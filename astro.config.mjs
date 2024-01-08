@@ -22,8 +22,12 @@ export default defineConfig({
           autogenerate: { directory: "guides" },
         },
         {
-          label: "Reference",
-          autogenerate: { directory: "reference" },
+          label: "Elements",
+          autogenerate: { directory: "elements" },
+        },
+        {
+          label: "Wrappers",
+          autogenerate: { directory: "wrappers" },
         },
       ],
     }),
