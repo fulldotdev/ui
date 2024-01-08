@@ -108,7 +108,7 @@ const getImportance = (i: number) => {
 - This element uses the `Group` wrapper, which you can read more about [here](/wrappers/group).
   :::
 
-Again, you may provide the `ButtonGroup` props in more than one way:
+Again, you may provide the `ButtonGroup` props in one of two ways:
 
 **Assigning props beforehand**
 
