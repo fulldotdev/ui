@@ -1,0 +1,73 @@
+---
+import { cva, type VariantProps } from 'cva'
+
+export type DeckProps = Props
+type Props = VariantProps<typeof variant>
+
+const variant = cva({
+  base: 'deck gap-size5 relative',
+  variants: {
+    layout: {
+      carousel: [
+        'px-wrapper -mx-wrapper pb-size3 relative max-w-100vw flex flex snap-x flex-row items-start justify-start overflow-hidden overflow-x-auto scroll-smooth',
+        '[&_.card]:(shrink-0 grow-0 snap-center text-size2)',
+        'size-small:[&_.card]:(w-18em max-w-46%)',
+        '[&_.card]:(w-20em max-w-68%)',
+        'size-large:[&_.card]:(w-26em max-w-90%)',
+      ],
+      grid: [
+        'grid w-full grid-cols-2 size-small:grid-cols-2 size-large:grid-cols-1 [&>*]:grow',
+        'size-small:sm:grid-cols-[repeat(auto-fill,minmax(220px,1fr))] ',
+        'sm:grid-cols-[repeat(auto-fill,minmax(290px,1fr))] ',
+        'size-large:sm:grid-cols-2',
+        'size-large:md:grid-cols-[repeat(auto-fill,minmax(385px,1fr))]',
+      ],
+      masonry: [
+        'w-full space-y-size5 columns-2 space-y-size4 size-small:columns-2 size-large:columns-1 [&>*]:grow [&>*]:break-inside-avoid-column',
+        'sm:columns-[308px] size-small:sm:columns-[220px] size-large:sm:columns-2',
+        'size-large:md:columns-[385px]',
+      ],
+      row: 'grid lg:grid-flow-col lg:auto-cols-fr w-full',
+      panels: 'grid auto-cols-fr lg:grid-cols-2 w-full',
+      bento:
+        'grid auto-cols-fr lg:grid-cols-5 w-full [&>*:first-child]:col-span-3 [&>*:last-child]:col-span-3 [&>*]:col-span-2',
+    },
+    size: {
+      small: 'size-small [&_.card]:size-small',
+      medium: 'size-medium [&_.card]:size-medium',
+      large: 'size-large [&_.card]:size-large',
+    },
+    mode: {
+      base: 'mode-base',
+      compact: 'mode-compact',
+    },
+  },
+  defaultVariants: {
+    mode: 'compact',
+    layout: 'grid',
+    size: 'medium',
+  },
+})
+
+const slot = await Astro.slots.render('default')
+---
+
+{
+  slot?.trim().length > 0 && (
+    <div class={variant(Astro.props)}>
+      <slot />
+    </div>
+  )
+}
+<!-- {
+  Astro.props.layout === 'carousel' && !Astro.props.noCarouselComponent ? (
+    // @ts-ignore
+    <DeckCarousel
+      client:load
+      {...Astro.props}
+    >
+      <slot />
+    </DeckCarousel>
+  ) : ( -->
+<!-- )
+} -->

@@ -1,0 +1,66 @@
+---
+import { hue, scheme, size } from '@variants'
+import type { VariantProps } from 'cva'
+import { cva } from 'cva'
+
+export type SectionProps = Props
+type Props = VariantProps<typeof variant>
+
+const variant = cva({
+  base: 'gap-size5 relative overflow-x-hidden',
+  variants: {
+    layout: {
+      col: 'flex flex-col gap-size5 justify-center',
+      row: 'grid gap-x-size6 gap-y-size5 lg:auto-cols-fr lg:grid-flow-col lg:[&>*]:col-span-3 lg:[&>.segment]:col-span-2',
+    },
+    align: {
+      start: 'items-start',
+      center: 'items-center justify-center',
+      end: 'items-end',
+    },
+    frame: {
+      fill: 'px-wrapper py-size6 first:pt-size5 border-x-0 first:border-t-0 last:border-b-0',
+      float:
+        'mx-wrapper py-size6 first:py-size5 border-x-0 first:border-t-0 border-x-0 first:border-t-0 last:border-b-0',
+      panel:
+        'mx-wrapper bg-hue2 my-size6 first:mt-size5 rounded-size2 [&_.segment]:(py-size5 px-wrapper sm:px-size5)',
+      screen: 'min-h-screen px-wrapper py-size6 first:pt-size5 last:pb-size5',
+    },
+    look: {
+      soft: 'bg-hue2',
+      surface: 'bg-hue2 border border-hue6',
+      outline: 'bg-transparent border border-hue6 ',
+      solid:
+        'bg-hue9 !text-hue-fg [&_*]:!text-hue-fg [&_.button]:(!bg-hue-fg !text-hue9)',
+    },
+    order: {
+      reverse: '[&>:first-child]:order-last',
+      switch: 'lg:[&>:first-child]:even:order-last',
+    },
+    size: size,
+    hue: hue,
+    scheme: scheme,
+  },
+  compoundVariants: [
+    {
+      layout: 'col',
+      align: 'center',
+      class: 'text-center justify-center',
+    },
+  ],
+  defaultVariants: {
+    layout: 'col',
+    frame: 'fill',
+  },
+})
+
+const slot = await Astro.slots.render('default')
+---
+
+{
+  slot?.trim().length > 0 && (
+    <section class={variant(Astro.props)}>
+      <slot />
+    </section>
+  )
+}
