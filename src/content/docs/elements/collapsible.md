@@ -10,6 +10,7 @@ The `Collapsible` is used to make a collapsible that shows content upon clicking
 The `Collapsible` element comes with a couple of props that you may use depending on your needs. This is what your TypeScript type may look like:
 
 ```ts
+// my-test-file.js
 interface Props {
   collapsible?: {
     heading: string;
