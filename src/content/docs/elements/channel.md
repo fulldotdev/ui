@@ -9,9 +9,8 @@ The `Channel` element is used to display contact/company information. This is cu
 If you want to display other contact platforms (i.e. instagram, facebook etc) use the [`Social`](/elements/social) element instead.
 :::
 
-Your `Channel` element may look something like this:
-
 ```astro
+<!-- Channel.astro -->
 ---
 export type ChannelProps = Props
 interface Props {
@@ -85,9 +84,10 @@ The `value` prop is the contact information itself for example your phone number
 
 ## ChannelGroup
 
-The `ChannelGroup` element may be used to render one or more channels. Below is an example of what your `ChannelGroup` element may look like:
+The `ChannelGroup` element may be used to render one or more channels.
 
 ```astro
+<!-- ChannelGroup.astro -->
 ---
 import Group, { type GroupProps } from '@components/wrappers/Group.astro'
 import Channel from './Channel.astro'

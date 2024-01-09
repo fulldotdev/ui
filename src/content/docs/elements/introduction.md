@@ -9,6 +9,34 @@ Elements are usually small files that contain specific parts of code. They are o
 
 They can be accessed in any component and are easily imported. This allows for coding quickly and not having to re-write the same code more than once.
 
-:::note[TODO]
-Explain the two ways to pass props to an element. (Example: Button)
-:::
+## Providing props
+
+You may always provide props to all elements in one of two ways:
+
+**Defining props beforehand**
+
+```astro
+<!-- Button.astro -->
+---
+  import Button from '@components/elements/Button.astro'
+  const button = {
+    label: "Example",
+    href: "https://example.com"
+  }
+---
+
+<Button {button} />
+```
+
+**Providing props directly**
+
+```astro
+<!-- Button.astro -->
+---
+  import Button from '@components/elements/Button.astro'
+---
+
+<Button label={"Example"} href={"https://example.com"} />
+```
+
+The `Button` element was used as an example. You may use both of these ways when calling any element.

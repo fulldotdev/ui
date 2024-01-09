@@ -3,9 +3,10 @@ title: Button
 description: A reference page in my new Starlight docs site.
 ---
 
-The `Button` element is self explanatory, it is a button that receives props from where the element is being called. Your `Button` element may look something like this:
+The `Button` element is self explanatory, it is a button that receives props from where the element is being called.
 
 ```astro
+<!-- Button.astro -->
 ---
 import type { HTMLAttributes } from 'astro/types'
 
@@ -35,37 +36,12 @@ const { label, href, importance } = Astro.props
 You may ignore or delete the `importance` prop if you are not using the Fulldev design system.
 :::
 
-You may import the button element anywhere and provide it's props in one of two ways:
-
-**Assigning props beforehand**
-
-```astro
----
-  import Button from '@components/elements/Button.astro'
-  const button = {
-  label: "Example",
-  href: "https://example.com"
-  }
----
-
-<Button {button} />
-```
-
-**Providing props directly**
-
-```astro
----
-  import Button from '@components/elements/Button.astro'
----
-
-<Button label={"Example"} href={"https://example.com"} />
-```
-
 ## ButtonGroup
 
-The `ButtonGroup` element may be used to render one or more buttons. Below is an example of what your `ButtonGroup` element may look like:
+The `ButtonGroup` element may be used to render one or more buttons.
 
 ```astro
+<!-- ButtonGroup.astro -->
 ---
 import Group, { type GroupProps } from '@components/wrappers/Group.astro'
 import type { ButtonProps } from './Button.astro'
@@ -107,48 +83,5 @@ const getImportance = (i: number) => {
 
 - This element uses the `Group` wrapper, which you can read more about [here](/wrappers/group).
   :::
-
-Again, you may provide the `ButtonGroup` props in one of two ways:
-
-**Assigning props beforehand**
-
-```astro
----
-  import ButtonGroup from '@components/elements/ButtonGroup.astro'
-  const buttons = {
-    {
-      label: "Example",
-      href: "https://example.com",
-    },
-    {
-      label: "Second example",
-      href: "https://example.com",
-      importance: 'secondary'
-    },
-  }
----
-
-<ButtonGroup {buttons} />
-```
-
-**Providing props directly**
-
-```astro
----
-import Button from '@components/elements/Button.astro'
----
-
-<ButtonGroup buttons={{
-    {
-      label: "Example",
-      href: "https://example.com",
-    },
-    {
-      label: "Second example",
-      href: "https://example.com",
-      importance: 'secondary'
-    }
-  }} />
-```
 
 If buttons are not/incorrectly provided the component will not render anything.

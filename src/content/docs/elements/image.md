@@ -3,4 +3,109 @@ title: Image
 description: A reference page in my new Starlight docs site.
 ---
 
-Bla bla `Image`
+The `Image` element is used to render a single image that uses the perfect size to have both quality and performance.
+
+```astro
+<!-- Image.astro -->
+---
+import type { HTMLAttributes } from 'astro/types'
+import { Image as AstroImage } from 'astro:assets'
+import { cva, type VariantProps } from 'cva'
+
+export type ImageProps = Props
+type Props = VariantProps<typeof variant> & {
+  src?: string
+  alt?: HTMLAttributes<'img'>['alt']
+  loading?: HTMLAttributes<'img'>['loading']
+  sizes?: {
+    base: string
+    sm?: string
+    md?: string
+    lg?: string
+    xl?: string
+    '2xl'?: string
+  }
+}
+
+const variant = cva({
+  base: 'image',
+  variants: {
+    position: {
+      relative: 'w-full h-auto relative',
+      background: 'object-cover absolute inset-0 !h-full !w-full',
+    },
+    ratio: {
+      landscape: 'aspect-4/3 object-cover',
+      square: 'aspect-square object-cover',
+      portrait: 'aspect-3/4 object-cover',
+    },
+  },
+  defaultVariants: {
+    position: 'relative',
+  },
+})
+
+const {
+  src,
+  alt = '',
+  loading = 'lazy',
+  sizes = {
+    base: '100vw',
+  },
+} = Astro.props
+
+function getSrc() {
+  if (src?.startsWith('http')) return src
+  const images = import.meta.glob('/src/assets/**/*.{jpeg,jpg,png,webp,gif}')
+  const path = ('/src/assets/' + src).replace('//', '/')
+  const image = images[path]
+  if (!image) console.warn(`Image not found: ${path}`)
+  else return image()
+}
+
+function getSizes() {
+  const mapped = Object.entries(sizes).map(([key, value]) => {
+    if (key === 'base') return value
+    if (key === 'sm') return `(min-width: 640px) ${value}`
+    if (key === 'md') return `(min-width: 768px) ${value}`
+    if (key === 'lg') return `(min-width: 1024px) ${value}`
+    if (key === 'xl') return `(min-width: 1280px) ${value}`
+    if (key === '2xl') return `(min-width: 1536px) ${value}`
+  })
+  const joined = mapped.join(', ')
+  return joined
+}
+---
+
+{
+  src && getSrc() && (
+    // @ts-ignore
+    <AstroImage
+      src={getSrc()}
+      width={src?.startsWith('http') ? 1000 : undefined}
+      height={src?.startsWith('http') ? 1000 : undefined}
+      alt={alt ? alt : 'Image'}
+      quality={80}
+      widths={[640, 768, 1024, 1280, 1536, 1920]}
+      sizes={getSizes()}
+      loading={loading}
+      class={variant(Astro.props)}
+    />
+  )
+}
+<style>
+  .mask {
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
+    mask-image: linear-gradient(to top, transparent 0%, black 30%);
+  }
+  .mask-lg {
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, black 100%);
+    mask-image: linear-gradient(to top, transparent 0%, black 100%);
+  }
+</style>
+
+```
+
+:::caution
+You may ignore/delete `cva` depending on if you are using the Fulldev design system. Alternatively you can read about [cva](https://cva.style/docs).
+:::

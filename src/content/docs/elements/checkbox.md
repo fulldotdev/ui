@@ -7,9 +7,8 @@ The `Checkbox` element is used to easily render an [HTML Checkbox](https://www.w
 
 As the name suggests the `required` prop makes the checkbox required.
 
-Your `Checkbox` element may look something like this:
-
 ```astro
+<!-- Checkbox.astro -->
 ---
 export type CheckboxProps = Props
 interface Props {

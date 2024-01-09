@@ -1,10 +1,6 @@
 ---
-title: Person
+title: Group
 description: A reference page in my new Starlight docs site.
 ---
 
-Bla bla `Person`
-
-:::danger
-Currently not in use.
-:::
+The `Group`

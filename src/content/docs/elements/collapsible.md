@@ -7,10 +7,10 @@ The `Collapsible` is used to make a collapsible that shows content upon clicking
 
 ## Props
 
-The `Collapsible` element comes with a couple of props that you may use depending on your needs. This is what your TypeScript type may look like:
+The `Collapsible` element comes with a couple of props that you may use depending on your needs.
 
 ```ts
-// my-test-file.js
+// Collapsible.astro
 interface Props {
   collapsible?: {
     heading: string;
@@ -34,9 +34,8 @@ The `class` prop is used to provide any styling classes that you want to add to 
 
 ## Code example
 
-Your `Collapsible` element may look something like this:
-
 ```astro
+<!-- Collapsible.astro -->
 ---
 interface Props {
   collapsible?: {
