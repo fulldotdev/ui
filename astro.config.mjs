@@ -29,6 +29,10 @@ export default defineConfig({
           label: "Wrappers",
           autogenerate: { directory: "wrappers" },
         },
+        {
+          label: "Components",
+          autogenerate: { directory: "components" },
+        },
       ],
     }),
   ],
