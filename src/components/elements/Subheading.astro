@@ -1,0 +1,35 @@
+---
+export interface Props {
+  heading?: string | null
+  level?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+  class?: string
+}
+
+const { level = 'h2', heading, class: className } = Astro.props
+const Level = level
+
+const slot = await Astro.slots.render('default')
+---
+
+{
+  (heading || slot?.trim().length > 0) && (
+    <Level class:list={['heading', className]}>
+      {heading}
+      <slot />
+    </Level>
+  )
+}
+
+<style lang="scss">
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
+    color: var(--color-heading);
+    line-height: 1.1;
+    font-size: var(--text3);
+  }
+</style>

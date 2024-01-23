@@ -1,0 +1,126 @@
+---
+export interface Props {
+  deck?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento'
+  class?: string
+}
+
+const { deck = 'carousel', class: className } = Astro.props
+const slot = await Astro.slots.render('default')
+---
+
+{
+  slot?.trim().length > 0 && (
+    <div class:list={['deck', deck, className]}>
+      <Fragment set:html={slot} />
+    </div>
+  )
+}
+
+<style is:global>
+  @custom-media --lg (min-width: 1024px);
+  @custom-media --sm (min-width: 768px);
+
+  .deck {
+    position: relative;
+    padding: 0 var(--gutter-padding);
+    width: 100%;
+
+    /* &:where(.carousel) {
+      @apply px-wrapper -mx-wrapper pb-flow3 relative max-w-100vw flex flex snap-x
+       flex-row items-start justify-start overflow-hidden overflow-x-auto scroll-smooth;
+       
+    } */
+
+    /* > * {
+      margin: 0 -7.5%;
+    } */
+
+    &:where(.row) {
+      display: grid;
+
+      @media (--lg) {
+        grid-auto-flow: column;
+        grid-auto-columns: 4fr 1fr;
+
+        > * {
+          margin: 0 -7.5%;
+
+          &:nth-child(2) {
+            grid-column-start: 3;
+          }
+          &:nth-child(3) {
+            grid-column-start: 5;
+          }
+          &:nth-child(4) {
+            grid-column-start: 7;
+          }
+        }
+        /* grid-auto-flow: column;
+        grid-auto-columns: 10fr;
+        grid-template-columns: 9fr;
+
+        & > *:not(:first-child) {
+          margin-left: 0 10% 0 20%;
+        } */
+      }
+    }
+
+    /* @apply         'px-wrapper -mx-wrapper pb-size3 relative max-w-100vw flex flex snap-x flex-row items-start justify-start overflow-hidden overflow-x-auto scroll-smooth',
+            '[&_.card]:(shrink-0 grow-0 snap-center text-size2)',
+            'size-small:[&_.card]:(w-18em max-w-46%)',
+            '[&_.card]:(w-20em max-w-68%)',
+            'size-large:[&_.card]:(w-26em max-w-90%)', */
+
+    &:where(.carousel) {
+      position: relative;
+      display: flex;
+      scroll-snap-type: x mandatory;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      flex-direction: row;
+      padding: 0 var(--gutter-padding);
+      width: 100%;
+
+      & > * {
+        flex-shrink: 0;
+        flex-grow: 0;
+        width: 400px;
+        scroll-snap-align: center;
+      }
+    }
+
+    &:where(.grid) {
+      display: grid;
+      width: 100%;
+      gap: calc(var(--gutter-padding) / 2);
+      grid-template-columns: repeat(4, 4fr 1fr);
+    }
+
+    &:where(.masonry) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    &:where(.panels) {
+      display: grid;
+      grid-template-columns: 1fr;
+
+      @media (--lg) {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    &:where(.bento) {
+      display: grid;
+      grid-template-columns: 1fr;
+
+      @media (--lg) {
+        grid-template-columns: 1fr 1fr 1fr;
+
+        & > *:nth-child(2n) {
+          grid-column-start: span 2;
+        }
+      }
+    }
+  }
+</style>

@@ -1,0 +1,36 @@
+---
+import { getCollection, getEntry } from 'astro:content'
+import { unslugify } from '../../utils'
+import Link from '../elements/link/Link.astro'
+const company = (await getEntry('globals', 'company')).data
+const policies = await getCollection('policies')
+---
+
+<div
+  class="bottom mx-wrapper gap-flow4 py-flow6 size-small density-compact flex flex-wrap justify-between"
+>
+  <p class="text-flow1">
+    &copy; {new Date().getFullYear()}&nbsp;{company.company}. Maatwerk
+    ontwikkeling door
+    <Link
+      class:list="text-inherit"
+      label="Fulldev"
+      href="https://full.dev"
+    />
+  </p>
+  <p class="text-flow1 gap-x-flow2 flex flex-wrap">
+    {company.kvk && `Kvk. ${company.kvk}`}
+    {
+      policies?.map((policy) => (
+        <>
+          <span>|</span>
+          <Link
+            class:list="text-inherit"
+            label={unslugify(policy.slug)}
+            href={'/beleid/' + policy.slug}
+          />
+        </>
+      ))
+    }
+  </p>
+</div>

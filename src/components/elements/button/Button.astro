@@ -1,0 +1,83 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+export interface Props {
+  label: string | null
+  href: HTMLAttributes<'a'>['href']
+}
+
+const { label, href } = Astro.props
+---
+
+{
+  label && href && (
+    <a href={href}>
+      {label}
+      <slot />
+    </a>
+  )
+}
+
+<style lang="scss">
+  a {
+    gap: 0.75rem;
+    display: inline-flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    white-space: nowrap;
+    border-radius: calc(var(--flow1) * var(--flow-rounded));
+    padding: var(--spacing4);
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    background: darkblue;
+    line-height: 1;
+    font-size: var(--text1);
+    border: 1px solid;
+    // width: 100%;
+
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: auto;
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &:disabled {
+      pointer-events: none;
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &:first-child {
+      color: var(--color-primary);
+      background: var(--bg-primary);
+      border-color: var(--border-primary);
+
+      &:hover {
+        background: var(--bg-primary-hover);
+        border-color: var(--border-primary-hover);
+      }
+
+      &:active {
+        background: var(--bg-primary-active);
+      }
+    }
+
+    &:last-child:not(:first-child) {
+      color: var(--color-secondary);
+      background: var(--bg-secondary);
+      border-color: var(--border-secondary);
+
+      &:hover {
+        background: var(--bg-secondary-hover);
+        border-color: var(--border-secondary-hover);
+      }
+
+      &:active {
+        background: var(--bg-secondary-active);
+      }
+    }
+  }
+</style>

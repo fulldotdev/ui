@@ -1,0 +1,47 @@
+---
+interface Props {
+  layout?: 'center' | 'left' | 'wide' | null
+  class?: string
+}
+
+const { layout = 'left', class: className } = Astro.props
+const slot = await Astro.slots.render('default')
+---
+
+{
+  slot?.trim().length > 0 && (
+    <ul
+      data-component="list"
+      class:list={['list', layout, className]}
+    >
+      <Fragment set:html={slot} />
+    </ul>
+  )
+}
+
+<style lang="postcss">
+  .list {
+    row-gap: var(--flow4);
+    column-gap: var(--flow5);
+    display: flex;
+
+    &:where(.left) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    &:where(.center) {
+      flex-direction: column;
+      align-items: center;
+    }
+    &:where(.split) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    &:where(.stack) {
+      align-items: center;
+    }
+    &:where(.reverse) {
+      align-items: center;
+    }
+  }
+</style>

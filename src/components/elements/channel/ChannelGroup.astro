@@ -1,0 +1,19 @@
+---
+import { getEntry } from 'astro:content'
+import type { Props as GroupProps } from '../../wrappers/Group.astro'
+import Group from '../../wrappers/Group.astro'
+import Channel from './Channel.astro'
+const company = (await getEntry('globals', 'company')).data
+
+export interface Props extends GroupProps {
+  channels?: boolean | null
+}
+
+const { channels, ...restProps } = Astro.props
+const keys = Object.keys(company.channels)
+const filteredKeys = keys.filter((key) => company.channels[key])
+---
+
+<Group {...restProps}>
+  {channels && filteredKeys.map((key: any) => <Channel {key} />)}
+</Group>

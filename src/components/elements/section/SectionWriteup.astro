@@ -1,0 +1,42 @@
+---
+export interface Props {
+  layout?: 'left' | 'center' | 'split' | 'wide'
+  class?: string
+}
+
+const { layout, class: className } = Astro.props
+const slot = await Astro.slots.render('default')
+---
+
+{
+  slot?.trim().length > 0 && (
+    <div class:list={['writeup', layout, className]}>
+      <slot />
+    </div>
+  )
+}
+
+<style lang="scss">
+  div {
+    container-type: inline-size;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--spacing3);
+    max-width: max(800px, 50vw);
+
+    // '[&_*:is(h1,h2,h3,h4,h5,h6)]:my-flow3 [&_*:is(h1,h2,h3,h4,h5,h6)]:heading hue-base',
+    //     '[&_p]:mt-flow2 [&_p]:text',
+    //     '[&_p:first-child:not(:last-child)]:(text-flow1 text-secondary)',
+
+    &:where(.center) {
+      align-items: center;
+      text-align: center;
+    }
+
+    &:where(.left) {
+      align-items: left;
+      text-align: left;
+    }
+  }
+</style>

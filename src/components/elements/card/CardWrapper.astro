@@ -1,0 +1,75 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+export interface Props {
+  href?: HTMLAttributes<'a'>['href']
+  frame?: 'fill' | 'panel' | null
+  ratio?: 'landscape' | 'square' | 'portrait' | null
+  class?: string
+}
+
+const {
+  href,
+  frame = 'fill',
+  ratio = 'landscape',
+  class: className,
+} = Astro.props
+---
+
+{
+  href ? (
+    <a
+      class:list={['card', frame, ratio, className]}
+      href={href}
+    >
+      <slot />
+    </a>
+  ) : (
+    <div class:list={['card', frame, ratio, className]}>
+      <slot />
+    </div>
+  )
+}
+
+<style>
+  div {
+    container: cardwrapper / inline-size;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: calc(var(--flow2) * var(--flow-rounded));
+    background: var(--bg-card);
+
+    & > img {
+      opacity: 0.75;
+    }
+
+    &:where(.surface) {
+      /* @apply bg-hue2 border border-hue6 [&[href]]:(hover:border-hue7 hover:bg-hue3 active:border-hue8 active:bg-hue4); */
+      border-width: 1px;
+    }
+    &:where(.soft) {
+      /* @apply bg-hue2 [&[href]]:(hover:bg-hue3 active:bg-hue4); */
+    }
+    &:where(.outline) {
+      /* @apply bg-transparent border border-hue6 [&[href]]:(hover:border-hue7 active:border-hue8); */
+      border-width: 1px;
+    }
+    &:where(.ghost) {
+      /* @apply bg-transparent [&[href]]:(hover:bg-hue2 active:bg-hue3); */
+      background-color: transparent;
+    }
+    &:where(.landscape) {
+      aspect-ratio: 4/3;
+      object-fit: cover;
+    }
+    &:where(.square) {
+      aspect-ratio: 1/1;
+      object-fit: cover;
+    }
+    &:where(.portrait) {
+      aspect-ratio: 3/4;
+      object-fit: cover;
+    }
+  }
+</style>

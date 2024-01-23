@@ -1,0 +1,71 @@
+---
+export interface Props {
+  layout?: 'left' | 'center' | 'split' | 'wide'
+  frame?: 'fill' | 'panel'
+  scale?: number
+  class?: string
+}
+
+const { props } = Astro
+const slot = await Astro.slots.render('default')
+---
+
+{
+  slot?.trim().length > 0 && (
+    <section class:list={['section', props.layout, props.class]}>
+      <Fragment set:html={slot} />
+    </section>
+  )
+}
+
+<style define:vars={{ scale: props.scale }} is:global>
+  section {
+    container: section / inline-size;
+    column-gap: var(--flow5);
+    row-gap: var(--flow5);
+    position: relative;
+    overflow-x: hidden;
+    margin: var(--spacer) var(--gutter-margin);
+    background: var(--bg-section);
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &:where(.left) {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &:where(.split) {
+      display: grid;
+      align-items: center;
+
+      @media (min-width: 1024px) {
+        grid-auto-columns: 1fr;
+        grid-auto-flow: column;
+
+        /* NEEDDS GLOBAL */
+        &:nth-child(even) {
+          & > *:first-child {
+            order: 2;
+          }
+        }
+      }
+      /* @apply grid items-center lg:auto-cols-fr lg:grid-flow-col lg:[&>:first-child]:even:order-last; */
+    }
+
+    &:where(.center) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    &:where(.wide) {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+</style>

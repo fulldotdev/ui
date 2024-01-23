@@ -1,0 +1,80 @@
+---
+import { getEntry } from 'astro:content'
+const company = (await getEntry('globals', 'company')).data
+
+export type ChannelProps = Props
+interface Props {
+  key: keyof typeof map
+}
+
+const { key } = Astro.props
+
+const map = {
+  email: {
+    value: company.channels.email,
+    href: `mailto:${company.channels.email}`,
+    icon: 'icon:mail',
+    title: 'Email',
+  },
+  phone: {
+    value: company.channels.phone,
+    href: `tel:${company.channels.phone}`,
+    icon: 'icon:phone',
+    title: 'Telefoon',
+  },
+  whatsapp: {
+    value: company.channels.whatsapp,
+    href: `https://wa.me/${company.channels.whatsapp}`,
+    icon: 'icon:brand-whatsapp',
+    title: 'Whatsapp',
+  },
+  address: {
+    value: company.channels.address,
+    href: `https://www.google.com/maps/search/?api=1&query=${company.channels.address}`,
+    icon: 'icon:location',
+    title: 'Adres',
+  },
+}
+---
+
+{
+  company.channels[key] && (
+    <div>
+      <a
+        href={map[key].href}
+        target="_blank"
+      >
+        <i class:list={map[key].icon} />
+      </a>
+      <div>
+        <p>{map[key].title}</p>
+        <p>{map[key].value}</p>
+      </div>
+    </div>
+  )
+}
+
+<style lang="postcss">
+  div {
+    gap: var(--flow3);
+    display: flex;
+    align-items: center;
+
+    i {
+      height: 1.4em;
+      width: 1.4em;
+      display: block;
+    }
+
+    div {
+      gap: var(--flow1);
+      display: flex;
+      flex-direction: column;
+      &:first-child {
+        font-size: var(--flow-text2);
+        line-height: 1;
+        /* @apply hue-base text-hue12; */
+      }
+    }
+  }
+</style>

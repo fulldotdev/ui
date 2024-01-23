@@ -1,0 +1,83 @@
+---
+export interface Props {
+  layout?: 'center' | 'left' | 'wide' | null
+  class?: string
+}
+
+const { layout = 'left', class: className } = Astro.props
+const slot = await Astro.slots.render('default')
+
+const CLAMP_START = 320
+const CLAMP_END = 1024
+const clamp = (min: number, max: number) => {
+  const slope = (max - min) / (CLAMP_END - CLAMP_START)
+  const intersect = -CLAMP_START * slope + min
+  return `clamp( ${min}px, ${intersect}px + ${slope * 100}vw, ${max}px)`
+}
+---
+
+{
+  slot?.trim().length > 0 && (
+    <div class:list={['segment', layout, className]}>
+      <Fragment set:html={slot} />
+    </div>
+  )
+}
+
+<style>
+  .segment {
+    container: cardsegment / inline-size;
+    display: flex;
+    flex-direction: column;
+    row-gap: max(16px, 2vw);
+    position: relative;
+    z-index: 10;
+    column-gap: var(--flow6);
+    width: 100%;
+    padding: 7.5%;
+
+    &:where(.left) {
+      align-items: flex-start;
+      text-align: left;
+    }
+    &:where(.center) {
+      align-items: center;
+      text-align: center;
+    }
+    &:where(.split) {
+      align-items: flex-start;
+      text-align: left;
+    }
+    &:where(.stack) {
+      justify-content: space-between;
+      width: 100%;
+
+      @media (min-width: 1024px) {
+        .lg\:flex-row {
+          flex-direction: row;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .lg\:items-center {
+          align-items: center;
+        }
+      }
+    }
+
+    &:where(.reverse) {
+      justify-content: space-between;
+      width: 100%;
+      @media (min-width: 1024px) {
+        .lg\:flex-row {
+          flex-direction: row;
+        }
+      }
+      @media (min-width: 1024px) {
+        .lg\:items-center {
+          align-items: center;
+        }
+      }
+    }
+  }
+</style>
