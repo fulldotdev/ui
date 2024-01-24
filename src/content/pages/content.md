@@ -19,4 +19,19 @@ sections:
       - label: Click me
         href: '#'
     image:
+  - _bookshop_name: blocks/hero/FeaturesSection
+    impact: extreme
+    tagline: tagline
+    heading: Heading
+    text: wefweef
+    buttons:
+      - label: Click me
+        href: '#'
+      - label: Click me
+        href: '#'
+    features:
+      - heading: Heading
+        text: wefweef
+      - heading: Heading
+        text: wefweef
 ---
