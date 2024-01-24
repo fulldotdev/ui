@@ -1,5 +1,5 @@
 ---
-title: test
+title: Categories
 description: A reference page in my new Starlight docs site.
 ---
 
@@ -18,6 +18,7 @@ const { props } = Astro
 <Card {...props} />
 
 ```
+This will render a singular card, to render multiple use `Deck`.
 
 ## Deck
 ```astro
