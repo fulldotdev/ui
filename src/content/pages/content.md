@@ -30,8 +30,13 @@ sections:
       - label: Click me
         href: '#'
     features:
-      - heading: Heading
+      - tagline: tagline
+        heading: Heading
         text: wefweef
-      - heading: Heading
+      - tagline: tagline
+        heading: Heading
+        text: wefweef
+      - tagline: tagline
+        heading: Heading
         text: wefweef
 ---
