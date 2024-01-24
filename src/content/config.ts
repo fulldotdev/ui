@@ -21,7 +21,6 @@ export const collections = {
   services: content,
   globals: data,
   settings: data,
-  blocks: data,
   docs: defineCollection({ schema: docsSchema() }),
   i18n: defineCollection({ type: 'data', schema: i18nSchema() }),
 }
