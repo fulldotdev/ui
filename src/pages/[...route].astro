@@ -1,0 +1,67 @@
+---
+import { getCollection, type ContentCollectionKey } from 'astro:content'
+import CategoriesLayout from 'src/components/blocks/categories/CategoriesLayout.astro'
+import PageLayout from 'src/components/blocks/pages/PagesLayout.astro'
+import PolicyLayout from 'src/components/blocks/policies/PoliciesLayout.astro'
+import PostLayout from 'src/components/blocks/posts/PostsLayout.astro'
+import ProductsLayout from 'src/components/blocks/products/ProductsLayout.astro'
+import ServiceLayout from 'src/components/blocks/services/ServicesLayout.astro'
+import FormLayout from '../layouts/FormLayout.astro'
+import { getRouteByEntry } from '../utils'
+
+// Function to generate static paths for all entries in all collections
+export async function getStaticPaths() {
+  // Object containing all collections keys
+  const collections: ContentCollectionKey[] = [
+    'pages',
+    'services',
+    'posts',
+    'products',
+    'categories',
+    'forms',
+    'policies',
+  ]
+  // Get all entries from all collections, resolve promises, flatten array, and filter out any undefined values
+  const promises = collections.map((key) => getCollection(key))
+  const results = await Promise.all(promises)
+  const flattened = results.flat()
+  const filtered = flattened.filter(Boolean)
+  const entries = filtered
+
+  // Return paths for all entries
+  return entries.map((entry) => ({
+    params: {
+      route:
+        getRouteByEntry(entry) === '/' ? undefined : getRouteByEntry(entry),
+    },
+    props: {
+      entry: entry,
+      frontmatter: entry.data,
+    },
+  }))
+}
+
+// Object containing all layouts for each collection
+const layouts: {
+  [key in ContentCollectionKey]?: any
+} = {
+  pages: PageLayout,
+  policies: PolicyLayout,
+  categories: CategoriesLayout,
+  products: ProductsLayout,
+  posts: PostLayout,
+  services: ServiceLayout,
+  forms: FormLayout,
+  reviews: PageLayout,
+}
+
+// Get current entry from props
+const { entry, frontmatter } = Astro.props
+// Get layout for current entry
+const CollectionLayout = layouts[entry.collection]
+---
+
+<CollectionLayout
+  entry={entry}
+  frontmatter={frontmatter}
+/>
