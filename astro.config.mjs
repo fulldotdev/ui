@@ -37,16 +37,16 @@ export default defineConfig({
           autogenerate: { directory: 'guides' },
         },
         {
+          label: 'Components',
+          autogenerate: { directory: 'components' },
+        },
+        {
           label: 'Elements',
           autogenerate: { directory: 'elements' },
         },
         {
           label: 'Wrappers',
           autogenerate: { directory: 'wrappers' },
-        },
-        {
-          label: 'Components',
-          autogenerate: { directory: 'components' },
         },
       ],
     }),
