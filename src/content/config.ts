@@ -1,3 +1,4 @@
+import { docsSchema, i18nSchema } from '@astrojs/starlight/schema'
 import { defineCollection, z } from 'astro:content'
 
 const content = defineCollection({
@@ -26,5 +27,6 @@ export const collections = {
   globals: data,
   settings: data,
   blocks: data,
-  docs: docs,
+  docs: defineCollection({ schema: docsSchema() }),
+  i18n: defineCollection({ type: 'data', schema: i18nSchema() }),
 }
