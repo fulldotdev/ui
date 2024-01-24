@@ -11,11 +11,6 @@ const data = defineCollection({
   schema: z.any(),
 })
 
-const docs = defineCollection({
-  type: 'content',
-  schema: z.any(),
-})
-
 export const collections = {
   categories: content,
   pages: content,
