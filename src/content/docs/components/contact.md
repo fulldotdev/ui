@@ -3,6 +3,12 @@ title: Contact
 description: A reference page in my new Starlight docs site.
 ---
 
+The `Contact` component is used to render your contact information. 
+
+
+(Waar is socials etc..???)
+
+
 ## Section
 
 ```astro
