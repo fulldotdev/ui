@@ -25,3 +25,45 @@ const { props } = Astro
 />
 
 ```
+
+## Card
+
+```astro
+---
+import type { Props as CardProps } from '../../elements/card/Card.astro'
+import Card from '../../elements/card/Card.astro'
+
+export interface Props
+  extends Pick<
+    CardProps,
+    'tagline' | 'heading' | 'text' | 'price' | 'buttons'
+  > {}
+
+const { props } = Astro
+---
+
+<Card {...props} />
+
+```
+
+## Deck
+
+```astro
+---
+import type { Props as DeckProps } from '../../elements/deck/Deck.astro'
+import Deck from '../../elements/deck/Deck.astro'
+import type { Props as OffersCardProps } from './OffersCard.astro'
+
+export interface Props extends Pick<DeckProps, 'deck'> {
+  offers?: OffersCardProps[] | null
+}
+
+const { props } = Astro
+---
+
+<Deck
+  {...props}
+  cards={props.offers}
+/>
+
+```
