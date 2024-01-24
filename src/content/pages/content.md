@@ -8,4 +8,11 @@ seo:
     src:
     alt:
 sections:
+  - _bookshop_name: blocks/hero/HeroSection
+    impact:
+    tagline: tagline
+    heading: Heading
+    text: wefweef
+    buttons:
+    image:
 ---
