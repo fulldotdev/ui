@@ -1,5 +1,6 @@
 ---
 export interface Props {
+  theme?: string
   layout?: 'left' | 'center' | 'split' | 'wide'
   frame?: 'fill' | 'panel'
   scale?: number
@@ -12,13 +13,13 @@ const slot = await Astro.slots.render('default')
 
 {
   slot?.trim().length > 0 && (
-    <section class:list={['section', props.layout, props.class]}>
+    <section class:list={['section', props.theme, props.layout, props.class]}>
       <Fragment set:html={slot} />
     </section>
   )
 }
 
-<style define:vars={{ scale: props.scale }} is:global>
+<style is:global>
   section {
     container: section / inline-size;
     column-gap: var(--flow5);
@@ -26,7 +27,9 @@ const slot = await Astro.slots.render('default')
     position: relative;
     overflow-x: hidden;
     margin: var(--spacer) var(--gutter-margin);
-    background: var(--bg-section);
+    background: var(--section-bg);
+    border-width: var(--borderWidth);
+    border-color: var(--section-ring);
 
     &:first-child {
       margin-top: 0;
