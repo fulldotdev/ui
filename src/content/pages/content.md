@@ -9,38 +9,78 @@ seo:
     alt:
 sections:
   - _bookshop_name: blocks/hero/HeroSection
-    impact: extreme
-    tagline: tagline
-    heading: Heading
-    text: wefweef
+    theme: impact-medium
+    tagline: Lorem ipsum
+    heading: Heading ipsum dolor sit amet
+    text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam eget
+      felis eget nunc lobortis mattis. Sed euismod, nisl quis.
     buttons:
       - label: Click me
         href: '#'
       - label: Click me
         href: '#'
     image:
-  # - _bookshop_name: blocks/hero/FeaturesSection
-  #   theme: impact-low
-  #   tagline: Lorem ipsum
-  #   heading: Heading ipsum dolor sit amet
-  #   text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam eget
-  #     felis eget nunc lobortis mattis. Sed euismod, nisl quis.
-  #   buttons:
-  #     - label: Click me
-  #       href: '#'
-  #     - label: Click me
-  #       href: '#'
-  #   features:
-  #     - tagline: Lorem ipsum
-  #       heading: Heading ipsum dolor sit amet
-  #       text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-  #         eget felis eget nunc lobortis mattis. Sed euismod, nisl quis.
-  #     - tagline: Lorem ipum
-  #       heading: Heading ipsum dolor sit amet
-  #       text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-  #         eget felis eget nunc lobortis mattis. Sed euismod, nisl quis.
-  #     - tagline: Lorem ipum
-  #       heading: Heading ipsum dolor sit amet
-  #       text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-  #         eget felis eget nunc lobortis mattis. Sed euismod, nisl quis.
+  - _bookshop_name: blocks/hero/FeaturesSection
+    theme: impact-high
+    tagline: Lorem ipsum
+    heading: Heading ipsum dolor sit amet
+    text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam eget
+      felis eget nunc lobortis mattis. Sed euismod, nisl quis.
+    features:
+      - tagline: Lorem ipsum
+        heading: Heading ipsum dolor sit amet
+        text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+          eget felis eget nunc lobortis mattis. Sed euismod, nisl quis.
+      - tagline: Lorem ipum
+        heading: Heading ipsum dolor sit amet
+        text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+          eget felis eget nunc lobortis mattis. Sed euismod, nisl quis.
+      - tagline: Lorem ipum
+        heading: Heading ipsum dolor sit amet
+        text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+          eget felis eget nunc lobortis mattis. Sed euismod, nisl quis.
+  - _bookshop_name: blocks/hero/CtaSection
+    theme: impact-high
+    tagline: Lorem ipsum
+    heading: Heading ipsum dolor sit amet
+    text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam eget
+      felis eget nunc lobortis mattis. Sed euismod, nisl quis.
+    buttons:
+      - label: Click me
+        href: '#'
+      - label: Click me
+        href: '#'
+  - _bookshop_name: blocks/hero/CtaSection
+    theme: impact-solid
+    tagline: Lorem ipsum
+    heading: Heading ipsum dolor sit amet
+    text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam eget
+      felis eget nunc lobortis mattis. Sed euismod, nisl quis.
+    buttons:
+      - label: Click me
+        href: '#'
+      - label: Click me
+        href: '#'
+  - _bookshop_name: blocks/hero/CtaSection
+    theme: impact-extreme
+    tagline: Lorem ipsum
+    heading: Heading ipsum dolor sit amet
+    text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam eget
+      felis eget nunc lobortis mattis. Sed euismod, nisl quis.
+    buttons:
+      - label: Click me
+        href: '#'
+      - label: Click me
+        href: '#'
+  - _bookshop_name: blocks/hero/ReviewsSection
+    theme: impact-low
+    tagline: Lorem ipsum
+    heading: Heading ipsum dolor sit amet
+    text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam eget
+      felis eget nunc lobortis mattis. Sed euismod, nisl quis.
+    buttons:
+      - label: Click me
+        href: '#'
+      - label: Click me
+        href: '#'
 ---

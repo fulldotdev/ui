@@ -82,7 +82,6 @@ const { entry, frontmatter } = Astro.props
 
 <LayoutAction seo={frontmatter.seo}>
   <SectionRenderer
-    bookshop:live
     sections={frontmatter.sections}
   />
 </LayoutAction>
