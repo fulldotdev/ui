@@ -1,0 +1,45 @@
+---
+export interface Props {
+  position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
+  class?: string
+}
+
+const { props } = Astro
+const slot = await Astro.slots.render('default')
+---
+
+{
+  slot?.trim().length > 0 && (
+    <header class:list={['header flow-compact', props.position]}>
+      <Fragment set:html={slot} />
+    </header>
+  )
+}
+
+<style>
+  header {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--flow2) var(--gutter-padding);
+    gap: var(--spacing6);
+    align-items: center;
+    z-index: 10;
+
+    &:where(.sticky) {
+      position: sticky;
+      top: 0;
+    }
+
+    &:where(.fixed) {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+    }
+
+    &:where(.absolute) {
+      position: absolute;
+      top: 0;
+    }
+  }
+</style>
