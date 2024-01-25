@@ -3,7 +3,7 @@ title: Cta
 description: A reference page in my new Starlight docs site.
 ---
 
-The `Cta` component is used to render a Call To Action, this is only a `writeup` with a `buttons`. 
+The `Cta` component is used to render a Call To Action, this is only a `writeup` with `buttons`. 
 
 If you want to use images in your `Cta` considering using the `Spotlight` component. Which is identical to this component, but allows for an image.
 
