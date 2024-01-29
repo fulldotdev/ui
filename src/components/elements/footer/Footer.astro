@@ -1,0 +1,51 @@
+---
+import { getEntry } from 'astro:content'
+import type { Props as LogoProps } from '../Logo.astro'
+import Logo from '../Logo.astro'
+import type { Props as TextProps } from '../Text.astro'
+import Text from '../Text.astro'
+import type { Props as ChannelGroupProps } from '../channel/ChannelGroup.astro'
+import ChannelGroup from '../channel/ChannelGroup.astro'
+import type { Props as LinkGroupProps } from '../link/Links.astro'
+import type { Props as SocialGroupProps } from '../social/SocialGroup.astro'
+import SocialGroup from '../social/SocialGroup.astro'
+import type { Props as FooterSegmentProps } from './FooterSegment.astro'
+import FooterSegment from './FooterSegment.astro'
+import type { Props as FooterWrapperProps } from './FooterWrapper.astro'
+import FooterWrapper from './FooterWrapper.astro'
+
+export interface Props
+  extends FooterWrapperProps,
+    FooterSegmentProps,
+    LinkGroupProps,
+    SocialGroupProps,
+    ChannelGroupProps,
+    TextProps {
+  logo?: LogoProps | null
+}
+
+let { props } = Astro
+props = {
+  ...(await getEntry('globals', 'company')).data,
+  ...(await getEntry('globals', 'footer')).data,
+  ...props,
+}
+---
+
+<FooterWrapper {...props}>
+  <FooterSegment {...props}>
+    <Logo />
+    <Text {...props} />
+    <SocialGroup socials />
+  </FooterSegment>
+  <ChannelGroup channels />
+  <!-- {
+    footer?.columns &&
+      footer?.columns?.map((column: any) => (
+        <Segment class:list="col-span-.8 density-compact size-small">
+          <h6 class="heading-secondary">{column.heading}</h6>
+          <Links links={column.links} />
+        </Segment>
+      ))
+  } -->
+</FooterWrapper>

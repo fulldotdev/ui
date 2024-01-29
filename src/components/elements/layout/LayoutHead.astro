@@ -1,0 +1,77 @@
+---
+import { SEO } from 'astro-seo'
+import { getEntry } from 'astro:content'
+const company = (await getEntry('globals', 'company')).data
+
+interface Props {
+  seo?: {
+    title?: string | null
+    description?: string | null
+    image?: {
+      src: string | null
+      alt?: string | null
+    }
+  }
+}
+
+const { title, description, image } = Astro.props.seo
+---
+
+<head>
+  <meta
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+    name="viewport"
+  />
+  <meta
+    name="generator"
+    content={Astro.generator}
+  />
+
+  <SEO
+    title={title || company.name || undefined}
+    description={description || company.description || undefined}
+    openGraph={{
+      basic: {
+        title: title || company.name || '',
+        type: 'website',
+        image: image?.src || company.image || '',
+      },
+      image: {
+        url: image?.src || company.image || '',
+        alt: image?.alt || 'Logo' + company.name || '',
+      },
+    }}
+  />
+
+  <link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="/apple-touch-icon.png"
+  />
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="32x32"
+    href="/favicon-32x32.png"
+  />
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="16x16"
+    href="/favicon-16x16.png"
+  />
+  <link
+    rel="manifest"
+    href="/site.webmanifest"
+  />
+  <meta
+    name="msapplication-TileColor"
+    content="#ffc40d"
+  />
+  <meta
+    name="theme-color"
+    content="#ffffff"
+  />
+
+  <!-- <ViewTransitions /> -->
+</head>
