@@ -69,7 +69,6 @@ const { props } = Astro
 ```astro
 ---
 import type { CollectionEntry } from 'astro:content'
-import LayoutAction from '../../../layouts/LayoutAction.astro'
 import SectionRenderer from '../../misc/SectionRenderer.astro'
 
 interface Props {
@@ -79,11 +78,5 @@ interface Props {
 
 const { entry, frontmatter } = Astro.props
 ---
-
-<LayoutAction seo={frontmatter.seo}>
-  <SectionRenderer
-    sections={frontmatter.sections}
-  />
-</LayoutAction>
 
 ```
