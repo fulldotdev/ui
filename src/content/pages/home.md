@@ -21,7 +21,7 @@ sections:
     image: 
       src: https://source.unsplash.com/random/800x600
       alt: my alt tag
-  - _bookshop_name: blocks/hero/HighlightsSection
+  - _bookshop_name: blocks/features/FeaturesSection
     theme: impact-low
     highlights:
       - heading: Doorgroeien bij HSM Utrecht
