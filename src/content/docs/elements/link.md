@@ -61,5 +61,5 @@ const { links, ...restProps } = Astro.props
 ```
 
 :::caution
-The `Links` element uses the `List` wrapper, which you can read more about [here](/wrappers/list).
+The `Links` element uses the `List` Root, which you can read more about [here](/wrappers/list).
 :::

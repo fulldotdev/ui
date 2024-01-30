@@ -108,5 +108,5 @@ const { channels, ...restProps } = Astro.props
 
 :::caution
 
-This element uses the `Group` wrapper, which you can read more about [here](/wrappers/group).
+This element uses the `Group` Root, which you can read more about [here](/wrappers/group).
 :::

@@ -56,5 +56,5 @@ const { specs } = Astro.props
 ```
 
 :::caution
-This element uses the `List` wrapper, which you can read more about [here](/wrappers/list)
+This element uses the `List` Root, which you can read more about [here](/wrappers/list)
 :::

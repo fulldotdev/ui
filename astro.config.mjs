@@ -45,8 +45,8 @@ export default defineConfig({
           autogenerate: { directory: 'elements' },
         },
         {
-          label: 'Wrappers',
-          autogenerate: { directory: 'wrappers' },
+          label: 'Roots',
+          autogenerate: { directory: 'Roots' },
         },
       ],
     }),
