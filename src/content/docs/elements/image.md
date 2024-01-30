@@ -8,9 +8,8 @@ The `Image` element is used to render a single image that uses the perfect size 
 ```astro
 <!-- Image.astro -->
 ---
-import type { HTMLAttributes } from 'astro/types'
+<!-- import type { HTMLAttributes } from 'astro/types'
 import { Image as AstroImage } from 'astro:assets'
-import { cva, type VariantProps } from 'cva'
 
 export type ImageProps = Props
 type Props = VariantProps<typeof variant> & {
@@ -74,7 +73,7 @@ function getSizes() {
   })
   const joined = mapped.join(', ')
   return joined
-}
+} -->
 ---
 
 {

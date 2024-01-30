@@ -1,6 +1,5 @@
 import sitemap from '@astrojs/sitemap'
 import starlight from '@astrojs/starlight'
-import svelte from '@astrojs/svelte'
 import bookshop from '@bookshop/astro-bookshop'
 import yaml from '@rollup/plugin-yaml'
 import robotsTxt from 'astro-robots-txt'
@@ -18,7 +17,6 @@ export default defineConfig({
     plugins: [yaml()],
   },
   integrations: [
-    svelte(),
     sitemap(),
     robotsTxt(),
     bookshop(),
