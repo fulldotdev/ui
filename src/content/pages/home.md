@@ -23,7 +23,7 @@ sections:
       alt: my alt tag
   - _bookshop_name: blocks/features/FeaturesSection
     theme: impact-low
-    highlights:
+    features:
       - heading: Doorgroeien bij HSM Utrecht
         text: Met de doorgroeimogelijkheden bij HSM Utrecht heb je altijd toekomstperspectief
       - heading: Ieder project is uniek
@@ -65,9 +65,22 @@ sections:
     heading: Van elektrotechniek naar hydrauliek monteur
     text: Na het volgen van een diverse cursussen ben ik nu een keurmeester voor autolaadkranen en containersystemen.
       - Rolf van Monteur Elektrotechniek naar Hydrauliek Monteur
-    # buttons:
-    #   - label: Lees meer
-    #     href: '#'
+    buttons:
+      - label: Lees meer
+        href: '#'
+    image:
+      src: https://source.unsplash.com/random/800x600
+      alt: 
+  - _bookshop_name: blocks/spotlight/SpotlightSection
+    theme: impact-low
+    layout: split
+    tagline: Het succesverhaal van Rolf
+    heading: Van elektrotechniek naar hydrauliek monteur
+    text: Na het volgen van een diverse cursussen ben ik nu een keurmeester voor autolaadkranen en containersystemen.
+      - Rolf van Monteur Elektrotechniek naar Hydrauliek Monteur
+    buttons:
+      - label: Lees meer
+        href: '#'
     image:
       src: https://source.unsplash.com/random/800x600
       alt: 
@@ -96,40 +109,15 @@ sections:
         buttons: 
           - label: Solliciteer nu
             href: '#'
-
-  # - _bookshop_name: blocks/hero/CtaSection
-  #   theme: impact-solid
-  #   layout: wide
-  #   heading: Praten over je kansen bij HSM Utrecht?
-  #   buttons:
-  #     - label: Neem contact op
-  #       href: '#'
-  #     - label: 06 123456
-  #       href: '#'
-  - _bookshop_name: blocks/spotlight/SpotlightSection
-    theme: impact-low
-    layout: split
-    tagline: 
-    heading: Werken aan Hydraulische systemen zonder ervaring?
-    text: Volg ons (om)scholingstraject tot hydrauliek monteur of carrosseriebouwer
+  - _bookshop_name: blocks/hero/CtaSection
+    theme: impact-high
+    layout: wide
+    heading: Praten over je kansen bij HSM Utrecht?
     buttons:
-      - label: Meer informatie
+      - label: Neem contact op
         href: '#'
-    image:
-      src: https://source.unsplash.com/random/800x600
-  - _bookshop_name: blocks/spotlight/SpotlightSection
-    theme: impact-low
-    layout: split
-    tagline: Over ons, HSM Utrecht
-    heading: Van hobbyschuur naar vier bedrijven
-    text: Het bedrijf is opgericht in 2006 en is zich eerst gaan vestigen in Breukelen maar dat pand werd al snel te klein en er moest een andere locatie gezocht gaan worden. In 2010 zijn we verhuisd naar het huidige pand in Utrecht. Het huidige pand is centraal gelegen aan de A2 op knooppunt Oudenrijn op het industrieterrein Lage Weide.
-    # buttons:
-    #   - label: Lees meer
-    #     href: '#'
-    image:
-      src: https://source.unsplash.com/random/800x600
-      alt:
-
+      - label: 06 123456
+        href: '#'
   - _bookshop_name: blocks/hero/CtaSection
     theme: impact-extreme
     layout: wide
