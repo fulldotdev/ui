@@ -9,7 +9,7 @@ The `Input` element is used to render a single input. This element is usually us
 <!-- Input.astro -->
 ---
 export type InputProps = Props
-interface Props {
+export interface Props {
   label: string
   required?: boolean
   type?: 'text' | 'email' | 'tel' | 'url' | 'number'

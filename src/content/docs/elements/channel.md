@@ -13,7 +13,7 @@ If you want to display other contact platforms (i.e. instagram, facebook etc) us
 <!-- Channel.astro -->
 ---
 export type ChannelProps = Props
-interface Props {
+export interface Props {
   type: "phone" | "email" | "whatsapp" | "address"
   value: string
 }
