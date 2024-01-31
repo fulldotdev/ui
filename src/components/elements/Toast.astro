@@ -1,0 +1,54 @@
+---
+export interface Props {
+  title: string
+  text?: string
+}
+
+const { title, text } = Astro.props
+---
+
+<button id="showToastButton">{title}</button>
+
+<div class="toast hidden">
+  <p class="toast-message">
+    {text}
+    <slot />
+  </p>
+</div>
+
+<script type="module">
+  document
+    .getElementById('showToastButton')
+    .addEventListener('click', function () {
+      var toast = document.querySelector('.toast')
+      toast.classList.remove('hidden')
+      setTimeout(function () {
+        toast.classList.add('hidden')
+      }, 3000)
+    })
+</script>
+
+<style>
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    background-color: #333;
+    transform: translateX(-50%);
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 99999;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.3s ease-in-out;
+
+    & > .toast-message {
+      margin: 0;
+    }
+  }
+
+  .hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+</style>

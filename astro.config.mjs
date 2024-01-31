@@ -5,6 +5,8 @@ import yaml from '@rollup/plugin-yaml'
 import robotsTxt from 'astro-robots-txt'
 import { defineConfig, passthroughImageService } from 'astro/config'
 
+// import mdx from '@astrojs/mdx'
+
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
@@ -22,31 +24,44 @@ export default defineConfig({
     bookshop(),
     starlight({
       title: 'FullUI',
-      social: {
-        github: 'https://github.com/dylankuipers',
+      expressiveCode: {
+        styleOverrides: {
+          borderRadius: '0.5rem',
+        },
       },
       sidebar: [
         {
           label: 'Getting started',
-          autogenerate: { directory: 'getting-started' },
+          autogenerate: {
+            directory: 'getting-started',
+          },
         },
         {
           label: 'Guides',
-          autogenerate: { directory: 'guides' },
+          autogenerate: {
+            directory: 'guides',
+          },
         },
         {
           label: 'Components',
-          autogenerate: { directory: 'components' },
+          autogenerate: {
+            directory: 'components',
+          },
         },
         {
           label: 'Elements',
-          autogenerate: { directory: 'elements' },
+          autogenerate: {
+            directory: 'elements',
+          },
         },
         {
           label: 'Roots',
-          autogenerate: { directory: 'Roots' },
+          autogenerate: {
+            directory: 'Roots',
+          },
         },
       ],
     }),
+    // mdx(),
   ],
 })
