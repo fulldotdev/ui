@@ -19,4 +19,6 @@ sections:
       - label: Click me
         href: '#'
     image:
+      src:
+      alt:
 ---
