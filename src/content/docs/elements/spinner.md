@@ -6,7 +6,7 @@ description: A reference page in my new Starlight docs site.
 The `Spinner` component includes an SVG spinner. It also takes two props, as shown below:
 
 ```ts
-interface Props {
+export interface Props {
   size?: string
   fill?: string
 }

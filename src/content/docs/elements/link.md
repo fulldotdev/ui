@@ -11,7 +11,7 @@ The `Link` element is used render a standard [`HTML <a> tag`](https://www.w3scho
 import type { HTMLAttributes } from 'astro/types'
 
 export type LinkProps = Props
-interface Props {
+export interface Props {
   label?: string | null
   href?: HTMLAttributes<'a'>['href'] | null
 }
@@ -61,5 +61,5 @@ const { links, ...restProps } = Astro.props
 ```
 
 :::caution
-The `Links` element uses the `List` wrapper, which you can read more about [here](/wrappers/list).
+The `Links` element uses the `List` Root, which you can read more about [here](/wrappers/list).
 :::

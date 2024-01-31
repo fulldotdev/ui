@@ -9,7 +9,7 @@ The `Textarea` element renders a standard [`HTML <textarea tag`](https://www.w3s
 <!-- Textarea.astro -->
 ---
 export type TextareaProps = Props
-interface Props {
+export interface Props {
   label: string
   required?: boolean
 }

@@ -8,7 +8,7 @@ The `Writeup` element renders text together with a `tagline` and `title`. This i
 ```astro
 <!-- Writeup.astro -->
 ---
-interface Props {
+export interface Props {
   writeup?: string | null
   tagline?: string | null
   title?: string | null

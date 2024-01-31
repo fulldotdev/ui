@@ -53,7 +53,7 @@ import type { Props as SectionProps } from '../../elements/section/Section.astro
 import Section from '../../elements/section/Section.astro'
 import type { Props as CategoriesCardProps } from './CategoriesCard.astro'
 
-interface Props
+export interface Props
   extends Pick<SectionProps, 'tagline' | 'heading' | 'text' | 'buttons'> {
   categories?: CategoriesCardProps[] | null
 }
@@ -71,7 +71,7 @@ const { props } = Astro
 import type { CollectionEntry } from 'astro:content'
 import SectionRenderer from '../../misc/SectionRenderer.astro'
 
-interface Props {
+export interface Props {
   entry: CollectionEntry<'pages'>
   frontmatter: CollectionEntry<'pages'>['data']
 }
