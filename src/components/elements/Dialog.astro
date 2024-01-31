@@ -1,0 +1,46 @@
+---
+import Button from './button/Button.astro'
+
+export interface Props {
+  open?: boolean
+  text?: string
+}
+
+const { text, open = false } = Astro.props
+---
+
+<div id="open">
+  <Button
+    label="test"
+    href="#"
+  />
+</div>
+
+<dialog
+  id="dialog"
+  {open}
+>
+  {text}
+  <slot />
+  <button id="close">Close</button>
+</dialog>
+
+<script type="module">
+  document.getElementById('close').addEventListener('click', function () {
+    const dialog = document.getElementById('dialog')
+    dialog.removeAttribute('open')
+  })
+
+  document.getElementById('open').addEventListener('click', function () {
+    const dialog = document.getElementById('dialog')
+    dialog.setAttribute('open', true)
+  })
+</script>
+
+<style lang="postcss">
+  dialog {
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0px 0px 5px 5px gray;
+  }
+</style>
