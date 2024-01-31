@@ -13,7 +13,7 @@ If you want to display other contact platforms (i.e. instagram, facebook etc) us
 <!-- Channel.astro -->
 ---
 export type ChannelProps = Props
-interface Props {
+export interface Props {
   type: "phone" | "email" | "whatsapp" | "address"
   value: string
 }
@@ -108,5 +108,5 @@ const { channels, ...restProps } = Astro.props
 
 :::caution
 
-This element uses the `Group` wrapper, which you can read more about [here](/wrappers/group).
+This element uses the `Group` Root, which you can read more about [here](/wrappers/group).
 :::

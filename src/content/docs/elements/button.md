@@ -11,7 +11,7 @@ The `Button` element is self explanatory, it is a button that receives props fro
 import type { HTMLAttributes } from 'astro/types'
 
 export type ButtonProps = Props
-interface Props {
+export interface Props {
   label: string | null
   href: HTMLAttributes<'a'>['href']
   importance?: 'primary' | 'secondary' | 'tertiary'
@@ -81,7 +81,7 @@ const getImportance = (i: number) => {
 
 - You may ignore or delete the `importance` prop if you are not using the Fulldev design system.
 
-- This element uses the `Group` wrapper, which you can read more about [here](/wrappers/group).
+- This element uses the `Group` Root, which you can read more about [here](/wrappers/group).
   :::
 
 If buttons are not/incorrectly provided the component will not render anything.

@@ -11,7 +11,7 @@ The `Collapsible` element comes with a couple of props that you may use dependin
 
 ```ts
 // Collapsible.astro
-interface Props {
+export interface Props {
   collapsible?: {
     heading: string;
     text: string;
@@ -37,7 +37,7 @@ The `class` prop is used to provide any styling classes that you want to add to 
 ```astro
 <!-- Collapsible.astro -->
 ---
-interface Props {
+export interface Props {
   collapsible?: {
     heading: string
     text: string

@@ -16,7 +16,7 @@ The `Contact` component is used to render your contact information.
 import type { Props as SectionProps } from '../../elements/section/Section.astro'
 import Section from '../../elements/section/Section.astro'
 
-interface Props
+export interface Props
   extends Pick<
     SectionProps,
     'level' | 'tagline' | 'heading' | 'text' | 'image'

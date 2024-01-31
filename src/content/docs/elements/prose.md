@@ -8,7 +8,7 @@ The `Prose` element is used to render text that is not formatted in any kind of 
 ```astro
 <!-- Prose.astro -->
 ---
-interface Props {
+export interface Props {
   prose?: any
   Content?: any
 }
