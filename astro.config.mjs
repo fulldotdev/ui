@@ -5,7 +5,7 @@ import yaml from '@rollup/plugin-yaml'
 import robotsTxt from 'astro-robots-txt'
 import { defineConfig, passthroughImageService } from 'astro/config'
 
-// import mdx from '@astrojs/mdx'
+import mdx from '@astrojs/mdx'
 
 // https://astro.build/config
 export default defineConfig({
@@ -57,6 +57,6 @@ export default defineConfig({
         },
       ],
     }),
-    // mdx(),
+    mdx(),
   ],
 })
