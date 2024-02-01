@@ -24,11 +24,6 @@ export default defineConfig({
     bookshop(),
     starlight({
       title: 'FullUI',
-      expressiveCode: {
-        styleOverrides: {
-          borderRadius: '0.5rem',
-        },
-      },
       sidebar: [
         {
           label: 'Getting started',
