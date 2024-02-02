@@ -1,5 +1,4 @@
 ---
-// TODO: iets met random id's of inline scripts, zodat we meerdere dialogs kunnen hebben
 import Button from './button/Button.astro'
 
 export interface Props {
@@ -8,11 +7,13 @@ export interface Props {
 }
 
 const { text, open = false } = Astro.props
+
+const randomId = `dialog_${Math.random().toString(36).substr(2, 9)}`
 ---
 
 <div
   id="open"
-  onclick="this.setAttribute('open', true)"
+  data-dialog-id={randomId}
 >
   <Button
     label="Open Dialog"
@@ -21,21 +22,33 @@ const { text, open = false } = Astro.props
 </div>
 
 <dialog
-  id="dialog"
+  id={randomId}
   {open}
 >
   {text}
   <slot />
-  <button id="close">Close</button>
+  <button class="close">Close</button>
 </dialog>
 
-<script type="module">
-  document.getElementById('close').addEventListener('click', () => {
-    document.getElementById('dialog').removeAttribute('open')
-  })
+<script is:inline>
+  document.addEventListener('click', (event) => {
+    const openBtn = event.target.closest('[data-dialog-id]')
+    if (openBtn) {
+      const dialogId = openBtn.getAttribute('data-dialog-id')
+      const dialog = document.getElementById(dialogId)
 
-  document.getElementById('open').addEventListener('click', () => {
-    document.getElementById('dialog').setAttribute('open', true)
+      if (dialog) {
+        dialog.setAttribute('open', true)
+      }
+    }
+
+    const closeBtn = event.target.closest('.close')
+    if (closeBtn) {
+      const dialog = closeBtn.closest('dialog')
+      if (dialog) {
+        dialog.removeAttribute('open')
+      }
+    }
   })
 </script>
 
@@ -44,5 +57,10 @@ const { text, open = false } = Astro.props
     border: none;
     border-radius: 0.5rem;
     box-shadow: 0px 0px 5px 5px gray;
+  }
+
+  div {
+    width: fit-content;
+    background-color: aqua;
   }
 </style>
