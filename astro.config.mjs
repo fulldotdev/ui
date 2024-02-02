@@ -7,7 +7,7 @@ import { defineConfig, passthroughImageService } from 'astro/config'
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'static',
+  output: import.meta.env.OUPUT || 'static', // static | server
   site: import.meta.env?.PUBLIC_APP_URL,
   scopedStyleStrategy: 'where',
   image: {
@@ -20,33 +20,30 @@ export default defineConfig({
     sitemap(),
     robotsTxt(),
     bookshop(),
-    starlight({
-      title: 'FullUI',
-      social: {
-        github: 'https://github.com/dylankuipers',
-      },
-      sidebar: [
-        {
-          label: 'Getting started',
-          autogenerate: { directory: 'getting-started' },
+    import.meta.env.OUPUT !== 'server' &&
+      starlight({
+        title: 'FullUI',
+        social: {
+          github: 'https://github.com/silveltman/fullui',
         },
-        {
-          label: 'Guides',
-          autogenerate: { directory: 'guides' },
-        },
-        {
-          label: 'Components',
-          autogenerate: { directory: 'components' },
-        },
-        {
-          label: 'Elements',
-          autogenerate: { directory: 'elements' },
-        },
-        {
-          label: 'Roots',
-          autogenerate: { directory: 'Roots' },
-        },
-      ],
-    }),
+        sidebar: [
+          {
+            label: 'Getting started',
+            autogenerate: { directory: 'getting-started' },
+          },
+          {
+            label: 'Guides',
+            autogenerate: { directory: 'guides' },
+          },
+          {
+            label: 'Blocks',
+            autogenerate: { directory: 'blocks' },
+          },
+          {
+            label: 'Elements',
+            autogenerate: { directory: 'elements' },
+          },
+        ],
+      }),
   ],
 })
