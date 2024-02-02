@@ -50,28 +50,28 @@ sections:
     jobs:
       - tagline: Tot €4.500 per maand
         heading: Leerling hydrauliek monteur
-        text: 40 uur per week - €2.500 tot €4.500 per maand
+        text: 40 uur per week | €2.500 tot €4.500 per maand
         buttons:
           - _bookshop_name: elements/button
             label: Bekijk vacature
             href: '#'
       - tagline: Tot €4.500 per maand
         heading: Leerling hydrauliek monteur
-        text: 40 uur per week - €2.500 tot €4.500 per maand
+        text: 40 uur per week | €2.500 tot €4.500 per maand
         buttons:
           - _bookshop_name: elements/button
             label: Bekijk vacature
             href: '#'
       - tagline: Tot €4.500 per maand
         heading: Leerling hydrauliek monteur
-        text: 40 uur per week - €2.500 tot €4.500 per maand
+        text: 40 uur per week | €2.500 tot €4.500 per maand
         buttons:
           - _bookshop_name: elements/button
             label: Bekijk vacature
             href: '#'
       - tagline: Tot €4.500 per maand
         heading: Leerling hydrauliek monteur
-        text: 40 uur per week - €2.500 tot €4.500 per maand
+        text: 40 uur per week | €2.500 tot €4.500 per maand
         buttons:
           - _bookshop_name: elements/button
             label: Bekijk vacature
