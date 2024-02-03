@@ -4,6 +4,8 @@ import { Image as AstroImage } from 'astro:assets'
 
 export interface Props {
   media?: 'relative' | 'background'
+  layout?: 'left' | 'center' | 'split' | 'wide'
+  frame?: 'fill' | 'panel' | 'screen'
   src?: string
   alt?: HTMLAttributes<'img'>['alt']
   loading?: HTMLAttributes<'img'>['loading']
@@ -37,6 +39,7 @@ export interface Props {
 
 const {
   media = 'relative',
+  frame = 'fill',
   src,
   alt = '',
   loading = 'lazy',
@@ -82,7 +85,7 @@ function getSizes() {
         alt={alt ? alt : 'Image'}
         sizes={getSizes()}
         loading={loading}
-        class:list={[media]}
+        class:list={[media, frame]}
       />
     </>
   )
@@ -117,11 +120,16 @@ loading={loading}
     object-fit: cover;
   }
 
+  img:where(.panel) {
+    border-radius: var(--rounded1);
+  }
+
   img:where(.background) {
     position: absolute;
     inset: 0;
     height: 100%;
     width: 100%;
     object-fit: cover;
+    border-radius: 0;
   }
 </style>

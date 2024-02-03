@@ -58,62 +58,62 @@ type Step =
 
 interface Impact {
   // default
-  bg: Step
-  ring: Step
-  text: Step
-  heading: Step
+  bg?: Step
+  ring?: Step
+  text?: Step
+  heading?: Step
   // section
-  sectionBg: Step
-  sectionRing: Step
-  sectionText: Step
-  sectionHeading: Step
+  sectionBg?: Step
+  sectionRing?: Step
+  sectionText?: Step
+  sectionHeading?: Step
   // card
-  cardBg: Step
-  cardRing: Step
-  cardText: Step
-  cardHeading: Step
+  cardBg?: Step
+  cardRing?: Step
+  cardText?: Step
+  cardHeading?: Step
   // input
-  inputBg: Step
-  inputRing: Step
-  inputText: Step
+  inputBg?: Step
+  inputRing?: Step
+  inputText?: Step
   // primary
-  primaryBg: Step
-  primaryBgHover: Step
-  primaryBgActive: Step
-  primaryRing: Step
-  primaryRingHover: Step
-  primaryText: Step
+  primaryBg?: Step
+  primaryBgHover?: Step
+  primaryBgActive?: Step
+  primaryRing?: Step
+  primaryRingHover?: Step
+  primaryText?: Step
   // secondary
-  secondaryBg: Step
-  secondaryBgHover: Step
-  secondaryBgActive: Step
-  secondaryRing: Step
-  secondaryRingHover: Step
-  secondaryText: Step
+  secondaryBg?: Step
+  secondaryBgHover?: Step
+  secondaryBgActive?: Step
+  secondaryRing?: Step
+  secondaryRingHover?: Step
+  secondaryText?: Step
 }
 
-interface Config {
-  colors: {
-    scheme: 'dark' | 'light'
-    accent: Hue
-    base: Hue
+export interface Config {
+  colors?: {
+    scheme?: 'dark' | 'light'
+    accent?: Hue
+    base?: Hue
   }
-  themes: {
-    low: Impact
-    medium: Impact
-    high: Impact
-    solid: Impact
-    extreme: Impact
+  impacts?: {
+    low?: Impact
+    medium?: Impact
+    high?: Impact
+    solid?: Impact
+    extreme?: Impact
   }
 }
 
 const defaultConfig: Config = {
   colors: {
-    scheme: 'dark',
+    scheme: 'light',
     base: 'slate',
-    accent: 'blue',
+    accent: 'indigo',
   },
-  themes: {
+  impacts: {
     low: {
       bg: 'base1',
       ring: 'base6',
@@ -262,50 +262,48 @@ const defaultConfig: Config = {
   },
 }
 
-// Helper function to generate CSS for themes
-
 export default function preset(passedConfig?: Config): Preset {
-  let config = merge(defaultConfig, passedConfig || {}) as Config
+  let config: any = merge(defaultConfig, passedConfig || {}) as Config
 
   function varValue(value: Step): string {
     if (!value) return 'transparent'
-    let paletteName: string = ''
+    let paletteName: any = ''
     if (value?.includes('base')) paletteName = config.colors['base']
     if (value?.includes('accent')) paletteName = config.colors['accent']
     return `var(--un-preset-radix-${value?.replace('base', paletteName).replace('accent', paletteName)})`
   }
 
-  function generateThemeCSS(key: string, theme: Impact): string {
+  function generateThemeCSS(key: string, impact: any): string {
     return `
       ${key === 'medium' ? ':root,' : ''}
-      .theme-${key} {
-        --bg: ${varValue(theme.bg)};
-        --ring: ${varValue(theme.ring)};
-        --text: ${varValue(theme.text)};
-        --heading: ${varValue(theme.heading)};
-        --section-bg: ${varValue(theme.sectionBg)};
-        --section-ring: ${varValue(theme.sectionRing)};
-        --section-text: ${varValue(theme.sectionText)};
-        --section-heading: ${varValue(theme.sectionHeading)};
-        --card-bg: ${varValue(theme.cardBg)};
-        --card-ring: ${varValue(theme.cardRing)};
-        --card-text: ${varValue(theme.cardText)};
-        --card-heading: ${varValue(theme.cardHeading)};
-        --input-bg: ${varValue(theme.inputBg)};
-        --input-ring: ${varValue(theme.inputRing)};
-        --input-text: ${varValue(theme.inputText)};
-        --primary-bg: ${varValue(theme.primaryBg)};
-        --primary-bg-hover: ${varValue(theme.primaryBgHover)};
-        --primary-bg-active: ${varValue(theme.primaryBgActive)};
-        --primary-ring: ${varValue(theme.primaryRing)};
-        --primary-ring-hover: ${varValue(theme.primaryRingHover)};
-        --primary-text: ${varValue(theme.primaryText)};
-        --secondary-bg: ${varValue(theme.secondaryBg)};
-        --secondary-bg-hover: ${varValue(theme.secondaryBgHover)};
-        --secondary-bg-active: ${varValue(theme.secondaryBgActive)};
-        --secondary-ring: ${varValue(theme.secondaryRing)};
-        --secondary-ring-hover: ${varValue(theme.secondaryRingHover)};
-        --secondary-text: ${varValue(theme.secondaryText)};
+      :where(.impact-${key}) {
+        --bg: ${varValue(impact.bg)};
+        --ring: ${varValue(impact.ring)};
+        --text: ${varValue(impact.text)};
+        --heading: ${varValue(impact.heading)};
+        --section-bg: ${varValue(impact.sectionBg)};
+        --section-ring: ${varValue(impact.sectionRing)};
+        --section-text: ${varValue(impact.sectionText)};
+        --section-heading: ${varValue(impact.sectionHeading)};
+        --card-bg: ${varValue(impact.cardBg)};
+        --card-ring: ${varValue(impact.cardRing)};
+        --card-text: ${varValue(impact.cardText)};
+        --card-heading: ${varValue(impact.cardHeading)};
+        --input-bg: ${varValue(impact.inputBg)};
+        --input-ring: ${varValue(impact.inputRing)};
+        --input-text: ${varValue(impact.inputText)};
+        --primary-bg: ${varValue(impact.primaryBg)};
+        --primary-bg-hover: ${varValue(impact.primaryBgHover)};
+        --primary-bg-active: ${varValue(impact.primaryBgActive)};
+        --primary-ring: ${varValue(impact.primaryRing)};
+        --primary-ring-hover: ${varValue(impact.primaryRingHover)};
+        --primary-text: ${varValue(impact.primaryText)};
+        --secondary-bg: ${varValue(impact.secondaryBg)};
+        --secondary-bg-hover: ${varValue(impact.secondaryBgHover)};
+        --secondary-bg-active: ${varValue(impact.secondaryBgActive)};
+        --secondary-ring: ${varValue(impact.secondaryRing)};
+        --secondary-ring-hover: ${varValue(impact.secondaryRingHover)};
+        --secondary-text: ${varValue(impact.secondaryText)};
       }
     `
   }
@@ -326,7 +324,7 @@ export default function preset(passedConfig?: Config): Preset {
       }),
     ],
     preflights: [
-      ...Object.entries(config.themes).map(([key, value]) => ({
+      ...Object.entries(config.impacts).map(([key, value]) => ({
         getCSS: () => generateThemeCSS(key, value),
       })),
     ],
