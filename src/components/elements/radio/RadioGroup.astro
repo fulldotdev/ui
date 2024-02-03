@@ -1,32 +1,25 @@
 ---
-export type Props = {
-  radioGroup: {
-    label: string
-  }[]
-  group?: string
-  required?: boolean
+import type { Props as RadioProps } from './Radio.astro'
+import Radio from './Radio.astro'
+
+export type Props = { radios: Pick<RadioProps, 'label'>[] } & {
+  group: string
 }
 
-const { radioGroup, group, required } = Astro.props
+const { radios, group } = Astro.props
 ---
 
-{
-  radioGroup.map(
-    (radio: any) =>
-      radio.label && (
-        <div>
-          <input
-            class="input"
-            id={radio.label}
-            name={group}
-            type="radio"
-            {required}
-          />
-          <label for={radio.label}>{radio.label}</label>
-        </div>
-      )
-  )
-}
+<div>
+  {
+    radios &&
+      radios.map((radio: any) => (
+        <Radio
+          label={radio.label}
+          group={group}
+        />
+      ))
+  }
+</div>
 
 <style>
   div {

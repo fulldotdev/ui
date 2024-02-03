@@ -1,0 +1,66 @@
+---
+import Button from './button/Button.astro'
+
+export interface Props {
+  open?: boolean
+  text?: string
+}
+
+const { text, open = false } = Astro.props
+
+const randomId = `dialog_${Math.random().toString(36).substr(2, 9)}`
+---
+
+<div
+  id="open"
+  data-dialog-id={randomId}
+>
+  <Button
+    label="Open Dialog"
+    href="#"
+  />
+</div>
+
+<dialog
+  id={randomId}
+  {open}
+>
+  {text}
+  <slot />
+  <button class="close">Close</button>
+</dialog>
+
+<script is:inline>
+  document.addEventListener('click', (event) => {
+    const openBtn = event.target.closest('[data-dialog-id]')
+    if (openBtn) {
+      const dialogId = openBtn.getAttribute('data-dialog-id')
+      const dialog = document.getElementById(dialogId)
+
+      if (dialog) {
+        dialog.setAttribute('open', true)
+      }
+    }
+
+    const closeBtn = event.target.closest('.close')
+    if (closeBtn) {
+      const dialog = closeBtn.closest('dialog')
+      if (dialog) {
+        dialog.removeAttribute('open')
+      }
+    }
+  })
+</script>
+
+<style lang="postcss">
+  dialog {
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0px 0px 5px 5px gray;
+  }
+
+  div {
+    width: fit-content;
+    background-color: aqua;
+  }
+</style>

@@ -1,9 +1,9 @@
 ---
-interface Props {
-  collapsibles: {
-    heading: string
-    text: string
-  }[]
+import type { Props as CollapsibleProps } from './Collapsible.astro'
+import Collapsible from './Collapsible.astro'
+
+export interface Props {
+  collapsibles: CollapsibleProps[]
 }
 
 const { collapsibles } = Astro.props
@@ -11,41 +11,9 @@ const { collapsibles } = Astro.props
 
 <div>
   {
-    collapsibles.map((collapsible) => (
-      <details>
-        <summary>{collapsible.heading}</summary>
-        <p>{collapsible.text}</p>
-      </details>
-    ))
+    collapsibles &&
+      collapsibles.map((collapsible: CollapsibleProps) => (
+        <Collapsible {...collapsible} />
+      ))
   }
 </div>
-
-<style>
-  summary {
-    list-style: none;
-    display: flex; /* also removes the list marker */
-    align-items: center;
-    cursor: pointer;
-  }
-
-  summary::after {
-    content: '';
-    width: 18px;
-    height: 10px;
-    background: url('https://uploads.sitepoint.com/wp-content/uploads/2023/10/1697699669arrow.svg')
-      no-repeat;
-    background-size: cover;
-    margin-left: auto;
-    transition: 0.2s;
-  }
-
-  details[open] > summary::after {
-    transform: rotate(180deg);
-  }
-
-  details {
-    cursor: default;
-    padding: 20px;
-    border-radius: 5px;
-  }
-</style>

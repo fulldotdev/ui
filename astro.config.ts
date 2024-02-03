@@ -31,19 +31,33 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Getting started',
-          autogenerate: { directory: 'getting-started' },
+          autogenerate: {
+            directory: 'getting-started',
+          },
         },
         {
           label: 'Guides',
-          autogenerate: { directory: 'guides' },
+          autogenerate: {
+            directory: 'guides',
+          },
         },
         {
-          label: 'Blocks',
-          autogenerate: { directory: 'blocks' },
+          label: 'Components',
+          autogenerate: {
+            directory: 'components',
+          },
         },
         {
           label: 'Elements',
-          autogenerate: { directory: 'elements' },
+          autogenerate: {
+            directory: 'elements',
+          },
+        },
+        {
+          label: 'Roots',
+          autogenerate: {
+            directory: 'Roots',
+          },
         },
       ],
     }),
