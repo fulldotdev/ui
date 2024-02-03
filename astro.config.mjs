@@ -4,10 +4,11 @@ import bookshop from '@bookshop/astro-bookshop'
 import yaml from '@rollup/plugin-yaml'
 import robotsTxt from 'astro-robots-txt'
 import { defineConfig, passthroughImageService } from 'astro/config'
+import fullui from './src/integration/fullui'
 
 // https://astro.build/config
 export default defineConfig({
-  output: import.meta.env.OUPUT || 'static', // static | server
+  output: 'static',
   site: import.meta.env?.PUBLIC_APP_URL,
   scopedStyleStrategy: 'where',
   image: {
@@ -20,30 +21,30 @@ export default defineConfig({
     sitemap(),
     robotsTxt(),
     bookshop(),
-    import.meta.env.OUPUT !== 'server' &&
-      starlight({
-        title: 'FullUI',
-        social: {
-          github: 'https://github.com/silveltman/fullui',
+    fullui,
+    starlight({
+      title: 'FullUI',
+      social: {
+        github: 'https://github.com/silveltman/fullui',
+      },
+      sidebar: [
+        {
+          label: 'Getting started',
+          autogenerate: { directory: 'getting-started' },
         },
-        sidebar: [
-          {
-            label: 'Getting started',
-            autogenerate: { directory: 'getting-started' },
-          },
-          {
-            label: 'Guides',
-            autogenerate: { directory: 'guides' },
-          },
-          {
-            label: 'Blocks',
-            autogenerate: { directory: 'blocks' },
-          },
-          {
-            label: 'Elements',
-            autogenerate: { directory: 'elements' },
-          },
-        ],
-      }),
+        {
+          label: 'Guides',
+          autogenerate: { directory: 'guides' },
+        },
+        {
+          label: 'Blocks',
+          autogenerate: { directory: 'blocks' },
+        },
+        {
+          label: 'Elements',
+          autogenerate: { directory: 'elements' },
+        },
+      ],
+    }),
   ],
 })

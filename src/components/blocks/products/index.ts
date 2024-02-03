@@ -1,7 +1,7 @@
-import Card, { type Props as CardProps } from './ProductsCard.astro'
-import Deck, { type Props as DeckProps } from './ProductsDeck.astro'
-import Layout, { type Props as LayoutProps } from './ProductsLayout.astro'
-import Section, { type Props as SectionProps } from './ProductsSection.astro'
+import Card from './ProductsCard.astro'
+import Deck from './ProductsDeck.astro'
+import Layout from './ProductsLayout.astro'
+import Section from './ProductsSection.astro'
 
 export {
   Card,
@@ -12,15 +12,4 @@ export {
   Layout as ProductsLayout,
   Section as ProductsSection,
   Section,
-}
-
-export type {
-  CardProps,
-  DeckProps,
-  LayoutProps,
-  CardProps as ProductsCardProps,
-  DeckProps as ProductsDeckProps,
-  LayoutProps as ProductsLayoutProps,
-  SectionProps as ProductsSectionProps,
-  SectionProps,
 }

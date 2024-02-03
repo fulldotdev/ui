@@ -3,6 +3,7 @@ import type { HTMLAttributes } from 'astro/types'
 import { Image as AstroImage } from 'astro:assets'
 
 export interface Props {
+  media?: 'relative' | 'background'
   src?: string
   alt?: HTMLAttributes<'img'>['alt']
   loading?: HTMLAttributes<'img'>['loading']
@@ -35,6 +36,7 @@ export interface Props {
 // })
 
 const {
+  media = 'relative',
   src,
   alt = '',
   loading = 'lazy',
@@ -80,6 +82,7 @@ function getSizes() {
         alt={alt ? alt : 'Image'}
         sizes={getSizes()}
         loading={loading}
+        class:list={[media]}
       />
     </>
   )
@@ -111,6 +114,14 @@ loading={loading}
     width: 100%;
     height: auto;
     position: relative;
+    object-fit: cover;
+  }
+
+  img:where(.background) {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: 100%;
     object-fit: cover;
   }
 </style>
