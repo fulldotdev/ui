@@ -4,16 +4,17 @@ const tabler: any = tablerIcons
 
 interface Props {
   icon?: keyof typeof tabler.icons
+  large?: boolean
   class?: string
 }
 
-const { icon, class: className } = Astro.props
+const { icon, large, class: className } = Astro.props
 const slot = await Astro.slots.render('default')
 ---
 
 {
   (icon || slot?.trim().length > 0) && (
-    <span>
+    <span class:list={['icon', large ? 'large' : '']}>
       {icon && (
         <svg
           class:list={[className]}
@@ -37,10 +38,15 @@ const slot = await Astro.slots.render('default')
     width: 1em;
     height: 1em;
     color: inherit;
+
+    &:where(.large) {
+      font-size: var(--text3);
+      color: var(--secondary-text);
+    }
   }
   svg {
     position: absolute;
-    height: 130%;
-    width: 130%;
+    height: 140%;
+    width: 140%;
   }
 </style>

@@ -305,6 +305,13 @@ export default function preset(passedConfig?: Config): Preset {
         --secondary-ring-hover: ${varValue(impact.secondaryRingHover)};
         --secondary-text: ${varValue(impact.secondaryText)};
       }
+
+      .scheme-light .scheme-reverse {
+        --at-apply: scheme-dark;
+      }
+      .scheme-light .scheme-reverse {
+        --at-apply: scheme-dark;
+      }
     `
   }
 
@@ -315,11 +322,11 @@ export default function preset(passedConfig?: Config): Preset {
         darkSelector:
           config.colors.scheme === 'dark'
             ? ':root, .scheme-dark'
-            : '.scheme-dark',
+            : '.scheme-dark .scheme-reverse',
         lightSelector:
           config.colors.scheme === 'light'
             ? ':root, .scheme-light'
-            : '.scheme-light',
+            : '.scheme-light .scheme-reverse',
         palette: [config.colors.base, config.colors.accent],
       }),
     ],

@@ -6,8 +6,8 @@ seo:
     src: 
     alt: 
 
-title:
-description: 
+heading: Lorem ipsum
+text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
 image:
   src: 
   alt: 
