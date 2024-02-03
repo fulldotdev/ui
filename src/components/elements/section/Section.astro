@@ -1,36 +1,28 @@
 ---
-import type { Props as HeadingProps } from '../Heading.astro'
+import '@unocss/reset/tailwind.css'
+import type { ComponentProps } from 'astro/types'
 import Heading from '../Heading.astro'
-import type { Props as TaglineProps } from '../Tagline.astro'
 import Tagline from '../Tagline.astro'
-import type { Props as TextProps } from '../Text.astro'
 import Text from '../Text.astro'
-import type { Props as ButtonGroupProps } from '../button/ButtonGroup.astro'
 import ButtonGroup from '../button/ButtonGroup.astro'
-import type { Props as ChannelGroupProps } from '../channel/ChannelGroup.astro'
 import ChannelGroup from '../channel/ChannelGroup.astro'
-import type { Props as DeckProps } from '../deck/Deck.astro'
 import Deck from '../deck/Deck.astro'
-import type { Props as ImageProps } from '../image/Image.astro'
 import Image from '../image/Image.astro'
-import type { Props as SectionRootProps } from './SectionRoot.astro'
 import SectionRoot from './SectionRoot.astro'
-import type { Props as SectionSegmentProps } from './SectionSegment.astro'
 import SectionSegment from './SectionSegment.astro'
-import type { Props as SectionWriteupProps } from './SectionWriteup.astro'
 import SectionWriteup from './SectionWriteup.astro'
 
 export interface Props
-  extends SectionRootProps,
-    SectionSegmentProps,
-    SectionWriteupProps,
-    TaglineProps,
-    HeadingProps,
-    TextProps,
-    ButtonGroupProps,
-    ChannelGroupProps,
-    DeckProps {
-  image?: ImageProps | null
+  extends ComponentProps<typeof SectionRoot>,
+    ComponentProps<typeof SectionSegment>,
+    ComponentProps<typeof SectionWriteup>,
+    ComponentProps<typeof Tagline>,
+    ComponentProps<typeof Heading>,
+    ComponentProps<typeof Text>,
+    ComponentProps<typeof ButtonGroup>,
+    ComponentProps<typeof ChannelGroup>,
+    ComponentProps<typeof Deck> {
+  image?: ComponentProps<typeof Image> | null
 }
 
 const { props } = Astro
@@ -49,6 +41,10 @@ const { props } = Astro
     <slot name="segment" />
   </SectionSegment>
   <Deck {...props} />
-  <Image {...props.image} />
+
+  <Image
+    {...props}
+    {...props.image}
+  />
   <slot />
 </SectionRoot>

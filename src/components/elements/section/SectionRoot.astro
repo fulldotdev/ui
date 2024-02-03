@@ -2,17 +2,25 @@
 export interface Props {
   theme?: string
   layout?: 'left' | 'center' | 'split' | 'wide'
+  frame?: 'fill' | 'panel' | 'screen'
   scale?: number
   class?: string
 }
 
-const { props } = Astro
+const {
+  theme,
+  layout = 'left',
+  frame = 'fill',
+  scale,
+  class: className,
+} = Astro.props
+
 const slot = await Astro.slots.render('default')
 ---
 
 {
   slot?.trim().length > 0 && (
-    <section class:list={['section', props.theme, props.layout, props.class]}>
+    <section class:list={['section', theme, layout, frame, className]}>
       <Fragment set:html={slot} />
     </section>
   )
@@ -23,15 +31,20 @@ const slot = await Astro.slots.render('default')
     container: section / inline-size;
     position: relative;
     overflow-x: hidden;
-    padding: var(--flow6) var(--gutter-margin);
+    padding-top: var(--flow6);
+    padding-bottom: var(--flow6);
     row-gap: var(--flow5);
     background: var(--section-bg);
-    border-width: var(--borderWidth);
     border-color: var(--section-ring);
 
     &:first-child {
       margin-top: 0;
+      padding-top: var(--flow5);
     }
+
+    /* &:last-child {
+      padding-bottom: var(--flow5);
+    } */
 
     &,
     &:where(.left) {
@@ -69,12 +82,13 @@ const slot = await Astro.slots.render('default')
       flex-direction: column;
     }
 
-    &:first-child {
-      padding-top: var(--flow5);
+    &:where(.panel) {
+      padding: var(--flow6) calc(var(--gutter) / 2);
+      border-width: var(--borderWidth);
     }
 
-    /* &:last-child {
-      padding-bottom: var(--flow5);
-    } */
+    &:where(.screen) {
+      min-height: 100vh;
+    }
   }
 </style>

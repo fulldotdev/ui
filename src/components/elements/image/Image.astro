@@ -3,6 +3,9 @@ import type { HTMLAttributes } from 'astro/types'
 import { Image as AstroImage } from 'astro:assets'
 
 export interface Props {
+  media?: 'relative' | 'background'
+  layout?: 'left' | 'center' | 'split' | 'wide'
+  frame?: 'fill' | 'panel' | 'screen'
   src?: string
   alt?: HTMLAttributes<'img'>['alt']
   loading?: HTMLAttributes<'img'>['loading']
@@ -35,6 +38,8 @@ export interface Props {
 // })
 
 const {
+  media = 'relative',
+  frame = 'fill',
   src,
   alt = '',
   loading = 'lazy',
@@ -46,11 +51,13 @@ const {
 function getSrc() {
   if (src?.startsWith('http')) return src
   // TODO: add eager import
-  const images = import.meta.glob('/src/assets/**/*.{jpeg,jpg,png,webp,gif}')
+  const images = import.meta.glob('/src/assets/**/*.{jpeg,jpg,png,webp,gif}', {
+    eager: true,
+  })
   const path = ('/src/assets/' + src).replace('//', '/')
   const image = images[path]
   if (!image) console.warn(`Image not found: ${path}`)
-  else return image()
+  else return image
 }
 
 function getSizes() {
@@ -70,18 +77,30 @@ function getSizes() {
 {
   src && getSrc() && (
     // @ts-ignore
-    <AstroImage
-      src={getSrc()}
-      width={src?.startsWith('http') ? 1000 : undefined}
-      height={src?.startsWith('http') ? 1000 : undefined}
-      alt={alt ? alt : 'Image'}
-      quality={80}
-      widths={[640, 768, 1024, 1280, 1536, 1920]}
-      sizes={getSizes()}
-      loading={loading}
-    />
+    <>
+      <img
+        src={src}
+        width={src?.startsWith('http') ? 1000 : undefined}
+        height={src?.startsWith('http') ? 1000 : undefined}
+        alt={alt ? alt : 'Image'}
+        sizes={getSizes()}
+        loading={loading}
+        class:list={[media, frame]}
+      />
+    </>
   )
 }
+
+<!-- <AstroImage
+src={getSrc()}
+width={src?.startsWith('http') ? 1000 : undefined}
+height={src?.startsWith('http') ? 1000 : undefined}
+alt={alt ? alt : 'Image'}
+quality={80}
+widths={[640, 768, 1024, 1280, 1536, 1920]}
+sizes={getSizes()}
+loading={loading}
+/> -->
 
 <style>
   .mask {
@@ -99,5 +118,18 @@ function getSizes() {
     height: auto;
     position: relative;
     object-fit: cover;
+  }
+
+  img:where(.panel) {
+    border-radius: var(--rounded1);
+  }
+
+  img:where(.background) {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 0;
   }
 </style>

@@ -1,9 +1,11 @@
 import sitemap from '@astrojs/sitemap'
 import starlight from '@astrojs/starlight'
-import bookshop from '@bookshop/astro-bookshop'
 import yaml from '@rollup/plugin-yaml'
 import robotsTxt from 'astro-robots-txt'
 import { defineConfig, passthroughImageService } from 'astro/config'
+import { fulluiIntegration } from './src/integration/fullui'
+// @ts-ignore
+import bookshop from '@bookshop/astro-bookshop'
 
 // https://astro.build/config
 export default defineConfig({
@@ -14,14 +16,18 @@ export default defineConfig({
     service: passthroughImageService(),
   },
   vite: {
-    plugins: [yaml()],
+    plugins: [yaml() as any],
   },
   integrations: [
     sitemap(),
     robotsTxt(),
     bookshop(),
+    fulluiIntegration({}),
     starlight({
       title: 'FullUI',
+      social: {
+        github: 'https://github.com/silveltman/fullui',
+      },
       sidebar: [
         {
           label: 'Getting started',

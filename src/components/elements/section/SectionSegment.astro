@@ -1,24 +1,17 @@
 ---
 export interface Props {
   layout?: 'left' | 'center' | 'split' | 'wide'
+  frame?: 'fill' | 'panel' | 'screen'
   class?: string
 }
 
-const { layout = 'left', class: className } = Astro.props
+const { layout = 'left', frame = 'fill', class: className } = Astro.props
 const slot = await Astro.slots.render('default')
-
-const CLAMP_START = 320
-const CLAMP_END = 1024
-const clamp = (min: number, max: number) => {
-  const slope = (max - min) / (CLAMP_END - CLAMP_START)
-  const intersect = -CLAMP_START * slope + min
-  return `clamp( ${min}px, ${intersect}px + ${slope * 100}vw, ${max}px)`
-}
 ---
 
 {
   slot?.trim().length > 0 && (
-    <div class:list={['segment', layout, className]}>
+    <div class:list={['segment', layout, frame, className]}>
       <Fragment set:html={slot} />
     </div>
   )
@@ -26,7 +19,6 @@ const clamp = (min: number, max: number) => {
 
 <style>
   .segment {
-    padding: 0 var(--gutter-padding);
     display: flex;
     flex-direction: column;
     row-gap: max(16px, 2vw);
@@ -59,6 +51,15 @@ const clamp = (min: number, max: number) => {
         justify-content: space-between;
         flex-direction: row;
       }
+    }
+
+    &,
+    &:where(.fill) {
+      padding: 0 var(--gutter);
+    }
+
+    &:where(.panel) {
+      padding-left: calc(var(--gutter) / 2);
     }
   }
 </style>

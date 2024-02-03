@@ -1,17 +1,46 @@
 ---
-import iconsJson from '@iconify-json/tabler/icons.json'
+import tablerIcons from '@iconify-json/tabler/icons.json'
+const tabler: any = tablerIcons
 
-const icons: any = iconsJson
-const { iconName, className, exclude } = Astro.props
+interface Props {
+  icon?: keyof typeof tabler.icons
+  class?: string
+}
+
+const { icon, class: className } = Astro.props
+const slot = await Astro.slots.render('default')
 ---
 
 {
-  !exclude && iconName && (
-    <svg
-      class:list={[className, 'w-2em h-2em']}
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      set:html={icons?.icons[iconName]?.body}
-    />
+  (icon || slot?.trim().length > 0) && (
+    <span>
+      {icon && (
+        <svg
+          class:list={[className]}
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          set:html={tabler.icons[icon].body}
+        />
+      )}
+      <slot />
+    </span>
   )
 }
+
+<style>
+  span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-size: inherit;
+    width: 1em;
+    height: 1em;
+    color: inherit;
+  }
+  svg {
+    position: absolute;
+    height: 130%;
+    width: 130%;
+  }
+</style>

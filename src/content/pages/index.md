@@ -7,4 +7,6 @@ seo:
     src:
     alt:
 sections:
+  - _bookshop_name: HeroSection
+    heading: test
 ---

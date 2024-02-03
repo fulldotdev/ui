@@ -1,16 +1,17 @@
 ---
 export interface Props {
   deck?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento'
+  frame?: 'fill' | 'panel' | 'screen'
   class?: string
 }
 
-const { deck = 'row', class: className } = Astro.props
+const { deck = 'row', frame = 'fill', class: className } = Astro.props
 const slot = await Astro.slots.render('default')
 ---
 
 {
   slot?.trim().length > 0 && (
-    <div class:list={['deck', deck, className]}>
+    <div class:list={['deck', deck, frame, className]}>
       <Fragment set:html={slot} />
     </div>
   )
@@ -103,6 +104,14 @@ const slot = await Astro.slots.render('default')
           grid-column-start: span 2;
         }
       }
+    }
+
+    &:where(.fill) {
+      padding: 0 var(--gutter);
+    }
+
+    &:where(.panel) {
+      padding: 0 calc(var(--gutter) / 2);
     }
   }
 </style>
