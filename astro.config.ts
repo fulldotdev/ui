@@ -36,15 +36,14 @@ export default defineConfig({
           },
         },
         {
-          label: 'Guides',
+          label: 'Design system',
+          items: [
+            { label: 'Introduction', link: '/design-system/introduction/' },
+            { label: 'Theme', link: '/design-system/theme/' },
+            { label: 'Flow', link: '/design-system/flow/' },
+          ],
           autogenerate: {
-            directory: 'guides',
-          },
-        },
-        {
-          label: 'Components',
-          autogenerate: {
-            directory: 'components',
+            directory: 'design-system',
           },
         },
         {
@@ -54,9 +53,9 @@ export default defineConfig({
           },
         },
         {
-          label: 'Roots',
+          label: 'Blocks',
           autogenerate: {
-            directory: 'Roots',
+            directory: 'Blocks',
           },
         },
       ],

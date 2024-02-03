@@ -1,10 +1,16 @@
 ---
 title: Introduction
-description: An introduction to the FullUI documentation
+description: An introduction to the docs of the Fullui Astro Component library
 ---
 
-FullUI is a component library developed by Fulldev to make your webdevelopment experience easier than ever before.
+Fullui is component library and design system for Astro with powerfull features that **you have not seen in other libraries before**.
 
-The project is open source to allow for community improvements & a free component library **for you**.
+:::note
+Fullui is currently a work-in-progress and is **not** yet ready for production use. We are working very hard to get it ready as possible. 
 
-Components are building blocks of your websites. Our components are written in [Astro](https://astro.build/) and use the default CSS classes.
+In the meantime, please report as many buygs as you can find, and request as many features as you would like - no annoying reproductions required,  promise! You can do so here: [GitHub Issues](https://full.dev)
+:::
+
+While many libraries focus on application development, we are focused on marketing websites. We aim to provide a set of components that are easy to use, and allow you to create webistes that just look good, even if you are not a designer.
+
+Let's take a look! 🚀

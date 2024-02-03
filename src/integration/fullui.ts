@@ -44,7 +44,7 @@ export const fulluiIntegration = (config: Config): AstroIntegration => ({
       await execAsync(
         'yarn unocss ./src/integration/src/uno.config.ts -c ./src/integration/src/uno.config.ts -o ./src/integration/dist/fullui.css'
       )
-      injectScript('page-ssr', 'import "./src/integration/dist/fullui.css";')
+      injectScript('page-ssr', 'import "src/integration/dist/fullui.css";')
     },
   },
 })
