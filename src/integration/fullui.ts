@@ -263,7 +263,7 @@ export const fulluiIntegration = (passedConfig: Config): AstroIntegration => ({
             --${hueKey}-10:  var(--${hueValue}-10);
             --${hueKey}-11:  var(--${hueValue}-11);
             --${hueKey}-12:  var(--${hueValue}-12);
-            --${hueKey}-fg: ${['orange', 'amber', 'yellow', 'lime', 'mint', 'sky'].includes(hueValue) ? 'black' : 'white'};
+            --${hueKey}-fg: ${['amber', 'yellow', 'lime', 'mint', 'sky'].includes(hueValue) ? 'black' : 'white'};
           }
         `
         )
