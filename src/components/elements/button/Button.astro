@@ -3,18 +3,19 @@ import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import Icon from '../Icon.astro'
 
 export interface Props extends ComponentProps<typeof Icon> {
-  label?: string | null
+  text?: string | null
+  area?: 'primary' | 'secondary'
   href?: HTMLAttributes<'a'>['href'] | null
 }
 
-const { icon, label, href } = Astro.props
+const { icon, text, href, area = 'primary' } = Astro.props
 ---
 
 {
-  (icon || label) && (
-    <a href={href}>
+  (icon || text) && (
+    <a href={href} class:list={['area-' + area]}>
       <Icon {icon} />
-      {label}
+      {text}
       <slot />
     </a>
   )
@@ -38,9 +39,18 @@ const { icon, label, href } = Astro.props
     flex-grow: 1;
     flex-shrink: 0;
     flex-basis: auto;
+    color: var(--text);
+    background: var(--bg);
+    border-color: var(--ring);
+
+    &:hover {
+      border-color: var(--ring-hover));
+      background: var(--bg-hover);
+    }
 
     &:active {
       transform: scale(0.95);
+      background: var(--bg-active);
     }
 
     &:disabled {
@@ -49,7 +59,7 @@ const { icon, label, href } = Astro.props
       cursor: not-allowed;
     }
 
-    &:first-child {
+    /* &:first-child {
       color: var(--primary-text);
       background: var(--primary-bg);
       border-color: var(--primary-ring);
@@ -77,6 +87,6 @@ const { icon, label, href } = Astro.props
       &:active {
         background: var(--secondary-bg-active);
       }
-    }
+    } */
   }
 </style>

@@ -7,13 +7,18 @@ seo:
     src:
     alt:
 sections:
-  - _bookshop_name: HeroSection
+  - _bookshop_name: CategoriesSection
+    impact: medium
+    deck: grid
+    area: panel
     tagline: De goedkoopste van Nederland
     heading: Handig langer thuis wonen
     text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-  - _bookshop_name: CategoriesSection
-    deck: row
     categories:
+      - category
+      - category
+      - category
+      - category
       - category
       - category
       - category
@@ -30,12 +35,26 @@ sections:
       - heading: Hulp van experts
         text: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
         icon: phone-call
-  - _bookshop_name: FeaturesSection
+  - _bookshop_name: ProductsSection
+    impact: medium
+    deck: grid
+    area: panel
+    heading: Aanbiedingen
+    products:
+      - product
+      - product
+      - product
+      - product
+      - product
+      - product
+      - product
+      - product
+  - _bookshop_name: SpotlightSection
     theme: impact-low
     layout: split
     frame: panel
     heading: Wat een traplift voor Hilda heeft betekend
-    text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+    text:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:
       - text: Bekijk de trapliften
         href: /trapliften
@@ -43,15 +62,15 @@ sections:
       src: https://source.unsplash.com/random/800x600
       alt: Een vrouw die de traplift gebruikt
   - _bookshop_name: CtaSection
-    theme: impact-high
-    frame: panel
+    impact: high
+    area: panel
+    scheme: dark
     layout: wide
     heading: Ontvang advies van een expert
     text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:
-      - label: Neem contact op
+      - text: Neem contact op
         href: /contact
-      - label: Bel 06 16715746
+      - text: Bel 06 16715746
         href: tel:31616715746
-
 ---

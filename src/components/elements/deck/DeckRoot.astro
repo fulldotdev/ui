@@ -1,17 +1,17 @@
 ---
 export interface Props {
   deck?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento'
-  frame?: 'fill' | 'panel' | 'screen'
+  area?: 'fill' | 'panel' | 'screen'
   class?: string
 }
 
-const { deck = 'row', frame = 'fill', class: className } = Astro.props
+const { deck = 'row', area = 'fill', class: className } = Astro.props
 const slot = await Astro.slots.render('default')
 ---
 
 {
   slot?.trim().length > 0 && (
-    <div class:list={['deck', deck, frame, className]}>
+    <div class:list={['deck', 'deck-' + deck, 'area-' + area, className]}>
       <Fragment set:html={slot} />
     </div>
   )
@@ -23,23 +23,20 @@ const slot = await Astro.slots.render('default')
 
   .deck {
     position: relative;
-    padding: 0 var(--gutter-padding);
     width: 100%;
 
     & > * {
       flex-shrink: 0;
       flex-grow: 0;
-      margin: 0 calc(-1 * var(--flow-self4));
     }
 
-    &:where(.row) {
+    &:where(.deck-row) {
       display: grid;
       row-gap: var(--flow4);
+      grid-auto-columns: 6fr 1fr;
+      grid-auto-flow: column;
 
       @media (--lg) {
-        grid-auto-flow: column;
-        grid-auto-columns: 4fr 1fr;
-
         > * {
           &:nth-child(2) {
             grid-column-start: 3;
@@ -49,6 +46,12 @@ const slot = await Astro.slots.render('default')
           }
           &:nth-child(4) {
             grid-column-start: 7;
+          }
+          &:nth-child(5) {
+            grid-column-start: 9;
+          }
+          &:nth-child(6) {
+            grid-column-start: 11;
           }
         }
       }
@@ -61,8 +64,6 @@ const slot = await Astro.slots.render('default')
       overflow-x: auto;
       scroll-behavior: smooth;
       flex-direction: row;
-      padding: 0 var(--gutter-padding);
-      width: 100%;
 
       & > * {
         flex-shrink: 0;
@@ -72,11 +73,11 @@ const slot = await Astro.slots.render('default')
       }
     }
 
-    &:where(.grid) {
+    &:where(.deck-grid) {
       display: grid;
-      width: 100%;
-      gap: calc(var(--gutter-padding) / 2);
-      grid-template-columns: repeat(4, 4fr 1fr);
+      column-gap: var(--flow3);
+      row-gap: var(--flow4);
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     }
 
     &:where(.masonry) {
@@ -104,14 +105,6 @@ const slot = await Astro.slots.render('default')
           grid-column-start: span 2;
         }
       }
-    }
-
-    &:where(.fill) {
-      padding: 0 var(--gutter);
-    }
-
-    &:where(.panel) {
-      padding: 0 calc(var(--gutter) / 2);
     }
   }
 </style>

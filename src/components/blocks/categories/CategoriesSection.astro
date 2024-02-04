@@ -1,6 +1,7 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import { getCollection } from 'astro:content'
+import { getRouteByEntry } from 'src/utils'
 import type { CategoriesDeck } from '.'
 import Section from '../../elements/section/Section.astro'
 
@@ -18,7 +19,7 @@ const allEntries = await getCollection('categories')
 const mappedCategories = props.categories?.map((category) => {
   // @ts-ignore
   const found = allEntries.find((entry) => category.includes(entry.slug))
-  return found?.data
+  return { ...found?.data, href: getRouteByEntry(found) }
 })
 ---
 

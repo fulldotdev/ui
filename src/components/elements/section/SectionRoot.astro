@@ -1,17 +1,17 @@
 ---
 export interface Props {
-  theme?: string
-  layout?: 'left' | 'center' | 'split' | 'wide'
-  frame?: 'fill' | 'panel' | 'screen'
-  scale?: number
+  scheme: 'default' | 'reverse' | 'light' | 'dark'
+  impact: 'low' | 'medium' | 'high' | 'extreme'
+  layout: 'left' | 'center' | 'split' | 'wide'
+  area: 'default' | 'panel'
   class?: string
 }
 
 const {
-  theme,
+  scheme = 'default',
+  impact = 'medium',
   layout = 'left',
-  frame = 'fill',
-  scale,
+  area = 'default',
   class: className,
 } = Astro.props
 
@@ -20,7 +20,18 @@ const slot = await Astro.slots.render('default')
 
 {
   slot?.trim().length > 0 && (
-    <section class:list={['section', theme, layout, frame, className]}>
+    <section
+      class:list={[
+        'section',
+        'scheme-' + scheme,
+        scheme + '-theme',
+        scheme,
+        'impact-' + impact,
+        'layout-' + layout,
+        'area-' + area,
+        className,
+      ]}
+    >
       <Fragment set:html={slot} />
     </section>
   )
@@ -31,28 +42,28 @@ const slot = await Astro.slots.render('default')
     container: section / inline-size;
     position: relative;
     overflow-x: hidden;
-    padding-top: var(--flow6);
-    padding-bottom: var(--flow6);
     row-gap: var(--flow5);
-    background: var(--section-bg);
-    border-color: var(--section-ring);
+    background: var(--bg);
+    border-color: var(--ring);
+    gap: var(--gutter);
+    padding: var(--gutter);
 
-    &:first-child {
+    /* &:first-child {
       margin-top: 0;
       padding-top: var(--flow5);
-    }
+    } */
 
     /* &:last-child {
       padding-bottom: var(--flow5);
     } */
 
     &,
-    &:where(.left) {
+    &:where(.layout-left) {
       display: flex;
       flex-direction: column;
     }
 
-    &:where(.split) {
+    &:where(.layout-split) {
       display: grid;
       align-items: center;
 
@@ -69,7 +80,7 @@ const slot = await Astro.slots.render('default')
       }
     }
 
-    &:where(.center) {
+    &:where(.layout-center) {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -77,21 +88,30 @@ const slot = await Astro.slots.render('default')
       text-align: center;
     }
 
-    &:where(.wide) {
+    &:where(.layout-wide) {
       display: flex;
       flex-direction: column;
+      align-items: stretch;
     }
 
-    &:where(.panel) {
-      margin: var(--spacer) calc(var(--gutter) / 1);
-      padding: var(--spacer) 0;
+    /* &:where(.area-panel:not(:has(.area-panel))) {
+      margin: var(--spacer) var(--gutter);
       border-width: var(--borderWidth);
-      border-color: var(--section-ring);
       border-radius: var(--rounded2);
+      gap: 0;
+      padding: 0;
+    } */
+
+    &:where(.area-panel) {
+      margin: var(--spacer) var(--gutter);
+      border-width: var(--borderWidth);
+      border-radius: var(--rounded2);
+      gap: 0;
+      padding: 0;
     }
 
-    &:where(.screen) {
+    /* &:where(.area-screen) {
       min-height: 100vh;
-    }
+    } */
   }
 </style>

@@ -23,12 +23,8 @@ export default defineConfig({
     robotsTxt(),
     bookshop(),
     fulluiIntegration({
-      theme: {
-        colors: {
-          scheme: 'light',
-          base: 'slate',
-          accent: 'cyan',
-        },
+      hue: {
+        accent: 'cyan',
       },
     }),
     starlight({
