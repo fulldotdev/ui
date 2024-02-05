@@ -1,6 +1,8 @@
 ---
-import type { CollectionEntry } from 'astro:content'
+import { getCollection, type CollectionEntry } from 'astro:content'
+import { CategoriesSection } from '.'
 import Layout from '../../elements/layout/Layout.astro'
+import { ProductsSection } from '../products'
 
 export interface Props {
   entry: CollectionEntry<'categories'>
@@ -8,11 +10,41 @@ export interface Props {
 }
 
 const { entry, frontmatter } = Astro.props
+
+const allProducts = await getCollection('products')
+const filteredProducts = allProducts.filter((product) => {
+  const found = product.data.categories.includes(entry.slug)
+  return found
+})
+const mappedProducts = filteredProducts.map((product) => {
+  return product.slug
+})
 ---
 
 <Layout
   class="categories-layout"
   seo={frontmatter.seo}
 >
+  <ProductsSection
+    heading={entry.data.heading}
+    text={entry.data.text}
+    deck="grid"
+    products={mappedProducts}
+  />
+  <CategoriesSection
+    deck="carousel"
+    impact=""
+    heading="Overige categorieën"
+    categories={[
+      'badkamer',
+      'veiligheid',
+      'trapliften',
+      'woonkamer',
+      'badkamer',
+      'veiligheid',
+      'trapliften',
+      'woonkamer',
+    ]}
+  />
   <slot />
 </Layout>

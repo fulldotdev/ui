@@ -298,6 +298,9 @@ export const fulluiIntegration = (passedConfig: Config): AstroIntegration => ({
       await writeFile(huePath, hueCSS, 'utf8')
       await writeFile(impactPath, impactCSS, 'utf8')
 
+      // import '@unocss/reset/tailwind.css'
+      injectScript('page-ssr', `import "@unocss/reset/tailwind.css";`)
+
       injectScript('page-ssr', `import "@radix-ui/colors/${hue.base}.css";`)
       injectScript(
         'page-ssr',
