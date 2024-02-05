@@ -24,7 +24,8 @@ sections:
       - veiligheid
       - woonkamer
   - _bookshop_name: FeaturesSection
-    impact: high
+    impact: medium
+    scheme: dark
     features:
       - heading: Binnen 48 uur geleverd
         text: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
@@ -72,8 +73,7 @@ sections:
       - product
       - product
   - _bookshop_name: SpotlightSection
-    impact: high
-    area: default
+    impact: medium
     scheme: dark
     layout: split
     frame: default
@@ -104,7 +104,7 @@ sections:
       - product
       - product
   - _bookshop_name: ReviewsSection
-    impact: high
+    impact: medium
     layout: left
     deck: masonry
     area: panel
@@ -156,7 +156,7 @@ sections:
       - product
       - product
   - _bookshop_name: CtaSection
-    impact: high
+    impact: medium
     area: default
     scheme: dark
     layout: wide

@@ -1,16 +1,37 @@
 ---
 export interface Props {
   position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
+  scheme: 'default' | 'reverse' | 'light' | 'dark'
+  impact: 'low' | 'medium' | 'high' | 'extreme'
+  area: 'default' | 'panel'
   class?: string
 }
 
-const { props } = Astro
+const {
+  position = 'relative',
+  scheme = 'default',
+  impact = 'medium',
+  area = 'default',
+  class: className,
+} = Astro.props
+
 const slot = await Astro.slots.render('default')
 ---
 
 {
   slot?.trim().length > 0 && (
-    <header class:list={['header flow-compact', props.position]}>
+    <header
+      class:list={[
+        'header flow-compact',
+        'position-' + position,
+        'scheme-' + scheme,
+        scheme + '-theme',
+        scheme,
+        'impact-' + impact,
+        'area-' + area,
+        className,
+      ]}
+    >
       <Fragment set:html={slot} />
     </header>
   )
@@ -20,26 +41,38 @@ const slot = await Astro.slots.render('default')
   header {
     display: flex;
     justify-content: space-between;
-    padding: var(--flow2) var(--gutter-padding);
-    gap: var(--spacing6);
+    padding: var(--flow1) var(--gutter);
+    gap: var(--flow);
     align-items: center;
     z-index: 10;
+    background-color: var(--bg);
+    border-color: var(--ring);
+    border-bottom-width: var(--borderWidth);
 
-    &:where(.sticky) {
+    &:where(.position-sticky) {
       position: sticky;
       top: 0;
     }
 
-    &:where(.fixed) {
+    &:where(.position-fixed) {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
     }
 
-    &:where(.absolute) {
+    &:where(.position-absolute) {
       position: absolute;
       top: 0;
+      left: 0;
+      right: 0;
+    }
+
+    &:where(.area-panel) {
+      border-width: var(--borderWidth);
+      margin: var(--flow2) var(--gutter);
+      border-radius: var(--rounded2);
+      padding: var(--flow2) var(--flow2);
     }
   }
 </style>

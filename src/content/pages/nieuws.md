@@ -7,21 +7,21 @@ seo:
     src:
     alt:
 sections:
-  - _bookshop_name: CategoriesSection
+  - _bookshop_name: PostsSection
     impact: medium
-    deck: panels
+    deck: masonry
     area: panel
-    heading: Al onze categorieën
+    heading: Het laatste nieuws
     text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-    categories:
-      - badkamer
-      - trapliften
-      - woonkamer
-      - veiligheid
-      - trapliften
-      - badkamer
-      - veiligheid
-      - woonkamer
+    posts:
+      - post7
+      - post6
+      - post5
+      - post4
+      - post3
+      - post2
+      - post1
+      - post
   - _bookshop_name: CtaSection
     impact: medium
     area: default
