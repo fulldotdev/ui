@@ -1,4 +1,6 @@
 ---
+import { getCollection } from 'astro:content'
+import { getRouteByEntry } from 'src/utils'
 import type { Props as SectionProps } from '../../elements/section/Section.astro'
 import Section from '../../elements/section/Section.astro'
 import type { Props as ProductsCardProps } from './ProductsCard.astro'
@@ -9,9 +11,20 @@ export interface Props
 }
 
 const { props } = Astro
+
+const allEntries = await getCollection('products')
+
+const mappedProducts = props.products?.map((product) => {
+  // @ts-ignore
+  const found = allEntries.find((entry) => product.includes(entry.slug))
+
+  if (!found) return found
+  return { ...found?.data, href: getRouteByEntry(found) }
+})
 ---
 
 <Section
+  class="products-section"
+  cards={mappedProducts}
   {...props}
-  cards={props.products}
 />

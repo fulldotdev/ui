@@ -15,14 +15,14 @@ sections:
     heading: Handig langer thuis wonen
     text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
     categories:
-      - category
-      - category
-      - category
-      - category
-      - category
-      - category
-      - category
-      - category
+      - badkamer
+      - trapliften
+      - woonkamer
+      - veiligheid
+      - trapliften
+      - badkamer
+      - veiligheid
+      - woonkamer
   - _bookshop_name: FeaturesSection
     theme: impact-low
     features:
@@ -37,7 +37,7 @@ sections:
         icon: phone-call
   - _bookshop_name: ProductsSection
     impact: medium
-    deck: grid
+    deck: carousel
     area: panel
     heading: Aanbiedingen
     products:
@@ -50,9 +50,10 @@ sections:
       - product
       - product
   - _bookshop_name: SpotlightSection
-    theme: impact-low
+    impact: low
+    area: panel
     layout: split
-    frame: panel
+    frame: default
     heading: Wat een traplift voor Hilda heeft betekend
     text:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:

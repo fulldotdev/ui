@@ -9,10 +9,10 @@ seo:
     src: 
     alt: 
 
-title: something 
-summary: 
+heading: Traplift 
+text: 
 images:
-  - src:
+  - src: https://source.unsplash.com/random/350x400
     alt:
 categories:
   - 
