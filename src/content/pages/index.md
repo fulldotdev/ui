@@ -24,7 +24,7 @@ sections:
       - veiligheid
       - woonkamer
   - _bookshop_name: FeaturesSection
-    theme: impact-low
+    impact: high
     features:
       - heading: Binnen 48 uur geleverd
         text: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
@@ -38,7 +38,7 @@ sections:
   - _bookshop_name: ProductsSection
     impact: medium
     deck: carousel
-    area: panel
+    area: default
     heading: Aanbiedingen
     products:
       - product
@@ -51,7 +51,7 @@ sections:
       - product
   - _bookshop_name: SpotlightSection
     impact: low
-    area: panel
+    area: default
     layout: split
     frame: default
     heading: Wat een traplift voor Hilda heeft betekend
@@ -62,9 +62,51 @@ sections:
     image:
       src: https://source.unsplash.com/random/800x600
       alt: Een vrouw die de traplift gebruikt
+  - _bookshop_name: ProductsSection
+    impact: medium
+    deck: carousel
+    area: default
+    heading: Alle trapliften
+    products:
+      - product
+      - product
+      - product
+      - product
+      - product
+      - product
+      - product
+      - product
+  - _bookshop_name: ReviewsSection
+    impact: low
+    deck: masonry
+    area: panel
+    heading: Wat onze klanten zeggen
+    reviews:
+      - erik
+      - hilda
+      - koos
+      - hilda
+      - peter
+      - erik
+      - koos
+      - peter
+  - _bookshop_name: ProductsSection
+    impact: medium
+    deck: carousel
+    area: default
+    heading: Alle trapliften
+    products:
+      - product
+      - product
+      - product
+      - product
+      - product
+      - product
+      - product
+      - product
   - _bookshop_name: CtaSection
     impact: high
-    area: panel
+    area: default
     scheme: dark
     layout: wide
     heading: Ontvang advies van een expert
