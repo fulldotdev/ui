@@ -3,7 +3,6 @@ import starlight from '@astrojs/starlight'
 import yaml from '@rollup/plugin-yaml'
 import robotsTxt from 'astro-robots-txt'
 import { defineConfig, passthroughImageService } from 'astro/config'
-import { fulluiIntegration } from './src/integration/fullui'
 // @ts-ignore
 import bookshop from '@bookshop/astro-bookshop'
 
@@ -22,11 +21,11 @@ export default defineConfig({
     sitemap(),
     robotsTxt(),
     bookshop(),
-    fulluiIntegration({
-      hue: {
-        accent: 'cyan',
-      },
-    }),
+    // fulluiIntegration({
+    //   hue: {
+    //     accent: 'cyan',
+    //   },
+    // }),
     starlight({
       title: 'FullUI',
       social: {

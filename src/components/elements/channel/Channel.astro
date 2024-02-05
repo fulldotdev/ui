@@ -1,5 +1,63 @@
+---
+import Icon from '../Icon.astro'
+
+export type ChannelProps = Props
+export interface Props {
+  type: 'phone' | 'email' | 'whatsapp' | 'address'
+  value: string
+}
+
+const { type, value } = Astro.props
+
+const map = {
+  email: {
+    value: value,
+    href: `mailto:${value}`,
+    icon: 'mail',
+    title: 'Email',
+  },
+  phone: {
+    value: value,
+    href: `tel:${value}`,
+    icon: 'phone',
+    title: 'Telefoon',
+  },
+  whatsapp: {
+    value: value,
+    href: `https://wa.me/${value}`,
+    icon: 'brand-whatsapp',
+    title: 'Whatsapp',
+  },
+  address: {
+    value: value,
+    href: `https://www.google.com/maps/search/?api=1&query=${value}`,
+    icon: 'location',
+    title: 'Adres',
+  },
+}
+---
+
+{
+  type && value && (
+    <div class="gap-size3 mode-compact size-medium flex items-center">
+      <a
+        class="button-secondary"
+        href={map[type].href}
+        target="_blank"
+      >
+        <Icon icon={map[type].icon} />
+      </a>
+      <div class="gap-size1 gap-size1 flex flex-col">
+        <p class="hue-base text-size2 text-hue12 text-left">
+          {map[type].title}
+        </p>
+        <p class="hue-base text-size1 text-left">{map[type].value}</p>
+      </div>
+    </div>
+  )
+}
+
 <!-- ---
-import { getEntry } from 'astro:content'
 const company = (await getEntry('globals', 'company')).data
 
 export interface Props {
