@@ -1,17 +1,18 @@
 ---
-export interface Props {
-  layout?: 'center' | 'left' | 'wide' | null
-  class?: string
-}
+import type { ComponentProps } from 'astro/types'
+import getSlot from 'src/utils/getSlot'
+import { Card } from '.'
 
-const { layout, class: className } = Astro.props
-const slot = await Astro.slots.render('default')
+interface Props extends ComponentProps<typeof Card> {}
+
+const { class: className } = Astro.props
+const slot = await getSlot(Astro)
 ---
 
 {
-  slot?.trim().length > 0 && (
-    <div class:list={['writeup', layout, className]}>
-      <slot />
+  slot && (
+    <div class:list={['writeup', className]}>
+      <Fragment set:html={slot} />
     </div>
   )
 }
@@ -23,21 +24,5 @@ const slot = await Astro.slots.render('default')
     display: flex;
     flex-direction: column;
     row-gap: var(--flow3);
-
-    &:where(.center) {
-      align-items: center;
-      text-align: center;
-    }
-
-    &:where(.left) {
-      align-items: left;
-      text-align: left;
-    }
-
-    &:where(.wide) {
-      flex-direction: row;
-      align-items: left;
-      text-align: left;
-    }
   }
 </style>

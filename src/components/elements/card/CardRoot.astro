@@ -1,27 +1,28 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { ComponentProps } from 'astro/types'
+import getSlot from 'src/utils/getSlot'
+import { Card } from '.'
 
-export interface Props {
-  href?: HTMLAttributes<'a'>['href']
-  area?: 'default' | 'panel'
-  ratio?: 'landscape' | 'square' | 'portrait' | null
-  class?: string
-}
+interface Props extends ComponentProps<typeof Card> {}
 
-const { href, area = 'default', ratio, class: className } = Astro.props
+const { href, area, ratio, class: className } = Astro.props
+const slot = await getSlot(Astro)
 ---
 
 {
-  href ? (
+  slot && href && (
     <a
       class:list={['card flow-compact', 'area-' + area, ratio, className]}
       href={href}
     >
-      <slot />
+      <Fragment set:html={slot} />
     </a>
-  ) : (
+  )
+}
+{
+  slot && !href && (
     <div class:list={['card flow-compact', 'area-' + area, ratio, className]}>
-      <slot />
+      <Fragment set:html={slot} />
     </div>
   )
 }
