@@ -58,7 +58,7 @@ export default defineConfig({
         {
           label: 'Blocks',
           autogenerate: {
-            directory: 'Blocks',
+            directory: 'blocks',
           },
         },
       ],
