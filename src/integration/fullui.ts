@@ -164,12 +164,12 @@ const defaultConfig: Config = {
         heading: 'base-12',
       },
       input: {
-        bg: 'base-2',
-        bgHover: 'base-3',
-        bgActive: 'base-4',
-        ring: 'base-6',
-        ringHover: 'base-7',
-        text: 'base-11',
+        bg: 'accent-3',
+        bgHover: 'accent-4',
+        bgActive: 'accent-5',
+        ring: 'accent-7',
+        ringHover: 'accent-8',
+        text: 'accent-fg',
         heading: null,
       },
       primary: {
