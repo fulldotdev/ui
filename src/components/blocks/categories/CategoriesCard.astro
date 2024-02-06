@@ -1,14 +1,21 @@
 ---
 import type { ComponentProps } from 'astro/types'
+import { getEntry } from 'astro:content'
 import Card from '../../elements/card/Card.astro'
 
 interface Props
   extends Pick<
     ComponentProps<typeof Card>,
     'href' | 'image' | 'tagline' | 'heading' | 'text'
-  > {}
+  > {
+  reference?: any
+}
 
 const { props } = Astro
+const category = await getEntry('categories', props.reference)
 ---
 
-<Card {...props} />
+<Card
+  {...category?.data}
+  {...props}
+/>
