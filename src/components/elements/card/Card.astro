@@ -1,26 +1,34 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
-import { Root, Segment, Writeup } from '.'
-import Heading from '../Heading.astro'
-import Icon from '../Icon.astro'
-import Rating from '../Rating.astro'
-import Tagline from '../Tagline.astro'
-import Text from '../Text.astro'
+import type { ComponentProps } from 'astro/types'
+import {
+  Heading,
+  Icon,
+  Price,
+  Rating,
+  Root,
+  Segment,
+  Tagline,
+  Text,
+  Writeup,
+} from '.'
 
-interface Props {
-  level?: 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | null
-  area?: 'panel' | null
-  ratio?: 'landscape' | 'square' | 'portrait' | null
-  href?: HTMLAttributes<'a'>['href'] | null
-  heading?: string | null
-  rating?: number | null
-  text?: string | null
+interface Props
+  extends ComponentProps<typeof Root>,
+    ComponentProps<typeof Segment>,
+    ComponentProps<typeof Icon>,
+    ComponentProps<typeof Rating>,
+    ComponentProps<typeof Writeup>,
+    ComponentProps<typeof Tagline>,
+    ComponentProps<typeof Heading>,
+    ComponentProps<typeof Text>,
+    ComponentProps<typeof Price> {
+  // ComponentProps<typeof Specs>,
+  // ComponentProps<typeof ButtonGroup>,
   query?: {
     collection: string
     slug: string
   }
   reference?: any
-  class?: HTMLAttributes<any>['class']
 }
 
 const { props } = Astro
@@ -31,7 +39,6 @@ const { props } = Astro
     {...props.images?.[0]}
     {...props.image}
   /> -->
-  <slot />
   <Segment {...props}>
     <Icon
       large
@@ -42,7 +49,7 @@ const { props } = Astro
       <Tagline {...props} />
       <Heading {...props} />
       <Text {...props} />
-      <!-- <Price {...props} /> -->
+      <Price {...props} />
       <slot name="writeup" />
     </Writeup>
     <!-- <Specs {...props} /> -->

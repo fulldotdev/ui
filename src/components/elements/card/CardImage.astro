@@ -1,0 +1,41 @@
+---
+export interface Props {
+  heading?: string | null
+  level?: 'h1' | 'h2' | 'h3'
+  class?: string
+}
+
+const { level = 'h2', heading, class: className } = Astro.props
+// TODO: use as, instead of always h1. Currently has bug with live editing.
+// const Level = level
+
+const slot = await Astro.slots.render('default')
+---
+
+{
+  (heading || slot?.trim().length > 0) && (
+    <h1 class:list={['heading', className]}>
+      {heading}
+      <slot />
+    </h1>
+  )
+}
+
+<style>
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
+    color: var(--heading);
+    line-height: 1.1;
+    font-size: var(--text3);
+    font-weight: 700;
+
+    &:last-child {
+      font-size: calc(var(--text3) * 0.8);
+    }
+  }
+</style>
