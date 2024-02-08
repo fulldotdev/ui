@@ -1,7 +1,7 @@
 import { defineCollection, z } from 'astro:content'
 
-export const pagesSchema = defineCollection({
-  type: 'data',
+export const postsSchema = defineCollection({
+  type: 'content',
   schema: z.object({
     seo: z.object({
       title: z.string(),
@@ -11,6 +11,11 @@ export const pagesSchema = defineCollection({
         alt: z.string(),
       }),
     }),
-    sections: z.any(),
+    title: z.string(),
+    description: z.string(),
+    image: z.object({
+      src: z.string(),
+      alt: z.string(),
+    }),
   }),
 })
