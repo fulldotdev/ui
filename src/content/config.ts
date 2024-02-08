@@ -1,5 +1,5 @@
 import { docsSchema } from '@astrojs/starlight/schema'
-import { defineCollection, reference, z } from 'astro:content'
+import { defineCollection, z } from 'astro:content'
 
 const content = defineCollection({
   type: 'content',
@@ -8,13 +8,10 @@ const content = defineCollection({
 
 const data = defineCollection({
   type: 'data',
-  schema: z.object({
-    title: z.string(),
-    tags: z.array(z.string()),
-    image: z.string().optional(),
-  }),
+  schema: z.any(),
 })
 
+// @dylan maak voor iedere collection een zod schema (zie pages.schema.ts) en gebruik deze hieronder
 export const collections = {
   categories: content,
   pages: content,
@@ -26,9 +23,4 @@ export const collections = {
   globals: data,
   settings: data,
   docs: defineCollection({ schema: docsSchema() }),
-  test: defineCollection({
-    schema: z.object({
-      products: z.array(reference('products')),
-    }),
-  }),
 }

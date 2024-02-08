@@ -5,6 +5,7 @@ import robotsTxt from 'astro-robots-txt'
 import { defineConfig, passthroughImageService } from 'astro/config'
 // @ts-ignore
 import bookshop from '@bookshop/astro-bookshop'
+import { fulluiIntegration } from './src/integration/fullui'
 
 // https://astro.build/config
 export default defineConfig({
