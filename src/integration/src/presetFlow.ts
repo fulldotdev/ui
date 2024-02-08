@@ -1,7 +1,7 @@
 import merge from 'deepmerge'
 import type { Preset } from 'unocss'
 
-export interface Config {
+interface Config {
   scale: number
   borderWidth: number
   rounded: number

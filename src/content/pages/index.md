@@ -24,7 +24,8 @@ sections:
       - veiligheid
       - woonkamer
   - _bookshop_name: FeaturesSection
-    impact: high
+    impact: medium
+    scheme: dark
     features:
       - heading: Binnen 48 uur geleverd
         text: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
@@ -38,8 +39,30 @@ sections:
   - _bookshop_name: ProductsSection
     impact: medium
     deck: carousel
+    layout: wide
     area: default
     heading: Aanbiedingen
+    buttons:
+      - text: Alle aanbiedingen
+        href: /aanbiedingen
+    products:
+      - product
+      - product
+      - product
+      - product
+      - product
+      - product
+      - product
+      - product
+  - _bookshop_name: ProductsSection
+    impact: medium
+    deck: carousel
+    layout: wide
+    area: default
+    heading: Aanbiedingen
+    buttons:
+      - text: Alle aanbiedingen
+        href: /aanbiedingen
     products:
       - product
       - product
@@ -50,14 +73,14 @@ sections:
       - product
       - product
   - _bookshop_name: SpotlightSection
-    impact: low
-    area: default
+    impact: medium
+    scheme: dark
     layout: split
     frame: default
     heading: Wat een traplift voor Hilda heeft betekend
     text:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:
-      - text: Bekijk de trapliften
+      - text: Alle trapliften
         href: /trapliften
     image:
       src: https://source.unsplash.com/random/800x600
@@ -66,7 +89,11 @@ sections:
     impact: medium
     deck: carousel
     area: default
+    layout: wide
     heading: Alle trapliften
+    buttons:
+      - text: Alle trapliften
+        href: /trapliften 
     products:
       - product
       - product
@@ -77,10 +104,12 @@ sections:
       - product
       - product
   - _bookshop_name: ReviewsSection
-    impact: low
+    impact: medium
+    layout: left
     deck: masonry
     area: panel
     heading: Wat onze klanten zeggen
+    text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam sequi recusandae quos perferendis enim fugiat nulla eos vero laboriosam iusto!
     reviews:
       - erik
       - hilda
@@ -94,7 +123,29 @@ sections:
     impact: medium
     deck: carousel
     area: default
+    layout: wide
     heading: Alle trapliften
+    buttons:
+      - text: Alle trapliften
+        href: /trapliften 
+    products:
+      - product
+      - product
+      - product
+      - product
+      - product
+      - product
+      - product
+      - product
+  - _bookshop_name: ProductsSection
+    impact: medium
+    deck: carousel
+    area: default
+    layout: wide
+    heading: Alle trapliften
+    buttons:
+      - text: Alle trapliften
+        href: /trapliften 
     products:
       - product
       - product
@@ -105,7 +156,7 @@ sections:
       - product
       - product
   - _bookshop_name: CtaSection
-    impact: high
+    impact: medium
     area: default
     scheme: dark
     layout: wide

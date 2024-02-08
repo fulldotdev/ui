@@ -28,7 +28,7 @@ type ImpactKey = 'low' | 'medium' | 'high' | 'extreme'
 type ImpactValue = {
   [key in AreaKey]: AreaValue
 }
-export interface Config {
+interface Config {
   scheme: Scheme
   hue: {
     [key in HueKey]: HueValue
@@ -164,12 +164,12 @@ const defaultConfig: Config = {
         heading: 'base-12',
       },
       input: {
-        bg: 'base-2',
-        bgHover: 'base-3',
-        bgActive: 'base-4',
-        ring: 'base-6',
-        ringHover: 'base-7',
-        text: 'base-11',
+        bg: 'accent-3',
+        bgHover: 'accent-4',
+        bgActive: 'accent-5',
+        ring: 'accent-7',
+        ringHover: 'accent-8',
+        text: 'accent-fg',
         heading: null,
       },
       primary: {
@@ -297,6 +297,9 @@ export const fulluiIntegration = (passedConfig: Config): AstroIntegration => ({
       const impactPath = join(__dirname, './dist/impact.css')
       await writeFile(huePath, hueCSS, 'utf8')
       await writeFile(impactPath, impactCSS, 'utf8')
+
+      // import '@unocss/reset/tailwind.css'
+      injectScript('page-ssr', `import "@unocss/reset/tailwind.css";`)
 
       injectScript('page-ssr', `import "@radix-ui/colors/${hue.base}.css";`)
       injectScript(

@@ -1,0 +1,98 @@
+---
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import getSlot from 'src/utils/getSlot'
+import Icon from '../Icon.astro'
+
+interface Props extends ComponentProps<typeof Icon> {
+  text?: string | null
+  area?: 'primary' | 'secondary'
+  href?: HTMLAttributes<'a'>['href']
+  class?: HTMLAttributes<'div'>['class']
+}
+
+const { icon, text, href, area = 'primary', class: className } = Astro.props
+const slot = await getSlot(Astro)
+---
+
+{
+  (icon || text || slot) && (
+    <a
+      class:list={['area-' + area, className]}
+      href={href}
+    >
+      <Icon {icon} />
+      {text}
+      <Fragment set:html={slot} />
+    </a>
+  )
+}
+
+<style>
+  a {
+    gap: 0.75rem;
+    display: inline-flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    white-space: nowrap;
+    border-radius: var(--rounded2);
+    padding: var(--flow3);
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    line-height: 1;
+    font-size: var(--text1);
+    border-width: var(--borderWidth);
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: auto;
+    color: var(--text);
+    background: var(--bg);
+    border-color: var(--ring);
+
+    &:hover {
+      border-color: var(--ring-hover);
+      background: var(--bg-hover);
+    }
+
+    &:active {
+      transform: scale(0.95);
+      background: var(--bg-active);
+    }
+
+    &:disabled {
+      pointer-events: none;
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* &:first-child {
+      color: var(--primary-text);
+      background: var(--primary-bg);
+      border-color: var(--primary-ring);
+
+      &:hover {
+        background-color: var(--primary-bg-hover);
+        border-color: var(--primary-ring-hover);
+      }
+
+      &:active {
+        background: var(--primary-bg-active);
+      }
+    }
+
+    &:last-child:not(:first-child) {
+      color: var(--secondary-text);
+      background: var(--secondary-bg);
+      border-color: var(--secondary-ring);
+
+      &:hover {
+        background-color: var(--secondary-bg-hover);
+        border-color: var(--secondary-ring-hover);
+      }
+
+      &:active {
+        background: var(--secondary-bg-active);
+      }
+    } */
+  }
+</style>

@@ -1,16 +1,19 @@
 ---
-export interface Props {
+import type { HTMLAttributes } from 'astro/types'
+import getSlot from '../../utils/getSlot'
+
+interface Props {
   tagline?: string | null
-  class?: string
+  class?: HTMLAttributes<'div'>['class']
 }
 
 const { tagline, class: className } = Astro.props
-const slot = await Astro.slots.render('default')
+const slot = await getSlot(Astro)
 ---
 
 {
-  (tagline || slot?.trim().length > 0) && (
-    <p class:list={['tagline area-secondary', className]}>
+  (tagline || slot) && (
+    <p class:list={['tagline', className]}>
       {tagline}
       <slot />
     </p>

@@ -1,23 +1,36 @@
 ---
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import getSlot from 'src/utils/getSlot'
 import Icon from '../Icon.astro'
 
-export interface Props extends ComponentProps<typeof Icon> {
+interface Props extends ComponentProps<typeof Icon> {
   text?: string | null
   area?: 'primary' | 'secondary'
-  href?: HTMLAttributes<'a'>['href'] | null
-  icon?: string
+  href?: HTMLAttributes<'a'>['href']
+  class?: HTMLAttributes<'div'>['class']
 }
 
-const { icon, text, href, area = 'primary' } = Astro.props
+const { icon, text, href, area = 'primary', class: className } = Astro.props
+const slot = await getSlot(Astro)
 ---
 
 {
+<<<<<<< HEAD
   (icon || text || Astro.slots) && (
     <a href={href} class:list={['area-' + area]}>
       {text}
       <slot />
       <Icon {icon} />
+=======
+  (icon || text || slot) && (
+    <a
+      class:list={['area-' + area, className]}
+      href={href}
+    >
+      <Icon {icon} />
+      {text}
+      <Fragment set:html={slot} />
+>>>>>>> main
     </a>
   )
 }
@@ -45,7 +58,7 @@ const { icon, text, href, area = 'primary' } = Astro.props
     border-color: var(--ring);
 
     &:hover {
-      border-color: var(--ring-hover));
+      border-color: var(--ring-hover);
       background: var(--bg-hover);
     }
 

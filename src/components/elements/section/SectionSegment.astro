@@ -1,17 +1,19 @@
 ---
-export interface Props {
-  layout: 'left' | 'center' | 'split' | 'wide'
-  area: 'default' | 'panel'
-  class?: string
+import type { HTMLAttributes } from 'astro/types'
+interface Props {
+  align?: 'start' | 'center' | 'end' | 'stretch'
+  layout?: 'split' | 'stack'
+  frame?: 'fill' | 'panel' | 'screen'
+  class?: HTMLAttributes<'div'>['class']
 }
 
-const { layout = 'left', area = 'default', class: className } = Astro.props
+const { layout = 'left', frame = 'fill', class: className } = Astro.props
 const slot = await Astro.slots.render('default')
 ---
 
 {
   slot?.trim().length > 0 && (
-    <div class:list={['segment', layout, area, className]}>
+    <div class:list={['segment', layout, 'frame-' + frame, className]}>
       <Fragment set:html={slot} />
     </div>
   )
@@ -52,11 +54,15 @@ const slot = await Astro.slots.render('default')
         flex-direction: row;
       }
     }
-    /* &:where(.area-panel:not(:has(.area-panel))) {
+    /* &:where(.frame-panel:not(:has(.frame-panel))) {
       padding: var(--gutter);
     } */
-    &:where(.panel) {
+    &:where(.frame-panel) {
       padding: var(--gutter);
+    }
+
+    &:where(.frame-screen) {
+      /* margin: auto 0; */
     }
   }
 </style>

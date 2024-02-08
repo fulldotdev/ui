@@ -1,0 +1,23 @@
+---
+import type { ComponentProps } from 'astro/types'
+import { Card } from '../card'
+
+interface Props {
+  cards: (
+    | ComponentProps<typeof Card>
+    | ComponentProps<typeof Card>['reference']
+  )[]
+}
+
+const { props } = Astro
+
+const cards = props.cards.map((card) => {
+  if (!card) return card
+  if ('collection' in card && 'slug' in card) {
+    return { reference: card }
+  }
+  return card
+})
+---
+
+{cards?.map((card) => <Card {...card} />)}

@@ -1,27 +1,19 @@
 ---
-export interface Props {
-  layout?: 'center' | 'left' | 'wide' | null
-  area?: 'default' | 'panel'
-  class?: string
+import type { HTMLAttributes } from 'astro/types'
+import getSlot from 'src/utils/getSlot'
+
+interface Props {
+  frame?: 'fill' | 'panel'
+  class?: HTMLAttributes<'div'>['class']
 }
 
-const { layout = 'left', area = 'default', class: className } = Astro.props
-const slot = await Astro.slots.render('default')
-
-const CLAMP_START = 320
-const CLAMP_END = 1024
-const clamp = (min: number, max: number) => {
-  const slope = (max - min) / (CLAMP_END - CLAMP_START)
-  const intersect = -CLAMP_START * slope + min
-  return `clamp( ${min}px, ${intersect}px + ${slope * 100}vw, ${max}px)`
-}
+const { frame = 'fill', class: className } = Astro.props
+const slot = getSlot(Astro)
 ---
 
 {
-  slot?.trim().length > 0 && (
-    <div
-      class:list={['segment', 'layout-' + layout, 'area-' + area, className]}
-    >
+  slot && (
+    <div class:list={['segment', `frame-${frame}`, className]}>
       <Fragment set:html={slot} />
     </div>
   )
@@ -38,53 +30,8 @@ const clamp = (min: number, max: number) => {
     width: 100%;
     height: 100%;
     justify-content: space-between;
-    border-color:
 
-    &:where(.left) {
-      align-items: flex-start;
-      text-align: left;
-    }
-    &:where(.center) {
-      align-items: center;
-      text-align: center;
-    }
-    &:where(.split) {
-      align-items: flex-start;
-      text-align: left;
-    }
-    &:where(.stack) {
-      justify-content: space-between;
-      width: 100%;
-
-      @media (min-width: 1024px) {
-        .lg\:flex-row {
-          flex-direction: row;
-        }
-      }
-
-      @media (min-width: 1024px) {
-        .lg\:items-center {
-          align-items: center;
-        }
-      }
-    }
-
-    &:where(.reverse) {
-      justify-content: space-between;
-      width: 100%;
-      @media (min-width: 1024px) {
-        .lg\:flex-row {
-          flex-direction: row;
-        }
-      }
-      @media (min-width: 1024px) {
-        .lg\:items-center {
-          align-items: center;
-        }
-      }
-    }
-
-    &:where(.area-panel) {
+    &:where(.frame-panel) {
       padding: var(--flow4);
     }
   }

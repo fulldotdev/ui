@@ -2,7 +2,7 @@
 import type { HTMLAttributes } from 'astro/types'
 import { Image as AstroImage } from 'astro:assets'
 
-export interface Props {
+interface Props {
   media?: 'relative' | 'background'
   layout?: 'left' | 'center' | 'split' | 'wide'
   area?: 'fill' | 'panel' | 'screen'
@@ -85,7 +85,7 @@ function getSizes() {
         alt={alt ? alt : 'Image'}
         sizes={getSizes()}
         loading={loading}
-        class:list={[media, area]}
+        class:list={[media, 'area-' + area]}
       />
     </>
   )
@@ -121,15 +121,19 @@ loading={loading}
     border-radius: var(--rounded1);
   }
 
-  img:where(.panel) {
+  img:where(.area-panel) {
+    height: 100%;
+    object-fit: cover;
   }
 
-  img:where(.background) {
+  img:where(.area-screen) {
     position: absolute;
     inset: 0;
     height: 100%;
     width: 100%;
     object-fit: cover;
     border-radius: 0;
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, white 50%);
+    mask-image: linear-gradient(to top, transparent 0%, white 50%);
   }
 </style>

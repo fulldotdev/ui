@@ -21,11 +21,11 @@ export default defineConfig({
     sitemap(),
     robotsTxt(),
     bookshop(),
-    // fulluiIntegration({
-    //   hue: {
-    //     accent: 'cyan',
-    //   },
-    // }),
+    fulluiIntegration({
+      hue: {
+        accent: 'indigo',
+      },
+    }),
     starlight({
       title: 'FullUI',
       social: {

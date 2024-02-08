@@ -1,21 +1,5 @@
-import Root, { type Props as RootProps } from './CardRoot.astro'
-import Segment, { type Props as SegmentProps } from './CardSegment.astro'
-import Writeup, { type Props as WriteupProps } from './CardWriteup.astro'
+import Card from './Card.astro'
+import Root from './CardRoot.astro'
+import Segment from './CardSegment.astro'
 
-export {
-  Root as CardRoot,
-  Segment as CardSegment,
-  Writeup as CardWriteup,
-  Root,
-  Segment,
-  Writeup,
-}
-
-export type {
-  RootProps as CardRootProps,
-  SegmentProps as CardSegmentProps,
-  WriteupProps as CardWriteupProps,
-  RootProps,
-  SegmentProps,
-  WriteupProps,
-}
+export { Card, Root as CardRoot, Segment as CardSegment, Root, Segment }

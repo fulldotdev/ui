@@ -1,0 +1,31 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import getSlot from '../../../utils/getSlot'
+
+interface Props {
+  label?: HTMLAttributes<'label'>['for']
+  class?: HTMLAttributes<'div'>['class']
+}
+
+const { label, class: className } = Astro.props
+const slot = await getSlot(Astro)
+---
+
+{
+  (label || slot) && (
+    <label
+      class:list={['input-label', className]}
+      for={label}
+    >
+      {label}
+      <Fragment set:html={slot} />
+    </label>
+  )
+}
+
+<style>
+  label {
+    color: var(--text);
+    font-size: var(--text1);
+  }
+</style>

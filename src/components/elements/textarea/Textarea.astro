@@ -1,51 +1,19 @@
 ---
-export interface Props {
-  label?: string
-  required?: boolean
-}
+import type { ComponentProps } from 'astro/types'
+import { Field, Label, Root } from '.'
 
-const { label, required } = Astro.props
+interface Props
+  extends ComponentProps<typeof Root>,
+    ComponentProps<typeof Field>,
+    ComponentProps<typeof Label> {}
+
+const { props } = Astro
 ---
 
-{
-  (
-    <div>
-      {label && <label for={label}>{label}</label>}
-      <slot />
-      <textarea
-        rows="5"
-        id={label}
-        name={label}
-        {required}
-      />
-    </div>
-  )
-}
-
-<style>
-  div {
-    gap: var(--flow1);
-    display: flex;
-    flex-direction: column;
-
-    textarea {
-      background-color: var(--un-preset-theme-backgroundColor-secondary);
-      box-shadow: var(--un-ring-offset-shadow), var(--un-ring-shadow),
-        var(--un-shadow);
-      --un-ring-color: var(--un-preset-theme-borderColor-secondary);
-
-      &:hover {
-        background-color: var(
-          --un-preset-theme-backgroundColor-secondary-hover
-        );
-        --un-ring-color: var(--un-preset-theme-borderColor-secondary-hover);
-      }
-
-      &:active {
-        background-color: var(
-          --un-preset-theme-backgroundColor-secondary-active
-        );
-      }
-    }
-  }
-</style>
+<Root {...props}>
+  <Label {...props}>
+    <slot name="label" />
+    <Field {...props} />
+  </Label>
+  <slot />
+</Root>
