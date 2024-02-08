@@ -1,10 +1,13 @@
 ---
-import type { Props as DeckProps } from '../../elements/deck/Deck.astro'
-import Deck from '../../elements/deck/Deck.astro'
-import type { Props as JobsCardProps } from './JobsCard.astro'
+import type { ComponentProps } from 'astro/types'
+import { Deck } from 'src/components'
+import type { JobsCard } from '.'
 
-interface Props extends Pick<DeckProps, 'deck'> {
-  jobs?: JobsCardProps[] | null
+interface Props extends ComponentProps<typeof Deck> {
+  jobs?: (
+    | ComponentProps<typeof JobsCard>
+    | ComponentProps<typeof JobsCard>['slug']
+  )[]
 }
 
 const { props } = Astro
@@ -12,5 +15,7 @@ const { props } = Astro
 
 <Deck
   {...props}
+  class="jobs-deck"
+  collection="jobs"
   cards={props.jobs}
 />

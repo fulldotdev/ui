@@ -1,5 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+import getSlot from '../../../utils/getSlot'
 interface Props {
   align?: 'start' | 'center' | 'end' | 'stretch'
   layout?: 'split' | 'stack'
@@ -8,11 +9,11 @@ interface Props {
 }
 
 const { layout = 'left', frame = 'fill', class: className } = Astro.props
-const slot = await Astro.slots.render('default')
+const slot = await getSlot(Astro)
 ---
 
 {
-  slot?.trim().length > 0 && (
+  slot && (
     <div class:list={['segment', layout, 'frame-' + frame, className]}>
       <Fragment set:html={slot} />
     </div>

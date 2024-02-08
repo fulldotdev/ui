@@ -1,16 +1,17 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+import getSlot from '../../utils/getSlot'
 interface Props {
   layout?: 'center' | 'left' | 'wide' | null
   class?: HTMLAttributes<'div'>['class']
 }
 
 const { layout = 'left', class: className } = Astro.props
-const slot = await Astro.slots.render('default')
+const slot = await getSlot(Astro)
 ---
 
 {
-  slot?.trim().length > 0 && (
+  slot && (
     <ul
       data-component="list"
       class:list={['list', layout, className]}
