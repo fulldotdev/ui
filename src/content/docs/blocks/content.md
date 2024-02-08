@@ -12,7 +12,7 @@ The `Content` component is used to render any kind of content. It includes a `wr
 import type { Props as SectionProps } from '../../elements/section/Section.astro'
 import Section from '../../elements/section/Section.astro'
 
-export interface Props
+interface Props
   extends Pick<
     SectionProps,
     'level' | 'tagline' | 'heading' | 'text' | 'image'

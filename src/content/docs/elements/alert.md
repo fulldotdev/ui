@@ -9,7 +9,8 @@ title: Alert
   ---
   import Icon from './Icon.astro'
 
-  export interface Props {
+  import type { HTMLAttributes } from 'astro/types'
+interface Props {
     icon?: string
     text?: string
   }

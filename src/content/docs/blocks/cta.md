@@ -14,7 +14,7 @@ If you want to use images in your `Cta` considering using the `Spotlight` compon
 import type { Props as SectionProps } from '../../elements/section/Section.astro'
 import Section from '../../elements/section/Section.astro'
 
-export interface Props
+interface Props
   extends Pick<
     SectionProps,
     'layout' | 'tagline' | 'heading' | 'text' | 'buttons'

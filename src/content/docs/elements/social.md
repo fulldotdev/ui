@@ -13,7 +13,8 @@ Although, make sure you also add the social media platform to the `map` with it'
 
 ```ts
 // Social.astro
-export interface Props {
+import type { HTMLAttributes } from 'astro/types'
+interface Props {
   type:
     | "facebook"
     | "instagram"
@@ -32,7 +33,8 @@ export interface Props {
 ```astro
 <!-- Social.astro -->
 ---
-export interface Props {
+import type { HTMLAttributes } from 'astro/types'
+interface Props {
   type: "facebook" | "instagram" | "twitter" | "pinterest" | "linkedin" | "youtube" | "tiktok" | "snapchat"
   value: string
 }
@@ -122,7 +124,8 @@ If you want to render more than one social media link, then you may use the `Soc
 import Group from '@components/wrappers/Group.astro'
 import Social from './Social.astro'
 
-export interface Props {
+import type { HTMLAttributes } from 'astro/types'
+interface Props {
   socials: object
 }
 

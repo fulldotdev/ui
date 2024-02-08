@@ -1,24 +1,31 @@
 ---
-import type { Props as CardProps } from '../card/Card.astro'
-import Card from '../card/Card.astro'
-import type { Props as DeckRootProps } from './DeckRoot.astro'
-import DeckRoot from './DeckRoot.astro'
+import type { ComponentProps } from 'astro/types'
+import { Cards, List, Root, Segment } from '.'
+import ButtonGroup from '../button/ButtonGroup.astro'
+import { Writeup } from '../writeup'
 
-export interface Props extends DeckRootProps {
-  cards?: CardProps[] | null
-}
+interface Props
+  extends ComponentProps<typeof Root>,
+    ComponentProps<typeof Segment>,
+    ComponentProps<typeof Writeup>,
+    ComponentProps<typeof ButtonGroup>,
+    ComponentProps<typeof List>,
+    ComponentProps<typeof Cards> {}
 
 const { props } = Astro
 ---
 
-<DeckRoot {...props}>
-  {
-    props.cards?.map((card) => (
-      <Card
-        area={props.area}
-        {...card}
-      />
-    ))
-  }
-  <slot />
-</DeckRoot>
+<Root {...props}>
+  <Segment {...props}>
+    <Writeup {...props}>
+      <slot name="writeup" />
+    </Writeup>
+    <ButtonGroup {...props} />
+    <slot name="segment" />
+  </Segment>
+  <List {...props}>
+    <Cards {...props} />
+    <slot name="list" />
+    <slot />
+  </List>
+</Root>

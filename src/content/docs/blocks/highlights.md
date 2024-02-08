@@ -11,7 +11,7 @@ import type { Props as SectionProps } from '../../elements/section/Section.astro
 import Section from '../../elements/section/Section.astro'
 import type { Props as HighlightsCardProps } from './HighlightsCard.astro'
 
-export interface Props
+interface Props
   extends Pick<SectionProps, 'tagline' | 'heading' | 'text' | 'buttons'> {
   highlights: HighlightsCardProps[] | null
 }
@@ -33,7 +33,7 @@ const { props } = Astro
 import type { Props as CardProps } from '../../elements/card/Card.astro'
 import Card from '../../elements/card/Card.astro'
 
-export interface Props
+interface Props
   extends Pick<CardProps, 'image' | 'tagline' | 'heading' | 'text'> {}
 
 const { props } = Astro
@@ -51,7 +51,7 @@ import type { Props as DeckProps } from '../../elements/deck/Deck.astro'
 import Deck from '../../elements/deck/Deck.astro'
 import type { Props as HighlightsCardProps } from './HighlightsCard.astro'
 
-export interface Props extends Pick<DeckProps, 'deck'> {
+interface Props extends Pick<DeckProps, 'deck'> {
   highlights?: HighlightsCardProps[] | null
 }
 

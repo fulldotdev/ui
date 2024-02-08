@@ -1,17 +1,20 @@
 ---
-export interface Props {
-  scheme: 'default' | 'reverse' | 'light' | 'dark'
-  impact: 'low' | 'medium' | 'high' | 'extreme'
-  layout: 'left' | 'center' | 'split' | 'wide'
-  area: 'default' | 'panel'
-  class?: string
+import type { HTMLAttributes } from 'astro/types'
+interface Props {
+  scheme?: 'default' | 'reverse' | 'light' | 'dark'
+  impact?: 'low' | 'medium' | 'high' | 'extreme'
+  align?: 'start' | 'center' | 'end' | 'stretch'
+  layout?: 'split' | 'stack'
+  frame?: 'fill' | 'panel' | 'screen'
+  class?: HTMLAttributes<'div'>['class']
 }
 
 const {
   scheme = 'default',
   impact = 'medium',
+  align = 'start',
   layout = 'left',
-  area = 'default',
+  frame = 'fill',
   class: className,
 } = Astro.props
 
@@ -28,7 +31,7 @@ const slot = await Astro.slots.render('default')
         scheme,
         'impact-' + impact,
         'layout-' + layout,
-        'area-' + area,
+        'frame-' + frame,
         className,
       ]}
     >
@@ -90,7 +93,7 @@ const slot = await Astro.slots.render('default')
       align-items: stretch;
     }
 
-    /* &:where(.area-panel:not(:has(.area-panel))) {
+    /* &:where(.frame-panel:not(:has(.frame-panel))) {
       margin: var(--spacer) var(--gutter);
       border-width: var(--borderWidth);
       border-radius: var(--rounded2);
@@ -98,7 +101,7 @@ const slot = await Astro.slots.render('default')
       padding: 0;
     } */
 
-    &:where(.area-panel) {
+    &:where(.frame-panel) {
       padding: var(--spacer) var(--gutter);
       margin: var(--spacer) var(--gutter);
       border-width: var(--borderWidth);
@@ -107,11 +110,11 @@ const slot = await Astro.slots.render('default')
       padding: 0;
     }
 
-    &:where(.area-screen) {
+    &:where(.frame-screen) {
       min-height: 100vh;
     }
 
-    /* &:where(.area-screen) {
+    /* &:where(.frame-screen) {
       min-height: 100vh;
     } */
   }

@@ -1,0 +1,56 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+interface Props {
+  align?: 'start' | 'center' | 'end' | 'stretch'
+  class?: HTMLAttributes<'div'>['class']
+}
+
+const { align = 'start', class: className } = Astro.props
+const slot = await Astro.slots.render('default')
+---
+
+{
+  slot?.trim().length > 0 && (
+    <div class:list={['deck-segment', 'align-' + align, className]}>
+      <Fragment set:html={slot} />
+    </div>
+  )
+}
+
+<style>
+  .segment {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 10;
+    gap: var(--flow4);
+    column-gap: var(--gutter);
+    container: segment / inline-size;
+    width: 100%;
+
+    &:where(.left) {
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    &:where(.center) {
+      align-items: center;
+      text-align: center;
+    }
+    &:where(.split) {
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    &:where(.wide) {
+      align-items: flex-start;
+      text-align: left;
+
+      @media (min-width: 1024px) {
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row;
+      }
+    }
+  }
+</style>

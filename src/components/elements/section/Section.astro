@@ -1,60 +1,35 @@
 ---
 import type { ComponentProps } from 'astro/types'
+import { Root, Segment } from '.'
 import Form from '../Form.astro'
-import Heading from '../Heading.astro'
-import Tagline from '../Tagline.astro'
-import Text from '../Text.astro'
 import ButtonGroup from '../button/ButtonGroup.astro'
 import ChannelGroup from '../channel/ChannelGroup.astro'
-import Deck from '../deck/Deck.astro'
 import Image from '../image/Image.astro'
-import SectionRoot from './SectionRoot.astro'
-import SectionSegment from './SectionSegment.astro'
-import SectionWriteup from './SectionWriteup.astro'
+import { Writeup } from '../writeup'
 
-export interface Props
-  extends ComponentProps<typeof SectionRoot>,
-    ComponentProps<typeof SectionSegment>,
-    ComponentProps<typeof SectionWriteup>,
-    ComponentProps<typeof Tagline>,
-    ComponentProps<typeof Heading>,
-    ComponentProps<typeof Text>,
-    ComponentProps<typeof ButtonGroup>,
-    ComponentProps<typeof ChannelGroup>,
-    ComponentProps<typeof Deck> {
-  image?: ComponentProps<typeof Image> | null
-}
+interface Props
+  extends ComponentProps<typeof Root>,
+    ComponentProps<typeof Segment>,
+    ComponentProps<typeof Writeup> {}
+// ComponentProps<typeof ButtonGroup>,
+// ComponentProps<typeof ChannelGroup>,
 
 const { props } = Astro
 ---
 
-<SectionRoot
-  {...props}
-  area={(props.cards || props.deck) && props.area === 'panel'
-    ? 'default'
-    : props.area}
->
-  <SectionSegment
-    {...props}
-    area={(props.cards || props.deck) && props.area === 'panel'
-      ? 'default'
-      : props.area}
-  >
-    <SectionWriteup {...props}>
-      <Tagline {...props} />
-      <Heading {...props} />
-      <Text {...props} />
+<Root {...props}>
+  <Segment {...props}>
+    <Writeup {...props}>
       <slot name="writeup" />
-    </SectionWriteup>
-    <ButtonGroup {...props} />
-    <ChannelGroup {...props} />
+    </Writeup>
+    <!-- <ButtonGroup {...props} />
+    <ChannelGroup {...props} /> -->
     <slot name="segment" />
-  </SectionSegment>
-  <Deck {...props} />
-  <Image
+  </Segment>
+  <!-- <Image
     {...props}
     {...props.image}
   />
-  <Form {...props} />
+  <Form {...props} /> -->
   <slot />
-</SectionRoot>
+</Root>

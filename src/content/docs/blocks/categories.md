@@ -12,7 +12,7 @@ The `Categories` component is used to render one or more categories as a `card`.
 import type { Props as CardProps } from '../../elements/card/Card.astro'
 import Card from '../../elements/card/Card.astro'
 
-export interface Props
+interface Props
   extends Pick<CardProps, 'href' | 'image' | 'tagline' | 'heading' | 'text'> {}
 
 const { props } = Astro
@@ -32,7 +32,7 @@ import type { Props as DeckProps } from '../../elements/deck/Deck.astro'
 import Deck from '../../elements/deck/Deck.astro'
 import type { Props as CategoriesCardProps } from './CategoriesCard.astro'
 
-export interface Props extends Pick<DeckProps, 'deck'> {
+interface Props extends Pick<DeckProps, 'deck'> {
   categories?: CategoriesCardProps[] | null
 }
 
@@ -53,7 +53,7 @@ import type { Props as SectionProps } from '../../elements/section/Section.astro
 import Section from '../../elements/section/Section.astro'
 import type { Props as CategoriesCardProps } from './CategoriesCard.astro'
 
-export interface Props
+interface Props
   extends Pick<SectionProps, 'tagline' | 'heading' | 'text' | 'buttons'> {
   categories?: CategoriesCardProps[] | null
 }
@@ -71,7 +71,8 @@ const { props } = Astro
 import type { CollectionEntry } from 'astro:content'
 import SectionRenderer from '../../misc/SectionRenderer.astro'
 
-export interface Props {
+import type { HTMLAttributes } from 'astro/types'
+interface Props {
   entry: CollectionEntry<'pages'>
   frontmatter: CollectionEntry<'pages'>['data']
 }

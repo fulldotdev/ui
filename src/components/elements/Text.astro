@@ -1,15 +1,18 @@
 ---
-export interface Props {
+import type { HTMLAttributes } from 'astro/types'
+import getSlot from '../../utils/getSlot'
+
+interface Props {
   text?: string | null
-  class?: string
+  class?: HTMLAttributes<'div'>['class']
 }
 
 const { text, class: className } = Astro.props
-const slot = await Astro.slots.render('default')
+const slot = await getSlot(Astro)
 ---
 
 {
-  (text || slot?.trim().length > 0) && (
+  (text || slot) && (
     <p class:list={['text', className]}>
       {text}
       <slot />

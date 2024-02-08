@@ -11,7 +11,8 @@ As the name suggests the `required` prop makes the checkbox required.
 <!-- Checkbox.astro -->
 ---
 export type CheckboxProps = Props
-export interface Props {
+import type { HTMLAttributes } from 'astro/types'
+interface Props {
   label: string
   required?: boolean
 }

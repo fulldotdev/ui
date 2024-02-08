@@ -1,16 +1,15 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import {
-  Heading,
-  Icon,
-  Price,
-  Rating,
-  Root,
-  Segment,
-  Tagline,
-  Text,
-  Writeup,
-} from '.'
+  getEntry,
+  type CollectionEntry,
+  type ContentCollectionKey,
+} from 'astro:content'
+import { Root, Segment } from '.'
+import Icon from '../Icon.astro'
+import Price from '../Price.astro'
+import Rating from '../Rating.astro'
+import Writeup from '../writeup/Writeup.astro'
 
 interface Props
   extends ComponentProps<typeof Root>,
@@ -18,40 +17,29 @@ interface Props
     ComponentProps<typeof Icon>,
     ComponentProps<typeof Rating>,
     ComponentProps<typeof Writeup>,
-    ComponentProps<typeof Tagline>,
-    ComponentProps<typeof Heading>,
-    ComponentProps<typeof Text>,
     ComponentProps<typeof Price> {
   // ComponentProps<typeof Specs>,
   // ComponentProps<typeof ButtonGroup>,
-  query?: {
-    collection: string
-    slug: string
+  reference?: {
+    collection: ContentCollectionKey
+    slug: CollectionEntry<ContentCollectionKey>['slug']
   }
-  reference?: any
 }
 
-const { props } = Astro
+let { props } = Astro
+const entry = props.reference && (await getEntry(props.reference))
+props = { ...entry?.data, ...props }
 ---
 
 <Root {...props}>
-  <!-- <Media
-    {...props.images?.[0]}
-    {...props.image}
-  /> -->
+  <slot />
   <Segment {...props}>
-    <Icon
-      large
-      {...props}
-    />
+    <Icon {...props} />
     <Rating {...props} />
     <Writeup {...props}>
-      <Tagline {...props} />
-      <Heading {...props} />
-      <Text {...props} />
-      <Price {...props} />
       <slot name="writeup" />
     </Writeup>
+    <Price {...props} />
     <!-- <Specs {...props} /> -->
     <!-- <ButtonGroup {...props} /> -->
     <slot name="segment" />

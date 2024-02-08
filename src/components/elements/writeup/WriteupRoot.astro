@@ -1,0 +1,40 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import getSlot from '../../../utils/getSlot'
+
+interface Props {
+  align?: 'start' | 'center' | 'end' | 'stretch'
+  class?: HTMLAttributes<'div'>['class']
+}
+
+const { align = 'start', class: className } = Astro.props
+const slot = await getSlot(Astro)
+---
+
+{
+  slot && (
+    <div class:list={['writeup writeup-root', `align-${align}`, className]}>
+      <slot />
+    </div>
+  )
+}
+
+<style>
+  div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--flow3);
+    max-width: calc(var(--flow6) * 3.6);
+
+    &:where(.layout-center) {
+      align-items: center;
+      text-align: center;
+    }
+
+    &:where(.layout-left) {
+      align-items: left;
+      text-align: left;
+    }
+  }
+</style>

@@ -8,7 +8,8 @@ The `Prose` element is used to render text that is not formatted in any kind of 
 ```astro
 <!-- Prose.astro -->
 ---
-export interface Props {
+import type { HTMLAttributes } from 'astro/types'
+interface Props {
   prose?: any
   Content?: any
 }

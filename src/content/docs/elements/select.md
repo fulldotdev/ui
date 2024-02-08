@@ -9,7 +9,8 @@ The `Select` element renders a select field with your specified options as well 
 <!-- Select.astro -->
 ---
 export type SelectProps = Props
-export interface Props {
+import type { HTMLAttributes } from 'astro/types'
+interface Props {
   label: string
   options: string[]
   required?: boolean

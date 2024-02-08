@@ -21,7 +21,8 @@ The `Form` element is used to generate forms.
   import Checkbox, { type CheckboxProps } from './checkbox/Checkbox.astro'
 
   export type FormProps = Props
-  export interface Props {
+  import type { HTMLAttributes } from 'astro/types'
+interface Props {
     form?: string | null
     title?: HTMLAttributes<'input'>['value'] | null
     key?: HTMLAttributes<'input'>['value'] | null

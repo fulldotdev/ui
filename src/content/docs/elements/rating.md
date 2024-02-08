@@ -8,7 +8,8 @@ The `Rating` element renders one to five stars depending on what the given ratin
 ```astro
 <!-- Rating.astro -->
 ---
-export interface Props {
+import type { HTMLAttributes } from 'astro/types'
+interface Props {
   rating?: number | null
 }
 

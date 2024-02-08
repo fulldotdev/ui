@@ -1,0 +1,6 @@
+---
+products: 
+  - product
+  - product
+  - product
+---

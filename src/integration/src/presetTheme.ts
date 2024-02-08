@@ -25,7 +25,7 @@ type ImpactKey = 'low' | 'medium' | 'high' | 'extreme'
 type ImpactValue = {
   [key in AreaKey]: AreaValue
 }
-export interface Config {
+interface Config {
   scheme: Scheme
   hue: {
     [key in HueKey]: HueValue

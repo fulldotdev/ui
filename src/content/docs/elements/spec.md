@@ -11,7 +11,8 @@ Currently it is not possible to add a `cross` to show it is _not included_. This
 <!-- Spec.astro -->
 ---
 export type SpecProps = Props
-export interface Props {
+import type { HTMLAttributes } from 'astro/types'
+interface Props {
   spec?: string
 }
 

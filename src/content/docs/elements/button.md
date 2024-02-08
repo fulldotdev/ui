@@ -11,7 +11,8 @@ The `Button` element is self explanatory, it is a button that receives props fro
 import type { HTMLAttributes } from 'astro/types'
 
 export type ButtonProps = Props
-export interface Props {
+import type { HTMLAttributes } from 'astro/types'
+interface Props {
   label: string | null
   href: HTMLAttributes<'a'>['href']
   importance?: 'primary' | 'secondary' | 'tertiary'

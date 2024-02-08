@@ -1,5 +1,5 @@
 import { docsSchema } from '@astrojs/starlight/schema'
-import { defineCollection, z } from 'astro:content'
+import { defineCollection, reference, z } from 'astro:content'
 
 const content = defineCollection({
   type: 'content',
@@ -8,7 +8,11 @@ const content = defineCollection({
 
 const data = defineCollection({
   type: 'data',
-  schema: z.any(),
+  schema: z.object({
+    title: z.string(),
+    tags: z.array(z.string()),
+    image: z.string().optional(),
+  }),
 })
 
 export const collections = {
@@ -22,4 +26,9 @@ export const collections = {
   globals: data,
   settings: data,
   docs: defineCollection({ schema: docsSchema() }),
+  test: defineCollection({
+    schema: z.object({
+      products: z.array(reference('products')),
+    }),
+  }),
 }

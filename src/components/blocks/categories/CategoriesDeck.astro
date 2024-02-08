@@ -1,10 +1,13 @@
 ---
 import type { ComponentProps } from 'astro/types'
+import type { CategoriesCard } from '.'
 import Deck from '../../elements/deck/Deck.astro'
-import type CategoriesCard from './CategoriesCard.astro'
 
-export interface Props extends Pick<ComponentProps<typeof Deck>, 'deck'> {
-  categories?: ComponentProps<typeof CategoriesCard>[] | null
+interface Props extends ComponentProps<typeof Deck> {
+  categories?: (
+    | ComponentProps<typeof CategoriesCard>
+    | ComponentProps<typeof CategoriesCard>['reference']
+  )[]
 }
 
 const { props } = Astro
@@ -12,6 +15,6 @@ const { props } = Astro
 
 <Deck
   class="categories-deck"
-  cards={props.categories}
   {...props}
+  cards={props.categories}
 />
