@@ -7,7 +7,7 @@ seo:
     src:
     alt:
 sections:
-  - _bookshop_name: CategoriesSection
+  - _bookshop_name: CategoriesDeck
     impact: medium
     deck: grid
     area: panel
