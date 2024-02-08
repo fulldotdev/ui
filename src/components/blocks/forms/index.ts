@@ -1,3 +1,1 @@
-import Layout from './FormsLayout.astro'
-
-export { Layout as FormsLayout, Layout }
+export { default as FormsLayout } from './FormsLayout.astro'

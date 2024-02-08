@@ -1,3 +1,1 @@
-import Layout from './PoliciesLayout.astro'
-
-export { Layout, Layout as PoliciesLayout }
+export { default as PoliciesLayout } from './PoliciesLayout.astro'

@@ -1,3 +1,1 @@
-import Section from './IntroSection.astro'
-
-export { Section as IntroSection, Section }
+export { default as IntroSection } from './IntroSection.astro'

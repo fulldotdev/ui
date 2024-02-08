@@ -19,10 +19,6 @@ sections:
       - trapliften
       - woonkamer
       - veiligheid
-      - trapliften
-      - badkamer
-      - veiligheid
-      - woonkamer
   - _bookshop_name: FeaturesSection
     impact: medium
     scheme: dark

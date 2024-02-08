@@ -1,3 +1,1 @@
-import Section from './HeroSection.astro'
-
-export { Section as HeroSection, Section }
+export { default as HeroSection } from './HeroSection.astro'

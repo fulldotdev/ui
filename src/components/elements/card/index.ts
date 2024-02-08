@@ -1,5 +1,3 @@
-import Card from './Card.astro'
-import Root from './CardRoot.astro'
-import Segment from './CardSegment.astro'
-
-export { Card, Root as CardRoot, Segment as CardSegment, Root, Segment }
+export { default as Card } from './Card.astro'
+export { default as CardRoot } from './CardRoot.astro'
+export { default as CardSegment } from './CardSegment.astro'

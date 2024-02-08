@@ -1,3 +1,1 @@
-import Section from './CtaSection.astro'
-
-export { Section as CtaSection, Section }
+export { default as CtaSection } from './CtaSection.astro'

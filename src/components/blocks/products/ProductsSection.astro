@@ -1,30 +1,18 @@
 ---
-import { getCollection } from 'astro:content'
-import { getRouteByEntry } from 'src/utils'
-import type { Props as SectionProps } from '../../elements/section/Section.astro'
-import Section from '../../elements/section/Section.astro'
-import type { Props as ProductsCardProps } from './ProductsCard.astro'
+import type { ComponentProps } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import { Section } from 'src/components'
 
-interface Props
-  extends Pick<SectionProps, 'tagline' | 'heading' | 'text' | 'buttons'> {
-  products: ProductsCardProps[] | null
+interface Props extends ComponentProps<typeof Section> {
+  slug?: CollectionEntry<'products'>['slug']
+  collection: never
 }
 
 const { props } = Astro
-
-const allEntries = await getCollection('products')
-
-const mappedProducts = props.products?.map((product) => {
-  // @ts-ignore
-  const found = allEntries.find((entry) => product.includes(entry.slug))
-
-  if (!found) return found
-  return { ...found?.data, href: getRouteByEntry(found) }
-})
 ---
 
 <Section
-  class="products-section"
-  cards={mappedProducts}
   {...props}
+  collection="products"
+  class="products-section"
 />

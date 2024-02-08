@@ -1,5 +1,5 @@
 ---
-rating: 5
+rating:
 title:
 tagline:
 description:

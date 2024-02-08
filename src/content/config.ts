@@ -1,25 +1,49 @@
 import { docsSchema } from '@astrojs/starlight/schema'
 import { defineCollection, z } from 'astro:content'
-
-const content = defineCollection({
-  type: 'content',
-  schema: z.any(),
-})
+import categoriesSchema from 'src/schemas/categories.schema'
 
 const data = defineCollection({
   type: 'data',
   schema: z.any(),
 })
 
-// @dylan maak voor iedere collection een zod schema (zie pages.schema.ts) en gebruik deze hieronder
 export const collections = {
-  categories: content,
-  pages: content,
-  policies: content,
-  posts: content,
-  products: content,
-  reviews: content,
-  services: content,
+  categories: defineCollection({
+    type: 'content',
+    schema: categoriesSchema,
+  }),
+  // jobs: defineCollection({
+  //   type: 'content',
+  //   schema: jobsSchema,
+  // }),
+  // pages: defineCollection({
+  //   type: 'content',
+  //   schema: pagesSchema,
+  // }),
+  // policies: defineCollection({
+  //   type: 'content',
+  //   schema: policiesSchema,
+  // }),
+  // posts: defineCollection({
+  //   type: 'content',
+  //   schema: postsSchema,
+  // }),
+  // products: defineCollection({
+  //   type: 'content',
+  //   schema: productsSchema,
+  // }),
+  // reviews: defineCollection({
+  //   type: 'content',
+  //   schema: reviewsSchema,
+  // }),
+  // services: defineCollection({
+  //   type: 'content',
+  //   schema: servicesSchema,
+  // }),
+  // forms: defineCollection({
+  //   type: 'content',
+  //   schema: formsSchema,
+  // }),
   globals: data,
   settings: data,
   docs: defineCollection({ schema: docsSchema() }),
