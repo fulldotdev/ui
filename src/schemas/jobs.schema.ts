@@ -1,22 +1,21 @@
-import { defineCollection, z } from 'astro:content'
+import { z } from 'astro:content'
 
-export const jobsSchema = defineCollection({
-  type: 'content',
-  schema: z.object({
+export default z
+  .object({
     seo: z.object({
-      title: z.string(),
-      description: z.string(),
+      title: z.string().nullable(),
+      description: z.string().nullable(),
       image: z.object({
-        src: z.string(),
-        alt: z.string(),
+        src: z.string().nullable(),
+        alt: z.string().nullable(),
       }),
     }),
-    tagline: z.string(),
-    title: z.string(),
-    description: z.string(),
+    tagline: z.string().nullable(),
+    heading: z.string().nullable(),
+    text: z.string().nullable(),
     image: z.object({
-      src: z.string(),
-      alt: z.string(),
+      src: z.string().nullable(),
+      alt: z.string().nullable(),
     }),
-  }),
-})
+  })
+  .partial()

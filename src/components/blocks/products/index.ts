@@ -1,15 +1,4 @@
-import Card from './ProductsCard.astro'
-import Deck from './ProductsDeck.astro'
-import Layout from './ProductsLayout.astro'
-import Section from './ProductsSection.astro'
-
-export {
-  Card,
-  Deck,
-  Layout,
-  Card as ProductsCard,
-  Deck as ProductsDeck,
-  Layout as ProductsLayout,
-  Section as ProductsSection,
-  Section,
-}
+export { default as ProductsCard } from './ProductsCard.astro'
+export { default as ProductsDeck } from './ProductsDeck.astro'
+export { default as ProductsLayout } from './ProductsLayout.astro'
+export { default as ProductsSection } from './ProductsSection.astro'

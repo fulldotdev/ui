@@ -1,17 +1,5 @@
-import Deck from './Deck.astro'
-import Cards from './DeckCards.astro'
-import List from './DeckList.astro'
-import Root from './DeckRoot.astro'
-import Segment from './DeckSegment.astro'
-
-export {
-  Cards,
-  Deck,
-  Cards as DeckCards,
-  List as DeckList,
-  Root as DeckRoot,
-  Segment as DeckSegment,
-  List,
-  Root,
-  Segment,
-}
+export { default as Deck } from './Deck.astro'
+export { default as DeckCards } from './DeckCards.astro'
+export { default as DeckList } from './DeckList.astro'
+export { default as DeckRoot } from './DeckRoot.astro'
+export { default as DeckSegment } from './DeckSegment.astro'

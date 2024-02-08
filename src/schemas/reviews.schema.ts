@@ -1,12 +1,22 @@
-import { defineCollection, z } from 'astro:content'
+import { z } from 'astro:content'
 
-export const reviewsSchema = defineCollection({
-  type: 'content',
-  schema: z.object({
-    rating: z.number(),
-    title: z.string(),
-    tagline: z.string(),
-    description: z.string(),
-    image: z.string(),
-  }),
-})
+export default z
+  .object({
+    seo: z.object({
+      title: z.string().nullable(),
+      description: z.string().nullable(),
+      image: z.object({
+        src: z.string().nullable(),
+        alt: z.string().nullable(),
+      }),
+    }),
+    rating: z.number().nullable(),
+    tagline: z.string().nullable(),
+    heading: z.string().nullable(),
+    text: z.string().nullable(),
+    image: z.object({
+      src: z.string().nullable(),
+      alt: z.string().nullable(),
+    }),
+  })
+  .partial()

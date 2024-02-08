@@ -1,11 +1,3 @@
-import Section from './Section.astro'
-import Root from './SectionRoot.astro'
-import Segment from './SectionSegment.astro'
-
-export {
-  Root,
-  Section,
-  Root as SectionRoot,
-  Segment as SectionSegment,
-  Segment,
-}
+export { default as Section } from './Section.astro'
+export { default as SectionRoot } from './SectionRoot.astro'
+export { default as SectionSegment } from './SectionSegment.astro'

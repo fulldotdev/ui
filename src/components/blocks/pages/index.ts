@@ -1,3 +1,1 @@
-import Layout from './PagesLayout.astro'
-
-export { Layout, Layout as PagesLayout }
+export { default as PagesLayout } from './PagesLayout.astro'

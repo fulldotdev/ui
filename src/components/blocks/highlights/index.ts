@@ -1,12 +1,3 @@
-import Card from './HighlightsCard.astro'
-import Deck from './HighlightsDeck.astro'
-import Section from './HighlightsSection.astro'
-
-export {
-  Card,
-  Deck,
-  Card as HighlightsCard,
-  Deck as HighlightsDeck,
-  Section as HighlightsSection,
-  Section,
-}
+export { default as HighlightsCard } from './HighlightsCard.astro'
+export { default as HighlightsDeck } from './HighlightsDeck.astro'
+export { default as HighlightsSection } from './HighlightsSection.astro'

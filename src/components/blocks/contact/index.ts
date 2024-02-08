@@ -1,3 +1,1 @@
-import Section from './ContactSection.astro'
-
-export { Section as ContactSection, Section }
+export { default as ContactSection } from './ContactSection.astro'

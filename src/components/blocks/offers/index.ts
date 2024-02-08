@@ -1,12 +1,3 @@
-import Card from './OffersCard.astro'
-import Deck from './OffersDeck.astro'
-import Section from './OffersSection.astro'
-
-export {
-  Card,
-  Deck,
-  Card as OffersCard,
-  Deck as OffersDeck,
-  Section as OffersSection,
-  Section,
-}
+export { default as OffersCard } from './OffersCard.astro'
+export { default as OffersDeck } from './OffersDeck.astro'
+export { default as OffersSection } from './OffersSection.astro'

@@ -1,12 +1,3 @@
-import Card from './JobsCard.astro'
-import Deck from './JobsDeck.astro'
-import Section from './JobsSection.astro'
-
-export {
-  Card,
-  Deck,
-  Card as JobsCard,
-  Deck as JobsDeck,
-  Section as JobsSection,
-  Section,
-}
+export { default as JobsCard } from './JobsCard.astro'
+export { default as JobsDeck } from './JobsDeck.astro'
+export { default as JobsSection } from './JobsSection.astro'

@@ -1,15 +1,4 @@
-import Card from './ServicesCard.astro'
-import Deck from './ServicesDeck.astro'
-import Layout from './ServicesLayout.astro'
-import Section from './ServicesSection.astro'
-
-export {
-  Card,
-  Deck,
-  Layout,
-  Section,
-  Card as ServicesCard,
-  Deck as ServicesDeck,
-  Layout as ServicesLayout,
-  Section as ServicesSection,
-}
+export { default as ServicesCard } from './ServicesCard.astro'
+export { default as ServicesDeck } from './ServicesDeck.astro'
+export { default as ServicesLayout } from './ServicesLayout.astro'
+export { default as ServicesSection } from './ServicesSection.astro'

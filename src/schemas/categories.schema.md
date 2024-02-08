@@ -6,8 +6,8 @@ seo:
     src: 
     alt: 
 
-title:
-description: 
+heading:
+text: 
 image:
   src: 
   alt: 

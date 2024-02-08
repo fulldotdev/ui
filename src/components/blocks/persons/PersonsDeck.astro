@@ -1,10 +1,13 @@
 ---
-import type { Props as DeckProps } from '../../elements/deck/Deck.astro'
-import Deck from '../../elements/deck/Deck.astro'
-import type { Props as PersonsCardProps } from './PersonsCard.astro'
+import type { ComponentProps } from 'astro/types'
+import { Deck } from 'src/components'
+import type { PersonsCard } from '.'
 
-interface Props extends Pick<DeckProps, 'deck'> {
-  persons?: PersonsCardProps[] | null
+interface Props extends ComponentProps<typeof Deck> {
+  persons?: (
+    | ComponentProps<typeof PersonsCard>
+    | ComponentProps<typeof PersonsCard>['slug']
+  )[]
 }
 
 const { props } = Astro
@@ -12,5 +15,7 @@ const { props } = Astro
 
 <Deck
   {...props}
+  class="persons-deck"
+  collection="persons"
   cards={props.persons}
 />

@@ -1,36 +1,36 @@
-import { defineCollection, z } from 'astro:content'
+import { reference, z } from 'astro:content'
 
-export const productsSchema = defineCollection({
-  type: 'content',
-  schema: z.object({
+export default z
+  .object({
     seo: z.object({
-      title: z.string(),
-      description: z.string(),
+      title: z.string().nullable(),
+      description: z.string().nullable(),
       image: z.object({
-        src: z.string(),
-        alt: z.string(),
+        src: z.string().nullable(),
+        alt: z.string().nullable(),
       }),
     }),
-    title: z.string(),
-    summary: z.string(),
+    tagline: z.string().nullable(),
+    heading: z.string().nullable(),
+    text: z.string().nullable(),
     images: z.array(
       z.object({
-        src: z.string(),
-        alt: z.string(),
+        src: z.string().nullable(),
+        alt: z.string().nullable(),
       })
     ),
-    categories: z.array(z.string()),
-    price: z.number(),
-    options: z.array(
-      z.object({
-        key: z.string(),
-        values: z.array(
-          z.object({
-            value: z.string(),
-            fee: z.number(),
-          })
-        ),
-      })
-    ),
-  }),
-})
+    categories: z.array(reference('categories')).nullable(),
+    price: z.number().nullable(),
+    // options: z.array(
+    //   z.object({
+    //     key: z.string(),
+    //     values: z.array(
+    //       z.object({
+    //         value: z.string(),
+    //         fee: z.number(),
+    //       })
+    //     ),
+    //   })
+    // ),
+  })
+  .partial()

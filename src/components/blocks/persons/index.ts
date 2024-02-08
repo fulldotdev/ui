@@ -1,12 +1,4 @@
-import Card from './PersonsCard.astro'
-import Deck from './PersonsDeck.astro'
-import Section from './PersonsSection.astro'
-
-export {
-  Card,
-  Deck,
-  Card as PersonsCard,
-  Deck as PersonsDeck,
-  Section as PersonsSection,
-  Section,
-}
+export { default as PersonsCard } from './PersonsCard.astro'
+export { default as PersonsDeck } from './PersonsDeck.astro'
+// export { default as PersonsLayout } from './PersonsLayout.astro'
+export { default as PersonsSection } from './PersonsSection.astro'

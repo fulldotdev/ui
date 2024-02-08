@@ -1,12 +1,4 @@
-import Card from './ReviewsCard.astro'
-import Deck from './ReviewsDeck.astro'
-import Section from './ReviewsSection.astro'
-
-export {
-  Card,
-  Deck,
-  Card as ReviewsCard,
-  Deck as ReviewsDeck,
-  Section as ReviewsSection,
-  Section,
-}
+export { default as ReviewsCard } from './ReviewsCard.astro'
+export { default as ReviewsDeck } from './ReviewsDeck.astro'
+// export { default as ReviewsLayout } from './ReviewsLayout.astro'
+export { default as ReviewsSection } from './ReviewsSection.astro'

@@ -1,6 +1,11 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import { Root, Segment } from '.'
+import {
+  getEntry,
+  type CollectionEntry,
+  type ContentCollectionKey,
+} from 'astro:content'
+import { SectionRoot, SectionSegment } from '.'
 import Form from '../Form.astro'
 import ButtonGroup from '../button/ButtonGroup.astro'
 import ChannelGroup from '../channel/ChannelGroup.astro'
@@ -8,28 +13,39 @@ import Image from '../image/Image.astro'
 import { Writeup } from '../writeup'
 
 interface Props
-  extends ComponentProps<typeof Root>,
-    ComponentProps<typeof Segment>,
+  extends ComponentProps<typeof SectionRoot>,
+    ComponentProps<typeof SectionSegment>,
     ComponentProps<typeof Writeup>,
     ComponentProps<typeof ButtonGroup> {
   image: ComponentProps<typeof Image>
+  reference?: {
+    collection: ContentCollectionKey
+    slug: CollectionEntry<ContentCollectionKey>['slug']
+  }
+  collection?: ContentCollectionKey
+  slug?: CollectionEntry<ContentCollectionKey>['slug']
 }
-// ComponentProps<typeof ButtonGroup>,
-// ComponentProps<typeof ChannelGroup>,
 
-const { props } = Astro
+let { collection, slug, reference, ...restProps } = Astro.props
+const entry =
+  reference &&
+  (await getEntry({
+    collection: collection || reference.collection,
+    slug: slug || reference.slug,
+  }))
+const props = { ...entry?.data, ...restProps }
 ---
 
-<Root {...props}>
-  <Segment {...props}>
+<SectionRoot {...props}>
+  <SectionSegment {...props}>
     <Writeup {...props}>
       <slot name="writeup" />
     </Writeup>
     <ButtonGroup {...props} />
     <!-- <ChannelGroup {...props} /> -->
     <slot name="segment" />
-  </Segment>
+  </SectionSegment>
   <Image {...props.image} />
   <!-- <Form {...props} /> -->
   <slot />
-</Root>
+</SectionRoot>
