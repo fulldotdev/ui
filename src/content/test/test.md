@@ -1,6 +1,0 @@
----
-products: 
-  - product
-  - product
-  - product
----
