@@ -1,0 +1,23 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { getSlot } from 'src'
+
+interface Props {
+  heading?: string | null
+  level?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+  class?: HTMLAttributes<'div'>['class']
+}
+
+const { level = 'h2', heading, class: className } = Astro.props
+const slot = await getSlot(Astro)
+const As = level
+---
+
+{
+  (heading || slot) && (
+    <As class:list={['heading full-theme', className]}>
+      {heading}
+      <Fragment set:html={slot} />
+    </As>
+  )
+}

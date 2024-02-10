@@ -1,0 +1,38 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { getSlot } from 'src'
+
+interface Props {
+  frame?: 'fill' | 'panel'
+  class?: HTMLAttributes<'div'>['class']
+}
+
+const { frame = 'fill', class: className } = Astro.props
+const slot = getSlot(Astro)
+---
+
+{
+  slot && (
+    <div class:list={['segment', `frame-${frame}`, className]}>
+      <Fragment set:html={slot} />
+    </div>
+  )
+}
+
+<style>
+  .segment {
+    container: cardsegment / inline-size;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 10;
+    gap: var(--flow4);
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+
+    &:where(.frame-panel) {
+      padding: var(--flow4);
+    }
+  }
+</style>

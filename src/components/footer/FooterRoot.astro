@@ -1,0 +1,34 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { getSlot } from 'src'
+interface Props {
+  class?: HTMLAttributes<'div'>['class']
+}
+
+const { props } = Astro
+const slot = await getSlot(Astro)
+---
+
+{
+  slot && (
+    <footer class:list={['header flow-compact', props.class]}>
+      <slot />
+    </footer>
+  )
+}
+
+<style>
+  footer {
+    position: relative;
+    display: grid;
+    gap: var(--flow5);
+    justify-content: center;
+    z-index: 20;
+    border-top-width: var(--border);
+
+    @media (min-width: 1024px) {
+      grid-auto-columns: 1fr;
+      grid-auto-flow: column;
+    }
+  }
+</style>

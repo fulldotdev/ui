@@ -1,0 +1,53 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { getSlot } from 'src'
+import Icon from './Icon.astro'
+
+interface Props {
+  rating?: number | null
+  class?: HTMLAttributes<'div'>['class']
+}
+
+// const percentageClasses = (num: number) => {
+//   if (!rating) return
+//   if (rating >= num) return 'bg-hue9'
+//   if (rating < num - 0.75) return 'bg-hue-6'
+//   else return 'bg-gradient-to-r from-50% to-50% from-hue9 to-hue6'
+// }
+
+const { rating, class: className } = Astro.props
+const slot = await getSlot(Astro)
+---
+
+{
+  (rating || slot) && (
+    <div class:list={['area-secondary', className]}>
+      {[1, 2, 3, 4, 5].map((num) => (
+        <Icon icon="star-filled" />
+      ))}
+    </div>
+  )
+}
+
+<style>
+  div {
+    gap: 0.75rem;
+    display: flex;
+
+    i {
+      --un-icon: url("data:image/svg+xml;utf8,%3Csvg viewBox='0 0 24 24' width='1em' height='1em' xmlns='http://www.w3.org/2000/svg' %3E%3Cg fill='none' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'%3E%3Cpath d='M0 0h24v24H0z'/%3E%3Cpath fill='currentColor' d='m8.243 7.34l-6.38.925l-.113.023a1 1 0 0 0-.44 1.684l4.622 4.499l-1.09 6.355l-.013.11a1 1 0 0 0 1.464.944l5.706-3l5.693 3l.1.046a1 1 0 0 0 1.352-1.1l-1.091-6.355l4.624-4.5l.078-.085a1 1 0 0 0-.633-1.62l-6.38-.926l-2.852-5.78a1 1 0 0 0-1.794 0z'/%3E%3C/g%3E%3C/svg%3E");
+      -webkit-mask: var(--un-icon) no-repeat;
+      mask: var(--un-icon) no-repeat;
+      -webkit-mask-size: 100% 100%;
+      mask-size: 100% 100%;
+      background-color: currentColor;
+      color: inherit;
+      width: 1em;
+      height: 1em;
+      height: 1.25em;
+      width: 1.25em;
+      margin-left: -0.4em;
+      color: var(--text);
+    }
+  }
+</style>

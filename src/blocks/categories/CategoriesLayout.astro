@@ -1,0 +1,37 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content'
+import { Layout, ProductsDeck, Prose } from 'src'
+import { CategoriesDeck } from '.'
+
+interface Props {
+  entry: CollectionEntry<'categories'>
+}
+
+const { entry } = Astro.props
+
+const products = await getCollection('products', (product) =>
+  product.data.categories.includes(entry.slug)
+)
+
+const categories = await getCollection(
+  'categories',
+  (category) => category.slug !== entry.slug
+)
+---
+
+<Layout
+  {...entry.data}
+  class="categories-layout"
+>
+  <ProductsDeck
+    {...entry.data}
+    layout="grid"
+    products={products.map(({ data }) => data)}
+  />
+  <Prose {entry} />
+  <CategoriesDeck
+    layout="carousel"
+    categories={categories.map(({ data }) => data)}
+  />
+  <slot />
+</Layout>

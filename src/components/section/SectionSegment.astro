@@ -1,0 +1,69 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { getSlot } from 'src'
+interface Props {
+  align?: 'start' | 'center' | 'end' | 'stretch'
+  layout?: 'split' | 'stack'
+  frame?: 'fill' | 'panel' | 'screen'
+  class?: HTMLAttributes<'div'>['class']
+}
+
+const { layout = 'left', frame = 'fill', class: className } = Astro.props
+const slot = await getSlot(Astro)
+---
+
+{
+  slot && (
+    <div class:list={['segment', layout, 'frame-' + frame, className]}>
+      <Fragment set:html={slot} />
+    </div>
+  )
+}
+
+<style>
+  .segment {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 10;
+    gap: var(--flow4);
+    column-gap: var(--gutter);
+    container: segment / inline-size;
+    width: 100%;
+
+    &:where(.left) {
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    &:where(.center) {
+      align-items: center;
+      text-align: center;
+    }
+    &:where(.split) {
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    &:where(.wide) {
+      align-items: flex-start;
+      text-align: left;
+
+      @media (min-width: 1024px) {
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row;
+      }
+    }
+    /* &:where(.frame-panel:not(:has(.frame-panel))) {
+      padding: var(--gutter);
+    } */
+    &:where(.frame-panel) {
+      padding: var(--gutter);
+    }
+
+    &:where(.frame-screen) {
+      /* margin: auto 0; */
+    }
+  }
+</style>

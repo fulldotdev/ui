@@ -1,0 +1,132 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { getSlot } from 'src'
+interface Props {
+  layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento'
+  class?: HTMLAttributes<'div'>['class']
+}
+
+const { layout = 'row', class: className } = Astro.props
+const slot = await getSlot(Astro)
+---
+
+{
+  slot && (
+    <div class:list={['deck-list', 'layout-' + layout, className]}>
+      <Fragment set:html={slot} />
+    </div>
+  )
+}
+
+<style is:global>
+  div {
+    position: relative;
+    width: 100%;
+
+    & > * {
+      flex-shrink: 0;
+      flex-grow: 0;
+    }
+
+    &:where(.layout-row) {
+      display: grid;
+      row-gap: var(--flow4);
+      grid-auto-columns: 6fr 1fr;
+      grid-auto-flow: column;
+
+      @media (min-width: 1024px) {
+        > * {
+          &:nth-child(2) {
+            grid-column-start: 3;
+          }
+          &:nth-child(3) {
+            grid-column-start: 5;
+          }
+          &:nth-child(4) {
+            grid-column-start: 7;
+          }
+          &:nth-child(5) {
+            grid-column-start: 9;
+          }
+          &:nth-child(6) {
+            grid-column-start: 11;
+          }
+        }
+      }
+    }
+
+    &:where(.layout-carousel) {
+      position: relative;
+      display: flex;
+      scroll-snap-type: x mandatory;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      flex-direction: row;
+      margin: 0 calc(var(--gutter) * -1);
+      padding: 0 var(--gutter) var(--flow3);
+      width: 100vw;
+      gap: var(--flow3);
+
+      & > * {
+        flex-shrink: 0;
+        flex-grow: 0;
+        width: 260px;
+        scroll-snap-align: center;
+      }
+    }
+
+    &:where(.layout-grid) {
+      display: grid;
+      column-gap: var(--flow3);
+      row-gap: var(--flow4);
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    &:where(.layout-masonry) {
+      /* 'w-full space-y-size5 columns-2 space-y-size4 size-small:columns-2 size-large:columns-1 [&>*]:grow [&>*]:break-inside-avoid-column',
+        'sm:columns-[308px] size-small:sm:columns-[220px] size-large:sm:columns-2',
+        'size-large:md:columns-[385px]', */
+      flex-direction: column;
+      align-items: flex-start;
+      column-count: var(--columns);
+      column-gap: var(--flow3);
+
+      @media (min-width: 640px) {
+        --columns: 2;
+      }
+      @media (min-width: 768px) {
+        --columns: 3;
+      }
+
+      @media (min-width: 1024px) {
+        --columns: 4;
+      }
+
+      & > :not([hidden]) ~ :not([hidden]) {
+        --un-space-y-reverse: 0;
+        margin-top: var(--flow4);
+        margin-bottom: var(--flow4);
+        break-inside: avoid-column;
+      }
+    }
+
+    &:where(.layout-panels) {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: var(--flow3);
+    }
+
+    &:where(.layout-bento) {
+      display: grid;
+      grid-template-columns: 1fr;
+
+      @media (min-width: 1024px) {
+        grid-template-columns: 1fr 1fr 1fr;
+
+        & > *:nth-child(2n) {
+          grid-column-start: span 2;
+        }
+      }
+    }
+  }
+</style>

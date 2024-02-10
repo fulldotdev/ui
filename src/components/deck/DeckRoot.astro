@@ -1,0 +1,74 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { getSlot } from 'src'
+
+interface Props {
+  scheme?: 'default' | 'reverse' | 'light' | 'dark'
+  impact?: 'low' | 'medium' | 'high' | 'extreme'
+  align?: 'start' | 'center' | 'end' | 'stretch'
+  class?: HTMLAttributes<'div'>['class']
+}
+
+const {
+  scheme = 'default',
+  impact = 'medium',
+  align = 'start',
+  class: className,
+} = Astro.props
+
+const slot = await getSlot(Astro)
+---
+
+{
+  slot && (
+    <section
+      class:list={[
+        'deck deck-root',
+        'scheme-' + scheme,
+        scheme + '-theme',
+        scheme,
+        'impact-' + impact,
+        'align-' + align,
+        className,
+      ]}
+    >
+      <Fragment set:html={slot} />
+    </section>
+  )
+}
+
+<style>
+  section {
+    container: section / inline-size;
+    position: relative;
+    overflow-x: hidden;
+    row-gap: var(--flow5);
+    background: var(--bg);
+    border-color: var(--ring);
+    gap: var(--gutter);
+    padding: calc(var(--spacer) * 1.5) var(--gutter);
+    display: flex;
+    flex-direction: column;
+
+    &:first-child {
+      padding-top: var(--spacer);
+      margin-top: 0;
+    }
+
+    &:where(.align-start) {
+      align-items: start;
+    }
+
+    &:where(.align-center) {
+      align-items: center;
+    }
+
+    &:where(.align-end) {
+      align-items: end;
+    }
+
+    &:where(.align-stretch) {
+      align-items: stretch;
+    }
+  }
+</style>

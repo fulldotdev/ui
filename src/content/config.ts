@@ -10,7 +10,7 @@ import {
   productsSchema,
   reviewsSchema,
   servicesSchema,
-} from 'src/components'
+} from 'src/blocks'
 
 const data = defineCollection({
   type: 'data',

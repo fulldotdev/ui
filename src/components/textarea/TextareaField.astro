@@ -1,0 +1,47 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { getSlot } from 'src'
+
+interface Props {
+  rows?: HTMLAttributes<'textarea'>['rows']
+  label?: HTMLAttributes<'label'>['for']
+  required?: HTMLAttributes<'input'>['required']
+  class?: HTMLAttributes<'div'>['class']
+}
+
+const { label, rows = 5, required, class: className } = Astro.props
+const slot = await getSlot(Astro)
+---
+
+{
+  slot && (
+    <textarea
+      class:list={['textarea-field', className]}
+      rows={rows}
+      id={label}
+      name={label}
+      {required}
+    />
+  )
+}
+
+<style>
+  textarea {
+    font: var(--font);
+    color: var(--color);
+    border: var(--border);
+    border-radius: var(--radius);
+    padding: var(--flow2);
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      border: var(--border-hover);
+      background: var(--background-hover);
+    }
+
+    &:active {
+      border: var(--border-active);
+      background: var(--background-active);
+    }
+  }
+</style>

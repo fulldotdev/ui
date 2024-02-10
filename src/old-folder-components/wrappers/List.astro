@@ -1,0 +1,48 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { getSlot } from 'src'
+interface Props {
+  layout?: 'center' | 'left' | 'wide' | null
+  class?: HTMLAttributes<'div'>['class']
+}
+
+const { layout = 'left', class: className } = Astro.props
+const slot = await getSlot(Astro)
+---
+
+{
+  slot && (
+    <ul
+      data-component="list"
+      class:list={['list', layout, className]}
+    >
+      <Fragment set:html={slot} />
+    </ul>
+  )
+}
+
+<style>
+  .list {
+    gap: var(--flow3);
+    display: flex;
+
+    &:where(.left) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    &:where(.center) {
+      flex-direction: column;
+      align-items: center;
+    }
+    &:where(.split) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    &:where(.stack) {
+      align-items: center;
+    }
+    &:where(.reverse) {
+      align-items: center;
+    }
+  }
+</style>
