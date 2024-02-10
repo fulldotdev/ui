@@ -1,8 +1,8 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content'
+import { Layout, ProductsDeck } from 'src/components'
+import Prose from 'src/components/elements/Prose.astro'
 import { CategoriesDeck } from '.'
-import Layout from '../../elements/layout/Layout.astro'
-import { ProductsDeck } from '../products'
 
 interface Props {
   entry: CollectionEntry<'categories'>
@@ -10,14 +10,14 @@ interface Props {
 
 const { entry } = Astro.props
 
-const allProducts = await getCollection('products')
-const filteredProducts = allProducts.filter((product) => {
-  const found = product.data.categories.includes(entry.slug)
-  return found
-})
-const mappedProducts = filteredProducts.map((product) => {
-  return product.slug
-})
+const products = await getCollection('products', (product) =>
+  product.data.categories.includes(entry.slug)
+)
+
+const categories = await getCollection(
+  'categories',
+  (category) => category.slug !== entry.slug
+)
 ---
 
 <Layout
@@ -25,24 +25,14 @@ const mappedProducts = filteredProducts.map((product) => {
   class="categories-layout"
 >
   <ProductsDeck
-    heading={entry.data.heading}
-    text={entry.data.text}
+    {...entry.data}
     layout="grid"
-    products={mappedProducts}
+    products={products.map(({ data }) => data)}
   />
+  <Prose {entry} />
   <CategoriesDeck
     layout="carousel"
-    heading="Overige categorieën"
-    categories={[
-      'badkamer',
-      'veiligheid',
-      'trapliften',
-      'woonkamer',
-      'badkamer',
-      'veiligheid',
-      'trapliften',
-      'woonkamer',
-    ]}
+    categories={categories.map(({ data }) => data)}
   />
   <slot />
 </Layout>

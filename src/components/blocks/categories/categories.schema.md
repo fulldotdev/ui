@@ -7,8 +7,8 @@ seo:
     alt: 
 
 heading:
-text: 
+text:
 image:
-  src: 
-  alt: 
+  src:
+  alt:
 ---

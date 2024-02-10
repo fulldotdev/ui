@@ -19,7 +19,8 @@ export * from './blocks/services'
 export * from './blocks/spotlight'
 
 // Elements
-export { default as Renderer } from './blocks/Renderer.astro'
+export { default as Blocks } from './blocks/Blocks.astro'
+export * from './elements/article'
 export * from './elements/card'
 export * from './elements/deck'
 export * from './elements/layout'

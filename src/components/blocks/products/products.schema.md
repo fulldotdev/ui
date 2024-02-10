@@ -1,4 +1,4 @@
----
+[text](products.schema.md) [text](products.schema.ts)---
 _stripe_product_id: 
 _stripe_price_id: 
 
