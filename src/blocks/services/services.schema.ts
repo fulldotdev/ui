@@ -17,6 +17,6 @@ export default z
       src: z.string().nullable(),
       alt: z.string().nullable(),
     }),
-    sections: z.any(),
+    blocks: z.any(),
   })
   .partial()

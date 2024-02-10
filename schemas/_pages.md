@@ -6,5 +6,5 @@ seo:
     src: 
     alt:
     
-sections:
+blocks:
 ---

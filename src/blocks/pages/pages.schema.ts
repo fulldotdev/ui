@@ -10,7 +10,7 @@ export default z
         alt: z.string().nullable(),
       }),
     }),
-    sections: z.any(),
+    blocks: z.any(),
   })
   .partial()
   .nullable()

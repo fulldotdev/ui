@@ -15,7 +15,7 @@ image:
   _bookshop_name: elements/image
   src: /900x.jpg
   alt:
-sections:
+blocks:
   - _bookshop_name: blocks/intro
     writeup: >-
       <h1>Lorem ipsum dolor sit</h1><p>Lorem ipsum dolor sit amet consectetur

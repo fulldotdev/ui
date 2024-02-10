@@ -1,0 +1,45 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { getSlot } from 'src'
+
+interface Props {
+  class?: HTMLAttributes<'div'>['class']
+}
+
+const { class: className } = Astro.props
+const slot = await getSlot(Astro)
+---
+
+{
+  slot && (
+    <div class:list={['links links-root', className]}>
+      <Fragment set:html={slot} />
+    </div>
+  )
+}
+
+<style>
+  .list {
+    gap: var(--flow3);
+    display: flex;
+
+    &:where(.left) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    &:where(.center) {
+      flex-direction: column;
+      align-items: center;
+    }
+    &:where(.split) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    &:where(.stack) {
+      align-items: center;
+    }
+    &:where(.reverse) {
+      align-items: center;
+    }
+  }
+</style>

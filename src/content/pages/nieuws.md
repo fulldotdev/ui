@@ -6,7 +6,7 @@ seo:
   image:
     src:
     alt:
-sections:
+blocks:
   - _bookshop_name: PostsSection
     impact: medium
     deck: masonry
