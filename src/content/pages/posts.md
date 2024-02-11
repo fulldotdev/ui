@@ -7,21 +7,13 @@ seo:
     src:
     alt:
 blocks:
-  - _bookshop_name: PostsSection
+  - _bookshop_name: PostsDeck
     impact: medium
-    deck: masonry
-    area: panel
+    layout: masonry
+    frame: panel
     heading: Het laatste nieuws
     text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
     posts:
-      - post7
-      - post6
-      - post5
-      - post4
-      - post3
-      - post2
-      - post1
-      - post
   - _bookshop_name: CtaSection
     impact: medium
     area: default

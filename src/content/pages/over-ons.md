@@ -6,7 +6,7 @@ seo:
     src: 
     alt: 
 heading: Lorem ipsum, dolor sit amet consectetur adipisicing elit
-text: Lorem ipsum dolor sit amet
+text: Maak kennis met HLTW
 image:
   src: https://picsum.photos/400/300
   alt: 

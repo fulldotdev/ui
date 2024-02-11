@@ -1,6 +1,5 @@
 // Elements
 export { default as Blocks } from '../blocks/Blocks.astro'
-export { default as Prose } from './Prose.astro'
 
 export * from './article'
 export * from './button'
@@ -17,6 +16,7 @@ export * from './layout'
 export * from './link'
 export * from './links'
 export * from './logo'
+export * from './prose'
 export * from './section'
 export * from './tagline'
 export * from './text'

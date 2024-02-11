@@ -1,3 +1,4 @@
+export { default as PostsArticle } from './PostsArticle.astro'
 export { default as PostsCard } from './PostsCard.astro'
 export { default as PostsDeck } from './PostsDeck.astro'
 export { default as PostsLayout } from './PostsLayout.astro'

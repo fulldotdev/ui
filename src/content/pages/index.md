@@ -59,6 +59,7 @@ blocks:
       - product
   - _bookshop_name: SpotlightSection
     layout: split
+    align: center
     heading: Wat een traplift voor Hilda heeft betekend
     text:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:
@@ -66,10 +67,10 @@ blocks:
         href: /trapliften
     image:
       src: https://picsum.photos/800/600
-
       alt: Een vrouw die de traplift gebruikt
   - _bookshop_name: SpotlightSection
     layout: split
+    align: center
     heading: Wat een traplift voor Hilda heeft betekend
     text:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:
@@ -77,7 +78,6 @@ blocks:
         href: /trapliften
     image:
       src: https://picsum.photos/800/600
-
       alt: Een vrouw die de traplift gebruikt
   - _bookshop_name: ProductsDeck
     impact: medium

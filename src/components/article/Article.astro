@@ -1,27 +1,32 @@
 ---
-import { getSlot } from 'src/utils'
+import type { ComponentProps } from 'astro/types'
+import { Image } from 'src/components/image'
+import { Prose } from 'src/components/prose'
+import { Writeup } from 'src/components/writeup'
+import { ArticleRoot, ArticleSegment } from '.'
 
-interface Props {
-  data?: any
-  render?: any
-  class?: any
-  collection?: any
+interface Props
+  extends ComponentProps<typeof ArticleRoot>,
+    ComponentProps<typeof ArticleSegment>,
+    ComponentProps<typeof Writeup>,
+    ComponentProps<typeof Prose> {
+  image?: ComponentProps<typeof Image>
 }
 
-const {} = Astro.props
-
-const slot = await getSlot(Astro)
+const { props } = Astro
 ---
 
-<!-- TODO: 1 and 2 columns -->{
-  slot && (
-    <article class:list={['full-theme', 'article']}>
-      <Fragment set:html={slot} />
-    </article>
-  )
-}
-
-<style>
-  article {
-  }
-</style>
+<ArticleRoot
+  class="article"
+  {...props}
+>
+  <ArticleSegment {...props}>
+    <Writeup {...props}>
+      <slot name="writeup" />
+    </Writeup>
+    <slot name="segment" />
+  </ArticleSegment>
+  <Image {...props.image} />
+  <Prose {...props} />
+  <slot />
+</ArticleRoot>

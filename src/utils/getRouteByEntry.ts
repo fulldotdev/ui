@@ -6,12 +6,18 @@ export default ({
 }: CollectionEntry<ContentCollectionKey>): string | undefined => {
   if (collection === 'reviews') return
   const routes: any = {
-    categories: 'categorieen',
-    forms: 'formulieren',
-    policies: 'beleid',
+    // categories: 'categorieen',
+    // forms: 'formulieren',
+    // policies: 'beleid',
+    // posts: 'posts',
+    // products: 'producten',
+    // services: 'diensten',
+    categories: 'categories',
+    forms: 'forms',
+    policies: 'policies',
     posts: 'posts',
-    products: 'producten',
-    services: 'diensten',
+    products: 'products',
+    services: 'services',
   }
   if (collection == 'pages' && slug === 'index') return '/'
   if (collection === 'pages') return slug

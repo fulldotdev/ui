@@ -3,49 +3,49 @@ import type { HTMLAttributes } from 'astro/types'
 import { getSlot } from 'src/utils'
 
 interface Props {
-  align?: 'start' | 'center' | 'stretch'
+  align?: 'start' | 'center'
   class?: HTMLAttributes<'div'>['class']
 }
 
 const { align = 'start', class: className } = Astro.props
+
 const slot = await getSlot(Astro)
 ---
 
 {
   slot && (
-    <div class:list={['deck-segment', 'align-' + align, className]}>
+    <article class:list={['article-root', 'align-' + align, className]}>
       <Fragment set:html={slot} />
-    </div>
+    </article>
   )
 }
 
 <style>
-  div {
+  article {
+    container: section / inline-size;
+    position: relative;
+    overflow-x: hidden;
+    row-gap: var(--flow5);
+    gap: var(--gutter);
+    padding: calc(var(--spacer) * 1.5) var(--gutter);
     display: flex;
     flex-direction: column;
-    position: relative;
-    z-index: 10;
-    gap: var(--flow4);
-    column-gap: var(--gutter);
-    container: segment / inline-size;
-    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    :global(&:first-child) {
+      padding-top: var(--spacer);
+      margin-top: 0;
+    }
 
     &:where(.align-start) {
-      align-items: flex-start;
+      align-items: start;
       text-align: left;
     }
 
     &:where(.align-center) {
       align-items: center;
       text-align: center;
-    }
-
-    &:where(.align-stretch) {
-      @media (min-width: 1024px) {
-        align-items: center;
-        justify-content: space-between;
-        flex-direction: row;
-      }
     }
   }
 </style>
