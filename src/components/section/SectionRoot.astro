@@ -1,11 +1,11 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
-import { getSlot } from 'src'
+import { getSlot } from 'src/utils'
 
 interface Props {
   scheme?: 'default' | 'reverse' | 'light' | 'dark'
   impact?: 'low' | 'medium' | 'high' | 'extreme'
-  align?: 'start' | 'center' | 'end' | 'stretch'
+  align?: 'start' | 'center' | 'stretch'
   layout?: 'split' | 'stack'
   frame?: 'fill' | 'panel' | 'screen'
   class?: HTMLAttributes<'div'>['class']
@@ -27,7 +27,6 @@ const slot = await getSlot(Astro)
   slot && (
     <section
       class:list={[
-        'full-theme',
         'section',
         'scheme-' + scheme,
         scheme + '-theme',
@@ -35,6 +34,7 @@ const slot = await getSlot(Astro)
         'impact-' + impact,
         'layout-' + layout,
         'frame-' + frame,
+        frame,
         className,
       ]}
     >
@@ -43,8 +43,13 @@ const slot = await getSlot(Astro)
   )
 }
 
-<style is:global>
+<style>
   section {
+    background: var(--background);
+    border: var(--border);
+    border-radius: var(--radius);
+    transition: var(--transition);
+
     container: section / inline-size;
     position: relative;
     overflow-x: hidden;
@@ -52,7 +57,7 @@ const slot = await getSlot(Astro)
     gap: var(--gutter);
     padding: calc(var(--spacer) * 1.5) var(--gutter);
 
-    &:first-child {
+    :global(&:first-child) {
       padding-top: var(--spacer);
       margin-top: 0;
     }
@@ -72,10 +77,8 @@ const slot = await getSlot(Astro)
         grid-auto-flow: column;
 
         /* NEEDDS GLOBAL */
-        &:nth-child(even) {
-          & > *:first-child {
-            order: 2;
-          }
+        :global(&:nth-child(even) > *:first-child) {
+          order: 2;
         }
       }
     }

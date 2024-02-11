@@ -9,6 +9,6 @@ seo:
 heading: Woonkamer
 text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
 image:
-  src:  https://source.unsplash.com/random/415x310
+  src: https://picsum.photos/404/303
   alt: 
 ---

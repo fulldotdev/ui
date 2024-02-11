@@ -1,8 +1,8 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
-import { getSlot } from 'src'
+import { getSlot } from 'src/utils'
 interface Props {
-  align?: 'start' | 'center' | 'end' | 'stretch'
+  align?: 'start' | 'center' | 'stretch'
   class?: HTMLAttributes<'div'>['class']
 }
 
@@ -19,7 +19,7 @@ const slot = await getSlot(Astro)
 }
 
 <style>
-  .segment {
+  div {
     display: flex;
     flex-direction: column;
     position: relative;
@@ -29,15 +29,24 @@ const slot = await getSlot(Astro)
     container: segment / inline-size;
     width: 100%;
 
-    &:where(.left) {
+    &:where(.align-start) {
       align-items: flex-start;
       text-align: left;
     }
 
-    &:where(.center) {
+    &:where(.align-center) {
       align-items: center;
       text-align: center;
     }
+
+    &:where(.align-stretch) {
+      @media (min-width: 1024px) {
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row;
+      }
+    }
+
     &:where(.split) {
       align-items: flex-start;
       text-align: left;

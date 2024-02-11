@@ -1,6 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
-import { getSlot } from 'src'
+import { getSlot } from 'src/utils'
 
 interface Props {
   frame?: 'fill' | 'panel'
@@ -16,7 +16,7 @@ const As = href ? 'a' : 'div'
 {
   slot && (
     <As
-      class:list={['card flow-compact', 'frame-' + frame, className]}
+      class:list={['card flow-compact', 'frame-' + frame, frame, className]}
       href={href}
     >
       <Fragment set:html={slot} />
@@ -27,15 +27,18 @@ const As = href ? 'a' : 'div'
 <style>
   div,
   a {
+    background: var(--background);
+    border: var(--border);
+    border-radius: var(--radius);
+    transition: var(--transition);
+
     container: cardRoot / inline-size;
     position: relative;
     display: flex;
     flex-direction: column;
-    border-radius: var(--rounded2);
-    background-color: var(--bg);
-    border-color: var(--ring);
     gap: var(--flow-self4);
     text-align: left;
+    overflow: hidden;
 
     & > img {
       opacity: 0.75;
@@ -57,26 +60,29 @@ const As = href ? 'a' : 'div'
       aspect-ratio: 3/4;
       object-fit: cover;
     }
-    &:where(.area-panel) {
+    &:where(.frame-panel) {
       border-width: var(--borderWidth);
       gap: 0;
     }
   }
 
   a {
-    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
-
     &:hover {
-      background-color: var(--bg-hover);
-      border-color: var(--ring-hover);
-
-      :global(img) {
-        transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
-        opacity: 0.75;
-      }
+      border: var(--border-hover, var(--border));
+      background: var(--background-hover, var(--background));
     }
+
     &:active {
-      background-color: var(--bg-active);
+      border: var(--border-active, var(--border-hover, var(--border)));
+      background: var(
+        --background-active,
+        var(--background-hover, var(--background))
+      );
+    }
+
+    :global(&:hover img) {
+      transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0.75;
     }
   }
 </style>

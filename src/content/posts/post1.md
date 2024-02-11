@@ -9,7 +9,8 @@ seo:
 heading: Lorem ipsum
 text: Lorem ipsum dolor sit amet
 image:
-  src: https://source.unsplash.com/random/500x300
+  src: https://picsum.photos/500/300
+
   alt: 
 ---
 

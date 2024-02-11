@@ -38,7 +38,6 @@ export async function getStaticPaths() {
     },
     props: {
       entry: entry,
-      frontmatter: entry.data,
     },
   }))
 }
@@ -58,9 +57,11 @@ const layouts: {
 }
 
 // Get current entry from props
-const { entry, frontmatter } = Astro.props
+const { entry } = Astro.props
 // Get layout for current entry
 const CollectionLayout = layouts[entry.collection]
+if (!CollectionLayout)
+  throw new Error(`No layout found for collection: ${entry.collection}`)
 ---
 
 <CollectionLayout entry={entry} />

@@ -1,11 +1,12 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
-import { getSlot } from 'src'
+import { getSlot } from 'src/utils'
 
 interface Props {
   scheme?: 'default' | 'reverse' | 'light' | 'dark'
+  frame?: 'fill' | 'panel'
   impact?: 'low' | 'medium' | 'high' | 'extreme'
-  align?: 'start' | 'center' | 'end' | 'stretch'
+  align?: 'start' | 'center' | 'stretch'
   class?: HTMLAttributes<'div'>['class']
 }
 
@@ -13,6 +14,7 @@ const {
   scheme = 'default',
   impact = 'medium',
   align = 'start',
+  frame = 'fill',
   class: className,
 } = Astro.props
 
@@ -27,6 +29,7 @@ const slot = await getSlot(Astro)
         'scheme-' + scheme,
         scheme + '-theme',
         scheme,
+        'frame-' + frame,
         'impact-' + impact,
         'align-' + align,
         className,
@@ -43,12 +46,16 @@ const slot = await getSlot(Astro)
     position: relative;
     overflow-x: hidden;
     row-gap: var(--flow5);
-    background: var(--bg);
     border-color: var(--ring);
     gap: var(--gutter);
     padding: calc(var(--spacer) * 1.5) var(--gutter);
     display: flex;
     flex-direction: column;
+    background: var(--background);
+
+    /* &:where(.frame-panel) {
+      background: none;
+    } */
 
     &:first-child {
       padding-top: var(--spacer);
@@ -61,10 +68,6 @@ const slot = await getSlot(Astro)
 
     &:where(.align-center) {
       align-items: center;
-    }
-
-    &:where(.align-end) {
-      align-items: end;
     }
 
     &:where(.align-stretch) {

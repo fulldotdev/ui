@@ -1,43 +1,5 @@
 ---
-import {
-  CategoriesDeck,
-  CategoriesSection,
-  ContactSection,
-  CtaSection,
-  FeaturesSection,
-  HeroSection,
-  HighlightsSection,
-  IntroSection,
-  JobsSection,
-  OffersSection,
-  PersonsSection,
-  PostsSection,
-  ProductsSection,
-  ReviewsSection,
-  Section,
-  ServicesSection,
-  SpotlightSection,
-} from 'src'
-
-const BLOCKS: any = {
-  CategoriesSection,
-  CategoriesDeck,
-  ContactSection,
-  CtaSection,
-  FeaturesSection,
-  HeroSection,
-  HighlightsSection,
-  IntroSection,
-  JobsSection,
-  OffersSection,
-  PersonsSection,
-  PostsSection,
-  ProductsSection,
-  ReviewsSection,
-  ServicesSection,
-  SpotlightSection,
-  Section,
-}
+import * as BLOCKS from 'src/blocks'
 
 interface Props {
   blocks?: any[]
@@ -50,8 +12,9 @@ const { blocks } = Astro.props
 {
   blocks?.map(async (block: any) => {
     const filename: any = block._bookshop_name?.split('/').pop()
-    let Block = BLOCKS[filename]
-    if (!Block) Block = BLOCKS.Section
+    const components: any = BLOCKS
+    let Block = components[filename]
+    if (!Block) throw new Error(`Block '${filename}' not found in Block.astro`)
     return <Block {...block} />
   })
 }

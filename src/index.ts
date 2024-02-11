@@ -1,3 +1,6 @@
-export * from './blocks'
-export * from './components'
+// Utils
 export * from './utils'
+// Components
+export * from './components'
+// Blocks
+export * from './blocks'

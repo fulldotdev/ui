@@ -1,4 +1,4 @@
-export { default as Blocks } from '../blocks/Blocks.astro'
+// Blocks
 export * from './categories'
 export * from './contact'
 export * from './cta'
@@ -17,3 +17,6 @@ export * from './products'
 export * from './reviews'
 export * from './services'
 export * from './spotlight'
+
+// Renderer
+export { default as Blocks } from '../blocks/Blocks.astro'

@@ -1,6 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
-import { getSlot } from 'src'
+import { getSlot } from 'src/utils'
 
 interface Props {
   layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento'
@@ -19,15 +19,10 @@ const slot = await getSlot(Astro)
   )
 }
 
-<style is:global>
+<style>
   div {
     position: relative;
     width: 100%;
-
-    & > * {
-      flex-shrink: 0;
-      flex-grow: 0;
-    }
 
     &:where(.layout-row) {
       display: grid;
@@ -36,7 +31,7 @@ const slot = await getSlot(Astro)
       grid-auto-flow: column;
 
       @media (min-width: 1024px) {
-        > * {
+        :global(> *) {
           &:nth-child(2) {
             grid-column-start: 3;
           }
@@ -68,7 +63,7 @@ const slot = await getSlot(Astro)
       width: 100vw;
       gap: var(--flow3);
 
-      & > * {
+      :global(> *) {
         flex-shrink: 0;
         flex-grow: 0;
         width: 260px;
@@ -103,7 +98,7 @@ const slot = await getSlot(Astro)
         --columns: 4;
       }
 
-      & > :not([hidden]) ~ :not([hidden]) {
+      :global(& > :not([hidden]) ~ :not([hidden])) {
         --un-space-y-reverse: 0;
         margin-top: var(--flow4);
         margin-bottom: var(--flow4);
@@ -124,7 +119,7 @@ const slot = await getSlot(Astro)
       @media (min-width: 1024px) {
         grid-template-columns: 1fr 1fr 1fr;
 
-        & > *:nth-child(2n) {
+        :global(& > *:nth-child(2n)) {
           grid-column-start: span 2;
         }
       }

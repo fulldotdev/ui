@@ -5,11 +5,12 @@ import {
   type CollectionEntry,
   type ContentCollectionKey,
 } from 'astro:content'
+import { Buttons } from 'src/components/buttons'
+import { Image } from 'src/components/image'
 import { CardRoot, CardSegment } from '.'
-import { Buttons } from '..'
-import Icon from '../Icon.astro'
-import Price from '../Price.astro'
 import Rating from '../Rating.astro'
+import Icon from '../icon/Icon.astro'
+import Price from '../price/Price.astro'
 import Writeup from '../writeup/Writeup.astro'
 
 interface Props
@@ -17,6 +18,7 @@ interface Props
     ComponentProps<typeof CardSegment>,
     ComponentProps<typeof Icon>,
     ComponentProps<typeof Rating>,
+    ComponentProps<typeof Image>,
     ComponentProps<typeof Writeup>,
     ComponentProps<typeof Price>,
     ComponentProps<typeof Buttons> {
@@ -29,16 +31,22 @@ interface Props
 }
 
 let { collection, slug, reference, ...restProps } = Astro.props
-const entry =
-  reference &&
-  (await getEntry({
-    collection: collection || reference.collection,
-    slug: slug || reference.slug,
-  }))
+reference = collection && slug && { collection, slug }
+let entry = reference && (await getEntry(reference))
+let href = reference && `/${reference.collection}/${reference.slug}`
+
 const props = { ...entry?.data, ...restProps }
 ---
 
-<CardRoot {...props}>
+<CardRoot
+  {href}
+  {...props}
+>
+  <Image
+    {...props}
+    {...props.images?.[0]}
+    {...props.image}
+  />
   <slot />
   <CardSegment {...props}>
     <Icon {...props} />
@@ -46,7 +54,6 @@ const props = { ...entry?.data, ...restProps }
     <Writeup {...props}>
       <slot name="writeup" />
     </Writeup>
-    <Price {...props} />
     <!-- <Specs {...props} /> -->
     <Buttons {...props} />
     <slot name="segment" />

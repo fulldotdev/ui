@@ -12,7 +12,7 @@ seo:
 heading: Traplift 
 text: 
 images:
-  - src: https://source.unsplash.com/random/350x400
+  - src: https://picsum.photos/350/400
     alt:
 categories:
   - badkamer

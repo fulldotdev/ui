@@ -9,6 +9,6 @@ seo:
 heading: Veiligheid
 text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
 image:
-  src:  https://source.unsplash.com/random/480x360
+  src: https://picsum.photos/408/306
   alt: 
 ---

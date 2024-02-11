@@ -9,6 +9,6 @@ seo:
 heading: Trapliften
 text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
 image:
-  src:  https://source.unsplash.com/random/440x330
+  src: https://picsum.photos/412/308
   alt: 
 ---

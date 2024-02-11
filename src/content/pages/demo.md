@@ -37,7 +37,8 @@ blocks:
     heading: Onze Werkwijze
     text: Ontdek hoe wij te werk gaan bij het slijpen van jouw schaatsen en het waxen van je snowboard. Van inspectie tot afwerking, wij zorgen voor een zorgvuldige behandeling van jouw uitrusting, met gebruik van de nieuwste technieken en materialen.
     image:
-      src: https://source.unsplash.com/random/800x600
+      src: https://picsum.photos/800/600
+
       alt: Een vrouw die de traplift gebruikt
     buttons:
       - text: Neem contact op
@@ -47,7 +48,8 @@ blocks:
     heading: Waarom bij de wintersporter-slijpers?
     text:  Bij Wintersport-Slijpers.nl combineren we passie voor wintersport met vakmanschap in het slijpen van schaatsen en waxen van snowboards. Met meer dan 12 jaar ervaring bieden wij een service van topkwaliteit die ervoor zorgt dat jouw uitrusting in optimale conditie is. Ons doel is om elke wintersportliefhebber met het beste materiaal op het ijs of de sneeuw te krijgen.
     image:
-      src: https://source.unsplash.com/random/800x600
+      src: https://picsum.photos/800/600
+
       alt: Een vrouw die de traplift gebruikt
   - _bookshop_name: CtaSection
     impact: extreme
@@ -79,7 +81,8 @@ blocks:
   #   heading: Maak kennis met
   #   text:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
   #   image:
-  #     src: https://source.unsplash.com/random/800x600
+  #     src: https://picsum.photos/800/600
+
   #     alt: Een vrouw die de traplift gebruikt
   - _bookshop_name: ContactSection
     impact: high

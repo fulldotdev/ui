@@ -22,7 +22,11 @@ export default defineConfig({
     sitemap(),
     robotsTxt(),
     bookshop(),
-    fulluiIntegration({}),
+    fulluiIntegration({
+      hue: {
+        accent: 'cyan',
+      },
+    }),
     starlight({
       title: 'FullUI',
       social: {

@@ -1,22 +1,23 @@
 ---
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import { Icon, getSlot } from 'src'
+import { Icon } from 'src/components/icon'
+import { getSlot } from 'src/utils'
 
 interface Props extends ComponentProps<typeof Icon> {
   text?: string | null
-  area?: 'primary' | 'secondary'
+  variant?: 'primary' | 'secondary'
   href?: HTMLAttributes<'a'>['href']
   class?: HTMLAttributes<'div'>['class']
 }
 
-const { icon, text, href, area = 'primary', class: className } = Astro.props
+const { icon, text, variant, href, class: className } = Astro.props
 const slot = await getSlot(Astro)
 ---
 
 {
   (icon || text || slot) && (
     <a
-      class:list={['fullui area-' + area, className]}
+      class:list={['fullui', variant, className]}
       href={href}
     >
       <Icon {icon} />
@@ -28,6 +29,13 @@ const slot = await getSlot(Astro)
 
 <style>
   a {
+    color: var(--color);
+    border: var(--border);
+    background: var(--background);
+    font: var(--font);
+    border-radius: var(--radius);
+    transition: var(--radius);
+
     gap: 0.75rem;
     display: inline-flex;
     cursor: pointer;
@@ -47,6 +55,19 @@ const slot = await getSlot(Astro)
       pointer-events: none;
       opacity: 0.5;
       cursor: not-allowed;
+    }
+
+    &:hover {
+      border: var(--border-hover, var(--border));
+      background: var(--background-hover, var(--background));
+    }
+
+    &:active {
+      border: var(--border-active, var(--border-hover, var(--border)));
+      background: var(
+        --background-active,
+        var(--background-hover, var(--background))
+      );
     }
 
     /* &:first-child {
