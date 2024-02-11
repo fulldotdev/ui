@@ -1,12 +1,27 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import { Card } from 'src'
+import { Card } from '../card'
 
-interface Props {
-  cards?: ComponentProps<typeof Card>[]
+interface Props extends ComponentProps<typeof Card> {
+  cards?: (
+    | ComponentProps<typeof Card>
+    | ComponentProps<typeof Card>['slug']
+    | undefined
+    | null
+  )[]
 }
 
-const { cards } = Astro.props
+const { props } = Astro
+const cards = props.cards?.map((card) =>
+  typeof card === 'string' ? { slug: card } : card
+)
 ---
 
-{cards?.map((card) => <Card {...card} />)}
+{
+  cards?.map((card) => (
+    <Card
+      {...props}
+      {...card}
+    />
+  ))
+}

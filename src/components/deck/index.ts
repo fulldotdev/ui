@@ -1,5 +1,3 @@
 export { default as Deck } from './Deck.astro'
-export { default as DeckCards } from './DeckCards.astro'
-export { default as DeckList } from './DeckList.astro'
 export { default as DeckRoot } from './DeckRoot.astro'
 export { default as DeckSegment } from './DeckSegment.astro'
