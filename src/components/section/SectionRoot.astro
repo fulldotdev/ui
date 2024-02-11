@@ -15,7 +15,7 @@ const {
   scheme = 'default',
   impact = 'medium',
   align = 'start',
-  layout = 'left',
+  layout = 'stack',
   frame = 'fill',
   class: className,
 } = Astro.props
@@ -34,6 +34,7 @@ const slot = await getSlot(Astro)
         'impact-' + impact,
         'layout-' + layout,
         'frame-' + frame,
+        'align-' + align,
         frame,
         className,
       ]}
@@ -45,11 +46,6 @@ const slot = await getSlot(Astro)
 
 <style>
   section {
-    background: var(--background);
-    border: var(--border);
-    border-radius: var(--radius);
-    transition: var(--transition);
-
     container: section / inline-size;
     position: relative;
     overflow-x: hidden;
@@ -62,8 +58,7 @@ const slot = await getSlot(Astro)
       margin-top: 0;
     }
 
-    &,
-    &:where(.layout-left) {
+    &:where(.layout-stack) {
       display: flex;
       flex-direction: column;
     }
@@ -83,18 +78,22 @@ const slot = await getSlot(Astro)
       }
     }
 
-    &:where(.layout-center) {
+    &:where(.align-start) {
+      align-items: start;
+      text-align: left;
+    }
+
+    &:where(.align-stretch) {
+      align-items: stretch;
+      text-align: left;
+    }
+
+    &:where(.align-center) {
       display: flex;
       flex-direction: column;
       align-items: center;
       /* justify-content: center; */
       text-align: center;
-    }
-
-    &:where(.layout-wide) {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
     }
 
     /* &:where(.frame-panel:not(:has(.frame-panel))) {
@@ -106,6 +105,9 @@ const slot = await getSlot(Astro)
     } */
 
     &:where(.frame-panel) {
+      background: var(--background);
+      border: var(--border);
+      border-radius: var(--radius);
       padding: var(--spacer) var(--gutter);
       margin: var(--spacer) var(--gutter);
       gap: 0;

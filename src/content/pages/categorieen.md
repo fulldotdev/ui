@@ -7,25 +7,13 @@ seo:
     src:
     alt:
 blocks:
-  - _bookshop_name: CategoriesSection
-    impact: medium
-    deck: panels
-    area: panel
+  - _bookshop_name: CategoriesDeck
+    layout: panels
+    frame: panel
     heading: Al onze categorieën
     text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
     categories:
-      - badkamer
-      - trapliften
-      - woonkamer
-      - veiligheid
-      - trapliften
-      - badkamer
-      - veiligheid
-      - woonkamer
   - _bookshop_name: CtaSection
-    impact: medium
-    area: default
-    scheme: dark
     layout: wide
     heading: Ontvang advies van een expert
     text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.

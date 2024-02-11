@@ -1,5 +1,10 @@
 ---
 import type { ComponentProps } from 'astro/types'
+import {
+  getCollection,
+  type CollectionEntry,
+  type ContentCollectionKey,
+} from 'astro:content'
 import { Card } from '../card'
 
 interface Props extends ComponentProps<typeof Card> {
@@ -7,23 +12,31 @@ interface Props extends ComponentProps<typeof Card> {
   cards?: (
     | ComponentProps<typeof Card>
     | ComponentProps<typeof Card>['slug']
+    | CollectionEntry<ContentCollectionKey>
     | undefined
     | null
   )[]
 }
 
-const { props } = Astro
-const cards = props.cards?.map((card) =>
-  typeof card === 'string' ? { slug: card } : card
-)
+let { cards, collection, frame } = Astro.props
+
+if ((!cards || cards.length === 0) && collection) {
+  const items = await getCollection(collection)
+  const slugs = items.map(({ slug }) => slug)
+  cards = slugs
+}
 ---
 
 {
-  cards?.map((card) => (
-    <Card
-      collection={props.collection}
-      frame={props.frame}
-      {...card}
-    />
-  ))
+  cards?.map((card) => {
+    if (!card) return null
+    if (typeof card === 'string') card = { slug: card }
+    return (
+      <Card
+        collection={collection}
+        frame={frame}
+        {...card}
+      />
+    )
+  })
 }
