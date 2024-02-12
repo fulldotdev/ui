@@ -7,7 +7,4 @@ description: A reference page in my new Starlight docs site.
 
 What happens when you study those for tens of hours? Heck, make that hundreds!  That's exactly what we did, and we started to recognize patterns that we used to build this design system.
 
-
-:::note
-I want to highlight that I am in no way downplaying the work of the mentioned libraries, and all the others out there. Quiet the opposite, their work helped us a lot! 🙏
-:::
+Lots and lots of thanks to the creators of the mentioned libraries. They did a great job, and we are grateful for their work 🙏
