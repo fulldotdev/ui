@@ -4,11 +4,17 @@ import { getSlot } from 'src/utils'
 
 interface Props {
   frame?: 'fill' | 'panel'
+  scheme?: 'default' | 'reverse' | 'light' | 'dark'
   href?: HTMLAttributes<'a'>['href']
   class?: HTMLAttributes<'div'>['class']
 }
 
-const { frame = 'fill', href, class: className } = Astro.props
+const {
+  frame = 'fill',
+  scheme = 'default',
+  href,
+  class: className,
+} = Astro.props
 const slot = await getSlot(Astro)
 const As = href ? 'a' : 'div'
 ---
@@ -16,7 +22,15 @@ const As = href ? 'a' : 'div'
 {
   slot && (
     <As
-      class:list={['card flow-compact', 'frame-' + frame, frame, className]}
+      class:list={[
+        'card flow-compact',
+        'frame-' + frame,
+        frame,
+        'scheme-' + scheme,
+        scheme + '-theme',
+        scheme,
+        className,
+      ]}
       href={href}
     >
       <Fragment set:html={slot} />
@@ -77,8 +91,10 @@ const As = href ? 'a' : 'div'
       }
     }
 
-    :global(&[href]:hover > img) {
-      opacity: 0.75;
+    &[href]:hover {
+      :global(img) {
+        opacity: 0.75;
+      }
     }
   }
 </style>

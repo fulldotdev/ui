@@ -8,7 +8,7 @@ seo:
 heading: Lorem ipsum, dolor sit amet consectetur adipisicing elit
 text: Lorem ipsum dolor sit amet
 image:
-  src: https://picsum.photos/400/300
+  src: https://picsum.photos/1600/1200
   alt: 
 ---
 

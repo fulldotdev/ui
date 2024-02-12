@@ -1,7 +1,6 @@
 import type { AstroIntegration } from 'astro'
 import merge from 'deepmerge'
-import { writeFile } from 'fs/promises'
-import { dirname, join } from 'path'
+import { dirname } from 'path'
 import type { RadixColors } from 'unocss-preset-radix'
 import { fileURLToPath } from 'url'
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -321,9 +320,9 @@ export const fulluiIntegration = (passedConfig: Config): AstroIntegration => ({
       //   )
       //   .join(' ')
 
-      const huePath = join(__dirname, '../css/hue.css')
+      // const huePath = join(__dirname, '../css/hue.css')
       // const impactPath = join(__dirname, './dist/impact.css')
-      await writeFile(huePath, hueCSS, 'utf8')
+      // await writeFile(huePath, hueCSS, 'utf8')
       // await writeFile(impactPath, impactCSS, 'utf8')
 
       // import '@unocss/reset/tailwind.css'
@@ -358,7 +357,7 @@ export const fulluiIntegration = (passedConfig: Config): AstroIntegration => ({
       )
 
       // TODO: add auto dark mode to hue file
-      // injectScript('page-ssr', `import "src/css/hue.css";`)
+      injectScript('page-ssr', `import "src/css/hue.css";`)
       // injectScript('page-ssr', `import "src/integration/dist/impact.css";`)
       injectScript('page-ssr', `import "src/css/flow.css";`)
       injectScript('page-ssr', `import "src/css/theme.css";`)

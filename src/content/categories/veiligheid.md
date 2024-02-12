@@ -7,8 +7,8 @@ seo:
     alt: 
 
 heading: Veiligheid
-text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+text: 
 image:
-  src: https://picsum.photos/408/306
+  src: https://picsum.photos/826/612
   alt: 
 ---

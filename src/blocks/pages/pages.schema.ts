@@ -10,6 +10,12 @@ export default z
         alt: z.string().nullable(),
       }),
     }),
+    heading: z.string().nullable(),
+    text: z.string().nullable(),
+    image: z.object({
+      src: z.string().nullable(),
+      alt: z.string().nullable(),
+    }),
     blocks: z.any(),
   })
   .partial()

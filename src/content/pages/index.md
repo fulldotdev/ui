@@ -14,7 +14,7 @@ blocks:
     # align: start
     tagline: De goedkoopste van Nederland
     heading: Handig langer thuis wonen
-    text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+    text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id.
     categories:
       - badkamer
       - trapliften
@@ -54,6 +54,7 @@ blocks:
       - product
   - _bookshop_name: SpotlightSection
     layout: split
+    theme: subtle
     align: center
     heading: Wat een traplift voor Hilda heeft betekend
     text:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
@@ -64,6 +65,7 @@ blocks:
       src: https://picsum.photos/800/600
       alt: Een vrouw die de traplift gebruikt
   - _bookshop_name: SpotlightSection
+    theme: subtle
     layout: split
     align: center
     heading: Wat een traplift voor Hilda heeft betekend

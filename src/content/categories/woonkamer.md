@@ -7,8 +7,8 @@ seo:
     alt: 
 
 heading: Woonkamer
-text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+text: 
 image:
-  src: https://picsum.photos/404/303
+  src: https://picsum.photos/808/606
   alt: 
 ---

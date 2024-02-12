@@ -7,9 +7,9 @@ seo:
     alt: 
 
 heading: Badkamer
-text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+text: 
 image:
-  src: https://picsum.photos/400/300
+  src: https://picsum.photos/800/600
   alt: 
 ---
 

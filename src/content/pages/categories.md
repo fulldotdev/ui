@@ -8,6 +8,7 @@ seo:
     alt:
 blocks:
   - _bookshop_name: CategoriesDeck
+    scheme: light
     layout: panels
     frame: panel
     heading: Al onze categorieën

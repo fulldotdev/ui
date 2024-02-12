@@ -7,8 +7,8 @@ seo:
     alt: 
 
 heading: Trapliften
-text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+text: 
 image:
-  src: https://picsum.photos/412/308
+  src: https://picsum.photos/824/616
   alt: 
 ---
