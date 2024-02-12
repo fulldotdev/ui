@@ -10,8 +10,10 @@ export default z
         alt: z.string().nullable(),
       }),
     }),
+    rating: z.number().nullable(),
     tagline: z.string().nullable(),
     heading: z.string().nullable(),
+    specs: z.any(),
     text: z.string().nullable(),
     images: z.array(
       z.object({

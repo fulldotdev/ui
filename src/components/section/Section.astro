@@ -7,15 +7,24 @@ import {
 } from 'astro:content'
 import { Buttons } from 'src/components/buttons'
 import { Form } from 'src/components/form'
+import { Gallery } from 'src/components/gallery'
 import { Image } from 'src/components/image'
+import { Prose } from 'src/components/prose'
+import { Rating } from 'src/components/rating'
+import { Specs } from 'src/components/specs'
 import { Writeup } from 'src/components/writeup'
 import { SectionRoot, SectionSegment } from '.'
+import { Price } from '../price'
 
 interface Props
   extends ComponentProps<typeof SectionRoot>,
     ComponentProps<typeof SectionSegment>,
     ComponentProps<typeof Writeup>,
-    ComponentProps<typeof Buttons> {
+    ComponentProps<typeof Buttons>,
+    ComponentProps<typeof Gallery>,
+    ComponentProps<typeof Form>,
+    ComponentProps<typeof Rating>,
+    ComponentProps<typeof Prose> {
   image?: ComponentProps<typeof Image>
   reference?: {
     collection: ContentCollectionKey
@@ -37,14 +46,19 @@ const props = { ...entry?.data, ...restProps }
 
 <SectionRoot {...props}>
   <SectionSegment {...props}>
+    <Rating {...props} />
     <Writeup {...props}>
       <slot name="writeup" />
     </Writeup>
+    <Specs {...props} />
+    <Price {...props} />
     <Buttons {...props} />
     <!-- <ChannelGroup {...props} /> -->
     <slot name="segment" />
   </SectionSegment>
   <Image {...props.image} />
   <Form {...props} />
+  <Prose {...props} />
+  {props.gallery && <Gallery {...props} />}
   <slot />
 </SectionRoot>

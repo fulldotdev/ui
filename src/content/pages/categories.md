@@ -9,7 +9,7 @@ seo:
 blocks:
   - _bookshop_name: CategoriesDeck
     scheme: light
-    layout: panels
+    layout: grid
     frame: panel
     heading: Al onze categorieën
     text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
