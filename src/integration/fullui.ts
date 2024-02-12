@@ -357,7 +357,8 @@ export const fulluiIntegration = (passedConfig: Config): AstroIntegration => ({
         `import "@radix-ui/colors/${hue.accent}-dark-alpha.css";`
       )
 
-      injectScript('page-ssr', `import "src/css/hue.css";`)
+      // TODO: add auto dark mode to hue file
+      // injectScript('page-ssr', `import "src/css/hue.css";`)
       // injectScript('page-ssr', `import "src/integration/dist/impact.css";`)
       injectScript('page-ssr', `import "src/css/flow.css";`)
       injectScript('page-ssr', `import "src/css/theme.css";`)

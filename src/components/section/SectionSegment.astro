@@ -8,13 +8,26 @@ interface Props {
   class?: HTMLAttributes<'div'>['class']
 }
 
-const { layout = 'left', frame = 'fill', class: className } = Astro.props
+const {
+  layout = 'left',
+  align = 'start',
+  frame = 'fill',
+  class: className,
+} = Astro.props
 const slot = await getSlot(Astro)
 ---
 
 {
   slot && (
-    <div class:list={['segment', layout, 'frame-' + frame, className]}>
+    <div
+      class:list={[
+        'segment',
+        'layout-' + layout,
+        'frame-' + frame,
+        'align-' + align,
+        className,
+      ]}
+    >
       <Fragment set:html={slot} />
     </div>
   )
@@ -41,12 +54,7 @@ const slot = await getSlot(Astro)
       text-align: center;
     }
 
-    &:where(.split) {
-      align-items: flex-start;
-      text-align: left;
-    }
-
-    &:where(.wide) {
+    &:where(.align-stretch) {
       align-items: flex-start;
       text-align: left;
 
@@ -56,6 +64,12 @@ const slot = await getSlot(Astro)
         flex-direction: row;
       }
     }
+
+    &:where(.layout-split) {
+      align-items: flex-start;
+      text-align: left;
+    }
+
     /* &:where(.frame-panel:not(:has(.frame-panel))) {
       padding: var(--gutter);
     } */

@@ -11,11 +11,14 @@ blocks:
     layout: grid
     heading: Alle producten
     posts:
+  - _bookshop_name: CategoriesDeck
+    layout: grid
+    frame: panel
+    heading: Shop op categorie
+    categories:
   - _bookshop_name: CtaSection
-    impact: medium
-    area: default
     scheme: dark
-    layout: wide
+    align: stretch
     heading: Ontvang advies van een expert
     text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:

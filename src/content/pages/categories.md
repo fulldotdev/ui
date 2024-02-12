@@ -14,7 +14,8 @@ blocks:
     text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
     categories:
   - _bookshop_name: CtaSection
-    layout: wide
+    scheme: dark
+    align: stretch
     heading: Ontvang advies van een expert
     text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:

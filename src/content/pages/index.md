@@ -15,11 +15,6 @@ blocks:
     tagline: De goedkoopste van Nederland
     heading: Handig langer thuis wonen
     text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-    buttons: 
-      - text: Alle producten
-        href: /producten
-      - text: Alle producten
-        href: /producten
     categories:
       - badkamer
       - trapliften
@@ -111,9 +106,8 @@ blocks:
       - koos
       - peter
   - _bookshop_name: CtaSection
-    impact: medium
-    area: default
-    layout: wide
+    scheme: dark
+    align: stretch
     heading: Ontvang advies van een expert
     text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:

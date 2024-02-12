@@ -1,25 +1,26 @@
-<!-- ---
+---
 import type { ComponentProps } from 'astro/types'
-import Link from '../link/Link.astro'
-import BannerRoot from './BannerRoot.astro'
+import { getEntry } from 'astro:content'
+import { Links } from 'src/components/links'
+import { Text } from 'src/components/text'
+import { BannerRoot } from '.'
 
-interface Props extends ComponentProps<typeof Link, TextProps {}
+interface Props
+  extends ComponentProps<typeof BannerRoot>,
+    ComponentProps<typeof Links>,
+    ComponentProps<typeof Text> {}
 
 let { props } = Astro
+props = {
+  ...(await getEntry('globals', 'banner')).data,
+  ...props,
+}
 ---
 
 <BannerRoot {...props}>
-  <span>{props.text}</span>
-  <div>
-    <Link
-      href="mailto:info@hltw.nl"
-      text="info@hltw.nl"
-    />
-    <Link
-      href="tel31616715746:"
-      text="316 1671 5746"
-    />
-  </div>
+  <!-- TODO: replace text with Specs (checkmark) -->
+  <Text {...props} />
+  <Links {...props} />
 </BannerRoot>
 
 <style>
@@ -35,4 +36,4 @@ let { props } = Astro
     color: var(--text);
     font-size: var(--text1);
   }
-</style> -->
+</style>
