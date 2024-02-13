@@ -24,7 +24,7 @@ export default defineConfig({
     bookshop(),
     fulluiIntegration({
       hue: {
-        accent: 'orange',
+        accent: 'indigo',
       },
     }),
     starlight({
