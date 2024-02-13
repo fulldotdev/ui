@@ -9,7 +9,7 @@ import {
   productsSchema,
   reviewsSchema,
   servicesSchema,
-} from '@silveltman/fullui/blocks'
+} from '@silveltman/fullui/src/blocks'
 import { defineCollection, z } from 'astro:content'
 
 const data = defineCollection({
