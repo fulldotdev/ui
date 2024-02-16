@@ -3,7 +3,8 @@ import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import { getSlot } from '../../utils'
 
 interface Props extends Omit<HTMLAttributes<HTMLTag>, 'slot'> {
-  scheme?: 'default' | 'reverse' | 'light' | 'dark'
+  order?: 'reverse' | 'switch'
+  scheme?: 'invert' | 'light' | 'dark'
   impact?: 'low' | 'medium' | 'high' | 'extreme'
   align?: 'start' | 'center' | 'stretch'
   layout?: 'split' | 'stack'
@@ -12,7 +13,8 @@ interface Props extends Omit<HTMLAttributes<HTMLTag>, 'slot'> {
 }
 
 const {
-  scheme = 'default',
+  scheme,
+  order,
   impact = 'medium',
   align = 'start',
   layout = 'stack',
@@ -26,7 +28,9 @@ const slot = await getSlot(Astro)
 
 {
   slot && (
-    <Tag class:list={['section', scheme, align, layout, frame, className]}>
+    <Tag
+      class:list={['section', scheme, align, layout, frame, order, className]}
+    >
       <Fragment set:html={slot} />
     </Tag>
   )
@@ -46,6 +50,17 @@ const slot = await getSlot(Astro)
       padding-top: var(--spacer);
       margin-top: 0;
     }
+
+    /* :global(&:where(.switch:nth-child(even) > *:first-child)) {
+      order: 2;
+    } */
+  }
+  :global(.reverse > *:first-child) {
+    order: 2;
+  }
+
+  :global(.switch:nth-child(even) > *:first-child) {
+    order: 2;
   }
 
   :where(.stack) {

@@ -60,6 +60,8 @@ blocks:
     buttons:
       - text: Alle trapliften
         href: /trapliften
+      - text: Alle trapliften
+        href: /trapliften
     image:
       src: https://picsum.photos/800/600
       alt: Een vrouw die de traplift gebruikt
