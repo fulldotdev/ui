@@ -1,0 +1,104 @@
+---
+import type { ComponentProps } from 'astro/types'
+import {
+  getEntry,
+  type CollectionEntry,
+  type ContentCollectionKey,
+} from 'astro:content'
+import { BlockAction, BlockContent, BlockRoot, BlockSegment } from '.'
+import { Buttons } from '../buttons'
+import { Cards } from '../cards'
+import { Channels } from '../channels'
+import { Form } from '../form'
+import { Gallery } from '../gallery'
+import { Heading } from '../heading'
+import { Html } from '../html'
+import { Image } from '../image'
+import { Price } from '../price'
+import { Prose } from '../prose'
+import { Rating } from '../rating'
+import { Socials } from '../socials'
+import { Specs } from '../specs'
+import { Tagline } from '../tagline'
+import { Text } from '../text'
+
+interface Props
+  extends Omit<ComponentProps<typeof BlockRoot>, 'layout'>,
+    Omit<ComponentProps<typeof BlockSegment>, 'layout'>,
+    ComponentProps<typeof BlockContent>,
+    ComponentProps<typeof Rating>,
+    ComponentProps<typeof Tagline>,
+    ComponentProps<typeof Heading>,
+    ComponentProps<typeof Text>,
+    ComponentProps<typeof Specs>,
+    ComponentProps<typeof Html>,
+    ComponentProps<typeof BlockAction>,
+    ComponentProps<typeof Channels>,
+    ComponentProps<typeof Socials>,
+    ComponentProps<typeof Form>,
+    ComponentProps<typeof Buttons>,
+    ComponentProps<typeof Gallery>,
+    ComponentProps<typeof Prose>,
+    Omit<ComponentProps<typeof Cards>, 'layout'> {
+  image?: ComponentProps<typeof Image>
+  reference?: {
+    collection: ContentCollectionKey
+    slug: CollectionEntry<ContentCollectionKey>['slug']
+  }
+  collection?: ContentCollectionKey
+  slug?: CollectionEntry<ContentCollectionKey>['slug']
+  layout?: never
+  sectionLayout?: ComponentProps<typeof BlockRoot>['layout']
+  cardsLayout?: ComponentProps<typeof Cards>['layout']
+  sectionFrame?: ComponentProps<typeof BlockRoot>['frame']
+  cardsFrame?: ComponentProps<typeof Cards>['frame']
+}
+
+let { props } = Astro
+const collection = props.collection || props.reference?.collection
+const slug = props.slug || props.reference?.slug
+const entry = collection && slug && (await getEntry({ collection, slug }))
+props = { ...entry?.data, ...props }
+---
+
+<BlockRoot
+  {...props}
+  layout={props.sectionLayout}
+  frame={props.sectionFrame}
+>
+  <BlockSegment
+    {...props}
+    layout={props.sectionLayout}
+    frame={props.sectionFrame}
+  >
+    <Rating {...props} />
+    <BlockContent {...props}>
+      <Rating {...props} />
+      <Tagline {...props} />
+      <Heading {...props} />
+      <Html {...props} />
+      <Text {...props} />
+      <Specs {...props} />
+      <slot name="content" />
+    </BlockContent>
+    <BlockAction>
+      <Channels {...props} />
+      <Socials {...props} />
+      <Price {...props} />
+      <Form {...props} />
+      <Buttons {...props} />
+      <slot name="action" />
+    </BlockAction>
+    <slot name="segment" />
+  </BlockSegment>
+  <Image {...props.image} />
+  <Prose {...props} />
+  <Gallery {...props} />
+  <Cards
+    {...props}
+    layout={props.cardsLayout}
+    frame={props.cardsFrame}
+  />
+  <slot name="root" />
+  <slot />
+</BlockRoot>

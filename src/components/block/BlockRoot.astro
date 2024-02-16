@@ -1,0 +1,124 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { getSlot } from '../../utils'
+
+interface Props {
+  scheme?: 'default' | 'reverse' | 'light' | 'dark'
+  impact?: 'low' | 'medium' | 'high' | 'extreme'
+  align?: 'start' | 'center' | 'stretch'
+  layout?: 'split' | 'stack'
+  frame?: 'fill' | 'panel' | 'screen'
+  class?: HTMLAttributes<'div'>['class']
+}
+
+const {
+  scheme = 'default',
+  impact = 'medium',
+  align = 'start',
+  layout = 'stack',
+  frame = 'fill',
+  class: className,
+} = Astro.props
+
+const slot = await getSlot(Astro)
+---
+
+{
+  slot && (
+    <section
+      class:list={[
+        'section',
+        'scheme-' + scheme,
+        scheme + '-theme',
+        scheme,
+        'impact-' + impact,
+        'layout-' + layout,
+        'frame-' + frame,
+        'align-' + align,
+        frame,
+        className,
+      ]}
+    >
+      <Fragment set:html={slot} />
+    </section>
+  )
+}
+
+<style>
+  section {
+    background: var(--background);
+
+    container: section / inline-size;
+    position: relative;
+    overflow-x: hidden;
+    row-gap: var(--flow5);
+    gap: var(--gutter);
+    padding: calc(var(--spacer) * 1.5) var(--gutter);
+
+    :global(&:first-child) {
+      padding-top: var(--spacer);
+      margin-top: 0;
+    }
+
+    &:where(.layout-stack) {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &:where(.layout-split) {
+      display: grid;
+      align-items: center;
+
+      @media (min-width: 1024px) {
+        grid-auto-columns: 1fr;
+        grid-auto-flow: column;
+
+        /* NEEDDS GLOBAL */
+        :global(&:nth-child(even) > *:first-child) {
+          order: 2;
+        }
+      }
+    }
+
+    &:where(.align-start) {
+      align-items: start;
+      text-align: left;
+    }
+
+    &:where(.align-stretch) {
+      align-items: stretch;
+      text-align: left;
+    }
+
+    &:where(.align-center) {
+      align-items: center;
+      text-align: center;
+    }
+
+    /* &:where(.frame-panel:not(:has(.frame-panel))) {
+      margin: var(--spacer) var(--gutter);
+      border-width: var(--borderWidth);
+      border-radius: var(--rounded2);
+      gap: 0;
+      padding: 0;
+    } */
+
+    &:where(.frame-panel) {
+      background: var(--background);
+      border: var(--border);
+      border-radius: var(--radius);
+      padding: var(--spacer) var(--gutter);
+      margin: var(--spacer) var(--gutter);
+      gap: 0;
+      padding: 0;
+    }
+
+    &:where(.frame-screen) {
+      min-height: 100vh;
+    }
+
+    /* &:where(.frame-screen) {
+      min-height: 100vh;
+    } */
+  }
+</style>

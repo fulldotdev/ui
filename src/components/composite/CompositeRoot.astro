@@ -1,0 +1,65 @@
+---
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import { getSlot } from '../../utils'
+
+interface Props extends Omit<HTMLAttributes<HTMLTag>, 'slot'> {
+  density?: 'compact'
+  frame?: 'panel' | 'fill' | 'screen'
+  align?: 'start' | 'center' | 'stretch'
+  tag?: HTMLTag
+}
+
+const {
+  density,
+  frame,
+  align,
+  tag: Tag = 'div',
+  class: className,
+} = Astro.props
+const slot = await getSlot(Astro)
+---
+
+{
+  slot && (
+    <Tag class:list={['composite', align, frame, density, , className]}>
+      <Fragment set:html={slot} />
+    </Tag>
+  )
+}
+
+<style>
+  :where(.composite),
+  :where(.start) {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    row-gap: var(--flow4);
+    column-gap: var(--gutter);
+    container: segment / inline-size;
+    width: 100%;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  :where(.fill),
+  :where(.screen) {
+    z-index: 10;
+  }
+
+  :where(.center) {
+    align-items: center;
+    text-align: center;
+  }
+
+  :where(.panel) {
+    padding: var(--gutter);
+  }
+
+  @media (min-width: 1024px) {
+    :where(.stretch) {
+      align-items: center;
+      justify-content: space-between;
+      flex-direction: row;
+    }
+  }
+</style>

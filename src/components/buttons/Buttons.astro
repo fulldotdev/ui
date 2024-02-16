@@ -1,15 +1,19 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import { ButtonsItems, ButtonsRoot } from '.'
+import { Button } from '../button'
 
-interface Props
-  extends ComponentProps<typeof ButtonsRoot>,
-    ComponentProps<typeof ButtonsItems> {}
+interface Props {
+  buttons?: ComponentProps<typeof Button>[]
+}
 
-const { props } = Astro
+const { buttons } = Astro.props
 ---
 
-<ButtonsRoot {...props}>
-  <ButtonsItems {...props} />
-  <slot />
-</ButtonsRoot>
+{
+  buttons?.map((button, i) => (
+    <Button
+      variant={i === 0 ? 'primary' : 'secondary'}
+      {...button}
+    />
+  ))
+}

@@ -5,22 +5,17 @@ import {
   type CollectionEntry,
   type ContentCollectionKey,
 } from 'astro:content'
-import { SectionRoot, SectionSegment } from '.'
-import { Buttons } from '../buttons'
+import { SectionRoot } from '.'
+import { Composite } from '../composite'
 import { Form } from '../form'
 import { Gallery } from '../gallery'
 import { Image } from '../image'
-import { Price } from '../price'
 import { Prose } from '../prose'
 import { Rating } from '../rating'
-import { Specs } from '../specs'
-import { Writeup } from '../writeup'
 
 interface Props
   extends ComponentProps<typeof SectionRoot>,
-    ComponentProps<typeof SectionSegment>,
-    ComponentProps<typeof Writeup>,
-    ComponentProps<typeof Buttons>,
+    ComponentProps<typeof Composite>,
     ComponentProps<typeof Gallery>,
     ComponentProps<typeof Form>,
     ComponentProps<typeof Rating>,
@@ -34,31 +29,21 @@ interface Props
   slug?: CollectionEntry<ContentCollectionKey>['slug']
 }
 
-let { collection, slug, reference, ...restProps } = Astro.props
-const entry =
-  reference &&
-  (await getEntry({
-    collection: collection || reference.collection,
-    slug: slug || reference.slug,
-  }))
-const props = { ...entry?.data, ...restProps }
+let { props } = Astro
+const collection = props.collection || props.reference?.collection
+const slug = props.slug || props.reference?.slug
+const entry = collection && slug && (await getEntry({ collection, slug }))
+props = { ...entry?.data, ...props }
 ---
 
 <SectionRoot {...props}>
-  <SectionSegment {...props}>
-    <Rating {...props} />
-    <Writeup {...props}>
-      <slot name="writeup" />
-    </Writeup>
-    <Specs {...props} />
-    <Price {...props} />
-    <Buttons {...props} />
-    <!-- <ChannelGroup {...props} /> -->
-    <slot name="segment" />
-  </SectionSegment>
+  <Composite
+    {...props}
+    align={props.layout === 'split' ? 'start' : props.align}
+  />
   <Image {...props.image} />
   <Form {...props} />
   <Prose {...props} />
-  {props.gallery && <Gallery {...props} />}
+  <Gallery {...props} />
   <slot />
 </SectionRoot>

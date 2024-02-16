@@ -1,14 +1,14 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import { getSlot } from '../../utils'
 
-interface Props {
+interface Props extends Omit<HTMLAttributes<HTMLTag>, 'slot'> {
   scheme?: 'default' | 'reverse' | 'light' | 'dark'
   impact?: 'low' | 'medium' | 'high' | 'extreme'
   align?: 'start' | 'center' | 'stretch'
   layout?: 'split' | 'stack'
   frame?: 'fill' | 'panel' | 'screen'
-  class?: HTMLAttributes<'div'>['class']
+  tag?: HTMLTag
 }
 
 const {
@@ -17,6 +17,7 @@ const {
   align = 'start',
   layout = 'stack',
   frame = 'fill',
+  tag: Tag = 'div',
   class: className,
 } = Astro.props
 
@@ -25,29 +26,15 @@ const slot = await getSlot(Astro)
 
 {
   slot && (
-    <section
-      class:list={[
-        'section',
-        'scheme-' + scheme,
-        scheme + '-theme',
-        scheme,
-        'impact-' + impact,
-        'layout-' + layout,
-        'frame-' + frame,
-        'align-' + align,
-        frame,
-        className,
-      ]}
-    >
+    <Tag class:list={['section', scheme, align, layout, frame, className]}>
       <Fragment set:html={slot} />
-    </section>
+    </Tag>
   )
 }
 
 <style>
-  section {
+  :where(.section) {
     background: var(--background);
-
     container: section / inline-size;
     position: relative;
     overflow-x: hidden;
@@ -59,43 +46,44 @@ const slot = await getSlot(Astro)
       padding-top: var(--spacer);
       margin-top: 0;
     }
+  }
 
-    &:where(.layout-stack) {
-      display: flex;
-      flex-direction: column;
-    }
+  :where(.stack) {
+    display: flex;
+    flex-direction: column;
+  }
 
-    &:where(.layout-split) {
-      display: grid;
-      align-items: center;
+  :where(.split) {
+    display: grid;
+    align-items: center;
 
-      @media (min-width: 1024px) {
-        grid-auto-columns: 1fr;
-        grid-auto-flow: column;
+    @media (min-width: 1024px) {
+      grid-auto-columns: 1fr;
+      grid-auto-flow: column;
 
-        /* NEEDDS GLOBAL */
-        :global(&:nth-child(even) > *:first-child) {
-          order: 2;
-        }
+      /* NEEDDS GLOBAL */
+      :global(&:nth-child(even) > *:first-child) {
+        order: 2;
       }
     }
+  }
 
-    &:where(.align-start) {
-      align-items: start;
-      text-align: left;
-    }
+  :where(.start) {
+    align-items: start;
+    text-align: left;
+  }
 
-    &:where(.align-stretch) {
-      align-items: stretch;
-      text-align: left;
-    }
+  :where(.stretch) {
+    align-items: stretch;
+    text-align: left;
+  }
 
-    &:where(.align-center) {
-      align-items: center;
-      text-align: center;
-    }
+  :where(.center) {
+    align-items: center;
+    text-align: center;
+  }
 
-    /* &:where(.frame-panel:not(:has(.frame-panel))) {
+  /* &:where(.frame-panel:not(:has(.frame-panel))) {
       margin: var(--spacer) var(--gutter);
       border-width: var(--borderWidth);
       border-radius: var(--rounded2);
@@ -103,22 +91,21 @@ const slot = await getSlot(Astro)
       padding: 0;
     } */
 
-    &:where(.frame-panel) {
-      background: var(--background);
-      border: var(--border);
-      border-radius: var(--radius);
-      padding: var(--spacer) var(--gutter);
-      margin: var(--spacer) var(--gutter);
-      gap: 0;
-      padding: 0;
-    }
+  :where(.panel) {
+    background: var(--background);
+    border: var(--border);
+    border-radius: var(--radius);
+    padding: var(--spacer) var(--gutter);
+    margin: var(--spacer) var(--gutter);
+    gap: 0;
+    padding: 0;
+  }
 
-    &:where(.frame-screen) {
-      min-height: 100vh;
-    }
+  :where(.screen) {
+    min-height: 100vh;
+  }
 
-    /* &:where(.frame-screen) {
+  /* &:where(.frame-screen) {
       min-height: 100vh;
     } */
-  }
 </style>

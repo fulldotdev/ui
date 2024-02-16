@@ -11,7 +11,6 @@ blocks:
     impact: medium
     layout: grid
     frame: panel
-    # align: start
     tagline: De goedkoopste van Nederland
     heading: Handig langer thuis wonen
     text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id.

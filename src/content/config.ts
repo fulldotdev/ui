@@ -1,4 +1,5 @@
 import { docsSchema } from '@astrojs/starlight/schema'
+import { defineCollection, z } from 'astro:content'
 import {
   categoriesSchema,
   formsSchema,
@@ -9,8 +10,7 @@ import {
   productsSchema,
   reviewsSchema,
   servicesSchema,
-} from '@silveltman/fullui/src/blocks'
-import { defineCollection, z } from 'astro:content'
+} from '../blocks'
 
 const data = defineCollection({
   type: 'data',

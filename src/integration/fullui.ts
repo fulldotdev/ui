@@ -322,7 +322,7 @@ export const fulluiIntegration = (passedConfig: Config): AstroIntegration => ({
 
       // const huePath = join(__dirname, '../css/hue.css')
       // const impactPath = join(__dirname, './dist/impact.css')
-      // await writeFile(huePath, hueCSS, 'utf8')
+      // await writeFile('./src/css', hueCSS, 'utf8')
       // await writeFile(impactPath, impactCSS, 'utf8')
 
       // import '@unocss/reset/tailwind.css'
@@ -357,8 +357,8 @@ export const fulluiIntegration = (passedConfig: Config): AstroIntegration => ({
       )
 
       // TODO: add auto dark mode to hue file
-      injectScript('page-ssr', `import "src/css/hue.css";`)
       // injectScript('page-ssr', `import "src/integration/dist/impact.css";`)
+      injectScript('page-ssr', `import "src/css/hue.css";`)
       injectScript('page-ssr', `import "src/css/flow.css";`)
       injectScript('page-ssr', `import "src/css/theme.css";`)
     },

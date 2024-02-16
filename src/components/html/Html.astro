@@ -1,8 +1,10 @@
 ---
+import type { HTMLString } from 'astro/runtime/server/escape.js'
 import type { HTMLAttributes } from 'astro/types'
 import { getSlot } from '../../utils'
 
 interface Props {
+  html?: HTMLString
   class?: HTMLAttributes<'div'>['class']
 }
 
@@ -12,16 +14,18 @@ const slot = await getSlot(Astro)
 
 {
   slot && (
-    <div class:list={['buttons buttons-root', className]}>
-      <Fragment set:html={slot} />
+    <div class:list={['html', className]}>
+      <slot />
     </div>
   )
 }
 
 <style>
   div {
+    width: 100%;
     display: flex;
-    gap: var(--flow2);
-    flex-wrap: wrap;
+    flex-direction: column;
+    row-gap: var(--flow3);
+    max-width: max(calc(var(--flow6) * 3.8), 500px);
   }
 </style>

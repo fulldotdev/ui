@@ -1,0 +1,28 @@
+---
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import { getSlot } from '../../utils'
+
+interface Props extends Omit<HTMLAttributes<HTMLTag>, 'slot'> {
+  density?: 'compact'
+  tag?: HTMLTag
+}
+
+const { density, tag: Tag = 'div', class: className } = Astro.props
+const slot = await getSlot(Astro)
+---
+
+{
+  slot && (
+    <Tag class:list={['action', density, className]}>
+      <Fragment set:html={slot} />
+    </Tag>
+  )
+}
+
+<style>
+  :where(.action) {
+    display: flex;
+    gap: var(--flow2);
+    flex-wrap: wrap;
+  }
+</style>

@@ -12,12 +12,14 @@ export default ({
     // posts: 'posts',
     // products: 'producten',
     // services: 'diensten',
+    // persons: 'persoonen',
     categories: 'categories',
     forms: 'forms',
     policies: 'policies',
     posts: 'posts',
     products: 'products',
     services: 'services',
+    persons: 'persons',
   }
   if (collection == 'pages' && slug === 'index') return '/'
   if (collection === 'pages') return slug
