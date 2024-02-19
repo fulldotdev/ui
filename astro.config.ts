@@ -18,7 +18,7 @@ export default defineConfig({
       },
     }),
     starlight({
-      title: 'FullUI',
+      title: 'Fullui',
       sidebar: [
         {
           label: 'Getting started',
