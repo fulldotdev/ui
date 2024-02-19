@@ -1,0 +1,42 @@
+---
+import type { ComponentProps } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import { getEntry } from 'astro:content'
+import { Checkbox } from '../checkbox'
+import { Input } from '../input'
+import { Select } from '../select'
+import { Textarea } from '../textarea'
+
+interface Props {
+  slug?: CollectionEntry<'forms'>['slug']
+  items?: (
+    | ComponentProps<typeof Checkbox>
+    | ComponentProps<typeof Input>
+    | ComponentProps<typeof Textarea>
+    | ComponentProps<typeof Select>
+  )[]
+}
+
+const components: any = {
+  Input,
+  Textarea,
+  Checkbox,
+  Select,
+}
+
+let { slug, items } = Astro.props
+
+if ((!items || items.length === 0) && slug)
+  items = (await getEntry('forms', slug)).data.items
+---
+
+{
+  items?.map(async (item: any) => {
+    const filename: any = item._bookshop_name?.split('/').pop()
+    console.log('filename', filename)
+    let Found = components[filename]
+    console.log('Found', Found)
+    if (!Found) return <Input {...item} />
+    return <Found {...item} />
+  })
+}

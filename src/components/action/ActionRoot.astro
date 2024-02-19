@@ -4,16 +4,17 @@ import { getSlot } from '../../utils'
 
 interface Props extends Omit<HTMLAttributes<HTMLTag>, 'slot'> {
   density?: 'compact'
+  align?: 'start' | 'center' | 'stretch'
   tag?: HTMLTag
 }
 
-const { density, tag: Tag = 'div', class: className } = Astro.props
+const { density, align, tag: Tag = 'div', class: className } = Astro.props
 const slot = await getSlot(Astro)
 ---
 
 {
   slot && (
-    <Tag class:list={['action', density, className]}>
+    <Tag class:list={['action', density, align, className]}>
       <Fragment set:html={slot} />
     </Tag>
   )
@@ -22,7 +23,11 @@ const slot = await getSlot(Astro)
 <style>
   :where(.action) {
     display: flex;
+    flex-direction: column;
     gap: var(--flow2);
-    flex-wrap: wrap;
+  }
+
+  :where(.center) {
+    align-items: center;
   }
 </style>

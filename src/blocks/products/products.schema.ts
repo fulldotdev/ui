@@ -1,4 +1,5 @@
-import { reference, z } from 'astro:content'
+// import { reference, z } from 'astro:content'
+import { z } from 'zod'
 
 export default z
   .object({
@@ -21,7 +22,8 @@ export default z
         alt: z.string().nullable(),
       })
     ),
-    categories: z.array(reference('categories')).nullable(),
+    // categories: z.array(reference('categories')).nullable(),
+    categories: z.any(),
     price: z.number().nullable(),
     // options: z.array(
     //   z.object({

@@ -2,27 +2,27 @@
 import type { ComponentProps } from 'astro/types'
 import { ActionRoot } from '.'
 import { Buttons } from '../buttons'
-import { Channels } from '../channels'
 import { Form } from '../form'
 import { Price } from '../price'
-import { Socials } from '../socials'
 
 interface Props
   extends ComponentProps<typeof ActionRoot>,
-    ComponentProps<typeof Channels>,
-    ComponentProps<typeof Socials>,
     ComponentProps<typeof Price>,
-    ComponentProps<typeof Form>,
-    ComponentProps<typeof Buttons> {}
+    ComponentProps<typeof Buttons> {
+  form?: ComponentProps<typeof Form>
+}
 
 const { props } = Astro
+
+console.log('action', props)
 ---
 
 <ActionRoot {...props}>
-  <Channels {...props} />
-  <Socials {...props} />
   <Price {...props} />
-  <Form {...props} />
+  <Form
+    slug={typeof props.form == 'string' ? props.form : undefined}
+    {...props}
+  />
   <Buttons {...props} />
   <slot />
 </ActionRoot>

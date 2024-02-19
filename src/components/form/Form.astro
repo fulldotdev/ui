@@ -1,6 +1,7 @@
 ---
-import { Button } from '../button'
-import { Input } from '../input'
+import type { ComponentProps } from 'astro/types'
+import FormItems from './FormItems.astro'
+import FormRoot from './FormRoot.astro'
 // import { Select } from '../select'
 
 // interface Props {
@@ -17,16 +18,22 @@ import { Input } from '../input'
 //   select: Select,
 // }
 
-let {
-  form,
-  title,
-  key,
-  inputs,
-  button = {
-    label: 'Verstuur',
-    href: '/bericht-ontvangen',
-  },
-} = Astro.props
+interface Props
+  extends ComponentProps<typeof FormRoot>,
+    ComponentProps<typeof FormItems> {}
+
+// let {
+//   form,
+//   title,
+//   key,
+//   inputs,
+//   button = {
+//     label: 'Verstuur',
+//     href: '/bericht-ontvangen',
+//   },
+// } = Astro.props
+
+const { props } = Astro
 
 // const formName = form?.split('/').pop()?.replace('.md', '') || 'myplaceholder'
 // const formEntry = await getEntry('forms', formName)
@@ -38,30 +45,6 @@ let {
 //   ?.shift()
 ---
 
-{
-  Astro.props.form && (
-    <form method="POST">
-      <Input label="Naam" />
-      <Input label="Email" />
-      <Input label="Telefoonnummer" />
-      <Button text="Verstuur" />
-    </form>
-  )
-}
-
-<style is:global>
-  form {
-    gap: var(--flow2);
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    text-align: left;
-    max-width: calc(var(--flow6) * 4);
-    /* for panel only */
-    /* padding: 0 var(--gutter) var(--spacer); */
-
-    a {
-      margin-top: var(--flow2);
-    }
-  }
-</style>
+<FormRoot {...props}>
+  <FormItems {...props} />
+</FormRoot>
