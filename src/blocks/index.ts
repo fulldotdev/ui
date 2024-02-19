@@ -17,6 +17,3 @@ export * from './products'
 export * from './reviews'
 export * from './services'
 export * from './spotlight'
-
-// Renderer
-export { default as Blocks } from '../components/blocks/Blocks.astro'

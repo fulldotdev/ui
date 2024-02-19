@@ -1,6 +1,3 @@
-// Elements
-export { default as Blocks } from './blocks/Blocks.astro'
-
 export * from './article'
 export * from './button'
 export * from './buttons'

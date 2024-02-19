@@ -1,1 +1,1 @@
-export { default as Blocks } from './Blocks.astro'
+export { default as Blocks } from './BlocksRenderer.astro'
