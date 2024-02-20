@@ -4,7 +4,7 @@ export default ({
   slug,
   collection,
 }: CollectionEntry<ContentCollectionKey>): string | undefined => {
-  if (collection === 'reviews') return
+  if (collection === 'review') return
   const routes: any = {
     // categories: 'categorieen',
     // forms: 'formulieren',
@@ -17,7 +17,7 @@ export default ({
     forms: 'forms',
     policies: 'policies',
     posts: 'posts',
-    products: 'products',
+    products: 'product',
     services: 'services',
     persons: 'persons',
   }
