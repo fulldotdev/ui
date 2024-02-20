@@ -13,7 +13,7 @@ export default defineConfig({
     robotsTxt(),
     fulluiIntegration({
       hue: {
-        base: 'sand',
+        base: 'slate',
         accent: 'orange',
       },
     }),

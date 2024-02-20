@@ -1,6 +1,7 @@
 import type { AstroIntegration } from 'astro'
 import merge from 'deepmerge'
-import { dirname } from 'path'
+import { writeFile } from 'fs/promises'
+import { dirname, join } from 'path'
 import type { RadixColors } from 'unocss-preset-radix'
 import { fileURLToPath } from 'url'
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -265,7 +266,7 @@ export const fulluiIntegration = (passedConfig: Config): AstroIntegration => ({
 
       const hueCSS = Object.entries(hue)
         .map(
-          ([hueKey, hueValue]) => `:root, .hue-${hueKey} {
+          ([hueKey, hueValue]) => `:root, .${hueKey}, .light, .dark {
   --${hueKey}-1: var(--${hueValue}-1);
   --${hueKey}-2:  var(--${hueValue}-2);
   --${hueKey}-3:  var(--${hueValue}-3);
@@ -320,44 +321,21 @@ export const fulluiIntegration = (passedConfig: Config): AstroIntegration => ({
       //   )
       //   .join(' ')
 
-      // const huePath = join(__dirname, '../css/hue.css')
-      // const impactPath = join(__dirname, './dist/impact.css')
-      // await writeFile('./src/css', hueCSS, 'utf8')
-      // await writeFile(impactPath, impactCSS, 'utf8')
+      const injectRadix = (name: string) =>
+        injectScript('page-ssr', `import "@radix-ui/colors/${name}.css";`)
+      injectRadix(`${hue.base}`)
+      injectRadix(`${hue.base}-alpha`)
+      injectRadix(`${hue.base}-dark`)
+      injectRadix(`${hue.base}-dark-alpha`)
+      injectRadix(`${hue.accent}`)
+      injectRadix(`${hue.accent}-alpha`)
+      injectRadix(`${hue.accent}-dark`)
+      injectRadix(`${hue.accent}-dark-alpha`)
 
-      // import '@unocss/reset/tailwind.css'
+      const huePath = join(__dirname, '../css/hue.css')
+      await writeFile(huePath, hueCSS, 'utf8')
+
       injectScript('page-ssr', `import "@unocss/reset/tailwind.css";`)
-
-      injectScript('page-ssr', `import "@radix-ui/colors/${hue.base}.css";`)
-      injectScript(
-        'page-ssr',
-        `import "@radix-ui/colors/${hue.base}-alpha.css";`
-      )
-      injectScript(
-        'page-ssr',
-        `import "@radix-ui/colors/${hue.base}-dark.css";`
-      )
-      injectScript(
-        'page-ssr',
-        `import "@radix-ui/colors/${hue.base}-dark-alpha.css";`
-      )
-
-      injectScript('page-ssr', `import "@radix-ui/colors/${hue.accent}.css";`)
-      injectScript(
-        'page-ssr',
-        `import "@radix-ui/colors/${hue.accent}-alpha.css";`
-      )
-      injectScript(
-        'page-ssr',
-        `import "@radix-ui/colors/${hue.accent}-dark.css";`
-      )
-      injectScript(
-        'page-ssr',
-        `import "@radix-ui/colors/${hue.accent}-dark-alpha.css";`
-      )
-
-      // TODO: add auto dark mode to hue file
-      // injectScript('page-ssr', `import "src/integration/dist/impact.css";`)
       injectScript('page-ssr', `import "src/css/hue.css";`)
       injectScript('page-ssr', `import "src/css/flow.css";`)
       injectScript('page-ssr', `import "src/css/theme.css";`)
