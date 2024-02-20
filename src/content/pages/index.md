@@ -7,7 +7,7 @@ seo:
     src:
     alt:
 blocks:
-  - _bookshop_name: CategoriesDeck
+  - _bookshop_name: CategoryDeck
     impact: medium
     layout: grid
     frame: panel
@@ -23,7 +23,7 @@ blocks:
       - veiligheid
       - badkamer
       - woonkamer
-  - _bookshop_name: FeaturesDeck
+  - _bookshop_name: FeatureDeck
     layout: row
     features:
       - heading: Binnen 48 uur geleverd
@@ -35,7 +35,7 @@ blocks:
       - heading: Hulp van experts
         text: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
         icon: phone-call
-  - _bookshop_name: ProductsDeck
+  - _bookshop_name: ProductDeck
     layout: carousel
     align: stretch
     heading: Aanbiedingen
@@ -51,7 +51,7 @@ blocks:
       - product
       - product
       - product
-  - _bookshop_name: SpotlightSection
+  - _bookshop_name: FeatureSection
     layout: split
     theme: subtle
     align: center
@@ -65,7 +65,7 @@ blocks:
     image:
       src: https://picsum.photos/800/600
       alt: Een vrouw die de traplift gebruikt
-  - _bookshop_name: SpotlightSection
+  - _bookshop_name: FeatureSection
     theme: subtle
     layout: split
     align: center
@@ -77,7 +77,7 @@ blocks:
     image:
       src: https://picsum.photos/800/600
       alt: Een vrouw die de traplift gebruikt
-  - _bookshop_name: ProductsDeck
+  - _bookshop_name: ProductDeck
     impact: medium
     layout: carousel
     align: stretch
@@ -94,7 +94,7 @@ blocks:
       - product
       - product
       - product
-  - _bookshop_name: ReviewsDeck
+  - _bookshop_name: ReviewDeck
     layout: masonry
     frame: panel
     heading: Wat onze klanten zeggen

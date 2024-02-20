@@ -7,11 +7,11 @@ seo:
     src:
     alt:
 blocks:
-  - _bookshop_name: ProductsDeck
+  - _bookshop_name: ProductDeck
     layout: grid
     heading: Alle producten
     posts:
-  - _bookshop_name: CategoriesDeck
+  - _bookshop_name: CategoryDeck
     layout: grid
     frame: panel
     heading: Shop op categorie

@@ -7,7 +7,7 @@ seo:
     src:
     alt:
 blocks:
-  - _bookshop_name: CategoriesDeck
+  - _bookshop_name: CategoryDeck
     scheme: light
     layout: grid
     frame: panel

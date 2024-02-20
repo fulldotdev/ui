@@ -7,7 +7,7 @@ seo:
     src:
     alt:
 blocks:
-  - _bookshop_name: PostsDeck
+  - _bookshop_name: PostDeck
     impact: medium
     layout: masonry
     frame: panel

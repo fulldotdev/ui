@@ -2,6 +2,8 @@
 _stripe_product_id: prod_PE9qB3WbRqzVdG 
 _stripe_price_id: price_1OPhopAtGAMIOG90iN2MlxIL
 
+frame: panel
+
 seo:
   title:
   description:

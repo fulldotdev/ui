@@ -1,0 +1,5 @@
+export { default as PersonCard } from './PersonCard.astro'
+export { default as PersonDeck } from './PersonDeck.astro'
+export { default as PersonLayout } from './PersonLayout.astro'
+export { default as PersonSection } from './PersonSection.astro'
+export { default as personSchema } from './personSchema'

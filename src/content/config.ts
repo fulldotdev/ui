@@ -8,7 +8,7 @@ import {
   policiesSchema,
   postsSchema,
   productsSchema,
-  reviewsSchema,
+  reviewSchema,
   servicesSchema,
 } from '../blocks'
 
@@ -48,7 +48,7 @@ export const collections = {
   }),
   reviews: defineCollection({
     type: 'content',
-    schema: reviewsSchema,
+    schema: reviewSchema,
   }),
   services: defineCollection({
     type: 'content',

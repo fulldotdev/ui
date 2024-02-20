@@ -1,0 +1,5 @@
+export { default as ProductCard } from './ProductCard.astro'
+export { default as ProductDeck } from './ProductDeck.astro'
+export { default as ProductLayout } from './ProductLayout.astro'
+export { default as ProductSection } from './ProductSection.astro'
+export { default as productSchema } from './productSchema'
