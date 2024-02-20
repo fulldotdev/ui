@@ -1,36 +1,38 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content'
+import type { ComponentProps } from 'astro/types'
+import { getCollection } from 'astro:content'
 import { CategoryDeck } from '.'
 import { Layout, Section } from '../../components'
 import { ProductDeck } from '../product'
 
-interface Props {
-  entry: CollectionEntry<'categories'>
-}
+interface Props
+  extends ComponentProps<typeof Layout>,
+    ComponentProps<typeof CategoryDeck>,
+    ComponentProps<typeof ProductDeck> {}
 
-const { entry } = Astro.props
+const { props } = Astro
 
 const products = await getCollection('products', (product) =>
-  product?.data?.categories?.includes(entry.slug)
+  product?.data?.categories?.includes(props.slug)
 )
 
 const categories = await getCollection(
   'categories',
-  (category) => category.slug !== entry.slug
+  (category) => category.slug !== props.slug
 )
 ---
 
 <Layout
-  {...entry.data}
+  {...props}
   class="category-layout"
 >
   <ProductDeck
-    {...entry.data}
+    {...props}
     layout="grid"
     products={products.map((product) => product?.data)}
   />
   <!-- TODO: seo tekst hieronder in 2 col layout -->
-  <Section {...entry} />
+  <!-- <Section {...entry} /> -->
   <CategoryDeck
     heading={'Overige categorieën'}
     frame="panel"

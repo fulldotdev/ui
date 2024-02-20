@@ -1,5 +1,0 @@
-export { default as Block } from './Block.astro'
-export { default as BlockAction } from './BlockAction.astro'
-export { default as BlockContent } from './BlockContent.astro'
-export { default as BlockRoot } from './BlockRoot.astro'
-export { default as BlockSegment } from './BlockSegment.astro'

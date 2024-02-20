@@ -8,7 +8,6 @@ seo:
     alt:
 blocks:
   - _bookshop_name: CategoryDeck
-    impact: medium
     layout: grid
     frame: panel
     tagline: De goedkoopste van Nederland

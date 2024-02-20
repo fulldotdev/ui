@@ -1,15 +1,15 @@
 import { docsSchema } from '@astrojs/starlight/schema'
 import { defineCollection, z } from 'astro:content'
 import {
-  categoriesSchema,
+  categorySchema,
   formsSchema,
-  jobsSchema,
-  pagesSchema,
-  policiesSchema,
-  postsSchema,
-  productsSchema,
+  jobSchema,
+  pageSchema,
+  policySchema,
+  postSchema,
+  productSchema,
   reviewSchema,
-  servicesSchema,
+  serviceSchema,
 } from '../blocks'
 
 const data = defineCollection({
@@ -20,7 +20,7 @@ const data = defineCollection({
 export const collections = {
   categories: defineCollection({
     type: 'content',
-    schema: categoriesSchema,
+    schema: categorySchema,
   }),
   forms: defineCollection({
     type: 'content',
@@ -28,23 +28,23 @@ export const collections = {
   }),
   jobs: defineCollection({
     type: 'content',
-    schema: jobsSchema,
+    schema: jobSchema,
   }),
   pages: defineCollection({
     type: 'content',
-    schema: pagesSchema,
+    schema: pageSchema,
   }),
   policies: defineCollection({
     type: 'content',
-    schema: policiesSchema,
+    schema: policySchema,
   }),
   posts: defineCollection({
     type: 'content',
-    schema: postsSchema,
+    schema: postSchema,
   }),
   products: defineCollection({
     type: 'content',
-    schema: productsSchema,
+    schema: productSchema,
   }),
   reviews: defineCollection({
     type: 'content',
@@ -52,7 +52,7 @@ export const collections = {
   }),
   services: defineCollection({
     type: 'content',
-    schema: servicesSchema,
+    schema: serviceSchema,
   }),
   globals: data,
   settings: data,
