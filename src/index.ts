@@ -4,5 +4,3 @@ export * from './utils'
 export * from './components'
 // Blocks
 export * from './blocks'
-// Integrations
-export * from './integration/fullui.ts'

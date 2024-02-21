@@ -1,20 +1,22 @@
 import sitemap from '@astrojs/sitemap'
 import starlight from '@astrojs/starlight'
+import unocss from '@unocss/astro'
 import robotsTxt from 'astro-robots-txt'
 import { defineConfig } from 'astro/config'
-import { fulluiIntegration } from './src/integration/fullui'
+import { fulluiIntegration } from './src/integration/fulluiIntegration'
 
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
   site: import.meta.env?.PUBLIC_APP_URL,
   integrations: [
+    unocss(),
     sitemap(),
     robotsTxt(),
     fulluiIntegration({
       hue: {
         base: 'slate',
-        accent: 'orange',
+        accent: 'indigo',
       },
     }),
     starlight({

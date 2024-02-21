@@ -2,8 +2,8 @@
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props {
-  media?: 'relative' | 'background'
-  area?: 'fill' | 'panel' | 'screen'
+  position?: 'background'
+  frame?: 'fill' | 'panel' | 'screen'
   src?: string
   alt?: string
   loading?: HTMLAttributes<'img'>['loading']
@@ -36,8 +36,8 @@ interface Props {
 // })
 
 const {
-  media = 'relative',
-  area = 'fill',
+  position,
+  frame,
   src,
   alt = '',
   loading = 'lazy',
@@ -81,7 +81,7 @@ function getSizes() {
       alt={alt ? alt : ''}
       sizes={getSizes()}
       loading={loading}
-      class:list={[media, 'area-' + area]}
+      class:list={['image', position, frame]}
     />
   )
 }
@@ -96,7 +96,7 @@ function getSizes() {
     mask-image: linear-gradient(to top, transparent 0%, black 100%);
   }
 
-  img {
+  :where(.image) {
     transition: var(--transition);
     display: block;
     width: 100%;
@@ -106,12 +106,13 @@ function getSizes() {
     border-radius: var(--rounded1);
   }
 
-  img:where(.area-panel) {
+  :where(.panel) {
     height: 100%;
     object-fit: cover;
   }
 
-  img:where(.area-screen) {
+  :where(.background) {
+    z-index: -1;
     position: absolute;
     inset: 0;
     height: 100%;

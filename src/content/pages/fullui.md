@@ -7,27 +7,14 @@ seo:
     src:
     alt:
 blocks:
-  - _bookshop_name: CategoryDeck
-    layout: grid
-    scale: medium
-    frame: panel
-    tagline: De goedkoopste van Nederland
-    heading: Handig langer thuis wonen
+  - _bookshop_name: HeroSection
+    align: center
+    scheme: dark
+    heading: Component Library built for Astro
     text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id.
-    categories:
-      - badkamer
-      - trapliften
-      - woonkamer
-      - veiligheid
-      - trapliften
-      - veiligheid
-      - badkamer
-      - woonkamer
-    buttons:
-      - text: Alle aanbiedingen
-        href: /aanbiedingen
-      - text: Alle aanbiedingen
-        href: /aanbiedingen
+    image:
+      src: https://picsum.photos/800/600
+      alt: 
   - _bookshop_name: FeatureDeck
     layout: row
     features:
@@ -40,22 +27,9 @@ blocks:
       - heading: Hulp van experts
         text: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
         icon: phone-call
-  - _bookshop_name: ProductDeck
-    layout: carousel
-    align: stretch
-    heading: Aanbiedingen
-    buttons:
-      - text: Alle aanbiedingen
-        href: /aanbiedingen
-    products:
-      - product
-      - product
-      - product
-      - product
-      - product
-      - product
-      - product
-      - product
+      - heading: Hulp van experts
+        text: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
+        icon: phone-call
   - _bookshop_name: FeatureSection
     layout: split
     theme: subtle

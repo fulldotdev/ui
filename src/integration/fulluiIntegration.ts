@@ -1,9 +1,9 @@
 import type { AstroIntegration } from 'astro'
 import merge from 'deepmerge'
-import { writeFile } from 'fs/promises'
-import { dirname, join } from 'path'
+import { dirname } from 'path'
 import type { RadixColors } from 'unocss-preset-radix'
 import { fileURLToPath } from 'url'
+import createVirtualModule from './createVirtualCss'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 // type Scheme = 'light' | 'dark'
@@ -261,7 +261,7 @@ const defaultConfig: Config = {
 export const fulluiIntegration = (passedConfig: Config): AstroIntegration => ({
   name: 'fullui-integration',
   hooks: {
-    'astro:config:setup': async ({ injectScript }) => {
+    'astro:config:setup': async ({ injectScript, updateConfig }) => {
       let { scheme, hue }: Config = merge(defaultConfig, passedConfig || {})
 
       const hueCSS = Object.entries(hue)
@@ -306,8 +306,8 @@ export const fulluiIntegration = (passedConfig: Config): AstroIntegration => ({
       //             --background-hover: ;
       //             --background-active: ;
       //             --border: ;
-      //             --border-hover: ;
-      //             --border-active: ;
+      //             --border-color-hover: ;
+      //             --border-color-active: ;
       //             --color: ;
       //             --color-heading: ;
       //             --font: ;
@@ -332,13 +332,17 @@ export const fulluiIntegration = (passedConfig: Config): AstroIntegration => ({
       injectRadix(`${hue.accent}-dark`)
       injectRadix(`${hue.accent}-dark-alpha`)
 
-      const huePath = join(__dirname, '../css/hue.css')
-      await writeFile(huePath, hueCSS, 'utf8')
-
       injectScript('page-ssr', `import "@unocss/reset/tailwind.css";`)
-      injectScript('page-ssr', `import "src/css/hue.css";`)
       injectScript('page-ssr', `import "src/css/flow.css";`)
       injectScript('page-ssr', `import "src/css/theme.css";`)
+
+      updateConfig({
+        vite: {
+          plugins: [createVirtualModule('hue', hueCSS)],
+        },
+      })
+
+      injectScript('page-ssr', `import "virtual:hue.css";`)
     },
   },
 })
