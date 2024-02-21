@@ -4,87 +4,95 @@ import { getSlot } from '../../utils'
 import { Icon } from '../icon'
 
 interface Props extends ComponentProps<typeof Icon> {
+  look?: 'solid' | 'soft' | 'ghost' | null
   text?: string | null
   href?: HTMLAttributes<'a'>['href']
-  variant?: 'primary' | 'secondary' | 'tertiary'
-  look?: 'solid' | 'soft' | 'ghost'
   class?: HTMLAttributes<'div'>['class']
 }
 
-const { icon, text, variant = 'primary', href, class: className } = Astro.props
+const { look = 'solid', icon, text, href, class: className } = Astro.props
+const Tag = href ? 'a' : 'button'
 const slot = await getSlot(Astro)
 ---
 
 {
   (icon || text || slot) && (
-    <a
-      class:list={['fullui button', variant, className]}
-      href={href}
+    <Tag
+      class:list={['button', look, className]}
+      {href}
     >
       <Icon {icon} />
-      {text}
       <Fragment set:html={slot} />
-    </a>
+      {text}
+    </Tag>
   )
 }
 
 <style>
-  a {
-    transition: var(--transition);
-    padding: var(--spacing-3);
-    gap: var(--spacing-1);
-
+  a,
+  button {
     display: inline-flex;
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    white-space: nowrap;
-    line-height: 1;
     flex-grow: 1;
     flex-shrink: 0;
     flex-basis: auto;
-    transform: scale(0.95);
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-1);
+    transition: var(--transition);
+    cursor: pointer;
+    border-width: var(--border-width);
+    border-radius: var(--border-radius-2);
+    padding: var(--spacing-3);
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
 
     &:disabled {
-      pointer-events: none;
       opacity: 0.5;
       cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    &:active {
+      transform: scale(0.95);
     }
 
     &:where(.solid) {
-      background: var(--hue-9);
-      color: var(--hue-fg);
+      border-color: var(--accent-9);
+      background: var(--accent-9);
+      color: var(--accent-fg);
 
       &:hover {
-        background: var(--hue-10);
+        border-color: var(--accent-10);
+        background: var(--accent-10);
       }
     }
 
     &:where(.soft) {
-      background: var(--hue-3);
-      border-color: var(--hue-7);
-      color: var(--hue-11);
+      border-color: var(--accent-7);
+      background: var(--accent-3);
+      color: var(--accent-11);
 
       &:hover {
-        background: var(--hue-4);
-        border-color: var(--hue-8);
+        border-color: var(--accent-8);
+        background: var(--accent-4);
       }
 
       &:active {
-        background: var(--hue-5);
+        background: var(--accent-5);
       }
     }
 
     &:where(.ghost) {
-      color: var(--hue-11);
+      border-color: transparent;
+      color: var(--accent-11);
 
       &:hover {
-        background: var(--hue-2);
+        background: var(--accent-2);
       }
 
       &:active {
-        background: var(--hue-3);
+        background: var(--accent-3);
       }
     }
   }

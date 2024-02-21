@@ -1,35 +1,37 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
 import { getSlot } from '../../utils'
 
 interface Props {
-  heading?: string | null
   level?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
-  class?: HTMLAttributes<'div'>['class']
+  heading?: string | null
+  class?: string | null
 }
 
-const { level = 'h2', heading, class: className } = Astro.props
+const { heading, level: Level = 'h2', class: className } = Astro.props
+
 const slot = await getSlot(Astro)
-const As = level
 ---
 
 {
   (heading || slot) && (
-    <As class:list={['heading', className]}>
+    <Level class:list={['heading', className]}>
       <Fragment set:html={slot} />
       {heading}
-    </As>
+    </Level>
   )
 }
 
 <style>
-  .heading {
-    --font-weight: 700;
-    --line-height: 1.25;
-    --font-size: var(--font-size-6);
-    --color: var(--base-12);
-
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--base-12);
     font: var(--font);
-    color: var(--color);
+    font-weight: 700;
+    font-size: var(--font-size-6);
+    line-height: 1.25;
   }
 </style>

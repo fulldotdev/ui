@@ -1,69 +1,59 @@
 ---
-import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import { getSlot } from '../../utils'
 
-interface Props extends Omit<HTMLAttributes<HTMLTag>, 'slot'> {
-  density?: 'compact'
-  frame?: 'panel' | 'fill' | 'screen'
-  align?: 'start' | 'center' | 'stretch'
-  tag?: HTMLTag
+interface Props {
+  density?: 'compact' | null
+  frame?: 'panel' | 'fill' | 'screen' | null
+  align?: 'start' | 'center' | 'stretch' | null
+  class?: string | null
 }
 
-const {
-  density,
-  frame,
-  align,
-  tag: Tag = 'div',
-  class: className,
-} = Astro.props
+const { density, frame, align, class: className } = Astro.props
 const slot = await getSlot(Astro)
 ---
 
 {
   slot && (
-    <Tag class:list={['composite', align, frame, density, className]}>
+    <div class:list={['composite', align, frame, density, className]}>
       <Fragment set:html={slot} />
-    </Tag>
+    </div>
   )
 }
 
 <style>
-  :where(.composite),
-  :where(.start) {
+  div {
     display: flex;
-    flex-direction: column;
     position: relative;
-    gap: var(--spacing-4);
-    container: composite / inline-size;
-    width: 100%;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: flex-start;
-    text-align: left;
-  }
-
-  :where(.fill),
-  :where(.screen) {
-    z-index: 10;
-  }
-
-  :where(.center) {
-    align-items: center;
-    text-align: center;
-  }
-
-  :where(.panel) {
-    padding: var(--gutter);
-  }
-  :where(.panel.compact) {
     gap: var(--spacing-4);
-    padding: var(--spacing-4);
-  }
+    width: 100%;
 
-  @media (min-width: 1024px) {
-    :where(.stretch) {
+    &:where(.fill),
+    &:where(.screen) {
+      z-index: 10;
+    }
+
+    &:where(.center) {
       align-items: center;
-      justify-content: space-between;
-      flex-direction: row;
+      text-align: center;
+    }
+
+    &:where(.panel) {
+      padding: var(--gutter);
+    }
+
+    &:where(.panel.compact) {
+      gap: var(--spacing-4);
+      padding: var(--spacing-4);
+    }
+
+    &:where(.stretch) {
+      @media (min-width: 1024px) {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
     }
   }
 </style>

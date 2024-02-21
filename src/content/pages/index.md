@@ -60,6 +60,7 @@ blocks:
     layout: split
     theme: subtle
     align: center
+    order: reverse
     heading: Wat een traplift voor Hilda heeft betekend
     text:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:

@@ -1,37 +1,32 @@
 ---
-import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import { getSlot } from '../../utils'
 
-interface Props extends Omit<HTMLAttributes<HTMLTag>, 'slot'> {
-  density?: 'compact'
-  align?: 'start' | 'center' | 'stretch'
-  tag?: HTMLTag
+interface Props {
+  density?: 'compact' | null
+  align?: 'start' | 'center' | 'stretch' | null
+  class?: string | null
 }
 
-const { density, align, tag: Tag = 'div', class: className } = Astro.props
+const { density, align, class: className } = Astro.props
 const slot = await getSlot(Astro)
 ---
 
 {
   slot && (
-    <Tag class:list={['display', align, density, className]}>
+    <div class:list={['display', align, density, className]}>
       <Fragment set:html={slot} />
-    </Tag>
+    </div>
   )
 }
 
 <style>
-  :where(.display),
-  :where(.start) {
-    container: display / inline-size;
-    width: 100%;
+  div {
     display: flex;
-    flex-direction: column;
     row-gap: var(--spacing-3);
-    /* TODO: fix max width, ook met container query */
-    max-width: max(calc(var(--spacing-6) * 3.8), 768px);
+    flex-direction: column;
     align-items: flex-start;
-    text-align: left;
+    width: 100%;
+    max-width: calc(var(--spacing-6) * 3);
   }
 
   :where(.center) {

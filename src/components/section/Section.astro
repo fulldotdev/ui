@@ -7,19 +7,17 @@ import {
 } from 'astro:content'
 import { SectionRoot } from '.'
 import { Composite } from '../composite'
-import { Form } from '../form'
 import { Gallery } from '../gallery'
-import { Image } from '../image'
+import { Media } from '../media'
 import { Prose } from '../prose'
 import { Rating } from '../rating'
-import { Media } from '../media'
 
 interface Props
   extends ComponentProps<typeof SectionRoot>,
     ComponentProps<typeof Composite>,
     ComponentProps<typeof Gallery>,
     ComponentProps<typeof Rating>,
-    ComponentProps<typeof Prose>, 
+    ComponentProps<typeof Prose>,
     ComponentProps<typeof Media> {
   reference?: {
     collection: ContentCollectionKey
@@ -29,14 +27,26 @@ interface Props
   slug?: CollectionEntry<ContentCollectionKey>['slug']
 }
 
-let { props } = Astro
-const collection = props.collection || props.reference?.collection
-const slug = props.slug || props.reference?.slug
+let {
+  collection,
+  slug,
+  reference,
+  tag,
+  class: className,
+  ...props
+} = Astro.props
+
+collection = collection || reference?.collection
+slug = slug || reference?.slug
 const entry = collection && slug && (await getEntry({ collection, slug }))
 props = { ...entry?.data, ...props }
 ---
 
-<SectionRoot {...props}>
+<SectionRoot
+  class={className}
+  {tag}
+  {...props}
+>
   <Composite
     {...props}
     align={props.layout === 'split' ? 'start' : props.align}

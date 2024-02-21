@@ -3,18 +3,21 @@ import type { HTMLAttributes } from 'astro/types'
 import { getSlot } from '../../utils'
 
 interface Props {
-  frame?: 'fill' | 'panel' | 'screen'
-  scheme?: 'default' | 'reverse' | 'light' | 'dark'
+  look?: 'ghost' | 'soft' | 'solid' | null
+  frame?: 'fill' | 'panel' | 'screen' | null
+  scheme?: 'default' | 'reverse' | 'light' | 'dark' | null
   href?: HTMLAttributes<'a'>['href']
   class?: HTMLAttributes<'div'>['class']
 }
 
 const {
+  look = 'ghost',
   frame = 'fill',
   scheme = 'default',
   href,
   class: className,
 } = Astro.props
+
 const slot = await getSlot(Astro)
 const As = href ? 'a' : 'div'
 ---
@@ -22,15 +25,7 @@ const As = href ? 'a' : 'div'
 {
   slot && (
     <As
-      class:list={[
-        'card compact',
-        'frame-' + frame,
-        frame,
-        'scheme-' + scheme,
-        scheme + '-theme',
-        scheme,
-        className,
-      ]}
+      class:list={['card', 'compact', frame, look, scheme, className]}
       href={href}
     >
       <Fragment set:html={slot} />
@@ -41,68 +36,86 @@ const As = href ? 'a' : 'div'
 <style>
   div,
   a {
-    transition: var(--transition);
-    container: cardRoot / inline-size;
-    position: relative;
     display: flex;
+    position: relative;
     flex-direction: column;
-    gap: var(--spacing-4);
-    text-align: left;
     justify-content: stretch;
+    gap: var(--spacing-4);
 
-    :global(.composite) {
-      height: 100%;
+    &:where(a) {
+      transition: var(--transition);
+
+      &:hover > :global(img) {
+        opacity: 0.85;
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
     }
 
-    & > img {
-      opacity: 0.75;
+    &:where(.panel) {
+      gap: 0;
+      border-radius: var(--border-radius-2);
+      overflow: hidden;
+
+      &:where(a) {
+        &:hover {
+          background: var(--base-3);
+        }
+
+        &:active {
+          background: var(--base-4);
+        }
+      }
+
+      &:where(.soft) {
+        border-width: var(--border-width);
+        border-color: var(--base-6);
+        background-color: var(--base-2);
+
+        &:where(a) {
+          border-color: var(--base-7);
+          background: var(--base-3);
+
+          &:hover {
+            border-color: var(--base-8);
+            background: var(--base-4);
+          }
+
+          &:active {
+            background: var(--accent-5);
+          }
+        }
+      }
+
+      &:where(.solid) {
+        border-color: var(--accent-9);
+        background: var(--accent-9);
+
+        :global(*) {
+          color: var(--accent-fg);
+        }
+
+        &:where(a):hover {
+          background: var(--accent-10);
+        }
+      }
     }
-    &:where(.soft) {
-    }
-    &:where(.ghost) {
-      background-color: transparent;
-    }
+
     &:where(.landscape) {
       aspect-ratio: 4/3;
       object-fit: cover;
     }
+
     &:where(.square) {
       aspect-ratio: 1/1;
       object-fit: cover;
     }
+
     &:where(.portrait) {
       aspect-ratio: 3/4;
       object-fit: cover;
-    }
-
-    &:where(.frame-panel) {
-      background: var(--background);
-      border: var(--border);
-      border-radius: var(--border-radius-2);
-      gap: 0;
-      overflow: hidden;
-
-      &[href]:hover {
-        border: var(--border-color-hover, var(--border));
-        background: var(--background-hover, var(--background));
-      }
-
-      &[href]:active {
-        border: var(
-          --border-color-active,
-          var(--border-color-hover, var(--border))
-        );
-        background: var(
-          --background-active,
-          var(--background-hover, var(--background))
-        );
-      }
-    }
-
-    &[href]:hover {
-      :global(img) {
-        opacity: 0.75;
-      }
     }
   }
 </style>
