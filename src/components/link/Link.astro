@@ -1,5 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+import { getSlot } from '../../utils'
 
 interface Props {
   text?: string | null
@@ -7,26 +8,37 @@ interface Props {
   class?: HTMLAttributes<'div'>['class']
 }
 
-const { href, text } = Astro.props
+const { href, text, class: className } = Astro.props
+
+const Tag = href ? 'a' : 'button'
+const slot = await getSlot(Astro)
 ---
 
 {
   href && (
-    <a href={href}>
+    <Tag
+      class:list={['button', className]}
+      href={href}
+    >
+      <Fragment set:html={slot} />
       {text}
-      <slot />
-    </a>
+    </Tag>
   )
 }
 
 <style>
   a {
+    transition: var(--transition);
+    color: var(--base-11);
     font: var(--font);
-    color: var(--color);
-    font-size: inherit;
+    font-size: var(--font-size-2);
 
     &:hover {
-      text-decoration: underline;
+      color: var(--base-12);
+    }
+
+    &:active {
+      transform: scale(0.95);
     }
   }
 </style>

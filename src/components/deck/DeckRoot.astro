@@ -1,20 +1,17 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
 import { getSlot } from '../../utils'
 
 interface Props {
-  scale?: 'small' | 'medium' | 'large'
-  scheme?: 'default' | 'reverse' | 'light' | 'dark'
-  frame?: 'fill' | 'panel' | 'screen'
-  impact?: 'low' | 'medium' | 'high' | 'extreme'
-  align?: 'start' | 'center' | 'stretch'
-  class?: HTMLAttributes<'div'>['class']
+  scale?: 'small' | 'medium' | 'large' | null
+  scheme?: 'default' | 'reverse' | 'light' | 'dark' | null
+  frame?: 'fill' | 'panel' | 'screen' | null
+  align?: 'start' | 'center' | 'stretch' | null
+  class?: string | null
 }
 
 const {
   scale,
   scheme = 'default',
-  impact = 'medium',
   align = 'start',
   frame = 'fill',
   class: className,
@@ -25,19 +22,7 @@ const slot = await getSlot(Astro)
 
 {
   slot && (
-    <section
-      class:list={[
-        'deck deck-root',
-        'scheme-' + scheme,
-        scheme + '-theme',
-        scheme,
-        'frame-' + frame,
-        'impact-' + impact,
-        'align-' + align,
-        scale,
-        className,
-      ]}
-    >
+    <section class:list={['deck', scheme, frame, align, scale, className]}>
       <Fragment set:html={slot} />
     </section>
   )
@@ -45,23 +30,23 @@ const slot = await getSlot(Astro)
 
 <style>
   section {
-    container: section / inline-size;
-    position: relative;
-    overflow-x: hidden;
-    border-color: var(--ring);
     display: flex;
+    position: relative;
     flex-direction: column;
-    background: var(--background);
     gap: var(--spacing-5);
+    container: section / inline-size;
+    border-color: var(--ring);
+    background: var(--base-1);
     padding: var(--spacing-6) var(--gutter);
+    overflow-x: hidden;
 
     &:where(.frame-panel) {
       background: none;
     }
 
     &:first-child {
-      padding-top: var(--spacing-5);
       margin-top: 0;
+      padding-top: var(--spacing-5);
     }
 
     &:where(.align-start) {
