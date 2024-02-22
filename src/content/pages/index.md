@@ -7,14 +7,11 @@ seo:
     src:
     alt:
 blocks:
-  - _bookshop_name: CategoryDeck
-    layout: grid
-    scale: medium
-    frame: panel
+  - scale: medium
     tagline: De goedkoopste van Nederland
     heading: Handig langer thuis wonen
     text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id.
-    categories:
+    cards:
       - badkamer
       - trapliften
       - woonkamer
@@ -23,14 +20,17 @@ blocks:
       - veiligheid
       - badkamer
       - woonkamer
+    _cards:
+      layout: grid
+      collection: categories
+      frame: panel
+      look: soft
     buttons:
       - text: Alle aanbiedingen
         href: /aanbiedingen
       - text: Alle aanbiedingen
         href: /aanbiedingen
-  - _bookshop_name: FeatureDeck
-    layout: row
-    features:
+  - cards:
       - heading: Binnen 48 uur geleverd
         text: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
         icon: truck-delivery
@@ -40,14 +40,14 @@ blocks:
       - heading: Hulp van experts
         text: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
         icon: phone-call
-  - _bookshop_name: ProductDeck
-    layout: carousel
-    align: stretch
+    _cards:
+      layout: row
+  - align: stretch
     heading: Aanbiedingen
     buttons:
       - text: Alle aanbiedingen
         href: /aanbiedingen
-    products:
+    cards:
       - product
       - product
       - product
@@ -56,11 +56,13 @@ blocks:
       - product
       - product
       - product
-  - _bookshop_name: FeatureSection
-    layout: split
-    theme: subtle
+    _cards:
+      collection: products
+      specs: null
+      text: null
+  - layout: split
     align: center
-    order: reverse
+    order: switch
     heading: Wat een traplift voor Hilda heeft betekend
     text:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:
@@ -71,27 +73,25 @@ blocks:
     image:
       src: https://picsum.photos/800/600
       alt: Een vrouw die de traplift gebruikt
-  - _bookshop_name: FeatureSection
-    theme: subtle
-    layout: split
+  - layout: split
     align: center
+    order: switch
     heading: Wat een traplift voor Hilda heeft betekend
     text:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:
       - text: Alle trapliften
         href: /trapliften
+      - text: Alle trapliften
+        href: /trapliften
     image:
       src: https://picsum.photos/800/600
       alt: Een vrouw die de traplift gebruikt
-  - _bookshop_name: ProductDeck
-    impact: medium
-    layout: carousel
-    align: stretch
+  - align: stretch
     heading: Alle trapliften
     buttons:
       - text: Alle trapliften
         href: /trapliften 
-    products:
+    cards:
       - product
       - product
       - product
@@ -100,12 +100,12 @@ blocks:
       - product
       - product
       - product
-  - _bookshop_name: ReviewDeck
-    layout: masonry
-    frame: panel
-    heading: Wat onze klanten zeggen
+    _cards:
+      collection: products
+      layout: carousel
+  - heading: Wat onze klanten zeggen
     text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam sequi recusandae quos perferendis enim fugiat nulla eos vero laboriosam iusto!
-    reviews:
+    cards:
       - erik
       - hilda
       - koos
@@ -114,8 +114,12 @@ blocks:
       - erik
       - koos
       - peter
-  - _bookshop_name: CtaSection
-    scheme: dark
+    _cards:
+      collection: reviews
+      layout: masonry
+      frame: panel
+      look: soft
+  - scheme: dark
     align: stretch
     heading: Ontvang advies van een expert
     text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.

@@ -1,24 +1,17 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import {
-  getCollection,
-  type CollectionEntry,
-  type ContentCollectionKey,
-} from 'astro:content'
+import { getCollection } from 'astro:content'
 import { Card } from '../card'
 
 interface Props extends ComponentProps<typeof Card> {
-  collection?: ComponentProps<typeof Card>['collection']
   cards?: (
     | ComponentProps<typeof Card>
     | ComponentProps<typeof Card>['slug']
-    | CollectionEntry<ContentCollectionKey>
-    | undefined
     | null
   )[]
 }
 
-let { cards, collection, frame, scheme } = Astro.props
+let { cards, collection, ..._card } = Astro.props
 
 if ((!cards || cards.length === 0) && collection) {
   const items = await getCollection(collection)
@@ -34,7 +27,7 @@ if ((!cards || cards.length === 0) && collection) {
     return (
       <Card
         {collection}
-        {frame}
+        {..._card}
         {...card}
       />
     )
