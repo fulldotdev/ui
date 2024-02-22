@@ -6,7 +6,7 @@ seo:
   image:
     src:
     alt:
-blocks:
+sections:
   - _bookshop_name: ProductDeck
     layout: grid
     heading: Alle producten

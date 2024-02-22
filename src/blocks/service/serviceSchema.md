@@ -12,5 +12,5 @@ image:
   src: 
   alt: 
 
-blocks:
+sections:
 ---

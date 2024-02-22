@@ -10,7 +10,7 @@ text: Maak kennis met HLTW
 image:
   src: https://picsum.photos/400/300
   alt: 
-blocks:
+sections:
   - _bookshop_name: CtaSection
     scheme: dark
     align: stretch

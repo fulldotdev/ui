@@ -6,7 +6,7 @@ seo:
   image:
     src:
     alt:
-blocks:
+sections:
   - _bookshop_name: PostDeck
     impact: medium
     layout: masonry

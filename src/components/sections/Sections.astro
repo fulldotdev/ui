@@ -1,0 +1,35 @@
+---
+import type { ComponentProps } from 'astro/types'
+import { getCollection } from 'astro:content'
+import { Section } from '../section'
+
+interface Props extends ComponentProps<typeof Section> {
+  sections?: (
+    | ComponentProps<typeof Section>
+    | ComponentProps<typeof Section>['slug']
+    | null
+  )[]
+}
+
+let { sections, collection, ..._section } = Astro.props
+
+if ((!sections || sections.length === 0) && collection) {
+  const items = await getCollection(collection)
+  const slugs = items.map(({ slug }) => slug)
+  sections = slugs
+}
+---
+
+{
+  sections?.map((section) => {
+    if (!section) return null
+    if (typeof section === 'string') section = { slug: section }
+    return (
+      <Section
+        {collection}
+        {..._section}
+        {...section}
+      />
+    )
+  })
+}

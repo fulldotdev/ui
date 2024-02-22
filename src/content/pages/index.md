@@ -6,7 +6,7 @@ seo:
   image:
     src:
     alt:
-blocks:
+sections:
   - scale: medium
     tagline: De goedkoopste van Nederland
     heading: Handig langer thuis wonen
