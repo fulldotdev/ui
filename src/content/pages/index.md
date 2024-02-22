@@ -6,6 +6,9 @@ seo:
   image:
     src:
     alt:
+
+_secions:
+  scheme: dark
 sections:
   - scale: medium
     tagline: De goedkoopste van Nederland
@@ -103,6 +106,8 @@ sections:
     _cards:
       collection: products
       layout: carousel
+      specs: null
+      text: null
   - heading: Wat onze klanten zeggen
     text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam sequi recusandae quos perferendis enim fugiat nulla eos vero laboriosam iusto!
     cards:
