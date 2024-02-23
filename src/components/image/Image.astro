@@ -2,8 +2,9 @@
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props {
-  position?: 'background'
-  frame?: 'fill' | 'panel' | 'screen'
+  position?: 'background' | null
+  frame?: 'fill' | 'panel' | 'screen' | null
+  // mask?: 'mask' | 'mask-lg' | null
   src?: string
   alt?: string
   loading?: HTMLAttributes<'img'>['loading']
@@ -72,12 +73,11 @@ function getSizes() {
 }
 ---
 
-{
+<!-- width={src?.startsWith('http') ? 1000 : undefined}
+height={src?.startsWith('http') ? 1000 : undefined} -->{
   src && (
     <img
       src={src}
-      width={src?.startsWith('http') ? 1000 : undefined}
-      height={src?.startsWith('http') ? 1000 : undefined}
       alt={alt ? alt : ''}
       sizes={getSizes()}
       loading={loading}
@@ -96,29 +96,29 @@ function getSizes() {
     mask-image: linear-gradient(to top, transparent 0%, black 100%);
   }
 
-  :where(.image) {
+  img {
     display: block;
-    position: relative;
     transition: var(--transition);
     border-radius: var(--border-radius-1);
     width: 100%;
     height: auto;
     object-fit: cover;
+
+    &:where(.background) {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      order: 1;
+      border-radius: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
 
   :where(.panel) {
-    height: 100%;
-    object-fit: cover;
-  }
-
-  :where(.background) {
-    position: absolute;
-    z-index: -1;
-    -webkit-mask-image: linear-gradient(to top, transparent 0%, white 50%);
-    mask-image: linear-gradient(to top, transparent 0%, white 50%);
-    inset: 0;
-    border-radius: 0;
-    width: 100%;
     height: 100%;
     object-fit: cover;
   }

@@ -9,8 +9,11 @@ seo:
 
 _secions:
   scheme: dark
+  
 sections:
   - scale: medium
+    align: center
+    scheme: dark
     tagline: De goedkoopste van Nederland
     heading: Handig langer thuis wonen
     text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id.
@@ -76,7 +79,7 @@ sections:
     image:
       src: https://picsum.photos/800/600
       alt: Een vrouw die de traplift gebruikt
-  - layout: split
+  - layout: stack
     align: center
     order: switch
     heading: Wat een traplift voor Hilda heeft betekend
@@ -87,6 +90,7 @@ sections:
       - text: Alle trapliften
         href: /trapliften
     image:
+      position: background
       src: https://picsum.photos/800/600
       alt: Een vrouw die de traplift gebruikt
   - align: stretch
