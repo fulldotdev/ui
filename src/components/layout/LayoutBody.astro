@@ -3,20 +3,33 @@ import type { HTMLAttributes } from 'astro/types'
 
 interface Props {
   class?: HTMLAttributes<'div'>['class']
+  scheme?: 'light' | 'dark'
 }
 
-const { class: className } = Astro.props
+const { scheme, class: className } = Astro.props
 ---
 
-<body class:list={['layout__body', className]}>
+<body class:list={['layout__body', scheme, className]}>
   <slot />
 </body>
 
 <style>
+  body {
+    background: var(--base-1);
+  }
+
+  .dark {
+    color-scheme: dark;
+  }
+
+  .light {
+    color-scheme: light;
+  }
+
   :root {
+    transition: var(--transition);
     background: var(--background);
     color: var(--color);
     font: var(--font);
-    transition: var(--transition);
   }
 </style>

@@ -6,7 +6,7 @@ import {
   type ContentCollectionKey,
 } from 'astro:content'
 import { CardRoot } from '.'
-import { getHref } from '../../utils'
+import { getPathname } from '../../utils'
 import { Composite } from '../composite'
 import { Image } from '../image'
 
@@ -25,7 +25,9 @@ interface Props
 let { collection, slug, reference, ...restProps } = Astro.props
 reference = collection && slug && { collection, slug }
 let entry = reference && (await getEntry(reference))
-const href = getHref(entry)
+
+// TODO type fix
+const href = getPathname(entry || ({} as any))
 const props = { ...entry?.data, ...restProps }
 ---
 

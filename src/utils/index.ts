@@ -1,4 +1,5 @@
+export { default as getCollectionDefault } from './getCollectionDefault'
 export { default as getHref } from './getHref'
-export { default as getRouteByEntry } from './getRouteByEntry'
+export { default as getPathname } from './getPathname'
 export { default as getSlot } from './getSlot'
 export { default as unslugify } from './unslugify'

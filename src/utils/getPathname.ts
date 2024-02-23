@@ -4,7 +4,7 @@ export default ({
   slug,
   collection,
   data,
-}: CollectionEntry<ContentCollectionKey>): string | undefined => {
+}: CollectionEntry<ContentCollectionKey>): URL['pathname'] | undefined => {
   if (!slug) return
   if (data.draft) return
   if (collection === 'pages' && slug === 'index') return '/'

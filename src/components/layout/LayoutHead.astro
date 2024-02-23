@@ -4,17 +4,15 @@ import { getEntry } from 'astro:content'
 const company = (await getEntry('globals', 'company')).data
 
 interface Props {
-  seo?: {
-    title?: string | null
-    description?: string | null
-    image?: {
-      src: string | null
-      alt?: string | null
-    }
+  title?: string | null
+  description?: string | null
+  image?: {
+    src: string | null
+    alt?: string | null
   }
 }
 
-const { seo } = Astro.props
+const { title, description, image } = Astro.props
 ---
 
 <head>
@@ -29,19 +27,21 @@ const { seo } = Astro.props
   />
 
   <SEO
-    title={seo?.title || company.name || undefined}
-    description={seo?.description || company.description || undefined}
-    openGraph={{
-      basic: {
-        title: seo?.title || company.name || '',
-        type: 'website',
-        image: seo?.image?.src || company.image || '',
-      },
-      image: {
-        url: seo?.image?.src || company.image || '',
-        alt: seo?.image?.alt || 'Logo' + company.name || '',
-      },
-    }}
+    title={title || undefined}
+    description={description || undefined}
+    openGraph={title && image && image.src
+      ? {
+          basic: {
+            title: title,
+            type: 'website',
+            image: image.src,
+          },
+          image: {
+            url: image?.src,
+            alt: image.alt || undefined,
+          },
+        }
+      : undefined}
   />
 
   <link

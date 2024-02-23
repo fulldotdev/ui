@@ -1,30 +1,40 @@
 ---
+import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
+import merge from 'deepmerge'
 import { LayoutBody, LayoutHead, LayoutMain, LayoutRoot } from '.'
 import { Banner } from '../banner'
 import { Footer } from '../footer'
 import { Header } from '../header'
+import { Sections } from '../sections'
 
-const { props } = Astro
+type Props = CollectionEntry<ContentCollectionKey>
+
+const { data } = Astro.props
 ---
 
-<LayoutRoot {...props}>
-  <LayoutHead {...props}>
+<LayoutRoot {...data}>
+  <!-- <LayoutHead {...merge(data, data.head)}>
+    <slot name="head" />
+  </LayoutHead> -->
+  <LayoutHead
+    {...data}
+    {...data.head}
+  >
     <slot name="head" />
   </LayoutHead>
-  <LayoutBody {...props}>
-    <Banner
+  <LayoutBody {...data}>
+    <!-- <Banner
       scheme="dark"
       text="De goedkoopste van Nederland"
     />
     <Header {...props}>
       <slot name="header" />
-    </Header>
-    <LayoutMain {...props}>
-      <slot />
-      <!-- <Whatsapp {...props} /> -->
+    </Header> -->
+    <LayoutMain {...data}>
+      <Sections sections={data.sections} />
     </LayoutMain>
-    <Footer>
+    <!-- <Footer>
       <slot name="footer" />
-    </Footer>
+    </Footer> -->
   </LayoutBody>
 </LayoutRoot>

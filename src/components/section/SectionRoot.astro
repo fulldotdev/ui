@@ -2,8 +2,9 @@
 import { getSlot } from '../../utils'
 
 interface Props {
-  hue?: string | null
+  hue?: 'base' | 'accent' | null
   scale?: 'small' | 'medium' | 'large' | null
+  look?: 'ghost' | 'soft' | 'solid' | null
   order?: 'reverse' | 'switch' | null
   scheme?: 'invert' | 'light' | 'dark' | null
   align?: 'start' | 'center' | 'stretch' | null
@@ -13,10 +14,11 @@ interface Props {
 }
 
 const {
-  hue,
   scale,
   order,
   scheme,
+  hue = 'base',
+  look = 'ghost',
   align = 'start',
   layout = 'stack',
   frame = 'fill',
@@ -31,6 +33,8 @@ const slot = await getSlot(Astro)
     <section
       class:list={[
         'section',
+        hue,
+        look,
         hue,
         scheme,
         align,
@@ -50,14 +54,14 @@ const slot = await getSlot(Astro)
   section {
     position: relative;
     gap: var(--spacing-5);
-    background: var(--base-1);
+    background: var(--hue-1);
     padding: var(--spacing-6) var(--gutter);
     overflow-x: hidden;
 
-    &:first-child {
+    /* &:first-child {
       margin-top: 0;
       padding-top: var(--spacing-5);
-    }
+    } */
 
     &:where(.reverse) > :global(*:first-child) {
       order: 2;
@@ -107,6 +111,32 @@ const slot = await getSlot(Astro)
 
     &:where(.screen) {
       min-height: 100vh;
+    }
+
+    &:where(.soft) {
+      border-color: var(--hue-6);
+      background-color: var(--hue-2);
+    }
+
+    &:where(.solid) {
+      border-color: var(--hue-9);
+      background: var(--hue-9);
+
+      :global(*) {
+        color: var(--hue-fg);
+      }
+
+      :global(.button.solid) {
+        border-color: var(--hue-fg);
+        background: var(--hue-fg);
+        color: var(--hue-9);
+      }
+
+      :global(.button.soft) {
+        border-color: var(--hue-7);
+        background: var(--hue-3);
+        color: var(--hue-11);
+      }
     }
   }
 </style>

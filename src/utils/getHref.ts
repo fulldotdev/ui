@@ -6,7 +6,7 @@ export default (
   if (!entry) return
   const body = 'body' in entry ? entry.body : ''
   const hasBody = body?.trim().length > 0
-  const blocks = 'blocks' in entry.data ? entry.data.blocks : []
+  const blocks = 'sections' in entry.data ? entry.data.sections : []
   const hasBlocks = blocks.length > 0
   if (hasBody || hasBlocks) return `/${entry.collection}/${entry.slug}`
   return

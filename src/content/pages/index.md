@@ -1,15 +1,16 @@
 ---
-_schema: default
-seo:
+head:
   title: Lorem ipsum
   description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
   image:
     src:
     alt:
+title: Lorem ipsum
+description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+image:
+  src:
+  alt:
 
-_secions:
-  scheme: dark
-  
 sections:
   - scale: medium
     align: center

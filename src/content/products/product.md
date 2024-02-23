@@ -1,16 +1,13 @@
 ---
-_stripe_product_id: prod_PE9qB3WbRqzVdG 
-_stripe_price_id: price_1OPhopAtGAMIOG90iN2MlxIL
+render: true
 
-frame: panel
-
-seo:
+head:
   title:
   description:
   image:
     src: 
     alt: 
-
+ 
 heading: Een extreem goede trapligt 
 text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor,  tellus nec lacinia tincidunt, nunc nisl lacinia nunc, nec tincidunt nunc nisl nec nunc.
 images:
