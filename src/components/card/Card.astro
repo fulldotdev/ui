@@ -5,10 +5,10 @@ import {
   type CollectionEntry,
   type ContentCollectionKey,
 } from 'astro:content'
-import { CardRoot } from '.'
-import { getPathname } from '../../utils'
+import { getCollectionDefault, getPathname } from '../../utils'
 import { Composite } from '../composite'
 import { Image } from '../image'
+import CardRoot from './CardRoot.astro'
 
 interface Props
   extends ComponentProps<typeof CardRoot>,
@@ -25,10 +25,15 @@ interface Props
 let { collection, slug, reference, ...restProps } = Astro.props
 reference = collection && slug && { collection, slug }
 let entry = reference && (await getEntry(reference))
-
+let _data = entry && (await getCollectionDefault(entry.collection, Astro))
+// TODO find better way to handle collection defaults
+const merged = {
+  ...entry,
+  data: { ..._data, ...entry?.data },
+}
 // TODO type fix
-const href = getPathname(entry || ({} as any))
-const props = { ...entry?.data, ...restProps }
+const href = getPathname(merged || ({} as any))
+const props = { ...merged?.data, ...restProps }
 ---
 
 <CardRoot

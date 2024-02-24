@@ -5,11 +5,6 @@ seo:
   image:
     src: 
     alt: 
-heading: Lorem ipsum, dolor sit amet consectetur adipisicing elit
-text: Maak kennis met HLTW
-image:
-  src: https://picsum.photos/400/300
-  alt: 
 sections:
   - _bookshop_name: CtaSection
     scheme: dark

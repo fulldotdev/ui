@@ -2,18 +2,22 @@
 import type { HTMLAttributes } from 'astro/types'
 import { getSlot } from '../../utils'
 interface Props {
+  hue?: 'base' | 'accent' | null
+  scale?: 'small' | 'medium' | 'large' | null
+  look?: 'ghost' | 'soft' | 'solid' | null
   position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
   scheme: 'default' | 'reverse' | 'light' | 'dark'
-  impact: 'low' | 'medium' | 'high' | 'extreme'
-  area: 'default' | 'panel'
+  frame: 'panel'
   class?: HTMLAttributes<'div'>['class']
 }
 
 const {
+  hue,
+  scale,
+  look,
+  frame,
   position = 'relative',
   scheme = 'default',
-  impact = 'medium',
-  area = 'default',
   class: className,
 } = Astro.props
 
@@ -24,13 +28,13 @@ const slot = await getSlot(Astro)
   slot && (
     <header
       class:list={[
-        'header header-root compact',
-        'position-' + position,
-        'scheme-' + scheme,
-        scheme + '-theme',
+        'header compact',
+        position,
         scheme,
-        'impact-' + impact,
-        'area-' + area,
+        hue,
+        scale,
+        look,
+        frame,
         className,
       ]}
     >
@@ -46,7 +50,6 @@ const slot = await getSlot(Astro)
     justify-content: space-between;
     align-items: center;
     gap: var(--flow);
-    z-index: 2;
     z-index: 10;
     border-top-width: 0;
     border-right-width: 0;
@@ -56,30 +59,42 @@ const slot = await getSlot(Astro)
     background: var(--background);
     padding: var(--spacing-2) var(--gutter);
 
-    &:where(.position-sticky) {
+    :global(.button:first-child) {
+      order: 10;
+    }
+
+    &:where(.sticky) {
       position: sticky;
       top: 0;
     }
 
-    &:where(.position-fixed) {
+    &:where(.fixed) {
       position: fixed;
       top: 0;
       right: 0;
       left: 0;
     }
 
-    &:where(.position-absolute) {
+    &:where(.absolute) {
       position: absolute;
       top: 0;
       right: 0;
       left: 0;
     }
 
-    &:where(.area-panel) {
+    &:where(.panel) {
       margin: var(--spacing-2) var(--gutter);
       border-color: var(--border-color);
       border-radius: var(--radius);
       padding: var(--spacing-2) var(--spacing-2);
+    }
+
+    &:where(.soft) {
+      background: var(--base-2);
+    }
+
+    &:where(.solid) {
+      background: var(--accent-9);
     }
   }
 </style>

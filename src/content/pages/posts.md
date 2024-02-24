@@ -1,11 +1,11 @@
 ---
-_schema: default
 seo:
   title: Lorem ipsum
   description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
   image:
     src:
     alt:
+
 sections:
   - _bookshop_name: PostDeck
     impact: medium
@@ -14,7 +14,6 @@ sections:
     heading: Het laatste nieuws
     text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
     posts:
-
   - _bookshop_name: CtaSection
     scheme: dark
     align: stretch

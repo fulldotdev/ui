@@ -1,37 +1,52 @@
 ---
 import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
+import { getEntry } from 'astro:content'
 import merge from 'deepmerge'
 import { LayoutBody, LayoutHead, LayoutMain, LayoutRoot } from '.'
 import { Banner } from '../banner'
 import { Footer } from '../footer'
 import { Header } from '../header'
+import { Section } from '../section'
 import { Sections } from '../sections'
 
-type Props = CollectionEntry<ContentCollectionKey>
+type Props = CollectionEntry<ContentCollectionKey>['data']
 
-const { data } = Astro.props
+const _layout = await getEntry('settings', 'layout')
+let { props } = Astro
+props = merge(_layout.data, props)
 ---
 
-<LayoutRoot {...data}>
+<LayoutRoot {...props}>
   <!-- <LayoutHead {...merge(data, data.head)}>
     <slot name="head" />
   </LayoutHead> -->
   <LayoutHead
-    {...data}
-    {...data.head}
+    {...props}
+    {...props.head}
   >
     <slot name="head" />
   </LayoutHead>
-  <LayoutBody {...data}>
+  <LayoutBody
+    id={Astro.props.collection}
+    {...props}
+    {...props.section}
+  >
     <!-- <Banner
       scheme="dark"
       text="De goedkoopste van Nederland"
-    />
-    <Header {...props}>
-      <slot name="header" />
-    </Header> -->
-    <LayoutMain {...data}>
-      <Sections sections={data.sections} />
+    />-->
+    <Header {...props.header} />
+    <LayoutMain {...props}>
+      <Section
+        id="hero"
+        render={Astro.props.render}
+        {...merge(props, props.hero || {})}
+      />
+      <Sections {...props} />
+      <Section
+        id="cta"
+        {...props.cta}
+      />
     </LayoutMain>
     <!-- <Footer>
       <slot name="footer" />

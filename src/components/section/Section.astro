@@ -6,6 +6,7 @@ import {
   type ContentCollectionKey,
 } from 'astro:content'
 import { SectionRoot } from '.'
+import { getCollectionDefault } from '../../utils'
 import { Cards } from '../cards'
 import { Composite } from '../composite'
 import { Gallery } from '../gallery'
@@ -30,14 +31,31 @@ interface Props
   }
   collection?: ContentCollectionKey
   slug?: CollectionEntry<ContentCollectionKey>['slug']
+  // TODO:
+  render?: any
 }
 
-let { collection, slug, reference, class: className, ...props } = Astro.props
+let {
+  collection,
+  slug,
+  reference,
+  class: className,
+  render,
+  ...props
+} = Astro.props
 
 collection = collection || reference?.collection
 slug = slug || reference?.slug
-const entry = collection && slug && (await getEntry({ collection, slug }))
-props = { ...entry?.data, ...props }
+const entry = collection && slug && (await getEntry(collection, slug))
+const _data = entry && (await getCollectionDefault(entry.collection, Astro))
+const mergedEntry = {
+  ...entry,
+  data: {
+    ..._data,
+    ...entry?.data,
+  },
+}
+props = { ...mergedEntry?.data, ...props }
 ---
 
 <SectionRoot
@@ -49,7 +67,7 @@ props = { ...entry?.data, ...props }
     align={props.layout === 'split' ? 'start' : props.align}
   />
   <Image {...props.image} />
-  <Prose {...props} />
+  <Prose render={render || entry?.render} />
   <Cards
     {...props._cards}
     cards={props.cards}
