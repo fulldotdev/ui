@@ -1,27 +1,23 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import { getEntry } from 'astro:content'
 import { BannerRoot } from '.'
 import { Links } from '../links'
-import { Spec } from '../spec'
+import { Specs } from '../specs'
 import { Text } from '../text'
 
 interface Props
   extends ComponentProps<typeof BannerRoot>,
     ComponentProps<typeof Links>,
     ComponentProps<typeof Text>,
-    ComponentProps<typeof Spec> {}
+    ComponentProps<typeof Specs> {}
 
 let { props } = Astro
-props = {
-  ...(await getEntry('globals', 'banner'))?.data,
-  ...props,
-}
----
 
+console.log('banner', props)
+
+---
 <BannerRoot {...props}>
-  <!-- TODO: replace text with Specs (checkmark) -->
-  <Spec {...props} />
+  <Specs {...props} />
   <Links {...props} />
 </BannerRoot>
 
@@ -33,8 +29,8 @@ props = {
 
   div {
     display: flex;
-    gap: var(--spacing-3);
     align-items: center;
+    gap: var(--spacing-3);
     color: var(--text);
     font-size: var(--font-size-1);
   }
