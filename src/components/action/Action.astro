@@ -4,6 +4,7 @@ import { ActionRoot } from '.'
 import { Buttons } from '../buttons'
 import { Form } from '../form'
 import { Price } from '../price'
+import { Select } from '../select'
 
 interface Props
   extends ComponentProps<typeof ActionRoot>,
@@ -16,15 +17,24 @@ const { props } = Astro
 ---
 
 <ActionRoot {...props}>
-  <Price {...props}>
-    <slot name="price" />
-  </Price>
   <Form
     slug={typeof props.form == 'string' ? props.form : undefined}
     {...props}
   >
     <slot name="form" />
   </Form>
+  <!-- TODO cleaner maken -->
+  {
+    props.variants?.map((variant: any) => (
+      <Select
+        label={variant.name}
+        options={variant.options.map((item: any) => item.value)}
+      />
+    ))
+  }
+  <Price {...props}>
+    <slot name="price" />
+  </Price>
   <Buttons {...props}>
     <slot name="buttons" />
   </Buttons>
