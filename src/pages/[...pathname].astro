@@ -1,8 +1,7 @@
 ---
 import { getCollection, type ContentCollectionKey } from 'astro:content'
-import merge from 'deepmerge'
 import Layout from '../components/layout/Layout.astro'
-import { getCollectionDefault, getPathname } from '../utils'
+import { getPathname, withDefaults } from '../utils'
 
 export async function getStaticPaths() {
   const collections: ContentCollectionKey[] = [
@@ -20,7 +19,7 @@ export async function getStaticPaths() {
   const resolved = await Promise.all(promises)
   const flattened = resolved.flat()
   const filtered = flattened.filter(Boolean)
-  const entries = filtered
+  const entries = await withDefaults(filtered)
 
   return entries.map((entry) => ({
     params: {
@@ -31,14 +30,6 @@ export async function getStaticPaths() {
 }
 
 const { ...entry } = Astro.props
-
-const _entryData = await getCollectionDefault(entry.collection, Astro)
-const mergedData = merge(_entryData, entry.data)
-
-const mergedEntry = {
-  ...entry,
-  data: mergedData as typeof entry.data,
-}
 ---
 
-<Layout {...mergedEntry} />
+<Layout {...entry.data} />

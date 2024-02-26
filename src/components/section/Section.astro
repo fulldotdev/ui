@@ -1,61 +1,34 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import {
-  getEntry,
-  type CollectionEntry,
-  type ContentCollectionKey,
-} from 'astro:content'
+import { getEntry } from 'astro:content'
+import merge from 'deepmerge'
 import { SectionRoot } from '.'
-import { getCollectionDefault } from '../../utils'
+import { getReference, withDefaults, type GetReference } from '../../utils'
 import { Cards } from '../cards'
 import { Composite } from '../composite'
 import { Gallery } from '../gallery'
 import { Image } from '../image'
 import { Media } from '../media'
 import { Prose } from '../prose'
-import { Rating } from '../rating'
 
 interface Props
-  extends ComponentProps<typeof SectionRoot>,
-    ComponentProps<typeof Composite>,
+  extends GetReference,
+    ComponentProps<typeof SectionRoot>,
     ComponentProps<typeof Gallery>,
-    ComponentProps<typeof Rating>,
-    ComponentProps<typeof Prose>,
+    // ComponentProps<typeof Prose>,
     ComponentProps<typeof Media> {
   _cards?: ComponentProps<typeof Cards>
   cards?: ComponentProps<typeof Cards>['cards']
+  _image?: ComponentProps<typeof Image>
   image?: ComponentProps<typeof Image>
-  reference?: {
-    collection: ContentCollectionKey
-    slug: CollectionEntry<ContentCollectionKey>['slug']
-  }
-  collection?: ContentCollectionKey
-  slug?: CollectionEntry<ContentCollectionKey>['slug']
-  // TODO:
-  render?: any
 }
 
-let {
-  collection,
-  slug,
-  reference,
-  class: className,
-  render,
-  ...props
-} = Astro.props
+const reference = getReference(Astro.props)
+const entry = reference && (await getEntry(reference))
+const entryWithDefaults = entry && (await withDefaults(entry))
+const entryAndProps = merge(entryWithDefaults?.data, Astro.props)
 
-collection = collection || reference?.collection
-slug = slug || reference?.slug
-const entry = collection && slug && (await getEntry(collection, slug))
-const _data = entry && (await getCollectionDefault(entry.collection, Astro))
-const mergedEntry = {
-  ...entry,
-  data: {
-    ..._data,
-    ...entry?.data,
-  },
-}
-props = { ...mergedEntry?.data, ...props }
+const { class: className, ...props } = entryAndProps
 ---
 
 <SectionRoot

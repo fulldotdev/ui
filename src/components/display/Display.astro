@@ -16,19 +16,27 @@ interface Props
     ComponentProps<typeof Rating>,
     ComponentProps<typeof Icon>,
     ComponentProps<typeof Tagline>,
-    ComponentProps<typeof Heading>,
     ComponentProps<typeof Text>,
     ComponentProps<typeof Specs>,
-    ComponentProps<typeof Html> {}
+    ComponentProps<typeof Html> {
+  heading?:
+    | ComponentProps<typeof Heading>
+    | ComponentProps<typeof Heading>['heading']
+}
+
+const headingProps = () => {
+  if (typeof Astro.props.heading == 'string') return { ...Astro.props }
+  else return { ...Astro.props.heading }
+}
 
 const { props } = Astro
 ---
 
 <DisplayRoot {...props}>
+  <Heading {...headingProps()} />
   <Rating {...props} />
   <Icon {...props} />
   <Tagline {...props} />
-  <Heading {...props} />
   <Html {...props} />
   <Text {...props} />
   <Specs {...props} />

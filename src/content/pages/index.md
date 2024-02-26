@@ -61,6 +61,7 @@ sections:
       collection: products
       specs: null
       text: null
+      variants: null
   - layout: split
     align: center
     order: switch
@@ -107,6 +108,7 @@ sections:
       layout: carousel
       specs: null
       text: null
+      variants: null
   - heading: Wat onze klanten zeggen
     text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam sequi recusandae quos perferendis enim fugiat nulla eos vero laboriosam iusto!
     cards:

@@ -4,13 +4,15 @@ import {
   type CollectionEntry,
   type ContentCollectionKey,
 } from 'astro:content'
+import { getEntryOrCollection, type GetEntryOrCollection } from 'src'
 
-interface Props {
+interface Props extends GetEntryOrCollection {
   collection?: CollectionEntry<ContentCollectionKey>['collection']
   slug?: CollectionEntry<ContentCollectionKey>['slug']
   render?: CollectionEntry<ContentCollectionKey>['render']
 }
 
+const entry = await getEntryOrCollection<Props>()
 let { render, collection, slug } = Astro.props
 if (collection && slug) render = (await getEntry(collection, slug)).render
 const Content = render ? (await render()).Content : null
