@@ -1,7 +1,7 @@
 ---
-head:
-  title: Lorem ipsum
-  description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+seo:
+  title:
+  description:
   image:
     src:
     alt:
@@ -67,10 +67,10 @@ sections:
     heading: Wat een traplift voor Hilda heeft betekend
     text:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:
-      - text: Alle trapliften
-        href: /trapliften
-      - text: Alle trapliften
-        href: /trapliften
+      - text: Bekijk de trapliften
+        href: "#"
+      - text: Alle producten
+        href: /producten
     image:
       src: https://picsum.photos/800/600
       alt: Een vrouw die de traplift gebruikt

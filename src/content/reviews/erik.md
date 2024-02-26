@@ -1,5 +1,6 @@
 ---
 _schema: default
+render: false
 rating: 5
 heading: Erik Bakker
 text: >

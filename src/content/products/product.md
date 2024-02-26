@@ -1,7 +1,7 @@
 ---
 render: true
 
-head:
+seo:
   title:
   description:
   image:
