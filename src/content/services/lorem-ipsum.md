@@ -6,7 +6,7 @@ seo:
   image:
     _bookshop_name: elements/image
     src:
-    alt:
+    
 title: Lorem ipsum
 description: >
   Lorem, ipsum dolor sit amet consectetur adipisicing elit. Asperiores,
@@ -14,7 +14,7 @@ description: >
 image:
   _bookshop_name: elements/image
   src: /900x.jpg
-  alt:
+  
 sections:
   - _bookshop_name: blocks/intro
     writeup: >-
@@ -26,7 +26,7 @@ sections:
         image:
           _bookshop_name: elements/image
           src: /900x.jpg
-          alt:
+          
         writeup: >-
           <h3>Lorem ipsum dolor sit</h3><p>Lorem ipsum dolor sit amet
           consectetur adipisicing elit. Suscipit, numquam!</p>
@@ -35,7 +35,7 @@ sections:
         image:
           _bookshop_name: elements/image
           src: /900x.jpg
-          alt:
+          
         writeup: >-
           <h3>Lorem ipsum dolor sit</h3><p>Lorem ipsum dolor sit amet
           consectetur adipisicing elit. Suscipit, numquam!</p>
@@ -44,7 +44,7 @@ sections:
         image:
           _bookshop_name: elements/image
           src: /900x.jpg
-          alt:
+          
         writeup: >-
           <h3>Lorem ipsum dolor sit</h3><p>Lorem ipsum dolor sit amet
           consectetur adipisicing elit. Suscipit, numquam!</p>

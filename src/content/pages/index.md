@@ -3,14 +3,14 @@ seo:
   title:
   description:
   image:
-    src:
-    alt:
+
 sections:
   - scale: medium
     align: center
     scheme: dark
     tagline: De goedkoopste van Nederland
     heading: Handig langer thuis wonen
+    image: https://picsum.photos/800/600
     text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id.
     cards:
       - badkamer
@@ -61,6 +61,7 @@ sections:
       collection: products
       specs: null
       text: null
+      variants: null
   - layout: split
     align: center
     order: switch
@@ -71,9 +72,7 @@ sections:
         href: "#"
       - text: Alle producten
         href: /producten
-    image:
-      src: https://picsum.photos/800/600
-      alt: Een vrouw die de traplift gebruikt
+    image: https://picsum.photos/800/600
   - layout: stack
     align: center
     order: switch
@@ -84,10 +83,10 @@ sections:
         href: /trapliften
       - text: Alle trapliften
         href: /trapliften
-    image:
+    image: https://picsum.photos/800/600
+    _image:
       position: background
-      src: https://picsum.photos/800/600
-      alt: Een vrouw die de traplift gebruikt
+      
   - align: stretch
     heading: Alle trapliften
     buttons:
@@ -107,6 +106,7 @@ sections:
       layout: carousel
       specs: null
       text: null
+      variants: null
   - heading: Wat onze klanten zeggen
     text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam sequi recusandae quos perferendis enim fugiat nulla eos vero laboriosam iusto!
     cards:

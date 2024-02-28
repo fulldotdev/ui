@@ -1,18 +1,21 @@
 ---
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import { getSlot } from '../../utils'
+import { buildProps, getSlot, type BuildProps } from '../../utils'
 import { Icon } from '../icon'
 
-interface Props extends ComponentProps<typeof Icon> {
+interface Base extends ComponentProps<typeof Icon> {
   look?: 'solid' | 'soft' | 'ghost' | null
   text?: string | null
   href?: HTMLAttributes<'a'>['href']
   class?: HTMLAttributes<'div'>['class']
 }
 
-const { look = 'solid', icon, text, href, class: className } = Astro.props
-const Tag = href ? 'a' : 'button'
+type Props = BuildProps<Base, 'button'>
+const props = buildProps(Astro, 'button')
 const slot = await getSlot(Astro)
+
+const { look = 'solid', icon, text, href, class: className } = props
+const Tag = href ? 'a' : 'button'
 ---
 
 {

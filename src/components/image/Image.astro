@@ -1,12 +1,12 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+import { buildProps, unslugify, type BuildProps } from '../../utils'
 
-interface Props {
+interface Base {
+  image?: string | null
+  alt?: string | null
   position?: 'background' | null
   frame?: 'fill' | 'panel' | 'screen' | null
-  // mask?: 'mask' | 'mask-lg' | null
-  src?: string
-  alt?: string
   loading?: HTMLAttributes<'img'>['loading']
   sizes?: {
     base: string
@@ -17,6 +17,18 @@ interface Props {
     '2xl'?: string
   }
 }
+
+type Props = BuildProps<Base, 'image'>
+const props = buildProps(Astro, 'image')
+
+// interface Props {
+//   image?: string | null | Omit<Props, '_image'>
+//   _image?: Props['image']
+//   alt?: string
+//   position?: 'background' | null
+//   frame?: 'fill' | 'panel' | 'screen' | null
+//   loading?: HTMLAttributes<'img'>['loading']
+// }
 
 // const variant = cva({
 //   base: 'image',
@@ -39,24 +51,32 @@ interface Props {
 const {
   position,
   frame,
-  src,
+  image,
   alt = '',
   loading = 'lazy',
   sizes = {
     base: '100vw',
   },
-} = Astro.props
+} = props
 
-function getSrc() {
-  if (src?.startsWith('http')) return src
-  // TODO: add eager import
-  const images = import.meta.glob('/src/assets/**/*.{jpeg,jpg,png,webp,gif}', {
-    eager: true,
-  })
-  const path = ('/src/assets/' + src).replace('//', '/')
-  const image = images[path]
-  if (!image) console.warn(`Image not found: ${path}`)
-  else return image
+// function getSrc() {
+//   if (src?.startsWith('http')) return src
+//   // TODO: add eager import
+//   const images = import.meta.glob('/src/assets/**/*.{jpeg,jpg,png,webp,gif}', {
+//     eager: true,
+//   })
+//   const path = ('/src/assets/' + src).replace('//', '/')
+//   const image = images[path]
+//   if (!image) console.warn(`Image not found: ${path}`)
+//   else return image
+// }
+
+function getAlt(): string {
+  if (alt) return alt
+  const filename = image?.split('/').pop()
+  const slug = filename && filename.split('.')[0]
+  const unslugged = slug && unslugify(slug)
+  return unslugged || ''
 }
 
 function getSizes() {
@@ -74,17 +94,16 @@ function getSizes() {
 ---
 
 {
-  src && (
+  image && (
     <img
-      src={src}
-      alt={alt ? alt : ''}
+      src={image}
+      alt={getAlt()}
       sizes={getSizes()}
       loading={loading}
       class:list={['image', position, frame]}
     />
   )
 }
-
 <style>
   .mask {
     -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);

@@ -4,11 +4,10 @@ seo:
   description: 
   image:
     src: 
-    alt: 
+    
 
 heading:
 text:
-image:
-  src:
-  alt:
+image: 
+  
 ---

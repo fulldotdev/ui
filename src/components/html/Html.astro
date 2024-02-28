@@ -1,19 +1,23 @@
 ---
 import type { HTMLString } from 'astro/runtime/server/escape.js'
-import { getSlot } from '../../utils'
+import { buildProps, getSlot, type BuildProps } from '../../utils'
 
-interface Props {
+interface Base {
   html?: HTMLString | null
   class?: string | null
 }
 
-const { class: className } = Astro.props
+type Props = BuildProps<Base, 'html'>
+const props = buildProps(Astro, 'html')
 const slot = await getSlot(Astro)
+
+const { html, class: className } = props
 ---
 
 {
-  slot && (
+  (slot || html) && (
     <div class:list={['html', className]}>
+      <Fragment set:html={html} />
       <slot />
     </div>
   )

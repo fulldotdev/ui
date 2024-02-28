@@ -1,27 +1,34 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import { BannerRoot } from '.'
+import { buildProps, type BuildProps } from '../../utils'
 import { Links } from '../links'
 import { Specs } from '../specs'
-import { Text } from '../text'
 
-interface Props
+interface Base
   extends ComponentProps<typeof BannerRoot>,
-    ComponentProps<typeof Links>,
-    ComponentProps<typeof Text>,
-    ComponentProps<typeof Specs> {}
+    Pick<ComponentProps<typeof Links>, 'links' | '_links'>,
+    Pick<ComponentProps<typeof Specs>, 'specs' | '_specs'> {}
 
-let { props } = Astro
+type Props = BuildProps<Base, 'banner'>
+const props = buildProps(Astro, 'banner')
 
-console.log('banner', props)
-
+const { specs, _specs, links, _links, ...rest } = props
 ---
-<BannerRoot {...props}>
-  <Specs {...props} />
-  <Links {...props} />
+
+<BannerRoot {...rest}>
+  <Specs
+    {specs}
+    {_specs}
+  />
+  <Links
+    {links}
+    {_links}
+  />
 </BannerRoot>
 
 <style>
+  /* FIXME volgensmij is deze styling onnnodig */
   span {
     color: var(--text);
     font-size: var(--font-size-1);

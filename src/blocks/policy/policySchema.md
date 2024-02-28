@@ -4,5 +4,5 @@ seo:
   description: 
   image:
     src: 
-    alt: 
+    
 ---

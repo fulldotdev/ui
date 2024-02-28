@@ -4,7 +4,7 @@ seo:
   description: 
   image:
     src: 
-    alt: 
+    
 sections:
   - _bookshop_name: CtaSection
     scheme: dark

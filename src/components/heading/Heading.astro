@@ -1,24 +1,27 @@
 ---
-import { getSlot } from '../../utils'
+import { buildProps, getSlot, type BuildProps } from '../../utils'
 
-interface Props {
-  level?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | null
-  heading?: string | null
+interface Base {
+  heading?: string
+  hello?: number
+  tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | null
   class?: string | null
 }
 
-const { heading, level, class: className } = Astro.props
-
-const Level = level || 'h2'
+type Props = BuildProps<Base, 'heading'>
+const props = buildProps(Astro, 'heading')
 const slot = await getSlot(Astro)
+
+const { heading, tag, class: className } = props
+const Tag = tag ? tag : 'h2'
 ---
 
 {
   (heading || slot) && (
-    <Level class:list={['heading', className]}>
+    <Tag class:list={['heading', className]}>
       <Fragment set:html={slot} />
       {heading}
-    </Level>
+    </Tag>
   )
 }
 

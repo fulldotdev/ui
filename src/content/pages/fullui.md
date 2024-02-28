@@ -5,16 +5,15 @@ seo:
   description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
   image:
     src:
-    alt:
+    
 sections:
   - _bookshop_name: HeroSection
     align: center
     scheme: dark
     heading: Component Library built for Astro
     text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id.
-    image:
-      src: https://picsum.photos/800/600
-      alt: 
+    image: https://picsum.photos/800/600
+      
   - _bookshop_name: FeatureDeck
     layout: row
     features:
@@ -41,9 +40,8 @@ sections:
         href: /trapliften
       - text: Alle trapliften
         href: /trapliften
-    image:
-      src: https://picsum.photos/800/600
-      alt: Een vrouw die de traplift gebruikt
+    image: https://picsum.photos/800/600
+      
   - _bookshop_name: FeatureSection
     theme: subtle
     layout: split
@@ -53,9 +51,8 @@ sections:
     buttons:
       - text: Alle trapliften
         href: /trapliften
-    image:
-      src: https://picsum.photos/800/600
-      alt: Een vrouw die de traplift gebruikt
+    image: https://picsum.photos/800/600
+      
   - _bookshop_name: ProductDeck
     impact: medium
     layout: carousel

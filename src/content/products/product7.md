@@ -7,13 +7,13 @@ seo:
   description:
   image:
     src: 
-    alt: 
+    
 
 heading: Traplift 
 text: 
 images:
   - src: https://picsum.photos/350/400
-    alt:
+    
 categories:
   - badkamer
   - trapliften

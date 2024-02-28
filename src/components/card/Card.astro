@@ -1,53 +1,48 @@
 ---
 import type { ComponentProps } from 'astro/types'
+import { getEntry } from 'astro:content'
+import merge from 'deepmerge'
 import {
-  getEntry,
-  type CollectionEntry,
-  type ContentCollectionKey,
-} from 'astro:content'
-import { getCollectionDefault, getPathname } from '../../utils'
+  buildProps,
+  getPathname,
+  getReference,
+  withDefaults,
+  type BuildProps,
+  type GetReference,
+} from '../../utils'
 import { Composite } from '../composite'
 import { Image } from '../image'
 import CardRoot from './CardRoot.astro'
 
-interface Props
-  extends ComponentProps<typeof CardRoot>,
-    ComponentProps<typeof Composite> {
-  reference?: {
-    collection: ContentCollectionKey
-    slug: CollectionEntry<ContentCollectionKey>['slug']
-  }
-  collection?: ContentCollectionKey
-  slug?: CollectionEntry<ContentCollectionKey>['slug']
-  image?: ComponentProps<typeof Image>
-}
+interface Base
+  extends GetReference,
+    ComponentProps<typeof CardRoot>,
+    ComponentProps<typeof Composite>,
+    Pick<ComponentProps<typeof Image>, 'image' | '_image'> {}
 
-let { collection, slug, reference, ...restProps } = Astro.props
-reference = collection && slug && { collection, slug }
-let entry = reference && (await getEntry(reference))
-let _data = entry && (await getCollectionDefault(entry.collection, Astro))
-// TODO find better way to handle collection defaults
-const merged = {
-  ...entry,
-  data: { ..._data, ...entry?.data },
-}
-// TODO type fix
-const href = getPathname(merged || ({} as any))
-const props = { ...merged?.data, ...restProps }
+type Props = BuildProps<Base, 'card'>
+let props = buildProps(Astro, 'card')
+
+const reference = getReference(props)
+const entry = reference && (await getEntry(reference))
+const entryWithDefaults = entry && (await withDefaults(entry))
+const href = getPathname(entryWithDefaults || ({} as any))
+
+props = merge(entryWithDefaults?.data, props)
+
+const { image, _image, ...restProps } = props
 ---
 
 <CardRoot
   {href}
-  {...props}
+  {...restProps}
 >
   <Image
-    {...props}
-    {...props.images?.[0]}
-    {...props.image}
+    {_image}
+    {image}
   />
-  <slot />
   <Composite
-    {...props}
     density="compact"
+    {...restProps}
   />
 </CardRoot>

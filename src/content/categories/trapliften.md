@@ -4,11 +4,10 @@ seo:
   description: 
   image:
     src: 
-    alt: 
+    
 
 heading: Trapliften
 text: 
-image:
-  src: https://picsum.photos/824/616
-  alt: 
+image:  https://picsum.photos/824/616
+  
 ---

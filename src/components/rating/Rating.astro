@@ -1,13 +1,16 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
-import { getSlot } from '../../utils'
+import { buildProps, getSlot, type BuildProps } from '../../utils'
 import Icon from '../icon/Icon.astro'
 
-interface Props {
+interface Base {
   rating?: number | null
   class?: HTMLAttributes<'div'>['class']
 }
 
+type Props = BuildProps<Base, 'rating'>
+const props = buildProps(Astro, 'rating')
+const slot = await getSlot(Astro)
 // const percentageClasses = (num: number) => {
 //   if (!rating) return
 //   if (rating >= num) return 'bg-hue9'
@@ -15,8 +18,7 @@ interface Props {
 //   else return 'bg-gradient-to-r from-50% to-50% from-hue9 to-hue6'
 // }
 
-const { rating, class: className } = Astro.props
-const slot = await getSlot(Astro)
+const { rating, class: className } = props
 ---
 
 {

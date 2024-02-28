@@ -6,13 +6,13 @@ seo:
   description:
   image:
     src: 
-    alt: 
+    
  
 heading: Een extreem goede trapligt 
 text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor,  tellus nec lacinia tincidunt, nunc nisl lacinia nunc, nec tincidunt nunc nisl nec nunc.
 images:
   - src: https://picsum.photos/350/400
-    alt:
+    
 
 specs:
   - Snelle levering

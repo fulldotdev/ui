@@ -1,6 +1,7 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import { DisplayRoot } from '.'
+import { buildProps, type BuildProps } from '../../utils'
 import { Channels } from '../channels'
 import { Heading } from '../heading'
 import { Html } from '../html'
@@ -11,28 +12,80 @@ import { Specs } from '../specs'
 import { Tagline } from '../tagline'
 import { Text } from '../text'
 
-interface Props
+interface Base
   extends ComponentProps<typeof DisplayRoot>,
-    ComponentProps<typeof Rating>,
-    ComponentProps<typeof Icon>,
-    ComponentProps<typeof Tagline>,
-    ComponentProps<typeof Heading>,
-    ComponentProps<typeof Text>,
-    ComponentProps<typeof Specs>,
-    ComponentProps<typeof Html> {}
+    Pick<ComponentProps<typeof Rating>, 'rating' | '_rating'>,
+    Pick<ComponentProps<typeof Html>, 'html' | '_html'>,
+    Pick<ComponentProps<typeof Specs>, 'specs' | '_specs'>,
+    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'>,
+    Pick<ComponentProps<typeof Tagline>, 'tagline' | '_tagline'>,
+    Pick<ComponentProps<typeof Text>, 'text' | '_text'>,
+    Pick<ComponentProps<typeof Channels>, 'channels' | '_channels'>,
+    Pick<ComponentProps<typeof Socials>, 'socials' | '_socials'>,
+    Pick<ComponentProps<typeof Heading>, 'heading' | '_heading'> {}
 
-const { props } = Astro
+type Props = BuildProps<Base, 'display'>
+const props = buildProps(Astro, 'display')
+
+const {
+  rating,
+  _rating,
+  icon,
+  _icon,
+  tagline,
+  _tagline,
+  heading,
+  _heading,
+  text,
+  _text,
+  specs,
+  _specs,
+  html,
+  _html,
+  channels,
+  _channels,
+  socials,
+  _socials,
+  ...restProps
+} = props
 ---
 
-<DisplayRoot {...props}>
-  <Rating {...props} />
-  <Icon {...props} />
-  <Tagline {...props} />
-  <Heading {...props} />
-  <Html {...props} />
-  <Text {...props} />
-  <Specs {...props} />
-  <Channels {...props} />
-  <Socials {...props} />
+<DisplayRoot {...restProps}>
+  <Rating
+    {rating}
+    {_rating}
+  />
+  <Icon
+    {icon}
+    {_icon}
+  />
+  <Tagline
+    {tagline}
+    {_tagline}
+  />
+  <Heading
+    {heading}
+    {_heading}
+  />
+  <Html
+    {html}
+    {_html}
+  />
+  <Text
+    {text}
+    {_text}
+  />
+  <Specs
+    {specs}
+    {_specs}
+  />
+  <Channels
+    {channels}
+    {_channels}
+  />
+  <Socials
+    {socials}
+    {_socials}
+  />
   <slot />
 </DisplayRoot>

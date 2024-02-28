@@ -1,80 +1,69 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import {
-  getEntry,
-  type CollectionEntry,
-  type ContentCollectionKey,
-} from 'astro:content'
+import { getEntry } from 'astro:content'
+import merge from 'deepmerge'
 import { SectionRoot } from '.'
-import { getCollectionDefault } from '../../utils'
+import {
+  buildProps,
+  getReference,
+  withDefaults,
+  type BuildProps,
+  type GetReference,
+} from '../../utils'
 import { Cards } from '../cards'
 import { Composite } from '../composite'
 import { Gallery } from '../gallery'
 import { Image } from '../image'
-import { Media } from '../media'
 import { Prose } from '../prose'
-import { Rating } from '../rating'
 
-interface Props
-  extends ComponentProps<typeof SectionRoot>,
-    ComponentProps<typeof Composite>,
-    ComponentProps<typeof Gallery>,
-    ComponentProps<typeof Rating>,
-    ComponentProps<typeof Prose>,
-    ComponentProps<typeof Media> {
-  _cards?: ComponentProps<typeof Cards>
-  cards?: ComponentProps<typeof Cards>['cards']
-  image?: ComponentProps<typeof Image>
-  reference?: {
-    collection: ContentCollectionKey
-    slug: CollectionEntry<ContentCollectionKey>['slug']
-  }
-  collection?: ContentCollectionKey
-  slug?: CollectionEntry<ContentCollectionKey>['slug']
-  // TODO:
-  render?: any
+interface Base
+  extends GetReference,
+    ComponentProps<typeof SectionRoot>,
+    Pick<ComponentProps<typeof Image>, 'image' | '_image'>,
+    Pick<ComponentProps<typeof Cards>, 'cards' | '_cards'> {
+  // Pick<ComponentProps<typeof Gallery>, 'gallery' | '_gallery'>,
+  // Pick<ComponentProps<typeof Prose>, 'prose' | '_prose'>,
+  // ComponentProps<typeof Prose>,
 }
 
-let {
-  collection,
-  slug,
-  reference,
+type Props = BuildProps<Base, 'section'>
+const props = buildProps(Astro, 'section')
+
+const reference = getReference(props)
+const entry = reference && (await getEntry(reference))
+const entryWithDefaults = entry && (await withDefaults(entry))
+const entryAndProps = merge(entryWithDefaults?.data, props)
+
+const {
+  cards,
+  _cards,
+  image,
+  _image,
   class: className,
-  render,
-  ...props
-} = Astro.props
-
-collection = collection || reference?.collection
-slug = slug || reference?.slug
-const entry = collection && slug && (await getEntry(collection, slug))
-const _data = entry && (await getCollectionDefault(entry.collection, Astro))
-const mergedEntry = {
-  ...entry,
-  data: {
-    ..._data,
-    ...entry?.data,
-  },
-}
-props = { ...mergedEntry?.data, ...props }
+  ...restProps
+} = entryAndProps
 ---
 
 <SectionRoot
   class={className}
-  {...props}
+  {...restProps}
 >
   <Composite
     {...props}
     align={props.layout === 'split' ? 'start' : props.align}
   />
-  <Image {...props.image} />
-  <Gallery
-    {...props}
-    gallery={props.images}
+  <Image
+    {image}
+    {_image}
   />
+  <!-- <Gallery
+    {gallery}
+    {_gallery}
+  /> -->
   <Cards
-    {...props._cards}
-    cards={props.cards}
+    {cards}
+    {_cards}
   />
-  <Prose render={render || entry?.render} />
+  <!-- <Prose render={render || entry?.render} /> -->
   <slot />
 </SectionRoot>
