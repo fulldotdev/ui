@@ -4,7 +4,7 @@ seo:
   description: 
   image:
     src: 
-    alt:
+    
     
 sections:
 ---

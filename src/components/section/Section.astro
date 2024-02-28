@@ -3,51 +3,67 @@ import type { ComponentProps } from 'astro/types'
 import { getEntry } from 'astro:content'
 import merge from 'deepmerge'
 import { SectionRoot } from '.'
-import { getReference, withDefaults, type GetReference } from '../../utils'
+import {
+  buildProps,
+  getReference,
+  withDefaults,
+  type BuildProps,
+  type GetReference,
+} from '../../utils'
 import { Cards } from '../cards'
 import { Composite } from '../composite'
 import { Gallery } from '../gallery'
 import { Image } from '../image'
-import { Media } from '../media'
 import { Prose } from '../prose'
 
-interface Props
+interface Base
   extends GetReference,
     ComponentProps<typeof SectionRoot>,
-    ComponentProps<typeof Gallery>,
-    // ComponentProps<typeof Prose>,
-    ComponentProps<typeof Media> {
-  _cards?: ComponentProps<typeof Cards>
-  cards?: ComponentProps<typeof Cards>['cards']
-  _image?: ComponentProps<typeof Image>
-  image?: ComponentProps<typeof Image>
+    Pick<ComponentProps<typeof Image>, 'image' | '_image'>,
+    Pick<ComponentProps<typeof Cards>, 'cards' | '_cards'> {
+  // Pick<ComponentProps<typeof Gallery>, 'gallery' | '_gallery'>,
+  // Pick<ComponentProps<typeof Prose>, 'prose' | '_prose'>,
+  // ComponentProps<typeof Prose>,
 }
 
-const reference = getReference(Astro.props)
+type Props = BuildProps<Base, 'section'>
+const props = buildProps(Astro, 'section')
+
+const reference = getReference(props)
 const entry = reference && (await getEntry(reference))
 const entryWithDefaults = entry && (await withDefaults(entry))
-const entryAndProps = merge(entryWithDefaults?.data, Astro.props)
+const entryAndProps = merge(entryWithDefaults?.data, props)
 
-const { class: className, ...props } = entryAndProps
+const {
+  cards,
+  _cards,
+  image,
+  _image,
+  class: className,
+  ...restProps
+} = entryAndProps
 ---
 
 <SectionRoot
   class={className}
-  {...props}
+  {...restProps}
 >
   <Composite
     {...props}
     align={props.layout === 'split' ? 'start' : props.align}
   />
-  <Image {...props.image} />
-  <Gallery
-    {...props}
-    gallery={props.images}
+  <Image
+    {image}
+    {_image}
   />
+  <!-- <Gallery
+    {gallery}
+    {_gallery}
+  /> -->
   <Cards
-    {...props._cards}
-    cards={props.cards}
+    {cards}
+    {_cards}
   />
-  <Prose render={render || entry?.render} />
+  <!-- <Prose render={render || entry?.render} /> -->
   <slot />
 </SectionRoot>

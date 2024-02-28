@@ -1,24 +1,29 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import { getSlot } from '../../utils'
+import { buildProps, getSlot, type BuildProps } from '../../utils'
 import { Spec } from '../spec'
 
-interface Props {
+interface Base {
   specs?: ComponentProps<typeof Spec>[]
+  never?: never // FIXME see buildProps.ts for explanation
 }
 
-const { specs } = Astro.props
+type Props = BuildProps<Base, 'specs'>
+const props = buildProps(Astro, 'specs')
 const slot = getSlot(Astro)
+
+const { specs } = props
 ---
 
 {
-  specs && (
-    <ul>
-      {specs?.map((spec) => (
-        <Spec set:html={spec} />
-      ))}
-    </ul>
-  )
+  slot ||
+    (specs && (
+      <ul>
+        {specs?.map((spec) => (
+          <Spec set:html={spec} />
+        ))}
+      </ul>
+    ))
 }
 
 <style>

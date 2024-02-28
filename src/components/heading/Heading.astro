@@ -1,57 +1,30 @@
 ---
-import merge from 'deepmerge'
-import { getSlot } from '../../utils'
+import { buildProps, getSlot, type BuildProps } from '../../utils'
 
-interface Props {
-  _heading?: Props['heading']
-  heading?: string | null | Props
+interface Base {
+  heading?: string
+  hello?: number
   tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | null
   class?: string | null
 }
 
-// type Props =
-//   | Keys
-//   | {
-//       heading?: Keys
-//       _heading?: Keys
-//     }
-
-let { heading, tag } = Astro.props
-
-console.log(Astro)
-
-const mergeProps = (name: string, props: any) => {
-  const _value = props[`_${name}`]
-  const _isObject = typeof _value === 'object'
-  const _object = _isObject
-    ? { ..._value, [name]: _value[name] }
-    : { [name]: _value }
-
-  const value = props[name]
-  const isObject = typeof value === 'object'
-  const object = isObject ? value : { [name]: value }
-
-  const mergedObject = merge(_object, object)
-  const merged: any = merge(props, mergedObject || {})
-  delete merged[`_${name}`]
-  return merged
-}
-
-const props = mergeProps('heading', Astro.props)
-console.log('merged', props)
-
-const Tag = tag || 'h2'
+type Props = BuildProps<Base, 'heading'>
+const props = buildProps(Astro, 'heading')
 const slot = await getSlot(Astro)
+
+const { heading, tag, class: className } = props
+const Tag = tag ? tag : 'h2'
 ---
 
-<!-- {
+{
   (heading || slot) && (
     <Tag class:list={['heading', className]}>
       <Fragment set:html={slot} />
       {heading}
     </Tag>
   )
-} -->
+}
+
 <style>
   h1,
   h2,

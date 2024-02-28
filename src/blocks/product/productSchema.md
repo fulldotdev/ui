@@ -9,13 +9,13 @@ seo:
   description:
   image:
     src: 
-    alt: 
+    
 
 title: 
 summary: 
 images:
   - src:
-    alt:
+    
 categories:
   - 
 

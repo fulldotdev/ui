@@ -1,55 +1,86 @@
 ---
-import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
-import { getEntry } from 'astro:content'
-import merge from 'deepmerge'
+import type { ComponentProps } from 'astro/types'
 import { LayoutBody, LayoutHead, LayoutMain, LayoutRoot } from '.'
+import { buildProps, type BuildProps, type GetReference } from '../../utils'
 import { Banner } from '../banner'
 import { Footer } from '../footer'
 import { Header } from '../header'
+import Legal from '../legal/Legal.astro'
 import { Section } from '../section'
 import { Sections } from '../sections'
 
-type Props = CollectionEntry<ContentCollectionKey>['data']
+interface Base
+  extends GetReference,
+    Pick<ComponentProps<typeof Header>, 'header' | '_header'>,
+    Pick<ComponentProps<typeof LayoutHead>, 'head' | '_head'>,
+    Pick<ComponentProps<typeof Footer>, 'footer' | '_footer'>,
+    Pick<ComponentProps<typeof Banner>, 'banner' | '_banner'>,
+    Pick<ComponentProps<typeof Legal>, 'legal' | '_legal'> {
+  hero?: ComponentProps<typeof Section>['section']
+  _hero?: ComponentProps<typeof Section>['_section']
+  cta?: ComponentProps<typeof Section>['section']
+  _cta?: ComponentProps<typeof Section>['_section']
+}
 
-const _layout = await getEntry('settings', 'layout')
-let { props } = Astro
-props = merge(_layout.data, props)
+type Props = BuildProps<Base, 'layout'>
+const props = buildProps(Astro, 'layout')
 
-console.log('layout', props)
+const {
+  head,
+  _head,
+  banner,
+  _banner,
+  header,
+  _header,
+  hero,
+  _hero,
+  cta,
+  _cta,
+  footer,
+  _footer,
+  legal,
+  _legal,
+  ...restProps
+} = props
+
+// const _layout = await getEntry('settings', 'layout')
 ---
 
 <LayoutRoot {...props}>
-  <!-- <LayoutHead {...merge(data, data.head)}>
-    <slot name="head" />
-  </LayoutHead> -->
   <LayoutHead
     {...props}
-    {...props.head}
-  >
-    <slot name="head" />
-  </LayoutHead>
-  <LayoutBody
-    id={Astro.props.collection}
-    {...props}
-    {...props.section}
-  >
-    <Banner {...props.banner} />
-    <Header {...props.header} />
+    {head}
+    {_head}
+  />
+  <LayoutBody {...props}>
+    <Banner
+      {banner}
+      {_banner}
+    />
+    <Header
+      {header}
+      {_header}
+    />
     <LayoutMain {...props}>
       <Section
         id="hero"
-        render={Astro.props.render}
-        {...merge(props, props.hero || {})}
+        section={hero}
+        _section={_hero}
       />
       <Sections {...props} />
-      <slot />
       <Section
         id="cta"
-        {...props.cta}
+        section={cta}
+        _section={_cta}
       />
     </LayoutMain>
-    <!-- <Footer>
-      <slot name="footer" />
-    </Footer> -->
+    <Footer
+      {footer}
+      {_footer}
+    />
+    <Legal
+      {legal}
+      {_legal}
+    />
   </LayoutBody>
 </LayoutRoot>

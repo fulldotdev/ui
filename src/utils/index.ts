@@ -1,3 +1,4 @@
+export * from './buildProps'
 export * from './getEntryByProps'
 export * from './getEntryOrCollection'
 export { default as getHref } from './getHref'

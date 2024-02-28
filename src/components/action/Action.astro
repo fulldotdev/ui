@@ -1,22 +1,25 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import { ActionRoot } from '.'
+import { buildProps, type BuildProps } from '../../utils'
 import { Buttons } from '../buttons'
 import { Form } from '../form'
 import { Price } from '../price'
 import { Select } from '../select'
 
-interface Props
+interface Base
   extends ComponentProps<typeof ActionRoot>,
-    ComponentProps<typeof Price>,
-    ComponentProps<typeof Buttons> {
+    Pick<ComponentProps<typeof Price>, 'price' | '_price'>,
+    Pick<ComponentProps<typeof Buttons>, 'buttons' | '_buttons'> {
   form?: ComponentProps<typeof Form>
 }
 
-const { props } = Astro
+type Props = BuildProps<Base, 'action'>
+const props = buildProps(Astro, 'action')
+const { price, _price, buttons, _buttons, ...restProps } = props
 ---
 
-<ActionRoot {...props}>
+<ActionRoot {...restProps}>
   <Form
     slug={typeof props.form == 'string' ? props.form : undefined}
     {...props}
@@ -24,19 +27,21 @@ const { props } = Astro
     <slot name="form" />
   </Form>
   <!-- TODO cleaner maken -->
-  {
+  <!-- {
     props.variants?.map((variant: any) => (
       <Select
         label={variant.name}
         options={variant.options.map((item: any) => item.value)}
       />
     ))
-  }
-  <Price {...props}>
-    <slot name="price" />
-  </Price>
-  <Buttons {...props}>
-    <slot name="buttons" />
-  </Buttons>
+  } -->
+  <Price
+    {price}
+    {_price}
+  />
+  <Buttons
+    {buttons}
+    {_buttons}
+  />
   <slot />
 </ActionRoot>

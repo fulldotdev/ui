@@ -1,16 +1,17 @@
 ---
 import { SEO } from 'astro-seo'
+import { buildProps, type BuildProps } from '../../utils'
 
-interface Props {
+interface Base {
   title?: string | null
   description?: string | null
-  image?: {
-    src: string | null
-    alt?: string | null
-  }
+  image?: string | null
 }
 
-const { title, description, image } = Astro.props
+type Props = BuildProps<Base, 'head'>
+const props = buildProps(Astro, 'head')
+
+const { title, description, image } = props
 ---
 
 <head>
@@ -27,16 +28,16 @@ const { title, description, image } = Astro.props
   <SEO
     title={title || undefined}
     description={description || undefined}
-    openGraph={title && image && image.src
+    openGraph={title && image
       ? {
           basic: {
             title: title,
             type: 'website',
-            image: image.src,
+            image: image,
           },
           image: {
-            url: image?.src,
-            alt: image.alt || undefined,
+            url: image,
+            alt: title,
           },
         }
       : undefined}

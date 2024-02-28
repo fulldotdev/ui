@@ -1,14 +1,17 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
-import { getSlot } from '../../utils'
+import { buildProps, getSlot, type BuildProps } from '../../utils'
 
-interface Props {
+interface Base {
   tagline?: string | null
   class?: HTMLAttributes<'div'>['class']
 }
 
-const { tagline, class: className } = Astro.props
+type Props = BuildProps<Base, 'tagline'>
+const props = buildProps(Astro, 'tagline')
 const slot = await getSlot(Astro)
+
+const { tagline, class: className } = props
 ---
 
 {
@@ -25,8 +28,8 @@ const slot = await getSlot(Astro)
     --font-size: var(--font-size-1);
     --font-weight: 600;
     --color: var(--accent-11);
+    color: var(--color);
 
     font: var(--font);
-    color: var(--color);
   }
 </style>

@@ -4,13 +4,12 @@ seo:
   description: 
   image:
     src: 
-    alt: 
+    
 
 heading: Badkamer
 text: 
-image:
-  src: https://picsum.photos/800/600
-  alt: 
+image:  https://picsum.photos/800/600
+  
 ---
 
 ## Een veilige badkamer

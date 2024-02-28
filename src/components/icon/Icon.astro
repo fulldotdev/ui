@@ -1,20 +1,23 @@
 ---
 import tablerIcons from '@iconify-json/tabler/icons.json'
+import type { HTMLAttributes } from 'astro/types'
+import { buildProps, getSlot, type BuildProps } from '../../utils'
 const tabler: any = tablerIcons
 
-import type { HTMLAttributes } from 'astro/types'
-import { getSlot } from '../../utils'
-interface Props {
+interface Base {
   icon?: keyof typeof tabler.icons
   class?: HTMLAttributes<'div'>['class']
 }
 
-const { icon, class: className } = Astro.props
+type Props = BuildProps<Base, 'icon'>
+const props = buildProps(Astro, 'icon')
 const slot = await getSlot(Astro)
+
+const { icon, class: className } = props
 ---
 
 {
-  (icon || slot?.trim().length > 0) && (
+  (icon || slot) && (
     <span class:list={['icon']}>
       {icon && (
         <svg

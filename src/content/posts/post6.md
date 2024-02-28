@@ -4,14 +4,13 @@ seo:
   description: 
   image:
     src: 
-    alt: 
+    
     
 heading: Lorem ipsum
 text: Lorem ipsum dolor sit amet
-image:
-  src: https://picsum.photos/400/500
+image:  https://picsum.photos/400/500
 
-  alt: 
+  
 ---
 
 # Hello worlddd
