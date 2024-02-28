@@ -10,20 +10,19 @@ interface Base {
 
 type Props = BuildProps<Base, 'specs'>
 const props = buildProps(Astro, 'specs')
-const slot = getSlot(Astro)
+const slot = await getSlot(Astro)
 
 const { specs } = props
 ---
 
 {
-  slot ||
-    (specs && (
-      <ul>
-        {specs?.map((spec) => (
-          <Spec set:html={spec} />
-        ))}
-      </ul>
-    ))
+  (slot || specs) && (
+    <ul>
+      {specs?.map((spec) => (
+        <Spec set:html={spec} />
+      ))}
+    </ul>
+  )
 }
 
 <style>

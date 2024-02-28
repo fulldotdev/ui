@@ -25,7 +25,7 @@ sections:
       layout: grid
       collection: categories
       frame: panel
-      look: soft
+      look: ghost
     buttons:
       - text: Alle aanbiedingen
         href: /aanbiedingen

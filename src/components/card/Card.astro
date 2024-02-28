@@ -18,7 +18,10 @@ interface Base
   extends GetReference,
     ComponentProps<typeof CardRoot>,
     ComponentProps<typeof Composite>,
-    Pick<ComponentProps<typeof Image>, 'image' | '_image'> {}
+    Pick<ComponentProps<typeof Image>, 'image' | '_image'> {
+  images?: Base['image'][]
+  _images?: Base['_image'][]
+}
 
 type Props = BuildProps<Base, 'card'>
 let props = buildProps(Astro, 'card')
@@ -30,7 +33,7 @@ const href = getPathname(entryWithDefaults || ({} as any))
 
 props = merge(entryWithDefaults?.data, props)
 
-const { image, _image, ...restProps } = props
+const { image, _image, images, _images, ...restProps } = props
 ---
 
 <CardRoot
@@ -38,8 +41,8 @@ const { image, _image, ...restProps } = props
   {...restProps}
 >
   <Image
-    {_image}
-    {image}
+    image={image || props.images?.[0]}
+    _image={_image || props._images?.[0]}
   />
   <Composite
     density="compact"

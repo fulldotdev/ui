@@ -12,14 +12,16 @@ import {
 } from '../../utils'
 import { Cards } from '../cards'
 import { Composite } from '../composite'
-import { Gallery } from '../gallery'
 import { Image } from '../image'
+import { Images } from '../images'
 import { Prose } from '../prose'
 
 interface Base
   extends GetReference,
     ComponentProps<typeof SectionRoot>,
     Pick<ComponentProps<typeof Image>, 'image' | '_image'>,
+    Pick<ComponentProps<typeof Images>, 'images' | '_images'>,
+    Pick<ComponentProps<typeof Prose>, 'prose' | '_prose'>,
     Pick<ComponentProps<typeof Cards>, 'cards' | '_cards'> {
   // Pick<ComponentProps<typeof Gallery>, 'gallery' | '_gallery'>,
   // Pick<ComponentProps<typeof Prose>, 'prose' | '_prose'>,
@@ -39,6 +41,10 @@ const {
   _cards,
   image,
   _image,
+  images,
+  _images,
+  prose,
+  _prose,
   class: className,
   ...restProps
 } = entryAndProps
@@ -49,21 +55,26 @@ const {
   {...restProps}
 >
   <Composite
-    {...props}
+    {...restProps}
     align={props.layout === 'split' ? 'start' : props.align}
   />
   <Image
     {image}
     {_image}
   />
-  <!-- <Gallery
-    {gallery}
-    {_gallery}
-  /> -->
+  <Images
+    {images}
+    {_images}
+  />
   <Cards
     {cards}
     {_cards}
   />
-  <!-- <Prose render={render || entry?.render} /> -->
+  <Prose
+    {prose}
+    {_prose}
+    {...restProps}
+  />
+  <!-- <Prose prose={prose} /> -->
   <slot />
 </SectionRoot>
