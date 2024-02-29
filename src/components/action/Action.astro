@@ -4,8 +4,8 @@ import { ActionRoot } from '.'
 import { buildProps, type BuildProps } from '../../utils'
 import { Buttons } from '../buttons'
 import { Form } from '../form'
+import FullcartAdd from '../fullcart/FullcartAdd.astro'
 import { Price } from '../price'
-import { Select } from '../select'
 
 interface Base
   extends ComponentProps<typeof ActionRoot>,
@@ -16,7 +16,7 @@ interface Base
 
 type Props = BuildProps<Base, 'action'>
 const props = buildProps(Astro, 'action')
-const { price, _price, buttons, _buttons, ...restProps } = props
+const { price, variants, _price, buttons, _buttons, ...restProps } = props
 ---
 
 <ActionRoot {...restProps}>
@@ -26,15 +26,11 @@ const { price, _price, buttons, _buttons, ...restProps } = props
   >
     <slot name="form" />
   </Form>
-  <!-- TODO cleaner maken -->
-  {
-    props.variants?.map((variant: any) => (
-      <Select
-        label={variant.name}
-        options={variant.options.map((item: any) => item.value)}
-      />
-    ))
-  }
+  <FullcartAdd
+    {price}
+    {variants}
+    id="my-cool-product"
+  />
   <Price
     {price}
     {_price}
