@@ -9,19 +9,22 @@ import HeaderRoot from './HeaderRoot.astro'
 
 interface Base
   extends ComponentProps<typeof HeaderRoot>,
-    ComponentProps<typeof Logo>,
+    Pick<ComponentProps<typeof Logo>, 'logo' | '_logo'>,
     ComponentProps<typeof Links>,
     ComponentProps<typeof Buttons>,
-    ComponentProps<typeof HeaderNav> {
-  logo?: ComponentProps<typeof Logo>
-}
+    ComponentProps<typeof HeaderNav> {}
 
 type Props = BuildProps<Base, 'header'>
 const props = buildProps(Astro, 'header')
+
+const { logo, _logo, ...rest } = props
 ---
 
 <HeaderRoot {...props}>
-  <Logo {...props.logo} />
+  <Logo
+    {logo}
+    {_logo}
+  />
   <HeaderNav>
     <Links {...props} />
     <Buttons {...props} />

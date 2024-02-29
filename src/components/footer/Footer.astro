@@ -1,43 +1,42 @@
-<!-- ---
-import { getEntry } from 'astro:content'
-import Text from '../Text.astro'
-import ChannelGroup from '../channel/ChannelGroup.astro'
-import Logo from '../logo/Logo.astro'
-import SocialGroup from '../social/SocialGroup.astro'
+---
+import { Display } from '../display'
+import { Logo } from '../logo'
 import FooterRoot from './FooterRoot.astro'
-import FooterSegment from './FooterSegment.astro'
 
-interface Props
-  extends FooterRootProps,
-    FooterSegmentProps,
-    LinkGroupProps,
-    SocialGroupProps,
-    ChannelGroupProps,
-    TextProps {
-  logo?: LogoProps | null
+import type { ComponentProps } from 'astro/types'
+import { buildProps, type BuildProps, type GetReference } from '../../utils'
+import { Heading } from '../heading'
+import { Links } from '../links'
+
+interface Base
+  extends GetReference,
+    ComponentProps<typeof Display>,
+    Pick<ComponentProps<typeof Logo>, 'logo' | '_logo'> {
+  columns?: ComponentProps<typeof Display>[]
 }
 
-let { props } = Astro
-props = {
-  ...(await getEntry('globals', 'company')).data,
-  ...(await getEntry('globals', 'footer')).data,
-  ...props,
-}
+type Props = BuildProps<Base, 'footer'>
+const props = buildProps(Astro, 'footer')
+
+const { display, columns, logo, _logo, class: className, ...restProps } = props
 ---
 
 <FooterRoot {...props}>
-  <FooterSegment {...props}>
-    <Logo />
-    <Text {...props} />
-    <SocialGroup socials />
-  </FooterSegment>
-  <ChannelGroup channels />
-  <!-- {
-    footer?.columns &&
-      footer?.columns?.map((column: any) => (
-        <Segment class:list="col-span-.8 density-compact size-small">
-          <h6 class="heading-secondary">{column.heading}</h6>
-          <Links links={column.links} />
-        </Segment>
-      ))
-  } -->
+  <Display {...props}>
+    <Logo
+      {logo}
+      {_logo}
+    />
+  </Display>
+  {
+    props?.columns?.map((column) => (
+      <Display>
+        <Heading
+          tag="h4"
+          {...column}
+        />
+        <Links {...column} />
+      </Display>
+    ))
+  }
+</FooterRoot>
