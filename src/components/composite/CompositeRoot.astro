@@ -3,18 +3,19 @@ import { getSlot } from '../../utils'
 
 interface Props {
   density?: 'compact' | null
+  layout?: 'split' | 'stack' | null
   frame?: 'panel' | 'fill' | 'screen' | null
   align?: 'start' | 'center' | 'stretch' | null
   class?: string | null
 }
 
-const { density, frame, align, class: className } = Astro.props
+const { density, frame, align, layout, class: className } = Astro.props
 const slot = await getSlot(Astro)
 ---
 
 {
   slot && (
-    <div class:list={['composite', align, frame, density, className]}>
+    <div class:list={['composite', align, frame, layout, density, className]}>
       <Fragment set:html={slot} />
     </div>
   )
@@ -23,8 +24,6 @@ const slot = await getSlot(Astro)
 <style>
   div {
     display: flex;
-    position: sticky;
-    top: 0;
     flex-direction: column;
     align-items: flex-start;
     gap: var(--spacing-4);
@@ -45,10 +44,21 @@ const slot = await getSlot(Astro)
     }
 
     &:where(.stretch) {
-      @media (min-width: 1024px) {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      /* @media (min-width: 1024px) {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+      } */
+    }
+
+    &:where(.split.start) {
+      @media (min-width: 1024px) {
+        position: sticky;
+        top: var(--spacing-5);
       }
     }
   }
