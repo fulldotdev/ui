@@ -5,6 +5,7 @@ import { buildProps, getSlot, type BuildProps } from '../../utils'
 const tabler: any = tablerIcons
 
 interface Base {
+  hue?: 'accent' | 'base' | null
   icon?: keyof typeof tabler.icons
   class?: HTMLAttributes<'div'>['class']
 }
@@ -13,15 +14,15 @@ type Props = BuildProps<Base, 'icon'>
 const props = buildProps(Astro, 'icon')
 const slot = await getSlot(Astro)
 
-const { icon, class: className } = props
+const { icon, hue = 'accent', class: className } = props
 ---
 
 {
   (icon || slot) && (
-    <span class:list={['icon', className]}>
+    <span class:list={['icon', hue, className]}>
       {icon && (
         <svg
-          class:list={[className]}
+          class:list={[hue, className]}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           set:html={tabler?.icons[icon]?.body}
@@ -40,7 +41,7 @@ const { icon, class: className } = props
     align-items: center;
     width: 1em;
     height: 1em;
-    color: var(--accent-9);
+    color: var(--hue-9);
 
     &.single-icon {
       width: 1.6em;

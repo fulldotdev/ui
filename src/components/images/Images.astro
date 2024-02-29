@@ -1,5 +1,6 @@
 ---
 import { ComponentProps } from 'astro/types'
+import { Button } from '..'
 import { buildProps, type BuildProps } from '../../utils'
 import { Image } from '../image'
 
@@ -53,27 +54,136 @@ const { images } = props
 
 {
   images && (
-    <div class="container">
-      <div class="large">
-        {images.map((image) => (
-          <Image {image} />
-        ))}
+    <>
+      <div class="container">
+        <Button
+          icon="chevron-left"
+          class="prev"
+          look="soft"
+          hue="base"
+        />
+        <div class="carousel large">
+          {images.map((image) => (
+            <Image {image} />
+          ))}
+        </div>
+        <Button
+          icon="chevron-right"
+          class="next"
+          look="soft"
+          hue="base"
+        />
+        <div class="carousel small">
+          {images.map((image) => (
+            <div class="carousel-item small">
+              <Image {image} />
+            </div>
+          ))}
+        </div>
       </div>
-      <div class="small">
-        {images.map((image) => (
-          <Image {image} />
-        ))}
-      </div>
-    </div>
+    </>
   )
 }
 
+<script>
+  const largeCarousel = document.querySelector('.carousel.large')
+  const smallItems = document?.querySelectorAll('.carousel-item.small')
+
+  smallItems?.forEach((item, i) => {
+    item.addEventListener('click', () => {
+      console.log('clicked')
+      largeCarousel?.scrollTo({
+        left: largeCarousel.clientWidth * i,
+        behavior: 'smooth',
+      })
+    })
+  })
+
+  const prevButton = document.querySelector('.button.prev')
+  const nextButton = document.querySelector('.button.next')
+
+  prevButton?.addEventListener('click', () => {
+    largeCarousel?.scrollBy({
+      left: -largeCarousel.clientWidth,
+      behavior: 'smooth',
+    })
+  })
+
+  nextButton?.addEventListener('click', () => {
+    largeCarousel?.scrollBy({
+      left: largeCarousel.clientWidth,
+      behavior: 'smooth',
+    })
+  })
+</script>
+
 <style>
-  .large {
-    flex-basis: 100%;
+  .container {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    border: 1px solid var(--base-4);
+    border-bottom-width: 0;
+    background: var(--base-2);
+    width: 100%;
+
+    .carousel {
+      display: inline-flex;
+      position: relative;
+      flex-basis: 100%;
+      width: 100%;
+      overflow-x: scroll;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+
+      :global(img) {
+        display: flex;
+        flex: none;
+        box-sizing: content-box;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        scroll-snap-align: start;
+      }
+
+      &.small {
+        gap: var(--spacing-2);
+        padding: var(--spacing-2) 0;
+
+        .carousel-item {
+          width: 20%;
+          scroll-snap-align: start;
+
+          &:hover {
+            opacity: 0.75;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+    :global(.button) {
+      position: absolute;
+      top: 35%;
+      opacity: 50%;
+      z-index: 1;
+      border-radius: var(--border-radius-1);
+      padding: var(--spacing-2);
+
+      &:hover {
+        opacity: 100%;
+      }
+
+      &:global(.prev) {
+        left: var(--spacing-2);
+      }
+
+      &:global(.next) {
+        right: var(--spacing-2);
+      }
+    }
   }
 
-  .large,
+  /* .large,
   .small {
     display: flex;
     gap: var(--spacing-1);
@@ -82,25 +192,25 @@ const { images } = props
     overflow-x: scroll;
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
-  }
+  } */
 
-  .small {
+  /* .small {
     gap: var(--spacing-1);
     padding-top: var(--spacing-1);
     padding-bottom: var(--spacing-1);
-  }
+  } */
 
-  img {
+  /* img {
     border-radius: var(--radius);
     object-fit: contain;
-  }
+  } */
 
-  .large > :global(img) {
+  /* .large > :global(img) {
     width: 100%;
     scroll-snap-align: start;
-  }
+  } */
 
-  .small > :global(img) {
+  /* .small > :global(img) {
     transition: var(--transition);
     cursor: pointer;
     width: 20%;
@@ -115,14 +225,14 @@ const { images } = props
     flex-grow: 1;
     flex-shrink: 1;
     flex-basis: 0px;
-    order: 10;
-  }
+    order: 10; */
+  /* } */
 
-  input {
+  /* input {
     display: none;
   }
 
   label:checked {
     border: 4px solid red;
-  }
+  } */
 </style>

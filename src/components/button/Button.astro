@@ -5,6 +5,7 @@ import { Icon } from '../icon'
 
 interface Base extends ComponentProps<typeof Icon> {
   look?: 'solid' | 'soft' | 'ghost' | null
+  hue?: 'accent' | 'base' | null
   text?: string | null
   href?: HTMLAttributes<'a'>['href']
   class?: HTMLAttributes<'div'>['class']
@@ -14,17 +15,27 @@ type Props = BuildProps<Base, 'button'>
 const props = buildProps(Astro, 'button')
 const slot = await getSlot(Astro)
 
-const { look = 'solid', icon, text, href, class: className } = props
+const {
+  look = 'solid',
+  hue = 'accent',
+  icon,
+  text,
+  href,
+  class: className,
+} = props
 const Tag = href ? 'a' : 'button'
 ---
 
 {
   (icon || text || slot) && (
     <Tag
-      class:list={['button', look, className]}
+      class:list={['button', look, hue, className]}
       {href}
     >
-      <Icon {icon} />
+      <Icon
+        {icon}
+        {hue}
+      />
       <Fragment set:html={slot} />
       {text}
     </Tag>
@@ -61,41 +72,41 @@ const Tag = href ? 'a' : 'button'
     }
 
     &:where(.solid) {
-      border-color: var(--accent-9);
-      background: var(--accent-9);
-      color: var(--accent-fg);
+      border-color: var(--hue-9);
+      background: var(--hue-9);
+      color: var(--hue-fg);
 
       &:hover {
-        border-color: var(--accent-10);
-        background: var(--accent-10);
+        border-color: var(--hue-10);
+        background: var(--hue-10);
       }
     }
 
     &:where(.soft) {
-      border-color: var(--accent-7);
-      background: var(--accent-3);
-      color: var(--accent-11);
+      border-color: var(--hue-7);
+      background: var(--hue-3);
+      color: var(--hue-11);
 
       &:hover {
-        border-color: var(--accent-8);
-        background: var(--accent-4);
+        border-color: var(--hue-8);
+        background: var(--hue-4);
       }
 
       &:active {
-        background: var(--accent-5);
+        background: var(--hue-5);
       }
     }
 
     &:where(.ghost) {
       border-color: transparent;
-      color: var(--accent-11);
+      color: var(--hue-11);
 
       &:hover {
-        background: var(--accent-2);
+        background: var(--hue-2);
       }
 
       &:active {
-        background: var(--accent-3);
+        background: var(--hue-3);
       }
     }
   }
