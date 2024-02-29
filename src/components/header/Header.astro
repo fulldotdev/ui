@@ -1,6 +1,7 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import { buildProps, type BuildProps } from '../../utils'
+import { Button } from '../button'
 import { Buttons } from '../buttons'
 import { Links } from '../links'
 import { Logo } from '../logo'
@@ -28,32 +29,59 @@ const { logo, _logo, ...rest } = props
   <HeaderNav>
     <Links {...props} />
     <Buttons {...props} />
+    <label
+      class="button-secondary hue-base lg:hidden"
+      for="header-toggle"
+    >
+      <!-- TODO fix use of uno class -->
+      <Button
+        look="soft"
+        hue="base"
+        icon="menu-2"
+        class="pointer-events-none"
+      />
+    </label>
+    <input
+      id="header-toggle"
+      class="peer"
+      type="checkbox"
+    />
     <slot name="nav" />
+    <Links {...props} />
   </HeaderNav>
   <slot />
 </HeaderRoot>
 
-<style is:global>
-  .header-root .button:first-child {
-    order: 2;
+<style>
+  .peer {
+    display: none;
+
+    @media (min-width: 1024px) {
+      ~ :global(.links) {
+        display: none;
+      }
+    }
+
+    &:checked ~ :global(.links) {
+      display: flex;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      left: 0;
+      flex-direction: column;
+      align-items: center;
+      background: var(--background);
+      padding: var(--spacing-6);
+      width: 100%;
+
+      @media (min-width: 1024px) {
+        display: none !important;
+      }
+    }
   }
 </style>
 
-<!-- <div class="gap-flow4 flex">
-  <ButtonGroup buttons={header.buttons} />
-  <label
-    class="button-secondary hue-base lg:hidden"
-    for="header-toggle"
-  >
-    <i class="icon:menu-2 peer-checked:icon:x text-flow2 h-1.4em w-1.4em block" />
-  </label>
-</div>
-<input
-  id="header-toggle"
-  class="peer hidden"
-  type="checkbox"
-/>
-
+<!-- 
 <div class:list="py-flow6 z-90 bg-hue1 border-hue6 !absolute left-0 right-0 top-full !hidden flex-col items-center border-y text-center backdrop-blur-lg peer-checked:max-lg:!flex">
   <Links
     layout="col"
