@@ -1,0 +1,43 @@
+---
+import type { Polymorphic } from 'astro/types'
+import { buildProps, getSlot, type BuildProps } from '../../utils'
+
+interface Base
+  extends Polymorphic<{ as: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' }> {
+  title?: string
+}
+
+type Props = BuildProps<Base, 'title'>
+
+const props = buildProps(Astro, 'title')
+const slot = await getSlot(Astro)
+
+const { title, as: Tag = 'h2', class: className, ...rest } = props
+---
+
+{
+  (title || slot) && (
+    <Tag
+      class:list={['title', className]}
+      {...rest}
+    >
+      <Fragment set:html={slot} />
+      <Fragment set:html={title} />
+    </Tag>
+  )
+}
+
+<style>
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--base-12);
+    font: var(--font);
+    font-weight: 700;
+    font-size: var(--font-size-6);
+    line-height: 1.25;
+  }
+</style>

@@ -1,6 +1,6 @@
 import type { AstroGlobal } from 'astro'
 
-export default async (
+export const getSlot = async (
   Astro: AstroGlobal,
   name: string = 'default'
 ): Promise<string | undefined> => {

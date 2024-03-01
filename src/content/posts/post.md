@@ -5,8 +5,8 @@ seo:
   image:
     src: 
     
-heading: Lorem ipsum, dolor sit amet consectetur adipisicing elit
-text: Lorem ipsum dolor sit amet
+title: Lorem ipsum, dolor sit amet consectetur adipisicing elit
+description: Lorem ipsum dolor sit amet
 image:  https://picsum.photos/1600/1200
   
 ---

@@ -4,37 +4,38 @@ import type { HTMLAttributes } from 'astro/types'
 import { buildProps, getSlot, type BuildProps } from '../../utils'
 const tabler: any = tablerIcons
 
-interface Base {
+interface Base extends HTMLAttributes<'i'> {
   hue?: 'accent' | 'base' | null
   icon?: keyof typeof tabler.icons
-  class?: HTMLAttributes<'div'>['class']
 }
 
 type Props = BuildProps<Base, 'icon'>
 const props = buildProps(Astro, 'icon')
 const slot = await getSlot(Astro)
 
-const { icon, hue = 'accent', class: className } = props
+const { icon, hue = 'accent', class: className, ...rest } = props
 ---
 
 {
   (icon || slot) && (
-    <span class:list={['icon', hue, className]}>
+    <i
+      class:list={['icon', hue, className]}
+      {...rest}
+    >
       {icon && (
         <svg
-          class:list={[hue, className]}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           set:html={tabler?.icons[icon]?.body}
         />
       )}
       <slot />
-    </span>
+    </i>
   )
 }
 
 <style>
-  span {
+  i {
     display: inline-flex;
     position: relative;
     justify-content: center;

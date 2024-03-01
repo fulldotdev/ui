@@ -1,6 +1,6 @@
 import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
 
-export default ({
+export const getPathname = ({
   slug,
   collection,
   data,

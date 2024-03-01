@@ -6,8 +6,8 @@ seo:
     src: 
     
 
-heading: Badkamer
-text: 
+title: Badkamer
+description: 
 image:  https://picsum.photos/800/600
   
 ---

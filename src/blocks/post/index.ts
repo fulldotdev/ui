@@ -1,6 +1,0 @@
-export { default as PostArticle } from './PostArticle.astro'
-export { default as PostCard } from './PostCard.astro'
-export { default as PostDeck } from './PostDeck.astro'
-export { default as PostLayout } from './PostLayout.astro'
-export { default as PostSection } from './PostSection.astro'
-export { default as postSchema } from './postSchema'

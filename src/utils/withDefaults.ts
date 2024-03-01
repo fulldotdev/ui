@@ -1,11 +1,11 @@
 import { type CollectionEntry, type CollectionKey } from 'astro:content'
 import merge from 'deepmerge'
-import readEntryData from './readEntryData'
+import { readEntryData } from './readEntryData'
 
 type Entry = CollectionEntry<CollectionKey>
 type EntryOrCollection = Entry | Entry[]
 
-export default async <T extends EntryOrCollection>(
+export const withDefaults = async <T extends EntryOrCollection>(
   collectionOrEntry: T
 ): Promise<T> => {
   const isArray = Array.isArray(collectionOrEntry)

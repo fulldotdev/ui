@@ -9,9 +9,9 @@ sections:
     align: center
     scheme: dark
     tagline: De goedkoopste van Nederland
-    heading: Handig langer thuis wonen
+    title: Handig langer thuis wonen
     image: https://picsum.photos/800/600
-    text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id.
+    description: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id.
     cards:
       - badkamer
       - trapliften
@@ -27,26 +27,26 @@ sections:
       frame: panel
       look: ghost
     buttons:
-      - text: Alle aanbiedingen
+      - description: Alle aanbiedingen
         href: /aanbiedingen
-      - text: Alle aanbiedingen
+      - description: Alle aanbiedingen
         href: /aanbiedingen
   - cards:
-      - heading: Binnen 48 uur geleverd
-        text: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
+      - title: Binnen 48 uur geleverd
+        description: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
         icon: truck-delivery
-      - heading: Veruit de laagste prijs
-        text: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
+      - title: Veruit de laagste prijs
+        description: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
         icon: discount-check
-      - heading: Hulp van experts
-        text: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
+      - title: Hulp van experts
+        description: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
         icon: phone-call
     _cards:
       layout: row
   - align: stretch
-    heading: Aanbiedingen
+    title: Aanbiedingen
     buttons:
-      - text: Alle aanbiedingen
+      - description: Alle aanbiedingen
         href: /aanbiedingen
     cards:
       - product
@@ -60,37 +60,37 @@ sections:
     _cards:
       collection: products
       specs: null
-      text: null
+      description: null
       variants: null
   - layout: split
     align: center
     order: switch
-    heading: Wat een traplift voor Hilda heeft betekend
-    text:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
+    title: Wat een traplift voor Hilda heeft betekend
+    description:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:
-      - text: Bekijk de trapliften
+      - description: Bekijk de trapliften
         href: "#"
-      - text: Alle producten
+      - description: Alle producten
         href: /producten
     image: https://picsum.photos/800/600
   - layout: stack
     align: center
     order: switch
-    heading: Wat een traplift voor Hilda heeft betekend
-    text:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
+    title: Wat een traplift voor Hilda heeft betekend
+    description:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:
-      - text: Alle trapliften
+      - description: Alle trapliften
         href: /trapliften
-      - text: Alle trapliften
+      - description: Alle trapliften
         href: /trapliften
     image: https://picsum.photos/800/600
     _image:
       position: background
       
   - align: stretch
-    heading: Alle trapliften
+    title: Alle trapliften
     buttons:
-      - text: Alle trapliften
+      - description: Alle trapliften
         href: /trapliften 
     cards:
       - product
@@ -105,10 +105,10 @@ sections:
       collection: products
       layout: carousel
       specs: null
-      text: null
+      description: null
       variants: null
-  - heading: Wat onze klanten zeggen
-    text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam sequi recusandae quos perferendis enim fugiat nulla eos vero laboriosam iusto!
+  - title: Wat onze klanten zeggen
+    description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam sequi recusandae quos perferendis enim fugiat nulla eos vero laboriosam iusto!
     cards:
       - erik
       - hilda
@@ -125,11 +125,11 @@ sections:
       look: soft
   - scheme: dark
     align: stretch
-    heading: Ontvang advies van een expert
-    text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
+    title: Ontvang advies van een expert
+    description: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:
-      - text: Neem contact op
+      - description: Neem contact op
         href: /contact
-      - text: Bel 06 16715746
+      - description: Bel 06 16715746
         href: tel:31616715746
 ---

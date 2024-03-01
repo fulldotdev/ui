@@ -5,7 +5,7 @@ import path from 'path'
 
 type EntryData = Partial<CollectionEntry<CollectionKey>['data']>
 
-export default async (
+export const readEntryData = async (
   collection: CollectionKey,
   id: string
 ): Promise<EntryData> => {

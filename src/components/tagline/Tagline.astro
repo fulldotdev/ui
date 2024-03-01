@@ -2,21 +2,23 @@
 import type { HTMLAttributes } from 'astro/types'
 import { buildProps, getSlot, type BuildProps } from '../../utils'
 
-interface Base {
+interface Base extends HTMLAttributes<'p'> {
   tagline?: string | null
-  class?: HTMLAttributes<'div'>['class']
 }
 
 type Props = BuildProps<Base, 'tagline'>
 const props = buildProps(Astro, 'tagline')
 const slot = await getSlot(Astro)
 
-const { tagline, class: className } = props
+const { tagline, class: className, ...rest } = props
 ---
 
 {
   (tagline || slot) && (
-    <p class:list={['tagline', className]}>
+    <p
+      class:list={['tagline', className]}
+      {...rest}
+    >
       <Fragment set:html={tagline} />
       <slot />
     </p>
@@ -29,7 +31,6 @@ const { tagline, class: className } = props
     --font-weight: 600;
     --color: var(--accent-11);
     color: var(--color);
-
     font: var(--font);
   }
 </style>

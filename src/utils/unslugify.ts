@@ -1,1 +1,1 @@
-export default (slug: string): string => slug.replace(/-/g, ' ')
+export const unslugify = (slug: string): string => slug.replace(/-/g, ' ')

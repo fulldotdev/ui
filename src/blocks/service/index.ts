@@ -1,5 +1,0 @@
-export { default as ServiceCard } from './ServiceCard.astro'
-export { default as ServiceDeck } from './ServiceDeck.astro'
-export { default as ServiceLayout } from './ServiceLayout.astro'
-export { default as ServiceSection } from './ServiceSection.astro'
-export { default as serviceSchema } from './serviceSchema'

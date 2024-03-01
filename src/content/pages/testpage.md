@@ -4,9 +4,9 @@ sections:
     align: center
     scheme: dark
     tagline: De goedkoopste van Nederland
-    heading: Handig langer thuis wonen
+    title: Handig langer thuis wonen
     image: /assets/een-cool-product.jpg
-    text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id.
+    description: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id.
     cards:
       - badkamer
       - trapliften
@@ -22,8 +22,8 @@ sections:
       frame: panel
       look: soft
     buttons:
-      - text: Alle aanbiedingen
+      - description: Alle aanbiedingen
         href: /aanbiedingen
-      - text: Alle aanbiedingen
+      - description: Alle aanbiedingen
         href: /aanbiedingen
 ---

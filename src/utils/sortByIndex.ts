@@ -1,4 +1,6 @@
-export default (array: any[] | undefined | null): any[] | undefined | null => {
+export const sortByIndex = (
+  array: any[] | undefined | null
+): any[] | undefined | null => {
   if (!array) return array
   // const increased = array?.map((item) => ({ ...item, index: item.index + 1 }))
   // const indexed = increased?.map((item, i) => ({ index: i + 0.99, ...item }))

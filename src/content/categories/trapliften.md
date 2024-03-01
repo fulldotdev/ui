@@ -6,8 +6,8 @@ seo:
     src: 
     
 
-heading: Trapliften
-text: 
+title: Trapliften
+description: 
 image:  https://picsum.photos/824/616
   
 ---

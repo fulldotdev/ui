@@ -1,7 +1,7 @@
 ---
 _schema: default
-heading: Heb je vragen?
-text: We nemen binnen 1 werkdag persoonlijk contact met je op.
+title: Heb je vragen?
+description: We nemen binnen 1 werkdag persoonlijk contact met je op.
 fields:
   - _bookshop_name: Input
     label: Naam

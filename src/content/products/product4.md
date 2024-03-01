@@ -9,8 +9,8 @@ seo:
     src: 
     
 
-heading: Traplift 
-text: 
+title: Traplift 
+description: 
 images:
   - src: https://picsum.photos/350/400
     

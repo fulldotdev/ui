@@ -6,8 +6,8 @@ seo:
     src: 
     
 
-heading: Veiligheid
-text: 
+title: Veiligheid
+description: 
 image:  https://picsum.photos/826/612
   
 ---

@@ -1,22 +1,25 @@
 ---
 import type { HTMLString } from 'astro/runtime/server/escape.js'
+import type { HTMLAttributes } from 'astro/types'
 import { buildProps, getSlot, type BuildProps } from '../../utils'
 
-interface Base {
+interface Base extends HTMLAttributes<'div'> {
   html?: HTMLString | null
-  class?: string | null
 }
 
 type Props = BuildProps<Base, 'html'>
 const props = buildProps(Astro, 'html')
 const slot = await getSlot(Astro)
 
-const { html, class: className } = props
+const { html, class: className, ...rest } = props
 ---
 
 {
   (slot || html) && (
-    <div class:list={['html', className]}>
+    <div
+      class:list={['html', className]}
+      {...rest}
+    >
       <Fragment set:html={html} />
       <slot />
     </div>

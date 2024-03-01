@@ -6,8 +6,8 @@ seo:
     src: 
     
 
-heading: Woonkamer
-text: 
+title: Woonkamer
+description: 
 image:  https://picsum.photos/808/606
   
 ---

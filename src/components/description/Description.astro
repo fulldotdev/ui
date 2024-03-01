@@ -1,0 +1,33 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { buildProps, getSlot, type BuildProps } from '../../utils'
+
+interface Base extends HTMLAttributes<'p'> {
+  description?: string | null
+}
+
+type Props = BuildProps<Base, 'description'>
+const props = buildProps(Astro, 'description')
+const slot = await getSlot(Astro)
+
+const { description, class: className, ...rest } = props
+---
+
+{
+  (description || slot) && (
+    <p
+      class:list={['description', className]}
+      {...rest}
+    >
+      <Fragment set:html={description} />
+      <slot />
+    </p>
+  )
+}
+
+<style>
+  p {
+    color: var(--color);
+    font: var(--font);
+  }
+</style>

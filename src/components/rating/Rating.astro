@@ -3,9 +3,8 @@ import type { HTMLAttributes } from 'astro/types'
 import { buildProps, getSlot, type BuildProps } from '../../utils'
 import Icon from '../icon/Icon.astro'
 
-interface Base {
+interface Base extends HTMLAttributes<'div'> {
   rating?: number | null
-  class?: HTMLAttributes<'div'>['class']
 }
 
 type Props = BuildProps<Base, 'rating'>
@@ -18,12 +17,15 @@ const slot = await getSlot(Astro)
 //   else return 'bg-gradient-to-r from-50% to-50% from-hue9 to-hue6'
 // }
 
-const { rating, class: className } = props
+const { rating, class: className, ...rest } = props
 ---
 
 {
   (rating || slot) && (
-    <div class:list={['area-secondary', className]}>
+    <div
+      class:list={['area-secondary', className]}
+      {...rest}
+    >
       {[1, 2, 3, 4, 5].map((num) => (
         <Icon icon="star-filled" />
       ))}
@@ -49,7 +51,7 @@ const { rating, class: className } = props
       height: 1em;
       height: 1.25em;
       color: inherit;
-      color: var(--text);
+      color: var(--description);
     }
   }
 </style>

@@ -10,35 +10,35 @@ sections:
   - _bookshop_name: HeroSection
     align: center
     scheme: dark
-    heading: Component Library built for Astro
-    text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id.
+    title: Component Library built for Astro
+    description: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id.
     image: https://picsum.photos/800/600
       
   - _bookshop_name: FeatureDeck
     layout: row
     features:
-      - heading: Binnen 48 uur geleverd
-        text: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
+      - title: Binnen 48 uur geleverd
+        description: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
         icon: truck-delivery
-      - heading: Veruit de laagste prijs
-        text: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
+      - title: Veruit de laagste prijs
+        description: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
         icon: discount-check
-      - heading: Hulp van experts
-        text: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
+      - title: Hulp van experts
+        description: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
         icon: phone-call
-      - heading: Hulp van experts
-        text: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
+      - title: Hulp van experts
+        description: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
         icon: phone-call
   - _bookshop_name: FeatureSection
     layout: split
     theme: subtle
     align: center
-    heading: Wat een traplift voor Hilda heeft betekend
-    text:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
+    title: Wat een traplift voor Hilda heeft betekend
+    description:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:
-      - text: Alle trapliften
+      - description: Alle trapliften
         href: /trapliften
-      - text: Alle trapliften
+      - description: Alle trapliften
         href: /trapliften
     image: https://picsum.photos/800/600
       
@@ -46,10 +46,10 @@ sections:
     theme: subtle
     layout: split
     align: center
-    heading: Wat een traplift voor Hilda heeft betekend
-    text:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
+    title: Wat een traplift voor Hilda heeft betekend
+    description:  Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:
-      - text: Alle trapliften
+      - description: Alle trapliften
         href: /trapliften
     image: https://picsum.photos/800/600
       
@@ -57,9 +57,9 @@ sections:
     impact: medium
     layout: carousel
     align: stretch
-    heading: Alle trapliften
+    title: Alle trapliften
     buttons:
-      - text: Alle trapliften
+      - description: Alle trapliften
         href: /trapliften 
     products:
       - product
@@ -73,8 +73,8 @@ sections:
   - _bookshop_name: ReviewDeck
     layout: masonry
     frame: panel
-    heading: Wat onze klanten zeggen
-    text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam sequi recusandae quos perferendis enim fugiat nulla eos vero laboriosam iusto!
+    title: Wat onze klanten zeggen
+    description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam sequi recusandae quos perferendis enim fugiat nulla eos vero laboriosam iusto!
     reviews:
       - erik
       - hilda
@@ -87,11 +87,11 @@ sections:
   - _bookshop_name: CtaSection
     scheme: dark
     align: stretch
-    heading: Ontvang advies van een expert
-    text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
+    title: Ontvang advies van een expert
+    description: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:
-      - text: Neem contact op
+      - description: Neem contact op
         href: /contact
-      - text: Bel 06 16715746
+      - description: Bel 06 16715746
         href: tel:31616715746
 ---

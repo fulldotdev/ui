@@ -9,12 +9,12 @@ sections:
   - _bookshop_name: CtaSection
     scheme: dark
     align: stretch
-    heading: Ontvang advies van een expert
-    text: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
+    title: Ontvang advies van een expert
+    description: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id diam suspendisse vulputate.
     buttons:
-      - text: Neem contact op
+      - description: Neem contact op
         href: /contact
-      - text: Bel 06 16715746
+      - description: Bel 06 16715746
         href: tel:31616715746
 ---
 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survive]d not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.

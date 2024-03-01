@@ -1,5 +1,0 @@
-export { default as ReviewCard } from './ReviewCard.astro'
-export { default as ReviewDeck } from './ReviewDeck.astro'
-// export { default as ReviewLayout } from './ReviewLayout.astro'
-export { default as ReviewSection } from './ReviewSection.astro'
-export { default as reviewSchema } from './reviewSchema'
