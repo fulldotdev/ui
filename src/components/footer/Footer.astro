@@ -1,24 +1,26 @@
 ---
-import { Display } from '../display'
-import { Logo } from '../logo'
-import FooterRoot from './FooterRoot.astro'
-
 import type { ComponentProps } from 'astro/types'
 import { buildProps, type BuildProps, type GetReference } from '../../utils'
+import { Display } from '../display'
 import { Links } from '../links'
+import { Logo } from '../logo'
 import { Title } from '../title'
+import FooterRoot from './FooterRoot.astro'
 
 interface Base
   extends GetReference,
     ComponentProps<typeof Display>,
     Pick<ComponentProps<typeof Logo>, 'logo' | '_logo'> {
-  columns?: ComponentProps<typeof Display>[]
+  columns?: {
+    title: ComponentProps<typeof Title>['title']
+    links: ComponentProps<typeof Links>['links']
+  }[]
 }
 
 type Props = BuildProps<Base, 'footer'>
 const props = buildProps(Astro, 'footer')
 
-const { display, columns, logo, _logo, class: className, ...restProps } = props
+const { logo, _logo } = props
 ---
 
 <FooterRoot {...props}>
@@ -32,10 +34,10 @@ const { display, columns, logo, _logo, class: className, ...restProps } = props
     props?.columns?.map((column) => (
       <Display>
         <Title
-          tag="h4"
+          as="h4"
           {...column}
         />
-        <Links {...column} />
+        <Links links={column.links} />
       </Display>
     ))
   }

@@ -31,38 +31,39 @@ const defaultConfig: Config = {
   },
 }
 
-export const fullui = (passedConfig: Config): AstroIntegration => ({
-  name: 'fullui-integration',
-  hooks: {
-    'astro:config:setup': async ({ injectScript, updateConfig }) => {
-      let { scale, radius, slope, borderWidth, palettes }: Config = merge(
-        defaultConfig,
-        passedConfig || {}
-      )
+export const fullui = (passedConfig: Config): AstroIntegration =>
+  ({
+    name: 'fullui-integration',
+    hooks: {
+      'astro:config:setup': async ({ injectScript, updateConfig }) => {
+        let { scale, radius, slope, borderWidth, palettes }: Config = merge(
+          defaultConfig,
+          passedConfig || {}
+        )
 
-      const radixCss = getRadixAliases(Object.entries(palettes))
-      const flowCss = getFlowCss({ scale, slope, radius })
-      const themeCss = getThemeCss({ borderWidth })
+        const radixCss = getRadixAliases(Object.entries(palettes))
+        const flowCss = getFlowCss({ scale, slope, radius })
+        const themeCss = getThemeCss({ borderWidth })
 
-      const fulluiCss = [radixCss, flowCss, themeCss].join(' ')
+        const fulluiCss = [radixCss, flowCss, themeCss].join(' ')
 
-      updateConfig({
-        vite: {
-          plugins: [getVirtualModule('fullui.css', fulluiCss)],
-          css: {
-            postcss: {
-              plugins: [autoprefixer, postcssPresetEnv],
+        updateConfig({
+          vite: {
+            plugins: [getVirtualModule('fullui.css', fulluiCss)],
+            css: {
+              postcss: {
+                plugins: [autoprefixer, postcssPresetEnv],
+              },
             },
           },
-        },
-      })
+        })
 
-      injectScript('page-ssr', 'import "virtual:fullui.css";')
-      injectScript('page-ssr', 'import "@unocss/reset/tailwind.css";')
+        injectScript('page-ssr', 'import "virtual:fullui.css";')
+        injectScript('page-ssr', 'import "@unocss/reset/tailwind.css";')
 
-      getRadixImports(Object.values(palettes)).forEach((importString) => {
-        injectScript('page-ssr', importString)
-      })
+        getRadixImports(Object.values(palettes)).forEach((importString) => {
+          injectScript('page-ssr', importString)
+        })
+      },
     },
-  },
-})
+  }) as AstroIntegration

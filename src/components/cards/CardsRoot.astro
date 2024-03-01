@@ -2,18 +2,20 @@
 import type { HTMLAttributes } from 'astro/types'
 import { getSlot } from '../../utils'
 
-interface Props {
-  layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento'
-  class?: HTMLAttributes<'div'>['class']
+interface Props extends HTMLAttributes<'div'> {
+  layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento' | null
 }
 
-const { layout = 'grid', class: className } = Astro.props
+const { layout = 'grid', class: className, ...rest } = Astro.props
 const slot = await getSlot(Astro)
 ---
 
 {
   slot && (
-    <div class:list={['cards-root cards', layout, className]}>
+    <div
+      class:list={['cards-root cards', layout, className]}
+      {...rest}
+    >
       <Fragment set:html={slot} />
     </div>
   )

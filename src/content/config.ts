@@ -1,9 +1,7 @@
-import { defineCollection, z } from 'astro:content'
-
-const data = defineCollection({
-  type: 'data',
-  schema: z.any(),
-})
+// const data = defineCollection({
+//   type: 'data',
+//   schema: z.any(),
+// })
 
 // export const collections = {
 //   categories: defineCollection({
