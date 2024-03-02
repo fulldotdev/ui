@@ -1,20 +1,16 @@
-import sitemap from '@astrojs/sitemap'
-import robotsTxt from 'astro-robots-txt'
 import { defineConfig } from 'astro/config'
-import fullui from './src/preset/fullui'
+import fullui from './src/preset/astro'
+// import UnoCSS from 'unocss/astro'
 
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
-  site: import.meta.env?.PUBLIC_APP_URL,
+  site: 'http://localhost:4321',
   integrations: [
-    sitemap(),
-    robotsTxt(),
-    fullui({
-      colors: {
-        base: 'slate',
-      },
-    }),
+    fullui(),
+    // UnoCSS({
+    //   injectReset: true,
+    // }),
     // starlight({
     //   title: 'Fullui',
     //   sidebar: [
