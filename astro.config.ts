@@ -1,7 +1,7 @@
 import sitemap from '@astrojs/sitemap'
 import robotsTxt from 'astro-robots-txt'
 import { defineConfig } from 'astro/config'
-import { fullui } from './src/integration/fullui'
+import fullui from './src/preset/fullui'
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,9 +11,8 @@ export default defineConfig({
     sitemap(),
     robotsTxt(),
     fullui({
-      palettes: {
+      colors: {
         base: 'slate',
-        accent: 'indigo',
       },
     }),
     // starlight({
