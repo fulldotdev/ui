@@ -1,18 +1,16 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
-import { getSlot } from '../../utils'
+import { getSlot, type BuildProps } from '../../utils'
 
-interface Props {
-  class?: HTMLAttributes<'div'>['class']
-}
+interface Base {}
 
-const { class: className } = Astro.props
+type Props = BuildProps<Base, 'buttons', 'div'>
+const { ...rest } = Astro.props
 const slot = await getSlot(Astro)
 ---
 
 {
   slot && (
-    <div class:list={['buttons', className]}>
+    <div {...rest}>
       <Fragment set:html={slot} />
     </div>
   )

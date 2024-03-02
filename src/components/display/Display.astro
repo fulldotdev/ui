@@ -1,7 +1,8 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import { DisplayRoot } from '.'
-import { buildProps, type BuildProps } from '../../utils'
+import { buildProps } from '../../utils'
+import Tag from '../Tag.astro'
 import { Channels } from '../channels'
 import { Description } from '../description'
 import { Html } from '../html'
@@ -12,7 +13,7 @@ import { Specs } from '../specs'
 import { Tagline } from '../tagline'
 import { Title } from '../title'
 
-interface Base
+interface Props
   extends ComponentProps<typeof DisplayRoot>,
     Pick<ComponentProps<typeof Rating>, 'rating' | '_rating'>,
     Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'>,
@@ -24,7 +25,6 @@ interface Base
     Pick<ComponentProps<typeof Channels>, 'channels' | '_channels'>,
     Pick<ComponentProps<typeof Socials>, 'socials' | '_socials'> {}
 
-type Props = BuildProps<Base, 'display'>
 const props = buildProps(Astro, 'display')
 
 const {
@@ -50,43 +50,51 @@ const {
 } = props
 ---
 
-<DisplayRoot {...restProps}>
-  <slot />
-  <Rating
-    {rating}
-    {_rating}
-  />
-  <Icon
-    class="single-icon"
-    {icon}
-    {_icon}
-  />
-  <Tagline
-    {tagline}
-    {_tagline}
-  />
-  <Title
-    {title}
-    {_title}
-  />
-  <Html
-    {html}
-    {_html}
-  />
-  <Description
-    {description}
-    {_description}
-  />
-  <Specs
-    {specs}
-    {_specs}
-  />
-  <Channels
-    {channels}
-    {_channels}
-  />
-  <Socials
-    {socials}
-    {_socials}
-  />
-</DisplayRoot>
+<Tag>
+  <DisplayRoot {...restProps}>
+    <slot />
+    <Rating
+      {rating}
+      {_rating}
+    />
+    <Icon
+      class="single-icon"
+      {icon}
+      {_icon}
+    />
+    <Tagline
+      {tagline}
+      {_tagline}
+    />
+    <Title
+      {title}
+      {_title}
+    />
+    <Html
+      {html}
+      {_html}
+    />
+    <Description
+      {description}
+      {_description}
+    />
+    <Specs
+      {specs}
+      {_specs}
+    />
+    <Channels
+      {channels}
+      {_channels}
+    />
+    <Socials
+      {socials}
+      {_socials}
+    />
+  </DisplayRoot>
+</Tag>
+
+<style is:global>
+  :where(.fullui.display) {
+    margin-top: 1rem;
+  }
+</style>
