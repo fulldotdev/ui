@@ -1,0 +1,37 @@
+---
+import type { ComponentProps } from 'astro/types'
+import { buildProps, type BuildProps } from '../utils'
+import Image from './Image.astro'
+import Tag from './Tag.astro'
+
+interface Base {
+  logo?: ComponentProps<typeof Image>['image']
+  alt?: ComponentProps<typeof Image>['alt']
+}
+
+type Props = BuildProps<Base, 'logo'>
+const props = buildProps(Astro, 'logo')
+
+const { logo, alt } = props
+---
+
+<Tag {...props}>
+  <Image
+    image={logo}
+    class="logo-image"
+    {alt}
+  />
+  <slot />
+</Tag>
+
+<style is:global>
+  .logo {
+    .logo-image {
+      display: block !important;
+      width: auto !important;
+      height: var(--spacing-5) !important;
+      object-fit: contain !important;
+      color: var(--hue12) !important;
+    }
+  }
+</style>

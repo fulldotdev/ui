@@ -1,0 +1,110 @@
+---
+import type { ComponentProps } from 'astro/types'
+import { buildProps, type BuildProps } from '../utils'
+import Channels from './Channels.astro'
+import Description from './Description.astro'
+import Html from './Html.astro'
+import Icon from './Icon.astro'
+import Rating from './Rating.astro'
+import Socials from './Socials.astro'
+import Specs from './Specs.astro'
+import Tag from './Tag.astro'
+import Tagline from './Tagline.astro'
+import Title from './Title.astro'
+
+interface Base
+  extends Pick<ComponentProps<typeof Rating>, 'rating' | '_rating'>,
+    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'>,
+    Pick<ComponentProps<typeof Tagline>, 'tagline' | '_tagline'>,
+    Pick<ComponentProps<typeof Title>, 'title' | '_title'>,
+    Pick<ComponentProps<typeof Description>, 'description' | '_description'>,
+    Pick<ComponentProps<typeof Html>, 'html' | '_html'>,
+    Pick<ComponentProps<typeof Specs>, 'specs' | '_specs'>,
+    Pick<ComponentProps<typeof Channels>, 'channels' | '_channels'>,
+    Pick<ComponentProps<typeof Socials>, 'socials' | '_socials'> {
+  density?: 'compact' | null
+  align?: 'start' | 'center' | 'stretch' | null
+}
+
+type Props = BuildProps<Base, 'display'>
+const props = buildProps(Astro, 'display')
+
+const {
+  rating,
+  _rating,
+  icon,
+  _icon,
+  tagline,
+  _tagline,
+  title,
+  _title,
+  description,
+  _description,
+  specs,
+  _specs,
+  html,
+  _html,
+  channels,
+  _channels,
+  socials,
+  _socials,
+  ...rest
+} = props
+---
+
+<Tag {...rest}>
+  <slot />
+  <Rating
+    {rating}
+    {_rating}
+  />
+  <Icon
+    class="single-icon"
+    {icon}
+    {_icon}
+  />
+  <Tagline
+    {tagline}
+    {_tagline}
+  />
+  <Title
+    {title}
+    {_title}
+  />
+  <Html
+    {html}
+    {_html}
+  />
+  <Description
+    {description}
+    {_description}
+  />
+  <Specs
+    {specs}
+    {_specs}
+  />
+  <Channels
+    {channels}
+    {_channels}
+  />
+  <Socials
+    {socials}
+    {_socials}
+  />
+</Tag>
+
+<style is:global>
+  .display {
+    display: flex;
+    row-gap: var(--spacing-3);
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: max(calc(var(--spacing-6) * 4), 500px);
+    text-align: left;
+
+    &.center {
+      align-items: center;
+      text-align: center;
+    }
+  }
+</style>

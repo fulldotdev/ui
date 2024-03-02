@@ -1,0 +1,29 @@
+---
+import { buildProps, type BuildProps } from '../utils'
+import Tag from './Tag.astro'
+
+interface Base {
+  title?: string | null
+}
+
+type Props = BuildProps<Base, 'title', 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'>
+const props = buildProps(Astro, 'title')
+
+const { title, ...rest } = props
+---
+
+<Tag {...rest}>
+  <Fragment set:html={title} />
+  <slot />
+</Tag>
+
+<style is:global>
+  .title {
+    /* FIXME */
+    color: var(--hue12);
+    font: var(--font);
+    font-weight: 700;
+    font-size: var(--font-size-6);
+    line-height: 1.25;
+  }
+</style>

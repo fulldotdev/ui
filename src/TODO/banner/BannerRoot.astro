@@ -1,0 +1,81 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props {
+  position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
+  scheme?: 'default' | 'reverse' | 'light' | 'dark'
+  impact?: 'low' | 'medium' | 'high' | 'extreme'
+  area?: 'default' | 'panel'
+  class?: HTMLAttributes<'div'>['class']
+}
+
+const {
+  position = 'relative',
+  scheme = 'default',
+  impact = 'medium',
+  area = 'default',
+  class: className,
+} = Astro.props
+---
+
+{
+  slot && (
+    <div
+      class:list={[
+        'banner compact',
+        'position-' + position,
+        'scheme-' + scheme,
+        scheme + '-theme',
+        scheme,
+        'impact-' + impact,
+        'area-' + area,
+        className,
+      ]}
+    >
+      <Fragment set:html={slot} />
+    </div>
+  )
+}
+
+<style is:global>
+  .banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--flow);
+    z-index: 10;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: var(--border-width);
+    border-left-width: 0;
+    border-color: var(--border-color);
+    background: var(--background);
+    padding: var(--spacing-1) var(--gutter);
+
+    &:where(.position-sticky) {
+      position: sticky;
+      top: 0;
+    }
+
+    &:where(.position-fixed) {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+    }
+
+    &:where(.position-absolute) {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+    }
+
+    &:where(.area-panel) {
+      margin: var(--spacing-2) var(--gutter);
+      border-color: var(--border-color);
+      border-radius: var(--radius);
+      padding: var(--spacing-2) var(--spacing-2);
+    }
+  }
+</style>

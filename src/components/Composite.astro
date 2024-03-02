@@ -1,0 +1,127 @@
+---
+import type { ComponentProps } from 'astro/types'
+import { buildProps, type BuildProps } from '../utils'
+import Action from './Action.astro'
+import Display from './Display.astro'
+import Tag from './Tag.astro'
+
+interface Base
+  extends ComponentProps<typeof Display>,
+    ComponentProps<typeof Action> {
+  density?: 'compact' | null
+  layout?: 'split' | 'stack' | null
+  align?: 'start' | 'center' | 'stretch' | null
+}
+
+type Props = BuildProps<Base, 'composite'>
+const props = buildProps(Astro, 'composite')
+
+const {
+  align,
+  // display
+  rating,
+  _rating,
+  icon,
+  _icon,
+  tagline,
+  _tagline,
+  title,
+  _title,
+  description,
+  _description,
+  specs,
+  _specs,
+  html,
+  _html,
+  channels,
+  _channels,
+  socials,
+  _socials,
+  // action
+  price,
+  variants,
+  _price,
+  buttons,
+  _buttons,
+  ...rest
+} = props
+---
+
+<Tag
+  class:list={[align]}
+  {...rest}
+>
+  <Display
+    {align}
+    {rating}
+    {_rating}
+    {icon}
+    {_icon}
+    {tagline}
+    {_tagline}
+    {title}
+    {_title}
+    {description}
+    {_description}
+    {specs}
+    {_specs}
+    {html}
+    {_html}
+    {channels}
+    {_channels}
+    {socials}
+    {_socials}
+  />
+  <Action
+    {align}
+    {price}
+    {variants}
+    {_price}
+    {buttons}
+    {_buttons}
+  />
+  <slot />
+</Tag>
+
+<style is:global>
+  .composite {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-4);
+    z-index: 1;
+    width: 100%;
+
+    &.center {
+      align-items: center;
+    }
+
+    &.panel {
+      padding: var(--gutter);
+    }
+
+    &.panel.compact {
+      gap: var(--spacing-4);
+      padding: var(--spacing-4);
+    }
+
+    &.stretch {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      /* @media (min-width: 1024px) {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      } */
+    }
+
+    &:where(.split .start) {
+      @media (min-width: 1024px) {
+        position: sticky;
+        top: var(--spacing-5);
+      }
+    }
+  }
+</style>

@@ -1,0 +1,27 @@
+---
+import type { ComponentProps } from 'astro/types'
+import { buildProps, type BuildProps } from '../utils'
+import Spec from './Spec.astro'
+import Tag from './Tag.astro'
+
+interface Base {
+  specs?: ComponentProps<typeof Spec>['spec'][]
+}
+
+type Props = BuildProps<Base, 'specs', 'ul'>
+const props = buildProps(Astro, 'specs')
+
+const { specs, ...rest } = props
+---
+
+<Tag {...rest}>
+  {specs?.map((spec) => <Spec {spec} />)}
+</Tag>
+
+<style is:global>
+  .specs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+  }
+</style>

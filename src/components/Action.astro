@@ -1,0 +1,50 @@
+---
+import type { ComponentProps } from 'astro/types'
+import { buildProps, type BuildProps } from '../utils'
+import Buttons from './Buttons.astro'
+import { Form } from './form'
+import FullcartAdd from './FullcartAdd.astro'
+import Price from './Price.astro'
+import Tag from './Tag.astro'
+
+interface Base
+  extends Pick<ComponentProps<typeof Price>, 'price' | '_price'>,
+    ComponentProps<typeof FullcartAdd>,
+    Pick<ComponentProps<typeof Buttons>, 'buttons' | '_buttons'> {
+  form?: ComponentProps<typeof Form>
+  align?: 'start' | 'center' | 'stretch' | null
+}
+
+type Props = BuildProps<Base, 'action'>
+const props = buildProps(Astro, 'action')
+
+const { price, variants, _price, buttons, _buttons, ...rest } = props
+---
+
+<Tag {...rest}>
+  <Form {...props}>
+    <slot name="form" />
+  </Form>
+  <FullcartAdd
+    {price}
+    {variants}
+    id="my-cool-product"
+  />
+  <Price
+    {price}
+    {_price}
+  />
+  <Buttons
+    {buttons}
+    {_buttons}
+  />
+  <slot />
+</Tag>
+
+<style is:global>
+  .action {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+</style>

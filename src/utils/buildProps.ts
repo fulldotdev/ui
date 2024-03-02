@@ -3,17 +3,15 @@ import type { HTMLTag, Polymorphic } from 'astro/types'
 import merge from 'deepmerge'
 
 type N<Name extends string> = Name | `_${Name}`
-type T<
-  Tag extends HTMLTag | undefined,
-  Name extends string,
-> = Tag extends string
-  ? Omit<Polymorphic<{ as: Tag }>, Name | 'slot'>
-  : undefined // TODO slot gives ts errors, see issue: https://github.com/withastro/astro/issues/10277. Fix could be including polymorphic in THIS function and setting everhything directly in the function, instead of in a Base interface
+type T<Tag extends HTMLTag, Name extends string> = Omit<
+  Polymorphic<{ as: Tag }>,
+  Name | 'slot'
+> // TODO slot gives ts errors, see issue: https://github.com/withastro/astro/issues/10277. Fix could be including polymorphic in THIS function and setting everhything directly in the function, instead of in a Base interface
 
 export type BuildProps<
   Props extends AstroGlobal['props'],
   Name extends string,
-  Tag extends HTMLTag | undefined = undefined,
+  Tag extends HTMLTag = HTMLTag,
 > = Omit<Props, Name> & {
   [Key in N<Name>]?: Name extends keyof Props
     ? (Props & T<Tag, Name>) | Props[Name] | null

@@ -1,17 +1,44 @@
 ---
 import type { HTMLTag, Polymorphic } from 'astro/types'
 
-type Props<As extends HTMLTag> = Polymorphic<{ as: As }>
+type Props<As extends HTMLTag> = Polymorphic<{ as: As }> & {}
+
+const {
+  as: As = 'div',
+  align,
+  layout,
+  hue,
+  scheme,
+  scale,
+  look,
+  order,
+  frame,
+  density,
+  class: className,
+  ...rest
+} = Astro.props
 
 const slot = await Astro.slots.render('default')
 const hasContent = slot?.trim().length > 0
-
-const { as: As = 'div', ...rest } = Astro.props
 ---
 
 {
   hasContent && (
-    <As {...rest}>
+    <As
+      class:list={[
+        align,
+        layout,
+        hue,
+        scheme,
+        scale,
+        look,
+        order,
+        frame,
+        density,
+        className,
+      ]}
+      {...rest}
+    >
       <Fragment set:html={slot} />
     </As>
   )

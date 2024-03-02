@@ -1,0 +1,62 @@
+---
+import tablerIcons from '@iconify-json/tabler/icons.json'
+import { buildProps, type BuildProps } from '../utils'
+import Tag from './Tag.astro'
+const tabler: any = tablerIcons
+
+interface Base {
+  hue?: 'accent' | 'base' | null
+  icon?: keyof typeof tabler.icons
+}
+
+type Props = BuildProps<Base, 'icon', 'i'>
+const props = buildProps(Astro, 'icon')
+
+const { icon, hue = 'accent', ...rest } = props
+---
+
+<Tag
+  class:list={[hue]}
+  {...rest}
+>
+  {
+    icon && (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        set:html={tabler?.icons[icon]?.body}
+      />
+    )
+  }
+  <slot />
+</Tag>
+
+<style is:global>
+  .icon {
+    display: inline-flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    width: 1em;
+    height: 1em;
+    color: var(--hue9);
+
+    /* FIXME */
+    &.single-icon {
+      width: 1.6em;
+      height: 1.6em;
+    }
+
+    /* FIXME */
+    &.button-icon {
+      width: 1.315em;
+      height: 1.315em;
+    }
+
+    svg {
+      position: absolute;
+      width: 120%;
+      height: 120%;
+    }
+  }
+</style>

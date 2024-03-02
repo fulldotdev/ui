@@ -1,0 +1,38 @@
+---
+import type { ComponentProps } from 'astro/types'
+import { buildProps, type BuildProps } from 'src'
+import type Icon from './Icon.astro'
+import Tag from './Tag.astro'
+
+interface Base extends ComponentProps<typeof Icon> {
+  hue?: 'accent' | 'base' | null
+  text?: string | null
+}
+
+type Props = BuildProps<Base, 'links', 'button' | 'a'>
+const props = buildProps(Astro, 'links')
+
+const { hue = 'accent', icon, _icon, as = 'a', text, ...rest } = props
+---
+
+<Tag
+  class:list={[hue]}
+  {as}
+  {...rest}
+>
+  <Fragment set:html={text} />
+  <slot />
+</Tag>
+
+<style is:global>
+  .link {
+    transition: var(--transition);
+    color: var(--hue11);
+    font: var(--font);
+    font-size: var(--font-size-2);
+
+    &:hover {
+      color: var(--hue12);
+    }
+  }
+</style>

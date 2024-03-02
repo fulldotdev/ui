@@ -1,28 +1,22 @@
 ---
 import type { HTMLAttributes, HTMLTag } from 'astro/types'
-import { getSlot } from '../../utils'
 
 interface Props extends Omit<HTMLAttributes<'form'>, 'slot'> {
   elements?: HTMLTag
 }
 
 const { method = 'POST', action, class: className } = Astro.props
-const slot = await getSlot(Astro)
 ---
 
-{
-  slot && (
-    <form
-      class:list={['form', className]}
-      {method}
-      {action}
-    >
-      <Fragment set:html={slot} />
-    </form>
-  )
-}
+<form
+  class:list={['form', className]}
+  {method}
+  {action}
+>
+  <slot />
+</form>
 
-<style>
+<style is:global>
   :where(.form) {
     display: flex;
     flex-direction: column;
