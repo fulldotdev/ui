@@ -27,9 +27,9 @@ categories:
 
 rating: 4.5
 price: 213 
-options:
-  - key: 
-    values:
+fields:
+  - label: 
+    options:
       - value: 
         fee: 
       - value: 

@@ -3,16 +3,18 @@ import type { ComponentProps } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Input from './Input.astro'
 import Label from './Label.astro'
+import Options from './Options.astro'
 import Tag from './Tag.astro'
 
 interface Base
   extends Pick<ComponentProps<typeof Label>, 'label' | '_label'>,
+    Pick<ComponentProps<typeof Options>, 'options' | '_options'>,
     Pick<ComponentProps<typeof Input>, 'input' | '_input'> {}
 
 type Props = BuildProps<Base, 'field'>
 const props = buildProps(Astro, 'field')
 
-const { label, _label, input, _input, ...rest } = props
+const { options, _options, label, _label, input, _input, ...rest } = props
 ---
 
 <Tag {...rest}>
@@ -21,11 +23,19 @@ const { label, _label, input, _input, ...rest } = props
     {label}
     {_label}
   />
-
-  <Input
-    {input}
-    {_input}
-  />
+  {
+    options ? (
+      <Options
+        {options}
+        {_options}
+      />
+    ) : (
+      <Input
+        {input}
+        {_input}
+      />
+    )
+  }
 </Tag>
 
 <style is:global>

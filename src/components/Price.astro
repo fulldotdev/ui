@@ -1,5 +1,6 @@
 ---
 import { buildProps, type BuildProps } from '../utils'
+import Tag from './Tag.astro'
 
 interface Base {
   price?: number | null
@@ -8,12 +9,14 @@ interface Base {
 type Props = BuildProps<Base, 'price', 'span'>
 const props = buildProps(Astro, 'price')
 
-const { price } = props
+const { price, ...rest } = props
 const priceNumber = parseFloat(price as any)
-const fixedPrice = priceNumber?.toFixed(2)
+const fixedPrice = priceNumber?.toFixed(2).replace('.', ',')
 ---
 
-{price && fixedPrice && <span> &euro;{fixedPrice}</span>}
+<Tag {...rest}>
+  {price && fixedPrice && <Fragment>&euro;{fixedPrice}</Fragment>}
+</Tag>
 
 <style is:global>
   .price {
