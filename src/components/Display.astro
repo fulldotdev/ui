@@ -2,23 +2,17 @@
 import type { ComponentProps } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Channels from './Channels.astro'
-import Description from './Description.astro'
-import Html from './Html.astro'
 import Icon from './Icon.astro'
 import Rating from './Rating.astro'
 import Socials from './Socials.astro'
 import Specs from './Specs.astro'
 import Tag from './Tag.astro'
-import Tagline from './Tagline.astro'
-import Title from './Title.astro'
+import Writeup from './Writeup.astro'
 
 interface Base
   extends Pick<ComponentProps<typeof Rating>, 'rating' | '_rating'>,
     Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'>,
-    Pick<ComponentProps<typeof Tagline>, 'tagline' | '_tagline'>,
-    Pick<ComponentProps<typeof Title>, 'title' | '_title'>,
-    Pick<ComponentProps<typeof Description>, 'description' | '_description'>,
-    Pick<ComponentProps<typeof Html>, 'html' | '_html'>,
+    ComponentProps<typeof Writeup>,
     Pick<ComponentProps<typeof Specs>, 'specs' | '_specs'>,
     Pick<ComponentProps<typeof Channels>, 'channels' | '_channels'>,
     Pick<ComponentProps<typeof Socials>, 'socials' | '_socials'> {
@@ -30,6 +24,7 @@ type Props = BuildProps<Base, 'display'>
 const props = buildProps(Astro, 'display')
 
 const {
+  align,
   rating,
   _rating,
   icon,
@@ -40,10 +35,10 @@ const {
   _title,
   description,
   _description,
+  writeup,
+  _writeup,
   specs,
   _specs,
-  html,
-  _html,
   channels,
   _channels,
   socials,
@@ -52,7 +47,10 @@ const {
 } = props
 ---
 
-<Tag {...rest}>
+<Tag
+  {...rest}
+  {align}
+>
   <slot />
   <Rating
     {rating}
@@ -63,21 +61,16 @@ const {
     {icon}
     {_icon}
   />
-  <Tagline
+  <Writeup
+    {align}
     {tagline}
     {_tagline}
-  />
-  <Title
     {title}
     {_title}
-  />
-  <Html
-    {html}
-    {_html}
-  />
-  <Description
     {description}
     {_description}
+    {writeup}
+    {_writeup}
   />
   <Specs
     {specs}
@@ -96,7 +89,7 @@ const {
 <style is:global>
   .display {
     display: flex;
-    row-gap: var(--spacing-3);
+    row-gap: var(--spacing-4);
     flex-direction: column;
     align-items: flex-start;
     max-width: max(calc(var(--spacing-6) * 4), 500px);

@@ -1,11 +1,14 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import { buildProps, type BuildProps } from '../utils'
+import type { ContentCollectionKey } from 'astro:content'
+import { getCollection } from 'astro:content'
+import { buildProps, type BuildProps, type GetReference } from '../utils'
 import Card from './Card.astro'
 import Tag from './Tag.astro'
 
-interface Base {
+interface Base extends GetReference {
   layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento' | null
+  collection?: ContentCollectionKey
   cards?: (
     | ComponentProps<typeof Card>
     | ComponentProps<typeof Card>['slug']
@@ -16,11 +19,10 @@ interface Base {
 type Props = BuildProps<Base, 'cards'>
 const props = buildProps(Astro, 'cards')
 
-const { cards, collection, layout, ...rest } = props
+let { cards, collection, ...rest } = props
 
 if ((!cards || cards.length === 0) && collection) {
   const items = await getCollection(collection)
-  // FIXME
   const slugs = items.map(({ slug }) => slug)
   cards = slugs
 }
@@ -34,8 +36,7 @@ if ((!cards || cards.length === 0) && collection) {
       return (
         <Card
           {collection}
-          {..._card}
-          {...card}
+          {card}
         />
       )
     })
@@ -88,7 +89,7 @@ if ((!cards || cards.length === 0) && collection) {
       scroll-behavior: smooth;
       scroll-snap-type: x mandatory;
 
-      :global(> *) {
+      > .card {
         /* TODO add multiple sizes */
         flex-grow: 0;
         flex-shrink: 0;

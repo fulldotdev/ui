@@ -6,21 +6,11 @@ seo:
 
 sections:
   - scale: medium
-    align: center
+    align: start
     scheme: dark
     tagline: De goedkoopste van Nederland
     title: Handig langer thuis wonen
-    image: https://picsum.photos/800/600
     description: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id.
-    cards:
-      - badkamer
-      - trapliften
-      - woonkamer
-      - veiligheid
-      - trapliften
-      - veiligheid
-      - badkamer
-      - woonkamer
     _cards:
       layout: grid
       collection: categories
@@ -37,7 +27,7 @@ sections:
         icon: truck-delivery
       - title: Veruit de laagste prijs
         description: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
-        icon: discount-check
+        icon: discount
       - title: Hulp van experts
         description: Lorem ipsum dolor sit amet consectetur. Tellus vitae morbi purus amet morbi porta dolor ut. Leo nulla mi.
         icon: phone-call
@@ -46,7 +36,7 @@ sections:
   - align: stretch
     title: Aanbiedingen
     buttons:
-      - description: Alle aanbiedingen
+      - text: Alle aanbiedingen
         href: /aanbiedingen
     cards:
       - product
@@ -59,6 +49,7 @@ sections:
       - product
     _cards:
       collection: products
+      layout: carousel
       specs: null
       description: null
       variants: null

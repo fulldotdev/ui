@@ -1,0 +1,62 @@
+---
+import type { ComponentProps } from 'astro/types'
+import { buildProps, type BuildProps } from '../utils'
+import Description from './Description.astro'
+import Tag from './Tag.astro'
+import Tagline from './Tagline.astro'
+import Title from './Title.astro'
+
+interface Base
+  extends Pick<ComponentProps<typeof Tagline>, 'tagline' | '_tagline'>,
+    Pick<ComponentProps<typeof Title>, 'title' | '_title'>,
+    Pick<ComponentProps<typeof Description>, 'description' | '_description'> {
+  writeup?: string | null
+  align?: 'start' | 'center' | 'stretch' | null
+}
+
+type Props = BuildProps<Base, 'writeup'>
+const props = buildProps(Astro, 'writeup')
+
+const {
+  writeup,
+  tagline,
+  _tagline,
+  title,
+  _title,
+  description,
+  _description,
+  ...rest
+} = props
+---
+
+<Tag {...rest}>
+  <Tagline
+    {tagline}
+    {_tagline}
+  />
+  <Title
+    {title}
+    {_title}
+  />
+  <Description
+    {description}
+    {_description}
+  />
+  <Fragment set:html={writeup} />
+</Tag>
+
+<style is:global>
+  .writeup {
+    display: flex;
+    row-gap: var(--spacing-3);
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: max(calc(var(--spacing-6) * 4), 500px);
+    text-align: left;
+
+    &.center {
+      align-items: center;
+      text-align: center;
+    }
+  }
+</style>

@@ -1,0 +1,36 @@
+---
+import type { ComponentProps } from 'astro/types'
+import { buildProps, type BuildProps } from '../utils'
+import Fields from './Fields.astro'
+import Tag from './Tag.astro'
+
+interface Base
+  extends Pick<ComponentProps<typeof Fields>, 'fields' | '_fields'> {}
+
+type Props = BuildProps<Base, 'form', 'form'>
+const props = buildProps(Astro, 'form')
+
+const { fields, _fields, method = 'POST', ...rest } = props
+---
+
+<Tag
+  {method}
+  {...rest}
+>
+  <Fields
+    {fields}
+    {_fields}
+  />
+</Tag>
+
+<style is:global>
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+    width: 100%;
+    min-width: min(500px, 85vw);
+    max-width: max(calc(var(--spacing-6) * 3), 500px);
+    text-align: left;
+  }
+</style>
