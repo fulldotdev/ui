@@ -1,0 +1,94 @@
+---
+import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
+import { buildProps, type BuildProps } from '../utils'
+import Tag from './Tag.astro'
+
+interface Base {
+  prose: string | CollectionEntry<ContentCollectionKey>['render'] | null
+}
+
+type Props = BuildProps<Base, 'prose'>
+const props = buildProps(Astro, 'prose')
+
+const { prose, ...rest } = props
+
+const Content = typeof prose === 'function' ? (await prose()).Content : null
+---
+
+<Tag {...rest}>
+  {Content && <Content />}
+  <Fragment set:Html={prose}></Fragment>
+  <slot />
+</Tag>
+
+<style is:global>
+  .prose {
+    column-gap: var(--spacing-5);
+    order: 3;
+    column-width: 500px;
+    column-count: auto;
+    text-align: left;
+
+    * {
+      align-items: flex-start;
+
+      margin-bottom: 0.5em;
+      color: var(--color);
+      font: var(--font);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      /* FIXME */
+      color: var(--hue12);
+      font: var(--font);
+      font-weight: 700;
+      font-size: var(--font-size-6);
+      line-height: 1.25;
+    }
+
+    h1 {
+      font-size: var(--font-size-6);
+    }
+    h2 {
+      font-size: var(--font-size-5);
+    }
+    h3 {
+      font-size: var(--font-size-4);
+    }
+    h4 {
+      font-size: var(--font-size-3);
+    }
+    h5 {
+      font-size: var(--font-size-2);
+    }
+    h6 {
+      font-size: var(--font-size-1);
+    }
+
+    :is(h1, h2, h3, h4, h5, h6) {
+      --color: var(--hue12);
+
+      margin-top: 2em;
+      margin-bottom: 0.5em;
+      color: var(--color);
+    }
+
+    :is(h1, h2, h3, h4, h5, h6):first-child {
+      margin-top: 0;
+    }
+
+    * {
+      break-inside: avoid-column;
+    }
+
+    ul {
+      padding-left: 1.5em;
+      list-style: disc;
+    }
+  }
+</style>

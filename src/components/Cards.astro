@@ -6,7 +6,9 @@ import { buildProps, type BuildProps, type GetReference } from '../utils'
 import Card from './Card.astro'
 import Tag from './Tag.astro'
 
-interface Base extends GetReference {
+interface Base
+  extends GetReference,
+    Omit<ComponentProps<typeof Card>, 'layout'> {
   layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento' | null
   collection?: ContentCollectionKey
   cards?: (
@@ -19,7 +21,7 @@ interface Base extends GetReference {
 type Props = BuildProps<Base, 'cards'>
 const props = buildProps(Astro, 'cards')
 
-let { cards, collection, ...rest } = props
+let { cards, collection, layout, ...rest } = props
 
 if ((!cards || cards.length === 0) && collection) {
   const items = await getCollection(collection)
@@ -28,13 +30,17 @@ if ((!cards || cards.length === 0) && collection) {
 }
 ---
 
-<Tag {...rest}>
+<Tag
+  {layout}
+  {...rest}
+>
   {
     cards?.map((card) => {
       if (!card) return null
       if (typeof card === 'string') card = { slug: card }
       return (
         <Card
+          {...rest}
           {collection}
           {card}
         />
