@@ -1,0 +1,39 @@
+---
+import { buildProps, type BuildProps } from '../utils'
+
+interface Base {
+  video?: string | null
+  thumbnail?: boolean | null
+}
+
+type Props = BuildProps<Base, 'video'>
+const props = buildProps(Astro, 'video')
+
+const { video, thumbnail } = props
+
+const youtubeId =
+  (video?.includes('youtube.com') || video?.includes('youtu.be')) &&
+  video.split('/').pop()?.split('?').shift()
+---
+
+{
+  youtubeId && !thumbnail && (
+    <iframe
+      class="image"
+      src={`https://www.youtube.com/embed/${youtubeId}?controls=0&showinfo=0&rel=0&modestbranding=1&loop=1`}
+      title="YouTube video player"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen
+    />
+  )
+}
+
+{
+  youtubeId && thumbnail && (
+    <img
+      src={`https://img.youtube.com/vi/${youtubeId}/0.jpg`}
+      alt=""
+    />
+  )
+}

@@ -3,6 +3,7 @@ import type { ComponentProps } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Button from './Button.astro'
 import Image from './Image.astro'
+import Media from './Media.astro'
 
 interface Base {
   images?: ComponentProps<typeof Image>['image'][]
@@ -26,7 +27,9 @@ const { images } = props
         />
         <div class="carousel large">
           {images.map((image) => (
-            <Image {image} />
+            // <Image {image} />
+            // <Video></Video>
+            <Media {image} />
           ))}
         </div>
         <Button
@@ -37,9 +40,14 @@ const { images } = props
         />
         <div class="carousel small">
           {images.map((image) => (
-            <div class="carousel-item small">
-              <Image {image} />
-            </div>
+            // <div class="carousel-item small">
+            <Media
+              thumbnail={true}
+              {image}
+            />
+
+            // <Image {image} />
+            // </div>
           ))}
         </div>
       </div>
@@ -49,7 +57,7 @@ const { images } = props
 
 <script>
   const largeCarousel = document.querySelector('.carousel.large')
-  const smallItems = document?.querySelectorAll('.carousel-item.small')
+  const smallItems = document?.querySelectorAll('.carousel.small>*')
 
   smallItems?.forEach((item, i) => {
     item.addEventListener('click', () => {
@@ -89,9 +97,8 @@ const { images } = props
     width: 100%;
 
     .carousel {
-      display: inline-flex;
+      display: flex;
       position: relative;
-      flex-basis: 100%;
       width: 100%;
       overflow-x: scroll;
       scroll-behavior: smooth;
@@ -109,14 +116,20 @@ const { images } = props
 
       &.large {
         align-items: center;
+        aspect-ratio: 1/1;
       }
 
       &.small {
         gap: var(--spacing-2);
         padding: var(--spacing-2) 0;
+        height: var(--spacing-6);
 
-        .carousel-item {
-          width: 20%;
+        img,
+        iframe {
+          align-self: stretch;
+          width: auto;
+          height: 100%;
+          object-fit: contain;
           scroll-snap-align: start;
 
           &:hover {
