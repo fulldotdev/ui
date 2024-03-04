@@ -1,13 +1,27 @@
 import { defineConfig } from 'astro/config'
-import fullui from './src/preset/astro'
-// import UnoCSS from 'unocss/astro'
+import UnoCSS from 'unocss/astro'
+import preset from './src/preset/uno'
 
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
   site: 'http://localhost:4321',
   integrations: [
-    fullui(),
+    UnoCSS({
+      injectReset: true,
+      content: {
+        pipeline: {
+          include: [
+            // the default
+            /\.(vue|svelte|[jt]sx|mdx?|astro|elm|php|phtml|html)($|\?)/,
+            // include js/ts files
+            'src/**/*.{js,ts,md}',
+          ],
+        },
+        filesystem: ['src/**/*.md'],
+      },
+      presets: [preset({})],
+    }),
     // UnoCSS({
     //   injectReset: true,
     // }),
