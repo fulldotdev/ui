@@ -1,24 +1,24 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
-import { BuildProps, buildProps } from '../utils'
+import { buildProps, type BuildProps } from '../utils'
 import Tag from './Tag.astro'
 
 interface Base {
-  label?: HTMLAttributes<'label'>['for']
+  label?: string | null
 }
 
 type Props = BuildProps<Base, 'label', 'label'>
 const props = buildProps(Astro, 'label')
 
-const { label, ...rest } = props
+const { label, as = 'label', ...rest } = props
 ---
 
 <Tag
   for={label}
+  {as}
   {...rest}
 >
+  <Fragment set:html={label} />
   <slot />
-  {label}
 </Tag>
 
 <style is:global>

@@ -1,47 +1,80 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
+import Checkbox from './Checkbox.astro'
 import Input from './Input.astro'
 import Label from './Label.astro'
 import Options from './Options.astro'
 import Tag from './Tag.astro'
+import Textarea from './Textarea.astro'
 
 interface Base
   extends Pick<ComponentProps<typeof Label>, 'label' | '_label'>,
     Pick<ComponentProps<typeof Options>, 'options' | '_options'>,
-    Pick<ComponentProps<typeof Input>, 'input' | '_input'> {}
+    Pick<ComponentProps<typeof Checkbox>, 'checkbox' | '_checkbox'>,
+    Pick<ComponentProps<typeof Textarea>, 'textarea' | '_textarea'>,
+    Pick<ComponentProps<typeof Input>, 'input' | '_input'> {
+  field?: 'input' | 'textarea' | 'checkbox' | 'options'
+}
 
 type Props = BuildProps<Base, 'field'>
 const props = buildProps(Astro, 'field')
 
-const { options, _options, label, _label, input, _input, ...rest } = props
+const {
+  options,
+  _options,
+  textarea,
+  _textarea,
+  checkbox,
+  _checkbox,
+  label,
+  _label,
+  input,
+  _input,
+  ...rest
+} = props
 ---
 
-<Tag {...rest}>
+<Tag
+  {...rest}
+  class:list={checkbox ? 'has-checkbox' : ''}
+>
   <slot />
   <Label
     {label}
     {_label}
   />
-  {
-    options ? (
-      <Options
-        {options}
-        {_options}
-      />
-    ) : (
-      <Input
-        {input}
-        {_input}
-      />
-    )
-  }
+  <Options
+    {options}
+    {_options}
+  />
+  <Textarea
+    {textarea}
+    {_textarea}
+  />
+  <Checkbox
+    {checkbox}
+    {_checkbox}
+  />
+  <Input
+    {input}
+    {_input}
+  />
 </Tag>
 
 <style is:global>
   .field {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: var(--spacing-1);
+
+    &.has-checkbox {
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+      align-items: center;
+      gap: var(--spacing-2);
+      padding: var(--spacing-1) 0;
+    }
   }
 </style>
