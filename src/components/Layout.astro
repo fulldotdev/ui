@@ -1,0 +1,79 @@
+---
+import type { ComponentProps } from 'astro/types'
+import { buildProps, type BuildProps, type GetReference } from '../utils'
+import Body from './Body.astro'
+import Head from './Head.astro'
+
+interface Base
+  extends GetReference,
+    ComponentProps<typeof Head>,
+    ComponentProps<typeof Body> {}
+
+type Props = BuildProps<Base, 'layout', 'html'>
+const props = buildProps(Astro, 'layout')
+
+const {
+  head,
+  _head,
+  title,
+  _title,
+  description,
+  _description,
+  image,
+  _image,
+  body,
+  _body,
+  header,
+  _header,
+  hero,
+  _hero,
+  prose,
+  _prose,
+  cta,
+  _cta,
+  footer,
+  _footer,
+  legal,
+  _legal,
+  ...rest
+} = props
+
+// const _layout = await getEntry('settings', 'layout')
+---
+
+<!doctype html>
+<html {...rest}>
+  <Head
+    {head}
+    {_head}
+    {title}
+    {description}
+    {image}
+  >
+    <slot name="head" />
+  </Head>
+  <Body
+    {body}
+    {_body}
+    {header}
+    {_header}
+    {hero}
+    {_hero}
+    {title}
+    {_title}
+    {description}
+    {_description}
+    {image}
+    {_image}
+    {prose}
+    {_prose}
+    {cta}
+    {_cta}
+    {footer}
+    {_footer}
+    {legal}
+    {_legal}
+  >
+    <slot />
+  </Body>
+</html>
