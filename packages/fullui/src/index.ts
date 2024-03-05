@@ -1,4 +1,4 @@
-// Utils
+// Preset
 export * from './utils'
 // Components
 export { default as Action } from './components/Action.astro'
