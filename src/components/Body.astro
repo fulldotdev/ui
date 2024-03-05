@@ -5,7 +5,6 @@ import { Footer } from './footer'
 import { Header } from './header'
 import Legal from './Legal.astro'
 import Main from './Main.astro'
-import Tag from './Tag.astro'
 
 interface Base
   extends GetReference,
@@ -18,25 +17,19 @@ interface Base
 type Props = BuildProps<Base, 'body'>
 const props = buildProps(Astro, 'body')
 
-const { header, _header, footer, _footer, legal, _legal, ...rest } = props
+const { class: className, ...rest } = props
 ---
 
-<Tag {...rest}>
+<body
+  class:list={['hue-base', className]}
+  {...rest}
+>
   <!-- <Banner></Banner> -->
-  <Header
-    {header}
-    {_header}
-  />
-  <Main />
+  <Header {...rest} />
+  <Main {...rest} />
   <slot />
-  <Footer
-    {footer}
-    {_footer}
-  />
-  <Legal
-    {legal}
-    {_legal}
-  />
+  <!-- <Footer {...rest} /> -->
+  <Legal {...rest} />
 
   <style is:global>
     .body {
@@ -55,4 +48,4 @@ const { header, _header, footer, _footer, legal, _legal, ...rest } = props
       }
     }
   </style>
-</Tag>
+</body>
