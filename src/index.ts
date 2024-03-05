@@ -1,8 +1,6 @@
 // Utils
 export * from './utils'
 // Components
-export * from './components/layout'
-
 export { default as Action } from './components/Action.astro'
 export { default as Button } from './components/Button.astro'
 export { default as Buttons } from './components/Buttons.astro'
@@ -21,6 +19,7 @@ export { default as Image } from './components/Image.astro'
 export { default as Images } from './components/Images.astro'
 export { default as Input } from './components/Input.astro'
 export { default as Label } from './components/Label.astro'
+export { default as Layout } from './components/Layout.astro'
 export { default as Legal } from './components/Legal.astro'
 export { default as Link } from './components/Link.astro'
 export { default as Links } from './components/Links.astro'

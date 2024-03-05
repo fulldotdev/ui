@@ -1,0 +1,51 @@
+---
+import type { ComponentProps } from 'astro/types'
+import { buildProps, type BuildProps, type GetReference } from '../utils'
+import { Footer } from './footer'
+import { Header } from './header'
+import Legal from './Legal.astro'
+import Main from './Main.astro'
+
+interface Base
+  extends GetReference,
+    // Pick<ComponentProps<typeof Banner>, 'banner' | '_banner'>,
+    Pick<ComponentProps<typeof Header>, 'header' | '_header'>,
+    ComponentProps<typeof Main>,
+    Pick<ComponentProps<typeof Footer>, 'footer' | '_footer'>,
+    Pick<ComponentProps<typeof Legal>, 'legal' | '_legal'> {}
+
+type Props = BuildProps<Base, 'body'>
+const props = buildProps(Astro, 'body')
+
+const { class: className, ...rest } = props
+---
+
+<body
+  class:list={['hue-base', className]}
+  {...rest}
+>
+  <!-- <Banner></Banner> -->
+  <Header {...rest} />
+  <Main {...rest} />
+  <slot />
+  <!-- <Footer {...rest} /> -->
+  <Legal {...rest} />
+
+  <style is:global>
+    .body {
+      transition: var(--transition);
+      background: var(--hue1);
+      background: var(--background);
+      min-height: 100vh;
+      color: var(--color);
+      font: var(--font);
+
+      &.dark {
+        color-scheme: dark;
+      }
+      &.light {
+        color-scheme: light;
+      }
+    }
+  </style>
+</body>

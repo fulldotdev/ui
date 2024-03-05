@@ -1,5 +1,6 @@
 ---
 import type { HTMLTag, Polymorphic } from 'astro/types'
+import { htmlElementAttributes } from 'html-element-attributes'
 
 type Props<As extends HTMLTag> = Polymorphic<{ as: As }> & {
   hue?: any
@@ -11,7 +12,6 @@ type Props<As extends HTMLTag> = Polymorphic<{ as: As }> & {
   layout?: any
   frame?: any
   density?: any
-  [key: string]: any // FIXME
 }
 
 const {
@@ -25,12 +25,22 @@ const {
   order,
   frame,
   density,
-  class: className,
   ...rest
 } = Astro.props
 
 const slot = await Astro.slots.render('default')
 const hasContent = slot?.trim().length > 0
+
+const attributes = Object.fromEntries(
+  Object.entries(rest).filter(
+    ([key]) =>
+      (htmlElementAttributes['*'].includes(key) ||
+        htmlElementAttributes[As]?.includes(key) ||
+        key.startsWith('data-') ||
+        key.startsWith('aria-')) &&
+      key !== 'title'
+  )
+)
 ---
 
 {
@@ -46,9 +56,8 @@ const hasContent = slot?.trim().length > 0
         order,
         frame,
         density,
-        className,
       ]}
-      {...rest}
+      {...attributes}
     >
       <Fragment set:html={slot} />
     </As>
