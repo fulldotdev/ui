@@ -1,7 +1,8 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import { LayoutBody, LayoutHead, LayoutMain, LayoutRoot } from '.'
+import { LayoutBody, LayoutMain, LayoutRoot } from '.'
 import { buildProps, type BuildProps, type GetReference } from '../../utils'
+import Head from '../Head.astro'
 import Legal from '../Legal.astro'
 import Prose from '../Prose.astro'
 import Section from '../Section.astro'
@@ -12,7 +13,7 @@ import { Header } from '../header'
 interface Base
   extends GetReference,
     Pick<ComponentProps<typeof Header>, 'header' | '_header'>,
-    Pick<ComponentProps<typeof LayoutHead>, 'head' | '_head'>,
+    Pick<ComponentProps<typeof Head>, 'head' | '_head'>,
     Pick<ComponentProps<typeof Footer>, 'footer' | '_footer'>,
     Pick<ComponentProps<typeof Prose>, 'prose' | '_prose'>,
     Pick<ComponentProps<typeof Legal>, 'legal' | '_legal'> {
@@ -47,13 +48,13 @@ const {
 ---
 
 <LayoutRoot {...props}>
-  <LayoutHead
+  <Head
     {...props}
     {head}
     {_head}
   >
     <slot name="head" />
-  </LayoutHead>
+  </Head>
   <LayoutBody {...props}>
     <Header
       {header}
@@ -68,11 +69,11 @@ const {
         {_prose}
         {...restProps}
       />
-      <!-- <Prose
+      <Prose
         {prose}
         {_prose}
         {...restProps}
-      /> -->
+      />
       <slot />
       <Sections {...props} />
       <Section
