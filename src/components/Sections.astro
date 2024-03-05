@@ -1,18 +1,21 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import { sortByIndex } from '../utils'
+import { buildProps, sortByIndex, type BuildProps } from '../utils'
 import Section from './Section.astro'
+import Tag from './Tag.astro'
 
 type Index = {
   index?: number
 }
 
-interface Props extends ComponentProps<typeof Section> {
+interface Base {
   sections?: (ComponentProps<typeof Section> & Index)[] | null
 }
 
-let { sections } = Astro.props
+type Props = BuildProps<Base, 'sections'>
+const props = buildProps(Astro, 'sections')
 
+let { as, sections, class: className, ...rest } = props
 const sorted = sortByIndex(sections)
 
 // const indexed = sections?.map((section, index) => ({ index, ...section }))
@@ -22,9 +25,13 @@ const sorted = sortByIndex(sections)
 // })
 ---
 
-<div>
+<Tag
+  {as}
+  class={className}
+  {...rest}
+>
   {sorted?.map((section) => <Section {...section} />)}
-</div>
+</Tag>
 
 <style is:global>
   .sections {

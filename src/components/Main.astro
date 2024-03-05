@@ -1,0 +1,44 @@
+---
+import type { ComponentProps } from 'astro/types'
+import { buildProps, type BuildProps, type GetReference } from '../utils'
+import Prose from './Prose.astro'
+import Section from './Section.astro'
+import Sections from './Sections.astro'
+import Tag from './Tag.astro'
+
+interface Base
+  extends GetReference,
+    ComponentProps<typeof Section>,
+    Pick<ComponentProps<typeof Prose>, 'prose' | '_prose'> {
+  hero?: ComponentProps<typeof Section>['section']
+  _hero?: ComponentProps<typeof Section>['_section']
+  cta?: ComponentProps<typeof Section>['section']
+  _cta?: ComponentProps<typeof Section>['_section']
+}
+
+type Props = BuildProps<Base, 'main', 'main'>
+const props = buildProps(Astro, 'main')
+
+const { as = 'main', hero, _hero, cta, _cta, class: className, ...rest } = props
+---
+
+<Tag
+  {as}
+  class={className}
+  {...rest}
+>
+  <Section
+    class="hero"
+    section={hero}
+    _section={_hero}
+    {...rest}
+  />
+  <!-- <Prose/> -->
+  <Sections {...props} />
+  <slot />
+  <Section
+    class="cta"
+    section={cta}
+    _section={_cta}
+  />
+</Tag>

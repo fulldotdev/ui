@@ -3,7 +3,6 @@ import type { ComponentProps } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Buttons from './Buttons.astro'
 import Form from './Form.astro'
-import Price from './Price.astro'
 import Product from './Product.astro'
 import Tag from './Tag.astro'
 
@@ -17,60 +16,16 @@ interface Base
 type Props = BuildProps<Base, 'action'>
 const props = buildProps(Astro, 'action')
 
-const {
-  form,
-  _form,
-  price,
-  _price,
-  fields,
-  _fields,
-  button,
-  _button,
-  buttons,
-  _buttons,
-  title,
-  _title,
-  description,
-  _description,
-  image,
-  _image,
-  ...rest
-} = props
+const { as, class: className, ...rest } = props
 ---
 
-<Tag {...rest}>
-  <Form
-    {form}
-    {_form}
-  />
-  <!-- <FullcartAdd
-    {price}
-    {variants}
-    id="my-cool-product"
-  /> -->
-  <!-- <Price
-    {price}
-    {_price}
-  /> -->
-
-  <Product
-    {price}
-    {_price}
-    {fields}
-    {_fields}
-    {button}
-    {_button}
-    {title}
-    {_title}
-    {description}
-    {_description}
-    {image}
-    {_image}
-  />
-  <Buttons
-    {buttons}
-    {_buttons}
-  />
+<Tag
+  {as}
+  class={className}
+  {...rest}
+>
+  {props.price ? <Product {...rest} /> : <Form {...(rest as any)} />}
+  <Buttons {...rest} />
   <slot />
 </Tag>
 
