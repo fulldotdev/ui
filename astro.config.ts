@@ -1,3 +1,4 @@
+import starlight from '@astrojs/starlight'
 import { defineConfig } from 'astro/config'
 import UnoCSS from 'unocss/astro'
 import preset from './src/preset/uno'
@@ -7,6 +8,20 @@ export default defineConfig({
   output: 'static',
   site: 'http://localhost:4321',
   integrations: [
+    starlight({
+      title: 'Fullui',
+      sidebar: [
+        {
+          label: 'Home',
+          items: [
+            {
+              label: 'Getting Started',
+              link: '/docs',
+            },
+          ],
+        },
+      ],
+    }),
     UnoCSS({
       injectReset: true,
       content: {
@@ -22,42 +37,5 @@ export default defineConfig({
       },
       presets: [preset({})],
     }),
-    // UnoCSS({
-    //   injectReset: true,
-    // }),
-    // starlight({
-    //   title: 'Fullui',
-    //   sidebar: [
-    //     {
-    //       label: 'Getting started',
-    //       autogenerate: {
-    //         directory: 'getting-started',
-    //       },
-    //     },
-    //     {
-    //       label: 'Design system',
-    //       items: [
-    //         { label: 'Introduction', link: '/design-system/introduction/' },
-    //         { label: 'Theme', link: '/design-system/theme/' },
-    //         { label: 'Flow', link: '/design-system/flow/' },
-    //       ],
-    //       autogenerate: {
-    //         directory: 'design-system',
-    //       },
-    //     },
-    //     {
-    //       label: 'Components',
-    //       autogenerate: {
-    //         directory: 'components',
-    //       },
-    //     },
-    //     {
-    //       label: 'Blocks',
-    //       autogenerate: {
-    //         directory: 'blocks',
-    //       },
-    //     },
-    //   ],
-    // }),
   ],
 })
