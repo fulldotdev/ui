@@ -1,0 +1,87 @@
+---
+import { Layout, getPathname, withDefaults } from '@fulldevlabs/fullui'
+import {
+  getCollection,
+  getEntry,
+  type ContentCollectionKey,
+} from 'astro:content'
+import merge from 'deepmerge'
+
+import '../css/custom.css'
+export async function getStaticPaths() {
+  const collections: ContentCollectionKey[] = [
+    'pages',
+    'posts',
+    'forms',
+    'policies',
+    'products',
+    'categories',
+  ]
+
+  const promises = collections.map((collection) => getCollection(collection))
+  const resolved = await Promise.all(promises)
+  const flattened = resolved.flat()
+  const filtered = flattened.filter(Boolean)
+  const entries = filtered
+
+  return entries.map((entry) => ({
+    params: {
+      pathname: getPathname(entry) === '/' ? undefined : getPathname(entry),
+    },
+    props: entry,
+  }))
+}
+
+const { props } = Astro
+const entry = await withDefaults(props)
+const layout = await getEntry('settings', 'layout')
+const mergedData = merge(layout.data, entry.data) || {}
+
+const { render, collection, data } = entry
+// const _data = await getCollectionDefault(collection, Astro)
+// const merged = merge(_data, data)
+---
+
+<Layout
+  {...mergedData}
+  collection={collection}
+  prose={render}
+>
+  <script
+    slot="head"
+    src="https://api.fullcart.dev/embed/cart.js"
+    defer
+  ></script>
+  <div
+    id="fullcart"
+    data-lang="nl"
+    data-key="sk_test_51ILS50IxKEY9gO57irWP8dcGtY4pg3t1c4LFaXuRGpcTjlvTUOhKEJgSMZhgUs681GSZQk6of13l7JBsUkdSZxfH00zb3s0Brz"
+    data-url={Astro.url.origin}
+    data-success-url={Astro.url.origin}
+    data-cancel-url={Astro.url.origin}
+    data-currency="eur"
+  >
+  </div>
+</Layout>
+
+<style is:global>
+  #fullcart {
+    .button-primary {
+      background: var(--hue9);
+      cursor: pointer;
+
+      &:hover {
+        background: var(--hue10);
+      }
+    }
+
+    .full-cart-button-secondary {
+      background: var(--hue3);
+      cursor: pointer;
+
+      &:hover {
+        background: var(--hue4);
+      }
+    }
+  }
+</style>
