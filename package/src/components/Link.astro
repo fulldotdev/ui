@@ -1,7 +1,7 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
-import type Icon from './Icon.astro'
+import Icon from './Icon.astro'
 import Tag from './Tag.astro'
 
 interface Base extends ComponentProps<typeof Icon> {
@@ -22,17 +22,39 @@ const { hue = 'accent', icon, _icon, as = 'a', text, ...rest } = props
 >
   <Fragment set:html={text} />
   <slot />
+  <Icon
+    {icon}
+    {_icon}
+    {hue}
+  />
 </Tag>
 
 <style is:global>
   .link {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
     transition: var(--transition);
     color: var(--hue11);
     font: var(--font);
-    font-size: var(--font-size-2);
+    font-size: var(--text-2);
+    text-decoration: none;
+    text-decoration-color: var(--hue8);
+    white-space: nowrap;
 
     &:hover {
       color: var(--hue12);
+      text-decoration: underline;
+      text-decoration-color: var(--hue8);
+    }
+
+    &.contrast {
+      color: var(--hue12);
+
+      &:hover {
+        color: var(--hue11);
+      }
     }
   }
 </style>

@@ -3,15 +3,18 @@ import type { HTMLTag, Polymorphic } from 'astro/types'
 import { htmlElementAttributes } from 'html-element-attributes'
 
 type Props<As extends HTMLTag> = Polymorphic<{ as: As }> & {
-  hue?: any
-  scale?: any
+  compact?: boolean | null
+  contrast?: boolean | null
+  scheme?: 'light' | 'dark' | null
+  color?: 'base' | 'accent' | null
+  size?: 'small' | 'medium' | 'large' | null
+
+  // sometimes
   look?: any
   order?: any
-  scheme?: any
   align?: any
   layout?: any
   frame?: any
-  density?: any
 }
 
 const {
@@ -19,12 +22,14 @@ const {
   align,
   layout,
   hue,
+  color,
   scheme,
-  scale,
+  size,
   look,
   order,
   frame,
-  density,
+  compact,
+  contrast,
   ...rest
 } = Astro.props
 
@@ -47,15 +52,22 @@ const attributes = Object.fromEntries(
   hasContent && (
     <As
       class:list={[
+        {
+          compact,
+          contrast,
+        },
+        color ? `hue-${color}` : '',
+        scheme,
+        size,
+        // sometimes
         align,
         layout,
         hue,
         scheme,
-        scale,
+        size,
         look,
         order,
         frame,
-        density,
       ]}
       {...attributes}
     >

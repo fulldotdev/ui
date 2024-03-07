@@ -38,8 +38,12 @@ export default function preset(userConfig?: Partial<Config>): Preset {
     name: 'unocss-preset-fullui-color',
     presets: [
       presetRadix({
-        lightSelector: config.scheme === 'light' ? ':root, .light' : '.light',
-        darkSelector: config.scheme === 'dark' ? ':root, .dark' : '.dark',
+        lightSelector:
+          (config.scheme === 'light' ? ':root,' : '') +
+          '.light, [data-theme="light"]',
+        darkSelector:
+          (config.scheme === 'dark' ? ':root,' : '') +
+          '.dark, [data-theme="dark"]',
         prefix: '--',
         palette: Object.values(config.palettes),
         aliases: config.palettes,

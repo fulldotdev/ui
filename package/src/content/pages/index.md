@@ -36,7 +36,7 @@ sections:
   - align: stretch
     title: Aanbiedingen
     buttons:
-      - text: Alle aanbiedingen
+      - button: Alle aanbiedingen
         href: /aanbiedingen
     cards:
       - product

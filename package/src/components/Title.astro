@@ -1,18 +1,22 @@
 ---
+import type { ComponentProps } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Tag from './Tag.astro'
 
-interface Base {
+interface Base extends ComponentProps<typeof Tag> {
   title?: string | null
 }
 
-type Props = BuildProps<Base, 'title', 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'>
+type Props = BuildProps<Base, 'title'>
 const props = buildProps(Astro, 'title')
 
-const { title, ...rest } = props
+const { title, contrast = true, ...rest } = props
 ---
 
-<Tag {...rest}>
+<Tag
+  {contrast}
+  {...rest}
+>
   <Fragment set:html={title} />
   <slot />
 </Tag>
@@ -20,10 +24,14 @@ const { title, ...rest } = props
 <style is:global>
   .title {
     /* FIXME */
-    color: var(--hue12);
+    color: var(--hue11);
     font: var(--font);
     font-weight: 700;
-    font-size: var(--font-size-6);
+    font-size: var(--text-3);
     line-height: 1.25;
+
+    &.contrast {
+      color: var(--hue12);
+    }
   }
 </style>

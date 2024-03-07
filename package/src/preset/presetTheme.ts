@@ -26,7 +26,7 @@ export default function preset(userConfig?: Partial<Config>): Preset {
           --border: var(--border-width) var(--border-style) var(--border-color);
         
           --font-weight: 400;
-          --font-size: var(--font-size-2);
+          --font-size: var(--text-2);
           --line-height: 1.625;
           --font-family: 'Open Sans', sans-serif;
           --font: var(--font-weight) var(--font-size)/var(--line-height) var(--font-family);

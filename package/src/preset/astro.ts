@@ -7,7 +7,7 @@ interface Config extends UnoConfig {}
 
 export default function fullui(config?: Partial<Config>): AstroIntegration {
   return UnoCSS({
-    injectReset: true,
+    injectReset: false,
     content: {
       pipeline: {
         include: [
