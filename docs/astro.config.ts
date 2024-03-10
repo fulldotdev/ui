@@ -20,7 +20,7 @@ export default defineConfig({
       },
       favicon: './favicon.png',
       components: {
-        Head: './src/components/Head.astro',
+        Head: './src/components/StarlightHead.astro',
       },
       customCss: ['./src/css/custom.css'],
       sidebar: [

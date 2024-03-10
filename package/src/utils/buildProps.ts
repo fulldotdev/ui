@@ -2,21 +2,47 @@ import type { AstroGlobal } from 'astro'
 import type { HTMLTag, Polymorphic } from 'astro/types'
 import merge from 'deepmerge'
 
-type N<Name extends string> = Name | `_${Name}`
-type T<Tag extends HTMLTag, Name extends string> = Omit<
+type P = AstroGlobal['props']
+type N = keyof AstroGlobal['props']
+type T = HTMLTag
+
+// HTML attributes depending on element
+export type Html<Name extends N, Tag extends T> = Omit<
   Polymorphic<{ as: Tag }>,
   Name | 'slot'
-> // TODO slot gives ts errors, see issue: https://github.com/withastro/astro/issues/10277. Fix could be including polymorphic in THIS function and setting everhything directly in the function, instead of in a Base interface
+>
 
+// For design purpose
+type Design = {
+  compact?: boolean | null
+  contrast?: boolean | null
+  scheme?: 'light' | 'dark' | null
+  color?: 'base' | 'accent' | null
+  size?: 'small' | 'medium' | 'large' | null
+}
+
+// Apply to each component
+type Complete<Props extends P, Name extends N, Tag extends T> = Props &
+  Html<Name, Tag> &
+  Design
+
+// Complete props without component name
+type Stripped<Complete, Name extends N> = Omit<Complete, Name>
+
+// Turn flat base props into dynamic _underscore functionality
+type Nested<Complete, Name extends N> = {
+  [Key in Name | `_${Name}`]?: Name extends keyof Complete
+    ? Complete | Complete[Name] | null
+    : Complete | null
+}
+
+// Total function to build the props
 export type BuildProps<
-  Props extends AstroGlobal['props'],
-  Name extends string,
-  Tag extends HTMLTag = HTMLTag,
-> = Omit<Props, Name> & {
-  [Key in N<Name>]?: Name extends keyof Props
-    ? (Props & T<Tag, Name>) | Props[Name] | null
-    : (Props & T<Tag, Name>) | null
-} & T<Tag, Name>
+  Props extends P,
+  Name extends N,
+  Tag extends T = 'div',
+> = Stripped<Complete<Props, Name, Tag>, Name> &
+  Nested<Complete<Props, Name, Tag>, Name>
 
 export const buildProps = <
   Props extends BuildProps<AstroGlobal['props'], Name, HTMLTag>,
@@ -28,8 +54,6 @@ export const buildProps = <
   const props = Astro.props
   const _key = `_${name}` as `_${Name}`
   const key = name
-  // FIXME
-  // @ts-ignore
   const _value = props[_key]
   const value = props[key] || _value
 
@@ -49,8 +73,6 @@ export const buildProps = <
     ? (merged.class = merged.class += ` ${name}`)
     : (merged.class = name)
 
-  // FIXME
-  // @ts-ignore
   return merged as Omit<Props, Name | `_${Name}`> & {
     [Key in Name]?: Exclude<Props[Name], object & { length?: never }>
   }
