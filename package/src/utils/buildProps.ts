@@ -5,11 +5,11 @@ export type BuildProps<
   Name extends string,
   Props extends AstroGlobal['props'],
 > = Omit<Props, Name> & {
-  [Key in Name]: Name extends keyof Props
+  [Key in Name]?: Name extends keyof Props
     ? Props | Props[Name] | null
     : Props | null
 } & {
-  [Key in `_${Name}`]: Name extends keyof Props
+  [Key in `_${Name}`]?: Name extends keyof Props
     ? Props | Props[Name] | null
     : Props | null
 }
