@@ -1,18 +1,18 @@
 ---
-import type { ComponentProps } from 'astro/types'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Spec from './Spec.astro'
 import Tag from './Tag.astro'
 
-interface Base {
-  specs?: ComponentProps<typeof Spec>['spec'][]
-  align?: 'start' | 'center' | 'stretch' | null
-}
+type Props<As extends HTMLTag> = BuildProps<
+  'specs',
+  ComponentProps<typeof Tag<As>> & {
+    specs?: ComponentProps<typeof Spec>['spec'][]
+    align?: 'start' | 'center' | 'stretch' | null
+  }
+>
 
-type Props = BuildProps<Base, 'specs'>
-const props = buildProps(Astro, 'specs')
-
-const { specs, ...rest } = props
+const { specs, ...rest } = buildProps('specs', Astro)
 ---
 
 <Tag {...rest}>

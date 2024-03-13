@@ -1,46 +1,37 @@
 ---
-import type { ComponentProps } from 'astro/types'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Description from './Description.astro'
 import Tag from './Tag.astro'
 import Tagline from './Tagline.astro'
 import Title from './Title.astro'
 
-interface Base
-  extends Pick<ComponentProps<typeof Tagline>, 'tagline' | '_tagline'>,
-    Pick<ComponentProps<typeof Title>, 'title' | '_title'>,
-    Pick<ComponentProps<typeof Description>, 'description' | '_description'> {
-  writeup?: string | null
-  align?: 'start' | 'center' | 'stretch' | null
-}
+type Props<As extends HTMLTag> = BuildProps<
+  'writeup',
+  ComponentProps<typeof Tag<As>> &
+    Pick<ComponentProps<typeof Tagline>, 'tagline' | '_tagline'> &
+    Pick<ComponentProps<typeof Title>, 'title' | '_title'> &
+    Pick<ComponentProps<typeof Description>, 'description' | '_description'> & {
+      writeup?: string | null
+      align?: 'start' | 'center' | 'stretch' | null
+    }
+>
 
-type Props = BuildProps<Base, 'writeup'>
-const props = buildProps(Astro, 'writeup')
-
-const {
-  writeup,
-  tagline,
-  _tagline,
-  title,
-  _title,
-  description,
-  _description,
-  ...rest
-} = props
+const { writeup, ...rest } = buildProps('writeup', Astro)
 ---
 
 <Tag {...rest}>
   <Tagline
-    {tagline}
-    {_tagline}
+    child
+    {...rest}
   />
   <Title
-    {title}
-    {_title}
+    child
+    {...rest}
   />
   <Description
-    {description}
-    {_description}
+    child
+    {...rest}
   />
   <Fragment set:html={writeup} />
 </Tag>

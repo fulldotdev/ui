@@ -1,18 +1,18 @@
 ---
-import type { ComponentProps } from 'astro/types'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import { buildProps, sortByIndex, type BuildProps } from '../utils'
 import Button from './Button.astro'
 import Tag from './Tag.astro'
 
-interface Base {
-  index?: number | null
-  buttons?: ComponentProps<typeof Button>['button'][]
-}
+type Props<As extends HTMLTag> = BuildProps<
+  'buttons',
+  ComponentProps<typeof Tag<As>> & {
+    buttons?: ComponentProps<typeof Button>[]
+    index?: number | null
+  }
+>
 
-type Props = BuildProps<Base, 'buttons'>
-const props = buildProps(Astro, 'buttons')
-
-const { buttons, ...rest } = props
+const { buttons, ...rest } = buildProps('buttons', Astro)
 
 const look: {
   [key: number]: 'solid' | 'soft' | 'ghost'

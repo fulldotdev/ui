@@ -1,5 +1,5 @@
 ---
-import type { ComponentProps } from 'astro/types'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Channels from './Channels.astro'
 import Icon from './Icon.astro'
@@ -9,34 +9,47 @@ import Specs from './Specs.astro'
 import Tag from './Tag.astro'
 import Writeup from './Writeup.astro'
 
-interface Base
-  extends Pick<ComponentProps<typeof Rating>, 'rating' | '_rating'>,
-    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'>,
-    ComponentProps<typeof Writeup>,
-    Pick<ComponentProps<typeof Specs>, 'specs' | '_specs'>,
-    Pick<ComponentProps<typeof Channels>, 'channels' | '_channels'>,
-    Pick<ComponentProps<typeof Socials>, 'socials' | '_socials'> {
-  density?: 'compact' | null
-  align?: 'start' | 'center' | 'stretch' | null
-}
+type Props<As extends HTMLTag = 'div'> = BuildProps<
+  'display',
+  ComponentProps<typeof Tag<As>> &
+    ComponentProps<typeof Writeup> &
+    Pick<ComponentProps<typeof Rating>, 'rating' | '_rating'> &
+    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'> &
+    Pick<ComponentProps<typeof Specs>, 'specs' | '_specs'> &
+    Pick<ComponentProps<typeof Channels>, 'channels' | '_channels'> &
+    Pick<ComponentProps<typeof Socials>, 'socials' | '_socials'> & {
+      align?: 'start' | 'center' | 'stretch' | null
+    }
+>
 
-type Props = BuildProps<Base, 'display'>
-const props = buildProps(Astro, 'display')
-
-const { as, class: className, ...rest } = props
+const { ...rest } = buildProps('display', Astro)
 ---
 
-<Tag
-  {as}
-  class={className}
-  {...rest}
->
-  <Rating {...rest} />
-  <Icon {...rest} />
-  <Writeup {...rest} />
-  <Specs {...rest} />
-  <Channels {...rest} />
-  <Socials {...rest} />
+<Tag {...rest}>
+  <Rating
+    child
+    {...rest}
+  />
+  <Icon
+    child
+    {...rest}
+  />
+  <Writeup
+    child
+    {...rest}
+  />
+  <Specs
+    child
+    {...rest}
+  />
+  <Channels
+    child
+    {...rest}
+  />
+  <Socials
+    child
+    {...rest}
+  />
   <slot />
 </Tag>
 

@@ -1,16 +1,17 @@
 ---
 import tablerIcons from '@iconify-json/tabler/icons.json'
-import type { ComponentProps } from 'astro/types'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Tag from './Tag.astro'
 const tabler: any = tablerIcons
 
-interface Base extends ComponentProps<typeof Tag> {
-  icon?: keyof typeof tabler.icons
-}
-
-type Props = BuildProps<Base, 'icon'>
-const props = buildProps(Astro, 'icon')
+type Props<As extends HTMLTag = 'i'> = BuildProps<
+  'icon',
+  ComponentProps<typeof Tag<As>> & {
+    icon?: keyof typeof tabler.icons
+  }
+>
+const props = buildProps('icon', Astro)
 
 const { as = 'i', icon, ...rest } = props
 ---

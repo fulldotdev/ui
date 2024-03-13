@@ -1,20 +1,26 @@
 ---
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Tag from './Tag.astro'
 
-interface Base {
-  tagline?: string | null
-  hue?: 'base' | 'accent' | null
-}
+type Props<As extends HTMLTag = 'p'> = BuildProps<
+  'tagline',
+  ComponentProps<typeof Tag<As>> & {
+    tagline?: string | null
+  }
+>
 
-type Props = BuildProps<Base, 'tagline', 'p'>
-const props = buildProps(Astro, 'tagline')
-
-const { tagline, hue = 'hue-accent', ...rest } = props
+const {
+  as = 'p',
+  color = 'accent',
+  tagline,
+  ...rest
+} = buildProps('tagline', Astro)
 ---
 
 <Tag
-  {hue}
+  {as}
+  {color}
   {...rest}
 >
   <Fragment set:html={tagline} />

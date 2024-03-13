@@ -1,14 +1,13 @@
 ---
-import type { BuildProps } from '@fulldevlabs/fullui'
-import type { HTMLTag } from 'astro/types'
+import type { HTMLTag, Polymorphic } from 'astro/types'
 
-interface Base {
-  test?: string | null
-}
-
-type Props<Tag extends HTMLTag = 'a'> = BuildProps<Base, 'test', Tag>
-
-const { as: Tag = 'a', ...props } = Astro.props
+type Props<As extends HTMLTag, Rest = {}> = Polymorphic<{
+  as: As
+  compact?: boolean | null
+  contrast?: boolean | null
+  scheme?: 'light' | 'dark' | null
+  color?: 'base' | 'accent' | null
+  size?: 'small' | 'medium' | 'large' | null
+}> &
+  Rest
 ---
-
-<Tag {...props} />

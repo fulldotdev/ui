@@ -4,26 +4,32 @@ import { buildProps, type BuildProps } from '../utils'
 import Icon from './Icon.astro'
 import Tag from './Tag.astro'
 
-interface Base extends Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'> {
-  button?: string | null
-  look?: 'solid' | 'soft' | 'ghost'
-}
+type Props<As extends HTMLTag = 'a'> = BuildProps<
+  'button',
+  ComponentProps<typeof Tag<As>> &
+    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'> & {
+      button?: string | null
+      look?: 'solid' | 'soft' | 'ghost' | null
+    }
+>
 
-type Props<Tag extends HTMLTag = 'a'> = BuildProps<Base, 'button', Tag>
-const props = buildProps(Astro, 'button')
-
-const { as = 'a', look = 'solid', icon, _icon, button, ...rest } = props
+const {
+  as = 'a',
+  look = 'solid',
+  button,
+  ...rest
+} = buildProps('button', Astro)
 ---
 
 <Tag
-  class:list={[look]}
   {as}
+  {look}
+  class="mybutton"
   {...rest}
 >
   <Icon
-    class="button-icon"
-    {icon}
-    {_icon}
+    child
+    {...rest}
   />
   <Fragment set:html={button} />
   <slot />

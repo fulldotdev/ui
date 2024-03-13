@@ -1,29 +1,20 @@
 ---
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Icon from './Icon.astro'
 import Tag from './Tag.astro'
 
-interface Base {
-  rating?: number | null
-  hue?: string
-}
+type Props<As extends HTMLTag> = BuildProps<
+  'rating',
+  ComponentProps<typeof Tag<As>> & {
+    rating?: number | null
+  }
+>
 
-type Props = BuildProps<Base, 'rating'>
-const props = buildProps(Astro, 'rating')
-// const percentageClasses = (num: number) => {
-//   if (!rating) return
-//   if (rating >= num) return 'bg-hue9'
-//   if (rating < num - 0.75) return 'bg-hue-6'
-//   else return 'bg-gradient-to-r from-50% to-50% from-hue9 to-hue6'
-// }
-
-const { rating, hue = 'hue-accent', ...rest } = props
+const { rating, ...rest } = buildProps('rating', Astro)
 ---
 
-<Tag
-  {...rest}
-  {hue}
->
+<Tag {...rest}>
   {rating && [1, 2, 3, 4, 5].map(() => <Icon icon="star-filled" />)}
 </Tag>
 
