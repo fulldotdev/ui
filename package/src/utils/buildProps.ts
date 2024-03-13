@@ -24,13 +24,14 @@ export const buildProps = <
   const _name = `_${name}` as `_${Name}`
   const { [name]: value, [_name]: _value, ...stripped } = Astro.props
 
+  type Object = object & { length?: never }
   const toObject = (val: Props[Name] | Props[`_${Name}`]) =>
     typeof val === 'object' &&
     val !== null &&
     !Array.isArray(val) &&
     name in val
-      ? (val as Extract<Props[Name], object>)
-      : ({ [name]: val } as Extract<Props[Name], object>)
+      ? (val as Extract<Props[Name], Object>)
+      : ({ [name]: val } as Extract<Props[Name], Object>)
 
   const object = toObject(value)
   const _object = toObject(_value)
@@ -40,12 +41,17 @@ export const buildProps = <
     merge(_object, object) as Partial<Props>
   )
 
-  return merged as Omit<Props, Name | `_${Name}`> & Extract<Props[Name], object>
+  return merged as Omit<Props, Name | `_${Name}`> & Extract<Props[Name], Object>
 
-  // This DOES create the right types, but not deep merge :(
+  // Below DOES create the right types, but not deep merge :(
   // const merged = {
   //   ...stripped,
   //   ..._object,
   //   ...object,
+  // }
+
+  // below is the OG way, in case the above breaks
+  // return merged as Omit<Props, Name | `_${Name}`> & {
+  //   [Key in Name]?: Exclude<Props[Name], object & { length?: never }>
   // }
 }
