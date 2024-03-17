@@ -1,30 +1,51 @@
 import type { AstroGlobal } from 'astro'
 import merge from 'deepmerge'
 
+// export type BuildProps<
+//   Name extends string,
+//   Props extends AstroGlobal['props'],
+// > = Omit<Props, Name> & {
+//   [Key in Name]?: Name extends keyof Props
+//     ? Props | Props[Name] | null
+//     : Props | null
+// } & {
+//   [Key in `_${Name}`]?: Name extends keyof Props
+//     ? Props | Props[Name] | null
+//     : Props | null
+// }
+
 export type BuildProps<
   Name extends string,
   Props extends AstroGlobal['props'],
 > = Omit<Props, Name> & {
-  [Key in Name]?: Name extends keyof Props
-    ? Props | Props[Name] | null
-    : Props | null
-} & {
-  [Key in `_${Name}`]?: Name extends keyof Props
+  [Key in Name | `_${Name}`]?: Name extends keyof Props
     ? Props | Props[Name] | null
     : Props | null
 }
+
+// export type BuildProps<
+//   Name extends string,
+//   As extends HTMLTag,
+//   Props extends object,
+// > = Omit<Props, Name> & {
+//   [Key in Name | `_${Name}`]?: Name extends keyof Props
+//     ?
+//         | (ComponentProps<typeof Tag<As>> & Props)
+//         | (ComponentProps<typeof Tag<As>> & Props[Name])
+//         | null
+//     : (ComponentProps<typeof Tag<As>> & Props) | null
 
 export const buildProps = <
   Name extends string,
   Props extends BuildProps<Name, AstroGlobal['props']>,
 >(
   name: Name,
-  Astro: { props: Props }
+  props: Props
 ) => {
   const _name = `_${name}` as `_${Name}`
-  const { [name]: value, [_name]: _value, ...stripped } = Astro.props
+  const { [name]: value, [_name]: _value, ...stripped } = props
 
-  type Object = object & { length?: never }
+  type Object = object & { length?: never; card?: any }
   const toObject = (val: Props[Name] | Props[`_${Name}`]) =>
     typeof val === 'object' &&
     val !== null &&

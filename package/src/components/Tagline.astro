@@ -10,17 +10,12 @@ type Props<As extends HTMLTag = 'p'> = BuildProps<
   }
 >
 
-const {
-  as = 'p',
-  color = 'accent',
-  tagline,
-  ...rest
-} = buildProps('tagline', Astro)
+const { as = 'p', tagline, ...rest } = buildProps('tagline', Astro.props)
 ---
 
 <Tag
+  class:list={['tagline']}
   {as}
-  {color}
   {...rest}
 >
   <Fragment set:html={tagline} />
@@ -28,12 +23,14 @@ const {
 </Tag>
 
 <style is:global>
-  /* FIXME */
   .tagline {
-    --font-size: var(--text-1);
-    --font-weight: 600;
-    --color: var(--hue11);
-    color: var(--color);
+    color: var(--hue11);
     font: var(--font);
+    font-size: var(--text-1);
+    line-height: 1.25;
+
+    &.contrast {
+      color: var(--hue12);
+    }
   }
 </style>

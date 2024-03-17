@@ -1,19 +1,22 @@
 ---
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
+import Tag from './Tag.astro'
 
-interface Base {
-  input: string | null
-}
+type Props<As extends HTMLTag = 'input'> = BuildProps<
+  'input',
+  ComponentProps<typeof Tag<As>> & {
+    input: string | null
+  }
+>
 
-type Props = BuildProps<Base, 'input', 'input'>
-const props = buildProps(Astro, 'input')
-
-const { input, ...rest } = props
+const { as = 'input', input, ...rest } = buildProps('input', Astro.props)
 ---
 
 {
   input && (
     <input
+      class="input"
       name={input}
       id={input}
       {...rest}

@@ -1,18 +1,20 @@
 ---
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Tag from './Tag.astro'
 
-interface Base {
-  label?: string | null
-}
+type Props<As extends HTMLTag = 'label'> = BuildProps<
+  'label',
+  ComponentProps<typeof Tag<As>> & {
+    label?: string | null
+  }
+>
 
-type Props = BuildProps<Base, 'label', 'label'>
-const props = buildProps(Astro, 'label')
-
-const { label, as = 'label', ...rest } = props
+const { as = 'label', label, ...rest } = buildProps('label', Astro.props)
 ---
 
 <Tag
+  class="label"
   for={label}
   {as}
   {...rest}

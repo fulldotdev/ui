@@ -1,20 +1,24 @@
----
-import type { ComponentProps } from 'astro/types'
-import { buildProps, type BuildProps } from '../utils'
+<!-- ---
+import type { ComponentProps,HTMLTag } from 'astro/types'
+import { buildProps,type BuildProps } from '../utils'
 import Image from './Image.astro'
+import Tag from './Tag.astro'
 import Video from './Video.astro'
 
-interface Base
-  extends Pick<ComponentProps<typeof Video>, 'video' | '_video'>,
-    Pick<ComponentProps<typeof Image>, 'image' | '_image'> {
-  media?: string | null
-  thumbnail?: boolean | null
-}
+type Props<As extends HTMLTag = 'div'> = BuildProps<
+  'media',
+  ComponentProps<typeof Tag<As>> &
+    Pick<ComponentProps<typeof Video>, 'video' | '_video'> &
+    Pick<ComponentProps<typeof Image>, 'image' | '_image'> & {
+      media?: string | null
+      thumbnail?: boolean | null
+    }
+>
 
-type Props = BuildProps<Base, 'media'>
-const props = buildProps(Astro, 'media')
-
-const { media, video, _video, image, _image, thumbnail, ...rest } = props
+const { media, video, _video, image, _image, thumbnail, ...rest } = buildProps(
+  'media',
+  Astro
+)
 
 // FIXME
 const isVideo =
@@ -35,20 +39,4 @@ const isVideo =
       {_image}
     />
   )
-}
-
-<style is:global>
-  .display {
-    display: flex;
-    row-gap: var(--space-4);
-    flex-direction: column;
-    align-items: flex-start;
-    max-width: max(calc(var(--space-6) * 4), 500px);
-    text-align: left;
-
-    &.center {
-      align-items: center;
-      text-align: center;
-    }
-  }
-</style>
+} -->

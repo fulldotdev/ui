@@ -2,7 +2,7 @@ import { type CollectionEntry, type ContentCollectionKey } from 'astro:content'
 
 type EntrySlug = CollectionEntry<ContentCollectionKey>['slug']
 
-export interface GetReference {
+export type GetReference = {
   collection?: ContentCollectionKey
   slug?: EntrySlug
   reference?: {

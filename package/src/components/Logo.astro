@@ -1,29 +1,27 @@
 ---
-import type { ComponentProps } from 'astro/types'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Image from './Image.astro'
 import Tag from './Tag.astro'
 
-interface Base {
-  logo?: ComponentProps<typeof Image>['image']
-  alt?: ComponentProps<typeof Image>['alt']
-}
+type Props<As extends HTMLTag = 'a'> = BuildProps<
+  'logo',
+  ComponentProps<typeof Tag<As>> &
+    ComponentProps<typeof Image> & {
+      logo?: ComponentProps<typeof Image>['image']
+    }
+>
 
-type Props = BuildProps<Base, 'logo', 'a'>
-const props = buildProps(Astro, 'logo')
-
-const { logo, alt } = props
+const { as = 'a', ...rest } = buildProps('logo', Astro.props)
 ---
 
 <Tag
-  {...props}
-  as="a"
+  class="logo"
   href="/"
+  {as}
+  {...rest}
 >
-  <Image
-    image={logo}
-    {alt}
-  />
+  <Image {...rest} />
   <slot />
 </Tag>
 

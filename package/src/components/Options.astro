@@ -1,21 +1,25 @@
 ---
-import type { ComponentProps } from 'astro/types'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Option from './Option.astro'
+import Tag from './Tag.astro'
 
-interface Base {
-  options?: ComponentProps<typeof Option>['option'][]
-}
+type Props<As extends HTMLTag = 'div'> = BuildProps<
+  'options',
+  ComponentProps<typeof Tag<As>> & {
+    options?: ComponentProps<typeof Option>['option'][]
+  }
+>
 
-type Props = BuildProps<Base, 'options'>
-const props = buildProps(Astro, 'options')
-
-const { options, ...rest } = props
+const { options, ...rest } = buildProps('options', Astro.props)
 ---
 
 {
   options && (
-    <select {...rest}>
+    <select
+      class="options"
+      {...rest}
+    >
       {options?.map((option) => (
         <Option {option} />
       ))}

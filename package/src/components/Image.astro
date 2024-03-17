@@ -1,47 +1,37 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import { buildProps, unslugify, type BuildProps } from '../utils'
+import Tag from './Tag.astro'
 
-interface Base {
-  image?: string | null
-  alt?: string | null
-  position?: 'background' | null
-  frame?: 'fill' | 'panel' | 'screen' | null
-  loading?: HTMLAttributes<'img'>['loading']
-  sizes?: {
-    base: string
-    sm?: string
-    md?: string
-    lg?: string
-    xl?: string
-    '2xl'?: string
+type Props<As extends HTMLTag = 'img'> = BuildProps<
+  'image',
+  ComponentProps<typeof Tag<As>> & {
+    image?: string | null
+    position?: 'background' | null
+    frame?: 'fill' | 'panel' | 'screen' | null
+    sizes?: {
+      base: string
+      sm?: string
+      md?: string
+      lg?: string
+      xl?: string
+      '2xl'?: string
+    }
   }
-  class?: string | null
-}
-
-type Props = BuildProps<Base, 'image'>
-const props = buildProps(Astro, 'image')
-
-// interface Props {
-//   image?: string | null | Omit<Props, '_image'>
-//   _image?: Props['image']
-//   alt?: string
-//   position?: 'background' | null
-//   frame?: 'fill' | 'panel' | 'screen' | null
-//   loading?: HTMLAttributes<'img'>['loading']
-// }
+>
 
 const {
-  position,
-  frame,
-  image,
-  alt = '',
+  as = 'img',
   loading = 'lazy',
+  alt = '',
   sizes = {
     base: '100vw',
   },
-  class: className,
-} = props
+  position,
+  frame,
+  image,
+  ...rest
+} = buildProps('image', Astro.props)
 
 // function getSrc() {
 //   if (src?.startsWith('http')) return src
@@ -77,17 +67,17 @@ function getSizes() {
 }
 ---
 
-{
-  image && (
-    <img
-      src={image}
-      alt={getAlt()}
-      sizes={getSizes()}
-      loading={loading}
-      class:list={['image', position, frame, className]}
-    />
-  )
-}
+<Tag
+  {as}
+  {...rest}
+  if="src"
+  src={image}
+  alt={getAlt()}
+  sizes={getSizes()}
+  class:list={['image', position, frame]}
+  {loading}
+/>
+
 <style is:global>
   .mask {
     -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);

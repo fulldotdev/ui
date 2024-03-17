@@ -1,32 +1,30 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { buildProps, type BuildProps } from '../utils'
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import { buildProps, getChildProps, type BuildProps } from '../utils'
 import Icon from './Icon.astro'
 import Tag from './Tag.astro'
 
-interface Base extends ComponentProps<typeof Icon> {
-  hue?: 'accent' | 'base' | null
-  text?: string | null
-}
+type Props<As extends HTMLTag = 'a'> = BuildProps<
+  'link',
+  ComponentProps<typeof Tag<As>> &
+    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'> & {
+      link?: string | null
+      contrast?: boolean | null
+    }
+>
 
-type Props = BuildProps<Base, 'link', 'button' | 'a'>
-const props = buildProps(Astro, 'link')
-
-const { hue = 'accent', icon, _icon, as = 'a', text, ...rest } = props
+const { as = 'a', link, ...rest } = buildProps('link', Astro.props)
+const child = getChildProps(rest)
 ---
 
 <Tag
-  class:list={[hue]}
+  class:list={['link']}
   {as}
   {...rest}
 >
-  <Fragment set:html={text} />
+  <Fragment set:html={link} />
   <slot />
-  <Icon
-    {icon}
-    {_icon}
-    {hue}
-  />
+  <Icon {...child} />
 </Tag>
 
 <style is:global>

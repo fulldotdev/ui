@@ -1,31 +1,36 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { buildProps, type BuildProps } from '../utils'
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import { buildProps, getChildProps, type BuildProps } from '../utils'
 import Action from './Action.astro'
 import Display from './Display.astro'
 import Tag from './Tag.astro'
 
-interface Base
-  extends ComponentProps<typeof Display>,
-    ComponentProps<typeof Action> {
-  density?: 'compact' | null
-  layout?: 'split' | 'stack' | null
-  align?: 'start' | 'center' | 'stretch' | null
-}
+type Props<As extends HTMLTag = 'div'> = BuildProps<
+  'composite',
+  ComponentProps<typeof Tag<As>> & {
+    direction?: 'column' | 'row' | null
+    align?: 'start' | 'center' | null
+  }
+> &
+  ComponentProps<typeof Display> &
+  ComponentProps<typeof Action>
 
-type Props = BuildProps<Base, 'composite'>
-const props = buildProps(Astro, 'composite')
-
-const { as, class: className, ...rest } = props
+const { direction, align, ...rest } = buildProps('composite', Astro.props)
+const child = getChildProps(rest)
 ---
 
 <Tag
-  {as}
-  class={className}
+  class:list={['composite', direction, align]}
   {...rest}
 >
-  <Display {...rest} />
-  <Action {...rest} />
+  <Display
+    {...child}
+    {align}
+  />
+  <Action
+    {align}
+    {...child}
+  />
   <slot />
 </Tag>
 

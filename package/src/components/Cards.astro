@@ -1,51 +1,63 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import type { ContentCollectionKey } from 'astro:content'
-import { getCollection } from 'astro:content'
-import { buildProps, type BuildProps, type GetReference } from '../utils'
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import { getCollection, type CollectionKey } from 'astro:content'
+import { buildProps, getChildProps, type BuildProps } from '../utils'
 import Card from './Card.astro'
 import Tag from './Tag.astro'
 
-interface Base
-  extends GetReference,
-    Omit<ComponentProps<typeof Card>, 'layout'> {
-  layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento' | null
-  collection?: ContentCollectionKey
-  cards?: (
-    | ComponentProps<typeof Card>
-    | ComponentProps<typeof Card>['slug']
-    | null
-  )[]
-}
+type Props<As extends HTMLTag = 'div'> = BuildProps<
+  'cards',
+  ComponentProps<typeof Tag<As>> &
+    Pick<ComponentProps<typeof Card>, 'card' | '_card'> & {
+      layout?:
+        | 'carousel'
+        | 'grid'
+        | 'masonry'
+        | 'row'
+        | 'panels'
+        | 'bento'
+        | null
+      cards?: CollectionKey | null
+    }
+>
 
-type Props = BuildProps<Base, 'cards'>
-const props = buildProps(Astro, 'cards')
+// interface Base
+//   extends GetReference,
+//     Omit<ComponentProps<typeof Card>, 'layout'> {
+//   layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento' | null
+//   collection?: ContentCollectionKey
+//   cards?: (
+//     | ComponentProps<typeof Card>
+//     | ComponentProps<typeof Card>['slug']
+//     | null
+//   )[]
+// }
 
-let { cards, collection, layout, ...rest } = props
+let { cards, layout, ...rest } = buildProps('cards', Astro.props)
+const child = getChildProps(rest)
 
-if ((!cards || cards.length === 0) && collection) {
-  const items = await getCollection(collection)
-  const slugs = items.map(({ slug }) => slug)
-  cards = slugs
-}
+let entries: ComponentProps<typeof Card>[] = []
+if (typeof cards === 'string')
+  entries = (await getCollection(cards)).map((entry) => entry.data)
+
+// if ((!cards || cards.length === 0) && collection) {
+//   const items = await getCollection(collection)
+//   const slugs = items.map(({ slug }) => slug)
+//   cards = slugs
+// }
 ---
 
 <Tag
-  {layout}
+  class:list={['cards', layout]}
   {...rest}
 >
   {
-    cards?.map((card) => {
-      if (!card) return null
-      if (typeof card === 'string') card = { slug: card }
-      return (
-        <Card
-          {...rest}
-          {collection}
-          {card}
-        />
-      )
-    })
+    entries?.map((card) => (
+      <Card
+        {...card}
+        {...child}
+      />
+    ))
   }
 </Tag>
 

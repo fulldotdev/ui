@@ -1,20 +1,25 @@
 ---
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Tag from './Tag.astro'
 
-interface Base {
-  price?: number | null
-}
+type Props<As extends HTMLTag = 'div'> = BuildProps<
+  'price',
+  ComponentProps<typeof Tag<As>> & {
+    price?: number | null
+  }
+>
 
-type Props = BuildProps<Base, 'price', 'span'>
-const props = buildProps(Astro, 'price')
+const { price, ...rest } = buildProps('price', Astro.props)
 
-const { price, ...rest } = props
 const priceNumber = parseFloat(price as any)
 const fixedPrice = priceNumber?.toFixed(2).replace('.', ',')
 ---
 
-<Tag {...rest}>
+<Tag
+  class="price"
+  {...rest}
+>
   {price && fixedPrice && <Fragment>&euro;{fixedPrice}</Fragment>}
 </Tag>
 

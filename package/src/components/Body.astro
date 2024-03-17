@@ -1,43 +1,61 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { buildProps, type BuildProps, type GetReference } from '../utils'
-import { Footer } from './footer'
-import { Header } from './header'
-import Legal from './Legal.astro'
-import Main from './Main.astro'
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import { buildProps, type BuildProps } from '../utils'
+import Section from './Section.astro'
+import Sections from './Sections.astro'
+import Tag from './Tag.astro'
 
-interface Base
-  extends GetReference,
-    // Pick<ComponentProps<typeof Banner>, 'banner' | '_banner'>,
-    Pick<ComponentProps<typeof Header>, 'header' | '_header'>,
-    ComponentProps<typeof Main>,
-    Pick<ComponentProps<typeof Footer>, 'footer' | '_footer'>,
-    Pick<ComponentProps<typeof Legal>, 'legal' | '_legal'> {}
+type Props<As extends HTMLTag = 'body'> = BuildProps<
+  'body',
+  ComponentProps<typeof Tag<As>> & {}
+> & {
+  hero?: Pick<ComponentProps<typeof Section>, 'section'>
+  _hero?: Pick<ComponentProps<typeof Section>, '_section'>
+  cta?: Pick<ComponentProps<typeof Section>, 'section'>
+  _cta?: Pick<ComponentProps<typeof Section>, '_section'>
+}
 
-type Props = BuildProps<Base, 'body'>
-const props = buildProps(Astro, 'body')
-
-const { class: className, ...rest } = props
+const {
+  as = 'body',
+  hero,
+  _hero,
+  cta,
+  _cta,
+  ...rest
+} = buildProps('body', Astro.props)
 ---
 
-<body
-  class:list={['hue-base', className]}
+<Tag
+  class="body hue-base"
+  {as}
   {...rest}
 >
   <!-- <Banner></Banner> -->
-  <Header {...rest} />
-  <Main {...rest} />
+  <!-- <Header {...rest} /> -->
+  <Sections {...rest}>
+    <Section
+      class="hero"
+      {..._hero}
+      {...hero}
+      slot="before"
+    />
+    <Section
+      class="cta"
+      {..._cta}
+      {...cta}
+      slot="after"
+    />
+  </Sections>
   <slot />
   <!-- <Footer {...rest} /> -->
-  <Legal {...rest} />
+  <!-- <Legal {...rest} /> -->
 
   <style is:global>
     .body {
       transition: var(--transition);
       background: var(--hue1);
-      background: var(--background);
       min-height: 100vh;
-      color: var(--color);
+      color: var(----hue11);
       font: var(--font);
 
       &.dark {
@@ -48,4 +66,4 @@ const { class: className, ...rest } = props
       }
     }
   </style>
-</body>
+</Tag>

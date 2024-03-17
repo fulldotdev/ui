@@ -53,14 +53,14 @@ export default function preset(userConfig?: Partial<Config>): Preset {
           --size: 1;
           --text-1: calc(14px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
           --text-2: calc(16px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
-          --text-3: calc(36px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
+          --text-3: calc(32px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
         }
 
         .large {
           --size: 1.25;
           --text-1: calc(16px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
           --text-2: calc(18px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
-          --text-3: calc(56px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
+          --text-3: calc(48px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
         }
 
         .compact.small, .compact .small, .small .compact {
@@ -89,6 +89,7 @@ export default function preset(userConfig?: Partial<Config>): Preset {
   }
 }
 
+export type FlowConfig = Config
 // const base = [4, 8, 16, 32, 64]
 // const compact = [4, 7, 12, 25, 21.44, 37.51]
 

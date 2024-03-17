@@ -1,31 +1,31 @@
 ---
 import type { ComponentProps, HTMLTag } from 'astro/types'
-import { buildProps, type BuildProps } from '../utils'
+import { buildProps, getChildProps, type BuildProps } from '../utils'
 import Buttons from './Buttons.astro'
 import Form from './Form.astro'
 import Product from './Product.astro'
 import Tag from './Tag.astro'
 
-interface Base
-  extends Pick<ComponentProps<typeof Form>, 'form' | '_form'>,
-    ComponentProps<typeof Product>,
-    Pick<ComponentProps<typeof Buttons>, 'buttons' | '_buttons'> {
-  align?: 'start' | 'center' | 'stretch' | null
-}
+type Props<As extends HTMLTag = 'div'> = BuildProps<
+  'action',
+  ComponentProps<typeof Tag<As>> &
+    Pick<ComponentProps<typeof Form>, 'form' | '_form'> &
+    ComponentProps<typeof Product> &
+    Pick<ComponentProps<typeof Buttons>, 'buttons' | '_buttons'> & {
+      align?: 'start' | 'center' | null
+    }
+>
 
-type Props<Tag extends HTMLTag = 'div'> = BuildProps<Base, 'action', Tag>
-const props = buildProps(Astro, 'action')
-
-const { as, class: className, ...rest } = props
+const { ...rest } = buildProps('action', Astro.props)
+const child = getChildProps(rest)
 ---
 
 <Tag
-  {as}
-  class={className}
+  class="action"
   {...rest}
 >
-  {props.price ? <Product {...rest} /> : <Form {...(rest as any)} />}
-  <Buttons {...rest} />
+  <!-- {props.price ? <Product {...rest} /> : <Form {...(rest as any)} />} -->
+  <Buttons {...child} />
   <slot />
 </Tag>
 

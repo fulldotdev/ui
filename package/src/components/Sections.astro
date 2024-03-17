@@ -1,23 +1,20 @@
 ---
-import type { ComponentProps } from 'astro/types'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import { buildProps, sortByIndex, type BuildProps } from '../utils'
 import Section from './Section.astro'
 import Tag from './Tag.astro'
 
-type Index = {
-  index?: number
-}
+type Props<As extends HTMLTag = 'main'> = BuildProps<
+  'sections',
+  ComponentProps<typeof Tag<As>> & {
+    sections?: ComponentProps<typeof Section>[]
+    index?: number
+  }
+>
 
-interface Base {
-  sections?: (ComponentProps<typeof Section> & Index)[] | null
-}
+const { as = 'main', sections, ...rest } = buildProps('sections', Astro.props)
 
-type Props = BuildProps<Base, 'sections'>
-const props = buildProps(Astro, 'sections')
-
-let { as, sections, class: className, ...rest } = props
 const sorted = sortByIndex(sections)
-
 // const indexed = sections?.map((section, index) => ({ index, ...section }))
 // const sorted = indexed?.sort((a, b) => {
 //   const index = (i: number) => (i < 0 ? indexed.length + 1 + i : i)
@@ -26,11 +23,13 @@ const sorted = sortByIndex(sections)
 ---
 
 <Tag
+  class="sections"
   {as}
-  class={className}
   {...rest}
 >
+  <slot name="before" />
   {sorted?.map((section) => <Section {...section} />)}
+  <slot name="after" />
 </Tag>
 
 <style is:global>

@@ -1,113 +1,47 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { getEntry } from 'astro:content'
-import merge from 'deepmerge'
-import {
-  buildProps,
-  getPathname,
-  getReference,
-  withDefaults,
-  type BuildProps,
-  type GetReference,
-} from '../utils'
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import { type CollectionEntry, type ContentCollectionKey } from 'astro:content'
+import { buildProps, getChildProps, type BuildProps } from '../utils'
 import Composite from './Composite.astro'
 import Image from './Image.astro'
 import Tag from './Tag.astro'
 
-interface Base
-  extends GetReference,
-    ComponentProps<typeof Composite>,
-    Pick<ComponentProps<typeof Image>, 'image' | '_image'> {
-  images?: Base['image'][]
-  _images?: Base['_image'][]
-  hue?: 'base' | 'accent'
-  look?: 'ghost' | 'soft' | 'solid' | null
-  frame?: 'fill' | 'panel' | 'screen' | null
-  scheme?: 'default' | 'reverse' | 'light' | 'dark' | null
-}
-
-type Props = BuildProps<Base, 'card'>
-let props = buildProps(Astro, 'card')
-
-// FIXME
-const reference = getReference(props)
-const entry = reference && (await getEntry(reference))
-const entryWithDefaults = entry && (await withDefaults(entry))
-const href = getPathname(entryWithDefaults || ({} as any))
-
-props = merge(entryWithDefaults?.data, props)
+type Props<
+  As extends HTMLTag = 'div',
+  Collection extends ContentCollectionKey = ContentCollectionKey,
+> = BuildProps<
+  'card',
+  ComponentProps<typeof Tag<As>> &
+    ComponentProps<typeof Composite> &
+    Pick<ComponentProps<typeof Image>, 'image' | '_image'> & {
+      collection?: Collection
+      slug?: CollectionEntry<Collection>['slug'] | null
+      look?: 'ghost' | 'soft' | 'solid' | null
+      frame?: 'fill' | 'panel' | 'screen' | null
+    }
+>
 
 const {
   look = 'soft',
-  frame,
-  image,
-  _image,
-  images,
-  _images,
-  hue,
-  //
-  align,
-  rating,
-  _rating,
-  icon,
-  _icon,
-  tagline,
-  _tagline,
-  title,
-  _title,
-  description,
-  _description,
-  specs,
-  _specs,
-  channels,
-  _channels,
-  socials,
-  _socials,
-  price,
-  _price,
-  buttons,
-  _buttons,
+  frame = 'panel',
+  collection,
+  slug,
   ...rest
-} = props
+} = buildProps('card', Astro.props)
+
+// const entry =
+//   collection && slug ? (await getEntry(collection, slug)).data : null
+// const merged = merge(entry, rest)
+const child = getChildProps(rest)
 ---
 
 <Tag
+  class:list={['card', look, frame]}
   compact
-  as={href ? 'a' : props.as}
-  {href}
-  {look}
-  {frame}
   {...rest}
 >
-  <Image
-    image={image || props.images?.[0]}
-    _image={_image || props._images?.[0]}
-  />
-  <Composite
-    compact
-    {frame}
-    {align}
-    {rating}
-    {_rating}
-    {icon}
-    {_icon}
-    {tagline}
-    {_tagline}
-    {title}
-    {_title}
-    {description}
-    {_description}
-    {specs}
-    {_specs}
-    {channels}
-    {_channels}
-    {socials}
-    {_socials}
-    {price}
-    {_price}
-    {buttons}
-    {_buttons}
-  />
+  <Image {...child} />
+  <Composite {...child} />
 </Tag>
 
 <style is:global>

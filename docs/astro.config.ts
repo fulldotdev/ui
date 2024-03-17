@@ -1,5 +1,6 @@
 import starlight from '@astrojs/starlight'
 import { fullui } from '@fulldevlabs/fullui/astro'
+// @ts-ignore
 import liveCode from 'astro-live-code'
 import { defineConfig } from 'astro/config'
 

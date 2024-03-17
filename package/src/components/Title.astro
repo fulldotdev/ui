@@ -7,6 +7,7 @@ type Props<As extends HTMLTag = 'h2'> = BuildProps<
   'title',
   ComponentProps<typeof Tag<As>> & {
     title?: string | null
+    contrast?: boolean | null
   }
 >
 
@@ -15,12 +16,11 @@ const {
   contrast = true,
   title,
   ...rest
-} = buildProps('title', Astro)
+} = buildProps('title', Astro.props)
 ---
 
 <Tag
-  {as}
-  {contrast}
+  class:list={['title', { contrast }]}
   {...rest}
 >
   <Fragment set:html={title} />
@@ -29,7 +29,6 @@ const {
 
 <style is:global>
   .title {
-    /* FIXME */
     color: var(--hue11);
     font: var(--font);
     font-weight: 700;

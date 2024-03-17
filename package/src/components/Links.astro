@@ -1,19 +1,24 @@
 ---
-import type { ComponentProps } from 'astro/types'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Link from './Link.astro'
 import Tag from './Tag.astro'
 
-interface Base {
-  links?: ComponentProps<typeof Link>[]
-}
+type Props<As extends HTMLTag = 'div'> = BuildProps<
+  'links',
+  ComponentProps<typeof Tag<As>> & {
+    links?: ComponentProps<typeof Link>[]
+  }
+>
 
-type Props = BuildProps<Base, 'links'>
-const props = buildProps(Astro, 'links')
+const { links, ...rest } = buildProps('links', Astro.props)
 ---
 
-<Tag {...props}>
-  {props.links?.map((link) => <Link {...link} />)}
+<Tag
+  class="links"
+  {...rest}
+>
+  {links?.map((link) => <Link {...link} />)}
 </Tag>
 
 <style is:global>
