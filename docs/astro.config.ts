@@ -22,10 +22,10 @@ export default defineConfig({
         replacesTitle: true,
       },
       favicon: './favicon.png',
-      components: {
-        // FIXME: causing erro on vercel build
-        // Head: './src/components/StarlightHead.astro',
-      },
+      // components: {
+      // FIXME: causing erro on vercel build
+      // Head: './src/components/StarlightHead.astro',
+      // },
       customCss: ['./src/css/custom.css'],
       sidebar: [
         {
