@@ -1,29 +1,29 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
-import { buildProps, type BuildProps } from '../utils'
+import type { ComponentProps } from 'astro/types'
+import { buildProps, getChildProps, type BuildProps } from '../utils'
 import Icon from './Icon.astro'
 import Tag from './Tag.astro'
 
-type Props<As extends HTMLTag = 'li'> = BuildProps<
-  'spec',
-  ComponentProps<typeof Tag<As>> &
-    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'> & {
-      spec: string | null
-    }
->
+interface Props
+  extends BuildProps<'spec', Props, string | null>,
+    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'>,
+    ComponentProps<typeof Tag> {}
 
-const { as = 'li', icon = 'check', spec, ...rest } = buildProps('spec', Astro)
+const {
+  as = 'li',
+  icon = 'check',
+  spec,
+  ...rest
+} = buildProps('spec', Astro.props)
+const child = getChildProps(rest)
 ---
 
 <Tag
+  class="spec"
   {as}
   {...rest}
 >
-  <Icon
-    child
-    {icon}
-    {...rest}
-  />
+  <Icon {...child} />
   <Fragment set:html={spec} />
   <slot />
 </Tag>

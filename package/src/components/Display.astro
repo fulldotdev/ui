@@ -1,6 +1,6 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
-import { buildProps, type BuildProps } from '../utils'
+import type { ComponentProps } from 'astro/types'
+import { buildProps, getChildProps, type BuildProps } from '../utils'
 import Channels from './Channels.astro'
 import Icon from './Icon.astro'
 import Rating from './Rating.astro'
@@ -9,47 +9,33 @@ import Specs from './Specs.astro'
 import Tag from './Tag.astro'
 import Writeup from './Writeup.astro'
 
-type Props<As extends HTMLTag = 'div'> = BuildProps<
-  'display',
-  ComponentProps<typeof Tag<As>> &
-    ComponentProps<typeof Writeup> &
-    Pick<ComponentProps<typeof Rating>, 'rating' | '_rating'> &
-    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'> &
-    Pick<ComponentProps<typeof Specs>, 'specs' | '_specs'> &
-    Pick<ComponentProps<typeof Channels>, 'channels' | '_channels'> &
-    Pick<ComponentProps<typeof Socials>, 'socials' | '_socials'> & {
-      align?: 'start' | 'center' | 'stretch' | null
-    }
->
+interface Props
+  extends BuildProps<'display', Props>,
+    ComponentProps<typeof Tag>,
+    Pick<ComponentProps<typeof Writeup>, 'writeup' | 'writeup'>,
+    Pick<ComponentProps<typeof Rating>, 'rating' | '_rating'>,
+    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'>,
+    Pick<ComponentProps<typeof Specs>, 'specs' | '_specs'> {
+  align?: 'start' | 'center' | null
+}
 
-const { ...rest } = buildProps('display', Astro)
+const { align, ...rest } = buildProps('display', Astro.props)
+const child = getChildProps(rest)
 ---
 
-<Tag {...rest}>
-  <Rating
-    child
-    {...rest}
-  />
-  <Icon
-    child
-    {...rest}
-  />
+<Tag
+  class:list={['display', align]}
+  {...rest}
+>
+  <Rating {...child} />
+  <Icon {...child} />
   <Writeup
-    child
-    {...rest}
+    {align}
+    {...child}
   />
-  <Specs
-    child
-    {...rest}
-  />
-  <Channels
-    child
-    {...rest}
-  />
-  <Socials
-    child
-    {...rest}
-  />
+  <Specs {...child} />
+  <Channels {...child} />
+  <Socials {...child} />
   <slot />
 </Tag>
 
@@ -59,7 +45,7 @@ const { ...rest } = buildProps('display', Astro)
     row-gap: var(--space-4);
     flex-direction: column;
     align-items: flex-start;
-    max-width: max(calc(var(--space-6) * 4), 500px);
+    max-width: max(calc(var(--space-6) * 6), 700px);
     text-align: left;
 
     &.center {

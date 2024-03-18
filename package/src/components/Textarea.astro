@@ -1,19 +1,24 @@
 ---
+import type { ComponentProps } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
+import Tag from './Tag.astro'
 
-interface Base {
-  textarea?: string | null
-}
+interface Props
+  extends BuildProps<'textarea', Props, string>,
+    ComponentProps<typeof Tag> {}
 
-type Props = BuildProps<Base, 'textarea', 'textarea'>
-const props = buildProps(Astro, 'textarea')
-
-const { textarea, rows = 5, ...rest } = props
+const {
+  as = 'textarea',
+  textarea,
+  rows = 5,
+  ...rest
+} = buildProps('textarea', Astro.props)
 ---
 
 {
   textarea && (
     <textarea
+      class="textarea"
       name={textarea}
       id={textarea}
       rows={rows}

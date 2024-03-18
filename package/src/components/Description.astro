@@ -1,19 +1,24 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
+import type { ComponentProps } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Tag from './Tag.astro'
 
-type Props<As extends HTMLTag = 'p'> = BuildProps<
-  'description',
-  ComponentProps<typeof Tag<As>> & {
-    description?: string | null
-  }
->
+interface Props
+  extends BuildProps<'description', Props, string | null>,
+    ComponentProps<typeof Tag> {}
 
-const { as = 'p', description, ...rest } = buildProps('description', Astro)
+const {
+  as = 'p',
+  description,
+  ...rest
+} = buildProps('description', Astro.props)
 ---
 
-<Tag {...rest}>
+<Tag
+  class:list={['description']}
+  {as}
+  {...rest}
+>
   <Fragment set:html={description} />
   <slot />
 </Tag>
@@ -22,5 +27,9 @@ const { as = 'p', description, ...rest } = buildProps('description', Astro)
   .description {
     color: var(--hue11);
     font: var(--font);
+
+    &.contrast {
+      color: var(--hue12);
+    }
   }
 </style>

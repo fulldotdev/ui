@@ -1,82 +1,56 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import { getEntry } from 'astro:content'
-import merge from 'deepmerge'
-import {
-  buildProps,
-  getReference,
-  withDefaults,
-  type BuildProps,
-  type GetReference,
-} from '../utils'
+import type { Icon } from '..'
+import { buildProps, type BuildProps } from '../utils'
 import Cards from './Cards.astro'
 import Composite from './Composite.astro'
 import Image from './Image.astro'
-import Images from './Images.astro'
 import Prose from './Prose.astro'
 import Tag from './Tag.astro'
 
-interface Base
-  extends GetReference,
+interface Props
+  extends BuildProps<'section', Props>,
+    ComponentProps<typeof Tag>,
     ComponentProps<typeof Composite>,
-    Pick<ComponentProps<typeof Image>, 'image' | '_image'>,
-    Pick<ComponentProps<typeof Images>, 'images' | '_images'>,
+    ComponentProps<typeof Image>,
     Pick<ComponentProps<typeof Prose>, 'prose' | '_prose'>,
     Pick<ComponentProps<typeof Cards>, 'cards' | '_cards'>,
-    Pick<ComponentProps<typeof Prose>, 'prose' | '_prose'> {
-  hue?: 'base' | 'accent' | null
-  size?: 'small' | 'medium' | 'large' | null
-  look?: 'ghost' | 'soft' | 'solid' | null
-  order?: 'reverse' | 'switch' | null
-  scheme?: 'invert' | 'light' | 'dark' | null
-  align?: 'start' | 'center' | 'stretch' | null
-  layout?: 'split' | 'stack' | null
-  frame?: 'fill' | 'panel' | 'screen' | null
+    Pick<ComponentProps<typeof Prose>, 'prose' | '_prose'>,
+    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'> {
+  direction?: 'row' | 'column' | null
+  align?: 'start' | 'center' | null
+  frame?: 'solid' | 'soft' | 'ghost' | null
 }
 
-type Props = BuildProps<Base, 'section'>
-const props = buildProps(Astro, 'section')
-
-const reference = getReference(props)
-const entry = reference && (await getEntry(reference))
-const entryWithDefaults = entry && (await withDefaults(entry))
-const entryAndProps = merge(entryWithDefaults?.data, props)
+// const reference = getReference(props)
+// const entry = reference && (await getEntry(reference))
+// const entryWithDefaults = entry && (await withDefaults(entry))
+// const entryAndProps = merge(entryWithDefaults?.data, props)
 
 const {
   as = 'section',
-  frame,
-  cards,
-  _cards,
+  direction = 'column',
+  align,
+  icon,
   image,
-  images,
-  class: className,
   ...rest
-} = entryAndProps
+} = buildProps('section', Astro.props)
+const child = buildProps('section', Astro.props)
 ---
 
 <Tag
   {as}
-  {frame}
-  class={className}
   {...rest}
+  class:list={['section', direction, align]}
 >
   <Composite
-    {...rest}
-    image={entryAndProps.images ? images[0] : image}
+    {direction}
+    {align}
+    {...child}
   />
-  <Image
-    {image}
-    {...rest}
-  />
-  <Images
-    {images}
-    {...rest}
-  />
-  <Cards
-    {cards}
-    {_cards}
-  />
-  <Prose {...rest} />
+  <Image {...child} />
+  <Cards {...child} />
+  <Prose {...child} />
   <slot />
 </Tag>
 
@@ -85,15 +59,15 @@ const {
     display: flex;
     position: relative;
     flex-direction: column;
-    gap: var(--space-5);
+    gap: var(--space-6);
     background: var(--hue1);
     padding: var(--space-6) var(--gutter);
     overflow-x: hidden;
 
-    /* &:first-child {
+    &:first-child {
       margin-top: 0;
       padding-top: var(--space-5);
-    } */
+    }
 
     &.reverse > *:first-child {
       order: 2;
@@ -105,15 +79,14 @@ const {
       }
     }
 
-    &.stack {
+    &.column {
       display: flex;
       flex-direction: column;
     }
 
-    &.split {
+    &.row {
       display: grid;
       align-items: center;
-      overflow-x: visible;
 
       @media (min-width: 1024px) {
         grid-auto-columns: 1fr;

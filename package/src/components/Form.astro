@@ -1,32 +1,35 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import { buildProps, type BuildProps } from '../utils'
+import { buildProps, getChildProps, type BuildProps } from '../utils'
 import Button from './Button.astro'
 import Fields from './Fields.astro'
 import Tag from './Tag.astro'
 
-interface Base
-  extends Pick<ComponentProps<typeof Fields>, 'fields' | '_fields'>,
-    Pick<ComponentProps<typeof Button>, 'button' | '_button'> {}
+interface Props
+  extends BuildProps<'form', Props>,
+    ComponentProps<typeof Tag>,
+    ComponentProps<typeof Fields>,
+    ComponentProps<typeof Button> {}
 
-type Props = BuildProps<Base, 'form', 'form'>
-const props = buildProps(Astro, 'form')
-
-const { button, _button, fields, _fields, method = 'POST', ...rest } = props
+const {
+  as = 'form',
+  method = 'POST',
+  ...rest
+} = buildProps('form', Astro.props)
+const child = getChildProps(rest)
 ---
 
 <Tag
+  class="form"
+  {as}
   {method}
   {...rest}
 >
-  <Fields
-    {fields}
-    {_fields}
-  />
+  <Fields {...child} />
   <Button
-    {button}
-    {_button}
+    as="button"
     type="submit"
+    {...rest}
   />
 </Tag>
 

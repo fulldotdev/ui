@@ -4,16 +4,18 @@ import { buildProps, type BuildProps } from '../utils'
 import Link from './Link.astro'
 import Tag from './Tag.astro'
 
-interface Base {
-  links?: ComponentProps<typeof Link>[]
-}
+interface Props
+  extends BuildProps<'links', Props, ComponentProps<typeof Link>[]>,
+    ComponentProps<typeof Tag> {}
 
-type Props = BuildProps<Base, 'links'>
-const props = buildProps(Astro, 'links')
+const { links, ...rest } = buildProps('links', Astro.props)
 ---
 
-<Tag {...props}>
-  {props.links?.map((link) => <Link {...link} />)}
+<Tag
+  class="links"
+  {...rest}
+>
+  {links?.map((link) => <Link {...link} />)}
 </Tag>
 
 <style is:global>

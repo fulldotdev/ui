@@ -1,20 +1,21 @@
 ---
+import type { ComponentProps } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
+import Tag from './Tag.astro'
 
-interface Base {
-  option?: string | null
+interface Props
+  extends BuildProps<'option', Props, string>,
+    ComponentProps<typeof Tag> {
   'data-price-change'?: number | null
 }
 
-type Props = BuildProps<Base, 'option', 'option'>
-const props = buildProps(Astro, 'option')
-
-const { option, ...rest } = props
+const { option, ...rest } = buildProps('option', Astro.props)
 ---
 
 {
   option && (
     <option
+      class="option"
       value={option}
       {...rest}
     >

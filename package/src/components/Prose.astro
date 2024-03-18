@@ -1,21 +1,25 @@
 ---
+import type { ComponentProps } from 'astro/types'
 import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
 import { buildProps, type BuildProps } from '../utils'
 import Tag from './Tag.astro'
 
-interface Base {
-  prose: string | CollectionEntry<ContentCollectionKey>['render'] | null
-}
+interface Props
+  extends BuildProps<
+      'prose',
+      Props,
+      string | CollectionEntry<ContentCollectionKey>['render']
+    >,
+    ComponentProps<typeof Tag> {}
 
-type Props = BuildProps<Base, 'prose'>
-const props = buildProps(Astro, 'prose')
-
-const { prose, ...rest } = props
-
+const { prose, ...rest } = buildProps('prose', Astro.props)
 const Content = typeof prose === 'function' ? (await prose()).Content : null
 ---
 
-<Tag {...rest}>
+<Tag
+  class="prose"
+  {...rest}
+>
   {Content && <Content />}
   <Fragment set:Html={prose}></Fragment>
   <slot />

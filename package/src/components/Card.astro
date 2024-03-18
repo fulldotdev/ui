@@ -1,113 +1,43 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import { getEntry } from 'astro:content'
-import merge from 'deepmerge'
-import {
-  buildProps,
-  getPathname,
-  getReference,
-  withDefaults,
-  type BuildProps,
-  type GetReference,
-} from '../utils'
+import { type CollectionEntry, type ContentCollectionKey } from 'astro:content'
+import { buildProps, getChildProps, type BuildProps } from '../utils'
 import Composite from './Composite.astro'
 import Image from './Image.astro'
 import Tag from './Tag.astro'
 
-interface Base
-  extends GetReference,
+interface Props
+  extends BuildProps<'card', Props>,
+    ComponentProps<typeof Tag>,
     ComponentProps<typeof Composite>,
     Pick<ComponentProps<typeof Image>, 'image' | '_image'> {
-  images?: Base['image'][]
-  _images?: Base['_image'][]
-  hue?: 'base' | 'accent'
+  collection?: ContentCollectionKey
+  slug?: CollectionEntry<ContentCollectionKey>['slug'] | null
   look?: 'ghost' | 'soft' | 'solid' | null
   frame?: 'fill' | 'panel' | 'screen' | null
-  scheme?: 'default' | 'reverse' | 'light' | 'dark' | null
 }
-
-type Props = BuildProps<Base, 'card'>
-let props = buildProps(Astro, 'card')
-
-// FIXME
-const reference = getReference(props)
-const entry = reference && (await getEntry(reference))
-const entryWithDefaults = entry && (await withDefaults(entry))
-const href = getPathname(entryWithDefaults || ({} as any))
-
-props = merge(entryWithDefaults?.data, props)
 
 const {
   look = 'soft',
-  frame,
-  image,
-  _image,
-  images,
-  _images,
-  hue,
-  //
-  align,
-  rating,
-  _rating,
-  icon,
-  _icon,
-  tagline,
-  _tagline,
-  title,
-  _title,
-  description,
-  _description,
-  specs,
-  _specs,
-  channels,
-  _channels,
-  socials,
-  _socials,
-  price,
-  _price,
-  buttons,
-  _buttons,
+  frame = 'panel',
+  collection,
+  slug,
   ...rest
-} = props
+} = buildProps('card', Astro.props)
+
+// const entry =
+//   collection && slug ? (await getEntry(collection, slug)).data : null
+// const merged = merge(entry, rest)
+const child = getChildProps(rest)
 ---
 
 <Tag
+  class:list={['card', look, frame]}
   compact
-  as={href ? 'a' : props.as}
-  {href}
-  {look}
-  {frame}
   {...rest}
 >
-  <Image
-    image={image || props.images?.[0]}
-    _image={_image || props._images?.[0]}
-  />
-  <Composite
-    compact
-    {frame}
-    {align}
-    {rating}
-    {_rating}
-    {icon}
-    {_icon}
-    {tagline}
-    {_tagline}
-    {title}
-    {_title}
-    {description}
-    {_description}
-    {specs}
-    {_specs}
-    {channels}
-    {_channels}
-    {socials}
-    {_socials}
-    {price}
-    {_price}
-    {buttons}
-    {_buttons}
-  />
+  <Image {...child} />
+  <Composite {...child} />
 </Tag>
 
 <style is:global>
@@ -124,7 +54,7 @@ const {
       /* height: 100%; */
     }
 
-    &:where(a) {
+    a {
       transition: var(--transition);
 
       &:hover > .image {
@@ -141,7 +71,7 @@ const {
       border-radius: var(--radius-2);
       overflow: hidden;
 
-      &:where(a) {
+      a {
         &:hover {
           background: var(--hue3);
         }
@@ -151,12 +81,12 @@ const {
         }
       }
 
-      &:where(.soft) {
+      &.soft {
         border-width: var(--border-width);
         border-color: var(--hue6);
         background-color: var(--hue2);
 
-        &:where(a) {
+        a {
           border-color: var(--hue7);
           background: var(--hue2);
 
@@ -176,7 +106,7 @@ const {
         }
       }
 
-      &:where(.solid) {
+      &.solid {
         border-color: var(--hue9);
         background: var(--hue9);
 
@@ -184,7 +114,7 @@ const {
           color: var(--hue-fg);
         }
 
-        &:where(a):hover {
+        a:hover {
           background: var(--hue10);
         }
 

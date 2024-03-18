@@ -1,4 +1,5 @@
 export * from './buildProps'
+export * from './getChildProps'
 export * from './getEntryOrCollection'
 export * from './getPathname'
 export * from './getReference'

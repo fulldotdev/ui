@@ -2,20 +2,25 @@
 import type { ComponentProps } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Option from './Option.astro'
+import Tag from './Tag.astro'
 
-interface Base {
-  options?: ComponentProps<typeof Option>['option'][]
-}
+interface Props
+  extends BuildProps<
+      'options',
+      Props,
+      ComponentProps<typeof Option>['option'][]
+    >,
+    ComponentProps<typeof Tag> {}
 
-type Props = BuildProps<Base, 'options'>
-const props = buildProps(Astro, 'options')
-
-const { options, ...rest } = props
+const { options, ...rest } = buildProps('options', Astro.props)
 ---
 
 {
   options && (
-    <select {...rest}>
+    <select
+      class="options"
+      {...rest}
+    >
       {options?.map((option) => (
         <Option {option} />
       ))}

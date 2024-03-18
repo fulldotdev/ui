@@ -1,41 +1,52 @@
-<!-- ---
-import type { HTMLAttributes } from 'astro/types'
+---
+import type { ComponentProps } from 'astro/types'
+import BannerRoot from '../TODO/banner/BannerRoot.astro'
+import { BuildProps, buildProps, getChildProps } from '../utils'
+import Links from './Links.astro'
+import Specs from './Specs.astro'
+import Tag from './Tag.astro'
 
-interface Props {
+interface Props
+  extends BuildProps<'banner', Props, string>,
+    Pick<ComponentProps<typeof Links>, 'links' | '_links'>,
+    Pick<ComponentProps<typeof Specs>, 'specs' | '_specs'>,
+    ComponentProps<typeof Tag> {
   position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
   scheme?: 'default' | 'reverse' | 'light' | 'dark'
   impact?: 'low' | 'medium' | 'high' | 'extreme'
   area?: 'default' | 'panel'
-  class?: HTMLAttributes<'div'>['class']
 }
 
 const {
-  position = 'relative',
-  scheme = 'default',
-  impact = 'medium',
-  area = 'default',
-  class: className,
-} = Astro.props
+  as = 'div',
+  position,
+  scheme,
+  impact,
+  area,
+  ...rest
+} = buildProps('banner', Astro.props)
+
+const child = getChildProps(rest)
 ---
 
-{
-  slot && (
-    <div
-      class:list={[
-        'banner compact',
-        'position-' + position,
-        'scheme-' + scheme,
-        scheme + '-theme',
-        scheme,
-        'impact-' + impact,
-        'area-' + area,
-        className,
-      ]}
-    >
-      <Fragment set:html={slot} />
-    </div>
-  )
-}
+slot && (
+<Tag
+  class:list={[
+    'banner compact',
+    'position-' + position,
+    'scheme-' + scheme,
+    scheme + '-theme',
+    scheme,
+    'impact-' + impact,
+    'area-' + area,
+  ]}
+>
+  <BannerRoot {...rest}>
+    <Specs {...child} />
+    <Links {...child} />
+  </BannerRoot>
+</Tag>
+)
 
 <style is:global>
   .banner {
@@ -78,4 +89,4 @@ const {
       padding: var(--space-2) var(--space-2);
     }
   }
-</style> -->
+</style>

@@ -1,31 +1,35 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import { buildProps, type BuildProps } from '../utils'
+import { buildProps, getChildProps, type BuildProps } from '../utils'
 import Action from './Action.astro'
 import Display from './Display.astro'
 import Tag from './Tag.astro'
 
-interface Base
-  extends ComponentProps<typeof Display>,
+interface Props
+  extends BuildProps<'composite', Props>,
+    ComponentProps<typeof Tag>,
+    ComponentProps<typeof Display>,
     ComponentProps<typeof Action> {
-  density?: 'compact' | null
-  layout?: 'split' | 'stack' | null
-  align?: 'start' | 'center' | 'stretch' | null
+  direction?: 'column' | 'row' | null
+  align?: 'start' | 'center' | null
 }
 
-type Props = BuildProps<Base, 'composite'>
-const props = buildProps(Astro, 'composite')
-
-const { as, class: className, ...rest } = props
+const { direction, align, ...rest } = buildProps('composite', Astro.props)
+const child = getChildProps(rest)
 ---
 
 <Tag
-  {as}
-  class={className}
+  class:list={['composite', direction, align]}
   {...rest}
 >
-  <Display {...rest} />
-  <Action {...rest} />
+  <Display
+    {...child}
+    {align}
+  />
+  <Action
+    {align}
+    {...child}
+  />
   <slot />
 </Tag>
 
@@ -56,7 +60,7 @@ const { as, class: className, ...rest } = props
       padding: var(--gutter);
     }
 
-    &:is(.panel &.compact) {
+    &:is(.compact.panel &) {
       gap: var(--space-4);
       padding: var(--space-4);
     }

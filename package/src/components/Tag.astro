@@ -1,79 +1,64 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import { htmlElementAttributes } from 'html-element-attributes'
 
-type Props<As extends HTMLTag, Rest extends {} = {}> = Omit<
-  Polymorphic<{
-    as: As
-  }>,
-  'slot'
-> & {
-  child?: boolean
+type Poly<Rest extends {} = {}> = {
+  as?: HTMLTag
+} & Rest
+
+interface Props extends Poly {
+  if?: string | boolean
+  // polymorphic
+  class?: HTMLAttributes<HTMLTag>['class']
+  id?: HTMLAttributes<HTMLTag>['id']
+
+  // design
   compact?: boolean | null
-  contrast?: boolean | null
   scheme?: 'light' | 'dark' | null
   color?: 'base' | 'accent' | null
   size?: 'small' | 'medium' | 'large' | null
-} & Rest
+  // temp
+  rows?: HTMLAttributes<'textarea'>['rows']
+  alt?: HTMLAttributes<'img'>['alt']
+  src?: HTMLAttributes<'img'>['src']
+  method?: HTMLAttributes<'form'>['method']
+  type?: HTMLAttributes<'button'>['type']
+  for?: HTMLAttributes<'label'>['for']
+  href?: HTMLAttributes<'a'>['href']
+}
 
 const {
+  // @ts-ignore
+  if: ifProp,
   as: As = 'div',
-  child,
-  align,
-  layout,
-  color,
-  scheme,
-  size,
-  look,
-  order,
-  frame,
   compact,
-  contrast,
+  scheme,
+  color,
+  size,
   ...rest
 } = Astro.props
 
-const slot = await Astro.slots.render('default')
-const hasContent = slot?.trim().length > 0
-
-let attributes = Object.fromEntries(
+const htmlAttributes = Object.fromEntries(
   Object.entries(rest).filter(
     ([key]) =>
-      (htmlElementAttributes['*'].includes(key) ||
-        htmlElementAttributes[As]?.includes(key) ||
+      (Object.values(htmlElementAttributes).flat().includes(key) ||
         key.startsWith('data-') ||
         key.startsWith('aria-')) &&
       key !== 'title'
   )
 )
 
-if (child) attributes = {}
+const slot = await Astro.slots.render('default')
+const hasContent = slot?.trim().length > 0
+// @ts-ignore
+const hasProp = ifProp === true || Astro.props[ifProp]
 ---
 
 {
-  hasContent && (
+  (hasProp || hasContent) && (
     <As
-      class:list={
-        !child
-          ? [
-              {
-                compact,
-                contrast,
-              },
-              color ? `hue-${color}` : '',
-              scheme,
-              size,
-              // sometimes
-              align,
-              layout,
-              scheme,
-              size,
-              look,
-              order,
-              frame,
-            ]
-          : ''
-      }
-      {...attributes}
+      class:list={[color ? `hue-${color}` : '', scheme, size, { compact }]}
+      {...htmlAttributes}
     >
       <Fragment set:html={slot} />
     </As>

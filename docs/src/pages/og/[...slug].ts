@@ -1,5 +1,6 @@
-import { getCollection } from 'astro:content'
+// @ts-nocheck
 import { OGImageRoute } from 'astro-og-canvas'
+import { getCollection } from 'astro:content'
 
 // Get all entries from the `docs` content collection.
 const entries = await getCollection('docs')

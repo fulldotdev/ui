@@ -1,6 +1,6 @@
----
-import type { ComponentProps } from 'astro/types'
-import { buildProps, type BuildProps } from '../utils'
+<!-- ---
+import type { ComponentProps,HTMLTag } from 'astro/types'
+import { buildProps,type BuildProps } from '../utils'
 import Button from './Button.astro'
 import type Description from './Description.astro'
 import Fields from './Fields.astro'
@@ -9,16 +9,16 @@ import Price from './Price.astro'
 import Tag from './Tag.astro'
 import type Title from './Title.astro'
 
-interface Base
-  extends Pick<ComponentProps<typeof Price>, 'price' | '_price'>,
-    Pick<ComponentProps<typeof Button>, 'button' | '_button'>,
-    Pick<ComponentProps<typeof Title>, 'title' | '_title'>,
-    Pick<ComponentProps<typeof Image>, 'image' | '_image'>,
-    Pick<ComponentProps<typeof Description>, 'description' | '_description'>,
-    Pick<ComponentProps<typeof Fields>, 'fields' | '_fields'> {}
-
-type Props = BuildProps<Base, 'product'>
-const props = buildProps(Astro, 'product')
+type Props<As extends HTMLTag = 'div'> = BuildProps<
+  'product',
+  ComponentProps<typeof Tag<As>> &
+    Pick<ComponentProps<typeof Price>, 'price' | '_price'> &
+    Pick<ComponentProps<typeof Button>, 'button' | '_button'> &
+    Pick<ComponentProps<typeof Title>, 'title' | '_title'> &
+    Pick<ComponentProps<typeof Image>, 'image' | '_image'> &
+    Pick<ComponentProps<typeof Description>, 'description' | '_description'> &
+    Pick<ComponentProps<typeof Fields>, 'fields' | '_fields'>
+>
 
 const {
   price,
@@ -31,7 +31,7 @@ const {
   image,
   description,
   ...rest
-} = props
+} = buildProps('product', Astro.props)
 
 const getImage = () => {
   if (typeof image !== 'string') return 'https://picsum.photos/1/1'
@@ -41,6 +41,7 @@ const getImage = () => {
 ---
 
 <Tag
+  class="product"
   {...rest}
   as="div"
 >
@@ -104,4 +105,4 @@ const getImage = () => {
     row-gap: var(--space-3);
     flex-direction: column;
   }
-</style>
+</style> -->
