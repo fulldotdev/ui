@@ -2,35 +2,39 @@
 import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import { htmlElementAttributes } from 'html-element-attributes'
 
-type Poly<Rest extends {} = {}> = {
+type Poly = {
   as?: HTMLTag
-} & Rest
+}
 
 interface Props extends Poly {
   if?: string | boolean
   // polymorphic
   class?: HTMLAttributes<HTMLTag>['class']
   id?: HTMLAttributes<HTMLTag>['id']
-
+  style?: HTMLAttributes<HTMLTag>['style']
   // design
   compact?: boolean | null
   scheme?: 'light' | 'dark' | null
   color?: 'base' | 'accent' | null
-  size?: 'small' | 'medium' | 'large' | null
+  size?: '1' | '2' | '3' | '4' | null
+  // components
+  variant?: 'solid' | 'soft' | 'surface' | 'outline' | 'ghost' | null
+  contrast?: boolean | null
   // temp
   rows?: HTMLAttributes<'textarea'>['rows']
   alt?: HTMLAttributes<'img'>['alt']
   src?: HTMLAttributes<'img'>['src']
   method?: HTMLAttributes<'form'>['method']
-  type?: HTMLAttributes<'button'>['type']
+  // type?: HTMLAttributes<'button'>['type']
   for?: HTMLAttributes<'label'>['for']
-  href?: HTMLAttributes<'a'>['href']
 }
 
 const {
   // @ts-ignore
   if: ifProp,
   as: As = 'div',
+  variant,
+  contrast,
   compact,
   scheme,
   color,
@@ -57,7 +61,14 @@ const hasProp = ifProp === true || Astro.props[ifProp]
 {
   (hasProp || hasContent) && (
     <As
-      class:list={[color ? `hue-${color}` : '', scheme, size, { compact }]}
+      class:list={[
+        { compact, contrast },
+        color ? `hue-${color}` : '',
+        variant ? `variant-${variant}` : '',
+        size ? `size-${size}` : '',
+        scheme,
+        size,
+      ]}
       {...htmlAttributes}
     >
       <Fragment set:html={slot} />

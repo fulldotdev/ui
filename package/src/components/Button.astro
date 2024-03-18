@@ -1,5 +1,5 @@
 ---
-import type { ComponentProps } from 'astro/types'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import { endomorphic, getChildProps, type Endomorphic } from '../utils'
 import Icon from './Icon.astro'
 import Tag from './Tag.astro'
@@ -8,14 +8,12 @@ interface Props
   extends Endomorphic<Props, 'button', string>,
     ComponentProps<typeof Tag>,
     Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'> {
-  look?: 'solid' | 'soft' | 'surface' | 'outline' | 'ghost' | null
-  contrast?: boolean | null
+  href?: HTMLAttributes<'a'>['href']
 }
 
 const {
   as = 'a',
-  look = 'solid',
-  contrast,
+  variant = 'solid',
   button,
   ...rest
 } = endomorphic(Astro.props, 'button')
@@ -23,7 +21,8 @@ const child = getChildProps(rest)
 ---
 
 <Tag
-  class:list={['button', look, { contrast }]}
+  class:list={['button']}
+  {variant}
   {as}
   {...rest}
 >
@@ -42,8 +41,6 @@ const child = getChildProps(rest)
     gap: var(--space-2);
     transition: var(--transition);
     cursor: pointer;
-    border-width: var(--border-width);
-    border-color: var(--button-border-color);
     border-radius: var(--radius-2);
     background: var(--button-background);
     padding: 0 var(--space-3);
@@ -57,61 +54,87 @@ const child = getChildProps(rest)
     text-decoration: none;
     white-space: nowrap;
 
-    &:hover {
-      border-color: var(--button-border-color-hover);
-      background: var(--button-background-hover);
-    }
-
-    &:active {
-      background: var(--button-background-active);
-    }
-
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       pointer-events: none;
     }
 
-    &.solid {
+    &:focus-visible {
+      outline: 2px solid var(--hue8);
+      outline-offset: 2px;
+    }
+
+    &.variant-solid,
+    &.variant-soft,
+    &.variant-outline,
+    &.variant-surface,
+    &.variant-ghost {
+      box-shadow: inset 0 0 0 var(--border-width) var(--button-border);
+      background-color: var(--button-background);
+      color: var(--button-color);
+
+      &:hover {
+        box-shadow: inset 0 0 0 var(--border-width)
+          var(--button-border-hover, var(--button-border));
+        background-color: var(
+          --button-background-hover,
+          var(--button-background)
+        );
+      }
+
+      &:active {
+        background-color: var(
+          --button-background-active,
+          var(--button-background-hover, var(--button-background))
+        );
+      }
+
+      &.contrast {
+        --button-color: var(--hue12);
+      }
+    }
+
+    &.variant-solid {
       --button-background: var(--hue9);
       --button-background-hover: var(--hue10);
-      --button-background-active: var(--hue10);
-      --button-border-color: transparent;
-      --button-border-color-hover: transparent;
       --button-color: var(--hue-fg);
 
       &.contrast {
         --button-background: var(--hue12);
         --button-background-hover: var(--hue12);
-        --button-background-active: var(--hue12);
         --button-color: var(--hue1);
       }
     }
 
-    &.soft {
+    &.variant-soft {
       --button-background: var(--hue3);
       --button-background-hover: var(--hue4);
       --button-background-active: var(--hue5);
-      --button-border-color: var(--hue7);
-      --button-border-color-hover: var(--hue8);
       --button-color: var(--hue11);
-
-      &.contrast {
-        --button-color: var(--hue12);
-      }
     }
 
-    &.ghost {
-      --button-background: transparent;
+    &.variant-surface {
+      --button-background: var(--hue2);
+      --button-background-hover: var(--hue3);
+      --button-background-active: var(--hue4);
+      --button-color: var(--hue11);
+      --button-border: var(--hue7A);
+      --button-border-hover: var(--hue8A);
+    }
+
+    &.variant-outline {
       --button-background-hover: var(--hue2);
       --button-background-active: var(--hue3);
-      --button-border-color: transparent;
-      --button-border-color-hover: transparent;
       --button-color: var(--hue11);
+      --button-border: var(--hue7A);
+      --button-border-hover: var(--hue8A);
+    }
 
-      &.contrast {
-        --button-color: var(--hue12);
-      }
+    &.variant-ghost {
+      --button-background-hover: var(--hue2);
+      --button-background-active: var(--hue3);
+      --button-color: var(--hue11);
     }
   }
 </style>

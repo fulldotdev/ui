@@ -37,7 +37,7 @@ export default defineConfig({
           items: [
             { label: 'Installation', link: '/guides/installation/' },
             { label: 'Theming', link: '/guides/theming/' },
-            { label: 'Components', link: '/guides/components/' },
+            { label: 'Endomorphic', link: '/guides/endomorphic/' },
             { label: 'Typescript', link: '/guides/typescript/' },
           ],
         },
