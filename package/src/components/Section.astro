@@ -1,7 +1,7 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import type { Icon } from '..'
-import { endomorphic, type Endomorphic } from '../utils'
+import { endomorphic, getChildProps, type Endomorphic } from '../utils'
 import Cards from './Cards.astro'
 import Composite from './Composite.astro'
 import Image from './Image.astro'
@@ -12,42 +12,37 @@ interface Props
   extends Endomorphic<Props, 'section'>,
     ComponentProps<typeof Tag>,
     ComponentProps<typeof Composite>,
-    ComponentProps<typeof Image>,
+    Pick<ComponentProps<typeof Image>, 'image' | '_image'>,
     Pick<ComponentProps<typeof Prose>, 'prose' | '_prose'>,
     Pick<ComponentProps<typeof Cards>, 'cards' | '_cards'>,
     Pick<ComponentProps<typeof Prose>, 'prose' | '_prose'>,
     Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'> {
   direction?: 'row' | 'column' | null
   align?: 'start' | 'center' | null
-  frame?: 'solid' | 'soft' | 'ghost' | null
+  look?: 'solid' | 'soft' | 'ghost' | null
+  frame?: 'screen' | 'panel' | null
 }
 
 // const reference = getReference(props)
 // const entry = reference && (await getEntry(reference))
 // const entryWithDefaults = entry && (await withDefaults(entry))
 // const entryAndProps = merge(entryWithDefaults?.data, props)
-
 const {
   as = 'section',
   direction = 'column',
+  frame,
   align,
-  icon,
-  image,
   ...rest
 } = endomorphic(Astro.props, 'section')
-const child = endomorphic(Astro.props, 'section')
+const child = getChildProps(rest)
 ---
 
 <Tag
   {as}
   {...rest}
-  class:list={['section', direction, align]}
+  class:list={['section', direction, align, frame]}
 >
-  <Composite
-    {direction}
-    {align}
-    {...child}
-  />
+  <Composite {...child} />
   <Image {...child} />
   <Cards {...child} />
   <Prose {...child} />
@@ -64,10 +59,10 @@ const child = endomorphic(Astro.props, 'section')
     padding: var(--space-6) var(--gutter);
     overflow-x: hidden;
 
-    &:first-child {
+    /* &:first-child {
       margin-top: 0;
       padding-top: var(--space-5);
-    }
+    } */
 
     &.reverse > *:first-child {
       order: 2;

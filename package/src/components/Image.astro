@@ -7,6 +7,7 @@ interface Props
   extends Endomorphic<Props, 'image', string>,
     ComponentProps<typeof Tag> {
   loading?: 'eager' | 'lazy'
+  mask?: boolean
   alt?: string
   sizes?: {
     base: string
@@ -23,6 +24,7 @@ interface Props
 const {
   as = 'img',
   loading = 'lazy',
+  mask,
   alt = '',
   sizes = {
     base: '100vw',
@@ -69,25 +71,16 @@ function getSizes() {
 
 <Tag
   {as}
-  {...rest}
   if="src"
   src={image}
   alt={getAlt()}
   sizes={getSizes()}
-  class:list={['image', position, frame]}
+  class:list={['image', position, frame, { mask }]}
   {loading}
+  {...rest}
 />
 
 <style is:global>
-  .mask {
-    -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
-    mask-image: linear-gradient(to top, transparent 0%, black 30%);
-  }
-  .mask-lg {
-    -webkit-mask-image: linear-gradient(to top, transparent 0%, black 100%);
-    mask-image: linear-gradient(to top, transparent 0%, black 100%);
-  }
-
   .image {
     display: block;
     transition: var(--transition);
@@ -121,6 +114,15 @@ function getSizes() {
     &.panel {
       height: 100%;
       object-fit: cover;
+    }
+
+    &.mask-sm {
+      -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
+      mask-image: linear-gradient(to top, transparent 0%, black 30%);
+    }
+    &.mask {
+      -webkit-mask-image: linear-gradient(to top, transparent 0%, black 100%);
+      mask-image: linear-gradient(to top, transparent 0%, black 100%);
     }
   }
 </style>

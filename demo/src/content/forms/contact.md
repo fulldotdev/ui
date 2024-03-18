@@ -1,21 +1,23 @@
 ---
-_schema: default
+align: center
 title: Heb je vragen?
 description: We nemen binnen 1 werkdag persoonlijk contact met je op.
-fields:
-  - label: Naam
-    input: naam
-  - label: Email
-    input: email
-    type: email
-    required: true
-  - label: Telefoon
-    input: telefoon
-    type: tel
-    required: true
-  - label: Bericht
-    textarea: bericht
-button:
-  label: Verstuur
-  href: /bericht-ontvangen
+form:
+  fields:
+    - input: naam
+      label: Naam
+    - input: email
+      label: Email
+      type: email
+      required: true
+    - input: Telefoon
+      label: Telefoon
+      type: tel
+      required: true
+    - textarea: Bericht
+      label: Bericht
+      type: textarea
+  button:
+    text: Verstuur
+    href: "#"
 ---

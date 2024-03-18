@@ -1,16 +1,23 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import { endomorphic, sortByIndex, type Endomorphic } from '../utils'
+import {
+  endomorphic,
+  getChildProps,
+  sortByIndex,
+  type Endomorphic,
+} from '../utils'
 import Button from './Button.astro'
 import Tag from './Tag.astro'
 
 interface Props
   extends Endomorphic<Props, 'buttons', ComponentProps<typeof Button>[]>,
-    ComponentProps<typeof Tag> {
+    ComponentProps<typeof Tag>,
+    Pick<ComponentProps<typeof Button>, 'button' | '_button'> {
   index?: number | null
 }
 
 const { buttons, ...rest } = endomorphic(Astro.props, 'buttons')
+const child = getChildProps(rest)
 
 const look: {
   [key: number]: 'solid' | 'soft' | 'ghost'
@@ -32,6 +39,7 @@ const sorted = sortByIndex(buttons)
       <Button
         look={look[i]}
         {button}
+        {...child}
       />
     ))
   }
