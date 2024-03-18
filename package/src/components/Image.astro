@@ -3,22 +3,24 @@ import type { ComponentProps, HTMLTag } from 'astro/types'
 import { buildProps, unslugify, type BuildProps } from '../utils'
 import Tag from './Tag.astro'
 
-type Props<As extends HTMLTag = 'img'> = BuildProps<
-  'image',
-  ComponentProps<typeof Tag<As>> & {
-    image?: string | null
-    position?: 'background' | null
-    frame?: 'fill' | 'panel' | 'screen' | null
-    sizes?: {
-      base: string
-      sm?: string
-      md?: string
-      lg?: string
-      xl?: string
-      '2xl'?: string
-    }
+interface Props
+  extends BuildProps<'image', Props, string>,
+    ComponentProps<typeof Tag> {
+  as?: HTMLTag
+  loading?: 'eager' | 'lazy'
+  alt?: string
+  sizes?: {
+    base: string
+    sm?: string
+    md?: string
+    lg?: string
+    xl?: string
+    '2xl'?: string
   }
->
+  position?: 'background' | null
+  frame?: 'fill' | 'panel' | 'screen' | null
+  image?: string | null
+}
 
 const {
   as = 'img',

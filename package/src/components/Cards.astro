@@ -1,25 +1,16 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
+import type { ComponentProps } from 'astro/types'
 import { getCollection, type CollectionKey } from 'astro:content'
 import { buildProps, getChildProps, type BuildProps } from '../utils'
 import Card from './Card.astro'
 import Tag from './Tag.astro'
 
-type Props<As extends HTMLTag = 'div'> = BuildProps<
-  'cards',
-  ComponentProps<typeof Tag<As>> &
-    Pick<ComponentProps<typeof Card>, 'card' | '_card'> & {
-      layout?:
-        | 'carousel'
-        | 'grid'
-        | 'masonry'
-        | 'row'
-        | 'panels'
-        | 'bento'
-        | null
-      cards?: CollectionKey | null
-    }
->
+interface Props
+  extends BuildProps<'cards', Props, CollectionKey>,
+    ComponentProps<typeof Tag>,
+    Pick<ComponentProps<typeof Card>, 'card' | '_card'> {
+  layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento' | null
+}
 
 // interface Base
 //   extends GetReference,

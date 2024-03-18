@@ -2,10 +2,12 @@
 import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import { htmlElementAttributes } from 'html-element-attributes'
 
-interface Props {
-  if?: string | null
-  // polymorphic
+type Poly = {
   as?: HTMLTag
+}
+
+interface Props extends Poly {
+  // polymorphic
   class?: HTMLAttributes<HTMLTag>['class']
   id?: HTMLAttributes<HTMLTag>['id']
   // design
@@ -22,12 +24,12 @@ interface Props {
   type?: HTMLAttributes<'button'>['type']
   for?: HTMLAttributes<'label'>['for']
   href?: HTMLAttributes<'a'>['href']
-  sizes?: HTMLAttributes<'img'>['sizes']
 }
 
 const {
-  as: As = 'div',
+  // @ts-ignore
   if: ifProp,
+  as: As = 'div',
   compact,
   scheme,
   color,
@@ -47,6 +49,7 @@ const htmlAttributes = Object.fromEntries(
 
 const slot = await Astro.slots.render('default')
 const hasContent = slot?.trim().length > 0
+// @ts-ignore
 const hasProp = ifProp === true || Astro.props[ifProp]
 ---
 
