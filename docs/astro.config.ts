@@ -23,7 +23,8 @@ export default defineConfig({
       },
       favicon: './favicon.png',
       components: {
-        Head: './src/components/StarlightHead.astro',
+        // FIXME: causing erro on vercel build
+        // Head: './src/components/StarlightHead.astro',
       },
       customCss: ['./src/css/custom.css'],
       sidebar: [
