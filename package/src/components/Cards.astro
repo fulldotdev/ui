@@ -1,12 +1,12 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import { getCollection, type CollectionKey } from 'astro:content'
-import { buildProps, getChildProps, type BuildProps } from '../utils'
+import { endomorphic, getChildProps, type Endomorphic } from '../utils'
 import Card from './Card.astro'
 import Tag from './Tag.astro'
 
 interface Props
-  extends BuildProps<'cards', Props, CollectionKey>,
+  extends Endomorphic<Props, 'cards', CollectionKey>,
     ComponentProps<typeof Tag>,
     Pick<ComponentProps<typeof Card>, 'card' | '_card'> {
   layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento' | null
@@ -24,7 +24,7 @@ interface Props
 //   )[]
 // }
 
-let { cards, layout = 'grid', ...rest } = buildProps('cards', Astro.props)
+let { cards, layout = 'grid', ...rest } = endomorphic(Astro.props, 'cards')
 const child = getChildProps(rest)
 
 let entries: ComponentProps<typeof Card>[] = []

@@ -1,9 +1,9 @@
 import type { AstroGlobal } from 'astro'
 import merge from 'deepmerge'
 
-export type BuildProps<
-  Name extends string,
+export type Endomorphic<
   Props extends AstroGlobal['props'],
+  Name extends string,
   Value extends AstroGlobal['props'][Name] = undefined | null,
 > = {
   [Key in Name | `_${Name}`]?:
@@ -15,16 +15,16 @@ export type BuildProps<
     | undefined
 }
 
-export const buildProps = <
-  Name extends string,
-  Props extends BuildProps<
-    Name,
+export const endomorphic = <
+  Props extends Endomorphic<
     AstroGlobal['props'],
+    Name,
     AstroGlobal['props'][Name]
   >,
+  Name extends string,
 >(
-  name: Name,
-  props: Props
+  props: Props,
+  name: Name
 ) => {
   const _name = `_${name}` as `_${Name}`
   const { [name]: value, [_name]: _value, ...stripped } = props

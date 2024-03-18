@@ -1,18 +1,18 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
-import { buildProps, type BuildProps } from '../utils'
+import { endomorphic, type Endomorphic } from '../utils'
 import Tag from './Tag.astro'
 
 interface Props
-  extends BuildProps<
+  extends Endomorphic<
       'prose',
       Props,
       string | CollectionEntry<ContentCollectionKey>['render']
     >,
     ComponentProps<typeof Tag> {}
 
-const { prose, ...rest } = buildProps('prose', Astro.props)
+const { prose, ...rest } = endomorphic(Astro.props, 'prose')
 const Content = typeof prose === 'function' ? (await prose()).Content : null
 ---
 

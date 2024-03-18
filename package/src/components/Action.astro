@@ -1,13 +1,13 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import { buildProps, getChildProps, type BuildProps } from '../utils'
+import { endomorphic, getChildProps, type Endomorphic } from '../utils'
 import Buttons from './Buttons.astro'
 import Form from './Form.astro'
 import Product from './Product.astro'
 import Tag from './Tag.astro'
 
 interface Props
-  extends BuildProps<'action', Props>,
+  extends Endomorphic<Props, 'action'>,
     ComponentProps<typeof Tag>,
     Pick<ComponentProps<typeof Form>, 'form' | '_form'>,
     // ComponentProps<typeof Product>,
@@ -15,7 +15,7 @@ interface Props
   align?: 'start' | 'center' | null
 }
 
-const { ...rest } = buildProps('action', Astro.props)
+const { ...rest } = endomorphic(Astro.props, 'action')
 const child = getChildProps(rest)
 ---
 
