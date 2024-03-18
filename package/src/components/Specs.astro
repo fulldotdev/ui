@@ -1,16 +1,22 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
+import type { ComponentProps } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Spec from './Spec.astro'
 import Tag from './Tag.astro'
 
-type Props<As extends HTMLTag = 'div'> = BuildProps<
-  'specs',
-  ComponentProps<typeof Tag<As>> & {
-    specs?: ComponentProps<typeof Spec>['spec'][]
-    align?: 'start' | 'center' | 'stretch' | null
-  }
->
+// type Props<As extends HTMLTag = 'div'> = BuildProps<
+//   'specs',
+//   ComponentProps<typeof Tag<As>> & {
+//     specs?: ComponentProps<typeof Spec>['spec'][]
+//     align?: 'start' | 'center' | 'stretch' | null
+//   }
+// >
+
+interface Props
+  extends BuildProps<'specs', Props, ComponentProps<typeof Spec>['spec'][]>,
+    ComponentProps<typeof Tag> {
+  align?: 'start' | 'center' | 'stretch' | null
+}
 
 const { specs, ...rest } = buildProps('specs', Astro.props)
 ---

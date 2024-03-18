@@ -1,21 +1,30 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
+import type { ComponentProps } from 'astro/types'
 import { buildProps, getChildProps, type BuildProps } from '../utils'
 import Description from './Description.astro'
 import Tag from './Tag.astro'
 import Tagline from './Tagline.astro'
 import Title from './Title.astro'
 
-type Props<As extends HTMLTag = 'div'> = BuildProps<
-  'writeup',
-  ComponentProps<typeof Tag<As>> & {
-    writeup?: string | null
-    align?: 'start' | 'center' | null
-  }
-> &
-  Pick<ComponentProps<typeof Tagline>, 'tagline' | '_tagline'> &
-  Pick<ComponentProps<typeof Title>, 'title' | '_title'> &
-  Pick<ComponentProps<typeof Description>, 'description' | '_description'>
+// type Props<As extends HTMLTag = 'div'> = BuildProps<
+//   'writeup',
+//   ComponentProps<typeof Tag<As>> & {
+//     writeup?: string | null
+//     align?: 'start' | 'center' | null
+//   }
+// > &
+//   Pick<ComponentProps<typeof Tagline>, 'tagline' | '_tagline'> &
+//   Pick<ComponentProps<typeof Title>, 'title' | '_title'> &
+//   Pick<ComponentProps<typeof Description>, 'description' | '_description'>
+
+interface Props
+  extends BuildProps<'writeup', Props, string>,
+    ComponentProps<typeof Tag>,
+    Pick<ComponentProps<typeof Tagline>, 'tagline' | '_tagline'>,
+    Pick<ComponentProps<typeof Title>, 'title' | '_title'>,
+    Pick<ComponentProps<typeof Description>, 'description' | '_description'> {
+  align?: 'start' | 'center' | null
+}
 
 const { writeup, align, ...rest } = buildProps('writeup', Astro.props)
 const child = getChildProps(rest)
