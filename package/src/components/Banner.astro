@@ -1,0 +1,92 @@
+---
+import type { ComponentProps } from 'astro/types'
+import BannerRoot from '../TODO/banner/BannerRoot.astro'
+import { BuildProps, buildProps, getChildProps } from '../utils'
+import Links from './Links.astro'
+import Specs from './Specs.astro'
+import Tag from './Tag.astro'
+
+interface Props
+  extends BuildProps<'banner', Props, string>,
+    Pick<ComponentProps<typeof Links>, 'links' | '_links'>,
+    Pick<ComponentProps<typeof Specs>, 'specs' | '_specs'>,
+    ComponentProps<typeof Tag> {
+  position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
+  scheme?: 'default' | 'reverse' | 'light' | 'dark'
+  impact?: 'low' | 'medium' | 'high' | 'extreme'
+  area?: 'default' | 'panel'
+}
+
+const {
+  as = 'div',
+  position,
+  scheme,
+  impact,
+  area,
+  ...rest
+} = buildProps('banner', Astro.props)
+
+const child = getChildProps(rest)
+---
+
+slot && (
+<Tag
+  class:list={[
+    'banner compact',
+    'position-' + position,
+    'scheme-' + scheme,
+    scheme + '-theme',
+    scheme,
+    'impact-' + impact,
+    'area-' + area,
+  ]}
+>
+  <BannerRoot {...rest}>
+    <Specs {...child} />
+    <Links {...child} />
+  </BannerRoot>
+</Tag>
+)
+
+<style is:global>
+  .banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--flow);
+    z-index: 10;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: var(--border-width);
+    border-left-width: 0;
+    border-color: var(--border-color);
+    background: var(--background);
+    padding: var(--space-1) var(--gutter);
+
+    &:where(.position-sticky) {
+      position: sticky;
+      top: 0;
+    }
+
+    &:where(.position-fixed) {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+    }
+
+    &:where(.position-absolute) {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+    }
+
+    &:where(.area-panel) {
+      margin: var(--space-2) var(--gutter);
+      border-color: var(--border-color);
+      border-radius: var(--radius);
+      padding: var(--space-2) var(--space-2);
+    }
+  }
+</style>
