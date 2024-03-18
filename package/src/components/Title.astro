@@ -1,15 +1,25 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
+import type { ComponentProps } from 'astro/types'
 import { buildProps, type BuildProps } from '../utils'
 import Tag from './Tag.astro'
 
-type Props<As extends HTMLTag = 'h2'> = BuildProps<
-  'title',
-  ComponentProps<typeof Tag<As>> & {
-    title?: string | null
-    contrast?: boolean | null
-  }
->
+interface Props
+  extends BuildProps<'title', Props, string | null>,
+    ComponentProps<typeof Tag> {
+  contrast?: boolean | null
+}
+
+const test: Props = {
+  title: {
+    title: 'Test',
+    contrast: true,
+  },
+  _title: {
+    title: 'Test',
+    contrast: true,
+  },
+  contrast: true,
+}
 
 const {
   as = 'h2',

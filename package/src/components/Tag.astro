@@ -1,17 +1,14 @@
 ---
-import type { HTMLAttributes, HTMLTag, Polymorphic } from 'astro/types'
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import { htmlElementAttributes } from 'html-element-attributes'
 
-type Props<As extends HTMLTag> = Omit<
-  Polymorphic<{
-    as: As
-  }>,
-  'slot' | 'title'
-> & {
-  // as?: As
+interface Props {
+  if?: string | null
+  // polymorphic
+  as?: HTMLTag
   class?: HTMLAttributes<HTMLTag>['class']
   id?: HTMLAttributes<HTMLTag>['id']
-  if?: string | null
+  // design
   compact?: boolean | null
   scheme?: 'light' | 'dark' | null
   color?: 'base' | 'accent' | null
@@ -38,7 +35,7 @@ const {
   ...rest
 } = Astro.props
 
-const attributes = Object.fromEntries(
+const htmlAttributes = Object.fromEntries(
   Object.entries(rest).filter(
     ([key]) =>
       (Object.values(htmlElementAttributes).flat().includes(key) ||
@@ -57,7 +54,7 @@ const hasProp = ifProp === true || Astro.props[ifProp]
   (hasProp || hasContent) && (
     <As
       class:list={[color ? `hue-${color}` : '', scheme, size, { compact }]}
-      {...attributes}
+      {...htmlAttributes}
     >
       <Fragment set:html={slot} />
     </As>

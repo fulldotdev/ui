@@ -1,43 +1,26 @@
 import type { AstroGlobal } from 'astro'
 import merge from 'deepmerge'
 
-// export type BuildProps<
-//   Name extends string,
-//   Props extends AstroGlobal['props'],
-// > = Omit<Props, Name> & {
-//   [Key in Name]?: Name extends keyof Props
-//     ? Props | Props[Name] | null
-//     : Props | null
-// } & {
-//   [Key in `_${Name}`]?: Name extends keyof Props
-//     ? Props | Props[Name] | null
-//     : Props | null
-// }
-
 export type BuildProps<
   Name extends string,
   Props extends AstroGlobal['props'],
-> = Omit<Props, Name> & {
-  [Key in Name | `_${Name}`]?: Name extends keyof Props
-    ? Props | Props[Name] | null
-    : Props | null
+  Value extends AstroGlobal['props'][Name] = undefined | null,
+> = {
+  [Key in Name | `_${Name}`]?:
+    | Value
+    | (Omit<Props, Name> & {
+        [K in Name]: Value
+      })
+    | null
 }
-
-// export type BuildProps<
-//   Name extends string,
-//   As extends HTMLTag,
-//   Props extends object,
-// > = Omit<Props, Name> & {
-//   [Key in Name | `_${Name}`]?: Name extends keyof Props
-//     ?
-//         | (ComponentProps<typeof Tag<As>> & Props)
-//         | (ComponentProps<typeof Tag<As>> & Props[Name])
-//         | null
-//     : (ComponentProps<typeof Tag<As>> & Props) | null
 
 export const buildProps = <
   Name extends string,
-  Props extends BuildProps<Name, AstroGlobal['props']>,
+  Props extends BuildProps<
+    Name,
+    AstroGlobal['props'],
+    AstroGlobal['props'][Name]
+  >,
 >(
   name: Name,
   props: Props
