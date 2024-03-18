@@ -9,9 +9,10 @@ export type BuildProps<
   [Key in Name | `_${Name}`]?:
     | Value
     | (Omit<Props, Name> & {
-        [K in Name]: Value
+        [K in Name]: Value | undefined
       })
     | null
+    | undefined
 }
 
 export const buildProps = <
