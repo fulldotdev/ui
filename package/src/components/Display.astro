@@ -1,5 +1,5 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
+import type { ComponentProps } from 'astro/types'
 import { buildProps, getChildProps, type BuildProps } from '../utils'
 import Channels from './Channels.astro'
 import Icon from './Icon.astro'
@@ -9,17 +9,15 @@ import Specs from './Specs.astro'
 import Tag from './Tag.astro'
 import Writeup from './Writeup.astro'
 
-interface Props<As extends HTMLTag = 'div'>
-  extends BuildProps<
-    'display',
-    ComponentProps<typeof Tag<As>> &
-      Pick<ComponentProps<typeof Writeup>, 'writeup' | 'writeup'> &
-      Pick<ComponentProps<typeof Rating>, 'rating' | '_rating'> &
-      Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'> &
-      Pick<ComponentProps<typeof Specs>, 'specs' | '_specs'> & {
-        align?: 'start' | 'center' | null
-      }
-  > {}
+interface Props
+  extends BuildProps<'display', Props>,
+    ComponentProps<typeof Tag>,
+    Pick<ComponentProps<typeof Writeup>, 'writeup' | 'writeup'>,
+    Pick<ComponentProps<typeof Rating>, 'rating' | '_rating'>,
+    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'>,
+    Pick<ComponentProps<typeof Specs>, 'specs' | '_specs'> {
+  align?: 'start' | 'center' | null
+}
 
 const { align, ...rest } = buildProps('display', Astro.props)
 const child = getChildProps(rest)

@@ -1,18 +1,16 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
+import type { ComponentProps } from 'astro/types'
 import { buildProps, getChildProps, type BuildProps } from '../utils'
 import Icon from './Icon.astro'
 import Tag from './Tag.astro'
 
-type Props<As extends HTMLTag = 'a'> = BuildProps<
-  'button',
-  ComponentProps<typeof Tag<As>> &
-    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'> & {
-      button?: string | null
-      look?: 'solid' | 'soft' | 'ghost' | null
-      contrast?: boolean | null
-    }
->
+interface Props
+  extends BuildProps<'button', Props, string>,
+    ComponentProps<typeof Tag>,
+    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'> {
+  look?: 'solid' | 'soft' | 'ghost'
+  contrast?: boolean
+}
 
 const {
   as = 'a',
