@@ -2,8 +2,8 @@
 title: Field
 sidebar: 
   badge:
-    text: Draft
-    variant: caution
+    text: Not available
+    variant: danger
   order: 50
 ---
 
