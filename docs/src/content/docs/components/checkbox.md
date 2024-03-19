@@ -2,8 +2,8 @@
 title: Checkbox
 sidebar: 
   badge:
-    text: Not available
-    variant: danger
+    text: Draft
+    variant: caution
   order: 50
 ---
 
