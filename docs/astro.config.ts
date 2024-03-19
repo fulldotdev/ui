@@ -10,10 +10,6 @@ export default defineConfig({
   site: 'https://fullui.dev',
   adapter: vercel(),
   integrations: [
-    liveCode({
-      layout: './src/components/LiveCodeLayout.astro',
-    }),
-    fullui(),
     starlight({
       title: 'Fullui',
       logo: {
@@ -49,6 +45,10 @@ export default defineConfig({
           autogenerate: { directory: 'components' },
         },
       ],
+    }),
+    fullui(),
+    liveCode({
+      layout: './src/components/LiveCodeLayout.astro',
     }),
   ],
 })
