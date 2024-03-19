@@ -1,5 +1,6 @@
 import starlight from '@astrojs/starlight'
 import { fullui } from '@fulldevlabs/fullui/astro'
+import type { AstroIntegration } from 'astro'
 // @ts-ignore
 import liveCode from 'astro-live-code'
 import { defineConfig } from 'astro/config'
@@ -11,7 +12,18 @@ export default defineConfig({
     liveCode({
       layout: './src/components/LiveCodeLayout.astro',
     }),
-    fullui(),
+    fullui({
+      color: {
+        scheme: 'light',
+        palettes: {
+          base: 'sand',
+          accent: 'orange',
+        },
+      },
+      theme: {
+        border: 2,
+      },
+    }) as AstroIntegration,
     starlight({
       title: 'Fullui',
       logo: {
