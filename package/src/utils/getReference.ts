@@ -5,31 +5,29 @@ import {
   type ContentCollectionKey,
 } from 'astro:content'
 
-// TODO support data collections
-// TODO support id's
-// TODO support zod references
-
-export type EntrySlug = CollectionEntry<ContentCollectionKey>['slug']
-
-type Collection = {
-  [Key in 'collection' | 'cards' | 'entries']?: ContentCollectionKey
-}
-
-type Entries = {
-  [Key in CollectionKey]?: EntrySlug[]
-}
-
-export type GetReference = Collection & Entry & Entries
+// TODO support data collections, support id's, support zod references
 
 type Entry = {
   collection?: ContentCollectionKey
-  slug?: EntrySlug
+  slug?: CollectionEntry<ContentCollectionKey>['slug']
+}
+type Collection = {
+  [Key in 'collection' | 'cards' | 'entries']?: ContentCollectionKey
+}
+type Entries = {
+  [Key in CollectionKey]?: CollectionEntry<ContentCollectionKey>['slug'][]
 }
 
-const isEntry = (object: GetReference & object): object is Entry => {
-  return 'slug' in object && 'collection' in object
-}
+const isEntry = (object: GetReference & object): object is Entry =>
+  object['collection'] && object['slug'] ? true : false
 
+const isCollection = (object: GetReference & object): object is Entry =>
+  object['collection'] || object['cards'] || object['entries'] ? true : false
+
+const isEntries = (object: GetReference & object): object is Entries =>
+  Object.keys(object).some((key) => key in CollectionKey)
+
+export type GetReference = Collection & Entry & Entries
 export const getReference = async (object: GetReference & object) => {
   const strings = [
     ...Object.keys(object),
