@@ -1,21 +1,22 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import type { Icon } from '..'
+import merge from 'deepmerge'
 import {
   endomorphic,
   getChildProps,
   getEntryByProps,
   type Endomorphic,
+  type EntryReference,
 } from '../utils'
 import Cards from './Cards.astro'
 import Composite from './Composite.astro'
+import Icon from './Icon.astro'
 import Image from './Image.astro'
 import Prose from './Prose.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'section'>,
-    ComponentProps<typeof Tag>,
+interface BaseProps
+  extends ComponentProps<typeof Tag>,
     ComponentProps<typeof Composite>,
     Pick<ComponentProps<typeof Image>, 'image' | '_image'>,
     Pick<ComponentProps<typeof Prose>, 'prose' | '_prose'>,
@@ -28,20 +29,13 @@ interface Props
   frame?: 'screen' | 'panel' | null
 }
 
-// const reference = getReference(props)
-// const entry = reference && (await getEntry(reference))
-// const entryWithDefaults = entry && (await withDefaults(entry))
-// const entryAndProps = merge(entryWithDefaults?.data, props)
+type Props = EntryReference & Endomorphic<BaseProps, 'section'>
 
 const props = endomorphic(Astro.props, 'section')
-const entry = getEntryByProps(props)
-const {
-  as = 'section',
-  direction = 'column',
-  frame,
-  align,
-  ...rest
-} = endomorphic(Astro.props, 'section')
+const entry = await getEntryByProps(props as any)
+const merged = merge(entry?.data, props)
+
+const { as = 'section', direction = 'column', frame, align, ...rest } = merged
 const child = getChildProps(rest)
 ---
 

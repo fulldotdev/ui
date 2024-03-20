@@ -5,10 +5,6 @@ import {
   type ContentCollectionKey,
 } from 'astro:content'
 
-interface Test {
-  [key: ContentCollectionKey]: CollectionEntry<ContentCollectionKey>['slug']
-}
-
 export type EntryReference =
   | {
       collection?: ContentCollectionKey
