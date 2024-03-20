@@ -22,6 +22,7 @@ export default function preset(userConfig?: Partial<Config>): Preset {
         getCSS: () => `
         :root, .flow, .compact, .size-1, .size-2, .size-3, .size-4 {
           --gutter: calc(5vw);
+          --spacer: calc(var(--space-7));
           --scale: ${config.scale};
           --slope: ${config.slope};
           --vw: max(0px, calc((100vw - 360px) / 700));
