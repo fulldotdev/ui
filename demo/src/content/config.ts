@@ -52,7 +52,7 @@ export const collections = {
     // schema: aanbodchema,
     schema: z.any(),
   }),
-  globals: data,
-  settings: data,
+  // globals: data,
+  // settings: data,
   docs: defineCollection({ schema: docsSchema() }),
 }
