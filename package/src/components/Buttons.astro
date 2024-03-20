@@ -9,24 +9,24 @@ import {
 import Button from './Button.astro'
 import Tag from './Tag.astro'
 
-// TODO index functionaliteit weghalen. Dit werkt op dit moment niet, heb er staat een issue van open. Later weer toevoegen.
 interface Props
   extends Endomorphic<Props, 'buttons', ComponentProps<typeof Button>[]>,
     ComponentProps<typeof Tag>,
     Pick<ComponentProps<typeof Button>, 'button' | '_button'> {
-  index?: number | null
+  // index?: number | null
 }
 
 const { buttons, ...rest } = endomorphic(Astro.props, 'buttons')
 const child = getChildProps(rest)
 
-// TODO is nu variant, niet look. Dit moet nog aangepast worden.
-const look: {
-  [key: number]: 'solid' | 'soft' | 'ghost'
+const variant: {
+  [key: number]: 'solid' | 'soft' | 'surface' | 'outline' | 'ghost'
 } = {
   0: 'solid',
   1: 'soft',
-  2: 'ghost',
+  2: 'surface',
+  3: 'outline',
+  4: 'ghost',
 }
 
 const sorted = sortByIndex(buttons)
@@ -39,7 +39,7 @@ const sorted = sortByIndex(buttons)
   {
     sorted?.map((button, i) => (
       <Button
-        look={look[i]}
+        variant={variant[i]}
         {button}
         {...child}
       />
@@ -52,6 +52,7 @@ const sorted = sortByIndex(buttons)
   .buttons {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: var(--space-2);
   }
 </style>
