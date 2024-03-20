@@ -8,10 +8,10 @@ export default defineConfig({
   integrations: [
     fullui({
       color: {
-        scheme: 'light',
+        scheme: 'dark',
         palettes: {
           base: 'sand',
-          accent: 'orange',
+          accent: 'amber',
         },
       },
       theme: {

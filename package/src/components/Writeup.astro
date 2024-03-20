@@ -1,13 +1,13 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import { buildProps, getChildProps, type BuildProps } from '../utils'
+import { endomorphic, getChildProps, type Endomorphic } from '../utils'
 import Description from './Description.astro'
 import Tag from './Tag.astro'
 import Tagline from './Tagline.astro'
 import Title from './Title.astro'
 
 interface Props
-  extends BuildProps<'writeup', Props, string>,
+  extends Endomorphic<Props, 'writeup', string>,
     ComponentProps<typeof Tag>,
     Pick<ComponentProps<typeof Tagline>, 'tagline' | '_tagline'>,
     Pick<ComponentProps<typeof Title>, 'title' | '_title'>,
@@ -15,7 +15,7 @@ interface Props
   align?: 'start' | 'center' | null
 }
 
-const { writeup, align, ...rest } = buildProps('writeup', Astro.props)
+const { writeup, align, ...rest } = endomorphic(Astro.props, 'writeup')
 const child = getChildProps(rest)
 ---
 

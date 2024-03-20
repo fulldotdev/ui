@@ -1,6 +1,6 @@
 import starlight from '@astrojs/starlight'
+import vercel from '@astrojs/vercel/static'
 import { fullui } from '@fulldevlabs/fullui/astro'
-import type { AstroIntegration } from 'astro'
 // @ts-ignore
 import liveCode from 'astro-live-code'
 import { defineConfig } from 'astro/config'
@@ -8,22 +8,8 @@ import { defineConfig } from 'astro/config'
 // https://astro.build/config
 export default defineConfig({
   site: 'https://fullui.dev',
+  adapter: vercel(),
   integrations: [
-    liveCode({
-      layout: './src/components/LiveCodeLayout.astro',
-    }),
-    fullui({
-      color: {
-        scheme: 'light',
-        palettes: {
-          base: 'sand',
-          accent: 'orange',
-        },
-      },
-      theme: {
-        border: 2,
-      },
-    }) as AstroIntegration,
     starlight({
       title: 'Fullui',
       logo: {
@@ -32,9 +18,10 @@ export default defineConfig({
         replacesTitle: true,
       },
       favicon: './favicon.png',
-      components: {
-        Head: './src/components/StarlightHead.astro',
-      },
+      // components: {
+      // FIXME: causing erro on vercel build
+      // Head: './src/components/StarlightHead.astro',
+      // },
       customCss: ['./src/css/custom.css'],
       sidebar: [
         {
@@ -49,7 +36,7 @@ export default defineConfig({
           items: [
             { label: 'Installation', link: '/guides/installation/' },
             { label: 'Theming', link: '/guides/theming/' },
-            { label: 'Components', link: '/guides/components/' },
+            { label: 'Endomorphic', link: '/guides/endomorphic/' },
             { label: 'Typescript', link: '/guides/typescript/' },
           ],
         },
@@ -58,6 +45,10 @@ export default defineConfig({
           autogenerate: { directory: 'components' },
         },
       ],
+    }),
+    fullui(),
+    liveCode({
+      layout: './src/components/LiveCodeLayout.astro',
     }),
   ],
 })

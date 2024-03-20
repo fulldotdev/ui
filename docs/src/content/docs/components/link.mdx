@@ -5,15 +5,24 @@ sidebar:
   order: 1
 ---
 
-Displays a link or a component that looks like a link.
 ## Props
-Extends [Tag](/components/tag), [Icon](/components/icon),
+Extends [Endomorphic](/guides/endomorphic), [Tag](/components/tag), [Icon](/components/icon),
 ```ts
-link?: string | null // Text in the link
+interface Props
+  extends Endomorphic<Props, 'link', string>,
+    ComponentProps<typeof Tag>,
+    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'> {
+  href?: HTMLAttributes<'a'>['href']
+}
+```
+
+## Defaults
+```ts
+const { as = 'a' } = Astro.props
 ```
 
 ## Examples
-Below examples use regular syntax, but work with [all syntaxes](/guides/components#syntax).
+Below examples use regular props, but also accept [Endomorphic props](/guides/endomorphic).
 
 ### Color
 ```astro live
@@ -62,7 +71,8 @@ import { Link } from '@fulldevlabs/fullui'
 import { Link } from '@fulldevlabs/fullui'
 ---
 
-<Link href="#" size="large" compact>Link</Link>
-<Link href="#" size="medium" compact>Link</Link>
-<Link href="#" size="small" compact>Link</Link>
+<Link href="#" size="4" compact>Link</Link>
+<Link href="#" size="3" compact>Link</Link>
+<Link href="#" size="2" compact>Link</Link>
+<Link href="#" size="1" compact>Link</Link>
 ```

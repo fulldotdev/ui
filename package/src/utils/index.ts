@@ -1,4 +1,4 @@
-export * from './buildProps'
+export * from './endomorphic'
 export * from './getChildProps'
 export * from './getEntryOrCollection'
 export * from './getPathname'

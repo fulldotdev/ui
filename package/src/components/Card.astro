@@ -1,13 +1,13 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import { type CollectionEntry, type ContentCollectionKey } from 'astro:content'
-import { buildProps, getChildProps, type BuildProps } from '../utils'
+import { endomorphic, getChildProps, type Endomorphic } from '../utils'
 import Composite from './Composite.astro'
 import Image from './Image.astro'
 import Tag from './Tag.astro'
 
 interface Props
-  extends BuildProps<'card', Props>,
+  extends Endomorphic<Props, 'card'>,
     ComponentProps<typeof Tag>,
     ComponentProps<typeof Composite>,
     Pick<ComponentProps<typeof Image>, 'image' | '_image'> {
@@ -17,13 +17,10 @@ interface Props
   frame?: 'fill' | 'panel' | 'screen' | null
 }
 
-const {
-  look = 'soft',
-  frame = 'panel',
-  collection,
-  slug,
-  ...rest
-} = buildProps('card', Astro.props)
+const { look, frame, collection, slug, ...rest } = endomorphic(
+  Astro.props,
+  'card'
+)
 
 // const entry =
 //   collection && slug ? (await getEntry(collection, slug)).data : null

@@ -20,7 +20,7 @@ export default function preset(userConfig?: Partial<Config>): Preset {
     preflights: [
       {
         getCSS: () => `
-        :root, .flow, .compact, .small, .medium, .large {
+        :root, .flow, .compact, .size-1, .size-2, .size-3, .size-4 {
           --gutter: calc(5vw);
           --scale: ${config.scale};
           --slope: ${config.slope};
@@ -37,51 +37,68 @@ export default function preset(userConfig?: Partial<Config>): Preset {
           --space-7: calc(64px * var(--size,1) * var(--fluid,1) * var(--scale,1) * var(--space-x,1));
 
           --radius-x: 1;
+          --radius-0: 0;
           --radius-1: calc(4px  * var(--size, 1) * var(--fluid, 1) * var(--scale) * var(--radius-x, 1));
           --radius-2: calc(8px  * var(--size, 1) * var(--fluid, 1) * var(--scale) * var(--radius-x, 1));
           --radius-3: calc(16px * var(--size, 1) * var(--fluid, 1) * var(--scale) * var(--radius-x, 1));
+          --radius-full: 9999px;
         }
     
-        .small {
+        .size-1 {
           --size: 0.75;
           --text-1: calc(12px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
           --text-2: calc(14px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
           --text-3: calc(24px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
         }
 
-        :root, .medium {
+        :root, .size-2 {
           --size: 1;
           --text-1: calc(14px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
           --text-2: calc(16px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
           --text-3: calc(32px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
         }
 
-        .large {
+        .size-3 {
           --size: 1.25;
           --text-1: calc(16px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
           --text-2: calc(18px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
           --text-3: calc(48px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
         }
 
-        .compact.small, .compact .small, .small .compact {
+        .size-4 {
+          --size: 1.5;
+          --text-1: calc(18px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
+          --text-2: calc(20px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
+          --text-3: calc(60px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
+        }
+        
+
+        .compact.size-1, .compact .size-1, .size-1 .compact {
           --size: 0.625;
           --text-1: calc(12px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
           --text-2: calc(13px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
           --text-3: calc(15px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
         }
 
-        .compact, .compact .medium, .medium .compact {
+        .compact, .compact.size-2, .compact .size-2, .size-2 .compact {
           --size: 0.75;
           --text-1: calc(13px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
           --text-2: calc(14px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
           --text-3: calc(16px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
         }
 
-        .compact.large, .compact .large, .large .compact {
+        .compact.size-3, .compact .size-3, .size-3 .compact {
           --size: 0.875;
           --text-1: calc(14px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
           --text-2: calc(15px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
           --text-3: calc(17px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
+        }
+
+        .compact.size-4, .compact .size-4, .size-4 .compact {
+          --size: 1;
+          --text-1: calc(15px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
+          --text-2: calc(16px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
+          --text-3: calc(18px * var(--fluid,1) * var(--scale,1) * var(--text-x,1));
         }
       `,
       },
