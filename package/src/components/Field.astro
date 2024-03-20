@@ -1,7 +1,6 @@
-<!-- TODO dit component maken. zie shadcn voor inspirate --><!-- ---
-<!-- TODO wellicht 2 aparte component: Control & Field --><!-- ---
+---
 import type { ComponentProps } from 'astro/types'
-import { endomorphic,type Endomorphic } from '../utils'
+import { endomorphic, getChildProps, type Endomorphic } from '../utils'
 import Checkbox from './Checkbox.astro'
 import Input from './Input.astro'
 import Label from './Label.astro'
@@ -9,58 +8,28 @@ import Options from './Options.astro'
 import Tag from './Tag.astro'
 import Textarea from './Textarea.astro'
 
-interface Base
-  extends Pick<ComponentProps<typeof Label>, 'label' | '_label'>,
+interface Props
+  extends Endomorphic<Props, 'field'>,
+    ComponentProps<typeof Tag>,
+    Pick<ComponentProps<typeof Label>, 'label' | '_label'>,
     Pick<ComponentProps<typeof Options>, 'options' | '_options'>,
     Pick<ComponentProps<typeof Checkbox>, 'checkbox' | '_checkbox'>,
     Pick<ComponentProps<typeof Textarea>, 'textarea' | '_textarea'>,
-    Pick<ComponentProps<typeof Input>, 'input' | '_input'> {
-  field?: 'input' | 'textarea' | 'checkbox' | 'options'
-}
+    Pick<ComponentProps<typeof Input>, 'input' | '_input'> {}
 
-type Props = Endomorphic<Base, 'field'>
-const props = endomorphic(Astro.props, 'field')
-
-const {
-  options,
-  _options,
-  textarea,
-  _textarea,
-  checkbox,
-  _checkbox,
-  label,
-  _label,
-  input,
-  _input,
-  ...rest
-} = props
+const { as = 'div', checkbox, ...rest } = endomorphic(Astro.props, 'field')
+const child = getChildProps(rest)
 ---
 
 <Tag
+  class:list={['field', checkbox ? 'checkbox' : null]}
   {...rest}
-  class:list={checkbox ? 'has-checkbox' : ''}
 >
+  <Checkbox {checkbox} />
+  <Label {...child} />
+  <Textarea {...child} />
+  <Input {...child} />
   <slot />
-  <Label
-    {label}
-    {_label}
-  />
-  <Options
-    {options}
-    {_options}
-  />
-  <Textarea
-    {textarea}
-    {_textarea}
-  />
-  <Checkbox
-    {checkbox}
-    {_checkbox}
-  />
-  <Input
-    {input}
-    {_input}
-  />
 </Tag>
 
 <style is:global>
@@ -69,6 +38,13 @@ const {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-1);
+    width: 100%;
+
+    &.checkbox {
+      flex-direction: row !important;
+      align-items: center !important;
+      gap: var(--space-2) !important;
+    }
 
     &.has-checkbox {
       flex-direction: row-reverse;
@@ -78,4 +54,4 @@ const {
       padding: var(--space-1) 0;
     }
   }
-</style> -->
+</style>
