@@ -1,29 +1,19 @@
 ---
 import { z } from 'astro:content'
-import { ectomorphic } from '..'
-import { endomorphic } from '../utils'
-import Tag, { zTag } from './Tag.astro'
+import { schemas } from '../utils'
+import Tag from './Tag.astro'
 
-export const zTitle = endomorphic(
-  'title',
-  zTag.extend({
-    title: z.string().nullish(),
-    contrast: z.boolean().nullish(),
-  })
-)
+type Props = z.infer<typeof macro>
 
-type Props = z.infer<typeof zTitle>
+export const { macro, meso, micro } = schemas('title', {
+  title: z.string().nullish(),
+})
 
-const {
-  as = 'h2',
-  contrast = true,
-  title,
-  ...rest
-} = ectomorphic('title', zTitle, Astro.props)
+const { title = 'h2', ...rest } = meso.parse(Astro.props)
 ---
 
 <Tag
-  class:list={['title', { contrast }]}
+  class:list={['title']}
   {...rest}
 >
   <Fragment set:html={title} />

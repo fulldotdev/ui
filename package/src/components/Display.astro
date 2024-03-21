@@ -1,39 +1,31 @@
 ---
 import { z } from 'astro:content'
-import { ectomorphic, endomorphic, getChildProps } from '../utils'
-import Icon, { zIcon } from './Icon.astro'
-import Rating, { zRating } from './Rating.astro'
-import Specs, { zSpecs } from './Specs.astro'
-import Tag, { zTag } from './Tag.astro'
-import Writeup, { zWriteup } from './Writeup.astro'
+import { schemas } from '../utils'
+import Icon from './Icon.astro'
+import Rating from './Rating.astro'
+import Specs from './Specs.astro'
+import Tag from './Tag.astro'
+import Writeup, { macro as writeup } from './Writeup.astro'
 
-export const zDisplay = endomorphic(
-  'display',
-  // @ts-ignore
-  zTag.merge(zWriteup).merge(zRating).merge(zIcon).merge(zSpecs).extend({
-    display: z.string().nullish(),
-    align: z.string().nullish(),
-  })
-)
+type Props = z.infer<typeof macro>
 
-type Props = z.infer<typeof zDisplay>
+export const { macro, meso, micro } = schemas('display', {
+  ...writeup.shape,
+  display: z.string().nullish(),
+  align: z.string().nullish(),
+})
 
-const { align, ...rest } = ectomorphic('display', zDisplay, Astro.props)
-
-const child = getChildProps(rest)
+const { align, ...rest } = meso.parse(Astro.props)
 ---
 
 <Tag
   class:list={['display', align]}
   {...rest}
 >
-  <Rating {...child} />
-  <Icon {...child} />
-  <Writeup
-    {align}
-    {...child}
-  />
-  <Specs {...child} />
+  <Rating {...micro.parse(rest)} />
+  <Icon {...micro.parse(rest)} />
+  <Writeup {...micro.parse(rest)} />
+  <Specs {...micro.parse(rest)} />
   <slot />
 </Tag>
 

@@ -1,42 +1,29 @@
 ---
 import { z } from 'astro:content'
-import { ectomorphic, endomorphic, getChildProps } from '../utils'
-import Action, { zAction } from './Action.astro'
-import Display, { zDisplay } from './Display.astro'
-import Tag, { zTag } from './Tag.astro'
+import { schemas } from '../utils'
+import Action, { macro as action } from './Action.astro'
+import Display, { macro as display } from './Display.astro'
+import Tag from './Tag.astro'
 
-export const zComposite = endomorphic(
-  'composite',
-  // @ts-ignore
-  zTag.merge(zAction).merge(zDisplay).extend({
-    composite: z.string().nullish(),
-    direction: z.string().nullish(),
-    align: z.string().nullish(),
-  })
-)
+type Props = z.infer<typeof macro>
 
-type Props = z.infer<typeof zComposite>
+export const { macro, meso, micro } = schemas('composite', {
+  ...display.shape,
+  ...action.shape,
+  composite: z.string().nullish(),
+  direction: z.string().nullish(),
+  align: z.string().nullish(),
+})
 
-const { direction, align, ...rest } = ectomorphic(
-  'composite',
-  zComposite,
-  Astro.props
-)
-const child = getChildProps(rest)
+const { direction, align, ...rest } = meso.parse(Astro.props)
 ---
 
 <Tag
   class:list={['composite', direction, align]}
   {...rest}
 >
-  <Display
-    {...child}
-    {align}
-  />
-  <Action
-    {align}
-    {...child}
-  />
+  <Display {...micro.parse(rest)} />
+  <Action {...micro.parse(rest)} />
   <slot />
 </Tag>
 

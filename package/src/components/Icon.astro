@@ -1,26 +1,21 @@
 ---
 import tablerIcons from '@iconify-json/tabler/icons.json'
 import { z } from 'astro:content'
-import { icons } from '../schemas/icons'
-import { ectomorphic, endomorphic } from '../utils'
+// import { icons } from '../schemas/icons'
+import { schemas } from '../utils'
 import Tag from './Tag.astro'
 
-const tabler = tablerIcons
+type Props = z.infer<typeof macro>
 
-export const zIcon = endomorphic(
-  'icon',
-  z.object({
-    icon: icons,
-  })
-)
+export const { macro, meso, micro } = schemas('icon', {
+  icon: z.string().nullish(),
+})
 
-type Icon = z.infer<typeof zIcon>
-
-const { as = 'i', icon, ...rest } = ectomorphic('icon', zIcon, Astro.props)
+const { as = 'i', icon, ...rest } = meso.parse(Astro.props)
 ---
 
 <Tag
-  class="icon"
+  class:list={['icon']}
   {as}
   {...rest}
 >
@@ -29,7 +24,7 @@ const { as = 'i', icon, ...rest } = ectomorphic('icon', zIcon, Astro.props)
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
-        set:html={tabler?.icons[icon]?.body}
+        set:html={(tablerIcons as any)?.icons[icon]?.body}
       />
     )
   }

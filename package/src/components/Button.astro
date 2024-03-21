@@ -1,35 +1,28 @@
 ---
 import { z } from 'astro:content'
-import { ectomorphic, endomorphic, getChildProps } from '../utils'
-import Icon, { zIcon } from './Icon.astro'
-import Tag, { zTag } from './Tag.astro'
+import { schemas } from '../utils'
+import Icon, { macro as icon } from './Icon.astro'
+import Tag from './Tag.astro'
 
-export const zButton = endomorphic(
-  'button',
-  zTag.merge(zIcon).extend({
-    button: z.string().nullish(),
-    href: z.string().nullish(),
-  })
-)
+type Props = z.infer<typeof macro>
 
-type Props = z.infer<typeof zButton>
+export const { macro, meso, micro } = schemas('button', {
+  icon: icon.shape.icon,
+  _icon: icon.shape._icon,
+  button: z.string().nullish(),
+  href: z.string().nullish(),
+  variant: z.string().nullish(),
+})
 
-const {
-  as = 'a',
-  variant = 'solid',
-  button,
-  ...rest
-} = ectomorphic('button', zButton, Astro.props)
-const child = getChildProps(rest)
+const { as = 'a', variant = 'solid', button, ...rest } = meso.parse(Astro.props)
 ---
 
 <Tag
-  class:list={['button']}
-  {variant}
+  class:list={['button', variant]}
   {as}
   {...rest}
 >
-  <Icon {...child} />
+  <Icon {...micro.parse(rest)} />
   <Fragment set:html={button} />
   <slot />
 </Tag>

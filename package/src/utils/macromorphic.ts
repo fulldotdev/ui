@@ -1,6 +1,6 @@
 import { z } from 'astro:content'
 
-export const endomorphic = <
+export const macromorphic = <
   N extends keyof z.infer<S>,
   S extends z.ZodObject<any, any, any>,
 >(

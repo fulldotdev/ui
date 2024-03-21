@@ -1,30 +1,15 @@
 ---
-// import type { ComponentProps } from 'astro/types'
-// import { endomorphic, type Endomorphic } from '../utils'
-// import Tag from './Tag.astro'
-
-// interface Props
-//   extends Endomorphic<Props, 'tagline', string>,
-//     ComponentProps<typeof Tag> {}
-
 import { z } from 'astro:content'
-import { ectomorphic, endomorphic } from '../utils'
-import Tag, { zTag } from './Tag.astro'
+import { schemas } from '../utils'
+import Tag from './Tag.astro'
 
-export const zTagline = endomorphic(
-  'tagline',
-  zTag.extend({
-    tagline: z.string().nullish(),
-  })
-)
+type Props = z.infer<typeof macro>
 
-type Props = z.infer<typeof zTagline>
+export const { macro, meso, micro } = schemas('tagline', {
+  tagline: z.string().nullish(),
+})
 
-const {
-  as = 'p',
-  tagline,
-  ...rest
-} = ectomorphic('tagline', zTagline, Astro.props)
+const { as = 'p', tagline, ...rest } = meso.parse(Astro.props)
 ---
 
 <Tag

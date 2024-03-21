@@ -1,7 +1,7 @@
 import type { AstroGlobal } from 'astro'
 import { z } from 'astro:content'
 import { merge } from 'merge-anything'
-import { endomorphic } from './endomorphic'
+import { macromorphic } from './macromorphic'
 
 const toObject = (name: string, value: any) => {
   if (!value) return {}
@@ -9,9 +9,9 @@ const toObject = (name: string, value: any) => {
   return { [name]: value }
 }
 
-export const ectomorphic = <
+export const mesomorphic = <
   N extends keyof P,
-  S extends ReturnType<typeof endomorphic<N, z.ZodObject<any, any, any>>>,
+  S extends ReturnType<typeof macromorphic<N, z.ZodObject<any, any, any>>>,
   P extends AstroGlobal['props'],
 >(
   name: N & string,

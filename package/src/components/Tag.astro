@@ -1,18 +1,35 @@
 ---
 import { z } from 'astro:content'
-import { zAttributes, zElements } from '../utils'
+import { zElements } from '../utils'
 
-export const zTag = zAttributes.extend({
+type Props = z.infer<typeof schema>
+
+// const prefixAttributes = z.record(
+//   z
+//     .string()
+//     .refine((key) =>
+//       ['on', 'data-', 'aria-'].some((prefix) => key.startsWith(prefix))
+//     ),
+//   z.string().nullish()
+// ) as z.ZodType<{
+//   [Key in `${'on' | 'data-' | 'aria-'}${string}`]: string | null | undefined
+// }>
+
+export const schema = z.object({
+  // element
   as: zElements.optional(),
   if: z.union([z.string(), z.literal(true)]).nullish(),
+  // theme
   color: z.string().nullish(),
   scheme: z.string().nullish(),
   contrast: z.boolean().nullish(),
   size: z.string().nullish(),
   compact: z.boolean().nullish(),
+  // attributes
+  class: z.string().nullish(),
+  id: z.string().nullish(),
+  onclick: z.string().nullish(),
 })
-
-type Props = z.infer<typeof zTag>
 
 const {
   as: As = 'div',
@@ -23,7 +40,7 @@ const {
   size,
   compact,
   ...rest
-} = zTag.parse(Astro.props)
+} = schema.parse(Astro.props)
 
 const slot = await Astro.slots.render('default')
 const hasContent = slot?.trim().length > 0
@@ -38,7 +55,6 @@ const hasProp = If === true || (If && If in rest)
         color ? `hue-${color}` : '',
         size ? `size-${size}` : '',
         scheme,
-        size,
       ]}
       {...rest}
     >

@@ -1,28 +1,19 @@
 ---
 import { z } from 'astro:content'
-import { ectomorphic, endomorphic } from '../utils'
-import Tag, { zTag } from './Tag.astro'
+import { schemas } from '../utils'
+import Tag from './Tag.astro'
 
-export const zDescription = endomorphic(
-  'description',
-  zTag.extend({
-    description: z.string().nullish(),
-    contrast: z.boolean().nullish(),
-  })
-)
+type Props = z.infer<typeof macro>
 
-type Props = z.infer<typeof zDescription>
+export const { macro, meso, micro } = schemas('description', {
+  description: z.string().nullish(),
+})
 
-const {
-  as = 'p',
-  contrast,
-  description,
-  ...rest
-} = ectomorphic('description', zDescription, Astro.props)
+const { as = 'p', contrast, description, ...rest } = meso.parse(Astro.props)
 ---
 
 <Tag
-  class:list={['description', { contrast }]}
+  class:list={['description']}
   {as}
   {...rest}
 >

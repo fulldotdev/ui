@@ -15,7 +15,7 @@ export type Endomorphic<
     | undefined
 }
 
-export const endomorphic = <
+export const macromorphic = <
   Props extends Endomorphic<
     AstroGlobal['props'],
     Name,
