@@ -1,61 +1,34 @@
 ---
-import type { HTMLAttributes, HTMLTag } from 'astro/types'
-import { htmlElementAttributes } from 'html-element-attributes'
+import { z } from 'astro:content'
+import { tags } from '../utils'
 
-type Poly = {
-  as?: HTMLTag
-}
+export const zTag = z.object({
+  as: tags.default('div'),
+  if: z.union([z.string(), z.literal(true)]).nullish(),
+  class: z.string().nullish(),
+  color: z.string().nullish(),
+  scheme: z.string().nullish(),
+  contrast: z.boolean().nullish(),
+  size: z.string().nullish(),
+  compact: z.boolean().nullish(),
+})
 
-interface Props extends Poly {
-  if?: string | boolean
-  // polymorphic
-  class?: HTMLAttributes<HTMLTag>['class']
-  id?: HTMLAttributes<HTMLTag>['id']
-  style?: HTMLAttributes<HTMLTag>['style']
-  // design
-  compact?: boolean | null
-  scheme?: 'light' | 'dark' | null
-  color?: 'base' | 'accent' | null
-  size?: '1' | '2' | '3' | '4' | null
-  // components
-  variant?: 'solid' | 'soft' | 'surface' | 'outline' | 'ghost' | null
-  contrast?: boolean | null
-  // temp
-  rows?: HTMLAttributes<'textarea'>['rows']
-  alt?: HTMLAttributes<'img'>['alt']
-  src?: HTMLAttributes<'img'>['src']
-  method?: HTMLAttributes<'form'>['method']
-  // type?: HTMLAttributes<'button'>['type']
-  for?: HTMLAttributes<'label'>['for']
-}
+type Props = z.infer<typeof zTag>
 
 const {
-  // @ts-ignore
-  if: ifProp,
-  as: As = 'div',
-  variant,
-  contrast,
-  compact,
-  scheme,
+  as: As,
+  if: If,
   color,
+  scheme,
+  contrast,
   size,
+  compact,
   ...rest
-} = Astro.props
-
-const htmlAttributes = Object.fromEntries(
-  Object.entries(rest).filter(
-    ([key]) =>
-      (Object.values(htmlElementAttributes).flat().includes(key) ||
-        key.startsWith('data-') ||
-        key.startsWith('aria-')) &&
-      key !== 'title'
-  )
-)
+} = zTag.parse(Astro.props)
 
 const slot = await Astro.slots.render('default')
 const hasContent = slot?.trim().length > 0
-// @ts-ignore
-const hasProp = ifProp === true || Astro.props[ifProp]
+const hasProp = If === true || (If && If in rest)
 ---
 
 {
@@ -64,12 +37,10 @@ const hasProp = ifProp === true || Astro.props[ifProp]
       class:list={[
         { compact, contrast },
         color ? `hue-${color}` : '',
-        variant ? `variant-${variant}` : '',
         size ? `size-${size}` : '',
         scheme,
         size,
       ]}
-      {...htmlAttributes}
     >
       <Fragment set:html={slot} />
     </As>
