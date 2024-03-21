@@ -1,5 +1,28 @@
 ---
-import { Tag } from '@fulldevlabs/fullui'
----
+import { z } from 'astro:content'
 
-<Tag />
+const testSchema = z.object({
+  test1: z.string(),
+  test2: z.string(),
+})
+
+const createEndomorphic = <
+  S extends z.ZodObject<any, any, any>,
+  N extends keyof z.infer<S>,
+>(
+  schema: S,
+  name: N & string
+) =>
+  schema.omit({ [name]: true }).extend({
+    [name]: schema.shape[name].or(schema),
+    [`_${name}`]: schema.shape[name].or(schema),
+  }) as z.ZodType<
+    Omit<z.infer<S>, N> & {
+      [K in N | `_${N & string}`]: z.infer<S>
+    }
+  >
+
+const mySchema = createEndomorphic(testSchema, 'test1')
+
+type MySchema = z.infer<typeof mySchema>
+---
