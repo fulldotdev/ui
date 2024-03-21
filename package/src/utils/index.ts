@@ -1,4 +1,5 @@
 export * from './attributes'
+export * from './ectomorphic'
 export * from './endomorphic'
 export * from './getChildProps'
 export * from './getEntriesByProps'
