@@ -1,25 +1,26 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, unslugify, type Endomorphic } from '../utils'
-import Tag from './Tag.astro'
+import { z } from 'astro:content'
+import { endomorphic, unslugify } from '../utils'
+import Tag, { zTag } from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'image', string>,
-    ComponentProps<typeof Tag> {
-  loading?: 'eager' | 'lazy'
-  mask?: boolean
-  alt?: string
-  sizes?: {
-    base: string
-    sm?: string
-    md?: string
-    lg?: string
-    xl?: string
-    '2xl'?: string
-  }
-  position?: 'background' | null
-  frame?: 'fill' | 'panel' | 'screen' | null
-}
+export const zImage = zTag.extend({
+  image: z.string().nullish(),
+  loading: z.string().nullish(),
+  mask: z.boolean().nullish(),
+  alt: z.string().nullish(),
+  sizes: {
+    base: z.string().nullish(),
+    sm: z.string().nullish(),
+    md: z.string().nullish(),
+    lg: z.string().nullish(),
+    xl: z.string().nullish(),
+    xxl: z.string().nullish(),
+  },
+  position: z.string().nullish(),
+  frame: z.string().nullish(),
+})
+
+type Props = z.infer<typeof zImage>
 
 const {
   as = 'img',
