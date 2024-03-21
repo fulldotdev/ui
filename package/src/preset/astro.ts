@@ -12,9 +12,9 @@ export function fullui(config?: Partial<Config>): AstroIntegration {
       pipeline: {
         include: [
           // the default
-          /\.(vue|svelte|[jt]sx|mdx?|astro|elm|php|phtml|html)($|\?)/,
+          /\.(vue|svelte|[jt]sx|md|mdx?|astro|elm|php|phtml|html)($|\?)/,
           // include js/ts files
-          'src/**/*.{js,ts,md}',
+          'src/**/*.{js,ts,md,mdx}',
         ],
       },
       filesystem: ['src/**/*.md'],
