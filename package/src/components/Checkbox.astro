@@ -1,24 +1,26 @@
-<!-- ---
-import { endomorphic,type Endomorphic } from '../utils'
+---
+import { z } from 'astro:content'
+import { endomorphic } from '../utils'
+import { zTag } from './Tag.astro'
 
-interface Base {
-  checkbox: string | null
-}
+export const zCheckbox = zTag.extend({
+  checkbox: z.string().nullish(),
+})
 
-type Props = Endomorphic<Base, 'checkbox', 'input'>
-const props = endomorphic(Astro.props, 'checkbox')
+type Props = z.infer<typeof zCheckbox>
 
-const { checkbox, ...rest } = props
+const { checkbox } = endomorphic(Astro.props, 'checkbox')
 ---
 
 {
   checkbox && (
-    <input
-      id={checkbox}
-      name={checkbox}
-      type="checkbox"
-      {...rest}
-    />
+    <>
+      <input
+        id={checkbox}
+        name={checkbox}
+        type="checkbox"
+      />
+    </>
   )
 }
 
@@ -29,7 +31,6 @@ const { checkbox, ...rest } = props
     border-color: var(--border-color);
     border-radius: var(--radius-2);
     background: var(--background);
-    padding: var(--space-2);
     color: var(--color);
     font: var(--font);
 
@@ -43,4 +44,4 @@ const { checkbox, ...rest } = props
       background: var(--background-active);
     }
   }
-</style> -->
+</style>
