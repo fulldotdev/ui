@@ -1,17 +1,16 @@
 ---
 import { SEO } from 'astro-seo'
-import { endomorphic, type Endomorphic } from '../utils'
+import { z } from 'astro:content'
 
-interface Props extends Endomorphic<Props, 'head'> {
-  title?: string | null
-  description?: string | null
-  image?: string | null
-}
+export const zHead = z.object({
+  title: z.string().nullish(),
+  description: z.string().nullish(),
+  image: z.string().nullish(),
+})
 
-// type Props = Endomorphic<Base, 'head'>
-const props = endomorphic(Astro.props, 'head')
+type Props = z.infer<typeof zHead>
 
-const { title, description, image } = props
+const { title, description, image } = Astro.props
 ---
 
 <head>

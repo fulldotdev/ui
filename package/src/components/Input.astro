@@ -1,13 +1,15 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, type Endomorphic } from '../utils'
-import Tag from './Tag.astro'
+import { z } from 'astro:content'
+import { endomorphic } from '../utils'
+import { zTag } from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'input', string>,
-    ComponentProps<typeof Tag> {}
+export const zInput = zTag.extend({
+  input: z.string().nullish(),
+})
 
-const { as = 'input', input, ...rest } = endomorphic(Astro.props, 'input')
+type Props = z.infer<typeof zInput>
+
+const { input, ...rest } = endomorphic(Astro.props, 'input')
 ---
 
 {
