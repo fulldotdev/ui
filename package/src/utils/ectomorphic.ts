@@ -23,19 +23,11 @@ export const ectomorphic = <
       const stripped = { ...val }
       delete stripped[name]
       delete stripped[`_${name}`]
-
-      console.log('1', val[`_${name}`])
-      console.log('2', val[name])
-      console.log('3', toObject(name, val[`_${name}`]))
-      console.log('4', toObject(name, val[name]))
-      console.log('5', stripped)
-
-      const merged = merge(
+      return merge(
         toObject(name, val[`_${name}`]),
         toObject(name, val[name]),
         stripped
       )
-      console.log('6', merged)
     })
     .parse(props) as Omit<P, N | `_${N & string}`> &
     Extract<P[N], object & { length?: never }>
