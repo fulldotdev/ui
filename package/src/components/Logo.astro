@@ -1,13 +1,26 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, type Endomorphic } from '../utils'
-import Image from './Image.astro'
-import Tag from './Tag.astro'
+// import type { ComponentProps } from 'astro/types'
+// import { endomorphic, type Endomorphic } from '../utils'
+// import Image from './Image.astro'
+// import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'logo', ComponentProps<typeof Image>['image']>,
-    ComponentProps<typeof Tag>,
-    ComponentProps<typeof Image> {}
+// interface Props
+//   extends Endomorphic<Props, 'logo', ComponentProps<typeof Image>['image']>,
+//     ComponentProps<typeof Tag>,
+//     ComponentProps<typeof Image> {}
+
+import { z } from 'astro:content'
+import { endomorphic } from '../utils'
+import Image, { zImage } from './Image.astro'
+import Tag, { zTag } from './Tag.astro'
+
+export const zLogo = zTag.extend({
+  logo: zImage,
+})
+
+type Props = z.infer<typeof zLogo>
+
+console.log(JSON.stringify(Object.keys(Props)))
 
 const { as = 'a', ...rest } = endomorphic(Astro.props, 'logo')
 ---
