@@ -1,6 +1,6 @@
 import { z } from 'astro:content'
 
-export const tags = z.enum([
+export const zElements = z.enum([
   'a',
   'abbr',
   'acronym',
