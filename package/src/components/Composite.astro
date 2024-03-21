@@ -1,20 +1,27 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, getChildProps, type Endomorphic } from '../utils'
-import Action from './Action.astro'
-import Display from './Display.astro'
-import Tag from './Tag.astro'
+import { z } from 'astro:content'
+import { ectomorphic, endomorphic, getChildProps } from '../utils'
+import Action, { zAction } from './Action.astro'
+import Display, { zDisplay } from './Display.astro'
+import Tag, { zTag } from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'composite'>,
-    ComponentProps<typeof Tag>,
-    ComponentProps<typeof Display>,
-    ComponentProps<typeof Action> {
-  direction?: 'column' | 'row' | null
-  align?: 'start' | 'center' | null
-}
+export const zComposite = endomorphic(
+  'composite',
+  // @ts-ignore
+  zTag.merge(zAction).merge(zDisplay).extend({
+    composite: z.string().nullish(),
+    direction: z.string().nullish(),
+    align: z.string().nullish(),
+  })
+)
 
-const { direction, align, ...rest } = endomorphic(Astro.props, 'composite')
+type Props = z.infer<typeof zComposite>
+
+const { direction, align, ...rest } = ectomorphic(
+  'composite',
+  zComposite,
+  Astro.props
+)
 const child = getChildProps(rest)
 ---
 

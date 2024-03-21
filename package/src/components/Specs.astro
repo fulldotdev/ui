@@ -1,16 +1,20 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, type Endomorphic } from '../utils'
-import Spec from './Spec.astro'
-import Tag from './Tag.astro'
+import { z } from 'astro:content'
+import { ectomorphic, endomorphic } from '../utils'
+import Spec, { zSpec } from './Spec.astro'
+import Tag, { zTag } from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'specs', ComponentProps<typeof Spec>['spec'][]>,
-    ComponentProps<typeof Tag> {
-  align?: 'start' | 'center' | 'stretch' | null
-}
+export const zSpecs = endomorphic(
+  'specs',
+  // @ts-ignore
+  zTag.merge(zSpec).extend({
+    specs: zSpec,
+  })
+)
 
-const { specs, ...rest } = endomorphic(Astro.props, 'specs')
+type Props = z.infer<typeof zSpecs>
+
+const { specs, ...rest } = ectomorphic('specs', zSpecs, Astro.props)
 ---
 
 <Tag

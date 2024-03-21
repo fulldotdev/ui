@@ -1,21 +1,28 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, getChildProps, type Endomorphic } from '../utils'
-import Description from './Description.astro'
-import Tag from './Tag.astro'
-import Tagline from './Tagline.astro'
-import Title from './Title.astro'
+import { z } from 'astro:content'
+import { ectomorphic, endomorphic, getChildProps } from '../utils'
+import Description, { zDescription } from './Description.astro'
+import Tag, { zTag } from './Tag.astro'
+import Tagline, { zTagline } from './Tagline.astro'
+import Title, { zTitle } from './Title.astro'
 
-interface Props
-  extends Endomorphic<Props, 'writeup', string>,
-    ComponentProps<typeof Tag>,
-    Pick<ComponentProps<typeof Tagline>, 'tagline' | '_tagline'>,
-    Pick<ComponentProps<typeof Title>, 'title' | '_title'>,
-    Pick<ComponentProps<typeof Description>, 'description' | '_description'> {
-  align?: 'start' | 'center' | null
-}
+export const zWriteup = endomorphic(
+  'writeup',
+  // @ts-ignore
+  zTag.merge(zTitle).merge(zDescription).merge(zTagline).extend({
+    writeup: z.string().nullish(),
+    align: z.string().nullish(),
+  })
+)
 
-const { writeup, align, ...rest } = endomorphic(Astro.props, 'writeup')
+type Props = z.infer<typeof zWriteup>
+
+const { writeup, align, title, ...rest } = ectomorphic(
+  'writeup',
+  zWriteup,
+  Astro.props
+)
+
 const child = getChildProps(rest)
 ---
 

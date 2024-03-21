@@ -1,20 +1,30 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, getChildProps, type Endomorphic } from '../utils'
-import Buttons from './Buttons.astro'
-import Form from './Form.astro'
-import Tag from './Tag.astro'
+import { z } from 'astro:content'
+import { ectomorphic, endomorphic, getChildProps } from '../utils'
+import Buttons, { zButtons } from './Buttons.astro'
+import Tag, { zTag } from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'action'>,
-    ComponentProps<typeof Tag>,
-    Pick<ComponentProps<typeof Form>, 'form' | '_form'>,
-    // ComponentProps<typeof Product>,
-    Pick<ComponentProps<typeof Buttons>, 'buttons' | '_buttons'> {
-  align?: 'start' | 'center' | null
-}
+export const zAction = endomorphic(
+  'action',
+  // @ts-ignore
+  zTag.merge(zButtons).extend({
+    action: z.string().nullish(),
+    align: z.string().nullish(),
+  })
+)
 
-const { ...rest } = endomorphic(Astro.props, 'action')
+// interface Props
+//   extends Endomorphic<Props, 'action'>,
+//     ComponentProps<typeof Tag>,
+//     // Pick<ComponentProps<typeof Form>, 'form' | '_form'>,
+//     // ComponentProps<typeof Product>,
+//     Pick<ComponentProps<typeof Buttons>, 'buttons' | '_buttons'> {
+//   align?: 'start' | 'center' | null
+// }
+
+type Props = z.infer<typeof zAction>
+
+const { ...rest } = ectomorphic('buttons', zAction, Astro.props)
 const child = getChildProps(rest)
 ---
 

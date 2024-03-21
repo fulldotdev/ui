@@ -1,24 +1,28 @@
 ---
 import { z } from 'astro:content'
-import { endomorphic, unslugify } from '../utils'
+import { ectomorphic, endomorphic, unslugify } from '../utils'
 import Tag, { zTag } from './Tag.astro'
 
-export const zImage = zTag.extend({
-  image: z.string().nullish(),
-  loading: z.string().nullish(),
-  mask: z.boolean().nullish(),
-  alt: z.string().nullish(),
-  // sizes: {
-  //   base: z.string().nullish(),
-  //   sm: z.string().nullish(),
-  //   md: z.string().nullish(),
-  //   lg: z.string().nullish(),
-  //   xl: z.string().nullish(),
-  //   xxl: z.string().nullish(),
-  // },
-  position: z.string().nullish(),
-  frame: z.string().nullish(),
-})
+export const zImage = endomorphic(
+  'image',
+  zTag.extend({
+    image: z.string().nullish(),
+    loading: z.string().nullish(),
+    mask: z.boolean().nullish(),
+    alt: z.string().nullish(),
+    sizes: {
+      // @ts-ignore
+      base: z.string().nullish(),
+      sm: z.string().nullish(),
+      md: z.string().nullish(),
+      lg: z.string().nullish(),
+      xl: z.string().nullish(),
+      '2xl': z.string().nullish(),
+    },
+    position: z.string().nullish(),
+    frame: z.string().nullish(),
+  })
+)
 
 type Props = z.infer<typeof zImage>
 
@@ -34,7 +38,7 @@ const {
   frame,
   image,
   ...rest
-} = endomorphic(Astro.props, 'image')
+} = ectomorphic('image', zImage, Astro.props)
 
 // function getSrc() {
 //   if (src?.startsWith('http')) return src

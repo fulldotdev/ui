@@ -1,25 +1,17 @@
 ---
-// import type { ComponentProps, HTMLAttributes } from 'astro/types'
-// import { endomorphic, getChildProps, type Endomorphic } from '../utils'
-// import Icon from './Icon.astro'
-// import Tag from './Tag.astro'
-
-// interface Props
-//   extends Endomorphic<Props, 'button', string>,
-//     ComponentProps<typeof Tag>,
-//     Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'> {
-//   href?: HTMLAttributes<'a'>['href']
-// }
-
 import { z } from 'astro:content'
-import { endomorphic, getChildProps } from '../utils'
-import Icon from './Icon.astro'
+import { ectomorphic, endomorphic, getChildProps } from '../utils'
+import Icon, { zIcon } from './Icon.astro'
 import Tag, { zTag } from './Tag.astro'
 
-export const zButton = zTag.extend({
-  button: z.string().nullish(),
-  href: z.string().nullish(),
-})
+export const zButton = endomorphic(
+  'button',
+  // @ts-ignore
+  zTag.merge(zIcon).extend({
+    button: z.string().nullish(),
+    href: z.string().nullish(),
+  })
+)
 
 type Props = z.infer<typeof zButton>
 
@@ -28,7 +20,7 @@ const {
   variant = 'solid',
   button,
   ...rest
-} = endomorphic(Astro.props, 'button')
+} = ectomorphic('button', zButton, Astro.props)
 const child = getChildProps(rest)
 ---
 

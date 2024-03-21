@@ -1,23 +1,25 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, getChildProps, type Endomorphic } from '../utils'
-import Icon from './Icon.astro'
-import Rating from './Rating.astro'
-import Specs from './Specs.astro'
-import Tag from './Tag.astro'
-import Writeup from './Writeup.astro'
+import { z } from 'astro:content'
+import { ectomorphic, endomorphic, getChildProps } from '../utils'
+import Icon, { zIcon } from './Icon.astro'
+import Rating, { zRating } from './Rating.astro'
+import Specs, { zSpecs } from './Specs.astro'
+import Tag, { zTag } from './Tag.astro'
+import Writeup, { zWriteup } from './Writeup.astro'
 
-interface Props
-  extends Endomorphic<Props, 'display'>,
-    ComponentProps<typeof Tag>,
-    Pick<ComponentProps<typeof Writeup>, 'writeup' | 'writeup'>,
-    Pick<ComponentProps<typeof Rating>, 'rating' | '_rating'>,
-    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'>,
-    Pick<ComponentProps<typeof Specs>, 'specs' | '_specs'> {
-  align?: 'start' | 'center' | null
-}
+export const zDisplay = endomorphic(
+  'display',
+  // @ts-ignore
+  zTag.merge(zWriteup).merge(zRating).merge(zIcon).merge(zSpecs).extend({
+    display: z.string().nullish(),
+    align: z.string().nullish(),
+  })
+)
 
-const { align, ...rest } = endomorphic(Astro.props, 'display')
+type Props = z.infer<typeof zDisplay>
+
+const { align, ...rest } = ectomorphic('display', zDisplay, Astro.props)
+
 const child = getChildProps(rest)
 ---
 

@@ -1,15 +1,22 @@
 ---
 import { z } from 'astro:content'
-import { endomorphic } from '../utils'
+import { ectomorphic, endomorphic } from '../utils'
 import Tag, { zTag } from './Tag.astro'
 
-export const zLabel = zTag.extend({
-  label: z.string().nullish(),
-})
+export const zLabel = endomorphic(
+  'label',
+  zTag.extend({
+    label: z.string().nullish(),
+  })
+)
 
 type Props = z.infer<typeof zLabel>
 
-const { as = 'label', label, ...rest } = endomorphic(Astro.props, 'label')
+const {
+  as = 'label',
+  label,
+  ...rest
+} = ectomorphic('label', zLabel, Astro.props)
 ---
 
 <Tag

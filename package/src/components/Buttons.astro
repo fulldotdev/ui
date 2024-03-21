@@ -1,33 +1,21 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import {
-  endomorphic,
-  getChildProps,
-  sortByIndex,
-  type Endomorphic,
-} from '../utils'
-import Button from './Button.astro'
-import Tag from './Tag.astro'
+import { z } from 'astro:content'
+import { ectomorphic, endomorphic, getChildProps } from '../utils'
+import Button, { zButton } from './Button.astro'
+import Tag, { zTag } from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'buttons', ComponentProps<typeof Button>[]>,
-    ComponentProps<typeof Tag>,
-    Pick<ComponentProps<typeof Button>, 'button' | '_button'> {
-  index?: number | null
-}
+export const zButtons = endomorphic(
+  'buttons',
+  // @ts-ignore
+  zTag.merge(zButton).extend({
+    buttons: zButton,
+  })
+)
 
-const { buttons, ...rest } = endomorphic(Astro.props, 'buttons')
+type Props = z.infer<typeof zButtons>
+
+const { buttons, ...rest } = ectomorphic('buttons', zButtons, Astro.props)
 const child = getChildProps(rest)
-
-const look: {
-  [key: number]: 'solid' | 'soft' | 'ghost'
-} = {
-  0: 'solid',
-  1: 'soft',
-  2: 'ghost',
-}
-
-const sorted = sortByIndex(buttons)
 ---
 
 <Tag
@@ -35,9 +23,8 @@ const sorted = sortByIndex(buttons)
   {...rest}
 >
   {
-    sorted?.map((button, i) => (
+    buttons?.map((button) => (
       <Button
-        look={look[i]}
         {button}
         {...child}
       />

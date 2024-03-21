@@ -1,18 +1,31 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, type Endomorphic } from '../utils'
-import Tag from './Tag.astro'
+// import type { ComponentProps } from 'astro/types'
+// import { endomorphic, type Endomorphic } from '../utils'
+// import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'textarea', string>,
-    ComponentProps<typeof Tag> {}
+// interface Props
+//   extends Endomorphic<Props, 'textarea', string>,
+//     ComponentProps<typeof Tag> {}
 
+import { z } from 'astro:content'
+import { ectomorphic, endomorphic } from '../utils'
+import { zTag } from './Tag.astro'
+
+export const zTextarea = endomorphic(
+  'textarea',
+  zTag.extend({
+    textarea: z.string().nullish(),
+    rows: z.number().nullish(),
+  })
+)
+
+type Props = z.infer<typeof zTextarea>
 const {
   as = 'textarea',
   textarea,
-  rows = 5,
+  rows,
   ...rest
-} = endomorphic(Astro.props, 'textarea')
+} = ectomorphic('textarea', zTextarea, Astro.props)
 ---
 
 {
