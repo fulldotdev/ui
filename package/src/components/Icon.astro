@@ -1,13 +1,27 @@
 ---
 import tablerIcons from '@iconify-json/tabler/icons.json'
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, type Endomorphic } from '../utils'
+import { z } from 'astro:content'
+import fs from 'fs'
+import { icons } from '../schemas/icons'
+import { endomorphic } from '../utils'
 import Tag from './Tag.astro'
 const tabler = tablerIcons
 
-interface Props
-  extends Endomorphic<Props, 'icon', keyof typeof tabler.icons>,
-    ComponentProps<typeof Tag> {}
+export const zIcon = z.object({
+  icon: icons,
+})
+
+type Icon = z.infer<typeof zIcon>
+
+// interface Props
+//   extends Endomorphic<Props, 'icon', keyof typeof tabler.icons>,
+//     ComponentProps<typeof Tag> {}
+
+const keys = Object.keys(tabler.icons)
+fs.writeFileSync(
+  'src/TablerIcons.ts',
+  `export default ${JSON.stringify(tabler.icons, null, 2)}`
+)
 
 const { as = 'i', icon, ...rest } = endomorphic(Astro.props, 'icon')
 ---
