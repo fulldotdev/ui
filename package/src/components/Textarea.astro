@@ -7,25 +7,23 @@
 //   extends Endomorphic<Props, 'textarea', string>,
 //     ComponentProps<typeof Tag> {}
 
+
 import { z } from 'astro:content'
-import { macromorphic, mesomorphic } from '../utils'
-import { zTag } from './Tag.astro'
+import { morph } from '../utils'
 
-export const zTextarea = macromorphic(
-  'textarea',
-  zTag.extend({
-    textarea: z.string().nullish(),
+type Props = z.infer<typeof macro>
+  
+export const { macro, meso, micro } = morph('textarea', {
+  textarea: z.string().nullish(),
     rows: z.number().nullish(),
-  })
-)
+})
 
-type Props = z.infer<typeof zTextarea>
 const {
   as = 'textarea',
   textarea,
   rows,
   ...rest
-} = mesomorphic('textarea', zTextarea, Astro.props)
+} = meso(Astro.props)
 ---
 
 {

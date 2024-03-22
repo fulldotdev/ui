@@ -1,18 +1,15 @@
 ---
 import { z } from 'astro:content'
-import { macromorphic, mesomorphic } from '../utils'
-import Tag, { zTag } from './Tag.astro'
+import { morph } from '../utils'
+import Tag from './Tag.astro'
 
-export const zPrice = macromorphic(
-  'price',
-  zTag.extend({
-    price: z.number().nullish(),
-  })
-)
+type Props = z.infer<typeof macro>
+  
+export const { macro, meso, micro } = morph('price', {
+  price: z.number().nullish(),
+})
 
-type Props = z.infer<typeof zPrice>
-
-const { price, ...rest } = mesomorphic('price', zPrice, Astro.props)
+const { price, ...rest } = meso(Astro.props)
 
 const priceNumber = parseFloat(price as any)
 const fixedPrice = priceNumber?.toFixed(2).replace('.', ',')

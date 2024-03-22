@@ -1,18 +1,14 @@
 ---
 import { z } from 'astro:content'
-import { macromorphic, mesomorphic } from '../utils'
-import { zTag } from './Tag.astro'
+import { morph } from '../utils'
 
-export const zInput = macromorphic(
-  'input',
-  zTag.extend({
-    input: z.string().nullish(),
-  })
-)
+type Props = z.infer<typeof macro>
+  
+export const { macro, meso, micro } = morph('input', {
+  input: z.string().nullish(),
+})
 
-type Props = z.infer<typeof zInput>
-
-const { input, ...rest } = mesomorphic('input', zInput, Astro.props)
+const { input, ...rest } = meso(Astro.props)
 ---
 
 {

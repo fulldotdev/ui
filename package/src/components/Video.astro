@@ -1,19 +1,15 @@
 ---
 import { z } from 'astro:content'
-import { macromorphic, mesomorphic } from '../utils'
-import { zTag } from './Tag.astro'
+import { morph } from '../utils'
 
-export const zVideo = macromorphic(
-  'video',
-  zTag.extend({
-    video: z.string().nullish(),
-    thumbnail: z.boolean().nullish(),
-  })
-)
+type Props = z.infer<typeof macro>
+  
+export const { macro, meso, micro } = morph('video', {
+  video: z.string().nullish(),
+  thumbnail: z.boolean().nullish(),
+})
 
-type Props = z.infer<typeof zVideo>
-
-const { video, thumbnail } = mesomorphic('video', zVideo, Astro.props)
+const { video, thumbnail } = meso(Astro.props)
 
 const youtubeId =
   (video?.includes('youtube.com') || video?.includes('youtu.be')) &&

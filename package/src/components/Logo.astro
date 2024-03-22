@@ -10,17 +10,18 @@
 //     ComponentProps<typeof Image> {}
 
 import { z } from 'astro:content'
-import { macromorphic } from '../utils'
-import Image, { zImage } from './Image.astro'
-import Tag, { zTag } from './Tag.astro'
+import { morph } from '../utils'
+import Tag from './Tag.astro'
+import Image, { macro as logo } from './Image.astro'
 
-export const zLogo = zTag.extend({
-  logo: zImage,
+type Props = z.infer<typeof macro>
+  
+export const { macro, meso, micro } = morph('logo', {
+  logo: logo.shape.logo,
+  _logo: logo.shape._logo,
 })
 
-type Props = z.infer<typeof zLogo>
-
-const { as = 'a', ...rest } = macromorphic(Astro.props, 'logo')
+const { as = 'a', ...rest } = meso(Astro.props)
 ---
 
 <Tag

@@ -1,15 +1,18 @@
 ---
 // TODO: convert naar zod
-import type { ComponentProps } from 'astro/types'
-import { macromorphic, type Endomorphic } from '../utils'
-import Link from './Link.astro'
+
+import { z } from 'astro:content'
+import { morph } from '../utils'
+import Link, { macro as linkSchema } from './Link.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'links', ComponentProps<typeof Link>[]>,
-    ComponentProps<typeof Tag> {}
+type Props = z.infer<typeof macro>
 
-const { links, ...rest } = macromorphic(Astro.props, 'links')
+export const { macro, meso, micro } = morph('links', {
+  links: z.array(linkSchema),
+})
+
+const { links, ...rest } = meso(Astro.props)
 ---
 
 <Tag
