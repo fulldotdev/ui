@@ -48,3 +48,36 @@ export const morph = <
 
   return { micro: microParse, meso: mesoParse, macro: macroSchema }
 }
+
+// export const morph = <
+//   N extends (keyof S & string) | string,
+//   S extends ZodRawShape | ZodObject<any>,
+//   P extends AstroGlobal['props'],
+// >(
+//   name: N,
+//   zod: S
+// ) => {
+//   const schema =
+//     typeof zod === 'function'
+//       ? (zod as ZodObject<any>)
+//       : z.object(zod as ZodRawShape)
+
+//   const microSchema = schema
+//   const microParse = (props: P) => microSchema.parse(mergeProps(name, props))
+
+//   const mesoSchema = tag.merge(microSchema)
+//   const mesoParse = (props: P) => mesoSchema.parse(mergeProps(name, props))
+
+//   const value = schema.shape[name].or(mesoSchema).nullable()
+//   const nested = {
+//     [name]: value,
+//     [`_${name}`]: value,
+//   } as {
+//     [K in N | `_${N}`]: typeof value
+//   }
+
+//   const macroSchema = mesoSchema.extend(nested)
+//   const macroParse = (props: P | null) => macroSchema.parse(props)
+
+//   return { micro: microParse, meso: mesoParse, macro: macroSchema }
+// }

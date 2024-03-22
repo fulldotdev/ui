@@ -1,44 +1,39 @@
 ---
 import { z } from 'astro:content'
-import { macromorphic, mesomorphic, unslugify } from '../utils'
-import Tag, { zTag } from './Tag.astro'
+import { morph, unslugify } from '../utils'
+import Tag from './Tag.astro'
 
-export const zImage = macromorphic(
-  'image',
-  zTag.extend({
-    image: z.string().nullish(),
-    loading: z.string().nullish(),
-    mask: z.boolean().nullish(),
-    alt: z.string().nullish(),
-    sizes: {
-      // @ts-ignore
-      base: z.string().nullish(),
-      sm: z.string().nullish(),
-      md: z.string().nullish(),
-      lg: z.string().nullish(),
-      xl: z.string().nullish(),
-      '2xl': z.string().nullish(),
-    },
-    position: z.string().nullish(),
-    frame: z.string().nullish(),
-  })
-)
+type Props = z.infer<typeof macro>
 
-type Props = z.infer<typeof zImage>
+export const { macro, meso, micro } = morph('image', {
+  image: z.string().nullish(),
+  loading: z.string().nullish(),
+  mask: z.boolean().nullish(),
+  alt: z.string().nullish(),
+  sizes: z.string().nullish(),
+  // sizes: {
+  //   base: z.string().nullish(),
+  //   sm: z.string().nullish(),
+  //   md: z.string().nullish(),
+  //   lg: z.string().nullish(),
+  //   xl: z.string().nullish(),
+  //   '2xl': z.string().nullish(),
+  // },
+  position: z.string().nullish(),
+  frame: z.string().nullish(),
+})
 
 const {
   as = 'img',
-  loading = 'lazy',
+  loading = 'lazy', // TODO apply to image
   mask,
   alt = '',
-  sizes = {
-    base: '100vw',
-  },
+  sizes,
   position,
   frame,
   image,
   ...rest
-} = mesomorphic('image', zImage, Astro.props)
+} = meso(Astro.props)
 
 // function getSrc() {
 //   if (src?.startsWith('http')) return src
@@ -60,28 +55,27 @@ function getAlt(): string {
   return unslugged || ''
 }
 
-function getSizes() {
-  const mapped = Object.entries(sizes).map(([key, value]) => {
-    if (key === 'base') return value
-    if (key === 'sm') return `(min-width: 640px) ${value}`
-    if (key === 'md') return `(min-width: 768px) ${value}`
-    if (key === 'lg') return `(min-width: 1024px) ${value}`
-    if (key === 'xl') return `(min-width: 1280px) ${value}`
-    if (key === '2xl') return `(min-width: 1536px) ${value}`
-  })
-  const joined = mapped.join(', ')
-  return joined
-}
+// function getSizes() {
+//   const mapped = Object.entries(sizes).map(([key, value]) => {
+//     if (key === 'base') return value
+//     if (key === 'sm') return `(min-width: 640px) ${value}`
+//     if (key === 'md') return `(min-width: 768px) ${value}`
+//     if (key === 'lg') return `(min-width: 1024px) ${value}`
+//     if (key === 'xl') return `(min-width: 1280px) ${value}`
+//     if (key === '2xl') return `(min-width: 1536px) ${value}`
+//   })
+//   const joined = mapped.join(', ')
+//   return joined
+// }
 ---
 
 <Tag
+  class:list={['image', position, frame, { mask }]}
   {as}
   if="src"
-  src={image}
+  src={image as string}
   alt={getAlt()}
-  sizes={getSizes()}
-  class:list={['image', position, frame, { mask }]}
-  {loading}
+  sizes={sizes}
   {...rest}
 />
 

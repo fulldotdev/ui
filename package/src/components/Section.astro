@@ -1,43 +1,34 @@
 ---
-// TODO: convert naar zod
-import type { ComponentProps } from 'astro/types'
+import { z } from 'astro:content'
 import merge from 'deepmerge'
-import {
-  getChildProps,
-  getEntryByProps,
-  macromorphic,
-  type Endomorphic,
-  type EntryReference,
-} from '../utils'
-import Cards from './Cards.astro'
-import Composite from './Composite.astro'
-import Icon from './Icon.astro'
-import Image from './Image.astro'
-import Prose from './Prose.astro'
+import { getEntryByProps, morph } from '../utils'
+import Cards, { macro as cards } from './Cards.astro'
+import Composite, { macro as composite } from './Composite.astro'
+import Image, { macro as image } from './Image.astro'
+import Prose, { macro as prose } from './Prose.astro'
 import Tag from './Tag.astro'
 
-interface BaseProps
-  extends ComponentProps<typeof Tag>,
-    ComponentProps<typeof Composite>,
-    Pick<ComponentProps<typeof Image>, 'image' | '_image'>,
-    Pick<ComponentProps<typeof Prose>, 'prose' | '_prose'>,
-    Pick<ComponentProps<typeof Cards>, 'cards' | '_cards'>,
-    Pick<ComponentProps<typeof Prose>, 'prose' | '_prose'>,
-    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'> {
-  direction?: 'row' | 'column' | null
-  align?: 'start' | 'center' | null
-  look?: 'solid' | 'soft' | 'ghost' | null
-  frame?: 'screen' | 'panel' | null
-}
+type Props = z.infer<typeof macro>
 
-type Props = EntryReference & Endomorphic<BaseProps, 'section'>
+export const { macro, meso, micro } = morph('section', {
+  ...composite.shape,
+  image: image.shape.image,
+  _image: image.shape._image,
+  prose: prose.shape.prose,
+  _prose: prose.shape._prose,
+  cards: cards.shape.cards,
+  _cards: cards.shape._cards,
+  direction: z.enum(['row', 'colmn']).nullish(),
+  frame: z.enum(['screen', 'panel']).nullish(),
+  variant: z.enum(['solid', 'soft', 'ghost']).nullish(),
+  align: z.enum(['start', 'center']).nullish(),
+})
 
-const props = macromorphic(Astro.props, 'section')
+const props = meso(Astro.props)
 const entry = await getEntryByProps(props as any)
 const merged = merge(entry?.data, props)
 
 const { as = 'section', direction = 'column', frame, align, ...rest } = merged
-const child = getChildProps(rest)
 ---
 
 <Tag
@@ -45,10 +36,10 @@ const child = getChildProps(rest)
   {...rest}
   class:list={['section', direction, align, frame]}
 >
-  <Composite {...child} />
-  <Image {...child} />
-  <Cards {...child} />
-  <Prose {...child} />
+  <Composite {...micro(rest)} />
+  <Image {...micro(rest)} />
+  <Cards {...micro(rest)} />
+  <Prose {...micro(rest)} />
   <slot />
 </Tag>
 

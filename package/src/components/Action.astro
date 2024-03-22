@@ -1,39 +1,26 @@
 ---
 import { z } from 'astro:content'
-import { getChildProps, macromorphic, mesomorphic } from '../utils'
-import Buttons, { zButtons } from './Buttons.astro'
-import Tag, { zTag } from './Tag.astro'
+import { morph } from '../utils'
+import Buttons, { macro as buttons } from './Buttons.astro'
+import Tag from './Tag.astro'
 
-export const zAction = macromorphic(
-  'action',
-  // @ts-ignore
-  zTag.merge(zButtons).extend({
-    action: z.string().nullish(),
-    align: z.string().nullish(),
-  })
-)
+type Props = z.infer<typeof macro>
 
-// interface Props
-//   extends Endomorphic<Props, 'action'>,
-//     ComponentProps<typeof Tag>,
-//     // Pick<ComponentProps<typeof Form>, 'form' | '_form'>,
-//     // ComponentProps<typeof Product>,
-//     Pick<ComponentProps<typeof Buttons>, 'buttons' | '_buttons'> {
-//   align?: 'start' | 'center' | null
-// }
+export const { macro, meso, micro } = morph('action', {
+  buttons: buttons.shape.buttons,
+  _buttons: buttons.shape._buttons,
+  align: z.enum(['start', 'center']).nullish(),
+})
 
-type Props = z.infer<typeof zAction>
-
-const { ...rest } = mesomorphic('buttons', zAction, Astro.props)
-const child = getChildProps(rest)
+const { ...rest } = meso(Astro.props)
 ---
 
 <Tag
-  class="action"
+  class:list={['action']}
   {...rest}
 >
   <!-- {props.price ? <Product {...rest} /> : <Form {...(rest as any)} />} -->
-  <Buttons {...child} />
+  <Buttons {...micro(rest)} />
   <slot />
 </Tag>
 

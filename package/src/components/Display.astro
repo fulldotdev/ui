@@ -1,18 +1,23 @@
 ---
 import { z } from 'astro:content'
 import { morph } from '../utils'
-import Icon from './Icon.astro'
-import Rating from './Rating.astro'
-import Specs from './Specs.astro'
+import Icon, { macro as icon } from './Icon.astro'
+import Rating, { macro as rating } from './Rating.astro'
+import Specs, { macro as specs } from './Specs.astro'
 import Tag from './Tag.astro'
 import Writeup, { macro as writeup } from './Writeup.astro'
 
 type Props = z.infer<typeof macro>
 
 export const { macro, meso, micro } = morph('display', {
+  rating: rating.shape.rating,
+  _rating: rating.shape._rating,
+  icon: icon.shape.icon,
+  _icon: icon.shape._icon,
   ...writeup.shape,
-  display: z.string().nullish(),
-  align: z.string().nullish(),
+  specs: specs.shape.specs,
+  _specs: specs.shape._specs,
+  align: z.enum(['start', 'center']).nullish(),
 })
 
 const { align, ...rest } = meso(Astro.props)

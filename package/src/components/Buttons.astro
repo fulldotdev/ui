@@ -1,21 +1,16 @@
 ---
 import { z } from 'astro:content'
-import { getChildProps, macromorphic, mesomorphic } from '../utils'
-import Button, { zButton } from './Button.astro'
-import Tag, { zTag } from './Tag.astro'
+import { morph } from '../utils'
+import Button, { macro as buttonSchema } from './Button.astro'
+import Tag from './Tag.astro'
 
-export const zButtons = macromorphic(
-  'buttons',
-  // @ts-ignore
-  zTag.merge(zButton).extend({
-    buttons: zButton,
-  })
-)
+type Props = z.infer<typeof macro>
 
-type Props = z.infer<typeof zButtons>
+export const { macro, meso, micro } = morph('buttons', {
+  buttons: z.array(buttonSchema),
+})
 
-const { buttons, ...rest } = mesomorphic('buttons', zButtons, Astro.props)
-const child = getChildProps(rest)
+const { buttons, ...rest } = meso(Astro.props)
 ---
 
 <Tag
@@ -25,8 +20,8 @@ const child = getChildProps(rest)
   {
     buttons?.map((button) => (
       <Button
-        {button}
-        {...child}
+        {...micro(Astro.props)}
+        {...button}
       />
     ))
   }

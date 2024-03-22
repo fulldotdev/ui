@@ -1,26 +1,18 @@
 ---
 import { z } from 'astro:content'
-import { getChildProps, macromorphic, mesomorphic } from '../utils'
-import Icon, { zIcon } from './Icon.astro'
-import Tag, { zTag } from './Tag.astro'
+import { morph } from '../utils'
+import Icon, { macro as iconSchema } from './Icon.astro'
+import Tag from './Tag.astro'
 
-export const zSpec = macromorphic(
-  'spec',
-  // @ts-ignore
-  zTag.merge(zIcon).extend({
-    spec: z.string().nullish(),
-  })
-)
+type Props = z.infer<typeof macro>
 
-type Props = z.infer<typeof zSpec>
+export const { macro, meso, micro } = morph('spec', {
+  icon: iconSchema.shape.icon,
+  _icon: iconSchema.shape._icon,
+  spec: z.string().nullish(),
+})
 
-const {
-  as = 'li',
-  icon = 'check',
-  spec,
-  ...rest
-} = mesomorphic('spec', zSpec, Astro.props)
-const child = getChildProps(rest)
+const { as = 'li', icon = 'check', spec, ...rest } = meso(Astro.props)
 ---
 
 <Tag
@@ -28,7 +20,10 @@ const child = getChildProps(rest)
   {as}
   {...rest}
 >
-  <Icon {...child} />
+  <Icon
+    {icon}
+    {...micro(rest)}
+  />
   <Fragment set:html={spec} />
   <slot />
 </Tag>
