@@ -1,17 +1,20 @@
 ---
 // TODO: convert naar zod
-import type { ComponentProps } from 'astro/types'
-import { macromorphic, sortByIndex, type Endomorphic } from '../utils'
-import Section from './Section.astro'
+
+import { z } from 'astro:content'
+import { morph } from '../utils'
+import Section, { macro as sectionSchema } from './Section.astro'
+import { sortByIndex } from '../utils'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'sections', ComponentProps<typeof Section>[]>,
-    ComponentProps<typeof Tag> {
-  index?: number
-}
+type Props = z.infer<typeof macro>
 
-const { as = 'main', sections, ...rest } = macromorphic(Astro.props, 'sections')
+export const { macro, meso, micro } = morph('sections', {
+  sections: z.array(sectionSchema),
+  index: z.number().nullish(),
+})
+
+const { as = 'main', sections, ...rest } = meso(Astro.props)
 
 const sorted = sortByIndex(sections)
 // const indexed = sections?.map((section, index) => ({ index, ...section }))

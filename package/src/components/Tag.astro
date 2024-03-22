@@ -1,21 +1,13 @@
 ---
+
 import { z } from 'astro:content'
 import { zElements } from '../utils'
+import { morph } from '../utils'
+import Tag from './Tag.astro'
 
-type Props = z.infer<typeof schema>
-
-// const prefixAttributes = z.record(
-//   z
-//     .string()
-//     .refine((key) =>
-//       ['on', 'data-', 'aria-'].some((prefix) => key.startsWith(prefix))
-//     ),
-//   z.string().nullish()
-// ) as z.ZodType<{
-//   [Key in `${'on' | 'data-' | 'aria-'}${string}`]: string | null | undefined
-// }>
-
-export const schema = z.object({
+type Props = z.infer<typeof macro>
+  
+export const { macro, meso, micro } = morph('tag', {
   // element
   as: zElements.optional(),
   if: z.union([z.string(), z.literal(true)]).nullish(),
@@ -45,7 +37,18 @@ const {
   size,
   compact,
   ...rest
-} = schema.parse(Astro.props)
+} = meso(Astro.props)
+
+// const prefixAttributes = z.record(
+//   z
+//     .string()
+//     .refine((key) =>
+//       ['on', 'data-', 'aria-'].some((prefix) => key.startsWith(prefix))
+//     ),
+//   z.string().nullish()
+// ) as z.ZodType<{
+//   [Key in `${'on' | 'data-' | 'aria-'}${string}`]: string | null | undefined
+// }>
 
 const slot = await Astro.slots.render('default')
 const hasContent = slot?.trim().length > 0
