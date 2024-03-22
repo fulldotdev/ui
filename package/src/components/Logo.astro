@@ -1,36 +1,29 @@
 ---
-// import type { ComponentProps } from 'astro/types'
-// import { macromorphic, type Endomorphic } from '../utils'
-// import Image from './Image.astro'
-// import Tag from './Tag.astro'
-
-// interface Props
-//   extends Endomorphic<Props, 'logo', ComponentProps<typeof Image>['image']>,
-//     ComponentProps<typeof Tag>,
-//     ComponentProps<typeof Image> {}
-
 import { z } from 'astro:content'
 import { morph } from '../utils'
+import Image from './Image.astro'
 import Tag from './Tag.astro'
-import Image, { macro as logo } from './Image.astro'
 
 type Props = z.infer<typeof macro>
-  
+
 export const { macro, meso, micro } = morph('logo', {
-  logo: logo.shape.logo,
-  _logo: logo.shape._logo,
+  logo: z.string().nullish(),
+  href: z.string().nullish(),
 })
 
-const { as = 'a', ...rest } = meso(Astro.props)
+const { as = 'a', href = '/', logo, ...rest } = meso(Astro.props)
 ---
 
 <Tag
   class="logo"
-  href="/"
+  {href}
   {as}
   {...rest}
 >
-  <Image {...rest} />
+  <Image
+    image={logo}
+    {...rest}
+  />
   <slot />
 </Tag>
 

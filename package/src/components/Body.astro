@@ -1,29 +1,23 @@
 ---
-// TODO: convert naar zod
-import type { ComponentProps } from 'astro/types'
-import { macromorphic, type Endomorphic } from '../utils'
-import Section from './Section.astro'
-import Sections from './Sections.astro'
+import { z } from 'astro:content'
+import { morph } from '../utils'
+import Section, { macro as section } from './Section.astro'
+import Sections, { macro as sections } from './Sections.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'body'>,
-    ComponentProps<typeof Tag>,
-    ComponentProps<typeof Section> {
-  hero?: Pick<ComponentProps<typeof Section>, 'section'>
-  _hero?: Pick<ComponentProps<typeof Section>, '_section'>
-  cta?: Pick<ComponentProps<typeof Section>, 'section'>
-  _cta?: Pick<ComponentProps<typeof Section>, '_section'>
-}
+type Props = z.infer<typeof macro>
 
-const {
-  as = 'body',
-  hero,
-  _hero,
-  cta,
-  _cta,
-  ...rest
-} = macromorphic(Astro.props, 'body')
+export const { macro, meso, micro } = morph('body', {
+  ...section.shape,
+  ...sections.shape,
+  body: z.undefined(),
+  hero: section.shape.section,
+  _hero: section.shape._section,
+  cta: section.shape.section,
+  _cta: section.shape._section,
+})
+
+const { as = 'body', hero, _hero, cta, _cta, ...rest } = meso(Astro.props)
 ---
 
 <Tag
@@ -36,14 +30,15 @@ const {
   <Sections {...rest}>
     <Section
       class="hero"
-      {..._hero}
-      {...hero}
+      _section={_hero}
+      section={hero}
+      {...micro(rest)}
       slot="before"
     />
     <Section
       class="cta"
-      {..._cta}
-      {...cta}
+      _section={_cta}
+      section={cta}
       slot="after"
     />
   </Sections>
@@ -55,6 +50,7 @@ const {
     .body {
       transition: var(--transition);
       background: var(--hue1);
+      height: 100%;
       min-height: 100vh;
       color: var(----hue11);
       font: var(--font);

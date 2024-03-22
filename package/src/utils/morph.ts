@@ -10,7 +10,7 @@ const toObject = (name: string, value: any) => {
   return { [name]: value }
 }
 
-const mergeProps = (name: string, val: any) => {
+export const mergeProps = (name: string, val: any) => {
   const stripped = { ...val }
   delete stripped[name]
   delete stripped[`_${name}`]
@@ -37,6 +37,10 @@ export const morph = <
   const mesoParse = (props: P) => mesoSchema.parse(mergeProps(name, props))
 
   const value = microSchema.shape[name].or(mesoSchema).nullable()
+  // const value = microSchema.shape[name] // TODO: not sure if this fully works yet. is replacement of line above // TODO return any. see card in cards for example
+  //   ? microSchema.shape[name].or(mesoSchema).nullable()
+  //   : z.any().nullable()
+
   const nested = {
     [name]: value,
     [`_${name}`]: value,
@@ -49,18 +53,3 @@ export const morph = <
 
   return { micro: microParse, meso: mesoParse, macro: macroSchema }
 }
-
-// export const pick = <
-//   O extends ZodObject<ZodRawShape>,
-//   N extends keyof z.infer<O>,
-// >(
-//   object: O,
-//   name: N
-// ) => {
-//   return object.pick({
-//     [name as N & string]: true,
-//     [`_${name as N & string}`]: true,
-//   }) as ZodType<{
-//     [K in N]: z.infer<O>[N]
-//   }>
-// }

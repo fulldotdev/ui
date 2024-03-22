@@ -1,43 +1,45 @@
 ---
-// TODO: convert naar zod
-import type { ComponentProps } from 'astro/types'
-import { type CollectionEntry, type ContentCollectionKey } from 'astro:content'
-import { getChildProps, macromorphic, type Endomorphic } from '../utils'
-import Composite from './Composite.astro'
-import Image from './Image.astro'
+import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
+import { getEntry, z } from 'astro:content'
+import { merge } from 'merge-anything'
+import { morph } from '../utils'
+import Composite, { macro as composite } from './Composite.astro'
+import Image, { macro as image } from './Image.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'card'>,
-    ComponentProps<typeof Tag>,
-    ComponentProps<typeof Composite>,
-    Pick<ComponentProps<typeof Image>, 'image' | '_image'> {
-  collection?: ContentCollectionKey
-  slug?: CollectionEntry<ContentCollectionKey>['slug'] | null
-  look?: 'ghost' | 'soft' | 'solid' | null
-  frame?: 'fill' | 'panel' | 'screen' | null
-}
+type Props = z.infer<typeof macro>
 
-const { look, frame, collection, slug, ...rest } = macromorphic(
-  Astro.props,
-  'card'
-)
+export const { macro, meso, micro } = morph('card', {
+  card: z.undefined(), // FIXME needed, otherwise morph doesn't work
+  ...composite.shape,
+  image: image.shape.image,
+  _image: image.shape._image,
+  frame: z.enum(['fill', 'panel', 'screen']).nullish(),
+  variant: z.enum(['ghost', 'soft', 'solid']).nullish(),
+  collection: z.string().nullish(),
+  slug: z.string().nullish(),
+})
 
-// const entry =
-//   collection && slug ? (await getEntry(collection, slug)).data : null
-// const merged = merge(entry, rest)
-const child = getChildProps(rest)
+const { collection, slug, ...props } = meso(Astro.props)
+const entry =
+  collection && slug
+    ? ((await getEntry(
+        collection as any,
+        slug as any
+      )) as CollectionEntry<ContentCollectionKey>)
+    : undefined
+
+const { variant, frame, ...rest } = merge(entry?.data, props)
 ---
 
 <Tag
-  class:list={['card', look, frame]}
+  class:list={['card', variant, frame]}
   compact
   {...rest}
 >
-  <Image {...child} />
-  <Composite {...child} />
+  <Image {...micro(rest)} />
+  <Composite {...micro(rest)} />
 </Tag>
-
 <style is:global>
   .card {
     display: flex;

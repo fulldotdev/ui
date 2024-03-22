@@ -1,19 +1,21 @@
 ---
 // TODO: convert naar zod
-import type { ComponentProps } from 'astro/types'
-import { macromorphic, sortByIndex, type Endomorphic } from '../utils'
-import Section from './Section.astro'
+import { z } from 'astro:content'
+import { morph } from '../utils'
+import Section, { macro as sectionSchema } from './Section.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'sections', ComponentProps<typeof Section>[]>,
-    ComponentProps<typeof Tag> {
-  index?: number
-}
+type Props = z.infer<typeof macro>
 
-const { as = 'main', sections, ...rest } = macromorphic(Astro.props, 'sections')
+export const { macro, meso, micro } = morph('sections', {
+  section: sectionSchema.shape.section,
+  _section: sectionSchema.shape._section,
+  sections: z.array(sectionSchema.shape.section).nullish(),
+})
 
-const sorted = sortByIndex(sections)
+const { as = 'main', sections, section, _section, ...rest } = meso(Astro.props)
+
+// const sorted = sortByIndex(sections)
 // const indexed = sections?.map((section, index) => ({ index, ...section }))
 // const sorted = indexed?.sort((a, b) => {
 //   const index = (i: number) => (i < 0 ? indexed.length + 1 + i : i)
@@ -27,7 +29,15 @@ const sorted = sortByIndex(sections)
   {...rest}
 >
   <slot name="before" />
-  {sorted?.map((section) => <Section {...section} />)}
+  {
+    sections?.map((item) => (
+      <Section
+        {_section}
+        {section}
+        {...item}
+      />
+    ))
+  }
   <slot name="after" />
 </Tag>
 

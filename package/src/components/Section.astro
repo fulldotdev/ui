@@ -1,7 +1,8 @@
 ---
-import { z } from 'astro:content'
+import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
+import { getEntry, z } from 'astro:content'
 import merge from 'deepmerge'
-import { getEntryByProps, morph } from '../utils'
+import { morph } from '../utils'
 import Cards from './Cards.astro'
 import Composite, { macro as composite } from './Composite.astro'
 import Image, { macro as image } from './Image.astro'
@@ -11,6 +12,7 @@ import Tag from './Tag.astro'
 type Props = z.infer<typeof macro>
 
 export const { macro, meso, micro } = morph('section', {
+  section: z.undefined(),
   ...composite.shape,
   image: image.shape.image,
   _image: image.shape._image,
@@ -22,13 +24,26 @@ export const { macro, meso, micro } = morph('section', {
   frame: z.enum(['screen', 'panel']).nullish(),
   variant: z.enum(['solid', 'soft', 'ghost']).nullish(),
   align: z.enum(['start', 'center']).nullish(),
+  collection: z.string().nullish(),
+  slug: z.string().nullish(),
 })
 
-const props = meso(Astro.props)
-const entry = await getEntryByProps(props as any)
-const merged = merge(entry?.data, props)
+const { collection, slug, ...props } = meso(Astro.props)
+const entry =
+  collection && slug
+    ? ((await getEntry(
+        collection as any,
+        slug as any
+      )) as CollectionEntry<ContentCollectionKey>)
+    : undefined
 
-const { as = 'section', direction = 'column', frame, align, ...rest } = merged
+const {
+  as = 'section',
+  direction = 'column',
+  frame,
+  align,
+  ...rest
+} = merge(entry?.data, props)
 ---
 
 <Tag

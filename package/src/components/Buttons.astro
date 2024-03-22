@@ -7,10 +7,12 @@ import Tag from './Tag.astro'
 type Props = z.infer<typeof macro>
 
 export const { macro, meso, micro } = morph('buttons', {
-  buttons: z.array(buttonSchema),
+  button: buttonSchema.shape.button,
+  _button: buttonSchema.shape._button,
+  buttons: z.array(buttonSchema).nullish(),
 })
 
-const { buttons, ...rest } = meso(Astro.props)
+const { buttons, button, _button, ...rest } = meso(Astro.props)
 ---
 
 <Tag
@@ -18,10 +20,11 @@ const { buttons, ...rest } = meso(Astro.props)
   {...rest}
 >
   {
-    buttons?.map((button) => (
+    buttons?.map((item) => (
       <Button
-        {...micro(Astro.props)}
-        {...button}
+        {_button}
+        {button}
+        {...item}
       />
     ))
   }

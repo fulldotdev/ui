@@ -25,7 +25,7 @@ sections:
     _image:
       position: background
       mask: true
-  - align: stretch
+  - align: start
     title: Onze 4 beloftes
     _button:
       color: accent

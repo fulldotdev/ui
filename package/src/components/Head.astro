@@ -1,16 +1,18 @@
 ---
 import { SEO } from 'astro-seo'
 import { z } from 'astro:content'
+import { morph } from '../utils'
 
-export const zHead = z.object({
+type Props = z.infer<typeof macro>
+
+export const { macro, meso, micro } = morph('head', {
+  head: z.undefined(),
   title: z.string().nullish(),
   description: z.string().nullish(),
   image: z.string().nullish(),
 })
 
-type Props = z.infer<typeof zHead>
-
-const { title, description, image } = Astro.props
+const { title, description, image } = meso(Astro.props)
 ---
 
 <head>

@@ -1,44 +1,33 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import type { ContentCollectionKey } from 'astro:content'
-import { getCollection } from 'astro:content'
-import { getChildProps, macromorphic, type Endomorphic } from '../utils'
-import Card from './Card.astro'
+import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
+import { getCollection, z } from 'astro:content'
+import { morph } from '../utils'
+import Card, { macro as cardSchema } from './Card.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<
-      Props,
-      'cards',
-      ContentCollectionKey | Pick<ComponentProps<typeof Card>, 'card'>[]
-    >,
-    ComponentProps<typeof Tag>,
-    Pick<ComponentProps<typeof Card>, 'card' | '_card'> {
-  layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento' | null
-  // [key: ContentCollectionKey]:
-  //   | CollectionEntry<ContentCollectionKey>['slug']
-  //   | CollectionEntry<ContentCollectionKey>['slug'][]
-}
+type Props = z.infer<typeof macro>
 
-let {
-  cards,
-  card,
-  _card,
-  layout = 'grid',
-  ...rest
-} = macromorphic(Astro.props, 'cards')
-const child = getChildProps(rest)
+export const { macro, meso, micro } = morph('cards', {
+  layout: z
+    .enum(['carousel', 'grid', 'masonry', 'row', 'panels', 'bento'])
+    .nullish(),
+  card: cardSchema.shape.card,
+  _card: cardSchema.shape._card,
+  cards: z.string().or(z.array(cardSchema.shape.card)).nullish(),
+  // TODO [collectionKey]: entrySlug <<< toevoegen
+})
 
-let entries: ComponentProps<typeof Card>['card'][] = []
-if (typeof cards === 'string')
-  entries = (await getCollection(cards)).map((entry) => entry.data)
-else entries = cards
+let { cards, ...props } = meso(Astro.props)
+const entries =
+  typeof cards === 'string'
+    ? ((await getCollection(cards as any)).map((entry: any) => entry.data) as
+        | CollectionEntry<ContentCollectionKey>['data'][]
+        | undefined)
+    : undefined
+cards = entries ?? (cards as ComponentProps<typeof Card>[])
 
-// if ((!cards || cards.length === 0) && collection) {
-//   const items = await getCollection(collection)
-//   const slugs = items.map(({ slug }) => slug)
-//   cards = slugs
-// }
+const { card, _card, layout = 'grid', ...rest } = props
 ---
 
 <Tag
@@ -46,11 +35,11 @@ else entries = cards
   {...rest}
 >
   {
-    entries?.map((card) => (
+    cards?.map((item) => (
       <Card
-        {...card}
-        {card}
         {_card}
+        {card}
+        {...item}
       />
     ))
   }
