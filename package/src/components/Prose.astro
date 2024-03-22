@@ -1,19 +1,15 @@
 ---
-// TODO: convert naar zod
-import type { ComponentProps } from 'astro/types'
-import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
-import { macromorphic, type Endomorphic } from '../utils'
+import { z } from 'astro:content'
+import { morph } from '../utils'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<
-      'prose',
-      Props,
-      string | CollectionEntry<ContentCollectionKey>['render']
-    >,
-    ComponentProps<typeof Tag> {}
+type Props = z.infer<typeof macro>
 
-const { prose, ...rest } = macromorphic(Astro.props, 'prose')
+export const { macro, meso, micro } = morph('prose', {
+  prose: z.any().nullish(),
+})
+
+const { prose, ...rest } = meso(Astro.props)
 const Content = typeof prose === 'function' ? (await prose()).Content : null
 ---
 
