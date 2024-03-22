@@ -8,16 +8,28 @@ import Title, { macro as title } from './Title.astro'
 
 type Props = z.infer<typeof macro>
 
-export const { macro, meso, micro } = morph('writeup', {
-  tagline: tagline.shape.tagline,
-  _tagline: tagline.shape._tagline,
-  title: title.shape.title,
-  _title: title.shape._title,
-  description: description.shape.description,
-  _description: description.shape._description,
-  writeup: z.string().nullish(),
-  align: z.enum(['start', 'center']).nullish(),
-})
+export const { macro, meso, micro } = morph(
+  'writeup',
+  tagline
+    .pick({ tagline: true, _tagline: true })
+    .merge(title.pick({ title: true, _title: true }))
+    .merge(description.pick({ description: true, _description: true }))
+    .extend({
+      writeup: z.string().nullish(),
+      align: z.enum(['start', 'center']).nullish(),
+    })
+)
+
+// {
+//   tagline: tagline.shape.tagline,
+//   _tagline: tagline.shape._tagline,
+//   title: title.shape.title,
+//   _title: title.shape._title,
+//   description: description.shape.description,
+//   _description: description.shape._description,
+//   writeup: z.string().nullish(),
+//   align: z.enum(['start', 'center']).nullish(),
+// })
 
 const { writeup, align, ...rest } = meso(Astro.props)
 ---
