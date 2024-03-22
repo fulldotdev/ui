@@ -1,6 +1,6 @@
 ---
 import { z } from 'astro:content'
-import { schemas } from '../utils'
+import { morph } from '../utils'
 import Description, { macro as description } from './Description.astro'
 import Tag from './Tag.astro'
 import Tagline, { macro as tagline } from './Tagline.astro'
@@ -8,7 +8,7 @@ import Title, { macro as title } from './Title.astro'
 
 type Props = z.infer<typeof macro>
 
-export const { macro, meso, micro } = schemas('writeup', {
+export const { macro, meso, micro } = morph('writeup', {
   tagline: tagline.shape.tagline,
   _tagline: tagline.shape._tagline,
   title: title.shape.title,
@@ -19,16 +19,16 @@ export const { macro, meso, micro } = schemas('writeup', {
   align: z.string().nullish(),
 })
 
-const { writeup, align, ...rest } = meso.parse(Astro.props)
+const { writeup, align, ...rest } = meso(Astro.props)
 ---
 
 <Tag
   class:list={['writeup', align]}
   {...rest}
 >
-  <Tagline {...micro.parse(rest)} />
-  <Title {...micro.parse(rest)} />
-  <Description {...micro.parse(rest)} />
+  <Tagline {...micro(rest)} />
+  <Title {...micro(rest)} />
+  <Description {...micro(rest)} />
   <Fragment set:html={writeup} />
 </Tag>
 

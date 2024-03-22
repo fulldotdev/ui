@@ -1,13 +1,13 @@
 ---
 import { z } from 'astro:content'
-import { schemas } from '../utils'
+import { morph } from '../utils'
 import Action, { macro as action } from './Action.astro'
 import Display, { macro as display } from './Display.astro'
 import Tag from './Tag.astro'
 
 type Props = z.infer<typeof macro>
 
-export const { macro, meso, micro } = schemas('composite', {
+export const { macro, meso, micro } = morph('composite', {
   ...display.shape,
   ...action.shape,
   composite: z.string().nullish(),
@@ -15,15 +15,15 @@ export const { macro, meso, micro } = schemas('composite', {
   align: z.string().nullish(),
 })
 
-const { direction, align, ...rest } = meso.parse(Astro.props)
+const { direction, align, ...rest } = meso(Astro.props)
 ---
 
 <Tag
   class:list={['composite', direction, align]}
   {...rest}
 >
-  <Display {...micro.parse(rest)} />
-  <Action {...micro.parse(rest)} />
+  <Display {...micro(rest)} />
+  <Action {...micro(rest)} />
   <slot />
 </Tag>
 

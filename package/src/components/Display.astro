@@ -1,6 +1,6 @@
 ---
 import { z } from 'astro:content'
-import { schemas } from '../utils'
+import { morph } from '../utils'
 import Icon from './Icon.astro'
 import Rating from './Rating.astro'
 import Specs from './Specs.astro'
@@ -9,23 +9,23 @@ import Writeup, { macro as writeup } from './Writeup.astro'
 
 type Props = z.infer<typeof macro>
 
-export const { macro, meso, micro } = schemas('display', {
+export const { macro, meso, micro } = morph('display', {
   ...writeup.shape,
   display: z.string().nullish(),
   align: z.string().nullish(),
 })
 
-const { align, ...rest } = meso.parse(Astro.props)
+const { align, ...rest } = meso(Astro.props)
 ---
 
 <Tag
   class:list={['display', align]}
   {...rest}
 >
-  <Rating {...micro.parse(rest)} />
-  <Icon {...micro.parse(rest)} />
-  <Writeup {...micro.parse(rest)} />
-  <Specs {...micro.parse(rest)} />
+  <Rating {...micro(rest)} />
+  <Icon {...micro(rest)} />
+  <Writeup {...micro(rest)} />
+  <Specs {...micro(rest)} />
   <slot />
 </Tag>
 
