@@ -1,25 +1,24 @@
 ---
 import { z } from 'astro:content'
-import { morph } from '../utils'
+import { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof textarea>
 
-export const { macro, meso, micro } = morph('textarea', {
-  textarea: z.string().nullish(),
+export const textarea = tag.extend({
+  name: z.string().nullable(),
   rows: z.number().nullish(),
 })
 
-const { as = 'textarea', textarea, rows = 5, ...rest } = meso(Astro.props)
+const { name, rows = 5 } = textarea.parse(Astro.props)
 ---
 
 {
-  textarea && (
+  name && (
     <textarea
       class="textarea"
-      name={textarea}
-      id={textarea}
+      id={name}
+      {name}
       {rows}
-      {...rest}
     />
   )
 }

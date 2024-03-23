@@ -1,18 +1,16 @@
 ---
 import { z } from 'astro:content'
-import { morph } from '../utils'
-import Button, { macro as buttonSchema } from './Button.astro'
-import Tag from './Tag.astro'
+import Button, { button } from './Button.astro'
+import Tag, { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof buttons>
 
-export const { macro, meso, micro } = morph('buttons', {
-  button: buttonSchema.shape.button,
-  _button: buttonSchema.shape._button,
-  buttons: z.array(buttonSchema).nullish(),
+export const buttons = tag.extend({
+  button,
+  items: z.array(button).nullish(),
 })
 
-const { buttons, button, _button, color, ...rest } = meso(Astro.props)
+const { items, ...rest } = buttons.parse(Astro.props)
 ---
 
 <Tag
@@ -20,11 +18,10 @@ const { buttons, button, _button, color, ...rest } = meso(Astro.props)
   {...rest}
 >
   {
-    buttons?.map((item, i) => (
+    items?.map((item, i) => (
       <Button
         variant={i == 1 ? 'soft' : undefined}
-        {_button}
-        {button}
+        {...rest.button}
         {...item}
       />
     ))

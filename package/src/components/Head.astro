@@ -1,18 +1,17 @@
 ---
 import { SEO } from 'astro-seo'
 import { z } from 'astro:content'
-import { morph } from '../utils'
+import { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof head>
 
-export const { macro, meso, micro } = morph('head', {
-  head: z.undefined(),
+export const head = tag.extend({
   title: z.string().nullish(),
   description: z.string().nullish(),
   image: z.string().nullish(),
 })
 
-const { title, description, image } = meso(Astro.props)
+const { title, description, image } = head.parse(Astro.props)
 ---
 
 <head>

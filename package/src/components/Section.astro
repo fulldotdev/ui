@@ -2,26 +2,21 @@
 import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
 import { getEntry, z } from 'astro:content'
 import merge from 'deepmerge'
-import { morph } from '../utils'
-import Cards, { macro as cards } from './Cards.astro'
-import Composite, { macro as composite } from './Composite.astro'
-import Image, { macro as image } from './Image.astro'
-import Prose, { macro as prose } from './Prose.astro'
-import Tag from './Tag.astro'
+import { card } from './Card.astro'
+import Cards, { cards } from './Cards.astro'
+import Composite, { composite } from './Composite.astro'
+import Image, { image } from './Image.astro'
+import Prose, { prose } from './Prose.astro'
+import Tag, { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof section>
 
-export const { macro, meso, micro } = morph('section', {
-  section: z.undefined(),
-  ...composite.shape,
-  image: image.shape.image,
-  _image: image.shape._image,
-  prose: prose.shape.prose,
-  _prose: prose.shape._prose,
-  cards: cards.shape.cards,
-  _cards: cards.shape._cards,
-  card: cards.shape.card, // FIXME
-  _card: cards.shape._card, // FIXME
+export const section = tag.extend({
+  composite,
+  image,
+  prose,
+  cards,
+  card,
   direction: z.enum(['row', 'column']).nullish(),
   frame: z.enum(['screen', 'panel']).nullish(),
   variant: z.enum(['solid', 'soft', 'ghost']).nullish(),
@@ -30,7 +25,7 @@ export const { macro, meso, micro } = morph('section', {
   slug: z.string().nullish(),
 })
 
-const { collection, slug, ...props } = meso(Astro.props)
+const { collection, slug, ...props } = section.parse(Astro.props)
 const entry =
   collection && slug
     ? ((await getEntry(
@@ -54,10 +49,10 @@ const {
   {...rest}
   class:list={['section', direction, align, frame, variant]}
 >
-  <Composite {...micro(rest)} />
-  <Image {...micro(rest)} />
-  <Cards {...micro(rest)} />
-  <Prose {...micro(rest)} />
+  <Composite {...rest.composite} />
+  <Image {...rest.image} />
+  <Cards {...rest.cards} />
+  <Prose {...rest.prose} />
   <slot />
 </Tag>
 

@@ -1,19 +1,12 @@
 ---
 import { z } from 'astro:content'
-import { morph } from '../utils'
-import Tag from './Tag.astro'
+import Tag, { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
-  
-export const { macro, meso, micro } = morph('label', {
-  label: z.string().nullish(),
-})
+type Props = z.infer<typeof label>
 
-const {
-  as = 'label',
-  label,
-  ...rest
-} = meso(Astro.props)
+export const label = tag.extend({})
+
+const { as = 'label', ...rest } = label.parse(Astro.props)
 ---
 
 <Tag
@@ -22,7 +15,6 @@ const {
   {as}
   {...rest}
 >
-  <Fragment set:html={label} />
   <slot />
 </Tag>
 

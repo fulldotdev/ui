@@ -1,16 +1,15 @@
 ---
 import tablerIcons from '@iconify-json/tabler/icons.json'
 import { z } from 'astro:content'
-import { morph } from '../utils'
-import Tag from './Tag.astro'
+import Tag, { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof icon>
 
-export const { macro, meso, micro } = morph('icon', {
-  icon: z.string().nullish(),
+export const icon = tag.extend({
+  name: z.string().nullish(),
 })
 
-const { as = 'i', icon, ...rest } = meso(Astro.props)
+const { as = 'i', name, ...rest } = icon.parse(Astro.props)
 ---
 
 <Tag
@@ -23,7 +22,7 @@ const { as = 'i', icon, ...rest } = meso(Astro.props)
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
-        set:html={(tablerIcons as any)?.icons[icon]?.body}
+        set:html={(tablerIcons as any)?.icons[name as any]?.body}
       />
     )
   }

@@ -2,27 +2,19 @@
 import { z } from 'astro:content'
 import { zElements } from '../utils'
 
-type Props = z.infer<typeof schema>
+// TODO add Polymorphic
+type Props = z.infer<typeof tag> & Record<any, any>
 
-// const prefixAttributes = z.record(
-//   z
-//     .string()
-//     .refine((key) =>
-//       ['on', 'data-', 'aria-'].some((prefix) => key.startsWith(prefix))
-//     ),
-//   z.string().nullish()
-// ) as z.ZodType<{
-//   [Key in `${'on' | 'data-' | 'aria-'}${string}`]: string | null | undefined
-// }>
-
-export const schema = z.object({
-  // element
+export const tag = z.object({
   as: zElements.optional(),
   if: z.union([z.string(), z.literal(true)]).nullish(),
-  // theme
+  html: z.string().nullish(),
   color: z.string().nullish(),
   scheme: z.string().nullish(),
   contrast: z.boolean().nullish(),
+  class: z.string().nullish(),
+  id: z.string().nullish(),
+  style: z.string().nullish(),
   scale: z.string().or(z.number()).nullish(), // TODO remove scale and fix sizing system. people can just use css scale
   size: z
     .enum(['1', '2', '3', '4'])
@@ -30,24 +22,12 @@ export const schema = z.object({
     .nullish(),
   compact: z.boolean().nullish(),
   order: z.string().or(z.number()).nullish(),
-  // global
-  class: z.string().nullish(),
-  id: z.string().nullish(),
-  onclick: z.string().nullish(),
-  // specific
-  src: z.string().nullish(),
-  alt: z.string().nullish(),
-  sizes: z.string().nullish(),
-  href: z.string().nullish(),
-  type: z.string().nullish(),
-  method: z.string().nullish(),
-
-  // loading: z.string().nullish(),
 })
 
 const {
   as: As = 'div',
   if: If,
+  html,
   color,
   scheme,
   contrast,
@@ -56,15 +36,15 @@ const {
   size,
   compact,
   ...rest
-} = schema.parse(Astro.props)
+} = Astro.props // disabled parsing, so that tag accepts everything. parsing is done in parent. = tag.parse(Astro.props)
 
 const slot = await Astro.slots.render('default')
-const hasContent = slot?.trim().length > 0
+const hasSlot = (await Astro.slots.render('default'))?.trim().length > 0
 const hasProp = If === true || (If && If in rest)
 ---
 
 {
-  (hasProp || hasContent) && (
+  (hasProp || hasSlot || html) && (
     <As
       style={`
         ${scale ? `--scale:${scale};` : ''}
@@ -79,6 +59,7 @@ const hasProp = If === true || (If && If in rest)
       {...rest}
     >
       <Fragment set:html={slot} />
+      <Fragment set:html={html} />
     </As>
   )
 }

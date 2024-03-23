@@ -1,38 +1,34 @@
 ---
 import { z } from 'astro:content'
-import { morph } from '../utils'
-import Icon, { macro as icon } from './Icon.astro'
-import Rating, { macro as rating } from './Rating.astro'
-import Specs, { macro as specs } from './Specs.astro'
-import Tag from './Tag.astro'
-import Writeup, { macro as writeup } from './Writeup.astro'
+import Icon, { icon } from './Icon.astro'
+import Rating, { rating } from './Rating.astro'
+import Specs, { specs } from './Specs.astro'
+import Tag, { tag } from './Tag.astro'
+import Writeup, { writeup } from './Writeup.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof display>
 
-export const { macro, meso, micro } = morph('display', {
-  display: z.undefined(),
-  rating: rating.shape.rating,
-  _rating: rating.shape._rating,
-  icon: icon.shape.icon,
-  _icon: icon.shape._icon,
-  ...writeup.shape,
-  specs: specs.shape.specs,
-  _specs: specs.shape._specs,
+export const display = tag.extend({
+  rating,
+  icon,
+  specs,
+  writeup,
   align: z.enum(['start', 'center']).nullish(),
 })
 
-const { align, ...rest } = meso(Astro.props)
+const { align, ...rest } = display.parse(Astro.props)
 ---
 
 <Tag
   class:list={['display', align]}
   {...rest}
 >
-  <Rating {...micro(rest)} />
-  <Icon {...micro(rest)} />
-  <Writeup {...micro(rest)} />
-  <Specs {...micro(rest)} />
-  <slot />
+  <slot>
+    <Rating {...rest.rating} />
+    <Icon {...rest.icon} />
+    <Writeup {...rest.writeup} />
+    <Specs {...rest.specs} />
+  </slot>
 </Tag>
 
 <style is:global>

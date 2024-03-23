@@ -1,25 +1,30 @@
 ---
-// TODO: convert naar zod
-
 import { z } from 'astro:content'
-import { morph } from '../utils'
-import Link, { macro as linkSchema } from './Link.astro'
-import Tag from './Tag.astro'
+import Link, { link } from './Link.astro'
+import Tag, { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof links>
 
-export const { macro, meso, micro } = morph('links', {
-  links: z.array(linkSchema),
+export const links = tag.extend({
+  link,
+  items: z.array(link).nullish(),
 })
 
-const { links, ...rest } = meso(Astro.props)
+const { items, ...rest } = links.parse(Astro.props)
 ---
 
 <Tag
   class="links"
   {...rest}
 >
-  {links?.map((link) => <Link {...link} />)}
+  {
+    items?.map((item) => (
+      <Link
+        {...rest.link}
+        {...item}
+      />
+    ))
+  }
 </Tag>
 
 <style is:global>

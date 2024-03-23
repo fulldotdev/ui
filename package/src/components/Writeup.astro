@@ -1,35 +1,31 @@
 ---
 import { z } from 'astro:content'
-import { morph } from '../utils'
-import Description, { macro as description } from './Description.astro'
-import Tag from './Tag.astro'
-import Tagline, { macro as tagline } from './Tagline.astro'
-import Title, { macro as title } from './Title.astro'
+import Description, { description } from './Description.astro'
+import Tag, { tag } from './Tag.astro'
+import Tagline, { tagline } from './Tagline.astro'
+import Title, { title } from './Title.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof writeup>
 
-export const { macro, meso, micro } = morph('writeup', {
-  tagline: tagline.shape.tagline,
-  _tagline: tagline.shape._tagline,
-  title: title.shape.title,
-  _title: title.shape._title,
-  description: description.shape.description,
-  _description: description.shape._description,
-  writeup: z.string().nullish(),
+export const writeup = tag.extend({
+  tagline,
+  title,
+  description,
   align: z.enum(['start', 'center']).nullish(),
 })
 
-const { writeup, align, ...rest } = meso(Astro.props)
+const { align, ...rest } = writeup.parse(Astro.props)
 ---
 
 <Tag
   class:list={['writeup', align]}
   {...rest}
 >
-  <Tagline {...micro(rest)} />
-  <Title {...micro(rest)} />
-  <Description {...micro(rest)} />
-  <Fragment set:html={writeup} />
+  <slot>
+    <Tagline {...rest.tagline} />
+    <Title {...rest.title} />
+    <Description {...rest.description} />
+  </slot>
 </Tag>
 
 <style is:global>

@@ -1,33 +1,27 @@
 ---
 import { z } from 'astro:content'
-import { morph } from '../utils'
-import Buttons, { macro as buttons } from './Buttons.astro'
-import Form, { macro as form } from './Form.astro'
-import Tag from './Tag.astro'
+import Buttons, { buttons } from './Buttons.astro'
+import Form, { form } from './Form.astro'
+import Tag, { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof action>
 
-export const { macro, meso, micro } = morph('action', {
-  action: z.undefined(), // FIXME needed, otherwise morph doesn't work
-  buttons: buttons.shape.buttons,
-  _buttons: buttons.shape._buttons,
-  button: buttons.shape.button,
-  _button: buttons.shape._button,
-  form: form.shape.form,
-  _form: form.shape._form,
+export const action = tag.extend({
+  buttons,
+  form,
   align: z.enum(['start', 'center']).nullish(),
 })
 
-const { ...rest } = meso(Astro.props)
+const { align, ...rest } = action.parse(Astro.props)
 ---
 
 <Tag
-  class:list={['action']}
+  class:list={['action, align']}
   {...rest}
 >
   <!-- {props.price ? <Product {...rest} /> : <Form {...(rest as any)} />} -->
-  <Form {...micro(rest)} />
-  <Buttons {...micro(rest)} />
+  <Form {...rest.form} />
+  <Buttons {...rest.buttons} />
   <slot />
 </Tag>
 

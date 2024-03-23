@@ -1,19 +1,19 @@
 ---
 import { z } from 'astro:content'
-import { morph } from '../utils'
+import { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
-  
-export const { macro, meso, micro } = morph('video', {
-  video: z.string().nullish(),
-  thumbnail: z.boolean().nullish(),
+type Props = z.infer<typeof video>
+
+export const video = tag.extend({
+  src: z.string().nullish(),
+  thumbnail: z.any(),
 })
 
-const { video, thumbnail } = meso(Astro.props)
+const { src, thumbnail } = video.parse(Astro.props)
 
 const youtubeId =
-  (video?.includes('youtube.com') || video?.includes('youtu.be')) &&
-  video.split('/').pop()?.split('?').shift()
+  (src?.includes('youtube.com') || src?.includes('youtu.be')) &&
+  src.split('/').pop()?.split('?').shift()
 ---
 
 {

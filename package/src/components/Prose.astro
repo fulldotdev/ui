@@ -1,16 +1,16 @@
 ---
 import { z } from 'astro:content'
-import { morph } from '../utils'
-import Tag from './Tag.astro'
+import Tag, { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof prose>
 
-export const { macro, meso, micro } = morph('prose', {
-  prose: z.any().nullish(),
+export const prose = tag.extend({
+  render: z.any(),
 })
 
-const { prose, ...rest } = meso(Astro.props)
-const Content = typeof prose === 'function' ? (await prose()).Content : null
+const { render, ...rest } = prose.parse(Astro.props)
+
+const Content = typeof prose === 'function' ? (await render()).Content : null
 ---
 
 <Tag

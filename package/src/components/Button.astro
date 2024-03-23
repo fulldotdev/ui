@@ -1,26 +1,22 @@
 ---
 import { z } from 'astro:content'
-import { morph } from '../utils'
-import Icon, { macro as icon } from './Icon.astro'
-import Tag from './Tag.astro'
+import Icon, { icon } from './Icon.astro'
+import Tag, { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof button>
 
-export const { macro, meso, micro } = morph('button', {
-  icon: icon.shape.icon,
-  _icon: icon.shape._icon,
-  button: z.string().nullish(),
+export const button = tag.extend({
+  icon,
   href: z.string().nullish(),
-  variant: z.string().nullish(),
+  variant: z.enum(['solid', 'soft', 'surface', 'outline', 'ghost']).nullish(),
 })
 
 const {
   as = 'a',
   variant = 'solid',
   color = 'accent',
-  button,
   ...rest
-} = meso(Astro.props)
+} = button.parse(Astro.props)
 ---
 
 <Tag
@@ -29,9 +25,9 @@ const {
   {as}
   {...rest}
 >
-  <Icon {...micro(rest)} />
-  <Fragment set:html={button} />
-  <slot />
+  <slot>
+    <Icon {...rest.icon} />
+  </slot>
 </Tag>
 
 <style is:global>

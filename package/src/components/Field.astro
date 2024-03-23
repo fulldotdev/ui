@@ -1,41 +1,31 @@
 ---
 import { z } from 'astro:content'
-import { getChildProps, morph } from '../utils'
-import Checkbox, { macro as checkbox } from './Checkbox.astro'
-import Input, { macro as input } from './Input.astro'
-import Label, { macro as label } from './Label.astro'
-import Tag from './Tag.astro'
-import Textarea, { macro as textarea } from './Textarea.astro'
+import Checkbox, { checkbox } from './Checkbox.astro'
+import Input, { input } from './Input.astro'
+import Label, { label } from './Label.astro'
+import Tag, { tag } from './Tag.astro'
+import Textarea, { textarea } from './Textarea.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof field>
 
-export const { macro, meso, micro } = morph('field', {
-  field: z.undefined(),
-  label: label.shape.label,
-  _label: label.shape._label,
-  checkbox: checkbox.shape.checkbox,
-  _checkbox: checkbox.shape._checkbox,
-  textarea: textarea.shape.textarea,
-  _textarea: textarea.shape._textarea,
-  input: input.shape.input,
-  _input: input.shape._input,
+export const field = tag.extend({
+  label,
+  checkbox,
+  textarea,
+  input,
 })
 
-const { as = 'div', ...rest } = meso(Astro.props)
-const child = getChildProps(rest)
+const { ...rest } = field.parse(Astro.props)
 ---
 
 <Tag
-  class:list={['field', { ...micro(checkbox) }]}
+  class:list={['field', { checkbox }]}
   {...rest}
 >
-  <Checkbox
-    {...micro(checkbox)}
-    {...child}
-  />
-  <Label {...child} />
-  <Textarea {...child} />
-  <Input {...child} />
+  <Checkbox {...rest.checkbox} />
+  <Label {...rest.label} />
+  <Textarea {...rest.textarea} />
+  <Input {...rest.input} />
   <slot />
 </Tag>
 

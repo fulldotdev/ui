@@ -1,15 +1,15 @@
 ---
 import { z } from 'astro:content'
-import { morph, unslugify } from '../utils'
-import Tag from './Tag.astro'
+import { unslugify } from '../utils'
+import Tag, { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof image>
 
-export const { macro, meso, micro } = morph('image', {
-  image: z.string().nullish(),
+export const image = tag.extend({
+  src: z.string().nullish(),
+  alt: z.string().nullish(),
   loading: z.string().nullish(),
   mask: z.boolean().nullish(),
-  alt: z.string().nullish(),
   sizes: z.string().nullish(),
   // sizes: {
   //   base: z.string().nullish(),
@@ -29,11 +29,11 @@ const {
   mask,
   alt = '',
   sizes,
+  src,
   position,
   frame,
-  image,
   ...rest
-} = meso(Astro.props)
+} = image.parse(Astro.props)
 
 // function getSrc() {
 //   if (src?.startsWith('http')) return src
@@ -49,7 +49,7 @@ const {
 
 function getAlt(): string {
   if (alt) return alt
-  const filename = image?.split('/').pop()
+  const filename = src?.split('/').pop()
   const slug = filename && filename.split('.')[0]
   const unslugged = slug && unslugify(slug)
   return unslugged || ''
@@ -70,14 +70,13 @@ function getAlt(): string {
 ---
 
 {
-  image && (
+  src && (
     <Tag
       class:list={['image', position, frame, { mask }]}
-      {as}
-      if="src"
-      src={image as string}
       alt={getAlt()}
-      sizes={sizes}
+      {as}
+      {src}
+      {sizes}
       {...rest}
     />
   )

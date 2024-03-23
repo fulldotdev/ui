@@ -1,17 +1,16 @@
 ---
 import { z } from 'astro:content'
-import { morph } from '../utils'
 import Image from './Image.astro'
-import Tag from './Tag.astro'
+import Tag, { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof title>
 
-export const { macro, meso, micro } = morph('logo', {
+export const title = tag.extend({
   logo: z.string().nullish(),
   href: z.string().nullish(),
 })
 
-const { as = 'a', href = '/', logo, ...rest } = meso(Astro.props)
+const { as = 'a', href = '/', logo, ...rest } = title.parse(Astro.props)
 ---
 
 <Tag
@@ -21,7 +20,7 @@ const { as = 'a', href = '/', logo, ...rest } = meso(Astro.props)
   {...rest}
 >
   <Image
-    image={logo}
+    src={logo}
     {...rest}
   />
   <slot />

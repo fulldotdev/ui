@@ -1,18 +1,16 @@
 ---
 import { z } from 'astro:content'
-import { morph } from '../utils'
-import Field, { macro as fieldSchema } from './Field.astro'
-import Tag from './Tag.astro'
+import Field, { field } from './Field.astro'
+import Tag, { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof fields>
 
-export const { macro, meso, micro } = morph('fields', {
-  field: fieldSchema.shape.field,
-  _field: fieldSchema.shape._field,
-  fields: z.array(fieldSchema).nullish(),
+export const fields = tag.extend({
+  field,
+  items: z.array(field).nullish(),
 })
 
-const { fields, field, _field, ...rest } = meso(Astro.props)
+const { items, ...rest } = fields.parse(Astro.props)
 ---
 
 <Tag
@@ -20,10 +18,9 @@ const { fields, field, _field, ...rest } = meso(Astro.props)
   {...rest}
 >
   {
-    fields?.map((item) => (
+    items?.map((item) => (
       <Field
-        {_field}
-        {field}
+        {...rest.field}
         {...item}
       />
     ))

@@ -1,16 +1,15 @@
 ---
 import { z } from 'astro:content'
-import { morph } from '../utils'
-import Icon from './Icon.astro'
-import Tag from './Tag.astro'
+import Icon, { icon } from './Icon.astro'
+import Tag, { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof rating>
 
-export const { macro, meso, micro } = morph('rating', {
-  rating: z.number().nullish(),
+export const rating = tag.extend({
+  value: z.number().nullish(),
 })
 
-const { rating, color = 'accent', ...rest } = meso(Astro.props)
+const { value = 5, color = 'accent', ...rest } = rating.parse(Astro.props)
 ---
 
 <Tag
@@ -18,12 +17,12 @@ const { rating, color = 'accent', ...rest } = meso(Astro.props)
   {color}
   {...rest}
 >
-  {rating && [1, 2, 3, 4, 5].map(() => <Icon icon="star-filled" />)}
+  {rating && [1, 2, 3, 4, 5].map(() => <Icon name="star-filled" />)}
 </Tag>
 
 <style is:global>
   .rating {
-    display: flex;
+    rating: flex;
     gap: 0.75rem;
     padding-left: 5px;
 

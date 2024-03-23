@@ -1,23 +1,24 @@
 ---
 import { z } from 'astro:content'
-import { morph } from '../utils'
-import Spec, { macro as spec } from './Spec.astro'
-import Tag from './Tag.astro'
+import Spec, { spec } from './Spec.astro'
+import Tag, { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof specs>
 
-export const { macro, meso, micro } = morph('specs', {
-  specs: z.array(spec).nullish(),
+export const specs = tag.extend({
+  items: z.array(spec),
 })
 
-const { specs, ...rest } = meso(Astro.props)
+const { items, ...rest } = specs.parse(Astro.props)
 ---
 
 <Tag
+  class:list={['specs']}
   {...rest}
-  class:list="specs"
 >
-  {specs?.map((spec) => <Spec {spec} />)}
+  <slot>
+    {items?.map((item) => <Spec {item} />)}
+  </slot>
 </Tag>
 
 <style is:global>

@@ -1,35 +1,34 @@
 ---
 import { z } from 'astro:content'
-import { morph } from '../utils'
-import Action, { macro as action } from './Action.astro'
-import Display, { macro as display } from './Display.astro'
-import Tag from './Tag.astro'
+import Action, { action } from './Action.astro'
+import Display, { display } from './Display.astro'
+import Tag, { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof composite>
 
-export const { macro, meso, micro } = morph('composite', {
-  composite: z.undefined(),
-  ...action.shape,
-  ...display.shape,
+export const composite = tag.extend({
+  action,
+  display,
   direction: z.enum(['row', 'column']).nullish(),
   align: z.enum(['start', 'center']).nullish(),
 })
 
-const { direction, align, ...rest } = meso(Astro.props)
+const { direction, align, ...rest } = composite.parse(Astro.props)
 ---
 
 <Tag
   class:list={['composite', direction, align]}
   {...rest}
 >
-  <Display {...micro(rest)} />
-  <Action {...micro(rest)} />
-  <slot />
+  <slot>
+    <Display {...rest.display} />
+    <Action {...rest.action} />
+  </slot>
 </Tag>
 
 <style is:global>
   .composite {
-    display: flex;
+    composite: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-5);

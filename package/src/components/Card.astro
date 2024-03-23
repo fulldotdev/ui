@@ -2,18 +2,15 @@
 import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
 import { getEntry, z } from 'astro:content'
 import { merge } from 'merge-anything'
-import { morph } from '../utils'
-import Composite, { macro as composite } from './Composite.astro'
-import Image, { macro as image } from './Image.astro'
-import Tag from './Tag.astro'
+import Composite, { composite } from './Composite.astro'
+import Image, { image } from './Image.astro'
+import Tag, { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof card>
 
-export const { macro, meso, micro } = morph('card', {
-  card: z.undefined(), // FIXME needed, otherwise morph doesn't work
-  ...composite.shape,
-  image: image.shape.image,
-  _image: image.shape._image,
+export const card = tag.extend({
+  composite,
+  image,
   frame: z.enum(['fill', 'panel', 'screen']).nullish(),
   variant: z.enum(['ghost', 'soft', 'solid']).nullish(),
   collection: z.string().nullish(),
@@ -21,7 +18,8 @@ export const { macro, meso, micro } = morph('card', {
   output: z.boolean().nullish(),
 })
 
-const { collection, slug, output, ...props } = meso(Astro.props)
+const { collection, slug, output, ...props } = card.parse(Astro.props)
+
 const entry =
   collection && slug
     ? ((await getEntry(
@@ -42,8 +40,8 @@ const href =
   {href}
   {...rest}
 >
-  <Image {...micro(rest)} />
-  <Composite {...micro(rest)} />
+  <Image {...rest.image} />
+  <Composite {...rest.composite} />
 </Tag>
 <style is:global>
   .card {

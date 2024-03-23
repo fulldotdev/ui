@@ -1,25 +1,23 @@
 ---
 import { z } from 'astro:content'
-import { morph } from '../utils'
+import { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof checkbox>
 
-export const { macro, meso, micro } = morph('checkbox', {
-  checkbox: z.string().nullish(),
+export const checkbox = tag.extend({
+  name: z.string().nullable(),
 })
 
-const { checkbox } = meso(Astro.props)
+const { name } = checkbox.parse(Astro.props)
 ---
 
 {
   checkbox && (
-    <>
-      <input
-        id={checkbox}
-        name={checkbox}
-        type="checkbox"
-      />
-    </>
+    <input
+      id={name}
+      type="checkbox"
+      {name}
+    />
   )
 }
 

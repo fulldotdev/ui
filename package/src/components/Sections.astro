@@ -1,26 +1,16 @@
 ---
-// TODO: convert naar zod
 import { z } from 'astro:content'
-import { morph } from '../utils'
-import Section, { macro as sectionSchema } from './Section.astro'
-import Tag from './Tag.astro'
+import Section, { section } from './Section.astro'
+import Tag, { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
+type Props = z.infer<typeof sections>
 
-export const { macro, meso, micro } = morph('sections', {
-  section: sectionSchema.shape.section,
-  _section: sectionSchema.shape._section,
-  sections: z.array(sectionSchema.shape.section).nullish(),
+export const sections = tag.extend({
+  section: section,
+  items: z.array(section).nullish(),
 })
 
-const { as = 'main', sections, section, _section, ...rest } = meso(Astro.props)
-
-// const sorted = sortByIndex(sections)
-// const indexed = sections?.map((section, index) => ({ index, ...section }))
-// const sorted = indexed?.sort((a, b) => {
-//   const index = (i: number) => (i < 0 ? indexed.length + 1 + i : i)
-//   return index(a.index) - index(b.index)
-// })
+const { as = 'main', items, ...rest } = sections.parse(Astro.props)
 ---
 
 <Tag
@@ -30,11 +20,10 @@ const { as = 'main', sections, section, _section, ...rest } = meso(Astro.props)
 >
   <slot name="before" />
   {
-    sections?.map((item) => (
+    items?.map((item) => (
       <Section
+        {...rest.section}
         {...item}
-        {_section}
-        {section}
       />
     ))
   }

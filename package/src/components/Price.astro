@@ -1,17 +1,14 @@
 ---
 import { z } from 'astro:content'
-import { morph } from '../utils'
-import Tag from './Tag.astro'
+import Tag, { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
-  
-export const { macro, meso, micro } = morph('price', {
-  price: z.number().nullish(),
-})
+type Props = z.infer<typeof price>
 
-const { price, ...rest } = meso(Astro.props)
+export const price = tag.extend({})
 
-const priceNumber = parseFloat(price as any)
+const { html, ...rest } = price.parse(Astro.props)
+
+const priceNumber = parseFloat(html as any)
 const fixedPrice = priceNumber?.toFixed(2).replace('.', ',')
 ---
 
@@ -19,7 +16,7 @@ const fixedPrice = priceNumber?.toFixed(2).replace('.', ',')
   class="price"
   {...rest}
 >
-  {price && fixedPrice && <Fragment>&euro;{fixedPrice}</Fragment>}
+  {html && fixedPrice && <Fragment>&euro;{fixedPrice}</Fragment>}
 </Tag>
 
 <style is:global>

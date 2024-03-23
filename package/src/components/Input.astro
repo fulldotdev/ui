@@ -1,23 +1,22 @@
 ---
 import { z } from 'astro:content'
-import { morph } from '../utils'
+import { tag } from './Tag.astro'
 
-type Props = z.infer<typeof macro>
-  
-export const { macro, meso, micro } = morph('input', {
-  input: z.string().nullish(),
+type Props = z.infer<typeof input>
+
+export const input = tag.extend({
+  name: z.string().nullable(),
 })
 
-const { input, ...rest } = meso(Astro.props)
+const { name } = input.parse(Astro.props)
 ---
 
 {
-  input && (
+  name && (
     <input
       class="input"
-      name={input}
-      id={input}
-      {...rest}
+      id={name}
+      {name}
     />
   )
 }
