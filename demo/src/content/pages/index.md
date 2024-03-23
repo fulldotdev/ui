@@ -5,8 +5,7 @@ seo:
   image:
 sections:
   - frame: screen
-    id: home-hero
-    size: large
+    size: 4
     align: center
     direction: row
     title: Maak kennis met The Gym in Haren
@@ -14,13 +13,14 @@ sections:
     _description:
       contrast: true
     _button: 
-      contrast: false
+      contrast: true
       color: accent
     buttons:
       - button: Gratis proefles
         href: /forms/gratis-proefles
       - button: Lidmaatschapstest
         href: /forms/lidmaatschapstest
+        variant: soft
     image: https://picsum.photos/800/600
     _image:
       position: background
@@ -70,50 +70,52 @@ sections:
           Bij ons geloven we in elke dag een beetje beter worden. Niet alleen
           voor jou, maar voor ons allemaal.
   - title: Ons aanbod
-    _card:
+    _card: # TODO werkend maken, wordt niet toegepast. Geldt ook voor button. Het komt omdat button en _button niet worden opgenomen in action. Action import nameljk allen meervoud. Zie Action.astro
       frame: panel
       look: soft
     _cards:
       layout: grid
     cards: services
-  # - collection: forms
-  #   look: soft
-  #   slug: contact
-  # - layout: split
-  #   align: center
-  #   title: The Gym plaats een ijsbaan in Haren!
-  #   description: >-
-  #     Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque
-  #     tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum
-  #     dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed
-  #     augue. Nam tellus id diam suspendisse vulputate.
-  #   buttons:
-  #     - button: Kom kennismaken
-  #       href: /forms/kennismaken
-  #     - button: Over ons team
-  #       href: /over-ons
-  #   image: https://picsum.photos/800/600
-  # - align: stretch
-  #   title: Wat onze leden zeggen
-  #   buttons:
-  #     - button: Past het ook bij jou?
-  #       href: /forms/lidmaatschapstest
-  #   _cards:
-  #     collection: reviews
-  #     layout: masonry
-  #     frame: panel
-  # - layout: split
-  #   align: center
-  #   title: Over The Gym Haren
-  #   description: >-
-  #     The Gym Haren helpt leden weer fitter, gezonder en/of slanker te worden.
-  #     En te blijven. Onze trainers staan garant voor 100% persoonlijke
-  #     begeleiding. Of het nou gaat over weer fit worden, afvallen of meer in
-  #     balans leven. Interesse? Start dan nu met een Gratis Proefles. Of wil je
-  #     eerst ontdekken wat bij je past? Doe dan de lidmaatschapstest. Stel in
-  #     ieder geval niet langer uit, want heel eerlijk, je bent al best een tijd
-  #     bezig met uitstellen… Toch? Daarom, vandaag start jouw gezondere
-  #     leefstijl! The Gym in Haren is de plek waar we je helpen je doelen te
-  #     behalen.
-  #   image: https://picsum.photos/800/600
+  - collection: forms
+    slug: contact
+    look: soft
+  - direction: row
+    align: center
+    title: The Gym plaats een ijsbaan in Haren!
+    description: >-
+      Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque
+      tempor sed augue. Nam tellus id diam suspendisse vulputate. Lorem ipsum
+      dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed
+      augue. Nam tellus id diam suspendisse vulputate.
+    buttons:
+      - button: Kom kennismaken
+        href: /forms/kennismaken
+      - button: Over ons team
+        href: /over-ons
+    image: https://picsum.photos/800/600
+  - align: start
+    _composite:
+      direction: row
+    title: Wat onze leden zeggen
+    buttons:
+      - button: Past het ook bij jou?
+        href: /forms/lidmaatschapstest
+    cards: reviews
+    _cards:
+      layout: masonry
+      frame: panel
+  - direction: row
+    align: center
+    title: Over The Gym Haren
+    description: >-
+      The Gym Haren helpt leden weer fitter, gezonder en/of slanker te worden.
+      En te blijven. Onze trainers staan garant voor 100% persoonlijke
+      begeleiding. Of het nou gaat over weer fit worden, afvallen of meer in
+      balans leven. Interesse? Start dan nu met een Gratis Proefles. Of wil je
+      eerst ontdekken wat bij je past? Doe dan de lidmaatschapstest. Stel in
+      ieder geval niet langer uit, want heel eerlijk, je bent al best een tijd
+      bezig met uitstellen… Toch? Daarom, vandaag start jouw gezondere
+      leefstijl! The Gym in Haren is de plek waar we je helpen je doelen te
+      behalen.
+    image: https://picsum.photos/800/600
 ---

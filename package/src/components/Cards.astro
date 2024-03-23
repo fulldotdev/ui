@@ -21,9 +21,11 @@ export const { macro, meso, micro } = morph('cards', {
 let { cards, ...props } = meso(Astro.props)
 const entries =
   typeof cards === 'string'
-    ? ((await getCollection(cards as any)).map((entry: any) => entry.data) as
-        | CollectionEntry<ContentCollectionKey>['data'][]
-        | undefined)
+    ? ((await getCollection(cards as any)).map((entry: any) => ({
+        collection: entry?.collection,
+        slug: entry?.slug,
+        ...entry?.data,
+      })) as CollectionEntry<ContentCollectionKey>['data'][] | undefined)
     : undefined
 cards = entries ?? (cards as ComponentProps<typeof Card>[])
 
@@ -109,19 +111,17 @@ const { card, _card, layout = 'grid', ...rest } = props
 
     &.masonry {
       column-gap: var(--space-3);
-      flex-direction: column;
-      align-items: flex-start;
-      column-count: var(--columns);
+      column-count: 1;
 
       @media (min-width: 640px) {
-        --columns: 2;
+        column-count: 2;
       }
       @media (min-width: 768px) {
-        --columns: 3;
+        column-count: 3;
       }
 
       @media (min-width: 1024px) {
-        --columns: 4;
+        column-count: 4;
       }
 
       & > :not([hidden]) ~ :not([hidden]) {

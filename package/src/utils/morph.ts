@@ -14,6 +14,7 @@ export const mergeProps = (name: string, val: any) => {
   const stripped = { ...val }
   delete stripped[name]
   delete stripped[`_${name}`]
+
   return merge(
     toObject(name, val[`_${name}`]),
     toObject(name, val[name]),

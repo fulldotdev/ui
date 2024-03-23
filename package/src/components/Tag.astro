@@ -23,7 +23,11 @@ export const schema = z.object({
   color: z.string().nullish(),
   scheme: z.string().nullish(),
   contrast: z.boolean().nullish(),
-  size: z.string().nullish(),
+  scale: z.string().or(z.number()).nullish(), // TODO remove scale and fix sizing system. people can just use css scale
+  size: z
+    .enum(['1', '2', '3', '4'])
+    .or(z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]))
+    .nullish(),
   compact: z.boolean().nullish(),
   // global
   class: z.string().nullish(),
@@ -34,6 +38,9 @@ export const schema = z.object({
   alt: z.string().nullish(),
   sizes: z.string().nullish(),
   href: z.string().nullish(),
+  type: z.string().nullish(),
+  method: z.string().nullish(),
+
   // loading: z.string().nullish(),
 })
 
@@ -43,6 +50,7 @@ const {
   color,
   scheme,
   contrast,
+  scale,
   size,
   compact,
   ...rest
@@ -56,6 +64,7 @@ const hasProp = If === true || (If && If in rest)
 {
   (hasProp || hasContent) && (
     <As
+      style={scale ? '--scale: ' + scale : undefined}
       class:list={[
         { compact, contrast },
         color ? `hue-${color}` : '',

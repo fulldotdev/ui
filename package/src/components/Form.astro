@@ -1,22 +1,18 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { getChildProps, macromorphic, type Endomorphic } from '../utils'
+import { z } from 'astro:content'
+import { morph } from '../utils'
 import Button from './Button.astro'
-import Fields from './Fields.astro'
+import Fields, { macro as fields } from './Fields.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'form'>,
-    ComponentProps<typeof Tag>,
-    ComponentProps<typeof Fields>,
-    ComponentProps<typeof Button> {}
+type Props = z.infer<typeof macro>
 
-const {
-  as = 'form',
-  method = 'POST',
-  ...rest
-} = macromorphic(Astro.props, 'form')
-const child = getChildProps(rest)
+export const { macro, meso, micro } = morph('form', {
+  ...fields,
+  ...Button,
+})
+
+const { as = 'form', method = 'POST', ...rest } = meso(Astro.props)
 ---
 
 <Tag
@@ -25,11 +21,11 @@ const child = getChildProps(rest)
   {method}
   {...rest}
 >
-  <Fields {...child} />
+  <Fields {...micro(rest)} />
   <Button
     as="button"
     type="submit"
-    {...rest}
+    {...micro(rest)}
   />
 </Tag>
 

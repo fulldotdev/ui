@@ -3,7 +3,7 @@ import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
 import { getEntry, z } from 'astro:content'
 import merge from 'deepmerge'
 import { morph } from '../utils'
-import Cards from './Cards.astro'
+import Cards, { macro as cards } from './Cards.astro'
 import Composite, { macro as composite } from './Composite.astro'
 import Image, { macro as image } from './Image.astro'
 import Prose, { macro as prose } from './Prose.astro'
@@ -18,9 +18,11 @@ export const { macro, meso, micro } = morph('section', {
   _image: image.shape._image,
   prose: prose.shape.prose,
   _prose: prose.shape._prose,
-  // cards: cards.shape.cards,
-  // _cards: cards.shape._cards,
-  direction: z.enum(['row', 'colmn']).nullish(),
+  cards: cards.shape.cards,
+  _cards: cards.shape._cards,
+  card: cards.shape.card, // FIXME
+  _card: cards.shape._card, // FIXME
+  direction: z.enum(['row', 'column']).nullish(),
   frame: z.enum(['screen', 'panel']).nullish(),
   variant: z.enum(['solid', 'soft', 'ghost']).nullish(),
   align: z.enum(['start', 'center']).nullish(),
@@ -40,6 +42,7 @@ const entry =
 const {
   as = 'section',
   direction = 'column',
+  variant,
   frame,
   align,
   ...rest
@@ -49,7 +52,7 @@ const {
 <Tag
   {as}
   {...rest}
-  class:list={['section', direction, align, frame]}
+  class:list={['section', direction, align, frame, variant]}
 >
   <Composite {...micro(rest)} />
   <Image {...micro(rest)} />
@@ -65,7 +68,7 @@ const {
     flex-direction: column;
     gap: var(--space-6);
     background: var(--hue1);
-    padding: var(--space-7) var(--gutter);
+    padding: var(--spacer) var(--gutter);
     overflow-x: hidden;
 
     /* &:first-child {
