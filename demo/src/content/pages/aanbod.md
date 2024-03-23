@@ -1,8 +1,7 @@
 ---
-seo:
-  title: Lorem ipsum
-  description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-  image:
+head:
+  title: Aanboddd
+head.title: Aanbod
 
 title: test
 _title: hello

@@ -31,6 +31,7 @@ const mergeUnderscore = (value: object) => {
 const morphedPagesSchema = z
   .any()
   .transform((val) => {
+    console.log(val)
     return mergeUnderscore(val)
   })
   .pipe(pagesSchema)

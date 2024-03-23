@@ -1,56 +1,12 @@
 ---
-import { z } from 'astro:content'
-import { flatten } from 'flatten-anything'
-import { merge } from 'merge-anything'
-import { nestifyObject } from 'nestify-anything'
+import { Title } from '@fulldevlabs/fullui'
 
-const testPage = {
-  title: 'first',
-  _title: 'second',
-  __title: 'third',
-  _head: {
-    title: 'head sdf first',
-    _title: 'head sdf second',
-    __title: 'head asd third',
-  },
-  head: {
-    title: 'head first',
-    _title: 'head second',
-    __title: 'head third',
-  },
+const obj = {
+  title: 'Hello World',
 }
-
-const pagesSchema = z.object({
-  head: z
-    .object({
-      title: z.string().nullish(),
-      description: z.string().nullish(),
-    })
-    .nullish(),
-  title: z.string().nullish(),
-  description: z.string().nullish(),
-})
-
-const morphedPagesSchema = z
-  .any()
-  .transform((val) => {
-    const flat: any = flatten(val)
-    const merged: any = {}
-
-    for (const key in flat) {
-      const strippedKey: any = key.toString().replace(/_/g, '')
-
-      if (merged[strippedKey] === undefined) merged[strippedKey] = flat[key]
-      else merged[strippedKey] = merge(merged[strippedKey], flat[key])
-    }
-
-    return nestifyObject(merged)
-  })
-  .pipe(pagesSchema)
-
-const parsed = morphedPagesSchema.parse(testPage)
-console.log(parsed)
 ---
+
+<Title {...obj.title} />
 
 <div>hoi</div>
 
