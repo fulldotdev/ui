@@ -9,7 +9,8 @@ sections:
     align: start
     scheme: dark
     tagline: De goedkoopste van Nederland
-    title: Handig langer thuis wonen
+    title: 
+      title: Handig langer thuis wonen
     description: Lorem ipsum dolor sit amet consectetur. Ac turpis euismod pellentesque tempor sed augue. Nam tellus id.
     _cards:
       layout: grid

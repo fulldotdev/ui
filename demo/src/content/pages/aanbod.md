@@ -4,6 +4,9 @@ seo:
   description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
   image:
 
+title: test
+_title: hello
+
 sections:
   - title: Ons volledige aanbod
     _cards:
