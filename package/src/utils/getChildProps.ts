@@ -29,7 +29,9 @@ export const getChildProps = (
           !tagProps.includes(key) &&
           !key.startsWith('data-') &&
           !key.startsWith('aria-')) ||
-        key === 'title'
+        key === 'title' ||
+        key === 'label' ||
+        key === 'placeholder'
     )
   )
   return filtered

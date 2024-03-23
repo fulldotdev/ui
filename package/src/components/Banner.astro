@@ -1,8 +1,7 @@
 ---
 // TODO: convert naar zod
 import type { ComponentProps } from 'astro/types'
-import BannerRoot from '../TODO/banner/BannerRoot.astro'
-import { Endomorphic, getChildProps, macromorphic } from '../utils'
+import { getChildProps, type Endomorphic } from '../utils'
 import Links from './Links.astro'
 import Specs from './Specs.astro'
 import Tag from './Tag.astro'
@@ -13,7 +12,6 @@ interface Props
     Pick<ComponentProps<typeof Specs>, 'specs' | '_specs'>,
     ComponentProps<typeof Tag> {
   position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
-  scheme?: 'default' | 'reverse' | 'light' | 'dark'
   impact?: 'low' | 'medium' | 'high' | 'extreme'
   area?: 'default' | 'panel'
 }
@@ -21,7 +19,6 @@ interface Props
 const {
   as = 'div',
   position,
-  scheme,
   impact,
   area,
   ...rest
@@ -30,24 +27,14 @@ const {
 const child = getChildProps(rest)
 ---
 
-slot && (
 <Tag
-  class:list={[
-    'banner compact',
-    'position-' + position,
-    'scheme-' + scheme,
-    scheme + '-theme',
-    scheme,
-    'impact-' + impact,
-    'area-' + area,
-  ]}
+  class:list={['banner', position, impact, area]}
+  {as}
+  {...rest}
 >
-  <BannerRoot {...rest}>
-    <Specs {...child} />
-    <Links {...child} />
-  </BannerRoot>
+  <Specs {...child} />
+  <Links {...child} />
 </Tag>
-)
 
 <style is:global>
   .banner {
@@ -64,26 +51,26 @@ slot && (
     background: var(--background);
     padding: var(--space-1) var(--gutter);
 
-    &:where(.position-sticky) {
+    &:where(.sticky) {
       position: sticky;
       top: 0;
     }
 
-    &:where(.position-fixed) {
+    &:where(.fixed) {
       position: fixed;
       top: 0;
       right: 0;
       left: 0;
     }
 
-    &:where(.position-absolute) {
+    &:where(.absolute) {
       position: absolute;
       top: 0;
       right: 0;
       left: 0;
     }
 
-    &:where(.area-panel) {
+    &:where(.area) {
       margin: var(--space-2) var(--gutter);
       border-color: var(--border-color);
       border-radius: var(--radius);

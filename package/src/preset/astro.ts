@@ -1,4 +1,4 @@
-import { default as UnoCSS } from '@unocss/astro'
+import UnoCSS from '@unocss/astro'
 import type { AstroIntegration } from 'astro'
 import type { UnoConfig } from './uno'
 import preset from './uno'
