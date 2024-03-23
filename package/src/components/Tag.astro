@@ -29,6 +29,7 @@ export const schema = z.object({
     .or(z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]))
     .nullish(),
   compact: z.boolean().nullish(),
+  order: z.string().or(z.number()).nullish(),
   // global
   class: z.string().nullish(),
   id: z.string().nullish(),
@@ -50,6 +51,7 @@ const {
   color,
   scheme,
   contrast,
+  order,
   scale,
   size,
   compact,
@@ -64,7 +66,10 @@ const hasProp = If === true || (If && If in rest)
 {
   (hasProp || hasContent) && (
     <As
-      style={scale ? '--scale: ' + scale : undefined}
+      style={`
+        ${scale ? `--scale:${scale};` : ''}
+        ${order ? `order:${order};` : ''}
+      `.trim()}
       class:list={[
         { compact, contrast },
         color ? `hue-${color}` : '',

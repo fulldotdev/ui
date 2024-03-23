@@ -8,8 +8,6 @@ seo:
 title: Fysiotherapie
 description: 
 image: https://picsum.photos/seed/3/800/600
-
-
 sections:
   - layout: split
     align: center

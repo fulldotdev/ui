@@ -18,9 +18,10 @@ export const { macro, meso, micro } = morph('card', {
   variant: z.enum(['ghost', 'soft', 'solid']).nullish(),
   collection: z.string().nullish(),
   slug: z.string().nullish(),
+  output: z.boolean().nullish(),
 })
 
-const { collection, slug, ...props } = meso(Astro.props)
+const { collection, slug, output, ...props } = meso(Astro.props)
 const entry =
   collection && slug
     ? ((await getEntry(
@@ -30,7 +31,8 @@ const entry =
     : undefined
 
 const { variant, frame, ...rest } = merge(entry?.data, props)
-const href = collection && slug ? `/${collection}/${slug}` : undefined
+const href =
+  output !== false && collection && slug ? `/${collection}/${slug}` : undefined
 ---
 
 <Tag
@@ -50,6 +52,7 @@ const href = collection && slug ? `/${collection}/${slug}` : undefined
     flex-direction: column;
     justify-content: stretch;
     gap: var(--space-4);
+    overflow: hidden;
 
     .composite {
       justify-content: space-between;

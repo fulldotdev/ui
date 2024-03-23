@@ -2,6 +2,7 @@ import type { AstroGlobal } from 'astro'
 import type { ZodRawShape } from 'astro/zod'
 import { z } from 'astro:content'
 import { merge } from 'merge-anything'
+import { fromZodError } from 'zod-validation-error'
 import { schema as tag } from '../components/Tag.astro'
 
 const toObject = (name: string, value: any) => {
@@ -16,9 +17,9 @@ export const mergeProps = (name: string, val: any) => {
   delete stripped[`_${name}`]
 
   return merge(
+    stripped,
     toObject(name, val[`_${name}`]),
-    toObject(name, val[name]),
-    stripped
+    toObject(name, val[name])
   )
 }
 
@@ -35,7 +36,14 @@ export const morph = <
     microSchema.parse(mergeProps(name, props)) as z.infer<typeof microSchema>
 
   const mesoSchema = tag.merge(microSchema)
-  const mesoParse = (props: P) => mesoSchema.parse(mergeProps(name, props))
+  const mesoParse = (props: P) => {
+    try {
+      return mesoSchema.parse(mergeProps(name, props))
+    } catch (error) {
+      // @ts-ignore
+      throw new Error(fromZodError(error))
+    }
+  }
 
   const value = microSchema.shape[name].or(mesoSchema).nullable()
   // const value = microSchema.shape[name] // TODO: not sure if this fully works yet. is replacement of line above // TODO return any. see card in cards for example

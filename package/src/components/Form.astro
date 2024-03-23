@@ -1,18 +1,25 @@
 ---
 import { z } from 'astro:content'
 import { morph } from '../utils'
-import Button from './Button.astro'
+import Button, { macro as button } from './Button.astro'
 import Fields, { macro as fields } from './Fields.astro'
 import Tag from './Tag.astro'
 
 type Props = z.infer<typeof macro>
 
 export const { macro, meso, micro } = morph('form', {
-  ...fields,
-  ...Button,
+  form: z.undefined(),
+  field: fields.shape.field,
+  _field: fields.shape._field,
+  fields: fields.shape.fields,
+  _fields: fields.shape._fields,
+  _button: button.shape._button,
+  button: button.shape.button,
 })
 
 const { as = 'form', method = 'POST', ...rest } = meso(Astro.props)
+
+console.log(Astro.props)
 ---
 
 <Tag

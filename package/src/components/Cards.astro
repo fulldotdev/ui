@@ -1,7 +1,7 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
-import { getCollection, z } from 'astro:content'
+import { getCollection, getEntries, z } from 'astro:content'
 import { morph } from '../utils'
 import Card, { macro as cardSchema } from './Card.astro'
 import Tag from './Tag.astro'
@@ -14,22 +14,54 @@ export const { macro, meso, micro } = morph('cards', {
     .nullish(),
   card: cardSchema.shape.card,
   _card: cardSchema.shape._card,
-  cards: z.string().or(z.array(cardSchema.shape.card)).nullish(),
+  cards: z
+    .string()
+    .or(z.array(z.string()))
+    .or(z.array(cardSchema.shape.card))
+    .nullish(),
+  collection: z.string().nullish(),
   // TODO [collectionKey]: entrySlug <<< toevoegen
 })
 
-let { cards, ...props } = meso(Astro.props)
-const entries =
-  typeof cards === 'string'
-    ? ((await getCollection(cards as any)).map((entry: any) => ({
+let { cards, collection, ...props } = meso(Astro.props)
+
+const collectionEntries =
+  typeof cards === 'string' || typeof collection === 'string'
+    ? ((await getCollection(cards ?? (collection as any)))?.map(
+        (entry: any) => ({
+          collection: entry?.collection,
+          slug: entry?.slug,
+          ...entry?.data,
+        })
+      ) as CollectionEntry<ContentCollectionKey>['data'][] | undefined)
+    : undefined
+
+const referenceEntries =
+  collection && Array.isArray(cards) && typeof cards[0] === 'string'
+    ? ((
+        await getEntries(
+          cards.map((card) => ({ collection, slug: card, id: card }) as any)
+        )
+      ).map((entry: any) => ({
         collection: entry?.collection,
         slug: entry?.slug,
+        id: entry?.id,
         ...entry?.data,
       })) as CollectionEntry<ContentCollectionKey>['data'][] | undefined)
     : undefined
-cards = entries ?? (cards as ComponentProps<typeof Card>[])
+
+cards = collectionEntries ?? (cards as ComponentProps<typeof Card>[])
+cards = referenceEntries ?? (cards as ComponentProps<typeof Card>[])
 
 const { card, _card, layout = 'grid', ...rest } = props
+
+console.log({
+  astroprops: Astro.props,
+  props,
+  cards,
+  collectionEntries,
+  referenceEntries,
+})
 ---
 
 <Tag
@@ -37,7 +69,7 @@ const { card, _card, layout = 'grid', ...rest } = props
   {...rest}
 >
   {
-    cards?.map((item) => (
+    cards?.map((item: any) => (
       <Card
         {_card}
         {card}
@@ -93,7 +125,7 @@ const { card, _card, layout = 'grid', ...rest } = props
       scroll-behavior: smooth;
       scroll-snap-type: x mandatory;
 
-      > .card {
+      & > :not([hidden]) :not([hidden]) {
         /* TODO add multiple sizes */
         flex-grow: 0;
         flex-shrink: 0;
@@ -124,9 +156,7 @@ const { card, _card, layout = 'grid', ...rest } = props
         column-count: 4;
       }
 
-      & > :not([hidden]) ~ :not([hidden]) {
-        --un-space-y-reverse: 0;
-        break-inside: avoid-column;
+      & > .card + .card {
         margin-top: var(--space-4);
         margin-bottom: var(--space-4);
       }
