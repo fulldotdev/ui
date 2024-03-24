@@ -10,19 +10,21 @@ sections.items:
     size: 4
     align: center
     direction: row
-    composite.display.writeup.title: Maak kennis met The Gym in Haren
-    composite.display.writeup.description: Dé sportschool voor echte persoonlijke begeleiding!
+    composite.display.writeup.title.html: Maak kennis met The Gym in Haren
+    composite.display.writeup.description.html: Dé sportschool voor echte persoonlijke begeleiding!
     _composite.display.writeup.description.contrast: true
     _composite.action.button:
-    _button: 
       contrast: true
-      color: accent
+      color: lorem
     composite.action.buttons.items:
       - html: Gratis proefles
         href: /forms/gratis-proefles
       - html: Lidmaatschapstest
         href: /forms/lidmaatschapstest
-        variant: soft
+        icon: 
+          name: arrow-right
+          color: base
+          _color: accent
     image.src: https://picsum.photos/800/600
     _image:
       position: background
