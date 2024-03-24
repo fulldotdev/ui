@@ -1,22 +1,23 @@
 ---
-import { z } from 'astro:content'
-import Icon, { icon } from './Icon.astro'
-import Rating, { rating } from './Rating.astro'
-import Specs, { specs } from './Specs.astro'
-import Tag, { tag } from './Tag.astro'
-import Writeup, { writeup } from './Writeup.astro'
+import { z } from 'astro:content';
+import { buildProps, parseProps } from '../utils';
+import Icon, { icon } from './Icon.astro';
+import Rating, { rating } from './Rating.astro';
+import Specs, { specs } from './Specs.astro';
+import Tag from './Tag.astro';
+import Writeup, { writeup } from './Writeup.astro';
 
-type Props = z.infer<typeof display>
+type Props = z.infer<typeof display>;
 
-export const display = tag.extend({
+export const display = buildProps({
   rating,
   icon,
   specs,
   writeup,
   align: z.enum(['start', 'center']).nullish(),
-})
+});
 
-const { align, ...rest } = display.parse(Astro.props)
+const { align, ...rest } = parseProps(display, Astro.props);
 ---
 
 <Tag

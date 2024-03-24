@@ -1,14 +1,15 @@
 ---
-import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
-import { getEntry, z } from 'astro:content'
-import { merge } from 'merge-anything'
-import Composite, { composite } from './Composite.astro'
-import Image, { image } from './Image.astro'
-import Tag, { tag } from './Tag.astro'
+import type { CollectionEntry, ContentCollectionKey } from 'astro:content';
+import { getEntry, z } from 'astro:content';
+import { merge } from 'merge-anything';
+import { buildProps, parseProps } from '../utils';
+import Composite, { composite } from './Composite.astro';
+import Image, { image } from './Image.astro';
+import Tag from './Tag.astro';
 
-type Props = z.infer<typeof card>
+type Props = z.infer<typeof card>;
 
-export const card = tag.extend({
+export const card = buildProps({
   composite,
   image,
   frame: z.enum(['fill', 'panel', 'screen']).nullish(),
@@ -16,21 +17,20 @@ export const card = tag.extend({
   collection: z.string().nullish(),
   slug: z.string().nullish(),
   output: z.boolean().nullish(),
-})
+});
 
-const { collection, slug, output, ...props } = card.parse(Astro.props)
-
+const { collection, slug, output, ...props } = parseProps(card, Astro.props);
 const entry =
   collection && slug
     ? ((await getEntry(
         collection as any,
         slug as any
       )) as CollectionEntry<ContentCollectionKey>)
-    : undefined
+    : undefined;
 
-const { variant, frame, ...rest } = merge(entry?.data, props)
+const { variant, frame, ...rest } = merge(entry?.data, props);
 const href =
-  output !== false && collection && slug ? `/${collection}/${slug}` : undefined
+  output !== false && collection && slug ? `/${collection}/${slug}` : undefined;
 ---
 
 <Tag

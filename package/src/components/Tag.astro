@@ -1,6 +1,6 @@
 ---
 import { z } from 'astro:content'
-import { zElements } from '../utils'
+import { attributes, zElements } from '../utils'
 
 // TODO add Polymorphic
 type Props = z.infer<typeof tag> & Record<any, any>
@@ -26,7 +26,7 @@ export const tag = z.object({
 
 const {
   as: As = 'div',
-  if: If,
+  if: hasProp,
   html,
   color,
   scheme,
@@ -36,27 +36,28 @@ const {
   size,
   compact,
   ...rest
-} = Astro.props // disabled parsing, so that tag accepts everything. parsing is done in parent. = tag.parse(Astro.props)
+} = Astro.props // disabled parsing, so that tag accepts everything. parsing is done in parent. = parseProps(tag, Astro.props)
 
 const slot = await Astro.slots.render('default')
 const hasSlot = (await Astro.slots.render('default'))?.trim().length > 0
-const hasProp = If === true || (If && If in rest)
 ---
 
 {
-  (hasProp || hasSlot || html) && (
+  (hasSlot || hasProp || html) && (
     <As
-      style={`
+      style={
+        `
         ${scale ? `--scale:${scale};` : ''}
         ${order ? `order:${order};` : ''}
-      `.trim()}
+      `.trim() || undefined
+      }
       class:list={[
         { compact, contrast },
         color ? `hue-${color}` : '',
         size ? `size-${size}` : '',
         scheme,
       ]}
-      {...rest}
+      {...attributes.parse(rest)}
     >
       <Fragment set:html={slot} />
       <Fragment set:html={html} />

@@ -1,11 +1,11 @@
 ---
 import { z } from 'astro:content'
-import { unslugify } from '../utils'
-import Tag, { tag } from './Tag.astro'
+import { buildProps, parseProps, unslugify } from '../utils'
+import Tag from './Tag.astro'
 
 type Props = z.infer<typeof image>
 
-export const image = tag.extend({
+export const image = buildProps({
   src: z.string().nullish(),
   alt: z.string().nullish(),
   loading: z.string().nullish(),
@@ -33,8 +33,7 @@ const {
   position,
   frame,
   ...rest
-} = image.parse(Astro.props)
-
+} = parseProps(image, Astro.props)
 // function getSrc() {
 //   if (src?.startsWith('http')) return src
 //   // TODO: add eager import
@@ -74,6 +73,7 @@ function getAlt(): string {
     <Tag
       class:list={['image', position, frame, { mask }]}
       alt={getAlt()}
+      if={true}
       {as}
       {src}
       {sizes}

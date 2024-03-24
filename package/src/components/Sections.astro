@@ -1,16 +1,17 @@
 ---
 import { z } from 'astro:content'
+import { buildProps, parseProps } from '../utils'
 import Section, { section } from './Section.astro'
-import Tag, { tag } from './Tag.astro'
+import Tag from './Tag.astro'
 
 type Props = z.infer<typeof sections>
 
-export const sections = tag.extend({
+export const sections = buildProps({
   section: section,
   items: z.array(section).nullish(),
 })
 
-const { as = 'main', items, ...rest } = sections.parse(Astro.props)
+const { as = 'main', items, ...rest } = parseProps(sections, Astro.props)
 ---
 
 <Tag

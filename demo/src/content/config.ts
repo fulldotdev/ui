@@ -1,18 +1,18 @@
+import { head } from '@fulldevlabs/fullui/src/components/Head.astro'
+import { sections } from '@fulldevlabs/fullui/src/components/Sections.astro'
 import { defineCollection, z } from 'astro:content'
 import { flatten } from 'flatten-anything'
 import { merge } from 'merge-anything'
 import { nestifyObject } from 'nestify-anything'
 
-const pagesSchema = z.object({
-  head: z
-    .object({
-      title: z.string().nullish(),
-      description: z.string().nullish(),
-    })
-    .nullish(),
-  title: z.string().nullish(),
-  description: z.string().nullish(),
-})
+const pagesSchema = z
+  .object({
+    head,
+    title: z.string().nullish(),
+    description: z.string().nullish(),
+    sections,
+  })
+  .partial()
 
 const mergeUnderscore = (value: object) => {
   const flat: any = flatten(value)
@@ -31,7 +31,9 @@ const mergeUnderscore = (value: object) => {
 const morphedPagesSchema = z
   .any()
   .transform((val) => {
-    return mergeUnderscore(val)
+    const merged = mergeUnderscore(val)
+    console.log('merged', JSON.stringify(merged, null, 2))
+    return merged
   })
   .pipe(pagesSchema)
 

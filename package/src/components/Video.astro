@@ -1,19 +1,18 @@
 ---
-import { z } from 'astro:content'
-import { tag } from './Tag.astro'
+import { z } from 'astro:content';
+import { buildProps, parseProps } from '../utils';
 
-type Props = z.infer<typeof video>
+type Props = z.infer<typeof video>;
 
-export const video = tag.extend({
+export const video = buildProps({
   src: z.string().nullish(),
   thumbnail: z.any(),
-})
+});
 
-const { src, thumbnail } = video.parse(Astro.props)
-
+const { src, thumbnail } = parseProps(video, Astro.props);
 const youtubeId =
   (src?.includes('youtube.com') || src?.includes('youtu.be')) &&
-  src.split('/').pop()?.split('?').shift()
+  src.split('/').pop()?.split('?').shift();
 ---
 
 {

@@ -1,4 +1,4 @@
----
+<!-- ---
 _enabled_editors:
   - content
 
@@ -80,4 +80,4 @@ hero:
 | Kickboksen              | 09:00 - 09:45 | Binnen  | [+ Info](/groepslessen/kickboxen)  |
 | BBB Booty calls!        | 10:00 - 10:45 | Binnen  | [+ Info](/groepslessen/bbb)  |
 | Training with Weights      | 10:00 - 10:45 | Buiten  | [+ Info](/groepslessen/training-with-weights)  |
-| Bootcamp in de Wijken - Oosterhaar | 10:00 - 10:45 | Buiten  | [+ Info](#/groepslessen/training-with-weights)  |
+| Bootcamp in de Wijken - Oosterhaar | 10:00 - 10:45 | Buiten  | [+ Info](#/groepslessen/training-with-weights)  | -->

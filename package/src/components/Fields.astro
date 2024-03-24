@@ -1,16 +1,17 @@
 ---
-import { z } from 'astro:content'
-import Field, { field } from './Field.astro'
-import Tag, { tag } from './Tag.astro'
+import { z } from 'astro:content';
+import { buildProps, parseProps } from '../utils';
+import Field, { field } from './Field.astro';
+import Tag from './Tag.astro';
 
-type Props = z.infer<typeof fields>
+type Props = z.infer<typeof fields>;
 
-export const fields = tag.extend({
+export const fields = buildProps({
   field,
   items: z.array(field).nullish(),
-})
+});
 
-const { items, ...rest } = fields.parse(Astro.props)
+const { items, ...rest } = parseProps(fields, Astro.props);
 ---
 
 <Tag

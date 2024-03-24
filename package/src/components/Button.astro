@@ -1,22 +1,23 @@
 ---
-import { z } from 'astro:content'
-import Icon, { icon } from './Icon.astro'
-import Tag, { tag } from './Tag.astro'
+import { z } from 'astro:content';
+import { buildProps, parseProps } from '../utils';
+import Icon, { icon } from './Icon.astro';
+import Tag from './Tag.astro';
 
-type Props = z.infer<typeof button>
+type Props = z.infer<typeof button>;
 
-export const button = tag.extend({
+export const button = buildProps({
   icon,
   href: z.string().nullish(),
   variant: z.enum(['solid', 'soft', 'surface', 'outline', 'ghost']).nullish(),
-})
+});
 
 const {
   as = 'a',
   variant = 'solid',
   color = 'accent',
   ...rest
-} = button.parse(Astro.props)
+} = parseProps(button, Astro.props);
 ---
 
 <Tag

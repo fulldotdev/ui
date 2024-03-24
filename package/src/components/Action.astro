@@ -1,18 +1,19 @@
 ---
 import { z } from 'astro:content'
+import { buildProps, parseProps } from '../utils'
 import Buttons, { buttons } from './Buttons.astro'
 import Form, { form } from './Form.astro'
-import Tag, { tag } from './Tag.astro'
+import Tag from './Tag.astro'
 
 type Props = z.infer<typeof action>
 
-export const action = tag.extend({
-  buttons,
+export const action = buildProps({
   form,
+  buttons,
   align: z.enum(['start', 'center']).nullish(),
 })
 
-const { align, ...rest } = action.parse(Astro.props)
+const { align, ...rest } = parseProps(action, Astro.props)
 ---
 
 <Tag

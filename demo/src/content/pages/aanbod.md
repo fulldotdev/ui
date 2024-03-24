@@ -1,4 +1,4 @@
----
+<!-- ---
 head:
   title: Aanboddd
 head.title: Aanbod
@@ -21,4 +21,4 @@ sections:
       collection: reviews
       layout: masonry
       frame: panel
----
+--- -->

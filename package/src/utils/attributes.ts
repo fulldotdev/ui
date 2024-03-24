@@ -1,11 +1,11 @@
 import { z } from 'astro:content'
 
-export const zAttributes = z.object({
+export const attributes = z.object({
   abbr: z.any(),
   accept: z.any(),
   acceptCharset: z.any(),
   accessKey: z.any(),
-  action: z.any(),
+  // action: z.any(),
   allowFullScreen: z.any(),
   allowTransparency: z.any(),
   alt: z.any(),

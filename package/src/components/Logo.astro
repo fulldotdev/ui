@@ -1,16 +1,17 @@
 ---
-import { z } from 'astro:content'
-import Image from './Image.astro'
-import Tag, { tag } from './Tag.astro'
+import { z } from 'astro:content';
+import { buildProps, parseProps } from '../utils';
+import Image from './Image.astro';
+import Tag from './Tag.astro';
 
-type Props = z.infer<typeof title>
+type Props = z.infer<typeof title>;
 
-export const title = tag.extend({
+export const title = buildProps({
   logo: z.string().nullish(),
   href: z.string().nullish(),
-})
+});
 
-const { as = 'a', href = '/', logo, ...rest } = title.parse(Astro.props)
+const { as = 'a', href = '/', logo, ...rest } = parseProps(title, Astro.props);
 ---
 
 <Tag

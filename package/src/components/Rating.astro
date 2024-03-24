@@ -1,15 +1,16 @@
 ---
 import { z } from 'astro:content'
+import { buildProps, parseProps } from '../utils'
 import Icon, { icon } from './Icon.astro'
-import Tag, { tag } from './Tag.astro'
+import Tag from './Tag.astro'
 
 type Props = z.infer<typeof rating>
 
-export const rating = tag.extend({
+export const rating = buildProps({
   value: z.number().nullish(),
 })
 
-const { value = 5, color = 'accent', ...rest } = rating.parse(Astro.props)
+const { value, color = 'accent', ...rest } = parseProps(rating, Astro.props)
 ---
 
 <Tag
@@ -17,12 +18,12 @@ const { value = 5, color = 'accent', ...rest } = rating.parse(Astro.props)
   {color}
   {...rest}
 >
-  {rating && [1, 2, 3, 4, 5].map(() => <Icon name="star-filled" />)}
+  {value && [1, 2, 3, 4, 5].map(() => <Icon name="star-filled" />)}
 </Tag>
 
 <style is:global>
   .rating {
-    rating: flex;
+    display: flex;
     gap: 0.75rem;
     padding-left: 5px;
 

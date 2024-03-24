@@ -1,19 +1,20 @@
 ---
 import { z } from 'astro:content'
+import { buildProps, parseProps } from '../utils'
 import Action, { action } from './Action.astro'
 import Display, { display } from './Display.astro'
-import Tag, { tag } from './Tag.astro'
+import Tag from './Tag.astro'
 
 type Props = z.infer<typeof composite>
 
-export const composite = tag.extend({
+export const composite = buildProps({
   action,
   display,
   direction: z.enum(['row', 'column']).nullish(),
   align: z.enum(['start', 'center']).nullish(),
 })
 
-const { direction, align, ...rest } = composite.parse(Astro.props)
+const { direction, align, ...rest } = parseProps(composite, Astro.props)
 ---
 
 <Tag
@@ -28,7 +29,7 @@ const { direction, align, ...rest } = composite.parse(Astro.props)
 
 <style is:global>
   .composite {
-    composite: flex;
+    display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-5);

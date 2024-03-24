@@ -1,33 +1,36 @@
 ---
 import tablerIcons from '@iconify-json/tabler/icons.json'
 import { z } from 'astro:content'
-import Tag, { tag } from './Tag.astro'
+import { buildProps, parseProps } from '../utils'
+import Tag from './Tag.astro'
 
 type Props = z.infer<typeof icon>
 
-export const icon = tag.extend({
+export const icon = buildProps({
   name: z.string().nullish(),
 })
 
-const { as = 'i', name, ...rest } = icon.parse(Astro.props)
+const { as = 'i', name, ...rest } = parseProps(icon, Astro.props)
 ---
 
-<Tag
-  class:list={['icon']}
-  {as}
-  {...rest}
->
-  {
-    icon && (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        set:html={(tablerIcons as any)?.icons[name as any]?.body}
-      />
-    )
-  }
-  <slot />
-</Tag>
+{
+  name && (
+    <Tag
+      class:list={['icon']}
+      {as}
+      {...rest}
+    >
+      {icon && (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          set:html={(tablerIcons as any)?.icons[name as any]?.body}
+        />
+      )}
+      <slot />
+    </Tag>
+  )
+}
 
 <style is:global>
   .icon {
