@@ -1,24 +1,29 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, type Endomorphic } from '../utils'
-import Image from './Image.astro'
-import Tag from './Tag.astro'
+import { z } from 'astro:content';
+import { buildProps, parseProps } from '../utils';
+import Image from './Image.astro';
+import Tag from './Tag.astro';
 
-interface Props
-  extends Endomorphic<Props, 'logo', ComponentProps<typeof Image>['image']>,
-    ComponentProps<typeof Tag>,
-    ComponentProps<typeof Image> {}
+type Props = z.infer<typeof title>;
 
-const { as = 'a', ...rest } = endomorphic(Astro.props, 'logo')
+export const title = buildProps({
+  logo: z.string().nullish(),
+  href: z.string().nullish(),
+});
+
+const { as = 'a', href = '/', logo, ...rest } = parseProps(title, Astro.props);
 ---
 
 <Tag
   class="logo"
-  href="/"
+  {href}
   {as}
   {...rest}
 >
-  <Image {...rest} />
+  <Image
+    src={logo}
+    {...rest}
+  />
   <slot />
 </Tag>
 

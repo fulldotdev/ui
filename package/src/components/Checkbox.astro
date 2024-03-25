@@ -1,23 +1,22 @@
-<!-- ---
-import { endomorphic,type Endomorphic } from '../utils'
+---
+import { z } from 'astro:content';
+import { buildProps, parseProps } from '../utils';
 
-interface Base {
-  checkbox: string | null
-}
+type Props = z.infer<typeof checkbox>;
 
-type Props = Endomorphic<Base, 'checkbox', 'input'>
-const props = endomorphic(Astro.props, 'checkbox')
+export const checkbox = buildProps({
+  name: z.string().nullable(),
+});
 
-const { checkbox, ...rest } = props
+const { name } = parseProps(checkbox, Astro.props);
 ---
 
 {
   checkbox && (
     <input
-      id={checkbox}
-      name={checkbox}
+      id={name}
       type="checkbox"
-      {...rest}
+      {name}
     />
   )
 }
@@ -29,7 +28,6 @@ const { checkbox, ...rest } = props
     border-color: var(--border-color);
     border-radius: var(--radius-2);
     background: var(--background);
-    padding: var(--space-2);
     color: var(--color);
     font: var(--font);
 
@@ -43,4 +41,4 @@ const { checkbox, ...rest } = props
       background: var(--background-active);
     }
   }
-</style> -->
+</style>

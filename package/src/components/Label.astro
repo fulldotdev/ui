@@ -1,13 +1,13 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, type Endomorphic } from '../utils'
-import Tag from './Tag.astro'
+import { z } from 'astro:content';
+import { buildProps, parseProps } from '../utils';
+import Tag from './Tag.astro';
 
-interface Props
-  extends Endomorphic<Props, 'label', string>,
-    ComponentProps<typeof Tag> {}
+type Props = z.infer<typeof label>;
 
-const { as = 'label', label, ...rest } = endomorphic(Astro.props, 'label')
+export const label = buildProps({});
+
+const { as = 'label', ...rest } = parseProps(label, Astro.props);
 ---
 
 <Tag
@@ -16,7 +16,6 @@ const { as = 'label', label, ...rest } = endomorphic(Astro.props, 'label')
   {as}
   {...rest}
 >
-  <Fragment set:html={label} />
   <slot />
 </Tag>
 

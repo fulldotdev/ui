@@ -1,38 +1,35 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, getChildProps, type Endomorphic } from '../utils'
-import Icon from './Icon.astro'
-import Rating from './Rating.astro'
-import Specs from './Specs.astro'
-import Tag from './Tag.astro'
-import Writeup from './Writeup.astro'
+import { z } from 'astro:content';
+import { buildProps, parseProps } from '../utils';
+import Icon, { icon } from './Icon.astro';
+import Rating, { rating } from './Rating.astro';
+import Specs, { specs } from './Specs.astro';
+import Tag from './Tag.astro';
+import Writeup, { writeup } from './Writeup.astro';
 
-interface Props
-  extends Endomorphic<Props, 'display'>,
-    ComponentProps<typeof Tag>,
-    Pick<ComponentProps<typeof Writeup>, 'writeup' | 'writeup'>,
-    Pick<ComponentProps<typeof Rating>, 'rating' | '_rating'>,
-    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'>,
-    Pick<ComponentProps<typeof Specs>, 'specs' | '_specs'> {
-  align?: 'start' | 'center' | null
-}
+type Props = z.infer<typeof display>;
 
-const { align, ...rest } = endomorphic(Astro.props, 'display')
-const child = getChildProps(rest)
+export const display = buildProps({
+  rating,
+  icon,
+  specs,
+  writeup,
+  align: z.enum(['start', 'center']).nullish(),
+});
+
+const { align, ...rest } = parseProps(display, Astro.props);
 ---
 
 <Tag
   class:list={['display', align]}
   {...rest}
 >
-  <Rating {...child} />
-  <Icon {...child} />
-  <Writeup
-    {align}
-    {...child}
-  />
-  <Specs {...child} />
-  <slot />
+  <slot>
+    <Rating {...rest.rating} />
+    <Icon {...rest.icon} />
+    <Writeup {...rest.writeup} />
+    <Specs {...rest.specs} />
+  </slot>
 </Tag>
 
 <style is:global>

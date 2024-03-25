@@ -1,31 +1,30 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { Tag, endomorphic, getChildProps, type Endomorphic } from '..'
-import Body from './Body.astro'
-import Head from './Head.astro'
+import { z } from 'astro:content'
+import Tag from '../components/Tag.astro'
+import { buildProps, parseProps } from '../utils'
+import Body, { body } from './Body.astro'
+import Head, { head } from './Head.astro'
 
-// type Props = ComponentProps<typeof Head> & ComponentProps<typeof Body>
+type Props = z.infer<typeof layout>
 
-interface Props
-  extends Endomorphic<Props, 'layout'>,
-    Pick<ComponentProps<typeof Head>, 'head' | '_head'>,
-    ComponentProps<typeof Body> {}
+export const layout = buildProps({
+  body,
+  head,
+})
 
-const { as = 'html', ...rest } = endomorphic(Astro.props, 'layout')
-const child = getChildProps(rest)
-// const _layout = await getEntry('settings', 'layout')
+const { as = 'html', ...rest } = parseProps(layout, Astro.props)
 ---
 
 <!doctype html>
 <Tag
-  class="layout"
-  {...rest}
+  class:list={['layout']}
   as="html"
+  {...rest}
 >
-  <Head {...child}>
+  <Head {...rest.head}>
     <slot name="head" />
   </Head>
-  <Body {...rest}>
+  <Body {...rest.body}>
     <slot name="body" />
     <slot />
   </Body>

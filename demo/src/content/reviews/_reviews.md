@@ -1,4 +1,4 @@
 ---
 _unlisted: true
-render: false
+output: false
 ---

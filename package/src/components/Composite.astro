@@ -1,36 +1,30 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, getChildProps, type Endomorphic } from '../utils'
-import Action from './Action.astro'
-import Display from './Display.astro'
+import { z } from 'astro:content'
+import { buildProps, parseProps } from '../utils'
+import Action, { action } from './Action.astro'
+import Display, { display } from './Display.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'composite'>,
-    ComponentProps<typeof Tag>,
-    ComponentProps<typeof Display>,
-    ComponentProps<typeof Action> {
-  direction?: 'column' | 'row' | null
-  align?: 'start' | 'center' | null
-}
+type Props = z.infer<typeof composite>
 
-const { direction, align, ...rest } = endomorphic(Astro.props, 'composite')
-const child = getChildProps(rest)
+export const composite = buildProps({
+  action,
+  display,
+  direction: z.enum(['row', 'column']).nullish(),
+  align: z.enum(['start', 'center']).nullish(),
+})
+
+const { direction, align, ...rest } = parseProps(composite, Astro.props)
 ---
 
 <Tag
   class:list={['composite', direction, align]}
   {...rest}
 >
-  <Display
-    {...child}
-    {align}
-  />
-  <Action
-    {align}
-    {...child}
-  />
-  <slot />
+  <slot>
+    <Display {...rest.display} />
+    <Action {...rest.action} />
+  </slot>
 </Tag>
 
 <style is:global>
@@ -38,9 +32,17 @@ const child = getChildProps(rest)
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--space-4);
+    gap: var(--space-5);
     z-index: 1;
     width: 100%;
+
+    &.column {
+      flex-direction: column !important;
+    }
+
+    &.row {
+      flex-direction: row !important;
+    }
 
     &.center {
       align-items: center;

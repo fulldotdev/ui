@@ -1,44 +1,53 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import type { ContentCollectionKey } from 'astro:content'
-import { getCollection } from 'astro:content'
-import { endomorphic, getChildProps, type Endomorphic } from '../utils'
-import Card from './Card.astro'
+import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
+import { getCollection, getEntries, z } from 'astro:content'
+import { buildProps, parseProps } from '../utils'
+import Card, { card } from './Card.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<
-      Props,
-      'cards',
-      ContentCollectionKey | Pick<ComponentProps<typeof Card>, 'card'>[]
-    >,
-    ComponentProps<typeof Tag>,
-    Pick<ComponentProps<typeof Card>, 'card' | '_card'> {
-  layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento' | null
-  // [key: ContentCollectionKey]:
-  //   | CollectionEntry<ContentCollectionKey>['slug']
-  //   | CollectionEntry<ContentCollectionKey>['slug'][]
-}
+type Props = z.infer<typeof cards>
 
-let {
-  cards,
+export const cards = buildProps({
   card,
-  _card,
-  layout = 'grid',
-  ...rest
-} = endomorphic(Astro.props, 'cards')
-const child = getChildProps(rest)
+  layout: z
+    .enum(['carousel', 'grid', 'masonry', 'row', 'panels', 'bento'])
+    .nullish(),
+  items: z.string().or(z.array(z.string())).or(z.array(card)).nullish(),
+  collection: z.string().nullish(),
+  // TODO [collectionKey]: entrySlug <<< toevoegen
+})
 
-let entries: ComponentProps<typeof Card>['card'][] = []
-if (typeof cards === 'string')
-  entries = (await getCollection(cards)).map((entry) => entry.data)
-else entries = cards
+let { items, collection, ...props } = parseProps(cards, Astro.props)
+const collectionEntries =
+  typeof items === 'string' || typeof collection === 'string'
+    ? ((await getCollection(items ?? (collection as any)))?.map(
+        (entry: any) => ({
+          collection: entry?.collection,
+          slug: entry?.slug,
+          ...entry?.data,
+        })
+      ) as CollectionEntry<ContentCollectionKey>['data'][] | undefined)
+    : undefined
 
-// if ((!cards || cards.length === 0) && collection) {
-//   const items = await getCollection(collection)
-//   const slugs = items.map(({ slug }) => slug)
-//   cards = slugs
-// }
+const referenceEntries =
+  collection && Array.isArray(items) && typeof items[0] === 'string'
+    ? ((
+        await getEntries(
+          items.map((card) => ({ collection, slug: card, id: card }) as any)
+        )
+      ).map((entry: any) => ({
+        collection: entry?.collection,
+        slug: entry?.slug,
+        id: entry?.id,
+        ...entry?.data,
+      })) as CollectionEntry<ContentCollectionKey>['data'][] | undefined)
+    : undefined
+
+items = collectionEntries ?? (items as ComponentProps<typeof Card>[])
+items = referenceEntries ?? (items as ComponentProps<typeof Card>[])
+
+const { layout = 'grid', ...rest } = props
 ---
 
 <Tag
@@ -46,11 +55,10 @@ else entries = cards
   {...rest}
 >
   {
-    entries?.map((card) => (
+    items?.map((item: any) => (
       <Card
-        {...card}
-        {card}
-        {_card}
+        {...rest.card}
+        {...item}
       />
     ))
   }
@@ -102,7 +110,7 @@ else entries = cards
       scroll-behavior: smooth;
       scroll-snap-type: x mandatory;
 
-      > .card {
+      & > :not([hidden]) :not([hidden]) {
         /* TODO add multiple sizes */
         flex-grow: 0;
         flex-shrink: 0;
@@ -120,24 +128,20 @@ else entries = cards
 
     &.masonry {
       column-gap: var(--space-3);
-      flex-direction: column;
-      align-items: flex-start;
-      column-count: var(--columns);
+      column-count: 1;
 
       @media (min-width: 640px) {
-        --columns: 2;
+        column-count: 2;
       }
       @media (min-width: 768px) {
-        --columns: 3;
+        column-count: 3;
       }
 
       @media (min-width: 1024px) {
-        --columns: 4;
+        column-count: 4;
       }
 
-      & > :not([hidden]) ~ :not([hidden]) {
-        --un-space-y-reverse: 0;
-        break-inside: avoid-column;
+      & > .card + .card {
         margin-top: var(--space-4);
         margin-bottom: var(--space-4);
       }

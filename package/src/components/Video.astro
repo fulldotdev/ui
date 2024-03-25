@@ -1,19 +1,18 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import type { Tag } from '..'
-import { endomorphic, type Endomorphic } from '../utils'
+import { z } from 'astro:content';
+import { buildProps, parseProps } from '../utils';
 
-interface Props
-  extends Endomorphic<Props, 'video', string>,
-    ComponentProps<typeof Tag> {
-  thumbnail?: boolean | null
-}
+type Props = z.infer<typeof video>;
 
-const { video, thumbnail } = endomorphic(Astro.props, 'video')
+export const video = buildProps({
+  src: z.string().nullish(),
+  thumbnail: z.any(),
+});
 
+const { src, thumbnail } = parseProps(video, Astro.props);
 const youtubeId =
-  (video?.includes('youtube.com') || video?.includes('youtu.be')) &&
-  video.split('/').pop()?.split('?').shift()
+  (src?.includes('youtube.com') || src?.includes('youtu.be')) &&
+  src.split('/').pop()?.split('?').shift();
 ---
 
 {

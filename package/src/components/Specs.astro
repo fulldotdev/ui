@@ -1,23 +1,25 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, type Endomorphic } from '../utils'
-import Spec from './Spec.astro'
-import Tag from './Tag.astro'
+import { z } from 'astro:content';
+import { buildProps, parseProps } from '../utils';
+import Spec, { spec } from './Spec.astro';
+import Tag from './Tag.astro';
 
-interface Props
-  extends Endomorphic<Props, 'specs', ComponentProps<typeof Spec>['spec'][]>,
-    ComponentProps<typeof Tag> {
-  align?: 'start' | 'center' | 'stretch' | null
-}
+type Props = z.infer<typeof specs>;
 
-const { specs, ...rest } = endomorphic(Astro.props, 'specs')
+export const specs = buildProps({
+  items: z.array(spec),
+});
+
+const { items, ...rest } = parseProps(specs, Astro.props);
 ---
 
 <Tag
+  class:list={['specs']}
   {...rest}
-  class:list="specs"
 >
-  {specs?.map((spec) => <Spec {spec} />)}
+  <slot>
+    {items?.map((item) => <Spec {item} />)}
+  </slot>
 </Tag>
 
 <style is:global>

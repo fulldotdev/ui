@@ -1,21 +1,31 @@
-<!-- ---
-import type { ComponentProps,HTMLTag } from 'astro/types'
-import { endomorphic,type Endomorphic } from '../utils'
-import Field from './Field.astro'
-import Tag from './Tag.astro'
+---
+import { z } from 'astro:content';
+import { buildProps, parseProps } from '../utils';
+import Field, { field } from './Field.astro';
+import Tag from './Tag.astro';
 
-type Props<As extends HTMLTag = 'div'> = Endomorphic<
-  'fields',
-  ComponentProps<typeof Tag<As>> & {
-    fields?: ComponentProps<typeof Field>['field'][]
-  }
->
+type Props = z.infer<typeof fields>;
 
-const { fields, ...rest } = endomorphic(Astro.props, 'fields')
+export const fields = buildProps({
+  field,
+  items: z.array(field).nullish(),
+});
+
+const { items, ...rest } = parseProps(fields, Astro.props);
 ---
 
-<Tag {...rest}>
-  {fields?.map((field) => <Field {field} />)}
+<Tag
+  class:list={['fields']}
+  {...rest}
+>
+  {
+    items?.map((item) => (
+      <Field
+        {...rest.field}
+        {...item}
+      />
+    ))
+  }
 </Tag>
 
 <style is:global>
@@ -24,4 +34,4 @@ const { fields, ...rest } = endomorphic(Astro.props, 'fields')
     flex-direction: column;
     gap: var(--space-2);
   }
-</style> -->
+</style>

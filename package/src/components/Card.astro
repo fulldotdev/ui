@@ -1,42 +1,48 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { type CollectionEntry, type ContentCollectionKey } from 'astro:content'
-import { endomorphic, getChildProps, type Endomorphic } from '../utils'
-import Composite from './Composite.astro'
-import Image from './Image.astro'
-import Tag from './Tag.astro'
+import type { CollectionEntry, ContentCollectionKey } from 'astro:content';
+import { getEntry, z } from 'astro:content';
+import { merge } from 'merge-anything';
+import { buildProps, parseProps } from '../utils';
+import Composite, { composite } from './Composite.astro';
+import Image, { image } from './Image.astro';
+import Tag from './Tag.astro';
 
-interface Props
-  extends Endomorphic<Props, 'card'>,
-    ComponentProps<typeof Tag>,
-    ComponentProps<typeof Composite>,
-    Pick<ComponentProps<typeof Image>, 'image' | '_image'> {
-  collection?: ContentCollectionKey
-  slug?: CollectionEntry<ContentCollectionKey>['slug'] | null
-  look?: 'ghost' | 'soft' | 'solid' | null
-  frame?: 'fill' | 'panel' | 'screen' | null
-}
+type Props = z.infer<typeof card>;
 
-const { look, frame, collection, slug, ...rest } = endomorphic(
-  Astro.props,
-  'card'
-)
+export const card = buildProps({
+  composite,
+  image,
+  frame: z.enum(['fill', 'panel', 'screen']).nullish(),
+  variant: z.enum(['ghost', 'soft', 'solid']).nullish(),
+  collection: z.string().nullish(),
+  slug: z.string().nullish(),
+  output: z.boolean().nullish(),
+});
 
-// const entry =
-//   collection && slug ? (await getEntry(collection, slug)).data : null
-// const merged = merge(entry, rest)
-const child = getChildProps(rest)
+const { collection, slug, output, ...props } = parseProps(card, Astro.props);
+const entry =
+  collection && slug
+    ? ((await getEntry(
+        collection as any,
+        slug as any
+      )) as CollectionEntry<ContentCollectionKey>)
+    : undefined;
+
+const { variant, frame, ...rest } = merge(entry?.data, props);
+const href =
+  output !== false && collection && slug ? `/${collection}/${slug}` : undefined;
 ---
 
 <Tag
-  class:list={['card', look, frame]}
+  class:list={['card', variant, frame]}
   compact
+  as={href ? 'a' : 'div'}
+  {href}
   {...rest}
 >
-  <Image {...child} />
-  <Composite {...child} />
+  <Image {...rest.image} />
+  <Composite {...rest.composite} />
 </Tag>
-
 <style is:global>
   .card {
     display: flex;
@@ -44,6 +50,7 @@ const child = getChildProps(rest)
     flex-direction: column;
     justify-content: stretch;
     gap: var(--space-4);
+    overflow: hidden;
 
     .composite {
       justify-content: space-between;
@@ -51,7 +58,7 @@ const child = getChildProps(rest)
       /* height: 100%; */
     }
 
-    a {
+    &:is(a) {
       transition: var(--transition);
 
       &:hover > .image {
@@ -68,7 +75,7 @@ const child = getChildProps(rest)
       border-radius: var(--radius-2);
       overflow: hidden;
 
-      a {
+      &:is(a) {
         &:hover {
           background: var(--hue3);
         }
@@ -83,7 +90,7 @@ const child = getChildProps(rest)
         border-color: var(--hue6);
         background-color: var(--hue2);
 
-        a {
+        &:is(a) {
           border-color: var(--hue7);
           background: var(--hue2);
 
@@ -111,7 +118,7 @@ const child = getChildProps(rest)
           color: var(--hue-fg);
         }
 
-        a:hover {
+        &:is(a):hover {
           background: var(--hue10);
         }
 

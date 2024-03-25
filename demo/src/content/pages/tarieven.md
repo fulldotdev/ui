@@ -1,4 +1,4 @@
----
+<!-- ---
 _schema: default
 seo:
   title: Lorem ipsum
@@ -134,4 +134,4 @@ sections:
     buttons:
       - button: Meld je aan
         href: "#"
----
+--- -->

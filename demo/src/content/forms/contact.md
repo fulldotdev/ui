@@ -17,7 +17,5 @@ form:
     - textarea: Bericht
       label: Bericht
       type: textarea
-  button:
-    text: Verstuur
-    href: "#"
+  button: Verstuur
 ---

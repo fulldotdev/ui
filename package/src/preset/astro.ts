@@ -1,4 +1,4 @@
-import { default as UnoCSS } from '@unocss/astro'
+import UnoCSS from '@unocss/astro'
 import type { AstroIntegration } from 'astro'
 import type { UnoConfig } from './uno'
 import preset from './uno'
@@ -12,9 +12,9 @@ export function fullui(config?: Partial<Config>): AstroIntegration {
       pipeline: {
         include: [
           // the default
-          /\.(vue|svelte|[jt]sx|mdx?|astro|elm|php|phtml|html)($|\?)/,
+          /\.(vue|svelte|[jt]sx|md|mdx?|astro|elm|php|phtml|html)($|\?)/,
           // include js/ts files
-          'src/**/*.{js,ts,md}',
+          'src/**/*.{js,ts,md,mdx}',
         ],
       },
       filesystem: ['src/**/*.md'],

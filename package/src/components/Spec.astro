@@ -1,21 +1,16 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, getChildProps, type Endomorphic } from '../utils'
-import Icon from './Icon.astro'
-import Tag from './Tag.astro'
+import { z } from 'astro:content';
+import { buildProps, parseProps } from '../utils';
+import Icon, { icon } from './Icon.astro';
+import Tag from './Tag.astro';
 
-interface Props
-  extends Endomorphic<Props, 'spec', string | null>,
-    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'>,
-    ComponentProps<typeof Tag> {}
+type Props = z.infer<typeof spec>;
 
-const {
-  as = 'li',
-  icon = 'check',
-  spec,
-  ...rest
-} = endomorphic(Astro.props, 'spec')
-const child = getChildProps(rest)
+export const spec = buildProps({
+  icon,
+});
+
+const { as = 'li', ...rest } = parseProps(spec, Astro.props);
 ---
 
 <Tag
@@ -23,7 +18,10 @@ const child = getChildProps(rest)
   {as}
   {...rest}
 >
-  <Icon {...child} />
+  <Icon
+    name={'check'}
+    {...rest.icon}
+  />
   <Fragment set:html={spec} />
   <slot />
 </Tag>

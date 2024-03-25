@@ -25,10 +25,10 @@ export default defineConfig({
       customCss: ['./src/css/custom.css'],
       sidebar: [
         {
-          label: 'Start Here',
+          label: 'Overview',
           items: [
-            { label: 'Introduction', link: '/start-here/introduction/' },
-            { label: 'Quick Start', link: '/start-here/quick-start/' },
+            { label: 'Introduction', link: '/overview/introduction/' },
+            { label: 'Getting started', link: '/overview/getting-started/' },
           ],
         },
         {
@@ -36,7 +36,7 @@ export default defineConfig({
           items: [
             { label: 'Installation', link: '/guides/installation/' },
             { label: 'Theming', link: '/guides/theming/' },
-            { label: 'Endomorphic', link: '/guides/endomorphic/' },
+            { label: 'Endomorphic', link: '/guides/macromorphic/' },
             { label: 'Typescript', link: '/guides/typescript/' },
           ],
         },

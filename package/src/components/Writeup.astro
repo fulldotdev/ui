@@ -1,32 +1,32 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, getChildProps, type Endomorphic } from '../utils'
-import Description from './Description.astro'
-import Tag from './Tag.astro'
-import Tagline from './Tagline.astro'
-import Title from './Title.astro'
+import { z } from 'astro:content';
+import { buildProps, parseProps } from '../utils';
+import Description, { description } from './Description.astro';
+import Tag from './Tag.astro';
+import Tagline, { tagline } from './Tagline.astro';
+import Title, { title } from './Title.astro';
 
-interface Props
-  extends Endomorphic<Props, 'writeup', string>,
-    ComponentProps<typeof Tag>,
-    Pick<ComponentProps<typeof Tagline>, 'tagline' | '_tagline'>,
-    Pick<ComponentProps<typeof Title>, 'title' | '_title'>,
-    Pick<ComponentProps<typeof Description>, 'description' | '_description'> {
-  align?: 'start' | 'center' | null
-}
+type Props = z.infer<typeof writeup>;
 
-const { writeup, align, ...rest } = endomorphic(Astro.props, 'writeup')
-const child = getChildProps(rest)
+export const writeup = buildProps({
+  tagline,
+  title,
+  description,
+  align: z.enum(['start', 'center']).nullish(),
+});
+
+const { align, ...rest } = parseProps(writeup, Astro.props);
 ---
 
 <Tag
   class:list={['writeup', align]}
   {...rest}
 >
-  <Tagline {...child} />
-  <Title {...child} />
-  <Description {...child} />
-  <Fragment set:html={writeup} />
+  <slot>
+    <Tagline {...rest.tagline} />
+    <Title {...rest.title} />
+    <Description {...rest.description} />
+  </slot>
 </Tag>
 
 <style is:global>
@@ -35,7 +35,7 @@ const child = getChildProps(rest)
     row-gap: var(--space-3);
     flex-direction: column;
     align-items: flex-start;
-    max-width: max(calc(var(--space-6) * 4), 600px);
+    max-width: max(calc(var(--space-6) * 4), 700px);
     text-align: left;
 
     &.center {

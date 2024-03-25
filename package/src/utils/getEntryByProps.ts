@@ -1,30 +1,30 @@
 import {
+  getCollection,
   getEntry,
+  z,
   type CollectionEntry,
   type CollectionKey,
   type ContentCollectionKey,
 } from 'astro:content'
 
-export type EntryReference =
-  | {
-      collection?: ContentCollectionKey
-      slug?: CollectionEntry<ContentCollectionKey>['slug']
-    }
-  | {
-      [Key in CollectionKey]?: CollectionEntry<ContentCollectionKey>['slug']
-    }
+export const zCollectionKey = z
+  .string()
+  .refine(
+    async (string) => (await getCollection(string as CollectionKey)).length > 0
+  )
 
-export const getEntryByProps = async (
-  props: Partial<EntryReference>
-): Promise<CollectionEntry<ContentCollectionKey> | undefined> => {
-  const slug = 'slug' in props ? props.slug : undefined
-  const collection = 'collection' in props ? props.collection : undefined
-  if (collection && slug) return getEntry(collection, slug)
+export const zGetEntryByProps = z.object({
+  collection: zCollectionKey,
+  slug: z.string(),
+})
 
-  const promises = Object.keys(props).map((key) => {
-    // @ts-ignore
-    return getEntry(key, props[key])
-  })
+type GetEntryByProps = z.infer<typeof zGetEntryByProps>
 
-  return (await Promise.all(promises)).find(Boolean)
+export const getEntryByProps = async (collection: any, slug: any) => {
+  const parsed = await zGetEntryByProps.safeParseAsync({ collection, slug })
+  if (!parsed.success) return undefined
+  return getEntry(
+    parsed.data.collection as ContentCollectionKey,
+    parsed.data.slug as CollectionEntry<ContentCollectionKey>['slug']
+  )
 }

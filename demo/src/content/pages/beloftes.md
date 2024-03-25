@@ -1,4 +1,4 @@
----
+<!-- ---
 seo:
   title: 
   description: 
@@ -55,4 +55,4 @@ sections:
       collection: reviews
       layout: masonry
       frame: panel
----
+--- -->

@@ -1,19 +1,16 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
-import { endomorphic, type Endomorphic } from '../utils'
-import Tag from './Tag.astro'
+import { z } from 'astro:content';
+import { buildProps, parseProps } from '../utils';
+import Tag from './Tag.astro';
 
-interface Props
-  extends Endomorphic<
-      'prose',
-      Props,
-      string | CollectionEntry<ContentCollectionKey>['render']
-    >,
-    ComponentProps<typeof Tag> {}
+type Props = z.infer<typeof prose>;
 
-const { prose, ...rest } = endomorphic(Astro.props, 'prose')
-const Content = typeof prose === 'function' ? (await prose()).Content : null
+export const prose = buildProps({
+  render: z.any(),
+});
+
+const { render, ...rest } = parseProps(prose, Astro.props);
+const Content = typeof prose === 'function' ? (await render()).Content : null;
 ---
 
 <Tag
