@@ -4,29 +4,30 @@ head:
   description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
   image:
 sections.items:
-  # - frame: screen
-  #   size: 4
-  #   align: center
-  #   direction: row
-  #   composite.display.writeup.title.html: Maak kennis met The Gym in Haren
-  #   composite.display.writeup.description.html: Dé sportschool voor echte persoonlijke begeleiding!
-  #   _composite.display.writeup.description.contrast: true
-  #   _composite.action.button:
-  #     contrast: true
-  #     color: lorem
-  #   composite.action.buttons.items:
-  #     - html: Gratis proefles
-  #       href: /forms/gratis-proefles
-  #     - html: Lidmaatschapstest
-  #       href: /forms/lidmaatschapstest
-  #       icon: 
-  #         name: arrow-right
-  #         color: base
-  #         _color: accent
-  #   image.src: https://picsum.photos/800/600
-  #   _image:
-  #     position: background
-  #     mask: true
+  - frame: screen
+    size: 4
+    align: center
+    direction: row
+    title: The Gym Haren
+    composite.display.writeup.title.html: Maak kennis met The Gym in Haren
+    composite.display.writeup.description.html: Dé sportschool voor echte persoonlijke begeleiding!
+    _composite.display.writeup.description.contrast: true
+    __composite.action.button:
+      contrast: true
+      color: lorem
+    composite.action.buttons.items:
+      - html: Gratis proefles
+        href: /forms/gratis-proefles
+      - html: Lidmaatschapstest
+        href: /forms/lidmaatschapstest
+        icon: 
+          name: arrow-right
+          color: base
+          _color: accent
+    image.src: https://picsum.photos/800/600
+    _image:
+      position: background
+      mask: true
   - align: start
     composite.display.writeup.title.html: Onze 4 beloftes
     # _button:

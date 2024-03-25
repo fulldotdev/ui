@@ -46,54 +46,12 @@ const flattenEverything = recursive(flatten)
 const combineEverything = recursive(combine)
 const nestifyEverything = recursive(nestify)
 
-// combines both wihin an object and within arrays
-// const combineEverything = (value: any): any => {
-//   if (Array.isArray(value)) return value.map(combineEverything)
-//   else if (typeof value === 'object' && value !== null) {
-//     const combinedObject: any = combine(value)
-//     Object.keys(combinedObject).forEach((key) => {
-//       combinedObject[key] = combineEverything(combinedObject[key])
-//     })
-//     return combinedObject
-//   }
-//   return value
-// }
-
-// // flattens both object and object within arrays
-// const flattenEverything = (value: any): any => {
-//   if (Array.isArray(value)) return value.map(flattenEverything)
-//   else if (typeof value === 'object' && value !== null) {
-//     const flatObject: any = flatten(value)
-//     Object.keys(flatObject).forEach((key) => {
-//       flatObject[key] = flattenEverything(flatObject[key])
-//     })
-//     return flatObject
-//   }
-//   return value
-// }
-
-// // nests both within an object and within arrays
-// const nestifyEverything = (value: any): any => {
-//   if (Array.isArray(value)) return value.map(nestifyEverything)
-//   else if (typeof value === 'object' && value !== null) {
-//     const nestedObject: any = nestify(value)
-//     Object.keys(nestedObject).forEach((key) => {
-//       nestedObject[key] = nestifyEverything(nestedObject[key])
-//     })
-//     return nestedObject
-//   }
-//   return value
-// }
-
 const morphedPagesSchema = z
   .any()
   .transform((value) => {
     let flat = flattenEverything(value)
-    console.log('flat', JSON.stringify(flat, null, 2))
     let combined = combineEverything(flat)
-    console.log('combined', JSON.stringify(combined, null, 2))
     let nested = nestifyEverything(combined)
-    console.log('nested', JSON.stringify(nested, null, 2))
     return nested
   })
   .pipe(pagesSchema)

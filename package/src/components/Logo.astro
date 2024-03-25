@@ -1,17 +1,22 @@
 ---
-import { z } from 'astro:content';
-import { buildProps, parseProps } from '../utils';
-import Image from './Image.astro';
-import Tag from './Tag.astro';
+import { z } from 'astro:content'
+import { buildProps, parseProps } from '../utils'
+import Image from './Image.astro'
+import Tag from './Tag.astro'
 
-type Props = z.infer<typeof title>;
+type Props = z.infer<typeof logo>
 
-export const title = buildProps({
+export const logo = buildProps({
   logo: z.string().nullish(),
   href: z.string().nullish(),
-});
+})
 
-const { as = 'a', href = '/', logo, ...rest } = parseProps(title, Astro.props);
+const {
+  as = 'a',
+  href = '/',
+  logo: logoSrc,
+  ...rest
+} = parseProps(logo, Astro.props)
 ---
 
 <Tag
@@ -21,7 +26,7 @@ const { as = 'a', href = '/', logo, ...rest } = parseProps(title, Astro.props);
   {...rest}
 >
   <Image
-    src={logo}
+    src={logoSrc}
     {...rest}
   />
   <slot />
