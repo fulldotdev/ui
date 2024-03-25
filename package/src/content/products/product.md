@@ -2,19 +2,19 @@
 render: true
 
 seo:
-  title:
+  composite.display.writeup.title.html:
   description:
   image:
     src: 
     
  
-title: Een extreem goede trapligt 
+composite.display.writeup.title.html: Een extreem goede trapligt 
 description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor,  tellus nec lacinia tincidunt, nunc nisl lacinia nunc, nec tincidunt nunc nisl nec nunc.
-images:
+images.items:
   - src: https://picsum.photos/350/400
     
 
-specs:
+composite.display.specs.items:
   - Snelle levering
   - Gegarandeerde de laagste prijs
   - Advies van experts
@@ -26,8 +26,8 @@ categories:
   - veiligheid
 
 rating: 4.5
-price: 213 
-fields:
+composite.display.price.html: 213 
+form.fields.items:
   - label: 
     options:
       - value: 
@@ -36,10 +36,16 @@ fields:
         fee:
 
 
+_card:
+  frame: panel
+  variant: soft
+  image.position: cover
+  composite.display.specs.items: null
+
 _inputs:
   summary:
     type: textarea
-  price:
+  composite.display.price.html:
     type: number
   key:
     type: select

@@ -1,16 +1,16 @@
 ---
-import { z } from 'astro:content';
-import { buildProps, parseProps } from '../utils';
-import Spec, { spec } from './Spec.astro';
-import Tag from './Tag.astro';
+import { z } from 'astro:content'
+import { buildProps, parseProps } from '../utils'
+import Spec, { spec } from './Spec.astro'
+import Tag from './Tag.astro'
 
-type Props = z.infer<typeof specs>;
+type Props = z.infer<typeof specs>
 
 export const specs = buildProps({
-  items: z.array(spec),
-});
+  items: z.array(spec.or(spec.shape.html)).nullish(),
+})
 
-const { items, ...rest } = parseProps(specs, Astro.props);
+const { items, ...rest } = parseProps(specs, Astro.props)
 ---
 
 <Tag
@@ -18,7 +18,12 @@ const { items, ...rest } = parseProps(specs, Astro.props);
   {...rest}
 >
   <slot>
-    {items?.map((item) => <Spec {item} />)}
+    {
+      items?.map((item) => {
+        if (typeof item === 'string') return <Spec html={item} />
+        else return <Spec {item} />
+      })
+    }
   </slot>
 </Tag>
 

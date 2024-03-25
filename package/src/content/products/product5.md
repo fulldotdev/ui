@@ -3,15 +3,15 @@ _stripe_product_id: prod_PE9qB3WbRqzVdG
 _stripe_price_id: price_1OPhopAtGAMIOG90iN2MlxIL
 
 seo:
-  title:
+  composite.display.writeup.title.html:
   description:
   image:
     src: 
     
 
-title: Traplift 
+composite.display.writeup.title.html: Traplift 
 description: 
-images:
+images.items:
   - src: https://picsum.photos/350/400
     
 categories:
@@ -20,7 +20,7 @@ categories:
   - woonkamer
   - veiligheid
 
-price: 213 
+composite.display.price.html: 213 
 options:
   - key: 
     values:
@@ -29,10 +29,16 @@ options:
       - value: 
         fee:
 
+_card:
+  frame: panel
+  variant: soft
+  image.position: cover
+  composite.display.specs.items: null
+
 _inputs:
   summary:
     type: textarea
-  price:
+  composite.display.price.html:
     type: number
   key:
     type: select

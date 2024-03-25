@@ -36,12 +36,15 @@ const referenceEntries =
         await getEntries(
           items.map((card) => ({ collection, slug: card, id: card }) as any)
         )
-      ).map((entry: any) => ({
-        collection: entry?.collection,
-        slug: entry?.slug,
-        id: entry?.id,
-        ...entry?.data,
-      })) as CollectionEntry<ContentCollectionKey>['data'][] | undefined)
+      ).map((entry: any) => {
+        return {
+          collection: entry?.collection,
+          slug: entry?.slug,
+          id: entry?.id,
+          ...entry?.data,
+          hoi: 'hoi',
+        }
+      }) as CollectionEntry<ContentCollectionKey>['data'][] | undefined)
     : undefined
 
 items = collectionEntries ?? (items as ComponentProps<typeof Card>[])
@@ -59,6 +62,7 @@ const { layout = 'grid', ...rest } = props
       <Card
         {...rest.card}
         {...item}
+        {...item.card}
       />
     ))
   }
@@ -110,7 +114,7 @@ const { layout = 'grid', ...rest } = props
       scroll-behavior: smooth;
       scroll-snap-type: x mandatory;
 
-      & > :not([hidden]) :not([hidden]) {
+      & > .card {
         /* TODO add multiple sizes */
         flex-grow: 0;
         flex-shrink: 0;

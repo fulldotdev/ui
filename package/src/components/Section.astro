@@ -1,20 +1,21 @@
 ---
-import type { CollectionEntry, ContentCollectionKey } from 'astro:content';
-import { getEntry, z } from 'astro:content';
-import merge from 'deepmerge';
-import { buildProps, parseProps } from '../utils';
-import { card } from './Card.astro';
-import Cards, { cards } from './Cards.astro';
-import Composite, { composite } from './Composite.astro';
-import Image, { image } from './Image.astro';
-import Prose, { prose } from './Prose.astro';
-import Tag from './Tag.astro';
+import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
+import { getEntry, z } from 'astro:content'
+import { merge } from 'merge-anything'
+import { buildProps, parseProps } from '../utils'
+import { card } from './Card.astro'
+import Cards, { cards } from './Cards.astro'
+import Composite, { composite } from './Composite.astro'
+import Image, { image } from './Image.astro'
+import Prose, { prose } from './Prose.astro'
+import Tag from './Tag.astro'
 
-type Props = z.infer<typeof section>;
+type Props = z.infer<typeof section>
 
 export const section = buildProps({
   composite,
   image,
+  images: z.any().nullish(), // FIXME
   prose,
   cards,
   card,
@@ -24,16 +25,17 @@ export const section = buildProps({
   align: z.enum(['start', 'center']).nullish(),
   collection: z.string().nullish(),
   slug: z.string().nullish(),
-});
+})
 
-const { collection, slug, ...props } = parseProps(section, Astro.props);
+const { collection, slug, ...props } = parseProps(section, Astro.props)
+
 const entry =
   collection && slug
     ? ((await getEntry(
         collection as any,
         slug as any
       )) as CollectionEntry<ContentCollectionKey>)
-    : undefined;
+    : undefined
 
 const {
   as = 'section',
@@ -42,7 +44,7 @@ const {
   frame,
   align,
   ...rest
-} = merge(entry?.data, props);
+} = merge(entry?.data, props)
 ---
 
 <Tag
