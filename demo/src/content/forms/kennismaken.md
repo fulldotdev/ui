@@ -1,21 +1,21 @@
 ---
 _schema: default
-title: Plan een kennismaking
+composite.display.writeup.title.html: Plan een kennismaking
 align: center
-description: We nemen binnen 1 werkdag persoonlijk contact met je op.
+composite.display.writeup.description.html: We nemen binnen 1 werkdag persoonlijk contact met je op.
 form:
-  fields:
-    - label: Naam
+  fields.items:
+    - label.html: Naam
       input: naam
-    - label: Email
+    - label.html: Email
       input: email
       type: email
       required: true
-    - label: Telefoon
+    - label.html: Telefoon
       input: telefoon
       type: tel
       required: true
   button:
-    text: Verstuur
+    html: Verstuur
     href: "#"
 ---

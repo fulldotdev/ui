@@ -1,6 +1,7 @@
 ---
 import { z } from 'astro:content'
 import { buildProps, parseProps } from '../utils'
+import Header, { header } from './Header.astro'
 import Section, { section } from './Section.astro'
 import Sections, { sections } from './Sections.astro'
 import Tag from './Tag.astro'
@@ -8,6 +9,7 @@ import Tag from './Tag.astro'
 type Props = z.infer<typeof body>
 
 export const body = buildProps({
+  header,
   section,
   sections,
   hero: section,
@@ -15,6 +17,8 @@ export const body = buildProps({
 })
 
 const { as = 'body', ...rest } = parseProps(body, Astro.props)
+
+console.log('body', rest)
 ---
 
 <Tag
@@ -23,8 +27,7 @@ const { as = 'body', ...rest } = parseProps(body, Astro.props)
   {...rest}
 >
   <!-- <Banner></Banner> -->
-  <!-- <Header {...rest} /> -->
-
+  <Header {...rest.header} />
   <Sections {...rest.sections}>
     <Section
       class="hero"

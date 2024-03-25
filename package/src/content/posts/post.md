@@ -1,13 +1,13 @@
 ---
-seo:
+head:
   title: 
   description: 
   image:
     src: 
     
-title: Lorem ipsum, dolor sit amet consectetur adipisicing elit
-description: Lorem ipsum dolor sit amet
-image:  https://picsum.photos/1600/1200
+composite.display.writeup.title.html: Lorem ipsum, dolor sit amet consectetur adipisicing elit
+composite.display.writeup.description.html: Lorem ipsum dolor sit amet
+image.src:  https://picsum.photos/1600/1200
   
 ---
 
