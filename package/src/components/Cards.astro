@@ -1,12 +1,12 @@
 ---
-import type { ComponentProps } from 'astro/types';
-import type { CollectionEntry, ContentCollectionKey } from 'astro:content';
-import { getCollection, getEntries, z } from 'astro:content';
-import { buildProps, parseProps } from '../utils';
-import Card, { card } from './Card.astro';
-import Tag from './Tag.astro';
+import type { ComponentProps } from 'astro/types'
+import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
+import { getCollection, getEntries, z } from 'astro:content'
+import { buildProps, parseProps } from '../utils'
+import Card, { card } from './Card.astro'
+import Tag from './Tag.astro'
 
-type Props = z.infer<typeof cards>;
+type Props = z.infer<typeof cards>
 
 export const cards = buildProps({
   card,
@@ -16,9 +16,9 @@ export const cards = buildProps({
   items: z.string().or(z.array(z.string())).or(z.array(card)).nullish(),
   collection: z.string().nullish(),
   // TODO [collectionKey]: entrySlug <<< toevoegen
-});
+})
 
-let { items, collection, ...props } = parseProps(cards, Astro.props);
+let { items, collection, ...props } = parseProps(cards, Astro.props)
 const collectionEntries =
   typeof items === 'string' || typeof collection === 'string'
     ? ((await getCollection(items ?? (collection as any)))?.map(
@@ -28,7 +28,7 @@ const collectionEntries =
           ...entry?.data,
         })
       ) as CollectionEntry<ContentCollectionKey>['data'][] | undefined)
-    : undefined;
+    : undefined
 
 const referenceEntries =
   collection && Array.isArray(items) && typeof items[0] === 'string'
@@ -42,12 +42,12 @@ const referenceEntries =
         id: entry?.id,
         ...entry?.data,
       })) as CollectionEntry<ContentCollectionKey>['data'][] | undefined)
-    : undefined;
+    : undefined
 
-items = collectionEntries ?? (items as ComponentProps<typeof Card>[]);
-items = referenceEntries ?? (items as ComponentProps<typeof Card>[]);
+items = collectionEntries ?? (items as ComponentProps<typeof Card>[])
+items = referenceEntries ?? (items as ComponentProps<typeof Card>[])
 
-const { layout = 'grid', ...rest } = props;
+const { layout = 'grid', ...rest } = props
 ---
 
 <Tag
