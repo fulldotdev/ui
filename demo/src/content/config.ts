@@ -1,5 +1,4 @@
-import { head } from '@fulldevlabs/fullui/src/components/Head.astro'
-import { sections } from '@fulldevlabs/fullui/src/components/Sections.astro'
+import { card, head, section, sections } from '@fulldevlabs/fullui'
 import { defineCollection, z } from 'astro:content'
 import { flatten } from 'flatten-anything'
 import { merge } from 'merge-anything'
@@ -7,10 +6,13 @@ import { nestifyObject as nestify } from 'nestify-anything'
 
 const pagesSchema = z
   .object({
+    ...section.shape,
     head,
-    title: z.string().nullish(),
-    description: z.string().nullish(),
+    hero: section,
+    card,
     sections,
+    images: z.any(), // FIXME
+    cta: section,
   })
   .partial()
 
@@ -56,9 +58,17 @@ const morphedPagesSchema = z
   })
   .pipe(pagesSchema)
 
-const pages = defineCollection({
+const contentCollection = defineCollection({
   type: 'content',
   schema: morphedPagesSchema,
 })
 
-export const collections = { pages }
+export const collections = {
+  pages: contentCollection,
+  categories: contentCollection,
+  products: contentCollection,
+  reviews: contentCollection,
+  // posts: contentCollection,
+  // forms: contentCollection,
+  // policies: contentCollection,
+}
