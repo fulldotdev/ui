@@ -1,8 +1,9 @@
 import { card, head, section, sections } from '@fulldevlabs/fullui'
-import { defineCollection, z } from 'astro:content'
+import { defineCollection } from 'astro:content'
 import { flatten } from 'flatten-anything'
 import { merge } from 'merge-anything'
 import { nestifyObject as nestify } from 'nestify-anything'
+import { z } from 'zod'
 
 const pagesSchema = z
   .object({

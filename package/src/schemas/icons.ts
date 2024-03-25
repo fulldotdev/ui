@@ -1,4 +1,4 @@
-import { z } from 'astro:content'
+import { z } from 'zod'
 
 export const icons = z.enum([
   'a-b',

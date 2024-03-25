@@ -1,4 +1,4 @@
-import merge from 'deepmerge'
+import { merge } from 'merge-anything'
 import type { Preset } from 'unocss'
 import { presetRadix, type RadixColors } from 'unocss-preset-radix'
 

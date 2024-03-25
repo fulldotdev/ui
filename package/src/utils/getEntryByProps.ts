@@ -1,11 +1,11 @@
 import {
   getCollection,
   getEntry,
-  z,
   type CollectionEntry,
   type CollectionKey,
   type ContentCollectionKey,
 } from 'astro:content'
+import { z } from 'zod'
 
 export const zCollectionKey = z
   .string()

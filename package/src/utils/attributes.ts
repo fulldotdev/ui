@@ -1,4 +1,4 @@
-import { z } from 'astro:content'
+import { z } from 'zod'
 
 export const attributes = z.object({
   abbr: z.any(),

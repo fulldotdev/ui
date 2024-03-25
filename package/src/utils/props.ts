@@ -1,5 +1,5 @@
 import type { AstroGlobal } from 'astro'
-import { z } from 'astro:content'
+import { z } from 'zod'
 import { fromZodError } from 'zod-validation-error'
 import { tag } from '../components/Tag.astro'
 

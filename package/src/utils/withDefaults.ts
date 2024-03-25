@@ -1,5 +1,5 @@
 import { type CollectionEntry, type CollectionKey } from 'astro:content'
-import merge from 'deepmerge'
+import { merge } from 'merge-anything'
 import { readEntryData } from './readEntryData'
 
 type Entry = CollectionEntry<CollectionKey>

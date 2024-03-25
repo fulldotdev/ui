@@ -1,7 +1,7 @@
-import { z } from 'astro:content'
 import { flatten } from 'flatten-anything'
 import { merge } from 'merge-anything'
 import { nestifyObject as nestify } from 'nestify-anything'
+import { z } from 'zod'
 import { card } from '../components/Card.astro'
 import { head } from '../components/Head.astro'
 import { header } from '../components/Header.astro'
