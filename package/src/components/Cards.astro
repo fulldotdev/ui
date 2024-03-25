@@ -1,9 +1,9 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
-import { getCollection, getEntries } from 'astro:content'
+import { getCollection, getEntries, getEntry } from 'astro:content'
+import { merge } from 'merge-anything'
 import { z } from 'zod'
 import { buildProps, parseProps } from '../utils/props'
+import { byReference, reference as referenceSchema } from '../utils/reference'
 import Card, { card } from './Card.astro'
 import Tag from './Tag.astro'
 
@@ -14,43 +14,34 @@ export const cards = buildProps({
   layout: z
     .enum(['carousel', 'grid', 'masonry', 'row', 'panels', 'bento'])
     .nullish(),
-  items: z.string().or(z.array(z.string())).or(z.array(card)).nullish(),
-  collection: z.string().nullish(),
-  // TODO [collectionKey]: entrySlug <<< toevoegen
+  items: z.array(card).nullish(),
+  reference: referenceSchema,
 })
 
-let { items, collection, ...props } = parseProps(cards, Astro.props)
-const collectionEntries =
-  typeof items === 'string' || typeof collection === 'string'
-    ? ((await getCollection(items ?? (collection as any)))?.map(
-        (entry: any) => ({
-          collection: entry?.collection,
-          slug: entry?.slug,
-          ...entry?.data,
-        })
-      ) as CollectionEntry<ContentCollectionKey>['data'][] | undefined)
-    : undefined
+let {
+  layout = 'grid',
+  reference,
+  items,
+  ...rest
+} = parseProps(cards, Astro.props)
 
-const referenceEntries =
-  collection && Array.isArray(items) && typeof items[0] === 'string'
-    ? ((
-        await getEntries(
-          items.map((card) => ({ collection, slug: card, id: card }) as any)
-        )
-      ).map((entry: any) => {
-        return {
-          collection: entry?.collection,
-          slug: entry?.slug,
-          id: entry?.id,
-          ...entry?.data,
-        }
-      }) as CollectionEntry<ContentCollectionKey>['data'][] | undefined)
-    : undefined
+const baseLayout = await getEntry('layouts', 'index')
+const ref = byReference(reference)
 
-items = collectionEntries ?? (items as ComponentProps<typeof Card>[])
-items = referenceEntries ?? (items as ComponentProps<typeof Card>[])
-
-const { layout = 'grid', ...rest } = props
+if (ref.length > 1) {
+  const res = await getEntries(ref as any)
+  items = res.map(async (entry: any) => {
+    const collectionLayout = await getEntry('layouts', entry.collection)
+    return merge(baseLayout?.data, collectionLayout?.data, entry?.data)
+  }) as typeof items
+} else if (reference) {
+  const collection = ref[0].collection as any
+  const res = await getCollection(collection)
+  const collectionLayout = await getEntry(collection)
+  items = res.map(async (entry: any) =>
+    merge(baseLayout?.data, collectionLayout?.data, entry?.data)
+  ) as typeof items
+}
 ---
 
 <Tag
