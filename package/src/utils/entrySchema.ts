@@ -48,38 +48,16 @@ const combine = (data: any) => {
   return merged
 }
 
-// Adds corresponding layout data to the entry data
-const withLayouts = async (data: any, layoutsCollection?: any) => {
-  if (!layoutsCollection) return data
-  const baseLayoutData = layoutsCollection.find(
-    (layout: any) => layout.slug === 'index'
-  )
-  console.log('layoutsCollection', layoutsCollection)
-  const collectionLayoutData = layoutsCollection.find(
-    (layout: any) => layout.slug === 'collection'
-  )
-  console.log('baseLayoutData', baseLayoutData)
-  const mergedData = merge(
-    baseLayoutData,
-    collectionLayoutData,
-    layoutsCollection
-  )
-  console.log('mergedData', mergedData)
-  return mergedData
-}
-
 const flattenEverything = recursive(flatten)
 const combineEverything = recursive(combine)
 const nestifyEverything = recursive(nestify)
 
-export const morphedEntrySchema = (layoutsCollection?: any) =>
-  z
-    .any()
-    .transform(async (data) => {
-      const flat = flattenEverything(data)
-      const combined = combineEverything(flat)
-      const nested = nestifyEverything(combined)
-      const merged = await withLayouts(nested, layoutsCollection)
-      return merged
-    })
-    .pipe(entrySchema)
+export const morphedEntrySchema = z
+  .any()
+  .transform(async (data) => {
+    const flat = flattenEverything(data)
+    const combined = combineEverything(flat)
+    const nested = nestifyEverything(combined)
+    return nested
+  })
+  .pipe(entrySchema)
