@@ -49,26 +49,34 @@ const combine = (data: any) => {
 }
 
 // Adds corresponding layout data to the entry data
-// const withLayouts = async (data: any) => {
-//   const baseLayoutData = (await getEntry('layouts', 'index'))?.data
-//   const collectionLayoutData = data.collection
-//     ? (await getEntry('layouts', data.collection))?.data
-//     : undefined
-//   const mergedEntry = merge(baseLayoutData, collectionLayoutData, data)
-//   return mergedEntry
-// }
+const withLayouts = async (data: any, layoutsCollection?: any) => {
+  if (!layoutsCollection) return data
+  const baseLayoutData = layoutsCollection.find(
+    (layout: any) => layout.slug === 'index'
+  )
+  const collectionLayoutData = layoutsCollection.find(
+    (layout: any) => layout.slug === 'collection'
+  )
+  const mergedData = merge(
+    baseLayoutData,
+    collectionLayoutData,
+    layoutsCollection
+  )
+  return mergedData
+}
 
 const flattenEverything = recursive(flatten)
 const combineEverything = recursive(combine)
 const nestifyEverything = recursive(nestify)
 
-export const morphedEntrySchema = z
-  .any()
-  .transform(async (data) => {
-    const flat = flattenEverything(data)
-    const combined = combineEverything(flat)
-    const nested = nestifyEverything(combined)
-    // const merged = await withLayouts(nested)
-    return nested
-  })
-  .pipe(entrySchema)
+export const morphedEntrySchema = (layoutsCollection?: any) =>
+  z
+    .any()
+    .transform(async (data) => {
+      const flat = flattenEverything(data)
+      const combined = combineEverything(flat)
+      const nested = nestifyEverything(combined)
+      const merged = await withLayouts(nested, layoutsCollection)
+      return merged
+    })
+    .pipe(entrySchema)
