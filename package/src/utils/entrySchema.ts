@@ -1,4 +1,3 @@
-import { getEntry } from 'astro:content'
 import { flatten } from 'flatten-anything'
 import { merge } from 'merge-anything'
 import { nestifyObject as nestify } from 'nestify-anything'
@@ -50,14 +49,14 @@ const combine = (data: any) => {
 }
 
 // Adds corresponding layout data to the entry data
-const withLayouts = async (data: any) => {
-  const baseLayoutData = (await getEntry('layouts', 'index'))?.data
-  const collectionLayoutData = data.collection
-    ? (await getEntry('layouts', data.collection))?.data
-    : undefined
-  const mergedEntry = merge(baseLayoutData, collectionLayoutData, data)
-  return mergedEntry
-}
+// const withLayouts = async (data: any) => {
+//   const baseLayoutData = (await getEntry('layouts', 'index'))?.data
+//   const collectionLayoutData = data.collection
+//     ? (await getEntry('layouts', data.collection))?.data
+//     : undefined
+//   const mergedEntry = merge(baseLayoutData, collectionLayoutData, data)
+//   return mergedEntry
+// }
 
 const flattenEverything = recursive(flatten)
 const combineEverything = recursive(combine)
@@ -69,7 +68,7 @@ export const morphedEntrySchema = z
     const flat = flattenEverything(data)
     const combined = combineEverything(flat)
     const nested = nestifyEverything(combined)
-    const merged = await withLayouts(nested)
-    return merged
+    // const merged = await withLayouts(nested)
+    return nested
   })
   .pipe(entrySchema)
