@@ -1,3 +1,4 @@
+import { getEntry } from 'astro:content'
 import { flatten } from 'flatten-anything'
 import { merge } from 'merge-anything'
 import { nestifyObject as nestify } from 'nestify-anything'
@@ -23,10 +24,10 @@ export const entrySchema = z
 // Makes a function recursive, so it works with arrays of objects
 const recursive =
   (transformation: any) =>
-  (value: any): any => {
-    if (Array.isArray(value)) return value.map(recursive(transformation))
-    else if (typeof value === 'object' && value !== null) {
-      const transformedObject = transformation(value)
+  (data: any): any => {
+    if (Array.isArray(data)) return data.map(recursive(transformation))
+    else if (typeof data === 'object' && data !== null) {
+      const transformedObject = transformation(data)
       Object.keys(transformedObject).forEach((key) => {
         transformedObject[key] = recursive(transformation)(
           transformedObject[key]
@@ -34,18 +35,28 @@ const recursive =
       })
       return transformedObject
     }
-    return value
+    return data
   }
 
 // combines keys with underscore with their non-underscored counterpart
-const combine = (value: any) => {
+const combine = (data: any) => {
   const merged: any = {}
-  for (const key in value) {
+  for (const key in data) {
     const strippedKey: any = key.toString().replace(/_/g, '')
-    if (merged[strippedKey] === undefined) merged[strippedKey] = value[key]
-    else merged[strippedKey] = merge(merged[strippedKey], value[key])
+    if (merged[strippedKey] === undefined) merged[strippedKey] = data[key]
+    else merged[strippedKey] = merge(merged[strippedKey], data[key])
   }
   return merged
+}
+
+// Adds corresponding layout data to the entry data
+const withLayouts = async (data: any) => {
+  const baseLayoutData = (await getEntry('layouts', 'index'))?.data
+  const collectionLayoutData = data.collection
+    ? (await getEntry('layouts', data.collection))?.data
+    : undefined
+  const mergedEntry = merge(baseLayoutData, collectionLayoutData, data)
+  return mergedEntry
 }
 
 const flattenEverything = recursive(flatten)
@@ -54,10 +65,11 @@ const nestifyEverything = recursive(nestify)
 
 export const morphedEntrySchema = z
   .any()
-  .transform((value) => {
-    let flat = flattenEverything(value)
-    let combined = combineEverything(flat)
-    let nested = nestifyEverything(combined)
-    return nested
+  .transform(async (data) => {
+    const flat = flattenEverything(data)
+    const combined = combineEverything(flat)
+    const nested = nestifyEverything(combined)
+    const merged = await withLayouts(nested)
+    return merged
   })
   .pipe(entrySchema)
