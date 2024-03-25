@@ -54,14 +54,17 @@ const withLayouts = async (data: any, layoutsCollection?: any) => {
   const baseLayoutData = layoutsCollection.find(
     (layout: any) => layout.slug === 'index'
   )
+  console.log('layoutsCollection', layoutsCollection)
   const collectionLayoutData = layoutsCollection.find(
     (layout: any) => layout.slug === 'collection'
   )
+  console.log('baseLayoutData', baseLayoutData)
   const mergedData = merge(
     baseLayoutData,
     collectionLayoutData,
     layoutsCollection
   )
+  console.log('mergedData', mergedData)
   return mergedData
 }
 
