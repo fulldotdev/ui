@@ -14,7 +14,7 @@ export const pageSchema = z
     header: headerSchema,
     ...sectionSchema.shape,
     hero: sectionSchema,
-    sections: sectionGroupSchema,
+    sectionGroup: sectionGroupSchema,
     cta: sectionSchema,
     card: cardSchema,
   })

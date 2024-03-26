@@ -11,7 +11,8 @@ export const parseProps = <
   props: P
 ) => {
   try {
-    return schema.parse(props) as z.infer<S>
+    // return schema.parse(props) as z.infer<S>
+    return schema.passthrough().parse(props) as z.infer<S>
   } catch (err: any) {
     const stack = err.stack || ''
     const regexPattern = /(\w+\.astro):\d+:\d+/
