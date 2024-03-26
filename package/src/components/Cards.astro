@@ -1,47 +1,49 @@
 ---
-import { getCollection, getEntries, getEntry } from 'astro:content'
-import { merge } from 'merge-anything'
 import { z } from 'zod'
 import { buildProps, parseProps } from '../utils/props'
-import { byReference, reference as referenceSchema } from '../utils/reference'
+import { entriesSchema } from '../schemas/entriesSchema'
 import Card, { card } from './Card.astro'
 import Tag from './Tag.astro'
+import { getEntries } from 'astro:content'
 
 type Props = z.infer<typeof cards>
 
 export const cards = buildProps({
+  entries: entriesSchema,
   card,
   layout: z
     .enum(['carousel', 'grid', 'masonry', 'row', 'panels', 'bento'])
     .nullish(),
   items: z.array(card).nullish(),
-  reference: referenceSchema,
 })
 
+
 let {
-  layout = 'grid',
-  reference,
-  items,
+  entries,
   ...rest
 } = parseProps(cards, Astro.props)
 
+const entryResponse = entries && (await getEntries(entries))
 const baseLayout = await getEntry('layouts', 'index')
-const ref = byReference(reference)
+const collectionLayout = entry?.collection && (await getEntry('layouts', entry.collection))
 
-if (ref.length > 1) {
-  const res = await getEntries(ref as any)
-  items = res.map(async (entry: any) => {
-    const collectionLayout = await getEntry('layouts', entry.collection)
-    return merge(baseLayout?.data, collectionLayout?.data, entry?.data)
-  }) as typeof items
-} else if (reference) {
-  const collection = ref[0].collection as any
-  const res = await getCollection(collection)
-  const collectionLayout = await getEntry(collection)
-  items = res.map(async (entry: any) =>
-    merge(baseLayout?.data, collectionLayout?.data, entry?.data)
-  ) as typeof items
-}
+// const baseLayout = await getEntry('layouts', 'index')
+// const ref = byReference(reference)
+
+// if (ref.length > 1) {
+//   const res = await getEntries(ref as any)
+//   items = res.map(async (entry: any) => {
+//     const collectionLayout = await getEntry('layouts', entry.collection)
+//     return merge(baseLayout?.data, collectionLayout?.data, entry?.data)
+//   }) as typeof items
+// } else if (reference) {
+//   const collection = ref[0].collection as any
+//   const res = await getCollection(collection)
+//   const collectionLayout = await getEntry(collection)
+//   items = res.map(async (entry: any) =>
+//     merge(baseLayout?.data, collectionLayout?.data, entry?.data)
+//   ) as typeof items
+// }
 ---
 
 <Tag

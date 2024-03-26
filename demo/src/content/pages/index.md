@@ -3,12 +3,21 @@ head:
   title: Lorem ipsum
   description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
   image:
+
+_head:
+  image: image
+
 sections.items:
   - frame: screen
     size: 4
     align: center
     direction: row
-    title: The Gym Haren
+    compistite.display.title: The Gym Haren
+
+
+
+
+
     composite.display.writeup.title.html: Maak kennis met The Gym in Haren
     composite.display.writeup.description.html: Dé sportschool voor echte persoonlijke begeleiding!
     _composite.display.writeup.description.contrast: true

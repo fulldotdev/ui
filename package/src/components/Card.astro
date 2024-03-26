@@ -3,14 +3,16 @@ import { getEntry } from 'astro:content'
 import { merge } from 'merge-anything'
 import { z } from 'zod'
 import { buildProps, parseProps } from '../utils/props'
-import { byReference, entryReference } from '../utils/reference'
+import { entryReference, getEntryByReference } from '../utils/reference'
 import Composite, { composite } from './Composite.astro'
 import Image, { image } from './Image.astro'
 import Tag from './Tag.astro'
+import { entrySchema } from '../schemas/entrySchema'
 
 type Props = z.infer<typeof card>
 
 export const card = buildProps({
+  entry: entrySchema,
   composite,
   image,
   images: z.any().nullish(), // FIXME
@@ -22,18 +24,15 @@ export const card = buildProps({
   reference: entryReference,
 })
 
-const { reference, output, ...props } = parseProps(card, Astro.props)
-
-const { collection, slug } = byReference(reference)[0]
-const entry = await getEntry(collection as any, slug)
+const { entry, ...props } = parseProps(card, Astro.props)
+const entryResponse = entry && (await getEntry(entry))
 const baseLayout = await getEntry('layouts', 'index')
-const collectionLayout = await getEntry('layouts', collection as any)
-const mergedEntry = merge(baseLayout, collectionLayout, entry) as any
+const collectionLayout = entry?.collection && (await getEntry('layouts', entry.collection))
 
-const { variant, frame, ...rest } = merge(mergedEntry?.data, props)
+const { variant, frame, output, ...rest } = merge(baseLayout?.data, collectionLayout?.data, entryResponse?.data, props)
 
 const href =
-  output !== false && collection && slug ? `/${collection}/${slug}` : undefined
+  output !== false && entry?.collection && entry?.slug ? `/${entry?.collection}/${entry?.slug}` : undefined
 
 const imageFromImages =
   typeof rest.images?.items?.[0] === 'string'

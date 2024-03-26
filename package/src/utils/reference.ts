@@ -17,8 +17,8 @@ export const collectionReference = z
   .nullish()
 
 export const entriesReference = z.array(entryReference).nullish()
-export const reference = entryReference
-  .or(entriesReference)
+
+export const entriesOrCollectionReference = entriesReference
   .or(collectionReference)
   .nullish()
 
@@ -27,18 +27,31 @@ const stringToObject = <R extends EntryReference | CollectionReference>(
 ) => {
   const string = reference ?? ''
   const end = string.split('content/').pop()
-  const collection = end?.split('/').shift() || ''
-  const slug = end?.split('/').slice(1).join('/') || ''
+  const collection = end?.split('/').shift() as ContentCollectionKey | undefined
+  const slug = end?.split('/').slice(1).join('/') as EntrySlug | undefined
   return { collection, slug }
 }
 
-export const byReference = <R extends Reference>(reference: R) =>
+export const getEntryByReference = (reference: EntryReference) =>
+  stringToObject(reference)
+
+export const getCollectionByReference = (reference: CollectionReference) =>
+  stringToObject(reference).collection
+
+export const getEntriesByReference = (reference: EntriesReference) =>
+  reference?.map(stringToObject)
+
+export const getEntriesOrCollectionByReference = (
+  reference: EntriesReference | CollectionReference
+) =>
   Array.isArray(reference)
-    ? reference.map(stringToObject)
-    : [stringToObject(reference)]
+    ? getEntriesByReference(reference)
+    : getCollectionByReference(reference)
 
 export type EntryReference = z.infer<typeof entryReference>
 export type CollectionReference = z.infer<typeof collectionReference>
 export type EntriesReference = z.infer<typeof entriesReference>
-export type Reference = z.infer<typeof reference>
+export type EntriesOrCollectionReference = z.infer<
+  typeof entriesOrCollectionReference
+>
 export type EntrySlug = CollectionEntry<ContentCollectionKey>['slug']
