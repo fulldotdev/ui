@@ -8,19 +8,19 @@ import { buildProps, parseProps } from '../utils/props'
 import Card, { cardSchema } from './Card.astro'
 import Tag from './Tag.astro'
 
-type Props = z.infer<typeof cardsSchema>
+type Props = z.infer<typeof cardGroupSchema>
 
-export const cardsSchema = buildProps({
+export const cardGroupSchema = buildProps({
   entries: entriesSchema,
   collection: collectionSchema,
-  items: z.array(cardSchema).nullish(),
+  cards: z.array(cardSchema).nullish(),
   card: cardSchema,
   layout: z
     .enum(['carousel', 'grid', 'masonry', 'row', 'panels', 'bento'])
     .nullish(),
 })
 
-let { entries, collection, ...props } = parseProps(cardsSchema, Astro.props)
+let { entries, collection, ...props } = parseProps(cardGroupSchema, Astro.props)
 
 const entriesData =
   entries &&
@@ -38,10 +38,10 @@ const collectionData =
     id: entry?.id,
     slug: 'slug' in entry ? entry?.slug : undefined,
   }))
-const items = [
+const cards = [
   ...(collectionData ?? []),
   ...(entriesData ?? []),
-  ...(props?.items ?? []),
+  ...(props?.cards ?? []),
 ].filter(Boolean)
 
 const { layout = 'grid', ...rest } = props
@@ -51,7 +51,7 @@ const { layout = 'grid', ...rest } = props
   class:list={['cards', layout]}
   {...rest}
 >
-  {items?.map((item: any) => <Card {...merge(item, item.card)} />)}
+  {cards?.map((card: any) => <Card {...merge(card, card.card)} />)}
 </Tag>
 
 <style is:global>

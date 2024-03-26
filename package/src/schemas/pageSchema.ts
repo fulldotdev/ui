@@ -6,7 +6,7 @@ import { cardSchema } from '../components/Card.astro'
 import { headSchema } from '../components/Head.astro'
 import { headerSchema } from '../components/Header.astro'
 import { sectionSchema } from '../components/Section.astro'
-import { sectionsSchema } from '../components/Sections.astro'
+import { sectionGroupSchema } from '../components/SectionGroup.astro'
 
 export const pageSchema = z
   .object({
@@ -14,7 +14,7 @@ export const pageSchema = z
     header: headerSchema,
     ...sectionSchema.shape,
     hero: sectionSchema,
-    sections: sectionsSchema,
+    sections: sectionGroupSchema,
     cta: sectionSchema,
     card: cardSchema,
   })

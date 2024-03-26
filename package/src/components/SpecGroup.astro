@@ -4,13 +4,13 @@ import { buildProps, parseProps } from '../utils/props'
 import Spec, { specSchema } from './Spec.astro'
 import Tag from './Tag.astro'
 
-type Props = z.infer<typeof specsSchema>
+type Props = z.infer<typeof specGroupSchema>
 
-export const specsSchema = buildProps({
-  items: z.array(specSchema.or(specSchema.shape.html)).nullish(),
+export const specGroupSchema = buildProps({
+  specs: z.array(specSchema.or(specSchema.shape.html)).nullish(),
 })
 
-const { items, ...rest } = parseProps(specsSchema, Astro.props)
+const { specs, ...rest } = parseProps(specGroupSchema, Astro.props)
 ---
 
 <Tag
@@ -19,7 +19,7 @@ const { items, ...rest } = parseProps(specsSchema, Astro.props)
 >
   <slot>
     {
-      items?.map((item) => {
+      specs?.map((item) => {
         if (typeof item === 'string') return <Spec html={item} />
         else return <Spec {item} />
       })
