@@ -1,26 +1,24 @@
-<!-- ---
-// TODO: convert naar zod
-import type { ComponentProps } from 'astro/types'
-import { macromorphic,type Endomorphic } from '../utils'
-import Tag from './Tag.astro'
+---
+import { z } from 'zod'
+import { buildProps, parseProps } from '../utils/props'
 
-interface Props
-  extends Endomorphic<Props, 'option', string>,
-    ComponentProps<typeof Tag> {
-  'data-price-change'?: number | null
-}
+type Props = z.infer<typeof optionSchema>
 
-const { option, ...rest } = macromorphic(Astro.props, 'option')
+export const optionSchema = buildProps({
+  value: z.number().or(z.string()).nullable(),
+})
+
+const { value, html, ...rest } = parseProps(optionSchema, Astro.props)
 ---
 
 {
-  option && (
+  optionSchema && (
     <option
       class="option"
-      value={option}
+      value={value}
       {...rest}
     >
-      <Fragment set:html={option} />
+      <slot>{html ? html : value}</slot>
     </option>
   )
-} -->
+}
