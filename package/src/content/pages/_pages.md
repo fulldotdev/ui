@@ -7,7 +7,7 @@ sections:
     look: solid
     buttons:
       - description: Gratis proefles
-        href: /forms/gratis-proef+les
+        href: /contact/gratis-proef+les
       - description: Lidmaatschapstest
-        href: /forms/lidmaatschapstest
+        href: /contact/lidmaatschapstest
 ---
