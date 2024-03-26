@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const attributes = z.object({
+export const attributesSchema = z.object({
   abbr: z.any(),
   accept: z.any(),
   acceptCharset: z.any(),

@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const zElements = z.enum([
+export const elementsSchema = z.enum([
   'a',
   'abbr',
   'acronym',

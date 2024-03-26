@@ -2,21 +2,21 @@ import { flatten } from 'flatten-anything'
 import { merge } from 'merge-anything'
 import { nestifyObject as nestify } from 'nestify-anything'
 import { z } from 'zod'
-import { card } from '../components/Card.astro'
-import { head } from '../components/Head.astro'
-import { header } from '../components/Header.astro'
-import { section } from '../components/Section.astro'
-import { sections } from '../components/Sections.astro'
+import { cardSchema } from '../components/Card.astro'
+import { headSchema } from '../components/Head.astro'
+import { headerSchema } from '../components/Header.astro'
+import { sectionSchema } from '../components/Section.astro'
+import { sectionsSchema } from '../components/Sections.astro'
 
 export const pageSchema = z
   .object({
-    head,
-    header,
-    ...section.shape,
-    hero: section,
-    sections,
-    cta: section,
-    card,
+    head: headSchema,
+    header: headerSchema,
+    ...sectionSchema.shape,
+    hero: sectionSchema,
+    sections: sectionsSchema,
+    cta: sectionSchema,
+    card: cardSchema,
   })
   .partial()
 

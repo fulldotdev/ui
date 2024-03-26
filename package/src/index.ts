@@ -1,5 +1,16 @@
 // Utils
-export * from './utils'
+export * from './utils/getPathname'
+export * from './utils/props'
+export * from './utils/unslugify'
+// schemas
+export * from './schemas/attributesGroupedSchema'
+export * from './schemas/attributesSchema'
+export * from './schemas/collectionSchema'
+export * from './schemas/elementsSchema'
+export * from './schemas/entriesSchema'
+export * from './schemas/entrySchema'
+export * from './schemas/iconsSchema'
+export * from './schemas/pageSchema'
 // Components
 export * from './components/Action.astro'
 export { default as Action } from './components/Action.astro'

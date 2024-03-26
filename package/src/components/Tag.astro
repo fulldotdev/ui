@@ -1,13 +1,12 @@
 ---
 import { z } from 'zod'
-import { attributes } from '../utils/attributes'
-import { zElements } from '../utils/elements'
-import { reference } from 'astro:content'
+import { attributesSchema } from '../schemas/attributesSchema'
+import { elementsSchema } from '../schemas/elementsSchema'
 
 type Props = z.infer<typeof tagSchema> & Record<any, any>
 
 export const tagSchema = z.object({
-  as: zElements.optional(),
+  as: elementsSchema.optional(),
   if: z.union([z.string(), z.literal(true)]).nullish(),
   html: z.string().nullish(),
   color: z.string().nullish(),
@@ -58,7 +57,7 @@ const hasSlot = slot?.trim().length > 0
         size ? `size-${size}` : '',
         scheme,
       ]}
-      {...attributes.parse(rest)}
+      {...attributesSchema.parse(rest)}
     >
       <Fragment set:html={html} />
       <Fragment set:html={slot} />

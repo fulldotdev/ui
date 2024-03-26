@@ -1,7 +1,7 @@
 import type { AstroGlobal } from 'astro'
 import { z } from 'zod'
 import { fromZodError } from 'zod-validation-error'
-import { tag } from '../components/Tag.astro'
+import { tagSchema } from '../components/Tag.astro'
 
 export const parseProps = <
   S extends ReturnType<typeof buildProps>,
@@ -23,4 +23,4 @@ export const parseProps = <
 }
 
 export const buildProps = <S extends z.ZodRawShape>(shape: S) =>
-  tag.extend(shape).partial()
+  tagSchema.extend(shape).partial()
