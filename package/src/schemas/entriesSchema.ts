@@ -10,14 +10,4 @@ const slug = z.string() as ZodType<EntrySlug>
 
 export const entriesSchema = z
   .array(entrySchema)
-  .transform((val) => {
-    return val.filter(Boolean)
-  })
-  .pipe(
-    z.array(
-      z.object({
-        collection,
-        slug,
-      })
-    )
-  )
+  .transform((val) => val.filter(Boolean))

@@ -1,7 +1,8 @@
 ---
-import { getCollection, getEntry, reference } from 'astro:content'
+import { getEntry } from 'astro:content'
 import { merge } from 'merge-anything'
 import { z } from 'zod'
+import { entrySchema } from '../schemas/entrySchema'
 import { buildProps, parseProps } from '../utils/props'
 import { card } from './Card.astro'
 import Cards, { cards } from './Cards.astro'
@@ -9,7 +10,6 @@ import Composite, { composite } from './Composite.astro'
 import Image, { image } from './Image.astro'
 import Prose, { prose } from './Prose.astro'
 import Tag from './Tag.astro'
-import { entrySchema } from '../schemas/entrySchema'
 
 type Props = z.infer<typeof section>
 
@@ -28,9 +28,7 @@ export const section = buildProps({
 })
 
 const { entry, ...props } = parseProps(section, Astro.props)
-const entryResponse = entry && (await getEntry(entry))
-const baseLayout = await getEntry('layouts', 'index')
-const collectionLayout = entry?.collection && (await getEntry('layouts', entry.collection))
+const entryData = entry && (await getEntry(entry)).data
 
 const {
   as = 'section',
@@ -39,7 +37,7 @@ const {
   frame,
   align,
   ...rest
-} = merge(baseLayout?.data, collectionLayout?.data, entryResponse?.data, props)
+} = merge(entryData, props)
 ---
 
 <Tag

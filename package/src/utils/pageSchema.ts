@@ -8,7 +8,7 @@ import { header } from '../components/Header.astro'
 import { section } from '../components/Section.astro'
 import { sections } from '../components/Sections.astro'
 
-export const entrySchema = z
+export const pageSchema = z
   .object({
     head,
     header,
@@ -52,7 +52,7 @@ const flattenEverything = recursive(flatten)
 const combineEverything = recursive(combine)
 const nestifyEverything = recursive(nestify)
 
-export const morphedEntrySchema = z
+export const morphedPageSchema = z
   .any()
   .transform(async (data) => {
     const flat = flattenEverything(data)
@@ -60,4 +60,17 @@ export const morphedEntrySchema = z
     const nested = nestifyEverything(combined)
     return nested
   })
-  .pipe(entrySchema)
+  .pipe(pageSchema)
+
+export const morphedPageSchemaWithLayouts = (
+  getEntry: any,
+  collection: string
+) =>
+  morphedPageSchema
+    .transform(async (data) => {
+      const baseLayout = await getEntry('layouts', 'index')
+      const collectionLayout = await getEntry('layouts', collection)
+      const merged = merge(baseLayout?.data, collectionLayout?.data, data)
+      return merged
+    })
+    .pipe(pageSchema)

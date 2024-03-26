@@ -11,9 +11,10 @@ export const entrySchema = z
   .any()
   .transform((val) => {
     if (typeof val !== 'string') return val
-    const end = val.split('content/').pop()
-    const collection = end?.split('/').shift()
-    const slug = end?.split('/').slice(1).join('/')
+    val = val.split('content/').pop()
+    val = val.startsWith('/') ? val.slice(1) : val //shorter
+    const collection = val?.split('/').shift()
+    const slug = val?.split('/').slice(1).join('/')
     return { collection, slug }
   })
   .pipe(

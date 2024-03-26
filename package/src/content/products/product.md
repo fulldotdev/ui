@@ -36,11 +36,7 @@ form.fields.items:
         fee:
 
 
-_card:
-  frame: panel
-  variant: soft
-  image.position: cover
-  composite.display.specs.items: null
+
 
 _inputs:
   summary:

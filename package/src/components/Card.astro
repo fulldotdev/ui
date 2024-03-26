@@ -2,12 +2,12 @@
 import { getEntry } from 'astro:content'
 import { merge } from 'merge-anything'
 import { z } from 'zod'
+import { entrySchema } from '../schemas/entrySchema'
 import { buildProps, parseProps } from '../utils/props'
-import { entryReference, getEntryByReference } from '../utils/reference'
+import { entryReference } from '../utils/reference'
 import Composite, { composite } from './Composite.astro'
 import Image, { image } from './Image.astro'
 import Tag from './Tag.astro'
-import { entrySchema } from '../schemas/entrySchema'
 
 type Props = z.infer<typeof card>
 
@@ -26,13 +26,20 @@ export const card = buildProps({
 
 const { entry, ...props } = parseProps(card, Astro.props)
 const entryResponse = entry && (await getEntry(entry))
-const baseLayout = await getEntry('layouts', 'index')
-const collectionLayout = entry?.collection && (await getEntry('layouts', entry.collection))
+const entryData = {
+  ...entryResponse?.data,
+  collection: entry?.collection,
+  slug: entry?.slug,
+  id: entry && 'id' in entry ? entry?.id : undefined,
+}
 
-const { variant, frame, output, ...rest } = merge(baseLayout?.data, collectionLayout?.data, entryResponse?.data, props)
+const { variant, frame, output, collection, slug, ...rest } = merge(
+  entryData,
+  props
+)
 
 const href =
-  output !== false && entry?.collection && entry?.slug ? `/${entry?.collection}/${entry?.slug}` : undefined
+  output !== false && collection && slug ? `/${collection}/${slug}` : undefined
 
 const imageFromImages =
   typeof rest.images?.items?.[0] === 'string'
@@ -53,6 +60,7 @@ const imageFromImages =
   />
   <Composite {...rest.composite} />
 </Tag>
+
 <style is:global>
   .card {
     display: flex;

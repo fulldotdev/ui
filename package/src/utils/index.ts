@@ -1,6 +1,6 @@
 export * from './attributes'
 export * from './elements'
-export * from './entrySchema'
+export * from './pageSchema'
 // export * from './getEntriesByProps'
 // export * from './getEntryByProps'
 export * from './getPathname'
