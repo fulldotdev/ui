@@ -4,14 +4,14 @@ import { buildProps, parseProps } from '../utils/props'
 import Field, { fieldSchema } from './Field.astro'
 import Tag from './Tag.astro'
 
-type Props = z.infer<typeof fieldsSchema>
+type Props = z.infer<typeof fieldGroupSchema>
 
-export const fieldsSchema = buildProps({
+export const fieldGroupSchema = buildProps({
   field: fieldSchema,
-  items: z.array(fieldSchema).nullish(),
+  fields: z.array(fieldSchema).nullish(),
 })
 
-const { items, ...rest } = parseProps(fieldsSchema, Astro.props)
+const { fields, ...rest } = parseProps(fieldGroupSchema, Astro.props)
 ---
 
 <Tag
@@ -19,7 +19,7 @@ const { items, ...rest } = parseProps(fieldsSchema, Astro.props)
   {...rest}
 >
   {
-    items?.map((item) => (
+    fields?.map((item) => (
       <Field
         {...rest.field}
         {...item}

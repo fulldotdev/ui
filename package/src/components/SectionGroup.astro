@@ -4,14 +4,18 @@ import { buildProps, parseProps } from '../utils/props'
 import Section, { sectionSchema } from './Section.astro'
 import Tag from './Tag.astro'
 
-type Props = z.infer<typeof sectionsSchema>
+type Props = z.infer<typeof sectionGroupSchema>
 
-export const sectionsSchema = buildProps({
+export const sectionGroupSchema = buildProps({
   section: sectionSchema,
-  items: z.array(sectionSchema).nullish(),
+  sections: z.array(sectionSchema).nullish(),
 })
 
-const { as = 'main', items, ...rest } = parseProps(sectionsSchema, Astro.props)
+const {
+  as = 'main',
+  sections,
+  ...rest
+} = parseProps(sectionGroupSchema, Astro.props)
 ---
 
 <Tag
@@ -21,7 +25,7 @@ const { as = 'main', items, ...rest } = parseProps(sectionsSchema, Astro.props)
 >
   <slot name="before" />
   {
-    items?.map((item) => (
+    sections?.map((item) => (
       <Section
         {...rest.section}
         {...item}

@@ -7,22 +7,22 @@ import { buildProps, parseProps } from '../utils/props'
 import Card, { cardSchema } from './Card.astro'
 import Tag from './Tag.astro'
 
-type Props = z.infer<typeof cardsSchema>
+type Props = z.infer<typeof cardGroupSchema>
 
-export const cardsSchema = buildProps({
+export const cardGroupSchema = buildProps({
   card: cardSchema,
   layout: z
     .enum(['carousel', 'grid', 'masonry', 'row', 'panels', 'bento'])
     .nullish(),
-  items: z.string().or(z.array(z.string())).or(z.array(cardSchema)).nullish(),
+  cards: z.string().or(z.array(z.string())).or(z.array(cardSchema)).nullish(),
   collection: z.string().nullish(),
   // TODO [collectionKey]: entrySlug <<< toevoegen
 })
 
-let { items, collection, ...props } = parseProps(cardsSchema, Astro.props)
+let { cards, collection, ...props } = parseProps(cardGroupSchema, Astro.props)
 const collectionEntries =
-  typeof items === 'string' || typeof collection === 'string'
-    ? ((await getCollection(items ?? (collection as any)))?.map(
+  typeof cards === 'string' || typeof collection === 'string'
+    ? ((await getCollection(cards ?? (collection as any)))?.map(
         (entry: any) => ({
           collection: entry?.collection,
           slug: entry?.slug,
@@ -32,10 +32,10 @@ const collectionEntries =
     : undefined
 
 const referenceEntries =
-  collection && Array.isArray(items) && typeof items[0] === 'string'
+  collection && Array.isArray(cards) && typeof cards[0] === 'string'
     ? ((
         await getEntries(
-          items.map((card) => ({ collection, slug: card, id: card }) as any)
+          cards.map((card) => ({ collection, slug: card, id: card }) as any)
         )
       ).map((entry: any) => {
         return {
@@ -47,8 +47,8 @@ const referenceEntries =
       }) as CollectionEntry<ContentCollectionKey>['data'][] | undefined)
     : undefined
 
-items = collectionEntries ?? (items as ComponentProps<typeof Card>[])
-items = referenceEntries ?? (items as ComponentProps<typeof Card>[])
+cards = collectionEntries ?? (cards as ComponentProps<typeof Card>[])
+cards = referenceEntries ?? (cards as ComponentProps<typeof Card>[])
 
 const { layout = 'grid', ...rest } = props
 ---
@@ -58,7 +58,7 @@ const { layout = 'grid', ...rest } = props
   {...rest}
 >
   {
-    items?.map((item: any) => (
+    cards?.map((item: any) => (
       <Card
         {...rest.card}
         {...item}
