@@ -58,6 +58,7 @@ export const morphedPageSchema = z
     const flat = flattenEverything(data)
     const combined = combineEverything(flat)
     const nested = nestifyEverything(combined)
+    const camelCased = merge(data, nested)
     return nested
   })
   .pipe(pageSchema)
