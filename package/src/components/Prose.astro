@@ -3,14 +3,14 @@ import { z } from 'zod'
 import { buildProps, parseProps } from '../utils/props'
 import Tag from './Tag.astro'
 
-type Props = z.infer<typeof prose>
+type Props = z.infer<typeof proseSchema>
 
-export const prose = buildProps({
+export const proseSchema = buildProps({
   render: z.any(),
 })
 
-const { render, ...rest } = parseProps(prose, Astro.props)
-const Content = typeof prose === 'function' ? (await render()).Content : null
+const { render, ...rest } = parseProps(proseSchema, Astro.props)
+const Content = typeof render === 'function' ? (await render()).Content : null
 ---
 
 <Tag
@@ -18,7 +18,6 @@ const Content = typeof prose === 'function' ? (await render()).Content : null
   {...rest}
 >
   {Content && <Content />}
-  <Fragment set:Html={prose}></Fragment>
   <slot />
 </Tag>
 
