@@ -1,21 +1,21 @@
 ---
 _schema: default
-title: Heb je vragen?
-description: We nemen binnen 1 werkdag persoonlijk contact met je op.
-fields:
-  - label: Naam
+composite.display.writeup.title.html: Heb je vragen?
+composite.display.writeup.description.html: We nemen binnen 1 werkdag persoonlijk contact met je op.
+fields.items:
+  - label.html: Naam
     input: naam
-  - label: Email
+  - label.html: Email
     input: email
     type: email
     required: true
-  - label: Telefoon
+  - label.html: Telefoon
     input: telefoon
     type: tel
     required: true
-  - label: Bericht
+  - label.html: Bericht
     textarea: bericht
 button:
-  label: Verstuur
+  label.html: Verstuur
   href: /bericht-ontvangen
 ---

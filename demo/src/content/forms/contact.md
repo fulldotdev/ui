@@ -1,23 +1,21 @@
 ---
 align: center
-title: Heb je vragen?
-description: We nemen binnen 1 werkdag persoonlijk contact met je op.
+composite.display.writeup.title.html: Heb je vragen?
+composite.display.writeup.description.html: We nemen binnen 1 werkdag persoonlijk contact met je op.
 form:
-  fields:
+  fields.items:
     - input: naam
-      label: Naam
+      label.html: Naam
     - input: email
-      label: Email
+      label.html: Email
       type: email
       required: true
     - input: Telefoon
-      label: Telefoon
+      label.html: Telefoon
       type: tel
       required: true
     - textarea: Bericht
-      label: Bericht
+      label.html: Bericht
       type: textarea
-  button:
-    text: Verstuur
-    href: "#"
+  button: Verstuur
 ---

@@ -1,21 +1,31 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, type Endomorphic } from '../utils'
-import Link from './Link.astro'
+import { z } from 'zod'
+import { buildProps, parseProps } from '../utils/props'
+import Link, { link } from './Link.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'links', ComponentProps<typeof Link>[]>,
-    ComponentProps<typeof Tag> {}
+type Props = z.infer<typeof links>
 
-const { links, ...rest } = endomorphic(Astro.props, 'links')
+export const links = buildProps({
+  link,
+  items: z.array(link).nullish(),
+})
+
+const { items, ...rest } = parseProps(links, Astro.props)
 ---
 
 <Tag
   class="links"
   {...rest}
 >
-  {links?.map((link) => <Link {...link} />)}
+  {
+    items?.map((item) => (
+      <Link
+        {...rest.link}
+        {...item}
+      />
+    ))
+  }
 </Tag>
 
 <style is:global>

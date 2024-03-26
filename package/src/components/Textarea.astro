@@ -1,28 +1,24 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, type Endomorphic } from '../utils'
-import Tag from './Tag.astro'
+import { z } from 'zod'
+import { buildProps, parseProps } from '../utils/props'
 
-interface Props
-  extends Endomorphic<Props, 'textarea', string>,
-    ComponentProps<typeof Tag> {}
+type Props = z.infer<typeof textarea>
 
-const {
-  as = 'textarea',
-  textarea,
-  rows = 5,
-  ...rest
-} = endomorphic(Astro.props, 'textarea')
+export const textarea = buildProps({
+  name: z.string().nullable(),
+  rows: z.number().nullish(),
+})
+
+const { name, rows = 5 } = parseProps(textarea, Astro.props)
 ---
 
 {
-  textarea && (
+  name && (
     <textarea
       class="textarea"
-      name={textarea}
-      id={textarea}
-      rows={rows}
-      {...rest}
+      id={name}
+      {name}
+      {rows}
     />
   )
 }

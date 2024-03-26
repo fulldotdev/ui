@@ -1,4 +1,4 @@
-import merge from 'deepmerge'
+import { merge } from 'merge-anything'
 import { presetMini, type Preset } from 'unocss'
 import presetColor, { type ColorConfig } from './presetColor'
 import presetFlow, { type FlowConfig } from './presetFlow'

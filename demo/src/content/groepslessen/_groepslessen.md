@@ -7,6 +7,7 @@ hero:
 sections:
   - align: center
     class: "!pt-0"
+    class: text-center
     buttons:
       - button: Terug naar lesrooster
         href: /lesrooster

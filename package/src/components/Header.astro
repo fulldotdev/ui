@@ -1,21 +1,21 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, getChildProps, type Endomorphic } from '../utils'
-import Buttons from './Buttons.astro'
-import Links from './Links.astro'
-import Logo from './Logo.astro'
+import { z } from 'zod'
+import { buildProps, parseProps } from '../utils/props'
+import Buttons, { buttons } from './Buttons.astro'
+import Links, { links } from './Links.astro'
+import Logo, { logo } from './Logo.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<'header', Props, string>,
-    Pick<ComponentProps<typeof Logo>, 'logo' | '_logo'>,
-    Pick<ComponentProps<typeof Links>, 'links' | '_links'>,
-    Pick<ComponentProps<typeof Buttons>, 'buttons' | '_buttons'>,
-    ComponentProps<typeof Tag> {
-  look?: 'ghost' | 'soft' | 'solid' | null
-  position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
-  frame?: 'panel'
-}
+type Props = z.infer<typeof header>
+
+export const header = buildProps({
+  logo,
+  links,
+  buttons,
+  frame: z.enum(['screen', 'panel']).nullish(),
+  variant: z.enum(['solid', 'soft', 'ghost']).nullish(),
+  position: z.enum(['relative', 'sticky', 'fixed', 'absolute']).nullish(),
+})
 
 const {
   as = 'header',
@@ -23,67 +23,74 @@ const {
   position,
   frame,
   ...rest
-} = endomorphic('header', Astro.props)
-
-const child = getChildProps(rest)
+} = parseProps(header, Astro.props)
 ---
 
 <Tag
   class:list={['header', look, position, frame]}
+  compact
   {as}
   {...rest}
 >
-  <Logo {...child} />
-
+  <Logo {...rest.logo} />
   <nav class="nav">
-    <Links {...child} />
-    <Buttons {...child} />
+    <Links {...rest.links} />
+    <Buttons {...rest.buttons} />
   </nav>
-
   <slot />
 </Tag>
 
 <style is:global>
-  @layer fullui {
-    .peer {
-      display: none;
+  .header {
+    display: flex;
+    top: 0;
+    right: 0;
+    left: 0;
+    align-items: center;
+    z-index: 10;
+    background: var(--hue1);
+    padding: var(--space-2) var(--gutter);
+    width: 100%;
+    overflow-x: hidden;
+  }
+  .peer {
+    display: none;
 
-      @media (min-width: 1024px) {
-        ~ .links {
-          display: none;
-        }
-      }
-
-      &:checked ~ .links {
-        display: flex;
-        position: absolute;
-        top: 100%;
-        right: 0;
-        left: 0;
-        flex-direction: column;
-        align-items: center;
-        background: var(--background);
-        padding: var(--space-6);
-        width: 100%;
-
-        @media (min-width: 1024px) {
-          display: none !important;
-        }
+    @media (min-width: 1024px) {
+      ~ .links {
+        display: none;
       }
     }
 
-    .fullcart-icon button {
-      --background: var(--hue3) !important;
-      --color: var(--hue11) !important;
+    &:checked ~ .links {
       display: flex;
-      justify-content: center;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      left: 0;
+      flex-direction: column;
       align-items: center;
-      width: 40px;
-      height: 40px;
+      background: var(--background);
+      padding: var(--space-6);
+      width: 100%;
 
-      p {
-        background: var(--orange9);
+      @media (min-width: 1024px) {
+        display: none !important;
       }
+    }
+  }
+
+  .fullcart-icon button {
+    --background: var(--hue3) !important;
+    --color: var(--hue11) !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+
+    p {
+      background: var(--orange9);
     }
   }
 

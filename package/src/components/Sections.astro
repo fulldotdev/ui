@@ -1,23 +1,17 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, sortByIndex, type Endomorphic } from '../utils'
-import Section from './Section.astro'
+import { z } from 'zod'
+import { buildProps, parseProps } from '../utils/props'
+import Section, { section } from './Section.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'sections', ComponentProps<typeof Section>[]>,
-    ComponentProps<typeof Tag> {
-  index?: number
-}
+type Props = z.infer<typeof sections>
 
-const { as = 'main', sections, ...rest } = endomorphic(Astro.props, 'sections')
+export const sections = buildProps({
+  section: section,
+  items: z.array(section).nullish(),
+})
 
-const sorted = sortByIndex(sections)
-// const indexed = sections?.map((section, index) => ({ index, ...section }))
-// const sorted = indexed?.sort((a, b) => {
-//   const index = (i: number) => (i < 0 ? indexed.length + 1 + i : i)
-//   return index(a.index) - index(b.index)
-// })
+const { as = 'main', items, ...rest } = parseProps(sections, Astro.props)
 ---
 
 <Tag
@@ -26,7 +20,14 @@ const sorted = sortByIndex(sections)
   {...rest}
 >
   <slot name="before" />
-  {sorted?.map((section) => <Section {...section} />)}
+  {
+    items?.map((item) => (
+      <Section
+        {...rest.section}
+        {...item}
+      />
+    ))
+  }
   <slot name="after" />
 </Tag>
 

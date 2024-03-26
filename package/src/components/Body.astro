@@ -1,28 +1,22 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, type Endomorphic } from '../utils'
-import Section from './Section.astro'
-import Sections from './Sections.astro'
+import { z } from 'zod'
+import { buildProps, parseProps } from '../utils/props'
+import Header, { header } from './Header.astro'
+import Section, { section } from './Section.astro'
+import Sections, { sections } from './Sections.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'body'>,
-    ComponentProps<typeof Tag>,
-    ComponentProps<typeof Section> {
-  hero?: Pick<ComponentProps<typeof Section>, 'section'>
-  _hero?: Pick<ComponentProps<typeof Section>, '_section'>
-  cta?: Pick<ComponentProps<typeof Section>, 'section'>
-  _cta?: Pick<ComponentProps<typeof Section>, '_section'>
-}
+type Props = z.infer<typeof body>
 
-const {
-  as = 'body',
-  hero,
-  _hero,
-  cta,
-  _cta,
-  ...rest
-} = endomorphic(Astro.props, 'body')
+export const body = buildProps({
+  header,
+  section,
+  sections,
+  hero: section,
+  cta: section,
+})
+
+const { as = 'body', ...rest } = parseProps(body, Astro.props)
 ---
 
 <Tag
@@ -31,19 +25,18 @@ const {
   {...rest}
 >
   <!-- <Banner></Banner> -->
-  <!-- <Header {...rest} /> -->
-  <Sections {...rest}>
+  <Header {...rest.header} />
+  <Sections {...rest.sections}>
     <Section
       class="hero"
-      {..._hero}
-      {...hero}
       slot="before"
+      {...rest.hero}
+      {...rest}
     />
     <Section
       class="cta"
-      {..._cta}
-      {...cta}
       slot="after"
+      {...rest.cta}
     />
   </Sections>
   <slot />
@@ -54,6 +47,7 @@ const {
     .body {
       transition: var(--transition);
       background: var(--hue1);
+      height: 100%;
       min-height: 100vh;
       color: var(----hue11);
       font: var(--font);

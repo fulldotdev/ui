@@ -1,31 +1,31 @@
 ---
 _schema: default
 align: center
-title: Past The Gym in Haren bij jou?
-description: Vul jouw doel(en) en gegevens in, beantwoord de 5 korte vragen op de volgende pagina en ontdek in 1 minuut welk programma het beste bij jou past. We nemen binnen 1 werkdag persoonlijk contact met je op.
+composite.display.writeup.title.html: Past The Gym in Haren bij jou?
+composite.display.writeup.description.html: Vul jouw doel(en) en gegevens in, beantwoord de 5 korte vragen op de volgende pagina en ontdek in 1 minuut welk programma het beste bij jou past. We nemen binnen 1 werkdag persoonlijk contact met je op.
 form:
-  fields:
-    - label: Afvallen
+  fields.items:
+    - label.html: Afvallen
       checkbox: afvallen
-    - label: Conditie verbeteren
+    - label.html: Conditie verbeteren
       checkbox: conditie-verbeteren
-    - label: Sterker worden
+    - label.html: Sterker worden
       checkbox: sterker-worden
-    - label: Pijnvrij bewege
+    - label.html: Pijnvrij bewege
       checkbox: pijnvrij-bewegen
-    - label: Sociale contacten en ontspanning
+    - label.html: Sociale contacten en ontspanning
       checkbox: sociale-contacten-en-ontspanning
-    - label: Naam
+    - label.html: Naam
       input: naam
-    - label: Email
+    - label.html: Email
       input: email
       type: email
       required: true
-    - label: Telefoon
+    - label.html: Telefoon
       input: telefoon
       type: tel
       required: true
   button:
-    text: Verstuur
+    html: Verstuur
     href: "#"
 ---

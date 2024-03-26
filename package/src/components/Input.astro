@@ -1,22 +1,22 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, type Endomorphic } from '../utils'
-import Tag from './Tag.astro'
+import { z } from 'zod'
+import { buildProps, parseProps } from '../utils/props'
 
-interface Props
-  extends Endomorphic<Props, 'input', string>,
-    ComponentProps<typeof Tag> {}
+type Props = z.infer<typeof input>
 
-const { as = 'input', input, ...rest } = endomorphic(Astro.props, 'input')
+export const input = buildProps({
+  name: z.string().nullable(),
+})
+
+const { name } = parseProps(input, Astro.props)
 ---
 
 {
-  input && (
+  name && (
     <input
       class="input"
-      name={input}
-      id={input}
-      {...rest}
+      id={name}
+      {name}
     />
   )
 }

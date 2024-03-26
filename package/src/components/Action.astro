@@ -1,29 +1,28 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, getChildProps, type Endomorphic } from '../utils'
-import Buttons from './Buttons.astro'
-import Form from './Form.astro'
+import { z } from 'zod'
+import { buildProps, parseProps } from '../utils/props'
+import Buttons, { buttons } from './Buttons.astro'
+import Form, { form } from './Form.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'action'>,
-    ComponentProps<typeof Tag>,
-    Pick<ComponentProps<typeof Form>, 'form' | '_form'>,
-    // ComponentProps<typeof Product>,
-    Pick<ComponentProps<typeof Buttons>, 'buttons' | '_buttons'> {
-  align?: 'start' | 'center' | null
-}
+type Props = z.infer<typeof action>
 
-const { ...rest } = endomorphic(Astro.props, 'action')
-const child = getChildProps(rest)
+export const action = buildProps({
+  form,
+  buttons,
+  align: z.enum(['start', 'center']).nullish(),
+})
+
+const { align, ...rest } = parseProps(action, Astro.props)
 ---
 
 <Tag
-  class="action"
+  class:list={['action, align']}
   {...rest}
 >
   <!-- {props.price ? <Product {...rest} /> : <Form {...(rest as any)} />} -->
-  <Buttons {...child} />
+  <Form {...rest.form} />
+  <Buttons {...rest.buttons} />
   <slot />
 </Tag>
 

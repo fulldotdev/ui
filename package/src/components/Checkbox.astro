@@ -1,25 +1,23 @@
 ---
-// TODO dit component maken
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, type Endomorphic } from '../utils'
-import Tag from './Tag.astro'
+import { z } from 'zod'
+import { buildProps, parseProps } from '../utils/props'
 
-interface Props
-  extends Endomorphic<Props, 'checkbox', string>,
-    ComponentProps<typeof Tag> {}
+type Props = z.infer<typeof checkbox>
 
-const { checkbox } = endomorphic(Astro.props, 'checkbox')
+export const checkbox = buildProps({
+  name: z.string().nullable(),
+})
+
+const { name } = parseProps(checkbox, Astro.props)
 ---
 
 {
-  checkbox && (
-    <>
-      <input
-        id={checkbox}
-        name={checkbox}
-        type="checkbox"
-      />
-    </>
+  name && (
+    <input
+      id={name}
+      type="checkbox"
+      {name}
+    />
   )
 }
 

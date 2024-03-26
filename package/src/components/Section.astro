@@ -1,50 +1,62 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import type { Icon } from '..'
-import { endomorphic, getChildProps, type Endomorphic } from '../utils'
-import Cards from './Cards.astro'
-import Composite from './Composite.astro'
-import Image from './Image.astro'
-import Prose from './Prose.astro'
+import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
+import { getEntry } from 'astro:content'
+import { merge } from 'merge-anything'
+import { z } from 'zod'
+import { buildProps, parseProps } from '../utils/props'
+import { card } from './Card.astro'
+import Cards, { cards } from './Cards.astro'
+import Composite, { composite } from './Composite.astro'
+import Image, { image } from './Image.astro'
+import Prose, { prose } from './Prose.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'section'>,
-    ComponentProps<typeof Tag>,
-    ComponentProps<typeof Composite>,
-    Pick<ComponentProps<typeof Image>, 'image' | '_image'>,
-    Pick<ComponentProps<typeof Prose>, 'prose' | '_prose'>,
-    Pick<ComponentProps<typeof Cards>, 'cards' | '_cards'>,
-    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'> {
-  direction?: 'row' | 'column' | null
-  align?: 'start' | 'center' | null
-  look?: 'solid' | 'soft' | 'ghost' | null
-  frame?: 'screen' | 'panel' | null
-}
+type Props = z.infer<typeof section>
 
-// const reference = getReference(props)
-// const entry = reference && (await getEntry(reference))
-// const entryWithDefaults = entry && (await withDefaults(entry))
-// const entryAndProps = merge(entryWithDefaults?.data, props)
+export const section = buildProps({
+  composite,
+  image,
+  images: z.any().nullish(), // FIXME
+  prose,
+  cards,
+  card,
+  direction: z.enum(['row', 'column']).nullish(),
+  frame: z.enum(['screen', 'panel']).nullish(),
+  variant: z.enum(['solid', 'soft', 'ghost']).nullish(),
+  align: z.enum(['start', 'center']).nullish(),
+  collection: z.string().nullish(),
+  slug: z.string().nullish(),
+})
+
+const { collection, slug, ...props } = parseProps(section, Astro.props)
+
+const entry =
+  collection && slug
+    ? ((await getEntry(
+        collection as any,
+        slug as any
+      )) as CollectionEntry<ContentCollectionKey>)
+    : undefined
+
 const {
   as = 'section',
   direction = 'column',
+  variant,
   frame,
   align,
   ...rest
-} = endomorphic(Astro.props, 'section')
-const child = getChildProps(rest)
+} = merge(entry?.data, props)
 ---
 
 <Tag
   {as}
   {...rest}
-  class:list={['section', direction, align, frame]}
+  class:list={['section', direction, align, frame, variant]}
 >
-  <Composite {...child} />
-  <Image {...child} />
-  <Cards {...child} />
-  <Prose {...child} />
+  <Composite {...rest.composite} />
+  <Image {...rest.image} />
+  <Cards {...rest.cards} />
+  <Prose {...rest.prose} />
   <slot />
 </Tag>
 
@@ -53,9 +65,10 @@ const child = getChildProps(rest)
     display: flex;
     position: relative;
     flex-direction: column;
-    gap: var(--space-6);
+    order: 0;
+    gap: var(--space-6) var(--spacer);
     background: var(--hue1);
-    padding: var(--space-6) var(--gutter);
+    padding: var(--spacer) var(--gutter);
     overflow-x: hidden;
 
     /* &:first-child {

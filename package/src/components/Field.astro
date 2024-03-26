@@ -1,37 +1,32 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, getChildProps, type Endomorphic } from '../utils'
-import Checkbox from './Checkbox.astro'
-import Input from './Input.astro'
-import Label from './Label.astro'
-import Options from './Options.astro'
+import { z } from 'zod'
+import { buildProps, parseProps } from '../utils/props'
+import Checkbox, { checkbox } from './Checkbox.astro'
+import Input, { input } from './Input.astro'
+import Label, { label } from './Label.astro'
 import Tag from './Tag.astro'
-import Textarea from './Textarea.astro'
+import Textarea, { textarea } from './Textarea.astro'
 
-interface Props
-  extends Endomorphic<Props, 'field'>,
-    ComponentProps<typeof Tag>,
-    Pick<ComponentProps<typeof Label>, 'label' | '_label'>,
-    Pick<ComponentProps<typeof Options>, 'options' | '_options'>,
-    Pick<ComponentProps<typeof Checkbox>, 'checkbox' | '_checkbox'>,
-    Pick<ComponentProps<typeof Textarea>, 'textarea' | '_textarea'>,
-    Pick<ComponentProps<typeof Input>, 'input' | '_input'> {}
+type Props = z.infer<typeof field>
 
-const { as = 'div', checkbox, ...rest } = endomorphic(Astro.props, 'field')
-const child = getChildProps(rest)
+export const field = buildProps({
+  label,
+  checkbox,
+  textarea,
+  input,
+})
+
+const { ...rest } = parseProps(field, Astro.props)
 ---
 
 <Tag
-  class:list={['field', { checkbox }]}
+  class:list={['field', { checkbox: rest.checkbox }]}
   {...rest}
 >
-  <Checkbox
-    {checkbox}
-    {...child}
-  />
-  <Label {...child} />
-  <Textarea {...child} />
-  <Input {...child} />
+  <Checkbox {...rest.checkbox} />
+  <Label {...rest.label} />
+  <Textarea {...rest.textarea} />
+  <Input {...rest.input} />
   <slot />
 </Tag>
 

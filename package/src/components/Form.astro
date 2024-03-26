@@ -1,22 +1,18 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, getChildProps, type Endomorphic } from '../utils'
-import Button from './Button.astro'
-import Fields from './Fields.astro'
+import { z } from 'zod'
+import { buildProps, parseProps } from '../utils/props'
+import Button, { button } from './Button.astro'
+import Fields, { fields } from './Fields.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'form'>,
-    ComponentProps<typeof Tag>,
-    ComponentProps<typeof Fields>,
-    ComponentProps<typeof Button> {}
+type Props = z.infer<typeof form>
 
-const {
-  as = 'form',
-  method = 'POST',
-  ...rest
-} = endomorphic(Astro.props, 'form')
-const child = getChildProps(rest)
+export const form = buildProps({
+  fields,
+  button,
+})
+
+const { as = 'form', method = 'POST', ...rest } = parseProps(form, Astro.props)
 ---
 
 <Tag
@@ -25,11 +21,11 @@ const child = getChildProps(rest)
   {method}
   {...rest}
 >
-  <Fields {...child} />
+  <Fields {...rest.fields} />
   <Button
     as="button"
     type="submit"
-    {...rest}
+    {...rest.button}
   />
 </Tag>
 

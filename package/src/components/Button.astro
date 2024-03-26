@@ -1,34 +1,34 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import { endomorphic, getChildProps, type Endomorphic } from '../utils'
-import Icon from './Icon.astro'
+import { z } from 'zod'
+import { buildProps, parseProps } from '../utils/props'
+import Icon, { icon } from './Icon.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'button', string>,
-    ComponentProps<typeof Tag>,
-    Pick<ComponentProps<typeof Icon>, 'icon' | '_icon'> {
-  href?: HTMLAttributes<'a'>['href']
-}
+type Props = z.infer<typeof button>
+
+export const button = buildProps({
+  icon,
+  href: z.string().nullish(),
+  variant: z.enum(['solid', 'soft', 'surface', 'outline', 'ghost']).nullish(),
+})
 
 const {
   as = 'a',
   variant = 'solid',
-  button,
+  color = 'accent',
   ...rest
-} = endomorphic(Astro.props, 'button')
-const child = getChildProps(rest)
+} = parseProps(button, Astro.props)
 ---
 
 <Tag
-  class:list={['button']}
-  {variant}
+  class:list={['button', variant]}
+  {color}
   {as}
   {...rest}
 >
-  <Icon {...child} />
-  <Fragment set:html={button} />
-  <slot />
+  <slot>
+    <Icon {...rest.icon} />
+  </slot>
 </Tag>
 
 <style is:global>
@@ -63,11 +63,11 @@ const child = getChildProps(rest)
       outline-offset: 2px;
     }
 
-    &.variant-solid,
-    &.variant-soft,
-    &.variant-outline,
-    &.variant-surface,
-    &.variant-ghost {
+    &.solid,
+    &.soft,
+    &.outline,
+    &.surface,
+    &.ghost {
       box-shadow: inset 0 0 0 var(--border-width) var(--button-border);
       background-color: var(--button-background);
       color: var(--button-color);
@@ -93,7 +93,7 @@ const child = getChildProps(rest)
       }
     }
 
-    &.variant-solid {
+    &.solid {
       --button-background: var(--hue9);
       --button-background-hover: var(--hue10);
       --button-color: var(--hue-fg);
@@ -105,14 +105,14 @@ const child = getChildProps(rest)
       }
     }
 
-    &.variant-soft {
+    &.soft {
       --button-background: var(--hue3);
       --button-background-hover: var(--hue4);
       --button-background-active: var(--hue5);
       --button-color: var(--hue11);
     }
 
-    &.variant-surface {
+    &.surface {
       --button-background: var(--hue2);
       --button-background-hover: var(--hue3);
       --button-background-active: var(--hue4);
@@ -121,7 +121,7 @@ const child = getChildProps(rest)
       --button-border-hover: var(--hue8A);
     }
 
-    &.variant-outline {
+    &.outline {
       --button-background-hover: var(--hue2);
       --button-background-active: var(--hue3);
       --button-color: var(--hue11);
@@ -129,7 +129,7 @@ const child = getChildProps(rest)
       --button-border-hover: var(--hue8A);
     }
 
-    &.variant-ghost {
+    &.ghost {
       --button-background-hover: var(--hue2);
       --button-background-active: var(--hue3);
       --button-color: var(--hue11);

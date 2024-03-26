@@ -1,7 +1,7 @@
 ---
-title:
+composite.display.writeup.title.html:
 inputs:
 button:
-  label: Verstuur
+  label.html: Verstuur
   href: /bericht-ontvangen
 ---

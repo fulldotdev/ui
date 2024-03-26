@@ -1,23 +1,24 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, type Endomorphic } from '../utils'
-import Icon from './Icon.astro'
+import { z } from 'zod'
+import { buildProps, parseProps } from '../utils/props'
+import Icon, { icon } from './Icon.astro'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'rating', number>,
-    ComponentProps<typeof Tag> {
-  align?: 'start' | 'center' | null
-}
+type Props = z.infer<typeof rating>
 
-const { rating, align, ...rest } = endomorphic(Astro.props, 'rating')
+export const rating = buildProps({
+  value: z.number().nullish(),
+})
+
+const { value, color = 'accent', ...rest } = parseProps(rating, Astro.props)
 ---
 
 <Tag
-  class:list={['rating', align]}
+  class:list={['rating']}
+  {color}
   {...rest}
 >
-  {rating && [1, 2, 3, 4, 5].map(() => <Icon icon="star-filled" />)}
+  {value && [1, 2, 3, 4, 5].map(() => <Icon name="star-filled" />)}
 </Tag>
 
 <style is:global>
@@ -42,8 +43,7 @@ const { rating, align, ...rest } = endomorphic(Astro.props, 'rating')
       width: 1.25em;
       height: 1em;
       height: 1.25em;
-      color: inherit;
-      color: var(--description);
+      color: var(--hue9);
     }
   }
 </style>

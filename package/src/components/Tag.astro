@@ -1,76 +1,64 @@
 ---
-import type { HTMLAttributes, HTMLTag } from 'astro/types'
-import { htmlElementAttributes } from 'html-element-attributes'
+import { z } from 'zod'
+import { attributes, zElements } from '../utils'
 
-type Poly = {
-  as?: HTMLTag
-}
+type Props = z.infer<typeof tag> & Record<any, any>
 
-interface Props extends Poly {
-  if?: string | boolean
-  // polymorphic
-  class?: HTMLAttributes<HTMLTag>['class']
-  id?: HTMLAttributes<HTMLTag>['id']
-  style?: HTMLAttributes<HTMLTag>['style']
-  // design
-  compact?: boolean | null
-  scheme?: 'light' | 'dark' | null
-  color?: 'base' | 'accent' | null
-  size?: '1' | '2' | '3' | '4' | null
-  // components
-  variant?: 'solid' | 'soft' | 'surface' | 'outline' | 'ghost' | null
-  contrast?: boolean | null
-  // temp
-  rows?: HTMLAttributes<'textarea'>['rows']
-  alt?: HTMLAttributes<'img'>['alt']
-  src?: HTMLAttributes<'img'>['src']
-  method?: HTMLAttributes<'form'>['method']
-  // type?: HTMLAttributes<'button'>['type']
-  for?: HTMLAttributes<'label'>['for']
-}
+export const tag = z.object({
+  as: zElements.optional(),
+  if: z.union([z.string(), z.literal(true)]).nullish(),
+  html: z.string().nullish(),
+  color: z.string().nullish(),
+  scheme: z.string().nullish(),
+  contrast: z.boolean().nullish(),
+  class: z.string().nullish(),
+  id: z.string().nullish(),
+  style: z.string().nullish(),
+  scale: z.string().or(z.number()).nullish(), // TODO remove scale and fix sizing system. people can just use css scale
+  size: z
+    .enum(['1', '2', '3', '4'])
+    .or(z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]))
+    .nullish(),
+  compact: z.boolean().nullish(),
+  order: z.string().or(z.number()).nullish(),
+})
 
 const {
-  // @ts-ignore
-  if: ifProp,
   as: As = 'div',
-  variant,
-  contrast,
-  compact,
-  scheme,
+  if: hasProp,
+  html,
   color,
+  scheme,
+  contrast,
+  order,
+  scale,
   size,
+  compact,
   ...rest
 } = Astro.props
 
-const htmlAttributes = Object.fromEntries(
-  Object.entries(rest).filter(
-    ([key]) =>
-      (Object.values(htmlElementAttributes).flat().includes(key) ||
-        key.startsWith('data-') ||
-        key.startsWith('aria-')) &&
-      key !== 'title'
-  )
-)
-
 const slot = await Astro.slots.render('default')
-const hasContent = slot?.trim().length > 0
-// @ts-ignore
-const hasProp = ifProp === true || Astro.props[ifProp]
+const hasSlot = slot?.trim().length > 0
 ---
 
 {
-  (hasProp || hasContent) && (
+  (hasSlot || hasProp || html) && (
     <As
+      style={
+        `
+        ${scale ? `--scale:${scale};` : ''}
+        ${order ? `order:${order};` : ''}
+      `.trim() || undefined
+      }
       class:list={[
         { compact, contrast },
         color ? `hue-${color}` : '',
-        variant ? `variant-${variant}` : '',
         size ? `size-${size}` : '',
         scheme,
-        size,
       ]}
-      {...htmlAttributes}
+      {...attributes.parse(rest)}
     >
+      <Fragment set:html={html} />
       <Fragment set:html={slot} />
     </As>
   )

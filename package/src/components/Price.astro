@@ -1,15 +1,14 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic, type Endomorphic } from '../utils'
+import { z } from 'zod'
+import { buildProps, parseProps } from '../utils/props'
 import Tag from './Tag.astro'
 
-interface Props
-  extends Endomorphic<Props, 'price', number>,
-    ComponentProps<typeof Tag> {}
+type Props = z.infer<typeof price>
 
-const { price, ...rest } = endomorphic(Astro.props, 'price')
+export const price = buildProps({})
 
-const priceNumber = parseFloat(price as any)
+const { html, ...rest } = parseProps(price, Astro.props)
+const priceNumber = parseFloat(html as any)
 const fixedPrice = priceNumber?.toFixed(2).replace('.', ',')
 ---
 
@@ -17,7 +16,7 @@ const fixedPrice = priceNumber?.toFixed(2).replace('.', ',')
   class="price"
   {...rest}
 >
-  {price && fixedPrice && <Fragment>&euro;{fixedPrice}</Fragment>}
+  {html && fixedPrice && <Fragment>&euro;{fixedPrice}</Fragment>}
 </Tag>
 
 <style is:global>
