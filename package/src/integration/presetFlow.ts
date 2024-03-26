@@ -14,7 +14,7 @@ const defaultConfig: Config = {
 }
 
 export default function preset(userConfig?: Partial<Config>): Preset {
-  const config: Config = merge(defaultConfig, userConfig || {})
+  const config = merge(defaultConfig, userConfig || {}) as Config
   return {
     name: 'unocss-preset-fullui-flow',
     // TODO differentiate between numbers and names, where names change automatically and numbers do not
