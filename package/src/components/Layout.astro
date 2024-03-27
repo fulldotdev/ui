@@ -1,20 +1,25 @@
 ---
 import { z } from 'zod'
 import Tag from '../components/Tag.astro'
-import { buildProps, parseProps } from '../utils/props'
+import { componentSchema } from '../schemas/componentSchema'
 import Body, { bodySchema } from './Body.astro'
 import Head, { headSchema } from './Head.astro'
 
 type Props = z.infer<typeof layoutSchema>
 
-export const layoutSchema = buildProps({
+export const layoutSchema = componentSchema({
   body: bodySchema,
   head: headSchema,
   render: z.any().nullish(),
-  hasProse:z.boolean().nullish(),
+  hasProse: z.boolean().nullish(),
 })
 
-const { as = 'html', render, hasProse, ...rest } = parseProps(layoutSchema, Astro.props)
+const {
+  as = 'html',
+  render,
+  hasProse,
+  ...rest
+} = layoutSchema.parse(Astro.props)
 ---
 
 <!doctype html>
@@ -26,7 +31,10 @@ const { as = 'html', render, hasProse, ...rest } = parseProps(layoutSchema, Astr
   <Head {...rest.head}>
     <slot name="head" />
   </Head>
-  <Body {...rest.body} render={hasProse ?render : undefined}>
+  <Body
+    {...rest.body}
+    render={hasProse ? render : undefined}
+  >
     <slot name="body" />
     <slot />
   </Body>

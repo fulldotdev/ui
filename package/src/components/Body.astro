@@ -1,15 +1,15 @@
 ---
+import { merge } from 'merge-anything'
 import { z } from 'zod'
-import { buildProps, parseProps } from '../utils/props'
+import { componentSchema } from '../schemas/componentSchema'
 import Header, { headerSchema } from './Header.astro'
 import Section, { sectionSchema } from './Section.astro'
 import SectionGroup, { sectionGroupSchema } from './SectionGroup.astro'
 import Tag from './Tag.astro'
-import { merge } from 'merge-anything'
 
 type Props = z.infer<typeof bodySchema>
 
-export const bodySchema = buildProps({
+export const bodySchema = componentSchema({
   ...sectionSchema.shape,
   output: z.boolean().nullish(),
   header: headerSchema,
@@ -20,7 +20,7 @@ export const bodySchema = buildProps({
   render: z.any().nullish(),
 })
 
-const { as = 'body', render, ...rest } = parseProps(bodySchema, Astro.props)
+const { as = 'body', render, ...rest } = bodySchema.parse(Astro.props)
 ---
 
 <Tag
@@ -36,7 +36,7 @@ const { as = 'body', render, ...rest } = parseProps(bodySchema, Astro.props)
       slot="before"
       {...merge(rest ?? {}, rest.hero ?? {})}
       prose={{
-        render: render
+        render: render,
       }}
     />
     <Section

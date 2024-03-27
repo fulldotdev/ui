@@ -1,17 +1,17 @@
 ---
 import { SEO } from 'astro-seo'
 import { z } from 'zod'
-import { buildProps, parseProps } from '../utils/props'
+import { componentSchema } from '../schemas/componentSchema'
 
 type Props = z.infer<typeof headSchema>
 
-export const headSchema = buildProps({
+export const headSchema = componentSchema({
   title: z.string().nullish(),
   description: z.string().nullish(),
   image: z.string().nullish(),
 })
 
-const { title, description, image } = parseProps(headSchema, Astro.props)
+const { title, description, image } = headSchema.parse(Astro.props)
 ---
 
 <head>

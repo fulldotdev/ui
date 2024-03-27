@@ -1,23 +1,19 @@
 ---
 import { z } from 'zod'
-import { buildProps, parseProps } from '../utils/props'
+import { componentSchema } from '../schemas/componentSchema'
 import Button, { buttonSchema } from './Button.astro'
 import FieldGroup, { fieldGroupSchema } from './FieldGroup.astro'
 import Tag from './Tag.astro'
 
 type Props = z.infer<typeof formSchema>
 
-export const formSchema = buildProps({
+export const formSchema = componentSchema({
   fieldGroup: fieldGroupSchema,
   button: buttonSchema,
   method: z.string().nullish(),
 })
 
-const {
-  as = 'form',
-  method = 'POST',
-  ...rest
-} = parseProps(formSchema, Astro.props)
+const { as = 'form', method = 'POST', ...rest } = formSchema.parse(Astro.props)
 ---
 
 <Tag

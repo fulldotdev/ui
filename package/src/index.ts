@@ -1,7 +1,6 @@
 // Utils
 export * from './utils/getPathname'
 export * from './utils/props'
-export * from './utils/unslugify'
 // schemas
 export * from './schemas/attributesGroupedSchema'
 export * from './schemas/attributesSchema'
@@ -76,5 +75,7 @@ export * from './components/Tag.astro'
 export { default as Tag } from './components/Tag.astro'
 export * from './components/Tagline.astro'
 export { default as Tagline } from './components/Tagline.astro'
+export * from './components/Test.astro'
+export { default as Test } from './components/Test.astro'
 export * from './components/Title.astro'
 export { default as Title } from './components/Title.astro'

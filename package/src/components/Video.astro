@@ -1,15 +1,15 @@
 ---
 import { z } from 'zod'
-import { buildProps, parseProps } from '../utils/props'
+import { componentSchema } from '../schemas/componentSchema'
 
 type Props = z.infer<typeof videoSchema>
 
-export const videoSchema = buildProps({
+export const videoSchema = componentSchema({
   src: z.string().nullish(),
   thumbnail: z.any(),
 })
 
-const { src, thumbnail } = parseProps(videoSchema, Astro.props)
+const { src, thumbnail } = videoSchema.parse(Astro.props)
 const youtubeId =
   (src?.includes('youtube.com') || src?.includes('youtu.be')) &&
   src.split('/').pop()?.split('?').shift()

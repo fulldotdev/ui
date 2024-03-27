@@ -1,16 +1,16 @@
 ---
 import { z } from 'zod'
-import { buildProps, parseProps } from '../utils/props'
+import { componentSchema } from '../schemas/componentSchema'
 import Option, { optionSchema } from './Option.astro'
 
 type Props = z.infer<typeof selectSchema>
 
-export const selectSchema = buildProps({
+export const selectSchema = componentSchema({
   option: optionSchema,
   options: z.array(optionSchema).nullish(),
 })
 
-const { options, ...rest } = parseProps(selectSchema, Astro.props)
+const { options, ...rest } = selectSchema.parse(Astro.props)
 ---
 
 {

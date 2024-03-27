@@ -1,13 +1,13 @@
 ---
 import { z } from 'zod'
-import { buildProps, parseProps } from '../utils/props'
+import { componentSchema } from '../schemas/componentSchema'
 import Tag from './Tag.astro'
 
 type Props = z.infer<typeof priceSchema>
 
-export const priceSchema = buildProps({})
+export const priceSchema = componentSchema({})
 
-const { html, ...rest } = parseProps(priceSchema, Astro.props)
+const { html, ...rest } = priceSchema.parse(Astro.props)
 const priceNumber = parseFloat(html as any)
 const fixedPrice = priceNumber?.toFixed(2).replace('.', ',')
 ---

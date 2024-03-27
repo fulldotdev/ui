@@ -1,6 +1,6 @@
 ---
 import { z } from 'zod'
-import { buildProps, parseProps } from '../utils/props'
+import { componentSchema } from '../schemas/componentSchema'
 import Icon, { iconSchema } from './Icon.astro'
 import Rating, { ratingSchema } from './Rating.astro'
 import SpecGroup, { specGroupSchema } from './SpecGroup.astro'
@@ -9,7 +9,7 @@ import Writeup, { writeupSchema } from './Writeup.astro'
 
 type Props = z.infer<typeof displaySchema>
 
-export const displaySchema = buildProps({
+export const displaySchema = componentSchema({
   rating: ratingSchema,
   icon: iconSchema,
   specGroup: specGroupSchema,
@@ -17,7 +17,7 @@ export const displaySchema = buildProps({
   align: z.enum(['start', 'center']).nullish(),
 })
 
-const { align, ...rest } = parseProps(displaySchema, Astro.props)
+const { align, ...rest } = displaySchema.parse(Astro.props)
 ---
 
 <Tag

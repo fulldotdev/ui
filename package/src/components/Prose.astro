@@ -1,15 +1,15 @@
 ---
 import { z } from 'zod'
-import { buildProps, parseProps } from '../utils/props'
+import { componentSchema } from '../schemas/componentSchema'
 import Tag from './Tag.astro'
 
 type Props = z.infer<typeof proseSchema>
 
-export const proseSchema = buildProps({
+export const proseSchema = componentSchema({
   render: z.any(),
 })
 
-const { render, ...rest } = parseProps(proseSchema, Astro.props)
+const { render, ...rest } = proseSchema.parse(Astro.props)
 const Content = typeof render === 'function' ? (await render()).Content : null
 ---
 

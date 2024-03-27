@@ -1,6 +1,6 @@
 ---
 import { z } from 'zod'
-import { buildProps, parseProps } from '../utils/props'
+import { componentSchema } from '../schemas/componentSchema'
 
 import Checkbox, { checkboxSchema } from './Checkbox.astro'
 import Input, { inputSchema } from './Input.astro'
@@ -11,7 +11,7 @@ import Textarea, { textareaSchema } from './Textarea.astro'
 
 type Props = z.infer<typeof fieldSchema>
 
-export const fieldSchema = buildProps({
+export const fieldSchema = componentSchema({
   label: labelSchema,
   checkbox: checkboxSchema,
   textarea: textareaSchema,
@@ -19,7 +19,7 @@ export const fieldSchema = buildProps({
   select: selectSchema,
 })
 
-const { ...rest } = parseProps(fieldSchema, Astro.props)
+const { ...rest } = fieldSchema.parse(Astro.props)
 ---
 
 <Tag
