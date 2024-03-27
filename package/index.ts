@@ -1,3 +1,5 @@
+// Integration
+// export default from './src'
 // Utils
 export * from './src/utils/getPathname'
 export * from './src/utils/props'
