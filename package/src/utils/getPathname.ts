@@ -10,5 +10,6 @@ export const getPathname = ({
   if (data.render === false) return
   if (collection === 'pages' && slug === 'index') return '/'
   if (collection === 'pages') return `/${slug}`
-  else return `/${collection}/${slug}`
+  if (slug === 'index') return `/${collection}`
+  return `/${collection}/${slug}`
 }
