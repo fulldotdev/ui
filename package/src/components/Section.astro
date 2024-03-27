@@ -1,42 +1,34 @@
 ---
-import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
 import { getEntry } from 'astro:content'
 import { merge } from 'merge-anything'
 import { z } from 'zod'
+import { entrySchema } from '../schemas/entrySchema'
 import { buildProps, parseProps } from '../utils/props'
-import { card } from './Card.astro'
-import Cards, { cards } from './Cards.astro'
-import Composite, { composite } from './Composite.astro'
-import Image, { image } from './Image.astro'
-import Prose, { prose } from './Prose.astro'
+import { cardSchema } from './Card.astro'
+import CardGroup, { cardGroupSchema } from './CardGroup.astro'
+import Composite, { compositeSchema } from './Composite.astro'
+import Image, { imageSchema } from './Image.astro'
+import Prose, { proseSchema } from './Prose.astro'
 import Tag from './Tag.astro'
 
-type Props = z.infer<typeof section>
+type Props = z.infer<typeof sectionSchema>
 
-export const section = buildProps({
-  composite,
-  image,
+export const sectionSchema = buildProps({
+  entry: entrySchema,
   images: z.any().nullish(), // FIXME
-  prose,
-  cards,
-  card,
+  composite: compositeSchema,
+  image: imageSchema,
+  prose: proseSchema,
+  cardGroup: cardGroupSchema,
+  card: cardSchema,
   direction: z.enum(['row', 'column']).nullish(),
   frame: z.enum(['screen', 'panel']).nullish(),
   variant: z.enum(['solid', 'soft', 'ghost']).nullish(),
   align: z.enum(['start', 'center']).nullish(),
-  collection: z.string().nullish(),
-  slug: z.string().nullish(),
 })
 
-const { collection, slug, ...props } = parseProps(section, Astro.props)
-
-const entry =
-  collection && slug
-    ? ((await getEntry(
-        collection as any,
-        slug as any
-      )) as CollectionEntry<ContentCollectionKey>)
-    : undefined
+const { entry, ...props } = parseProps(sectionSchema, Astro.props)
+const entryData = entry && (await getEntry(entry))?.data
 
 const {
   as = 'section',
@@ -45,7 +37,7 @@ const {
   frame,
   align,
   ...rest
-} = merge(entry?.data, props)
+} = merge(entryData, props)
 ---
 
 <Tag
@@ -55,7 +47,7 @@ const {
 >
   <Composite {...rest.composite} />
   <Image {...rest.image} />
-  <Cards {...rest.cards} />
+  <CardGroup {...rest.cardGroup} />
   <Prose {...rest.prose} />
   <slot />
 </Tag>

@@ -1,0 +1,36 @@
+---
+import { z } from 'zod'
+import { buildProps, parseProps } from '../utils/props'
+import Spec, { specSchema } from './Spec.astro'
+import Tag from './Tag.astro'
+
+type Props = z.infer<typeof specGroupSchema>
+
+export const specGroupSchema = buildProps({
+  specs: z.array(specSchema.or(specSchema.shape.html)).nullish(),
+})
+
+const { specs, ...rest } = parseProps(specGroupSchema, Astro.props)
+---
+
+<Tag
+  class:list={['specs']}
+  {...rest}
+>
+  <slot>
+    {
+      specs?.map((item) => {
+        if (typeof item === 'string') return <Spec html={item} />
+        else return <Spec {...item} />
+      })
+    }
+  </slot>
+</Tag>
+
+<style is:global>
+  .specs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+</style>

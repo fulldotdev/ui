@@ -1,0 +1,159 @@
+---
+import { getCollection, getEntries } from 'astro:content'
+import { merge } from 'merge-anything'
+import { z } from 'zod'
+import { collectionSchema } from '../schemas/collectionSchema'
+import { entriesSchema } from '../schemas/entriesSchema'
+import { buildProps, parseProps } from '../utils/props'
+import Card, { cardSchema } from './Card.astro'
+import Tag from './Tag.astro'
+
+type Props = z.infer<typeof cardGroupSchema>
+
+export const cardGroupSchema = buildProps({
+  entries: entriesSchema,
+  collection: collectionSchema,
+  cards: z.array(cardSchema).nullish(),
+  card: cardSchema,
+  layout: z
+    .enum(['carousel', 'grid', 'masonry', 'row', 'panels', 'bento'])
+    .nullish(),
+})
+
+let { entries, collection, ...props } = parseProps(cardGroupSchema, Astro.props)
+
+const entriesData =
+  entries &&
+  (await getEntries(entries)).map((entry) => ({
+    ...entry?.data,
+    collection: entry?.collection,
+    id: entry?.id,
+    slug: entry?.slug,
+  }))
+const collectionData =
+  collection &&
+  (await getCollection(collection)).map((entry) => ({
+    ...entry?.data,
+    collection: entry?.collection,
+    id: entry?.id,
+    slug: 'slug' in entry ? entry?.slug : undefined,
+  }))
+const cards = [
+  ...(collectionData ?? []),
+  ...(entriesData ?? []),
+  ...(props?.cards ?? []),
+].filter(Boolean)
+
+const { layout = 'grid', ...rest } = props
+---
+
+<Tag
+  class:list={['cards', layout]}
+  {...rest}
+>
+  {cards?.map((card: any) => <Card {...merge(card, card.card)} />)}
+</Tag>
+
+<style is:global>
+  .cards {
+    position: relative;
+    width: 100%;
+
+    &.row {
+      display: grid;
+      row-gap: var(--space-4);
+
+      @media (min-width: 1024px) {
+        grid-auto-columns: 6fr 1fr;
+        grid-auto-flow: column;
+
+        > * {
+          &:nth-child(2) {
+            grid-column-start: 3;
+          }
+          &:nth-child(3) {
+            grid-column-start: 5;
+          }
+          &:nth-child(4) {
+            grid-column-start: 7;
+          }
+          &:nth-child(5) {
+            grid-column-start: 9;
+          }
+          &:nth-child(6) {
+            grid-column-start: 11;
+          }
+        }
+      }
+    }
+
+    &.carousel {
+      display: flex;
+      position: relative;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: var(--space-3);
+      margin: 0 calc(var(--gutter) * -1);
+      padding: 0 var(--gutter) var(--space-3);
+      width: 100vw;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+
+      & > .card {
+        /* TODO add multiple sizes */
+        flex-grow: 0;
+        flex-shrink: 0;
+        width: calc(7 * var(--space-6));
+        scroll-snap-align: center;
+      }
+    }
+
+    &.grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      column-gap: var(--space-3);
+      row-gap: var(--space-4);
+    }
+
+    &.masonry {
+      column-gap: var(--space-3);
+      column-count: 1;
+
+      @media (min-width: 640px) {
+        column-count: 2;
+      }
+      @media (min-width: 768px) {
+        column-count: 3;
+      }
+
+      @media (min-width: 1024px) {
+        column-count: 4;
+      }
+
+      & > .card + .card {
+        margin-top: var(--space-4);
+        margin-bottom: var(--space-4);
+      }
+    }
+
+    &.panels {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: var(--space-3);
+    }
+
+    &.bento {
+      display: grid;
+      grid-template-columns: 1fr;
+
+      @media (min-width: 1024px) {
+        grid-template-columns: 1fr 1fr 1fr;
+
+        & > *:nth-child(2n) {
+          grid-column-start: span 2;
+        }
+      }
+    }
+  }
+</style>

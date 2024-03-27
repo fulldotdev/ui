@@ -1,1 +1,1 @@
-export * from './src/preset/astro'
+export * from './src/integration/astro'

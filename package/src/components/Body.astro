@@ -1,22 +1,22 @@
 ---
 import { z } from 'zod'
 import { buildProps, parseProps } from '../utils/props'
-import Header, { header } from './Header.astro'
-import Section, { section } from './Section.astro'
-import Sections, { sections } from './Sections.astro'
+import Header, { headerSchema } from './Header.astro'
+import Section, { sectionSchema } from './Section.astro'
+import SectionGroup, { sectionGroupSchema } from './SectionGroup.astro'
 import Tag from './Tag.astro'
 
-type Props = z.infer<typeof body>
+type Props = z.infer<typeof bodySchema>
 
-export const body = buildProps({
-  header,
-  section,
-  sections,
-  hero: section,
-  cta: section,
+export const bodySchema = buildProps({
+  header: headerSchema,
+  section: sectionSchema,
+  sectionGroup: sectionGroupSchema,
+  hero: sectionSchema,
+  cta: sectionSchema,
 })
 
-const { as = 'body', ...rest } = parseProps(body, Astro.props)
+const { as = 'body', ...rest } = parseProps(bodySchema, Astro.props)
 ---
 
 <Tag
@@ -26,7 +26,7 @@ const { as = 'body', ...rest } = parseProps(body, Astro.props)
 >
   <!-- <Banner></Banner> -->
   <Header {...rest.header} />
-  <Sections {...rest.sections}>
+  <SectionGroup {...rest.sectionGroup}>
     <Section
       class="hero"
       slot="before"
@@ -38,7 +38,7 @@ const { as = 'body', ...rest } = parseProps(body, Astro.props)
       slot="after"
       {...rest.cta}
     />
-  </Sections>
+  </SectionGroup>
   <slot />
   <!-- <Footer {...rest} /> -->
   <!-- <Legal {...rest} /> -->

@@ -1,7 +1,7 @@
 import type { AstroGlobal } from 'astro'
 import { z } from 'zod'
 import { fromZodError } from 'zod-validation-error'
-import { tag } from '../components/Tag.astro'
+import { tagSchema } from '../components/Tag.astro'
 
 export const parseProps = <
   S extends ReturnType<typeof buildProps>,
@@ -11,7 +11,8 @@ export const parseProps = <
   props: P
 ) => {
   try {
-    return schema.parse(props) as z.infer<S>
+    // return schema.parse(props) as z.infer<S>
+    return schema.passthrough().parse(props) as z.infer<S>
   } catch (err: any) {
     const stack = err.stack || ''
     const regexPattern = /(\w+\.astro):\d+:\d+/
@@ -23,4 +24,4 @@ export const parseProps = <
 }
 
 export const buildProps = <S extends z.ZodRawShape>(shape: S) =>
-  tag.extend(shape).partial()
+  tagSchema.extend(shape).partial()
