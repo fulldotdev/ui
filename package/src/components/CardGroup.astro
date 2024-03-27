@@ -44,6 +44,9 @@ const cards = [
   ...(props?.cards ?? []),
 ].filter(Boolean)
 
+console.log('CARDGROUP', Astro.props)
+
+
 const { layout = 'grid', ...rest } = props
 ---
 
@@ -51,7 +54,10 @@ const { layout = 'grid', ...rest } = props
   class:list={['cards', layout]}
   {...rest}
 >
-  {cards?.map((card: any) => <Card {...merge(card, card.card)} />)}
+  {cards?.map((card: any) => {
+    const merged = merge(rest.card ?? {}, card ?? {}, card.card ?? {})
+    return <Card {...merged} />
+  })}
 </Tag>
 
 <style is:global>

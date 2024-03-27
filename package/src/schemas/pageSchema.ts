@@ -10,6 +10,7 @@ import { sectionGroupSchema } from '../components/SectionGroup.astro'
 
 export const pageSchema = z
   .object({
+    output: z.boolean().nullish(),
     head: headSchema,
     header: headerSchema,
     ...sectionSchema.shape,
