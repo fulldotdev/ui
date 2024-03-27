@@ -1,6 +1,5 @@
 ---
 import { getCollection, getEntries } from 'astro:content'
-import { merge } from 'merge-anything'
 import { z } from 'zod'
 import { collectionSchema } from '../schemas/collectionSchema'
 import { entriesSchema } from '../schemas/entriesSchema'
@@ -51,7 +50,14 @@ const { layout = 'grid', ...rest } = props
   class:list={['cards', layout]}
   {...rest}
 >
-  {cards?.map((card: any) => <Card {...merge(card, card.card)} />)}
+  {
+    cards?.map((item) => (
+      <Card
+        {...rest.card}
+        {...item}
+      />
+    ))
+  }
 </Tag>
 
 <style is:global>
