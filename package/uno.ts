@@ -1,2 +1,2 @@
 // Preset
-export { default as fullui } from './src/integration/uno'
+export { default as fullui } from './src/integration/unoPreset'

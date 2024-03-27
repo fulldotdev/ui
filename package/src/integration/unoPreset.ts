@@ -1,10 +1,10 @@
 import { merge } from 'merge-anything'
 import { presetMini, type Preset } from 'unocss'
-import presetColor, { type ColorConfig } from './presetColor'
-import presetFlow, { type FlowConfig } from './presetFlow'
-import type { FontConfig } from './presetFont'
-import presetFont from './presetFont'
-import presetTheme, { type ThemeConfig } from './presetTheme'
+import presetColor, { type ColorConfig } from './unoPresetColor'
+import presetFlow, { type FlowConfig } from './unoPresetFlow'
+import type { FontConfig } from './unoPresetFont'
+import presetFont from './unoPresetFont'
+import presetTheme, { type ThemeConfig } from './unoPresetTheme'
 
 interface Config {
   color: ColorConfig
