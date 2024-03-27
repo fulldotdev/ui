@@ -1,5 +1,5 @@
 import { flatten } from 'flatten-anything'
-import { merge } from 'merge-anything'
+import { mergeAndConcat } from 'merge-anything'
 import { nestifyObject as nestify } from 'nestify-anything'
 import { z } from 'zod'
 import { cardSchema } from '../components/Card.astro'
@@ -10,6 +10,7 @@ import { sectionGroupSchema } from '../components/SectionGroup.astro'
 
 export const pageSchema = z
   .object({
+    output: z.boolean().nullish(),
     head: headSchema,
     header: headerSchema,
     ...sectionSchema.shape,
@@ -43,7 +44,7 @@ const combine = (data: any) => {
   for (const key in data) {
     const strippedKey: any = key.toString().replace(/_/g, '')
     if (merged[strippedKey] === undefined) merged[strippedKey] = data[key]
-    else merged[strippedKey] = merge(merged[strippedKey], data[key])
+    else merged[strippedKey] = mergeAndConcat(merged[strippedKey], data[key])
   }
   return merged
 }
@@ -70,7 +71,11 @@ export const morphedPageSchemaWithLayouts = (
     .transform(async (data) => {
       const baseLayout = await getEntry('layouts', 'index')
       const collectionLayout = await getEntry('layouts', collection)
-      const merged = merge(baseLayout?.data, collectionLayout?.data, data)
+      const merged = mergeAndConcat(
+        baseLayout?.data,
+        collectionLayout?.data,
+        data
+      )
       return merged
     })
     .pipe(pageSchema)

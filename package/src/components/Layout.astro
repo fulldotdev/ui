@@ -10,9 +10,11 @@ type Props = z.infer<typeof layoutSchema>
 export const layoutSchema = buildProps({
   body: bodySchema,
   head: headSchema,
+  render: z.any().nullish(),
+  hasProse:z.boolean().nullish(),
 })
 
-const { as = 'html', ...rest } = parseProps(layoutSchema, Astro.props)
+const { as = 'html', render, hasProse, ...rest } = parseProps(layoutSchema, Astro.props)
 ---
 
 <!doctype html>
@@ -24,7 +26,7 @@ const { as = 'html', ...rest } = parseProps(layoutSchema, Astro.props)
   <Head {...rest.head}>
     <slot name="head" />
   </Head>
-  <Body {...rest.body}>
+  <Body {...rest.body} render={hasProse ?render : undefined}>
     <slot name="body" />
     <slot />
   </Body>

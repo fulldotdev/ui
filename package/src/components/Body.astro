@@ -5,18 +5,22 @@ import Header, { headerSchema } from './Header.astro'
 import Section, { sectionSchema } from './Section.astro'
 import SectionGroup, { sectionGroupSchema } from './SectionGroup.astro'
 import Tag from './Tag.astro'
+import { merge } from 'merge-anything'
 
 type Props = z.infer<typeof bodySchema>
 
 export const bodySchema = buildProps({
+  ...sectionSchema.shape,
+  output: z.boolean().nullish(),
   header: headerSchema,
   section: sectionSchema,
   sectionGroup: sectionGroupSchema,
   hero: sectionSchema,
   cta: sectionSchema,
+  render: z.any().nullish(),
 })
 
-const { as = 'body', ...rest } = parseProps(bodySchema, Astro.props)
+const { as = 'body', render, ...rest } = parseProps(bodySchema, Astro.props)
 ---
 
 <Tag
@@ -30,8 +34,10 @@ const { as = 'body', ...rest } = parseProps(bodySchema, Astro.props)
     <Section
       class="hero"
       slot="before"
-      {...rest.hero}
-      {...rest}
+      {...merge(rest ?? {}, rest.hero ?? {})}
+      prose={{
+        render: render
+      }}
     />
     <Section
       class="cta"
