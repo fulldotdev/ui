@@ -17,9 +17,10 @@ export const bodySchema = buildProps({
   sectionGroup: sectionGroupSchema,
   hero: sectionSchema,
   cta: sectionSchema,
+  render: z.any().nullish(),
 })
 
-const { as = 'body', ...rest } = parseProps(bodySchema, Astro.props)
+const { as = 'body', render, ...rest } = parseProps(bodySchema, Astro.props)
 ---
 
 <Tag
@@ -34,6 +35,9 @@ const { as = 'body', ...rest } = parseProps(bodySchema, Astro.props)
       class="hero"
       slot="before"
       {...merge(rest ?? {}, rest.hero ?? {})}
+      prose={{
+        render: render
+      }}
     />
     <Section
       class="cta"
