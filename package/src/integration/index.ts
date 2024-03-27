@@ -11,8 +11,6 @@ export default function fulluiIntegration(fulluiConfig: any): AstroIntegration {
           integrations: [unoIntegration(fulluiConfig)],
         })
 
-        const virtualModuleId = 'virtual:fullui-config'
-        const resolvedVirtualModuleId = '\0' + virtualModuleId
         updateConfig({
           vite: {
             plugins: [
