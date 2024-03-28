@@ -1,53 +1,27 @@
 ---
-import { merge } from 'merge-anything'
 import { z } from 'zod'
 import { componentSchema } from '../schemas/componentSchema'
 import Header, { headerSchema } from './Header.astro'
-import Section, { sectionSchema } from './Section.astro'
-import SectionGroup, { sectionGroupSchema } from './SectionGroup.astro'
+import Main, { mainSchema } from './Main.astro'
 import Tag from './Tag.astro'
 
 type Props = z.infer<typeof bodySchema>
 
 export const bodySchema = componentSchema({
-  ...sectionSchema.shape,
-  output: z.boolean(),
   header: headerSchema,
-  section: sectionSchema,
-  sectionGroup: sectionGroupSchema,
-  hero: sectionSchema,
-  cta: sectionSchema,
-  render: z.any(),
+  main: mainSchema,
 })
 
-const { as = 'body', render, ...rest } = bodySchema.parse(Astro.props)
+const { as = 'body', ...rest } = bodySchema.parse(Astro.props)
 ---
 
 <Tag
-  class="body hue-base hue-accent"
+  class:list={['body', 'hue-base', 'hue-accent']}
   {as}
   {...rest}
 >
-  <!-- <Banner></Banner> -->
   <Header {...rest.header} />
-  <SectionGroup {...rest.sectionGroup}>
-    <Section
-      class="hero"
-      slot="before"
-      {...merge(rest ?? {}, rest.hero ?? {})}
-      prose={{
-        render: render,
-      }}
-    />
-    <Section
-      class="cta"
-      slot="after"
-      {...rest.cta}
-    />
-  </SectionGroup>
-  <slot />
-  <!-- <Footer {...rest} /> -->
-  <!-- <Legal {...rest} /> -->
+  <Main {...rest.main} />
 
   <style is:global>
     .body {

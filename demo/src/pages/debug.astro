@@ -1,0 +1,59 @@
+---
+import type { CollectionKey } from 'astro:content'
+import { getCollection, getEntry } from 'astro:content'
+import { flatten } from 'flatten-anything'
+import { z } from 'zod'
+
+const collections: CollectionKey[] = ['pages']
+
+const getSchema = z.string().refine((val) => {
+  if (typeof val !== 'string') return
+  if (!val.startsWith('$')) return
+  const collection = val.split('.')[0].substring(1)
+  return collections.includes(collection as CollectionKey)
+}) as z.ZodType<`$${CollectionKey}${string}`>
+
+const transformed = getSchema.transform(async (val) => {
+  if (val.startsWith('$this')) {
+    const key = val.split('.').slice(1).join('.')
+    const flat = flatten(val)
+  }
+
+  const collection = val.split('.')[0].substring(1) as CollectionKey
+  const slug = val.split('.')[1] || null
+  const key = val.split('.').slice(2).join('.') || null
+
+  if (collection && slug && key) {
+    console.log('getting entry key', collection, slug, key)
+    const response = await getEntry(collection, slug)
+    const data = response?.data
+    const flat = flatten(data) as Record<string, any>
+    console.log('got:', flat)
+    const value = flat[key]
+    console.log('got:', value)
+    return data
+  }
+
+  if (collection && slug) {
+    console.log('getting entry', collection, slug)
+    const response = await getEntry(collection, slug)
+    const data = response?.data
+    console.log('got:', data)
+    return data
+  }
+
+  if (collection) {
+    console.log('getting collection', collection)
+    const response = await getCollection(collection)
+    const data = response.map((entry) => entry.data)
+    console.log('got:', data)
+    return data
+  }
+})
+
+const string = '$pages.index.body.'
+const result = transformed.parseAsync(string)
+
+type Get = z.infer<typeof getSchema>
+type Transformed = z.infer<typeof transformed>
+---
