@@ -8,23 +8,16 @@ const allowedComponents: any = {
   Title,
   Description,
   Tagline,
-} as const
+}
 
-const dynamicSchema = z
-  .object({
-    component: z.string().optional(),
-  })
-  .catchall(z.any())
+// const COMPONENTS = Astro.glob('../**/*.astro')
 
-const rest = dynamicSchema.parse(Astro.props)
-console.log({
-  props: Astro.props,
-  rest,
-})
+const dynamicSchema = z.object({}).catchall(z.any())
+const props = dynamicSchema.parse(Astro.props)
 ---
 
 {
-  Object.entries(rest).map(([key, value]) => {
+  Object.entries(props).map(([key, value]) => {
     let Component =
       allowedComponents[key.charAt(0).toUpperCase() + key.slice(1)]
 
