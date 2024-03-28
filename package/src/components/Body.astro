@@ -1,11 +1,12 @@
 ---
+import { merge } from 'merge-anything'
 import { z } from 'zod'
+import { Prose } from '..'
 import { buildProps, parseProps } from '../utils/props'
 import Header, { headerSchema } from './Header.astro'
 import Section, { sectionSchema } from './Section.astro'
 import SectionGroup, { sectionGroupSchema } from './SectionGroup.astro'
 import Tag from './Tag.astro'
-import { merge } from 'merge-anything'
 
 type Props = z.infer<typeof bodySchema>
 
@@ -36,9 +37,12 @@ const { as = 'body', render, ...rest } = parseProps(bodySchema, Astro.props)
       slot="before"
       {...merge(rest ?? {}, rest.hero ?? {})}
       prose={{
-        render: render
+        render: render,
       }}
     />
+    <Section slot="before">
+      <Prose {render} />
+    </Section>
     <Section
       class="cta"
       slot="after"
