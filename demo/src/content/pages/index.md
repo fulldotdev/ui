@@ -1,9 +1,8 @@
 ---
-head:
-  title:
-  description: Description
-  image: /images/image.jpg
-
-sectionGroup.sections:
-  - composite.display.writeup.title.html: My secion title
+hero:
+  component: Title
+  html: dit is een title met een hero class
+  
+description:
+  html: dit is gewoon een description
 ---
