@@ -1,27 +1,26 @@
 ---
 import { z } from 'zod'
-import Description from './Description.astro'
-import Tagline from './Tagline.astro'
-import Title from './Title.astro'
+import { allowedComponents } from '../schemas/dynamicComponentsSchema'
 
-const allowedComponents: any = {
-  Title,
-  Description,
-  Tagline,
-}
+export const dynamicSchema = z.object({}).catchall(z.any())
 
-// const COMPONENTS = Astro.glob('../**/*.astro')
-
-const dynamicSchema = z.object({}).catchall(z.any())
 const props = dynamicSchema.parse(Astro.props)
+
+function toPascalCase(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
 ---
 
 {
   Object.entries(props).map(([key, value]) => {
-    let Component =
-      allowedComponents[key.charAt(0).toUpperCase() + key.slice(1)]
+    let Component = allowedComponents[toPascalCase(key)]
 
-    if (value?.component) Component = allowedComponents[value.component]
+    if (value?.component)
+      Component = allowedComponents[toPascalCase(value.component)]
+
+    if (value?._component)
+      Component = allowedComponents[toPascalCase(value._component)]
+
     if (!Component) return null
 
     return <Component {...value} />

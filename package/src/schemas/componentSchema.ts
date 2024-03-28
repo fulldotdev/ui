@@ -1,11 +1,10 @@
 import { z } from 'zod'
 import { fromZodError } from 'zod-validation-error'
-import { dynamicSchema } from '../components/Dynamic.astro'
 import { tagSchema } from '../components/Tag.astro'
 
 export const componentSchema = <S extends z.ZodRawShape>(shape: S) => {
-  const schema = tagSchema.merge(dynamicSchema).extend(shape).partial()
-  // return schema
+  const schema = tagSchema.extend(shape).partial()
+  return schema
   const parse = schema.parse
   schema.parse = (data: unknown) => {
     try {

@@ -2,33 +2,22 @@
 import { z } from 'zod'
 import { Dynamic } from '..'
 import { componentSchema } from '../schemas/componentSchema'
-import Description, { descriptionSchema } from './Description.astro'
 import Tag from './Tag.astro'
-import Tagline, { taglineSchema } from './Tagline.astro'
-import Title, { titleSchema } from './Title.astro'
+
 
 type Props = z.infer<typeof writeupSchema>
 
 export const writeupSchema = componentSchema({
-  tagline: taglineSchema,
-  title: titleSchema,
-  description: descriptionSchema,
   align: z.enum(['start', 'center']),
-})
+}).catchall(z.any())
 
 const { align, ...rest } = writeupSchema.parse(Astro.props)
 ---
 
 <Tag
   class:list={['writeup', align]}
-  {...rest}
 >
   <Dynamic {...rest} />
-  <!-- <slot>
-    <Tagline {...rest.tagline} />
-    <Title {...rest.title} />
-    <Description {...rest.description} />
-  </slot> -->
 </Tag>
 
 <style is:global>
