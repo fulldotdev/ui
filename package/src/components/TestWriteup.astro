@@ -1,0 +1,23 @@
+---
+import { z } from 'zod'
+import { componentSchema } from '../schemas/componentSchema'
+import { descriptionSchema } from './Description.astro'
+import RenderMultiple from './RenderMultiple.astro'
+import RenderSingle from './RenderSingle.astro'
+import { taglineSchema } from './Tagline.astro'
+import { titleSchema } from './Title.astro'
+
+type Props = z.infer<typeof writeupSchema>
+
+export const writeupSchema = componentSchema({
+  tagline: taglineSchema,
+  title: titleSchema,
+  description: descriptionSchema,
+})
+
+const { ...rest } = writeupSchema.parse(Astro.props)
+---
+
+<RenderSingle {...rest}>
+  <RenderMultiple {...rest} />
+</RenderSingle>

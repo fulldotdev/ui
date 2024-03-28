@@ -1,0 +1,23 @@
+---
+import { z } from 'zod'
+import Description from './Description.astro'
+import Tagline from './Tagline.astro'
+import Title from './Title.astro'
+
+const COMPONENTS: any = {
+  Title,
+  Description,
+  Tagline,
+}
+
+export const dynamicSchema = z.object({
+  component: z.string().optional(),
+})
+
+const { component } = dynamicSchema.parse(Astro.props)
+const Component = component && COMPONENTS[component]
+---
+
+<Component>
+  <slot />
+</Component>

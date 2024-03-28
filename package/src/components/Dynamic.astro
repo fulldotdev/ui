@@ -1,9 +1,8 @@
 ---
 import { z } from 'zod'
-import { buildProps, parseProps } from '../utils/props'
-import Description, { descriptionSchema } from './Description.astro'
-import Tagline, { taglineSchema } from './Tagline.astro'
-import Title, { titleSchema } from './Title.astro'
+import Description from './Description.astro'
+import Tagline from './Tagline.astro'
+import Title from './Title.astro'
 
 const allowedComponents: any = {
   Title,
@@ -11,57 +10,27 @@ const allowedComponents: any = {
   Tagline,
 } as const
 
-export const dynamicSchema = buildProps({
-  component: z.any(),
-  tagline: taglineSchema,
-  title: titleSchema,
-  description: descriptionSchema,
+const dynamicSchema = z
+  .object({
+    component: z.string().optional(),
+  })
+  .catchall(z.any())
+
+const rest = dynamicSchema.parse(Astro.props)
+console.log({
+  props: Astro.props,
+  rest,
 })
-
-function omit<Data extends object, Keys extends keyof Data>(
-  data: Data,
-  keys: Keys[]
-): Omit<Data, Keys> {
-  const result = { ...data }
-  for (const key of keys) {
-    delete result[key]
-  }
-  return result as Omit<Data, Keys>
-}
-
-const { ...rest } = parseProps(dynamicSchema, Astro.props)
-
-console.log(rest)
 ---
 
 {
   Object.entries(rest).map(([key, value]) => {
-    // FIXME lowercase word alphabetisch gesort ;-;
-    const Component =
+    let Component =
       allowedComponents[key.charAt(0).toUpperCase() + key.slice(1)]
 
-    if (value.component !== undefined) {
-      const Component = allowedComponents[value.component]
+    if (value?.component) Component = allowedComponents[value.component]
+    if (!Component) return null
 
-      if (!Component) return false
-
-      const properties = omit(value, ['component'])
-
-      return (
-        <Component
-          class:list={[Component, key.toLowerCase()]}
-          {...properties}
-        />
-      )
-    }
-
-    if (!Component) return false
-
-    return (
-      <Component
-        class:list={[Component]}
-        {...value}
-      />
-    )
+    return <Component {...value} />
   })
 }
