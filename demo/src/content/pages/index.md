@@ -33,5 +33,6 @@ md-footer:
   tag: footer
   footer-message:
     tag: p
+    href: /
     html: footer message
 ---

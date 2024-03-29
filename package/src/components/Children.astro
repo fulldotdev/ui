@@ -1,10 +1,10 @@
 ---
 import { z } from 'zod'
-import { allowedComponents } from '../schemas/dynamicComponentsSchema'
+import { allowedComponents } from '../schemas/childrenComponentsSchema'
 
-export const dynamicSchema = z.object({}).catchall(z.any())
+export const ChildrenSchema = z.object({}).catchall(z.any())
 
-const props = dynamicSchema.parse(Astro.props)
+const props = ChildrenSchema.parse(Astro.props)
 
 function toPascalCase(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1)
@@ -26,7 +26,10 @@ function toPascalCase(str: string) {
       <Component
         class:list={[value?.component || value?.tag ? key.toLowerCase() : '']}
         {...value}
-      />
+      >
+        <Fragment set:html={value?.slot ? value?.slot : ''} />
+        <Fragment set:html={value?.html ? value?.html : ''} />
+      </Component>
     )
   })
 }
