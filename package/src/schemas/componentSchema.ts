@@ -3,8 +3,7 @@ import { fromZodError } from 'zod-validation-error'
 import { tagSchema } from '../components/Tag.astro'
 
 export const componentSchema = <S extends z.ZodRawShape>(shape: S) => {
-  const schema = tagSchema.extend(shape).partial()
-  return schema
+  const schema = tagSchema.extend(shape).partial().catchall(z.any())
   const parse = schema.parse
   schema.parse = (data: unknown) => {
     try {
