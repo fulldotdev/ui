@@ -1,23 +1,22 @@
 ---
 import { z } from 'zod'
-import { componentSchema } from '../schemas/componentSchema'
 import Header, { headerSchema } from './Header.astro'
 import Main, { mainSchema } from './Main.astro'
-import Tag from './Tag.astro'
+import Tag, { componentSchema } from './Tag.astro'
 
 type Props = z.infer<typeof bodySchema>
 
 export const bodySchema = componentSchema({
   header: headerSchema,
   main: mainSchema,
-})
+}).omit({ as: true, if: true })
 
-const { as = 'body', ...rest } = bodySchema.parse(Astro.props)
+const { ...rest } = bodySchema.parse(Astro.props)
 ---
 
 <Tag
+  as="body"
   class:list={['body', 'hue-base', 'hue-accent']}
-  {as}
   {...rest}
 >
   <Header {...rest.header} />

@@ -1,21 +1,19 @@
 ---
 import { z } from 'zod'
-import { componentSchema } from '../schemas/componentSchema'
 import Body, { bodySchema } from './Body.astro'
 import Head, { headSchema } from './Head.astro'
 
 type Props = z.infer<typeof pageSchema>
 
-export const pageSchema = componentSchema({
+export const pageSchema = z.object({
   head: headSchema,
   body: bodySchema,
 })
-
-const { as = 'html', ...rest } = pageSchema.parse(Astro.props)
+const { head, body } = pageSchema.parse(Astro.props)
 ---
 
 <!doctype html>
 <html class="page">
-  <Head {...rest.head} />
-  <Body {...rest.body} />
+  <Head {...head} />
+  <Body {...body} />
 </html>

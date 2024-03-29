@@ -8,7 +8,8 @@ const collection = z.string() as ZodType<ContentCollectionKey>
 const slug = z.string() as ZodType<EntrySlug>
 
 export const entrySchema = z
-  .any().nullish()
+  .any()
+  .nullish()
   .transform((val) => {
     if (typeof val !== 'string') return val
     val = val.split('content/').pop()
