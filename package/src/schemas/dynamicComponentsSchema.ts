@@ -7,6 +7,7 @@ import Checkbox from '../components/Checkbox.astro'
 import Composite from '../components/Composite.astro'
 import Description from '../components/Description.astro'
 import Display from '../components/Display.astro'
+import Element from '../components/Element.astro'
 import Field from '../components/Field.astro'
 import FieldGroup from '../components/FieldGroup.astro'
 import Footer from '../components/Footer.astro'
@@ -84,4 +85,5 @@ export const allowedComponents: any = {
   Tag,
   Textarea,
   Video,
+  Element,
 }
