@@ -3,6 +3,7 @@ import { mergeAndConcat } from 'merge-anything'
 import { nestifyObject as nestify } from 'nestify-anything'
 import { z } from 'zod'
 import { cardSchema } from '../components/Card.astro'
+import { footerSchema } from '../components/Footer.astro'
 import { headSchema } from '../components/Head.astro'
 import { headerSchema } from '../components/Header.astro'
 import { sectionSchema } from '../components/Section.astro'
@@ -18,6 +19,7 @@ export const pageSchema = z
     sectionGroup: sectionGroupSchema,
     cta: sectionSchema,
     card: cardSchema,
+    footer: footerSchema,
   })
   .partial()
 
