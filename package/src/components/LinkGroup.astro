@@ -9,13 +9,20 @@ type Props = z.infer<typeof linkGroupSchema>
 export const linkGroupSchema = buildProps({
   link: linkSchema,
   links: z.array(linkSchema).nullish(),
+  direction: z.enum(['row', 'column']).nullish(),
+  align: z.enum(['start', 'center', 'end', 'stretch']).nullish(),
 })
 
-const { links, ...rest } = parseProps(linkGroupSchema, Astro.props)
+const {
+  links,
+  direction = 'row',
+  align = 'center',
+  ...rest
+} = parseProps(linkGroupSchema, Astro.props)
 ---
 
 <Tag
-  class="links"
+  class="link-group"
   {...rest}
 >
   {
@@ -29,9 +36,29 @@ const { links, ...rest } = parseProps(linkGroupSchema, Astro.props)
 </Tag>
 
 <style is:global>
-  .links {
+  .link-group {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3);
+
+    &.row {
+      flex-direction: row;
+    }
+
+    &.column {
+      flex-direction: column;
+    }
+
+    &.align-start {
+      align-items: flex-start;
+    }
+
+    &.align-center {
+      align-items: center;
+    }
+
+    &.align-end {
+      align-items: flex-end;
+    }
   }
 </style>

@@ -1,5 +1,6 @@
 ---
 import { z } from 'zod'
+import { Button } from '..'
 import { buildProps, parseProps } from '../utils/props'
 import Buttons, { buttonGroupSchema } from './ButtonGroup.astro'
 import LinkGroup, { linkGroupSchema } from './LinkGroup.astro'
@@ -33,6 +34,24 @@ const {
   {...rest}
 >
   <Logo {...rest.logo} />
+  <Buttons {...rest.buttonGroup} />
+  <Button
+    variant={'soft'}
+    color="base"
+    as="label"
+    contrast
+    for="menu"
+    class="icon-label"
+    icon={{
+      name: 'menu-2',
+    }}
+  />
+  <input
+    name="menu"
+    class="menu"
+    id="menu"
+    type="checkbox"
+  />
   <nav class="nav">
     <LinkGroup {...rest.linkGroup} />
     <Buttons {...rest.buttonGroup} />
@@ -46,56 +65,62 @@ const {
     top: 0;
     right: 0;
     left: 0;
+    row-gap: var(--space-5);
+    flex-wrap: wrap;
+    justify-content: space-between;
     align-items: center;
     z-index: 10;
     background: var(--hue1);
-    padding: var(--space-2) var(--gutter);
+    padding: var(--space-3) var(--gutter);
     width: 100%;
-    
+
     &.fixed {
       position: fixed;
       top: 0;
     }
 
     .nav {
-      display: flex;
+      display: none;
+      flex-direction: column;
       flex-wrap: wrap;
       align-items: center;
       gap: var(--space-4);
       margin-left: auto;
       width: max-content;
+      width: 100%;
       font: var(--font);
       font-size: var(--text-2);
-    }
-    .peer {
-      display: none;
-  
-      @media (min-width: 1024px) {
-        ~ .links {
-          display: none;
-        }
-      }
-  
-      &:checked ~ .links {
-        display: flex;
-        position: absolute;
-        top: 100%;
-        right: 0;
-        left: 0;
+
+      .link-group {
         flex-direction: column;
         align-items: center;
-        background: var(--background);
-        padding: var(--space-6);
+        gap: var(--space-4);
         width: 100%;
-  
+
         @media (min-width: 1024px) {
-          display: none !important;
+          flex-direction: row;
         }
+      }
+    }
+
+    .logo + .button-group {
+      margin-right: var(--space-3);
+      margin-left: auto;
+    }
+
+    .icon {
+      width: 1.6em;
+      height: 1.6em;
+    }
+
+    .menu {
+      display: none;
+
+      &:checked + .nav {
+        display: flex;
       }
     }
   }
-
-
 
   /* .fullcart-icon button {
     --background: var(--hue3) !important;
@@ -110,6 +135,4 @@ const {
       background: var(--orange9);
     }
   } */
-
-
 </style>
