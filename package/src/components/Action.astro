@@ -1,15 +1,12 @@
 ---
 import { z } from 'zod'
+import { Dynamic } from '..'
 import { componentSchema } from '../schemas/componentSchema'
-import ButtonGroup, { buttonGroupSchema } from './ButtonGroup.astro'
-import Form, { formSchema } from './Form.astro'
 import Tag from './Tag.astro'
 
 type Props = z.infer<typeof actionSchema>
 
 export const actionSchema = componentSchema({
-  form: formSchema,
-  buttonGroup: buttonGroupSchema,
   align: z.enum(['start', 'center']),
 })
 
@@ -17,13 +14,10 @@ const { align, ...rest } = actionSchema.parse(Astro.props)
 ---
 
 <Tag
-  class:list={['action, align']}
+  class:list={['action', align]}
   {...rest}
 >
-  <!-- {props.price ? <Product {...rest} /> : <Form {...(rest as any)} />} -->
-  <Form {...rest.form} />
-  <ButtonGroup {...rest.buttonGroup} />
-  <slot />
+  <Dynamic {...rest} />
 </Tag>
 
 <style is:global>

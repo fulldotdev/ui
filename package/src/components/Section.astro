@@ -2,25 +2,13 @@
 import { getEntry } from 'astro:content'
 import { merge } from 'merge-anything'
 import { z } from 'zod'
+import { Dynamic } from '..'
 import { componentSchema } from '../schemas/componentSchema'
-import { entrySchema } from '../schemas/entrySchema'
-import { cardSchema } from './Card.astro'
-import CardGroup, { cardGroupSchema } from './CardGroup.astro'
-import Composite, { compositeSchema } from './Composite.astro'
-import Image, { imageSchema } from './Image.astro'
-import Prose, { proseSchema } from './Prose.astro'
 import Tag from './Tag.astro'
 
 type Props = z.infer<typeof sectionSchema>
 
 export const sectionSchema = componentSchema({
-  entry: entrySchema,
-  images: z.any(), // FIXME
-  composite: compositeSchema,
-  image: imageSchema,
-  prose: proseSchema,
-  cardGroup: cardGroupSchema,
-  card: cardSchema,
   direction: z.enum(['row', 'column']),
   frame: z.enum(['screen', 'panel']),
   variant: z.enum(['solid', 'soft', 'ghost']),
@@ -45,11 +33,7 @@ const {
   {...rest}
   class:list={['section', direction, align, frame, variant]}
 >
-  <Composite {...rest.composite} />
-  <Image {...rest.image} />
-  <CardGroup {...rest.cardGroup} />
-  <Prose {...rest.prose} />
-  <slot />
+  <Dynamic {...rest} />
 </Tag>
 
 <style is:global>

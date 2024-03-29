@@ -2,19 +2,13 @@
 import { getEntry } from 'astro:content'
 import { merge } from 'merge-anything'
 import { z } from 'zod'
+import { Dynamic } from '..'
 import { componentSchema } from '../schemas/componentSchema'
-import { entrySchema } from '../schemas/entrySchema'
-import Composite, { compositeSchema } from './Composite.astro'
-import Image, { imageSchema } from './Image.astro'
 import Tag from './Tag.astro'
 
 type Props = z.infer<typeof cardSchema>
 
 export const cardSchema = componentSchema({
-  entry: entrySchema,
-  composite: compositeSchema,
-  image: imageSchema,
-  images: z.any(), // FIXME
   frame: z.enum(['fill', 'panel', 'screen']),
   variant: z.enum(['ghost', 'soft', 'solid']),
   collection: z.string(),
@@ -52,11 +46,7 @@ const imageFromImages =
   {href}
   {...rest}
 >
-  <Image
-    {...imageFromImages}
-    {...rest.image}
-  />
-  <Composite {...rest.composite} />
+  <Dynamic {...rest} />
 </Tag>
 
 <style is:global>

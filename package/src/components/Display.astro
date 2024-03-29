@@ -1,19 +1,12 @@
 ---
 import { z } from 'zod'
+import { Dynamic } from '..'
 import { componentSchema } from '../schemas/componentSchema'
-import Icon, { iconSchema } from './Icon.astro'
-import Rating, { ratingSchema } from './Rating.astro'
-import SpecGroup, { specGroupSchema } from './SpecGroup.astro'
 import Tag from './Tag.astro'
-import Writeup, { writeupSchema } from './Writeup.astro'
 
 type Props = z.infer<typeof displaySchema>
 
 export const displaySchema = componentSchema({
-  rating: ratingSchema,
-  icon: iconSchema,
-  specGroup: specGroupSchema,
-  writeup: writeupSchema,
   align: z.enum(['start', 'center']),
 })
 
@@ -24,12 +17,7 @@ const { align, ...rest } = displaySchema.parse(Astro.props)
   class:list={['display', align]}
   {...rest}
 >
-  <slot>
-    <Rating {...rest.rating} />
-    <Icon {...rest.icon} />
-    <Writeup {...rest.writeup} />
-    <SpecGroup {...rest.specGroup} />
-  </slot>
+  <Dynamic {...rest} />
 </Tag>
 
 <style is:global>
