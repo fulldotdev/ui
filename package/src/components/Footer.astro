@@ -1,15 +1,15 @@
 ---
 import { z } from 'zod'
 import { buildProps, parseProps } from '../utils/props'
-import LinkGroup, { linkGroupSchema } from './LinkGroup.astro'
-import Logo, { logoSchema } from './Logo.astro'
+import ButtonGroup, { buttonGroupSchema } from './ButtonGroup.astro'
 import ChannelGroup, { channelGroupSchema } from './ChannelGroup.astro'
 import Description, { descriptionSchema } from './Description.astro'
-import Title, { titleSchema } from './Title.astro'
 import Display from './Display.astro'
+import LinkGroup, { linkGroupSchema } from './LinkGroup.astro'
+import Logo, { logoSchema } from './Logo.astro'
 import Section from './Section.astro'
 import SpecGroup, { specGroupSchema } from './SpecGroup.astro'
-import ButtonGroup, {buttonGroupSchema } from './ButtonGroup.astro'
+import Title, { titleSchema } from './Title.astro'
 
 type Props = z.infer<typeof footerSchema>
 
@@ -18,19 +18,16 @@ export const footerSchema = buildProps({
   description: descriptionSchema,
   channelGroup: channelGroupSchema,
   buttonGroup: buttonGroupSchema,
-  columns: z.array(z.object({
-    title: titleSchema,
-    specGroup: specGroupSchema.optional(),
-    linkGroup: linkGroupSchema.optional(),
-  })),
+  columns: z.array(
+    z.object({
+      title: titleSchema,
+      specGroup: specGroupSchema.optional(),
+      linkGroup: linkGroupSchema.optional(),
+    })
+  ),
 })
 
-console.log('footer', Astro.props)
-
-const {
-  as = 'footer',
-  ...rest
-} = parseProps(footerSchema, Astro.props)
+const { as = 'footer', ...rest } = parseProps(footerSchema, Astro.props)
 ---
 
 <Section
@@ -41,31 +38,34 @@ const {
   {as}
   {...rest}
 >
-<div class="part first">
-  <Display class={'about-footer'}>
-    <Logo {...rest.logo} />
-    <Description {...rest.description} />
-    <ButtonGroup {...rest.buttonGroup} />
-  </Display>
-  <Display>
-    <ChannelGroup {...rest.channelGroup} />
-  </Display>
-</div>
-<div class="part second">
-
-  {rest?.columns?.map((column) => (
-    <Display class={'col'}>
-      <Title {...column.title} />
-      <LinkGroup direction={'column'} {...column.linkGroup} />
-      <SpecGroup {...column.specGroup} />
-      </Display>
-      ))}
-      </div>
+  <div class="part first">
+    <Display class={'about-footer'}>
+      <Logo {...rest.logo} />
+      <Description {...rest.description} />
+      <ButtonGroup {...rest.buttonGroup} />
+    </Display>
+    <Display>
+      <ChannelGroup {...rest.channelGroup} />
+    </Display>
+  </div>
+  <div class="part second">
+    {
+      rest?.columns?.map((column) => (
+        <Display class={'col'}>
+          <Title {...column.title} />
+          <LinkGroup
+            direction={'column'}
+            {...column.linkGroup}
+          />
+          <SpecGroup {...column.specGroup} />
+        </Display>
+      ))
+    }
+  </div>
 </Section>
 
 <style is:global>
   .footer {
-
     .part {
       display: flex;
       flex-direction: column;
