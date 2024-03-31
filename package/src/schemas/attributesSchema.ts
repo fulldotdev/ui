@@ -56,7 +56,7 @@ export const attributesSchema = z.object({
   hrefLang: z.any(),
   htmlFor: z.any(),
   httpEquiv: z.any(),
-  icon: z.any(),
+  // icon: z.any(),
   id: z.any(),
   inputMode: z.any(),
   isMap: z.any(),
