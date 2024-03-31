@@ -2,8 +2,8 @@
 import { z } from 'zod'
 import { buildProps, parseProps } from '../utils/props'
 import Button, { buttonSchema } from './Button.astro'
-import Writeup, { writeupSchema } from './Writeup.astro'
 import Tag from './Tag.astro'
+import Writeup, { writeupSchema } from './Writeup.astro'
 
 type Props = z.infer<typeof channelSchema>
 
@@ -20,8 +20,13 @@ const { ...rest } = parseProps(channelSchema, Astro.props)
   compact
   {...rest}
 >
-  <Button size={3} {...rest.button}></Button>
-  <Writeup {...rest.writeup}/>
+  <Button
+    size={3}
+    {...rest.button}
+  >
+    <span class="hidden">{rest?.writeup?.title?.html}</span>
+  </Button>
+  <Writeup {...rest.writeup} />
 </Tag>
 
 <style is:global>
