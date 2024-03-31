@@ -11,22 +11,42 @@ export const formSchema = buildProps({
   fieldGroup: fieldGroupSchema,
   button: buttonSchema,
   method: z.string().nullish(),
+  action: z.any(),
+  key: z.any(),
+  replyTo: z.any(),
 })
 
 const {
   as = 'form',
   method = 'POST',
+  action = '/bedankt',
+  replyTo
+  key,
   ...rest
 } = parseProps(formSchema, Astro.props)
 ---
 
 <Tag
   class="form"
-  action="/bedankt"
+  {action}
   {as}
   {method}
   {...rest}
 >
+  <input
+    type="hidden"
+    name="inbox_key"
+    value={key}
+  />
+  <input
+    type="text"
+    name="_gotcha"
+    style="display: none;"
+  />
+  <input
+    type="text"
+    name={replyTo}
+  />
   <FieldGroup {...rest.fieldGroup} />
   <slot />
   <Button
