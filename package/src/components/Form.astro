@@ -14,14 +14,16 @@ export const formSchema = buildProps({
   action: z.any(),
   key: z.any(),
   replyTo: z.any(),
+  gotcha: z.any(),
 })
 
 const {
   as = 'form',
   method = 'POST',
   action = '/bedankt',
-  replyTo
+  replyTo,
   key,
+  gotcha,
   ...rest
 } = parseProps(formSchema, Astro.props)
 ---
@@ -33,20 +35,24 @@ const {
   {method}
   {...rest}
 >
-  <input
-    type="hidden"
-    name="inbox_key"
-    value={key}
-  />
-  <input
-    type="text"
-    name="_gotcha"
-    style="display: none;"
-  />
-  <input
-    type="text"
-    name={replyTo}
-  />
+  {
+    key && (
+      <input
+        type="hidden"
+        name="inbox_key"
+        value={key}
+      />
+    )
+  }
+  {
+    gotcha && (
+      <input
+        type="text"
+        name="_gotcha"
+        style="display: none;"
+      />
+    )
+  }
   <FieldGroup {...rest.fieldGroup} />
   <slot />
   <Button
