@@ -48,7 +48,7 @@ export default defineConfig({
     }),
     fullui({}),
     liveCode({
-      layout: './src/components/LiveCodeLayout.astro',
+      layout: '@components/LiveCodeLayout.astro',
     }),
   ],
 })
