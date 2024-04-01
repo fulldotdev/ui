@@ -37,7 +37,6 @@ import SectionGroup from '../components/SectionGroup.astro'
 import Select from '../components/Select.astro'
 import Spec from '../components/Spec.astro'
 import SpecGroup from '../components/SpecGroup.astro'
-import Tag from '../components/Tag.astro'
 import Tagline from '../components/Tagline.astro'
 import Textarea from '../components/Textarea.astro'
 import Title from '../components/Title.astro'
@@ -92,9 +91,9 @@ export const COMPONENTS: any = {
   Element,
 }
 
-type Props = z.infer<typeof dynamicTagSchema>
+type Props = z.infer<typeof tagSchema>
 
-const dynamicTagSchema = z
+const schema = z
   .object({
     as: elementsSchema,
     if: z.union([z.string(), z.literal(true)]),
@@ -113,6 +112,8 @@ const dynamicTagSchema = z
   .partial()
   .catchall(z.any())
 
+export const tagSchema = schema
+
 const {
   as: As = 'div',
   if: hasProp,
@@ -123,7 +124,7 @@ const {
   size,
   compact,
   ...rest
-} = dynamicTagSchema.parse(Astro.props)
+} = tagSchema.parse(Astro.props)
 
 const toPascalCase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 
