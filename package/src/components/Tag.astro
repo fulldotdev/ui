@@ -1,51 +1,67 @@
 ---
-import { z } from 'zod'
-import Action from '../components/Action.astro'
-import Body from '../components/Body.astro'
-import Button from '../components/Button.astro'
-import Card from '../components/Card.astro'
-import CardGroup from '../components/CardGroup.astro'
-import Checkbox from '../components/Checkbox.astro'
-import Composite from '../components/Composite.astro'
-import Description from '../components/Description.astro'
-import Display from '../components/Display.astro'
-import Element from '../components/Element.astro'
-import Field from '../components/Field.astro'
-import FieldGroup from '../components/FieldGroup.astro'
-import Footer from '../components/Footer.astro'
-import Form from '../components/Form.astro'
-import Head from '../components/Head.astro'
-import Header from '../components/Header.astro'
-import Icon from '../components/Icon.astro'
-import Image from '../components/Image.astro'
-import ImageGroup from '../components/ImageGroup.astro'
-import Input from '../components/Input.astro'
-import Label from '../components/Label.astro'
-import Layout from '../components/Layout.astro'
-import Link from '../components/Link.astro'
-import LinkGroup from '../components/LinkGroup.astro'
-import Logo from '../components/Logo.astro'
-import Media from '../components/Media.astro'
-import Option from '../components/Option.astro'
-import Page from '../components/Page.astro'
-import Price from '../components/Price.astro'
-import Product from '../components/Product.astro'
-import Prose from '../components/Prose.astro'
-import Rating from '../components/Rating.astro'
-import Section from '../components/Section.astro'
-import SectionGroup from '../components/SectionGroup.astro'
-import Select from '../components/Select.astro'
-import Spec from '../components/Spec.astro'
-import SpecGroup from '../components/SpecGroup.astro'
-import Tagline from '../components/Tagline.astro'
-import Textarea from '../components/Textarea.astro'
-import Title from '../components/Title.astro'
-import Video from '../components/Video.astro'
-import Writeup from '../components/Writeup.astro'
-import { attributesSchema } from '../schemas/attributesSchema'
-import { elementsSchema } from '../schemas/elementsSchema'
+import { z } from 'zod';
+import Action from '../components/Action.astro';
+import Body from '../components/Body.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import CardGroup from '../components/CardGroup.astro';
+import Checkbox from '../components/Checkbox.astro';
+import Composite from '../components/Composite.astro';
+import Description from '../components/Description.astro';
+import Display from '../components/Display.astro';
+import Element from '../components/Element.astro';
+import Field from '../components/Field.astro';
+import FieldGroup from '../components/FieldGroup.astro';
+import Footer from '../components/Footer.astro';
+import Form from '../components/Form.astro';
+import Head from '../components/Head.astro';
+import Header from '../components/Header.astro';
+import Icon from '../components/Icon.astro';
+import Image from '../components/Image.astro';
+import ImageGroup from '../components/ImageGroup.astro';
+import Input from '../components/Input.astro';
+import Label from '../components/Label.astro';
+import Layout from '../components/Layout.astro';
+import Link from '../components/Link.astro';
+import LinkGroup from '../components/LinkGroup.astro';
+import Logo from '../components/Logo.astro';
+import Media from '../components/Media.astro';
+import Option from '../components/Option.astro';
+import Page from '../components/Page.astro';
+import Price from '../components/Price.astro';
+import Product from '../components/Product.astro';
+import Prose from '../components/Prose.astro';
+import Rating from '../components/Rating.astro';
+import Section from '../components/Section.astro';
+import SectionGroup from '../components/SectionGroup.astro';
+import Select from '../components/Select.astro';
+import Spec from '../components/Spec.astro';
+import SpecGroup from '../components/SpecGroup.astro';
+import Tagline from '../components/Tagline.astro';
+import Textarea from '../components/Textarea.astro';
+import Title from '../components/Title.astro';
+import Video from '../components/Video.astro';
+import Writeup from '../components/Writeup.astro';
+import { attributesSchema } from '../schemas/attributesSchema';
+import { componentSchema } from '../schemas/componentSchema';
 
-export const COMPONENTS: any = {
+type Props = z.infer<typeof tagSchema>;
+
+export const tagSchema = componentSchema();
+
+const {
+  as: As = 'div',
+  if: hasProp,
+  color,
+  scheme,
+  contrast,
+  order,
+  size,
+  compact,
+  ...rest
+} = tagSchema.parse(Astro.props);
+
+const COMPONENTS: any = {
   Title,
   Description,
   Tagline,
@@ -85,56 +101,22 @@ export const COMPONENTS: any = {
   Select,
   Spec,
   SpecGroup,
-  Tag,
   Textarea,
   Video,
   Element,
-}
+};
 
-type Props = z.infer<typeof tagSchema>
+const toPascalCase = (str: string) =>
+  str.charAt(0).toUpperCase() + str.slice(1);
 
-export const tagSchema = <S extends z.ZodRawShape>(shape: S = {} as S) =>
-  z
-    .object({
-      as: elementsSchema,
-      if: z.union([z.string(), z.literal(true)]),
-      color: z.string(),
-      scheme: z.string(),
-      contrast: z.boolean(),
-      class: z.string(),
-      id: z.string(),
-      style: z.string(),
-      size: z
-        .enum(['1', '2', '3', '4'])
-        .or(z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])),
-      compact: z.boolean(),
-      order: z.string().or(z.number()),
-    })
-    .partial()
-    .catchall(z.any())
-
-const {
-  as: As = 'div',
-  if: hasProp,
-  color,
-  scheme,
-  contrast,
-  order,
-  size,
-  compact,
-  ...rest
-} = tagSchema.parse(Astro.props)
-
-const toPascalCase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
-
-const slot = await Astro.slots.render('default')
-const hasSlot = slot?.trim().length > 0
-const hasHtml = rest.html
+const slot = await Astro.slots.render('default');
+const hasSlot = slot?.trim().length > 0;
+const hasHtml = rest.html;
 const hasChildren = Object.entries(rest).find(
   ([key, value]) =>
     typeof value === 'object' &&
     (value.component || value.html || value.as || COMPONENTS[toPascalCase(key)])
-)
+);
 ---
 
 {
@@ -151,13 +133,13 @@ const hasChildren = Object.entries(rest).find(
     >
       <Fragment set:html={slot} />
       {Object.entries(rest).map(([key, value]) => {
-        if (key === 'html') return <Fragment set:html={value} />
-        if (typeof value !== 'object' || value === null) return null
+        if (key === 'html') return <Fragment set:html={value} />;
+        if (typeof value !== 'object' || value === null) return null;
 
-        const componentName = value.component ?? toPascalCase(key)
-        const Component = COMPONENTS[componentName] ?? COMPONENTS['Element']
+        const componentName = value.component ?? toPascalCase(key);
+        const Component = COMPONENTS[componentName] ?? COMPONENTS['Element'];
 
-        return Component ? <Component {...value} /> : null
+        return Component ? <Component {...value} /> : null;
       })}
     </As>
   )
