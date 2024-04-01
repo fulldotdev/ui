@@ -3,9 +3,6 @@ import { z } from 'zod'
 import { allowedComponents } from '../schemas/childrenComponentsSchema'
 
 // TODO: allowed component hier naar deze file verplaatsen
-
-// TODO schema kloppend maken, zodat ie allen de component names accent als extra props
-// OF een random key maar dan moet de component key daarin required zijn
 export const ChildrenSchema = z.object({}).catchall(z.any())
 
 const props = ChildrenSchema.parse(Astro.props)
@@ -17,6 +14,8 @@ const toPascalCase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
   Object.entries(props).map(([key, value]) => {
     if (key === 'html') return <Fragment set:html={value} />
     if (typeof key !== 'object') return null
+
+    // if (Array.isArray(value)) value.map((item) => <Astro.self {...item} />)
 
     if (value.component) {
       const componentName = value.component
@@ -33,6 +32,6 @@ const toPascalCase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
       return <Component {...value} />
     }
 
-    return null
+    return
   })
 }
