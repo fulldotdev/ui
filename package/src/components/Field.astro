@@ -1,23 +1,12 @@
 ---
 import { z } from 'zod'
+import { Children } from '..'
 import { componentSchema } from '../schemas/componentSchema'
-
-import Checkbox, { checkboxSchema } from './Checkbox.astro'
-import Input, { inputSchema } from './Input.astro'
-import Label, { labelSchema } from './Label.astro'
-import Select, { selectSchema } from './Select.astro'
 import Tag from './Tag.astro'
-import Textarea, { textareaSchema } from './Textarea.astro'
 
 type Props = z.infer<typeof fieldSchema>
 
-export const fieldSchema = componentSchema({
-  label: labelSchema,
-  checkbox: checkboxSchema,
-  textarea: textareaSchema,
-  input: inputSchema,
-  select: selectSchema,
-})
+export const fieldSchema = componentSchema({})
 
 const { ...rest } = fieldSchema.parse(Astro.props)
 ---
@@ -26,11 +15,7 @@ const { ...rest } = fieldSchema.parse(Astro.props)
   class:list={['field', { checkbox: rest.checkbox }]}
   {...rest}
 >
-  <Checkbox {...rest.checkbox} />
-  <Label {...rest.label} />
-  <Textarea {...rest.textarea} />
-  <Input {...rest.input} />
-  <Select {...rest.select} />
+  <Children {...rest} />
   <slot />
 </Tag>
 
