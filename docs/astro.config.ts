@@ -15,11 +15,11 @@ export default defineConfig({
         alt: 'Logo Fullui',
         replacesTitle: true,
       },
+      social: {
+        github: 'https://github.com/fulldevlabs/fullui',
+        linkedin: 'https://www.linkedin.com/in/silveltman/',
+      },
       favicon: './favicon.png',
-      // components: {
-      // FIXME: causing erro on vercel build
-      // Head: './src/components/StarlightHead.astro',
-      // },
       customCss: ['./src/css/custom.css'],
       sidebar: [
         {
