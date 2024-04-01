@@ -8,24 +8,23 @@ type Props = z.infer<typeof tagSchema> & Record<any, any>
 export const tagSchema = z.object({
   as: elementsSchema,
   if: z.union([z.string(), z.literal(true)]),
-  html: z.string(),
   color: z.string(),
   scheme: z.string(),
   contrast: z.boolean(),
-  class: z.string(),
-  id: z.string(),
   style: z.string(),
-  scale: z.string().or(z.number()), // TODO remove scale and fix sizing system. people can just use css scale
+  id: z.string(),
   size: z
     .enum(['1', '2', '3', '4'])
     .or(z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])),
   compact: z.boolean(),
   order: z.string().or(z.number()),
+  // attributes
+  class: z.string(),
 })
 
 const {
   as: As = 'div',
-  if: hasProp,
+  if: ifProp,
   html,
   color,
   scheme,
@@ -42,7 +41,7 @@ const hasSlot = slot?.trim().length > 0
 ---
 
 {
-  (hasSlot || hasProp || html) && (
+  (hasSlot || ifProp || html) && (
     <As
       style={
         `
