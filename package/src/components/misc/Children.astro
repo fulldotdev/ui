@@ -1,0 +1,31 @@
+---
+import { z } from 'zod';
+import Child from './Child.astro';
+
+type Props = z.infer<typeof childrenSchema>;
+
+export const childrenSchema = z.object({}).catchall(z.any());
+
+const { ...rest } = childrenSchema.parse(Astro.props);
+
+const keyToComponentName = (key: string) => {
+  const part = key.split(/(?=[A-Z])/).pop() ?? key;
+  return part.charAt(0).toUpperCase() + part.slice(1);
+};
+---
+
+{
+  Object.entries(rest).map(([key, value]) => {
+    if (key === 'html') return <Fragment set:html={value} />;
+
+    if (Array.isArray(value)) return value.map((item) => <Child {...item} />);
+    if (typeof value !== 'object' || value === null) return null;
+
+    return (
+      <Child
+        component={keyToComponentName(key)}
+        {...value}
+      />
+    );
+  })
+}

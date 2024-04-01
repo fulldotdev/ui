@@ -1,24 +1,28 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../schemas/componentSchema'
-import Button, { buttonSchema } from './Button.astro'
-import FieldGroup, { fieldGroupSchema } from './FieldGroup.astro'
-import Tag from './Tag.astro'
+import { z } from 'zod';
+import { componentSchema } from '../schemas/componentSchema';
+import Button, { buttonSchema } from './Button.astro';
+import FieldGroup, { fieldGroupSchema } from './FieldGroup.astro';
+import Component from './misc/Component.astro';
 
-type Props = z.infer<typeof formSchema>
+type Props = z.infer<typeof formSchema>;
 
 export const formSchema = componentSchema({
   fieldGroup: fieldGroupSchema,
   button: buttonSchema,
   method: z.string(),
-})
+});
 
-const { as = 'form', method = 'POST', ...rest } = formSchema.parse(Astro.props)
+const {
+  tag = 'form',
+  method = 'POST',
+  ...rest
+} = formSchema.parse(Astro.props);
 ---
 
-<Tag
+<Component
   class="form"
-  {as}
+  {tag}
   {method}
   {...rest}
 >
@@ -28,7 +32,7 @@ const { as = 'form', method = 'POST', ...rest } = formSchema.parse(Astro.props)
     type="submit"
     {...rest.button}
   />
-</Tag>
+</Component>
 
 <style is:global>
   .form {

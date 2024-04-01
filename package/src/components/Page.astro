@@ -1,10 +1,10 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../schemas/componentSchema'
-import Body, { bodySchema } from './Body.astro'
-import Head, { headSchema } from './Head.astro'
+import { z } from 'zod';
+import { componentSchema } from '../schemas/componentSchema';
+import Body, { bodySchema } from './Body.astro';
+import Head, { headSchema } from './Head.astro';
 
-type Props = z.infer<typeof pageSchema>
+type Props = z.infer<typeof pageSchema>;
 
 export const pageSchema = componentSchema({
   // layout: reference('layouts'),
@@ -12,9 +12,14 @@ export const pageSchema = componentSchema({
   body: bodySchema,
   render: z.any(),
   hasProse: z.boolean(),
-})
+});
 
-const { as = 'html', render, hasProse, ...rest } = pageSchema.parse(Astro.props)
+const {
+  tag = 'html',
+  render,
+  hasProse,
+  ...rest
+} = pageSchema.parse(Astro.props);
 ---
 
 <!doctype html>
@@ -26,7 +31,5 @@ const { as = 'html', render, hasProse, ...rest } = pageSchema.parse(Astro.props)
   <Body
     render={hasProse ? render : undefined}
     {...rest.body}
-  >
-    <Main {...rest.main} />
-  </Body>
+  />
 </html>

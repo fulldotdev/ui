@@ -1,14 +1,14 @@
----
-import { getCollection, getEntries } from 'astro:content'
-import { merge } from 'merge-anything'
-import { z } from 'zod'
-import { collectionSchema } from '../schemas/collectionSchema'
-import { componentSchema } from '../schemas/componentSchema'
-import { entriesSchema } from '../schemas/entriesSchema'
-import Card, { cardSchema } from './Card.astro'
-import Tag from './Tag.astro'
+<!-- ---
+import { getCollection,getEntries } from 'astro:content';
+import { merge } from 'merge-anything';
+import { z } from 'zod';
+import { collectionSchema } from '../schemas/collectionSchema';
+import { componentSchema } from '../schemas/componentSchema';
+import { entriesSchema } from '../schemas/entriesSchema';
+import Card,{ cardSchema } from './Card.astro';
+import Component from './Component.astro';
 
-type Props = z.infer<typeof cardGroupSchema>
+type Props = z.infer<typeof cardGroupSchema>;
 
 export const cardGroupSchema = componentSchema({
   entries: entriesSchema,
@@ -16,9 +16,9 @@ export const cardGroupSchema = componentSchema({
   cards: z.array(cardSchema),
   card: cardSchema,
   layout: z.enum(['carousel', 'grid', 'masonry', 'row', 'panels', 'bento']),
-})
+});
 
-let { entries, collection, ...props } = cardGroupSchema.parse(Astro.props)
+let { entries, collection, ...props } = cardGroupSchema.parse(Astro.props);
 
 const entriesData =
   entries &&
@@ -27,7 +27,7 @@ const entriesData =
     collection: entry?.collection,
     id: entry?.id,
     slug: entry?.slug,
-  }))
+  }));
 const collectionData =
   collection &&
   (await getCollection(collection)).map((entry) => ({
@@ -35,27 +35,27 @@ const collectionData =
     collection: entry?.collection,
     id: entry?.id,
     slug: 'slug' in entry ? entry?.slug : undefined,
-  }))
+  }));
 const cards = [
   ...(collectionData ?? []),
   ...(entriesData ?? []),
   ...(props?.cards ?? []),
-].filter(Boolean)
+].filter(Boolean);
 
-const { layout = 'grid', ...rest } = props
+const { layout = 'grid', ...rest } = props;
 ---
 
-<Tag
+<Component
   class:list={['cards', layout]}
   {...rest}
 >
   {
     cards?.map((card: any) => {
-      const merged = merge(rest.card ?? {}, card ?? {}, card.card ?? {})
-      return <Card {...merged} />
+      const merged = merge(rest.card ?? {}, card ?? {}, card.card ?? {});
+      return <Card {...merged} />;
     })
   }
-</Tag>
+</Component>
 
 <style is:global>
   .cards {
@@ -159,4 +159,4 @@ const { layout = 'grid', ...rest } = props
       }
     }
   }
-</style>
+</style> -->

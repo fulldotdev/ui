@@ -1,26 +1,22 @@
 ---
-import { z } from 'zod'
-import { Children } from '..'
-import { componentSchema } from '../schemas/componentSchema'
-import Tag from './Tag.astro'
+import { z } from 'zod';
+import { componentSchema } from '../schemas/componentSchema';
+import Component from './misc/Component.astro';
 
-type Props = z.infer<typeof linkSchema>
+type Props = z.infer<typeof linkSchema>;
 
 export const linkSchema = componentSchema({
   href: z.string(),
-})
+});
 
-const { as = 'a', ...rest } = linkSchema.parse(Astro.props)
+const { tag = 'a', ...rest } = linkSchema.parse(Astro.props);
 ---
 
-<Tag
+<Component
   class:list={['link']}
-  {as}
+  {tag}
   {...rest}
->
-  <slot />
-  <Children {...rest} />
-</Tag>
+/>
 
 <style is:global>
   .link {

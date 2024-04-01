@@ -1,12 +1,17 @@
 ---
-title:
-  html: title
-  span:
-    as: span
-    html: title 2
+head:
+  title: Home
+  description: This is the home page
 
-description:
-  html: description
+body:
+  buttons:
+    - component: Button
+      html: TITLE!
+    - component: Button
+      html: TITLE!
+    - component: Button
+      html: TITLE!
+
 # md-header:
 #   as: header
 #   logo:

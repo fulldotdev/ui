@@ -1,22 +1,26 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../schemas/componentSchema'
-import Section, { sectionSchema } from './Section.astro'
-import Tag from './Tag.astro'
+import { z } from 'zod';
+import { componentSchema } from '../schemas/componentSchema';
+import Section, { sectionSchema } from './Section.astro';
+import Component from './misc/Component.astro';
 
-type Props = z.infer<typeof sectionGroupSchema>
+type Props = z.infer<typeof sectionGroupSchema>;
 
 export const sectionGroupSchema = componentSchema({
   section: sectionSchema,
   sections: z.array(sectionSchema),
-})
+});
 
-const { as = 'main', sections, ...rest } = sectionGroupSchema.parse(Astro.props)
+const {
+  tag = 'main',
+  sections,
+  ...rest
+} = sectionGroupSchema.parse(Astro.props);
 ---
 
-<Tag
+<Component
   class="sections"
-  {as}
+  {tag}
   {...rest}
 >
   <slot name="before" />
@@ -29,7 +33,7 @@ const { as = 'main', sections, ...rest } = sectionGroupSchema.parse(Astro.props)
     ))
   }
   <slot name="after" />
-</Tag>
+</Component>
 
 <style is:global>
   .sections {

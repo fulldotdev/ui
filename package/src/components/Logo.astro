@@ -1,23 +1,23 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../schemas/componentSchema'
-import Image from './Image.astro'
-import Tag from './Tag.astro'
+import { z } from 'zod';
+import { componentSchema } from '../schemas/componentSchema';
+import Image from './Image.astro';
+import Component from './misc/Component.astro';
 
-type Props = z.infer<typeof logoSchema>
+type Props = z.infer<typeof logoSchema>;
 
 export const logoSchema = componentSchema({
   src: z.string(),
   href: z.string(),
-})
+});
 
-const { as = 'a', href = '/', src, ...rest } = logoSchema.parse(Astro.props)
+const { tag = 'a', href = '/', src, ...rest } = logoSchema.parse(Astro.props);
 ---
 
-<Tag
+<Component
   class="logo"
   {href}
-  {as}
+  {tag}
   {...rest}
 >
   <Image
@@ -25,7 +25,7 @@ const { as = 'a', href = '/', src, ...rest } = logoSchema.parse(Astro.props)
     {...rest}
   />
   <slot />
-</Tag>
+</Component>
 
 <style is:global>
   .logo {

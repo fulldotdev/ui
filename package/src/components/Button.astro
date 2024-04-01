@@ -1,34 +1,30 @@
 ---
-import { z } from 'zod'
-import { Children } from '..'
-import { componentSchema } from '../schemas/componentSchema'
-import Tag from './Tag.astro'
+import { z } from 'zod';
+import { componentSchema } from '../schemas/componentSchema';
+import Component from './misc/Component.astro';
 
-type Props = z.infer<typeof buttonSchema>
+type Props = z.infer<typeof buttonSchema>;
 
 export const buttonSchema = componentSchema({
   href: z.string(),
   variant: z.enum(['solid', 'soft', 'surface', 'outline', 'ghost']),
   type: z.string(),
-})
+});
 
 const {
-  as = 'a',
+  tag = 'a',
   variant = 'solid',
   color = 'accent',
   ...rest
-} = buttonSchema.parse(Astro.props)
+} = buttonSchema.parse(Astro.props);
 ---
 
-<Tag
+<Component
   class:list={['button', variant]}
   {color}
-  {as}
+  {tag}
   {...rest}
->
-  <slot />
-  <Children {...rest} />
-</Tag>
+/>
 
 <style is:global>
   .button {

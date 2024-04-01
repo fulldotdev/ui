@@ -21,7 +21,7 @@ export const zodObjectwithReadableError = <S extends ZodRawShape>(shape: S) => {
 
 export const componentSchema = <S extends z.ZodRawShape>(shape: S = {} as S) =>
   zodObjectwithReadableError({
-    as: elementsSchema,
+    tag: elementsSchema,
     if: z.union([z.string(), z.literal(true)]),
     id: z.string(),
     class: z.string(),
