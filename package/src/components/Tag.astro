@@ -93,26 +93,25 @@ export const COMPONENTS: any = {
 
 type Props = z.infer<typeof tagSchema>
 
-const schema = z
-  .object({
-    as: elementsSchema,
-    if: z.union([z.string(), z.literal(true)]),
-    color: z.string(),
-    scheme: z.string(),
-    contrast: z.boolean(),
-    class: z.string(),
-    id: z.string(),
-    style: z.string(),
-    size: z
-      .enum(['1', '2', '3', '4'])
-      .or(z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])),
-    compact: z.boolean(),
-    order: z.string().or(z.number()),
-  })
-  .partial()
-  .catchall(z.any())
-
-export const tagSchema = schema
+export const tagSchema = <S extends z.ZodRawShape>(shape: S = {} as S) =>
+  z
+    .object({
+      as: elementsSchema,
+      if: z.union([z.string(), z.literal(true)]),
+      color: z.string(),
+      scheme: z.string(),
+      contrast: z.boolean(),
+      class: z.string(),
+      id: z.string(),
+      style: z.string(),
+      size: z
+        .enum(['1', '2', '3', '4'])
+        .or(z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])),
+      compact: z.boolean(),
+      order: z.string().or(z.number()),
+    })
+    .partial()
+    .catchall(z.any())
 
 const {
   as: As = 'div',
