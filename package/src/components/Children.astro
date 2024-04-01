@@ -2,42 +2,37 @@
 import { z } from 'zod'
 import { allowedComponents } from '../schemas/childrenComponentsSchema'
 
+// TODO: allowed component hier naar deze file verplaatsen
+
+// TODO schema kloppend maken, zodat ie allen de component names accent als extra props
+// OF een random key maar dan moet de component key daarin required zijn
 export const ChildrenSchema = z.object({}).catchall(z.any())
 
 const props = ChildrenSchema.parse(Astro.props)
 
-function toPascalCase(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1)
-}
+const toPascalCase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 ---
 
 {
   Object.entries(props).map(([key, value]) => {
-    let Component = allowedComponents[toPascalCase(key)]
+    if (key === 'html') return <Fragment set:html={value} />
+    if (typeof key !== 'object') return null
 
-    if (value?.component)
-      Component = allowedComponents[toPascalCase(value.component)]
-
-    if (value?.tag) Component = allowedComponents['Element']
-
-    if (!Component) return null
-
-    if (value.html) {
-      return (
-        <Component
-          class:list={[value?.component || value?.tag ? key.toLowerCase() : '']}
-          {...value}
-        >
-          <Fragment set:html={value?.html ? value?.html : value} />
-        </Component>
-      )
+    if (value.component) {
+      const componentName = value.component
+      const Component = allowedComponents[componentName] ?? null
+      if (Component) return <Component {...value} />
     }
 
-    return (
-      <Component
-        class:list={[value?.component || value?.tag ? key.toLowerCase() : '']}
-        {...value}
-      />
-    )
+    const componentName = toPascalCase(key)
+    let Component = allowedComponents[componentName] ?? null
+    if (Component) return <Component {...value} />
+
+    if (value.component || value.as || value.html) {
+      const Component = allowedComponents['Element']
+      return <Component {...value} />
+    }
+
+    return null
   })
 }

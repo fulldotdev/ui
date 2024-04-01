@@ -1,40 +1,41 @@
 ---
 md-header:
-  tag: header
+  as: header
   logo:
-    tag: span
+    as: span
     html: logo
   title:
     html: omg
   links:
-    tag: div
+    as: div
     html:
     link:
-      tag: a
+      as: a
       href: /link-href-dinges
       html: link
 md-container:
-  tag: main
-  section:
-    tag: section
+  as: main
+  hero:
+    component: Section
+    as: div
     section-title:
-      tag: h1
+      as: h1
       html: TITLE!
     section-description:
-      tag: p
+      as: p
       html: lorem ipsum nogwattes
   content:
-    tag: section
+    as: section
     content-title:
-      tag: h1
+      as: h1
       html: content TITLE!
     content-description:
-      tag: p
+      as: p
       html: lorem content ipsum nogwattes
 md-footer:
-  tag: footer
+  as: footer
   footer-message:
-    tag: p
+    as: p
     href: /
     html: footer message
 ---

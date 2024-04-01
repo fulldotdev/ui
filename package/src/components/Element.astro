@@ -1,23 +1,14 @@
 ---
-import { z } from 'zod'
-import { Children } from '..'
 import { componentSchema } from '../schemas/componentSchema'
+import Children from './Children.astro'
 import Tag from './Tag.astro'
 
-export const elementSchema = componentSchema({
-  html: z.string().nullish(),
-  href: z.string().nullish(),
-  tag: z.string().nullish(),
-})
+export const elementSchema = componentSchema({})
 
-const { tag, as = tag, href, html, ...rest } = elementSchema.parse(Astro.props)
+const { ...rest } = elementSchema.parse(Astro.props)
 ---
 
-<Tag
-  {as}
-  {href}
-  class:list={rest.class}
->
+<Tag {...rest}>
   <Children {...rest} />
   <slot />
 </Tag>
