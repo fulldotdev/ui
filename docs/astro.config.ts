@@ -41,6 +41,19 @@ export default defineConfig({
           ],
         },
         {
+          label: 'Dynamic Rendering',
+          items: [
+            {
+              label: 'Rendering Children',
+              link: '/dynamic-rendering/rendering-children/',
+            },
+            {
+              label: 'Rendering Elements',
+              link: '/dynamic-rendering/rendering-elements/',
+            },
+          ],
+        },
+        {
           label: 'Components',
           autogenerate: { directory: 'components' },
         },
