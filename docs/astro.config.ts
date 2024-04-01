@@ -21,6 +21,10 @@ export default defineConfig({
       },
       favicon: './favicon.png',
       customCss: ['./src/css/custom.css'],
+      components: {
+        // Relative path to the custom component.
+        Head: './src/components/Head.astro',
+      },
       sidebar: [
         {
           label: 'Overview',
