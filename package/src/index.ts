@@ -58,6 +58,8 @@ export * from './components/Logo.astro';
 export { default as Logo } from './components/Logo.astro';
 export * from './components/Option.astro';
 export { default as Option } from './components/Option.astro';
+export * from './components/Page.astro';
+export { default as Page } from './components/Page.astro';
 export * from './components/Price.astro';
 export { default as Price } from './components/Price.astro';
 export * from './components/Prose.astro';
