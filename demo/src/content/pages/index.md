@@ -2,6 +2,7 @@
 head:
   title: Website Cardgamelife
   description: Website Cardgamelife
+  
 body:
   header:
     group:
