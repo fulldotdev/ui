@@ -153,6 +153,23 @@ declare module 'astro:content' {
 "components/children.mdx": {
 	id: "components/children.mdx";
   slug: "components/children";
+<<<<<<< HEAD
+=======
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"components/composite.mdx": {
+	id: "components/composite.mdx";
+  slug: "components/composite";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"components/display.mdx": {
+	id: "components/display.mdx";
+  slug: "components/display";
+>>>>>>> 41d6880be98726737d132ed753a613fa866a2a67
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -297,6 +314,20 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"dynamic-rendering/rendering-children.mdx": {
+	id: "dynamic-rendering/rendering-children.mdx";
+  slug: "dynamic-rendering/rendering-children";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"dynamic-rendering/rendering-elements.mdx": {
+	id: "dynamic-rendering/rendering-elements.mdx";
+  slug: "dynamic-rendering/rendering-elements";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "guides/endomorphic.mdx": {
 	id: "guides/endomorphic.mdx";
   slug: "guides/endomorphic";
@@ -384,5 +415,5 @@ declare module 'astro:content' {
 
 	type AnyEntryMap = ContentEntryMap & DataEntryMap;
 
-	export type ContentConfig = typeof import("../src/content/config.js");
+	export type ContentConfig = typeof import("./../src/content/config.js");
 }

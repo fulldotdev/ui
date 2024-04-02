@@ -74,6 +74,8 @@ export * from './components/SectionGroup.astro';
 export { default as SectionGroup } from './components/SectionGroup.astro';
 export * from './components/Select.astro';
 export { default as Select } from './components/Select.astro';
+export * from './components/Stats.astro';
+export { default as Stats } from './components/Stats.astro';
 export * from './components/Tagline.astro';
 export { default as Tagline } from './components/Tagline.astro';
 export * from './components/Test.astro';
