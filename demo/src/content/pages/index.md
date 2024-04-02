@@ -7,7 +7,7 @@ body:
     group:
       links:
         - component: Link
-          html: $self.head.title
+          html: Home
         - component: Link
           html: Categorieen
         - component: Link
@@ -20,27 +20,37 @@ body:
           html: Over ons
     tagline:
       html: Search
+
   section:
-    section-text:
-      tag: div
-      title:
-        html: Obsidian flames <br /> op release bezorgd.
-      description:
-        html: Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    button:
-      html: Bestel nu
-      variant: soft
+    direction: row
+    composite:
+      writeup:
+        tagline:
+          html: Lorem ipsum
+        title:
+          html: Obsidian flames <br /> op release bezorgd.
+        description:
+          html: Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      button:
+        html: Bestel nu
+        variant: soft
+    image:
+      src: https://picsum.photos/id/237/536/354
   mainSection:
     deck:
       layout: grid
       cards:
         - component: Card
+          frame: panel
+          variant: soft
           image:
             src: https://picsum.photos/id/237/536/354
-          title:
-            html: Japanse booster boxen
-          description:
-            html: Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+          composite:
+            writeup:
+              title:
+                html: Japanse booster boxen
+              description:
+                html: Lorem ipsum dolor sit amet, consectetur adipiscing elit,
         - component: Card
           image:
             src: https://picsum.photos/id/237/536/354
