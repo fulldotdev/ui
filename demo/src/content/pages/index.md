@@ -4,13 +4,16 @@ head:
   description: This is the home page
 
 body:
-  buttons:
-    - component: Button
-      html: TITLE!
-    - component: Button
-      html: TITLE!
-    - component: Button
-      html: TITLE!
+  group:
+    buttons:
+      - component: Tagline
+        html: TITLE!
+      - component: Link
+        html: TITLE!
+      - component: Button
+        html: TITLE!
+  button:
+    html: TITLE!
 
 # md-header:
 #   as: header
