@@ -31,7 +31,7 @@ body:
       html: Bestel nu
       variant: soft
   mainSection:
-    cardGroup:
+    deck:
       layout: grid
       cards:
         - component: Card
@@ -62,7 +62,7 @@ body:
         html: Nieuwe producten
       description:
         html: Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    cardGroup:
+    deck:
       layout: grid
       cards:
         - component: Card
@@ -89,7 +89,7 @@ body:
   reviewSection:
     title:
         html: Beordeel met 4,99 sterren
-    cardGroup:
+    deck:
       layout: grid
       cards:
         - component: Card
@@ -115,8 +115,8 @@ body:
             html: Lorem ipsum dolor sit amet, consectetur adipiscing elit,
   cardSection:
     align: center
-    group:
-      layout: bento
+    deck:
+      layout: carousel
       items:
         - component: Image
           src: https://picsum.photos/id/237/536/354
@@ -134,7 +134,7 @@ body:
         html: Aanbiedingen
       description:
         html: Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    cardGroup:
+    deck:
       layout: grid
       cards:
         - component: Card

@@ -24,6 +24,8 @@ export * from './components/Checkbox.astro';
 export { default as Checkbox } from './components/Checkbox.astro';
 export * from './components/Composite.astro';
 export { default as Composite } from './components/Composite.astro';
+export * from './components/Deck.astro';
+export { default as Deck } from './components/Deck.astro';
 export * from './components/Description.astro';
 export { default as Description } from './components/Description.astro';
 export * from './components/Display.astro';
