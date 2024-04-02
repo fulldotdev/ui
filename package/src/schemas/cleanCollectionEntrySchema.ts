@@ -1,9 +1,18 @@
 import { getEntry } from 'astro:content';
 import merge from 'deepmerge';
 import { flatten, unflatten } from 'flat';
-import { camel, mapValues } from 'radash';
+import { camel, crush, mapKeys, mapValues } from 'radash';
 import { removeProp } from 'remove-anything';
 import { z } from 'zod';
+
+const removeUnderscore = (obj: any) =>
+  mapKeys(obj, (key) => key.toString().replace(/^_+/, ''));
+
+const camelCase = (obj: any) => mapKeys(obj, (key) => camel(key.toString()));
+
+const removeNull = (obj: any) => removeProp(obj, null);
+
+const removeFalse = (obj: any) => removeProp(obj, false);
 
 export const collectionEntrySchema = z
   .object({
@@ -12,6 +21,12 @@ export const collectionEntrySchema = z
   .passthrough()
   .transform(async (data: any) => {
     console.log('data', data);
+
+    const curshed: any = crush(data);
+    const noUnderscore = mapKeys(curshed, (key) =>
+      key.toString().replace(/^_+/, '')
+    );
+    const camelized = mapKeys(noUnderscore, (key) => camel(key));
 
     const flatMergedCamel: any = flatten(data, {
       transformKey: (key: any) => {
