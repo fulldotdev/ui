@@ -150,16 +150,9 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"components/composite.mdx": {
-	id: "components/composite.mdx";
-  slug: "components/composite";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"components/display.mdx": {
-	id: "components/display.mdx";
-  slug: "components/display";
+"components/children.mdx": {
+	id: "components/children.mdx";
+  slug: "components/children";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -241,13 +234,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"components/section.mdx": {
-	id: "components/section.mdx";
-  slug: "components/section";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "components/select.mdx": {
 	id: "components/select.mdx";
   slug: "components/select";
@@ -297,9 +283,16 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"components/writeup.mdx": {
-	id: "components/writeup.mdx";
-  slug: "components/writeup";
+"dynamic-rendering/rendering-children.mdx": {
+	id: "dynamic-rendering/rendering-children.mdx";
+  slug: "dynamic-rendering/rendering-children";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"dynamic-rendering/rendering-elements.mdx": {
+	id: "dynamic-rendering/rendering-elements.mdx";
+  slug: "dynamic-rendering/rendering-elements";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -335,6 +328,34 @@ declare module 'astro:content' {
 "index.mdx": {
 	id: "index.mdx";
   slug: "index";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"layout/composite.mdx": {
+	id: "layout/composite.mdx";
+  slug: "layout/composite";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"layout/display.mdx": {
+	id: "layout/display.mdx";
+  slug: "layout/display";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"layout/section.mdx": {
+	id: "layout/section.mdx";
+  slug: "layout/section";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"layout/writeup.mdx": {
+	id: "layout/writeup.mdx";
+  slug: "layout/writeup";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">

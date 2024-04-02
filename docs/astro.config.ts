@@ -1,9 +1,9 @@
-import starlight from '@astrojs/starlight'
-import vercel from '@astrojs/vercel/static'
-import fullui from '@fulldevlabs/fullui/integration'
+import starlight from '@astrojs/starlight';
+import vercel from '@astrojs/vercel/static';
+import fullui from '@fulldevlabs/fullui/integration';
 // @ts-ignore
-import liveCode from 'astro-live-code'
-import { defineConfig } from 'astro/config'
+import liveCode from 'astro-live-code';
+import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
@@ -26,32 +26,15 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Overview',
-          items: [
-            { label: 'Introduction', link: '/overview/introduction/' },
-            { label: 'Getting started', link: '/overview/getting-started/' },
-          ],
+          autogenerate: { directory: 'overview' },
         },
         {
-          label: 'Guides',
-          items: [
-            { label: 'Installation', link: '/guides/installation/' },
-            { label: 'Theming', link: '/guides/theming/' },
-            // { label: 'Endomorphic', link: '/guides/endomorphic/' },
-            { label: 'Typescript', link: '/guides/typescript/' },
-          ],
+          label: 'Typography',
+          autogenerate: { directory: 'typography' },
         },
         {
-          label: 'Dynamic Rendering',
-          items: [
-            {
-              label: 'Rendering Children',
-              link: '/dynamic-rendering/rendering-children/',
-            },
-            {
-              label: 'Rendering Elements',
-              link: '/dynamic-rendering/rendering-elements/',
-            },
-          ],
+          label: 'Layout',
+          autogenerate: { directory: 'layout' },
         },
         {
           label: 'Components',
@@ -64,4 +47,4 @@ export default defineConfig({
       layout: './src/components/LiveCodeLayout.astro',
     }),
   ],
-})
+});
