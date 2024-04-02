@@ -1,45 +1,161 @@
 ---
-title: My first page
-
-section:
-  title: $self.title
-# md-header:
-#   as: header
-#   logo:
-#     as: span
-#     html: logo
-#   title:
-#     html: omg
-#   links:
-#     as: div
-#     html:
-#     link:
-#       as: a
-#       href: /link-href-dinges
-#       html: link
-# md-container:
-#   as: main
-#   hero:
-#     component: Section
-#     as: div
-#     section-title:
-#       as: h1
-#       html: TITLE!
-#     section-description:
-#       as: p
-#       html: lorem ipsum nogwattes
-#   content:
-#     as: section
-#     content-title:
-#       as: h1
-#       html: content TITLE!
-#     content-description:
-#       as: p
-#       html: lorem content ipsum nogwattes
-# md-footer:
-#   as: footer
-#   footer-message:
-#     as: p
-#     href: /
-#     html: footer message
+head:
+  title: Website Cardgamelife
+  description: Website Cardgamelife
+body:
+  header:
+    group:
+      links:
+        - component: Link
+          html: Home
+        - component: Link
+          html: Categorieen
+        - component: Link
+          html: Pokemon
+        - component: Link
+          html: Magic the Gathering
+        - component: Link
+          html: Beurzen
+        - component: Link
+          html: Over ons
+    tagline:
+      html: Search
+  section:
+    section-text:
+      tag: div
+      title:
+        html: Obsidian flames <br /> op release bezorgd.
+      description:
+        html: Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    button:
+      html: Bestel nu
+      variant: soft
+  mainSection:
+    cardGroup:
+      layout: grid
+      cards:
+        - component: Card
+          image:
+            src: https://picsum.photos/id/237/536/354
+          title:
+            html: Japanse booster boxen
+          description:
+            html: Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+        - component: Card
+          image:
+            src: https://picsum.photos/id/237/536/354
+          title:
+            html: Japanse booster boxen
+          description:
+            html: Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+        - component: Card
+          image:
+            src: https://picsum.photos/id/237/536/354
+          title:
+            html: Japanse booster boxen
+          description:
+            html: Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+  itemSection:
+    section-text:
+      tag: div
+      title:
+        html: Nieuwe producten
+      description:
+        html: Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    cardGroup:
+      layout: grid
+      cards:
+        - component: Card
+          image:
+            src: https://picsum.photos/id/237/536/354
+          title:
+            html: Japanse booster boxen
+          description:
+            html: Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+        - component: Card
+          image:
+            src: https://picsum.photos/id/237/536/354
+          title:
+            html: Japanse booster boxen
+          description:
+            html: Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+        - component: Card
+          image:
+            src: https://picsum.photos/id/237/536/354
+          title:
+            html: Japanse booster boxen
+          description:
+            html: Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+  reviewSection:
+    title:
+        html: Beordeel met 4,99 sterren
+    cardGroup:
+      layout: grid
+      cards:
+        - component: Card
+          rating:
+            value: 5
+          title:
+            html: Japanse booster boxen
+          description:
+            html: Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+        - component: Card
+          rating:
+            value: 5
+          title:
+            html: Japanse booster boxen
+          description:
+            html: Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+        - component: Card
+          rating:
+            value: 5
+          title:
+            html: Japanse booster boxen
+          description:
+            html: Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+  cardSection:
+    align: center
+    group:
+      layout: bento
+      items:
+        - component: Image
+          src: https://picsum.photos/id/237/536/354
+        - component: Display
+          title:
+            html: Gamecardlife op Comic Con
+          description:
+            html: Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          button:
+            html: Bekijk beursplanning
+  saleSection:
+    section-text:
+      tag: div
+      title:
+        html: Aanbiedingen
+      description:
+        html: Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    cardGroup:
+      layout: grid
+      cards:
+        - component: Card
+          image:
+            src: https://picsum.photos/id/237/536/354
+          title:
+            html: Japanse booster boxen
+          description:
+            html: Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+        - component: Card
+          image:
+            src: https://picsum.photos/id/237/536/354
+          title:
+            html: Japanse booster boxen
+          description:
+            html: Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+        - component: Card
+          image:
+            src: https://picsum.photos/id/237/536/354
+          title:
+            html: Japanse booster boxen
+          description:
+            html: Lorem ipsum dolor sit amet, consectetur adipiscing elit,         
 ---
