@@ -7,7 +7,7 @@ body:
     group:
       links:
         - component: Link
-          html: Home
+          html: $self.head.title
         - component: Link
           html: Categorieen
         - component: Link

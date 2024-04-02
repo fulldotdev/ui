@@ -21,33 +21,24 @@ export const collectionEntrySchema = z
       },
     });
 
-    console.log('flatMergedCamel', flatMergedCamel);
-
     const noNull = removeProp(flatMergedCamel, null);
-    console.log('flatMergedCamel', flatMergedCamel);
-
     const nested: any = unflatten(noNull);
-    console.log('nested', nested);
-
     const layoutData = undefined;
     nested.layout && (await getEntry('layouts', nested.layout))?.data;
-    console.log('layoutData', layoutData);
 
     const merged = merge(layoutData || {}, nested || {});
-    console.log('merged', merged);
-
     const flat: any = flatten(merged);
-    console.log('flat', flat);
-
     const noFalse = removeProp(flat, false);
-    console.log('noFalse', noFalse);
 
     const replacedSelfVars = mapValues(noFalse, (value) => {
       if (typeof value !== 'string') return value;
 
       if (value.startsWith('$self.')) {
         const key = value.replace('$self.', '');
-        return data[key];
+
+        console.log('flat', flat);
+        console.log('key', key);
+        return flat[key];
       }
 
       return value;
@@ -83,22 +74,7 @@ export const collectionEntrySchema = z
     //   return value;
     // });
 
-    console.log('replacedSelfVars', replacedSelfVars);
-
     const nestedAgain = unflatten(replacedSelfVars);
-    console.log('nestedAgain', nestedAgain);
-
-    console.log({
-      flatMergedCamel,
-      noNull,
-      nested,
-      layoutData,
-      merged,
-      flat,
-      noFalse,
-      replacedSelfVars,
-      nestedAgain,
-    });
 
     return nestedAgain;
   });
