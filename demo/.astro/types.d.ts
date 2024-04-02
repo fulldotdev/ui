@@ -131,13 +131,20 @@ declare module 'astro:content' {
   slug: "index";
   body: string;
   collection: "layouts";
-  data: InferEntrySchema<"layouts">
+  data: any
 } & { render(): Render[".md"] };
 };
 "pages": {
 "index.md": {
 	id: "index.md";
   slug: "index";
+  body: string;
+  collection: "pages";
+  data: InferEntrySchema<"pages">
+} & { render(): Render[".md"] };
+"test.md": {
+	id: "test.md";
+  slug: "test";
   body: string;
   collection: "pages";
   data: InferEntrySchema<"pages">

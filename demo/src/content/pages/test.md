@@ -1,8 +1,8 @@
 ---
-title: My first page
+title: My test page
 
 section:
-  title: $self.title
+  title: 
 # md-header:
 #   as: header
 #   logo:
