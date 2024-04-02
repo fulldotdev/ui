@@ -1,6 +1,6 @@
 import starlight from '@astrojs/starlight'
 import vercel from '@astrojs/vercel/static'
-import { fullui } from '@fulldevlabs/fullui/astro'
+import fullui from '@fulldevlabs/fullui/integration'
 // @ts-ignore
 import liveCode from 'astro-live-code'
 import { defineConfig } from 'astro/config'
@@ -38,6 +38,19 @@ export default defineConfig({
             { label: 'Theming', link: '/guides/theming/' },
             // { label: 'Endomorphic', link: '/guides/endomorphic/' },
             { label: 'Typescript', link: '/guides/typescript/' },
+          ],
+        },
+        {
+          label: 'Dynamic Rendering',
+          items: [
+            {
+              label: 'Rendering Children',
+              link: '/dynamic-rendering/rendering-children/',
+            },
+            {
+              label: 'Rendering Elements',
+              link: '/dynamic-rendering/rendering-elements/',
+            },
           ],
         },
         {

@@ -1,12 +1,12 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../schemas/componentSchema'
-import Buttons, { buttonGroupSchema } from './ButtonGroup.astro'
-import LinkGroup, { linkGroupSchema } from './LinkGroup.astro'
-import Logo, { logoSchema } from './Logo.astro'
-import Tag from './Tag.astro'
+import { z } from 'zod';
+import { componentSchema } from '../schemas/componentSchema';
+import { buttonGroupSchema } from './ButtonGroup.astro';
+import { linkGroupSchema } from './LinkGroup.astro';
+import { logoSchema } from './Logo.astro';
+import Component from './misc/Component.astro';
 
-type Props = z.infer<typeof headerSchema>
+type Props = z.infer<typeof headerSchema>;
 
 export const headerSchema = componentSchema({
   logo: logoSchema,
@@ -15,30 +15,23 @@ export const headerSchema = componentSchema({
   frame: z.enum(['screen', 'panel']),
   variant: z.enum(['solid', 'soft', 'ghost']),
   position: z.enum(['relative', 'sticky', 'fixed', 'absolute']),
-})
+});
 
 const {
-  as = 'header',
+  tag = 'header',
   variant,
   position,
   frame,
   ...rest
-} = headerSchema.parse(Astro.props)
+} = headerSchema.parse(Astro.props);
 ---
 
-<Tag
+<Component
   class:list={['header', variant, position, frame]}
   compact
-  {as}
+  {tag}
   {...rest}
->
-  <Logo {...rest.logo} />
-  <nav class="nav">
-    <LinkGroup {...rest.linkGroup} />
-    <Buttons {...rest.buttonGroup} />
-  </nav>
-  <slot />
-</Tag>
+/>
 
 <style is:global>
   .header {
@@ -46,67 +39,16 @@ const {
     top: 0;
     right: 0;
     left: 0;
+    justify-content: space-between;
     align-items: center;
     z-index: 10;
     background: var(--hue1);
     padding: var(--space-2) var(--gutter);
     width: 100%;
-  }
 
-  .fixed {
-    position: fixed;
-    top: 0;
-  }
-
-  .peer {
-    display: none;
-
-    @media (min-width: 1024px) {
-      ~ .links {
-        display: none;
-      }
+    .fixed {
+      position: fixed;
+      top: 0;
     }
-
-    &:checked ~ .links {
-      display: flex;
-      position: absolute;
-      top: 100%;
-      right: 0;
-      left: 0;
-      flex-direction: column;
-      align-items: center;
-      background: var(--background);
-      padding: var(--space-6);
-      width: 100%;
-
-      @media (min-width: 1024px) {
-        display: none !important;
-      }
-    }
-  }
-
-  .fullcart-icon button {
-    --background: var(--hue3) !important;
-    --color: var(--hue11) !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 40px;
-
-    p {
-      background: var(--orange9);
-    }
-  }
-
-  .nav {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-4);
-    margin-left: auto;
-    width: max-content;
-    font: var(--font);
-    font-size: var(--text-2);
   }
 </style>

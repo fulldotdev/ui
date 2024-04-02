@@ -1,27 +1,23 @@
 ---
-import { z } from 'zod'
-import Header, { headerSchema } from './Header.astro'
-import Main, { mainSchema } from './Main.astro'
-import Tag, { componentSchema } from './Tag.astro'
+import { z } from 'zod';
+import { componentSchema } from '../schemas/componentSchema';
+import Component from './misc/Component.astro';
 
-type Props = z.infer<typeof bodySchema>
+type Props = z.infer<typeof bodySchema>;
 
 export const bodySchema = componentSchema({
-  header: headerSchema,
-  main: mainSchema,
-}).omit({ as: true, if: true })
+  output: z.boolean(),
+  render: z.any(),
+});
 
-const { ...rest } = bodySchema.parse(Astro.props)
+const { tag = 'body', render, ...rest } = bodySchema.parse(Astro.props);
 ---
 
-<Tag
-  as="body"
+<Component
   class:list={['body', 'hue-base', 'hue-accent']}
+  {tag}
   {...rest}
 >
-  <Header {...rest.header} />
-  <Main {...rest.main} />
-
   <style is:global>
     .body {
       transition: var(--transition);
@@ -39,4 +35,4 @@ const { ...rest } = bodySchema.parse(Astro.props)
       }
     }
   </style>
-</Tag>
+</Component>

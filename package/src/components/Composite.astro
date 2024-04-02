@@ -1,31 +1,22 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../schemas/componentSchema'
-import Action, { actionSchema } from './Action.astro'
-import Display, { displaySchema } from './Display.astro'
-import Tag from './Tag.astro'
+import { z } from 'zod';
+import { componentSchema } from '../schemas/componentSchema';
+import Component from './misc/Component.astro';
 
-type Props = z.infer<typeof compositeSchema>
+type Props = z.infer<typeof compositeSchema>;
 
 export const compositeSchema = componentSchema({
-  action: actionSchema,
-  display: displaySchema,
   direction: z.enum(['row', 'column']),
   align: z.enum(['start', 'center']),
-})
+});
 
-const { direction, align, ...rest } = compositeSchema.parse(Astro.props)
+const { direction, align, ...rest } = compositeSchema.parse(Astro.props);
 ---
 
-<Tag
+<Component
   class:list={['composite', direction, align]}
   {...rest}
->
-  <slot>
-    <Display {...rest.display} />
-    <Action {...rest.action} />
-  </slot>
-</Tag>
+/>
 
 <style is:global>
   .composite {

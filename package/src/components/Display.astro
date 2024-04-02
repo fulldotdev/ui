@@ -1,36 +1,21 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../schemas/componentSchema'
-import Icon, { iconSchema } from './Icon.astro'
-import Rating, { ratingSchema } from './Rating.astro'
-import SpecGroup, { specGroupSchema } from './SpecGroup.astro'
-import Tag from './Tag.astro'
-import Writeup, { writeupSchema } from './Writeup.astro'
+import { z } from 'zod';
+import { componentSchema } from '../schemas/componentSchema';
+import Component from './misc/Component.astro';
 
-type Props = z.infer<typeof displaySchema>
+type Props = z.infer<typeof displaySchema>;
 
 export const displaySchema = componentSchema({
-  rating: ratingSchema,
-  icon: iconSchema,
-  specGroup: specGroupSchema,
-  writeup: writeupSchema,
   align: z.enum(['start', 'center']),
-})
+});
 
-const { align, ...rest } = displaySchema.parse(Astro.props)
+const { align, ...rest } = displaySchema.parse(Astro.props);
 ---
 
-<Tag
+<Component
   class:list={['display', align]}
   {...rest}
->
-  <slot>
-    <Rating {...rest.rating} />
-    <Icon {...rest.icon} />
-    <Writeup {...rest.writeup} />
-    <SpecGroup {...rest.specGroup} />
-  </slot>
-</Tag>
+/>
 
 <style is:global>
   .display {

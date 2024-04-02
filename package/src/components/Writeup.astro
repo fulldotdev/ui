@@ -1,33 +1,21 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../schemas/componentSchema'
-import Description, { descriptionSchema } from './Description.astro'
-import Tag from './Tag.astro'
-import Tagline, { taglineSchema } from './Tagline.astro'
-import Title, { titleSchema } from './Title.astro'
+import { z } from 'zod';
+import { componentSchema } from '../schemas/componentSchema';
+import Component from './misc/Component.astro';
 
-type Props = z.infer<typeof writeupSchema>
+type Props = z.infer<typeof writeupSchema>;
 
 export const writeupSchema = componentSchema({
-  tagline: taglineSchema,
-  title: titleSchema,
-  description: descriptionSchema,
   align: z.enum(['start', 'center']),
-})
+});
 
-const { align, ...rest } = writeupSchema.parse(Astro.props)
+const { align, ...rest } = writeupSchema.parse(Astro.props);
 ---
 
-<Tag
+<Component
   class:list={['writeup', align]}
   {...rest}
->
-  <slot>
-    <Tagline {...rest.tagline} />
-    <Title {...rest.title} />
-    <Description {...rest.description} />
-  </slot>
-</Tag>
+/>
 
 <style is:global>
   .writeup {

@@ -1,36 +1,30 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../schemas/componentSchema'
-import Icon, { iconSchema } from './Icon.astro'
-import Tag from './Tag.astro'
+import { z } from 'zod';
+import { componentSchema } from '../schemas/componentSchema';
+import Component from './misc/Component.astro';
 
-type Props = z.infer<typeof buttonSchema>
+type Props = z.infer<typeof buttonSchema>;
 
 export const buttonSchema = componentSchema({
-  icon: iconSchema,
   href: z.string(),
   variant: z.enum(['solid', 'soft', 'surface', 'outline', 'ghost']),
   type: z.string(),
-})
+});
 
 const {
-  as = 'a',
+  tag = 'a',
   variant = 'solid',
   color = 'accent',
   ...rest
-} = buttonSchema.parse(Astro.props)
+} = buttonSchema.parse(Astro.props);
 ---
 
-<Tag
+<Component
   class:list={['button', variant]}
   {color}
-  {as}
+  {tag}
   {...rest}
->
-  <slot>
-    <Icon {...rest.icon} />
-  </slot>
-</Tag>
+/>
 
 <style is:global>
   .button {

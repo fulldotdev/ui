@@ -1,56 +1,37 @@
 ---
-import { getEntry } from 'astro:content'
-import { merge } from 'merge-anything'
-import { z } from 'zod'
-import { componentSchema } from '../schemas/componentSchema'
-import { entrySchema } from '../schemas/entrySchema'
-import { cardSchema } from './Card.astro'
-import CardGroup, { cardGroupSchema } from './CardGroup.astro'
-import Composite, { compositeSchema } from './Composite.astro'
-import Image, { imageSchema } from './Image.astro'
-import Prose, { proseSchema } from './Prose.astro'
-import Tag from './Tag.astro'
+import { getEntry } from 'astro:content';
+import { merge } from 'merge-anything';
+import { z } from 'zod';
+import { componentSchema } from '../schemas/componentSchema';
+import Component from './misc/Component.astro';
 
-type Props = z.infer<typeof sectionSchema>
+type Props = z.infer<typeof sectionSchema>;
 
 export const sectionSchema = componentSchema({
-  entry: entrySchema,
-  images: z.any(), // FIXME
-  composite: compositeSchema,
-  image: imageSchema,
-  prose: proseSchema,
-  cardGroup: cardGroupSchema,
-  card: cardSchema,
   direction: z.enum(['row', 'column']),
   frame: z.enum(['screen', 'panel']),
   variant: z.enum(['solid', 'soft', 'ghost']),
   align: z.enum(['start', 'center']),
-})
+});
 
-const { entry, ...props } = sectionSchema.parse(Astro.props)
-const entryData = entry && (await getEntry(entry))?.data
+const { entry, ...props } = sectionSchema.parse(Astro.props);
+const entryData = entry && (await getEntry(entry))?.data;
 
 const {
-  as = 'section',
+  tag = 'section',
   direction = 'column',
   variant,
   frame,
   align,
   ...rest
-} = merge(entryData, props)
+} = merge(entryData, props);
 ---
 
-<Tag
-  {as}
+<Component
+  {tag}
   {...rest}
   class:list={['section', direction, align, frame, variant]}
->
-  <Composite {...rest.composite} />
-  <Image {...rest.image} />
-  <CardGroup {...rest.cardGroup} />
-  <Prose {...rest.prose} />
-  <slot />
-</Tag>
+/>
 
 <style is:global>
   .section {

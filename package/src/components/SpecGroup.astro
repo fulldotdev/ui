@@ -1,31 +1,31 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../schemas/componentSchema'
-import Spec, { specSchema } from './Spec.astro'
-import Tag from './Tag.astro'
+import { z } from 'zod';
+import { componentSchema } from '../schemas/componentSchema';
+import Spec, { specSchema } from './Spec.astro';
+import Component from './misc/Component.astro';
 
-type Props = z.infer<typeof specGroupSchema>
+type Props = z.infer<typeof specGroupSchema>;
 
 export const specGroupSchema = componentSchema({
   specs: z.array(specSchema.or(specSchema.shape.html)),
-})
+});
 
-const { specs, ...rest } = specGroupSchema.parse(Astro.props)
+const { specs, ...rest } = specGroupSchema.parse(Astro.props);
 ---
 
-<Tag
+<Component
   class:list={['specs']}
   {...rest}
 >
   <slot>
     {
       specs?.map((item) => {
-        if (typeof item === 'string') return <Spec html={item} />
-        else return <Spec {...item} />
+        if (typeof item === 'string') return <Spec html={item} />;
+        else return <Spec {...item} />;
       })
     }
   </slot>
-</Tag>
+</Component>
 
 <style is:global>
   .specs {
