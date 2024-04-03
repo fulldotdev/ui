@@ -1,9 +1,9 @@
-import starlight from '@astrojs/starlight';
-import vercel from '@astrojs/vercel/static';
-import fullui from '@fulldevlabs/fullui/integration';
+import starlight from '@astrojs/starlight'
+import vercel from '@astrojs/vercel/static'
+import fullui from '@fulldevlabs/fullui/integration'
 // @ts-ignore
-import liveCode from 'astro-live-code';
-import { defineConfig } from 'astro/config';
+import liveCode from 'astro-live-code'
+import { defineConfig } from 'astro/config'
 
 // https://astro.build/config
 export default defineConfig({
@@ -28,6 +28,18 @@ export default defineConfig({
           label: 'Overview',
           autogenerate: { directory: 'overview' },
         },
+        // {
+        //   label: 'Typography',
+        //   autogenerate: { directory: 'typography' },
+        // },
+        // {
+        //   label: 'Layout',
+        //   autogenerate: { directory: 'layout' },
+        // },
+        {
+          label: 'Base',
+          autogenerate: { directory: 'base' },
+        },
         {
           label: 'Typography',
           autogenerate: { directory: 'typography' },
@@ -37,8 +49,8 @@ export default defineConfig({
           autogenerate: { directory: 'layout' },
         },
         {
-          label: 'Components',
-          autogenerate: { directory: 'components' },
+          label: 'Utility',
+          autogenerate: { directory: 'utilities' },
         },
       ],
     }),
@@ -47,4 +59,4 @@ export default defineConfig({
       layout: './src/components/LiveCodeLayout.astro',
     }),
   ],
-});
+})
