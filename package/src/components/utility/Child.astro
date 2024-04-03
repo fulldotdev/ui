@@ -1,5 +1,6 @@
 ---
 import { z } from 'zod'
+import { propsSchema } from '../../schemas/componentSchema'
 import Button from '../base/Button.astro'
 import Checkbox from '../base/Checkbox.astro'
 import Icon from '../base/Icon.astro'
@@ -30,7 +31,7 @@ import Link from '../typography/Link.astro'
 import Subtext from '../typography/Subtext.astro'
 import Text from '../typography/Text.astro'
 import Children from './Children.astro'
-import Tag from './Tag.astro'
+import Tag, { tagSchema } from './Tag.astro'
 
 type Props = z.infer<typeof childSchema>
 
@@ -66,16 +67,22 @@ const COMPONENTS: any = {
   Video,
 }
 
-// export const childSchema = z.object({
-//   component: z.string().optional(),
-//   as:z.string().optional(),
-// });
+export const childSchema = propsSchema({
+  component: z.string().optional(),
+  key: z.string().optional(),
+  as: tagSchema.shape.as.optional(),
+}).passthrough()
 
-export const childSchema = z.any()
+const { key, component, as, ...rest } = childSchema.parse(Astro.props)
 
-const { component, as, ...rest } = childSchema.parse(Astro.props)
+const keyToComponentName = (key: string) => {
+  const part = key.split(/(?=[A-Z])/).pop() ?? key
+  return part.charAt(0).toUpperCase() + part.slice(1)
+}
 
-let Component = component && COMPONENTS[component]
+const KeyComponent = key && COMPONENTS[keyToComponentName(key)]
+const ComponentComponent = component && COMPONENTS[component]
+const Component = KeyComponent || ComponentComponent
 ---
 
 {
