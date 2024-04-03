@@ -1,5 +1,5 @@
-import { collectionEntrySchema } from '@fulldevlabs/fullui';
-import { defineCollection } from 'astro:content';
+import { collectionEntrySchema } from '@fullui/ui'
+import { defineCollection } from 'astro:content'
 
 export const collections = {
   pages: defineCollection({
@@ -10,4 +10,4 @@ export const collections = {
   //   type: 'content',
   //   schema: collectionEntrySchema,
   // }),
-};
+}

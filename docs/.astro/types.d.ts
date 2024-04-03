@@ -136,6 +136,13 @@ declare module 'astro:content' {
 
 	type ContentEntryMap = {
 		"docs": {
+"base/badge.mdx": {
+	id: "base/badge.mdx";
+  slug: "base/badge";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "base/button.mdx": {
 	id: "base/button.mdx";
   slug: "base/button";
@@ -328,6 +335,13 @@ declare module 'astro:content' {
 "overview/typescript.mdx": {
 	id: "overview/typescript.mdx";
   slug: "overview/typescript";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"typography/blockquote.mdx": {
+	id: "typography/blockquote.mdx";
+  slug: "typography/blockquote";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
