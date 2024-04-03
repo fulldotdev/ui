@@ -1,10 +1,26 @@
 ---
 import { z } from 'zod'
 import { attributesSchema } from '../../schemas/attributesSchema'
+import { propsSchema } from '../../schemas/componentSchema'
+import { elementsSchema } from '../../schemas/elementsSchema'
 
 type Props = z.infer<typeof parentSchema>
 
-export const parentSchema = z.object({}).catchall(z.any())
+export const parentSchema = propsSchema({
+  as: elementsSchema,
+  if: z.union([z.string(), z.literal(true)]),
+  id: z.string(),
+  class: z.string(),
+  style: z.string(),
+  color: z.string(),
+  scheme: z.string(),
+  contrast: z.boolean(),
+  compact: z.boolean(),
+  order: z.string().or(z.number()),
+  size: z
+    .enum(['1', '2', '3', '4'])
+    .or(z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])),
+})
 
 const {
   as: As = 'div',
@@ -25,7 +41,6 @@ const hasSlot = slot?.trim().length > 0
 {
   (hasSlot || ifProp) && (
     <As
-      style={order ? `order:${order};` : ''}
       class:list={[
         { compact, contrast },
         color ? `hue-${color}` : '',
@@ -34,7 +49,9 @@ const hasSlot = slot?.trim().length > 0
       ]}
       {...attributesSchema.parse(rest)}
     >
-      <Fragment set:html={slot} />
+      <Fragment set:html={slot} /> hoi
     </As>
   )
 }
+
+<!-- test -->
