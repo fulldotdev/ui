@@ -241,13 +241,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"layout/composite.mdx": {
-	id: "layout/composite.mdx";
-  slug: "layout/composite";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "layout/deck.mdx": {
 	id: "layout/deck.mdx";
   slug: "layout/deck";
@@ -255,9 +248,30 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"layout/display.mdx": {
-	id: "layout/display.mdx";
-  slug: "layout/display";
+"layout/footer.mdx": {
+	id: "layout/footer.mdx";
+  slug: "layout/footer";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"layout/group.mdx": {
+	id: "layout/group.mdx";
+  slug: "layout/group";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"layout/header.mdx": {
+	id: "layout/header.mdx";
+  slug: "layout/header";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"layout/prose.mdx": {
+	id: "layout/prose.mdx";
+  slug: "layout/prose";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -265,6 +279,13 @@ declare module 'astro:content' {
 "layout/section.mdx": {
 	id: "layout/section.mdx";
   slug: "layout/section";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"layout/stack.mdx": {
+	id: "layout/stack.mdx";
+  slug: "layout/stack";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">

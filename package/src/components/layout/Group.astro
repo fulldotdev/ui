@@ -1,0 +1,51 @@
+---
+import { z } from 'zod'
+import { componentSchema } from '../../schemas/componentSchema'
+import Tag from '../utilities/Tag.astro'
+
+type Props = z.infer<typeof groupSchema>
+
+export const groupSchema = componentSchema({
+  layout: z.enum(['row', 'column']),
+  align: z.enum(['stretch', 'start', 'center', 'end']),
+})
+
+const { layout, ...rest } = groupSchema.parse(Astro.props)
+---
+
+<Tag
+  class:list={['group', layout]}
+  {...rest}
+/>
+
+<style is:global>
+  .group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+
+    .row {
+      flex-direction: row;
+    }
+
+    .column {
+      flex-direction: column;
+    }
+
+    .stretch {
+      align-items: stretch;
+    }
+
+    .start {
+      align-items: flex-start;
+    }
+
+    .center {
+      align-items: center;
+    }
+
+    .end {
+      align-items: flex-end;
+    }
+  }
+</style>

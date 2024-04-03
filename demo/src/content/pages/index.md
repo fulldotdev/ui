@@ -24,7 +24,7 @@ body:
 
   section:
     direction: row
-    composite:
+    stack:
       writeup:
         tagline:
           html: Lorem ipsum
@@ -46,7 +46,7 @@ body:
           variant: soft
           image:
             src: https://picsum.photos/id/237/536/354
-          composite:
+          stack:
             writeup:
               title:
                 html: Japanse booster boxen

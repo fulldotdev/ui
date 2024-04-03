@@ -1,0 +1,30 @@
+---
+import { z } from 'zod'
+import { componentSchema } from '../../schemas/componentSchema'
+import Body, { bodySchema } from './Body.astro'
+import Head, { headSchema } from './Head.astro'
+
+type Props = z.infer<typeof pageSchema>
+
+export const pageSchema = componentSchema({
+  // layout: reference('layouts'),
+  head: headSchema,
+  body: bodySchema,
+  render: z.any(),
+  hasProse: z.boolean(),
+})
+
+const { as = 'html', render, hasProse, ...rest } = pageSchema.parse(Astro.props)
+---
+
+<!doctype html>
+<html
+  class="page"
+  {...rest}
+>
+  <Head {...rest.head} />
+  <Body
+    render={hasProse ? render : undefined}
+    {...rest.body}
+  />
+</html>

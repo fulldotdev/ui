@@ -1,0 +1,42 @@
+<!-- ---
+import type { ComponentProps,HTMLTag } from 'astro/types'
+import { macromorphic,type Endomorphic } from '../utils'
+import Image from './Image.astro'
+import Tag from './Tag.astro'
+import Video from './Video.astro'
+
+type Props<As extends HTMLTag = 'div'> = Endomorphic<
+  'media',
+  ComponentProps<typeof Tag<As>> &
+    Pick<TagProps<typeof Video>, 'video' | '_video'> &
+    Pick<TagProps<typeof Image>, 'image' | '_image'> & {
+      media?: string | null
+      thumbnail?: boolean | null
+    }
+>
+
+const { media, video, _video, image, _image, thumbnail, ...rest } = macromorphic(
+  'media',
+  Astro
+)
+
+// FIXME
+const isVideo =
+  typeof image === 'string' &&
+  (image?.includes('youtube.com') || image?.includes('youtu.be'))
+---
+
+{
+  isVideo ? (
+    <Video
+      {thumbnail}
+      video={image}
+      _video={_image}
+    />
+  ) : (
+    <Image
+      {image}
+      {_image}
+    />
+  )
+} -->

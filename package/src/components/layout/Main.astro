@@ -1,0 +1,31 @@
+---
+import { z } from 'zod'
+import { componentSchema } from '../../schemas/componentSchema'
+import Children from '../utilities/Children.astro'
+import Tag from '../utilities/Tag.astro'
+
+type Props = z.infer<typeof mainSchema>
+
+export const mainSchema = componentSchema({})
+
+const { as = 'main', sections, ...rest } = mainSchema.parse(Astro.props)
+---
+
+<Tag
+  class:list={['main']}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
+
+<style is:global>
+  .main {
+    display: flex;
+    flex-direction: column;
+  }
+</style>

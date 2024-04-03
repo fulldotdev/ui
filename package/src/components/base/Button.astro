@@ -1,0 +1,140 @@
+---
+import { z } from 'zod'
+import { componentSchema } from '../../schemas/componentSchema'
+import Children from '../utilities/Children.astro'
+import Tag from '../utilities/Tag.astro'
+
+type Props = z.infer<typeof buttonSchema>
+
+export const buttonSchema = componentSchema({
+  href: z.string(),
+  variant: z.enum(['solid', 'soft', 'surface', 'outline', 'ghost']),
+  type: z.string(),
+})
+
+const {
+  as = 'a',
+  variant = 'solid',
+  color = 'accent',
+  ...rest
+} = buttonSchema.parse(Astro.props)
+---
+
+<Tag
+  class:list={['button', variant]}
+  {color}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
+
+<style is:global>
+  .button {
+    display: inline-flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    vertical-align: top;
+    gap: var(--space-2);
+    transition: var(--transition);
+    cursor: pointer;
+    border-radius: var(--radius-2);
+    padding: 0 var(--space-3);
+    min-width: var(--space-6);
+    height: var(--space-6);
+    font-size: var(--text-2);
+    line-height: 1;
+    user-select: none;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--hue8);
+      outline-offset: 2px;
+    }
+
+    &.solid,
+    &.soft,
+    &.outline,
+    &.surface,
+    &.ghost {
+      box-shadow: inset 0 0 0 var(--border-width) var(--button-border);
+      background-color: var(--button-background);
+      color: var(--button-color);
+
+      &:hover {
+        box-shadow: inset 0 0 0 var(--border-width)
+          var(--button-border-hover, var(--button-border));
+        background-color: var(
+          --button-background-hover,
+          var(--button-background)
+        );
+      }
+
+      &:active {
+        background-color: var(
+          --button-background-active,
+          var(--button-background-hover, var(--button-background))
+        );
+      }
+
+      &.contrast {
+        --button-color: var(--hue12);
+      }
+    }
+
+    &.solid {
+      --button-background: var(--hue9);
+      --button-background-hover: var(--hue10);
+      --button-color: var(--hue-fg);
+
+      &.contrast {
+        --button-background: var(--hue12);
+        --button-background-hover: var(--hue12);
+        --button-color: var(--hue1);
+      }
+    }
+
+    &.soft {
+      --button-background: var(--hue3);
+      --button-background-hover: var(--hue4);
+      --button-background-active: var(--hue5);
+      --button-color: var(--hue11);
+    }
+
+    &.surface {
+      --button-background: var(--hue2);
+      --button-background-hover: var(--hue3);
+      --button-background-active: var(--hue4);
+      --button-color: var(--hue11);
+      --button-border: var(--hue7A);
+      --button-border-hover: var(--hue8A);
+    }
+
+    &.outline {
+      --button-background-hover: var(--hue2);
+      --button-background-active: var(--hue3);
+      --button-color: var(--hue11);
+      --button-border: var(--hue7A);
+      --button-border-hover: var(--hue8A);
+    }
+
+    &.ghost {
+      --button-background-hover: var(--hue2);
+      --button-background-active: var(--hue3);
+      --button-color: var(--hue11);
+    }
+  }
+</style>

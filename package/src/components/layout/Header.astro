@@ -1,0 +1,55 @@
+---
+import { z } from 'zod'
+import { componentSchema } from '../../schemas/componentSchema'
+import Children from '../utilities/Children.astro'
+import Tag from '../utilities/Tag.astro'
+
+type Props = z.infer<typeof headerSchema>
+
+export const headerSchema = componentSchema({
+  frame: z.enum(['screen', 'panel']),
+  variant: z.enum(['solid', 'soft', 'ghost']),
+  position: z.enum(['relative', 'sticky', 'fixed', 'absolute']),
+})
+
+const {
+  as = 'header',
+  variant,
+  position,
+  frame,
+  ...rest
+} = headerSchema.parse(Astro.props)
+---
+
+<Tag
+  class:list={['header', variant, position, frame]}
+  compact
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
+
+<style is:global>
+  .header {
+    display: flex;
+    top: 0;
+    right: 0;
+    left: 0;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    background: var(--hue1);
+    padding: var(--space-2) var(--gutter);
+    width: 100%;
+
+    .fixed {
+      position: fixed;
+      top: 0;
+    }
+  }
+</style>

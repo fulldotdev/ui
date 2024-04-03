@@ -1,0 +1,132 @@
+---
+import { z } from 'zod'
+import { componentSchema } from '../../schemas/componentSchema'
+import Tag from '../utilities/Tag.astro'
+
+type Props = z.infer<typeof imageSchema>
+
+export const imageSchema = componentSchema({
+  src: z.string(),
+  alt: z.string(),
+  loading: z.string(),
+  mask: z.boolean(),
+  sizes: z.string(),
+  // sizes: {
+  //   base: z.string(),
+  //   sm: z.string(),
+  //   md: z.string(),
+  //   lg: z.string(),
+  //   xl: z.string(),
+  //   '2xl': z.string(),
+  // },
+  position: z.string(),
+  frame: z.string(),
+})
+
+const {
+  as = 'img',
+  loading = 'lazy', // TODO apply to image
+  mask,
+  alt = '',
+  sizes,
+  src,
+  position,
+  frame,
+  ...rest
+} = imageSchema.parse(Astro.props)
+// function getSrc() {
+//   if (src?.startsWith('http')) return src
+//   // TODO: add eager import
+//   const images = import.meta.glob('/src/assets/**/*.{jpeg,jpg,png,webp,gif}', {
+//     eager: true,
+//   })
+//   const path = ('/src/assets/' + src).replace('//', '/')
+//   const image = images[path]
+//   if (!image) console.warn(`Image not found: ${path}`)
+//   else return image
+// }
+
+const unslugify = (slug: string): string => slug.replace(/-/g, ' ')
+
+function getAlt(): string {
+  if (alt) return alt
+  const filename = src?.split('/').pop()
+  const slug = filename && filename.split('.')[0]
+  const unslugged = slug && unslugify(slug)
+  return unslugged || ''
+}
+
+// function getSizes() {
+//   const mapped = Object.entries(sizes).map(([key, value]) => {
+//     if (key === 'base') return value
+//     if (key === 'sm') return `(min-width: 640px) ${value}`
+//     if (key === 'md') return `(min-width: 768px) ${value}`
+//     if (key === 'lg') return `(min-width: 1024px) ${value}`
+//     if (key === 'xl') return `(min-width: 1280px) ${value}`
+//     if (key === '2xl') return `(min-width: 1536px) ${value}`
+//   })
+//   const joined = mapped.join(', ')
+//   return joined
+// }
+---
+
+{
+  src && (
+    <Tag
+      class:list={['image', position, frame, { mask }]}
+      alt={getAlt()}
+      if={true}
+      {as}
+      {src}
+      {sizes}
+      {...rest}
+    />
+  )
+}
+
+<style is:global>
+  .image {
+    display: block;
+    transition: var(--transition);
+    border-radius: var(--radius-1);
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+
+    &.background {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      order: 1;
+
+      /* TODO manier fixen zodat dit met custom classes kan */
+      opacity: 50%;
+      border-radius: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    &.cover {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    &.panel {
+      height: 100%;
+      object-fit: cover;
+    }
+
+    &.mask-sm {
+      -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
+      mask-image: linear-gradient(to top, transparent 0%, black 30%);
+    }
+    &.mask {
+      -webkit-mask-image: linear-gradient(to top, transparent 0%, black 100%);
+      mask-image: linear-gradient(to top, transparent 0%, black 100%);
+    }
+  }
+</style>

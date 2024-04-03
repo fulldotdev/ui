@@ -1,0 +1,38 @@
+---
+import { z } from 'zod'
+import { componentSchema } from '../../schemas/componentSchema'
+import Tag from '../utilities/Tag.astro'
+
+type Props = z.infer<typeof bodySchema>
+
+export const bodySchema = componentSchema({
+  output: z.boolean(),
+  render: z.any(),
+})
+
+const { as = 'body', render, ...rest } = bodySchema.parse(Astro.props)
+---
+
+<Tag
+  class:list={['body', 'hue-base', 'hue-accent']}
+  {as}
+  {...rest}
+>
+  <style is:global>
+    .body {
+      transition: var(--transition);
+      background: var(--hue1);
+      height: 100%;
+      min-height: 100vh;
+      color: var(----hue11);
+      font: var(--font);
+
+      &.dark {
+        color-scheme: dark;
+      }
+      &.light {
+        color-scheme: light;
+      }
+    }
+  </style>
+</Tag>

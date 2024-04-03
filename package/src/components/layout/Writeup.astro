@@ -1,0 +1,42 @@
+---
+import { z } from 'zod'
+import { componentSchema } from '../../schemas/componentSchema'
+import Children from '../utilities/Children.astro'
+import Tag from '../utilities/Tag.astro'
+
+type Props = z.infer<typeof writeupSchema>
+
+export const writeupSchema = componentSchema({
+  align: z.enum(['start', 'center']),
+})
+
+const { align, ...rest } = writeupSchema.parse(Astro.props)
+---
+
+<Tag
+  class:list={['writeup', align]}
+  {...rest}
+>
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
+
+<style is:global>
+  .writeup {
+    display: flex;
+    /* TODO replace gap with per-component margin */
+    row-gap: var(--space-3);
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: max(calc(var(--space-6) * 10), 700px);
+    text-align: left;
+
+    &.center {
+      align-items: center;
+      text-align: center;
+    }
+  }
+</style>

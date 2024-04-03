@@ -1,0 +1,38 @@
+---
+import { z } from 'zod'
+import { componentSchema } from '../../schemas/componentSchema'
+import Children from '../utilities/Children.astro'
+import Tag from '../utilities/Tag.astro'
+
+type Props = z.infer<typeof subtextSchema>
+
+export const subtextSchema = componentSchema({})
+
+const { as = 'p', color = 'accent', ...rest } = subtextSchema.parse(Astro.props)
+---
+
+<Tag
+  class:list={['subtext']}
+  {as}
+  {color}
+  {...rest}
+>
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
+
+<style is:global>
+  .subtext {
+    color: var(--hue11);
+    font: var(--font);
+    font-size: var(--text-1);
+    line-height: 1.25;
+
+    &.contrast {
+      color: var(--hue12);
+    }
+  }
+</style>

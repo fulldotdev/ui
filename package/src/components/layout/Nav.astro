@@ -1,0 +1,37 @@
+---
+import { z } from 'zod'
+import { componentSchema } from '../../schemas/componentSchema'
+import Children from '../utilities/Children.astro'
+import Tag from '../utilities/Tag.astro'
+
+type Props = z.infer<typeof navSchema>
+
+export const navSchema = componentSchema({})
+
+const { as = 'nav', ...rest } = navSchema.parse(Astro.props)
+---
+
+<Tag
+  class:list={['nav']}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
+
+<style is:global>
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    margin-left: auto;
+    width: max-content;
+    font: var(--font);
+    font-size: var(--text-2);
+  }
+</style>

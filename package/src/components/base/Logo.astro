@@ -1,0 +1,45 @@
+---
+import { z } from 'zod'
+import { componentSchema } from '../../schemas/componentSchema'
+import Children from '../utilities/Children.astro'
+import Tag from '../utilities/Tag.astro'
+import Image from './Image.astro'
+
+type Props = z.infer<typeof logoSchema>
+
+export const logoSchema = componentSchema({
+  src: z.string(),
+  href: z.string(),
+})
+
+const { as = 'a', href = '/', src, ...rest } = logoSchema.parse(Astro.props)
+---
+
+<Tag
+  class="logo"
+  {href}
+  {as}
+  {...rest}
+>
+  <Image
+    src={src}
+    {...rest}
+  />
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
+
+<style is:global>
+  .logo {
+    .image {
+      display: block !important;
+      width: auto !important;
+      height: var(--space-5) !important;
+      object-fit: contain !important;
+      color: var(--hue12) !important;
+    }
+  }
+</style>

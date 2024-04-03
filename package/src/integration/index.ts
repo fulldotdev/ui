@@ -6,7 +6,10 @@ export default function fulluiIntegration(fulluiConfig: any): AstroIntegration {
   return {
     name: '@fulldevlabs/fullui/integration',
     hooks: {
-      'astro:config:setup': async ({ config: astroConfig, updateConfig }) => {
+      'astro:config:setup': async ({
+        // config: astroConfig,
+        updateConfig,
+      }) => {
         updateConfig({
           integrations: [unoIntegration(fulluiConfig)],
         })
