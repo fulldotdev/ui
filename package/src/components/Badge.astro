@@ -1,0 +1,127 @@
+---
+import { z } from 'zod'
+import { componentSchema } from '../schemas/componentSchema'
+import Component from './misc/Component.astro'
+
+type Props = z.infer<typeof badgeSchema>
+
+export const badgeSchema = componentSchema({
+  variant: z.enum(['solid', 'soft', 'surface', 'outline']),
+})
+
+const {
+  tag = 'span',
+  variant = 'solid',
+  color = 'accent',
+  ...rest
+} = badgeSchema.parse(Astro.props)
+---
+
+<Component
+  class:list={['badge', variant]}
+  {color}
+  {tag}
+  {...rest}
+>
+  <slot name="start" />
+  <slot />
+  <slot name="end" />
+</Component>
+
+<style is:global>
+  .badge {
+    display: inline-flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    vertical-align: top;
+    gap: var(--space-2);
+    transition: var(--transition);
+    border-radius: var(--radius-1);
+    padding: 0 var(--space-2);
+    min-width: var(--space-6);
+    height: var(--space-4);
+    font-size: var(--text-1);
+    line-height: 1;
+    user-select: none;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--hue8);
+      outline-offset: 2px;
+    }
+
+    &.solid,
+    &.soft,
+    &.outline,
+    &.surface {
+      box-shadow: inset 0 0 0 var(--border-width) var(--badge-border);
+      background-color: var(--badge-background);
+      color: var(--badge-color) !important;
+
+      /* &:hover {
+        box-shadow: inset 0 0 0 var(--border-width)
+          var(--badge-border-hover, var(--badge-border));
+        background-color: var(
+          --badge-background-hover,
+          var(--badge-background)
+        );
+      } */
+
+      /* &:active {
+        background-color: var(
+          --badge-background-active,
+          var(--badge-background-hover, var(--badge-background))
+        );
+      } */
+
+      &.contrast {
+        --badge-color: var(--hue12);
+      }
+    }
+
+    &.solid {
+      --badge-background: var(--hue9);
+      --badge-background-hover: var(--hue10);
+      --badge-color: var(--hue-fg);
+
+      &.contrast {
+        --badge-background: var(--hue12);
+        --badge-background-hover: var(--hue12);
+        --badge-color: var(--hue1);
+      }
+    }
+
+    &.soft {
+      --badge-background: var(--hue3);
+      --badge-background-hover: var(--hue4);
+      --badge-background-active: var(--hue5);
+      --badge-color: var(--hue11);
+    }
+
+    &.surface {
+      --badge-background: var(--hue2);
+      --badge-background-hover: var(--hue3);
+      --badge-background-active: var(--hue4);
+      --badge-color: var(--hue11);
+      --badge-border: var(--hue7A);
+      --badge-border-hover: var(--hue8A);
+    }
+
+    &.outline {
+      --badge-background-hover: var(--hue2);
+      --badge-background-active: var(--hue3);
+      --badge-color: var(--hue11);
+      --badge-border: var(--hue7A);
+      --badge-border-hover: var(--hue8A);
+    }
+  }
+</style>
