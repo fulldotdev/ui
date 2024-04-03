@@ -1,25 +1,26 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../schemas/componentSchema'
+import { z } from 'zod';
+import { componentSchema } from '../schemas/componentSchema';
+import Parent from './misc/Parent.astro';
 
-type Props = z.infer<typeof inputSchema>
+type Props = z.infer<typeof inputSchema>;
 
 export const inputSchema = componentSchema({
   name: z.string().nullable(),
-})
+  placeholder: z.string().nullable(),
+  type: z.string().nullable(),
+});
 
-const { name } = inputSchema.parse(Astro.props)
+const { tag = 'input', name, ...rest } = inputSchema.parse(Astro.props);
 ---
 
-{
-  name && (
-    <input
-      class="input"
-      id={name}
-      {name}
-    />
-  )
-}
+<Parent
+  if={name}
+  {tag}
+  class:list={['input']}
+  name={name}
+  {...rest}
+/>
 
 <style is:global>
   .input {

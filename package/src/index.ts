@@ -68,6 +68,8 @@ export * from './components/Tagline.astro';
 export { default as Tagline } from './components/Tagline.astro';
 export * from './components/Test.astro';
 export { default as Test } from './components/Test.astro';
+export * from './components/Textarea.astro';
+export { default as Textarea } from './components/Textarea.astro';
 export * from './components/Title.astro';
 export { default as Title } from './components/Title.astro';
 export * from './components/Video.astro';

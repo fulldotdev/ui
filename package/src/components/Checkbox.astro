@@ -1,25 +1,30 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../schemas/componentSchema'
+import { z } from 'zod';
+import { componentSchema } from '../schemas/componentSchema';
+import Parent from './misc/Parent.astro';
 
-type Props = z.infer<typeof checkboxSchema>
+type Props = z.infer<typeof checkboxSchema>;
 
 export const checkboxSchema = componentSchema({
   name: z.string().nullable(),
-})
+});
 
-const { name } = checkboxSchema.parse(Astro.props)
+const {
+  tag = 'input',
+  name,
+  type = 'checkbox',
+  ...rest
+} = checkboxSchema.parse(Astro.props);
 ---
 
-{
-  name && (
-    <input
-      id={name}
-      type="checkbox"
-      {name}
-    />
-  )
-}
+<Parent
+  if={name}
+  {tag}
+  type={type}
+  class:list={['checkbox']}
+  name={name}
+  {...rest}
+/>
 
 <style is:global>
   .checkbox {
