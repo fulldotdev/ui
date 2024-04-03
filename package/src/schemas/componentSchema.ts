@@ -38,3 +38,19 @@ export const componentSchema = <S extends z.ZodRawShape>(shape: S = {} as S) =>
   })
     .partial()
     .catchall(z.any())
+
+export const propsSchema = <S extends z.ZodRawShape>(shape: S = {} as S) => {
+  const schema = z.object(shape).partial()
+  const defaultParseFunction = schema.parse
+  schema.parse = (data: unknown) => {
+    try {
+      return defaultParseFunction(data)
+    } catch (err: any) {
+      const stack = err.stack || ''
+      const inComponent = stack.match(/(\w+\.astro):\d+:\d+/)?.[0]
+      const message = fromZodError(err).toString()
+      throw new Error(`${inComponent ?? 'Component props'} > ${message}`)
+    }
+  }
+  return schema
+}

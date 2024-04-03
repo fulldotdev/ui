@@ -7,24 +7,18 @@ import Head, { headSchema } from './Head.astro'
 type Props = z.infer<typeof pageSchema>
 
 export const pageSchema = componentSchema({
-  // layout: reference('layouts'),
   head: headSchema,
   body: bodySchema,
-  render: z.any(),
-  hasProse: z.boolean(),
 })
 
-const { as = 'html', render, hasProse, ...rest } = pageSchema.parse(Astro.props)
+const { as = 'html', ...rest } = pageSchema.parse(Astro.props)
 ---
 
 <!doctype html>
 <html
-class:list={["full-page"]}
+  class:list={['full-page']}
   {...rest}
 >
   <Head {...rest.head} />
-  <Body
-    render={hasProse ? render : undefined}
-    {...rest.body}
-  />
+  <Body {...rest.body} />
 </html>
