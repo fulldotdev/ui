@@ -4,7 +4,7 @@ import unoIntegration from './unoIntegration'
 
 export default function fulluiIntegration(fulluiConfig: any): AstroIntegration {
   return {
-    name: '@fulldevlabs/fullui/integration',
+    name: '@fullui/ui/integration',
     hooks: {
       'astro:config:setup': async ({
         // config: astroConfig,
@@ -18,7 +18,7 @@ export default function fulluiIntegration(fulluiConfig: any): AstroIntegration {
           vite: {
             plugins: [
               virtual({
-                'virtual:@fulldevlabs/fullui/config': `export default ${JSON.stringify(fulluiConfig)}`,
+                'virtual:@fullui/ui/config': `export default ${JSON.stringify(fulluiConfig)}`,
               }),
             ],
           },

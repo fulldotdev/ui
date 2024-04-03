@@ -1,6 +1,6 @@
 import starlight from '@astrojs/starlight'
 import vercel from '@astrojs/vercel/static'
-import fullui from '@fulldevlabs/fullui/integration'
+import fullui from '@fullui/ui/integration'
 // @ts-ignore
 import liveCode from 'astro-live-code'
 import { defineConfig } from 'astro/config'

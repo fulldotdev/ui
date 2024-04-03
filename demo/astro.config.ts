@@ -1,4 +1,4 @@
-import fullui from '@fulldevlabs/fullui/integration'
+import fullui from '@fullui/ui/integration'
 import type { AstroIntegration } from 'astro'
 import { defineConfig } from 'astro/config'
 
