@@ -1,58 +1,108 @@
 <!-- ---
-import type { ComponentProps } from 'astro/types'
-import { endomorphic,getChildProps,type Endomorphic } from '../utils'
+import { z } from 'zod'
+import { buildProps,parseProps } from '../utils/props'
+import ButtonGroup,{ buttonGroupSchema } from './ButtonGroup.astro'
+import ChannelGroup,{ channelGroupSchema } from './ChannelGroup.astro'
+import Description,{ descriptionSchema } from './Description.astro'
 import Display from './Display.astro'
-import Heading from './Heading.astro'
-import Links from './Links.astro'
-import Logo from './Logo.astro'
-import Tag from './Tag.astro'
+import LinkGroup,{ linkGroupSchema } from './LinkGroup.astro'
+import Logo,{ logoSchema } from './Logo.astro'
+import Section from './Section.astro'
+import SpecGroup,{ specGroupSchema } from './SpecGroup.astro'
+import Title,{ titleSchema } from './Title.astro'
 
-interface Props
-  extends Endomorphic<'footer', Props, string>,
-    Pick<TagProps<typeof Logo>, 'logo' | '_logo'>,
-    ComponentProps<typeof Tag> {
-  columns?: {
-    title: ComponentProps<typeof Heading>['title']
-    links: ComponentProps<typeof Links>['links']
-  }[]
-}
-const { as = 'footer', ...rest } = endomorphic('footer', Astro.props)
+type Props = z.infer<typeof footerSchema>
 
-const child = getChildProps(rest)
+export const footerSchema = buildProps({
+  logo: logoSchema,
+  description: descriptionSchema,
+  channelGroup: channelGroupSchema,
+  buttonGroup: buttonGroupSchema,
+  columns: z.array(
+    z.object({
+      title: titleSchema,
+      specGroup: specGroupSchema.optional(),
+      linkGroup: linkGroupSchema.optional(),
+    })
+  ),
+})
+
+const { as = 'footer', ...rest } = parseProps(footerSchema, Astro.props)
 ---
 
-<Tag
+<Section
+  direction={'row'}
+  align={'start'}
+  class:list={['footer']}
+  compact
   {as}
   {...rest}
 >
-  <Display>
-    <Logo {...child} />
-  </Display>
-  {
-    rest?.columns?.map((column) => (
-      <Display>
-        <Heading
-          as="h4"
-          {...column}
-        />
-        <Links links={column.links} />
-      </Display>
-    ))
-  }
-</Tag>
+  <div class="part first">
+    <Display class={'about-footer'}>
+      <Logo {...rest.logo} />
+      <Description {...rest.description} />
+      <ButtonGroup {...rest.buttonGroup} />
+    </Display>
+    <Display>
+      <ChannelGroup {...rest.channelGroup} />
+    </Display>
+  </div>
+  <div class="part second">
+    {
+      rest?.columns?.map((column) => (
+        <Display class={'col'}>
+          <Title {...column.title} />
+          <LinkGroup
+            direction={'column'}
+            {...column.linkGroup}
+          />
+          <SpecGroup {...column.specGroup} />
+        </Display>
+      ))
+    }
+  </div>
+</Section>
 
 <style is:global>
-  footer {
-    display: grid;
-    position: relative;
-    justify-content: center;
-    gap: var(--space-5);
-    z-index: 20;
-    border-top-width: var(--border-width);
+  .footer {
+    gap: var(--spacer) var(--space-6);
+    .part {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
 
-    @media (min-width: 1024px) {
-      grid-auto-columns: 1fr;
-      grid-auto-flow: column;
+      .about-footer {
+        max-width: 400px;
+      }
+
+      @media (min-width: 768px) {
+        flex-direction: row;
+      }
+    }
+
+    .link-group {
+      flex-direction: column;
+      align-items: start;
+      gap: var(--space-2);
+    }
+
+    .col {
+      width: 100%;
+    }
+    .spec-group {
+      .full-icon {
+        display: none !important;
+      }
+
+      .spec {
+        color: var(--sand11);
+
+        b {
+          display: inline-block;
+          width: var(--space-5);
+        }
+      }
     }
   }
 </style> -->

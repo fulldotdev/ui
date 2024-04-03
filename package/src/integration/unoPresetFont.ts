@@ -7,8 +7,10 @@ import type { WebFontsOptions } from 'unocss/preset-web-fonts'
 type Config = WebFontsOptions['fonts']
 
 const defaultConfig: Config = {
-  sans: 'Roboto',
-  monoooo: ['Fira Code', 'Fira Mono:400,700'],
+  title: 'Inter',
+  subtitle: 'Inter',
+  body: 'Inter',
+  buttons: 'Inter',
 }
 
 export default function preset(userConfig?: Partial<Config>): Preset {

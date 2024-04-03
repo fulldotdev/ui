@@ -22,8 +22,10 @@ const defaultConfig: Config = {
     },
   },
   font: {
-    base: 'Inter',
-    heading: 'Inter',
+    title: 'Inter',
+    subtitle: 'Inter',
+    body: 'Inter',
+    buttons: 'Inter',
   },
   flow: {
     scale: 1,

@@ -157,20 +157,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"base/field.mdx": {
-	id: "base/field.mdx";
-  slug: "base/field";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"base/head.mdx": {
-	id: "base/head.mdx";
-  slug: "base/head";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "base/icon.mdx": {
 	id: "base/icon.mdx";
   slug: "base/icon";
@@ -360,6 +346,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"typography/subtext.mdx": {
+	id: "typography/subtext.mdx";
+  slug: "typography/subtext";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "typography/text.mdx": {
 	id: "typography/text.mdx";
   slug: "typography/text";
@@ -367,23 +360,44 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"utilities/child.mdx": {
-	id: "utilities/child.mdx";
-  slug: "utilities/child";
+"utility/body.mdx": {
+	id: "utility/body.mdx";
+  slug: "utility/body";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"utilities/children.mdx": {
-	id: "utilities/children.mdx";
-  slug: "utilities/children";
+"utility/child.mdx": {
+	id: "utility/child.mdx";
+  slug: "utility/child";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"utilities/tag.mdx": {
-	id: "utilities/tag.mdx";
-  slug: "utilities/tag";
+"utility/children.mdx": {
+	id: "utility/children.mdx";
+  slug: "utility/children";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"utility/head.mdx": {
+	id: "utility/head.mdx";
+  slug: "utility/head";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"utility/page.mdx": {
+	id: "utility/page.mdx";
+  slug: "utility/page";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"utility/tag.mdx": {
+	id: "utility/tag.mdx";
+  slug: "utility/tag";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
