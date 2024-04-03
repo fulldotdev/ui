@@ -73,16 +73,26 @@ const COMPONENTS: any = {
 
 export const childSchema = z.any()
 
-const { component, tag, ...rest } = childSchema.parse(Astro.props)
+const { component, as, ...rest } = childSchema.parse(Astro.props)
 
 let Component = component && COMPONENTS[component]
 ---
 
-{Component && <Component {...rest} />}
+{
+  Component && (
+    <Component
+      {as}
+      {...rest}
+    />
+  )
+}
 
 {
-  !Component && tag && (
-    <Tag {...rest}>
+  !Component && as && (
+    <Tag
+      {as}
+      {...rest}
+    >
       <Children {...rest} />
     </Tag>
   )
