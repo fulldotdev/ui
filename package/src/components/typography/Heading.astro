@@ -1,20 +1,17 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../../schemas/componentSchema'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
 
-type Props = z.infer<typeof headingSchema>
+type Props<As extends HTMLTag = 'h2'> = ComponentProps<typeof Tag<As>>
 
-export const headingSchema = componentSchema({})
-
-const { as = 'h2', contrast = true, ...rest } = headingSchema.parse(Astro.props)
+const { as = 'h2', contrast = true, ...rest } = Astro.props
 ---
 
 <Tag
   class:list={['full-heading']}
-  {as}
   {contrast}
+  {as}
   {...rest}
 >
   <slot name="before" />

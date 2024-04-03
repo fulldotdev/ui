@@ -1,17 +1,12 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../../schemas/componentSchema'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import Tag from '../utility/Tag.astro'
 
-type Props = z.infer<typeof deckSchema>
+type Props<As extends HTMLTag = 'div'> = ComponentProps<typeof Tag<As>> & {
+  layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento'
+}
 
-export const deckSchema = componentSchema({
-  layout: z
-    .enum(['carousel', 'grid', 'masonry', 'row', 'panels', 'bento'])
-    .nullish(),
-})
-
-const { layout, ...rest } = deckSchema.parse(Astro.props)
+const { layout, ...rest } = Astro.props
 ---
 
 <Tag

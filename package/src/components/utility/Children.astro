@@ -1,20 +1,126 @@
 ---
-import { isArray, isObject } from 'radash'
-import { z } from 'zod'
-import Child from './Child.astro'
+import type { ComponentProps } from 'astro/types'
+import { isArray, objectify } from 'radash'
+import Button from '../base/Button.astro'
+import Checkbox from '../base/Checkbox.astro'
+import Icon from '../base/Icon.astro'
+import Image from '../base/Image.astro'
+import Input from '../base/Input.astro'
+import Label from '../base/Label.astro'
+import Logo from '../base/Logo.astro'
+import Media from '../base/Media.astro'
+import Option from '../base/Option.astro'
+import Rating from '../base/Rating.astro'
+import Select from '../base/Select.astro'
+import Spec from '../base/Spec.astro'
+import Textarea from '../base/Textarea.astro'
+import Video from '../base/Video.astro'
+import Card from '../layout/Card.astro'
+import Deck from '../layout/Deck.astro'
+import Field from '../layout/Field.astro'
+import Footer from '../layout/Footer.astro'
+import Form from '../layout/Form.astro'
+import Group from '../layout/Group.astro'
+import Header from '../layout/Header.astro'
+import Prose from '../layout/Prose.astro'
+import Section from '../layout/Section.astro'
+import Stack from '../layout/Stack.astro'
+import Writeup from '../layout/Writeup.astro'
+import Heading from '../typography/Heading.astro'
+import Link from '../typography/Link.astro'
+import Subtext from '../typography/Subtext.astro'
+import Text from '../typography/Text.astro'
+import Tag from './Tag.astro'
 
-type Props = z.infer<typeof childrenSchema>
+type Html = {
+  html?: string
+} & {
+  [key: string]: any
+}
 
-export const childrenSchema = z.object({}).passthrough()
+type Child = {
+  component?: keyof typeof COMPONENTS
+  as?: ComponentProps<typeof Tag>['as']
+} & {
+  [key: string]: any
+}
 
-const { ...rest } = childrenSchema.parse(Astro.props)
+type Props =
+  | Html
+  | (Html & {
+      [key: string]: Child | Props
+    })
+
+const COMPONENTS = {
+  Heading,
+  Text,
+  Subtext,
+  Writeup,
+  Button,
+  Card,
+  Checkbox,
+  Stack,
+  Deck,
+  Field,
+  Footer,
+  Form,
+  Group,
+  Header,
+  Icon,
+  Image,
+  Input,
+  Label,
+  Link,
+  Logo,
+  Media,
+  Option,
+  Prose,
+  Rating,
+  Section,
+  Select,
+  Spec,
+  Textarea,
+  Video,
+}
+
+const { ...rest } = Astro.props
+
+const keyToComponentName = (key?: string) => {
+  if (!key) return
+  const part = key.split(/(?=[A-Z])/).pop() ?? key
+  const correctedPart = part.charAt(0).toUpperCase() + part.slice(1)
+  if (correctedPart && correctedPart in COMPONENTS)
+    return correctedPart as keyof typeof COMPONENTS
+  return
+}
 ---
 
 {
   Object.entries(rest).map(([key, value]) => {
     if (key === 'html') return <Fragment set:html={value} />
-    if (isArray(value)) return value.map((item) => <Child {...item} />)
-    if (isObject(value)) return <Child {...{ key, ...value }} />
-    else return null
+
+    if (isArray(value))
+      return <Astro.self {...objectify(value, (v) => v.component ?? v.tag)} />
+
+    if (value.component && value.component in COMPONENTS) {
+      const component = value.component as keyof typeof COMPONENTS
+      const Component = component && COMPONENTS[component]
+      return <Component {...value} />
+    }
+
+    if (keyToComponentName(key)) {
+      const component = keyToComponentName(key) as keyof typeof COMPONENTS
+      const Component = component && COMPONENTS[component]
+      return <Component {...value} />
+    }
+
+    if (value.as)
+      return (
+        <Tag {...value}>
+          <Astro.self {...value} />
+        </Tag>
+      )
+
+    return null
   })
 }

@@ -1,16 +1,11 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../../schemas/componentSchema'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
 
-type Props = z.infer<typeof linkSchema>
+type Props<As extends HTMLTag = 'a'> = ComponentProps<typeof Tag<As>>
 
-export const linkSchema = componentSchema({
-  href: z.string(),
-})
-
-const { as = 'a', ...rest } = linkSchema.parse(Astro.props)
+const { as = 'a', ...rest } = Astro.props
 ---
 
 <Tag

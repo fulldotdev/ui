@@ -1,27 +1,26 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../../schemas/componentSchema'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
 
-type Props = z.infer<typeof BlockquoteSchema>
-
-export const BlockquoteSchema = componentSchema({
-  variant: z.enum(['solid', 'soft']),
-})
+type Props<As extends HTMLTag = 'blockquote'> = ComponentProps<
+  typeof Tag<As>
+> & {
+  variant?: 'solid' | 'soft'
+}
 
 const {
-  tag = 'span',
-  variant = 'solid',
+  as = 'blockquote',
   color = 'accent',
+  variant = 'solid',
   ...rest
-} = BlockquoteSchema.parse(Astro.props)
+} = Astro.props
 ---
 
 <Tag
   class:list={['full-blockquote', variant]}
+  {as}
   {color}
-  {tag}
   {...rest}
 >
   <slot name="before" />

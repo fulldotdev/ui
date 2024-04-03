@@ -1,24 +1,15 @@
 ---
-import { z } from 'zod'
+import type { HTMLTag, Polymorphic } from 'astro/types'
 import { attributesSchema } from '../../schemas/attributesSchema'
-import { propsSchema } from '../../schemas/componentSchema'
 
-type Props = z.infer<typeof tagSchema>
-
-export const tagSchema = propsSchema({
-  as: z.string(),
-  if: z.string().or(z.literal(true)),
-  color: z.string(),
-  scheme: z.string(),
-  contrast: z.boolean(),
-  compact: z.boolean(),
-  size: z
-    .enum(['1', '2', '3', '4'])
-    .or(z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])),
-  class: z.string(),
-  style: z.string(),
-  id: z.string(),
-})
+type Props<As extends HTMLTag> = Omit<Polymorphic<{ as: As }>, 'slot'> & {
+  if?: any
+  color?: string
+  scheme?: string
+  contrast?: boolean
+  compact?: boolean
+  size?: '1' | '2' | '3' | '4' | 1 | 2 | 3 | 4
+}
 
 const {
   as: As = 'div',
@@ -29,7 +20,7 @@ const {
   size,
   compact,
   ...rest
-} = tagSchema.parse(Astro.props)
+} = Astro.props
 
 const slot = await Astro.slots.render('default')
 const hasSlot = slot?.trim().length > 0

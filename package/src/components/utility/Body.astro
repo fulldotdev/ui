@@ -1,23 +1,25 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../../schemas/componentSchema'
+import type { ComponentProps } from 'astro/types'
 import Tag from '../utility/Tag.astro'
+import Children from './Children.astro'
 
-type Props = z.infer<typeof bodySchema>
+type Props = Omit<ComponentProps<typeof Tag<'body'>>, 'as' | 'if'> &
+  ComponentProps<typeof Children>
 
-export const bodySchema = componentSchema({
-  output: z.boolean(),
-  render: z.any(),
-})
-
-const { as = 'body', render, ...rest } = bodySchema.parse(Astro.props)
+const { ...rest } = Astro.props
 ---
 
 <Tag
   class:list={['full-body', 'hue-base', 'hue-accent']}
-  {as}
+  as="body"
   {...rest}
 >
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+
   <style is:global>
     .body {
       transition: var(--transition);

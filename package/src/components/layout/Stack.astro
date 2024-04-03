@@ -1,17 +1,14 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../../schemas/componentSchema'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
 
-type Props = z.infer<typeof stackSchema>
+type Props<As extends HTMLTag = 'div'> = ComponentProps<typeof Tag<As>> & {
+  direction?: 'row' | 'column'
+  align?: 'start' | 'center'
+}
 
-export const stackSchema = componentSchema({
-  direction: z.enum(['row', 'column']),
-  align: z.enum(['start', 'center']),
-})
-
-const { direction, align, ...rest } = stackSchema.parse(Astro.props)
+const { direction, align, ...rest } = Astro.props
 ---
 
 <Tag

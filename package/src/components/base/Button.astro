@@ -1,23 +1,13 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../../schemas/componentSchema'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
 
-type Props = z.infer<typeof buttonSchema>
+type Props<As extends HTMLTag = 'a'> = ComponentProps<typeof Tag<As>> & {
+  variant?: 'solid' | 'soft' | 'surface' | 'outline' | 'ghost'
+}
 
-export const buttonSchema = componentSchema({
-  href: z.string(),
-  variant: z.enum(['solid', 'soft', 'surface', 'outline', 'ghost']),
-  type: z.string(),
-})
-
-const {
-  as = 'a',
-  variant = 'solid',
-  color = 'accent',
-  ...rest
-} = buttonSchema.parse(Astro.props)
+const { as = 'a', variant = 'solid', color = 'accent', ...rest } = Astro.props
 ---
 
 <Tag

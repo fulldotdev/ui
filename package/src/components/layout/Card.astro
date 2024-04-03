@@ -1,49 +1,19 @@
 ---
-import { getEntry } from 'astro:content'
-import { merge } from 'merge-anything'
-import { z } from 'zod'
-import { componentSchema } from '../../schemas/componentSchema'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
 
-type Props = z.infer<typeof cardSchema>
-
-export const cardSchema = componentSchema({
-  frame: z.enum(['fill', 'panel', 'screen']),
-  variant: z.enum(['ghost', 'soft', 'solid']),
-  collection: z.string(),
-  slug: z.string(),
-  output: z.boolean(),
-})
-
-const { entry, ...props } = cardSchema.parse(Astro.props)
-const entryResponse = entry && (await getEntry(entry))
-const entryData = {
-  ...entryResponse?.data,
-  collection: entry?.collection,
-  slug: entry?.slug,
-  id: entry && 'id' in entry ? entry?.id : undefined,
+type Props<As extends HTMLTag = 'header'> = ComponentProps<typeof Tag<As>> & {
+  frame?: 'fill' | 'panel' | 'screen'
+  variant?: 'ghost' | 'soft' | 'solid'
 }
 
-const { variant, frame, output, collection, slug, ...rest } = merge(
-  entryData,
-  props
-)
-
-const href =
-  output !== false && collection && slug ? `/${collection}/${slug}` : undefined
-
-// const imageFromImages =
-//   typeof rest.images?.items?.[0] === 'string'
-//     ? { src: rest.images?.items?.[0] }
-//     : rest.images?.items?.[0]
+const { variant, frame, ...rest } = Astro.props
 ---
 
 <Tag
   class:list={['full-card', variant, frame]}
   compact
-  tag={href ? 'a' : 'div'}
-  {href}
   {...rest}
 >
   <slot name="before" />

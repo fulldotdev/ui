@@ -1,20 +1,10 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../../schemas/componentSchema'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import Tag from '../utility/Tag.astro'
 
-type Props = z.infer<typeof checkboxSchema>
+type Props<As extends HTMLTag = 'input'> = ComponentProps<typeof Tag<As>> & {}
 
-export const checkboxSchema = componentSchema({
-  name: z.string().nullable(),
-})
-
-const {
-  as = 'input',
-  name,
-  type = 'checkbox',
-  ...rest
-} = checkboxSchema.parse(Astro.props)
+const { as = 'input', name, type = 'checkbox', ...rest } = Astro.props
 ---
 
 <Tag
