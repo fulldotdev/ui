@@ -1,6 +1,7 @@
 ---
 import { z } from 'zod'
 import { componentSchema } from '../../schemas/componentSchema'
+import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
 
 type Props = z.infer<typeof groupSchema>
@@ -16,13 +17,20 @@ const { layout, ...rest } = groupSchema.parse(Astro.props)
 <Tag
   class:list={['full-group', layout]}
   {...rest}
-/>
+>
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
 
 <style is:global>
   .full-group {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2);
+    width: 100%;
 
     .row {
       flex-direction: row;
