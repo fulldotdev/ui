@@ -68,7 +68,7 @@ body:
             html: Lorem ipsum dolor sit amet, consectetur adipiscing elit,
   itemSection:
     section-text:
-      tag: div
+      as:div
       title:
         html: Nieuwe producten
       description:
@@ -140,7 +140,7 @@ body:
             html: Bekijk beursplanning
   saleSection:
     section-text:
-      tag: div
+      as:div
       title:
         html: Aanbiedingen
       description:
