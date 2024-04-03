@@ -1,0 +1,59 @@
+---
+import { z } from 'zod'
+import { componentSchema } from '../schemas/componentSchema'
+import Component from './misc/Component.astro'
+
+type Props = z.infer<typeof BlockquoteSchema>
+
+export const BlockquoteSchema = componentSchema({
+  variant: z.enum(['solid', 'soft']),
+})
+
+const {
+  tag = 'span',
+  variant = 'solid',
+  color = 'accent',
+  ...rest
+} = BlockquoteSchema.parse(Astro.props)
+---
+
+<Component
+  class:list={['blockquote', variant]}
+  {color}
+  {tag}
+  {...rest}
+>
+  <slot name="start" />
+  <slot />
+  <slot name="end" />
+</Component>
+
+<style is:global>
+  .blockquote {
+    border-left: 6px solid var(--border-color);
+    padding-left: var(--space-3);
+
+    &.solid,
+    &.soft {
+      color: var(--blockquote-color);
+    }
+
+    &.solid {
+      --border-color: var(--hue10);
+
+      &.contrast {
+        --border-color: var(--hue12);
+        --blockquote-color: var(--hue12);
+      }
+    }
+
+    &.soft {
+      --border-color: var(--hue5);
+
+      &.contrast {
+        --border-color: var(--hue11);
+        --blockquote-color: var(--hue10);
+      }
+    }
+  }
+</style>
