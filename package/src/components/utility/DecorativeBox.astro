@@ -1,10 +1,24 @@
+---
+import { z } from 'zod'
+import { componentSchema } from '../../schemas/componentSchema'
+
+type Props = z.infer<typeof decorativeBoxSchema>
+
+export const decorativeBoxSchema = componentSchema({
+  height: z.string(),
+})
+
+const { height } = decorativeBoxSchema.parse(Astro.props)
+---
+
 <div class="decorative-box"></div>
 
-<style is:global>
+<style is:global define:vars={{ height }}>
   .decorative-box {
     border: 1px solid var(--hue5);
     border-radius: var(--radius-1);
     background-color: var(--hue3);
-    min-height: 100px !important;
+    height: var(--height) !important;
+    min-height: 100px;
   }
 </style>
