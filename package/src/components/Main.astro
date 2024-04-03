@@ -2,7 +2,7 @@
 import { z } from 'zod'
 import { componentSchema } from '../schemas/componentSchema'
 import Section, { sectionSchema } from './Section.astro'
-import Tag from './Tag.astro'
+import Component from './misc/Component.astro'
 
 type Props = z.infer<typeof mainSchema>
 
@@ -10,16 +10,16 @@ export const mainSchema = componentSchema({
   sections: z.array(sectionSchema),
 })
 
-const { as = 'main', sections, ...rest } = mainSchema.parse(Astro.props)
+const { tag = 'main', sections, ...rest } = mainSchema.parse(Astro.props)
 ---
 
-<Tag
+<Component
   class:list={['main']}
-  {as}
+  {tag}
   {...rest}
 >
   {sections?.map((item) => <Section {...item} />)}
-</Tag>
+</Component>
 
 <style is:global>
   .main {

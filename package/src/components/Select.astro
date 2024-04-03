@@ -2,6 +2,7 @@
 import { z } from 'zod'
 import { componentSchema } from '../schemas/componentSchema'
 import Option, { optionSchema } from './Option.astro'
+import Parent from './misc/Parent.astro'
 
 type Props = z.infer<typeof selectSchema>
 
@@ -10,26 +11,26 @@ export const selectSchema = componentSchema({
   options: z.array(optionSchema),
 })
 
-const { options, ...rest } = selectSchema.parse(Astro.props)
+const { tag = 'select', options, ...rest } = selectSchema.parse(Astro.props)
 ---
 
-{
-  options && (
-    <select
-      class="options"
-      {...rest}
-    >
-      {options?.map((option) => (
-        <Option value={option.value}>
-          {option.html ? option.html : option.value}
-        </Option>
-      ))}
-    </select>
-  )
-}
+<Parent
+  if={options}
+  {tag}
+  class:list={['select']}
+  {...rest}
+>
+  {
+    options?.map((option) => (
+      <Option value={option.value}>
+        {option.html ? option.html : option.value}
+      </Option>
+    ))
+  }
+</Parent>
 
 <style is:global>
-  .options {
+  .select {
     transition: var(--transition);
     outline: none;
     border-width: var(--border-width);

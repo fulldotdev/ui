@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 export const attributesSchema = z.object({
   abbr: z.any(),
@@ -94,7 +94,7 @@ export const attributesSchema = z.object({
   rel: z.any(),
   required: z.any(),
   // role: z.any(),
-  // rows: z.any(),
+  rows: z.any(),
   // rowSpan: z.any(),
   // sandbox: z.any(),
   // scope: z.any(),
@@ -125,4 +125,4 @@ export const attributesSchema = z.object({
   width: z.any(),
   // wmode: z.any(),
   // wrap: z.any(),
-})
+});
