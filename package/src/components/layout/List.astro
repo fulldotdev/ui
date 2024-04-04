@@ -3,17 +3,17 @@ import type { ComponentProps, HTMLTag } from 'astro/types'
 import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
 
-type Props<As extends HTMLTag = 'div'> = ComponentProps<typeof Tag<As>> &
-  ComponentProps<typeof Children>& {
-  direction?: 'row' | 'column'
-  align?: 'stretch' | 'start' | 'center' | 'end'
-}
+type Props<As extends HTMLTag = 'ul'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Children> & {
+    direction?: 'row' | 'column'
+    align?: 'stretch' | 'start' | 'center' | 'end'
+  }
 
-const { direction, ...rest } = Astro.props
+const { as = 'ul', direction = 'column', align, ...rest } = Astro.props
 ---
 
 <Tag
-  class:list={['full-group', direction]}
+  class:list={['full-list', direction, align]}
   {...rest}
 >
   <slot name="before" />
@@ -24,7 +24,7 @@ const { direction, ...rest } = Astro.props
 </Tag>
 
 <style is:global>
-  .full-group {
+  .full-list {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2);

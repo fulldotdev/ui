@@ -1,16 +1,10 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../../schemas/componentSchema'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
-import Image from './Image.astro'
 
-type Props = z.infer<typeof logoSchema>
-
-export const logoSchema = componentSchema({
-  src: z.string(),
-  href: z.string(),
-})
+type Props<As extends HTMLTag = 'a'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Children>
 
 const { as = 'a', href = '/', src, ...rest } = Astro.props
 ---
@@ -21,10 +15,6 @@ const { as = 'a', href = '/', src, ...rest } = Astro.props
   {as}
   {...rest}
 >
-  <Image
-    src={src}
-    {...rest}
-  />
   <slot name="before" />
   <slot>
     <Children {...rest} />

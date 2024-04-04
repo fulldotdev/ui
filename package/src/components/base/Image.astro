@@ -1,39 +1,29 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../../schemas/componentSchema'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import Tag from '../utility/Tag.astro'
 
-type Props = z.infer<typeof imageSchema>
+type Props<As extends HTMLTag = 'img'> = ComponentProps<typeof Tag<As>> & {
+  position?: 'background' | 'cover' | 'panel'
+  frame?: 'mask' | 'mask-sm'
+}
 
-export const imageSchema = componentSchema({
-  src: z.string(),
-  alt: z.string(),
-  loading: z.string(),
-  mask: z.boolean(),
-  sizes: z.string(),
-  // sizes: {
-  //   base: z.string(),
-  //   sm: z.string(),
-  //   md: z.string(),
-  //   lg: z.string(),
-  //   xl: z.string(),
-  //   '2xl': z.string(),
-  // },
-  position: z.string(),
-  frame: z.string(),
-})
+function getAltBySrc(): string {
+  const filename = Astro.props.src?.split('/').pop()
+  const slug = filename && filename.split('.')[0]
+  const unslugged = slug?.replace(/-/g, ' ')
+  return unslugged || ''
+}
 
 const {
   as = 'img',
-  loading = 'lazy', // TODO apply to image
-  mask,
-  alt = '',
-  sizes,
+  loading = 'lazy',
+  alt = getAltBySrc(),
   src,
   position,
   frame,
   ...rest
 } = Astro.props
+
 // function getSrc() {
 //   if (src?.startsWith('http')) return src
 //   // TODO: add eager import
@@ -45,16 +35,6 @@ const {
 //   if (!image) console.warn(`Image not found: ${path}`)
 //   else return image
 // }
-
-const unslugify = (slug: string): string => slug.replace(/-/g, ' ')
-
-function getAlt(): string {
-  if (alt) return alt
-  const filename = src?.split('/').pop()
-  const slug = filename && filename.split('.')[0]
-  const unslugged = slug && unslugify(slug)
-  return unslugged || ''
-}
 
 // function getSizes() {
 //   const mapped = Object.entries(sizes).map(([key, value]) => {
@@ -73,12 +53,11 @@ function getAlt(): string {
 {
   src && (
     <Tag
-      class:list={['full-image', position, frame, { mask }]}
-      alt={getAlt()}
-      if={true}
-      {as}
+      class:list={['full-image', position, frame]}
+      if={src}
       {src}
-      {sizes}
+      {alt}
+      {as}
       {...rest}
     />
   )

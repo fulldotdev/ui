@@ -1,11 +1,10 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const attributesSchema = z.object({
   abbr: z.any(),
   accept: z.any(),
   acceptCharset: z.any(),
   accessKey: z.any(),
-  // action: z.any(),
   allowFullScreen: z.any(),
   allowTransparency: z.any(),
   alt: z.any(),
@@ -56,7 +55,6 @@ export const attributesSchema = z.object({
   hrefLang: z.any(),
   htmlFor: z.any(),
   httpEquiv: z.any(),
-  // icon: z.any(),
   id: z.any(),
   inputMode: z.any(),
   isMap: z.any(),
@@ -88,12 +86,14 @@ export const attributesSchema = z.object({
   placeholder: z.any(),
   poster: z.any(),
   preload: z.any(),
-  // radioGroup: z.any(),
-  // readOnly: z.any(),
   rel: z.any(),
   required: z.any(),
-  // role: z.any(),
   rows: z.any(),
+  sizes: z.any(),
+
+  // role: z.any(),
+  // radioGroup: z.any(),
+  // readOnly: z.any(),
   // rowSpan: z.any(),
   // sandbox: z.any(),
   // scope: z.any(),
@@ -103,7 +103,6 @@ export const attributesSchema = z.object({
   // selected: z.any(),
   // shape: z.any(),
   // size: z.any(),
-  sizes: z.any(),
   // sortable: z.any(),
   // span: z.any(),
   // spellCheck: z.any(),
@@ -114,7 +113,7 @@ export const attributesSchema = z.object({
   // step: z.any(),
   style: z.any(),
   tabIndex: z.any(),
-  // title: z.any(),
+  title: z.any(),
   // translate: z.any(),
   type: z.any(),
   // typeMustMatch: z.any(),
@@ -123,4 +122,4 @@ export const attributesSchema = z.object({
   width: z.any(),
   // wmode: z.any(),
   // wrap: z.any(),
-});
+})

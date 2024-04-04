@@ -1,10 +1,12 @@
 ---
 import type { ComponentProps, HTMLTag } from 'astro/types'
+import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
 
-type Props<As extends HTMLTag = 'div'> = ComponentProps<typeof Tag<As>> & {
-  layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento'
-}
+type Props<As extends HTMLTag = 'div'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Children> & {
+    layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento'
+  }
 
 const { layout, ...rest } = Astro.props
 ---
@@ -12,7 +14,13 @@ const { layout, ...rest } = Astro.props
 <Tag
   class:list={['full-deck', layout]}
   {...rest}
-/>
+>
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
 
 <style is:global>
   .full-deck {

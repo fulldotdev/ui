@@ -1,17 +1,15 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../../schemas/componentSchema'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
 
-type Props = z.infer<typeof badgeSchema>
-
-export const badgeSchema = componentSchema({
-  variant: z.enum(['solid', 'soft', 'surface', 'outline']),
-})
+type Props<As extends HTMLTag = 'span'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Children> & {
+    variant?: 'solid' | 'soft' | 'surface' | 'outline'
+  }
 
 const {
-  tag = 'span',
+  as = 'span',
   variant = 'solid',
   color = 'accent',
   ...rest
@@ -21,7 +19,7 @@ const {
 <Tag
   class:list={['full-badge', variant]}
   {color}
-  {tag}
+  {as}
   {...rest}
 >
   <slot name="before" />

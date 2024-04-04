@@ -1,22 +1,22 @@
 ---
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import Body from './Body.astro'
 import Head from './Head.astro'
+import Tag from './Tag.astro'
 
-type Props = any
-
-// export const pageSchema = componentSchema({
-//   head: headSchema,
-//   body: bodySchema,
-// })
+type Props<As extends HTMLTag = 'html'> = ComponentProps<typeof Tag<As>> & {
+  head?: ComponentProps<typeof Head>
+  body?: ComponentProps<typeof Body>
+}
 
 const { as = 'html', ...rest } = Astro.props
 ---
 
-<!doctype html>
-<html
+<Tag
   class:list={['full-page']}
+  {as}
   {...rest}
 >
   <Head {...rest.head} />
   <Body {...rest.body} />
-</html>
+</Tag>

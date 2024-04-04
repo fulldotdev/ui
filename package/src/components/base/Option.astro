@@ -1,24 +1,21 @@
 ---
-import { z } from 'zod'
-import { componentSchema } from '../../schemas/componentSchema'
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import Children from '../utility/Children.astro'
+import Tag from '../utility/Tag.astro'
 
-type Props = z.infer<typeof optionSchema>
+type Props<As extends HTMLTag = 'option'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Children>
 
-export const optionSchema = componentSchema({
-  value: z.number().or(z.string()).nullable(),
-})
-
-const { value, html, ...rest } = Astro.props
+const { ...rest } = Astro.props
 ---
 
-{
-  optionSchema && (
-    <option
-      class:list={['full-option']}
-      value={value}
-      {...rest}
-    >
-      <slot>{html ? html : value}</slot>
-    </option>
-  )
-}
+<Tag
+  class:list={['full-option']}
+  {...rest}
+>
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
