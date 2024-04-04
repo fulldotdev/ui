@@ -1,0 +1,32 @@
+for key, value in config['color']
+  path = '@radix-ui/colors/' + value + '.css'
+  path-alpha = '@radix-ui/colors/' + value + '-alpha.css'
+  path-dark = '@radix-ui/colors/' + value + '-dark.css'
+  path-dark-alpha = '@radix-ui/colors/' + value + '-dark-alpha.css'
+  @import path
+  @import path-alpha
+  @import path-dark
+  @import path-dark-alpha
+
+VarValue(value, step)
+  {unquote('var(--' + value + '-' + step + ')')}
+
+VarPair(name, value, step)
+  {unquote('--' + name + '-' + step)}: VarValue(value, step)
+
+:root, .light, .light-theme, .dark, .dark-theme
+  for key, value in config['color']
+    if value == 'orange' || value == 'amber'|| value == 'yellow' || value == 'lime' || value == 'mint' || value == 'sky' 
+      {unquote('--' + key + '-fg')}: black;
+    else
+      {unquote('--' + key + '-fg')}: white;
+    for step in (1..12)
+      VarPair(key, value, step)
+      VarPair(key, value, 'a' + step)
+  
+for key, value in config['color']
+  :root, .color-{key}
+    VarPair('color', key, 'fg')
+    for step in (1..12)
+      VarPair('color', key, step)
+      VarPair('color', key, 'a' + step)

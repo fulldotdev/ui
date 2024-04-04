@@ -18,7 +18,7 @@ export default function preset(userConfig?: Partial<Config>): Preset {
         getCSS: () => `
         :root, *  {
           --border-width: ${config.border}px;
-          --border-color: var(--hue6);
+          --border-color: var(--color-6);
           --border-style: solid;
           --border: var(--border-width) var(--border-style) var(--border-color);
           --font-weight: 400;

@@ -39,7 +39,7 @@ export default function preset(userConfig?: Partial<Config>): Preset {
           --space-4: calc(24px * var(--space-x,1) * var(--scale,1));
           --space-5: calc(32px * var(--space-x,1) * var(--scale,1));
           --space-6: calc(48px * var(--space-x,1) * var(--scale,1));
-          --space-7: calc(64px * var(--space-x,1) * var(--scale,1));
+          // --space-7: calc(64px * var(--space-x,1) * var(--scale,1));
 
           --radius-x: 1;
           --radius-0: 0px;
