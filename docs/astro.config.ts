@@ -16,7 +16,7 @@ export default defineConfig({
         replacesTitle: true,
       },
       social: {
-        github: 'https://github.com/fulldevlabs/fullui',
+        github: 'https://github.com/fullui/ui',
         linkedin: 'https://www.linkedin.com/in/silveltman/',
       },
       favicon: './favicon.png',
