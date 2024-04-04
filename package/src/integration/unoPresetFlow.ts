@@ -1,5 +1,5 @@
 import { merge } from 'merge-anything'
-import { type Preset } from 'unocss'
+import type { Preset } from 'unocss'
 
 interface Config {
   scale: number
