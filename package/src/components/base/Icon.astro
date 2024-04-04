@@ -1,30 +1,29 @@
 ---
-// TODO re-ecport astro-icon package
 import tablerIcons from '@iconify-json/tabler/icons.json'
+import type { ComponentProps, HTMLTag } from 'astro/types'
 import Tag from '../utility/Tag.astro'
 
-type Props = any
+type Props<As extends HTMLTag = 'i'> = ComponentProps<typeof Tag<As>> & {
+  name?: string
+}
 
 const { as = 'i', name, ...rest } = Astro.props
+
+const icon = name && (tablerIcons as any)?.icons[name as any]?.body
 ---
 
-{
-  name && (
-    <Tag
-      class:list={['full-icon']}
-      {as}
-      {...rest}
-    >
-      {name && (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          set:html={(tablerIcons as any)?.icons[name as any]?.body}
-        />
-      )}
-    </Tag>
-  )
-}
+<Tag
+  class:list={['full-icon']}
+  if={icon}
+  {as}
+  {...rest}
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    set:html={icon}
+  />
+</Tag>
 
 <style is:global>
   .full-icon {
@@ -41,7 +40,6 @@ const { as = 'i', name, ...rest } = Astro.props
       color: var(--hue12);
     }
 
-    /* FIXME */
     &:is(.full-button > .icon),
     &:is(.full-badge > .icon),
     &:is(.full-link > .icon) {
