@@ -39,16 +39,16 @@ export default defineConfig({
         //   autogenerate: { directory: 'layout' },
         // },
         {
-          label: 'Layout',
-          autogenerate: { directory: 'layout' },
+          label: 'Base',
+          autogenerate: { directory: 'base' },
         },
         {
           label: 'Typography',
           autogenerate: { directory: 'typography' },
         },
         {
-          label: 'Base',
-          autogenerate: { directory: 'base' },
+          label: 'Layout',
+          autogenerate: { directory: 'layout' },
         },
         {
           label: 'Utility',
