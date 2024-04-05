@@ -22,6 +22,7 @@ export { default as Radio } from './components/base/Radio.astro'
 export { default as Rating } from './components/base/Rating.astro'
 export { default as Select } from './components/base/Select.astro'
 export { default as Stats } from './components/base/Stats.astro'
+export { default as Summary } from './components/base/Summary.astro'
 export { default as Textarea } from './components/base/Textarea.astro'
 export { default as Video } from './components/base/Video.astro'
 // Components - Layout
