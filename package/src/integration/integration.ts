@@ -4,8 +4,8 @@ import virtual from 'vite-plugin-virtual'
 
 const defaultConfig = {
   color: {
-    base: 'slate',
     accent: 'indigo',
+    base: 'slate',
   },
   size: {
     scale: 1,
