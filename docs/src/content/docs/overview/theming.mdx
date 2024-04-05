@@ -8,28 +8,48 @@ sidebar:
     variant: note
 ---
 
-## Global configuration
-These are all the options you are able to change in your Astro configuration.
+Fullui features a design system used in each component. Some parts can be configured globally, while others can be configured per component using props.
 
-### Colors
-We use the Radix colors for our components. For all the color options check: https://www.radix-ui.com/colors
+## Global config
+Global configuration is set by passing an object to fullui integration.
+
+```ts
+// astro.config.ts
+import { defineConfig } from 'astro/config'
+import fullui from '@fullui/ui/integration'
+
+export default defineConfig({
+  integrations: [
+    fullui({
+      color: {},
+      size: {},
+      font: {},
+      theme: {},
+    }),
+  ],
+})
+```
+
+
+### Color
+Fullui uses Radix Colors under the hood. You can define an alias and a value. For all available radix palettes, [see their documentation](https://www.radix-ui.com/colors).
 ```ts
 color: {
   accent: 'indigo',
   base: 'slate',
+  // or choose any key you like
+  // the last item is used as the default color
 }, 
 ```
 
-### Sizes
-Control default sizes of components.
+### Size
+All spacing in Fullui is fully responsive and highly dynamic. The value you enter is a multiplier, so we recommend using values between 0.75 and 1.25.
 
 ```ts
-size: {
-  scale: 1,
-  space: 1,
-  radius: 1,
-  text: 1,
-}, 
+  scale: 1, // Applies to everything
+  space: 1, // Applies to margin and padding
+  radius: 1,  // Applies to border radius
+  text: 1, // Applies to font size
 ```
 {/* ### Theme
 
@@ -39,8 +59,10 @@ theme: {
 },  
 ``` */}
 
-### Fonts
-We use font families from bunny.net for our components. <br /> For more font options check: https://fonts.bunny.net/
+### Font
+All Google fonts are avaiable through the Fullui theming, and ofcourse others can be configured through regular css.
+
+We use [Bunny Fonts](https://fonts.bunny.net/) to import them privacy-friendly and fast. 
 ```ts
 font: {
   heading: 'Open Sans:700',
@@ -51,39 +73,50 @@ font: {
 },    
 ```
 
-## Helper Props
-extends [Tag](/utility/tag).
+### Theme
+This part of the global configuration is a work-in-progress. For now it only accepts a border-width.
 
-Fullui uses a helper component to pass certain attributes to other components, so that you are able to customize the sizes and colors of these components. 
+```ts
+theme: {
+  border: '1px',
+},    
+```
 
-But it depends on the component if it accepts one of these theming props.
+## Component props
+Every component in Fullui used the [Tag component](/utility/tag), which allows them to take a base set of props. 
 
 ### Scheme
-Choose between light or dark mode for your project.
+Switch between light or dark mode. Cascades down to all children.
 ```ts
-scheme?: string
+scheme?: 'light' | 'dark
 ```
 
 ### Color
-Choose between the base or accent color to use on the component.
+Choose one of the colors that you've set in your global color config. Cascades down to all children.
 ```ts
-color?: string
+color?: keyof globalConfig.color // for example 'accent' or 'base'
 ```
 
 ### Contrast
-Choose if you want a higher contrast on your component.
+Increase the contrast of this component.
 ```ts
 contrast?: boolean
 ```
 
 ### Size
-Changes the size of the component.
+Change the size of the component. Everythings scales accordingly; spacing, fonts, etc.
+
+Cascades down to all children.
 ```ts
 size?: 'small' | 'medium' | 'large'
 ```
 
 ### Compact
-Compacts the size of the component. Also usable with size. 
+This is a powerful feature that can be used in combination with the size prop. You primarily use this in card-like components.
+
+Example: it allows you to use the same Heading component in a Card as well as in a Section. In both cases you still have the option to choose between small, medium or large. Everythings scales accordingly; spacing, fonts, etc.
+
+Cascades down to all children.
 ```ts
 compact?: boolean
 ```
