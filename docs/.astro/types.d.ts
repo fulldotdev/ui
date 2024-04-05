@@ -234,6 +234,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: any
 } & { render(): Render[".mdx"] };
+"layout/card.mdx": {
+	id: "layout/card.mdx";
+  slug: "layout/card";
+  body: string;
+  collection: "docs";
+  data: any
+} & { render(): Render[".mdx"] };
 "layout/deck.mdx": {
 	id: "layout/deck.mdx";
   slug: "layout/deck";
@@ -290,13 +297,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: any
 } & { render(): Render[".mdx"] };
-"overview/children.mdx": {
-	id: "overview/children.mdx";
-  slug: "overview/children";
-  body: string;
-  collection: "docs";
-  data: any
-} & { render(): Render[".mdx"] };
 "overview/installation.mdx": {
 	id: "overview/installation.mdx";
   slug: "overview/installation";
@@ -307,6 +307,13 @@ declare module 'astro:content' {
 "overview/introduction.mdx": {
 	id: "overview/introduction.mdx";
   slug: "overview/introduction";
+  body: string;
+  collection: "docs";
+  data: any
+} & { render(): Render[".mdx"] };
+"overview/syntax.mdx": {
+	id: "overview/syntax.mdx";
+  slug: "overview/syntax";
   body: string;
   collection: "docs";
   data: any
