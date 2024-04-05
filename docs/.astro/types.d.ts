@@ -157,13 +157,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: any
 } & { render(): Render[".mdx"] };
-"base/field.mdx": {
-	id: "base/field.mdx";
-  slug: "base/field";
-  body: string;
-  collection: "docs";
-  data: any
-} & { render(): Render[".mdx"] };
 "base/icon.mdx": {
 	id: "base/icon.mdx";
   slug: "base/icon";
@@ -188,13 +181,6 @@ declare module 'astro:content' {
 "base/label.mdx": {
 	id: "base/label.mdx";
   slug: "base/label";
-  body: string;
-  collection: "docs";
-  data: any
-} & { render(): Render[".mdx"] };
-"base/list.mdx": {
-	id: "base/list.mdx";
-  slug: "base/list";
   body: string;
   collection: "docs";
   data: any
@@ -255,6 +241,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: any
 } & { render(): Render[".mdx"] };
+"layout/field.mdx": {
+	id: "layout/field.mdx";
+  slug: "layout/field";
+  body: string;
+  collection: "docs";
+  data: any
+} & { render(): Render[".mdx"] };
 "layout/footer.mdx": {
 	id: "layout/footer.mdx";
   slug: "layout/footer";
@@ -279,6 +272,13 @@ declare module 'astro:content' {
 "layout/header.mdx": {
 	id: "layout/header.mdx";
   slug: "layout/header";
+  body: string;
+  collection: "docs";
+  data: any
+} & { render(): Render[".mdx"] };
+"layout/list.mdx": {
+	id: "layout/list.mdx";
+  slug: "layout/list";
   body: string;
   collection: "docs";
   data: any
