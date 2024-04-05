@@ -2,8 +2,8 @@
 
 Fullui is a component library for [Astro][astro].
 
-> [!WARNING]  
-> Fullui is currently in development. Expect breaking changes and bugs.
+> [!NOTE]  
+> Fullui is currently in beta. Please expect bugs, breaking changes and lots of improvements 🚀.
 
 ## Documentation
 
