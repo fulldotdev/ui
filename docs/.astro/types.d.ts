@@ -185,16 +185,16 @@ declare module 'astro:content' {
   collection: "docs";
   data: any
 } & { render(): Render[".mdx"] };
-"base/item.mdx": {
-	id: "base/item.mdx";
-  slug: "base/item";
+"base/label.mdx": {
+	id: "base/label.mdx";
+  slug: "base/label";
   body: string;
   collection: "docs";
   data: any
 } & { render(): Render[".mdx"] };
-"base/label.mdx": {
-	id: "base/label.mdx";
-  slug: "base/label";
+"base/list.mdx": {
+	id: "base/list.mdx";
+  slug: "base/list";
   body: string;
   collection: "docs";
   data: any
