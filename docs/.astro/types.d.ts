@@ -157,6 +157,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: any
 } & { render(): Render[".mdx"] };
+"base/field.mdx": {
+	id: "base/field.mdx";
+  slug: "base/field";
+  body: string;
+  collection: "docs";
+  data: any
+} & { render(): Render[".mdx"] };
 "base/icon.mdx": {
 	id: "base/icon.mdx";
   slug: "base/icon";
