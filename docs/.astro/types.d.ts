@@ -262,6 +262,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: any
 } & { render(): Render[".mdx"] };
+"layout/form.mdx": {
+	id: "layout/form.mdx";
+  slug: "layout/form";
+  body: string;
+  collection: "docs";
+  data: any
+} & { render(): Render[".mdx"] };
 "layout/group.mdx": {
 	id: "layout/group.mdx";
   slug: "layout/group";
