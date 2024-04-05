@@ -1,6 +1,6 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import { isArray, objectify } from 'radash'
+import { isArray } from 'radash'
 import Button from '../base/Button.astro'
 import Checkbox from '../base/Checkbox.astro'
 import Icon from '../base/Icon.astro'
@@ -100,7 +100,7 @@ const keyToComponentName = (key?: string) => {
     if (key === 'html') return <Fragment set:html={value} />
 
     if (isArray(value)) {
-      const object = objectify(value, (v) => JSON.stringify(v))
+      const object = value.reduce((acc, v, i) => ({ ...acc, [i]: v }), {})
       return <Astro.self {...object} />
     }
 
