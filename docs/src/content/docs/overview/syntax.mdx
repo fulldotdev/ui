@@ -8,7 +8,7 @@ sidebar:
     variant: note
 ---
 
-With Fullui you are able to render child components or custom elements within other components.
+With Fullui you are able to render child components using slots (like most libraries), but Fullui also introduces a fresh new way of rendering child components, which works great with content collections or any headless CMS.
 
 :::note
 This feature is currenty in beta.
@@ -16,18 +16,18 @@ If you find any problems or bugs report them here: [GitHub Issues](https://githu
 :::
 
 ## Using Props
-Instead of the usual way of building components using slots (see below), in Fullui you can use props instead. This unlucks the ability to dynamically generate entire pages from your Astro content collections for example.
-
-Each component loops over it's props, rendering a child component or element when:
-
-- the prop key is 'html', in which case a html string is rendered
-- the prop name ends with a component name and the value is an object, in which case the component is rendered
-- the prop value is an object and contains a 'component' key, in which case the component is rendered
-- the prop value is an object and contains a 'as' key, in which case an element with the specified is rendered
-
-:::note
-You can not use multiple props with the same name. But you can use prefixes for components like `primaryButton` or `secondaryButton`.
+:::tip[Unique feature]
+This feature allows you to build entire pages from data only. For example, from Astro collection or a headless CMS.
 :::
+
+Instead of the usual way of building components using slots (see below), in Fullui you can use props too. This unlucks the ability to dynamically generate entire pages from your Astro content collections for example.
+
+Each component loops over it's props, rendering a child when:
+
+- __key is `html`:__ the html html string is rendered
+- __key ends with component name AND value is an object:__ the componet with name matching the end of the key is rendered
+- __value is an object containing a `component` key:__ the specified component is rendered
+- __value is an object containing a `as` key:__ the Tag component is renderer with the specified tag
 
 ``` astro live
 ---
@@ -46,57 +46,89 @@ import { Writeup } from '@fullui/ui'
     html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
   }}
   group={{
-    primaryButton: {
-      variant: 'outline',
-      html: 'Button'
+    button: {
+      variant: 'surface',
+      html: 'Lorem'
     },
     secondaryButton: {
-      variant: 'soft',
-      html: 'Button'
+      variant: 'ghost',
+      html: 'Lorem'
     }
   }}
 />
 ```
 
-### Prefixing and custom names
-If you have multiple components with the same name you can prefix the component name with for example "primary". Or just use a completely different name with the `component` prop.
+#### Choosing component by name
+You might want to choose you own props names, because it looks more neat in your cms for example.
 ``` astro live
 ---
-import { Writeup } from '@fullui/ui'
+import { Group } from '@fullui/ui'
 ---
 
-<Writeup 
-  primaryLabel={{
-    html: 'Lorem ipsum dolor amet.'
+<Group 
+  button={{
+    variant: 'surface',
+    html: 'Lorem'
   }}
   foo={{
-    component: 'Label',
-    html: 'Lorem ipsum dolor amet.'
+    component: 'Button',
+    variant: 'surface',
+    html: 'Lorem'
   }}
 />
 ```
 
-### Creating custom elements
-You can create custom elements by using the `as` prop. You can use any tag you want.
+#### Choosing the tag to be rendered
+You can choose which HTML tag is used using `as` prop. This also signal to Fullui that this should be rendered as a isJsxChild, therefore the `component` prop or keyname is not needed anymore.
 ``` astro live
 ---
-import { Writeup } from '@fullui/ui'
+import { Heading } from '@fullui/ui'
 ---
 
-<Writeup 
-  italics={{
-    as: 'i',
-    html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+<Heading
+  html='Lorem ipsum '
+  secondPart={{
+    as: 'span',
+    style: 'text-decoration:underline',
+    html: 'dolor amet'
   }}
-  descriptionField={{
-    as: 'textarea',
-    html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-  }}
+/>
+```
+
+#### Using arrays
+The above behaviour works with arrays too, in which case each item in the array is handled seperately
+
+{/* TODO FIXME */}
+``` astro live
+---
+import { Group } from '@fullui/ui'
+---
+
+<Group
+  buttons={[
+    {
+      component: 'Button',
+      variant: 'surface',
+      html: 'Lorem ipsum'
+    },
+    {
+      component: 'Button',
+      variant: 'ghost',
+      html: 'Lorem ipsum'
+    }
+  ]}
 />
 ```
 
 ## Using Slots
-Or just use the classic way by filling the slot with components.
+Or just can use the classic way of rendering children, using slots.
+
+Each component has 3 slots:
+- __default__: overwrites any children passed via props
+- __before__: renders before the children passed via props
+- __after__: renders after the children passed via props
+
+
 ``` astro live
 ---
 import { Writeup, Subtext, Heading, Text, Group, Button } from '@fullui/ui'
@@ -114,10 +146,10 @@ import { Writeup, Subtext, Heading, Text, Group, Button } from '@fullui/ui'
     sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
   </Text>
   <Group>
-    <Button variant="outline">
+    <Button variant="surface">
       Button
     </Button>
-    <Button variant="soft">
+    <Button variant="ghost">
       Button
     </Button>
   </Group>
