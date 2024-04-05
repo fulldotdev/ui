@@ -157,6 +157,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"base/details.mdx": {
+	id: "base/details.mdx";
+  slug: "base/details";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "base/icon.mdx": {
 	id: "base/icon.mdx";
   slug: "base/icon";
@@ -188,6 +195,13 @@ declare module 'astro:content' {
 "base/logo.mdx": {
 	id: "base/logo.mdx";
   slug: "base/logo";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"base/radio.mdx": {
+	id: "base/radio.mdx";
+  slug: "base/radio";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
