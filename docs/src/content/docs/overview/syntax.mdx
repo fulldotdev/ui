@@ -1,0 +1,125 @@
+---
+title: Syntax
+description: How to dynamically generate child components in Fullui; a component library and design system built for Astro.
+sidebar:
+  order: 30
+  badge:
+    text: β
+    variant: note
+---
+
+With Fullui you are able to render child components or custom elements within other components.
+
+:::note
+This feature is currenty in beta.
+If you find any problems or bugs report them here: [GitHub Issues](https://github.com/fullui/ui/issues).
+:::
+
+## Using Props
+You can use props instead of importing components to use components.
+
+Each component loops over it's props, rendering a child component or element when:
+
+- the prop key is 'html', in which case a html string is rendered
+- the prop name ends with a component name and the value is an object, in which case the component is rendered
+- the prop value is an object and contains a 'component' key, in which case the component is rendered
+- the prop value is an object and contains a 'tag' key, in which case the element is rendered
+
+:::note
+You can not use multiple props with the same name. But you can use prefixes for components like `primaryButton` or `secondaryButton`.
+:::
+
+``` astro live
+---
+import { Writeup } from '@fullui/ui'
+---
+
+<Writeup 
+  align="start"
+  subtext={{
+    html: 'Lorem ipsum'
+  }}
+  heading={{
+    html: 'Lorem ipsum dolor'
+  }}
+  text={{
+    html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+  }}
+  group={{
+    primaryButton: {
+      variant: 'outline',
+      html: 'Button'
+    },
+    secondaryButton: {
+      variant: 'soft',
+      html: 'Button'
+    }
+  }}
+/>
+```
+
+### Prefixing and custom names
+If you have multiple components with the same name you can prefix the component name with for example "primary". Or just use a completely different name with the `component` prop.
+``` astro live
+---
+import { Writeup } from '@fullui/ui'
+---
+
+<Writeup 
+  primaryLabel={{
+    html: 'Lorem ipsum dolor amet.'
+  }}
+  foo={{
+    component: 'Label',
+    html: 'Lorem ipsum dolor amet.'
+  }}
+/>
+```
+
+### Creating custom elements
+You can create custom elements by using the `as` prop. You can use any tag you want.
+``` astro live
+---
+import { Writeup } from '@fullui/ui'
+---
+
+<Writeup 
+  italics={{
+    as: 'i',
+    html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+  }}
+  descriptionField={{
+    as: 'textarea',
+    html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+  }}
+/>
+```
+
+## Using Slots
+Or just use the classic way by filling the slot with components.
+``` astro live
+---
+import { Writeup, Subtext, Heading, Text, Group, Button } from '@fullui/ui'
+---
+
+<Writeup align="start">
+  <Subtext>
+    Lorem ipsum
+  </Subtext>
+  <Heading>
+    Lorem ipsum dolor
+  </Heading>
+  <Text>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br />
+    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  </Text>
+  <Group>
+    <Button variant="outline">
+      Button
+    </Button>
+    <Button variant="soft">
+      Button
+    </Button>
+  </Group>
+</Writeup>
+```
