@@ -13,6 +13,16 @@ const defaultConfig = {
     radius: 1,
     text: 1,
   },
+  theme: {
+    border: '1px',
+  },
+  font: {
+    heading: 'Open Sans:700',
+    subheading: 'Open Sans:500',
+    text: 'Open Sans:400',
+    subtext: 'Open Sans:400',
+    button: 'Open Sans:500',
+  },
 }
 
 export default function fulluiIntegration(userConfig: any): AstroIntegration {
@@ -26,10 +36,6 @@ export default function fulluiIntegration(userConfig: any): AstroIntegration {
         updateConfig,
         injectScript,
       }) => {
-        // updateConfig({
-        //   integrations: [unoIntegration(config)],
-        // })
-
         console.log(
           'config passed to stylus:',
           `config = ${JSON.stringify(config, null, 2)}`
