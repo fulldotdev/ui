@@ -56,7 +56,19 @@ export default defineConfig({
         },
       ],
     }),
-    fullui({}),
+    fullui({
+      color: {
+        base: 'gray',
+        accent: 'indigo',
+      },
+      font: {
+        heading: 'Montserrat:900',
+        subheading: 'Montserrat:700',
+        text: 'Montserrat:400',
+        subtext: 'Montserrat:500',
+        button: 'Montserrat:400',
+      },
+    }),
     liveCode({
       layout: '/src/components/LiveCodeLayout.astro',
     }),
