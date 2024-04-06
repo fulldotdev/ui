@@ -24,6 +24,7 @@ export default defineConfig({
       components: {
         // Relative path to the custom component.
         Head: './src/components/Head.astro',
+        ThemeSelect: './src/components/ThemeSelect.astro',
       },
       sidebar: [
         {
@@ -71,9 +72,9 @@ export default defineConfig({
       font: {
         heading: 'Work Sans:700',
         subheading: 'Work Sans:700',
-        text: 'Work Sans:300',
+        text: 'Work Sans:400',
         subtext: 'Work Sans:400',
-        button: 'Work Sans:300',
+        button: 'Work Sans:400',
       },
     }),
     liveCode({
