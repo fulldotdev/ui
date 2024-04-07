@@ -28,17 +28,13 @@ export default defineConfig({
       },
       sidebar: [
         {
-          label: 'Overview',
-          autogenerate: { directory: 'overview' },
+          label: 'Get Started',
+          autogenerate: { directory: 'get-started' },
         },
-        // {
-        //   label: 'Typography',
-        //   autogenerate: { directory: 'typography' },
-        // },
-        // {
-        //   label: 'Layout',
-        //   autogenerate: { directory: 'layout' },
-        // },
+        {
+          label: 'Theme',
+          autogenerate: { directory: 'theme' },
+        },
         {
           label: 'Base',
           autogenerate: { directory: 'base' },
@@ -70,11 +66,11 @@ export default defineConfig({
       //   button: 'Montserrat:400',
       // },
       font: {
-        heading: 'Work Sans:700',
-        subheading: 'Work Sans:700',
-        text: 'Work Sans:400',
-        subtext: 'Work Sans:400',
-        button: 'Work Sans:400',
+        heading: 'IMB Plex Sans:700',
+        subheading: 'IMB Plex Sans:700',
+        text: 'IMB Plex Sans:400',
+        subtext: 'IMB Plex Sans:400',
+        button: 'IMB Plex Sans:500',
       },
     }),
     liveCode({

@@ -227,6 +227,34 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"get-started/installation.mdx": {
+	id: "get-started/installation.mdx";
+  slug: "get-started/installation";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"get-started/introduction.mdx": {
+	id: "get-started/introduction.mdx";
+  slug: "get-started/introduction";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"get-started/syntax.mdx": {
+	id: "get-started/syntax.mdx";
+  slug: "get-started/syntax";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"get-started/typescript.mdx": {
+	id: "get-started/typescript.mdx";
+  slug: "get-started/typescript";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "index.mdx": {
 	id: "index.mdx";
   slug: "index";
@@ -325,37 +353,37 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"overview/installation.mdx": {
-	id: "overview/installation.mdx";
-  slug: "overview/installation";
+"theme/installation.mdx": {
+	id: "theme/installation.mdx";
+  slug: "theme/installation";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"overview/introduction.mdx": {
-	id: "overview/introduction.mdx";
-  slug: "overview/introduction";
+"theme/introduction.mdx": {
+	id: "theme/introduction.mdx";
+  slug: "theme/introduction";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"overview/syntax.mdx": {
-	id: "overview/syntax.mdx";
-  slug: "overview/syntax";
+"theme/syntax.mdx": {
+	id: "theme/syntax.mdx";
+  slug: "theme/syntax";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"overview/theming.mdx": {
-	id: "overview/theming.mdx";
-  slug: "overview/theming";
+"theme/theming.mdx": {
+	id: "theme/theming.mdx";
+  slug: "theme/theming";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"overview/typescript.mdx": {
-	id: "overview/typescript.mdx";
-  slug: "overview/typescript";
+"theme/typescript.mdx": {
+	id: "theme/typescript.mdx";
+  slug: "theme/typescript";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
