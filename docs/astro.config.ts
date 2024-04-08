@@ -1,5 +1,5 @@
 import starlight from '@astrojs/starlight'
-import fullui from '@fulldevlabs/fullui/integration'
+import fullui from '@fullui/ui/integration'
 // @ts-ignore
 import liveCode from 'astro-live-code'
 import { defineConfig } from 'astro/config'
@@ -10,47 +10,67 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'Fullui',
-      logo: {
-        src: './src/assets/logo.png',
-        alt: 'Logo Fullui',
-        replacesTitle: true,
-      },
+      // logo: {
+      //   src: './src/assets/logo.png',
+      //   alt: 'Logo Fullui',
+      //   replacesTitle: true,
+      // },
       social: {
-        github: 'https://github.com/fulldevlabs/fullui',
+        github: 'https://github.com/fullui/ui',
         linkedin: 'https://www.linkedin.com/in/silveltman/',
       },
       favicon: './favicon.png',
-      customCss: ['./src/css/custom.css'],
+      customCss: [
+        './src/css/custom.css',
+        './src/css/radix.css',
+        '@fullui/ui/css',
+      ],
       components: {
         // Relative path to the custom component.
         Head: './src/components/Head.astro',
       },
       sidebar: [
         {
-          label: 'Overview',
-          items: [
-            { label: 'Introduction', link: '/overview/introduction/' },
-            { label: 'Getting started', link: '/overview/getting-started/' },
-          ],
+          label: 'Get Started',
+          autogenerate: { directory: 'get-started' },
         },
         {
-          label: 'Guides',
-          items: [
-            { label: 'Installation', link: '/guides/installation/' },
-            { label: 'Theming', link: '/guides/theming/' },
-            // { label: 'Endomorphic', link: '/guides/endomorphic/' },
-            { label: 'Typescript', link: '/guides/typescript/' },
-          ],
+          label: 'Theme',
+          autogenerate: { directory: 'theme' },
         },
         {
-          label: 'Components',
-          autogenerate: { directory: 'components' },
+          label: 'Base',
+          autogenerate: { directory: 'base' },
+        },
+        {
+          label: 'Typography',
+          autogenerate: { directory: 'typography' },
+        },
+        {
+          label: 'Layout',
+          autogenerate: { directory: 'layout' },
+        },
+        {
+          label: 'Utility',
+          autogenerate: { directory: 'utility' },
         },
       ],
     }),
-    fullui({}),
+    fullui({
+      color: {
+        base: 'slate',
+        accent: 'indigo',
+      },
+      font: {
+        heading: 'IMB Plex Sans:700',
+        subheading: 'IMB Plex Sans:700',
+        text: 'IMB Plex Sans:400',
+        subtext: 'IMB Plex Sans:400',
+        button: 'IMB Plex Sans:500',
+      },
+    }),
     liveCode({
-      layout: '@components/LiveCodeLayout.astro',
+      layout: '/src/components/LiveCodeLayout.astro',
     }),
   ],
 })

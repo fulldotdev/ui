@@ -1,0 +1,35 @@
+---
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import Children from '../utility/Children.astro'
+import Tag from '../utility/Tag.astro'
+
+type Props<As extends HTMLTag = 'a'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Children>
+
+const { as = 'a', href = '/', src, ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['full-logo']}
+  {href}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
+
+<style is:global>
+  .full-logo {
+    .full-image {
+      display: block !important;
+      width: auto !important;
+      height: var(--space-5) !important;
+      object-fit: contain !important;
+      color: var(--color-12) !important;
+    }
+  }
+</style>

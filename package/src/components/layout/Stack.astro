@@ -1,0 +1,67 @@
+---
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import Children from '../utility/Children.astro'
+import Tag from '../utility/Tag.astro'
+
+type Props<As extends HTMLTag = 'div'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Children> & {
+    direction?: 'row' | 'column'
+    align?: 'start' | 'center'
+  }
+
+const { direction = 'column', align, ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['full-stack', direction, align]}
+  {...rest}
+>
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
+
+<style is:global>
+  .full-stack {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    z-index: 1;
+    width: 100%;
+
+    &.column {
+      flex-direction: column !important;
+    }
+
+    &.row {
+      flex-direction: row !important;
+    }
+
+    &.center {
+      align-items: center;
+    }
+
+    &.stretch {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* &.row {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    } */
+
+    &:where(.split .start) {
+      @media (min-width: 1024px) {
+        position: sticky;
+        top: var(--space-5);
+      }
+    }
+  }
+</style>

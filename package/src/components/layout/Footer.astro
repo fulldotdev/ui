@@ -1,0 +1,62 @@
+---
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import Children from '../utility/Children.astro'
+import Tag from '../utility/Tag.astro'
+
+type Props<As extends HTMLTag = 'footer'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Children> & {
+    align?: 'start' | 'center'
+  }
+
+const { align, ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['full-footer', align]}
+  compact
+  {...rest}
+>
+  <slot name="before" />
+  <slot>
+    <Children
+      class:list={[align]}
+      {...rest}
+    />
+  </slot>
+  <slot name="after" />
+</Tag>
+
+<style is:global>
+  .full-footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+
+    &.center {
+      align-items: center;
+    }
+
+    .full-group {
+      gap: var(--space-2);
+    }
+
+    /* .col {
+      width: 100%;
+    }
+
+    .spec-group {
+      .full-icon {
+        display: none !important;
+      }
+
+      .spec {
+        color: var(--sand11);
+
+        b {
+          display: inline-block;
+          width: var(--space-5);
+        }
+      }
+    } */
+  }
+</style>

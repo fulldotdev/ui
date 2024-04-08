@@ -1,0 +1,131 @@
+---
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import Children from '../utility/Children.astro'
+import Tag from '../utility/Tag.astro'
+
+type Props<As extends HTMLTag = 'header'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Children> & {
+    frame?: 'fill' | 'panel' | 'screen'
+    variant?: 'ghost' | 'soft' | 'solid'
+  }
+
+const { variant, frame, ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['full-card', variant, frame]}
+  compact
+  {...rest}
+>
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
+
+<style is:global>
+  .full-card {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    justify-content: stretch;
+    gap: var(--space-4);
+    overflow: hidden;
+
+    .stack {
+      justify-content: space-between;
+      gap: var(--space-5);
+      /* height: 100%; */
+    }
+
+    &:is(a) {
+      &:hover > .image {
+        opacity: 0.85;
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+
+    /* TODO add child paddings/margin */
+    /* padding all side with negative padding/margin on image/media? */
+    /* or only padding bottom and side apdding on children? */
+    /* I prefer negative margin (inset) on media if this works */
+    &.panel {
+      gap: 0;
+      border-radius: var(--radius-2);
+      overflow: hidden;
+
+      &:is(a) {
+        &:hover {
+          background: var(--color-3);
+        }
+
+        &:active {
+          background: var(--color-4);
+        }
+      }
+
+      &.soft,
+      &.surface {
+        border-width: var(--border-width);
+        border-color: var(--color-6);
+        background-color: var(--color-2);
+
+        &:is(a) {
+          border-color: var(--color-7);
+          background: var(--color-2);
+
+          &:hover {
+            border-color: var(--color-8);
+            background: var(--color-3);
+          }
+
+          &:active {
+            background: var(--color-4);
+          }
+        }
+
+        .image {
+          border-bottom-right-radius: 0;
+          border-bottom-left-radius: 0;
+        }
+      }
+
+      &.solid {
+        border-color: var(--color-9);
+        background: var(--color-9);
+
+        * {
+          color: var(--color-fg);
+        }
+
+        &:is(a):hover {
+          background: var(--color-10);
+        }
+
+        .image {
+          border-bottom-right-radius: 0;
+          border-bottom-left-radius: 0;
+        }
+      }
+    }
+
+    &.landscape {
+      aspect-ratio: 4/3;
+      object-fit: cover;
+    }
+
+    &.square {
+      aspect-ratio: 1/1;
+      object-fit: cover;
+    }
+
+    &.portrait {
+      aspect-ratio: 3/4;
+      object-fit: cover;
+    }
+  }
+</style>

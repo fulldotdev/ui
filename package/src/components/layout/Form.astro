@@ -1,0 +1,36 @@
+---
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import Children from '../utility/Children.astro'
+import Tag from '../utility/Tag.astro'
+
+type Props<As extends HTMLTag = 'form'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Children> &
+  ComponentProps<typeof Children>
+
+const { as = 'form', method = 'POST', ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['full-form']}
+  {as}
+  {method}
+  {...rest}
+>
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
+
+<style is:global>
+  .full-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100%;
+    min-width: min(500px, 85vw);
+    max-width: max(calc(var(--space-6) * 3), 500px);
+    text-align: left;
+  }
+</style>

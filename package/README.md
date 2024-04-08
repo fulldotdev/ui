@@ -1,8 +1,28 @@
-# Fullui (deprecated)
+# Fullui
 
-> [!CAUTION]
-> This package has moved to @fullui/ui. Therefore, this version is deprecated.
+Fullui is a component library built for [Astro][astro].
 
-[Click here for the new location][package].
+Built to take full advantage Astro's power, like static rendering,
+content collections and more Astro features.
 
-[package]: https://www.npmjs.com/package/@fullui/ui
+> [!NOTE]  
+> Fullui is currently in alpha. Please expect bugs, breaking changes and lots of improvements 🚀.
+
+## Documentation
+
+[Read the Fullui docs][docs]
+
+## Support
+
+Please [create a Github issue ][issues] for anything that crosses your mind; feature requests, bug reports or feedback.
+
+## License
+
+MIT
+
+Copyright (c) 2024–present [Fulldev][fulldev]
+
+[astro]: https://astro.build/
+[docs]: https://fullui.dev/
+[fulldev]: https://full.dev/
+[issues]: https://github.com/fullui/ui/issues/

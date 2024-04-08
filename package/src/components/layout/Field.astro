@@ -1,0 +1,53 @@
+---
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import Children from '../utility/Children.astro'
+import Tag from '../utility/Tag.astro'
+
+type Props<As extends HTMLTag = 'div'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Children> & {
+    checkbox?: any
+    radio?: any
+  }
+
+const { ...rest } = Astro.props
+---
+
+<Tag
+  class:list={[
+    'full-field',
+    { checkbox: rest.checkbox },
+    { radio: rest.radio },
+  ]}
+  {...rest}
+>
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
+
+<style is:global>
+  .full-field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+    width: 100%;
+
+    &.checkbox,
+    &.radio {
+      flex-direction: row !important;
+      align-items: center !important;
+      gap: var(--space-2) !important;
+    }
+
+    &.has-checkbox {
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-1) 0;
+    }
+  }
+</style>

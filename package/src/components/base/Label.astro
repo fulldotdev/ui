@@ -1,0 +1,29 @@
+---
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import Children from '../utility/Children.astro'
+import Tag from '../utility/Tag.astro'
+
+type Props<As extends HTMLTag = 'label'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Children>
+
+const { as = 'label', ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['full-label']}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
+
+<style is:global>
+  .full-label {
+    color: var(--color-11);
+    font-size: var(--text-1);
+  }
+</style>

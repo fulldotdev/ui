@@ -1,0 +1,50 @@
+---
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import Children from '../utility/Children.astro'
+import Tag from '../utility/Tag.astro'
+
+type Props<As extends HTMLTag = 'a'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Children>
+
+const { as = 'a', ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['full-link']}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
+
+<style is:global>
+  .full-link {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-11);
+    font-size: var(--text-2);
+    text-decoration: none;
+    text-decoration-color: var(--color-8);
+    white-space: nowrap;
+
+    &:hover {
+      color: var(--color-12);
+      text-decoration: underline;
+      text-decoration-color: var(--color-8);
+    }
+
+    &.contrast {
+      color: var(--color-12);
+
+      &:hover {
+        color: var(--color-11);
+      }
+    }
+  }
+</style>

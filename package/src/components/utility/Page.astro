@@ -1,0 +1,26 @@
+---
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import Body from './Body.astro'
+import Head from './Head.astro'
+import Tag from './Tag.astro'
+
+type Props<As extends HTMLTag = 'html'> = ComponentProps<typeof Tag<As>> & {
+  head?: ComponentProps<typeof Head>
+  body?: ComponentProps<typeof Body>
+}
+
+const { as = 'html', ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['full-page']}
+  {as}
+  {...rest}
+>
+  <Head {...rest.head} />
+  <Body {...rest.body}>
+    <slot name="before" />
+    <slot />
+    <slot name="after" />
+  </Body>
+</Tag>

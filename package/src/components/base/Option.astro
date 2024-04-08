@@ -1,0 +1,29 @@
+---
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import Children from '../utility/Children.astro'
+import Tag from '../utility/Tag.astro'
+
+type Props<As extends HTMLTag = 'option'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Children>
+
+const { as = 'option', ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['full-option']}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot>
+    <Children {...rest} />
+  </slot>
+  <slot name="after" />
+</Tag>
+
+<style>
+  .full-option {
+    font-size: var(--text-2);
+    font: var(--font-text);
+  }
+</style>

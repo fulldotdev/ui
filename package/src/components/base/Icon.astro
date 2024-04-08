@@ -1,0 +1,56 @@
+---
+import tablerIcons from '@iconify-json/tabler/icons.json'
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import Tag from '../utility/Tag.astro'
+
+type Props<As extends HTMLTag = 'i'> = ComponentProps<typeof Tag<As>> & {
+  name?: string
+}
+
+const { as = 'i', name, ...rest } = Astro.props
+
+const icon = name && (tablerIcons as any)?.icons[name as any]?.body
+---
+
+<Tag
+  class:list={['full-icon']}
+  if={icon}
+  {as}
+  {...rest}
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    set:html={icon}
+  />
+</Tag>
+
+<style is:global>
+  .full-icon {
+    display: inline-flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    width: 1em;
+    height: 1em;
+    color: inherit;
+    color: var(--color-11);
+    font-size: var(--text-2);
+
+    &.contrast {
+      color: var(--color-12);
+    }
+
+    &:is(.full-button > .full-icon),
+    &:is(.full-badge > .full-icon),
+    &:is(.full-link > .full-icon) {
+      color: inherit;
+    }
+
+    svg {
+      position: absolute;
+      width: 120%;
+      height: 120%;
+    }
+  }
+</style>

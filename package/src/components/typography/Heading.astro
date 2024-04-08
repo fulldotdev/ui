@@ -1,0 +1,39 @@
+---
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import { Page } from '../..'
+import Children from '../utility/Children.astro'
+import Tag from '../utility/Tag.astro'
+
+type Props<As extends HTMLTag = 'h2'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Children>
+
+const { as = 'h2', contrast = true, ...rest } = Astro.props
+---
+
+<Page>
+  <Tag
+    class:list={['full-heading']}
+    {contrast}
+    {as}
+    {...rest}
+  >
+    <slot name="before" />
+    <slot>
+      <Children {...rest} />
+    </slot>
+    <slot name="after" />
+  </Tag>
+</Page>
+
+<style is:global>
+  .full-heading {
+    color: var(--color-11);
+    line-height: 1.25;
+    font: var(--font-heading);
+    font-size: var(--text-3);
+
+    &.contrast {
+      color: var(--color-12);
+    }
+  }
+</style>
