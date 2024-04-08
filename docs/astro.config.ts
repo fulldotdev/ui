@@ -10,21 +10,24 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'Fullui',
-      logo: {
-        src: './src/assets/logo.png',
-        alt: 'Logo Fullui',
-        replacesTitle: true,
-      },
+      // logo: {
+      //   src: './src/assets/logo.png',
+      //   alt: 'Logo Fullui',
+      //   replacesTitle: true,
+      // },
       social: {
         github: 'https://github.com/fullui/ui',
         linkedin: 'https://www.linkedin.com/in/silveltman/',
       },
       favicon: './favicon.png',
-      customCss: ['./src/css/custom.css'],
+      customCss: [
+        './src/css/custom.css',
+        './src/css/radix.css',
+        '@fullui/ui/css',
+      ],
       components: {
         // Relative path to the custom component.
         Head: './src/components/Head.astro',
-        ThemeSelect: './src/components/ThemeSelect.astro',
       },
       sidebar: [
         {
@@ -55,16 +58,9 @@ export default defineConfig({
     }),
     fullui({
       color: {
-        base: 'gray',
+        base: 'slate',
         accent: 'indigo',
       },
-      // font: {
-      //   heading: 'Montserrat:800',
-      //   subheading: 'Montserrat:700',
-      //   text: 'Montserrat:400',
-      //   subtext: 'Montserrat:500',
-      //   button: 'Montserrat:400',
-      // },
       font: {
         heading: 'IMB Plex Sans:700',
         subheading: 'IMB Plex Sans:700',

@@ -17,11 +17,11 @@ const defaultConfig = {
     border: '1px',
   },
   font: {
-    heading: 'Open Sans:700',
-    subheading: 'Open Sans:500',
-    text: 'Open Sans:400',
-    subtext: 'Open Sans:400',
-    button: 'Open Sans:500',
+    heading: 'IMB Plex Sans:700',
+    subheading: 'IMB Plex Sans:700',
+    text: 'IMB Plex Sans:400',
+    subtext: 'IMB Plex Sans:400',
+    button: 'IMB Plex Sans:500',
   },
 }
 

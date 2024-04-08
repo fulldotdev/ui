@@ -353,37 +353,30 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"theme/installation.mdx": {
-	id: "theme/installation.mdx";
-  slug: "theme/installation";
+"theme/color.mdx": {
+	id: "theme/color.mdx";
+  slug: "theme/color";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"theme/introduction.mdx": {
-	id: "theme/introduction.mdx";
-  slug: "theme/introduction";
+"theme/font.mdx": {
+	id: "theme/font.mdx";
+  slug: "theme/font";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"theme/syntax.mdx": {
-	id: "theme/syntax.mdx";
-  slug: "theme/syntax";
+"theme/overview.mdx": {
+	id: "theme/overview.mdx";
+  slug: "theme/overview";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"theme/theming.mdx": {
-	id: "theme/theming.mdx";
-  slug: "theme/theming";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"theme/typescript.mdx": {
-	id: "theme/typescript.mdx";
-  slug: "theme/typescript";
+"theme/size.mdx": {
+	id: "theme/size.mdx";
+  slug: "theme/size";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
