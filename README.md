@@ -1,9 +1,12 @@
 # Fullui
 
-Fullui is a component library for [Astro][astro].
+Fullui is a component library built for [Astro][astro].
 
-> [!WARNING]  
-> Fullui is currently in development. Expect breaking changes and bugs.
+Built to take full advantage Astro's power, like static rendering,
+content collections and more Astro features.
+
+> [!NOTE]  
+> Fullui is currently in alpha. Please expect bugs, breaking changes and lots of improvements 🚀.
 
 ## Documentation
 
@@ -11,7 +14,7 @@ Fullui is a component library for [Astro][astro].
 
 ## Support
 
-You can submit bug reports and feature requests as [GitHub issues][issues].
+Please [create a Github issue ][issues] for anything that crosses your mind; feature requests, bug reports or feedback.
 
 ## License
 
