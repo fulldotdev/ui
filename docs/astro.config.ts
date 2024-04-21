@@ -21,8 +21,8 @@ export default defineConfig({
       },
       favicon: './favicon.png',
       customCss: [
-        './src/css/custom.css',
         './src/css/radix.css',
+        './src/css/custom.css',
         '@fullui/ui/css',
       ],
       components: {
