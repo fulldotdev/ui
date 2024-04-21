@@ -4,6 +4,8 @@ import fullui from '@fullui/ui/integration'
 import liveCode from 'astro-live-code'
 import { defineConfig } from 'astro/config'
 
+import sitemap from '@astrojs/sitemap'
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://fullui.dev',
@@ -32,27 +34,39 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Get Started',
-          autogenerate: { directory: 'get-started' },
+          autogenerate: {
+            directory: 'get-started',
+          },
         },
         {
           label: 'Theme',
-          autogenerate: { directory: 'theme' },
+          autogenerate: {
+            directory: 'theme',
+          },
         },
         {
           label: 'Base',
-          autogenerate: { directory: 'base' },
+          autogenerate: {
+            directory: 'base',
+          },
         },
         {
           label: 'Typography',
-          autogenerate: { directory: 'typography' },
+          autogenerate: {
+            directory: 'typography',
+          },
         },
         {
           label: 'Layout',
-          autogenerate: { directory: 'layout' },
+          autogenerate: {
+            directory: 'layout',
+          },
         },
         {
           label: 'Utility',
-          autogenerate: { directory: 'utility' },
+          autogenerate: {
+            directory: 'utility',
+          },
         },
       ],
     }),
@@ -72,5 +86,6 @@ export default defineConfig({
     liveCode({
       layout: '/src/components/LiveCodeLayout.astro',
     }),
+    sitemap(),
   ],
 })
