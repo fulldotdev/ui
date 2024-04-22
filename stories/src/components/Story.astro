@@ -1,0 +1,115 @@
+---
+import { Children, Heading, Icon, Link, Text } from '@fullui/ui'
+import type { CollectionEntry } from 'astro:content'
+import CodeSnippet from './CodeSnippet.astro'
+import Details from './Details.astro'
+type Props = CollectionEntry<'components'>['data']
+
+const { name, category, ...rest } = Astro.props
+---
+
+{
+  name ? (
+    <div class="story">
+      <div class="content">
+        <Children {...rest} />
+      </div>
+
+      <div class="details">
+        <Heading size="xs">Props</Heading>
+
+        <Text size="sm">
+          Here are the available Props for the <b>{name}</b> component.
+        </Text>
+
+        <CodeSnippet name={name} {...rest} />
+
+        <Link
+          size="sm"
+          href={'https://fullui.dev/'}
+          color="accent"
+          target="_blank"
+        >
+          Read the documentation <Icon name="external-link" />
+        </Link>
+
+        {Object.entries(rest).map(([key, value]) => {
+          return <Details {key} {value} />
+        })}
+      </div>
+    </div>
+  ) : null
+}
+
+<script is:inline>
+  function updateUrl() {
+    window.location.href =
+      '/?component=' +
+      document.getElementById('component').value +
+      '&color=' +
+      document.getElementById('color').value +
+      '&html=' +
+      document.getElementById('html').value +
+      '&name=' +
+      document.getElementById('name').value +
+      '&placeholder=' +
+      document.getElementById('placeholder').value +
+      '&rows=' +
+      document.getElementById('rows').value +
+      '&src=' +
+      document.getElementById('src').value +
+      '&size=' +
+      document.getElementById('size').value +
+      '&type=' +
+      document.getElementById('type').value +
+      '&variant=' +
+      document.getElementById('variant').value
+  }
+</script>
+
+<style>
+  .story {
+    width: 100%;
+    max-height: 96vh;
+    overflow: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .story::-webkit-scrollbar {
+    display: none;
+  }
+
+  .content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 10px 0 10px;
+    border: 2px solid var(--color-6);
+    border-radius: var(--radius-2);
+    background-image: radial-gradient(
+      circle,
+      var(--color-8) 1px,
+      rgba(0, 0, 0, 0) 1px
+    );
+    background-size: 40px 40px;
+    background-color: var(--color-2);
+    padding: 20px;
+    height: 395px;
+    overflow: auto;
+    resize: both;
+
+    img {
+      max-width: 250px;
+      max-height: 350px;
+    }
+  }
+
+  .details {
+    padding: 20px;
+
+    b {
+      text-transform: capitalize;
+    }
+  }
+</style>
