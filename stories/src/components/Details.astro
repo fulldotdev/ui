@@ -1,0 +1,107 @@
+---
+import { Text } from '@fullui/ui'
+
+const { ...rest } = Astro.props
+
+const size = ['xl', 'lg', 'md', 'sm', 'xs']
+const color = ['base', 'accent']
+const variant = ['solid', 'soft', 'surface', 'outline', 'ghost']
+---
+
+{
+  Object.entries(rest.value).map(([key, value]) => {
+    if (value === 'undefined') {
+      return (
+        <div class="display-none">
+          <input id={key} class="full-input" value={value} disabled />
+        </div>
+      )
+    }
+
+    if (key === 'component' || key === 'category') {
+      return (
+        <div class="display-none">
+          <input id={key} class="full-input" value={value} disabled />
+        </div>
+      )
+    } else {
+      if (key === 'size') {
+        return (
+          <div>
+            <Text size="sm">{key}?:</Text>
+            <select class="full-input" onchange="updateUrl()" id={key}>
+              {size.map((size) => {
+                if (size === value) return <option selected>{size}</option>
+                return <option>{size}</option>
+              })}
+            </select>
+          </div>
+        )
+      }
+
+      if (key === 'color') {
+        return (
+          <div>
+            <Text size="sm">{key}?:</Text>
+            <select class="full-input" onchange="updateUrl()" id={key}>
+              {color.map((color) => {
+                if (color === value) return <option selected>{color}</option>
+                return <option>{color}</option>
+              })}
+            </select>
+          </div>
+        )
+      }
+
+      if (key === 'variant') {
+        return (
+          <div>
+            <Text size="sm">{key}?:</Text>
+            <select class="full-input" onchange="updateUrl()" id={key}>
+              {variant.map((variant) => {
+                if (variant === value)
+                  return <option selected>{variant}</option>
+                return <option>{variant}</option>
+              })}
+            </select>
+          </div>
+        )
+      }
+
+      return (
+        <div>
+          <Text size="sm">{key}?:</Text>
+          <input
+            id={key}
+            onchange="updateUrl()"
+            class="full-input"
+            value={value}
+          />
+        </div>
+      )
+    }
+  })
+}
+
+<style>
+  div {
+    margin: 20px 10px;
+
+    input,
+    select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      border: 2px solid var(--color-6);
+      border-radius: var(--radius-2);
+      background-color: var(--color-2);
+      color: var(--color-11);
+      font-size: 14px;
+      text-indent: 1px;
+      text-overflow: '';
+    }
+  }
+
+  .display-none {
+    display: none;
+  }
+</style>
