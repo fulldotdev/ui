@@ -1,6 +1,5 @@
 ---
 name: Text
-category: typography
 props:
     component: Text
     color: base

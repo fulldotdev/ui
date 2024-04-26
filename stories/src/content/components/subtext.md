@@ -1,6 +1,5 @@
 ---
 name: Subtext
-category: typography
 props:
     component: Subtext
     color: base

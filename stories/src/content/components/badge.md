@@ -1,6 +1,5 @@
 ---
 name: Badge
-category: base
 props:
     component: Badge
     variant: solid

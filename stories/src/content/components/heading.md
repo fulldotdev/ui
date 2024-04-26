@@ -1,6 +1,5 @@
 ---
 name: Heading
-category: typography
 props:
     component: Heading
     color: base

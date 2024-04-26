@@ -1,6 +1,5 @@
 ---
 name: Icon
-category: base
 props:
     component: Icon
     color: base
