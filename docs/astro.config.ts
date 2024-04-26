@@ -35,9 +35,9 @@ export default defineConfig({
       },
       sidebar: [
         {
-          label: 'Get Started',
+          label: 'Overview',
           autogenerate: {
-            directory: 'get-started',
+            directory: 'overview',
           },
         },
         {

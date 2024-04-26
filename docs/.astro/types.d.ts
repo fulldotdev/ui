@@ -227,34 +227,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"get-started/collections.mdx": {
-	id: "get-started/collections.mdx";
-  slug: "get-started/collections";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"get-started/components.mdx": {
-	id: "get-started/components.mdx";
-  slug: "get-started/components";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"get-started/installation.mdx": {
-	id: "get-started/installation.mdx";
-  slug: "get-started/installation";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"get-started/introduction.mdx": {
-	id: "get-started/introduction.mdx";
-  slug: "get-started/introduction";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "layout/card.mdx": {
 	id: "layout/card.mdx";
   slug: "layout/card";
@@ -346,6 +318,34 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"overview/collections.mdx": {
+	id: "overview/collections.mdx";
+  slug: "overview/collections";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"overview/components.mdx": {
+	id: "overview/components.mdx";
+  slug: "overview/components";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"overview/installation.mdx": {
+	id: "overview/installation.mdx";
+  slug: "overview/installation";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"overview/introduction.mdx": {
+	id: "overview/introduction.mdx";
+  slug: "overview/introduction";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "theme/color.mdx": {
 	id: "theme/color.mdx";
   slug: "theme/color";
@@ -360,9 +360,9 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"theme/overview.mdx": {
-	id: "theme/overview.mdx";
-  slug: "theme/overview";
+"theme/integration.mdx": {
+	id: "theme/integration.mdx";
+  slug: "theme/integration";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
