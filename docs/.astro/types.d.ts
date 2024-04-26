@@ -227,6 +227,20 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"get-started/collections.mdx": {
+	id: "get-started/collections.mdx";
+  slug: "get-started/collections";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"get-started/components.mdx": {
+	id: "get-started/components.mdx";
+  slug: "get-started/components";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "get-started/installation.mdx": {
 	id: "get-started/installation.mdx";
   slug: "get-started/installation";
@@ -237,20 +251,6 @@ declare module 'astro:content' {
 "get-started/introduction.mdx": {
 	id: "get-started/introduction.mdx";
   slug: "get-started/introduction";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"get-started/syntax.mdx": {
-	id: "get-started/syntax.mdx";
-  slug: "get-started/syntax";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"get-started/typescript.mdx": {
-	id: "get-started/typescript.mdx";
-  slug: "get-started/typescript";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">

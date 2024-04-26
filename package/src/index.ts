@@ -2,10 +2,7 @@
 export * from './utils/getPathname'
 // schemas
 export * from './schemas/attributesSchema'
-export * from './schemas/collectionEntrySchema'
-export * from './schemas/collectionSchema'
-export * from './schemas/entriesSchema'
-export * from './schemas/entrySchema'
+export * from './schemas/pageSchema'
 // Components - Base
 export { default as Badge } from './components/base/Badge.astro'
 export { default as Button } from './components/base/Button.astro'
