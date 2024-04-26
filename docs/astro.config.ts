@@ -1,5 +1,6 @@
 import starlight from '@astrojs/starlight'
 import fullui from '@fullui/ui/integration'
+import browserSync from 'astro-browser-sync'
 // @ts-ignore
 import liveCode from 'astro-live-code'
 import { defineConfig } from 'astro/config'
@@ -10,6 +11,7 @@ import sitemap from '@astrojs/sitemap'
 export default defineConfig({
   site: 'https://fullui.dev',
   integrations: [
+    browserSync({}),
     starlight({
       title: 'Fullui',
       // logo: {
