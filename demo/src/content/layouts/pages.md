@@ -1,5 +1,5 @@
 ---
-title: Default Layout Title
-description: Default Layout Description
-image.position: cover
+_: $layouts/index
+cta:
+  heading: Ready to get started
 ---
