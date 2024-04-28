@@ -1,8 +1,63 @@
----
-import { getEntry } from 'astro:content'
+<!-- ---
+import type { CollectionKey } from 'astro:content'
+import { getCollection,getEntry } from 'astro:content'
+import { JSONPath } from 'jsonpath-plus'
+import { construct,crush,mapValues,objectify } from 'radash'
+
+const withQueries = async (data: any) => {
+  const crushed = crush(data)
+  const values = Object.values(crush(data))
+  const strings = values.filter((v) => typeof v === 'string')
+  const string = strings.join(' ')
+  const references = string.match(/(?<=\$|\.)\w+/g)
+  const uniques = [...new Set(references)]
+  const collectionKeys = uniques.filter((u) => u !== 'self')
+  const collections = await Promise.all(
+    collectionKeys.map((collection) =>
+      getCollection(collection as CollectionKey)
+    )
+  )
+
+  const cascade = {
+    self: data,
+    ...objectify(
+      collections,
+      (c) => c[0].collection,
+      (c) =>
+        objectify(
+          c,
+          (e) => e.slug,
+          (e) => e.data
+        )
+    ),
+  }
+
+  const mapped = mapValues(crushed, (value: string) => {
+    if (typeof value !== 'string') return value
+    const regex = /\$[^\s]+/g
+    const queries = value.match(regex)
+    const surrounding = value.replace(regex, '').replace(' ', '')
+
+    if (queries?.length == 0) return value
+
+    if (queries?.length == 1 && surrounding?.length == 0) {
+      const result = JSONPath({ path: queries[0], wrap: false, json: cascade })
+      return result
+    }
+
+    return (value as string).replace(/\$[^\s]+/g, (query) => {
+      const result = JSONPath({ path: query, json: cascade })
+      return JSON.stringify(result)
+    })
+  })
+
+  const constructed = construct(mapped)
+  return constructed
+}
 
 const page = await getEntry('pages', 'index')
-console.log(page)
+const neww = await withQueries(page.data)
+console.log('end', neww)
 ---
 
-page
+page -->

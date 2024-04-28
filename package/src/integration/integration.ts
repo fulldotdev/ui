@@ -36,11 +36,6 @@ export default function fulluiIntegration(userConfig: any): AstroIntegration {
         updateConfig,
         injectScript,
       }) => {
-        console.log(
-          'config passed to stylus:',
-          `config = ${JSON.stringify(config, null, 2)}`
-        )
-
         updateConfig({
           vite: {
             plugins: [
