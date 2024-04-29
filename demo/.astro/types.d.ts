@@ -125,7 +125,16 @@ declare module 'astro:content' {
 	>;
 
 	type ContentEntryMap = {
-		"layouts": {
+		"components": {
+"header.md": {
+	id: "header.md";
+  slug: "header";
+  body: string;
+  collection: "components";
+  data: InferEntrySchema<"components">
+} & { render(): Render[".md"] };
+};
+"layouts": {
 };
 "pages": {
 "index.md": {

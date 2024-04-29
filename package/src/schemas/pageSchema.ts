@@ -75,12 +75,10 @@ export const pageSchema = (options: Partial<Options> = {}) =>
 
     const mappedValues = await all(
       mapValues(mappedKeys, async (value) => {
-        console.log({ value })
         if (typeof value !== 'string') return value
         const parts = value.split(' ')
         const results = await all(
           parts.map(async (valuePart) => {
-            console.log({ valuePart })
             if (queries)
               valuePart = (await replaceQueries(valuePart, data)) as any
             return valuePart

@@ -10,4 +10,8 @@ export const collections = {
     type: 'content',
     schema: pageSchema(),
   }),
+  components: defineCollection({
+    type: 'content',
+    schema: pageSchema(),
+  }),
 }
