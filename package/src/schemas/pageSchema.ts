@@ -37,7 +37,7 @@ const replaceQueries = async (valuePart: string, self: any) => {
   if (!valuePart.startsWith('$')) return valuePart
   const reference = valuePart.split('.')[0].replace('$', '')
   const path = valuePart.split('.').slice(1).join('.')
-  const collection = reference.split('/')[0].split('[')[0]
+  const collection = reference.split('/')[0]
   const slug = reference.split('/').slice(1).join('/')
 
   if (collection == 'self') {
