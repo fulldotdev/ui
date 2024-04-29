@@ -1,0 +1,152 @@
+---
+title: Collections
+description: How to use Astro content collections Fullui; a component library and design system built for Astro.
+sidebar:
+  order: 20
+  badge:
+    text: Unique
+    variant: tip
+---
+
+:::tip[Unique feature]
+These features are possible thanks to Astro's awesome [content collections](https://docs.astro.build/en/guides/content-collections/) and built-in support for [Zod](https://zod.dev) schemas.
+:::
+
+## Usage
+```ts
+// content/config.ts
+import { defineCollection } from 'astro:content'
+import { pageSchema } from '@fullui/ui'
+
+export const collections = {
+  yourcollection: defineCollection({
+    type: 'content',
+    schema: pageSchema({
+      // your configuration options here...
+    }),
+  }),
+}
+```
+
+## Options
+
+### nestify
+**Type**: `boolean`\
+**Default**: `true`
+
+:::caution
+Disabling this feature will disable all other features as well, because they rely on this feature.
+:::
+
+Changes all flattened keys to nested ones.
+```markdown
+---
+image.src: /image.jpg
+# becomes
+image:
+  src: /image.jpg
+---
+```
+
+### camelCase
+**Type**: `boolean`\
+**Default**: `true`
+
+Transforms keys in all possible casing strategies to camelCase.
+
+### mergeUnderscores
+**Type**: `boolean`\
+**Default**: `true`
+
+Strips all leading underscores. Resulting keys with an equal name will be merged. 
+This allows you to do define default values for specific keys:
+
+```markdown
+---
+_image:
+  position: cover
+  class: 'my-class'
+image:
+  src: /image.jpg
+  alt: My image
+---
+```
+
+### layouts
+**Type**: `CollectionKey | false`\
+**Default**: `layouts`
+
+Looks for a `layout` key in the entry. Then takes the value of the `layout` key and looks for an entry in the specified `layouts` collection.
+
+Let's say you have a products collection with the following entry:
+```markdown
+// content/products/myproduct.md
+---
+layout: products
+title: My Product
+price: 100
+---
+```
+
+You see we reference a layout called `products`. Make sure you define this layout in a collection called `layouts`:
+```markdown
+// content/layouts/products.md
+---
+title: Default Title
+checklist:
+  - Free shipping
+  - Delivered in 1 day
+---
+```
+
+When you now call `getEntry('products', 'myproduct')` (or any of the other function, like `getCollection` or `getEntries`), it automatically returns a deepmerged version of the product and the layout. The entry itself allways has the highest priority, so you can override the layout values.
+```markdown
+---
+checklist:
+  - Free shipping
+  - Delivered in 1 day
+layout: products
+title: My Product
+price: 100
+---
+```
+
+### removeNull
+**Type**: `boolean`\
+**Default**: `true`
+
+Removes all keys with a `false` value.
+
+Removes all `null` values, which is the default in markdown/yaml when you define a key with no value. 
+Otherwise your layout data would be overwritten by all those nulls.
+
+You can disable this if your setup allows you to simply not define a key at all, since then it will be undefined instead of null.
+
+### removeFalse
+**Type**: `boolean`\
+**Default**: `true`
+
+Removes all keys with a `false` value. This way you can disable keys from the received layout.
+
+:::caution
+This will result in all keys with a `false` value to be completely removed from the entry.
+:::
+
+## Using types
+Astro does a lot of typing automatically for you, but if you need to use a type manually, you can do that using built-in Astro feaures:
+
+```astro
+---
+import type {
+  CollectionEntry,
+  CollectionKey,
+  ContentCollectionKey,
+  DataCollectionKey,
+} from 'astro:content'
+
+type YourCollection = CollectionEntry<'yourcollection'>
+type GenericCollection = CollectionEntry<CollectionKey>
+type ContentCollection = CollectionEntry<ContentCollectionKey>
+type DataCollection = CollectionEntry<DataCollectionKey>
+---
+```

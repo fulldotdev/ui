@@ -1,6 +1,10 @@
 ---
-head:
-  title: Layout title
-  description: Layout description
-  image: /image
+header:
+  links: 
+    - title: Home
+      url: /
+    - title: About
+      url: /about
+    - title: Contact
+      url: /contact
 ---

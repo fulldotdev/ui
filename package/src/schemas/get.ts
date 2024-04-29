@@ -6,7 +6,7 @@ const getSchema = z
   .string()
   .refine(async (val) => {
     if (typeof val !== 'string') return
-    if (!val.startsWith('$')) return
+    if (!val.startsWith('$products[]name')) return
     const collection = val.split('.')[0]
     if (!collection) return
     if (!collections.includes(collection)) return

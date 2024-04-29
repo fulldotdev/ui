@@ -1,5 +1,7 @@
 import type { AstroIntegration } from 'astro'
+import autoprefixer from 'autoprefixer'
 import merge from 'deepmerge'
+import postcssNesting from 'postcss-nesting'
 import virtual from 'vite-plugin-virtual'
 
 const defaultConfig = {
@@ -36,11 +38,6 @@ export default function fulluiIntegration(userConfig: any): AstroIntegration {
         updateConfig,
         injectScript,
       }) => {
-        console.log(
-          'config passed to stylus:',
-          `config = ${JSON.stringify(config, null, 2)}`
-        )
-
         updateConfig({
           vite: {
             plugins: [
@@ -49,6 +46,9 @@ export default function fulluiIntegration(userConfig: any): AstroIntegration {
               }),
             ],
             css: {
+              postcss: {
+                plugins: [postcssNesting, autoprefixer],
+              },
               preprocessorOptions: {
                 styl: {
                   additionalData: `config = ${JSON.stringify(config, null, 2)}`,
