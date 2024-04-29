@@ -1,7 +1,7 @@
 import type { AstroIntegration } from 'astro'
 import autoprefixer from 'autoprefixer'
-import merge from 'deepmerge'
 import postcssNesting from 'postcss-nesting'
+import { mergeDeep } from 'remeda'
 import virtual from 'vite-plugin-virtual'
 
 const defaultConfig = {
@@ -28,7 +28,7 @@ const defaultConfig = {
 }
 
 export default function fulluiIntegration(userConfig: any): AstroIntegration {
-  const config: any = merge(defaultConfig || {}, userConfig || {})
+  const config: any = mergeDeep(defaultConfig || {}, userConfig || {})
 
   return {
     name: '@fullui/ui/integration',
