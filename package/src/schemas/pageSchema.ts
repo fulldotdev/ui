@@ -66,15 +66,14 @@ export const pageSchema = (options: Partial<Options> = {}) =>
     const mappedKeys = mapKeys(flat, (key) => {
       if (typeof key !== 'string') return key
       let i: number = 0
-      return key
-        .split('.')
-        .map((keyPart) => {
-          if (underscores) return replaceUnderscores(keyPart)
-          if (casing) return replaceCasing(keyPart)
-          i++
-          return keyPart
-        })
-        .join('.')
+      const parts = key.split('.')
+      const result = parts.map((keyPart) => {
+        if (underscores) keyPart = replaceUnderscores(keyPart)
+        if (casing) keyPart = replaceCasing(keyPart)
+        i++
+        return keyPart
+      })
+      return result.join('.')
     })
 
     const mappedValues = await all(
@@ -83,8 +82,9 @@ export const pageSchema = (options: Partial<Options> = {}) =>
         const parts = value.split(' ')
         const results = await all(
           parts.map(async (valuePart) => {
-            if (queries) return replaceQueries(valuePart, data)
-            if (templates) return replaceTemplates(valuePart)
+            if (queries)
+              valuePart = (await replaceQueries(valuePart, data)) as any
+            // if (templates) valuePart = replaceTemplates(valuePart)
             return valuePart
           })
         )
