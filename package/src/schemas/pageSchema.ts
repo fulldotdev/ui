@@ -4,8 +4,8 @@ import {
   type CollectionEntry,
   type CollectionKey,
 } from 'astro:content'
-import { unflatten } from 'flat'
-import { all, camel, crush, get, mapValues } from 'radash'
+import { flatten, unflatten } from 'flat'
+import { all, camel, get, mapValues } from 'radash'
 import { mapKeys, merge } from 'remeda'
 import { z } from 'zod'
 
@@ -23,15 +23,9 @@ const defaults: Options = {
   queries: true,
 }
 
-const replaceUnderscores = (keyPart: string) => {
-  if (/^_+$/.test(keyPart)) return '$template$' // only underscores
-  return keyPart.replace(/^_+/, '') // leading underscores
-}
+const replaceUnderscores = (keyPart: string) => keyPart.replace(/^_+/, '')
 
 const replaceCasing = (keyPart: string) => camel(keyPart)
-
-const replaceTemplates = (keyPart: string) =>
-  keyPart == '$template$' ? undefined : keyPart
 
 const replaceQueries = async (valuePart: string, self: any) => {
   if (!valuePart.startsWith('$')) return valuePart
@@ -61,30 +55,34 @@ const replaceQueries = async (valuePart: string, self: any) => {
 export const pageSchema = (options: Partial<Options> = {}) =>
   z.any().transform(async (data: CollectionEntry<CollectionKey>['data']) => {
     const { casing, underscores, templates, queries } = merge(defaults, options)
-    const flat: any = crush(data)
+    const flat: any = flatten(data)
 
     const mappedKeys = mapKeys(flat, (key) => {
       if (typeof key !== 'string') return key
       let i: number = 0
       const parts = key.split('.')
-      const result = parts.map((keyPart) => {
-        if (underscores) keyPart = replaceUnderscores(keyPart)
-        if (casing) keyPart = replaceCasing(keyPart)
-        i++
-        return keyPart
-      })
-      return result.join('.')
+      const result = parts
+        .map((keyPart) => {
+          if (underscores) keyPart = replaceUnderscores(keyPart)
+          if (casing) keyPart = replaceCasing(keyPart)
+          i++
+          return keyPart
+        })
+        .filter(Boolean)
+      const filtered = result.filter(Boolean)
+      return filtered.join('.')
     })
 
     const mappedValues = await all(
       mapValues(mappedKeys, async (value) => {
+        console.log({ value })
         if (typeof value !== 'string') return value
         const parts = value.split(' ')
         const results = await all(
           parts.map(async (valuePart) => {
+            console.log({ valuePart })
             if (queries)
               valuePart = (await replaceQueries(valuePart, data)) as any
-            // if (templates) valuePart = replaceTemplates(valuePart)
             return valuePart
           })
         )
