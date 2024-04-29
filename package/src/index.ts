@@ -3,7 +3,6 @@ export * from './utils/getPathname'
 // schemas
 export * from './schemas/attributesSchema'
 export * from './schemas/pageSchema'
-export * from './schemas/pageSchemaClean'
 // Components - Base
 export { default as Badge } from './components/base/Badge.astro'
 export { default as Button } from './components/base/Button.astro'

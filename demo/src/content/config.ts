@@ -1,13 +1,13 @@
-import { pageSchemaClean } from '@fullui/ui'
+import { pageSchema } from '@fullui/ui'
 import { defineCollection } from 'astro:content'
 
 export const collections = {
   pages: defineCollection({
     type: 'content',
-    schema: pageSchemaClean(),
+    schema: pageSchema(),
   }),
   layouts: defineCollection({
     type: 'content',
-    schema: pageSchemaClean(),
+    schema: pageSchema(),
   }),
 }
