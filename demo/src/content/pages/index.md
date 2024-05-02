@@ -1,6 +1,6 @@
 ---
 _: $layouts/index
 
-name: $self.layout_title
+name: $layouts/index.head.description
 page_title: Hello page title
 ---

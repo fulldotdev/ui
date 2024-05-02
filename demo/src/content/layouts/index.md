@@ -1,3 +1,5 @@
 ---
-layout_title: Hello layout title
+head:
+  title: My default title
+  description: Hello default description
 ---
