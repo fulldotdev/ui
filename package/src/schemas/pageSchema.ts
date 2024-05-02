@@ -46,7 +46,9 @@ const mapValueParts = (object: object, callback: Function) => {
 }
 
 const replaceUnderscores = (data: object) =>
-  mapKeyParts(data, (part: string) => part.replace(/^_+/, ''))
+  mapKeyParts(data, (part: string) => {
+    return part.replace(/^_+/, '')
+  })
 
 const replaceCasing = (data: object) =>
   mapKeyParts(data, (part: string) => camel(part))
@@ -71,12 +73,6 @@ const replaceReferences = (data: object) =>
     const collection = reference.split('/')[0]
     const slug = reference.split('/').slice(1).join('/')
     const path = valuePart.split('.').slice(1).join('.')
-
-    console.log({
-      collection,
-      slug,
-      path,
-    })
 
     if (collection && slug) {
       const data = getEntry(collection as CollectionKey, slug).then(
@@ -104,16 +100,15 @@ export const pageSchema = (options: Partial<Options> = {}) =>
         options
       )
 
-      if (underscores) data = replaceUnderscores(data)
+      data = (await all(
+        mapValues(flatten(data) as any, async (value) => {
+          console.log({ value })
 
-      if (casing) data = replaceCasing(data)
-
-      const mappedValues = (await all(
-        mapValues(data, async (value) => {
           if (typeof value !== 'string') return value
           const parts = value.split(' ')
           const results = await all(
             parts.map(async (valuePart) => {
+              console.log({ valuePart })
               if (!valuePart.startsWith('$')) return valuePart
               if (valuePart.startsWith('$self')) return valuePart
 
@@ -121,6 +116,8 @@ export const pageSchema = (options: Partial<Options> = {}) =>
               const collection = reference.split('/')[0]
               const slug = reference.split('/').slice(1).join('/')
               const path = valuePart.split('.').slice(1).join('.')
+
+              console.log({ collection, slug })
 
               if (collection && slug) {
                 const response = await getEntry(
@@ -145,14 +142,20 @@ export const pageSchema = (options: Partial<Options> = {}) =>
         })
       )) as any
 
+      data = unflatten(data)
+
+      if (selfs) data = replaceSelfs(data)
+
+      if (underscores) data = replaceUnderscores(data)
+
+      if (casing) data = replaceCasing(data)
+
       data = {
-        ...mappedValues['0'],
-        ...mappedValues,
+        ...data['0'],
+        ...data,
       }
 
       delete data['0']
-
-      if (selfs) data = replaceSelfs(data)
 
       return data
     })
