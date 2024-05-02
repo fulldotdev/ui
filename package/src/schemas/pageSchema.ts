@@ -131,16 +131,12 @@ export const pageSchema = (options: Partial<Options> = {}) =>
     const { layouts, casing, references, selfs } = merge(defaults, options)
 
     if (references) data = await transformReferences(data)
-    console.log('references', data)
 
     if (layouts) data = transformLayouts(data)
-    console.log('layouts', data)
 
     if (selfs) data = transformSelfs(data)
-    console.log('selfs', data)
 
     if (casing) data = transformCasing(data)
-    console.log('casing', data)
 
     return data
   })
