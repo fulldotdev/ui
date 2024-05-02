@@ -102,13 +102,10 @@ export const pageSchema = (options: Partial<Options> = {}) =>
 
       data = (await all(
         mapValues(flatten(data) as any, async (value) => {
-          console.log({ value })
-
           if (typeof value !== 'string') return value
           const parts = value.split(' ')
           const results = await all(
             parts.map(async (valuePart) => {
-              console.log({ valuePart })
               if (!valuePart.startsWith('$')) return valuePart
               if (valuePart.startsWith('$self')) return valuePart
 
@@ -116,8 +113,6 @@ export const pageSchema = (options: Partial<Options> = {}) =>
               const collection = reference.split('/')[0]
               const slug = reference.split('/').slice(1).join('/')
               const path = valuePart.split('.').slice(1).join('.')
-
-              console.log({ collection, slug })
 
               if (collection && slug) {
                 const response = await getEntry(
@@ -142,10 +137,12 @@ export const pageSchema = (options: Partial<Options> = {}) =>
         })
       )) as any
 
+      console.log(data)
       data = {
-        ...data['0'],
+        ...data['_'],
         ...data,
       }
+      delete data['_']
 
       data = unflatten(data)
 
@@ -154,8 +151,6 @@ export const pageSchema = (options: Partial<Options> = {}) =>
       if (underscores) data = replaceUnderscores(data)
 
       if (casing) data = replaceCasing(data)
-
-      delete data['0']
 
       return data
     })
