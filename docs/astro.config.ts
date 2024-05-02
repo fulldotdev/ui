@@ -11,7 +11,6 @@ import sitemap from '@astrojs/sitemap'
 export default defineConfig({
   site: 'https://fullui.dev',
   integrations: [
-    browserSync({}),
     starlight({
       title: 'Fullui',
       // logo: {
