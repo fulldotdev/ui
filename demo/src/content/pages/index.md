@@ -1,6 +1,4 @@
 ---
 _: $layouts/index
-body:
-  hello: world
-  header: $components/header
+name: $self.head.title
 ---

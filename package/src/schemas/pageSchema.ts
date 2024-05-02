@@ -5,152 +5,138 @@ import {
   type CollectionKey,
 } from 'astro:content'
 import { flatten, unflatten } from 'flat'
-import { all, camel, get, isString, mapValues } from 'radash'
+import {
+  all,
+  camel,
+  construct,
+  get,
+  isNumber,
+  isString,
+  mapValues,
+} from 'radash'
 import { mapKeys, merge } from 'remeda'
 import { z } from 'zod'
 
 interface Options {
   casing: boolean
-  underscores: boolean
+  layouts: boolean
   references: boolean
   selfs: boolean
 }
 
 const defaults: Options = {
   casing: true,
-  underscores: true,
+  layouts: true,
   references: true,
   selfs: true,
 }
 
-const mapKeyParts = (object: object, callback: Function) => {
-  const flat = flatten(object)
-  const mapped = mapKeys(flat, (key) => {
+const transformReferences = async (data: object) =>
+  await all(
+    mapValues(flatten(data) as any, async (value) => {
+      if (typeof value !== 'string') return value
+      const parts = value.split(' ')
+      const results = await all(
+        parts.map(async (valuePart) => {
+          if (!valuePart.startsWith('$')) return valuePart
+          if (valuePart.startsWith('$self')) return valuePart
+
+          const reference = valuePart.split('.')[0].replace('$', '')
+          const collection = reference.split('/')[0]
+          const slug = reference.split('/').slice(1).join('/')
+          const path = valuePart.split('.').slice(1).join('.')
+
+          if (collection && slug) {
+            const response = await getEntry(collection as CollectionKey, slug)
+            const result = get(response?.data, path)
+            return result
+          } else if (collection) {
+            const response = await getCollection(collection as CollectionKey)
+            const result = response?.map((entry: any) => entry.data)
+            return result
+          }
+
+          return valuePart
+        })
+      )
+      if (results.length == 1) return results[0]
+      return results.join(' ')
+    })
+  )
+
+const transformLayouts = (data: object) => {
+  const flat: any = flatten(data)
+  let store: any = {}
+
+  const merged = mapKeys(flat, (key) => {
     if (!isString(key)) return key
-    const parts = (key as string).split('.')
-    const result = parts.map((part) => callback(part))
-    return result.join('.')
+    const parts = key.split('.')
+    const result = parts.map((part) => {
+      // Concatenating array indexes
+      if (isNumber(parseInt(part))) {
+        let index = parseInt(part)
+        let item = key.replace(/^_+/, '').replace(/\d+/, '')
+
+        if (store[item] >= index) store[item]++
+        else store[item] = index
+
+        return store[item].toString()
+      }
+      // Removing leading underscores
+      return part.replace(/^_+/, '')
+    })
+    const filtered = result.filter(Boolean)
+    const joined = filtered.join('.')
+    return joined
   })
-  return unflatten(mapped)
+  const nested = construct(merged)
+  return nested
 }
 
-const mapValueParts = (object: object, callback: Function) => {
-  const flat = flatten(object) as any
+const transformSelfs = (data: object) => {
+  const flat = flatten(data) as any
   const mapped = mapValues(flat, (value) => {
     if (!isString(value)) return value
     const parts = (value as string).split(' ')
-    const result = parts.map((part) => callback(part))
+    const result = parts.map((part) => {
+      if (!part.startsWith('$self')) return part
+      const pathParts = part.split('.').slice(1)
+      const camelCased = pathParts.map((part) => camel(part))
+      const path = camelCased.join('.')
+      const result = get(data, path)
+      return result
+    })
     return result.join(' ')
   })
   return unflatten(mapped)
 }
 
-const replaceUnderscores = (data: object) =>
-  mapKeyParts(data, (part: string) => {
-    return part.replace(/^_+/, '')
+const transformCasing = (object: object) => {
+  const flat = flatten(object)
+  const mapped = mapKeys(flat, (key) => {
+    if (!isString(key)) return key
+    const parts = (key as string).split('.')
+    const result = parts.map((part) => camel(part))
+    return result.join('.')
   })
-
-const replaceCasing = (data: object) =>
-  mapKeyParts(data, (part: string) => camel(part))
-
-const replaceSelfs = (data: object) =>
-  mapValueParts(data, (part: string) => {
-    if (!part.startsWith('$self')) return part
-
-    const pathParts = part.split('.').slice(1)
-    const camelCased = pathParts.map((part) => camel(part))
-    const path = camelCased.join('.')
-    const result = get(data, path)
-    return result
-  })
-
-const replaceReferences = (data: object) =>
-  mapValueParts(data, (valuePart: string) => {
-    if (!valuePart.startsWith('$')) return valuePart
-    if (valuePart.startsWith('$self')) return valuePart
-
-    const reference = valuePart.split('.')[0].replace('$', '')
-    const collection = reference.split('/')[0]
-    const slug = reference.split('/').slice(1).join('/')
-    const path = valuePart.split('.').slice(1).join('.')
-
-    if (collection && slug) {
-      const data = getEntry(collection as CollectionKey, slug).then(
-        (v) => v?.data
-      )
-      const result = get(data, path)
-      return result
-    } else if (collection) {
-      const data = getCollection(collection as CollectionKey).then((v) =>
-        v?.map((entry: any) => entry.data)
-      )
-      return data
-    }
-
-    return valuePart
-  })
+  return unflatten(mapped)
+}
 
 export const pageSchema = (options: Partial<Options> = {}) =>
-  z
-    .object({})
-    .passthrough()
-    .transform(async (data: CollectionEntry<CollectionKey>['data']) => {
-      const { casing, underscores, references, selfs } = merge(
-        defaults,
-        options
-      )
+  z.any().transform(async (data: CollectionEntry<CollectionKey>['data']) => {
+    const { layouts, casing, references, selfs } = merge(defaults, options)
 
-      data = (await all(
-        mapValues(flatten(data) as any, async (value) => {
-          if (typeof value !== 'string') return value
-          const parts = value.split(' ')
-          const results = await all(
-            parts.map(async (valuePart) => {
-              if (!valuePart.startsWith('$')) return valuePart
-              if (valuePart.startsWith('$self')) return valuePart
+    if (references) data = await transformReferences(data)
+    console.log('references', data)
 
-              const reference = valuePart.split('.')[0].replace('$', '')
-              const collection = reference.split('/')[0]
-              const slug = reference.split('/').slice(1).join('/')
-              const path = valuePart.split('.').slice(1).join('.')
+    if (layouts) data = transformLayouts(data)
+    console.log('layouts', data)
 
-              if (collection && slug) {
-                const response = await getEntry(
-                  collection as CollectionKey,
-                  slug
-                )
-                const result = get(response?.data, path)
-                return result
-              } else if (collection) {
-                const response = await getCollection(
-                  collection as CollectionKey
-                )
-                const result = response?.map((entry: any) => entry.data)
-                return result
-              }
+    if (selfs) data = transformSelfs(data)
+    console.log('selfs', data)
 
-              return valuePart
-            })
-          )
-          if (results.length == 1) return results[0]
-          return results.join(' ')
-        })
-      )) as any
+    if (casing) data = transformCasing(data)
+    console.log('casing', data)
 
-      console.log(data)
-      data = {
-        ...data['_'],
-        ...data,
-      }
-      delete data['_']
-
-      data = unflatten(data)
-
-      if (selfs) data = replaceSelfs(data)
-
-      if (underscores) data = replaceUnderscores(data)
-
-      if (casing) data = replaceCasing(data)
-
-      return data
-    })
+    return data
+  })
