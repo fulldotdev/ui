@@ -5,15 +5,7 @@ import {
   type CollectionKey,
 } from 'astro:content'
 import { flatten, unflatten } from 'flat'
-import {
-  all,
-  camel,
-  construct,
-  get,
-  isNumber,
-  isString,
-  mapValues,
-} from 'radash'
+import { all, camel, construct, get, isString, mapValues } from 'radash'
 import { mapKeys, merge } from 'remeda'
 import { z } from 'zod'
 
@@ -67,21 +59,33 @@ const transformReferences = async (data: object) =>
 const transformLayouts = (data: object) => {
   const flat: any = flatten(data)
   let store: any = {}
+  let i: number = 0
 
   const merged = mapKeys(flat, (key) => {
     if (!isString(key)) return key
     const parts = key.split('.')
     const result = parts.map((part) => {
       // Concatenating array indexes
-      if (isNumber(parseInt(part))) {
-        let index = parseInt(part)
-        let item = key.replace(/^_+/, '').replace(/\d+/, '')
+      // if (isNumber(parseInt(part))) {
+      //   i++
+      //   return i.toString()
 
-        if (store[item] >= index) store[item]++
-        else store[item] = index
+      // let index = parseInt(part)
+      // const path = parts.slice(0, i).join('.').replace(/^_+/, '')
 
-        return store[item].toString()
-      }
+      // if (store[path] > index) store[path]++
+      // else store[path] = index
+
+      // console.log({
+      //   key,
+      //   part,
+      //   path,
+      //   index,
+      //   store,
+      // })
+
+      // return store[path].toString()
+      //   }
       // Removing leading underscores
       return part.replace(/^_+/, '')
     })
