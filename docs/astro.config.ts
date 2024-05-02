@@ -1,6 +1,5 @@
 import starlight from '@astrojs/starlight'
 import fullui from '@fullui/ui/integration'
-import browserSync from 'astro-browser-sync'
 // @ts-ignore
 import liveCode from 'astro-live-code'
 import { defineConfig } from 'astro/config'
@@ -80,7 +79,7 @@ export default defineConfig({
         heading: 'IMB Plex Sans:700',
         subheading: 'IMB Plex Sans:700',
         text: 'IMB Plex Sans:400',
-        subtext: 'IMB Plex Sans:400',
+        tagline: 'IMB Plex Sans:400',
         button: 'IMB Plex Sans:500',
       },
     }),
@@ -89,4 +88,7 @@ export default defineConfig({
     }),
     sitemap(),
   ],
+  redirects: {
+    '/': '/',
+  },
 })

@@ -3,7 +3,8 @@ import type { ComponentProps, HTMLTag } from 'astro/types'
 import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
 
-type Props<As extends HTMLTag = 'summary'> = ComponentProps<typeof Tag<As>>
+type Props<As extends HTMLTag = 'summary'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Children>
 
 const { as = 'summary', ...rest } = Astro.props
 ---
@@ -14,16 +15,19 @@ const { as = 'summary', ...rest } = Astro.props
   {...rest}
 >
   <slot name="before" />
-  <slot>
-    <Children {...rest} />
-  </slot>
+  <Children {...rest} />
+  <slot />
   <slot name="after" />
 </Tag>
 
 <style is:global>
   .full-summary {
     cursor: pointer;
-    color: var(--color-11);
+    color: var(--foreground);
     font-size: var(--text-1);
+
+    &.subtle {
+      color: var(--foreground-subtle);
+    }
   }
 </style>

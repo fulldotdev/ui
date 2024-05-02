@@ -4,63 +4,31 @@ import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
 
 type Props<As extends HTMLTag = 'blockquote'> = ComponentProps<typeof Tag<As>> &
-  ComponentProps<typeof Children> & {
-    variant?: 'solid' | 'soft'
-  }
+  ComponentProps<typeof Children>
 
-const {
-  as = 'blockquote',
-  color = 'accent',
-  variant = 'solid',
-  ...rest
-} = Astro.props
+const { as = 'blockquote', ...rest } = Astro.props
 ---
 
 <Tag
-  class:list={['full-blockquote', variant]}
+  class:list={['full-blockquote']}
   {as}
-  {color}
   {...rest}
 >
   <slot name="before" />
-  <slot>
-    <Children {...rest} />
-  </slot>
+  <Children {...rest} />
+  <slot />
   <slot name="after" />
 </Tag>
 
 <style is:global>
   .full-blockquote {
-    border-left: 6px solid var(--border-color);
-    border-color: var(--border-color);
+    border-left: 6px solid var(--border);
+    border-color: var(--border);
     padding-left: var(--space-3);
-    color: var(--color-11);
+    color: var(--foreground);
 
-    &.has-color {
-      border-color: var(--color-6);
-    }
-
-    &.solid,
-    &.soft {
-      color: var(--blockquote-color);
-    }
-
-    &.solid {
-      --border-color: var(--color-10);
-
-      &.contrast {
-        --border-color: var(--color-12);
-        --blockquote-color: var(--color-12);
-      }
-    }
-
-    &.soft {
-      --border-color: var(--color-5);
-
-      &.contrast {
-        --border-color: var(--color-11);
-        --blockquote-color: var(--color-10);
-      }
+    &.subtle {
+      color: var(--foreground-subtle);
     }
   }
 </style>

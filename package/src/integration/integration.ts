@@ -22,7 +22,7 @@ const defaultConfig = {
     heading: 'IMB Plex Sans:700',
     subheading: 'IMB Plex Sans:700',
     text: 'IMB Plex Sans:400',
-    subtext: 'IMB Plex Sans:400',
+    tagline: 'IMB Plex Sans:400',
     button: 'IMB Plex Sans:500',
   },
 }
