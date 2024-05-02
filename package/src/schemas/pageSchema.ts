@@ -142,6 +142,11 @@ export const pageSchema = (options: Partial<Options> = {}) =>
         })
       )) as any
 
+      data = {
+        ...data['0'],
+        ...data,
+      }
+
       data = unflatten(data)
 
       if (selfs) data = replaceSelfs(data)
@@ -149,11 +154,6 @@ export const pageSchema = (options: Partial<Options> = {}) =>
       if (underscores) data = replaceUnderscores(data)
 
       if (casing) data = replaceCasing(data)
-
-      data = {
-        ...data['0'],
-        ...data,
-      }
 
       delete data['0']
 
