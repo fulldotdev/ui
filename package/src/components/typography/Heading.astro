@@ -4,13 +4,15 @@ import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
 
 type Props<As extends HTMLTag = 'h2'> = ComponentProps<typeof Tag<As>> &
-  ComponentProps<typeof Children>
+  ComponentProps<typeof Children> & {
+    variant?: 'primary' | 'secondary' | 'subtle' | 'accent'
+  }
 
-const { as = 'h2', ...rest } = Astro.props
+const { as = 'h2', variant, ...rest } = Astro.props
 ---
 
 <Tag
-  class:list={['full-heading']}
+  class:list={['full-heading', variant]}
   {as}
   {...rest}
 >
@@ -22,13 +24,18 @@ const { as = 'h2', ...rest } = Astro.props
 
 <style is:global>
   .full-heading {
-    color: var(--foreground);
-    line-height: 1.25;
+    color: var(--color-foreground);
     font: var(--font-heading);
     font-size: var(--text-3);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
 
     &.subtle {
-      color: var(--foreground-subtle);
+      color: var(--color-foreground-subtle);
+    }
+
+    &.accent {
+      color: var(--color-foreground-accent);
     }
   }
 </style>

@@ -1,6 +1,7 @@
 import type { AstroIntegration } from 'astro'
 import autoprefixer from 'autoprefixer'
 import postcssNesting from 'postcss-nesting'
+import postcssPresetEnv from 'postcss-preset-env'
 import { mergeDeep } from 'remeda'
 import virtual from 'vite-plugin-virtual'
 
@@ -47,7 +48,7 @@ export default function fulluiIntegration(userConfig: any): AstroIntegration {
             ],
             css: {
               postcss: {
-                plugins: [postcssNesting, autoprefixer],
+                plugins: [postcssNesting, postcssPresetEnv, autoprefixer],
               },
               preprocessorOptions: {
                 styl: {
