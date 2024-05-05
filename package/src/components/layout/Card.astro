@@ -7,13 +7,20 @@ type Props<As extends HTMLTag = 'header'> = ComponentProps<typeof Tag<As>> &
   ComponentProps<typeof Children> & {
     frame?: 'fill' | 'panel' | 'screen'
     variant?: 'ghost' | 'soft' | 'solid'
+    direction?: 'row' | 'column'
   }
 
-const { variant, frame, ...rest } = Astro.props
+const {
+  variant,
+  frame,
+  direction = 'column',
+  align = 'start',
+  ...rest
+} = Astro.props
 ---
 
 <Tag
-  class:list={['full-card', variant, frame]}
+  class:list={['full-card full-layout', variant, frame, direction, align]}
   compact
   {...rest}
 >
@@ -29,14 +36,7 @@ const { variant, frame, ...rest } = Astro.props
     position: relative;
     flex-direction: column;
     justify-content: stretch;
-    gap: var(--space-4);
     overflow: hidden;
-
-    .stack {
-      justify-content: space-between;
-      gap: var(--space-5);
-      /* height: 100%; */
-    }
 
     &:is(a) {
       &:hover > .image {
@@ -46,6 +46,24 @@ const { variant, frame, ...rest } = Astro.props
       &:active {
         transform: scale(0.95);
       }
+    }
+
+    &.start {
+      align-items: flex-start;
+      /* text-align: left; */
+    }
+
+    &.stretch {
+      align-items: stretch;
+    }
+
+    &.center {
+      align-items: center;
+      text-align: center;
+    }
+
+    &.end {
+      align-items: flex-end;
     }
 
     /* TODO add child paddings/margin */

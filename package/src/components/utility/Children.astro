@@ -1,5 +1,6 @@
 ---
 import type { ComponentProps } from 'astro/types'
+import * as cheerio from 'cheerio'
 import { isArray } from 'radash'
 import Badge from '../base/Badge.astro'
 import Button from '../base/Button.astro'
@@ -104,7 +105,13 @@ const keyToComponentName = (key?: string) => {
 {
   Object.entries(rest).map(([key, value]) => {
     if (key === 'text') return value
-    if (key === 'html') return <Fragment set:html={value} />
+    if (key === 'html') {
+      const $ = cheerio.load(value, null, false)
+      $('h1,h2,h3,h4,h5,h6').addClass('full-heading')
+      $('p').addClass('full-paragraph')
+      const html = $.html()
+      return <Fragment set:html={html} />
+    }
 
     if (isArray(value)) {
       const object = value.reduce((acc, v, i) => ({ ...acc, [i]: v }), {})
