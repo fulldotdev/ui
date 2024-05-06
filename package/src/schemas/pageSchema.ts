@@ -44,7 +44,7 @@ const transformReferences = async (data: object) =>
             return result
           } else if (collection) {
             const response = await getCollection(collection as CollectionKey)
-            const result = response?.map((entry: any) => entry.data)
+            const result = response?.map((entry: any) => get(entry?.data, path))
             return result
           }
 
