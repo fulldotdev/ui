@@ -1,0 +1,98 @@
+---
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import Children from '../utility/Children.astro'
+import Tag from '../utility/Tag.astro'
+
+type Props<As extends HTMLTag = 'div'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Children> & {
+    layout: 'row' | 'column' | 'split'
+    x: 'start' | 'center' | 'end' | 'between'
+    y: 'start' | 'center' | 'end' | 'between'
+  }
+
+const { layout = 'column', x = 'start', y = 'center', ...rest } = Astro.props
+---
+
+<Tag
+  class:list={[
+    'full-stack',
+    {
+      [`full-layout-${layout}`]: layout,
+      [`full-x-${x}`]: x,
+      [`full-y-${y}`]: y,
+    },
+  ]}
+  {...rest}
+>
+  <slot name="before" />
+  <Children {...rest} />
+  <slot />
+  <slot name="after" />
+</Tag>
+
+<style is:global>
+  .full-stack {
+  }
+
+  .full-layout-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: var(--full-x);
+    align-items: var(--full-y);
+  }
+
+  .full-layout-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: var(--full-y);
+    align-items: var(--full-x);
+  }
+
+  .full-layout-split {
+    display: grid;
+    column-gap: var(--gutter);
+    justify-content: var(--full-x);
+    align-items: var(--full-y);
+
+    @media (min-width: 1024px) {
+      grid-auto-columns: 1fr;
+      grid-auto-flow: column;
+    }
+
+    & > * {
+      margin: 0;
+    }
+  }
+
+  .full-x-start {
+    --full-x: start;
+  }
+
+  .full-x-center {
+    --full-x: center;
+  }
+
+  .full-x-end {
+    --full-x: end;
+  }
+
+  .full-x-between {
+    --full-x: between;
+  }
+
+  .full-y-start {
+    --full-y: start;
+  }
+
+  .full-y-center {
+    --full-y: center;
+  }
+
+  .full-y-end {
+    --full-y: end;
+  }
+
+  .full-y-between {
+    --full-y: between;
+  }
+</style>

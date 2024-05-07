@@ -50,3 +50,5 @@ export { default as DecorativeBox } from './components/utility/DecorativeBox.ast
 export { default as Head } from './components/utility/Head.astro'
 export { default as Page } from './components/utility/Page.astro'
 export { default as Tag } from './components/utility/Tag.astro'
+// Components - Wrappers
+export { default as Wrapper } from './components/wrappers/Wrapper.astro'

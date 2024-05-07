@@ -22,11 +22,7 @@ export default defineConfig({
         linkedin: 'https://www.linkedin.com/in/silveltman/',
       },
       favicon: './favicon.png',
-      customCss: [
-        './src/css/radix.css',
-        './src/css/custom.css',
-        '@fullui/ui/css',
-      ],
+      customCss: ['./src/css/custom.css', '@fullui/ui/css'],
       components: {
         // Relative path to the custom component.
         Head: './src/components/Head.astro',

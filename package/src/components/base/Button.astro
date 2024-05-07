@@ -13,7 +13,8 @@ const { as = 'a', variant = 'primary', ...rest } = Astro.props
 ---
 
 <Tag
-  class:list={['full-button', variant]}
+  class:list={['full-button']}
+  {variant}
   {as}
   {...rest}
 >
@@ -31,21 +32,31 @@ const { as = 'a', variant = 'primary', ...rest } = Astro.props
     align-items: center;
     vertical-align: top;
     gap: var(--space-2);
+    transition: var(--full-transition);
     cursor: pointer;
     outline: none !important;
+    border: 1px solid var(--full-border);
     border-radius: var(--radius-2);
+    background-color: var(--full-background);
     padding: 0 var(--element-1);
     min-width: var(--element-2);
     height: var(--element-2);
-    font: var(--font-button);
+    color: var(--full-foreground);
     font: var(--text-1);
-    line-height: 1;
+    font-weight: var(--button-font-weight);
+    font-family: var(--button-font-family);
     user-select: none;
     text-align: center;
     text-decoration: none;
     white-space: nowrap;
-    background: var(--full-background);
-    color: var(--full-foreground);
+
+    &:hover {
+      background-color: color-mix(
+        in hsl,
+        var(--full-background) 40%,
+        var(--full-background) 40%
+      );
+    }
 
     &:disabled {
       opacity: 0.5;
@@ -56,6 +67,33 @@ const { as = 'a', variant = 'primary', ...rest } = Astro.props
     &:focus-visible {
       outline: 2px solid var(--color-8) !important;
       outline-offset: 2px;
+    }
+
+    &.variant-primary {
+      &:hover {
+        background-color: color-mix(
+          in hsl,
+          var(--full-background) 45%,
+          var(--full-background) 45%
+        );
+      }
+    }
+
+    &.variant-bordered,
+    &.variant-ghost {
+      background: transparent;
+
+      &:hover {
+        background-color: color-mix(
+          in hsl,
+          var(--full-secondary-background) 20%,
+          var(--full-secondary-background) 20%
+        );
+      }
+    }
+
+    &.variant-ghost {
+      border-color: transparent;
     }
   }
 </style>

@@ -1,5 +1,7 @@
 import type { AstroIntegration } from 'astro'
 import autoprefixer from 'autoprefixer'
+// @ts-ignore
+import postcssColorFunction from 'postcss-color-function'
 import postcssNesting from 'postcss-nesting'
 import postcssPresetEnv from 'postcss-preset-env'
 import { mergeDeep } from 'remeda'
@@ -48,7 +50,12 @@ export default function fulluiIntegration(userConfig: any): AstroIntegration {
             ],
             css: {
               postcss: {
-                plugins: [postcssNesting, postcssPresetEnv, autoprefixer],
+                plugins: [
+                  postcssNesting,
+                  postcssPresetEnv,
+                  autoprefixer,
+                  postcssColorFunction,
+                ],
               },
               preprocessorOptions: {
                 styl: {
