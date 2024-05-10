@@ -1,13 +1,13 @@
 import {
   getCollection,
   getEntry,
+  z,
   type CollectionEntry,
   type CollectionKey,
 } from 'astro:content'
 import { flatten, unflatten } from 'flat'
-import { all, camel, construct, get, isString, mapValues,  } from 'radash'
+import { all, camel, construct, get, isString, mapValues } from 'radash'
 import { mapKeys, merge } from 'remeda'
-import { z } from 'zod'
 
 interface Options {
   casing: boolean
