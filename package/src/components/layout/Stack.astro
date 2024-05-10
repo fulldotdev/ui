@@ -5,61 +5,206 @@ import Tag from '../utility/Tag.astro'
 
 type Props<As extends HTMLTag = 'div'> = ComponentProps<typeof Tag<As>> &
   ComponentProps<typeof Children> & {
-    direction?: 'row' | 'column'
-    align?: 'start' | 'center'
+    layout?: 'row' | 'column' | 'split'
+    x?: 'start' | 'center' | 'end' | 'between' | 'stretch'
+    y?: 'start' | 'center' | 'end' | 'between' | 'stretch'
   }
 
-const { direction = 'column', align, ...rest } = Astro.props
+const { layout = 'column', x = 'start', y = 'start', ...rest } = Astro.props
 ---
 
 <Tag
-  class:list={['full-stack full-layout', direction, align]}
+  class:list={[
+    'full-stack',
+    {
+      [`full-layout-${layout}`]: layout,
+      [`full-x-${x}`]: x,
+      [`full-y-${y}`]: y,
+    },
+  ]}
   {...rest}
 >
   <slot name="before" />
   <Children {...rest} />
   <slot />
-  <slot name="after" />
 </Tag>
 
 <style is:global>
   .full-stack {
+  }
+
+  .full-layout-row {
     display: flex;
-    align-items: flex-start;
-    z-index: 1;
+    flex-direction: row;
+    justify-content: var(--full-x);
+    align-items: var(--full-y);
 
-    &.center {
-      align-items: center;
-    }
+    > {
+      .full-tag {
+        + .full-deck,
+        + .full-image,
+        + .full-icon {
+          margin-left: var(--full-space-5);
+        }
+      }
 
-    &.stretch {
-      flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-    }
+      .full-deck,
+      .full-image,
+      .full-icon {
+        + .full-tag {
+          margin-left: var(--full-space-5);
+        }
+      }
 
-    /* &.row {
-      flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-    } */
+      .full-tag {
+        + .full-stack,
+        + .full-form {
+          margin-left: var(--full-space-4);
+        }
+      }
 
-    &:where(.split .start) {
-      @media (min-width: 1024px) {
-        position: sticky;
-        top: var(--space-5);
+      .full-button {
+        + .full-button {
+          margin-left: var(--full-space-2);
+        }
       }
     }
+  }
 
-    &.column {
-      flex-direction: column;
+  .full-layout-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: var(--full-y);
+    align-items: var(--full-x);
+    text-align: var(--full-x);
+
+    > * > * {
+      text-align: left;
     }
 
-    &.row {
-      flex-direction: row;
-      flex-wrap: wrap;
+    > {
+      .full-tag {
+        + .full-deck,
+        + .full-image,
+        + .full-icon {
+          margin-top: var(--full-space-5);
+        }
+      }
+
+      .full-tag {
+        + .full-stack,
+        + .full-form,
+        + .full-button {
+          margin-top: var(--full-space-4);
+        }
+      }
+
+      .full-deck,
+      .full-image,
+      .full-icon {
+        + .full-tag {
+          margin-top: var(--full-space-5);
+        }
+      }
+
+      .full-button {
+        + .full-button {
+          margin-top: var(--full-space-2);
+        }
+      }
+
+      .full-paragraph {
+        + .full-paragraph,
+        + .full-label,
+        + .full-input {
+          margin-top: var(--full-space-2);
+        }
+      }
+
+      .full-tagline {
+        + .full-paragraph,
+        + .full-heading,
+        + .full-label,
+        + .full-input {
+          margin-top: var(--full-space-3);
+        }
+      }
+
+      .full-heading {
+        + .full-paragraph {
+          margin-top: var(--full-space-3);
+        }
+      }
+
+      .full-label {
+        + .full-input {
+          margin-top: var(--full-space-1);
+        }
+      }
+
+      .full-input {
+        + .full-input,
+        + .full-button,
+        + .full-label {
+          margin-top: var(--full-space-3);
+        }
+      }
     }
+  }
+
+  .full-layout-split {
+    display: grid;
+    column-gap: var(--full-space-6);
+    justify-content: var(--full-x);
+    align-items: var(--full-y);
+
+    @media (min-width: 1024px) {
+      grid-auto-columns: 1fr;
+      grid-auto-flow: column;
+    }
+
+    & > * {
+      margin: 0;
+    }
+  }
+
+  .full-x-start {
+    --full-x: flex-start;
+  }
+
+  .full-x-center {
+    --full-x: center;
+  }
+
+  .full-x-end {
+    --full-x: flex-end;
+  }
+
+  .full-x-between {
+    --full-x: space-between;
+  }
+
+  .full-x-stretch {
+    --full-x: stretch;
+  }
+
+  .full-y-start {
+    --full-y: flex-start;
+  }
+
+  .full-y-center {
+    --full-y: center;
+  }
+
+  .full-y-end {
+    --full-y: flex-end;
+  }
+
+  .full-y-between {
+    --full-y: space-between;
+  }
+
+  .full-y-stretch {
+    --full-y: stretch;
   }
 </style>

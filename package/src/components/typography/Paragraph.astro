@@ -8,24 +8,30 @@ type Props<As extends HTMLTag = 'p'> = ComponentProps<typeof Tag<As>> &
     variant?: 'lowered' | 'accent'
   }
 
-const { as = 'p', variant, ...rest } = Astro.props
+const { as = 'p', variant = 'lowered', ...rest } = Astro.props
 ---
 
 <Tag
-  class:list={['full-paragraph', variant]}
+  class:list={[
+    'full-paragraph',
+    {
+      [`full-variant-${variant}`]: variant,
+    },
+  ]}
   {as}
   {...rest}
 >
   <slot name="before" />
   <Children {...rest} />
   <slot />
-  <slot name="after" />
 </Tag>
 
 <style is:global>
   .full-paragraph {
-    color: var(--full-foreground);
-    font: var(--text-2);
+    color: var(--full-color-foreground);
+    font-weight: var(--full-font-weight);
+    font-size: var(--full-text-2);
     line-height: 1.625;
+    font-family: var(--full-font-family);
   }
 </style>

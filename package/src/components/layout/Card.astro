@@ -2,69 +2,48 @@
 import type { ComponentProps, HTMLTag } from 'astro/types'
 import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
+import Stack from './Stack.astro'
 
 type Props<As extends HTMLTag = 'header'> = ComponentProps<typeof Tag<As>> &
   ComponentProps<typeof Children> & {
-    frame?: 'fill' | 'panel' | 'screen'
     variant?: 'ghost' | 'soft' | 'solid'
-    direction?: 'row' | 'column'
+    frame?: 'fill' | 'panel' | 'screen'
+    ratio?: 'landscape' | 'portrait' | 'square' | number
   }
 
-const {
-  variant,
-  frame,
-  direction = 'column',
-  align = 'start',
-  ...rest
-} = Astro.props
+const { compact = true, variant, frame, ratio, ...rest } = Astro.props
 ---
 
-<Tag
-  class:list={['full-card full-layout', variant, frame, direction, align]}
-  compact
+<Stack
+  class:list={[
+    'full-card',
+    {
+      [`full-frame-${frame}`]: frame,
+      [`full-variant-${variant}`]: variant,
+      [`full-ratio-${ratio}`]: ratio,
+    },
+  ]}
+  {compact}
   {...rest}
 >
   <slot name="before" />
-  <Children {...rest} />
   <slot />
-  <slot name="after" />
-</Tag>
+</Stack>
 
 <style is:global>
   .full-card {
-    display: flex;
     position: relative;
-    flex-direction: column;
-    justify-content: stretch;
     overflow: hidden;
-    background-color: var(--full-background);
 
-    &:is(a) {
-      &:hover > .image {
-        opacity: 0.85;
+    /* &:is(a) */
+    &[href] {
+      cursor: pointer;
+
+      &:hover {
+        > .full-image {
+          opacity: 0.85;
+        }
       }
-
-      &:active {
-        transform: scale(0.95);
-      }
-    }
-
-    &.start {
-      align-items: flex-start;
-      /* text-align: left; */
-    }
-
-    &.stretch {
-      align-items: stretch;
-    }
-
-    &.center {
-      align-items: center;
-      text-align: center;
-    }
-
-    &.end {
-      align-items: flex-end;
     }
 
     /* TODO add child paddings/margin */
@@ -73,23 +52,13 @@ const {
     /* I prefer negative margin (inset) on media if this works */
     &.panel {
       gap: 0;
-      border-radius: calc(var(--radius-3) * 3);
+      border: 1px solid var(--full-color-border);
+      border-radius: var(--radius-3);
+      padding: var(--full-space-5);
       overflow: hidden;
-      padding: var(--space-5);
-      border: 1px solid var(--full-border);
-
-      &:is(a) {
-        &:hover {
-          background: var(--color-3);
-        }
-
-        &:active {
-          background: var(--color-4);
-        }
-      }
     }
 
-      /* &.subtle,
+    /* &.subtle,
       &.surface {
         background-color: var(--color-2);
 
@@ -132,19 +101,16 @@ const {
       }
     } */
 
-    &.landscape {
+    &.full-ratio-landscape {
       aspect-ratio: 4/3;
-      object-fit: cover;
     }
 
-    &.square {
+    &.full-ratio-square {
       aspect-ratio: 1/1;
-      object-fit: cover;
     }
 
-    &.portrait {
+    &.full-ratio-portrait {
       aspect-ratio: 3/4;
-      object-fit: cover;
     }
   }
 </style>

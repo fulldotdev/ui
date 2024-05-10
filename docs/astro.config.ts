@@ -26,6 +26,7 @@ export default defineConfig({
       components: {
         // Relative path to the custom component.
         Head: './src/components/Head.astro',
+        // Header: './src/components/Header.astro',
       },
       sidebar: [
         {

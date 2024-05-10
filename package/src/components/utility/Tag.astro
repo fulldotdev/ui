@@ -1,5 +1,6 @@
 ---
 import type { HTMLTag, Polymorphic } from 'astro/types'
+import { attributesSchema } from '../../schemas/attributesSchema'
 
 type Props<As extends HTMLTag = 'div'> = Omit<
   Polymorphic<{ as: As }>,
@@ -9,6 +10,7 @@ type Props<As extends HTMLTag = 'div'> = Omit<
   color?: string
   scheme?: 'light' | 'dark'
   compact?: boolean
+  density?: 'base' | 'compact'
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 }
 
@@ -18,6 +20,7 @@ const {
   color,
   scheme,
   compact,
+  density,
   size,
   ...rest
 } = Astro.props
@@ -29,8 +32,17 @@ const hasSlot = slot?.trim().length > 0
 {
   (hasSlot || ifProp) && (
     <As
-      class:list={['full-tag']}
-      {...rest}
+      class:list={[
+        'full-tag',
+        {
+          [`full-scheme-${scheme}`]: scheme,
+          [`full-color-${color}`]: color,
+          [`full-size-${size}`]: size,
+          [`full-density-${density}`]: density,
+          [`full-compact`]: compact,
+        },
+      ]}
+      {...attributesSchema.parse(rest)}
     >
       <Fragment set:html={slot} />
     </As>

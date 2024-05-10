@@ -1,135 +1,93 @@
 ---
 import type { ComponentProps, HTMLTag } from 'astro/types'
+import Stack from '../layout/Stack.astro'
 import Children from '../utility/Children.astro'
-import Tag from '../utility/Tag.astro'
 
-type Props<As extends HTMLTag = 'div'> = ComponentProps<typeof Tag<As>> &
+type Props<As extends HTMLTag = 'div'> = ComponentProps<typeof Stack<As>> &
   ComponentProps<typeof Children> & {
-    direction?: 'row' | 'column'
-    align?: 'start' | 'center'
-    frame?: 'screen' | 'panel'
     variant?: 'solid' | 'soft' | 'ghost'
-    layout: 'grid' | 'flex'
+    frame?: 'viewport' | 'panel'
+    reverse?: true | 'odd' | 'even'
   }
 
-const {
-  as = 'section',
-  direction = 'column',
-  variant,
-  frame,
-  layout = 'grid',
-  align,
-  ...rest
-} = Astro.props
+const { as = 'section', reverse, variant, frame, ...rest } = Astro.props
 ---
 
-<Tag
+<Stack
+  class:list={[
+    'full-section',
+    {
+      [`full-variant-${variant}`]: variant,
+      [`full-frame-${frame}`]: frame,
+      [`full-reverse-${reverse}`]: reverse,
+    },
+  ]}
   {as}
   {...rest}
-  class:list={[
-    'full-section full-layout',
-    direction,
-    align,
-    frame,
-    variant,
-    layout,
-  ]}
 >
   <slot name="before" />
-  <Children {...rest} />
   <slot />
-  <slot name="after" />
-</Tag>
+</Stack>
 
 <style is:global>
   .full-section {
-    display: flex;
     position: relative;
-    flex-direction: column;
-    order: 0;
-    background: var(--full-background);
-    padding: var(--spacer) var(--gutter);
+    background: var(--full-color-background);
+    padding: var(--full-space-spacer) var(--full-space-gutter);
+    width: 100%;
     overflow-x: hidden;
 
     /* &:first-child {
-      margin-top: 0;
-      padding-top: var(--space-6);
+      padding-top: var(--full-space-5);
+    }
+
+    &:last-child {
+      padding-bottom: var(--full-space-5);
     } */
+  }
 
-    &.reverse > *:first-child {
-      order: 2;
-    }
+  .full-reverse-true {
+    --full-reverse: 1;
+  }
 
-    &.switch:nth-child(even) > *:first-child {
-      @media (min-width: 1024px) {
-        order: 2;
+  .full-reverse-even:nth-child(even) {
+    --full-reverse: 1;
+  }
+
+  .full-reverse-odd:nth-child(odd) {
+    --full-reverse: 1;
+  }
+
+  .full-reverse-even,
+  .full-reverse-odd,
+  .full-reverse-true {
+    @media (min-width: 1024px) {
+      > .full-tag {
+        order: 0;
+
+        &:first-child {
+          order: var(--full-reverse, 0);
+        }
+
+        &:last-child {
+          order: calc(var(--full-reverse, 0) * -1);
+        }
       }
     }
+  }
 
-    &.column {
-      display: flex;
-      flex-direction: column;
-    }
+  .full-frame-viewport {
+    height: auto;
+    min-height: 100vh;
+  }
 
-    &.row.grid {
-      display: grid;
-      column-gap: var(--gutter);
-      align-items: center;
-
-      @media (min-width: 1024px) {
-        grid-auto-columns: 1fr;
-        grid-auto-flow: column;
-      }
-
-      & > * {
-        margin: 0 !important;
-      }
-    }
-
-    &.row.flex {
-      display: flex;
-      align-items: center;
-    }
-
-    &.start {
-      align-items: flex-start;
-    }
-
-    &.stretch {
-      align-items: stretch;
-    }
-
-    &.center {
-      align-items: center;
-      text-align: center;
-
-      & > * > * {
-        text-align: left;
-      }
-    }
-
-    &.end {
-      align-items: flex-end;
-    }
-
-    &.panel {
-      margin: var(--space-6) var(--gutter);
-      border-width: var(--border-width);
-      border-color: var(--border-color);
-      border-radius: var(--radius);
-      border-radius: var(--radius-2);
-      background: var(--full-background);
-      padding: var(--space-5) var(--gutter);
-      padding: 0;
-    }
-
-    &.screen {
-      min-height: 100vh;
-    }
-
-    /* .button.outline {
-        border-color: var(--color-7) !important;
-        color: var(--color-fg) !important;
-      } */
+  &.full-frame-panel {
+    margin: var(--full-space-5) var(--full-space-gutter);
+    border-width: var(--border-width);
+    border-color: var(--border-color);
+    border-radius: var(--radius-2);
+    background: var(--full-color-background);
+    padding: var(--full-space-5) var(--full-space-gutter);
+    padding: 0;
   }
 </style>
