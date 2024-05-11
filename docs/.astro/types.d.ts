@@ -227,6 +227,41 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"foundation/body.mdx": {
+	id: "foundation/body.mdx";
+  slug: "foundation/body";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"foundation/children.mdx": {
+	id: "foundation/children.mdx";
+  slug: "foundation/children";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"foundation/head.mdx": {
+	id: "foundation/head.mdx";
+  slug: "foundation/head";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"foundation/page.mdx": {
+	id: "foundation/page.mdx";
+  slug: "foundation/page";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"foundation/tag.mdx": {
+	id: "foundation/tag.mdx";
+  slug: "foundation/tag";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "layout/card.mdx": {
 	id: "layout/card.mdx";
   slug: "layout/card";
@@ -325,6 +360,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"overview/components-old.mdx": {
+	id: "overview/components-old.mdx";
+  slug: "overview/components-old";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "overview/components.mdx": {
 	id: "overview/components.mdx";
   slug: "overview/components";
@@ -346,9 +388,9 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"overview/usage.mdx": {
-	id: "overview/usage.mdx";
-  slug: "overview/usage";
+"overview/theming.mdx": {
+	id: "overview/theming.mdx";
+  slug: "overview/theming";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -419,41 +461,6 @@ declare module 'astro:content' {
 "typography/text.mdx": {
 	id: "typography/text.mdx";
   slug: "typography/text";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"utility/body.mdx": {
-	id: "utility/body.mdx";
-  slug: "utility/body";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"utility/children.mdx": {
-	id: "utility/children.mdx";
-  slug: "utility/children";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"utility/head.mdx": {
-	id: "utility/head.mdx";
-  slug: "utility/head";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"utility/page.mdx": {
-	id: "utility/page.mdx";
-  slug: "utility/page";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"utility/tag.mdx": {
-	id: "utility/tag.mdx";
-  slug: "utility/tag";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
