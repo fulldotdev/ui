@@ -1,5 +1,4 @@
 import starlight from '@astrojs/starlight'
-import fullui from '@fullui/ui/integration'
 // @ts-ignore
 import liveCode from 'astro-live-code'
 import { defineConfig } from 'astro/config'
@@ -24,10 +23,9 @@ export default defineConfig({
       favicon: './favicon.png',
       customCss: ['./src/css/custom.css', '@fullui/ui/css'],
       components: {
-        // Relative path to the custom component.
         Head: './src/components/Head.astro',
-        // Header: './src/components/Header.astro',
       },
+      pagefind: false,
       sidebar: [
         {
           label: 'Overview',
@@ -36,11 +34,17 @@ export default defineConfig({
           },
         },
         {
-          label: 'Theme',
+          label: 'Foundation',
           autogenerate: {
-            directory: 'theme',
+            directory: 'foundation',
           },
         },
+        // {
+        //   label: 'Theme',
+        //   autogenerate: {
+        //     directory: 'theme',
+        //   },
+        // },
         {
           label: 'Base',
           autogenerate: {
@@ -59,26 +63,7 @@ export default defineConfig({
             directory: 'layout',
           },
         },
-        {
-          label: 'Utility',
-          autogenerate: {
-            directory: 'utility',
-          },
-        },
       ],
-    }),
-    fullui({
-      color: {
-        base: 'slate',
-        accent: 'indigo',
-      },
-      font: {
-        heading: 'IMB Plex Sans:700',
-        subheading: 'IMB Plex Sans:700',
-        text: 'IMB Plex Sans:400',
-        tagline: 'IMB Plex Sans:400',
-        button: 'IMB Plex Sans:500',
-      },
     }),
     liveCode({
       layout: '/src/components/LiveCodeLayout.astro',

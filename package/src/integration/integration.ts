@@ -32,7 +32,7 @@ export default function fulluiIntegration(userConfig: any): AstroIntegration {
   const config: any = mergeDeep(defaultConfig || {}, userConfig || {})
 
   return {
-    name: '@fullui/ui/integration',
+    name: '/integration',
     hooks: {
       'astro:config:setup': async ({
         // config: astroConfig,
@@ -43,23 +43,18 @@ export default function fulluiIntegration(userConfig: any): AstroIntegration {
           vite: {
             plugins: [
               virtual({
-                'virtual:@fullui/ui/config': `export default ${JSON.stringify(config)}`,
+                'virtual:/config': `export default ${JSON.stringify(config)}`,
               }) as any,
             ],
             css: {
               postcss: {
                 plugins: [postcssNesting, postcssPresetEnv, autoprefixer],
               },
-              preprocessorOptions: {
-                styl: {
-                  additionalData: `config = ${JSON.stringify(config, null, 2)}`,
-                },
-              },
             },
           },
         })
 
-        injectScript('page-ssr', 'import "@fullui/ui/css";')
+        // injectScript('page-ssr', 'import "@fullui/ui/css";')
       },
     },
   }

@@ -1,5 +1,6 @@
 ---
 import type { HTMLTag, Polymorphic } from 'astro/types'
+import '../../css/main.css'
 import { attributesSchema } from '../../schemas/attributesSchema'
 
 type Props<As extends HTMLTag = 'div'> = Omit<
@@ -8,9 +9,8 @@ type Props<As extends HTMLTag = 'div'> = Omit<
 > & {
   if?: any
   color?: string
-  scheme?: 'light' | 'dark'
+  theme?: 'light' | 'dark'
   compact?: boolean
-  density?: 'base' | 'compact'
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 }
 
@@ -18,9 +18,8 @@ const {
   as: As = 'div',
   if: ifProp,
   color,
-  scheme,
+  theme,
   compact,
-  density,
   size,
   ...rest
 } = Astro.props
@@ -35,10 +34,9 @@ const hasSlot = slot?.trim().length > 0
       class:list={[
         'full-tag',
         {
-          [`full-${scheme}`]: scheme,
+          [`full-theme-${theme}`]: theme,
           [`full-color-${color}`]: color,
           [`full-size-${size}`]: size,
-          [`full-density-${density}`]: density,
           [`full-compact`]: compact,
         },
       ]}
@@ -48,3 +46,10 @@ const hasSlot = slot?.trim().length > 0
     </As>
   )
 }
+
+<style>
+  .full-tag {
+    margin: 0;
+    padding: 0;
+  }
+</style>

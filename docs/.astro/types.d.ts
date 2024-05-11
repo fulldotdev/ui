@@ -346,6 +346,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"overview/usage.mdx": {
+	id: "overview/usage.mdx";
+  slug: "overview/usage";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "theme/color.mdx": {
 	id: "theme/color.mdx";
   slug: "theme/color";
