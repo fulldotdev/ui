@@ -4,13 +4,20 @@ import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
 
 type Props<As extends HTMLTag = 'a'> = ComponentProps<typeof Tag<As>> &
-  ComponentProps<typeof Children>
+  ComponentProps<typeof Children> & {
+    variant?: 'base' | 'lowered'
+  }
 
 const { as = 'a', ...rest } = Astro.props
 ---
 
 <Tag
-  class:list={['full-link']}
+  class:list={[
+    'full-link',
+    {
+      [`full-variant-${variant}`]: variant,
+    },
+  ]}
   {as}
   {...rest}
 >

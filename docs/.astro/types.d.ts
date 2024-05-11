@@ -444,9 +444,9 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"typography/subtext.mdx": {
-	id: "typography/subtext.mdx";
-  slug: "typography/subtext";
+"typography/paragraph.mdx": {
+	id: "typography/paragraph.mdx";
+  slug: "typography/paragraph";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -458,9 +458,9 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"typography/text.mdx": {
-	id: "typography/text.mdx";
-  slug: "typography/text";
+"typography/tagline.mdx": {
+	id: "typography/tagline.mdx";
+  slug: "typography/tagline";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
