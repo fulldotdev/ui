@@ -2,6 +2,7 @@
 import type { ComponentProps, HTMLTag } from 'astro/types'
 import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
+import Icon from './Icon.astro'
 
 type Props<As extends HTMLTag = 'select'> = ComponentProps<typeof Tag<As>> &
   ComponentProps<typeof Children>
@@ -9,31 +10,41 @@ type Props<As extends HTMLTag = 'select'> = ComponentProps<typeof Tag<As>> &
 const { as = 'select', options, ...rest } = Astro.props
 ---
 
-<Tag
-  if={options}
-  {as}
-  class:list={['full-select full-input']}
-  {...rest}
->
-  <slot name="before" />
-  <Children
-    {options}
+<div class="full-select-wrapper">
+  <Tag
+    if={options}
+    {as}
+    class:list={['full-select full-input']}
     {...rest}
+  >
+    <slot name="before" />
+    <Children
+      {options}
+      {...rest}
+    />
+    <slot />
+  </Tag>
+  <Icon
+    class="full-select-icon"
+    name="chevron-down"
   />
-  <slot />
-</Tag>
+</div>
 
 <style is:global>
   .full-select {
-    /* transition: var(--full-input-transition);
-    border-radius: var(--full-border-radius-1);
-    background-color: var(--full-input-background);
-    padding: var(--full-space-2) var(--full-space-3);
-    height: var(--element-2);
-    color: var(--full-input-foreground);
-    font: var(--full-text-1);
-    font-weight: var(--font-weight);
-    line-height: 1.25;
-    font-family: var(--font-family); */
+    appearance: none;
+  }
+
+  .full-select-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  .full-select-icon {
+    position: absolute;
+    top: var(--full-element-3);
+    right: var(--full-element-2);
+    bottom: var(--full-element-3);
+    height: var(--full-text-1);
   }
 </style>
