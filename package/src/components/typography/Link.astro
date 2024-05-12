@@ -1,28 +1,21 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
-import Children from '../utility/Children.astro'
+import type { ComponentProps } from 'astro/types'
+import Test from '../base/Test.astro'
 import Tag from '../utility/Tag.astro'
 
-type Props<As extends HTMLTag = 'a'> = ComponentProps<typeof Tag<As>> &
-  ComponentProps<typeof Children> & {
-    color?: 'base' | 'lowered'
-  }
+type Props<As extends 'a' | 'button' = 'a'> = ComponentProps<typeof Tag<As>> &
+  ComponentProps<typeof Test<'text' | 'html'>>
 
-const { as = 'a', variant, ...rest } = Astro.props
+const { as = 'a', ...rest } = Astro.props
 ---
 
 <Tag
-  class:list={[
-    'full-link',
-    {
-      [`full-color-${variant}`]: variant,
-    },
-  ]}
+  class:list={['full-link']}
   {as}
   {...rest}
 >
   <slot name="before" />
-  <Children {...rest} />
+  <Test {...rest} />
   <slot />
 </Tag>
 

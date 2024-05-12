@@ -1,0 +1,49 @@
+---
+import type { ComponentProps } from 'astro/types'
+import { pascal } from 'radash'
+import Stack from '../layout/Stack.astro'
+import Link from '../typography/Link.astro'
+
+const components = {
+  Link,
+  Stack,
+}
+
+type Components = typeof components
+
+type PrefixedComponents = {
+  [Key in keyof Components as `${string}${Key}`]: Components[Key]
+}
+
+type Props<Child extends keyof Components | 'html' | 'text'> = {
+  [Key in Child & keyof Components]?: ComponentProps<Components[Key]>
+} & {
+  [Key in Child & `${string}${keyof Components}`]?: ComponentProps<
+    PrefixedComponents[Key]
+  >
+} & {
+  [Key in Child & ('html' | 'text') as
+    | 'html'
+    | 'text'
+    | `${string}Html`
+    | `${string}Text`]?: string
+}
+---
+
+{
+  Object.entries(Astro.props).map(([key, value]) => {
+    const lastPart = key.split(/(?=[A-Z])/).pop()
+    if (!lastPart) return null
+    const part = pascal(lastPart)
+
+    if (part === 'Text') return value
+    if (part === 'Html') return <Fragment set:html={value} />
+
+    if (part in components) {
+      const Component = components[part as keyof Components]
+      return <Component {...(value as any)} />
+    }
+
+    return null
+  })
+}

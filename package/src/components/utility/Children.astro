@@ -1,140 +1,176 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import * as cheerio from 'cheerio'
-import { unflatten } from 'flat'
-import { isArray, isObject } from 'radash'
-import Badge from '../base/Badge.astro'
-import Button from '../base/Button.astro'
-import Checkbox from '../base/Checkbox.astro'
-import Icon from '../base/Icon.astro'
-import Image from '../base/Image.astro'
-import Input from '../base/Input.astro'
-import Item from '../base/Item.astro'
-import Label from '../base/Label.astro'
-import Logo from '../base/Logo.astro'
-import Option from '../base/Option.astro'
-import Rating from '../base/Rating.astro'
-import Select from '../base/Select.astro'
-import Textarea from '../base/Textarea.astro'
-import Video from '../base/Video.astro'
-import Card from '../layout/Card.astro'
-import Deck from '../layout/Deck.astro'
-import Field from '../layout/Field.astro'
-import Footer from '../layout/Footer.astro'
-import Form from '../layout/Form.astro'
-import Header from '../layout/Header.astro'
-import Main from '../layout/Main.astro'
-import Prose from '../layout/Prose.astro'
-import Section from '../layout/Section.astro'
-import Stack from '../layout/Stack.astro'
-import Heading from '../typography/Heading.astro'
-import Link from '../typography/Link.astro'
-import Paragraph from '../typography/Paragraph.astro'
-import DecorativeBox from './DecorativeBox.astro'
-import Tag from './Tag.astro'
+import type { HTMLTag } from 'astro/types'
 
-type Html = {
-  html?: string
+// type String = 'hello'
+// type Cap = Capitalize<String>
+
+// const components = {
+//   Heading,
+//   Paragraph,
+// }
+
+// type Components = typeof components
+
+// type PrefixedComponents = {
+//   [Key in keyof Components as `${string}${Key}`]: Components[Key]
+// }
+
+// type LowercaseComponents = {
+//   [Key in keyof Components as Lowercase<Key>]: Components[Key]
+// }
+
+// type ExtendedComponents = Components & PrefixedComponents & LowercaseComponents
+
+// const testcomp: AstroComponentFactory = Heading
+
+type Props<As extends HTMLTag> = {
+  as?: As
 } & {
-  [key: string]: any
+  [Key in As]?: 'good'
 }
 
-type Child = {
-  component?: keyof typeof COMPONENTS
-  as?: ComponentProps<typeof Tag>['as']
-} & {
-  [key: string]: any
-}
+// type Props = {
+//   children?: (keyof Components)[]
+// } & {
+//   [Key in keyof ExtendedComponents]?: ComponentProps<ExtendedComponents[Key]>
+// }
 
-type Props =
-  | Html
-  | (Html & {
-      [key: string]: Child | Props
-    })
+// type Props<Children extends Record<string, any>> = {
+//   children?: Children
+// } & {
+//   [Key in keyof Children]?: any
+// }
 
-const COMPONENTS = {
-  Heading,
-  Paragraph,
-  Badge,
-  DecorativeBox,
-  Button,
-  Card,
-  Checkbox,
-  Stack,
-  Deck,
-  Field,
-  Footer,
-  Form,
-  Main,
-  Header,
-  Icon,
-  Image,
-  Input,
-  Label,
-  Link,
-  Logo,
-  Option,
-  Prose,
-  Rating,
-  Section,
-  Select,
-  Item,
-  Textarea,
-  Video,
-}
+// type Props<Children extends Record<string, any>> = {
+//   children?: Children
+// } & Children & {
+//     [Key: string]: any
+//   }
 
-const { ...rest } = unflatten(Astro.props) as typeof Astro.props
+// const test: Props = {
+//   Heading: {
+//     color: 'lowered',
+//   },
+//   secondHeading: {
+//     color: 'lowered',
+//   },
+//   Paragraph: {
+//     color: 'base',
+//   },
+//   secondParagraph: {
+//     color: 'lowered',
+//   },
+// }
 
-const keyToComponentName = (key?: string) => {
-  if (!key) return
-  const part = key.split(/(?=[A-Z])/).pop() ?? key
-  const correctedPart = part.charAt(0).toUpperCase() + part.slice(1)
-  if (correctedPart && correctedPart in COMPONENTS)
-    return correctedPart as keyof typeof COMPONENTS
-  return
-}
+// type ExtractComponentName<S> = S extends `${infer Prefix}${ComponentName}`
+//   ? ComponentName
+//   : never
+
+// type SecondProps = {
+//   [Key in `${string}${ComponentName}`]?: ComponentProps<
+//     Components[ExtractComponentName<Key>]
+//   >
+// }
+
+// type ChildProps<Name extends string, Value extends AstroGlobal[]> = {
+//   [Key in
+//     | keyof Name
+//     | `${string}${Name}`
+//     | Lowercase<Name>]?: ComponentProps<Value>
+// }
+
+// type ParagraphProps = ChildProps<'Paragraph', ComponentProps<typeof Paragraph>>
+
+// const par: ParagraphProps = {
+//   Paragraph: {
+//     color: 'lowered',
+//   },
+// }
+
+// type MyCoolType = ComponentProps<typeof isAstroComponentFactory>
+
+// type ComponentName = 'Heading' | 'Paragraph'
+// interface Components {
+//   Heading: { color: string; size: number }
+//   Paragraph: { color: string; length: number }
+// }
+
+// type ComponentProps<T> = T
+
+// type ExtendedComponentName = ComponentName | `Custom${ComponentName}`
+
+// type Props = {
+//   [Key in ExtendedComponentName]?: ComponentProps<
+//     Components[Extract<Key, ComponentName>]
+//   >
+// }
+
+// type SecondProps = {
+//   [Key in `${infer}${ComponentName}`]?: Key extends ComponentName
+//     ? ComponentProps<Components[Key]>
+//     : never
+// }
+
+// const test: Props = {
+//   Heading: {
+//     color: 'lowered',
+//   },
+// }
+
+// const test2: SecondProps = {
+//   myHeading: {
+//     color: 'test',
+//   },
+// }
+
+// type ParagraphProps = ComponentProps<Components['Paragraph']>
+
+// const { ...rest } = unflatten(Astro.props) as typeof Astro.props
+
+// const keyToComponentName = (key?: string) => {
+//   if (!key) return
+//   const part = key.split(/(?=[A-Z])/).pop() ?? key
+//   const correctedPart = part.charAt(0).toUpperCase() + part.slice(1)
+//   if (correctedPart && correctedPart in COMPONENTS)
+//     return correctedPart as keyof typeof COMPONENTS
+//   return
+// }
 ---
 
 {
-  Object.entries(rest).map(([key, value]) => {
-    if (key === 'text') return value
-    if (key === 'html') {
-      if (!value) return null
-      const $ = cheerio.load(value, null, false)
-      $('h1,h2,h3,h4,h5,h6').addClass('full-heading full-tag')
-      $('p').addClass('full-paragraph full-tag')
-      const html = $.html()
-      return <Fragment set:html={html} />
-    }
-
-    if (isArray(value)) {
-      const object = value.reduce((acc, v, i) => ({ ...acc, [i]: v }), {})
-      return <Astro.self {...object} />
-    }
-
-    if (value.component && value.component in COMPONENTS) {
-      const component = value.component as keyof typeof COMPONENTS
-      const Component = component && COMPONENTS[component]
-      return <Component {...value} />
-    }
-
-    if (keyToComponentName(key)) {
-      const component = keyToComponentName(key) as keyof typeof COMPONENTS
-      const Component = component && COMPONENTS[component]
-      return <Component {...value} />
-    }
-
-    if (value.as)
-      return (
-        <Tag {...value}>
-          <Astro.self {...value} />
-        </Tag>
-      )
-
-    if (isObject(value)) return <Astro.self {...value} />
-
-    return null
-  })
+  //   Object.entries(rest).map(([key, value]) => {
+  //     if (key === 'text') return value
+  //     if (key === 'html') {
+  //       if (!value) return null
+  //       const $ = cheerio.load(value, null, false)
+  //       $('h1,h2,h3,h4,h5,h6').addClass('full-heading full-tag')
+  //       $('p').addClass('full-paragraph full-tag')
+  //       const html = $.html()
+  //       return <Fragment set:html={html} />
+  //     }
+  //     if (isArray(value)) {
+  //       const object = value.reduce((acc, v, i) => ({ ...acc, [i]: v }), {})
+  //       return <Astro.self {...object} />
+  //     }
+  //     if (value.component && value.component in COMPONENTS) {
+  //       const component = value.component as keyof typeof COMPONENTS
+  //       const Component = component && COMPONENTS[component]
+  //       return <Component {...value} />
+  //     }
+  //     if (keyToComponentName(key)) {
+  //       const component = keyToComponentName(key) as keyof typeof COMPONENTS
+  //       const Component = component && COMPONENTS[component]
+  //       return <Component {...value} />
+  //     }
+  //     if (value.as)
+  //       return (
+  //         <Tag {...value}>
+  //           <Astro.self {...value} />
+  //         </Tag>
+  //       )
+  //     if (isObject(value)) return <Astro.self {...value} />
+  //     return null
+  //   })
+  // }
+  // <style></style>
 }
-
-<style></style>
