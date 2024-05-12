@@ -1,234 +1,45 @@
 ---
-import '../../css/main.css'
-import Children from '../utility/Children.astro'
-import Tag from '../utility/Tag.astro'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { Childmorphic } from '../../types/Childmorphic'
+import type Card from './Card.astro'
+import type Deck from './Deck.astro'
+import type Footer from './Footer.astro'
+import type Form from './Form.astro'
+import type Header from './Header.astro'
+import type Main from './Main.astro'
+import type Nav from './Nav.astro'
+import type Section from './Section.astro'
+import { default as Layout } from './_Layout.astro'
 
-// type Props<As extends 'div' | 'section' | 'main' | 'aside' = 'div'> =
-//   ComponentProps<typeof Tag<As>> &
-//     ComponentProps<typeof Test<'html' | 'Stack' | 'Heading' | 'Paragraph'>> & {
-//       layout?: 'row' | 'column' | 'split'
-//       x?: 'start' | 'center' | 'end' | 'between' | 'stretch'
-//       y?: 'start' | 'center' | 'end' | 'between' | 'stretch'
-//     }
+type Props<As extends HTMLTag> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Layout> &
+  Childmorphic<{
+    card: ComponentProps<typeof Card>
+    deck: ComponentProps<typeof Deck>
+    footer: ComponentProps<typeof Footer>
+    form: ComponentProps<typeof Form>
+    header: ComponentProps<typeof Header>
+    main: ComponentProps<typeof Main>
+    nav: ComponentProps<typeof Nav>
+    section: ComponentProps<typeof Section>
+    stack: Props<As>
+  }>
 
-interface Props {
-  [key: `${string}Stack`]: Props
-  Stack: Props
-  stack: Props
-  layout?: 'row' | 'column' | 'split'
-  x?: 'start' | 'center' | 'end' | 'between' | 'stretch'
-  y?: 'start' | 'center' | 'end' | 'between' | 'stretch'
-}
-
-// type Props<As extends HTMLTag = 'div'> = ComponentProps<typeof Tag<As>> &
-//   ComponentProps<typeof Children> & {
-//     layout?: 'row' | 'column' | 'split'
-//     x?: 'start' | 'center' | 'end' | 'between' | 'stretch'
-//     y?: 'start' | 'center' | 'end' | 'between' | 'stretch'
-//   }
-
-const { layout = 'column', x = 'start', y = 'start', ...rest } = Astro.props
+const { as = 'main', ...rest } = Astro.props
 ---
 
-<Tag
-  class:list={[
-    'full-stack',
-    {
-      [`full-layout-${layout}`]: layout,
-      [`full-x-${x}`]: x,
-      [`full-y-${y}`]: y,
-    },
-  ]}
+<Layout
+  class:list={['full-stack']}
+  {as}
   {...rest}
 >
   <slot name="before" />
-  <Children {...rest} />
   <slot />
-</Tag>
+</Layout>
 
 <style is:global lang="scss">
-  .full-stack {
-  }
-
-  .full-layout-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: var(--full-x);
-    align-items: var(--full-y);
-
-    > {
-      .full-tag {
-        + .full-deck,
-        + .full-image,
-        + .full-icon {
-          margin-left: var(--space-5);
-        }
-      }
-
-      .full-deck,
-      .full-image,
-      .full-icon {
-        + .full-tag {
-          margin-left: var(--space-5);
-        }
-      }
-
-      .full-tag {
-        + .full-stack,
-        + .full-form {
-          margin-left: var(--space-4);
-        }
-      }
-
-      .full-button {
-        + .full-button {
-          margin-left: var(--space-2);
-        }
-      }
-    }
-  }
-
-  .full-layout-column {
+  .full-main {
     display: flex;
     flex-direction: column;
-    justify-content: var(--full-y);
-    align-items: var(--full-x);
-    text-align: var(--full-x);
-
-    > * > * {
-      text-align: left;
-    }
-
-    > {
-      .full-tag {
-        + .full-deck,
-        + .full-image,
-        + .full-icon {
-          margin-top: var(--space-5);
-        }
-      }
-
-      .full-tag {
-        + .full-stack,
-        + .full-form,
-        + .full-button {
-          margin-top: var(--space-4);
-        }
-      }
-
-      .full-rating {
-        + .full-tag {
-          margin-top: var(--space-4);
-        }
-      }
-
-      .full-deck,
-      .full-image,
-      .full-icon {
-        + .full-tag {
-          margin-top: var(--space-5);
-        }
-      }
-
-      .full-button {
-        + .full-button {
-          margin-top: var(--space-2);
-        }
-      }
-
-      .full-paragraph {
-        + .full-paragraph,
-        + .full-label,
-        + .full-input {
-          margin-top: var(--space-2);
-        }
-      }
-
-      .full-tagline {
-        + .full-paragraph,
-        + .full-heading,
-        + .full-label,
-        + .full-input {
-          margin-top: var(--space-3);
-        }
-      }
-
-      .full-heading {
-        + .full-paragraph {
-          margin-top: var(--space-3);
-        }
-      }
-
-      .full-label {
-        + .full-input {
-          margin-top: var(--space-1);
-        }
-      }
-
-      .full-input {
-        + .full-input,
-        + .full-button,
-        + .full-label {
-          margin-top: var(--space-3);
-        }
-      }
-    }
-  }
-
-  .full-layout-split {
-    display: grid;
-    column-gap: var(--space-6);
-    row-gap: var(--space-5);
-    justify-content: var(--full-x);
-    align-items: var(--full-y);
-
-    @media (min-width: 1024px) {
-      grid-auto-columns: 1fr;
-      grid-auto-flow: column;
-    }
-
-    & > * {
-      margin: 0;
-    }
-  }
-
-  .full-x-start {
-    --full-x: flex-start;
-  }
-
-  .full-x-center {
-    --full-x: center;
-  }
-
-  .full-x-end {
-    --full-x: flex-end;
-  }
-
-  .full-x-between {
-    --full-x: space-between;
-  }
-
-  .full-x-stretch {
-    --full-x: stretch;
-  }
-
-  .full-y-start {
-    --full-y: flex-start;
-  }
-
-  .full-y-center {
-    --full-y: center;
-  }
-
-  .full-y-end {
-    --full-y: flex-end;
-  }
-
-  .full-y-between {
-    --full-y: space-between;
-  }
-
-  .full-y-stretch {
-    --full-y: stretch;
   }
 </style>

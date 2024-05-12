@@ -1,10 +1,22 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
-import Stack from '../layout/Stack.astro'
-import Children from '../utility/Children.astro'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { Childmorphic } from '../../types/Childmorphic'
+import type Card from './Card.astro'
+import type Deck from './Deck.astro'
+import type Form from './Form.astro'
+import type Main from './Main.astro'
+import type Stack from './Stack.astro'
+import Layout from './_Layout.astro'
 
-type Props<As extends HTMLTag = 'div'> = ComponentProps<typeof Stack<As>> &
-  ComponentProps<typeof Children> & {
+type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Layout> &
+  Childmorphic<{
+    stack: ComponentProps<typeof Stack>
+    form: ComponentProps<typeof Form>
+    card: ComponentProps<typeof Card>
+    deck: ComponentProps<typeof Deck>
+    main: ComponentProps<typeof Main>
+  }> & {
     variant?: 'solid' | 'soft' | 'ghost'
     frame?: 'viewport' | 'panel'
     reverse?: true | 'odd' | 'even'
@@ -13,7 +25,7 @@ type Props<As extends HTMLTag = 'div'> = ComponentProps<typeof Stack<As>> &
 const { as = 'section', reverse, variant, frame, ...rest } = Astro.props
 ---
 
-<Stack
+<Layout
   class:list={[
     'full-section',
     {
@@ -27,9 +39,16 @@ const { as = 'section', reverse, variant, frame, ...rest } = Astro.props
 >
   <slot name="before" />
   <slot />
-</Stack>
+</Layout>
 
 <style is:global lang="scss">
+  :root,
+  .full-tag {
+    --media: 1536px;
+    --space-gutter: max(4vw, calc((100vw - var(--media)) / 2));
+    --space-spacer: calc(var(--space-5) + 4vw);
+  }
+
   .full-section {
     position: relative;
     background: var(--color-background);
@@ -44,6 +63,23 @@ const { as = 'section', reverse, variant, frame, ...rest } = Astro.props
     &:last-child {
       padding-bottom: var(--space-5);
     } */
+  }
+
+  .full-layout-split {
+    display: grid;
+    column-gap: var(--space-6);
+    row-gap: var(--space-5);
+    justify-content: var(--full-x);
+    align-items: var(--full-y);
+
+    @media (min-width: 1024px) {
+      grid-auto-columns: 1fr;
+      grid-auto-flow: column;
+    }
+
+    & > * {
+      margin: 0;
+    }
   }
 
   .full-reverse-true {

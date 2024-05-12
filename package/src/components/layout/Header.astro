@@ -1,28 +1,49 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
-import Children from '../utility/Children.astro'
-import Tag from '../utility/Tag.astro'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { Childmorphic } from '../../types/Childmorphic'
+import type Nav from './Nav.astro'
+import type Stack from './Stack.astro'
+import Layout from './_Layout.astro'
 
-type Props<As extends HTMLTag = 'header'> = ComponentProps<typeof Tag<As>> &
-  ComponentProps<typeof Children> & {
+type Props<As extends HTMLTag = 'header'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Layout> &
+  Childmorphic<{
+    stack: ComponentProps<typeof Stack>
+    nav: ComponentProps<typeof Nav>
+  }> & {
     frame?: 'screen' | 'panel'
-    variant?: 'bordered' | 'subtle'
     position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
   }
 
-const { as = 'header', variant, position, frame, ...rest } = Astro.props
+const {
+  as = 'header',
+  layout = 'row',
+  y = 'center',
+  density = 'compact',
+  variant,
+  position,
+  frame,
+  ...rest
+} = Astro.props
 ---
 
-<Tag
-  class:list={['full-header', variant, position, frame]}
-  compact
+<Layout
+  class:list={[
+    'full-header',
+    {
+      [`full-frame-${frame}`]: frame,
+      [`full-position-${position}`]: position,
+    },
+  ]}
   {as}
+  {layout}
+  {y}
+  {density}
   {...rest}
 >
   <slot name="before" />
-  <Children {...rest} />
   <slot />
-</Tag>
+</Layout>
 
 <style is:global lang="scss">
   .full-header {
@@ -35,6 +56,7 @@ const { as = 'header', variant, position, frame, ...rest } = Astro.props
     z-index: 10;
     background: var(--color-background);
     padding: var(--space-3) var(--space-gutter);
+    width: 100%;
 
     &.fixed {
       position: fixed;

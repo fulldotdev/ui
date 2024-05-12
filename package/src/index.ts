@@ -1,8 +1,10 @@
 // Utils
 export * from './utils/getPathname'
+
 // schemas
 export * from './schemas/attributesSchema'
 export * from './schemas/pageSchema'
+
 // Components - Base
 export { default as Badge } from './components/base/Badge.astro'
 export { default as Button } from './components/base/Button.astro'
@@ -21,28 +23,27 @@ export { default as Select } from './components/base/Select.astro'
 export { default as Stats } from './components/base/Stats.astro'
 export { default as Textarea } from './components/base/Textarea.astro'
 export { default as Video } from './components/base/Video.astro'
-export { default as Details } from './components/layout/Details.astro'
-// Components - Layout
-export { default as Card } from './components/layout/Card.astro'
-export { default as Deck } from './components/layout/Deck.astro'
-export { default as Field } from './components/layout/Field.astro'
-export { default as Footer } from './components/layout/Footer.astro'
-export { default as Form } from './components/layout/Form.astro'
-export { default as Header } from './components/layout/Header.astro'
-export { default as Main } from './components/layout/Main.astro'
-export { default as Nav } from './components/layout/Nav.astro'
-export { default as Prose } from './components/layout/Prose.astro'
-export { default as Section } from './components/layout/Section.astro'
-export { default as Stack } from './components/layout/Stack.astro'
+
 // Components - Typography
 export { default as Heading } from './components/typography/Heading.astro'
 export { default as Link } from './components/typography/Link.astro'
 export { default as Paragraph } from './components/typography/Paragraph.astro'
 export { default as Text } from './components/typography/Text.astro'
+
+// Components - Layout
+export { default as Card } from './components/layout/Card.astro'
+export { default as Deck } from './components/layout/Deck.astro'
+export { default as Footer } from './components/layout/Footer.astro'
+export { default as Form } from './components/layout/Form.astro'
+export { default as Header } from './components/layout/Header.astro'
+export { default as Main } from './components/layout/Main.astro'
+export { default as Nav } from './components/layout/Nav.astro'
+export { default as Section } from './components/layout/Section.astro'
+export { default as Stack } from './components/layout/Stack.astro'
+
 // Components - Utilities
-export { default as Test } from './components/base/Test.astro'
-export { default as Body } from './components/utility/Body.astro'
-export { default as Children } from './components/utility/Children.astro'
+export { default as Body } from './components/layout/Body.astro'
+export { default as Test } from './components/utility/Children.astro'
 export { default as DecorativeBox } from './components/utility/DecorativeBox.astro'
 export { default as Head } from './components/utility/Head.astro'
 export { default as Page } from './components/utility/Page.astro'

@@ -1,23 +1,26 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
-import Children from '../utility/Children.astro'
-import Stack from './Stack.astro'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { Childmorphic } from '../../types/Childmorphic'
+import type Stack from './Stack.astro'
+import Layout from './_Layout.astro'
 
-type Props<As extends HTMLTag = 'form'> = ComponentProps<typeof Stack<As>> &
-  ComponentProps<typeof Children>
+type Props<As extends HTMLTag = 'form'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Layout> &
+  Childmorphic<{
+    stack: ComponentProps<typeof Stack>
+  }>
 
-const { as = 'form', method = 'POST', ...rest } = Astro.props
+const { as = 'form', ...rest } = Astro.props
 ---
 
-<Stack
+<Layout
   class:list={['full-form']}
   {as}
-  {method}
   {...rest}
 >
   <slot name="before" />
   <slot />
-</Stack>
+</Layout>
 
 <style is:global lang="scss">
   .full-form {

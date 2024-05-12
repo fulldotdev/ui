@@ -1,0 +1,40 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { Childmorphic } from '../../types/Childmorphic'
+import type Footer from './Footer.astro'
+import type Header from './Header.astro'
+import type Stack from './Stack.astro'
+import Layout from './_Layout.astro'
+
+type Props<As extends HTMLTag = 'body'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Layout> &
+  Childmorphic<{
+    stack: ComponentProps<typeof Stack>
+    header: ComponentProps<typeof Header>
+    main: ComponentProps<typeof Layout>
+    footer: ComponentProps<typeof Footer>
+  }>
+
+const { as = 'body', ...rest } = Astro.props
+---
+
+<Layout
+  class:list={['full-body']}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot />
+
+  <style is:global lang="scss">
+    .full-body {
+      background: var(--color-background);
+      padding: 0;
+      height: 100%;
+      min-height: 100vh;
+      color: var(--color-foreground);
+      font-size: var(--text);
+      font-family: var(--font-family);
+    }
+  </style>
+</Layout>

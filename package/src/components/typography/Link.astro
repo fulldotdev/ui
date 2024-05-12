@@ -1,10 +1,14 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import Test from '../base/Test.astro'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { Childmorphic } from '../../types/Childmorphic'
 import Tag from '../utility/Tag.astro'
+import type Text from './_Typography.astro'
 
-type Props<As extends 'a' | 'button' = 'a'> = ComponentProps<typeof Tag<As>> &
-  ComponentProps<typeof Test<'text' | 'html'>>
+type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Text> &
+  Childmorphic<{
+    text: ComponentProps<typeof Text> | string
+  }>
 
 const { as = 'a', ...rest } = Astro.props
 ---
@@ -15,7 +19,6 @@ const { as = 'a', ...rest } = Astro.props
   {...rest}
 >
   <slot name="before" />
-  <Test {...rest} />
   <slot />
 </Tag>
 
@@ -25,18 +28,12 @@ const { as = 'a', ...rest } = Astro.props
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-2);
-    color: var(--color-foreground);
-    font-size: var(--text);
     text-decoration: none;
     text-decoration-color: var(--border);
     white-space: nowrap;
 
     &:hover {
       text-decoration: underline;
-    }
-
-    &.subtle {
-      color: var(--color-foreground-subtle);
     }
   }
 </style>

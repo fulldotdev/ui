@@ -1,24 +1,29 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
-import Children from '../utility/Children.astro'
-import Tag from '../utility/Tag.astro'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { Childmorphic } from '../../types/Childmorphic'
+import type Card from './Card.astro'
+import type Stack from './Stack.astro'
+import Layout from './_Layout.astro'
 
-type Props<As extends HTMLTag = 'div'> = ComponentProps<typeof Tag<As>> &
-  ComponentProps<typeof Children> & {
+type Props<As extends HTMLTag> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Layout> &
+  Childmorphic<{
+    stack: ComponentProps<typeof Stack>
+    card: ComponentProps<typeof Card>
+  }> & {
     layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento'
   }
 
 const { layout, ...rest } = Astro.props
 ---
 
-<Tag
+<Layout
   class:list={['full-deck', layout]}
   {...rest}
 >
   <slot name="before" />
-  <Children {...rest} />
   <slot />
-</Tag>
+</Layout>
 
 <style is:global lang="scss">
   .full-deck {
