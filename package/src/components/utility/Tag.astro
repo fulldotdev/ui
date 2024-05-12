@@ -1,54 +1,56 @@
 ---
 import type { HTMLTag, Polymorphic } from 'astro/types'
-import { attributesSchema } from '../../schemas/attributesSchema'
+import '../../css/main.css'
 
-type Props<As extends HTMLTag> = Omit<Polymorphic<{ as: As }>, 'slot'> & {
-  if?: any
-  color?: string
-  scheme?: string
-  contrast?: boolean
-  compact?: boolean
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
+  slot?: any
+  if?: 'slot' | any
+  theme?: 'light' | 'dark'
+  color?: 'base' | 'lowered' | 'raised' | 'primary' | 'secondary' | 'input'
+  size?: 'sm' | 'md' | 'lg'
+  density?: 'base' | 'compact'
+  [key: string]: any
 }
 
 const {
   as: As = 'div',
-  if: ifProp,
+  if: ifProp = 'slot',
+  theme,
   color,
-  scheme,
-  contrast,
   size,
-  compact,
+  density,
   ...rest
 } = Astro.props
 
 const slot = await Astro.slots.render('default')
-const hasSlot = slot?.trim().length > 0
+const render = ifProp === 'slot' ? slot?.trim().length > 0 : ifProp
 ---
 
 {
-  (hasSlot || ifProp) && (
+  render && (
     <As
       class:list={[
-        { compact, contrast, scheme },
-        color ? `color-${color}` : '',
-        size ? `size-${size}` : '',
-        scheme,
+        'full-tag',
+        {
+          [`full-theme-${theme}`]: theme,
+          [`full-color-${color}`]: color,
+          [`full-density-${density}`]: density,
+          [`full-size-${size}`]: size,
+        },
       ]}
-      {...attributesSchema.parse(rest)}
+      {...rest}
     >
       <Fragment set:html={slot} />
     </As>
   )
 }
 
-<style is:global>
-  &.scheme-dark,
-  .dark {
-    color-scheme: dark;
-  }
-  &.scheme-light,
-  .light {
-    color-scheme: light;
+<style is:global lang="scss">
+  .full-tag {
+    margin: 0;
+    padding: 0;
+    color: var(--color-foreground);
+    font-size: var(--text);
+    font-family: var(--font-family);
   }
 </style>

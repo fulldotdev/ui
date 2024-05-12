@@ -1,35 +1,39 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
-import Children from '../utility/Children.astro'
-import Tag from '../utility/Tag.astro'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { Childmorphic } from '../../types/Childmorphic'
+import Link from './Link.astro'
+import type Text from './Text.astro'
+import Typography from './_Typography.astro'
 
-type Props<As extends HTMLTag = 'h2'> = ComponentProps<typeof Tag<As>> &
-  ComponentProps<typeof Children>
+type Props<As extends HTMLTag = 'h2'> = Polymorphic<{ as: As }> &
+  Omit<ComponentProps<typeof Typography>, 'size'> &
+  Childmorphic<{
+    text: ComponentProps<typeof Text> | string
+    link: ComponentProps<typeof Link>
+  }> & {
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+  }
 
-const { as = 'h2', contrast = true, ...rest } = Astro.props
+const { as = 'a', size, ...rest } = Astro.props
 ---
 
-<Tag
+<!-- FIXME: size type -->
+<Typography
   class:list={['full-heading']}
-  {contrast}
   {as}
-  {...rest}
+  size={size as any}
+  {...rest as any}
 >
   <slot name="before" />
   <slot />
-  <Children {...rest} />
-  <slot name="after" />
-</Tag>
+</Typography>
 
-<style is:global>
+<style is:global lang="scss">
   .full-heading {
-    color: var(--color-11);
-    line-height: 1.25;
-    font: var(--font-heading);
-    font-size: var(--text-3);
-
-    &.contrast {
-      color: var(--color-12);
-    }
+    font-weight: var(--full-heading-font-weight);
+    font-size: var(--text-heading);
+    line-height: 1.1;
+    font-family: var(--full-heading-font-family);
+    letter-spacing: -0.025em;
   }
 </style>

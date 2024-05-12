@@ -1,6 +1,4 @@
 import starlight from '@astrojs/starlight'
-import fullui from '@fullui/ui/integration'
-import browserSync from 'astro-browser-sync'
 // @ts-ignore
 import liveCode from 'astro-live-code'
 import { defineConfig } from 'astro/config'
@@ -23,15 +21,11 @@ export default defineConfig({
         linkedin: 'https://www.linkedin.com/in/silveltman/',
       },
       favicon: './favicon.png',
-      customCss: [
-        './src/css/radix.css',
-        './src/css/custom.css',
-        '@fullui/ui/css',
-      ],
+      customCss: ['./src/css/custom.css', '@fullui/ui/css'],
       components: {
-        // Relative path to the custom component.
         Head: './src/components/Head.astro',
       },
+      pagefind: false,
       sidebar: [
         {
           label: 'Overview',
@@ -40,11 +34,17 @@ export default defineConfig({
           },
         },
         {
-          label: 'Theme',
+          label: 'Foundation',
           autogenerate: {
-            directory: 'theme',
+            directory: 'foundation',
           },
         },
+        // {
+        //   label: 'Theme',
+        //   autogenerate: {
+        //     directory: 'theme',
+        //   },
+        // },
         {
           label: 'Base',
           autogenerate: {
@@ -63,30 +63,14 @@ export default defineConfig({
             directory: 'layout',
           },
         },
-        {
-          label: 'Utility',
-          autogenerate: {
-            directory: 'utility',
-          },
-        },
       ],
-    }),
-    fullui({
-      color: {
-        base: 'slate',
-        accent: 'indigo',
-      },
-      font: {
-        heading: 'IMB Plex Sans:700',
-        subheading: 'IMB Plex Sans:700',
-        text: 'IMB Plex Sans:400',
-        subtext: 'IMB Plex Sans:400',
-        button: 'IMB Plex Sans:500',
-      },
     }),
     liveCode({
       layout: '/src/components/LiveCodeLayout.astro',
     }),
     sitemap(),
   ],
+  redirects: {
+    '/': '/',
+  },
 })

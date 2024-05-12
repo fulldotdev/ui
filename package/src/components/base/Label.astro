@@ -1,29 +1,42 @@
 ---
+// @Jeremy Dit component moet verplaatst worden naar de Typography map
+// Kijk goed naar de overige components in deze map en hoe deze zijn opgebouwd!
+// Als het gelukt is laat mij het dan checken. Ondertussen kun je bezig met de docs pagina voor label
+
 import type { ComponentProps, HTMLTag } from 'astro/types'
 import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
 
 type Props<As extends HTMLTag = 'label'> = ComponentProps<typeof Tag<As>> &
-  ComponentProps<typeof Children>
+  ComponentProps<typeof Children> & {
+    variant?: 'lowered' | 'accent'
+  }
 
-const { as = 'label', ...rest } = Astro.props
+const { as = 'label', variant, ...rest } = Astro.props
 ---
 
 <Tag
-  class:list={['full-label']}
+  class:list={[
+    'full-label',
+    {
+      [`full-variant-${variant}`]: variant,
+    },
+  ]}
   {as}
   {...rest}
 >
   <slot name="before" />
-  <slot>
-    <Children {...rest} />
-  </slot>
-  <slot name="after" />
+  <Children {...rest} />
+  <slot />
 </Tag>
 
-<style is:global>
+<style is:global lang="scss">
   .full-label {
-    color: var(--color-11);
-    font-size: var(--text-1);
+    display: flex;
+    flex-direction: column;
+    color: var(--color-foreground);
+    font-weight: var(--font-weight);
+    font-size: var(--text-element);
+    font-family: var(--font-family);
   }
 </style>

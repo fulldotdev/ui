@@ -1,51 +1,51 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
-import Children from '../utility/Children.astro'
-import Tag from '../utility/Tag.astro'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { Childmorphic } from '../../types/Childmorphic'
+import type Stack from './Stack.astro'
+import Layout from './_Layout.astro'
 
-type Props<As extends HTMLTag = 'header'> = ComponentProps<typeof Tag<As>> &
-  ComponentProps<typeof Children> & {
-    frame?: 'fill' | 'panel' | 'screen'
+type Props<As extends HTMLTag> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Layout> &
+  Childmorphic<{
+    stack: ComponentProps<typeof Stack>
+  }> & {
     variant?: 'ghost' | 'soft' | 'solid'
+    frame?: 'fill' | 'panel' | 'screen'
+    ratio?: 'landscape' | 'portrait' | 'square' | number
   }
 
-const { variant, frame, ...rest } = Astro.props
+const { compact = true, variant, frame, ratio, ...rest } = Astro.props
 ---
 
-<Tag
-  class:list={['full-card', variant, frame]}
-  compact
+<Layout
+  class:list={[
+    'full-card',
+    {
+      [`full-frame-${frame}`]: frame,
+      [`full-variant-${variant}`]: variant,
+      [`full-ratio-${ratio}`]: ratio,
+    },
+  ]}
+  {compact}
   {...rest}
 >
   <slot name="before" />
-  <slot>
-    <Children {...rest} />
-  </slot>
-  <slot name="after" />
-</Tag>
+  <slot />
+</Layout>
 
-<style is:global>
+<style is:global lang="scss">
   .full-card {
-    display: flex;
     position: relative;
-    flex-direction: column;
-    justify-content: stretch;
-    gap: var(--space-4);
     overflow: hidden;
 
-    .stack {
-      justify-content: space-between;
-      gap: var(--space-5);
-      /* height: 100%; */
-    }
+    /* &:is(a) */
+    &[href] {
+      cursor: pointer;
 
-    &:is(a) {
-      &:hover > .image {
-        opacity: 0.85;
-      }
-
-      &:active {
-        transform: scale(0.95);
+      &:hover {
+        > .full-image {
+          opacity: 0.85;
+        }
       }
     }
 
@@ -53,29 +53,18 @@ const { variant, frame, ...rest } = Astro.props
     /* padding all side with negative padding/margin on image/media? */
     /* or only padding bottom and side apdding on children? */
     /* I prefer negative margin (inset) on media if this works */
-    &.panel {
+    &.full-frame-panel {
       gap: 0;
-      border-radius: var(--radius-2);
+      border: var(--full-border-width) solid var(--color-border);
+      border-radius: var(--full-border-radius-3);
+      background-color: var(--color-background);
+      padding: var(--space-5);
       overflow: hidden;
+      color: var(--color-foreground);
+    }
 
-      & > *:not(.full-image) {
-        padding: var(--space-4);
-      }
-
-      &:is(a) {
-        &:hover {
-          background: var(--color-3);
-        }
-
-        &:active {
-          background: var(--color-4);
-        }
-      }
-
-      &.soft,
+    /* &.subtle,
       &.surface {
-        border-width: var(--border-width);
-        border-color: var(--color-6);
         background-color: var(--color-2);
 
         &:is(a) {
@@ -115,21 +104,18 @@ const { variant, frame, ...rest } = Astro.props
           border-bottom-left-radius: 0;
         }
       }
-    }
+    } */
 
-    &.landscape {
+    &.full-ratio-landscape {
       aspect-ratio: 4/3;
-      object-fit: cover;
     }
 
-    &.square {
+    &.full-ratio-square {
       aspect-ratio: 1/1;
-      object-fit: cover;
     }
 
-    &.portrait {
+    &.full-ratio-portrait {
       aspect-ratio: 3/4;
-      object-fit: cover;
     }
   }
 </style>

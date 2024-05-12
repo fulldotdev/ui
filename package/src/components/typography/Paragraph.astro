@@ -1,0 +1,30 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { Childmorphic } from '../../types/Childmorphic'
+import Link from './Link.astro'
+import type Text from './Text.astro'
+import Typography from './_Typography.astro'
+
+type Props<As extends HTMLTag = 'p'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Typography> &
+  Childmorphic<{
+    text: ComponentProps<typeof Text> | string
+    link: ComponentProps<typeof Link>
+  }>
+
+const { as = 'p', ...rest } = Astro.props
+---
+
+<Typography
+  class:list={['full-paragraph']}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot />
+</Typography>
+
+<style is:global lang="scss">
+  .full-paragraph {
+  }
+</style>

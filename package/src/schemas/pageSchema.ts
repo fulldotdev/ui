@@ -1,13 +1,13 @@
 import {
   getCollection,
   getEntry,
+  z,
   type CollectionEntry,
   type CollectionKey,
 } from 'astro:content'
 import { flatten, unflatten } from 'flat'
 import { all, camel, construct, get, isString, mapValues } from 'radash'
 import { mapKeys, merge } from 'remeda'
-import { z } from 'zod'
 
 interface Options {
   casing: boolean
@@ -26,8 +26,8 @@ const defaults: Options = {
 const transformReferences = async (data: object) =>
   await all(
     mapValues(flatten(data) as any, async (value) => {
-      if (typeof value !== 'string') return value
-      const parts = value.split(' ')
+      if (!isString(value)) return value
+      const parts = (value as string).split(' ')
       const results = await all(
         parts.map(async (valuePart) => {
           if (!valuePart.startsWith('$')) return valuePart
