@@ -220,13 +220,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"base/video.mdx": {
-	id: "base/video.mdx";
-  slug: "base/video";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "foundation/body.mdx": {
 	id: "foundation/body.mdx";
   slug: "foundation/body";
@@ -276,13 +269,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"layout/details.mdx": {
-	id: "layout/details.mdx";
-  slug: "layout/details";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "layout/footer.mdx": {
 	id: "layout/footer.mdx";
   slug: "layout/footer";
@@ -300,20 +286,6 @@ declare module 'astro:content' {
 "layout/header.mdx": {
 	id: "layout/header.mdx";
   slug: "layout/header";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"layout/list.mdx": {
-	id: "layout/list.mdx";
-  slug: "layout/list";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"layout/prose.mdx": {
-	id: "layout/prose.mdx";
-  slug: "layout/prose";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -374,41 +346,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"theme/color.mdx": {
-	id: "theme/color.mdx";
-  slug: "theme/color";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"theme/font.mdx": {
-	id: "theme/font.mdx";
-  slug: "theme/font";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"theme/integration.mdx": {
-	id: "theme/integration.mdx";
-  slug: "theme/integration";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"theme/size.mdx": {
-	id: "theme/size.mdx";
-  slug: "theme/size";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"typography/blockquote.mdx": {
-	id: "typography/blockquote.mdx";
-  slug: "typography/blockquote";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "typography/heading.mdx": {
 	id: "typography/heading.mdx";
   slug: "typography/heading";
@@ -426,20 +363,6 @@ declare module 'astro:content' {
 "typography/paragraph.mdx": {
 	id: "typography/paragraph.mdx";
   slug: "typography/paragraph";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"typography/summary.mdx": {
-	id: "typography/summary.mdx";
-  slug: "typography/summary";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"typography/tagline.mdx": {
-	id: "typography/tagline.mdx";
-  slug: "typography/tagline";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
