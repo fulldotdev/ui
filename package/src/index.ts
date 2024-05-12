@@ -36,6 +36,7 @@ export { default as Stack } from './components/layout/Stack.astro'
 // Components - Typography
 export { default as Heading } from './components/typography/Heading.astro'
 export { default as Link } from './components/typography/Link.astro'
+export { default as Paragraph } from './components/typography/Paragraph.astro'
 // Components - Utilities
 export { default as Body } from './components/utility/Body.astro'
 export { default as Children } from './components/utility/Children.astro'
