@@ -1,28 +1,31 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
-import Children from '../utility/Children.astro'
-import Tag from '../utility/Tag.astro'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { Childmorphic } from '../../types/Childmorphic'
+import type Card from './Card.astro'
+import type Stack from './Stack.astro'
+import Layout from './_Layout.astro'
 
-type Props<As extends HTMLTag = 'div'> = ComponentProps<typeof Tag<As>> &
-  ComponentProps<typeof Children> & {
+type Props<As extends HTMLTag> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Layout> &
+  Childmorphic<{
+    stack: ComponentProps<typeof Stack>
+    card: ComponentProps<typeof Card>
+  }> & {
     layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento'
   }
 
 const { layout, ...rest } = Astro.props
 ---
 
-<Tag
+<Layout
   class:list={['full-deck', layout]}
   {...rest}
 >
   <slot name="before" />
-  <slot>
-    <Children {...rest} />
-  </slot>
-  <slot name="after" />
-</Tag>
+  <slot />
+</Layout>
 
-<style is:global>
+<style is:global lang="scss">
   .full-deck {
     position: relative;
     width: 100%;
@@ -61,8 +64,8 @@ const { layout, ...rest } = Astro.props
       flex-direction: row;
       align-items: flex-start;
       gap: var(--space-3);
-      margin: 0 calc(var(--gutter) * -1);
-      padding: 0 var(--gutter) var(--space-3);
+      margin: 0 calc(var(--space-gutter) * -1);
+      padding: 0 var(--space-gutter) var(--space-3);
       width: 100vw;
       overflow-x: auto;
       scroll-behavior: smooth;
@@ -72,7 +75,7 @@ const { layout, ...rest } = Astro.props
         /* TODO add multiple sizes */
         flex-grow: 0;
         flex-shrink: 0;
-        width: calc(7 * var(--space-6));
+        width: calc(7 * var(--space-5));
         scroll-snap-align: center;
       }
     }

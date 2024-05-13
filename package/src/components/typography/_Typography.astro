@@ -1,0 +1,30 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { Childmorphic } from '../../types/Childmorphic'
+import Children from '../utility/Children.astro'
+import Tag from '../utility/Tag.astro'
+
+type Props<As extends HTMLTag> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag> &
+  Childmorphic<{
+    html: string
+  }> & {
+    color?: 'base' | 'lowered' | 'raised'
+  }
+
+const { ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['full-typography']}
+  {...rest}
+>
+  <slot name="before" />
+  <Children {...rest} />
+  <slot />
+</Tag>
+
+<style is:global lang="scss">
+  .full-typography {
+  }
+</style>

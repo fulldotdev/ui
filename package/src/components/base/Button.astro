@@ -4,26 +4,23 @@ import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
 
 type Props<As extends HTMLTag = 'a'> = ComponentProps<typeof Tag<As>> &
-  ComponentProps<typeof Children> & {
-    variant?: 'solid' | 'soft' | 'surface' | 'outline' | 'ghost'
-  }
+  ComponentProps<typeof Children>
 
-const { as = 'a', variant = 'solid', ...rest } = Astro.props
+const { as = 'a', color = 'primary', ...rest } = Astro.props
 ---
 
 <Tag
-  class:list={['full-button', variant]}
+  class:list={['full-button']}
   {as}
+  {color}
   {...rest}
 >
   <slot name="before" />
-  <slot>
-    <Children {...rest} />
-  </slot>
-  <slot name="after" />
+  <Children {...rest} />
+  <slot />
 </Tag>
 
-<style is:global>
+<style is:global lang="scss">
   .full-button {
     display: inline-flex;
     flex-shrink: 0;
@@ -31,24 +28,27 @@ const { as = 'a', variant = 'solid', ...rest } = Astro.props
     align-items: center;
     vertical-align: top;
     gap: var(--space-2);
+    transition: var(--full-transition);
     cursor: pointer;
     outline: none !important;
-    border-radius: var(--radius-2);
-    padding: 0 var(--space-3);
-    min-width: var(--space-6);
-    height: var(--space-6);
-    font: var(--font-button);
-    font-size: var(--text-1);
-    line-height: 1;
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    border-radius: var(--full-border-radius-2);
+    background-color: var(--color-background);
+    padding-right: var(--space-element-3);
+    padding-left: var(--space-element-3);
+    height: calc(var(--text-element) + 2 * var(--space-element-3));
+    color: var(--color-foreground);
+    font-weight: var(--full-button-font-weight);
+    font-size: var(--text-element);
+    line-height: 1.625;
+    font-family: var(--full-button-font-family);
     user-select: none;
     text-align: center;
     text-decoration: none;
     white-space: nowrap;
 
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      pointer-events: none;
+    &:hover {
+      background-color: var(--color-state);
     }
 
     &:focus-visible {
@@ -56,80 +56,10 @@ const { as = 'a', variant = 'solid', ...rest } = Astro.props
       outline-offset: 2px;
     }
 
-    &.solid,
-    &.soft,
-    &.outline,
-    &.surface,
-    &.ghost {
-      box-shadow: inset 0 0 0 var(--border-width) var(--button-border);
-      background-color: var(--button-background);
-      color: var(--button-color);
-
-      &:hover {
-        box-shadow: inset 0 0 0 var(--border-width)
-          var(--button-border-hover, var(--button-border));
-        background-color: var(
-          --button-background-hover,
-          var(--button-background)
-        );
-      }
-
-      &:active {
-        background-color: var(
-          --button-background-active,
-          var(--button-background-hover, var(--button-background))
-        );
-      }
-
-      &.contrast {
-        --button-color: var(--color-12);
-      }
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
     }
-
-    &.solid {
-      --button-background: var(--color-9);
-      --button-background-hover: var(--color-10);
-      --button-color: var(--color-fg);
-
-      &.contrast {
-        --button-background: var(--color-12);
-        --button-background-hover: var(--color-12);
-        --button-color: var(--color-1);
-      }
-    }
-
-    &.soft {
-      --button-background: var(--color-3);
-      --button-background-hover: var(--color-4);
-      --button-background-active: var(--color-5);
-      --button-color: var(--color-11);
-    }
-
-    &.surface {
-      --button-background: var(--color-2);
-      --button-background-hover: var(--color-3);
-      --button-background-active: var(--color-4);
-      --button-color: var(--color-11);
-      --button-border: var(--color-a7);
-      --button-border-hover: var(--color-a8);
-    }
-
-    &.outline {
-      --button-background-hover: var(--color-2);
-      --button-background-active: var(--color-3);
-      --button-color: var(--color-11);
-      --button-border: var(--color-a7);
-      --button-border-hover: var(--color-a8);
-    }
-
-    &.ghost {
-      --button-background-hover: var(--color-2);
-      --button-background-active: var(--color-3);
-      --button-color: var(--color-11);
-    }
-  }
-
-  button {
-    border: inherit;
   }
 </style>

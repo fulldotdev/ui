@@ -1,10 +1,14 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
-import Children from '../utility/Children.astro'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { Childmorphic } from '../../types/Childmorphic'
 import Tag from '../utility/Tag.astro'
+import type Text from './_Typography.astro'
 
-type Props<As extends HTMLTag = 'a'> = ComponentProps<typeof Tag<As>> &
-  ComponentProps<typeof Children>
+type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Text> &
+  Childmorphic<{
+    text: ComponentProps<typeof Text> | string
+  }>
 
 const { as = 'a', ...rest } = Astro.props
 ---
@@ -15,36 +19,25 @@ const { as = 'a', ...rest } = Astro.props
   {...rest}
 >
   <slot name="before" />
-  <slot>
-    <Children {...rest} />
-  </slot>
-  <slot name="after" />
+  <slot />
 </Tag>
 
-<style is:global>
+<style is:global lang="scss">
   .full-link {
     display: inline-flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-2);
-    color: var(--color-11);
-    font-size: var(--text-2);
+    color: var(--color-foreground);
+    font-weight: var(--full-font-weight);
+    font-size: var(--text);
+    font-family: var(--full-font-family);
     text-decoration: none;
-    text-decoration-color: var(--color-8);
+    text-decoration-color: var(--border);
     white-space: nowrap;
 
     &:hover {
-      color: var(--color-12);
       text-decoration: underline;
-      text-decoration-color: var(--color-8);
-    }
-
-    &.contrast {
-      color: var(--color-12);
-
-      &:hover {
-        color: var(--color-11);
-      }
     }
   }
 </style>
