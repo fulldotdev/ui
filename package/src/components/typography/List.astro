@@ -1,0 +1,33 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import { isObject } from 'radash'
+import Tag from '../_Tag.astro'
+import ListItem from './ListItem.astro'
+
+type Props<As extends HTMLTag = 'ul'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag> & {
+    items?: (ComponentProps<typeof ListItem> | string)[]
+  }
+
+const { as = 'ul', items, ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['full-list']}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  {
+    items?.map((item) => {
+      if (isObject(item)) return <ListItem {...item} />
+      else return <ListItem html={item} />
+    })
+  }
+  <slot />
+</Tag>
+
+<style is:global lang="scss">
+  .full-list {
+  }
+</style>
