@@ -70,7 +70,4 @@ export default defineConfig({
     }),
     sitemap(),
   ],
-  redirects: {
-    '/': '/',
-  },
 })
