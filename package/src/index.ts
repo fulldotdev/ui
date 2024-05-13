@@ -28,7 +28,6 @@ export { default as Video } from './components/base/Video.astro'
 export { default as Heading } from './components/typography/Heading.astro'
 export { default as Link } from './components/typography/Link.astro'
 export { default as Paragraph } from './components/typography/Paragraph.astro'
-export { default as Text } from './components/typography/Text.astro'
 
 // Components - Layout
 export { default as Card } from './components/layout/Card.astro'

@@ -1,19 +1,21 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { Childmorphic } from '../../types/Childmorphic'
 import Children from '../utility/Children.astro'
 import Tag from '../utility/Tag.astro'
 
-type Props<As extends HTMLTag = 'span'> = ComponentProps<typeof Tag<As>> &
-  ComponentProps<typeof Children> & {
-    variant?: 'solid' | 'soft' | 'surface' | 'outline'
-  }
+type Props<As extends HTMLTag = 'span'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag> &
+  Childmorphic<{
+    html: string
+    text: string
+  }>
 
-const { as = 'span', variant = 'primary', ...rest } = Astro.props
+const { as = 'span', ...rest } = Astro.props
 ---
 
 <Tag
-  class:list={['full-badge']}
-  {variant}
+  class:list={['full-badge full-button']}
   {as}
   {...rest}
 >
@@ -24,102 +26,8 @@ const { as = 'span', variant = 'primary', ...rest } = Astro.props
 
 <style is:global lang="scss">
   .full-badge {
-    display: inline-flex;
-    flex-shrink: 0;
-    justify-content: center;
-    align-items: center;
-    vertical-align: top;
-    gap: var(--space-2);
-    transition: var(--full-transition);
-    outline: none !important;
-    border: var(--full-border-width) solid var(--color-border);
-    border-radius: var(--full-border-radius-1);
-    background-color: var(--color-background);
-    padding: 0 var(--element-1);
-    min-width: var(--element-2);
-    height: var(--element-2);
-    color: var(--color-foreground);
-    font-size: var(--text-element);
-    font: var(--text-element);
-    user-select: none;
-    text-align: center;
-    text-decoration: none;
-    white-space: nowrap;
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      pointer-events: none;
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--color-8);
-      outline-offset: 2px;
-    }
-
-    &.solid,
-    &.subtle,
-    &.outline,
-    &.surface {
-      box-shadow: inset 0 0 0 var(--border-width) var(--badge-border);
-      background-color: var(--badge-background);
-      color: var(--badge-color) !important;
-
-      /* &:hover {
-        box-shadow: inset 0 0 0 var(--border-width)
-          var(--badge-border-hover, var(--badge-border));
-        background-color: var(
-          --badge-background-hover,
-          var(--badge-background)
-        );
-      } */
-
-      /* &:active {
-        background-color: var(
-          --badge-background-active,
-          var(--badge-background-hover, var(--badge-background))
-        );
-      } */
-
-      &.contrast {
-        --badge-color: var(--color-12);
-      }
-    }
-
-    &.solid {
-      --badge-background: var(--color-9);
-      --badge-background-hover: var(--color-10);
-      --badge-color: var(--color-fg); /* TODO */
-
-      &.contrast {
-        --badge-background: var(--color-12);
-        --badge-background-hover: var(--color-12);
-        --badge-color: var(--color-1);
-      }
-    }
-
-    &.subtle {
-      --badge-background: var(--color-3);
-      --badge-background-hover: var(--color-4);
-      --badge-background-active: var(--color-5);
-      --badge-color: var(--color-11);
-    }
-
-    &.surface {
-      --badge-background: var(--color-2);
-      --badge-background-hover: var(--color-3);
-      --badge-background-active: var(--color-4);
-      --badge-color: var(--color-11);
-      --badge-border: var(--color-a7); /* TODO */
-      --badge-border-hover: var(--color-a8); /* TODO */
-    }
-
-    &.outline {
-      --badge-background-hover: var(--color-2);
-      --badge-background-active: var(--color-3);
-      --badge-color: var(--color-11);
-      --badge-border: var(--color-a7); /* TODO */
-      --badge-border-hover: var(--color-a8); /* TODO */
-    }
+    padding-right: var(--space-element-2);
+    padding-left: var(--space-element-2);
+    height: calc(var(--text-element) + 2 * var(--space-element-1));
   }
 </style>
