@@ -1,8 +1,7 @@
 ---
 name: Input
-category: base
 props:
     component: Input
-    placeholder: input
+    placeholder: Input
     type: text
 ---

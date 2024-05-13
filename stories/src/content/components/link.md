@@ -1,6 +1,5 @@
 ---
 name: Link
-category: typography
 props:
     component: Link
     color: base

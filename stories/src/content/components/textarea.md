@@ -1,8 +1,7 @@
 ---
 name: Textarea
-category: base
 props:
     component: Textarea
-    placeholder: textarea
+    placeholder: Textarea
     rows: 8
 ---
