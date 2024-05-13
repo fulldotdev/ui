@@ -1,9 +1,8 @@
 ---
-name: Tagline
-category: typography
+name: Subtext
 props:
-    component: Tagline
+    component: Subtext
     color: base
     size: xl
-    html: Tagline
+    html: Subtext
 ---

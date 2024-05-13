@@ -1,0 +1,27 @@
+---
+import { listify } from 'radash'
+import { isNumber, isString, pickBy } from 'remeda'
+
+interface Props {
+  component: any
+  [defaults: string]: any
+  [items: number]: object | string
+}
+
+const { component: Component, ...rest } = Astro.props
+
+const defaults = pickBy(rest, (v, key) => !isNumber(parseInt(key as string)))
+
+const items = pickBy(rest, (v, key) => isNumber(parseInt(key as string)))
+const array = listify(items, (k, value) => value)
+const mapped = array.map((item) => (isString(item) ? { html: item } : item))
+---
+
+{
+  mapped.map((item) => (
+    <Component
+      {...defaults}
+      {...item}
+    />
+  ))
+}

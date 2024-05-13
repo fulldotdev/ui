@@ -1,15 +1,20 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { Childmorphic } from '../../types/Childmorphic'
+import Link from './Link.astro'
 import Typography from './_Typography.astro'
 
-type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Typography>
+type Props<As extends HTMLTag = 'li'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Typography> &
+  Childmorphic<{
+    link: ComponentProps<typeof Link>
+  }>
 
-const { as = 'a', ...rest } = Astro.props
+const { as = 'li', ...rest } = Astro.props
 ---
 
 <Typography
-  class:list={['full-link']}
+  class:list={['full-item']}
   {as}
   {...rest}
 >
@@ -18,21 +23,14 @@ const { as = 'a', ...rest } = Astro.props
 </Typography>
 
 <style is:global lang="scss">
-  .full-link {
-    display: inline-flex;
-    flex-wrap: wrap;
+  .full-item {
+    display: flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: 0.5em;
     color: var(--color-foreground);
     font-weight: var(--full-font-weight);
     font-size: var(--text);
+    line-height: 1.625;
     font-family: var(--full-font-family);
-    text-decoration: none;
-    text-decoration-color: var(--border);
-    white-space: nowrap;
-
-    &:hover {
-      text-decoration: underline;
-    }
   }
 </style>

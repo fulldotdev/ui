@@ -182,9 +182,9 @@ declare module 'astro:content' {
   collection: "components";
   data: InferEntrySchema<"components">
 } & { render(): Render[".md"] };
-"tagline.md": {
-	id: "tagline.md";
-  slug: "tagline";
+"subtext.md": {
+	id: "subtext.md";
+  slug: "subtext";
   body: string;
   collection: "components";
   data: InferEntrySchema<"components">
