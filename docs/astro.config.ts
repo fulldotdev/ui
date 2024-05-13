@@ -24,7 +24,7 @@ export default defineConfig({
         maxHeadingLevel: 4,
       },
       favicon: './favicon.png',
-      customCss: ['./src/css/custom.css', '@fullui/ui/css'],
+      customCss: ['./src/css/custom.css', '@fullui/ui/colors'],
       components: {
         Head: './src/components/Head.astro',
       },
