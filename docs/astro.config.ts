@@ -20,6 +20,9 @@ export default defineConfig({
         github: 'https://github.com/fullui/ui',
         linkedin: 'https://www.linkedin.com/in/silveltman/',
       },
+      tableOfContents: {
+        maxHeadingLevel: 4,
+      },
       favicon: './favicon.png',
       customCss: ['./src/css/custom.css', '@fullui/ui/css'],
       components: {
