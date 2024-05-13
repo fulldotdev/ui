@@ -42,9 +42,9 @@ export { default as Section } from './components/layout/Section.astro'
 export { default as Stack } from './components/layout/Stack.astro'
 
 // Components - Utilities
+export { default as Test } from './components/_Children.astro'
 export { default as Tag } from './components/_Tag.astro'
 export { default as Body } from './components/layout/Body.astro'
-export { default as Test } from './components/utility/Children.astro'
 export { default as DecorativeBox } from './components/utility/DecorativeBox.astro'
 export { default as Head } from './components/utility/Head.astro'
 export { default as Page } from './components/utility/Page.astro'
