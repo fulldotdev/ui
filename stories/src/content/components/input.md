@@ -2,6 +2,6 @@
 name: Input
 props:
     component: Input
-    placeholder: input
+    placeholder: Input
     type: text
 ---

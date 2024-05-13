@@ -11,7 +11,7 @@ export default defineConfig({
         heading: 'Inter:600',
         subheading: 'Inter:600',
         text: 'JetBrains Mono:400',
-        tagline: 'JetBrains Mono:400',
+        subtext: 'JetBrains Mono:400',
         button: 'JetBrains Mono:500',
       },
     }) as AstroIntegration,

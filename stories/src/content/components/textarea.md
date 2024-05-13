@@ -2,6 +2,6 @@
 name: Textarea
 props:
     component: Textarea
-    placeholder: textarea
+    placeholder: Textarea
     rows: 8
 ---
