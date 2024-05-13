@@ -1,11 +1,16 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { Childmorphic } from '../../types/Childmorphic'
 import Children from '../_Children.astro'
 import Tag from '../_Tag.astro'
 import Icon from './Icon.astro'
+import type Options from './Options.astro'
 
-type Props<As extends HTMLTag = 'select'> = ComponentProps<typeof Tag<As>> &
-  ComponentProps<typeof Children>
+type Props<As extends HTMLTag = 'select'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag> &
+  Childmorphic<{
+    options: ComponentProps<typeof Options>
+  }>
 
 const { as = 'select', options, ...rest } = Astro.props
 ---
@@ -54,5 +59,6 @@ const { as = 'select', options, ...rest } = Astro.props
     right: var(--space-element-2);
     align-items: center;
     height: 100%;
+    pointer-events: none;
   }
 </style>

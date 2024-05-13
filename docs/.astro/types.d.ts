@@ -283,6 +283,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"layout/list.mdx": {
+	id: "layout/list.mdx";
+  slug: "layout/list";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "layout/section.mdx": {
 	id: "layout/section.mdx";
   slug: "layout/section";
@@ -342,6 +349,20 @@ declare module 'astro:content' {
 "typography/heading.mdx": {
 	id: "typography/heading.mdx";
   slug: "typography/heading";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"typography/item.mdx": {
+	id: "typography/item.mdx";
+  slug: "typography/item";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"typography/items.mdx": {
+	id: "typography/items.mdx";
+  slug: "typography/items";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
