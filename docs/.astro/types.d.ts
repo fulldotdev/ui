@@ -283,13 +283,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"layout/list.mdx": {
-	id: "layout/list.mdx";
-  slug: "layout/list";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "layout/section.mdx": {
 	id: "layout/section.mdx";
   slug: "layout/section";
@@ -353,20 +346,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"typography/item.mdx": {
-	id: "typography/item.mdx";
-  slug: "typography/item";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"typography/items.mdx": {
-	id: "typography/items.mdx";
-  slug: "typography/items";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "typography/label.mdx": {
 	id: "typography/label.mdx";
   slug: "typography/label";
@@ -377,6 +356,13 @@ declare module 'astro:content' {
 "typography/link.mdx": {
 	id: "typography/link.mdx";
   slug: "typography/link";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"typography/list.mdx": {
+	id: "typography/list.mdx";
+  slug: "typography/list";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
