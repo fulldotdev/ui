@@ -33,12 +33,12 @@ export default defineConfig({
             directory: 'overview',
           },
         },
-        {
-          label: 'Foundation',
-          autogenerate: {
-            directory: 'foundation',
-          },
-        },
+        // {
+        //   label: 'Foundation',
+        //   autogenerate: {
+        //     directory: 'foundation',
+        //   },
+        // },
         // {
         //   label: 'Theme',
         //   autogenerate: {
