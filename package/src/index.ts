@@ -14,7 +14,6 @@ export { default as Icon } from './components/base/Icon.astro'
 export { default as Image } from './components/base/Image.astro'
 export { default as Input } from './components/base/Input.astro'
 export { default as Item } from './components/base/Item.astro'
-export { default as Label } from './components/base/Label.astro'
 export { default as Logo } from './components/base/Logo.astro'
 export { default as Option } from './components/base/Option.astro'
 export { default as Radio } from './components/base/Radio.astro'
@@ -26,6 +25,7 @@ export { default as Video } from './components/base/Video.astro'
 
 // Components - Typography
 export { default as Heading } from './components/typography/Heading.astro'
+export { default as Label } from './components/typography/Label.astro'
 export { default as Link } from './components/typography/Link.astro'
 export { default as Paragraph } from './components/typography/Paragraph.astro'
 
@@ -41,9 +41,9 @@ export { default as Section } from './components/layout/Section.astro'
 export { default as Stack } from './components/layout/Stack.astro'
 
 // Components - Utilities
+export { default as Test } from './components/_Children.astro'
+export { default as Tag } from './components/_Tag.astro'
 export { default as Body } from './components/layout/Body.astro'
-export { default as Test } from './components/utility/Children.astro'
 export { default as DecorativeBox } from './components/utility/DecorativeBox.astro'
 export { default as Head } from './components/utility/Head.astro'
 export { default as Page } from './components/utility/Page.astro'
-export { default as Tag } from './components/utility/Tag.astro'
