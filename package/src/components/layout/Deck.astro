@@ -2,24 +2,33 @@
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
 import type { Childmorphic } from '../../types/Childmorphic'
 import type Card from './Card.astro'
-import type Stack from './Stack.astro'
+import type Cards from './Cards.astro'
 import Layout from './_Layout.astro'
 
-type Props<As extends HTMLTag> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Layout> &
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
+  Omit<ComponentProps<typeof Layout>, 'layout'> &
   Childmorphic<{
-    stack: ComponentProps<typeof Stack>
     card: ComponentProps<typeof Card>
+    cards: ComponentProps<typeof Cards>
   }> & {
-    layout?: 'carousel' | 'grid' | 'masonry' | 'row' | 'panels' | 'bento'
+    layout?:
+      | 'carousel'
+      | 'grid'
+      | 'masonry'
+      | 'row'
+      | 'column'
+      | 'split'
+      | 'panels'
+      | 'bento'
   }
 
-const { layout, ...rest } = Astro.props
+const { layout = 'grid', ...rest } = Astro.props
 ---
 
 <Layout
-  class:list={['full-deck', layout]}
-  {...rest}
+  class:list={['full-deck']}
+  layout={layout as any}
+  {...rest as any}
 >
   <slot name="before" />
   <slot />
@@ -30,7 +39,7 @@ const { layout, ...rest } = Astro.props
     position: relative;
     width: 100%;
 
-    &.row {
+    &.full-layout-row {
       display: grid;
       row-gap: var(--space-4);
 
@@ -58,7 +67,7 @@ const { layout, ...rest } = Astro.props
       }
     }
 
-    &.carousel {
+    &.full-layout-carousel {
       display: flex;
       position: relative;
       flex-direction: row;
@@ -80,14 +89,14 @@ const { layout, ...rest } = Astro.props
       }
     }
 
-    &.grid {
+    &.full-layout-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       column-gap: var(--space-3);
       row-gap: var(--space-4);
     }
 
-    &.masonry {
+    &.full-layout-masonry {
       column-gap: var(--space-3);
       column-count: 1;
 
@@ -108,13 +117,13 @@ const { layout, ...rest } = Astro.props
       }
     }
 
-    &.panels {
+    &.full-layout-panels {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
       gap: var(--space-3);
     }
 
-    &.bento {
+    &.full-layout-bento {
       display: grid;
       grid-template-columns: 1fr;
 
