@@ -1,6 +1,5 @@
 ---
 import type { HTMLTag, Polymorphic } from 'astro/types'
-import '../css/main.css'
 
 type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
   slot?: any
@@ -16,9 +15,9 @@ const {
   as: As = 'div',
   if: ifProp = true,
   theme,
-  color,
-  size,
+  color = theme ? 'base' : undefined,
   density,
+  size = density ? 'md' : undefined,
   ...rest
 } = Astro.props
 
@@ -45,12 +44,12 @@ const render = ifProp === 'slot' ? slot?.trim().length > 0 : ifProp
   )
 }
 
-<style is:global lang="scss">
-  .full-tag {
-    margin: 0;
-    padding: 0;
-    color: var(--color-foreground);
-    font-size: var(--text);
-    font-family: var(--font-family);
-  }
+<style>
+  /* FIXME: reset is local now, so duplicate selectors */
+  /* temp fix for starlight theme break because of reset */
+  @import '../css/reset.css';
+</style>
+
+<style is:global>
+  @import '../css/main.css';
 </style>
