@@ -18,6 +18,7 @@ export default defineConfig({
       // },
       social: {
         github: 'https://github.com/fullui/ui',
+        'x.com': 'https://x.com/silveltm',
         linkedin: 'https://www.linkedin.com/in/silveltman/',
       },
       tableOfContents: {
