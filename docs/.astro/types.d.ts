@@ -248,6 +248,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"globalprops/asprop.mdx": {
+	id: "globalprops/asprop.mdx";
+  slug: "globalprops/asprop";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "globalprops/children/keyComponentName.mdx": {
 	id: "globalprops/children/keyComponentName.mdx";
   slug: "globalprops/children/keycomponentname";
