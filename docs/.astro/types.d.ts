@@ -213,13 +213,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"foundation/body.mdx": {
-	id: "foundation/body.mdx";
-  slug: "foundation/body";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "foundation/children.mdx": {
 	id: "foundation/children.mdx";
   slug: "foundation/children";
@@ -244,6 +237,13 @@ declare module 'astro:content' {
 "foundation/tag.mdx": {
 	id: "foundation/tag.mdx";
   slug: "foundation/tag";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"layout/body.mdx": {
+	id: "layout/body.mdx";
+  slug: "layout/body";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -279,6 +279,13 @@ declare module 'astro:content' {
 "layout/header.mdx": {
 	id: "layout/header.mdx";
   slug: "layout/header";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"layout/main.mdx": {
+	id: "layout/main.mdx";
+  slug: "layout/main";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
