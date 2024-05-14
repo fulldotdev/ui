@@ -248,76 +248,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"globalprops/asprop.mdx": {
-	id: "globalprops/asprop.mdx";
-  slug: "globalprops/asprop";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"globalprops/children/keyComponentName.mdx": {
-	id: "globalprops/children/keyComponentName.mdx";
-  slug: "globalprops/children/keycomponentname";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"globalprops/children/valueComponentName.mdx": {
-	id: "globalprops/children/valueComponentName.mdx";
-  slug: "globalprops/children/valuecomponentname";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"globalprops/children/valueElementName.mdx": {
-	id: "globalprops/children/valueElementName.mdx";
-  slug: "globalprops/children/valueelementname";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"globalprops/tag/asPolymorphic.mdx": {
-	id: "globalprops/tag/asPolymorphic.mdx";
-  slug: "globalprops/tag/aspolymorphic";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"globalprops/tag/compact.mdx": {
-	id: "globalprops/tag/compact.mdx";
-  slug: "globalprops/tag/compact";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"globalprops/tag/ifAny.mdx": {
-	id: "globalprops/tag/ifAny.mdx";
-  slug: "globalprops/tag/ifany";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"globalprops/tag/size.mdx": {
-	id: "globalprops/tag/size.mdx";
-  slug: "globalprops/tag/size";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"globalprops/tag/theme.mdx": {
-	id: "globalprops/tag/theme.mdx";
-  slug: "globalprops/tag/theme";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"globalprops/theming.mdx": {
-	id: "globalprops/theming.mdx";
-  slug: "globalprops/theming";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "layout/card.mdx": {
 	id: "layout/card.mdx";
   slug: "layout/card";
@@ -443,6 +373,78 @@ declare module 'astro:content' {
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+};
+"globalprops": {
+"asprop.mdx": {
+	id: "asprop.mdx";
+  slug: "asprop";
+  body: string;
+  collection: "globalprops";
+  data: any
+} & { render(): Render[".mdx"] };
+"children/keyComponentName.mdx": {
+	id: "children/keyComponentName.mdx";
+  slug: "children/keycomponentname";
+  body: string;
+  collection: "globalprops";
+  data: any
+} & { render(): Render[".mdx"] };
+"children/valueComponentName.mdx": {
+	id: "children/valueComponentName.mdx";
+  slug: "children/valuecomponentname";
+  body: string;
+  collection: "globalprops";
+  data: any
+} & { render(): Render[".mdx"] };
+"children/valueElementName.mdx": {
+	id: "children/valueElementName.mdx";
+  slug: "children/valueelementname";
+  body: string;
+  collection: "globalprops";
+  data: any
+} & { render(): Render[".mdx"] };
+"tag/asPolymorphic.mdx": {
+	id: "tag/asPolymorphic.mdx";
+  slug: "tag/aspolymorphic";
+  body: string;
+  collection: "globalprops";
+  data: any
+} & { render(): Render[".mdx"] };
+"tag/compact.mdx": {
+	id: "tag/compact.mdx";
+  slug: "tag/compact";
+  body: string;
+  collection: "globalprops";
+  data: any
+} & { render(): Render[".mdx"] };
+"tag/ifAny.mdx": {
+	id: "tag/ifAny.mdx";
+  slug: "tag/ifany";
+  body: string;
+  collection: "globalprops";
+  data: any
+} & { render(): Render[".mdx"] };
+"tag/size.mdx": {
+	id: "tag/size.mdx";
+  slug: "tag/size";
+  body: string;
+  collection: "globalprops";
+  data: any
+} & { render(): Render[".mdx"] };
+"tag/theme.mdx": {
+	id: "tag/theme.mdx";
+  slug: "tag/theme";
+  body: string;
+  collection: "globalprops";
+  data: any
+} & { render(): Render[".mdx"] };
+"theming.mdx": {
+	id: "theming.mdx";
+  slug: "theming";
+  body: string;
+  collection: "globalprops";
+  data: any
 } & { render(): Render[".mdx"] };
 };
 
