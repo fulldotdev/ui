@@ -1,16 +1,16 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { ComponentProps, Polymorphic } from 'astro/types'
 import { isObject } from 'radash'
 import Tag from '../_Tag.astro'
 import Icon from './Icon.astro'
 import SelectOption from './SelectOption.astro'
 
-type Props<As extends HTMLTag = 'select'> = Polymorphic<{ as: As }> &
+type Props<As extends 'select'> = Polymorphic<{ as: As }> &
   ComponentProps<typeof Tag> & {
-    options: (ComponentProps<typeof SelectOption> | string)[]
+    options?: (ComponentProps<typeof SelectOption> | string)[]
   }
 
-const { as = 'select', options, ...rest } = Astro.props
+const { options, ...rest } = Astro.props
 ---
 
 <Tag
@@ -19,14 +19,14 @@ const { as = 'select', options, ...rest } = Astro.props
   {...rest}
 >
   <Tag
+    as="select"
     if={options}
-    {as}
     class:list={['full-select full-input']}
     {...rest}
   >
     <slot name="before" />
     {
-      options?.map((option) => {
+      options?.map((option: any) => {
         if (isObject(option)) return <SelectOption {...option} />
         else return <SelectOption text={option} />
       })
