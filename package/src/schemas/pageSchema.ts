@@ -108,7 +108,18 @@ const transformSelfs = (data: object) => {
       const camelCased = pathParts.map((part) => camel(part))
       const path = camelCased.join('.')
       const result = get(data, path)
-      return result
+
+      if (pathParts.includes('body')) {
+        console.log({
+          data,
+          main: data?.body?.main,
+          pathParts,
+          camelCased,
+          path,
+          result,
+        })
+      }
+      return result ? result : part
     })
     return result.join(' ')
   })
@@ -131,12 +142,16 @@ export const pageSchema = (options: Partial<Options> = {}) =>
     const { layouts, casing, references, selfs } = merge(defaults, options)
 
     if (references) data = await transformReferences(data)
+    // console.log('references', JSON.stringify(data, null, 2))
 
     if (layouts) data = transformLayouts(data)
-
-    if (selfs) data = transformSelfs(data)
+    // console.log('layouts', data)
 
     if (casing) data = transformCasing(data)
+    // console.log('casing', data)
+
+    if (selfs) data = transformSelfs(data)
+    // console.log('selfs', data)
 
     return data
   })

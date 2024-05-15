@@ -1,9 +1,8 @@
+import sitemap from '@astrojs/sitemap'
 import starlight from '@astrojs/starlight'
 // @ts-ignore
 import liveCode from 'astro-live-code'
 import { defineConfig } from 'astro/config'
-
-import sitemap from '@astrojs/sitemap'
 
 // https://astro.build/config
 export default defineConfig({
@@ -73,5 +72,7 @@ export default defineConfig({
       layout: '/src/components/LiveCodeLayout.astro',
     }),
     sitemap(),
+    // mdx(),
+    // expressiveCode(),
   ],
 })
