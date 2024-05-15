@@ -108,17 +108,6 @@ const transformSelfs = (data: object) => {
       const camelCased = pathParts.map((part) => camel(part))
       const path = camelCased.join('.')
       const result = get(data, path)
-
-      if (pathParts.includes('body')) {
-        console.log({
-          data,
-          main: data?.body?.main,
-          pathParts,
-          camelCased,
-          path,
-          result,
-        })
-      }
       return result ? result : part
     })
     return result.join(' ')
