@@ -40,6 +40,7 @@ const transformReferences = async (data: object) =>
 
           if (collection && slug) {
             const response = await getEntry(collection as CollectionKey, slug)
+            console.log('response', collection, slug, response?.data)
             const result = get(response?.data, path)
             return result
           } else if (collection) {
@@ -65,28 +66,6 @@ const transformLayouts = (data: object) => {
     if (!isString(key)) return key
     const parts = key.split('.')
     const result = parts.map((part) => {
-      // Concatenating array indexes
-      // if (isNumber(parseInt(part))) {
-      //   i++
-      //   return i.toString()
-
-      // let index = parseInt(part)
-      // const path = parts.slice(0, i).join('.').replace(/^_+/, '')
-
-      // if (store[path] > index) store[path]++
-      // else store[path] = index
-
-      // console.log({
-      //   key,
-      //   part,
-      //   path,
-      //   index,
-      //   store,
-      // })
-
-      // return store[path].toString()
-      //   }
-      // Removing leading underscores
       return part.replace(/^_+/, '')
     })
     const filtered = result.filter(Boolean)
