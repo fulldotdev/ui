@@ -1,17 +1,24 @@
 ---
-import { Heading, Page, Section } from '@fullui/ui'
-import { getEntry } from 'astro:content'
+import {
+  getCollectionCascade,
+  transformCasing,
+  transformLayouts,
+  transformReferences,
+  transformSelfs,
+} from '@fullui/ui'
 
-const entry = await getEntry('pages', 'gym')
-const { Content, headings } = await entry.render()
-console.log(entry)
+let cascade: any = await getCollectionCascade(['pages', 'layouts', 'sections'])
+console.log('cascade', cascade.pages.index)
+
+cascade = transformReferences(cascade)
+console.log('references', cascade.pages.index)
+
+cascade = transformLayouts(cascade)
+console.log('layouts', cascade.pages.index)
+
+cascade = transformSelfs(cascade)
+console.log('selfs', cascade.pages.index)
+
+cascade = transformCasing(cascade)
+console.log('casing', cascade.pages.index)
 ---
-
-<Page>
-  <Section
-    color="raised"
-    frame="panel"
-  >
-    <Heading>Hello world</Heading>
-  </Section>
-</Page>

@@ -1,6 +1,11 @@
 // Utils
+export * from './utils/getAllCollections'
+export * from './utils/getCollectionCascade'
 export * from './utils/getPathname'
-
+export * from './utils/transformCasing'
+export * from './utils/transformLayouts'
+export * from './utils/transformReferences'
+export * from './utils/transformSelfs'
 // schemas
 export * from './schemas/attributesSchema'
 export * from './schemas/pageSchema'

@@ -455,23 +455,9 @@ declare module 'astro:content' {
 } & { render(): Render[".mdx"] };
 };
 "pages": {
-"around.mdx": {
-	id: "around.mdx";
-  slug: "around";
-  body: string;
-  collection: "pages";
-  data: any
-} & { render(): Render[".mdx"] };
-"gym.mdx": {
-	id: "gym.mdx";
-  slug: "gym";
-  body: string;
-  collection: "pages";
-  data: any
-} & { render(): Render[".mdx"] };
-"gym2.md": {
-	id: "gym2.md";
-  slug: "gym2";
+"index.md": {
+	id: "index.md";
+  slug: "index";
   body: string;
   collection: "pages";
   data: any
@@ -481,7 +467,26 @@ declare module 'astro:content' {
 	};
 
 	type DataEntryMap = {
-		
+		"layouts": {
+"index": {
+	id: "index";
+  collection: "layouts";
+  data: any
+};
+};
+"sections": {
+"features": {
+	id: "features";
+  collection: "sections";
+  data: any
+};
+"hero": {
+	id: "hero";
+  collection: "sections";
+  data: any
+};
+};
+
 	};
 
 	type AnyEntryMap = ContentEntryMap & DataEntryMap;

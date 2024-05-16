@@ -1,2 +1,3 @@
 ---
+bye: index layout
 ---
