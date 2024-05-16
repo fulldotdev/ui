@@ -15,10 +15,21 @@ function getAltBySrc(): string {
   return unslugged || ''
 }
 
-const { alt = getAltBySrc(), src, position, frame, ...rest } = Astro.props
+const {
+  alt = getAltBySrc(),
+  src,
+  position,
+  inferSize = inferSizes(),
+  frame,
+  ...rest
+} = Astro.props
 
 // TODO use astro glob for local import of image and infer sizes. | @jeremybosma
 // TODO / IDEA if the src is external, automatically set infer sizes to true. | @jeremybosma
+
+function inferSizes() {
+  if (src?.startsWith('https')) return '{true}'
+}
 
 // function getSrc() {
 //   if (src?.startsWith('http')) return src
@@ -44,6 +55,7 @@ const { alt = getAltBySrc(), src, position, frame, ...rest } = Astro.props
       ]}
       if={src}
       {src}
+      {inferSize}
       {alt}
       {...rest}
     />
