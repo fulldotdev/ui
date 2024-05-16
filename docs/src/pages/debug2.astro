@@ -1,24 +1,13 @@
 ---
-import {
-  getCollectionCascade,
-  transformCasing,
-  transformLayouts,
-  transformReferences,
-  transformSelfs,
-} from '@fullui/ui'
+import { getCollectionCascade, transformLayouts } from '@fullui/ui'
+import { getEntry } from 'astro:content'
 
-let cascade: any = await getCollectionCascade(['pages', 'layouts', 'sections'])
-console.log('cascade', cascade.pages.index)
-
-cascade = transformReferences(cascade)
-console.log('references', cascade.pages.index)
-
-cascade = transformLayouts(cascade)
-console.log('layouts', cascade.pages.index)
-
-cascade = transformSelfs(cascade)
-console.log('selfs', cascade.pages.index)
-
-cascade = transformCasing(cascade)
-console.log('casing', cascade.pages.index)
+const cascade = await getCollectionCascade([
+  'pages',
+  'layouts',
+  'aanbod',
+  'team',
+])
+const home = await getEntry('pages', 'index')
+const transformed = transformLayouts(home.data, cascade)
 ---

@@ -7,7 +7,7 @@ import {
 } from 'astro:content'
 import { unflatten } from 'flat'
 import { objectify } from 'radash'
-import { getPathname } from './getPathname'
+import { mapValues } from 'remeda'
 
 export type CollectionCascade = {
   [Key in ContentCollectionKey]: {
@@ -23,17 +23,11 @@ export const getCollectionCascade = async (collectionKeys: CollectionKey[]) => {
   const promises = collectionKeys.map((key) => getCollection(key))
   const resolved = await Promise.all(promises)
   const flattened = resolved.flat()
-  const data = flattened.map((entry) => ({
-    ...entry.data,
-    collection: entry.collection,
-    id: entry.id,
-    slug: entry.slug,
-    pathname: getPathname(entry),
-  }))
   const object = objectify(
-    data,
+    flattened,
     ({ collection, slug, id }) => `${collection}.${slug || id}`
   )
-  const unflattened = unflatten(object)
+  const mapped = mapValues(object, (value) => value.data)
+  const unflattened = unflatten(mapped)
   return unflattened as CollectionCascade
 }

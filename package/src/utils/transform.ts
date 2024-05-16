@@ -29,3 +29,32 @@ export const transformReferences = (
   const nested = unflatten(transformed)
   return nested
 }
+
+import type {
+  CollectionEntry,
+  CollectionKey,
+  ContentCollectionKey,
+} from 'astro:content'
+import { get } from 'radash'
+import { transformReferences } from './transformReferences'
+
+export const queryCascade = (
+  cascade: CollectionCascade,
+  query: string
+): any => {
+  let data: any = get(cascade, query)
+
+  data = transformReferences(data, cascade)
+
+  return data
+}
+
+export const getCascadeEntry = (
+  data: CollectionCascade,
+  path: `${CollectionKey}.${CollectionEntry<ContentCollectionKey>['slug'] | CollectionEntry<CollectionKey>['id']}`
+) => {
+  let data: any = get(cascade, path)
+  const collection
+
+  entry = transformReferences(entry, cascade)
+}

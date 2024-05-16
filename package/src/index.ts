@@ -2,8 +2,10 @@
 export * from './utils/getAllCollections'
 export * from './utils/getCollectionCascade'
 export * from './utils/getPathname'
+export * from './utils/queryCascade'
 export * from './utils/transformCasing'
-export * from './utils/transformLayouts'
+export * from './utils/transformCompleteLayouts'
+// export * from './utils/transformLayouts'
 export * from './utils/transformReferences'
 export * from './utils/transformSelfs'
 // schemas

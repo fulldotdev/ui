@@ -135,7 +135,16 @@ declare module 'astro:content' {
 	>;
 
 	type ContentEntryMap = {
-		"docs": {
+		"aanbod": {
+"bootcamp.md": {
+	id: "bootcamp.md";
+  slug: "bootcamp";
+  body: string;
+  collection: "aanbod";
+  data: any
+} & { render(): Render[".md"] };
+};
+"docs": {
 "base/badge.mdx": {
 	id: "base/badge.mdx";
   slug: "base/badge";
@@ -463,13 +472,32 @@ declare module 'astro:content' {
   data: any
 } & { render(): Render[".md"] };
 };
+"team": {
+"kent.md": {
+	id: "kent.md";
+  slug: "kent";
+  body: string;
+  collection: "team";
+  data: any
+} & { render(): Render[".md"] };
+};
 
 	};
 
 	type DataEntryMap = {
 		"layouts": {
+"aanbod": {
+	id: "aanbod";
+  collection: "layouts";
+  data: any
+};
 "index": {
 	id: "index";
+  collection: "layouts";
+  data: any
+};
+"pages": {
+	id: "pages";
   collection: "layouts";
   data: any
 };
