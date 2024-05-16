@@ -1,5 +1,5 @@
 import { flatten, unflatten } from 'flat'
-import { get, isObject } from 'radash'
+import { get, isObject, mapEntries } from 'radash'
 import { isArray, isString, mapKeys, mapValues } from 'remeda'
 
 let hasMoreReferences = true
@@ -45,6 +45,21 @@ const replaceUnderscores = (data: any) => {
 
 export const transformLayouts = (data: any): any => {
   if (!isObject(data) && !isArray(data)) return data
+
+  const mapped = mapEntries(data, (key, value) => {
+    const valueParts = (value as string).split(' ')
+    const transformedValueParts = valueParts.map((valuePart) => {
+      if (!valuePart.startsWith('$')) return valuePart
+      const queryParts = valuePart.replace('$', '').split('.')
+
+      const path = valuePart.replace('$', '')
+      const got = get(data, path)
+
+      return got ? got : valuePart
+    })
+
+    return [key, value]
+  })
 
   const replacedReferences = replaceReferences(data)
   const replacedUnderscores = replaceUnderscores(replacedReferences)

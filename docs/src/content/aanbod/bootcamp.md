@@ -1,4 +1,3 @@
 ---
-_: $layouts.aanbod
-aanbodtitle: Boodcamp
+thisisaanbod: Boodcamp
 ---

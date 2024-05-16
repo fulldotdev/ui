@@ -141,8 +141,10 @@ declare module 'astro:content' {
   slug: "bootcamp";
   body: string;
   collection: "aanbod";
-  data: any
+  data: InferEntrySchema<"aanbod">
 } & { render(): Render[".md"] };
+};
+"contact": {
 };
 "docs": {
 "base/badge.mdx": {
@@ -469,8 +471,10 @@ declare module 'astro:content' {
   slug: "index";
   body: string;
   collection: "pages";
-  data: any
+  data: InferEntrySchema<"pages">
 } & { render(): Render[".md"] };
+};
+"reviews": {
 };
 "team": {
 "kent.md": {
@@ -478,7 +482,7 @@ declare module 'astro:content' {
   slug: "kent";
   body: string;
   collection: "team";
-  data: any
+  data: InferEntrySchema<"team">
 } & { render(): Render[".md"] };
 };
 
@@ -489,29 +493,29 @@ declare module 'astro:content' {
 "aanbod": {
 	id: "aanbod";
   collection: "layouts";
-  data: any
+  data: InferEntrySchema<"layouts">
 };
 "index": {
 	id: "index";
   collection: "layouts";
-  data: any
+  data: InferEntrySchema<"layouts">
 };
 "pages": {
 	id: "pages";
   collection: "layouts";
-  data: any
+  data: InferEntrySchema<"layouts">
 };
 };
 "sections": {
 "features": {
 	id: "features";
   collection: "sections";
-  data: any
+  data: InferEntrySchema<"sections">
 };
 "hero": {
 	id: "hero";
   collection: "sections";
-  data: any
+  data: InferEntrySchema<"sections">
 };
 };
 

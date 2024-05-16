@@ -1,18 +1,25 @@
 import { flatten, unflatten } from 'flat'
-import { camel } from 'radash'
-import { isString, mapKeys } from 'remeda'
-import type { CollectionCascade } from './getCollectionCascade'
+import { camel, isObject } from 'radash'
+import { isArray, isString, mapKeys } from 'remeda'
 
 // TODO now takes collectionCascade, while it basically works for any object.
-export const transformCasing = (collectionCascade: CollectionCascade) => {
-  if (!collectionCascade) return collectionCascade
-  const flat: any = flatten(collectionCascade)
+export const transformCasing = (data: any) => {
+  if (!isObject(data) && !isArray(data)) return data
+
+  const flat: any = flatten(data)
   const transformedData = mapKeys(flat, (key) => {
     if (!isString(key)) return key
     const parts = (key as string).split('.')
-    const result = parts.map((part) => camel(part))
+    const result = parts.map((part) => {
+      const leadingUnderscores = part.match(/^_+/)
+      const withoutLeadingUnderscores = part.replace(/^_+/, '')
+      const camelCased = camel(withoutLeadingUnderscores)
+      const result = leadingUnderscores + camelCased
+      return result
+    })
     return result.join('.')
   })
+
   const nested = unflatten(transformedData)
   return nested
 }
