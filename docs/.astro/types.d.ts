@@ -469,6 +469,13 @@ declare module 'astro:content' {
   collection: "pages";
   data: any
 } & { render(): Render[".mdx"] };
+"gym2.md": {
+	id: "gym2.md";
+  slug: "gym2";
+  body: string;
+  collection: "pages";
+  data: any
+} & { render(): Render[".md"] };
 };
 
 	};
