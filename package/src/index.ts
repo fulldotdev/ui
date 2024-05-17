@@ -1,5 +1,11 @@
 // Utils
+export * from './utils/getAllCollections'
 export * from './utils/getPathname'
+export * from './utils/transform/transform'
+export * from './utils/transform/transformCasing'
+export * from './utils/transform/transformReferences'
+export * from './utils/transform/transformSelfs'
+export * from './utils/transform/transformUnderscores'
 
 // schemas
 export * from './schemas/attributesSchema'

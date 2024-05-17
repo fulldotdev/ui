@@ -135,7 +135,16 @@ declare module 'astro:content' {
 	>;
 
 	type ContentEntryMap = {
-		"docs": {
+		"aanbod": {
+"bootcamp.md": {
+	id: "bootcamp.md";
+  slug: "bootcamp";
+  body: string;
+  collection: "aanbod";
+  data: any
+} & { render(): Render[".md"] };
+};
+"docs": {
 "base/badge.mdx": {
 	id: "base/badge.mdx";
   slug: "base/badge";
@@ -455,25 +464,20 @@ declare module 'astro:content' {
 } & { render(): Render[".mdx"] };
 };
 "pages": {
-"around.mdx": {
-	id: "around.mdx";
-  slug: "around";
+"index.md": {
+	id: "index.md";
+  slug: "index";
   body: string;
   collection: "pages";
   data: any
-} & { render(): Render[".mdx"] };
-"gym.mdx": {
-	id: "gym.mdx";
-  slug: "gym";
+} & { render(): Render[".md"] };
+};
+"team": {
+"kent.md": {
+	id: "kent.md";
+  slug: "kent";
   body: string;
-  collection: "pages";
-  data: any
-} & { render(): Render[".mdx"] };
-"gym2.md": {
-	id: "gym2.md";
-  slug: "gym2";
-  body: string;
-  collection: "pages";
+  collection: "team";
   data: any
 } & { render(): Render[".md"] };
 };
@@ -481,7 +485,36 @@ declare module 'astro:content' {
 	};
 
 	type DataEntryMap = {
-		
+		"layouts": {
+"aanbod": {
+	id: "aanbod";
+  collection: "layouts";
+  data: any
+};
+"index": {
+	id: "index";
+  collection: "layouts";
+  data: any
+};
+"pages": {
+	id: "pages";
+  collection: "layouts";
+  data: any
+};
+};
+"sections": {
+"features": {
+	id: "features";
+  collection: "sections";
+  data: any
+};
+"hero": {
+	id: "hero";
+  collection: "sections";
+  data: any
+};
+};
+
 	};
 
 	type AnyEntryMap = ContentEntryMap & DataEntryMap;

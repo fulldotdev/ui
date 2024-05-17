@@ -1,21 +1,12 @@
 import {
   getCollection,
-  getEntries,
   getEntry,
   z,
   type CollectionEntry,
   type CollectionKey,
 } from 'astro:content'
 import { flatten, unflatten } from 'flat'
-import {
-  all,
-  camel,
-  construct,
-  get,
-  isString,
-  mapValues,
-  objectify,
-} from 'radash'
+import { all, camel, construct, get, isString, mapValues } from 'radash'
 import { mapKeys, merge } from 'remeda'
 
 interface Options {
@@ -31,8 +22,6 @@ const defaults: Options = {
   references: true,
   selfs: true,
 }
-
-let cascade: any = {}
 
 const transformReferences = async (data: object) =>
   await all(
@@ -51,14 +40,10 @@ const transformReferences = async (data: object) =>
 
           if (collection && slug) {
             let response = await getEntry(collection as CollectionKey, slug)
-            const parsed = await pageSchema().parseAsync(response?.data)
-            // let response: any = get(cascade, `${collection}/${slug}`)
-            const result = get(parsed, path)
-            response = undefined
+            const result = get(response?.data, path)
             return result
           } else if (collection) {
             const response = await getCollection(collection as CollectionKey)
-            // const response: any = get(cascade, collection)
             const result = response?.map((entry: any) => get(entry?.data, path))
             return result
           }
@@ -119,58 +104,12 @@ const transformCasing = (object: object) => {
   return unflatten(mapped)
 }
 
-const buildCascade = async (data: any) => {
-  const flat: any = flatten(data)
-  const values = Object.values(flat)
-  const strings = values.filter(isString)
-  const parts = strings.map((value: any) => value.split(' ')).flat()
-  const fullpaths = parts.filter(
-    (value) => value.startsWith('$') && !value.startsWith('$self')
-  )
-  const filepaths = fullpaths.map((f) => f.replace('$', '').split('.')[0])
-
-  const collections = filepaths.filter((f) => !f.includes('/'))
-  const collectionsNew = collections.filter((c) => !cascade[c])
-  // console.log('collectionsNew', collectionsNew)
-  const collectionsPromises = collectionsNew.map((c) => getCollection(c))
-  const collectionsResponses = await Promise.all(collectionsPromises)
-  const collectionsCascade = objectify(
-    collectionsResponses,
-    (c: any) => c[0]?.collection
-  )
-
-  const entries = filepaths.filter((f) => f.includes('/'))
-  const entriesNew = entries.filter(
-    (e) => !cascade[e.split('/').slice(1).join('/')]
-  )
-  // console.log('entriesNew', entriesNew)
-  const entriesResponses = await getEntries(
-    entriesNew.map((e) => ({
-      collection: e.split('/')[0],
-      slug: e.split('/').slice(1).join('/'),
-    }))
-  )
-  const entriesCascade = objectify(
-    entriesResponses,
-    (e: any) => `${e?.collection}/${e?.slug || e?.id}`
-  )
-
-  cascade = { ...cascade, ...collectionsCascade, ...entriesCascade }
-}
-
-let doIStay = false
-
 export const pageSchema = (options: Partial<Options> = {}) =>
   z.any().transform(async (data: CollectionEntry<CollectionKey>['data']) => {
     const { layouts, casing, references, selfs } = merge(defaults, options)
 
-    // console.log('doIStay', doIStay)
-    // console.log('cascade', Object.keys(cascade))
-    doIStay = true
-    // await buildCascade(data)
-
     if (references) data = await transformReferences(data)
-    // console.log('references', data)
+    // console.log('references', JSON.stringify(data, null, 2))
 
     if (layouts) data = transformLayouts(data)
     // console.log('layouts', data)
