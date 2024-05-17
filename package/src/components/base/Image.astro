@@ -1,5 +1,4 @@
 ---
-import type { ImageMetadata } from 'astro'
 import type { ComponentProps } from 'astro/types'
 import { Image as AstroImage } from 'astro:assets'
 import Tag from '../_Tag.astro'
@@ -18,7 +17,7 @@ function getAltBySrc(): string {
 
 const {
   alt = getAltBySrc(),
-  src = getSrc(),
+  src,
   position,
   inferSize = inferSizes(),
   frame,
@@ -32,16 +31,16 @@ function inferSizes() {
   if (src?.startsWith('http')) return true
 }
 
-async function getSrc() {
-  if (src?.startsWith('http')) return src
-  const images = await Astro.glob<{ default: ImageMetadata }>(
-    '/src/assets/**/*.{jpeg,jpg,png,webp,gif}'
-  )
-  const path = ('/src/assets/' + src).replace('//', '/')
-  const image = images[path as any]
-  if (!image) console.warn(`Image not found: ${path}`)
-  else return 'image'
-}
+// async function getSrc() {
+//   if (src?.startsWith('http')) return src
+//   const images = await Astro.glob<{ default: ImageMetadata }>(
+//     '/src/assets/**/*.{jpeg,jpg,png,webp,gif}'
+//   )
+//   const path = ('/src/assets/' + src).replace('//', '/')
+//   const image = images[path as any]
+//   if (!image) console.warn(`Image not found: ${path}`)
+//   else return 'image'
+// }
 ---
 
 {
