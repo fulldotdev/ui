@@ -12,13 +12,6 @@ export const transformSelfs = (data: any): any => {
       const camelCased = pathParts.map((part) => camel(part))
       const path = 'data.' + camelCased.join('.')
       const result = get(data, path)
-      console.log({
-        part,
-        pathParts,
-        camelCased,
-        path,
-        result,
-      })
       return result ? result : part
     })
     return result.join(' ')
