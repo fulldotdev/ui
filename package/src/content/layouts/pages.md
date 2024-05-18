@@ -1,4 +1,4 @@
 ---
-_: $layouts.index
+_: $/layouts.index
 hello: pages layout
 ---

@@ -1,0 +1,34 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import { default as Layout } from './_Layout.astro'
+
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Layout>
+// Childmorphic<{
+//   card: ComponentProps<typeof Card>
+//   deck: ComponentProps<typeof Deck>
+//   footer: ComponentProps<typeof Footer>
+//   form: ComponentProps<typeof Form>
+//   header: ComponentProps<typeof Header>
+//   main: ComponentProps<typeof Main>
+//   nav: ComponentProps<typeof Nav>
+//   section: ComponentProps<typeof Section>
+//   stack: Props<As>
+// }>
+
+const { as = 'div', ...rest } = Astro.props
+---
+
+<Layout
+  class:list={['full-group']}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot />
+</Layout>
+
+<style is:global lang="scss">
+  .full-group {
+  }
+</style>

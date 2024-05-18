@@ -1,5 +1,5 @@
 ---
-_: $layouts.pages
+_: $/layouts.pages
 head:
   title: Maak kennis met fitness bij sportschool The Gym in Haren
   description: >-
@@ -8,44 +8,44 @@ head:
     Haren e.o..
 
 body.main:
-  hero_section:
-    _: $sections/main-hero
-    image.src: /assets/thegymharen-hero.jpg
-    content_stack.heading.html: Maak kennis met <br> <span>The Gym</span> in Haren
-    content_stack.paragraph.html: Dé sportschool voor en met echte persoonlijke begeleiding!
-    button_stack.buttons:
-      - html: Gratis proefles
+  intro_section:
+    _: $/sections/main-hero
+    image: /assets/thegymharen-hero.jpg
+    content_stack.heading: Maak kennis met <br> <span>The Gym</span> in Haren
+    content_stack.paragraph: Dé sportschool voor en met echte persoonlijke begeleiding!
+    button_group.buttons:
+      - text: Gratis proefles
         href: /contact/gratis-proefles/
-      - _color: secondary
-        html: Lidmaatschapstest
+      - html: Lidmaatschapstest
         href: /contact/lidmaatschapstest/
+        _color: secondary
 
   beloftes_section:
-    stack.heading.html: Onze 4 beloftes
+    stack.heading: Onze 4 beloftes
     stack.button:
-      html: Bekijk alle beloftes
+      text: Bekijk alle beloftes
       href: /beloftes/
     deck.cards:
-      - icon.name: coffee
-        heading.html: Een club waar je ook kunt sporten
-        paragraph.html: >-
+      - icon: coffee
+        heading: Een club waar je ook kunt sporten
+        paragraph: >-
           We zijn een club waar persoonlijk contact en plezier net zo belangrijk
           zijn als de oefeningen zelf.
-      - icon.name: eye-bolt
-        heading.html: Goed dat je er bent!
-        paragraph.html: >-
+      - icon: eye-bolt
+        heading: Goed dat je er bent!
+        paragraph: >-
           Onze trainers kennen je naam en helpen jou je welkom te voelen. Of je
           nou 1 keer per week of 1 keer per dag komt sporten, of je sporten leuk
           vindt of niet: wij zijn er voor je.
-      - icon.name: mood-heart
-        heading.html: We maken er wat van
-        paragraph.html: >-
+      - icon: mood-heart
+        heading: We maken er wat van
+        paragraph: >-
           Niks is perfect, wij ook niet. Met ons enthousiasme en onze passie om
           jou te helpen, proberen we uit iedere situatie het beste te halen.
-      - icon.name: ease-in-control-point
-        heading.html: Iedere dag 1% beter
-        paragraph.html: >-
+      - icon: ease-in-control-point
+        heading: Iedere dag 1% beter
+        paragraph: >-
           Bij ons geloven we in elke dag een beetje beter worden. Niet alleen
           voor jou, maar voor ons allemaal.
-    _: $sections/features
+    _: $/sections/features
 ---
