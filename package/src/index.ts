@@ -24,7 +24,6 @@ export { default as Radio } from './components/base/Radio.astro'
 export { default as Rating } from './components/base/Rating.astro'
 export { default as Select } from './components/base/Select.astro'
 export { default as SelectOption } from './components/base/SelectOption.astro'
-export { default as Stats } from './components/base/Stats.astro'
 export { default as Textarea } from './components/base/Textarea.astro'
 export { default as Video } from './components/base/Video.astro'
 
@@ -32,28 +31,25 @@ export { default as Video } from './components/base/Video.astro'
 export { default as Heading } from './components/typography/Heading.astro'
 export { default as Label } from './components/typography/Label.astro'
 export { default as Link } from './components/typography/Link.astro'
+export { default as Links } from './components/typography/Links.astro'
 export { default as List } from './components/typography/List.astro'
 export { default as ListItem } from './components/typography/ListItem.astro'
 export { default as Paragraph } from './components/typography/Paragraph.astro'
+export { default as Tagline } from './components/typography/Tagline.astro'
 
 // Components - Layout
+export { default as Body } from './components/layout/Body.astro'
 export { default as Card } from './components/layout/Card.astro'
 export { default as Deck } from './components/layout/Deck.astro'
 export { default as Footer } from './components/layout/Footer.astro'
 export { default as Form } from './components/layout/Form.astro'
-export {
-  default as Group,
-  default as Group,
-} from './components/layout/Group.astro'
+export { default as Group } from './components/layout/Group.astro'
 export { default as Header } from './components/layout/Header.astro'
 export { default as Main } from './components/layout/Main.astro'
 export { default as Nav } from './components/layout/Nav.astro'
 export { default as Section } from './components/layout/Section.astro'
 
 // Components - Utilities
-export { default as Test } from './components/_Children.astro'
-export { default as Tag } from './components/_Tag.astro'
-export { default as Body } from './components/layout/Body.astro'
 export { default as DecorativeBox } from './components/utility/DecorativeBox.astro'
 export { default as Head } from './components/utility/Head.astro'
 export { default as Page } from './components/utility/Page.astro'
