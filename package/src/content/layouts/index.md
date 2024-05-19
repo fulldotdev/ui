@@ -6,7 +6,7 @@ _seo:
 
 title: My homepage
 description: This is my homepage
-image: /images/hero.jpg
+image.src: /images/hero.jpg
 
 hero:
   title: $title
@@ -16,6 +16,6 @@ _hero:
   color: black
 
 _card:
-  image: $image
+  image.src: $image
   title: $title
 ---

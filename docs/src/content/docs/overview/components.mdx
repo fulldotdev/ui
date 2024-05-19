@@ -6,69 +6,82 @@ sidebar:
   order: 30
 ---
 
-Components can be used in two ways: using slots or using props. 
+Components can be used in two ways: using slots or using props.
 
 ## Slots
+
 Slots are the classic way of of using components. This is probably the easier way when directly working in .astro files.
 
-``` astro live
+```astro live
 ---
 import { Button, Icon } from '@fullui/ui'
 ---
 
 <Button href="#"> Button </Button>
-<Button href="#"> Button <Icon name="arrow-right"/> </Button>
+<Button href="#"> Button <Icon name="arrow-right" /> </Button>
 ```
 
 ## Props
+
 Using slots is a game changer when working with content from a headless CMS or Astro content collections.
 
 Let's have a look at a simple example first.
 
-``` astro live
+```astro live
 ---
-import { Button, Icon } from '@fullui/ui'
+import { Button } from '@fullui/ui'
 ---
 
-<Button href="#" text="Button" />
-<Button href="#" text="Button" icon={{ name: 'arrow-right' }} />
-<Button href="#" icon={{ name: 'arrow-right' }}  text="Button" />
+<Button
+  href="#"
+  text="Button"
+/>
+<Button
+  href="#"
+  text="Button"
+  icon={{ name: 'arrow-right' }}
+/>
+<Button
+  href="#"
+  icon={{ name: 'arrow-right' }}
+  text="Button"
+/>
 ```
 
-<br/>
-##### That's a bit messy, let's clean it up.
-All props are automatically 'objectified', so you can use them in a more readable way.
-``` astro live
----
-import { Button, Icon } from '@fullui/ui'
----
+<br />
+##### That's a bit messy, let's clean it up. All props are automatically 'objectified',
+so you can use them in a more readable way. ``` astro live --- import {
+  (Button, Icon)
+} from '@fullui/ui' ---
 
 <Button href="#" text="Button" />
 <Button href="#" text="Button" icon.name="arrow-right"  />
 <Button href="#" icon.name="arrow-right" text="Button"  />
 ```
 
-<br/>
-##### That's nice, but is that all?
-No, because you can use any component inside any component, and do that infinitely deep.
+<br />
+##### That's nice, but is that all? No, because you can use any component inside
+any component, and do that infinitely deep.
 
 Usually what you do is define a content structure first, and then map the content to the right place in the components. With this appoeach, we can do both at the same time.
-``` astro live
+
+```astro live
 ---
-import { Stack } from '@fullui/ui'
+import { Group } from '@fullui/ui'
 
 // This would come from your headless CMS or content collections
 const content = {
   'heading.html': 'Lorem ipsum dolor',
-  'paragraph.html': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  'paragraph.html':
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
   button: {
     href: '#',
-    html: 'Button'
+    html: 'Button',
   },
 }
 ---
 
-<Stack {content} />
+<Group {content} />
 ```
 
 You can goes as far as adding full page-builder functionality to any content environment. Have a look at the example below. It uses markdown, but this can be any data format.
@@ -84,38 +97,40 @@ intro_section:
 
 content_section:
   layout: row
-  stack.heading.html: 'Lorem ipsum dolor'
-  stack.paragraph.html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+  group.heading.html: 'Lorem ipsum dolor'
+  group.paragraph.html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
   image.src: 'https://source.unsplash.com/random/800x600'
 ```
-<br/>
-##### You control any element, which is great when using tailwind too!
-You can pass any prop into any component. Like the `class` prop for example, to apply custom tailwind styles if you want. 
 
+<br />
+##### You control any element, which is great when using tailwind too! You can pass
+any prop into any component. Like the `class` prop for example, to apply custom tailwind
+styles if you want.{' '}
 
 ```astro live
 ---
-import { Stack } from '@fullui/ui'
+import { Group } from '@fullui/ui'
 
 // This would come from your headless CMS or content collections
 const content = {
   heading: {
     class: 'your custom tailwind classes go here',
-    html: 'Lorem ipsum dolor'
+    html: 'Lorem ipsum dolor',
   },
-  'paragraph.html': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  'paragraph.html':
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br /> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
   button: {
     class: 'your custom tailwind classes go here',
     component: 'Button',
     href: '#',
-    html: 'Button'
+    html: 'Button',
   },
 }
 ---
 
-<Stack {content} />
+<Group {content} />
 ```
 
-<br/>
-### What props are available?
-This is explained in detail on the [Tag](/docs/foundation/tag) [Children](/docs/foundation/children) component pages.
+<br />
+### What props are available? This is explained in detail on the [Tag](/docs/foundation/tag)
+[Children](/docs/foundation/children) component pages.

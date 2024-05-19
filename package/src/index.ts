@@ -41,12 +41,14 @@ export { default as Card } from './components/layout/Card.astro'
 export { default as Deck } from './components/layout/Deck.astro'
 export { default as Footer } from './components/layout/Footer.astro'
 export { default as Form } from './components/layout/Form.astro'
-export { default as Group } from './components/layout/Group.astro'
+export {
+  default as Group,
+  default as Group,
+} from './components/layout/Group.astro'
 export { default as Header } from './components/layout/Header.astro'
 export { default as Main } from './components/layout/Main.astro'
 export { default as Nav } from './components/layout/Nav.astro'
 export { default as Section } from './components/layout/Section.astro'
-export { default as Stack } from './components/layout/Stack.astro'
 
 // Components - Utilities
 export { default as Test } from './components/_Children.astro'
