@@ -1,6 +1,7 @@
 ---
 import type { ComponentProps, HTMLTag } from 'astro/types'
 import Tag from '../_Tag.astro'
+import { isString } from 'remeda'
 
 type Props<As extends HTMLTag = 'img'> = ComponentProps<typeof Tag<As>> & {
   position?: 'background' | 'cover' | 'panel'
@@ -8,6 +9,7 @@ type Props<As extends HTMLTag = 'img'> = ComponentProps<typeof Tag<As>> & {
 }
 
 function getAltBySrc(): string {
+  if (!isString(Astro.props.src)) return ''
   const filename = Astro.props.src?.split('/').pop()
   const slug = filename && filename.split('.')[0]
   const unslugged = slug?.replace(/-/g, ' ')
@@ -68,8 +70,7 @@ const {
   )
 }
 
-<style is:global lang="less">
-  @layer components {
+<style is:global lang="scss">
     .full-image {
       display: block;
       border-radius: var(--full-border-radius-1);
@@ -119,5 +120,4 @@ const {
         mask-image: linear-gradient(to top, transparent 0%, black 100%);
       }
     }
-  }
 </style>

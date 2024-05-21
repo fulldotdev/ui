@@ -1,0 +1,98 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { Childmorphic } from '../../types/Childmorphic'
+import Children from '../_Children.astro'
+import Tag from '../_Tag.astro'
+
+type Props<As extends HTMLTag = 'span'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag> &
+  Childmorphic<{
+    html: string
+    text: string
+  }>
+
+const { as = 'input', ...rest } = Astro.props
+---
+
+<label class="full-switch">
+  <input type="checkbox" class="checkbox">
+  <div class="checkmark"></div>
+</label>
+
+<style is:global lang="scss">
+  .full-switch {
+    display: block;
+    height: calc(var(--text-element) + 2 * var(--space-element-1));
+    min-width: calc((var(--text-element) + 2 * var(--space-element-1) * 2) + 2 * var(--space-1));
+    background-color: var(--color-raised-background);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: var(--space-1);
+    box-sizing: border-box;
+    position: relative;
+    cursor: pointer;
+
+    .checkbox {
+      position: absolute;
+      opacity: 0;
+      height: 0;
+      width: 0;
+    }
+
+    .checkmark {
+      height: 100%;
+      width: 50%;
+      border-radius: 999px;
+      transform: 0%;
+      transition: var(--full-transition);
+      background-color: var(--color-secondary-background);
+    }
+    
+    .checkbox:checked ~ .checkmark {
+      transform: translateX(100%);
+      background-color: var(--color-primary-background);
+    }
+  }
+
+  .full-toggle {
+    display: inline-flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    vertical-align: top;
+    gap: var(--space-2);
+    transition: var(--full-transition);
+    cursor: pointer;
+    outline: none !important;
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    border-radius: var(--full-border-radius-2);
+    background-color: var(--color-background);
+    padding-right: var(--space-element-2);
+    padding-left: var(--space-element-2);
+    height: calc(var(--text-element) + 2 * var(--space-element-1));
+    color: var(--color-foreground);
+    font-weight: var(--full-button-font-weight);
+    font-size: var(--text-element);
+    line-height: 1.625;
+    font-family: var(--full-button-font-family);
+    user-select: none;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: var(--color-state);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-8) !important;
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  }
+</style>

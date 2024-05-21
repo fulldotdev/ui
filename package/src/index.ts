@@ -26,6 +26,7 @@ export { default as Select } from './components/base/Select.astro'
 export { default as SelectOption } from './components/base/SelectOption.astro'
 export { default as Textarea } from './components/base/Textarea.astro'
 export { default as Video } from './components/base/Video.astro'
+export { default as Switch } from './components/base/Switch.astro'
 
 // Components - Typography
 export { default as Heading } from './components/typography/Heading.astro'
@@ -48,6 +49,7 @@ export { default as Header } from './components/layout/Header.astro'
 export { default as Main } from './components/layout/Main.astro'
 export { default as Nav } from './components/layout/Nav.astro'
 export { default as Section } from './components/layout/Section.astro'
+export { default as Writeup } from './components/layout/Writeup.astro'
 
 // Components - Utilities
 export { default as DecorativeBox } from './components/utility/DecorativeBox.astro'
