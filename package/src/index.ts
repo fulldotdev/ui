@@ -24,9 +24,9 @@ export { default as Radio } from './components/base/Radio.astro'
 export { default as Rating } from './components/base/Rating.astro'
 export { default as Select } from './components/base/Select.astro'
 export { default as SelectOption } from './components/base/SelectOption.astro'
+export { default as Switch } from './components/base/Switch.astro'
 export { default as Textarea } from './components/base/Textarea.astro'
 export { default as Video } from './components/base/Video.astro'
-export { default as Switch } from './components/base/Switch.astro'
 
 // Components - Typography
 export { default as Heading } from './components/typography/Heading.astro'
@@ -48,10 +48,14 @@ export { default as Group } from './components/layout/Group.astro'
 export { default as Header } from './components/layout/Header.astro'
 export { default as Main } from './components/layout/Main.astro'
 export { default as Nav } from './components/layout/Nav.astro'
+export { default as Prose } from './components/layout/Prose.astro'
 export { default as Section } from './components/layout/Section.astro'
 export { default as Writeup } from './components/layout/Writeup.astro'
 
 // Components - Utilities
+export { default as Children } from './components/_Children.astro'
 export { default as DecorativeBox } from './components/utility/DecorativeBox.astro'
 export { default as Head } from './components/utility/Head.astro'
-export { default as Page } from './components/utility/Page.astro'
+
+// Layouts
+export { default as Layout } from './layouts/Layout.astro'

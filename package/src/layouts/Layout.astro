@@ -1,0 +1,32 @@
+---
+import type { ComponentProps } from 'astro/types'
+import Tag from '../components/_Tag.astro'
+import Body from '../components/layout/Body.astro'
+import Head from '../components/utility/Head.astro'
+
+interface Props extends ComponentProps<typeof Tag<'html'>> {
+  theme?: 'light' | 'dark'
+  head?: ComponentProps<typeof Head>
+  body?: ComponentProps<typeof Body>
+}
+
+const { head, body, theme, ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['full-layout']}
+  as="html"
+  if={true}
+  {theme}
+  {...rest}
+>
+  <Head {...head} />
+  <Body
+    if={true}
+    {theme}
+    {...body}
+  >
+    <slot name="before" />
+    <slot />
+  </Body>
+</Tag>

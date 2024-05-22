@@ -3,15 +3,13 @@ import { isObject, pascal } from 'radash'
 import { isArray, isString } from 'remeda'
 
 interface Props {
-  Content?: any
+  render?: () => any
   [key: string]: any
 }
 
 const libraryComponents = await Astro.glob('../**/*.astro')
-const userComponents = await Astro.glob('/src/components/**/*.astro')
+const userComponents = await Astro.glob('/src/**/*.astro')
 const components = [...userComponents, ...libraryComponents]
-
-const { Content } = Astro.props
 ---
 
 {
@@ -22,7 +20,10 @@ const { Content } = Astro.props
 
     if (part === 'Text' && isString(value)) return value
     if (part === 'Html') return <Fragment set:html={value} />
-    // if (part === 'Content') return <Content />
+    if (part === 'Content' && Astro.props.render) {
+      const { Content } = Astro.props.render()
+      return <Content />
+    }
 
     const Component: any = components.find((component) => {
       const fileName = component.default.moduleId?.split('/').pop()
