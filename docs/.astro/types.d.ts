@@ -289,7 +289,7 @@ declare module 'astro:content' {
 	id: "layout/header.mdx";
   slug: "layout/header";
   body: string;
-  collection: "docs";
+  collection: "docs";w
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
 "layout/main.mdx": {
@@ -306,9 +306,9 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"layout/stack.mdx": {
-	id: "layout/stack.mdx";
-  slug: "layout/stack";
+"layout/group.mdx": {
+	id: "layout/group.mdx";
+  slug: "layout/group";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">

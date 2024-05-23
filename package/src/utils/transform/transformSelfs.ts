@@ -7,18 +7,11 @@ export const transformSelfs = (data: any): any => {
     if (!isString(value)) return value
     const parts = (value as string).split(' ')
     const result = parts.map((part) => {
-      if (!part.startsWith('$self')) return part
-      const pathParts = part.split('.').slice(1)
+      if (!part.startsWith('$.')) return part
+      const pathParts = part.replace('$.', '').split('.')
       const camelCased = pathParts.map((part) => camel(part))
       const path = 'data.' + camelCased.join('.')
       const result = get(data, path)
-      console.log({
-        part,
-        pathParts,
-        camelCased,
-        path,
-        result,
-      })
       return result ? result : part
     })
     return result.join(' ')

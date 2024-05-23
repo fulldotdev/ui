@@ -1,3 +1,0 @@
----
-team_name: Kent
----

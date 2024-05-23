@@ -1,7 +1,7 @@
 ---
 import type { HTMLTag, Polymorphic } from 'astro/types'
 
-type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
+type Props<As extends HTMLTag = 'div'> = Omit<Polymorphic<{ as: As }>, 'slot'> & {
   if?: 'slot' | any
   theme?: 'light' | 'dark'
   color?: 'base' | 'lowered' | 'raised' | 'primary' | 'secondary' | 'input'
@@ -13,7 +13,7 @@ type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
 
 const {
   as: As = 'div',
-  if: ifProp = true,
+  if: ifProp = 'slot',
   theme,
   color,
   density,
@@ -44,10 +44,11 @@ const render = ifProp === 'slot' ? slot?.trim().length > 0 : ifProp
   )
 }
 
-<style is:global>
+<style is:global lang="scss">
   @import '../css/main.css';
 
   .full-tag {
     box-sizing: border-box;
+    z-index: 0;
   }
 </style>

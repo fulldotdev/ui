@@ -11,10 +11,9 @@ export const transformReferences = async (data: object): Promise<any> => {
       const parts = (value as string).split(' ')
       const mappedParts = await all(
         parts.map(async (valuePart) => {
-          if (!valuePart.startsWith('$')) return valuePart
-          if (valuePart.startsWith('$self')) return valuePart
+          if (!valuePart.startsWith('$/')) return valuePart
 
-          const reference = valuePart.split('.')[0].replace('$', '')
+          const reference = valuePart.split('.')[0].replace('$/', '')
           const collection = reference.split('/')[0]
           const slug = reference.split('/').slice(1).join('/')
           const path = valuePart.split('.').slice(1).join('.')

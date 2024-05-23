@@ -3,10 +3,13 @@ import { isObject, pascal } from 'radash'
 import { isArray, isString } from 'remeda'
 
 interface Props {
+  render?: () => any
   [key: string]: any
 }
 
-const components = await Astro.glob('../**/*.astro')
+const libraryComponents = await Astro.glob('../**/*.astro')
+const userComponents = await Astro.glob('/src/**/*.astro')
+const components = [...userComponents, ...libraryComponents]
 ---
 
 {
@@ -17,6 +20,10 @@ const components = await Astro.glob('../**/*.astro')
 
     if (part === 'Text' && isString(value)) return value
     if (part === 'Html') return <Fragment set:html={value} />
+    if (part === 'Content' && Astro.props.render) {
+      const { Content } = Astro.props.render()
+      return <Content />
+    }
 
     const Component: any = components.find((component) => {
       const fileName = component.default.moduleId?.split('/').pop()
