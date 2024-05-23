@@ -53,6 +53,8 @@ export { default as Section } from './components/layout/Section.astro'
 export { default as Writeup } from './components/layout/Writeup.astro'
 
 // Components - Utilities
+export { default as Block } from './components/_Block.astro'
+export { default as Blocks } from './components/_Blocks.astro'
 export { default as Children } from './components/_Children.astro'
 export { default as DecorativeBox } from './components/utility/DecorativeBox.astro'
 export { default as Head } from './components/utility/Head.astro'

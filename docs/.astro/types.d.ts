@@ -135,16 +135,7 @@ declare module 'astro:content' {
 	>;
 
 	type ContentEntryMap = {
-		"aanbod": {
-"bootcamp.md": {
-	id: "bootcamp.md";
-  slug: "bootcamp";
-  body: string;
-  collection: "aanbod";
-  data: any
-} & { render(): Render[".md"] };
-};
-"docs": {
+		"docs": {
 "base/badge.mdx": {
 	id: "base/badge.mdx";
   slug: "base/badge";
@@ -285,11 +276,18 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"layout/group.mdx": {
+	id: "layout/group.mdx";
+  slug: "layout/group";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "layout/header.mdx": {
 	id: "layout/header.mdx";
   slug: "layout/header";
   body: string;
-  collection: "docs";w
+  collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
 "layout/main.mdx": {
@@ -302,13 +300,6 @@ declare module 'astro:content' {
 "layout/section.mdx": {
 	id: "layout/section.mdx";
   slug: "layout/section";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"layout/group.mdx": {
-	id: "layout/group.mdx";
-  slug: "layout/group";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -463,58 +454,11 @@ declare module 'astro:content' {
   data: any
 } & { render(): Render[".mdx"] };
 };
-"pages": {
-"index.md": {
-	id: "index.md";
-  slug: "index";
-  body: string;
-  collection: "pages";
-  data: any
-} & { render(): Render[".md"] };
-};
-"team": {
-"kent.md": {
-	id: "kent.md";
-  slug: "kent";
-  body: string;
-  collection: "team";
-  data: any
-} & { render(): Render[".md"] };
-};
 
 	};
 
 	type DataEntryMap = {
-		"layouts": {
-"aanbod": {
-	id: "aanbod";
-  collection: "layouts";
-  data: any
-};
-"index": {
-	id: "index";
-  collection: "layouts";
-  data: any
-};
-"pages": {
-	id: "pages";
-  collection: "layouts";
-  data: any
-};
-};
-"sections": {
-"features": {
-	id: "features";
-  collection: "sections";
-  data: any
-};
-"hero": {
-	id: "hero";
-  collection: "sections";
-  data: any
-};
-};
-
+		
 	};
 
 	type AnyEntryMap = ContentEntryMap & DataEntryMap;

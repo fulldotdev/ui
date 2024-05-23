@@ -1,13 +1,19 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
-
-type Props<As extends HTMLTag = 'div'> = Omit<Polymorphic<{ as: As }>, 'slot'> & {
+interface Props {
   if?: 'slot' | any
   theme?: 'light' | 'dark'
-  color?: 'base' | 'lowered' | 'raised' | 'primary' | 'secondary' | 'input'
+  color?:
+    | 'base'
+    | 'primary'
+    | 'secondary'
+    | 'raised'
+    | 'lowered'
+    | 'outline'
+    | 'ghost'
+    | 'accent'
   size?: 'sm' | 'md' | 'lg'
   density?: 'base' | 'compact'
-  slot?: any
+  slot?: any // slot
   [key: string | number | symbol]: any
 }
 
@@ -44,11 +50,13 @@ const render = ifProp === 'slot' ? slot?.trim().length > 0 : ifProp
   )
 }
 
-<style is:global lang="scss">
+<style is:global>
   @import '../css/main.css';
+</style>
 
+<style is:global>
   .full-tag {
-    box-sizing: border-box;
     z-index: 0;
+    box-sizing: border-box;
   }
 </style>

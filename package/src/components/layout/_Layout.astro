@@ -1,16 +1,13 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import type { Childmorphic } from '../../types/Childmorphic'
 import Children from '../_Children.astro'
 import Tag from '../_Tag.astro'
 
 type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag> &
-  Childmorphic<{
-    slot: any
-    html: string
-  }> & {
-    layout?: 'row' | 'column' | undefined
+  ComponentProps<typeof Tag> & {
+    slot?: any
+    html?: string
+    layout?: 'row' | 'column'
     x?: 'start' | 'center' | 'end' | 'between' | 'stretch'
     y?: 'start' | 'center' | 'end' | 'between' | 'stretch'
   }
@@ -138,9 +135,16 @@ const { layout = 'column', x = 'start', y = 'start', ...rest } = Astro.props
 
       .full-tag {
         + .full-group,
+        + .full-card,
         + .full-form,
         + .full-button,
         + .full-list {
+          margin-top: var(--space-4);
+        }
+      }
+
+      .full-list {
+        + .full-tag {
           margin-top: var(--space-4);
         }
       }
@@ -201,7 +205,9 @@ const { layout = 'column', x = 'start', y = 'start', ...rest } = Astro.props
       }
 
       .full-label {
-        + .full-input {
+        + .full-input,
+        + .full-textarea,
+        + .full-select {
           margin-top: var(--space-1);
         }
       }
