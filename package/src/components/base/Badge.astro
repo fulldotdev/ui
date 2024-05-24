@@ -4,19 +4,20 @@ import type { Childmorphic } from '../../types/Childmorphic'
 import Children from '../_Children.astro'
 import Tag from '../_Tag.astro'
 
-type Props<As extends HTMLTag = 'span'> = Polymorphic<{ as: As }> &
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
   ComponentProps<typeof Tag> &
   Childmorphic<{
     html: string
     text: string
   }>
 
-const { as = 'span', ...rest } = Astro.props
+const { as = 'div', variant = 'primary', ...rest } = Astro.props
 ---
 
 <Tag
   class:list={['full-badge']}
   {as}
+  {variant}
   {...rest}
 >
   <slot name="before" />
@@ -33,8 +34,6 @@ const { as = 'span', ...rest } = Astro.props
     vertical-align: top;
     gap: var(--space-2);
     transition: var(--full-transition);
-    cursor: pointer;
-    outline: none !important;
     box-shadow: inset 0 0 0 1px var(--border);
     border-radius: var(--full-border-radius-2);
     background-color: var(--background);
@@ -50,20 +49,5 @@ const { as = 'span', ...rest } = Astro.props
     text-align: center;
     text-decoration: none;
     white-space: nowrap;
-
-    &:hover {
-      background-color: var(--state);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--8) !important;
-      outline-offset: 2px;
-    }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      pointer-events: none;
-    }
   }
 </style>

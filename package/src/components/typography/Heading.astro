@@ -1,24 +1,18 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import type { Childmorphic } from '../../types/Childmorphic'
-import Link from './Link.astro'
 import Typography from './_Typography.astro'
 
 type Props<As extends HTMLTag = 'h2'> = Polymorphic<{ as: As }> &
-  Omit<ComponentProps<typeof Typography>, 'size'> &
-  Childmorphic<{
-    link: ComponentProps<typeof Link>
-  }> & {
+  Omit<ComponentProps<typeof Typography>, 'size'> & {
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
   }
 
-const { as = 'h2', size, ...rest } = Astro.props
+const { as = 'h2', ...rest } = Astro.props
 ---
 
 <Typography
   class:list={['full-heading']}
   {as}
-  size={size as any}
   {...rest as any}
 >
   <slot name="before" />
@@ -34,5 +28,9 @@ const { as = 'h2', size, ...rest } = Astro.props
     line-height: 1.1;
     font-family: var(--full-heading-font-family);
     letter-spacing: -0.025em;
+
+    .full-tag + & {
+      --my-spacer: var(--space-3);
+    }
   }
 </style>

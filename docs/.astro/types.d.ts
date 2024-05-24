@@ -382,75 +382,110 @@ declare module 'astro:content' {
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
 };
-"globalprops": {
-"asprop.mdx": {
-	id: "asprop.mdx";
+"props": {
+"AsProp.mdx": {
+	id: "AsProp.mdx";
   slug: "asprop";
   body: string;
-  collection: "globalprops";
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"DensityProp.mdx": {
+	id: "DensityProp.mdx";
+  slug: "densityprop";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"HtmlProp.mdx": {
+	id: "HtmlProp.mdx";
+  slug: "htmlprop";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"SizeProp.mdx": {
+	id: "SizeProp.mdx";
+  slug: "sizeprop";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"TextProp.mdx": {
+	id: "TextProp.mdx";
+  slug: "textprop";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"ThemeProp.mdx": {
+	id: "ThemeProp.mdx";
+  slug: "themeprop";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"VariantProp.mdx": {
+	id: "VariantProp.mdx";
+  slug: "variantprop";
+  body: string;
+  collection: "props";
   data: any
 } & { render(): Render[".mdx"] };
 "children/keyComponentName.mdx": {
 	id: "children/keyComponentName.mdx";
   slug: "children/keycomponentname";
   body: string;
-  collection: "globalprops";
+  collection: "props";
   data: any
 } & { render(): Render[".mdx"] };
 "children/valueComponentName.mdx": {
 	id: "children/valueComponentName.mdx";
   slug: "children/valuecomponentname";
   body: string;
-  collection: "globalprops";
+  collection: "props";
   data: any
 } & { render(): Render[".mdx"] };
 "children/valueElementName.mdx": {
 	id: "children/valueElementName.mdx";
   slug: "children/valueelementname";
   body: string;
-  collection: "globalprops";
+  collection: "props";
   data: any
 } & { render(): Render[".mdx"] };
 "tag/asPolymorphic.mdx": {
 	id: "tag/asPolymorphic.mdx";
   slug: "tag/aspolymorphic";
   body: string;
-  collection: "globalprops";
+  collection: "props";
   data: any
 } & { render(): Render[".mdx"] };
 "tag/compact.mdx": {
 	id: "tag/compact.mdx";
   slug: "tag/compact";
   body: string;
-  collection: "globalprops";
+  collection: "props";
   data: any
 } & { render(): Render[".mdx"] };
 "tag/ifAny.mdx": {
 	id: "tag/ifAny.mdx";
   slug: "tag/ifany";
   body: string;
-  collection: "globalprops";
+  collection: "props";
   data: any
 } & { render(): Render[".mdx"] };
 "tag/size.mdx": {
 	id: "tag/size.mdx";
   slug: "tag/size";
   body: string;
-  collection: "globalprops";
+  collection: "props";
   data: any
 } & { render(): Render[".mdx"] };
 "tag/theme.mdx": {
 	id: "tag/theme.mdx";
   slug: "tag/theme";
   body: string;
-  collection: "globalprops";
-  data: any
-} & { render(): Render[".mdx"] };
-"theming.mdx": {
-	id: "theming.mdx";
-  slug: "theming";
-  body: string;
-  collection: "globalprops";
+  collection: "props";
   data: any
 } & { render(): Render[".mdx"] };
 };

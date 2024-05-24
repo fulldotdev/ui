@@ -1,19 +1,20 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Layout from './_Layout.astro'
+import Container from './_Container.astro'
 
 type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Layout> & {
-    layout?: 'split' | 'row' | 'column' // TODO fix omit from layout
-    variant?: 'solid' | 'soft' | 'ghost'
+  ComponentProps<typeof Container> & {
+    direction?: 'horizontal' | 'vertical'
+    variant?: 'base' | 'raised'
     frame?: 'viewport' | 'panel'
+    // gutter?: 'viewport' | 'panel'
     reverse?: true | 'odd' | 'even'
   }
 
 const { as = 'section', reverse, variant, frame, ...rest } = Astro.props
 ---
 
-<Layout
+<Container
   class:list={[
     'full-section',
     {
@@ -27,7 +28,7 @@ const { as = 'section', reverse, variant, frame, ...rest } = Astro.props
 >
   <slot name="before" />
   <slot />
-</Layout>
+</Container>
 
 <style is:global lang="scss">
   :root,
@@ -43,14 +44,6 @@ const { as = 'section', reverse, variant, frame, ...rest } = Astro.props
     padding: var(--space-spacer) var(--space-gutter);
     width: 100%;
     overflow-x: hidden;
-
-    /* &:first-child {
-      padding-top: var(--space-5);
-    }
-
-    &:last-child {
-      padding-bottom: var(--space-5);
-    } */
 
     &.full-frame-panel {
       margin: var(--space-5) var(--space-gutter);
