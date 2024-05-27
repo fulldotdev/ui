@@ -6,12 +6,12 @@ import { defineConfig } from 'astro/config'
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://fullui.dev',
+  site: 'https://ui.full.dev',
   integrations: [
     starlight({
       title: 'Fulldev UI',
       social: {
-        github: 'https://github.com/fullui/ui',
+        github: 'https://github.com/fulldotdev/ui',
         'x.com': 'https://x.com/silveltm',
         linkedin: 'https://www.linkedin.com/in/silveltman/',
       },
@@ -19,7 +19,7 @@ export default defineConfig({
         maxHeadingLevel: 4,
       },
       favicon: './favicon.png',
-      customCss: ['./src/css/custom.css', '@fullui/ui/colors'],
+      customCss: ['./src/css/custom.css', 'fulldev-ui/colors'],
       components: {
         Head: './src/components/Head.astro',
       },
