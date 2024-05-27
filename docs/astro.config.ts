@@ -9,12 +9,7 @@ export default defineConfig({
   site: 'https://fullui.dev',
   integrations: [
     starlight({
-      title: 'Fullui',
-      // logo: {
-      //   src: './src/assets/logo.png',
-      //   alt: 'Logo Fullui',
-      //   replacesTitle: true,
-      // },
+      title: 'Fulldev UI',
       social: {
         github: 'https://github.com/fullui/ui',
         'x.com': 'https://x.com/silveltm',
@@ -36,18 +31,6 @@ export default defineConfig({
             directory: 'overview',
           },
         },
-        // {
-        //   label: 'Foundation',
-        //   autogenerate: {
-        //     directory: 'foundation',
-        //   },
-        // },
-        // {
-        //   label: 'Theme',
-        //   autogenerate: {
-        //     directory: 'theme',
-        //   },
-        // },
         {
           label: 'Base',
           autogenerate: {
@@ -61,9 +44,9 @@ export default defineConfig({
           },
         },
         {
-          label: 'Layout',
+          label: 'Container',
           autogenerate: {
-            directory: 'layout',
+            directory: 'container',
           },
         },
       ],
@@ -72,7 +55,5 @@ export default defineConfig({
       layout: '/src/components/LiveCodeLayout.astro',
     }),
     sitemap(),
-    // mdx(),
-    // expressiveCode(),
   ],
 })
