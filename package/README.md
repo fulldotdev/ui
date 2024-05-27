@@ -13,6 +13,10 @@ Please visit the [documentaion site][docs]
 
 Please [create a Github issue ][issues] for things that cross your mind; feature requests, bug reports or feedback.
 
+## Older versions
+This package has moved to here. See [this package](https://www.npmjs.com/package/@fullui/ui) for older versions.
+
+
 ## License
 
 MIT
