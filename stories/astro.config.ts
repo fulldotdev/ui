@@ -1,6 +1,6 @@
-import fullui from '@fullui/ui/integration'
 import type { AstroIntegration } from 'astro'
 import { defineConfig } from 'astro/config'
+import fullui from 'fulldev-ui/integration'
 
 export default defineConfig({
   output: 'server',

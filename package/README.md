@@ -1,23 +1,17 @@
-# Fullui
+# Fulldev UI
 
-Fullui is a component library built for [Astro][astro].
+The [Astro][astro] UI library for content-driven websites
 
-Built to take full advantage Astro's power, like static rendering,
-content collections and more Astro features.
-
-> Fullui is currently in alpha. Please expect bugs, breaking changes and lots of improvements 🚀.
+Rapidly build content-driven websites, with the power of modern design,
+static / server rendering, and CSS cascading styles.
 
 ## Documentation
 
-[Read the Fullui docs][docs]
+Please visit the [documentaion site][docs]
 
 ## Support
 
-Please [create a Github issue ][issues] for anything that crosses your mind; feature requests, bug reports or feedback.
-
-## Changes
-
-This package has moved to here from `@fulldevlabs/fullui`. Please see that package for 70 previous versions.
+Please [create a Github issue ][issues] for things that cross your mind; feature requests, bug reports or feedback.
 
 ## License
 
@@ -26,6 +20,6 @@ MIT
 Copyright (c) 2024–present [Fulldev][fulldev]
 
 [astro]: https://astro.build/
-[docs]: https://fullui.dev/
+[docs]: https://ui.full.dev/
 [fulldev]: https://full.dev/
-[issues]: https://github.com/fullui/ui/issues/
+[issues]: https://github.com/fulldotdev/ui/issues/

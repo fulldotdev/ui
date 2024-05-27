@@ -54,7 +54,7 @@
 //           },
 //         })
 
-//         // injectScript('page-ssr', 'import "@fullui/ui/css";')
+//         // injectScript('page-ssr', 'import "fulldev-ui/css";')
 //       },
 //     },
 //   }
