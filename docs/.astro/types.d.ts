@@ -150,6 +150,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"base/checkbox.mdx": {
+	id: "base/checkbox.mdx";
+  slug: "base/checkbox";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "base/icon.mdx": {
 	id: "base/icon.mdx";
   slug: "base/icon";
@@ -167,6 +174,13 @@ declare module 'astro:content' {
 "base/input.mdx": {
 	id: "base/input.mdx";
   slug: "base/input";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"base/radio.mdx": {
+	id: "base/radio.mdx";
+  slug: "base/radio";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -213,6 +227,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"container/carousel.mdx": {
+	id: "container/carousel.mdx";
+  slug: "container/carousel";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "container/deck.mdx": {
 	id: "container/deck.mdx";
   slug: "container/deck";
@@ -255,9 +276,23 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"container/prose.mdx": {
+	id: "container/prose.mdx";
+  slug: "container/prose";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "container/section.mdx": {
 	id: "container/section.mdx";
   slug: "container/section";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"overview/colors.mdx": {
+	id: "overview/colors.mdx";
+  slug: "overview/colors";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -283,9 +318,9 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"overview/theming.mdx": {
-	id: "overview/theming.mdx";
-  slug: "overview/theming";
+"overview/sizes.mdx": {
+	id: "overview/sizes.mdx";
+  slug: "overview/sizes";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
