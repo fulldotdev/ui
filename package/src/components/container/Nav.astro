@@ -1,0 +1,27 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Container from './_Container.astro'
+
+type Props<As extends HTMLTag = 'nav'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Container>
+
+const { as = 'nav', direction = 'row', y = 'center', ...rest } = Astro.props
+---
+
+<Container
+  class:list={['full-nav']}
+  {as}
+  {direction}
+  {y}
+  {...rest}
+>
+  <slot name="before" />
+  <slot />
+</Container>
+
+<style is:global lang="scss">
+  .full-nav {
+    margin-left: auto;
+    width: max-content;
+  }
+</style>

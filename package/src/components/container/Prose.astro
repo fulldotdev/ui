@@ -1,0 +1,108 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Section from './Section.astro'
+import { default as Layout } from './_Container.astro'
+
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Layout>
+
+const { as = 'div', ...rest } = Astro.props
+---
+
+<Section
+  class:list={['full-prose']}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot />
+</Section>
+
+<style is:global lang="scss">
+  .full-prose {
+    @media (min-width: 768px) {
+      padding-right: 15vw;
+      padding-left: 15vw;
+    }
+    @media (min-width: 1024px) {
+      padding-right: 25vw;
+      padding-left: 25vw;
+    }
+  }
+
+  // Tables
+  .full-prose {
+    color: var(--foreground);
+    font-weight: var(--full-font-weight);
+    font-size: var(--text);
+    line-height: 1.625;
+    font-family: var(--full-font-family);
+
+    .display {
+      display: grid;
+      width: 100%;
+      max-width: none;
+
+      table {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          margin: var(--space-2) 0;
+          font: 600 var(--text-2) 'Saira';
+
+          & + p {
+            color: var(--hue11);
+          }
+        }
+      }
+    }
+
+    @media (max-width: 640px) {
+      display: none;
+    }
+
+    table {
+      margin: var(--space-4) 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-1) !important;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th {
+      border-bottom: 1px solid var(--border);
+      background: var(--raised-background) !important;
+      color: var(--muted-foreground) !important;
+      font-weight: 500 !important;
+      font-size: var(--text-element) !important;
+    }
+
+    td {
+      color: var(--muted-foreground) !important;
+    }
+
+    th,
+    td {
+      padding: var(--space-2);
+    }
+
+    table a {
+      color: var(--primary-background) !important;
+      font-size: var(--text-element) !important;
+      line-height: 1 !important;
+      white-space: nowrap;
+    }
+
+    h6 {
+      margin: var(--space-2) 0;
+      font-size: var(--text) !important;
+    }
+
+    table a:hover {
+      text-decoration: underline;
+    }
+  }
+</style>

@@ -1,0 +1,32 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Container from './_Container.astro'
+
+type Props<As extends HTMLTag = 'body'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Container>
+
+const { as = 'body', x = 'fill', ...rest } = Astro.props
+---
+
+<Container
+  class:list={['full-body']}
+  {as}
+  {x}
+  {...rest}
+>
+  <slot name="before" />
+  <slot />
+
+  <style is:global lang="scss">
+    .full-body {
+      margin: 0;
+      background: var(--background);
+      padding: 0;
+      height: 100%;
+      min-height: 100vh;
+      color: var(--foreground);
+      font-size: var(--text);
+      font-family: var(--font-family);
+    }
+  </style>
+</Container>

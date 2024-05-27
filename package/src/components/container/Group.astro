@@ -1,0 +1,26 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import { default as Container } from './_Container.astro'
+
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Container>
+
+const { as = 'div', ...rest } = Astro.props
+---
+
+<Container
+  class:list={['full-group']}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot />
+</Container>
+
+<style is:global lang="scss">
+  .full-group {
+    .full-tag + & {
+      --my-spacer: var(--space-4);
+    }
+  }
+</style>

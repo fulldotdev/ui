@@ -1,0 +1,26 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Container from './_Container.astro'
+
+type Props<As extends HTMLTag = 'form'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Container>
+
+const { as = 'form', ...rest } = Astro.props
+---
+
+<Container
+  class:list={['full-form']}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot />
+</Container>
+
+<style is:global lang="scss">
+  .full-form {
+    display: flex;
+    width: 100%;
+    max-width: calc(var(--space-element-3) * 36);
+  }
+</style>

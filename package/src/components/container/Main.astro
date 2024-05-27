@@ -1,0 +1,25 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Container from './_Container.astro'
+
+type Props<As extends HTMLTag = 'main'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Container>
+
+const { as = 'main', x = 'fill', ...rest } = Astro.props
+---
+
+<Container
+  class:list={['full-main']}
+  {as}
+  {x}
+  {...rest}
+>
+  <slot name="before" />
+  <slot />
+</Container>
+
+<style is:global lang="scss">
+  .full-main {
+    width: 100%;
+  }
+</style>

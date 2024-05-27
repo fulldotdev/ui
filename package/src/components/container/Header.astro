@@ -1,0 +1,75 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Container from './_Container.astro'
+
+type Props<As extends HTMLTag = 'header'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Container> & {
+    frame?: 'screen' | 'panel'
+    position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
+  }
+
+const {
+  as = 'header',
+  direction = 'row',
+  y = 'center',
+  density = 'compact',
+  variant,
+  position,
+  frame,
+  ...rest
+} = Astro.props
+---
+
+<Container
+  class:list={[
+    'full-header',
+    {
+      [`full-frame-${frame}`]: frame,
+      [`full-position-${position}`]: position,
+    },
+  ]}
+  {as}
+  {direction}
+  {y}
+  {density}
+  {...rest}
+>
+  <slot name="before" />
+  <slot />
+</Container>
+
+<style is:global lang="scss">
+  .full-header {
+    display: flex;
+    top: 0;
+    right: 0;
+    left: 0;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    background: var(--background);
+    padding: var(--space-3) var(--space-gutter);
+    width: 100%;
+
+    &.full-position-fixed {
+      position: fixed;
+    }
+
+    &.full-position-absolute {
+      position: absolute;
+    }
+
+    &.full-position-sticky {
+      position: sticky;
+    }
+
+    &.subtle {
+      border-color: var(--6);
+      background-color: var(--2);
+    }
+
+    &.bordered {
+      border-bottom: 1px solid var(--border);
+    }
+  }
+</style>
