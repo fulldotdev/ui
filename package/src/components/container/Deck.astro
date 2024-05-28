@@ -3,7 +3,7 @@ import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
 import Container from './_Container.astro'
 
 type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
-  Omit<ComponentProps<typeof Container>, 'Container'> & {
+  Omit<ComponentProps<typeof Container>, 'layout'> & {
     layout?:
       | 'carousel'
       | 'grid'
@@ -15,12 +15,13 @@ type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
       | 'bento'
   }
 
-const { layout = 'grid', ...rest } = Astro.props
+const { layout = 'grid', direction = null, ...rest } = Astro.props
 ---
 
 <Container
   class:list={['full-deck']}
-  Container={Container as any}
+  layout={layout as any}
+  {direction}
   {...rest as any}
 >
   <slot name="before" />
