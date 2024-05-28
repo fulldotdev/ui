@@ -213,83 +213,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"container/body.mdx": {
-	id: "container/body.mdx";
-  slug: "container/body";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"container/card.mdx": {
-	id: "container/card.mdx";
-  slug: "container/card";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"container/carousel.mdx": {
-	id: "container/carousel.mdx";
-  slug: "container/carousel";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"container/deck.mdx": {
-	id: "container/deck.mdx";
-  slug: "container/deck";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"container/footer.mdx": {
-	id: "container/footer.mdx";
-  slug: "container/footer";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"container/form.mdx": {
-	id: "container/form.mdx";
-  slug: "container/form";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"container/group.mdx": {
-	id: "container/group.mdx";
-  slug: "container/group";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"container/header.mdx": {
-	id: "container/header.mdx";
-  slug: "container/header";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"container/main.mdx": {
-	id: "container/main.mdx";
-  slug: "container/main";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"container/prose.mdx": {
-	id: "container/prose.mdx";
-  slug: "container/prose";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"container/section.mdx": {
-	id: "container/section.mdx";
-  slug: "container/section";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "overview/colors.mdx": {
 	id: "overview/colors.mdx";
   slug: "overview/colors";
@@ -356,6 +279,83 @@ declare module 'astro:content' {
 "typography/paragraph.mdx": {
 	id: "typography/paragraph.mdx";
   slug: "typography/paragraph";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"wrapper/body.mdx": {
+	id: "wrapper/body.mdx";
+  slug: "wrapper/body";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"wrapper/card.mdx": {
+	id: "wrapper/card.mdx";
+  slug: "wrapper/card";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"wrapper/carousel.mdx": {
+	id: "wrapper/carousel.mdx";
+  slug: "wrapper/carousel";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"wrapper/deck.mdx": {
+	id: "wrapper/deck.mdx";
+  slug: "wrapper/deck";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"wrapper/footer.mdx": {
+	id: "wrapper/footer.mdx";
+  slug: "wrapper/footer";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"wrapper/form.mdx": {
+	id: "wrapper/form.mdx";
+  slug: "wrapper/form";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"wrapper/group.mdx": {
+	id: "wrapper/group.mdx";
+  slug: "wrapper/group";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"wrapper/header.mdx": {
+	id: "wrapper/header.mdx";
+  slug: "wrapper/header";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"wrapper/main.mdx": {
+	id: "wrapper/main.mdx";
+  slug: "wrapper/main";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"wrapper/prose.mdx": {
+	id: "wrapper/prose.mdx";
+  slug: "wrapper/prose";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"wrapper/section.mdx": {
+	id: "wrapper/section.mdx";
+  slug: "wrapper/section";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">

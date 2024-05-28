@@ -44,9 +44,10 @@ export default defineConfig({
           },
         },
         {
-          label: 'Container',
+          label: 'Wrapper',
+          badge: 'WIP',
           autogenerate: {
-            directory: 'container',
+            directory: 'wrapper',
           },
         },
       ],
