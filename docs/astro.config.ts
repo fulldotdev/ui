@@ -20,9 +20,6 @@ export default defineConfig({
       },
       favicon: './favicon.png',
       customCss: ['./src/css/custom.css', 'fulldev-ui/colors'],
-      components: {
-        Head: './src/components/Head.astro',
-      },
       pagefind: false,
       sidebar: [
         {
