@@ -7,7 +7,7 @@ static / server rendering, and CSS cascading styles.
 
 ## Documentation
 
-Please visit the [documentaion site][docs]
+Please visit the [documentation site][docs]
 
 ## Support
 
