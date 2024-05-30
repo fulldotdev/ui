@@ -3,21 +3,23 @@ import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
 import type { Childmorphic } from '../../types/Childmorphic'
 import Children from '../_Children.astro'
 import Tag from '../_Tag.astro'
+import type Icon from './Icon.astro'
 
 type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
   ComponentProps<typeof Tag> &
   Childmorphic<{
     html: string
     text: string
+    variant: 'primary' | 'raised' | 'muted' | 'accent'
+    icon: ComponentProps<typeof Icon> | ComponentProps<typeof Icon>['name']
   }>
 
-const { as = 'div', variant, ...rest } = Astro.props
+const { as = 'div', ...rest } = Astro.props
 ---
 
 <Tag
-  class:list={['full-badge']}
+  class:list={['badge']}
   {as}
-  {variant}
   {...rest}
 >
   <slot name="before" />
@@ -26,7 +28,7 @@ const { as = 'div', variant, ...rest } = Astro.props
 </Tag>
 
 <style is:global lang="scss">
-  .full-badge {
+  .full.badge {
     display: inline-flex;
     flex-shrink: 0;
     justify-content: center;

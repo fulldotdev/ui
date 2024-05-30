@@ -10,18 +10,15 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> &
   Childmorphic<{
     html: string
     text: string
-    variant?: 'primary' | 'secondary' | 'ghost'
+    variant?: 'primary' | 'secondary' | 'outline' | 'ghost'
     icon: ComponentProps<typeof Icon> | ComponentProps<typeof Icon>['name']
   }>
-
-// TODO: variants: link, filled, outline, ghost. Deze zijn independent van de color prop. Betekent dus dat je een outline variant hebt van elke color.
-// Let wel op, dit werkt niet met de Primary variant, omdat deze kleuren dan niet kloppen.
 
 const { as = 'a', variant = 'primary', ...rest } = Astro.props
 ---
 
 <Tag
-  class:list={['full-button']}
+  class:list={['button']}
   {as}
   {variant}
   {...rest}
@@ -32,7 +29,7 @@ const { as = 'a', variant = 'primary', ...rest } = Astro.props
 </Tag>
 
 <style is:global lang="scss">
-  .full-button {
+  .full.button {
     display: inline-flex;
     flex-shrink: 0;
     justify-content: center;
@@ -72,14 +69,6 @@ const { as = 'a', variant = 'primary', ...rest } = Astro.props
       opacity: 0.5;
       cursor: not-allowed;
       pointer-events: none;
-    }
-
-    .full-tag + & {
-      --my-spacer: var(--space-4);
-    }
-
-    & + & {
-      --my-spacer: var(--space-2);
     }
   }
 </style>
