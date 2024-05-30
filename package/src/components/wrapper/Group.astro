@@ -3,13 +3,15 @@ import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
 import Wrapper from './_Wrapper.astro'
 
 type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Wrapper>
+  ComponentProps<typeof Wrapper> & {
+    direction?: 'row' | 'column'
+  }
 
-const { as = 'div', ...rest } = Astro.props
+const { as = 'div', direction = 'row', ...rest } = Astro.props
 ---
 
 <Wrapper
-  class:list={['full-group']}
+  class:list={['group']}
   {as}
   {...rest}
 >
@@ -18,9 +20,17 @@ const { as = 'div', ...rest } = Astro.props
 </Wrapper>
 
 <style is:global lang="scss">
-  .full-group {
-    .full-tag + & {
-      --my-spacer: var(--space-4);
+  .full.group {
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
+
+    &.direction-row {
+      flex-direction: row;
+    }
+
+    &.direction-column {
+      flex-direction: column;
     }
   }
 </style>
