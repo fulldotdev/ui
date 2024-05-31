@@ -1,0 +1,74 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Wrapper from './_Wrapper.astro'
+
+type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Wrapper> & {
+    variant?: 'base' | 'raised' | 'primary'
+    frame?: 'viewport' | 'panel'
+    reverse?: true | 'odd' | 'even'
+  }
+
+const { as = 'section', reverse, variant, frame, ...rest } = Astro.props
+---
+
+<Wrapper
+  class:list={[
+    'section',
+    {
+      [`variant-${variant}`]: variant,
+      [`frame-${frame}`]: frame,
+      [`reverse-${reverse}`]: reverse,
+    },
+  ]}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot />
+</Wrapper>
+
+<style is:global lang="scss">
+  .full.split {
+    display: grid;
+    column-gap: var(--space-gutter);
+    row-gap: var(--space-5);
+    justify-content: var(--full-x);
+    align-items: var(--full-y);
+
+    @media (min-width: 1024px) {
+      grid-auto-columns: 1fr;
+      grid-auto-flow: column;
+    }
+  }
+
+  .full.reverse-true {
+    --full-reverse: 1;
+  }
+
+  .full.reverse-even:nth-child(even) {
+    --full-reverse: 1;
+  }
+
+  .full.reverse-odd:nth-child(odd) {
+    --full-reverse: 1;
+  }
+
+  .full.reverse-even,
+  .full.reverse-odd,
+  .full.reverse-true {
+    @media (min-width: 1024px) {
+      > .full {
+        order: 0;
+
+        &:first-child {
+          order: var(--full-reverse, 0);
+        }
+
+        &:last-child {
+          order: calc(var(--full-reverse, 0) * -1);
+        }
+      }
+    }
+  }
+</style>
