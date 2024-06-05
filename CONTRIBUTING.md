@@ -70,8 +70,7 @@ You can use the `pnpm --filter [WORKSPACE] dev` command to start the development
 To run the ui.full.dev website:
 `pnpm --filter docs dev`
 
-To run the fulldev-ui package:
-`pnpm --filter package dev`
+or run it by going to the folder using `cd docs` and running `pnpm dev` there.
 
 ### Use your version of fulldev-ui on documentation
 
