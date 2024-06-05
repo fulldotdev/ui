@@ -1,0 +1,76 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Wrapper from './_Wrapper.astro'
+
+type Props<As extends HTMLTag = 'header'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Wrapper> & {
+    frame?: 'screen' | 'panel'
+    position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
+  }
+
+const {
+  as = 'header',
+  direction = 'horizontal',
+  y = 'center',
+  density = 'compact',
+  variant,
+  position,
+  frame,
+  ...rest
+} = Astro.props
+---
+
+<Wrapper
+  class:list={[
+    'full-header',
+    {
+      [`full-frame-${frame}`]: frame,
+      [`full-position-${position}`]: position,
+    },
+  ]}
+  {as}
+  {direction}
+  {y}
+  {density}
+  {variant}
+  {...rest}
+>
+  <slot name="before" />
+  <slot />
+</Wrapper>
+
+<style is:global lang="scss">
+  .full-header {
+    display: flex;
+    top: 0;
+    right: 0;
+    left: 0;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    background: var(--background);
+    padding: var(--space-3) var(--space-gutter);
+    width: 100%;
+
+    &.full-position-fixed {
+      position: fixed;
+    }
+
+    &.full-position-absolute {
+      position: absolute;
+    }
+
+    &.full-position-sticky {
+      position: sticky;
+    }
+
+    &.subtle {
+      border-color: var(--6);
+      background-color: var(--2);
+    }
+
+    &.bordered {
+      border-bottom: 1px solid var(--border);
+    }
+  }
+</style>

@@ -1,0 +1,20 @@
+---
+interface Props {
+  block?: string
+  [key: string | number | symbol]: any
+}
+
+const libraryComponents = await Astro.glob('../**/*.astro')
+const userComponents = await Astro.glob('/src/**/*.astro')
+const components = [...userComponents, ...libraryComponents]
+
+const { block, ...rest } = Astro.props
+
+const Component = components.find((component) => {
+  const fileName = component.default.moduleId?.split('/').pop()
+  const componentName = fileName?.split('.')[0]
+  return componentName === block
+})?.default
+---
+
+{Component && <Component {...rest} />}

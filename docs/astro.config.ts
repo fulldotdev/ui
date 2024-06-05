@@ -6,17 +6,12 @@ import { defineConfig } from 'astro/config'
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://fullui.dev',
+  site: 'https://ui.full.dev',
   integrations: [
     starlight({
-      title: 'Fullui',
-      // logo: {
-      //   src: './src/assets/logo.png',
-      //   alt: 'Logo Fullui',
-      //   replacesTitle: true,
-      // },
+      title: 'Fulldev UI',
       social: {
-        github: 'https://github.com/fullui/ui',
+        github: 'https://github.com/fulldotdev/ui',
         'x.com': 'https://x.com/silveltm',
         linkedin: 'https://www.linkedin.com/in/silveltman/',
       },
@@ -24,10 +19,7 @@ export default defineConfig({
         maxHeadingLevel: 4,
       },
       favicon: './favicon.png',
-      customCss: ['./src/css/custom.css', '@fullui/ui/colors'],
-      components: {
-        Head: './src/components/Head.astro',
-      },
+      customCss: ['./src/css/custom.css', 'fulldev-ui/colors'],
       pagefind: false,
       sidebar: [
         {
@@ -36,18 +28,6 @@ export default defineConfig({
             directory: 'overview',
           },
         },
-        // {
-        //   label: 'Foundation',
-        //   autogenerate: {
-        //     directory: 'foundation',
-        //   },
-        // },
-        // {
-        //   label: 'Theme',
-        //   autogenerate: {
-        //     directory: 'theme',
-        //   },
-        // },
         {
           label: 'Base',
           autogenerate: {
@@ -61,9 +41,10 @@ export default defineConfig({
           },
         },
         {
-          label: 'Layout',
+          label: 'Wrapper',
+          badge: 'WIP',
           autogenerate: {
-            directory: 'layout',
+            directory: 'wrapper',
           },
         },
       ],
@@ -72,7 +53,5 @@ export default defineConfig({
       layout: '/src/components/LiveCodeLayout.astro',
     }),
     sitemap(),
-    // mdx(),
-    // expressiveCode(),
   ],
 })

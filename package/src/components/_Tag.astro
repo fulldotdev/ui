@@ -1,13 +1,10 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
-
-type Props<As extends HTMLTag = 'div'> = Omit<Polymorphic<{ as: As }>, 'slot'> & {
-  if?: 'slot' | any
-  theme?: 'light' | 'dark'
-  color?: 'base' | 'lowered' | 'raised' | 'primary' | 'secondary' | 'input'
-  size?: 'sm' | 'md' | 'lg'
-  density?: 'base' | 'compact'
+interface Props {
+  theme?: 'light' | 'dark' | string
+  size?: 'sm' | 'md' | 'lg' | string
+  density?: 'base' | 'compact' | string
   slot?: any
+  if?: 'slot' | any
   [key: string | number | symbol]: any
 }
 
@@ -15,7 +12,7 @@ const {
   as: As = 'div',
   if: ifProp = 'slot',
   theme,
-  color,
+  variant,
   density,
   size,
   ...rest
@@ -32,7 +29,7 @@ const render = ifProp === 'slot' ? slot?.trim().length > 0 : ifProp
         'full-tag',
         {
           [`full-theme-${theme}`]: theme,
-          [`full-color-${color}`]: color,
+          [`full-variant-${variant}`]: variant,
           [`full-density-${density}`]: density,
           [`full-size-${size}`]: size,
         },
@@ -44,11 +41,13 @@ const render = ifProp === 'slot' ? slot?.trim().length > 0 : ifProp
   )
 }
 
-<style is:global lang="scss">
+<style is:global>
   @import '../css/main.css';
+</style>
 
+<style is:global>
   .full-tag {
-    box-sizing: border-box;
     z-index: 0;
+    box-sizing: border-box;
   }
 </style>

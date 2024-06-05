@@ -1,6 +1,7 @@
 import { getCollection, getEntry, type CollectionKey } from 'astro:content'
 import { flatten, unflatten } from 'flat'
 import { all, get, isString, mapValues } from 'radash'
+import { getPathname } from '../getPathname'
 import { transform } from './transform'
 
 export const transformReferences = async (data: object): Promise<any> => {
@@ -24,6 +25,11 @@ export const transformReferences = async (data: object): Promise<any> => {
               throw new Error(`Entry not found: ${collection}/${slug}`)
             const transformed = await transform(response as any)
             const result = get(transformed?.data, path)
+            if (!path)
+              return {
+                ...transformed?.data,
+                pathname: getPathname(transformed),
+              }
             return result ? result : valuePart
           } else if (collection) {
             const response = await getCollection(collection as CollectionKey)

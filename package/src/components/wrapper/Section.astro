@@ -1,0 +1,110 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Wrapper from './_Wrapper.astro'
+
+type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Wrapper> & {
+    direction?: 'horizontal' | 'vertical'
+    variant?: 'base' | 'raised'
+    frame?: 'viewport' | 'panel'
+    // gutter?: 'viewport' | 'panel'
+    reverse?: true | 'odd' | 'even'
+  }
+
+const { as = 'section', reverse, variant, frame, ...rest } = Astro.props
+---
+
+<Wrapper
+  class:list={[
+    'full-section',
+    {
+      [`full-variant-${variant}`]: variant,
+      [`full-frame-${frame}`]: frame,
+      [`full-reverse-${reverse}`]: reverse,
+    },
+  ]}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot />
+</Wrapper>
+
+<style is:global lang="scss">
+  :root,
+  .full-tag {
+    --media: 1536px;
+    --space-gutter: max(4vw, calc((100vw - var(--media)) / 2));
+    --space-spacer: calc(var(--space-5) + 4vw);
+  }
+
+  .full-section {
+    position: relative;
+    background: var(--background);
+    padding: var(--space-spacer) var(--space-gutter);
+    width: 100%;
+    overflow-x: hidden;
+
+    &.full-frame-panel {
+      margin: var(--space-5) var(--space-gutter);
+      border: 1px solid var(--border);
+      border-radius: var(--full-border-radius-3);
+      background-color: var(--background);
+      padding: var(--space-5) var(--space-gutter);
+      width: auto;
+      overflow: hidden;
+    }
+  }
+
+  .full-layout-split {
+    display: grid;
+    column-gap: var(--space-gutter);
+    row-gap: var(--space-5);
+    justify-content: var(--full-x);
+    align-items: var(--full-y);
+
+    @media (min-width: 1024px) {
+      grid-auto-columns: 1fr;
+      grid-auto-flow: column;
+    }
+
+    & > * {
+      margin: 0;
+    }
+  }
+
+  .full-reverse-true {
+    --full-reverse: 1;
+  }
+
+  .full-reverse-even:nth-child(even) {
+    --full-reverse: 1;
+  }
+
+  .full-reverse-odd:nth-child(odd) {
+    --full-reverse: 1;
+  }
+
+  .full-reverse-even,
+  .full-reverse-odd,
+  .full-reverse-true {
+    @media (min-width: 1024px) {
+      > .full-tag {
+        order: 0;
+
+        &:first-child {
+          order: var(--full-reverse, 0);
+        }
+
+        &:last-child {
+          order: calc(var(--full-reverse, 0) * -1);
+        }
+      }
+    }
+  }
+
+  .full-frame-viewport {
+    height: auto;
+    min-height: 100vh;
+  }
+</style>

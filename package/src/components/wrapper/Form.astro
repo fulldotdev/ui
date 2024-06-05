@@ -1,0 +1,26 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Wrapper from './_Wrapper.astro'
+
+type Props<As extends HTMLTag = 'form'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Wrapper>
+
+const { as = 'form', ...rest } = Astro.props
+---
+
+<Wrapper
+  class:list={['full-form']}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot />
+</Wrapper>
+
+<style is:global lang="scss">
+  .full-form {
+    display: flex;
+    width: 100%;
+    max-width: calc(var(--space-element-3) * 36);
+  }
+</style>

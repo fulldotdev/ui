@@ -1,14 +1,9 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import type { Childmorphic } from '../../types/Childmorphic'
-import Link from './Link.astro'
 import Typography from './_Typography.astro'
 
 type Props<As extends HTMLTag = 'p'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Typography> &
-  Childmorphic<{
-    link: ComponentProps<typeof Link>
-  }>
+  ComponentProps<typeof Typography>
 
 const { as = 'p', ...rest } = Astro.props
 ---
@@ -24,10 +19,20 @@ const { as = 'p', ...rest } = Astro.props
 
 <style is:global lang="scss">
   .full-paragraph {
-    color: var(--color-foreground);
+    max-width: calc(var(--space-element-3) * 36);
+    color: var(--foreground);
     font-weight: var(--full-font-weight);
     font-size: var(--text);
     line-height: 1.625;
     font-family: var(--full-font-family);
+
+    .full-tag + & {
+      --my-spacer: var(--space-5);
+    }
+
+    .full-heading + &,
+    .full-paragraph + & {
+      --my-spacer: var(--space-3);
+    }
   }
 </style>

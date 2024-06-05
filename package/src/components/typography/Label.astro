@@ -1,30 +1,36 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Layout from '../layout/_Layout.astro'
+import Typography from './_Typography.astro'
 
 type Props<As extends HTMLTag = 'label'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Layout>
+  ComponentProps<typeof Typography> & {
+    variant?: 'base' | 'muted'
+    text?: string
+    html?: string
+  }
 
-const { as = 'label', variant, ...rest } = Astro.props
+const { as = 'label', text, html, ...rest } = Astro.props
 ---
 
-<Layout
+<Typography
   class:list={['full-label']}
   {as}
   {...rest}
 >
   <slot name="before" />
+  <Fragment set:html={html} />
+  {text}
   <slot />
-</Layout>
+</Typography>
 
 <style is:global lang="scss">
   .full-label {
     display: flex;
     flex-direction: column;
-    color: var(--color-foreground);
-    font-size: var(--text-element);
-    text-align: left;
+    color: var(--foreground);
     font-weight: var(--full-font-weight);
+    font-size: var(--text-element);
     font-family: var(--full-font-family);
+    text-align: left;
   }
 </style>
