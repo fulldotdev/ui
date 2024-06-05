@@ -63,15 +63,15 @@ pnpm dev
 
 ### Run a workspace
 
-You can use the `pnpm --filter=[WORKSPACE]` command to start the development process for a workspace.
+You can use the `pnpm --filter [WORKSPACE] dev` command to start the development process for a workspace.
 
 #### Workspace Examples
 
 To run the ui.full.dev website:
-`pnpm --filter=docs dev`
+`pnpm --filter docs dev`
 
 To run the fulldev-ui package:
-`pnpm --filter=package dev`
+`pnpm --filter package dev`
 
 ### Use your version of fulldev-ui on documentation
 
