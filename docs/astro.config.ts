@@ -6,7 +6,8 @@ import { defineConfig } from 'astro/config'
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://ui.full.dev',
+  site: 'https://fulldotdev.github.io/ui',
+  base: 'ui',
   integrations: [
     starlight({
       title: 'Fulldev UI',
