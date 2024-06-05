@@ -9,6 +9,10 @@ static / server rendering, and CSS cascading styles.
 
 Please visit the [documentation site][docs]
 
+## Contributing
+
+We welcome all contributions. Please read our [contributing guide](/CONTRIBUTING.md) to get started.
+
 ## Support
 
 Please [create a Github issue][issues] for things that cross your mind; feature requests, bug reports or feedback.
