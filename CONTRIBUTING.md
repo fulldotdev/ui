@@ -55,6 +55,8 @@ git checkout -b my-new-branch
 pnpm install
 ```
 
+Make sure to do this in root to make sure you're using the local version of the component package.
+
 1. Run the entire repository (optional)
 
 ```bash
@@ -72,12 +74,6 @@ To run the ui.full.dev website:
 `pnpm --filter docs dev`
 
 or run it by going to the folder using `cd docs` and running `pnpm dev` there.
-
-### Use your version of fulldev-ui on documentation
-<!-- TODO linken is niet nodig, omdat het pnpm workspaces gebruikt -->
-<!-- pnpm i hoeft alleen 1x in de root, dat wordt alles automatisch geinstalled. -->
-<!-- er is dus in feite nooit een 'cd' nodig, als we de juiste script tags toevoegen aan den root -->
-For using your development package on the documentation you can use the `pnpm link fulldev-ui command` in /package and in /docs run `pnpm install fulldev-ui`.
 
 ## Commit & Pull Requests
 
