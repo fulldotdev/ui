@@ -31,7 +31,7 @@ Here lays the documentation of fulldev-ui deployed to [ui.full.dev](https://ui.f
 
 The actual component library with it's components and styling.
 
-## Development (Setup, Conduct, PNPM Link)
+## Development
 
 ### Setup
 
@@ -63,7 +63,6 @@ Make sure to do this in root to make sure you're using the local version of the 
 pnpm dev
 ```
 
-<!-- TODO Dit is niet nodig. Je kunt --filter toevoegen aan de `dev` command in de root, zodat de docs de default is. Dit is nml de enige mogelijkheid -->
 ### Run a workspace
 
 You can use the `pnpm --filter [WORKSPACE] dev` command to start the development process for a workspace.
