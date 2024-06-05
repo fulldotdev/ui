@@ -61,6 +61,7 @@ pnpm install
 pnpm dev
 ```
 
+<!-- TODO Dit is niet nodig. Je kunt --filter toevoegen aan de `dev` command in de root, zodat de docs de default is. Dit is nml de enige mogelijkheid -->
 ### Run a workspace
 
 You can use the `pnpm --filter [WORKSPACE] dev` command to start the development process for a workspace.
@@ -73,7 +74,9 @@ To run the ui.full.dev website:
 or run it by going to the folder using `cd docs` and running `pnpm dev` there.
 
 ### Use your version of fulldev-ui on documentation
-
+<!-- TODO linken is niet nodig, omdat het pnpm workspaces gebruikt -->
+<!-- pnpm i hoeft alleen 1x in de root, dat wordt alles automatisch geinstalled. -->
+<!-- er is dus in feite nooit een 'cd' nodig, als we de juiste script tags toevoegen aan den root -->
 For using your development package on the documentation you can use the `pnpm link fulldev-ui command` in /package and in /docs run `pnpm install fulldev-ui`.
 
 ## Commit & Pull Requests
