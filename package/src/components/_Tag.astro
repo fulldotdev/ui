@@ -1,12 +1,9 @@
 ---
-// interface Props {
-//   theme?: 'light' | 'dark' | string
-//   size?: 'sm' | 'md' | 'lg' | string
-//   density?: 'base' | 'compact' | string
-//   slot?: any
-//   if?: 'slot' | any
-//   [key: string | number | symbol]: any
-// }
+interface Props {
+  if?: 'content' | any
+  slot?: any
+  [key: string | number | symbol]: any
+}
 
 const {
   as: As = 'div',
@@ -15,12 +12,22 @@ const {
   variant,
   density,
   size,
+  align,
+  position,
+  level,
+  frame,
+  ratio,
+  html,
+  text,
   ...rest
 } = Astro.props
 
 const slot = await Astro.slots.render('default')
-const hasContent = (str: string) => str.trim().length > 0 
-const render = ifProp === 'content' ? (hasContent(slot) || hasContent(Astro.props.html) || hasContent(Astro.props.text)) : ifProp
+const hasContent = (str?: string) => str && str.trim().length > 0
+const render =
+  ifProp === 'content'
+    ? hasContent(slot) || hasContent(html) || hasContent(text)
+    : ifProp
 ---
 
 {
@@ -33,15 +40,21 @@ const render = ifProp === 'content' ? (hasContent(slot) || hasContent(Astro.prop
           [`variant-${variant}`]: variant,
           [`density-${density}`]: density,
           [`size-${size}`]: size,
+          [`align-${align}`]: align,
+          [`level-${level}`]: level,
+          [`position-${position}`]: position,
+          [`frame-${frame}`]: frame,
+          [`ratio-${ratio}`]: ratio,
         },
       ]}
       {...rest}
     >
-      {Object.entries(Astro.props).map(([key, value]) => {
-        if (key === 'text') return <Fragment set:text={value} />
-        if (key === 'html') return <Fragment set:html={value} />
-      })}
+      <slot name="before" />
       <Fragment set:html={slot} />
+      <Fragment set:html={html} />
+      <Fragment set:text={text} />
+      <slot />
+      <slot name="after" />
     </As>
   )
 }

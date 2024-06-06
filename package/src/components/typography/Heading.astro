@@ -1,11 +1,16 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Typography from './_Typography.astro'
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Tag from '../_Tag.astro'
 
-type Props<As extends HTMLTag = 'h2'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Typography> & {
-    level: 1 | 2 | 3 | 4 | 5 | 6
-  }
+type Props<As extends HTMLTag = 'h2'> = Polymorphic<{
+  as: As
+  theme?: 'light' | 'dark' | string
+  size?: 'sm' | 'md' | 'lg'
+  density?: 'base' | 'compact' | string
+  html?: string
+  text?: string
+  level: 1 | 2 | 3 | 4 | 5 | 6
+}>
 
 const {
   level = 2,
@@ -15,19 +20,16 @@ const {
 } = Astro.props
 ---
 
-<Typography
-  class:list={[
-    'heading',
-    {
-      [`level-${level}`]: level,
-    },
-  ]}
+<Tag
+  class:list={['heading']}
   {as}
-  {...rest as any}
+  {density}
+  {level}
+  {...rest}
 >
   <slot name="before" />
   <slot />
-</Typography>
+</Tag>
 
 <style is:global lang="scss">
   .full.heading {
