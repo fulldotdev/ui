@@ -1,16 +1,16 @@
 ---
-interface Props {
-  theme?: 'light' | 'dark' | string
-  size?: 'sm' | 'md' | 'lg' | string
-  density?: 'base' | 'compact' | string
-  slot?: any
-  if?: 'slot' | any
-  [key: string | number | symbol]: any
-}
+// interface Props {
+//   theme?: 'light' | 'dark' | string
+//   size?: 'sm' | 'md' | 'lg' | string
+//   density?: 'base' | 'compact' | string
+//   slot?: any
+//   if?: 'slot' | any
+//   [key: string | number | symbol]: any
+// }
 
 const {
   as: As = 'div',
-  if: ifProp = 'slot',
+  if: ifProp = 'content',
   theme,
   variant,
   density,
@@ -19,7 +19,8 @@ const {
 } = Astro.props
 
 const slot = await Astro.slots.render('default')
-const render = ifProp === 'slot' ? slot?.trim().length > 0 : ifProp
+const hasContent = (str: string) => str.trim().length > 0 
+const render = ifProp === 'content' ? (hasContent(slot) || hasContent(Astro.props.html) || hasContent(Astro.props.text)) : ifProp
 ---
 
 {
@@ -36,6 +37,10 @@ const render = ifProp === 'slot' ? slot?.trim().length > 0 : ifProp
       ]}
       {...rest}
     >
+      {Object.entries(Astro.props).map(([key, value]) => {
+        if (key === 'text') return <Fragment set:text={value} />
+        if (key === 'html') return <Fragment set:html={value} />
+      })}
       <Fragment set:html={slot} />
     </As>
   )
