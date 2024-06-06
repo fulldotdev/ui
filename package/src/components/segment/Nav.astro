@@ -3,24 +3,20 @@ import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
 import Tag from '../_Tag.astro'
 
 type Props<As extends HTMLTag = 'nav'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag>
+  ComponentProps<typeof Tag> & {
+    structure?: 'spread' | 'group'
+    align?: 'start' | 'center' | 'end'
+  }
 
-const {
-  as = 'nav',
-  direction = 'horizontal',
-  y = 'center',
-  ...rest
-} = Astro.props
+const { as = 'nav', structure = 'spread', ...rest } = Astro.props
 ---
 
 <Tag
   class:list={['nav']}
   {as}
-  {direction}
-  {y}
+  {structure}
   {...rest}
 >
-  <slot name="before" />
   <slot />
 </Tag>
 

@@ -3,17 +3,19 @@ import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
 import Tag from '../_Tag.astro'
 
 type Props<As extends HTMLTag = 'form'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag>
+  ComponentProps<typeof Tag> & {
+    structure?: 'stack' | 'group'
+  }
 
-const { as = 'form', ...rest } = Astro.props
+const { as = 'form', structure = 'stack', ...rest } = Astro.props
 ---
 
 <Tag
   class:list={['form']}
   {as}
+  {structure}
   {...rest}
 >
-  <slot name="before" />
   <slot />
 </Tag>
 

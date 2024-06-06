@@ -8,10 +8,12 @@ type Props<As extends HTMLTag = 'i'> = Polymorphic<{ as: As }> &
     name?: string
   }
 
-const { as = 'i', name = Astro.props.html, ...rest } = Astro.props
+const { as = 'i', name, ...rest } = Astro.props
 
 const trimmedName = name?.trim() as string | undefined
-const icon = trimmedName && (tablerIcons as any)?.icons[trimmedName]?.body
+const icon = trimmedName
+  ? (tablerIcons as any)?.icons[trimmedName]?.body
+  : undefined
 ---
 
 <Tag
@@ -20,11 +22,15 @@ const icon = trimmedName && (tablerIcons as any)?.icons[trimmedName]?.body
   {as}
   {...rest}
 >
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    set:html={icon}
-  />
+  {
+    icon && (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        set:html={icon}
+      />
+    )
+  }
 </Tag>
 
 <style is:global lang="scss">

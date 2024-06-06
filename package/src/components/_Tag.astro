@@ -1,8 +1,10 @@
 ---
 interface Props {
-  if?: 'content' | any
-
+  theme?: 'light' | 'dark' | string
+  size?: 'sm' | 'md' | 'lg'
+  density?: 'base' | 'compact' | string
   slot?: any
+  if?: 'content' | any
   [key: string | number | symbol]: any
 }
 
@@ -18,15 +20,16 @@ const {
   level,
   frame,
   ratio,
-  html,
+  structure,
   text,
+  html,
   ...rest
 } = Astro.props
 
 const slot = await Astro.slots.render('default')
 const hasContent = (str?: string) => str && str.trim().length > 0
 const render =
-  ifProp === 'content'
+  ifProp == 'content'
     ? hasContent(slot) || hasContent(html) || hasContent(text)
     : ifProp
 ---
@@ -46,16 +49,14 @@ const render =
           [`position-${position}`]: position,
           [`frame-${frame}`]: frame,
           [`ratio-${ratio}`]: ratio,
+          [`structure-${structure}`]: structure,
         },
       ]}
       {...rest}
     >
-      <slot name="before" />
-      <Fragment set:html={slot} />
-      <Fragment set:html={html} />
       <Fragment set:text={text} />
-      <slot />
-      <slot name="after" />
+      <Fragment set:html={html} />
+      <Fragment set:html={slot} />
     </As>
   )
 }
