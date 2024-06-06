@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'astro/types'
 import type Carousel from '../components/structure/Carousel.astro'
-import type Stack from '../components/structure/Stack.astro'
+import type Stack from '../components/structure/Column.astro'
 
 export type Structuremorphic<
   S extends

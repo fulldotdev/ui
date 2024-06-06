@@ -4,14 +4,15 @@ import Structure from './_Structure.astro'
 
 type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
   ComponentProps<typeof Structure> & {
-    align?: 'start' | 'center' | 'end'
+    align?: 'start' | 'center' | 'end' | 'stretch'
   }
 
-const { ...rest } = Astro.props
+const { align = 'start', ...rest } = Astro.props
 ---
 
 <Structure
   class:list={['stack']}
+  {align}
   {...rest}
 >
   <slot />
@@ -21,6 +22,7 @@ const { ...rest } = Astro.props
   .full.stack {
     display: flex;
     flex-direction: column;
+    gap: 0 !important;
 
     &.align-center {
       text-align: center;
@@ -42,6 +44,7 @@ const { ...rest } = Astro.props
 
       .full + .wrapper,
       .full + .button,
+      .full + .group,
       .full + .switch {
         margin-top: var(--space-4);
       }

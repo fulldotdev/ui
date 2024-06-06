@@ -1,0 +1,27 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Segment from './_Segment.astro'
+
+type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Segment> & {
+    structure?: 'grid' | 'carousel' | 'masonry' | 'bento'
+    // frame?: 'none' | 'fill' | 'inset'
+  }
+
+const { structure = 'grid', ...rest } = Astro.props
+---
+
+<Segment
+  class:list={['deck']}
+  {structure}
+  {...rest}
+>
+  <slot />
+</Segment>
+
+<style is:global lang="scss">
+  .full.deck {
+    position: relative;
+    width: 100%;
+  }
+</style>

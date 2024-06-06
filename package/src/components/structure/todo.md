@@ -1,4 +1,5 @@
-# Chores
-
-# New components
+# Components
 - Pile
+- Join
+
+# Chores
