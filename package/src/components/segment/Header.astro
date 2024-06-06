@@ -1,0 +1,58 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Segment from './_Segment.astro'
+
+type Props<As extends HTMLTag = 'header'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Segment> & {
+    structure?: 'spread' | 'group' | 'stack'
+    position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
+    variant?: 'base' | 'raised'
+    frame?: 'fill' | 'panel'
+  }
+
+const {
+  as = 'header',
+  structure = 'spread',
+  density = 'compact',
+  position,
+  frame,
+  ...rest
+} = Astro.props
+---
+
+<Segment
+  class:list={['header']}
+  {as}
+  {density}
+  {...rest}
+>
+  <slot name="before" />
+  <slot />
+</Segment>
+
+<style is:global lang="scss">
+  .full.header {
+    display: flex;
+    top: 0;
+    right: 0;
+    left: 0;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    background: var(--background);
+    padding: var(--space-3) var(--space-gutter);
+    width: 100%;
+
+    &.position-fixed {
+      position: fixed;
+    }
+
+    &.position-absolute {
+      position: absolute;
+    }
+
+    &.position-sticky {
+      position: sticky;
+    }
+  }
+</style>

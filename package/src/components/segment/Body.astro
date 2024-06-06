@@ -1,0 +1,34 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Wrapper from '../wrapper/_Wrapper.astro'
+
+type Props<As extends HTMLTag = 'body'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Wrapper>
+
+const { as = 'body', ...rest } = Astro.props
+---
+
+<Wrapper
+  class:list={['body']}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot />
+
+  <style is:global lang="scss">
+    .full.body {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      margin: 0;
+      background: var(--background);
+      padding: 0;
+      height: 100%;
+      min-height: 100vh;
+      color: var(--foreground);
+      font-size: var(--text-2);
+      font-family: var(--font-family);
+    }
+  </style>
+</Wrapper>

@@ -1,0 +1,69 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Structure from './_Structure.astro'
+
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Structure> & {
+    align?: 'start' | 'center' | 'end' | 'stretch'
+  }
+
+const { align = 'start', ...rest } = Astro.props
+---
+
+<Structure
+  class:list={['stack']}
+  {align}
+  {...rest}
+>
+  <slot />
+</Structure>
+
+<style is:global lang="scss">
+  .full.stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0 !important;
+
+    &.align-center {
+      text-align: center;
+
+      > * > * {
+        text-align: left;
+      }
+    }
+
+    > {
+      .full {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+
+      .full + .full {
+        margin-top: var(--space-5);
+      }
+
+      .full + .wrapper,
+      .full + .button,
+      .full + .group,
+      .full + .switch {
+        margin-top: var(--space-4);
+      }
+
+      .full + .typography,
+      .full + .input,
+      .full + .badge,
+      .full + .rating {
+        margin-top: var(--space-3);
+      }
+
+      .paragraph + .paragraph,
+      .button + .button {
+        margin-top: var(--space-2);
+      }
+
+      .label + .input {
+        margin-top: var(--space-1);
+      }
+    }
+  }
+</style>

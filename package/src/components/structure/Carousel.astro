@@ -1,0 +1,42 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Structure from './_Structure.astro'
+
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Structure>
+
+const { ...rest } = Astro.props
+---
+
+<Structure
+  class:list={['carousel']}
+  {...rest}
+>
+  <slot />
+</Structure>
+
+<style is:global lang="scss">
+  .full.carousel {
+    display: flex;
+    position: relative;
+    position: relative;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin: 0 calc(var(--space-gutter) * -1);
+    padding: 0 var(--space-gutter) var(--space-3);
+    width: 100%;
+    width: 100vw;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+
+    > .full {
+      /* TODO add multiple sizes */
+      flex-grow: 0;
+      flex-shrink: 0;
+      width: calc(12 * var(--space-6));
+      scroll-snap-align: center;
+    }
+  }
+</style>

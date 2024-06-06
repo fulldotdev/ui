@@ -1,42 +1,60 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Typography from './_Typography.astro'
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Tag from '../_Tag.astro'
 
-type Props<As extends HTMLTag = 'h2'> = Polymorphic<{ as: As }> &
-  Omit<ComponentProps<typeof Typography>, 'size'> & {
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
-  }
+type Props<As extends HTMLTag = 'h2'> = Polymorphic<{
+  as: As
+  theme?: 'light' | 'dark' | string
+  size?: 'sm' | 'md' | 'lg'
+  density?: 'base' | 'compact' | string
+  html?: string
+  text?: string
+  level: 1 | 2 | 3 | 4 | 5 | 6
+}>
 
-const { as = 'h2', ...rest } = Astro.props
+const {
+  level = 2,
+  as = `h${Astro.props.level}`,
+  density = Astro.props.level > 3 ? 'compact' : undefined,
+  ...rest
+} = Astro.props
 ---
 
-<Typography
-  class:list={['full-heading']}
+<Tag
+  class:list={['heading']}
   {as}
-  {...rest as any}
+  {density}
+  {level}
+  {...rest}
 >
   <slot name="before" />
   <slot />
-</Typography>
+</Tag>
 
 <style is:global lang="scss">
-  .full-heading {
-    max-width: calc(var(--space-element-3) * 36);
+  .full.heading {
+    max-width: calc(var(--element-3) * 36);
     color: var(--foreground);
-    font-weight: var(--full-heading-font-weight);
-    font-size: var(--text-heading);
+    font-weight: var(--heading-font-weight);
     line-height: 1.1;
-    font-family: var(--full-heading-font-family);
+    font-family: var(--heading-font-family);
     letter-spacing: -0.025em;
     text-decoration: none;
 
-    .full-tag + & {
-      --my-spacer: var(--space-5);
+    &.level-1,
+    &.level-4 {
+      font-size: var(--text-5);
     }
 
-    .full-tagline,
-    .full-badge + & {
-      --my-spacer: var(--space-3);
+    &,
+    &.level-2,
+    &.level-5 {
+      font-size: var(--text-4);
+    }
+
+    &.level-3,
+    &.level-6 {
+      font-size: var(--text-3);
     }
   }
 </style>

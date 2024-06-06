@@ -1,0 +1,38 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Structure from './_Structure.astro'
+
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Structure> & {
+    align?: 'start' | 'center' | 'end'
+  }
+
+const { ...rest } = Astro.props
+---
+
+<Structure
+  class:list={['split']}
+  {...rest}
+>
+  <slot />
+</Structure>
+
+<style is:global lang="scss">
+  .full.split {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-6) var(--space-5);
+
+    &.align-start {
+      align-items: flex-start;
+    }
+
+    &.align-center {
+      align-items: center;
+    }
+
+    &.align-end {
+      align-items: flex-end;
+    }
+  }
+</style>

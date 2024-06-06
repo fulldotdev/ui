@@ -1,0 +1,78 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Segment from './_Segment.astro'
+
+type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Segment> & {
+    structure?: 'stack' | 'group' | 'split' | 'spread'
+    align?: 'start' | 'center' | 'end' | 'stretch'
+    variant?: 'base' | 'raised' | 'primary'
+    frame?: 'fill' | 'panel'
+    ratio?: 'landscape' | 'portrait' | 'square' | number
+  }
+
+const {
+  href,
+  as = Astro.props.href ? 'a' : 'div',
+  structure = 'stack',
+  density = 'compact',
+  variant,
+  frame,
+  ratio,
+  ...rest
+} = Astro.props
+---
+
+<Segment
+  class:list={['card']}
+  {href}
+  {density}
+  {as}
+  {...rest}
+>
+  <slot />
+</Segment>
+
+<style is:global lang="scss">
+  .full.card {
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+
+    &[href] {
+      cursor: pointer;
+
+      > .full.image {
+        transition: var(--transition);
+      }
+
+      &:hover {
+        > .full.image {
+          opacity: 0.85;
+        }
+      }
+    }
+
+    &.frame-panel {
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2);
+      background-color: var(--background);
+      padding: var(--space-5);
+      overflow: hidden;
+      color: var(--foreground);
+    }
+
+    &.ratio-landscape {
+      aspect-ratio: 4/3;
+    }
+
+    &.ratio-square {
+      aspect-ratio: 1/1;
+    }
+
+    &.ratio-portrait {
+      aspect-ratio: 3/4;
+    }
+  }
+</style>

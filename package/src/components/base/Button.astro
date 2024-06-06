@@ -10,18 +10,15 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> &
   Childmorphic<{
     html: string
     text: string
-    variant?: 'primary' | 'secondary' | 'ghost' | 'outline'
+    variant?: 'primary' | 'secondary' | 'outline' | 'ghost'
     icon: ComponentProps<typeof Icon> | ComponentProps<typeof Icon>['name']
   }>
-
-// TODO: variants: link, filled, outline, ghost. Deze zijn independent van de color prop. Betekent dus dat je een outline variant hebt van elke color.
-// Let wel op, dit werkt niet met de Primary variant, omdat deze kleuren dan niet kloppen.
 
 const { as = 'a', variant = 'primary', ...rest } = Astro.props
 ---
 
 <Tag
-  class:list={['full-button']}
+  class:list={['button']}
   {as}
   {variant}
   {...rest}
@@ -32,28 +29,28 @@ const { as = 'a', variant = 'primary', ...rest } = Astro.props
 </Tag>
 
 <style is:global lang="scss">
-  .full-button {
+  .full.button {
     display: inline-flex;
     flex-shrink: 0;
     justify-content: center;
     align-items: center;
     vertical-align: top;
     gap: var(--space-2);
-    transition: background-color var(--full-transition);
+    transition: background-color var(--transition);
     cursor: pointer;
     outline: none !important;
     box-shadow: inset 0 0 0 1px var(--border);
     border: none;
-    border-radius: var(--full-border-radius-2);
+    border-radius: var(--radius-1);
     background-color: var(--background);
-    padding-right: var(--space-element-3);
-    padding-left: var(--space-element-3);
-    height: calc(var(--text-element) + 2 * var(--space-element-3));
+    padding-right: var(--element-3);
+    padding-left: var(--element-3);
+    height: calc(var(--text-1) + 2 * var(--element-3));
     color: var(--foreground);
-    font-weight: var(--full-button-font-weight);
-    font-size: var(--text-element);
+    font-weight: var(--button-font-weight);
+    font-size: var(--text-1);
     line-height: 1.625;
-    font-family: var(--full-button-font-family);
+    font-family: var(--button-font-family);
     user-select: none;
     text-align: center;
     text-decoration: none;
@@ -72,14 +69,6 @@ const { as = 'a', variant = 'primary', ...rest } = Astro.props
       opacity: 0.5;
       cursor: not-allowed;
       pointer-events: none;
-    }
-
-    .full-tag + & {
-      --my-spacer: var(--space-4);
-    }
-
-    & + & {
-      --my-spacer: var(--space-2);
     }
   }
 </style>

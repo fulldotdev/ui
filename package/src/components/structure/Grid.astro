@@ -1,0 +1,29 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Structure from './_Structure.astro'
+
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Structure>
+
+const { ...rest } = Astro.props
+---
+
+<Structure
+  class:list={['grid']}
+  {...rest}
+>
+  <slot />
+</Structure>
+
+<style is:global lang="scss">
+  // <!-- Difference with split is that the columns in this component should not grow. 4 columns is 4 columns, even if theres only 3 children -->
+
+  .full.grid {
+    display: grid;
+    position: relative;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    column-gap: var(--space-3);
+    row-gap: var(--space-4);
+    width: 100%;
+  }
+</style>

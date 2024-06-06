@@ -1,0 +1,27 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Wrapper from '../wrapper/_Wrapper.astro'
+
+type Props<As extends HTMLTag = 'main'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Wrapper>
+
+const { as = 'main', ...rest } = Astro.props
+---
+
+<Wrapper
+  class:list={['main']}
+  {as}
+  {...rest}
+>
+  <slot name="before" />
+  <slot />
+</Wrapper>
+
+<style is:global lang="scss">
+  .full.main {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+</style>
