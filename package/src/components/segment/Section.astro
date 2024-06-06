@@ -1,0 +1,63 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type Group from '../structure/Group.astro'
+import type Split from '../structure/Split.astro'
+import type Spread from '../structure/Spread.astro'
+import type Stack from '../structure/Stack.astro'
+import Segment from './_Segment.astro'
+
+type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Segment> &
+  ComponentProps<typeof Stack> &
+  ComponentProps<typeof Split> &
+  ComponentProps<typeof Group> &
+  ComponentProps<typeof Spread> & {
+    structure?: 'stack' | 'split' | 'spread' | 'group'
+    variant?: 'base' | 'raised' | 'primary'
+    frame?: 'fill' | 'viewport' | 'panel'
+  }
+
+const { as = 'section', structure = 'stack', ...rest } = Astro.props
+---
+
+<Segment
+  class:list={['section']}
+  {structure}
+  {as}
+  {...rest}
+>
+  <slot />
+</Segment>
+
+<style is:global lang="scss">
+  :root,
+  .full {
+    --media: 1536px;
+    --space-spacer: calc(var(--space-5) + 4vw);
+    --space-gutter: max(4vw, calc((100vw - var(--media)) / 2));
+  }
+
+  .full.section {
+    position: relative;
+    gap: var(--space-6) var(--space-5);
+    background: var(--background);
+    padding: var(--space-spacer) var(--space-gutter);
+    width: 100%;
+    overflow-x: hidden;
+
+    &.frame-panel {
+      margin: var(--space-5) var(--space-gutter);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-3);
+      background-color: var(--background);
+      padding: var(--space-5);
+      width: auto;
+      overflow: hidden;
+    }
+
+    &.frame-viewport {
+      height: auto;
+      min-height: 100vh;
+    }
+  }
+</style>

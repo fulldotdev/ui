@@ -1,43 +1,34 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Wrapper from './_Wrapper.astro'
+import Segment from './_Segment.astro'
 
 type Props<As extends HTMLTag = 'header'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Wrapper> & {
-    frame?: 'screen' | 'panel'
+  ComponentProps<typeof Segment> & {
+    structure?: 'spread' | 'group' | 'stack'
     position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
+    variant?: 'base' | 'raised'
+    frame?: 'fill' | 'panel'
   }
 
 const {
   as = 'header',
-  direction = 'horizontal',
-  y = 'center',
+  structure = 'spread',
   density = 'compact',
-  variant,
   position,
   frame,
   ...rest
 } = Astro.props
 ---
 
-<Wrapper
-  class:list={[
-    'header',
-    {
-      [`frame-${frame}`]: frame,
-      [`position-${position}`]: position,
-    },
-  ]}
+<Segment
+  class:list={['header']}
   {as}
-  {direction}
-  {y}
   {density}
-  {variant}
   {...rest}
 >
   <slot name="before" />
   <slot />
-</Wrapper>
+</Segment>
 
 <style is:global lang="scss">
   .full.header {

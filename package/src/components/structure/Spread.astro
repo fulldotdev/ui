@@ -1,27 +1,29 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Wrapper from './_Wrapper.astro'
+import Structure from './_Structure.astro'
 
 type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Wrapper>
+  ComponentProps<typeof Structure> & {
+    align?: 'start' | 'center' | 'end'
+  }
 
-const { as = 'div', ...rest } = Astro.props
+const { ...rest } = Astro.props
 ---
 
-<Wrapper
-  class:list={['row']}
-  {as}
+<Structure
+  class:list={['spread']}
   {...rest}
 >
-  <slot name="before" />
   <slot />
-</Wrapper>
+</Structure>
 
 <style is:global lang="scss">
-  .full.row {
+  .full.spread {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
-    align-items: center;
+    align-items: stretch;
     gap: var(--space-4);
+    width: 100%;
   }
 </style>
