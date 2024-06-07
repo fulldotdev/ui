@@ -2,33 +2,29 @@
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
 import Tag from '../_Tag.astro'
 
-type Props<As extends HTMLTag = 'h2'> = ComponentProps<typeof Tag> &
-  Polymorphic<{
-    as: As
+type Props<As extends HTMLTag = 'h2'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag> & {
     html?: string
     text?: string
-    theme?: 'light' | 'dark' | string
-    size?: 'sm' | 'md' | 'lg'
-    density?: 'base' | 'compact' | string
-    level: 1 | 2 | 3 | 4 | 5 | 6
-  }>
+    variant?: 'base' | 'muted' | 'accent'
+    level?: 1 | 2 | 3 | 4 | 5 | 6
+  }
 
 const {
   level = 2,
   as = `h${Astro.props.level}`,
-  density = Astro.props.level > 3 ? 'compact' : undefined,
+  density = level > 3 ? 'compact' : undefined,
   ...rest
 } = Astro.props
 ---
 
 <Tag
   class:list={['heading']}
+  {level}
   {as}
   {density}
-  {level}
   {...rest}
 >
-  <slot name="before" />
   <slot />
 </Tag>
 

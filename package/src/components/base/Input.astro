@@ -1,16 +1,18 @@
 ---
-import type { ComponentProps } from 'astro/types'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
 import Tag from '../_Tag.astro'
 
-type Props = ComponentProps<typeof Tag>
+type Props<As extends HTMLTag = 'input'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag> & {
+    variant?: 'outline'
+  }
 
-const { as = 'input', variant = 'outline', name, ...rest } = Astro.props
+const { as = 'input', variant = 'outline', ...rest } = Astro.props
 ---
 
 <Tag
   class:list={['input']}
-  if={name}
-  {name}
+  if={true}
   {as}
   {variant}
   {...rest}

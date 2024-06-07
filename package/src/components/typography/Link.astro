@@ -1,21 +1,24 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Typography from './_Typography.astro'
+import Tag from '../_Tag.astro'
 
 type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Typography>
+  ComponentProps<typeof Tag> & {
+    html?: string
+    text?: string
+    variant?: 'base' | 'muted' | 'accent'
+  }
 
 const { as = 'a', ...rest } = Astro.props
 ---
 
-<Typography
+<Tag
   class:list={['link']}
   {as}
   {...rest}
 >
-  <slot name="before" />
   <slot />
-</Typography>
+</Tag>
 
 <style is:global lang="scss">
   .full.link {

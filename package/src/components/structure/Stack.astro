@@ -1,35 +1,46 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Structure from './_Structure.astro'
+import Tag from '../_Tag.astro'
 
 type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Structure> & {
-    align?: 'start' | 'center' | 'end' | 'stretch'
+  ComponentProps<typeof Tag> & {
+    align?: 'start' | 'center' | 'end'
   }
 
 const { align = 'start', ...rest } = Astro.props
 ---
 
-<Structure
+<Tag
   class:list={['stack']}
   {align}
   {...rest}
 >
   <slot />
-</Structure>
+</Tag>
 
 <style is:global lang="scss">
-  .full.stack {
+  .full.stack,
+  .full.structure-stack {
     display: flex;
     flex-direction: column;
     gap: 0 !important;
+    width: 100%;
+
+    &.align-start {
+      align-items: flex-start;
+    }
 
     &.align-center {
+      align-items: center;
       text-align: center;
 
       > * > * {
         text-align: left;
       }
+    }
+
+    &.align-end {
+      align-items: flex-end;
     }
 
     > {
@@ -42,14 +53,25 @@ const { align = 'start', ...rest } = Astro.props
         margin-top: var(--space-5);
       }
 
-      .full + .wrapper,
-      .full + .button,
+      .full + .bento,
+      .full + .carousel,
+      .full + .grid,
       .full + .group,
+      .full + .masonry,
+      .full + .split,
+      .full + .spread,
+      .full + .stack,
+      .full + .button,
       .full + .switch {
         margin-top: var(--space-4);
       }
 
-      .full + .typography,
+      .full + .heading,
+      .full + .label,
+      .full + .link,
+      .full + .list,
+      .full + .paragraph,
+      .full + .tagline,
       .full + .input,
       .full + .badge,
       .full + .rating {
@@ -63,6 +85,10 @@ const { align = 'start', ...rest } = Astro.props
 
       .label + .input {
         margin-top: var(--space-1);
+      }
+
+      .image + .full {
+        margin-top: var(--space-5);
       }
     }
   }
