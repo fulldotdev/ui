@@ -14,6 +14,7 @@ export default defineConfig({
         github: 'https://github.com/fulldotdev/ui',
         'x.com': 'https://x.com/silveltm',
         linkedin: 'https://www.linkedin.com/in/silveltman/',
+        discord: 'https://discord.gg/vXZqMbadm8',
       },
       tableOfContents: {
         maxHeadingLevel: 4,

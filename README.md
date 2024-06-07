@@ -9,9 +9,17 @@ static / server rendering, and CSS cascading styles.
 
 Please visit the [documentation site][docs]
 
+## Contributing
+
+We welcome all contributions. Please read our [contributing guide](/CONTRIBUTING.md) to get started.
+
 ## Support
 
-Please [create a Github issue ][issues] for things that cross your mind; feature requests, bug reports or feedback.
+Please [create a Github issue][issues] for things that cross your mind; feature requests, bug reports or feedback.
+
+## Community / Contact
+
+Looking to share your work using fulldev-ui, regular talks about it or support join our [discord server](https://discord.gg/tdmUyH2YE4).
 
 ## License
 
