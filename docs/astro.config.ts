@@ -41,10 +41,15 @@ export default defineConfig({
           },
         },
         {
-          label: 'Wrapper',
-          badge: 'WIP',
+          label: 'Structure',
           autogenerate: {
-            directory: 'wrapper',
+            directory: 'structure',
+          },
+        },
+        {
+          label: 'Segment',
+          autogenerate: {
+            directory: 'segment',
           },
         },
       ],
