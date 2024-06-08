@@ -411,13 +411,13 @@ declare module 'astro:content' {
 } & { render(): Render[".mdx"] };
 };
 "pages": {
-"index.md": {
-	id: "index.md";
+"index.mdx": {
+	id: "index.mdx";
   slug: "index";
   body: string;
   collection: "pages";
   data: any
-} & { render(): Render[".md"] };
+} & { render(): Render[".mdx"] };
 };
 "props": {
 "AsProp.mdx": {

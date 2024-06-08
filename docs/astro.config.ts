@@ -30,18 +30,6 @@ export default defineConfig({
           },
         },
         {
-          label: 'Base',
-          autogenerate: {
-            directory: 'base',
-          },
-        },
-        {
-          label: 'Typography',
-          autogenerate: {
-            directory: 'typography',
-          },
-        },
-        {
           label: 'Structure',
           autogenerate: {
             directory: 'structure',
@@ -51,6 +39,18 @@ export default defineConfig({
           label: 'Segment',
           autogenerate: {
             directory: 'segment',
+          },
+        },
+        {
+          label: 'Typography',
+          autogenerate: {
+            directory: 'typography',
+          },
+        },
+        {
+          label: 'Base',
+          autogenerate: {
+            directory: 'base',
           },
         },
       ],
