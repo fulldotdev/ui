@@ -213,20 +213,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"overview/colors.mdx": {
-	id: "overview/colors.mdx";
-  slug: "overview/colors";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"overview/components.mdx": {
-	id: "overview/components.mdx";
-  slug: "overview/components";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "overview/installation.mdx": {
 	id: "overview/installation.mdx";
   slug: "overview/installation";
@@ -241,16 +227,9 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"overview/sizes.mdx": {
-	id: "overview/sizes.mdx";
-  slug: "overview/sizes";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"segment/body.mdx": {
-	id: "segment/body.mdx";
-  slug: "segment/body";
+"overview/theming.mdx": {
+	id: "overview/theming.mdx";
+  slug: "overview/theming";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -262,51 +241,9 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"segment/carousel.mdx": {
-	id: "segment/carousel.mdx";
-  slug: "segment/carousel";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "segment/deck.mdx": {
 	id: "segment/deck.mdx";
   slug: "segment/deck";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"segment/footer.mdx": {
-	id: "segment/footer.mdx";
-  slug: "segment/footer";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"segment/form.mdx": {
-	id: "segment/form.mdx";
-  slug: "segment/form";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"segment/header.mdx": {
-	id: "segment/header.mdx";
-  slug: "segment/header";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"segment/main.mdx": {
-	id: "segment/main.mdx";
-  slug: "segment/main";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"segment/prose.mdx": {
-	id: "segment/prose.mdx";
-  slug: "segment/prose";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
