@@ -11,10 +11,9 @@ export default defineConfig({
     starlight({
       title: 'Fulldev UI',
       social: {
-        github: 'https://github.com/fulldotdev/ui',
-        'x.com': 'https://x.com/silveltm',
-        linkedin: 'https://www.linkedin.com/in/silveltman/',
         discord: 'https://discord.gg/vXZqMbadm8',
+        'x.com': 'https://x.com/silveltm',
+        github: 'https://github.com/fulldotdev/ui',
       },
       tableOfContents: {
         maxHeadingLevel: 4,
