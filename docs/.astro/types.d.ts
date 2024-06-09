@@ -213,6 +213,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"overview/frameworks.mdx": {
+	id: "overview/frameworks.mdx";
+  slug: "overview/frameworks";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "overview/installation.mdx": {
 	id: "overview/installation.mdx";
   slug: "overview/installation";
