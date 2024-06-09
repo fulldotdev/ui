@@ -63,4 +63,7 @@ export default defineConfig({
       layer: false,
     }),
   ],
+  redirects: {
+    '/discord': 'https://discord.gg/vXZqMbadm8',
+  },
 })
