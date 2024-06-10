@@ -1,6 +1,6 @@
 # Fulldev UI Changelog
 
-## fulldev-ui@0.2.0
+## fulldev-ui@0.2.10
 
 In this release we focussed on showing and improving the things that make Fulldev UI unique.
 
