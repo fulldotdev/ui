@@ -1,30 +1,35 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Typography from './_Typography.astro'
+import Tag from '../_Tag.astro'
 
 type Props<As extends HTMLTag = 'li'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Typography>
+  ComponentProps<typeof Tag> & {
+    html?: string
+    text?: string
+    variant?: 'base' | 'muted' | 'accent'
+  }
 
 const { as = 'li', ...rest } = Astro.props
 ---
 
-<Typography
-  class:list={['full-list-item']}
+<Tag
+  class:list={['list-item']}
   {as}
   {...rest}
 >
-  <slot name="before" />
   <slot />
-</Typography>
+</Tag>
 
 <style is:global lang="scss">
-  .full-item {
+  @import '../../css/utils.scss';
+
+  @include component('list-item') {
     align-items: center;
-    max-width: calc(var(--space-element-3) * 36);
+    max-width: calc(var(--element-3) * 36);
     color: var(--foreground);
-    font-weight: var(--full-font-weight);
-    font-size: var(--text);
+    font-weight: var(--font-weight);
+    font-size: var(--text-2);
     line-height: 1.625;
-    font-family: var(--full-font-family);
+    font-family: var(--font-family);
   }
 </style>

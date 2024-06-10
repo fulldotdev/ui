@@ -1,0 +1,35 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Tag from '../_Tag.astro'
+
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag>
+
+const { ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['bento']}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+
+  @include component('bento') {
+    display: grid;
+    position: relative;
+    grid-template-columns: 1fr;
+    width: 100%;
+
+    @media (min-width: 1024px) {
+      grid-template-columns: 1fr 1fr 1fr;
+
+      & > *:nth-child(2n) {
+        grid-column-start: span 2;
+      }
+    }
+  }
+</style>

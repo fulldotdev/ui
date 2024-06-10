@@ -1,25 +1,37 @@
 ---
+import { getEntry } from 'astro:content'
 import {
   Badge,
   Button,
+  Card,
+  Deck,
   Group,
   Heading,
+  Icon,
+  Input,
   Layout,
+  Link,
   Main,
   Paragraph,
   Section,
+  Select,
+  SelectOption,
+  Spread,
+  Switch,
+  Tagline,
+  Textarea,
 } from 'fulldev-ui'
+import Footer from '../components/Footer.astro'
 import Header from '../components/Header.astro'
+
+const { data, render } = await getEntry('pages', 'index')
+const { Content } = await render()
 ---
 
 <Layout
+  title="Fulldev UI - Astro UI component library, open-source"
+  description="A library of UI components, written in Astro, compatible with all frameworks. Unique features to build entire websites, check it out."
   image="https://ui.full.dev/og-image-fulldev-ui.png"
-  head={{
-    title: 'Fulldev UI - Astro UI component library, open-source',
-    description:
-      'Fulldev UI provides a library of UI components written completely in the Astro language. With unique features only possible in Astro. Read about it here.',
-    image: 'https://ui.full.dev/og-image-fulldev-ui.png',
-  }}
   body={{
     class: 'not-content',
     theme: 'dark',
@@ -29,58 +41,432 @@ import Header from '../components/Header.astro'
 
   <Main>
     <Section
-      theme="dark"
       class="hero"
       size="lg"
-      x="center"
+      align="center"
     >
       <Badge
         as="a"
+        {...data.hero.badge}
         variant="outline"
-        href="https://discord.gg/vXZqMbadm8"
-        >Join our discord for updates and chats 🤖</Badge
-      >
+      />
       <Heading
-        as="h1"
-        size="xl"
-      >
-        The Astro UI library for
-        <span class="nobreak"> content-driven websites</span>
-      </Heading>
-      <Paragraph variant="muted">
-        Rapidly build content-driven websites, with the power of modern design,
-        <span class="nobreak">static / server rendering,</span>
-        and CSS cascading styles.
-      </Paragraph>
-      <Group
-        direction="horizontal"
-        x="center"
-      >
-        <Button
-          variant="primary"
-          html="Get Started"
-          href="/overview/introduction"
-        />
-        <Button
-          variant="secondary"
-          html="Github"
-          icon={{ name: 'brand-github' }}
-          href="https://github.com/fulldotdev/ui"
-          target="_blank"
-        />
+        level={1}
+        text={data.hero.heading}
+      />
+      <Paragraph
+        variant="muted"
+        text={data.hero.paragraph}
+      />
+      <Group>
+        {data.hero.buttons.map((button: any) => <Button {...button} />)}
       </Group>
+
+      <!-- <Spread>
+        <Group>
+          <Badge
+            variant="primary"
+            text="Hero"
+          />
+          <Badge
+            variant="outline"
+            text="Product Overview"
+          />
+          <Badge
+            variant="outline"
+            text="CTA"
+          />
+          <Badge
+            variant="outline"
+            text="Form"
+          />
+        </Group>
+        <Button
+          variant="ghost"
+          text="view code"
+        />
+      </Spread>
+
+      <div
+        style="width: 100%; height: 600px; border-radius: 8px; background: #141414; box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);"
+      >
+      </div> -->
+      <Deck
+        structure="grid"
+        size="md"
+      >
+        {
+          data.hero.features.map((feature: any) => (
+            <Card>
+              <Icon
+                name={feature.icon}
+                size="lg"
+                style={{
+                  height: '1.4em',
+                  width: '1.4em',
+                }}
+              />
+              <Heading>{feature.heading}</Heading>
+              <Paragraph variant="muted">{feature.paragraph}</Paragraph>
+            </Card>
+          ))
+        }
+      </Deck>
     </Section>
+    <Section
+      align="center"
+      class={'cta-section'}
+    >
+      <Heading> Have a look at some examples </Heading>
+    </Section>
+    <div class="examples">
+      <Content />
+    </div>
   </Main>
 </Layout>
 
-<style>
-  @media (min-width: 768px) {
-    .nobreak {
-      white-space: nowrap;
+<!-- <Section>
+      <Heading> Features that help you build faster </Heading>
+      <Deck
+        structure="masonry"
+        size="lg"
+      >
+        <Card
+          frame="panel"
+          variant="raised"
+        >
+          <Icon
+            name="code"
+            size="lg"
+          />
+          <Heading>Automatic Rendering</Heading>
+          <Paragraph>
+            Components render automatically, making it compatible with headless
+            CMS and content collections.
+          </Paragraph>
+        </Card>
+
+        <Card
+          frame="panel"
+          variant="raised"
+        >
+          <Icon
+            name="file-type-css"
+            size="lg"
+          />
+          <Heading>Vanilla CSS Styling</Heading>
+          <Paragraph>
+            All components use vanilla CSS, ensuring simple and flexible
+            styling.
+          </Paragraph>
+        </Card>
+
+        <Card
+          frame="panel"
+          variant="raised"
+        >
+          <Icon
+            name="text-size"
+            size="lg"
+          />
+          <Heading>Cascading styles</Heading>
+          <Paragraph>
+            We handle sizes and margins for you automatically, you focus on the
+            content and we do the rest.
+          </Paragraph>
+        </Card>
+
+        <Card
+          frame="panel"
+          variant="raised"
+        >
+          <Icon
+            name="news"
+            size="lg"
+          />
+          <Heading>Headless Capability</Heading>
+          <Paragraph>
+            Headless supported, allowing seamless integration with various
+            backends.
+          </Paragraph>
+        </Card>
+
+        <Card
+          frame="panel"
+          variant="raised"
+        >
+          <Icon
+            name="braces"
+            size="lg"
+          />
+          <Heading>Polymorphic Components</Heading>
+          <Paragraph>
+            All components accept any HTML attributes, offering complete
+            customization.
+          </Paragraph>
+        </Card>
+
+        <Card
+          frame="panel"
+          variant="raised"
+        >
+          <Icon
+            name="list-tree"
+            size="lg"
+          />
+          <Heading>Unique Structure for Content Sites</Heading>
+          <Paragraph>
+            Custom-designed components for content websites with adaptable
+            design systems. Components are single elements, fully customizable,
+            with no dependencies, working in isolation. Import only what you
+            need.
+          </Paragraph>
+        </Card>
+
+        <Card
+          frame="panel"
+          variant="raised"
+        >
+          <Icon
+            name="pencil"
+            size="lg"
+          />
+          <Heading>Customizability</Heading>
+          <Paragraph>
+            Components are one element and their styling can be overwritten
+            using a css framework like Tailwind. Or even styled completely from
+            scratch.
+          </Paragraph>
+        </Card>
+      </Deck>
+    </Section> -->
+<!-- <Section>
+    <Spread>
+      <Heading> Components to build your UI </Heading>
+      <Button
+        variant="primary"
+        text="All components"
+        href="/base/badge"
+        icon="arrow-right"
+      />
+    </Spread>
+    <Deck
+      structure="grid"
+      size="lg"
+    >
+      <Card
+        frame="panel"
+        variant="raised"
+      >
+        <div style="display: flex; justify-content: center;">
+          <Badge
+            variant="outline"
+            text="Badge"
+            size="lg"
+          />
+        </div>
+        <br />
+        <Spread>
+          <Heading>Badge</Heading>
+          <Link href="/base/badge"> Learn more</Link>
+        </Spread>
+      </Card>
+
+      <Card
+        frame="panel"
+        variant="raised"
+      >
+        <div
+          style="display: flex; justify-content: center; margin-bottom: auto;"
+        >
+          <Button
+            variant="primary"
+            text="Get Started"
+            href="/overview/introduction"
+            size="lg"
+          />
+        </div>
+        <br />
+        <Heading>Button</Heading>
+        <Link href="/base/button"> Learn more</Link>
+      </Card>
+
+      <Card
+        frame="panel"
+        variant="raised"
+      >
+        <div
+          style="display: flex; justify-content: center; margin-bottom: auto;"
+        >
+          <Textarea
+            placeholder="Message"
+            size="lg"
+          />
+        </div>
+        <br />
+        <Heading>Textarea</Heading>
+        <Link href="/base/textarea"> Learn more</Link>
+      </Card>
+
+      <Card
+        frame="panel"
+        variant="raised"
+      >
+        <div
+          style="display: flex; justify-content: center; margin-bottom: auto;"
+        >
+          <Input
+            placeholder="Name"
+            size="lg"
+          />
+        </div>
+        <br />
+        <Heading>Input</Heading>
+        <Link href="/base/input"> Learn more</Link>
+      </Card>
+
+      <Card
+        frame="panel"
+        variant="raised"
+      >
+        <div
+          style="display: flex; justify-content: center; margin-bottom: auto;"
+        >
+          <Switch size="lg" />
+        </div>
+        <br />
+        <Heading>Switch</Heading>
+        <Link href="/base/switch"> Learn more</Link>
+      </Card>
+
+      <Card
+        frame="panel"
+        variant="raised"
+      >
+        <div style="display: flex; justify-content: center;">
+          <Select size="lg">
+            <SelectOption>Option 1</SelectOption>
+            <SelectOption>Option 2</SelectOption>
+          </Select>
+        </div>
+        <br />
+        <Heading>Select</Heading>
+        <Link href="/base/select"> Learn more</Link>
+      </Card>
+    </Deck>
+  </Section> -->
+
+<!-- <Section align="center">
+  <Heading> Do you prefer different colors? </Heading>
+  <Paragraph variant="muted">
+    No worries, everything is fully customizable
+  </Paragraph>
+  <Group>
+    <Tagline>Dark</Tagline>
+    <Switch class={'theme-switch'} />
+    <Tagline>Light</Tagline>
+  </Group>
+  <Group>
+    <Button
+      variant="primary"
+      icon="circle"
+    />
+    <Button
+      variant="primary"
+      icon="circle"
+    />
+    <Button
+      variant="primary"
+      icon="circle"
+    />
+    <Button
+      variant="primary"
+      icon="circle"
+    />
+  </Group>
+  
+</Section> -->
+
+<Section
+  align="center"
+  size="lg"
+  class="cta-section"
+  style={{ margin: ' var(--space-spacer) 0' }}
+>
+  <Tagline> Let Fulldev UI help you </Tagline>
+  <Heading
+    level={1}
+    as="h2"
+    size="lg"
+  >
+    Build content websites <br />
+    in a fraction of time
+  </Heading>
+  <Group>
+    <Button
+      variant="primary"
+      text="Get Started"
+      href="/overview/installation"
+    />
+    <Button
+      variant="secondary"
+      text="Github"
+      icon={{ name: 'brand-github' }}
+      href="https://github.com/fulldotdev/ui"
+      target="_blank"
+    />
+  </Group>
+</Section>
+
+<!-- <Footer /> -->
+
+<style is:global>
+  .hero {
+    padding-top: var(--space-5) !important;
+
+    h1.heading {
+      background: -webkit-linear-gradient(
+        275deg,
+        hsl(223, 14%, 100%),
+        hsl(223, 14%, 75%)
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
   }
 
-  .full-badge {
+  .examples {
+    border-radius: 4px;
+
+    .example-container {
+      border: none;
+      border-top: 1px solid var(--border);
+
+      > div {
+        align-items: stretch;
+        margin: 0;
+        border-width: 0px;
+        padding: 0;
+      }
+    }
+
+    .expressive-code {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--raised-background);
+      padding-right: var(--space-gutter);
+      padding-left: var(--space-gutter);
+    }
+  }
+
+  .cta-section {
+    background-image: url('/landing-background.png') !important;
+    background-position: center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+  }
+
+  .full.badge {
     border-radius: 999px;
   }
 </style>

@@ -1,0 +1,28 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Tag from '../_Tag.astro'
+
+type Props<As extends HTMLTag = 'main'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag>
+
+const { as = 'main', ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['main']}
+  {as}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+
+  @include component('main') {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+</style>

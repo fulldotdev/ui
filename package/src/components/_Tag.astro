@@ -1,52 +1,73 @@
 ---
 interface Props {
   theme?: 'light' | 'dark' | string
-  size?: 'sm' | 'md' | 'lg' | string
+  size?: 'sm' | 'md' | 'lg'
   density?: 'base' | 'compact' | string
   slot?: any
-  if?: 'slot' | any
+  if?: 'content' | any
   [key: string | number | symbol]: any
 }
 
 const {
   as: As = 'div',
-  if: ifProp = 'slot',
+  if: ifProp = 'content',
   theme,
   variant,
   density,
   size,
+  align,
+  position,
+  level,
+  frame,
+  ratio,
+  structure,
+  text,
+  html,
   ...rest
 } = Astro.props
 
 const slot = await Astro.slots.render('default')
-const render = ifProp === 'slot' ? slot?.trim().length > 0 : ifProp
+const hasContent = (str?: string) => str && str.trim().length > 0
+const render =
+  ifProp == 'content'
+    ? hasContent(slot) || hasContent(html) || hasContent(text)
+    : ifProp
 ---
 
 {
   render && (
     <As
       class:list={[
-        'full-tag',
+        'full',
+        structure,
         {
-          [`full-theme-${theme}`]: theme,
-          [`full-variant-${variant}`]: variant,
-          [`full-density-${density}`]: density,
-          [`full-size-${size}`]: size,
+          [`theme-${theme}`]: theme,
+          [`variant-${variant}`]: variant,
+          [`density-${density}`]: density,
+          [`size-${size}`]: size,
+          [`align-${align}`]: align,
+          [`level-${level}`]: level,
+          [`position-${position}`]: position,
+          [`frame-${frame}`]: frame,
+          [`ratio-${ratio}`]: ratio,
         },
       ]}
       {...rest}
     >
+      <Fragment set:text={text} />
+      <Fragment set:html={html} />
       <Fragment set:html={slot} />
     </As>
   )
 }
 
-<style is:global>
-  @import '../css/main.css';
-</style>
+<style is:global lang="scss">
+  @import '../css/utils.scss';
+  @import '../css/colors.css';
+  @import '../css/styles.css';
+  @import '../css/sizes.css';
 
-<style is:global>
-  .full-tag {
+  @include component('full') {
     z-index: 0;
     box-sizing: border-box;
   }

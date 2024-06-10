@@ -1,42 +1,44 @@
 ---
-import type { ComponentProps } from 'astro/types'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
 import Tag from '../_Tag.astro'
 
-type Props = ComponentProps<typeof Tag>
+type Props<As extends HTMLTag = 'input'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag> & {
+    variant?: 'outline'
+  }
 
-const { as = 'input', variant = 'outline', name, ...rest } = Astro.props
+const { as = 'input', variant = 'outline', ...rest } = Astro.props
 ---
 
 <Tag
-  class:list={['full-input']}
-  if={name}
-  {name}
+  class:list={['input']}
+  if={true}
   {as}
   {variant}
   {...rest}
 />
 
 <style is:global lang="scss">
-  .full-input,
-  .full-textarea,
-  .full-select {
+  @import '../../css/utils.scss';
+
+  @include component('input') {
     display: flex;
     position: relative;
     align-items: center;
     outline: none;
-    box-shadow: inset 0 0 0 var(--full-border-width) var(--border);
+    box-shadow: inset 0 0 0 var(--border-width) var(--border);
     border: 0px;
-    border-radius: var(--full-border-radius-2);
+    border-radius: var(--radius-1);
     background-color: var(--input-background);
-    padding: var(--space-element-2);
+    padding: var(--element-2);
     width: 100%;
     min-width: var(--element-2);
-    height: calc(var(--text-element) + 2 * var(--space-element-3));
+    height: calc(var(--text-1) + 2 * var(--element-3));
     color: var(--foreground);
-    font-weight: var(--full-font-weight);
-    font-size: var(--text-element);
+    font-weight: var(--font-weight);
+    font-size: var(--text-1);
     line-height: 1.25;
-    font-family: var(--full-font-family);
+    font-family: var(--font-family);
 
     &:focus {
       outline: none;

@@ -3,6 +3,7 @@ import starlight from '@astrojs/starlight'
 // @ts-ignore
 import liveCode from 'astro-live-code'
 import { defineConfig } from 'astro/config'
+import fulldevUI from 'fulldev-ui/integration'
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,10 +12,9 @@ export default defineConfig({
     starlight({
       title: 'Fulldev UI',
       social: {
-        github: 'https://github.com/fulldotdev/ui',
-        'x.com': 'https://x.com/silveltm',
-        linkedin: 'https://www.linkedin.com/in/silveltman/',
         discord: 'https://discord.gg/vXZqMbadm8',
+        'x.com': 'https://x.com/silveltm',
+        github: 'https://github.com/fulldotdev/ui',
       },
       tableOfContents: {
         maxHeadingLevel: 4,
@@ -30,9 +30,15 @@ export default defineConfig({
           },
         },
         {
-          label: 'Base',
+          label: 'Structure',
           autogenerate: {
-            directory: 'base',
+            directory: 'structure',
+          },
+        },
+        {
+          label: 'Segment',
+          autogenerate: {
+            directory: 'segment',
           },
         },
         {
@@ -42,10 +48,9 @@ export default defineConfig({
           },
         },
         {
-          label: 'Wrapper',
-          badge: 'WIP',
+          label: 'Base',
           autogenerate: {
-            directory: 'wrapper',
+            directory: 'base',
           },
         },
       ],
@@ -54,5 +59,11 @@ export default defineConfig({
       layout: '/src/components/LiveCodeLayout.astro',
     }),
     sitemap(),
+    fulldevUI({
+      layer: false,
+    }),
   ],
+  redirects: {
+    '/discord': 'https://discord.gg/vXZqMbadm8',
+  },
 })

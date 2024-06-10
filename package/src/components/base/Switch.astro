@@ -1,21 +1,19 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import type { Childmorphic } from '../../types/Childmorphic'
 import Tag from '../_Tag.astro'
 
 type Props<As extends HTMLTag = 'span'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag> &
-  Childmorphic<{
+  ComponentProps<typeof Tag> & {
     name?: string
-  }>
+  }
 
 const { as = 'input', name, ...rest } = Astro.props
 ---
 
 <Tag
-  if={true}
   as="label"
-  class="full-switch"
+  class:list="switch"
+  if={true}
   {...rest}
 >
   <input
@@ -27,10 +25,12 @@ const { as = 'input', name, ...rest } = Astro.props
 </Tag>
 
 <style is:global lang="scss">
-  .full-switch {
+  @import '../../css/utils.scss';
+
+  @include component('switch') {
     display: block;
     position: relative;
-    transition: var(--full-transition);
+    transition: var(--transition);
     cursor: pointer;
     box-sizing: border-box;
     border: 1px solid var(--border);
@@ -38,10 +38,9 @@ const { as = 'input', name, ...rest } = Astro.props
     background-color: var(--background);
     padding: var(--space-1);
     min-width: calc(
-      (var(--text-element) + 2 * var(--space-element-1) * 2) + 2 *
-        var(--space-1)
+      (var(--text-1) + 2 * var(--element-1) * 2) + 2 * var(--space-1)
     );
-    height: calc(var(--text-element) + 2 * var(--space-element-1));
+    height: calc(var(--text-1) + 2 * var(--element-1));
 
     .checkbox {
       position: absolute;
@@ -52,7 +51,7 @@ const { as = 'input', name, ...rest } = Astro.props
 
     .checkmark {
       transform: 0%;
-      transition: var(--full-transition);
+      transition: var(--transition);
       border-radius: 999px;
       background-color: var(--border);
       width: 50%;

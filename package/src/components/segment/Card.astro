@@ -1,0 +1,94 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Tag from '../_Tag.astro'
+
+type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag> & {
+    structure?: 'stack' | 'group' | 'split' | 'spread'
+    align?: 'start' | 'center' | 'end' | 'stretch'
+    variant?: 'base' | 'raised' | 'primary'
+    frame?: 'fill' | 'panel'
+    ratio?: 'landscape' | 'portrait' | 'square' | number
+  }
+
+const {
+  as = Astro.props.href ? 'a' : 'div',
+  structure = 'stack',
+  density = 'compact',
+  frame = 'panel',
+  variant = 'raised',
+  ...rest
+} = Astro.props
+---
+
+<Tag
+  class:list={['card']}
+  {structure}
+  {density}
+  {frame}
+  {variant}
+  {as}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+
+  @include component('card') {
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+
+    &[href] {
+      cursor: pointer;
+
+      > .full.image {
+        transition: var(--transition);
+      }
+
+      &:hover {
+        > .full.image {
+          opacity: 0.85;
+        }
+      }
+    }
+
+    &.frame-panel {
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2);
+      background-color: var(--background);
+      padding: var(--space-5);
+      overflow: hidden;
+      color: var(--foreground);
+    }
+
+    &.ratio-landscape {
+      aspect-ratio: 4/3;
+    }
+
+    &.ratio-square {
+      aspect-ratio: 1/1;
+    }
+
+    &.ratio-portrait {
+      aspect-ratio: 3/4;
+    }
+
+    & > .frame-inset {
+      margin-right: calc(var(--space-5) * -1);
+      margin-left: calc(var(--space-5) * -1);
+      width: calc(100% + var(--space-5) * 2);
+
+      &:first-child {
+        margin-top: calc(var(--space-5) * -1);
+      }
+
+      &:last-child {
+        margin-bottom: calc(var(--space-5) * -1);
+      }
+    }
+  }
+</style>

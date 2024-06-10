@@ -1,24 +1,27 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
 import Tag from '../_Tag.astro'
 import Icon from './Icon.astro'
 
-type Props<As extends HTMLTag = 'div'> = ComponentProps<typeof Tag<As>> & {
-  value: number | string
-}
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag> & {
+    value: number | string
+  }
 
 const { variant = 'accent', value = Astro.props.html, ...rest } = Astro.props
 ---
 
 <Tag
-  class:list={['full-rating']}
+  class:list={['rating']}
   {...rest}
 >
   {value && [1, 2, 3, 4, 5].map(() => <Icon name="star-filled" />)}
 </Tag>
 
 <style is:global lang="scss">
-  .full-rating {
+  @import '../../css/utils.scss';
+
+  @include component('rating') {
     display: flex;
     gap: 0.75rem;
     padding-left: 5px;
@@ -39,7 +42,7 @@ const { variant = 'accent', value = Astro.props.html, ...rest } = Astro.props
       width: 1.25em;
       height: 1em;
       height: 1.25em;
-      color: var(--full-accent-foreground);
+      color: var(--foreground);
     }
   }
 </style>

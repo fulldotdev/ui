@@ -1,8 +1,9 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
 import Tag from '../_Tag.astro'
 
-type Props<As extends HTMLTag = 'textarea'> = ComponentProps<typeof Tag>
+type Props<As extends HTMLTag = 'textarea'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag>
 
 const {
   as = 'textarea',
@@ -14,18 +15,19 @@ const {
 ---
 
 <Tag
-  class:list={['full-textarea']}
-  if={name}
+  class:list={['textarea input']}
+  if={true}
   {rows}
-  {name}
   {variant}
   {as}
   {...rest}
 />
 
 <style is:global lang="scss">
-  .full-textarea {
-    height: calc((var(--text-element) + 2 * var(--space-element-3)) * 2);
+  @import '../../css/utils.scss';
+
+  @include component('textarea') {
+    height: calc((var(--text-1) + 2 * var(--element-3)) * 2);
     resize: vertical;
   }
 </style>

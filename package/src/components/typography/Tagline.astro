@@ -1,39 +1,34 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Typography from './_Typography.astro'
+import Tag from '../_Tag.astro'
 
 type Props<As extends HTMLTag = 'span'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Typography>
+  ComponentProps<typeof Tag> & {
+    html?: string
+    text?: string
+    variant?: 'base' | 'muted' | 'accent'
+  }
 
-const { as = 'span', variant, ...rest } = Astro.props
+const { as = 'span', ...rest } = Astro.props
 ---
 
-<Typography
-  class:list={['full-tagline']}
+<Tag
+  class:list={['tagline']}
   {as}
-  {variant}
   {...rest}
 >
-  <slot name="before" />
   <slot />
-</Typography>
+</Tag>
 
 <style is:global lang="scss">
-  .full-tagline {
-    max-width: calc(var(--space-element-3) * 36);
+  @import '../../css/utils.scss';
+
+  @include component('tagline') {
+    max-width: calc(var(--element-3) * 36);
     color: var(--foreground);
-    font-weight: var(--full-font-weight);
-    font-size: var(--text-element);
+    font-weight: var(--font-weight);
+    font-size: var(--text-1);
     line-height: 1.25;
-    font-family: var(--full-font-family);
-
-    .full-tag + & {
-      --my-spacer: var(--space-5);
-    }
-
-    .full-heading + &,
-    .full-paragraph + & {
-      --my-spacer: var(--space-3);
-    }
+    font-family: var(--font-family);
   }
 </style>

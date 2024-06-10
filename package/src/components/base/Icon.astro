@@ -1,33 +1,42 @@
 ---
 import tablerIcons from '@iconify-json/tabler/icons.json'
-import type { ComponentProps, HTMLTag } from 'astro/types'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
 import Tag from '../_Tag.astro'
 
-type Props<As extends HTMLTag = 'i'> = ComponentProps<typeof Tag> & {
-  name?: string
-}
+type Props<As extends HTMLTag = 'i'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag> & {
+    name?: string
+  }
 
-const { as = 'i', name = Astro.props.html, ...rest } = Astro.props
+const { as = 'i', name, ...rest } = Astro.props
 
 const trimmedName = name?.trim() as string | undefined
-const icon = trimmedName && (tablerIcons as any)?.icons[trimmedName]?.body
+const icon = trimmedName
+  ? (tablerIcons as any)?.icons[trimmedName]?.body
+  : undefined
 ---
 
 <Tag
-  class:list={['full-icon']}
+  class:list={['icon']}
   if={icon}
   {as}
   {...rest}
 >
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    set:html={icon}
-  />
+  {
+    icon && (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        set:html={icon}
+      />
+    )
+  }
 </Tag>
 
 <style is:global lang="scss">
-  .full-icon {
+  @import '../../css/utils.scss';
+
+  @include component('icon') {
     display: inline-flex;
     position: relative;
     justify-content: center;
@@ -35,7 +44,7 @@ const icon = trimmedName && (tablerIcons as any)?.icons[trimmedName]?.body
     width: 1em;
     height: 1em;
     color: var(--foreground);
-    font-size: var(--text);
+    font-size: var(--text-2);
 
     svg {
       position: absolute;
