@@ -1,9 +1,8 @@
 # Fulldev UI
 
-The [Astro][astro] UI library for content-driven websites
+The [Astro][astro] UI library to build entire websites
 
-Rapidly build content-driven websites, with the power of modern design,
-static / server rendering, and CSS cascading styles.
+Make good looking websites, no matter your design skills
 
 ## Documentation
 
