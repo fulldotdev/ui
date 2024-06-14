@@ -1,4 +1,6 @@
 // Utils
+export * from './schemas/collection'
+export * from './schemas/path'
 export * from './utils/getAllCollections'
 export * from './utils/getPathname'
 export * from './utils/transform/transform'
@@ -7,14 +9,9 @@ export * from './utils/transform/transformReferences'
 export * from './utils/transform/transformSelfs'
 export * from './utils/transform/transformUnderscores'
 
-// Schemas
-export * from './schemas/attributesSchema'
-export * from './schemas/pageSchema'
-
 // Base components
 export { default as Badge } from './components/base/Badge.astro'
 export { default as Button } from './components/base/Button.astro'
-export { default as Buttons } from './components/base/Buttons.astro'
 export { default as Checkbox } from './components/base/Checkbox.astro'
 export { default as Icon } from './components/base/Icon.astro'
 export { default as Image } from './components/base/Image.astro'
