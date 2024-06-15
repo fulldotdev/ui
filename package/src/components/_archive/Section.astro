@@ -1,0 +1,35 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Tag from '../_Tag.astro'
+
+type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag> & {
+    structure?: 'stack' | 'split' | 'spread' | 'group' | 'none'
+    variant?: 'base' | 'raised' | 'primary'
+    frame?: 'wrapper' | 'container' | 'panel' | 'none'
+    align?: 'start' | 'center' | 'end'
+  }
+
+const { as = 'section', align = 'start', frame, ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['section']}
+  {align}
+  {frame}
+  {as}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+
+  @include component('section') {
+    position: relative;
+    gap: var(--space-6) var(--space-5);
+    background: var(--background);
+    overflow-x: hidden;
+  }
+</style>

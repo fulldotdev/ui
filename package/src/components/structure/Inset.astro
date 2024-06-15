@@ -1,0 +1,73 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Tag from '../_Tag.astro'
+
+type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag>
+
+const { as = 'div', ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['inset']}
+  {as}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+
+  @include component('inset') {
+    &:is(.stack > &) {
+      margin-right: calc(var(--gutter) * -1);
+      margin-left: calc(var(--gutter) * -1);
+      width: calc(100% + var(--gutter) * 2);
+
+      &:first-child {
+        margin-top: calc(var(--inner) * -1);
+        height: calc(100% + var(--inner) * 1);
+      }
+
+      &:last-child {
+        margin-bottom: calc(var(--inner) * -1);
+        height: calc(100% + var(--inner) * 1);
+      }
+    }
+
+    &:is(.split > &) {
+      @media (max-width: 767.999px) {
+        margin-right: calc(var(--gutter) * -1);
+        margin-left: calc(var(--gutter) * -1);
+        width: calc(100% + var(--gutter) * 2);
+
+        &:first-child {
+          margin-top: calc(var(--inner) * -1);
+          height: calc(100% + var(--inner) * 1);
+        }
+
+        &:last-child {
+          margin-bottom: calc(var(--inner) * -1);
+          height: calc(100% + var(--inner) * 1);
+        }
+      }
+
+      @media (min-width: 768px) {
+        margin-top: calc(var(--inner) * -1);
+        margin-top: calc(var(--inner) * -1);
+        height: calc(100% + var(--inner) * 2);
+
+        &:first-child {
+          margin-left: calc(var(--gutter) * -1);
+          width: calc(100% + var(--gutter) * 1);
+        }
+
+        &:last-child {
+          margin-right: calc(var(--gutter) * -1);
+          width: calc(100% + var(--gutter) * 1);
+        }
+      }
+    }
+  }
+</style>

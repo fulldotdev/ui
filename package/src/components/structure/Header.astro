@@ -7,7 +7,7 @@ type Props<As extends HTMLTag = 'header'> = Polymorphic<{ as: As }> &
     structure?: 'spread' | 'group' | 'stack'
     position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
     variant?: 'base' | 'raised'
-    frame?: 'fill' | 'panel'
+    frame?: 'wrapper' | 'container' | 'panel'
     align?: 'start' | 'center' | 'end'
   }
 
@@ -15,6 +15,7 @@ const {
   as = 'header',
   structure = 'spread',
   density = 'compact',
+  frame = 'wrapper',
   ...rest
 } = Astro.props
 ---
@@ -23,6 +24,7 @@ const {
   class:list={['header']}
   {as}
   {density}
+  {frame}
   {...rest}
 >
   <slot />
@@ -32,6 +34,8 @@ const {
   @import '../../css/utils.scss';
 
   @include component('header') {
+    --inner: var(--element-3);
+
     display: flex;
     top: 0;
     right: 0;
@@ -40,8 +44,11 @@ const {
     align-items: center;
     z-index: 10;
     background: var(--background);
-    padding: var(--space-3) var(--space-gutter);
     width: 100%;
+
+    // &.panel {
+    //   margin-top: var(--inner);
+    // }
 
     &.position-fixed {
       position: fixed;

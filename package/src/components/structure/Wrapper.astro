@@ -1,0 +1,42 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Tag from '../_Tag.astro'
+
+type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag> & {
+    screen?: 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+  }
+
+const { as = 'div', ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['wrapper']}
+  {as}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+
+  @include component('wrapper') {
+    background-color: var(--background);
+    padding-right: var(--gutter);
+    padding-left: var(--gutter);
+    max-width: 100%;
+
+    &:is(.split > &) {
+      @media (min-width: 768px) {
+        &:not(:first-child) {
+          padding-left: 0;
+        }
+
+        &:not(:last-child) {
+          padding-right: 0;
+        }
+      }
+    }
+  }
+</style>
