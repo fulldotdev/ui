@@ -1,0 +1,56 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Tag from '../_Tag.astro'
+
+type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Tag> & {
+    scheme?: 'light' | 'dark'
+    color?: 'base' | 'brand' | string
+    size?: 'sm' | 'md' | 'lg'
+    compact?: boolean
+    frame?: 'container' | 'wrapper' | 'panel' | 'viewport'
+    variant?: 'fill' | 'outline' | 'soft' | 'solid' | 'surface'
+    structure?:
+      | 'row'
+      | 'column'
+      | 'split'
+      | 'spread'
+      | 'grid'
+      | 'bento'
+      | 'masonry'
+      | 'carousel'
+  }
+
+const {
+  frame = 'wrapper',
+  structure = 'column',
+  as = 'div',
+  ...rest
+} = Astro.props
+---
+
+<Tag
+  class:list={['section']}
+  {as}
+  {frame}
+  {structure}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+  @import '../../css/props/frame.scss';
+  @import '../../css/props/variant.scss';
+  @import '../../css/props/structure.scss';
+  @import '../../css/props/align.scss';
+
+  @include component('section') {
+    --inner: var(--space-6);
+
+    background-color: var(--background);
+    padding-top: var(--inner);
+    padding-bottom: var(--inner);
+  }
+</style>
