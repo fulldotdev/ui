@@ -6,6 +6,51 @@ const defaultConfig = {
   layer: 'fulldev',
 }
 
+interface Config {
+  layer: string
+  prefix: string
+  screen: string
+  styled: boolean
+  responsive: boolean
+  colors: {
+    gray: {
+      background: string
+      backgroundPanel: string
+      backgroundElement: string
+      backgroundHover: string
+      backgroundActive: string
+
+      border: string
+      borderElement: string
+      borderHover: string
+
+      solid: string
+      solidHover: string
+
+      text: string
+      textContrast: string
+    }
+    accent: {
+      background: string
+      backgroundPanel: string
+      backgroundElement: string
+      backgroundHover: string
+      backgroundActive: string
+
+      border: string
+      borderElement: string
+      borderHover: string
+
+      solid: string
+      solidHover: string
+
+      text: string
+      textContrast: string
+    }
+  }
+  tailwind: {}
+}
+
 export default function fulluiIntegration(
   userConfig: any = {}
 ): AstroIntegration {
