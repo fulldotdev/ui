@@ -6,14 +6,16 @@ type Props<As extends HTMLTag> = Polymorphic<{ as: As }> &
   ComponentProps<typeof Tag> & {
     html?: string
     text?: string
+    contrast?: boolean
     variant?: 'base' | 'muted' | 'accent'
   }
 
-const { ...rest } = Astro.props
+const { contrast = true, ...rest } = Astro.props
 ---
 
 <Tag
   class:list={['heading']}
+  {contrast}
   {...rest}
 >
   <slot />
@@ -26,12 +28,16 @@ const { ...rest } = Astro.props
     margin: 0;
     max-width: calc(var(--element-3) * 36);
     scroll-margin: var(--space-4);
-    color: var(--foreground);
+    color: var(--base-text);
     font-weight: var(--heading-font-weight);
     font-size: var(--heading);
     line-height: 1.1;
     font-family: var(--heading-font-family);
     letter-spacing: -0.025em;
     text-decoration: none;
+
+    &.contrast {
+      color: var(--base-text-contrast);
+    }
   }
 </style>
