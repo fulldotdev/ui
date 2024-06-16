@@ -1,5 +1,0 @@
-# Components
-- Pile
-- Join
-
-# Chores

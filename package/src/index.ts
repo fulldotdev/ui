@@ -1,12 +1,3 @@
-// Utils
-export * from './utils/getAllCollections'
-export * from './utils/getPathname'
-export * from './utils/transform/transform'
-export * from './utils/transform/transformCasing'
-export * from './utils/transform/transformReferences'
-export * from './utils/transform/transformSelfs'
-export * from './utils/transform/transformUnderscores'
-
 // Base components
 export { default as Badge } from './components/base/Badge.astro'
 export { default as Button } from './components/base/Button.astro'
@@ -32,35 +23,24 @@ export { default as ListItem } from './components/typography/ListItem.astro'
 export { default as Paragraph } from './components/typography/Paragraph.astro'
 export { default as Tagline } from './components/typography/Tagline.astro'
 
-// Structure components
-export { default as Bento } from './components/structure/Bento.astro'
-export { default as Carousel } from './components/structure/Carousel.astro'
-export { default as Grid } from './components/structure/Grid.astro'
-export { default as Group } from './components/structure/Group.astro'
-export { default as Masonry } from './components/structure/Masonry.astro'
-export { default as Row } from './components/structure/Row.astro'
-export { default as Split } from './components/structure/Split.astro'
-export { default as Spread } from './components/structure/Spread.astro'
-export { default as Stack } from './components/structure/Stack.astro'
-
 // Segment components
-export { default as Body } from './components/segment/Body.astro'
+export { default as Body } from './components/_archive/Body.astro'
+export { default as Deck } from './components/_archive/Deck.astro'
+export { default as Main } from './components/_archive/Main.astro'
+export { default as Nav } from './components/_archive/Nav.astro'
+export { default as Footer } from './components/_todo/Footer.astro'
+export { default as Form } from './components/_todo/Form.astro'
+export { default as Prose } from './components/_todo/Prose.astro'
+export { default as Writeup } from './components/_todo/Writeup.astro'
+export { default as Box } from './components/segment/Box.astro'
 export { default as Card } from './components/segment/Card.astro'
-export { default as Deck } from './components/segment/Deck.astro'
-export { default as Footer } from './components/segment/Footer.astro'
-export { default as Form } from './components/segment/Form.astro'
+export { default as Group } from './components/segment/Group.astro'
 export { default as Header } from './components/segment/Header.astro'
-export { default as Main } from './components/segment/Main.astro'
-export { default as Nav } from './components/segment/Nav.astro'
-export { default as Prose } from './components/segment/Prose.astro'
 export { default as Section } from './components/segment/Section.astro'
-export { default as Writeup } from './components/segment/Writeup.astro'
 
 // Utility components
 export { default as Block } from './components/_Block.astro'
 export { default as Blocks } from './components/_Blocks.astro'
 export { default as Children } from './components/_Children.astro'
 export { default as Head } from './components/utility/Head.astro'
-
-// Layouts
-export { default as Layout } from './layouts/Layout.astro'
+export { default as Layout } from './components/utility/Layout.astro'

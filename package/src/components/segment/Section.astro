@@ -4,25 +4,36 @@ import Tag from '../_Tag.astro'
 
 type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> &
   ComponentProps<typeof Tag> & {
-    structure?: 'stack' | 'split' | 'spread' | 'group'
-    variant?: 'base' | 'raised' | 'primary'
-    frame?: 'fill' | 'viewport' | 'panel'
-    align?: 'start' | 'center' | 'end'
+    scheme?: 'light' | 'dark'
+    color?: 'base' | 'brand' | string
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl'
+    compact?: boolean
+    frame?: 'container' | 'wrapper' | 'panel' | 'viewport'
+    variant?: 'fill' | 'outline' | 'soft' | 'solid' | 'surface'
+    structure?:
+      | 'row'
+      | 'column'
+      | 'split'
+      | 'spread'
+      | 'grid'
+      | 'bento'
+      | 'masonry'
+      | 'carousel'
   }
 
 const {
-  as = 'section',
-  structure = 'stack',
-  align = 'start',
+  frame = 'wrapper',
+  structure = 'column',
+  as = 'div',
   ...rest
 } = Astro.props
 ---
 
 <Tag
   class:list={['section']}
-  {structure}
-  {align}
   {as}
+  {frame}
+  {structure}
   {...rest}
 >
   <slot />
@@ -30,37 +41,16 @@ const {
 
 <style is:global lang="scss">
   @import '../../css/utils.scss';
-
-  :root,
-  .full {
-    --media: 1536px;
-    --space-spacer: calc(var(--space-5) + 4vw);
-    --space-gutter: max(4vw, calc((100vw - var(--media)) / 2));
-  }
+  @import '../../css/props/frame.scss';
+  @import '../../css/props/variant.scss';
+  @import '../../css/props/structure.scss';
+  @import '../../css/props/align.scss';
 
   @include component('section') {
-    position: relative;
-    gap: var(--space-6) var(--space-5);
-    background: var(--background);
-    padding: var(--space-spacer) var(--space-gutter);
-    width: 100%;
-    overflow-x: hidden;
+    --inner: var(--space-6);
 
-    &.frame-panel {
-      margin: var(--space-5) var(--space-gutter);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-3);
-      background-color: var(--background);
-      padding-top: var(--space-5);
-      padding-right: min(var(--space-5), var(--space-gutter));
-      padding-bottom: var(--space-5);
-      padding-left: min(var(--space-5), var(--space-gutter));
-      overflow: hidden;
-    }
-
-    &.frame-viewport {
-      height: auto;
-      min-height: 100vh;
-    }
+    background-color: var(--background);
+    padding-top: var(--inner);
+    padding-bottom: var(--inner);
   }
 </style>

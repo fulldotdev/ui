@@ -1,0 +1,39 @@
+---
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Tag from '../_Tag.astro'
+
+type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
+  scheme?: 'light' | 'dark'
+  color?: 'base' | 'brand' | string
+  compact?: boolean
+  size?: 'sm' | 'md' | 'lg' | 'xl'
+  structure?: 'grid' | 'carousel' | 'masonry' | 'bento' | 'row' | 'split'
+  frame?: 'wrapper' | 'container'
+}
+
+const { structure = 'grid', ...rest } = Astro.props
+---
+
+<Tag
+  class:list={['deck']}
+  {structure}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+
+  @include component('deck') {
+    position: relative;
+    width: 100%;
+
+    // &.frame-fill {
+    //   margin-right: calc(var(--space-gutter) * -1);
+    //   margin-left: calc(var(--space-gutter) * -1);
+    //   padding: 0 var(--space-gutter) var(--space-3);
+    //   width: calc(100% + var(--space-gutter) * 2);
+    // }
+  }
+</style>

@@ -3,13 +3,17 @@ import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
 import Tag from '../_Tag.astro'
 
 type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag>
+  ComponentProps<typeof Tag> & {
+    color?: 'base' | 'brand' | string
+    size?: 'sm' | 'md' | 'lg'
+    structure?: 'row' | 'column' | 'wrap'
+  }
 
 const { ...rest } = Astro.props
 ---
 
 <Tag
-  class:list={['grid']}
+  class:list={['group']}
   {...rest}
 >
   <slot />
@@ -18,13 +22,10 @@ const { ...rest } = Astro.props
 <style is:global lang="scss">
   @import '../../css/utils.scss';
 
-  @include component('grid') {
-    --column-width: calc(15 * var(--element-3));
-
-    display: grid;
-    position: relative;
-    grid-template-columns: repeat(auto-fit, minmax(var(--column-width), 1fr));
-    gap: var(--space-3);
-    width: 100%;
+  @include component('group') {
+    display: flex;
+    justify-content: stretch;
+    align-items: center;
+    gap: var(--space-2);
   }
 </style>
