@@ -241,6 +241,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"segment/box.mdx": {
+	id: "segment/box.mdx";
+  slug: "segment/box";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "segment/card.mdx": {
 	id: "segment/card.mdx";
   slug: "segment/card";
@@ -251,6 +258,13 @@ declare module 'astro:content' {
 "segment/deck.mdx": {
 	id: "segment/deck.mdx";
   slug: "segment/deck";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"segment/group.mdx": {
+	id: "segment/group.mdx";
+  slug: "segment/group";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -276,16 +290,16 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"structure/grid.mdx": {
-	id: "structure/grid.mdx";
-  slug: "structure/grid";
+"structure/column.mdx": {
+	id: "structure/column.mdx";
+  slug: "structure/column";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"structure/group.mdx": {
-	id: "structure/group.mdx";
-  slug: "structure/group";
+"structure/grid.mdx": {
+	id: "structure/grid.mdx";
+  slug: "structure/grid";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -307,13 +321,6 @@ declare module 'astro:content' {
 "structure/spread.mdx": {
 	id: "structure/spread.mdx";
   slug: "structure/spread";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"structure/stack.mdx": {
-	id: "structure/stack.mdx";
-  slug: "structure/stack";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -355,6 +362,13 @@ declare module 'astro:content' {
 } & { render(): Render[".mdx"] };
 };
 "pages": {
+"components.mdx": {
+	id: "components.mdx";
+  slug: "components";
+  body: string;
+  collection: "pages";
+  data: any
+} & { render(): Render[".mdx"] };
 "index.mdx": {
 	id: "index.mdx";
   slug: "index";
