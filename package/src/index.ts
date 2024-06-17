@@ -22,6 +22,7 @@ export { default as List } from './components/typography/List.astro'
 export { default as ListItem } from './components/typography/ListItem.astro'
 export { default as Paragraph } from './components/typography/Paragraph.astro'
 export { default as Tagline } from './components/typography/Tagline.astro'
+export { default as Text } from './components/typography/Text.astro'
 
 // Segment components
 export { default as Body } from './components/_archive/Body.astro'
