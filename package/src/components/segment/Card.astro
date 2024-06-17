@@ -1,13 +1,13 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Tag from '../_Tag.astro'
+import Component from '../_Component.astro'
 
 type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag> & {
+  ComponentProps<typeof Component> & {
     structure?: 'stack' | 'group' | 'split' | 'spread' | 'row'
     align?: 'start' | 'center' | 'end' | 'stretch'
     variant?: 'base' | 'raised' | 'primary'
-    frame?: 'fill' | 'panel'
+    frame?: 'fill' | 'panel' | 'none'
     ratio?: 'landscape' | 'portrait' | 'square' | number
   }
 
@@ -16,12 +16,12 @@ const {
   structure = 'column',
   compact = true,
   frame = 'panel',
-  variant = 'subtle',
+  variant = frame === 'panel' ? 'subtle' : undefined,
   ...rest
 } = Astro.props
 ---
 
-<Tag
+<Component
   class:list={['card']}
   {compact}
   {structure}
@@ -31,7 +31,7 @@ const {
   {...rest}
 >
   <slot />
-</Tag>
+</Component>
 
 <style is:global lang="scss">
   @import '../../css/utils.scss';
@@ -56,9 +56,9 @@ const {
     }
 
     // &.frame-panel {
-    //   border: 1px solid var(--base-border);
+    //   border: 1px solid var(--border);
     //   border-radius: var(--radius-2);
-    //   background-color: var(--base-background-subtle);
+    //   background-color: var(--background-subtle);
     //   padding: var(--space-5);
     //   overflow: hidden;
     // }

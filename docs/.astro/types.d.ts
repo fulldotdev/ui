@@ -315,9 +315,9 @@ declare module 'astro:content' {
   collection: "props";
   data: any
 } & { render(): Render[".mdx"] };
-"DensityProp.mdx": {
-	id: "DensityProp.mdx";
-  slug: "densityprop";
+"CompactProp.mdx": {
+	id: "CompactProp.mdx";
+  slug: "compactprop";
   body: string;
   collection: "props";
   data: any
