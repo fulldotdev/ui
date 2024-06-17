@@ -19,7 +19,7 @@ export default defineConfig({
       tableOfContents: {
         maxHeadingLevel: 4,
       },
-      favicon: './favicon.png',
+      favicon: './favicon/favicon.ico',
       customCss: ['./src/css/custom.css', 'fulldev-ui/colors'],
       pagefind: false,
       sidebar: [
