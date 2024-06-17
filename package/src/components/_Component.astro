@@ -1,8 +1,8 @@
 ---
-interface Props {
-  theme?: 'light' | 'dark' | string
-  size?: 'sm' | 'md' | 'lg'
-  density?: 'base' | 'compact' | string
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
+
+type Props<As extends HTMLTag> = {
+  as?: As
   slot?: any
   if?: 'content' | any
   [key: string | number | symbol]: any
@@ -11,35 +11,17 @@ interface Props {
 const {
   as: As = 'div',
   if: ifProp = 'content',
-  extend,
-  apply,
   theme,
+  compact,
   variant,
   density,
   size,
   align,
   position,
-  level,
   frame,
   ratio,
+  contrast,
   structure,
-  background,
-  bento,
-  box,
-  card,
-  carousel,
-  container,
-  grid,
-  group,
-  header,
-  inset,
-  masonry,
-  panel,
-  section,
-  split,
-  spread,
-  stack,
-  wrapper,
   text,
   html,
   ...rest
@@ -60,6 +42,8 @@ const render =
       class:list={[
         'full',
         {
+          compact,
+          contrast,
           [`theme-${theme}`]: theme,
           [`variant-${variant}`]: variant,
           [`density-${density}`]: density,
@@ -82,9 +66,9 @@ const render =
 
 <style is:global lang="scss">
   @import '../css/utils.scss';
-  @import '../css/colors.css';
+  @import '../css/color.css';
   @import '../css/styles.css';
-  @import '../css/sizes.css';
+  @import '../css/size.css';
 
   @include component('full') {
     z-index: 0;

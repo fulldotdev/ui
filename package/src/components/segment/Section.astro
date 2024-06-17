@@ -1,15 +1,15 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Tag from '../_Tag.astro'
+import Component from '../_Component.astro'
 
 type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag> & {
+  ComponentProps<typeof Component> & {
     scheme?: 'light' | 'dark'
     color?: 'base' | 'brand' | string
-    size?: 'sm' | 'md' | 'lg'
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl'
     compact?: boolean
     frame?: 'container' | 'wrapper' | 'panel' | 'viewport'
-    variant?: 'fill' | 'outline' | 'soft' | 'solid' | 'surface'
+    variant?: 'fill' | 'subtle' | 'outline' | 'soft' | 'solid' | 'surface'
     structure?:
       | 'row'
       | 'column'
@@ -24,23 +24,26 @@ type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> &
 const {
   frame = 'wrapper',
   structure = 'column',
+  variant = frame === 'panel' ? 'subtle' : 'fill',
   as = 'div',
   ...rest
 } = Astro.props
 ---
 
-<Tag
+<Component
   class:list={['section']}
   {as}
   {frame}
+  {variant}
   {structure}
   {...rest}
 >
   <slot />
-</Tag>
+</Component>
 
 <style is:global lang="scss">
   @import '../../css/utils.scss';
+  @import '../../css/color.css';
   @import '../../css/props/frame.scss';
   @import '../../css/props/variant.scss';
   @import '../../css/props/structure.scss';
@@ -49,8 +52,12 @@ const {
   @include component('section') {
     --inner: var(--space-6);
 
-    background-color: var(--background);
     padding-top: var(--inner);
     padding-bottom: var(--inner);
+
+    &.frame-panel {
+      margin-top: var(--space-6);
+      margin-bottom: var(--space-6);
+    }
   }
 </style>

@@ -1,33 +1,42 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Tag from '../_Tag.astro'
+import Component from '../_Component.astro'
 import Icon from './Icon.astro'
 
 type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag> & {
+  ComponentProps<typeof Component> & {
     html?: string
     text?: string
-    variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'link'
+    variant?: 'solid' | 'soft' | 'surface' | 'outline' | 'ghost' | 'link'
     icon?: ComponentProps<typeof Icon> | ComponentProps<typeof Icon>['name']
   }
 
-const { as = 'a', variant = 'primary', icon, ...rest } = Astro.props
+const {
+  as = 'a',
+  variant = 'solid',
+  contrast = true,
+  icon,
+  ...rest
+} = Astro.props
 ---
 
-<Tag
+<Component
   class:list={['button']}
   {as}
   {variant}
+  {contrast}
   {...rest}
 >
   <slot />
   {typeof icon === 'string' ? <Icon name={icon} /> : <Icon {...icon} />}
-</Tag>
+</Component>
 
 <style is:global lang="scss">
   @import '../../css/utils.scss';
 
   @include component('button') {
+    @import '../../css/props/variant.scss';
+
     display: inline-flex;
     flex-shrink: 0;
     justify-content: center;
@@ -37,49 +46,37 @@ const { as = 'a', variant = 'primary', icon, ...rest } = Astro.props
     transition: background-color var(--transition);
     cursor: pointer;
     outline: none !important;
-    box-shadow: inset 0 0 0 1px var(--border);
     border: none;
     border-radius: var(--radius-1);
-    background-color: var(--background);
     padding-right: var(--element-3);
     padding-left: var(--element-3);
-    height: calc(var(--text-1) + 2 * var(--element-3));
+    height: calc(var(--text-label) + 2 * var(--element-3));
     color: var(--foreground);
     font-weight: var(--button-font-weight);
-    font-size: var(--text-1);
+    font-size: var(--text-label);
     line-height: 1.625;
     font-family: var(--button-font-family);
     text-align: center;
     text-decoration: none;
     white-space: nowrap;
 
-    &.variant-link {
-      --background: transparent;
-      --hover: transparent;
-      box-shadow: none !important;
-      border-color: transparent;
-      background-color: transparent;
-      padding: 0;
-      font-weight: 400;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    &:hover {
-      background-color: var(--hover);
-    }
-
     &:focus-visible {
       outline: 2px solid var(--focus) !important;
       outline-offset: 2px;
+    }
+
+    &.variant-solid {
+      color: var(--background);
     }
 
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       pointer-events: none;
+    }
+
+    &.variant-link {
+      padding: 0;
     }
   }
 </style>

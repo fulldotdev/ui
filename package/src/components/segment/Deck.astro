@@ -1,23 +1,27 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Tag from '../_Tag.astro'
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../_Component.astro'
 
-type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag> & {
-    structure?: 'grid' | 'carousel' | 'masonry' | 'bento'
-    frame?: 'none' | 'fill' | 'inset'
-  }
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
+  scheme?: 'light' | 'dark'
+  color?: 'base' | 'brand' | string
+  compact?: boolean
+  size?: 'sm' | 'md' | 'lg' | 'xl'
+  structure?: 'grid' | 'carousel' | 'masonry' | 'bento' | 'row' | 'split'
+  frame?: 'wrapper' | 'container'
+}
 
-const { structure = 'grid', ...rest } = Astro.props
+const { as = 'div', structure = 'grid', ...rest } = Astro.props
 ---
 
-<Tag
+<Component
   class:list={['deck']}
+  {as}
   {structure}
   {...rest}
 >
   <slot />
-</Tag>
+</Component>
 
 <style is:global lang="scss">
   @import '../../css/utils.scss';

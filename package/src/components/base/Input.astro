@@ -1,16 +1,16 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Tag from '../_Tag.astro'
+import Component from '../_Component.astro'
 
 type Props<As extends HTMLTag = 'input'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag> & {
+  ComponentProps<typeof Component> & {
     variant?: 'outline'
   }
 
 const { as = 'input', variant = 'outline', ...rest } = Astro.props
 ---
 
-<Tag
+<Component
   class:list={['input']}
   if={true}
   {as}
@@ -26,23 +26,28 @@ const { as = 'input', variant = 'outline', ...rest } = Astro.props
     position: relative;
     align-items: center;
     outline: none;
-    box-shadow: inset 0 0 0 var(--border-width) var(--border);
+    box-shadow: inset 0 0 0 var(--border-width) var(--border-outline);
     border: 0px;
     border-radius: var(--radius-1);
     background-color: var(--input-background);
     padding: var(--element-2);
     width: 100%;
     min-width: var(--element-2);
-    height: calc(var(--text-1) + 2 * var(--element-3));
+    height: calc(var(--text-label) + 2 * var(--element-3));
     color: var(--foreground);
     font-weight: var(--font-weight);
-    font-size: var(--text-1);
+    font-size: var(--text-label);
     line-height: 1.25;
     font-family: var(--font-family);
 
+    &:hover {
+      outline: none;
+      box-shadow: inset 0 0 0 1px var(--border-hover);
+    }
+
     &:focus {
       outline: none;
-      box-shadow: inset 0 0 0 2px var(--focus);
+      box-shadow: inset 0 0 0 3px var(--border-hover);
     }
 
     &:disabled {

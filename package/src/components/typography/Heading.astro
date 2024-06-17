@@ -1,32 +1,29 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Tag from '../_Tag.astro'
+import Component from '../_Component.astro'
 
 type Props<As extends HTMLTag = 'h2'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag> & {
+  ComponentProps<typeof Component> & {
+    scheme?: 'light' | 'dark'
+    color?: 'base' | 'brand' | string
+    size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl'
     html?: string
     text?: string
+    contrast?: boolean
     variant?: 'base' | 'muted' | 'accent'
-    level?: 1 | 2 | 3 | 4 | 5 | 6
   }
 
-const {
-  level = 2,
-  as = `h${level}`,
-  density = level > 3 ? 'compact' : undefined,
-  ...rest
-} = Astro.props
+const { as = 'h2', contrast = true, ...rest } = Astro.props
 ---
 
-<Tag
+<Component
   class:list={['heading']}
-  {level}
   {as}
-  {density}
+  {contrast}
   {...rest}
 >
   <slot />
-</Tag>
+</Component>
 
 <style is:global lang="scss">
   @import '../../css/utils.scss';
@@ -36,25 +33,15 @@ const {
     max-width: calc(var(--element-3) * 36);
     scroll-margin: var(--space-4);
     color: var(--foreground);
-    font-weight: var(--heading-font-weight);
+    font-weight: var(--text-heading-font-weight);
+    font-size: var(--text-heading);
     line-height: 1.1;
-    font-family: var(--heading-font-family);
+    font-family: var(--text-heading-font-family);
     letter-spacing: -0.025em;
     text-decoration: none;
 
-    &.level-1,
-    &.level-4 {
-      font-size: var(--text-5);
-    }
-
-    &.level-2,
-    &.level-5 {
-      font-size: var(--text-4);
-    }
-
-    &.level-3,
-    &.level-6 {
-      font-size: var(--text-3);
+    &.contrast {
+      color: var(--foreground-contrast);
     }
   }
 </style>

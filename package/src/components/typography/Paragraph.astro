@@ -1,24 +1,25 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Tag from '../_Tag.astro'
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../_Component.astro'
 
-type Props<As extends HTMLTag = 'p'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag> & {
-    html?: string
-    text?: string
-    variant?: 'base' | 'muted' | 'accent'
-  }
+type Props<As extends HTMLTag = 'p'> = Polymorphic<{ as: As }> & {
+  scheme?: 'light' | 'dark'
+  color?: 'base' | 'brand' | string
+  size?: 'sm' | 'md' | 'lg' | 'xl'
+  contrast?: boolean
+  html?: string
+  text?: string
+}
 
 const { as = 'p', ...rest } = Astro.props
 ---
 
-<Tag
+<Component
   class:list={['paragraph']}
-  {as}
   {...rest}
 >
   <slot />
-</Tag>
+</Component>
 
 <style is:global lang="scss">
   @import '../../css/utils.scss';
@@ -28,8 +29,12 @@ const { as = 'p', ...rest } = Astro.props
     max-width: calc(var(--element-3) * 36);
     color: var(--foreground);
     font-weight: var(--font-weight);
-    font-size: var(--text-2);
+    font-size: var(--text-body);
     line-height: 1.625;
     font-family: var(--font-family);
+
+    &.contrast {
+      color: var(--foreground-contrast);
+    }
   }
 </style>
