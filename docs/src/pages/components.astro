@@ -23,6 +23,10 @@ const baseComponents = await getCollection('docs', (entry) =>
   entry.slug.startsWith('base/')
 )
 
+const typographyComponents = await getCollection('docs', (entry) =>
+  entry.slug.startsWith('typography/')
+)
+
 const components = await Astro.glob(
   '../../node_modules/fulldev-ui/src/components/**/*.astro'
 )
@@ -77,26 +81,25 @@ const components = await Astro.glob(
 
   <Section>
     <Heading>Typography components</Heading>
-
-    <!-- <Deck>
+    <Deck>
       {
-        typographyMdx
-          .filter(
-            (item) => item.frontmatter.title && item.frontmatter.description
+        typographyComponents.map(({ data, slug }) => {
+          const component = components.find((component) =>
+            component.file.endsWith(data.title + '.astro')
           )
-          .map((item) => (
+          const Component = component?.default
+          return (
             <ComponentCard
-              title={item.frontmatter.title}
-              description={item.frontmatter.description}
-              link={
-                '/base/' +
-                item.frontmatter.title.toLowerCase().replace(' ', '-')
-              }
-              set:html={item.example}
-            />
-          ))
+              title={data.title}
+              description={data.description}
+              link={slug}
+            >
+              {Component && <Component {...data.props} />}
+            </ComponentCard>
+          )
+        })
       }
-    </Deck> -->
+    </Deck>
   </Section>
   <Cta>
     {data.cta.buttons.map((button: any) => <Button {...button} />)}
