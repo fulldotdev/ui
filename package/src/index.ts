@@ -1,3 +1,6 @@
+// Schemas and utils
+export * from './schemas/collection'
+
 // Base components
 export { default as Badge } from './components/base/Badge.astro'
 export { default as Button } from './components/base/Button.astro'
