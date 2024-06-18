@@ -10,6 +10,7 @@ import {
   Section,
 } from 'fulldev-ui'
 
+import { getCollection } from 'astro:content'
 import ComponentCard from '../components/ComponentCard.astro'
 import Cta from '../components/Cta.astro'
 import Footer from '../components/Footer.astro'
@@ -18,11 +19,13 @@ import Header from '../components/Header.astro'
 const { data, render } = await getEntry('pages', 'components')
 const { Content } = await render()
 
-const baseMdx = await Astro.glob('../content/docs/base/*.mdx')
-console.log('mdx', baseMdx)
+const baseComponents = await getCollection('docs', (entry) =>
+  entry.slug.startsWith('base/')
+)
 
-const typographyMdx = await Astro.glob('../content/docs/typography/*.mdx')
-console.log('mdx', typographyMdx)
+const components = await Astro.glob(
+  '../../node_modules/fulldev-ui/src/components/**/*.astro'
+)
 ---
 
 <Layout
@@ -52,21 +55,21 @@ console.log('mdx', typographyMdx)
       <Heading>Base components</Heading>
       <Deck>
         {
-          baseMdx
-            .filter(
-              (item) => item.frontmatter.title && item.frontmatter.description
+          baseComponents.map(({ data, slug }) => {
+            const component = components.find((component) =>
+              component.file.endsWith(data.title + '.astro')
             )
-            .map((item) => (
+            const Component = component?.default
+            return (
               <ComponentCard
-                title={item.frontmatter.title}
-                description={item.frontmatter.description}
-                link={
-                  '/base/' +
-                  item.frontmatter.title.toLowerCase().replace(' ', '-')
-                }
-                set:html={item.example}
-              />
-            ))
+                title={data.title}
+                description={data.description}
+                link={slug}
+              >
+                {Component && <Component {...data.props} />}
+              </ComponentCard>
+            )
+          })
         }
       </Deck>
     </Section>
@@ -75,7 +78,7 @@ console.log('mdx', typographyMdx)
   <Section>
     <Heading>Typography components</Heading>
 
-    <Deck>
+    <!-- <Deck>
       {
         typographyMdx
           .filter(
@@ -93,7 +96,7 @@ console.log('mdx', typographyMdx)
             />
           ))
       }
-    </Deck>
+    </Deck> -->
   </Section>
   <Cta>
     {data.cta.buttons.map((button: any) => <Button {...button} />)}

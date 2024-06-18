@@ -1,8 +1,12 @@
 import { docsSchema } from '@astrojs/starlight/schema'
-import { defineCollection } from 'astro:content'
+import { defineCollection, z } from 'astro:content'
 
 export const collections = {
-  docs: defineCollection({ schema: docsSchema() }),
+  docs: defineCollection({
+    schema: docsSchema({
+      extend: z.object({}).catchall(z.any()),
+    }),
+  }),
   // pages: defineCollection({
   //   type: 'content',
   //   schema: pageSchema(),

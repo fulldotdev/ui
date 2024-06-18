@@ -150,13 +150,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"base/checkbox.mdx": {
-	id: "base/checkbox.mdx";
-  slug: "base/checkbox";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "base/icon.mdx": {
 	id: "base/icon.mdx";
   slug: "base/icon";
@@ -174,13 +167,6 @@ declare module 'astro:content' {
 "base/input.mdx": {
 	id: "base/input.mdx";
   slug: "base/input";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"base/radio.mdx": {
-	id: "base/radio.mdx";
-  slug: "base/radio";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
