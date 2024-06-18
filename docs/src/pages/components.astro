@@ -1,13 +1,10 @@
 ---
 import { getEntry } from 'astro:content'
 import {
-  Badge,
   Button,
   Deck,
   Group,
   Heading,
-  Icon,
-  Input,
   Label,
   Layout,
   Link,
@@ -16,13 +13,8 @@ import {
   Main,
   Paragraph,
   Section,
-  Select,
-  SelectOption,
-  Switch,
-  Textarea,
 } from 'fulldev-ui'
 
-import { getCollection } from 'astro:content'
 import ComponentCard from '../components/ComponentCard.astro'
 import Cta from '../components/Cta.astro'
 import Footer from '../components/Footer.astro'
@@ -31,16 +23,11 @@ import Header from '../components/Header.astro'
 const { data, render } = await getEntry('pages', 'components')
 const { Content } = await render()
 
-const baseComponents = await getCollection('docs', (entry) =>
-  entry.slug.startsWith('base/')
-)
-
 const baseMdx = await Astro.glob('../content/docs/base/*.mdx')
 console.log('mdx', baseMdx)
 
-const typographyComponents = await getCollection('docs', (entry) =>
-  entry.slug.startsWith('typography/')
-)
+const typographyMdx = await Astro.glob('../content/docs/typography/*.mdx')
+console.log('mdx', typographyMdx)
 ---
 
 <Layout
@@ -69,145 +56,89 @@ const typographyComponents = await getCollection('docs', (entry) =>
     <Section>
       <Heading>Base components</Heading>
       <Deck>
-        <ComponentCard
-          title="Badge"
-          description="A badge useful for displaying a small amount of information."
-          link="/base/badge/"
-        >
-          <Badge>Badge</Badge>
-        </ComponentCard>
-
-        <ComponentCard
-          title="Button"
-          description="A button or a component that looks like a button."
-          link="/base/button/"
-        >
-          <Button
-            as="button"
-            href
-          >
-            Button
-          </Button>
-        </ComponentCard>
-
-        <ComponentCard
-          title="Icon"
-          description="Displays a fully customizable inline svg icon."
-          link="/base/icon/"
-        >
-          <Group>
-            <Icon name="circle" />
-            <Icon name="arrow-right" />
-            <Icon name="brand-x" />
-            <Icon name="brand-github" />
-          </Group>
-        </ComponentCard>
-
-        <ComponentCard
-          title="Input"
-          description="A native, styled input element."
-          link="/base/input/"
-        >
-          <Input
-            name="name"
-            placeholder="Name"
-          />
-        </ComponentCard>
-
-        <ComponentCard
-          title="Select"
-          description="A native, styled select element with options to pick from."
-          link="/base/select/"
-        >
-          <Select>
-            <SelectOption>Option 1</SelectOption>
-            <SelectOption>Option 2</SelectOption>
-          </Select>
-        </ComponentCard>
-
-        <ComponentCard
-          title="Switch"
-          description="A native checkbox input, styled as a switch with pure CSS."
-          link="/base/switch/"
-        >
-          <Switch />
-        </ComponentCard>
-
-        <ComponentCard
-          title="Textarea"
-          description="A native, styled textarea element."
-          link="/base/textarea/"
-        >
-          <Textarea
-            name="message"
-            placeholder="Message"
-          />
-        </ComponentCard>
+        {
+          baseMdx
+            .filter(
+              (item) => item.frontmatter.title && item.frontmatter.description
+            )
+            .map((item) => (
+              <ComponentCard
+                title={item.frontmatter.title}
+                description={item.frontmatter.description}
+                link={
+                  '/base/' +
+                  item.frontmatter.title.toLowerCase().replace(' ', '-')
+                }
+              >
+                {item.example}
+              </ComponentCard>
+            ))
+        }
       </Deck>
     </Section>
-
-    <Section>
-      <Heading>Typography components</Heading>
-
-      <Deck>
-        <ComponentCard
-          title="Heading"
-          description="A native, styled heading element."
-          link="/typography/heading/"
-        >
-          <Group>
-            <Heading size="xl">Hello World</Heading>
-          </Group>
-        </ComponentCard>
-
-        <ComponentCard
-          title="Label"
-          description="A native, styled label element."
-          link="/typography/label/"
-        >
-          <Label size="lg">Label</Label>
-        </ComponentCard>
-
-        <ComponentCard
-          title="Link"
-          description="A native, styled link element."
-          link="/typography/link/"
-        >
-          <Link
-            href="#"
-            size="lg"
-            as="button"
-            style="background: none; border: none;"
-            >Link</Link
-          >
-        </ComponentCard>
-
-        <ComponentCard
-          title="List"
-          description="A native, styled list element with list items inside."
-          link="/typography/list/"
-        >
-          <List>
-            <ListItem>Item 1</ListItem>
-            <ListItem>Item 2</ListItem>
-            <ListItem>Item 3</ListItem>
-          </List>
-        </ComponentCard>
-
-        <ComponentCard
-          title="Paragraph"
-          description="A native, styled paragraph element."
-          link="/typography/paragraph/"
-        >
-          <Paragraph>The quick brown fox jumps over the lazy dog</Paragraph>
-        </ComponentCard>
-      </Deck>
-    </Section>
-    <Cta>
-      {data.cta.buttons.map((button: any) => <Button {...button} />)}
-    </Cta>
-    <Footer />
   </Main>
+
+  <Section>
+    <Heading>Typography components</Heading>
+
+    <Deck>
+      <ComponentCard
+        title="Heading"
+        description="A native, styled heading element."
+        link="/typography/heading/"
+      >
+        <Group>
+          <Heading size="xl">Hello World</Heading>
+        </Group>
+      </ComponentCard>
+
+      <ComponentCard
+        title="Label"
+        description="A native, styled label element."
+        link="/typography/label/"
+      >
+        <Label size="lg">Label</Label>
+      </ComponentCard>
+
+      <ComponentCard
+        title="Link"
+        description="A native, styled link element."
+        link="/typography/link/"
+      >
+        <Link
+          href="#"
+          size="lg"
+          as="button"
+          style="background: none; border: none;"
+          >Link</Link
+        >
+      </ComponentCard>
+
+      <ComponentCard
+        title="List"
+        description="A native, styled list element with list items inside."
+        link="/typography/list/"
+      >
+        <List>
+          <ListItem>Item 1</ListItem>
+          <ListItem>Item 2</ListItem>
+          <ListItem>Item 3</ListItem>
+        </List>
+      </ComponentCard>
+
+      <ComponentCard
+        title="Paragraph"
+        description="A native, styled paragraph element."
+        link="/typography/paragraph/"
+      >
+        <Paragraph>The quick brown fox jumps over the lazy dog</Paragraph>
+      </ComponentCard>
+    </Deck>
+  </Section>
+  <Cta>
+    {data.cta.buttons.map((button: any) => <Button {...button} />)}
+  </Cta>
+  <Footer />
 </Layout>
 
 <style>
