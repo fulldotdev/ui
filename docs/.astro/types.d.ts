@@ -241,9 +241,23 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"props/frame.mdx": {
+	id: "props/frame.mdx";
+  slug: "props/frame";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "props/structure.mdx": {
 	id: "props/structure.mdx";
   slug: "props/structure";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"props/variant.mdx": {
+	id: "props/variant.mdx";
+  slug: "props/variant";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -279,55 +293,6 @@ declare module 'astro:content' {
 "segment/section.mdx": {
 	id: "segment/section.mdx";
   slug: "segment/section";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"structure/bento.mdx": {
-	id: "structure/bento.mdx";
-  slug: "structure/bento";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"structure/carousel.mdx": {
-	id: "structure/carousel.mdx";
-  slug: "structure/carousel";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"structure/column.mdx": {
-	id: "structure/column.mdx";
-  slug: "structure/column";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"structure/grid.mdx": {
-	id: "structure/grid.mdx";
-  slug: "structure/grid";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"structure/masonry.mdx": {
-	id: "structure/masonry.mdx";
-  slug: "structure/masonry";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"structure/split.mdx": {
-	id: "structure/split.mdx";
-  slug: "structure/split";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"structure/spread.mdx": {
-	id: "structure/spread.mdx";
-  slug: "structure/spread";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
