@@ -1,4 +1,5 @@
 ---
+import { getEntry } from 'astro:content'
 import {
   Badge,
   Button,
@@ -22,11 +23,12 @@ import {
 } from 'fulldev-ui'
 
 import ComponentCard from '../components/ComponentCard.astro'
+import Cta from '../components/Cta.astro'
 import Footer from '../components/Footer.astro'
 import Header from '../components/Header.astro'
 
-// const { data, render } = await getEntry('pages', 'components')
-// const { Content } = await render()
+const { data, render } = await getEntry('pages', 'components')
+const { Content } = await render()
 ---
 
 <Layout
@@ -47,12 +49,9 @@ import Header from '../components/Header.astro'
       <Heading
         size="xl"
         as="h1"
-      >
-        Components
-      </Heading>
-      <Paragraph>
-        15+ beautifully crafted components for your next Astro project!
-      </Paragraph>
+        text={data.hero.heading}
+      />
+      <Paragraph text={data.hero.paragraph} />
     </Section>
 
     <Section>
@@ -192,7 +191,10 @@ import Header from '../components/Header.astro'
         </ComponentCard>
       </Deck>
     </Section>
-    <!-- <Footer /> -->
+    <Cta>
+      {data.cta.buttons.map((button: any) => <Button {...button} />)}
+    </Cta>
+    <Footer />
   </Main>
 </Layout>
 
