@@ -241,6 +241,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"props/structure.mdx": {
+	id: "props/structure.mdx";
+  slug: "props/structure";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "segment/box.mdx": {
 	id: "segment/box.mdx";
   slug: "segment/box";

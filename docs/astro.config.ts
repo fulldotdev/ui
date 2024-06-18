@@ -30,9 +30,9 @@ export default defineConfig({
           },
         },
         {
-          label: 'Structure',
+          label: 'Props',
           autogenerate: {
-            directory: 'structure',
+            directory: 'props',
           },
         },
         {
