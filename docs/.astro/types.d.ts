@@ -150,13 +150,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"base/checkbox.mdx": {
-	id: "base/checkbox.mdx";
-  slug: "base/checkbox";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "base/icon.mdx": {
 	id: "base/icon.mdx";
   slug: "base/icon";
@@ -164,30 +157,9 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"base/image.mdx": {
-	id: "base/image.mdx";
-  slug: "base/image";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "base/input.mdx": {
 	id: "base/input.mdx";
   slug: "base/input";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"base/radio.mdx": {
-	id: "base/radio.mdx";
-  slug: "base/radio";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"base/rating.mdx": {
-	id: "base/rating.mdx";
-  slug: "base/rating";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -241,6 +213,34 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"props/frame.mdx": {
+	id: "props/frame.mdx";
+  slug: "props/frame";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"props/structure.mdx": {
+	id: "props/structure.mdx";
+  slug: "props/structure";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"props/variant.mdx": {
+	id: "props/variant.mdx";
+  slug: "props/variant";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"segment/box.mdx": {
+	id: "segment/box.mdx";
+  slug: "segment/box";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "segment/card.mdx": {
 	id: "segment/card.mdx";
   slug: "segment/card";
@@ -251,6 +251,13 @@ declare module 'astro:content' {
 "segment/deck.mdx": {
 	id: "segment/deck.mdx";
   slug: "segment/deck";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"segment/group.mdx": {
+	id: "segment/group.mdx";
+  slug: "segment/group";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -299,6 +306,13 @@ declare module 'astro:content' {
 } & { render(): Render[".mdx"] };
 };
 "pages": {
+"components.mdx": {
+	id: "components.mdx";
+  slug: "components";
+  body: string;
+  collection: "pages";
+  data: any
+} & { render(): Render[".mdx"] };
 "index.mdx": {
 	id: "index.mdx";
   slug: "index";

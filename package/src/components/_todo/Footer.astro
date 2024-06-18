@@ -1,16 +1,66 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../_Component.astro'
 
 type Props<As extends HTMLTag = 'footer'> = Polymorphic<{ as: As }> &
   ComponentProps<typeof Component> & {
-    structure?: 'spread' | 'group' | 'column'
-    frame?: 'fill' | 'contain' | 'panel'
+    structure?: 'spread'
+    position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
+    variant?: 'base' | 'raised'
+    frame?: 'wrapper' | 'container' | 'panel'
+    align?: 'start' | 'center' | 'end'
   }
 
 const {
   as = 'footer',
-  direction = 'horizontal',
-  density = 'compact',
+  density = 'base',
+  frame = 'wrapper',
   ...rest
 } = Astro.props
 ---
+
+<Component
+  class:list={['footer']}
+  {as}
+  {density}
+  {frame}
+  {...rest}
+>
+  <slot />
+</Component>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+
+  @include component('footer') {
+    --inner: var(--element-3);
+
+    display: flex;
+    top: 0;
+    right: 0;
+    left: 0;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    background: var(--background);
+    padding-top: var(--element-3);
+    padding-bottom: var(--element-3);
+    width: 100%;
+
+    // &.panel {
+    //   margin-top: var(--inner);
+    // }
+
+    &.position-fixed {
+      position: fixed;
+    }
+
+    &.position-absolute {
+      position: absolute;
+    }
+
+    &.position-sticky {
+      position: sticky;
+    }
+  }
+</style>
