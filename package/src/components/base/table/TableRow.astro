@@ -1,0 +1,33 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../../_Component.astro'
+
+type Props<As extends HTMLTag = 'tr'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Component> & {}
+
+const { as = 'tr', ...rest } = Astro.props
+---
+
+<Component
+  class:list={['TableRow']}
+  {...rest}
+  {as}
+>
+  <slot />
+</Component>
+
+<style is:global lang="scss">
+  @import '../../../css/utils.scss';
+
+  @include component('TableRow') {
+    transition-duration: 0.3s;
+    transition-property: background-color;
+    border-bottom: 1px solid;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    &[data-state='selected'] {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+</style>
