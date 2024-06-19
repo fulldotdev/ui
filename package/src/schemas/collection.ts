@@ -60,7 +60,8 @@ export const pageSchema = <R extends ZodRawShape>(references: R) =>
       title: z.string(),
       description: z.string(),
       block: blockSchema(references),
-      blocks: z.object({}).catchall(blockSchema(references)).partial(),
+      blocks: blockSchema(references).array(),
+      main: z.object({}).catchall(blockSchema(references)).partial(),
       head: z
         .object({
           title: z.string(),

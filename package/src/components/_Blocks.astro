@@ -1,26 +1,11 @@
 ---
-import { pascal } from 'radash'
 import Block from './_Block.astro'
 
 interface Props {
-  [key: string | number | symbol]: {
-    block?: string
-    [key: string | number | symbol]: any
-  }
+  blocks?: any
 }
+
+const { blocks } = Astro.props
 ---
 
-{
-  Object.entries(Astro.props).map(([key, value]) => {
-    const { block, ...rest } = value
-    const keyPart = key.split(/(?=[A-Z])/).pop()
-    const keyBlock = keyPart ? pascal(keyPart) : ''
-
-    return (
-      <Block
-        block={block ?? keyBlock}
-        {...rest}
-      />
-    )
-  })
-}
+{blocks?.map((block: any) => <Block {...block} />)}
