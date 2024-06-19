@@ -87,13 +87,20 @@ const components = await Astro.glob(
             component.file.endsWith(data.title + '.astro')
           )
           const Component = component?.default
+          const deepProps = data.props?.reduce((acc: any, item: any) => {
+            return {
+              ...acc,
+              [item.prop]: item.value,
+            }
+          }, {})
+
           return (
             <ComponentCard
               title={data.title}
               description={data.description}
               link={slug}
             >
-              {Component && <Component {...data.props} />}
+              {Component && <Component {...deepProps} />}
             </ComponentCard>
           )
         })
