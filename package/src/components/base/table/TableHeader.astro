@@ -1,11 +1,18 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
 import Component from '../../_Component.astro'
+import TableHead from './TableHead.astro'
+import TableRow from './TableRow.astro'
 
 type Props<As extends HTMLTag = 'thead'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Component> & {}
+  ComponentProps<typeof Component> & {
+    rows?: (
+      | ComponentProps<typeof TableHead>
+      | ComponentProps<typeof TableHead>['html']
+    )[]
+  }
 
-const { as = 'thead', ...rest } = Astro.props
+const { as = 'thead', rows, ...rest } = Astro.props
 ---
 
 <Component
@@ -13,6 +20,16 @@ const { as = 'thead', ...rest } = Astro.props
   {as}
   {...rest}
 >
+  {
+    rows && (
+      <TableRow>
+        {rows?.map((row) => {
+          if (typeof row === 'string') return <TableHead html={row} />
+          else return <TableHead {...row} />
+        })}
+      </TableRow>
+    )
+  }
   <slot />
 </Component>
 
