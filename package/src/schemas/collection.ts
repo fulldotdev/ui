@@ -23,10 +23,9 @@ const buttonSchema = z
     text: z.string(),
     html: z.string(),
     href: z.string(),
-    variant: z.string(),
-    color: z.string(),
   })
   .partial()
+  .passthrough()
 
 const baseSchema = z
   .object({
@@ -43,6 +42,7 @@ const baseSchema = z
     buttons: buttonSchema.array(),
   })
   .partial()
+  .passthrough()
 
 const blockSchema = <R extends ZodRawShape>(references: R) =>
   baseSchema
@@ -52,6 +52,7 @@ const blockSchema = <R extends ZodRawShape>(references: R) =>
     })
     .extend(references)
     .partial()
+    .passthrough()
 
 export const pageSchema = <R extends ZodRawShape>(references: R) =>
   baseSchema
@@ -59,7 +60,7 @@ export const pageSchema = <R extends ZodRawShape>(references: R) =>
       title: z.string(),
       description: z.string(),
       block: blockSchema(references),
-      blocks: z.object({}).catchall(blockSchema(references)),
+      blocks: z.object({}).catchall(blockSchema(references)).partial(),
       head: z
         .object({
           title: z.string(),

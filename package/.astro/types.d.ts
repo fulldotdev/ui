@@ -134,8 +134,6 @@ declare module 'astro:content' {
   data: InferEntrySchema<"pages">
 } & { render(): Render[".md"] };
 };
-"products": {
-};
 
 	};
 
