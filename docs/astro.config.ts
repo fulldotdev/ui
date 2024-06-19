@@ -20,7 +20,7 @@ export default defineConfig({
         maxHeadingLevel: 4,
       },
       favicon: './favicon/favicon.ico',
-      customCss: ['./src/css/custom.css', 'fulldev-ui/colors'],
+      customCss: ['./src/css/custom.css', 'fulldev-ui/color'],
       pagefind: true,
       sidebar: [
         {
