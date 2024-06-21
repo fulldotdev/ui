@@ -1,7 +1,20 @@
 ---
 import { Box } from 'fulldev-ui'
-
+import DecorativeBox from './DecorativeBox.astro'
 const { structure, frame } = Astro.props
+
+const structureBoxCounts: { [key: string]: number } = {
+  carousel: 4,
+  column: 3,
+  grid: 4,
+  masonry: 6,
+  split: 2,
+  spread: 2,
+  row: 4,
+  wrap: 5,
+}
+
+const boxCount = structureBoxCounts[structure] || 0
 ---
 
 <Box
@@ -11,6 +24,15 @@ const { structure, frame } = Astro.props
   style={structure === 'carousel' ? 'overflow-x: scroll; !important' : ''}
   frame={frame}
 >
+  {
+    Array.from({ length: boxCount }, (_, i) => (
+      <DecorativeBox
+        key={i}
+        style={structure === 'carousel' ? 'min-width: 300px;' : ''}
+      />
+    ))
+  }
+  {frame && <DecorativeBox frame={frame} />}
   <slot />
 </Box>
 

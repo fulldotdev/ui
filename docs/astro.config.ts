@@ -30,12 +30,6 @@ export default defineConfig({
           },
         },
         {
-          label: 'Props',
-          autogenerate: {
-            directory: 'props',
-          },
-        },
-        {
           label: 'Segment',
           autogenerate: {
             directory: 'segment',

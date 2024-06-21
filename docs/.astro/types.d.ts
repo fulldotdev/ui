@@ -220,27 +220,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"props/frame.mdx": {
-	id: "props/frame.mdx";
-  slug: "props/frame";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"props/structure.mdx": {
-	id: "props/structure.mdx";
-  slug: "props/structure";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
-"props/variant.mdx": {
-	id: "props/variant.mdx";
-  slug: "props/variant";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "segment/box.mdx": {
 	id: "segment/box.mdx";
   slug: "segment/box";
@@ -381,6 +360,104 @@ declare module 'astro:content' {
 "VariantProp.mdx": {
 	id: "VariantProp.mdx";
   slug: "variantprop";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"frames/Container.mdx": {
+	id: "frames/Container.mdx";
+  slug: "frames/container";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"frames/Panel.mdx": {
+	id: "frames/Panel.mdx";
+  slug: "frames/panel";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"frames/Wrapper.mdx": {
+	id: "frames/Wrapper.mdx";
+  slug: "frames/wrapper";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"frames/container.mdx": {
+	id: "frames/container.mdx";
+  slug: "frames/container";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"frames/panel.mdx": {
+	id: "frames/panel.mdx";
+  slug: "frames/panel";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"frames/wrapper.mdx": {
+	id: "frames/wrapper.mdx";
+  slug: "frames/wrapper";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"structures/Carousel.mdx": {
+	id: "structures/Carousel.mdx";
+  slug: "structures/carousel";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"structures/Column.mdx": {
+	id: "structures/Column.mdx";
+  slug: "structures/column";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"structures/Grid.mdx": {
+	id: "structures/Grid.mdx";
+  slug: "structures/grid";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"structures/Masonry.mdx": {
+	id: "structures/Masonry.mdx";
+  slug: "structures/masonry";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"structures/Row.mdx": {
+	id: "structures/Row.mdx";
+  slug: "structures/row";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"structures/Split.mdx": {
+	id: "structures/Split.mdx";
+  slug: "structures/split";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"structures/Spread.mdx": {
+	id: "structures/Spread.mdx";
+  slug: "structures/spread";
+  body: string;
+  collection: "props";
+  data: any
+} & { render(): Render[".mdx"] };
+"structures/grid.mdx": {
+	id: "structures/grid.mdx";
+  slug: "structures/grid";
   body: string;
   collection: "props";
   data: any
