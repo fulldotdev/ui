@@ -178,6 +178,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"base/table.mdx": {
+	id: "base/table.mdx";
+  slug: "base/table";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "base/textarea.mdx": {
 	id: "base/textarea.mdx";
   slug: "base/textarea";
