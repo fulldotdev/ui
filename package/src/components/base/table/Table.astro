@@ -24,14 +24,14 @@ const { as = 'table', header, body, footer, ...rest } = Astro.props
 
 function renderCell(cell: any[]) {
   if (typeof cell === 'string') {
-    return 'TableCell>{cell}</TableCell>'
+    return `<TableCell>${cell}</TableCell>`
   } else {
-    return '<TableCell {...cell}></TableCell>'
+    return `<TableCell ${cell}></TableCell>`
   }
 }
 
 function renderRow(row: any[]) {
-  return <TableRow>{row.map(renderCell)}</TableRow>
+  return `<TableRow>${row.map(renderCell)}</TableRow>`
 }
 ---
 
@@ -56,17 +56,14 @@ function renderRow(row: any[]) {
     )
   }
   {
-    Array.isArray(body) && (
-      <TableBody>
-        {body.map((row) => {
-          if (Array.isArray(row)) {
-            return <Fragment set:html={renderRow(row)} />
-          } else if (typeof row === 'object' && row.rows) {
-            return row.rows.map(renderRow)
-          }
-        })}
-      </TableBody>
-    )
+    Array.isArray(body) &&
+      body.map((row: any) => {
+        if (Array.isArray(row)) {
+          return <TableBody set:html={renderRow(row)} />
+        } else if (typeof row === 'object' && row.rows) {
+          return <TableBody set:html={row.rows.map(renderRow)} />
+        }
+      })
   }
   {
     footer && (
