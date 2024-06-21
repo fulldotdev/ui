@@ -57,21 +57,28 @@ const components = await Astro.glob(
             )
             const Component = component?.default
             const deepProps = data.props?.reduce((acc: any, item: any) => {
-              return {
-                ...acc,
-                [item.prop]: item.value,
+              if (item.value) {
+                return {
+                  ...acc,
+                  [item.prop]: item.value,
+                }
               }
+              return acc
             }, {})
 
-            return (
-              <ComponentCard
-                title={data.title}
-                description={data.description}
-                link={slug}
-              >
-                {Component && <Component {...deepProps} />}
-              </ComponentCard>
-            )
+            if (Component && Object.keys(deepProps).length > 0) {
+              return (
+                <ComponentCard
+                  title={data.title}
+                  description={data.description}
+                  link={slug}
+                >
+                  <Component {...deepProps} />
+                </ComponentCard>
+              )
+            }
+
+            return null
           })
         }
       </Deck>
@@ -88,21 +95,28 @@ const components = await Astro.glob(
           )
           const Component = component?.default
           const deepProps = data.props?.reduce((acc: any, item: any) => {
-            return {
-              ...acc,
-              [item.prop]: item.value,
+            if (item.value) {
+              return {
+                ...acc,
+                [item.prop]: item.value,
+              }
             }
+            return acc
           }, {})
 
-          return (
-            <ComponentCard
-              title={data.title}
-              description={data.description}
-              link={slug}
-            >
-              {Component && <Component {...deepProps} />}
-            </ComponentCard>
-          )
+          if (Component && Object.keys(deepProps).length > 0) {
+            return (
+              <ComponentCard
+                title={data.title}
+                description={data.description}
+                link={slug}
+              >
+                <Component {...deepProps} />
+              </ComponentCard>
+            )
+          }
+
+          return null
         })
       }
     </Deck>
