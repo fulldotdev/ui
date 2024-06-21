@@ -4,10 +4,7 @@ import Component from '../../_Component.astro'
 import TableCell from './TableCell.astro'
 
 type Props<As extends HTMLTag = 'tr'> = Polymorphic<{ as: As }> & {
-  cells?: (
-    | ComponentProps<typeof TableCell>
-    | ComponentProps<typeof TableCell>['html']
-  )[]
+  cells?: ComponentProps<typeof TableCell>[]
 }
 
 const { as = 'tr', cells, ...rest } = Astro.props
@@ -20,7 +17,7 @@ const { as = 'tr', cells, ...rest } = Astro.props
 >
   {
     cells?.map((cel) => {
-      if (typeof cel === 'string') return <TableCell html={cel} />
+      if (typeof cel === 'string') return <TableCell set:html={cel} />
       else return <TableCell {...cel} />
     })
   }
