@@ -6,7 +6,10 @@ import TableRow from './TableRow.astro'
 
 type Props<As extends HTMLTag = 'thead'> = Polymorphic<{ as: As }> &
   ComponentProps<typeof Component> & {
-    cells?: (ComponentProps<typeof TableHead> | string)[]
+    cells?: (
+      | ComponentProps<typeof TableHead>
+      | ComponentProps<typeof TableHead>['html']
+    )[]
   }
 
 const { as = 'thead', cells, ...rest } = Astro.props
@@ -17,16 +20,14 @@ const { as = 'thead', cells, ...rest } = Astro.props
   {as}
   {...rest}
 >
-  {
-    cells && (
-      <TableRow>
-        {cells?.map((cell) => {
-          if (typeof cell === 'string') return <TableHead set:html={cell} />
-          else return <TableHead {...cell} />
-        })}
-      </TableRow>
-    )
-  }
+  <TableRow>
+    {
+      cells?.map((cell) => {
+        if (typeof cell === 'string') return <TableHead set:html={cell} />
+        else return <TableHead {...cell} />
+      })
+    }
+  </TableRow>
   <slot />
 </Component>
 

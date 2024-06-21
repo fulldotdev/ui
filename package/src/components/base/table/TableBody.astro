@@ -5,10 +5,13 @@ import Component from '../../_Component.astro'
 import TableRow from './TableRow.astro'
 
 type Props<As extends HTMLTag = 'tbody'> = Polymorphic<{ as: As }> & {
-  rows?: ComponentProps<typeof TableRow>[]
+  rows?: (
+    | ComponentProps<typeof TableRow>
+    | ComponentProps<typeof TableRow>['cells']
+  )[]
 }
 
-const { as = 'tbody', ...rest } = Astro.props
+const { as = 'tbody', rows, ...rest } = Astro.props
 ---
 
 <Component
@@ -16,6 +19,12 @@ const { as = 'tbody', ...rest } = Astro.props
   {as}
   {...rest}
 >
+  {
+    rows?.map((row) => {
+      if (Array.isArray(row)) return <TableRow cells={row} />
+      else return <TableRow {...row} />
+    })
+  }
   <slot />
 </Component>
 
