@@ -10,15 +10,20 @@ import {
 } from 'fulldev-ui'
 import Component from '../../_Component.astro'
 
-type Props<As extends HTMLTag = 'table'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Component> & {
-    header?: (string | Record<string, any>)[]
-    body?: (
-      | (string | Record<string, any>)[]
-      | { class?: string; rows: (string | Record<string, any>)[][] }
-    )[]
-    footer?: (string | Record<string, any>)[]
-  }
+type Props<As extends HTMLTag = 'table'> = Polymorphic<{ as: As }> & {
+  header?: (
+    | ComponentProps<typeof TableHeader>
+    | ComponentProps<typeof TableHeader>['cells']
+  )[]
+  body?: (
+    | ComponentProps<typeof TableBody>
+    | ComponentProps<typeof TableBody>['rows']
+  )[]
+  footer?: (
+    | ComponentProps<typeof TableFooter>
+    | ComponentProps<typeof TableFooter>['cells']
+  )[]
+}
 
 const { as = 'table', header, body, footer, ...rest } = Astro.props
 
