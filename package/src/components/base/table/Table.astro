@@ -1,18 +1,88 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import {
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from 'fulldev-ui'
 import Component from '../../_Component.astro'
 
 type Props<As extends HTMLTag = 'table'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Component> & {}
+  ComponentProps<typeof Component> & {
+    header?: (string | Record<string, any>)[]
+    body?: (
+      | (string | Record<string, any>)[]
+      | { class?: string; rows: (string | Record<string, any>)[][] }
+    )[]
+    footer?: (string | Record<string, any>)[]
+  }
 
-const { as = 'table', ...rest } = Astro.props
+const { as = 'table', header, body, footer, ...rest } = Astro.props
+
+function renderCell(cell: any[]) {
+  if (typeof cell === 'string') {
+    return 'TableCell>{cell}</TableCell>'
+  } else {
+    return '<TableCell {...cell}></TableCell>'
+  }
+}
+
+function renderRow(row: any[]) {
+  return <TableRow>{row.map(renderCell)}</TableRow>
+}
 ---
 
 <Component
   class:list={['table']}
-  {as}
+  as={as}
   {...rest}
 >
+  {
+    header && (
+      <TableHeader>
+        <TableRow>
+          {header.map((cell) =>
+            typeof cell === 'string' ? (
+              <TableHead>{cell}</TableHead>
+            ) : (
+              <TableHead {...cell} />
+            )
+          )}
+        </TableRow>
+      </TableHeader>
+    )
+  }
+  {
+    Array.isArray(body) && (
+      <TableBody>
+        {body.map((row) => {
+          if (Array.isArray(row)) {
+            return <Fragment set:html={renderRow(row)} />
+          } else if (typeof row === 'object' && row.rows) {
+            return row.rows.map(renderRow)
+          }
+        })}
+      </TableBody>
+    )
+  }
+  {
+    footer && (
+      <TableFooter>
+        <TableRow>
+          {footer.map((cell) =>
+            typeof cell === 'string' ? (
+              <TableCell>{cell}</TableCell>
+            ) : (
+              <TableCell {...cell} />
+            )
+          )}
+        </TableRow>
+      </TableFooter>
+    )
+  }
   <slot />
 </Component>
 
