@@ -1,43 +1,21 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import {
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from 'fulldev-ui'
+import { TableBody, TableFooter, TableHeader } from 'fulldev-ui'
 import Component from '../../_Component.astro'
 
 type Props<As extends HTMLTag = 'table'> = Polymorphic<{ as: As }> & {
-  header?: (
+  header?:
     | ComponentProps<typeof TableHeader>
     | ComponentProps<typeof TableHeader>['cells']
-  )[]
-  body?: (
+  body?:
     | ComponentProps<typeof TableBody>
     | ComponentProps<typeof TableBody>['rows']
-  )[]
-  footer?: (
+  footer?:
     | ComponentProps<typeof TableFooter>
     | ComponentProps<typeof TableFooter>['cells']
-  )[]
 }
 
 const { as = 'table', header, body, footer, ...rest } = Astro.props
-
-function renderCell(cell: any[]) {
-  if (typeof cell === 'string') {
-    return `<TableCell>${cell}</TableCell>`
-  } else {
-    return `<TableCell ${cell}></TableCell>`
-  }
-}
-
-function renderRow(row: any[]) {
-  return `<TableRow>${row.map(renderCell)}</TableRow>`
-}
 ---
 
 <Component
@@ -46,45 +24,22 @@ function renderRow(row: any[]) {
   {...rest}
 >
   {
-    header && (
-      <TableHeader>
-        <TableRow>
-          {header.map((cell) =>
-            typeof cell === 'string' ? (
-              <TableHead>{cell}</TableHead>
-            ) : (
-              <TableHead {...cell} />
-            )
-          )}
-        </TableRow>
-      </TableHeader>
+    Array.isArray(header) ? (
+      <TableHeader cells={header} />
+    ) : (
+      <TableHeader {...header} />
     )
   }
+
+  {Array.isArray(header) ? <TableBody rows={body} /> : <TableBody {...body} />}
   {
-    Array.isArray(body) &&
-      body.map((row: any) => {
-        if (Array.isArray(row)) {
-          return <TableBody set:html={renderRow(row)} />
-        } else if (typeof row === 'object' && row.rows) {
-          return <TableBody set:html={row.rows.map(renderRow)} />
-        }
-      })
-  }
-  {
-    footer && (
-      <TableFooter>
-        <TableRow>
-          {footer.map((cell) =>
-            typeof cell === 'string' ? (
-              <TableCell>{cell}</TableCell>
-            ) : (
-              <TableCell {...cell} />
-            )
-          )}
-        </TableRow>
-      </TableFooter>
+    Array.isArray(header) ? (
+      <TableFooter cells={footer} />
+    ) : (
+      <TableFooter {...footer} />
     )
   }
+
   <slot />
 </Component>
 
