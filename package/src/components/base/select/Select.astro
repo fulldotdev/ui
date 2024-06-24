@@ -1,13 +1,11 @@
 ---
 import type { ComponentProps, Polymorphic } from 'astro/types'
 import Component from '../../_Component.astro'
+import Label from '../../typography/Label.astro'
 import SelectField from './SelectField.astro'
-import SelectLabel from './SelectLabel.astro'
 
 type Props<As extends 'div'> = Polymorphic<{ as: As }> & {
-  label?:
-    | ComponentProps<typeof SelectLabel>
-    | ComponentProps<typeof SelectLabel>['html']
+  label?: ComponentProps<typeof Label> | ComponentProps<typeof Label>['html']
 } & Pick<ComponentProps<typeof SelectField>, 'name' | 'placeholder' | 'options'>
 
 const { as = 'div', label, name, placeholder, options, ...rest } = Astro.props
@@ -18,9 +16,9 @@ const { as = 'div', label, name, placeholder, options, ...rest } = Astro.props
   {as}
   {...rest}
 >
-  <SelectLabel
+  <Label
     for={name}
-    {...typeof label === 'string' ? { html: label } : label}
+    text={label}
   />
   <SelectField
     {name}
