@@ -6,16 +6,27 @@ import Icon from './Icon.astro'
 type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
   ComponentProps<typeof Component> & {
     value?: number | string
+    size?: string
+    compact?: boolean
   }
 
-const { value = Astro.props.html, ...rest } = Astro.props
+const { size, compact, value, ...rest } = Astro.props
 ---
 
 <Component
   class:list={['rating']}
   {...rest}
 >
-  {value && [1, 2, 3, 4, 5].map(() => <Icon name="star-filled" />)}
+  {
+    Array.from(Array(Number(value) || 1), (_, index) => (
+      <Icon
+        size={size}
+        compact={compact}
+        name="star-filled"
+        key={index}
+      />
+    ))
+  }
 </Component>
 
 <style is:global lang="scss">
@@ -28,21 +39,6 @@ const { value = Astro.props.html, ...rest } = Astro.props
 
     &.center {
       padding-left: 0 !important;
-    }
-
-    i {
-      --un-icon: url("data:image/svg+xml;utf8,%3Csvg viewBox='0 0 24 24' width='1em' height='1em' xmlns='http://www.w3.org/2000/svg' %3E%3Cg fill='none' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'%3E%3Cpath d='M0 0h24v24H0z'/%3E%3Cpath fill='currentColor' d='m8.243 7.34l-6.38.925l-.113.023a1 1 0 0 0-.44 1.684l4.622 4.499l-1.09 6.355l-.013.11a1 1 0 0 0 1.464.944l5.706-3l5.693 3l.1.046a1 1 0 0 0 1.352-1.1l-1.091-6.355l4.624-4.5l.078-.085a1 1 0 0 0-.633-1.62l-6.38-.926l-2.852-5.78a1 1 0 0 0-1.794 0z'/%3E%3C/g%3E%3C/svg%3E");
-      -webkit-mask: var(--un-icon) no-repeat;
-      mask: var(--un-icon) no-repeat;
-      -webkit-mask-size: 100% 100%;
-      mask-size: 100% 100%;
-      margin-left: -0.4em;
-      background-color: currentColor;
-      width: 1em;
-      width: 1.25em;
-      height: 1em;
-      height: 1.25em;
-      color: var(--foreground);
     }
   }
 </style>

@@ -1,25 +1,20 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Component from '../_Component.astro'
 
-type Props<As extends HTMLTag = 'textarea'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Component>
-
-const {
-  as = 'textarea',
-  rows = '5',
-  variant = 'outline',
-  name,
-  ...rest
-} = Astro.props
+type Props = HTMLAttributes<'textarea'> & {
+  rows?: string
+  variant?: 'outline'
+}
+const { rows = '5', variant, ...rest } = Astro.props
 ---
 
 <Component
-  class:list={['textarea input']}
+  class:list={['textarea']}
   if={true}
+  as="textarea"
   {rows}
   {variant}
-  {as}
   {...rest}
 />
 
@@ -27,8 +22,39 @@ const {
   @import '../../css/utils.scss';
 
   @include component('textarea') {
+    display: flex;
+    position: relative;
+    align-items: center;
+    outline: none;
+    box-shadow: inset 0 0 0 var(--border-width) var(--border-outline);
+    border: 0px;
+    border-radius: var(--radius-1);
+    background-color: var(--input-background);
+    padding: var(--element-2);
+    width: 100%;
     height: calc((var(--text-1) + 2 * var(--element-3)) * 2);
     min-height: calc((var(--text-1) + 2 * var(--element-3)) * 1);
     resize: vertical;
+    color: var(--foreground);
+    font-weight: var(--font-weight);
+    font-size: var(--text-label);
+    line-height: 1.25;
+    font-family: var(--font-family);
+
+    &:hover {
+      outline: none;
+      box-shadow: inset 0 0 0 1px var(--border-hover);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: inset 0 0 0 3px var(--border-hover);
+    }
+
+    &:disabled {
+      opacity: 50%;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
   }
 </style>
