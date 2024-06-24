@@ -2,11 +2,8 @@
 import type { ComponentProps, Polymorphic } from 'astro/types'
 import Component from '../../_Component.astro'
 import SelectOption from '../select/SelectOption.astro'
-import SelectControl from './SelectControl.astro'
 import SelectField from './SelectField.astro'
-import SelectIcon from './SelectIcon.astro'
 import SelectLabel from './SelectLabel.astro'
-import SelectPlaceholder from './SelectPlaceholder.astro'
 
 type Props<As extends 'div'> = Polymorphic<{ as: As }> &
   ComponentProps<typeof Component> & {
@@ -15,20 +12,19 @@ type Props<As extends 'div'> = Polymorphic<{ as: As }> &
     options?: (ComponentProps<typeof SelectOption> | string)[]
   }
 
-const { label, placeholder, options, ...rest } = Astro.props
+const { as = 'div', label, placeholder, options, ...rest } = Astro.props
 ---
 
 <Component
   class:list={['select']}
-  as="div"
+  as={as}
 >
   <SelectLabel text={label} />
-  <SelectField>
-    <SelectControl options={options}>
-      <SelectPlaceholder placeholder={placeholder} />
-      <slot />
-    </SelectControl>
-    <SelectIcon />
+  <SelectField
+    options={options}
+    placeholder={placeholder}
+  >
+    <slot />
   </SelectField>
 </Component>
 
