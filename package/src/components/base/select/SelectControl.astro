@@ -13,19 +13,17 @@ const { as = 'select', options, ...rest } = Astro.props
 
 <Component
   as="select"
-  if={options}
-  class:list={['select input']}
+  class:list={['select selectControl']}
   {...rest}
 >
   {
-    options &&
-      options.map((option: any) =>
-        typeof option === 'string' ? (
-          <SelectOption text={option} />
-        ) : (
-          <SelectOption {...option} />
-        )
+    options?.map((option: any) =>
+      typeof option === 'string' ? (
+        <SelectOption text={option} />
+      ) : (
+        <SelectOption {...option} />
       )
+    )
   }
   <slot />
 </Component>
@@ -33,7 +31,40 @@ const { as = 'select', options, ...rest } = Astro.props
 <style is:global lang="scss">
   @import '../../../css/utils.scss';
 
-  @include component('select') {
+  @include component('selectControl') {
+    display: flex;
+    position: relative;
+    align-items: center;
     appearance: none;
+    outline: none;
+    box-shadow: inset 0 0 0 var(--border-width) var(--border-outline);
+    border: 0px;
+    border-radius: var(--radius-1);
+    background-color: var(--input-background);
+    padding: var(--element-2);
+    width: 100%;
+    min-width: var(--element-2);
+    height: calc(var(--text-label) + 2 * var(--element-3));
+    color: var(--foreground);
+    font-weight: var(--font-weight);
+    font-size: var(--text-label);
+    line-height: 1.25;
+    font-family: var(--font-family);
+
+    &:hover {
+      outline: none;
+      box-shadow: inset 0 0 0 1px var(--border-hover);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: inset 0 0 0 3px var(--border-hover);
+    }
+
+    &:disabled {
+      opacity: 50%;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
   }
 </style>
