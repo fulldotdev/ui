@@ -8,12 +8,14 @@ import SelectIcon from './SelectIcon.astro'
 import SelectLabel from './SelectLabel.astro'
 import SelectPlaceholder from './SelectPlaceholder.astro'
 
-type Props<As extends 'select'> = Polymorphic<{ as: As }> &
+type Props<As extends 'div'> = Polymorphic<{ as: As }> &
   ComponentProps<typeof Component> & {
+    placeholder?: string
+    label?: string
     options?: (ComponentProps<typeof SelectOption> | string)[]
   }
 
-const { as = 'select', options, ...rest } = Astro.props
+const { label, placeholder, options, ...rest } = Astro.props
 ---
 
 <Component
@@ -21,69 +23,21 @@ const { as = 'select', options, ...rest } = Astro.props
   class:list="select-wrapper"
   {...rest}
 >
-  <SelectLabel />
+  <SelectLabel text={label} />
   <SelectField>
-    <SelectControl>
-      <SelectPlaceholder />
-      {
-        options.map((option) =>
-          typeof option === 'string' ? (
-            <SelectOption text={option} />
-          ) : (
-            <SelectOption {...option} />
-          )
-        )
-      }
+    <SelectControl options={options}>
+      <SelectPlaceholder placeholder={placeholder} />
+      <slot />
     </SelectControl>
     <SelectIcon />
   </SelectField>
 </Component>
 
-<!-- <Component
-  as="div"
-  class:list="select-wrapper"
-  {...rest}
->
-  <Component
-    as="select"
-    if={options}
-    class:list={['select input']}
-    {...rest}
-  >
-    <slot name="before" />
-    {
-      options?.map((option: any) => {
-        if (isObject(option)) return <SelectOption {...option} />
-        else return <SelectOption text={option} />
-      })
-    }
-    <slot />
-  </Component>
-  <div class="select-icon-wrapper">
-    <Icon
-      class="select-icon"
-      name="chevron-down"
-    />
-  </div>
-</Component> -->
-
 <style is:global lang="scss">
-  @import '../../css/utils.scss';
+  @import '../../../css/utils.scss';
 
   @include component('select') {
     appearance: none;
-  }
-
-  .select-icon-wrapper {
-    display: flex;
-    position: absolute;
-    top: 0;
-    right: var(--element-2);
-    align-items: center;
-    margin: 0 !important;
-    padding: 0;
-    height: 100%;
-    pointer-events: none;
   }
 
   .full.select-wrapper {

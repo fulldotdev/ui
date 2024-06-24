@@ -385,27 +385,6 @@ declare module 'astro:content' {
   collection: "props";
   data: any
 } & { render(): Render[".mdx"] };
-"frames/container.mdx": {
-	id: "frames/container.mdx";
-  slug: "frames/container";
-  body: string;
-  collection: "props";
-  data: any
-} & { render(): Render[".mdx"] };
-"frames/panel.mdx": {
-	id: "frames/panel.mdx";
-  slug: "frames/panel";
-  body: string;
-  collection: "props";
-  data: any
-} & { render(): Render[".mdx"] };
-"frames/wrapper.mdx": {
-	id: "frames/wrapper.mdx";
-  slug: "frames/wrapper";
-  body: string;
-  collection: "props";
-  data: any
-} & { render(): Render[".mdx"] };
 "structures/Carousel.mdx": {
 	id: "structures/Carousel.mdx";
   slug: "structures/carousel";
@@ -451,13 +430,6 @@ declare module 'astro:content' {
 "structures/Spread.mdx": {
 	id: "structures/Spread.mdx";
   slug: "structures/spread";
-  body: string;
-  collection: "props";
-  data: any
-} & { render(): Render[".mdx"] };
-"structures/grid.mdx": {
-	id: "structures/grid.mdx";
-  slug: "structures/grid";
   body: string;
   collection: "props";
   data: any
