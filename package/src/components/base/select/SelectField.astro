@@ -1,18 +1,29 @@
 ---
-import type { Polymorphic } from 'astro/types'
+import type { ComponentProps, Polymorphic } from 'astro/types'
 import Component from '../../_Component.astro'
+import SelectControl from './SelectControl.astro'
+import SelectIcon from './SelectIcon.astro'
 
-type Props<As extends 'div'> = Polymorphic<{ as: As }>
+type Props<As extends 'div'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Component> & {
+    placeholder?: string
+  }
 
-const { ...rest } = Astro.props
+const { as = 'div', placeholder, options, ...rest } = Astro.props
 ---
 
 <Component
-  as="div"
+  as={as}
   class:list={['select-field']}
   {...rest}
 >
-  <slot />
+  <SelectControl
+    placeholder={placeholder}
+    options={options}
+  >
+    <slot />
+  </SelectControl>
+  <SelectIcon />
 </Component>
 
 <style is:global lang="scss">
