@@ -1,28 +1,31 @@
 ---
 import type { ComponentProps, Polymorphic } from 'astro/types'
 import Component from '../../_Component.astro'
-import SelectOption from '../select/SelectOption.astro'
 import SelectField from './SelectField.astro'
 import SelectLabel from './SelectLabel.astro'
 
-type Props<As extends 'div'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Component> & {
-    placeholder?: string
-    label?: string
-    options?: (ComponentProps<typeof SelectOption> | string)[]
-  }
+type Props<As extends 'div'> = Polymorphic<{ as: As }> & {
+  label?:
+    | ComponentProps<typeof SelectLabel>
+    | ComponentProps<typeof SelectLabel>['html']
+} & Pick<ComponentProps<typeof SelectField>, 'name' | 'placeholder' | 'options'>
 
-const { as = 'div', label, placeholder, options, ...rest } = Astro.props
+const { as = 'div', label, name, placeholder, options, ...rest } = Astro.props
 ---
 
 <Component
   class:list={['select']}
-  as={as}
+  {as}
+  {...rest}
 >
-  <SelectLabel text={label} />
+  <SelectLabel
+    for={name}
+    {...typeof label === 'string' ? { html: label } : label}
+  />
   <SelectField
-    options={options}
-    placeholder={placeholder}
+    {name}
+    {placeholder}
+    {options}
   >
     <slot />
   </SelectField>
@@ -32,7 +35,10 @@ const { as = 'div', label, placeholder, options, ...rest } = Astro.props
   @import '../../../css/utils.scss';
 
   @include component('select') {
+    display: flex;
     position: relative;
+    flex-direction: column;
+    gap: var(--space-1);
     width: 100%;
   }
 </style>
