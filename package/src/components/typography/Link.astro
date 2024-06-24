@@ -4,9 +4,11 @@ import Component from '../_Component.astro'
 
 type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> &
   ComponentProps<typeof Component> & {
+    color?: 'base' | 'brand'
+    contrast?: boolean
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
     html?: string
     text?: string
-    variant?: 'base' | 'muted' | 'accent'
   }
 
 const { as = 'a', ...rest } = Astro.props
@@ -34,10 +36,19 @@ const { as = 'a', ...rest } = Astro.props
     font-family: var(--font-family);
     text-decoration: none;
     text-decoration-color: var(--border);
+    text-decoration: underline;
     white-space: nowrap;
 
     &:hover {
-      text-decoration: underline;
+      color: var(--foreground-contrast);
+    }
+
+    &.contrast {
+      color: var(--foreground-contrast);
+
+      &:hover {
+        color: var(--foreground);
+      }
     }
   }
 </style>

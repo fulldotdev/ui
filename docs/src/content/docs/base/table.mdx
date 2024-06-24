@@ -4,44 +4,51 @@ description: A native, styled table element.
 props:
   table:
     - prop: size
-      type: 'sm | md | lg'
-      default: md
+      type: sm | md | lg
     - prop: compact
       type: boolean
-      default: false
-    - prop: variant
-      type: 'primary | secondary | outline | ghost'
-      default: primary
-    - prop: theme
-      type: string
+    - prop: scheme
+      type: light | dark
     - prop: text
       type: string
     - prop: html
       type: string
-    - prop: as
-      type: string
-      default: table
+    - prop: HTML Attributes
+      type: HTMLAttributes<table>
   tableHeader:
     - prop: cells
-      type: string[]
+      type: (string | TableCell)[]
+    - prop: HTML Attributes
+      type: HTMLAttributes<thead>
   tableBody:
     - prop: rows
-      type: string[][]
+      type: (string | TableRow)[][]
+    - prop: HTML Attributes
+      type: HTMLAttributes<tbody>
   tableRow:
     - prop: cells
-      type: string[]
+      type: (string | TableCell)[]
+    - prop: HTML Attributes
+      type: HTMLAttributes<tr>
   tableCell:
     - prop: text
       type: string
     - prop: html
       type: string
-    - prop: colspan
+    - prop: HTML Attributes
+      type: HTMLAttributes<td>
+  tableHead:
+    - prop: text
       type: string
+    - prop: html
+      type: string
+    - prop: HTML Attributes
+      type: HTMLAttributes<th>
   tableFooter:
     - prop: cells
-      type: string[]
-    - prop: colspan
-      type: string
+      type: (string | TableCell)[]
+    - prop: HTML Attributes
+      type: HTMLAttributes<tfoot>
 ---
 
 import PropsTable from '../../../components/PropsTable.astro'
@@ -59,32 +66,65 @@ import { Table } from 'fulldev-ui'
 ---
 
 <Table
-  header={['First Name', 'Last Name', 'Age']}
+  header={['Product', 'Color', 'Quantity']}
   body={[
-    ['John', 'Doe', '31'],
-    ['Jane', 'Doe', '29'],
+    ['Apple', 'Green', '2'],
+    ['Banana', 'Yellow', '3'],
   ]}
-  footer={[{ text: 'Total', colspan: '2' }, '2']}
+  footer={[{ text: 'Total', colspan: '2' }, '5']}
 />
 ```
 
 ## Props
 
-### `Table` (root)
+The `Table` component exists of multiple sub-components. Each sub-component has its own set of props.
+
+#### `Table` (root)
 
 <PropsTable props={frontmatter.props.table} />
 
-### `TableHeader`
+#### `TableHeader`
 
 <PropsTable props={frontmatter.props.tableHeader} />
 
-### `TableBody`
+#### `TableBody`
 
 <PropsTable props={frontmatter.props.tableBody} />
 
-### `TableRow`
+#### `TableRow`
 
 <PropsTable props={frontmatter.props.tableRow} />
+
+#### `TableCell`
+
+<PropsTable props={frontmatter.props.tableCell} />
+
+#### `TableFooter`
+
+<PropsTable props={frontmatter.props.tableFooter} />
+
+## Examples
+
+### `size`
+
+<SizeProp />
+
+```astro live
+---
+import { Table } from 'fulldev-ui'
+
+const table = {
+  header: ['Product', 'Quantity'],
+  body: [['Apple', '2']],
+}
+---
+
+<Table size="sm" {...table} />
+<Table size="md" {...table} />
+<Table size="lg" {...table} />
+```
+
+### Props vs slots
 
 ```astro
 <Table>
@@ -97,8 +137,6 @@ import { Table } from 'fulldev-ui'
 </Table>
 ```
 
-:::note
-
 instead of creating each row with a `TableRow` component, you can use the `rows` prop in the `TableBody` component.
 
 ```astro
@@ -109,43 +147,3 @@ instead of creating each row with a `TableRow` component, you can use the `rows`
   ]}
 />
 ```
-
-:::
-
-### `TableCell`
-
-<PropsTable props={frontmatter.props.tableCell} />
-
-### `TableFooter`
-
-<PropsTable props={frontmatter.props.tableFooter} />
-
-## Examples
-
-### `size`
-
-```astro live
----
-import { Table } from 'fulldev-ui'
----
-
-<Table
-  size="sm"
-  header={['First Name', 'Last Name', 'Age']}
-  body={[
-    ['John', 'Doe', '31'],
-    ['Jane', 'Doe', '29'],
-  ]}
-  footer={[{ text: 'Total', colspan: '2' }, '2']}
-/>
-```
-
-<SizeProp />
-
-### `compact`
-
-<CompactProp />
-
-### `variant`
-
-<VariantProp />
