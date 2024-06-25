@@ -1,20 +1,10 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Component from '../../_Component.astro'
-import SelectOption from '../select/SelectOption.astro'
-import SelectPlaceholder from '../select/SelectPlaceholder.astro'
 
-type Props = HTMLAttributes<'select'> & {
-  placeholder?:
-    | ComponentProps<typeof SelectPlaceholder>
-    | ComponentProps<typeof SelectPlaceholder>['text']
-  options?: (
-    | ComponentProps<typeof SelectOption>
-    | ComponentProps<typeof SelectOption>['text']
-  )[]
-}
+type Props = HTMLAttributes<'select'>
 
-const { placeholder, options, ...rest } = Astro.props
+const { ...rest } = Astro.props
 ---
 
 <Component
@@ -22,16 +12,6 @@ const { placeholder, options, ...rest } = Astro.props
   as="select"
   {...rest}
 >
-  <SelectPlaceholder
-    {...typeof placeholder === 'string' ? { text: placeholder } : placeholder}
-  />
-  {
-    options?.map((option: any) => (
-      <SelectOption
-        {...(typeof option === 'string' ? { text: option } : option)}
-      />
-    ))
-  }
   <slot />
 </Component>
 
