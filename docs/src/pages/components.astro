@@ -56,15 +56,18 @@ const components = await Astro.glob(
               component.file.endsWith(data.title + '.astro')
             )
             const Component = component?.default
-            const deepProps = data.props?.reduce((acc: any, item: any) => {
-              if (item.value) {
-                return {
-                  ...acc,
-                  [item.prop]: item.value,
-                }
-              }
-              return acc
-            }, {})
+
+            const deepProps = Array.isArray(data.props)
+              ? data.props.reduce((acc, item) => {
+                  if (item.value) {
+                    return {
+                      ...acc,
+                      [item.prop]: item.value,
+                    }
+                  }
+                  return acc
+                }, {})
+              : {}
 
             if (Component && Object.keys(deepProps).length > 0) {
               return (
@@ -94,15 +97,18 @@ const components = await Astro.glob(
             component.file.endsWith(data.title + '.astro')
           )
           const Component = component?.default
-          const deepProps = data.props?.reduce((acc: any, item: any) => {
-            if (item.value) {
-              return {
-                ...acc,
-                [item.prop]: item.value,
-              }
-            }
-            return acc
-          }, {})
+
+          const deepProps = Array.isArray(data.props)
+            ? data.props.reduce((acc, item) => {
+                if (item.value) {
+                  return {
+                    ...acc,
+                    [item.prop]: item.value,
+                  }
+                }
+                return acc
+              }, {})
+            : {}
 
           if (Component && Object.keys(deepProps).length > 0) {
             return (

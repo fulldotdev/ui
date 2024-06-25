@@ -1,21 +1,33 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 import Component from '../_Component.astro'
-type Props = HTMLAttributes<'input'>
+import Label from '../typography/Label.astro'
+type Props = HTMLAttributes<'input'> & {
+  label?: string
+}
 
-const { name, ...rest } = Astro.props
+const { label, name, ...rest } = Astro.props
 ---
 
-<Component
-  class:list={['radio']}
-  if={true}
-  as="input"
-  type="radio"
-  {...rest}
-/>
+<div class="radio-container">
+  <Component
+    class:list={['radio']}
+    if={true}
+    as="input"
+    type="radio"
+    name={name}
+    {...rest}
+  />
+  <Label>{label ?? name}</Label>
+</div>
 
 <style is:global lang="scss">
   @import '../../css/utils.scss';
+
+  .radio-container {
+    display: flex;
+    gap: var(--space-2);
+  }
 
   @include component('radio') {
     border-width: var(--border-width);
