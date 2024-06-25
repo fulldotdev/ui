@@ -1,23 +1,74 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { ComponentProps, Polymorphic } from 'astro/types'
+import Component from '../../_Component.astro'
 import Label from '../../typography/Label.astro'
 import InputField from './InputField.astro'
 
-type Props = HTMLAttributes<'input'> & {
-  name?: string
-  label?: string
-  variant?: 'outline'
-}
+type Props<As extends 'div'> = Polymorphic<{ as: As }> &
+  Pick<
+    ComponentProps<typeof InputField>,
+    | 'placeholder'
+    | 'type'
+    | 'name'
+    | 'variant'
+    | 'value'
+    | 'disabled'
+    | 'required'
+    | 'control'
+    | 'icon'
+  > & {
+    label?: ComponentProps<typeof Label> | ComponentProps<typeof Label>['html']
+    field?: ComponentProps<typeof InputField>
+  }
 
-const { name, label, variant = 'outline', ...rest } = Astro.props
+const {
+  as = 'div',
+  field,
+  control,
+  label,
+  icon,
+  name,
+  variant,
+  placeholder,
+  type,
+  value,
+  disabled,
+  required,
+  ...rest
+} = Astro.props
 ---
 
-<Label
-  text={label}
-  for={name}
-/>
-<InputField
-  name={name}
-  variant={variant}
+<Component
   class:list={['input']}
-/>
+  {as}
+  {...rest}
+>
+  <Label
+    for={name}
+    html={label}
+  />
+  <InputField
+    {name}
+    {placeholder}
+    {type}
+    {name}
+    {variant}
+    {value}
+    {disabled}
+    {required}
+    {control}
+    {...field}
+  />
+</Component>
+
+<style is:global lang="scss">
+  @import '../../../css/utils.scss';
+
+  @include component('input') {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    gap: var(--space-1);
+    width: 100%;
+  }
+</style>

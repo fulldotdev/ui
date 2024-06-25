@@ -7,10 +7,31 @@ import InputControl from './InputControl.astro'
 type Props<As extends 'div'> = Polymorphic<{ as: As }> &
   Pick<
     ComponentProps<typeof InputControl>,
-    'placeholder' | 'type' | 'name' | 'variant'
-  >
+    | 'placeholder'
+    | 'type'
+    | 'name'
+    | 'variant'
+    | 'value'
+    | 'disabled'
+    | 'required'
+  > & {
+    control?: ComponentProps<typeof InputControl>
+    icon?: ComponentProps<typeof Icon> | ComponentProps<typeof Icon>['name']
+  }
 
-const { as = 'div', placeholder, variant, type, name, ...rest } = Astro.props
+const {
+  as = 'div',
+  icon,
+  control,
+  placeholder,
+  type,
+  name,
+  variant,
+  value,
+  disabled,
+  required,
+  ...rest
+} = Astro.props
 ---
 
 <Component
@@ -18,20 +39,26 @@ const { as = 'div', placeholder, variant, type, name, ...rest } = Astro.props
   {as}
   {...rest}
 >
-  <Icon
+  <!-- <Icon
     class:list={['input-icon']}
-    name="chevron-down"
-  />
+    {...typeof icon === 'string' ? { name: icon } : icon}
+  /> -->
   <InputControl
     id={name}
-    {name}
     {placeholder}
     {type}
+    {name}
+    {variant}
+    {value}
+    {disabled}
+    {required}
+    {...control}
   />
 </Component>
 
 <style is:global lang="scss">
   @import '../../../css/utils.scss';
+
   @include component('input-field') {
     position: relative;
   }
