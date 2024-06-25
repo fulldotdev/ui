@@ -5,12 +5,14 @@ type Props<As extends HTMLTag> = {
   as?: As
   slot?: any
   if?: 'content' | any
+  wrapper?: any
   [key: string | number | symbol]: any
 }
 
 const {
   as: As = 'div',
   if: ifProp = 'content',
+  wrapper = true,
   theme,
   compact,
   variant,
@@ -38,32 +40,39 @@ const render =
 ---
 
 {
-  render && (
-    <As
-      class:list={[
-        'full',
-        {
-          compact,
-          contrast,
-          [`theme-${theme}`]: theme,
-          [`variant-${variant}`]: variant,
-          [`density-${density}`]: density,
-          [`structure-${structure}`]: structure,
-          [`size-${size}`]: size,
-          [`align-${align}`]: align,
-          [`position-${position}`]: position,
-          [`frame-${frame}`]: frame,
-          [`ratio-${ratio}`]: ratio,
-          [`color-${color}`]: color,
-        },
-      ]}
-      {...rest}
-    >
-      <Fragment set:text={text} />
-      <Fragment set:html={html} />
-      <Fragment set:html={slot} />
-    </As>
-  )
+  render &&
+    (wrapper ? (
+      <As
+        class:list={[
+          'full',
+          {
+            compact,
+            contrast,
+            [`theme-${theme}`]: theme,
+            [`variant-${variant}`]: variant,
+            [`density-${density}`]: density,
+            [`structure-${structure}`]: structure,
+            [`size-${size}`]: size,
+            [`align-${align}`]: align,
+            [`position-${position}`]: position,
+            [`frame-${frame}`]: frame,
+            [`ratio-${ratio}`]: ratio,
+            [`color-${color}`]: color,
+          },
+        ]}
+        {...rest}
+      >
+        <Fragment set:text={text} />
+        <Fragment set:html={html} />
+        <Fragment set:html={slot} />
+      </As>
+    ) : (
+      <>
+        <Fragment set:text={text} />
+        <Fragment set:html={html} />
+        <Fragment set:html={slot} />
+      </>
+    ))
 }
 
 <style is:global lang="scss">
