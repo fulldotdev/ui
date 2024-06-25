@@ -1,0 +1,33 @@
+---
+import MarkdownContent from '@astrojs/starlight/components/MarkdownContent.astro'
+import PropsTable from './PropsTable.astro'
+
+const { render, data } = Astro.props.entry
+const { Content } = await render()
+const { title, description, props } = data
+---
+
+<MarkdownContent {...Astro.props.entry.data}>
+  <p>{description}</p>
+
+  <h2>Props</h2>
+  {
+    Array.isArray(props) ? (
+      <PropsTable {props} />
+    ) : (
+      Object.entries(props || {})?.map(([key, value]) => (
+        <>
+          <h3>{key}</h3>
+          <PropsTable props={value} />
+        </>
+      ))
+    )
+  }
+  <Content />
+</MarkdownContent>
+
+<style>
+  h3 {
+    text-transform: capitalize;
+  }
+</style>
