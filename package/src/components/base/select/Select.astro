@@ -1,36 +1,31 @@
 ---
 import type { ComponentProps, Polymorphic } from 'astro/types'
 import Component from '../../_Component.astro'
+import Box from '../../segment/Box.astro'
 import Label from '../../typography/Label.astro'
 import Icon from '../Icon.astro'
-import SelectControl from './SelectControl.astro'
-import SelectField from './SelectField.astro'
+import { default as SelectElement } from './SelectElement.astro'
 import SelectOption from './SelectOption.astro'
-import SelectPlaceholder from './SelectPlaceholder.astro'
 
 type Props<As extends 'div'> = Polymorphic<{ as: As }> & {
   label?: ComponentProps<typeof Label> | ComponentProps<typeof Label>['text']
-  field?: ComponentProps<typeof SelectField>
-  control?: ComponentProps<typeof SelectControl>
-  placeholder?:
-    | ComponentProps<typeof SelectPlaceholder>
-    | ComponentProps<typeof SelectPlaceholder>['text']
+  placeholder?: ComponentProps<typeof SelectOption>['text']
   options?: (
     | ComponentProps<typeof SelectOption>
     | ComponentProps<typeof SelectOption>['text']
   )[]
   icon?: ComponentProps<typeof Icon> | ComponentProps<typeof Icon>['name']
-} & Pick<ComponentProps<typeof SelectControl>, 'name'>
+} & Pick<ComponentProps<typeof SelectElement>, 'name' | 'required' | 'disabled'>
 
 const {
   as = 'div',
-  icon = 'chevron-down',
   label,
-  name,
   placeholder,
   options,
-  field,
-  control,
+  icon = 'chevron-down',
+  name,
+  required,
+  disabled,
   ...rest
 } = Astro.props
 ---
@@ -44,16 +39,17 @@ const {
     for={name}
     {...typeof label === 'string' ? { text: label } : label}
   />
-  <SelectField {...field}>
-    <SelectControl
+  <Box>
+    <SelectElement
       id={name}
       {name}
-      {...field}
+      {required}
+      {disabled}
     >
-      <SelectPlaceholder
-        {...typeof placeholder === 'string'
-          ? { text: placeholder }
-          : placeholder}
+      <SelectOption
+        text={placeholder}
+        disabled
+        selected
       />
       {
         options?.map((option: any) => (
@@ -63,12 +59,9 @@ const {
         ))
       }
       <slot />
-    </SelectControl>
-    <Icon
-      class:list={['select-icon']}
-      {...typeof icon === 'string' ? { name: icon } : icon}
-    />
-  </SelectField>
+    </SelectElement>
+    <Icon {...typeof icon === 'string' ? { name: icon } : icon} />
+  </Box>
 </Component>
 
 <style is:global lang="scss">
@@ -80,12 +73,12 @@ const {
     flex-direction: column;
     gap: var(--space-1);
     width: 100%;
-  }
 
-  @include component('select-icon') {
-    position: absolute;
-    top: 50%;
-    right: var(--space-2);
-    transform: translateY(-50%);
+    .icon {
+      position: absolute;
+      top: 50%;
+      right: var(--element-2);
+      transform: translateY(-50%);
+    }
   }
 </style>
