@@ -311,6 +311,20 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"typography/tagline.mdx": {
+	id: "typography/tagline.mdx";
+  slug: "typography/tagline";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"typography/text.mdx": {
+	id: "typography/text.mdx";
+  slug: "typography/text";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 };
 "pages": {
 "components.mdx": {
