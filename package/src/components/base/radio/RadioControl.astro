@@ -1,0 +1,72 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import Component from '../../_Component.astro'
+import Label from '../../typography/Label.astro'
+import Group from '../../segment/Group.astro'
+
+type Props = HTMLAttributes<'input'> & {
+  value?: string
+  label?: string
+  options?: string[]
+}
+
+const { label, value, name, options, ...rest } = Astro.props
+---
+
+{
+  options?.length ? (
+    options.map((option) => {
+      return (
+        <Group>
+          {options?.map((option) => (
+            <Component
+              class:list={['radio-control']}
+              if={true}
+              as="input"
+              type="radio"
+              name={name}
+              {...rest}
+            >
+              <Label>{label ?? option}</Label>
+            </Component>
+          ))}
+        </Group>
+      )
+    })
+  ) : (
+    <Component
+      class:list={['radio-control']}
+      if={true}
+      as="input"
+      type="radio"
+      name={name}
+      {...rest}
+    >
+      <Label>{label ?? value}</Label>
+    </Component>
+  )
+}
+
+<style is:global lang="scss">
+  @import '../../../css/utils.scss';
+
+  @include component('radio-control') {
+    border-width: var(--border-width);
+    border-color: var(--border-color);
+    border-radius: var(--full-border-radius-2);
+    background: var(--background);
+    min-width: var(--element-2);
+    accent-color: var(--10);
+    font-size: var(--text-body);
+
+    &:hover {
+      border: var(--border-color-hover);
+      background: var(--background-hover);
+    }
+
+    &:active {
+      border: var(--border-color-active);
+      background: var(--background-active);
+    }
+  }
+</style>
