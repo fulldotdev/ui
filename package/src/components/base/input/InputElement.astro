@@ -1,54 +1,37 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Component from '../../_Component.astro'
-import SelectOption from '../select/SelectOption.astro'
-import SelectPlaceholder from '../select/SelectPlaceholder.astro'
 
-type Props = HTMLAttributes<'select'> & {
-  placeholder?:
-    | ComponentProps<typeof SelectPlaceholder>
-    | ComponentProps<typeof SelectPlaceholder>['text']
-  options?: (
-    | ComponentProps<typeof SelectOption>
-    | ComponentProps<typeof SelectOption>['text']
-  )[]
+type Props = HTMLAttributes<'input'> & {
+  variant?: 'outline'
 }
 
-const { placeholder, options, ...rest } = Astro.props
+const { variant = 'outline', ...rest } = Astro.props
 ---
 
 <Component
-  class:list={['select-control']}
-  as="select"
+  as="input"
+  type={'text'}
+  class="input-element"
+  if={true}
+  {variant}
   {...rest}
->
-  <SelectPlaceholder
-    {...typeof placeholder === 'string' ? { text: placeholder } : placeholder}
-  />
-  {
-    options?.map((option: any) => (
-      <SelectOption
-        {...(typeof option === 'string' ? { text: option } : option)}
-      />
-    ))
-  }
-  <slot />
-</Component>
+/>
 
 <style is:global lang="scss">
   @import '../../../css/utils.scss';
 
-  @include component('select-control') {
+  @include component('input-element') {
     display: flex;
     position: relative;
     align-items: center;
-    appearance: none;
-    appearance: none;
     outline: none;
     box-shadow: inset 0 0 0 var(--border-width) var(--border-outline);
     border: 0px;
+    border: none;
     border-radius: var(--radius-1);
     background-color: var(--input-background);
+    background: none;
     padding: var(--element-2);
     width: 100%;
     min-width: var(--element-2);
