@@ -9,6 +9,7 @@ interface Props {
     name: string
     type?: 'string' | 'boolean' | string
     value?: any
+    default: any
   }[]
 }
 
@@ -29,9 +30,11 @@ const Component = components.find((astroComponent) => {
 // })
 
 const propsObject: any = {}
-props.forEach(({ name, value }) => {
-  propsObject[name] = value
+props.forEach(({ name, value, default: defaultValue }) => {
+  propsObject[name] = value || defaultValue
 })
+
+console.log({ props, propsObject })
 
 // TODO: Cleanup:
 let propsString: string = ''
@@ -70,18 +73,22 @@ import { ` +
 
   <div class="story-inputs compact">
     {
-      props.map(({ name, type, value }) => {
+      props.map(({ name, type, value, default: defaultValue }) => {
         if (type === 'boolean')
           return (
             <Checkbox
+              class:list={['story-input']}
               label={name}
               {name}
               {value}
+              checked={value || defaultValue}
             />
           )
-        else if (type === 'string')
+        else if (type === 'string' && value)
           return (
             <Input
+              class:list={['story-input']}
+              label={name}
               {name}
               {value}
             />
@@ -90,6 +97,8 @@ import { ` +
           const options = type.split('|').map((o) => o.trim())
           return (
             <Select
+              class:list={['story-input']}
+              label={name}
               {options}
               {name}
               {value}
@@ -154,7 +163,9 @@ import { ` +
 </div>
 
 <script define:vars={{ codeSnippet }} is:inline>
-  const inputs = document.querySelectorAll('.story-input')
+  const inputs = document.querySelectorAll(
+    '.story-input input, .story-input select'
+  )
   const component = document.querySelector('.story-component')
 
   inputs.forEach((input) => {
@@ -171,6 +182,7 @@ import { ` +
         component.classList.remove(currentClass)
         component.classList.add(name + '-' + value)
       }
+      console.log(event)
     })
   })
 
