@@ -40,7 +40,7 @@ console.log({ props, propsObject })
 let propsString: string = ''
 
 props.map(({ name, value }) => {
-  propsString += name + '="' + value + '" '
+  if (value) propsString += name + '="' + value + '" '
 })
 
 const codeSnippet = `--- 
@@ -120,6 +120,7 @@ import { ${component} } from 'fulldev-ui'
   const inputs = document.querySelectorAll(
     '.story-input input, .story-input select'
   )
+
   const component = document.querySelector('.story-component')
 
   inputs.forEach((input) => {
@@ -136,7 +137,14 @@ import { ${component} } from 'fulldev-ui'
         component.classList.remove(currentClass)
         component.classList.add(name + '-' + value)
       }
-      console.log(event)
+
+      const allSpans = document.querySelectorAll('.astro-code span')
+
+      for (let i = 0; i < allSpans.length; i++) {
+        if (allSpans[i].textContent.trim() === name) {
+          allSpans[i + 2].textContent = '"' + value + '"'
+        }
+      }
     })
   })
 
