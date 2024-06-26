@@ -1,0 +1,57 @@
+---
+import type { ComponentProps, Polymorphic } from 'astro/types'
+import Component from '../../_Component.astro'
+import Label from '../../typography/Label.astro'
+import CheckboxElement from './CheckboxElement.astro'
+
+type Props<As extends 'div'> = Polymorphic<{ as: As }> & {
+  label?: ComponentProps<typeof Label> | ComponentProps<typeof Label>['text']
+} & Pick<
+    ComponentProps<typeof CheckboxElement>,
+    'name' | 'value' | 'disabled' | 'required'
+  >
+
+const {
+  as = 'div',
+  field,
+  control,
+  label,
+  icon,
+  name,
+  variant,
+  placeholder,
+  type,
+  value,
+  disabled,
+  required,
+  ...rest
+} = Astro.props
+---
+
+<Component
+  class:list={['checkbox']}
+  {as}
+  {...rest}
+>
+  <CheckboxElement
+    {name}
+    {value}
+    {disabled}
+    {required}
+  />
+  <Label
+    for={name}
+    {...typeof label === 'string' ? { text: label } : label}
+  />
+</Component>
+
+<style is:global lang="scss">
+  @import '../../../css/utils.scss';
+
+  @include component('checkbox') {
+    display: flex;
+    position: relative;
+    gap: var(--space-3);
+    width: 100%;
+  }
+</style>

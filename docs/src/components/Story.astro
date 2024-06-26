@@ -1,0 +1,239 @@
+---
+import { Code } from 'astro:components'
+import { Button, Checkbox, Icon, Input, Select } from 'fulldev-ui'
+import { pascal } from 'radash'
+
+interface Props {
+  title: string
+  props: {
+    name: string
+    type?: 'string' | 'boolean' | string
+    value?: any
+  }[]
+}
+
+const components = await Astro.glob('../../node_modules/fulldev-ui/**/*.astro')
+
+const { title: component, props } = Astro.props
+
+const Component = components.find((astroComponent) => {
+  const fileName = astroComponent.default.moduleId?.split('/').pop()
+  const componentName = fileName?.split('.')[0]
+  return componentName === pascal(component)
+})?.default
+
+// Astro.url.searchParams.forEach((value, key) => {
+//   const propIndex = props.findIndex((prop) => prop.name === key)
+//   if (propIndex === -1) return
+//   props[propIndex].value = value
+// })
+
+const propsObject: any = {}
+props.forEach(({ name, value }) => {
+  propsObject[name] = value
+})
+
+// TODO: Cleanup:
+let propsString: string = ''
+
+props.map(({ name, value }) => {
+  propsString += name + '="' + value + '" '
+})
+
+const codeSnippet =
+  `--- 
+import { ` +
+  component.charAt(0).toUpperCase() +
+  component.slice(1) +
+  ` } from 'fulldev-ui'
+---
+
+<` +
+  component.charAt(0).toUpperCase() +
+  component.slice(1) +
+  ` ` +
+  propsString +
+  `/>`
+---
+
+<div class="story not-content">
+  <div class="story-preview">
+    {
+      Component && (
+        <Component
+          class:list={['story-component']}
+          {...propsObject}
+        />
+      )
+    }
+  </div>
+
+  <div class="story-inputs compact">
+    {
+      props.map(({ name, type, value }) => {
+        if (type === 'boolean')
+          return (
+            <Checkbox
+              label={name}
+              {name}
+              {value}
+            />
+          )
+        else if (type === 'string')
+          return (
+            <Input
+              {name}
+              {value}
+            />
+          )
+        else if (typeof type === 'string' && type.includes('|')) {
+          const options = type.split('|').map((o) => o.trim())
+          return (
+            <Select
+              {options}
+              {name}
+              {value}
+            />
+          )
+        }
+        // if (typeof value === 'boolean') {
+        //   return (
+        //     <>
+        //       <Label>
+        //         <b>{name}?:</b>
+        //       </Label>
+        //       <input
+        //         type="checkbox"
+        //         name=""
+        //         value={value}
+        //       />
+        //     </>
+        //   )
+        // } else if (options) {
+        //   return (
+        //     <>
+        //       <Select
+        //         class="story-input"
+        //         label={name}
+        //         {value}
+        //         {name}
+        //         {options}
+        //       />
+        //     </>
+        //   )
+        // } else {
+        //   return (
+        //     <>
+        //       <Input
+        //         class="story-input"
+        //         label={name}
+        //         {value}
+        //         {name}
+        //       />
+        //     </>
+        //   )
+        // }
+      })
+    }
+  </div>
+
+  <div class="story-snippet">
+    <Code
+      lang={'astro'}
+      code={codeSnippet}
+    />
+
+    <Button
+      id="copySnippet"
+      color="base"
+      variant="outline"
+      size="sm"
+      ><Icon name="copy" /></Button
+    >
+  </div>
+</div>
+
+<script define:vars={{ codeSnippet }} is:inline>
+  const inputs = document.querySelectorAll('.story-input')
+  const component = document.querySelector('.story-component')
+
+  inputs.forEach((input) => {
+    input.addEventListener('input', (event) => {
+      const { name, value } = event.target
+      if (name === 'text') component.textContent = value
+      else if (name === 'html') component.innerHTML = value
+      else if (name === 'compact') component.classList.toggle('compact')
+      else if (name === 'contrast') component.classList.toggle('contrast')
+      else {
+        const currentClass = component.className
+          .split(' ')
+          .find((c) => c.startsWith(name))
+        component.classList.remove(currentClass)
+        component.classList.add(name + '-' + value)
+      }
+    })
+  })
+
+  document
+    .getElementById('copySnippet')
+    .addEventListener('click', () => navigator.clipboard.writeText(codeSnippet))
+</script>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  .story {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    width: 100%;
+
+    .story-preview {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-bottom: 0;
+      padding: 1rem;
+      width: 100%;
+    }
+
+    .story-inputs {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      border-bottom: 0;
+      border: solid var(--border);
+      border-width: 1px 0px;
+      background-color: var(--background-subtle);
+      padding: var(--space-3);
+      width: 100%;
+    }
+
+    .story-snippet {
+      display: flex;
+      justify-content: space-between;
+      background-color: var(--background-subtle) !important;
+      padding: var(--space-3);
+      font-size: var(--text-label);
+
+      .astro-code {
+        margin: 0;
+        background-color: var(--background-subtle) !important;
+        font-size: var(--text-label);
+      }
+
+      a {
+        opacity: 0;
+        transition: all 0.25s ease-out;
+      }
+    }
+
+    .story-snippet:hover {
+      a {
+        opacity: 100;
+      }
+    }
+  }
+</style>
