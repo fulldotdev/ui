@@ -39,14 +39,16 @@ const isArray = (name: string) =>
   ['color', 'size', 'theme', 'variant'].includes(name)
 const isBoolean = (name: string) => ['compact', 'contrast'].includes(name)
 const isSnippetOnly = (name: string) =>
-  ['list', 'options', 'label', 'name', 'placeholder'].includes(name)
+  ['list', 'options', 'label', 'name', 'items', 'placeholder'].includes(name)
 
 const propsString = props
   .map(({ name, value, default: defaultValue }) => {
     if (isBoolean(name)) return `${name}={${value ? 'true' : 'false'}}`
     else if ((isArray(name) || isString(name)) && (value || defaultValue))
       return `${name}="${value || defaultValue}"`
-    else if (isSnippetOnly(name))
+    else if (name === 'size') return `${name}="md"`
+    else if (name === 'color') return `${name}="base"`
+    else if (isSnippetOnly(name) && (value || defaultValue))
       return `${name}={${JSON.stringify(value || defaultValue)}}`
   })
   .filter(Boolean)
@@ -101,6 +103,28 @@ import { ${component} } from 'fulldev-ui'
               class:list={['story-input']}
               label={name}
               value={value || defaultValue}
+              {options}
+              {name}
+            />
+          )
+        } else if (name === 'size') {
+          const options = type?.split('|').map((o) => o.trim())
+          return (
+            <Select
+              class:list={['story-input']}
+              label={name}
+              value={'md'}
+              {options}
+              {name}
+            />
+          )
+        } else if (name === 'color') {
+          const options = type?.split('|').map((o) => o.trim())
+          return (
+            <Select
+              class:list={['story-input']}
+              label={name}
+              value={'base'}
               {options}
               {name}
             />
