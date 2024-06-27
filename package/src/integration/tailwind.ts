@@ -18,6 +18,11 @@ export const tailwindPlugin = plugin(
         'element-2': 'var(--element-2)',
         'element-3': 'var(--element-3)',
       },
+      borderRadius: {
+        'radius-1': 'var(--radius-1)',
+        'radius-2': 'var(--radius-2)',
+        'radius-3': 'var(--radius-3)',
+      },
     },
   }
 )
