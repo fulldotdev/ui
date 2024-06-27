@@ -34,11 +34,12 @@ props.forEach(({ name, value, default: defaultValue }) => {
   propsObject[name] = value || defaultValue
 })
 
-const isString = (name: string) => ['html', 'text', 'label'].includes(name)
-const isArray = (name: string) => ['color', 'size', 'scheme'].includes(name)
-const isBoolean = (name: string) =>
-  ['compact', 'contrast', 'disabled', 'required'].includes(name)
-const isSnippetOnly = (name: string) => ['list', 'options'].includes(name)
+const isString = (name: string) => ['html', 'text'].includes(name)
+const isArray = (name: string) =>
+  ['color', 'size', 'theme', 'variant'].includes(name)
+const isBoolean = (name: string) => ['compact', 'contrast'].includes(name)
+const isSnippetOnly = (name: string) =>
+  ['list', 'options', 'label', 'name', 'placeholder'].includes(name)
 
 const propsString = props
   .map(({ name, value, default: defaultValue }) => {
@@ -153,11 +154,13 @@ import { ${component} } from 'fulldev-ui'
 
       const allSpans = document.querySelectorAll('.astro-code span')
 
-      for (let i = 0; i < allSpans.length; i++) {
-        if (allSpans[i].textContent.trim() === name) {
-          allSpans[i + 2].textContent = '"' + value + '"'
+      allSpans.forEach((span, index) => {
+        if (span.textContent.trim() === name) {
+          if (value === 'on')
+            allSpans[index + 3].textContent = input.checked ? 'true' : 'false'
+          else allSpans[index + 2].textContent = '"' + value + '"'
         }
-      }
+      })
     })
   })
 
