@@ -34,15 +34,39 @@ props.forEach(({ name, value, default: defaultValue }) => {
   propsObject[name] = value || defaultValue
 })
 
-console.log({ props, propsObject })
+const hiddenProps = [
+  'items',
+  'options',
+  'placeholder',
+  'header',
+  'body',
+  'footer',
+  'as',
+]
+
+const arrayTypes = [
+  'array',
+  "(ListItem | ListItem['html'])[]",
+  '(string | TableRow)[][]',
+  '(string | TableHead)[]',
+  '(string | TableCell)[]',
+]
 
 // TODO: Cleanup:
 let propsString: string = ''
 
-props.map(({ name, value, default: defaultValue }) => {
-  if (value) propsString += '\n  ' + name + '="' + value + '" '
-  else if (defaultValue)
-    propsString += '\n  ' + name + '="' + defaultValue + '" '
+props.map(({ name, value, type, default: defaultValue }) => {
+  if (name === 'as') {
+    return null
+  } else if (arrayTypes.includes(type)) {
+    propsString += '\n  ' + name + '={' + JSON.stringify(value) + '}'
+  } else if (value) {
+    propsString += '\n  ' + name + '="' + value + '"'
+  } else if (typeof defaultValue == 'boolean') {
+    propsString += '\n  ' + name
+  } else if (defaultValue) {
+    propsString += '\n  ' + name + '="' + defaultValue + '"'
+  }
 })
 
 const codeSnippet = `--- 
@@ -67,7 +91,8 @@ import { ${component} } from 'fulldev-ui'
   <div class="story-inputs compact">
     {
       props.map(({ name, type, value, default: defaultValue }) => {
-        if (type === 'boolean')
+        if (hiddenProps.includes(name)) return null
+        else if (type === 'boolean' && defaultValue)
           return (
             <Checkbox
               class:list={['story-input']}
@@ -141,6 +166,8 @@ import { ${component} } from 'fulldev-ui'
         component.classList.remove(currentClass)
         component.classList.add(name + '-' + value)
       }
+
+      console.log(value)
 
       const allSpans = document.querySelectorAll('.astro-code span')
 
