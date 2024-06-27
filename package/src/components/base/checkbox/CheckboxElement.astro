@@ -2,9 +2,11 @@
 import type { HTMLAttributes } from 'astro/types'
 import Component from '../../_Component.astro'
 
-type Props = HTMLAttributes<'input'>
+type Props = Omit<HTMLAttributes<'input'>, 'type'> & {
+  color?: 'base' | 'brand'
+}
 
-const { name, ...rest } = Astro.props
+const { color = 'brand', name, ...rest } = Astro.props
 ---
 
 <Component
@@ -14,6 +16,7 @@ const { name, ...rest } = Astro.props
   id={name}
   if={name}
   {name}
+  {color}
   {...rest}
 />
 
@@ -22,23 +25,8 @@ const { name, ...rest } = Astro.props
 
   @include component('checkbox-element') {
     display: block;
-    border-width: var(--border-width);
-    border-color: var(--border-color);
-    border-radius: var(--full-border-radius-2);
-    background: var(--background);
-    min-width: var(--element-2);
-    color: var(--color);
-    accent-color: var(--10);
-    font-size: var(--text-body);
-
-    &:hover {
-      border: var(--border-color-hover);
-      background: var(--background-hover);
-    }
-
-    &:active {
-      border: var(--border-color-active);
-      background: var(--background-active);
-    }
+    width: var(--text-label);
+    height: var(--text-label);
+    accent-color: var(--solid);
   }
 </style>
