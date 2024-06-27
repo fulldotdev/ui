@@ -40,9 +40,10 @@ const isArray = (name: string) => ['color', 'size', 'scheme'].includes(name)
 const isBoolean = (name: string) => ['compact', 'contrast'].includes(name)
 
 const propsString = props
-  .map(({ name, value }) => {
+  .map(({ name, value, default: defaultValue }) => {
     if (isBoolean(name)) return `${name}={${value ? 'true' : 'false'}}`
-    if (isArray(name) || isString(name)) return `${name}="${value}"`
+    if ((isArray(name) || isString(name)) && (value || defaultValue))
+      return `${name}="${value || defaultValue}"`
   })
   .filter(Boolean)
   .join('\n  ')
@@ -80,7 +81,7 @@ import { ${component} } from 'fulldev-ui'
               {name}
             />
           )
-        else if (isString(name))
+        else if (isString(name) && (value || defaultValue))
           return (
             <Input
               class:list={['story-input']}
@@ -89,13 +90,13 @@ import { ${component} } from 'fulldev-ui'
               {value}
             />
           )
-        else if (isArray(name)) {
+        else if (isArray(name) && (value || defaultValue)) {
           const options = type?.split('|').map((o) => o.trim())
           return (
             <Select
               class:list={['story-input']}
               label={name}
-              value={defaultValue || value}
+              value={value || defaultValue}
               {options}
               {name}
             />
@@ -143,9 +144,9 @@ import { ${component} } from 'fulldev-ui'
           .find((c) => c.startsWith(name))
         component.classList.remove(currentClass)
         component.classList.add(name + '-' + value)
-      }
 
-      console.log(value)
+        console.log({ name, value })
+      }
 
       const allSpans = document.querySelectorAll('.astro-code span')
 

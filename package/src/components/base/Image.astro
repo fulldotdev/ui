@@ -1,11 +1,14 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+import { Image as AstroImage } from 'astro:assets'
 import { isString } from 'remeda'
 import Component from '../_Component.astro'
 
 type Props = HTMLAttributes<'img'> & {
-    position?: 'background' | 'cover'
-    frame?: 'inset'
+  position?: 'background' | 'cover'
+  frame?: 'inset'
+  width?: number | 1920
+  height?: number | 1920
 }
 
 function getAltBySrc(): string {
@@ -22,47 +25,39 @@ const {
   src = Astro.props.src,
   position,
   frame,
+  width,
+  height,
   ...rest
 } = Astro.props
-
-// function getSrc() {
-//   if (src?.startsWith('http')) return src
-//   // TODO: add eager import
-//   const images = Astro.glob('/src/assets/**/*.{jpeg,jpg,png,webp,gif}', {
-//     eager: true,
-//   })
-//   const path = ('/src/assets/' + src).replace('//', '/')
-//   const image = images[path]
-//   if (!image) console.warn(`Image not found: ${path}`)
-//   else return image
-// }
-
-// function getSizes() {
-//   const mapped = Object.entries(sizes).map(([key, value]) => {
-//     if (key === 'base') return value
-//     if (key === 'sm') return `(min-width: 640px) ${value}`
-//     if (key === 'md') return `(min-width: 768px) ${value}`
-//     if (key === 'lg') return `(min-width: 1024px) ${value}`
-//     if (key === 'xl') return `(min-width: 1280px) ${value}`
-//     if (key === '2xl') return `(min-width: 1536px) ${value}`
-//   })
-//   const joined = mapped.join(', ')
-//   return joined
-// }
 ---
 
 {
   src && (
-    <Component
-      class:list={['image']}
-      if={src}
-      {src}
-      {alt}
-      as="img"
-      {frame}
-      {position}
-      {...rest}
-    />
+    <>
+      {!width && !height && (
+        <Component
+          class:list={['image']}
+          if={src}
+          {src}
+          {alt}
+          as="img"
+          {frame}
+          {position}
+          {...rest}
+        />
+      )}
+      {width && height && (
+        <AstroImage
+          class:list={['image']}
+          {src}
+          {alt}
+          width={width}
+          height={height}
+          loading="eager"
+          {...rest}
+        />
+      )}
+    </>
   )
 }
 
