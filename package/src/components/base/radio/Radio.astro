@@ -1,12 +1,62 @@
 ---
-import RadioField from './RadioField.astro'
+import type { ComponentProps, Polymorphic } from 'astro/types'
+import '../../../css/utils.scss'
+import Component from '../../_Component.astro'
+import Box from '../../segment/Box.astro'
+import Label from '../../typography/Label.astro'
+import RadioElement from './RadioElement.astro'
 
-const { label, name, options, ...rest } = Astro.props
+type Props<As extends 'div'> = Polymorphic<{ as: As }> & {
+  options?: ComponentProps<typeof Label>['text']
+} & {
+  color?: 'base' | 'brand'
+  contrast?: boolean
+}
+
+const {
+  as = 'div',
+  options,
+  label,
+  contrast,
+  icon,
+  value,
+  disabled,
+  required,
+  ...rest
+} = Astro.props
 ---
 
-<RadioField
-  label={label}
-  name={name}
-  options={options}
+<Component
+  structure="column"
+  class:list={['radio']}
+  {as}
   {...rest}
-/>
+>
+  {
+    options?.map((option: any) => (
+      <Box structure="row">
+        <RadioElement
+          value={option}
+          id={option}
+        />
+        <Label
+          for={option}
+          text={option}
+          {contrast}
+        />
+      </Box>
+    ))
+  }
+</Component>
+
+<style is:global lang="scss">
+  @import '../../../css/utils.scss';
+
+  @include component('radio') {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    gap: var(--space-1);
+    width: 100%;
+  }
+</style>

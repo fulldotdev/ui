@@ -1,5 +1,5 @@
 ---
-import type { ComponentProps, Polymorphic } from 'astro/types'
+import type { HTMLAttributes, HTMLTag, Polymorphic } from 'astro/types'
 import Component from '../../_Component.astro'
 import Box from '../../segment/Box.astro'
 import Label from '../../typography/Label.astro'
@@ -7,24 +7,21 @@ import Icon from '../Icon.astro'
 import { default as SelectElement } from './SelectElement.astro'
 import SelectOption from './SelectOption.astro'
 
-type Props<As extends 'div'> = Polymorphic<{ as: As }> & {
-  label?: ComponentProps<typeof Label> | ComponentProps<typeof Label>['text']
-  placeholder?: ComponentProps<typeof SelectOption>['text']
-  options?: (
-    | ComponentProps<typeof SelectOption>
-    | ComponentProps<typeof SelectOption>['text']
-  )[]
-  value?: ComponentProps<typeof SelectOption>['value']
-  icon?: ComponentProps<typeof Icon> | ComponentProps<typeof Icon>['name']
-} & Pick<ComponentProps<typeof SelectElement>, 'name' | 'required' | 'disabled'>
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
+  HTMLAttributes<'select'> & {
+    label?: string
+    placeholder?: string
+    options?: string[]
+    value?: string
+  }
 
 const {
   as = 'div',
   label,
-  value,
   placeholder,
   options,
-  icon = 'chevron-down',
+  value,
+  // select attributes
   name,
   required,
   disabled,
@@ -56,18 +53,15 @@ const {
       {
         options?.map((option: any) => (
           <SelectOption
-            selected={
-              typeof option === 'string'
-                ? option === value
-                : option.value === value
-            }
-            {...(typeof option === 'string' ? { text: option } : option)}
+            selected={value === option}
+            text={option}
+            value={option}
           />
         ))
       }
       <slot />
     </SelectElement>
-    <Icon {...typeof icon === 'string' ? { name: icon } : icon} />
+    <Icon name="chevron-down" />
   </Box>
 </Component>
 
