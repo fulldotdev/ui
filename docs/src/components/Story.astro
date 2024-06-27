@@ -35,16 +35,18 @@ props.forEach(({ name, value, default: defaultValue }) => {
 })
 
 const isString = (name: string) => ['html', 'text', 'label'].includes(name)
-const isArray = (name: string) =>
-  ['color', 'size', 'items', 'scheme'].includes(name)
+const isArray = (name: string) => ['color', 'size', 'scheme'].includes(name)
 const isBoolean = (name: string) =>
   ['compact', 'contrast', 'disabled', 'required'].includes(name)
+const isSnippetOnly = (name: string) => ['list', 'options'].includes(name)
 
 const propsString = props
   .map(({ name, value, default: defaultValue }) => {
     if (isBoolean(name)) return `${name}={${value ? 'true' : 'false'}}`
-    if ((isArray(name) || isString(name)) && (value || defaultValue))
+    else if ((isArray(name) || isString(name)) && (value || defaultValue))
       return `${name}="${value || defaultValue}"`
+    else if (isSnippetOnly(name))
+      return `${name}={${JSON.stringify(value || defaultValue)}}`
   })
   .filter(Boolean)
   .join('\n  ')
