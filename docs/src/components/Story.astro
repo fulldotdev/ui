@@ -34,46 +34,25 @@ props.forEach(({ name, value, default: defaultValue }) => {
   propsObject[name] = value || defaultValue
 })
 
-const hiddenProps = [
-  'items',
-  'options',
-  'placeholder',
-  'header',
-  'body',
-  'footer',
-  'as',
-]
+const isString = (name: string) => ['html'].includes(name)
+const isArray = (name: string) => ['color', 'size'].includes(name)
+const isBoolean = (name: string) => ['compact', 'contrast'].includes(name)
 
-const arrayTypes = [
-  'array',
-  "(ListItem | ListItem['html'])[]",
-  '(string | TableRow)[][]',
-  '(string | TableHead)[]',
-  '(string | TableCell)[]',
-]
-
-// TODO: Cleanup:
-let propsString: string = ''
-
-props.map(({ name, value, type, default: defaultValue }) => {
-  if (name === 'as') {
-    return null
-  } else if (arrayTypes.includes(type)) {
-    propsString += '\n  ' + name + '={' + JSON.stringify(value) + '}'
-  } else if (value) {
-    propsString += '\n  ' + name + '="' + value + '"'
-  } else if (typeof defaultValue == 'boolean') {
-    propsString += '\n  ' + name
-  } else if (defaultValue) {
-    propsString += '\n  ' + name + '="' + defaultValue + '"'
-  }
-})
+const propsString = props
+  .map(({ name, value }) => {
+    if (isBoolean(name)) return `${name}={${value}}`
+    if (isArray(name) || isString(name)) return `${name}="${value}"`
+  })
+  .filter(Boolean)
+  .join('\n  ')
 
 const codeSnippet = `--- 
 import { ${component} } from 'fulldev-ui'
 ---
 
-<${component} ${propsString}\n/>`
+<${component} 
+  ${propsString}
+/>`
 ---
 
 <div class="story not-content">
@@ -91,18 +70,16 @@ import { ${component} } from 'fulldev-ui'
   <div class="story-inputs compact">
     {
       props.map(({ name, type, value, default: defaultValue }) => {
-        if (hiddenProps.includes(name)) return null
-        else if (type === 'boolean' && defaultValue)
+        if (isBoolean(name))
           return (
             <Checkbox
               class:list={['story-input']}
               label={name}
-              {name}
-              {value}
               checked={value || defaultValue}
+              {name}
             />
           )
-        else if (type === 'string' && value)
+        else if (isString(name))
           return (
             <Input
               class:list={['story-input']}
@@ -111,8 +88,8 @@ import { ${component} } from 'fulldev-ui'
               {value}
             />
           )
-        else if (typeof type === 'string' && type.includes('|')) {
-          const options = type.split('|').map((o) => o.trim())
+        else if (isArray(name)) {
+          const options = type?.split('|').map((o) => o.trim())
           return (
             <Select
               class:list={['story-input']}
