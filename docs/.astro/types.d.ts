@@ -141,196 +141,196 @@ declare module 'astro:content' {
   slug: "base/badge";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "base/button.mdx": {
 	id: "base/button.mdx";
   slug: "base/button";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "base/checkbox.mdx": {
 	id: "base/checkbox.mdx";
   slug: "base/checkbox";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "base/icon.mdx": {
 	id: "base/icon.mdx";
   slug: "base/icon";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "base/image.mdx": {
 	id: "base/image.mdx";
   slug: "base/image";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "base/input.mdx": {
 	id: "base/input.mdx";
   slug: "base/input";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "base/radio.mdx": {
 	id: "base/radio.mdx";
   slug: "base/radio";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "base/rating.mdx": {
 	id: "base/rating.mdx";
   slug: "base/rating";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "base/select.mdx": {
 	id: "base/select.mdx";
   slug: "base/select";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "base/switch.mdx": {
 	id: "base/switch.mdx";
   slug: "base/switch";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "base/table.mdx": {
 	id: "base/table.mdx";
   slug: "base/table";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "base/textarea.mdx": {
 	id: "base/textarea.mdx";
   slug: "base/textarea";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "overview/frameworks.mdx": {
 	id: "overview/frameworks.mdx";
   slug: "overview/frameworks";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "overview/installation.mdx": {
 	id: "overview/installation.mdx";
   slug: "overview/installation";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "overview/introduction.mdx": {
 	id: "overview/introduction.mdx";
   slug: "overview/introduction";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "overview/theming.mdx": {
 	id: "overview/theming.mdx";
   slug: "overview/theming";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "segment/box.mdx": {
 	id: "segment/box.mdx";
   slug: "segment/box";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "segment/card.mdx": {
 	id: "segment/card.mdx";
   slug: "segment/card";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "segment/deck.mdx": {
 	id: "segment/deck.mdx";
   slug: "segment/deck";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "segment/group.mdx": {
 	id: "segment/group.mdx";
   slug: "segment/group";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "segment/section.mdx": {
 	id: "segment/section.mdx";
   slug: "segment/section";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "typography/heading.mdx": {
 	id: "typography/heading.mdx";
   slug: "typography/heading";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "typography/label.mdx": {
 	id: "typography/label.mdx";
   slug: "typography/label";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "typography/link.mdx": {
 	id: "typography/link.mdx";
   slug: "typography/link";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "typography/list.mdx": {
 	id: "typography/list.mdx";
   slug: "typography/list";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "typography/paragraph.mdx": {
 	id: "typography/paragraph.mdx";
   slug: "typography/paragraph";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "typography/tagline.mdx": {
 	id: "typography/tagline.mdx";
   slug: "typography/tagline";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 "typography/text.mdx": {
 	id: "typography/text.mdx";
   slug: "typography/text";
   body: string;
   collection: "docs";
-  data: InferEntrySchema<"docs">
+  data: any
 } & { render(): Render[".mdx"] };
 };
 "pages": {
@@ -486,5 +486,5 @@ declare module 'astro:content' {
 
 	type AnyEntryMap = ContentEntryMap & DataEntryMap;
 
-	export type ContentConfig = typeof import("./../src/content/config.js");
+	export type ContentConfig = never;
 }
