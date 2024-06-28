@@ -17,23 +17,23 @@ export default plugin(() => {}, {
       'radius-1': 'var(--radius-1)',
       'radius-2': 'var(--radius-2)',
       'radius-3': 'var(--radius-3)',
+      1: 'var(--radius-1)',
+      2: 'var(--radius-2)',
+      3: 'var(--radius-3)',
     },
-    border: {
-      default: '1px solid var(--border)',
-      outline: '1px solid var(--border-outline)',
-      hover: '1px solid var(--border-hover)',
+    colors: {
+      background: 'var(--background)',
+      text: 'var(--text)',
+      border: 'var(--border)',
     },
-    color: {
-      surface: 'var(--background-surface)',
-      subtle: 'var(--background-subtle)',
-      soft: 'var(--background-soft)',
-      hover: 'var(--background-hover)',
-      active: 'var(--background-active)',
-      solid: 'var(--solid)',
-      'solid-hover': 'var(--solid-hover)',
-      'solid-contrast': 'var(--solid-contrast)',
-      foreground: 'var(--foreground)',
-      'foreground-contrast': 'var(--foreground-contrast)',
+    backgroundColor: {
+      fulldev: 'var(--background)',
+    },
+    borderColor: {
+      fulldev: 'var(--border)',
+    },
+    textColor: {
+      fulldev: 'var(--text)',
     },
   },
 })
