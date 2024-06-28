@@ -311,13 +311,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"typography/paragraph.mdx": {
-	id: "typography/paragraph.mdx";
-  slug: "typography/paragraph";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "typography/tagline.mdx": {
 	id: "typography/tagline.mdx";
   slug: "typography/tagline";
@@ -360,13 +353,6 @@ declare module 'astro:content' {
 "CompactProp.mdx": {
 	id: "CompactProp.mdx";
   slug: "compactprop";
-  body: string;
-  collection: "props";
-  data: any
-} & { render(): Render[".mdx"] };
-"HtmlProp.mdx": {
-	id: "HtmlProp.mdx";
-  slug: "htmlprop";
   body: string;
   collection: "props";
   data: any
