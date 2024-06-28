@@ -1,31 +1,19 @@
-const plugin = require('tailwindcss/plugin')
+import plugin from 'tailwindcss/plugin'
 
-const tailwindPlugin = plugin(function ({
-  addUtilities,
-}: {
-  addUtilities: any
-}) {
-  const newUtilities = {
-    '.space-test': {
-      margin: 'var(--space-1)',
-    },
-
-    '.rounded-1': {
-      borderRadius: 'var(--radius-1)',
-    },
-    '.rounded-2': {
-      borderRadius: 'var(--radius-2)',
-    },
-    '.rounded-3': {
-      borderRadius: 'var(--radius-3)',
-    },
-
-    '.background': {
-      backgroundColor: 'var(--background)',
+export const tailwindPlugin = plugin(
+  () => {
+    // Your plugin logic here
+  },
+  {
+    extend: {
+      colors: {
+        test: 'red',
+      },
+      borderRadius: {
+        'radius-1': 'var(--radius-1)',
+        'radius-2': 'var(--radius-2)',
+        'radius-3': 'var(--radius-3)',
+      },
     },
   }
-
-  addUtilities(newUtilities)
-})
-
-module.exports = tailwindPlugin
+)
