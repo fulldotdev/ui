@@ -1,27 +1,28 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { HTMLTag, Polymorphic } from 'astro/types'
 import Component from '../_Component.astro'
 import Icon from './Icon.astro'
 
 type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
+  variant?: 'solid' | 'surface' | 'soft' | 'outline' | 'ghost'
   size?: 'sm' | 'md' | 'lg'
   color?: 'base' | 'brand'
   contrast?: boolean
   html?: string
   text?: string
-  variant?: 'solid' | 'soft' | 'surface' | 'outline' | 'ghost'
-  icon?: ComponentProps<typeof Icon> | ComponentProps<typeof Icon>['name']
+  icon?: string
 }
 
-const { icon, ...rest } = Astro.props
+const { variant = 'solid', icon, ...rest } = Astro.props
 ---
 
 <Component
   class:list={['badge']}
+  {variant}
   {...rest}
 >
   <slot />
-  {typeof icon === 'string' ? <Icon name={icon} /> : <Icon {...icon} />}
+  <Icon name={icon} />
 </Component>
 
 <style is:global lang="scss">
@@ -35,13 +36,13 @@ const { icon, ...rest } = Astro.props
     vertical-align: top;
     gap: var(--space-2);
     transition: var(--transition);
-    box-shadow: inset 0 0 0 1px var(--border);
+    border: 1px solid var(--border);
     border-radius: var(--radius-1);
     background-color: var(--background);
     padding-right: var(--element-2);
     padding-left: var(--element-2);
     height: calc(var(--text-label) + 2 * var(--element-1));
-    color: var(--foreground);
+    color: var(--text);
     font-weight: var(--button-font-weight);
     font-size: var(--text-label);
     line-height: 1.625;
