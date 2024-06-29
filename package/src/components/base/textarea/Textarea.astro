@@ -1,0 +1,87 @@
+---
+import type { ComponentProps, Polymorphic } from 'astro/types'
+import Component from '../../_Component.astro'
+import Box from '../../segment/Box.astro'
+import Label from '../../typography/Label.astro'
+import Icon from '../Icon.astro'
+import TextareaElement from './TextareaElement.astro'
+
+type Props<As extends 'div'> = Polymorphic<{ as: As }> &
+  Pick<
+    ComponentProps<typeof TextareaElement>,
+    | 'variant'
+    | 'placeholder'
+    | 'name'
+    | 'value'
+    | 'disabled'
+    | 'required'
+    | 'rows'
+  > & {
+    color?: 'base' | 'brand'
+    label?: string
+    icon?: string
+  }
+
+const {
+  as = 'div',
+  label,
+  icon,
+  variant,
+  // textarea attributes
+  name,
+  rows,
+  placeholder,
+  value,
+  disabled,
+  required,
+  ...rest
+} = Astro.props
+---
+
+<Component
+  class:list={['textarea']}
+  {as}
+  {...rest}
+>
+  <Label
+    for={name}
+    text={label}
+  />
+  <Box>
+    <TextareaElement
+      id={name}
+      {name}
+      {variant}
+      {placeholder}
+      {value}
+      {disabled}
+      {required}
+      {rows}
+    />
+    <Icon name={icon} />
+  </Box>
+</Component>
+
+<style is:global lang="scss">
+  @import '../../../css/utils.scss';
+
+  @include component('textarea') {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    gap: var(--space-1);
+    width: 100%;
+
+    // FIXME not working
+    &::placeholder {
+      color: var(--text);
+    }
+
+    .icon {
+      position: absolute;
+      top: 50%;
+      right: var(--element-2);
+      transform: translateY(-50%);
+    }
+  }
+</style>

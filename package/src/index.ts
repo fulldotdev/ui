@@ -9,7 +9,6 @@ export { default as Image } from './components/base/Image.astro'
 export { default as Logo } from './components/base/Logo.astro'
 export { default as Rating } from './components/base/Rating.astro'
 export { default as Switch } from './components/base/Switch.astro'
-export { default as Textarea } from './components/base/Textarea.astro'
 export { default as Video } from './components/base/Video.astro'
 export { default as Checkbox } from './components/base/checkbox/Checkbox.astro'
 export { default as Input } from './components/base/input/Input.astro'
@@ -25,6 +24,8 @@ export { default as TableFooter } from './components/base/table/TableFooter.astr
 export { default as TableHead } from './components/base/table/TableHead.astro'
 export { default as TableHeader } from './components/base/table/TableHeader.astro'
 export { default as TableRow } from './components/base/table/TableRow.astro'
+export { default as Textarea } from './components/base/textarea/Textarea.astro'
+export { default as TextareaElement } from './components/base/textarea/TextareaElement.astro'
 
 // Typography components
 export { default as Heading } from './components/typography/Heading.astro'
