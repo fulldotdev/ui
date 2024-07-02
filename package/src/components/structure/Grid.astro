@@ -1,0 +1,36 @@
+---
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../_Component.astro'
+
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
+  scheme?: 'light' | 'dark'
+  color?: 'base' | 'brand'
+  frame?: 'fill' | 'panel' | 'card' | 'viewport' | 'none'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl'
+  compact?: boolean
+  variant?: 'ghost' | 'subtle' | 'outline' | 'soft' | 'solid' | 'surface'
+}
+
+const { ...rest } = Astro.props
+---
+
+<Component
+  class:list={['grid']}
+  {...rest}
+>
+  <slot />
+</Component>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+
+  @include component('grid') {
+    --column-width: calc(15 * var(--element-3));
+
+    display: grid;
+    position: relative;
+    grid-template-columns: repeat(auto-fit, minmax(var(--column-width), 1fr));
+    gap: var(--space-3);
+    width: 100%;
+  }
+</style>

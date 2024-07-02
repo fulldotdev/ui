@@ -1,0 +1,31 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../_Component.astro'
+
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Component> & {
+    scheme?: 'light' | 'dark'
+    color?: 'base' | 'brand'
+    size?: 'sm' | 'md' | 'lg'
+    compact?: boolean
+    frame?: 'container' | 'wrapper' | 'panel' | 'viewport' | 'card' | 'none'
+    variant?: 'fill' | 'subtle' | 'outline' | 'soft' | 'solid' | 'surface'
+  }
+
+const { ...rest } = Astro.props
+---
+
+<Component
+  class:list={['box']}
+  {...rest}
+>
+  <slot />
+</Component>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+
+  @include component('box') {
+    position: relative;
+  }
+</style>

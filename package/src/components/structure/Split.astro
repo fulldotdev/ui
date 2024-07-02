@@ -1,0 +1,33 @@
+---
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../_Component.astro'
+
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
+  align?: 'start' | 'center' | 'end'
+}
+
+const { align = 'center', ...rest } = Astro.props
+---
+
+<Component
+  class:list={['split']}
+  {align}
+  {...rest}
+>
+  <slot />
+</Component>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+
+  @include component('split') {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+
+    @media (min-width: 1024px) {
+      grid-auto-columns: 1fr;
+      grid-auto-flow: column;
+    }
+  }
+</style>

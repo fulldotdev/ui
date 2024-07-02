@@ -52,6 +52,18 @@ export { default as Group } from './components/segment/Group.astro'
 export { default as Header } from './components/segment/Header.astro'
 export { default as Section } from './components/segment/Section.astro'
 
+// Structure components
+// export { default as Box } from './components/segment/Box.astro'
+export { default as Bento } from './components/structure/Bento.astro'
+export { default as Carousel } from './components/structure/Carousel.astro'
+export { default as Column } from './components/structure/Column.astro'
+export { default as Grid } from './components/structure/Grid.astro'
+export { default as Masonry } from './components/structure/Masonry.astro'
+export { default as Row } from './components/structure/Row.astro'
+export { default as Split } from './components/structure/Split.astro'
+export { default as Spread } from './components/structure/Spread.astro'
+export { default as Wrap } from './components/structure/Wrap.astro'
+
 // Utility components
 export { default as Block } from './components/_Block.astro'
 export { default as Blocks } from './components/_Blocks.astro'

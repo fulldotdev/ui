@@ -8,25 +8,17 @@ type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> &
     color?: 'base' | 'brand'
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl'
     compact?: boolean
-    frame?: 'container' | 'wrapper' | 'panel' | 'viewport' | 'none'
-    variant?: 'fill' | 'subtle' | 'outline' | 'soft' | 'solid' | 'surface'
+    frame?: 'fill' | 'viewport' | 'contain' | 'panel'
+    variant?: 'ghost' | 'subtle' | 'outline' | 'soft' | 'solid' | 'surface'
     align?: 'start' | 'center' | 'end' | 'stretch'
-    structure?:
-      | 'row'
-      | 'column'
-      | 'split'
-      | 'spread'
-      | 'grid'
-      | 'bento'
-      | 'masonry'
-      | 'carousel'
+    structure?: 'column' | 'split' | 'spread' | 'row'
   }
 
 const {
-  frame = 'container',
-  structure = 'column',
-  variant = frame === 'panel' ? 'subtle' : 'fill',
   as = 'div',
+  frame = 'fill',
+  structure = 'column',
+  variant = 'ghost',
   ...rest
 } = Astro.props
 ---
@@ -46,26 +38,49 @@ const {
   @import '../../css/utils.scss';
 
   @include component('section') {
-    --inner-y: var(--space-6);
+    --screen: 1536px;
+    --gutter: max(4vw, calc(100vw - var(--screen)) / 2);
+    --is-full-width: calc((100vw - 100%) * 999);
+
     position: relative;
-    padding-top: var(--inner-y);
-    padding-bottom: var(--inner-y);
-
+    margin: var(--outer-y) var(--outer-x);
+    background-color: var(--background);
+    padding: var(--inner-y) var(--inner-x);
     width: 100%;
+    max-width: calc(100% - (2 * var(--outer-x)));
+    overflow: hidden;
 
-    &.frame-wrapper {
-      background-color: var(--background);
+    &.frame-fill {
+      --inner-x: var(--gutter);
+      --outer-x: 0;
+      --inner-y: var(--space-6);
+      --outer-y: 0;
+    }
+
+    &.frame-viewport {
+      --inner-x: var(--gutter);
+      --outer-x: 0;
+      --inner-y: var(--space-6);
+      --outer-y: 0;
+
+      min-height: 100vh;
+    }
+
+    &.frame-contain {
+      --inner-x: max(4vw, var(--space-6));
+      --outer-x: max(0px, calc(var(--gutter) - var(--inner-x)));
+      --inner-y: var(--space-6);
+      --outer-y: 0;
     }
 
     &.frame-panel {
-      margin-top: var(--inner-y);
-      margin-bottom: var(--inner-y);
-      border: 1px solid var(--border);
-      background-color: var(--background);
-    }
+      --inner-x: min(4vw, var(--space-6));
+      --outer-x: var(--gutter);
+      --inner-y: var(--space-6);
+      --outer-y: var(--space-6);
 
-    &:not(.frame-panel) {
-      box-shadow: none !important;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-3);
     }
   }
 </style>

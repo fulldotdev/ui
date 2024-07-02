@@ -1,0 +1,29 @@
+---
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../_Component.astro'
+
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
+  align?: 'start' | 'center' | 'end'
+}
+
+const { align = 'center', ...rest } = Astro.props
+---
+
+<Component
+  class:list={['wrap']}
+  {align}
+  {...rest}
+>
+  <slot />
+</Component>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+
+  @include component('wrap') {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: stretch;
+    gap: var(--space-2);
+  }
+</style>

@@ -1,0 +1,41 @@
+---
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../_Component.astro'
+
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
+  scheme?: 'light' | 'dark'
+  color?: 'base' | 'brand'
+  frame?: 'fill' | 'panel' | 'card' | 'viewport' | 'none'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl'
+  compact?: boolean
+  variant?: 'ghost' | 'subtle' | 'outline' | 'soft' | 'solid' | 'surface'
+}
+
+const { ...rest } = Astro.props
+---
+
+<Component
+  class:list={['bento']}
+  {...rest}
+>
+  <slot />
+</Component>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+
+  @include component('bento') {
+    display: grid;
+    position: relative;
+    grid-template-columns: 1fr;
+    width: 100%;
+
+    @media (min-width: 1024px) {
+      grid-template-columns: 1fr 1fr 1fr;
+
+      & > *:nth-child(2n) {
+        grid-column-start: span 2;
+      }
+    }
+  }
+</style>
