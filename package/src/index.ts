@@ -50,7 +50,6 @@ export { default as Header } from './components/segment/Header.astro'
 export { default as Section } from './components/segment/Section.astro'
 
 // Structure components
-// export { default as Box } from './components/segment/Box.astro'
 export { default as Bento } from './components/structure/Bento.astro'
 export { default as Carousel } from './components/structure/Carousel.astro'
 export { default as Column } from './components/structure/Column.astro'
