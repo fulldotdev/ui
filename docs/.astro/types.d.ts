@@ -269,6 +269,55 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"structures/Carousel.mdx": {
+	id: "structures/Carousel.mdx";
+  slug: "structures/carousel";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"structures/Column.mdx": {
+	id: "structures/Column.mdx";
+  slug: "structures/column";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"structures/Grid.mdx": {
+	id: "structures/Grid.mdx";
+  slug: "structures/grid";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"structures/Masonry.mdx": {
+	id: "structures/Masonry.mdx";
+  slug: "structures/masonry";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"structures/Row.mdx": {
+	id: "structures/Row.mdx";
+  slug: "structures/row";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"structures/Split.mdx": {
+	id: "structures/Split.mdx";
+  slug: "structures/split";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"structures/Spread.mdx": {
+	id: "structures/Spread.mdx";
+  slug: "structures/spread";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "typography/heading.mdx": {
 	id: "typography/heading.mdx";
   slug: "typography/heading";

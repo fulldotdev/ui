@@ -30,6 +30,12 @@ export default defineConfig({
           },
         },
         {
+          label: 'Structure',
+          autogenerate: {
+            directory: 'structure',
+          },
+        },
+        {
           label: 'Segment',
           autogenerate: {
             directory: 'segment',
