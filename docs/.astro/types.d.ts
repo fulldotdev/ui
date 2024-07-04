@@ -269,51 +269,51 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"structures/Carousel.mdx": {
-	id: "structures/Carousel.mdx";
-  slug: "structures/carousel";
+"structure/Carousel.mdx": {
+	id: "structure/Carousel.mdx";
+  slug: "structure/carousel";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"structures/Column.mdx": {
-	id: "structures/Column.mdx";
-  slug: "structures/column";
+"structure/Column.mdx": {
+	id: "structure/Column.mdx";
+  slug: "structure/column";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"structures/Grid.mdx": {
-	id: "structures/Grid.mdx";
-  slug: "structures/grid";
+"structure/Grid.mdx": {
+	id: "structure/Grid.mdx";
+  slug: "structure/grid";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"structures/Masonry.mdx": {
-	id: "structures/Masonry.mdx";
-  slug: "structures/masonry";
+"structure/Masonry.mdx": {
+	id: "structure/Masonry.mdx";
+  slug: "structure/masonry";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"structures/Row.mdx": {
-	id: "structures/Row.mdx";
-  slug: "structures/row";
+"structure/Row.mdx": {
+	id: "structure/Row.mdx";
+  slug: "structure/row";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"structures/Split.mdx": {
-	id: "structures/Split.mdx";
-  slug: "structures/split";
+"structure/Split.mdx": {
+	id: "structure/Split.mdx";
+  slug: "structure/split";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"structures/Spread.mdx": {
-	id: "structures/Spread.mdx";
-  slug: "structures/spread";
+"structure/Spread.mdx": {
+	id: "structure/Spread.mdx";
+  slug: "structure/spread";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
