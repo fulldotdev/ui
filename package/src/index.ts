@@ -1,6 +1,4 @@
 // Utils
-export * from './schemas/collection'
-export * from './schemas/path'
 export * from './utils/getAllCollections'
 export * from './utils/getPathname'
 export * from './utils/transform/transform'
