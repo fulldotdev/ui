@@ -4,10 +4,10 @@ import Component from '../_Component.astro'
 
 type Props<As extends HTMLTag = 'header'> = Polymorphic<{ as: As }> &
   ComponentProps<typeof Component> & {
-    structure?: 'spread' | 'group' | 'column'
+    structure?: 'spread' | 'row' | 'column'
     position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
-    variant?: 'base' | 'raised'
-    frame?: 'wrapper' | 'container' | 'panel'
+    variant?: 'ghost' | 'raised'
+    frame?: 'fill' | 'panel'
     align?: 'start' | 'center' | 'end'
   }
 
@@ -15,7 +15,8 @@ const {
   as = 'header',
   structure = 'spread',
   density = 'compact',
-  frame = 'container',
+  frame = 'fill',
+  variant = 'ghost',
   compact = true,
   ...rest
 } = Astro.props
@@ -27,6 +28,7 @@ const {
   {density}
   {frame}
   {compact}
+  {variant}
   {...rest}
 >
   <slot />
@@ -36,7 +38,8 @@ const {
   @import '../../css/utils.scss';
 
   @include component('header') {
-    --inner: var(--element-3);
+    --screen: 1536px;
+    --gutter: max(4vw, calc(100vw - var(--screen)) / 2);
 
     display: flex;
     top: 0;
@@ -45,12 +48,25 @@ const {
     justify-content: space-between;
     align-items: center;
     z-index: 10;
+    border-bottom: 1px solid var(--border);
+    background-color: var(--background);
     padding-top: var(--element-3);
     padding-bottom: var(--element-3);
     width: 100%;
 
-    &.frame-wrapper {
-      background: var(--background);
+    &.frame-fill {
+      padding-top: var(--space-3);
+      padding-right: var(--gutter);
+      padding-bottom: var(--space-3);
+      padding-left: var(--gutter);
+    }
+
+    &.frame-panel {
+      margin-right: var(--gutter);
+      margin-left: var(--gutter);
+      border-radius: var(--radius-3);
+      padding-right: var(--space-3);
+      padding-left: var(--space-3);
     }
 
     &.position-fixed {
