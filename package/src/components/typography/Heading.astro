@@ -5,18 +5,20 @@ import Component from '../_Component.astro'
 type Props<As extends HTMLTag = 'h2'> = Polymorphic<{ as: As }> & {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl'
   color?: 'base' | 'brand'
+  level?: 1 | 2 | 3 | 4 | 5 | 6
   contrast?: boolean
   html?: string
   text?: string
 }
 
-const { as = 'h2', contrast = true, ...rest } = Astro.props
+const { level = 2, as = `h${level}`, contrast = true, ...rest } = Astro.props
 ---
 
 <Component
   class:list={['heading']}
   {as}
   {contrast}
+  {level}
   {...rest}
 >
   <slot />
@@ -27,15 +29,38 @@ const { as = 'h2', contrast = true, ...rest } = Astro.props
 
   @include component('heading') {
     margin: 0;
-    max-width: calc(var(--element-3) * 36);
-    scroll-margin: var(--space-4);
-    color: var(--color-11);
+    max-width: calc(var(--space-4) * 36);
+    scroll-margin: var(--space-5);
+    color: var(--text);
     font-weight: var(--heading-font-weight);
     font-weight: 700;
-    font-size: var(--text-heading);
     line-height: 1.1;
     font-family: var(--heading-font-family);
     letter-spacing: -0.025em;
     text-decoration: none;
+
+    &.level-1 {
+      font-size: var(--text-7);
+    }
+
+    &.level-2 {
+      font-size: var(--text-6);
+    }
+
+    &.level-3 {
+      font-size: var(--text-5);
+    }
+
+    &.level-4 {
+      font-size: var(--text-4);
+    }
+
+    &.level-5 {
+      font-size: var(--text-3);
+    }
+
+    &.level-6 {
+      font-size: var(--text-2);
+    }
   }
 </style>
