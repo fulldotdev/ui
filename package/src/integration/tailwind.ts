@@ -9,31 +9,26 @@ export default plugin(() => {}, {
       'space-4': 'var(--space-4)',
       'space-5': 'var(--space-5)',
       'space-6': 'var(--space-6)',
-      'element-1': 'var(--element-1)',
-      'element-2': 'var(--element-2)',
-      'element-3': 'var(--element-3)',
+      'space-7': 'var(--space-7)',
     },
     borderRadius: {
-      'radius-1': 'var(--radius-1)',
-      'radius-2': 'var(--radius-2)',
-      'radius-3': 'var(--radius-3)',
       1: 'var(--radius-1)',
       2: 'var(--radius-2)',
       3: 'var(--radius-3)',
+    },
+    fontSize: {
+      1: 'var(--text-1)',
+      2: 'var(--text-2)',
+      3: 'var(--text-3)',
+      4: 'var(--text-4)',
+      5: 'var(--text-5)',
+      6: 'var(--text-6)',
+      7: 'var(--text-7)',
     },
     colors: {
       background: 'var(--background)',
       text: 'var(--text)',
       border: 'var(--border)',
-    },
-    backgroundColor: {
-      fulldev: 'var(--background)',
-    },
-    borderColor: {
-      fulldev: 'var(--border)',
-    },
-    textColor: {
-      fulldev: 'var(--text)',
     },
   },
 })
