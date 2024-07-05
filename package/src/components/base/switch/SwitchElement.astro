@@ -1,24 +1,24 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Component from '../_Component.astro'
+import type { HTMLAttributes } from 'astro/types'
+import Component from '../../_Component.astro'
 
-type Props<As extends HTMLTag = 'span'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Component> & {
-    name?: string
-    color?: 'base' | 'brand'
-  }
+type Props = HTMLAttributes<'input'> & {
+  name?: string
+  color?: 'base' | 'brand'
+}
 
-const { as = 'input', name, ...rest } = Astro.props
+const { name, checked, ...rest } = Astro.props
 ---
 
 <Component
   as="label"
   for={name}
-  class:list="switch"
+  class:list="switch-element"
   if={true}
   {...rest}
 >
   <input
+    {checked}
     name={name}
     type="checkbox"
     class="checkbox"
@@ -27,9 +27,9 @@ const { as = 'input', name, ...rest } = Astro.props
 </Component>
 
 <style is:global lang="scss">
-  @import '../../css/utils.scss';
+  @import '../../../css/utils.scss';
 
-  @include component('switch') {
+  @include component('switch-element') {
     display: block;
     position: relative;
     transition: var(--transition);
@@ -63,7 +63,7 @@ const { as = 'input', name, ...rest } = Astro.props
 
     .checkbox:checked ~ .checkmark {
       transform: translateX(100%);
-      background-color: var(--solid);
+      background-color: var(--color-12);
     }
 
     &:hover {
