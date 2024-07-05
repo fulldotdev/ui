@@ -6,12 +6,19 @@ import Icon from './Icon.astro'
 type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
   ComponentProps<typeof Component> & {
     color?: 'base' | 'brand'
-    value?: number | string
+    value?: number
     size?: string
     compact?: boolean
   }
 
-const { size, compact, value, ...rest } = Astro.props
+const { size, compact, value = 5, ...rest } = Astro.props
+
+const getIcon = (count: number) => {
+  const difference = value - count
+  if (difference >= -0.25) return 'star-filled'
+  if (difference >= -0.75) return 'star-half-filled'
+  return 'star'
+}
 ---
 
 <Component
@@ -19,13 +26,15 @@ const { size, compact, value, ...rest } = Astro.props
   {...rest}
 >
   {
-    Array.from(Array(Number(value) || 1), (_, index) => (
-      <Icon
-        size={size}
-        compact={compact}
-        name="star-filled"
-        key={index}
-      />
+    [1, 2, 3, 4, 5].map((_, i) => (
+      <>
+        <Icon
+          size={size}
+          compact={compact}
+          name={getIcon(i + 1)}
+          class:list={'rating-icon-solid'}
+        />
+      </>
     ))
   }
 </Component>
@@ -34,12 +43,8 @@ const { size, compact, value, ...rest } = Astro.props
   @import '../../css/utils.scss';
 
   @include component('rating') {
-    display: flex;
-    gap: 0.75rem;
-    padding-left: 5px;
-
-    &.center {
-      padding-left: 0 !important;
-    }
+    display: inline-flex;
+    position: relative;
+    gap: var(--space-2);
   }
 </style>
