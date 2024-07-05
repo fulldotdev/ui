@@ -318,6 +318,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"structure/Wrap.mdx": {
+	id: "structure/Wrap.mdx";
+  slug: "structure/wrap";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "typography/heading.mdx": {
 	id: "typography/heading.mdx";
   slug: "typography/heading";
