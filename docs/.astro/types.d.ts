@@ -178,13 +178,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"base/radio.mdx": {
-	id: "base/radio.mdx";
-  slug: "base/radio";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".mdx"] };
 "base/rating.mdx": {
 	id: "base/rating.mdx";
   slug: "base/rating";
@@ -255,6 +248,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"segment/footer.mdx": {
+	id: "segment/footer.mdx";
+  slug: "segment/footer";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "segment/header.mdx": {
 	id: "segment/header.mdx";
   slug: "segment/header";
@@ -314,6 +314,69 @@ declare module 'astro:content' {
 "structure/Spread.mdx": {
 	id: "structure/Spread.mdx";
   slug: "structure/spread";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"structure/Wrap.mdx": {
+	id: "structure/Wrap.mdx";
+  slug: "structure/wrap";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"structure/carousel.mdx": {
+	id: "structure/carousel.mdx";
+  slug: "structure/carousel";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"structure/column.mdx": {
+	id: "structure/column.mdx";
+  slug: "structure/column";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"structure/grid.mdx": {
+	id: "structure/grid.mdx";
+  slug: "structure/grid";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"structure/masonry.mdx": {
+	id: "structure/masonry.mdx";
+  slug: "structure/masonry";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"structure/row.mdx": {
+	id: "structure/row.mdx";
+  slug: "structure/row";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"structure/split.mdx": {
+	id: "structure/split.mdx";
+  slug: "structure/split";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"structure/spread.mdx": {
+	id: "structure/spread.mdx";
+  slug: "structure/spread";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"structure/wrap.mdx": {
+	id: "structure/wrap.mdx";
+  slug: "structure/wrap";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">

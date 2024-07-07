@@ -11,7 +11,7 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   text?: string
 }
 
-const { as = 'a', underline, ...rest } = Astro.props
+const { as = 'a', underline = 'auto', ...rest } = Astro.props
 ---
 
 <Component
@@ -31,20 +31,24 @@ const { as = 'a', underline, ...rest } = Astro.props
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-2);
+    cursor: pointer;
     border: none;
     background: none;
     color: var(--text);
     font-weight: var(--font-weight);
     font-size: var(--text-2);
     font-family: var(--font-family);
-    text-decoration: none;
-    text-decoration-color: var(--border);
-    text-decoration: underline;
+    text-decoration-color: var(--border); // FIXME, werkt niet
     white-space: nowrap;
+
+    &:hover {
+      color: var(--color-12);
+    }
 
     &.underline-auto {
       text-decoration: none;
-      &:is(p &) {
+
+      &:is(p > &) {
         text-decoration: underline;
       }
     }
