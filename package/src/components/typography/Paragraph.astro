@@ -1,32 +1,33 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Tag from '../_Tag.astro'
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../_Component.astro'
 
-type Props<As extends HTMLTag = 'p'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag> & {
-    html?: string
-    text?: string
-    variant?: 'base' | 'muted' | 'accent'
-  }
+type Props<As extends HTMLTag = 'p'> = Polymorphic<{ as: As }> & {
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  color?: 'base' | 'brand'
+  contrast?: boolean
+  html?: string
+  text?: string
+}
 
 const { as = 'p', ...rest } = Astro.props
 ---
 
-<Tag
+<Component
   class:list={['paragraph']}
   {as}
   {...rest}
 >
   <slot />
-</Tag>
+</Component>
 
 <style is:global lang="scss">
   @import '../../css/utils.scss';
 
   @include component('paragraph') {
     margin: 0;
-    max-width: calc(var(--element-3) * 36);
-    color: var(--foreground);
+    max-width: calc(var(--space-4) * 36);
+    color: var(--text);
     font-weight: var(--font-weight);
     font-size: var(--text-2);
     line-height: 1.625;

@@ -1,30 +1,43 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Tag from '../_Tag.astro'
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../_Component.astro'
 
-type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag> & {
-    align?: 'start' | 'center' | 'end'
-  }
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
+  color?: 'base' | 'brand'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  compact?: boolean
+  align?: 'start' | 'center' | 'end'
+}
 
-const { ...rest } = Astro.props
+const { align = 'center', ...rest } = Astro.props
 ---
 
-<Tag
+<Component
   class:list={['split']}
+  {align}
   {...rest}
 >
   <slot />
-</Tag>
+</Component>
 
 <style is:global lang="scss">
   @import '../../css/utils.scss';
+  @import '../../css/space.scss';
 
   @include component('split') {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: var(--space-5) var(--space-5);
+    grid-template-columns: 1fr;
+    column-gap: var(--space-6);
     width: 100%;
+
+    @media (max-width: 1023.9999px) {
+      @include space-y;
+    }
+
+    @media (min-width: 1024px) {
+      grid-auto-columns: 1fr;
+      grid-auto-flow: column;
+    }
 
     &.align-start {
       align-items: flex-start;

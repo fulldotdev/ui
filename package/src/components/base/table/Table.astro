@@ -1,0 +1,55 @@
+---
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import { TableBody, TableFooter, TableHeader } from 'fulldev-ui'
+import Component from '../../_Component.astro'
+
+type Props = HTMLAttributes<'table'> & {
+  color?: 'base' | 'brand'
+  size?: 'sm' | 'md' | 'lg'
+  header?:
+    | ComponentProps<typeof TableHeader>
+    | ComponentProps<typeof TableHeader>['cells']
+  body?:
+    | ComponentProps<typeof TableBody>
+    | ComponentProps<typeof TableBody>['rows']
+  footer?:
+    | ComponentProps<typeof TableFooter>
+    | ComponentProps<typeof TableFooter>['cells']
+}
+
+const { header, body, footer, ...rest } = Astro.props
+---
+
+<Component
+  class:list={['table']}
+  as="table"
+  {...rest}
+>
+  <TableHeader {...Array.isArray(header) ? { cells: header } : header} />
+
+  {Array.isArray(body) ? <TableBody rows={body} /> : <TableBody {...body} />}
+
+  {
+    Array.isArray(footer) ? (
+      <TableFooter cells={footer} />
+    ) : (
+      <TableFooter {...footer} />
+    )
+  }
+
+  <slot />
+</Component>
+
+<style is:global lang="scss">
+  @import '../../../css/utils.scss';
+
+  @include component('table') {
+    display: table;
+    box-shadow: 0 0 0 1px var(--border);
+    border-radius: var(--radius-1);
+    border-collapse: collapse;
+    width: 100%;
+    caption-side: bottom;
+    overflow: hidden;
+  }
+</style>

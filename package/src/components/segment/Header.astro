@@ -1,12 +1,12 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Tag from '../_Tag.astro'
+import Component from '../_Component.astro'
 
 type Props<As extends HTMLTag = 'header'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag> & {
-    structure?: 'spread' | 'group' | 'stack'
+  ComponentProps<typeof Component> & {
+    structure?: 'spread' | 'row' | 'column'
     position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
-    variant?: 'base' | 'raised'
+    variant?: 'ghost' | 'subtle' | 'soft' | 'surface' | 'outline'
     frame?: 'fill' | 'panel'
     align?: 'start' | 'center' | 'end'
   }
@@ -14,24 +14,32 @@ type Props<As extends HTMLTag = 'header'> = Polymorphic<{ as: As }> &
 const {
   as = 'header',
   structure = 'spread',
-  density = 'compact',
+  frame = 'fill',
+  variant = 'subtle',
+  compact = true,
   ...rest
 } = Astro.props
 ---
 
-<Tag
+<Component
   class:list={['header']}
   {as}
-  {density}
+  {frame}
+  {compact}
+  {structure}
+  {variant}
   {...rest}
 >
   <slot />
-</Tag>
+</Component>
 
 <style is:global lang="scss">
   @import '../../css/utils.scss';
 
   @include component('header') {
+    --screen: 1536px;
+    --gutter: max(4vw, calc(100vw - var(--screen)) / 2);
+
     display: flex;
     top: 0;
     right: 0;
@@ -39,9 +47,30 @@ const {
     justify-content: space-between;
     align-items: center;
     z-index: 10;
-    background: var(--background);
-    padding: var(--space-3) var(--space-gutter);
+    border-bottom: 1px solid var(--border);
+    background-color: var(--background);
+    padding-top: var(--space-4);
+    padding-bottom: var(--space-4);
     width: 100%;
+
+    &.frame-fill {
+      padding-top: var(--space-4);
+      padding-right: var(--gutter);
+      padding-bottom: var(--space-4);
+      padding-left: var(--gutter);
+    }
+
+    &.frame-panel {
+      margin-top: var(--space-2);
+      margin-right: var(--gutter);
+      margin-left: var(--gutter);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-3);
+      padding-top: var(--space-2);
+      padding-right: var(--space-4);
+      padding-bottom: var(--space-2);
+      padding-left: var(--space-4);
+    }
 
     &.position-fixed {
       position: fixed;
@@ -53,6 +82,18 @@ const {
 
     &.position-sticky {
       position: sticky;
+    }
+
+    &.align-start {
+      align-items: flex-start;
+    }
+
+    &.align-center {
+      align-items: center;
+    }
+
+    &.align-end {
+      align-items: flex-end;
     }
   }
 </style>

@@ -1,0 +1,39 @@
+---
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Component from '../../_Component.astro'
+
+import TableRow from './TableRow.astro'
+
+type Props = HTMLAttributes<'tbody'> & {
+  rows?: (
+    | ComponentProps<typeof TableRow>
+    | ComponentProps<typeof TableRow>['cells']
+  )[]
+}
+
+const { rows, ...rest } = Astro.props
+---
+
+<Component
+  class:list={['table-body']}
+  as="tbody"
+  {...rest}
+>
+  {
+    rows?.map((row) => {
+      if (Array.isArray(row)) return <TableRow cells={row} />
+      else return <TableRow {...row} />
+    })
+  }
+  <slot />
+</Component>
+
+<style is:global lang="scss">
+  @import '../../../css/utils.scss';
+
+  @include component('table-body') {
+    display: table-row-group;
+    vertical-align: middle;
+    unicode-bidi: isolate;
+  }
+</style>

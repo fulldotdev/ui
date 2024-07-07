@@ -1,26 +1,29 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Tag from '../_Tag.astro'
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../_Component.astro'
 
-type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag>
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
+  color?: 'base' | 'brand'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  compact?: boolean
+}
 
 const { ...rest } = Astro.props
 ---
 
-<Tag
+<Component
   class:list={['masonry']}
   {...rest}
 >
   <slot />
-</Tag>
+</Component>
 
 <style is:global lang="scss">
   @import '../../css/utils.scss';
 
   @include component('masonry') {
-    --column-width: calc(16 * var(--element-3));
-    --gap: var(--space-3);
+    --column-width: calc(16 * var(--space-4));
+    --gap: var(--space-4);
 
     position: relative;
     column-gap: var(--gap);

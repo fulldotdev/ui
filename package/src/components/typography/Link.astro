@@ -1,24 +1,27 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Tag from '../_Tag.astro'
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../_Component.astro'
 
-type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag> & {
-    html?: string
-    text?: string
-    variant?: 'base' | 'muted' | 'accent'
-  }
+type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  color?: 'base' | 'brand'
+  underline?: 'auto' | 'always' | 'hover' | 'none'
+  contrast?: boolean
+  html?: string
+  text?: string
+}
 
-const { as = 'a', ...rest } = Astro.props
+const { as = 'a', underline = 'auto', ...rest } = Astro.props
 ---
 
-<Tag
+<Component
   class:list={['link']}
   {as}
+  {underline}
   {...rest}
 >
   <slot />
-</Tag>
+</Component>
 
 <style is:global lang="scss">
   @import '../../css/utils.scss';
@@ -28,16 +31,41 @@ const { as = 'a', ...rest } = Astro.props
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-2);
-    color: var(--foreground);
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: var(--text);
     font-weight: var(--font-weight);
     font-size: var(--text-2);
     font-family: var(--font-family);
-    text-decoration: none;
-    text-decoration-color: var(--border);
+    text-decoration-color: var(--border); // FIXME, werkt niet
     white-space: nowrap;
 
     &:hover {
+      color: var(--color-12);
+    }
+
+    &.underline-auto {
+      text-decoration: none;
+
+      &:is(p > &) {
+        text-decoration: underline;
+      }
+    }
+
+    &.underline-always {
       text-decoration: underline;
+    }
+
+    &.underline-hover {
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    &.underline-none {
+      text-decoration: none;
     }
   }
 </style>

@@ -1,0 +1,99 @@
+---
+import type { ComponentProps } from 'astro/types'
+import {
+  Badge,
+  Button,
+  Card,
+  Grid,
+  Heading,
+  Icon,
+  Section,
+  Text,
+  Wrap,
+} from 'fulldev-ui'
+
+interface Props extends ComponentProps<typeof Section> {
+  badge?: any
+  heading?: string
+  text?: string
+  buttons?: ComponentProps<typeof Button>[]
+  features?: any[]
+  image?: string
+}
+
+const { badge, heading, text, buttons, features, image, ...rest } = Astro.props
+---
+
+<Section
+  class="hero"
+  size="xl"
+  align="center"
+  {...rest}
+>
+  <Badge
+    size="md"
+    contrast
+    style={{ borderRadius: '999px' }}
+    as="a"
+    variant="outline"
+    {...badge}
+  />
+  <Heading
+    level={1}
+    text={heading}
+  />
+  <Text text={text} />
+  <Wrap>
+    {
+      buttons?.map((button: any, i: any) => (
+        <Button
+          color="brand"
+          variant={i > 0 ? 'soft' : 'solid'}
+          contrast={i > 0}
+          {...button}
+        />
+      ))
+    }
+  </Wrap>
+  <Grid size="md">
+    {
+      features?.map((feature: any) => (
+        <Card>
+          <Icon
+            color="brand"
+            name={feature.icon}
+            size="xl"
+            style={{
+              height: '1.4em',
+              width: '1.4em',
+            }}
+          />
+          <Heading level={3}>{feature.heading}</Heading>
+          <Text>{feature.text}</Text>
+        </Card>
+      ))
+    }
+  </Grid>
+</Section>
+
+<style is:global>
+  .hero {
+    padding-top: var(--space-6) !important;
+    overflow: visible;
+
+    &::before {
+      position: absolute;
+      top: -80%;
+      left: 0;
+      z-index: -1;
+      background: radial-gradient(
+        circle,
+        rgba(255, 85, 0, 0.08) 0%,
+        rgba(255, 85, 0, 0) 52%
+      );
+      width: 100%;
+      height: 170%;
+      content: '';
+    }
+  }
+</style>

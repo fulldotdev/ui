@@ -1,14 +1,88 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import type Tag from '../_Tag.astro'
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../_Component.astro'
 
-type Props<As extends HTMLTag = 'footer'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag>
+type Props<As extends HTMLTag = 'footer'> = Polymorphic<{ as: As }> & {
+  structure?: 'spread' | 'row' | 'split' | 'column'
+  variant?: 'base' | 'ghost' | 'subtle' | 'soft' | 'surface' | 'outline'
+  frame?: 'fill' | 'panel' | 'contain'
+  align?: 'start' | 'center' | 'end'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  scheme?: 'light' | 'dark'
+  color?: 'base' | 'brand'
+  compact?: boolean
+}
 
 const {
   as = 'footer',
-  direction = 'horizontal',
-  density = 'compact',
+  structure = 'spread',
+  variant = 'subtle',
+  frame = 'fill',
   ...rest
 } = Astro.props
 ---
+
+<Component
+  class:list={['footer']}
+  {structure}
+  {as}
+  {variant}
+  {frame}
+  {...rest}
+>
+  <slot />
+</Component>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+
+  @include component('footer') {
+    --screen: 1536px;
+    --gutter: max(4vw, calc(100vw - var(--screen)) / 2);
+
+    margin: var(--outer-y) var(--outer-x);
+    background: var(--background);
+    padding: var(--inner-y) var(--inner-x);
+    width: 100%;
+    max-width: calc(100% - (2 * var(--outer-x)));
+
+    &.frame-fill {
+      border-top: 1px solid var(--border);
+      --inner-x: var(--gutter);
+      --outer-x: 0;
+      --inner-y: var(--space-7);
+      --outer-y: 0;
+    }
+
+    &.frame-panel {
+      margin-top: var(--space-2);
+      margin-right: var(--gutter);
+      margin-left: var(--gutter);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-3);
+      --inner-x: var(--gutter);
+      --outer-x: 0;
+      --inner-y: var(--space-7);
+      --outer-y: 0;
+    }
+
+    &.frame-contain {
+      --inner-x: max(4vw, var(--space-7));
+      --outer-x: max(0px, calc(var(--gutter) - var(--inner-x)));
+      --inner-y: var(--space-7);
+      --outer-y: 0;
+    }
+
+    &.align-start {
+      align-items: flex-start;
+    }
+
+    &.align-center {
+      align-items: center;
+    }
+
+    &.align-end {
+      align-items: flex-end;
+    }
+  }
+</style>

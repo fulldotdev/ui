@@ -1,0 +1,46 @@
+---
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Component from '../../_Component.astro'
+import TableCell from './TableCell.astro'
+
+type Props = HTMLAttributes<'tr'> & {
+  cells?: (
+    | ComponentProps<typeof TableCell>
+    | ComponentProps<typeof TableCell>['text']
+  )[]
+}
+
+const { cells, ...rest } = Astro.props
+---
+
+<Component
+  class:list={['table-row']}
+  {...rest}
+  as="tr"
+>
+  {
+    cells?.map((cel) => {
+      if (typeof cel === 'string') return <TableCell text={cel} />
+      else return <TableCell {...cel} />
+    })
+  }
+  <slot />
+</Component>
+
+<style is:global lang="scss">
+  @import '../../../css/utils.scss';
+
+  @include component('table-row') {
+    border-bottom: 1px solid var(--color-6);
+    background-color: var(--color-2);
+
+    &:is(.table-header > &),
+    &:is(.table-footer > &) {
+      background-color: var(--color-3);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+</style>

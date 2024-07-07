@@ -1,0 +1,46 @@
+---
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../_Component.astro'
+
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
+  color?: 'base' | 'brand'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  compact?: boolean
+  align?: 'start' | 'center' | 'end'
+}
+
+const { align = 'start', ...rest } = Astro.props
+---
+
+<Component
+  class:list={['column']}
+  {align}
+  {...rest}
+>
+  <slot />
+</Component>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+  @import '../../css/space.scss';
+
+  @include component('column') {
+    @include space-y;
+
+    display: flex;
+    position: relative;
+    flex-direction: column;
+
+    &.align-start {
+      align-items: flex-start;
+    }
+
+    &.align-center {
+      align-items: center;
+    }
+
+    &.align-end {
+      align-items: flex-end;
+    }
+  }
+</style>

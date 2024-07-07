@@ -1,50 +1,90 @@
 ---
 title: Card
+description: Use this as the main wrapper for your cards.
+props:
+  - name: structure
+    type: column | split | row
+  - name: frame
+    type: fill | panel
+    default: panel
+  - name: size
+    type: sm | md | lg
+  - name: compact
+    type: attribute
+    default: true
+  - name: contrast
+    type: attribute
+  - name: color
+    type: base | brand
+  - name: variant
+    type: ghost | subtle | surface | outline | soft | solid
+    default: subtle
+  - name: theme
+    type: string
+  - name: text
+    type: string
+  - name: html
+    type: string
+  - name: as
+    type: HTMLTag
+    default: a
+  - name: HTML Attributes
+    type: Polymorphic<as>
 ---
 
-import ThemeProp from '../../props/ThemeProp.mdx'
-import AsProp from '../../props/AsProp.mdx'
+import PropsTable from '../../../components/PropsTable.astro'
 import SizeProp from '../../props/SizeProp.mdx'
-import DensityProp from '../../props/DensityProp.mdx'
-import TextProp from '../../props/TextProp.mdx'
-import HtmlProp from '../../props/HtmlProp.mdx'
+import CompactProp from '../../props/CompactProp.mdx'
 import VariantProp from '../../props/VariantProp.mdx'
 
-Use this as the main wrapper for your cards.
+import SplitProp from '../../props/structures/Split.mdx'
+import SpreadProp from '../../props/structures/Spread.mdx'
+import RowProp from '../../props/structures/Row.mdx'
+
+import PanelProp from '../../props/frames/Panel.mdx'
+
+import Story from '../../../components/Story.astro'
+
+import { Image, Heading, Paragraph } from 'fulldev-ui'
+
+{frontmatter.description}
 
 <br />
 
-```astro live
----
-import { Card, Heading, Image, Paragraph } from 'fulldev-ui'
----
+:::note
+The documentation of this component is very limited at the moment. Expect improvements.
+:::
 
-<Card>
-  <Image src="/example.jpg" frame="inset" />
+<Story {...frontmatter}>
+  <Image src="/example.jpg" />
   <Heading> Lorem ipsum dolor </Heading>
-  <Paragraph>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua.
-  </Paragraph>
-</Card>
-```
+  <Paragraph>This is a card.</Paragraph>
+</Story>
 
 ## Props
 
+<PropsTable props={frontmatter.props} />
+
+## Examples
+
 ### `frame`
 
-**Type:** `'fill' | 'panel'`
-
 Applies a margin around certain child elements and applies the background and border set in your [color variables](/overview/theming)
-
-You can use the variant prop explained below to adjust these styles.
 
 ```astro live
 ---
 import { Card, Heading, Paragraph } from 'fulldev-ui'
 ---
 
-<Card frame="panel">
+<Card frame="panel" size="sm">
+  <Heading> Lorem ipsum dolor </Heading>
+  <Paragraph>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua.
+  </Paragraph>
+</Card>
+
+<Card frame="fill" size="sm">
   <Heading> Lorem ipsum dolor </Heading>
   <Paragraph>
     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
@@ -52,6 +92,10 @@ import { Card, Heading, Paragraph } from 'fulldev-ui'
   </Paragraph>
 </Card>
 ```
+
+#### `panel`
+
+<PanelProp />
 
 ### `size`
 
@@ -87,49 +131,14 @@ import { Card, Heading, Paragraph } from 'fulldev-ui'
 </Card>
 ```
 
-### `density`
-
-**Type:** `density?: 'base' | 'compact' | string = 'compact'`
-
-Changes the underlying values used by the `size` prop, for this component and **all its children**.
-
-For example, we set `compact` on a card and can now size this and all children automatically based on the `size` on the wrapping block/section.
-
-Choose a predefined density, or a custom value defined like explained in the [theming guide](/overview/theming).
-
-The default for cards is `compact` and you probably use it this way most of the time.
-
-```astro live
----
-import { Card, Heading, Paragraph } from 'fulldev-ui'
----
-
-<Card frame="panel">
-  <Heading> Lorem ipsum dolor </Heading>
-  <Paragraph>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua.
-  </Paragraph>
-</Card>
-
-<Card frame="panel" density="base">
-  <Heading> Lorem ipsum dolor </Heading>
-  <Paragraph>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.
-  </Paragraph>
-</Card>
-```
-
 ### `variant`
 
-**Type:** `'base' | 'ghost' | 'soft' | 'solid'`
-
 ```astro live
 ---
 import { Card, Heading, Paragraph } from 'fulldev-ui'
 ---
 
-<Card frame="panel" variant="ghost">
+<Card variant="subtle">
   <Heading> Lorem ipsum dolor </Heading>
   <Paragraph>
     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
@@ -137,7 +146,7 @@ import { Card, Heading, Paragraph } from 'fulldev-ui'
   </Paragraph>
 </Card>
 
-<Card frame="panel" variant="base">
+<Card variant="ghost">
   <Heading> Lorem ipsum dolor </Heading>
   <Paragraph>
     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
@@ -145,7 +154,7 @@ import { Card, Heading, Paragraph } from 'fulldev-ui'
   </Paragraph>
 </Card>
 
-<Card frame="panel" variant="raised">
+<Card variant="outline">
   <Heading> Lorem ipsum dolor </Heading>
   <Paragraph>
     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
@@ -153,7 +162,15 @@ import { Card, Heading, Paragraph } from 'fulldev-ui'
   </Paragraph>
 </Card>
 
-<Card frame="panel" variant="primary">
+<Card variant="soft">
+  <Heading> Lorem ipsum dolor </Heading>
+  <Paragraph>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua.
+  </Paragraph>
+</Card>
+
+<Card variant="surface">
   <Heading> Lorem ipsum dolor </Heading>
   <Paragraph>
     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
@@ -162,12 +179,18 @@ import { Card, Heading, Paragraph } from 'fulldev-ui'
 </Card>
 ```
 
-### `theme`
+### `structure`
 
-<ThemeProp />
+Applies all **styles & props** of the chosen `Structure` component to this component.
 
-### `as` & HTML Attributes
+#### `split`
 
-**Type:** `as?: HTMLTag = 'div'`
+<SplitProp />
 
-<AsProp />
+#### `spread`
+
+<SpreadProp />
+
+#### `row`
+
+<RowProp />

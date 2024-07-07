@@ -1,37 +1,48 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Tag from '../_Tag.astro'
+import Component from '../_Component.astro'
 
 type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag> & {
-    structure?: 'stack' | 'group' | 'split' | 'spread' | 'row'
+  ComponentProps<typeof Component> & {
+    structure?: 'column' | 'group' | 'split' | 'spread' | 'row'
     align?: 'start' | 'center' | 'end' | 'stretch'
-    variant?: 'base' | 'raised' | 'primary'
-    frame?: 'fill' | 'panel'
+    frame?: 'panel' | 'none'
+    color?: 'base' | 'brand'
+    contrast?: boolean
     ratio?: 'landscape' | 'portrait' | 'square' | number
+    variant?:
+      | 'ghost'
+      | 'subtle'
+      | 'surface'
+      | 'outline'
+      | 'soft'
+      | 'surface'
+      | 'solid'
   }
 
 const {
-  as = Astro.props.href ? 'a' : 'div',
-  structure = 'stack',
-  density = 'compact',
+  href,
+  as = href ? 'a' : 'div',
   frame = 'panel',
-  variant = 'raised',
+  structure = 'column',
+  compact = true,
+  variant = 'subtle',
   ...rest
 } = Astro.props
 ---
 
-<Tag
+<Component
   class:list={['card']}
+  {compact}
+  {href}
   {structure}
-  {density}
-  {frame}
   {variant}
+  {frame}
   {as}
   {...rest}
 >
   <slot />
-</Tag>
+</Component>
 
 <style is:global lang="scss">
   @import '../../css/utils.scss';
@@ -55,15 +66,6 @@ const {
       }
     }
 
-    &.frame-panel {
-      border: 1px solid var(--border);
-      border-radius: var(--radius-2);
-      background-color: var(--background);
-      padding: var(--space-5);
-      overflow: hidden;
-      color: var(--foreground);
-    }
-
     &.ratio-landscape {
       aspect-ratio: 4/3;
     }
@@ -76,18 +78,26 @@ const {
       aspect-ratio: 3/4;
     }
 
-    & > .frame-inset {
-      margin-right: calc(var(--space-5) * -1);
-      margin-left: calc(var(--space-5) * -1);
-      width: calc(100% + var(--space-5) * 2);
+    &.frame-panel {
+      --inner-x: var(--space-7);
+      --inner-y: var(--space-7);
 
-      &:first-child {
-        margin-top: calc(var(--space-5) * -1);
-      }
+      border: 1px solid var(--border);
+      border-radius: var(--radius-3);
+      background-color: var(--background);
+      padding: var(--inner-y) var(--inner-x);
+    }
 
-      &:last-child {
-        margin-bottom: calc(var(--space-5) * -1);
-      }
+    &.align-start {
+      align-items: flex-start;
+    }
+
+    &.align-center {
+      align-items: center;
+    }
+
+    &.align-end {
+      align-items: flex-end;
     }
   }
 </style>

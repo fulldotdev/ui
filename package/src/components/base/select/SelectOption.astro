@@ -1,0 +1,32 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import Component from '../../_Component.astro'
+
+type Props = HTMLAttributes<'option'> & {
+  text?: string
+}
+
+const { value, text, ...rest } = Astro.props
+---
+
+<Component
+  class:list={['select-option']}
+  as="option"
+  value={value ?? text}
+  text={text ?? value}
+  {...rest}
+>
+  <slot />
+</Component>
+
+<style is:global lang="scss">
+  @import '../../../css/utils.scss';
+
+  @include component('select-option') {
+    color: var(--text);
+    font-weight: var(--font-weight);
+    font-size: var(--text-1);
+    line-height: 1;
+    font-family: var(--font-family);
+  }
+</style>

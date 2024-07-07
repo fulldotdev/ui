@@ -1,66 +1,103 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Tag from '../_Tag.astro'
+import Component from '../_Component.astro'
 
 type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag> & {
-    structure?: 'stack' | 'split' | 'spread' | 'group'
-    variant?: 'base' | 'raised' | 'primary'
-    frame?: 'fill' | 'viewport' | 'panel'
+  ComponentProps<typeof Component> & {
+    scheme?: 'light' | 'dark'
+    color?: 'base' | 'brand'
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+    compact?: boolean
+    frame?: 'fill' | 'viewport' | 'contain' | 'panel'
+    variant?: 'ghost' | 'subtle' | 'outline' | 'soft' | 'solid' | 'surface'
     align?: 'start' | 'center' | 'end'
+    structure?: 'column' | 'split' | 'spread' | 'row'
   }
 
 const {
-  as = 'section',
-  structure = 'stack',
+  as = 'div',
+  frame = 'fill',
+  structure = 'column',
+  variant = 'ghost',
   align = 'start',
   ...rest
 } = Astro.props
 ---
 
-<Tag
+<Component
   class:list={['section']}
-  {structure}
-  {align}
   {as}
+  {frame}
+  {variant}
+  {align}
+  {structure}
   {...rest}
 >
   <slot />
-</Tag>
+</Component>
 
 <style is:global lang="scss">
   @import '../../css/utils.scss';
 
-  :root,
-  .full {
-    --media: 1536px;
-    --space-spacer: calc(var(--space-5) + 4vw);
-    --space-gutter: max(4vw, calc((100vw - var(--media)) / 2));
-  }
-
   @include component('section') {
-    position: relative;
-    gap: var(--space-6) var(--space-5);
-    background: var(--background);
-    padding: var(--space-spacer) var(--space-gutter);
-    width: 100%;
-    overflow-x: hidden;
+    --screen: 1536px;
+    --gutter: max(4vw, calc(100vw - var(--screen)) / 2);
 
-    &.frame-panel {
-      margin: var(--space-5) var(--space-gutter);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-3);
-      background-color: var(--background);
-      padding-top: var(--space-5);
-      padding-right: min(var(--space-5), var(--space-gutter));
-      padding-bottom: var(--space-5);
-      padding-left: min(var(--space-5), var(--space-gutter));
-      overflow: hidden;
+    position: relative;
+    margin: var(--outer-y) var(--outer-x);
+    background-color: var(--background);
+    padding: var(--inner-y) var(--inner-x);
+    width: 100%;
+    max-width: calc(100% - (2 * var(--outer-x)));
+
+    &.frame-fill {
+      --inner-x: var(--gutter);
+      --outer-x: 0;
+      --inner-y: var(--space-7);
+      --outer-y: 0;
     }
 
     &.frame-viewport {
-      height: auto;
+      --inner-x: var(--gutter);
+      --outer-x: 0;
+      --inner-y: var(--space-7);
+      --outer-y: 0;
+
       min-height: 100vh;
+    }
+
+    &.frame-contain {
+      --inner-x: max(4vw, var(--space-7));
+      --outer-x: max(0px, calc(var(--gutter) - var(--inner-x)));
+      --inner-y: var(--space-7);
+      --outer-y: 0;
+    }
+
+    &.frame-panel {
+      --inner-x: min(4vw, var(--space-7));
+      --outer-x: var(--gutter);
+      --inner-y: var(--space-7);
+      --outer-y: var(--space-7);
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius-3);
+    }
+
+    &.align-start {
+      align-items: flex-start;
+    }
+
+    &.align-center {
+      align-items: center;
+      text-align: center;
+
+      & > * > * {
+        text-align: left;
+      }
+    }
+
+    &.align-end {
+      align-items: flex-end;
     }
   }
 </style>

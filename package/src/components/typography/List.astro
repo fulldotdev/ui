@@ -1,23 +1,22 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Tag from '../_Tag.astro'
+import Component from '../_Component.astro'
 import ListItem from './ListItem.astro'
 
-type Props<As extends HTMLTag = 'ul'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag> & {
-    html?: string
-    text?: string
-    variant?: 'base' | 'muted' | 'accent'
-    items?: (
-      | ComponentProps<typeof ListItem>
-      | ComponentProps<typeof ListItem>['html']
-    )[]
-  }
+type Props<As extends HTMLTag = 'ul'> = Polymorphic<{ as: As }> & {
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  color?: 'base' | 'brand'
+  contrast?: boolean
+  items?: (
+    | ComponentProps<typeof ListItem>
+    | ComponentProps<typeof ListItem>['html']
+  )[]
+}
 
 const { as = 'ul', items, ...rest } = Astro.props
 ---
 
-<Tag
+<Component
   class:list={['list']}
   {as}
   {...rest}
@@ -29,7 +28,7 @@ const { as = 'ul', items, ...rest } = Astro.props
     })
   }
   <slot />
-</Tag>
+</Component>
 
 <style is:global lang="scss">
   @import '../../css/utils.scss';
@@ -37,8 +36,8 @@ const { as = 'ul', items, ...rest } = Astro.props
   @include component('list') {
     display: flex;
     flex-direction: column;
-    padding-left: var(--space-4);
-    color: var(--foreground);
+    padding-left: var(--space-5);
+    color: var(--text);
     font-weight: var(--font-weight);
     font-size: var(--text-2);
     line-height: 1.625;

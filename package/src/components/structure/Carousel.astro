@@ -1,33 +1,37 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Tag from '../_Tag.astro'
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../_Component.astro'
 
-type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> &
-  ComponentProps<typeof Tag>
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
+  color?: 'base' | 'brand'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  compact?: boolean
+  position?: 'inset'
+}
 
 const { ...rest } = Astro.props
 ---
 
-<Tag
+<Component
   class:list={['carousel']}
   {...rest}
 >
   <slot />
-</Tag>
+</Component>
 
 <style is:global lang="scss">
   @import '../../css/utils.scss';
 
   @include component('carousel') {
-    --column-width: calc(16 * var(--element-3));
+    --column-width: calc(16 * var(--space-4));
 
     display: flex;
     position: relative;
     position: relative;
     flex-direction: row;
     align-items: flex-start;
-    gap: var(--space-3);
-    padding-bottom: var(--space-3);
+    gap: var(--space-4);
+    padding-bottom: var(--space-4);
     width: 100%;
     overflow-x: auto;
     scroll-behavior: smooth;
@@ -38,6 +42,14 @@ const { ...rest } = Astro.props
       flex-shrink: 0;
       width: var(--column-width);
       scroll-snap-align: center;
+    }
+
+    &.position-inset {
+      margin-right: calc(var(--inner-x) * -1);
+      margin-left: calc(var(--inner-x) * -1);
+      padding-right: var(--inner-x);
+      padding-left: var(--inner-x);
+      width: calc(100% + var(--inner-x) * 2);
     }
   }
 </style>

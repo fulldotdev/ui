@@ -13,15 +13,15 @@ export default defineConfig({
       title: 'Fulldev UI',
       social: {
         discord: 'https://discord.gg/vXZqMbadm8',
-        'x.com': 'https://x.com/silveltm',
+        'x.com': 'https://x.com/fulldotdev',
         github: 'https://github.com/fulldotdev/ui',
       },
       tableOfContents: {
         maxHeadingLevel: 4,
       },
-      favicon: './favicon.png',
-      customCss: ['./src/css/custom.css', 'fulldev-ui/colors'],
-      pagefind: false,
+      favicon: './favicon/favicon.ico',
+      customCss: ['./src/css/custom.css', 'fulldev-ui/color'],
+      pagefind: true,
       sidebar: [
         {
           label: 'Overview',

@@ -1,0 +1,289 @@
+:root,
+.theme-light,
+[data-theme='light'] {
+  --brand-1: #fbf9f8;
+  --brand-2: #fff1ec;
+  --brand-3: #ffe6db;
+  --brand-4: #ffd3c2;
+  --brand-5: #ffc4ad;
+  --brand-6: #ffb397;
+  --brand-7: #ff9e7e;
+  --brand-8: #f5845f;
+  --brand-9: #f50;
+  --brand-10: #ed4d00;
+  --brand-11: #ca4900;
+  --brand-12: #5b2a1a;
+  --brand-contrast: #fff;
+
+  --base-1: #f9f9fa;
+  --base-2: #f5f6f8;
+  --base-3: #ececf0;
+  --base-4: #e3e4e9;
+  --base-5: #dcdde2;
+  --base-6: #d4d5dc;
+  --base-7: #c8cad2;
+  --base-8: #b5b7c2;
+  --base-9: #878994;
+  --base-10: #7c7e89;
+  --base-11: #5e6068;
+  --base-12: #1e1f24;
+  --base-contrast: #ffffff;
+
+  color-scheme: light;
+}
+
+.theme-dark,
+[data-theme='dark'] {
+  --brand-1: #160f0d;
+  --brand-2: #201511;
+  --brand-3: #38190f;
+  --brand-4: #4f1602;
+  --brand-5: #5e1e07;
+  --brand-6: #6f2c15;
+  --brand-7: #873c23;
+  --brand-8: #ae4d2c;
+  --brand-9: #f50;
+  --brand-10: #ed4d00;
+  --brand-11: #ff976f;
+  --brand-12: #ffd8c9;
+  --brand-contrast: #fff;
+
+  --base-1: #101113;
+  --base-2: #18191b;
+  --base-3: #212225;
+  --base-4: #282a2d;
+  --base-5: #2e3135;
+  --base-6: #373a3f;
+  --base-7: #44474e;
+  --base-8: #5c616a;
+  --base-9: #696e77;
+  --base-10: #777b84;
+  --base-11: #b0b4ba;
+  --base-12: #edeef0;
+  --base-contrast: #ffffff;
+
+  color-scheme: dark;
+}
+
+/* --------------------------- */
+/* Generate colors */
+/* --------------------------- */
+
+@mixin selector($selector,
+  $selectors: $selector) {
+  #{$selectors},
+  #{$selector},
+  #{$selector}
+    :is(
+      [class*='theme-'],
+      [class*='color-'],
+      [class*='variant-'],
+      .contrast
+    ):not(
+      #{$selector}
+        [class*='color-']
+        :is([class*='theme-'], [class*='variant-'], .contrast)
+    )
+    :not(
+      #{$selector}
+        [class*='color-']:is([class*='theme-'], [class*='variant-'], .contrast)
+    ) {
+    @content;
+  }
+}
+
+:where(:root),
+:where(.theme-light),
+:where(.theme-dark),
+.color-base,
+.color-base
+  .full:not(.color-base [class*='color-']):not(
+    .color-base [class*='color-'] .full
+  ) {
+  --color-1: var(--base-1);
+  --color-2: var(--base-2);
+  --color-3: var(--base-3);
+  --color-4: var(--base-4);
+  --color-5: var(--base-5);
+  --color-6: var(--base-6);
+  --color-7: var(--base-7);
+  --color-8: var(--base-8);
+  --color-9: var(--base-9);
+  --color-10: var(--base-10);
+  --color-11: var(--base-11);
+  --color-12: var(--base-12);
+  --color-contrast: var(--base-contrast);
+}
+
+.color-brand,
+.color-brand
+  .full:not(.color-brand [class*='color-']):not(
+    .color-brand [class*='color-'] .full
+  ) {
+  --color-1: var(--brand-1);
+  --color-2: var(--brand-2);
+  --color-3: var(--brand-3);
+  --color-4: var(--brand-4);
+  --color-5: var(--brand-5);
+  --color-6: var(--brand-6);
+  --color-7: var(--brand-7);
+  --color-8: var(--brand-8);
+  --color-9: var(--brand-9);
+  --color-10: var(--brand-10);
+  --color-11: var(--brand-11);
+  --color-12: var(--brand-12);
+  --color-contrast: var(--brand-contrast);
+}
+
+* {
+  --background: var(--color-1);
+  --border: var(--color-6);
+  --text: var(--color-11);
+
+  &:where(.contrast &, .contrast) {
+    --text: var(--color-12);
+  }
+}
+
+.variant-solid,
+.variant-solid
+  .full:not(.variant-solid [class*='variant-']):not(
+    .variant-solid [class*='variant-'] .full
+  ) {
+  --background: var(--color-9);
+  --border: transparent;
+  --text: var(--color-contrast);
+
+  &:is(.contrast &, .contrast) {
+    --text: var(--color-1);
+    --background: var(--color-12);
+  }
+
+  &:is(a, button, [href]) {
+    &:hover {
+      --background: var(--color-10);
+
+      &:is(.contrast &, .contrast) {
+        --background: var(--color-12);
+      }
+    }
+  }
+}
+
+.variant-surface,
+.variant-surface
+  .full:not(.variant-surface [class*='variant-']):not(
+    .variant-surface [class*='variant-'] .full
+  ) {
+  --background: var(--color-3);
+  --border: var(--color-7);
+  --text: var(--color-11);
+
+  &:is(.contrast &, .contrast) {
+    --text: var(--color-12);
+  }
+
+  &:is(a, button, [href]) {
+    &:hover {
+      --background: var(--color-4);
+      --border: var(--color-8);
+    }
+
+    &:active {
+      --background: var(--color-5);
+    }
+  }
+}
+
+.variant-soft,
+.variant-soft
+  .full:not(.variant-soft [class*='variant-']):not(
+    .variant-soft [class*='variant-'] .full
+  ) {
+  --background: var(--color-3);
+  --border: transparent;
+  --text: var(--color-11);
+
+  &:is(.contrast &, .contrast) {
+    --text: var(--color-12);
+  }
+
+  &:is(a, button, [href]) {
+    &:hover {
+      --background: var(--color-4);
+    }
+
+    &:active {
+      --background: var(--color-5);
+    }
+  }
+}
+
+.variant-outline,
+.variant-outline
+  .full:not(.variant-outline [class*='variant-']):not(
+    .variant-outline [class*='variant-'] .full
+  ) {
+  --background: transparent;
+  --border: var(--color-7);
+  --text: var(--color-11);
+
+  &:is(.contrast &, .contrast) {
+    --text: var(--color-12);
+  }
+
+  &:is(a, button, [href]) {
+    &:hover {
+      --background: var(--color-3);
+      --border: var(--color-8);
+    }
+
+    &:active {
+      --background: var(--color-5);
+    }
+  }
+}
+
+.variant-ghost,
+.variant-ghost
+  .full:not(.variant-ghost [class*='variant-']):not(
+    .variant-ghost [class*='variant-'] .full
+  ) {
+  --background: transparent;
+  --border: transparent;
+  --text: var(--color-11);
+
+  &:is(.contrast &, .contrast) {
+    --text: var(--color-12);
+  }
+
+  &:is(a, button, [href]) {
+    &:hover {
+      --background: var(--color-3);
+    }
+
+    &:active {
+      --background: var(--color-4);
+    }
+  }
+}
+
+.variant-subtle,
+.variant-subtle
+  .full:not(.variant-subtle [class*='variant-']):not(
+    .variant-subtle [class*='variant-'] .full
+  ) {
+  --background: var(--color-2);
+  --border: var(--color-6);
+  --text: var(--color-11);
+
+  &:is(.contrast &, .contrast) {
+    --text: var(--color-12);
+  }
+
+  &:is(a, button, [href]) {
+    &:hover {
+      --border: var(--color-8);
+    }
+  }
+}

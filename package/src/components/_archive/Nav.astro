@@ -1,0 +1,42 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../_Component.astro'
+
+type Props<As extends HTMLTag = 'nav'> = Polymorphic<{ as: As }> &
+  ComponentProps<typeof Component> & {
+    structure?: 'spread' | 'group' | 'row'
+    align?: 'start' | 'center' | 'end'
+  }
+
+const { as = 'nav', structure = 'spread', ...rest } = Astro.props
+---
+
+<Component
+  class:list={['nav']}
+  {as}
+  {structure}
+  {...rest}
+>
+  <slot />
+</Component>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+
+  @include component('nav') {
+    margin-left: auto;
+    width: max-content;
+
+    &.align-start {
+      align-items: flex-start;
+    }
+
+    &.align-center {
+      align-items: center;
+    }
+
+    &.align-end {
+      align-items: flex-end;
+    }
+  }
+</style>
