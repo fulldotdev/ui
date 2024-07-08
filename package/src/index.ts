@@ -1,5 +1,5 @@
 // Schemas and utils
-export * from './schemas/collection'
+export * from './schemas/schemas'
 
 // Base components
 export { default as Badge } from './components/base/Badge.astro'

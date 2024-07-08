@@ -1,5 +1,5 @@
 import { defineCollection, reference } from 'astro:content'
-import { pageSchema } from '../schemas/collection'
+import { pageSchema } from '../schemas/schemas'
 
 const collection = defineCollection({
   type: 'content',
