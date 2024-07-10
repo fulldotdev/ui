@@ -1,0 +1,50 @@
+---
+import type { ComponentProps } from 'astro/types'
+import {
+  Card,
+  Carousel,
+  Heading,
+  Image,
+  Paragraph,
+  Section,
+  Tagline,
+  Text,
+} from 'fulldev-ui'
+
+interface Props {
+  heading?: ComponentProps<typeof Heading>['html']
+  text?: ComponentProps<typeof Paragraph>['html']
+  products?: {
+    href?: string
+    heading?: string
+    description?: string
+    price?: string
+    image?: string
+  }[]
+}
+
+const { heading, text, products } = Astro.props
+---
+
+<Section>
+  <Heading html={heading} />
+  <Text html={text} />
+  <Carousel position="inset">
+    {
+      products?.map(({ href, heading, description, price, image }) => (
+        <Card
+          {href}
+          frame="none"
+        >
+          <Image src={image} />
+          <Heading
+            level={3}
+            html={heading}
+          />
+          <Paragraph html={description} />
+          <Tagline html={price} />
+        </Card>
+      ))
+    }
+  </Carousel>
+</Section>

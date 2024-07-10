@@ -1,0 +1,73 @@
+---
+import type { ComponentProps } from 'astro/types'
+import {
+  Button,
+  Column,
+  Heading,
+  Image,
+  List,
+  ListItem,
+  Rating,
+  Section,
+  Spread,
+  Text,
+} from 'fulldev-ui'
+
+interface Props extends ComponentProps<typeof Section> {
+  heading?: string
+  price?: string
+  rating?: number
+  image?: string
+  subheading?: string
+  description?: string
+  list?: string[]
+  buttons?: {
+    text?: string
+    href?: string
+  }[]
+}
+
+const {
+  heading,
+  list,
+  price,
+  image,
+  rating,
+  buttons,
+  subheading,
+  description,
+  ...rest
+} = Astro.props
+---
+
+<Section
+  structure="split"
+  {...rest}
+>
+  <Image src={image} />
+  <Column>
+    <Spread>
+      <Heading html={heading} />
+      <Heading html={price} />
+    </Spread>
+    <Rating value={rating} />
+    {
+      buttons?.map(({ href, text }) => (
+        <Button
+          href={href}
+          html={text}
+        />
+      ))
+    }
+    <Column>
+      <Text
+        html={subheading}
+        contrast={true}
+      />
+      <Text html={description} />
+      <List>
+        {list?.map((listitem) => <ListItem html={listitem} />)}
+      </List>
+    </Column>
+  </Column>
+</Section>

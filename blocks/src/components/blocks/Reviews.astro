@@ -1,0 +1,49 @@
+---
+import type { ComponentProps } from 'astro/types'
+import {
+  Card,
+  Heading,
+  Masonry,
+  Paragraph,
+  Rating,
+  Section,
+  Text,
+} from 'fulldev-ui'
+
+interface Props {
+  heading?: ComponentProps<typeof Heading>['html']
+  text?: ComponentProps<typeof Paragraph>['html']
+  cards?: {
+    href?: string
+    rating?: number
+    heading?: string
+    paragraph?: string
+  }[]
+}
+
+const { heading, text, cards } = Astro.props
+
+const randomReviews = cards?.sort(() => Math.random() - 0.5).slice(0, 5)
+---
+
+<Section>
+  <Heading html={heading} />
+  <Text html={text} />
+  <Masonry>
+    {
+      randomReviews?.map(({ href, rating, heading, paragraph }) => (
+        <Card
+          {href}
+          variant="outline"
+        >
+          <Rating value={rating} />
+          <Heading
+            level={3}
+            html={heading}
+          />
+          <Paragraph html={paragraph} />
+        </Card>
+      ))
+    }
+  </Masonry>
+</Section>

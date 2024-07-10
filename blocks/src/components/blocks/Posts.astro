@@ -1,0 +1,75 @@
+---
+import Avatar from '@components/base/Avatar.astro'
+import type { ComponentProps } from 'astro/types'
+import {
+  Card,
+  Column,
+  Heading,
+  Image,
+  Row,
+  Section,
+  Tagline,
+  Text,
+} from 'fulldev-ui'
+
+interface Props extends ComponentProps<typeof Section> {
+  heading?: string
+  paragraph?: string
+  text?: string
+  posts?: {
+    image?: string
+    name?: string
+    text?: string
+    href?: string
+    date?: string
+    author?: {
+      name?: string
+      tagline?: string
+      image?: string
+    }
+  }[]
+}
+
+const { heading, text, posts, ...rest } = Astro.props
+---
+
+<Section {...rest}>
+  <Heading html={heading} />
+  <Text html={text} />
+  <Row align="center">
+    {
+      posts?.map(({ image, href, name, text, date, author }) => (
+        <Card
+          {href}
+          variant="outline"
+        >
+          <Image
+            src={image}
+            position="inset"
+          />
+          <Tagline html={date} />
+          <Heading
+            html={name}
+            level={3}
+          />
+          <Text html={text} />
+
+          <Row>
+            <Avatar
+              src={author?.image}
+              width={60}
+              height={60}
+            />
+            <Column>
+              <Heading
+                level={4}
+                html={author?.name}
+              />
+              <Text html={author?.tagline} />
+            </Column>
+          </Row>
+        </Card>
+      ))
+    }
+  </Row>
+</Section>

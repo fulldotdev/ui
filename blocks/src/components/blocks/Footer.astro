@@ -1,0 +1,67 @@
+---
+import Logo from '@components/base/Logo.astro'
+import type { ComponentProps } from 'astro/types'
+import {
+  Column,
+  Footer as FullFooter,
+  Heading,
+  Link,
+  Split,
+  Text,
+} from 'fulldev-ui'
+
+interface Props extends ComponentProps<typeof FullFooter> {
+  logo?: string
+  heading?: string
+  href?: string
+  text?: string
+  categories?: {
+    category: string
+    links: {
+      text: string
+      href: string
+    }[]
+  }[]
+}
+
+const { logo, heading, categories, href, text, ...rest } = Astro.props
+---
+
+<FullFooter
+  structure="split"
+  size="sm"
+>
+  <Column>
+    <Column
+      style={{ textDecoration: 'none' }}
+      as="a"
+      href="/"
+    >
+      <Logo src={logo} />
+      <Heading
+        as="p"
+        level={2}
+        text={heading}
+      />
+    </Column>
+    <Text text={text} />
+  </Column>
+  <Split align="start">
+    {
+      categories?.map((category) => (
+        <Column>
+          <Heading
+            text={category.category}
+            level={3}
+          />
+          {category.links.map((link) => (
+            <Link
+              href={link.href}
+              text={link.text}
+            />
+          ))}
+        </Column>
+      ))
+    }
+  </Split>
+</FullFooter>
