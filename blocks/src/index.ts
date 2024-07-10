@@ -17,3 +17,13 @@ export { default as Product } from './components/blocks/Product.astro'
 export { default as Products } from './components/blocks/Products.astro'
 export { default as Reviews } from './components/blocks/Reviews.astro'
 export { default as Stats } from './components/blocks/Stats.astro'
+
+// Layouts
+// export { default as CategoryLayout } from './layouts/CategoryLayout.astro'
+export { default as Layout } from './layouts/Layout.astro'
+export { default as NavLayout } from './layouts/NavLayout.astro'
+export { default as PageLayout } from './layouts/PageLayout.astro'
+export { default as PolicyLayout } from './layouts/PolicyLayout.astro'
+export { default as PostLayout } from './layouts/PostLayout.astro'
+export { default as ProductLayout } from './layouts/ProductLayout.astro'
+export { default as ProductsLayout } from './layouts/ProductsLayout.astro'
