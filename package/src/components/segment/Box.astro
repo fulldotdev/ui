@@ -3,19 +3,32 @@ import type { HTMLTag, Polymorphic } from 'astro/types'
 import Component from '../_Component.astro'
 
 type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
-  scheme?: 'light' | 'dark'
-  color?: 'base' | 'brand'
-  size?: 'sm' | 'md' | 'lg'
-  compact?: boolean
-  frame?: 'container' | 'wrapper' | 'panel' | 'viewport' | 'card' | 'none'
-  variant?: 'fill' | 'subtle' | 'outline' | 'soft' | 'solid' | 'surface'
+  align?: 'start' | 'center' | 'end'
+  structure?:
+    | 'bento'
+    | 'carousel'
+    | 'column'
+    | 'grid'
+    | 'masonry'
+    | 'row'
+    | 'split'
+    | 'spread'
+    | 'wrap'
 }
 
-const { ...rest } = Astro.props
+const {
+  as = 'div',
+  structure = 'column',
+  align = 'start',
+  ...rest
+} = Astro.props
 ---
 
 <Component
   class:list={['box']}
+  {as}
+  {structure}
+  {align}
   {...rest}
 >
   <slot />
@@ -25,6 +38,5 @@ const { ...rest } = Astro.props
   @import '../../css/utils.scss';
 
   @include component('box') {
-    position: relative;
   }
 </style>
