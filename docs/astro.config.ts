@@ -3,7 +3,7 @@ import starlight from '@astrojs/starlight'
 // @ts-ignore
 import liveCode from 'astro-live-code'
 import { defineConfig } from 'astro/config'
-import fulldevUI from '../ui/src/integration/integration'
+import fulldevUI from '../package/src/integration/integration'
 
 // https://astro.build/config
 export default defineConfig({
