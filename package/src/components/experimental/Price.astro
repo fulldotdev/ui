@@ -1,0 +1,36 @@
+---
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Component from '../_Component.astro'
+
+type Props<As extends HTMLTag = 'p'> = Polymorphic<{ as: As }> & {
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  color?: 'base' | 'brand'
+  contrast?: boolean
+  value?: number
+}
+
+const { as = 'p', value, ...rest } = Astro.props
+---
+
+<Component
+  if={value}
+  class:list={['price']}
+  {as}
+  {...rest}
+>
+  €{value?.toFixed(2).replace('.', ',')}
+</Component>
+
+<style is:global lang="scss">
+  @import '../../css/utils.scss';
+
+  @include component('price') {
+    margin: 0;
+    max-width: calc(var(--space-4) * 36);
+    color: var(--text, var(--color-11));
+    font-weight: var(--font-weight);
+    font-size: var(--text-5);
+    line-height: 1.25;
+    font-family: var(--font-family);
+  }
+</style>

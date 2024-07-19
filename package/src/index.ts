@@ -59,6 +59,10 @@ export { default as Split } from './components/structure/Split.astro'
 export { default as Spread } from './components/structure/Spread.astro'
 export { default as Wrap } from './components/structure/Wrap.astro'
 
+// Experimental components
+export { default as Channel } from './components/experimental/Channel.astro'
+export { default as Price } from './components/experimental/Price.astro'
+
 // Utility components
 export { default as Block } from './components/_Block.astro'
 export { default as Blocks } from './components/_Blocks.astro'
