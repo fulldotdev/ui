@@ -2,13 +2,18 @@
 import type { ComponentProps } from 'astro/types'
 import { Image } from 'fulldev-ui'
 
-type Props = Omit<ComponentProps<typeof Image>, 'position' | 'frame'> & {}
+type Props = Omit<ComponentProps<typeof Image>, 'position' | 'frame'> & {
+  radius?: 'none' | 'auto' | 'full'
+  variant?: 'subtle' | 'outline' | 'ghost'
+}
 
-const { ...rest } = Astro.props
+const { radius = 'auto', variant = 'ghost', ...rest } = Astro.props
 ---
 
 <Image
   class="avatar"
+  {variant}
+  {radius}
   {...rest}
 />
 
@@ -16,8 +21,23 @@ const { ...rest } = Astro.props
   @import '../../css/utils.scss';
 
   @include component('avatar') {
+    display: block;
+    border: 1px solid var(--border);
     border-radius: var(--radius-3);
-    max-width: calc(2.8 * var(--space-6));
-    height: auto;
+    width: calc(var(--text-1) + 2 * var(--space-4));
+    height: calc(var(--text-1) + 2 * var(--space-4));
+    object-fit: cover;
+
+    &.radius-none {
+      border-radius: 0;
+    }
+
+    &.radius-auto {
+      border-radius: var(--radius-1);
+    }
+
+    &.radius-full {
+      border-radius: 9999px;
+    }
   }
 </style>
