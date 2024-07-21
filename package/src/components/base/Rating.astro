@@ -1,18 +1,37 @@
 ---
 import type { HTMLTag, Polymorphic } from 'astro/types'
 import Component from '../_Component.astro'
+import Column from '../structure/Column.astro'
+import Row from '../structure/Row.astro'
+import Heading from '../typography/Heading.astro'
+import Label from '../typography/Label.astro'
+import Avatar from './Avatar.astro'
 import Icon from './Icon.astro'
 
 type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
   color?: 'base' | 'brand'
+  radius?: 'none' | 'auto' | 'full'
   value?: number
   size?: string
   compact?: boolean
+  avatars?: string[]
+  label?: string
+  heading: string
 }
 
-const { size, compact, value = 5, ...rest } = Astro.props
+const {
+  color = 'brand',
+  radius = 'full',
+  compact = true,
+  value,
+  heading,
+  avatars,
+  label,
+  ...rest
+} = Astro.props
 
 const getIcon = (count: number) => {
+  if (!value) return
   const difference = value - count
   if (difference >= -0.25) return 'star-filled'
   if (difference >= -0.75) return 'star-half-filled'
@@ -22,18 +41,39 @@ const getIcon = (count: number) => {
 
 <Component
   class:list={['rating']}
+  {compact}
   {...rest}
 >
   {
-    [1, 2, 3, 4, 5].map((_, i) => (
-      <>
-        <Icon
-          name={getIcon(i + 1)}
-          class:list={'rating-icon-solid'}
-        />
-      </>
+    avatars?.map((avatar) => (
+      <Avatar
+        {radius}
+        src={avatar}
+      />
     ))
   }
+  <Column>
+    <Row>
+      {
+        value &&
+          [1, 2, 3, 4, 5].map((_, i) => (
+            <Icon
+              {color}
+              name={getIcon(i + 1)}
+              class:list={'rating-icon-solid'}
+            />
+          ))
+      }
+    </Row>
+    <Label
+      color="base"
+      html={label}
+    />
+    <Heading
+      level={6}
+      html={heading}
+    />
+  </Column>
 </Component>
 
 <style is:global lang="scss">
@@ -41,7 +81,23 @@ const getIcon = (count: number) => {
 
   @include component('rating') {
     display: inline-flex;
-    position: relative;
-    gap: var(--space-2);
+    align-items: center;
+
+    .avatar {
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    * + .column {
+      margin-left: var(--space-4);
+    }
+
+    .label,
+    .heading {
+      margin-top: var(--space-2) !important;
+    }
+
+    .avatar + .avatar {
+      margin-left: calc(-1 * var(--space-5));
+    }
   }
 </style>
