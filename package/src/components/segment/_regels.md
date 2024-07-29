@@ -3,7 +3,7 @@ Kan je een collectie Cards maken? Ja: Product, Post etc
 
 Kan je een collectie ... maken? Zo ja = segment.
 Segments omschrijven super duidelijk de content.
-Group is een voorbeeld van een slechte section, want niemand wat hier in zit. 
+Group is een voorbeeld van een slechte segment, want niemand wat hier in zit. 
 
 Deze segments willen we uiteindelijk hebben:
 
@@ -24,7 +24,7 @@ Ze omschrijven ALLEMAAL duidelijk wat de content is.
 
 Beschrijft het niet duidelijk de content? Beschrijft het wel duidelijk de structuur? >> structure
 
-Waar structures 1 slot hebben, moeten segments meerdere slots krijgen. reden is dat de conten t hier bepalen is! Anders klopt de segment naam sws niet.
+Waar structures 1 slot hebben, moeten segments meerdere slots krijgen. reden is dat de content hier bepalen is! Anders klopt de segment naam sws niet.
 
 Section heeft bijv segment, writeup, actions, media.
 Deck heeft bijv segment, writeup, actions, cards
