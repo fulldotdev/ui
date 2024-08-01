@@ -7,14 +7,16 @@ type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   compact?: boolean
   align?: 'start' | 'center' | 'end'
+  space?: 'none' | 'auto'
 }
 
-const { align = 'start', ...rest } = Astro.props
+const { space = 'auto', align = 'start', ...rest } = Astro.props
 ---
 
 <Component
   class:list={['column']}
   {align}
+  {space}
   {...rest}
 >
   <slot />
@@ -47,6 +49,10 @@ const { align = 'start', ...rest } = Astro.props
       align-items: flex-end;
     }
 
-    @include space-y;
+    &.space-auto {
+      > * + * {
+        margin-top: var(--space-auto);
+      }
+    }
   }
 </style>

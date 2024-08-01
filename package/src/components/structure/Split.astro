@@ -7,14 +7,16 @@ type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   compact?: boolean
   align?: 'start' | 'center' | 'end'
+  space?: 'none' | 'auto'
 }
 
-const { align = 'center', ...rest } = Astro.props
+const { space = 'auto', align = 'center', ...rest } = Astro.props
 ---
 
 <Component
   class:list={['split']}
   {align}
+  {space}
   {...rest}
 >
   <slot />
@@ -31,7 +33,11 @@ const { align = 'center', ...rest } = Astro.props
     width: 100%;
 
     @media (max-width: 1023.9999px) {
-      @include space-y;
+      &.space-auto {
+        > * + * {
+          margin-top: var(--space-auto);
+        }
+      }
     }
 
     @media (min-width: 1024px) {
