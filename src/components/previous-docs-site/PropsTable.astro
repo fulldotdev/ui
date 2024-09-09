@@ -1,7 +1,92 @@
 ---
-import { Table } from 'fulldev-ui'
+import { readFileSync } from 'fs'
+import { Table } from 'fulldev-ui/components/base/table/Table.astro'
+import { fileURLToPath } from 'url'
 
-const { props } = Astro.props
+const { component } = Astro.props
+
+const componentFilePath = fileURLToPath(
+  new URL(component.moduleId, import.meta.url)
+)
+const componentFileContent = readFileSync(componentFilePath, 'utf-8')
+
+const propsTypeMatch = componentFileContent.match(
+  /type Props(?:<[^>]+>)?\s*=\s*(?:HTMLAttributes<'[^']+'>\s*&\s*)?(?:Polymorphic<[^>]+>\s*&\s*)?{([\s\S]*?)}/
+)
+const propsType = propsTypeMatch ? propsTypeMatch[1] : ''
+
+const astroPropsMatch = componentFileContent.match(
+  /const { [^}]+ } = Astro\.props/
+)
+const astroProps = astroPropsMatch ? astroPropsMatch[0] : ''
+
+const propRegex = /(\w+)\??:\s*((?:[^;\n]|\n\s*\|)*)/g
+const parsedProps = [...propsType.matchAll(propRegex)].map(([, name, type]) => {
+  const cleanType = type
+    .replace(/^\s*\|\s*/, '')
+    .trim()
+    .replace(/\n\s*\|/g, ' | ')
+  return { name, type: cleanType }
+})
+
+const astroPropsRegex = /(\w+)(?:=\s*('[^']*'|"[^"]*"|[^,\s]+))?/g
+const parsedAstroProps = [...astroProps.matchAll(astroPropsRegex)].reduce<
+  Record<string, string | undefined>
+>((acc, [, name, defaultValue]) => {
+  if (defaultValue) {
+    acc[name] =
+      defaultValue.startsWith("'") || defaultValue.startsWith('"')
+        ? defaultValue.slice(1, -1)
+        : defaultValue
+  }
+  return acc
+}, {})
+
+const defaultPropsMatch = componentFileContent.match(
+  /const\s*{[^}]+}\s*=\s*Astro\.props/s
+)
+if (defaultPropsMatch) {
+  const defaultPropsString = defaultPropsMatch[0]
+  const defaultPropsRegex = /(\w+)\s*=\s*('[^']*'|"[^"]*"|[^,\s]+)/g
+  let match
+  while ((match = defaultPropsRegex.exec(defaultPropsString)) !== null) {
+    const [, name, value] = match
+    parsedAstroProps[name] =
+      value.startsWith("'") || value.startsWith('"')
+        ? value.slice(1, -1)
+        : value
+  }
+}
+
+// Handle multi-line default props
+const multiLineDefaultPropsMatch = componentFileContent.match(
+  /const\s*{[\s\S]*?}\s*=\s*Astro\.props/
+)
+if (multiLineDefaultPropsMatch) {
+  const multiLineDefaultPropsString = multiLineDefaultPropsMatch[0]
+  const multiLineDefaultPropsRegex = /(\w+)\s*=\s*('[^']*'|"[^"]*"|[^,\n]+)/g
+  let match
+  while (
+    (match = multiLineDefaultPropsRegex.exec(multiLineDefaultPropsString)) !==
+    null
+  ) {
+    const [, name, value] = match
+    parsedAstroProps[name] =
+      value.startsWith("'") || value.startsWith('"')
+        ? value.slice(1, -1)
+        : value
+  }
+}
+
+const asDefaultMatch = componentFileContent.match(/as\s*=\s*([^,\n]+)/)
+const asDefault = asDefaultMatch
+  ? asDefaultMatch[1]
+      .trim()
+      .split(' : ')[0]
+      .replace(/['"]/g, '')
+      .replace(/href \? a : /, '')
+      .replace(/href \? 'a' : /, '')
+  : 'div'
 ---
 
 <Table
@@ -9,9 +94,15 @@ const { props } = Astro.props
   style={{ 'border-radius': '0px' }}
   size="md"
   header={['Prop', 'Type', 'Default']}
-  body={props.map((item: any) => [
-    item.name,
-    item.type,
-    item.default === undefined ? '-' : `${item.default}`,
-  ])}
+  body={[
+    ...parsedProps.map((item) => [
+      item.name,
+      item.type,
+      parsedAstroProps[item.name] !== undefined
+        ? parsedAstroProps[item.name]
+        : '-',
+    ]),
+    ['as', 'HTMLTag', asDefault],
+    ['HTML Attributes', 'Polymorphic<as>', '-'],
+  ]}
 />
