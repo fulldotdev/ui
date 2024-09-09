@@ -1,9 +1,8 @@
-import { defineConfig } from 'astro/config'
-import sitemap from '@astrojs/sitemap'
 import mdx from '@astrojs/mdx'
+import sitemap from '@astrojs/sitemap'
 import liveCode from 'astro-live-code'
-import integration from 'fulldev-ui/integration/integration'
-
+import { defineConfig } from 'astro/config'
+import integration from 'fulldev-ui/integration'
 
 // https://astro.build/config
 export default defineConfig({

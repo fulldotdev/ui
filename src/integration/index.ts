@@ -1,10 +1,6 @@
 import type { AstroIntegration } from 'astro'
 import merge from 'deepmerge'
 import virtual from 'vite-plugin-virtual'
-// @ts-ignore
-// @ts-ignore
-// @ts-ignore
-// @ts-ignore
 import { generateRadixColors } from './generate-colors'
 
 type Color = {
@@ -32,18 +28,19 @@ const defaultConfig: Config = {
     },
   },
 }
-
-export default function fulldevBlocksIntegration(
-  userConfig: Partial<Config> = {}
+export default function fulluiIntegration(
+  userConfig: any = {}
 ): AstroIntegration {
-  const config = merge(defaultConfig, userConfig)
+  const config = merge(defaultConfig ?? {}, userConfig ?? {})
+
   return {
     name: '/integration',
     hooks: {
       'astro:config:setup': async ({
-        injectRoute,
-        injectScript,
+        config: astroConfig,
         updateConfig,
+        injectScript,
+        injectRoute,
       }) => {
         // ----------------------
         // Inject css
@@ -124,9 +121,18 @@ export default function fulldevBlocksIntegration(
           vite: {
             plugins: [
               virtual({
+                'virtual:astro/config': `export default ${JSON.stringify(astroConfig)}`,
+                'virtual:fulldev-ui/config': `export default ${JSON.stringify(config)}`,
                 'virtual:colors.css': css,
-              }) as any,
+              }),
             ],
+            // css: {
+            //   preprocessorOptions: {
+            //     scss: {
+            //       additionalData: `$layer: ${config.layer};`,
+            //     },
+            //   },
+            // },
           },
         })
 
@@ -139,7 +145,7 @@ export default function fulldevBlocksIntegration(
         !pages['/src/pages/[...page].astro'] &&
           injectRoute({
             pattern: '/[...page]',
-            entrypoint: 'fulldev-blocks/[...page].astro',
+            entrypoint: 'fulldev-ui/[...page].astro',
           })
       },
     },
