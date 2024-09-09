@@ -1,16 +1,12 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Root from '../Root.astro'
-import ListItem from './ListItem.astro'
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Root from 'fulldev-ui/components/Root.astro'
 
 type Props<As extends HTMLTag = 'ul'> = Polymorphic<{ as: As }> & {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   color?: 'base' | 'brand'
   contrast?: boolean
-  items?: (
-    | ComponentProps<typeof ListItem>
-    | ComponentProps<typeof ListItem>['html']
-  )[]
+  items?: string[]
 }
 
 const { as = 'ul', items, ...rest } = Astro.props
@@ -21,13 +17,7 @@ const { as = 'ul', items, ...rest } = Astro.props
   {as}
   {...rest}
 >
-  {
-    items?.map((item) => {
-      if (typeof item === 'string') return <ListItem html={item} />
-      else return <ListItem {...item} />
-    })
-  }
-  <slot />
+  {items?.map((item) => <li set:html={item} />)}
 </Root>
 
 <style is:global lang="scss">
@@ -41,5 +31,15 @@ const { as = 'ul', items, ...rest } = Astro.props
     line-height: 1.625;
     font-family: var(--font-family);
     list-style-type: disc;
+
+    li {
+      align-items: center;
+      max-width: calc(var(--space-4) * 36);
+      color: var(--text);
+      font-weight: var(--font-weight);
+      font-size: var(--text-2);
+      line-height: 1.625;
+      font-family: var(--font-family);
+    }
   }
 </style>
