@@ -9,31 +9,31 @@ section:
     - heading: Product
       text: The best product in the world
       price: 100
-      image: /placeholder.webp
+      image: /images/placeholder.webp
       href: '#'
     - heading: Product
       text: The best product in the world
       price: 100
-      image: /placeholder.webp
+      image: /images/placeholder.webp
       href: '#'
     - heading: Product
       text: The best product in the world
       price: 100
-      image: /placeholder.webp
+      image: /images/placeholder.webp
       href: '#'
     - heading: Product
       text: The best product in the world
       price: 100
-      image: /placeholder.webp
+      image: /images/placeholder.webp
       href: '#'
     - heading: Product
       text: The best product in the world
       price: 100
-      image: /placeholder.webp
+      image: /images/placeholder.webp
       href: '#'
     - heading: Product
       text: The best product in the world
       price: 100
-      image: /placeholder.webp
+      image: /images/placeholder.webp
       href: '#'
 ---

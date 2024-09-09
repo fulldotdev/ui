@@ -12,7 +12,7 @@ export default defineConfig({
     mdx(),
 
     liveCode({
-      layout: '/src/components/Window.astro',
+      layout: '/src/components/experimental/Window.astro',
     }),
     integration({
       css: '/src/css/custom.css',

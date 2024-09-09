@@ -10,7 +10,7 @@ section:
       date: '2024-06-09'
       text: Today we have launched our new summer collection in europe. Ranging from new graphic tees to swim shorts. Check it out now!
       href: /
-      image: /placeholder.webp
+      image: /images/placeholder.webp
       author:
         name: John Doe
         tagline: Ceo @ Company
@@ -19,7 +19,7 @@ section:
       date: '2024-06-09'
       text: Today we have launched our new summer collection in europe. Ranging from new graphic tees to swim shorts. Check it out now!
       href: /
-      image: /placeholder.webp
+      image: /images/placeholder.webp
       author:
         name: John Doe
         tagline: Ceo @ Company
@@ -28,7 +28,7 @@ section:
       date: '2024-06-09'
       text: Today we have launched our new summer collection in europe. Ranging from new graphic tees to swim shorts. Check it out now!
       href: /
-      image: /placeholder.webp
+      image: /images/placeholder.webp
       author:
         name: John Doe
         tagline: Ceo @ Company

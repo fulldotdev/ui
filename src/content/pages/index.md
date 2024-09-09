@@ -18,21 +18,20 @@ sections:
   features:
     _bookshop_name: Features
     align: center
-    heading: What's included
     pages:
       - system
       - components
       - blocks
 
-  cta:
-    _bookshop_name: Cta
-    heading: Build content websites in a fraction of time
-    text: Fulldev UI is a library of components and blocks to build content sites.
-    buttons:
-      - text: Get Started
-        href: /overview/introduction
-      - text: Github
-        href: https://github.com/fulldotdev/ui
-        target: _blank
-        icon: brand-github
+  # cta:
+  #   _bookshop_name: Cta
+  #   heading: Build content websites in a fraction of time
+  #   text: Fulldev UI is a library of components and blocks to build content sites.
+  #   buttons:
+  #     - text: Get Started
+  #       href: /overview/introduction
+  #     - text: Github
+  #       href: https://github.com/fulldotdev/ui
+  #       target: _blank
+  #       icon: brand-github
 ---

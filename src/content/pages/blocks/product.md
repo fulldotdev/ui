@@ -6,7 +6,7 @@ section:
   heading: 8 BALL TEE PIGMENT DYED
   price: 48
   rating: 5
-  image: /placeholder.webp
+  image: /images/placeholder.webp
   buttons:
     - text: Add to cart
       href: /

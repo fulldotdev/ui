@@ -3,7 +3,9 @@ import { Button, Heading, Section, Spread } from 'fulldev-ui'
 
 const { componentProps } = Astro.props
 
-const id = Astro.props.componentProps.title.toLowerCase().replace(/ /g, '-')
+const randomId = Math.random().toString(36).substring(2, 15)
+const id =
+  Astro.props.componentProps.title?.toLowerCase().replace(/ /g, '-') ?? randomId
 ---
 
 <Section class="window">
@@ -19,6 +21,9 @@ const id = Astro.props.componentProps.title.toLowerCase().replace(/ /g, '-')
       as="label"
       for={id}
       variant="soft"
+      style={{
+        marginLeft: 'auto',
+      }}
     >
       Preview / Code
     </Button>
@@ -43,6 +48,8 @@ const id = Astro.props.componentProps.title.toLowerCase().replace(/ /g, '-')
 
 <style lang="scss" is:global>
   .window {
+    width: 100%;
+
     .live-code-layout {
       display: flex;
       flex-direction: column;
@@ -52,15 +59,11 @@ const id = Astro.props.componentProps.title.toLowerCase().replace(/ /g, '-')
       width: 100%;
       overflow: hidden;
 
-      // .window-toggle ~ .astro-code {
-      //   display: none;
-      // }
-      // .window-toggle:checked ~ .astro-code {
-      //   display: block;
-      // }
-
-      // .window-toggle:checked ~ .example-container {
-      //   display: block;
+      // .example-container {
+      //   display: flex;
+      //   justify-content: center;
+      //   align-items: center;
+      //   padding: var(--space-5);
       // }
 
       .code-container {
@@ -89,16 +92,4 @@ const id = Astro.props.componentProps.title.toLowerCase().replace(/ /g, '-')
       }
     }
   }
-
-  /* .example-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-width: var(--ec-brdWd, 1px);
-    border-style: solid;
-    border-color: var(--ec-brdCol, var(--sl-color-gray-5));
-    border-bottom: none;
-    background: var(--ec-frm-edBg, var(--astro-code-color-background));
-    padding: 2.5rem;
-  } */
 </style>
