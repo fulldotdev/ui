@@ -1,20 +1,20 @@
 ---
 import type { ComponentProps, Polymorphic } from 'astro/types'
+import Icon from '../../Icon.astro'
+import Label from '../../Label.astro'
 import Root from '../../Root.astro'
-import Label from '../../typography/Label.astro'
-import Icon from '../Icon.astro'
-import TextareaElement from './TextareaElement.astro'
+import InputElement from './InputElement.astro'
 
 type Props<As extends 'div'> = Polymorphic<{ as: As }> &
   Pick<
-    ComponentProps<typeof TextareaElement>,
+    ComponentProps<typeof InputElement>,
     | 'variant'
     | 'placeholder'
+    | 'type'
     | 'name'
     | 'value'
     | 'disabled'
     | 'required'
-    | 'rows'
   > & {
     color?: 'base' | 'brand'
     label?: string
@@ -23,13 +23,13 @@ type Props<As extends 'div'> = Polymorphic<{ as: As }> &
 
 const {
   as = 'div',
+  variant = 'outline',
   label,
   icon,
-  variant,
-  // textarea attributes
-  name,
-  rows,
+  // input attributes
   placeholder,
+  name,
+  type,
   value,
   disabled,
   required,
@@ -38,7 +38,7 @@ const {
 ---
 
 <Root
-  class:list={['textarea']}
+  class:list={['input']}
   {as}
   {...rest}
 >
@@ -46,21 +46,21 @@ const {
     for={name}
     text={label}
   />
-  <TextareaElement
+  <InputElement
     id={name}
     {name}
     {variant}
     {placeholder}
+    {type}
     {value}
     {disabled}
     {required}
-    {rows}
   />
   <Icon name={icon} />
 </Root>
 
 <style is:global lang="scss">
-  .textarea {
+  .input {
     display: flex;
     position: relative;
     flex-direction: column;

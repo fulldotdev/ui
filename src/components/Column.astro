@@ -1,6 +1,6 @@
 ---
 import type { HTMLTag, Polymorphic } from 'astro/types'
-import Root from '../Root.astro'
+import Root from './Root.astro'
 
 type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
   color?: 'base' | 'brand'
@@ -10,11 +10,11 @@ type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
   space?: 'none' | 'auto'
 }
 
-const { space = 'auto', align = 'center', ...rest } = Astro.props
+const { space = 'auto', align = 'start', ...rest } = Astro.props
 ---
 
 <Root
-  class:list={['row']}
+  class:list={['column']}
   {align}
   {space}
   {...rest}
@@ -23,8 +23,10 @@ const { space = 'auto', align = 'center', ...rest } = Astro.props
 </Root>
 
 <style is:global lang="scss">
-  .row {
+  .column {
     display: flex;
+    position: relative;
+    flex-direction: column;
 
     &.align-start {
       align-items: flex-start;
@@ -33,15 +35,29 @@ const { space = 'auto', align = 'center', ...rest } = Astro.props
 
     &.align-center {
       align-items: center;
+      text-align: center;
+
+      & > *:not(.align-center) > *:not(.align-center) {
+        text-align: left;
+      }
     }
 
     &.align-end {
       align-items: flex-end;
     }
 
+    &.justify-center {
+      justify-content: center;
+    }
+
     &.space-auto {
       > * + * {
-        margin-left: var(--space-auto);
+        margin-top: var(--space-auto);
+      }
+
+      > * + .carousel {
+        margin-top: 0;
+        padding-top: var(--space-auto);
       }
     }
   }
