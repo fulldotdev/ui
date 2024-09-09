@@ -6,33 +6,31 @@ type Props<As extends HTMLTag = 'p'> = Polymorphic<{ as: As }> & {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   color?: 'base' | 'brand'
   contrast?: boolean
-  value?: number
+  html?: string
+  text?: string
 }
 
-const { as = 'p', value, ...rest } = Astro.props
+// TODO text alleen p, html apparte component voor genaamd <Html> die een div wordt. Misschien kan dit wel gwn de prose zijn
+const { html, as = html ? 'div' : 'p', ...rest } = Astro.props
 ---
 
-{
-  value && (
-    <Root
-      if={value}
-      class:list={['price']}
-      {as}
-      {...rest}
-    >
-      €{value?.toFixed(2).replace('.', ',')}
-    </Root>
-  )
-}
+<Root
+  class:list={['text']}
+  {as}
+  {html}
+  {...rest}
+>
+  <slot />
+</Root>
 
 <style is:global lang="scss">
-  .price {
+  .text {
     margin: 0;
     max-width: calc(var(--space-4) * 36);
-    color: var(--color-12);
+    color: var(--text, var(--color-11));
     font-weight: var(--font-weight);
-    font-size: var(--text-5);
-    line-height: 1.25;
+    font-size: var(--text-2);
+    line-height: 1.625;
     font-family: var(--font-family);
   }
 </style>

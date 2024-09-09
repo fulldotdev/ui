@@ -1,0 +1,31 @@
+---
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Root from 'fulldev-ui/components/Root.astro'
+
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
+  color?: 'base' | 'brand'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  compact?: boolean
+}
+
+const { ...rest } = Astro.props
+---
+
+<Root
+  class:list={['grid']}
+  {...rest}
+>
+  <slot />
+</Root>
+
+<style is:global lang="scss">
+  .grid {
+    --column-width: calc(15 * var(--space-4));
+
+    display: grid;
+    position: relative;
+    grid-template-columns: repeat(auto-fit, minmax(var(--column-width), 1fr));
+    gap: var(--space-4);
+    width: 100%;
+  }
+</style>

@@ -1,0 +1,34 @@
+---
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Root from 'fulldev-ui/components/Root.astro'
+
+type Props<As extends HTMLTag = 'span'> = Polymorphic<{ as: As }> & {
+  size?: 'sm' | 'md' | 'lg'
+  color?: 'base' | 'brand'
+  contrast?: boolean
+  html?: string
+  text?: string
+}
+
+const { as = 'span', ...rest } = Astro.props
+---
+
+<Root
+  class:list={['tagline']}
+  {as}
+  {...rest}
+>
+  <slot />
+</Root>
+
+<style is:global lang="scss">
+  .tagline {
+    margin: 0;
+    max-width: calc(var(--space-4) * 36);
+    color: var(--text);
+    font-weight: var(--font-weight);
+    font-size: var(--text-1);
+    line-height: 1.25;
+    font-family: var(--font-family);
+  }
+</style>

@@ -1,0 +1,45 @@
+---
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Icon from 'fulldev-ui/components/Icon.astro'
+import Root from 'fulldev-ui/components/Root.astro'
+
+type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
+  color?: 'base' | 'brand'
+  value?: number
+  size?: string
+  compact?: boolean
+}
+
+const { value, ...rest } = Astro.props
+
+const getIcon = (count: number) => {
+  if (!value) return
+  const difference = value - count
+  if (difference >= -0.25) return 'star-filled'
+  if (difference >= -0.75) return 'star-half-filled'
+  return 'star'
+}
+---
+
+<Root
+  class:list={'rating'}
+  {...rest}
+>
+  {
+    value &&
+      [1, 2, 3, 4, 5].map((_, i) => (
+        <Icon
+          name={getIcon(i + 1)}
+          class:list={'rating-icon-solid'}
+        />
+      ))
+  }
+</Root>
+
+<style is:global lang="scss">
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+</style>

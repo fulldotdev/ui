@@ -1,0 +1,98 @@
+---
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Root from 'fulldev-ui/components/Root.astro'
+
+type Props<As extends HTMLTag = 'header'> = Polymorphic<{ as: As }> & {
+  structure?: 'spread' | 'row' | 'column'
+  position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
+  variant?: 'ghost' | 'subtle' | 'soft' | 'surface' | 'outline'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  frame?: 'fill' | 'panel'
+  align?: 'start' | 'center' | 'end'
+  space?: 'none' | 'auto'
+  compact?: boolean
+}
+
+const {
+  as = 'header',
+  space = 'auto',
+  structure = 'spread',
+  frame = 'fill',
+  variant = 'subtle',
+  compact = true,
+  ...rest
+} = Astro.props
+---
+
+<Root
+  class:list={['header']}
+  {as}
+  {frame}
+  {compact}
+  {structure}
+  {variant}
+  {space}
+  {...rest}
+>
+  <slot />
+</Root>
+
+<style is:global lang="scss">
+  :root {
+    --header-height: calc(
+      var(--text-1) + 2 * var(--space-4) + 2 * var(--space-3)
+    );
+  }
+
+  .header {
+    --screen: 1536px;
+    --gutter: max(4vw, calc(100vw - var(--screen)) / 2);
+
+    display: flex;
+    position: relative;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 10;
+    margin: var(--outer-y) var(--outer-x);
+    border-bottom: 1px solid var(--border);
+    background-color: var(--background);
+    padding: 0 var(--inner-x);
+    width: 100%;
+    max-width: calc(100% - (2 * var(--outer-x)));
+    height: var(--header-height);
+
+    &.frame-fill {
+      --inner-x: var(--gutter);
+      --outer-y: 0;
+    }
+
+    &.frame-contain {
+      --inner-x: max(4vw, var(--space-3));
+      --outer-x: max(0px, calc(var(--gutter) - var(--inner-x)));
+      --outer-y: 0;
+    }
+
+    &.frame-panel {
+      --inner-x: min(4vw, var(--space-3));
+      --outer-x: var(--gutter);
+      --outer-y: var(--space-3);
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius-3);
+    }
+
+    &.position-fixed {
+      position: fixed;
+    }
+
+    &.position-absolute {
+      position: absolute;
+    }
+
+    &.position-sticky {
+      position: sticky;
+      top: -1px;
+    }
+  }
+</style>

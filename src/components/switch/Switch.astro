@@ -1,0 +1,53 @@
+---
+import type { Polymorphic } from 'astro/types'
+import Label from '../../Label.astro'
+import Root from '../../Root.astro'
+import SwitchElement from './SwitchElement.astro'
+
+type Props<As extends 'div'> = Polymorphic<{ as: As }> &
+  Pick<ComponentProps<typeof SwitchElement>, 'name' | 'checked'> & {
+    color?: 'base' | 'brand'
+    true?: string
+    false?: string
+  }
+
+const {
+  as = 'div',
+  name,
+  checked,
+  trueLabel,
+  falseLabel,
+  ...rest
+} = Astro.props
+---
+
+<Root
+  structure="row"
+  class:list={['switch']}
+  {as}
+  {...rest}
+>
+  <Label
+    for={name}
+    text={falseLabel}
+  />
+  <SwitchElement
+    id={name}
+    {name}
+    {checked}
+  />
+  <Label
+    for={name}
+    text={trueLabel}
+  />
+</Root>
+
+<style is:global lang="scss">
+  .switch {
+    position: relative;
+    align-items: center;
+    gap: var(--space-1);
+
+    width: 100%;
+  }
+</style>

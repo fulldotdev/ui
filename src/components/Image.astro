@@ -1,0 +1,198 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { Image as AstroImage } from 'astro:assets'
+import Root from 'fulldev-ui/components/Root.astro'
+import { isString } from 'remeda'
+
+type Props = HTMLAttributes<'img'> & {
+  position?: 'background' | 'cover' | 'inset'
+  ratio?: 'landscape' | 'portrait' | 'square' | number
+  frame?: 'inset'
+  width?: number | 1920
+  height?: number | 1920
+  radius?: 'none' | 'auto' | 'full'
+  mask?: 'sm' | 'md' | 'lg'
+}
+
+function getAltBySrc(): string {
+  if (!isString(Astro.props.src)) return ''
+  const filename = Astro.props.src?.split('/').pop()
+  const slug = filename && filename.split('.')[0]
+  const unslugged = slug?.replace(/-/g, ' ')
+  return unslugged || ''
+}
+
+const {
+  loading = 'lazy',
+  alt = getAltBySrc(),
+  src = Astro.props.src,
+  position,
+  frame,
+  width,
+  radius = 'auto',
+  height,
+  ...rest
+} = Astro.props
+---
+
+{
+  src && (
+    <>
+      {!width && !height && (
+        <Root
+          class:list={['image']}
+          if={src}
+          {src}
+          {alt}
+          as="img"
+          {frame}
+          {position}
+          {radius}
+          {...rest}
+        />
+      )}
+      {width && height && (
+        <AstroImage
+          class:list={['image']}
+          {src}
+          {alt}
+          width={width}
+          height={height}
+          loading="eager"
+          {...rest}
+        />
+      )}
+    </>
+  )
+}
+
+<style is:global lang="scss">
+  .image {
+    display: block;
+    width: 100%;
+    height: auto;
+
+    &.mask-sm {
+      -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
+      mask-image: linear-gradient(to top, transparent 0%, black 30%);
+    }
+
+    &.mask-md {
+      -webkit-mask-image: linear-gradient(to top, transparent 0%, black 65%);
+      mask-image: linear-gradient(to top, transparent 0%, black 65%);
+    }
+
+    &.mask-lg {
+      -webkit-mask-image: linear-gradient(to top, transparent 0%, black 100%);
+      mask-image: linear-gradient(to top, transparent 0%, black 100%);
+    }
+
+    &.radius-none {
+      border-radius: 0;
+    }
+
+    &.radius-auto {
+      border-radius: var(--radius-1);
+    }
+
+    &.radius-full {
+      border-radius: 9999px;
+    }
+
+    &.position-background {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: -1;
+      margin: 0 !important;
+      border-radius: 0;
+      width: 100%;
+      max-width: none;
+      height: 100%;
+      max-height: 100%;
+      object-fit: cover;
+    }
+
+    &.position-cover {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    &.position-container {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    &.position-inset {
+      max-width: none;
+      object-fit: cover;
+
+      &:is(.structure-column > &) {
+        margin-right: calc(var(--inner-x) * -1);
+        margin-left: calc(var(--inner-x) * -1);
+        width: calc(100% + var(--inner-x) * 2);
+
+        &.image:first-child {
+          margin-top: calc(var(--inner-y) * -1);
+          height: calc(100% + var(--inner-y) * 1);
+        }
+
+        &.image:last-child {
+          margin-bottom: calc(var(--inner-y) * -1);
+          height: calc(100% + var(--inner-y) * 1);
+        }
+      }
+
+      &:is(.structure-split > &) {
+        @media (max-width: 1023.999px) {
+          margin-right: calc(var(--inner-x) * -1);
+          margin-left: calc(var(--inner-x) * -1);
+          width: calc(100% + var(--inner-x) * 2);
+
+          &.image:first-child {
+            margin-top: calc(var(--inner-y) * -1);
+            height: calc(100% + var(--inner-y) * 1);
+          }
+
+          &.image:last-child {
+            margin-bottom: calc(var(--inner-y) * -1);
+            height: calc(100% + var(--inner-y) * 1);
+          }
+        }
+
+        @media (min-width: 1024px) {
+          margin-top: calc(var(--inner-y) * -1);
+          margin-bottom: calc(var(--inner-y) * -1);
+          height: calc(100% + var(--inner-y) * 2);
+
+          &.image:first-child {
+            margin-left: calc(var(--inner-x) * -1);
+            width: calc(100% + var(--inner-x) * 1);
+          }
+
+          &.image:last-child {
+            margin-right: calc(var(--inner-x) * -1);
+            width: calc(100% + var(--inner-x) * 1);
+          }
+        }
+      }
+    }
+
+    &.ratio-landscape {
+      aspect-ratio: 4/3;
+    }
+
+    &.ratio-square {
+      aspect-ratio: 1/1;
+    }
+
+    &.ratio-portrait {
+      aspect-ratio: 3/4;
+    }
+  }
+</style>
