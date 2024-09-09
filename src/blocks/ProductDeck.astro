@@ -1,0 +1,74 @@
+---
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import {
+  Box,
+  Button,
+  Column,
+  Heading,
+  Image,
+  Section,
+  Text,
+  Wrap,
+} from 'fulldev-ui'
+import ProductCard from './ProductCard.astro'
+
+type Props<As extends HTMLTag = 'section'> = ComponentProps<
+  typeof Section<As>
+> & {
+  level?: ComponentProps<typeof Heading>['level']
+  position?: ComponentProps<typeof Image>['position']
+  heading?: ComponentProps<typeof Heading>['html']
+  text?: ComponentProps<typeof Text>['html']
+  buttons?: ComponentProps<typeof Button>[]
+  products: CollectionEntry<'products'>[]
+}
+
+const {
+  frame = 'none',
+  structure = 'carousel',
+  variant = 'ghost',
+  level,
+  heading,
+  pages,
+  text,
+  buttons,
+  products,
+  position,
+  ...rest
+} = Astro.props
+---
+
+<Section
+  class:list={'product-deck'}
+  structure={structure === 'split' ? 'split' : 'column'}
+  {...rest}
+>
+  <Box structure={structure === 'carousel' ? 'spread' : 'column'}>
+    <Column>
+      <Heading
+        {level}
+        html={heading}
+      />
+      <Text html={text} />
+    </Column>
+    <Wrap>
+      {buttons?.map((button) => <Button {...button} />)}
+    </Wrap>
+  </Box>
+  <Box
+    structure={structure === 'split' ? 'grid' : structure}
+    position={structure === 'carousel' ? 'inset' : undefined}
+  >
+    {
+      pages?.map(({ href, ...data }) => (
+        <ProductCard
+          href={href}
+          frame={frame === 'panel' ? frame : undefined}
+          position={frame === 'panel' ? position : undefined}
+          {...data}
+        />
+      ))
+    }
+  </Box>
+</Section>

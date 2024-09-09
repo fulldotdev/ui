@@ -1,0 +1,42 @@
+---
+import type { CollectionEntry } from 'astro:content'
+import { getCollection } from 'astro:content'
+import JobDeck from 'fulldev-blocks/blocks/JobDeck.astro'
+import Block from 'fulldev-blocks/components/Block.astro'
+import Blocks from 'fulldev-blocks/components/Blocks.astro'
+import MainLayout from 'fulldev-blocks/layouts/MainLayout.astro'
+import { Prose, Section } from 'fulldev-ui'
+
+type Props = CollectionEntry<'pages'>
+
+const { data, slug, ...rest } = Astro.props
+
+const childPages = (
+  await getCollection('pages', (page) => page.slug.startsWith(slug))
+).map((page) => ({ href: `/${page.slug}/`, ...page.data }))
+---
+
+<MainLayout
+  class:list={'page'}
+  data={data}
+  {...rest}
+>
+  <Block
+    _bookshop_name="Hero"
+    heading={data.title}
+    text={data.description}
+    {...data}
+    {...data.hero}
+  />
+  <JobDeck cards={childPages} />
+  <Section
+    size="lg"
+    style={{ '--screen': '768px' }}
+  >
+    <Prose id="prose">
+      <slot />
+    </Prose>
+  </Section>
+  <Blocks blocks={data.blocks} />
+  <slot />
+</MainLayout>

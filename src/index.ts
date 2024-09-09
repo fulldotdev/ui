@@ -69,3 +69,12 @@ export { default as Blocks } from './components/_Blocks.astro'
 // export { default as Children } from './components/_Children.astro'
 export { default as Head } from './components/utility/Head.astro'
 export { default as Layout } from './components/utility/Layout.astro'
+
+export * from './schemas/base'
+export * from './schemas/block'
+export * from './schemas/card'
+export * from './schemas/page'
+export * from './schemas/utils'
+
+// Utils
+export * from './utils/mergeEntries'

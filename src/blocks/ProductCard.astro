@@ -1,0 +1,53 @@
+---
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import { Card, Heading, Image, Label, Price, Spread } from 'fulldev-ui'
+
+type Props<As extends HTMLTag = 'a'> = ComponentProps<typeof Card<As>> & {
+  level?: ComponentProps<typeof Heading>['level']
+  ratio?: ComponentProps<typeof Image>['ratio']
+  position?: ComponentProps<typeof Image>['position']
+  image?: ComponentProps<typeof Image>['src']
+  images?: ComponentProps<typeof Image>['src'][]
+  label?: ComponentProps<typeof Heading>['html']
+  heading?: ComponentProps<typeof Heading>['html']
+  title?: ComponentProps<typeof Heading>['html']
+  price?: ComponentProps<typeof Price>['value']
+}
+
+const {
+  level = 4,
+  compact = true,
+  variant = 'base',
+  frame = 'none',
+  ratio = 'portrait',
+  image,
+  images,
+  position,
+  label,
+  heading,
+  title,
+  price,
+  ...rest
+} = Astro.props
+---
+
+<Card
+  class:list={'product-card'}
+  {frame}
+  {variant}
+  {...rest}
+>
+  <Image
+    src={image || images?.[0]}
+    {ratio}
+    {position}
+  />
+  <Spread>
+    <Label html={label} />
+    <Heading
+      {level}
+      html={heading ?? title}
+    />
+    <Price value={price} />
+  </Spread>
+</Card>

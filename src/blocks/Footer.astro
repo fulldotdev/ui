@@ -1,0 +1,122 @@
+---
+import type { HTMLTag } from 'astro/types'
+import {
+  Channel,
+  Column,
+  Footer as FullFooter,
+  Heading,
+  Link,
+  Logo,
+  Split,
+  Text,
+} from 'fulldev-ui'
+import type { Block } from '../../schemas/block'
+
+type Props<As extends HTMLTag = 'footer'> = Block<As>
+
+const {
+  structure = 'split',
+  size = 'sm',
+  logo,
+  heading,
+  columns,
+  href,
+  text,
+  channels,
+  company,
+  socials,
+  hours,
+  ...rest
+} = Astro.props
+---
+
+<FullFooter
+  class:list={'footer'}
+  style={{
+    marginTop: 'auto',
+  }}
+  {structure}
+  {size}
+  {...rest}
+>
+  <Split align="start">
+    <Column>
+      <Column
+        style={{ textDecoration: 'none' }}
+        as="a"
+        href="/"
+      >
+        <Logo src={logo} />
+        <Heading
+          as="p"
+          level={2}
+          text={heading}
+        />
+      </Column>
+      <Text text={text} />
+    </Column>
+    {
+      channels && (
+        <Column compact>
+          <Channel
+            if={channels?.phone}
+            icon="phone"
+            heading="Telefoon"
+            text={channels?.phone}
+            href={`tel:${channels?.phone}`}
+          />
+          <Channel
+            if={channels?.email}
+            icon="mail"
+            heading="Email"
+            text={channels?.email}
+            href={`mailto:${channels?.email}`}
+          />
+          <Channel
+            if={channels?.address}
+            icon="pin"
+            heading="Adres"
+            text={channels?.address}
+            target="_blank"
+            href={`https://maps.google.com/?q=${company} ${channels?.address}`}
+          />
+        </Column>
+      )
+    }
+    <Column>
+      {
+        hours && (
+          <Heading
+            text={'Openingstijden'}
+            level={3}
+          />
+        )
+      }
+
+      {
+        Object.entries(hours || {}).map(([day, time]) => (
+          <Text text={`${day}: ${time}`} />
+        ))
+      }
+    </Column>
+  </Split>
+
+  <Split align="start">
+    {
+      columns?.map(({ heading, links }) => (
+        <Column>
+          <Heading
+            text={heading}
+            level={3}
+          />
+          {links?.map((link) => (
+            <Link
+              href={link.href}
+              text={link.text}
+            />
+          ))}
+        </Column>
+      ))
+    }
+  </Split>
+</FullFooter>

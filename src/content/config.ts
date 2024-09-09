@@ -1,14 +1,17 @@
-// import { defineCollection, reference } from 'astro:content'
-// import { pageSchema } from '../schemas/schemas'
+import { defineCollection } from 'astro:content'
+import { page } from 'fulldev-blocks'
 
-// const collection = defineCollection({
-//   type: 'content',
-//   schema: pageSchema({
-//     page: reference('pages'),
-//     pages: reference('pages').array(),
-//   }),
-// })
-
-// export const collections = {
-//   pages: collection,
-// }
+export const collections = {
+  pages: defineCollection({
+    type: 'content',
+    schema: page,
+  }),
+  records: defineCollection({
+    type: 'data',
+    schema: page,
+  }),
+  settings: defineCollection({
+    type: 'data',
+    schema: page,
+  }),
+}

@@ -1,0 +1,101 @@
+---
+import type { HTMLTag } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import {
+  Badge,
+  Box,
+  Button,
+  Card,
+  Column,
+  Heading,
+  Image,
+  Section,
+  Spread,
+  Text,
+  Wrap,
+} from 'fulldev-ui'
+import type { Block } from '../schemas/block'
+
+type Props<As extends HTMLTag = 'section'> = Omit<Block<As>, 'frame'> & {
+  pages?: CollectionEntry<'pages'>[]
+  frame?: 'fill' | 'panel'
+}
+
+const {
+  structure = 'grid',
+  variant = 'ghost',
+  frame = 'fill',
+  position,
+  mask,
+  ratio,
+  theme,
+  heading,
+  text,
+  pages,
+  buttons,
+  ...rest
+} = Astro.props
+---
+
+<Section
+  class:list={'pages'}
+  structure={structure === 'split' ? 'split' : 'column'}
+  {...rest}
+>
+  <Spread class:list={'stick-me'}>
+    <Column>
+      <Heading html={heading} />
+      <Text html={text} />
+    </Column>
+    <Wrap>
+      {buttons?.map((button, i) => <Button {...button} />)}
+    </Wrap>
+  </Spread>
+  <Box
+    structure={structure === 'split' ? 'column' : structure}
+    align="stretch"
+  >
+    {
+      pages?.map(
+        ({ slug, data: { title, description, image, href, badges } }) => (
+          <Card
+            href={href ?? `/${slug}/`}
+            target="_blank"
+            {frame}
+            {variant}
+            {ratio}
+            {theme}
+          >
+            <Image
+              src={image}
+              {position}
+              {mask}
+            />
+            <Wrap size="sm">
+              {badges?.map((badge) => (
+                <Badge
+                  variant="soft"
+                  text={badge}
+                />
+              ))}
+            </Wrap>
+            <Heading
+              html={title}
+              level={3}
+            />
+            <Text html={description} />
+          </Card>
+        )
+      )
+    }
+  </Box>
+</Section>
+
+<style lang="scss">
+  @media (min-width: 1024px) {
+    .stick-me {
+      position: sticky;
+      top: var(--space-7);
+    }
+  }
+</style>

@@ -1,0 +1,70 @@
+---
+import type { HTMLTag } from 'astro/types'
+import {
+  Button,
+  Column,
+  Heading,
+  Image,
+  Input,
+  Price,
+  Row,
+  Section,
+  Text,
+} from 'fulldev-ui'
+import type { Block } from '../../schemas/block'
+
+type Props<As extends HTMLTag = 'section'> = Block<As>
+
+const {
+  heading,
+  title,
+  list,
+  price,
+  image,
+  images,
+  rating,
+  buttons,
+  text,
+  subheading,
+  button,
+  description,
+  form,
+  ...rest
+} = Astro.props
+---
+
+<Section
+  class:list={'product'}
+  structure="split"
+  {...rest}
+>
+  <Image src={image || images?.[0]} />
+  <Column>
+    <Heading
+      level={1}
+      html={heading || title}
+    />
+    <Text
+      style={{ maxWidth: '420px' }}
+      html={text || description}
+    />
+    <Price value={price} />
+    <Row>
+      <Input
+        value={1}
+        name={'quantity'}
+        style={{ width: 'var(--space-6)' }}
+        type="number"
+      />
+      <Button
+        color="brand"
+        html={form?.submit}
+      />
+    </Row>
+    <Button
+      style={{ marginTop: 'var(--space-3)', width: '100%', maxWidth: '400px' }}
+      variant="soft"
+      {...button}
+    />
+  </Column>
+</Section>

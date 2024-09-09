@@ -1,0 +1,137 @@
+---
+import {
+  Badge,
+  Box,
+  Button,
+  Column,
+  Heading,
+  Image,
+  Label,
+  Rating,
+  Section,
+  Text,
+  Wrap,
+} from 'fulldev-ui'
+import MasterCard from './MasterCard.astro'
+
+const {
+  level = 2,
+  structure,
+  align,
+  position,
+  label,
+  heading,
+  badge,
+  title,
+  text,
+  html,
+  description,
+  buttons,
+  review,
+  image,
+  rating,
+  button,
+  cards,
+  pages,
+  records,
+  mask,
+  variant,
+  frame,
+  ratio,
+  ...rest
+} = Astro.props
+
+const mergedCards = [
+  ...(cards ?? []),
+  ...(pages ?? []),
+  ...(records ?? []),
+]?.filter(Boolean)
+const hasCards = mergedCards.length > 0
+---
+
+<Section
+  structure={structure === 'split' ? 'split' : 'column'}
+  frame={frame === 'panel' && hasCards ? 'none' : frame}
+  variant={hasCards ? undefined : variant}
+  {align}
+  {...rest}
+>
+  <Box
+    structure={structure === 'spread' || structure === 'carousel'
+      ? 'spread'
+      : 'column'}
+    align={structure === 'split' ? 'start' : align}
+  >
+    <slot name="segment">
+      <Column align={structure === 'split' ? 'start' : align}>
+        <slot name="writeup">
+          <Rating value={rating} />
+          <Badge
+            radius="full"
+            {...typeof badge === 'string' ? { html: badge } : badge}
+          />
+          <Label
+            color="brand"
+            html={label}
+          />
+          <Heading
+            color="base"
+            html={heading || title}
+            {level}
+          />
+          <Text
+            color="base"
+            contrast={!hasCards && position === 'background' && true}
+            html={html || text || description}
+          />
+        </slot>
+      </Column>
+      <Wrap>
+        <slot name="actions">
+          {
+            [button, ...(buttons ?? [])]
+              .filter(Boolean)
+              ?.map((button: any, i: number) => (
+                <Button
+                  color="brand"
+                  variant={i > 0 ? 'soft' : 'solid'}
+                  {...button}
+                />
+              ))
+          }
+        </slot>
+      </Wrap>
+    </slot>
+  </Box>
+  <slot>
+    <Box
+      structure={structure === 'split' || structure === 'spread'
+        ? 'column'
+        : structure}
+      position={structure === 'carousel' ? 'inset' : undefined}
+    >
+      <slot name="deck">
+        {
+          mergedCards?.map(({ ...rest }: any) => (
+            <MasterCard
+              align="start"
+              level={Number(level) + 1}
+              {position}
+              {frame}
+              {variant}
+              {ratio}
+              {mask}
+              {...rest}
+            />
+          ))
+        }
+      </slot>
+    </Box>
+    <Image
+      position={hasCards ? undefined : position}
+      ratio={hasCards ? undefined : ratio}
+      mask={hasCards ? undefined : mask}
+      src={image}
+    />
+  </slot>
+</Section>

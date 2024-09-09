@@ -1,0 +1,104 @@
+---
+import { Button, Heading, Section, Spread } from 'fulldev-ui'
+
+const { componentProps } = Astro.props
+
+const id = Astro.props.componentProps.title.toLowerCase().replace(/ /g, '-')
+---
+
+<Section class="window">
+  <Spread
+    style={{ width: '100%' }}
+    compact
+  >
+    <Heading
+      level={3}
+      html={componentProps.title}
+    />
+    <Button
+      as="label"
+      for={id}
+      variant="soft"
+    >
+      Preview / Code
+    </Button>
+  </Spread>
+  <div class="live-code-layout">
+    <input
+      type="checkbox"
+      id={id}
+      name={id}
+      class="window-toggle"
+    />
+    <div class="example-container">
+      <div>
+        <slot name="example" />
+      </div>
+    </div>
+    <div class="code-container">
+      <slot name="code" />
+    </div>
+  </div>
+</Section>
+
+<style lang="scss" is:global>
+  .window {
+    .live-code-layout {
+      display: flex;
+      flex-direction: column;
+      margin-top: var(--space-4);
+      border: 1px solid var(--base-6);
+      border-radius: var(--radius-2);
+      width: 100%;
+      overflow: hidden;
+
+      // .window-toggle ~ .astro-code {
+      //   display: none;
+      // }
+      // .window-toggle:checked ~ .astro-code {
+      //   display: block;
+      // }
+
+      // .window-toggle:checked ~ .example-container {
+      //   display: block;
+      // }
+
+      .code-container {
+        display: none;
+
+        .astro-code {
+          margin: 0;
+          background-color: var(--base-2) !important;
+          padding: var(--space-5);
+        }
+      }
+
+      .window-toggle {
+        display: none;
+        visibility: hidden;
+        opacity: 0;
+      }
+
+      .window-toggle:checked {
+        & ~ .example-container {
+          display: none;
+        }
+        & ~ .code-container {
+          display: block;
+        }
+      }
+    }
+  }
+
+  /* .example-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-width: var(--ec-brdWd, 1px);
+    border-style: solid;
+    border-color: var(--ec-brdCol, var(--sl-color-gray-5));
+    border-bottom: none;
+    background: var(--ec-frm-edBg, var(--astro-code-color-background));
+    padding: 2.5rem;
+  } */
+</style>

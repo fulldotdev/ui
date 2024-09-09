@@ -1,0 +1,110 @@
+---
+import {
+  Avatar,
+  Button,
+  Card,
+  Column,
+  Heading,
+  Icon,
+  Image,
+  Label,
+  Price,
+  Rating,
+  Row,
+  Spread,
+  Text,
+  Wrap,
+} from 'fulldev-ui'
+
+const {
+  structure = 'column',
+  align = 'start',
+  level = 4,
+  position,
+  label,
+  heading,
+  badge,
+  title,
+  text,
+  html,
+  description,
+  buttons,
+  review,
+  ratio,
+  image,
+  rating,
+  button,
+  cards,
+  pages,
+  records,
+  price,
+  frame,
+  icon,
+  avatar,
+  mask,
+  avatars,
+  ...rest
+} = Astro.props
+---
+
+<Card
+  structure="column"
+  {frame}
+  {align}
+  ratio={position === 'background' ? ratio : undefined}
+  {...rest}
+>
+  <Image
+    {position}
+    {mask}
+    ratio={position === 'background' ? undefined : ratio}
+    src={image}
+  />
+  <Icon name={icon} />
+  <Row>
+    {
+      [avatar, ...(avatars ?? [])]?.filter(Boolean)?.map((avatar) => (
+        <Avatar
+          radius="full"
+          src={avatar}
+        />
+      ))
+    }
+    <Column>
+      <Rating
+        color="brand"
+        value={rating}
+      />
+      <Label
+        color="base"
+        html={label}
+      />
+    </Column>
+  </Row>
+  <Spread>
+    <Heading
+      color="base"
+      {level}
+      html={heading ?? title}
+    />
+    <Price value={price} />
+  </Spread>
+  <Text
+    color="base"
+    contrast={position === 'background' && true}
+    html={html || text || description}
+  />
+  <Wrap>
+    {
+      [button, ...(buttons ?? [])]
+        .filter(Boolean)
+        ?.map((button: any, i: number) => (
+          <Button
+            color="brand"
+            variant={i > 0 ? 'soft' : 'solid'}
+            {...button}
+          />
+        ))
+    }
+  </Wrap>
+</Card>

@@ -1,0 +1,34 @@
+---
+import { Code } from 'astro:components'
+
+interface Props {
+  _bookshop_name?: string
+  [key: string | number | symbol]: any
+}
+
+let { _bookshop_name, props } = Astro.props
+
+const usecaseString = `
+<${_bookshop_name}
+${Object.entries(props)
+  .map(([key, value]) => {
+    if (typeof value === 'object') {
+      return `    ${key}={${JSON.stringify(value, null, 2).replace(/\n/g, '\n    ')}}`
+    }
+    return `    ${key}="${value}"`
+  })
+  .join('\n')}
+/>
+`.trim()
+---
+
+<Code
+  code={usecaseString}
+  lang="astro"
+/>
+
+<style>
+  .astro-code {
+    padding: var(--space-7) var(--gutter);
+  }
+</style>

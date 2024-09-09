@@ -1,0 +1,99 @@
+---
+import type { ComponentProps } from 'astro/types'
+import {
+  Avatar,
+  Card,
+  Column,
+  Heading,
+  Label,
+  Rating,
+  Row,
+  Text,
+} from 'fulldev-ui'
+
+type Props = ComponentProps<typeof Card> & {
+  color?: 'base' | 'brand'
+  radius?: 'none' | 'auto' | 'full'
+  value?: number
+  size?: string
+  compact?: boolean
+  avatars?: string[]
+  label?: string
+  heading?: string
+  title?: string
+  text?: string
+  description?: string
+  // rating?: number
+  [key: string | symbol | number]: any
+}
+
+const {
+  compact = true,
+  variant = 'base',
+  radius,
+  value,
+  heading,
+  title,
+  text,
+  description,
+  rating,
+  avatars,
+  avatar,
+  label,
+  ...rest
+} = Astro.props
+---
+
+<Card
+  class:list={'review-card'}
+  {variant}
+  {...rest}
+>
+  <Row>
+    {
+      [avatar, ...(avatars ?? [])]?.map((avatar) => (
+        <Avatar
+          radius="full"
+          src={avatar}
+        />
+      ))
+    }
+    <Column>
+      <Rating
+        color="brand"
+        value={rating}
+      />
+      <Label
+        color="base"
+        html={label}
+      />
+    </Column>
+  </Row>
+  <Heading
+    as="h3"
+    level={4}
+    html={heading ?? title}
+  />
+  <Text html={text ?? description} />
+</Card>
+
+<style is:global lang="scss">
+  .review-card {
+    .avatar {
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    * + .column {
+      margin-left: var(--space-4);
+    }
+
+    .label,
+    .heading {
+      margin-top: var(--space-2) !important;
+    }
+
+    .avatar + .avatar {
+      margin-left: calc(-1 * var(--space-5));
+    }
+  }
+</style>

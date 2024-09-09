@@ -1,0 +1,158 @@
+---
+import type { HTMLTag } from 'astro/types'
+import {
+  Button,
+  Channel,
+  Column,
+  Form,
+  Heading,
+  Image,
+  Input,
+  Row,
+  Section,
+  Tagline,
+  Text,
+  Textarea,
+} from 'fulldev-ui'
+import type { Block } from '../schemas/block'
+
+type Props<As extends HTMLTag = 'section'> = Block<As>
+
+const {
+  heading,
+  text,
+  tagline,
+  googleMaps,
+  buttons,
+  channels,
+  socials,
+  position,
+  image,
+  ...rest
+} = Astro.props
+---
+
+<Section
+  class:list={'contact'}
+  structure="split"
+  {...rest}
+>
+  <Column>
+    <Tagline html={tagline} />
+    <Heading
+      level={1}
+      html={heading}
+    />
+    <Text html={text} />
+    <Row>
+      {buttons?.map((button) => <Button {...button} />)}
+    </Row>
+    <Column>
+      <Channel
+        if={channels?.phone}
+        icon="phone"
+        heading="Telefoon"
+        text={channels?.phone}
+        href={`tel:${channels?.phone}`}
+      />
+      <Channel
+        if={channels?.email}
+        icon="mail"
+        heading="Email"
+        text={channels?.email}
+        href={`mailto:${channels?.email}`}
+      />
+      {
+        channels?.address && (
+          <Channel
+            if={channels?.address}
+            icon="pin"
+            heading="Adres"
+            text={channels?.address}
+          />
+        )
+      }
+    </Column>
+    {
+      socials && (
+        <Row
+          compact
+          size="sm"
+        >
+          <Button
+            if={socials?.facebook}
+            href={socials?.facebook}
+            variant="soft"
+            icon="brand-facebook"
+          />
+          <Button
+            if={socials?.instagram}
+            variant="soft"
+            href={socials?.instagram}
+            icon="brand-instagram"
+          />
+        </Row>
+      )
+    }
+
+    <Form
+      action="/bedankt"
+      method="POST"
+    >
+      <Input
+        label="Naam"
+        id="Naam"
+        name="Naam"
+        type="text"
+        required
+      />
+      <Input
+        label="Email"
+        id="Email"
+        name="Email"
+        type="email"
+        required
+      />
+      <Input
+        label="Telefoon"
+        id="Telefoon"
+        name="Telefoon"
+        type="tel"
+        required
+      />
+      <Textarea
+        label="Bericht"
+        id="Bericht"
+        name="Bericht"
+      />
+      <Button
+        as="button"
+        type="submit"
+        color="brand"
+        text="Verstuur bericht"
+      />
+    </Form>
+  </Column>
+
+  <!-- <iframe
+    src={googleMaps}
+    width="100%"
+    height="450"
+    style="border:0; margin-top: var(--space-6);"
+    allowfullscreen="false"
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"
+  ></iframe> -->
+  <Image
+    {position}
+    src={image}
+  />
+</Section>
+
+<style is:global>
+  .contact {
+    .channel + .channel {
+      margin-top: var(--space-3) !important;
+    }
+  }
+</style>

@@ -1,0 +1,55 @@
+---
+import type { HTMLTag } from 'astro/types'
+import { getEntries } from 'astro:content'
+import {
+  Avatar,
+  Card,
+  Column,
+  Heading,
+  Row,
+  Section,
+  Split,
+  Tagline,
+  Text,
+} from 'fulldev-ui'
+import type { Block } from '../schemas/block'
+
+type Props<As extends HTMLTag = 'section'> = Block<As>
+
+const { tagline, heading, text, buttons, image, pages, ...rest } = Astro.props
+
+const entries = await getEntries(pages)
+---
+
+<Section
+  class:list={'colleagues'}
+  {...rest}
+>
+  <Heading html={heading} />
+  <Text html={text} />
+  <Split align="center">
+    {
+      entries?.map(({ slug, data: { avatar, heading, text, tagline } }) => (
+        <Card
+          href={slug}
+          frame="none"
+        >
+          <Row>
+            <Avatar
+              radius="full"
+              src={avatar}
+            />
+            <Column>
+              <Tagline html={tagline} />
+              <Heading
+                html={heading}
+                level={3}
+              />
+            </Column>
+          </Row>
+          <Text html={text} />
+        </Card>
+      ))
+    }
+  </Split>
+</Section>
