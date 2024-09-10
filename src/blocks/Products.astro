@@ -1,80 +1,11 @@
 ---
-import type { HTMLTag } from 'astro/types'
-import type { CollectionEntry } from 'astro:content'
-import {
-  Box,
-  Button,
-  Card,
-  Column,
-  Heading,
-  Image,
-  Price,
-  Section,
-  Spread,
-  Text,
-  Wrap,
-} from 'fulldev-ui'
-import type { Block } from '../../schemas/block'
+import MasterSection from 'fulldev-ui/components/MasterSection.astro'
 
-type Props<As extends HTMLTag = 'section'> = Block<As> & {
-  products: CollectionEntry<'products'>[]
-}
-
-const {
-  frame = 'none',
-  structure = 'carousel',
-  variant = 'ghost',
-  size,
-  heading,
-  text,
-  buttons,
-  products,
-  position,
-  ...rest
-} = Astro.props
+const { ...rest } = Astro.props
 ---
 
-<Section
-  class:list={'products'}
-  structure={structure === 'split' ? 'split' : 'column'}
-  {size}
+<MasterSection
+  class="products"
+  structure="carousel"
   {...rest}
->
-  <Box>
-    <Column>
-      <Heading html={heading} />
-      <Text html={text} />
-    </Column>
-    <Wrap>
-      {buttons?.map((button, i) => <Button {...button} />)}
-    </Wrap>
-  </Box>
-  <Box
-    structure={structure === 'split' ? 'grid' : structure}
-    position={structure === 'carousel' ? 'inset' : undefined}
-  >
-    {
-      products?.map(({ slug, data: { title, image, images, price } }) => (
-        <Card
-          href={`/producten/${slug}/`}
-          {frame}
-          {variant}
-        >
-          <Image
-            ratio={'portrait'}
-            src={image || images?.[0]}
-            {position}
-          />
-          <Spread>
-            <Heading
-              level={4}
-              as="h3"
-              html={title}
-            />
-            <Price value={price} />
-          </Spread>
-        </Card>
-      ))
-    }
-  </Box>
-</Section>
+/>
