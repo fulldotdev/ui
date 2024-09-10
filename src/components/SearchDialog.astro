@@ -1,0 +1,92 @@
+---
+import Search from 'astro-pagefind/components/Search'
+import Icon from 'fulldev-ui/components/Icon.astro'
+---
+
+<input
+  placeholder="Search.."
+  id="open-search"
+/>
+
+<dialog id="search-dialog">
+  <div style="display: flex; justify-content: flex-end;">
+    <Icon
+      name="x"
+      id="close-search"
+      style={{ cursor: 'pointer' }}
+    />
+  </div>
+  <Search
+    id="search"
+    className="search-input"
+    uiOptions={{ showImages: false }}
+  />
+</dialog>
+
+<style>
+  :root {
+    --pagefind-ui-primary: var(--primary);
+    --pagefind-ui-text: var(--text);
+    --pagefind-ui-background: var(--background);
+    --pagefind-ui-border: var(--border);
+    --pagefind-ui-tag: var(--border);
+  }
+
+  dialog {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-2);
+    background: none;
+  }
+
+  #search-dialog {
+    opacity: 0;
+    transition: opacity 0.1s ease-in-out;
+    background-color: var(--background);
+    max-width: 50vw;
+    max-height: 60vh;
+
+    @media (max-width: 768px) {
+      max-width: 80vw;
+      max-height: 80vh;
+    }
+  }
+
+  #search-dialog[open] {
+    opacity: 1;
+  }
+</style>
+
+<script>
+  const openButton = document.getElementById('open-search')
+  const closeButton = document.getElementById('close-search')
+  const dialog = document.getElementById('search-dialog')
+  const searchInput = document.querySelector('.pagefind-ui__search-input')
+
+  openButton.addEventListener('click', () => {
+    dialog.showModal()
+    setTimeout(() => {
+      dialog.style.opacity = '1'
+      searchInput.focus()
+    }, 0)
+  })
+
+  closeButton.addEventListener('click', () => {
+    dialog.style.opacity = '0'
+    setTimeout(() => {
+      dialog.close()
+    }, 200)
+  })
+
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) {
+      dialog.style.opacity = '0'
+      setTimeout(() => {
+        dialog.close()
+      }, 200)
+    }
+  })
+</script>
