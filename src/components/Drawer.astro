@@ -1,36 +1,49 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
-import MainLayout from 'fulldev-ui/layouts/MainLayout.astro'
 import Button from './Button.astro'
-import MasterCard from './MasterCard.astro'
+import Root from './Root.astro'
 
-type Props = HTMLAttributes<'dialog'> & {
+type Props = HTMLAttributes<'div'> & {
+  position?: 'left' | 'right'
   label?: string
   icon?: string
 }
 
-const { label, icon, id = 'dialog', ...rest } = Astro.props
+const { id = 'drawer', position = 'right', label, icon, ...rest } = Astro.props
 ---
 
-<MainLayout {...Astro.props}>
-  <Button
-    as="button"
-    onclick={`document.getElementById('${id}').showModal()`}
-    text={label}
-    icon={icon}
-  />
+<Button
+  as="button"
+  text={label}
+  icon={icon}
+  onclick={`document.getElementById('${id}').showModal()`}
+/>
 
-  <MasterCard
-    as="dialog"
-    {id}
-    {...rest}
-  >
-    <slot />
-  </MasterCard>
-</MainLayout>
+<Root
+  as="dialog"
+  class="drawer"
+  {...rest}
+>
+  <slot />
+</Root>
 
-<style>
-  dialog::backdrop {
-    background: rgba(0, 0, 0, 0.5);
+<style is:global lang="scss">
+  .drawer {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 99;
+
+    &.position-left {
+      left: 0;
+    }
+
+    &.position-right {
+      right: 0;
+    }
+
+    &::backdrop {
+      background: rgba(0, 0, 0, 0.5);
+    }
   }
 </style>
