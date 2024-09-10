@@ -1,0 +1,90 @@
+---
+import { getCollection } from 'astro:content'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Link from 'fulldev-ui/components/Link.astro'
+import Column from 'fulldev-ui/components/structures/Column.astro'
+
+const componentPages = await getCollection('pages', (entry: any) =>
+  entry.slug.startsWith('components/')
+)
+
+const docsPages = await getCollection('pages', (entry: any) =>
+  entry.slug.startsWith('docs/')
+)
+
+const structuresPages = await getCollection('pages', (entry: any) =>
+  entry.slug.startsWith('structures/')
+)
+
+const sortPages = (pages: any[]) =>
+  pages.sort(
+    (a, b) => (a.data.sidebar?.order || 0) - (b.data.sidebar?.order || 0)
+  )
+
+const currentPath = Astro.url.pathname
+---
+
+<Column
+  as="aside"
+  class="sidebar"
+>
+  <Heading level={4}>Docs</Heading>
+  {
+    sortPages(docsPages).map((page: any) => (
+      <Link
+        class="sidebar-link"
+        href={`/${page.slug}`}
+        color={currentPath === `/${page.slug}` ? 'brand' : undefined}
+      >
+        {page.data.title}
+      </Link>
+    ))
+  }
+
+  <Heading level={4}>Components</Heading>
+  {
+    sortPages(componentPages).map((page: any) => (
+      <Link
+        class="sidebar-link"
+        href={`/${page.slug}`}
+        color={currentPath === `/${page.slug}` ? 'brand' : undefined}
+      >
+        {page.data.title}
+      </Link>
+    ))
+  }
+
+  <Heading level={4}>Structures</Heading>
+  {
+    sortPages(structuresPages).map((page: any) => (
+      <Link
+        class="sidebar-link"
+        href={`/${page.slug}`}
+        color={currentPath === `/${page.slug}` ? 'brand' : undefined}
+      >
+        {page.data.title}
+      </Link>
+    ))
+  }
+</Column>
+
+<style lang="scss">
+  .sidebar {
+    display: none;
+    position: sticky;
+    top: 0;
+    box-sizing: border-box;
+    border-right: 1px solid var(--border);
+    padding: var(--space-5) var(--space-7) var(--space-5) var(--gutter);
+    max-height: 100vh;
+    overflow-y: auto;
+
+    .sidebar-link {
+      font-size: var(--text-1);
+    }
+
+    @media (min-width: 768px) {
+      display: flex;
+    }
+  }
+</style>
