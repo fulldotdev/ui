@@ -15,19 +15,26 @@ const { label, icon, id = 'dialog', ...rest } = Astro.props
   as="dialog"
   {id}
   {...rest}
+  onclick={`this.close()`}
 >
   <slot />
 </Root>
 
 <Button
   as="button"
+  id={`${id}-button`}
   text={label}
   icon={icon}
   onclick={`document.getElementById('${id}').showModal()`}
 />
 
-<style>
-  .dialog::backdrop {
-    background: rgba(0, 0, 0, 0.5);
+<style lang="scss" is:global>
+  .dialog {
+    pointer-events: none;
+
+    &::backdrop {
+      background: rgba(0, 0, 0, 0.5);
+      pointer-events: auto;
+    }
   }
 </style>
