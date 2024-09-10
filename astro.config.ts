@@ -19,8 +19,8 @@ export default defineConfig({
       colors: {
         theme: 'dark',
         dark: {
-          background: '#060913',
-          base: '#060913',
+          background: '#111110',
+          base: '#6F6D66',
           brand: '#F50',
         },
       },
