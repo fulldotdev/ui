@@ -65,25 +65,21 @@ import Icon from 'fulldev-ui/components/Icon.astro'
 
     if (!openButton || !closeButton || !dialog) return
 
-    openButton.addEventListener('click', () => {
+    function openDialog() {
       dialog.showModal()
-      setTimeout(() => {
-        dialog.style.opacity = '1'
-        const searchInput = document.querySelector('.pagefind-ui__search-input')
-        if (searchInput) {
-          searchInput.focus()
-        }
-      }, 0)
-    })
+      dialog.style.opacity = '1'
+      document.querySelector('.pagefind-ui__search-input')?.focus()
+    }
 
-    closeButton.addEventListener('click', () => {
-      closeDialog()
-    })
+    function closeDialog() {
+      dialog.style.opacity = '0'
+      setTimeout(() => dialog.close(), 200)
+    }
 
+    openButton.addEventListener('click', openDialog)
+    closeButton.addEventListener('click', closeDialog)
     dialog.addEventListener('click', (event) => {
-      if (event.target === dialog) {
-        closeDialog()
-      }
+      if (event.target === dialog) closeDialog()
     })
 
     document.addEventListener('keydown', (event) => {
@@ -92,16 +88,8 @@ import Icon from 'fulldev-ui/components/Icon.astro'
         closeDialog()
       }
     })
-
-    function closeDialog() {
-      dialog.style.opacity = '0'
-      setTimeout(() => {
-        dialog.close()
-      }, 200)
-    }
   }
 
   document.addEventListener('DOMContentLoaded', initializeSearchDialog)
-
   document.addEventListener('astro:page-load', initializeSearchDialog)
 </script>
