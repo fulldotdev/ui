@@ -1,49 +1,79 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { ComponentProps, HTMLTag } from 'astro/types'
+import Box from './Box.astro'
 import Button from './Button.astro'
-import Root from './Root.astro'
+import MasterCard from './MasterCard.astro'
 
-type Props = HTMLAttributes<'div'> & {
-  position?: 'left' | 'right'
+type Props<As extends HTMLTag = 'a'> = ComponentProps<typeof MasterCard<As>> & {
   label?: string
   icon?: string
+  position?: 'left' | 'right'
 }
 
-const { id = 'drawer', position = 'right', label, icon, ...rest } = Astro.props
+const {
+  id = 'drawer',
+  label,
+  icon,
+  variant = 'subtle',
+  structure = 'column',
+  position = 'left',
+  ...rest
+} = Astro.props
 ---
+
+<dialog
+  class="drawer"
+  {id}
+  onclick={`event.target === this && this.close()`}
+>
+  <Box
+    {variant}
+    {structure}
+    {...rest}
+  >
+    <slot />
+  </Box>
+</dialog>
 
 <Button
   as="button"
+  type="button"
+  id={`${id}-button`}
   text={label}
   icon={icon}
   onclick={`document.getElementById('${id}').showModal()`}
 />
 
-<Root
-  as="dialog"
-  class="drawer"
-  {...rest}
->
-  <slot />
-</Root>
-
-<style is:global lang="scss">
+<style lang="scss" is:global>
   .drawer {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    z-index: 99;
+    box-sizing: border-box;
+    margin: 0;
+    outline: 0;
+    border: 0;
+    background: none;
+    padding: 0;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+
+    &::backdrop {
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .box {
+      background: var(--background);
+      padding: var(--space-5);
+      height: 100vh;
+    }
 
     &.position-left {
       left: 0;
+      padding-left: var(--gutter);
     }
 
     &.position-right {
       right: 0;
-    }
-
-    &::backdrop {
-      background: rgba(0, 0, 0, 0.5);
+      padding-right: var(--gutter);
     }
   }
 </style>
