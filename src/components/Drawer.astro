@@ -3,6 +3,7 @@ import type { ComponentProps, HTMLTag } from 'astro/types'
 import Box from './Box.astro'
 import Button from './Button.astro'
 import MasterCard from './MasterCard.astro'
+import Root from './Root.astro'
 
 type Props<As extends HTMLTag = 'a'> = ComponentProps<typeof MasterCard<As>> & {
   label?: string
@@ -21,33 +22,38 @@ const {
 } = Astro.props
 ---
 
-<dialog
-  class="drawer"
-  {id}
-  onclick={`event.target === this && this.close()`}
->
-  <Box
-    {variant}
-    {structure}
-    {...rest}
-  >
-    <slot />
-  </Box>
-</dialog>
-
 <Button
   as="button"
+  variant="soft"
   type="button"
   id={`${id}-button`}
+  class="drawer-button"
   text={label}
   icon={icon}
   onclick={`document.getElementById('${id}').showModal()`}
 />
 
+<Root
+  as="dialog"
+  class="drawer"
+  {id}
+  {position}
+  onclick={`event.target === this && this.close()`}
+>
+  <Box
+    {variant}
+    {structure}
+    {position}
+    {...rest}
+  >
+    <slot />
+  </Box>
+</Root>
+
 <style lang="scss" is:global>
   .drawer {
     box-sizing: border-box;
-    margin: 0;
+    margin: 0 !important;
     outline: 0;
     border: 0;
     background: none;
@@ -60,20 +66,27 @@ const {
       background: rgba(0, 0, 0, 0.5);
     }
 
-    .box {
-      background: var(--background);
-      padding: var(--space-5);
-      height: 100vh;
-    }
-
     &.position-left {
-      left: 0;
-      padding-left: var(--gutter);
+      margin-right: 0;
     }
 
     &.position-right {
       right: 0;
-      padding-right: var(--gutter);
+    }
+
+    .box {
+      background: var(--background);
+      padding: calc(var(--space-7) * 3);
+      min-width: calc(var(--space-7) * 14);
+      height: 100vh;
+
+      &.position-left {
+        padding-left: var(--gutter);
+      }
+
+      &.position-right {
+        padding-right: var(--gutter);
+      }
     }
   }
 </style>

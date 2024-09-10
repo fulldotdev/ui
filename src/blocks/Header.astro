@@ -2,13 +2,13 @@
 import type { HTMLTag } from 'astro/types'
 import {
   Button,
-  Column,
   Header as FullHeader,
   Heading,
   Link,
   Logo,
   Row,
 } from 'fulldev-ui'
+import Drawer from 'fulldev-ui/components/Drawer.astro'
 import type { Block } from '../schemas/block'
 
 type Props<As extends HTMLTag = 'header'> = Omit<Block<As>, 'structure'> & {
@@ -63,30 +63,20 @@ const {
       ))
     }
     {buttons?.map((button, i) => <Button {...button} />)}
-    <Button
-      icon="menu-2"
-      class={'hamburger'}
-      variant="outline"
-      as="label"
-      contrast
-      for="hamburger-toggle"
-    />
-    <input
-      id="hamburger-toggle"
-      class="hamburger-toggle"
-      name="hamburger-toggle"
-      type="checkbox"
-    />
-    <Column
-      align="center"
-      class="dropdown"
-    >
-      {links?.map((link, i) => <Link {...link} />)}
-    </Column>
+    <Drawer icon="menu-2">
+      {
+        links?.map((link) => (
+          <Link
+            class:list={'header-link-sidebar'}
+            {...link}
+          />
+        ))
+      }
+    </Drawer>
   </Row>
 </FullHeader>
 
-<style lang="scss">
+<style lang="scss" is:global>
   .header {
     position: relative;
 
@@ -99,18 +89,15 @@ const {
       }
     }
 
-    .hamburger {
+    .header-link-sidebar {
+      font-size: var(--text-1);
+    }
+
+    .drawer,
+    .drawer-button {
       @media (min-width: 768px) {
-        display: none;
+        display: none !important;
       }
-    }
-
-    .hamburger-toggle {
-      display: none;
-    }
-
-    .hamburger-toggle:checked ~ .dropdown {
-      display: flex;
     }
 
     .dropdown {
