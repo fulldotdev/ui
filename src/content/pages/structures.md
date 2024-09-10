@@ -1,5 +1,5 @@
 ---
 _layout: OverviewLayout
 title: Structures
-heading: Structures that you build layouts with
+heading: Structures to build your own custom blocks
 ---
