@@ -15,13 +15,13 @@ sections:
         target: _blank
         icon: brand-github
 
-  features:
-    _bookshop_name: Features
-    align: center
-    pages:
-      - system
-      - components
-      - blocks
+  # features:
+  #   _bookshop_name: Features
+  #   align: center
+  #   pages:
+  #     - system
+  #     - components
+  #     - blocks
 
   # cta:
   #   _bookshop_name: Cta
