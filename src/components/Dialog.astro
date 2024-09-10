@@ -1,34 +1,33 @@
 ---
-import { HTMLTag, Polymorphic } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Button from './Button.astro'
 import Card from './Card.astro'
 
-type Props<As extends HTMLTag = 'dialog'> = Polymorphic<{ as: As }> & {
-  id?: string
-  button?: {
-    text: string
-  }
+type Props = HTMLAttributes<'dialog'> & {
+  label?: string
+  icon?: string
 }
 
-const { id = 'dialog', button, ...rest } = Astro.props
+const { label, icon, id = 'dialog', ...rest } = Astro.props
 ---
 
 <Button
-  {...button}
+  as="button"
   onclick={`document.getElementById('${id}').showModal()`}
+  text={label}
+  icon={icon}
 />
 
-<dialog
-  id={id}
+<Card
+  as="dialog"
+  {id}
   {...rest}
 >
-  <Card>
-    <slot />
-  </Card>
+  <slot />
+</Card>
 
-  <style>
-    dialog::backdrop {
-      background: rgba(0, 0, 0, 0.5);
-    }
-  </style>
-</dialog>
+<style>
+  /* dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+  } */
+</style>
