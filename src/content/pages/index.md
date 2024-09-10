@@ -5,6 +5,7 @@ sections:
     badge:
       text: Join our discord for updates and chats
       href: https://discord.gg/vXZqMbadm8
+      icon: arrow-right
     heading: The Astro UI library to build content sites
     text: Make good looking websites that are easy to maintain
     buttons:
