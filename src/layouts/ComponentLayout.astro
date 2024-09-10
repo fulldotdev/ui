@@ -1,13 +1,15 @@
 ---
 import type { CollectionEntry } from 'astro:content'
 import Intro from 'fulldev-ui/blocks/Intro.astro'
+import ComponentSidebar from 'fulldev-ui/components/docs/ComponentSidebar.astro'
 import PropsTable from 'fulldev-ui/components/docs/PropsTable.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Section from 'fulldev-ui/components/Section.astro'
 import MainLayout from 'fulldev-ui/layouts/MainLayout.astro'
+
 type Props = CollectionEntry<'pages'>
 
-const { data, slug, render, ...rest } = Astro.props
+const { data, render, ...rest } = Astro.props
 const { Content } = await render()
 ---
 
@@ -15,24 +17,38 @@ const { Content } = await render()
   {...Astro.props}
   class:list={['component-layout']}
 >
-  <Intro
-    variant="base"
-    size="sm"
-    {...data}
-  />
-  <Section>
-    <Heading size="sm"> Props </Heading>
-    <PropsTable component={data.title} />
-  </Section>
-  <Section>
-    <Heading size="sm"> Examples </Heading>
-    <Content />
-  </Section>
-  <slot />
+  <div class="layout-container">
+    <ComponentSidebar />
+    <main class="content">
+      <Intro
+        variant="base"
+        size="sm"
+        {...data}
+      />
+      <Section>
+        <Heading size="sm"> Props </Heading>
+        <PropsTable component={data.title} />
+      </Section>
+      <Section>
+        <Heading size="sm"> Examples </Heading>
+        <Content />
+      </Section>
+      <slot />
+    </main>
+  </div>
 </MainLayout>
 
 <style is:global lang="scss">
   .component-layout {
+    .layout-container {
+      display: flex;
+    }
+
+    .content {
+      flex: 1;
+      padding: var(--space-4);
+    }
+
     .example-container {
       display: flex;
       flex-wrap: wrap;
