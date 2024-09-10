@@ -17,19 +17,24 @@ const componentFileContent = readFileSync(componentFilePath, 'utf-8')
 
 const extractProps = (content: string) => {
   const propsMatch = content.match(
-    /type Props(?:<[^>]+>)?\s*=\s*(?:HTMLAttributes<'[^']+'>\s*&\s*)?(?:Polymorphic<[^>]+>\s*&\s*)?{([\s\S]*?)}/
+    /type Props(?:<[^>]+>)?\s*=\s*(?:HTMLAttributes<'[^']+'>\s*&\s*)?(?:Polymorphic<[^>]+>\s*&\s*)?([\s\S]*?)(?:}|$)/
   )
-  return propsMatch
-    ? [...propsMatch[1].matchAll(/(\w+)\??:\s*((?:[^;\n]|\n\s*\|)*)/g)].map(
-        ([, name, type]) => ({
-          name,
-          type: type
+  if (propsMatch) {
+    const propsContent = propsMatch[1]
+    const props = [
+      ...propsContent.matchAll(/(\w+)(?:\??:\s*((?:[^;\n]|\n\s*\|)*)|,)/g),
+    ].map(([, name, type]) => ({
+      name,
+      type: type
+        ? type
             .replace(/^\s*\|\s*/, '')
             .trim()
-            .replace(/\n\s*\|/g, ' | '),
-        })
-      )
-    : []
+            .replace(/\n\s*\|/g, ' | ')
+        : 'unknown',
+    }))
+    return props
+  }
+  return []
 }
 
 const extractDefaultProps = (content: string) => {
