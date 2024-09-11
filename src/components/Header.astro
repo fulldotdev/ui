@@ -1,31 +1,54 @@
 ---
 import type { HTMLTag, Polymorphic } from 'astro/types'
+import { getCollection } from 'astro:content'
+import Button from 'fulldev-ui/components/Button.astro'
+import Drawer from 'fulldev-ui/components/Drawer.astro'
+import Logo from 'fulldev-ui/components/experimental/Logo.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Link from 'fulldev-ui/components/Link.astro'
 import Root from 'fulldev-ui/components/Root.astro'
+import Search from 'fulldev-ui/components/Search.astro'
+import Row from 'fulldev-ui/components/structures/Row.astro'
 
 type Props<As extends HTMLTag = 'header'> = Polymorphic<{ as: As }> & {
   structure?: 'spread' | 'row' | 'column'
   position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
-  variant?: 'ghost' | 'subtle' | 'soft' | 'surface' | 'outline'
+  variant?: 'ghost' | 'base' | 'subtle' | 'soft' | 'surface' | 'outline'
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   frame?: 'fill' | 'panel'
   align?: 'start' | 'center' | 'end'
   space?: 'none' | 'auto'
   compact?: boolean
+  logo?: string
+  heading?: string
+  links?: any[]
+  buttons?: any[]
+  drawer?: any[]
+  search?: any
 }
 
 const {
   as = 'header',
-  space = 'auto',
+  align = 'center',
   structure = 'spread',
+  space = 'auto',
   frame = 'fill',
-  variant = 'subtle',
+  variant = 'base',
   compact = true,
+  logo,
+  heading,
+  links,
+  buttons,
+  drawer,
+  search,
   ...rest
 } = Astro.props
+
+const slug = Astro.url.pathname.replace(/^\/|\/$/g, '')
 ---
 
 <Root
-  class:list={['header']}
+  class:list={'header'}
   {as}
   {frame}
   {compact}
@@ -34,10 +57,73 @@ const {
   {space}
   {...rest}
 >
-  <slot />
+  <Row
+    style={{ textDecoration: 'none', height: '100%' }}
+    as="a"
+    href="/"
+  >
+    <Logo src={logo} />
+    <Heading
+      as="p"
+      level={3}
+      text={heading}
+    />
+  </Row>
+  <Row>
+    {
+      links?.map((link, i) => (
+        <Link
+          class={'header-link'}
+          {...link}
+        />
+      ))
+    }
+    {buttons?.map((button, i) => <Button {...button} />)}
+    <Search {...search} />
+    <Drawer
+      icon="menu-2"
+      id="navigation-drawer"
+    >
+      {
+        drawer?.length > 0 &&
+          drawer.map((item: any) => (
+            <>
+              <Heading
+                level={6}
+                html={item.heading}
+              />
+              {item.links?.map((link: any) => (
+                <Link
+                  {...link}
+                  class="drawer-link"
+                  color={slug === link.href ? 'brand' : undefined}
+                />
+              ))}
+              {item.folder &&
+                (async () => {
+                  const pages = await getCollection(
+                    'pages',
+                    (entry: any) =>
+                      entry.slug.startsWith(item.folder) &&
+                      !entry.slug.endsWith(item.folder)
+                  )
+                  return pages.map((page: any) => (
+                    <Link
+                      href={`/${page.slug}`}
+                      class="sidebar-link"
+                      color={slug === page.slug ? 'brand' : undefined}
+                      text={page.data.title}
+                    />
+                  ))
+                })()}
+            </>
+          ))
+      }
+    </Drawer>
+  </Row>
 </Root>
 
-<style is:global lang="scss">
+<style lang="scss" is:global>
   :root {
     --header-height: calc(
       var(--text-1) + 2 * var(--space-4) + 2 * var(--space-3)
@@ -94,6 +180,45 @@ const {
     &.position-sticky {
       position: sticky;
       top: -1px;
+    }
+
+    .header-link {
+      display: none;
+      font-size: var(--text-1);
+
+      @media (min-width: 1024px) {
+        display: flex;
+      }
+    }
+
+    .drawer-link {
+      font-size: var(--text-1);
+    }
+
+    .drawer-button {
+      @media (min-width: 1024px) {
+        display: none !important;
+      }
+    }
+
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      left: 0;
+      gap: var(--space-4);
+      margin-left: 0 !important;
+      box-shadow: 0 100px 100px rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid var(--color-6);
+      background: var(--color-1);
+      padding-top: var(--space-6);
+      padding-bottom: var(--space-6);
+      width: 100%;
+
+      @media (min-width: 1024px) {
+        display: none !important;
+      }
     }
   }
 </style>
