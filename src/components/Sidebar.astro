@@ -12,38 +12,39 @@ const { sidebar } = Astro.props
   class="sidebar"
 >
   {
-    sidebar?.map((item: any) => (
-      <>
-        <Heading
-          level={6}
-          html={item.heading}
-        />
-        {item.links?.map((link: any) => (
-          <Link
-            {...link}
-            class="sidebar-link"
-            color={Astro.url.pathname === link.href ? 'brand' : undefined}
+    sidebar?.length > 0 &&
+      sidebar.map((item: any) => (
+        <>
+          <Heading
+            level={6}
+            html={item.heading}
           />
-        ))}
-        {item.folder &&
-          (async () => {
-            const pages = await getCollection(
-              'pages',
-              (entry: any) =>
-                entry.slug.startsWith(item.folder) &&
-                !entry.slug.endsWith(item.folder)
-            )
-            return pages.map((page: any) => (
-              <Link
-                href={`/${page.slug}`}
-                class="sidebar-link"
-                color={Astro.url.pathname === page.slug ? 'brand' : undefined}
-                text={page.data.title}
-              />
-            ))
-          })()}
-      </>
-    ))
+          {item.links?.map((link: any) => (
+            <Link
+              {...link}
+              class="sidebar-link"
+              color={Astro.url.pathname === link.href ? 'brand' : undefined}
+            />
+          ))}
+          {item.folder &&
+            (async () => {
+              const pages = await getCollection(
+                'pages',
+                (entry: any) =>
+                  entry.slug.startsWith(item.folder) &&
+                  !entry.slug.endsWith(item.folder)
+              )
+              return pages.map((page: any) => (
+                <Link
+                  href={`/${page.slug}`}
+                  class="sidebar-link"
+                  color={Astro.url.pathname === page.slug ? 'brand' : undefined}
+                  text={page.data.title}
+                />
+              ))
+            })()}
+        </>
+      ))
   }
 </Column>
 
