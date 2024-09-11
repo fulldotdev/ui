@@ -5,31 +5,51 @@ Here lay a few resources we wrote to help you do it!
 
 ## Repo Structure
 
-This repository is a monorepo.
-
-- We use pnpm and workspaces
-
 ```md
 .
-├── docs/
-│   └── src/
-│       └── content/
-│           └── [categories]/
-│               └── [documentation].mdx
-├── package/
-│   └── src/
-│       └── components/
-│           └── [categories]/
-│               └── [components].astro
+├── src/
+│   ├── blocks/
+│   │   └── ...
+│   ├── components/
+│   │   └── ...
+│   ├── content/
+│   │   ├── pages/
+│   │   │   └── ...
+│   │   ├── settings/
+│   │   │   └── ...
+│   │   └── ...
+│   ├── css/
+│   │   └── ...
+│   ├── integration/
+│   │   └── ...
+│   ├── layouts/
+│   │   └── ...
+│   ├── pages/
+│   │   └── ...
+│   ├── schemas/
+│   │   └── ...
+│   └── utils/
+│       └── ...
+├── public/
+│   └── ...
+└──
 ```
 
-### /docs
+### /src
 
-Here lays the documentation of fulldev-ui deployed to [ui.full.dev](https://ui.full.dev).
+The main source directory containing all the core files of the project.
 
-### /package
-
-The actual component library with it's components and styling.
+- **blocks/**: Contains reusable block components that can be composed to build pages also exported to the package.
+- **components/**: Houses individual UI components used throughout the project also exported to the package.
+- **content/**: Stores content-related files:
+  - **pages/**: Contains markdown or MDX files for individual pages.
+  - **settings/**: Includes configuration files for various settings like the sidebar.
+- **css/**: Contains global CSS files and styles.
+- **integration/**: Holds astro integration-related code.
+- **layouts/**: Stores layout components used to structure pages.
+- **pages/**: Contains Astro page components that define the routes of the website.
+- **schemas/**: Includes schema definitions for content validation.
+- **utils/**: Houses utility functions and helper modules used across the project.
 
 ## Development
 
@@ -57,22 +77,11 @@ pnpm install
 
 Make sure to do this in root to make sure you're using the local version of the component package.
 
-1. Run the entire repository (optional)
+1. Run the development server:
 
 ```bash
 pnpm dev
 ```
-
-### Run a workspace
-
-You can use the `pnpm --filter [WORKSPACE] dev` command to start the development process for a workspace.
-
-#### Workspace Examples
-
-To run the ui.full.dev website:
-`pnpm --filter docs dev`
-
-or run it by going to the folder using `cd docs` and running `pnpm dev` there.
 
 ## Commit & Pull Requests
 
