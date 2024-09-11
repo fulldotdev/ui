@@ -4,66 +4,45 @@ import Heading from 'fulldev-ui/components/Heading.astro'
 import Link from 'fulldev-ui/components/Link.astro'
 import Column from 'fulldev-ui/components/structures/Column.astro'
 
-const componentPages = await getCollection('pages', (entry: any) =>
-  entry.slug.startsWith('components/')
-)
-
-const docsPages = await getCollection('pages', (entry: any) =>
-  entry.slug.startsWith('docs/')
-)
-
-const structuresPages = await getCollection('pages', (entry: any) =>
-  entry.slug.startsWith('structures/')
-)
-
-const sortPages = (pages: any[]) =>
-  pages.sort(
-    (a, b) => (a.data.sidebar?.order || 0) - (b.data.sidebar?.order || 0)
-  )
-
-const currentPath = Astro.url.pathname
+const { sidebar } = Astro.props
 ---
 
 <Column
   as="aside"
   class="sidebar"
 >
-  <Heading level={4}>Docs</Heading>
   {
-    sortPages(docsPages).map((page: any) => (
-      <Link
-        class="sidebar-link"
-        href={`/${page.slug}`}
-        color={currentPath === `/${page.slug}` ? 'brand' : undefined}
-      >
-        {page.data.title}
-      </Link>
-    ))
-  }
-
-  <Heading level={4}>Components</Heading>
-  {
-    sortPages(componentPages).map((page: any) => (
-      <Link
-        class="sidebar-link"
-        href={`/${page.slug}`}
-        color={currentPath === `/${page.slug}` ? 'brand' : undefined}
-      >
-        {page.data.title}
-      </Link>
-    ))
-  }
-
-  <Heading level={4}>Structures</Heading>
-  {
-    sortPages(structuresPages).map((page: any) => (
-      <Link
-        class="sidebar-link"
-        href={`/${page.slug}`}
-        color={currentPath === `/${page.slug}` ? 'brand' : undefined}
-      >
-        {page.data.title}
-      </Link>
+    sidebar?.map((item: any) => (
+      <>
+        <Heading
+          level={6}
+          html={item.heading}
+        />
+        {item.links?.map((link: any) => (
+          <Link
+            {...link}
+            class="sidebar-link"
+            color={Astro.url.pathname === link.href ? 'brand' : undefined}
+          />
+        ))}
+        {item.folder &&
+          (async () => {
+            const pages = await getCollection(
+              'pages',
+              (entry: any) =>
+                entry.slug.startsWith(item.folder) &&
+                !entry.slug.endsWith(item.folder)
+            )
+            return pages.map((page: any) => (
+              <Link
+                href={`/${page.slug}`}
+                class="sidebar-link"
+                color={Astro.url.pathname === page.slug ? 'brand' : undefined}
+                text={page.data.title}
+              />
+            ))
+          })()}
+      </>
     ))
   }
 </Column>
