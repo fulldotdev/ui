@@ -1,5 +1,6 @@
 ---
 import type { HTMLTag } from 'astro/types'
+import { getCollection } from 'astro:content'
 import {
   Button,
   Header as FullHeader,
@@ -20,6 +21,7 @@ type Props<As extends HTMLTag = 'header'> = Omit<Block<As>, 'structure'> & {
   heading?: string
   links?: any[]
   buttons?: any[]
+  drawer?: any[]
 }
 
 const {
@@ -30,10 +32,23 @@ const {
   heading,
   links,
   buttons,
-  href,
+  drawer,
   search,
   ...rest
 } = Astro.props
+
+const currentPath = Astro.url.pathname
+
+const getCollectionPages = async (folder: string) => {
+  return await getCollection('pages', (entry: any) =>
+    entry.slug.startsWith(`${folder}/`)
+  )
+}
+
+const sortPages = (pages: any[]) =>
+  pages.sort(
+    (a, b) => (a.data.sidebar?.order || 0) - (b.data.sidebar?.order || 0)
+  )
 ---
 
 <FullHeader
@@ -71,11 +86,37 @@ const {
       id="navigation-drawer"
     >
       {
-        links?.map((link) => (
-          <Link
-            class:list={'header-link-sidebar'}
-            {...link}
-          />
+        drawer?.map((section: any) => (
+          <>
+            <Heading level={4}>{section.heading}</Heading>
+            {section.links &&
+              section.links.map((link: any) => (
+                <Link
+                  class:list={'header-link-sidebar'}
+                  href={link.href}
+                  color={currentPath === link.href ? 'brand' : undefined}
+                >
+                  {link.text}
+                </Link>
+              ))}
+            {section.folder && (
+              <>
+                {getCollectionPages(section.folder).then((pages) =>
+                  pages.map((page: any) => (
+                    <Link
+                      class:list={'header-link-sidebar'}
+                      href={`/${page.slug}`}
+                      color={
+                        currentPath === `/${page.slug}` ? 'brand' : undefined
+                      }
+                    >
+                      {page.data.title}
+                    </Link>
+                  ))
+                )}
+              </>
+            )}
+          </>
         ))
       }
     </Drawer>
