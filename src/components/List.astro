@@ -6,7 +6,7 @@ type Props<As extends HTMLTag = 'ul'> = Polymorphic<{ as: As }> & {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   color?: 'base' | 'brand'
   contrast?: boolean
-  items?: string[]
+  items?: (string | { text: string })[]
 }
 
 const { as = 'ul', items, ...rest } = Astro.props
@@ -17,7 +17,7 @@ const { as = 'ul', items, ...rest } = Astro.props
   {as}
   {...rest}
 >
-  {items?.map((item) => <li set:html={item} />)}
+  {items?.map((item) => <li>{typeof item === 'string' ? item : item.text}</li>)}
 </Root>
 
 <style is:global lang="scss">
