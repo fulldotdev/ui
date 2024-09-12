@@ -1,7 +1,5 @@
 ---
 import Button from 'fulldev-ui/components/Button.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
-import Spread from 'fulldev-ui/components/Spread.astro'
 
 const { componentProps } = Astro.props
 
@@ -13,55 +11,57 @@ const isComponent = Astro.url.pathname.includes('components/')
 console.log(Astro.url.pathname, isComponent)
 ---
 
-<div class:list={['window', isComponent && 'component']}>
-  {
-    !isComponent && (
-      <Spread
-        style={{ width: '100%' }}
-        compact
+{
+  isComponent ? (
+    <div class="component window">
+      <div class="example-container">
+        <slot name="example" />
+      </div>
+      <div class="code-container">
+        <slot name="code" />
+      </div>
+    </div>
+  ) : (
+    <div class="block window">
+      <Button
+        as="label"
+        for={id}
+        variant="soft"
       >
-        <Heading
-          level={3}
-          size="sm"
-          html={componentProps.title}
-        />
-
-        <Button
-          as="label"
-          for={id}
-          variant="soft"
-          style={{
-            marginLeft: 'auto',
-          }}
-        >
-          Preview / Code
-        </Button>
-      </Spread>
-    )
-  }
-  <div class="live-code-layout">
-    {
-      !isComponent && (
-        <input
-          type="checkbox"
-          id={id}
-          name={id}
-          class="window-toggle"
-        />
-      )
-    }
-    <div class="example-container">
-      <slot name="example" />
+        Preview / Code
+      </Button>
+      <input
+        type="checkbox"
+        id={id}
+        name={id}
+        class="window-toggle"
+      />
+      <div class="example-container">
+        <slot name="example" />
+      </div>
+      <div class="code-container">
+        <slot name="code" />
+      </div>
     </div>
-    <div class="code-container">
-      <slot name="code" />
-    </div>
-  </div>
-</div>
+  )
+}
 
 <style lang="scss" is:global>
   .window {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     width: 100%;
+
+    .code-container {
+      width: 100%;
+
+      .astro-code {
+        margin: 0;
+        background-color: var(--base-2) !important;
+        padding: var(--space-5);
+      }
+    }
 
     &.component {
       border: 1px solid var(--base-6);
@@ -76,53 +76,87 @@ console.log(Astro.url.pathname, isComponent)
         padding: var(--space-5);
       }
 
-      .astro-code {
+      .code-container {
         border: none;
         border-top: 1px solid var(--base-6);
         border-radius: 0px;
+
+        .astro-code {
+          border: none;
+          border-radius: 0px;
+        }
       }
     }
 
-    &:not(.component) {
+    &.block {
+      gap: var(--space-2);
       padding-top: var(--space-7);
       padding-bottom: var(--space-7);
 
-      .live-code-layout {
-        display: flex;
-        flex-direction: column;
-        margin-top: var(--space-4);
+      .code-container {
+        display: none;
+      }
+
+      .window-toggle {
+        display: none;
+        visibility: hidden;
+        opacity: 0;
+      }
+
+      .window-toggle:checked {
+        & ~ .example-container {
+          display: none;
+        }
+        & ~ .code-container {
+          display: block;
+        }
+      }
+
+      .example-container {
+        border-top: 1px solid var(--base-6);
         width: 100%;
-        overflow: hidden;
-
-        .example-container {
-          border-top: 1px solid var(--base-6);
-        }
-
-        .code-container {
-          display: none;
-
-          .astro-code {
-            margin: 0;
-            background-color: var(--base-2) !important;
-            padding: var(--space-5);
-          }
-        }
-
-        .window-toggle {
-          display: none;
-          visibility: hidden;
-          opacity: 0;
-        }
-
-        .window-toggle:checked {
-          & ~ .example-container {
-            display: none;
-          }
-          & ~ .code-container {
-            display: block;
-          }
-        }
       }
     }
   }
+
+  // .window {
+  //   width: 100%;
+
+  //   &.component {
+  //     border: 1px solid var(--base-6);
+  //     border-radius: var(--radius-2);
+  //     overflow: hidden;
+
+  //     .example-container {
+  //       display: flex;
+  //       flex-direction: column;
+  //       align-items: start;
+  //       gap: var(--space-4);
+  //       padding: var(--space-5);
+  //     }
+
+  //     .astro-code {
+  //       border: none;
+  //       border-top: 1px solid var(--base-6);
+  //       border-radius: 0px;
+  //     }
+  //   }
+
+  //   &:not(.component) {
+  //     padding-top: var(--space-7);
+  //     padding-bottom: var(--space-7);
+
+  //     .live-code-layout {
+  //       display: flex;
+  //       flex-direction: column;
+  //       margin-top: var(--space-4);
+  //       width: 100%;
+  //       overflow: hidden;
+
+  //       .example-container {
+  //         border-top: 1px solid var(--base-6);
+  //       }
+  //     }
+  //   }
+  // }
 </style>
