@@ -7,7 +7,7 @@ type Props = HTMLAttributes<'table'> & {
   size?: 'sm' | 'md' | 'lg'
   header?: string[]
   body?: string[][]
-  footer?: string[]
+  footer?: (string | { text: string; colspan?: string | number })[]
 }
 
 const { header, body, footer, ...rest } = Astro.props
@@ -36,7 +36,22 @@ const { header, body, footer, ...rest } = Astro.props
   </Root>
   <Root as="tfoot">
     <Root as="tr">
-      {footer?.map((cell: string) => <Root as="td">{cell}</Root>)}
+      {
+        footer?.map((cell) => {
+          if (typeof cell === 'string') {
+            return <Root as="td">{cell}</Root>
+          } else {
+            return (
+              <Root
+                as="td"
+                colspan={cell.colspan}
+              >
+                {cell.text}
+              </Root>
+            )
+          }
+        })
+      }
     </Root>
   </Root>
 </Root>
