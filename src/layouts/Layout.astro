@@ -35,7 +35,15 @@ const { logo, header, headers, footer, footers, channels, sidebar } = data || {}
     />
     <Blocks {...headers} />
     <Sidebar {sidebar} />
-    <main data-pagefind-body>
+    <main
+      data-pagefind-body
+      class:list={[
+        classes,
+        {
+          'has-sidebar': sidebar,
+        },
+      ]}
+    >
       <slot />
     </main>
     {
@@ -63,6 +71,11 @@ const { logo, header, headers, footer, footers, channels, sidebar } = data || {}
     <Blocks {...footers} />
     <Fragment set:html={data?.code?.body} />
     <style lang="scss" is:global>
+      :root {
+        --screen: 1536px;
+        --gutter: max(4vw, calc(100vw - var(--screen)) / 2);
+      }
+
       html,
       body {
         box-sizing: border-box;
@@ -75,7 +88,6 @@ const { logo, header, headers, footer, footers, channels, sidebar } = data || {}
         font-size: var(--text-2);
         font-family: var(--font-family);
       }
-
       body {
         display: grid;
         // grid-template-rows: 150px auto auto;
@@ -83,7 +95,6 @@ const { logo, header, headers, footer, footers, channels, sidebar } = data || {}
           'header'
           'main'
           'footer';
-        column-gap: var(--space-7);
         align-items: start;
         padding-right: var(--gutter);
         padding-left: var(--gutter);
@@ -106,15 +117,19 @@ const { logo, header, headers, footer, footers, channels, sidebar } = data || {}
           position: sticky;
           top: 0;
           grid-area: sidebar;
+          // margin-left: calc(var(--gutter) * -1);
+          // padding-left: var(--gutter);
         }
 
         main {
           display: flex;
-          row-gap: var(--space-7);
+          // row-gap: var(--space-7);
           grid-area: main;
           flex-direction: column;
-          padding-top: var(--space-7);
-          padding-bottom: var(--space-7);
+
+          &.has-sidebar {
+            padding-left: min(var(--gutter), var(--space-7));
+          }
         }
 
         .footer {
@@ -122,9 +137,9 @@ const { logo, header, headers, footer, footers, channels, sidebar } = data || {}
         }
 
         .section,
-        .footer,
         .header {
-          padding: 0 !important;
+          padding-right: 0 !important;
+          padding-left: 0 !important;
         }
       }
     </style>
