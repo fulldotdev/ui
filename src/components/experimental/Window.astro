@@ -6,38 +6,50 @@ import Spread from 'fulldev-ui/components/structures/Spread.astro'
 const { componentProps } = Astro.props
 
 const randomId = Math.random().toString(36).substring(2, 15)
-const id =
-  Astro.props.componentProps.title?.toLowerCase().replace(/ /g, '-') ?? randomId
+const id = componentProps.title?.toLowerCase().replace(/ /g, '-') ?? randomId
+
+const isComponent = Astro.url.pathname.includes('components/')
+
+console.log(Astro.url.pathname, isComponent)
 ---
 
-<div class="window">
-  <Spread
-    style={{ width: '100%' }}
-    compact
-  >
-    <Heading
-      level={3}
-      size="sm"
-      html={componentProps.title}
-    />
-    <Button
-      as="label"
-      for={id}
-      variant="soft"
-      style={{
-        marginLeft: 'auto',
-      }}
-    >
-      Preview / Code
-    </Button>
-  </Spread>
+<div class:list={['window', isComponent && 'component']}>
+  {
+    !isComponent && (
+      <Spread
+        style={{ width: '100%' }}
+        compact
+      >
+        <Heading
+          level={3}
+          size="sm"
+          html={componentProps.title}
+        />
+
+        <Button
+          as="label"
+          for={id}
+          variant="soft"
+          style={{
+            marginLeft: 'auto',
+          }}
+        >
+          Preview / Code
+        </Button>
+      </Spread>
+    )
+  }
   <div class="live-code-layout">
-    <input
-      type="checkbox"
-      id={id}
-      name={id}
-      class="window-toggle"
-    />
+    {
+      !isComponent && (
+        <input
+          type="checkbox"
+          id={id}
+          name={id}
+          class="window-toggle"
+        />
+      )
+    }
     <div class="example-container">
       <slot name="example" />
     </div>
@@ -51,37 +63,55 @@ const id =
   .window {
     width: 100%;
 
-    .live-code-layout {
-      display: flex;
-      flex-direction: column;
-      margin-top: var(--space-4);
+    &.component {
       border: 1px solid var(--base-6);
       border-radius: var(--radius-2);
-      width: 100%;
       overflow: hidden;
 
-      .code-container {
-        display: none;
-
-        .astro-code {
-          margin: 0;
-          background-color: var(--base-2) !important;
-          padding: var(--space-5);
-        }
+      .example-container {
+        padding: var(--space-5);
       }
 
-      .window-toggle {
-        display: none;
-        visibility: hidden;
-        opacity: 0;
+      .astro-code {
+        border: none;
+        border-top: 1px solid var(--base-6);
+        border-radius: 0px;
       }
+    }
 
-      .window-toggle:checked {
-        & ~ .example-container {
+    &:not(.component) {
+      .live-code-layout {
+        display: flex;
+        flex-direction: column;
+        margin-top: var(--space-4);
+        border: 1px solid var(--base-6);
+        border-radius: var(--radius-2);
+        width: 100%;
+        overflow: hidden;
+
+        .code-container {
           display: none;
+
+          .astro-code {
+            margin: 0;
+            background-color: var(--base-2) !important;
+            padding: var(--space-5);
+          }
         }
-        & ~ .code-container {
-          display: block;
+
+        .window-toggle {
+          display: none;
+          visibility: hidden;
+          opacity: 0;
+        }
+
+        .window-toggle:checked {
+          & ~ .example-container {
+            display: none;
+          }
+          & ~ .code-container {
+            display: block;
+          }
         }
       }
     }
