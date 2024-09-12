@@ -8,14 +8,16 @@ type Props = HTMLAttributes<'table'> & {
   header?: string[]
   body?: string[][]
   footer?: (string | { text: string; colspan?: string | number })[]
+  radius?: 'none' | 'auto'
 }
 
-const { header, body, footer, ...rest } = Astro.props
+const { header, body, footer, radius = 'auto', ...rest } = Astro.props
 ---
 
 <Root
   class="table"
   as="table"
+  {radius}
   {...rest}
 >
   <Root as="thead">
@@ -65,6 +67,14 @@ const { header, body, footer, ...rest } = Astro.props
     width: 100%;
     caption-side: bottom;
     overflow: hidden;
+
+    &.radius-none {
+      border-radius: 0;
+    }
+
+    &.radius-auto {
+      border-radius: var(--radius-1);
+    }
 
     thead {
       background-color: var(--color-3);
