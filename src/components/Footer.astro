@@ -51,8 +51,6 @@ const {
   hours,
   ...rest
 } = Astro.props
-
-const hasSlotContent = await Astro.slots.has('default')
 ---
 
 <Root
@@ -65,89 +63,92 @@ const hasSlotContent = await Astro.slots.has('default')
   {size}
   {...rest}
 >
-  {
-    hasSlotContent ? (
-      <slot />
-    ) : (
-      <>
-        <Split align="start">
-          <Column>
-            <Column
-              style={{ textDecoration: 'none' }}
-              as="a"
-              href="/"
-            >
-              {logo && <Logo src={logo} />}
-              {heading && (
-                <Heading
-                  as="p"
-                  level={2}
-                  text={heading}
-                />
-              )}
-            </Column>
-            {text && <Text text={text} />}
+  <slot>
+    <Split align="start">
+      <Column>
+        <Column
+          style={{ textDecoration: 'none' }}
+          as="a"
+          href="/"
+        >
+          {logo && <Logo src={logo} />}
+          {
+            heading && (
+              <Heading
+                as="p"
+                level={2}
+                text={heading}
+              />
+            )
+          }
+        </Column>
+        {text && <Text text={text} />}
+      </Column>
+      {
+        channels && (
+          <Column compact>
+            <Channel
+              if={channels.phone}
+              icon="phone"
+              heading="Telefoon"
+              text={channels.phone}
+              href={`tel:${channels.phone}`}
+            />
+            <Channel
+              if={channels.email}
+              icon="mail"
+              heading="Email"
+              text={channels.email}
+              href={`mailto:${channels.email}`}
+            />
+            <Channel
+              if={channels.address}
+              icon="pin"
+              heading="Adres"
+              text={channels.address}
+              target="_blank"
+              href={`https://maps.google.com/?q=${company} ${channels.address}`}
+            />
           </Column>
-          {channels && (
-            <Column compact>
-              <Channel
-                if={channels.phone}
-                icon="phone"
-                heading="Telefoon"
-                text={channels.phone}
-                href={`tel:${channels.phone}`}
-              />
-              <Channel
-                if={channels.email}
-                icon="mail"
-                heading="Email"
-                text={channels.email}
-                href={`mailto:${channels.email}`}
-              />
-              <Channel
-                if={channels.address}
-                icon="pin"
-                heading="Adres"
-                text={channels.address}
-                target="_blank"
-                href={`https://maps.google.com/?q=${company} ${channels.address}`}
-              />
-            </Column>
-          )}
-          {hours && (
+        )
+      }
+      {
+        hours && (
+          <Column>
+            <Heading
+              text={'Openingstijden'}
+              level={3}
+            />
+            {Object.entries(hours).map(([day, time]) => (
+              <Text text={`${day}: ${time}`} />
+            ))}
+          </Column>
+        )
+      }
+    </Split>
+
+    {
+      columns && (
+        <Split align="start">
+          {columns.map(({ heading, links }) => (
             <Column>
               <Heading
-                text={'Openingstijden'}
+                text={heading}
                 level={3}
               />
-              {Object.entries(hours).map(([day, time]) => (
-                <Text text={`${day}: ${time}`} />
+              {links.map((link) => (
+                <Link
+                  href={link.href}
+                  text={link.text}
+                />
               ))}
             </Column>
-          )}
+          ))}
         </Split>
-
-        {columns && (
-          <Split align="start">
-            {columns.map(({ heading, links }) => (
-              <Column>
-                <Heading
-                  text={heading}
-                  level={3}
-                />
-                {links.map((link) => (
-                  <Link
-                    href={link.href}
-                    text={link.text}
-                  />
-                ))}
-              </Column>
-            ))}
-          </Split>
-        )}
-      </>
+      )
+    }
     )
-  }
+  </slot>
 </Root>
 
 <style is:global lang="scss">
