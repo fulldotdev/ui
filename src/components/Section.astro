@@ -1,5 +1,6 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
 import Badge from 'fulldev-ui/components/Badge.astro'
 import Box from 'fulldev-ui/components/Box.astro'
 import Button from 'fulldev-ui/components/Button.astro'
@@ -14,21 +15,46 @@ import Text from 'fulldev-ui/components/Text.astro'
 import Wrap from 'fulldev-ui/components/Wrap.astro'
 
 type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> & {
-  scheme?: 'light' | 'dark'
+  position?: ComponentProps<typeof Image>['position']
+  ratio?: ComponentProps<typeof Image>['ratio']
+  mask?: ComponentProps<typeof Image>['mask']
+  buttons?: ComponentProps<typeof Button<'a'>>['html']
+  button?: ComponentProps<typeof Button<'a'>>['html']
+  cards?: ComponentProps<typeof Card<'a'>>[]
+  badge?: string | ComponentProps<typeof Badge<'a'>>
+  image?: ComponentProps<typeof Image>['src']
+  rating?: ComponentProps<typeof Rating<'div'>>['value']
+  pages?: CollectionEntry<'pages'>['data'][]
+  records?: CollectionEntry<'records'>['data'][]
+  heading?: string
+  title?: string
+  text?: string
+  html?: string
+  description?: string
+  theme?: 'light' | 'dark'
   color?: 'base' | 'brand'
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-  frame?: 'fill' | 'viewport' | 'contain' | 'panel'
-  variant?: 'ghost' | 'subtle' | 'outline' | 'soft' | 'solid' | 'surface'
+  frame?: 'fill' | 'viewport' | 'panel'
   align?: 'start' | 'center' | 'end'
+  justify?: 'start' | 'center' | 'end'
   structure?: 'column' | 'split' | 'spread' | 'carousel' | 'grid' | 'masonry'
+  level?: 1 | 2 | 3 | 4 | 5 | 6
+  label?: string
   space?: 'auto' | 'none'
   compact?: boolean
   reverse?: 'odd' | 'even'
-  ratio?: ComponentProps<typeof Image>['ratio']
-} & Record<string, any>
+  variant?:
+    | 'base'
+    | 'ghost'
+    | 'subtle'
+    | 'outline'
+    | 'soft'
+    | 'solid'
+    | 'surface'
+}
 
 const {
-  as = 'div',
+  as = 'section',
   space = 'auto',
   frame = 'fill',
   structure = 'column',
@@ -44,7 +70,6 @@ const {
   html,
   description,
   buttons,
-  review,
   image,
   rating,
   size,
@@ -58,7 +83,7 @@ const {
 } = Astro.props
 
 const mergedCards = (pages || records || cards)?.filter(Boolean)
-const hasCards = mergedCards?.length > 0
+const hasCards = mergedCards && mergedCards?.length > 0
 ---
 
 <Root
