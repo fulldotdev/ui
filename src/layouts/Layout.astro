@@ -10,11 +10,13 @@ import Toc from 'fulldev-ui/components/Toc.astro'
 
 type Props = Partial<CollectionEntry<'pages'>> & {
   class?: string
+  theme?: 'light' | 'dark'
 }
 
-const { slug, data, class: classes } = Astro.props
-const { logo, header, headers, footer, footers, channels, sidebar, toc } =
-  data || {}
+const { slug, data, theme, class: classes } = Astro.props
+const { logo, header, footer, footers, channels, sidebar, toc } = data || {}
+
+console.log({ theme })
 ---
 
 <!doctype html>
@@ -23,7 +25,8 @@ const { logo, header, headers, footer, footers, channels, sidebar, toc } =
   class:list={[
     slug,
     {
-      'theme-dark': data?.theme === 'dark',
+      'theme-dark': theme === 'dark',
+      'theme-light': theme === 'light',
     },
   ]}
 >
@@ -34,6 +37,8 @@ const { logo, header, headers, footer, footers, channels, sidebar, toc } =
       {
         'has-sidebar': sidebar,
         'has-toc': toc,
+        'theme-dark': theme === 'dark',
+        'theme-light': theme === 'light',
       },
     ]}
   >
