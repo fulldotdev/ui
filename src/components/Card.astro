@@ -1,8 +1,41 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Avatar from 'fulldev-ui/components/Avatar.astro'
+import Button from 'fulldev-ui/components/Button.astro'
+import Column from 'fulldev-ui/components/Column.astro'
+import Price from 'fulldev-ui/components/experimental/Price.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Icon from 'fulldev-ui/components/Icon.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Label from 'fulldev-ui/components/Label.astro'
+import Rating from 'fulldev-ui/components/Rating.astro'
 import Root from 'fulldev-ui/components/Root.astro'
+import Row from 'fulldev-ui/components/Row.astro'
+import Spread from 'fulldev-ui/components/Spread.astro'
+import Text from 'fulldev-ui/components/Text.astro'
+import Wrap from 'fulldev-ui/components/Wrap.astro'
 
 type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
+  level?: ComponentProps<typeof Heading<'h2'>>['level']
+  position?: ComponentProps<typeof Image>['position']
+  ratio?: ComponentProps<typeof Image>['ratio']
+  image?: ComponentProps<typeof Image>['src']
+  button?: ComponentProps<typeof Button<'a'>>
+  buttons?: ComponentProps<typeof Button<'a'>>[]
+  price?: ComponentProps<typeof Price<'span'>>['value']
+  icon?: ComponentProps<typeof Icon<'i'>>['name']
+  avatar?: ComponentProps<typeof Avatar>['src']
+  avatars?: ComponentProps<typeof Avatar>['src'][]
+  mask?: ComponentProps<typeof Image>['mask']
+  label?: ComponentProps<typeof Label<'span'>>['html']
+  rating?: ComponentProps<typeof Rating<'div'>>['value']
+  pages?: any
+  records?: any
+  html?: string
+  text?: string
+  description?: string
+  heading?: string
+  title?: string
   structure?: 'column' | 'group' | 'split' | 'spread' | 'row'
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   align?: 'start' | 'center' | 'end' | 'stretch'
@@ -11,7 +44,6 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   color?: 'base' | 'brand'
   contrast?: boolean
   compact?: boolean
-  ratio?: 'landscape' | 'portrait' | 'square' | number
   space?: 'auto' | 'none'
   variant?:
     | 'base'
@@ -33,12 +65,35 @@ const {
   compact = true,
   radius = 'auto',
   variant = 'subtle',
+  align = 'start',
+  level = 4,
+  position,
+  label,
+  heading,
+  title,
+  text,
+  html,
+  description,
+  buttons,
+  ratio,
+  image,
+  rating,
+  button,
+  pages,
+  records,
+  price,
+  icon,
+  avatar,
+  mask,
+  avatars,
   ...rest
 } = Astro.props
 ---
 
 <Root
   class:list={['card']}
+  ratio={position === 'background' ? ratio : undefined}
+  {align}
   {compact}
   {href}
   {radius}
@@ -49,6 +104,59 @@ const {
   {as}
   {...rest}
 >
+  <Image
+    {position}
+    {mask}
+    ratio={position === 'background' ? undefined : ratio}
+    src={image}
+  />
+  <Icon name={icon} />
+  <Row>
+    {
+      [avatar, ...(avatars ?? [])]?.filter(Boolean)?.map((avatar) => (
+        <Avatar
+          radius="full"
+          src={avatar}
+        />
+      ))
+    }
+    <Column>
+      <Rating
+        color="brand"
+        value={rating}
+      />
+      <Label
+        color="base"
+        html={label}
+      />
+    </Column>
+  </Row>
+  <Spread>
+    <Heading
+      color="base"
+      {level}
+      html={heading ?? title}
+    />
+    <Price value={price} />
+  </Spread>
+  <Text
+    color="base"
+    contrast={position === 'background' && true}
+    html={html || text || description}
+  />
+  <Wrap>
+    {
+      [button, ...(buttons ?? [])]
+        .filter(Boolean)
+        ?.map((button: any, i: number) => (
+          <Button
+            color="brand"
+            variant={i > 0 ? 'soft' : 'solid'}
+            {...button}
+          />
+        ))
+    }
+  </Wrap>
   <slot />
 </Root>
 
