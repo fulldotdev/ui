@@ -10,12 +10,13 @@ type Color = {
 }
 
 interface Config {
+  css?: string
+  injectRoutes?: boolean
   colors: {
     theme: 'light' | 'dark'
     light?: Color
     dark?: Color
   }
-  css?: string
 }
 
 const defaultConfig: Config = {
@@ -139,14 +140,16 @@ export default function fulluiIntegration(
         injectScript('page-ssr', `import "virtual:colors.css";`)
 
         // ----------------------
-        // Inject pages
+        // Inject routes
         // ----------------------
-        const pages = import.meta.glob('/src/pages/**/*.astro')
-        !pages['/src/pages/[...page].astro'] &&
-          injectRoute({
-            pattern: '/[...page]',
-            entrypoint: 'fulldev-ui/[...page].astro',
-          })
+        if (config.injectRoutes) {
+          const pages = import.meta.glob('/src/pages/**/*.astro')
+          !pages['/src/pages/[...page].astro'] &&
+            injectRoute({
+              pattern: '/[...page]',
+              entrypoint: 'fulldev-ui/[...page].astro',
+            })
+        }
       },
     },
   }
