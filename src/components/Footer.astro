@@ -1,6 +1,13 @@
 ---
 import type { HTMLTag, Polymorphic } from 'astro/types'
+import Column from 'fulldev-ui/components/Column.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Link from 'fulldev-ui/components/Link.astro'
 import Root from 'fulldev-ui/components/Root.astro'
+import Split from 'fulldev-ui/components/Split.astro'
+import Text from 'fulldev-ui/components/Text.astro'
+import Channel from 'fulldev-ui/components/experimental/Channel.astro'
+import Logo from 'fulldev-ui/components/experimental/Logo.astro'
 
 type Props<As extends HTMLTag = 'footer'> = Polymorphic<{ as: As }> & {
   structure?: 'spread' | 'row' | 'split' | 'column'
@@ -11,16 +18,25 @@ type Props<As extends HTMLTag = 'footer'> = Polymorphic<{ as: As }> & {
   scheme?: 'light' | 'dark'
   color?: 'base' | 'brand'
   space?: 'none' | 'auto'
-
   compact?: boolean
-}
+} & Record<string, any>
 
 const {
   as = 'footer',
   space = 'auto',
-  structure = 'spread',
   variant = 'subtle',
   frame = 'fill',
+  structure = 'split',
+  size = 'sm',
+  logo,
+  heading,
+  columns,
+  href,
+  text,
+  channels,
+  company,
+  socials,
+  hours,
   ...rest
 } = Astro.props
 ---
@@ -32,9 +48,89 @@ const {
   {variant}
   {frame}
   {space}
+  {size}
   {...rest}
 >
-  <slot />
+  <Split align="start">
+    <Column>
+      <Column
+        style={{ textDecoration: 'none' }}
+        as="a"
+        href="/"
+      >
+        <Logo src={logo} />
+        <Heading
+          as="p"
+          level={2}
+          text={heading}
+        />
+      </Column>
+      <Text text={text} />
+    </Column>
+    {
+      channels && (
+        <Column compact>
+          <Channel
+            if={channels?.phone}
+            icon="phone"
+            heading="Telefoon"
+            text={channels?.phone}
+            href={`tel:${channels?.phone}`}
+          />
+          <Channel
+            if={channels?.email}
+            icon="mail"
+            heading="Email"
+            text={channels?.email}
+            href={`mailto:${channels?.email}`}
+          />
+          <Channel
+            if={channels?.address}
+            icon="pin"
+            heading="Adres"
+            text={channels?.address}
+            target="_blank"
+            href={`https://maps.google.com/?q=${company} ${channels?.address}`}
+          />
+        </Column>
+      )
+    }
+    <Column>
+      {
+        hours && (
+          <Heading
+            text={'Openingstijden'}
+            level={3}
+          />
+        )
+      }
+
+      {
+        Object.entries(hours || {}).map(([day, time]) => (
+          <Text text={`${day}: ${time}`} />
+        ))
+      }
+    </Column>
+  </Split>
+
+  <Split align="start">
+    {
+      columns?.map(({ heading, links }) => (
+        <Column>
+          <Heading
+            text={heading}
+            level={3}
+          />
+          {links?.map((link) => (
+            <Link
+              href={link.href}
+              text={link.text}
+            />
+          ))}
+        </Column>
+      ))
+    }
+  </Split>
 </Root>
 
 <style is:global lang="scss">
@@ -43,6 +139,7 @@ const {
     --gutter: max(4vw, calc(100vw - var(--screen)) / 2);
 
     margin: var(--outer-y) var(--outer-x);
+    margin-top: auto;
     background: var(--background);
     padding: var(--inner-y) var(--inner-x);
     width: 100%;
