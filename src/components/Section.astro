@@ -1,6 +1,17 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Badge from 'fulldev-ui/components/Badge.astro'
+import Box from 'fulldev-ui/components/Box.astro'
+import Button from 'fulldev-ui/components/Button.astro'
+import Card from 'fulldev-ui/components/Card.astro'
+import Column from 'fulldev-ui/components/Column.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Label from 'fulldev-ui/components/Label.astro'
+import Rating from 'fulldev-ui/components/Rating.astro'
 import Root from 'fulldev-ui/components/Root.astro'
+import Text from 'fulldev-ui/components/Text.astro'
+import Wrap from 'fulldev-ui/components/Wrap.astro'
 
 type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> & {
   scheme?: 'light' | 'dark'
@@ -9,12 +20,12 @@ type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> & {
   frame?: 'fill' | 'viewport' | 'contain' | 'panel'
   variant?: 'ghost' | 'subtle' | 'outline' | 'soft' | 'solid' | 'surface'
   align?: 'start' | 'center' | 'end'
-  structure?: 'column' | 'split' | 'spread'
-  // order?: 'reverse' | 'switch'
+  structure?: 'column' | 'split' | 'spread' | 'carousel' | 'grid' | 'masonry'
   space?: 'auto' | 'none'
   compact?: boolean
   reverse?: 'odd' | 'even'
-}
+  ratio?: ComponentProps<typeof Image>['ratio']
+} & Record<string, any>
 
 const {
   as = 'div',
@@ -23,21 +34,127 @@ const {
   structure = 'column',
   variant = 'ghost',
   align = 'start',
+  level = 2,
+  position,
+  label,
+  heading,
+  badge,
+  title,
+  text,
+  html,
+  description,
+  buttons,
+  review,
+  image,
+  rating,
+  size,
+  button,
+  cards,
+  pages,
+  records,
+  mask,
+  ratio,
   ...rest
 } = Astro.props
+
+const mergedCards = (pages || records || cards)?.filter(Boolean)
+const hasCards = mergedCards?.length > 0
 ---
 
 <Root
   class:list={['section']}
   {as}
-  {frame}
-  {variant}
+  variant={hasCards ? undefined : variant}
+  structure={structure === 'split' ? 'split' : 'column'}
+  frame={frame === 'panel' && hasCards ? undefined : frame}
   {align}
   {space}
-  {structure}
+  {size}
   {...rest}
 >
-  <slot />
+  <Box
+    structure={structure === 'spread' || structure === 'carousel'
+      ? 'spread'
+      : 'column'}
+    align={structure === 'split' ? 'start' : align}
+  >
+    <slot name="segment">
+      <Column
+        align={structure === 'split' || structure === 'spread'
+          ? 'start'
+          : align}
+      >
+        <slot name="writeup">
+          <Rating value={rating} />
+          <Badge
+            radius="full"
+            size={size === 'xl' || size === 'lg' ? 'md' : size}
+            {...typeof badge === 'string' ? { html: badge } : badge}
+          />
+          <Label
+            color="brand"
+            html={label}
+          />
+          <Heading
+            color="base"
+            html={heading || title}
+            {level}
+          />
+          <Text
+            color="base"
+            contrast={!hasCards && position === 'background' && true}
+            html={html || text || description}
+          />
+        </slot>
+      </Column>
+      <Wrap>
+        <slot name="actions">
+          {
+            [button, ...(buttons ?? [])]
+              .filter(Boolean)
+              ?.map((button: any, i: number) => (
+                <Button
+                  color="brand"
+                  variant={i > 0 ? 'soft' : 'solid'}
+                  {...button}
+                />
+              ))
+          }
+        </slot>
+      </Wrap>
+    </slot>
+  </Box>
+  <slot>
+    <Box
+      structure={structure === 'split' || structure === 'spread'
+        ? 'column'
+        : structure}
+      position={structure === 'carousel' ? 'inset' : undefined}
+    >
+      <slot name="deck">
+        {
+          mergedCards?.map(({ ...rest }: any) => (
+            <Card
+              align="start"
+              level={Number(level) + 1}
+              {position}
+              {frame}
+              {variant}
+              {ratio}
+              {mask}
+              {...rest}
+            />
+          ))
+        }
+      </slot>
+    </Box>
+    <Image
+      position={hasCards ? undefined : position}
+      ratio={hasCards ? undefined : ratio}
+      mask={hasCards ? undefined : mask}
+      src={image}
+    />
+  </slot>
 </Root>
 
 <style is:global lang="scss">
