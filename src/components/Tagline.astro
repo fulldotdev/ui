@@ -10,7 +10,7 @@ type Props<As extends HTMLTag = 'span'> = Polymorphic<{ as: As }> & {
   text?: string
 }
 
-const { as = 'span', ...rest } = Astro.props
+const { as = 'span', html, text, ...rest } = Astro.props
 ---
 
 <Root
@@ -18,16 +18,18 @@ const { as = 'span', ...rest } = Astro.props
   {as}
   {...rest}
 >
-  <slot />
+  <slot>
+    <Fragment set:html={html} />
+    <Fragment set:text={text} />
+  </slot>
 </Root>
 
 <style is:global lang="scss">
   .tagline {
-    margin: 0;
-    color: var(--text);
-    font-weight: var(--font-weight);
+    color: var(--color-11);
     font-size: var(--text-2);
-    line-height: 1.25;
-    font-family: var(--font-family);
+    line-height: 1;
+    text-align: left;
+    white-space: nowrap;
   }
 </style>
