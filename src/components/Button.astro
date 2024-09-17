@@ -10,36 +10,37 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   color?: 'base' | 'brand'
   radius?: 'none' | 'auto' | 'full'
   contrast?: boolean
+  avatar?: string
+  icon?: string
   html?: string
   text?: string
-  icon?: string
-  label?: string
-  avatar?: string
 }
 
 const {
   as = 'a',
   variant = 'primary',
   radius = 'auto',
-  contrast,
-  icon,
-  label,
   avatar,
+  icon,
+  html,
+  text,
   ...rest
 } = Astro.props
 ---
 
 <Root
-  class:list={['button']}
+  class="button"
   {as}
   {variant}
-  {contrast}
   {radius}
   {...rest}
 >
-  <slot />
-  <Icon name={icon} />
-  <Avatar src={avatar} />
+  <slot>
+    <Avatar src={avatar} />
+    <Icon name={icon} />
+    <Fragment set:html={html} />
+    <Fragment set:text={text} />
+  </slot>
 </Root>
 
 <style is:global lang="scss">

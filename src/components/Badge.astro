@@ -14,7 +14,10 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
 }
 
 const {
-  as = Astro.props.href ? 'a' : 'div',
+  href,
+  html,
+  text,
+  as = href ? 'a' : 'div',
   radius = 'full',
   icon,
   ...rest
@@ -25,10 +28,14 @@ const {
   class:list={['badge']}
   {radius}
   {as}
+  {href}
   {...rest}
 >
-  <slot />
-  <Icon name={icon} />
+  <slot>
+    <Fragment set:text={text} />
+    <Fragment set:html={html} />
+    <Icon name={icon} />
+  </slot>
 </Root>
 
 <style is:global lang="scss">
