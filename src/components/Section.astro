@@ -34,7 +34,7 @@ type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> & {
   theme?: 'light' | 'dark'
   color?: 'base' | 'brand'
   size?: 'sm' | 'md' | 'lg'
-  frame?: 'fill' | 'viewport' | 'panel'
+  frame?: 'none' | 'fill' | 'panel'
   align?: 'start' | 'center' | 'end'
   justify?: 'start' | 'center' | 'end'
   structure?: 'column' | 'split' | 'spread' | 'carousel' | 'grid' | 'masonry'
@@ -43,22 +43,15 @@ type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> & {
   space?: 'auto' | 'none'
   compact?: boolean
   reverse?: 'odd' | 'even'
-  variant?:
-    | 'base'
-    | 'ghost'
-    | 'subtle'
-    | 'outline'
-    | 'soft'
-    | 'solid'
-    | 'surface'
+  variant?: 'primary' | 'secondary' | 'tertiary'
 }
 
 const {
   as = 'section',
   space = 'auto',
-  frame = 'fill',
+  frame = 'none',
   structure = 'column',
-  variant = 'ghost',
+  variant = 'secondary',
   align = 'start',
   level = 2,
   position,
@@ -84,10 +77,20 @@ const {
 
 const mergedCards = (pages || records || cards)?.filter(Boolean)
 const hasCards = mergedCards && mergedCards?.length > 0
+
+const buttonVariant = (i: number) => {
+  if (variant === 'primary' && i === 0) return 'primary'
+  else if (variant === 'primary' && i === 1) return 'secondary'
+  else if (variant === 'primary' && i > 1) return 'tertiary'
+  else if (variant === 'secondary' && i === 0) return 'secondary'
+  else if (variant === 'secondary' && i > 0) return 'tertiary'
+  else if (variant === 'tertiary') return 'tertiary'
+  else return
+}
 ---
 
 <Root
-  class:list={['section']}
+  class:list={['section', 'variant-primary']}
   {as}
   variant={hasCards ? undefined : variant}
   structure={structure === 'split' ? 'split' : 'column'}
@@ -121,12 +124,10 @@ const hasCards = mergedCards && mergedCards?.length > 0
             html={label}
           />
           <Heading
-            color="base"
             html={heading || title}
             {level}
           />
           <Text
-            color="base"
             contrast={!hasCards && position === 'background' && true}
             html={html || text || description}
             lead={level === 1}
@@ -141,7 +142,7 @@ const hasCards = mergedCards && mergedCards?.length > 0
               ?.map((button: any, i: number) => (
                 <Button
                   color="brand"
-                  variant={i > 0 ? 'soft' : 'solid'}
+                  variant={buttonVariant(i)}
                   {...button}
                 />
               ))
@@ -192,30 +193,29 @@ const hasCards = mergedCards && mergedCards?.length > 0
     --inset-bottom: var(--space-7);
 
     position: relative;
-    margin: var(--outer-y) var(--outer-x);
-    background-color: var(--background);
 
     &:first-child {
       --inset-top: var(--space-6);
       --inset-bottom: var(--space-6);
     }
 
-    &.frame-fill {
+    &.frame-none {
       padding: var(--inset-top) var(--inset-right) var(--inset-bottom)
         var(--inset-left);
     }
 
-    &.frame-viewport {
+    &.frame-fill {
+      background-color: var(--color-2);
       padding: var(--inset-top) var(--inset-right) var(--inset-bottom)
         var(--inset-left);
-      min-height: 100vh;
     }
 
     &.frame-panel {
       margin: var(--inset-top) var(--inset-right) var(--inset-bottom)
         var(--inset-left);
-      border: 1px solid var(--border);
+      border: 1px solid var(--base-a6);
       border-radius: var(--radius-2);
+      background-color: var(--color-2);
       padding: var(--space-6) min(var(--gutter), var(--space-7));
       max-width: calc(
         100vw - var(--sidebar-width) - var(--toc-width) - var(--inset-left) - var(
@@ -224,11 +224,9 @@ const hasCards = mergedCards && mergedCards?.length > 0
       );
       overflow: hidden;
 
-      & {
-        @media (min-width: 1024px) {
-          padding-top: var(--space-7);
-          padding-bottom: var(--space-7);
-        }
+      @media (min-width: 1024px) {
+        padding-top: var(--space-7);
+        padding-bottom: var(--space-7);
       }
     }
 
@@ -253,24 +251,5 @@ const hasCards = mergedCards && mergedCards?.length > 0
         }
       }
     }
-
-    // &.frame-contain {
-    //   --inner-x: max(4vw);
-    //   --outer-x: max(0px, calc(var(--gutter) - var(--inner-x)));
-    //   --inner-y: var(--space-7);
-    //   --outer-y: 0;
-    // }
-
-    // &.order-reverse {
-    //   --is-reverse: initial;
-
-    //   > *:first-child {
-    //     order: 999;
-    //   }
-
-    //   & > *:last-child {
-    //     order: -999;
-    //   }
-    // }
   }
 </style>
