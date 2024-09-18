@@ -4,7 +4,6 @@ import Column from 'fulldev-ui/components/Column.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Link from 'fulldev-ui/components/Link.astro'
 import Root from 'fulldev-ui/components/Root.astro'
-import Split from 'fulldev-ui/components/Split.astro'
 import Text from 'fulldev-ui/components/Text.astro'
 import Logo from 'fulldev-ui/components/experimental/Logo.astro'
 
@@ -19,7 +18,10 @@ type Props<As extends HTMLTag = 'footer'> = Polymorphic<{ as: As }> & {
   space?: 'none' | 'auto'
   logo?: string
   heading?: string
+  title?: string
+  description?: string
   text?: string
+  html?: string
   columns?: [
     {
       heading: string
@@ -33,12 +35,15 @@ const {
   space = 'auto',
   variant = 'subtle',
   frame = 'fill',
-  structure = 'split',
+  structure = 'grid',
   size = 'sm',
   logo,
   heading,
   columns,
   text,
+  title,
+  description,
+  html,
   ...rest
 } = Astro.props
 ---
@@ -53,49 +58,38 @@ const {
   {size}
   {...rest}
 >
-  <slot>
-    <Split align="start">
-      <Column>
-        <Column
-          style={{ textDecoration: 'none' }}
-          as="a"
-          href="/"
-        >
-          {logo && <Logo src={logo} />}
-          {
-            heading && (
-              <Heading
-                level={4}
-                set:html={heading}
-              />
-            )
-          }
-        </Column>
-        {text && <Text set:html={text} />}
-      </Column>
-    </Split>
+  <Column>
+    <Column
+      style={{ textDecoration: 'none' }}
+      as="a"
+      href="/"
+    >
+      <Logo src={logo} />
+      <Heading
+        level={4}
+        color="base"
+        html={heading || title}
+      />
+    </Column>
+    <Text
+      color="base"
+      html={html || text || description}
+    />
+  </Column>
 
-    {
-      columns && (
-        <Split align="start">
-          {columns.map(({ heading, links }) => (
-            <Column>
-              <Heading
-                set:html={heading}
-                level={3}
-              />
-              {links.map((link) => (
-                <Link
-                  href={link.href}
-                  set:html={link.text}
-                />
-              ))}
-            </Column>
-          ))}
-        </Split>
-      )
-    }
-  </slot>
+  {
+    columns?.map(({ heading, links }) => (
+      <Column>
+        <Heading
+          html={heading}
+          level={4}
+        />
+        {links.map((link) => (
+          <Link {...link} />
+        ))}
+      </Column>
+    ))
+  }
 </Root>
 
 <style is:global lang="scss">
@@ -110,32 +104,30 @@ const {
     width: 100%;
     max-width: calc(100% - (2 * var(--outer-x)));
 
+    &.frame-none {
+      border-top: 1px solid var(--base-a6);
+      padding: var(--space-7) var(--gutter);
+    }
+
     &.frame-fill {
-      border-top: 1px solid var(--border);
-      --inner-x: var(--gutter);
-      --outer-x: 0;
-      --inner-y: var(--space-7);
-      --outer-y: 0;
+      border-top: 1px solid var(--base-a6);
+      background-color: var(--color-2);
+      padding: var(--space-7) var(--gutter);
     }
 
     &.frame-panel {
-      margin-top: var(--space-2);
-      margin-right: var(--gutter);
-      margin-left: var(--gutter);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-3);
+      margin: var(--space-7) var(--gutter);
+      border: 1px solid var(--base-a6);
+      border-radius: var(--radius-2);
+      background-color: var(--color-2);
+      padding: var(--space-6) min(var(--gutter), var(--space-7));
+      max-width: calc(100vw - 2 * var(--gutter));
+      overflow: hidden;
 
-      --inner-x: var(--gutter);
-      --outer-x: 0;
-      --inner-y: var(--space-7);
-      --outer-y: 0;
-    }
-
-    &.frame-contain {
-      --inner-x: max(4vw, var(--space-7));
-      --outer-x: max(0px, calc(var(--gutter) - var(--inner-x)));
-      --inner-y: var(--space-7);
-      --outer-y: 0;
+      @media (min-width: 1024px) {
+        padding-top: var(--space-7);
+        padding-bottom: var(--space-7);
+      }
     }
 
     &.align-start {
