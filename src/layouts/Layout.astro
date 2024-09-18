@@ -16,7 +16,9 @@ type Props = Partial<CollectionEntry<'pages'>> & {
 const { slug, data, theme, class: classes, render } = Astro.props
 const { logo, header, footer, footers, channels, sidebar, toc } = data || {}
 
-const { headings } = await render()
+const { headings } = render ? await render() : { headings: [] }
+
+const h2Headings = headings.filter((heading) => heading.depth === 2)
 ---
 
 <!doctype html>
@@ -49,7 +51,10 @@ const { headings } = await render()
     <div class="core">
       <Sidebar {sidebar} />
       <main data-pagefind-body>
-        <Toc toc={toc} />
+        <Toc
+          toc={toc}
+          headings={h2Headings}
+        />
         <div class="blocks">
           <slot />
         </div>
