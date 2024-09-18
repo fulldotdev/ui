@@ -36,5 +36,9 @@ export default defineConfig({
   ],
   redirects: {
     '/discord': 'https://discord.gg/vXZqMbadm8',
+    '/segment/card': '/base/card',
+    '/segment/section': '/base/section',
+    '/segment/header': '/blocks/header',
+    '/segment/footer': '/blocks/footer',
   },
 })
