@@ -43,43 +43,43 @@ const children =
         ...(
           await getCollection(
             'pages',
-            (page) =>
+            (page: any) =>
               page.slug.startsWith(slug) &&
               page.slug !== slug &&
               !page.slug.replace(`${slug}/`, '').includes('/')
           )
-        ).map((page) => ({ href: `/${page.slug}/`, ...page.data })),
+        ).map((page: any) => ({ href: `/${page.slug}/`, ...page.data })),
         ...(
           await getCollection(
             'records',
-            (record) =>
+            (record: any) =>
               record.id.startsWith(slug) &&
               record.id !== slug &&
               !record.id.replace(`${slug}/`, '').includes('/')
           )
-        ).map((record) => record.data),
+        ).map((record: any) => record.data),
       ]
     : undefined
 
 const references =
   source === 'references' && slug
     ? (
-        await getCollection('pages', (page) =>
+        await getCollection('pages', (page: any) =>
           page.data?.pages?.find(
-            (page) =>
+            (page: any) =>
               page.slug
                 .replace('.md', '')
                 .replace('/index', '')
                 .replace('src/content/', '') === slug
           )
         )
-      ).map((item) => ({ href: `/${item.slug}/`, ...item.data }))
+      ).map((item: any) => ({ href: `/${item.slug}/`, ...item.data }))
     : undefined
 
 const siblings =
   source === 'siblings' && slug
     ? (
-        await getCollection('pages', (page) => {
+        await getCollection('pages', (page: any) => {
           const currentPageFolder = slug.split('/').slice(0, -1).join('/')
           const pageFolder = page.slug.split('/').slice(0, -1).join('/')
           return (
@@ -89,7 +89,7 @@ const siblings =
           )
         })
       )
-        .map((item) => ({ href: `/${item.slug}/`, ...item.data }))
+        .map((item: any) => ({ href: `/${item.slug}/`, ...item.data }))
         .sort(() => Math.random() - 0.5) // Randomize the order
     : undefined
 
@@ -98,7 +98,7 @@ const mergedPages = pages
       pages.map(async (page: any) => {
         if (!page.i18n) return page
         const i18n = await getEntry(page.i18n)
-        return assign(i18n.data, page)
+        return assign(i18n?.data, page)
       })
     )
   : undefined
@@ -108,7 +108,7 @@ const mergedChildren = children
       children.map(async (child: any) => {
         if (!child.i18n) return child
         const i18n = await getEntry(child.i18n)
-        return assign(i18n.data, child)
+        return assign(i18n?.data, child)
       })
     )
   : undefined
@@ -118,7 +118,7 @@ const mergedReferences = references
       references.map(async (reference: any) => {
         if (!reference.i18n) return reference
         const i18n = await getEntry(reference.i18n)
-        return assign(i18n.data, reference)
+        return assign(i18n?.data, reference)
       })
     )
   : undefined
@@ -128,7 +128,7 @@ const mergedSiblings = siblings
       siblings.map(async (sibling: any) => {
         if (!sibling.i18n) return sibling
         const i18n = await getEntry(sibling.i18n)
-        return assign(i18n.data, sibling)
+        return assign(i18n?.data, sibling)
       })
     )
   : undefined

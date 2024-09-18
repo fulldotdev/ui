@@ -1,6 +1,6 @@
 import { definePreset, presetUno } from 'unocss'
 
-export default definePreset((options?: any) => {
+export default definePreset(() => {
   return {
     name: 'fullUI',
     presets: [presetUno()],
