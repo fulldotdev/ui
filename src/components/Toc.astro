@@ -1,12 +1,9 @@
 ---
-import { getCollection } from 'astro:content'
 import Column from 'fulldev-ui/components/Column.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
 import Link from 'fulldev-ui/components/Link.astro'
+import Heading from './Heading.astro'
 
-const { toc } = Astro.props
-const slug = Astro.url.pathname.replace(/^\/|\/$/g, '')
-const url = Astro.url.href
+const { toc, headings } = Astro.props
 ---
 
 <Column
@@ -14,39 +11,23 @@ const url = Astro.url.href
   as="aside"
 >
   {
-    toc?.length > 0 &&
-      toc.map((item: any) => (
-        <>
-          <Heading
-            level={6}
-            set:html={item.heading}
-          />
-          {item.links?.map((link: any) => (
+    toc?.length && headings?.length > 0 && (
+      <>
+        <Heading
+          text="On this page"
+          level={4}
+        />
+        {headings.map(
+          (heading: { slug: string; depth: number; text: string }) => (
             <Link
-              {...link}
+              href={`#${heading.slug}`}
               class="toc-link"
-              color={url.endsWith(link.href) ? 'brand' : undefined}
+              text={heading.text}
             />
-          ))}
-          {item.folder &&
-            (async () => {
-              const pages = await getCollection(
-                'pages',
-                (entry: any) =>
-                  entry.slug.startsWith(item.folder) &&
-                  !entry.slug.endsWith(item.folder)
-              )
-              return pages.map((page: any) => (
-                <Link
-                  href={`/${page.slug}`}
-                  class="toc-link"
-                  color={slug === page.slug ? 'brand' : undefined}
-                  set:html={page.data.title}
-                />
-              ))
-            })()}
-        </>
-      ))
+          )
+        )}
+      </>
+    )
   }
 </Column>
 
