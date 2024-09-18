@@ -4,8 +4,9 @@ settings: components
 ---
 
 # Frameworks
+Fulldev UI is written in vanilla CSS and .astro files. It is framework agnostic.
 
-## All JS frameworks
+## JS frameworks
 
 All styles in Fulldev UI use regular CSS and classes. Classes use the following naming convention:
 
@@ -27,76 +28,27 @@ import Button from 'fulldev-ui/components/Button.astro'
 
 ## CSS frameworks
 
-All Fulldev UI styles have low specificity, because they are in a native CSS `fulldev` layer. This means you can overwrite them with any CSS framework.
+A TailwindCSS plugin and UnoCSS preset is available.
 
-The only thing to be aware of is that styles you want Fulldev UI to overwrite (like a reset), should be in a native CSS `base` layer.
+### TailwindCSS
 
-:::note
-CSS layers are a baseline CSS feature since 2022. Tailwind V4 will use them by default and others will probably follow. Therefore, over time you would not need to do any setup with Fulldev UI.
-:::
-
-## Tailwind
-
-You can place Tailwind's `base` styles in a native CSS `base` layer as follows:
-
-1. Set `applyBaseStyles` to false in the tailwind configuration.
-
-```js
-// astro.config.mjs
-
-import { defineConfig } from 'astro/config'
-import tailwind from '@astrojs/tailwind'
-
-export default defineConfig({
-  integrations: [
-    tailwind({
-      applyBaseStyles: false,
-    }),
-  ],
-})
-```
-
-2. Manually import Tailwind CSS into your project, making sure the `base` layer is in an actual native CSS layer.
-
-```css
-@import 'tailwindcss/base' layer(base);
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-```
-
-### Plugin
-
-We have created a plugin to utilize fulldev-ui styles with tailwindcss on top of tailwind classes. Installation is pretty simple:
+In your `tailwind.config.ts` add the following:
 
 ```ts
 // tailwind.config.ts
 import fulldevUI from 'fulldev-ui/tailwind'
 
-export default {
-  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+export default defineConfig({
   plugins: [fulldevUI],
-}
+})
 ```
 
-You can now start using the following in your project on top of tailwind classes like `pt-space-1`, `rounded-radius-1`, or `bg-variant`. For all availabilities see plugin classes.
+### UnoCSS
 
-## UnoCSS
-
-UnoCSS does **not** inject base/reset styles by default. Fulldev UI does not rely on style resets, so you you don't need them, you're done here.
-
-If do need a reset, make sure you import it in a native CSS `base` layer. For example:
-
-```css
-@import '@unocss/reset/tailwind.css' layer(base);
-```
-
-### Preset
-
-We have created a preset to utilize fulldev-ui styles with unocss. Installation is pretty simple:
+In your `uno.config.ts` add the following:
 
 ```ts
 // uno.config.ts
-import { defineConfig } from 'unocss'
 import fulldevUI from 'fulldev-ui/unocss'
 
 export default defineConfig({
@@ -104,59 +56,125 @@ export default defineConfig({
 })
 ```
 
-You can now start using the following in your project on top of tailwind classes like `pt-space-1`, `rounded-radius-1`, or `bg-variant`. For all availabilities see plugin classes.
 
-## Plugin classes
+```ts
+// uno.config.ts
+import fulldevUI from 'fulldev-ui/unocss'
+
+export default defineConfig({
+  presets: [fulldevUI],
+})
+```
+
+## Utility classes
 
 The following classes are available when using the Tailwind plugin or UnoCSS preset.
 
 ### Spacing
 
-You can use these classes for paddings, margins, heights, widths etc.
+The following spacing classes are added to your tailwind/uno config. 
 
-All space classes are dynamic and adapt to the `size` props on Fulldev UI components.
-
-- `...-space-1`
-- `...-space-2`
-- `...-space-3`
-- `...-space-4`
-- `...-space-5`
-- `...-space-6`
-- `...-space-7`
+You can use them like `p-space-1`, `m-space-1`, `h-space-1`, `w-space-1`, etc.
+```ts
+spacing: {
+  'space-1': 'var(--space-1)',
+  'space-2': 'var(--space-2)',
+  'space-3': 'var(--space-3)',
+  'space-4': 'var(--space-4)',
+  'space-5': 'var(--space-5)',
+  'space-6': 'var(--space-6)',
+  'space-7': 'var(--space-7)',
+},
+```
 
 ### Font size
 
-All font size classes are dynamic and adapt to the `size` props on Fulldev UI components.
+The following spacing classes are added to your tailwind/uno config. 
 
-- `text-1`
-- `text-2`
-- `text-3`
-- `text-4`
-- `text-5`
-- `text-6`
-- `text-7`
-- `text-8`
+You can use them like `text-1`, `text-2`, `text-3`, etc.
+
+```ts
+fontSize: {
+  1: 'var(--text-1)',
+  2: 'var(--text-2)',
+  3: 'var(--text-3)',
+  4: 'var(--text-4)',
+  5: 'var(--text-5)',
+  6: 'var(--text-6)',
+  7: 'var(--text-7)',
+  8: 'var(--text-8)',
+}
+```
 
 ### Border radius
 
-The border radius classes are also dynamic, adapting to `size` props on Fulldev UI components.
+The following border radius classes are added to your tailwind/uno config. 
 
-- `rounded-1`
-- `rounded-2`
-- `rounded-3`
+You can use them like `rounded-1`, `rounded-2`, `rounded-3`, etc.
+
+```ts
+borderRadius: {
+  1: 'var(--radius-1)',
+  2: 'var(--radius-2)',
+  3: 'var(--radius-3)',
+}
+```
 
 ### Color classes
 
-The following colors are avaliable and adapt to `theme`, `color`, `contrast` and `variant` props. Therefore you only need 3 colors.
+The following color classes are added to your tailwind/uno config. 
 
-- `...-background`
-- `...-border`
-- `...-text`
+You can use them like `bg-color-1`, `text-base-2`, `border-base-6`, etc.
 
-You can use them like `bg-background`, `border-border` and `text-text`. But you can also do `bg-text` if you like.
-
-We know the naming feels a bit weird, but at least for now we will stick with this.
-
-## Other CSS frameworks
-
-Make sure all styles you want Fulldev UI to overwrite are in a native CSS `base` layer. That's it.
+```ts
+colors: {
+  color: {
+    1: 'var(--color-1)',
+    2: 'var(--color-2)',
+    3: 'var(--color-3)',
+    4: 'var(--color-4)',
+    5: 'var(--color-5)',
+    6: 'var(--color-6)',
+    7: 'var(--color-7)',
+    8: 'var(--color-8)',
+    9: 'var(--color-9)',
+    10: 'var(--color-10)',
+    11: 'var(--color-11)',
+    12: 'var(--color-12)',
+    contrast: 'var(--color-contrast)',
+    background: 'var(--color-background)',
+  },
+  base: {
+    1: 'var(--color-base-1)',
+    2: 'var(--color-base-2)',
+    3: 'var(--color-base-3)',
+    4: 'var(--color-base-4)',
+    5: 'var(--color-base-5)',
+    6: 'var(--color-base-6)',
+    7: 'var(--color-base-7)',
+    8: 'var(--color-base-8)',
+    9: 'var(--color-base-9)',
+    10: 'var(--color-base-10)',
+    11: 'var(--color-base-11)',
+    12: 'var(--color-base-12)',
+    contrast: 'var(--color-base-contrast)',
+    background: 'var(--color-base-background)',
+  },
+  brand: {
+    1: 'var(--color-brand-1)',
+    2: 'var(--color-brand-2)',
+    3: 'var(--color-brand-3)',
+    4: 'var(--color-brand-4)',
+    5: 'var(--color-brand-5)',
+    6: 'var(--color-brand-6)',
+    7: 'var(--color-brand-7)',
+    8: 'var(--color-brand-8)',
+    9: 'var(--color-brand-9)',
+    10: 'var(--color-brand-10)',
+    11: 'var(--color-brand-11)',
+    12: 'var(--color-brand-12)',
+    contrast: 'var(--color-brand-contrast)',
+    background: 'var(--color-brand-background)',
+  }
+}
+```
