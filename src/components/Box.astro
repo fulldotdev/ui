@@ -1,6 +1,14 @@
 ---
 import type { HTMLTag, Polymorphic } from 'astro/types'
-import Root from 'fulldev-ui/components/Root.astro'
+import Bento from './Bento.astro'
+import Carousel from './Carousel.astro'
+import Column from './Column.astro'
+import Grid from './Grid.astro'
+import Masonry from './Masonry.astro'
+import Row from './Row.astro'
+import Split from './Split.astro'
+import Spread from './Spread.astro'
+import Wrap from './Wrap.astro'
 
 type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
   align?: 'start' | 'center' | 'end'
@@ -19,6 +27,18 @@ type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
     | 'wrap'
 }
 
+const structuresMap = {
+  bento: Bento,
+  carousel: Carousel,
+  column: Column,
+  grid: Grid,
+  masonry: Masonry,
+  row: Row,
+  split: Split,
+  spread: Spread,
+  wrap: Wrap,
+}
+
 const {
   as = 'div',
   space = 'auto',
@@ -26,20 +46,15 @@ const {
   align = 'start',
   ...rest
 } = Astro.props
+
+const Structure = structuresMap[structure]
 ---
 
-<Root
-  class:list="box"
+<Structure
   {as}
-  {structure}
   {align}
   {space}
   {...rest}
 >
   <slot />
-</Root>
-
-<style is:global lang="scss">
-  .box {
-  }
-</style>
+</Structure>
