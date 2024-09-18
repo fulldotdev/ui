@@ -17,6 +17,7 @@ import Wrap from 'fulldev-ui/components/Wrap.astro'
 
 type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   ratio?: 'landscape' | 'portrait' | 'square' | number
+  variant?: 'primary' | 'secondary' | 'tertiary'
   position?: 'background' | 'cover' | 'inset'
   align?: 'start' | 'center' | 'end'
   level?: 1 | 2 | 3 | 4 | 5 | 6
@@ -50,6 +51,7 @@ const {
   frame = 'panel',
   radius = 'auto',
   align = 'start',
+  variant,
   level = 4,
   position,
   label,
@@ -70,6 +72,15 @@ const {
   avatars,
   ...rest
 } = Astro.props
+
+const buttonVariant = (i: number) => {
+  if (variant === 'primary' && i === 0) return 'primary'
+  else if (variant === 'primary' && i === 1) return 'secondary'
+  else if (variant === 'primary' && i > 1) return 'tertiary'
+  else if (variant === 'secondary' && i === 0) return 'secondary'
+  else if (variant === 'secondary' && i > 0) return 'tertiary'
+  else if (variant === 'tertiary') return 'tertiary'
+}
 ---
 
 <Root
@@ -130,8 +141,7 @@ const {
         .filter(Boolean)
         ?.map((button: any, i: number) => (
           <Button
-            color="brand"
-            variant={i > 0 ? 'soft' : 'solid'}
+            variant={buttonVariant(i)}
             {...button}
           />
         ))
