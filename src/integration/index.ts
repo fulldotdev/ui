@@ -93,6 +93,7 @@ export default function fulluiIntegration(
           const baseContrastString = `--base-contrast: ${generated.accentContrast};`
           const baseBackgroundString = `--base-background: ${generated.background};`
           const brandBackgroundString = `--brand-background: ${generated.background};`
+          const colorSchemeString = `--color-scheme: ${theme};`
 
           const css = `${defaultTheme == theme ? ':root, ' : ''} .theme-${theme}  {
   ${baseString}
@@ -103,6 +104,7 @@ export default function fulluiIntegration(
   ${brandAlphaString}
   ${brandContrastString}
   ${brandBackgroundString}
+  ${colorSchemeString}
   }`
           return css
         }
