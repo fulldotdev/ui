@@ -29,8 +29,8 @@ const defaultConfig: Config = {
     },
   },
 }
-export default function fulluiIntegration(
-  userConfig: any = {}
+export default function fulldevIntegration(
+  userConfig?: Partial<Config>
 ): AstroIntegration {
   const config = merge(defaultConfig ?? {}, userConfig ?? {})
 
