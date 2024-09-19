@@ -8,12 +8,12 @@ import Card from 'fulldev-ui/components/Card.astro'
 import Column from 'fulldev-ui/components/Column.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import Label from 'fulldev-ui/components/Label.astro'
 import List from 'fulldev-ui/components/List.astro'
 import Rating from 'fulldev-ui/components/Rating.astro'
 import Root from 'fulldev-ui/components/Root.astro'
 import Text from 'fulldev-ui/components/Text.astro'
 import Wrap from 'fulldev-ui/components/Wrap.astro'
+import Tagline from './Tagline.astro'
 
 type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> & {
   position?: 'background' | 'cover' | 'inset'
@@ -33,6 +33,7 @@ type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> & {
   html?: string
   description?: string
   label?: string
+  tagline?: string
   list?: string[]
   theme?: 'light' | 'dark'
   color?: 'base' | 'brand'
@@ -63,6 +64,7 @@ const {
   text,
   list,
   html,
+  tagline,
   description,
   buttons,
   image,
@@ -115,13 +117,19 @@ const buttonVariant = (i: number) => {
           : align}
       >
         <slot name="writeup">
-          <Rating value={rating} />
+          <Rating
+            color="brand"
+            {...typeof rating === 'number' ? { value: rating } : rating}
+          />
           <Badge
             color="base"
             radius="full"
             {...typeof badge === 'string' ? { html: badge } : badge}
           />
-          <Label html={label} />
+          <Tagline
+            color="brand"
+            html={tagline}
+          />
           <Heading
             html={heading || title}
             {level}

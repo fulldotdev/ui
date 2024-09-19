@@ -1,17 +1,13 @@
 ---
 import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Avatar from 'fulldev-ui/components/Avatar.astro'
 import Button from 'fulldev-ui/components/Button.astro'
-import Column from 'fulldev-ui/components/Column.astro'
 import Price from 'fulldev-ui/components/experimental/Price.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import Label from 'fulldev-ui/components/Label.astro'
 import List from 'fulldev-ui/components/List.astro'
 import Rating from 'fulldev-ui/components/Rating.astro'
 import Root from 'fulldev-ui/components/Root.astro'
-import Row from 'fulldev-ui/components/Row.astro'
 import Spread from 'fulldev-ui/components/Spread.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Text from 'fulldev-ui/components/Text.astro'
@@ -32,13 +28,13 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   image?: string
   button?: ComponentProps<typeof Button<'a'>>
   buttons?: ComponentProps<typeof Button<'a'>>[]
+  rating?: number | ComponentProps<typeof Rating>
   price?: number
   icon?: string
   avatar?: string
   avatars?: string[]
   label?: string
   tagline?: string
-  rating?: number
   contrast?: boolean
   heading?: string
   title?: string
@@ -108,26 +104,10 @@ const buttonVariant = (i: number) => {
     src={image}
   />
   <Icon name={icon} />
-  <Row>
-    {
-      [avatar, ...(avatars ?? [])]?.filter(Boolean)?.map((avatar) => (
-        <Avatar
-          radius="full"
-          src={avatar}
-        />
-      ))
-    }
-    <Column>
-      <Rating
-        color="brand"
-        value={rating}
-      />
-      <Label
-        color="base"
-        html={label}
-      />
-    </Column>
-  </Row>
+  <Rating
+    color="brand"
+    {...typeof rating === 'number' ? { value: rating } : rating}
+  />
   <Tagline
     color="base"
     html={tagline}
@@ -223,6 +203,10 @@ const buttonVariant = (i: number) => {
       &.radius-auto {
         border-radius: var(--radius-2);
       }
+    }
+
+    > .image + * {
+      margin-top: var(--space-5);
     }
   }
 </style>

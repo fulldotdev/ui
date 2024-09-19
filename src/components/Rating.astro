@@ -1,15 +1,21 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Icon from 'fulldev-ui/components/Icon.astro'
 import Root from 'fulldev-ui/components/Root.astro'
+import Avatar from './Avatar.astro'
+import Column from './Column.astro'
+import Label from './Label.astro'
 
-type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
+type Props = HTMLAttributes<'div'> & {
   color?: 'base' | 'brand'
   value?: number
   size?: string
+  label?: string
+  avatars?: string[]
+  avatar?: string
 }
 
-const { value, ...rest } = Astro.props
+const { value, label, avatars, avatar, ...rest } = Astro.props
 
 const getIcon = (count: number) => {
   if (!value) return
@@ -21,24 +27,56 @@ const getIcon = (count: number) => {
 ---
 
 <Root
-  class:list={'rating'}
+  class:list="rating"
   {...rest}
 >
   {
-    value &&
-      [1, 2, 3, 4, 5].map((_, i) => (
-        <Icon
-          name={getIcon(i + 1)}
-          class:list={'rating-icon-solid'}
-        />
-      ))
+    [avatar, ...(avatars ?? [])]?.filter(Boolean)?.map((avatar) => (
+      <Avatar
+        radius="full"
+        src={avatar}
+      />
+    ))
   }
+  <Column>
+    <Root
+      class:list={'stars'}
+      {...rest}
+    >
+      {
+        value &&
+          [1, 2, 3, 4, 5].map((_, i) => (
+            <Icon
+              name={getIcon(i + 1)}
+              class:list={'rating-icon-solid'}
+            />
+          ))
+      }
+    </Root>
+    <Label
+      color="base"
+      html={label}
+    />
+  </Column>
 </Root>
 
 <style is:global lang="scss">
   .rating {
     display: flex;
-    align-items: center;
-    gap: var(--space-2);
+    gap: var(--space-4);
+
+    .avatar + .avatar {
+      margin-left: calc(var(--space-4) * -2.5);
+    }
+
+    .label {
+      margin-top: var(--space-2) !important;
+    }
+
+    .stars {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
   }
 </style>
