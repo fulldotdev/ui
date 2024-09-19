@@ -8,12 +8,13 @@ type Props = Partial<CollectionEntry<'pages'>>
 const { data, render } = Astro.props
 const { title, description, image, seo, code } = data || {}
 
+console.log(Astro.props)
+
 const renderTitle = render && (await render()).headings[0]?.text
 const mergedTitle = seo?.title || title || renderTitle
 const mergedDescription = seo?.description || description
-const mergedImage = (seo?.image || image)?.startsWith('/')
-  ? (Astro.url.origin ?? '' + (seo?.image || image) ?? '')
-  : seo?.image || image
+const mergedImage =
+  seo?.image || image ? Astro.url.origin + (seo?.image || image) : undefined
 ---
 
 <head>
