@@ -1,0 +1,105 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import Label from 'fulldev-ui/components/Label.astro'
+import Root from 'fulldev-ui/components/Root.astro'
+
+type Props = HTMLAttributes<'textarea'> & {
+  radius?: 'none' | 'auto'
+  color?: 'base' | 'brand'
+  variant?: 'outline'
+  label?: string
+}
+
+const {
+  placeholder,
+  name = placeholder,
+  variant = 'outline',
+  radius = 'auto',
+  label,
+  rows,
+  value,
+  disabled,
+  required,
+  ...rest
+} = Astro.props
+---
+
+<Root
+  class:list="textarea"
+  {...rest}
+>
+  <Label
+    for={name}
+    set:html={label}
+  />
+  <Root
+    as="textarea"
+    if={name}
+    id={name}
+    {name}
+    {variant}
+    {placeholder}
+    {value}
+    {disabled}
+    {required}
+    {rows}
+    {radius}
+  />
+</Root>
+
+<style is:global lang="scss">
+  .textarea {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    gap: var(--space-1);
+    width: 100%;
+
+    textarea {
+      display: flex;
+      position: relative;
+      align-items: center;
+      outline: none;
+      border: 1px solid var(--color-6);
+      border-radius: var(--radius-1);
+      background-color: transparent;
+      padding: var(--space-4);
+      width: 100%;
+      height: calc((var(--text-2) + 2 * var(--space-4)) * 2);
+      min-height: calc((var(--text-2) + 2 * var(--space-4)) * 2);
+      resize: vertical;
+      color: var(--color-11);
+      font-weight: 400;
+      font-size: var(--text-2);
+      line-height: 1.25;
+
+      &.radius-none {
+        border-radius: 0;
+      }
+
+      &.radius-auto {
+        border-radius: var(--radius-1);
+      }
+
+      &::placeholder {
+        color: var(--color-11);
+      }
+
+      &:hover {
+        outline: none;
+      }
+
+      &:focus {
+        outline: none;
+        box-shadow: inset 0 0 0 2px var(--color-7);
+        border-color: var(--color-7);
+      }
+
+      &:disabled {
+        opacity: 50%;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+    }
+  }
+</style>

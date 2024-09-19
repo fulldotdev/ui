@@ -1,0 +1,53 @@
+---
+import tablerIcons from '@iconify-json/tabler/icons.json'
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Root from 'fulldev-ui/components/Root.astro'
+
+type Props<As extends HTMLTag = 'i'> = Polymorphic<{ as: As }> & {
+  name?: string
+  color?: 'base' | 'brand'
+}
+
+const { as = 'i', name, ...rest } = Astro.props
+
+const trimmedName = name?.trim() as string | undefined
+const icon = trimmedName
+  ? (tablerIcons as any)?.icons[trimmedName]?.body
+  : undefined
+---
+
+<Root
+  class:list="icon"
+  if={icon}
+  {as}
+  {...rest}
+>
+  {
+    icon && (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        set:html={icon}
+      />
+    )
+  }
+</Root>
+
+<style is:global lang="scss">
+  .icon {
+    display: inline-flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    width: 1em;
+    height: 1em;
+    color: var(--color-11);
+    font-size: inherit;
+
+    svg {
+      position: absolute;
+      width: 120%;
+      height: 120%;
+    }
+  }
+</style>

@@ -1,0 +1,161 @@
+---
+import Icon from 'fulldev-ui/components/Icon.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+
+const { images, direction } = Astro.props
+---
+
+<script>
+  const carousel = document.querySelector('.gallery .large-carousel')
+  const icon = document.querySelector('.gallery .icon')
+  const smallImages = document.querySelectorAll('.gallery .small-image')
+
+  carousel &&
+    icon?.addEventListener('click', () => {
+      const carouselWidth = (carousel as HTMLElement).offsetWidth
+      const currentScroll = carousel.scrollLeft
+      const maxScroll = carousel.scrollWidth - carouselWidth
+
+      let scrollAmount = currentScroll + carouselWidth
+      if (scrollAmount > maxScroll) {
+        scrollAmount = 0 // Reset to beginning if we're at the end
+      }
+
+      carousel.scrollTo({
+        left: scrollAmount,
+        behavior: 'smooth',
+      })
+    })
+
+  carousel &&
+    smallImages.forEach((image, i) => {
+      image.addEventListener('click', () => {
+        const imageWidth = (carousel as HTMLElement).offsetWidth
+        carousel.scrollTo({
+          left: i * imageWidth,
+          behavior: 'smooth',
+        })
+      })
+    })
+</script>
+
+<div
+  class:list={[
+    'full',
+    'gallery',
+    {
+      [`direction-${direction}`]: direction,
+    },
+  ]}
+>
+  <div class="large-container">
+    <div class="large-carousel">
+      {
+        images?.map((image: any) => (
+          <Image
+            class="large-image"
+            src={image}
+          />
+        ))
+      }
+    </div>
+    {
+      images?.length > 1 && (
+        <Icon
+          class="icon"
+          name="swipe-left"
+        />
+      )
+    }
+  </div>
+  <div class="small-carousel">
+    {
+      images?.length > 1 &&
+        images.map((image: any) => (
+          <Image
+            class="small-image"
+            src={image}
+          />
+        ))
+    }
+  </div>
+</div>
+
+<style is:global lang="scss">
+  .gallery {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    gap: var(--space-1);
+
+    .large-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      &:hover .icon {
+        opacity: 1;
+      }
+
+      .icon {
+        position: absolute;
+        right: var(--space-3);
+        opacity: 0.5;
+        animation: swipe-icon 1.6s ease-in-out infinite;
+        transition: opacity 0.2s ease-in-out;
+        font-size: calc(var(--text-2) * 1.7);
+      }
+
+      @keyframes swipe-icon {
+        0%,
+        100% {
+          right: var(--space-3);
+        }
+        50% {
+          right: calc(var(--space-3) * 2);
+        }
+      }
+    }
+
+    .small-carousel,
+    .large-carousel {
+      --column-width: 100%;
+      display: flex;
+      position: relative;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: var(--space-4);
+
+      box-sizing: border-box;
+      padding-bottom: var(--space-4);
+      width: 100%;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+
+      > .root {
+        flex-grow: 0;
+        flex-shrink: 0;
+        width: var(--column-width);
+        scroll-snap-align: center;
+      }
+
+      &.position-inset {
+        margin-right: calc(var(--inner-x) * -1);
+        margin-left: calc(var(--inner-x) * -1);
+        padding-right: var(--inner-x);
+        padding-left: var(--inner-x);
+        width: calc(100% + var(--inner-x) * 2);
+      }
+    }
+
+    .small-carousel {
+      --column-width: var(--space-7);
+    }
+
+    .small-image:hover {
+      opacity: 0.8;
+      cursor: pointer;
+    }
+  }
+</style>

@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content'
+import PageLayout from 'fulldev-ui/layouts/PageLayout.astro'
+import { mapKeys } from 'radash'
+import { mergeEntries } from '../utils/mergeEntries'
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages')
+  return pages.map((page: any) => ({
+    params: {
+      page: page.slug === 'index' ? undefined : page.slug,
+    },
+    props: page,
+  }))
+}
+
+// @ts-ignore
+const { data, slug, ...rest } = Astro.props
+
+const merged = (await mergeEntries({ data, slug })) as any
+
+const packageLayouts = import.meta.glob('../layouts/**/*.astro')
+const userLayouts = import.meta.glob('/src/layouts/**/*.astro')
+
+const mapBlockKeys = (blocks: any) =>
+  mapKeys(blocks, (key: any) => key.split('/').pop().split('.').shift())
+
+const components = {
+  ...mapBlockKeys(packageLayouts),
+  ...mapBlockKeys(userLayouts),
+}
+
+const found = components[(merged.data._layout ?? 'PageLayout') as string] as any
+const functioncomp = found && (await found())
+const Layout = functioncomp?.default ?? PageLayout
+---
+
+<Layout
+  data={merged.data}
+  {...rest}
+/>

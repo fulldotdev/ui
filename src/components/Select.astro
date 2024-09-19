@@ -1,0 +1,144 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import Icon from 'fulldev-ui/components/Icon.astro'
+import Label from 'fulldev-ui/components/Label.astro'
+import Root from 'fulldev-ui/components/Root.astro'
+
+type Props = HTMLAttributes<'select'> & {
+  color?: 'base' | 'brand'
+  label?: string
+  placeholder?: string
+  options?: string[]
+  value?: string
+  radius?: 'none' | 'auto' | 'full'
+  variant?: 'outline'
+}
+
+const {
+  label,
+  placeholder,
+  options,
+  value,
+  name,
+  required,
+  radius = 'auto',
+  disabled,
+  variant = 'outline',
+  ...rest
+} = Astro.props
+---
+
+<Root
+  class:list="select"
+  {variant}
+  {...rest}
+>
+  <Label
+    for={name}
+    html={label}
+  />
+  <Root
+    as="select"
+    if={name || options}
+    id={name}
+    {radius}
+    {name}
+    {required}
+    {disabled}
+  >
+    <Root
+      as="option"
+      value={placeholder}
+      set:html={placeholder}
+      disabled
+      selected
+    />
+    {
+      options?.map((option: any) => (
+        <Root
+          as="option"
+          selected={value === option}
+          set:html={option}
+          value={option}
+        />
+      ))
+    }
+    <slot />
+  </Root>
+  <Icon name="chevron-down" />
+</Root>
+
+<style is:global lang="scss">
+  .select {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    gap: var(--space-1);
+    width: 100%;
+
+    .icon {
+      position: absolute;
+      right: var(--space-4);
+      bottom: var(--space-4);
+      width: var(--text-2);
+      height: var(--text-2);
+      pointer-events: none;
+    }
+
+    select {
+      display: flex;
+      position: relative;
+      align-items: center;
+      appearance: none;
+      appearance: none;
+      outline: none;
+      border: 1px solid var(--color-6);
+      border-radius: var(--radius-1);
+      background-color: transparent;
+      padding-right: calc(var(--text-2) + 2 * var(--space-4));
+      padding-left: var(--space-4);
+      width: 100%;
+      min-width: var(--space-4);
+      height: calc(var(--text-2) + 2 * var(--space-4));
+      color: var(--color-11);
+      font-size: var(--text-2);
+      line-height: 1.25;
+
+      &:hover {
+        outline: none;
+      }
+
+      &:focus {
+        outline: none;
+        box-shadow: inset 0 0 0 2px var(--color-7);
+        border-color: var(--color-7);
+      }
+
+      &:disabled {
+        opacity: 50%;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      &.radius-none {
+        border-radius: 0;
+      }
+
+      &.radius-auto {
+        border-radius: var(--radius-1);
+      }
+
+      &.radius-full {
+        border-radius: 9999px;
+      }
+    }
+
+    option {
+      color: var(--text);
+      font-weight: var(--font-weight);
+      font-size: var(--text-2);
+      line-height: 1;
+      font-family: var(--font-family);
+    }
+  }
+</style>

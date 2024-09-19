@@ -2,8 +2,7 @@
 
 The [Astro][astro] UI library to build entire websites
 
-Make good looking websites, no matter your design skills
-
+Make websites with prebuilt components and blocks
 ## Documentation
 
 Please visit the [documentation site][docs]

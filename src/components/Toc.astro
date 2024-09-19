@@ -1,0 +1,52 @@
+---
+import Column from 'fulldev-ui/components/Column.astro'
+import Link from 'fulldev-ui/components/Link.astro'
+import Heading from './Heading.astro'
+
+const { toc, headings } = Astro.props
+---
+
+<Column
+  class:list="toc"
+  as="aside"
+>
+  {
+    toc?.length && headings?.length > 0 && (
+      <>
+        <Heading
+          text="On this page"
+          level={6}
+        />
+        {headings.map(
+          (heading: { slug: string; depth: number; text: string }) => (
+            <Link
+              href={`#${heading.slug}`}
+              class="toc-link"
+              text={heading.text}
+            />
+          )
+        )}
+      </>
+    )
+  }
+</Column>
+
+<style lang="scss" is:global>
+  .toc {
+    display: none !important;
+    box-sizing: border-box;
+    border-left: 1px solid var(--color-a6);
+    padding: var(--space-6) 0 var(--space-6) min(var(--space-5), var(--gutter));
+    height: 100vh;
+    max-height: 100vh;
+    overflow-y: auto;
+
+    .toc-link {
+      font-size: var(--text-2);
+    }
+
+    @media (min-width: 1024px) {
+      display: flex !important;
+    }
+  }
+</style>

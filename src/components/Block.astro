@@ -1,0 +1,157 @@
+---
+import { getCollection, getEntries, getEntry } from 'astro:content'
+import { assign, mapKeys } from 'radash'
+
+interface Props {
+  _bookshop_name?: string
+  [key: string | number | symbol]: any
+}
+
+let { _bookshop_name, records, pages, source, ...rest } = Astro.props
+
+const packageBlocks = import.meta.glob('../blocks/**/*.astro')
+const userBlocks = import.meta.glob('/src/blocks/**/*.astro')
+
+const mapBlockKeys = (blocks: any) =>
+  mapKeys(blocks, (key: any) => key.split('/').pop().split('.').shift())
+
+const components = {
+  ...mapBlockKeys(packageBlocks),
+  ...mapBlockKeys(userBlocks),
+}
+
+const found = components[_bookshop_name as any] as any
+const functioncomp = found && (await found())
+const Component = functioncomp?.default
+
+records = records
+  ? (await getEntries(records)).map((entry: any) => entry?.data)
+  : undefined
+
+pages = pages
+  ? (await getEntries(pages)).map((entry: any) => ({
+      href: `/${entry.slug}/`,
+      ...entry?.data,
+    }))
+  : undefined
+
+const slug = Astro.url.pathname.replace(/^\/|\/$/g, '')
+
+const children =
+  source === 'children' && slug
+    ? [
+        ...(
+          await getCollection(
+            'pages',
+            (page: any) =>
+              page.slug.startsWith(slug) &&
+              page.slug !== slug &&
+              !page.slug.replace(`${slug}/`, '').includes('/')
+          )
+        ).map((page: any) => ({ href: `/${page.slug}/`, ...page.data })),
+        ...(
+          await getCollection(
+            'records',
+            (record: any) =>
+              record.id.startsWith(slug) &&
+              record.id !== slug &&
+              !record.id.replace(`${slug}/`, '').includes('/')
+          )
+        ).map((record: any) => record.data),
+      ]
+    : undefined
+
+const references =
+  source === 'references' && slug
+    ? (
+        await getCollection('pages', (page: any) =>
+          page.data?.pages?.find(
+            (page: any) =>
+              page.slug
+                .replace('.md', '')
+                .replace('/index', '')
+                .replace('src/content/', '') === slug
+          )
+        )
+      ).map((item: any) => ({ href: `/${item.slug}/`, ...item.data }))
+    : undefined
+
+const siblings =
+  source === 'siblings' && slug
+    ? (
+        await getCollection('pages', (page: any) => {
+          const currentPageFolder = slug.split('/').slice(0, -1).join('/')
+          const pageFolder = page.slug.split('/').slice(0, -1).join('/')
+          return (
+            page.slug !== slug &&
+            pageFolder === currentPageFolder &&
+            page.slug.startsWith(currentPageFolder)
+          )
+        })
+      )
+        .map((item: any) => ({ href: `/${item.slug}/`, ...item.data }))
+        .sort(() => Math.random() - 0.5) // Randomize the order
+    : undefined
+
+const mergedPages = pages
+  ? await Promise.all(
+      pages.map(async (page: any) => {
+        if (!page.i18n) return page
+        const i18n = await getEntry(page.i18n)
+        return assign(i18n?.data, page)
+      })
+    )
+  : undefined
+
+const mergedChildren = children
+  ? await Promise.all(
+      children.map(async (child: any) => {
+        if (!child.i18n) return child
+        const i18n = await getEntry(child.i18n)
+        return assign(i18n?.data, child)
+      })
+    )
+  : undefined
+
+const mergedReferences = references
+  ? await Promise.all(
+      references.map(async (reference: any) => {
+        if (!reference.i18n) return reference
+        const i18n = await getEntry(reference.i18n)
+        return assign(i18n?.data, reference)
+      })
+    )
+  : undefined
+
+const mergedSiblings = siblings
+  ? await Promise.all(
+      siblings.map(async (sibling: any) => {
+        if (!sibling.i18n) return sibling
+        const i18n = await getEntry(sibling.i18n)
+        return assign(i18n?.data, sibling)
+      })
+    )
+  : undefined
+---
+
+{
+  Component && (
+    <Component
+      cards={
+        mergedPages ||
+        mergedSiblings ||
+        records ||
+        mergedChildren ||
+        mergedReferences
+      }
+      pages={
+        mergedPages ||
+        mergedSiblings ||
+        records ||
+        mergedChildren ||
+        mergedReferences
+      }
+      {...rest}
+    />
+  )
+}

@@ -1,0 +1,119 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import Icon from 'fulldev-ui/components/Icon.astro'
+import Label from 'fulldev-ui/components/Label.astro'
+import Root from 'fulldev-ui/components/Root.astro'
+
+type Props = HTMLAttributes<'input'> & {
+  variant?: 'outline'
+  color?: 'base' | 'brand'
+  label?: string
+  icon?: string
+  radius?: 'none' | 'auto' | 'full'
+}
+
+const {
+  variant = 'outline',
+  label,
+  icon,
+  value,
+  disabled,
+  required,
+  radius = 'auto',
+  placeholder,
+  name = placeholder,
+  type = 'text',
+  ...rest
+} = Astro.props
+---
+
+<Root
+  class:list="input"
+  {...rest}
+>
+  <Label
+    for={name}
+    html={label}
+  />
+  <Root
+    as="input"
+    if={name}
+    id={name}
+    {name}
+    {variant}
+    {placeholder}
+    {radius}
+    {type}
+    {value}
+    {disabled}
+    {required}
+  />
+  <Icon name={icon} />
+</Root>
+
+<style is:global lang="scss">
+  .input {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    gap: var(--space-1);
+    width: 100%;
+
+    .icon {
+      position: absolute;
+      right: var(--space-4);
+      bottom: var(--space-4);
+      pointer-events: none;
+    }
+
+    input {
+      display: flex;
+      position: relative;
+      align-items: center;
+      outline: none;
+      border: 1px solid var(--color-6);
+      border-radius: var(--radius-1);
+      background-color: transparent;
+      padding: var(--space-4);
+      padding-right: calc(var(--text-2) + 2 * var(--space-4));
+      width: 100%;
+      min-width: var(--space-4);
+      height: calc(var(--text-2) + 2 * var(--space-4));
+      color: var(--text);
+      font-size: var(--text-2);
+      line-height: 1.25;
+
+      &.radius-none {
+        border-radius: 0;
+      }
+
+      &.radius-auto {
+        border-radius: var(--radius-1);
+      }
+
+      &.radius-full {
+        border-radius: 9999px;
+      }
+
+      &::placeholder {
+        color: var(--color-11);
+      }
+
+      &:hover {
+        outline: none;
+      }
+
+      &:focus {
+        outline: none;
+        box-shadow: inset 0 0 0 2px var(--color-7);
+        border-color: var(--color-7);
+      }
+
+      &:disabled {
+        opacity: 50%;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+    }
+  }
+</style>

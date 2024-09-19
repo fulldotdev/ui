@@ -1,0 +1,73 @@
+---
+import type { HTMLTag, Polymorphic } from 'astro/types'
+import Root from 'fulldev-ui/components/Root.astro'
+
+type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
+  underline?: 'auto' | 'always' | 'hover' | 'none'
+  size?: 'sm' | 'md' | 'lg'
+  color?: 'base' | 'brand'
+  contrast?: boolean
+  html?: string
+  text?: string
+}
+
+const { html, text, as = 'a', underline = 'auto', ...rest } = Astro.props
+---
+
+<Root
+  class:list="link"
+  {as}
+  {underline}
+  {...rest}
+>
+  <slot>
+    <Fragment set:text={text} />
+    <Fragment set:html={html} />
+  </slot>
+</Root>
+
+<style is:global lang="scss">
+  .link {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: var(--color-11);
+    font-weight: var(--font-weight);
+    font-size: var(--text-3);
+    font-family: var(--font-family);
+    text-decoration-color: var(--border); // FIXME, werkt niet
+    white-space: nowrap;
+
+    &:hover {
+      color: var(--color-12);
+    }
+
+    &.underline-auto {
+      text-decoration: none;
+
+      &:is(p > &) {
+        text-decoration: underline;
+      }
+    }
+
+    &.underline-always {
+      text-decoration: underline;
+    }
+
+    &.underline-hover {
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    &.underline-none {
+      text-decoration: none;
+    }
+  }
+</style>
