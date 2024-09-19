@@ -15,107 +15,116 @@ const { header, body, footer, radius = 'auto', ...rest } = Astro.props
 ---
 
 <Root
-  class="table"
-  as="table"
-  {radius}
+  class:list="table"
   {...rest}
 >
-  <Root as="thead">
-    <Root as="tr">
-      {header?.map((cell: string) => <Root as="th">{cell}</Root>)}
+  <Root
+    as="table"
+    {radius}
+  >
+    <Root as="thead">
+      <Root as="tr">
+        {header?.map((cell: string) => <Root as="th">{cell}</Root>)}
+      </Root>
     </Root>
-  </Root>
-  <Root as="tbody">
-    {
-      body?.map((row: string[]) => (
-        <Root as="tr">
-          {row.map((cell: string) => (
-            <Root as="td">{cell}</Root>
-          ))}
-        </Root>
-      ))
-    }
-  </Root>
-  <Root as="tfoot">
-    <Root as="tr">
+    <Root as="tbody">
       {
-        footer?.map((cell) => {
-          if (typeof cell === 'string') {
-            return <Root as="td">{cell}</Root>
-          } else {
-            return (
-              <Root
-                as="td"
-                colspan={cell.colspan}
-              >
-                {cell.text}
-              </Root>
-            )
-          }
-        })
+        body?.map((row: string[]) => (
+          <Root as="tr">
+            {row.map((cell: string) => (
+              <Root as="td">{cell}</Root>
+            ))}
+          </Root>
+        ))
       }
+    </Root>
+    <Root as="tfoot">
+      <Root as="tr">
+        {
+          footer?.map((cell) => {
+            if (typeof cell === 'string') {
+              return <Root as="td">{cell}</Root>
+            } else {
+              return (
+                <Root
+                  as="td"
+                  colspan={cell.colspan}
+                >
+                  {cell.text}
+                </Root>
+              )
+            }
+          })
+        }
+      </Root>
     </Root>
   </Root>
 </Root>
 
 <style is:global lang="scss">
   .table {
-    display: table;
     box-shadow: 0 0 0 1px var(--color-6);
     border-radius: var(--radius-1);
-    border-collapse: collapse;
-    width: 100%;
-    caption-side: bottom;
-    overflow: hidden;
+    overflow-x: auto;
 
-    &.radius-none {
-      border-radius: 0;
-    }
+    table {
+      display: table;
+      margin: 0;
+      border-collapse: collapse;
+      width: 100%;
+      caption-side: bottom;
+      white-space: nowrap;
 
-    &.radius-auto {
-      border-radius: var(--radius-1);
-    }
-
-    thead {
-      background-color: var(--color-3);
-
-      &:not(:last-child) {
-        border-bottom: 1px solid var(--color-6);
+      &.radius-none {
+        border-radius: 0;
       }
 
-      th {
+      &.radius-auto {
+        border-radius: var(--radius-1);
+      }
+
+      thead {
+        background-color: var(--color-3);
+
+        &:not(:last-child) {
+          border-bottom: 1px solid var(--color-6);
+        }
+
+        th {
+          color: var(--color-12);
+          font-weight: 500;
+        }
+      }
+
+      tbody {
+        display: table-row-group;
+        vertical-align: middle;
+        background-color: var(--color-2);
+        width: 100%;
+        unicode-bidi: isolate;
+      }
+
+      tfoot {
+        display: table-footer-group;
+        background-color: var(--color-3);
         color: var(--color-12);
-        font-weight: 500;
+
+        &:not(:last-child) {
+          border-top: 1px solid var(--color-6);
+        }
       }
-    }
 
-    tbody {
-      display: table-row-group;
-      vertical-align: middle;
-      background-color: var(--color-2);
-      unicode-bidi: isolate;
-    }
-
-    tfoot {
-      display: table-footer-group;
-      background-color: var(--color-3);
-      color: var(--color-12);
-
-      &:not(:last-child) {
+      tr + tr {
         border-top: 1px solid var(--color-6);
       }
-    }
 
-    tr + tr {
-      border-top: 1px solid var(--color-6);
-    }
-
-    th,
-    td {
-      vertical-align: middle;
-      padding: var(--space-3) var(--space-4);
-      font-size: var(--text-2);
-      text-align: left;
+      th,
+      td {
+        vertical-align: middle;
+        padding: var(--space-3) var(--space-4);
+        font-size: var(--text-2);
+        text-align: left;
+      }
     }
   }
 </style>
