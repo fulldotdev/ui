@@ -1,0 +1,124 @@
+---
+import type { Polymorphic } from 'astro/types'
+import Icon from 'fulldev-ui/components/Icon.astro'
+import Root from 'fulldev-ui/components/Root.astro'
+
+type Props<As extends 'div'> = Polymorphic<{ as: As }> & {
+  radius?: 'none' | 'auto' | 'full'
+  icon?: string
+  html?: string
+  text?: string
+  toggled: boolean
+}
+
+const {
+  as = 'div',
+  radius = 'auto',
+  name,
+  toggled,
+  icon,
+  html,
+  text,
+
+  ...rest
+} = Astro.props
+---
+
+<Root
+  class:list="toggle"
+  {as}
+  {radius}
+  {...rest}
+>
+  <label class="toggle-element">
+    <input
+      checked={toggled}
+      type="checkbox"
+      class="checkbox"
+    />
+    <div class="toggled">
+      <Icon name={icon} />
+      <slot>
+        <Fragment set:html={html} />
+        <Fragment set:text={text} />
+      </slot>
+    </div>
+  </label>
+</Root>
+
+<style is:global lang="scss">
+  .toggle {
+    .toggle-element {
+      position: relative;
+      align-items: center;
+      cursor: pointer;
+      border-radius: inherit;
+      color: var(--base-12);
+
+      .checkbox {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .toggled {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: var(--transition);
+        border-radius: inherit;
+        background-color: var(--base-1);
+        padding: 0 var(--space-4);
+        height: calc(var(--text-2) + 2 * var(--space-4));
+        line-height: 1;
+
+        .icon {
+          transition: inherit;
+          margin-right: var(--space-2);
+          color: var(--base-12);
+        }
+      }
+
+      .checkbox:hover ~ .toggled,
+      .checkbox:checked ~ .toggled {
+        background-color: var(--color-5);
+      }
+
+      .checkbox:checked ~ .toggled {
+        color: var(--base-12);
+      }
+
+      .checkbox:checked ~ .toggled .icon {
+        color: var(--base-12);
+      }
+
+      .checkbox:hover:not(:checked) ~ .toggled .icon {
+        color: var(--base-9);
+      }
+
+      &:hover {
+        background-color: var(--color-5);
+        color: var(--base-9);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+    }
+
+    &.radius-none {
+      border-radius: 0;
+    }
+
+    &.radius-auto {
+      border-radius: var(--radius-1);
+    }
+
+    &.radius-full {
+      border-radius: 9999px;
+    }
+  }
+</style>
