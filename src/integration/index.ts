@@ -129,13 +129,13 @@ export default function fulldevIntegration(
                 'virtual:colors.css': css,
               }),
             ],
-            // css: {
-            //   preprocessorOptions: {
-            //     scss: {
-            //       additionalData: `$layer: ${config.layer};`,
-            //     },
-            //   },
-            // },
+            css: {
+              preprocessorOptions: {
+                scss: {
+                  api: 'modern',
+                },
+              },
+            },
           },
         })
 
