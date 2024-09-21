@@ -38,9 +38,33 @@ In your `tailwind.config.ts` add the following:
 // tailwind.config.ts
 import fulldevUI from 'fulldev-ui/tailwind'
 
-export default defineConfig({
+export default {
   plugins: [fulldevUI],
+}
+```
+
+In your `astro.config.ts` add the following:
+
+```ts
+// astro.config.ts
+import tailwind from '@astrojs/tailwind'
+
+export default defineConfig({
+  integrations: [
+    tailwind({
+      // Disable injecting styles, import manually instead
+      applyBaseStyles: false,
+    }),
+  ],
 })
+```
+
+Import the css file file below anywhere in your project.
+
+```css
+@tailwind base layer(base);
+@tailwind components;
+@tailwind utilities;
 ```
 
 ### UnoCSS
@@ -52,9 +76,12 @@ In your `uno.config.ts` add the following:
 import fulldevUI from 'fulldev-ui/unocss'
 
 export default defineConfig({
+  injectReset: false,
   presets: [fulldevUI],
 })
 ```
+
+Do not use `injectReset` when using the UnoCSS preset, as it will conflict with the reset provided by Fulldev UI. If you do want a style reset, be sure to import it in the `base` layer, similar to the TailwindCSS example above.
 
 ## Utility classes
 
