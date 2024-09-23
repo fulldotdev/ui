@@ -38,6 +38,7 @@ export const base = z
           value: z.number(),
           label: z.string(),
           avatars: z.string().array(),
+          avatar: z.string(),
         })
         .partial()
     ),
