@@ -3,6 +3,7 @@ import type { HTMLAttributes } from 'astro/types'
 import Icon from 'fulldev-ui/components/Icon.astro'
 import Root from 'fulldev-ui/components/Root.astro'
 import Avatar from './Avatar.astro'
+import Box from './Box.astro'
 import Column from './Column.astro'
 import Label from './Label.astro'
 
@@ -33,34 +34,39 @@ const hasAvatars = avatars && avatars?.length > 0
   class:list="rating"
   {...rest}
 >
-  {
-    [avatar, ...(avatars ?? [])]?.filter(Boolean)?.map((avatar) => (
-      <Avatar
-        radius="full"
-        src={avatar}
-      />
-    ))
-  }
-  <Column align={!hasAvatars ? align : undefined}>
-    <Root
-      class:list={'stars'}
-      {...rest}
-    >
-      {
-        value &&
-          [1, 2, 3, 4, 5].map((_, i) => (
-            <Icon
-              name={getIcon(i + 1)}
-              class:list={'rating-icon-solid'}
-            />
-          ))
-      }
-    </Root>
+  <Box
+    structure="row"
+    align="center"
+  >
+    {
+      [avatar, ...(avatars ?? [])]?.filter(Boolean)?.map((avatar) => (
+        <Avatar
+          radius="full"
+          src={avatar}
+        />
+      ))
+    }
+    <Column align={!hasAvatars ? align : undefined}>
+      <Root
+        class:list={'stars'}
+        {...rest}
+      >
+        {
+          value &&
+            [1, 2, 3, 4, 5].map((_, i) => (
+              <Icon
+                name={getIcon(i + 1)}
+                class:list={'rating-icon-solid'}
+              />
+            ))
+        }
+      </Root>
+    </Column>
     <Label
       color="base"
       html={label}
     />
-  </Column>
+  </Box>
 </Root>
 
 <style is:global lang="scss">
