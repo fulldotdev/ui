@@ -84,6 +84,7 @@ const {
 const mergedCards = (pages || records || cards)?.filter(Boolean)
 const hasCards = mergedCards && mergedCards?.length > 0
 const hasText = text || html || description || list
+const hasButton = button || (buttons && buttons?.length > 0)
 
 const buttonVariant = (i: number) => {
   if (variant === 'primary' && i === 0) return 'primary'
@@ -109,7 +110,9 @@ const buttonVariant = (i: number) => {
   {...rest}
 >
   <Box
-    structure={structure === 'spread' || structure === 'carousel' || !hasText
+    structure={structure === 'spread' ||
+    structure === 'carousel' ||
+    (!hasText && hasButton)
       ? 'spread'
       : 'column'}
     align={structure === 'split' ? 'start' : align}
@@ -124,6 +127,7 @@ const buttonVariant = (i: number) => {
         <slot name="writeup">
           <Rating
             color="brand"
+            {align}
             {...typeof rating === 'number' ? { value: rating } : rating}
           />
           <Badge
