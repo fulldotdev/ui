@@ -6,12 +6,10 @@ import Spread from './Spread.astro'
 const { currentSlug } = Astro.props
 
 const sidebarEntry = await getEntry('settings', 'components')
-const sidebar = Array.isArray(sidebarEntry.data.sidebar)
-  ? sidebarEntry.data.sidebar
-  : []
+const sidebar = sidebarEntry.data.sidebar || []
 
 async function getFlattenedPages(sidebar: any[]): Promise<any[]> {
-  const flattenedPages: any[] = []
+  const flattenedPages = []
   for (const item of sidebar) {
     if (item.links) {
       flattenedPages.push(...item.links)
@@ -34,7 +32,7 @@ async function getFlattenedPages(sidebar: any[]): Promise<any[]> {
   return flattenedPages
 }
 
-const flattenedPages: any[] = await getFlattenedPages(sidebar)
+const flattenedPages = (await getFlattenedPages(sidebar)) as any[]
 const currentIndex = flattenedPages.findIndex(
   (page) => page.href === `/${currentSlug}`
 )
@@ -45,7 +43,7 @@ const nextPage = flattenedPages[currentIndex + 1] || null
 
 <Spread>
   <Button
-    href={prevPage?.href}
+    href={prevPage.href}
     variant="secondary"
     text={prevPage?.title + '←'}
   />
