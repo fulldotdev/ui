@@ -100,25 +100,10 @@ For a faster and easier review we advise you to use [conventional commits](https
 
 Have you used fulldev-ui to build a website? Add it to the showcase!
 
-1. Clone the repository by following this [setup guide](#setup).
-2. Add a screenshot of your site to the `public/showcase/` directory. The image file must:
-   - Benamed after your site’s domain, e.g. `example.com.png`.
-3. Add a card at the top of all existing cards `src/content/pages/overview/showcase.mdx`.
-   - The `title` attribute must be the name of your site with no extra details.
-   - The `href` must be the URL of site created using fulldev-ui.
-   - The `image` attribute can be added like so`/showcase/file-you-added-to-showcase.png`.
-
-   ```diff
-   <Masonry>
-     <Card title="Example" href="https://example.net" thumbnail="/showcase/example.net.png" />
-   + <Card title="Latest Card" href="https://example.com" thumbnail="/showcase/example.com.png" />
-   // All the other existing cards
-   </Masonry>
-   ```
-
-4. After adding your card, make sure to see how it looks so the image is not too small or too big.
-
-5. Follow the [pull request guide](#pull-requests) to submit your changes to the showcase.
+1. Fork this repository.
+2. Add a screenshot of your site to the `public/showcase/` directory.
+3. Add your site to the `showcase` array at the top of `src/content/pages/overview/showcase.mdx`.
+4. Go to the forked repository on your Github and clicke the 'Contribute` button to make a Pull Request.
 
 ## Community / Contact
 
