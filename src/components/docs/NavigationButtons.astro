@@ -25,8 +25,13 @@ for (const item of sidebar as any) {
   }
 }
 
+const withoutLeadingOrTrailingSlashes = (path: string) =>
+  path.replace(/^\/+|\/+$/g, '')
+
 const currentIndex = pages.findIndex(
-  (page: any) => page?.href === `${Astro.url.pathname}`
+  (page: any) =>
+    withoutLeadingOrTrailingSlashes(page?.href) ===
+    withoutLeadingOrTrailingSlashes(Astro.url.pathname)
 )
 
 const prevPage = pages[currentIndex - 1]
