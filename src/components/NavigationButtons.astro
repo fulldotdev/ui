@@ -1,0 +1,66 @@
+---
+import { getCollection, getEntry } from 'astro:content'
+import Button from 'fulldev-ui/components/Button.astro'
+import Spread from './Spread.astro'
+
+const { currentSlug } = Astro.props
+
+const sidebarEntry = await getEntry('settings', 'components')
+const sidebar = sidebarEntry.data.sidebar || []
+
+async function getFlattenedPages(sidebar: any[]): Promise<any[]> {
+  const flattenedPages = []
+  for (const item of sidebar) {
+    if (item.links) {
+      flattenedPages.push(...item.links)
+    }
+    if (item.folder) {
+      const pages = await getCollection(
+        'pages',
+        (entry: any) =>
+          entry.slug.startsWith(item.folder) &&
+          !entry.slug.endsWith(item.folder)
+      )
+      flattenedPages.push(
+        ...pages.map((page: any) => ({
+          href: `/${page.slug}`,
+          title: page.data.title,
+        }))
+      )
+    }
+  }
+  return flattenedPages
+}
+
+const flattenedPages = await getFlattenedPages(sidebar)
+const currentIndex = flattenedPages.findIndex(
+  (page) => page.href === `/${currentSlug}`
+)
+
+const prevPage = flattenedPages[currentIndex - 1] || null
+const nextPage = flattenedPages[currentIndex + 1] || null
+---
+
+<Spread>
+  {
+    prevPage && (
+      <Button
+        href={prevPage.href}
+        variant="secondary"
+      >
+        ← {prevPage.title}
+      </Button>
+    )
+  }
+  {
+    nextPage && (
+      <Button
+        href={nextPage.href}
+        variant="secondary"
+        class="ml-auto"
+      >
+        {nextPage.title} →
+      </Button>
+    )
+  }
+</Spread>
