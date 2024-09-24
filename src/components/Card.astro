@@ -27,12 +27,22 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   color?: 'base' | 'brand'
   space?: 'auto' | 'none'
   mask?: 'sm' | 'md' | 'lg'
-  image?: string
+  image?: string | ComponentProps<typeof Image>
   images?: string[]
-  button?: ComponentProps<typeof Button<'a'>>
-  buttons?: ComponentProps<typeof Button<'a'>>[]
-  badge?: string | ComponentProps<typeof Badge<'a'>>
-  badges?: (string | ComponentProps<typeof Badge<'a'>>)[]
+  button?: ComponentProps<typeof Button<'a'>> | ComponentProps<typeof Button>
+  buttons?: (
+    | ComponentProps<typeof Button<'a'>>
+    | ComponentProps<typeof Button>
+  )[]
+  badge?:
+    | string
+    | ComponentProps<typeof Badge<'a'>>
+    | ComponentProps<typeof Badge>
+  badges?: (
+    | string
+    | ComponentProps<typeof Badge<'a'>>
+    | ComponentProps<typeof Badge>
+  )[]
   rating?: number | ComponentProps<typeof Rating>
   price?: number
   icon?: string
@@ -109,7 +119,7 @@ const buttonVariant = (i: number) => {
     {position}
     {mask}
     ratio={position === 'background' ? undefined : ratio}
-    src={image || images?.[0]}
+    {...typeof image === 'string' ? { src: image } : image}
   />
   <Icon name={icon} />
   <Rating
