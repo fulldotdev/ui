@@ -1,56 +1,54 @@
 ---
-import { getCollection, getEntry } from 'astro:content'
+import { getCollection } from 'astro:content'
 import Button from 'fulldev-ui/components/Button.astro'
+import Section from '../Section.astro'
 import Spread from '../Spread.astro'
 
-const { currentSlug } = Astro.props
+const { sidebar = [] } = Astro.props
 
-const sidebarEntry = await getEntry('settings', 'components')
-const sidebar = sidebarEntry.data.sidebar as any[]
+const allPages = await getCollection('pages')
+const pages = []
 
-async function getFlattenedPages(sidebar: any[]): Promise<any[]> {
-  const flattenedPages: any[] = []
-  for (const item of sidebar) {
-    if (item.links) {
-      flattenedPages.push(...item.links)
-    }
-    if (item.folder) {
-      const pages = await getCollection(
-        'pages',
-        (entry: any) =>
-          entry.slug.startsWith(item.folder) &&
-          !entry.slug.endsWith(item.folder)
-      )
-      flattenedPages.push(
-        ...pages.map((page: any) => ({
-          href: `/${page.slug}`,
-          title: page.data.title,
-        }))
-      )
-    }
+for (const item of sidebar as any) {
+  if (item.links) pages.push(...item.links)
+  if (item.folder) {
+    const folderPages = allPages.filter(
+      (page: any) =>
+        page.slug.startsWith(item.folder) && !page.slug.endsWith(item.folder)
+    )
+    pages.push(
+      ...folderPages.map((page: any) => ({
+        href: `/${page.slug}`,
+        text: page.data.title,
+      }))
+    )
   }
-  return flattenedPages
 }
 
-const flattenedPages: any[] = await getFlattenedPages(sidebar)
-const currentIndex = flattenedPages.findIndex(
-  (page: any) => page.href === `/${currentSlug}`
+const currentIndex = pages.findIndex(
+  (page: any) => page?.href === `${Astro.url.pathname}`
 )
 
-const prevPage = flattenedPages[currentIndex - 1] || null
-const nextPage = flattenedPages[currentIndex + 1] || null
+const prevPage = pages[currentIndex - 1]
+const nextPage = pages[currentIndex + 1]
 ---
 
-<Spread>
-  <Button
-    href={prevPage.href}
-    variant="secondary"
-    text={prevPage ? '← ' + prevPage.title : undefined}
-  />
-  <Button
-    href={nextPage?.href}
-    variant="secondary"
-    text={nextPage ? nextPage.title + '→ ' : undefined}
-    style={{ marginLeft: 'auto' }}
-  />
-</Spread>
+{
+  sidebar && sidebar.length > 0 && (
+    <Section>
+      <Spread>
+        <Button
+          href={prevPage?.href}
+          variant="secondary"
+          text={prevPage ? `← ${prevPage.text}` : undefined}
+        />
+        <Button
+          href={nextPage?.href}
+          variant="secondary"
+          text={nextPage ? `${nextPage.text} →` : undefined}
+          style={{ marginLeft: 'auto' }}
+        />
+      </Spread>
+    </Section>
+  )
+}
