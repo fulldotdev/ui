@@ -29,3 +29,4 @@ Copyright (c) 2024–present [Fulldev][fulldev]
 [docs]: https://ui.full.dev/
 [fulldev]: https://full.dev/
 [issues]: https://github.com/fulldotdev/ui/issues/
+[discord]: https://discord.gg/vXZqMbadm8
