@@ -32,8 +32,7 @@ const {
   structure = 'spread',
   space = 'auto',
   size = 'sm',
-  frame = 'fill',
-  variant = 'base',
+  frame = 'none',
   logo,
   heading,
   links,
@@ -52,7 +51,6 @@ const url = Astro.url.href
   {as}
   {frame}
   {structure}
-  {variant}
   {space}
   {size}
   {...rest}
@@ -86,52 +84,54 @@ const url = Astro.url.href
         />
       ))
     }
-    <Search {...search} />
-    <Drawer
-      icon="menu-2"
-      id="navigation-drawer"
-    >
-      {
-        drawer &&
-          drawer.length > 0 &&
-          drawer.map((item: any) => (
-            <>
-              <Heading
-                level={6}
-                html={item.heading}
-              />
-              {item.links?.map((link: any) => (
-                <Link
-                  {...link}
-                  class="sidebar-link"
-                  color={
-                    url.replace(/\/$/, '').endsWith(link.href)
-                      ? 'brand'
-                      : undefined
-                  }
+    {search && <Search {...search} />}
+    {
+      drawer && (
+        <Drawer
+          icon="menu-2"
+          id="navigation-drawer"
+        >
+          {drawer &&
+            drawer.length > 0 &&
+            drawer.map((item: any) => (
+              <>
+                <Heading
+                  level={6}
+                  html={item.heading}
                 />
-              ))}
-              {item.folder &&
-                (async () => {
-                  const pages = await getCollection(
-                    'pages',
-                    (entry: any) =>
-                      entry.slug.startsWith(item.folder) &&
-                      !entry.slug.endsWith(item.folder)
-                  )
-                  return pages.map((page: any) => (
-                    <Link
-                      href={`/${page.slug}`}
-                      class="sidebar-link"
-                      color={slug === page.slug ? 'brand' : undefined}
-                      html={page.data.title}
-                    />
-                  ))
-                })()}
-            </>
-          ))
-      }
-    </Drawer>
+                {item.links?.map((link: any) => (
+                  <Link
+                    {...link}
+                    class="sidebar-link"
+                    color={
+                      url.replace(/\/$/, '').endsWith(link.href)
+                        ? 'brand'
+                        : undefined
+                    }
+                  />
+                ))}
+                {item.folder &&
+                  (async () => {
+                    const pages = await getCollection(
+                      'pages',
+                      (entry: any) =>
+                        entry.slug.startsWith(item.folder) &&
+                        !entry.slug.endsWith(item.folder)
+                    )
+                    return pages.map((page: any) => (
+                      <Link
+                        href={`/${page.slug}`}
+                        class="sidebar-link"
+                        color={slug === page.slug ? 'brand' : undefined}
+                        html={page.data.title}
+                      />
+                    ))
+                  })()}
+              </>
+            ))}
+        </Drawer>
+      )
+    }
   </Row>
 </Root>
 
@@ -159,6 +159,10 @@ const url = Astro.url.href
       // TODO: fix this
       max-width: calc(100% - (2 * var(--outer-x)));
       height: var(--header-height);
+
+      &.frame-none {
+        padding: 0 var(--gutter);
+      }
 
       &.frame-fill {
         background-color: var(--color-2);

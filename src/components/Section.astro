@@ -75,12 +75,16 @@ const {
   pages,
   records,
   mask,
+  justify,
+  theme,
   ratio,
   ...rest
 } = Astro.props
 
 const mergedCards = (pages || records || cards)?.filter(Boolean)
 const hasCards = mergedCards && mergedCards?.length > 0
+const hasText = text || html || description || list
+const hasButton = button || (buttons && buttons?.length > 0)
 
 const buttonVariant = (i: number) => {
   if (variant === 'primary' && i === 0) return 'primary'
@@ -95,6 +99,8 @@ const buttonVariant = (i: number) => {
 <Root
   class:list="section"
   variant={hasCards ? undefined : variant}
+  justify={hasCards ? undefined : justify}
+  theme={hasCards ? undefined : theme}
   structure={structure === 'split' ? 'split' : 'column'}
   frame={frame === 'panel' && hasCards ? 'none' : frame}
   {as}
@@ -104,7 +110,9 @@ const buttonVariant = (i: number) => {
   {...rest}
 >
   <Box
-    structure={structure === 'spread' || structure === 'carousel'
+    structure={structure === 'spread' ||
+    structure === 'carousel' ||
+    (!hasText && hasButton)
       ? 'spread'
       : 'column'}
     align={structure === 'split' ? 'start' : align}
@@ -119,6 +127,7 @@ const buttonVariant = (i: number) => {
         <slot name="writeup">
           <Rating
             color="brand"
+            {align}
             {...typeof rating === 'number' ? { value: rating } : rating}
           />
           <Badge
@@ -174,6 +183,8 @@ const buttonVariant = (i: number) => {
               level={Number(level) + 2}
               {position}
               {frame}
+              {justify}
+              {theme}
               {variant}
               {ratio}
               {mask}

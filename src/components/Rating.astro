@@ -8,6 +8,7 @@ import Label from './Label.astro'
 
 type Props = HTMLAttributes<'div'> & {
   color?: 'base' | 'brand'
+  align?: 'start' | 'center' | 'end'
   value?: number
   size?: string
   label?: string
@@ -15,7 +16,7 @@ type Props = HTMLAttributes<'div'> & {
   avatar?: string
 }
 
-const { value, label, avatars, avatar, ...rest } = Astro.props
+const { value, label, avatars, avatar, align, ...rest } = Astro.props
 
 const getIcon = (count: number) => {
   if (!value) return
@@ -24,6 +25,8 @@ const getIcon = (count: number) => {
   if (difference >= -0.75) return 'star-half-filled'
   return 'star'
 }
+
+const hasAvatars = avatars && avatars?.length > 0
 ---
 
 <Root
@@ -38,7 +41,7 @@ const getIcon = (count: number) => {
       />
     ))
   }
-  <Column>
+  <Column align={!hasAvatars ? align : undefined}>
     <Root
       class:list={'stars'}
       {...rest}
@@ -64,6 +67,7 @@ const getIcon = (count: number) => {
   @layer fulldev {
     .rating {
       display: flex;
+      align-items: center;
       gap: var(--space-4);
 
       .avatar + .avatar {
