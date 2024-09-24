@@ -8,33 +8,31 @@ const { currentSlug } = Astro.props
 const sidebarEntry = await getEntry('settings', 'components')
 const sidebar = sidebarEntry.data.sidebar || []
 
-async function getFlattenedPages(sidebar: any[]): Promise<any[]> {
-  const flattenedPages: any[] = []
-  for (const item of sidebar) {
-    if (item.links) {
-      flattenedPages.push(...item.links)
-    }
-    if (item.folder) {
-      const pages = await getCollection(
-        'pages',
-        (entry: any) =>
-          entry.slug.startsWith(item.folder) &&
-          !entry.slug.endsWith(item.folder)
-      )
-      flattenedPages.push(
-        ...pages.map((page: any) => ({
-          href: `/${page.slug}`,
-          title: page.data.title,
-        }))
-      )
-    }
-  }
-  return flattenedPages
-}
+const flattenedPages = (
+  await Promise.all(
+    sidebar.map(async (item: any) => {
+      const links = item.links || []
+      if (item.folder) {
+        const pages = await getCollection(
+          'pages',
+          (entry: any) =>
+            entry.slug.startsWith(item.folder) &&
+            !entry.slug.endsWith(item.folder)
+        )
+        links.push(
+          ...pages.map((page: any) => ({
+            href: `/${page.slug}`,
+            title: page.data.title,
+          }))
+        )
+      }
+      return links
+    })
+  )
+).flat()
 
-const flattenedPages = await getFlattenedPages(sidebar)
 const currentIndex = flattenedPages.findIndex(
-  (page) => page.href === `/${currentSlug}`
+  (page: any) => page.href === `/${currentSlug}`
 )
 
 const prevPage = flattenedPages[currentIndex - 1] || null
