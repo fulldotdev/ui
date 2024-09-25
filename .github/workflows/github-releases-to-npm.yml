@@ -11,27 +11,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Configure Git
-        env:
-          USER_NAME: ${{ secrets.USER_NAME }}
-          USER_EMAIL: ${{ secrets.USER_EMAIL }}
         run: |
-          git config user.name ${USER_NAME}
-          git config user.email ${USER_EMAIL}
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
       - name: Authenticate with Git
         env:
-          GITHUB_TOKEN: ${{ secrets.GHP_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
         run: |
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
       # Setup .npmrc file to publish to npm
       - uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "20.x"
+          registry-url: "https://registry.npmjs.org"
       - name: Set and push version from release tag
         run: |
           git checkout -b main
-          VERSION=${GITHUB_REF#refs/tags/}
-          VERSION=${VERSION#v}
+          VERSION=${GITHUB_REF#refs/tags/v}
           npm version $VERSION --no-git-tag-version
           git add .
           git commit -m "Bump to $VERSION"
@@ -39,38 +35,3 @@ jobs:
       - run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-# name: Publish Package to npmjs
-# on:
-#   release:
-#     types: [published]
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-#     permissions:
-#       contents: write
-#       id-token: write
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-
-#       - name: Setup Node.js
-#         uses: actions/setup-node@v4
-#         with:
-#           node-version: '20.x'
-#           registry-url: 'https://registry.npmjs.org'
-
-#       - name: Set and push version from release tag
-#         run: |
-#           VERSION=${GITHUB_REF#refs/tags/v}
-#           git checkout -b main
-#           npm version $VERSION --no-git-tag-version
-#           git add .
-#           git commit -m "$VERSION"
-#           git push --set-upstream origin main
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-#       - run: npm publish --provenance --access public
-#         env:
-#           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
