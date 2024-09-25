@@ -102,7 +102,7 @@ Have you used fulldev-ui to build a website? Add it to the showcase!
 
 1. Fork this repository.
 2. Add a screenshot of your site to the `public/showcase/` directory.
-3. Add your site to the `showcase` array at the top of `src/content/pages/overview/showcase.mdx`.
+3. Add your site to the `showcase` array at the top of `src/content/pages/showcase.mdx`.
 4. Go to the forked repository on your Github and clicke the 'Contribute` button to make a Pull Request.
 
 ## Community / Contact
