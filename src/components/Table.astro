@@ -7,7 +7,7 @@ type Props = HTMLAttributes<'table'> & {
   size?: 'sm' | 'md' | 'lg'
   header?: string[]
   body?: string[][]
-  footer?: (string | { text: string; colspan?: string | number })[]
+  footer?: string[]
   radius?: 'none' | 'auto'
 }
 
@@ -24,15 +24,15 @@ const { header, body, footer, radius = 'auto', ...rest } = Astro.props
   >
     <Root as="thead">
       <Root as="tr">
-        {header?.map((cell: string) => <Root as="th">{cell}</Root>)}
+        {header?.map((cell) => <th>{cell}</th>)}
       </Root>
     </Root>
     <Root as="tbody">
       {
         body?.map((row: string[]) => (
           <Root as="tr">
-            {row.map((cell: string) => (
-              <Root as="td">{cell}</Root>
+            {row?.map((cell) => (
+              <td>{cell}</td>
             ))}
           </Root>
         ))
@@ -40,22 +40,7 @@ const { header, body, footer, radius = 'auto', ...rest } = Astro.props
     </Root>
     <Root as="tfoot">
       <Root as="tr">
-        {
-          footer?.map((cell) => {
-            if (typeof cell === 'string') {
-              return <Root as="td">{cell}</Root>
-            } else {
-              return (
-                <Root
-                  as="td"
-                  colspan={cell.colspan}
-                >
-                  {cell.text}
-                </Root>
-              )
-            }
-          })
-        }
+        {footer?.map((cell) => <td>{cell}</td>)}
       </Root>
     </Root>
   </Root>
