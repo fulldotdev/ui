@@ -12,9 +12,7 @@ import Spread from 'fulldev-ui/components/Spread.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Text from 'fulldev-ui/components/Text.astro'
 import Wrap from 'fulldev-ui/components/Wrap.astro'
-import type Avatar from './Avatar.astro'
 import Badge from './Badge.astro'
-import type Label from './Label.astro'
 
 type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   ratio?: 'landscape' | 'portrait' | 'square' | number
@@ -29,34 +27,26 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   color?: 'base' | 'brand'
   space?: 'auto' | 'none'
   mask?: 'sm' | 'md' | 'lg'
-  image?: string | ComponentProps<typeof Image>
-  icon?: string | ComponentProps<typeof Icon>
-  avatar?: string | ComponentProps<typeof Avatar>
-  label?: string | ComponentProps<typeof Label>
-  tagline?: string | ComponentProps<typeof Tagline>
-  heading?: string | ComponentProps<typeof Heading>
-  text?: string | ComponentProps<typeof Text>
-  list?: string[] | ComponentProps<typeof List>
-  button?: ComponentProps<typeof Button<'a'>> | ComponentProps<typeof Button>
-  buttons?: (
-    | ComponentProps<typeof Button<'a'>>
-    | ComponentProps<typeof Button>
-  )[]
-  badge?:
-    | string
-    | ComponentProps<typeof Badge<'a'>>
-    | ComponentProps<typeof Badge>
-  badges?: (
-    | string
-    | ComponentProps<typeof Badge<'a'>>
-    | ComponentProps<typeof Badge>
-  )[]
+  image?: ComponentProps<typeof Image>['src']
+  images?: string[]
+  button?: ComponentProps<typeof Button<'a'>>
+  buttons?: ComponentProps<typeof Button<'a'>>[]
+  badge?: string | ComponentProps<typeof Badge<'a'>>
+  badges?: (string | ComponentProps<typeof Badge<'a'>>)[]
   rating?: number | ComponentProps<typeof Rating>
   price?: number
+  icon?: string
+  avatar?: string
   avatars?: string[]
+  label?: string
+  tagline?: string
   contrast?: boolean
+  heading?: string
+  title?: string
   description?: string
   html?: string
+  text?: string
+  list?: string[]
 }
 
 const {
@@ -82,13 +72,14 @@ const {
   badges,
   ratio,
   image,
+  images,
+  rating,
+  button,
+  price,
   icon,
   avatar,
   mask,
   avatars,
-  rating,
-  price,
-  button,
   ...rest
 } = Astro.props
 
@@ -118,14 +109,14 @@ const buttonVariant = (i: number) => {
     {position}
     {mask}
     ratio={position === 'background' ? undefined : ratio}
-    {...typeof image === 'string' ? { src: image } : image}
+    src={image || images?.[0]}
   />
-  <Icon {...typeof icon === 'string' ? { name: icon } : icon} />
+  <Icon name={icon} />
   <Rating
     color="brand"
     {avatars}
-    {...typeof avatar === 'string' ? { avatar } : avatar}
-    {...typeof label === 'string' ? { label } : label}
+    {avatar}
+    {label}
     {...typeof rating === 'number' ? { value: rating } : rating}
   />
   <Wrap>
@@ -140,12 +131,12 @@ const buttonVariant = (i: number) => {
   </Wrap>
   <Tagline
     color="base"
-    {...typeof tagline === 'string' ? { html: tagline } : tagline}
+    html={tagline}
   />
   <Spread>
     <Heading
       color="base"
-      {...typeof heading === 'string' ? { html: heading } : heading}
+      html={heading ?? title}
       {level}
     />
     <Price value={price} />
@@ -153,12 +144,12 @@ const buttonVariant = (i: number) => {
   <Text
     color="base"
     contrast={position === 'background' && true}
-    {...typeof text === 'string' ? { html: text } : text}
+    html={html || text || description}
   />
   <List
     color="base"
     contrast
-    {...Array.isArray(list) ? { items: list } : list}
+    items={list}
   />
   <Wrap>
     {
