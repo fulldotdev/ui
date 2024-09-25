@@ -30,7 +30,13 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   space?: 'auto' | 'none'
   mask?: 'sm' | 'md' | 'lg'
   image?: string | ComponentProps<typeof Image>
-  images?: string[]
+  icon?: string | ComponentProps<typeof Icon>
+  avatar?: string | ComponentProps<typeof Avatar>
+  label?: string | ComponentProps<typeof Label>
+  tagline?: string | ComponentProps<typeof Tagline>
+  heading?: string | ComponentProps<typeof Heading>
+  text?: string | ComponentProps<typeof Text>
+  list?: string[] | ComponentProps<typeof List>
   button?: ComponentProps<typeof Button<'a'>> | ComponentProps<typeof Button>
   buttons?: (
     | ComponentProps<typeof Button<'a'>>
@@ -47,18 +53,10 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   )[]
   rating?: number | ComponentProps<typeof Rating>
   price?: number
-  icon?: string | ComponentProps<typeof Icon>
-  avatar?: string | ComponentProps<typeof Avatar>
   avatars?: string[]
-  label?: string | ComponentProps<typeof Label>
-  tagline?: string | ComponentProps<typeof Tagline>
   contrast?: boolean
-  heading?: string | ComponentProps<typeof Heading>
-  title?: string
   description?: string
   html?: string
-  text?: string | ComponentProps<typeof Text>
-  list?: string[] | ComponentProps<typeof List>
 }
 
 const {
@@ -84,14 +82,13 @@ const {
   badges,
   ratio,
   image,
-  images,
-  rating,
-  button,
-  price,
   icon,
   avatar,
   mask,
   avatars,
+  rating,
+  price,
+  button,
   ...rest
 } = Astro.props
 
@@ -123,12 +120,12 @@ const buttonVariant = (i: number) => {
     ratio={position === 'background' ? undefined : ratio}
     {...typeof image === 'string' ? { src: image } : image}
   />
-  <Icon name={icon} />
+  <Icon {...typeof icon === 'string' ? { name: icon } : icon} />
   <Rating
     color="brand"
     {avatars}
-    {avatar}
-    {label}
+    {...typeof avatar === 'string' ? { avatar } : avatar}
+    {...typeof label === 'string' ? { label } : label}
     {...typeof rating === 'number' ? { value: rating } : rating}
   />
   <Wrap>
@@ -143,12 +140,12 @@ const buttonVariant = (i: number) => {
   </Wrap>
   <Tagline
     color="base"
-    html={tagline}
+    {...typeof tagline === 'string' ? { html: tagline } : tagline}
   />
   <Spread>
     <Heading
       color="base"
-      html={heading ?? title}
+      {...typeof heading === 'string' ? { html: heading } : heading}
       {level}
     />
     <Price value={price} />
@@ -156,12 +153,12 @@ const buttonVariant = (i: number) => {
   <Text
     color="base"
     contrast={position === 'background' && true}
-    html={html || text || description}
+    {...typeof text === 'string' ? { html: text } : text}
   />
   <List
     color="base"
     contrast
-    items={list}
+    {...Array.isArray(list) ? { items: list } : list}
   />
   <Wrap>
     {
