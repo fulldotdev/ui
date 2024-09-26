@@ -10,28 +10,48 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
-      - name: Configure Git
-        run: |
-          git config user.name 'fulldev-bot'
-          git config user.email 'bot@full.dev'
-      - name: Authenticate with Git
+        with:
+          fetch-depth: 0
+      - name: Configure and Authenticate Git
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
         run: |
+          git config --global user.name 'fulldev-bot'
+          git config --global user.email 'bot@full.dev'
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          echo "Git configuration and authentication completed"
       # Setup .npmrc file to publish to npm
       - uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Set and push version from release tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
         run: |
-          git checkout -b main
+          echo "Debugging: Current Git config"
+          git config --list
+
+          echo "Debugging: Current branch"
+          git branch --show-current
+
           VERSION=${GITHUB_REF#refs/tags/v}
+          echo "Setting version to $VERSION"
+
           npm version $VERSION --no-git-tag-version
+
           git add .
-          git commit -m "Bump to $VERSION"
-          git push --set-upstream origin main
+          git -c user.name="fulldev-bot" -c user.email="bot@full.dev" commit -m "Bump to $VERSION"
+
+          echo "Debugging: Git status"
+          git status
+
+          echo "Attempting to push to main"
+          git push origin HEAD:main || echo "Push failed"
+
+          echo "Debugging: Git log"
+          git log -n 5 --oneline
+      - run: npm ci
       - run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
