@@ -12,6 +12,7 @@ import Spread from 'fulldev-ui/components/Spread.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Text from 'fulldev-ui/components/Text.astro'
 import Wrap from 'fulldev-ui/components/Wrap.astro'
+import Badge from './Badge.astro'
 
 type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   ratio?: 'landscape' | 'portrait' | 'square' | number
@@ -26,10 +27,12 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   color?: 'base' | 'brand'
   space?: 'auto' | 'none'
   mask?: 'sm' | 'md' | 'lg'
-  image?: string
+  image?: string | ComponentProps<typeof Image>
   images?: string[]
   button?: ComponentProps<typeof Button<'a'>>
   buttons?: ComponentProps<typeof Button<'a'>>[]
+  badge?: string | ComponentProps<typeof Badge<'a'>>
+  badges?: (string | ComponentProps<typeof Badge<'a'>>)[]
   rating?: number | ComponentProps<typeof Rating>
   price?: number
   icon?: string
@@ -65,6 +68,8 @@ const {
   description,
   list,
   buttons,
+  badge,
+  badges,
   ratio,
   image,
   images,
@@ -104,7 +109,8 @@ const buttonVariant = (i: number) => {
     {position}
     {mask}
     ratio={position === 'background' ? undefined : ratio}
-    src={image || images?.[0]}
+    src={images?.[0]}
+    {...typeof image === 'string' ? { src: image } : image}
   />
   <Icon name={icon} />
   <Rating
@@ -114,6 +120,16 @@ const buttonVariant = (i: number) => {
     {label}
     {...typeof rating === 'number' ? { value: rating } : rating}
   />
+  <Wrap>
+    {
+      [badge, ...(badges ?? [])].filter(Boolean)?.map((badge: any) => (
+        <Badge
+          color="base"
+          {...(typeof badge === 'string' ? { html: badge } : badge)}
+        />
+      ))
+    }
+  </Wrap>
   <Tagline
     color="base"
     html={tagline}
