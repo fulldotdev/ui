@@ -1,37 +1,38 @@
 name: Publish Package to npmjs
+
 on:
   release:
     types: [published]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
       id-token: write
+
     steps:
       - uses: actions/checkout@v4
-      - name: Configure Git
+
+      - name: Configure Git and Bump Version
         run: |
-          git config user.name 'fulldev-bot'
-          git config user.email 'bot@full.dev'
-      - name: Authenticate with Git
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
-        run: |
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-      # Setup .npmrc file to publish to npm
-      - uses: actions/setup-node@v4
+          git config --global user.name 'fulldev-bot'
+          git config --global user.email 'bot@full.dev'
+          git remote set-url origin https://x-access-token:${{ secrets.BOT_TOKEN }}@github.com/${{ github.repository }}.git
+
+          VERSION=${GITHUB_REF#refs/tags/v}
+          npm version $VERSION --no-git-tag-version
+          git add package.json
+          git commit -m "Bump to version $VERSION"
+          git push origin HEAD:main
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Set and push version from release tag
-        run: |
-          git checkout -b main
-          VERSION=${GITHUB_REF#refs/tags/v}
-          npm version $VERSION --no-git-tag-version
-          git add .
-          git commit -m "Bump to $VERSION"
-          git push --set-upstream origin main
-      - run: npm publish --provenance --access public
+
+      - name: Publish to npm
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
