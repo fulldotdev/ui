@@ -46,26 +46,10 @@ jobs:
           git commit -m "Bump to version $VERSION"
           git push origin $BRANCH_NAME
 
-      - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.BOT_TOKEN }}
-          branch: bump-version-${VERSION}
-          base: main
-          title: 'Bump version to $VERSION'
-          body: 'Automated version bump to $VERSION'
-          delete-branch: true
-
-      - name: Enable Pull Request Automerge
+      - name: Create Pull Request and enable auto merge
         run: |
-          gh pr merge --auto --merge "${{ steps.cpr.outputs.pull-request-number }}"
-        env:
-          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
-
-      - name: Wait for checks
-        run: |
-          gh pr checks ${{ steps.cpr.outputs.pull-request-number }} --watch
+          gh pr create --base main --head $BRANCH_NAME --title "Bump version to ${VERSION}" --body "Automated version bump to ${VERSION}"
+          gh pr merge --auto --merge $BRANCH_NAME
         env:
           GH_TOKEN: ${{ secrets.BOT_TOKEN }}
 
