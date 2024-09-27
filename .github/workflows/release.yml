@@ -16,9 +16,13 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config --global user.name 'fulldev-bot'
-          git config --global user.email 'bot@full.dev'
-          git remote set-url origin https://x-access-token:${{ secrets.BOT_TOKEN }}@github.com/${{ github.repository }}.git
+          git config --global user.name ${{ secrets.USER_NAME }}
+          git config --global user.email ${{ secrets.USER_EMAIL }}
+          git remote set-url origin https://x-access-token:${{ secrets.GHP_TOKEN }}@github.com/${{ github.repository }}.git
+        env:
+          USER_EMAIL: ${{ secrets.USER_EMAIL }}
+          USER_NAME: ${{ secrets.USER_NAME }}
+          GHP_TOKEN: ${{ secrets.GHP_TOKEN }}
 
       - name: Fetch and Pull Latest Changes
         run: |
@@ -31,7 +35,7 @@ jobs:
           npm version $VERSION --no-git-tag-version
           git add package.json
           git commit -m "Bump to version $VERSION"
-          git push origin HEAD:main --force-with-lease
+          git push origin HEAD:main
 
       - name: Github Releases To Discord
         uses: SethCohen/github-releases-to-discord@v1.13.1
