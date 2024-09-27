@@ -58,14 +58,12 @@ jobs:
           delete-branch: true
 
       - name: Enable Pull Request Automerge
-        if: steps.cpr.outputs.pull-request-number
         run: |
           gh pr merge --auto --merge "${{ steps.cpr.outputs.pull-request-number }}"
         env:
           GH_TOKEN: ${{ secrets.BOT_TOKEN }}
 
       - name: Wait for checks
-        if: steps.cpr.outputs.pull-request-number
         run: |
           gh pr checks ${{ steps.cpr.outputs.pull-request-number }} --watch
         env:
