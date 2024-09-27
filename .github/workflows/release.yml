@@ -10,32 +10,67 @@ jobs:
     permissions:
       contents: write
       id-token: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Configure Git
         run: |
-          git config --global user.name ${{ secrets.USER_NAME }}
-          git config --global user.email ${{ secrets.USER_EMAIL }}
-          git remote set-url origin https://x-access-token:${{ secrets.GHP_TOKEN }}@github.com/${{ github.repository }}.git
+          git config --global user.name 'fulldev-bot'
+          git config --global user.email 'bot@full.dev'
+          git remote set-url origin https://x-access-token:${{ secrets.BOT_TOKEN }}@github.com/${{ github.repository }}.git
         env:
-          USER_EMAIL: ${{ secrets.USER_EMAIL }}
-          USER_NAME: ${{ secrets.USER_NAME }}
-          GHP_TOKEN: ${{ secrets.GHP_TOKEN }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
 
       - name: Fetch and Pull Latest Changes
         run: |
           git fetch origin
           git pull origin HEAD:main
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+
       - name: Bump Version
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
+          git checkout -b bump-version-${VERSION}
           npm version $VERSION --no-git-tag-version
           git add package.json
           git commit -m "Bump to version $VERSION"
-          git push origin HEAD:main --force -o ci.skip
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.BOT_TOKEN }}
+          branch: bump-version-${VERSION}
+          title: 'Bump version to $VERSION'
+          body: 'Automated version bump to $VERSION'
+
+      - name: Enable Pull Request Automerge
+        if: steps.cpr.outputs.pull-request-number
+        run: |
+          gh pr merge --auto --merge "${{ steps.cpr.outputs.pull-request-number }}"
+        env:
+          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Wait for checks
+        if: steps.cpr.outputs.pull-request-number
+        run: |
+          gh pr checks ${{ steps.cpr.outputs.pull-request-number }} --watch
+        env:
+          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Github Releases To Discord
         uses: SethCohen/github-releases-to-discord@v1.13.1
@@ -48,14 +83,3 @@ jobs:
           footer_title: 'fulldev-ui'
           footer_icon_url: 'https://raw.githubusercontent.com/fulldotdev/ui/main/siteicon.png'
           footer_timestamp: true
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          registry-url: 'https://registry.npmjs.org'
-
-      - name: Publish to npm
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
