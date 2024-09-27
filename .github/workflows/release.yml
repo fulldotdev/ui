@@ -49,19 +49,29 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.BOT_TOKEN }}
 
+      - name: Review PR
+        run: |
+          gh pr review $BRANCH_NAME --approve --body "Automated approval for version bump"
+        env:
+          GH_TOKEN: ${{ secrets.GHP_TOKEN }}
+
       - name: Wait for PR to be merged
         run: |
           PR_URL=$(gh pr view $BRANCH_NAME --json url -q .url)
-          while true; do
+          for i in {1..3}; do
             PR_STATE=$(gh pr view $BRANCH_NAME --json state -q .state)
             if [ "$PR_STATE" = "MERGED" ]; then
               echo "PR has been merged"
-              break
+              exit 0
             elif [ "$PR_STATE" = "CLOSED" ]; then
               echo "PR was closed without merging"
               exit 1
             fi
-            echo "Waiting for PR to be merged..."
+            echo "Attempt $i: Waiting for PR to be merged..."
+            if [ $i -eq 3 ]; then
+              echo "PR not merged after 3 attempts. Exiting with failure."
+              exit 1
+            fi
             sleep 60
           done
         env:
