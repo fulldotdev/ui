@@ -1,4 +1,4 @@
-name: Publish Package to npmjs
+name: Publish Package to npmjs and announce to Discord
 
 on:
   release:
@@ -32,6 +32,18 @@ jobs:
           git add package.json
           git commit -m "Bump to version $VERSION"
           git push origin HEAD:main
+
+      - name: Github Releases To Discord
+        uses: SethCohen/github-releases-to-discord@v1.13.1
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          color: '2105893'
+          username: 'Release Changelog'
+          avatar_url: 'https://raw.githubusercontent.com/fulldotdev/ui/main/siteicon.png'
+          content: 'A new release has just been published'
+          footer_title: 'fulldev-ui'
+          footer_icon_url: 'https://raw.githubusercontent.com/fulldotdev/ui/main/siteicon.png'
+          footer_timestamp: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
