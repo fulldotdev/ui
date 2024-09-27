@@ -14,13 +14,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configure Git and Bump Version
+      - name: Configure Git
         run: |
           git config --global user.name 'fulldev-bot'
           git config --global user.email 'bot@full.dev'
           git remote set-url origin https://x-access-token:${{ secrets.BOT_TOKEN }}@github.com/${{ github.repository }}.git
-          git fetch
-          git pull
+
+      - name: Fetch and Pull Latest Changes
+        run: |
+          git fetch origin
+          git pull origin HEAD:main
+
+      - name: Bump Version
+        run: |
           VERSION=${GITHUB_REF#refs/tags/v}
           npm version $VERSION --no-git-tag-version
           git add package.json
