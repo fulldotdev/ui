@@ -36,7 +36,7 @@ jobs:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Bump Version
+      - name: Bump Version and Create PR
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
           BRANCH_NAME="bump-version-${VERSION}"
@@ -46,13 +46,32 @@ jobs:
           git commit -m "Bump to version $VERSION"
           git push origin $BRANCH_NAME
           gh pr create --base main --head $BRANCH_NAME --title "Bump version to ${VERSION}" --body "Automated version bump to ${VERSION}"
-          gh pr checks $BRANCH_NAME --watch
-          gh pr merge --merge $BRANCH_NAME
+        env:
+          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Wait for PR to be merged
+        run: |
+          PR_URL=$(gh pr view $BRANCH_NAME --json url -q .url)
+          while true; do
+            PR_STATE=$(gh pr view $BRANCH_NAME --json state -q .state)
+            if [ "$PR_STATE" = "MERGED" ]; then
+              echo "PR has been merged"
+              break
+            elif [ "$PR_STATE" = "CLOSED" ]; then
+              echo "PR was closed without merging"
+              exit 1
+            fi
+            echo "Waiting for PR to be merged..."
+            sleep 60
+          done
         env:
           GH_TOKEN: ${{ secrets.BOT_TOKEN }}
 
       - name: Publish to npm
-        run: npm publish --access public
+        run: |
+          git checkout main
+          git pull origin main
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
