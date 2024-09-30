@@ -34,14 +34,6 @@ const {
   ...rest
 } = Astro.props
 
-const isLocalAsset = src && src.startsWith('./')
-let localImage
-
-if (isLocalAsset) {
-  const { default: importedImage } = await import(src)
-  localImage = importedImage
-}
-
 // TODO get alt from image collection with yaml files
 // const imageEntry =
 //   src && (await getEntry('images', src?.replace('/images/', '')))
@@ -50,47 +42,29 @@ if (isLocalAsset) {
 {
   src && (
     <>
-      {isLocalAsset ? (
-        <AstroImage
-          class:list={[
-            'image',
-            position && `position-${position}`,
-            frame && `frame-${frame}`,
-            radius && `radius-${radius}`,
-          ]}
-          src={localImage}
+      {!width && !height && (
+        <Root
+          class:list="image"
+          if={src}
+          {src}
           {alt}
-          inferSize
-          loading={loading}
+          as="img"
+          {frame}
+          {position}
+          {radius}
           {...rest}
         />
-      ) : (
-        <>
-          {!width && !height && (
-            <Root
-              class:list="image"
-              if={src}
-              {src}
-              {alt}
-              as="img"
-              {frame}
-              {position}
-              {radius}
-              {...rest}
-            />
-          )}
-          {width && height && (
-            <AstroImage
-              class:list="image"
-              {src}
-              {alt}
-              width={width}
-              height={height}
-              loading="eager"
-              {...rest}
-            />
-          )}
-        </>
+      )}
+      {width && height && (
+        <AstroImage
+          class:list="image"
+          {src}
+          {alt}
+          width={width}
+          height={height}
+          loading="eager"
+          {...rest}
+        />
       )}
     </>
   )
