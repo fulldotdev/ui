@@ -34,13 +34,35 @@ const {
   ...rest
 } = Astro.props
 
-const isLocalAsset = src && (src.startsWith('*/') || src.startsWith('../'))
+const isUrl = (str: string): boolean => {
+  try {
+    new URL(str)
+    return true
+  } catch {
+    return false
+  }
+}
+
+const isLocalAsset =
+  src &&
+  !isUrl(src.toString()) &&
+  !src.toString().startsWith('/') &&
+  (src.toString().startsWith('./') ||
+    src.toString().startsWith('../') ||
+    !src.toString().includes('/'))
 let localImage
 
 if (isLocalAsset) {
-  const { default: importedImage } = await import(/* @vite-ignore */ src)
-  localImage = importedImage
+  try {
+    const importedImage = await import(`../assets/${src}`)
+    localImage = importedImage.default
+  } catch (error) {
+    console.error(`Failed to import image: ${src}`, error)
+    localImage = undefined
+  }
 }
+
+const isPublicAsset = src && !isLocalAsset && !isUrl(src.toString())
 
 // TODO get alt from image collection with yaml files
 // const imageEntry =
@@ -50,7 +72,7 @@ if (isLocalAsset) {
 {
   src && (
     <>
-      {isLocalAsset ? (
+      {isLocalAsset && localImage ? (
         <AstroImage
           class:list={[
             'image',
@@ -60,38 +82,42 @@ if (isLocalAsset) {
           ]}
           src={localImage}
           {alt}
-          inferSize
+          {...(width && height ? { width, height } : { inferSize: true })}
           loading={loading}
           {...rest}
         />
-      ) : (
-        <>
-          {!width && !height && (
-            <Root
-              class:list="image"
-              if={src}
-              {src}
-              {alt}
-              as="img"
-              {frame}
-              {position}
-              {radius}
-              {...rest}
-            />
-          )}
-          {width && height && (
-            <AstroImage
-              class:list="image"
-              {src}
-              {alt}
-              width={width}
-              height={height}
-              loading="eager"
-              {...rest}
-            />
-          )}
-        </>
-      )}
+      ) : isPublicAsset ? (
+        <img
+          class:list={[
+            'image',
+            position && `position-${position}`,
+            frame && `frame-${frame}`,
+            radius && `radius-${radius}`,
+          ]}
+          src={src}
+          {alt}
+          width={width}
+          height={height}
+          loading={loading}
+          {...rest}
+        />
+      ) : src && (isUrl(src.toString()) || typeof src === 'string') ? (
+        <Root
+          class:list={[
+            'image',
+            position && `position-${position}`,
+            frame && `frame-${frame}`,
+            radius && `radius-${radius}`,
+          ]}
+          src={src}
+          {alt}
+          as="img"
+          width={width}
+          height={height}
+          loading={loading}
+          {...rest}
+        />
+      ) : null}
     </>
   )
 }
