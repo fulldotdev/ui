@@ -32,6 +32,8 @@ export default defineConfig({
           brand: '#F50',
         },
       },
+      injectRoutes: true,
+      generateImageEntries: true,
     }),
   ],
   redirects: {
