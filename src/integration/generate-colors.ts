@@ -1,3 +1,5 @@
+// Below code is taken from Radix UI, therefore it does not satisfy Astro strictest tsconfig.
+// @ts-nocheck
 import * as RadixColors from '@radix-ui/colors'
 import BezierEasing from 'bezier-easing'
 import Color from 'colorjs.io'
@@ -417,7 +419,7 @@ function getAlphaColor(
   backgroundRgb: number[],
   rgbPrecision: number,
   alphaPrecision: number,
-  targetAlpha?: number
+  targetAlpha?: undefined | number
 ) {
   const [tr, tg, tb] = targetRgb.map((c) => Math.round(c * rgbPrecision))
   const [br, bg, bb] = backgroundRgb.map((c) => Math.round(c * rgbPrecision))
@@ -535,7 +537,7 @@ function blendAlpha(
 function getAlphaColorSrgb(
   targetColor: string,
   backgroundColor: string,
-  targetAlpha?: number
+  targetAlpha?: undefined | number
 ) {
   const [r, g, b, a] = getAlphaColor(
     new Color(targetColor).to('srgb').coords,
@@ -551,7 +553,7 @@ function getAlphaColorSrgb(
 function getAlphaColorP3(
   targetColor: string,
   backgroundColor: string,
-  targetAlpha?: number
+  targetAlpha?: undefined | number
 ) {
   const [r, g, b, a] = getAlphaColor(
     new Color(targetColor).to('p3').coords,

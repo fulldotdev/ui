@@ -10,12 +10,12 @@ type Color = {
 }
 
 interface Config {
-  css?: string
-  injectRoutes?: boolean
+  css?: undefined | string
+  injectRoutes?: undefined | boolean
   colors: {
     theme: 'light' | 'dark'
-    light?: Color
-    dark?: Color
+    light?: undefined | Color
+    dark?: undefined | Color
   }
 }
 
@@ -30,7 +30,7 @@ const defaultConfig: Config = {
   },
 }
 export default function fulldevIntegration(
-  userConfig?: Partial<Config>
+  userConfig?: undefined | Partial<Config>
 ): AstroIntegration {
   const config = merge(defaultConfig ?? {}, userConfig ?? {})
 
@@ -64,7 +64,7 @@ export default function fulldevIntegration(
           const scaleToString = (
             scale: any,
             palette: 'base' | 'brand',
-            alpha?: boolean
+            alpha?: undefined | boolean
           ) =>
             scale
               .map(
