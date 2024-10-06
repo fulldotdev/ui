@@ -419,7 +419,7 @@ function getAlphaColor(
   backgroundRgb: number[],
   rgbPrecision: number,
   alphaPrecision: number,
-  targetAlpha?: undefined | number
+  targetAlpha?: number
 ) {
   const [tr, tg, tb] = targetRgb.map((c) => Math.round(c * rgbPrecision))
   const [br, bg, bb] = backgroundRgb.map((c) => Math.round(c * rgbPrecision))
@@ -537,7 +537,7 @@ function blendAlpha(
 function getAlphaColorSrgb(
   targetColor: string,
   backgroundColor: string,
-  targetAlpha?: undefined | number
+  targetAlpha?: number
 ) {
   const [r, g, b, a] = getAlphaColor(
     new Color(targetColor).to('srgb').coords,
@@ -553,7 +553,7 @@ function getAlphaColorSrgb(
 function getAlphaColorP3(
   targetColor: string,
   backgroundColor: string,
-  targetAlpha?: undefined | number
+  targetAlpha?: number
 ) {
   const [r, g, b, a] = getAlphaColor(
     new Color(targetColor).to('p3').coords,

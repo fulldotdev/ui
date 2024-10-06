@@ -1,5 +1,5 @@
 ---
-// This component is experimental and only used within docs.
+// This component is experimental and only used w
 // @ts-nocheck
 import Table from 'fulldev-ui/components/Table.astro'
 import { readFileSync } from 'node:fs'
@@ -19,14 +19,12 @@ const componentFileContent = readFileSync(found.file, 'utf-8')
 
 const extractProps = (content: string) => {
   const propsMatch = content.match(
-    /type Props(?: undefined |<[^>]+>)?\s*=\s*(?: undefined |HTMLAttributes<'[^']+'>\s*&\s*)?(?: undefined |Polymorphic<[^>]+>\s*&\s*)?([\s\S]*?)(?: undefined |}|$)/
+    /type Props(?:<[^>]+>)?\s*=\s*(?:HTMLAttributes<'[^']+'>\s*&\s*)?(?:Polymorphic<[^>]+>\s*&\s*)?([\s\S]*?)(?:}|$)/
   )
   if (propsMatch) {
     const propsContent = propsMatch[1]
     const props = [
-      ...propsContent.matchAll(
-        /(\w+)(?: undefined |\??: undefined |\s*((?: undefined |[^;\n]|\n\s*\|)*)|,)/g
-      ),
+      ...propsContent.matchAll(/(\w+)(?:\??:\s*((?:[^;\n]|\n\s*\|)*)|,)/g),
     ].map(([, name, type]) => ({
       name,
       type: type
