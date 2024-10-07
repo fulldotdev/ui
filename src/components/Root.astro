@@ -1,5 +1,6 @@
 ---
 import type { HTMLTag } from 'astro/types'
+import { mapKeys } from 'radash'
 
 type Props<As extends HTMLTag> = {
   as?: As
@@ -42,11 +43,29 @@ const render =
   ifProp == 'content'
     ? hasContent(slot) || hasContent(html) || hasContent(text)
     : ifProp
+
+const packageComponents = import.meta.glob('../components/**/*.astro')
+const userComponents = import.meta.glob('/src/components/**/*.astro')
+
+const mapComponentKeys = (components: Record<string, any>) =>
+  mapKeys(components, (key: string) => {
+    const name = key.split('/').pop()?.split('.').shift()
+    return name || key
+  })
+
+const components = {
+  ...mapComponentKeys(packageComponents),
+  ...mapComponentKeys(userComponents),
+}
+
+const currentComponentName = import.meta.url.split('/').pop()?.split('.')[0]
+const found = components[currentComponentName as keyof typeof components]
+const ComponentToRender = found ? (await found()).default : As
 ---
 
 {
   render && (
-    <As
+    <ComponentToRender
       class:list={[
         'root',
         structure,
@@ -74,7 +93,7 @@ const render =
       {...rest}
     >
       <Fragment set:html={slot} />
-    </As>
+    </ComponentToRender>
   )
 }
 
