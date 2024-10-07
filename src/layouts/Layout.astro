@@ -7,31 +7,28 @@ import Head from 'fulldev-ui/components/Head.astro'
 import Header from 'fulldev-ui/components/Header.astro'
 import Sidebar from 'fulldev-ui/components/Sidebar.astro'
 import Toc from 'fulldev-ui/components/Toc.astro'
+import fulldevConfig from 'virtual:fulldev-ui/config'
 import NavigationButtons from '../components/docs/NavigationButtons.astro'
 
 type Props = Partial<CollectionEntry<'pages'>> & {
   class?: string
-  theme?: 'light' | 'dark'
 }
 
-const { slug, data, theme, class: classes, render } = Astro.props
+const { slug, data, class: classes, render } = Astro.props
 const { logo, header, footer, footers, channels, sidebar, toc } = data || {}
 
 const { headings } = render ? await render() : { headings: [] }
 
 const h2Headings = headings.filter((heading: any) => heading.depth === 2)
+
+const defaultTheme = fulldevConfig.colors.theme || 'light'
+const theme = Astro.cookies.get('fullui_theme')?.value || defaultTheme
 ---
 
 <!doctype html>
 <html
   lang="nl"
-  class:list={[
-    slug,
-    {
-      'theme-dark': theme === 'dark',
-      'theme-light': theme === 'light',
-    },
-  ]}
+  class:list={[slug, `theme-${theme}`]}
 >
   <Head {...Astro.props} />
   <body
@@ -40,9 +37,8 @@ const h2Headings = headings.filter((heading: any) => heading.depth === 2)
       {
         'has-sidebar': sidebar,
         'has-toc': toc,
-        'theme-dark': theme === 'dark',
-        'theme-light': theme === 'light',
       },
+      `theme-${theme}`,
     ]}
   >
     <Header {...header} />
@@ -169,5 +165,48 @@ const h2Headings = headings.filter((heading: any) => heading.depth === 2)
         }
       }
     </style>
+    <style is:global>
+      :root {
+        --background-color: #ffffff;
+        --text-color: #000000;
+      }
+
+      .theme-dark {
+        --background-color: #111110;
+        --text-color: #ffffff;
+      }
+
+      body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+      }
+    </style>
   </body>
 </html>
+
+<script define:vars={{ defaultTheme }}>
+  function setTheme(theme) {
+    document.documentElement.classList.remove('theme-light', 'theme-dark')
+    document.documentElement.classList.add(`theme-${theme}`)
+    document.body.classList.remove('theme-light', 'theme-dark')
+    document.body.classList.add(`theme-${theme}`)
+  }
+
+  function getStoredTheme() {
+    const storedTheme = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('fullui_theme='))
+    return storedTheme ? storedTheme.split('=')[1] : defaultTheme
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const theme = getStoredTheme()
+    setTheme(theme)
+  })
+
+  setTheme(getStoredTheme())
+
+  document.addEventListener('themeChanged', (event) => {
+    setTheme(event.detail.theme)
+  })
+</script>
