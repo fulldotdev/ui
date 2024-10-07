@@ -1,0 +1,38 @@
+---
+import Select from 'fulldev-ui/components/Select.astro'
+import fulldevConfig from 'virtual:fulldev-ui/config'
+
+const defaultTheme = fulldevConfig.colors.theme || 'light'
+---
+
+<Select
+  name="theme-switcher"
+  options={['light', 'dark']}
+  value={defaultTheme}
+  placeholder={defaultTheme}
+  radius={fulldevConfig.radius ?? 'auto'}
+/>
+
+<script>
+  function getStoredTheme() {
+    const storedTheme = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('fullui_theme='))
+    return storedTheme ? storedTheme.split('=')[1] : 'light'
+  }
+
+  const select = document.querySelector('.select select')
+  select?.addEventListener('change', (event) => {
+    const target = event.target as HTMLSelectElement
+    const selectedTheme = target.value
+    document.cookie = `fullui_theme=${selectedTheme}; path=/; max-age=31536000`
+
+    document.dispatchEvent(
+      new CustomEvent('themeChanged', { detail: { theme: selectedTheme } })
+    )
+  })
+
+  if (select instanceof HTMLSelectElement) {
+    select.value = getStoredTheme()
+  }
+</script>
