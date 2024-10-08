@@ -21,6 +21,7 @@ interface Config {
     light?: Color
     dark?: Color
   }
+  radius?: 'none' | 'auto' | 'full'
 }
 
 const defaultConfig: Config = {
@@ -131,7 +132,9 @@ export default function fulldevIntegration(
             plugins: [
               virtual({
                 'virtual:astro/config': `export default ${JSON.stringify(astroConfig)}`,
-                'virtual:fulldev-ui/config': `export default ${JSON.stringify(config)}`,
+                'virtual:fulldev-ui/config': `export default ${JSON.stringify({
+                  ...config,
+                })}`,
                 'virtual:colors.css': css,
               }),
             ],
