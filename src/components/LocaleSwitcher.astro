@@ -1,0 +1,27 @@
+---
+import Select from 'fulldev-ui/components/Select.astro'
+import fulldevConfig from 'virtual:fulldev-ui/config'
+---
+
+{
+  Astro.props.locales && (
+    <Select
+      name="locale-switcher"
+      options={Astro.props.locales}
+      value={Astro.props.lang as string}
+      placeholder={Astro.props.lang as string}
+      radius={fulldevConfig.radius ?? 'auto'}
+    />
+  )
+}
+
+<script>
+  const select = document.querySelector('.theme-switcher select')
+  select?.addEventListener('change', (event) => {
+    const target = event.target as HTMLSelectElement
+    const selectedLocale = target.value
+    const currentUrl = new URL(window.location.href)
+    currentUrl.pathname = '/' + selectedLocale + currentUrl.pathname
+    window.location.href = currentUrl.toString()
+  })
+</script>
