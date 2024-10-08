@@ -130,6 +130,7 @@ export default function fulldevIntegration(
                 'virtual:astro/config': `export default ${JSON.stringify(astroConfig)}`,
                 'virtual:fulldev-ui/config': `export default ${JSON.stringify({
                   ...config,
+                  radius: config.radius,
                 })}`,
                 'virtual:colors.css': css,
               }),
