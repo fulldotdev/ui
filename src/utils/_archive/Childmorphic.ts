@@ -4,5 +4,5 @@
 //   [Key in keyof C & string as
 //     | Lowercase<Key>
 //     | Capitalize<Key>
-//     | `${string}${Capitalize<Key>}`]?: C[Key]
+//     | `${string}${Capitalize<Key>}`]?: undefined | C[Key]
 // }

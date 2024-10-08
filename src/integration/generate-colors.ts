@@ -1,3 +1,5 @@
+// Below code is taken from Radix UI, therefore it does not satisfy Astro strictest tsconfig.
+// @ts-nocheck
 import * as RadixColors from '@radix-ui/colors'
 import BezierEasing from 'bezier-easing'
 import Color from 'colorjs.io'
