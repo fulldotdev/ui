@@ -4,10 +4,10 @@ import { assign } from 'radash'
 export const mergeEntries = async (entry: any) => {
   if (!entry) return entry
   const { data, slug } = entry
-  const baseSettings = await getEntry('settings', 'base')
-  const enSettings = await getEntry('settings', 'en')
-  const deSettings = await getEntry('settings', 'de')
-  const frSettings = await getEntry('settings', 'fr')
+  const baseSettings = await getEntry('layouts', 'base')
+  const enSettings = await getEntry('layouts', 'en')
+  const deSettings = await getEntry('layouts', 'de')
+  const frSettings = await getEntry('layouts', 'fr')
   const pageSettings = data.settings && (await getEntry(data.settings))
   const i18nSettings = data.i18n && (await getEntry(data.i18n))
 

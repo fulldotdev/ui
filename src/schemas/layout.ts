@@ -1,13 +1,12 @@
-import { getEntry, reference, z } from 'astro:content'
-import { assign } from 'radash'
+import { z } from 'astro:content'
 import { base } from './base'
 import { block } from './block'
 import { pathSchema } from './utils'
 
-export const page = base
+export const layout = base
   .extend({
     i18n: pathSchema('pages'),
-    _layout: reference('layouts'),
+    _layout: pathSchema('layouts'),
     seo: z
       .object({
         title: z.string(),
@@ -40,17 +39,3 @@ export const page = base
   })
   .partial()
   .passthrough()
-  .transform(async (data) => {
-    type Data = typeof data
-    const baseLayoutData = (await getEntry('layouts', 'layout'))?.data as
-      | Data
-      | undefined
-    const customLayoutData =
-      data._layout && ((await getEntry(data._layout))?.data as Data | undefined)
-    const mergedLayoutData = assign(
-      baseLayoutData ?? {},
-      customLayoutData ?? {}
-    ) as Data
-    const mergedData = assign(mergedLayoutData ?? {}, data) as Data
-    return mergedData
-  })

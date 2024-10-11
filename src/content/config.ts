@@ -1,4 +1,5 @@
 import { defineCollection } from 'astro:content'
+import { layout } from 'fulldev-ui/schemas/layout'
 import { page } from 'fulldev-ui/schemas/page'
 
 export const collections = {
@@ -10,7 +11,11 @@ export const collections = {
     type: 'data',
     schema: page,
   }),
-  settings: defineCollection({
+  layouts: defineCollection({
+    type: 'data',
+    schema: layout,
+  }),
+  blocks: defineCollection({
     type: 'data',
     schema: page,
   }),

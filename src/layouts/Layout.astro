@@ -1,4 +1,5 @@
 ---
+import type { HTMLAttributes } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
 import Block from 'fulldev-ui/components/Block.astro'
 import Blocks from 'fulldev-ui/components/Blocks.astro'
@@ -9,13 +10,27 @@ import Sidebar from 'fulldev-ui/components/Sidebar.astro'
 import Toc from 'fulldev-ui/components/Toc.astro'
 import NavigationButtons from '../components/docs/NavigationButtons.astro'
 
-type Props = Partial<CollectionEntry<'pages'>> & {
-  class?: string
+type Props = CollectionEntry<'pages'>['data'] & {
+  class?: HTMLAttributes<'body'>['class']
+  lang?: HTMLAttributes<'html'>['lang']
+  render: CollectionEntry<'pages'>['render']
   theme?: 'light' | 'dark'
 }
 
-const { slug, data, theme, class: classes, render } = Astro.props
-const { logo, header, footer, footers, channels, sidebar, toc } = data || {}
+const {
+  class: classList,
+  lang = 'nl',
+  render,
+  logo,
+  header,
+  footer,
+  footers,
+  channels,
+  sidebar,
+  toc,
+  code,
+  theme,
+} = Astro.props
 
 const { headings } = render ? await render() : { headings: [] }
 
@@ -23,20 +38,12 @@ const h2Headings = headings.filter((heading: any) => heading.depth === 2)
 ---
 
 <!doctype html>
-<html
-  lang="nl"
-  class:list={[
-    slug,
-    {
-      'theme-dark': theme === 'dark',
-      'theme-light': theme === 'light',
-    },
-  ]}
->
+<html lang={lang}>
   <Head {...Astro.props} />
+
   <body
     class:list={[
-      classes,
+      classList,
       {
         'has-sidebar': sidebar,
         'has-toc': toc,
@@ -84,7 +91,7 @@ const h2Headings = headings.filter((heading: any) => heading.depth === 2)
     />
     <Blocks {...footers} />
 
-    <Fragment set:html={data?.code?.body} />
+    <Fragment set:html={code?.body} />
     <style lang="scss" is:global>
       @layer fulldev {
         * {

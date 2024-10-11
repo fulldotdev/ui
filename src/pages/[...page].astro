@@ -1,8 +1,7 @@
 ---
 import { getCollection } from 'astro:content'
-import PageLayout from 'fulldev-ui/layouts/PageLayout.astro'
-import { mapKeys } from 'radash'
-import { mergeEntries } from '../utils/mergeEntries'
+import Layout from 'fulldev-ui/layouts/Layout.astro'
+import { mapKeys, pascal } from 'radash'
 
 export async function getStaticPaths() {
   const pages = await getCollection('pages')
@@ -14,27 +13,24 @@ export async function getStaticPaths() {
   }))
 }
 
-const { data, slug, ...rest } = Astro.props
+const { data, render } = Astro.props
 
-const merged = (await mergeEntries({ data, slug })) as any
-
-const packageLayouts = import.meta.glob('../layouts/**/*.astro')
-const userLayouts = import.meta.glob('/src/layouts/**/*.astro')
-
+const fulldevLayoutComponents = import.meta.glob('../layouts/**/*.astro')
+const userLayoutComponents = import.meta.glob('/src/layouts/**/*.astro')
 const mapBlockKeys = (blocks: any) =>
   mapKeys(blocks, (key: any) => key.split('/').pop().split('.').shift())
-
-const components = {
-  ...mapBlockKeys(packageLayouts),
-  ...mapBlockKeys(userLayouts),
+const mergedLayoutComponents = {
+  ...mapBlockKeys(fulldevLayoutComponents),
+  ...mapBlockKeys(userLayoutComponents),
 }
 
-const found = components[(merged.data._layout ?? 'PageLayout') as string] as any
-const functioncomp = found && (await found())
-const Layout = functioncomp?.default ?? PageLayout
+const layoutName = `${pascal(data?._layout?.id ?? '')}Layout`
+const layoutComponent = mergedLayoutComponents[layoutName] as any
+const layoutFunction = layoutComponent && (await layoutComponent())
+const FoundLayout = layoutFunction?.default ?? Layout
 ---
 
-<Layout
-  data={merged.data}
-  {...rest}
+<FoundLayout
+  {render}
+  {...data}
 />
