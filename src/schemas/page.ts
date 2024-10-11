@@ -1,5 +1,5 @@
 import { getEntry, reference, z } from 'astro:content'
-import { assign } from 'radash'
+import { assign, mapKeys } from 'radash'
 import { base } from './base'
 import { block } from './block'
 import { pathSchema } from './utils'
@@ -7,7 +7,21 @@ import { pathSchema } from './utils'
 export const page = base
   .extend({
     i18n: pathSchema('pages'),
-    _layout: reference('layouts'),
+    _layout: z.string().refine(
+      (value) => {
+        const packageLayouts = import.meta.glob('../layouts/**/*.astro')
+        const userLayouts = import.meta.glob('/src/layouts/**/*.astro')
+        const mapBlockKeys = (blocks: any) =>
+          mapKeys(blocks, (key: any) => key.split('/').pop().split('.').shift())
+        const mergedLayoutComponents = {
+          ...mapBlockKeys(packageLayouts),
+          ...mapBlockKeys(userLayouts),
+        }
+        return mergedLayoutComponents[value] !== undefined
+      },
+      (value) => ({ message: `_layout: the layout "${value}" does not exist` })
+    ),
+    _preset: reference('presets'),
     seo: z
       .object({
         title: z.string(),
@@ -42,11 +56,11 @@ export const page = base
   .passthrough()
   .transform(async (data) => {
     type Data = typeof data
-    const baseLayoutData = (await getEntry('layouts', 'layout'))?.data as
+    const baseLayoutData = (await getEntry('presets', 'base'))?.data as
       | Data
       | undefined
     const customLayoutData =
-      data._layout && ((await getEntry(data._layout))?.data as Data | undefined)
+      data._preset && ((await getEntry(data._preset))?.data as Data | undefined)
     const mergedLayoutData = assign(
       baseLayoutData ?? {},
       customLayoutData ?? {}

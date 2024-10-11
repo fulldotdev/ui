@@ -1,0 +1,21 @@
+---
+import { getEntry } from 'astro:content'
+import Prose from 'fulldev-ui/components/experimental/Prose.astro'
+import Section from 'fulldev-ui/components/Section.astro'
+
+const { ...rest } = Astro.props
+
+const slug = Astro.url.pathname.replace(/^\/|\/$/g, '') || 'index'
+const currentEntry = await getEntry('pages', slug)
+const render = currentEntry && (await currentEntry.render())
+const { Content } = render || {}
+---
+
+<Section
+  style={{ '--screen': '768px' }}
+  {...rest}
+>
+  <Prose id="prose">
+    {Content && <Content />}
+  </Prose>
+</Section>

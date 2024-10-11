@@ -6,7 +6,7 @@ import { pathSchema } from './utils'
 export const layout = base
   .extend({
     i18n: pathSchema('pages'),
-    _layout: pathSchema('layouts'),
+    _preset: pathSchema('presets'),
     seo: z
       .object({
         title: z.string(),
@@ -39,3 +39,4 @@ export const layout = base
   })
   .partial()
   .passthrough()
+  .optional()

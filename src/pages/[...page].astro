@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content'
 import Layout from 'fulldev-ui/layouts/Layout.astro'
-import { mapKeys, pascal } from 'radash'
+import { mapKeys } from 'radash'
 
 export async function getStaticPaths() {
   const pages = await getCollection('pages')
@@ -24,10 +24,11 @@ const mergedLayoutComponents = {
   ...mapBlockKeys(userLayoutComponents),
 }
 
-const layoutName = `${pascal(data?._layout?.id ?? '')}Layout`
-const layoutComponent = mergedLayoutComponents[layoutName] as any
+const layoutComponent = mergedLayoutComponents[data._layout || 'Layout'] as any
 const layoutFunction = layoutComponent && (await layoutComponent())
 const FoundLayout = layoutFunction?.default ?? Layout
+
+console.log(data._layout, layoutComponent)
 ---
 
 <FoundLayout
