@@ -1,14 +1,11 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
-import Block from 'fulldev-ui/components/Block.astro'
-import Blocks from 'fulldev-ui/components/Blocks.astro'
-import Button from 'fulldev-ui/components/Button.astro'
+import Footer from 'fulldev-ui/components/Footer.astro'
 import Head from 'fulldev-ui/components/Head.astro'
 import Header from 'fulldev-ui/components/Header.astro'
 import Sidebar from 'fulldev-ui/components/Sidebar.astro'
 import Toc from 'fulldev-ui/components/Toc.astro'
-import NavigationButtons from '../components/docs/NavigationButtons.astro'
 
 type Props = CollectionEntry<'pages'>['data'] & {
   class?: HTMLAttributes<'body'>['class']
@@ -24,8 +21,6 @@ const {
   logo,
   header,
   footer,
-  footers,
-  channels,
   sidebar,
   toc,
   code,
@@ -52,46 +47,26 @@ const h2Headings = headings.filter((heading: any) => heading.depth === 2)
       },
     ]}
   >
-    <Header {...header} />
+    <slot name="top">
+      <Header {...header} />
+    </slot>
     <div class="core">
-      <Sidebar {sidebar} />
-      <main data-pagefind-body>
+      <slot name="left">
+        <Sidebar {sidebar} />
+      </slot>
+      <main>
+        <slot />
+      </main>
+      <slot name="right">
         <Toc
           toc={toc}
           headings={h2Headings}
         />
-        <div class="blocks">
-          <slot />
-          <NavigationButtons {sidebar} />
-        </div>
-      </main>
+      </slot>
     </div>
-
-    {
-      channels?.whatsapp && (
-        <Button
-          variant="primary"
-          color="brand"
-          icon="brand-whatsapp"
-          size="lg"
-          href={`https://wa.me/${channels.whatsapp}`}
-          style={{
-            position: 'fixed',
-            right: 'var(--space-4)',
-            bottom: 'var(--space-4)',
-            backgroundColor: '#46A758',
-          }}
-        />
-      )
-    }
-    <Block
-      _bookshop_name="Footer"
-      {logo}
-      {...footer}
-    />
-    <Blocks {...footers} />
-
-    <Fragment set:html={code?.body} />
+    <slot name="bottom">
+      <!-- <Footer {...footer} /> -->
+    </slot>
     <style lang="scss" is:global>
       @layer fulldev {
         * {
@@ -99,12 +74,6 @@ const h2Headings = headings.filter((heading: any) => heading.depth === 2)
         }
 
         :root {
-          --screen: 1536px;
-          --gutter: max(4vw, calc(100vw - var(--screen)) / 2);
-          --gutter-left: var(--gutter);
-          --gutter-right: var(--gutter);
-          --sidebar-width: 0px;
-          --toc-width: 0px;
           --header-height: calc(
             var(--text-2) + 2 * var(--space-4) + 2 * var(--space-3)
           );
@@ -125,55 +94,87 @@ const h2Headings = headings.filter((heading: any) => heading.depth === 2)
         }
 
         body {
+          --screen: 100vw;
+
           display: flex;
           flex-direction: column;
 
-          @media (min-width: 1024px) {
-            &.has-sidebar .core {
-              --gutter-left: var(--space-6);
-              --sidebar-width: calc(var(--gutter) + 200px);
-
-              display: grid;
-              grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-            }
-
-            &.has-toc main {
-              --gutter-right: var(--space-6);
-              --toc-width: calc(var(--gutter) + 200px);
-
-              display: grid;
-              grid-template-columns: minmax(0, 1fr) var(--toc-width);
-            }
-          }
-
-          .header {
-            width: 100%;
-            height: var(--header-height);
-          }
-
           .core {
-            .sidebar {
-              position: sticky;
-              top: 0;
-              padding-left: var(--gutter);
-            }
+            --screen: 1280px;
 
-            main {
-              .toc {
-                position: sticky;
-                top: 0;
-                order: 1;
-                padding-right: var(--gutter);
-              }
+            display: grid;
+            grid-template-columns: 1fr;
+            overflow-x: hidden;
 
-              .blocks {
+            @media (min-width: 1024px) {
+              grid-template-columns:
+                [body-start]
+                minmax(0, auto)
+                [main-start]
+                minmax(0, 1fr)
+                [main-end]
+                minmax(0, auto)
+                [body-end];
+
+              main {
                 display: flex;
+                grid-column: main-start / main-end;
                 flex-direction: column;
-                width: 100%;
               }
             }
           }
         }
+
+        // body {
+        //   display: flex;
+        //   flex-direction: column;
+
+        //   @media (min-width: 1024px) {
+        //     &.has-sidebar .core {
+        //       --gutter-left: var(--space-6);
+        //       --sidebar-width: calc(var(--gutter) + 200px);
+
+        //       display: grid;
+        //       grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+        //     }
+
+        //     &.has-toc main {
+        //       --gutter-right: var(--space-6);
+        //       --toc-width: calc(var(--gutter) + 200px);
+
+        //       display: grid;
+        //       grid-template-columns: minmax(0, 1fr) var(--toc-width);
+        //     }
+        //   }
+
+        //   .header {
+        //     width: 100%;
+        //     height: var(--header-height);
+        //   }
+
+        //   .core {
+        //     .sidebar {
+        //       position: sticky;
+        //       top: 0;
+        //       padding-left: var(--gutter);
+        //     }
+
+        //     main {
+        //       .toc {
+        //         position: sticky;
+        //         top: 0;
+        //         order: 1;
+        //         padding-right: var(--gutter);
+        //       }
+
+        //       .blocks {
+        //         display: flex;
+        //         flex-direction: column;
+        //         width: 100%;
+        //       }
+        //     }
+        //   }
+        // }
       }
     </style>
   </body>
