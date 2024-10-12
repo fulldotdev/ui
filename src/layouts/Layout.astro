@@ -1,9 +1,11 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
-import Footer from 'fulldev-ui/components/Footer.astro'
+import Footer from 'fulldev-ui/blocks/Footer.astro'
+import Header from 'fulldev-ui/blocks/Header.astro'
+import Blocks from 'fulldev-ui/components/Blocks.astro'
 import Head from 'fulldev-ui/components/Head.astro'
-import Header from 'fulldev-ui/components/Header.astro'
+import Root from 'fulldev-ui/components/Root.astro'
 import Sidebar from 'fulldev-ui/components/Sidebar.astro'
 import Toc from 'fulldev-ui/components/Toc.astro'
 
@@ -15,37 +17,24 @@ type Props = CollectionEntry<'pages'>['data'] & {
 }
 
 const {
-  class: classList,
   lang = 'nl',
-  render,
-  logo,
   header,
-  footer,
   sidebar,
+  sections,
   toc,
+  footer,
+  render,
   code,
   theme,
 } = Astro.props
-
-const { headings } = render ? await render() : { headings: [] }
-
-const h2Headings = headings.filter((heading: any) => heading.depth === 2)
 ---
 
 <!doctype html>
 <html lang={lang}>
   <Head {...Astro.props} />
-
-  <body
-    class:list={[
-      classList,
-      {
-        'has-sidebar': sidebar,
-        'has-toc': toc,
-        'theme-dark': theme === 'dark',
-        'theme-light': theme === 'light',
-      },
-    ]}
+  <Root
+    as="body"
+    {theme}
   >
     <slot name="top">
       <Header {...header} />
@@ -54,40 +43,27 @@ const h2Headings = headings.filter((heading: any) => heading.depth === 2)
       <slot name="left">
         <Sidebar {sidebar} />
       </slot>
-      <main>
-        <slot />
+      <main data-pagefind-body>
+        <slot>
+          <Blocks {...sections} />
+        </slot>
       </main>
       <slot name="right">
         <Toc
-          toc={toc}
-          headings={h2Headings}
+          {toc}
+          {render}
         />
       </slot>
     </div>
     <slot name="bottom">
-      <!-- <Footer {...footer} /> -->
+      <Footer {...footer} />
     </slot>
+    <Fragment set:html={code} />
+
     <style lang="scss" is:global>
       @layer fulldev {
-        * {
+        html {
           scroll-behavior: smooth;
-        }
-
-        :root {
-          --header-height: calc(
-            var(--text-2) + 2 * var(--space-4) + 2 * var(--space-3)
-          );
-        }
-
-        html,
-        body {
-          box-sizing: border-box;
-          margin: 0;
-          background-color: var(--color-background);
-          padding: 0;
-          width: 100%;
-          min-height: 100vh;
-          color: var(--base-11);
           color-scheme: var(--color-scheme);
           font-size: var(--text-2);
           font-family: var(--font-family);
@@ -98,13 +74,14 @@ const h2Headings = headings.filter((heading: any) => heading.depth === 2)
 
           display: flex;
           flex-direction: column;
+          background-color: var(--color-background);
+          color: var(--base-11);
 
           .core {
             --screen: 1280px;
 
             display: grid;
             grid-template-columns: 1fr;
-            overflow-x: hidden;
 
             @media (min-width: 1024px) {
               grid-template-columns:
@@ -124,58 +101,7 @@ const h2Headings = headings.filter((heading: any) => heading.depth === 2)
             }
           }
         }
-
-        // body {
-        //   display: flex;
-        //   flex-direction: column;
-
-        //   @media (min-width: 1024px) {
-        //     &.has-sidebar .core {
-        //       --gutter-left: var(--space-6);
-        //       --sidebar-width: calc(var(--gutter) + 200px);
-
-        //       display: grid;
-        //       grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-        //     }
-
-        //     &.has-toc main {
-        //       --gutter-right: var(--space-6);
-        //       --toc-width: calc(var(--gutter) + 200px);
-
-        //       display: grid;
-        //       grid-template-columns: minmax(0, 1fr) var(--toc-width);
-        //     }
-        //   }
-
-        //   .header {
-        //     width: 100%;
-        //     height: var(--header-height);
-        //   }
-
-        //   .core {
-        //     .sidebar {
-        //       position: sticky;
-        //       top: 0;
-        //       padding-left: var(--gutter);
-        //     }
-
-        //     main {
-        //       .toc {
-        //         position: sticky;
-        //         top: 0;
-        //         order: 1;
-        //         padding-right: var(--gutter);
-        //       }
-
-        //       .blocks {
-        //         display: flex;
-        //         flex-direction: column;
-        //         width: 100%;
-        //       }
-        //     }
-        //   }
-        // }
       }
     </style>
-  </body>
+  </Root>
 </html>
