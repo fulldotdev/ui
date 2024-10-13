@@ -23,12 +23,12 @@ export default defineConfig({
         theme: 'dark',
         light: {
           background: '#fff',
-          base: '#6F6D66',
+          base: '#0F0F0F',
           brand: '#F50',
         },
         dark: {
-          background: '#111110',
-          base: '#6F6D66',
+          background: '#0F0F0F',
+          base: '#0F0F0F',
           brand: '#F50',
         },
       },
