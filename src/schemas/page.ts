@@ -1,4 +1,4 @@
-import { getEntry, reference, z } from 'astro:content'
+import { getEntries, reference, z } from 'astro:content'
 import { assign, mapKeys } from 'radash'
 import { base } from './base'
 import { block } from './block'
@@ -23,6 +23,7 @@ export const page = base
       (value) => ({ message: `_layout: the layout "${value}" does not exist` })
     ),
     _preset: reference('presets'),
+    _presets: reference('presets').array(),
     seo: z
       .object({
         title: z.string(),
@@ -57,16 +58,16 @@ export const page = base
   .partial()
   .passthrough()
   .transform(async (data) => {
-    type Data = typeof data
-    const baseLayoutData = (await getEntry('presets', 'base'))?.data as
-      | Data
-      | undefined
-    const customLayoutData =
-      data._preset && ((await getEntry(data._preset))?.data as Data | undefined)
-    const mergedLayoutData = assign(
-      baseLayoutData ?? {},
-      customLayoutData ?? {}
-    ) as Data
-    const mergedData = assign(mergedLayoutData ?? {}, data) as Data
+    const presetReferences = [
+      { collection: 'presets', id: 'base' },
+      data._preset ?? undefined,
+      ...(data._presets ?? []),
+    ].filter(Boolean)
+
+    const presetEntries = await getEntries(presetReferences as any)
+    let mergedData = data
+    presetEntries.forEach(
+      (preset: any) => (mergedData = assign(mergedData, preset.data))
+    )
     return mergedData
   })
