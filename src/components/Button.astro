@@ -29,20 +29,18 @@ const {
   color = href === Astro.url.pathname && variant === 'link'
     ? 'brand'
     : undefined,
+  text = slug && (await getEntry('pages', slug)).data.title,
   avatar,
   icon,
   html,
-  text,
   ...rest
 } = Astro.props
-
-const entry = slug && (await getEntry('pages', slug))
 ---
 
 <Root
   class:list="button"
-  href={slug ? `/${slug}/` : href}
   {as}
+  {href}
   {href}
   {color}
   {variant}
@@ -53,7 +51,7 @@ const entry = slug && (await getEntry('pages', slug))
   <Avatar src={avatar} />
   <Icon name={icon} />
   <slot>
-    <Fragment set:html={entry?.data?.title ?? text ?? html} />
+    <Fragment set:html={text ?? html} />
   </slot>
 </Root>
 
