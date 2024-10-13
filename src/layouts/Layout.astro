@@ -16,6 +16,7 @@ type Props = CollectionEntry<'pages'>['data'] & {
 
 const {
   lang = 'nl',
+  class: classes,
   navigation,
   render,
   sections,
@@ -30,6 +31,7 @@ const {
   <Head {...Astro.props} />
   <Root
     as="body"
+    class={classes}
     {theme}
   >
     <slot name="navigation">
@@ -68,27 +70,33 @@ const {
           height: 100%;
           color: var(--base-11);
 
+          .sidebar ~ main {
+            margin-left: var(--sidebar-width);
+          }
+
+          .toc ~ main {
+            margin-right: var(--sidebar-width);
+          }
+
+          main {
+            --screen: 1280px;
+
+            display: flex;
+            grid-column: 2 / 3;
+            flex-direction: column;
+            padding-top: var(--header-height);
+          }
+
           @media (min-width: 1024px) {
             grid-template-columns:
               minmax(0, auto)
               minmax(0, 1fr)
               minmax(0, auto);
 
-            .sidebar ~ main {
-              margin-left: var(--sidebar-width);
-            }
-
-            .toc ~ main {
-              margin-right: var(--sidebar-width);
-            }
-
             main {
               --screen: 1280px;
 
-              display: flex;
               grid-column: 2 / 3;
-              flex-direction: column;
-              padding-top: var(--header-height);
             }
           }
         }

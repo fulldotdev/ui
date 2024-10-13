@@ -1,0 +1,31 @@
+---
+import type { ComponentProps } from 'astro/types'
+import Prose from 'fulldev-ui/components/experimental/Prose.astro'
+import Layout from 'fulldev-ui/layouts/Layout.astro'
+
+type Props = ComponentProps<typeof Layout>
+
+const { sections, render, ...rest } = Astro.props
+const { Content } = await render()
+---
+
+<Layout
+  class:list="docs-layout"
+  {render}
+  {...rest}
+>
+  <Prose>
+    {Content && <Content />}
+  </Prose>
+</Layout>
+
+<style lang="scss" is:global>
+  @layer fulldev {
+    .docs-layout {
+      .prose {
+        --screen: 768px;
+        padding: var(--space-6) var(--gutter);
+      }
+    }
+  }
+</style>
