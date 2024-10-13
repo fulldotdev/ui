@@ -3,44 +3,39 @@ import Column from 'fulldev-ui/components/Column.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Link from 'fulldev-ui/components/Link.astro'
 
-interface Props {
-  logo?: string
-  items?: {
-    heading?: string
-    links?: {
-      text?: string
-      href?: string
-    }[]
-  }[]
-}
-
-const { items } = Astro.props
-const slug = Astro.url.pathname.replace(/^\/|\/$/g, '')
-const url = Astro.url.href
+const { heading, search, links } = Astro.props
 ---
 
 <Column
   as="aside"
   class:list="sidebar"
 >
+  <Heading
+    level={5}
+    html={heading}
+  />
+  <!-- TODO search -->
   {
-    items &&
-      items.length > 0 &&
-      items.map((item: any) => (
-        <>
-          <Heading
-            level={6}
-            set:html={item.heading}
+    links?.map(({ heading, slug, href, text, links }: any) => (
+      <>
+        <Heading
+          level={6}
+          html={heading}
+        />
+        <Link
+          {slug}
+          {href}
+          {text}
+          class="sidebar-link"
+        />
+        {links?.map((link: any) => (
+          <Link
+            {...link}
+            class="sidebar-link"
           />
-          {item.links?.map((link: any) => (
-            <Link
-              {...link}
-              class="sidebar-link"
-              color={url.endsWith(link.href) ? 'brand' : undefined}
-            />
-          ))}
-        </>
-      ))
+        ))}
+      </>
+    ))
   }
 </Column>
 
@@ -53,13 +48,13 @@ const url = Astro.url.href
     .sidebar {
       display: none !important;
       position: fixed;
-      top: var(--header-height);
+      top: 0;
       left: 0;
       box-sizing: border-box;
       border-right: 1px solid var(--color-a6);
-      padding: var(--spacer) 24px;
+      padding: var(--space-5) var(--gutter);
       width: var(--sidebar-width);
-      height: calc(100vh - var(--header-height));
+      height: 100vh;
       max-height: 100vh;
       overflow-y: auto;
 

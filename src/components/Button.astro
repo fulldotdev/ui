@@ -1,9 +1,12 @@
 ---
 import type { HTMLTag, Polymorphic } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import { getEntry } from 'astro:content'
 import Avatar from 'fulldev-ui/components/Avatar.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
 import Root from 'fulldev-ui/components/Root.astro'
 import fulldevConfig from 'virtual:fulldev-ui/config'
+
 type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   variant?: 'primary' | 'secondary' | 'tertiary'
   radius?: 'none' | 'auto' | 'full'
@@ -14,6 +17,7 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   icon?: string
   html?: string
   text?: string
+  slug?: CollectionEntry<'pages'>['slug']
 }
 
 const {
@@ -24,8 +28,11 @@ const {
   icon,
   html,
   text,
+  slug,
   ...rest
 } = Astro.props
+
+const entry = slug && (await getEntry('pages', slug))
 ---
 
 <Root
@@ -38,8 +45,7 @@ const {
   <Avatar src={avatar} />
   <Icon name={icon} />
   <slot>
-    <Fragment set:html={html} />
-    <Fragment set:text={text} />
+    <Fragment set:html={entry?.data?.title ?? text ?? html} />
   </slot>
 </Root>
 

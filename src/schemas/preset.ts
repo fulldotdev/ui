@@ -1,6 +1,7 @@
 import { z } from 'astro:content'
 import { base } from './base'
 import { block } from './block'
+import { sidebar } from './sidebar'
 import { pathSchema } from './utils'
 
 export const layout = base
@@ -36,6 +37,7 @@ export const layout = base
     cta: block.or(z.literal(false)),
     footer: block.or(z.literal(false)),
     footers: block.array().or(z.literal(false)),
+    sidebar: sidebar.or(z.literal(false)),
   })
   .partial()
   .passthrough()
