@@ -1,4 +1,5 @@
 ---
+import type { CollectionEntry } from 'astro:content'
 import Button from 'fulldev-ui/components/Button.astro'
 import Logo from 'fulldev-ui/components/experimental/Logo.astro'
 import Root from 'fulldev-ui/components/Root.astro'
@@ -9,6 +10,7 @@ import Column from './Column.astro'
 import Heading from './Heading.astro'
 
 type Props = {
+  render?: CollectionEntry<'pages'>['render']
   position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
   size?: 'sm' | 'md' | 'lg'
   frame?: 'fill' | 'panel' | 'none'
@@ -27,9 +29,14 @@ const {
   search,
   sidebar,
   toc,
+  render,
 } = Astro.props
+
+const headings = render ? (await render())?.headings : []
+const h2Headings = headings?.filter((heading: any) => heading.depth === 2)
 ---
 
+<!-- Header -->
 <Root
   class:list={[
     'header',
@@ -66,6 +73,7 @@ const {
   />
 </Root>
 
+<!-- Sidebar -->
 <input
   id="sidebar-checkbox"
   class="sidebar-checkbox"
@@ -115,16 +123,50 @@ const {
   </Column>
 </Column>
 
-<Toc {toc} />
+<!-- Toc -->
+<Column
+  class:list="toc"
+  as="aside"
+  space="none"
+  class:list={[
+    'toc',
+    {
+      'sidebar-true': sidebar,
+      'toc-true': toc,
+    },
+  ]}
+>
+  {
+    headings?.length > 0 && (
+      <>
+        <Heading
+          text="On this page"
+          level={6}
+        />
+        <Button
+          variant="link"
+          href={`#${headings[0]?.slug}`}
+          text="Overview"
+        />
+        {h2Headings.map((heading) => (
+          <Button
+            variant="link"
+            href={`#${heading.slug}`}
+            text={heading.text}
+          />
+        ))}
+      </>
+    )
+  }
+</Column>
 
 <style lang="scss" is:global>
   @layer fulldev {
     .header,
-    .sidebar {
+    .sidebar,
+    .toc {
       display: flex;
       position: fixed;
-      top: 0;
-      left: 0;
       z-index: 10;
       border-style: solid;
       border-color: var(--color-a6);
@@ -154,6 +196,8 @@ const {
     }
 
     .header {
+      top: 0;
+      left: 0;
       justify-content: space-between;
       align-items: center;
       border-bottom-width: 1px;
@@ -205,18 +249,41 @@ const {
       }
     }
 
-    .sidebar {
+    .sidebar,
+    .toc {
       display: none;
-      position: fixed;
       top: var(--header-height);
-      left: 0;
-      box-sizing: border-box;
-      border-right: 1px solid var(--color-a6);
-      padding: 0px var(--gutter);
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      padding-right: var(--gutter);
+      padding-left: var(--gutter);
       width: 240px;
       height: calc(100vh - var(--header-height));
       max-height: 100vh;
       overflow-y: auto;
+    }
+
+    @media (min-width: 1024px) {
+      .toc,
+      .sidebar.sidebar-true {
+        display: flex;
+      }
+    }
+
+    #sidebar-checkbox {
+      display: none;
+
+      &:checked ~ .sidebar {
+        @media (max-width: 1023.999px) {
+          display: flex;
+        }
+      }
+    }
+
+    .sidebar {
+      left: 0;
+      border-right-width: 1px;
 
       .logo {
         display: none;
@@ -228,18 +295,10 @@ const {
         }
       }
 
-      @media (min-width: 1024px) {
-        &.sidebar-true {
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-start;
-        }
-      }
-
       .buttons {
         display: flex;
         flex-direction: column;
-        gap: var(--space-4);
+        gap: calc(var(--space-4) + var(--space-1));
         padding: var(--space-5) 0;
 
         .button + .heading {
@@ -248,20 +307,14 @@ const {
       }
     }
 
-    .sidebar-checkbox {
-      display: none;
-      position: absolute;
-      visibility: hidden;
-      opacity: 0;
+    .toc {
+      right: 0;
+      gap: calc(var(--space-4) + var(--space-1));
+      border-left-width: 1px;
+      padding: var(--space-5) var(--gutter);
 
-      &:checked ~ .sidebar {
-        display: flex;
-      }
-    }
-
-    .sidebar:not(.sidebar-true) {
-      @media (min-width: 1024px) {
-        display: none !important;
+      .button + .heading {
+        margin-top: var(--space-5);
       }
     }
   }
