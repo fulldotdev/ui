@@ -8,7 +8,7 @@ import Root from 'fulldev-ui/components/Root.astro'
 import fulldevConfig from 'virtual:fulldev-ui/config'
 
 type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
-  variant?: 'primary' | 'secondary' | 'tertiary'
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'link'
   radius?: 'none' | 'auto' | 'full'
   size?: 'sm' | 'md' | 'lg'
   color?: 'base' | 'brand'
@@ -24,6 +24,7 @@ const {
   as = 'a',
   variant = 'primary',
   radius = fulldevConfig.radius ?? 'auto',
+  href,
   avatar,
   icon,
   html,
@@ -37,6 +38,7 @@ const entry = slug && (await getEntry('pages', slug))
 
 <Root
   class:list="button"
+  href={slug ? `/${slug}/` : href}
   {as}
   {variant}
   {radius}
@@ -64,7 +66,6 @@ const entry = slug && (await getEntry('pages', slug))
       outline: none;
       box-shadow: none;
       border-width: 0px;
-      background: none;
       padding: 0 var(--space-4);
       height: calc(var(--text-2) + 2 * var(--space-4));
       color: var(--text);
@@ -134,7 +135,6 @@ const entry = slug && (await getEntry('pages', slug))
       }
 
       &.variant-tertiary {
-        background-color: transparent;
         color: var(--color-11);
 
         &:hover {
@@ -143,6 +143,21 @@ const entry = slug && (await getEntry('pages', slug))
 
         &:active {
           background-color: var(--color-4);
+        }
+      }
+
+      &.variant-link {
+        padding: 0;
+        height: auto;
+        color: var(--color-11);
+        font-weight: 400;
+
+        &:hover {
+          color: var(--color-12);
+        }
+
+        &:active {
+          color: var(--color-12);
         }
       }
     }

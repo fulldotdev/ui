@@ -2,7 +2,7 @@ import { getEntry, reference, z } from 'astro:content'
 import { assign, mapKeys } from 'radash'
 import { base } from './base'
 import { block } from './block'
-import { sidebar } from './sidebar'
+import { navigation } from './navigation'
 import { pathSchema } from './utils'
 
 export const page = base
@@ -52,7 +52,7 @@ export const page = base
     cta: block.or(z.literal(false)),
     footer: block.or(z.literal(false)),
     footers: block.array().or(z.literal(false)),
-    sidebar: sidebar.or(z.literal(false)),
+    navigation: navigation.or(z.literal(false)),
   })
   .partial()
   .passthrough()

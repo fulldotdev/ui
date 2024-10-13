@@ -1,0 +1,268 @@
+---
+import Button from 'fulldev-ui/components/Button.astro'
+import Logo from 'fulldev-ui/components/experimental/Logo.astro'
+import Root from 'fulldev-ui/components/Root.astro'
+import Row from 'fulldev-ui/components/Row.astro'
+import Search from 'fulldev-ui/components/Search.astro'
+import Toc from 'fulldev-ui/components/Toc.astro'
+import Column from './Column.astro'
+import Heading from './Heading.astro'
+
+type Props = {
+  position?: 'relative' | 'sticky' | 'fixed' | 'absolute'
+  size?: 'sm' | 'md' | 'lg'
+  frame?: 'fill' | 'panel' | 'none'
+  search?: boolean
+  sidebar?: boolean
+  toc?: boolean
+  logo?: string
+  buttons?: any[]
+}
+
+const {
+  frame = 'fill',
+  size = 'sm',
+  logo,
+  buttons,
+  search,
+  sidebar,
+  toc,
+} = Astro.props
+---
+
+<Root
+  class:list={[
+    'header',
+    {
+      'sidebar-true': sidebar,
+      'toc-true': toc,
+    },
+  ]}
+  as="header"
+  {frame}
+  {size}
+>
+  <Logo {logo} />
+  <Row
+    class:list="buttons"
+    space="none"
+  >
+    {
+      buttons?.map((button) => (
+        <Button
+          variant="link"
+          {...button}
+        />
+      ))
+    }
+    {/* <!-- {search && <Search {...search} />} --> */}
+  </Row>
+  <Button
+    class="menu-button"
+    variant="tertiary"
+    icon="menu-2"
+    as="label"
+    for="sidebar-checkbox"
+  />
+</Root>
+
+<input
+  id="sidebar-checkbox"
+  class="sidebar-checkbox"
+  type="checkbox"
+/>
+<Column
+  class:list={[
+    'sidebar',
+    {
+      'sidebar-true': sidebar,
+      'toc-true': toc,
+    },
+  ]}
+  id="sidebar"
+  as="aside"
+  space="none"
+  {size}
+>
+  <!-- {search && <Search {...search} />} -->
+  <Logo {logo} />
+  <Column
+    space="none"
+    class:list="buttons"
+  >
+    {
+      buttons?.map(({ heading, slug, href, text, buttons }) => (
+        <>
+          <Heading
+            level={6}
+            html={heading}
+          />
+          <Button
+            variant="link"
+            {slug}
+            {href}
+            {text}
+          />
+          {buttons?.map((button) => (
+            <Button
+              variant="link"
+              {...button}
+            />
+          ))}
+        </>
+      ))
+    }
+  </Column>
+</Column>
+
+<Toc {toc} />
+
+<style lang="scss" is:global>
+  @layer fulldev {
+    .header,
+    .sidebar {
+      display: flex;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      border-style: solid;
+      border-color: var(--color-a6);
+      background-color: var(--color-background);
+
+      &,
+      & ~ * {
+        --sidebar-width: 0px;
+        --toc-width: 0px;
+        --header-height: calc(
+          var(--text-2) + 2 * var(--space-4) + 2 * var(--space-2)
+        );
+      }
+
+      @media (min-width: 1024px) {
+        &.sidebar-true,
+        &.sidebar-true ~ * {
+          --sidebar-width: 240px;
+          --header-height: 0px;
+        }
+
+        &.toc-true,
+        &.toc-true ~ * {
+          --toc-width: 240px;
+        }
+      }
+    }
+
+    .header {
+      justify-content: space-between;
+      align-items: center;
+      border-bottom-width: 1px;
+      width: 100%;
+      height: var(--header-height);
+
+      &.frame-fill {
+        padding: 0 var(--gutter);
+      }
+
+      &.frame-panel {
+        margin: var(--space-4) var(--gutter);
+        border: 1px solid var(--color-a6);
+        border-radius: var(--radius-2);
+        padding: var(--sapce-4) min(var(--gutter), var(--space-4));
+        width: auto;
+        overflow: hidden;
+      }
+
+      .buttons {
+        display: none;
+
+        @media (min-width: 1024px) {
+          display: flex;
+          gap: var(--space-2);
+
+          .button.variant-link + .button {
+            margin-left: var(--space-3);
+          }
+        }
+      }
+
+      .menu-button {
+        margin-right: calc(-1 * var(--space-3));
+
+        .icon {
+          transform: scale(1.56);
+        }
+
+        @media (min-width: 1024px) {
+          display: none;
+        }
+      }
+
+      &.sidebar-true {
+        @media (min-width: 1024px) {
+          display: none;
+        }
+      }
+    }
+
+    .sidebar {
+      display: none;
+      position: fixed;
+      top: var(--header-height);
+      left: 0;
+      box-sizing: border-box;
+      border-right: 1px solid var(--color-a6);
+      padding: 0px var(--gutter);
+      width: 240px;
+      height: calc(100vh - var(--header-height));
+      max-height: 100vh;
+      overflow-y: auto;
+
+      .logo {
+        display: none;
+        flex-shrink: 0;
+        height: calc(var(--text-2) + 2 * var(--space-4) + 2 * var(--space-2));
+
+        @media (min-width: 1024px) {
+          display: flex;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        &.sidebar-true {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+        }
+      }
+
+      .buttons {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        padding: var(--space-5) 0;
+
+        .button + .heading {
+          margin-top: var(--space-5);
+        }
+      }
+    }
+
+    .sidebar-checkbox {
+      display: none;
+      position: absolute;
+      visibility: hidden;
+      opacity: 0;
+
+      &:checked ~ .sidebar {
+        display: flex;
+      }
+    }
+
+    .sidebar:not(.sidebar-true) {
+      @media (min-width: 1024px) {
+        display: none !important;
+      }
+    }
+  }
+</style>

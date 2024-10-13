@@ -1,13 +1,13 @@
 import { z } from 'astro:content'
 import { pathSchema } from './utils'
 
-const link = pathSchema('pages').or(
+const button = pathSchema('pages').or(
   z
     .object({
       text: z.string(),
       href: z.string(),
       heading: z.never(),
-      links: z.never(),
+      buttons: z.never(),
     })
     .partial()
     .passthrough()
@@ -16,18 +16,20 @@ const link = pathSchema('pages').or(
 const group = z
   .object({
     heading: z.string(),
-    links: z.array(link),
+    buttons: z.array(button),
     text: z.never(),
     href: z.never(),
   })
   .partial()
   .passthrough()
 
-export const sidebar = z
+export const navigation = z
   .object({
-    heading: z.string(),
+    logo: z.string(),
     search: z.boolean(),
-    links: z.array(link.or(group)),
+    sidebar: z.boolean(),
+    toc: z.boolean(),
+    buttons: z.array(button.or(group)),
   })
   .partial()
   .passthrough()
