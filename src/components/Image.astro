@@ -3,7 +3,7 @@ import type { HTMLAttributes } from 'astro/types'
 import { Image as AstroImage } from 'astro:assets'
 import Root from 'fulldev-ui/components/Root.astro'
 import { isString } from 'remeda'
-
+import fulldevConfig from 'virtual:fulldev-ui/config'
 type Props = HTMLAttributes<'img'> & {
   position?: 'background' | 'cover' | 'inset' | undefined
   ratio?: 'landscape' | 'portrait' | 'square' | number | undefined
@@ -29,10 +29,21 @@ const {
   position,
   frame,
   width,
-  radius = 'auto',
+  radius = fulldevConfig.radius ?? 'auto',
   height,
   ...rest
 } = Astro.props
+
+const isLocalAsset =
+  src &&
+  typeof src === 'string' &&
+  (src.startsWith('*/') || src.startsWith('../'))
+let localImage
+
+if (isLocalAsset) {
+  const { default: importedImage } = await import(/* @vite-ignore */ src)
+  localImage = importedImage
+}
 
 // TODO get alt from image collection with yaml files
 // const imageEntry =
@@ -42,29 +53,47 @@ const {
 {
   src && (
     <>
-      {!width && !height && (
-        <Root
-          class:list="image"
-          if={src}
-          {src}
-          {alt}
-          as="img"
-          {frame}
-          {position}
-          {radius}
-          {...rest}
-        />
-      )}
-      {width && height && (
+      {isLocalAsset ? (
         <AstroImage
-          class:list="image"
-          {src}
+          class:list={[
+            'image',
+            position && `position-${position}`,
+            frame && `frame-${frame}`,
+            radius && `radius-${radius}`,
+          ]}
+          src={localImage}
           {alt}
-          width={width}
-          height={height}
-          loading="eager"
+          inferSize
+          loading={loading}
           {...rest}
         />
+      ) : (
+        <>
+          {!width && !height && (
+            <Root
+              class:list="image"
+              if={src}
+              {src}
+              {alt}
+              as="img"
+              {frame}
+              {position}
+              {radius}
+              {...rest}
+            />
+          )}
+          {width && height && (
+            <AstroImage
+              class:list="image"
+              {src}
+              {alt}
+              width={width}
+              height={height}
+              loading="eager"
+              {...rest}
+            />
+          )}
+        </>
       )}
     </>
   )

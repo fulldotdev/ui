@@ -1,21 +1,28 @@
 import { z } from 'astro:content'
+import { pathSchema } from './utils'
 
-export const button = z
-  .object({
-    text: z.string(),
-    href: z.string(),
-    icon: z.string(),
-  })
-  .partial()
-  .passthrough()
+export const button = pathSchema('pages').or(
+  z
+    .object({
+      text: z.string(),
+      html: z.string(),
+      href: z.string(),
+      icon: z.string(),
+    })
+    .partial()
+    .passthrough()
+)
 
-export const link = z
-  .object({
-    text: z.string(),
-    href: z.string(),
-  })
-  .partial()
-  .passthrough()
+export const link = pathSchema('pages').or(
+  z
+    .object({
+      text: z.string(),
+      html: z.string(),
+      href: z.string(),
+    })
+    .partial()
+    .passthrough()
+)
 
 export const base = z
   .object({

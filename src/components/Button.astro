@@ -1,29 +1,38 @@
 ---
 import type { HTMLTag, Polymorphic } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import { getEntry } from 'astro:content'
 import Avatar from 'fulldev-ui/components/Avatar.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
 import Root from 'fulldev-ui/components/Root.astro'
+import fulldevConfig from 'virtual:fulldev-ui/config'
 
 type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
-  variant?: 'primary' | 'secondary' | 'tertiary' | undefined
-  radius?: 'none' | 'auto' | 'full' | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
-  color?: 'base' | 'brand' | undefined
-  contrast?: boolean | undefined
-  avatar?: string | undefined
-  icon?: string | undefined
-  html?: string | undefined
-  text?: string | undefined
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'link'
+  radius?: 'none' | 'auto' | 'full'
+  size?: 'sm' | 'md' | 'lg'
+  color?: 'base' | 'brand'
+  contrast?: boolean
+  avatar?: string
+  icon?: string
+  html?: string
+  text?: string
+  slug?: CollectionEntry<'pages'>['slug']
 }
 
 const {
   as = 'a',
   variant = 'primary',
-  radius = 'auto',
+  radius = fulldevConfig.radius ?? 'auto',
+  slug,
+  href = slug === 'index' ? '/' : `/${slug}/`,
+  color = href === Astro.url.pathname && variant === 'link'
+    ? 'brand'
+    : undefined,
+  text = slug && (await getEntry('pages', slug)).data.title,
   avatar,
   icon,
   html,
-  text,
   ...rest
 } = Astro.props
 ---
@@ -31,15 +40,18 @@ const {
 <Root
   class:list="button"
   {as}
+  {href}
+  {href}
+  {color}
   {variant}
   {radius}
+  {color}
   {...rest}
 >
   <Avatar src={avatar} />
   <Icon name={icon} />
   <slot>
-    <Fragment set:html={html} />
-    <Fragment set:text={text} />
+    <Fragment set:html={text ?? html} />
   </slot>
 </Root>
 
@@ -58,7 +70,6 @@ const {
       outline: none;
       box-shadow: none;
       border-width: 0px;
-      background: none;
       padding: 0 var(--space-4);
       height: calc(var(--text-2) + 2 * var(--space-4));
       color: var(--text);
@@ -128,7 +139,6 @@ const {
       }
 
       &.variant-tertiary {
-        background-color: transparent;
         color: var(--color-11);
 
         &:hover {
@@ -137,6 +147,21 @@ const {
 
         &:active {
           background-color: var(--color-4);
+        }
+      }
+
+      &.variant-link {
+        padding: 0;
+        height: auto;
+        color: var(--color-11);
+        font-weight: 400;
+
+        &:hover {
+          color: var(--color-12);
+        }
+
+        &:active {
+          color: var(--color-12);
         }
       }
     }

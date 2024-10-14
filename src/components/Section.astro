@@ -16,31 +16,31 @@ import Wrap from 'fulldev-ui/components/Wrap.astro'
 import Tagline from './Tagline.astro'
 
 type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> & {
-  position?: 'background' | 'cover' | 'inset' | undefined
-  ratio?: 'landscape' | 'portrait' | 'square' | number | undefined
-  mask?: 'sm' | 'md' | 'lg' | undefined
-  buttons?: ComponentProps<typeof Button<'a'>>[] | undefined
-  button?: ComponentProps<typeof Button<'a'>> | undefined
-  cards?: ComponentProps<typeof Card<'a'>>[] | undefined
-  badge?: string | ComponentProps<typeof Badge<'a'>> | undefined
-  image?: ComponentProps<typeof Image>['src'] | undefined
-  rating?: number | undefined
-  pages?: CollectionEntry<'pages'>['data'][] | undefined
-  records?: CollectionEntry<'records'>['data'][] | undefined
-  heading?: string | undefined
-  title?: string | undefined
-  text?: string | undefined
-  html?: string | undefined
-  description?: string | undefined
-  label?: string | undefined
-  tagline?: string | undefined
-  list?: string[] | undefined
-  theme?: 'light' | 'dark' | undefined
-  color?: 'base' | 'brand' | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
-  frame?: 'none' | 'fill' | 'panel' | undefined
-  align?: 'start' | 'center' | 'end' | undefined
-  justify?: 'start' | 'center' | 'end' | undefined
+  position?: 'background' | 'cover' | 'inset'
+  ratio?: 'landscape' | 'portrait' | 'square' | number
+  mask?: 'sm' | 'md' | 'lg'
+  buttons?: ComponentProps<typeof Button<'a'>>[]
+  button?: ComponentProps<typeof Button<'a'>>
+  cards?: ComponentProps<typeof Card<'a'>>[]
+  badge?: string | ComponentProps<typeof Badge<'a'>>
+  image?: ComponentProps<typeof Image>['src']
+  rating?: number
+  pages?: CollectionEntry<'pages'>['data'][]
+  records?: CollectionEntry<'records'>['data'][]
+  heading?: string
+  title?: string
+  text?: string
+  html?: string
+  description?: string
+  label?: string
+  tagline?: string
+  list?: string[]
+  theme?: 'light' | 'dark'
+  color?: 'base' | 'brand'
+  size?: 'sm' | 'md' | 'lg'
+  frame?: 'none' | 'fill' | 'viewport' | 'panel'
+  align?: 'start' | 'center' | 'end'
+  justify?: 'start' | 'center' | 'end'
   structure?:
     | 'column'
     | 'split'
@@ -59,7 +59,7 @@ type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> & {
 const {
   as = 'section',
   space = 'auto',
-  frame = 'none',
+  frame = 'fill',
   structure = 'column',
   variant = 'secondary',
   align = 'start',
@@ -111,7 +111,7 @@ const buttonVariant = (i: number) => {
   justify={hasCards ? undefined : justify}
   theme={hasCards ? undefined : theme}
   structure={structure === 'split' ? 'split' : 'column'}
-  frame={frame === 'panel' && hasCards ? 'none' : frame}
+  frame={frame === 'panel' && hasCards ? 'fill' : frame}
   {as}
   {align}
   {space}
@@ -215,59 +215,30 @@ const buttonVariant = (i: number) => {
 <style is:global lang="scss">
   @layer fulldev {
     .section {
-      --inset-top: var(--space-7);
-      --inset-left: var(--gutter-left);
-      --inset-right: var(--gutter-right);
-      --inset-bottom: var(--space-7);
+      --inset-x: var(--gutter);
+      --inset-y: var(--spacer);
 
       position: relative;
-
-      &:first-child {
-        --inset-top: var(--space-6);
-        --inset-bottom: var(--space-6);
-      }
-
-      &.frame-none {
-        padding: var(--inset-top) var(--inset-right) var(--inset-bottom)
-          var(--inset-left);
-      }
+      overflow: auto;
 
       &.frame-fill {
-        background-color: var(--color-2);
-        padding: var(--inset-top) var(--inset-right) var(--inset-bottom)
-          var(--inset-left);
-      }
-
-      &.frame-panel {
-        --inset-top: var(--space-6);
-        --inset-left: min(var(--gutter), var(--space-7));
-        --inset-right: min(var(--gutter), var(--space-7));
-        --inset-bottom: var(--space-6);
-
-        margin: var(--inset-top) var(--gutter-right) var(--inset-bottom)
-          var(--gutter-left);
-        border: 1px solid var(--base-a6);
-        border-radius: var(--radius-2);
-        background-color: var(--color-2);
-        padding: var(--inset-top) var(--inset-right) var(--inset-bottom)
-          var(--inset-left);
-        max-width: calc(
-          100vw - var(--sidebar-width) - var(--toc-width) - var(--gutter-left) - var(
-              --gutter-right
-            )
-        );
-        overflow: hidden;
-
-        @media (min-width: 1024px) {
-          --inset-top: var(--space-7);
-          --inset-bottom: var(--space-7);
-        }
+        padding: var(--inset-y) var(--inset-x);
       }
 
       &.frame-viewport {
-        padding: var(--inset-top) var(--inset-right) var(--inset-bottom)
-          var(--inset-left);
+        padding: var(--inset-y) var(--inset-x);
         min-height: 100vh;
+      }
+
+      &.frame-panel {
+        --inset-x: min(var(--gutter), var(--spacer));
+
+        margin: var(--spacer) var(--gutter);
+        border: 1px solid var(--base-a6);
+        border-radius: var(--radius-2);
+        background-color: var(--color-2);
+        padding: var(--inset-y) var(--inset-x);
+        overflow: hidden;
       }
 
       @media (min-width: 1024px) {

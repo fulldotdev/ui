@@ -1,12 +1,29 @@
-import { z } from 'astro:content'
+import { getEntries, reference, z } from 'astro:content'
+import { assign, mapKeys } from 'radash'
 import { base } from './base'
 import { block } from './block'
+import { navigation } from './navigation'
 import { pathSchema } from './utils'
 
 export const page = base
   .extend({
     i18n: pathSchema('pages'),
-    settings: pathSchema('settings'),
+    _layout: z.string().refine(
+      (value) => {
+        const packageLayouts = import.meta.glob('../layouts/**/*.astro')
+        const userLayouts = import.meta.glob('/src/layouts/**/*.astro')
+        const mapBlockKeys = (blocks: any) =>
+          mapKeys(blocks, (key: any) => key.split('/').pop().split('.').shift())
+        const mergedLayoutComponents = {
+          ...mapBlockKeys(packageLayouts),
+          ...mapBlockKeys(userLayouts),
+        }
+        return mergedLayoutComponents[value] !== undefined
+      },
+      (value) => ({ message: `_layout: the layout "${value}" does not exist` })
+    ),
+    _preset: reference('presets'),
+    _presets: reference('presets').array(),
     seo: z
       .object({
         title: z.string(),
@@ -36,8 +53,22 @@ export const page = base
     cta: block.or(z.literal(false)),
     footer: block.or(z.literal(false)),
     footers: block.array().or(z.literal(false)),
+    navigation: navigation.or(z.literal(false)),
   })
   .partial()
   .passthrough()
+  .transform(async (data) => {
+    const presetReferences = [
+      { collection: 'presets', id: 'base' },
+      data._preset ?? undefined,
+      ...(data._presets ?? []),
+    ].filter(Boolean)
 
-export type Page = z.infer<typeof page>
+    const presetEntries = await getEntries(presetReferences as any)
+    let mergedData = {}
+    presetEntries.forEach(
+      (preset: any) => (mergedData = assign(mergedData, preset.data))
+    )
+    mergedData = assign(mergedData, data)
+    return mergedData as typeof data
+  })
