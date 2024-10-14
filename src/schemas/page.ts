@@ -70,5 +70,5 @@ export const page = base
       (preset: any) => (mergedData = assign(mergedData, preset.data))
     )
     mergedData = assign(mergedData, data)
-    return mergedData
+    return mergedData as typeof data
   })
