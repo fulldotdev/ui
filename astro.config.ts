@@ -9,11 +9,13 @@ import integration from 'fulldev-ui/integration'
 // https://astro.build/config
 export default defineConfig({
   site: 'https://ui.full.dev',
+  devToolbar: {
+    enabled: false,
+  },
   integrations: [
     sitemap(),
     mdx(),
     pagefind(),
-
     liveCode({
       layout: '/src/components/experimental/Window.astro',
     }),
