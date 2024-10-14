@@ -1,12 +1,12 @@
 ---
 import { AstroSeo } from '@astrolib/seo'
-import type { CollectionEntry } from 'astro:content'
+import type { ComponentProps } from 'astro/types'
 import { ViewTransitions } from 'astro:transitions'
+import type Layout from 'fulldev-ui/layouts/Layout.astro'
 
-type Props = Partial<CollectionEntry<'pages'>>
+type Props = ComponentProps<typeof Layout>
 
-const { data, render } = Astro.props
-const { title, description, image, seo, code } = data || {}
+const { title, description, image, seo, code, render } = Astro.props
 
 const renderTitle = render && (await render()).headings[0]?.text
 const mergedTitle = seo?.title || title || renderTitle
@@ -27,8 +27,8 @@ const mergedImage =
   />
   <ViewTransitions />
   <AstroSeo
-    title={mergedTitle}
-    description={mergedDescription}
+    title={mergedTitle ?? ''}
+    description={mergedDescription ?? ''}
     openGraph={{
       title: mergedTitle,
       description: mergedDescription,
@@ -40,7 +40,7 @@ const mergedImage =
             },
           ]
         : undefined,
-    }}
+    } as any}
   />
   <link
     rel="apple-touch-icon"
