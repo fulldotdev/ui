@@ -1,0 +1,73 @@
+---
+import type { ComponentProps } from 'astro/types'
+import Button from 'fulldev-ui/components/Button.astro'
+import Prose from 'fulldev-ui/components/experimental/Prose.astro'
+import Spread from 'fulldev-ui/components/Spread.astro'
+import Layout from 'fulldev-ui/layouts/Layout.astro'
+import { crush } from 'radash'
+
+type Props = ComponentProps<typeof Layout>
+
+const { render, slug, navigation, ...rest } = Astro.props
+const { Content } = await render()
+
+const flatButtons = crush((navigation as any)?.buttons ?? {})
+const slugs = Object.entries(flatButtons)
+  .map(([key, value]) => (key.endsWith('.slug') ? value : null))
+  .filter(Boolean)
+const slugIndex = slugs.findIndex((val) => val === slug)
+
+const prevSlug = slugs[slugIndex - 1]
+const nextSlug = slugs[slugIndex + 1]
+---
+
+<Layout
+  class:list="docs-layout"
+  {render}
+  {slug}
+  {navigation}
+  {...rest}
+>
+  <Prose>
+    {Content && <Content />}
+    <Spread>
+      <Button
+        variant="secondary"
+        slug={prevSlug}
+      />
+      <Button
+        variant="secondary"
+        slug={nextSlug}
+      />
+    </Spread>
+  </Prose>
+</Layout>
+
+<style lang="scss" is:global>
+  @layer fulldev {
+    .docs-layout {
+      .prose {
+        --screen: 768px;
+        padding: var(--space-6) var(--gutter);
+        color: var(--color-12);
+
+        > h1 + p {
+          color: var(--color-11);
+        }
+
+        > a,
+        > p > a {
+          color: var(--brand-11);
+
+          &:hover {
+            color: var(--brand-12);
+          }
+        }
+
+        .spread {
+          margin-top: var(--space-7);
+        }
+      }
+    }
+  }
+</style>

@@ -1,15 +1,14 @@
 ---
-import type { CollectionEntry } from 'astro:content'
+import type { ComponentProps } from 'astro/types'
 import Block from 'fulldev-ui/components/Block.astro'
 import Blocks from 'fulldev-ui/components/Blocks.astro'
 import Prose from 'fulldev-ui/components/experimental/Prose.astro'
 import Section from 'fulldev-ui/components/Section.astro'
 import Layout from 'fulldev-ui/layouts/Layout.astro'
 
-type Props = CollectionEntry<'pages'>
+type Props = ComponentProps<typeof Layout>
 
-const { data, render } = Astro.props
-const { sections, blocks, children, references } = data
+const { render, sections, blocks, children, references, ...rest } = Astro.props
 const { Content } = await render()
 ---
 
@@ -17,7 +16,7 @@ const { Content } = await render()
   <Block
     _bookshop_name="Hero"
     size="lg"
-    {...data}
+    {...rest}
   />
   <Block
     _bookshop_name="Categories"
@@ -27,8 +26,8 @@ const { Content } = await render()
   />
   <Block
     _bookshop_name="ProductDeck"
-    heading={data.title && references
-      ? `Alle ${data.title.toLowerCase()}`
+    heading={rest.title && references
+      ? `Alle ${rest.title.toLowerCase()}`
       : undefined}
     source="references"
     structure="grid"
