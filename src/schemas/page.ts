@@ -65,9 +65,10 @@ export const page = base
     ].filter(Boolean)
 
     const presetEntries = await getEntries(presetReferences as any)
-    let mergedData = data
+    let mergedData = {}
     presetEntries.forEach(
       (preset: any) => (mergedData = assign(mergedData, preset.data))
     )
+    mergedData = assign(mergedData, data)
     return mergedData
   })
