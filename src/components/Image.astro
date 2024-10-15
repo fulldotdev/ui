@@ -1,156 +1,63 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { ImageMetadata } from 'astro'
+import type { ComponentProps } from 'astro/types'
 import { Image as AstroImage } from 'astro:assets'
-import fs from 'fs/promises'
-import Root from 'fulldev-ui/components/Root.astro'
-import yaml from 'js-yaml'
-import path from 'path'
-import { isString } from 'remeda'
-import fulldevConfig from 'virtual:fulldev-ui/config'
+import { getEntry } from 'astro:content'
 
-type Props = HTMLAttributes<'img'> & {
-  position?: 'background' | 'cover' | 'inset' | undefined
-  ratio?: 'landscape' | 'portrait' | 'square' | number | undefined
-  frame?: 'inset' | undefined
-  width?: number | 1920 | undefined
-  height?: number | 1920 | undefined
+type Props = ComponentProps<typeof AstroImage> & {
   radius?: 'none' | 'auto' | 'full' | undefined
+  position?: 'background' | 'cover' | 'inset' | undefined
+  frame?: 'inset' | undefined
+  ratio?: 'landscape' | 'portrait' | 'square' | number | undefined
   mask?: 'sm' | 'md' | 'lg' | undefined
+  src?: string | undefined
 }
 
-async function getAltFromCollection(src: string): Promise<string> {
-  if (!isString(src)) return ''
-  const filename = src.split('/').pop()
-  const slug = filename && filename.split('.')[0]
+const {
+  radius = 'auto',
+  width = 1920,
+  height = 1920,
+  position,
+  frame,
+  ratio,
+  mask,
+  src,
+  alt,
+  ...rest
+} = Astro.props
 
-  const yamlPath = path.join(
-    process.cwd(),
-    'src',
-    'content',
-    'images',
-    `${slug}.yml`
-  )
-
-  try {
-    const fileContent = await fs.readFile(yamlPath, 'utf-8')
-    const imageData = yaml.load(fileContent) as { alt?: string }
-    return imageData.alt || ''
-  } catch (error) {
-    return ''
-  }
-}
-
-function getAltBySrc(): string {
-  if (!isString(Astro.props.src)) return ''
+function getAltBySrc() {
+  if (!src) return
   const filename = Astro.props.src?.split('/').pop()
   const slug = filename && filename.split('.')[0]
   const unslugged = slug?.replace(/-/g, ' ')
   return unslugged || ''
 }
 
-const {
-  loading = 'lazy',
-  alt: propAlt,
-  src = Astro.props.src,
-  position,
-  frame,
-  width,
-  radius = fulldevConfig.radius ?? 'auto',
-  height,
-  ...rest
-} = Astro.props
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/images/*')
+const localImage = src && images[`/src/images/${src}`]
+const id = localImage && src.split('.').shift()
+const entry = id && ((await getEntry('images', id)) as any)
 
-const isUrl = (str: string): boolean => {
-  try {
-    new URL(str)
-    return true
-  } catch {
-    return false
-  }
-}
-
-const isLocalAsset =
-  src &&
-  !isUrl(src.toString()) &&
-  !src.toString().startsWith('/') &&
-  (src.toString().startsWith('./') ||
-    src.toString().startsWith('../') ||
-    !src.toString().includes('/'))
-
-let alt = propAlt || ''
-
-if (isLocalAsset) {
-  const collectionAlt = await getAltFromCollection(src.toString())
-  alt = alt || collectionAlt || getAltBySrc()
-} else {
-  alt = alt || getAltBySrc()
-}
-
-let localImage
-
-if (isLocalAsset) {
-  try {
-    const importedImage = await import(`/src/images/${src}`)
-    localImage = importedImage.default
-  } catch (error) {
-    console.error(`Failed to import image: ${src}`, error)
-    localImage = undefined
-  }
-}
-
-const isPublicAsset = src && !isLocalAsset && !isUrl(src.toString())
+const newAlt = alt ?? entry?.data.alt ?? getAltBySrc() ?? ''
+const newSrc = localImage ? localImage() : src
 ---
 
 {
-  src && (
-    <>
-      {isLocalAsset && localImage ? (
-        <AstroImage
-          class:list={[
-            'image',
-            position && `position-${position}`,
-            frame && `frame-${frame}`,
-            radius && `radius-${radius}`,
-          ]}
-          src={localImage}
-          {alt}
-          {...(width && height ? { width, height } : { inferSize: true })}
-          loading={loading}
-          {...rest}
-        />
-      ) : isPublicAsset ? (
-        <img
-          class:list={[
-            'image',
-            position && `position-${position}`,
-            frame && `frame-${frame}`,
-            radius && `radius-${radius}`,
-          ]}
-          src={src}
-          {alt}
-          width={width}
-          height={height}
-          loading={loading}
-          {...rest}
-        />
-      ) : src && (isUrl(src.toString()) || typeof src === 'string') ? (
-        <Root
-          class:list={[
-            'image',
-            position && `position-${position}`,
-            frame && `frame-${frame}`,
-            radius && `radius-${radius}`,
-          ]}
-          src={src}
-          {alt}
-          as="img"
-          width={width}
-          height={height}
-          loading={loading}
-          {...rest}
-        />
-      ) : null}
-    </>
+  newSrc && (
+    <AstroImage
+      class:list={[
+        'image',
+        position && `position-${position}`,
+        frame && `frame-${frame}`,
+        radius && `radius-${radius}`,
+      ]}
+      src={newSrc as typeof src}
+      alt={newAlt as typeof alt}
+      width={localImage ? undefined : width}
+      height={localImage ? undefined : height}
+      {...(rest as any)}
+    />
   )
 }
 
