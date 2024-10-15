@@ -21,7 +21,6 @@ interface Config {
     light?: Color | undefined
     dark?: Color | undefined
   }
-  radius?: 'none' | 'auto' | 'full'
 }
 
 const defaultConfig: Config = {
