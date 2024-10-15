@@ -5,27 +5,24 @@ import { getEntry } from 'astro:content'
 import Avatar from 'fulldev-ui/components/Avatar.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
 import Root from 'fulldev-ui/components/Root.astro'
-import fulldevConfig from 'virtual:fulldev-ui/config'
 
 type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   variant?: 'primary' | 'secondary' | 'tertiary' | 'link' | undefined
-  radius?: 'none' | 'auto' | 'full' | undefined
   size?: 'sm' | 'md' | 'lg' | undefined
   color?: 'base' | 'brand' | undefined
   contrast?: boolean | undefined
+  slug?: CollectionEntry<'pages'>['slug'] | undefined
   avatar?: string | undefined
   icon?: string | undefined
   html?: string | undefined
   text?: string | undefined
-  slug?: CollectionEntry<'pages'>['slug'] | undefined
 }
 
 const {
-  as = 'a',
-  variant = 'primary',
-  radius = fulldevConfig.radius ?? 'auto',
   slug,
   href = slug === 'index' ? '/' : `/${slug}/`,
+  as = href ? 'a' : 'button',
+  variant = 'primary',
   color = href === Astro.url.pathname && variant === 'link'
     ? 'brand'
     : undefined,
@@ -44,13 +41,12 @@ const {
   {href}
   {color}
   {variant}
-  {radius}
   {color}
   {...rest}
 >
-  <Avatar src={avatar} />
-  <Icon name={icon} />
   <slot>
+    <Avatar src={avatar} />
+    <Icon name={icon} />
     <Fragment set:html={text ?? html} />
   </slot>
 </Root>
@@ -65,11 +61,12 @@ const {
       vertical-align: top;
       gap: var(--space-2);
       appearance: none;
-      transition: background-color var(--transition);
+      transition: background-color;
       cursor: pointer;
       outline: none;
       box-shadow: none;
       border-width: 0px;
+      border-radius: var(--radius-1);
       padding: 0 var(--space-4);
       height: calc(var(--text-2) + 2 * var(--space-4));
       color: var(--text);
@@ -97,18 +94,6 @@ const {
         opacity: 0.5;
         cursor: not-allowed;
         pointer-events: none;
-      }
-
-      &.radius-none {
-        border-radius: 0;
-      }
-
-      &.radius-auto {
-        border-radius: var(--radius-1);
-      }
-
-      &.radius-full {
-        border-radius: 9999px;
       }
 
       &.variant-primary {
