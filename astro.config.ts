@@ -9,11 +9,13 @@ import integration from 'fulldev-ui/integration'
 // https://astro.build/config
 export default defineConfig({
   site: 'https://ui.full.dev',
+  devToolbar: {
+    enabled: false,
+  },
   integrations: [
     sitemap(),
     mdx(),
     pagefind(),
-
     liveCode({
       layout: '/src/components/experimental/Window.astro',
     }),
@@ -23,15 +25,17 @@ export default defineConfig({
         theme: 'dark',
         light: {
           background: '#fff',
-          base: '#6F6D66',
+          base: '#0F0F0F',
           brand: '#F50',
         },
         dark: {
-          background: '#111110',
-          base: '#6F6D66',
+          background: '#0F0F0F',
+          base: '#0F0F0F',
           brand: '#F50',
         },
       },
+      injectRoutes: true,
+      generateImageEntries: true,
     }),
   ],
   redirects: {

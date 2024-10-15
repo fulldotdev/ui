@@ -1,0 +1,336 @@
+---
+import type { CollectionEntry } from 'astro:content'
+import Button from 'fulldev-ui/components/Button.astro'
+import Logo from 'fulldev-ui/components/experimental/Logo.astro'
+import Root from 'fulldev-ui/components/Root.astro'
+import Row from 'fulldev-ui/components/Row.astro'
+import Search from 'fulldev-ui/components/Search.astro'
+import Column from './Column.astro'
+import Heading from './Heading.astro'
+import ThemeSelect from './ThemeSelect.astro'
+
+type Props = {
+  render?: CollectionEntry<'pages'>['render']
+  position?: 'relative' | 'sticky' | 'fixed' | 'absolute' | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
+  search?: boolean | undefined
+  sidebar?: boolean | undefined
+  toc?: boolean | undefined
+  logo?: string | undefined
+  buttons?: any[] | undefined
+  panel?: boolean | undefined
+}
+
+const {
+  size = 'sm',
+  logo,
+  buttons,
+  search,
+  panel,
+  sidebar,
+  toc,
+  render,
+} = Astro.props
+
+const headings = render ? (await render())?.headings : []
+const h2Headings = headings?.filter((heading: any) => heading.depth === 2)
+---
+
+<!-- Header -->
+<Root
+  class:list={[
+    'header',
+    {
+      'sidebar-true': sidebar,
+      'toc-true': toc,
+    },
+  ]}
+  as="header"
+  {panel}
+  {size}
+>
+  <Logo {logo} />
+  <Row
+    class:list="buttons"
+    space="none"
+  >
+    {
+      buttons?.map((button) => (
+        <Button
+          variant="link"
+          {...button}
+        />
+      ))
+    }
+  </Row>
+  {search && <Search />}
+  <ThemeSelect />
+  <Button
+    class="menu-button"
+    variant="tertiary"
+    icon="menu-2"
+    as="label"
+    for="sidebar-checkbox"
+  />
+</Root>
+
+<!-- Sidebar -->
+<input
+  id="sidebar-checkbox"
+  class="sidebar-checkbox"
+  type="checkbox"
+/>
+<Root
+  class:list={[
+    'sidebar',
+    {
+      'sidebar-true': sidebar,
+      'toc-true': toc,
+    },
+  ]}
+  id="sidebar"
+  as="aside"
+  {size}
+>
+  <Logo {logo} />
+  {search && <Search />}
+  <Column
+    space="none"
+    class:list="buttons"
+  >
+    {
+      buttons?.map(({ heading, slug, href, text, buttons }) => (
+        <>
+          <Heading
+            level={6}
+            html={heading}
+          />
+          <Button
+            variant="link"
+            {slug}
+            {href}
+            {text}
+          />
+          {buttons?.map((button: any) => (
+            <Button
+              variant="link"
+              {...button}
+            />
+          ))}
+        </>
+      ))
+    }
+    <ThemeSelect />
+  </Column>
+</Root>
+
+<!-- Toc -->
+{
+  toc && (
+    <Root
+      class:list="toc"
+      as="aside"
+      {size}
+      class:list={[
+        'toc',
+        {
+          'sidebar-true': sidebar,
+          'toc-true': toc,
+        },
+      ]}
+    >
+      {headings?.length > 0 && (
+        <>
+          <Heading
+            text="On this page"
+            level={6}
+          />
+          <Button
+            variant="link"
+            href={`#${headings[0]?.slug}`}
+            text="Overview"
+          />
+          {h2Headings.map((heading: any) => (
+            <Button
+              variant="link"
+              href={`#${heading.slug}`}
+              text={heading.text}
+            />
+          ))}
+        </>
+      )}
+    </Root>
+  )
+}
+
+<style lang="scss" is:global>
+  @layer fulldev {
+    .header,
+    .sidebar,
+    .toc {
+      display: flex;
+      position: fixed;
+      z-index: 10;
+      border-style: solid;
+      border-color: var(--color-a6);
+      background-color: var(--color-background);
+
+      &,
+      & ~ * {
+        --sidebar-width: 0px;
+        --toc-width: 0px;
+        --header-height: 56px;
+      }
+
+      @media (min-width: 1024px) {
+        &.sidebar-true,
+        &.sidebar-true ~ * {
+          --sidebar-width: 240px;
+          --header-height: 0px;
+        }
+
+        &.toc-true,
+        &.toc-true ~ * {
+          --toc-width: 240px;
+        }
+      }
+    }
+
+    .header {
+      top: 0;
+      left: 0;
+      justify-content: flex-end;
+      align-items: center;
+      gap: var(--space-2);
+      border-bottom-width: 1px;
+      padding: 0 var(--gutter);
+      width: 100%;
+      height: var(--header-height);
+
+      .logo {
+        margin-right: auto;
+      }
+
+      &.panel {
+        margin: var(--space-4) var(--gutter);
+        border: 1px solid var(--color-a6);
+        border-radius: var(--radius-2);
+        padding: var(--sapce-4) min(var(--gutter), var(--space-4));
+        width: auto;
+        overflow: hidden;
+      }
+
+      .buttons {
+        display: none;
+        margin-left: auto;
+
+        @media (min-width: 1024px) {
+          display: flex;
+          gap: var(--space-2);
+
+          .button.variant-link + .button {
+            margin-left: var(--space-3);
+          }
+        }
+      }
+
+      .menu-button {
+        .icon {
+          transform: scale(1.56);
+        }
+
+        @media (min-width: 1024px) {
+          display: none;
+        }
+      }
+
+      &.sidebar-true {
+        @media (min-width: 1024px) {
+          display: none;
+        }
+      }
+    }
+
+    .sidebar,
+    .toc {
+      display: none;
+      top: var(--header-height);
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      padding-right: var(--gutter);
+      padding-left: var(--gutter);
+      width: 240px;
+      height: calc(100% - var(--header-height));
+      max-height: 100vh;
+      overflow-y: auto;
+    }
+
+    @media (min-width: 1024px) {
+      .toc,
+      .sidebar.sidebar-true {
+        display: flex;
+      }
+    }
+
+    #sidebar-checkbox {
+      display: none;
+
+      &:checked ~ .sidebar {
+        @media (max-width: 1023.999px) {
+          display: flex;
+        }
+      }
+    }
+
+    .sidebar {
+      left: 0;
+      border-right-width: 1px;
+      width: 100vw;
+
+      @media (min-width: 768px) {
+        width: 240px;
+      }
+
+      .logo {
+        display: none;
+        flex-shrink: 0;
+        height: 56px;
+
+        @media (min-width: 1024px) {
+          display: flex;
+        }
+      }
+
+      .buttons {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--space-4) + var(--space-1));
+        padding: var(--space-5) 0;
+
+        @media (min-width: 768px) {
+          // padding: var(--space-4) 0 var(--space-6);
+        }
+
+        .theme-select {
+          margin-top: var(--space-5);
+        }
+
+        .button + .heading {
+          margin-top: var(--space-5);
+        }
+      }
+    }
+
+    .toc {
+      right: 0;
+      gap: calc(var(--space-4) + var(--space-1));
+      border-left-width: 1px;
+      padding: var(--space-md-6) var(--gutter);
+
+      .button + .heading {
+        margin-top: var(--space-5);
+      }
+    }
+  }
+</style>

@@ -2,40 +2,28 @@
 import type { HTMLTag, Polymorphic } from 'astro/types'
 import Icon from 'fulldev-ui/components/Icon.astro'
 import Root from 'fulldev-ui/components/Root.astro'
-import fulldevConfig from 'virtual:fulldev-ui/config'
 
 type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
-  radius?: 'none' | 'auto' | 'full'
-  size?: 'sm' | 'md' | 'lg'
-  color?: 'base' | 'brand'
-  contrast?: boolean
-  html?: string
-  text?: string
-  icon?: string
+  size?: 'sm' | 'md' | 'lg' | undefined
+  color?: 'base' | 'brand' | undefined
+  contrast?: boolean | undefined
+  href?: string | undefined
+  html?: string | undefined
+  text?: string | undefined
+  icon?: string | undefined
 }
 
-const {
-  href,
-  html,
-  text,
-  as = href ? 'a' : 'div',
-  radius = fulldevConfig.radius ?? 'full',
-  icon,
-  ...rest
-} = Astro.props
+const { href, as = href ? 'a' : 'div', html, text, icon, ...rest } = Astro.props
 ---
 
 <Root
   class:list="badge"
-  {radius}
   {as}
   {href}
   {...rest}
 >
-  <slot>
-    <Fragment set:text={text} />
-    <Fragment set:html={html} />
-  </slot>
+  <slot />
+  <Fragment set:html={html ?? text} />
   <Icon name={icon} />
 </Root>
 
@@ -48,8 +36,9 @@ const {
       align-items: center;
       vertical-align: top;
       gap: var(--space-2);
-      transition: var(--transition);
+      transition: all;
       border: 1px solid var(--color-a6);
+      border-radius: var(--radius-1);
       padding: 0 var(--space-3);
       height: calc(var(--text-1) + 2 * var(--space-2));
       color: var(--color-11);
@@ -60,24 +49,12 @@ const {
       text-decoration: none;
       white-space: nowrap;
 
-      &[href] {
+      &:is(a) {
         border-color: var(--color-7);
 
         &:hover {
           border-color: var(--color-8);
         }
-      }
-
-      &.radius-none {
-        border-radius: 0;
-      }
-
-      &.radius-auto {
-        border-radius: var(--radius-1);
-      }
-
-      &.radius-full {
-        border-radius: 9999px;
       }
     }
   }
