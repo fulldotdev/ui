@@ -1,0 +1,99 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'fulldev-bot'
+          git config --global user.email 'bot@full.dev'
+          git remote set-url origin https://x-access-token:${{ secrets.BOT_TOKEN }}@github.com/${{ github.repository }}.git
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Fetch and Pull Latest Changes
+        run: |
+          git fetch origin
+          git pull origin HEAD:main
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Bump Version and Create PR
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          BRANCH_NAME="bump-version-${VERSION}"
+          git checkout -b $BRANCH_NAME
+          npm version $VERSION --no-git-tag-version
+          git add package.json
+          git commit -m "Bump to version $VERSION"
+          git push origin $BRANCH_NAME
+          gh pr create --base main --head $BRANCH_NAME --title "Bump version to ${VERSION}" --body "Automated version bump to ${VERSION}"
+          gh pr merge --auto --merge $BRANCH_NAME
+        env:
+          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Review PR
+        run: |
+          gh pr review $BRANCH_NAME --approve --body "Automated approval for version bump"
+        env:
+          GH_TOKEN: ${{ secrets.GHP_TOKEN }}
+
+      - name: Wait for PR to be merged
+        run: |
+          PR_URL=$(gh pr view $BRANCH_NAME --json url -q .url)
+          for i in {1..3}; do
+            PR_STATE=$(gh pr view $BRANCH_NAME --json state -q .state)
+            if [ "$PR_STATE" = "MERGED" ]; then
+              echo "PR has been merged"
+              exit 0
+            elif [ "$PR_STATE" = "CLOSED" ]; then
+              echo "PR was closed without merging"
+              exit 1
+            fi
+            echo "Attempt $i: Waiting for PR to be merged..."
+            if [ $i -eq 3 ]; then
+              echo "PR not merged after 3 attempts. Exiting with failure."
+              exit 1
+            fi
+            sleep 60
+          done
+        env:
+          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Publish to npm
+        run: |
+          git checkout main
+          git pull origin main
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Github Releases To Discord
+        uses: SethCohen/github-releases-to-discord@v1.13.1
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          color: '2105893'
+          username: 'Release Changelog'
+          avatar_url: 'https://raw.githubusercontent.com/fulldotdev/ui/main/siteicon.png'
+          content: 'A new release has just been published'
+          footer_title: 'fulldev-ui'
+          footer_icon_url: 'https://raw.githubusercontent.com/fulldotdev/ui/main/siteicon.png'
+          footer_timestamp: true
