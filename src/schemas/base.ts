@@ -73,13 +73,6 @@ export const base = z
       })
       .partial()
       .passthrough(),
-    socials: z
-      .object({
-        facebook: z.string(),
-        instagram: z.string(),
-      })
-      .partial()
-      .passthrough(),
     hours: z
       .object({
         monday: z.string(),
