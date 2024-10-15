@@ -12,22 +12,19 @@ import Spread from 'fulldev-ui/components/Spread.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Text from 'fulldev-ui/components/Text.astro'
 import Wrap from 'fulldev-ui/components/Wrap.astro'
-import fulldevConfig from 'virtual:fulldev-ui/config'
 import Badge from './Badge.astro'
 
 type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
-  ratio?: 'landscape' | 'portrait' | 'square' | number | undefined
   variant?: 'primary' | 'secondary' | 'tertiary' | undefined
   position?: 'background' | 'cover' | 'inset' | undefined
   align?: 'start' | 'center' | 'end' | undefined
   justify?: 'start' | 'center' | 'end' | undefined
   level?: 1 | 2 | 3 | 4 | 5 | 6 | undefined
   size?: 'sm' | 'md' | 'lg' | undefined
-  radius?: 'auto' | 'none' | undefined
-  frame?: 'panel' | 'none' | undefined
   color?: 'base' | 'brand' | undefined
   space?: 'auto' | 'none' | undefined
-  mask?: 'sm' | 'md' | 'lg' | undefined
+  panel?: boolean | undefined
+  contrast?: boolean | undefined
   image?: string | ComponentProps<typeof Image> | undefined
   images?: string[] | undefined
   button?: ComponentProps<typeof Button<'a'>> | undefined
@@ -41,7 +38,6 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   avatars?: string[] | undefined
   label?: string | undefined
   tagline?: string | undefined
-  contrast?: boolean | undefined
   heading?: string | undefined
   title?: string | undefined
   description?: string | undefined
@@ -54,8 +50,7 @@ const {
   href,
   as = href ? 'a' : 'div',
   space = 'auto',
-  frame = 'none',
-  radius = fulldevConfig.radius ?? 'auto',
+  panel = true,
   align = 'start',
   variant,
   level = 4,
@@ -71,7 +66,6 @@ const {
   buttons,
   badge,
   badges,
-  ratio,
   image,
   images,
   rating,
@@ -79,7 +73,6 @@ const {
   price,
   icon,
   avatar,
-  mask,
   avatars,
   ...rest
 } = Astro.props
@@ -97,20 +90,15 @@ const buttonVariant = (i: number) => {
 
 <Root
   class:list="card"
-  ratio={position === 'background' ? ratio : undefined}
   structure="column"
   {align}
   {href}
-  {radius}
   {space}
-  {frame}
   {as}
   {...rest}
 >
   <Image
     {position}
-    {mask}
-    ratio={position === 'background' ? undefined : ratio}
     src={images?.[0]}
     {...typeof image === 'string' ? { src: image } : image}
   />
@@ -184,7 +172,7 @@ const buttonVariant = (i: number) => {
         cursor: pointer;
 
         > .root.image {
-          transition: var(--transition);
+          transition: all;
         }
 
         &:hover {
@@ -194,24 +182,9 @@ const buttonVariant = (i: number) => {
         }
       }
 
-      &.ratio-landscape {
-        aspect-ratio: 4/3;
-      }
-
-      &.ratio-square {
-        aspect-ratio: 1/1;
-      }
-
-      &.ratio-portrait {
-        aspect-ratio: 3/4;
-      }
-
-      &.frame-fill {
-        border-radius: 0 !important;
-      }
-
-      &.frame-panel {
+      &.panel {
         border: 1px solid var(--color-a6);
+        border-radius: var(--radius-2);
         background-color: var(--color-2);
         padding: var(--inset-top) var(--inset-right) var(--inset-bottom)
           var(--inset-left);
@@ -219,14 +192,6 @@ const buttonVariant = (i: number) => {
 
         &[href]:hover {
           border: 1px solid var(--color-a7);
-        }
-
-        &.radius-none {
-          border-radius: 0;
-        }
-
-        &.radius-auto {
-          border-radius: var(--radius-2);
         }
       }
 
