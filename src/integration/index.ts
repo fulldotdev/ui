@@ -18,8 +18,8 @@ interface Config {
   generateImageEntries?: boolean
   colors: {
     theme: 'light' | 'dark'
-    light?: Color
-    dark?: Color
+    light?: Color | undefined
+    dark?: Color | undefined
   }
   radius?: 'none' | 'auto' | 'full'
 }
@@ -37,7 +37,7 @@ const defaultConfig: Config = {
 }
 
 export default function fulldevIntegration(
-  userConfig?: Partial<Config>
+  userConfig?: Partial<Config> | undefined
 ): AstroIntegration {
   const config = merge(defaultConfig, userConfig ?? {})
 
@@ -71,7 +71,7 @@ export default function fulldevIntegration(
           const scaleToString = (
             scale: any,
             palette: 'base' | 'brand',
-            alpha?: boolean
+            alpha?: boolean | undefined
           ) =>
             scale
               .map(

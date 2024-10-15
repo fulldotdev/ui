@@ -1,21 +1,46 @@
 ---
-import type { ComponentProps } from 'astro/types'
 import Image from 'fulldev-ui/components/Image.astro'
+import Heading from '../Heading.astro'
+import Root from '../Root.astro'
 
-type Props = Omit<ComponentProps<typeof Image>, 'position' | 'frame'> & {}
+type Props = {
+  logo?: string | undefined
+}
 
-const { ...rest } = Astro.props
+const { logo, ...rest } = Astro.props
+
+const isImage = logo?.startsWith('/') || logo?.startsWith('http')
 ---
 
-<Image
+<Root
+  as="a"
+  href="/"
   class:list="logo"
-  {...rest}
-/>
+>
+  {
+    isImage ? (
+      <Image {...rest} />
+    ) : (
+      <Heading
+        as="p"
+        level={3}
+        html={logo}
+      />
+    )
+  }
+</Root>
 
 <style is:global lang="scss">
-  .logo {
-    max-width: calc(15 * var(--space-2));
-    height: 100%;
-    object-fit: contain;
+  @layer fulldev {
+    .logo {
+      display: flex;
+      align-items: center;
+
+      img {
+        max-width: calc(15 * var(--space-2));
+        height: 100%;
+        object-fit: contain;
+      }
+    }
   }
 </style>
