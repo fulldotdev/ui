@@ -5,7 +5,6 @@ import { getEntry } from 'astro:content'
 import Root from 'fulldev-ui/components/Root.astro'
 
 type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
-  underline?: 'auto' | 'always' | 'hover' | 'none' | undefined
   size?: 'sm' | 'md' | 'lg' | undefined
   color?: 'base' | 'brand' | undefined
   contrast?: boolean | undefined
@@ -14,15 +13,7 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   slug?: CollectionEntry<'pages'>['slug'] | undefined
 }
 
-const {
-  slug,
-  href,
-  html,
-  text,
-  as = 'a',
-  underline = 'auto',
-  ...rest
-} = Astro.props
+const { slug, href, html, text, as = 'a', ...rest } = Astro.props
 
 const entry = slug && (await getEntry('pages', slug))
 ---
@@ -31,7 +22,6 @@ const entry = slug && (await getEntry('pages', slug))
   class:list="link"
   href={slug ? `/${slug}/` : href}
   {as}
-  {underline}
   {...rest}
 >
   <slot>
@@ -54,34 +44,15 @@ const entry = slug && (await getEntry('pages', slug))
       font-size: var(--text-3);
       font-family: var(--font-family);
       text-decoration-color: var(--border); // FIXME, werkt niet
+      text-decoration: none;
       white-space: nowrap;
 
-      &:hover {
-        color: var(--color-12);
-      }
-
-      &.underline-auto {
-        text-decoration: none;
-
-        &:is(p > &) {
-          text-decoration: underline;
-        }
-      }
-
-      &.underline-always {
+      &:is(p > &) {
         text-decoration: underline;
       }
 
-      &.underline-hover {
-        text-decoration: none;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-
-      &.underline-none {
-        text-decoration: none;
+      &:hover {
+        color: var(--color-12);
       }
     }
   }
