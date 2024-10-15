@@ -5,28 +5,33 @@ import Root from '../Root.astro'
 const { images, direction = 'horizontal' } = Astro.props
 ---
 
-<script define:vars={{ direction }}>
-  const carousel = document.querySelector('.gallery .large-carousel')
-  const smallImages = document.querySelectorAll('.gallery .small-image')
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const galleries = document.querySelectorAll('.gallery')
 
-  carousel &&
-    smallImages?.forEach((image, i) => {
-      image.addEventListener('click', () => {
-        const largeImages = carousel.querySelectorAll('.large-image')
-        if (largeImages[i]) {
-          largeImages[i].scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest',
-            inline: 'start',
+    galleries.forEach((gallery) => {
+      const carousel = gallery.querySelector('.large-carousel')
+      const smallImages = gallery.querySelectorAll('.small-image')
+
+      carousel &&
+        smallImages?.forEach((image, i) => {
+          image.addEventListener('click', () => {
+            const largeImages = carousel.querySelectorAll('.large-image')
+            if (largeImages[i]) {
+              largeImages[i].scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'start',
+              })
+            }
           })
-        }
-      })
+        })
     })
+  })
 </script>
 
 <Root
   class:list={[
-    'full',
     'gallery',
     {
       [`direction-${direction}`]: direction,
