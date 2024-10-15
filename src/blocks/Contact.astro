@@ -14,14 +14,15 @@ import Textarea from 'fulldev-ui/components/Textarea.astro'
 
 const {
   heading,
+  form,
   text,
   tagline,
   googleMaps,
   buttons,
-  channels,
   socials,
   position,
   image,
+  channels,
   ...rest
 } = Astro.props
 ---
@@ -41,32 +42,35 @@ const {
     <Row>
       {buttons?.map((button: any) => <Button {...button} />)}
     </Row>
+
     <Column>
       <Channel
-        if={channels?.phone}
         icon="phone"
-        heading="Telefoon"
-        text={channels?.phone}
-        href={`tel:${channels?.phone}`}
+        heading={channels?.phone?.heading}
+        text={channels?.phone?.text}
+        href={`tel:${channels?.phone?.text}`}
       />
       <Channel
-        if={channels?.email}
         icon="mail"
-        heading="Email"
-        text={channels?.email}
-        href={`mailto:${channels?.email}`}
+        heading={channels?.email?.heading}
+        text={channels?.email?.text}
+        href={`mailto:${channels?.email?.text}`}
       />
       {
         channels?.address && (
           <Channel
-            if={channels?.address}
             icon="pin"
-            heading="Adres"
-            text={channels?.address}
+            heading={channels.address.heading}
+            text={channels.address.text}
+            href={
+              channels?.address?.link ??
+              `https://maps.google.com/?q=${channels.address.text}`
+            }
           />
         )
       }
     </Column>
+
     {
       socials && (
         <Row size="sm">
@@ -81,7 +85,6 @@ const {
             <Button
               href={socials?.instagram}
               variant="secondary"
-              href={socials?.instagram}
               icon="brand-instagram"
             />
           )}
@@ -90,40 +93,40 @@ const {
     }
 
     <Form
-      action="/bedankt"
+      action="/thank-you"
       method="POST"
     >
       <Input
-        label="Naam"
-        id="Naam"
-        name="Naam"
+        label={form?.name}
+        id="Name"
+        name="Name"
         type="text"
         required
       />
       <Input
-        label="Email"
+        label={form?.email}
         id="Email"
         name="Email"
         type="email"
         required
       />
       <Input
-        label="Telefoon"
-        id="Telefoon"
-        name="Telefoon"
+        label={form?.phone}
+        id="Phone"
+        name="Phone"
         type="tel"
         required
       />
       <Textarea
-        label="Bericht"
-        id="Bericht"
-        name="Bericht"
+        label={form?.message}
+        id="Message"
+        name="Message"
       />
       <Button
         as="button"
         type="submit"
         color="brand"
-        text="Verstuur bericht"
+        text={form?.button}
       />
     </Form>
   </Column>
