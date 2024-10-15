@@ -1,126 +1,45 @@
 ---
 import type { Polymorphic } from 'astro/types'
-import Icon from 'fulldev-ui/components/Icon.astro'
-import Root from 'fulldev-ui/components/Root.astro'
+import { uid } from 'radash'
+import Button from './Button.astro'
 
 type Props<As extends 'label'> = Polymorphic<{ as: As }> & {
-  radius?: 'none' | 'auto' | 'full'
-  icon?: string
-  html?: string
-  text?: string
-  toggled: boolean
+  color?: 'base' | 'brand' | undefined
+  id?: string | undefined
+  name?: string | undefined
+  icon?: string | undefined
+  html?: string | undefined
+  text?: string | undefined
+  toggled: boolean | undefined
 }
 
-const {
-  radius = 'auto',
-  name,
-  toggled,
-  icon,
-  html,
-  text,
-  ...rest
-} = Astro.props
+const { id = uid(7), toggled, name, ...rest } = Astro.props
 ---
 
-<Root
-  class:list={['toggle toggle-element']}
-  as="label"
-  {radius}
-  {...rest}
->
-  <input
-    checked={toggled}
-    type="checkbox"
-    class="toggle-input"
-  />
-  <Icon name={icon} />
-  <slot>
-    <Fragment set:html={html} />
-    <Fragment set:text={text} />
-  </slot>
-</Root>
+<input
+  class="toggle-checkbox"
+  checked={toggled}
+  type="checkbox"
+  id={id}
+  name={name ?? id}
+/>
 
-<script>
-  document.querySelectorAll('.toggle-element').forEach((toggle) => {
-    const input = toggle.querySelector(
-      '.toggle-input'
-    ) as HTMLInputElement | null
-    if (input) {
-      input.addEventListener('change', () => {
-        toggle.classList.toggle('checked', input.checked)
-      })
-      toggle.classList.toggle('checked', input.checked)
-    }
-  })
-</script>
+<Button
+  class:list="toggle"
+  variant="tertiary"
+  as="label"
+  for={id}
+  {...rest}
+/>
 
 <style is:global lang="scss">
   @layer fulldev {
-    .toggle {
-      &.toggle-element {
-        display: flex;
-        position: relative;
-        align-items: center;
-        transition: var(--transition);
-        will-change: background-color, color;
-        cursor: pointer;
-        border-radius: inherit;
-        background-color: var(--base-1);
-        padding: 0 var(--space-4);
-        height: calc(var(--text-2) + 2 * var(--space-4));
+    .toggle-checkbox {
+      display: none;
+
+      &:checked + .toggle {
+        background-color: var(--color-5);
         color: var(--base-12);
-        line-height: 1;
-
-        input {
-          position: absolute;
-          opacity: 0;
-          width: 0;
-          height: 0;
-        }
-
-        .icon {
-          transition: inherit;
-          margin-right: var(--space-2);
-          color: var(--base-12);
-        }
-
-        &:hover {
-          background-color: var(--color-5);
-          color: var(--base-11);
-        }
-
-        &.checked {
-          background-color: var(--color-5);
-          color: var(--base-12);
-
-          .icon {
-            color: var(--base-12);
-          }
-        }
-
-        &:hover:not(.checked) {
-          .icon {
-            color: var(--base-11);
-          }
-        }
-
-        &:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-          pointer-events: none;
-        }
-      }
-
-      &.radius-none {
-        border-radius: 0;
-      }
-
-      &.radius-auto {
-        border-radius: var(--radius-1);
-      }
-
-      &.radius-full {
-        border-radius: 9999px;
       }
     }
   }
