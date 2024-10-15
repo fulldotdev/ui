@@ -154,47 +154,38 @@ export default function fulldevIntegration(
         // Generate image YAML files
         // ----------------------
         if (config.generateImageEntries) {
-          const generateImageYamlFiles = async () => {
-            const assetsDir = path.join(process.cwd(), 'src', 'assets')
-            const imagesDir = path.join(
-              process.cwd(),
-              'src',
-              'content',
-              'images'
-            )
+          const srcDir = path.join(process.cwd(), 'src')
+          const filesDir = path.join(srcDir, 'images')
+          const entriesDir = path.join(srcDir, 'content', 'images')
 
-            try {
-              await fs.mkdir(imagesDir, { recursive: true })
+          try {
+            await fs.mkdir(filesDir, { recursive: true })
+            await fs.mkdir(entriesDir, { recursive: true })
 
-              const files = await fs.readdir(assetsDir)
-              for (const file of files) {
-                if (file.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
-                  const yamlPath = path.join(
-                    imagesDir,
-                    `${path.parse(file).name}.yml`
-                  )
+            const files = await fs.readdir(filesDir)
+            files.forEach(async (file) => {
+              const filename = path.parse(file).name
+              const yamlPath = path.join(entriesDir, `${filename}.yml`)
 
-                  try {
-                    await fs.access(yamlPath)
-                  } catch {
-                    const filename = file
-                    const slug = filename.split('.')[0]
-                    const unslugged = slug.replace(/-/g, ' ')
-
-                    const yamlContent = yaml.dump({
-                      alt: unslugged,
-                    })
-                    await fs.writeFile(yamlPath, yamlContent, 'utf8')
-                  }
-                }
+              try {
+                await fs.access(yamlPath)
+              } catch {
+                const slug = filename.split('.')[0]
+                const unslugged = slug?.replace(/-/g, ' ')
+                const yamlContent = yaml.dump({
+                  alt: unslugged,
+                })
+                await fs.writeFile(yamlPath, yamlContent, 'utf8')
               }
-            } catch (error) {
-              console.error('Error generating image YAML files:', error)
-            }
+            })
+          } catch (error) {
+            console.error('Error generating image YAML files:', error)
           }
-          await generateImageYamlFiles()
         }
 
+        // ----------------------
+        // Inject routes
+        // ----------------------
         if (config.injectRoutes) {
           const pages = import.meta.glob('/src/pages/**/*.astro')
           !pages['/src/pages/[...page].astro'] &&
