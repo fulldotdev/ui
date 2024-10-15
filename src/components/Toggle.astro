@@ -3,7 +3,7 @@ import type { Polymorphic } from 'astro/types'
 import Icon from 'fulldev-ui/components/Icon.astro'
 import Root from 'fulldev-ui/components/Root.astro'
 
-type Props<As extends 'div'> = Polymorphic<{ as: As }> & {
+type Props<As extends 'label'> = Polymorphic<{ as: As }> & {
   radius?: 'none' | 'auto' | 'full'
   icon?: string
   html?: string
@@ -12,7 +12,6 @@ type Props<As extends 'div'> = Polymorphic<{ as: As }> & {
 }
 
 const {
-  as = 'div',
   radius = 'auto',
   name,
   toggled,
@@ -24,82 +23,78 @@ const {
 ---
 
 <Root
-  class:list="toggle"
-  {as}
+  class:list={['toggle toggle-element']}
+  as="label"
   {radius}
   {...rest}
 >
-  <label class="toggle-element">
-    <input
-      checked={toggled}
-      type="checkbox"
-      class="checkbox"
-    />
-    <div class="toggle-content">
-      <Icon name={icon} />
-      <slot>
-        <Fragment set:html={html} />
-        <Fragment set:text={text} />
-      </slot>
-    </div>
-  </label>
+  <input
+    checked={toggled}
+    type="checkbox"
+    class="toggle-input"
+  />
+  <Icon name={icon} />
+  <slot>
+    <Fragment set:html={html} />
+    <Fragment set:text={text} />
+  </slot>
 </Root>
+
+<script>
+  document.querySelectorAll('.toggle-element').forEach((toggle) => {
+    const input = toggle.querySelector(
+      '.toggle-input'
+    ) as HTMLInputElement | null
+    if (input) {
+      input.addEventListener('change', () => {
+        toggle.classList.toggle('checked', input.checked)
+      })
+      toggle.classList.toggle('checked', input.checked)
+    }
+  })
+</script>
 
 <style is:global lang="scss">
   @layer fulldev {
     .toggle {
-      .toggle-element {
+      &.toggle-element {
+        display: flex;
         position: relative;
         align-items: center;
+        transition: var(--transition);
+        will-change: background-color, color;
         cursor: pointer;
         border-radius: inherit;
+        background-color: var(--base-1);
+        padding: 0 var(--space-4);
+        height: calc(var(--text-2) + 2 * var(--space-4));
         color: var(--base-12);
+        line-height: 1;
 
-        .checkbox {
-          position: absolute;
-          opacity: 0;
-          width: 0;
-          height: 0;
-        }
-
-        .toggle-content {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          transition: var(--transition);
-          border-radius: inherit;
-          background-color: var(--base-1);
-          padding: 0 var(--space-4);
-          height: calc(var(--text-2) + 2 * var(--space-4));
-          line-height: 1;
-
-          .icon {
-            transition: inherit;
-            margin-right: var(--space-2);
-            color: var(--base-12);
-          }
-        }
-
-        .checkbox:hover ~ .toggle-content,
-        .checkbox:checked ~ .toggle-content {
-          background-color: var(--color-5);
-        }
-
-        .checkbox:checked ~ .toggle-content {
+        .icon {
+          transition: inherit;
+          margin-right: var(--space-2);
           color: var(--base-12);
-        }
-
-        .checkbox:checked ~ .toggle-content .icon {
-          color: var(--base-12);
-        }
-
-        .checkbox:hover:not(:checked) ~ .toggle-content .icon {
-          color: var(--base-9);
         }
 
         &:hover {
           background-color: var(--color-5);
-          color: var(--base-9);
+          color: var(--base-11);
+        }
+
+        &.checked {
+          background-color: var(--color-5);
+          color: var(--base-12);
+
+          .icon {
+            color: var(--base-12);
+          }
+        }
+
+        &:hover:not(.checked) {
+          .icon {
+            color: var(--base-11);
+          }
         }
 
         &:disabled {
