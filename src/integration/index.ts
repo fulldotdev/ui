@@ -1,5 +1,8 @@
 import type { AstroIntegration } from 'astro'
 import merge from 'deepmerge'
+import fs from 'fs/promises'
+import yaml from 'js-yaml'
+import path from 'path'
 import virtual from 'vite-plugin-virtual'
 import { generateRadixColors } from './generate-colors'
 
@@ -10,8 +13,9 @@ type Color = {
 }
 
 interface Config {
-  css?: string | undefined
-  injectRoutes?: boolean | undefined
+  css?: string
+  injectRoutes?: boolean
+  generateImageEntries?: boolean
   colors: {
     theme: 'light' | 'dark'
     light?: Color | undefined
@@ -29,13 +33,13 @@ const defaultConfig: Config = {
       brand: '#000',
     },
   },
-  radius: 'auto',
+  generateImageEntries: false,
 }
 
 export default function fulldevIntegration(
   userConfig?: Partial<Config> | undefined
 ): AstroIntegration {
-  const config = merge(defaultConfig ?? {}, userConfig ?? {})
+  const config = merge(defaultConfig, userConfig ?? {})
 
   return {
     name: '/integration',
@@ -145,6 +149,39 @@ export default function fulldevIntegration(
         })
 
         injectScript('page-ssr', `import "virtual:colors.css";`)
+
+        // ----------------------
+        // Generate image YAML files
+        // ----------------------
+        if (config.generateImageEntries) {
+          const srcDir = path.join(process.cwd(), 'src')
+          const filesDir = path.join(srcDir, 'images')
+          const entriesDir = path.join(srcDir, 'content', 'images')
+
+          try {
+            await fs.mkdir(filesDir, { recursive: true })
+            await fs.mkdir(entriesDir, { recursive: true })
+
+            const files = await fs.readdir(filesDir)
+            files.forEach(async (file) => {
+              const filename = path.parse(file).name
+              const yamlPath = path.join(entriesDir, `${filename}.yml`)
+
+              try {
+                await fs.access(yamlPath)
+              } catch {
+                const slug = filename.split('.')[0]
+                const unslugged = slug?.replace(/-/g, ' ')
+                const yamlContent = yaml.dump({
+                  alt: unslugged,
+                })
+                await fs.writeFile(yamlPath, yamlContent, 'utf8')
+              }
+            })
+          } catch (error) {
+            console.error('Error generating image YAML files:', error)
+          }
+        }
 
         // ----------------------
         // Inject routes
