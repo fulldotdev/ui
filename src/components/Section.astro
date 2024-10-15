@@ -36,7 +36,6 @@ type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> & {
   theme?: 'light' | 'dark' | undefined
   color?: 'base' | 'brand' | undefined
   size?: 'sm' | 'md' | 'lg' | undefined
-  frame?: 'none' | 'fill' | 'viewport' | 'panel' | undefined
   align?: 'start' | 'center' | 'end' | undefined
   justify?: 'start' | 'center' | 'end' | undefined
   structure?:
@@ -52,16 +51,17 @@ type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> & {
   space?: 'auto' | 'none' | undefined
   reverse?: 'odd' | 'even' | undefined
   variant?: 'primary' | 'secondary' | 'tertiary' | undefined
+  panel?: boolean | undefined
 }
 
 const {
   as = 'section',
   space = 'auto',
-  frame = 'fill',
   structure = 'column',
   variant = 'secondary',
   align = 'start',
   level = 2,
+  panel,
   position,
   label,
   heading,
@@ -106,10 +106,10 @@ const buttonVariant = (i: number) => {
   justify={hasCards ? undefined : justify}
   theme={hasCards ? undefined : theme}
   structure={structure === 'split' ? 'split' : 'column'}
-  frame={frame === 'panel' && hasCards ? 'fill' : frame}
   {as}
   {align}
   {space}
+  {panel}
   {size}
   {...rest}
 >
@@ -185,7 +185,7 @@ const buttonVariant = (i: number) => {
               align="start"
               level={Number(level) + 2}
               {position}
-              {frame}
+              {panel}
               {justify}
               {theme}
               {variant}
@@ -209,25 +209,15 @@ const buttonVariant = (i: number) => {
       --inset-y: var(--spacer);
 
       position: relative;
+      padding: var(--inset-y) var(--inset-x);
       overflow: auto;
 
-      &.frame-fill {
-        padding: var(--inset-y) var(--inset-x);
-      }
-
-      &.frame-viewport {
-        padding: var(--inset-y) var(--inset-x);
-        min-height: 100vh;
-      }
-
-      &.frame-panel {
+      &.panel {
         --inset-x: min(var(--gutter), var(--spacer));
 
         margin: var(--spacer) var(--gutter);
         border: 1px solid var(--base-a6);
         border-radius: var(--radius-2);
-        background-color: var(--color-2);
-        padding: var(--inset-y) var(--inset-x);
         overflow: hidden;
       }
 

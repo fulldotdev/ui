@@ -9,7 +9,6 @@ import Logo from 'fulldev-ui/components/experimental/Logo.astro'
 
 type Props<As extends HTMLTag = 'footer'> = Polymorphic<{ as: As }> & {
   structure?: 'spread' | 'row' | 'split' | 'column' | 'stack' | undefined
-  frame?: 'fill' | 'panel' | 'contain' | 'none' | undefined
   align?: 'start' | 'center' | 'end' | undefined
   size?: 'sm' | 'md' | 'lg' | undefined
   theme?: 'light' | 'dark' | undefined
@@ -21,6 +20,7 @@ type Props<As extends HTMLTag = 'footer'> = Polymorphic<{ as: As }> & {
   description?: string | undefined
   text?: string | undefined
   html?: string | undefined
+  panel?: boolean | undefined
   columns?: {
     heading: string | undefined
     links: ComponentProps<typeof Link<'a'>>[] | undefined
@@ -30,7 +30,7 @@ type Props<As extends HTMLTag = 'footer'> = Polymorphic<{ as: As }> & {
 const {
   as = 'footer',
   space = 'auto',
-  frame = 'fill',
+  panel,
   structure = 'grid',
   size = 'sm',
   logo,
@@ -48,7 +48,7 @@ const {
   class:list="footer"
   {structure}
   {as}
-  {frame}
+  {panel}
   {space}
   {size}
   {...rest}
@@ -90,38 +90,22 @@ const {
 <style is:global lang="scss">
   @layer fulldev {
     .footer {
-      --inset-top: var(--space-7);
-      --inset-left: var(--gutter-left);
-      --inset-right: var(--gutter-right);
-      --inset-bottom: var(--space-7);
+      --inset-x: var(--gutter);
+      --inset-y: var(--spacer);
 
+      position: relative;
       margin-top: auto;
+      padding: var(--inset-y) var(--inset-x);
       width: 100%;
+      overflow: auto;
 
-      &.frame-none {
-        border-top: 1px solid var(--base-a6);
-        padding: var(--space-7) var(--gutter);
-      }
+      &.panel {
+        --inset-x: min(var(--gutter), var(--spacer));
 
-      &.frame-fill {
-        border-top: 1px solid var(--base-a6);
-        background-color: var(--color-2);
-        padding: var(--space-7) var(--gutter);
-      }
-
-      &.frame-panel {
-        margin: var(--space-7) var(--gutter);
+        margin: var(--spacer) var(--gutter);
         border: 1px solid var(--base-a6);
         border-radius: var(--radius-2);
-        background-color: var(--color-2);
-        padding: var(--space-6) min(var(--gutter), var(--space-7));
-        max-width: calc(100vw - 2 * var(--gutter));
         overflow: hidden;
-
-        @media (min-width: 1024px) {
-          padding-top: var(--space-7);
-          padding-bottom: var(--space-7);
-        }
       }
 
       &.align-start {
