@@ -9,6 +9,7 @@ import Image from 'fulldev-ui/components/Image.astro'
 import Input from 'fulldev-ui/components/Input.astro'
 import Row from 'fulldev-ui/components/Row.astro'
 import Section from 'fulldev-ui/components/Section.astro'
+import Social from 'fulldev-ui/components/Social.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Text from 'fulldev-ui/components/Text.astro'
 import Textarea from 'fulldev-ui/components/Textarea.astro'
@@ -64,7 +65,10 @@ const {
   {...rest}
 >
   <Column>
-    <Tagline text={tagline} />
+    <Tagline
+      color="brand"
+      text={tagline}
+    />
     <Heading
       level={level}
       text={heading}
@@ -76,7 +80,7 @@ const {
 
     <Column>
       {
-        channels.map((channel: any) => (
+        channels?.map((channel: any) => (
           <Channel
             heading={channel.heading}
             text={channel.text}
@@ -87,27 +91,18 @@ const {
       }
     </Column>
 
-    {
-      socials && (
-        <Row size="sm">
-          {socials?.facebook && (
-            <Button
-              href={socials.facebook}
-              variant="secondary"
-              icon="brand-facebook"
-            />
-          )}
-          {socials?.instagram && (
-            <Button
-              href={socials.instagram}
-              variant="secondary"
-              icon="brand-instagram"
-            />
-          )}
-        </Row>
-      )
-    }
-
+    <Row
+      space="none"
+      class:list="socials"
+    >
+      {
+        socials?.map((social: any) => (
+          <Social
+            {...(typeof social === 'string' ? { href: social } : social)}
+          />
+        ))
+      }
+    </Row>
     <Form
       action="/thank-you"
       method="POST"
@@ -136,7 +131,6 @@ const {
         })
       }
       <Button
-        as="button"
         type="submit"
         color="brand"
         text={form.button}
@@ -155,6 +149,10 @@ const {
     .contact {
       .channel + .channel {
         margin-top: var(--space-3) !important;
+      }
+
+      .socials {
+        gap: var(--space-2);
       }
     }
   }
