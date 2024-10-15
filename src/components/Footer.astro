@@ -11,6 +11,7 @@ import Row from './Row.astro'
 import Social from './Social.astro'
 import Spread from './Spread.astro'
 import Stack from './Stack.astro'
+import Channel from './experimental/Channel.astro'
 
 type Props<As extends HTMLTag = 'footer'> = Polymorphic<{ as: As }> & {
   size?: 'sm' | 'md' | 'lg' | undefined
@@ -28,6 +29,7 @@ type Props<As extends HTMLTag = 'footer'> = Polymorphic<{ as: As }> & {
   buttons?: ComponentProps<typeof Button<'a'>>[] | undefined
   html?: string | undefined
   panel?: boolean | undefined
+  channels?: any
   columns?: {
     heading: string | undefined
     links: ComponentProps<typeof Link<'a'>>[] | undefined
@@ -49,6 +51,7 @@ const {
   text,
   title,
   description,
+  channels,
   html,
   ...rest
 } = Astro.props
@@ -82,16 +85,32 @@ const {
   </Column>
 
   <Column
+    space="none"
+    class:list="channels"
+  >
+    {
+      channels?.map((channel: any) => (
+        <Channel
+          heading={channel.heading}
+          text={channel.text}
+          icon={channel.icon}
+          href={channel.href}
+        />
+      ))
+    }
+  </Column>
+
+  <Column
     class:list="hours"
     space="none"
   >
     <Heading
-      html={hours.heading}
-      level={4}
+      html={hours?.heading}
+      level={5}
     />
     <Column space="none">
       {
-        Object.entries(hours.days)?.map(([key, value]: any) => (
+        Object.entries(hours?.days ?? {})?.map(([key, value]: any) => (
           <Spread>
             <Text text={key} />
             <Text text={value} />
@@ -103,10 +122,10 @@ const {
 
   <Stack class:list="buttons">
     {
-      columns?.map(({ heading, buttons }) => (
+      columns?.map(({ heading, buttons }: any) => (
         <Column>
           <Heading
-            level={4}
+            level={5}
             html={heading}
           />
           {buttons?.map((button: any) => (
@@ -132,11 +151,25 @@ const {
       width: 100%;
       overflow: auto;
 
+      .column {
+        h5 + * {
+          margin-top: var(--space-4);
+        }
+
+        .button.variant-link + .button.variant-link {
+          margin-top: var(--space-4);
+        }
+      }
+
       &.panel {
         margin: var(--spacer) var(--gutter);
         border-width: 1px;
         border-radius: var(--radius-2);
         overflow: hidden;
+      }
+
+      .channels {
+        gap: var(--space-3);
       }
 
       .buttons {
@@ -148,8 +181,6 @@ const {
       }
 
       .hours {
-        gap: var(--space-3);
-
         .column {
           gap: 0;
 

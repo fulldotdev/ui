@@ -65,14 +65,6 @@ export const base = z
       .passthrough(),
     logos: z.string().array(),
     logo: z.string(),
-    channels: z
-      .object({
-        phone: z.string(),
-        email: z.string(),
-        address: z.string(),
-      })
-      .partial()
-      .passthrough(),
     hours: z
       .object({
         monday: z.string(),
