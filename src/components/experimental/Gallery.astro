@@ -1,40 +1,24 @@
 ---
-import Icon from 'fulldev-ui/components/Icon.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 
-const { images, direction } = Astro.props
+const { images, direction = 'horizontal' } = Astro.props
 ---
 
-<script>
+<script define:vars={{ direction }}>
   const carousel = document.querySelector('.gallery .large-carousel')
-  const icon = document.querySelector('.gallery .icon')
   const smallImages = document.querySelectorAll('.gallery .small-image')
-
-  carousel &&
-    icon?.addEventListener('click', () => {
-      const carouselWidth = (carousel as HTMLElement).offsetWidth
-      const currentScroll = carousel.scrollLeft
-      const maxScroll = carousel.scrollWidth - carouselWidth
-
-      let scrollAmount = currentScroll + carouselWidth
-      if (scrollAmount > maxScroll) {
-        scrollAmount = 0 // Reset to beginning if we're at the end
-      }
-
-      carousel.scrollTo({
-        left: scrollAmount,
-        behavior: 'smooth',
-      })
-    })
 
   carousel &&
     smallImages?.forEach((image, i) => {
       image.addEventListener('click', () => {
-        const imageWidth = (carousel as HTMLElement).offsetWidth
-        carousel.scrollTo({
-          left: i * imageWidth,
-          behavior: 'smooth',
-        })
+        const largeImages = carousel.querySelectorAll('.large-image')
+        if (largeImages[i]) {
+          largeImages[i].scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'start',
+          })
+        }
       })
     })
 </script>
@@ -59,14 +43,6 @@ const { images, direction } = Astro.props
         ))
       }
     </div>
-    {
-      images?.length > 1 && (
-        <Icon
-          class="icon"
-          name="swipe-left"
-        />
-      )
-    }
   </div>
   <div class="small-carousel">
     {
@@ -89,8 +65,11 @@ const { images, direction } = Astro.props
     row-gap: var(--space-1);
     flex-direction: column;
 
-    @media (min-width: 1024px) {
-      flex-direction: row-reverse;
+    &.direction-vertical {
+      @media (min-width: 1024px) {
+        flex-direction: row-reverse;
+        align-items: flex-start;
+      }
     }
 
     .large-container {
@@ -98,30 +77,12 @@ const { images, direction } = Astro.props
       justify-content: space-between;
       align-items: center;
 
-      &:hover .icon {
-        opacity: 1;
-      }
-
-      .icon {
-        position: absolute;
-        right: var(--space-3);
-        opacity: 0.5;
-        animation: swipe-icon 1.6s ease-in-out infinite;
-        transition: opacity 0.2s ease-in-out;
-        font-size: calc(var(--text-2) * 1.7);
-
+      .direction-vertical & {
         @media (min-width: 1024px) {
-          display: none;
-        }
-      }
-
-      @keyframes swipe-icon {
-        0%,
-        100% {
-          right: var(--space-3);
-        }
-        50% {
-          right: calc(var(--space-3) * 2);
+          right: auto;
+          bottom: var(--space-3);
+          left: 50%;
+          transform: translateX(-50%);
         }
       }
     }
@@ -137,9 +98,19 @@ const { images, direction } = Astro.props
       box-sizing: border-box;
       padding-bottom: var(--space-4);
       width: 100%;
-      overflow-x: auto;
+      overflow: auto;
       scroll-behavior: smooth;
       scroll-snap-type: x mandatory;
+
+      .direction-vertical & {
+        @media (min-width: 1024px) {
+          flex-direction: column;
+          height: 600px;
+          overflow-x: hidden;
+          overflow-y: auto;
+          scroll-snap-type: y mandatory;
+        }
+      }
 
       > .root {
         flex-grow: 0;
@@ -160,21 +131,38 @@ const { images, direction } = Astro.props
     .small-carousel {
       --column-width: var(--space-7);
 
-      @media (min-width: 1024px) {
-        --column-width: 100%;
-
-        flex-direction: column;
-        width: 40%;
+      .direction-vertical & {
+        @media (min-width: 1024px) {
+          --column-width: 100%;
+          flex-direction: column;
+          width: 40%;
+          height: 600px;
+          overflow-x: hidden;
+          overflow-y: auto;
+        }
       }
-    }
-
-    .small-image,
-    .large-image {
     }
 
     .small-image:hover {
       opacity: 0.8;
       cursor: pointer;
+    }
+  }
+
+  .direction-vertical {
+    .small-carousel {
+      flex-direction: column;
+      min-width: 20%;
+      height: auto;
+      max-height: 600px;
+      overflow-x: hidden;
+      overflow-y: auto;
+
+      .small-image {
+        margin-bottom: var(--space-4);
+        width: 100%;
+        height: auto;
+      }
     }
   }
 </style>

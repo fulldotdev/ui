@@ -1,14 +1,15 @@
 ---
 import Button from 'fulldev-ui/components/Button.astro'
 import Column from 'fulldev-ui/components/Column.astro'
+import Gallery from 'fulldev-ui/components/experimental/Gallery.astro'
+import Price from 'fulldev-ui/components/experimental/Price.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Input from 'fulldev-ui/components/Input.astro'
+import List from 'fulldev-ui/components/List.astro'
 import Row from 'fulldev-ui/components/Row.astro'
 import Section from 'fulldev-ui/components/Section.astro'
 import Text from 'fulldev-ui/components/Text.astro'
-import Price from 'fulldev-ui/components/experimental/Price.astro'
-
 const {
   heading,
   title,
@@ -23,6 +24,7 @@ const {
   button,
   description,
   form,
+  gallery = 'horizontal',
   ...rest
 } = Astro.props
 ---
@@ -32,7 +34,16 @@ const {
   structure="split"
   {...rest}
 >
-  <Image src={image || images?.[0]} />
+  {
+    images && images.length > 1 ? (
+      <Gallery
+        images={images}
+        direction={gallery}
+      />
+    ) : (
+      <Image src={image || images?.[0]} />
+    )
+  }
   <Column>
     <Heading
       level={1}
@@ -43,12 +54,17 @@ const {
       text={text || description}
     />
     <Price value={price} />
+    <List
+      items={list}
+      style={{ marginTop: 'var(--space-5)' }}
+    />
     <Row>
       <Input
         value={1}
         name={'quantity'}
-        style={{ width: 'var(--space-6)' }}
+        style={{ width: 'var(--space-7)' }}
         type="number"
+        min={1}
       />
       <Button
         color="brand"
