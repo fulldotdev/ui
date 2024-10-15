@@ -1,5 +1,4 @@
 ---
-import { getEntry } from 'astro:content'
 import Button from 'fulldev-ui/components/Button.astro'
 import Column from 'fulldev-ui/components/Column.astro'
 import Channel from 'fulldev-ui/components/experimental/Channel.astro'
@@ -14,10 +13,6 @@ import Text from 'fulldev-ui/components/Text.astro'
 import Textarea from 'fulldev-ui/components/Textarea.astro'
 
 const {
-  data: { channels },
-} = await getEntry('settings', 'base')
-
-const {
   heading,
   form,
   text,
@@ -27,6 +22,7 @@ const {
   socials,
   position,
   image,
+  channels,
   ...rest
 } = Astro.props
 ---
@@ -52,13 +48,13 @@ const {
         icon="phone"
         heading={channels?.phone?.heading}
         text={channels?.phone?.text}
-        href={`tel:${channels?.phone?.value}`}
+        href={`tel:${channels?.phone?.text}`}
       />
       <Channel
         icon="mail"
         heading={channels?.email?.heading}
         text={channels?.email?.text}
-        href={`mailto:${channels?.email?.value}`}
+        href={`mailto:${channels?.email?.text}`}
       />
       {
         channels?.address && (
@@ -66,6 +62,10 @@ const {
             icon="pin"
             heading={channels.address.heading}
             text={channels.address.text}
+            href={
+              channels?.address?.link ??
+              `https://maps.google.com/?q=${channels.address.text}`
+            }
           />
         )
       }
@@ -93,13 +93,13 @@ const {
     }
 
     <Form
-      action="/bedankt"
+      action="/thank-you"
       method="POST"
     >
       <Input
         label={form?.name}
-        id="Naam"
-        name="Naam"
+        id="Name"
+        name="Name"
         type="text"
         required
       />
@@ -112,15 +112,15 @@ const {
       />
       <Input
         label={form?.phone}
-        id="Telefoon"
-        name="Telefoon"
+        id="Phone"
+        name="Phone"
         type="tel"
         required
       />
       <Textarea
         label={form?.message}
-        id="Bericht"
-        name="Bericht"
+        id="Message"
+        name="Message"
       />
       <Button
         as="button"
