@@ -11,18 +11,18 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   size?: 'sm' | 'md' | 'lg' | undefined
   color?: 'base' | 'brand' | undefined
   contrast?: boolean | undefined
+  slug?: CollectionEntry<'pages'>['slug'] | undefined
   avatar?: string | undefined
   icon?: string | undefined
   html?: string | undefined
   text?: string | undefined
-  slug?: CollectionEntry<'pages'>['slug'] | undefined
 }
 
 const {
-  as = 'a',
-  variant = 'primary',
   slug,
   href = slug === 'index' ? '/' : `/${slug}/`,
+  as = href ? 'a' : 'button',
+  variant = 'primary',
   color = href === Astro.url.pathname && variant === 'link'
     ? 'brand'
     : undefined,
@@ -44,9 +44,9 @@ const {
   {color}
   {...rest}
 >
-  <Avatar src={avatar} />
-  <Icon name={icon} />
   <slot>
+    <Avatar src={avatar} />
+    <Icon name={icon} />
     <Fragment set:html={text ?? html} />
   </slot>
 </Root>
