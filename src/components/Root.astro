@@ -4,6 +4,7 @@ import { mapKeys } from 'radash'
 
 type Props<As extends HTMLTag> = {
   as?: As
+  component?: string
   slot?: any
   if?: 'content' | any
   [key: string | number | symbol]: any
@@ -12,6 +13,7 @@ type Props<As extends HTMLTag> = {
 const {
   as: As = 'div',
   if: ifProp = 'content',
+  component,
   space,
   theme,
   variant,
@@ -40,52 +42,61 @@ const render =
     ? hasContent(slot) || hasContent(html) || hasContent(text)
     : ifProp
 
-const packageComponents = import.meta.glob('../components/**/*.astro')
-const userComponents = import.meta.glob('/src/components/**/*.astro')
+const userComponents = import.meta.glob('/src/**/*.astro')
+const mappedUserComponents = mapKeys(userComponents, (key: string) => {
+  const name = key.split('/').pop()?.split('.').shift()?.toLowerCase()
+  return name || key
+})
 
-const mapComponentKeys = (components: Record<string, any>) =>
-  mapKeys(components, (key: string) => {
-    const name = key.split('/').pop()?.split('.').shift()
-    return name || key
-  })
+const found = mappedUserComponents[component] as any
+const FoundComponent = found ? (await found()).default : null
 
-const components = {
-  ...mapComponentKeys(packageComponents),
-  ...mapComponentKeys(userComponents),
-}
-
-const currentComponentName = import.meta.url.split('/').pop()?.split('.')[0]
-const found = components[currentComponentName as keyof typeof components]
-const ComponentToRender = found ? (await found()).default : As
+console.log({
+  component,
+  userComponents,
+  mappedUserComponents,
+  found,
+  FoundComponent,
+  Astro,
+})
 ---
 
 {
   render && (
-    <ComponentToRender
-      class:list={[
-        'root',
-        structure,
-        {
-          lead,
-          contrast,
-          panel,
-          [`theme-${theme}`]: theme,
-          [`level-${level}`]: level,
-          [`variant-${variant}`]: variant,
-          [`structure-${structure}`]: structure,
-          [`size-${size}`]: size,
-          [`align-${align}`]: align,
-          [`justify-${justify}`]: justify,
-          [`position-${position}`]: position,
-          [`color-${color}`]: color,
-          [`space-${space}`]: space,
-          [`reverse-${reverse}`]: reverse,
-        },
-      ]}
-      {...rest}
-    >
-      <Fragment set:html={slot} />
-    </ComponentToRender>
+    <>
+      {found ? (
+        <FoundComponent {...Astro.props}>
+          <Fragment set:html={slot} />
+        </FoundComponent>
+      ) : (
+        <As
+          class:list={[
+            'root',
+            component,
+            structure,
+            {
+              lead,
+              contrast,
+              panel,
+              [`theme-${theme}`]: theme,
+              [`level-${level}`]: level,
+              [`variant-${variant}`]: variant,
+              [`structure-${structure}`]: structure,
+              [`size-${size}`]: size,
+              [`align-${align}`]: align,
+              [`justify-${justify}`]: justify,
+              [`position-${position}`]: position,
+              [`color-${color}`]: color,
+              [`space-${space}`]: space,
+              [`reverse-${reverse}`]: reverse,
+            },
+          ]}
+          {...rest}
+        >
+          <Fragment set:html={slot} />
+        </As>
+      )}
+    </>
   )
 }
 
