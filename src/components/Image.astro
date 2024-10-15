@@ -1,83 +1,42 @@
 ---
+import type { ImageMetadata } from 'astro'
 import type { HTMLAttributes } from 'astro/types'
 import { Image as AstroImage } from 'astro:assets'
-import Root from 'fulldev-ui/components/Root.astro'
-import { isString } from 'remeda'
+import { getEntry } from 'astro:content'
 
 type Props = HTMLAttributes<'img'> & {
   position?: 'background' | 'cover' | 'inset' | undefined
-  ratio?: 'landscape' | 'portrait' | 'square' | number | undefined
-  frame?: 'inset' | undefined
-  width?: number | 1920 | undefined
-  height?: number | 1920 | undefined
-  radius?: 'none' | 'auto' | 'full' | undefined
-  mask?: 'sm' | 'md' | 'lg' | undefined
 }
 
-function getAltBySrc(): string {
-  if (!isString(Astro.props.src)) return ''
-  const filename = Astro.props.src?.split('/').pop()
+const { width = 1920, height = 1920, position, src, alt, ...rest } = Astro.props
+
+function getAltBySrc() {
+  if (!src) return
+  const filename = src?.split('/').pop()
   const slug = filename && filename.split('.')[0]
   const unslugged = slug?.replace(/-/g, ' ')
   return unslugged || ''
 }
 
-const {
-  loading = 'lazy',
-  alt = getAltBySrc(),
-  src = Astro.props.src,
-  position,
-  frame,
-  width,
-  radius = 'auto',
-  height,
-  ...rest
-} = Astro.props
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/images/*')
+const localImage = src && images[`/src/images/${src}`]
+const id = localImage && src.split('.').shift()
+const entry = id && ((await getEntry('images', id)) as any)
 
-const isLocalAsset =
-  src &&
-  typeof src === 'string' &&
-  (src.startsWith('*/') || src.startsWith('../'))
-let localImage
-
-if (isLocalAsset) {
-  const { default: importedImage } = await import(/* @vite-ignore */ src)
-  localImage = importedImage
-}
-
-// TODO get alt from image collection with yaml files
-// const imageEntry =
-//   src && (await getEntry('images', src?.replace('/images/', '')))
+const newAlt = alt ?? entry?.data.alt ?? getAltBySrc() ?? ''
+const newSrc = localImage ? localImage() : src
 ---
 
 {
-  src && (
-    <>
-      {!width && !height && (
-        <Root
-          class:list="image"
-          if={src}
-          {src}
-          {alt}
-          as="img"
-          {frame}
-          {position}
-          {radius}
-          {...rest}
-        />
-      )}
-      {width && height && (
-        <AstroImage
-          class:list="image"
-          {src}
-          {alt}
-          width={width}
-          height={height}
-          loading="eager"
-          {...rest}
-        />
-      )}
-    </>
+  newSrc && (
+    <AstroImage
+      class:list={['image', position && `position-${position}`]}
+      src={newSrc as typeof src}
+      alt={newAlt as typeof alt}
+      width={localImage ? undefined : width}
+      height={localImage ? undefined : height}
+      {...(rest as any)}
+    />
   )
 }
 
@@ -87,33 +46,6 @@ if (isLocalAsset) {
       display: block;
       width: 100%;
       height: auto;
-
-      &.mask-sm {
-        -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
-        mask-image: linear-gradient(to top, transparent 0%, black 30%);
-      }
-
-      &.mask-md {
-        -webkit-mask-image: linear-gradient(to top, transparent 0%, black 65%);
-        mask-image: linear-gradient(to top, transparent 0%, black 65%);
-      }
-
-      &.mask-lg {
-        -webkit-mask-image: linear-gradient(to top, transparent 0%, black 100%);
-        mask-image: linear-gradient(to top, transparent 0%, black 100%);
-      }
-
-      &.radius-none {
-        border-radius: 0;
-      }
-
-      &.radius-auto {
-        border-radius: var(--radius-1);
-      }
-
-      &.radius-full {
-        border-radius: 9999px;
-      }
 
       &.position-background {
         position: absolute;
@@ -197,18 +129,6 @@ if (isLocalAsset) {
             }
           }
         }
-      }
-
-      &.ratio-landscape {
-        aspect-ratio: 4/3;
-      }
-
-      &.ratio-square {
-        aspect-ratio: 1/1;
-      }
-
-      &.ratio-portrait {
-        aspect-ratio: 3/4;
       }
     }
   }

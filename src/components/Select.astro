@@ -10,8 +10,6 @@ type Props = HTMLAttributes<'select'> & {
   placeholder?: string | undefined
   options?: string[] | undefined
   value?: string | undefined
-  radius?: 'none' | 'auto' | 'full' | undefined
-  variant?: 'outline' | undefined
 }
 
 const {
@@ -21,16 +19,14 @@ const {
   value,
   name,
   required,
-  radius = 'auto',
   disabled,
-  variant = 'outline',
+  onchange,
   ...rest
 } = Astro.props
 ---
 
 <Root
   class:list="select"
-  {variant}
   {...rest}
 >
   <Label
@@ -41,7 +37,6 @@ const {
     as="select"
     if={name || options}
     id={name}
-    {radius}
     {name}
     {required}
     {disabled}
@@ -120,26 +115,12 @@ const {
           cursor: not-allowed;
           pointer-events: none;
         }
-
-        &.radius-none {
-          border-radius: 0;
-        }
-
-        &.radius-auto {
-          border-radius: var(--radius-1);
-        }
-
-        &.radius-full {
-          border-radius: 9999px;
-        }
       }
 
       option {
         color: var(--text);
-        font-weight: var(--font-weight);
         font-size: var(--text-2);
         line-height: 1;
-        font-family: var(--font-family);
       }
     }
   }
