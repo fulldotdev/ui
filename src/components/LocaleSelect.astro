@@ -1,5 +1,7 @@
 ---
 import Select from 'fulldev-ui/components/Select.astro'
+
+const { ...rest } = Astro.props
 ---
 
 {
@@ -9,19 +11,19 @@ import Select from 'fulldev-ui/components/Select.astro'
       options={Astro.props.locales}
       value={Astro.props.lang as string}
       placeholder={Astro.props.lang as string}
+      {...rest}
     />
   )
 }
 
 <script>
-  const select = document.querySelector('.theme-switcher select')
+  const select = document.querySelector('select[name="locale-switcher"]')
   select?.addEventListener('change', (event) => {
     if (event.target instanceof HTMLSelectElement) {
-      const target = event.target
-      const selectedLocale = target.value
-      const currentUrl = new URL(window.location.href)
-      currentUrl.pathname = '/' + selectedLocale + currentUrl.pathname
-      window.location.href = currentUrl.toString()
+      const selectedLocale = event.target.value
+      const currentPath = window.location.pathname
+      const newPath = `/${selectedLocale}${currentPath.replace(/^\/[^/]+/, '')}`
+      window.location.href = new URL(newPath, window.location.href).toString()
     }
   })
 </script>
