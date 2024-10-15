@@ -1,5 +1,6 @@
 ---
 import Image from 'fulldev-ui/components/Image.astro'
+import Root from '../Root.astro'
 
 const { images, direction = 'horizontal' } = Astro.props
 ---
@@ -23,7 +24,7 @@ const { images, direction = 'horizontal' } = Astro.props
     })
 </script>
 
-<div
+<Root
   class:list={[
     'full',
     'gallery',
@@ -55,7 +56,7 @@ const { images, direction = 'horizontal' } = Astro.props
         ))
     }
   </div>
-</div>
+</Root>
 
 <style is:global lang="scss">
   .gallery {
@@ -132,6 +133,13 @@ const { images, direction = 'horizontal' } = Astro.props
       --column-width: var(--space-7);
 
       .direction-vertical & {
+        --column-width: var(--space-7);
+        flex-direction: row;
+        width: 100%;
+        height: auto;
+        overflow-x: auto;
+        overflow-y: hidden;
+
         @media (min-width: 1024px) {
           --column-width: 100%;
           flex-direction: column;
@@ -151,17 +159,31 @@ const { images, direction = 'horizontal' } = Astro.props
 
   .direction-vertical {
     .small-carousel {
-      flex-direction: column;
-      min-width: 20%;
+      flex-direction: row;
+      min-width: 100%;
       height: auto;
-      max-height: 600px;
-      overflow-x: hidden;
-      overflow-y: auto;
+      max-height: none;
+      overflow-x: auto;
+      overflow-y: hidden;
 
       .small-image {
-        margin-bottom: var(--space-4);
-        width: 100%;
+        margin-bottom: 0;
+        width: var(--space-7);
         height: auto;
+      }
+
+      @media (min-width: 1024px) {
+        flex-direction: column;
+        min-width: 20%;
+        max-height: 600px;
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        .small-image {
+          margin-bottom: var(--space-4);
+          width: 100%;
+          height: auto;
+        }
       }
     }
   }
