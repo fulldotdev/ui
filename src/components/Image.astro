@@ -5,26 +5,10 @@ import { Image as AstroImage } from 'astro:assets'
 import { getEntry } from 'astro:content'
 
 type Props = HTMLAttributes<'img'> & {
-  radius?: 'none' | 'auto' | 'full' | undefined
   position?: 'background' | 'cover' | 'inset' | undefined
-  frame?: 'inset' | undefined
-  ratio?: 'landscape' | 'portrait' | 'square' | number | undefined
-  mask?: 'sm' | 'md' | 'lg' | undefined
-  src?: string | undefined
 }
 
-const {
-  radius = 'auto',
-  width = 1920,
-  height = 1920,
-  position,
-  frame,
-  ratio,
-  mask,
-  src,
-  alt,
-  ...rest
-} = Astro.props
+const { width = 1920, height = 1920, position, src, alt, ...rest } = Astro.props
 
 function getAltBySrc() {
   if (!src) return
@@ -46,12 +30,7 @@ const newSrc = localImage ? localImage() : src
 {
   newSrc && (
     <AstroImage
-      class:list={[
-        'image',
-        position && `position-${position}`,
-        frame && `frame-${frame}`,
-        radius && `radius-${radius}`,
-      ]}
+      class:list={['image', position && `position-${position}`]}
       src={newSrc as typeof src}
       alt={newAlt as typeof alt}
       width={localImage ? undefined : width}
@@ -67,33 +46,6 @@ const newSrc = localImage ? localImage() : src
       display: block;
       width: 100%;
       height: auto;
-
-      &.mask-sm {
-        -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
-        mask-image: linear-gradient(to top, transparent 0%, black 30%);
-      }
-
-      &.mask-md {
-        -webkit-mask-image: linear-gradient(to top, transparent 0%, black 65%);
-        mask-image: linear-gradient(to top, transparent 0%, black 65%);
-      }
-
-      &.mask-lg {
-        -webkit-mask-image: linear-gradient(to top, transparent 0%, black 100%);
-        mask-image: linear-gradient(to top, transparent 0%, black 100%);
-      }
-
-      &.radius-none {
-        border-radius: 0;
-      }
-
-      &.radius-auto {
-        border-radius: var(--radius-1);
-      }
-
-      &.radius-full {
-        border-radius: 9999px;
-      }
 
       &.position-background {
         position: absolute;
@@ -177,18 +129,6 @@ const newSrc = localImage ? localImage() : src
             }
           }
         }
-      }
-
-      &.ratio-landscape {
-        aspect-ratio: 4/3;
-      }
-
-      &.ratio-square {
-        aspect-ratio: 1/1;
-      }
-
-      &.ratio-portrait {
-        aspect-ratio: 3/4;
       }
     }
   }

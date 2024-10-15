@@ -1,33 +1,22 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 import Root from 'fulldev-ui/components/Root.astro'
-import fulldevConfig from 'virtual:fulldev-ui/config'
 type Props = HTMLAttributes<'table'> & {
   color?: 'base' | 'brand' | undefined
   size?: 'sm' | 'md' | 'lg' | undefined
   header?: string[] | undefined
   body?: string[][] | undefined
   footer?: string[] | undefined
-  radius?: 'none' | 'auto' | undefined
 }
 
-const {
-  header,
-  body,
-  footer,
-  radius = fulldevConfig.radius ?? 'auto',
-  ...rest
-} = Astro.props
+const { header, body, footer, ...rest } = Astro.props
 ---
 
 <Root
   class:list="table"
   {...rest}
 >
-  <Root
-    as="table"
-    {radius}
-  >
+  <Root as="table">
     <Root as="thead">
       <Root as="tr">
         {header?.map((cell) => <th>{cell}</th>)}
@@ -66,14 +55,6 @@ const {
         width: 100%;
         caption-side: bottom;
         white-space: nowrap;
-
-        &.radius-none {
-          border-radius: 0;
-        }
-
-        &.radius-auto {
-          border-radius: var(--radius-1);
-        }
 
         thead {
           background-color: var(--color-3);
