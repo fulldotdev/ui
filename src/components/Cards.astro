@@ -1,5 +1,6 @@
 ---
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
 import Root from 'fulldev-ui/components/Root.astro'
 import Card from './Card.astro'
 
@@ -11,7 +12,9 @@ type Props = HTMLAttributes<'div'> & {
   panel?: boolean | undefined
   level?: 1 | 2 | 3 | 4 | 5 | 6 | undefined
   position?: 'background' | 'cover' | 'inset' | undefined
-  cards?: ComponentProps<typeof Card<'a'>>[] | undefined
+  cards?: ComponentProps<typeof Card>[] | undefined
+  pages?: CollectionEntry<'pages'>['data'][] | undefined
+  records?: CollectionEntry<'records'>['data'][] | undefined
 }
 
 const {
@@ -23,6 +26,8 @@ const {
   level,
   panel,
   position,
+  pages,
+  records,
   ...rest
 } = Astro.props
 ---
@@ -37,7 +42,7 @@ const {
   {...rest}
 >
   {
-    cards?.map((card) => (
+    (cards || pages || records)?.map((card) => (
       <Card
         {panel}
         {level}

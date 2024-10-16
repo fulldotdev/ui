@@ -1,91 +1,63 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import type { ComponentProps } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
-import Badge from 'fulldev-ui/components/Badge.astro'
 import Button from 'fulldev-ui/components/Button.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
-import Card from 'fulldev-ui/components/Card.astro'
 import Cards from 'fulldev-ui/components/Cards.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Root from 'fulldev-ui/components/Root.astro'
 import Writeup from 'fulldev-ui/components/Writeup.astro'
+import type Card from './Card.astro'
 
-type Props = HTMLAttributes<'section'> & {
-  position?: 'background' | 'cover' | 'inset' | undefined
-  buttons?: ComponentProps<typeof Button<'a'>>[] | undefined
+interface Props
+  extends ComponentProps<typeof Root>,
+    ComponentProps<typeof Writeup> {
+  image?: ComponentProps<typeof Image>['src']
+  position?: ComponentProps<typeof Image>['position']
+  buttons?: ComponentProps<typeof Buttons>['buttons']
   button?: ComponentProps<typeof Button<'a'>> | undefined
-  cards?: ComponentProps<typeof Card<'a'>>[] | undefined
-  badge?: string | ComponentProps<typeof Badge<'a'>> | undefined
-  image?: ComponentProps<typeof Image>['src'] | undefined
-  rating?: number | undefined
+  variant?: ComponentProps<typeof Button<'a'>>['variant']
+  cards?: ComponentProps<typeof Cards>['cards']
+  panel?: ComponentProps<typeof Card>['panel']
   pages?: CollectionEntry<'pages'>['data'][] | undefined
   records?: CollectionEntry<'records'>['data'][] | undefined
-  heading?: string | undefined
-  title?: string | undefined
-  text?: string | undefined
-  html?: string | undefined
-  description?: string | undefined
-  label?: string | undefined
-  tagline?: string | undefined
-  list?: string[] | undefined
-  theme?: 'light' | 'dark' | undefined
-  color?: 'base' | 'brand' | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
-  align?: 'start' | 'center' | 'end' | undefined
-  level?: 1 | 2 | 3 | 4 | undefined
-  space?: 'auto' | 'none' | undefined
-  reverse?: boolean | undefined
-  variant?: 'primary' | 'secondary' | 'tertiary' | undefined
-  panel?: boolean | undefined
   structure?:
+    | ComponentProps<typeof Cards>['structure']
     | 'column'
     | 'split'
     | 'spread'
-    | 'carousel'
-    | 'grid'
-    | 'masonry'
-    | 'stack'
-    | undefined
 }
 
+const { cards, pages, records } = Astro.props
+const hasCards = (pages || records || cards)?.filter(Boolean)
+
 const {
-  space = 'auto',
-  structure = 'column',
-  variant = 'secondary',
+  structure = hasCards ? 'column' : 'grid',
   align = 'start',
+  space = 'auto',
   level = 2,
-  panel,
-  position,
-  label,
-  heading,
   badge,
-  title,
+  tagline,
+  rating,
+  heading,
   text,
   list,
   html,
-  tagline,
-  description,
-  buttons,
-  image,
-  rating,
   button,
-  cards,
-  pages,
-  records,
+  buttons,
+  variant,
+  panel,
+  image,
+  position,
   ...rest
 } = Astro.props
-
-const mergedCards = (pages || records || cards)?.filter(Boolean)
-const hasCards = mergedCards && mergedCards?.length > 0
 ---
 
 <Root
   class:list="section"
   as="section"
-  panel={hasCards ? undefined : panel}
-  structure={structure === 'split' || structure === 'spread'
-    ? structure
-    : 'column'}
+  panel={!hasCards && panel}
+  structure={hasCards ? 'column' : structure}
   {align}
   {...rest}
 >
@@ -99,24 +71,30 @@ const hasCards = mergedCards && mergedCards?.length > 0
           {tagline}
           {heading}
           {text}
+          {html}
           {list}
         />
       </slot>
       <slot name="buttons">
-        <Buttons {buttons} />
+        <Button
+          {variant}
+          {...button}
+        />
+        <Buttons
+          {variant}
+          {buttons}
+        />
       </slot>
     </slot>
   </Root>
   <slot>
     <Cards
-      structure={structure === 'carousel' ||
-      structure === 'stack' ||
-      structure === 'grid' ||
-      structure === 'masonry'
-        ? structure
-        : undefined}
-      cards={cards ?? pages ?? records}
       level={(level + 2) as any}
+      structure={hasCards ? (structure as any) : undefined}
+      position={hasCards ? position : undefined}
+      {cards}
+      {pages}
+      {records}
       {panel}
       {position}
     />

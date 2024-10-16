@@ -1,5 +1,5 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
 import Price from 'fulldev-ui/components/experimental/Price.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
@@ -14,7 +14,7 @@ import Text from 'fulldev-ui/components/Text.astro'
 import Wrap from 'fulldev-ui/components/Wrap.astro'
 import Badge from './Badge.astro'
 
-type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
+interface Props extends ComponentProps<typeof Root>, HTMLAttributes<'a'> {
   variant?: 'primary' | 'secondary' | 'tertiary' | undefined
   position?: 'background' | 'cover' | 'inset' | undefined
   align?: 'start' | 'center' | 'end' | undefined
@@ -29,8 +29,8 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
   images?: string[] | undefined
   button?: ComponentProps<typeof Button<'a'>> | undefined
   buttons?: ComponentProps<typeof Button<'a'>>[] | undefined
-  badge?: string | ComponentProps<typeof Badge<'a'>> | undefined
-  badges?: (string | ComponentProps<typeof Badge<'a'>>)[] | undefined
+  badge?: string | ComponentProps<typeof Badge> | undefined
+  badges?: (string | ComponentProps<typeof Badge>)[] | undefined
   rating?: number | ComponentProps<typeof Rating> | undefined
   price?: number | undefined
   icon?: string | undefined
@@ -48,7 +48,6 @@ type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
 
 const {
   href,
-  as = href ? 'a' : 'div',
   space = 'auto',
   panel = true,
   align = 'start',
@@ -90,12 +89,12 @@ const buttonVariant = (i: number) => {
 
 <Root
   class:list="card"
+  as={href ? 'a' : 'div'}
   structure="column"
   {align}
   {href}
   {space}
   {panel}
-  {as}
   {...rest}
 >
   <Image
