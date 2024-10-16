@@ -13,7 +13,9 @@ type Props = HTMLAttributes<'aside'> & {
 const { size = 'sm', render } = Astro.props
 
 const headings = render ? (await render())?.headings : []
-const h2Headings = headings?.filter((heading: any) => heading.depth === 2)
+const filteredHeadings = headings?.filter(
+  (heading: any) => heading.depth >= 2 && heading.depth <= 4
+)
 ---
 
 <input
@@ -28,24 +30,28 @@ const h2Headings = headings?.filter((heading: any) => heading.depth === 2)
   {size}
 >
   {
-    headings?.length > 0 && (
+    filteredHeadings?.length > 0 && (
       <>
         <Heading
           text="On this page"
           level={6}
         />
-        <Button
-          variant="link"
-          href={`#${headings[0]?.slug}`}
-          text="Overview"
-        />
-        {h2Headings.map((heading: any) => (
+        <nav class="toc-nav">
           <Button
             variant="link"
-            href={`#${heading.slug}`}
-            text={heading.text}
+            href={`#${filteredHeadings[0]?.slug}`}
+            text="Overview"
+            class="toc-link toc-link-h2"
           />
-        ))}
+          {filteredHeadings.map((heading: any) => (
+            <Button
+              variant="link"
+              href={`#${heading.slug}`}
+              text={heading.text}
+              class={`toc-link toc-link-h${heading.depth}`}
+            />
+          ))}
+        </nav>
       </>
     )
   }
@@ -97,6 +103,31 @@ const h2Headings = headings?.filter((heading: any) => heading.depth === 2)
 
       .button + .heading {
         margin-top: var(--space-5);
+      }
+
+      .toc-nav {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .toc-link {
+        text-align: left;
+      }
+
+      .toc-link-h2 {
+        margin-top: var(--space-3);
+      }
+
+      .toc-link-h3 {
+        margin-top: var(--space-3);
+        margin-left: var(--space-4);
+        font-size: 0.9em;
+      }
+
+      .toc-link-h4 {
+        margin-top: var(--space-2);
+        margin-left: var(--space-5);
+        font-size: 0.8em;
       }
     }
   }
