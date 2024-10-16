@@ -6,21 +6,30 @@ import Link from 'fulldev-ui/components/Link.astro'
 import Root from 'fulldev-ui/components/Root.astro'
 import Text from 'fulldev-ui/components/Text.astro'
 import Logo from 'fulldev-ui/components/experimental/Logo.astro'
+import Button from './Button.astro'
+import Row from './Row.astro'
+import Social from './Social.astro'
+import Spread from './Spread.astro'
+import Stack from './Stack.astro'
+import Channel from './experimental/Channel.astro'
 
 type Props<As extends HTMLTag = 'footer'> = Polymorphic<{ as: As }> & {
-  structure?: 'spread' | 'row' | 'split' | 'column' | 'stack' | undefined
-  align?: 'start' | 'center' | 'end' | undefined
   size?: 'sm' | 'md' | 'lg' | undefined
   theme?: 'light' | 'dark' | undefined
   color?: 'base' | 'brand' | undefined
   space?: 'none' | 'auto' | undefined
-  panel?: boolean | undefined
+  screen?: number | undefined
   logo?: string | undefined
   heading?: string | undefined
   title?: string | undefined
   description?: string | undefined
+  hours?: any
   text?: string | undefined
+  socials?: (string | ComponentProps<typeof Social>)[] | undefined
+  buttons?: ComponentProps<typeof Button<'a'>>[] | undefined
   html?: string | undefined
+  panel?: boolean | undefined
+  channels?: any
   columns?: {
     heading: string | undefined
     links: ComponentProps<typeof Link<'a'>>[] | undefined
@@ -30,15 +39,19 @@ type Props<As extends HTMLTag = 'footer'> = Polymorphic<{ as: As }> & {
 const {
   as = 'footer',
   space = 'auto',
-  panel,
-  structure = 'grid',
   size = 'sm',
+  screen = 1280,
+  hours,
+  panel,
   logo,
+  socials,
   heading,
+  buttons,
   columns,
   text,
   title,
   description,
+  channels,
   html,
   ...rest
 } = Astro.props
@@ -46,7 +59,8 @@ const {
 
 <Root
   class:list="footer"
-  {structure}
+  style={{ '--screen': `${screen}px` }}
+  structure="stack"
   {as}
   {panel}
   {space}
@@ -54,71 +68,127 @@ const {
   {...rest}
 >
   <Column>
-    <Column
-      style={{ textDecoration: 'none' }}
-      as="a"
-      href="/"
-    >
-      <Logo logo={logo} />
-      <Heading
-        level={4}
-        color="base"
-        html={heading || title}
-      />
-    </Column>
+    <Logo {logo} />
     <Text
       color="base"
       html={html || text || description}
     />
+    <Row>
+      {
+        socials?.map((social) => (
+          <Social
+            {...(typeof social === 'string' ? { href: social } : social)}
+          />
+        ))
+      }
+    </Row>
   </Column>
 
-  {
-    columns?.map(({ heading, links }) => (
-      <Column>
-        <Heading
-          html={heading}
-          level={4}
+  <Column
+    space="none"
+    class:list="channels"
+  >
+    {
+      channels?.map((channel: any) => (
+        <Channel
+          heading={channel.heading}
+          text={channel.text}
+          icon={channel.icon}
+          href={channel.href}
         />
-        {links?.map((link) => (
-          <Link {...link} />
-        ))}
-      </Column>
-    ))
-  }
+      ))
+    }
+  </Column>
+
+  <Column
+    class:list="hours"
+    space="none"
+  >
+    <Heading
+      html={hours?.heading}
+      level={5}
+    />
+    <Column space="none">
+      {
+        Object.entries(hours?.days ?? {})?.map(([key, value]: any) => (
+          <Spread>
+            <Text text={key} />
+            <Text text={value} />
+          </Spread>
+        ))
+      }
+    </Column>
+  </Column>
+
+  <Stack class:list="buttons">
+    {
+      columns?.map(({ heading, buttons }: any) => (
+        <Column>
+          <Heading
+            level={5}
+            html={heading}
+          />
+          {buttons?.map((button: any) => (
+            <Button
+              variant="link"
+              {...button}
+            />
+          ))}
+        </Column>
+      ))
+    }
+  </Stack>
 </Root>
 
 <style is:global lang="scss">
   @layer fulldev {
     .footer {
-      --inset-x: var(--gutter);
-      --inset-y: var(--spacer);
-
       position: relative;
       margin-top: auto;
-      padding: var(--inset-y) var(--inset-x);
+      border-top-width: 1px;
+      border-color: var(--base-a6);
+      background-color: var(--base-2);
+      padding: var(--space-7) var(--gutter);
       width: 100%;
       overflow: auto;
 
-      &.panel {
-        --inset-x: min(var(--gutter), var(--spacer));
+      .column {
+        h5 + * {
+          margin-top: var(--space-4);
+        }
 
+        .button.variant-link + .button.variant-link {
+          margin-top: var(--space-4);
+        }
+      }
+
+      &.panel {
         margin: var(--spacer) var(--gutter);
-        border: 1px solid var(--base-a6);
+        border-width: 1px;
         border-radius: var(--radius-2);
         overflow: hidden;
       }
 
-      &.align-start {
-        align-items: flex-start;
-        text-align: left;
+      .channels {
+        gap: var(--space-3);
       }
 
-      &.align-center {
-        align-items: center;
+      .buttons {
+        gap: var(--space-3);
       }
 
-      &.align-end {
-        align-items: flex-end;
+      .text {
+        max-width: calc(5 * var(--space-7));
+      }
+
+      .hours {
+        .column {
+          gap: 0;
+
+          .text {
+            font-size: var(--text-2);
+          }
+        }
       }
     }
   }

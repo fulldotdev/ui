@@ -1,85 +1,103 @@
-<!-- ---
-import Column from 'fulldev-ui/components/Column.astro'
-import Link from 'fulldev-ui/components/Link.astro'
-import Card from './Card.astro'
-import Heading from './Heading.astro'
+---
+import type { HTMLAttributes } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import Button from 'fulldev-ui/components/Button.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Root from 'fulldev-ui/components/Root.astro'
 
-const { toc, render } = Astro.props
+type Props = HTMLAttributes<'aside'> & {
+  render?: CollectionEntry<'pages'>['render'] | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
+}
 
-const { headings } = render ? await render() : { headings: [] }
-const h2Headings = headings.filter((heading: any) => heading.depth === 2)
+const { size = 'sm', render } = Astro.props
+
+const headings = render ? (await render())?.headings : []
+const h2Headings = headings?.filter((heading: any) => heading.depth === 2)
 ---
 
-<Column
+<input
+  id="toc"
+  class="toc-checkbox"
+  type="checkbox"
+/>
+
+<Root
   class:list="toc"
   as="aside"
+  {size}
 >
   {
-    toc?.length && headings?.length > 0 && (
+    headings?.length > 0 && (
       <>
         <Heading
           text="On this page"
           level={6}
         />
-        {headings.map(
-          (heading: { slug: string; depth: number; text: string }) => (
-            <Link
-              href={`#${heading.slug}`}
-              class="toc-link"
-              text={heading.text}
-            />
-          )
-        )}
-        <Card
-          size="sm"
-          frame="panel"
-          heading="Join our community Discord"
-          text="Get help, share your work and shape the future of fulldev-ui."
-          buttons={[
-            {
-              icon: 'brand-discord',
-              text: 'Join discord',
-              contrast: true,
-              href: '/discord',
-              size: 'sm',
-            },
-          ]}
+        <Button
+          variant="link"
+          href={`#${headings[0]?.slug}`}
+          text="Overview"
         />
+        {h2Headings.map((heading: any) => (
+          <Button
+            variant="link"
+            href={`#${heading.slug}`}
+            text={heading.text}
+          />
+        ))}
       </>
     )
   }
-</Column>
+</Root>
 
 <style lang="scss" is:global>
-  :root {
-    --toc-width: 240px;
-  }
-
   @layer fulldev {
+    .toc-checkbox {
+      display: none;
+    }
+
+    @media (max-width: 1023.999px) {
+      body:has(.toc-checkbox:checked) {
+        overflow: hidden;
+      }
+    }
+
     .toc {
-      display: none !important;
+      --toc-width: 240px;
+
+      display: none;
       position: fixed;
-      top: 0;
+      top: var(--header-height, 0px);
       right: 0;
-      box-sizing: border-box;
-      border-left: 1px solid var(--color-a6);
-      padding: var(--space-6) var(--gutter);
-      width: var(--sidebar-width);
-      height: 100vh;
-      max-height: 100vh;
+      flex-shrink: 0;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: calc(var(--space-4) + var(--space-1));
+      z-index: 10;
+      border-left-width: 1px;
+      border-style: solid;
+      border-color: var(--color-a6);
+      background-color: var(--color-background);
+      padding: var(--space-md-6) var(--gutter);
+      width: 100%;
+      max-height: calc(100vh - var(--header-height, 0px));
       overflow-y: auto;
 
-      .toc-link {
-        font-size: var(--text-2);
+      &:is(.toc-checkbox:checked + &) {
+        display: flex;
       }
 
       @media (min-width: 1024px) {
-        display: flex !important;
+        display: flex;
+        position: sticky;
+        border-left-width: 1px;
+        width: var(--toc-width);
       }
 
-      .card .icon {
-        color: var(--base-1);
+      .button + .heading {
+        margin-top: var(--space-5);
       }
     }
   }
-</style> -->
+</style>
