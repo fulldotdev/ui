@@ -1,30 +1,46 @@
 ---
-import Section from 'fulldev-ui/components/Section.astro'
+import Root from 'fulldev-ui/components/Root.astro'
+import Text from 'fulldev-ui/components/Text.astro'
 
-const { href, ...rest } = Astro.props
+type Props = {
+  color?: 'base' | 'brand' | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
+  text?: string | undefined
+}
+
+const { color = 'brand', size = 'sm', text, ...rest } = Astro.props
 ---
 
-<a href={href}>
-  <Section
-    class:list="banner"
-    as="header"
-    size="sm"
-    structure="masonry"
-    level={1}
-    align="center"
-    {...rest}
-  />
-</a>
+<Root
+  class:list={'banner'}
+  as="header"
+  {size}
+  {color}
+  {...rest}
+>
+  <Text text={text} />
+</Root>
 
-<style is:global lang="scss">
+<style lang="scss" is:global>
   @layer fulldev {
     .banner {
-      &.section {
-        margin: 0;
-        border: 0;
-        border-radius: 0;
-        background-color: var(--color-2);
-        padding: var(--space-5);
+      display: flex;
+      position: relative;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--color-9);
+      padding: 0 var(--gutter);
+      width: 100%;
+      height: var(--banner-height);
+      overflow: hidden;
+
+      .text {
+        color: var(--color-contrast);
+      }
+
+      &,
+      & ~ * {
+        --banner-height: 32px;
       }
     }
   }
