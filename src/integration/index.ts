@@ -15,6 +15,7 @@ type Color = {
 interface Config {
   css?: string
   injectRoutes?: boolean
+  overrideComponents?: boolean
   generateImageEntries?: boolean
   colors: {
     theme: 'light' | 'dark'

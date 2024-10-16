@@ -1,6 +1,7 @@
 ---
 import type { HTMLTag } from 'astro/types'
 import { mapKeys } from 'radash'
+import config from 'virtual:fulldev-ui/config'
 
 type Props<As extends HTMLTag> = {
   as?: As
@@ -44,23 +45,16 @@ const render =
     ? hasContent(slot) || hasContent(html) || hasContent(text)
     : ifProp
 
+const componentName = Astro.props.class?.split(' ').pop()
 const userComponents = import.meta.glob('/src/**/*.astro')
 const mappedUserComponents = mapKeys(userComponents, (key: string) => {
   const name = key.split('/').pop()?.split('.').shift()?.toLowerCase()
   return name || key
 })
 
-const found = mappedUserComponents[component] as any
+const found =
+  config.overrideComponents && (mappedUserComponents[componentName] as any)
 const FoundComponent = found ? (await found()).default : null
-
-console.log({
-  component,
-  userComponents,
-  mappedUserComponents,
-  found,
-  FoundComponent,
-  Astro,
-})
 ---
 
 {
