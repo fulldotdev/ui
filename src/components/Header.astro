@@ -1,0 +1,133 @@
+---
+import Button from 'fulldev-ui/components/Button.astro'
+import Logo from 'fulldev-ui/components/experimental/Logo.astro'
+import Root from 'fulldev-ui/components/Root.astro'
+import Row from 'fulldev-ui/components/Row.astro'
+import Search from 'fulldev-ui/components/Search.astro'
+import ThemeSelect from './ThemeSelect.astro'
+
+type Props = {
+  size?: 'sm' | 'md' | 'lg' | undefined
+  panel?: boolean | undefined
+  search?: boolean | undefined
+  logo?: string | undefined
+  buttons?: any[] | undefined
+  open?: boolean | undefined
+}
+
+const {
+  size = 'sm',
+  open = true,
+  logo,
+  buttons,
+  search,
+  panel,
+  ...rest
+} = Astro.props
+---
+
+<Root
+  class:list={['header']}
+  as="header"
+  {panel}
+  {size}
+  {open}
+  {...rest}
+>
+  <Logo {logo} />
+  <Row
+    class:list="buttons"
+    space="none"
+  >
+    {
+      buttons?.map((button) => (
+        <Button
+          variant="link"
+          {...button}
+        />
+      ))
+    }
+  </Row>
+  {search && <Search />}
+  <ThemeSelect />
+  <Button
+    class="menu-button"
+    variant="tertiary"
+    icon="menu-2"
+    as="label"
+    for="sidebar"
+  />
+</Root>
+
+<style lang="scss" is:global>
+  @layer fulldev {
+    .header {
+      display: flex;
+      position: sticky;
+      top: 0;
+      left: 0;
+      justify-content: flex-end;
+      align-items: center;
+      gap: var(--space-4);
+      z-index: 20;
+      border-bottom-width: 1px;
+      border-style: solid;
+      border-color: var(--base-a6);
+      background-color: var(--base-2);
+      padding: 0 var(--gutter);
+      width: 100%;
+      height: var(--header-height);
+      overflow: hidden;
+
+      &,
+      & ~ * {
+        --header-height: 56px;
+      }
+
+      &.panel {
+        margin: var(--space-4) var(--gutter);
+        border-width: 1px solid;
+        border-radius: var(--radius-2);
+        padding: var(--sapce-4) min(var(--gutter), var(--space-4));
+        width: auto;
+      }
+
+      .logo {
+        margin-right: auto;
+      }
+
+      @media (min-width: 1024px) {
+        &:not(.open) {
+          display: none;
+
+          & ~ * {
+            --header-height: 0px;
+          }
+        }
+      }
+
+      .buttons {
+        display: none;
+
+        @media (min-width: 1024px) {
+          display: flex;
+          gap: var(--space-2);
+
+          .button.variant-link + .button {
+            margin-left: var(--space-3);
+          }
+        }
+      }
+
+      .menu-button {
+        .icon {
+          transform: scale(1.56);
+        }
+
+        @media (min-width: 1024px) {
+          display: none;
+        }
+      }
+    }
+  }
+</style>

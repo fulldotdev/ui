@@ -7,12 +7,11 @@ import Text from 'fulldev-ui/components/Text.astro'
 import Root from '../Root.astro'
 
 type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
-  if?: any | undefined
   size?: 'sm' | 'md' | 'lg' | undefined
   color?: 'base' | 'brand' | undefined
   variant?: 'primary' | 'secondary' | 'tertiary' | undefined
   structure?: 'row' | 'column' | undefined
-  level?: 1 | 2 | 3 | 4 | 5 | 6 | undefined
+  align?: 'start' | 'center' | 'end' | undefined
   heading?: string | undefined
   text?: string | undefined
   icon?: string | undefined
@@ -24,9 +23,9 @@ const {
   variant = 'secondary',
   structure = 'row',
   color = 'brand',
-  level = 5,
+  align = 'start',
+  target = '_blank',
   heading,
-  target,
   text,
   icon,
   href,
@@ -37,21 +36,25 @@ const {
 <Root
   class:list={'channel'}
   {structure}
+  align={structure === 'row' ? 'start' : align}
   {...rest}
 >
   <Button
+    {target}
     {variant}
     {color}
     {href}
-    {target}
     {icon}
   />
-  <Column>
+  <Column
+    space="none"
+    align={structure === 'row' ? 'start' : align}
+  >
     <Heading
-      {level}
-      set:html={heading}
+      level={6}
+      html={heading}
     />
-    <Text set:html={text} />
+    <Text html={text} />
   </Column>
 </Root>
 
@@ -59,16 +62,8 @@ const {
   .channel {
     gap: var(--space-4);
 
-    * {
-      margin: 0;
-    }
-
     .column {
       gap: var(--space-1);
-
-      * {
-        margin: 0;
-      }
     }
   }
 </style>
