@@ -4,23 +4,32 @@ import type { CollectionEntry } from 'astro:content'
 import Footer from 'fulldev-ui/blocks/Footer.astro'
 import Blocks from 'fulldev-ui/components/Blocks.astro'
 import Head from 'fulldev-ui/components/Head.astro'
-import Navigation from 'fulldev-ui/components/Navigation.astro'
+import Header from 'fulldev-ui/components/Header.astro'
 import Root from 'fulldev-ui/components/Root.astro'
+import Sidebar from 'fulldev-ui/components/Sidebar.astro'
+import Toc from 'fulldev-ui/components/Toc.astro'
 
 type Props = Omit<CollectionEntry<'pages'>, 'data'> &
   CollectionEntry<'pages'>['data'] & {
     class?: HTMLAttributes<'body'>['class'] | undefined
     lang?: HTMLAttributes<'html'>['lang'] | undefined
     theme?: 'light' | 'dark' | undefined
+    toc?: any
+    sidebar?: any
+    footer?: any
+    navigation?: any
   }
 
 const {
   lang = 'nl',
   class: classes,
-  navigation,
   render,
-  sections,
+  header,
+  navigation,
   footer,
+  sidebar,
+  toc,
+  sections,
   code,
   theme,
 } = Astro.props
@@ -34,17 +43,33 @@ const {
     class={classes}
     {theme}
   >
-    <slot name="navigation">
-      <Navigation
+    <slot name="header">
+      <Header
+        open={header}
         {...navigation}
-        {render}
+        {...header}
       />
     </slot>
-    <main data-pagefind-body>
-      <slot>
-        <Blocks {...sections} />
+    <div class="core">
+      <slot name="sidebar">
+        <Sidebar
+          open={sidebar}
+          {...navigation}
+          {...sidebar}
+        />
       </slot>
-    </main>
+      <main data-pagefind-body>
+        <slot>
+          <Blocks {...sections} />
+        </slot>
+      </main>
+      <slot name="toc">
+        <Toc
+          {render}
+          {...toc}
+        />
+      </slot>
+    </div>
     <slot name="footer">
       <Footer {...footer} />
     </slot>
@@ -68,32 +93,24 @@ const {
         body {
           --screen: 100vw;
 
-          background-color: var(--color-background);
+          background-color: var(--base-2);
           width: 100%;
-          min-height: 100vh;
           color: var(--base-11);
 
-          @media (max-width: 767.999px) {
-            &:has(#sidebar-checkbox:checked) {
-              overflow: hidden;
-            }
-          }
-
-          .sidebar ~ main {
-            padding-left: var(--sidebar-width);
-          }
-
-          .toc ~ main {
-            padding-right: var(--sidebar-width);
-          }
-
-          main {
-            --screen: 1280px;
-
+          .core {
             display: flex;
-            flex-direction: column;
-            padding-top: var(--header-height);
-            max-width: 100vw;
+            position: relative;
+
+            main {
+              --screen: 1280px;
+
+              display: flex;
+              flex: 1;
+              flex-direction: column;
+              background-color: var(--color-background);
+              max-width: 100vw;
+              min-height: 100vh;
+            }
           }
         }
       }
