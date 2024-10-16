@@ -1,0 +1,61 @@
+---
+import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import Root from 'fulldev-ui/components/Root.astro'
+import Button from './Button.astro'
+
+type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'link' | undefined
+  color?: 'base' | 'brand' | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
+  contrast?: boolean | undefined
+  buttons?: ComponentProps<typeof Button<'a'>>[] | undefined
+}
+
+const {
+  variant = 'primary',
+  color,
+  size,
+  buttons,
+  contrast,
+  ...rest
+} = Astro.props
+
+const buttonVariant = (i: number) => {
+  if (variant === 'primary' && i === 0) return 'primary'
+  else if (variant === 'primary' && i === 1) return 'secondary'
+  else if (variant === 'primary' && i > 1) return 'tertiary'
+  else if (variant === 'secondary' && i === 0) return 'secondary'
+  else if (variant === 'secondary' && i > 0) return 'tertiary'
+  else if (variant === 'tertiary') return 'tertiary'
+  else return 'tertiary'
+}
+---
+
+<Root
+  class:list="buttons"
+  {color}
+  {size}
+  {contrast}
+  {...rest}
+>
+  {
+    buttons?.map((button, i) => (
+      <Button
+        variant={buttonVariant(i)}
+        {...button}
+      />
+    ))
+  }
+</Root>
+
+<style is:global lang="scss">
+  @layer fulldev {
+    .buttons {
+      display: inline-flex;
+      flex-wrap: wrap;
+      justify-content: stretch;
+      gap: var(--space-2);
+      width: auto;
+    }
+  }
+</style>

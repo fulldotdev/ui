@@ -1,21 +1,16 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
 import Badge from 'fulldev-ui/components/Badge.astro'
-import Box from 'fulldev-ui/components/Box.astro'
 import Button from 'fulldev-ui/components/Button.astro'
+import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Card from 'fulldev-ui/components/Card.astro'
-import Column from 'fulldev-ui/components/Column.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
+import Cards from 'fulldev-ui/components/Cards.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import List from 'fulldev-ui/components/List.astro'
-import Rating from 'fulldev-ui/components/Rating.astro'
 import Root from 'fulldev-ui/components/Root.astro'
-import Text from 'fulldev-ui/components/Text.astro'
-import Wrap from 'fulldev-ui/components/Wrap.astro'
-import Tagline from './Tagline.astro'
+import Writeup from 'fulldev-ui/components/Writeup.astro'
 
-type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> & {
+type Props = HTMLAttributes<'section'> & {
   position?: 'background' | 'cover' | 'inset' | undefined
   buttons?: ComponentProps<typeof Button<'a'>>[] | undefined
   button?: ComponentProps<typeof Button<'a'>> | undefined
@@ -37,7 +32,11 @@ type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> & {
   color?: 'base' | 'brand' | undefined
   size?: 'sm' | 'md' | 'lg' | undefined
   align?: 'start' | 'center' | 'end' | undefined
-  justify?: 'start' | 'center' | 'end' | undefined
+  level?: 1 | 2 | 3 | 4 | undefined
+  space?: 'auto' | 'none' | undefined
+  reverse?: boolean | undefined
+  variant?: 'primary' | 'secondary' | 'tertiary' | undefined
+  panel?: boolean | undefined
   structure?:
     | 'column'
     | 'split'
@@ -47,15 +46,9 @@ type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> & {
     | 'masonry'
     | 'stack'
     | undefined
-  level?: 1 | 2 | 3 | 4 | 5 | 6 | undefined
-  space?: 'auto' | 'none' | undefined
-  reverse?: 'odd' | 'even' | undefined
-  variant?: 'primary' | 'secondary' | 'tertiary' | undefined
-  panel?: boolean | undefined
 }
 
 const {
-  as = 'section',
   space = 'auto',
   structure = 'column',
   variant = 'secondary',
@@ -75,127 +68,58 @@ const {
   buttons,
   image,
   rating,
-  size,
   button,
   cards,
   pages,
   records,
-  justify,
-  theme,
   ...rest
 } = Astro.props
 
 const mergedCards = (pages || records || cards)?.filter(Boolean)
 const hasCards = mergedCards && mergedCards?.length > 0
-const hasText = text || html || description || list
-const hasButton = button || (buttons && buttons?.length > 0)
-
-const buttonVariant = (i: number) => {
-  if (variant === 'primary' && i === 0) return 'primary'
-  else if (variant === 'primary' && i === 1) return 'secondary'
-  else if (variant === 'primary' && i > 1) return 'tertiary'
-  else if (variant === 'secondary' && i === 0) return 'secondary'
-  else if (variant === 'secondary' && i > 0) return 'tertiary'
-  else if (variant === 'tertiary') return 'tertiary'
-  else return 'tertiary'
-}
 ---
 
 <Root
   class:list="section"
-  justify={hasCards ? undefined : justify}
-  theme={hasCards ? undefined : theme}
-  structure={structure === 'split' ? 'split' : 'column'}
+  as="section"
   panel={hasCards ? undefined : panel}
-  {as}
+  structure={structure === 'split' || structure === 'spread'
+    ? structure
+    : 'column'}
   {align}
-  {space}
-  {size}
   {...rest}
 >
-  <Box
-    structure={structure === 'spread' ||
-    structure === 'carousel' ||
-    (!hasText && hasButton)
-      ? 'spread'
-      : 'column'}
-    align={structure === 'split' ? 'start' : align}
-  >
+  <Root class:list="section-segment">
     <slot name="segment">
-      <Column
-        style={{ textWrap: 'balance' }}
-        align={structure === 'split' || structure === 'spread'
-          ? 'start'
-          : align}
-      >
-        <slot name="writeup">
-          <Rating
-            color="brand"
-            {align}
-            {...typeof rating === 'number' ? { value: rating } : rating}
-          />
-          <Badge
-            color="base"
-            {...typeof badge === 'string' ? { html: badge } : badge}
-          />
-          <Tagline
-            color="brand"
-            html={tagline}
-          />
-          <Heading
-            html={heading || title}
-            {level}
-          />
-          <Text
-            contrast={!hasCards && position === 'background' && true}
-            html={html || text || description}
-            lead={level === 1}
-          />
-          <List items={list} />
-        </slot>
-      </Column>
-      <Wrap>
-        <slot name="actions">
-          {
-            [button, ...(buttons ?? [])]
-              .filter(Boolean)
-              ?.map((button: any, i: number) => (
-                <Button
-                  variant={buttonVariant(i)}
-                  {...button}
-                />
-              ))
-          }
-        </slot>
-      </Wrap>
-    </slot>
-  </Box>
-  <slot>
-    <Box
-      structure={structure === 'split' || structure === 'spread'
-        ? 'column'
-        : structure}
-      position={structure === 'carousel' ? 'inset' : undefined}
-      size={size === 'lg' ? 'md' : 'sm'}
-      {panel}
-    >
-      <slot name="deck">
-        {
-          mergedCards?.map(({ ...rest }: any) => (
-            <Card
-              align="start"
-              level={Number(level) + 2}
-              {position}
-              {panel}
-              {justify}
-              {theme}
-              {variant}
-              {...rest}
-            />
-          ))
-        }
+      <slot name="writeup">
+        <Writeup
+          {level}
+          {rating}
+          {badge}
+          {tagline}
+          {heading}
+          {text}
+          {list}
+        />
       </slot>
-    </Box>
+      <slot name="buttons">
+        <Buttons {buttons} />
+      </slot>
+    </slot>
+  </Root>
+  <slot>
+    <Cards
+      structure={structure === 'carousel' ||
+      structure === 'stack' ||
+      structure === 'grid' ||
+      structure === 'masonry'
+        ? structure
+        : undefined}
+      cards={cards ?? pages ?? records}
+      level={(level + 2) as any}
+      {panel}
+      {position}
+    />
     <Image
       position={hasCards ? undefined : position}
       src={image}
@@ -210,6 +134,7 @@ const buttonVariant = (i: number) => {
       --inset-y: var(--spacer);
 
       position: relative;
+      align-items: flex-start;
       padding: var(--inset-y) var(--inset-x);
       overflow: auto;
 
@@ -223,25 +148,73 @@ const buttonVariant = (i: number) => {
         overflow: hidden;
       }
 
-      @media (min-width: 1024px) {
-        &:nth-of-type(odd).split.reverse-odd {
-          > :first-child {
+      &.reverse {
+        &:not(.structure-split) {
+          .section-segment {
             order: 999;
-          }
-
-          > :last-child {
-            order: 0;
           }
         }
 
-        &:nth-of-type(even).split.reverse-even {
-          > :first-child {
-            order: 0;
-          }
-
-          > :last-child {
+        @media (min-width: 1024px) {
+          .section-segment {
             order: 999;
           }
+        }
+      }
+
+      &.structure-column {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-6);
+
+        .section-segment {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-5);
+        }
+
+        &.align-center {
+          align-items: center;
+
+          .section-segment {
+            align-items: center;
+            text-align: center;
+          }
+        }
+      }
+
+      &.structure-split {
+        display: grid;
+        grid-template-columns: 1fr;
+        column-gap: var(--space-7);
+        width: 100%;
+
+        .section-segment {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: var(--space-5);
+        }
+
+        &.align-center {
+          align-items: center;
+        }
+      }
+
+      &.structure-spread {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-6);
+
+        .section-segment {
+          display: flex;
+          justify-content: space-between;
+          gap: var(--space-5);
+          width: 100%;
+        }
+
+        &.align-center {
+          align-items: flex-start;
         }
       }
     }

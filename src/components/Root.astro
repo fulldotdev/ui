@@ -1,20 +1,19 @@
 ---
-import type { HTMLTag } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import { mapKeys } from 'radash'
 import config from 'virtual:fulldev-ui/config'
 
-type Props<As extends HTMLTag> = {
-  as?: As
-  component?: string
-  slot?: any
-  if?: 'content' | any
+interface Props extends HTMLAttributes<'div'> {
+  contrast?: boolean | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
+  color?: 'base' | 'brand' | undefined
+  theme?: 'light' | 'dark' | undefined
   [key: string | number | symbol]: any
 }
 
 const {
   as: As = 'div',
   if: ifProp = 'content',
-  component,
   space,
   theme,
   variant,
@@ -45,7 +44,7 @@ const render =
     ? hasContent(slot) || hasContent(html) || hasContent(text)
     : ifProp
 
-const componentName = Astro.props.class?.split(' ').pop()
+const componentName = Astro.props.class?.split(' ').pop() ?? ''
 const userComponents = import.meta.glob('/src/**/*.astro')
 const mappedUserComponents = mapKeys(userComponents, (key: string) => {
   const name = key.split('/').pop()?.split('.').shift()?.toLowerCase()
@@ -68,23 +67,21 @@ const FoundComponent = found ? (await found()).default : null
         <As
           class:list={[
             'root',
-            structure,
             {
-              lead,
               contrast,
               panel,
               open,
+              reverse,
+              lead,
+              [`size-${size}`]: size,
+              [`color-${color}`]: color,
               [`theme-${theme}`]: theme,
               [`level-${level}`]: level,
               [`variant-${variant}`]: variant,
               [`structure-${structure}`]: structure,
-              [`size-${size}`]: size,
               [`align-${align}`]: align,
               [`justify-${justify}`]: justify,
               [`position-${position}`]: position,
-              [`color-${color}`]: color,
-              [`space-${space}`]: space,
-              [`reverse-${reverse}`]: reverse,
               [`placement-${placement}`]: placement,
             },
           ]}

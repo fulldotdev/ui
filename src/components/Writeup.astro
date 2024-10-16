@@ -1,0 +1,90 @@
+---
+import type { ComponentProps } from 'astro/types'
+import Badge from 'fulldev-ui/components/Badge.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import List from 'fulldev-ui/components/List.astro'
+import Rating from 'fulldev-ui/components/Rating.astro'
+import Root from 'fulldev-ui/components/Root.astro'
+import Tagline from 'fulldev-ui/components/Tagline.astro'
+import Text from 'fulldev-ui/components/Text.astro'
+
+interface Props extends ComponentProps<typeof Root> {
+  level?: ComponentProps<typeof Heading>['level']
+  rating?: ComponentProps<typeof Rating>
+  badge?: ComponentProps<typeof Badge>
+  tagline?: ComponentProps<typeof Tagline>['html']
+  heading?: ComponentProps<typeof Heading>['text']
+  text?: ComponentProps<typeof Text<'p'>>['text']
+  list?: ComponentProps<typeof List<'ul'>>['items']
+  align?: 'start' | 'center' | 'end' | undefined
+}
+
+const {
+  level = 2,
+  rating,
+  badge,
+  tagline,
+  heading,
+  text,
+  list,
+  ...rest
+} = Astro.props
+---
+
+<Root
+  class:list="writeup"
+  as="div"
+  {...rest}
+>
+  <slot>
+    <Rating
+      color="brand"
+      {...typeof rating === 'number' ? { value: rating } : rating}
+    />
+    <Badge
+      color="base"
+      {...typeof badge === 'string' ? { html: badge } : badge}
+    />
+    <Tagline
+      color="brand"
+      html={tagline}
+    />
+    <Heading
+      {level}
+      html={heading}
+    />
+    <Text
+      lead={level === 1}
+      html={text}
+    />
+    <List items={list} />
+  </slot>
+</Root>
+
+<style is:global lang="scss">
+  @layer fulldev {
+    .writeup {
+      display: flex;
+      position: relative;
+      flex-direction: column;
+      align-items: inherit;
+      gap: var(--space-4);
+      text-align: inherit;
+
+      &.align-start {
+        align-items: flex-start;
+        text-align: left;
+      }
+
+      &.align-center {
+        align-items: center;
+        text-align: center;
+      }
+
+      &.align-end {
+        align-items: flex-end;
+        text-align: right;
+      }
+    }
+  }
+</style>
