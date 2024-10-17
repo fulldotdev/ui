@@ -1,21 +1,17 @@
 ---
-// This component is experimental
-// @ts-nocheck
 import Table from 'fulldev-ui/components/Table.astro'
 import { readFileSync } from 'node:fs'
+import { pascal } from 'radash'
 
-const pathnameWithoutTrailingSlash = Astro.url.pathname.replace(/\/$/, '')
-const slug = pathnameWithoutTrailingSlash.split('/').pop() || ''
-const component = slug.charAt(0).toUpperCase() + slug.slice(1)
-
-const allComponents = await Astro.glob('../../components/**/*.astro')
-const found = allComponents.find(
-  (c) => c.file.split('/').pop()?.replace('.astro', '') === component
-)
-
-if (!found) return
-
-const componentFileContent = readFileSync(found.file, 'utf-8')
+const slug = Astro.url.pathname.replace(/\/$/, '').split('/').pop() || ''
+const componentName = pascal(slug)
+const allComponents = import.meta.glob('src/**/*.astro', { eager: true })
+const foundComponent = Object.entries(allComponents).find(
+  ([key]) => key.split('/').pop() === `${componentName}.astro`
+)?.[1] as any
+const foundContent =
+  foundComponent && readFileSync(foundComponent.file, 'utf-8')
+console.log(foundContent)
 
 const extractProps = (content: string) => {
   const propsMatch =
