@@ -240,9 +240,16 @@ const isPolymorphic = componentFileContent.includes('Polymorphic<')
 
 // Extract HTMLAttributes from the component
 const htmlAttributesMatch = componentFileContent.match(
-  /HTMLAttributes<'(\w+)'>/
+  /HTMLAttributes<['"]?([^'">\s]+)['"]?>/
 )
-const htmlElement = htmlAttributesMatch ? htmlAttributesMatch[1] : ''
+let htmlElement = htmlAttributesMatch ? htmlAttributesMatch[1] : ''
+
+// Special handling for List and Button components
+if (componentName === 'List') {
+  htmlElement = "'ul' | 'ol'"
+} else if (componentName === 'Button') {
+  htmlElement = "'button' | 'a' | 'label'"
+}
 
 // Add HTML Attributes row
 if (isPolymorphic && asDefault) {
