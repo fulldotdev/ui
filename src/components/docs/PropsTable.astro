@@ -1,5 +1,5 @@
 ---
-// This component is experimental and only used w
+// This component is experimental
 // @ts-nocheck
 import Table from 'fulldev-ui/components/Table.astro'
 import { readFileSync } from 'node:fs'
@@ -18,9 +18,16 @@ if (!found) return
 const componentFileContent = readFileSync(found.file, 'utf-8')
 
 const extractProps = (content: string) => {
-  const propsMatch = content.match(
-    /type Props(?:<[^>]+>)?\s*=\s*(?:HTMLAttributes<'[^']+'>\s*&\s*)?(?:Polymorphic<[^>]+>\s*&\s*)?([\s\S]*?)(?:}|$)/
-  )
+  const propsMatch =
+    content.match(
+      /(?:interface Props|type Props(?:<[^>]+>)?)\s*(?:extends[^{]+)?\s*{([\s\S]*?)}/
+    ) ||
+    content.match(
+      /type Props(?:<[^>]+>)?\s*=\s*(?:HTMLAttributes<'[^']+'>\s*&\s*)?(?:Polymorphic<[^>]+>\s*&\s*)?([\s\S]*?)(?:}|$)/
+    ) ||
+    content.match(
+      /interface Props(?:<[^>]+>)?\s*(?:extends[^{]+)?\s*{([\s\S]*?)}/
+    )
   if (propsMatch) {
     const propsContent = propsMatch[1]
     const props = [
@@ -34,7 +41,7 @@ const extractProps = (content: string) => {
             .replace(/\n\s*\|/g, ' | ')
         : 'unknown',
     }))
-    return props
+    return props.filter((prop) => prop.name !== 'as')
   }
   return []
 }
@@ -50,10 +57,12 @@ const extractDefaultProps = (content: string) => {
         ),
       ].reduce(
         (acc, [, name, value]) => {
-          acc[name] =
-            value.startsWith("'") || value.startsWith('"')
-              ? value.slice(1, -1)
-              : value
+          if (name !== 'as') {
+            acc[name] =
+              value.startsWith("'") || value.startsWith('"')
+                ? value.slice(1, -1)
+                : value
+          }
           return acc
         },
         {} as Record<string, string>
@@ -73,9 +82,39 @@ const extractAsDefault = (content: string) => {
     : 'div'
 }
 
+const extractComponentProps = (content: string) => {
+  const componentPropsMatches =
+    content.match(
+      /(?:extends ComponentProps<typeof ([^>]+)>|ComponentProps<typeof ([^>]+)>)/g
+    ) || []
+  return componentPropsMatches.map((match) => {
+    const componentName = match.match(/typeof ([^>]+)/)[1]
+    return {
+      name: componentName,
+      props: `ComponentProps<typeof ${componentName}>`,
+    }
+  })
+}
+
 const parsedProps = extractProps(componentFileContent)
 const parsedAstroProps = extractDefaultProps(componentFileContent)
 const asDefault = extractAsDefault(componentFileContent)
+const componentProps = extractComponentProps(componentFileContent)
+
+const allProps = [
+  ...parsedProps,
+  ...componentProps.map((cp) => ({ name: cp.name, type: cp.props })),
+]
+
+const getDefaultValue = (name: string, type: string) => {
+  if (parsedAstroProps[name]) {
+    return parsedAstroProps[name]
+  }
+  if (type.includes('undefined')) {
+    return 'undefined'
+  }
+  return '-'
+}
 ---
 
 <Table
@@ -83,17 +122,13 @@ const asDefault = extractAsDefault(componentFileContent)
   class:list={['props-table']}
   header={['Prop', 'Type', 'Default']}
   body={[
-    ...parsedProps.map((item) => [
+    ...allProps.map((item) => [
       item.name,
       item.type,
-      parsedAstroProps[item.name] ?? '-',
+      getDefaultValue(item.name, item.type),
     ]),
-    ...(asDefault !== 'div'
-      ? [
-          ['as', 'HTMLTag', asDefault],
-          ['HTML Attributes', `Polymorphic<${asDefault}>`, '-'],
-        ]
-      : []),
+    ['as', 'HTMLTag', asDefault],
+    ['HTML Attributes', `Polymorphic<${asDefault}>`, '-'],
   ]}
 />
 
