@@ -163,23 +163,26 @@ const extendsRoot = componentFileContent.includes(
 )
 
 // Prepare the table body data
-const tableBody = [
-  ...parsedProps.map((item) => [
+const tableBody = new Map()
+
+// Add component-specific props
+parsedProps.forEach((item) => {
+  tableBody.set(item.name, [
     item.name,
     item.type.replace(/\s*\|?\s*undefined/, '').trim(),
     getDefaultValue(item.name),
-  ]),
-]
+  ])
+})
 
 // Add Root props if the component extends Root.astro
 if (extendsRoot) {
   const rootProps = extractProps(
     readFileSync('src/components/Root.astro', 'utf-8')
   )
-  tableBody.push(
-    ...rootProps
-      .filter((item) => item.name !== '[key: string | number | symbol]')
-      .map((item) => {
+  rootProps
+    .filter((item) => item.name !== '[key: string | number | symbol]')
+    .forEach((item) => {
+      if (!tableBody.has(item.name)) {
         let type = item.type
           .replace(/\s*\|?\s*undefined/, '')
           .trim()
@@ -191,14 +194,14 @@ if (extendsRoot) {
           type = type.replace(/\s*\[key: string \| number \| symbol\]: any/, '')
         }
 
-        return [item.name, type, getDefaultValue(item.name)]
-      })
-  )
+        tableBody.set(item.name, [item.name, type, getDefaultValue(item.name)])
+      }
+    })
 }
 
 // Add 'as' prop only if asDefault is not empty
 if (asDefault) {
-  tableBody.push(['as', 'HTMLTag', asDefault])
+  tableBody.set('as', ['as', 'HTMLTag', asDefault])
 }
 
 // Check if the component is polymorphic
@@ -206,7 +209,11 @@ const isPolymorphic = componentFileContent.includes('Polymorphic<')
 
 // Add HTML Attributes row only if the component is polymorphic
 if (isPolymorphic && asDefault) {
-  tableBody.push(['HTML Attributes', `Polymorphic<${asDefault}>`, '-'])
+  tableBody.set('HTML Attributes', [
+    'HTML Attributes',
+    `Polymorphic<${asDefault}>`,
+    '-',
+  ])
 }
 ---
 
@@ -214,7 +221,7 @@ if (isPolymorphic && asDefault) {
   size="md"
   class:list={['props-table']}
   header={['Prop', 'Type', 'Default']}
-  body={tableBody}
+  body={Array.from(tableBody.values())}
 />
 
 <style is:global lang="scss">
