@@ -1,5 +1,6 @@
 import { getEntries, reference, z } from 'astro:content'
 import { assign, mapKeys } from 'radash'
+import { createTypeAlias, printNode, zodToTs } from 'zod-to-ts'
 import { base } from './base'
 import { block } from './block'
 import { navigation } from './navigation'
@@ -72,3 +73,13 @@ export const page = base
     mergedData = assign(mergedData, data)
     return mergedData as typeof data
   })
+
+const identifier = 'page'
+const { node } = zodToTs(page, identifier)
+const typeAlias = createTypeAlias(node, identifier)
+export const nodeString = printNode(typeAlias)
+  .replace(/\| undefined\)/g, ')')
+  .replace(/(\(string \| |\?: \()/g, (match) => match.slice(0, -1))
+  .replace(/\)(?=;)/g, '')
+  .replace(/(\w+\?: \w+) \) \| undefined;/g, '$1 | undefined;')
+  .replace(/string\[\] \)/g, 'string[]')
