@@ -139,9 +139,9 @@ const extractAsDefault = (content: string): string => {
 
     asDefault = asDefault?.replace(/^{/, '').replace(/}$/, '')
 
-    return asDefault?.includes('?') ? `{${asDefault}}` : asDefault || 'div'
+    return asDefault?.includes('?') ? `{${asDefault}}` : (asDefault ?? '')
   }
-  return 'div'
+  return ''
 }
 
 const parsedProps = extractProps(componentFileContent)
@@ -164,9 +164,20 @@ const tableBody = [
     item.type.replace(/\s*\|?\s*undefined/, '').trim(),
     getDefaultValue(item.name),
   ]),
-  ['as', 'HTMLTag', asDefault],
-  ['HTML Attributes', `Polymorphic<${asDefault}>`, '-'],
 ]
+
+// Add 'as' prop only if asDefault is not empty
+if (asDefault) {
+  tableBody.push(['as', 'HTMLTag', asDefault])
+}
+
+// Check if the component is polymorphic
+const isPolymorphic = componentFileContent.includes('Polymorphic<')
+
+// Add HTML Attributes row only if the component is polymorphic
+if (isPolymorphic && asDefault) {
+  tableBody.push(['HTML Attributes', `Polymorphic<${asDefault}>`, '-'])
+}
 ---
 
 <Table
