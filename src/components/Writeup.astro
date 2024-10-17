@@ -11,7 +11,7 @@ import Icon from './Icon.astro'
 
 interface Props extends ComponentProps<typeof Element>, HTMLAttributes<'div'> {
   level?: ComponentProps<typeof Heading>['level']
-  rating?: ComponentProps<typeof Rating> | undefined
+
   badge?: ComponentProps<typeof Badge> | undefined
   tagline?: ComponentProps<typeof Tagline>['html']
   heading?: ComponentProps<typeof Heading>['text']
@@ -19,6 +19,9 @@ interface Props extends ComponentProps<typeof Element>, HTMLAttributes<'div'> {
   list?: ComponentProps<typeof List>['items']
   icon?: ComponentProps<typeof Icon>['name']
   align?: 'start' | 'center' | 'end' | undefined
+  rating?:
+    | ComponentProps<typeof Rating>
+    | ComponentProps<typeof Rating>['value']
 }
 
 const {
@@ -43,7 +46,7 @@ const {
     <Icon name={icon} />
     <Rating
       color="brand"
-      {...rating}
+      {...typeof rating === 'number' ? { value: rating } : rating}
     />
     <Badge {...badge} />
     <Tagline html={tagline} />
