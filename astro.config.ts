@@ -12,6 +12,9 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
+  experimental: {
+    contentIntellisense: true,
+  },
   integrations: [
     sitemap(),
     mdx(),
