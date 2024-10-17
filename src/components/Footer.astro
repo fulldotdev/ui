@@ -1,5 +1,5 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { ComponentProps } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
 import Channel from 'fulldev-ui/components/Channel.astro'
 import Element from 'fulldev-ui/components/Element.astro'
@@ -9,11 +9,7 @@ import Social from 'fulldev-ui/components/Social.astro'
 import Text from 'fulldev-ui/components/Text.astro'
 import Logo from 'fulldev-ui/components/experimental/Logo.astro'
 
-type Props<As extends HTMLTag = 'footer'> = Polymorphic<{ as: As }> & {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  theme?: 'light' | 'dark' | undefined
-  color?: 'base' | 'brand' | undefined
-  space?: 'none' | 'auto' | undefined
+interface Props extends ComponentProps<typeof Element> {
   screen?: number | undefined
   logo?: string | undefined
   heading?: string | undefined
@@ -107,10 +103,10 @@ const {
     <Element space="none">
       {
         Object.entries(hours?.days ?? {})?.map(([key, value]: any) => (
-          <Spread>
+          <Element class:list="spread">
             <Text text={key} />
             <Text text={value} />
-          </Spread>
+          </Element>
         ))
       }
     </Element>
@@ -147,6 +143,11 @@ const {
       padding: var(--space-7) var(--gutter);
       width: 100%;
       overflow: auto;
+
+      .spread {
+        display: flex;
+        justify-content: space-between;
+      }
 
       .column {
         display: flex;
