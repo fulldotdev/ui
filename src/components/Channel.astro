@@ -1,21 +1,15 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
+import type { ComponentProps } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
-import Column from 'fulldev-ui/components/Column.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Text from 'fulldev-ui/components/Text.astro'
-import Root from '../Root.astro'
+import Root from './Root.astro'
 
-type Props<As extends HTMLTag = 'div'> = Polymorphic<{ as: As }> & {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  color?: 'base' | 'brand' | undefined
-  variant?: 'primary' | 'secondary' | 'tertiary' | undefined
+interface Props extends ComponentProps<typeof Button<'a'>> {
   structure?: 'row' | 'column' | undefined
-  align?: 'start' | 'center' | 'end' | undefined
+  align?: 'start' | 'center' | undefined
   heading?: string | undefined
   text?: string | undefined
-  icon?: string | undefined
-  href?: string | undefined
   target?: string | undefined
 }
 
@@ -36,7 +30,7 @@ const {
 <Root
   class:list={'channel'}
   {structure}
-  align={structure === 'row' ? 'start' : align}
+  {align}
   {...rest}
 >
   <Button
@@ -46,16 +40,13 @@ const {
     {href}
     {icon}
   />
-  <Column
-    space="none"
-    align={structure === 'row' ? 'start' : align}
-  >
+  <Root class:list={'column'}>
     <Heading
       level={6}
       html={heading}
     />
     <Text html={text} />
-  </Column>
+  </Root>
 </Root>
 
 <style>
@@ -63,7 +54,16 @@ const {
     gap: var(--space-4);
 
     .column {
+      display: flex;
+      flex-direction: column;
+      align-items: inherit;
       gap: var(--space-1);
+    }
+
+    &.structure-row {
+      .column {
+        align-items: flex-start;
+      }
     }
   }
 </style>

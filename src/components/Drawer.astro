@@ -1,11 +1,10 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
-import Box from './Box.astro'
+import type { ComponentProps } from 'astro/types'
 import Button from './Button.astro'
 import Card from './Card.astro'
 import Root from './Root.astro'
 
-type Props<As extends HTMLTag = 'a'> = ComponentProps<typeof Card<As>> & {
+interface Props extends Omit<ComponentProps<typeof Card>, 'position'> {
   label?: string | undefined
   icon?: string | undefined
   position?: 'left' | 'right' | undefined
@@ -40,12 +39,12 @@ const {
   {position}
   onclick={`event.target === this && this.close()`}
 >
-  <Box
+  <Root
     class:list={[panel, `position-${position}`]}
     {...rest}
   >
     <slot />
-  </Box>
+  </Root>
 </Root>
 
 <style lang="scss" is:global>
