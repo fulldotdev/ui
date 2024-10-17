@@ -1,13 +1,12 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 import Label from 'fulldev-ui/components/Label.astro'
-import Root from 'fulldev-ui/components/Root.astro'
 
-type Props = Omit<HTMLAttributes<'input'>, 'type'> & {
-  color?: 'base' | 'brand' | undefined
-  contrast?: boolean | undefined
-  label?: string | undefined
-  icon?: string | undefined
+interface Props
+  extends ComponentProps<typeof Element>,
+    HTMLAttributes<'input'> {
+  label?: ComponentProps<typeof Label>['text']
 }
 
 const {
@@ -25,12 +24,11 @@ const {
 } = Astro.props
 ---
 
-<Root
-  structure="row"
+<Element
   class:list="checkbox"
   {...rest}
 >
-  <Root
+  <Element
     as="input"
     type="checkbox"
     id={id ?? name ?? label}
@@ -43,14 +41,15 @@ const {
   />
   <Label
     for={id ?? name ?? label}
-    html={label}
+    text={label}
     {contrast}
   />
-</Root>
+</Element>
 
 <style lang="scss" is:global>
   @layer fulldev {
     .checkbox {
+      display: flex;
       align-items: center;
       gap: var(--space-1);
 

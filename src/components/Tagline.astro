@@ -1,28 +1,22 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
-import Root from 'fulldev-ui/components/Root.astro'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 
-type Props<As extends HTMLTag = 'span'> = Polymorphic<{ as: As }> & {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  color?: 'base' | 'brand' | undefined
-  contrast?: boolean | undefined
-  html?: string | undefined
+interface Props extends ComponentProps<typeof Element>, HTMLAttributes<'span'> {
   text?: string | undefined
 }
 
-const { as = 'span', html, text, ...rest } = Astro.props
+const { text, ...rest } = Astro.props
 ---
 
-<Root
+<Element
   class:list="tagline"
-  {as}
+  as="span"
   {...rest}
 >
-  <slot>
-    <Fragment set:html={html} />
-    <Fragment set:text={text} />
-  </slot>
-</Root>
+  <slot />
+  <Fragment set:text={text} />
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {

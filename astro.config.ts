@@ -44,5 +44,6 @@ export default defineConfig({
     '/segment/section': '/base/section',
     '/segment/header': '/blocks/header',
     '/segment/footer': '/blocks/footer',
+    '/blocks': '/blocks/banner',
   },
 })

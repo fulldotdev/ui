@@ -1,0 +1,58 @@
+---
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Button from 'fulldev-ui/components/Button.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+
+interface Props extends ComponentProps<typeof Element>, HTMLAttributes<'div'> {
+  variant?: ComponentProps<typeof Button>['variant']
+  buttons?: ComponentProps<typeof Button>[] | undefined
+}
+
+const {
+  variant = 'secondary',
+  color,
+  size,
+  buttons,
+  contrast,
+  ...rest
+} = Astro.props
+
+const buttonVariant = (i: number) => {
+  if (variant === 'primary' && i === 0) return 'primary'
+  else if (variant === 'primary' && i === 1) return 'secondary'
+  else if (variant === 'primary' && i > 1) return 'tertiary'
+  else if (variant === 'secondary' && i === 0) return 'secondary'
+  else if (variant === 'secondary' && i > 0) return 'tertiary'
+  else if (variant === 'tertiary') return 'tertiary'
+  else return 'tertiary'
+}
+---
+
+<Element
+  class:list="buttons"
+  {color}
+  {size}
+  {contrast}
+  {...rest}
+>
+  {
+    buttons?.map((button, i) => (
+      <Button
+        variant={variant === 'link' ? 'link' : buttonVariant(i)}
+        {...button}
+      />
+    ))
+  }
+</Element>
+
+<style is:global lang="scss">
+  @layer fulldev {
+    .buttons {
+      display: inline-flex;
+      flex-wrap: wrap;
+      justify-content: stretch;
+      gap: var(--space-2);
+      width: auto;
+    }
+  }
+</style>

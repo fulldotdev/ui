@@ -1,40 +1,34 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
-import Root from 'fulldev-ui/components/Root.astro'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 
-type Props<As extends HTMLTag = 'h2'> = Polymorphic<{ as: As }> & {
+interface Props
+  extends ComponentProps<typeof Element>,
+    HTMLAttributes<'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'> {
   level?: 1 | 2 | 3 | 4 | 5 | 6 | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
-  color?: 'base' | 'brand' | undefined
-  contrast?: boolean | undefined
-  html?: string | undefined
   text?: string | undefined
 }
 
 const {
-  level = 2,
-  as = `h${level}`,
-  color = 'base',
   contrast = true,
-  html,
+  color = 'base',
+  level = 2,
   text,
   ...rest
 } = Astro.props
 ---
 
-<Root
+<Element
   class:list="heading"
-  {as}
+  as=`h${level}`
   {contrast}
   {color}
   {level}
   {...rest}
 >
-  <slot>
-    <Fragment set:html={html} />
-    <Fragment set:text={text} />
-  </slot>
-</Root>
+  <slot />
+  <Fragment set:text={text} />
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {
@@ -46,10 +40,12 @@ const {
       font-weight: 700;
       line-height: 1.1;
       letter-spacing: -0.025em;
+      text-align: inherit;
       text-decoration: none;
 
       &.level-1 {
         font-size: var(--text-8);
+        text-wrap: balance;
       }
 
       &.level-2 {

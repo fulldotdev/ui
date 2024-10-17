@@ -1,14 +1,15 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
-import Column from 'fulldev-ui/components/Column.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Logo from 'fulldev-ui/components/experimental/Logo.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
-import Root from 'fulldev-ui/components/Root.astro'
 import Search from 'fulldev-ui/components/Search.astro'
 import ThemeSelect from 'fulldev-ui/components/ThemeSelect.astro'
 
-type Props = HTMLAttributes<'aside'> & {
+interface Props
+  extends ComponentProps<typeof Element>,
+    HTMLAttributes<'aside'> {
   size?: 'sm' | 'md' | 'lg' | undefined
   search?: boolean | undefined
   logo?: string | undefined
@@ -25,7 +26,7 @@ const { size = 'sm', open = false, logo, buttons, search } = Astro.props
   type="checkbox"
 />
 
-<Root
+<Element
   class:list="sidebar"
   as="aside"
   {size}
@@ -33,16 +34,13 @@ const { size = 'sm', open = false, logo, buttons, search } = Astro.props
 >
   <Logo {logo} />
   {search && <Search />}
-  <Column
-    space="none"
-    class:list="buttons"
-  >
+  <Element class:list="buttons">
     {
       buttons?.map(({ heading, slug, href, text, buttons }) => (
         <>
           <Heading
             level={6}
-            html={heading}
+            text={heading}
           />
           <Button
             variant="link"
@@ -60,8 +58,8 @@ const { size = 'sm', open = false, logo, buttons, search } = Astro.props
       ))
     }
     <ThemeSelect />
-  </Column>
-</Root>
+  </Element>
+</Element>
 
 <style lang="scss" is:global>
   @layer fulldev {
@@ -126,17 +124,17 @@ const { size = 'sm', open = false, logo, buttons, search } = Astro.props
 
       .logo {
         display: none;
+        position: absolute;
+        top: 0;
+        left: var(--gutter);
+        align-items: center;
+        height: 56px;
+      }
+    }
 
-        @media (min-width: 1024px) {
-          &:is(.header:not(.open) ~ .sidebar &) {
-            display: flex;
-            position: absolute;
-            top: 0;
-            left: var(--gutter);
-            align-items: center;
-            height: 56px;
-          }
-        }
+    @media (min-width: 1024px) {
+      .header:not(.open) ~ .core .sidebar .logo {
+        display: flex;
       }
     }
   }

@@ -1,31 +1,24 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
-import Root from 'fulldev-ui/components/Root.astro'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 
-type Props<As extends HTMLTag = 'p'> = Polymorphic<{ as: As }> & {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  color?: 'base' | 'brand' | undefined
-  contrast?: boolean | undefined
+interface Props extends ComponentProps<typeof Element>, HTMLAttributes<'p'> {
   lead?: boolean | undefined
-  html?: string | undefined
   text?: string | undefined
 }
 
-const { as = 'p', color = 'base', html, text, ...rest } = Astro.props
+const { color = 'base', text, ...rest } = Astro.props
 ---
 
-<Root
+<Element
   class:list="text"
-  {as}
-  {html}
+  as="p"
   {color}
   {...rest}
 >
-  <slot>
-    <Fragment set:html={html} />
-    <Fragment set:text={text} />
-  </slot>
-</Root>
+  <slot />
+  <Fragment set:text={text} />
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {
@@ -38,6 +31,7 @@ const { as = 'p', color = 'base', html, text, ...rest } = Astro.props
 
       &.lead {
         font-size: var(--text-4);
+        text-wrap: balance;
       }
     }
   }

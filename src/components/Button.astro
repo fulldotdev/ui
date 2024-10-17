@@ -1,55 +1,53 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
 import { getEntry } from 'astro:content'
 import Avatar from 'fulldev-ui/components/Avatar.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import Root from 'fulldev-ui/components/Root.astro'
 
-type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'link' | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
-  color?: 'base' | 'brand' | undefined
-  contrast?: boolean | undefined
+interface Props
+  extends ComponentProps<typeof Element>,
+    HTMLAttributes<'button' | 'a'>,
+    HTMLAttributes<'label'> {
+  icon?: ComponentProps<typeof Icon>['name']
+  avatar?: ComponentProps<typeof Avatar>['src']
   slug?: CollectionEntry<'pages'>['slug'] | undefined
-  avatar?: string | undefined
-  icon?: string | undefined
-  html?: string | undefined
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'link' | undefined
   text?: string | undefined
 }
 
 const {
+  variant = 'secondary',
+  as = 'a',
   slug,
-  href = slug === 'index' ? '/' : `/${slug}/`,
-  as = href ? 'a' : 'button',
-  variant = 'primary',
-  color = href === Astro.url.pathname && variant === 'link'
-    ? 'brand'
-    : undefined,
-  text = slug && (await getEntry('pages', slug)).data.title,
+  color,
+  text,
   avatar,
   icon,
-  html,
   ...rest
 } = Astro.props
+
+const entry = slug && !text ? await getEntry('pages', slug) : undefined
+
+const href =
+  rest.href ?? (slug ? (slug === 'index' ? '/' : `/${slug}/`) : undefined)
 ---
 
-<Root
+<Element
   class:list="button"
-  {as}
+  as={as}
   {href}
-  {href}
-  {color}
+  color={variant === 'link' && href === Astro.url.pathname ? 'brand' : color}
   {variant}
-  {color}
   {...rest}
 >
   <slot>
     <Avatar src={avatar} />
     <Icon name={icon} />
-    <Fragment set:html={text ?? html} />
+    <Fragment set:html={text ?? entry?.data.title} />
   </slot>
-</Root>
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {
@@ -99,6 +97,10 @@ const {
       &.variant-primary {
         background-color: var(--color-9);
         color: var(--color-contrast);
+
+        .icon {
+          color: inherit;
+        }
 
         &:hover,
         &:active {

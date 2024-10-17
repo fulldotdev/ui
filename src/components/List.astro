@@ -1,24 +1,23 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
-import Root from 'fulldev-ui/components/Root.astro'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 
-type Props<As extends HTMLTag = 'ul'> = Polymorphic<{ as: As }> & {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  color?: 'base' | 'brand' | undefined
-  contrast?: boolean | undefined
-  items?: (string | { text: string })[] | undefined
+interface Props
+  extends ComponentProps<typeof Element>,
+    HTMLAttributes<'ul' | 'ol'> {
+  items?: string[] | undefined
 }
 
 const { as = 'ul', items, ...rest } = Astro.props
 ---
 
-<Root
+<Element
   class:list="list"
   {as}
   {...rest}
 >
-  {items?.map((item) => <li>{typeof item === 'string' ? item : item.text}</li>)}
-</Root>
+  {items?.map((item) => <li set:html={item} />)}
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {

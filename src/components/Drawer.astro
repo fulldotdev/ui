@@ -1,11 +1,10 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
-import Box from './Box.astro'
-import Button from './Button.astro'
-import Card from './Card.astro'
-import Root from './Root.astro'
+import type { ComponentProps } from 'astro/types'
+import Button from 'fulldev-ui/components/Button.astro'
+import Card from 'fulldev-ui/components/Card.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 
-type Props<As extends HTMLTag = 'a'> = ComponentProps<typeof Card<As>> & {
+interface Props extends Omit<ComponentProps<typeof Card>, 'position'> {
   label?: string | undefined
   icon?: string | undefined
   position?: 'left' | 'right' | undefined
@@ -28,25 +27,25 @@ const {
   variant="secondary"
   type="button"
   id={`${id}-button`}
-  html={label}
+  text={label}
   icon={icon}
   onclick={`document.getElementById('${id}').showModal()`}
 />
 
-<Root
+<Element
   as="dialog"
   class="drawer"
   {id}
   {position}
   onclick={`event.target === this && this.close()`}
 >
-  <Box
+  <Element
     class:list={[panel, `position-${position}`]}
     {...rest}
   >
     <slot />
-  </Box>
-</Root>
+  </Element>
+</Element>
 
 <style lang="scss" is:global>
   @layer fulldev {

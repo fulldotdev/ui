@@ -1,17 +1,19 @@
 ---
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
+import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Logo from 'fulldev-ui/components/experimental/Logo.astro'
-import Root from 'fulldev-ui/components/Root.astro'
-import Row from 'fulldev-ui/components/Row.astro'
 import Search from 'fulldev-ui/components/Search.astro'
-import ThemeSelect from './ThemeSelect.astro'
+import ThemeSelect from 'fulldev-ui/components/ThemeSelect.astro'
 
-type Props = {
-  size?: 'sm' | 'md' | 'lg' | undefined
+interface Props
+  extends ComponentProps<typeof Element>,
+    HTMLAttributes<'header'> {
+  logo?: ComponentProps<typeof Logo>['logo']
+  buttons?: ComponentProps<typeof Buttons>['buttons']
   panel?: boolean | undefined
   search?: boolean | undefined
-  logo?: string | undefined
-  buttons?: any[] | undefined
   open?: boolean | undefined
 }
 
@@ -26,7 +28,7 @@ const {
 } = Astro.props
 ---
 
-<Root
+<Element
   class:list={['header']}
   as="header"
   {panel}
@@ -35,19 +37,10 @@ const {
   {...rest}
 >
   <Logo {logo} />
-  <Row
-    class:list="buttons"
-    space="none"
-  >
-    {
-      buttons?.map((button) => (
-        <Button
-          variant="link"
-          {...button}
-        />
-      ))
-    }
-  </Row>
+  <Buttons
+    {buttons}
+    variant="link"
+  />
   {search && <Search />}
   <ThemeSelect />
   <Button
@@ -57,7 +50,7 @@ const {
     as="label"
     for="sidebar"
   />
-</Root>
+</Element>
 
 <style lang="scss" is:global>
   @layer fulldev {

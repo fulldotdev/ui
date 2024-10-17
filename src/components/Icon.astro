@@ -1,15 +1,13 @@
 ---
 import tablerIcons from '@iconify-json/tabler/icons.json'
-import type { HTMLTag, Polymorphic } from 'astro/types'
-import Root from 'fulldev-ui/components/Root.astro'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 
-type Props<As extends HTMLTag = 'i'> = Polymorphic<{ as: As }> & {
-  color?: 'base' | 'brand' | undefined
-  contrast?: boolean | undefined
+interface Props extends ComponentProps<typeof Element>, HTMLAttributes<'i'> {
   name?: string | undefined
 }
 
-const { as = 'i', name, ...rest } = Astro.props
+const { name, ...rest } = Astro.props
 
 const trimmedName = name?.trim() as string | undefined
 const icon = trimmedName
@@ -17,10 +15,10 @@ const icon = trimmedName
   : undefined
 ---
 
-<Root
+<Element
   class:list="icon"
   if={icon}
-  {as}
+  as="i"
   {...rest}
 >
   {
@@ -32,7 +30,7 @@ const icon = trimmedName
       />
     )
   }
-</Root>
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {

@@ -1,14 +1,14 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
 import Label from 'fulldev-ui/components/Label.astro'
-import Root from 'fulldev-ui/components/Root.astro'
 
-type Props = HTMLAttributes<'input'> & {
-  color?: 'base' | 'brand' | undefined
-  contrast?: boolean | undefined
-  label?: string | undefined
-  icon?: string | undefined
+interface Props
+  extends ComponentProps<typeof Element>,
+    HTMLAttributes<'input'> {
+  label?: ComponentProps<typeof Label>['text']
+  icon?: ComponentProps<typeof Icon>['name']
 }
 
 const {
@@ -24,15 +24,15 @@ const {
 } = Astro.props
 ---
 
-<Root
+<Element
   class:list="input"
   {...rest}
 >
   <Label
     for={name}
-    html={label}
+    text={label}
   />
-  <Root
+  <Element
     as="input"
     if={name}
     id={name}
@@ -44,7 +44,7 @@ const {
     {required}
   />
   <Icon name={icon} />
-</Root>
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {

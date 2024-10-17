@@ -1,34 +1,29 @@
 ---
-import type { HTMLTag } from 'astro/types'
 import { mapKeys } from 'radash'
 import config from 'virtual:fulldev-ui/config'
 
-type Props<As extends HTMLTag> = {
-  as?: As
-  component?: string
-  slot?: any
-  if?: 'content' | any
+interface Props {
+  // size?: 'sm' | 'md' | 'lg'
+  // color?: 'base' | 'brand'
+  size?: string | number | null | undefined
+  color?: string | undefined | null
+  contrast?: boolean | undefined
+  theme?: 'light' | 'dark' | undefined
   [key: string | number | symbol]: any
 }
 
 const {
   as: As = 'div',
   if: ifProp = 'content',
-  component,
-  space,
   theme,
   variant,
-  density,
   size,
   align,
-  justify,
   color,
   position,
   panel,
   contrast,
   structure,
-  text,
-  html,
   level,
   placement,
   reverse,
@@ -38,14 +33,9 @@ const {
 } = Astro.props
 
 const slot = await Astro.slots.render('default')
-const hasContent = (str?: undefined | string) =>
-  typeof str === 'string' && str.trim().length > 0
-const render =
-  ifProp == 'content'
-    ? hasContent(slot) || hasContent(html) || hasContent(text)
-    : ifProp
+const render = ifProp == 'content' ? slot?.trim().length > 0 : ifProp
 
-const componentName = Astro.props.class?.split(' ').pop()
+const componentName = Astro.props.class?.split(' ').pop() ?? ''
 const userComponents = import.meta.glob('/src/**/*.astro')
 const mappedUserComponents = mapKeys(userComponents, (key: string) => {
   const name = key.split('/').pop()?.split('.').shift()?.toLowerCase()
@@ -68,24 +58,21 @@ const FoundComponent = found ? (await found()).default : null
         <As
           class:list={[
             'root',
-            structure,
             {
-              lead,
               contrast,
               panel,
               open,
+              reverse,
+              lead,
+              [`size-${size}`]: size,
+              [`color-${color}`]: color,
               [`theme-${theme}`]: theme,
               [`level-${level}`]: level,
               [`variant-${variant}`]: variant,
               [`structure-${structure}`]: structure,
-              [`size-${size}`]: size,
               [`align-${align}`]: align,
-              [`justify-${justify}`]: justify,
               [`position-${position}`]: position,
-              [`color-${color}`]: color,
-              [`space-${space}`]: space,
-              [`reverse-${reverse}`]: reverse,
-              [`placement-${placement}`]: placement,
+              [`position-${position}`]: position,
             },
           ]}
           {...rest}
@@ -99,7 +86,7 @@ const FoundComponent = found ? (await found()).default : null
 
 <style is:global lang="scss">
   @import '@unocss/reset/tailwind.css' layer(fulldev);
-  @import '../css/color.css';
-  @import '../css/size.css';
-  @import '../css/space.css';
+  @import 'fulldev-ui/css/color.css';
+  @import 'fulldev-ui/css/size.css';
+  @import 'fulldev-ui/css/space.css';
 </style>
