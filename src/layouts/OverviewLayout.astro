@@ -1,37 +1,39 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import Block from 'fulldev-ui/components/Block.astro'
+import Categories from 'fulldev-ui/blocks/Categories.astro'
+import Intro from 'fulldev-ui/blocks/Intro.astro'
+import Products from 'fulldev-ui/blocks/Products.astro'
 import Blocks from 'fulldev-ui/components/Blocks.astro'
 import Prose from 'fulldev-ui/components/experimental/Prose.astro'
 import Section from 'fulldev-ui/components/Section.astro'
 import Layout from 'fulldev-ui/layouts/Layout.astro'
+import { getChildPages } from 'fulldev-ui/utils/getChildPages.ts'
+import { getChildRecords } from 'fulldev-ui/utils/getChildRecords.ts'
+import { getReferencingPages } from 'fulldev-ui/utils/getReferencingPages.ts'
 
 type Props = ComponentProps<typeof Layout>
 
-const { render, sections, blocks, children, references, ...rest } = Astro.props
+const { slug, render, sections, blocks, children, references, ...rest } =
+  Astro.props
 const { Content } = await render()
+
+const childPages = await getChildPages(slug)
+const childRecords = await getChildRecords(slug)
+// const siblingPages = await getSiblingPages(slug)
+const referencingPages = await getReferencingPages(slug)
 ---
 
 <Layout {...Astro.props}>
-  <Block
-    _bookshop_name="Hero"
-    size="lg"
-    {...rest}
-  />
-  <Block
-    _bookshop_name="Categories"
-    source="children"
+  <Intro {...rest} />
+  <Categories
+    pages={childPages}
+    records={childRecords}
     structure="grid"
-    {...children ?? {}}
+    panel
   />
-  <Block
-    _bookshop_name="ProductDeck"
-    heading={rest.title && references
-      ? `Alle ${rest.title.toLowerCase()}`
-      : undefined}
-    source="references"
+  <Products
+    pages={referencingPages}
     structure="grid"
-    {...references ?? {}}
   />
   <Section style={{ '--screen': '768px' }}>
     <Prose id="prose">

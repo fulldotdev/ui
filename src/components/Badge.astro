@@ -1,24 +1,20 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
+import type { ComponentProps } from 'astro/types'
 import Icon from 'fulldev-ui/components/Icon.astro'
 import Root from 'fulldev-ui/components/Root.astro'
 
-type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  color?: 'base' | 'brand' | undefined
-  contrast?: boolean | undefined
-  href?: string | undefined
+interface Props extends ComponentProps<typeof Root> {
+  icon?: ComponentProps<typeof Icon>['name']
   html?: string | undefined
   text?: string | undefined
-  icon?: string | undefined
 }
 
-const { href, as = href ? 'a' : 'div', html, text, icon, ...rest } = Astro.props
+const { href, html, text, icon, ...rest } = Astro.props
 ---
 
 <Root
   class:list="badge"
-  {as}
+  as={href ? 'a' : 'div'}
   {href}
   {...rest}
 >
@@ -31,7 +27,9 @@ const { href, as = href ? 'a' : 'div', html, text, icon, ...rest } = Astro.props
   @layer fulldev {
     .badge {
       display: inline-flex;
+      flex-grow: 0;
       flex-shrink: 0;
+      flex-shrink: 1;
       justify-content: center;
       align-items: center;
       vertical-align: top;

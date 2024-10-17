@@ -1,53 +1,51 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
+import type { ComponentProps, Polymorphic } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
 import { getEntry } from 'astro:content'
 import Avatar from 'fulldev-ui/components/Avatar.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
 import Root from 'fulldev-ui/components/Root.astro'
 
-type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'link' | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
-  color?: 'base' | 'brand' | undefined
-  contrast?: boolean | undefined
-  slug?: CollectionEntry<'pages'>['slug'] | undefined
-  avatar?: string | undefined
-  icon?: string | undefined
-  html?: string | undefined
-  text?: string | undefined
-}
+type Props<As extends 'a' | 'button' | 'label' = 'a'> = ComponentProps<
+  typeof Root
+> &
+  Polymorphic<{ as: As }> & {
+    icon?: ComponentProps<typeof Icon>['name']
+    avatar?: ComponentProps<typeof Avatar>['src']
+    slug?: CollectionEntry<'pages'>['slug'] | undefined
+    variant?: 'primary' | 'secondary' | 'tertiary' | 'link' | undefined
+    html?: string | undefined
+    text?: string | undefined
+  }
 
 const {
-  slug,
-  href = slug === 'index' ? '/' : `/${slug}/`,
-  as = href ? 'a' : 'button',
   variant = 'primary',
-  color = href === Astro.url.pathname && variant === 'link'
-    ? 'brand'
-    : undefined,
-  text = slug && (await getEntry('pages', slug)).data.title,
+  as = 'a',
+  href,
+  slug,
+  color,
+  text,
   avatar,
   icon,
   html,
   ...rest
 } = Astro.props
+
+const entry = slug && !text ? await getEntry('pages', slug) : undefined
 ---
 
 <Root
   class:list="button"
-  {as}
-  {href}
-  {href}
-  {color}
+  as={as}
+  href={(href ?? slug) ? (slug === 'index' ? '/' : `/${slug}/`) : undefined}
+  color={variant === 'link' && href === Astro.url.pathname ? 'brand' : color}
   {variant}
-  {color}
   {...rest}
 >
   <slot>
     <Avatar src={avatar} />
     <Icon name={icon} />
-    <Fragment set:html={text ?? html} />
+    <Fragment set:html={text ?? html ?? entry?.data.title} />
   </slot>
 </Root>
 

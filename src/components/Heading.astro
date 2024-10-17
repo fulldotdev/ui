@@ -1,21 +1,17 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
+import type { ComponentProps } from 'astro/types'
 import Root from 'fulldev-ui/components/Root.astro'
 
-type Props<As extends HTMLTag = 'h2'> = Polymorphic<{ as: As }> & {
+interface Props extends ComponentProps<typeof Root> {
   level?: 1 | 2 | 3 | 4 | 5 | 6 | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
-  color?: 'base' | 'brand' | undefined
-  contrast?: boolean | undefined
   html?: string | undefined
   text?: string | undefined
 }
 
 const {
-  level = 2,
-  as = `h${level}`,
-  color = 'base',
   contrast = true,
+  color = 'base',
+  level = 2,
   html,
   text,
   ...rest
@@ -24,7 +20,7 @@ const {
 
 <Root
   class:list="heading"
-  {as}
+  as=`h${level}`
   {contrast}
   {color}
   {level}
@@ -46,10 +42,12 @@ const {
       font-weight: 700;
       line-height: 1.1;
       letter-spacing: -0.025em;
+      text-align: inherit;
       text-decoration: none;
 
       &.level-1 {
         font-size: var(--text-8);
+        text-wrap: balance;
       }
 
       &.level-2 {
