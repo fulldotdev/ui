@@ -5,6 +5,7 @@ import { pascal } from 'radash'
 
 const slug = Astro.url.pathname.replace(/\/$/, '').split('/').pop() || ''
 const componentName = pascal(slug)
+
 const allComponents = import.meta.glob('src/**/*.astro', { eager: true })
 const foundComponent = Object.entries(allComponents).find(
   ([key]) => key.split('/').pop() === `${componentName}.astro`
@@ -19,16 +20,17 @@ interface Prop {
   type: string
 }
 
+// Regular expression to match the Props interface or type
+const staticProps = /(?:interface|type)\s+Props[\s\S]*?{([\s\S]*?)}/
+
 // Function to extract props from the component file
 const extractProps = (content: string): Prop[] => {
   const props: Prop[] = []
 
-  // Extract props from interface or type definition
-  const propsMatch = content.match(
-    /(?:interface|type)\s+Props[\s\S]*?{([\s\S]*?)}/
-  )
-  if (propsMatch && propsMatch[1]) {
-    const propsContent = propsMatch[1]
+  // Extract static props from Props interface or type
+  const staticPropsMatch = content.match(staticProps)
+  if (staticPropsMatch && staticPropsMatch[1]) {
+    const propsContent = staticPropsMatch[1]
     const propLines = propsContent.split('\n')
 
     let currentProp: Prop | null = null
@@ -37,6 +39,7 @@ const extractProps = (content: string): Prop[] => {
       const trimmedLine = line.trim()
       if (trimmedLine === '') return
 
+      // Match prop name and type
       const match = trimmedLine.match(/^(\w+)(\??):(.*)/)
       if (match && match[1] && match[3]) {
         if (currentProp) props.push(currentProp)
@@ -45,6 +48,7 @@ const extractProps = (content: string): Prop[] => {
           type: match[3].trim(),
         }
       } else if (currentProp) {
+        // Continue adding to type if it spans multiple lines
         currentProp.type += ' ' + trimmedLine
       }
     })
@@ -65,6 +69,7 @@ const extractProps = (content: string): Prop[] => {
       const trimmedLine = line.trim()
       if (trimmedLine === '') return
 
+      // Match prop name and type
       const match = trimmedLine.match(/(\w+)(\??):(.*)/)
       if (match && match[1] && match[3]) {
         if (currentProp) props.push(currentProp)
@@ -73,6 +78,7 @@ const extractProps = (content: string): Prop[] => {
           type: match[3].trim(),
         }
       } else if (currentProp) {
+        // Continue adding to type if it spans multiple lines
         currentProp.type += ' ' + trimmedLine
       }
     })
@@ -88,12 +94,13 @@ const extractProps = (content: string): Prop[] => {
     }
   }
 
+  // Filter out 'as' prop and props starting with underscore
   return props.filter(
     (prop) => prop.name !== 'as' && !prop.name.startsWith('_')
   )
 }
 
-// Function to extract default prop values
+// Function to extract default prop values from Astro.props
 const extractDefaultProps = (content: string): Record<string, string> => {
   const defaultPropsMatch = content.match(
     /const\s*{[\s\S]*?}\s*=\s*Astro\.props/
