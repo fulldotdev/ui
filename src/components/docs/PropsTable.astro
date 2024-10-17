@@ -17,7 +17,13 @@ if (!found) return
 
 const componentFileContent = readFileSync(found.file, 'utf-8')
 
+// Function to extract props from the component file
 const extractProps = (content: string) => {
+  // Regex to match different prop definitions:
+  // 1. interface Props {...}
+  // 2. type Props = {...}
+  // 3. type Props = HTMLAttributes<'...'> & {...}
+  // 4. type Props = Polymorphic<...> & {...}
   const propsMatch =
     content.match(
       /(?:interface Props|type Props(?:<[^>]+>)?)\s*(?:extends[^{]+)?\s*{([\s\S]*?)}/
@@ -30,6 +36,7 @@ const extractProps = (content: string) => {
     )
   if (propsMatch) {
     const propsContent = propsMatch[1]
+    // Regex to match individual prop definitions
     const props = [
       ...propsContent.matchAll(/(\w+)(?:\??:\s*((?:[^;\n]|\n\s*\|)*)|,)/g),
     ].map(([, name, type]) => ({
@@ -46,7 +53,9 @@ const extractProps = (content: string) => {
   return []
 }
 
+// Function to extract default prop values
 const extractDefaultProps = (content: string) => {
+  // Regex to match the Astro.props destructuring
   const defaultPropsMatch = content.match(
     /const\s*{[\s\S]*?}\s*=\s*Astro\.props/
   )
@@ -70,19 +79,30 @@ const extractDefaultProps = (content: string) => {
     : {}
 }
 
+// Function to extract the default 'as' prop value
 const extractAsDefault = (content: string) => {
+  // Regex to match the 'as' prop assignment
   const asDefaultMatch = content.match(/as\s*=\s*([^,\n]+)/)
-  return asDefaultMatch
-    ? asDefaultMatch[1]
-        .trim()
-        .split(' : ')[0]
-        .replace(/['"]/g, '')
-        .replace(/href \? a : /, '')
-        .replace(/href \? 'a' : /, '')
-    : 'div'
+  if (asDefaultMatch) {
+    let asDefault = asDefaultMatch[1]
+      .trim()
+      .split(' : ')[0]
+      .replace(/['"]/g, '')
+      .replace(/href \? a : /, '')
+      .replace(/href \? 'a' : /, '')
+
+    if (asDefault.includes('?')) {
+      asDefault = `{${asDefault}}`
+    }
+
+    return asDefault.replace(/{{/g, '{').replace(/}}/g, '}')
+  }
+  return 'div'
 }
 
+// Function to extract component props (e.g., ComponentProps<typeof Button>)
 const extractComponentProps = (content: string) => {
+  // Regex to match ComponentProps usage
   const componentPropsMatches =
     content.match(
       /(?:extends ComponentProps<typeof ([^>]+)>|ComponentProps<typeof ([^>]+)>)/g
@@ -106,6 +126,7 @@ const allProps = [
   ...componentProps.map((cp) => ({ name: cp.name, type: cp.props })),
 ]
 
+// Function to get the default value for a prop
 const getDefaultValue = (name: string, type: string) => {
   if (parsedAstroProps[name]) {
     return parsedAstroProps[name]
