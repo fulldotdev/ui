@@ -1,0 +1,37 @@
+---
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Channel from 'fulldev-ui/components/Channel.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+
+interface Props extends ComponentProps<typeof Element>, HTMLAttributes<'div'> {
+  variant?: ComponentProps<typeof Channel>['variant']
+  channels?: ComponentProps<typeof Channel>[] | undefined
+}
+
+const { channels, variant, ...rest } = Astro.props
+---
+
+<Element
+  as="div"
+  class:list="channels"
+  {...rest}
+>
+  {
+    channels?.map((channel) => (
+      <Channel
+        {variant}
+        {...channel}
+      />
+    ))
+  }
+</Element>
+
+<style is:global lang="scss">
+  @layer fulldev {
+    .channels {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+  }
+</style>

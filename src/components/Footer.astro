@@ -1,11 +1,12 @@
 ---
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
-import Channel from 'fulldev-ui/components/Channel.astro'
+import Channels from 'fulldev-ui/components/Channels.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Link from 'fulldev-ui/components/Link.astro'
 import Social from 'fulldev-ui/components/Social.astro'
+import Socials from 'fulldev-ui/components/Socials.astro'
 import Text from 'fulldev-ui/components/Text.astro'
 import Logo from 'fulldev-ui/components/experimental/Logo.astro'
 
@@ -14,14 +15,10 @@ interface Props
     HTMLAttributes<'footer'> {
   screen?: number | undefined
   logo?: string | undefined
-  heading?: string | undefined
-  title?: string | undefined
-  description?: string | undefined
-  hours?: any
   text?: string | undefined
+  hours?: any
   socials?: (string | ComponentProps<typeof Social>)[] | undefined
   buttons?: ComponentProps<typeof Button>[] | undefined
-  html?: string | undefined
   panel?: boolean | undefined
   channels?: any
   columns?: {
@@ -46,7 +43,6 @@ const {
   title,
   description,
   channels,
-  html,
   ...rest
 } = Astro.props
 ---
@@ -65,35 +61,16 @@ const {
     <Logo {logo} />
     <Text
       color="base"
-      html={html || text || description}
+      {text}
     />
-    <Element class:list="socials">
-      {
-        socials?.map((social) => (
-          <Social
-            {...(typeof social === 'string' ? { href: social } : social)}
-          />
-        ))
-      }
-    </Element>
+    <Socials {socials} />
   </Element>
 
-  <Element class:list="channels column">
-    {
-      channels?.map((channel: any) => (
-        <Channel
-          heading={channel.heading}
-          text={channel.text}
-          icon={channel.icon}
-          href={channel.href}
-        />
-      ))
-    }
-  </Element>
+  <Channels {channels} />
 
   <Element class:list="hours column">
     <Heading
-      html={hours?.heading}
+      text={hours?.heading}
       level={5}
     />
     <Element>
@@ -114,7 +91,7 @@ const {
         <Element>
           <Heading
             level={5}
-            html={heading}
+            text={heading}
           />
           {buttons?.map((button: any) => (
             <Button
