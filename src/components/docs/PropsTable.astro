@@ -18,45 +18,91 @@ const componentFileContent = readFileSync(found.file, 'utf-8')
 
 // Function to extract props from the component file
 const extractProps = (content: string) => {
-  // Regex patterns to match different prop definition styles:
-  // 1. interface Props {...} or type Props<T> {...}
-  // 2. type Props = {...} or type Props<T> = {...}
-  const propsMatch =
-    content.match(
-      /(?:interface Props|type Props(?:<[^>]+>)?)\s*(?:extends[^{]+)?\s*{([\s\S]*?)}/
-    ) ||
-    content.match(
-      /type Props(?:<[^>]+>)?\s*=\s*(?:HTMLAttributes<'[^']+'>\s*&\s*)?(?:Polymorphic<[^>]+>\s*&\s*)?([\s\S]*?)(?:}|$)/
-    )
+  const props = []
+
+  // Extract props from interface or type definition
+  // Regex: Matches 'interface Props' or 'type Props', captures everything between curly braces
+  const propsMatch = content.match(
+    /(?:interface|type)\s+Props[\s\S]*?{([\s\S]*?)}/
+  )
   if (propsMatch) {
     const propsContent = propsMatch[1]
-    // Regex to match individual prop definitions, including generic types
-    return [
-      ...propsContent.matchAll(/(\w+)(?:\??:\s*((?:[^;\n]|\n\s*\|)*)|,)/g),
-    ]
-      .map(([, name, type]) => ({
-        name,
-        type: type
-          ? type
-              .replace(/^\s*\|\s*/, '')
-              .trim()
-              .replace(/\n\s*\|/g, ' | ')
-          : 'unknown',
-      }))
-      .filter((prop) => prop.name !== 'as')
+    const propLines = propsContent.split('\n')
+
+    let currentProp = null
+
+    propLines.forEach((line) => {
+      const trimmedLine = line.trim()
+      if (trimmedLine === '') return
+
+      // Regex: Matches prop name, optional question mark, and type
+      const match = trimmedLine.match(/^(\w+)(\??):(.*)/)
+      if (match) {
+        if (currentProp) props.push(currentProp)
+        currentProp = {
+          name: match[1],
+          type: match[3].trim(),
+        }
+      } else if (currentProp) {
+        currentProp.type += ' ' + trimmedLine
+      }
+    })
+
+    if (currentProp) props.push(currentProp)
   }
-  return []
+
+  // Extract props from type intersections
+  // Regex: Matches 'Props =' or 'Props<T> =', captures everything until end of file or double newline
+  const intersectionProps = content.match(
+    /Props(?:<[^>]+>)?\s*=\s*([\s\S]*?)(?:$|\n\n)/
+  )
+  if (intersectionProps) {
+    const intersectionContent = intersectionProps[1]
+    let currentProp = null
+    const lines = intersectionContent.split('\n')
+
+    lines.forEach((line) => {
+      const trimmedLine = line.trim()
+      if (trimmedLine === '') return
+
+      // Regex: Matches prop name, optional question mark, and type
+      const match = trimmedLine.match(/(\w+)(\??):(.*)/)
+      if (match) {
+        if (currentProp) props.push(currentProp)
+        currentProp = {
+          name: match[1],
+          type: match[3].trim(),
+        }
+      } else if (currentProp) {
+        currentProp.type += ' ' + trimmedLine
+      }
+    })
+
+    if (currentProp) props.push(currentProp)
+  }
+
+  // Clean up the type of the last prop
+  if (props.length > 0) {
+    const lastProp = props[props.length - 1]
+    // Regex: Removes trailing closing brace and whitespace
+    lastProp.type = lastProp.type.replace(/\s*}\s*$/, '')
+  }
+
+  return props.filter(
+    (prop) => prop.name !== 'as' && !prop.name.startsWith('_')
+  )
 }
 
 // Function to extract default prop values
 const extractDefaultProps = (content: string) => {
-  // Regex to match the Astro.props destructuring
+  // Regex: Matches Astro.props destructuring
   const defaultPropsMatch = content.match(
     /const\s*{[\s\S]*?}\s*=\s*Astro\.props/
   )
   return defaultPropsMatch
     ? [
         ...defaultPropsMatch[0].matchAll(
+          // Regex: Matches prop name and its default value
           /(\w+)\s*=\s*('[^']*'|"[^"]*"|[^,\n]+)/g
         ),
       ].reduce(
@@ -76,7 +122,7 @@ const extractDefaultProps = (content: string) => {
 
 // Function to extract the default 'as' prop value
 const extractAsDefault = (content: string) => {
-  // Regex to match the 'as' prop assignment
+  // Regex: Matches 'as =' assignment
   const asDefaultMatch = content.match(/as\s*=\s*([^,\n]+)/)
   if (asDefaultMatch) {
     let asDefault = asDefaultMatch[1]
@@ -97,11 +143,13 @@ const extractAsDefault = (content: string) => {
 
 // Function to extract component props (e.g., ComponentProps<typeof Button>)
 const extractComponentProps = (content: string) => {
+  // Regex: Matches 'ComponentProps<typeof ComponentName>' or 'extends ComponentProps<typeof ComponentName>'
   const componentPropsMatches =
     content.match(
       /(?:extends ComponentProps<typeof ([^>]+)>|ComponentProps<typeof ([^>]+)>)/g
     ) || []
   return componentPropsMatches.map((match) => {
+    // Regex: Extracts component name from the match
     const componentName = match.match(/typeof ([^>]+)/)[1]
     return {
       name: componentName,
@@ -113,22 +161,21 @@ const extractComponentProps = (content: string) => {
 const parsedProps = extractProps(componentFileContent)
 const parsedAstroProps = extractDefaultProps(componentFileContent)
 const asDefault = extractAsDefault(componentFileContent)
-const componentProps = extractComponentProps(componentFileContent)
-
-const allProps = [
-  ...parsedProps,
-  ...componentProps.map((cp) => ({ name: cp.name, type: cp.props })),
-]
 
 // Function to get the default value for a prop
-const getDefaultValue = (name: string, type: string) =>
-  parsedAstroProps[name] || (type.includes('undefined') ? 'undefined' : '-')
+const getDefaultValue = (name: string, type: string) => {
+  if (name in parsedAstroProps) {
+    return parsedAstroProps[name]
+  }
+
+  return '-'
+}
 
 // Prepare the table body data
 const tableBody = [
-  ...allProps.map((item) => [
+  ...parsedProps.map((item) => [
     item.name,
-    item.type,
+    item.type.replace(/\s*\|?\s*undefined/, '').trim(),
     getDefaultValue(item.name, item.type),
   ]),
   ['as', 'HTMLTag', asDefault],
