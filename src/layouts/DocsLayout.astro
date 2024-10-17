@@ -9,7 +9,7 @@ import { crush } from 'radash'
 type Props = ComponentProps<typeof Layout>
 
 const { render, slug, navigation, footer, ...rest } = Astro.props
-const { Content } = await render()
+const { Content } = render ? await render() : {}
 
 const flatButtons = crush((navigation as any)?.buttons ?? {})
 const slugs = Object.entries(flatButtons)
@@ -31,14 +31,19 @@ const nextSlug = slugs[slugIndex + 1]
 >
   <Prose>
     {Content && <Content />}
-    <Element class="prev-next">
+    <Element class:list={['prev-next', { 'next-only': !prevSlug }]}>
       <Button
-        variant="secondary"
+        if={prevSlug}
         slug={prevSlug}
+        icon="arrow-left"
+        variant="secondary"
       />
       <Button
-        variant="secondary"
+        if={nextSlug}
         slug={nextSlug}
+        icon="arrow-right"
+        variant="secondary"
+        reverse={true}
       />
     </Element>
   </Prose>
@@ -70,6 +75,10 @@ const nextSlug = slugs[slugIndex + 1]
           justify-content: space-between;
           align-items: center;
           margin-top: var(--space-7);
+
+          &.next-only {
+            justify-content: flex-end;
+          }
         }
       }
     }

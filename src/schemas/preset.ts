@@ -1,4 +1,5 @@
 import { z } from 'astro:content'
+import { createTypeAlias, printNode, zodToTs } from 'zod-to-ts'
 import { base } from './base'
 import { block } from './block'
 import { navigation } from './navigation'
@@ -42,3 +43,13 @@ export const layout = base
   .partial()
   .passthrough()
   .optional()
+
+const identifier = 'preset'
+const { node } = zodToTs(layout, identifier)
+const typeAlias = createTypeAlias(node, identifier)
+export const nodeString = printNode(typeAlias)
+  .replace(/\| undefined\)/g, ')')
+  .replace(/(\(string \| |\?: \()/g, (match) => match.slice(0, -1))
+  .replace(/\)(?=;)/g, '')
+  .replace(/(\w+\?: \w+) \) \| undefined;/g, '$1 | undefined;')
+  .replace(/string\[\] \)/g, 'string[]')
