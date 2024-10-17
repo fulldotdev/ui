@@ -157,6 +157,11 @@ const getDefaultValue = (name: string): string => {
   return '-'
 }
 
+// Check if the component extends Root.astro
+const extendsRoot = componentFileContent.includes(
+  'extends ComponentProps<typeof Root>'
+)
+
 // Prepare the table body data
 const tableBody = [
   ...parsedProps.map((item) => [
@@ -165,6 +170,31 @@ const tableBody = [
     getDefaultValue(item.name),
   ]),
 ]
+
+// Add Root props if the component extends Root.astro
+if (extendsRoot) {
+  const rootProps = extractProps(
+    readFileSync('src/components/Root.astro', 'utf-8')
+  )
+  tableBody.push(
+    ...rootProps
+      .filter((item) => item.name !== '[key: string | number | symbol]')
+      .map((item) => {
+        let type = item.type
+          .replace(/\s*\|?\s*undefined/, '')
+          .trim()
+          .replace(/\s*\|\s*any/, '')
+          .replace(/\s*\[key: string \| number \| symbol\]: any/, '')
+
+        // Remove [key: string | number | symbol]: any from the last prop
+        if (item === rootProps[rootProps.length - 1]) {
+          type = type.replace(/\s*\[key: string \| number \| symbol\]: any/, '')
+        }
+
+        return [item.name, type, getDefaultValue(item.name)]
+      })
+  )
+}
 
 // Add 'as' prop only if asDefault is not empty
 if (asDefault) {
