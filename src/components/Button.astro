@@ -21,7 +21,6 @@ interface Props
 const {
   variant = 'secondary',
   as = 'a',
-  href,
   slug,
   color,
   text,
@@ -32,12 +31,15 @@ const {
 } = Astro.props
 
 const entry = slug && !text ? await getEntry('pages', slug) : undefined
+
+const href =
+  rest.href ?? (slug ? (slug === 'index' ? '/' : `/${slug}/`) : undefined)
 ---
 
 <Element
   class:list="button"
   as={as}
-  href={href ?? (slug ? (slug === 'index' ? '/' : `/${slug}/`) : undefined)}
+  {href}
   color={variant === 'link' && href === Astro.url.pathname ? 'brand' : color}
   {variant}
   {...rest}
