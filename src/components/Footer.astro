@@ -1,23 +1,15 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Column from 'fulldev-ui/components/Column.astro'
+import type { ComponentProps } from 'astro/types'
+import Button from 'fulldev-ui/components/Button.astro'
+import Channel from 'fulldev-ui/components/Channel.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Link from 'fulldev-ui/components/Link.astro'
-import Root from 'fulldev-ui/components/Root.astro'
+import Social from 'fulldev-ui/components/Social.astro'
 import Text from 'fulldev-ui/components/Text.astro'
 import Logo from 'fulldev-ui/components/experimental/Logo.astro'
-import Button from './Button.astro'
-import Row from './Row.astro'
-import Social from './Social.astro'
-import Spread from './Spread.astro'
-import Stack from './Stack.astro'
-import Channel from './experimental/Channel.astro'
 
-type Props<As extends HTMLTag = 'footer'> = Polymorphic<{ as: As }> & {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  theme?: 'light' | 'dark' | undefined
-  color?: 'base' | 'brand' | undefined
-  space?: 'none' | 'auto' | undefined
+interface Props extends ComponentProps<typeof Element> {
   screen?: number | undefined
   logo?: string | undefined
   heading?: string | undefined
@@ -57,7 +49,7 @@ const {
 } = Astro.props
 ---
 
-<Root
+<Element
   class:list="footer"
   style={{ '--screen': `${screen}px` }}
   structure="stack"
@@ -67,13 +59,13 @@ const {
   {size}
   {...rest}
 >
-  <Column>
+  <Element class:list="column">
     <Logo {logo} />
     <Text
       color="base"
       html={html || text || description}
     />
-    <Row>
+    <Element class:list="socials">
       {
         socials?.map((social) => (
           <Social
@@ -81,12 +73,12 @@ const {
           />
         ))
       }
-    </Row>
-  </Column>
+    </Element>
+  </Element>
 
-  <Column
+  <Element
     space="none"
-    class:list="channels"
+    class:list="channels column"
   >
     {
       channels?.map((channel: any) => (
@@ -98,32 +90,32 @@ const {
         />
       ))
     }
-  </Column>
+  </Element>
 
-  <Column
-    class:list="hours"
+  <Element
+    class:list="hours column"
     space="none"
   >
     <Heading
       html={hours?.heading}
       level={5}
     />
-    <Column space="none">
+    <Element space="none">
       {
         Object.entries(hours?.days ?? {})?.map(([key, value]: any) => (
-          <Spread>
+          <Element class:list="spread">
             <Text text={key} />
             <Text text={value} />
-          </Spread>
+          </Element>
         ))
       }
-    </Column>
-  </Column>
+    </Element>
+  </Element>
 
-  <Stack class:list="buttons">
+  <Element class:list="buttons column">
     {
       columns?.map(({ heading, buttons }: any) => (
-        <Column>
+        <Element>
           <Heading
             level={5}
             html={heading}
@@ -134,11 +126,11 @@ const {
               {...button}
             />
           ))}
-        </Column>
+        </Element>
       ))
     }
-  </Stack>
-</Root>
+  </Element>
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {
@@ -151,6 +143,20 @@ const {
       padding: var(--space-7) var(--gutter);
       width: 100%;
       overflow: auto;
+
+      .spread {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .column {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .socials {
+        display: flex;
+      }
 
       .column {
         h5 + * {
@@ -174,7 +180,18 @@ const {
       }
 
       .buttons {
+        display: grid;
+        position: relative;
+        grid-template-columns: 1fr;
+        align-items: flex-start;
         gap: var(--space-3);
+        gap: var(--space-6);
+        width: 100%;
+
+        @media (min-width: 1024px) {
+          grid-auto-columns: 1fr;
+          grid-auto-flow: column;
+        }
       }
 
       .text {

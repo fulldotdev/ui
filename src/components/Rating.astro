@@ -1,12 +1,11 @@
 ---
 import type { ComponentProps } from 'astro/types'
+import Avatar from 'fulldev-ui/components/Avatar.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import Root from 'fulldev-ui/components/Root.astro'
-import Avatar from './Avatar.astro'
-import Column from './Column.astro'
-import Label from './Label.astro'
+import Label from 'fulldev-ui/components/Label.astro'
 
-interface Props extends ComponentProps<typeof Root> {
+interface Props extends ComponentProps<typeof Element> {
   align?: 'start' | 'center' | 'end' | undefined
   value?: number | undefined
   label?: string | undefined
@@ -27,7 +26,7 @@ const getIcon = (count: number) => {
 const hasAvatars = avatars && avatars?.length > 0
 ---
 
-<Root
+<Element
   class:list="rating"
   {...rest}
 >
@@ -36,8 +35,11 @@ const hasAvatars = avatars && avatars?.length > 0
       ?.filter(Boolean)
       ?.map((avatar) => <Avatar src={avatar} />)
   }
-  <Column align={!hasAvatars ? align : undefined}>
-    <Root
+  <Element
+    class:list="column"
+    align={!hasAvatars ? align : undefined}
+  >
+    <Element
       class:list={'stars'}
       {...rest}
     >
@@ -50,13 +52,13 @@ const hasAvatars = avatars && avatars?.length > 0
             />
           ))
       }
-    </Root>
+    </Element>
     <Label
       color="base"
       html={label}
     />
-  </Column>
-</Root>
+  </Element>
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {
@@ -64,6 +66,12 @@ const hasAvatars = avatars && avatars?.length > 0
       display: flex;
       align-items: center;
       gap: var(--space-4);
+
+      .column {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
 
       .avatar + .avatar {
         margin-left: calc(var(--space-4) * -2.5);
