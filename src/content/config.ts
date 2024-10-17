@@ -1,5 +1,5 @@
 import { defineCollection } from 'astro:content'
-import { page } from 'fulldev-ui/schemas/page'
+import { page } from 'fulldev-ui/schemas/collections/page'
 import { layout } from 'fulldev-ui/schemas/preset'
 
 export const collections = {

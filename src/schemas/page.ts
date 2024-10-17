@@ -9,7 +9,10 @@ import { pathSchema } from './utils'
 export const page = base
   .extend({
     i18n: pathSchema('pages'),
-    _layout: z.string().refine(
+    layout: z.string({
+      message: 'layout: the layout does not exist',
+    }),
+    component: z.string().refine(
       (value) => {
         const packageLayouts = import.meta.glob('../layouts/**/*.astro')
         const userLayouts = import.meta.glob('/src/layouts/**/*.astro')
@@ -21,9 +24,11 @@ export const page = base
         }
         return mergedLayoutComponents[value] !== undefined
       },
-      (value) => ({ message: `_layout: the layout "${value}" does not exist` })
+      (value) => ({
+        message: `component: the layout "${value}" does not exist`,
+      })
     ),
-    _preset: reference('presets'),
+    _presets: reference('presets'),
     _presets: reference('presets').array(),
     seo: z
       .object({

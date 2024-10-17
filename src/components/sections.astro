@@ -1,0 +1,28 @@
+---
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import Section from './Section.astro'
+
+interface Props extends GlobalProps, HTMLAttributes<'div'> {
+  sections?: ComponentProps<typeof Section>[] | undefined
+}
+
+const { sections, ...rest } = Astro.props
+---
+
+<Element
+  class:list="sections"
+  {...rest}
+>
+  {sections?.map((section) => <Section {...section} />)}
+</Element>
+
+<style is:global lang="scss">
+  @layer fulldev {
+    .sections {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+</style>

@@ -8,7 +8,7 @@ import { pathSchema } from './utils'
 export const layout = base
   .extend({
     i18n: pathSchema('pages'),
-    _preset: pathSchema('presets'),
+    _presets: pathSchema('presets'),
     seo: z
       .object({
         title: z.string(),

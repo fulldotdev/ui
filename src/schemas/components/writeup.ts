@@ -7,12 +7,14 @@ import rating from './rating'
 import tagline from './tagline'
 import text from './text'
 
-export default z.object({
-  rating,
-  badge,
-  tagline,
-  heading,
-  text,
-  list,
-  price,
-})
+export default z
+  .object({
+    rating,
+    badge,
+    tagline,
+    heading,
+    text,
+    list,
+    price,
+  })
+  .partial()

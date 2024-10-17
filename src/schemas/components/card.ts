@@ -5,10 +5,12 @@ import image from './image'
 import images from './images'
 import writeup from './writeup'
 
-export default writeup.extend({
-  image,
-  images,
-  buttons,
-  button,
-  icon,
-})
+export default writeup
+  .extend({
+    image,
+    images,
+    buttons,
+    button,
+    icon,
+  })
+  .partial()

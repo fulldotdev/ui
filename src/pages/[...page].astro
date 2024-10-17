@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content'
 import Layout from 'fulldev-ui/layouts/Layout.astro'
-import { mapKeys } from 'radash'
 
 export async function getStaticPaths() {
   const pages = await getCollection('pages')
@@ -15,21 +14,31 @@ export async function getStaticPaths() {
 
 const { data, ...rest } = Astro.props
 
-const fulldevLayoutComponents = import.meta.glob('../layouts/**/*.astro')
-const userLayoutComponents = import.meta.glob('/src/layouts/**/*.astro')
-const mapBlockKeys = (blocks: any) =>
-  mapKeys(blocks, (key: any) => key.split('/').pop().split('.').shift())
-const mergedLayoutComponents = {
-  ...mapBlockKeys(fulldevLayoutComponents),
-  ...mapBlockKeys(userLayoutComponents),
+const { component, ...restData } = data
+
+const allComponents = {
+  ...import.meta.glob('../../**/*.astro'),
+  ...import.meta.glob('/src/**/*.astro'),
 }
 
-const layoutComponent = mergedLayoutComponents[data._layout || 'Layout'] as any
-const layoutFunction = layoutComponent && (await layoutComponent())
-const FoundLayout = layoutFunction?.default ?? Layout
+const componentPath = Object.keys(allComponents).find(
+  (path) => path.split('/').pop()?.split('.')[0] === component
+)
+
+const Component =
+  componentPath && (await (allComponents[componentPath] as any)()).default
 ---
 
-<FoundLayout
-  {...rest}
-  {...data}
-/>
+{
+  Component ? (
+    <Component
+      {...restData}
+      {...rest}
+    />
+  ) : (
+    <Layout
+      {...(data as any)}
+      {...rest}
+    />
+  )
+}

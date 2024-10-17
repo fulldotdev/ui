@@ -4,10 +4,12 @@ import avatars from './avatars'
 import text from './text'
 
 export default z.number().or(
-  z.object({
-    value: z.number(),
-    avatar,
-    avatars,
-    text,
-  })
+  z
+    .object({
+      value: z.number(),
+      avatar,
+      avatars,
+      text,
+    })
+    .partial()
 )

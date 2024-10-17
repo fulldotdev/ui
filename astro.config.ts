@@ -13,7 +13,7 @@ export default defineConfig({
     enabled: false,
   },
   experimental: {
-    contentIntellisense: true,
+    contentIntellisense: false,
   },
   integrations: [
     sitemap(),
@@ -39,6 +39,7 @@ export default defineConfig({
       },
       injectRoutes: true,
       generateImageEntries: true,
+      overrideComponents: true,
     }),
   ],
   redirects: {

@@ -23,6 +23,7 @@ interface Props
   panel?: ComponentProps<typeof Card>['panel']
   pages?: CollectionEntry<'pages'>['data'][] | undefined
   records?: CollectionEntry<'records'>['data'][] | undefined
+  component?: string
   structure?:
     | ComponentProps<typeof Cards>['structure']
     | 'column'
@@ -51,58 +52,78 @@ const {
   position,
   ...rest
 } = Astro.props
+
+const { component, ...props } = Astro.props
+
+const allComponents = {
+  ...import.meta.glob('../../**/*.astro'),
+  ...import.meta.glob('/src/**/*.astro'),
+}
+
+const componentPath = Object.keys(allComponents).find(
+  (path) => path.split('/').pop()?.split('.')[0] === component
+)
+
+const Component =
+  componentPath && (await (allComponents[componentPath] as any)()).default
 ---
 
-<Element
-  class:list="section"
-  as="section"
-  panel={!hasCards && panel}
-  structure={hasCards ? 'column' : structure}
-  {align}
-  {...rest}
->
-  <Element class:list="section-segment">
-    <slot name="segment">
-      <slot name="writeup">
-        <Writeup
-          {level}
-          {rating}
-          {badge}
-          {tagline}
-          {heading}
-          {text}
-          {list}
+{
+  Component ? (
+    <Component {...props} />
+  ) : (
+    <Element
+      class:list="section"
+      as="section"
+      panel={!hasCards && panel}
+      structure={hasCards ? 'column' : structure}
+      {align}
+      {...rest}
+    >
+      <Element class:list="section-segment">
+        <slot name="segment">
+          <slot name="writeup">
+            <Writeup
+              {level}
+              {rating}
+              {badge}
+              {tagline}
+              {heading}
+              {text}
+              {list}
+            />
+          </slot>
+          <slot name="buttons">
+            <Button
+              {variant}
+              {...button}
+            />
+            <Buttons
+              {variant}
+              {buttons}
+            />
+          </slot>
+        </slot>
+      </Element>
+      <slot>
+        <Cards
+          level={(level + 3) as any}
+          structure={hasCards ? (structure as any) : undefined}
+          position={hasCards ? position : undefined}
+          {cards}
+          {pages}
+          {records}
+          {panel}
+          {position}
+        />
+        <Image
+          position={hasCards ? undefined : position}
+          src={image}
         />
       </slot>
-      <slot name="buttons">
-        <Button
-          {variant}
-          {...button}
-        />
-        <Buttons
-          {variant}
-          {buttons}
-        />
-      </slot>
-    </slot>
-  </Element>
-  <slot>
-    <Cards
-      level={(level + 3) as any}
-      structure={hasCards ? (structure as any) : undefined}
-      position={hasCards ? position : undefined}
-      {cards}
-      {pages}
-      {records}
-      {panel}
-      {position}
-    />
-    <Image
-      position={hasCards ? undefined : position}
-      src={image}
-    />
-  </slot>
-</Element>
+    </Element>
+  )
+}
 
 <style is:global lang="scss">
   @layer fulldev {
