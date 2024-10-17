@@ -1,19 +1,16 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
 import { getEntry } from 'astro:content'
 import Element from 'fulldev-ui/components/Element.astro'
 
-type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  color?: 'base' | 'brand' | undefined
-  contrast?: boolean | undefined
+interface Props extends ComponentProps<typeof Element>, HTMLAttributes<'a'> {
+  slug?: CollectionEntry<'pages'>['slug'] | undefined
   html?: string | undefined
   text?: string | undefined
-  slug?: CollectionEntry<'pages'>['slug'] | undefined
 }
 
-const { slug, href, html, text, as = 'a', ...rest } = Astro.props
+const { slug, href, html, text, ...rest } = Astro.props
 
 const entry = slug && (await getEntry('pages', slug))
 ---
@@ -21,7 +18,7 @@ const entry = slug && (await getEntry('pages', slug))
 <Element
   class:list="link"
   href={slug ? `/${slug}/` : href}
-  {as}
+  as="a"
   {...rest}
 >
   <slot>
