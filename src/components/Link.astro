@@ -6,11 +6,10 @@ import Element from 'fulldev-ui/components/Element.astro'
 
 interface Props extends ComponentProps<typeof Element>, HTMLAttributes<'a'> {
   slug?: CollectionEntry<'pages'>['slug'] | undefined
-  html?: string | undefined
   text?: string | undefined
 }
 
-const { slug, href, html, text, ...rest } = Astro.props
+const { slug, href, text, ...rest } = Astro.props
 
 const entry = slug && (await getEntry('pages', slug))
 ---
@@ -21,9 +20,8 @@ const entry = slug && (await getEntry('pages', slug))
   as="a"
   {...rest}
 >
-  <slot>
-    <Fragment set:html={entry?.data?.title ?? text ?? html} />
-  </slot>
+  <slot />
+  <Fragment set:html={entry?.data?.title ?? text} />
 </Element>
 
 <style is:global lang="scss">

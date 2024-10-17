@@ -5,7 +5,6 @@ export const button = pathSchema('pages').or(
   z
     .object({
       text: z.string(),
-      html: z.string(),
       href: z.string(),
       icon: z.string(),
     })
@@ -17,7 +16,6 @@ export const link = pathSchema('pages').or(
   z
     .object({
       text: z.string(),
-      html: z.string(),
       href: z.string(),
     })
     .partial()
@@ -36,7 +34,6 @@ export const base = z
     ),
     heading: z.string(),
     text: z.string(),
-    html: z.string(),
     image: z.string(),
     images: z.string().array(),
     rating: z.number().or(
