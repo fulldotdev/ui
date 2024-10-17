@@ -1,5 +1,5 @@
 import { z } from 'astro:content'
-import { pathSchema } from '../utils'
+import pathSchema from '../utils/pathSchema'
 
 export default pathSchema('pages').or(
   z
@@ -9,4 +9,5 @@ export default pathSchema('pages').or(
       icon: z.string(),
     })
     .partial()
+    .passthrough()
 )

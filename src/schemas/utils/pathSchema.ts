@@ -9,7 +9,7 @@ import { reference, z, type AnyEntryMap } from 'astro:content'
 //   })
 //   .pipe(reference('pages'))
 
-export const pathSchema = <C extends keyof AnyEntryMap>(collection: C) =>
+export default <C extends keyof AnyEntryMap>(collection: C) =>
   z
     .string()
     .transform((value) => {
