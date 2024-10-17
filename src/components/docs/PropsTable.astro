@@ -13,36 +13,41 @@ const foundContent =
   foundComponent && readFileSync(foundComponent.file, 'utf-8')
 console.log(foundContent)
 
+// Function to extract props from the component file
 const extractProps = (content: string) => {
+  // Regex patterns to match different prop definition styles:
+  // 1. interface Props {...} or type Props<T> {...}
+  // 2. type Props = {...} or type Props<T> = {...}
   const propsMatch =
     content.match(
       /(?:interface Props|type Props(?:<[^>]+>)?)\s*(?:extends[^{]+)?\s*{([\s\S]*?)}/
     ) ||
     content.match(
       /type Props(?:<[^>]+>)?\s*=\s*(?:HTMLAttributes<'[^']+'>\s*&\s*)?(?:Polymorphic<[^>]+>\s*&\s*)?([\s\S]*?)(?:}|$)/
-    ) ||
-    content.match(
-      /interface Props(?:<[^>]+>)?\s*(?:extends[^{]+)?\s*{([\s\S]*?)}/
     )
   if (propsMatch) {
     const propsContent = propsMatch[1]
-    const props = [
+    // Regex to match individual prop definitions, including generic types
+    return [
       ...propsContent.matchAll(/(\w+)(?:\??:\s*((?:[^;\n]|\n\s*\|)*)|,)/g),
-    ].map(([, name, type]) => ({
-      name,
-      type: type
-        ? type
-            .replace(/^\s*\|\s*/, '')
-            .trim()
-            .replace(/\n\s*\|/g, ' | ')
-        : 'unknown',
-    }))
-    return props.filter((prop) => prop.name !== 'as')
+    ]
+      .map(([, name, type]) => ({
+        name,
+        type: type
+          ? type
+              .replace(/^\s*\|\s*/, '')
+              .trim()
+              .replace(/\n\s*\|/g, ' | ')
+          : 'unknown',
+      }))
+      .filter((prop) => prop.name !== 'as')
   }
   return []
 }
 
+// Function to extract default prop values
 const extractDefaultProps = (content: string) => {
+  // Regex to match the Astro.props destructuring
   const defaultPropsMatch = content.match(
     /const\s*{[\s\S]*?}\s*=\s*Astro\.props/
   )
@@ -66,18 +71,28 @@ const extractDefaultProps = (content: string) => {
     : {}
 }
 
+// Function to extract the default 'as' prop value
 const extractAsDefault = (content: string) => {
+  // Regex to match the 'as' prop assignment
   const asDefaultMatch = content.match(/as\s*=\s*([^,\n]+)/)
-  return asDefaultMatch
-    ? asDefaultMatch[1]
-        .trim()
-        .split(' : ')[0]
-        .replace(/['"]/g, '')
-        .replace(/href \? a : /, '')
-        .replace(/href \? 'a' : /, '')
-    : 'div'
+  if (asDefaultMatch) {
+    let asDefault = asDefaultMatch[1]
+      .trim()
+      .split(' : ')[0]
+      .replace(/['"]/g, '')
+      .replace(/href \? a : /, '')
+      .replace(/href \? 'a' : /, '')
+
+    // Remove extra braces and clean up the string
+    asDefault = asDefault.replace(/^{{/, '{').replace(/}}$/, '}')
+    asDefault = asDefault.replace(/^{/, '').replace(/}$/, '')
+
+    return asDefault.includes('?') ? `{${asDefault}}` : asDefault
+  }
+  return 'div'
 }
 
+// Function to extract component props (e.g., ComponentProps<typeof Button>)
 const extractComponentProps = (content: string) => {
   const componentPropsMatches =
     content.match(
@@ -102,30 +117,27 @@ const allProps = [
   ...componentProps.map((cp) => ({ name: cp.name, type: cp.props })),
 ]
 
-const getDefaultValue = (name: string, type: string) => {
-  if (parsedAstroProps[name]) {
-    return parsedAstroProps[name]
-  }
-  if (type.includes('undefined')) {
-    return 'undefined'
-  }
-  return '-'
-}
+// Function to get the default value for a prop
+const getDefaultValue = (name: string, type: string) =>
+  parsedAstroProps[name] || (type.includes('undefined') ? 'undefined' : '-')
+
+// Prepare the table body data
+const tableBody = [
+  ...allProps.map((item) => [
+    item.name,
+    item.type,
+    getDefaultValue(item.name, item.type),
+  ]),
+  ['as', 'HTMLTag', asDefault],
+  ['HTML Attributes', `Polymorphic<${asDefault}>`, '-'],
+]
 ---
 
 <Table
   size="md"
   class:list={['props-table']}
   header={['Prop', 'Type', 'Default']}
-  body={[
-    ...allProps.map((item) => [
-      item.name,
-      item.type,
-      getDefaultValue(item.name, item.type),
-    ]),
-    ['as', 'HTMLTag', asDefault],
-    ['HTML Attributes', `Polymorphic<${asDefault}>`, '-'],
-  ]}
+  body={tableBody}
 />
 
 <style is:global lang="scss">
