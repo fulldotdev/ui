@@ -124,21 +124,18 @@ const extractDefaultProps = (content: string): Record<string, string> => {
     : {}
 }
 
-// Function to extract the default 'as' prop value
+// Function to extract the default 'As' prop value from the interface or type
 const extractAsDefault = (content: string): string => {
-  const asDefaultMatch = content.match(/as\s*=\s*([^,\n]+)/)
-  if (asDefaultMatch && asDefaultMatch[1]) {
-    let asDefault = asDefaultMatch[1]
-      ?.split(' : ')[0]
-      ?.trim()
-      ?.replace(/['"]/g, '')
-      ?.replace(/href \? a : /, '')
-      ?.replace(/href \? 'a' : /, '')
-
-    asDefault = asDefault?.replace(/^{/, '').replace(/}$/, '')
-
-    return asDefault?.includes('?') ? `{${asDefault}}` : (asDefault ?? '')
+  const asTypeMatch = content.match(/type Props<As extends ([^>]+)>/)
+  if (asTypeMatch && asTypeMatch[1]) {
+    return asTypeMatch[1].trim().replace(/['"]/g, '')
   }
+
+  const asInterfaceMatch = content.match(/interface Props<As extends ([^>]+)>/)
+  if (asInterfaceMatch && asInterfaceMatch[1]) {
+    return asInterfaceMatch[1].trim().replace(/['"]/g, '')
+  }
+
   return ''
 }
 
@@ -157,7 +154,12 @@ const getDefaultValue = (name: string): string => {
 
 // Check if the component extends Element.astro
 const extendsElement = componentFileContent.includes(
-  'extends ComponentProps<typeof Element>'
+  'ComponentProps<typeof Element>'
+)
+
+// Check if the component extends Writeup.astro
+const extendsWriteup = componentFileContent.includes(
+  'ComponentProps<typeof Writeup>'
 )
 
 // Prepare the table body data
@@ -167,7 +169,7 @@ const tableBody = new Map()
 parsedProps.forEach((item) => {
   tableBody.set(item.name, [
     item.name,
-    item.type.replace(/\s*\|?\s*undefined/, '').trim(),
+    item.type.replace(/\s*\|?\s*(undefined|null)/, '').trim(),
     getDefaultValue(item.name),
   ])
 })
@@ -182,13 +184,38 @@ if (extendsElement) {
     .forEach((item) => {
       if (!tableBody.has(item.name)) {
         let type = item.type
-          .replace(/\s*\|?\s*undefined/, '')
+          .replace(/\s*\|?\s*(undefined|null)/, '')
           .trim()
           .replace(/\s*\|\s*any/, '')
           .replace(/\s*\[key: string \| number \| symbol\]: any/, '')
 
         // Remove [key: string | number | symbol]: any from the last prop
         if (item === elementProps[elementProps.length - 1]) {
+          type = type.replace(/\s*\[key: string \| number \| symbol\]: any/, '')
+        }
+
+        tableBody.set(item.name, [item.name, type, getDefaultValue(item.name)])
+      }
+    })
+}
+
+// Add Writeup props if the component extends Writeup.astro
+if (extendsWriteup) {
+  const writeupProps = extractProps(
+    readFileSync('src/components/Writeup.astro', 'utf-8')
+  )
+  writeupProps
+    .filter((item) => item.name !== '[key: string | number | symbol]')
+    .forEach((item) => {
+      if (!tableBody.has(item.name)) {
+        let type = item.type
+          .replace(/\s*\|?\s*(undefined|null)/, '')
+          .trim()
+          .replace(/\s*\|\s*any/, '')
+          .replace(/\s*\[key: string \| number \| symbol\]: any/, '')
+
+        // Remove [key: string | number | symbol]: any from the last prop
+        if (item === writeupProps[writeupProps.length - 1]) {
           type = type.replace(/\s*\[key: string \| number \| symbol\]: any/, '')
         }
 
@@ -205,13 +232,21 @@ if (asDefault) {
 // Check if the component is polymorphic
 const isPolymorphic = componentFileContent.includes('Polymorphic<')
 
-// Add HTML Attributes row only if the component is polymorphic
+// Extract HTMLAttributes from the component
+const htmlAttributesMatch = componentFileContent.match(
+  /HTMLAttributes<'(\w+)'>/
+)
+const htmlElement = htmlAttributesMatch ? htmlAttributesMatch[1] : ''
+
+// Add HTML Attributes row
 if (isPolymorphic && asDefault) {
   tableBody.set('HTML Attributes', [
     'HTML Attributes',
     `Polymorphic<${asDefault}>`,
     '-',
   ])
+} else if (htmlElement) {
+  tableBody.set('HTML Attributes', ['HTML Attributes', `${htmlElement}`, '-'])
 }
 ---
 
