@@ -14,7 +14,6 @@ interface Props {
 
 const {
   as: As = 'div',
-  if: ifProp = 'content',
   space,
   theme,
   variant,
@@ -41,9 +40,9 @@ const slot = await Astro.slots.render('default')
 const hasContent = (str?: undefined | string) =>
   typeof str === 'string' && str.trim().length > 0
 const render =
-  ifProp == 'content'
-    ? hasContent(slot) || hasContent(html) || hasContent(text)
-    : ifProp
+  'if' in rest
+    ? rest.if
+    : hasContent(slot) || hasContent(html) || hasContent(text)
 
 const componentName = Astro.props.class?.split(' ').pop() ?? ''
 const userComponents = import.meta.glob('/src/**/*.astro')
