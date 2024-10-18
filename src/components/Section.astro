@@ -32,10 +32,14 @@ interface Props
 }
 
 const { cards, pages, records } = Astro.props
-const hasCards = (pages || records || cards)?.filter(Boolean)
+const mergedCards = [
+  ...(pages ?? []),
+  ...(records ?? []),
+  ...(cards ?? []),
+]?.filter(Boolean)
 
 const {
-  structure = hasCards ? 'grid' : 'column',
+  structure = mergedCards ? 'grid' : 'column',
   align = 'start',
   level = 2,
   size = 'md',
@@ -76,8 +80,8 @@ const Component =
     <Element
       class:list="section"
       as="section"
-      panel={!hasCards && panel}
-      structure={hasCards ? 'column' : structure}
+      panel={!mergedCards && panel}
+      structure={mergedCards ? 'column' : structure}
       {align}
       {size}
       {...rest}
@@ -86,6 +90,7 @@ const Component =
         <slot name="segment">
           <slot name="writeup">
             <Writeup
+              {align}
               {level}
               {rating}
               {badge}
@@ -111,16 +116,14 @@ const Component =
         <Cards
           level={(level + 2) as any}
           size={size === 'lg' ? 'md' : 'sm'}
-          structure={hasCards ? (structure as any) : undefined}
-          position={hasCards ? position : undefined}
-          {cards}
-          {pages}
-          {records}
+          structure={mergedCards ? (structure as any) : undefined}
+          position={mergedCards ? position : undefined}
+          cards={mergedCards}
           {panel}
           {position}
         />
         <Image
-          position={hasCards ? undefined : position}
+          position={mergedCards ? undefined : position}
           src={image}
         />
       </slot>
