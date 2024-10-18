@@ -1,5 +1,7 @@
 ---
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import { getEntry } from 'astro:content'
 import Button from 'fulldev-ui/components/Button.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Element from 'fulldev-ui/components/Element.astro'
@@ -11,7 +13,7 @@ import Icon from './Icon.astro'
 interface Props
   extends GlobalProps,
     ComponentProps<typeof Writeup>,
-    HTMLAttributes<'a'> {
+    Omit<HTMLAttributes<'a'>, 'title'> {
   image?: ComponentProps<typeof Image>['src']
   images?: ComponentProps<typeof Image>['src'][]
   position?: ComponentProps<typeof Image>['position']
@@ -20,7 +22,21 @@ interface Props
   variant?: ComponentProps<typeof Button>['variant']
   align?: ComponentProps<typeof Writeup>['align']
   icon?: ComponentProps<typeof Icon>['name']
+  slug?: CollectionEntry<'pages'>['slug'] | undefined
+  id?: CollectionEntry<'records'>['id'] | undefined
   panel?: boolean | undefined
+}
+
+const { slug, id } = Astro.props
+const page = slug ? (await getEntry('pages', slug)).data : {}
+const record = id ? (await getEntry('records', id)).data : {}
+
+const entryProps = {
+  heading: page.title ?? record.title,
+  text: page.description ?? record.description,
+  href: `/${slug}/`,
+  ...record,
+  ...page,
 }
 
 const {
@@ -42,7 +58,10 @@ const {
   images,
   position,
   ...rest
-} = Astro.props
+} = {
+  ...entryProps,
+  ...Astro.props,
+}
 ---
 
 <Element
