@@ -1,5 +1,23 @@
+// import { z } from 'astro:content'
+// import button from '../components/button'
+// import buttons from '../components/buttons'
+// import heading from '../components/heading'
+// import logo from '../components/logo'
+
+// export default z.object({
+//   logo,
+//   buttons: z.array(
+//     button.or(
+//       z.object({
+//         heading,
+//         buttons,
+//       })
+//     )
+//   ),
+// })
+
 import { z } from 'astro:content'
-import { pathSchema } from './utils'
+import pathSchema from '../utils/pathSchema'
 
 const button = pathSchema('pages').or(
   z
@@ -23,7 +41,7 @@ const group = z
   .partial()
   .passthrough()
 
-export const navigation = z
+export default z
   .object({
     logo: z.string(),
     search: z.boolean(),

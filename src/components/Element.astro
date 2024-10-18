@@ -1,17 +1,4 @@
 ---
-import { mapKeys } from 'radash'
-import config from 'virtual:fulldev-ui/config'
-
-interface Props {
-  // size?: 'sm' | 'md' | 'lg'
-  // color?: 'base' | 'brand'
-  size?: string | number | null | undefined
-  color?: string | undefined | null
-  contrast?: boolean | undefined
-  theme?: 'light' | 'dark' | undefined
-  [key: string | number | symbol]: any
-}
-
 const {
   as: As = 'div',
   theme,
@@ -33,53 +20,34 @@ const {
 
 const slot = await Astro.slots.render('default')
 const render = 'if' in rest ? rest.if : slot?.trim().length > 0
-
-const componentName = Astro.props.class?.split(' ').pop() ?? ''
-const userComponents = import.meta.glob('/src/**/*.astro')
-const mappedUserComponents = mapKeys(userComponents, (key: string) => {
-  const name = key.split('/').pop()?.split('.').shift()?.toLowerCase()
-  return name || key
-})
-
-const found =
-  config.overrideComponents && (mappedUserComponents[componentName] as any)
-const FoundComponent = found ? (await found()).default : null
 ---
 
 {
   render && (
-    <>
-      {found ? (
-        <FoundComponent {...Astro.props}>
-          <Fragment set:html={slot} />
-        </FoundComponent>
-      ) : (
-        <As
-          class:list={[
-            'root',
-            {
-              contrast,
-              panel,
-              open,
-              reverse,
-              lead,
-              [`size-${size}`]: size,
-              [`color-${color}`]: color,
-              [`theme-${theme}`]: theme,
-              [`level-${level}`]: level,
-              [`variant-${variant}`]: variant,
-              [`structure-${structure}`]: structure,
-              [`align-${align}`]: align,
-              [`position-${position}`]: position,
-              [`position-${position}`]: position,
-            },
-          ]}
-          {...rest}
-        >
-          <Fragment set:html={slot} />
-        </As>
-      )}
-    </>
+    <As
+      class:list={[
+        'root',
+        {
+          contrast,
+          panel,
+          open,
+          reverse,
+          lead,
+          [`size-${size}`]: size,
+          [`color-${color}`]: color,
+          [`theme-${theme}`]: theme,
+          [`level-${level}`]: level,
+          [`variant-${variant}`]: variant,
+          [`structure-${structure}`]: structure,
+          [`align-${align}`]: align,
+          [`position-${position}`]: position,
+          [`position-${position}`]: position,
+        },
+      ]}
+      {...rest}
+    >
+      <Fragment set:html={slot} />
+    </As>
   )
 }
 

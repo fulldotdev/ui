@@ -5,11 +5,14 @@ import { getEntry } from 'astro:content'
 import Avatar from 'fulldev-ui/components/Avatar.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
 interface Props
-  extends ComponentProps<typeof Element>,
-    HTMLAttributes<'button' | 'a'>,
+  extends GlobalProps,
+    HTMLAttributes<'button'>,
+    HTMLAttributes<'a'>,
     HTMLAttributes<'label'> {
+  type?: HTMLAttributes<'button'>['type'] & HTMLAttributes<'a'>['type']
   icon?: ComponentProps<typeof Icon>['name']
   avatar?: ComponentProps<typeof Avatar>['src']
   slug?: CollectionEntry<'pages'>['slug'] | undefined
@@ -18,28 +21,25 @@ interface Props
   text?: string | undefined
 }
 
-const {
-  variant = 'secondary',
-  as = 'a',
-  slug,
-  color,
-  text,
-  avatar,
-  icon,
-  ...rest
-} = Astro.props
+const { variant = 'secondary', slug, text, avatar, icon, ...rest } = Astro.props
 
 const entry = slug && !text ? await getEntry('pages', slug) : undefined
-
+const hrefString =
+  rest.href && typeof rest.href !== 'string' ? rest.href.href : rest.href
 const href =
-  rest.href ?? (slug ? (slug === 'index' ? '/' : `/${slug}/`) : undefined)
+  hrefString ?? (slug ? (slug === 'index' ? '/' : `/${slug}/`) : undefined)
+const as = href ? 'a' : rest.for ? 'label' : 'button'
+const color =
+  variant === 'link' && href === Astro.url.pathname ? 'brand' : rest.color
 ---
 
 <Element
   class:list="button"
-  as={as}
+  _target={href?.startsWith('http') ? '_blank' : undefined}
+  type={as === 'button' ? 'button' : undefined}
+  {as}
   {href}
-  color={variant === 'link' && href === Astro.url.pathname ? 'brand' : color}
+  {color}
   {variant}
   {...rest}
 >

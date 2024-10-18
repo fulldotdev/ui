@@ -5,11 +5,13 @@ import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Writeup from 'fulldev-ui/components/Writeup.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import Icon from './Icon.astro'
 
 interface Props
-  extends ComponentProps<typeof Element>,
+  extends GlobalProps,
     ComponentProps<typeof Writeup>,
-    HTMLAttributes<'a' | 'div'> {
+    HTMLAttributes<'a'> {
   image?: ComponentProps<typeof Image>['src']
   images?: ComponentProps<typeof Image>['src'][]
   position?: ComponentProps<typeof Image>['position']
@@ -17,6 +19,7 @@ interface Props
   button?: ComponentProps<typeof Button> | undefined
   variant?: ComponentProps<typeof Button>['variant']
   align?: ComponentProps<typeof Writeup>['align']
+  icon?: ComponentProps<typeof Icon>['name']
   panel?: boolean | undefined
 }
 
@@ -56,6 +59,9 @@ const {
       src={image ?? images?.[0]}
     />
   </slot>
+  <slot name="icon">
+    <Icon name={icon} />
+  </slot>
   <slot name="writeup">
     <Writeup
       {level}
@@ -65,7 +71,6 @@ const {
       {heading}
       {text}
       {list}
-      {icon}
     />
   </slot>
   <slot name="buttons">

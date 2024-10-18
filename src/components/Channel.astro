@@ -4,13 +4,16 @@ import Button from 'fulldev-ui/components/Button.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Text from 'fulldev-ui/components/Text.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-interface Props extends ComponentProps<typeof Button> {
+interface Props extends GlobalProps, ComponentProps<typeof Button> {
+  variant?: ComponentProps<typeof Button>['variant']
+  icon?: ComponentProps<typeof Button>['icon']
+  href?: ComponentProps<typeof Button>['href']
+  heading?: ComponentProps<typeof Heading>['text']
+  text?: ComponentProps<typeof Text>['text']
   structure?: 'row' | 'column' | undefined
   align?: 'start' | 'center' | undefined
-  heading?: string | undefined
-  text?: string | undefined
-  target?: string | undefined
 }
 
 const {
@@ -18,7 +21,6 @@ const {
   structure = 'row',
   color = 'brand',
   align = 'start',
-  target = '_blank',
   heading,
   text,
   icon,
@@ -28,13 +30,11 @@ const {
 ---
 
 <Element
-  class:list="channel"
-  {structure}
+  class:list={`channel ${structure}`}
   {align}
   {...rest}
 >
   <Button
-    {target}
     {variant}
     {color}
     {href}
@@ -53,17 +53,18 @@ const {
   .channel {
     gap: var(--space-4);
 
-    .column {
+    &.column {
       display: flex;
       flex-direction: column;
       align-items: inherit;
       gap: var(--space-1);
     }
 
-    &.structure-row {
-      .column {
-        align-items: flex-start;
-      }
+    &.row {
+      display: flex;
+      flex-direction: row;
+      align-items: inherit;
+      gap: var(--space-1);
     }
   }
 </style>

@@ -4,44 +4,38 @@ import Button from 'fulldev-ui/components/Button.astro'
 import Channels from 'fulldev-ui/components/Channels.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
-import Link from 'fulldev-ui/components/Link.astro'
 import Social from 'fulldev-ui/components/Social.astro'
 import Socials from 'fulldev-ui/components/Socials.astro'
 import Text from 'fulldev-ui/components/Text.astro'
 import Logo from 'fulldev-ui/components/experimental/Logo.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-interface Props
-  extends ComponentProps<typeof Element>,
-    HTMLAttributes<'footer'> {
+interface Props extends GlobalProps, HTMLAttributes<'footer'> {
   screen?: number | undefined
-  logo?: string | undefined
-  text?: string | undefined
+  logo?: ComponentProps<typeof Logo>['logo']
+  text?: ComponentProps<typeof Text>['text']
   hours?: any
-  socials?: (string | ComponentProps<typeof Social>)[] | undefined
+  socials?: ComponentProps<typeof Social>['href'][] | undefined
   buttons?: ComponentProps<typeof Button>[] | undefined
   panel?: boolean | undefined
-  channels?: any
+  channels?: ComponentProps<typeof Channels>['channels'] | undefined
   columns?: {
-    heading: string | undefined
-    links: ComponentProps<typeof Link>[] | undefined
+    heading: ComponentProps<typeof Heading>['text']
+    buttons: ComponentProps<typeof Button>[] | undefined
   }[]
 }
 
 const {
-  as = 'footer',
-  space = 'auto',
   size = 'sm',
   screen = 1280,
   hours,
   panel,
   logo,
   socials,
-  heading,
   buttons,
   columns,
   text,
   title,
-  description,
   channels,
   ...rest
 } = Astro.props
@@ -51,9 +45,7 @@ const {
   class:list="footer"
   style={{ '--screen': `${screen}px` }}
   structure="stack"
-  {as}
   {panel}
-  {space}
   {size}
   {...rest}
 >
@@ -88,7 +80,7 @@ const {
   <Element class:list="buttons column">
     {
       columns?.map(({ heading, buttons }: any) => (
-        <Element>
+        <Element class:list="column">
           <Heading
             level={5}
             text={heading}

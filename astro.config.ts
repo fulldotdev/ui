@@ -12,6 +12,9 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
+  experimental: {
+    contentIntellisense: false,
+  },
   integrations: [
     sitemap(),
     mdx(),
@@ -36,6 +39,7 @@ export default defineConfig({
       },
       injectRoutes: true,
       generateImageEntries: true,
+      overrideComponents: true,
     }),
   ],
   redirects: {

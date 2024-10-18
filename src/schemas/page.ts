@@ -1,85 +1,63 @@
-import { getEntries, reference, z } from 'astro:content'
-import { assign, mapKeys } from 'radash'
-import { createTypeAlias, printNode, zodToTs } from 'zod-to-ts'
-import { base } from './base'
-import { block } from './block'
-import { navigation } from './navigation'
-import { pathSchema } from './utils'
+import { getEntries, getEntry, z } from 'astro:content'
+import { assign } from 'radash'
+import image from './components/image'
+import sections from './components/sections'
+import categories from './utils/categories'
+import component from './utils/component'
+import navigation from './utils/navigation'
+import pathSchema from './utils/pathSchema'
 
-export const page = base
-  .extend({
-    i18n: pathSchema('pages'),
-    _layout: z.string().refine(
-      (value) => {
-        const packageLayouts = import.meta.glob('../layouts/**/*.astro')
-        const userLayouts = import.meta.glob('/src/layouts/**/*.astro')
-        const mapBlockKeys = (blocks: any) =>
-          mapKeys(blocks, (key: any) => key.split('/').pop().split('.').shift())
-        const mergedLayoutComponents = {
-          ...mapBlockKeys(packageLayouts),
-          ...mapBlockKeys(userLayouts),
-        }
-        return mergedLayoutComponents[value] !== undefined
-      },
-      (value) => ({ message: `_layout: the layout "${value}" does not exist` })
-    ),
-    _preset: reference('presets'),
-    _presets: reference('presets').array(),
-    seo: z
-      .object({
-        title: z.string(),
-        description: z.string(),
-        image: z.string(),
-      })
-      .partial()
-      .passthrough(),
-    code: z
-      .object({
-        head: z.string(),
-        body: z.string(),
-      })
-      .partial()
-      .passthrough(),
-    pages: pathSchema('pages').array(),
-    records: pathSchema('records').array(),
-    title: z.string(),
-    description: z.string(),
-    header: block.or(z.literal(false)),
-    headers: block.array().or(z.literal(false)),
-    hero: block.or(z.literal(false)),
-    block: block.or(z.literal(false)),
-    section: block.or(z.literal(false)),
-    blocks: block.array().or(z.object({}).catchall(block)),
-    sections: block.array().or(z.object({}).catchall(block)),
-    cta: block.or(z.literal(false)),
-    footer: block.or(z.literal(false)),
-    footers: block.array().or(z.literal(false)),
-    navigation: navigation.or(z.literal(false)),
+const i18n = z
+  .object({
+    i18n: pathSchema('pages').optional(),
   })
-  .partial()
   .passthrough()
-  .transform(async (data) => {
-    const presetReferences = [
-      { collection: 'presets', id: 'base' },
-      data._preset ?? undefined,
-      ...(data._presets ?? []),
-    ].filter(Boolean)
+  .transform(async ({ i18n, ...rest }) => {
+    if (!i18n) return rest
+    const entry = await getEntry(i18n)
+    const merged = assign(entry.data, rest) as typeof rest
+    return merged as typeof rest
+  })
 
-    const presetEntries = await getEntries(presetReferences as any)
+const presets = z
+  .object({
+    presets: z.array(pathSchema('presets')).optional(),
+  })
+  .passthrough()
+  .transform(async ({ presets, ...rest }) => {
+    if (!presets) return rest
+    const entries = await getEntries(presets)
     let mergedData = {}
-    presetEntries.forEach(
+    entries.forEach(
       (preset: any) => (mergedData = assign(mergedData, preset.data))
     )
-    mergedData = assign(mergedData, data)
-    return mergedData as typeof data
+    mergedData = assign(mergedData, rest)
+    return mergedData as typeof rest
   })
 
-const identifier = 'page'
-const { node } = zodToTs(page, identifier)
-const typeAlias = createTypeAlias(node, identifier)
-export const nodeString = printNode(typeAlias)
-  .replace(/\| undefined\)/g, ')')
-  .replace(/(\(string \| |\?: \()/g, (match) => match.slice(0, -1))
-  .replace(/\)(?=;)/g, '')
-  .replace(/(\w+\?: \w+) \) \| undefined;/g, '$1 | undefined;')
-  .replace(/string\[\] \)/g, 'string[]')
+export default i18n.pipe(presets).pipe(
+  z
+    .object({
+      component,
+      categories,
+      theme: z.enum(['light', 'dark']),
+      lang: z.string(),
+      seo: z
+        .object({
+          title: z.string().optional(),
+          description: z.string().optional(),
+        })
+        .optional(),
+      title: z.string(),
+      description: z.string().optional(),
+      image,
+      sections,
+      header: z.any(),
+      footer: z.any(),
+      navigation,
+      toc: z.any(),
+      sidebar: z.any(),
+    })
+    .partial()
+    .passthrough()
+)
