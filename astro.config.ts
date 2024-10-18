@@ -1,5 +1,6 @@
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
+import yaml from '@rollup/plugin-yaml'
 import favicons from 'astro-favicons'
 // @ts-ignore
 import liveCode from 'astro-live-code'
@@ -15,6 +16,7 @@ export default defineConfig({
   },
   experimental: {
     contentIntellisense: false,
+    contentLayer: true,
   },
   integrations: [
     sitemap(),
@@ -45,10 +47,12 @@ export default defineConfig({
         },
       },
       injectRoutes: true,
-      generateImageEntries: true,
       overrideComponents: true,
     }),
   ],
+  vite: {
+    plugins: [yaml()],
+  },
   redirects: {
     '/discord': 'https://discord.gg/vXZqMbadm8',
     '/segment/card': '/base/card',
