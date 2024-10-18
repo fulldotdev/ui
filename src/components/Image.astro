@@ -31,6 +31,7 @@ const newSrc = localImage ? localImage() : src
   newSrc && (
     <AstroImage
       class:list={['image', position && `position-${position}`]}
+      style={{ '--screen': '100vw' }}
       src={newSrc as typeof src}
       alt={newAlt as typeof alt}
       width={localImage ? undefined : width}
@@ -68,66 +69,15 @@ const newSrc = localImage ? localImage() : src
         object-fit: cover;
       }
 
-      &.position-container {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        object-position: center;
-      }
-
       &.position-inset {
+        margin-top: calc(var(--inset-top) * -1);
+        margin-right: calc(var(--inset-right) * -1);
+        margin-bottom: calc(var(--inset-bottom) * -1);
+        margin-left: calc(var(--inset-left) * -1);
+        width: calc(100% + var(--inset-left) + var(--inset-right));
         max-width: none;
+        height: calc(100% + var(--inset-top) + var(--inset-bottom));
         object-fit: cover;
-
-        &:is(.structure-column > &) {
-          margin-right: calc(var(--inset-right) * -1);
-          margin-left: calc(var(--inset-left) * -1);
-          width: calc(100% + var(--inset-left) + var(--inset-right));
-
-          &.image:first-child {
-            margin-top: calc(var(--inset-top) * -1);
-            height: calc(100% + var(--inset-top) * 1);
-          }
-
-          &.image:last-child {
-            margin-bottom: calc(var(--inset-bottom) * -1);
-            height: calc(100% + var(--inset-bottom) * 1);
-          }
-        }
-
-        &:is(.structure-split > &) {
-          @media (max-width: 1023.999px) {
-            margin-right: calc(var(--inset-right) * -1);
-            margin-left: calc(var(--inset-left) * -1);
-            width: calc(100% + var(--inset-left) + var(--inset-right));
-
-            &.image:first-child {
-              margin-top: calc(var(--inset-top) * -1);
-              height: calc(100% + var(--inset-top) * 1);
-            }
-
-            &.image:last-child {
-              margin-bottom: calc(var(--inset-bottom) * -1);
-              height: calc(100% + var(--inset-bottom) * 1);
-            }
-          }
-
-          @media (min-width: 1024px) {
-            margin-top: calc(var(--inset-top) * -1);
-            margin-bottom: calc(var(--inset-bottom) * -1);
-            height: calc(100% + var(--inset-top) * 1 + var(--inset-bottom) * 1);
-
-            &.image:first-child {
-              margin-left: calc(var(--inset-left) * -1);
-              width: calc(100% + var(--inset-left) * 1);
-            }
-
-            &.image:last-child {
-              margin-right: calc(var(--inset-right) * -1);
-              width: calc(100% + var(--inset-right) * 1);
-            }
-          }
-        }
       }
     }
   }

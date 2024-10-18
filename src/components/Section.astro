@@ -38,6 +38,7 @@ const {
   structure = hasCards ? 'grid' : 'column',
   align = 'start',
   level = 2,
+  size = 'md',
   badge,
   tagline,
   rating,
@@ -107,7 +108,8 @@ const Component =
       </Element>
       <slot>
         <Cards
-          level={(level + 3) as any}
+          level={(level + 2) as any}
+          size={size === 'lg' ? 'md' : 'sm'}
           structure={hasCards ? (structure as any) : undefined}
           position={hasCards ? position : undefined}
           {cards}
@@ -128,13 +130,15 @@ const Component =
 <style is:global lang="scss">
   @layer fulldev {
     .section {
-      --inset-x: var(--gutter);
-      --inset-y: var(--spacer);
+      --inset-top: 0px;
+      --inset-left: var(--gutter);
+      --inset-right: var(--gutter);
+      --inset-bottom: var(--spacer);
 
       position: relative;
       align-items: flex-start;
       gap: var(--space-6) var(--space-7);
-      padding: var(--inset-y) var(--inset-x);
+      padding: var(--spacer) var(--gutter);
       overflow: auto;
 
       .section-segment {
@@ -145,16 +149,20 @@ const Component =
       }
 
       &.panel {
-        --inset-x: min(var(--gutter), var(--spacer));
-
         margin: var(--spacer) var(--gutter);
         border: 1px solid var(--base-a6);
         border-radius: var(--radius-2);
         background-color: var(--base-2);
+        padding: min(var(--gutter), var(--spacer));
         overflow: hidden;
       }
 
       &.reverse {
+        --inset-top: var(--spacer);
+        --inset-left: var(--gutter);
+        --inset-right: var(--gutter);
+        --inset-bottom: 0px;
+
         &:not(.structure-split) {
           .section-segment {
             order: 999;
@@ -188,8 +196,18 @@ const Component =
         width: 100%;
 
         @media (min-width: 1024px) {
+          --inset-top: var(--spacer);
+          --inset-left: 0px;
+          --inset-right: var(--gutter);
+          --inset-bottom: var(--spacer);
+
           grid-auto-columns: 1fr;
           grid-auto-flow: column;
+
+          &.reverse {
+            --inset-right: 0px;
+            --inset-left: var(--gutter);
+          }
         }
 
         &.align-center {
