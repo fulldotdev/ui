@@ -1,6 +1,5 @@
 ---
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import type { CollectionEntry } from 'astro:content'
 import Button from 'fulldev-ui/components/Button.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import type Card from 'fulldev-ui/components/Card.astro'
@@ -14,15 +13,13 @@ interface Props
   extends GlobalProps,
     HTMLAttributes<'section'>,
     ComponentProps<typeof Writeup> {
-  image?: ComponentProps<typeof Image>['src']
+  image?: ComponentProps<typeof Image>
   position?: ComponentProps<typeof Image>['position']
   buttons?: ComponentProps<typeof Buttons>['buttons']
   button?: ComponentProps<typeof Button> | undefined
   variant?: ComponentProps<typeof Button>['variant']
   cards?: ComponentProps<typeof Cards>['cards']
   panel?: ComponentProps<typeof Card>['panel']
-  pages?: CollectionEntry<'pages'>['data'][] | undefined
-  records?: CollectionEntry<'records'>['data'][] | undefined
   component?: string
   structure?:
     | ComponentProps<typeof Cards>['structure']
@@ -31,15 +28,9 @@ interface Props
     | 'spread'
 }
 
-const { cards, pages, records } = Astro.props
-const mergedCards = [
-  ...(pages ?? []),
-  ...(records ?? []),
-  ...(cards ?? []),
-]?.filter(Boolean)
-
 const {
-  structure = mergedCards ? 'grid' : 'column',
+  cards,
+  structure = cards ? 'grid' : 'column',
   align = 'start',
   level = 2,
   size = 'md',
@@ -80,8 +71,8 @@ const Component =
     <Element
       class:list="section"
       as="section"
-      panel={!mergedCards && panel}
-      structure={mergedCards ? 'column' : structure}
+      panel={!cards && panel}
+      structure={cards ? 'column' : structure}
       {align}
       {size}
       {...rest}
@@ -116,15 +107,15 @@ const Component =
         <Cards
           level={(level + 2) as any}
           size={size === 'lg' ? 'md' : 'sm'}
-          structure={mergedCards ? (structure as any) : undefined}
-          position={mergedCards ? position : undefined}
-          cards={mergedCards}
+          structure={cards ? (structure as any) : undefined}
+          position={cards ? position : undefined}
+          {cards}
           {panel}
           {position}
         />
         <Image
-          position={mergedCards ? undefined : position}
-          src={image}
+          position={cards ? undefined : position}
+          {...image}
         />
       </slot>
     </Element>

@@ -1,3 +1,4 @@
+import viteYaml from '@rollup/plugin-yaml'
 import type { AstroIntegration } from 'astro'
 import merge from 'deepmerge'
 import fs from 'fs/promises'
@@ -130,13 +131,14 @@ export default function fulldevIntegration(
         updateConfig({
           vite: {
             plugins: [
+              viteYaml(),
               virtual({
                 'virtual:astro/config': `export default ${JSON.stringify(astroConfig)}`,
                 'virtual:fulldev-ui/config': `export default ${JSON.stringify({
                   ...config,
                 })}`,
                 'virtual:colors.css': css,
-              }),
+              }) as any,
             ],
             css: {
               preprocessorOptions: {

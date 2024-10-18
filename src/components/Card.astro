@@ -14,8 +14,8 @@ interface Props
   extends GlobalProps,
     ComponentProps<typeof Writeup>,
     Omit<HTMLAttributes<'a'>, 'title'> {
-  image?: ComponentProps<typeof Image>['src']
-  images?: ComponentProps<typeof Image>['src'][]
+  image?: ComponentProps<typeof Image>
+  images?: ComponentProps<typeof Image>[]
   position?: ComponentProps<typeof Image>['position']
   buttons?: ComponentProps<typeof Buttons>['buttons']
   button?: ComponentProps<typeof Button> | undefined
@@ -23,19 +23,17 @@ interface Props
   align?: ComponentProps<typeof Writeup>['align']
   icon?: ComponentProps<typeof Icon>['name']
   slug?: CollectionEntry<'pages'>['slug'] | undefined
-  id?: CollectionEntry<'records'>['id'] | undefined
+  id?: any
   panel?: boolean | undefined
 }
 
-const { slug, id } = Astro.props
+const { slug } = Astro.props
 const page = slug ? (await getEntry('pages', slug)).data : {}
-const record = id ? (await getEntry('records', id)).data : {}
 
 const entryProps = {
-  heading: page.title ?? record.title,
-  text: page.description ?? record.description,
+  heading: page.title,
+  text: page.description,
   href: `/${slug}/`,
-  ...record,
   ...page,
 }
 
@@ -75,7 +73,7 @@ const {
   <slot name="image">
     <Image
       position={panel ? position : undefined}
-      src={image ?? images?.[0]}
+      {...image || images?.[0]}
     />
   </slot>
   <slot name="icon">

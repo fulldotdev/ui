@@ -1,16 +1,11 @@
 import { defineCollection, z } from 'astro:content'
 import page from 'fulldev-ui/schemas/page.ts'
 import preset from 'fulldev-ui/schemas/preset.ts'
-import record from 'fulldev-ui/schemas/record.ts'
 
 export const collections = {
   pages: defineCollection({
     type: 'content',
     schema: page,
-  }),
-  records: defineCollection({
-    type: 'data',
-    schema: record,
   }),
   presets: defineCollection({
     type: 'data',
@@ -43,6 +38,13 @@ export const collections = {
       })
       return allImages as any
     },
-    schema: z.any(),
+    schema: z.object({
+      id: z.string(),
+      src: z.string(),
+      alt: z.string().default(''),
+      width: z.number(),
+      height: z.number(),
+      format: z.string(),
+    }),
   }),
 }
