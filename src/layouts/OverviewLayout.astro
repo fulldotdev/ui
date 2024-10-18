@@ -1,26 +1,23 @@
 ---
 import type { ComponentProps } from 'astro/types'
+import Article from 'fulldev-ui/blocks/Article.astro'
 import Categories from 'fulldev-ui/blocks/Categories.astro'
 import Intro from 'fulldev-ui/blocks/Intro.astro'
 import Products from 'fulldev-ui/blocks/Products.astro'
-import Blocks from 'fulldev-ui/components/Blocks.astro'
-import Prose from 'fulldev-ui/components/experimental/Prose.astro'
-import Section from 'fulldev-ui/components/Section.astro'
+import Sections from 'fulldev-ui/components/sections.astro'
 import Layout from 'fulldev-ui/layouts/Layout.astro'
+import { getCategoryPages } from 'fulldev-ui/utils/getCategoryPages'
 import { getChildPages } from 'fulldev-ui/utils/getChildPages.ts'
 import { getChildRecords } from 'fulldev-ui/utils/getChildRecords.ts'
-import { getReferencingPages } from 'fulldev-ui/utils/getReferencingPages.ts'
 
 type Props = ComponentProps<typeof Layout>
 
-const { slug, render, sections, blocks, children, references, ...rest } =
-  Astro.props
-const { Content } = await render()
+const { slug, render, sections, children, ...rest } = Astro.props
 
 const childPages = await getChildPages(slug)
 const childRecords = await getChildRecords(slug)
+const categoryPages = await getCategoryPages(slug)
 // const siblingPages = await getSiblingPages(slug)
-const referencingPages = await getReferencingPages(slug)
 ---
 
 <Layout {...Astro.props}>
@@ -32,15 +29,10 @@ const referencingPages = await getReferencingPages(slug)
     panel
   />
   <Products
-    pages={referencingPages}
+    pages={categoryPages}
     structure="grid"
   />
-  <Section style={{ '--screen': '768px' }}>
-    <Prose id="prose">
-      <Content />
-    </Prose>
-  </Section>
-  <Blocks {...sections} />
-  <Blocks {...blocks} />
+  <Article style={{ '--screen': '768px' }} />
+  <Sections {sections} />
   <slot />
 </Layout>
