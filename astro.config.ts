@@ -1,5 +1,6 @@
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
+import favicons from 'astro-favicons'
 // @ts-ignore
 import liveCode from 'astro-live-code'
 import pagefind from 'astro-pagefind'
@@ -21,6 +22,12 @@ export default defineConfig({
     pagefind(),
     liveCode({
       layout: '/src/components/experimental/Window.astro',
+    }),
+    favicons({
+      path: 'src/images/favicon.svg',
+      masterPicture: 'src/images/favicon.svg',
+      appName: 'Fulldev UI',
+      appShortName: 'Fulldev UI',
     }),
     integration({
       css: '/src/css/custom.css',

@@ -170,10 +170,8 @@ export default function fulldevIntegration(
               try {
                 await fs.access(yamlPath)
               } catch {
-                const slug = filename.split('.')[0]
-                const unslugged = slug?.replace(/-/g, ' ')
                 const yamlContent = yaml.dump({
-                  alt: unslugged,
+                  alt: '',
                 })
                 await fs.writeFile(yamlPath, yamlContent, 'utf8')
               }
