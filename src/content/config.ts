@@ -27,7 +27,6 @@ export const collections = {
       })
 
       const allImages = Object.entries(files).map(([src, file]) => {
-        console.log(file)
         const id = src.split('/images/').pop()
         const matchPath = Object.keys(entries).find(
           (entry) => entry.split('.').shift() === src
