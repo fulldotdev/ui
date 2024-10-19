@@ -1,3 +1,4 @@
+import viteYaml from '@rollup/plugin-yaml'
 import type { AstroIntegration } from 'astro'
 import merge from 'deepmerge'
 import fs from 'fs/promises'
@@ -130,13 +131,14 @@ export default function fulldevIntegration(
         updateConfig({
           vite: {
             plugins: [
+              viteYaml(),
               virtual({
                 'virtual:astro/config': `export default ${JSON.stringify(astroConfig)}`,
                 'virtual:fulldev-ui/config': `export default ${JSON.stringify({
                   ...config,
                 })}`,
                 'virtual:colors.css': css,
-              }),
+              }) as any,
             ],
             css: {
               preprocessorOptions: {
@@ -170,10 +172,8 @@ export default function fulldevIntegration(
               try {
                 await fs.access(yamlPath)
               } catch {
-                const slug = filename.split('.')[0]
-                const unslugged = slug?.replace(/-/g, ' ')
                 const yamlContent = yaml.dump({
-                  alt: unslugged,
+                  alt: '',
                 })
                 await fs.writeFile(yamlPath, yamlContent, 'utf8')
               }

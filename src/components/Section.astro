@@ -1,6 +1,5 @@
 ---
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import type { CollectionEntry } from 'astro:content'
 import Button from 'fulldev-ui/components/Button.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import type Card from 'fulldev-ui/components/Card.astro'
@@ -14,15 +13,13 @@ interface Props
   extends GlobalProps,
     HTMLAttributes<'section'>,
     ComponentProps<typeof Writeup> {
-  image?: ComponentProps<typeof Image>['src']
+  image?: ComponentProps<typeof Image>
   position?: ComponentProps<typeof Image>['position']
   buttons?: ComponentProps<typeof Buttons>['buttons']
   button?: ComponentProps<typeof Button> | undefined
   variant?: ComponentProps<typeof Button>['variant']
   cards?: ComponentProps<typeof Cards>['cards']
   panel?: ComponentProps<typeof Card>['panel']
-  pages?: CollectionEntry<'pages'>['data'][] | undefined
-  records?: CollectionEntry<'records'>['data'][] | undefined
   component?: string
   structure?:
     | ComponentProps<typeof Cards>['structure']
@@ -31,13 +28,12 @@ interface Props
     | 'spread'
 }
 
-const { cards, pages, records } = Astro.props
-const hasCards = (pages || records || cards)?.filter(Boolean)
-
 const {
-  structure = hasCards ? 'grid' : 'column',
+  cards,
+  structure = cards ? 'grid' : 'column',
   align = 'start',
   level = 2,
+  size = 'md',
   badge,
   tagline,
   rating,
@@ -75,9 +71,10 @@ const Component =
     <Element
       class:list="section"
       as="section"
-      panel={!hasCards && panel}
-      structure={hasCards ? 'column' : structure}
+      panel={!cards && panel}
+      structure={cards ? 'column' : structure}
       {align}
+      {size}
       {...rest}
     >
       <Element class:list="section-segment">
@@ -107,18 +104,17 @@ const Component =
       </Element>
       <slot>
         <Cards
-          level={(level + 3) as any}
-          structure={hasCards ? (structure as any) : undefined}
-          position={hasCards ? position : undefined}
+          level={(level + 2) as any}
+          size={size === 'lg' ? 'md' : 'sm'}
+          structure={cards ? (structure as any) : undefined}
+          position={cards ? position : undefined}
           {cards}
-          {pages}
-          {records}
           {panel}
           {position}
         />
         <Image
-          position={hasCards ? undefined : position}
-          src={image}
+          position={cards ? undefined : position}
+          {...image}
         />
       </slot>
     </Element>
@@ -128,33 +124,40 @@ const Component =
 <style is:global lang="scss">
   @layer fulldev {
     .section {
-      --inset-x: var(--gutter);
-      --inset-y: var(--spacer);
+      --inset-top: 0px;
+      --inset-left: var(--gutter);
+      --inset-right: var(--gutter);
+      --inset-bottom: var(--spacer);
 
       position: relative;
       align-items: flex-start;
       gap: var(--space-6) var(--space-7);
-      padding: var(--inset-y) var(--inset-x);
+      padding: var(--spacer) var(--gutter);
       overflow: auto;
 
       .section-segment {
         display: flex;
         flex-direction: column;
+        align-items: flex-start;
         gap: var(--space-5);
         z-index: 1;
       }
 
       &.panel {
-        --inset-x: min(var(--gutter), var(--spacer));
-
         margin: var(--spacer) var(--gutter);
         border: 1px solid var(--base-a6);
         border-radius: var(--radius-2);
         background-color: var(--base-2);
+        padding: min(var(--gutter), var(--spacer));
         overflow: hidden;
       }
 
       &.reverse {
+        --inset-top: var(--spacer);
+        --inset-left: var(--gutter);
+        --inset-right: var(--gutter);
+        --inset-bottom: 0px;
+
         &:not(.structure-split) {
           .section-segment {
             order: 999;
@@ -188,8 +191,18 @@ const Component =
         width: 100%;
 
         @media (min-width: 1024px) {
+          --inset-top: var(--spacer);
+          --inset-left: 0px;
+          --inset-right: var(--gutter);
+          --inset-bottom: var(--spacer);
+
           grid-auto-columns: 1fr;
           grid-auto-flow: column;
+
+          &.reverse {
+            --inset-right: 0px;
+            --inset-left: var(--gutter);
+          }
         }
 
         &.align-center {

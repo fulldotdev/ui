@@ -1,5 +1,7 @@
 ---
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import { getEntry } from 'astro:content'
 import Button from 'fulldev-ui/components/Button.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Element from 'fulldev-ui/components/Element.astro'
@@ -11,16 +13,28 @@ import Icon from './Icon.astro'
 interface Props
   extends GlobalProps,
     ComponentProps<typeof Writeup>,
-    HTMLAttributes<'a'> {
-  image?: ComponentProps<typeof Image>['src']
-  images?: ComponentProps<typeof Image>['src'][]
+    Omit<HTMLAttributes<'a'>, 'title'> {
+  image?: ComponentProps<typeof Image>
+  images?: ComponentProps<typeof Image>[]
   position?: ComponentProps<typeof Image>['position']
   buttons?: ComponentProps<typeof Buttons>['buttons']
   button?: ComponentProps<typeof Button> | undefined
   variant?: ComponentProps<typeof Button>['variant']
   align?: ComponentProps<typeof Writeup>['align']
   icon?: ComponentProps<typeof Icon>['name']
+  slug?: CollectionEntry<'pages'>['slug'] | undefined
+  id?: any
   panel?: boolean | undefined
+}
+
+const { slug } = Astro.props
+const page = slug ? (await getEntry('pages', slug)).data : {}
+
+const entryProps = {
+  heading: page.title,
+  text: page.description,
+  href: `/${slug}/`,
+  ...page,
 }
 
 const {
@@ -42,7 +56,10 @@ const {
   images,
   position,
   ...rest
-} = Astro.props
+} = {
+  ...entryProps,
+  ...Astro.props,
+}
 ---
 
 <Element
@@ -56,7 +73,7 @@ const {
   <slot name="image">
     <Image
       position={panel ? position : undefined}
-      src={image ?? images?.[0]}
+      {...image || images?.[0]}
     />
   </slot>
   <slot name="icon">
@@ -89,10 +106,10 @@ const {
 <style is:global lang="scss">
   @layer fulldev {
     .card {
-      --inset-top: var(--space-5);
-      --inset-left: var(--space-5);
-      --inset-right: var(--space-5);
-      --inset-bottom: var(--space-5);
+      --inset-top: 0px;
+      --inset-left: 0px;
+      --inset-right: 0px;
+      --inset-bottom: 0px;
 
       display: flex;
       position: relative;
@@ -116,20 +133,20 @@ const {
       }
 
       &.panel {
+        --inset-top: var(--space-4);
+        --inset-left: var(--space-4);
+        --inset-right: var(--space-4);
+        --inset-bottom: 0px;
+
         border: 1px solid var(--color-a6);
         border-radius: var(--radius-2);
         background-color: var(--color-2);
-        padding: var(--inset-top) var(--inset-right) var(--inset-bottom)
-          var(--inset-left);
+        padding: var(--space-4);
         overflow: hidden;
 
         &[href]:hover {
           border: 1px solid var(--color-a7);
         }
-      }
-
-      > .image + * {
-        margin-top: var(--space-5);
       }
     }
   }
