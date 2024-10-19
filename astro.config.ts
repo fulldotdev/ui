@@ -25,7 +25,7 @@ export default defineConfig({
       layout: '/src/components/experimental/Window.astro',
     }),
     favicons({
-      path: 'src/images/favicon.svg',
+      path: 'favicon',
       masterPicture: 'src/images/favicon.svg',
       appName: 'Fulldev UI',
       appShortName: 'Fulldev UI',
