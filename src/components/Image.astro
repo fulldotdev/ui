@@ -11,7 +11,7 @@ interface Props extends HTMLAttributes<'img'> {
 }
 
 const { id } = Astro.props
-const page = id ? (await getEntry('images', id))?.data : {}
+const entry = id ? (await getEntry('images', id))?.data : {}
 
 const {
   width = 1920,
@@ -21,8 +21,8 @@ const {
   alt,
   ...rest
 } = {
-  ...page,
   ...Astro.props,
+  ...entry,
 }
 
 function getAltBySrc() {
@@ -34,7 +34,7 @@ function getAltBySrc() {
 }
 
 const images = import.meta.glob<{ default: ImageMetadata }>('/src/images/*')
-const image = id && images[id]
+const image = images[src as keyof typeof images]
 ---
 
 {
@@ -42,8 +42,8 @@ const image = id && images[id]
     <AstroImage
       class:list={['image', position && `position-${position}`]}
       style={{ '--screen': '100vw' }}
-      src={(image as any) || (src as any)}
       alt={alt || getAltBySrc()}
+      src={image ? image() : src}
       width={width}
       height={height}
       {...(rest as any)}
