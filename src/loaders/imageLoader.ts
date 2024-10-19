@@ -1,8 +1,8 @@
 export default async () => {
-  const files = import.meta.glob('src/images/**/*.{webp,png,jpg,jpeg,svg}', {
+  const files = import.meta.glob('/src/images/**/*.{webp,png,jpg,jpeg,svg}', {
     eager: true,
   })
-  const entries = import.meta.glob('src/images/**/*.{yml,yaml,json}', {
+  const entries = import.meta.glob('/src/images/**/*.{yml,yaml,json}', {
     eager: true,
   })
 

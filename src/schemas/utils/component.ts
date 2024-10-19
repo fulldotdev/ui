@@ -3,15 +3,15 @@ import { mapKeys } from 'radash'
 
 export default z.string().refine(
   (value) => {
-    const packageLayouts = import.meta.glob('../**/*.astro')
-    const userLayouts = import.meta.glob('/src/**/*.astro')
+    const packageComponents = import.meta.glob('../../**/*.astro')
+    const userComponents = import.meta.glob('/src/**/*.astro')
     const mapBlockKeys = (blocks: any) =>
       mapKeys(blocks, (key: any) => key.split('/').pop().split('.').shift())
-    const mergedLayoutComponents = {
-      ...mapBlockKeys(packageLayouts),
-      ...mapBlockKeys(userLayouts),
+    const mergedComponents = {
+      ...mapBlockKeys(packageComponents),
+      ...mapBlockKeys(userComponents),
     }
-    return mergedLayoutComponents[value] !== undefined
+    return mergedComponents[value] !== undefined
   },
   (value) => ({ message: `component: the component "${value}" does not exist` })
 )
