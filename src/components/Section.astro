@@ -7,12 +7,10 @@ import Cards from 'fulldev-ui/components/Cards.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Writeup from 'fulldev-ui/components/Writeup.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
 interface Props
-  extends GlobalProps,
-    HTMLAttributes<'section'>,
-    ComponentProps<typeof Writeup> {
+  extends ComponentProps<typeof Writeup>,
+    HTMLAttributes<'section'> {
   image?: ComponentProps<typeof Image>
   position?: ComponentProps<typeof Image>['position']
   buttons?: ComponentProps<typeof Buttons>['buttons']
@@ -45,6 +43,7 @@ const {
   variant,
   panel,
   image,
+  theme,
   position,
   ...rest
 } = Astro.props
@@ -52,8 +51,8 @@ const {
 const { component, ...props } = Astro.props
 
 const allComponents = {
-  ...import.meta.glob('../../**/*.astro'),
   ...import.meta.glob('/src/**/*.astro'),
+  ...import.meta.glob('../../**/*.astro'),
 }
 
 const componentPath = Object.keys(allComponents).find(
@@ -72,12 +71,21 @@ const Component =
       class:list="section"
       as="section"
       panel={!cards && panel}
-      structure={cards ? 'column' : structure}
+      theme={cards ? undefined : theme}
+      structure={
+        structure === 'column' ||
+        structure === 'split' ||
+        structure === 'spread'
+          ? structure
+          : text
+            ? 'column'
+            : 'spread'
+      }
       {align}
       {size}
       {...rest}
     >
-      <Element class:list="section-segment">
+      <Element class:list="segment">
         <slot name="segment">
           <slot name="writeup">
             <Writeup
@@ -106,8 +114,17 @@ const Component =
         <Cards
           level={(level + 2) as any}
           size={size === 'lg' ? 'md' : 'sm'}
-          structure={cards ? (structure as any) : undefined}
+          structure={
+            structure === 'grid' ||
+            structure === 'masonry' ||
+            structure === 'stack' ||
+            structure === 'carousel' ||
+            structure === 'bento'
+              ? structure
+              : undefined
+          }
           position={cards ? position : undefined}
+          {theme}
           {cards}
           {panel}
           {position}
@@ -135,7 +152,7 @@ const Component =
       padding: var(--spacer) var(--gutter);
       overflow: auto;
 
-      .section-segment {
+      .segment {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -159,13 +176,13 @@ const Component =
         --inset-bottom: 0px;
 
         &:not(.structure-split) {
-          .section-segment {
+          .segment {
             order: 999;
           }
         }
 
         @media (min-width: 1024px) {
-          .section-segment {
+          .segment {
             order: 999;
           }
         }
@@ -178,7 +195,7 @@ const Component =
         &.align-center {
           align-items: center;
 
-          .section-segment {
+          .segment {
             align-items: center;
             text-align: center;
           }
@@ -214,14 +231,14 @@ const Component =
         display: flex;
         flex-direction: column;
 
-        .section-segment {
+        .segment {
           flex-direction: row;
           justify-content: space-between;
           width: 100%;
         }
 
         &.align-center {
-          .section-segment {
+          .segment {
             align-items: center;
 
             .writeup {
