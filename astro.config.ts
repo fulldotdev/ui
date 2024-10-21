@@ -41,7 +41,6 @@ export default defineConfig({
         },
       },
       injectRoutes: true,
-      overrideComponents: true,
     }),
   ],
   redirects: {

@@ -1,7 +1,9 @@
 import { getCollection, type CollectionEntry } from 'astro:content'
 
 // Records that are in a folder with the current page's slug
-export const getChildPages = async (slug: CollectionEntry<'pages'>['slug']) =>
+export const getFolderChildren = async (
+  slug: CollectionEntry<'pages'>['slug']
+) =>
   (
     await getCollection(
       'pages',

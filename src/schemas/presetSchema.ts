@@ -1,13 +1,13 @@
 import { z } from 'astro:content'
 import image from './components/image'
 import sections from './components/sections'
-import categories from './utils/categories'
 import component from './utils/component'
+import parents from './utils/parents'
 
 export default z
   .object({
     component,
-    categories,
+    parents,
     theme: z.enum(['light', 'dark']),
     lang: z.string(),
     seo: z
