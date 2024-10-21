@@ -1,6 +1,8 @@
 import { getEntries, getEntry, z } from 'astro:content'
 import { assign } from 'radash'
 import fulldevConfig from 'virtual:fulldev-ui/config'
+import footer from './components/footer'
+import header from './components/header'
 import image from './components/image'
 import images from './components/images'
 import sections from './components/sections'
@@ -63,11 +65,12 @@ export default i18n.pipe(presets).pipe(
       image,
       images,
       sections,
-      header: z.any(),
-      footer: z.any(),
+      header,
+      footer,
       navigation,
       toc: z.any(),
       sidebar: z.any(),
+      banner: z.any(),
     })
     .partial()
     .passthrough()

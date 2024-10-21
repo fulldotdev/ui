@@ -9,6 +9,7 @@ import Image from 'fulldev-ui/components/Image.astro'
 import Writeup from 'fulldev-ui/components/Writeup.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
 import Icon from './Icon.astro'
+import Price from './Price.astro'
 
 interface Props
   extends GlobalProps,
@@ -22,9 +23,11 @@ interface Props
   variant?: ComponentProps<typeof Button>['variant']
   align?: ComponentProps<typeof Writeup>['align']
   icon?: ComponentProps<typeof Icon>['name']
+  price?: ComponentProps<typeof Price>['value']
   slug?: CollectionEntry<'pages'>['slug'] | undefined
   id?: any
   panel?: boolean | undefined
+  title?: ComponentProps<typeof Writeup>['heading']
 }
 
 const { slug } = Astro.props
@@ -47,12 +50,14 @@ const {
   heading,
   text,
   variant,
+  price,
   list,
   button,
   buttons,
   panel,
   image,
   icon,
+  title,
   images,
   position,
   ...rest
@@ -81,14 +86,15 @@ const {
   </slot>
   <slot name="writeup">
     <Writeup
+      heading={heading || title}
       {level}
       {rating}
       {badge}
       {tagline}
-      {heading}
       {text}
       {list}
     />
+    <Price value={price} />
   </slot>
   <slot name="buttons">
     <Button
@@ -121,12 +127,12 @@ const {
       &[href] {
         cursor: pointer;
 
-        > .root.image {
-          transition: all;
+        > .image {
+          transition: all 0.2s ease;
         }
 
         &:hover {
-          > .root.image {
+          > .image {
             opacity: 0.8;
           }
         }
