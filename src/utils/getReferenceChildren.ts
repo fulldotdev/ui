@@ -8,4 +8,7 @@ export const getReferenceChildren = async (
     await getCollection('pages', (page) =>
       page.data?.parents?.some((p: any) => p.slug === slug)
     )
-  )?.map((page) => page.data)
+  )?.map(({ slug, data }) => ({
+    ...data,
+    href: `/${slug}/`,
+  }))
