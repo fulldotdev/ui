@@ -1,132 +1,93 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import Column from 'fulldev-ui/components/Column.astro'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Button from 'fulldev-ui/components/Button.astro'
+import Channels from 'fulldev-ui/components/Channels.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
-import Link from 'fulldev-ui/components/Link.astro'
-import Root from 'fulldev-ui/components/Root.astro'
+import Social from 'fulldev-ui/components/Social.astro'
+import Socials from 'fulldev-ui/components/Socials.astro'
 import Text from 'fulldev-ui/components/Text.astro'
 import Logo from 'fulldev-ui/components/experimental/Logo.astro'
-import Button from './Button.astro'
-import Row from './Row.astro'
-import Social from './Social.astro'
-import Spread from './Spread.astro'
-import Stack from './Stack.astro'
-import Channel from './experimental/Channel.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-type Props<As extends HTMLTag = 'footer'> = Polymorphic<{ as: As }> & {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  theme?: 'light' | 'dark' | undefined
-  color?: 'base' | 'brand' | undefined
-  space?: 'none' | 'auto' | undefined
+interface Props extends GlobalProps, HTMLAttributes<'footer'> {
   screen?: number | undefined
-  logo?: string | undefined
-  heading?: string | undefined
-  title?: string | undefined
-  description?: string | undefined
+  logo?: ComponentProps<typeof Logo>['src']
+  company?: ComponentProps<typeof Logo>['company']
+  text?: ComponentProps<typeof Text>['text']
   hours?: any
-  text?: string | undefined
-  socials?: (string | ComponentProps<typeof Social>)[] | undefined
-  buttons?: ComponentProps<typeof Button<'a'>>[] | undefined
-  html?: string | undefined
+  socials?: ComponentProps<typeof Social>['href'][] | undefined
+  buttons?: ComponentProps<typeof Button>[] | undefined
   panel?: boolean | undefined
-  channels?: any
+  channels?: ComponentProps<typeof Channels>['channels'] | undefined
   columns?: {
-    heading: string | undefined
-    links: ComponentProps<typeof Link<'a'>>[] | undefined
+    heading: ComponentProps<typeof Heading>['text']
+    buttons: ComponentProps<typeof Button>[] | undefined
   }[]
 }
 
 const {
-  as = 'footer',
-  space = 'auto',
   size = 'sm',
   screen = 1280,
   hours,
   panel,
   logo,
+  company,
   socials,
-  heading,
   buttons,
   columns,
   text,
   title,
-  description,
   channels,
-  html,
   ...rest
 } = Astro.props
 ---
 
-<Root
+<Element
   class:list="footer"
   style={{ '--screen': `${screen}px` }}
   structure="stack"
-  {as}
   {panel}
-  {space}
   {size}
   {...rest}
 >
-  <Column>
-    <Logo {logo} />
+  <Element class:list="column">
+    <Logo
+      id={logo}
+      src={logo}
+      {company}
+    />
     <Text
       color="base"
-      html={html || text || description}
+      {text}
     />
-    <Row>
-      {
-        socials?.map((social) => (
-          <Social
-            {...(typeof social === 'string' ? { href: social } : social)}
-          />
-        ))
-      }
-    </Row>
-  </Column>
-
-  <Column
-    space="none"
-    class:list="channels"
-  >
-    {
-      channels?.map((channel: any) => (
-        <Channel
-          heading={channel.heading}
-          text={channel.text}
-          icon={channel.icon}
-          href={channel.href}
-        />
-      ))
-    }
-  </Column>
-
-  <Column
-    class:list="hours"
-    space="none"
-  >
+    <Socials {socials} />
+  </Element>
+  <Channels {channels} />
+  <Element class:list="hours column">
     <Heading
-      html={hours?.heading}
+      text={hours?.heading}
       level={5}
     />
-    <Column space="none">
+    <Element>
       {
         Object.entries(hours?.days ?? {})?.map(([key, value]: any) => (
-          <Spread>
+          <Element class:list="spread">
             <Text text={key} />
             <Text text={value} />
-          </Spread>
+          </Element>
         ))
       }
-    </Column>
-  </Column>
+    </Element>
+  </Element>
 
-  <Stack class:list="buttons">
+  <Element class:list="buttons column">
     {
       columns?.map(({ heading, buttons }: any) => (
-        <Column>
+        <Element class:list="column">
           <Heading
             level={5}
-            html={heading}
+            text={heading}
           />
           {buttons?.map((button: any) => (
             <Button
@@ -134,16 +95,20 @@ const {
               {...button}
             />
           ))}
-        </Column>
+        </Element>
       ))
     }
-  </Stack>
-</Root>
+  </Element>
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {
     .footer {
+      display: grid;
       position: relative;
+      grid-template-columns: 1fr;
+      align-items: flex-start;
+      gap: var(--space-6);
       margin-top: auto;
       border-top-width: 1px;
       border-color: var(--base-a6);
@@ -151,6 +116,25 @@ const {
       padding: var(--space-7) var(--gutter);
       width: 100%;
       overflow: auto;
+
+      @media (min-width: 1024px) {
+        grid-auto-columns: 1fr;
+        grid-auto-flow: column;
+      }
+
+      .spread {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .column {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .socials {
+        display: flex;
+      }
 
       .column {
         h5 + * {
@@ -174,7 +158,18 @@ const {
       }
 
       .buttons {
+        display: grid;
+        position: relative;
+        grid-template-columns: 1fr;
+        align-items: flex-start;
         gap: var(--space-3);
+        gap: var(--space-6);
+        width: 100%;
+
+        @media (min-width: 1024px) {
+          grid-auto-columns: 1fr;
+          grid-auto-flow: column;
+        }
       }
 
       .text {

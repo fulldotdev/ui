@@ -1,16 +1,14 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+import Avatar from 'fulldev-ui/components/Avatar.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import Root from 'fulldev-ui/components/Root.astro'
-import Avatar from './Avatar.astro'
-import Column from './Column.astro'
-import Label from './Label.astro'
+import Label from 'fulldev-ui/components/Label.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-type Props = HTMLAttributes<'div'> & {
-  color?: 'base' | 'brand' | undefined
+interface Props extends GlobalProps, HTMLAttributes<'div'> {
   align?: 'start' | 'center' | 'end' | undefined
   value?: number | undefined
-  size?: string | undefined
   label?: string | undefined
   avatars?: string[] | undefined
   avatar?: string | undefined
@@ -29,7 +27,7 @@ const getIcon = (count: number) => {
 const hasAvatars = avatars && avatars?.length > 0
 ---
 
-<Root
+<Element
   class:list="rating"
   {...rest}
 >
@@ -38,8 +36,11 @@ const hasAvatars = avatars && avatars?.length > 0
       ?.filter(Boolean)
       ?.map((avatar) => <Avatar src={avatar} />)
   }
-  <Column align={!hasAvatars ? align : undefined}>
-    <Root
+  <Element
+    class:list="column"
+    align={!hasAvatars ? align : undefined}
+  >
+    <Element
       class:list={'stars'}
       {...rest}
     >
@@ -52,13 +53,13 @@ const hasAvatars = avatars && avatars?.length > 0
             />
           ))
       }
-    </Root>
+    </Element>
     <Label
       color="base"
-      html={label}
+      text={label}
     />
-  </Column>
-</Root>
+  </Element>
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {
@@ -66,6 +67,12 @@ const hasAvatars = avatars && avatars?.length > 0
       display: flex;
       align-items: center;
       gap: var(--space-4);
+
+      .column {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
 
       .avatar + .avatar {
         margin-left: calc(var(--space-4) * -2.5);

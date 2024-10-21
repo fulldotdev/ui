@@ -1,0 +1,70 @@
+---
+import type { ComponentProps } from 'astro/types'
+import Button from 'fulldev-ui/components/Button.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Text from 'fulldev-ui/components/Text.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
+
+interface Props extends GlobalProps, ComponentProps<typeof Button> {
+  variant?: ComponentProps<typeof Button>['variant']
+  icon?: ComponentProps<typeof Button>['icon']
+  href?: ComponentProps<typeof Button>['href']
+  heading?: ComponentProps<typeof Heading>['text']
+  text?: ComponentProps<typeof Text>['text']
+  structure?: 'row' | 'column' | undefined
+  align?: 'start' | 'center' | undefined
+}
+
+const {
+  variant = 'secondary',
+  structure = 'row',
+  color = 'brand',
+  align = 'start',
+  heading,
+  text,
+  icon,
+  href,
+  ...rest
+} = Astro.props
+---
+
+<Element
+  class:list={`channel ${structure}`}
+  {align}
+  {...rest}
+>
+  <Button
+    {variant}
+    {color}
+    {href}
+    {icon}
+  />
+  <Element class:list={'column'}>
+    <Heading
+      level={6}
+      text={heading}
+    />
+    <Text text={text} />
+  </Element>
+</Element>
+
+<style>
+  .channel {
+    gap: var(--space-4);
+
+    &.column {
+      display: flex;
+      flex-direction: column;
+      align-items: inherit;
+      gap: var(--space-1);
+    }
+
+    &.row {
+      display: flex;
+      flex-direction: row;
+      align-items: inherit;
+      gap: var(--space-1);
+    }
+  }
+</style>

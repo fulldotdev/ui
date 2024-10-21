@@ -1,0 +1,58 @@
+---
+const {
+  as: As = 'div',
+  theme,
+  variant,
+  size,
+  align,
+  color,
+  position,
+  panel,
+  contrast,
+  structure,
+  level,
+  placement,
+  reverse,
+  open,
+  lead,
+  ...rest
+} = Astro.props
+
+const slot = await Astro.slots.render('default')
+const render = 'if' in rest ? rest.if : slot?.trim().length > 0
+---
+
+{
+  render && (
+    <As
+      class:list={[
+        'root',
+        {
+          contrast,
+          panel,
+          open,
+          reverse,
+          lead,
+          [`size-${size}`]: size,
+          [`color-${color}`]: color,
+          [`theme-${theme}`]: theme,
+          [`level-${level}`]: level,
+          [`variant-${variant}`]: variant,
+          [`structure-${structure}`]: structure,
+          [`align-${align}`]: align,
+          [`position-${position}`]: position,
+          [`position-${position}`]: position,
+        },
+      ]}
+      {...rest}
+    >
+      <Fragment set:html={slot} />
+    </As>
+  )
+}
+
+<style is:global lang="scss">
+  @import '@unocss/reset/tailwind.css' layer(fulldev);
+  @import 'fulldev-ui/css/color.css';
+  @import 'fulldev-ui/css/size.css';
+</style>

@@ -1,47 +1,46 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
-import Column from 'fulldev-ui/components/Column.astro'
-import Channel from 'fulldev-ui/components/experimental/Channel.astro'
+import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Channels from 'fulldev-ui/components/Channels.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Form from 'fulldev-ui/components/experimental/Form.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Input from 'fulldev-ui/components/Input.astro'
-import Row from 'fulldev-ui/components/Row.astro'
 import Section from 'fulldev-ui/components/Section.astro'
-import Social from 'fulldev-ui/components/Social.astro'
+import Socials from 'fulldev-ui/components/Socials.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Text from 'fulldev-ui/components/Text.astro'
 import Textarea from 'fulldev-ui/components/Textarea.astro'
 
-interface Channel {
-  type: 'tel' | 'email' | 'address'
-  text: string
-  heading?: string
-  icon?: string
-  href?: string
-}
+// interface Channel {
+//   type: 'tel' | 'email' | 'address'
+//   text: string
+//   heading?: string
+//   icon?: string
+//   href?: string
+// }
 
-interface FormField {
-  type: 'text' | 'email' | 'tel' | 'textarea'
-  name: string
-  label: string
-  required?: boolean
-}
+// interface FormField {
+//   type: 'text' | 'email' | 'tel' | 'textarea'
+//   name: string
+//   label: string
+//   required?: boolean
+// }
 
-interface Form {
-  fields: FormField[]
-  button: string
-}
+// interface Form {
+//   fields: FormField[]
+//   button: string
+// }
 
-type Props<As extends HTMLTag = 'section'> = ComponentProps<
-  typeof Section<As>
-> & {
-  form: Form
-  googleMaps?: string
-  socials?: any
-  channels: Channel[]
-}
+// type Props<As extends HTMLTag = 'section'> = ComponentProps<
+//   typeof Section<As>
+// > & {
+//   form: Form
+//   googleMaps?: string
+//   socials?: any
+//   channels: Channel[]
+// }
 
 const {
   heading,
@@ -64,7 +63,7 @@ const {
   structure="split"
   {...rest}
 >
-  <Column>
+  <Element class:list="column">
     <Tagline
       color="brand"
       text={tagline}
@@ -74,35 +73,9 @@ const {
       text={heading}
     />
     <Text text={text} />
-    <Row>
-      {buttons?.map((button: any) => <Button {...button} />)}
-    </Row>
-
-    <Column>
-      {
-        channels?.map((channel: any) => (
-          <Channel
-            heading={channel.heading}
-            text={channel.text}
-            icon={channel.icon}
-            href={channel.href}
-          />
-        ))
-      }
-    </Column>
-
-    <Row
-      space="none"
-      class:list="socials"
-    >
-      {
-        socials?.map((social: any) => (
-          <Social
-            {...(typeof social === 'string' ? { href: social } : social)}
-          />
-        ))
-      }
-    </Row>
+    <Buttons {buttons} />
+    <Channels {channels} />
+    <Socials {socials} />
     <Form
       action="/thank-you"
       method="POST"
@@ -136,22 +109,29 @@ const {
         text={form.button}
       />
     </Form>
-  </Column>
+  </Element>
 
   <Image
     {position}
-    src={image}
+    {...image}
   />
 </Section>
 
 <style is:global lang="scss">
   @layer fulldev {
     .contact {
+      .column {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
       .channel + .channel {
         margin-top: var(--space-3) !important;
       }
 
       .socials {
+        display: flex;
         gap: var(--space-2);
       }
     }

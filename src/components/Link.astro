@@ -1,33 +1,29 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
 import { getEntry } from 'astro:content'
-import Root from 'fulldev-ui/components/Root.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  color?: 'base' | 'brand' | undefined
-  contrast?: boolean | undefined
-  html?: string | undefined
-  text?: string | undefined
+interface Props extends GlobalProps, HTMLAttributes<'a'> {
   slug?: CollectionEntry<'pages'>['slug'] | undefined
+  text?: string | undefined
 }
 
-const { slug, href, html, text, as = 'a', ...rest } = Astro.props
+const { slug, href, text, ...rest } = Astro.props
 
 const entry = slug && (await getEntry('pages', slug))
 ---
 
-<Root
+<Element
   class:list="link"
   href={slug ? `/${slug}/` : href}
-  {as}
+  as="a"
   {...rest}
 >
-  <slot>
-    <Fragment set:html={entry?.data?.title ?? text ?? html} />
-  </slot>
-</Root>
+  <slot />
+  <Fragment set:html={entry?.data?.title ?? text} />
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {

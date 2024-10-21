@@ -1,11 +1,11 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
 import Label from 'fulldev-ui/components/Label.astro'
-import Root from 'fulldev-ui/components/Root.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-type Props = HTMLAttributes<'select'> & {
-  color?: 'base' | 'brand' | undefined
+interface Props extends GlobalProps, HTMLAttributes<'select'> {
   label?: string | undefined
   placeholder?: string | undefined
   options?: string[] | undefined
@@ -25,15 +25,15 @@ const {
 } = Astro.props
 ---
 
-<Root
+<Element
   class:list="select"
   {...rest}
 >
   <Label
     for={name}
-    html={label}
+    text={label}
   />
-  <Root
+  <Element
     as="select"
     if={name || options}
     id={name}
@@ -42,7 +42,7 @@ const {
     {disabled}
     {onchange}
   >
-    <Root
+    <Element
       as="option"
       value={placeholder}
       set:html={placeholder}
@@ -51,7 +51,7 @@ const {
     />
     {
       options?.map((option: any) => (
-        <Root
+        <Element
           as="option"
           selected={value === option}
           set:html={option}
@@ -60,9 +60,9 @@ const {
       ))
     }
     <slot />
-  </Root>
+  </Element>
   <Icon name="chevron-down" />
-</Root>
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {

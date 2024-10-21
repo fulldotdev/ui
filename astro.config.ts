@@ -12,6 +12,10 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
+  experimental: {
+    contentIntellisense: false,
+    contentLayer: true,
+  },
   integrations: [
     sitemap(),
     mdx(),
@@ -20,6 +24,8 @@ export default defineConfig({
       layout: '/src/components/experimental/Window.astro',
     }),
     integration({
+      company: 'Fulldev UI',
+      favicon: 'src/images/favicon.svg',
       css: '/src/css/custom.css',
       colors: {
         theme: 'dark',
@@ -35,7 +41,7 @@ export default defineConfig({
         },
       },
       injectRoutes: true,
-      generateImageEntries: true,
+      overrideComponents: true,
     }),
   ],
   redirects: {
@@ -44,5 +50,6 @@ export default defineConfig({
     '/segment/section': '/base/section',
     '/segment/header': '/blocks/header',
     '/segment/footer': '/blocks/footer',
+    '/blocks': '/blocks/banner',
   },
 })

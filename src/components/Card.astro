@@ -1,171 +1,121 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import { getEntry } from 'astro:content'
 import Button from 'fulldev-ui/components/Button.astro'
-import Price from 'fulldev-ui/components/experimental/Price.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
-import Icon from 'fulldev-ui/components/Icon.astro'
+import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import List from 'fulldev-ui/components/List.astro'
-import Rating from 'fulldev-ui/components/Rating.astro'
-import Root from 'fulldev-ui/components/Root.astro'
-import Spread from 'fulldev-ui/components/Spread.astro'
-import Tagline from 'fulldev-ui/components/Tagline.astro'
-import Text from 'fulldev-ui/components/Text.astro'
-import Wrap from 'fulldev-ui/components/Wrap.astro'
-import Badge from './Badge.astro'
+import Writeup from 'fulldev-ui/components/Writeup.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import Icon from './Icon.astro'
 
-type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
-  variant?: 'primary' | 'secondary' | 'tertiary' | undefined
-  position?: 'background' | 'cover' | 'inset' | undefined
-  align?: 'start' | 'center' | 'end' | undefined
-  justify?: 'start' | 'center' | 'end' | undefined
-  level?: 1 | 2 | 3 | 4 | 5 | 6 | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
-  color?: 'base' | 'brand' | undefined
-  space?: 'auto' | 'none' | undefined
+interface Props
+  extends GlobalProps,
+    ComponentProps<typeof Writeup>,
+    Omit<HTMLAttributes<'a'>, 'title'> {
+  image?: ComponentProps<typeof Image>
+  images?: ComponentProps<typeof Image>[]
+  position?: ComponentProps<typeof Image>['position']
+  buttons?: ComponentProps<typeof Buttons>['buttons']
+  button?: ComponentProps<typeof Button> | undefined
+  variant?: ComponentProps<typeof Button>['variant']
+  align?: ComponentProps<typeof Writeup>['align']
+  icon?: ComponentProps<typeof Icon>['name']
+  slug?: CollectionEntry<'pages'>['slug'] | undefined
+  id?: any
   panel?: boolean | undefined
-  contrast?: boolean | undefined
-  image?: string | ComponentProps<typeof Image> | undefined
-  images?: string[] | undefined
-  button?: ComponentProps<typeof Button<'a'>> | undefined
-  buttons?: ComponentProps<typeof Button<'a'>>[] | undefined
-  badge?: string | ComponentProps<typeof Badge<'a'>> | undefined
-  badges?: (string | ComponentProps<typeof Badge<'a'>>)[] | undefined
-  rating?: number | ComponentProps<typeof Rating> | undefined
-  price?: number | undefined
-  icon?: string | undefined
-  avatar?: string | undefined
-  avatars?: string[] | undefined
-  label?: string | undefined
-  tagline?: string | undefined
-  heading?: string | undefined
-  title?: string | undefined
-  description?: string | undefined
-  html?: string | undefined
-  text?: string | undefined
-  list?: string[] | undefined
+}
+
+const { slug } = Astro.props
+const page = slug ? (await getEntry('pages', slug)).data : {}
+
+const entryProps = {
+  heading: page.title,
+  text: page.description,
+  href: `/${slug}/`,
+  ...page,
 }
 
 const {
-  href,
-  as = href ? 'a' : 'div',
-  space = 'auto',
-  panel = true,
   align = 'start',
-  variant,
   level = 4,
-  position,
-  label,
-  heading,
-  title,
-  tagline,
-  text,
-  html,
-  description,
-  list,
-  buttons,
+  href,
   badge,
-  badges,
-  image,
-  images,
+  tagline,
   rating,
+  heading,
+  text,
+  variant,
+  list,
   button,
-  price,
+  buttons,
+  panel,
+  image,
   icon,
-  avatar,
-  avatars,
+  images,
+  position,
   ...rest
-} = Astro.props
-
-const buttonVariant = (i: number) => {
-  if (variant === 'primary' && i === 0) return 'primary'
-  else if (variant === 'primary' && i === 1) return 'secondary'
-  else if (variant === 'primary' && i > 1) return 'tertiary'
-  else if (variant === 'secondary' && i === 0) return 'secondary'
-  else if (variant === 'secondary' && i > 0) return 'tertiary'
-  else if (variant === 'tertiary') return 'tertiary'
-  else return 'tertiary'
+} = {
+  ...entryProps,
+  ...Astro.props,
 }
 ---
 
-<Root
+<Element
   class:list="card"
-  structure="column"
-  {align}
+  as={href ? 'a' : 'div'}
   {href}
-  {space}
-  {as}
+  {align}
+  {panel}
   {...rest}
 >
-  <Image
-    {position}
-    src={images?.[0]}
-    {...typeof image === 'string' ? { src: image } : image}
-  />
-  <Icon name={icon} />
-  <Rating
-    color="brand"
-    {avatars}
-    {avatar}
-    {label}
-    {...typeof rating === 'number' ? { value: rating } : rating}
-  />
-  <Wrap>
-    {
-      [badge, ...(badges ?? [])].filter(Boolean)?.map((badge: any) => (
-        <Badge
-          color="base"
-          {...(typeof badge === 'string' ? { html: badge } : badge)}
-        />
-      ))
-    }
-  </Wrap>
-  <Tagline
-    color="base"
-    html={tagline}
-  />
-  <Spread>
-    <Heading
-      color="base"
-      html={heading ?? title}
-      {level}
+  <slot name="image">
+    <Image
+      position={panel ? position : undefined}
+      {...image || images?.[0]}
     />
-    <Price value={price} />
-  </Spread>
-  <Text
-    color="base"
-    contrast={position === 'background' && true}
-    html={html || text || description}
-  />
-  <List
-    color="base"
-    contrast
-    items={list}
-  />
-  <Wrap>
-    {
-      [button, ...(buttons ?? [])]
-        .filter(Boolean)
-        ?.map((button: any, i: number) => (
-          <Button
-            variant={buttonVariant(i)}
-            {...button}
-          />
-        ))
-    }
-  </Wrap>
+  </slot>
+  <slot name="icon">
+    <Icon name={icon} />
+  </slot>
+  <slot name="writeup">
+    <Writeup
+      {level}
+      {rating}
+      {badge}
+      {tagline}
+      {heading}
+      {text}
+      {list}
+    />
+  </slot>
+  <slot name="buttons">
+    <Button
+      {variant}
+      {...button}
+    />
+    <Buttons
+      {variant}
+      {buttons}
+    />
+  </slot>
   <slot />
-</Root>
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {
     .card {
-      --inset-top: var(--space-5);
-      --inset-left: var(--space-5);
-      --inset-right: var(--space-5);
-      --inset-bottom: var(--space-5);
+      --inset-top: 0px;
+      --inset-left: 0px;
+      --inset-right: 0px;
+      --inset-bottom: 0px;
 
+      display: flex;
       position: relative;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-4);
       text-decoration: none;
 
       &[href] {
@@ -183,20 +133,20 @@ const buttonVariant = (i: number) => {
       }
 
       &.panel {
+        --inset-top: var(--space-4);
+        --inset-left: var(--space-4);
+        --inset-right: var(--space-4);
+        --inset-bottom: 0px;
+
         border: 1px solid var(--color-a6);
         border-radius: var(--radius-2);
         background-color: var(--color-2);
-        padding: var(--inset-top) var(--inset-right) var(--inset-bottom)
-          var(--inset-left);
+        padding: var(--space-4);
         overflow: hidden;
 
         &[href]:hover {
           border: 1px solid var(--color-a7);
         }
-      }
-
-      > .image + * {
-        margin-top: var(--space-5);
       }
     }
   }

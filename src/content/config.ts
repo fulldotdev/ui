@@ -1,18 +1,20 @@
 import { defineCollection } from 'astro:content'
-import { page } from 'fulldev-ui/schemas/page'
-import { layout } from 'fulldev-ui/schemas/preset'
+import imageLoader from 'fulldev-ui/loaders/imageLoader.ts'
+import imageSchema from 'fulldev-ui/schemas/imageSchema.ts'
+import pageSchema from 'fulldev-ui/schemas/pageSchema.ts'
+import presetSchema from 'fulldev-ui/schemas/presetSchema.ts'
 
 export const collections = {
   pages: defineCollection({
     type: 'content',
-    schema: page,
-  }),
-  records: defineCollection({
-    type: 'data',
-    schema: page,
+    schema: pageSchema,
   }),
   presets: defineCollection({
     type: 'data',
-    schema: layout,
+    schema: presetSchema,
+  }),
+  images: defineCollection({
+    loader: imageLoader,
+    schema: imageSchema,
   }),
 }

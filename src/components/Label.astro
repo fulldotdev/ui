@@ -1,28 +1,26 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
-import Root from 'fulldev-ui/components/Root.astro'
+import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-type Props<As extends HTMLTag = 'label'> = Polymorphic<{ as: As }> & {
+interface Props extends GlobalProps, HTMLAttributes<'label'> {
   size?: 'sm' | 'md' | 'lg' | undefined
   color?: 'base' | 'brand' | undefined
   contrast?: boolean | undefined
-  html?: string | undefined
   text?: string | undefined
 }
 
-const { as = 'label', html, text, ...rest } = Astro.props
+const { text, ...rest } = Astro.props
 ---
 
-<Root
+<Element
   class:list="label"
-  {as}
+  as="label"
   {...rest}
 >
-  <slot>
-    <Fragment set:html={html} />
-    <Fragment set:text={text} />
-  </slot>
-</Root>
+  <slot />
+  <Fragment set:text={text} />
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {

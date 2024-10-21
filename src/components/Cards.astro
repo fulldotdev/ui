@@ -1,0 +1,135 @@
+---
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Card from 'fulldev-ui/components/Card.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
+
+interface Props extends GlobalProps, HTMLAttributes<'div'> {
+  level?: ComponentProps<typeof Card>['level']
+  panel?: ComponentProps<typeof Card>['panel']
+  position?: ComponentProps<typeof Card>['position']
+  cards?: ComponentProps<typeof Card>[] | undefined
+  structure?: 'grid' | 'masonry' | 'stack' | 'carousel' | 'bento' | undefined
+}
+
+const { level, panel, position, cards, ...rest } = Astro.props
+---
+
+<Element
+  class:list="cards"
+  {panel}
+  {...rest}
+>
+  {
+    cards?.map((card: any) => (
+      <Card
+        {level}
+        {panel}
+        {position}
+        {...card}
+      />
+    ))
+  }
+</Element>
+
+<style is:global lang="scss">
+  @layer fulldev {
+    .cards {
+      --column-width: calc(21 * var(--space-4));
+      --gap: var(--space-5);
+
+      position: relative;
+      width: 100%;
+
+      &.panel {
+        --gap: var(--space-4);
+      }
+
+      &.position-inset {
+        margin-right: calc(var(--inset-right) * -1);
+        margin-left: calc(var(--inset-left) * -1);
+        padding-right: var(--inset-right);
+        padding-left: var(--inset-left);
+        width: calc(100% + var(--inset-left) + var(--inset-right));
+      }
+
+      &.structure-grid {
+        display: grid;
+        grid-template-columns: repeat(
+          auto-fill,
+          minmax(var(--column-width), 1fr)
+        );
+        gap: var(--gap);
+        width: 100%;
+      }
+
+      &.structure-masonry {
+        column-gap: var(--gap);
+        column-fill: balance;
+        column-width: var(--column-width);
+        column-count: 6;
+        break-inside: avoid;
+        width: 100%;
+
+        & > .root + .root,
+        & > * + * {
+          break-inside: avoid;
+          margin-top: var(--gap);
+          margin-bottom: var(--gap);
+        }
+      }
+
+      &.structure-carousel {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--gap);
+        padding-bottom: var(--gap);
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        scroll-snap-type: x mandatory;
+
+        > .root {
+          flex-grow: 0;
+          flex-shrink: 0;
+          width: var(--column-width);
+          scroll-snap-align: center;
+        }
+      }
+
+      &.structure-stack {
+        display: grid;
+        position: relative;
+        grid-template-columns: 1fr;
+        align-items: flex-start;
+        gap: var(--space-6);
+        width: 100%;
+
+        @media (min-width: 1024px) {
+          grid-auto-columns: 1fr;
+          grid-auto-flow: column;
+        }
+      }
+
+      &.structure-bento {
+        display: grid;
+        position: relative;
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+        width: 100%;
+
+        @media (min-width: 1024px) {
+          grid-template-columns: repeat(5, 1fr);
+
+          & > * {
+            grid-column: span 2;
+          }
+
+          & > *:nth-child(3n + 2),
+          & > *:nth-child(3n + 3) {
+            grid-column: span 3;
+          }
+        }
+      }
+    }
+  }
+</style>

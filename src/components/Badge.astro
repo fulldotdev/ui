@@ -1,60 +1,45 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
+import type { ComponentProps } from 'astro/types'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import Root from 'fulldev-ui/components/Root.astro'
+import Button from './Button.astro'
 
-type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  color?: 'base' | 'brand' | undefined
-  contrast?: boolean | undefined
-  href?: string | undefined
-  html?: string | undefined
-  text?: string | undefined
-  icon?: string | undefined
-}
+interface Props extends ComponentProps<typeof Button> {}
 
-const { href, as = href ? 'a' : 'div', html, text, icon, ...rest } = Astro.props
+const {
+  variant = 'tertiary',
+  color = 'base',
+  href,
+  text,
+  icon,
+  ...rest
+} = Astro.props
 ---
 
-<Root
+<Button
   class:list="badge"
-  {as}
+  {variant}
   {href}
+  {color}
   {...rest}
 >
   <slot />
-  <Fragment set:html={html ?? text} />
+  <Fragment set:html={text} />
   <Icon name={icon} />
-</Root>
+</Button>
 
 <style is:global lang="scss">
   @layer fulldev {
-    .badge {
-      display: inline-flex;
-      flex-shrink: 0;
-      justify-content: center;
-      align-items: center;
-      vertical-align: top;
+    .button.badge {
       gap: var(--space-2);
-      transition: all;
-      border: 1px solid var(--color-a6);
+      transition: all 0.15s ease;
+      border: 1px solid var(--color-a7);
       border-radius: 999px;
       padding: 0 var(--space-3);
       height: calc(var(--text-1) + 2 * var(--space-2));
-      color: var(--color-11);
-      font-weight: 500;
       font-size: var(--text-1);
-      line-height: 1;
-      text-align: center;
-      text-decoration: none;
-      white-space: nowrap;
 
-      &:is(a) {
-        border-color: var(--color-7);
-
-        &:hover {
-          border-color: var(--color-8);
-        }
+      &:hover {
+        border-color: var(--color-a8);
       }
     }
   }

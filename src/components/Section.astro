@@ -1,245 +1,251 @@
 ---
-import type { ComponentProps, HTMLTag, Polymorphic } from 'astro/types'
-import type { CollectionEntry } from 'astro:content'
-import Badge from 'fulldev-ui/components/Badge.astro'
-import Box from 'fulldev-ui/components/Box.astro'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
-import Card from 'fulldev-ui/components/Card.astro'
-import Column from 'fulldev-ui/components/Column.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
+import Buttons from 'fulldev-ui/components/Buttons.astro'
+import type Card from 'fulldev-ui/components/Card.astro'
+import Cards from 'fulldev-ui/components/Cards.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import List from 'fulldev-ui/components/List.astro'
-import Rating from 'fulldev-ui/components/Rating.astro'
-import Root from 'fulldev-ui/components/Root.astro'
-import Text from 'fulldev-ui/components/Text.astro'
-import Wrap from 'fulldev-ui/components/Wrap.astro'
-import Tagline from './Tagline.astro'
+import Writeup from 'fulldev-ui/components/Writeup.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props.js'
 
-type Props<As extends HTMLTag = 'section'> = Polymorphic<{ as: As }> & {
-  position?: 'background' | 'cover' | 'inset' | undefined
-  buttons?: ComponentProps<typeof Button<'a'>>[] | undefined
-  button?: ComponentProps<typeof Button<'a'>> | undefined
-  cards?: ComponentProps<typeof Card<'a'>>[] | undefined
-  badge?: string | ComponentProps<typeof Badge<'a'>> | undefined
-  image?: ComponentProps<typeof Image>['src'] | undefined
-  rating?: number | undefined
-  pages?: CollectionEntry<'pages'>['data'][] | undefined
-  records?: CollectionEntry<'records'>['data'][] | undefined
-  heading?: string | undefined
-  title?: string | undefined
-  text?: string | undefined
-  html?: string | undefined
-  description?: string | undefined
-  label?: string | undefined
-  tagline?: string | undefined
-  list?: string[] | undefined
-  theme?: 'light' | 'dark' | undefined
-  color?: 'base' | 'brand' | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
-  align?: 'start' | 'center' | 'end' | undefined
-  justify?: 'start' | 'center' | 'end' | undefined
+interface Props
+  extends GlobalProps,
+    ComponentProps<typeof Writeup>,
+    HTMLAttributes<'section'> {
+  image?: ComponentProps<typeof Image>
+  position?: ComponentProps<typeof Image>['position']
+  buttons?: ComponentProps<typeof Buttons>['buttons']
+  button?: ComponentProps<typeof Button> | undefined
+  variant?: ComponentProps<typeof Button>['variant']
+  cards?: ComponentProps<typeof Cards>['cards']
+  panel?: ComponentProps<typeof Card>['panel']
+  component?: string
   structure?:
+    | ComponentProps<typeof Cards>['structure']
     | 'column'
     | 'split'
     | 'spread'
-    | 'carousel'
-    | 'grid'
-    | 'masonry'
-    | 'stack'
-    | undefined
-  level?: 1 | 2 | 3 | 4 | 5 | 6 | undefined
-  space?: 'auto' | 'none' | undefined
-  reverse?: 'odd' | 'even' | undefined
-  variant?: 'primary' | 'secondary' | 'tertiary' | undefined
-  panel?: boolean | undefined
 }
 
 const {
-  as = 'section',
-  space = 'auto',
-  structure = 'column',
-  variant = 'secondary',
+  cards,
+  structure = cards ? 'grid' : 'column',
   align = 'start',
   level = 2,
-  panel,
-  position,
-  label,
-  heading,
+  size = 'md',
   badge,
-  title,
+  tagline,
+  rating,
+  heading,
   text,
   list,
-  html,
-  tagline,
-  description,
-  buttons,
-  image,
-  rating,
-  size,
   button,
-  cards,
-  pages,
-  records,
-  justify,
+  buttons,
+  variant,
+  panel,
+  image,
   theme,
+  position,
   ...rest
 } = Astro.props
 
-const mergedCards = (pages || records || cards)?.filter(Boolean)
-const hasCards = mergedCards && mergedCards?.length > 0
-const hasText = text || html || description || list
-const hasButton = button || (buttons && buttons?.length > 0)
+const { component, ...props } = Astro.props
 
-const buttonVariant = (i: number) => {
-  if (variant === 'primary' && i === 0) return 'primary'
-  else if (variant === 'primary' && i === 1) return 'secondary'
-  else if (variant === 'primary' && i > 1) return 'tertiary'
-  else if (variant === 'secondary' && i === 0) return 'secondary'
-  else if (variant === 'secondary' && i > 0) return 'tertiary'
-  else if (variant === 'tertiary') return 'tertiary'
-  else return 'tertiary'
+const allComponents = {
+  ...import.meta.glob('/src/**/*.astro'),
+  ...import.meta.glob('../../**/*.astro'),
 }
+
+const componentPath = Object.keys(allComponents).find(
+  (path) => path.split('/').pop()?.split('.')[0] === component
+)
+
+const Component =
+  componentPath && (await (allComponents[componentPath] as any)()).default
 ---
 
-<Root
-  class:list="section"
-  justify={hasCards ? undefined : justify}
-  theme={hasCards ? undefined : theme}
-  structure={structure === 'split' ? 'split' : 'column'}
-  {as}
-  {align}
-  {space}
-  {panel}
-  {size}
-  {...rest}
->
-  <Box
-    structure={structure === 'spread' ||
-    structure === 'carousel' ||
-    (!hasText && hasButton)
-      ? 'spread'
-      : 'column'}
-    align={structure === 'split' ? 'start' : align}
-  >
-    <slot name="segment">
-      <Column
-        style={{ textWrap: 'balance' }}
-        align={structure === 'split' || structure === 'spread'
-          ? 'start'
-          : align}
-      >
-        <slot name="writeup">
-          <Rating
-            color="brand"
-            {align}
-            {...typeof rating === 'number' ? { value: rating } : rating}
-          />
-          <Badge
-            color="base"
-            {...typeof badge === 'string' ? { html: badge } : badge}
-          />
-          <Tagline
-            color="brand"
-            html={tagline}
-          />
-          <Heading
-            html={heading || title}
-            {level}
-          />
-          <Text
-            contrast={!hasCards && position === 'background' && true}
-            html={html || text || description}
-            lead={level === 1}
-          />
-          <List items={list} />
-        </slot>
-      </Column>
-      <Wrap>
-        <slot name="actions">
-          {
-            [button, ...(buttons ?? [])]
-              .filter(Boolean)
-              ?.map((button: any, i: number) => (
-                <Button
-                  variant={buttonVariant(i)}
-                  {...button}
-                />
-              ))
-          }
-        </slot>
-      </Wrap>
-    </slot>
-  </Box>
-  <slot>
-    <Box
-      structure={structure === 'split' || structure === 'spread'
-        ? 'column'
-        : structure}
-      position={structure === 'carousel' ? 'inset' : undefined}
-      size={size === 'lg' ? 'md' : 'sm'}
+{
+  Component ? (
+    <Component {...props} />
+  ) : (
+    <Element
+      class:list="section"
+      as="section"
+      panel={!cards && panel}
+      theme={cards ? undefined : theme}
+      structure={
+        structure === 'grid' ||
+        structure === 'carousel' ||
+        structure === 'stack'
+          ? text
+            ? 'column'
+            : 'spread'
+          : structure
+      }
+      {align}
+      {size}
+      {...rest}
     >
-      <slot name="deck">
-        {
-          mergedCards?.map(({ ...rest }: any) => (
-            <Card
-              align="start"
-              level={Number(level) + 2}
-              {position}
-              {panel}
-              {justify}
-              {theme}
-              {variant}
-              {...rest}
+      <Element class:list="segment">
+        <slot name="segment">
+          <slot name="writeup">
+            <Writeup
+              {level}
+              {rating}
+              {badge}
+              {tagline}
+              {heading}
+              {text}
+              {list}
             />
-          ))
-        }
+          </slot>
+          <slot name="buttons">
+            <Button
+              {variant}
+              {...button}
+            />
+            <Buttons
+              {variant}
+              {buttons}
+            />
+          </slot>
+        </slot>
+      </Element>
+      <slot>
+        <Cards
+          level={(level + 2) as any}
+          size={size === 'lg' ? 'md' : 'sm'}
+          structure={
+            structure === 'grid' ||
+            structure === 'masonry' ||
+            structure === 'stack' ||
+            structure === 'carousel' ||
+            structure === 'bento'
+              ? structure
+              : undefined
+          }
+          position={cards ? position : undefined}
+          {theme}
+          {cards}
+          {panel}
+          {position}
+        />
+        <Image
+          position={cards ? undefined : position}
+          {...image}
+        />
       </slot>
-    </Box>
-    <Image
-      position={hasCards ? undefined : position}
-      src={image}
-    />
-  </slot>
-</Root>
+    </Element>
+  )
+}
 
 <style is:global lang="scss">
   @layer fulldev {
     .section {
-      --inset-x: var(--gutter);
-      --inset-y: var(--spacer);
+      --inset-top: 0px;
+      --inset-left: var(--gutter);
+      --inset-right: var(--gutter);
+      --inset-bottom: var(--spacer);
 
       position: relative;
-      padding: var(--inset-y) var(--inset-x);
+      align-items: flex-start;
+      gap: var(--space-6) var(--space-7);
+      padding: var(--spacer) var(--gutter);
       overflow: auto;
 
-      &.panel {
-        --inset-x: min(var(--gutter), var(--spacer));
+      .segment {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-5);
+        z-index: 1;
+      }
 
+      &.panel {
         margin: var(--spacer) var(--gutter);
         border: 1px solid var(--base-a6);
         border-radius: var(--radius-2);
         background-color: var(--base-2);
+        padding: min(var(--gutter), var(--spacer));
         overflow: hidden;
       }
 
-      @media (min-width: 1024px) {
-        &:nth-of-type(odd).split.reverse-odd {
-          > :first-child {
-            order: 999;
-          }
+      &.reverse {
+        --inset-top: var(--spacer);
+        --inset-left: var(--gutter);
+        --inset-right: var(--gutter);
+        --inset-bottom: 0px;
 
-          > :last-child {
-            order: 0;
+        &:not(.structure-split) {
+          .segment {
+            order: 999;
           }
         }
 
-        &:nth-of-type(even).split.reverse-even {
-          > :first-child {
-            order: 0;
-          }
-
-          > :last-child {
+        @media (min-width: 1024px) {
+          .segment {
             order: 999;
+          }
+        }
+      }
+
+      &.structure-column {
+        display: flex;
+        flex-direction: column;
+
+        &.align-center {
+          align-items: center;
+
+          .segment {
+            align-items: center;
+            text-align: center;
+          }
+        }
+      }
+
+      &.structure-split {
+        display: grid;
+        grid-template-columns: 1fr;
+        width: 100%;
+
+        @media (min-width: 1024px) {
+          --inset-top: var(--spacer);
+          --inset-left: 0px;
+          --inset-right: var(--gutter);
+          --inset-bottom: var(--spacer);
+
+          grid-auto-columns: 1fr;
+          grid-auto-flow: column;
+
+          &.reverse {
+            --inset-right: 0px;
+            --inset-left: var(--gutter);
+          }
+        }
+
+        &.align-center {
+          align-items: center;
+        }
+      }
+
+      &.structure-spread {
+        display: flex;
+        flex-direction: column;
+
+        .segment {
+          flex-direction: row;
+          justify-content: space-between;
+          width: 100%;
+        }
+
+        &.align-center {
+          .segment {
+            align-items: center;
+
+            .writeup {
+              align-items: flex-start;
+            }
           }
         }
       }

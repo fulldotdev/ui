@@ -1,0 +1,90 @@
+---
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Badge from 'fulldev-ui/components/Badge.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import List from 'fulldev-ui/components/List.astro'
+import Price from 'fulldev-ui/components/Price.astro'
+import Rating from 'fulldev-ui/components/Rating.astro'
+import Tagline from 'fulldev-ui/components/Tagline.astro'
+import Text from 'fulldev-ui/components/Text.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
+
+interface Props extends GlobalProps, HTMLAttributes<'div'> {
+  level?: ComponentProps<typeof Heading>['level']
+  badge?: ComponentProps<typeof Badge> | undefined
+  tagline?: ComponentProps<typeof Tagline>['text']
+  heading?: ComponentProps<typeof Heading>['text']
+  text?: ComponentProps<typeof Text>['text']
+  list?: ComponentProps<typeof List>['items']
+  align?: 'start' | 'center' | 'end' | undefined
+  price?: ComponentProps<typeof Price>['value']
+  rating?:
+    | ComponentProps<typeof Rating>
+    | ComponentProps<typeof Rating>['value']
+}
+
+const {
+  level = 2,
+  rating,
+  badge,
+  tagline,
+  heading,
+  text,
+  list,
+  price,
+  ...rest
+} = Astro.props
+---
+
+<Element
+  class:list="writeup"
+  {...rest}
+>
+  <slot>
+    <Rating
+      color="brand"
+      {...typeof rating === 'number' ? { value: rating } : rating}
+    />
+    <Tagline text={tagline} />
+    <Badge {...badge} />
+    <Heading
+      {level}
+      text={heading}
+    />
+    <Text
+      lead={level === 1}
+      text={text}
+    />
+    <List items={list} />
+    <Price value={price} />
+  </slot>
+</Element>
+
+<style is:global lang="scss">
+  @layer fulldev {
+    .writeup {
+      display: flex;
+      position: relative;
+      flex-direction: column;
+      align-items: inherit;
+      gap: var(--space-3);
+      text-align: inherit;
+
+      &.align-start {
+        align-items: flex-start;
+        text-align: left;
+      }
+
+      &.align-center {
+        align-items: center;
+        text-align: center;
+      }
+
+      &.align-end {
+        align-items: flex-end;
+        text-align: right;
+      }
+    }
+  }
+</style>

@@ -1,14 +1,14 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Prose from 'fulldev-ui/components/experimental/Prose.astro'
-import Spread from 'fulldev-ui/components/Spread.astro'
 import Layout from 'fulldev-ui/layouts/Layout.astro'
 import { crush } from 'radash'
 
 type Props = ComponentProps<typeof Layout>
 
-const { render, slug, navigation, footer, ...rest } = Astro.props
+const { render, slug, navigation, ...rest } = Astro.props
 const { Content } = await render()
 
 const flatButtons = crush((navigation as any)?.buttons ?? {})
@@ -26,21 +26,25 @@ const nextSlug = slugs[slugIndex + 1]
   {render}
   {slug}
   {navigation}
-  {footer}
   {...rest}
 >
   <Prose>
     {Content && <Content />}
-    <Spread class="prev-next">
+    <Element class:list={['prev-next', { 'next-only': !prevSlug }]}>
       <Button
-        variant="secondary"
+        if={prevSlug}
         slug={prevSlug}
+        icon="arrow-left"
+        variant="secondary"
       />
       <Button
-        variant="secondary"
+        if={nextSlug}
         slug={nextSlug}
+        icon="arrow-right"
+        variant="secondary"
+        reverse={true}
       />
-    </Spread>
+    </Element>
   </Prose>
 </Layout>
 
@@ -66,7 +70,14 @@ const nextSlug = slugs[slugIndex + 1]
         }
 
         .prev-next {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
           margin-top: var(--space-7);
+
+          &.next-only {
+            justify-content: flex-end;
+          }
         }
       }
     }

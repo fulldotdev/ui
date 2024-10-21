@@ -1,8 +1,8 @@
+import viteYaml from '@rollup/plugin-yaml'
 import type { AstroIntegration } from 'astro'
+import favicons from 'astro-favicons'
+import type { CollectionEntry } from 'astro:content'
 import merge from 'deepmerge'
-import fs from 'fs/promises'
-import yaml from 'js-yaml'
-import path from 'path'
 import virtual from 'vite-plugin-virtual'
 import { generateRadixColors } from './generate-colors'
 
@@ -13,10 +13,12 @@ type Color = {
 }
 
 interface Config {
+  favicon?: string
+  company?: string
   css?: string
+  basePreset?: CollectionEntry<'presets'>['id']
   injectRoutes?: boolean
-  overrideComponents?: boolean
-  generateImageEntries?: boolean
+  // generateImageEntries?: boolean
   colors: {
     theme: 'light' | 'dark'
     light?: Color | undefined
@@ -33,7 +35,7 @@ const defaultConfig: Config = {
       brand: '#000',
     },
   },
-  generateImageEntries: false,
+  // generateImageEntries: false,
 }
 
 export default function fulldevIntegration(
@@ -50,6 +52,21 @@ export default function fulldevIntegration(
         injectScript,
         injectRoute,
       }) => {
+        // ----------------------
+        // Inject favicon integration
+        // ----------------------
+        config.favicon &&
+          config.company &&
+          updateConfig({
+            integrations: [
+              favicons({
+                path: 'favicon',
+                masterPicture: config.favicon,
+                appName: config.company,
+                appShortName: config.company,
+              }),
+            ],
+          })
         // ----------------------
         // Inject css
         // ----------------------
@@ -130,13 +147,14 @@ export default function fulldevIntegration(
         updateConfig({
           vite: {
             plugins: [
+              viteYaml(),
               virtual({
                 'virtual:astro/config': `export default ${JSON.stringify(astroConfig)}`,
                 'virtual:fulldev-ui/config': `export default ${JSON.stringify({
                   ...config,
                 })}`,
                 'virtual:colors.css': css,
-              }),
+              }) as any,
             ],
             css: {
               preprocessorOptions: {
@@ -153,35 +171,33 @@ export default function fulldevIntegration(
         // ----------------------
         // Generate image YAML files
         // ----------------------
-        if (config.generateImageEntries) {
-          const srcDir = path.join(process.cwd(), 'src')
-          const filesDir = path.join(srcDir, 'images')
-          const entriesDir = path.join(srcDir, 'content', 'images')
+        // if (config.generateImageEntries) {
+        //   const srcDir = path.join(process.cwd(), 'src')
+        //   const filesDir = path.join(srcDir, 'images')
+        //   const entriesDir = path.join(srcDir, 'content', 'images')
 
-          try {
-            await fs.mkdir(filesDir, { recursive: true })
-            await fs.mkdir(entriesDir, { recursive: true })
+        //   try {
+        //     await fs.mkdir(filesDir, { recursive: true })
+        //     await fs.mkdir(entriesDir, { recursive: true })
 
-            const files = await fs.readdir(filesDir)
-            files.forEach(async (file) => {
-              const filename = path.parse(file).name
-              const yamlPath = path.join(entriesDir, `${filename}.yml`)
+        //     const files = await fs.readdir(filesDir)
+        //     files.forEach(async (file) => {
+        //       const filename = path.parse(file).name
+        //       const yamlPath = path.join(entriesDir, `${filename}.yml`)
 
-              try {
-                await fs.access(yamlPath)
-              } catch {
-                const slug = filename.split('.')[0]
-                const unslugged = slug?.replace(/-/g, ' ')
-                const yamlContent = yaml.dump({
-                  alt: unslugged,
-                })
-                await fs.writeFile(yamlPath, yamlContent, 'utf8')
-              }
-            })
-          } catch (error) {
-            console.error('Error generating image YAML files:', error)
-          }
-        }
+        //       try {
+        //         await fs.access(yamlPath)
+        //       } catch {
+        //         const yamlContent = yaml.dump({
+        //           alt: '',
+        //         })
+        //         await fs.writeFile(yamlPath, yamlContent, 'utf8')
+        //       }
+        //     })
+        //   } catch (error) {
+        //     console.error('Error generating image YAML files:', error)
+        //   }
+        // }
 
         // ----------------------
         // Inject routes

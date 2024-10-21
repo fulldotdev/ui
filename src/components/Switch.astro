@@ -1,10 +1,10 @@
 ---
-import type { Polymorphic } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 import Label from 'fulldev-ui/components/Label.astro'
-import Root from 'fulldev-ui/components/Root.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-type Props<As extends 'div'> = Polymorphic<{ as: As }> & {
-  color?: 'base' | 'brand' | undefined
+interface Props extends GlobalProps, HTMLAttributes<'div'> {
   true?: string | undefined
   false?: string | undefined
   trueLabel?: string | undefined
@@ -13,20 +13,11 @@ type Props<As extends 'div'> = Polymorphic<{ as: As }> & {
   checked: boolean
 }
 
-const {
-  as = 'div',
-  name,
-  checked,
-  trueLabel,
-  falseLabel,
-  ...rest
-} = Astro.props
+const { name, checked, trueLabel, falseLabel, ...rest } = Astro.props
 ---
 
-<Root
-  structure="row"
+<Element
   class:list="switch"
-  {as}
   {...rest}
 >
   <Label
@@ -49,11 +40,12 @@ const {
     for={name}
     set:html={trueLabel}
   />
-</Root>
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {
     .switch {
+      display: flex;
       position: relative;
       align-items: center;
       gap: var(--space-1);

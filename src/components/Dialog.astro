@@ -1,11 +1,13 @@
 ---
-import type { ComponentProps, HTMLTag } from 'astro/types'
-import Button from './Button.astro'
-import Card from './Card.astro'
+import type { ComponentProps } from 'astro/types'
+import Button from 'fulldev-ui/components/Button.astro'
+import Card from 'fulldev-ui/components/Card.astro'
+import type Icon from './Icon.astro'
+import type Label from './Label.astro'
 
-type Props<As extends HTMLTag = 'a'> = ComponentProps<typeof Card<As>> & {
-  label?: string | undefined
-  icon?: string | undefined
+interface Props extends ComponentProps<typeof Card> {
+  icon?: ComponentProps<typeof Icon>['name']
+  label?: ComponentProps<typeof Label>['text']
 }
 
 const {
@@ -18,8 +20,6 @@ const {
 ---
 
 <Button
-  as="button"
-  type="button"
   id={`${id}-button`}
   variant="secondary"
   onclick={`document.getElementById('${id}').showModal()`}
@@ -32,7 +32,6 @@ const {
   onclick={`event.target === this && this.close()`}
 >
   <Card
-    as="div"
     panel
     {...rest}
   >

@@ -1,44 +1,38 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import Block from 'fulldev-ui/components/Block.astro'
-import Blocks from 'fulldev-ui/components/Blocks.astro'
-import Prose from 'fulldev-ui/components/experimental/Prose.astro'
-import Section from 'fulldev-ui/components/Section.astro'
+import Article from 'fulldev-ui/blocks/Article.astro'
+import Categories from 'fulldev-ui/blocks/Categories.astro'
+import Intro from 'fulldev-ui/blocks/Intro.astro'
+import Products from 'fulldev-ui/blocks/Products.astro'
+import Sections from 'fulldev-ui/components/sections.astro'
 import Layout from 'fulldev-ui/layouts/Layout.astro'
+import { getCategoryPages } from 'fulldev-ui/utils/getCategoryPages'
+import { getChildPages } from 'fulldev-ui/utils/getChildPages.ts'
 
 type Props = ComponentProps<typeof Layout>
 
-const { render, sections, blocks, children, references, ...rest } = Astro.props
-const { Content } = await render()
+const { slug, sections, title, description } = Astro.props
+
+const childPages = await getChildPages(slug)
+const categoryPages = await getCategoryPages(slug)
+// const siblingPages = await getSiblingPages(slug)
 ---
 
 <Layout {...Astro.props}>
-  <Block
-    _bookshop_name="Hero"
-    size="lg"
-    {...rest}
+  <Intro
+    heading={title}
+    text={description}
   />
-  <Block
-    _bookshop_name="Categories"
-    source="children"
+  <Categories
+    cards={childPages}
     structure="grid"
-    {...children ?? {}}
+    panel
   />
-  <Block
-    _bookshop_name="ProductDeck"
-    heading={rest.title && references
-      ? `Alle ${rest.title.toLowerCase()}`
-      : undefined}
-    source="references"
+  <Products
+    cards={categoryPages}
     structure="grid"
-    {...references ?? {}}
   />
-  <Section style={{ '--screen': '768px' }}>
-    <Prose id="prose">
-      <Content />
-    </Prose>
-  </Section>
-  <Blocks {...sections} />
-  <Blocks {...blocks} />
+  <Article style={{ '--screen': '768px' }} />
+  <Sections {sections} />
   <slot />
 </Layout>

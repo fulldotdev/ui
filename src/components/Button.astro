@@ -1,55 +1,54 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
 import { getEntry } from 'astro:content'
 import Avatar from 'fulldev-ui/components/Avatar.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import Root from 'fulldev-ui/components/Root.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'link' | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
-  color?: 'base' | 'brand' | undefined
-  contrast?: boolean | undefined
+interface Props
+  extends GlobalProps,
+    HTMLAttributes<'button'>,
+    HTMLAttributes<'a'>,
+    HTMLAttributes<'label'> {
+  type?: HTMLAttributes<'button'>['type'] & HTMLAttributes<'a'>['type']
+  icon?: ComponentProps<typeof Icon>['name']
+  avatar?: ComponentProps<typeof Avatar>['src']
   slug?: CollectionEntry<'pages'>['slug'] | undefined
-  avatar?: string | undefined
-  icon?: string | undefined
-  html?: string | undefined
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'link' | undefined
+  reverse?: boolean | undefined
   text?: string | undefined
 }
 
-const {
-  slug,
-  href = slug === 'index' ? '/' : `/${slug}/`,
-  as = href ? 'a' : 'button',
-  variant = 'primary',
-  color = href === Astro.url.pathname && variant === 'link'
-    ? 'brand'
-    : undefined,
-  text = slug && (await getEntry('pages', slug)).data.title,
-  avatar,
-  icon,
-  html,
-  ...rest
-} = Astro.props
+const { variant = 'secondary', slug, text, avatar, icon, ...rest } = Astro.props
+
+const entry = slug && !text ? await getEntry('pages', slug) : undefined
+const hrefString =
+  rest.href && typeof rest.href !== 'string' ? rest.href.href : rest.href
+const href =
+  hrefString ?? (slug ? (slug === 'index' ? '/' : `/${slug}/`) : undefined)
+const as = href ? 'a' : rest.for ? 'label' : 'button'
+const color =
+  variant === 'link' && href === Astro.url.pathname ? 'brand' : rest.color
 ---
 
-<Root
+<Element
   class:list="button"
+  _target={href?.startsWith('http') ? '_blank' : undefined}
+  type={as === 'button' ? 'button' : undefined}
   {as}
-  {href}
   {href}
   {color}
   {variant}
-  {color}
   {...rest}
 >
   <slot>
     <Avatar src={avatar} />
     <Icon name={icon} />
-    <Fragment set:html={text ?? html} />
+    <Fragment set:html={text ?? entry?.data.title} />
   </slot>
-</Root>
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {
@@ -61,7 +60,7 @@ const {
       vertical-align: top;
       gap: var(--space-2);
       appearance: none;
-      transition: background-color;
+      transition: all 0.15s ease;
       cursor: pointer;
       outline: none;
       box-shadow: none;
@@ -90,6 +89,10 @@ const {
         outline-offset: 2px;
       }
 
+      &.reverse > * {
+        order: 999;
+      }
+
       &:disabled {
         opacity: 0.5;
         cursor: not-allowed;
@@ -99,6 +102,10 @@ const {
       &.variant-primary {
         background-color: var(--color-9);
         color: var(--color-contrast);
+
+        .icon {
+          color: inherit;
+        }
 
         &:hover,
         &:active {
