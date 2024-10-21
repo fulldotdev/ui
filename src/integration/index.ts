@@ -1,6 +1,7 @@
 import viteYaml from '@rollup/plugin-yaml'
 import type { AstroIntegration } from 'astro'
 import favicons from 'astro-favicons'
+import type { CollectionEntry } from 'astro:content'
 import merge from 'deepmerge'
 import fs from 'fs/promises'
 import yaml from 'js-yaml'
@@ -18,8 +19,8 @@ interface Config {
   favicon?: string
   company?: string
   css?: string
+  basePreset?: CollectionEntry<'presets'>['id']
   injectRoutes?: boolean
-  overrideComponents?: boolean
   generateImageEntries?: boolean
   colors: {
     theme: 'light' | 'dark'

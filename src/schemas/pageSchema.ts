@@ -1,6 +1,8 @@
 import { getEntries, getEntry, z } from 'astro:content'
 import { assign } from 'radash'
+import fulldevConfig from 'virtual:fulldev-ui/config'
 import image from './components/image'
+import images from './components/images'
 import sections from './components/sections'
 import categories from './utils/categories'
 import component from './utils/component'
@@ -25,12 +27,20 @@ const presets = z
   })
   .passthrough()
   .transform(async ({ presets, ...rest }) => {
-    if (!presets) return rest
-    const entries = await getEntries(presets)
     let mergedData = {}
-    entries.forEach(
-      (preset: any) => (mergedData = assign(mergedData, preset.data))
-    )
+
+    if (fulldevConfig.basePreset) {
+      const baseEntry = await getEntry('presets', fulldevConfig.basePreset)
+      mergedData = assign(mergedData, baseEntry?.data || {})
+    }
+
+    if (presets) {
+      const entries = await getEntries(presets)
+      entries.forEach(
+        (preset: any) => (mergedData = assign(mergedData, preset.data))
+      )
+    }
+
     mergedData = assign(mergedData, rest)
     return mergedData as typeof rest
   })
@@ -51,6 +61,7 @@ export default i18n.pipe(presets).pipe(
       title: z.string(),
       description: z.string().optional(),
       image,
+      images,
       sections,
       header: z.any(),
       footer: z.any(),
