@@ -17,6 +17,7 @@
 // })
 
 import { z } from 'astro:content'
+import logo from '../components/logo'
 import pathSchema from '../utils/pathSchema'
 
 const button = pathSchema('pages').or(
@@ -43,7 +44,7 @@ const group = z
 
 export default z
   .object({
-    logo: z.string(),
+    logo,
     search: z.boolean(),
     sidebar: z.boolean(),
     toc: z.boolean(),

@@ -1,12 +1,14 @@
 import { getEntries, getEntry, z } from 'astro:content'
 import { assign } from 'radash'
 import fulldevConfig from 'virtual:fulldev-ui/config'
+import footer from './components/footer'
+import header from './components/header'
 import image from './components/image'
 import images from './components/images'
 import sections from './components/sections'
-import categories from './utils/categories'
 import component from './utils/component'
 import navigation from './utils/navigation'
+import parents from './utils/parents'
 import pathSchema from './utils/pathSchema'
 
 const i18n = z
@@ -49,7 +51,7 @@ export default i18n.pipe(presets).pipe(
   z
     .object({
       component,
-      categories,
+      parents,
       theme: z.enum(['light', 'dark']),
       lang: z.string(),
       seo: z
@@ -63,11 +65,12 @@ export default i18n.pipe(presets).pipe(
       image,
       images,
       sections,
-      header: z.any(),
-      footer: z.any(),
+      header,
+      footer,
       navigation,
       toc: z.any(),
       sidebar: z.any(),
+      banner: z.any(),
     })
     .partial()
     .passthrough()
