@@ -6,16 +6,15 @@ import Intro from 'fulldev-ui/blocks/Intro.astro'
 import Products from 'fulldev-ui/blocks/Products.astro'
 import Sections from 'fulldev-ui/components/sections.astro'
 import Layout from 'fulldev-ui/layouts/Layout.astro'
-import { getCategoryPages } from 'fulldev-ui/utils/getCategoryPages'
-import { getChildPages } from 'fulldev-ui/utils/getChildPages.ts'
+import { getFolderChildren } from 'fulldev-ui/utils/getFolderChildren.ts'
+import { getReferenceChildren } from 'fulldev-ui/utils/getReferenceChildren'
 
 type Props = ComponentProps<typeof Layout>
 
 const { slug, sections, title, description } = Astro.props
 
-const childPages = await getChildPages(slug)
-const categoryPages = await getCategoryPages(slug)
-// const siblingPages = await getSiblingPages(slug)
+const folderChildren = await getFolderChildren(slug)
+const referenceChildren = await getReferenceChildren(slug)
 ---
 
 <Layout {...Astro.props}>
@@ -24,12 +23,14 @@ const categoryPages = await getCategoryPages(slug)
     text={description}
   />
   <Categories
-    cards={childPages}
+    component="Categories"
+    cards={folderChildren}
     structure="grid"
     panel
   />
   <Products
-    cards={categoryPages}
+    component="Products"
+    cards={referenceChildren}
     structure="grid"
   />
   <Article style={{ '--screen': '768px' }} />

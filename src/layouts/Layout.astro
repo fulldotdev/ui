@@ -1,6 +1,7 @@
 ---
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
+import Article from 'fulldev-ui/blocks/Article.astro'
 import Banner from 'fulldev-ui/blocks/Banner.astro'
 import Footer from 'fulldev-ui/blocks/Footer.astro'
 import Element from 'fulldev-ui/components/Element.astro'
@@ -77,14 +78,20 @@ const {
         />
       </slot>
       <main data-pagefind-body>
-        <slot />
-        <Sections {sections} />
+        <slot>
+          <Article />
+          <Sections {sections} />
+        </slot>
       </main>
       <slot name="toc">
-        <Toc
-          {render}
-          {...toc}
-        />
+        {
+          toc && (
+            <Toc
+              {render}
+              {...toc}
+            />
+          )
+        }
       </slot>
     </div>
     <slot name="footer">
@@ -105,25 +112,28 @@ const {
 
         body {
           --screen: 100vw;
+          display: flex;
+          flex-direction: column;
 
           background-color: var(--base-2);
           width: 100%;
+          min-height: 100vh;
           color: var(--base-11);
 
           .core {
             display: flex;
             position: relative;
+            flex-grow: 1;
+            height: 100%;
 
             main {
               --screen: 1280px;
-
               display: flex;
               flex: 1;
               flex-direction: column;
               background-color: var(--color-background);
               width: 100%;
               max-width: 100vw;
-              min-height: 100vh;
               overflow-x: hidden;
             }
           }
