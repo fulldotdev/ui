@@ -1,12 +1,12 @@
 ---
 import Image from 'fulldev-ui/components/Image.astro'
-import Root from '../Root.astro'
+import Element from '../Element.astro'
 
-const { images, direction = 'horizontal' } = Astro.props
+const { images } = Astro.props
 ---
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  const setupGallery = (document: Document) => {
     const galleries = document.querySelectorAll('.gallery')
 
     galleries.forEach((gallery) => {
@@ -27,80 +27,52 @@ const { images, direction = 'horizontal' } = Astro.props
           })
         })
     })
+  }
+
+  setupGallery(document)
+
+  document.addEventListener('astro:before-swap', (event) => {
+    setupGallery(event.newDocument)
   })
 </script>
 
-<Root
-  class:list={[
-    'gallery',
+<Element class:list={['gallery']}>
+  <Element class="large-carousel">
     {
-      [`direction-${direction}`]: direction,
-    },
-  ]}
->
-  <div class="large-container">
-    <div class="large-carousel">
-      {
-        images?.map((image: any) => (
-          <Image
-            class="large-image"
-            src={image}
-          />
-        ))
-      }
-    </div>
-  </div>
-  <div class="small-carousel">
+      images?.map((image: any) => (
+        <Image
+          class="large-image"
+          {...(typeof image === 'string' ? { src: image } : image)}
+        />
+      ))
+    }
+  </Element>
+  <Element class="small-carousel">
     {
       images?.length > 1 &&
         images.map((image: any) => (
           <Image
             class="small-image"
-            src={image}
+            {...(typeof image === 'string' ? { src: image } : image)}
           />
         ))
     }
-  </div>
-</Root>
+  </Element>
+</Element>
 
 <style is:global lang="scss">
   .gallery {
     display: flex;
     position: relative;
-    column-gap: var(--space-4);
-    row-gap: var(--space-1);
     flex-direction: column;
-
-    &.direction-vertical {
-      @media (min-width: 1024px) {
-        flex-direction: row-reverse;
-        align-items: flex-start;
-      }
-    }
-
-    .large-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      .direction-vertical & {
-        @media (min-width: 1024px) {
-          right: auto;
-          bottom: var(--space-3);
-          left: 50%;
-          transform: translateX(-50%);
-        }
-      }
-    }
+    gap: var(--space-1) var(--space-4);
 
     .small-carousel,
     .large-carousel {
-      --column-width: 100%;
       display: flex;
       position: relative;
-      align-items: flex-start;
+      align-items: center;
       gap: var(--space-4);
-
       box-sizing: border-box;
       padding-bottom: var(--space-4);
       width: 100%;
@@ -108,59 +80,24 @@ const { images, direction = 'horizontal' } = Astro.props
       scroll-behavior: smooth;
       scroll-snap-type: x mandatory;
 
-      > .root {
+      > .image {
         flex-grow: 0;
         flex-shrink: 0;
         width: var(--column-width);
         scroll-snap-align: center;
       }
+    }
 
-      &.position-inset {
-        margin-right: calc(var(--inner-x) * -1);
-        margin-left: calc(var(--inner-x) * -1);
-        padding-right: var(--inner-x);
-        padding-left: var(--inner-x);
-        width: calc(100% + var(--inner-x) * 2);
-      }
+    .large-carousel {
+      --column-width: 100%;
     }
 
     .small-carousel {
       --column-width: var(--space-7);
-    }
 
-    .small-image:hover {
-      opacity: 0.8;
-      cursor: pointer;
-    }
-  }
-
-  .direction-vertical {
-    .small-carousel {
-      flex-direction: row;
-      min-width: 100%;
-      height: auto;
-      max-height: none;
-      overflow-x: auto;
-      overflow-y: hidden;
-
-      .small-image {
-        margin-bottom: 0;
-        width: var(--space-7);
-        height: auto;
-      }
-
-      @media (min-width: 1024px) {
-        flex-direction: column;
-        min-width: 20%;
-        max-height: 275px;
-        overflow-x: hidden;
-        overflow-y: auto;
-
-        .small-image {
-          margin-bottom: var(--space-4);
-          width: 100%;
-          height: auto;
-        }
+      .image:hover {
+        opacity: 0.8;
+        cursor: pointer;
       }
     }
   }
