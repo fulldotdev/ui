@@ -1,12 +1,12 @@
 ---
+import Element from 'fulldev-ui/components/Element.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import Root from '../Root.astro'
 
 const { images, direction = 'horizontal' } = Astro.props
 ---
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  const initializeGallery = (document: Document) => {
     const galleries = document.querySelectorAll('.gallery')
 
     galleries.forEach((gallery) => {
@@ -27,10 +27,16 @@ const { images, direction = 'horizontal' } = Astro.props
           })
         })
     })
+  }
+
+  initializeGallery(document)
+
+  document.addEventListener('astro:page-load', () => {
+    initializeGallery(document)
   })
 </script>
 
-<Root
+<Element
   class:list={[
     'gallery',
     {
@@ -61,7 +67,7 @@ const { images, direction = 'horizontal' } = Astro.props
         ))
     }
   </div>
-</Root>
+</Element>
 
 <style is:global lang="scss">
   .gallery {
