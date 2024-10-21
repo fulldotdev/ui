@@ -13,9 +13,13 @@ We utilize <Link href="https://docs.astro.build/docs/guides/content-collections/
 
 This is the recommended way to get started with our content layer integration. We've created a <Link href="https://github.com/fulldotdev/starter/tree/main">starter template</Link> with examples of everything you need to get started.
 
+```bash
+pnpm create astro@latest -- --template fulldotdev/starter
+```
+
 ## Manual Setup
 
-To get started with the manual setup, you need to install the <Link href="/overview/installation/">integration</Link> and add `injectRoutes: true` to your `astro.config.ts` file, see <Link href="#folder-structure">file structure</Link> below for more information on how this generates a site using content files.
+To get started with the manual setup, you need to install the <Link href="/overview/installation/">integration</Link> and add `injectRoutes: true` to your `astro.config.ts` file, see <Link href="#type-safe-frontmatter">frontmatter</Link> below for more information on how this generates a site using content files.
 
 ```ts
 import { defineConfig } from 'astro/config'
@@ -34,7 +38,7 @@ export default defineConfig({
 
 ## Folder Structure
 
-```
+```bash
 .
 ├── src/
 │   ├── blocks/
@@ -67,34 +71,50 @@ export default defineConfig({
   - **/blocks/**: Contains reusable block components that can be composed to build pages (Custom or overwrites existing fulldev-ui blocks)
   - **/components/**: Houses individual UI components used throughout the project (Custom or overwrites existing fulldev-ui components)
   - **/layouts/**: Contains layout components used to structure pages (Custom or overwrites existing fulldev-ui layouts)
-  - **/assets/**: Contains assets like images, fonts, etc.
+  - **/images/**: Contains images, favicons, ect.
   - **/content/**: Stores content-related files:
     - **pages/**: Contains markdown or MDX files for individual pages.
     - **records/**: Contains markdown or MDX files for content collections. Nested in directories by collection name.
     - **/presets/**: Includes configuration files for various settings like the sidebar.
   - **/css/**: Contains global CSS files and styles.
 
-### File Structure
+## Type-safe frontmatter
 
 Each file has a few frontmatter objects that are important to know about. Seo has priority over title and description, however title and description is used in multiple places like a card.
 
-```md
+```yml
 ---
+preset: [docs] # Applies the configuration from src/content/presets/docs.yml
+component: DocsLayout
+
 seo:
   title: Page Title
   description: This is my page description
   image: /image.jpg # Open Graph Image
 
+# Information on the page, this is used in places like card, sidebar, etc.
 title: Page Title
 description: This is my page description
+
+sections: # Here you generate the page by adding a component and passing props
+  - component: Hero
+    heading: Page Title
+    text: This is my page description
+    buttons:
+      - text: Button
+        color: brand
+        href: /
+      - text: Button
+        href: /
 ---
+# This is the prose, you can use markdown here
 ```
 
 For all objects avaliable in the Content Layer, see the <Link href="/schemas/page/">schemas</Link>.
 
-### Image Alt collection
+### Presets
 
-To create yml records for images, you can simply add `generateImageEntries: true` to the integration setup. This will generate a yml file in the **src/assets/** directory with the image alt text pre set to the unslugged filename which can be customized. If turned on the Image component will automatically use these records for the alt text of local images.
+Presets are configuration files that can be used to set the default values for a page. They are located in the **src/content/presets** directory and you can use them by adding the `preset` property to the frontmatter of a page or add a `basePreset` to the integration setup in the `astro.config.ts` file.
 
 ```ts
 import { defineConfig } from 'astro/config'
@@ -105,7 +125,7 @@ export default defineConfig({
   integrations: [
     fulldev({
       // other options
-      generateImageEntries: true,
+      basePreset: 'base', // Applies the configuration from src/content/presets/base.yml to every page
     }),
   ],
 })
@@ -115,7 +135,7 @@ export default defineConfig({
 
 Getting started with i18n is easy, you can easily add additional languages by creating a new folder in the **content/pages** directory and adding your content files in the new language.
 
-```
+```bash
 .
 ├── src/
 │   ├── content/
