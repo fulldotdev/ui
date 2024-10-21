@@ -1,5 +1,6 @@
 import viteYaml from '@rollup/plugin-yaml'
 import type { AstroIntegration } from 'astro'
+import favicons from 'astro-favicons'
 import merge from 'deepmerge'
 import fs from 'fs/promises'
 import yaml from 'js-yaml'
@@ -14,6 +15,8 @@ type Color = {
 }
 
 interface Config {
+  favicon?: string
+  company?: string
   css?: string
   injectRoutes?: boolean
   overrideComponents?: boolean
@@ -51,6 +54,21 @@ export default function fulldevIntegration(
         injectScript,
         injectRoute,
       }) => {
+        // ----------------------
+        // Inject favicon integration
+        // ----------------------
+        config.favicon &&
+          config.company &&
+          updateConfig({
+            integrations: [
+              favicons({
+                path: 'favicon',
+                masterPicture: config.favicon,
+                appName: config.company,
+                appShortName: config.company,
+              }),
+            ],
+          })
         // ----------------------
         // Inject css
         // ----------------------
