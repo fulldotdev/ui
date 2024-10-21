@@ -1,9 +1,11 @@
 ---
 import Button from 'fulldev-ui/components/Button.astro'
 import Element from 'fulldev-ui/components/Element.astro'
+import Gallery from 'fulldev-ui/components/experimental/Gallery.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Input from 'fulldev-ui/components/Input.astro'
+import List from 'fulldev-ui/components/List.astro'
 import Price from 'fulldev-ui/components/Price.astro'
 import Section from 'fulldev-ui/components/Section.astro'
 import Text from 'fulldev-ui/components/Text.astro'
@@ -22,6 +24,7 @@ const {
   button,
   description,
   form,
+  gallery = 'horizontal',
   ...rest
 } = Astro.props
 ---
@@ -31,10 +34,19 @@ const {
   structure="split"
   {...rest}
 >
-  <Image {...image || images?.[0]} />
+  {
+    images && images.length > 1 ? (
+      <Gallery
+        {images}
+        direction={gallery}
+      />
+    ) : (
+      <Image {...(image || images?.[0])} />
+    )
+  }
   <Element class:list="column">
     <Heading
-      level={1}
+      level={2}
       text={heading || title}
     />
     <Text
@@ -42,12 +54,17 @@ const {
       text={text || description}
     />
     <Price value={price} />
+    <List
+      items={list}
+      style={{ marginTop: 'var(--space-5)' }}
+    />
     <Element class:list="row">
       <Input
         value={1}
         name={'quantity'}
-        style={{ width: 'var(--space-6)' }}
+        style={{ width: 'var(--space-7)' }}
         type="number"
+        min={1}
       />
       <Button
         color="brand"
@@ -64,14 +81,36 @@ const {
 
 <style is:global lang="scss">
   .product {
+    padding-top: 0px;
+
+    @media (min-width: 1024px) {
+      padding-top: var(--space-6);
+    }
+
     .column {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      gap: var(--space-5);
     }
 
     .row {
       display: flex;
+      align-items: center;
+      gap: var(--space-5);
+    }
+
+    @media (max-width: 1023.99px) {
+      .gallery {
+        margin-right: calc(-1 * var(--gutter));
+        margin-left: calc(-1 * var(--gutter));
+        width: calc(100% + (var(--gutter) * 2));
+
+        .small-carousel {
+          padding-right: var(--gutter);
+          padding-left: var(--gutter);
+        }
+      }
     }
   }
 </style>

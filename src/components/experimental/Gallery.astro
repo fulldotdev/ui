@@ -1,180 +1,104 @@
 ---
-import Icon from 'fulldev-ui/components/Icon.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 
-const { images, direction } = Astro.props
+const { images } = Astro.props
 ---
 
 <script>
-  const carousel = document.querySelector('.gallery .large-carousel')
-  const icon = document.querySelector('.gallery .icon')
-  const smallImages = document.querySelectorAll('.gallery .small-image')
+  const setupGallery = (document: Document) => {
+    const galleries = document.querySelectorAll('.gallery')
 
-  carousel &&
-    icon?.addEventListener('click', () => {
-      const carouselWidth = (carousel as HTMLElement).offsetWidth
-      const currentScroll = carousel.scrollLeft
-      const maxScroll = carousel.scrollWidth - carouselWidth
+    galleries.forEach((gallery) => {
+      const carousel = gallery.querySelector('.large-carousel')
+      const smallImages = gallery.querySelectorAll('.small-image')
 
-      let scrollAmount = currentScroll + carouselWidth
-      if (scrollAmount > maxScroll) {
-        scrollAmount = 0 // Reset to beginning if we're at the end
-      }
-
-      carousel.scrollTo({
-        left: scrollAmount,
-        behavior: 'smooth',
-      })
-    })
-
-  carousel &&
-    smallImages?.forEach((image, i) => {
-      image.addEventListener('click', () => {
-        const imageWidth = (carousel as HTMLElement).offsetWidth
-        carousel.scrollTo({
-          left: i * imageWidth,
-          behavior: 'smooth',
+      carousel &&
+        smallImages?.forEach((image, i) => {
+          image.addEventListener('click', () => {
+            const largeImages = carousel.querySelectorAll('.large-image')
+            if (largeImages[i]) {
+              largeImages[i].scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'start',
+              })
+            }
+          })
         })
-      })
     })
+  }
+
+  setupGallery(document)
+
+  document.addEventListener('astro:before-swap', (event) => {
+    setupGallery(event.newDocument)
+  })
 </script>
 
-<div
-  class:list={[
-    'full',
-    'gallery',
+<Element class:list={['gallery']}>
+  <Element class="large-carousel">
     {
-      [`direction-${direction}`]: direction,
-    },
-  ]}
->
-  <div class="large-container">
-    <div class="large-carousel">
-      {
-        images?.map((image: any) => (
-          <Image
-            class="large-image"
-            src={image}
-          />
-        ))
-      }
-    </div>
-    {
-      images?.length > 1 && (
-        <Icon
-          class="icon"
-          name="swipe-left"
+      images?.map((image: any) => (
+        <Image
+          class="large-image"
+          {...(typeof image === 'string' ? { src: image } : image)}
         />
-      )
+      ))
     }
-  </div>
-  <div class="small-carousel">
+  </Element>
+  <Element class="small-carousel">
     {
       images?.length > 1 &&
         images.map((image: any) => (
           <Image
             class="small-image"
-            src={image}
+            {...(typeof image === 'string' ? { src: image } : image)}
           />
         ))
     }
-  </div>
-</div>
+  </Element>
+</Element>
 
 <style is:global lang="scss">
   .gallery {
     display: flex;
     position: relative;
-    column-gap: var(--space-4);
-    row-gap: var(--space-1);
     flex-direction: column;
-
-    @media (min-width: 1024px) {
-      flex-direction: row-reverse;
-    }
-
-    .large-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      &:hover .icon {
-        opacity: 1;
-      }
-
-      .icon {
-        position: absolute;
-        right: var(--space-3);
-        opacity: 0.5;
-        animation: swipe-icon 1.6s ease-in-out infinite;
-        transition: opacity 0.2s ease-in-out;
-        font-size: calc(var(--text-2) * 1.7);
-
-        @media (min-width: 1024px) {
-          display: none;
-        }
-      }
-
-      @keyframes swipe-icon {
-        0%,
-        100% {
-          right: var(--space-3);
-        }
-        50% {
-          right: calc(var(--space-3) * 2);
-        }
-      }
-    }
+    gap: var(--space-1) var(--space-4);
 
     .small-carousel,
     .large-carousel {
-      --column-width: 100%;
       display: flex;
       position: relative;
-      align-items: flex-start;
+      align-items: center;
       gap: var(--space-4);
-
       box-sizing: border-box;
       padding-bottom: var(--space-4);
       width: 100%;
-      overflow-x: auto;
+      overflow: auto;
       scroll-behavior: smooth;
       scroll-snap-type: x mandatory;
 
-      > .root {
+      > .image {
         flex-grow: 0;
         flex-shrink: 0;
         width: var(--column-width);
         scroll-snap-align: center;
       }
+    }
 
-      &.position-inset {
-        margin-right: calc(var(--inner-x) * -1);
-        margin-left: calc(var(--inner-x) * -1);
-        padding-right: var(--inner-x);
-        padding-left: var(--inner-x);
-        width: calc(100% + var(--inner-x) * 2);
-      }
+    .large-carousel {
+      --column-width: 100%;
     }
 
     .small-carousel {
       --column-width: var(--space-7);
 
-      @media (min-width: 1024px) {
-        --column-width: 100%;
-
-        flex-direction: column;
-        width: 40%;
+      .image:hover {
+        opacity: 0.8;
+        cursor: pointer;
       }
-    }
-
-    .small-image,
-    .large-image {
-    }
-
-    .small-image:hover {
-      opacity: 0.8;
-      cursor: pointer;
     }
   }
 </style>
