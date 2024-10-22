@@ -59,13 +59,19 @@ console.log({ header, sidebar, navigation })
 <!doctype html>
 <html {...rest}>
   <Head {...Astro.props} />
-  <Element as="body">
+  <Element
+    as="body"
+    {theme}
+  >
     <slot name="banner">
       <Banner text={banner} />
     </slot>
     <slot name="header">
       <Header
-        if={header}
+        class:list={{
+          'for-sidebar': sidebar,
+        }}
+        if={navigation || header}
         {...navigation}
         {...header}
       />
@@ -86,7 +92,6 @@ console.log({ header, sidebar, navigation })
       </main>
       <slot name="toc">
         <Toc
-          if={toc}
           heading={toc}
           {render}
         />
@@ -116,6 +121,16 @@ console.log({ header, sidebar, navigation })
           width: 100%;
           min-height: 100vh;
           color: var(--base-11);
+
+          .for-sidebar {
+            @media (min-width: 1024px) {
+              display: none;
+
+              ~ * {
+                --header-height: 0px;
+              }
+            }
+          }
 
           .core {
             display: flex;
