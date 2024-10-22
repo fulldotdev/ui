@@ -1,0 +1,56 @@
+---
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Button from 'fulldev-ui/components/Button.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
+
+interface Props extends GlobalProps, HTMLAttributes<'div'> {
+  groups?:
+    | {
+        heading?: ComponentProps<typeof Heading>['text']
+        buttons?: ComponentProps<typeof Button>[]
+      }[]
+    | undefined
+}
+
+const { groups, ...rest } = Astro.props
+---
+
+<Element
+  class:list="menu"
+  {...rest}
+>
+  {
+    groups?.map(({ heading, buttons }) => (
+      <Element class:list="menu-group">
+        <Heading
+          level={6}
+          text={heading}
+        />
+        {buttons?.map((button) => (
+          <Button
+            variant="link"
+            {...button}
+          />
+        ))}
+      </Element>
+    ))
+  }
+</Element>
+
+<style lang="scss" is:global>
+  @layer fulldev {
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+
+      .menu-group {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+      }
+    }
+  }
+</style>

@@ -3,6 +3,8 @@ import footer from './components/footer'
 import header from './components/header'
 import image from './components/image'
 import sections from './components/sections'
+import sidebar from './components/sidebar'
+import toc from './components/toc'
 import component from './utils/component'
 import navigation from './utils/navigation'
 import parents from './utils/parents'
@@ -23,11 +25,11 @@ export default z
     description: z.string().optional(),
     image,
     sections,
-    header,
     footer,
+    header: z.boolean().or(header),
+    sidebar: z.boolean().or(sidebar),
     navigation,
-    toc: z.any(),
-    sidebar: z.any(),
+    toc,
   })
   .partial()
   .passthrough()
