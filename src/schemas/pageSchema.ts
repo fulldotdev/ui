@@ -4,8 +4,9 @@ import fulldevConfig from 'virtual:fulldev-ui/config'
 import footer from './components/footer'
 import header from './components/header'
 import image from './components/image'
-import images from './components/images'
 import sections from './components/sections'
+import sidebar from './components/sidebar'
+import toc from './components/toc'
 import component from './utils/component'
 import navigation from './utils/navigation'
 import parents from './utils/parents'
@@ -63,14 +64,12 @@ export default i18n.pipe(presets).pipe(
       title: z.string(),
       description: z.string().optional(),
       image,
-      images,
       sections,
-      header,
       footer,
+      header: z.boolean().or(header),
+      sidebar: z.boolean().or(sidebar),
       navigation,
-      toc: z.any(),
-      sidebar: z.any(),
-      banner: z.any(),
+      toc,
     })
     .partial()
     .passthrough()

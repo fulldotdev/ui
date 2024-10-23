@@ -57,22 +57,27 @@ const {
 <!doctype html>
 <html {...rest}>
   <Head {...Astro.props} />
-  <Element as="body">
+  <Element
+    as="body"
+    {theme}
+  >
     <slot name="banner">
       <Banner text={banner} />
     </slot>
     <slot name="header">
       <Header
-        open={header}
+        class:list={{
+          'for-sidebar': sidebar,
+        }}
+        if={navigation || header}
         {...navigation}
-        {themeselect}
         {...header}
       />
     </slot>
     <div class="core">
       <slot name="sidebar">
         <Sidebar
-          open={sidebar}
+          if={sidebar}
           {...navigation}
           {...sidebar}
         />
@@ -84,14 +89,10 @@ const {
         </slot>
       </main>
       <slot name="toc">
-        {
-          toc && (
-            <Toc
-              {render}
-              {...toc}
-            />
-          )
-        }
+        <Toc
+          heading={toc}
+          {render}
+        />
       </slot>
     </div>
     <slot name="footer">
@@ -114,11 +115,20 @@ const {
           --screen: 100vw;
           display: flex;
           flex-direction: column;
-
-          background-color: var(--base-2);
+          background-color: var(--base-background);
           width: 100%;
           min-height: 100vh;
           color: var(--base-11);
+
+          .for-sidebar {
+            @media (min-width: 1024px) {
+              display: none;
+
+              ~ * {
+                --header-height: 0px;
+              }
+            }
+          }
 
           .core {
             display: flex;

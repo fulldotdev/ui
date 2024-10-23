@@ -1,21 +1,24 @@
 ---
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import Button from 'fulldev-ui/components/Button.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Logo from 'fulldev-ui/components/experimental/Logo.astro'
 import Search from 'fulldev-ui/components/Search.astro'
 import ThemeSelect from 'fulldev-ui/components/ThemeSelect.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import Drawer from './Drawer.astro'
+import type Menu from './Menu.astro'
 
 interface Props extends GlobalProps, HTMLAttributes<'header'> {
-  logo?: ComponentProps<typeof Logo>['src']
+  logo?: ComponentProps<typeof Logo>
   company?: ComponentProps<typeof Logo>['company']
   buttons?: ComponentProps<typeof Buttons>['buttons']
+  menu?: ComponentProps<typeof Menu>['groups']
   panel?: boolean | undefined
   search?: boolean | undefined
   open?: boolean | undefined
   themeselect?: boolean | undefined
+  cart?: string | undefined
 }
 
 const {
@@ -26,7 +29,9 @@ const {
   buttons,
   search,
   panel,
+  menu,
   themeselect,
+  cart,
   ...rest
 } = Astro.props
 ---
@@ -49,11 +54,19 @@ const {
   />
   {search && <Search />}
   {themeselect && <ThemeSelect />}
-  <Button
-    class="menu-button"
-    variant="tertiary"
+  <Drawer
     icon="menu-2"
-    for="sidebar"
+    id="menu"
+    {menu}
+    {logo}
+    {company}
+  />
+  <Drawer
+    icon="shopping-cart"
+    class="cart-button"
+    color="brand"
+    id="cart"
+    heading={cart}
   />
 </Element>
 
@@ -118,10 +131,6 @@ const {
       }
 
       .menu-button {
-        .icon {
-          transform: scale(1.56);
-        }
-
         @media (min-width: 1024px) {
           display: none;
         }

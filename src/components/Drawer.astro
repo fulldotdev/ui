@@ -1,95 +1,138 @@
 ---
-import type { ComponentProps } from 'astro/types'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
-import Card from 'fulldev-ui/components/Card.astro'
 import Element from 'fulldev-ui/components/Element.astro'
+import Logo from 'fulldev-ui/components/experimental/Logo.astro'
+import Menu from 'fulldev-ui/components/Menu.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import Heading from './Heading.astro'
 
-interface Props extends Omit<ComponentProps<typeof Card>, 'position'> {
-  label?: string | undefined
-  icon?: string | undefined
-  position?: 'left' | 'right' | undefined
-  panel?: boolean | undefined
+interface Props extends GlobalProps, HTMLAttributes<'aside'> {
+  variant?: ComponentProps<typeof Button>['variant']
+  text?: ComponentProps<typeof Button>['text']
+  icon?: ComponentProps<typeof Button>['icon']
+  heading?: ComponentProps<typeof Heading>['text']
+  logo?: ComponentProps<typeof Logo> | undefined
+  company?: ComponentProps<typeof Logo>['company']
+  menu?: ComponentProps<typeof Menu>['groups']
 }
 
 const {
   id = 'drawer',
-  position = 'left',
-  panel,
-  label,
-  icon,
+  size = 'sm',
+  icon = 'menu-2',
+  color,
+  variant,
+  text,
+  heading,
+  logo,
+  company,
+  menu,
   ...rest
 } = Astro.props
 ---
 
 <Button
-  class:list="drawer-button"
   variant="secondary"
-  id={`${id}-button`}
-  text={label}
-  icon={icon}
+  class:list={['drawer-button', `${id}-button`]}
   onclick={`document.getElementById('${id}').showModal()`}
+  {variant}
+  {text}
+  {icon}
+  {color}
 />
 
 <Element
-  as="dialog"
-  class="drawer"
-  {id}
-  {position}
   onclick={`event.target === this && this.close()`}
+  class:list="drawer"
+  as="dialog"
+  {id}
+  {text}
+  {icon}
+  {...rest}
 >
-  <Element
-    class:list={[panel, `position-${position}`]}
-    {...rest}
-  >
-    <slot />
+  <Element class:list="drawer-body">
+    <Element
+      class:list="drawer-header"
+      as="header"
+    >
+      <Logo
+        {company}
+        {...logo}
+      />
+      <Heading
+        level={4}
+        text={heading}
+      />
+      <Button
+        variant="secondary"
+        icon="x"
+        onclick={`document.getElementById('${id}').close()`}
+      />
+      <slot name="header" />
+    </Element>
+    <Element class:list="drawer-content">
+      <Menu groups={menu} />
+      <slot />
+    </Element>
   </Element>
 </Element>
 
 <style lang="scss" is:global>
   @layer fulldev {
+    body:has(dialog[open]) {
+      overflow: hidden;
+
+      @media (min-width: 768px) {
+        overflow: auto;
+      }
+    }
+
     .drawer {
-      flex-shrink: 0;
-      align-items: stretch;
-      box-sizing: border-box;
-      margin: 0 !important;
-      outline: 0;
-      border: 0;
-      background: var(--color-2);
+      top: 0;
+      bottom: 0;
+      margin: 0;
       padding: 0;
-      padding: var(--space-7) var(--space-7) var(--space-7) var(--gutter);
-      min-width: 260px;
-      max-width: 360px;
-      height: 100vh;
-      max-height: 100vh;
+      width: 100%;
+      max-width: 100%;
+      height: 100%;
+      max-height: 100%;
+
+      @media (min-width: 768px) {
+        width: 360px;
+      }
 
       &::backdrop {
+        cursor: pointer;
         background: rgba(0, 0, 0, 0.5);
       }
 
-      &.position-left {
-        margin-right: 0;
+      .drawer-body {
+        flex-shrink: 1;
+        border-right: 1px solid var(--color-a6);
+        height: 100%;
+        overflow: auto;
       }
 
-      &.position-right {
-        right: 0;
+      .drawer-header {
+        display: flex;
+        position: sticky;
+        top: 0;
+        align-items: center;
+        border-bottom: 1px solid var(--color-a6);
+        background-color: var(--base-background);
+        padding: 0 var(--gutter);
+        height: 56px;
+
+        .button {
+          margin-left: auto;
+        }
       }
 
-      .box {
-        padding: calc(var(--space-5) * 2) calc(var(--space-7) * 3);
-        min-width: calc(var(--space-7) * 14);
-        height: 100vh;
-        overflow-x: hidden;
-        overflow-y: auto;
-
-        &.position-left {
-          border-right: 1px solid var(--color-a6);
-          padding-left: var(--gutter);
-        }
-
-        &.position-right {
-          border-left: 1px solid var(--color-a6);
-          padding-right: var(--gutter);
-        }
+      .drawer-content {
+        display: flex;
+        flex-direction: column;
+        padding: var(--space-6) var(--gutter);
       }
     }
   }

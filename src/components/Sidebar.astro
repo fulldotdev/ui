@@ -1,150 +1,100 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
-import Button from 'fulldev-ui/components/Button.astro'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import Logo from 'fulldev-ui/components/experimental/Logo.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
-import Search from 'fulldev-ui/components/Search.astro'
+import Menu from 'fulldev-ui/components/Menu.astro'
 import ThemeSelect from 'fulldev-ui/components/ThemeSelect.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import Heading from './Heading.astro'
+import Toc from './Toc.astro'
 
 interface Props extends GlobalProps, HTMLAttributes<'aside'> {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  search?: boolean | undefined
-  logo?: string | undefined
-  company?: string | undefined
-  buttons?: any[] | undefined
-  open?: boolean | undefined
+  menu?: ComponentProps<typeof Menu>['groups']
+  heading?: ComponentProps<typeof Heading>['text']
+  render?: ComponentProps<typeof Toc>['render']
+  logo?: ComponentProps<typeof Logo>
+  toc?: ComponentProps<typeof Toc>['heading']
+  company?: ComponentProps<typeof Logo>['company']
+  themeselect?: boolean | undefined
 }
 
 const {
   size = 'sm',
-  open = false,
   logo,
   company,
-  buttons,
-  search,
+  render,
+  themeselect,
+  menu,
+  toc,
+  heading,
+  ...rest
 } = Astro.props
 ---
-
-<input
-  id="sidebar"
-  class="sidebar-checkbox"
-  type="checkbox"
-/>
 
 <Element
   class:list="sidebar"
   as="aside"
   {size}
-  {open}
+  {...rest}
 >
-  <Logo
-    {company}
-    {...typeof logo === 'string' ? { src: logo } : logo}
-  />
-  {search && <Search />}
-  <Element class:list="buttons">
-    {
-      buttons?.map(({ heading, slug, href, text, buttons }) => (
-        <>
-          <Heading
-            level={6}
-            text={heading}
-          />
-          <Button
-            variant="link"
-            {slug}
-            {href}
-            {text}
-          />
-          {buttons?.map((button: any) => (
-            <Button
-              variant="link"
-              {...button}
-            />
-          ))}
-        </>
-      ))
-    }
-    <ThemeSelect />
+  <Element
+    class:list="sidebar-header"
+    as="header"
+  >
+    <Logo
+      {company}
+      {...logo}
+    />
+    <Heading
+      level={4}
+      text={heading}
+    />
+    <slot name="header" />
+  </Element>
+  <Element class:list="sidebar-content">
+    <Menu groups={menu} />
+    <ThemeSelect if={themeselect} />
+    <slot />
   </Element>
 </Element>
 
 <style lang="scss" is:global>
   @layer fulldev {
-    .sidebar-checkbox {
-      display: none;
-    }
-
-    @media (max-width: 1023.999px) {
-      body:has(.sidebar-checkbox:checked) {
-        overflow: hidden;
-      }
-    }
-
     .sidebar {
-      --sidebar-width: 240px;
-
       display: none;
-      position: fixed;
-      top: var(--header-height, 0px);
-      bottom: 0;
-      left: 0;
-      flex-shrink: 0;
-      flex-direction: column;
-      justify-content: flex-start;
-      z-index: 10;
-      border-style: solid;
-      border-color: var(--color-a6);
-      background-color: var(--base-2);
-      padding: var(--space-md-5) var(--gutter);
-      width: 100%;
-      height: calc(100vh - var(--header-height, 0px));
-      overflow-y: auto;
-
-      &:is(.sidebar-checkbox:checked + &) {
-        display: flex;
-      }
 
       @media (min-width: 1024px) {
-        border-right-width: 1px;
-        padding: var(--space-md-6) var(--gutter);
-        width: var(--sidebar-width);
+        display: flex;
+        position: sticky;
+        top: var(--header-height, 0px);
+        bottom: 0;
+        flex-shrink: 0;
+        flex-direction: column;
+        justify-content: flex-start;
+        z-index: 10;
+        border-right: 1px solid var(--color-a6);
+        width: calc(var(--space-7) * 4);
+        height: calc(100vh - var(--header-height, 0px));
 
-        &.open {
+        .sidebar-header {
           display: flex;
           position: sticky;
-        }
-      }
-
-      .buttons {
-        display: flex;
-        flex-direction: column;
-        gap: calc(var(--space-4) + var(--space-1));
-
-        .theme-select {
-          margin-top: var(--space-5);
+          align-items: center;
+          border-bottom: 1px solid var(--color-a6);
+          padding: 0 var(--gutter);
+          width: 100%;
+          height: 56px;
         }
 
-        .button + .heading {
-          margin-top: var(--space-5);
+        .sidebar-content {
+          display: flex;
+          top: 0;
+          flex: 1;
+          flex-direction: column;
+          padding: var(--space-6) var(--gutter);
+          width: 100%;
+          overflow-y: auto;
         }
-      }
-
-      .logo {
-        display: none;
-        position: absolute;
-        top: 0;
-        left: var(--gutter);
-        align-items: center;
-        height: 56px;
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .header:not(.open) ~ .core .sidebar .logo {
-        display: flex;
       }
     }
   }
