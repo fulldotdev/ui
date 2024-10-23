@@ -12,7 +12,7 @@ import navigation from './utils/navigation'
 import parents from './utils/parents'
 import pathSchema from './utils/pathSchema'
 
-const i18n = z
+export const i18n = z
   .object({
     i18n: pathSchema('pages').optional(),
   })
@@ -24,7 +24,7 @@ const i18n = z
     return merged as typeof rest
   })
 
-const presets = z
+export const presets = z
   .object({
     presets: z.array(pathSchema('presets')).optional(),
   })
@@ -48,29 +48,39 @@ const presets = z
     return mergedData as typeof rest
   })
 
-export default i18n.pipe(presets).pipe(
-  z
-    .object({
-      component,
-      parents,
-      theme: z.enum(['light', 'dark']),
-      lang: z.string(),
-      seo: z
-        .object({
-          title: z.string().optional(),
-          description: z.string().optional(),
-        })
-        .optional(),
-      title: z.string(),
-      description: z.string().optional(),
-      image,
-      sections,
-      footer,
-      header: z.boolean().or(header),
-      sidebar: z.boolean().or(sidebar),
-      navigation,
-      toc,
-    })
-    .partial()
-    .passthrough()
-)
+export const basePreset = z
+  .object({})
+  .passthrough()
+  .transform(async (data) => {
+    if (!fulldevConfig.basePreset) return data
+    const baseEntry = await getEntry('presets', fulldevConfig.basePreset)
+    const mergedData = assign(baseEntry?.data ?? {}, data)
+    return mergedData as typeof data
+  })
+
+export const page = z
+  .object({
+    component,
+    parents,
+    theme: z.enum(['light', 'dark']),
+    lang: z.string(),
+    seo: z
+      .object({
+        title: z.string().optional(),
+        description: z.string().optional(),
+      })
+      .optional(),
+    title: z.string(),
+    description: z.string().optional(),
+    image,
+    sections,
+    footer,
+    header: z.boolean().or(header),
+    sidebar: z.boolean().or(sidebar),
+    navigation,
+    toc,
+  })
+  .partial()
+  .passthrough()
+
+export default i18n.pipe(basePreset).pipe(presets).pipe(page)
