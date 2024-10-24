@@ -2,6 +2,7 @@
 import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import { formatPrice } from 'fulldev-ui/utils/cart'
 
 interface Props extends GlobalProps, HTMLAttributes<'div'> {
   size?: 'sm' | 'md' | 'lg' | undefined
@@ -13,17 +14,12 @@ interface Props extends GlobalProps, HTMLAttributes<'div'> {
 const { value, ...rest } = Astro.props
 ---
 
-{
-  value && (
-    <Element
-      if={value}
-      class:list="price"
-      {...rest}
-    >
-      €{value?.toFixed(2).replace('.', ',')}
-    </Element>
-  )
-}
+<Element
+  class:list="price"
+  {...rest}
+>
+  {value && <Fragment set:html={formatPrice(value)} />}
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {
