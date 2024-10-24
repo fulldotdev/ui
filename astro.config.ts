@@ -1,35 +1,12 @@
 // @ts-ignore
 import liveCode from 'astro-live-code'
-import { defineConfig, envField } from 'astro/config'
+import { defineConfig } from 'astro/config'
 import integration from 'fulldev-ui/integration'
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://ui.full.dev',
   devToolbar: {
     enabled: false,
-  },
-  experimental: {
-    contentLayer: true,
-    env: {
-      schema: {
-        SITE_URL: envField.string({
-          context: 'client',
-          access: 'public',
-        }),
-        STRIPE_RESTRICTED_KEY: envField.string({
-          context: 'client',
-          access: 'public',
-          optional: true,
-        }),
-        STRIPE_SECRET_KEY: envField.string({
-          context: 'server',
-          access: 'secret',
-          optional: true,
-        }),
-      },
-      validateSecrets: true,
-    },
   },
   integrations: [
     liveCode({

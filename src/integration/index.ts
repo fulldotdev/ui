@@ -7,6 +7,7 @@ import robotsTxt from 'astro-robots-txt'
 import { envField } from 'astro/config'
 import type { CollectionEntry } from 'astro:content'
 import merge from 'deepmerge'
+import { loadEnv } from 'vite'
 import virtual from 'vite-plugin-virtual'
 import { generateRadixColors } from './generate-colors'
 
@@ -39,7 +40,6 @@ const defaultConfig: Config = {
       brand: '#000',
     },
   },
-  // generateImageEntries: false,
 }
 
 export default function fulldevIntegration(
@@ -84,6 +84,8 @@ export default function fulldevIntegration(
                 validateSecrets: true,
               },
             },
+            site: loadEnv(process.env.NODE_ENV as any, process.cwd(), '')
+              .SITE_URL,
             integrations: [
               sitemap(),
               mdx(),
