@@ -1,41 +1,21 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import type { CollectionEntry } from 'astro:content'
 import { getEntry } from 'astro:content'
 import Button from 'fulldev-ui/components/Button.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Writeup from 'fulldev-ui/components/Writeup.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import type { CardSchema } from 'fulldev-ui/schemas/components/card'
 import Icon from './Icon.astro'
 import Price from './Price.astro'
 
-interface Props
-  extends GlobalProps,
-    ComponentProps<typeof Writeup>,
-    Omit<HTMLAttributes<'a'>, 'title'> {
-  image?: ComponentProps<typeof Image>
-  images?: ComponentProps<typeof Image>[]
-  position?: ComponentProps<typeof Image>['position']
-  buttons?: ComponentProps<typeof Buttons>['buttons']
-  button?: ComponentProps<typeof Button> | undefined
-  variant?: ComponentProps<typeof Button>['variant']
-  align?: ComponentProps<typeof Writeup>['align']
-  icon?: ComponentProps<typeof Icon>['name']
-  price?: ComponentProps<typeof Price>['value']
-  slug?: CollectionEntry<'pages'>['slug'] | undefined
-  id?: any
-  panel?: boolean | undefined
-  title?: ComponentProps<typeof Writeup>['heading']
-}
-
+interface Props extends CardSchema {}
 const { slug } = Astro.props
-const page = slug ? (await getEntry('pages', slug)).data : {}
+const page = slug ? (await getEntry('pages', slug))?.data : {}
 
 const entryProps = {
-  heading: page.title,
-  text: page.description,
+  heading: page?.title,
+  text: page?.description,
   href: slug ? `/${slug}/` : undefined,
   ...page,
 }
