@@ -1,4 +1,5 @@
 ---
+import { getImage } from 'astro:assets'
 import CartForm from 'fulldev-ui/components/CartForm.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Gallery from 'fulldev-ui/components/experimental/Gallery.astro'
@@ -27,8 +28,11 @@ const {
   ...rest
 } = Astro.props
 
-const slug = Astro.params.page || 'index'
+const slug = Astro.url.pathname.replace(/^\/|\/$/g, '') || 'index'
 const src = `/src/images/${images?.[0].id}`
+const gotImage = await getImage({ src, width: 200, height: 200 })
+
+console.log({ hoi: gotImage.src })
 ---
 
 <Section
@@ -60,7 +64,7 @@ const src = `/src/images/${images?.[0].id}`
       style={{ marginTop: 'var(--space-5)' }}
     />
     <CartForm
-      image={src}
+      image={gotImage.src}
       {title}
       {price}
       {slug}
