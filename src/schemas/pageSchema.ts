@@ -92,6 +92,8 @@ export const page = z
     uitverkocht: z.any(),
     rating: z.any(),
     variants: z.any(),
+    heading: z.any(),
+    href: z.any(),
   })
   .partial()
   .strict()
