@@ -1,8 +1,6 @@
-import mdx from '@astrojs/mdx'
-import sitemap from '@astrojs/sitemap'
 // @ts-ignore
 import liveCode from 'astro-live-code'
-import { defineConfig } from 'astro/config'
+import { defineConfig, envField } from 'astro/config'
 import integration from 'fulldev-ui/integration'
 
 // https://astro.build/config
@@ -12,12 +10,28 @@ export default defineConfig({
     enabled: false,
   },
   experimental: {
-    contentIntellisense: false,
     contentLayer: true,
+    env: {
+      schema: {
+        SITE_URL: envField.string({
+          context: 'client',
+          access: 'public',
+        }),
+        STRIPE_RESTRICTED_KEY: envField.string({
+          context: 'client',
+          access: 'public',
+          optional: true,
+        }),
+        STRIPE_SECRET_KEY: envField.string({
+          context: 'server',
+          access: 'secret',
+          optional: true,
+        }),
+      },
+      validateSecrets: true,
+    },
   },
   integrations: [
-    sitemap(),
-    mdx(),
     liveCode({
       layout: '/src/components/experimental/Window.astro',
     }),

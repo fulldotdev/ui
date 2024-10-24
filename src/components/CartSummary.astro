@@ -66,8 +66,6 @@ const { ...rest } = Astro.props
   import { formatPrice } from 'fulldev-ui/utils/cart'
   import Stripe from 'stripe'
 
-  const stripe = new Stripe(import.meta.env.PUBLIC_STRIPE_CHECKOUT_KEY)
-
   function setPrice(items: any) {
     const price = document.querySelector('.cart-summary .price')
     if (price)
@@ -80,6 +78,8 @@ const { ...rest } = Astro.props
   }
 
   document.addEventListener('astro:page-load', () => {
+    const stripe = new Stripe(import.meta.env.STRIPE_RESTRICTED_KEY)
+    if (stripe) return
     setPrice($cart.get())
 
     $cart.subscribe((items: any) => {

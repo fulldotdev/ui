@@ -1,6 +1,10 @@
+import mdx from '@astrojs/mdx'
+import sitemap from '@astrojs/sitemap'
 import viteYaml from '@rollup/plugin-yaml'
 import type { AstroIntegration } from 'astro'
 import favicons from 'astro-favicons'
+import robotsTxt from 'astro-robots-txt'
+import { envField } from 'astro/config'
 import type { CollectionEntry } from 'astro:content'
 import merge from 'deepmerge'
 import virtual from 'vite-plugin-virtual'
@@ -53,12 +57,37 @@ export default function fulldevIntegration(
         injectRoute,
       }) => {
         // ----------------------
-        // Inject favicon integration
+        // Update config
         // ----------------------
         config.favicon &&
           config.company &&
           updateConfig({
+            experimental: {
+              contentLayer: true,
+              env: {
+                schema: {
+                  SITE_URL: envField.string({
+                    context: 'client',
+                    access: 'public',
+                  }),
+                  STRIPE_RESTRICTED_KEY: envField.string({
+                    context: 'client',
+                    access: 'public',
+                    optional: true,
+                  }),
+                  STRIPE_SECRET_KEY: envField.string({
+                    context: 'server',
+                    access: 'secret',
+                    optional: true,
+                  }),
+                },
+                validateSecrets: true,
+              },
+            },
             integrations: [
+              sitemap(),
+              mdx(),
+              robotsTxt(),
               favicons({
                 path: 'favicon',
                 masterPicture: config.favicon,
