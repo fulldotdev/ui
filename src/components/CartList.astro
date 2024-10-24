@@ -1,0 +1,134 @@
+---
+import Element from 'fulldev-ui/components/Element.astro'
+import Button from './Button.astro'
+import Card from './Card.astro'
+import Heading from './Heading.astro'
+import Text from './Text.astro'
+
+const { ...rest } = Astro.props
+---
+
+<Element
+  if
+  class:list="cart-list"
+  {...rest}
+/>
+
+<template>
+  <Card class="cart-list-card">
+    <img class="cart-list-image image" />
+    <Element class="column">
+      <Heading
+        if
+        level={4}
+        class="heading"
+      />
+      <Element class="row">
+        <Text
+          if
+          class="cart-list-price"
+        />
+        <Button
+          class:list="cart-list-remove"
+          variant="tertiary"
+          icon="trash"
+          type="button"
+        />
+      </Element>
+    </Element>
+  </Card>
+</template>
+
+<script>
+  import { $cart } from 'fulldev-ui/stores/cart.ts'
+  import { formatPrice } from 'fulldev-ui/utils/cart'
+
+  function setCards(items: any) {
+    const template = document.querySelector('template')
+    const container = document.querySelector('.cart-list')
+
+    if (!container || !template) return
+
+    container.innerHTML = ''
+
+    items.forEach((item: any, index: number) => {
+      const clone = template?.content.cloneNode(true)
+      if (!(clone instanceof DocumentFragment)) return
+      const card = clone.querySelector('.cart-list-card')
+      if (!card) return
+
+      const img = card.querySelector('img')
+      if (img) img.src = item.image
+
+      const h4 = card.querySelector('h4')
+      if (h4) h4.textContent = item.name
+
+      const p = card.querySelector('p')
+      if (p) p.textContent = formatPrice(item.price)
+
+      const button = card.querySelector('button')
+      if (button) {
+        button.addEventListener('click', () => {
+          const currentCart = $cart.get()
+          const newCart = [...currentCart]
+          newCart.splice(index, 1)
+          $cart.set(newCart)
+        })
+      }
+
+      container.appendChild(clone)
+    })
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    setCards($cart.get())
+
+    $cart.subscribe((items: any) => {
+      setCards(items)
+    })
+  })
+</script>
+
+<style lang="scss" is:global>
+  @layer fulldev {
+    .cart-list {
+      display: flex;
+      flex-direction: column;
+
+      .card {
+        display: flex;
+        flex-direction: row;
+        gap: var(--space-5);
+        width: 100%;
+
+        &:not(:first-child) {
+          margin-top: var(--space-5);
+          border-top: 1px solid var(--color-a6);
+          padding-top: var(--space-5);
+        }
+
+        .image {
+          display: block;
+          width: 100px;
+          height: auto;
+        }
+
+        .column {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          gap: var(--space-3);
+          width: 100%;
+          height: 100%;
+        }
+
+        .row {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
+    }
+  }
+</style>

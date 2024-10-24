@@ -4,6 +4,9 @@ import fulldevConfig from 'virtual:fulldev-ui/config'
 import footer from './components/footer'
 import header from './components/header'
 import image from './components/image'
+import images from './components/images'
+import price from './components/price'
+import section from './components/section'
 import sections from './components/sections'
 import sidebar from './components/sidebar'
 import toc from './components/toc'
@@ -73,14 +76,24 @@ export const page = z
     title: z.string(),
     description: z.string().optional(),
     image,
+    images,
+    section,
     sections,
     footer,
     header: z.boolean().or(header),
     sidebar: z.boolean().or(sidebar),
     navigation,
     toc,
+    price,
+    code: z.any(),
+    sizes: z.any(),
+    banner: z.any(),
+    _schema: z.any(),
+    uitverkocht: z.any(),
+    rating: z.any(),
+    variants: z.any(),
   })
   .partial()
-  .passthrough()
+  .strict()
 
 export default i18n.pipe(basePreset).pipe(presets).pipe(page)

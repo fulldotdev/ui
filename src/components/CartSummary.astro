@@ -1,0 +1,144 @@
+---
+import Button from './Button.astro'
+import Element from './Element.astro'
+import Price from './Price.astro'
+import Text from './Text.astro'
+
+interface Props {}
+
+const { ...rest } = Astro.props
+---
+
+<Element
+  size="md"
+  class="cart-summary"
+>
+  <div
+    class="row"
+    {...rest}
+  >
+    <Text
+      class:list="total"
+      text="Totaal"
+      contrast
+    />
+    <Price value={10} />
+  </div>
+  <Text
+    class:list="shipping"
+    text="Verzendkosten worden berekend bij het afrekenen."
+  />
+  <Button
+    class:list="checkout-button"
+    variant="primary"
+    color="brand"
+    text="Afrekenen"
+  />
+</Element>
+
+<style is:global lang="scss">
+  @layer fulldev {
+    .cart-summary {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+
+      .price,
+      .total {
+        font-size: var(--text-4);
+      }
+
+      .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .shipping {
+        font-size: var(--text-1);
+      }
+    }
+  }
+</style>
+
+<script>
+  import { $cart } from 'fulldev-ui/stores/cart.ts'
+  import { formatPrice } from 'fulldev-ui/utils/cart'
+  import Stripe from 'stripe'
+
+  const stripe = new Stripe(import.meta.env.PUBLIC_STRIPE_CHECKOUT_KEY)
+
+  function setPrice(items: any) {
+    const price = document.querySelector('.cart-summary .price')
+    if (price)
+      price.textContent = formatPrice(
+        items.reduce(
+          (acc: number, item: { price: number }) => acc + item.price,
+          0
+        )
+      )
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    setPrice($cart.get())
+
+    $cart.subscribe((items: any) => {
+      setPrice(items)
+    })
+
+    const button = document.querySelector('.cart-summary .checkout-button')
+
+    button?.addEventListener('click', async () => {
+      const items = $cart.get()
+
+      const checkoutConfig = {
+        success_url: `${import.meta.env.PUBLIC_SITE_URL}/checkout`,
+        mode: 'payment',
+        customer_creation: 'always',
+        shipping_address_collection: {
+          allowed_countries: ['NL'],
+        },
+        phone_number_collection: {
+          enabled: true,
+        },
+      }
+
+      try {
+        const lineItems = items.map((item: any) => ({
+          price_data: {
+            currency: 'eur',
+            product: item.id,
+          },
+          quantity: 1,
+        }))
+
+        const checkoutSession = await stripe.checkout.sessions.create({
+          line_items: lineItems,
+          ...checkoutConfig,
+        })
+
+        window.location.replace(checkoutSession.url)
+      } catch (error) {
+        console.error(error)
+
+        const lineItems = items.map((item: any) => ({
+          quantity: 1,
+          price_data: {
+            currency: 'eur',
+            product_data: {
+              name: item.name,
+            },
+            unit_amount: Math.round(item.price * 100),
+          },
+        }))
+
+        const checkoutSession = await stripe.checkout.sessions.create({
+          line_items: lineItems,
+          ...checkoutConfig,
+        })
+
+        window.location.replace(checkoutSession.url)
+      }
+    })
+  })
+</script>

@@ -2,7 +2,6 @@ import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 // @ts-ignore
 import liveCode from 'astro-live-code'
-import pagefind from 'astro-pagefind'
 import { defineConfig } from 'astro/config'
 import integration from 'fulldev-ui/integration'
 
@@ -19,7 +18,6 @@ export default defineConfig({
   integrations: [
     sitemap(),
     mdx(),
-    pagefind(),
     liveCode({
       layout: '/src/components/experimental/Window.astro',
     }),

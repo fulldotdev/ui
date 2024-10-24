@@ -1,12 +1,10 @@
 ---
-import Button from 'fulldev-ui/components/Button.astro'
+import CartForm from 'fulldev-ui/components/CartForm.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Gallery from 'fulldev-ui/components/experimental/Gallery.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import Input from 'fulldev-ui/components/Input.astro'
 import List from 'fulldev-ui/components/List.astro'
-import Price from 'fulldev-ui/components/Price.astro'
 import Section from 'fulldev-ui/components/Section.astro'
 import Text from 'fulldev-ui/components/Text.astro'
 
@@ -21,12 +19,16 @@ const {
   buttons,
   text,
   subheading,
+  variants,
   button,
   description,
   form,
   gallery = 'horizontal',
   ...rest
 } = Astro.props
+
+const slug = Astro.url.pathname.replace(/^\/|\/$/g, '') || 'index'
+const src = `/src/images/${images?.[0].id}`
 ---
 
 <Section
@@ -53,28 +55,16 @@ const {
       style={{ maxWidth: '420px' }}
       text={text || description}
     />
-    <Price value={price} />
     <List
       items={list}
       style={{ marginTop: 'var(--space-5)' }}
     />
-    <Element class:list="row">
-      <Input
-        value={1}
-        name={'quantity'}
-        style={{ width: 'var(--space-7)' }}
-        type="number"
-        min={1}
-      />
-      <Button
-        color="brand"
-        text={form?.submit}
-      />
-    </Element>
-    <Button
-      style={{ marginTop: 'var(--space-3)', width: '100%', maxWidth: '400px' }}
-      variant="secondary"
-      {...button}
+    <CartForm
+      image={src}
+      {title}
+      {price}
+      {slug}
+      {variants}
     />
   </Element>
 </Section>

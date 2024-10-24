@@ -1,0 +1,49 @@
+---
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Button from 'fulldev-ui/components/Button.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Input from 'fulldev-ui/components/Input.astro'
+import Select from 'fulldev-ui/components/Select.astro'
+import Textarea from 'fulldev-ui/components/Textarea.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
+
+interface Props extends GlobalProps, HTMLAttributes<'form'> {
+  fields: (
+    | ComponentProps<typeof Input>
+    | ComponentProps<typeof Select>
+    | (ComponentProps<typeof Textarea> & { type?: 'textarea' | undefined })
+  )[]
+  submit?: ComponentProps<typeof Button>['text']
+}
+
+const { fields, submit, ...rest } = Astro.props
+---
+
+<Element
+  class:list="form"
+  as="form"
+  {...rest}
+>
+  {
+    fields.map((field) => {
+      if ('options' in field) return <Select {...field} />
+      if ('type' in field && field.type === 'textarea')
+        return <Textarea {...field} />
+      return <Input {...(field as any)} />
+    })
+  }
+  <Button
+    type="submit"
+    text={submit}
+  />
+</Element>
+
+<style is:global lang="scss">
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    width: 100%;
+    max-width: calc(var(--space-4) * 44);
+  }
+</style>

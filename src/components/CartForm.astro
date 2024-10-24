@@ -1,0 +1,121 @@
+---
+import type { ComponentProps } from 'astro/types'
+import Button from 'fulldev-ui/components/Button.astro'
+import Input from 'fulldev-ui/components/Input.astro'
+import Select from 'fulldev-ui/components/Select.astro'
+import { capitalize } from 'radash'
+import Form from './experimental/Form.astro'
+import Price from './Price.astro'
+
+interface Props extends Omit<ComponentProps<typeof Form>, 'fields' | 'submit'> {
+  title: string
+  slug: string
+  price: number
+  image?: string | undefined
+  variants?:
+    | {
+        [key: string]: string[]
+      }
+    | undefined
+}
+
+const { title, slug, image, price, variants, ...rest } = Astro.props
+---
+
+<Form
+  class:list="cart-form"
+  {...rest}
+>
+  <Input
+    type="hidden"
+    name="title"
+    value={title}
+  />
+  <Input
+    type="hidden"
+    name="slug"
+    value={slug}
+  />
+  <Input
+    type="hidden"
+    name="url"
+    value={Astro.site ? Astro.site.href + slug : undefined}
+  />
+  <Input
+    type="hidden"
+    name="image"
+    value={image}
+  />
+  {
+    Object.entries(variants ?? {}).map(([key, options]) => (
+      <Select
+        label={capitalize(key)}
+        name={`variant-${key}`}
+        options={options}
+      />
+    ))
+  }
+  <Price value={price} />
+  <Input
+    type="hidden"
+    name="price"
+    value={price}
+  />
+  <Button
+    variant="primary"
+    color="brand"
+    type="submit"
+    class="cart-add"
+    text="Toevoegen aan winkelwagen"
+  />
+</Form>
+
+<script>
+  import { $cart } from 'fulldev-ui/stores/cart.ts'
+  import { generateProductId, generateProductName } from 'fulldev-ui/utils/cart'
+
+  document.addEventListener('astro:page-load', () => {
+    const cartForm = document.querySelector('.cart-form')
+
+    cartForm?.addEventListener('submit', (e) => {
+      e.preventDefault()
+
+      if (e.target instanceof HTMLFormElement) {
+        const formData = new FormData(e.target)
+
+        const title = formData.get('title') as string
+        const slug = formData.get('slug') as string
+        const url = formData.get('url') as string
+        const image = formData.get('image') as string
+        const price = Number(formData.get('price')) as number
+        const variants = Array.from(formData.entries())
+          .filter(([key]) => key.startsWith('variant-'))
+          .map(([_, value]) => value) as string[]
+
+        const id = generateProductId(slug, variants)
+        const name = generateProductName(title, variants)
+
+        const currentCart = $cart.get()
+        const newCart = [...currentCart, { id, name, price, image, url }]
+        $cart.set(newCart)
+
+        const cartDialog = document?.querySelector('dialog#cart')
+        if (cartDialog instanceof HTMLDialogElement) cartDialog.showModal()
+      }
+    })
+  })
+</script>
+
+<style is:global lang="scss">
+  @layer fulldev {
+    .cart-form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+
+      .input {
+        display: none;
+      }
+    }
+  }
+</style>
