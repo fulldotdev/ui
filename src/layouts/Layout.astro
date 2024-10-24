@@ -10,7 +10,6 @@ import Header from 'fulldev-ui/components/Header.astro'
 import Section from 'fulldev-ui/components/Section.astro'
 import Sections from 'fulldev-ui/components/sections.astro'
 import Sidebar from 'fulldev-ui/components/Sidebar.astro'
-import Toc from 'fulldev-ui/components/Toc.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
 type Props = GlobalProps &
@@ -69,19 +68,20 @@ const {
     </slot>
     <slot name="header">
       <Header
-        class:list={{
-          'for-sidebar': sidebar,
-        }}
-        if={navigation || header}
-        {...navigation}
+        {...navigation?.header === true ? navigation : {}}
         {...header}
       />
     </slot>
     <div class="core">
       <slot name="sidebar">
         <Sidebar
-          if={sidebar}
-          {...navigation}
+          {...navigation?.sidebar === true ? navigation : {}}
+          logo={navigation?.sidebar?.header
+            ? undefined
+            : navigation?.sidebar?.logo}
+          company={navigation?.sidebar?.header
+            ? undefined
+            : navigation?.sidebar?.company}
           {...sidebar}
         />
       </slot>
@@ -92,12 +92,6 @@ const {
           <Sections {sections} />
         </slot>
       </main>
-      <slot name="toc">
-        <Toc
-          heading={toc}
-          {render}
-        />
-      </slot>
     </div>
     <slot name="footer">
       <Footer {...footer} />
@@ -116,7 +110,6 @@ const {
         }
 
         body {
-          --screen: 100vw;
           display: flex;
           flex-direction: column;
           background-color: var(--base-background);
@@ -148,7 +141,6 @@ const {
               background-color: var(--color-background);
               width: 100%;
               max-width: 100vw;
-              overflow-x: hidden;
             }
           }
         }

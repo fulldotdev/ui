@@ -1,21 +1,40 @@
 ---
-import { getEntry } from 'astro:content'
 import Prose from 'fulldev-ui/components/experimental/Prose.astro'
 import Section from 'fulldev-ui/components/Section.astro'
+import Toc from 'fulldev-ui/components/Toc.astro'
 
-const { ...rest } = Astro.props
-
-const slug = Astro.url.pathname.replace(/^\/|\/$/g, '') || 'index'
-const currentEntry = await getEntry('pages', slug)
-const render = currentEntry && (await currentEntry.render())
-const { Content } = render || {}
+const { toc = 'Op deze pagina', render } = Astro.props
+const { Content } = (render && (await render())) || {}
 ---
 
-<Section
-  style={{ '--screen': '768px' }}
-  {...rest}
->
-  <Prose id="prose">
+<Section class:list="article">
+  <Prose>
     {Content && <Content />}
+    <slot />
   </Prose>
+  <Toc
+    {render}
+    heading={toc}
+  />
 </Section>
+
+<style is:global lang="scss">
+  .article {
+    display: flex;
+    position: relative;
+    flex-grow: 1;
+    flex-direction: row;
+    align-items: start;
+    height: 100%;
+
+    &:first-child {
+      padding-top: var(--space-6);
+    }
+
+    .prose {
+      margin-right: auto;
+      margin-left: auto;
+      max-width: 768px;
+    }
+  }
+</style>

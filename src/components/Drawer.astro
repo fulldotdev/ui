@@ -5,6 +5,7 @@ import Element from 'fulldev-ui/components/Element.astro'
 import Logo from 'fulldev-ui/components/experimental/Logo.astro'
 import Menu from 'fulldev-ui/components/Menu.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import Buttons from './Buttons.astro'
 import Heading from './Heading.astro'
 
 interface Props extends GlobalProps, HTMLAttributes<'aside'> {
@@ -15,6 +16,7 @@ interface Props extends GlobalProps, HTMLAttributes<'aside'> {
   logo?: ComponentProps<typeof Logo> | undefined
   company?: ComponentProps<typeof Logo>['company']
   menu?: ComponentProps<typeof Menu>['groups']
+  buttons?: ComponentProps<typeof Buttons>['buttons']
 }
 
 const {
@@ -24,15 +26,21 @@ const {
   color,
   variant,
   text,
+  buttons,
   heading,
   logo,
   company,
   menu,
+  if: ifProp,
   ...rest
 } = Astro.props
+
+const buttonsGroup = { heading: '', buttons: buttons }
+const mergedMenu = [buttonsGroup, ...(menu || [])] as typeof menu
 ---
 
 <Button
+  if={ifProp}
   variant="secondary"
   class:list={['drawer-button', `${id}-button`]}
   onclick={`document.getElementById('${id}').showModal()`}
@@ -43,6 +51,7 @@ const {
 />
 
 <Element
+  if={ifProp}
   onclick={`event.target === this && this.close()`}
   class:list="drawer"
   as="dialog"
@@ -72,7 +81,7 @@ const {
       <slot name="header" />
     </Element>
     <Element class:list="drawer-content">
-      <Menu groups={menu} />
+      <Menu groups={mergedMenu} />
       <slot />
     </Element>
     <Element

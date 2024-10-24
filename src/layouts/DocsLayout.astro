@@ -2,14 +2,13 @@
 import type { ComponentProps } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
 import Element from 'fulldev-ui/components/Element.astro'
-import Prose from 'fulldev-ui/components/experimental/Prose.astro'
 import Layout from 'fulldev-ui/layouts/Layout.astro'
 import { crush } from 'radash'
+import PostLayout from './PostLayout.astro'
 
 type Props = ComponentProps<typeof Layout>
 
-const { render, slug, navigation, ...rest } = Astro.props
-const { Content } = await render()
+const { slug, navigation } = Astro.props
 
 const flatButtons = crush((navigation as any)?.buttons ?? {})
 const slugs = Object.entries(flatButtons)
@@ -21,45 +20,34 @@ const prevSlug = slugs[slugIndex - 1]
 const nextSlug = slugs[slugIndex + 1]
 ---
 
-<Layout
+<PostLayout
   class:list="docs-layout"
-  {render}
-  {slug}
-  {navigation}
-  {...rest}
+  {...Astro.props}
 >
-  <Prose>
-    {Content && <Content />}
-    <Element class:list={['prev-next', { 'next-only': !prevSlug }]}>
-      <Button
-        if={prevSlug}
-        slug={prevSlug}
-        icon="arrow-left"
-        variant="secondary"
-      />
-      <Button
-        if={nextSlug}
-        slug={nextSlug}
-        icon="arrow-right"
-        variant="secondary"
-        reverse={true}
-      />
-    </Element>
-  </Prose>
-</Layout>
+  <Element
+    class:list={['prev-next', { 'next-only': !prevSlug }]}
+    slot="prose"
+  >
+    <Button
+      if={prevSlug}
+      slug={prevSlug}
+      icon="arrow-left"
+      variant="secondary"
+    />
+    <Button
+      if={nextSlug}
+      slug={nextSlug}
+      icon="arrow-right"
+      variant="secondary"
+      reverse={true}
+    />
+  </Element>
+</PostLayout>
 
 <style lang="scss" is:global>
   @layer fulldev {
     .docs-layout {
       .prose {
-        --screen: 768px;
-        padding: var(--space-6) var(--gutter);
-        color: var(--color-12);
-
-        > h1 + p {
-          color: var(--color-11);
-        }
-
         > a,
         > p > a {
           color: var(--brand-11);

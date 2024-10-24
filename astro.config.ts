@@ -25,6 +25,8 @@ export default defineConfig({
       company: 'Fulldev UI',
       favicon: 'src/images/favicon.svg',
       css: '/src/css/custom.css',
+      basePreset: 'base',
+      injectRoutes: true,
       colors: {
         theme: 'dark',
         light: {
@@ -38,7 +40,6 @@ export default defineConfig({
           brand: '#F50',
         },
       },
-      injectRoutes: true,
     }),
   ],
   redirects: {
