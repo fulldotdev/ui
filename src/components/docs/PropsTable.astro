@@ -1,21 +1,24 @@
 ---
+const { schema } = Astro.props
+
 import Table from 'fulldev-ui/components/Table.astro'
 import { zodToJsonSchema } from 'zod-to-json-schema'
 
 const slug = Astro.params.page?.split('/').pop() || ''
 
-const allSchemas = import.meta.glob('/src/schemas/components/*.ts', {
+const allSchemas = import.meta.glob('/src/schemas/**/*.ts', {
   eager: true,
 })
 
+const schemaName = schema ?? slug
 const foundSchema = Object.entries(allSchemas).find(([key]) =>
-  key.toLowerCase().includes(`/${slug.toLowerCase()}.ts`)
+  key.toLowerCase().includes(`/${schemaName.toLowerCase()}.ts`)
 )?.[1] as any
 
 const jsonSchema = zodToJsonSchema(foundSchema?.default, {
   pipeStrategy: 'output',
   $refStrategy: 'none',
-})
+}) as { properties?: Record<string, any> }
 
 const properties = jsonSchema.properties || {}
 
