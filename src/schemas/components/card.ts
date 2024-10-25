@@ -2,6 +2,7 @@ import { z } from 'astro:content'
 import pathSchema from '../utils/pathSchema'
 import button from './button'
 import buttons from './buttons'
+import globalSchema from './global'
 import icon from './icon'
 import image from './image'
 import images from './images'
@@ -9,8 +10,8 @@ import images from './images'
 export const cardSchema = z
   .union([pathSchema('pages'), z.object({}).passthrough()])
   .pipe(
-    z
-      .object({
+    globalSchema
+      .extend({
         slug: z
           .string()
           .refine(async (data) => await pathSchema('pages').parseAsync(data)),
@@ -20,13 +21,13 @@ export const cardSchema = z
         buttons: buttons,
         button: button,
         variant: z.string(),
-        align: z.string(),
+        align: z.string().default('start'),
         icon: icon,
         price: z.number(),
-        panel: z.boolean(),
+        panel: z.boolean().default(true),
         title: z.string(),
         heading: z.string(),
-        level: z.enum(['1', '2', '3', '4', '5', '6']),
+        level: z.enum(['1', '2', '3', '4', '5', '6']).default('4'),
         badge: z.any(),
         tagline: z.string(),
         rating: z.number(),
