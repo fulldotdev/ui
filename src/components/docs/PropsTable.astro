@@ -1,271 +1,36 @@
 ---
 import Table from 'fulldev-ui/components/Table.astro'
-import { readFileSync } from 'node:fs'
-import { pascal } from 'radash'
+import { zodToJsonSchema } from 'zod-to-json-schema'
 
-const slug = Astro.params.page || 'index'
-const componentName = pascal(slug)
+const slug = Astro.params.page?.split('/').pop() || ''
 
-const allComponents = import.meta.glob('/src/**/*.astro', { eager: true })
-const foundComponent = Object.entries(allComponents).find(
-  ([key]) => key.split('/').pop() === `${componentName}.astro`
-)?.[1] as any
-const componentFileContent =
-  (foundComponent && readFileSync(foundComponent.file, 'utf-8')) || ''
-
-interface Prop {
-  name: string
-  type: string
-}
-
-// Regular expression to match the Props interface or type
-const staticProps = /(?:interface|type)\s+Props[\s\S]*?{([\s\S]*?)}/
-
-// Function to extract props from the component file
-const extractProps = (content: string): Prop[] => {
-  const props: Prop[] = []
-
-  // Extract static props from Props interface or type
-  const staticPropsMatch = content.match(staticProps)
-  if (staticPropsMatch && staticPropsMatch[1]) {
-    const propsContent = staticPropsMatch[1]
-    const propLines = propsContent.split('\n')
-
-    let currentProp: Prop | null = null
-
-    propLines.forEach((line) => {
-      const trimmedLine = line.trim()
-      if (trimmedLine === '') return
-
-      // Match prop name and type
-      const match = trimmedLine.match(/^(\w+)(\??):(.*)/)
-      if (match && match[1] && match[3]) {
-        if (currentProp) props.push(currentProp)
-        currentProp = {
-          name: match[1],
-          type: match[3].trim(),
-        }
-      } else if (currentProp) {
-        // Continue adding to type if it spans multiple lines
-        currentProp.type += ' ' + trimmedLine
-      }
-    })
-
-    if (currentProp) props.push(currentProp)
-  }
-
-  // Extract props from type intersections
-  const intersectionProps = content.match(
-    /Props(?:<[^>]+>)?\s*=\s*([\s\S]*?)(?:$|\n\n)/
-  )
-  if (intersectionProps && intersectionProps[1]) {
-    const intersectionContent = intersectionProps[1]
-    let currentProp: Prop | null = null
-    const lines = intersectionContent.split('\n')
-
-    lines.forEach((line) => {
-      const trimmedLine = line.trim()
-      if (trimmedLine === '') return
-
-      // Match prop name and type
-      const match = trimmedLine.match(/(\w+)(\??):(.*)/)
-      if (match && match[1] && match[3]) {
-        if (currentProp) props.push(currentProp)
-        currentProp = {
-          name: match[1],
-          type: match[3].trim(),
-        }
-      } else if (currentProp) {
-        // Continue adding to type if it spans multiple lines
-        currentProp.type += ' ' + trimmedLine
-      }
-    })
-
-    if (currentProp) props.push(currentProp)
-  }
-
-  // Clean up the type of the last prop
-  if (props.length > 0) {
-    const lastProp = props[props.length - 1]
-    if (lastProp) {
-      lastProp.type = lastProp.type.replace(/\s*}\s*$/, '')
-    }
-  }
-
-  // Filter out 'as' prop and props starting with underscore
-  return props.filter(
-    (prop) => prop.name !== 'as' && !prop.name.startsWith('_')
-  )
-}
-
-// Function to extract default prop values from Astro.props
-const extractDefaultProps = (content: string): Record<string, string> => {
-  const defaultPropsMatch = content.match(
-    /const\s*{[\s\S]*?}\s*=\s*Astro\.props/
-  )
-  return defaultPropsMatch
-    ? [
-        ...defaultPropsMatch[0].matchAll(
-          /(\w+)\s*=\s*('[^']*'|"[^"]*"|[^,\n]+)/g
-        ),
-      ].reduce(
-        (acc, match) => {
-          const [, name, value] = match
-          if (name && name !== 'as' && value !== undefined) {
-            acc[name] =
-              value.startsWith("'") || value.startsWith('"')
-                ? value.slice(1, -1)
-                : value
-          }
-          return acc
-        },
-        {} as Record<string, string>
-      )
-    : {}
-}
-
-// Function to extract the default 'As' prop value from the interface or type
-const extractAsDefault = (content: string): string => {
-  const asTypeMatch = content.match(/type Props<As extends ([^>]+)>/)
-  if (asTypeMatch && asTypeMatch[1]) {
-    return asTypeMatch[1].trim().replace(/['"]/g, '')
-  }
-
-  const asInterfaceMatch = content.match(/interface Props<As extends ([^>]+)>/)
-  if (asInterfaceMatch && asInterfaceMatch[1]) {
-    return asInterfaceMatch[1].trim().replace(/['"]/g, '')
-  }
-
-  return ''
-}
-
-const parsedProps = extractProps(componentFileContent)
-const parsedAstroProps = extractDefaultProps(componentFileContent)
-const asDefault = extractAsDefault(componentFileContent)
-
-// Function to get the default value for a prop
-const getDefaultValue = (name: string): string => {
-  if (name in parsedAstroProps) {
-    return parsedAstroProps[name] || '-'
-  }
-
-  return '-'
-}
-
-// Check if the component extends Element.astro
-const extendsElement = componentFileContent.includes('GlobalProps')
-
-// Check if the component extends Writeup.astro
-const extendsWriteup = componentFileContent.includes(
-  'ComponentProps<typeof Writeup>'
-)
-
-// Prepare the table body data
-const tableBody = new Map()
-
-// Add component-specific props
-parsedProps.forEach((item) => {
-  tableBody.set(item.name, [
-    item.name,
-    item.type.replace(/\s*\|?\s*(undefined|null)/, '').trim(),
-    getDefaultValue(item.name),
-  ])
+const allSchemas = import.meta.glob('/src/schemas/components/*.ts', {
+  eager: true,
 })
 
-// Add Element props if the component extends Element.astro
-if (extendsElement) {
-  const elementProps = extractProps(
-    readFileSync('src/components/Element.astro', 'utf-8')
-  )
-  elementProps
-    .filter((item) => item.name !== '[key: string | number | symbol]')
-    .forEach((item) => {
-      if (!tableBody.has(item.name)) {
-        let type = item.type
-          .replace(/\s*\|?\s*(undefined|null)/, '')
-          .trim()
-          .replace(/\s*\|\s*any/, '')
-          .replace(/\s*\[key: string \| number \| symbol\]: any/, '')
+const foundSchema = Object.entries(allSchemas).find(([key]) =>
+  key.toLowerCase().includes(`/${slug.toLowerCase()}.ts`)
+)?.[1] as any
 
-        // Remove [key: string | number | symbol]: any from the last prop
-        if (item === elementProps[elementProps.length - 1]) {
-          type = type.replace(/\s*\[key: string \| number \| symbol\]: any/, '')
-        }
+const jsonSchema = zodToJsonSchema(foundSchema?.default, {
+  pipeStrategy: 'output',
+  $refStrategy: 'none',
+})
 
-        if (item.name === 'size') {
-          type = "'sm' | 'md' | 'lg'"
-        } else if (item.name === 'color') {
-          type = "'base' | 'brand'"
-        }
+const properties = jsonSchema.properties || {}
 
-        tableBody.set(item.name, [item.name, type, getDefaultValue(item.name)])
-      }
-    })
-}
-
-// Add Writeup props if the component extends Writeup.astro
-if (extendsWriteup) {
-  const writeupProps = extractProps(
-    readFileSync('src/components/Writeup.astro', 'utf-8')
-  )
-  writeupProps
-    .filter((item) => item.name !== '[key: string | number | symbol]')
-    .forEach((item) => {
-      if (!tableBody.has(item.name)) {
-        let type = item.type
-          .replace(/\s*\|?\s*(undefined|null)/, '')
-          .trim()
-          .replace(/\s*\|\s*any/, '')
-          .replace(/\s*\[key: string \| number \| symbol\]: any/, '')
-
-        // Remove [key: string | number | symbol]: any from the last prop
-        if (item === writeupProps[writeupProps.length - 1]) {
-          type = type.replace(/\s*\[key: string \| number \| symbol\]: any/, '')
-        }
-
-        tableBody.set(item.name, [item.name, type, getDefaultValue(item.name)])
-      }
-    })
-}
-
-// Add 'as' prop only if asDefault is not empty
-if (asDefault) {
-  tableBody.set('as', ['as', 'HTMLTag', asDefault])
-}
-
-// Check if the component is polymorphic
-const isPolymorphic = componentFileContent.includes('Polymorphic<')
-
-// Extract HTMLAttributes from the component
-const htmlAttributesMatch = componentFileContent.match(
-  /HTMLAttributes<'(\w+)'>/
-)
-let htmlElement = htmlAttributesMatch ? htmlAttributesMatch[1] : ''
-
-// Special handling for List and Button components
-if (componentName === 'List') {
-  htmlElement = "'ul' | 'ol'"
-} else if (componentName === 'Button') {
-  htmlElement = "'button' | 'a' | 'label'"
-}
-
-// Add HTML Attributes row
-if (isPolymorphic && asDefault) {
-  tableBody.set('HTML Attributes', [
-    'HTML Attributes',
-    `Polymorphic<${asDefault}>`,
-    '-',
-  ])
-} else if (htmlElement) {
-  tableBody.set('HTML Attributes', ['HTML Attributes', `${htmlElement}`, '-'])
-}
+const tableBody = Object.entries(properties).map(([key, value]: any) => {
+  const type = value.enum?.join(' | ') || value.type || 'any'
+  const defaultValue = value.default?.toString() ?? '-'
+  return [key, type, defaultValue]
+})
 ---
 
 <Table
   size="md"
   class:list={['props-table']}
   header={['Prop', 'Type', 'Default']}
-  body={Array.from(tableBody.values())}
+  body={tableBody}
 />
 
 <style is:global lang="scss">
