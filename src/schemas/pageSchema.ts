@@ -51,16 +51,6 @@ export const presets = z
     return mergedData as typeof rest
   })
 
-export const basePreset = z
-  .object({})
-  .passthrough()
-  .transform(async (data) => {
-    if (!fulldevConfig.basePreset) return data
-    const baseEntry = await getEntry('presets', fulldevConfig.basePreset)
-    const mergedData = assign(baseEntry?.data ?? {}, data)
-    return mergedData as typeof data
-  })
-
 export const page = z
   .object({
     component,
@@ -98,4 +88,4 @@ export const page = z
   .partial()
   .strict()
 
-export default i18n.pipe(basePreset).pipe(presets).pipe(page)
+export default i18n.pipe(presets).pipe(page)
