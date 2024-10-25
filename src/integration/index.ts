@@ -66,7 +66,7 @@ export default function fulldevIntegration(
               contentLayer: true,
               env: {
                 schema: {
-                  SITE_URL: envField.string({
+                  URL: envField.string({
                     context: 'client',
                     access: 'public',
                   }),
@@ -84,8 +84,7 @@ export default function fulldevIntegration(
                 validateSecrets: true,
               },
             },
-            site: loadEnv(process.env.NODE_ENV as any, process.cwd(), '')
-              .SITE_URL,
+            site: loadEnv(process.env.NODE_ENV as any, process.cwd(), '').URL,
             build: {
               format: 'file',
             },
