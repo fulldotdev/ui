@@ -27,7 +27,7 @@ export const cardSchema = z
         panel: z.boolean().default(true),
         title: z.string(),
         heading: z.string(),
-        level: z.enum(['1', '2', '3', '4', '5', '6']).default('4'),
+        level: z.number().min(1).max(6).default(4),
         badge: z.any(),
         tagline: z.string(),
         rating: z.number(),
