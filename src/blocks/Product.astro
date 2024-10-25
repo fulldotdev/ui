@@ -30,7 +30,9 @@ const {
 
 const slug = Astro.url.pathname.replace(/^\/|\/$/g, '') || 'index'
 const src = `/src/images/${images?.[0].id}`
-const gotImage = await getImage({ src, width: 200, height: 200 })
+const allImages = import.meta.glob<{ default: ImageMetadata }>('/src/images/*')
+const foundImage = allImages[src]
+const gotImage = await getImage({ src: foundImage ? foundImage() : src })
 ---
 
 <Section
