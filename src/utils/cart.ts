@@ -1,7 +1,3 @@
-// import Stripe from 'stripe'
-
-// const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY)
-
 const slugify = (input: string): string => {
   return input
     .toLowerCase()
