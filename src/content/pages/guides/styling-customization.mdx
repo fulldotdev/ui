@@ -1,13 +1,78 @@
 ---
 presets: [docs]
-title: Frameworks
+title: Styling & Customization
 ---
 
-# Frameworks
+import Link from 'fulldev-ui/components/Link.astro'
 
-Fulldev UI is written in vanilla CSS and .astro files. It is framework agnostic.
+# Styling & Customization
 
-## JS frameworks
+With the fulldev-ui integration you can easily set a theme and generate a palette based on <Link href="https://www.radix-ui.com/colors">Radix Colors.</Link>
+
+## Configuration
+
+### Generating a color palette
+
+- **css** is the path to your custom css file that applies to all pages on your site.
+- **colors** is an object that defines the colors for your site.
+  - **theme** is the default theme for your site.
+  - **dark** and **light** are objects that define the colors for the dark and light themes, these three properties are used to generate a color pallete using radix colors.
+
+```ts
+import { defineConfig } from 'astro/config'
+import fulldev from 'fulldev-ui/integration'
+
+// https://astro.build/config
+export default defineConfig({
+  integrations: [
+    fulldev({
+      css: '/src/css/custom.css',
+      colors: {
+        theme: 'dark',
+        dark: {
+          background: '#111110',
+          base: '#6F6D66',
+          brand: '#F50',
+        },
+        light: {
+          background: '#EEEEEC',
+          base: '#6F6D66',
+          brand: '#F50',
+        },
+      },
+    }),
+  ],
+})
+```
+
+### Generating favicons
+
+We've integrated <Link href="https://github.com/ACP-CODE/astro-favicons">astro-favicons</Link> into fulldev-ui to generate favicons from a svg file.
+
+```ts
+import { defineConfig } from 'astro/config'
+import fulldev from 'fulldev-ui/integration'
+
+// https://astro.build/config
+export default defineConfig({
+  integrations: [
+    fulldev({
+      favicon: 'src/images/favicon.svg', // can also be png, webp, jpg, etc.
+      // other options here
+    }),
+  ],
+})
+```
+
+## Overwriting styles
+
+Since Fulldev UI uses just regular CSS with low specificity, you can customize anything else using custom CSS.
+
+## Frameworks
+
+Since Fulldev UI is written in vanilla CSS and .astro files, it is framework agnostic.
+
+### JS frameworks
 
 All styles in Fulldev UI use regular CSS and classes. Classes use the following naming convention:
 
@@ -26,11 +91,11 @@ import Button from 'fulldev-ui/components/Button.astro'
 <Button contrast>Button</Button>
 ```
 
-## CSS frameworks
+### CSS frameworks
 
 A TailwindCSS plugin and UnoCSS preset is available.
 
-### TailwindCSS
+#### TailwindCSS
 
 In your `tailwind.config.ts` add the following:
 
@@ -67,7 +132,7 @@ Import the css file file below anywhere in your project.
 @tailwind utilities;
 ```
 
-### UnoCSS
+#### UnoCSS
 
 In your `uno.config.ts` add the following:
 
@@ -83,11 +148,11 @@ export default defineConfig({
 
 Do not use `injectReset` when using the UnoCSS preset, as it will conflict with the reset provided by Fulldev UI. If you do want a style reset, be sure to import it in the `base` layer, similar to the TailwindCSS example above.
 
-## Utility classes
+### Utility classes
 
 The following classes are available when using the Tailwind plugin or UnoCSS preset.
 
-### Spacing
+#### Spacing
 
 The following spacing classes are added to your tailwind/uno config.
 
@@ -105,7 +170,7 @@ spacing: {
 },
 ```
 
-### Font size
+#### Font size
 
 The following spacing classes are added to your tailwind/uno config.
 
@@ -124,7 +189,7 @@ fontSize: {
 }
 ```
 
-### Border radius
+#### Border radius
 
 The following border radius classes are added to your tailwind/uno config.
 
@@ -138,7 +203,7 @@ borderRadius: {
 }
 ```
 
-### Color classes
+#### Color classes
 
 The following color classes are added to your tailwind/uno config.
 
