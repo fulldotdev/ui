@@ -8,60 +8,29 @@ const allSchemas = import.meta.glob('/src/schemas/components/*.ts', {
   eager: true,
 })
 
-const schemaFile = Object.entries(allSchemas).find(([key]) =>
+const foundSchema = Object.entries(allSchemas).find(([key]) =>
   key.toLowerCase().includes(`/${slug.toLowerCase()}.ts`)
 )?.[1] as any
 
-const schema = schemaFile?.default
+const jsonSchema = zodToJsonSchema(foundSchema?.default, {
+  pipeStrategy: 'output',
+  $refStrategy: 'none',
+})
 
-const extractSchemaProps = (schema: any) => {
-  if (!schema) return []
+const properties = jsonSchema.properties || {}
 
-  try {
-    const jsonSchema = zodToJsonSchema(schema, {
-      pipeStrategy: 'output',
-      $refStrategy: 'none',
-    })
-    const properties = (jsonSchema as any).properties || {}
-    console.log({ properties })
-
-    return new Map(
-      Object.entries(properties).map(([key, value]: [string, any]) => {
-        // Determine the type string by:
-        // 1. Using enum values joined with | if present
-        // 2. For arrays, use item type + [] (defaulting to key[])
-        // 3. For union types (anyOf), join the types with |
-        // 4. Fallback to the direct type or key
-        const type =
-          value.enum?.join(' | ') ||
-          (value.type === 'array'
-            ? `${value.items?.type || key}[]`
-            : value.anyOf
-                ?.map((t: any) => {
-                  if (t.enum) return t.enum.join(' | ')
-                  return t.type || key
-                })
-                .join(' | ') ||
-              value.type ||
-              key)
-
-        return [key, [key, type, value.default?.toString() ?? '-']]
-      })
-    )
-  } catch (error) {
-    console.error('Error extracting props:', error)
-    return new Map()
-  }
-}
-
-const tableBody = extractSchemaProps(schema)
+const tableBody = Object.entries(properties).map(([key, value]: any) => [
+  key,
+  value.type,
+  value.default?.toString() ?? '-',
+])
 ---
 
 <Table
   size="md"
   class:list={['props-table']}
   header={['Prop', 'Type', 'Default']}
-  body={tableBody ? Array.from(tableBody.values()) : []}
+  body={tableBody}
 />
 
 <style is:global lang="scss">
