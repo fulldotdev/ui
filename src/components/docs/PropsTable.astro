@@ -15,7 +15,7 @@ const schemaFile = Object.entries(allSchemas).find(([key]) =>
 const schema = schemaFile?.default || schemaFile?.cardSchema
 
 const extractSchemaProps = (schema: any) => {
-  if (!schema) return
+  if (!schema) return []
 
   try {
     const jsonSchema = zodToJsonSchema(schema, {
@@ -50,7 +50,7 @@ const extractSchemaProps = (schema: any) => {
     )
   } catch (error) {
     console.error('Error extracting props:', error)
-    return ['']
+    return new Map()
   }
 }
 
@@ -61,7 +61,7 @@ const tableBody = extractSchemaProps(schema)
   size="md"
   class:list={['props-table']}
   header={['Prop', 'Type', 'Default']}
-  body={Array.from(tableBody?.values() as any)}
+  body={tableBody ? Array.from(tableBody.values()) : []}
 />
 
 <style is:global lang="scss">
