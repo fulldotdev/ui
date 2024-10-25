@@ -85,9 +85,6 @@ export default function fulldevIntegration(
               },
             },
             site: loadEnv(process.env.NODE_ENV as any, process.cwd(), '').URL,
-            build: {
-              format: 'file',
-            },
             integrations: [
               sitemap(),
               mdx(),
