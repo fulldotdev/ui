@@ -62,6 +62,7 @@ const { ...rest } = Astro.props
 </style>
 
 <script>
+  import { SITE_URL, STRIPE_RESTRICTED_KEY } from 'astro:env/client'
   import { $cart } from 'fulldev-ui/stores/cart.ts'
   import { formatPrice } from 'fulldev-ui/utils/cart'
   import Stripe from 'stripe'
@@ -78,8 +79,9 @@ const { ...rest } = Astro.props
   }
 
   document.addEventListener('astro:page-load', () => {
-    const stripe = new Stripe(import.meta.env.STRIPE_RESTRICTED_KEY)
-    if (stripe) return
+    console.log({ STRIPE_RESTRICTED_KEY })
+    const stripe = new Stripe(STRIPE_RESTRICTED_KEY)
+    if (!stripe) return
     setPrice($cart.get())
 
     $cart.subscribe((items: any) => {
@@ -92,7 +94,7 @@ const { ...rest } = Astro.props
       const items = $cart.get()
 
       const checkoutConfig = {
-        success_url: `${import.meta.env.PUBLIC_SITE_URL}/checkout`,
+        success_url: `${SITE_URL}/checkout`,
         mode: 'payment',
         customer_creation: 'always',
         shipping_address_collection: {
@@ -128,7 +130,7 @@ const { ...rest } = Astro.props
             currency: 'eur',
             product_data: {
               name: item.name,
-              images: [Astro.site ? Astro.site.href + item.image : undefined],
+              images: [SITE_URL + item.image],
             },
             unit_amount: Math.round(item.price * 100),
           },
