@@ -19,11 +19,11 @@ const jsonSchema = zodToJsonSchema(foundSchema?.default, {
 
 const properties = jsonSchema.properties || {}
 
-const tableBody = Object.entries(properties).map(([key, value]: any) => [
-  key,
-  value.type ?? 'any',
-  value.default?.toString() ?? '-',
-])
+const tableBody = Object.entries(properties).map(([key, value]: any) => {
+  const type = value.enum?.join(' | ') || value.type || 'any'
+  const defaultValue = value.default?.toString() ?? '-'
+  return [key, type, defaultValue]
+})
 ---
 
 <Table
