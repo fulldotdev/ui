@@ -29,10 +29,12 @@ const {
 } = Astro.props
 
 const slug = Astro.url.pathname.replace(/^\/|\/$/g, '') || 'index'
-const src = `/src/images/${images?.[0].id}`
+const imageId = images?.[0]?.id
+const src = `/src/images/${imageId}`
 const allImages = import.meta.glob<{ default: ImageMetadata }>('/src/images/*')
 const foundImage = allImages[src]
-const gotImage = await getImage({ src: foundImage ? foundImage() : src })
+const gotImage =
+  imageId && (await getImage({ src: foundImage ? foundImage() : src }))
 ---
 
 <Section
@@ -64,7 +66,7 @@ const gotImage = await getImage({ src: foundImage ? foundImage() : src })
       style={{ marginTop: 'var(--space-5)' }}
     />
     <CartForm
-      image={gotImage.src}
+      image={gotImage?.src}
       {title}
       {price}
       {slug}
