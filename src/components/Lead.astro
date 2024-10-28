@@ -1,0 +1,42 @@
+---
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
+
+interface Props extends GlobalProps, HTMLAttributes<'p'> {
+  as?: HTMLTag
+  text?: string | undefined
+}
+
+const { as = 'p', text, ...rest } = Astro.props
+---
+
+<Element
+  class:list="lead"
+  {as}
+  {...rest}
+>
+  <slot />
+  <Fragment set:html={text} />
+</Element>
+
+<style is:global lang="scss">
+  @layer fulldev {
+    .lead,
+    h1 + p {
+      color: var(--muted-foreground);
+      font-size: var(--font-size-lg);
+      line-height: var(--font-size-lg--line-height);
+
+      &:is(&.size-sm, .size-sm &) {
+        font-size: var(--font-size-base);
+        line-height: var(--font-size-base--line-height);
+      }
+
+      &:is(&.size-lg, .size-lg &) {
+        font-size: var(--font-size-xl);
+        line-height: var(--font-size-xl--line-height);
+      }
+    }
+  }
+</style>
