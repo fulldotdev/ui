@@ -1,29 +1,20 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-interface Props
-  extends GlobalProps,
-    HTMLAttributes<'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'> {
+interface Props extends GlobalProps, HTMLAttributes<'h2'> {
+  as?: HTMLTag
   level?: 1 | 2 | 3 | 4 | 5 | 6 | undefined
   text?: string | undefined
 }
 
-const {
-  contrast = true,
-  color = 'base',
-  level = 2,
-  text,
-  ...rest
-} = Astro.props
+const { level = 2, as = `h${level}`, text, ...rest } = Astro.props
 ---
 
 <Element
   class:list="heading"
-  as=`h${level}`
-  {contrast}
-  {color}
+  {as}
   {level}
   {...rest}
 >
@@ -32,42 +23,71 @@ const {
 </Element>
 
 <style is:global lang="scss">
-  @layer fulldev {
-    .heading {
-      margin: 0;
-      max-width: calc(var(--space-4) * 44);
-      scroll-margin: var(--space-5);
-      color: var(--color-11);
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -0.025em;
-      text-align: inherit;
-      text-decoration: none;
+  .heading,
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    margin: 0;
+    max-width: calc(var(--space-4) * 44);
+    scroll-margin: var(--spacing-20);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--letter-spacing-tight);
 
-      &.level-1 {
-        font-size: var(--text-8);
-        text-wrap: balance;
-      }
+    &:is(h1) {
+      font-weight: var(--font-weight-extrabold);
+      font-size: var(--font-size-4xl);
+      line-height: var(--font-size-4xl--line-height);
 
-      &.level-2 {
-        font-size: var(--text-7);
+      @media (min-width: 1024px) {
+        font-size: var(--font-size-5xl);
+        line-height: var(--font-size-5xl--line-height);
       }
+    }
 
-      &.level-3 {
-        font-size: var(--text-6);
-      }
+    &:is(h2) {
+      font-size: var(--font-size-3xl);
+      line-height: var(--font-size-3xl--line-height);
+    }
 
-      &.level-4 {
-        font-size: var(--text-5);
-      }
+    &:is(h3) {
+      font-size: var(--font-size-2xl);
+      line-height: var(--font-size-2xl--line-height);
+    }
 
-      &.level-5 {
-        font-size: var(--text-4);
-      }
+    &:is(h4) {
+      font-size: var(--font-size-xl);
+      line-height: var(--font-size-xl--line-height);
+    }
 
-      &.level-6 {
-        font-size: var(--text-3);
+    &:is(h5) {
+      font-size: var(--font-size-lg);
+      line-height: var(--font-size-lg--line-height);
+    }
+
+    &:is(h6) {
+      font-size: var(--font-size-base);
+      line-height: var(--font-size-base--line-height);
+    }
+  }
+
+  .prose {
+    h2 {
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: var(--spacing-2);
+
+      &:not(:first-child) {
+        margin-top: var(--spacing-10);
       }
+    }
+
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin-top: var(--spacing-8);
     }
   }
 </style>
