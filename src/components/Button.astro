@@ -1,5 +1,5 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import type { ComponentProps, HTMLAttributes, HTMLTag } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
 import { getEntry } from 'astro:content'
 import Avatar from 'fulldev-ui/components/Avatar.astro'
@@ -10,13 +10,13 @@ import type { GlobalProps } from 'fulldev-ui/types/global-props'
 interface Props
   extends GlobalProps,
     HTMLAttributes<'button'>,
-    HTMLAttributes<'a'>,
-    HTMLAttributes<'label'> {
+    HTMLAttributes<'a'> {
+  as?: HTMLTag
   type?: HTMLAttributes<'button'>['type'] & HTMLAttributes<'a'>['type']
   icon?: ComponentProps<typeof Icon>['name']
   avatar?: ComponentProps<typeof Avatar>['src']
   slug?: CollectionEntry<'pages'>['slug'] | undefined
-  reverse?: boolean | undefined
+  size?: 'sm' | 'md' | 'lg' | 'icon' | undefined
   text?: string | undefined
   variant?:
     | 'primary'
@@ -28,33 +28,34 @@ interface Props
     | undefined
 }
 
-const { variant = 'secondary', slug, text, avatar, icon, ...rest } = Astro.props
-
-const entry = slug && !text ? await getEntry('pages', slug) : undefined
-const hrefString =
-  rest.href && typeof rest.href !== 'string' ? rest.href.href : rest.href
-const href =
-  hrefString ?? (slug ? (slug === 'index' ? '/' : `/${slug}/`) : undefined)
-const as = href ? 'a' : rest.for ? 'label' : 'button'
-const color =
-  variant === 'link' && href === Astro.url.pathname ? 'brand' : rest.color
+const {
+  slug,
+  href = slug === 'index' ? '/' : slug ? `/${slug}/` : undefined,
+  text = slug ? (await getEntry('pages', slug)).data.title : undefined,
+  as = href ? 'a' : 'button',
+  type = as === 'button' ? 'button' : undefined,
+  target = href?.toString().startsWith('http') ? '_blank' : undefined,
+  variant = 'secondary',
+  avatar,
+  size,
+  icon,
+  ...rest
+} = Astro.props
 ---
 
 <Element
-  class:list="button"
-  _target={href?.startsWith('http') ? '_blank' : undefined}
-  type={as === 'button' ? 'button' : undefined}
-  {as}
+  class:list={'button'}
   {href}
-  {color}
+  {as}
+  {type}
+  {target}
   {variant}
   {...rest}
 >
-  <slot>
-    <Avatar src={avatar} />
-    <Icon name={icon} />
-    <Fragment set:html={text ?? entry?.data.title} />
-  </slot>
+  <slot />
+  <Avatar src={avatar} />
+  <Icon name={icon} />
+  <Fragment set:html={text} />
 </Element>
 
 <style is:global lang="scss">
