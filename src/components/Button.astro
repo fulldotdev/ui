@@ -16,9 +16,16 @@ interface Props
   icon?: ComponentProps<typeof Icon>['name']
   avatar?: ComponentProps<typeof Avatar>['src']
   slug?: CollectionEntry<'pages'>['slug'] | undefined
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'link' | undefined
   reverse?: boolean | undefined
   text?: string | undefined
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'outline'
+    | 'ghost'
+    | 'destructive'
+    | 'link'
+    | undefined
 }
 
 const { variant = 'secondary', slug, text, avatar, icon, ...rest } = Astro.props
@@ -54,43 +61,19 @@ const color =
   @layer fulldev {
     .button {
       display: inline-flex;
-      flex-shrink: 0;
       justify-content: center;
       align-items: center;
-      vertical-align: top;
-      gap: var(--space-2);
-      appearance: none;
-      transition: all 0.15s ease;
-      cursor: pointer;
-      outline: none;
-      box-shadow: none;
-      border-width: 0px;
-      border-radius: var(--radius-1);
-      padding: 0 var(--space-4);
-      height: calc(var(--text-2) + 2 * var(--space-4));
-      color: var(--text);
-      font-weight: 500;
-      font-size: var(--text-2);
+      gap: var(--spacing-2);
+      transition: var(--transition);
+      border-radius: var(--radius-md);
+      font-weight: var(--font-weight-medium);
+      font-size: var(--font-size-sm);
       line-height: 1;
-      text-align: center;
-      text-decoration: none;
       white-space: nowrap;
 
-      .avatar {
-        margin-right: calc(-1 * (var(--space-4)));
-        margin-left: var(--space-1);
-        padding: calc(var(--space-1) / 3);
-        width: calc(var(--text-2) + 2 * var(--space-4)) !important;
-        height: calc(var(--text-2) + 2 * var(--space-4)) !important;
-      }
-
       &:focus-visible {
-        outline: 2px solid var(--focus) !important;
+        outline: 2px solid var(--ring);
         outline-offset: 2px;
-      }
-
-      &.reverse > * {
-        order: 999;
       }
 
       &:disabled {
@@ -100,62 +83,87 @@ const color =
       }
 
       &.variant-primary {
-        background-color: var(--color-9);
-        color: var(--color-contrast);
+        background-color: hsl(var(--primary));
+        color: hsl(var(--primary-foreground));
 
-        .icon {
-          color: inherit;
-        }
-
-        &:hover,
-        &:active {
-          background-color: var(--color-10);
+        &:hover {
+          background-color: hsl(var(--primary) / 0.9);
         }
       }
 
       &.variant-secondary {
-        border-style: solid;
-        border-color: var(--color-7);
-        background-color: var(--color-3);
-        color: var(--color-11);
+        background-color: hsl(var(--secondary));
+        color: hsl(var(--secondary-foreground));
 
         &:hover {
-          border-color: var(--color-8);
-          background-color: var(--color-4);
-        }
-
-        &:active {
-          border-color: var(--color-8);
-          background-color: var(--color-5);
+          background-color: hsl(var(--secondary) / 0.8);
         }
       }
 
-      &.variant-tertiary {
-        color: var(--color-11);
+      &.variant-outline {
+        border: 1px solid hsl(var(--input));
+        background-color: hsl(var(--background));
 
         &:hover {
-          background-color: var(--color-3);
+          background-color: hsl(var(--accent));
+          color: hsl(var(--accent-foreground));
         }
+      }
 
-        &:active {
-          background-color: var(--color-4);
+      &.variant-ghost:hover {
+        background-color: hsl(var(--accent));
+        color: hsl(var(--accent-foreground));
+      }
+
+      &.variant-destructive {
+        background-color: hsl(var(--destructive));
+        color: hsl(var(--destructive-foreground));
+
+        &:hover {
+          background-color: hsl(var(--destructive) / 0.9);
         }
       }
 
       &.variant-link {
-        justify-content: flex-start;
-        padding: 0;
-        height: auto;
-        color: var(--color-11);
-        font-weight: 400;
+        color: hsl(var(--primary));
+        text-underline-offset: 4px;
 
         &:hover {
-          color: var(--color-12);
+          text-decoration: underline;
         }
+      }
 
-        &:active {
-          color: var(--color-12);
-        }
+      &:is(&.size-sm),
+      &:where(.size-sm &) {
+        padding: 0 var(--spacing-3);
+        min-width: var(--spacing-9);
+        min-height: var(--spacing-9);
+      }
+
+      &:is(&.size-md),
+      &:where(.size-md &) {
+        padding: 0 var(--spacing-4);
+        min-width: var(--spacing-10);
+        height: var(--spacing-10);
+      }
+
+      &:is(&.size-lg),
+      &:where(.size-lg &) {
+        padding: 0 var(--spacing-8);
+        min-width: var(--spacing-11);
+        height: var(--spacing-11);
+      }
+
+      .avatar {
+        margin-right: calc(-1 * (var(--space-4)));
+        margin-left: var(--space-1);
+        padding: calc(var(--space-1) / 3);
+        width: calc(var(--text-2) + 2 * var(--space-4)) !important;
+        height: calc(var(--text-2) + 2 * var(--space-4)) !important;
+      }
+
+      &.reverse > * {
+        order: 999;
       }
     }
   }

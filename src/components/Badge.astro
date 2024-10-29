@@ -1,45 +1,108 @@
 ---
-import type { ComponentProps } from 'astro/types'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import Button from './Button.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-interface Props extends ComponentProps<typeof Button> {}
+interface Props extends GlobalProps, HTMLAttributes<'div'> {
+  icon?: ComponentProps<typeof Icon>['name']
+  text?: string | undefined
+  reverse?: boolean | undefined
+  variant?: 'primary' | 'secondary' | 'destructive' | 'outline' | undefined
+}
 
-const {
-  variant = 'tertiary',
-  color = 'base',
-  href,
-  text,
-  icon,
-  ...rest
-} = Astro.props
+const { variant = 'outline', text, icon, ...rest } = Astro.props
 ---
 
-<Button
+<Element
   class:list="badge"
   {variant}
-  {href}
-  {color}
   {...rest}
 >
   <slot />
-  <Fragment set:html={text} />
   <Icon name={icon} />
-</Button>
+  <Fragment set:html={text} />
+</Element>
 
 <style is:global lang="scss">
   @layer fulldev {
-    .button.badge {
-      gap: var(--space-2);
-      transition: all 0.15s ease;
-      border: 1px solid var(--color-a7);
+    .badge {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--spacing-2);
+      transition: var(--transition);
       border-radius: 999px;
-      padding: 0 var(--space-3);
-      height: calc(var(--text-1) + 2 * var(--space-2));
-      font-size: var(--text-1);
+      font-weight: var(--font-weight-medium);
+      font-size: var(--font-size-sm);
+      line-height: 1;
+      white-space: nowrap;
 
-      &:hover {
-        border-color: var(--color-a8);
+      &:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+
+      &.variant-primary {
+        background-color: hsl(var(--primary));
+        color: hsl(var(--primary-foreground));
+
+        &:hover {
+          background-color: hsl(var(--primary) / 0.9);
+        }
+      }
+
+      &.variant-secondary {
+        background-color: hsl(var(--secondary));
+        color: hsl(var(--secondary-foreground));
+
+        &:hover {
+          background-color: hsl(var(--secondary) / 0.8);
+        }
+      }
+
+      &.variant-outline {
+        border: 1px solid hsl(var(--input));
+        background-color: hsl(var(--background));
+
+        &:hover {
+          background-color: hsl(var(--accent));
+          color: hsl(var(--accent-foreground));
+        }
+      }
+
+      &.variant-destructive {
+        background-color: hsl(var(--destructive));
+        color: hsl(var(--destructive-foreground));
+
+        &:hover {
+          background-color: hsl(var(--destructive) / 0.9);
+        }
+      }
+
+      &:is(&.size-sm),
+      &:where(.size-sm &) {
+        padding: var(--spacing-1) var(--spacing-2);
+        min-width: var(--spacing-6);
+        min-height: var(--spacing-6);
+      }
+
+      &:is(&.size-md),
+      &:where(.size-md &) {
+        padding: var(--spacing-1_5) var(--spacing-3);
+        min-width: var(--spacing-7);
+        min-height: var(--spacing-7);
+      }
+
+      &:is(&.size-lg),
+      &:where(.size-lg &) {
+        padding: var(--spacing-2) var(--spacing-4);
+        min-width: var(--spacing-8);
+        min-height: var(--spacing-8);
+      }
+
+      &.reverse > * {
+        order: 999;
       }
     }
   }
