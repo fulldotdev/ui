@@ -1,32 +1,83 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { ComponentProps, HTMLAttributes, HTMLTag } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import { getEntry } from 'astro:content'
+import Avatar from 'fulldev-ui/components/Avatar.astro'
 import Element from 'fulldev-ui/components/Element.astro'
+import Icon from 'fulldev-ui/components/Icon.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-interface Props extends GlobalProps, HTMLAttributes<'span'> {
+interface Props
+  extends GlobalProps,
+    HTMLAttributes<'span'>,
+    HTMLAttributes<'a'> {
+  as?: HTMLTag
+  icon?: ComponentProps<typeof Icon>['name']
+  avatar?: ComponentProps<typeof Avatar>['src']
+  slug?: CollectionEntry<'pages'>['slug'] | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
   text?: string | undefined
+  variant?: 'secondary' | 'outline' | 'link' | undefined
 }
 
-const { text, ...rest } = Astro.props
+const {
+  slug,
+  href = slug === 'index' ? '/' : slug ? `/${slug}/` : undefined,
+  text = slug ? (await getEntry('pages', slug)).data.title : undefined,
+  as = href ? 'a' : 'a',
+  target = href?.toString().startsWith('http') ? '_blank' : undefined,
+  variant = href ? 'outline' : 'link',
+  icon,
+  ...rest
+} = Astro.props
 ---
 
 <Element
-  class:list="tagline"
-  as="span"
+  class:list={'tagline'}
+  {href}
+  {as}
+  {target}
+  {variant}
   {...rest}
 >
   <slot />
+  <Icon name={icon} />
   <Fragment set:html={text} />
 </Element>
 
-<style is:global lang="scss">
+<style is:global>
   @layer fulldev {
     .tagline {
-      color: var(--color-11);
-      font-size: var(--text-2);
-      line-height: 1;
-      text-align: left;
-      white-space: nowrap;
+      @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-2.5 py-0.5 text-sm font-semibold leading-none ring-offset-background transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+      @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+      @apply disabled:pointer-events-none disabled:opacity-50;
+
+      &.size-sm,
+      &:where(.size-sm, &) {
+        @apply h-6 px-3;
+      }
+
+      &.size-md,
+      &:where(.size-md, &) {
+        @apply h-7 px-4 py-2;
+      }
+
+      &.size-lg,
+      &:where(.size-lg, &) {
+        @apply h-8 px-3.5;
+      }
+
+      &.variant-secondary {
+        @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+      }
+
+      &.variant-outline {
+        @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+      }
+
+      &.variant-link {
+        @apply h-auto p-0 text-primary underline-offset-4 [&:is(a)]:hover:underline;
+      }
     }
   }
 </style>

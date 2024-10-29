@@ -3,6 +3,8 @@ import liveCode from 'astro-live-code'
 import { defineConfig } from 'astro/config'
 import integration from 'fulldev-ui/integration'
 
+import tailwind from '@astrojs/tailwind'
+
 // https://astro.build/config
 export default defineConfig({
   devToolbar: {
@@ -31,6 +33,9 @@ export default defineConfig({
           brand: '#F50',
         },
       },
+    }),
+    tailwind({
+      applyBaseStyles: false,
     }),
   ],
   redirects: {
