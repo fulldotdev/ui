@@ -1,0 +1,108 @@
+---
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import { getEntry } from 'astro:content'
+import Avatar from 'fulldev-ui/components/Avatar.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Icon from 'fulldev-ui/components/Icon.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
+
+interface Props
+  extends GlobalProps,
+    HTMLAttributes<'button'>,
+    HTMLAttributes<'a'>,
+    HTMLAttributes<'label'> {
+  type?: HTMLAttributes<'button'>['type'] & HTMLAttributes<'a'>['type']
+  icon?: ComponentProps<typeof Icon>['name']
+  avatar?: ComponentProps<typeof Avatar>['src']
+  slug?: CollectionEntry<'pages'>['slug'] | undefined
+  reverse?: boolean | undefined
+  text?: string | undefined
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'outline'
+    | 'ghost'
+    | 'destructive'
+    | 'link'
+    | undefined
+}
+
+const { variant = 'secondary', slug, text, avatar, icon, ...rest } = Astro.props
+
+const entry = slug && !text ? await getEntry('pages', slug) : undefined
+const hrefString =
+  rest.href && typeof rest.href !== 'string' ? rest.href.href : rest.href
+const href =
+  hrefString ?? (slug ? (slug === 'index' ? '/' : `/${slug}/`) : undefined)
+const as = href ? 'a' : rest.for ? 'label' : 'button'
+const color =
+  variant === 'link' && href === Astro.url.pathname ? 'brand' : rest.color
+---
+
+<Element
+  class:list="button"
+  _target={href?.startsWith('http') ? '_blank' : undefined}
+  type={as === 'button' ? 'button' : undefined}
+  {as}
+  {href}
+  {color}
+  {variant}
+  {...rest}
+>
+  <slot>
+    <Avatar src={avatar} />
+    <Icon name={icon} />
+    <Fragment set:html={text ?? entry?.data.title} />
+  </slot>
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .button {
+      @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors;
+      @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+      @apply disabled:pointer-events-none disabled:opacity-50;
+
+      &.variant-primary {
+        @apply bg-primary text-primary-foreground hover:bg-primary/90;
+      }
+
+      &.variant-destructive {
+        @apply bg-destructive text-destructive-foreground hover:bg-destructive/90;
+      }
+
+      &.variant-outline {
+        @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+      }
+
+      &.variant-secondary {
+        @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+      }
+
+      &.variant-ghost {
+        @apply hover:bg-accent hover:text-accent-foreground;
+      }
+
+      &.variant-link {
+        @apply text-primary underline-offset-4 hover:underline;
+      }
+
+      &.size-sm {
+        @apply h-9 rounded-md px-3;
+      }
+
+      &.size-md {
+        @apply h-10 px-4 py-2;
+      }
+
+      &.size-lg {
+        @apply h-11 rounded-md px-8;
+      }
+
+      &.size-icon {
+        @apply h-10 w-10;
+      }
+    }
+  }
+</style>
