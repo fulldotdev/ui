@@ -1,30 +1,23 @@
 ---
-import tablerIcons from '@iconify-json/tabler/icons.json'
-import type { HTMLAttributes } from 'astro/types'
-import Element from 'fulldev-ui/components/Element.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import { Icon as AstroIcon } from 'astro-icon/components'
+import type { ComponentProps } from 'astro/types'
 
-interface Props extends GlobalProps, HTMLAttributes<'i'> {
-  name?: string | undefined
+interface Props extends ComponentProps<typeof AstroIcon> {
+  set?: string
 }
 
-const { name, ...rest } = Astro.props
-
-const trimmedName = name?.trim() as string | undefined
-const icon = trimmedName
-  ? (tablerIcons as any)?.icons[trimmedName]?.body
-  : undefined
+const { set = 'tabler', name, ...rest } = Astro.props
 ---
 
-<Element
-  class:list="icon"
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 24 24"
-  as="svg"
-  {...rest}
->
-  <Fragment set:html={icon} />
-</Element>
+{
+  name && (
+    <AstroIcon
+      class:list="icon"
+      name={`${set}:${name}`}
+      {...rest}
+    />
+  )
+}
 
 <style is:global>
   @layer fulldev {

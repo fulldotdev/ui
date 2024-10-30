@@ -5,21 +5,14 @@ import viteYaml from '@rollup/plugin-yaml'
 import type { AstroIntegration } from 'astro'
 import favicons from 'astro-favicons'
 // @ts-ignore
+import icon from 'astro-icon'
 import liveCode from 'astro-live-code'
 import robotsTxt from 'astro-robots-txt'
 import { envField } from 'astro/config'
 import type { CollectionEntry } from 'astro:content'
 import postcssNesting from 'postcss-nesting'
-import { assign } from 'radash'
 import { loadEnv } from 'vite'
 import virtual from 'vite-plugin-virtual'
-import { generateRadixColors } from './generate-colors'
-
-type Color = {
-  background: Parameters<typeof generateRadixColors>[0]['background']
-  base: Parameters<typeof generateRadixColors>[0]['gray']
-  brand: Parameters<typeof generateRadixColors>[0]['accent']
-}
 
 interface Config {
   favicon?: string
@@ -27,44 +20,24 @@ interface Config {
   css?: string
   basePreset?: CollectionEntry<'presets'>['id']
   injectRoutes?: boolean
-  // generateImageEntries?: boolean
-  colors: {
-    theme: 'light' | 'dark'
-    light?: Color | undefined
-    dark?: Color | undefined
-  }
-}
-
-const defaultConfig: Config = {
-  colors: {
-    theme: 'light',
-    light: {
-      background: '#fff',
-      base: '#000',
-      brand: '#000',
-    },
-  },
 }
 
 export default function fulldevIntegration(
-  userConfig?: Partial<Config> | undefined
+  config?: Partial<Config> | undefined
 ): AstroIntegration {
-  const config = assign(defaultConfig, userConfig ?? {})
-
   return {
     name: '/integration',
     hooks: {
       'astro:config:setup': async ({
         config: astroConfig,
         updateConfig,
-        injectScript,
         injectRoute,
       }) => {
         // ----------------------
         // Update config
         // ----------------------
-        config.favicon &&
-          config.company &&
+        config?.favicon &&
+          config?.company &&
           updateConfig({
             site: loadEnv(process.env.NODE_ENV as any, process.cwd(), '').URL,
             experimental: {
@@ -90,9 +63,10 @@ export default function fulldevIntegration(
               },
             },
             integrations: [
-              sitemap(),
               mdx(),
+              sitemap(),
               robotsTxt(),
+              icon(),
               liveCode({
                 layout: '/src/components/Code.astro',
               }),
@@ -129,7 +103,7 @@ export default function fulldevIntegration(
         // ----------------------
         // Inject routes
         // ----------------------
-        if (config.injectRoutes) {
+        if (config?.injectRoutes) {
           const pages = import.meta.glob('/src/pages/**/*.astro')
           !pages['/src/pages/[...page].astro'] &&
             injectRoute({
