@@ -2,7 +2,6 @@
 import type { ComponentProps, HTMLAttributes, HTMLTag } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
 import { getEntry } from 'astro:content'
-import Avatar from 'fulldev-ui/components/Avatar.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
@@ -15,18 +14,9 @@ interface Props
   href?: string | null | undefined
   type?: HTMLAttributes<'button'>['type'] & HTMLAttributes<'a'>['type']
   icon?: ComponentProps<typeof Icon>['name']
-  avatar?: ComponentProps<typeof Avatar>['src']
   slug?: CollectionEntry<'pages'>['slug'] | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | undefined
   text?: string | undefined
-  variant?:
-    | 'primary'
-    | 'secondary'
-    | 'outline'
-    | 'ghost'
-    | 'destructive'
-    | 'link'
-    | undefined
 }
 
 const {
@@ -37,7 +27,6 @@ const {
   type = as === 'button' ? 'button' : undefined,
   target = href?.startsWith('http') ? '_blank' : undefined,
   variant = 'primary',
-  avatar,
   icon,
   ...rest
 } = Astro.props
@@ -73,7 +62,7 @@ const {
 
       &.size-md,
       &:where(.size-md &) {
-        @apply h-11 min-w-10 rounded-md px-5;
+        @apply h-11 min-w-11 rounded-md px-5;
       }
 
       &.size-lg,
@@ -82,23 +71,19 @@ const {
       }
 
       &.variant-primary {
-        @apply hover:bg-primary-hover bg-primary text-primary-foreground;
+        @apply bg-primary text-primary-foreground hover:bg-primary-hover;
       }
 
       &.variant-secondary {
-        @apply hover:bg-secondary-hover bg-secondary text-secondary-foreground;
+        @apply bg-secondary text-secondary-foreground hover:bg-secondary-hover;
       }
 
       &.variant-outline {
-        @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+        @apply border border-input text-accent-foreground hover:bg-accent;
       }
 
       &.variant-ghost {
-        @apply hover:bg-accent hover:text-accent-foreground;
-      }
-
-      &.variant-link {
-        @apply h-auto p-0 text-primary underline-offset-4 hover:underline;
+        @apply text-accent-foreground hover:bg-accent;
       }
 
       .icon {

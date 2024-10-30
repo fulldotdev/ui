@@ -1,18 +1,17 @@
 ---
-import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import type { ComponentProps, HTMLAttributes, HTMLTag } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
 import { getEntry } from 'astro:content'
 import Element from 'fulldev-ui/components/Element.astro'
+import Icon from 'fulldev-ui/components/Icon.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
-import type { ComponentProps } from 'react'
-import Icon from './Icon.astro'
 
 interface Props extends GlobalProps, HTMLAttributes<'a'> {
   as?: HTMLTag
   href?: string | null | undefined
   slug?: CollectionEntry<'pages'>['slug'] | undefined
   icon?: ComponentProps<typeof Icon>['name']
-  variant?: 'primary' | 'underline' | 'muted' | undefined
+  variant?: 'primary' | 'muted' | undefined
   text?: string | undefined
   current?: boolean | undefined
 }
@@ -40,23 +39,19 @@ const {
   {...rest}
 >
   <Fragment set:html={text} />
-  <Icon name={icon} />
   <slot />
+  <Icon name={icon} />
 </Element>
 
 <style is:global>
   @layer fulldev {
     .link,
     p > a {
-      @apply ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+      @apply align-middle ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
 
       &.variant-primary,
       &:is(p > a) {
         @apply text-primary underline underline-offset-4;
-      }
-
-      &.variant-underline {
-        @apply text-muted-foreground underline underline-offset-4 hover:text-foreground;
       }
 
       &.variant-muted {
@@ -75,6 +70,10 @@ const {
       &.size-lg,
       &:where(.size-lg &) {
         @apply text-lg;
+      }
+
+      .icon {
+        @apply mb-0.5;
       }
     }
   }

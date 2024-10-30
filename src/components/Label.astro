@@ -1,31 +1,39 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
 interface Props extends GlobalProps, HTMLAttributes<'label'> {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  color?: 'base' | 'brand' | undefined
-  contrast?: boolean | undefined
+  as?: HTMLTag
   text?: string | undefined
 }
 
-const { text, ...rest } = Astro.props
+const { as = 'label', text, ...rest } = Astro.props
 ---
 
 <Element
   class:list="label"
-  as="label"
+  {as}
   {...rest}
 >
-  <slot />
   <Fragment set:html={text} />
+  <slot />
 </Element>
 
 <style is:global>
   @layer fulldev {
     .label {
-      @apply text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70;
+      @apply font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70;
+
+      &.size-sm,
+      &:where(.size-sm &) {
+        @apply text-xs;
+      }
+
+      &.size-md,
+      &:where(.size-md &) {
+        @apply text-sm;
+      }
     }
   }
 </style>

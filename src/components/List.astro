@@ -7,8 +7,8 @@ interface Props
   extends GlobalProps,
     HTMLAttributes<'ul'>,
     HTMLAttributes<'ol'> {
+  as?: 'ul' | 'ol' | undefined
   items?: string[] | undefined
-  as?: 'ul' | 'ol'
 }
 
 const { as = 'ul', items, ...rest } = Astro.props
@@ -19,7 +19,15 @@ const { as = 'ul', items, ...rest } = Astro.props
   {as}
   {...rest}
 >
-  {items?.map((item) => <li set:html={item} />)}
+  {
+    items?.map((item) => (
+      <Element
+        as="li"
+        set:html={item}
+      />
+    ))
+  }
+  <slot />
 </Element>
 
 <style is:global>
@@ -46,6 +54,16 @@ const { as = 'ul', items, ...rest } = Astro.props
 
       li {
         @apply mt-2;
+      }
+
+      &.size-sm,
+      &:where(.size-sm &) {
+        @apply text-sm;
+      }
+
+      &.size-lg,
+      &:where(.size-lg &) {
+        @apply text-lg;
       }
     }
   }
