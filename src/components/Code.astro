@@ -1,0 +1,49 @@
+---
+import { Code as AstroCode } from 'astro:components'
+import Element from 'fulldev-ui/components/Element.astro'
+import type { ComponentProps } from 'react'
+
+interface Props extends ComponentProps<typeof AstroCode> {}
+
+const { code } = Astro.props
+const slot = await Astro.slots.render('code')
+
+console.log(slot)
+---
+
+<Element class:list="code">
+  <div class="example">
+    <slot name="example" />
+    <Fragment set:html={code} />
+  </div>
+  <slot name="code" />
+  {
+    code && (
+      <AstroCode
+        class:list="code"
+        code={code}
+      />
+    )
+  }
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .astro-code {
+      @apply mt-4 rounded-md !bg-foreground p-4 first:mt-0 dark:!bg-muted;
+    }
+
+    .code {
+      @apply mt-8 overflow-hidden rounded-md border first:mt-0;
+
+      .example {
+        /* @apply; */
+        @apply px-4 py-8;
+      }
+
+      .astro-code {
+        @apply rounded-none p-4;
+      }
+    }
+  }
+</style>

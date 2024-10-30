@@ -1,52 +1,80 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
 import { getEntry } from 'astro:content'
 import Element from 'fulldev-ui/components/Element.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import type { ComponentProps } from 'react'
+import Icon from './Icon.astro'
 
 interface Props extends GlobalProps, HTMLAttributes<'a'> {
+  as?: HTMLTag
+  href?: string | null | undefined
   slug?: CollectionEntry<'pages'>['slug'] | undefined
+  icon?: ComponentProps<typeof Icon>['name']
+  variant?: 'primary' | 'underline' | 'muted' | undefined
   text?: string | undefined
+  current?: boolean | undefined
 }
 
-const { slug, href, text, ...rest } = Astro.props
-
-const entry = slug && (await getEntry('pages', slug))
+const {
+  slug,
+  href = slug === 'index' ? '/' : slug ? `/${slug}/` : undefined,
+  text = slug ? (await getEntry('pages', slug)).data.title : undefined,
+  target = href?.startsWith('http') ? '_blank' : undefined,
+  current = Astro.url.pathname === href,
+  as = 'a',
+  variant = 'primary',
+  icon,
+  ...rest
+} = Astro.props
 ---
 
 <Element
   class:list="link"
-  href={slug ? `/${slug}/` : href}
-  as="a"
+  {href}
+  {as}
+  {target}
+  {variant}
+  {current}
   {...rest}
 >
+  <Fragment set:html={text} />
+  <Icon name={icon} />
   <slot />
-  <Fragment set:html={entry?.data?.title ?? text} />
 </Element>
 
-<style is:global lang="scss">
+<style is:global>
   @layer fulldev {
-    .link {
-      display: inline-flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: var(--space-2);
-      cursor: pointer;
-      border: none;
-      background: none;
-      color: var(--color-11);
-      font-size: var(--text-3);
-      text-decoration-color: var(--border); // FIXME, werkt niet
-      text-decoration: none;
-      white-space: nowrap;
+    .link,
+    p > a {
+      @apply ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
 
-      &:is(p > &) {
-        text-decoration: underline;
+      &.variant-primary,
+      &:is(p > a) {
+        @apply text-primary underline underline-offset-4;
       }
 
-      &:hover {
-        color: var(--color-12);
+      &.variant-underline {
+        @apply text-muted-foreground underline underline-offset-4 hover:text-foreground;
+      }
+
+      &.variant-muted {
+        @apply text-muted-foreground hover:text-foreground;
+
+        &.current {
+          @apply text-foreground;
+        }
+      }
+
+      &.size-sm,
+      &:where(.size-sm &) {
+        @apply text-sm;
+      }
+
+      &.size-lg,
+      &:where(.size-lg &) {
+        @apply text-lg;
       }
     }
   }

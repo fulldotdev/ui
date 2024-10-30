@@ -12,7 +12,7 @@ export default defineConfig({
   },
   integrations: [
     liveCode({
-      layout: '/src/components/experimental/Window.astro',
+      layout: '/src/components/Code.astro',
     }),
     integration({
       company: 'Fulldev UI',

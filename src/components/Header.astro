@@ -2,11 +2,12 @@
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Element from 'fulldev-ui/components/Element.astro'
-import Logo from 'fulldev-ui/components/experimental/Logo.astro'
-import ThemeSelect from 'fulldev-ui/components/ThemeSelect.astro'
+import Logo from 'fulldev-ui/components/Logo.astro'
+// import ThemeSelect from 'fulldev-ui/components/ThemeSelect.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
 import Cart from './Cart.astro'
 import Drawer from './Drawer.astro'
+import Links from './Links.astro'
 import type Menu from './Menu.astro'
 import Socials from './Socials.astro'
 
@@ -14,6 +15,7 @@ interface Props extends GlobalProps, HTMLAttributes<'header'> {
   logo?: ComponentProps<typeof Logo>
   company?: ComponentProps<typeof Logo>['company']
   buttons?: ComponentProps<typeof Buttons>['buttons']
+  links?: ComponentProps<typeof Links>['links']
   menu?: ComponentProps<typeof Menu>['groups']
   panel?: boolean | undefined
   search?: boolean | undefined
@@ -29,6 +31,7 @@ const {
   logo,
   company,
   buttons,
+  links,
   search,
   panel,
   socials,
@@ -51,62 +54,67 @@ const {
     {company}
     {...typeof logo === 'string' ? { src: logo } : logo}
   />
+  <Links {links} />
+  <Socials
+    variant="ghost"
+    {socials}
+  />
   <Buttons
     {buttons}
     variant="link"
-  />
-  {themeselect && <ThemeSelect />}
-  <Socials {socials} />
-  <Cart
-    if={cart}
-    heading={cart}
-  />
-  <Drawer
-    class:list={['header-button']}
-    icon="menu-2"
-    id="menu"
-    {logo}
-    {company}
-    {buttons}
-    {menu}
-  />
+  >
+    <!-- {themeselect && <ThemeSelect />} -->
+
+    <Cart
+      if={cart}
+      variant="secondary"
+      heading={cart}
+    />
+    <Drawer
+      class:list={['header-button']}
+      icon="menu-2"
+      id="menu"
+      variant="secondary"
+      {logo}
+      {company}
+      {buttons}
+      {menu}
+    />
+  </Buttons>
 </Element>
 
-<style lang="scss" is:global>
+<style is:global>
   @layer fulldev {
     .header {
-      display: flex;
-      position: sticky;
-      top: 0;
-      left: 0;
-      justify-content: flex-end;
-      align-items: center;
-      gap: var(--space-4);
-      z-index: 20;
-      border-bottom-width: 1px;
-      border-style: solid;
-      border-color: var(--base-a6);
-      background-color: var(--base-2);
-      padding: 0 var(--gutter);
-      width: 100%;
-      height: var(--header-height);
-      overflow: hidden;
+      @apply px-gutter sticky left-0 top-0 z-20 flex h-14 items-center gap-2 overflow-hidden border-b bg-background py-2;
 
       &,
       & ~ * {
-        --header-height: 56px;
+        --header-height: 3.5rem;
       }
 
       &.panel {
-        margin: var(--space-4) var(--gutter);
-        border-width: 1px solid;
-        border-radius: var(--radius-2);
-        padding: var(--sapce-4) min(var(--gutter), var(--space-4));
-        width: auto;
+        @apply mx-gutter top-2 my-2 rounded-lg border px-4;
       }
 
       .logo {
-        margin-right: auto;
+        @apply justify-self-start;
+      }
+
+      .links {
+        @apply mx-auto ml-4 max-lg:hidden;
+      }
+
+      .socials {
+        @apply ml-auto max-lg:hidden;
+      }
+
+      .buttons {
+        @apply justify-self-end max-lg:ml-auto;
+      }
+
+      .menu-button {
+        @apply lg:hidden;
       }
 
       @media (min-width: 1024px) {
@@ -116,25 +124,6 @@ const {
           & ~ * {
             --header-height: 0px;
           }
-        }
-      }
-
-      .buttons {
-        display: none;
-
-        @media (min-width: 1024px) {
-          display: flex;
-          gap: var(--space-2);
-
-          .button.variant-link + .button {
-            margin-left: var(--space-3);
-          }
-        }
-      }
-
-      .menu-button {
-        @media (min-width: 1024px) {
-          display: none;
         }
       }
     }

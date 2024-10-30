@@ -6,8 +6,8 @@ module.exports = {
   content: ['src/**/*.{ts,tsx,astro,css}'],
   theme: {
     container: {
-      center: true,
-      padding: '2rem',
+      center: false,
+      padding: 'max(2rem, calc((100% - var(--screen)) / 2))',
       screens: {
         '2xl': '1400px',
       },
@@ -22,36 +22,38 @@ module.exports = {
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
+          hover: 'hsl(var(--primary-hover))',
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
-        },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
+          hover: 'hsl(var(--secondary-hover))',
         },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
+          hover: 'hsl(var(--muted-hover))',
         },
         accent: {
           DEFAULT: 'hsl(var(--accent))',
           foreground: 'hsl(var(--accent-foreground))',
-        },
-        popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
+          hover: 'hsl(var(--accent-hover))',
         },
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
       },
+      spacing: {
+        gutter: 'max(24px, calc((100% - var(--screen, 100vw)) / 2))',
+      },
       borderRadius: {
         lg: `var(--radius)`,
         md: `calc(var(--radius) - 2px)`,
         sm: 'calc(var(--radius) - 4px)',
+      },
+      borderColor: {
+        DEFAULT: 'hsl(var(--border))',
       },
       fontFamily: {
         sans: ['var(--font-sans)', ...fontFamily.sans],

@@ -12,6 +12,7 @@ interface Props
     HTMLAttributes<'button'>,
     HTMLAttributes<'a'> {
   as?: HTMLTag
+  href?: string | null | undefined
   type?: HTMLAttributes<'button'>['type'] & HTMLAttributes<'a'>['type']
   icon?: ComponentProps<typeof Icon>['name']
   avatar?: ComponentProps<typeof Avatar>['src']
@@ -34,7 +35,7 @@ const {
   text = slug ? (await getEntry('pages', slug)).data.title : undefined,
   as = href ? 'a' : 'button',
   type = as === 'button' ? 'button' : undefined,
-  target = href?.toString().startsWith('http') ? '_blank' : undefined,
+  target = href?.startsWith('http') ? '_blank' : undefined,
   variant = 'primary',
   avatar,
   icon,
@@ -43,7 +44,7 @@ const {
 ---
 
 <Element
-  class:list={'button'}
+  class:list={['button']}
   {href}
   {as}
   {type}
@@ -51,33 +52,45 @@ const {
   {variant}
   {...rest}
 >
-  <slot />
-  <Avatar src={avatar} />
   <Icon name={icon} />
-  <Fragment set:html={text} />
+  <Element as="span">
+    <Fragment set:html={text} />
+    <slot />
+  </Element>
 </Element>
 
 <style is:global>
   @layer fulldev {
     .button {
-      @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors;
+      @apply inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium leading-none ring-offset-background transition-colors;
       @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
       @apply disabled:pointer-events-none disabled:opacity-50;
 
-      &.variant-primary {
-        @apply bg-primary text-primary-foreground hover:bg-primary/90;
+      &.size-sm,
+      &:where(.size-sm &) {
+        @apply h-9 min-w-9 rounded-sm px-4;
       }
 
-      &.variant-destructive {
-        @apply bg-destructive text-destructive-foreground hover:bg-destructive/90;
+      &.size-md,
+      &:where(.size-md &) {
+        @apply h-11 min-w-10 rounded-md px-5;
+      }
+
+      &.size-lg,
+      &:where(.size-lg &) {
+        @apply h-12 min-w-12 rounded-md px-6;
+      }
+
+      &.variant-primary {
+        @apply hover:bg-primary-hover bg-primary text-primary-foreground;
+      }
+
+      &.variant-secondary {
+        @apply hover:bg-secondary-hover bg-secondary text-secondary-foreground;
       }
 
       &.variant-outline {
         @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
-      }
-
-      &.variant-secondary {
-        @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
       }
 
       &.variant-ghost {
@@ -85,22 +98,15 @@ const {
       }
 
       &.variant-link {
-        @apply text-primary underline-offset-4 hover:underline;
+        @apply h-auto p-0 text-primary underline-offset-4 hover:underline;
       }
 
-      &.size-sm,
-      &:where(.size-sm, &) {
-        @apply h-9 rounded-md px-3;
+      .icon {
+        @apply first:last:absolute;
       }
 
-      &.size-md,
-      &:where(.size-md, &) {
-        @apply h-10 px-4 py-2;
-      }
-
-      &.size-lg,
-      &:where(.size-lg, &) {
-        @apply h-11 rounded-md px-8;
+      span {
+        @apply text-inherit;
       }
     }
   }

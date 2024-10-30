@@ -9,11 +9,12 @@ interface Props extends GlobalProps, HTMLAttributes<'div'> {
   socials?: ComponentProps<typeof Social>['href'][] | undefined
 }
 
-const { socials, variant, ...rest } = Astro.props
+const { variant = 'ghost', socials, ...rest } = Astro.props
 ---
 
 <Element
   class:list="socials"
+  {variant}
   {...rest}
 >
   {
@@ -26,12 +27,14 @@ const { socials, variant, ...rest } = Astro.props
   }
 </Element>
 
-<style is:global lang="scss">
+<style is:global>
   @layer fulldev {
     .socials {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-2);
+      @apply flex gap-2;
+
+      &.variant-ghost {
+        @apply gap-0;
+      }
     }
   }
 </style>
