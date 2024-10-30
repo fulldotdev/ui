@@ -1,12 +1,16 @@
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
+import tailwind from '@astrojs/tailwind'
 import viteYaml from '@rollup/plugin-yaml'
 import type { AstroIntegration } from 'astro'
 import favicons from 'astro-favicons'
+// @ts-ignore
+import liveCode from 'astro-live-code'
 import robotsTxt from 'astro-robots-txt'
 import { envField } from 'astro/config'
 import type { CollectionEntry } from 'astro:content'
-import merge from 'deepmerge'
+import postcssNesting from 'postcss-nesting'
+import { assign } from 'radash'
 import { loadEnv } from 'vite'
 import virtual from 'vite-plugin-virtual'
 import { generateRadixColors } from './generate-colors'
@@ -45,7 +49,7 @@ const defaultConfig: Config = {
 export default function fulldevIntegration(
   userConfig?: Partial<Config> | undefined
 ): AstroIntegration {
-  const config = merge(defaultConfig, userConfig ?? {})
+  const config = assign(defaultConfig, userConfig ?? {})
 
   return {
     name: '/integration',
@@ -62,6 +66,7 @@ export default function fulldevIntegration(
         config.favicon &&
           config.company &&
           updateConfig({
+            site: loadEnv(process.env.NODE_ENV as any, process.cwd(), '').URL,
             experimental: {
               contentLayer: true,
               env: {
@@ -84,11 +89,16 @@ export default function fulldevIntegration(
                 validateSecrets: true,
               },
             },
-            site: loadEnv(process.env.NODE_ENV as any, process.cwd(), '').URL,
             integrations: [
               sitemap(),
               mdx(),
               robotsTxt(),
+              liveCode({
+                layout: '/src/components/Code.astro',
+              }),
+              tailwind({
+                applyBaseStyles: false,
+              }),
               favicons({
                 path: 'favicon',
                 masterPicture: config.favicon,
@@ -96,107 +106,37 @@ export default function fulldevIntegration(
                 appShortName: config.company,
               }),
             ],
-          })
-        // ----------------------
-        // Inject css
-        // ----------------------
-        config?.css && injectScript('page-ssr', `import "${config?.css}";`)
-
-        const generateCss = (
-          defaultTheme: 'light' | 'dark',
-          theme: 'light' | 'dark',
-          color: Color
-        ) => {
-          const { background, base, brand } = color
-          const generated = generateRadixColors({
-            background,
-            appearance: theme,
-            gray: base,
-            accent: brand,
-          })
-
-          const scaleToString = (
-            scale: any,
-            palette: 'base' | 'brand',
-            alpha?: boolean | undefined
-          ) =>
-            scale
-              .map(
-                (color: any, i: any) =>
-                  `--${palette}-${alpha ? 'a' : ''}${i + 1}: ${color};`
-              )
-              .join('\n')
-
-          const baseString = scaleToString(generated.grayScale, 'base', false)
-          const baseAlphaString = scaleToString(
-            generated.grayScaleAlpha,
-            'base',
-            true
-          )
-          const brandString = scaleToString(
-            generated.accentScale,
-            'brand',
-            false
-          )
-          const brandAlphaString = scaleToString(
-            generated.accentScaleAlpha,
-            'brand',
-            true
-          )
-          const brandContrastString = `--brand-contrast: ${generated.accentContrast};`
-          const baseContrastString = `--base-contrast: ${generated.accentContrast};`
-          const baseBackgroundString = `--base-background: ${generated.background};`
-          const brandBackgroundString = `--brand-background: ${generated.background};`
-          const colorSchemeString = `--color-scheme: ${theme};`
-
-          const css = `${defaultTheme == theme ? ':root, ' : ''} .theme-${theme}  {
-  ${baseString}
-  ${baseAlphaString}
-  ${baseContrastString}
-  ${baseBackgroundString}
-  ${brandString}
-  ${brandAlphaString}
-  ${brandContrastString}
-  ${brandBackgroundString}
-  ${colorSchemeString}
-  }`
-          return css
-        }
-
-        const lightCss =
-          (config.colors.light &&
-            generateCss(config.colors.theme, 'light', config.colors.light)) ||
-          ''
-        const darkCss =
-          (config.colors.dark &&
-            generateCss(config.colors.theme, 'dark', config.colors.dark)) ||
-          ''
-
-        const css = lightCss + '\n' + darkCss
-
-        updateConfig({
-          vite: {
-            plugins: [
-              viteYaml(),
-              virtual({
-                'virtual:astro/config': `export default ${JSON.stringify(astroConfig)}`,
-                'virtual:fulldev-ui/config': `export default ${JSON.stringify({
-                  ...config,
-                })}`,
-                'virtual:colors.css': css,
-              }) as any,
-            ],
-            css: {
-              preprocessorOptions: {
-                scss: {
-                  api: 'modern',
+            vite: {
+              plugins: [
+                viteYaml(),
+                virtual({
+                  'virtual:astro/config': `export default ${JSON.stringify(astroConfig)}`,
+                  'virtual:fulldev-ui/config': `export default ${JSON.stringify(
+                    {
+                      ...config,
+                    }
+                  )}`,
+                }),
+              ],
+              css: {
+                postcss: {
+                  plugins: [postcssNesting as any],
                 },
               },
             },
-          },
-        })
+          })
 
-        injectScript('page-ssr', `import "virtual:colors.css";`)
+        // ----------------------
+        // Inject routes
+        // ----------------------
+        if (config.injectRoutes) {
+          const pages = import.meta.glob('/src/pages/**/*.astro')
+          !pages['/src/pages/[...page].astro'] &&
+            injectRoute({
+              pattern: '/[...page]',
+              entrypoint: 'fulldev-ui/[...page].astro',
+            })
+        }
 
         // ----------------------
         // Generate image YAML files
@@ -228,18 +168,6 @@ export default function fulldevIntegration(
         //     console.error('Error generating image YAML files:', error)
         //   }
         // }
-
-        // ----------------------
-        // Inject routes
-        // ----------------------
-        if (config.injectRoutes) {
-          const pages = import.meta.glob('/src/pages/**/*.astro')
-          !pages['/src/pages/[...page].astro'] &&
-            injectRoute({
-              pattern: '/[...page]',
-              entrypoint: 'fulldev-ui/[...page].astro',
-            })
-        }
       },
     },
   }
