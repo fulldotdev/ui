@@ -6,7 +6,7 @@ import type Layout from 'fulldev-ui/layouts/Layout.astro'
 
 type Props = ComponentProps<typeof Layout>
 
-const { title, description, image, seo, code, render } = Astro.props
+const { theme, title, description, image, seo, code, render } = Astro.props
 
 const renderTitle = render && (await render()).headings[0]?.text
 const mergedTitle = seo?.title || title || renderTitle
@@ -48,9 +48,9 @@ const mergedImage =
   />
   <Fragment set:html={code?.head} />
 
-  <script is:inline>
+  <script is:inline define:vars={{ theme }}>
     function setTheme(document) {
-      const value = localStorage.getItem('theme')
+      const value = localStorage.getItem('theme') || theme
 
       const isDark =
         value === 'dark' ||
@@ -58,6 +58,8 @@ const mergedImage =
           window.matchMedia('(prefers-color-scheme: dark)').matches)
 
       document.documentElement.classList.toggle('dark', isDark)
+
+      console.log(theme)
 
       document.querySelectorAll('.themer').forEach((themer) => {
         themer.classList.toggle('dark', isDark)

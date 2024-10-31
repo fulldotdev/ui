@@ -55,7 +55,7 @@ export const page = z
   .object({
     component,
     parents,
-    theme: z.enum(['light', 'dark']),
+    theme: z.enum(['light', 'dark', 'system']),
     lang: z.string(),
     seo: z
       .object({
