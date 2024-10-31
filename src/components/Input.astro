@@ -21,11 +21,13 @@ const {
 } = Astro.props
 ---
 
-<Element class:list="input">
+<Element
+  class:list="input"
+  {size}
+>
   <Label
     for={name}
     text={label}
-    {size}
   />
   <Icon name={icon} />
   <Element
@@ -36,7 +38,6 @@ const {
     {name}
     {placeholder}
     {type}
-    {size}
     {...rest}
   />
 </Element>
@@ -44,10 +45,10 @@ const {
 <style is:global>
   @layer fulldev {
     .input {
-      @apply relative flex flex-col gap-1;
+      @apply relative flex flex-col gap-1.5;
 
       .icon {
-        @apply pointer-events-none absolute bottom-3 right-3;
+        @apply pointer-events-none absolute;
       }
 
       .input-input {
@@ -56,21 +57,47 @@ const {
         @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
         @apply disabled:pointer-events-none disabled:opacity-50;
         @apply [&[readonly]]:pointer-events-none;
+      }
 
-        &.size-sm {
+      &.size-sm {
+        .input-input {
           @apply h-9 px-2.5 py-1.5;
         }
 
-        &.size-md {
-          @apply h-11 px-3 py-2;
+        .icon {
+          @apply bottom-2 right-2;
         }
 
-        &.size-lg {
-          @apply h-12 px-6 py-2.5;
+        .icon + .input-input {
+          @apply pr-9;
+        }
+      }
+
+      &.size-md {
+        .input-input {
+          @apply h-10 px-3 py-2;
         }
 
-        .icon + & {
+        .icon {
+          @apply bottom-2.5 right-2.5;
+        }
+
+        .icon + .input-input {
           @apply pr-10;
+        }
+      }
+
+      &.size-lg {
+        .input-input {
+          @apply h-12 px-3.5 py-2.5;
+        }
+
+        .icon {
+          @apply bottom-3.5 right-3.5;
+        }
+
+        .icon + .input-input {
+          @apply pr-11;
         }
       }
     }

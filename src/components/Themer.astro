@@ -1,0 +1,91 @@
+---
+import Button from './Button.astro'
+import Icon from './Icon.astro'
+
+interface Props {
+  size?: 'sm' | 'md' | 'lg' | undefined
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | undefined
+}
+
+const { size = 'sm', variant = 'secondary', ...rest } = Astro.props
+---
+
+<Button
+  class="themer"
+  {size}
+  {variant}
+  {...rest}
+>
+  <Icon
+    class="themer-light-icon"
+    name="sun"
+  />
+  <Icon
+    class="themer-dark-icon"
+    name="moon"
+  />
+  <select class="themer-select">
+    <option value="light">Light</option>
+    <option value="dark">Dark</option>
+    <option
+      value="system"
+      selected
+    >
+      System
+    </option>
+  </select>
+</Button>
+
+<script>
+  const getTheme = (value: any) => {
+    if (
+      value === 'system' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+    )
+      return 'dark'
+    else if (value === 'dark') return 'dark'
+    else return 'light'
+  }
+
+  const setTheme = (value: string) => {
+    localStorage.setItem('theme', value)
+    const isDark = getTheme(value) === 'dark'
+
+    document.documentElement.classList.toggle('dark', isDark)
+
+    document.querySelectorAll('.themer').forEach((themer) => {
+      themer.classList.toggle('dark', isDark)
+      themer?.querySelectorAll('option').forEach((option) => {
+        option.selected = option.value === value
+      })
+    })
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    const savedTheme = localStorage.getItem('theme') || 'system'
+    setTheme(savedTheme)
+
+    document.querySelectorAll('.themer select').forEach((select) => {
+      select.addEventListener('change', (e) => {
+        if (e.target instanceof HTMLSelectElement) {
+          setTheme(e.target.value)
+        }
+      })
+    })
+  })
+</script>
+
+<style is:global>
+  .themer {
+    @apply relative;
+
+    &:not(.dark) .themer-dark-icon,
+    &.dark .themer-light-icon {
+      display: none;
+    }
+
+    .themer-select {
+      @apply absolute inset-0 cursor-pointer appearance-none opacity-0;
+    }
+  }
+</style>

@@ -5,12 +5,13 @@ import viteYaml from '@rollup/plugin-yaml'
 import type { AstroIntegration } from 'astro'
 import favicons from 'astro-favicons'
 // @ts-ignore
+import tailwindNesting from '@tailwindcss/nesting'
 import icon from 'astro-icon'
+// @ts-ignore
 import liveCode from 'astro-live-code'
 import robotsTxt from 'astro-robots-txt'
 import { envField } from 'astro/config'
 import type { CollectionEntry } from 'astro:content'
-import postcssNesting from 'postcss-nesting'
 import { loadEnv } from 'vite'
 import virtual from 'vite-plugin-virtual'
 
@@ -78,6 +79,7 @@ export default function fulldevIntegration(
                 masterPicture: config.favicon,
                 appName: config.company,
                 appShortName: config.company,
+                appDescription: config.company,
               }),
             ],
             vite: {
@@ -94,7 +96,7 @@ export default function fulldevIntegration(
               ],
               css: {
                 postcss: {
-                  plugins: [postcssNesting as any],
+                  plugins: [tailwindNesting],
                 },
               },
             },
