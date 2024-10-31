@@ -23,26 +23,27 @@ module.exports = {
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
-          hover: 'hsl(var(--primary-hover))',
+          hover: 'hsl(var(--primary) / 85%)',
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
-          hover: 'hsl(var(--secondary-hover))',
+          hover: 'hsl(var(--secondary) / 75%)',
         },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
-          hover: 'hsl(var(--muted-hover))',
+          hover: 'hsl(var(--muted) / 75%)',
         },
         accent: {
           DEFAULT: 'hsl(var(--accent))',
           foreground: 'hsl(var(--accent-foreground))',
-          hover: 'hsl(var(--accent-hover))',
+          hover: 'hsl(var(--accent) / 75%)',
         },
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
+          hover: 'hsl(var(--card) / 75%)',
         },
       },
       spacing: {
@@ -77,13 +78,6 @@ module.exports = {
   },
   plugins: [
     require('tailwindcss-animate'),
-    plugin(function ({ addVariant }) {
-      // addVariant(
-      //   'size-sm',
-      //   '&:is(.size-sm,.size-sm &:not(.size-lg, .size-md, .size-sm .size-md &, .size-sm .size-lg &))'
-      // )
-      addVariant('size-sm', '&:is(.size-sm,.size-sm &)')
-      addVariant('size-lg', '&:is(.size-lg &)')
-    }),
+    require('tailwind-scrollbar')({ nocompatible: true }),
   ],
 }
