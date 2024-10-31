@@ -1,6 +1,13 @@
 import { reference, z } from 'astro:content'
 
-export default z.union([reference('images'), z.object({}).passthrough()]).pipe(
+const imagePath = z.preprocess((data: unknown) => {
+  if (typeof data === 'string') {
+    return data.split('/').pop()
+  }
+  return data
+}, reference('images'))
+
+export default z.union([imagePath, z.object({}).passthrough()]).pipe(
   z
     .object({
       id: z
