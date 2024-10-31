@@ -1,4 +1,5 @@
 const { fontFamily } = require('tailwindcss/defaultTheme')
+const plugin = require('tailwindcss/plugin')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -50,7 +51,7 @@ module.exports = {
       borderRadius: {
         lg: `var(--radius)`,
         md: `calc(var(--radius) - 2px)`,
-        sm: 'calc(var(--radius) - 4px)',
+        md: 'calc(var(--radius) - 4px)',
       },
       borderColor: {
         DEFAULT: 'hsl(var(--border))',
@@ -74,5 +75,15 @@ module.exports = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    plugin(function ({ addVariant }) {
+      // addVariant(
+      //   'size-sm',
+      //   '&:is(.size-sm,.size-sm &:not(.size-lg, .size-md, .size-sm .size-md &, .size-sm .size-lg &))'
+      // )
+      addVariant('size-sm', '&:is(.size-sm,.size-sm &)')
+      addVariant('size-lg', '&:is(.size-lg &)')
+    }),
+  ],
 }

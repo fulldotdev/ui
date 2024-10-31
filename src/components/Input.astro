@@ -11,25 +11,25 @@ interface Props extends GlobalProps, HTMLAttributes<'input'> {
 }
 
 const {
-  placeholder,
-  name = placeholder,
-  type = 'text',
   label,
+  placeholder,
+  name = label || placeholder,
+  type = 'text',
+  size = 'md',
   icon,
-  size,
   ...rest
 } = Astro.props
 ---
 
-<Element
-  class:list="input"
-  {...rest}
->
+<Element class:list="input">
   <Label
     for={name}
     text={label}
+    {size}
   />
+  <Icon name={icon} />
   <Element
+    class:list="input-input"
     as="input"
     if={name}
     id={name}
@@ -39,7 +39,6 @@ const {
     {size}
     {...rest}
   />
-  <Icon name={icon} />
 </Element>
 
 <style is:global>
@@ -51,26 +50,27 @@ const {
         @apply pointer-events-none absolute bottom-3 right-3;
       }
 
-      input {
-        @apply flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background;
+      .input-input {
+        @apply flex w-full rounded-md border border-input bg-background text-sm ring-offset-background;
         @apply file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground;
         @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
         @apply disabled:pointer-events-none disabled:opacity-50;
         @apply [&[readonly]]:pointer-events-none;
 
-        &.size-sm,
-        &:where(.size-sm &) {
-          @apply h-9 min-w-9 rounded-sm px-4;
+        &.size-sm {
+          @apply h-9 px-2.5 py-1.5;
         }
 
-        &.size-md,
-        &:where(.size-md &) {
-          @apply h-11 min-w-11 rounded-md px-5;
+        &.size-md {
+          @apply h-11 px-3 py-2;
         }
 
-        &.size-lg,
-        &:where(.size-lg &) {
-          @apply h-12 min-w-12 rounded-md px-6;
+        &.size-lg {
+          @apply h-12 px-6 py-2.5;
+        }
+
+        .icon + & {
+          @apply pr-10;
         }
       }
     }

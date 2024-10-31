@@ -8,43 +8,23 @@ import Badge from './Badge.astro'
 interface Props extends GlobalProps, HTMLAttributes<'div'> {
   variant?: ComponentProps<typeof Button>['variant']
   badges?: ComponentProps<typeof Badge>[] | undefined
+  badge?: ComponentProps<typeof Badge> | undefined
 }
 
-const { variant = 'secondary', badges, ...rest } = Astro.props
-
-const buttonVariant = (i: number) => {
-  if (variant === 'primary' && i === 0) return 'primary'
-  else if (variant === 'primary' && i === 1) return 'secondary'
-  else if (variant === 'primary' && i > 1) return 'tertiary'
-  else if (variant === 'secondary' && i === 0) return 'secondary'
-  else if (variant === 'secondary' && i > 0) return 'tertiary'
-  else if (variant === 'tertiary') return 'tertiary'
-  else return 'tertiary'
-}
+const { variant = 'outline', badges = [], badge, ...rest } = Astro.props
 ---
 
 <Element
   class:list="badges"
   {...rest}
 >
-  {
-    badges?.map((badge, i) => (
-      <Badge
-        variant={variant === 'link' ? 'link' : buttonVariant(i)}
-        {...badge}
-      />
-    ))
-  }
+  {[badge, ...badges].filter(Boolean).map((badge) => <Badge {...badge} />)}
 </Element>
 
-<style is:global >
+<style is:global>
   @layer fulldev {
     .badges {
-      display: inline-flex;
-      flex-wrap: wrap;
-      justify-content: stretch;
-      gap: var(--space-2);
-      width: auto;
+      @apply inline-flex w-auto flex-wrap justify-stretch gap-2;
     }
   }
 </style>

@@ -4,15 +4,21 @@ import type { ComponentProps } from 'astro/types'
 
 interface Props extends ComponentProps<typeof AstroIcon> {
   set?: string
+  size?: any
 }
 
-const { set = 'tabler', name, ...rest } = Astro.props
+const { size = 'md', set = 'tabler', name, ...rest } = Astro.props
 ---
 
 {
   name && (
     <AstroIcon
-      class:list="icon"
+      class:list={[
+        'icon',
+        {
+          [`size-${size}`]: size,
+        },
+      ]}
       name={`${set}:${name}`}
       {...rest}
     />
@@ -22,10 +28,22 @@ const { set = 'tabler', name, ...rest } = Astro.props
 <style is:global>
   @layer fulldev {
     .icon {
-      @apply inline-flex h-5 w-5 text-inherit;
+      @apply inline-flex text-inherit;
 
       * {
         stroke-width: 1.7px;
+      }
+
+      &.size-sm {
+        @apply h-4 w-4;
+      }
+
+      &.size-md {
+        @apply h-5 w-5;
+      }
+
+      &.size-lg {
+        @apply h-6 w-6;
       }
     }
   }

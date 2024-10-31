@@ -7,17 +7,16 @@ import type { GlobalProps } from 'fulldev-ui/types/global-props'
 interface Props extends GlobalProps, HTMLAttributes<'div'> {
   variant?: ComponentProps<typeof Button>['variant']
   buttons?: ComponentProps<typeof Button>[] | undefined
+  button?: ComponentProps<typeof Button> | undefined
 }
 
-const { variant = 'secondary', buttons, ...rest } = Astro.props
+const { variant = 'primary', buttons = [], button, ...rest } = Astro.props
 
 const buttonVariant = (i: number) => {
   if (variant === 'primary' && i === 0) return 'primary'
   else if (variant === 'primary' && i === 1) return 'secondary'
   else if (variant === 'primary' && i > 1) return 'ghost'
   else if (variant === 'secondary' && i === 0) return 'secondary'
-  else if (variant === 'secondary' && i > 0) return 'ghost'
-  else if (variant === 'ghost') return 'ghost'
   else return 'ghost'
 }
 ---
@@ -27,9 +26,9 @@ const buttonVariant = (i: number) => {
   {...rest}
 >
   {
-    buttons?.map((button, i) => (
+    [button, ...buttons].filter(Boolean).map((button, i) => (
       <Button
-        variant={variant === 'link' ? 'link' : buttonVariant(i)}
+        variant={buttonVariant(i)}
         {...button}
       />
     ))

@@ -25,6 +25,7 @@ const {
   as = href ? 'a' : 'div',
   target = href?.startsWith('http') ? '_blank' : undefined,
   variant = 'outline',
+  size = 'md',
   icon,
   ...rest
 } = Astro.props
@@ -32,20 +33,41 @@ const {
 
 <Element
   class:list="badge"
+  {as}
+  {href}
+  {target}
   {variant}
+  {size}
   {...rest}
 >
-  <Icon name={icon} />
-  <Fragment set:html={text} />
-  <slot />
+  <Icon
+    size={'sm'}
+    name={icon}
+  />
+  <Element as="span">
+    <Fragment set:html={text} />
+    <slot />
+  </Element>
 </Element>
 
 <style is:global>
   @layer fulldev {
     .badge {
-      @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium leading-none ring-offset-background transition-colors;
+      @apply inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full text-sm font-medium leading-none ring-offset-background transition-colors;
       @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
       @apply disabled:pointer-events-none disabled:opacity-50;
+
+      &.size-sm {
+        @apply h-6 min-w-6 px-2;
+      }
+
+      &.size-md {
+        @apply h-7 min-w-7 px-3;
+      }
+
+      &.size-lg {
+        @apply h-8 min-w-8 px-3.5;
+      }
 
       &.variant-primary {
         @apply bg-primary text-primary-foreground hover:bg-primary-hover;
@@ -59,19 +81,12 @@ const {
         @apply border border-input text-accent-foreground hover:bg-accent;
       }
 
-      &.size-sm,
-      &:where(.size-sm &) {
-        @apply px-2.5 py-1 text-xs;
+      .icon {
+        @apply first:last:absolute;
       }
 
-      &.size-md,
-      &:where(.size-md &) {
-        @apply px-3 py-1.5;
-      }
-
-      &.size-lg,
-      &:where(.size-lg &) {
-        @apply px-4 py-2;
+      span {
+        @apply text-inherit;
       }
     }
   }
