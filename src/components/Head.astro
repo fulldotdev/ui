@@ -47,4 +47,30 @@ const mergedImage =
     } as any}
   />
   <Fragment set:html={code?.head} />
+
+  <script is:inline>
+    function setTheme(document) {
+      const value = localStorage.getItem('theme')
+
+      const isDark =
+        value === 'dark' ||
+        (value === 'system' &&
+          window.matchMedia('(prefers-color-scheme: dark)').matches)
+
+      document.documentElement.classList.toggle('dark', isDark)
+
+      document.querySelectorAll('.themer').forEach((themer) => {
+        themer.classList.toggle('dark', isDark)
+        themer?.querySelectorAll('option').forEach((option) => {
+          option.selected = option.value === value
+        })
+      })
+    }
+
+    setTheme(document)
+
+    document.addEventListener('astro:before-swap', (event) => {
+      setTheme(event.newDocument)
+    })
+  </script>
 </head>
