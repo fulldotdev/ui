@@ -6,7 +6,6 @@ import type { AstroIntegration } from 'astro'
 import favicons from 'astro-favicons'
 // @ts-ignore
 import tailwindNesting from '@tailwindcss/nesting'
-import icon from 'astro-icon'
 // @ts-ignore
 import liveCode from 'astro-live-code'
 import robotsTxt from 'astro-robots-txt'
@@ -67,7 +66,6 @@ export default function fulldevIntegration(
               mdx(),
               sitemap(),
               robotsTxt(),
-              icon(),
               liveCode({
                 layout: '/src/components/Code.astro',
               }),

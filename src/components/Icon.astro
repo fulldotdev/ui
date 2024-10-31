@@ -1,50 +1,45 @@
 ---
-import { Icon as AstroIcon } from 'astro-icon/components'
-import type { ComponentProps } from 'astro/types'
+import tablerIcons from '@iconify-json/tabler/icons.json'
+import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-interface Props extends ComponentProps<typeof AstroIcon> {
-  set?: string
-  size?: any
+interface Props extends GlobalProps, HTMLAttributes<'i'> {
+  name?: string | undefined
 }
 
-const { size = 'md', set = 'tabler', name, ...rest } = Astro.props
+const { size = 'md', name, ...rest } = Astro.props
+
+const trimmedName = name?.trim() as string | undefined
+const icon = trimmedName
+  ? (tablerIcons as any)?.icons[trimmedName]?.body
+  : undefined
 ---
 
-{
-  name && (
-    <AstroIcon
-      class:list={[
-        'icon',
-        {
-          [`size-${size}`]: size,
-        },
-      ]}
-      name={`${set}:${name}`}
-      {...rest}
-    />
-  )
-}
+<Element
+  class:list="icon"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  as="svg"
+  {...rest}
+>
+  <Fragment set:html={icon} />
+</Element>
 
 <style is:global>
-  @layer fulldev {
-    .icon {
-      @apply inline-flex text-inherit;
+  .icon {
+    @apply relative inline-flex h-[1em] w-[1em] text-xl;
 
-      * {
-        stroke-width: 1.56px;
-      }
+    &.size-sm {
+      @apply text-lg;
+    }
 
-      &.size-sm {
-        @apply size-4;
-      }
+    &.size-md {
+      @apply text-xl;
+    }
 
-      &.size-md {
-        @apply size-5;
-      }
-
-      &.size-lg {
-        @apply size-6;
-      }
+    &.size-lg {
+      @apply text-2xl;
     }
   }
 </style>
