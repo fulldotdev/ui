@@ -20,19 +20,6 @@ export default defineConfig({
       css: '/src/css/custom.css',
       basePreset: 'base',
       injectRoutes: true,
-      colors: {
-        theme: 'dark',
-        light: {
-          background: '#fff',
-          base: '#0F0F0F',
-          brand: '#F50',
-        },
-        dark: {
-          background: '#0F0F0F',
-          base: '#0F0F0F',
-          brand: '#F50',
-        },
-      },
     }),
     tailwind({
       applyBaseStyles: false,
@@ -40,10 +27,9 @@ export default defineConfig({
   ],
   redirects: {
     '/discord': 'https://discord.gg/vXZqMbadm8',
-    '/segment/card': '/base/card',
-    '/segment/section': '/base/section',
-    '/segment/header': '/blocks/header',
-    '/segment/footer': '/blocks/footer',
-    '/blocks': '/blocks/banner',
+    '/structure/[...slug]': '/components/[...slug]',
+    '/segment/[...slug]': '/components/[...slug]',
+    '/typography/[...slug]': '/components/[...slug]',
+    '/base/[...slug]': '/components/[...slug]',
   },
 })
