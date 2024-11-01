@@ -27,10 +27,11 @@ export default defineConfig({
   ],
   redirects: {
     '/discord': 'https://discord.gg/vXZqMbadm8',
-    '/structure/[...slug]': '/components/[...slug]',
-    '/segment/[...slug]': '/components/[...slug]',
-    '/typography/[...slug]': '/components/[...slug]',
-    '/base/[...slug]': '/components/[...slug]',
-    '/overview/theming/': '/overview/customization/',
+    // '/structure/[...slug]': '/docs/components/[...slug]',
+    // '/segment/[...slug]': '/docs/components/[...slug]',
+    // '/typography/[...slug]': '/docs/components/[...slug]',
+    // '/base/[...slug]': '/docs/components/[...slug]',
+    // '/overview/theming/': '/docs/customization/',
+    // '/overview/[...slug]': '/docs/[...slug]',
   },
 })
