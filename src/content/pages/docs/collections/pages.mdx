@@ -5,8 +5,93 @@ title: pages
 
 # pages
 
-All avaliable objects when creating a new page using content files.
+Used for generating pages and/or cards.
+
+## Features
+
+- Pages are automatically generated from `.md` and `.mdx` files in `src/content/pages`
+- References to other pages, and other collections
+- Setting a preset, which automatically gets merged with the current page
+- Type-safe frontmatter validation with helpful error messages
+
+## Frontmatter reference
 
 import PropsTable from 'fulldev-ui/components/docs/PropsTable.astro'
 
 <PropsTable schema="pageSchema" />
+
+### `presets`
+
+Type: Filepath of an entry in `src/content/presets`
+
+### `component`
+
+Type: Filename of a component in `src/layouts`
+
+### `theme`
+
+Type: `'light' | 'dark' | 'system' | undefined`
+
+### `lang`
+
+Type: `string` | undefined
+
+### `title`
+
+Type: `string` | undefined
+
+### `description`
+
+Type: `string` | undefined
+
+### `image`
+
+### `images`
+
+### `seo`
+
+## Example
+
+```md
+---
+presets: [post]
+component: PostLayout
+
+seo:
+  title: About us - Fulldev
+  description: Learn more about Fulldev
+
+title: About us
+
+sections:
+  - component: Hero
+    tagline: We are a team of passionate developers
+    heading: About us
+    description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    buttons:
+      - text: Get in touch
+        href: /contact
+---
+
+# Write your markdown here!
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+```
+
+## Disabling page generation
+
+By default, pages are generated for every file in the collection. You can disable automatic page generation using the integration settings:
+
+```ts
+// astro.config.ts
+import { defineConfig } from 'astro/config'
+import fulldev from 'fulldev-ui/integration'
+
+export default defineConfig({
+  integrations: [
+    fulldev({
+      injectRoutes: false,
+    }),
+  ],
+})
+```
