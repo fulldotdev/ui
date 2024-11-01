@@ -12,6 +12,7 @@ interface Props extends Omit<ComponentProps<typeof Form>, 'fields' | 'submit'> {
   slug: string
   price: number
   image?: string | undefined
+  soldout?: boolean
   variants?:
     | {
         [key: string]: string[]
@@ -19,7 +20,7 @@ interface Props extends Omit<ComponentProps<typeof Form>, 'fields' | 'submit'> {
     | undefined
 }
 
-const { title, slug, image, price, variants, ...rest } = Astro.props
+const { title, slug, image, price, variants, soldout, ...rest } = Astro.props
 ---
 
 <Form
@@ -41,7 +42,6 @@ const { title, slug, image, price, variants, ...rest } = Astro.props
     name="url"
     value={Astro.site ? Astro.site.href + slug : undefined}
   />
-
   <Input
     type="hidden"
     name="image"
@@ -53,6 +53,7 @@ const { title, slug, image, price, variants, ...rest } = Astro.props
         label={capitalize(key)}
         name={`variant-${key}`}
         options={options}
+        disabled={soldout}
       />
     ))
   }
@@ -67,7 +68,8 @@ const { title, slug, image, price, variants, ...rest } = Astro.props
     color="brand"
     type="submit"
     class="cart-add"
-    text="Toevoegen aan winkelwagen"
+    text={soldout ? 'Uitverkocht' : 'Toevoegen aan winkelwagen'}
+    disabled={soldout}
   />
 </Form>
 
