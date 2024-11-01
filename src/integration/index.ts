@@ -32,6 +32,7 @@ export default function fulldevIntegration(
         config: astroConfig,
         updateConfig,
         injectRoute,
+        injectScript,
       }) => {
         // ----------------------
         // Update config
@@ -111,6 +112,11 @@ export default function fulldevIntegration(
               entrypoint: 'fulldev-ui/[...page].astro',
             })
         }
+
+        // ----------------------
+        // Inject css
+        // ----------------------
+        config?.css && injectScript('page-ssr', `import "${config?.css}";`)
 
         // ----------------------
         // Generate image YAML files
