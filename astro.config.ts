@@ -31,5 +31,6 @@ export default defineConfig({
     '/segment/[...slug]': '/components/[...slug]',
     '/typography/[...slug]': '/components/[...slug]',
     '/base/[...slug]': '/components/[...slug]',
+    '/overview/theming/': '/overview/customization/',
   },
 })
