@@ -1,48 +1,89 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import Label from 'fulldev-ui/components/Label.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-interface Props extends GlobalProps, HTMLAttributes<'div'> {
-  true?: string | undefined
-  false?: string | undefined
-  trueLabel?: string | undefined
-  falseLabel?: string | undefined
-  name: string
-  checked: boolean
+interface Props extends GlobalProps, Omit<HTMLAttributes<'input'>, 'type'> {
+  label?: ComponentProps<typeof Label>['text']
 }
 
-const { name, checked, trueLabel, falseLabel, ...rest } = Astro.props
+const { label, name = label, id = name, size = 'md', ...rest } = Astro.props
 ---
 
 <Element
   class:list="switch"
-  {...rest}
+  {size}
 >
-  <Label
-    for={name}
-    set:html={falseLabel}
+  <Element
+    class:list="switch-input"
+    as="input"
+    type="checkbox"
+    if={id}
+    {id}
+    {name}
+    {...rest}
   />
-  <label
-    for={name}
-    class="switch-element"
-  >
-    <input
-      {checked}
-      name={name}
-      type="checkbox"
-      class="checkbox"
-    />
-    <div class="checkmark"></div>
-  </label>
+  <Element
+    as="label"
+    for={id}
+    if={id}
+    class="switch-mark"
+  />
   <Label
-    for={name}
-    set:html={trueLabel}
+    for={id}
+    text={label}
+    {size}
   />
 </Element>
 
-<style is:global >
+<style is:global>
+  @layer fulldev {
+    .switch {
+      @apply flex items-center gap-2;
+
+      .switch-input {
+        @apply hidden opacity-0;
+      }
+
+      .switch-mark {
+        @apply relative block cursor-pointer rounded-full bg-input transition;
+
+        &::before {
+          @apply block h-full w-1/2 rounded-full border-2 border-input bg-background transition content-[''];
+        }
+      }
+
+      .switch-input:checked ~ .switch-mark {
+        @apply bg-primary;
+
+        &::before {
+          @apply translate-x-full border-primary;
+        }
+      }
+
+      &.size-sm {
+        .switch-mark {
+          @apply h-5 w-10;
+        }
+      }
+
+      &.size-md {
+        .switch-mark {
+          @apply h-6 w-12;
+        }
+      }
+
+      &.size-lg {
+        .switch-mark {
+          @apply h-7 w-14;
+        }
+      }
+    }
+  }
+</style>
+
+<!-- <style is:global>
   @layer fulldev {
     .switch {
       display: flex;
@@ -105,4 +146,4 @@ const { name, checked, trueLabel, falseLabel, ...rest } = Astro.props
       }
     }
   }
-</style>
+</style> -->
