@@ -45,6 +45,10 @@ module.exports = {
           foreground: 'hsl(var(--card-foreground))',
           hover: 'hsl(var(--card) / 75%)',
         },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
       },
       spacing: {
         gutter: 'max(24px, calc((100% - var(--screen, 100vw)) / 2))',

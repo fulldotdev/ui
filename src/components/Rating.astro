@@ -1,20 +1,27 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
-import Avatar from 'fulldev-ui/components/Avatar.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import Label from 'fulldev-ui/components/Label.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import Avatars from './Avatars.astro'
 
 interface Props extends GlobalProps, HTMLAttributes<'div'> {
   align?: 'start' | 'center' | 'end' | undefined
   value?: number | undefined
-  label?: string | undefined
-  avatars?: string[] | undefined
-  avatar?: string | undefined
+  text?: string | undefined
+  avatars?: any
+  avatar?: any
 }
 
-const { value, label, avatars, avatar, align, ...rest } = Astro.props
+const {
+  size = 'md',
+  value,
+  text,
+  avatars,
+  avatar,
+  align,
+  ...rest
+} = Astro.props
 
 const getIcon = (count: number) => {
   if (!value) return
@@ -29,63 +36,73 @@ const hasAvatars = avatars && avatars?.length > 0
 
 <Element
   class:list="rating"
+  {size}
   {...rest}
 >
-  {
-    [avatar, ...(avatars ?? [])]
-      ?.filter(Boolean)
-      ?.map((avatar) => <Avatar src={avatar} />)
-  }
+  <Avatars
+    {size}
+    {avatars}
+    {avatar}
+  />
   <Element
-    class:list="column"
+    class:list="rating-content"
     align={!hasAvatars ? align : undefined}
   >
     <Element
-      class:list={'stars'}
+      class:list="rating-stars"
       {...rest}
     >
       {
         value &&
           [1, 2, 3, 4, 5].map((_, i) => (
             <Icon
+              {size}
               name={getIcon(i + 1)}
               class:list={'rating-icon-solid'}
             />
           ))
       }
     </Element>
-    <Label
-      color="base"
-      text={label}
-    />
+    <Fragment set:html={text} />
+    <slot />
   </Element>
 </Element>
 
-<style is:global >
+<style is:global>
   @layer fulldev {
     .rating {
-      display: flex;
-      align-items: center;
-      gap: var(--space-4);
+      @apply flex items-center gap-3;
 
-      .column {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
+      .rating-content {
+        @apply flex flex-col gap-1 text-muted-foreground;
       }
 
-      .avatar + .avatar {
-        margin-left: calc(var(--space-4) * -2.5);
+      .rating-stars {
+        @apply flex gap-1 text-primary;
       }
 
-      .label {
-        margin-top: var(--space-2) !important;
+      &.size-sm {
+        @apply gap-2;
+
+        .rating-content {
+          @apply text-xs leading-none;
+        }
       }
 
-      .stars {
-        display: flex;
-        align-items: center;
-        gap: var(--space-2);
+      &.size-md {
+        @apply gap-2.5;
+
+        .rating-content {
+          @apply text-sm leading-none;
+        }
+      }
+
+      &.size-lg {
+        @apply gap-3;
+
+        .rating-content {
+          @apply text-base leading-none;
+        }
       }
     }
   }
