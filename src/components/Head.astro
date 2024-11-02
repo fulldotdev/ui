@@ -59,10 +59,18 @@ const mergedImage =
 
       document.documentElement.classList.toggle('dark', isDark)
 
-      console.log(theme)
+      document.querySelectorAll('.themer').forEach((themer) => {
+        themer?.querySelectorAll('option').forEach((option) => {
+          console.log('option', option)
+          option.selected = option.value === value
+        })
+      })
+    }
+
+    function setOption(document) {
+      const value = localStorage.getItem('theme') || theme
 
       document.querySelectorAll('.themer').forEach((themer) => {
-        themer.classList.toggle('dark', isDark)
         themer?.querySelectorAll('option').forEach((option) => {
           option.selected = option.value === value
         })
@@ -70,9 +78,14 @@ const mergedImage =
     }
 
     setTheme(document)
+    setOption(document)
 
     document.addEventListener('astro:before-swap', (event) => {
       setTheme(event.newDocument)
+    })
+
+    document.addEventListener('astro:page-load', (event) => {
+      setOption(document)
     })
   </script>
 </head>
