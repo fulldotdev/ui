@@ -18,53 +18,72 @@ interface Props extends GlobalProps, ComponentProps<typeof Button> {
 
 const {
   variant = 'secondary',
-  structure = 'row',
-  color = 'brand',
-  align = 'start',
+  size = 'md',
+  href,
+  icon,
   heading,
   text,
-  icon,
-  href,
   ...rest
 } = Astro.props
 ---
 
 <Element
-  class:list={`channel ${structure}`}
-  {align}
+  class:list="channel"
+  {size}
   {...rest}
 >
   <Button
     {variant}
-    {color}
+    {size}
     {href}
     {icon}
+    icon="circle"
   />
-  <Element class:list={'column'}>
+  <Element class:list="channel-content">
     <Heading
       level={6}
       text={heading}
+      {size}
     />
-    <Text text={text} />
+    <Fragment set:html={text} />
+    <slot />
   </Element>
 </Element>
 
-<style>
+<style is:global>
   .channel {
-    gap: var(--space-4);
+    @apply flex gap-3;
 
-    &.column {
-      display: flex;
-      flex-direction: column;
-      align-items: inherit;
-      gap: var(--space-1);
+    .channel-content {
+      @apply flex flex-col text-muted-foreground;
+
+      .heading {
+        @apply leading-snug;
+      }
     }
 
-    &.row {
-      display: flex;
-      flex-direction: row;
-      align-items: inherit;
-      gap: var(--space-1);
+    &.size-sm {
+      @apply gap-2;
+
+      .channel-content {
+        @apply text-xs leading-tight;
+      }
+    }
+
+    &.size-md {
+      @apply gap-2.5;
+
+      .channel-content {
+        @apply text-sm leading-tight;
+      }
+    }
+
+    &.size-lg {
+      @apply gap-3;
+
+      .channel-content {
+        @apply text-base leading-tight;
+      }
     }
   }
 </style>

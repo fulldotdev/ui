@@ -1,139 +1,129 @@
 ---
-// @ts-nocheck
 import { getEntry } from 'astro:content'
-import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Element from 'fulldev-ui/components/Element.astro'
+import Icon from 'fulldev-ui/components/Icon.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import Writeup from 'fulldev-ui/components/Writeup.astro'
-import type { CardSchema } from 'fulldev-ui/schemas/components/card'
-import Icon from './Icon.astro'
-import Price from './Price.astro'
-interface Props extends CardSchema {}
+import Price from 'fulldev-ui/components/Price.astro'
+import Heading from './Heading.astro'
+import Lead from './Lead.astro'
+import Paragraph from './Paragraph.astro'
 
-const { align: alignDefault, level: levelDefault } = Astro.props
+// interface Props
+//   extends GlobalProps,
+//     ComponentProps<typeof Writeup>,
+//     Omit<HTMLAttributes<'a'>, 'title'> {
+//   image?: ComponentProps<typeof Image>
+//   images?: ComponentProps<typeof Image>[]
+//   position?: ComponentProps<typeof Image>['position']
+//   buttons?: ComponentProps<typeof Buttons>['buttons']
+//   button?: ComponentProps<typeof Button> | undefined
+//   variant?: ComponentProps<typeof Button>['variant']
+//   align?: ComponentProps<typeof Writeup>['align']
+//   icon?: ComponentProps<typeof Icon>['name']
+//   price?: ComponentProps<typeof Price>['value']
+//   slug?: CollectionEntry<'pages'>['slug'] | undefined
+//   id?: any
+//   panel?: boolean | undefined
+//   title?: ComponentProps<typeof Writeup>['heading']
+// }
 
-const { slug } = Astro.props
-const page = slug ? (await getEntry('pages', slug))?.data : {}
+const { slug, ...props } = Astro.props
+const page = slug && (await getEntry('pages', slug))
 
-const entryProps = {
-  heading: page?.title,
-  text: page?.description,
-  href: slug ? `/${slug}/` : undefined,
-  ...page,
+const merged = {
+  ...props,
+  ...page?.data,
 }
 
 const {
-  align = alignDefault,
-  level = levelDefault,
-  href,
-  badge,
-  tagline,
-  rating,
-  heading,
-  text,
-  variant,
+  href = slug === 'index' ? undefined : slug,
+  as = href ? 'a' : 'div',
+  heading = page?.data.title,
+  image = page?.data.images?.[0],
+  size = 'md',
+  panel = true,
+  lead,
+  paragraph,
   price,
-  list,
-  button,
-  buttons,
-  panel,
-  image,
   icon,
-  title,
-  images,
   position,
-  size,
   ...rest
-} = {
-  ...entryProps,
-  ...Astro.props,
-}
+} = merged
 ---
 
 <Element
   class:list="card"
   as={href ? 'a' : 'div'}
   {href}
-  {align}
   {panel}
   {size}
   {...rest}
 >
-  <slot name="image">
-    <Image
-      position={panel ? position : undefined}
-      {...image || images?.[0]}
-    />
-  </slot>
-  <slot name="icon">
-    <Icon name={icon} />
-  </slot>
-  <slot name="writeup">
-    <Writeup
-      heading={heading || title}
+  <Image
+    position={panel ? position : undefined}
+    {...image}
+  />
+  <Icon name={icon} />
+  <Element class:list="card-content">
+    <Heading
       {size}
-      {rating}
-      {badge}
-      {tagline}
-      {text}
-      {list}
+      level={3}
+      text={heading}
+    />
+    <Lead
+      {size}
+      text={lead}
+    />
+    <Paragraph
+      {size}
+      text={paragraph}
     />
     <Price value={price} />
-  </slot>
-  <slot name="buttons">
-    <Buttons
-      {variant}
-      {size}
-      {button}
-      {buttons}
-    />
-  </slot>
-  <slot />
+  </Element>
 </Element>
 
 <style is:global>
   @layer fulldev {
     .card {
-      --inset-top: 0px;
+      @apply relative flex flex-col items-start gap-4;
+
+      /* --inset-top: 0px;
       --inset-left: 0px;
       --inset-right: 0px;
-      --inset-bottom: 0px;
+      --inset-bottom: 0px; */
+      &.panel {
+        @apply overflow-hidden rounded-md border bg-card p-4;
+      }
 
-      display: flex;
-      position: relative;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-4);
-      text-decoration: none;
+      &:is(a[href]) > .image {
+        @apply transition hover:opacity-80;
+      }
 
-      &[href] {
-        cursor: pointer;
+      &.size-sm {
+        @apply gap-4;
 
-        > .image {
-          transition: all 0.2s ease;
-        }
-
-        &:hover {
-          > .image {
-            opacity: 0.8;
-          }
+        &.panel {
+          @apply p-4;
         }
       }
 
-      &.panel {
-        --inset-top: var(--space-4);
-        --inset-left: var(--space-4);
-        --inset-right: var(--space-4);
-        --inset-bottom: 0px;
+      &.size-md {
+        @apply gap-6;
 
-        border: 1px solid var(--color-a6);
-        border-radius: var(--radius-2);
-        background-color: var(--color-2);
-        padding: var(--space-4);
-        overflow: hidden;
+        &.panel {
+          @apply p-6;
+        }
 
-        &[href]:hover {
-          border: 1px solid var(--color-a7);
+        .card-content {
+          @apply space-y-2;
+        }
+      }
+
+      &.size-lg {
+        @apply gap-8;
+
+        &.panel {
+          @apply p-8;
         }
       }
     }

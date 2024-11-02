@@ -1,9 +1,14 @@
 ---
 import type { ImageMetadata } from 'astro'
+import type { HTMLAttributes } from 'astro/types'
 import { Image as AstroImage } from 'astro:assets'
 import { getEntry } from 'astro:content'
 
-type Props = any
+interface Props extends HTMLAttributes<'img'> {
+  size?: 'sm' | 'md' | 'lg' | undefined
+  id?: any
+  position?: 'background' | 'cover' | 'inset' | undefined
+}
 
 const { id } = Astro.props
 const entry = id ? (await getEntry('images', id))?.data : {}
@@ -14,6 +19,7 @@ const {
   position,
   src,
   alt,
+  size,
   ...rest
 } = {
   ...entry,
@@ -35,7 +41,13 @@ const image = images[src as keyof typeof images]
 {
   image && (
     <AstroImage
-      class:list={['image', position && `position-${position}`]}
+      class:list={[
+        'image',
+        {
+          [`size-${size}`]: size,
+          [`position-${position}`]: position,
+        },
+      ]}
       alt={alt || getAltBySrc()}
       src={image ? image() : src}
       width={width}

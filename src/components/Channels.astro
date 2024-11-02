@@ -6,32 +6,46 @@ import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
 interface Props extends GlobalProps, HTMLAttributes<'div'> {
   variant?: ComponentProps<typeof Channel>['variant']
+  size?: ComponentProps<typeof Channel>['size']
+  channel?: ComponentProps<typeof Channel> | undefined
   channels?: ComponentProps<typeof Channel>[] | undefined
 }
 
-const { channels, variant, ...rest } = Astro.props
+const { channels = [], channel, variant, size, ...rest } = Astro.props
 ---
 
 <Element
   class:list="channels"
+  {size}
   {...rest}
 >
   {
-    channels?.map((channel) => (
+    [channel, ...channels].filter(Boolean).map((channel) => (
       <Channel
         {variant}
+        {size}
         {...channel}
       />
     ))
   }
 </Element>
 
-<style is:global >
+<style is:global>
   @layer fulldev {
     .channels {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-2);
+      @apply flex flex-col gap-2.5;
+
+      &.size-sm {
+        @apply gap-2;
+      }
+
+      &.size-md {
+        @apply gap-2.5;
+      }
+
+      &.size-lg {
+        @apply gap-3;
+      }
     }
   }
 </style>

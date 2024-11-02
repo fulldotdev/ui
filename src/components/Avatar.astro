@@ -1,26 +1,45 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import Image from 'fulldev-ui/components/Image.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-interface Props extends ComponentProps<typeof Image> {}
+interface Props extends GlobalProps, ComponentProps<typeof Image> {
+  size?: 'sm' | 'md' | 'lg' | undefined
+}
 
-const { ...rest } = Astro.props
+const { size = 'md', ...rest } = Astro.props
+
+const sizeMap = {
+  sm: 36,
+  md: 40,
+  lg: 44,
+}
 ---
 
 <Image
   class:list={'avatar'}
+  width={sizeMap[size]}
+  height={sizeMap[size]}
+  {size}
   {...rest}
 />
 
-<style is:global >
+<style is:global>
   @layer fulldev {
     .avatar {
-      display: block;
-      border: 1px solid var(--base-a6);
-      border-radius: 999px;
-      width: calc(2.8 * var(--space-4));
-      height: calc(2.8 * var(--space-4));
-      object-fit: cover;
+      @apply aspect-square shrink-0 rounded-full bg-muted object-cover;
+
+      &.size-sm {
+        @apply size-9;
+      }
+
+      &.size-md {
+        @apply size-10;
+      }
+
+      &.size-lg {
+        @apply size-11;
+      }
     }
   }
 </style>
