@@ -81,6 +81,8 @@ export const page = z
     variants: z.any(),
     heading: z.any(),
     href: z.any(),
+    next: z.any(),
+    prev: z.any(),
   })
   .partial()
   .strict()
