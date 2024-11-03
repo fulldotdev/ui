@@ -1,18 +1,15 @@
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
-import tailwind from '@astrojs/tailwind'
-import viteYaml from '@rollup/plugin-yaml'
 import type { AstroIntegration } from 'astro'
 import favicons from 'astro-favicons'
-// @ts-ignore
-import tailwindNesting from '@tailwindcss/nesting'
-// @ts-ignore
 import liveCode from 'astro-live-code'
 import robotsTxt from 'astro-robots-txt'
 import { envField } from 'astro/config'
 import type { CollectionEntry } from 'astro:content'
+import tailwindcss from 'tailwindcss'
+import tailwindcssNesting from 'tailwindcss/nesting'
 import { loadEnv } from 'vite'
-import virtual from 'vite-plugin-virtual'
+import tailwindConfig from './tailwindConfig.ts'
 
 interface Config {
   favicon?: string
@@ -29,7 +26,6 @@ export default function fulldevIntegration(
     name: '/integration',
     hooks: {
       'astro:config:setup': async ({
-        config: astroConfig,
         updateConfig,
         injectRoute,
         injectScript,
@@ -37,42 +33,43 @@ export default function fulldevIntegration(
         // ----------------------
         // Update config
         // ----------------------
-        config?.favicon &&
-          config?.company &&
-          updateConfig({
-            site: loadEnv(process.env.NODE_ENV as any, process.cwd(), '').URL,
-            experimental: {
-              contentLayer: true,
-              env: {
-                schema: {
-                  URL: envField.string({
-                    context: 'client',
-                    access: 'public',
-                  }),
-                  STRIPE_RESTRICTED_KEY: envField.string({
-                    context: 'client',
-                    access: 'public',
-                    optional: true,
-                  }),
-                  STRIPE_SECRET_KEY: envField.string({
-                    context: 'server',
-                    access: 'secret',
-                    optional: true,
-                  }),
-                },
-                validateSecrets: true,
+        updateConfig({
+          site: loadEnv(process.env.NODE_ENV as any, process.cwd(), '').URL,
+          experimental: {
+            contentLayer: true,
+            env: {
+              schema: {
+                URL: envField.string({
+                  context: 'client',
+                  access: 'public',
+                }),
+                STRIPE_RESTRICTED_KEY: envField.string({
+                  context: 'client',
+                  access: 'public',
+                  optional: true,
+                }),
+                STRIPE_SECRET_KEY: envField.string({
+                  context: 'server',
+                  access: 'secret',
+                  optional: true,
+                }),
               },
+              validateSecrets: true,
             },
-            integrations: [
-              mdx(),
-              sitemap(),
-              robotsTxt(),
-              liveCode({
-                layout: '/src/components/Code.astro',
-              }),
-              tailwind({
-                applyBaseStyles: false,
-              }),
+          },
+          integrations: [
+            mdx(),
+            sitemap(),
+            robotsTxt(),
+            liveCode({
+              layout: '/src/components/Code.astro',
+            }),
+            // tailwind({
+            //   applyBaseStyles: false,
+            //   configFile: '../../tailwind.config.mjs',
+            // }),
+            config?.favicon &&
+              config?.company &&
               favicons({
                 path: 'favicon',
                 masterPicture: config.favicon,
@@ -80,26 +77,15 @@ export default function fulldevIntegration(
                 appShortName: config.company,
                 appDescription: config.company,
               }),
-            ],
-            vite: {
-              plugins: [
-                viteYaml(),
-                virtual({
-                  'virtual:astro/config': `export default ${JSON.stringify(astroConfig)}`,
-                  'virtual:fulldev-ui/config': `export default ${JSON.stringify(
-                    {
-                      ...config,
-                    }
-                  )}`,
-                }),
-              ],
-              css: {
-                postcss: {
-                  plugins: [tailwindNesting],
-                },
+          ],
+          vite: {
+            css: {
+              postcss: {
+                plugins: [tailwindcss(tailwindConfig), tailwindcssNesting],
               },
             },
-          })
+          },
+        })
 
         // ----------------------
         // Inject routes

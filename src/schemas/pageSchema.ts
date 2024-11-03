@@ -1,6 +1,5 @@
 import { getEntries, getEntry, z } from 'astro:content'
 import { assign } from 'radash'
-import fulldevConfig from 'virtual:fulldev-ui/config'
 import footer from './components/footer'
 import header from './components/header'
 import image from './components/image'
@@ -35,10 +34,8 @@ export const presets = z
   .transform(async ({ presets, ...rest }) => {
     let mergedData = {}
 
-    if (fulldevConfig.basePreset) {
-      const baseEntry = await getEntry('presets', fulldevConfig.basePreset)
-      mergedData = assign(mergedData, baseEntry?.data || {})
-    }
+    const baseEntry = await getEntry('presets', 'base')
+    mergedData = assign(mergedData, baseEntry?.data || {})
 
     if (presets) {
       const entries = await getEntries(presets)

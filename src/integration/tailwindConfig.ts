@@ -1,8 +1,8 @@
-const { fontFamily } = require('tailwindcss/defaultTheme')
-const plugin = require('tailwindcss/plugin')
+import tailwindcssScrollbar from 'tailwind-scrollbar'
+import type { Config } from 'tailwindcss'
+import tailwindcssAnimate from 'tailwindcss-animate'
 
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   darkMode: ['class'],
   content: ['src/**/*.{ts,tsx,astro,css,mdx}'],
   theme: {
@@ -56,14 +56,14 @@ module.exports = {
       borderRadius: {
         lg: `var(--radius)`,
         md: `calc(var(--radius) - 2px)`,
-        md: 'calc(var(--radius) - 4px)',
+        // md: 'calc(var(--radius) - 4px)',
       },
       borderColor: {
         DEFAULT: 'hsl(var(--border))',
       },
-      fontFamily: {
-        sans: ['var(--font-sans)', ...fontFamily.sans],
-      },
+      // fontFamily: {
+      //   sans: ['var(--font-sans)', ...fontFamily.sans],
+      // },
       keyframes: {
         'accordion-down': {
           from: { height: '0' },
@@ -80,8 +80,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    require('tailwindcss-animate'),
-    require('tailwind-scrollbar')({ nocompatible: true }),
-  ],
-}
+  plugins: [tailwindcssAnimate, tailwindcssScrollbar({ nocompatible: true })],
+} satisfies Config

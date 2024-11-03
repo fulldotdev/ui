@@ -1,9 +1,5 @@
-// @ts-ignore
-import liveCode from 'astro-live-code'
 import { defineConfig } from 'astro/config'
 import integration from 'fulldev-ui/integration'
-
-import tailwind from '@astrojs/tailwind'
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,18 +7,12 @@ export default defineConfig({
     enabled: false,
   },
   integrations: [
-    liveCode({
-      layout: '/src/components/Code.astro',
-    }),
     integration({
       company: 'Fulldev UI',
       favicon: 'src/images/favicon.svg',
       css: '/src/css/custom.css',
       basePreset: 'base',
       injectRoutes: true,
-    }),
-    tailwind({
-      applyBaseStyles: false,
     }),
   ],
   redirects: {
