@@ -2,6 +2,7 @@
 import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import { slugify } from 'fulldev-ui/utils/slugify'
 
 interface Props extends GlobalProps, HTMLAttributes<'h2'> {
   as?: HTMLTag
@@ -9,23 +10,31 @@ interface Props extends GlobalProps, HTMLAttributes<'h2'> {
   text?: string | undefined
 }
 
-const { size = 'md', level = 2, as = `h${level}`, text, ...rest } = Astro.props
+const {
+  text,
+  id = text ? slugify(text) : undefined,
+  size = 'md',
+  level = 2,
+  as = `h${level}`,
+  ...rest
+} = Astro.props
 ---
 
 <Element
   class:list="heading"
+  {id}
   {as}
   {level}
   {size}
   {...rest}
 >
-  <slot />
   <Fragment set:html={text} />
+  <slot />
 </Element>
 
 <style is:global>
   .heading {
-    @apply mt-8 scroll-mt-20 font-bold tracking-tight text-foreground first:mt-0;
+    @apply scroll-mt-20 font-bold tracking-tight text-foreground;
 
     &.size-sm {
       &.level-1 {

@@ -1,12 +1,12 @@
 ---
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
-import Article from 'fulldev-ui/blocks/Article.astro'
 import Banner from 'fulldev-ui/blocks/Banner.astro'
 import Footer from 'fulldev-ui/blocks/Footer.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Head from 'fulldev-ui/components/Head.astro'
 import Header from 'fulldev-ui/components/Header.astro'
+import Prose from 'fulldev-ui/components/Prose.astro'
 import Section from 'fulldev-ui/components/Section.astro'
 import Sections from 'fulldev-ui/components/sections.astro'
 import Sidebar from 'fulldev-ui/components/Sidebar.astro'
@@ -14,13 +14,13 @@ import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
 type Props = GlobalProps &
   HTMLAttributes<'html'> & {
-    render: CollectionEntry<'pages'>['render']
-    slug: CollectionEntry<'pages'>['slug']
-    header?: ComponentProps<typeof Header>
-    footer?: ComponentProps<typeof Footer>
+    render?: CollectionEntry<'pages'>['render'] | undefined
+    slug?: CollectionEntry<'pages'>['slug'] | undefined
+    header?: ComponentProps<typeof Header> | undefined
+    footer?: ComponentProps<typeof Footer> | undefined
     sections?: ComponentProps<typeof Sections>['sections']
     section?: ComponentProps<typeof Section> | undefined
-    theme?: 'light' | 'dark' | 'system'
+    theme?: 'light' | 'dark' | 'system' | undefined
     banner?: any
     toc?: any
     sidebar?: any
@@ -41,6 +41,7 @@ type Props = GlobalProps &
 
 const {
   render,
+  slug,
   header,
   navigation,
   footer,
@@ -56,82 +57,82 @@ const {
 ---
 
 <!doctype html>
-<html {...rest}>
+<html
+  class="layout"
+  {...rest}
+>
   <Head {...Astro.props} />
   <Element
+    class:list="layout-body"
     as="body"
     {theme}
   >
-    <slot name="banner">
-      <Banner text={banner} />
-    </slot>
-    <slot name="header">
-      <Header
-        open={navigation?.header}
-        {...navigation}
-        {...header}
+    <Banner text={banner} />
+    <Header
+      open={navigation?.header}
+      {...navigation}
+      {...header}
+    />
+    <slot name="header" />
+    <div class="layout-content">
+      <Sidebar
+        if={sidebar || navigation?.sidebar}
+        {...navigation?.sidebar === true ? navigation : {}}
+        logo={navigation?.header ? undefined : navigation?.logo}
+        company={navigation?.header ? undefined : navigation?.company}
+        {...sidebar}
       />
-    </slot>
-    <div class="core">
-      <slot name="sidebar">
-        <Sidebar
-          if={sidebar || navigation?.sidebar}
-          {...navigation?.sidebar === true ? navigation : {}}
-          logo={navigation?.header ? undefined : navigation?.logo}
-          company={navigation?.header ? undefined : navigation?.company}
-          {...sidebar}
+      <slot name="sidebar" />
+      <main
+        class="layout-main"
+        data-pagefind-body
+      >
+        <Section
+          level={1}
+          {...section}
         />
-      </slot>
-      <main data-pagefind-body>
-        <slot>
-          <Section {...section} />
-          <Article />
-          <Sections {sections} />
-        </slot>
+        <slot name="section" />
+        <Prose
+          {render}
+          {slug}
+          toc={toc || navigation?.toc}
+          {navigation}
+        />
+        <slot name="prose" />
+        <Sections {sections} />
+        <slot name="sections" />
+        <slot />
       </main>
     </div>
-    <slot name="footer">
-      <Footer {...footer} />
-    </slot>
+    <Footer {...footer} />
+    <slot name="footer" />
     <Fragment set:html={code?.body} />
 
     <style is:global>
       @layer fulldev {
-        html {
-          color: hsl(var(--foreground));
+        .layout {
+          @apply text-base text-foreground;
+          color-scheme: light;
           line-height: 1.5;
           font-family: 'Inter', sans-serif;
-          color-scheme: light;
 
           &.dark {
             color-scheme: dark;
           }
         }
 
-        body {
-          background-color: hsl(var(--background));
-          width: 100%;
-          min-height: 100vh;
-          color: hsl(var(--foreground));
-          line-height: inherit;
+        .layout-body {
+          @apply min-h-screen w-full bg-background text-foreground;
           font-family: 'Inter', sans-serif;
+        }
 
-          .core {
-            display: flex;
-            position: relative;
-            flex-grow: 1;
-            height: 100%;
+        .layout-content {
+          @apply relative flex h-full flex-grow;
+        }
 
-            main {
-              --screen: 1280px;
-              display: flex;
-              flex: 1;
-              flex-direction: column;
-              background-color: var(--color-background);
-              width: 100%;
-              max-width: 100vw;
-            }
-          }
+        .layout-main {
+          --screen: 1280px;
+          @apply flex w-full flex-1 shrink flex-col;
         }
       }
     </style>

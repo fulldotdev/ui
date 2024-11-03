@@ -7,11 +7,7 @@ export default {
   content: ['src/**/*.{ts,tsx,astro,css,mdx}'],
   theme: {
     container: {
-      center: false,
-      padding: 'max(2rem, calc((100% - var(--screen)) / 2))',
-      screens: {
-        '2xl': '1400px',
-      },
+      center: true,
     },
     extend: {
       colors: {
@@ -51,7 +47,9 @@ export default {
         },
       },
       spacing: {
-        gutter: 'max(24px, calc((100% - var(--screen, 100vw)) / 2))',
+        // gutter: 'max(24px, calc((100% - var(--screen, 100vw)) / 2))',
+        gutter: 'clamp(16px, 4vw, 32px)',
+        screen: 'var(--screen, 100vw)',
       },
       borderRadius: {
         lg: `var(--radius)`,

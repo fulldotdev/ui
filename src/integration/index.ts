@@ -9,7 +9,7 @@ import type { CollectionEntry } from 'astro:content'
 import tailwindcss from 'tailwindcss'
 import tailwindcssNesting from 'tailwindcss/nesting'
 import { loadEnv } from 'vite'
-import tailwindConfig from './tailwindConfig.ts'
+import tailwindConfig from '../../tailwind.config.ts'
 
 interface Config {
   favicon?: string

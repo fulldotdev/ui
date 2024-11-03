@@ -1,13 +1,68 @@
 ---
-import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import type { ComponentProps, HTMLAttributes, HTMLTag } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import Button from 'fulldev-ui/components/Button.astro'
 import Element from 'fulldev-ui/components/Element.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Lead from 'fulldev-ui/components/Lead.astro'
+import Tagline from 'fulldev-ui/components/Tagline.astro'
+import Toc from 'fulldev-ui/components/Toc.astro'
+import { crush } from 'radash'
 
-interface Props extends GlobalProps, HTMLAttributes<'div'> {
-  as?: HTMLTag
+interface Props extends HTMLAttributes<'section'> {
+  as?: HTMLTag | undefined
+  render?: CollectionEntry<'pages'>['render'] | undefined
+  slug?: CollectionEntry<'pages'>['slug'] | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
+  toc?: boolean | string
+  next?: boolean | ComponentProps<typeof Button> | undefined
+  prev?: boolean | ComponentProps<typeof Button> | undefined
+  navigation?: any
+  image?: any
+  heading?: any
+  lead?: any
+  rating?: any
+  tagline?: any
+  badge?: any
+  level?: any
+  paragraph?: any
+  list?: any
+  price?: any
+  center?: boolean
+  inset?: boolean
 }
 
-const { size = 'md', ...rest } = Astro.props
+const {
+  size = 'md',
+  toc = false,
+  slug,
+  navigation,
+  render,
+  rating,
+  tagline,
+  badge,
+  heading,
+  lead,
+  paragraph,
+  next,
+  prev,
+  list,
+  price,
+  image,
+  ...rest
+} = Astro.props
+
+const Content = render && (await render())?.Content
+
+const flatMenu = crush(navigation?.menu ?? {})
+const slugs = Object.entries(flatMenu)
+  .map(([key, value]) => (key.endsWith('.slug') ? value : null))
+  .filter(Boolean)
+const slugIndex = slugs.findIndex((val) => val === slug)
+
+const prevSlug = slugs[slugIndex - 1]
+const nextSlug = slugs[slugIndex + 1]
 ---
 
 <Element
@@ -15,57 +70,120 @@ const { size = 'md', ...rest } = Astro.props
   {size}
   {...rest}
 >
-  <slot />
+  <Element class:list="prose-container">
+    <Element class:list="prose-content">
+      <Tagline
+        text={tagline}
+        {size}
+      />
+      <Heading
+        text={heading}
+        level={1}
+        {size}
+      />
+      <Lead
+        text={lead}
+        {size}
+      />
+      <Image {...image} />
+      {Content && <Content />}
+      <slot />
+      <Element class:list="prose-footer">
+        <Button
+          class:list="prose-prev"
+          icon={prevSlug && 'arrow-left'}
+          slug={prevSlug}
+          variant="secondary"
+        />
+        <Button
+          class:list="prose-next"
+          icon={nextSlug && 'arrow-right'}
+          slug={nextSlug}
+          variant="secondary"
+          reverse
+        />
+      </Element>
+    </Element>
+    <Toc
+      if={toc}
+      heading={typeof toc === 'string' ? toc : undefined}
+      {render}
+    />
+  </Element>
 </Element>
 
 <style is:global>
   @layer fulldev {
     .prose {
-      @apply mx-auto w-full max-w-screen-md;
+      @apply relative items-start py-28 first:pt-14;
 
-      code:not(.astro-code code) {
-        @apply rounded bg-muted px-1.5 py-0.5 font-mono text-sm font-medium;
+      .prose-container {
+        @apply max-w-screen mx-auto flex h-full w-full flex-grow justify-evenly gap-14 gap-x-gutter px-gutter;
       }
 
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6 {
-        @apply mt-8 scroll-m-20 font-semibold first:mt-0;
+      .prose-content {
+        @apply w-full max-w-screen-md;
 
-        code {
-          font-size: inherit !important;
+        > * {
+          @apply mt-6 first:mt-0;
+        }
+
+        code:not(.astro-code code) {
+          @apply rounded bg-muted px-1.5 py-0.5 font-mono text-sm font-medium;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          @apply mt-8 scroll-m-20 font-semibold first:mt-0;
+
+          code {
+            font-size: inherit !important;
+          }
+        }
+
+        > h1 {
+          @apply text-4xl font-extrabold;
+        }
+
+        > h2 {
+          @apply text-2xl;
+        }
+
+        > h3 {
+          @apply text-xl;
+        }
+
+        > h4 {
+          @apply text-lg;
+        }
+
+        > h5 {
+          @apply text-base;
+        }
+
+        > h6 {
+          @apply text-sm;
+        }
+
+        > aside {
+          @apply mt-6 rounded-md border border-destructive p-4 text-destructive first:mt-0;
         }
       }
 
-      > h1 {
-        @apply text-4xl font-extrabold;
+      .prose-footer {
+        @apply mt-14 flex items-center;
+
+        .prose-next {
+          @apply ml-auto;
+        }
       }
 
-      > h2 {
-        @apply text-2xl;
-      }
-
-      > h3 {
-        @apply text-xl;
-      }
-
-      > h4 {
-        @apply text-lg;
-      }
-
-      > h5 {
-        @apply text-base;
-      }
-
-      > h6 {
-        @apply text-sm;
-      }
-
-      > aside {
-        @apply border-destructive text-destructive mt-6 rounded-md border p-4 first:mt-0;
+      .toc {
+        @apply order-last;
       }
     }
   }
