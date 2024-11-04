@@ -42,6 +42,7 @@ const {
   image = page?.data.images?.[0],
   size = 'md',
   panel = true,
+  inset = panel,
   lead,
   paragraph,
   price,
@@ -56,6 +57,7 @@ const {
   as={href ? 'a' : 'div'}
   {href}
   {panel}
+  {inset}
   {size}
   {...rest}
 >
@@ -63,8 +65,8 @@ const {
     position={panel ? position : undefined}
     {...image}
   />
-  <Icon name={icon} />
   <Element class:list="card-content">
+    <Icon name={icon} />
     <Heading
       {size}
       level={3}
@@ -87,12 +89,20 @@ const {
     .card {
       @apply relative flex flex-col items-start gap-4;
 
-      /* --inset-top: 0px;
-      --inset-left: 0px;
-      --inset-right: 0px;
-      --inset-bottom: 0px; */
+      .card-content {
+        @apply gap-4;
+      }
+
       &.panel {
         @apply overflow-hidden rounded-md border bg-card p-4;
+      }
+
+      &.inset {
+        @apply p-0;
+
+        .card-content {
+          @apply p-4;
+        }
       }
 
       &:is(a[href]) > .image {

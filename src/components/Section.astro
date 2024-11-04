@@ -41,6 +41,8 @@ interface Props extends HTMLAttributes<'section'> {
   structure?: 'left' | 'center' | 'spread' | 'split'
 }
 
+const { component, ...props } = Astro.props
+
 const {
   as = 'section',
   size = 'md',
@@ -60,69 +62,89 @@ const {
   price,
   buttons,
   image,
+  cards,
   ...rest
-} = Astro.props
+} = props
+
+const allComponents = {
+  ...import.meta.glob('/src/**/*.astro'),
+  ...import.meta.glob('../../**/*.astro'),
+}
+
+const componentPath = Object.keys(allComponents).find(
+  (path) => path.split('/').pop()?.split('.')[0] === component
+)
+
+const Component =
+  componentPath && (await (allComponents[componentPath] as any)()).default
 ---
 
-<Element
-  class:list="section"
-  {as}
-  {size}
-  {structure}
-  {inset}
-  {panel}
-  {reverse}
-  {...rest}
->
-  <Element class:list="section-container">
-    <Element class:list="section-segment">
-      <Element class:list="section-content">
-        <Rating
-          {size}
-          {...rating}
-        />
-        <Tagline
-          text={tagline}
-          {size}
-        />
-        <Badge
-          {size}
-          {...badge}
-        />
-        <Heading
-          text={heading}
-          {size}
-          {level}
-        />
-        <Lead
-          text={lead}
-          {size}
-        />
-        <Paragraph
-          text={paragraph}
-          {size}
-        />
-        <List
-          items={list}
-          {size}
-        />
-        <Price
-          value={price}
-          {size}
-        />
-        <slot name="content" />
+{
+  Component ? (
+    <Component {...props} />
+  ) : (
+    <Element
+      class:list="section"
+      {as}
+      {size}
+      {structure}
+      {inset}
+      {panel}
+      {reverse}
+      {...rest}
+    >
+      <Element class:list="section-container">
+        <Element class:list="section-segment">
+          <Element class:list="section-content">
+            <Rating
+              {size}
+              {...rating}
+            />
+            <Tagline
+              text={tagline}
+              {size}
+            />
+            <Badge
+              {size}
+              {...badge}
+            />
+            <Heading
+              text={heading}
+              {size}
+              {level}
+            />
+            <Lead
+              text={lead}
+              {size}
+            />
+            <Paragraph
+              text={paragraph}
+              {size}
+            />
+            <List
+              items={list}
+              {size}
+            />
+            <Price
+              value={price}
+              {size}
+            />
+            <slot name="content" />
+          </Element>
+          <Buttons
+            {size}
+            {variant}
+            {buttons}
+          />
+          <slot name="segment" />
+        </Element>
+        <Image {...image} />
+        <Cards {cards} />
+        <slot />
       </Element>
-      <Buttons
-        {size}
-        {variant}
-        {buttons}
-      />
-      <slot name="segment" />
     </Element>
-    <Image {...image} />
-    <slot />
-  </Element>
-</Element>
+  )
+}
 
 <style is:global>
   @layer fulldev {
@@ -134,11 +156,19 @@ const {
       }
 
       .section-segment {
-        @apply flex flex-col gap-8 py-12;
+        @apply gap-8 py-16;
       }
 
       .section-content {
-        @apply flex max-w-screen-md flex-col gap-4;
+        @apply max-w-screen-md gap-6;
+      }
+
+      &.panel {
+        @apply px-gutter first:pt-gutter;
+
+        .section-container {
+          @apply bg-card overflow-hidden rounded-lg border;
+        }
       }
 
       &.inset {
@@ -151,39 +181,19 @@ const {
         }
       }
 
-      &.panel {
-        @apply px-gutter first:pt-gutter;
-
-        .section-container {
-          @apply bg-card overflow-hidden rounded-lg border;
-        }
-      }
-
       &.structure-left {
-        .section-container {
-          @apply flex flex-col items-start;
-        }
-
-        .section-segment {
-          @apply flex flex-col items-start gap-4;
-        }
-
+        .section-container,
+        .section-segment,
         .section-content {
-          @apply items-start;
+          @apply flex flex-col items-start;
         }
       }
 
       &.structure-center {
-        .section-container {
-          @apply flex flex-col items-center text-center;
-        }
-
-        .section-segment {
-          @apply flex flex-col items-center gap-8;
-        }
-
+        .section-container,
+        .section-segment,
         .section-content {
-          @apply items-center;
+          @apply flex flex-col items-center text-center;
         }
       }
 
@@ -192,8 +202,9 @@ const {
           @apply grid auto-cols-fr gap-x-14 lg:grid-flow-col lg:items-center;
         }
 
-        .section-segment {
-          @apply flex flex-col items-start gap-8;
+        .section-segment,
+        .section-content {
+          @apply flex flex-col items-start;
         }
       }
 
