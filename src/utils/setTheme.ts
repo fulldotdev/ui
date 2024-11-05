@@ -7,8 +7,6 @@ export default function setTheme(newValue?: string) {
     (value === 'system' &&
       window.matchMedia('(prefers-color-scheme: dark)').matches)
 
-  console.log({ value, isDark })
-
   document.documentElement.classList.toggle('dark', isDark)
 
   document.querySelectorAll('.themer').forEach((themer) => {
