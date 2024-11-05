@@ -38,7 +38,15 @@ interface Props extends HTMLAttributes<'section'> {
   center?: boolean
   inset?: boolean
   reverse?: boolean
-  structure?: 'left' | 'center' | 'spread' | 'split'
+  structure?:
+    | 'left'
+    | 'center'
+    | 'spread'
+    | 'split'
+    | 'grid'
+    | 'masonry'
+    | 'carousel'
+    | 'stack'
 }
 
 const { component, ...props } = Astro.props
@@ -77,6 +85,8 @@ const componentPath = Object.keys(allComponents).find(
 
 const Component =
   componentPath && (await (allComponents[componentPath] as any)()).default
+
+const hasCards = cards && cards.length > 0
 ---
 
 {
@@ -85,11 +95,11 @@ const Component =
   ) : (
     <Element
       class:list="section"
+      panel={hasCards ? undefined : panel}
       {as}
       {size}
       {structure}
       {inset}
-      {panel}
       {reverse}
       {...rest}
     >
@@ -139,7 +149,11 @@ const Component =
           <slot name="segment" />
         </Element>
         <Image {...image} />
-        <Cards {cards} />
+        <Cards
+          {size}
+          {level}
+          {cards}
+        />
         <slot />
       </Element>
     </Element>

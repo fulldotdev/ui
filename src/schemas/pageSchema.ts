@@ -62,6 +62,7 @@ export const page = z
       .optional(),
     title: z.string(),
     description: z.string().optional(),
+    paragraph: z.string().optional(),
     image,
     images,
     section,

@@ -1,4 +1,5 @@
 ---
+// @ts-nocheck
 import type { ImageMetadata } from 'astro'
 import type { HTMLAttributes } from 'astro/types'
 import { Image as AstroImage } from 'astro:assets'
@@ -39,7 +40,7 @@ const image = images[src as keyof typeof images]
 ---
 
 {
-  image && (
+  (image || src) && (
     <AstroImage
       class:list={[
         'image',
@@ -50,8 +51,8 @@ const image = images[src as keyof typeof images]
       ]}
       alt={alt || getAltBySrc()}
       src={image ? image() : src}
-      width={width}
-      height={height}
+      width={width ? Number(width) : undefined}
+      height={height ? Number(height) : undefined}
       {...rest}
     />
   )

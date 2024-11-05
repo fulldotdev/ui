@@ -12,19 +12,28 @@ interface Props extends GlobalProps, HTMLAttributes<'div'> {
   structure?: 'grid' | 'masonry' | 'stack' | 'carousel' | 'bento' | undefined
 }
 
-const { level, panel, position, cards, size, ...rest } = Astro.props
+const {
+  structure = 'grid',
+  level,
+  panel,
+  position,
+  cards,
+  size,
+  ...rest
+} = Astro.props
 ---
 
 <Element
   class:list="cards"
   {panel}
   {size}
+  {structure}
   {...rest}
 >
   {
     cards?.map((card: any) => (
       <Card
-        {level}
+        level={level + 3}
         {panel}
         {size}
         {position}
@@ -37,49 +46,23 @@ const { level, panel, position, cards, size, ...rest } = Astro.props
 <style is:global>
   @layer fulldev {
     .cards {
-      --column-width: calc(21 * var(--space-4));
-      --gap: var(--space-5);
-
+      --column-width: 20rem;
       @apply relative w-full;
 
-      position: relative;
-      width: 100%;
-
-      /* &.panel {
-        --gap: var(--space-4);
-      } */
-
-      &.position-inset {
-        margin-right: calc(var(--inset-right) * -1);
-        margin-left: calc(var(--inset-left) * -1);
-        padding-right: var(--inset-right);
-        padding-left: var(--inset-left);
-        width: calc(100% + var(--inset-left) + var(--inset-right));
-      }
-
       &.structure-grid {
-        display: grid;
-        grid-template-columns: repeat(
-          auto-fill,
-          minmax(var(--column-width), 1fr)
-        );
-        gap: var(--gap);
-        width: 100%;
+        @apply grid w-full grid-cols-[repeat(auto-fill,minmax(var(--column-width),1fr))] gap-5;
       }
 
       &.structure-masonry {
-        column-gap: var(--gap);
+        @apply w-full columns-6 break-inside-avoid gap-5 space-y-5;
         column-fill: balance;
         column-width: var(--column-width);
-        column-count: 6;
-        break-inside: avoid;
-        width: 100%;
 
-        & > * + * {
+        /* & > * + * {
           break-inside: avoid;
           margin-top: var(--gap);
           margin-bottom: var(--gap);
-        }
+        } */
       }
 
       &.structure-carousel {
@@ -132,6 +115,18 @@ const { level, panel, position, cards, size, ...rest } = Astro.props
             grid-column: span 3;
           }
         }
+      }
+
+      &.size-sm {
+        --column-width: 16rem;
+      }
+
+      &.size-md {
+        --column-width: 20rem;
+      }
+
+      &.size-lg {
+        --column-width: 26rem;
       }
     }
   }
