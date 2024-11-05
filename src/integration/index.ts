@@ -64,20 +64,7 @@ export default function fulldevIntegration(
             liveCode({
               layout: '/src/components/Code.astro',
             }),
-            // tailwind({
-            //   applyBaseStyles: false,
-            //   configFile: '../../tailwind.config.mjs',
-            // }),
-            config?.favicon &&
-              config?.company &&
-              favicons({
-                path: 'favicon',
-                masterPicture: config.favicon,
-                appName: config.company,
-                appShortName: config.company,
-                appDescription: config.company,
-              }),
-          ].filter(Boolean),
+          ],
           vite: {
             css: {
               postcss: {
@@ -87,6 +74,22 @@ export default function fulldevIntegration(
           },
         })
 
+        // ----------------------
+        // Inject Favicon
+        // ----------------------
+        config?.favicon &&
+          config?.company &&
+          updateConfig({
+            integrations: [
+              favicons({
+                path: 'favicon',
+                masterPicture: config.favicon,
+                appName: config.company,
+                appShortName: config.company,
+                appDescription: config.company,
+              }),
+            ],
+          })
         // ----------------------
         // Inject routes
         // ----------------------
