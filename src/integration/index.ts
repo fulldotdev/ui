@@ -77,7 +77,7 @@ export default function fulldevIntegration(
                 appShortName: config.company,
                 appDescription: config.company,
               }),
-          ],
+          ].filter(Boolean),
           vite: {
             css: {
               postcss: {
