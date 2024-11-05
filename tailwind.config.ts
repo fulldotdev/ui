@@ -6,14 +6,17 @@ export default {
   darkMode: ['class'],
   content: ['src/**/*.{ts,tsx,astro,css,mdx}'],
   theme: {
-    container: {
-      center: true,
-      padding: '2rem',
-      screens: {
-        '2xl': '1400px',
-      },
-    },
+    // container: {
+    //   center: true,
+    //   padding: 'clamp(16px, 4vw, 32px)',
+    //   screens: [],
+    // },
     extend: {
+      spacing: {
+        gutter: 'clamp(16px, 4vw, 32px)',
+        container: 'var(--container, 100vw)',
+        hero: 'calc(100vh - var(--header-height) - var(--banner-height))',
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -49,11 +52,6 @@ export default {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
         },
-      },
-      spacing: {
-        // gutter: 'max(24px, calc((100% - var(--screen, 100vw)) / 2))',
-        gutter: 'clamp(16px, 4vw, 32px)',
-        screen: 'var(--screen, 100vw)',
       },
       borderRadius: {
         lg: `var(--radius)`,

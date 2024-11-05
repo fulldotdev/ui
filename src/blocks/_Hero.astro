@@ -1,0 +1,218 @@
+---
+import type { ComponentProps, HTMLAttributes, HTMLTag } from 'astro/types'
+import Badge from 'fulldev-ui/components/Badge.astro'
+import Button from 'fulldev-ui/components/Button.astro'
+import Buttons from 'fulldev-ui/components/Buttons.astro'
+import type Card from 'fulldev-ui/components/Card.astro'
+import Cards from 'fulldev-ui/components/Cards.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Lead from 'fulldev-ui/components/Lead.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Rating from 'fulldev-ui/components/Rating.astro'
+import Tagline from 'fulldev-ui/components/Tagline.astro'
+
+interface Props extends HTMLAttributes<'section'> {
+  as?: HTMLTag
+  size?: 'sm' | 'md' | 'lg' | undefined
+  image?: ComponentProps<typeof Image>
+  buttons?: ComponentProps<typeof Buttons>['buttons']
+  variant?: ComponentProps<typeof Button>['variant']
+  cards?: ComponentProps<typeof Cards>['cards']
+  panel?: ComponentProps<typeof Card>['panel']
+  heading?: any
+  lead?: any
+  rating?: any
+  tagline?: any
+  badge?: any
+  level?: any
+  paragraph?: any
+  dark?: boolean
+  inset?: boolean
+  reverse?: boolean
+  structure?: 'left' | 'center' | 'spread' | 'split' | undefined
+  position?: 'contain' | 'inset' | 'background' | undefined
+}
+
+const {
+  as = 'hero',
+  size = 'lg',
+  structure = 'left',
+  position = 'contain',
+  reverse = false,
+  dark = false,
+  variant = 'primary',
+  level = 1,
+  rating,
+  tagline,
+  badge,
+  heading,
+  lead,
+  paragraph,
+  buttons,
+  image,
+  cards,
+  ...rest
+} = Astro.props
+---
+
+<Element
+  class:list="hero"
+  {as}
+  {size}
+  {structure}
+  {position}
+  {reverse}
+  {dark}
+  {...rest}
+>
+  <Element class:list="hero-container">
+    <Element class:list="hero-segment">
+      <Element class:list="hero-content">
+        <Rating
+          {size}
+          {...rating}
+        />
+        <Tagline
+          text={tagline}
+          {size}
+        />
+        <Badge
+          {size}
+          {...badge}
+        />
+        <Heading
+          text={heading}
+          {size}
+          {level}
+        />
+        <Lead
+          text={lead}
+          {size}
+        />
+        <Paragraph
+          text={paragraph}
+          {size}
+        />
+        <slot name="content" />
+      </Element>
+      <Buttons
+        {size}
+        {variant}
+        {buttons}
+      />
+      <slot name="segment" />
+    </Element>
+    <Image {...image} />
+    <slot />
+  </Element>
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .heroooo {
+      @apply relative w-full lg:min-h-[calc(100vh-var(--header-height)-var(--banner-height))];
+
+      .hero-container {
+        @apply z-10 mx-auto flex h-full w-full max-w-container flex-col justify-center px-gutter;
+      }
+
+      .hero-segment {
+        @apply z-10 flex flex-col items-start gap-8 py-20;
+      }
+
+      .hero-content {
+        @apply flex max-w-screen-md flex-col items-start gap-6;
+      }
+
+      &.position-contain {
+        @apply py-8;
+
+        .hero-segment {
+          @apply py-20;
+        }
+
+        .image {
+          @apply h-full w-full rounded-lg object-contain;
+        }
+      }
+
+      &.position-overflow {
+        @apply overflow-hidden py-8;
+
+        .hero-segment {
+          @apply py-20;
+        }
+
+        .image {
+          @apply lg:min-w-screen block h-auto rounded-lg object-contain object-left lg:max-h-[clamp(500px,100vw,70vh)];
+        }
+      }
+
+      &.position-background {
+        .image {
+          @apply absolute inset-0 h-full max-h-none w-full max-w-none object-cover opacity-30;
+        }
+      }
+
+      &.position-inset {
+        @apply overflow-hidden;
+
+        .hero-container {
+          @apply px-0;
+        }
+
+        .hero-segment {
+          @apply px-gutter;
+        }
+
+        .image {
+          @apply min-w-screen block h-full;
+        }
+      }
+
+      &.dark {
+        @apply bg-background;
+      }
+
+      &.structure-center {
+        .hero-container,
+        .hero-segment,
+        .hero-content {
+          @apply items-center text-center;
+        }
+      }
+
+      &.structure-split {
+        .hero-container {
+          @apply lg:grid lg:auto-cols-fr lg:grid-flow-col lg:items-center;
+        }
+      }
+
+      &.structure-spread {
+        .hero-container {
+          @apply flex flex-col;
+        }
+
+        .hero-segment {
+          @apply flex w-full flex-row flex-wrap items-end justify-between;
+        }
+      }
+
+      &.reverse {
+        &:not(.structure-split) {
+          .hero-segment {
+            @apply order-last;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .hero-segment {
+            @apply order-last;
+          }
+        }
+      }
+    }
+  }
+</style>

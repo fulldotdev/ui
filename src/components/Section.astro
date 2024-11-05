@@ -19,7 +19,6 @@ interface Props extends HTMLAttributes<'section'> {
   as?: HTMLTag
   size?: 'sm' | 'md' | 'lg' | undefined
   image?: ComponentProps<typeof Image>
-  position?: ComponentProps<typeof Image>['position']
   buttons?: ComponentProps<typeof Buttons>['buttons']
   button?: ComponentProps<typeof Button> | undefined
   variant?: ComponentProps<typeof Button>['variant']
@@ -27,17 +26,21 @@ interface Props extends HTMLAttributes<'section'> {
   panel?: ComponentProps<typeof Card>['panel']
   component?: string
   heading?: any
+  background?: any
   lead?: any
   rating?: any
   tagline?: any
   badge?: any
   level?: any
   paragraph?: any
+  dark?: boolean
   list?: any
   price?: any
   center?: boolean
   inset?: boolean
   reverse?: boolean
+  frame?: 'fill' | 'panel' | 'viewport' | undefined
+  position?: 'contain' | 'inset' | 'background' | undefined
   structure?:
     | 'left'
     | 'center'
@@ -47,6 +50,7 @@ interface Props extends HTMLAttributes<'section'> {
     | 'masonry'
     | 'carousel'
     | 'stack'
+    | undefined
 }
 
 const { component, ...props } = Astro.props
@@ -59,6 +63,9 @@ const {
   inset = false,
   panel = false,
   reverse = false,
+  dark = false,
+  frame = 'viewport',
+  position = 'background',
   level = 2,
   rating,
   tagline,
@@ -70,6 +77,7 @@ const {
   price,
   buttons,
   image,
+  background,
   cards,
   ...rest
 } = props
@@ -101,6 +109,9 @@ const hasCards = cards && cards.length > 0
       {structure}
       {inset}
       {reverse}
+      {dark}
+      {position}
+      {frame}
       {...rest}
     >
       <Element class:list="section-container">
@@ -163,29 +174,53 @@ const hasCards = cards && cards.length > 0
 <style is:global>
   @layer fulldev {
     .section {
-      @apply w-full pb-28 pt-14 first:pt-0;
+      @apply relative flex w-full items-center pb-28 pt-14 first:pt-0;
 
       .section-container {
-        @apply max-w-screen px-gutter mx-auto w-full;
+        @apply z-10 mx-auto w-full max-w-container px-gutter;
       }
 
       .section-segment {
-        @apply gap-8 py-16;
+        @apply z-10 gap-8 py-16;
       }
 
       .section-content {
         @apply max-w-screen-md gap-6;
       }
 
-      &.panel {
-        @apply px-gutter first:pt-gutter;
+      &.frame-fill {
+        @apply pb-28 pt-14 first:pt-0;
+      }
+
+      &.frame-viewport {
+        @apply min-h-screen pb-28 pt-14;
 
         .section-container {
-          @apply bg-card overflow-hidden rounded-lg border;
+          @apply justify-center;
         }
       }
 
-      &.inset {
+      &.frame-panel {
+        @apply px-gutter first:pt-gutter;
+
+        .section-container {
+          @apply relative overflow-hidden rounded-lg border bg-card;
+        }
+      }
+
+      &.position-contain {
+        .image {
+          @apply h-auto w-full object-contain;
+        }
+      }
+
+      &.position-background {
+        .image {
+          @apply absolute inset-0 h-full max-h-none w-full max-w-none object-cover opacity-30;
+        }
+      }
+
+      &.position-inset {
         .section-container {
           @apply px-0;
         }
@@ -193,6 +228,14 @@ const hasCards = cards && cards.length > 0
         .section-segment {
           @apply px-gutter;
         }
+
+        .image {
+          @apply h-auto w-full object-cover;
+        }
+      }
+
+      &.dark {
+        @apply bg-background;
       }
 
       &.structure-left {
