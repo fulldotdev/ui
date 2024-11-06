@@ -1,0 +1,112 @@
+---
+import Button from 'fulldev-ui/components/Button.astro'
+import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Channels from 'fulldev-ui/components/Channels.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Form from 'fulldev-ui/components/Form.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Input from 'fulldev-ui/components/Input.astro'
+import Section from 'fulldev-ui/components/Section.astro'
+import Socials from 'fulldev-ui/components/Socials.astro'
+import Tagline from 'fulldev-ui/components/Tagline.astro'
+import Text from 'fulldev-ui/components/Text.astro'
+import Textarea from 'fulldev-ui/components/Textarea.astro'
+
+const {
+  heading,
+  form,
+  text,
+  tagline,
+  googleMaps,
+  buttons,
+  socials,
+  position,
+  image,
+  channels,
+  level = 1,
+  ...rest
+} = Astro.props
+---
+
+<Section
+  class:list="contact"
+  structure="split"
+  {...rest}
+>
+  <Element class:list="column">
+    <Tagline text={tagline} />
+    <Heading
+      size={'sm'}
+      level={level}
+      text={heading}
+    />
+    <Text text={text} />
+    <Buttons {buttons} />
+    <Channels {channels} />
+    <Socials {socials} />
+    <Form
+      action="/thank-you"
+      method="POST"
+    >
+      {
+        form.fields.map((field: any) => {
+          if (field.type === 'textarea') {
+            return (
+              <Textarea
+                label={field.label}
+                id={field.name}
+                name={field.name}
+                required={field.required}
+              />
+            )
+          }
+          return (
+            <Input
+              label={field.label}
+              id={field.name}
+              name={field.name}
+              type={field.type}
+              required={field.required}
+            />
+          )
+        })
+      }
+      <Button
+        type="submit"
+        variant="primary"
+        text={form.button}
+      />
+    </Form>
+  </Element>
+
+  <Image
+    {position}
+    {...image}
+  />
+</Section>
+
+<style is:global>
+  @layer fulldev {
+    .oldcontact {
+      .column {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      > .column {
+        gap: var(--space-5);
+      }
+
+      .channel + .channel {
+        margin-top: var(--space-3) !important;
+      }
+
+      .socials {
+        display: flex;
+        gap: var(--space-2);
+      }
+    }
+  }
+</style>

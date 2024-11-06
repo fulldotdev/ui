@@ -11,16 +11,16 @@ import Rating from 'fulldev-ui/components/Rating.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 
 interface Props extends HTMLAttributes<'section'> {
-  as?: HTMLTag
-  image?: ComponentProps<typeof Image>['id']
-  buttons?: ComponentProps<typeof Buttons>['buttons']
+  rating?: ComponentProps<typeof Rating> | undefined
+  badge?: ComponentProps<typeof Badge> | undefined
+  tagline?: ComponentProps<typeof Tagline>['text']
   heading?: ComponentProps<typeof Heading>['text']
   lead?: ComponentProps<typeof Lead>['text']
-  rating?: ComponentProps<typeof Rating> | undefined
-  tagline?: ComponentProps<typeof Tagline>['text']
-  badge?: ComponentProps<typeof Badge> | undefined
   paragraph?: ComponentProps<typeof Paragraph>['text']
+  buttons?: ComponentProps<typeof Buttons>['buttons']
+  image?: ComponentProps<typeof Image>['id']
   level?: ComponentProps<typeof Heading>['level']
+  as?: HTMLTag
   size?: 'sm' | 'md' | 'lg' | undefined
   variant?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | undefined
 }
@@ -28,7 +28,7 @@ interface Props extends HTMLAttributes<'section'> {
 const {
   as = 'section',
   size = 'lg',
-  variant = 8,
+  variant = 1,
   level = 1,
   rating,
   tagline,
@@ -66,7 +66,7 @@ const {
         />
         <Heading
           text={heading}
-          level={1}
+          {level}
           {size}
         />
         <Lead
@@ -86,7 +86,10 @@ const {
       />
       <slot name="segment" />
     </Element>
-    <Image {...image} />
+    <Image
+      class:list="hero-image"
+      {...image}
+    />
     <slot />
   </Element>
 </Element>
@@ -108,6 +111,10 @@ const {
         @apply flex max-w-screen-md flex-col gap-6;
       }
 
+      &.dark {
+        @apply bg-background;
+      }
+
       /* Column left aligned */
       &.variant-1 {
         .hero-container {
@@ -116,6 +123,10 @@ const {
 
         .hero-segment {
           @apply gap-8 py-16;
+        }
+
+        .content-image {
+          @apply rounded-lg;
         }
       }
 
@@ -132,6 +143,10 @@ const {
         .hero-content {
           @apply items-center text-center;
         }
+
+        .content-image {
+          @apply rounded-lg;
+        }
       }
 
       /* Spread */
@@ -143,12 +158,20 @@ const {
         .hero-segment {
           @apply w-full flex-row flex-wrap items-end justify-between py-16;
         }
+
+        .content-image {
+          @apply rounded-lg;
+        }
       }
 
       /* Split */
       &.variant-4 {
         .hero-container {
           @apply max-w-container px-gutter py-8 lg:grid lg:grid-cols-2 lg:items-center;
+        }
+
+        .content-image {
+          @apply rounded-lg;
         }
       }
 
@@ -164,7 +187,7 @@ const {
           @apply w-auto max-w-screen-md px-gutter pb-16 pt-24 lg:pb-24;
         }
 
-        .image {
+        .hero-image {
           @apply right-0 top-0 h-full object-cover lg:absolute lg:w-1/2;
         }
       }
@@ -177,7 +200,7 @@ const {
           @apply max-w-container justify-center px-gutter py-16;
         }
 
-        .image {
+        .hero-image {
           @apply absolute inset-0 h-full w-full object-cover opacity-30;
         }
       }
@@ -190,13 +213,13 @@ const {
           @apply max-w-container items-center justify-center px-gutter py-16;
         }
 
+        .hero-image {
+          @apply absolute inset-0 h-full w-full object-cover opacity-30;
+        }
+
         .hero-segment,
         .hero-content {
           @apply items-center text-center;
-        }
-
-        .image {
-          @apply absolute inset-0 h-full w-full object-cover opacity-30;
         }
       }
 
@@ -208,12 +231,12 @@ const {
           @apply max-w-container items-center justify-end px-gutter py-16;
         }
 
-        .hero-segment {
-          @apply w-full flex-row flex-wrap items-end justify-between;
+        .hero-image {
+          @apply absolute inset-0 h-full w-full object-cover opacity-30;
         }
 
-        .image {
-          @apply absolute inset-0 h-full w-full object-cover opacity-30;
+        .hero-segment {
+          @apply w-full flex-row flex-wrap items-end justify-between;
         }
       }
     }

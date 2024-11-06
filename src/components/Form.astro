@@ -8,12 +8,14 @@ import Textarea from 'fulldev-ui/components/Textarea.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
 interface Props extends GlobalProps, HTMLAttributes<'form'> {
-  fields: (
-    | ComponentProps<typeof Input>
-    | ComponentProps<typeof Select>
-    | (ComponentProps<typeof Textarea> & { type?: 'textarea' | undefined })
-  )[]
   submit?: ComponentProps<typeof Button>['text']
+  fields?:
+    | (
+        | ComponentProps<typeof Input>
+        | ComponentProps<typeof Select>
+        | (ComponentProps<typeof Textarea> & { type?: 'textarea' | undefined })
+      )[]
+    | undefined
 }
 
 const { fields, submit, ...rest } = Astro.props
@@ -25,25 +27,24 @@ const { fields, submit, ...rest } = Astro.props
   {...rest}
 >
   {
-    fields.map((field) => {
+    fields?.map((field) => {
       if ('options' in field) return <Select {...field} />
       if ('type' in field && field.type === 'textarea')
         return <Textarea {...field} />
       return <Input {...(field as any)} />
     })
   }
+  <slot />
   <Button
     type="submit"
     text={submit}
   />
 </Element>
 
-<style is:global >
-  .form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-    width: 100%;
-    max-width: calc(var(--space-4) * 44);
+<style is:global>
+  @layer fulldev {
+    .form {
+      @apply flex w-full max-w-screen-md flex-col gap-4;
+    }
   }
 </style>

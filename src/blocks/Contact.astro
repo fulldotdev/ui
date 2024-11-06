@@ -1,24 +1,23 @@
 ---
-import Button from 'fulldev-ui/components/Button.astro'
-import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Channels from 'fulldev-ui/components/Channels.astro'
 import Element from 'fulldev-ui/components/Element.astro'
-import Form from 'fulldev-ui/components/experimental/Form.astro'
+import Form from 'fulldev-ui/components/Form.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import Input from 'fulldev-ui/components/Input.astro'
-import Section from 'fulldev-ui/components/Section.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Socials from 'fulldev-ui/components/Socials.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
-import Text from 'fulldev-ui/components/Text.astro'
-import Textarea from 'fulldev-ui/components/Textarea.astro'
 
 const {
+  as = 'section',
+  size = 'md',
+  variant = 1,
   heading,
   form,
   text,
   tagline,
   googleMaps,
+  paragraph,
   buttons,
   socials,
   position,
@@ -29,83 +28,89 @@ const {
 } = Astro.props
 ---
 
-<Section
+<Element
   class:list="contact"
-  structure="split"
+  {as}
+  {size}
+  {variant}
   {...rest}
 >
-  <Element class:list="column">
-    <Tagline text={tagline} />
-    <Heading
-      size={'sm'}
-      level={level}
-      text={heading}
-    />
-    <Text text={text} />
-    <Buttons {buttons} />
-    <Channels {channels} />
-    <Socials {socials} />
-    <Form
-      action="/thank-you"
-      method="POST"
-    >
-      {
-        form.fields.map((field: any) => {
-          if (field.type === 'textarea') {
-            return (
-              <Textarea
-                label={field.label}
-                id={field.name}
-                name={field.name}
-                required={field.required}
-              />
-            )
-          }
-          return (
-            <Input
-              label={field.label}
-              id={field.name}
-              name={field.name}
-              type={field.type}
-              required={field.required}
-            />
-          )
-        })
-      }
-      <Button
-        type="submit"
-        variant="primary"
-        text={form.button}
+  <Element class:list="contact-container">
+    <Element class:list="contact-segment">
+      <Element class:list="contact-content">
+        <Tagline text={tagline} />
+        <Heading
+          size={'sm'}
+          level={level}
+          text={heading}
+        />
+        <Paragraph text={paragraph} />
+      </Element>
+      <Channels {channels} />
+      <Socials {socials} />
+      <Form
+        action="/thank-you"
+        method="POST"
+        {...form}
       />
-    </Form>
+    </Element>
+    <Image
+      class:list="contact-image"
+      {position}
+      {...image}
+    />
   </Element>
-
-  <Image
-    {position}
-    {...image}
-  />
-</Section>
+</Element>
 
 <style is:global>
   @layer fulldev {
     .contact {
-      .column {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
+      @apply relative w-full;
+
+      .contact-container {
+        @apply mx-auto flex h-full w-full flex-col;
       }
 
-      > .column {
-        gap: var(--space-5);
+      .contact-segment {
+        @apply z-10 flex flex-col items-start gap-8;
       }
 
-      .channel + .channel {
-        margin-top: var(--space-3) !important;
+      .contact-content {
+        @apply flex max-w-screen-md flex-col gap-6;
       }
 
-      .socials {
-        display: flex;
-        gap: var(--space-2);
+      &.dark {
+        @apply bg-background;
+      }
+
+      /* Narrow left aligned */
+      &.variant-1 {
+        .contact-container {
+          @apply max-w-screen-md px-gutter py-8;
+        }
+
+        .contact-segment {
+          @apply gap-8 py-16;
+        }
+
+        .content-image {
+          @apply rounded-lg;
+        }
+      }
+
+      /* Split */
+      &.variant-2 {
+        .contact-container {
+          @apply max-w-container gap-x-gutter gap-y-16 px-gutter py-20 lg:grid lg:grid-cols-2 lg:items-center;
+        }
+
+        .contact-segment {
+          @apply max-w-xl;
+        }
+
+        .contact-image {
+          @apply rounded-lg;
+        }
       }
     }
   }

@@ -1,11 +1,130 @@
 ---
-import Section from 'fulldev-ui/components/Section.astro'
+import type { ComponentProps, HTMLAttributes, HTMLTag } from 'astro/types'
+import Badge from 'fulldev-ui/components/Badge.astro'
+import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Lead from 'fulldev-ui/components/Lead.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Rating from 'fulldev-ui/components/Rating.astro'
+import Tagline from 'fulldev-ui/components/Tagline.astro'
 
-const { ...rest } = Astro.props
+interface Props extends HTMLAttributes<'section'> {
+  rating?: ComponentProps<typeof Rating> | undefined
+  badge?: ComponentProps<typeof Badge> | undefined
+  tagline?: ComponentProps<typeof Tagline>['text']
+  heading?: ComponentProps<typeof Heading>['text']
+  lead?: ComponentProps<typeof Lead>['text']
+  paragraph?: ComponentProps<typeof Paragraph>['text']
+  buttons?: ComponentProps<typeof Buttons>['buttons']
+  image?: ComponentProps<typeof Image>['id']
+  level?: ComponentProps<typeof Heading>['level']
+  as?: HTMLTag
+  size?: 'sm' | 'md' | 'lg' | undefined
+  variant?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | undefined
+}
+
+const {
+  as = 'section',
+  size = 'md',
+  variant = 1,
+  level = 2,
+  rating,
+  tagline,
+  badge,
+  heading,
+  lead,
+  paragraph,
+  buttons,
+  image,
+  ...rest
+} = Astro.props
 ---
 
-<Section
+<Element
   class:list="content"
-  structure="split"
+  {as}
+  {size}
+  {variant}
   {...rest}
-/>
+>
+  <Element class:list="content-container">
+    <Element class:list="content-segment">
+      <Element class:list="content-content">
+        <Rating
+          {size}
+          {...rating}
+        />
+        <Tagline
+          text={tagline}
+          {size}
+        />
+        <Badge
+          {size}
+          {...badge}
+        />
+        <Heading
+          text={heading}
+          {level}
+          {size}
+        />
+        <Lead
+          text={lead}
+          {size}
+        />
+        <Paragraph
+          text={paragraph}
+          {size}
+        />
+        <slot name="content" />
+      </Element>
+      <Buttons
+        variant="secondary"
+        {size}
+        {buttons}
+      />
+      <slot name="segment" />
+    </Element>
+    <Image
+      class:list="content-image"
+      {...image}
+    />
+    <slot />
+  </Element>
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .content {
+      @apply relative w-full;
+
+      .content-container {
+        @apply mx-auto flex h-full w-full flex-col;
+      }
+
+      .content-segment {
+        @apply z-10 flex flex-col items-start gap-8;
+      }
+
+      .content-content {
+        @apply flex max-w-screen-md flex-col gap-6;
+      }
+
+      &.dark {
+        @apply bg-background;
+      }
+
+      /* Split */
+      &.variant-1 {
+        .content-container {
+          @apply max-w-container px-gutter py-16 lg:grid lg:grid-cols-2 lg:items-center;
+        }
+
+        .content-image {
+          @apply rounded-lg;
+        }
+      }
+    }
+  }
+</style>
