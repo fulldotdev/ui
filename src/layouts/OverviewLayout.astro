@@ -1,7 +1,7 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import Categories from 'fulldev-ui/blocks/Categories.astro'
-import Intro from 'fulldev-ui/blocks/Intro.astro'
+import Hero from 'fulldev-ui/blocks/Hero.astro'
 import Products from 'fulldev-ui/blocks/Products.astro'
 import Prose from 'fulldev-ui/components/Prose.astro'
 import Sections from 'fulldev-ui/components/sections.astro'
@@ -11,16 +11,18 @@ import { getReferenceChildren } from 'fulldev-ui/utils/getReferenceChildren.ts'
 
 type Props = ComponentProps<typeof Layout>
 
-const { slug, sections, title, description, render } = Astro.props
+const { slug, sections, title, image, images, description, render } =
+  Astro.props
 
 const folderChildren = slug && (await getFolderChildren(slug))
 const referenceChildren = slug && (await getReferenceChildren(slug))
 ---
 
 <Layout {...Astro.props}>
-  <!-- <Intro
+  <Hero
     heading={title}
-    text={description}
+    paragraph={description}
+    image={image || images?.[0]}
   />
   <Categories
     component="Categories"
@@ -32,7 +34,7 @@ const referenceChildren = slug && (await getReferenceChildren(slug))
     component="Products"
     cards={referenceChildren}
     structure="grid"
-  /> -->
+  />
   <Prose {render} />
   <Sections {sections} />
   <slot />

@@ -8,7 +8,7 @@ import links from 'fulldev-ui/schemas/components/links'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
 import Buttons from './Buttons.astro'
 import Heading from './Heading.astro'
-import type Links from './Links.astro'
+import Links from './Links.astro'
 
 interface Props extends GlobalProps, HTMLAttributes<'aside'> {
   variant?: ComponentProps<typeof Button>['variant']
@@ -39,15 +39,6 @@ const {
   if: ifProp,
   ...rest
 } = Astro.props
-
-const firstGroup = {
-  heading: '',
-  links: [...(links || []), ...(buttons || [])],
-}
-
-console.log('FIRST GROUP', { buttons, links, firstGroup })
-
-const mergedMenu = [firstGroup, ...(menu || [])] as typeof menu
 ---
 
 <Button
@@ -93,7 +84,11 @@ const mergedMenu = [firstGroup, ...(menu || [])] as typeof menu
       <slot name="header" />
     </Element>
     <Element class:list="drawer-content">
-      <Menu groups={mergedMenu} />
+      <Links
+        direction="column"
+        {links}
+      />
+      <Menu groups={menu} />
       <slot />
     </Element>
     <Element
@@ -122,7 +117,7 @@ const mergedMenu = [firstGroup, ...(menu || [])] as typeof menu
         @apply flex h-full shrink flex-col overflow-auto bg-background;
 
         .drawer-content {
-          @apply flex flex-col px-gutter py-12;
+          @apply flex flex-col gap-6 px-gutter py-12;
         }
 
         .drawer-header,

@@ -3,7 +3,6 @@ import logo from '../components/logo'
 import menu from '../components/menu'
 import heading from './heading'
 import themer from './themer'
-import toc from './toc'
 
 export default z
   .object({
@@ -11,7 +10,6 @@ export default z
     logo,
     heading,
     menu,
-    toc,
   })
   .partial()
   .passthrough()

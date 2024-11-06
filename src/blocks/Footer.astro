@@ -1,7 +1,101 @@
 ---
-import FooterComponent from 'fulldev-ui/components/Footer.astro'
+import type { ComponentProps, HTMLAttributes, HTMLTag } from 'astro/types'
+import Channels from 'fulldev-ui/components/Channels.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Logo from 'fulldev-ui/components/Logo.astro'
+import Menu from 'fulldev-ui/components/Menu.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Socials from 'fulldev-ui/components/Socials.astro'
+import Text from 'fulldev-ui/components/Text.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-const { ...rest } = Astro.props
+interface Props extends GlobalProps, HTMLAttributes<'footer'> {
+  as?: HTMLTag
+  variant?: 1 | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
+  logo?: ComponentProps<typeof Logo>['src']
+  company?: ComponentProps<typeof Logo>['company']
+  paragraph?: ComponentProps<typeof Paragraph>['text']
+  socials?: ComponentProps<typeof Socials>['socials']
+  channels?: ComponentProps<typeof Channels>['channels']
+  hours?: any
+  menu?: ComponentProps<typeof Menu>['groups']
+}
+
+const {
+  as = 'footer',
+  size = 'sm',
+  variant = 1,
+  logo,
+  company,
+  paragraph,
+  socials,
+  channels,
+  hours,
+  menu,
+  ...rest
+} = Astro.props
 ---
 
-<FooterComponent {...rest} />
+<Element
+  class:list="footer"
+  {as}
+  {size}
+  {variant}
+  {...rest}
+>
+  <Element class:list="footer-container">
+    <Element class:list="footer-content">
+      <Logo
+        {company}
+        {...typeof logo === 'string' ? { src: logo } : logo}
+      />
+      <Paragraph text={paragraph} />
+      <Socials {socials} />
+    </Element>
+    <Channels {channels} />
+    <!-- <Hours {hours} /> -->
+    <Menu
+      direction="row"
+      groups={menu}
+      {size}
+    />
+    <Element class:list="hours column">
+      <Heading
+        text={hours?.heading}
+        level={5}
+      />
+      <Element>
+        {
+          Object.entries(hours?.days ?? {})?.map(([key, value]: any) => (
+            <Element class:list="spread">
+              <Text text={key} />
+              <Text text={value} />
+            </Element>
+          ))
+        }
+      </Element>
+    </Element>
+  </Element>
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .footer {
+      @apply relative w-full;
+
+      &.dark {
+        @apply bg-background;
+      }
+
+      .footer-container {
+        @apply mx-auto flex w-full max-w-container gap-12 px-gutter py-20;
+      }
+
+      .footer-content {
+        @apply flex max-w-sm flex-col gap-4;
+      }
+    }
+  }
+</style>

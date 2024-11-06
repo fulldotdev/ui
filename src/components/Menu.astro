@@ -7,6 +7,7 @@ import type Link from './Link.astro'
 import Links from './Links.astro'
 
 interface Props extends GlobalProps, HTMLAttributes<'div'> {
+  direction?: 'row' | 'column'
   groups?:
     | {
         heading?: ComponentProps<typeof Heading>['text']
@@ -15,11 +16,12 @@ interface Props extends GlobalProps, HTMLAttributes<'div'> {
     | undefined
 }
 
-const { groups, size = 'md', ...rest } = Astro.props
+const { direction = 'column', groups, size = 'md', ...rest } = Astro.props
 ---
 
 <Element
   class:list="menu"
+  {direction}
   {size}
   {...rest}
 >
@@ -48,6 +50,10 @@ const { groups, size = 'md', ...rest } = Astro.props
 
       .menu-group {
         @apply flex flex-col gap-3;
+      }
+
+      &.direction-row {
+        @apply flex-row flex-wrap gap-6;
       }
     }
   }

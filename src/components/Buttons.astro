@@ -8,9 +8,17 @@ interface Props extends GlobalProps, HTMLAttributes<'div'> {
   variant?: ComponentProps<typeof Button>['variant']
   button?: ComponentProps<typeof Button> | undefined
   buttons?: ComponentProps<typeof Button>[] | undefined
+  direction?: 'row' | 'column' | undefined
 }
 
-const { variant = 'primary', buttons = [], button, size, ...rest } = Astro.props
+const {
+  direction = 'row',
+  variant = 'primary',
+  buttons = [],
+  button,
+  size,
+  ...rest
+} = Astro.props
 
 const buttonVariant = (i: number) => {
   if (variant === 'primary' && i === 0) return 'primary'
@@ -23,6 +31,7 @@ const buttonVariant = (i: number) => {
 
 <Element
   class:list="buttons"
+  {direction}
   {...rest}
 >
   {
@@ -41,6 +50,10 @@ const buttonVariant = (i: number) => {
   @layer fulldev {
     .buttons {
       @apply inline-flex flex-wrap justify-stretch gap-2;
+
+      &.direction-column {
+        @apply flex-col items-start;
+      }
     }
   }
 </style>
