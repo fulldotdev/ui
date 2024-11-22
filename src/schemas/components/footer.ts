@@ -1,8 +1,7 @@
 import { z } from 'astro:content'
-import buttons from './buttons'
 import channels from './channels'
-import heading from './heading'
 import logo from './logo'
+import menu from './menu'
 import socials from './socials'
 import text from './text'
 
@@ -12,14 +11,7 @@ export default z
     text,
     socials,
     channels,
-    columns: z.array(
-      z
-        .object({
-          heading,
-          buttons,
-        })
-        .partial()
-    ),
+    menu,
   })
   .partial()
   .passthrough()

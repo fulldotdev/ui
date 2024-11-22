@@ -15,7 +15,7 @@ export default {
       spacing: {
         gutter: 'clamp(16px, 4vw, 32px)',
         container: 'var(--container, 100vw)',
-        hero: 'calc(100vh - var(--header-height) - var(--banner-height))',
+        hero: 'calc(100vh - var(--header-height, 0px) - var(--subheader-height, 0px) - var(--banner-height, 0px))',
       },
       colors: {
         border: 'hsl(var(--border))',

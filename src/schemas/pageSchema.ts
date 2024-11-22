@@ -8,6 +8,7 @@ import price from './components/price'
 import section from './components/section'
 import sections from './components/sections'
 import sidebar from './components/sidebar'
+import subheader from './components/subheader'
 import toc from './components/toc'
 import component from './utils/component'
 import navigation from './utils/navigation'
@@ -68,8 +69,9 @@ export const page = z
     section,
     sections,
     footer,
-    header: header,
-    sidebar: sidebar,
+    header,
+    sidebar,
+    subheader,
     navigation,
     toc,
     price,

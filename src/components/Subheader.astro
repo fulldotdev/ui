@@ -1,0 +1,59 @@
+---
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
+import Links from 'fulldev-ui/components/Links.astro'
+import type { GlobalProps } from 'fulldev-ui/types/global-props'
+
+interface Props extends GlobalProps, HTMLAttributes<'header'> {
+  dark?: boolean | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
+  links?: ComponentProps<typeof Links>['links']
+}
+
+const { size = 'sm', links, ...rest } = Astro.props
+---
+
+<Element
+  class:list={['subheader']}
+  as="subheader"
+  {size}
+  {...rest}
+>
+  <Element class:list="subheader-container">
+    <Links
+      class:list="subheader-links"
+      {size}
+      {links}
+    />
+  </Element>
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .subheader {
+      @apply sticky left-0 top-0 z-20 flex h-11 items-center overflow-hidden bg-card max-lg:hidden;
+
+      top: var(--header-height);
+
+      .subheader-container {
+        @apply mx-auto flex w-full max-w-container items-center gap-6 px-gutter;
+      }
+
+      .subheader-links {
+        @apply w-full justify-between;
+      }
+
+      &,
+      & ~ * {
+        --subheader-height: 2.75rem;
+      }
+
+      @media (max-width: 1023.999px) {
+        &,
+        & ~ * {
+          --subheader-height: 0px;
+        }
+      }
+    }
+  }
+</style>

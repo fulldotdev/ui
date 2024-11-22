@@ -46,99 +46,88 @@ const {
 <Element
   class:list={['header']}
   as="header"
-  {panel}
   {size}
   {open}
   {...rest}
 >
-  <Logo
-    {company}
-    {size}
-    {...typeof logo === 'string' ? { src: logo } : logo}
-  />
-  <Links
-    class:list="header-links"
-    {size}
-    {links}
-  />
-  <Socials
-    {size}
-    variant="ghost"
-    {socials}
-  />
-  <Buttons
-    class:list="header-buttons"
-    {size}
-    {buttons}
-  >
-    <Themer
-      if={themer}
-      {size}
-    />
-    <Cart
-      if={cart}
-      variant="secondary"
-      heading={cart}
-      {size}
-    />
-    <Drawer
-      class:list={['header-button']}
-      icon="menu-2"
-      id="menu"
-      variant="secondary"
-      {logo}
+  <Element class:list="header-container">
+    <Logo
       {company}
-      {buttons}
-      {links}
-      {menu}
       {size}
+      {...typeof logo === 'string' ? { src: logo } : logo}
     />
-  </Buttons>
+    <Links
+      class:list="header-links"
+      {size}
+      {links}
+    />
+    <Socials
+      {size}
+      variant="ghost"
+      {socials}
+    />
+    <Buttons
+      class:list="header-buttons"
+      {size}
+      {buttons}
+    >
+      <Themer
+        if={themer}
+        {size}
+      />
+      <Cart
+        if={cart}
+        variant="secondary"
+        heading={cart}
+        {size}
+      />
+      <Drawer
+        class:list={['header-button']}
+        icon="menu-2"
+        id="menu"
+        variant="secondary"
+        {logo}
+        {company}
+        {buttons}
+        {links}
+        {menu}
+        {size}
+      />
+    </Buttons>
+  </Element>
 </Element>
 
 <style is:global>
   @layer fulldev {
     .header {
-      @apply sticky left-0 top-0 z-20 flex h-14 items-center gap-6 overflow-hidden px-gutter py-2;
-      /* @apply border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60; */
-      @apply bg-background;
+      @apply sticky left-0 top-0 z-20 flex h-14 items-center overflow-hidden bg-background;
+
+      .header-container {
+        @apply mx-auto flex w-full max-w-container items-center justify-between gap-6 px-gutter;
+      }
 
       &,
       & ~ * {
         --header-height: 3.5rem;
       }
 
-      &.panel {
-        @apply top-2 mx-gutter my-2 rounded-lg border px-4;
-      }
-
-      .logo {
-        @apply justify-self-start;
-      }
-
       .header-links {
         @apply mr-auto max-lg:hidden;
       }
 
-      .socials {
+      .header-socials {
         @apply ml-auto max-lg:hidden;
-      }
-
-      .header-buttons {
-        @apply justify-self-end max-lg:ml-auto;
       }
 
       .menu-button {
         @apply lg:hidden;
       }
 
-      @media (min-width: 1024px) {
-        &:not(.open) {
-          display: none;
+      &:not(.open) {
+        @apply lg:hidden;
 
-          & ~ * {
-            --header-height: 0px;
-          }
+        & ~ * {
+          --header-height: 0px;
         }
       }
     }
