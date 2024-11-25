@@ -4,23 +4,16 @@ import CartForm from 'fulldev-ui/components/CartForm.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Gallery from 'fulldev-ui/components/Gallery.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
-import Image from 'fulldev-ui/components/Image.astro'
 import List from 'fulldev-ui/components/List.astro'
-import Text from 'fulldev-ui/components/Text.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 
 const {
   as = 'section',
-  size = 'lg',
+  size = 'md',
   variant = 1,
   level = 1,
-  rating,
-  tagline,
-  badge,
   heading,
-  lead,
   paragraph,
-  buttons,
-  image,
   title,
   list,
   price,
@@ -46,75 +39,51 @@ const gotImage =
 
 <Element
   class:list="product"
-  structure="split"
+  {as}
+  {size}
   {...rest}
 >
-  {
-    images && images.length > 1 ? (
-      <Gallery
-        {images}
-        direction={gallery}
+  <Element class:list="product-container">
+    <Gallery {images} />
+    <Element class:list="product-segment">
+      <Element class:list="product-content">
+        <Heading
+          {level}
+          text={heading || title}
+        />
+        <Paragraph text={paragraph || description} />
+        <List items={list} />
+      </Element>
+      <CartForm
+        soldout={uitverkocht}
+        image={gotImage?.src}
+        {title}
+        {price}
+        {slug}
+        {variants}
       />
-    ) : (
-      <Image {...(image || images?.[0])} />
-    )
-  }
-  <Element class:list="column">
-    <Heading
-      level={2}
-      text={heading || title}
-    />
-    <Text
-      style={{ maxWidth: '420px' }}
-      text={text || description}
-    />
-    <List
-      items={list}
-      style={{ marginTop: 'var(--space-5)' }}
-    />
-    <CartForm
-      soldout={uitverkocht}
-      image={gotImage?.src}
-      {title}
-      {price}
-      {slug}
-      {variants}
-    />
+    </Element>
   </Element>
 </Element>
 
 <style is:global>
   .product {
-    padding-top: 0px;
+    @apply relative w-full;
 
-    @media (min-width: 1024px) {
-      padding-top: var(--space-6);
+    .product-container {
+      @apply container flex h-full w-full flex-col gap-16 py-8 lg:grid lg:grid-cols-[3fr_2fr];
     }
 
-    .column {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-5);
+    .product-segment {
+      @apply z-10 flex flex-col items-start gap-8;
     }
 
-    .row {
-      display: flex;
-      align-items: center;
-      gap: var(--space-5);
+    .product-content {
+      @apply flex max-w-screen-md flex-col gap-6;
     }
 
-    @media (max-width: 1023.99px) {
-      .gallery {
-        margin-right: calc(-1 * var(--gutter));
-        margin-left: calc(-1 * var(--gutter));
-        width: calc(100% + (var(--gutter) * 2));
-
-        .small-carousel {
-          padding-right: var(--gutter);
-          padding-left: var(--gutter);
-        }
-      }
+    &.dark {
+      @apply bg-background;
     }
   }
 </style>

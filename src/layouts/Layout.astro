@@ -61,6 +61,8 @@ const {
   prev,
   ...rest
 } = Astro.props
+
+const hasSidebar = sidebar || navigation?.sidebar
 ---
 
 <!doctype html>
@@ -75,26 +77,13 @@ const {
     {theme}
   >
     <Banner text={banner} />
-    <Header
-      open={navigation?.header || header}
-      {...navigation}
-      {...header}
-    />
+    <Header {...header} />
     <Subheader {...subheader} />
-    <slot name="header" />
-    <div class="layout-content">
-      <Sidebar
-        if={sidebar || navigation?.sidebar}
-        {...navigation?.sidebar === true ? navigation : {}}
-        logo={navigation?.header ? undefined : navigation?.logo}
-        company={navigation?.header ? undefined : navigation?.company}
-        {...sidebar}
-      />
-      <slot name="sidebar" />
-      <main
-        class="layout-main"
-        data-pagefind-body
-      >
+    <slot name="before" />
+
+    <Element class:list={['layout-container', { 'has-sidebar': hasSidebar }]}>
+      <Sidebar {...sidebar} />
+      <main class="layout-main">
         <Section
           level={1}
           {...section}
@@ -110,21 +99,18 @@ const {
         />
         <slot name="prose" />
         <Sections {sections} />
-        <slot name="sections" />
         <slot />
       </main>
-    </div>
+    </Element>
     <Footer {...footer} />
-    <slot name="footer" />
+    <slot name="after" />
     <Fragment set:html={code?.body} />
 
     <style is:global>
       @layer fulldev {
         .layout {
-          @apply text-base text-foreground;
+          @apply font-sans text-base leading-relaxed text-foreground;
           color-scheme: light;
-          line-height: 1.5;
-          font-family: 'Inter', sans-serif;
 
           &.dark {
             color-scheme: dark;
@@ -132,16 +118,18 @@ const {
         }
 
         .layout-body {
-          @apply min-h-screen w-full bg-background text-foreground;
-          font-family: 'Inter', sans-serif;
+          @apply min-h-screen w-full bg-background font-sans text-foreground;
         }
 
-        .layout-content {
+        .layout-container {
           @apply relative flex h-full flex-grow;
+
+          &.has-sidebar {
+            @apply container;
+          }
         }
 
         .layout-main {
-          --container: 1400px;
           @apply flex w-full flex-1 shrink flex-col;
         }
       }
