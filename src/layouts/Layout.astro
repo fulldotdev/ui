@@ -1,68 +1,48 @@
 ---
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import type { CollectionEntry } from 'astro:content'
 import Banner from 'fulldev-ui/blocks/Banner.astro'
 import Footer from 'fulldev-ui/blocks/Footer.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Head from 'fulldev-ui/components/Head.astro'
 import Header from 'fulldev-ui/components/Header.astro'
-import Prose from 'fulldev-ui/components/Prose.astro'
-import Section from 'fulldev-ui/components/Section.astro'
-import Sections from 'fulldev-ui/components/sections.astro'
 import Sidebar from 'fulldev-ui/components/Sidebar.astro'
 import Subheader from 'fulldev-ui/components/Subheader.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-type Props = GlobalProps &
-  HTMLAttributes<'html'> & {
-    render?: CollectionEntry<'pages'>['render'] | undefined
-    slug?: CollectionEntry<'pages'>['slug'] | undefined
-    header?: ComponentProps<typeof Header> | undefined
-    footer?: ComponentProps<typeof Footer> | undefined
-    sections?: ComponentProps<typeof Sections>['sections']
-    section?: ComponentProps<typeof Section> | undefined
-    theme?: 'light' | 'dark' | 'system' | undefined
-    banner?: any
-    subheader?: any
-    toc?: any
-    sidebar?: any
-    navigation?: any
-    code?: {
-      head?: string
-      body?: string
-    }
+type Props = HTMLAttributes<'html'> & {
+  banner?: ComponentProps<typeof Banner>['text'] | undefined
+  header?: ComponentProps<typeof Header> | undefined
+  subheader?: ComponentProps<typeof Subheader> | undefined
+  sidebar?: ComponentProps<typeof Sidebar> | undefined
+  footer?: ComponentProps<typeof Footer> | undefined
+  theme?: 'light' | 'dark' | 'system' | undefined
+  title?: string
+  code?: {
+    head?: string
+    body?: string
+  }
+  description?: string
+  image?: any
+  seo?: {
     title?: string
     description?: string
     image?: string
-    seo?: {
-      title?: string
-      description?: string
-      image?: string
-    }
-    next?: string
-    prev?: string
   }
+  next?: string
+  prev?: string
+}
 
 const {
-  render,
-  slug,
-  header,
-  navigation,
-  footer,
-  sidebar,
-  subheader,
-  toc,
-  sections,
-  theme,
-  section,
   banner,
+  header,
+  subheader,
+  sidebar,
+  footer,
+  theme,
   code,
   next,
   prev,
   ...rest
 } = Astro.props
-
-const hasSidebar = sidebar || navigation?.sidebar
 ---
 
 <!doctype html>
@@ -81,24 +61,9 @@ const hasSidebar = sidebar || navigation?.sidebar
     <Subheader {...subheader} />
     <slot name="before" />
 
-    <Element class:list={['layout-container', { 'has-sidebar': hasSidebar }]}>
+    <Element class:list={['layout-container', { 'has-sidebar': sidebar }]}>
       <Sidebar {...sidebar} />
       <main class="layout-main">
-        <Section
-          level={1}
-          {...section}
-        />
-        <slot name="section" />
-        <Prose
-          {render}
-          {slug}
-          toc={toc || navigation?.toc}
-          {navigation}
-          {next}
-          {prev}
-        />
-        <slot name="prose" />
-        <Sections {sections} />
         <slot />
       </main>
     </Element>

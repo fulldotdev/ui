@@ -1,5 +1,5 @@
 ---
-import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import type { ComponentProps, HTMLAttributes, HTMLTag } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
 import Button from 'fulldev-ui/components/Button.astro'
 import Element from 'fulldev-ui/components/Element.astro'
@@ -9,82 +9,57 @@ import Lead from 'fulldev-ui/components/Lead.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Toc from 'fulldev-ui/components/Toc.astro'
 import { crush } from 'radash'
+import type Sidebar from './Sidebar.astro'
 
-interface Props extends HTMLAttributes<'section'> {
+interface Props extends HTMLAttributes<'div'> {
   as?: HTMLTag | undefined
-  render?: CollectionEntry<'pages'>['render'] | undefined
+  render: CollectionEntry<'pages'>['render']
+  sidebar?: ComponentProps<typeof Sidebar> | undefined
   slug?: CollectionEntry<'pages'>['slug'] | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
-  toc?: boolean | string
-  next?: any
-  prev?: any
-  navigation?: any
-  image?: any
-  heading?: any
-  lead?: any
-  rating?: any
-  tagline?: any
-  badge?: any
-  level?: any
-  paragraph?: any
-  list?: any
-  price?: any
-  center?: boolean
-  inset?: boolean
+  toc?: boolean | ComponentProps<typeof Toc>['heading'] | undefined
+  tagline?: ComponentProps<typeof Tagline>['text'] | undefined
+  heading?: ComponentProps<typeof Heading>['text'] | undefined
+  image?: ComponentProps<typeof Image> | undefined
+  lead?: ComponentProps<typeof Lead>['text'] | undefined
 }
 
 const {
-  size = 'md',
   toc = false,
   slug,
-  navigation,
+  sidebar,
   render,
-  rating,
   tagline,
-  badge,
   heading,
   lead,
-  paragraph,
-  next,
-  prev,
-  list,
-  price,
   image,
   ...rest
 } = Astro.props
 
 const Content = render && (await render())?.Content
 
-const flatMenu = crush(navigation?.menu ?? {})
+const flatMenu = crush(sidebar?.menu ?? {})
 const slugs = Object.entries(flatMenu)
   .map(([key, value]) => (key.endsWith('.slug') ? value : null))
   .filter(Boolean)
 const slugIndex = slugs.findIndex((val) => val === slug)
 
-const prevSlug = next && slugs[slugIndex - 1]
-const nextSlug = prev && slugs[slugIndex + 1]
+const prevSlug = slugs[slugIndex - 1]
+const nextSlug = slugs[slugIndex + 1]
 ---
 
 <Element
   class:list="prose"
-  {size}
   {...rest}
 >
   <Element class:list="prose-container">
     <Element class:list="prose-content">
-      <Tagline
-        text={tagline}
-        {size}
-      />
+      <Tagline text={tagline} />
       <Heading
+        as="h1"
+        level={2}
         text={heading}
-        level={1}
-        {size}
       />
-      <Lead
-        text={lead}
-        {size}
-      />
+      <Lead text={lead} />
       <Image {...image} />
       {Content && <Content />}
       <slot />

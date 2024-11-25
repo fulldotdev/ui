@@ -1,22 +1,20 @@
 ---
+import type { ComponentProps } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import Text from 'fulldev-ui/components/Text.astro'
 
 type Props = {
-  color?: 'base' | 'brand' | undefined
   size?: 'sm' | 'md' | 'lg' | undefined
-  variant?: 'primary' | 'secondary' | undefined
-  text?: string | undefined
+  text?: ComponentProps<typeof Text>['text']
 }
 
-const { variant = 'primary', size = 'sm', text, ...rest } = Astro.props
+const { size = 'sm', text, ...rest } = Astro.props
 ---
 
 <Element
   class:list={'banner'}
   as="header"
   {size}
-  {variant}
   {...rest}
 >
   <Text text={text} />
@@ -25,12 +23,8 @@ const { variant = 'primary', size = 'sm', text, ...rest } = Astro.props
 <style is:global>
   @layer fulldev {
     .banner {
-      @apply relative z-50 flex w-full items-center justify-center overflow-hidden px-gutter text-center text-sm;
+      @apply relative z-50 flex w-full items-center justify-center overflow-hidden bg-primary px-gutter text-center text-sm text-primary-foreground;
       height: var(--banner-height);
-
-      &.variant-primary {
-        @apply bg-primary text-primary-foreground;
-      }
 
       &,
       & ~ * {

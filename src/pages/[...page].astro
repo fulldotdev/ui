@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content'
-import Layout from 'fulldev-ui/layouts/Layout.astro'
+import PageLayout from 'fulldev-ui/layouts/PageLayout.astro'
 
 export async function getStaticPaths() {
   const pages = await getCollection('pages')
@@ -13,32 +13,24 @@ export async function getStaticPaths() {
 }
 
 const { data, ...rest } = Astro.props
-
 const { component, ...restData } = data
 
-const allComponents = {
-  ...import.meta.glob('/src/**/*.astro'),
-  ...import.meta.glob('../../**/*.astro'),
+const layouts = {
+  ...import.meta.glob('/src/layouts/**/*.astro'),
+  ...import.meta.glob('../layouts/**/*.astro'),
 }
 
-const componentPath = Object.keys(allComponents).find(
-  (path) => path.split('/').pop()?.split('.')[0] === component
-)
+const componentPath = Object.keys(layouts).find((path) => {
+  const strip = (str?: string) => str?.split('/').pop()?.split('.')[0]
+  return strip(path) === strip(component)
+})
 
 const Component =
-  componentPath && (await (allComponents[componentPath] as any)()).default
+  (componentPath && (await (layouts[componentPath] as any)()).default) ??
+  PageLayout
 ---
 
-{
-  Component ? (
-    <Component
-      {...restData}
-      {...rest}
-    />
-  ) : (
-    <Layout
-      {...(data as any)}
-      {...rest}
-    />
-  )
-}
+<Component
+  {...restData}
+  {...rest}
+/>
