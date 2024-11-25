@@ -1,0 +1,58 @@
+---
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import Element from 'fulldev-ui/components/Element.astro'
+import Icon from 'fulldev-ui/components/Icon.astro'
+import Link from 'fulldev-ui/components/Link.astro'
+
+interface Props extends HTMLAttributes<'div'> {
+  as?: HTMLTag
+  slug?: CollectionEntry<'pages'>['slug'] | undefined
+}
+
+const { size = 'sm', slug, ...rest } = Astro.props
+---
+
+<Element
+  class:list="breadcrumb"
+  {...rest}
+>
+  <Link
+    as="a"
+    href="/"
+    icon="home"
+    {size}
+  />
+  {
+    slug?.split('/').map((part, i) => (
+      <>
+        <Icon
+          {size}
+          name="chevron-right"
+        />
+        <Link
+          {size}
+          variant="muted"
+          href={`/${slug
+            ?.split('/')
+            .slice(0, i + 1)
+            .join('/')}/`}
+        >
+          {part}
+        </Link>
+      </>
+    ))
+  }
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .breadcrumb {
+      @apply flex items-center gap-2;
+
+      .icon {
+        @apply text-muted-foreground;
+      }
+    }
+  }
+</style>

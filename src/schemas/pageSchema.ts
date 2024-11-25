@@ -10,9 +10,9 @@ import sections from './components/sections'
 import sidebar from './components/sidebar'
 import subheader from './components/subheader'
 import toc from './components/toc'
+import categories from './utils/categories'
 import component from './utils/component'
 import navigation from './utils/navigation'
-import parents from './utils/parents'
 import pathSchema from './utils/pathSchema'
 
 export const i18n = z
@@ -52,7 +52,7 @@ export const presets = z
 export const page = z
   .object({
     component,
-    parents,
+    categories,
     theme: z.enum(['light', 'dark', 'system']),
     lang: z.string(),
     seo: z

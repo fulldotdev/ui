@@ -6,7 +6,7 @@ export const getDeepReferenceChildren = async (
 ) =>
   (
     await getCollection('pages', (page) =>
-      page.data?.parents?.some((p: any) => p.slug.includes(slug))
+      page.data?.categories?.some((p: any) => p.slug.includes(slug))
     )
   )?.map(({ slug, data }) => ({
     ...data,

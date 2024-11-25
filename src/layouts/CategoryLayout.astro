@@ -1,35 +1,91 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import Categories from 'fulldev-ui/blocks/Categories.astro'
+import { getCollection } from 'astro:content'
 import Intro from 'fulldev-ui/blocks/Intro.astro'
 import Products from 'fulldev-ui/blocks/Products.astro'
+import Carousel from 'fulldev-ui/components/Carousel.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Prose from 'fulldev-ui/components/Prose.astro'
 import Sections from 'fulldev-ui/components/sections.astro'
+import Select from 'fulldev-ui/components/Select.astro'
 import Layout from 'fulldev-ui/layouts/Layout.astro'
-import { getDeepReferenceChildren } from 'fulldev-ui/utils/getDeepReferenceChildren'
-import { getFolderChildren } from 'fulldev-ui/utils/getFolderChildren.ts'
 
 type Props = ComponentProps<typeof Layout>
 
 const { slug, sections, title, image, images, description, render } =
   Astro.props
 
-const folderChildren = slug && (await getFolderChildren(slug))
-const referenceChildren = slug && (await getDeepReferenceChildren(slug))
+const children = await getCollection('pages', (page) =>
+  page.data.categories?.some((c: any) => {
+    // temprorary, because not all categories are selected manually in cardgamelife
+    return c.slug.includes(slug)
+    // return c.slug === slug
+  })
+)
+
+const categoryChildren = children?.filter(
+  (c) => c.data.component === 'CategoryLayout'
+)
+
+const productChildren = children?.filter(
+  (c) => c.data.component === 'ProductLayout'
+)
+
+console.log(productChildren[0])
 ---
 
 <Layout {...Astro.props}>
   <Intro
+    {slug}
     heading={title}
     paragraph={description}
     image={image || images?.[0]}
   />
-  <Categories
-    component="Categories"
-    cards={folderChildren}
-  />
-  <Products cards={referenceChildren} />
+  <Carousel>
+    {
+      categoryChildren.map((child) => (
+        <Element
+          as="a"
+          class:list="item"
+          href={`/${child.slug}/`}
+        >
+          {child.data.title}
+        </Element>
+      ))
+    }
+  </Carousel>
+  <Element class:list="toolbar">
+    <span>{productChildren.length} resultaten</span>
+    <Select
+      size="sm"
+      name="Sorteren"
+      options={[
+        'Aanbevolen',
+        'Prijs (laag - hoog)',
+        'Prijs (hoog - laag)',
+        'Alfabetisch (A-Z)',
+        'Alfabetisch (Z-A)',
+      ]}
+    />
+  </Element>
+  <Products cards={productChildren} />
   <Prose {render} />
   <Sections {sections} />
   <slot />
 </Layout>
+
+<style is:global>
+  .carousel {
+    .item {
+      @apply min-w-48 rounded-sm border p-4 text-sm;
+    }
+  }
+
+  .toolbar {
+    @apply container flex items-center justify-between pt-8;
+
+    span {
+      @apply text-sm text-muted-foreground;
+    }
+  }
+</style>
