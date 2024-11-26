@@ -24,43 +24,34 @@ interface Props {}
     const atEnd =
       content.scrollLeft >= content.scrollWidth - content.clientWidth
 
-    console.log('running')
-
     left?.classList.toggle('hide', !isScrollable || atStart)
     right?.classList.toggle('hide', !isScrollable || atEnd)
   }
 
-  const init = (document: Document) => {
+  document.addEventListener('astro:page-load', () => {
     const carousels = document.querySelectorAll('.carousel')
     carousels.forEach((carousel) => {
       const left = carousel?.querySelector('.carousel-left')
       const right = carousel?.querySelector('.carousel-right')
-      const content = carousel?.querySelector(
-        '.carousel-content'
-      ) as HTMLElement
+      const content = carousel?.querySelector('.carousel-content')
+
+      if (!(content instanceof HTMLElement)) return
+      if (!(left instanceof HTMLElement)) return
+      if (!(right instanceof HTMLElement)) return
 
       left?.addEventListener('click', () => scrollLeft(content))
       right?.addEventListener('click', () => scrollRight(content))
 
       const observer = new ResizeObserver(() => {
-        if (left && right) {
-          updateButtons(left as HTMLElement, right as HTMLElement, content)
-        }
+        updateButtons(left, right, content)
       })
+
       observer.observe(content)
 
       content.addEventListener('scroll', () => {
-        if (left && right) {
-          updateButtons(left as HTMLElement, right as HTMLElement, content)
-        }
+        updateButtons(left, right, content)
       })
     })
-  }
-
-  init(document)
-
-  document.addEventListener('astro:before-swap', (event) => {
-    init(event.newDocument)
   })
 </script>
 

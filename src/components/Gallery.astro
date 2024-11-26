@@ -27,7 +27,7 @@ const hasMany = images?.length > 5
     carousel.scrollLeft = index * carousel.clientWidth
   }
 
-  const init = (document: Document) => {
+  document.addEventListener('astro:page-load', () => {
     const galleries = document.querySelectorAll('.gallery')
     galleries.forEach((gallery) => {
       // Apply left and right event listeners to large and small carousels
@@ -56,12 +56,6 @@ const hasMany = images?.length > 5
         })
       })
     })
-  }
-
-  init(document)
-
-  document.addEventListener('astro:before-swap', (event) => {
-    init(event.newDocument)
   })
 </script>
 
@@ -77,7 +71,9 @@ const hasMany = images?.length > 5
     <Element class:list="gallery-carousel">
       {
         images?.map((image: any) => (
-          <Image {...(typeof image === 'string' ? { src: image } : image)} />
+          <Element class:list="gallery-item">
+            <Image {...(typeof image === 'string' ? { src: image } : image)} />
+          </Element>
         ))
       }
     </Element>
@@ -149,12 +145,16 @@ const hasMany = images?.length > 5
       }
 
       .gallery-carousel {
-        @apply inline-flex snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-none;
+        @apply inline-flex w-full snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-none;
       }
 
       .gallery-large {
+        .gallery-item {
+          @apply flex w-full min-w-full snap-start;
+        }
+
         .image {
-          @apply snap-start;
+          @apply h-full max-h-[768px] w-full object-contain;
         }
       }
 

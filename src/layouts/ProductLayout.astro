@@ -1,18 +1,105 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import Product from 'fulldev-ui/blocks/Product.astro'
+import { getImage } from 'astro:assets'
+import CartForm from 'fulldev-ui/components/CartForm.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Gallery from 'fulldev-ui/components/Gallery.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import List from 'fulldev-ui/components/List.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Prose from 'fulldev-ui/components/Prose.astro'
 import Sections from 'fulldev-ui/components/sections.astro'
 import Layout from 'fulldev-ui/layouts/Layout.astro'
 
-type Props = ComponentProps<typeof Layout>
+const {
+  variant = 1,
+  level = 1,
+  heading,
+  paragraph,
+  title,
+  list,
+  price,
+  images,
+  text,
+  subheading,
+  variants,
+  button,
+  description,
+  form,
+  uitverkocht,
+  render,
+  sections,
+  banner,
+} = Astro.props
 
-const { render, sections, ...rest } = Astro.props
+const slug = Astro.url.pathname.replace(/^\/|\/$/g, '') || 'index'
+const imageId = images?.[0]?.id
+const src = `/src/images/${imageId}`
+const allImages = import.meta.glob<{ default: ImageMetadata }>('/src/images/*')
+const foundImage = allImages[src]
+const gotImage =
+  imageId && (await getImage({ src: foundImage ? foundImage() : src }))
 ---
 
 <Layout {...Astro.props}>
-  <Product {...rest} />
-  <Prose {render} />
+  <Element
+    class:list="product"
+    as="section"
+  >
+    <Element class:list="product-container">
+      <Element class:list="product-main">
+        <Gallery {images} />
+        <!-- <Prose {render} /> -->
+      </Element>
+      <Element class:list="product-segment">
+        <Element class:list="product-content">
+          <Heading
+            {level}
+            text={heading || title}
+          />
+          <Paragraph text={paragraph || description} />
+        </Element>
+        <CartForm
+          soldout={uitverkocht}
+          image={gotImage?.src}
+          {title}
+          {price}
+          {slug}
+          {variants}
+        />
+        <List
+          size="sm"
+          items={banner.split('|')}
+        />
+      </Element>
+    </Element>
+  </Element>
   <Sections {sections} />
   <slot />
 </Layout>
+
+<style is:global>
+  .product {
+    @apply relative w-full;
+
+    .product-container {
+      @apply flex h-full w-full flex-col items-start gap-16 lg:container lg:grid lg:grid-cols-[3fr_2fr] lg:py-8;
+    }
+
+    .product-segment {
+      @apply z-10 flex flex-col items-start gap-8 max-lg:container lg:sticky lg:top-0;
+
+      --height: calc(
+        var(--header-height, 0px) + var(--subheader-height, 0px) + 2rem
+      );
+      top: var(--height);
+    }
+
+    .product-content {
+      @apply flex max-w-screen-md flex-col gap-6;
+    }
+
+    &.dark {
+      @apply bg-background;
+    }
+  }
+</style>

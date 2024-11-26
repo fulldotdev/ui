@@ -16,59 +16,99 @@ const { slug, sections, title, image, images, description, render } =
   Astro.props
 
 const children = await getCollection('pages', (page) =>
-  page.data.categories?.some((c: any) => {
-    // temprorary, because not all categories are selected manually in cardgamelife
-    return c.slug.includes(slug)
-    // return c.slug === slug
-  })
+  page.data.categories?.some((c: any) => c.slug.includes(slug))
 )
 
-const categoryChildren = children?.filter(
+const categories = children?.filter(
   (c) => c.data.component === 'CategoryLayout'
 )
 
-const productChildren = children?.filter(
-  (c) => c.data.component === 'ProductLayout'
-)
+const products = children?.filter((c) => c.data.component === 'ProductLayout')
 
-console.log(productChildren[0])
+const sorts = [
+  {
+    option: 'Aanbevolen',
+    products: [...products].sort(
+      (a, b) => (a.data.order || 0) - (b.data.order || 0)
+    ),
+  },
+  {
+    option: 'Prijs (laag - hoog)',
+    products: [...products].sort(
+      (a, b) => (a.data.price || 0) - (b.data.price || 0)
+    ),
+  },
+  {
+    option: 'Prijs (hoog - laag)',
+    products: [...products].sort(
+      (a, b) => (b.data.price || 0) - (a.data.price || 0)
+    ),
+  },
+  {
+    option: 'Alfabetisch (A-Z)',
+    products: [...products],
+  },
+  {
+    option: 'Alfabetisch (Z-A)',
+    products: [...products].sort((a, b) =>
+      (b.data.title || '').localeCompare(a.data.title || '')
+    ),
+  },
+]
 ---
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const sort = document.querySelector('.sort')
+
+    sort?.addEventListener('change', (e) => {
+      const blocks = document.querySelectorAll('.products')
+      const value = (e.target as HTMLSelectElement).value
+      blocks?.forEach((block) => block.classList.add('hide'))
+
+      const block = document.querySelector(`.products[id='${value}']`)
+      block?.classList.remove('hide')
+    })
+  })
+</script>
 
 <Layout {...Astro.props}>
   <Intro
-    {slug}
     heading={title}
     paragraph={description}
     image={image || images?.[0]}
   />
   <Carousel>
     {
-      categoryChildren.map((child) => (
+      categories.map((category) => (
         <Element
           as="a"
           class:list="item"
-          href={`/${child.slug}/`}
+          href={`/${category.slug}/`}
         >
-          {child.data.title}
+          {category.data.title}
         </Element>
       ))
     }
   </Carousel>
   <Element class:list="toolbar">
-    <span>{productChildren.length} resultaten</span>
+    <span>{products.length} resultaten</span>
     <Select
+      class:list="sort"
       size="sm"
       name="Sorteren"
-      options={[
-        'Aanbevolen',
-        'Prijs (laag - hoog)',
-        'Prijs (hoog - laag)',
-        'Alfabetisch (A-Z)',
-        'Alfabetisch (Z-A)',
-      ]}
+      options={sorts.map((sort) => sort.option)}
     />
   </Element>
-  <Products cards={productChildren} />
+  {
+    sorts.map((sort) => (
+      <Products
+        class:list={sort.option !== 'Aanbevolen' ? 'hide' : ''}
+        id={sort.option}
+        cards={sort.products}
+      />
+    ))
+  }
   <Prose {render} />
   <Sections {sections} />
   <slot />
@@ -79,6 +119,10 @@ console.log(productChildren[0])
     .item {
       @apply min-w-48 rounded-sm border p-4 text-sm;
     }
+  }
+
+  .products.hide {
+    @apply hidden;
   }
 
   .toolbar {

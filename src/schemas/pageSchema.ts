@@ -53,6 +53,7 @@ export const page = z
   .object({
     component,
     categories,
+    order: z.number().optional(),
     theme: z.enum(['light', 'dark', 'system']),
     lang: z.string(),
     seo: z
