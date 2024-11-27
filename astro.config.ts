@@ -12,7 +12,7 @@ export default defineConfig({
       favicon: 'src/images/favicon.svg',
       css: '/src/css/custom.css',
       basePreset: 'base',
-      injectRoutes: true,
+      injectRoutes: false,
     }),
   ],
   redirects: {

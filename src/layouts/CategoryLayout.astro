@@ -1,5 +1,4 @@
 ---
-import type { ComponentProps } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
 import { getCollection } from 'astro:content'
 import Intro from 'fulldev-ui/blocks/Intro.astro'
@@ -7,27 +6,22 @@ import Products from 'fulldev-ui/blocks/Products.astro'
 import Carousel from 'fulldev-ui/components/Carousel.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Prose from 'fulldev-ui/components/Prose.astro'
-import Sections from 'fulldev-ui/components/sections.astro'
 import Select from 'fulldev-ui/components/Select.astro'
 import Layout from 'fulldev-ui/layouts/Layout.astro'
-import type { CategorySchema } from 'fulldev-ui/schemas/categorySchema'
+import { getHref } from 'fulldev-ui/utils/getHref'
 
-interface Props extends ComponentProps<typeof Layout>, CategorySchema {
-  render?: CollectionEntry<'docs'>['render']
-}
+type Props = CollectionEntry<'categories'>
 
-const { slug, sections, title, image, images, description, render } =
-  Astro.props
+const { render, slug } = Astro.props
+const { title, description } = Astro.props.data
 
-const children = await getCollection('pages', (page) =>
-  page.data.categories?.some((c: any) => c.slug.includes(slug))
+const categories = await getCollection('categories', ({ data }) =>
+  data.categories?.some((c) => c.slug.includes(slug))
 )
 
-const categories = children?.filter(
-  (c) => c.data.component === 'CategoryLayout'
+const products = await getCollection('products', ({ data }) =>
+  data.categories?.some((c) => c.slug.includes(slug))
 )
-
-const products = children?.filter((c) => c.data.component === 'ProductLayout')
 
 const sorts = [
   {
@@ -80,7 +74,6 @@ const sorts = [
   <Intro
     heading={title}
     paragraph={description}
-    image={image || images?.[0]}
   />
   <Carousel>
     {
@@ -88,7 +81,7 @@ const sorts = [
         <Element
           as="a"
           class:list="item"
-          href={`/${category.slug}/`}
+          href={getHref('categories', category.slug)}
         >
           {category.data.title}
         </Element>
@@ -105,16 +98,14 @@ const sorts = [
     />
   </Element>
   {
-    sorts.map((sort) => (
+    sorts.map((sort: any) => (
       <Products
         class:list={sort.option !== 'Aanbevolen' ? 'hide' : ''}
-        id={sort.option}
-        cards={sort.products}
+        products={sort.products}
       />
     ))
   }
   <Prose {render} />
-  <Sections {sections} />
   <slot />
 </Layout>
 

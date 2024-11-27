@@ -1,4 +1,6 @@
 ---
+import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
+import { getEntry } from 'astro:content'
 import Banner from 'fulldev-ui/blocks/Banner.astro'
 import Footer from 'fulldev-ui/blocks/Footer.astro'
 import Element from 'fulldev-ui/components/Element.astro'
@@ -6,16 +8,20 @@ import Head from 'fulldev-ui/components/Head.astro'
 import Header from 'fulldev-ui/components/Header.astro'
 import Sidebar from 'fulldev-ui/components/Sidebar.astro'
 import Subheader from 'fulldev-ui/components/Subheader.astro'
-import type { LayoutSchema } from 'fulldev-ui/schemas/layoutSchema'
 
-interface Props extends LayoutSchema {}
+type Props = CollectionEntry<ContentCollectionKey>
 
-const { banner, header, subheader, sidebar, footer, theme, code } = Astro.props
+const layout = await getEntry('layouts', 'base')
+
+const { banner, header, subheader, sidebar, footer, theme, code } = layout.data
 ---
 
 <!doctype html>
 <html class="layout">
-  <Head {...Astro.props} />
+  <Head
+    {...layout.data}
+    {...Astro.props.data}
+  />
   <Element
     class:list="layout-body"
     as="body"

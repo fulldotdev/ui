@@ -1,137 +1,100 @@
 ---
-import type { ComponentProps, HTMLAttributes, HTMLTag } from 'astro/types'
-import { getEntries } from 'astro:content'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
 import Button from 'fulldev-ui/components/Button.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
-import Card from 'fulldev-ui/components/Card.astro'
-import Cards from 'fulldev-ui/components/Cards.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Price from 'fulldev-ui/components/Price.astro'
-import Tagline from 'fulldev-ui/components/Tagline.astro'
-import type { ProductReferences } from 'fulldev-ui/schemas/fields/products'
 
 interface Props extends HTMLAttributes<'section'> {
-  tagline?: ComponentProps<typeof Tagline>['text']
   heading?: ComponentProps<typeof Heading>['text']
-  paragraph?: ComponentProps<typeof Paragraph>['text']
   button?: ComponentProps<typeof Buttons> | undefined
-  cards?: ComponentProps<typeof Cards>['cards']
-  products?: ProductReferences
-  level?: ComponentProps<typeof Heading>['level']
-  as?: HTMLTag
-  size?: 'sm' | 'md' | 'lg' | undefined
-  variant?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | undefined
+  products?: CollectionEntry<'products'>[]
 }
 
-const {
-  as = 'section',
-  size = 'sm',
-  variant = 1,
-  level = 2,
-  tagline,
-  heading,
-  paragraph,
-  button,
-  products,
-  ...rest
-} = Astro.props
-
-const entries = products && (await getEntries(products))
+const { heading, button, products, ...rest } = Astro.props
 ---
 
 <Element
   class:list="products"
-  {as}
+  if={products?.length}
+  as="section"
   {...rest}
 >
   <Element class:list="products-container">
     <Element class:list="products-segment">
-      <Element class:list="products-content">
-        <Tagline
-          text={tagline}
-          {size}
-        />
-        <Heading
-          text={heading}
-          {level}
-          {size}
-        />
-        <Paragraph
-          text={paragraph}
-          {size}
-        />
-        <slot name="content" />
-      </Element>
+      <Heading
+        level={2}
+        size="sm"
+        text={heading}
+      />
       <Button
         variant="ghost"
         size="sm"
         {...button}
       />
-      <slot name="segment" />
     </Element>
     <Element class:list="products-cards">
       {
-        entries?.map(({ slug, data }) => (
-          <Card href={`/producten/${slug}/`}>
-            <Image {...data.images?.[0]} />
-            <Element class:list="card-content">
+        products?.map(({ slug, data }) => (
+          <Element
+            class:list="products-card"
+            as="a"
+            href={`/producten/${slug}/`}
+          >
+            <Image
+              class:list="products-card-image"
+              {...data.images?.[0]}
+            />
+            <Element class:list="products-card-content">
               <Heading
-                level={3}
+                as="h3"
+                level={5}
+                size={'sm'}
                 text={data.title}
               />
               <Price value={data.price} />
             </Element>
-          </Card>
+          </Element>
         ))
       }
     </Element>
-    <slot />
   </Element>
 </Element>
 
 <style is:global>
   @layer fulldev {
     .products {
-      @apply relative w-full;
+      @apply relative w-full py-16;
 
       .products-container {
-        @apply flex h-full w-full flex-col;
+        @apply container flex flex-col gap-8;
       }
 
       .products-segment {
-        @apply z-10 flex flex-col items-start gap-8;
+        @apply flex items-center justify-between gap-8;
       }
 
-      .products-content {
-        @apply flex max-w-screen-md flex-col gap-6;
+      .products-cards {
+        @apply grid grid-cols-2 items-start gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6;
       }
 
-      &.dark {
-        @apply bg-background;
+      .products-card {
+        @apply relative flex flex-col gap-3;
+
+        &:hover > .image {
+          @apply opacity-75 transition-opacity;
+        }
+
+        .image {
+          @apply rounded-md border;
+        }
       }
 
-      /* Column left aligned */
-      &.variant-1 {
-        .products-container {
-          @apply container py-8;
-        }
-
-        .products-segment {
-          @apply w-full flex-row flex-wrap justify-between gap-8 py-8;
-        }
-
-        .cards {
-          --column-width: 200px;
-
-          @apply gap-2;
-
-          .image {
-            @apply p-4;
-          }
-        }
+      .products-card-content {
+        @apply flex h-full flex-col gap-2;
       }
     }
   }

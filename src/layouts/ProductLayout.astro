@@ -1,8 +1,7 @@
 ---
-import type { ComponentProps } from 'astro/types'
 import { getImage } from 'astro:assets'
 import type { CollectionEntry } from 'astro:content'
-import { getCollection } from 'astro:content'
+import { getCollection, getEntry } from 'astro:content'
 import Products from 'fulldev-ui/blocks/Products.astro'
 import CartForm from 'fulldev-ui/components/CartForm.astro'
 import Element from 'fulldev-ui/components/Element.astro'
@@ -11,28 +10,13 @@ import Heading from 'fulldev-ui/components/Heading.astro'
 import List from 'fulldev-ui/components/List.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Prose from 'fulldev-ui/components/Prose.astro'
-import Sections from 'fulldev-ui/components/sections.astro'
 import Layout from 'fulldev-ui/layouts/Layout.astro'
-import type { ProductSchema } from 'fulldev-ui/schemas/productSchema'
 
-interface Props extends ComponentProps<typeof Layout>, ProductSchema {
-  render?: CollectionEntry<'docs'>['render']
-}
+type Props = CollectionEntry<'products'>
 
-const {
-  heading,
-  paragraph,
-  title,
-  price,
-  images,
-  variants,
-  description,
-  soldout,
-  categories,
-  render,
-  sections,
-  banner,
-} = Astro.props
+const { render } = Astro.props
+const { title, price, images, description, soldout, categories, variants } =
+  Astro.props.data
 
 const slug = Astro.url.pathname.replace(/^\/|\/$/g, '') || 'index'
 const imageId = images?.[0]?.id
@@ -42,11 +26,13 @@ const foundImage = allImages[src]
 const gotImage =
   imageId && (await getImage({ src: foundImage ? foundImage() : src }))
 
-const relatedProducts = await getCollection('pages', (page: any) =>
-  page.data.categories?.some((cat: any) =>
-    categories?.map((cat) => cat.slug).includes(cat.slug)
+const relatedProducts = await getCollection('products', (product) =>
+  product.data.categories?.some((category) =>
+    categories?.map((c) => c.slug).includes(category.slug)
   )
 )
+
+const baseLayout = await getEntry('layouts', 'base')
 ---
 
 <Layout {...Astro.props}>
@@ -57,19 +43,19 @@ const relatedProducts = await getCollection('pages', (page: any) =>
     <Element class:list="product-container">
       <Element class:list="product-main">
         <Gallery {images} />
-        <!-- <Prose {render} /> -->
+        <Prose {render} />
       </Element>
       <Element class:list="product-segment">
         <Element class:list="product-content">
           <Heading
             as="h1"
             level={2}
-            text={heading || title}
+            text={title}
           />
-          <Paragraph text={paragraph || description} />
+          <Paragraph text={description} />
         </Element>
         <CartForm
-          image={gotImage?.src}
+          image={gotImage && 'src' in gotImage ? gotImage?.src : undefined}
           {soldout}
           {title}
           {price}
@@ -78,16 +64,15 @@ const relatedProducts = await getCollection('pages', (page: any) =>
         />
         <List
           size="sm"
-          items={banner.split('|')}
+          items={baseLayout.data.banner?.split('|')}
         />
       </Element>
     </Element>
   </Element>
   <Products
     heading="Gerelateerde producten"
-    cards={[...relatedProducts].sort(() => Math.random() - 0.5).slice(0, 6)}
+    products={[...relatedProducts].sort(() => Math.random() - 0.5).slice(0, 6)}
   />
-  <Sections {sections} />
   <slot />
 </Layout>
 

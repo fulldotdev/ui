@@ -1,59 +1,122 @@
 ---
-import Dialog from 'fulldev-ui/components/Dialog.astro'
+import { getCollection } from 'astro:content'
+import { getHref } from 'fulldev-ui/utils/getHref'
+import Button from './Button.astro'
+import Element from './Element.astro'
+import Heading from './Heading.astro'
+import Input from './Input.astro'
+import Paragraph from './Paragraph.astro'
 
-const { variant = 'secondary', ...rest } = Astro.props
+const pages = await getCollection('pages')
+const products = await getCollection('products')
+const categories = await getCollection('categories')
+const posts = await getCollection('posts')
+const docs = await getCollection('docs')
+const entries = [...pages, ...categories, ...products, ...posts, ...docs]
 ---
 
-<Dialog
-  class:list="search"
-  id="search"
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const input = document.querySelector('.search-input')
+    const items = document.querySelectorAll('.search-item')
+
+    input?.addEventListener('input', (e) => {
+      if (!(e.target instanceof HTMLInputElement)) return
+      const value = e.target.value.toLowerCase()
+      items.forEach((item) => {
+        if (!(item instanceof HTMLElement)) return
+
+        const title =
+          item.querySelector('.heading')?.textContent?.toLowerCase() || ''
+        const description =
+          item.querySelector('.paragraph')?.textContent?.toLowerCase() || ''
+
+        const isVisible = title.includes(value) || description.includes(value)
+        item.classList.toggle('hide', !isVisible)
+      })
+    })
+  })
+</script>
+
+<Button
+  class:list="search-button"
+  variant="secondary"
+  size="sm"
   icon="search"
-  {variant}
-  {...rest}
+  onclick={`document.getElementById('search').showModal()`}
 />
 
-<style is:global >
-  :root {
-    --pagefind-ui-primary: var(--brand-11);
-    --pagefind-ui-text: var(--base-12);
-    --pagefind-ui-background: var(--base-2);
-    --pagefind-ui-border: var(--base-6);
-    --pagefind-ui-tag: var(--base-6);
-  }
+<dialog
+  class="search"
+  id="search"
+  onclick={`event.target === this && this.close()`}
+>
+  <Element class:list="search-container">
+    <Element class:list="search-content">
+      <Input
+        class:list="search-input"
+        icon="search"
+        placeholder="Search"
+      />
+      <Element class:list="search-list">
+        {
+          entries.map(({ collection, slug, data }) => (
+            <Element
+              as="a"
+              href={getHref(collection, slug)}
+              class="search-item hide"
+            >
+              <Heading
+                text={data.title}
+                level={6}
+              />
+              <Paragraph
+                set:text={'description' in data ? data.description : undefined}
+              />
+            </Element>
+          ))
+        }
+      </Element>
+    </Element>
+  </Element>
+</dialog>
 
-  @media (max-width: 1023.999px) {
-    .search,
-    #search,
-    #search-button {
-      display: none !important;
+<style is:global>
+  @layer fulldev {
+    .search {
+      @apply container h-full w-full max-w-screen-md rounded-lg !border-none bg-transparent py-24 outline-none backdrop:bg-black/50;
+
+      &:is(.dark &) {
+        color-scheme: dark;
+      }
+
+      .search-container {
+        @apply w-full overflow-hidden rounded-lg border bg-background shadow-md;
+      }
+
+      .search-content {
+        @apply max-h-[400px] w-full overflow-y-scroll;
+      }
+
+      .input {
+        @apply m-5;
+      }
+
+      .search-list {
+        @apply flex h-full w-full shrink grow-0 flex-col;
+      }
+
+      .search-item {
+        @apply border-t p-5 transition-colors hover:bg-accent;
+
+        &.hide {
+          @apply hidden;
+        }
+      }
+
+      .paragraph {
+        @apply mt-2 truncate text-sm text-muted-foreground;
+      }
     }
-  }
-
-  .dialog div {
-    width: 100%;
-  }
-
-  .pagefind-ui__search-input {
-    outline: none !important;
-    border: 1px solid var(--base-7);
-    color: var(--base-11);
-
-    &::placeholder {
-      color: var(--base-11);
-    }
-
-    &:hover {
-      outline: none;
-    }
-
-    &:focus {
-      outline: none;
-      box-shadow: inset 0 0 0 2px var(--base-8);
-      border-color: var(--base-8);
-    }
-  }
-
-  .pagefind-ui__search-clear {
-    background: transparent !important;
   }
 </style>

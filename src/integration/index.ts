@@ -5,7 +5,6 @@ import favicons from 'astro-favicons'
 import liveCode from 'astro-live-code'
 import robotsTxt from 'astro-robots-txt'
 import { envField } from 'astro/config'
-import type { CollectionEntry } from 'astro:content'
 import tailwindcss from 'tailwindcss'
 import tailwindcssNesting from 'tailwindcss/nesting'
 import { loadEnv } from 'vite'
@@ -15,7 +14,6 @@ interface Config {
   favicon?: string
   company?: string
   css?: string
-  basePreset?: CollectionEntry<'presets'>['id']
   injectRoutes?: boolean
 }
 
@@ -99,20 +97,20 @@ export default function fulldevIntegration(
             entrypoint: 'fulldev-ui/pages/[...page].astro',
           })
           injectRoute({
-            pattern: '/[docs]/[...doc]',
-            entrypoint: 'fulldev-ui/pages/[docs]/[...doc].astro',
+            pattern: '/[...doc]',
+            entrypoint: 'fulldev-ui/pages/[...doc].astro',
           })
           injectRoute({
-            pattern: '/[categories]/[...category]',
-            entrypoint: 'fulldev-ui/pages/[categories]/[...category].astro',
+            pattern: '/[...category]',
+            entrypoint: 'fulldev-ui/pages/[...category].astro',
           })
           injectRoute({
-            pattern: '/[posts]/[...post]',
-            entrypoint: 'fulldev-ui/pages/[posts]/[...post].astro',
+            pattern: '/[...post]',
+            entrypoint: 'fulldev-ui/pages/[...post].astro',
           })
           injectRoute({
-            pattern: '/[products]/[...product]',
-            entrypoint: 'fulldev-ui/pages/[products]/[...product].astro',
+            pattern: '/[...product]',
+            entrypoint: 'fulldev-ui/pages/[...product].astro',
           })
         }
 

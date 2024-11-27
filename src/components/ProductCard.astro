@@ -1,0 +1,52 @@
+---
+import type { CollectionEntry } from 'astro:content'
+import Element from 'fulldev-ui/components/Element.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Price from 'fulldev-ui/components/Price.astro'
+import type { ProductSchema } from 'fulldev-ui/schemas/productSchema'
+
+interface Props extends ProductSchema {
+  slug?: CollectionEntry<'products'>['slug']
+}
+
+const { slug, images, title, price, ...rest } = Astro.props
+---
+
+<Element
+  class:list="product-card"
+  as="a"
+  href={`/producten/${slug}/`}
+  {...rest}
+>
+  <Image {...images?.[0]} />
+  <Element class:list="product-card-content">
+    <Heading
+      as="h3"
+      level={5}
+      size={'sm'}
+      text={title}
+    />
+    <Price value={price} />
+  </Element>
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .product-card {
+      @apply relative flex flex-col gap-3;
+
+      &:hover > .image {
+        @apply opacity-75 transition-opacity;
+      }
+
+      .image {
+        @apply rounded-md border;
+      }
+
+      .product-card-content {
+        @apply flex h-full flex-col gap-2;
+      }
+    }
+  }
+</style>
