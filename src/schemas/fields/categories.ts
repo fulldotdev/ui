@@ -1,3 +1,3 @@
 import pathSchema from '../utils/pathSchema'
 
-export default pathSchema('pages').array().optional()
+export default pathSchema('categories').array().optional()

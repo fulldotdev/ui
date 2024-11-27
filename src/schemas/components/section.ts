@@ -1,3 +1,4 @@
+import { reference } from 'astro:content'
 import component from '../utils/component'
 import buttons from './buttons'
 import cards from './cards'
@@ -10,6 +11,7 @@ export default writeup
     image,
     buttons,
     cards,
+    products: reference('products').array().optional(),
   })
   .partial()
   .passthrough()

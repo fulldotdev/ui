@@ -4,12 +4,13 @@ import sections from 'fulldev-ui/schemas/components/sections'
 import description from 'fulldev-ui/schemas/fields/description'
 import title from 'fulldev-ui/schemas/fields/title'
 
-export default z
+export const postSchema = z
   .object({
-    _layout: z.literal('post'),
     title,
     description,
     image,
     sections,
   })
   .strict()
+
+export type PostSchema = z.infer<typeof postSchema>

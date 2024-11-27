@@ -1,12 +1,17 @@
 ---
 import type { ComponentProps, HTMLAttributes, HTMLTag } from 'astro/types'
+import { getEntries } from 'astro:content'
 import Button from 'fulldev-ui/components/Button.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Card from 'fulldev-ui/components/Card.astro'
 import Cards from 'fulldev-ui/components/Cards.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Price from 'fulldev-ui/components/Price.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
+import type { ProductReferences } from 'fulldev-ui/schemas/fields/products'
 
 interface Props extends HTMLAttributes<'section'> {
   tagline?: ComponentProps<typeof Tagline>['text']
@@ -14,6 +19,7 @@ interface Props extends HTMLAttributes<'section'> {
   paragraph?: ComponentProps<typeof Paragraph>['text']
   button?: ComponentProps<typeof Buttons> | undefined
   cards?: ComponentProps<typeof Cards>['cards']
+  products?: ProductReferences
   level?: ComponentProps<typeof Heading>['level']
   as?: HTMLTag
   size?: 'sm' | 'md' | 'lg' | undefined
@@ -29,16 +35,16 @@ const {
   heading,
   paragraph,
   button,
-  cards,
+  products,
   ...rest
 } = Astro.props
+
+const entries = products && (await getEntries(products))
 ---
 
 <Element
   class:list="products"
   {as}
-  {size}
-  {variant}
   {...rest}
 >
   <Element class:list="products-container">
@@ -61,15 +67,27 @@ const {
       </Element>
       <Button
         variant="ghost"
-        {size}
+        size="sm"
         {...button}
       />
       <slot name="segment" />
     </Element>
-    <Cards
-      {cards}
-      {size}
-    />
+    <Element class:list="products-cards">
+      {
+        entries?.map(({ slug, data }) => (
+          <Card href={`/producten/${slug}/`}>
+            <Image {...data.images?.[0]} />
+            <Element class:list="card-content">
+              <Heading
+                level={3}
+                text={data.title}
+              />
+              <Price value={data.price} />
+            </Element>
+          </Card>
+        ))
+      }
+    </Element>
     <slot />
   </Element>
 </Element>

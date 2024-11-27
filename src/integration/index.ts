@@ -94,12 +94,26 @@ export default function fulldevIntegration(
         // Inject routes
         // ----------------------
         if (config?.injectRoutes) {
-          const pages = import.meta.glob('/src/pages/**/*.astro')
-          !pages['/src/pages/[...page].astro'] &&
-            injectRoute({
-              pattern: '/[...page]',
-              entrypoint: 'fulldev-ui/[...page].astro',
-            })
+          injectRoute({
+            pattern: '/[...page]',
+            entrypoint: 'fulldev-ui/pages/[...page].astro',
+          })
+          injectRoute({
+            pattern: '/[docs]/[...doc]',
+            entrypoint: 'fulldev-ui/pages/[docs]/[...doc].astro',
+          })
+          injectRoute({
+            pattern: '/[categories]/[...category]',
+            entrypoint: 'fulldev-ui/pages/[categories]/[...category].astro',
+          })
+          injectRoute({
+            pattern: '/[posts]/[...post]',
+            entrypoint: 'fulldev-ui/pages/[posts]/[...post].astro',
+          })
+          injectRoute({
+            pattern: '/[products]/[...product]',
+            entrypoint: 'fulldev-ui/pages/[products]/[...product].astro',
+          })
         }
 
         // ----------------------

@@ -1,9 +1,10 @@
 import { z } from 'astro:content'
 import title from 'fulldev-ui/schemas/fields/title'
 
-export default z
+export const docSchema = z
   .object({
-    _layout: z.literal('policy'),
     title,
   })
   .strict()
+
+export type DocSchema = z.infer<typeof docSchema>

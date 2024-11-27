@@ -1,12 +1,13 @@
 ---
 import { getCollection, getEntry } from 'astro:content'
-import PageLayout from 'fulldev-ui/layouts/PageLayout.astro'
+import PostLayout from 'fulldev-ui/layouts/PostLayout.astro'
 
 export async function getStaticPaths() {
-  const collection = await getCollection('pages')
+  const collection = await getCollection('posts')
   return collection.map((entry) => ({
     params: {
-      page: entry.slug === 'index' ? undefined : entry.slug,
+      posts: 'blog',
+      post: entry.slug,
     },
     props: entry,
   }))
@@ -17,7 +18,7 @@ const { data, ...rest } = Astro.props
 const baseLayout = await getEntry('layouts', 'base')
 ---
 
-<PageLayout
+<PostLayout
   {...baseLayout.data}
   {...data}
   {...rest}

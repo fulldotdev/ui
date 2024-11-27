@@ -1,16 +1,12 @@
 import { z } from 'astro:content'
-import categoryLayout from 'fulldev-ui/schemas/layouts/categoryLayout'
-import docsLayout from 'fulldev-ui/schemas/layouts/docsLayout'
-import pageLayout from 'fulldev-ui/schemas/layouts/pageLayout'
-import policyLayout from 'fulldev-ui/schemas/layouts/policyLayout'
-import postLayout from 'fulldev-ui/schemas/layouts/postLayout'
-import productLayout from 'fulldev-ui/schemas/layouts/productLayout'
+import title from 'fulldev-ui/schemas/fields/title'
+import sections from './components/sections'
 
-export default z.union([
-  pageLayout,
-  postLayout,
-  policyLayout,
-  docsLayout,
-  categoryLayout,
-  productLayout,
-])
+export const pageSchema = z
+  .object({
+    title,
+    sections,
+  })
+  .strict()
+
+export type PageSchema = z.infer<typeof pageSchema>

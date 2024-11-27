@@ -5,7 +5,7 @@ const imagePath = z.preprocess((data: unknown) => {
     return data.split('/').pop()
   }
   return data
-}, reference('images'))
+}, reference('images').optional())
 
 export default z.union([imagePath, z.object({}).passthrough()]).pipe(
   z

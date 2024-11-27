@@ -2,27 +2,20 @@ import { z } from 'astro:content'
 import banner from 'fulldev-ui/schemas/components/banner'
 import footer from 'fulldev-ui/schemas/components/footer'
 import header from 'fulldev-ui/schemas/components/header'
-import image from 'fulldev-ui/schemas/components/image'
 import sidebar from 'fulldev-ui/schemas/components/sidebar'
 import subheader from 'fulldev-ui/schemas/components/subheader'
-import description from 'fulldev-ui/schemas/fields/description'
-import title from 'fulldev-ui/schemas/fields/title'
+import seo from './fields/seo'
 
-export default z
+export const layoutSchema = z
   .object({
-    seo: z
-      .object({
-        title,
-        description,
-        image,
-      })
-      .optional(),
+    theme: z.any(),
     code: z
       .object({
         head: z.string().optional(),
         body: z.string().optional(),
       })
       .optional(),
+    seo,
     banner,
     header,
     subheader,
@@ -30,3 +23,5 @@ export default z
     sidebar,
   })
   .strict()
+
+export type LayoutSchema = z.infer<typeof layoutSchema>

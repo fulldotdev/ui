@@ -15,3 +15,4 @@ export default z
   })
   .partial()
   .passthrough()
+  .optional()
