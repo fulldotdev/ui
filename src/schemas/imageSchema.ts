@@ -9,4 +9,4 @@ export default z
     height: z.number(),
     format: z.string(),
   })
-  .passthrough()
+  .strict()

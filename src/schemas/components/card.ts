@@ -1,11 +1,11 @@
 import { z } from 'astro:content'
+import images from '../fields/images'
 import pathSchema from '../utils/pathSchema'
 import button from './button'
 import buttons from './buttons'
 import globalSchema from './global'
 import icon from './icon'
 import image from './image'
-import images from './images'
 
 export const cardSchema = z
   .union([pathSchema('pages'), z.object({}).passthrough()])
