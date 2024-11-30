@@ -1,89 +1,89 @@
 ---
 import Element from 'fulldev-ui/components/Element.astro'
+import { scope } from 'simple:scope'
 import Button from './Button.astro'
 import Heading from './Heading.astro'
-import Text from './Text.astro'
+import Input from './Input.astro'
+import Price from './Price.astro'
 
 const { ...rest } = Astro.props
 ---
 
-<Element
-  if
-  class:list="cart-list"
-  {...rest}
-/>
+<RootElement>
+  <Element
+    data-target={scope('list')}
+    class:list={'cart-list'}
+    if={true}
+    {...rest}
+  />
 
-<template>
-  <Element class="cart-list-card">
-    <img class="cart-list-image image" />
-    <Element class="column">
-      <Heading
-        if
-        level={4}
-        class="heading"
-      />
-      <Element class="row">
-        <Text
-          if
-          class="cart-list-price"
-        />
-        <Button
-          class:list="cart-list-remove"
-          variant="ghost"
-          icon="trash"
-          type="button"
-        />
+  <template data-target={scope('template')}>
+    <Element class="cart-list-card">
+      <img class="image" />
+      <Element class="cart-list-card-segment">
+        <Element class="cart-list-card-content">
+          <Heading
+            if
+            level={6}
+          />
+          <Price if />
+        </Element>
+        <Element class="cart-list-card-actions">
+          <Input
+            type="number"
+            name="quantity"
+            value={1}
+            min={0}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            icon="trash"
+            type="button"
+          />
+        </Element>
       </Element>
     </Element>
-  </Element>
-</template>
+  </template>
+</RootElement>
 
 <script>
-  import { $cart } from 'fulldev-ui/stores/cart.ts'
+  import { $cart, removeItem, updateQuantity } from 'fulldev-ui/stores/cart.ts'
   import { formatPrice } from 'fulldev-ui/utils/cart'
 
-  function setCards(items: any) {
-    const template = document.querySelector('template')
-    const container = document.querySelector('.cart-list')
+  RootElement.ready(($) => {
+    $cart.subscribe((items) => {
+      const list = $('list')
+      const template = $('template') as HTMLTemplateElement
 
-    if (!container || !template) return
+      // list.innerHTML = ''
+      items.forEach((item) => {
+        const clone = template?.content.cloneNode(true) as HTMLElement
+        const clonedCard = clone.querySelector('.cart-list-card') as HTMLElement
+        const existingCard = list.querySelector(`[data-slug="${item.slug}"]`)
+        const card = existingCard || (clonedCard as HTMLElement)
+        const heading = card.querySelector('.heading') as HTMLElement
+        const price = card.querySelector('.price') as HTMLElement
+        const image = card.querySelector('.image') as HTMLImageElement
+        const remove = card.querySelector('.button') as HTMLButtonElement
+        const quantity = card.querySelector('.input') as HTMLInputElement
 
-    container.innerHTML = ''
+        card.dataset.slug = item.slug
+        heading.textContent = item.title
+        price.textContent = formatPrice(item.price)
+        image.src = item.image
 
-    items.forEach((item: any, index: number) => {
-      const clone = template?.content.cloneNode(true)
-      if (!(clone instanceof DocumentFragment)) return
-      const card = clone.querySelector('.cart-list-card')
-      if (!card) return
+        remove.addEventListener('click', () => removeItem(item.slug))
 
-      const img = card.querySelector('img')
-      if (img) img.src = item.image
-
-      const h4 = card.querySelector('h4')
-      if (h4) h4.textContent = item.name
-
-      const p = card.querySelector('p')
-      if (p) p.textContent = formatPrice(item.price)
-
-      const button = card.querySelector('button')
-      if (button) {
-        button.addEventListener('click', () => {
-          const currentCart = $cart.get()
-          const newCart = [...currentCart]
-          newCart.splice(index, 1)
-          $cart.set(newCart)
+        quantity.addEventListener('change', (e) => {
+          console.log('blur')
+          const target = e.target as HTMLInputElement
+          const value = Number(target.value)
+          updateQuantity(item.slug, value)
         })
-      }
 
-      container.appendChild(clone)
-    })
-  }
-
-  document.addEventListener('astro:page-load', () => {
-    setCards($cart.get())
-
-    $cart.subscribe((items: any) => {
-      setCards(items)
+        $('list').appendChild(clone)
+      })
     })
   })
 </script>
@@ -99,18 +99,23 @@ const { ...rest } = Astro.props
         &:not(:first-child) {
           @apply mt-5 border-t pt-5;
         }
+      }
 
-        .image {
-          @apply block h-auto w-24;
-        }
+      .image {
+        @apply block h-auto w-24;
+      }
 
-        .column {
-          @apply flex h-full w-full flex-col justify-between gap-3;
-        }
+      .cart-list-card-segment {
+        @apply flex h-full w-full flex-col justify-between gap-4;
+      }
 
-        .row {
-          @apply flex w-full flex-row justify-between;
-        }
+      .cart-list-card-content,
+      .cart-list-card-actions {
+        @apply flex justify-between gap-2;
+      }
+
+      .input {
+        @apply w-16;
       }
     }
   }

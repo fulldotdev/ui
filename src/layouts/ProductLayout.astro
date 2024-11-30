@@ -3,7 +3,7 @@ import { getImage } from 'astro:assets'
 import type { CollectionEntry } from 'astro:content'
 import { getCollection, getEntry } from 'astro:content'
 import Products from 'fulldev-ui/blocks/Products.astro'
-import CartForm from 'fulldev-ui/components/CartForm.astro'
+import CartForm from 'fulldev-ui/components/CartForm.svelte'
 import Element from 'fulldev-ui/components/Element.astro'
 import Gallery from 'fulldev-ui/components/Gallery.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
@@ -43,7 +43,7 @@ const baseLayout = await getEntry('layouts', 'base')
     <Element class:list="product-container">
       <Element class:list="product-main">
         <Gallery {images} />
-        <Prose {render} />
+        <!-- <Prose {render} /> -->
       </Element>
       <Element class:list="product-segment">
         <Element class:list="product-content">
@@ -55,12 +55,8 @@ const baseLayout = await getEntry('layouts', 'base')
           <Paragraph text={description} />
         </Element>
         <CartForm
-          image={gotImage && 'src' in gotImage ? gotImage?.src : undefined}
-          {soldout}
-          {title}
-          {price}
-          {slug}
-          {variants}
+          product={Astro.props}
+          client:load
         />
         <List
           size="sm"

@@ -1,5 +1,5 @@
 ---
-heading: Miele Witgoedcenter Amsterdam
+title: Miele Witgoedcenter Amsterdam
 image: miele-witgoedcenter-amsterdam.webp
 href: 'https://witgoedcenteramsterdam.nl'
 ---

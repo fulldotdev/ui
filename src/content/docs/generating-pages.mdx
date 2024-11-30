@@ -1,0 +1,128 @@
+---
+title: Generating Pages
+---
+
+import Link from 'fulldev-ui/components/Link.astro'
+
+# Generating Pages
+
+With our integration, you can generate pages using content files with type-safe frontmatter, minimal configuration, and an easy-to-understand project structure.
+
+## Starter Template
+
+This is the recommended way to get started with our content layer integration. We've created a <Link href="https://github.com/fulldotdev/starter/tree/main">starter template</Link> with examples of everything you need to get started. This instantly gives you access to generating pages, using presets, internationalization and more without any additional setup.
+
+```bash
+pnpm create astro@latest -- --template fulldotdev/starter
+```
+
+## Manual Setup
+
+To get started with the manual setup, you need to install the <Link href="/overview/installation/">integration</Link> and add `injectRoutes: true` to your `astro.config.ts` file, see <Link href="#type-safe-frontmatter">frontmatter</Link> below for more information on how this generates a site using content files.
+
+```ts
+import { defineConfig } from 'astro/config'
+import fulldev from 'fulldev-ui/integration'
+
+// https://astro.build/config
+export default defineConfig({
+  integrations: [
+    fulldev({
+      // other options
+      injectRoutes: true,
+    }),
+  ],
+})
+```
+
+`injectRoutes` reads your content files and generates routes for them in the generated site. Supporting file types like markdown and MDX.
+
+## Project Structure
+
+To start with, your project structure should look like this:
+
+```md
+.
+├── src/
+│ ├── blocks/
+│ │ └── ...
+│ ├── components/
+│ │ └── ...
+│ ├── layouts/
+│ │ └── ...
+│ ├── images/
+│ │ └── ...
+│ ├── content/
+│ │ ├── pages/
+│ │ │ └── ...
+│ │ ├── presets/
+│ │ │ ├── base.yml
+│ │ │ └── ...
+│ │ └── ...
+│ ├── css/
+│ │ ├── custom.css
+│ │ └── ...
+├── public/
+│ └── ...
+└──
+```
+
+## Creating a page
+
+Creating a page is as simple as creating a new file in the **src/content/pages** directory.
+
+For example,
+
+- **src/content/pages/index.mdx** will be the root of your site.
+- **src/content/pages/about.mdx** will appear at /about.
+- **src/content/pages/team/first-name.mdx** will appear at /team/first-name.
+
+### Using presets
+
+Presets are a way to apply a set of configurations to a page. This can be apply navigation settings, seo and more.
+
+To learn more about presets, see the <Link href="/guides/using-presets/">using presets</Link> guide.
+
+### Using layouts
+
+Layouts are a way to apply styles to a page. Used for having multiple layouts like a blog layout, documentation layout, etc.
+
+To learn more about layouts, see the <Link href="/guides/using-layouts/">using layouts</Link> guide.
+
+### Frontmatter
+
+Each file has a few frontmatter objects that are important to know about. The frontmatter is fully type-safe, so you will know if you use an unavailable option or mistype something. SEO has priority over title and description, however title and description are used in multiple places like cards so they remain important.
+
+```yml
+---
+preset: [docs]
+component: DocsLayout
+
+seo:
+  title: Page Title
+  description: This is my page description
+  image: /image.jpg # Open Graph Image
+
+# Information on the page, this is used in places like card, sidebar, etc.
+title: Page Title
+description: This is my page description
+
+sections: # Here you generate the page by adding a component and passing props
+  - component: Hero
+    heading: Page Title
+    text: This is my page description
+    buttons:
+      - text: Button
+        color: brand
+        href: /
+      - text: Button
+        href: /
+---
+# This is the prose, you can use markdown here, typically used for blogs, docs, etc.
+```
+
+For all objects avaliable in the frontmatter, see the <Link href="https://ui.full.dev/content-collections/pages/">pages collection</Link>.
+
+## Using custom components
+
+You can use custom components simply creating them in the **src/components**, **src/blocks** or **src/layouts** directory. You can then use those in the component property of the frontmatter. If you want to override a component from the library, see the [overriding components](/guides/overriding-components/) guide.

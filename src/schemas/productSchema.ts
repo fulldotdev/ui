@@ -6,6 +6,7 @@ import title from 'fulldev-ui/schemas/fields/title'
 import order from './fields/order'
 import price from './fields/price'
 import soldout from './fields/soldout'
+import variants from './fields/variants'
 
 export const productSchema = z.object({
   soldout,
@@ -15,7 +16,7 @@ export const productSchema = z.object({
   price,
   categories,
   images,
-  variants: z.any().optional(),
+  variants,
 })
 
 export type ProductSchema = z.infer<typeof productSchema>

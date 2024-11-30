@@ -1,5 +1,5 @@
 ---
-heading: Stark Vulcanising Products
+title: Stark Vulcanising Products
 image: stark-vulcanising-products.webp
 href: '#'
 ---

@@ -5,7 +5,7 @@ import title from 'fulldev-ui/schemas/fields/title'
 
 export default z
   .object({
-    title,
+    title: title.optional(),
     description,
     image,
   })

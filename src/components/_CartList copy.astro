@@ -1,0 +1,213 @@
+<!-- ---
+import Element from 'fulldev-ui/components/Element.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import { $cart } from 'fulldev-ui/stores/cart.ts'
+import { formatPrice } from 'fulldev-ui/utils/cart'
+import Button from './Button.astro'
+import Card from './Card.astro'
+import Heading from './Heading.astro'
+import Input from './Input.astro'
+import Price from './Price.astro'
+import Text from './Text.astro'
+
+const { ...rest } = Astro.props
+---
+
+<Element
+  class:list="cart-list"
+  {...rest}
+>
+  <template id="cart-card-template">
+    <Element class="cart-card">
+      <Image src="/placeholder-portrait.webp" />
+      <Element class="cart-card-segment">
+        <Element class="cart-card-content">
+          <Heading
+            level={6}
+            text="Product title"
+          />
+          <Price value={999} />
+        </Element>
+        <Element class="cart-card-actions">
+          <Input
+            type="number"
+            name="quantity"
+            value={1}
+            min={0}
+          />
+          <Button
+            variant="outline"
+            icon="trash"
+            type="button"
+          />
+        </Element>
+      </Element>
+    </Element>
+  </template>
+</Element>
+<Element
+  if
+  class:list="cart-list"
+  {...rest}
+/>
+
+<template>
+  <Card class="cart-list-card">
+    <img class="cart-list-image image" />
+    <Element class="column">
+      <Heading
+        if
+        level={4}
+        class="heading"
+      />
+      <Element class="row">
+        <Text
+          if
+          class="cart-list-price"
+        />
+        <Button
+          class:list="cart-list-remove"
+          variant="ghost"
+          icon="trash"
+          type="button"
+        />
+      </Element>
+    </Element>
+  </Card>
+</template>
+
+<script>
+  import { $cart } from 'fulldev-ui/stores/cart.ts'
+  import { formatPrice } from 'fulldev-ui/utils/cart'
+
+  function setCards(items: any) {
+    const template = document.querySelector('template')
+    const container = document.querySelector('.cart-list')
+
+    if (!container || !template) return
+
+    container.innerHTML = ''
+
+    items.forEach((item: any, index: number) => {
+      const clone = template?.content.cloneNode(true)
+      if (!(clone instanceof DocumentFragment)) return
+      const card = clone.querySelector('.cart-card')
+      if (!card) return
+
+      const img = card.querySelector('img')
+      if (img) img.src = item.image
+
+      const h4 = card.querySelector('h4')
+      if (h4) h4.textContent = item.name
+
+      const p = card.querySelector('p')
+      if (p) p.textContent = formatPrice(item.price)
+
+      const button = card.querySelector('button')
+      if (button) {
+        button.addEventListener('click', () => {
+          const currentCart = $cart.get()
+          const newCart = [...currentCart]
+          newCart.splice(index, 1)
+          $cart.set(newCart)
+        })
+      }
+
+      container.appendChild(clone)
+    })
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    setCards($cart.get())
+
+    $cart.subscribe((items: any) => {
+      setCards(items)
+    })
+  })
+</script>
+
+<script>
+  function setCards(items: any) {
+    const template = document.querySelector('template')
+    const container = document.querySelector('.cart-list')
+    if (!(container instanceof HTMLElement)) return
+    if (!(template instanceof HTMLTemplateElement)) return
+
+    container.innerHTML = ''
+
+    items.forEach((item: any, index: number) => {
+      const clone = template?.content.cloneNode(true)
+      if (!(clone instanceof DocumentFragment)) return
+      const card = clone.querySelector('.cart-list-card')
+      if (!card) return
+
+      const image = card.querySelector('img')
+      const heading = card.querySelector('.heading')
+      const price = card.querySelector('.price')
+      // const input = card.querySelector('.input-input')
+      const remove = card.querySelector('.button')
+
+      if (image) image.src = item.image
+      if (heading) heading.textContent = item.name
+      if (price) price.textContent = formatPrice(item.price)
+
+      remove?.addEventListener('click', () => {
+        const currentCart = $cart.get()
+        const newCart = [...currentCart]
+        newCart.splice(index, 1)
+        $cart.set(newCart)
+      })
+
+      container.appendChild(clone)
+    })
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    setCards($cart.get())
+
+    $cart.subscribe((items: any) => {
+      setCards(items)
+    })
+  })
+</script>
+
+<style is:global>
+  @layer fulldev {
+    .cart-list {
+      @apply flex flex-col text-foreground;
+
+      .cart-card {
+        @apply flex w-full gap-5;
+
+        &:not(:first-child) {
+          @apply mt-5 border-t pt-5;
+        }
+
+        .image {
+          @apply block h-auto w-24;
+        }
+
+        .column {
+          @apply flex h-full w-full flex-col justify-between gap-3;
+        }
+
+        .row {
+          @apply flex w-full flex-row justify-between;
+        }
+      }
+
+      .cart-card-segment {
+        @apply flex h-full w-full flex-col justify-between gap-4;
+      }
+
+      .cart-card-content,
+      .cart-card-actions {
+        @apply flex justify-between gap-2;
+      }
+
+      .input {
+        @apply w-16;
+      }
+    }
+  }
+</style> -->-->

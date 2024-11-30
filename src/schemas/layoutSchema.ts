@@ -23,5 +23,6 @@ export const layoutSchema = z
     sidebar,
   })
   .strict()
+  .nullable()
 
 export type LayoutSchema = z.infer<typeof layoutSchema>
