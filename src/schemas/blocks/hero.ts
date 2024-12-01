@@ -1,19 +1,16 @@
 import { z } from 'astro:content'
-import badge from '../components/badge'
-import buttons from '../components/buttons'
-import heading from '../components/heading'
-import tagline from '../components/tagline'
-import text from '../components/text'
-import image from '../fields/image'
+import { badgeSchema } from 'fulldev-ui/schemas/components/badge.ts'
+import { buttonSchema } from 'fulldev-ui/schemas/components/button.ts'
+import { imageSchema } from 'fulldev-ui/schemas/components/image.ts'
 
 export const heroSchema = z
   .object({
-    badge: badge,
-    tagline: tagline,
-    heading: heading,
-    text: text,
-    buttons: buttons,
-    image: image,
+    badge: badgeSchema,
+    tagline: z.string().optional(),
+    heading: z.string().optional(),
+    text: z.string().optional(),
+    buttons: buttonSchema.array().optional(),
+    image: imageSchema.optional(),
   })
   .strict()
 

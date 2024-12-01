@@ -1,18 +1,16 @@
 import { z } from 'astro:content'
-import channels from './channels'
-import logo from './logo'
-import menu from './menu'
-import socials from './socials'
-import text from './text'
+import { channelSchema } from 'fulldev-ui/schemas/components/channel.ts'
+import { logoSchema } from 'fulldev-ui/schemas/components/logo.ts'
+import { menuSchema } from 'fulldev-ui/schemas/components/menu.ts'
 
-export default z
+export const footerSchema = z
   .object({
-    logo,
-    text,
-    socials,
-    channels,
-    menu,
+    logo: logoSchema.optional(),
+    description: z.string().optional(),
+    socials: z.string().url().array().optional(),
+    channels: channelSchema.array().optional(),
+    menus: menuSchema.array().optional(),
   })
-  .partial()
-  .passthrough()
-  .optional()
+  .strict()
+
+export type FooterSchema = z.infer<typeof footerSchema>

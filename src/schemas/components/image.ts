@@ -7,7 +7,7 @@ const imagePath = z.preprocess((data: unknown) => {
   return data
 }, reference('images'))
 
-export default z
+export const imageSchema = z
   .union([imagePath, z.object({}).passthrough()])
   .pipe(
     z

@@ -1,20 +1,17 @@
 import { z } from 'astro:content'
-import buttons from './buttons'
-import links from './links'
-import logo from './logo'
-import menu from './menu'
-import subheader from './subheader'
-import themer from './themer'
+import { buttonSchema } from 'fulldev-ui/schemas/components/button.ts'
+import { linkSchema } from 'fulldev-ui/schemas/components/link.ts'
+import { logoSchema } from 'fulldev-ui/schemas/components/logo.ts'
+import { menuSchema } from 'fulldev-ui/schemas/components/menu.ts'
 
-export default z
+export const headerSchema = z
   .object({
-    themer,
-    subheader,
-    logo,
-    buttons,
-    links,
-    menu,
+    themer: z.boolean().optional(),
+    logo: logoSchema.optional(),
+    links: linkSchema.array().optional(),
+    buttons: buttonSchema.array().optional(),
+    menus: menuSchema.array().optional(),
   })
-  .partial()
-  .passthrough()
-  .optional()
+  .strict()
+
+export type HeaderSchema = z.infer<typeof headerSchema>

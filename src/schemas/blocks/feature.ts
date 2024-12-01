@@ -2,7 +2,7 @@ import { z } from 'astro:content'
 import { buttonSchema } from 'fulldev-ui/schemas/components/button.ts'
 import { imageSchema } from 'fulldev-ui/schemas/components/image.ts'
 
-export const ctaSchema = z
+export const featureSchema = z
   .object({
     tagline: z.string().optional(),
     heading: z.string().optional(),
@@ -12,4 +12,4 @@ export const ctaSchema = z
   })
   .strict()
 
-export type CtaSchema = z.infer<typeof ctaSchema>
+export type FeatureSchema = z.infer<typeof featureSchema>

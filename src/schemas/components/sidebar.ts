@@ -1,22 +1,14 @@
 import { z } from 'astro:content'
-import logo from '../components/logo'
-import heading from './heading'
-import links from './links'
-import themer from './themer'
+import { logoSchema } from '../components/logo'
+import { menuSchema } from './menu'
 
 export const sidebarSchema = z
   .object({
     company: z.string().optional(),
-    logo: logo,
-    heading: heading,
-    themer: themer,
-    menu: z
-      .object({
-        heading: heading,
-        links: links,
-      })
-      .array()
-      .optional(),
+    logo: logoSchema.optional(),
+    heading: z.string().optional(),
+    themer: z.boolean().optional(),
+    menus: menuSchema.array().optional(),
   })
   .strict()
 

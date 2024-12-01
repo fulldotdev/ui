@@ -1,16 +1,16 @@
 import { z } from 'astro:content'
-import href from '../fields/href'
-import icon from './icon'
-import text from './text'
 
-export const buttonSchema = z.object({
-  text: text,
-  href: href,
-  icon: icon,
-  size: z.enum(['sm', 'md', 'lg']).optional(),
-  variant: z.enum(['primary', 'secondary', 'outline', 'ghost']).optional(),
-})
+export const buttonSchema = z
+  .object({
+    text: z.string().optional(),
+    href: z.string().optional(),
+    icon: z.string().optional(),
+    size: z.enum(['sm', 'md', 'lg']).default('md').optional(),
+    variant: z
+      .enum(['primary', 'secondary', 'outline', 'ghost'])
+      .default('primary')
+      .optional(),
+  })
+  .strict()
 
 export type ButtonSchema = z.infer<typeof buttonSchema>
-
-export default buttonSchema
