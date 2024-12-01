@@ -1,5 +1,5 @@
 ---
-title: Mug
+title: Category
 description: Lorem ipsum dolor sit
 ---
 

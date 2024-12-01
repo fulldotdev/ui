@@ -1,8 +1,8 @@
 ---
-title: My Product Title
+title: Product
 categories: 
-  - mugs
-description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, libero at lacinia ferment
+  - category
+description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 price: 90
 images: 
   - placeholder.webp

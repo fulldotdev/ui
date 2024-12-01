@@ -15,8 +15,9 @@ export function getHref(
   slug: CollectionEntry<ContentCollectionKey>['slug']
 ) {
   let href
-  if (slug === 'index') href = `/`
-  else if (slug) href = `/${routes[collection]}/${slug}/`
+  if (collection === 'pages' && slug === 'index') href = `/`
+  else if (slug === 'index') href = `/${routes[collection]}/`
+  else href = `/${routes[collection]}/${slug}/`
   href = href?.replace('//', '/')
   return href
 }

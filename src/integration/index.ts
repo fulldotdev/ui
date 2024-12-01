@@ -8,7 +8,6 @@ import { envField } from 'astro/config'
 import tailwindcss from 'tailwindcss'
 import tailwindcssNesting from 'tailwindcss/nesting'
 import { loadEnv } from 'vite'
-import virtual from 'vite-plugin-virtual'
 import tailwindConfig from '../../tailwind.config.ts'
 
 interface Config {
@@ -16,80 +15,13 @@ interface Config {
   company?: string
   css?: string
   injectRoutes?: boolean
-  components?: {
-    Avatar?: string
-    Avatars?: string
-    Badge?: string
-    Badges?: string
-    Button?: string
-    Buttons?: string
-    Channel?: string
-    Channels?: string
-    Checkbox?: string
-    Form?: string
-    Gallery?: string
-    Head?: string
-    Heading?: string
-    Icon?: string
-    Image?: string
-    Input?: string
-    Label?: string
-    Lead?: string
-    Link?: string
-    Links?: string
-    List?: string
-    Logo?: string
-    Menu?: string
-    Paragraph?: string
-    Prose?: string
-    Rating?: string
-    Search?: string
-    Select?: string
-    Sidebar?: string
-    Social?: string
-    Socials?: string
-    Subheader?: string
-    Switch?: string
-    Table?: string
-    Tagline?: string
-    Text?: string
-    Textarea?: string
-    Themer?: string
-    Toc?: string
-    Writeup?: string
-  }
-  blocks?: {
-    Banner?: string
-    Categories?: string
-    Colleagues?: string
-    Contact?: string
-    Content?: string
-    Cta?: string
-    Excerpt?: string
-    Features?: string
-    Footer?: string
-    Header?: string
-    Hero?: string
-    Intro?: string
-    Jobs?: string
-    Posts?: string
-    Prices?: string
-    Product?: string
-    Products?: string
-    Reviews?: string
-  }
-  layouts?: {
-    Layout?: string
-    CategoryLayout?: string
-    DocLayout?: string
-    PageLayout?: string
-    PostLayout?: string
-    ProductLayout?: string
+  overrides?: {
+    [k: string]: string
   }
 }
 
 export default function fulldevIntegration(
-  config?: Partial<Config> | undefined
+  config: Partial<Config> | undefined
 ): AstroIntegration {
   return {
     name: '/integration',
@@ -102,20 +34,6 @@ export default function fulldevIntegration(
         // ----------------------
         // Update config
         // ----------------------
-
-        const getVirtualModules = (
-          object: object | undefined = {},
-          prefix: 'components' | 'blocks' | 'layouts'
-        ) =>
-          Object.fromEntries(
-            Object.entries(object).map(([name, path]) => [
-              `fulldev-ui/${prefix}/${name}`,
-              `export { default } from '${path}';`,
-            ])
-          )
-
-        console.log(getVirtualModules(config?.components, 'components'))
-
         updateConfig({
           site: loadEnv(process.env.NODE_ENV as any, process.cwd(), '').URL,
           experimental: {
@@ -149,13 +67,11 @@ export default function fulldevIntegration(
             }),
           ],
           vite: {
-            plugins: [
-              virtual({
-                ...getVirtualModules(config?.components, 'components'),
-                ...getVirtualModules(config?.blocks, 'blocks'),
-                ...getVirtualModules(config?.layouts, 'layouts'),
-              }),
-            ],
+            resolve: {
+              alias: {
+                ...config?.overrides,
+              },
+            },
             css: {
               postcss: {
                 plugins: [tailwindcss(tailwindConfig), tailwindcssNesting],
@@ -180,6 +96,7 @@ export default function fulldevIntegration(
               }),
             ],
           })
+
         // ----------------------
         // Inject routes
         // ----------------------

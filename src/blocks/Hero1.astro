@@ -1,0 +1,60 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import Badge from 'fulldev-ui/components/Badge.astro'
+import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import type { HeroSchema } from 'fulldev-ui/schemas/blocks/hero.ts'
+import Container from '../wrappers/Container.astro'
+import Section from '../wrappers/Section.astro'
+
+interface Props extends HTMLAttributes<'section'>, HeroSchema {}
+
+const { badge, heading, lead, buttons, image, ...rest } = Astro.props
+---
+
+<Section
+  class:list="hero"
+  {...rest}
+>
+  <Container>
+    <Element class="segment">
+      <Element class="content">
+        <Badge {...badge} />
+        <Heading
+          text={heading}
+          size={'lg'}
+          level={1}
+        />
+        <Text
+          size={'lg'}
+          text={lead}
+        />
+      </Element>
+      <Buttons
+        size={'lg'}
+        {buttons}
+      />
+    </Element>
+    <Image {...image} />
+  </Container>
+</Section>
+
+<style is:global>
+  @layer fulldev {
+    .hero {
+      .segment {
+        @apply z-10 flex flex-col items-start gap-8;
+      }
+
+      .content {
+        @apply flex max-w-screen-md flex-col gap-6;
+      }
+
+      .image {
+        @apply rounded-lg;
+      }
+    }
+  }
+</style>
