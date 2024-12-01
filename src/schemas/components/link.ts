@@ -1,23 +1,18 @@
 import { z } from 'astro:content'
+import href from '../fields/href'
+import icon from './icon'
+import text from './text'
 
-// export default z.union([pathSchema('pages'), z.object({}).passthrough()]).pipe(
-//   z
-//     .object({
-//       slug: z
-//         .string()
-//         .refine(async (data) => await pathSchema('pages').parseAsync(data)),
-//       text: z.string(),
-//       href: z.string(),
-//       icon: z.string(),
-//     })
-//     .partial()
-//     .passthrough()
-// )
-
-export default z
+export const linkSchema = z
   .object({
-    text: z.string().optional(),
-    href: z.string().optional(),
+    text: text,
+    href: href,
+    icon: icon,
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    variant: z.enum(['primary', 'underline', 'muted']).optional(),
   })
   .strict()
-  .optional()
+
+export type LinkSchema = z.infer<typeof linkSchema>
+
+export default linkSchema

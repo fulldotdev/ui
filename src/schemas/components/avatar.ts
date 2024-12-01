@@ -1,3 +1,6 @@
 import { z } from 'astro:content'
+import image from 'fulldev-ui/schemas/components/image.ts'
 
-export default z.string()
+export const avatarSchema = image
+
+export type AvatarSchema = z.infer<typeof avatarSchema>

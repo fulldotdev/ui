@@ -1,13 +1,15 @@
 import { z } from 'astro:content'
-import pathSchema from '../utils/pathSchema'
+import icon from 'fulldev-ui/schemas/components/icon.ts'
+import text from 'fulldev-ui/schemas/components/text.ts'
 
-export default pathSchema('pages').or(
-  z
-    .object({
-      text: z.string(),
-      href: z.string(),
-      icon: z.string(),
-    })
-    .partial()
-    .passthrough()
-)
+export const badgeSchema = z.object({
+  icon: icon,
+  text: text,
+  href: z.string().optional(),
+  size: z.enum(['sm', 'md', 'lg']).optional(),
+  variant: z.enum(['primary', 'secondary', 'outline', 'ghost']).optional(),
+})
+
+export type BadgeSchema = z.infer<typeof badgeSchema>
+
+export default badgeSchema

@@ -1,16 +1,23 @@
 import { z } from 'astro:content'
 import logo from '../components/logo'
-import menu from '../components/menu'
 import heading from './heading'
+import links from './links'
 import themer from './themer'
 
-export default z
+export const sidebarSchema = z
   .object({
-    themer,
-    logo,
-    heading,
-    menu,
+    company: z.string().optional(),
+    logo: logo,
+    heading: heading,
+    themer: themer,
+    menu: z
+      .object({
+        heading: heading,
+        links: links,
+      })
+      .array()
+      .optional(),
   })
-  .partial()
-  .passthrough()
-  .optional()
+  .strict()
+
+export type SidebarSchema = z.infer<typeof sidebarSchema>

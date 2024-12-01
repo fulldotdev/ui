@@ -1,29 +1,19 @@
 ---
-import type { ComponentProps, HTMLAttributes, HTMLTag } from 'astro/types'
-import type { CollectionEntry } from 'astro:content'
-import { getEntry } from 'astro:content'
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import type { LinkSchema } from 'fulldev-ui/schemas/components/link'
 
-interface Props extends GlobalProps, HTMLAttributes<'a'> {
+interface Props extends Omit<HTMLAttributes<'a'>, 'href'>, LinkSchema {
   as?: HTMLTag
-  href?: string | null | undefined
-  slug?: CollectionEntry<'pages'>['slug'] | undefined
-  icon?: ComponentProps<typeof Icon>['name']
-  variant?: 'primary' | 'muted' | undefined
-  text?: string | undefined
   current?: boolean | undefined
 }
 
 const {
-  slug,
-  href = slug === 'index' ? '/' : slug ? `/${slug}/` : undefined,
-  text = slug ? (await getEntry('pages', slug)).data.title : undefined,
-  target = href?.startsWith('http') ? '_blank' : undefined,
-  current = Astro.url.pathname === href,
   as = 'a',
   variant = 'primary',
+  size = 'md',
+  text,
   icon,
   ...rest
 } = Astro.props
@@ -31,11 +21,8 @@ const {
 
 <Element
   class:list="link"
-  {href}
   {as}
-  {target}
   {variant}
-  {current}
   {...rest}
 >
   <Fragment set:html={text} />
@@ -52,6 +39,10 @@ const {
       &.variant-primary,
       &:is(.prose-content > *:not(.prose-footer) > a) {
         @apply text-primary underline underline-offset-4;
+      }
+
+      &.variant-underline {
+        @apply underline underline-offset-4;
       }
 
       &.variant-muted {

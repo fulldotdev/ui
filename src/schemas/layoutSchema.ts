@@ -2,7 +2,7 @@ import { z } from 'astro:content'
 import banner from 'fulldev-ui/schemas/components/banner'
 import footer from 'fulldev-ui/schemas/components/footer'
 import header from 'fulldev-ui/schemas/components/header'
-import sidebar from 'fulldev-ui/schemas/components/sidebar'
+import { sidebarSchema } from 'fulldev-ui/schemas/components/sidebar'
 import subheader from 'fulldev-ui/schemas/components/subheader'
 import seo from './fields/seo'
 
@@ -20,7 +20,7 @@ export const layoutSchema = z
     header,
     subheader,
     footer,
-    sidebar,
+    sidebar: sidebarSchema.optional(),
   })
   .strict()
   .nullable()

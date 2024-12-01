@@ -1,41 +1,20 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
+import Links from 'fulldev-ui/components/Links.astro'
 import Logo from 'fulldev-ui/components/Logo.astro'
-import Menu from 'fulldev-ui/components/Menu.astro'
 import Themer from 'fulldev-ui/components/Themer.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import type { SidebarSchema } from 'fulldev-ui/schemas/components/sidebar'
 import Heading from './Heading.astro'
-import Toc from './Toc.astro'
 
-interface Props extends GlobalProps, HTMLAttributes<'aside'> {
-  menu?: ComponentProps<typeof Menu>['groups']
-  heading?: ComponentProps<typeof Heading>['text']
-  render?: ComponentProps<typeof Toc>['render']
-  logo?: ComponentProps<typeof Logo>
-  toc?: ComponentProps<typeof Toc>['heading']
-  company?: ComponentProps<typeof Logo>['company']
-  themer?: boolean | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
-}
+interface Props extends HTMLAttributes<'aside'>, SidebarSchema {}
 
-const {
-  size = 'sm',
-  logo,
-  company,
-  render,
-  menu,
-  toc,
-  heading,
-  themer,
-  ...rest
-} = Astro.props
+const { company, logo, menu, heading, themer, ...rest } = Astro.props
 ---
 
 <Element
   class:list="sidebar"
   as="aside"
-  {size}
   {...rest}
 >
   <Element
@@ -44,24 +23,38 @@ const {
   >
     <Logo
       {company}
-      {size}
       {...logo}
+      size="sm"
     />
     <Heading
-      level={4}
+      as="h5"
+      size="md"
       text={heading}
     />
-    <slot name="header" />
   </Element>
   <Element class:list="sidebar-content">
-    <Menu
-      groups={menu}
-      {size}
-    />
-    <Themer
-      if={themer}
-      {size}
-    />
+    <Element
+      class:list="sidebar-nav"
+      as="nav"
+    >
+      {
+        menu?.map(({ heading, links }) => (
+          <Element class:list="menu-group">
+            <Heading
+              text={heading}
+              size="sm"
+              as="h6"
+            />
+            <Links
+              direction="column"
+              size="sm"
+              {links}
+            />
+          </Element>
+        ))
+      }
+    </Element>
+    <Themer if={themer} />
     <slot />
   </Element>
 </Element>
@@ -69,7 +62,7 @@ const {
 <style is:global>
   @layer fulldev {
     .sidebar {
-      @apply sticky bottom-0 z-10 hidden h-full flex-col items-start justify-start bg-background lg:flex;
+      @apply sticky bottom-0 z-10 hidden h-full flex-col items-start justify-start border-r bg-background lg:flex;
 
       --height: calc(var(--header-height, 0px) + var(--subheader-height, 0px));
       top: var(--height);
