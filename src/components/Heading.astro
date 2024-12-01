@@ -5,27 +5,23 @@ import type { GlobalProps } from 'fulldev-ui/types/global-props'
 import { slugify } from 'fulldev-ui/utils/slugify'
 
 interface Props extends GlobalProps, HTMLAttributes<'h2'> {
-  as?: HTMLTag
-  level?: 1 | 2 | 3 | 4 | 5 | 6 | undefined
+  as: HTMLTag
   text?: string | undefined
+  muted?: boolean | undefined
 }
 
 const {
+  as = 'h2',
   text,
   id = text ? slugify(text) : undefined,
-  size = 'md',
-  level = 2,
-  as = `h${level}`,
   ...rest
 } = Astro.props
 ---
 
 <Element
   class:list="heading"
-  {id}
   {as}
-  {level}
-  {size}
+  {id}
   {...rest}
 >
   <Fragment set:html={text} />
@@ -36,82 +32,45 @@ const {
   .heading {
     @apply scroll-mt-20 font-bold tracking-tight text-foreground;
 
-    &.size-sm {
-      &.level-1 {
-        @apply text-3xl;
-      }
-
-      &.level-2 {
-        @apply text-2xl;
-      }
-
-      &.level-3 {
-        @apply text-xl;
-      }
-
-      &.level-4 {
-        @apply text-lg;
-      }
-
-      &.level-5 {
-        @apply text-base;
-      }
-
-      &.level-6 {
-        @apply text-sm;
-      }
+    &.muted {
+      @apply text-muted-foreground;
     }
 
+    &,
     &.size-md {
-      &.level-1 {
-        @apply text-4xl;
-      }
+      @apply text-base;
+    }
 
-      &.level-2 {
-        @apply text-3xl;
-      }
+    &.size-xs {
+      @apply text-xs;
+    }
 
-      &.level-3 {
-        @apply text-2xl;
-      }
-
-      &.level-4 {
-        @apply text-xl;
-      }
-
-      &.level-5 {
-        @apply text-lg;
-      }
-
-      &.level-6 {
-        @apply text-base;
-      }
+    &.size-sm {
+      @apply text-sm;
     }
 
     &.size-lg {
-      &.level-1 {
-        @apply text-5xl lg:text-6xl;
-      }
+      @apply text-lg;
+    }
 
-      &.level-2 {
-        @apply text-4xl;
-      }
+    &.size-xl {
+      @apply text-xl;
+    }
 
-      &.level-3 {
-        @apply text-3xl;
-      }
+    &.size-2xl {
+      @apply text-2xl;
+    }
 
-      &.level-4 {
-        @apply text-2xl;
-      }
+    &.size-3xl {
+      @apply text-3xl;
+    }
 
-      &.level-5 {
-        @apply text-xl;
-      }
+    &.size-4xl {
+      @apply text-4xl;
+    }
 
-      &.level-6 {
-        @apply text-lg;
-      }
+    &.size-5xl {
+      @apply text-5xl lg:text-6xl;
     }
   }
 </style>

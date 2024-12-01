@@ -1,23 +1,15 @@
 import { z } from 'astro:content'
-import pathSchema from '../utils/pathSchema'
-import globalSchema from './global'
+import href from '../fields/href'
+import icon from './icon'
+import text from './text'
 
-export const buttonSchema = z
-  .union([pathSchema('pages'), z.object({}).passthrough()])
-  .pipe(
-    globalSchema
-      .extend({
-        slug: z
-          .string()
-          .refine(async (data) => await pathSchema('pages').parseAsync(data)),
-        text: z.string(),
-        href: z.string(),
-        icon: z.string(),
-      })
-      .partial()
-      .passthrough()
-      .merge(globalSchema)
-  )
+export const buttonSchema = z.object({
+  text: text,
+  href: href,
+  icon: icon,
+  size: z.enum(['sm', 'md', 'lg']).optional(),
+  variant: z.enum(['primary', 'secondary', 'outline', 'ghost']).optional(),
+})
 
 export type ButtonSchema = z.infer<typeof buttonSchema>
 

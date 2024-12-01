@@ -1,57 +1,55 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
-import Badge from 'fulldev-ui/components/Badge.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Text from 'fulldev-ui/components/Text.astro'
-import type { HeroSchema } from 'fulldev-ui/schemas/blocks/hero.ts'
+import type { CtaSchema } from 'fulldev-ui/schemas/blocks/cta.ts'
 import Container from '../wrappers/Container.astro'
+import Panel from '../wrappers/Panel.astro'
 import Section from '../wrappers/Section.astro'
 
-interface Props extends HTMLAttributes<'section'>, HeroSchema {}
+interface Props extends HTMLAttributes<'section'>, CtaSchema {}
 
-const { badge, tagline, heading, text, buttons, image, ...rest } = Astro.props
+const { tagline, heading, text, buttons, image, ...rest } = Astro.props
 ---
 
 <Section
-  class:list="hero"
+  class:list="cta"
   {...rest}
 >
   <Container>
-    <Element class="segment">
-      <Element class="content">
-        <Badge
-          {...badge}
+    <Panel>
+      <Element class="segment">
+        <Element class="content">
+          <Tagline text={tagline} />
+          <Heading
+            text={heading}
+            size="4xl"
+            as="h2"
+          />
+          <Text
+            text={text}
+            size="lg"
+          />
+        </Element>
+        <Buttons
+          {buttons}
           size="lg"
         />
-        <Tagline text={tagline} />
-        <Heading
-          text={heading}
-          size="5xl"
-          as="h1"
-        />
-        <Text
-          text={text}
-          size="xl"
-        />
       </Element>
-      <Buttons
-        {buttons}
-        size="lg"
-      />
-    </Element>
-    <Image {...image} />
+      <Image {...image} />
+    </Panel>
   </Container>
 </Section>
 
 <style is:global>
   @layer fulldev {
-    .hero {
+    .cta {
       .segment {
-        @apply flex flex-col items-center gap-8 text-center;
+        @apply z-10 flex flex-col items-center gap-8 text-center;
       }
 
       .content {

@@ -1,59 +1,49 @@
 ---
-import type { ComponentProps, HTMLAttributes, HTMLTag } from 'astro/types'
-import type { CollectionEntry } from 'astro:content'
-import { getEntry } from 'astro:content'
-import Avatar from 'fulldev-ui/components/Avatar.astro'
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
-import Icon from 'fulldev-ui/components/Icon.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-interface Props
-  extends GlobalProps,
-    HTMLAttributes<'span'>,
-    HTMLAttributes<'a'> {
+interface Props extends GlobalProps, HTMLAttributes<'p'> {
   as?: HTMLTag
-  icon?: ComponentProps<typeof Icon>['name']
-  avatar?: ComponentProps<typeof Avatar>['src']
-  slug?: CollectionEntry<'pages'>['slug'] | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
   text?: string | undefined
-  variant?: 'secondary' | 'outline' | 'link' | undefined
+  muted?: boolean | undefined
 }
 
-const {
-  slug,
-  href = slug === 'index' ? '/' : slug ? `/${slug}/` : undefined,
-  text = slug ? (await getEntry('pages', slug)).data.title : undefined,
-  as = href ? 'a' : 'a',
-  target = href?.toString().startsWith('http') ? '_blank' : undefined,
-  icon,
-  ...rest
-} = Astro.props
+const { as = 'p', text, ...rest } = Astro.props
 ---
 
 <Element
-  class:list={'tagline'}
-  {href}
+  class:list="text"
   {as}
-  {target}
   {...rest}
 >
-  <slot />
-  <Icon name={icon} />
   <Fragment set:html={text} />
+  <slot />
 </Element>
 
 <style is:global>
   @layer fulldev {
     .tagline {
-      @apply text-primary font-semibold;
+      @apply font-semibold leading-tight text-primary;
+
+      &.size-xs {
+        @apply text-xs;
+      }
 
       &.size-sm {
         @apply text-sm;
       }
 
+      &.size-md {
+        @apply text-base;
+      }
+
       &.size-lg {
         @apply text-lg;
+      }
+
+      &.size-xl {
+        @apply text-xl;
       }
     }
   }

@@ -1,46 +1,41 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
-import Badge from 'fulldev-ui/components/Badge.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Text from 'fulldev-ui/components/Text.astro'
-import type { HeroSchema } from 'fulldev-ui/schemas/blocks/hero.ts'
+import type { ContentSchema } from 'fulldev-ui/schemas/blocks/content'
 import Container from '../wrappers/Container.astro'
 import Section from '../wrappers/Section.astro'
 
-interface Props extends HTMLAttributes<'section'>, HeroSchema {}
+interface Props extends HTMLAttributes<'section'>, ContentSchema {}
 
-const { badge, tagline, heading, text, buttons, image, ...rest } = Astro.props
+const { tagline, heading, text, buttons, image, ...rest } = Astro.props
 ---
 
 <Section
-  class:list="hero"
+  class:list="content"
   {...rest}
 >
   <Container>
     <Element class="segment">
       <Element class="content">
-        <Badge
-          {...badge}
-          size="lg"
-        />
         <Tagline text={tagline} />
         <Heading
           text={heading}
-          size="5xl"
-          as="h1"
+          size="3xl"
+          as="h2"
         />
         <Text
           text={text}
-          size="xl"
+          size="lg"
         />
       </Element>
       <Buttons
         {buttons}
-        size="lg"
+        variant="secondary"
       />
     </Element>
     <Image {...image} />
@@ -49,17 +44,17 @@ const { badge, tagline, heading, text, buttons, image, ...rest } = Astro.props
 
 <style is:global>
   @layer fulldev {
-    .hero {
+    .content {
+      .container {
+        @apply gap-y-12 lg:grid lg:grid-cols-2 lg:items-center;
+      }
+
       .segment {
-        @apply flex flex-col items-center gap-8 text-center;
+        @apply flex flex-col items-start gap-6 lg:max-w-xl;
       }
 
       .content {
-        @apply flex max-w-screen-md flex-col items-center gap-4 text-center;
-      }
-
-      .text {
-        @apply text-balance;
+        @apply flex max-w-screen-md flex-col items-start gap-3;
       }
 
       .image {

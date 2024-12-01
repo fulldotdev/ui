@@ -1,49 +1,35 @@
 ---
-import type { ComponentProps, HTMLAttributes, HTMLTag } from 'astro/types'
-import type { CollectionEntry } from 'astro:content'
-import { getEntry } from 'astro:content'
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import type { ButtonSchema } from 'fulldev-ui/schemas/components/button'
 
 interface Props
-  extends GlobalProps,
-    HTMLAttributes<'button'>,
-    HTMLAttributes<'a'> {
+  extends HTMLAttributes<'button'>,
+    Omit<HTMLAttributes<'a'>, 'href'>,
+    ButtonSchema {
   as?: HTMLTag
-  href?: string | null | undefined
   type?: HTMLAttributes<'button'>['type'] & HTMLAttributes<'a'>['type']
-  icon?: ComponentProps<typeof Icon>['name']
-  slug?: CollectionEntry<'pages'>['slug'] | undefined
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | undefined
-  text?: string | undefined
   reverse?: boolean | undefined
 }
 
 const {
-  slug,
-  href = slug === 'index' ? '/' : slug ? `/${slug}/` : undefined,
-  text = slug ? (await getEntry('pages', slug)).data.title : undefined,
+  href,
   as = href ? 'a' : 'button',
-  type = as === 'button' ? 'button' : undefined,
-  target = href?.startsWith('http') ? '_blank' : undefined,
   variant = 'primary',
   size = 'md',
+  text,
   icon,
-  reverse,
   ...rest
 } = Astro.props
 ---
 
 <Element
   class:list={['button']}
-  {href}
   {as}
-  {type}
-  {target}
+  {href}
   {variant}
   {size}
-  {reverse}
   {...rest}
 >
   <Icon name={icon} />
