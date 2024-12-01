@@ -1,10 +1,12 @@
 import { z } from 'astro:content'
-import title from 'fulldev-ui/schemas/fields/title'
+import { headSchema } from 'fulldev-ui/schemas/components/head.ts'
 
 export const docSchema = z
   .object({
-    title,
+    title: z.string().optional(),
+    head: headSchema.optional(),
   })
   .strict()
+  .nullable()
 
 export type DocSchema = z.infer<typeof docSchema>

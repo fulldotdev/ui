@@ -1,26 +1,18 @@
 import { z } from 'astro:content'
-import banner from 'fulldev-ui/schemas/components/banner'
-import footer from 'fulldev-ui/schemas/components/footer'
-import header from 'fulldev-ui/schemas/components/header'
+import { footerSchema } from 'fulldev-ui/schemas/components/footer'
+import { headSchema } from 'fulldev-ui/schemas/components/head.ts'
+import { headerSchema } from 'fulldev-ui/schemas/components/header'
+import { linkSchema } from 'fulldev-ui/schemas/components/link.ts'
 import { sidebarSchema } from 'fulldev-ui/schemas/components/sidebar'
-import subheader from 'fulldev-ui/schemas/components/subheader'
-import seo from './fields/seo'
 
 export const layoutSchema = z
   .object({
-    theme: z.any(),
-    code: z
-      .object({
-        head: z.string().optional(),
-        body: z.string().optional(),
-      })
-      .optional(),
-    seo,
-    banner,
-    header,
-    subheader,
-    footer,
+    head: headSchema.optional(),
+    banner: z.string().optional(),
+    header: headerSchema.optional(),
+    subheader: linkSchema.array().optional(),
     sidebar: sidebarSchema.optional(),
+    footer: footerSchema.optional(),
   })
   .strict()
   .nullable()

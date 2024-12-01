@@ -1,16 +1,17 @@
 import { z } from 'astro:content'
-import categories from 'fulldev-ui/schemas/fields/categories'
-import description from 'fulldev-ui/schemas/fields/description'
-import image from 'fulldev-ui/schemas/fields/image'
-import title from 'fulldev-ui/schemas/fields/title'
+import { headSchema } from 'fulldev-ui/schemas/components/head.ts'
+import { imageSchema } from 'fulldev-ui/schemas/components/image.ts'
+import pathSchema from 'fulldev-ui/schemas/utils/pathSchema.ts'
 
 export const categorySchema = z
   .object({
-    title,
-    description,
-    image,
-    categories,
+    title: z.string().optional(),
+    description: z.string().optional(),
+    image: imageSchema.optional(),
+    categories: pathSchema('categories').array().optional(),
+    head: headSchema.optional(),
   })
   .strict()
+  .nullable()
 
 export type CategorySchema = z.infer<typeof categorySchema>

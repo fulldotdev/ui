@@ -1,7 +1,7 @@
 import { z } from 'astro:content'
 import { imageSchema } from 'fulldev-ui/schemas/components/image.ts'
 
-export default z
+export const headSchema = z
   .object({
     title: z.string().optional(),
     description: z.string().optional(),
@@ -12,3 +12,5 @@ export default z
     scripts: z.string().array().optional(),
   })
   .strict()
+
+export type HeadSchema = z.infer<typeof headSchema>
