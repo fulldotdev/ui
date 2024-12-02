@@ -1,0 +1,41 @@
+---
+import { getEntries } from 'astro:content'
+import type { CategoriesSchema } from 'fulldev-ui/schemas/blocks/categories'
+import type { CtaSchema } from 'fulldev-ui/schemas/blocks/cta'
+import type { FeatureSchema } from 'fulldev-ui/schemas/blocks/feature'
+import type { HeroSchema } from 'fulldev-ui/schemas/blocks/hero'
+import type { ProductsSchema } from 'fulldev-ui/schemas/blocks/products'
+
+interface Props
+  extends HeroSchema,
+    CtaSchema,
+    FeatureSchema,
+    CategoriesSchema,
+    ProductsSchema {}
+
+let { _block, products, categories, ...rest } = Astro.props
+
+products = products && (await getEntries(products))
+categories = categories && (await getEntries(categories))
+
+const blocks = {
+  ...import.meta.glob('/src/blocks/**/*.astro'),
+  ...import.meta.glob('../blocks/**/*.astro'),
+}
+
+const path = Object.keys(blocks).find(
+  (path) => path.split('/').pop()?.split('.')[0] === _block
+)
+
+const BlockComponent = path && (await (blocks[path] as any)()).default
+---
+
+{
+  BlockComponent && (
+    <BlockComponent
+      {products}
+      {categories}
+      {...rest}
+    />
+  )
+}

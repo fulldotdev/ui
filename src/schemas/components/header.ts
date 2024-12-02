@@ -8,7 +8,9 @@ export const headerSchema = z
   .object({
     themer: z.boolean().optional(),
     logo: logoSchema.optional(),
+    company: z.string().optional(),
     links: linkSchema.array().optional(),
+    socials: z.string().url().array().optional(),
     buttons: buttonSchema.array().optional(),
     menus: menuSchema.array().optional(),
   })

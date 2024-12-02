@@ -10,6 +10,7 @@ export const headSchema = z
     favicon: z.string().optional(),
     company: z.string().optional(),
     scripts: z.string().array().optional(),
+    code: z.string().optional(),
   })
   .strict()
 

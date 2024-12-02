@@ -4,6 +4,7 @@ import { imageSchema } from 'fulldev-ui/schemas/components/image.ts'
 
 export const featureSchema = z
   .object({
+    _block: z.string(),
     tagline: z.string().optional(),
     heading: z.string().optional(),
     text: z.string().optional(),

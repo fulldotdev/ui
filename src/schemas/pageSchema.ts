@@ -1,7 +1,5 @@
 import { z } from 'astro:content'
-import { ctaSchema } from 'fulldev-ui/schemas//blocks/cta.ts'
-import { featureSchema } from 'fulldev-ui/schemas//blocks/feature.ts'
-import { heroSchema } from 'fulldev-ui/schemas//blocks/hero.ts'
+import { blockSchema } from 'fulldev-ui/schemas/components/block.ts'
 import { headSchema } from 'fulldev-ui/schemas/components/head.ts'
 import { imageSchema } from 'fulldev-ui/schemas/components/image.ts'
 
@@ -10,8 +8,9 @@ export const pageSchema = z
     title: z.string().optional(),
     description: z.string().optional(),
     image: imageSchema.optional(),
+    href: z.string().optional(),
     head: headSchema.optional(),
-    blocks: z.union([heroSchema, ctaSchema, featureSchema]).optional(),
+    blocks: blockSchema.array().optional(),
   })
   .strict()
   .nullable()

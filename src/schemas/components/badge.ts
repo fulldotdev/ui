@@ -5,6 +5,7 @@ export const badgeSchema = z
     icon: z.string().optional(),
     text: z.string().optional(),
     href: z.string().optional(),
+    target: z.literal('_blank').optional(),
     size: z.enum(['sm', 'md', 'lg']).default('md').optional(),
     variant: z
       .enum(['primary', 'secondary', 'outline', 'ghost'])

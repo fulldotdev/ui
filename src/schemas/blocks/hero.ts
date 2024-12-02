@@ -5,6 +5,7 @@ import { imageSchema } from 'fulldev-ui/schemas/components/image.ts'
 
 export const heroSchema = z
   .object({
+    _block: z.string(),
     badge: badgeSchema,
     tagline: z.string().optional(),
     heading: z.string().optional(),
