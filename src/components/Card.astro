@@ -1,170 +1,30 @@
 ---
-import { getEntry } from 'astro:content'
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
-import Icon from 'fulldev-ui/components/Icon.astro'
-import Image from 'fulldev-ui/components/Image.astro'
-import Price from 'fulldev-ui/components/Price.astro'
-import Heading from './Heading.astro'
-import Rating from './Rating.astro'
 
-// interface Props
-//   extends GlobalProps,
-//     ComponentProps<typeof Writeup>,
-//     Omit<HTMLAttributes<'a'>, 'title'> {
-//   image?: ComponentProps<typeof Image>
-//   images?: ComponentProps<typeof Image>[]
-//   position?: ComponentProps<typeof Image>['position']
-//   buttons?: ComponentProps<typeof Buttons>['buttons']
-//   button?: ComponentProps<typeof Button> | undefined
-//   variant?: ComponentProps<typeof Button>['variant']
-//   align?: ComponentProps<typeof Writeup>['align']
-//   icon?: ComponentProps<typeof Icon>['name']
-//   price?: ComponentProps<typeof Price>['value']
-//   slug?: CollectionEntry<'pages'>['slug'] | undefined
-//   id?: any
-//   panel?: boolean | undefined
-//   title?: ComponentProps<typeof Writeup>['heading']
-// }
-
-const { slug, ...props } = Astro.props
-const page = slug && (await getEntry('pages', slug))
-
-const merged = {
-  ...props,
-  ...page?.data,
+interface Props extends HTMLAttributes<'a'>, HTMLAttributes<'div'> {
+  as?: HTMLTag
 }
 
-const {
-  href = slug === 'index' ? undefined : `/${slug}/`,
-  as = href ? 'a' : 'div',
-  heading = page?.data.title || props.title,
-  image = page?.data.images?.[0] || props.images?.[0],
-  size = 'md',
-  panel = true,
-  inset = panel,
-  level = 3,
-  lead,
-  paragraph,
-  rating,
-  price,
-  icon,
-  position,
-  ...rest
-} = merged
+const { href, as = href ? 'a' : 'div', ...rest } = Astro.props
 ---
 
 <Element
   class:list="card"
-  as={href ? 'a' : 'div'}
+  {as}
   {href}
-  {panel}
-  {inset}
-  {size}
   {...rest}
 >
-  <Image
-    position={panel ? position : undefined}
-    {...image}
-  />
-  <Element class:list="card-content">
-    <Icon name={icon} />
-    <Rating
-      {size}
-      value={rating}
-    />
-    <Heading
-      {size}
-      {level}
-      text={heading}
-    />
-    <Text
-      {size}
-      text={lead}
-    />
-    <Text
-      {size}
-      text={paragraph}
-    />
-    <Price value={price} />
-  </Element>
   <slot />
 </Element>
 
 <style is:global>
   @layer fulldev {
     .card {
-      @apply relative flex flex-col items-start;
+      @apply w-full rounded-lg border bg-card p-4 text-card-foreground;
 
-      &:is(a[href]):hover > .image {
-        @apply opacity-50 transition;
-      }
-
-      .card-content {
-        @apply flex flex-col;
-      }
-
-      &.panel {
-        @apply overflow-hidden rounded-md border bg-card;
-      }
-
-      &.size-sm {
-        @apply gap-4;
-
-        .card-content {
-          @apply gap-2;
-        }
-
-        &.panel {
-          @apply p-4;
-        }
-
-        &.inset {
-          @apply gap-0 p-0;
-
-          .card-content {
-            @apply p-4;
-          }
-        }
-      }
-
-      &.size-md {
-        @apply gap-5;
-
-        .card-content {
-          @apply gap-2.5;
-        }
-
-        &.panel {
-          @apply p-5;
-        }
-
-        &.inset {
-          @apply gap-0 p-0;
-
-          .card-content {
-            @apply p-5;
-          }
-        }
-      }
-
-      &.size-lg {
-        @apply gap-6;
-
-        .card-content {
-          @apply gap-3;
-        }
-
-        &.panel {
-          @apply p-6;
-        }
-
-        &.inset {
-          @apply gap-0 p-0;
-
-          .card-content {
-            @apply p-6;
-          }
-        }
+      &:is(a[href]) {
+        @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
       }
     }
   }

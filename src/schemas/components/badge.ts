@@ -1,8 +1,9 @@
 import { z } from 'astro:content'
+import { iconSchema } from './icon'
 
 export const badgeSchema = z
   .object({
-    icon: z.string().optional(),
+    icon: iconSchema.optional(),
     text: z.string().optional(),
     href: z.string().optional(),
     target: z.literal('_blank').optional(),

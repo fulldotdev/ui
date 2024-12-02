@@ -1,128 +1,30 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import Buttons from 'fulldev-ui/components/Buttons.astro'
-import Cart from 'fulldev-ui/components/Cart.astro'
-import Drawer from 'fulldev-ui/components/Drawer.astro'
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
-import Links from 'fulldev-ui/components/Links.astro'
-import Logo from 'fulldev-ui/components/Logo.astro'
-import Menu from 'fulldev-ui/components/Menu.astro'
-import Socials from 'fulldev-ui/components/Socials.astro'
-import Themer from 'fulldev-ui/components/Themer.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
-import Search from './Search.astro'
 
-interface Props extends GlobalProps, HTMLAttributes<'header'> {
-  logo?: ComponentProps<typeof Logo>
-  company?: ComponentProps<typeof Logo>['company']
-  buttons?: ComponentProps<typeof Buttons>['buttons']
-  links?: ComponentProps<typeof Links>['links']
-  menu?: ComponentProps<typeof Menu>['groups']
-  panel?: boolean | undefined
-  search?: boolean | undefined
-  open?: boolean | undefined
-  cart?: string | undefined
-  socials?: ComponentProps<typeof Socials>['socials']
-  themer?: boolean | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
+interface Props extends HTMLAttributes<'header'> {
+  as?: HTMLTag
 }
 
-const {
-  size = 'sm',
-  open,
-  logo,
-  company,
-  buttons,
-  links,
-  search,
-  panel,
-  socials,
-  menu,
-  cart,
-  themer,
-  ...rest
-} = Astro.props
+const { as = 'header', ...rest } = Astro.props
 ---
 
 <Element
   class:list="header"
-  as="header"
-  {size}
-  {open}
+  {as}
   {...rest}
 >
-  <Element class:list="header-container">
-    <Logo
-      {company}
-      {size}
-      {...typeof logo === 'string' ? { src: logo } : logo}
-    />
-    <Links
-      class:list="header-links"
-      {size}
-      {links}
-    />
-    <Socials
-      {size}
-      variant="ghost"
-      {socials}
-    />
-    <Buttons
-      class:list="header-buttons"
-      {size}
-      {buttons}
-    >
-      <Search size="sm" />
-      <Themer
-        if={themer}
-        {size}
-      />
-      <Cart
-        if={cart}
-        variant="secondary"
-        heading={cart}
-        {size}
-      />
-      <Drawer
-        class:list={['header-button']}
-        icon="menu-2"
-        id="menu"
-        variant="secondary"
-        {logo}
-        {company}
-        {buttons}
-        {links}
-        {menu}
-        {size}
-      />
-    </Buttons>
-  </Element>
+  <slot />
 </Element>
 
 <style is:global>
   @layer fulldev {
     .header {
-      @apply sticky left-0 top-0 z-20 flex h-14 items-center overflow-hidden border-b bg-background;
+      @apply relative w-full py-2.5;
 
-      .header-container {
-        @apply container flex w-full items-center justify-between gap-6;
-      }
-
-      &,
-      & ~ * {
-        --header-height: 3.5rem;
-      }
-
-      .header-links {
-        @apply mr-auto max-lg:hidden;
-      }
-
-      .header-socials {
-        @apply ml-auto max-lg:hidden;
-      }
-
-      .menu-button {
-        @apply lg:hidden;
+      &.dark {
+        @apply bg-background;
+        color-scheme: dark;
       }
     }
   }

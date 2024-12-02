@@ -2,30 +2,16 @@
 import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
-import Avatars from './Avatars.astro'
+import type { RatingSchema } from 'fulldev-ui/schemas/components/rating'
+import Avatar from './Avatar.astro'
 
-interface Props extends GlobalProps, HTMLAttributes<'div'> {
-  align?: 'start' | 'center' | 'end' | undefined
-  value?: number | undefined
-  text?: string | undefined
-  avatars?: any
-  avatar?: any
-}
+interface Props extends HTMLAttributes<'div'>, RatingSchema {}
 
-const {
-  size = 'md',
-  value,
-  text,
-  avatars,
-  avatar,
-  align,
-  ...rest
-} = Astro.props
+const { size = 'md', score, text, avatars, avatar, ...rest } = Astro.props
 
 const getIcon = (count: number) => {
-  if (!value) return
-  const difference = value - count
+  if (!score) return
+  const difference = score - count
   if (difference >= -0.25) return 'star-filled'
   if (difference >= -0.75) return 'star-half-filled'
   return 'star'
@@ -37,23 +23,19 @@ const getIcon = (count: number) => {
   {size}
   {...rest}
 >
-  <Avatars
-    {size}
-    {avatars}
-    {avatar}
-  />
+  <Avatar {...avatar} />
+  {avatars?.map((avatar) => <Avatar {...avatar} />)}
   <Element class:list="rating-content">
     <Element
       class:list="rating-stars"
       {...rest}
     >
       {
-        value &&
-          [1, 2, 3, 4, 5].map((_, i) => (
+        score &&
+          [1, 2, 3, 4, 5].map((count) => (
             <Icon
+              name={getIcon(count)}
               {size}
-              name={getIcon(i + 1)}
-              class:list={'rating-icon-solid'}
             />
           ))
       }
@@ -67,6 +49,10 @@ const getIcon = (count: number) => {
   @layer fulldev {
     .rating {
       @apply flex items-center gap-3;
+
+      .avatar + .avatar {
+        @apply -ml-3;
+      }
 
       .rating-content {
         @apply flex flex-col gap-1 text-muted-foreground;

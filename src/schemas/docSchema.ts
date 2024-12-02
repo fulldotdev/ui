@@ -7,6 +7,5 @@ export const docSchema = z
     head: headSchema.optional(),
   })
   .strict()
-  .nullable()
 
 export type DocSchema = z.infer<typeof docSchema>

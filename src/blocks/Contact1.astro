@@ -1,0 +1,92 @@
+---
+import Channel from 'fulldev-ui/components/Channel.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Form from 'fulldev-ui/components/Form.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Section from 'fulldev-ui/components/Section.astro'
+import Social from 'fulldev-ui/components/Social.astro'
+import Tagline from 'fulldev-ui/components/Tagline.astro'
+import type { ContactSchema } from 'fulldev-ui/schemas/blocks/contact'
+import type { ComponentProps } from 'svelte'
+
+interface Props extends ComponentProps<typeof Section>, ContactSchema {}
+
+const {
+  heading,
+  form,
+  text,
+  tagline,
+  googleMaps,
+  paragraph,
+  buttons,
+  socials,
+  position,
+  image,
+  channels,
+  level = 1,
+  ...rest
+} = Astro.props
+---
+
+<Section
+  class:list="contact-1"
+  {...rest}
+>
+  <Element>
+    <Element class:list="contact-1-segment">
+      <Element class:list="contact-1-content">
+        <Tagline
+          size="sm"
+          {...tagline}
+        />
+        <Heading
+          as="h1"
+          size="2xl"
+          {...heading}
+        />
+        <Paragraph {...paragraph} />
+      </Element>
+      <Element class:list="contact-1-channels">
+        {channels?.map((channel) => <Channel {...channel} />)}
+      </Element>
+      <Element class:list="contact-1-socials">
+        {socials?.map((social) => <Social {...social} />)}
+      </Element>
+      <Form
+        action="/thank-you"
+        method="POST"
+        {...form}
+      />
+    </Element>
+    <Image
+      {position}
+      {...image}
+    />
+  </Element>
+</Section>
+
+<style is:global>
+  @layer fulldev {
+    .contact-1 {
+      @apply relative w-full;
+
+      .container {
+        @apply flex flex-col gap-16;
+      }
+
+      .contact-1-segment {
+        @apply flex flex-col items-start gap-8;
+      }
+
+      .contact-1-content {
+        @apply flex max-w-screen-md flex-col gap-4;
+      }
+
+      .image {
+        @apply rounded-md;
+      }
+    }
+  }
+</style>

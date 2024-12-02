@@ -1,0 +1,34 @@
+---
+import type { HTMLTag } from 'astro/types'
+import Container from 'fulldev-ui/components/Container.astro'
+import Header from 'fulldev-ui/components/Header.astro'
+import type { BannerSchema } from 'fulldev-ui/schemas/blocks/banner'
+import type { ComponentProps } from 'svelte'
+
+interface Props extends ComponentProps<typeof Header>, BannerSchema {
+  as?: HTMLTag
+}
+
+const { text, ...rest } = Astro.props
+---
+
+<Header
+  class:list="banner-1"
+  {...rest}
+>
+  <Container>
+    <Fragment set:html={text} />
+  </Container>
+</Header>
+
+<style is:global>
+  @layer fulldev {
+    .banner-1 {
+      @apply bg-primary text-primary-foreground;
+
+      .container {
+        @apply z-50 flex items-center justify-center overflow-hidden bg-primary text-center text-sm leading-none text-primary-foreground;
+      }
+    }
+  }
+</style>

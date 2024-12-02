@@ -12,6 +12,5 @@ export const categorySchema = z
     head: headSchema.optional(),
   })
   .strict()
-  .nullable()
 
 export type CategorySchema = z.infer<typeof categorySchema>

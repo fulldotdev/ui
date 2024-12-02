@@ -3,16 +3,20 @@ import { buttonSchema } from 'fulldev-ui/schemas/components/button.ts'
 import { linkSchema } from 'fulldev-ui/schemas/components/link.ts'
 import { logoSchema } from 'fulldev-ui/schemas/components/logo.ts'
 import { menuSchema } from 'fulldev-ui/schemas/components/menu.ts'
+import { headingSchema } from './heading'
+import { socialSchema } from './social'
 
 export const headerSchema = z
   .object({
-    themer: z.boolean().optional(),
     logo: logoSchema.optional(),
-    company: z.string().optional(),
+    heading: headingSchema.optional(),
     links: linkSchema.array().optional(),
-    socials: z.string().url().array().optional(),
+    socials: socialSchema.array().optional(),
     buttons: buttonSchema.array().optional(),
     menus: menuSchema.array().optional(),
+    themer: z.boolean().optional(),
+    cart: z.boolean().optional(),
+    search: z.boolean().optional(),
   })
   .strict()
 

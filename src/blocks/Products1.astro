@@ -1,0 +1,90 @@
+---
+import type { ComponentProps } from 'astro/types'
+import { getEntries } from 'astro:content'
+import Button from 'fulldev-ui/components/Button.astro'
+import Card from 'fulldev-ui/components/Card.astro'
+import Container from 'fulldev-ui/components/Container.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Price from 'fulldev-ui/components/Price.astro'
+import Section from 'fulldev-ui/components/Section.astro'
+import type { ProductsSchema } from 'fulldev-ui/schemas/blocks/products'
+import { getHref } from 'fulldev-ui/utils/getHref'
+
+interface Props extends ComponentProps<typeof Section>, ProductsSchema {}
+
+const { heading, button, products, ...rest } = Astro.props
+
+const entries = products && (await getEntries(products))
+---
+
+<Section
+  class:list="products-1"
+  {...rest}
+>
+  <Container>
+    <Element class:list="products-1-segment">
+      <Heading
+        size="2xl"
+        {...heading}
+      />
+      <Button
+        variant="ghost"
+        size="sm"
+        {...button}
+      />
+    </Element>
+    <Element class:list="products-1-cards">
+      {
+        entries?.map(({ collection, slug, data: { images, title, price } }) => (
+          <Card href={getHref(collection, slug)}>
+            <Image {...images?.[0]} />
+            <Element class:list="products-1-card-content">
+              <Heading
+                as="h3"
+                size="md"
+                text={title}
+              />
+              <Price {...price} />
+            </Element>
+          </Card>
+        ))
+      }
+    </Element>
+  </Container>
+</Section>
+
+<style is:global>
+  @layer fulldev {
+    .products-1 {
+      .container {
+        @apply flex flex-col gap-8;
+      }
+
+      .products-1-segment {
+        @apply flex items-center justify-between gap-8;
+      }
+
+      .products-1-cards {
+        @apply grid grid-cols-2 items-start gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6;
+      }
+
+      .card {
+        @apply relative flex flex-col gap-3;
+
+        &:hover > .image {
+          @apply opacity-75 transition-opacity;
+        }
+
+        .image {
+          @apply rounded-md border;
+        }
+      }
+
+      .products-1-card-content {
+        @apply flex h-full flex-col gap-2;
+      }
+    }
+  }
+</style>

@@ -5,14 +5,13 @@ import { imageSchema } from 'fulldev-ui/schemas/components/image.ts'
 
 export const pageSchema = z
   .object({
+    href: z.string().optional(),
     title: z.string().optional(),
     description: z.string().optional(),
     image: imageSchema.optional(),
-    href: z.string().optional(),
     head: headSchema.optional(),
     blocks: blockSchema.array().optional(),
   })
   .strict()
-  .nullable()
 
 export type PageSchema = z.infer<typeof pageSchema>

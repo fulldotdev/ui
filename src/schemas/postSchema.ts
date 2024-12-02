@@ -10,6 +10,5 @@ export const postSchema = z
     head: headSchema.optional(),
   })
   .strict()
-  .nullable()
 
 export type PostSchema = z.infer<typeof postSchema>

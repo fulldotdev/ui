@@ -1,31 +1,24 @@
 ---
-import type { ComponentProps, HTMLAttributes, HTMLTag } from 'astro/types'
-import type { CollectionEntry } from 'astro:content'
-import { getEntry } from 'astro:content'
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import type { BadgeSchema } from 'fulldev-ui/schemas/components/badge'
 
 interface Props
-  extends GlobalProps,
-    HTMLAttributes<'div'>,
-    HTMLAttributes<'a'> {
+  extends HTMLAttributes<'button'>,
+    Omit<HTMLAttributes<'a'>, 'href' | 'target'>,
+    BadgeSchema {
   as?: HTMLTag
-  href?: string | null | undefined
-  icon?: ComponentProps<typeof Icon>['name']
-  slug?: CollectionEntry<'pages'>['slug'] | undefined
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | undefined
-  text?: string | undefined
+  type?: HTMLAttributes<'button'>['type'] & HTMLAttributes<'a'>['type']
+  reverse?: boolean | undefined
 }
 
 const {
-  slug,
-  href = slug === 'index' ? '/' : slug ? `/${slug}/` : undefined,
-  text = slug ? (await getEntry('pages', slug)).data.title : undefined,
-  as = href ? 'a' : 'div',
-  target = href?.startsWith('http') ? '_blank' : undefined,
+  href,
+  as = href ? 'a' : 'button',
   variant = 'outline',
   size = 'md',
+  text,
   icon,
   ...rest
 } = Astro.props
@@ -35,14 +28,13 @@ const {
   class:list="badge"
   {as}
   {href}
-  {target}
   {variant}
   {size}
   {...rest}
 >
   <Icon
     size="sm"
-    name={icon}
+    {...icon}
   />
   <Element as="span">
     <Fragment set:html={text} />

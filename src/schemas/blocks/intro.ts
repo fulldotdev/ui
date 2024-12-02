@@ -1,18 +1,16 @@
 import { z } from 'astro:content'
 import { buttonSchema } from 'fulldev-ui/schemas/components/button.ts'
-import { imageSchema } from 'fulldev-ui/schemas/components/image.ts'
-import { headingSchema } from '../components/heading'
+import { headingSchema } from 'fulldev-ui/schemas/components/heading'
+import { taglineSchema } from 'fulldev-ui/schemas/components/tagline'
 import { paragraphSchema } from '../components/paragraph'
-import { taglineSchema } from '../components/tagline'
 
-export const ctaSchema = z
+export const introSchema = z
   .object({
     tagline: taglineSchema.optional(),
     heading: headingSchema.optional(),
     paragraph: paragraphSchema.optional(),
     buttons: buttonSchema.array().optional(),
-    image: imageSchema.optional(),
   })
   .strict()
 
-export type CtaSchema = z.infer<typeof ctaSchema>
+export type IntroSchema = z.infer<typeof introSchema>

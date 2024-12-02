@@ -4,17 +4,17 @@ import { headSchema } from 'fulldev-ui/schemas/components/head.ts'
 import { headerSchema } from 'fulldev-ui/schemas/components/header'
 import { linkSchema } from 'fulldev-ui/schemas/components/link.ts'
 import { sidebarSchema } from 'fulldev-ui/schemas/components/sidebar'
+import { bannerSchema } from './blocks/banner'
 
 export const layoutSchema = z
   .object({
     head: headSchema.optional(),
-    banner: z.string().optional(),
+    banner: bannerSchema.optional(),
     header: headerSchema.optional(),
     subheader: linkSchema.array().optional(),
     sidebar: sidebarSchema.optional(),
     footer: footerSchema.optional(),
   })
   .strict()
-  .nullable()
 
 export type LayoutSchema = z.infer<typeof layoutSchema>

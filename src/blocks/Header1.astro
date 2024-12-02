@@ -1,0 +1,113 @@
+---
+import type { ComponentProps } from 'astro/types'
+import Button from 'fulldev-ui/components/Button.astro'
+import Cart from 'fulldev-ui/components/Cart.astro'
+import Container from 'fulldev-ui/components/Container.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Header from 'fulldev-ui/components/Header.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Link from 'fulldev-ui/components/Link.astro'
+import Logo from 'fulldev-ui/components/Logo.astro'
+import Search from 'fulldev-ui/components/Search.astro'
+import Social from 'fulldev-ui/components/Social.astro'
+import Themer from 'fulldev-ui/components/Themer.astro'
+import type { HeaderSchema } from 'fulldev-ui/schemas/components/header'
+
+interface Props extends ComponentProps<typeof Header>, HeaderSchema {}
+
+const {
+  logo,
+  heading,
+  links,
+  socials,
+  search,
+  themer,
+  buttons,
+  cart,
+  ...rest
+} = Astro.props
+---
+
+<Header
+  class:list="header-1"
+  {...rest}
+>
+  <Container>
+    <Element class:list="header-1-start">
+      <Element
+        class:list="header-1-home"
+        as="a"
+        href="/"
+      >
+        <Logo {...logo} />
+        <Heading {...heading} />
+      </Element>
+      {
+        links?.map((link) => (
+          <Link
+            size="sm"
+            variant="muted"
+            {...link}
+          />
+        ))
+      }
+    </Element>
+    <Element class:list="header-1-end">
+      {socials?.map((socials) => <Social {...socials} />)}
+      <Search
+        if={search}
+        size="sm"
+      />
+      <Themer
+        if={themer}
+        size="sm"
+      />
+      {buttons?.map((button) => <Button {...button} />)}
+      <Cart
+        if={cart}
+        size="sm"
+      />
+    </Element>
+  </Container>
+</Header>
+
+<style is:global>
+  @layer fulldev {
+    .header-1 {
+      @apply sticky left-0 top-0 z-20 flex h-14 items-center overflow-hidden border-b bg-background;
+
+      .container {
+        @apply flex items-center gap-6;
+      }
+
+      .header-1-home {
+        @apply flex items-center gap-2;
+      }
+
+      .header-1-start {
+        @apply flex items-center gap-6;
+      }
+
+      .header-1-end {
+        @apply ml-auto flex items-center gap-2;
+      }
+
+      &,
+      & ~ * {
+        --header-height: 3.5rem;
+      }
+
+      .header-links {
+        @apply mr-auto max-lg:hidden;
+      }
+
+      .header-socials {
+        @apply ml-auto max-lg:hidden;
+      }
+
+      .menu-button {
+        @apply lg:hidden;
+      }
+    }
+  }
+</style>
