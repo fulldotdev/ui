@@ -4,7 +4,7 @@ import { headingSchema } from './heading'
 
 export const menuSchema = z
   .object({
-    heading: headingSchema.optional(),
+    heading: headingSchema.shape.text,
     href: z.string().optional(),
     links: linkSchema.array().optional(),
   })

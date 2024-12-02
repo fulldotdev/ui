@@ -9,9 +9,9 @@ import { paragraphSchema } from '../components/paragraph'
 export const heroSchema = z
   .object({
     badge: badgeSchema.optional(),
-    tagline: taglineSchema.optional(),
-    heading: headingSchema.optional(),
-    paragraph: paragraphSchema.optional(),
+    tagline: taglineSchema.shape.text,
+    heading: headingSchema.shape.text,
+    paragraph: paragraphSchema.shape.text,
     buttons: buttonSchema.array().optional(),
     image: imageSchema.optional(),
   })

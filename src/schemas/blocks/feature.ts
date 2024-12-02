@@ -7,9 +7,9 @@ import { taglineSchema } from '../components/tagline'
 
 export const featureSchema = z
   .object({
-    tagline: taglineSchema.optional(),
-    heading: headingSchema.optional(),
-    paragraph: paragraphSchema.optional(),
+    tagline: taglineSchema.shape.text,
+    heading: headingSchema.shape.text,
+    paragraph: paragraphSchema.shape.text,
     buttons: buttonSchema.array().optional(),
     image: imageSchema.optional(),
   })

@@ -7,11 +7,11 @@ import { socialSchema } from '../components/social'
 
 export const contactSchema = z
   .object({
-    tagline: taglineSchema.optional(),
-    heading: headingSchema.optional(),
-    paragraph: paragraphSchema.optional(),
+    tagline: taglineSchema.shape.text,
+    heading: headingSchema.shape.text,
+    paragraph: paragraphSchema.shape.text,
     channels: channelSchema.array().optional(),
-    socials: socialSchema.array().optional(),
+    socials: socialSchema.shape.href.array().optional(),
   })
   .strict()
 

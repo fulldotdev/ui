@@ -8,8 +8,8 @@ import { paragraphSchema } from './paragraph'
 export const footerSchema = z
   .object({
     logo: logoSchema.optional(),
-    heading: headingSchema.optional(),
-    paragraph: paragraphSchema.optional(),
+    heading: headingSchema.shape.text,
+    paragraph: paragraphSchema.shape.text,
     socials: z.string().url().array().optional(),
     channels: channelSchema.array().optional(),
     menus: menuSchema.array().optional(),

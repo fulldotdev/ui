@@ -3,7 +3,7 @@ import { iconSchema } from './icon'
 
 export const buttonSchema = z
   .object({
-    icon: iconSchema.optional(),
+    icon: iconSchema.shape.name,
     text: z.string().optional(),
     href: z.string().optional(),
     target: z.literal('_blank').optional(),

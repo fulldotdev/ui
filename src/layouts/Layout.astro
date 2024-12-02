@@ -12,19 +12,16 @@ type Props = CollectionEntry<ContentCollectionKey>
 
 const layout = await getEntry('layouts', 'base')
 
-const { banner, header, subheader, sidebar, footer, theme, code } = layout.data
+const { banner, header, subheader, sidebar, footer, head, navigation } =
+  layout.data
 ---
 
 <!doctype html>
 <html class="layout">
-  <Head
-    {...layout.data}
-    {...Astro.props.data}
-  />
+  <Head {...head} />
   <Element
     class:list="layout-body"
     as="body"
-    {theme}
   >
     <Block
       _block="Banner1"
@@ -32,20 +29,22 @@ const { banner, header, subheader, sidebar, footer, theme, code } = layout.data
     />
     <Block
       _block="Header1"
+      {...navigation}
       {...header}
     />
     <Subheader {...subheader} />
     <slot name="before" />
-
     <Element class:list={['layout-container', { 'has-sidebar': sidebar }]}>
-      <Sidebar {...sidebar} />
+      <Sidebar
+        {...navigation}
+        {...sidebar}
+      />
       <main class="layout-main">
         <slot />
       </main>
     </Element>
     <Footer {...footer} />
     <slot name="after" />
-    <Fragment set:html={code?.body} />
 
     <style is:global>
       @layer fulldev {

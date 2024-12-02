@@ -1,15 +1,14 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
-import Links from 'fulldev-ui/components/Links.astro'
-import Logo from 'fulldev-ui/components/Logo.astro'
-import Themer from 'fulldev-ui/components/Themer.astro'
 import type { SidebarSchema } from 'fulldev-ui/schemas/components/sidebar'
+import Container from './Container.astro'
 import Heading from './Heading.astro'
+import Link from './Link.astro'
 
 interface Props extends HTMLAttributes<'aside'>, SidebarSchema {}
 
-const { company, logo, menu, heading, themer, ...rest } = Astro.props
+const { company, logo, menus, links, heading, themer, ...rest } = Astro.props
 ---
 
 <Element
@@ -17,70 +16,57 @@ const { company, logo, menu, heading, themer, ...rest } = Astro.props
   as="aside"
   {...rest}
 >
-  <Element
-    class:list="sidebar-header"
-    as="header"
-  >
-    <Logo
-      {company}
-      {...logo}
-      size="sm"
-    />
-    <Heading
-      as="h5"
-      size="md"
-      text={heading}
-    />
-  </Element>
-  <Element class:list="sidebar-content">
-    <Element
-      class:list="sidebar-nav"
-      as="nav"
-    >
+  <Container>
+    <Element class:list="sidebar-links">
       {
-        menu?.map(({ heading, links }) => (
-          <Element class:list="menu-group">
-            <Heading
-              text={heading}
-              size="sm"
-              as="h6"
-            />
-            <Links
-              direction="column"
-              size="sm"
-              {links}
-            />
-          </Element>
+        links?.map((link) => (
+          <Link
+            size="sm"
+            variant="muted"
+            {...link}
+          />
         ))
       }
     </Element>
-    <Themer if={themer} />
-    <slot />
-  </Element>
+    {
+      menus?.map(({ heading, links }) => (
+        <Element class:list="sidebar-menu">
+          <Heading
+            text={heading}
+            size="sm"
+            as="h6"
+          />
+          <Element class:list="sidebar-links">
+            {links?.map((link) => (
+              <Link
+                size="sm"
+                variant="muted"
+                {...link}
+              />
+            ))}
+          </Element>
+        </Element>
+      ))
+    }
+  </Container>
 </Element>
 
 <style is:global>
   @layer fulldev {
     .sidebar {
-      @apply sticky bottom-0 z-10 hidden h-full flex-col items-start justify-start border-r bg-background lg:flex;
+      @apply sticky bottom-0 top-0 z-10 hidden h-full w-56 flex-col items-start justify-start border-r bg-background lg:flex;
 
-      --height: calc(var(--header-height, 0px) + var(--subheader-height, 0px));
-      top: var(--height);
-      width: var(--sidebar-width);
-      max-height: calc(100vh - var(--height));
-
-      &,
-      & ~ * {
-        --sidebar-width: 13rem;
-      }
-
-      .sidebar-header {
-        @apply sticky flex h-14 w-full items-center px-gutter py-6;
-      }
-
-      .sidebar-content {
-        @apply flex w-full flex-1 flex-col items-start gap-7 overflow-y-auto px-gutter pb-14 pt-6 first:pt-14;
+      .container {
+        @apply flex w-full flex-1 flex-col items-start gap-6 overflow-y-auto px-gutter pb-14 pt-6 first:pt-14;
         @apply scrollbar scrollbar-track-transparent scrollbar-thumb-accent scrollbar-thumb-rounded-full scrollbar-w-2 hover:scrollbar-thumb-accent-hover;
+      }
+
+      .sidebar-menu {
+        @apply flex flex-col gap-3;
+      }
+
+      .sidebar-links {
+        @apply flex flex-col gap-2;
       }
     }
   }

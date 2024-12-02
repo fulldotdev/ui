@@ -9,9 +9,9 @@ import { socialSchema } from './social'
 export const headerSchema = z
   .object({
     logo: logoSchema.optional(),
-    heading: headingSchema.optional(),
+    heading: headingSchema.shape.text,
     links: linkSchema.array().optional(),
-    socials: socialSchema.array().optional(),
+    socials: socialSchema.shape.href.array().optional(),
     buttons: buttonSchema.array().optional(),
     menus: menuSchema.array().optional(),
     themer: z.boolean().optional(),

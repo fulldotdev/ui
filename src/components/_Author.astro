@@ -1,0 +1,90 @@
+<!-- ---
+import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
+import Icon from 'fulldev-ui/components/Icon.astro'
+import type { RatingSchema } from 'fulldev-ui/schemas/components/rating'
+import Avatar from './Avatar.astro'
+
+interface Props extends HTMLAttributes<'div'>, RatingSchema {}
+
+const { size = 'md', score, text, avatars, avatar, ...rest } = Astro.props
+
+const getIcon = (count: number) => {
+  if (!score) return
+  const difference = score - count
+  if (difference >= -0.25) return 'star-filled'
+  if (difference >= -0.75) return 'star-half-filled'
+  return 'star'
+}
+---
+
+<Element
+  class:list="author"
+  {size}
+  {...rest}
+>
+  <Avatar {...avatar} />
+  {avatars?.map((avatar) => <Avatar {...avatar} />)}
+  <Element class:list="rating-content">
+    <Element
+      class:list="rating-stars"
+      {...rest}
+    >
+      {
+        score &&
+          [1, 2, 3, 4, 5].map((count) => (
+            <Icon
+              name={getIcon(count)}
+              {size}
+            />
+          ))
+      }
+    </Element>
+    <Fragment set:html={text} />
+    <slot />
+  </Element>
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .rating {
+      @apply flex items-center gap-3;
+
+      .avatar + .avatar {
+        @apply -ml-3;
+      }
+
+      .rating-content {
+        @apply flex flex-col gap-1 text-muted-foreground;
+      }
+
+      .rating-stars {
+        @apply flex gap-1 text-primary;
+      }
+
+      &.size-sm {
+        @apply gap-2;
+
+        .rating-content {
+          @apply text-xs leading-none;
+        }
+      }
+
+      &.size-md {
+        @apply gap-2.5;
+
+        .rating-content {
+          @apply text-sm leading-none;
+        }
+      }
+
+      &.size-lg {
+        @apply gap-3;
+
+        .rating-content {
+          @apply text-base leading-none;
+        }
+      }
+    }
+  }
+</style> -->

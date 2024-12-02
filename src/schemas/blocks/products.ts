@@ -5,7 +5,7 @@ import pathSchema from '../utils/pathSchema'
 
 export const productsSchema = z
   .object({
-    heading: headingSchema.optional(),
+    heading: headingSchema.shape.text,
     button: buttonSchema.optional(),
     products: pathSchema('products').array().optional(),
   })

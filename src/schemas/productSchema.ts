@@ -10,7 +10,7 @@ export const productSchema = z
     description: z.string().optional(),
     image: imageSchema.optional(),
     order: z.number().optional(),
-    price: priceSchema.optional(),
+    price: priceSchema.shape.amount,
     categories: pathSchema('categories').array().optional(),
     images: imageSchema.array().optional(),
     head: headSchema.optional(),

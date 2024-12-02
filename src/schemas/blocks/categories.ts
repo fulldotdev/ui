@@ -5,7 +5,7 @@ import pathSchema from '../utils/pathSchema'
 
 export const categoriesSchema = z
   .object({
-    heading: headingSchema.optional(),
+    heading: headingSchema.shape.text,
     button: buttonSchema.optional(),
     categories: pathSchema('categories').array().optional(),
   })

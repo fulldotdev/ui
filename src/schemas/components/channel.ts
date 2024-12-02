@@ -4,8 +4,8 @@ import { iconSchema } from './icon'
 
 export const channelSchema = z
   .object({
-    icon: iconSchema.optional(),
-    heading: headingSchema.optional(),
+    icon: iconSchema.shape.name,
+    heading: headingSchema.shape.text,
     text: z.string().optional(),
     href: z.string().optional(),
     size: z.enum(['sm', 'md', 'lg']).default('md').optional(),
