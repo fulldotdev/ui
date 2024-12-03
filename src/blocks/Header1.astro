@@ -3,6 +3,7 @@ import type { ComponentProps } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
 import Cart from 'fulldev-ui/components/Cart.astro'
 import Container from 'fulldev-ui/components/Container.astro'
+import Drawer from 'fulldev-ui/components/Drawer.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Header from 'fulldev-ui/components/Header.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
@@ -20,6 +21,7 @@ const {
   heading,
   links,
   socials,
+  menus,
   search,
   themer,
   buttons,
@@ -34,14 +36,7 @@ const {
 >
   <Container>
     <Element class:list="header-1-start">
-      <Element
-        class:list="header-1-home"
-        as="a"
-        href="/"
-      >
-        <Logo {...logo} />
-        <Heading text={heading} />
-      </Element>
+      <Logo {...logo} />
       {
         links?.map((link) => (
           <Link
@@ -53,11 +48,15 @@ const {
       }
     </Element>
     <Element class:list="header-1-end">
-      <Search
-        if={search}
-        variant="ghost"
-        size="sm"
-      />
+      {
+        search && (
+          <Search
+            if={search}
+            variant="ghost"
+            size="sm"
+          />
+        )
+      }
       {
         buttons?.map((button) => (
           <Button
@@ -89,6 +88,51 @@ const {
           />
         ))
       }
+      <!-- <Button
+        class:list="menu-button"
+        as="label"
+        for="sidebar-toggle"
+        icon="menu-2"
+        variant="ghost"
+        size="sm"
+      /> -->
+      <Drawer
+        id="header-1-drawer"
+        icon="menu-2"
+        size="sm"
+      >
+        <Container>
+          <Element class:list="header-1-links">
+            {
+              links?.map((link) => (
+                <Link
+                  variant="muted"
+                  {...link}
+                />
+              ))
+            }
+          </Element>
+          {
+            menus?.map(({ heading, links }) => (
+              <Element class:list="header-1-menu">
+                <Heading
+                  text={heading}
+                  size="md"
+                  as="h6"
+                />
+                <Element class:list="header-1-links">
+                  {links?.map((link) => (
+                    <Link
+                      variant="muted"
+                      {...link}
+                    />
+                  ))}
+                </Element>
+              </Element>
+            ))
+          }
+        </Container>
+      </Drawer>
     </Element>
   </Container>
 </Header>
@@ -102,33 +146,46 @@ const {
         @apply flex items-center gap-6;
       }
 
+      .header-1-start {
+        @apply flex items-center gap-6;
+
+        .link {
+          @apply max-lg:hidden;
+        }
+      }
+
       .header-1-home {
         @apply flex items-center gap-2;
       }
 
-      .header-1-start {
-        @apply flex items-center gap-6;
-      }
-
       .header-1-end {
         @apply ml-auto flex items-center gap-1;
+
+        .social,
+        .themer {
+          @apply max-lg:hidden;
+        }
+
+        .menu-button {
+          @apply lg:hidden;
+        }
       }
 
-      &,
-      & ~ * {
-        --header-height: 3.5rem;
-      }
-
-      .header-links {
-        @apply mr-auto max-lg:hidden;
-      }
-
-      .header-socials {
-        @apply ml-auto max-lg:hidden;
-      }
-
-      .menu-button {
+      .drawer {
         @apply lg:hidden;
+
+        .container {
+          @apply flex w-full flex-col items-start gap-6 overflow-y-auto px-gutter pb-14 pt-8;
+          @apply scrollbar scrollbar-track-transparent scrollbar-thumb-accent scrollbar-thumb-rounded-full scrollbar-w-2 hover:scrollbar-thumb-accent-hover;
+        }
+
+        .header-1-menu {
+          @apply flex flex-col gap-4;
+        }
+
+        .header-1-links {
+          @apply flex flex-col gap-3;
+        }
       }
     }
   }

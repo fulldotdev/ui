@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content'
-import { getCollection } from 'astro:content'
+import { getCollection, getEntry } from 'astro:content'
 import Intro1 from 'fulldev-ui/blocks/Intro1.astro'
 import Products1 from 'fulldev-ui/blocks/Products1.astro'
 import Carousel from 'fulldev-ui/components/Carousel.astro'
@@ -9,11 +9,18 @@ import Prose from 'fulldev-ui/components/Prose.astro'
 import Select from 'fulldev-ui/components/Select.astro'
 import Layout from 'fulldev-ui/layouts/Layout.astro'
 import { getHref } from 'fulldev-ui/utils/getHref'
+import { mergeDeep } from 'remeda'
 
 type Props = CollectionEntry<'categories'>
 
-const { render, slug } = Astro.props
-const { title, description } = Astro.props.data
+const layout = await getEntry('layouts', 'categories')
+const merged = mergeDeep(layout || {}, Astro.props)
+
+const {
+  render,
+  slug,
+  data: { title, description },
+} = merged
 
 const categories = await getCollection('categories', ({ data }) =>
   data.categories?.some((c) => c.slug.includes(slug))
@@ -70,7 +77,7 @@ const sorts = [
   })
 </script>
 
-<Layout {...Astro.props}>
+<Layout {...merged}>
   <Intro1
     heading={title}
     text={description}

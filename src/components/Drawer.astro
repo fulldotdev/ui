@@ -1,142 +1,81 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import Button from 'fulldev-ui/components/Button.astro'
+import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
-import Logo from 'fulldev-ui/components/Logo.astro'
-import Menu from 'fulldev-ui/components/Menu.astro'
-import links from 'fulldev-ui/schemas/components/links'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
-import Buttons from './Buttons.astro'
-import Heading from './Heading.astro'
-import Links from './Links.astro'
+import type { ComponentProps } from 'svelte'
+import Button from './Button.astro'
 
-interface Props extends GlobalProps, HTMLAttributes<'aside'> {
-  variant?: ComponentProps<typeof Button>['variant']
-  text?: ComponentProps<typeof Button>['text']
-  icon?: ComponentProps<typeof Button>['icon']
-  heading?: ComponentProps<typeof Heading>['text']
-  logo?: ComponentProps<typeof Logo> | undefined
-  company?: ComponentProps<typeof Logo>['company']
-  menu?: ComponentProps<typeof Menu>['groups']
-  buttons?: ComponentProps<typeof Buttons>['buttons']
-  links?: ComponentProps<typeof Links>['links']
-  size?: 'sm' | 'md' | 'lg' | undefined
+interface Props
+  extends HTMLAttributes<'aside'>,
+    Pick<ComponentProps<typeof Button>, 'variant' | 'size' | 'text' | 'icon'> {
+  id: string
+  icon: string
 }
 
-const {
-  id = 'drawer',
-  size = 'sm',
-  icon = 'menu-2',
-  color,
-  variant,
-  text,
-  buttons,
-  links,
-  heading,
-  logo,
-  company,
-  menu,
-  if: ifProp,
-  ...rest
-} = Astro.props
+const { id, variant = 'ghost', size = 'md', icon, text, ...rest } = Astro.props
+
+const slot = await Astro.slots.render('default')
+const render = slot?.trim().length > 0
 ---
 
-<Button
-  variant="secondary"
-  class:list={['drawer-button', `${id}-button`]}
-  onclick={`document.getElementById('${id}').showModal()`}
-  {variant}
-  {text}
-  {icon}
-  {color}
-  {size}
-/>
-
-<Element
-  onclick={`event.target === this && this.close()`}
-  class:list="drawer"
-  as="dialog"
-  {id}
-  {text}
-  {size}
-  {icon}
-  {...rest}
->
-  <Element class:list="drawer-body">
-    <button autofocus></button>
-    <Element
-      class:list="drawer-header"
-      as="header"
-    >
-      <Logo
-        {size}
-        {company}
-        {...logo}
-      />
-      <Heading
-        level={4}
-        text={heading}
-      />
+{
+  render && (
+    <Element class:list="drawer">
       <Button
-        variant="secondary"
-        icon="x"
-        onclick={`document.getElementById('${id}').close()`}
+        class="drawer-button"
+        as="label"
+        for={id}
+        {variant}
+        {size}
+        {text}
+        {icon}
       />
-      <slot name="header" />
-    </Element>
-    <Element class:list="drawer-content">
-      <Links
-        direction="column"
-        {links}
+
+      <input
+        type="checkbox"
+        class="drawer-checkbox"
+        name={id}
+        {id}
       />
-      <Menu groups={menu} />
-      <slot />
+
+      <Element
+        class:list="drawer-body"
+        as="aside"
+        {...rest}
+      >
+        <Fragment set:html={slot} />
+      </Element>
+
+      <label
+        for={id}
+        class="drawer-backdrop"
+      />
     </Element>
-    <Element
-      class:list="drawer-footer"
-      as="footer"
-    >
-      <slot name="footer" />
-    </Element>
-  </Element>
-</Element>
+  )
+}
 
 <style is:global>
   @layer fulldev {
-    body:has(dialog[open]) {
-      @apply max-md:overflow-hidden;
+    .drawer {
+      @apply contents;
     }
 
-    .drawer {
-      @apply inset-0 m-0 h-full max-h-full w-full max-w-full p-0 md:max-w-md;
+    .drawer-checkbox {
+      @apply invisible hidden;
+    }
 
-      &::backdrop {
-        @apply cursor-pointer bg-background/50;
+    .drawer-backdrop {
+      @apply pointer-events-none invisible fixed left-0 top-0 z-30 h-full w-full bg-black opacity-0 transition-opacity;
+
+      &:is(.drawer-checkbox:checked ~ &) {
+        @apply pointer-events-auto visible opacity-50;
       }
+    }
 
-      .drawer-body {
-        @apply flex h-full shrink flex-col overflow-auto bg-background;
+    .drawer-body {
+      @apply fixed bottom-0 left-0 top-0 z-40 h-full w-80 max-w-[75vw] -translate-x-full rounded-r-lg border border-l-0 bg-background shadow-2xl transition-transform;
 
-        .drawer-content {
-          @apply flex flex-col gap-6 px-gutter py-12;
-        }
-
-        .drawer-header,
-        .drawer-footer {
-          @apply sticky z-10 flex shrink-0 bg-background;
-        }
-
-        .drawer-header {
-          @apply top-0 h-14 items-center px-gutter;
-
-          .button {
-            @apply ml-auto;
-          }
-        }
-
-        .drawer-footer {
-          @apply bottom-0 mt-auto flex-col px-gutter py-8;
-        }
+      &:is(.drawer-checkbox:checked ~ &) {
+        @apply translate-x-0;
       }
     }
   }

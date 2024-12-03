@@ -17,17 +17,6 @@ const { company, logo, menus, links, heading, themer, ...rest } = Astro.props
   {...rest}
 >
   <Container>
-    <Element class:list="sidebar-links">
-      {
-        links?.map((link) => (
-          <Link
-            size="sm"
-            variant="muted"
-            {...link}
-          />
-        ))
-      }
-    </Element>
     {
       menus?.map(({ heading, links }) => (
         <Element class:list="sidebar-menu">
@@ -54,11 +43,23 @@ const { company, logo, menus, links, heading, themer, ...rest } = Astro.props
 <style is:global>
   @layer fulldev {
     .sidebar {
-      @apply sticky bottom-0 top-0 z-10 hidden h-full w-56 flex-col items-start justify-start border-r bg-background lg:flex;
+      @apply sticky bottom-0 left-0 hidden w-64 max-w-[75vw] border-r bg-background py-8 lg:flex;
+
+      --headers: calc(var(--header-height, 0px) + var(--subheader-height, 0px));
+      top: var(--headers);
+      width: var(--sidebar-width);
+      max-height: calc(100vh - var(--headers));
+
+      &,
+      & ~ * {
+        @media (min-width: 1024px) {
+          --sidebar-width: 16rem;
+        }
+      }
 
       .container {
-        @apply flex w-full flex-1 flex-col items-start gap-6 overflow-y-auto px-gutter pb-14 pt-6 first:pt-14;
-        @apply scrollbar scrollbar-track-transparent scrollbar-thumb-accent scrollbar-thumb-rounded-full scrollbar-w-2 hover:scrollbar-thumb-accent-hover;
+        @apply flex h-full w-full grow flex-col items-start gap-8 overflow-y-auto;
+        /* @apply scrollbar scrollbar-track-transparent scrollbar-thumb-accent scrollbar-thumb-rounded-full scrollbar-w-2 hover:scrollbar-thumb-accent-hover; */
       }
 
       .sidebar-menu {

@@ -1,0 +1,172 @@
+---
+import type { ComponentProps, HTMLAttributes, HTMLTag } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import Button from 'fulldev-ui/components/Button.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import {
+  default as Lead,
+  default as Paragraph,
+} from 'fulldev-ui/components/Paragraph.astro'
+import Tagline from 'fulldev-ui/components/Tagline.astro'
+import Toc from 'fulldev-ui/components/Toc.astro'
+import { crush } from 'radash'
+import type Sidebar from './Sidebar.astro'
+
+interface Props extends HTMLAttributes<'div'> {
+  as?: HTMLTag | undefined
+  render?: any
+  sidebar?: ComponentProps<typeof Sidebar> | undefined
+  slug?: CollectionEntry<'pages'>['slug'] | undefined
+  toc?: boolean | ComponentProps<typeof Toc>['heading'] | undefined
+  tagline?: ComponentProps<typeof Tagline>['text'] | undefined
+  heading?: ComponentProps<typeof Heading>['text'] | undefined
+  image?: ComponentProps<typeof Image> | undefined
+  lead?: ComponentProps<typeof Lead>['text'] | undefined
+}
+
+const {
+  toc = false,
+  slug,
+  sidebar,
+  render,
+  tagline,
+  heading,
+  lead,
+  image,
+  ...rest
+} = Astro.props
+
+const Content = render && (await render())?.Content
+
+const flatMenu = crush(sidebar?.menu ?? {})
+const slugs = Object.entries(flatMenu)
+  .map(([key, value]) => (key.endsWith('.slug') ? value : null))
+  .filter(Boolean)
+const slugIndex = slugs.findIndex((val) => val === slug)
+
+const prevSlug = slugs[slugIndex - 1]
+const nextSlug = slugs[slugIndex + 1]
+---
+
+<Element
+  class:list="prose"
+  {...rest}
+>
+  <Element class:list="prose-container">
+    <Element class:list="prose-content">
+      <Tagline text={tagline} />
+      <Heading
+        as="h1"
+        level={2}
+        text={heading}
+      />
+      <Paragraph text={lead} />
+      <Image {...image} />
+      {Content && <Content />}
+      <slot />
+      <Element class:list="prose-footer">
+        <Button
+          class:list="prose-prev"
+          icon={prevSlug && 'arrow-left'}
+          slug={prevSlug}
+          variant="secondary"
+        />
+        <Button
+          class:list="prose-next"
+          icon={nextSlug && 'arrow-right'}
+          slug={nextSlug}
+          variant="secondary"
+          reverse
+        />
+      </Element>
+    </Element>
+    <Toc
+      if={toc}
+      heading={typeof toc === 'string' ? toc : undefined}
+      {render}
+    />
+  </Element>
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .prose {
+      @apply relative items-start py-28 first:pt-14;
+
+      .prose-container {
+        @apply container flex h-full w-full flex-grow items-start justify-evenly gap-14 gap-x-gutter;
+      }
+
+      .prose-content {
+        @apply w-full max-w-screen-md;
+
+        > * {
+          @apply mt-6 first:mt-0;
+        }
+
+        p {
+          @apply mt-4 first:mt-0;
+        }
+
+        code:not(.astro-code code) {
+          @apply rounded bg-muted px-1.5 py-0.5 font-mono text-sm font-medium;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          @apply mt-8 scroll-m-20 font-semibold first:mt-0;
+
+          code {
+            font-size: inherit !important;
+          }
+        }
+
+        > h1 {
+          @apply text-4xl font-extrabold;
+        }
+
+        > h2 {
+          @apply text-2xl;
+        }
+
+        > h3 {
+          @apply text-xl;
+        }
+
+        > h4 {
+          @apply text-lg;
+        }
+
+        > h5 {
+          @apply text-base;
+        }
+
+        > h6 {
+          @apply text-sm;
+        }
+
+        > aside {
+          @apply mt-6 rounded-md border border-destructive p-4 text-destructive first:mt-0;
+        }
+      }
+
+      .prose-footer {
+        @apply mt-14 flex items-center;
+
+        .prose-next {
+          @apply ml-auto;
+        }
+      }
+
+      .toc {
+        @apply order-last;
+      }
+    }
+  }
+</style>

@@ -1,24 +1,55 @@
 ---
+import type { HTMLAttributes } from 'astro/types'
 import type { CollectionEntry, ContentCollectionKey } from 'astro:content'
 import { getEntry } from 'astro:content'
 import Footer from 'fulldev-ui/blocks/Footer.astro'
 import Block from 'fulldev-ui/components/Block.astro'
+import Container from 'fulldev-ui/components/Container.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Head from 'fulldev-ui/components/Head.astro'
 import Sidebar from 'fulldev-ui/components/Sidebar.astro'
 import Subheader from 'fulldev-ui/components/Subheader.astro'
+import { mergeDeep } from 'remeda'
 
-type Props = CollectionEntry<ContentCollectionKey>
+type Props = HTMLAttributes<'body'> & CollectionEntry<ContentCollectionKey>
 
 const layout = await getEntry('layouts', 'base')
+const merged = mergeDeep(layout || {}, Astro.props)
 
-const { banner, header, subheader, sidebar, footer, head, navigation } =
-  layout.data
+const {
+  collection,
+  slug,
+  id,
+  render,
+  body,
+  data: {
+    banner,
+    header,
+    subheader,
+    sidebar,
+    footer,
+    head,
+    navigation,
+    title,
+    description,
+    image,
+  },
+  ...rest
+} = merged
 ---
 
 <!doctype html>
-<html class="layout">
-  <Head {...head} />
+<Element
+  class:list="layout"
+  as="html"
+  {...rest}
+>
+  <Head
+    {title}
+    {description}
+    {image}
+    {...head}
+  />
   <Element
     class:list="layout-body"
     as="body"
@@ -29,32 +60,29 @@ const { banner, header, subheader, sidebar, footer, head, navigation } =
     />
     <Block
       _block="Header1"
-      {...navigation}
+      {...navigation?.header && navigation}
       {...header}
     />
     <Subheader {...subheader} />
-    <slot name="before" />
-    <Element class:list={['layout-container', { 'has-sidebar': sidebar }]}>
+    <Container class:list={['layout-container', { 'has-sidebar': sidebar }]}>
       <Sidebar
-        {...navigation}
+        {...navigation?.sidebar && navigation}
         {...sidebar}
       />
       <main class="layout-main">
         <slot />
       </main>
-    </Element>
+    </Container>
     <Footer {...footer} />
-    <slot name="after" />
-
     <style is:global>
       @layer fulldev {
         .layout {
           @apply w-full font-sans text-base leading-relaxed text-foreground;
           color-scheme: light;
+        }
 
-          &.dark {
-            color-scheme: dark;
-          }
+        .dark {
+          color-scheme: dark;
         }
 
         .layout-body {
@@ -62,11 +90,7 @@ const { banner, header, subheader, sidebar, footer, head, navigation } =
         }
 
         .layout-container {
-          @apply relative flex h-full w-full flex-grow;
-
-          &.has-sidebar {
-            @apply container px-0;
-          }
+          @apply flex w-full grow !px-0;
         }
 
         .layout-main {
@@ -80,4 +104,4 @@ const { banner, header, subheader, sidebar, footer, head, navigation } =
       }
     </style>
   </Element>
-</html>
+</Element>

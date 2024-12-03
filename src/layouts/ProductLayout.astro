@@ -11,12 +11,17 @@ import List from 'fulldev-ui/components/List.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Prose from 'fulldev-ui/components/Prose.astro'
 import Layout from 'fulldev-ui/layouts/Layout.astro'
+import { mergeDeep } from 'remeda'
 
 type Props = CollectionEntry<'products'>
 
-const { render } = Astro.props
-const { title, price, images, description, soldout, categories, variants } =
-  Astro.props.data
+const layout = await getEntry('layouts', 'products')
+const merged = mergeDeep(layout || {}, Astro.props)
+
+const {
+  render,
+  data: { title, price, images, description, soldout, categories, variants },
+} = merged
 
 const slug = Astro.url.pathname.replace(/^\/|\/$/g, '') || 'index'
 const imageId = images?.[0]?.id
@@ -35,7 +40,7 @@ const relatedProducts = await getCollection('products', (product) =>
 const baseLayout = await getEntry('layouts', 'base')
 ---
 
-<Layout {...Astro.props}>
+<Layout {...merged}>
   <Element
     class:list="product"
     as="section"

@@ -45,11 +45,20 @@ const links = filteredHeadings?.map((button: any) => ({
 <style is:global>
   @layer fulldev {
     .toc {
-      @apply sticky bottom-0 z-10 -mt-14 hidden w-52 shrink-0 flex-col items-start justify-start gap-3 overflow-y-auto py-14 md:flex;
+      @apply sticky bottom-0 z-10 hidden shrink-0 flex-col items-start justify-start gap-3 overflow-y-auto py-8 md:flex;
       @apply scrollbar scrollbar-track-transparent scrollbar-thumb-accent scrollbar-thumb-rounded-full scrollbar-w-2 hover:scrollbar-thumb-accent-hover;
 
-      top: var(--header-height, 0px);
-      max-height: calc(100vh - var(--header-height, 0px));
+      --headers: calc(var(--header-height, 0px) + var(--subheader-height, 0px));
+      top: var(--headers);
+      width: var(--toc-width);
+      max-height: calc(100vh - var(--headers));
+
+      &,
+      & ~ * {
+        @media (min-width: 768px) {
+          --toc-width: 12rem;
+        }
+      }
 
       .depth-3 {
         @apply pl-3;

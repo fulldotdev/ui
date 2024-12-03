@@ -1,13 +1,35 @@
 ---
-import type { ComponentProps } from 'astro/types'
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import Image from 'fulldev-ui/components/Image.astro'
+import type { LogoSchema } from 'fulldev-ui/schemas/components/logo'
+import Element from './Element.astro'
 
-interface Props extends ComponentProps<typeof Image> {
-  company?: string | undefined
+interface Props
+  extends Omit<HTMLAttributes<'a'>, 'href'>,
+    HTMLAttributes<'div'>,
+    LogoSchema {
+  as?: HTMLTag
 }
 
-const { size = 'md', company, ...rest } = Astro.props as Props
+const {
+  href = '/',
+  as = href ? 'a' : 'div',
+  size = 'md',
+  image,
+  text,
+  ...rest
+} = Astro.props as Props
 ---
+
+<Element
+  class:list="logo"
+  {href}
+  {as}
+  {size}
+>
+  <Image {...image} />
+  <Fragment set:html={text} />
+</Element>
 
 <Image
   class:list="logo"
@@ -18,7 +40,7 @@ const { size = 'md', company, ...rest } = Astro.props as Props
 <style is:global>
   @layer fulldev {
     .logo {
-      @apply h-full w-auto object-contain;
+      @apply flex w-auto items-center object-contain text-base font-bold leading-none text-foreground;
 
       &.size-sm {
         @apply h-6;

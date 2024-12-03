@@ -1,40 +1,28 @@
 ---
-import type { ComponentProps, HTMLAttributes, HTMLTag } from 'astro/types'
-import Channels from 'fulldev-ui/components/Channels.astro'
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import Channel from 'fulldev-ui/components/Channel.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Logo from 'fulldev-ui/components/Logo.astro'
 import Menu from 'fulldev-ui/components/Menu.astro'
 import { default as Paragraph } from 'fulldev-ui/components/Paragraph.astro'
-import Socials from 'fulldev-ui/components/Socials.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import Social from 'fulldev-ui/components/Social.astro'
+import type { FooterSchema } from 'fulldev-ui/schemas/components/footer'
 
-interface Props extends GlobalProps, HTMLAttributes<'footer'> {
+interface Props extends HTMLAttributes<'footer'>, FooterSchema {
   as?: HTMLTag
-  variant?: 1 | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
-  logo?: ComponentProps<typeof Logo>['src']
-  company?: ComponentProps<typeof Logo>['company']
-  paragraph?: ComponentProps<typeof Paragraph>['text']
-  socials?: ComponentProps<typeof Socials>['socials']
-  channels?: ComponentProps<typeof Channels>['channels']
-  hours?: any
-  menu?: ComponentProps<typeof Menu>['groups']
-  html?: any
 }
 
 const {
   as = 'footer',
-  size = 'sm',
-  variant = 1,
   logo,
-  company,
+  heading,
   paragraph,
   socials,
   channels,
-  hours,
-  menu,
-  html,
+  menus,
+  // hours,
+  // html,
   ...rest
 } = Astro.props
 ---
@@ -42,57 +30,63 @@ const {
 <Element
   class:list="footer"
   {as}
-  {size}
-  {variant}
   {...rest}
 >
   <Element class:list="footer-container">
     <Element class:list="footer-content">
       <Logo
-        {size}
-        {company}
-        {...typeof logo === 'string' ? { src: logo } : logo}
+        size="sm"
+        {...logo}
       />
       <Paragraph
-        {size}
+        size="sm"
         text={paragraph}
       />
-      <Socials
-        {size}
-        {socials}
-      />
-    </Element>
-    <Channels {channels} />
-    <Fragment set:html={html} />
-    <!-- <Hours {hours} /> -->
-    <Menu
-      direction="row"
-      groups={menu}
-      {size}
-    />
-    <Element class:list="hours column">
-      <Heading
-        text={hours?.heading}
-        as="h5"
-      />
-      <Element>
+      <Element class:list="footer-socials">
         {
-          Object.entries(hours?.days ?? {})?.map(([key, value]: any) => (
-            <Element class:list="spread">
-              <Paragraph text={key} />
-              <Paragraph text={value} />
-            </Element>
+          socials?.map((social) => (
+            <Social
+              variant="secondary"
+              size="sm"
+              href={social}
+            />
           ))
         }
       </Element>
     </Element>
+    <Element class:list="footer-channels">
+      {channels?.map((channel) => <Channel {...channel} />)}
+    </Element>
   </Element>
+  <!-- <Fragment set:html={html} /> -->
+  <!-- <Hours {hours} /> -->
+  <!-- <Menu
+    direction="row"
+    groups={menu}
+    {size}
+  /> -->
+  <!-- <Element class:list="hours column">
+    <Heading
+      text={hours?.heading}
+      as="h5"
+    />
+    <Element>
+      {
+        Object.entries(hours?.days ?? {})?.map(([key, value]: any) => (
+          <Element class:list="spread">
+            <Paragraph text={key} />
+            <Paragraph text={value} />
+          </Element>
+        ))
+      }
+    </Element>
+  </Element> -->
 </Element>
 
 <style is:global>
   @layer fulldev {
     .footer {
-      @apply relative mt-auto w-full;
+      @apply relative mt-auto w-full border-t bg-background;
 
       &.dark {
         @apply bg-background;

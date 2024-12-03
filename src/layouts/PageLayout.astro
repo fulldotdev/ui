@@ -1,16 +1,23 @@
 ---
 import type { CollectionEntry } from 'astro:content'
+import { getEntry } from 'astro:content'
 import Blocks from 'fulldev-ui/components/Blocks.astro'
 import Prose from 'fulldev-ui/components/Prose.astro'
 import Layout from 'fulldev-ui/layouts/Layout.astro'
+import { mergeDeep } from 'remeda'
 
 type Props = CollectionEntry<'pages'>
 
-const { render } = Astro.props
-const { blocks } = Astro.props.data
+const layout = await getEntry('layouts', 'pages')
+const merged = mergeDeep(layout || {}, Astro.props)
+
+const {
+  render,
+  data: { blocks },
+} = merged
 ---
 
-<Layout {...Astro.props}>
+<Layout {...merged}>
   <Prose
     {render}
     toc={false}

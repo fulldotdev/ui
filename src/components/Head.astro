@@ -1,18 +1,13 @@
 ---
 import { AstroSeo } from '@astrolib/seo'
-import type { ComponentProps } from 'astro/types'
-import { ViewTransitions } from 'astro:transitions'
-import type Layout from 'fulldev-ui/layouts/Layout.astro'
+import type { HTMLAttributes } from 'astro/types'
+import type { HeadSchema } from 'fulldev-ui/schemas/components/head'
 
-type Props = ComponentProps<typeof Layout>
+type Props = HTMLAttributes<'head'> & HeadSchema & {}
 
-const { theme, title, description, image, seo, code, render } = Astro.props
+const { theme, title, description, image, code } = Astro.props
 
-const renderTitle = render && (await render()).headings[0]?.text
-const mergedTitle = seo?.title || title || renderTitle
-const mergedDescription = seo?.description || description
-const mergedImage =
-  seo?.image || image ? Astro.url.origin + (seo?.image || image) : undefined
+const src = image?.src && Astro.url.origin + image.src
 ---
 
 <head>
@@ -29,24 +24,22 @@ const mergedImage =
     rel="canonical"
     href={Astro.url.href.endsWith('/') ? Astro.url.href : Astro.url.href + '/'}
   />
-  <ViewTransitions />
   <AstroSeo
-    title={mergedTitle ?? ''}
-    description={mergedDescription ?? ''}
+    title={title ?? ''}
+    description={description ?? ''}
     openGraph={{
-      title: mergedTitle,
-      description: mergedDescription,
-      images: mergedImage
-        ? [
-            {
-              url: mergedImage,
-              alt: mergedTitle,
-            },
-          ]
-        : undefined,
-    } as any}
+      title: title ?? '',
+      description: description ?? '',
+      images: [
+        {
+          url: src ?? '',
+          alt: title ?? '',
+        },
+      ],
+    }}
   />
-  <Fragment set:html={code?.head} />
+
+  <Fragment set:html={code} />
 
   <script is:inline define:vars={{ theme }}>
     function setTheme(document) {
@@ -87,11 +80,4 @@ const mergedImage =
       setOption(document)
     })
   </script>
-
-  <!-- TrustBox script -->
-  <script
-    type="text/javascript"
-    src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js"
-    async
-  ></script>
 </head>
