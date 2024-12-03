@@ -1,26 +1,38 @@
-import { reference, z } from 'astro:content'
+import { z } from 'astro:content'
 
-const imagePath = z.preprocess((data: unknown) => {
-  if (typeof data === 'string') {
-    return data.split('/').pop()
-  }
-  return data
-}, reference('images'))
+// const imagePath = z.preprocess((data: unknown) => {
+//   if (typeof data === 'string') {
+//     return data.split('/').pop()
+//   }
+//   return data
+// }, reference('images'))
+
+// export const imageSchema = z
+//   .union([imagePath, z.object({}).passthrough()])
+//   .pipe(
+//     z
+//       .object({
+//         id: z
+//           .string()
+//           .refine(async (data) => await reference('images').parseAsync(data)),
+//         src: z.string(),
+//         alt: z.string(),
+//         width: z.number(),
+//         height: z.number(),
+//       })
+//       .partial()
+//       .passthrough()
+//   )
+//   .optional()
 
 export const imageSchema = z
-  .union([imagePath, z.object({}).passthrough()])
-  .pipe(
+  .preprocess(
+    (data: unknown) => (typeof data === 'string' ? { src: data } : data),
     z
       .object({
-        id: z
-          .string()
-          .refine(async (data) => await reference('images').parseAsync(data)),
-        src: z.string(),
-        alt: z.string(),
-        width: z.number(),
-        height: z.number(),
+        src: z.string().optional(),
+        alt: z.string().optional(),
       })
-      .partial()
-      .passthrough()
+      .strict()
   )
   .optional()

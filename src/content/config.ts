@@ -1,7 +1,6 @@
 import { defineCollection } from 'astro:content'
 import { categorySchema } from 'fulldev-ui/schemas/categorySchema.ts'
 import { docSchema } from 'fulldev-ui/schemas/docSchema.ts'
-import { imageLoader, imageSchema } from 'fulldev-ui/schemas/imageSchema.ts'
 import { layoutSchema } from 'fulldev-ui/schemas/layoutSchema.ts'
 import { pageSchema } from 'fulldev-ui/schemas/pageSchema.ts'
 import { postSchema } from 'fulldev-ui/schemas/postSchema.ts'
@@ -32,8 +31,8 @@ export const collections = {
     type: 'data',
     schema: layoutSchema,
   }),
-  images: defineCollection({
-    loader: imageLoader,
-    schema: imageSchema,
-  }),
+  // images: defineCollection({
+  //   loader: imageLoader,
+  //   schema: imageSchema,
+  // }),
 }

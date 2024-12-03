@@ -1,0 +1,43 @@
+---
+// @ts-nocheck
+import type { HTMLAttributes } from 'astro/types'
+import { Image as AstroImage } from 'astro:assets'
+import type { ImageSchema } from 'fulldev-ui/schemas/imageSchema'
+
+interface Props extends HTMLAttributes<'img'>, ImageSchema {}
+
+function getAltBySrc() {
+  if (!src) return
+  const filename = src?.split('/').pop()
+  const slug = filename && filename.split('.')[0]
+  const unslugged = slug?.replace(/-/g, ' ')
+  return unslugged || ''
+}
+
+const {
+  src,
+  alt = getAltBySrc(),
+  height = 1920,
+  width = 1920,
+  ...rest
+} = Astro.props
+---
+
+{
+  src && (
+    <AstroImage
+      class:list="image"
+      {alt}
+      {src}
+      {...rest}
+    />
+  )
+}
+
+<style is:global>
+  @layer fulldev {
+    .image {
+      @apply block;
+    }
+  }
+</style>

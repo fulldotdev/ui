@@ -5,9 +5,12 @@ import favicons from 'astro-favicons'
 import liveCode from 'astro-live-code'
 import robotsTxt from 'astro-robots-txt'
 import { envField } from 'astro/config'
+import simpleStackForm from 'simple-stack-form'
+import simpleStackQuery from 'simple-stack-query'
 import tailwindcss from 'tailwindcss'
 import tailwindcssNesting from 'tailwindcss/nesting'
 import { loadEnv } from 'vite'
+import virtual from 'vite-plugin-virtual'
 import tailwindConfig from '../../tailwind.config.ts'
 
 interface Config {
@@ -15,6 +18,7 @@ interface Config {
   company?: string
   css?: string
   injectRoutes?: boolean
+  cart?: boolean
   overrides?: {
     [k: string]: string
   }
@@ -62,6 +66,8 @@ export default function fulldevIntegration(
             mdx(),
             sitemap(),
             robotsTxt(),
+            simpleStackQuery(),
+            simpleStackForm(),
             liveCode({
               layout: '/src/components/Code.astro',
             }),
@@ -72,6 +78,11 @@ export default function fulldevIntegration(
                 ...config?.overrides,
               },
             },
+            plugins: [
+              virtual({
+                'virtual:fulldev-ui/config': config ?? {},
+              }),
+            ],
             css: {
               postcss: {
                 plugins: [tailwindcss(tailwindConfig), tailwindcssNesting],

@@ -1,10 +1,6 @@
+import svelte from '@astrojs/svelte'
 import { defineConfig } from 'astro/config'
 import integration from 'fulldev-ui/integration'
-import simpleStackQuery from 'simple-stack-query'
-
-import simpleStackForm from 'simple-stack-form'
-
-import svelte from '@astrojs/svelte'
 
 // https://astro.build/config
 export default defineConfig({
@@ -19,8 +15,6 @@ export default defineConfig({
       css: '/src/css/custom.css',
       injectRoutes: false,
     }),
-    simpleStackQuery(),
-    simpleStackForm(),
     svelte(),
   ],
   redirects: {
