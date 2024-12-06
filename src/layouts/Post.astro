@@ -1,20 +1,52 @@
 ---
 import type { ComponentProps } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import Content1 from 'fulldev-ui/blocks/Content1.astro'
+import Footer from 'fulldev-ui/blocks/Footer.astro'
+import Header from 'fulldev-ui/blocks/Header.astro'
+import Block from 'fulldev-ui/components/Block.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Layout from 'fulldev-ui/components/Layout.astro'
-import Prose from 'fulldev-ui/components/Prose.astro'
+import type { PageSchema } from 'fulldev-ui/schemas/page'
 
-type Props = ComponentProps<typeof Layout>
+interface Props extends ComponentProps<typeof Layout>, PageSchema {
+  render: CollectionEntry<'pages'>['render']
+}
 
-const { render } = Astro.props
+const {
+  title,
+  description,
+  list,
+  button,
+  header,
+  sidebar,
+  blocks,
+  footer,
+  render,
+} = Astro.props
+
+const { Content, headings } = await render()
 ---
 
 <Layout
   class:list="post"
   {...Astro.props}
 >
-  <Prose
-    {render}
-    toc={true}
+  <Header
+    {...sidebar}
+    {...header}
   />
-  <slot />
+  <Element as="main">
+    <Content1
+      heading={title}
+      paragraph={description}
+      {list}
+      {button}
+      {headings}
+    >
+      <Content />
+    </Content1>
+    {blocks?.map((block) => <Block {...block} />)}
+  </Element>
+  <Footer {...footer} />
 </Layout>

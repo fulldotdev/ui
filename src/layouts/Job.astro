@@ -5,17 +5,15 @@ import { getEntries } from 'astro:content'
 import Content3 from 'fulldev-ui/blocks/Content3.astro'
 import Footer from 'fulldev-ui/blocks/Footer.astro'
 import Header from 'fulldev-ui/blocks/Header.astro'
-import Blocks from 'fulldev-ui/components/Blocks.astro'
+import Block from 'fulldev-ui/components/Block.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Layout from 'fulldev-ui/components/Layout.astro'
-import type { LayoutSchema } from 'fulldev-ui/schemas/layoutSchema.ts'
-import type { PageSchema } from 'fulldev-ui/schemas/pageSchema.ts'
-import { getHref } from 'fulldev-ui/utils/getHref'
+import type { PageSchema } from 'fulldev-ui/schemas/page.ts'
+import { getHref } from 'fulldev-ui/utils/getHref.ts'
 
-type Props = ComponentProps<typeof Layout> &
-  LayoutSchema &
-  PageSchema &
-  Pick<CollectionEntry<'pages'>, 'render'>
+interface Props extends ComponentProps<typeof Layout>, PageSchema {
+  render: CollectionEntry<'pages'>['render']
+}
 
 const {
   title,
@@ -31,6 +29,8 @@ const {
 } = Astro.props
 
 const categoriesEntries = categories && (await getEntries(categories))
+
+const { Content } = await render()
 ---
 
 <Layout
@@ -49,16 +49,12 @@ const categoriesEntries = categories && (await getEntries(categories))
       }))}
       heading={title}
       paragraph={description}
-      list={list}
-      button={button}
-      render={render}
-    />
-    <Blocks {blocks} />
+      {list}
+      {button}
+    >
+      <Content />
+    </Content3>
+    {blocks?.map((block) => <Block {...block} />)}
   </Element>
   <Footer {...footer} />
 </Layout>
-
-<style is:global>
-  @layer fulldev {
-  }
-</style>

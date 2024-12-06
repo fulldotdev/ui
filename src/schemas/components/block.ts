@@ -30,6 +30,7 @@ export const blockSchema = z.object({
   heading: headingSchema.shape.text,
   paragraph: paragraphSchema.shape.text,
   list: z.string().array().optional(),
+  content: z.string().optional(),
   button: buttonSchema.optional(),
   buttons: buttonSchema.array().optional(),
   image: imageSchema.optional(),

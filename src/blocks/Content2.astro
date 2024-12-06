@@ -29,12 +29,13 @@ const {
   buttons,
   image,
   headings,
+  content,
   ...rest
 } = Astro.props
 ---
 
 <Section
-  class:list="content-1"
+  class:list="content-2"
   {...rest}
 >
   <Container>
@@ -59,18 +60,31 @@ const {
         <Button {...button} />
         {buttons?.map((button) => <Button {...button} />)}
       </Group>
-      <Image {...image} />
+      <Fragment set:html={content} />
       <slot />
     </Prose>
-    <Toc {headings} />
+    <Image {...image} />
   </Container>
 </Section>
 
 <style is:global>
   @layer fulldev {
-    .content-1 {
+    .content-2 {
       .container {
-        @apply flex items-start justify-evenly gap-x-gutter;
+        @apply grid items-start gap-x-gutter gap-y-16 lg:grid-cols-2;
+      }
+
+      .prose,
+      .image {
+        @apply lg:top-sticky-16 lg:sticky;
+      }
+
+      .prose {
+        @apply max-w-screen-sm;
+      }
+
+      .image {
+        @apply rounded-md;
       }
     }
   }

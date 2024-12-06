@@ -18,7 +18,6 @@ export const pageSchema = z
     image: imageSchema.optional(),
     images: imageSchema.array().optional(),
     price: priceSchema.shape.amount,
-    categories: pathSchema('pages').array().optional(),
     order: z.number().optional(),
     variants: z.record(z.string(), z.string().array()).optional(),
     soldout: z.boolean().optional(),
@@ -31,6 +30,9 @@ export const pageSchema = z
     subheader: blockSchema.array().optional(),
     sidebar: blockSchema.optional(),
     footer: blockSchema.optional(),
+    parents: pathSchema('pages').array().optional(),
+    children: pathSchema('pages').array().optional(),
+    siblings: pathSchema('pages').array().optional(),
   })
   .strict()
 

@@ -11,13 +11,11 @@ import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Prose from 'fulldev-ui/components/Prose.astro'
 import Sidebar from 'fulldev-ui/components/Sidebar.astro'
 import Toc from 'fulldev-ui/components/Toc.astro'
-import type { LayoutSchema } from 'fulldev-ui/schemas/layoutSchema.ts'
-import type { PageSchema } from 'fulldev-ui/schemas/pageSchema.ts'
+import type { PageSchema } from 'fulldev-ui/schemas/page.ts'
 
-type Props = ComponentProps<typeof Layout> &
-  LayoutSchema &
-  PageSchema &
-  Pick<CollectionEntry<'pages'>, 'render'>
+interface Props extends ComponentProps<typeof Layout>, PageSchema {
+  render: CollectionEntry<'pages'>['render']
+}
 
 const { header, sidebar, render, title, description, footer } = Astro.props
 
@@ -56,17 +54,3 @@ const { Content } = await render()
   </Container>
   <Footer {...footer} />
 </Layout>
-
-<style is:global>
-  @layer fulldev {
-    .doc {
-      .doc-container {
-        @apply flex gap-x-gutter;
-      }
-
-      .doc-main {
-        @apply flex grow justify-evenly gap-x-gutter;
-      }
-    }
-  }
-</style>

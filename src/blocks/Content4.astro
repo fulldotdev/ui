@@ -1,6 +1,5 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import Badge from 'fulldev-ui/components/Badge.astro'
 import Button from 'fulldev-ui/components/Button.astro'
 import Container from 'fulldev-ui/components/Container.astro'
 import Group from 'fulldev-ui/components/Group.astro'
@@ -9,30 +8,32 @@ import List from 'fulldev-ui/components/List.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Prose from 'fulldev-ui/components/Prose.astro'
 import Section from 'fulldev-ui/components/Section.astro'
+import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Writeup from 'fulldev-ui/components/Writeup.astro'
 import type { BlockSchema } from 'fulldev-ui/schemas/components/block'
 
 interface Props extends ComponentProps<typeof Section>, BlockSchema {}
 
-const { badges, heading, paragraph, list, button, ...rest } = Astro.props
+const {
+  tagline,
+  heading,
+  paragraph,
+  list,
+  content,
+  button,
+  buttons,
+  image,
+  ...rest
+} = Astro.props
 ---
 
 <Section
-  class:list="content-3"
+  class:list="content-4"
   {...rest}
 >
   <Container>
     <Writeup>
-      <Group>
-        {
-          badges?.map((badge) => (
-            <Badge
-              size="sm"
-              {...badge}
-            />
-          ))
-        }
-      </Group>
+      <Tagline text={tagline} />
       <Heading
         as="h1"
         size="4xl"
@@ -44,26 +45,27 @@ const { badges, heading, paragraph, list, button, ...rest } = Astro.props
         text={paragraph}
       />
       <List items={list} />
-      <Button
-        size="lg"
-        {...button}
-      />
     </Writeup>
     <Prose>
+      <Fragment set:html={content} />
       <slot />
     </Prose>
+    <Group>
+      <Button {...button} />
+      {buttons?.map((button) => <Button {...button} />)}
+    </Group>
   </Container>
 </Section>
 
 <style is:global>
   @layer fulldev {
-    .content-3 {
+    .content-4 {
       .container {
-        @apply flex flex-col items-start gap-x-gutter lg:grid lg:grid-cols-2;
+        @apply flex flex-col items-start gap-8;
       }
 
-      .writeup {
-        @apply lg:top-sticky-16 lg:sticky lg:max-w-xl;
+      .prose {
+        @apply max-w-none break-inside-avoid gap-x-gutter lg:columns-2;
       }
     }
   }

@@ -1,22 +1,23 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import type { CollectionEntry } from 'astro:content'
+import type { MarkdownHeading } from 'astro'
+import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import type { GlobalProps } from 'fulldev-ui/types/global-props'
-import Links from './Links.astro'
+import Link from './Link.astro'
 
 interface Props extends GlobalProps, HTMLAttributes<'div'> {
-  heading?: ComponentProps<typeof Heading>['text']
-  render?: CollectionEntry<'pages'>['render'] | undefined
+  headings?: MarkdownHeading[] | undefined
 }
 
-const { size = 'sm', heading = 'On this page', render, ...rest } = Astro.props
+const { headings, ...rest } = Astro.props
 
-const headings = render ? (await render())?.headings : []
 const filteredHeadings = headings?.filter(
   (heading: any) => heading.depth >= 2 && heading.depth <= 4
 )
+
+const h1 = headings?.find((heading: any) => heading.depth === 1)
+
 const links = filteredHeadings?.map((button: any) => ({
   text: button.text,
   href: `#${button.slug}`,
@@ -25,40 +26,31 @@ const links = filteredHeadings?.map((button: any) => ({
 ---
 
 <Element
-  if={filteredHeadings?.length > 1}
   class:list="toc"
-  {size}
+  if={filteredHeadings?.length}
   {...rest}
 >
   <Heading
-    level={5}
-    text={heading}
-    {size}
+    as="a"
+    href="#"
+    {...h1}
   />
-  <Links
-    direction="column"
-    {links}
-    {size}
-  />
+  {
+    links?.map((link) => (
+      <Link
+        variant="muted"
+        size="sm"
+        {...link}
+      />
+    ))
+  }
 </Element>
 
 <style is:global>
   @layer fulldev {
     .toc {
-      @apply sticky bottom-0 z-10 hidden shrink-0 flex-col items-start justify-start gap-3 overflow-y-auto py-8 md:flex;
+      @apply lg:top-sticky-16 sticky bottom-0 z-10 hidden w-48 shrink-0 flex-col items-start justify-start gap-3 overflow-y-auto md:flex;
       @apply scrollbar scrollbar-track-transparent scrollbar-thumb-accent scrollbar-thumb-rounded-full scrollbar-w-2 hover:scrollbar-thumb-accent-hover;
-
-      --headers: calc(var(--header-height, 0px) + var(--subheader-height, 0px));
-      top: var(--headers);
-      width: var(--toc-width);
-      max-height: calc(100vh - var(--headers));
-
-      &,
-      & ~ * {
-        @media (min-width: 768px) {
-          --toc-width: 12rem;
-        }
-      }
 
       .depth-3 {
         @apply pl-3;
