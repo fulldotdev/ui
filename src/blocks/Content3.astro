@@ -1,0 +1,79 @@
+---
+import type { ComponentProps } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import Badge from 'fulldev-ui/components/Badge.astro'
+import Button from 'fulldev-ui/components/Button.astro'
+import Container from 'fulldev-ui/components/Container.astro'
+import Group from 'fulldev-ui/components/Group.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import List from 'fulldev-ui/components/List.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Prose from 'fulldev-ui/components/Prose.astro'
+import Section from 'fulldev-ui/components/Section.astro'
+import Writeup from 'fulldev-ui/components/Writeup.astro'
+import type { BlockSchema } from 'fulldev-ui/schemas/components/block'
+
+interface Props extends ComponentProps<typeof Section>, BlockSchema {
+  render: CollectionEntry<'pages'>['render']
+}
+
+const { badges, heading, paragraph, list, button, render, ...rest } =
+  Astro.props
+
+const { Content } = await render()
+---
+
+<Section
+  class:list="content-3"
+  {...rest}
+>
+  <Container>
+    <Writeup>
+      <Group>
+        {
+          badges?.map((badge) => (
+            <Badge
+              size="sm"
+              {...badge}
+            />
+          ))
+        }
+      </Group>
+      <Heading
+        as="h1"
+        size="4xl"
+        text={heading}
+      />
+      <Paragraph
+        size="lg"
+        muted
+        text={paragraph}
+      />
+      <List items={list} />
+      <Button
+        size="lg"
+        {...button}
+      />
+    </Writeup>
+    <Prose>
+      <Content />
+    </Prose>
+  </Container>
+</Section>
+
+<style is:global>
+  @layer fulldev {
+    .content-3 {
+      .container {
+        @apply flex flex-col items-start gap-x-gutter lg:grid lg:grid-cols-2;
+      }
+
+      .writeup {
+        @apply max-w-xl lg:sticky;
+
+        top: var(--header-height, 0px);
+        height: calc(100vh - var(--headers));
+      }
+    }
+  }
+</style>

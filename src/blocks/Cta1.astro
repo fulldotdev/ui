@@ -2,16 +2,16 @@
 import type { ComponentProps } from 'astro/types'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Container from 'fulldev-ui/components/Container.astro'
-import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Panel from 'fulldev-ui/components/Panel.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Section from 'fulldev-ui/components/Section.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
-import type { CtaSchema } from 'fulldev-ui/schemas/blocks/cta.ts'
+import Writeup from 'fulldev-ui/components/Writeup.astro'
+import type { BlockSchema } from 'fulldev-ui/schemas/components/block'
 
-interface Props extends ComponentProps<typeof Section>, CtaSchema {}
+interface Props extends ComponentProps<typeof Section>, BlockSchema {}
 
 const { tagline, heading, paragraph, buttons, image, ...rest } = Astro.props
 ---
@@ -22,24 +22,22 @@ const { tagline, heading, paragraph, buttons, image, ...rest } = Astro.props
 >
   <Container>
     <Panel>
-      <Element class="cta-1-segment">
-        <Element class="cta-1-content">
-          <Tagline text={tagline} />
-          <Heading
-            size="4xl"
-            as="h2"
-            text={heading}
-          />
-          <Paragraph
-            size="lg"
-            text={paragraph}
-          />
-        </Element>
+      <Writeup align="center">
+        <Tagline text={tagline} />
+        <Heading
+          size="4xl"
+          as="h2"
+          text={heading}
+        />
+        <Paragraph
+          size="lg"
+          text={paragraph}
+        />
         <Buttons
           {buttons}
           size="lg"
         />
-      </Element>
+      </Writeup>
       <Image {...image} />
     </Panel>
   </Container>
@@ -48,20 +46,8 @@ const { tagline, heading, paragraph, buttons, image, ...rest } = Astro.props
 <style is:global>
   @layer fulldev {
     .cta-1 {
-      .panel {
-        @apply flex flex-col items-center gap-16;
-      }
-
-      .cta-1-segment {
-        @apply z-10 flex flex-col items-center gap-8 text-center;
-      }
-
-      .cta-1-content {
-        @apply flex max-w-screen-md flex-col items-center gap-4 text-center;
-      }
-
       .text {
-        @apply text-balance;
+        @apply text-pretty;
       }
 
       .image {

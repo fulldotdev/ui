@@ -5,9 +5,9 @@ export const imageSchema = z
     id: z.string(),
     src: z.string(),
     alt: z.string().default(''),
-    width: z.number(),
-    height: z.number(),
-    format: z.string(),
+    width: z.number().optional(),
+    height: z.number().optional(),
+    format: z.string().optional(),
   })
   .passthrough()
 

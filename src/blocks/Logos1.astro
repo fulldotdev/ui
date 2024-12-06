@@ -1,60 +1,54 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Container from 'fulldev-ui/components/Container.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Section from 'fulldev-ui/components/Section.astro'
-import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Writeup from 'fulldev-ui/components/Writeup.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/components/block'
+import type { BlockSchema } from 'fulldev-ui/schemas/components/block.ts'
 
 interface Props extends ComponentProps<typeof Section>, BlockSchema {}
 
-const { tagline, heading, paragraph, buttons, image, ...rest } = Astro.props
+const { tagline, heading, paragraph, images, ...rest } = Astro.props
 ---
 
 <Section
-  class:list="feature-1"
+  class:list="logos-1"
   {...rest}
 >
   <Container>
     <Writeup>
-      <Tagline
-        size="sm"
-        text={tagline}
-      />
       <Heading
-        size="3xl"
+        size="lg"
         text={heading}
       />
       <Paragraph
-        size="lg"
+        size="sm"
+        muted
         text={paragraph}
       />
-      <Buttons
-        variant="secondary"
-        {buttons}
-      />
     </Writeup>
-    <Image {...image} />
+    <Element class:list="logos-1-cards">
+      {images?.map((image) => <Image {...image} />)}
+    </Element>
   </Container>
 </Section>
 
 <style is:global>
   @layer fulldev {
-    .feature-1 {
-      .container {
-        @apply gap-x-gutter gap-y-12 lg:grid lg:grid-cols-2 lg:items-center;
+    .logos-1 {
+      .logos-1-cards {
+        @apply grid grid-cols-1 gap-6 lg:grid-cols-3;
       }
 
-      .writeup {
-        @apply lg:max-w-xl;
+      .logos-1-card {
+        @apply flex flex-col gap-3;
       }
 
-      .image {
-        @apply rounded-lg;
+      .icon {
+        @apply text-primary;
       }
     }
   }

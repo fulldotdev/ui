@@ -1,0 +1,59 @@
+---
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
+
+interface Props extends HTMLAttributes<'div'> {
+  as?: HTMLTag
+  align?: 'left' | 'center' | 'right'
+}
+
+const { align = 'start', ...rest } = Astro.props
+---
+
+<Element
+  class:list="writeup"
+  {align}
+  {...rest}
+>
+  <slot />
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .writeup {
+      @apply relative w-full;
+
+      &.align-left {
+        @apply mr-auto flex flex-col items-start text-left;
+      }
+
+      &.align-center {
+        @apply mx-auto flex flex-col items-center text-center;
+      }
+
+      &.align-right {
+        @apply ml-auto flex flex-col items-end text-right;
+      }
+
+      .heading {
+        @apply max-w-screen-lg text-balance;
+      }
+
+      .paragraph {
+        @apply max-w-screen-md text-balance;
+      }
+
+      > * {
+        & + * {
+          @apply mt-4;
+        }
+
+        & + .group,
+        & + .button,
+        & + .buttons {
+          @apply mt-8;
+        }
+      }
+    }
+  }
+</style>

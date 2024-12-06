@@ -19,12 +19,18 @@ export const pageSchema = z
     images: imageSchema.array().optional(),
     price: priceSchema.shape.amount,
     categories: pathSchema('pages').array().optional(),
-    blocks: blockSchema.array().optional(),
     order: z.number().optional(),
     variants: z.record(z.string(), z.string().array()).optional(),
     soldout: z.boolean().optional(),
     head: headSchema.optional(),
     button: buttonSchema.optional(),
+    banner: blockSchema.optional(),
+    navigation: blockSchema.optional(),
+    header: blockSchema.optional(),
+    blocks: blockSchema.array().optional(),
+    subheader: blockSchema.array().optional(),
+    sidebar: blockSchema.optional(),
+    footer: blockSchema.optional(),
   })
   .strict()
 

@@ -1,30 +1,14 @@
 ---
 import { getEntries } from 'astro:content'
-import type { BannerSchema } from 'fulldev-ui/schemas/blocks/banner'
-import type { CategoriesSchema } from 'fulldev-ui/schemas/blocks/categories'
-import type { CtaSchema } from 'fulldev-ui/schemas/blocks/cta'
-import type { FeatureSchema } from 'fulldev-ui/schemas/blocks/feature'
-import type { HeroSchema } from 'fulldev-ui/schemas/blocks/hero'
-import type { ProductsSchema } from 'fulldev-ui/schemas/blocks/products'
-import type { FooterSchema } from 'fulldev-ui/schemas/components/footer'
-import type { HeaderSchema } from 'fulldev-ui/schemas/components/header'
+import type { BlockSchema } from 'fulldev-ui/schemas/components/block'
 
-interface Props
-  extends HeroSchema,
-    CtaSchema,
-    FeatureSchema,
-    CategoriesSchema,
-    ProductsSchema,
-    HeaderSchema,
-    FooterSchema,
-    BannerSchema {
+interface Props extends BlockSchema {
   _block: string
 }
 
-let { _block, products, categories, ...rest } = Astro.props
+let { _block, pages, ...rest } = Astro.props
 
-products = products && (await getEntries(products))
-categories = categories && (await getEntries(categories))
+pages = pages && (await getEntries(pages))
 
 const blocks = {
   ...import.meta.glob('/src/blocks/**/*.astro'),
@@ -41,8 +25,7 @@ const BlockComponent = path && (await (blocks[path] as any)()).default
 {
   BlockComponent && (
     <BlockComponent
-      {products}
-      {categories}
+      {pages}
       {...rest}
     />
   )
