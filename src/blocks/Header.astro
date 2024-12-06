@@ -1,0 +1,196 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import Button from 'fulldev-ui/components/Button.astro'
+// import Cart from 'fulldev-ui/components/Cart.astro'
+import Container from 'fulldev-ui/components/Container.astro'
+import Drawer from 'fulldev-ui/components/Drawer.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Link from 'fulldev-ui/components/Link.astro'
+import Logo from 'fulldev-ui/components/Logo.astro'
+import Search from 'fulldev-ui/components/Search.astro'
+import Social from 'fulldev-ui/components/Social.astro'
+import Themer from 'fulldev-ui/components/Themer.astro'
+import type { HeaderSchema } from 'fulldev-ui/schemas/components/header'
+
+interface Props extends HTMLAttributes<'header'>, HeaderSchema {}
+
+const {
+  logo,
+  heading,
+  links,
+  socials,
+  menus,
+  search,
+  themer,
+  buttons,
+  cart,
+  ...rest
+} = Astro.props
+---
+
+<Element
+  class:list="header"
+  {...rest}
+>
+  <Container>
+    <Element class:list="header-start">
+      <Logo {...logo} />
+      {
+        links?.map((link) => (
+          <Link
+            size="sm"
+            variant="muted"
+            {...link}
+          />
+        ))
+      }
+    </Element>
+    <Element class:list="header-end">
+      {
+        search && (
+          <Search
+            if={search}
+            variant="ghost"
+            size="sm"
+          />
+        )
+      }
+      {
+        buttons?.map((button) => (
+          <Button
+            size="sm"
+            {...button}
+          />
+        ))
+      }
+      <!-- {
+        cart && (
+          <Cart
+            variant="ghost"
+            size="sm"
+          />
+        )
+      } -->
+      <Themer
+        if={themer}
+        variant="ghost"
+        size="sm"
+      />
+      {
+        socials?.map((social) => (
+          <Social
+            variant="ghost"
+            size="sm"
+            href={social}
+          />
+        ))
+      }
+      <!-- <Button
+        class:list="menu-button"
+        as="label"
+        for="sidebar-toggle"
+        icon="menu-2"
+        variant="ghost"
+        size="sm"
+      /> -->
+      <Drawer
+        id="header-drawer"
+        icon="menu-2"
+        size="sm"
+      >
+        <Container>
+          <Element class:list="header-links">
+            {
+              links?.map((link) => (
+                <Link
+                  variant="muted"
+                  {...link}
+                />
+              ))
+            }
+          </Element>
+          {
+            menus?.map(({ heading, links }) => (
+              <Element class:list="header-menu">
+                <Heading
+                  text={heading}
+                  size="md"
+                  as="h6"
+                />
+                <Element class:list="header-links">
+                  {links?.map((link) => (
+                    <Link
+                      variant="muted"
+                      {...link}
+                    />
+                  ))}
+                </Element>
+              </Element>
+            ))
+          }
+        </Container>
+      </Drawer>
+    </Element>
+  </Container>
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .header {
+      @apply sticky left-0 top-0 z-20 flex h-14 w-full items-center overflow-hidden border-b bg-background;
+      height: var(--header-height);
+
+      &,
+      & ~ * {
+        --header-height: 3.5rem;
+      }
+
+      .container {
+        @apply flex items-center gap-6;
+      }
+
+      .header-start {
+        @apply flex items-center gap-6;
+
+        .link {
+          @apply max-lg:hidden;
+        }
+      }
+
+      .header-home {
+        @apply flex items-center gap-2;
+      }
+
+      .header-end {
+        @apply ml-auto flex items-center gap-1;
+
+        .social,
+        .themer {
+          @apply max-lg:hidden;
+        }
+
+        .menu-button {
+          @apply lg:hidden;
+        }
+      }
+
+      .drawer {
+        @apply lg:hidden;
+
+        .container {
+          @apply flex w-full flex-col items-start gap-6 overflow-y-auto px-gutter pb-14 pt-8;
+          @apply scrollbar scrollbar-track-transparent scrollbar-thumb-accent scrollbar-thumb-rounded-full scrollbar-w-2 hover:scrollbar-thumb-accent-hover;
+        }
+
+        .header-menu {
+          @apply flex flex-col gap-4;
+        }
+
+        .header-links {
+          @apply flex flex-col gap-3;
+        }
+      }
+    }
+  }
+</style>

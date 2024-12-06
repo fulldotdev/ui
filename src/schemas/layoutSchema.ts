@@ -1,11 +1,11 @@
 import { z } from 'astro:content'
-import { footerSchema } from 'fulldev-ui/schemas/components/footer'
+import { bannerSchema } from 'fulldev-ui/schemas/blocks/banner.ts'
+import { footerSchema } from 'fulldev-ui/schemas/components/footer.ts'
 import { headSchema } from 'fulldev-ui/schemas/components/head.ts'
-import { headerSchema } from 'fulldev-ui/schemas/components/header'
+import { headerSchema } from 'fulldev-ui/schemas/components/header.ts'
 import { linkSchema } from 'fulldev-ui/schemas/components/link.ts'
-import { sidebarSchema } from 'fulldev-ui/schemas/components/sidebar'
-import { bannerSchema } from './blocks/banner'
-import { navigationSchema } from './components/navigation'
+import { navigationSchema } from 'fulldev-ui/schemas/components/navigation.ts'
+import { sidebarSchema } from 'fulldev-ui/schemas/components/sidebar.ts'
 
 export const layoutSchema = z
   .object({

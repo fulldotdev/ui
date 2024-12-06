@@ -8,15 +8,9 @@ import Icon from './Icon.astro'
 import Input from './Input.astro'
 import Select from './Select.astro'
 
-interface Props extends ComponentProps<typeof Drawer> {}
+interface Props extends Omit<ComponentProps<typeof Drawer>, 'id' | 'icon'> {}
 
-const {
-  icon = 'shopping-cart',
-  color = 'brand',
-  id = 'cart',
-  if: ifProp,
-  ...rest
-} = Astro.props
+const { variant = 'ghost', size = 'md', ...rest } = Astro.props
 ---
 
 <Select if={false} />
@@ -25,12 +19,12 @@ const {
 <Icon if={false} />
 
 <Drawer
-  if={ifProp}
   class:list="cart"
-  variant="secondary"
+  id="cart"
+  icon="shopping-cart"
+  {variant}
+  {size}
   {icon}
-  {color}
-  {id}
   {...rest}
 >
   <CartList client:load />

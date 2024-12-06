@@ -5,8 +5,10 @@ import favicons from 'astro-favicons'
 import liveCode from 'astro-live-code'
 import robotsTxt from 'astro-robots-txt'
 import { envField } from 'astro/config'
-import simpleStackForm from 'simple-stack-form'
-import simpleStackQuery from 'simple-stack-query'
+import fs from 'fs'
+import yaml from 'js-yaml'
+import path from 'path'
+import { assign } from 'radash'
 import tailwindcss from 'tailwindcss'
 import tailwindcssNesting from 'tailwindcss/nesting'
 import { loadEnv } from 'vite'
@@ -18,6 +20,7 @@ interface Config {
   company?: string
   css?: string
   injectRoutes?: boolean
+  cloudcannon?: boolean
   cart?: boolean
   overrides?: {
     [k: string]: string
@@ -66,8 +69,6 @@ export default function fulldevIntegration(
             mdx(),
             sitemap(),
             robotsTxt(),
-            simpleStackQuery(),
-            simpleStackForm(),
             liveCode({
               layout: '/src/components/Code.astro',
             }),
@@ -116,28 +117,16 @@ export default function fulldevIntegration(
             pattern: '/[...page]',
             entrypoint: 'fulldev-ui/pages/[...page].astro',
           })
-          injectRoute({
-            pattern: '/[...doc]',
-            entrypoint: 'fulldev-ui/pages/[...doc].astro',
-          })
-          injectRoute({
-            pattern: '/[...category]',
-            entrypoint: 'fulldev-ui/pages/[...category].astro',
-          })
-          injectRoute({
-            pattern: '/[...post]',
-            entrypoint: 'fulldev-ui/pages/[...post].astro',
-          })
-          injectRoute({
-            pattern: '/[...product]',
-            entrypoint: 'fulldev-ui/pages/[...product].astro',
-          })
         }
 
         // ----------------------
         // Inject css
         // ----------------------
         config?.css && injectScript('page-ssr', `import "${config?.css}";`)
+
+        // ----------------------
+        // merge Cloudcannon configs
+        // ----------------------
 
         // ----------------------
         // Generate image YAML files
@@ -169,6 +158,28 @@ export default function fulldevIntegration(
         //     console.error('Error generating image YAML files:', error)
         //   }
         // }
+      },
+      'astro:build:done': async () => {
+        if (config?.cloudcannon) {
+          const __dirname = path.dirname(new URL(import.meta.url).pathname)
+          const libDir = path.join(__dirname, '../../cloudcannon.config.yml')
+          const userDir = path.join(process.cwd(), 'cloudcannon.config.yml')
+
+          console.log({ libDir, userDir })
+
+          const libConfig = yaml.load(
+            fs.readFileSync(path.resolve(libDir), 'utf8')
+          )
+
+          const userConfig = yaml.load(
+            fs.readFileSync(path.resolve(userDir), 'utf8')
+          )
+
+          const mergedConfig = assign(libConfig || {}, userConfig || {})
+          const yamlContent = yaml.dump(mergedConfig)
+
+          await fs.promises.writeFile(userDir, yamlContent, 'utf8')
+        }
       },
     },
   }

@@ -1,0 +1,33 @@
+---
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import Container from 'fulldev-ui/components/Container.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import type { BannerSchema } from 'fulldev-ui/schemas/blocks/banner'
+
+interface Props extends HTMLAttributes<'header'>, BannerSchema {
+  as?: HTMLTag
+}
+
+const { as = 'header', text, ...rest } = Astro.props
+---
+
+<Element
+  class:list="banner"
+  {...rest}
+>
+  <Container>
+    <Fragment set:html={text} />
+  </Container>
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .banner {
+      @apply relative flex w-full items-center bg-primary py-3 text-primary-foreground;
+
+      .container {
+        @apply flex items-center justify-center overflow-hidden bg-primary text-center text-sm leading-none text-primary-foreground;
+      }
+    }
+  }
+</style>

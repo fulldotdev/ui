@@ -1,0 +1,75 @@
+---
+import type { ComponentProps } from 'astro/types'
+import Container from 'fulldev-ui/components/Container.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Icon from 'fulldev-ui/components/Icon.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Section from 'fulldev-ui/components/Section.astro'
+import Tagline from 'fulldev-ui/components/Tagline.astro'
+import type { FeaturesSchema } from 'fulldev-ui/schemas/blocks/features'
+
+interface Props extends ComponentProps<typeof Section>, FeaturesSchema {}
+
+const { tagline, heading, paragraph, cards, ...rest } = Astro.props
+---
+
+<Section
+  class:list="features-1"
+  {...rest}
+>
+  <Container>
+    <Element class="features-1-segment">
+      <Element class="features-1-content">
+        <Tagline
+          size="sm"
+          text={tagline}
+        />
+        <Heading
+          size="3xl"
+          text={heading}
+        />
+        <Paragraph
+          size="lg"
+          text={paragraph}
+        />
+      </Element>
+    </Element>
+    <Element class:list="features-1-cards">
+      {
+        cards?.map(({ icon, heading, paragraph }) => (
+          <Element class="features-1-card">
+            <Icon
+              size="lg"
+              name={icon}
+            />
+            <Heading
+              as="h3"
+              size="lg"
+              text={heading}
+            />
+            <Paragraph text={paragraph} />
+          </Element>
+        ))
+      }
+    </Element>
+  </Container>
+</Section>
+
+<style is:global>
+  @layer fulldev {
+    .features-1 {
+      .features-1-cards {
+        @apply grid grid-cols-1 gap-6 lg:grid-cols-3;
+      }
+
+      .features-1-card {
+        @apply flex flex-col gap-3;
+      }
+
+      .icon {
+        @apply text-primary;
+      }
+    }
+  }
+</style>

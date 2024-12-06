@@ -1,0 +1,110 @@
+---
+import type { ComponentProps } from 'astro/types'
+import { getImage } from 'astro:assets'
+import { getCollection, getEntry } from 'astro:content'
+import Products1 from 'fulldev-ui/blocks/Products1.astro'
+import CartForm from 'fulldev-ui/components/CartForm.svelte'
+import Element from 'fulldev-ui/components/Element.astro'
+import Gallery from 'fulldev-ui/components/Gallery.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Layout from 'fulldev-ui/components/Layout.astro'
+import List from 'fulldev-ui/components/List.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Prose from 'fulldev-ui/components/Prose.astro'
+
+type Props = ComponentProps<typeof Layout>
+
+const {
+  render,
+  title,
+  price,
+  images,
+  description,
+  soldout,
+  categories,
+  variants,
+} = Astro.props
+
+const slug = Astro.url.pathname.replace(/^\/|\/$/g, '') || 'index'
+const imageId = images?.[0]?.id
+const src = `/src/images/${imageId}`
+const allImages = import.meta.glob<{ default: ImageMetadata }>('/src/images/*')
+const foundImage = allImages[src]
+const gotImage =
+  imageId && (await getImage({ src: foundImage ? foundImage() : src }))
+
+const relatedProducts = await getCollection('products', (product) =>
+  product.data.categories?.some((category) =>
+    categories?.map((c) => c.slug).includes(category.slug)
+  )
+)
+
+const baseLayout = await getEntry('layouts', 'base')
+---
+
+<Layout
+  class:list="product"
+  {...Astro.props}
+>
+  <Element
+    class:list="product"
+    as="section"
+  >
+    <Element class:list="product-container">
+      <Element class:list="product-main">
+        <Gallery {images} />
+        <!-- <Prose {render} /> -->
+      </Element>
+      <Element class:list="product-segment">
+        <Element class:list="product-content">
+          <Heading
+            as="h1"
+            size="3xl"
+            text={title}
+          />
+          <Paragraph text={description} />
+        </Element>
+        <!-- <CartForm
+          product={Astro.props}
+          client:load
+        /> -->
+        <List
+          size="sm"
+          items={baseLayout.data.banner?.split('|')}
+        />
+      </Element>
+    </Element>
+  </Element>
+  <Products1
+    heading="Gerelateerde producten"
+    products={[...relatedProducts].sort(() => Math.random() - 0.5).slice(0, 6)}
+  />
+  <slot />
+</Layout>
+
+<style is:global>
+  .product {
+    @apply relative w-full;
+
+    .product-container {
+      @apply flex h-full w-full flex-col items-start gap-32 lg:container lg:grid lg:grid-cols-2 lg:py-8;
+    }
+
+    .product-segment {
+      @apply z-10 flex flex-col items-start gap-8 max-lg:container lg:sticky lg:top-0;
+
+      --height: calc(
+        var(--header-height, 0px) + var(--subheader-height, 0px) + 2rem
+      );
+      top: var(--height);
+    }
+
+    .product-content {
+      @apply flex max-w-screen-md flex-col gap-6;
+    }
+
+    &.dark {
+      @apply bg-background;
+    }
+  }
+</style>

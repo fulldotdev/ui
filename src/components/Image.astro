@@ -1,31 +1,9 @@
 ---
-// @ts-nocheck
-import type { ImageMetadata } from 'astro'
 import type { HTMLAttributes } from 'astro/types'
 import { Image as AstroImage } from 'astro:assets'
-import { getEntry } from 'astro:content'
+import type { ImageSchema } from 'fulldev-ui/schemas/imageSchema'
 
-interface Props extends GlobalProps, HTMLAttributes<'img'> {
-  id?: any
-  size?: 'sm' | 'md' | 'lg' | undefined
-  position?: 'background' | 'cover' | 'inset' | undefined
-}
-
-const { id } = Astro.props
-const entry = id ? (await getEntry('images', id))?.data : {}
-
-const {
-  width = 1920,
-  height = 1920,
-  position,
-  src,
-  alt,
-  size,
-  ...rest
-} = {
-  ...entry,
-  ...Astro.props,
-}
+interface Props extends HTMLAttributes<'img'>, ImageSchema {}
 
 function getAltBySrc() {
   if (!src) return
@@ -35,24 +13,23 @@ function getAltBySrc() {
   return unslugged || ''
 }
 
-const images = import.meta.glob<{ default: ImageMetadata }>('/src/images/*')
-const image = images[src as keyof typeof images]
+const {
+  src,
+  alt = getAltBySrc(),
+  height = 1920,
+  width = 1920,
+  ...rest
+} = Astro.props
 ---
 
 {
-  (image || src) && (
+  src && (
     <AstroImage
-      class:list={[
-        'image',
-        {
-          [`size-${size}`]: size,
-          [`position-${position}`]: position,
-        },
-      ]}
-      alt={alt || getAltBySrc()}
-      src={image ? image() : src}
-      width={width ? Number(width) : undefined}
-      height={height ? Number(height) : undefined}
+      class:list="image"
+      {alt}
+      {src}
+      {width}
+      {height}
       {...rest}
     />
   )
@@ -62,18 +39,6 @@ const image = images[src as keyof typeof images]
   @layer fulldev {
     .image {
       @apply block;
-
-      &.position-contain {
-        @apply h-auto w-full object-contain;
-      }
-
-      &.position-cover {
-        @apply h-full w-full object-cover;
-      }
-
-      &.position-background {
-        @apply absolute inset-0 h-full max-h-none w-full max-w-none object-cover opacity-30;
-      }
     }
   }
 </style>

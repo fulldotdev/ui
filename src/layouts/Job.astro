@@ -1,0 +1,64 @@
+---
+import type { ComponentProps } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import { getEntries } from 'astro:content'
+import Footer from 'fulldev-ui/blocks/Footer.astro'
+import Header from 'fulldev-ui/blocks/Header.astro'
+import Job1 from 'fulldev-ui/blocks/Job1.astro'
+import Blocks from 'fulldev-ui/components/Blocks.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Layout from 'fulldev-ui/components/Layout.astro'
+import type { LayoutSchema } from 'fulldev-ui/schemas/layoutSchema.ts'
+import type { PageSchema } from 'fulldev-ui/schemas/pageSchema.ts'
+import { getHref } from 'fulldev-ui/utils/getHref'
+
+type Props = ComponentProps<typeof Layout> &
+  LayoutSchema &
+  PageSchema &
+  Pick<CollectionEntry<'pages'>, 'render'>
+
+const {
+  title,
+  description,
+  list,
+  button,
+  header,
+  sidebar,
+  render,
+  categories,
+  blocks,
+  footer,
+} = Astro.props
+
+const categoriesEntries = categories && (await getEntries(categories))
+---
+
+<Layout
+  class:list="job"
+  {...Astro.props}
+>
+  <Header
+    {...sidebar}
+    {...header}
+  />
+  <Element as="main">
+    <Job1
+      badges={categoriesEntries?.map((category) => ({
+        text: category.data.title,
+        href: getHref(category.slug),
+      }))}
+      heading={title}
+      paragraph={description}
+      list={list}
+      button={button}
+      render={render}
+    />
+    <Blocks {blocks} />
+  </Element>
+  <Footer {...footer} />
+</Layout>
+
+<style is:global>
+  @layer fulldev {
+  }
+</style>

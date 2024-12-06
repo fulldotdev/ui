@@ -2,7 +2,6 @@
 import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import type { SidebarSchema } from 'fulldev-ui/schemas/components/sidebar'
-import Container from './Container.astro'
 import Heading from './Heading.astro'
 import Link from './Link.astro'
 
@@ -16,50 +15,55 @@ const { company, logo, menus, links, heading, themer, ...rest } = Astro.props
   as="aside"
   {...rest}
 >
-  <Container>
+  <Element class:list="sidebar-links">
     {
-      menus?.map(({ heading, links }) => (
-        <Element class:list="sidebar-menu">
-          <Heading
-            text={heading}
-            size="sm"
-            as="h6"
-          />
-          <Element class:list="sidebar-links">
-            {links?.map((link) => (
-              <Link
-                size="sm"
-                variant="muted"
-                {...link}
-              />
-            ))}
-          </Element>
-        </Element>
+      links?.map((link) => (
+        <Link
+          variant="muted"
+          size="sm"
+          {...link}
+        />
       ))
     }
-  </Container>
+  </Element>
+  {
+    menus?.map(({ heading, links }) => (
+      <Element class:list="sidebar-menu">
+        <Heading
+          text={heading}
+          size="sm"
+          as="h6"
+        />
+        <Element class:list="sidebar-links">
+          {links?.map((link) => (
+            <Link
+              variant="muted"
+              size="sm"
+              {...link}
+            />
+          ))}
+        </Element>
+      </Element>
+    ))
+  }
 </Element>
 
 <style is:global>
   @layer fulldev {
     .sidebar {
-      @apply sticky bottom-0 left-0 hidden w-64 max-w-[75vw] border-r bg-background py-8 lg:flex;
+      @apply sticky bottom-0 left-0 hidden h-full max-w-[75vw] flex-col items-start gap-8 overflow-y-auto border-r bg-background py-8 pr-8 lg:flex;
+      @apply scrollbar scrollbar-track-transparent scrollbar-thumb-accent scrollbar-thumb-rounded-full scrollbar-w-2 hover:scrollbar-thumb-accent-hover;
 
       --headers: calc(var(--header-height, 0px) + var(--subheader-height, 0px));
       top: var(--headers);
       width: var(--sidebar-width);
-      max-height: calc(100vh - var(--headers));
+      height: calc(100vh - var(--headers));
 
       &,
       & ~ * {
         @media (min-width: 1024px) {
-          --sidebar-width: 16rem;
+          --sidebar-width: 14rem;
         }
-      }
-
-      .container {
-        @apply flex h-full w-full grow flex-col items-start gap-8 overflow-y-auto;
-        /* @apply scrollbar scrollbar-track-transparent scrollbar-thumb-accent scrollbar-thumb-rounded-full scrollbar-w-2 hover:scrollbar-thumb-accent-hover; */
       }
 
       .sidebar-menu {

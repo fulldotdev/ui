@@ -12,6 +12,7 @@ export const ctaSchema = z
     paragraph: paragraphSchema.shape.text,
     buttons: buttonSchema.array().optional(),
     image: imageSchema.optional(),
+    dark: z.boolean().optional(),
   })
   .strict()
 

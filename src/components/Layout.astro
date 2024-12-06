@@ -1,0 +1,35 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import Head from 'fulldev-ui/components/Head.astro'
+import type { HeadSchema } from 'fulldev-ui/schemas/components/head'
+
+type Props = HTMLAttributes<'body'> & {
+  head?: HeadSchema
+}
+
+const { head, ...rest } = Astro.props
+---
+
+<!doctype html>
+<html>
+  <Head {...head} />
+  <body {...rest}>
+    <slot />
+    <style is:global>
+      @layer fulldev {
+        html {
+          @apply w-full font-sans text-base leading-relaxed text-foreground;
+          color-scheme: light;
+        }
+
+        .dark {
+          color-scheme: dark;
+        }
+
+        body {
+          @apply w-full bg-background font-sans text-foreground;
+        }
+      }
+    </style>
+  </body>
+</html>
