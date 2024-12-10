@@ -1,22 +1,15 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
+import Icon from 'fulldev-ui/components/Icon.astro'
 import Label from 'fulldev-ui/components/Label.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
-import Icon from './Icon.astro'
+import type { CheckboxSchema } from 'fulldev-ui/schemas/checkbox'
 
-interface Props extends GlobalProps, HTMLAttributes<'input'> {
-  label?: ComponentProps<typeof Label>['text']
-}
+interface Props
+  extends Omit<HTMLAttributes<'input'>, 'name' | 'size' | 'id' | 'value'>,
+    CheckboxSchema {}
 
-const {
-  label,
-  name = label,
-  id = name,
-  type = 'text',
-  size = 'md',
-  ...rest
-} = Astro.props
+const { label, name = label, id = name, size = 'md', ...rest } = Astro.props
 ---
 
 <Element
@@ -37,6 +30,7 @@ const {
   <Icon
     class="checkbox-icon"
     name="check"
+    {size}
   />
   <Label
     for={id}

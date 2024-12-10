@@ -1,14 +1,16 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
 import Label from 'fulldev-ui/components/Label.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
+import type { InputSchema } from 'fulldev-ui/schemas/input.ts'
 
-interface Props extends GlobalProps, HTMLAttributes<'input'> {
-  label?: ComponentProps<typeof Label>['text']
-  icon?: ComponentProps<typeof Icon>['name']
-}
+interface Props
+  extends Omit<
+      HTMLAttributes<'input'>,
+      'name' | 'size' | 'id' | 'value' | 'type' | 'placeholder'
+    >,
+    InputSchema {}
 
 const {
   label,
@@ -16,11 +18,8 @@ const {
   name = label || placeholder,
   id = name,
   type = 'text',
-  min,
-  max,
-  value,
-  step,
   size = 'md',
+  value,
   icon,
   ...rest
 } = Astro.props
@@ -38,7 +37,10 @@ const {
     text={label}
     {size}
   />
-  <Icon name={icon} />
+  <Icon
+    name={icon}
+    {size}
+  />
   <Element
     class:list="input-input"
     as="input"
@@ -47,10 +49,7 @@ const {
     {name}
     {placeholder}
     {type}
-    {min}
-    {max}
     {value}
-    {step}
   />
 </Element>
 
