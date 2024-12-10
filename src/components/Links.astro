@@ -1,42 +1,21 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import Element from 'fulldev-ui/components/Element.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
-import Link from './Link.astro'
+import type { ComponentProps } from 'astro/types'
+import Link from 'fulldev-ui/components/Link.astro'
 
-interface Props extends GlobalProps, HTMLAttributes<'div'> {
-  variant?: ComponentProps<typeof Link>['variant']
+interface Props extends ComponentProps<typeof Link> {
+  link?: ComponentProps<typeof Link> | undefined
   links?: ComponentProps<typeof Link>[] | undefined
-  direction?: 'row' | 'column' | undefined
 }
 
-const { variant = 'muted', links, size, ...rest } = Astro.props
+const { variant = 'muted', link, links, ...rest } = Astro.props
 ---
 
-<Element
-  class:list="links"
-  {...rest}
->
-  {
-    links?.map((link) => (
-      <Link
-        {variant}
-        {size}
-        {...link}
-      />
-    ))
-  }
-  <slot />
-</Element>
-
-<style is:global>
-  @layer fulldev {
-    .links {
-      @apply flex items-center justify-stretch gap-x-6 gap-y-2;
-
-      &.direction-column {
-        @apply flex-col items-start;
-      }
-    }
-  }
-</style>
+{
+  [link, ...(links || [])].filter(Boolean).map((link) => (
+    <Link
+      {variant}
+      {...rest}
+      {...link}
+    />
+  ))
+}

@@ -1,23 +1,29 @@
 ---
 import type { ComponentProps } from 'astro/types'
+import { getEntries } from 'astro:content'
 import Card from 'fulldev-ui/components/Card.astro'
 import Container from 'fulldev-ui/components/Container.astro'
+import Grid from 'fulldev-ui/components/Grid.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
-import Image from 'fulldev-ui/components/Image.astro'
+import List from 'fulldev-ui/components/List.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Section from 'fulldev-ui/components/Section.astro'
-import Stack from 'fulldev-ui/components/Stack.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Writeup from 'fulldev-ui/components/Writeup.astro'
 import type { BlockSchema } from 'fulldev-ui/schemas/components/block'
+import { getHref } from 'fulldev-ui/utils/getHref'
 
 interface Props extends ComponentProps<typeof Section>, BlockSchema {}
 
-const { tagline, heading, paragraph, cards, ...rest } = Astro.props
+const { tagline, heading, paragraph, pages, ...rest } = Astro.props
+
+const entries = pages && (await getEntries(pages))
+
+console.log({ entries })
 ---
 
 <Section
-  class:list="colleagues-1"
+  class:list="jobs-1"
   {...rest}
 >
   <Container>
@@ -32,41 +38,37 @@ const { tagline, heading, paragraph, cards, ...rest } = Astro.props
       />
       <Paragraph text={paragraph} />
     </Writeup>
-    <Stack>
+    <Grid>
       {
-        cards?.map(({ image, heading, paragraph }) => (
-          <Card>
-            <Image {...image} />
+        entries?.map(({ slug, data: { title, list } }) => (
+          <Card
+            class="jobs-1-card"
+            href={getHref(slug)}
+          >
             <Heading
-              as="h3"
-              size="xl"
-              text={heading}
+              as="h2"
+              size="lg"
+              text={title}
             />
-            <Paragraph text={paragraph} />
+            <List
+              size="sm"
+              items={list}
+            />
           </Card>
         ))
       }
-    </Stack>
+    </Grid>
   </Container>
 </Section>
 
 <style is:global>
   @layer fulldev {
-    .colleagues-1 {
+    .jobs-1 {
       .container {
         @apply flex flex-col items-center gap-16;
       }
-
       .card {
-        @apply mt-20 flex flex-col items-center gap-1 pt-0;
-      }
-
-      .image {
-        @apply -mt-20 mb-4 aspect-square max-w-40 rounded-full object-cover;
-      }
-
-      .icon {
-        @apply text-primary;
+        @apply flex flex-col gap-3;
       }
     }
   }

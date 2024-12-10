@@ -1,69 +1,71 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
+import { getCollection } from 'astro:content'
 import Footer from 'fulldev-ui/blocks/Footer.astro'
 import Header from 'fulldev-ui/blocks/Header.astro'
+import Intro1 from 'fulldev-ui/blocks/Intro1.astro'
+import Jobs1 from 'fulldev-ui/blocks/Jobs1.astro'
 import Container from 'fulldev-ui/components/Container.astro'
 import Element from 'fulldev-ui/components/Element.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
 import Layout from 'fulldev-ui/components/Layout.astro'
-import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Prose from 'fulldev-ui/components/Prose.astro'
 import Sidebar from 'fulldev-ui/components/Sidebar.astro'
-import Toc from 'fulldev-ui/components/Toc.astro'
 import type { PageSchema } from 'fulldev-ui/schemas/page.ts'
 
 interface Props extends ComponentProps<typeof Layout>, PageSchema {
+  slug: CollectionEntry<'pages'>['slug']
   render: CollectionEntry<'pages'>['render']
 }
 
-const { header, sidebar, render, title, description, footer } = Astro.props
+const { slug, header, sidebar, render, title, description, footer } =
+  Astro.props
 
 const { Content } = await render()
+
+const children = (
+  await getCollection('pages', ({ data }) =>
+    data.parents?.some((p) => p.slug.includes(slug))
+  )
+)?.map(({ collection, slug }) => ({ collection, slug }))
 ---
 
 <Layout
-  class:list="doc"
+  class:list="jobs"
   {...Astro.props}
 >
   <Header
     {...sidebar}
     {...header}
   />
-  <Container class:list="doc-container">
+  <Container class:list="jobs-container">
     <Sidebar {...sidebar} />
     <Element
-      class:list="doc-main"
+      class:list="jobs-main"
       as="main"
     >
+      <Intro1
+        heading={title}
+        paragraph={description}
+      />
+      <Jobs1 pages={children} />
       <Prose>
-        <Heading
-          as="h1"
-          size="4xl"
-          text={title}
-        />
-        <Paragraph
-          muted
-          size="lg"
-          text={description}
-        />
         <Content />
       </Prose>
-      <Toc {render} />
     </Element>
   </Container>
-  <Footer {...footer} />
 </Layout>
+<Footer {...footer} />
 
 <style is:global>
   @layer fulldev {
-    .doc {
-      .doc-container {
-        @apply flex gap-x-gutter;
+    .jobs {
+      .jobs-container {
+        @apply flex !pr-0;
       }
 
-      .doc-main {
-        @apply flex grow justify-evenly gap-x-gutter;
+      .jobs-main {
+        @apply flex w-full flex-col;
       }
     }
   }

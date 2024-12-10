@@ -2,12 +2,11 @@
 import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import type { SidebarSchema } from 'fulldev-ui/schemas/components/sidebar'
-import Heading from './Heading.astro'
-import Link from './Link.astro'
+import Menus from './Menus.astro'
 
 interface Props extends HTMLAttributes<'aside'>, SidebarSchema {}
 
-const { company, logo, menus, links, heading, themer, ...rest } = Astro.props
+const { menus, ...rest } = Astro.props
 ---
 
 <Element
@@ -15,37 +14,11 @@ const { company, logo, menus, links, heading, themer, ...rest } = Astro.props
   as="aside"
   {...rest}
 >
-  <Element class:list="sidebar-links">
-    {
-      links?.map((link) => (
-        <Link
-          variant="muted"
-          size="sm"
-          {...link}
-        />
-      ))
-    }
-  </Element>
-  {
-    menus?.map(({ heading, links }) => (
-      <Element class:list="sidebar-menu">
-        <Heading
-          text={heading}
-          size="sm"
-          as="h6"
-        />
-        <Element class:list="sidebar-links">
-          {links?.map((link) => (
-            <Link
-              variant="muted"
-              size="sm"
-              {...link}
-            />
-          ))}
-        </Element>
-      </Element>
-    ))
-  }
+  <Menus
+    size="sm"
+    menu={rest}
+    {menus}
+  />
 </Element>
 
 <style is:global>
@@ -64,14 +37,6 @@ const { company, logo, menus, links, heading, themer, ...rest } = Astro.props
         @media (min-width: 1024px) {
           --sidebar-width: 14rem;
         }
-      }
-
-      .sidebar-menu {
-        @apply flex flex-col gap-3;
-      }
-
-      .sidebar-links {
-        @apply flex flex-col gap-2;
       }
     }
   }

@@ -1,59 +1,38 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
-import type Link from './Link.astro'
+import type { MenuSchema } from 'fulldev-ui/schemas/components/menu'
 import Links from './Links.astro'
 
-interface Props extends GlobalProps, HTMLAttributes<'div'> {
-  direction?: 'row' | 'column'
-  groups?:
-    | {
-        heading?: ComponentProps<typeof Heading>['text']
-        links?: ComponentProps<typeof Link>[]
-      }[]
-    | undefined
-}
+interface Props extends HTMLAttributes<'div'>, MenuSchema {}
 
-const { direction = 'column', groups, size = 'md', ...rest } = Astro.props
+const { size = 'md', heading, links, ...rest } = Astro.props
 ---
 
 <Element
   class:list="menu"
-  {direction}
-  {size}
   {...rest}
 >
-  {
-    groups?.map(({ heading, links }) => (
-      <Element class:list="menu-group">
-        <Heading
-          level={6}
-          text={heading}
-          {size}
-        />
-        <Links
-          direction="column"
-          {links}
-          {size}
-        />
-      </Element>
-    ))
-  }
+  <Heading
+    text={heading}
+    as="h6"
+    {size}
+  />
+  <Links
+    variant="muted"
+    {size}
+    {links}
+  />
 </Element>
 
 <style is:global>
   @layer fulldev {
     .menu {
-      @apply flex flex-col gap-6;
+      @apply flex flex-col gap-2;
 
-      .menu-group {
-        @apply flex flex-col gap-3;
-      }
-
-      &.direction-row {
-        @apply flex-row flex-wrap gap-12;
+      .heading {
+        @apply mb-1;
       }
     }
   }
