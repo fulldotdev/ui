@@ -43,6 +43,7 @@ export const blockSchema = z.object({
     .object({
       image: imageSchema.optional(),
       icon: iconSchema.shape.name,
+      rating: z.number().optional(),
       tagline: taglineSchema.shape.text,
       badge: badgeSchema.optional(),
       badges: badgeSchema.array().optional(),

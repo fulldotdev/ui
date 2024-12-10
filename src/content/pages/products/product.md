@@ -1,6 +1,6 @@
 ---
 title: Product
-categories: 
+parents: 
   - categories/category
 description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 price: 90

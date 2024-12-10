@@ -1,7 +1,7 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import Badge from 'fulldev-ui/components/Badge.astro'
-import Button from 'fulldev-ui/components/Button.astro'
+import Badges from 'fulldev-ui/components/Badges.astro'
+import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Container from 'fulldev-ui/components/Container.astro'
 import Group from 'fulldev-ui/components/Group.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
@@ -14,7 +14,8 @@ import type { BlockSchema } from 'fulldev-ui/schemas/components/block'
 
 interface Props extends ComponentProps<typeof Section>, BlockSchema {}
 
-const { badges, heading, paragraph, list, button, ...rest } = Astro.props
+const { badge, badges, heading, paragraph, list, button, buttons, ...rest } =
+  Astro.props
 ---
 
 <Section
@@ -24,14 +25,11 @@ const { badges, heading, paragraph, list, button, ...rest } = Astro.props
   <Container>
     <Writeup>
       <Group>
-        {
-          badges?.map((badge) => (
-            <Badge
-              size="sm"
-              {...badge}
-            />
-          ))
-        }
+        <Badges
+          size="sm"
+          {badge}
+          {badges}
+        />
       </Group>
       <Heading
         as="h1"
@@ -44,10 +42,12 @@ const { badges, heading, paragraph, list, button, ...rest } = Astro.props
         text={paragraph}
       />
       <List items={list} />
-      <Button
-        size="lg"
-        {...button}
-      />
+      <Group>
+        <Buttons
+          {button}
+          {buttons}
+        />
+      </Group>
     </Writeup>
     <Prose>
       <slot />
@@ -63,7 +63,7 @@ const { badges, heading, paragraph, list, button, ...rest } = Astro.props
       }
 
       .writeup {
-        @apply lg:top-sticky-16 lg:sticky lg:max-w-xl;
+        @apply lg:sticky lg:top-sticky-16 lg:max-w-xl;
       }
     }
   }

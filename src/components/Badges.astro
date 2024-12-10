@@ -1,43 +1,20 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import Element from 'fulldev-ui/components/Element.astro'
+import type { ComponentProps } from 'astro/types'
 import Badge from './Badge.astro'
 
-interface Props extends HTMLAttributes<'div'> {
-  variant?: ComponentProps<typeof Badge>['variant']
-  size?: ComponentProps<typeof Badge>['size']
-  badges?: ComponentProps<typeof Badge>[] | undefined
+interface Props extends ComponentProps<typeof Badge> {
   badge?: ComponentProps<typeof Badge> | undefined
+  badges?: ComponentProps<typeof Badge>[] | undefined
 }
 
-const {
-  variant = 'outline',
-  size = 'md',
-  badges = [],
-  badge,
-  ...rest
-} = Astro.props
+const { badge, badges, ...rest } = Astro.props
 ---
 
-<Element
-  class:list="badges"
-  {...rest}
->
-  {
-    [badge, ...badges].filter(Boolean).map((badge) => (
-      <Badge
-        {variant}
-        {size}
-        {...badge}
-      />
-    ))
-  }
-</Element>
-
-<style is:global>
-  @layer fulldev {
-    .badges {
-      @apply inline-flex w-auto flex-wrap justify-stretch gap-1.5;
-    }
-  }
-</style>
+{
+  [badge, ...(badges || [])].filter(Boolean).map((badge) => (
+    <Badge
+      {...badge}
+      {...rest}
+    />
+  ))
+}

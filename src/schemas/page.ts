@@ -23,6 +23,7 @@ export const pageSchema = z
     soldout: z.boolean().optional(),
     head: headSchema.optional(),
     button: buttonSchema.optional(),
+    buttons: buttonSchema.array().optional(),
     banner: blockSchema.optional(),
     navigation: blockSchema.optional(),
     header: blockSchema.optional(),

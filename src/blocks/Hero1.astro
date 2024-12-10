@@ -3,6 +3,7 @@ import type { ComponentProps } from 'astro/types'
 import Badge from 'fulldev-ui/components/Badge.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Container from 'fulldev-ui/components/Container.astro'
+import Group from 'fulldev-ui/components/Group.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
@@ -13,8 +14,17 @@ import type { BlockSchema } from 'fulldev-ui/schemas/components/block'
 
 interface Props extends ComponentProps<typeof Section>, BlockSchema {}
 
-const { badge, tagline, heading, paragraph, buttons, image, ...rest } =
-  Astro.props
+const {
+  badge,
+  tagline,
+  heading,
+  paragraph,
+  content,
+  button,
+  buttons,
+  image,
+  ...rest
+} = Astro.props
 ---
 
 <Section
@@ -40,10 +50,14 @@ const { badge, tagline, heading, paragraph, buttons, image, ...rest } =
         size="xl"
         text={paragraph}
       />
-      <Buttons
-        {buttons}
-        size="lg"
-      />
+      <Fragment set:html={content} />
+      <Group>
+        <Buttons
+          size="lg"
+          {button}
+          {buttons}
+        />
+      </Group>
     </Writeup>
     <Image {...image} />
   </Container>

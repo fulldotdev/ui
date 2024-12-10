@@ -3,10 +3,10 @@ import type { ComponentProps } from 'astro/types'
 import Card from 'fulldev-ui/components/Card.astro'
 import Container from 'fulldev-ui/components/Container.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
-import Masonry from 'fulldev-ui/components/Masonry.astro'
+import Image from 'fulldev-ui/components/Image.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
-import Rating from 'fulldev-ui/components/Rating.astro'
 import Section from 'fulldev-ui/components/Section.astro'
+import Stack from 'fulldev-ui/components/Stack.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Writeup from 'fulldev-ui/components/Writeup.astro'
 import type { BlockSchema } from 'fulldev-ui/schemas/components/block'
@@ -17,7 +17,7 @@ const { tagline, heading, paragraph, cards, ...rest } = Astro.props
 ---
 
 <Section
-  class:list="reviews-1"
+  class:list="colleagues-1"
   {...rest}
 >
   <Container>
@@ -35,43 +35,37 @@ const { tagline, heading, paragraph, cards, ...rest } = Astro.props
         text={paragraph}
       />
     </Writeup>
-    <Masonry>
+    <Stack>
       {
-        cards?.map(({ rating, heading, paragraph }) => (
-          <Card class="reviews-1-card">
-            <Rating
-              size="sm"
-              score={rating}
-            />
+        cards?.map(({ image, heading, paragraph }) => (
+          <Card>
+            <Image {...image} />
             <Heading
               as="h3"
-              size="md"
+              size="xl"
               text={heading}
             />
-            <Paragraph
-              size="sm"
-              text={paragraph}
-            />
+            <Paragraph text={paragraph} />
           </Card>
         ))
       }
-    </Masonry>
+    </Stack>
   </Container>
 </Section>
 
 <style is:global>
   @layer fulldev {
-    .reviews-1 {
+    .colleagues-1 {
       .container {
         @apply flex flex-col items-center gap-16;
       }
 
-      .reviews-1-cards {
-        @apply grid grid-cols-1 gap-6 lg:grid-cols-3;
+      .card {
+        @apply mt-20 flex flex-col items-center gap-1 pt-0;
       }
 
-      .reviews-1-card {
-        @apply flex flex-col gap-3;
+      .image {
+        @apply -mt-20 mb-4 aspect-square max-w-40 rounded-full object-cover;
       }
 
       .icon {
