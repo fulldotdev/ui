@@ -165,8 +165,6 @@ export default function fulldevIntegration(
           const libDir = path.join(__dirname, '../../cloudcannon.config.yml')
           const userDir = path.join(process.cwd(), 'cloudcannon.config.yml')
 
-          console.log({ libDir, userDir })
-
           const libConfig = yaml.load(
             fs.readFileSync(path.resolve(libDir), 'utf8')
           )

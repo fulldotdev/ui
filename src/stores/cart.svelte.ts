@@ -70,7 +70,6 @@ export const closeCart = () => {
 }
 
 export const totalPrice = derived(cart, ($cart) => {
-  console.log('DERIVED', $cart)
   return $cart.length
   // return $cart.reduce(
   //   (acc, item) => acc + (item.price || 0) * (item.quantity || 0),
