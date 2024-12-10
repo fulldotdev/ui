@@ -1,51 +1,20 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import type { ComponentProps } from 'astro/types'
 import Channel from 'fulldev-ui/components/Channel.astro'
-import Element from 'fulldev-ui/components/Element.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-interface Props extends GlobalProps, HTMLAttributes<'div'> {
-  variant?: ComponentProps<typeof Channel>['variant']
-  size?: ComponentProps<typeof Channel>['size']
+interface Props extends ComponentProps<typeof Channel> {
   channel?: ComponentProps<typeof Channel> | undefined
   channels?: ComponentProps<typeof Channel>[] | undefined
 }
 
-const { channels = [], channel, variant, size, ...rest } = Astro.props
+const { channel, channels, ...rest } = Astro.props
 ---
 
-<Element
-  class:list="channels"
-  {size}
-  {...rest}
->
-  {
-    [channel, ...channels].filter(Boolean).map((channel) => (
-      <Channel
-        {variant}
-        {size}
-        {...channel}
-      />
-    ))
-  }
-</Element>
-
-<style is:global>
-  @layer fulldev {
-    .channels {
-      @apply flex flex-col gap-2.5;
-
-      &.size-sm {
-        @apply gap-2;
-      }
-
-      &.size-md {
-        @apply gap-2.5;
-      }
-
-      &.size-lg {
-        @apply gap-3;
-      }
-    }
-  }
-</style>
+{
+  [channel, ...(channels || [])].filter(Boolean).map((channel) => (
+    <Channel
+      {...rest}
+      {...channel}
+    />
+  ))
+}

@@ -1,41 +1,25 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import Element from 'fulldev-ui/components/Element.astro'
+import type { ComponentProps } from 'astro/types'
 import Social from 'fulldev-ui/components/Social.astro'
-import type { GlobalProps } from 'fulldev-ui/types/global-props'
 
-interface Props extends GlobalProps, HTMLAttributes<'div'> {
-  variant?: ComponentProps<typeof Social>['variant']
-  socials?: ComponentProps<typeof Social>['href'][] | undefined
+interface Props extends ComponentProps<typeof Social> {
+  social?:
+    | ComponentProps<typeof Social>
+    | ComponentProps<typeof Social>['href']
+    | undefined
+  socials?:
+    | (ComponentProps<typeof Social> | ComponentProps<typeof Social>['href'])[]
+    | undefined
 }
 
-const { variant = 'ghost', socials, size, ...rest } = Astro.props
+const { social, socials, ...rest } = Astro.props
 ---
 
-<Element
-  class:list="socials"
-  {variant}
-  {...rest}
->
-  {
-    socials?.map((social) => (
-      <Social
-        {variant}
-        {size}
-        href={social}
-      />
-    ))
-  }
-</Element>
-
-<style is:global>
-  @layer fulldev {
-    .socials {
-      @apply flex gap-2;
-
-      &.variant-ghost {
-        @apply gap-0;
-      }
-    }
-  }
-</style>
+{
+  [social, ...(socials || [])].filter(Boolean).map((social) => (
+    <Social
+      {...rest}
+      {...(typeof social === 'string' ? { href: social } : social)}
+    />
+  ))
+}

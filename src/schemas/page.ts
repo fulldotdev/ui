@@ -27,13 +27,11 @@ export const pageSchema = z
     banner: blockSchema.optional(),
     navigation: blockSchema.optional(),
     header: blockSchema.optional(),
-    blocks: blockSchema.array().optional(),
+    sections: blockSchema.array().optional(),
     subheader: blockSchema.array().optional(),
     sidebar: blockSchema.optional(),
     footer: blockSchema.optional(),
     parents: pathSchema('pages').array().optional(),
-    children: pathSchema('pages').array().optional(),
-    siblings: pathSchema('pages').array().optional(),
   })
   .strict()
 
