@@ -1,5 +1,5 @@
 import { z } from 'astro:content'
-import { imageSchema } from 'fulldev-ui/schemas/components/image.ts'
+import { imageSchema } from 'fulldev-ui/schemas/image.ts'
 
 export const avatarSchema = imageSchema
 

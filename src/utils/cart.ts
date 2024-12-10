@@ -1,4 +1,4 @@
-import { slugify } from './slugify'
+import { slugify } from './slugify.ts'
 
 export const generateProductId = (
   slug: string,

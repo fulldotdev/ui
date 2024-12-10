@@ -1,10 +1,10 @@
 import { z } from 'astro:content'
-import { buttonSchema } from 'fulldev-ui/schemas/components/button.ts'
-import { linkSchema } from 'fulldev-ui/schemas/components/link.ts'
-import { logoSchema } from 'fulldev-ui/schemas/components/logo.ts'
-import { menuSchema } from 'fulldev-ui/schemas/components/menu.ts'
-import { headingSchema } from './heading'
-import { socialSchema } from './social'
+import { buttonSchema } from 'fulldev-ui/schemas/button.ts'
+import { headingSchema } from 'fulldev-ui/schemas/heading.ts'
+import { linkSchema } from 'fulldev-ui/schemas/link.ts'
+import { logoSchema } from 'fulldev-ui/schemas/logo.ts'
+import { menuSchema } from 'fulldev-ui/schemas/menu.ts'
+import { socialSchema } from 'fulldev-ui/schemas/social.ts'
 
 export const headerSchema = z
   .object({

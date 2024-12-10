@@ -1,10 +1,10 @@
 import { z } from 'astro:content'
-import { blockSchema } from 'fulldev-ui/schemas/components/block.ts'
-import { buttonSchema } from 'fulldev-ui/schemas/components/button.ts'
-import { headSchema } from 'fulldev-ui/schemas/components/head.ts'
-import { imageSchema } from 'fulldev-ui/schemas/components/image.ts'
-import { priceSchema } from 'fulldev-ui/schemas/components/price.ts'
-import pathSchema from 'fulldev-ui/schemas/utils/pathSchema.ts'
+import { blockSchema } from 'fulldev-ui/schemas/block.ts'
+import { buttonSchema } from 'fulldev-ui/schemas/button.ts'
+import { headSchema } from 'fulldev-ui/schemas/head.ts'
+import { imageSchema } from 'fulldev-ui/schemas/image.ts'
+import { pathSchema } from 'fulldev-ui/schemas/path.ts'
+import { priceSchema } from 'fulldev-ui/schemas/price.ts'
 
 export const pageSchema = z
   .object({

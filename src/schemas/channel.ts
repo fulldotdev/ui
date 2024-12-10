@@ -1,18 +1,19 @@
 import { z } from 'astro:content'
-import { iconSchema } from './icon'
+import { headingSchema } from 'fulldev-ui/schemas/heading.ts'
+import { iconSchema } from 'fulldev-ui/schemas/icon.ts'
 
-export const badgeSchema = z
+export const channelSchema = z
   .object({
     icon: iconSchema.shape.name,
+    heading: headingSchema.shape.text,
     text: z.string().optional(),
     href: z.string().optional(),
-    target: z.literal('_blank').optional(),
     size: z.enum(['sm', 'md', 'lg']).default('md').optional(),
     variant: z
       .enum(['primary', 'secondary', 'outline', 'ghost'])
-      .default('outline')
+      .default('secondary')
       .optional(),
   })
   .strict()
 
-export type BadgeSchema = z.infer<typeof badgeSchema>
+export type ChannelSchema = z.infer<typeof channelSchema>

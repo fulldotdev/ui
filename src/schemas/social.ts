@@ -1,5 +1,5 @@
 import { z } from 'astro:content'
-import { iconSchema } from './icon'
+import { iconSchema } from 'fulldev-ui/schemas/icon.ts'
 
 export const socialSchema = z
   .object({

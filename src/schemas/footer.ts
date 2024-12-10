@@ -1,9 +1,9 @@
 import { z } from 'astro:content'
-import { channelSchema } from 'fulldev-ui/schemas/components/channel.ts'
-import { logoSchema } from 'fulldev-ui/schemas/components/logo.ts'
-import { menuSchema } from 'fulldev-ui/schemas/components/menu.ts'
-import { headingSchema } from './heading'
-import { paragraphSchema } from './paragraph'
+import { channelSchema } from 'fulldev-ui/schemas/channel.ts'
+import { headingSchema } from 'fulldev-ui/schemas/heading.ts'
+import { logoSchema } from 'fulldev-ui/schemas/logo.ts'
+import { menuSchema } from 'fulldev-ui/schemas/menu.ts'
+import { paragraphSchema } from 'fulldev-ui/schemas/paragraph.ts'
 
 export const footerSchema = z
   .object({
