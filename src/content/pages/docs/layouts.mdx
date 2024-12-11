@@ -1,0 +1,80 @@
+---
+_layout: doc
+title: Using Layouts
+description: Ready to use layouts and page generation.
+---
+
+## Regular usage
+
+```astro
+---
+import Page from 'fulldev-ui/layouts/Page.astro'
+---
+
+<Page
+  title="Your meta title"
+  description="Your meta description"
+  banner={{
+    text: 'This is a banner',
+  }}
+  header={{
+    logo: {
+      image: '/favicon/android-chrome-512x512.png',
+      text: 'Fulldev UI',
+    },
+    links: [{ text: 'Docs', href: '/docs/' }],
+    socials: [
+      'https://github.com/fulldotdev/ui',
+      'https://discord.gg/vXZqMbadm8',
+    ],
+  }}
+/>
+```
+
+## Dynamic page generation
+
+To generate pages dynamically, you need to enable page generation in your `astro.config.ts` file.
+
+```ts
+// astro.config.ts
+import { defineConfig } from 'astro/config'
+import fulldev from 'fulldev-ui/integration'
+
+export default defineConfig({
+  integrations: [
+    fulldev({
+      injectRoutes: true,
+    }),
+  ],
+})
+```
+
+### Configuring collections
+
+There are two types of collections:
+
+1. `pages`: Used for generating pages and/or cards.
+2. `layouts`: Default values that can be referenced by pages
+
+Create a content collections config file at `src/content/config.ts`, and add the following content:
+
+```ts
+// src/content/config.ts
+import { defineCollection } from 'astro:content'
+import { pageSchema } from 'fulldev-ui/schemas/page.ts'
+
+export const collections = {
+  pages: defineCollection({
+    type: 'content',
+    schema: pageSchema,
+  }),
+  layouts: defineCollection({
+    type: 'data',
+    schema: pageSchema,
+  }),
+}
+```
+
+#### Pages
+
+Please reference `fulldev-ui/schemas/page.ts` for more information on the page schema.

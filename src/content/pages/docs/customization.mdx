@@ -4,9 +4,11 @@ title: Customization
 description: Customize styles and components.
 ---
 
-## CSS Variables
+## Overriding styles
 
-While outputting 100% vanilla CSS, the underlying theming variables are based on - and therefore fully compatible with - the popular [Shadcn/ui](https://ui.shadcn.com/).
+While fulldev-ui outputs 100% vanilla CSS, it is also fully compatible with [TailwindCSS](https://tailwindcss.com/) and [Shadcn/ui](https://ui.shadcn.com/).
+
+### Using CSS variables
 
 ###### Default colors for backgrounds and text
 
@@ -74,7 +76,7 @@ While outputting 100% vanilla CSS, the underlying theming variables are based on
 --radius: 0.5rem;
 ```
 
-### Dark mode
+#### Dark mode
 
 Dark mode colors can be customized by adding them within the `.dark` class:
 
@@ -88,17 +90,15 @@ Dark mode colors can be customized by adding them within the `.dark` class:
 }
 ```
 
-## Overwriting styles
+### Using vanilla CSS
 
 Components use simple CSS classes that match their names. For example:
 
 - `<Button/>` uses the class `.button`
 - `<Button variant="secondary"/>` adds `.variant-secondary`
-- `<Card panel={true}/>` or `<Card panel />` adds `.panel`
+- `<Heading muted/>` adds `.muted`
 
-### Using vanilla CSS
-
-Write your own CSS wihtin an Astro component, or anywhere else in your project.
+You can then simply override the styles in your own CSS file like this:
 
 The plugin [postcss-nesting](https://github.com/csstools/postcss-plugins/tree/main/plugins/postcss-nesting) is pre-installed so you can use the `&` operator to nest your styles.
 
@@ -110,22 +110,21 @@ import Button from 'fulldev-ui/components/Button.astro'
 <Button>Button</Button>
 <Button variant="secondary">Secondary</Button>
 
-<style>
+<style is:global>
   .button {
     border-radius: 999px;
 
     &.variant-secondary {
-      border: 1px solid rgba(0, 0, 0, 0.3);
+      border: 1px solid hsl(var(--primary));
+      background-color: transparent;
     }
   }
 </style>
 ```
 
-### Using Tailwind
+### Using tailwind classes
 
-Using Tailwind is **completely optional**, but since all styles match Tailwind's utility values, they work seamlessly together.
-
-Tailwind is pre-installed, so your can use either classes or the `@apply` directive out of the box.
+Tailwind is pre-installed. You don't have to use it, but you can.
 
 ```astro live
 ---
@@ -133,16 +132,52 @@ import Button from 'fulldev-ui/components/Button.astro'
 ---
 
 <Button class="rounded-full">Button</Button>
+<Button variant="secondary" class="border border-primary bg-transparent">
+  Secondary
+</Button>
+```
+
+### Using Tailwind @apply
+
+```astro live
+---
+import Button from 'fulldev-ui/components/Button.astro'
+---
+
+<Button>Button</Button>
+<Button variant="secondary"> Secondary </Button>
 
 <style>
   .button {
     @apply rounded-full;
+
+    &.variant-secondary {
+      @apply border border-primary bg-transparent;
+    }
   }
 </style>
 ```
 
-## Customizing components
+## Overriding components
 
-Components can be copied from the repository and customized, without breaking imports.
+All components can be overridden by defining a new path in the integration:
 
-The repositiory is setup like a regular Astro project, so it easy to find your way around, as long as you have basic knowledge of Astro.
+```ts
+// astro.config.ts
+import { defineConfig } from 'astro/config'
+import fulldev from 'fulldev-ui/integration'
+
+export default defineConfig({
+  integrations: [
+    fulldev({
+      override: {
+        Button: 'src/components/Button.astro',
+      },
+    }),
+  ],
+})
+```
+
+Everywhere where the `Button` component is imported, the new component will be used instead.
+
+This not only works for .astro files, but for all files in the entire library. Please check the [repository](https://github.com/fulldotdev/ui) to see what you can override.
