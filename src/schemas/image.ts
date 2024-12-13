@@ -25,16 +25,20 @@ import { z } from 'astro:content'
 //   )
 //   .optional()
 
+const image = z
+  .object({
+    src: z.string(),
+    alt: z.string(),
+    width: z.number(),
+    height: z.number(),
+  })
+  .strict()
+
 export const imageSchema = z
   .preprocess(
     (data: unknown) => (typeof data === 'string' ? { src: data } : data),
-    z
-      .object({
-        src: z.string().optional(),
-        alt: z.string().optional(),
-        width: z.number().optional(),
-        height: z.number().optional(),
-      })
-      .strict()
+    image
   )
   .optional()
+
+export type ImageSchema = z.infer<typeof image>

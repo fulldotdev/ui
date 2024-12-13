@@ -3,15 +3,15 @@ import type { ComponentProps } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
 import Footer from 'fulldev-ui/blocks/Footer.astro'
 import Header from 'fulldev-ui/blocks/Header.astro'
-import Container from 'fulldev-ui/components/Container.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
-import Layout from 'fulldev-ui/components/Layout.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
-import Prose from 'fulldev-ui/components/Prose.astro'
 import Sidebar from 'fulldev-ui/components/Sidebar.astro'
 import Toc from 'fulldev-ui/components/Toc.astro'
 import type { PageSchema } from 'fulldev-ui/schemas/page.ts'
+import Container from 'fulldev-ui/structures/Container.astro'
+import Layout from 'fulldev-ui/structures/Layout.astro'
+import Prose from 'fulldev-ui/structures/Prose.astro'
 
 interface Props extends ComponentProps<typeof Layout>, PageSchema {
   render: CollectionEntry<'pages'>['render']
@@ -49,10 +49,14 @@ const { Content, headings } = await render()
         />
         <Content />
       </Prose>
-      <Toc
-        {title}
-        {headings}
-      />
+      {
+        headings?.length > 0 && (
+          <Toc
+            {title}
+            {headings}
+          />
+        )
+      }
     </Element>
   </Container>
   <Footer {...footer} />
@@ -67,6 +71,9 @@ const { Content, headings } = await render()
 
       .doc-main {
         @apply flex grow items-start justify-evenly gap-x-gutter py-8;
+        max-width: calc(
+          100% - var(--sidebar-width) - clamp(16px, 4vw, 32px)
+        ) !important;
       }
 
       .toc {

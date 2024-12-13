@@ -70,7 +70,7 @@ export default function fulldevIntegration(
             sitemap(),
             robotsTxt(),
             liveCode({
-              layout: '/src/components/Code.astro',
+              layout: '/src/structures/Code.astro',
             }),
           ],
           vite: {
