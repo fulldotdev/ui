@@ -7,7 +7,7 @@ import { pathSchema } from 'fulldev-ui/schemas/path.ts'
 
 export const pageSchema = z
   .object({
-    _layout: z.string().default('Page').optional(),
+    _layout: z.string().optional(),
     _schema: z.string().optional(),
     href: z.string().optional(),
     draft: z.boolean().optional(),

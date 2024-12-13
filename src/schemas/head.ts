@@ -8,7 +8,7 @@ export const headSchema = z
     title: z.string().optional(),
     description: z.string().optional(),
     image: imageSchema.optional(),
-    theme: z.enum(['light', 'dark', 'system']).default('light').optional(),
+    theme: z.enum(['light', 'dark', 'system']).optional(),
     favicon: z.string().optional(),
     company: z.string().optional(),
     scripts: z.string().array().optional(),

@@ -8,7 +8,7 @@ export const badgeSchema = z
     text: z.string().optional(),
     href: z.string().optional(),
     target: z.literal('_blank').optional(),
-    size: z.enum(['sm', 'md', 'lg']).default('md').optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
     variant: z.enum(['primary', 'secondary', 'outline']).optional(),
   })
   .strict() satisfies z.ZodType<ComponentProps<typeof Badge>>

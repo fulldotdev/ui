@@ -8,6 +8,6 @@ export const checkboxSchema = z
     label: z.string().optional(),
     id: z.string().optional(),
     value: z.string().optional(),
-    size: z.enum(['sm', 'md', 'lg']).default('md').optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
   })
   .strict() satisfies z.ZodType<ComponentProps<typeof Checkbox>>

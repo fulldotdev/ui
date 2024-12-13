@@ -1,4 +1,6 @@
+import type { ComponentProps } from 'astro/types'
 import { z } from 'astro:content'
+import Channel from 'fulldev-ui/components/Channel.astro'
 
 export const channelSchema = z
   .object({
@@ -6,12 +8,7 @@ export const channelSchema = z
     heading: z.string().optional(),
     text: z.string().optional(),
     href: z.string().optional(),
-    size: z.enum(['sm', 'md', 'lg']).default('md').optional(),
-    variant: z
-      .enum(['primary', 'secondary', 'outline', 'ghost'])
-      .default('secondary')
-      .optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    variant: z.enum(['secondary', 'outline']).optional(),
   })
-  .strict()
-
-export type ChannelSchema = z.infer<typeof channelSchema>
+  .strict() satisfies z.ZodType<ComponentProps<typeof Channel>>
