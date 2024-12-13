@@ -1,9 +1,8 @@
 import { z } from 'astro:content'
-import { iconSchema } from 'fulldev-ui/schemas/icon.ts'
 
 export const buttonSchema = z
   .object({
-    icon: iconSchema.shape.name,
+    icon: z.string().optional(),
     text: z.string().optional(),
     href: z.string().optional(),
     target: z.literal('_blank').optional(),

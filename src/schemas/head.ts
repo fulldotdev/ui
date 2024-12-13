@@ -1,4 +1,6 @@
+import type { ComponentProps } from 'astro/types'
 import { z } from 'astro:content'
+import type Head from 'fulldev-ui/components/Head.astro'
 import { imageSchema } from 'fulldev-ui/schemas/image.ts'
 
 export const headSchema = z
@@ -12,6 +14,4 @@ export const headSchema = z
     scripts: z.string().array().optional(),
     code: z.string().optional(),
   })
-  .strict()
-
-export type HeadSchema = z.infer<typeof headSchema>
+  .strict() satisfies z.ZodType<ComponentProps<typeof Head>>

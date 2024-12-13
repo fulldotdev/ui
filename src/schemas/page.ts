@@ -3,9 +3,7 @@ import { blockSchema } from 'fulldev-ui/schemas/block.ts'
 import { buttonSchema } from 'fulldev-ui/schemas/button.ts'
 import { headSchema } from 'fulldev-ui/schemas/head.ts'
 import { imageSchema } from 'fulldev-ui/schemas/image.ts'
-import { listSchema } from 'fulldev-ui/schemas/list.ts'
 import { pathSchema } from 'fulldev-ui/schemas/path.ts'
-import { priceSchema } from 'fulldev-ui/schemas/price.ts'
 
 export const pageSchema = z
   .object({
@@ -15,13 +13,13 @@ export const pageSchema = z
     draft: z.boolean().optional(),
     title: z.string().optional(),
     description: z.string().optional(),
-    list: listSchema.shape.items,
-    image: imageSchema.optional(),
-    images: imageSchema.array().optional(),
-    price: priceSchema.shape.amount,
+    list: z.string().array().optional(),
+    price: z.number().optional(),
+    soldout: z.boolean().optional(),
     order: z.number().optional(),
     variants: z.record(z.string(), z.string().array()).optional(),
-    soldout: z.boolean().optional(),
+    image: imageSchema.optional(),
+    images: imageSchema.array().optional(),
     head: headSchema.optional(),
     button: buttonSchema.optional(),
     buttons: buttonSchema.array().optional(),

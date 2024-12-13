@@ -1,33 +1,24 @@
 ---
-import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import type { ButtonSchema } from 'fulldev-ui/schemas/button.ts'
 
 interface Props
   extends HTMLAttributes<'button'>,
-    HTMLAttributes<'label'>,
-    Omit<HTMLAttributes<'a'>, 'href' | 'target'>,
-    ButtonSchema {
-  as?: HTMLTag
-  type?: HTMLAttributes<'button'>['type'] & HTMLAttributes<'a'>['type']
+    Omit<HTMLAttributes<'a'>, 'type'>,
+    HTMLAttributes<'label'> {
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
+  text?: string | undefined
+  icon?: string | undefined
 }
 
-const {
-  href,
-  as = href ? 'a' : 'button',
-  variant = 'primary',
-  size = 'md',
-  text,
-  icon,
-  ...rest
-} = Astro.props
+const { variant = 'primary', size = 'md', text, icon, ...rest } = Astro.props
 ---
 
 <Element
   class:list={['button']}
-  {as}
-  {href}
+  as={rest.href ? 'a' : rest.for ? 'label' : 'button'}
   {variant}
   {size}
   {...rest}

@@ -1,31 +1,22 @@
 ---
-import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import type { LinkSchema } from 'fulldev-ui/schemas/link'
 
-interface Props
-  extends Omit<HTMLAttributes<'a'>, 'href' | 'target'>,
-    LinkSchema {
-  as?: HTMLTag
+interface Props extends HTMLAttributes<'a'> {
+  variant?: 'primary' | 'underline' | 'muted' | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
+  text?: string | undefined
+  icon?: string | undefined
 }
 
-const {
-  as = 'a',
-  variant = 'muted',
-  size = 'md',
-  href,
-  text,
-  icon,
-  ...rest
-} = Astro.props
+const { variant = 'muted', size = 'md', text, icon, ...rest } = Astro.props
 ---
 
 <Element
   class:list="link"
-  current={`/${Astro.params.page}/` === href}
-  {as}
-  {href}
+  as="a"
+  current={`/${Astro.params.page}/` === rest.href}
   {variant}
   {size}
   {...rest}
@@ -60,6 +51,10 @@ const {
 
       &.size-sm {
         @apply text-sm;
+      }
+
+      &.size-md {
+        @apply text-base;
       }
 
       &.size-lg {

@@ -1,33 +1,21 @@
 ---
-import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import type { BadgeSchema } from 'fulldev-ui/schemas/badge'
 
-interface Props
-  extends HTMLAttributes<'button'>,
-    Omit<HTMLAttributes<'a'>, 'href' | 'target'>,
-    BadgeSchema {
-  as?: HTMLTag
-  type?: HTMLAttributes<'button'>['type'] & HTMLAttributes<'a'>['type']
+interface Props extends HTMLAttributes<'a'>, HTMLAttributes<'div'> {
+  variant?: 'primary' | 'secondary' | 'outline' | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
+  text?: string | undefined
+  icon?: string | undefined
 }
 
-const {
-  href,
-  as = href ? 'a' : 'button',
-  type = as === 'button' ? 'button' : undefined,
-  variant = 'outline',
-  size = 'md',
-  text,
-  icon,
-  ...rest
-} = Astro.props
+const { variant = 'outline', size = 'md', text, icon, ...rest } = Astro.props
 ---
 
 <Element
   class:list="badge"
-  {as}
-  {href}
+  as={rest.href ? 'a' : 'div'}
   {variant}
   {size}
   {...rest}

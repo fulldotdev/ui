@@ -1,4 +1,6 @@
+import type { ComponentProps } from 'astro/types'
 import { z } from 'astro:content'
+import type Image from 'fulldev-ui/components/Image.astro'
 
 // const imagePath = z.preprocess((data: unknown) => {
 //   if (typeof data === 'string') {
@@ -25,20 +27,11 @@ import { z } from 'astro:content'
 //   )
 //   .optional()
 
-const image = z
-  .object({
-    src: z.string(),
-    alt: z.string(),
-    width: z.number(),
-    height: z.number(),
-  })
-  .strict()
-
 export const imageSchema = z
-  .preprocess(
-    (data: unknown) => (typeof data === 'string' ? { src: data } : data),
-    image
-  )
-  .optional()
-
-export type ImageSchema = z.infer<typeof image>
+  .object({
+    src: z.string().optional(),
+    alt: z.string().optional(),
+    width: z.number().optional(),
+    height: z.number().optional(),
+  })
+  .strict() satisfies z.ZodType<ComponentProps<typeof Image>>

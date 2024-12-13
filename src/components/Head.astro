@@ -1,16 +1,26 @@
 ---
 import { AstroSeo } from '@astrolib/seo'
 import type { HTMLAttributes } from 'astro/types'
-import type { HeadSchema } from 'fulldev-ui/schemas/head'
+import type Image from 'fulldev-ui/components/Image.astro'
+import type { ComponentProps } from 'svelte'
 
-type Props = HTMLAttributes<'head'> & HeadSchema & {}
+type Props = HTMLAttributes<'head'> & {
+  title?: string | undefined
+  description?: string | undefined
+  image?: ComponentProps<typeof Image> | undefined
+  theme?: 'light' | 'dark' | 'system' | undefined
+  favicon?: string | undefined
+  company?: string | undefined
+  scripts?: string[] | undefined
+  code?: string | undefined
+}
 
-const { theme, title, description, image, code } = Astro.props
+const { theme, title, description, image, code, ...rest } = Astro.props
 
 const src = image?.src && Astro.url.origin + image.src
 ---
 
-<head>
+<head {...rest}>
   <meta charset="utf-8" />
   <meta
     content="width=device-width, initial-scale=1, viewport-fit=cover"

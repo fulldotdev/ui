@@ -1,30 +1,22 @@
 ---
-import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Image from 'fulldev-ui/components/Image.astro'
-import type { LogoSchema } from 'fulldev-ui/schemas/logo'
+import type { ComponentProps } from 'svelte'
 import Element from './Element.astro'
 
-interface Props
-  extends Omit<HTMLAttributes<'a'>, 'href'>,
-    HTMLAttributes<'div'>,
-    LogoSchema {
-  as?: HTMLTag
+interface Props extends HTMLAttributes<'a'>, HTMLAttributes<'div'> {
+  image?: ComponentProps<typeof Image> | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
+  text?: string | undefined
 }
 
-const {
-  href = '/',
-  as = href ? 'a' : 'div',
-  size = 'md',
-  image,
-  text,
-  ...rest
-} = Astro.props as Props
+const { href = '/', size = 'md', image, text, ...rest } = Astro.props as Props
 ---
 
 <Element
   class:list="logo"
+  as={href ? 'a' : 'div'}
   {href}
-  {as}
   {size}
   {...rest}
 >

@@ -1,17 +1,13 @@
+import type { ComponentProps } from 'astro/types'
 import { z } from 'astro:content'
-import { iconSchema } from 'fulldev-ui/schemas/icon.ts'
+import Input from 'fulldev-ui/components/Input.astro'
 
 export const inputSchema = z
   .object({
-    icon: iconSchema.shape.name,
-    name: z.string().optional(),
+    icon: z.string().optional(),
     label: z.string().optional(),
     placeholder: z.string().optional(),
-    id: z.string().optional(),
     value: z.string().optional(),
-    type: z.enum(['text', 'email', 'tel', 'url']).default('text').optional(),
-    size: z.enum(['sm', 'md', 'lg']).default('md').optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
   })
-  .strict()
-
-export type InputSchema = z.infer<typeof inputSchema>
+  .strict() satisfies z.ZodType<ComponentProps<typeof Input>>
