@@ -1,17 +1,13 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
+import Content1 from 'fulldev-ui/blocks/Content1.astro'
 import Footer from 'fulldev-ui/blocks/Footer.astro'
 import Header from 'fulldev-ui/blocks/Header.astro'
-import Element from 'fulldev-ui/components/Element.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
-import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Sidebar from 'fulldev-ui/components/Sidebar.astro'
-import Toc from 'fulldev-ui/components/Toc.astro'
 import type { PageSchema } from 'fulldev-ui/schemas/page.ts'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Layout from 'fulldev-ui/structures/Layout.astro'
-import Prose from 'fulldev-ui/structures/Prose.astro'
 
 type Props = ComponentProps<typeof Layout> &
   PageSchema & {
@@ -31,34 +27,15 @@ const { Content, headings } = await render()
     {...sidebar}
     {...header}
   />
-  <Container class:list="doc-container">
+  <Container>
     <Sidebar {...sidebar} />
-    <Element
-      class:list="doc-main"
-      as="main"
+    <Content1
+      heading={title}
+      paragraph={description}
+      {headings}
     >
-      <Prose>
-        <Heading
-          as="h1"
-          size="4xl"
-          text={title}
-        />
-        <Paragraph
-          muted
-          size="lg"
-          text={description}
-        />
-        <Content />
-      </Prose>
-      {
-        headings?.length > 0 && (
-          <Toc
-            {title}
-            {headings}
-          />
-        )
-      }
-    </Element>
+      <Content />
+    </Content1>
   </Container>
   <Footer {...footer} />
 </Layout>
@@ -66,19 +43,16 @@ const { Content, headings } = await render()
 <style is:global>
   @layer fulldev {
     .doc {
-      .doc-container {
-        @apply flex gap-x-gutter;
+      > .container {
+        @apply flex;
       }
 
-      .doc-main {
-        @apply flex grow items-start justify-evenly gap-x-gutter py-8;
-        max-width: calc(
-          100% - var(--sidebar-width) - clamp(16px, 4vw, 32px)
-        ) !important;
-      }
+      .content-1 {
+        @apply pt-8;
 
-      .toc {
-        @apply lg:top-sticky-8;
+        .toc {
+          @apply top-sticky-8;
+        }
       }
     }
   }
