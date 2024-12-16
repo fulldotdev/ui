@@ -1,0 +1,37 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
+
+interface Props extends HTMLAttributes<'aside'> {}
+
+const { ...rest } = Astro.props
+---
+
+<Element
+  class:list="sidebar"
+  as="aside"
+  {...rest}
+>
+  <slot />
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .sidebar {
+      @apply top-header sticky shrink-0 grow flex-col items-start gap-8 overflow-y-auto bg-background p-8 first:border-r last:border-l lg:flex;
+      @apply scrollbar scrollbar-track-transparent scrollbar-thumb-accent scrollbar-thumb-rounded-full scrollbar-w-2 hover:scrollbar-thumb-accent-hover;
+
+      top: var(--header-height);
+      width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      height: calc(100vh - var(--header-height, 0px));
+
+      &,
+      & ~ * {
+        @media (min-width: 1024px) {
+          --sidebar-width: 16rem;
+        }
+      }
+    }
+  }
+</style>

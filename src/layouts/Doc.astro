@@ -1,13 +1,17 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
-import Content1 from 'fulldev-ui/blocks/Content1.astro'
 import Footer from 'fulldev-ui/blocks/Footer.astro'
 import Header from 'fulldev-ui/blocks/Header.astro'
-import Sidebar from 'fulldev-ui/components/Sidebar.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Menu from 'fulldev-ui/components/Menu.astro'
+import Menus from 'fulldev-ui/components/Menus.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import type { PageSchema } from 'fulldev-ui/schemas/page.ts'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Layout from 'fulldev-ui/structures/Layout.astro'
+import Prose from 'fulldev-ui/structures/Prose.astro'
+import Sidebar from 'fulldev-ui/structures/Sidebar.astro'
 
 type Props = ComponentProps<typeof Layout> &
   PageSchema & {
@@ -17,6 +21,16 @@ type Props = ComponentProps<typeof Layout> &
 const { header, sidebar, render, title, description, footer } = Astro.props
 
 const { Content, headings } = await render()
+
+const filteredHeadings = headings?.filter(
+  (heading: any) => heading.depth >= 2 && heading.depth <= 4
+)
+
+const links = filteredHeadings?.map((button: any) => ({
+  text: button.text,
+  href: `#${button.slug}`,
+  class: `depth-${button.depth}`,
+}))
 ---
 
 <Layout
@@ -27,15 +41,30 @@ const { Content, headings } = await render()
     {...sidebar}
     {...header}
   />
-  <Container>
-    <Sidebar {...sidebar} />
-    <Content1
-      heading={title}
-      paragraph={description}
-      {headings}
-    >
-      <Content />
-    </Content1>
+  <Container as="main">
+    <Sidebar>
+      <Menus menus={sidebar?.menus} />
+    </Sidebar>
+    <Container>
+      <Prose>
+        <Heading
+          size="4xl"
+          as="h1"
+          text={title}
+        />
+        <Paragraph
+          muted
+          text={description}
+        />
+        <Content />
+      </Prose>
+    </Container>
+    <Sidebar class:list="doc-toc">
+      <Menu
+        heading={title}
+        {links}
+      />
+    </Sidebar>
   </Container>
   <Footer {...footer} />
 </Layout>
@@ -43,16 +72,20 @@ const { Content, headings } = await render()
 <style is:global>
   @layer fulldev {
     .doc {
-      > .container {
-        @apply flex;
+      main {
+        @apply flex w-full items-start justify-between !px-0;
       }
 
-      .content-1 {
-        @apply pt-8;
+      .sidebar {
+        @apply hidden lg:flex;
+      }
 
-        .toc {
-          @apply top-sticky-8;
-        }
+      .doc-toc {
+        @apply hidden xl:flex;
+      }
+
+      .prose {
+        @apply mx-auto py-8;
       }
     }
   }

@@ -16,6 +16,7 @@ export default {
         gutter: 'clamp(16px, 4vw, 32px)',
         container: 'var(--container, 1536px)',
         hero: 'calc(100vh - var(--header-height, 0px) - var(--subheader-height, 0px) - var(--banner-height, 0px))',
+        header: 'var(--header-height, 0px)',
         'sticky-8':
           'calc(var(--header-height, 0px) + var(--subheader-height, 0px) + 2rem)',
         'sticky-16':
