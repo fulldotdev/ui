@@ -4,12 +4,14 @@ import type { CollectionEntry } from 'astro:content'
 import Button from 'fulldev-ui/components/Button.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
 import List from 'fulldev-ui/components/List.astro'
 import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Card from 'fulldev-ui/structures/Card.astro'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Matrix from 'fulldev-ui/structures/Matrix.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
+import Writeup from 'fulldev-ui/structures/Writeup.astro'
 import { getHref } from 'fulldev-ui/utils/getHref'
 
 interface Props extends ComponentProps<typeof Section>, BlockSchema {
@@ -20,11 +22,11 @@ const { heading, button, pages, ...rest } = Astro.props
 ---
 
 <Section
-  class:list="jobs-1"
+  class:list="industries-1"
   {...rest}
 >
   <Container>
-    <Element class:list="jobs-1-segment">
+    <Element class:list="industries-1-segment">
       <Heading
         size="3xl"
         text={heading}
@@ -35,22 +37,25 @@ const { heading, button, pages, ...rest } = Astro.props
         {...button}
       />
     </Element>
-    <Matrix>
+    <Matrix size="lg">
       {
-        pages?.map(({ slug, data: { title, list } }) => (
+        pages?.map(({ slug, data: { title, list, image } }) => (
           <Card
-            class="jobs-1-card"
+            class="industries-1-card"
             href={getHref(slug)}
           >
-            <Heading
-              as="h2"
-              size="lg"
-              text={title}
-            />
-            <List
-              size="sm"
-              items={list}
-            />
+            <Image {...image} />
+            <Writeup>
+              <Heading
+                as="h2"
+                size="lg"
+                text={title}
+              />
+              <List
+                size="sm"
+                items={list}
+              />
+            </Writeup>
           </Card>
         ))
       }
@@ -60,17 +65,21 @@ const { heading, button, pages, ...rest } = Astro.props
 
 <style is:global>
   @layer fulldev {
-    .jobs-1 {
+    .industries-1 {
       .container {
         @apply flex flex-col gap-12;
       }
 
-      .jobs-1-segment {
+      .industries-1-segment {
         @apply flex items-center justify-between gap-8;
       }
 
       .card {
-        @apply flex flex-col gap-3;
+        @apply overflow-hidden p-0;
+
+        .writeup {
+          @apply p-4;
+        }
       }
     }
   }

@@ -6,6 +6,9 @@ export default {
   darkMode: ['class'],
   content: ['src/**/*.{ts,tsx,astro,css,mdx}'],
   theme: {
+    container: {
+      screens: ['1536px'],
+    },
     extend: {
       spacing: {
         gutter: 'clamp(16px, 4vw, 32px)',
