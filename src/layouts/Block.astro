@@ -4,12 +4,13 @@ import type { CollectionEntry } from 'astro:content'
 import Footer from 'fulldev-ui/blocks/Footer.astro'
 import Header from 'fulldev-ui/blocks/Header.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
+import Menus from 'fulldev-ui/components/Menus.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
-import Sidebar from 'fulldev-ui/components/Sidebar.astro'
 import type { PageSchema } from 'fulldev-ui/schemas/page.ts'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Layout from 'fulldev-ui/structures/Layout.astro'
 import Prose from 'fulldev-ui/structures/Prose.astro'
+import Sidebar from 'fulldev-ui/structures/Sidebar.astro'
 
 type Props = ComponentProps<typeof Layout> &
   PageSchema & {
@@ -29,41 +30,51 @@ const { Content } = await render()
     {...sidebar}
     {...header}
   />
-  <Sidebar {...sidebar} />
-  <Container>
-    <Prose as="main">
-      <Heading
-        as="h1"
-        size="4xl"
-        text={title}
+  <Container
+    class:list="block-main"
+    as="main"
+  >
+    <Sidebar>
+      <Menus
+        size="sm"
+        menus={sidebar?.menus}
       />
-      <Paragraph
-        muted
-        size="lg"
-        text={description}
-      />
-      <Content />
-    </Prose>
+    </Sidebar>
+    <Container class:list="block-container">
+      <Prose class:list="block-prose">
+        <Heading
+          size="4xl"
+          as="h1"
+          text={title}
+        />
+        <Paragraph
+          muted
+          text={description}
+        />
+        <Content />
+      </Prose>
+    </Container>
   </Container>
-
   <Footer {...footer} />
 </Layout>
 
 <style is:global>
   @layer fulldev {
     .block {
-      > .container {
-        @apply flex !px-0;
+      .block-main {
+        @apply flex w-full items-start justify-between !px-0;
       }
 
-      main {
-        @apply w-full max-w-none py-8;
+      .block-container {
+        max-width: calc(100% - var(--sidebar-width)) !important;
+      }
 
-        max-width: calc(100% - var(--sidebar-width, 0px) - 32px);
+      .sidebar {
+        @apply hidden lg:flex;
+      }
 
-        /* .code .example {
-          @apply p-0;
-        } */
+      .block-prose {
+        @apply mx-auto max-w-none py-8;
       }
     }
   }

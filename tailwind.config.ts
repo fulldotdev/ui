@@ -6,21 +6,14 @@ export default {
   darkMode: ['class'],
   content: ['src/**/*.{ts,tsx,astro,css,mdx}'],
   theme: {
-    container: {
-      center: true,
-      padding: 'clamp(16px, 4vw, 32px)',
-      screens: ['1536px'],
-    },
     extend: {
       spacing: {
         gutter: 'clamp(16px, 4vw, 32px)',
         container: 'var(--container, 1536px)',
         hero: 'calc(100vh - var(--header-height, 0px) - var(--subheader-height, 0px) - var(--banner-height, 0px))',
         header: 'var(--header-height, 0px)',
-        'sticky-8':
-          'calc(var(--header-height, 0px) + var(--subheader-height, 0px) + 2rem)',
-        'sticky-16':
-          'calc(var(--header-height, 0px) + var(--subheader-height, 0px) + 4rem)',
+        'sticky-8': 'calc(var(--header-height, 0px)  + 2rem)',
+        'sticky-16': 'calc(var(--header-height, 0px)  + 4rem)',
       },
       colors: {
         border: 'hsl(var(--border))',
@@ -31,7 +24,8 @@ export default {
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
-          hover: 'hsl(var(--primary) / 85%)',
+          // hover: 'hsl(var(--primary) / 85%)',
+          hover: 'hsl(var(--primary) / 75%)',
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',

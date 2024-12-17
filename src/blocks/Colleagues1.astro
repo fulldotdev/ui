@@ -1,14 +1,14 @@
 ---
 import type { ComponentProps } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import type { BlockSchema } from 'fulldev-ui/schemas/block'
-import Card from 'fulldev-ui/structures/Card.astro'
 import Container from 'fulldev-ui/structures/Container.astro'
+import Matrix from 'fulldev-ui/structures/Matrix.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
-import Stack from 'fulldev-ui/structures/Stack.astro'
 import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
 interface Props extends ComponentProps<typeof Section>, BlockSchema {}
@@ -32,23 +32,21 @@ const { tagline, heading, paragraph, cards, ...rest } = Astro.props
       />
       <Paragraph text={paragraph} />
     </Writeup>
-    <Stack>
+    <Matrix>
       {
         cards?.map(({ image, heading, paragraph }) => (
-          <Card>
+          <Element class:list="colleagues-card">
             <Image {...image} />
-            <Writeup align="center">
-              <Heading
-                as="h3"
-                size="xl"
-                text={heading}
-              />
-              <Paragraph text={paragraph} />
-            </Writeup>
-          </Card>
+            <Heading
+              as="h3"
+              size="xl"
+              text={heading}
+            />
+            <Paragraph text={paragraph} />
+          </Element>
         ))
       }
-    </Stack>
+    </Matrix>
   </Container>
 </Section>
 
@@ -59,16 +57,16 @@ const { tagline, heading, paragraph, cards, ...rest } = Astro.props
         @apply flex flex-col items-center gap-16;
       }
 
-      .card {
-        @apply mt-20 flex flex-col items-center gap-1 pt-0;
+      .colleagues-cards {
+        @apply grid grid-cols-1 gap-8 lg:grid-cols-3;
+      }
+
+      .colleagues-card {
+        @apply flex flex-col items-center text-center;
       }
 
       .image {
-        @apply -mt-20 mb-4 aspect-square max-w-40 rounded-full object-cover;
-      }
-
-      .icon {
-        @apply text-primary;
+        @apply mb-4 aspect-square w-2/3 rounded-full object-cover;
       }
     }
   }
