@@ -1,37 +1,27 @@
 ---
+// Content left, image right, centered
 import type { ComponentProps } from 'astro/types'
-import Badges from 'fulldev-ui/components/Badges.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import List from 'fulldev-ui/components/List.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
-import Toc from 'fulldev-ui/components/Toc.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Group from 'fulldev-ui/structures/Group.astro'
 import Prose from 'fulldev-ui/structures/Prose.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 
-interface Props extends ComponentProps<typeof Section>, BlockSchema {
-  headings?: ComponentProps<typeof Toc>['headings']
+interface Props extends ComponentProps<typeof Section> {
+  tagline?: string | undefined
+  heading?: string | undefined
+  paragraph?: string | undefined
+  content?: string | undefined
+  image?: ComponentProps<typeof Image> | undefined
+  buttons?: ComponentProps<typeof Buttons>['buttons']
 }
 
-const {
-  tagline,
-  badge,
-  badges,
-  heading,
-  paragraph,
-  list,
-  button,
-  buttons,
-  image,
-  headings,
-  content,
-  ...rest
-} = Astro.props
+const { tagline, heading, paragraph, buttons, image, content, ...rest } =
+  Astro.props
 ---
 
 <Section
@@ -40,18 +30,9 @@ const {
 >
   <Container>
     <Prose>
-      <Group>
-        <Badges
-          {badges}
-          {badge}
-        />
-      </Group>
-      <Tagline
-        size="sm"
-        text={tagline}
-      />
+      <Tagline text={tagline} />
       <Heading
-        as="h1"
+        as="h2"
         size="4xl"
         text={heading}
       />
@@ -60,14 +41,10 @@ const {
         size="lg"
         text={paragraph}
       />
-      <List items={list} />
       <Fragment set:html={content} />
       <slot />
       <Group>
-        <Buttons
-          {buttons}
-          {button}
-        />
+        <Buttons {buttons} />
       </Group>
     </Prose>
     <Image {...image} />
@@ -78,12 +55,7 @@ const {
   @layer fulldev {
     .content-2 {
       .container {
-        @apply grid items-start gap-x-gutter gap-y-16 lg:grid-cols-2;
-      }
-
-      .prose,
-      .image {
-        @apply lg:sticky lg:top-sticky-16;
+        @apply grid items-center gap-x-gutter gap-y-16 lg:grid-cols-2;
       }
 
       .prose {

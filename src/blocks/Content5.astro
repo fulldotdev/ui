@@ -1,5 +1,5 @@
 ---
-// Heading etc left, image and content right, sticky
+// Content in 2 columns
 import type { ComponentProps } from 'astro/types'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
@@ -25,7 +25,7 @@ const { tagline, heading, paragraph, buttons, image, content, ...rest } =
 ---
 
 <Section
-  class:list="content-4"
+  class:list="content-5"
   {...rest}
 >
   <Container>
@@ -33,7 +33,7 @@ const { tagline, heading, paragraph, buttons, image, content, ...rest } =
       <Tagline text={tagline} />
       <Heading
         as="h2"
-        size="4xl"
+        size="5xl"
         text={heading}
       />
       <Paragraph
@@ -41,27 +41,31 @@ const { tagline, heading, paragraph, buttons, image, content, ...rest } =
         size="lg"
         text={paragraph}
       />
-      <Group>
-        <Buttons {buttons} />
-      </Group>
     </Prose>
-    <Prose>
-      <Image {...image} />
+    <Prose class:list="content-5-main">
       <Fragment set:html={content} />
       <slot />
     </Prose>
+    <Group>
+      <Buttons {buttons} />
+    </Group>
+    <Image {...image} />
   </Container>
 </Section>
 
 <style is:global>
   @layer fulldev {
-    .content-4 {
+    .content-5 {
       .container {
-        @apply flex flex-col items-start gap-x-gutter lg:grid lg:grid-cols-2;
+        @apply flex flex-col items-start gap-8;
       }
 
-      .prose {
-        @apply lg:sticky lg:top-sticky-16 lg:max-w-xl;
+      .content-5-main {
+        @apply max-w-none break-inside-avoid gap-x-gutter lg:columns-2;
+      }
+
+      .image {
+        @apply rounded-md;
       }
     }
   }
