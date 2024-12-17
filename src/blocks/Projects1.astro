@@ -1,0 +1,103 @@
+---
+// Heading etc left, image and content right, sticky
+import type { ComponentProps } from 'astro/types'
+import Badges from 'fulldev-ui/components/Badges.astro'
+import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Tagline from 'fulldev-ui/components/Tagline.astro'
+import Container from 'fulldev-ui/structures/Container.astro'
+import Group from 'fulldev-ui/structures/Group.astro'
+import Prose from 'fulldev-ui/structures/Prose.astro'
+import Section from 'fulldev-ui/structures/Section.astro'
+
+interface Props extends ComponentProps<typeof Section> {
+  tagline?: string | undefined
+  heading?: string | undefined
+  paragraph?: string | undefined
+  content?: string | undefined
+  buttons?: ComponentProps<typeof Buttons>['buttons']
+  cards?: {
+    image?: ComponentProps<typeof Image> | undefined
+    badges?: ComponentProps<typeof Badges>['badges']
+    heading?: string | undefined
+    paragraph?: string | undefined
+  }[]
+}
+
+const { tagline, heading, paragraph, buttons, content, cards, ...rest } =
+  Astro.props
+---
+
+<Section
+  class:list="projects-1"
+  {...rest}
+>
+  <Container>
+    <Prose>
+      <Tagline text={tagline} />
+      <Heading
+        as="h2"
+        size="4xl"
+        text={heading}
+      />
+      <Paragraph
+        muted
+        size="lg"
+        text={paragraph}
+      />
+      <Group>
+        <Buttons {buttons} />
+      </Group>
+    </Prose>
+    <Element class:list="projects-1-cards">
+      {
+        cards?.map(({ image, badges, heading, paragraph }) => (
+          <Element class:list="projects-1-card">
+            <Image {...image} />
+            <Group>
+              <Badges
+                size="sm"
+                {badges}
+              />
+            </Group>
+            <Heading
+              as="h3"
+              size="xl"
+              text={heading}
+            />
+            <Paragraph text={paragraph} />
+          </Element>
+        ))
+      }
+    </Element>
+  </Container>
+</Section>
+
+<style is:global>
+  @layer fulldev {
+    .projects-1 {
+      .container {
+        @apply flex flex-col items-start gap-x-gutter lg:grid lg:grid-cols-2;
+      }
+
+      .prose {
+        @apply lg:sticky lg:top-sticky-16 lg:max-w-xl;
+      }
+
+      .projects-1-cards {
+        @apply flex flex-col gap-8;
+      }
+
+      .projects-1-card {
+        @apply flex flex-col gap-2;
+
+        .image {
+          @apply mb-4 rounded-md;
+        }
+      }
+    }
+  }
+</style>
