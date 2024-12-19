@@ -1,76 +1,69 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import Badge from 'fulldev-ui/components/Badge.astro'
-import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
-import Image from 'fulldev-ui/components/Image.astro'
+import Icon from 'fulldev-ui/components/Icon.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
-import Group from 'fulldev-ui/structures/Group.astro'
+import Matrix from 'fulldev-ui/structures/Matrix.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
 interface Props extends ComponentProps<typeof Section>, BlockSchema {}
 
-const {
-  badge,
-  tagline,
-  heading,
-  paragraph,
-  content,
-  button,
-  buttons,
-  image,
-  ...rest
-} = Astro.props
+const { tagline, heading, paragraph, cards, ...rest } = Astro.props
 ---
 
 <Section
-  class:list="hero-1"
+  class:list="features-2"
   {...rest}
 >
   <Container>
-    <Writeup align="center">
-      <Badge
-        size="lg"
-        {...badge}
-      />
+    <Writeup>
       <Tagline
         size="sm"
         text={tagline}
       />
       <Heading
-        as="h1"
-        size="6xl"
+        size="3xl"
         text={heading}
       />
       <Paragraph
-        size="xl"
+        size="lg"
         text={paragraph}
       />
-      <Fragment set:html={content} />
-      <Group>
-        <Buttons
-          size="lg"
-          {button}
-          {buttons}
-        />
-      </Group>
     </Writeup>
-    <Image {...image} />
+    <Matrix size="sm">
+      {
+        cards?.map(({ icon, heading, paragraph }) => (
+          <Writeup>
+            <Icon
+              size="lg"
+              name={icon}
+            />
+            <Heading
+              as="h3"
+              size="xl"
+              text={heading}
+            />
+            <Paragraph text={paragraph} />
+          </Writeup>
+        ))
+      }
+    </Matrix>
   </Container>
 </Section>
 
 <style is:global>
   @layer fulldev {
-    .hero-1 {
+    .features-2 {
       .container {
-        @apply flex flex-col items-center gap-16;
+        @apply flex flex-col gap-12;
       }
-      .image {
-        @apply max-h-[700px] w-auto rounded-lg;
+
+      .icon {
+        @apply text-primary;
       }
     }
   }
