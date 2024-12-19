@@ -1,7 +1,5 @@
 ---
-// Centered
 import type { ComponentProps } from 'astro/types'
-import type { CollectionEntry } from 'astro:content'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
@@ -12,13 +10,12 @@ import Group from 'fulldev-ui/structures/Group.astro'
 import Prose from 'fulldev-ui/structures/Prose.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 
-interface Props extends ComponentProps<typeof Section> {
+interface Props {
   depth?: 1 | 2 | undefined
   tagline?: string | undefined
   heading?: string | undefined
   paragraph?: string | undefined
   content?: string | undefined
-  render?: CollectionEntry<'pages'>['render']
   image?: ComponentProps<typeof Image> | undefined
   buttons?: ComponentProps<typeof Buttons>['buttons']
 }
@@ -31,17 +28,10 @@ const {
   buttons,
   image,
   content,
-  render,
-  ...rest
 } = Astro.props
-
-const Content = render && (await render()).Content
 ---
 
-<Section
-  class:list="content-1"
-  {...rest}
->
+<Section class="content-1">
   <Container>
     <Prose>
       <Tagline text={tagline} />
@@ -57,7 +47,6 @@ const Content = render && (await render()).Content
       />
       <Image {...image} />
       <Fragment set:html={content} />
-      {Content && <Content />}
       <slot />
       <Group>
         <Buttons {buttons} />
@@ -65,13 +54,3 @@ const Content = render && (await render()).Content
     </Prose>
   </Container>
 </Section>
-
-<style is:global>
-  @layer fulldev {
-    .content-1 {
-      .prose {
-        @apply mx-auto;
-      }
-    }
-  }
-</style>

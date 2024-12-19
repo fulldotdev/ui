@@ -1,5 +1,4 @@
 ---
-// Centered
 import type { ComponentProps } from 'astro/types'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
@@ -11,10 +10,9 @@ import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Group from 'fulldev-ui/structures/Group.astro'
 import Prose from 'fulldev-ui/structures/Prose.astro'
-import Section from 'fulldev-ui/structures/Section.astro'
 import Sidebar from 'fulldev-ui/structures/Sidebar.astro'
 
-interface Props extends ComponentProps<typeof Section> {
+interface Props {
   depth?: 1 | 2 | undefined
   tagline?: string | undefined
   heading?: string | undefined
@@ -22,7 +20,7 @@ interface Props extends ComponentProps<typeof Section> {
   content?: string | undefined
   image?: ComponentProps<typeof Image> | undefined
   buttons?: ComponentProps<typeof Buttons>['buttons']
-  toc?: ComponentProps<typeof Menu>
+  toc?: ComponentProps<typeof Menu> | undefined
   sidebar?: ComponentProps<typeof Menus>['menus']
 }
 
@@ -36,22 +34,18 @@ const {
   content,
   sidebar,
   toc,
-  ...rest
 } = Astro.props
 ---
 
-<Container
-  class:list="content-7"
-  {...rest}
->
+<Container class="content-7 flex items-start justify-between px-0">
   <Sidebar>
     <Menus
       size="sm"
       menus={sidebar}
     />
   </Sidebar>
-  <Container>
-    <Prose>
+  <Container class="lg:!max-w-[calc(100%-(2*var(--sidebar-width)))]">
+    <Prose class="py-8">
       <Tagline text={tagline} />
       <Heading
         size="5xl"
@@ -79,23 +73,3 @@ const {
     />
   </Sidebar>
 </Container>
-
-<style is:global>
-  @layer fulldev {
-    .content-7 {
-      @apply flex w-full items-start justify-between px-0;
-
-      > .sidebar {
-        @apply hidden lg:flex;
-      }
-
-      > .container {
-        @apply lg:!max-w-[calc(100%-(2*var(--sidebar-width)))];
-
-        > .prose {
-          @apply mx-auto py-8;
-        }
-      }
-    }
-  }
-</style>
