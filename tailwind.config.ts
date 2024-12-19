@@ -4,7 +4,7 @@ import tailwindcssAnimate from 'tailwindcss-animate'
 
 export default {
   darkMode: ['class'],
-  content: ['src/**/*.{ts,tsx,astro,css,mdx}'],
+  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     container: {
       screens: ['1536px'],
