@@ -1,29 +1,84 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import Banner from 'fulldev-ui/blocks/Banner.astro'
-import Footer from 'fulldev-ui/blocks/Footer.astro'
-import Header from 'fulldev-ui/blocks/Header.astro'
+import type { CollectionEntry } from 'astro:content'
 import Block from 'fulldev-ui/components/Block.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import type { PageSchema } from 'fulldev-ui/schemas/page.ts'
 import Layout from 'fulldev-ui/structures/Layout.astro'
 
-type Props = ComponentProps<typeof Layout> & PageSchema
+type Props = ComponentProps<typeof Layout> &
+  PageSchema & {
+    render: CollectionEntry<'pages'>['render']
+    headings?: any
+    heading?: string
+    paragraph?: string
+  }
 
-const { banner, sidebar, header, sections, footer } = Astro.props
+const {
+  heading,
+  title,
+  paragraph,
+  description,
+  banner,
+  sidebar,
+  header,
+  sections,
+  footer,
+  render,
+  navigation,
+  ...rest
+} = Astro.props
+
+const { Content, headings } = await render()
+
+const h1 = headings?.find((heading) => heading.depth === 1)
+const links = headings
+  ?.filter((heading) => heading.depth >= 2 && heading.depth <= 4)
+  .map(({ text, depth, slug }) => ({
+    text,
+    depth,
+    href: `#${slug}`,
+  }))
 ---
 
 <Layout
   class:list="page"
-  {...Astro.props}
+  {...rest}
 >
-  <Banner {...banner} />
-  <Header
-    {...sidebar}
+  <Block
+    _block="Banner"
+    {...banner}
+  />
+  <Block
+    _block="Header"
+    {sidebar}
     {...header}
   />
   <Element as="main">
-    {sections?.map((section) => <Block {...section} />)}
+    <Block
+      depth={1}
+      heading={h1 ? undefined : heading || title}
+      paragraph={h1 ? undefined : paragraph || description}
+      toc={{
+        heading: h1?.text || heading || title,
+        links,
+      }}
+      {sidebar}
+      {...rest}
+    >
+      <Content />
+    </Block>
+    {
+      sections?.map((section, i) => (
+        <Block
+          depth={i === 0 && !rest._block ? 1 : 2}
+          {...section}
+        />
+      ))
+    }
   </Element>
-  <Footer {...footer} />
+  <Block
+    _block="Footer"
+    {...footer}
+  />
 </Layout>

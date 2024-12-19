@@ -1,6 +1,7 @@
 ---
 // Centered
 import type { ComponentProps } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
@@ -12,16 +13,29 @@ import Prose from 'fulldev-ui/structures/Prose.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 
 interface Props extends ComponentProps<typeof Section> {
+  depth?: 1 | 2 | undefined
   tagline?: string | undefined
   heading?: string | undefined
   paragraph?: string | undefined
   content?: string | undefined
+  render?: CollectionEntry<'pages'>['render']
   image?: ComponentProps<typeof Image> | undefined
   buttons?: ComponentProps<typeof Buttons>['buttons']
 }
 
-const { tagline, heading, paragraph, buttons, image, content, ...rest } =
-  Astro.props
+const {
+  depth = 2,
+  tagline,
+  heading,
+  paragraph,
+  buttons,
+  image,
+  content,
+  render,
+  ...rest
+} = Astro.props
+
+const Content = render && (await render()).Content
 ---
 
 <Section
@@ -32,9 +46,9 @@ const { tagline, heading, paragraph, buttons, image, content, ...rest } =
     <Prose>
       <Tagline text={tagline} />
       <Heading
-        as="h2"
         size="5xl"
         text={heading}
+        {depth}
       />
       <Paragraph
         muted
@@ -43,6 +57,7 @@ const { tagline, heading, paragraph, buttons, image, content, ...rest } =
       />
       <Image {...image} />
       <Fragment set:html={content} />
+      {Content && <Content />}
       <slot />
       <Group>
         <Buttons {buttons} />

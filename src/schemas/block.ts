@@ -26,6 +26,7 @@ export const blockSchema = z
     link: linkSchema.optional(),
     links: linkSchema.array().optional(),
     menus: menuSchema.array().optional(),
+    sidebar: menuSchema.array().optional(),
     badge: badgeSchema.optional(),
     badges: badgeSchema.array().optional(),
     button: buttonSchema.optional(),

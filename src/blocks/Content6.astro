@@ -1,15 +1,17 @@
 ---
-// Content left, image right, centered
+// Centered
 import type { ComponentProps } from 'astro/types'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
+import Menu from 'fulldev-ui/components/Menu.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Group from 'fulldev-ui/structures/Group.astro'
 import Prose from 'fulldev-ui/structures/Prose.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
+import Sidebar from 'fulldev-ui/structures/Sidebar.astro'
 
 interface Props extends ComponentProps<typeof Section> {
   depth?: 1 | 2 | undefined
@@ -19,6 +21,7 @@ interface Props extends ComponentProps<typeof Section> {
   content?: string | undefined
   image?: ComponentProps<typeof Image> | undefined
   buttons?: ComponentProps<typeof Buttons>['buttons']
+  toc?: ComponentProps<typeof Menu>
 }
 
 const {
@@ -29,19 +32,20 @@ const {
   buttons,
   image,
   content,
+  toc,
   ...rest
 } = Astro.props
 ---
 
-<Section
-  class:list="content-2"
+<Container
+  class:list="content-6"
   {...rest}
 >
   <Container>
     <Prose>
       <Tagline text={tagline} />
       <Heading
-        size="4xl"
+        size="5xl"
         text={heading}
         {depth}
       />
@@ -50,28 +54,38 @@ const {
         size="lg"
         text={paragraph}
       />
+      <Image {...image} />
       <Fragment set:html={content} />
       <slot />
       <Group>
         <Buttons {buttons} />
       </Group>
     </Prose>
-    <Image {...image} />
   </Container>
-</Section>
+  <Sidebar>
+    <Menu
+      size="sm"
+      heading={toc?.heading}
+      links={toc?.links}
+    />
+  </Sidebar>
+</Container>
 
 <style is:global>
   @layer fulldev {
-    .content-2 {
-      > .container {
-        @apply grid items-center gap-x-gutter gap-y-16 lg:grid-cols-2;
+    .content-6 {
+      @apply flex w-full items-start justify-between px-0;
 
-        > .prose {
-          @apply max-w-screen-sm;
-        }
+      .sidebar {
+        @apply hidden lg:flex;
       }
-      .image {
-        @apply rounded-md;
+
+      .container {
+        @apply lg:!max-w-[calc(100vw-var(--sidebar-width))];
+      }
+
+      .prose {
+        @apply mx-auto py-8;
       }
     }
   }
