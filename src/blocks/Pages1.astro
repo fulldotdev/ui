@@ -1,6 +1,7 @@
 ---
+// Heading etc left, image and content right, sticky
+import type { ComponentProps } from 'astro/types'
 import type { CollectionEntry } from 'astro:content'
-import { getEntries } from 'astro:content'
 import Badges from 'fulldev-ui/components/Badges.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Element from 'fulldev-ui/components/Element.astro'
@@ -13,20 +14,21 @@ import Group from 'fulldev-ui/structures/Group.astro'
 import Prose from 'fulldev-ui/structures/Prose.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 import Split from 'fulldev-ui/structures/Split.astro'
+import { getHref } from 'fulldev-ui/utils/getHref'
 
-type Props = CollectionEntry<'pages'>['data']
+interface Props {
+  tagline?: string | undefined
+  heading?: string | undefined
+  paragraph?: string | undefined
+  content?: string | undefined
+  buttons?: ComponentProps<typeof Buttons>['buttons']
+  pages?: CollectionEntry<'pages'>[] | undefined
+}
 
-const { tagline, heading, paragraph, buttons, content, cards, pages, records } =
-  Astro.props
-
-const projects = [
-  ...(cards || []),
-  ...(await getEntries(pages || [])).map(({ data }) => data),
-  ...(await getEntries(records || [])).map(({ data }) => data),
-]
+const { tagline, heading, paragraph, buttons, content, pages } = Astro.props
 ---
 
-<Section class="projects-1">
+<Section class="pages-1">
   <Container>
     <Split class="items-start">
       <Prose class="lg:sticky lg:top-sticky-16 lg:max-w-xl">
@@ -51,26 +53,32 @@ const projects = [
       </Prose>
       <Element class="flex flex-col gap-8">
         {
-          projects?.map(({ image, badges, heading, paragraph }) => (
-            <Element class="flex flex-col gap-2">
-              <Image
-                class="mb-4"
-                {...image}
-              />
-              <Group>
-                <Badges
-                  size="sm"
-                  {badges}
+          pages?.map(
+            ({ slug, data: { href, image, badges, heading, paragraph } }) => (
+              <Element
+                as="a"
+                href={href || getHref(slug)}
+                class="flex flex-col gap-2"
+              >
+                <Image
+                  class="mb-4"
+                  {...image}
                 />
-              </Group>
-              <Heading
-                as="h3"
-                size="xl"
-                text={heading}
-              />
-              <Paragraph text={paragraph} />
-            </Element>
-          ))
+                <Group>
+                  <Badges
+                    size="sm"
+                    {badges}
+                  />
+                </Group>
+                <Heading
+                  as="h3"
+                  size="xl"
+                  text={heading}
+                />
+                <Paragraph text={paragraph} />
+              </Element>
+            )
+          )
         }
       </Element>
     </Split>

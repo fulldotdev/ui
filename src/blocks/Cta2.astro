@@ -1,0 +1,68 @@
+---
+import type { ComponentProps } from 'astro/types'
+import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Tagline from 'fulldev-ui/components/Tagline.astro'
+import Container from 'fulldev-ui/structures/Container.astro'
+import Group from 'fulldev-ui/structures/Group.astro'
+import Panel from 'fulldev-ui/structures/Panel.astro'
+import Prose from 'fulldev-ui/structures/Prose.astro'
+import Section from 'fulldev-ui/structures/Section.astro'
+import Split from 'fulldev-ui/structures/Split.astro'
+
+interface Props {
+  depth?: 1 | 2 | undefined
+  tagline?: string | undefined
+  heading?: string | undefined
+  paragraph?: string | undefined
+  content?: string | undefined
+  image?: ComponentProps<typeof Image> | undefined
+  buttons?: ComponentProps<typeof Buttons>['buttons']
+}
+
+const {
+  depth = 2,
+  tagline,
+  heading,
+  paragraph,
+  buttons,
+  image,
+  content,
+  ...rest
+} = Astro.props
+---
+
+<Section
+  class="cta-2"
+  {...rest}
+>
+  <Container>
+    <Panel class="p-0">
+      <Split class="items-center">
+        <Prose class="px-4 sm:px-8 lg:px-16">
+          <Tagline text={tagline} />
+          <Heading
+            size="4xl"
+            text={heading}
+            {depth}
+          />
+          <Paragraph
+            size="lg"
+            text={paragraph}
+          />
+          <Fragment set:html={content} />
+          <slot />
+          <Group>
+            <Buttons
+              size="lg"
+              {buttons}
+            />
+          </Group>
+        </Prose>
+        <Image {...image} />
+      </Split>
+    </Panel>
+  </Container>
+</Section>

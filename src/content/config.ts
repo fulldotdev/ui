@@ -1,4 +1,5 @@
 import { defineCollection } from 'astro:content'
+import { cardSchema } from 'fulldev-ui/schemas/card.ts'
 import { pageSchema } from 'fulldev-ui/schemas/page.ts'
 
 export const collections = {
@@ -9,5 +10,9 @@ export const collections = {
   layouts: defineCollection({
     type: 'data',
     schema: pageSchema,
+  }),
+  records: defineCollection({
+    type: 'data',
+    schema: cardSchema,
   }),
 }
