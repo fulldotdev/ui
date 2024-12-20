@@ -33,6 +33,7 @@ export const pageSchema = z
     sidebar: menuSchema.array().optional(),
     footer: blockSchema.optional(),
     parents: pathSchema('pages').array().optional(),
+    pages: pathSchema('pages').array().optional(),
   })
   .strict()
 
