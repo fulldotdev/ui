@@ -2,17 +2,33 @@
 import type { ComponentProps } from 'astro/types'
 import Badge from 'fulldev-ui/components/Badge.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
+import Label from 'fulldev-ui/components/Label.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Rating from 'fulldev-ui/components/Rating.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Group from 'fulldev-ui/structures/Group.astro'
+import Prose from 'fulldev-ui/structures/Prose.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
-import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
-interface Props extends ComponentProps<typeof Section>, BlockSchema {}
+interface Props {
+  depth?: 1 | 2 | undefined
+  badge?: ComponentProps<typeof Badge> | undefined
+  tagline?: string | undefined
+  heading?: string | undefined
+  paragraph?: string | undefined
+  content?: string | undefined
+  image?: ComponentProps<typeof Image> | undefined
+  buttons?: ComponentProps<typeof Buttons>['buttons']
+  proof?: {
+    rating?: number | undefined
+    images?: ComponentProps<typeof Image>[] | undefined
+    text?: string | undefined
+  }
+}
 
 const {
   badge,
@@ -20,9 +36,9 @@ const {
   heading,
   paragraph,
   content,
-  button,
   buttons,
   image,
+  proof,
   ...rest
 } = Astro.props
 ---
@@ -32,7 +48,27 @@ const {
   {...rest}
 >
   <Container>
-    <Writeup align="center">
+    <Prose class="flex flex-col items-center text-center">
+      <Element class="flex items-center">
+        {
+          proof?.images?.map((image) => (
+            <Image
+              class="-mr-5 h-11 w-11 rounded-full object-cover last-of-type:mr-2"
+              {...image}
+            />
+          ))
+        }
+        <Element class="flex flex-col gap-1">
+          <Rating
+            score={proof?.rating}
+            size="sm"
+          />
+          <Label
+            size="md"
+            text={proof?.text}
+          />
+        </Element>
+      </Element>
       <Badge
         size="lg"
         {...badge}
@@ -54,11 +90,10 @@ const {
       <Group>
         <Buttons
           size="lg"
-          {button}
           {buttons}
         />
       </Group>
-    </Writeup>
+    </Prose>
     <Image {...image} />
   </Container>
 </Section>

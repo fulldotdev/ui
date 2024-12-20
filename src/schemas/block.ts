@@ -53,6 +53,13 @@ export const blockSchema = z
       .strict()
       .array()
       .optional(),
+    proof: z
+      .object({
+        rating: z.number().optional(),
+        images: imageSchema.array().optional(),
+        text: z.string().optional(),
+      })
+      .optional(),
   })
   .strict()
 
