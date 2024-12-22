@@ -21,7 +21,6 @@ export const pageSchema = blockSchema
     subheader: blockSchema.array().optional(),
     sidebar: menuSchema.array().optional(),
     footer: blockSchema.optional(),
-    parents: pathSchema('pages').array().optional(),
     categories: pathSchema('pages').array().optional(),
   })
   .strict()

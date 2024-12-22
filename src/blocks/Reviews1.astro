@@ -1,6 +1,6 @@
 ---
-import type { CollectionEntry } from 'astro:content'
-import { getEntries } from 'astro:content'
+import type { ComponentProps } from 'astro/types'
+import type Avatar from 'fulldev-ui/components/Avatar.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Proof from 'fulldev-ui/components/Proof.astro'
@@ -11,16 +11,20 @@ import Masonry from 'fulldev-ui/structures/Masonry.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
-type Props = CollectionEntry<'pages'>['data']
+interface Props {
+  tagline?: string | undefined
+  heading?: string | undefined
+  paragraph?: string | undefined
+  cards?: {
+    avatar?: ComponentProps<typeof Avatar>
+    rating?: number | undefined
+    tagline?: string | undefined
+    heading?: string | undefined
+    paragraph?: string | undefined
+  }[]
+}
 
-const { tagline, heading, paragraph, pages, cards, records, ...rest } =
-  Astro.props
-
-const reviews = [
-  ...(cards || []),
-  ...(await getEntries(pages || [])).map(({ data }) => data),
-  ...(await getEntries(records || [])).map(({ data }) => data),
-]
+const { tagline, heading, paragraph, cards, ...rest } = Astro.props
 ---
 
 <Section
@@ -41,7 +45,7 @@ const reviews = [
     </Writeup>
     <Masonry>
       {
-        reviews?.map(({ tagline, avatar, rating, heading, paragraph }) => (
+        cards?.map(({ tagline, avatar, rating, heading, paragraph }) => (
           <Card class="reviews-1-card">
             <Proof
               text={tagline}
