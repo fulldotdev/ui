@@ -1,0 +1,175 @@
+---
+// @ts-nocheck
+import type { ComponentProps } from 'astro/types'
+import Button from 'fulldev-ui/components/Button.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+
+interface Props {
+  images?:
+    | (ComponentProps<typeof Image> | ComponentProps<typeof Image>['src'])[]
+    | undefined
+}
+
+const { images } = Astro.props
+
+const hasMultiple = images?.length > 1
+const hasMany = images?.length > 5
+---
+
+<script>
+  function scrollLeft(carousel: HTMLElement) {
+    carousel.scrollLeft -= carousel.clientWidth
+  }
+
+  function scrollRight(carousel: HTMLElement) {
+    carousel.scrollLeft += carousel.clientWidth
+  }
+
+  function scrollTo(carousel: HTMLElement, index: number) {
+    carousel.scrollLeft = index * carousel.clientWidth
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    const galleries = document.querySelectorAll('.gallery')
+    galleries.forEach((gallery) => {
+      // Apply left and right event listeners to large and small carousels
+      const containers = gallery.querySelectorAll(
+        '.gallery-small, .gallery-large'
+      )
+      containers?.forEach((element) => {
+        const left = element?.querySelector('.gallery-left')
+        const right = element?.querySelector('.gallery-right')
+        const carousel = element?.querySelector(
+          '.gallery-carousel'
+        ) as HTMLElement
+
+        left?.addEventListener('click', () => scrollLeft(carousel))
+        right?.addEventListener('click', () => scrollRight(carousel))
+      })
+
+      // Apply item click event listener to small carousel items
+      const items = gallery.querySelectorAll('.gallery-small .gallery-item')
+      const largeCarousel = gallery.querySelector(
+        '.gallery-large .gallery-carousel'
+      ) as HTMLElement
+      items?.forEach((item, i) => {
+        item.addEventListener('click', () => {
+          scrollTo(largeCarousel, i)
+        })
+      })
+    })
+  })
+</script>
+
+<Element class:list="gallery">
+  <Element class:list="gallery-large">
+    <Button
+      show={hasMultiple}
+      class="gallery-left"
+      icon="chevron-left"
+      variant="secondary"
+      size="sm"
+    />
+    <Element class:list="gallery-carousel">
+      {
+        images?.map((image: any) => (
+          <Element class:list="gallery-item">
+            <Image {...(typeof image === 'string' ? { src: image } : image)} />
+          </Element>
+        ))
+      }
+    </Element>
+    <Button
+      show={hasMultiple}
+      class="gallery-right"
+      icon="chevron-right"
+      variant="secondary"
+      size="sm"
+    />
+  </Element>
+  <Element
+    show={hasMultiple}
+    class:list="gallery-small"
+  >
+    <Button
+      show={hasMany}
+      class="gallery-left"
+      icon="chevron-left"
+      variant="secondary"
+      size="sm"
+    />
+    <Element class:list="gallery-carousel">
+      {
+        images?.map((image: any) => (
+          <Element
+            as="button"
+            class:list="gallery-item"
+          >
+            <Image {...(typeof image === 'string' ? { src: image } : image)} />
+          </Element>
+        ))
+      }
+    </Element>
+    <Button
+      show={hasMany}
+      class="gallery-right"
+      icon="chevron-right"
+      variant="ghost"
+      size="sm"
+    />
+  </Element>
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .gallery {
+      @apply relative flex flex-col gap-2;
+
+      .gallery-large,
+      .gallery-small {
+        @apply relative flex items-center;
+      }
+
+      .image {
+        @apply rounded;
+      }
+
+      .button {
+        @apply absolute z-10 bg-secondary-hover opacity-50 hover:opacity-100;
+      }
+
+      .gallery-left {
+        @apply left-2;
+      }
+
+      .gallery-right {
+        @apply right-2;
+      }
+
+      .gallery-carousel {
+        @apply inline-flex w-full snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-none;
+      }
+
+      .gallery-large {
+        .gallery-item {
+          @apply flex w-full min-w-full snap-start;
+        }
+
+        .image {
+          @apply h-full max-h-[768px] w-full object-contain;
+        }
+      }
+
+      .gallery-small {
+        .gallery-carousel {
+          @apply gap-2;
+        }
+
+        .gallery-item {
+          @apply min-w-[calc(20%-0.4rem)] snap-start overflow-hidden transition hover:opacity-80;
+        }
+      }
+    }
+  }
+</style>

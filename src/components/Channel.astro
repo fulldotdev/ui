@@ -1,0 +1,85 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import Button from 'fulldev-ui/components/Button.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+
+interface Props extends HTMLAttributes<'div'> {
+  variant?: 'secondary' | 'outline' | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
+  heading?: string | undefined
+  text?: string | undefined
+  href?: string | undefined
+  icon?: string | undefined
+}
+
+const {
+  variant = 'secondary',
+  size = 'md',
+  href,
+  icon,
+  heading,
+  text,
+  ...rest
+} = Astro.props
+---
+
+<Element
+  class:list="channel"
+  {size}
+  {...rest}
+>
+  <Button
+    {variant}
+    {size}
+    {href}
+    {icon}
+  />
+  <Element class:list="channel-content">
+    <Heading
+      as="h6"
+      {size}
+      text={heading}
+    />
+    <Fragment set:html={text} />
+    <slot />
+  </Element>
+</Element>
+
+<style is:global>
+  .channel {
+    @apply flex gap-3;
+
+    .channel-content {
+      @apply flex flex-col text-muted-foreground;
+
+      .heading {
+        @apply leading-snug;
+      }
+    }
+
+    &.size-sm {
+      @apply gap-2;
+
+      .channel-content {
+        @apply text-xs leading-tight;
+      }
+    }
+
+    &.size-md {
+      @apply gap-2.5;
+
+      .channel-content {
+        @apply text-sm leading-tight;
+      }
+    }
+
+    &.size-lg {
+      @apply gap-3;
+
+      .channel-content {
+        @apply text-base leading-tight;
+      }
+    }
+  }
+</style>

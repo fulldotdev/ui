@@ -1,0 +1,88 @@
+---
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
+
+interface Props extends HTMLAttributes<'div'> {
+  as?: HTMLTag
+  align?: 'center' | 'middle' | 'columns'
+}
+
+const { ...rest } = Astro.props
+---
+
+<Element
+  class:list="prose"
+  {...rest}
+>
+  <slot />
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .prose {
+      @apply w-full max-w-screen-md;
+
+      &.align-middle {
+        @apply mx-auto max-w-screen-md items-center;
+      }
+
+      &.align-center {
+        @apply mx-auto flex max-w-screen-md;
+
+        > *:not(* > *) {
+          @apply text-center;
+        }
+      }
+
+      &.align-columns {
+        @apply max-w-none break-inside-avoid gap-x-8 lg:columns-2;
+      }
+
+      > *,
+      .tagline + * {
+        @apply mt-4;
+      }
+
+      > .group,
+      > .button,
+      > .buttons {
+        @apply mt-8;
+      }
+
+      > h2 {
+        @apply mt-10;
+      }
+
+      > h3 {
+        @apply mt-8;
+      }
+
+      > h4,
+      > h5,
+      > h6 {
+        @apply mt-6;
+      }
+
+      code:not(:is(.astro-code, h1, h2, h3, h4, h5, h6) code) {
+        @apply rounded bg-muted px-1.5 py-0.5 font-mono text-sm font-medium;
+      }
+
+      > aside {
+        @apply rounded-md border border-destructive p-4 text-destructive;
+      }
+
+      > img,
+      > p > img {
+        @apply my-12 rounded-md;
+      }
+
+      blockquote > p + p {
+        @apply !mt-1;
+      }
+
+      > *:first-child {
+        @apply mt-0;
+      }
+    }
+  }
+</style>

@@ -1,0 +1,47 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import type Link from 'fulldev-ui/components/Link.astro'
+import type { ComponentProps } from 'svelte'
+import Links from './Links.astro'
+
+interface Props extends HTMLAttributes<'div'> {
+  size?: 'sm' | 'md' | 'lg' | undefined
+  heading?: string | undefined
+  links?: ComponentProps<typeof Link>[] | undefined
+}
+
+const { size = 'md', heading, links, ...rest } = Astro.props
+---
+
+<Element
+  class:list="menu"
+  {...rest}
+>
+  {
+    links && links.length > 0 && (
+      <Heading
+        text={heading}
+        as="h6"
+        {size}
+      />
+    )
+  }
+  <Links
+    {size}
+    {links}
+  />
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .menu {
+      @apply flex flex-col gap-2;
+
+      .heading {
+        @apply mb-1;
+      }
+    }
+  }
+</style>

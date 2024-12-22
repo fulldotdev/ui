@@ -1,0 +1,53 @@
+---
+import Element from 'fulldev-ui/components/Element.astro'
+import Links from 'fulldev-ui/components/Links.astro'
+import type { BlockSchema } from 'fulldev-ui/schemas/block'
+
+interface Props extends BlockSchema {}
+
+const { links, ...rest } = Astro.props
+---
+
+<Element
+  class:list={['subheader']}
+  as="subheader"
+  {...rest}
+>
+  <Element class:list="subheader-container">
+    <Links
+      class:list="subheader-links"
+      size="sm"
+      {links}
+    />
+  </Element>
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .subheader {
+      @apply sticky left-0 top-0 z-20 flex h-11 items-center overflow-hidden bg-card max-lg:hidden;
+
+      top: var(--header-height);
+
+      .subheader-container {
+        @apply container flex w-full items-center gap-6;
+      }
+
+      .subheader-links {
+        @apply w-full justify-between;
+      }
+
+      &,
+      & ~ * {
+        --subheader-height: 2.75rem;
+      }
+
+      @media (max-width: 1023.999px) {
+        &,
+        & ~ * {
+          --subheader-height: 0px;
+        }
+      }
+    }
+  }
+</style>

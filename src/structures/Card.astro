@@ -1,0 +1,35 @@
+---
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
+
+interface Props extends HTMLAttributes<'a'>, HTMLAttributes<'div'> {
+  as?: HTMLTag
+}
+
+const { href, as = href ? 'a' : 'div', ...rest } = Astro.props
+---
+
+<Element
+  class:list="card"
+  {as}
+  {href}
+  {...rest}
+>
+  <slot />
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .card {
+      @apply w-full overflow-hidden rounded-lg border bg-card p-4 text-card-foreground;
+
+      &:is(a[href]) {
+        @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+
+        &:hover .image {
+          @apply opacity-75 transition-opacity;
+        }
+      }
+    }
+  }
+</style>

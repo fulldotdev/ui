@@ -1,114 +1,84 @@
 ---
-import type { Polymorphic } from 'astro/types'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 import Label from 'fulldev-ui/components/Label.astro'
-import Root from 'fulldev-ui/components/Root.astro'
 
-type Props<As extends 'div'> = Polymorphic<{ as: As }> & {
-  color?: 'base' | 'brand'
-  true?: string
-  false?: string
-  trueLabel?: string
-  falseLabel?: string
-  name: string
-  checked: boolean
+interface Props extends Omit<HTMLAttributes<'input'>, 'type'> {
+  label?: ComponentProps<typeof Label>['text']
+  size?: 'sm' | 'md' | 'lg'
 }
 
-const {
-  as = 'div',
-  name,
-  checked,
-  trueLabel,
-  falseLabel,
-  ...rest
-} = Astro.props
+const { label, name = label, id = name, size = 'md', ...rest } = Astro.props
 ---
 
-<Root
-  structure="row"
+<Element
   class:list="switch"
-  {as}
-  {...rest}
+  as="label"
+  for={id}
+  {size}
 >
-  <Label
-    for={name}
-    set:html={falseLabel}
+  <Element
+    class:list="switch-input"
+    as="input"
+    type="checkbox"
+    show={id}
+    {id}
+    {name}
+    {...rest}
   />
-  <label
-    for={name}
-    class="switch-element"
-  >
-    <input
-      {checked}
-      name={name}
-      type="checkbox"
-      class="checkbox"
-    />
-    <div class="checkmark"></div>
-  </label>
-  <Label
-    for={name}
-    set:html={trueLabel}
+  <Element
+    as="label"
+    for={id}
+    show={id}
+    class="switch-mark"
   />
-</Root>
+  <Label
+    for={id}
+    text={label}
+    {size}
+  />
+</Element>
 
-<style is:global lang="scss">
+<style is:global>
   @layer fulldev {
     .switch {
-      position: relative;
-      align-items: center;
-      gap: var(--space-1);
-      width: 100%;
+      @apply flex items-center gap-2;
 
-      .switch-element {
-        display: block;
-        position: relative;
-        transition: var(--transition);
-        cursor: pointer;
-        box-sizing: border-box;
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        background-color: var(--base-2);
-        padding: var(--space-1);
-        width: fit-content;
-        min-width: calc(
-          (var(--text-2) + 2 * var(--space-2) * 2) + 2 * var(--space-1)
-        );
-        height: calc(var(--text-2) + 2 * var(--space-2));
+      .switch-input {
+        @apply hidden opacity-0;
+      }
 
-        .checkbox {
-          position: absolute;
-          opacity: 0;
-          width: 0;
-          height: 0;
+      .switch-mark {
+        @apply relative block cursor-pointer rounded-full bg-input transition;
+
+        &::before {
+          @apply block h-full w-1/2 rounded-full border-2 border-input bg-background transition content-[''];
         }
+      }
 
-        .checkmark {
-          transform: 0%;
-          transition: var(--transition);
-          border-radius: 999px;
-          background-color: var(--base-1);
-          width: 50%;
-          height: 100%;
+      .switch-input:checked ~ .switch-mark {
+        @apply bg-primary;
+
+        &::before {
+          @apply translate-x-full border-primary;
         }
+      }
 
-        .checkbox:checked ~ .checkmark {
-          transform: translateX(100%);
-          background-color: var(--color-12);
+      &.size-sm {
+        .switch-mark {
+          @apply h-5 w-10;
         }
+      }
 
-        &:hover {
-          background-color: var(--base-3);
+      &.size-md {
+        .switch-mark {
+          @apply h-6 w-12;
         }
+      }
 
-        &:focus-visible {
-          outline: 2px solid var(--focus) !important;
-          outline-offset: 2px;
-        }
-
-        &:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-          pointer-events: none;
+      &.size-lg {
+        .switch-mark {
+          @apply h-7 w-14;
         }
       }
     }

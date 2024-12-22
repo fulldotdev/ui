@@ -1,0 +1,28 @@
+---
+import type { ComponentProps } from 'astro/types'
+import Button from 'fulldev-ui/components/Button.astro'
+
+interface Props extends ComponentProps<typeof Button> {
+  button?: ComponentProps<typeof Button> | undefined
+  buttons?: ComponentProps<typeof Button>[] | undefined
+}
+
+const { variant = 'primary', button, buttons, ...rest } = Astro.props
+
+const buttonVariant = (i: number) => {
+  if (variant === 'primary' && i === 0) return 'primary'
+  else if (variant === 'primary' && i === 1) return 'secondary'
+  else if (variant === 'secondary' && i === 0) return 'secondary'
+  else return 'ghost'
+}
+---
+
+{
+  [button, ...(buttons || [])].filter(Boolean).map((button, i) => (
+    <Button
+      variant={buttonVariant(i)}
+      {...rest}
+      {...button}
+    />
+  ))
+}

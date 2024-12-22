@@ -1,81 +1,92 @@
 ---
-import type { Polymorphic } from 'astro/types'
-import Root from 'fulldev-ui/components/Root.astro'
+import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 
-type Props<As extends 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span'> =
-  Polymorphic<{
-    as: As
-  }> & {
-    level?: 1 | 2 | 3 | 4 | 5 | 6
-    size?: 'sm' | 'md' | 'lg'
-    color?: 'base' | 'brand'
-    contrast?: boolean
-    html?: string
-    text?: string
-  }
+interface Props
+  extends HTMLAttributes<'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'> {
+  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | undefined
+  depth?: 1 | 2 | 3 | 4 | 5 | 6 | number | undefined
+  text?: string | undefined
+  size?:
+    | 'xs'
+    | 'sm'
+    | 'md'
+    | 'lg'
+    | 'xl'
+    | '2xl'
+    | '3xl'
+    | '4xl'
+    | '5xl'
+    | '6xl'
+    | undefined
+}
 
-const {
-  level = 2,
-  as = `h${level}`,
-  color = 'base',
-  contrast = true,
-  html,
-  text,
-  ...rest
-} = Astro.props
+const { depth = 2, as = `h${depth}`, text, ...rest } = Astro.props
 ---
 
-<Root
+<Element
   class:list="heading"
   {as}
-  {contrast}
-  {color}
-  {level}
   {...rest}
 >
-  <slot>
-    <Fragment set:html={html} />
-    <Fragment set:text={text} />
-  </slot>
-</Root>
+  <Fragment set:html={text} />
+  <slot />
+</Element>
 
-<style is:global lang="scss">
-  @layer fulldev {
-    .heading {
-      margin: 0;
-      max-width: calc(var(--space-4) * 44);
-      scroll-margin: var(--space-5);
-      color: var(--color-11);
-      font-weight: var(--heading-font-weight);
-      font-weight: 700;
-      line-height: 1.1;
-      font-family: var(--heading-font-family);
-      letter-spacing: -0.025em;
-      text-decoration: none;
+<style is:global>
+  .heading,
+  .prose > :is(h1, h2, h3, h4, h5, h6) {
+    @apply scroll-mt-20 font-bold tracking-tight text-foreground;
 
-      &.level-1 {
-        font-size: var(--text-8);
-      }
+    code {
+      @apply rounded-sm bg-muted px-1 py-0.5 font-mono;
+    }
 
-      &.level-2 {
-        font-size: var(--text-7);
-      }
+    &.size-xs {
+      @apply text-xs;
+    }
 
-      &.level-3 {
-        font-size: var(--text-6);
-      }
+    &.size-sm {
+      @apply text-sm;
+    }
 
-      &.level-4 {
-        font-size: var(--text-5);
-      }
+    &:where(.prose > h6),
+    &.size-md {
+      @apply text-base;
+    }
 
-      &.level-5 {
-        font-size: var(--text-4);
-      }
+    &:where(.prose > h5),
+    &.size-lg {
+      @apply text-lg;
+    }
 
-      &.level-6 {
-        font-size: var(--text-3);
-      }
+    &:where(.prose > h4),
+    &.size-xl {
+      @apply text-xl;
+    }
+
+    &:where(.prose > h3),
+    &.size-2xl {
+      @apply text-2xl;
+    }
+
+    &:where(.prose > h2),
+    &.size-3xl {
+      @apply text-3xl;
+    }
+
+    &:where(.prose > h2:not(:is(h1 ~ h2))),
+    &.size-4xl {
+      @apply text-4xl;
+    }
+
+    &:where(.prose > h1),
+    &.size-5xl {
+      @apply text-4xl lg:text-5xl;
+    }
+
+    &.size-6xl {
+      @apply text-5xl lg:text-6xl;
     }
   }
 </style>

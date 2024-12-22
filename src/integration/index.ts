@@ -1,156 +1,182 @@
+import mdx from '@astrojs/mdx'
+import sitemap from '@astrojs/sitemap'
 import type { AstroIntegration } from 'astro'
-import merge from 'deepmerge'
+import favicons from 'astro-favicons'
+import liveCode from 'astro-live-code'
+import robotsTxt from 'astro-robots-txt'
+import { envField } from 'astro/config'
+import fs from 'fs'
+import yaml from 'js-yaml'
+import path from 'path'
+import { assign } from 'radash'
+import tailwindcss from 'tailwindcss'
+import tailwindcssNesting from 'tailwindcss/nesting'
+import { loadEnv } from 'vite'
 import virtual from 'vite-plugin-virtual'
-import { generateRadixColors } from './generate-colors'
-
-type Color = {
-  background: Parameters<typeof generateRadixColors>[0]['background']
-  base: Parameters<typeof generateRadixColors>[0]['gray']
-  brand: Parameters<typeof generateRadixColors>[0]['accent']
-}
+import tailwindConfig from '../../tailwind.config.ts'
 
 interface Config {
+  favicon?: string
+  company?: string
   css?: string
   injectRoutes?: boolean
-  colors: {
-    theme: 'light' | 'dark'
-    light?: Color
-    dark?: Color
+  cloudcannon?: boolean
+  cart?: boolean
+  overrides?: {
+    [k: string]: string
   }
 }
 
-const defaultConfig: Config = {
-  colors: {
-    theme: 'light',
-    light: {
-      background: '#fff',
-      base: '#000',
-      brand: '#000',
-    },
-  },
-}
 export default function fulldevIntegration(
-  userConfig?: Partial<Config>
+  config: Partial<Config> | undefined
 ): AstroIntegration {
-  const config = merge(defaultConfig ?? {}, userConfig ?? {})
-
   return {
     name: '/integration',
     hooks: {
       'astro:config:setup': async ({
-        config: astroConfig,
         updateConfig,
-        injectScript,
         injectRoute,
+        injectScript,
       }) => {
         // ----------------------
-        // Inject css
+        // Update config
         // ----------------------
-        config?.css && injectScript('page-ssr', `import "${config?.css}";`)
-
-        const generateCss = (
-          defaultTheme: 'light' | 'dark',
-          theme: 'light' | 'dark',
-          color: Color
-        ) => {
-          const { background, base, brand } = color
-          const generated = generateRadixColors({
-            background,
-            appearance: theme,
-            gray: base,
-            accent: brand,
-          })
-
-          const scaleToString = (
-            scale: any,
-            palette: 'base' | 'brand',
-            alpha?: boolean
-          ) =>
-            scale
-              .map(
-                (color: any, i: any) =>
-                  `--${palette}-${alpha ? 'a' : ''}${i + 1}: ${color};`
-              )
-              .join('\n')
-
-          const baseString = scaleToString(generated.grayScale, 'base', false)
-          const baseAlphaString = scaleToString(
-            generated.grayScaleAlpha,
-            'base',
-            true
-          )
-          const brandString = scaleToString(
-            generated.accentScale,
-            'brand',
-            false
-          )
-          const brandAlphaString = scaleToString(
-            generated.accentScaleAlpha,
-            'brand',
-            true
-          )
-          const brandContrastString = `--brand-contrast: ${generated.accentContrast};`
-          const baseContrastString = `--base-contrast: ${generated.accentContrast};`
-          const baseBackgroundString = `--base-background: ${generated.background};`
-          const brandBackgroundString = `--brand-background: ${generated.background};`
-          const colorSchemeString = `--color-scheme: ${theme};`
-
-          const css = `${defaultTheme == theme ? ':root, ' : ''} .theme-${theme}  {
-  ${baseString}
-  ${baseAlphaString}
-  ${baseContrastString}
-  ${baseBackgroundString}
-  ${brandString}
-  ${brandAlphaString}
-  ${brandContrastString}
-  ${brandBackgroundString}
-  ${colorSchemeString}
-  }`
-          return css
-        }
-
-        const lightCss =
-          (config.colors.light &&
-            generateCss(config.colors.theme, 'light', config.colors.light)) ||
-          ''
-        const darkCss =
-          (config.colors.dark &&
-            generateCss(config.colors.theme, 'dark', config.colors.dark)) ||
-          ''
-
-        const css = lightCss + '\n' + darkCss
-
         updateConfig({
+          site: loadEnv(process.env.NODE_ENV as any, process.cwd(), '').URL,
+          experimental: {
+            contentLayer: true,
+            env: {
+              schema: {
+                URL: envField.string({
+                  context: 'client',
+                  access: 'public',
+                }),
+                STRIPE_RESTRICTED_KEY: envField.string({
+                  context: 'client',
+                  access: 'public',
+                  optional: true,
+                }),
+                STRIPE_SECRET_KEY: envField.string({
+                  context: 'server',
+                  access: 'secret',
+                  optional: true,
+                }),
+              },
+              validateSecrets: true,
+            },
+          },
+          integrations: [
+            mdx(),
+            sitemap(),
+            robotsTxt(),
+            liveCode({
+              layout: '/src/structures/Code.astro',
+            }),
+          ],
           vite: {
+            resolve: {
+              alias: {
+                ...config?.overrides,
+              },
+            },
             plugins: [
               virtual({
-                'virtual:astro/config': `export default ${JSON.stringify(astroConfig)}`,
-                'virtual:fulldev-ui/config': `export default ${JSON.stringify(config)}`,
-                'virtual:colors.css': css,
+                'virtual:fulldev-ui/config': config ?? {},
               }),
             ],
             css: {
-              preprocessorOptions: {
-                scss: {
-                  api: 'modern',
-                },
+              postcss: {
+                plugins: [tailwindcss(tailwindConfig), tailwindcssNesting],
               },
             },
           },
         })
 
-        injectScript('page-ssr', `import "virtual:colors.css";`)
+        // ----------------------
+        // Inject Favicon
+        // ----------------------
+        config?.favicon &&
+          config?.company &&
+          updateConfig({
+            integrations: [
+              favicons({
+                path: 'favicon',
+                masterPicture: config.favicon,
+                appName: config.company,
+                appShortName: config.company,
+                appDescription: config.company,
+              }),
+            ],
+          })
 
         // ----------------------
         // Inject routes
         // ----------------------
-        if (config.injectRoutes) {
-          const pages = import.meta.glob('/src/pages/**/*.astro')
-          !pages['/src/pages/[...page].astro'] &&
-            injectRoute({
-              pattern: '/[...page]',
-              entrypoint: 'fulldev-ui/[...page].astro',
-            })
+        if (config?.injectRoutes) {
+          injectRoute({
+            pattern: '/[...page]',
+            entrypoint: 'fulldev-ui/pages/[...page].astro',
+          })
+        }
+
+        // ----------------------
+        // Inject css
+        // ----------------------
+        config?.css && injectScript('page-ssr', `import "${config?.css}";`)
+
+        // ----------------------
+        // merge Cloudcannon configs
+        // ----------------------
+
+        // ----------------------
+        // Generate image YAML files
+        // ----------------------
+        // if (config.generateImageEntries) {
+        //   const srcDir = path.join(process.cwd(), 'src')
+        //   const filesDir = path.join(srcDir, 'images')
+        //   const entriesDir = path.join(srcDir, 'content', 'images')
+
+        //   try {
+        //     await fs.mkdir(filesDir, { recursive: true })
+        //     await fs.mkdir(entriesDir, { recursive: true })
+
+        //     const files = await fs.readdir(filesDir)
+        //     files.forEach(async (file) => {
+        //       const filename = path.parse(file).name
+        //       const yamlPath = path.join(entriesDir, `${filename}.yml`)
+
+        //       try {
+        //         await fs.access(yamlPath)
+        //       } catch {
+        //         const yamlContent = yaml.dump({
+        //           alt: '',
+        //         })
+        //         await fs.writeFile(yamlPath, yamlContent, 'utf8')
+        //       }
+        //     })
+        //   } catch (error) {
+        //     console.error('Error generating image YAML files:', error)
+        //   }
+        // }
+      },
+      'astro:build:done': async () => {
+        if (config?.cloudcannon) {
+          const __dirname = path.dirname(new URL(import.meta.url).pathname)
+          const libDir = path.join(__dirname, '../../cloudcannon.config.yml')
+          const userDir = path.join(process.cwd(), 'cloudcannon.config.yml')
+
+          const libConfig = yaml.load(
+            fs.readFileSync(path.resolve(libDir), 'utf8')
+          )
+
+          const userConfig = yaml.load(
+            fs.readFileSync(path.resolve(userDir), 'utf8')
+          )
+
+          const mergedConfig = assign(libConfig || {}, userConfig || {})
+          const yamlContent = yaml.dump(mergedConfig)
+
+          await fs.promises.writeFile(userDir, yamlContent, 'utf8')
         }
       },
     },

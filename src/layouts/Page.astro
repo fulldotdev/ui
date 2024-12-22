@@ -1,0 +1,63 @@
+---
+import type { ComponentProps } from 'astro/types'
+import type { CollectionEntry } from 'astro:content'
+import Block from 'fulldev-ui/components/Block.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import type { PageSchema } from 'fulldev-ui/schemas/page.ts'
+import Layout from 'fulldev-ui/structures/Layout.astro'
+
+type Props = ComponentProps<typeof Layout> &
+  PageSchema & {
+    render: CollectionEntry<'pages'>['render']
+  }
+
+const {
+  _block,
+  title,
+  heading,
+  description,
+  paragraph,
+  banner,
+  sidebar,
+  header,
+  sections,
+  footer,
+  render,
+  navigation,
+  ...rest
+} = Astro.props
+
+const { Content, headings } = await render()
+---
+
+<Layout
+  class:list="page"
+  {...rest}
+>
+  <Block
+    _block="Banner"
+    {...banner}
+  />
+  <Block
+    _block="Header"
+    {...rest}
+    {...header}
+  />
+  <Element as="main">
+    <Block
+      _block={_block || 'Hero1'}
+      depth={1}
+      heading={heading || title}
+      paragraph={paragraph || description}
+      {headings}
+      {...rest}
+    >
+      <Content />
+    </Block>
+    {sections?.map((section) => <Block {...section} />)}
+  </Element>
+  <Block
+    _block="Footer"
+    {...footer}
+  />
+</Layout>

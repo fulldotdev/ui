@@ -1,75 +1,58 @@
 ---
-import Column from 'fulldev-ui/components/Column.astro'
+import type { MarkdownHeading } from 'astro'
+import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 import Link from 'fulldev-ui/components/Link.astro'
-import Card from './Card.astro'
-import Heading from './Heading.astro'
+import Links from './Links.astro'
 
-const { toc, headings } = Astro.props
+interface Props extends HTMLAttributes<'div'> {
+  size?: 'sm' | 'md' | 'lg' | undefined
+  heading?: string | undefined
+  headings?: MarkdownHeading[] | undefined
+}
+
+const { size = 'md', heading, headings, ...rest } = Astro.props
+
+const filteredHeadings = headings?.filter((heading: any) => heading.depth <= 4)
+
+const links = filteredHeadings?.map((button: any) => ({
+  text: button.text,
+  href: `#${button.slug}`,
+  class: `depth-${button.depth}`,
+}))
 ---
 
-<Column
+<Element
   class:list="toc"
-  as="aside"
+  {...rest}
 >
-  {
-    toc?.length && headings?.length > 0 && (
-      <>
-        <Heading
-          text="On this page"
-          level={6}
-        />
-        {headings.map(
-          (heading: { slug: string; depth: number; text: string }) => (
-            <Link
-              href={`#${heading.slug}`}
-              class="toc-link"
-              text={heading.text}
-            />
-          )
-        )}
-        <Card
-          size="sm"
-          frame="panel"
-          heading="Join our community Discord"
-          text="Get help, share your work and shape the future of fulldev-ui."
-          buttons={[
-            {
-              icon: 'brand-discord',
-              text: 'Join discord',
-              contrast: true,
-              href: '/discord',
-              size: 'sm',
-            },
-          ]}
-        />
-      </>
-    )
-  }
-</Column>
+  <Link
+    text={heading}
+    href="#"
+    size="sm"
+  />
+  <Links
+    {size}
+    {links}
+  />
 
-<style lang="scss" is:global>
-  @layer fulldev {
-    .toc {
-      display: none !important;
-      box-sizing: border-box;
-      border-left: 1px solid var(--color-a6);
-      padding: var(--space-6) 0 var(--space-6)
-        min(var(--space-5), var(--gutter));
-      height: 100vh;
-      max-height: 100vh;
-      overflow-y: auto;
+  <style is:global>
+    @layer fulldev {
+      .toc {
+        @apply flex flex-col gap-2;
 
-      .toc-link {
-        font-size: var(--text-2);
-      }
+        .link:first-child {
+          @apply font-bold text-foreground;
+        }
 
-      @media (min-width: 1024px) {
-        display: flex !important;
-      }
+        .link.depth-3 {
+          @apply pl-3;
+        }
 
-      .card .icon {
-        color: var(--base-1);
+        .link.depth-4 {
+          @apply pl-6;
+        }
       }
     }
-  }
-</style>
+  </style>
+</Element>

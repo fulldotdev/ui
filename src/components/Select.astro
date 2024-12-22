@@ -1,52 +1,50 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
 import Label from 'fulldev-ui/components/Label.astro'
-import Root from 'fulldev-ui/components/Root.astro'
 
-type Props = HTMLAttributes<'select'> & {
-  color?: 'base' | 'brand'
-  label?: string
-  placeholder?: string
-  options?: string[]
-  value?: string
-  radius?: 'none' | 'auto' | 'full'
-  variant?: 'outline'
+interface Props extends HTMLAttributes<'select'> {
+  show?: any
+  label?: string | undefined
+  placeholder?: string | undefined
+  options?: string[] | undefined
+  value?: string | undefined
 }
 
 const {
   label,
   placeholder,
+  name = label || placeholder,
+  id = name,
+  size = 'md',
   options,
   value,
-  name,
-  required,
-  radius = 'auto',
-  disabled,
-  variant = 'outline',
   ...rest
 } = Astro.props
 ---
 
-<Root
+<Element
   class:list="select"
-  {variant}
-  {...rest}
+  show={options}
+  as="label"
+  for={id}
+  {size}
 >
   <Label
     for={name}
-    html={label}
+    text={label}
   />
-  <Root
+  <Icon name="chevron-down" />
+  <Element
+    class:list="select-select"
     as="select"
-    if={name || options}
-    id={name}
-    {radius}
+    {id}
     {name}
-    {required}
-    {disabled}
+    {...rest}
   >
-    <Root
+    <Element
+      class:list="select-option"
       as="option"
       value={placeholder}
       set:html={placeholder}
@@ -55,7 +53,8 @@ const {
     />
     {
       options?.map((option: any) => (
-        <Root
+        <Element
+          class:list="select-option"
           as="option"
           selected={value === option}
           set:html={option}
@@ -64,82 +63,54 @@ const {
       ))
     }
     <slot />
-  </Root>
-  <Icon name="chevron-down" />
-</Root>
+  </Element>
+</Element>
 
-<style is:global lang="scss">
+<style is:global>
   @layer fulldev {
     .select {
-      display: flex;
-      position: relative;
-      flex-direction: column;
-      gap: var(--space-1);
-      width: 100%;
+      @apply relative flex flex-col gap-1.5;
 
       .icon {
-        position: absolute;
-        right: var(--space-4);
-        bottom: var(--space-4);
-        width: var(--text-2);
-        height: var(--text-2);
-        pointer-events: none;
+        @apply pointer-events-none absolute;
       }
 
-      select {
-        display: flex;
-        position: relative;
-        align-items: center;
-        appearance: none;
-        appearance: none;
-        outline: none;
-        border: 1px solid var(--color-6);
-        border-radius: var(--radius-1);
-        background-color: transparent;
-        padding-right: calc(var(--text-2) + 2 * var(--space-4));
-        padding-left: var(--space-4);
-        width: 100%;
-        min-width: var(--space-4);
-        height: calc(var(--text-2) + 2 * var(--space-4));
-        color: var(--color-11);
-        font-size: var(--text-2);
-        line-height: 1.25;
+      .select-select {
+        @apply flex w-full appearance-none rounded-md border border-input bg-background pr-10 text-sm ring-offset-background;
+        @apply file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground;
+        @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+        @apply disabled:pointer-events-none disabled:opacity-50;
+        @apply [&[readonly]]:pointer-events-none;
+      }
 
-        &:hover {
-          outline: none;
+      &.size-sm {
+        .select-select {
+          @apply h-9 px-2.5 py-1.5 pr-9 text-xs;
         }
 
-        &:focus {
-          outline: none;
-          box-shadow: inset 0 0 0 2px var(--color-7);
-          border-color: var(--color-7);
-        }
-
-        &:disabled {
-          opacity: 50%;
-          cursor: not-allowed;
-          pointer-events: none;
-        }
-
-        &.radius-none {
-          border-radius: 0;
-        }
-
-        &.radius-auto {
-          border-radius: var(--radius-1);
-        }
-
-        &.radius-full {
-          border-radius: 9999px;
+        .icon {
+          @apply bottom-2 right-2;
         }
       }
 
-      option {
-        color: var(--text);
-        font-weight: var(--font-weight);
-        font-size: var(--text-2);
-        line-height: 1;
-        font-family: var(--font-family);
+      &.size-md {
+        .select-select {
+          @apply h-10 px-3 py-2 pr-10 text-sm;
+        }
+
+        .icon {
+          @apply bottom-2.5 right-2.5;
+        }
+      }
+
+      &.size-lg {
+        .select-select {
+          @apply h-12 px-3.5 py-2.5 pr-11 text-base;
+        }
+
+        .icon {
+          @apply bottom-3.5 right-3.5;
+        }
       }
     }
   }

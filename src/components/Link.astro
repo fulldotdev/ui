@@ -1,74 +1,68 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
-import Root from 'fulldev-ui/components/Root.astro'
+import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
+import Icon from 'fulldev-ui/components/Icon.astro'
 
-type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
-  underline?: 'auto' | 'always' | 'hover' | 'none'
-  size?: 'sm' | 'md' | 'lg'
-  color?: 'base' | 'brand'
-  contrast?: boolean
-  html?: string
-  text?: string
+interface Props extends HTMLAttributes<'a'> {
+  variant?: 'primary' | 'underline' | 'muted' | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
+  text?: string | undefined
+  icon?: string | undefined
 }
 
-const { html, text, as = 'a', underline = 'auto', ...rest } = Astro.props
+const { variant = 'muted', size = 'md', text, icon, ...rest } = Astro.props
 ---
 
-<Root
+<Element
   class:list="link"
-  {as}
-  {underline}
+  as="a"
+  current={`/${Astro.params.page}/` === rest.href}
+  {variant}
+  {size}
   {...rest}
 >
-  <slot>
-    <Fragment set:text={text} />
-    <Fragment set:html={html} />
-  </slot>
-</Root>
+  <Fragment set:html={text} />
+  <slot />
+  <Icon name={icon} />
+</Element>
 
-<style is:global lang="scss">
+<style is:global>
   @layer fulldev {
-    .link {
-      display: inline-flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: var(--space-2);
-      cursor: pointer;
-      border: none;
-      background: none;
-      color: var(--color-11);
-      font-weight: var(--font-weight);
-      font-size: var(--text-3);
-      font-family: var(--font-family);
-      text-decoration-color: var(--border); // FIXME, werkt niet
-      white-space: nowrap;
+    .link,
+    .prose-content > *:not(.prose-footer) > a {
+      @apply cursor-pointer ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
 
-      &:hover {
-        color: var(--color-12);
+      &.variant-primary,
+      &:is(.prose-content > *:not(.prose-footer) > a) {
+        @apply text-primary underline underline-offset-4;
       }
 
-      &.underline-auto {
-        text-decoration: none;
+      &.variant-underline {
+        @apply underline underline-offset-4;
+      }
 
-        &:is(p > &) {
-          text-decoration: underline;
+      &.variant-muted {
+        @apply text-muted-foreground hover:text-foreground;
+
+        &.current {
+          @apply text-foreground;
         }
       }
 
-      &.underline-always {
-        text-decoration: underline;
+      &.size-sm {
+        @apply text-sm;
       }
 
-      &.underline-hover {
-        text-decoration: none;
-
-        &:hover {
-          text-decoration: underline;
-        }
+      &.size-md {
+        @apply text-base;
       }
 
-      &.underline-none {
-        text-decoration: none;
+      &.size-lg {
+        @apply text-lg;
+      }
+
+      .icon {
+        @apply mb-0.5;
       }
     }
   }

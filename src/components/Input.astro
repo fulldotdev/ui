@@ -1,119 +1,118 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
 import Label from 'fulldev-ui/components/Label.astro'
-import Root from 'fulldev-ui/components/Root.astro'
 
-type Props = HTMLAttributes<'input'> & {
-  variant?: 'outline'
-  color?: 'base' | 'brand'
-  label?: string
-  icon?: string
-  radius?: 'none' | 'auto' | 'full'
+interface Props extends HTMLAttributes<'input'> {
+  size?: 'sm' | 'md' | 'lg' | undefined
+  label?: string | undefined
+  icon?: string | undefined
 }
 
 const {
-  variant = 'outline',
   label,
-  icon,
-  value,
-  disabled,
-  required,
-  radius = 'auto',
   placeholder,
-  name = placeholder,
+  name = label || placeholder,
+  id = name,
   type = 'text',
+  size = 'md',
+  value,
+  icon,
   ...rest
 } = Astro.props
 ---
 
-<Root
+<Element
   class:list="input"
+  as="label"
+  for={id}
+  {size}
   {...rest}
 >
   <Label
     for={name}
-    html={label}
+    text={label}
+    {size}
   />
-  <Root
+  <Icon
+    name={icon}
+    {size}
+  />
+  <Element
+    class:list="input-input"
     as="input"
-    if={name}
+    show={name}
     id={name}
     {name}
-    {variant}
     {placeholder}
-    {radius}
     {type}
     {value}
-    {disabled}
-    {required}
   />
-  <Icon name={icon} />
-</Root>
+</Element>
 
-<style is:global lang="scss">
+<style is:global>
   @layer fulldev {
+    .input-input {
+      @apply flex w-full rounded-md border border-input bg-background text-sm text-foreground ring-offset-background;
+      @apply file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground;
+      @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+      @apply disabled:pointer-events-none disabled:opacity-50;
+      @apply [&[readonly]]:pointer-events-none;
+    }
+
     .input {
-      display: flex;
-      position: relative;
-      flex-direction: column;
-      gap: var(--space-1);
-      width: 100%;
+      @apply relative flex flex-col gap-1.5;
 
       .icon {
-        position: absolute;
-        right: var(--space-4);
-        bottom: var(--space-4);
-        pointer-events: none;
+        @apply pointer-events-none absolute;
       }
 
-      input {
-        display: flex;
-        position: relative;
-        align-items: center;
-        outline: none;
-        border: 1px solid var(--color-6);
-        border-radius: var(--radius-1);
-        background-color: transparent;
-        padding: var(--space-4);
-        padding-right: calc(var(--text-2) + 2 * var(--space-4));
-        width: 100%;
-        min-width: var(--space-4);
-        height: calc(var(--text-2) + 2 * var(--space-4));
-        color: var(--text);
-        font-size: var(--text-2);
-        line-height: 1.25;
+      &.size-sm {
+        @apply gap-1;
 
-        &.radius-none {
-          border-radius: 0;
+        .input-input {
+          @apply h-9 px-2.5 py-1.5 text-xs;
         }
 
-        &.radius-auto {
-          border-radius: var(--radius-1);
+        .icon {
+          @apply bottom-2 right-2;
         }
 
-        &.radius-full {
-          border-radius: 9999px;
+        .icon + .input-input {
+          @apply pr-9;
+        }
+      }
+
+      &.size-md {
+        @apply gap-1.5;
+
+        .input-input {
+          @apply h-10 px-3 py-2 text-sm;
         }
 
-        &::placeholder {
-          color: var(--color-11);
+        .icon {
+          @apply bottom-2.5 right-2.5;
         }
 
-        &:hover {
-          outline: none;
+        .icon + .input-input {
+          @apply pr-10;
+        }
+      }
+
+      &.size-lg {
+        @apply gap-2;
+
+        .input-input {
+          @apply h-12 px-3.5 py-2.5 text-base;
         }
 
-        &:focus {
-          outline: none;
-          box-shadow: inset 0 0 0 2px var(--color-7);
-          border-color: var(--color-7);
+        .icon {
+          @apply bottom-3.5 right-3.5;
         }
 
-        &:disabled {
-          opacity: 50%;
-          cursor: not-allowed;
-          pointer-events: none;
+        .icon + .input-input {
+          @apply pr-11;
         }
       }
     }

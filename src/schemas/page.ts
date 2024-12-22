@@ -1,43 +1,23 @@
 import { z } from 'astro:content'
-import { base } from './base'
-import { block } from './block'
-import { pathSchema } from './utils'
+import { blockSchema } from 'fulldev-ui/schemas/block.ts'
+import { headSchema } from 'fulldev-ui/schemas/head.ts'
+import { menuSchema } from 'fulldev-ui/schemas/menu.ts'
 
-export const page = base
+export const pageSchema = blockSchema
   .extend({
-    i18n: pathSchema('pages'),
-    settings: pathSchema('settings'),
-    seo: z
-      .object({
-        title: z.string(),
-        description: z.string(),
-        image: z.string(),
-      })
-      .partial()
-      .passthrough(),
-    code: z
-      .object({
-        head: z.string(),
-        body: z.string(),
-      })
-      .partial()
-      .passthrough(),
-    pages: pathSchema('pages').array(),
-    records: pathSchema('records').array(),
-    title: z.string(),
-    description: z.string(),
-    header: block.or(z.literal(false)),
-    headers: block.array().or(z.literal(false)),
-    hero: block.or(z.literal(false)),
-    block: block.or(z.literal(false)),
-    section: block.or(z.literal(false)),
-    blocks: block.array().or(z.object({}).catchall(block)),
-    sections: block.array().or(z.object({}).catchall(block)),
-    cta: block.or(z.literal(false)),
-    footer: block.or(z.literal(false)),
-    footers: block.array().or(z.literal(false)),
+    _layout: z.string().optional(),
+    _schema: z.string().optional(),
+    title: z.string().optional(),
+    description: z.string().optional(),
+    head: headSchema.optional(),
+    banner: blockSchema.optional(),
+    navigation: blockSchema.optional(),
+    header: blockSchema.optional(),
+    sections: blockSchema.array().optional(),
+    subheader: blockSchema.array().optional(),
+    sidebar: menuSchema.array().optional(),
+    footer: blockSchema.optional(),
   })
-  .partial()
-  .passthrough()
+  .strict()
 
-export type Page = z.infer<typeof page>
+export type PageSchema = z.infer<typeof pageSchema>

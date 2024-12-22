@@ -1,62 +1,118 @@
 ---
-import Pagefind from 'astro-pagefind/components/Search'
-import Dialog from './Dialog.astro'
+import { getCollection } from 'astro:content'
+import { getHref } from 'fulldev-ui/utils/getHref'
+import Button from './Button.astro'
+import Element from './Element.astro'
+import Heading from './Heading.astro'
+import Input from './Input.astro'
+import Paragraph from './Paragraph.astro'
 
-const { variant = 'secondary', icon, ...rest } = Astro.props
+const pages = await getCollection('pages')
 ---
 
-<Dialog
-  class:list="search"
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const input = document.querySelector('.search-input')
+    const items = document.querySelectorAll('.search-item')
+
+    input?.addEventListener('input', (e) => {
+      if (!(e.target instanceof HTMLInputElement)) return
+      const value = e.target.value.toLowerCase()
+      items.forEach((item) => {
+        if (!(item instanceof HTMLElement)) return
+
+        const title =
+          item.querySelector('.heading')?.textContent?.toLowerCase() || ''
+        const description =
+          item.querySelector('.paragraph')?.textContent?.toLowerCase() || ''
+
+        const isVisible = title.includes(value) || description.includes(value)
+        item.classList.toggle('hide', !isVisible)
+      })
+    })
+  })
+</script>
+
+<Button
+  class:list="search-button"
+  variant={Astro.props.variant}
+  size="sm"
+  icon="search"
+  onclick={`document.getElementById('search').showModal()`}
+/>
+
+<dialog
+  class="search"
   id="search"
-  {variant}
-  {icon}
-  {...rest}
+  onclick={`event.target === this && this.close()`}
 >
-  <Pagefind uiOptions={{ showImages: false }} />
-</Dialog>
+  <Element class:list="search-container">
+    <Element class:list="search-content">
+      <Input
+        class:list="search-input"
+        placeholder="Search"
+        icon="search"
+      />
+      <Element class:list="search-list">
+        {
+          pages.map(({ slug, data }) => (
+            <Element
+              as="a"
+              href={getHref(slug)}
+              class="search-item hide"
+            >
+              <Heading
+                text={data.title}
+                as="h6"
+                size="md"
+              />
+              <Paragraph
+                set:text={'description' in data ? data.description : undefined}
+              />
+            </Element>
+          ))
+        }
+      </Element>
+    </Element>
+  </Element>
+</dialog>
 
-<style is:global lang="scss">
-  :root {
-    --pagefind-ui-primary: var(--brand-11);
-    --pagefind-ui-text: var(--base-12);
-    --pagefind-ui-background: var(--base-2);
-    --pagefind-ui-border: var(--base-6);
-    --pagefind-ui-tag: var(--base-6);
-  }
+<style is:global>
+  @layer fulldev {
+    .search {
+      @apply container h-full w-full max-w-screen-md rounded-lg !border-none bg-transparent py-24 outline-none backdrop:bg-black/50;
 
-  @media (max-width: 1023.999px) {
-    .search,
-    #search,
-    #search-button {
-      display: none !important;
+      &:is(.dark &) {
+        color-scheme: dark;
+      }
+
+      .search-container {
+        @apply w-full overflow-hidden rounded-lg border bg-background shadow-md;
+      }
+
+      .search-content {
+        @apply max-h-[400px] w-full overflow-y-auto;
+      }
+
+      .input {
+        @apply m-5;
+      }
+
+      .search-list {
+        @apply flex h-full w-full shrink grow-0 flex-col;
+      }
+
+      .search-item {
+        @apply border-t p-5 transition-colors hover:bg-accent;
+
+        &.hide {
+          @apply hidden;
+        }
+      }
+
+      .paragraph {
+        @apply mt-2 truncate text-sm text-muted-foreground;
+      }
     }
-  }
-
-  .dialog div {
-    width: 100%;
-  }
-
-  .pagefind-ui__search-input {
-    outline: none !important;
-    border: 1px solid var(--base-7);
-    color: var(--base-11);
-
-    &::placeholder {
-      color: var(--base-11);
-    }
-
-    &:hover {
-      outline: none;
-    }
-
-    &:focus {
-      outline: none;
-      box-shadow: inset 0 0 0 2px var(--base-8);
-      border-color: var(--base-8);
-    }
-  }
-
-  .pagefind-ui__search-clear {
-    background: transparent !important;
   }
 </style>

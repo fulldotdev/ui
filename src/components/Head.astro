@@ -1,21 +1,26 @@
 ---
 import { AstroSeo } from '@astrolib/seo'
-import type { CollectionEntry } from 'astro:content'
-import { ViewTransitions } from 'astro:transitions'
+import type { HTMLAttributes } from 'astro/types'
+import type Image from 'fulldev-ui/components/Image.astro'
+import type { ComponentProps } from 'svelte'
 
-type Props = Partial<CollectionEntry<'pages'>>
+type Props = HTMLAttributes<'head'> & {
+  title?: string | undefined
+  description?: string | undefined
+  image?: ComponentProps<typeof Image> | undefined
+  theme?: 'light' | 'dark' | 'system' | undefined
+  favicon?: string | undefined
+  company?: string | undefined
+  scripts?: string[] | undefined
+  code?: string | undefined
+}
 
-const { data, render } = Astro.props
-const { title, description, image, seo, code } = data || {}
+const { theme, title, description, image, code, ...rest } = Astro.props
 
-const renderTitle = render && (await render()).headings[0]?.text
-const mergedTitle = seo?.title || title || renderTitle
-const mergedDescription = seo?.description || description
-const mergedImage =
-  seo?.image || image ? Astro.url.origin + (seo?.image || image) : undefined
+const src = image?.src && Astro.url.origin + image.src
 ---
 
-<head>
+<head {...rest}>
   <meta charset="utf-8" />
   <meta
     content="width=device-width, initial-scale=1, viewport-fit=cover"
@@ -25,60 +30,64 @@ const mergedImage =
     name="generator"
     content={Astro.generator}
   />
-  <ViewTransitions />
+  <link
+    rel="canonical"
+    href={Astro.url.href.endsWith('/') ? Astro.url.href : Astro.url.href + '/'}
+  />
   <AstroSeo
-    title={mergedTitle}
-    description={mergedDescription}
+    title={title ?? ''}
+    description={description ?? ''}
     openGraph={{
-      title: mergedTitle,
-      description: mergedDescription,
-      images: mergedImage
-        ? [
-            {
-              url: mergedImage,
-              alt: mergedTitle,
-            },
-          ]
-        : undefined,
+      title: title ?? '',
+      description: description ?? '',
+      images: [
+        {
+          url: src ?? '',
+          alt: title ?? '',
+        },
+      ],
     }}
   />
-  <link
-    rel="apple-touch-icon"
-    sizes="76x76"
-    href="/favicon/apple-touch-icon.png"
-  />
-  <link
-    rel="icon"
-    type="image/png"
-    sizes="32x32"
-    href="/favicon/favicon-32x32.png"
-  />
-  <link
-    rel="icon"
-    type="image/png"
-    sizes="16x16"
-    href="/favicon/favicon-16x16.png"
-  />
-  <link
-    rel="manifest"
-    href="/favicon/site.webmanifest"
-  />
-  <link
-    rel="mask-icon"
-    href="/favicon/safari-pinned-tab.svg"
-  />
-  <link
-    rel="shortcut icon"
-    href="/favicon/favicon.ico"
-  />
-  <meta
-    name="msapplication-config"
-    content="/favicon/browserconfig.xml"
-  />
-  <meta
-    name="theme-color"
-    content="#000000"
-  />
-  <slot name="head" />
-  <Fragment set:html={code?.head} />
+
+  <Fragment set:html={code} />
+
+  <script is:inline define:vars={{ theme }}>
+    function setTheme(document) {
+      const value = localStorage.getItem('theme') || theme
+
+      const isDark =
+        value === 'dark' ||
+        (value === 'system' &&
+          window.matchMedia('(prefers-color-scheme: dark)').matches)
+
+      document.documentElement.classList.toggle('dark', isDark)
+
+      document.querySelectorAll('.themer').forEach((themer) => {
+        themer?.querySelectorAll('option').forEach((option) => {
+          option.selected = option.value === value
+        })
+      })
+    }
+
+    function setOption(document) {
+      const value = localStorage.getItem('theme') || theme
+
+      document.querySelectorAll('.themer').forEach((themer) => {
+        themer?.querySelectorAll('option').forEach((option) => {
+          option.selected = option.value === value
+        })
+      })
+    }
+
+    setTheme(document)
+    setOption(document)
+
+    document.addEventListener('astro:before-swap', (event) => {
+      setTheme(event.newDocument)
+    })
+
+    document.addEventListener('astro:page-load', (event) => {
+      setOption(document)
+    })
+  </script>
 </head>

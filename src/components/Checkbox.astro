@@ -1,65 +1,80 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
+import Icon from 'fulldev-ui/components/Icon.astro'
 import Label from 'fulldev-ui/components/Label.astro'
-import Root from 'fulldev-ui/components/Root.astro'
 
-type Props = Omit<HTMLAttributes<'input'>, 'type'> & {
-  label?: string
-  color?: 'base' | 'brand'
-  contrast?: boolean
-  icon?: string
+interface Props extends HTMLAttributes<'input'> {
+  size?: 'sm' | 'md' | 'lg' | undefined
+  label?: string | undefined
 }
 
-const {
-  label,
-  contrast,
-  icon,
-  name,
-  id,
-  placeholder,
-  value,
-  disabled,
-  checked,
-  required,
-  ...rest
-} = Astro.props
+const { label, name = label, id = name, size = 'md', ...rest } = Astro.props
 ---
 
-<Root
-  structure="row"
+<Element
   class:list="checkbox"
-  {...rest}
+  as="label"
+  for={id}
+  {size}
 >
-  <Root
+  <Element
+    class:list="checkbox-input"
     as="input"
     type="checkbox"
-    id={id ?? name ?? label}
-    if={id ?? name ?? label}
-    name={name ?? label ?? id}
-    {disabled}
-    {required}
-    {checked}
+    show={id}
+    {id}
+    {name}
     {...rest}
   />
-  <Label
-    for={id ?? name ?? label}
-    html={label}
-    {contrast}
+  <Icon
+    class="checkbox-icon"
+    name="check"
+    {size}
   />
-</Root>
+  <Label
+    for={id}
+    text={label}
+    {size}
+  />
+</Element>
 
-<style lang="scss" is:global>
+<style is:global>
   @layer fulldev {
     .checkbox {
-      align-items: center;
-      gap: var(--space-1);
+      @apply relative flex items-center gap-2;
 
-      input {
-        display: block;
-        width: var(--text-2);
-        height: var(--text-2);
-        accent-color: var(--color-9);
-        color-scheme: dark;
+      .checkbox-input {
+        @apply size-[1em] cursor-pointer rounded-sm border border-primary bg-transparent accent-primary;
+        @apply appearance-none border border-primary bg-background checked:bg-primary;
+      }
+
+      .icon.checkbox-icon {
+        @apply absolute bg-transparent p-0.5 text-background;
+
+        * {
+          stroke-width: 3.5px !important;
+        }
+      }
+
+      &.size-sm {
+        .checkbox-input,
+        .icon.checkbox-icon {
+          @apply !size-3.5;
+        }
+      }
+      &.size-md {
+        .checkbox-input,
+        .checkbox-icon {
+          @apply !size-4;
+        }
+      }
+
+      &.size-lg {
+        .checkbox-input,
+        .checkbox-icon {
+          @apply !size-[1.125rem];
+        }
       }
     }
   }

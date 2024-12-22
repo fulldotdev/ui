@@ -1,0 +1,102 @@
+---
+_block: Content7
+title: images
+---
+
+# images
+
+Adds type-safety and optimization for local images
+
+## Features
+
+- Type-safe image references
+- Integrates with Astro's `<Image />` component
+- Integrates even better with fulldev-ui's `<Image />` component
+- Get images using the `getEntry()` helper function
+- Define alt texts globally, so you don't have to repeat yourself
+
+## Adding images
+
+Image files added to the `src/images` directory will automatically be added to the images collection.
+
+## Global alt texts
+
+Alt texts can be defined globally in the same folder as where the images live. You create a `[IMAGE NAME].yml` in the same folder as the images.
+
+This way you can define alt texts once and they will be used everyhwere you use the image. An example of such a `yaml` file would be:
+
+```yaml
+alt: 'A placeholder landscape image'
+```
+
+## Using images
+
+### Automatic (recommended)
+
+Use fulldev-ui's included `<Image />` component to get the following benefits out of the box:
+
+- You only have to pass the image id
+- Automatic type-safety and warnings
+- Automatically uses global alt text
+- Automatically optimizes image file
+
+This is also the easiest way to use images:
+
+```astro
+---
+import Image from 'fulldev-ui/components/Image.astro'
+---
+
+<Image id="my-image.png" />
+```
+
+### Manual
+
+If you want more control over the image, you can use the `getEntry()` helper function to get an image.
+
+```astro
+---
+import { getEntry } from 'fulldev-ui/utils'
+
+const image = getEntry('my-image.png')
+---
+```
+
+It will return an image in the following format:
+
+```ts
+{
+  id: 'my-image.png',
+  src: '/src/images/my-image.png',
+  alt: 'Alt text provided via steps above',
+  width: 1930,
+  height: 1080,
+  format: 'png'
+}
+```
+
+You can pass these values directly into Astro's `<Image />` component to render the image.
+
+```astro
+---
+import { getEntry } from 'fulldev-ui/utils'
+
+const image = getEntry('my-image.png')
+---
+
+<Image {...image} />
+```
+
+But to get an optimized version, you should use an imported image instead:
+
+```astro
+---
+import { getEntry } from 'fulldev-ui/utils'
+
+const image = getEntry('my-image.png')
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/images/*')
+const image = images[image.src]
+---
+
+<Image src={image()} alt={image.alt} />
+```

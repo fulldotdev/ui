@@ -1,82 +1,43 @@
 ---
-import type { HTMLTag, Polymorphic } from 'astro/types'
-import Icon from 'fulldev-ui/components/Icon.astro'
-import Root from 'fulldev-ui/components/Root.astro'
+import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 
-type Props<As extends HTMLTag = 'a'> = Polymorphic<{ as: As }> & {
-  radius?: 'none' | 'auto' | 'full'
-  size?: 'sm' | 'md' | 'lg'
-  color?: 'base' | 'brand'
-  contrast?: boolean
-  html?: string
-  text?: string
-  icon?: string
+interface Props extends HTMLAttributes<'a'>, HTMLAttributes<'div'> {
+  variant?: 'primary' | 'secondary' | 'outline' | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
+  text?: string | undefined
+  icon?: string | undefined
 }
 
-const {
-  href,
-  html,
-  text,
-  as = href ? 'a' : 'div',
-  radius = 'full',
-  icon,
-  ...rest
-} = Astro.props
+const { variant = 'outline', size = 'md', text, icon, ...rest } = Astro.props
 ---
 
-<Root
+<Element
   class:list="badge"
-  {radius}
-  {as}
-  {href}
+  as={rest.href ? 'a' : 'div'}
+  {variant}
+  {size}
   {...rest}
 >
-  <slot>
-    <Fragment set:text={text} />
-    <Fragment set:html={html} />
-  </slot>
-  <Icon name={icon} />
-</Root>
+  <Fragment set:html={text} />
+  <slot />
+</Element>
 
-<style is:global lang="scss">
+<style is:global>
   @layer fulldev {
     .badge {
-      display: inline-flex;
-      flex-shrink: 0;
-      justify-content: center;
-      align-items: center;
-      vertical-align: top;
-      gap: var(--space-2);
-      transition: var(--transition);
-      border: 1px solid var(--color-a6);
-      padding: 0 var(--space-3);
-      height: calc(var(--text-1) + 2 * var(--space-2));
-      color: var(--color-11);
-      font-weight: 500;
-      font-size: var(--text-1);
-      line-height: 1;
-      text-align: center;
-      text-decoration: none;
-      white-space: nowrap;
+      @apply inline-flex h-6 items-center justify-center whitespace-nowrap rounded-full px-2.5 text-xs font-medium leading-none ring-offset-background;
 
-      &[href] {
-        border-color: var(--color-7);
-
-        &:hover {
-          border-color: var(--color-8);
-        }
+      &.variant-primary {
+        @apply bg-primary text-primary-foreground;
       }
 
-      &.radius-none {
-        border-radius: 0;
+      &.variant-secondary {
+        @apply bg-secondary text-secondary-foreground;
       }
 
-      &.radius-auto {
-        border-radius: var(--radius-1);
-      }
-
-      &.radius-full {
-        border-radius: 9999px;
+      &.variant-outline {
+        @apply border border-input text-accent-foreground;
       }
     }
   }

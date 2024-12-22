@@ -1,0 +1,67 @@
+---
+import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Tagline from 'fulldev-ui/components/Tagline.astro'
+import type { BlockSchema } from 'fulldev-ui/schemas/block'
+import Container from 'fulldev-ui/structures/Container.astro'
+import Group from 'fulldev-ui/structures/Group.astro'
+import Section from 'fulldev-ui/structures/Section.astro'
+import Writeup from 'fulldev-ui/structures/Writeup.astro'
+
+interface Props extends BlockSchema {}
+
+const {
+  depth = 2,
+  tagline,
+  heading,
+  paragraph,
+  content,
+  button,
+  buttons,
+  image,
+  ...rest
+} = Astro.props
+---
+
+<Section
+  class:list="intro-1"
+  {...rest}
+>
+  <Container>
+    <Writeup>
+      <Tagline
+        size="sm"
+        text={tagline}
+      />
+      <Heading
+        size="3xl"
+        text={heading}
+        {depth}
+      />
+      <Paragraph text={paragraph} />
+      <Fragment set:html={content} />
+      <Group>
+        <Buttons
+          size="sm"
+          {button}
+          {buttons}
+        />
+      </Group>
+    </Writeup>
+    <Image {...image} />
+  </Container>
+</Section>
+
+<style is:global>
+  @layer fulldev {
+    .section.intro-1 {
+      @apply border-b py-8;
+
+      .image {
+        @apply rounded-lg;
+      }
+    }
+  }
+</style>

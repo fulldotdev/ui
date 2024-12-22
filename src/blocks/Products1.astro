@@ -1,0 +1,87 @@
+---
+import Button from 'fulldev-ui/components/Button.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Price from 'fulldev-ui/components/Price.astro'
+import type { BlockSchema } from 'fulldev-ui/schemas/block'
+import Card from 'fulldev-ui/structures/Card.astro'
+import Container from 'fulldev-ui/structures/Container.astro'
+import Section from 'fulldev-ui/structures/Section.astro'
+
+interface Props extends BlockSchema {}
+
+const { depth = 2, heading, button, cards, ...rest } = Astro.props
+---
+
+<Section
+  class:list="products-1"
+  {...rest}
+>
+  <Container>
+    <Element class:list="products-1-segment">
+      <Heading
+        size="2xl"
+        text={heading}
+        {depth}
+      />
+      <Button
+        variant="ghost"
+        size="sm"
+        {...button}
+      />
+    </Element>
+    <Element class:list="products-1-cards">
+      {
+        cards?.map(({ href, images, heading, price }) => (
+          <Card {href}>
+            <Image {...images?.[0]} />
+            <Element class:list="products-1-card-content">
+              <Heading
+                depth={(depth + 1) as 3}
+                as="h3"
+                size="md"
+                text={heading}
+              />
+              <Price amount={price} />
+            </Element>
+          </Card>
+        ))
+      }
+    </Element>
+  </Container>
+</Section>
+
+<style is:global>
+  @layer fulldev {
+    .products-1 {
+      .container {
+        @apply flex flex-col gap-8;
+      }
+
+      .products-1-segment {
+        @apply flex items-center justify-between gap-8;
+      }
+
+      .products-1-cards {
+        @apply grid grid-cols-2 items-start gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6;
+      }
+
+      .card {
+        @apply relative flex flex-col gap-3;
+
+        &:hover > .image {
+          @apply opacity-75 transition-opacity;
+        }
+
+        .image {
+          @apply rounded-md border;
+        }
+      }
+
+      .products-1-card-content {
+        @apply flex h-full flex-col gap-2;
+      }
+    }
+  }
+</style>

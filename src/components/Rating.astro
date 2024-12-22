@@ -1,88 +1,55 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import Root from 'fulldev-ui/components/Root.astro'
-import Avatar from './Avatar.astro'
-import Column from './Column.astro'
-import Label from './Label.astro'
 
-type Props = HTMLAttributes<'div'> & {
-  color?: 'base' | 'brand'
-  align?: 'start' | 'center' | 'end'
-  value?: number
-  size?: string
-  label?: string
-  avatars?: string[]
-  avatar?: string
+interface Props extends HTMLAttributes<'div'> {
+  size?: 'sm' | 'md' | 'lg' | undefined
+  score?: number | undefined
 }
 
-const { value, label, avatars, avatar, align, ...rest } = Astro.props
+const { size = 'md', score, ...rest } = Astro.props
 
 const getIcon = (count: number) => {
-  if (!value) return
-  const difference = value - count
+  if (!score) return
+  const difference = score - count
   if (difference >= -0.25) return 'star-filled'
   if (difference >= -0.75) return 'star-half-filled'
   return 'star'
 }
-
-const hasAvatars = avatars && avatars?.length > 0
 ---
 
-<Root
+<Element
   class:list="rating"
   {...rest}
 >
   {
-    [avatar, ...(avatars ?? [])]?.filter(Boolean)?.map((avatar) => (
-      <Avatar
-        radius="full"
-        src={avatar}
-      />
-    ))
+    score &&
+      [1, 2, 3, 4, 5].map((count) => (
+        <Icon
+          name={getIcon(count)}
+          {size}
+        />
+      ))
   }
-  <Column align={!hasAvatars ? align : undefined}>
-    <Root
-      class:list={'stars'}
-      {...rest}
-    >
-      {
-        value &&
-          [1, 2, 3, 4, 5].map((_, i) => (
-            <Icon
-              name={getIcon(i + 1)}
-              class:list={'rating-icon-solid'}
-            />
-          ))
-      }
-    </Root>
-    <Label
-      color="base"
-      html={label}
-    />
-  </Column>
-</Root>
+</Element>
 
-<style is:global lang="scss">
+<style is:global>
   @layer fulldev {
     .rating {
-      display: flex;
-      align-items: center;
-      gap: var(--space-4);
+      @apply flex gap-1 text-primary;
+    }
 
-      .avatar + .avatar {
-        margin-left: calc(var(--space-4) * -2.5);
-      }
+    &.size-sm {
+      @apply text-xs;
+    }
 
-      .label {
-        margin-top: var(--space-2) !important;
-      }
+    &.size-md {
+      @apply text-sm;
+    }
 
-      .stars {
-        display: flex;
-        align-items: center;
-        gap: var(--space-2);
-      }
+    &.size-lg {
+      @apply text-base;
     }
   }
 </style>

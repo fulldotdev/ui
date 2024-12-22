@@ -1,7 +1,141 @@
 ---
-import HeaderComponent from 'fulldev-ui/components/Header.astro'
+// import Button from 'fulldev-ui/components/Button.astro'
+import Button from 'fulldev-ui/components/Button.astro'
+// import Cart from 'fulldev-ui/components/Cart.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Links from 'fulldev-ui/components/Links.astro'
+import Logo from 'fulldev-ui/components/Logo.astro'
+import Menus from 'fulldev-ui/components/Menus.astro'
+import Search from 'fulldev-ui/components/Search.astro'
+import Socials from 'fulldev-ui/components/Socials.astro'
+import Themer from 'fulldev-ui/components/Themer.astro'
+import type { BlockSchema } from 'fulldev-ui/schemas/block'
+import Container from 'fulldev-ui/structures/Container.astro'
+import Drawer from 'fulldev-ui/structures/Drawer.astro'
 
-const { ...rest } = Astro.props
+interface Props extends BlockSchema {}
+
+const { logo, links, menus, socials, search, themer, button } = Astro.props
 ---
 
-<HeaderComponent {...rest} />
+<Element
+  class:list="header"
+  as="header"
+>
+  <Container>
+    <Element class:list="header-start">
+      <Logo {...logo} />
+      <Links
+        size="sm"
+        variant="muted"
+        {links}
+      />
+    </Element>
+    <Element class:list="header-end">
+      {
+        search && (
+          <Search
+            show={search}
+            variant="ghost"
+            size="sm"
+          />
+        )
+      }
+      <!-- {
+        cart && (
+          <Cart
+            variant="ghost"
+            size="sm"
+          />
+        )
+      } -->
+      {
+        themer && (
+          <Themer
+            show={themer}
+            variant="ghost"
+            size="sm"
+          />
+        )
+      }
+      <Socials
+        size="sm"
+        {socials}
+      />
+
+      <Button
+        size="sm"
+        {...button}
+      />
+      <!-- <Button
+        class:list="menu-button"
+        as="label"
+        for="sidebar-toggle"
+        icon="menu-2"
+        variant="ghost"
+        size="sm"
+      /> -->
+      <Drawer
+        id="header-drawer"
+        icon="menu-2"
+        size="sm"
+      >
+        <Container>
+          <Menus {menus} />
+        </Container>
+      </Drawer>
+    </Element>
+  </Container>
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .header {
+      @apply sticky left-0 top-0 z-20 flex h-14 w-full items-center border-b bg-background;
+      height: var(--header-height);
+
+      &,
+      & ~ * {
+        --header-height: 3.5rem;
+      }
+
+      .container {
+        @apply flex items-center gap-6;
+      }
+
+      .header-start {
+        @apply flex items-center gap-6;
+
+        .link {
+          @apply max-lg:hidden;
+        }
+      }
+
+      .header-home {
+        @apply flex items-center gap-2;
+      }
+
+      .header-end {
+        @apply ml-auto flex items-center gap-1;
+
+        .social,
+        .themer {
+          @apply max-lg:hidden;
+        }
+
+        .menu-button {
+          @apply lg:hidden;
+        }
+      }
+
+      .drawer {
+        @apply lg:hidden;
+
+        .container {
+          @apply flex w-full flex-col items-start gap-6 overflow-y-auto px-gutter pb-14 pt-8;
+          @apply scrollbar scrollbar-track-transparent scrollbar-thumb-accent scrollbar-thumb-rounded-full scrollbar-w-2 hover:scrollbar-thumb-accent-hover;
+        }
+      }
+    }
+  }
+</style>

@@ -1,0 +1,106 @@
+---
+import Button from 'fulldev-ui/components/Button.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+
+interface Props {}
+---
+
+<script>
+  function scrollLeft(content: HTMLElement) {
+    content.scrollLeft -= content.clientWidth
+  }
+
+  function scrollRight(content: HTMLElement) {
+    content.scrollLeft += content.clientWidth
+  }
+
+  const updateButtons = (
+    left: HTMLElement,
+    right: HTMLElement,
+    content: HTMLElement
+  ) => {
+    const isScrollable = content.scrollWidth > content.clientWidth
+    const atStart = content.scrollLeft <= 0
+    const atEnd =
+      content.scrollLeft >= content.scrollWidth - content.clientWidth
+
+    left?.classList.toggle('hide', !isScrollable || atStart)
+    right?.classList.toggle('hide', !isScrollable || atEnd)
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    const carousels = document.querySelectorAll('.carousel')
+    carousels.forEach((carousel) => {
+      const left = carousel?.querySelector('.carousel-left')
+      const right = carousel?.querySelector('.carousel-right')
+      const content = carousel?.querySelector('.carousel-content')
+
+      if (!(content instanceof HTMLElement)) return
+      if (!(left instanceof HTMLElement)) return
+      if (!(right instanceof HTMLElement)) return
+
+      left?.addEventListener('click', () => scrollLeft(content))
+      right?.addEventListener('click', () => scrollRight(content))
+
+      const observer = new ResizeObserver(() => {
+        updateButtons(left, right, content)
+      })
+
+      observer.observe(content)
+
+      content.addEventListener('scroll', () => {
+        updateButtons(left, right, content)
+      })
+    })
+  })
+</script>
+
+<Element class:list="carousel">
+  <Button
+    class="carousel-left hide"
+    icon="chevron-left"
+    variant="secondary"
+    size="sm"
+  />
+  <Element class:list="carousel-content">
+    <slot />
+  </Element>
+  <Button
+    class="carousel-right hide"
+    icon="chevron-right"
+    variant="secondary"
+    size="sm"
+  />
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .carousel {
+      @apply container relative flex w-full items-center overflow-hidden px-0;
+
+      .button {
+        @apply absolute z-10 bg-secondary-hover opacity-50 hover:opacity-100;
+
+        &.hide {
+          @apply !hidden;
+        }
+      }
+
+      .carousel-left {
+        @apply left-2;
+      }
+
+      .carousel-right {
+        @apply right-2;
+      }
+
+      .carousel-content {
+        @apply inline-flex w-full snap-x snap-mandatory gap-2 overflow-x-auto scroll-smooth px-gutter scrollbar-none;
+
+        > * {
+          @apply snap-center;
+        }
+      }
+    }
+  }
+</style>

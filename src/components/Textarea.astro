@@ -1,105 +1,81 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 import Label from 'fulldev-ui/components/Label.astro'
-import Root from 'fulldev-ui/components/Root.astro'
 
-type Props = HTMLAttributes<'textarea'> & {
-  radius?: 'none' | 'auto'
-  color?: 'base' | 'brand'
-  variant?: 'outline'
-  label?: string
+interface Props extends HTMLAttributes<'textarea'> {
+  size?: 'sm' | 'md' | 'lg' | undefined
+  label?: string | undefined
 }
 
 const {
-  placeholder,
-  name = placeholder,
-  variant = 'outline',
-  radius = 'auto',
   label,
-  rows,
-  value,
-  disabled,
-  required,
+  placeholder,
+  name = label || placeholder,
+  id = name,
+  size = 'md',
+  rows = 3,
   ...rest
 } = Astro.props
 ---
 
-<Root
+<Element
   class:list="textarea"
-  {...rest}
+  as="label"
+  for={id}
+  {size}
 >
   <Label
     for={name}
-    set:html={label}
+    text={label}
+    {size}
   />
-  <Root
+  <Element
+    class:list="textarea-textarea"
     as="textarea"
-    if={name}
-    id={name}
+    show={id}
+    {id}
     {name}
-    {variant}
     {placeholder}
-    {value}
-    {disabled}
-    {required}
     {rows}
-    {radius}
+    {...rest}
   />
-</Root>
+</Element>
 
-<style is:global lang="scss">
-  @layer fulldev {
+<style is:global>
+  @layer textarea {
     .textarea {
-      display: flex;
-      position: relative;
-      flex-direction: column;
-      gap: var(--space-1);
-      width: 100%;
+      @apply relative flex flex-col gap-1.5;
 
-      textarea {
-        display: flex;
-        position: relative;
-        align-items: center;
-        outline: none;
-        border: 1px solid var(--color-6);
-        border-radius: var(--radius-1);
-        background-color: transparent;
-        padding: var(--space-4);
-        width: 100%;
-        height: calc((var(--text-2) + 2 * var(--space-4)) * 2);
-        min-height: calc((var(--text-2) + 2 * var(--space-4)) * 2);
-        resize: vertical;
-        color: var(--color-11);
-        font-weight: 400;
-        font-size: var(--text-2);
-        line-height: 1.25;
+      .textarea-textarea {
+        @apply flex w-full resize-y rounded-md border border-input bg-background text-sm ring-offset-background;
+        @apply file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground;
+        @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+        @apply disabled:pointer-events-none disabled:opacity-50;
+        @apply [&[readonly]]:pointer-events-none;
+      }
 
-        &.radius-none {
-          border-radius: 0;
+      &.size-sm {
+        @apply gap-1;
+
+        .textarea-textarea {
+          @apply min-h-9 px-2.5 py-1.5 text-xs;
         }
+      }
 
-        &.radius-auto {
-          border-radius: var(--radius-1);
+      &.size-md {
+        @apply gap-1.5;
+
+        .textarea-textarea {
+          @apply min-h-10 px-3 py-2 text-sm;
         }
+      }
 
-        &::placeholder {
-          color: var(--color-11);
-        }
+      &.size-lg {
+        @apply gap-2;
 
-        &:hover {
-          outline: none;
-        }
-
-        &:focus {
-          outline: none;
-          box-shadow: inset 0 0 0 2px var(--color-7);
-          border-color: var(--color-7);
-        }
-
-        &:disabled {
-          opacity: 50%;
-          cursor: not-allowed;
-          pointer-events: none;
+        .textarea-textarea {
+          @apply min-h-12 px-3.5 py-2.5 text-base;
         }
       }
     }

@@ -2,41 +2,38 @@
 import type { ComponentProps } from 'astro/types'
 import Image from 'fulldev-ui/components/Image.astro'
 
-type Props = Omit<ComponentProps<typeof Image>, 'position' | 'frame'> & {
-  variant?: 'subtle' | 'outline' | 'ghost'
-  radius?: 'none' | 'auto' | 'full'
+interface Props extends ComponentProps<typeof Image> {
+  size?: 'sm' | 'md' | 'lg' | undefined
 }
 
-const { radius = 'auto', ...rest } = Astro.props
+const { size = 'md', ...rest } = Astro.props
 ---
 
 <Image
-  class:list={'avatar'}
-  {radius}
+  class:list={[
+    'avatar',
+    {
+      [`size-${size}`]: size,
+    },
+  ]}
   {...rest}
 />
 
-<style is:global lang="scss">
+<style is:global>
   @layer fulldev {
     .avatar {
-      display: block;
-      border: 1px solid var(--border);
-      border: 1px solid var(--base-a6);
-      border-radius: var(--radius-3);
-      width: calc(2.8 * var(--space-4));
-      height: calc(2.8 * var(--space-4));
-      object-fit: cover;
+      @apply !rounded-full object-cover;
 
-      &.radius-none {
-        border-radius: 0;
+      &.size-sm {
+        @apply h-9 w-9;
       }
 
-      &.radius-auto {
-        border-radius: var(--radius-1);
+      &.size-md {
+        @apply h-10 w-10;
       }
 
-      &.radius-full {
-        border-radius: 9999px;
+      &.size-lg {
+        @apply h-11 w-11;
       }
     }
   }

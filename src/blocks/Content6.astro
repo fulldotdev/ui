@@ -1,0 +1,56 @@
+---
+import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Tagline from 'fulldev-ui/components/Tagline.astro'
+import Toc from 'fulldev-ui/components/Toc.astro'
+import type { BlockSchema } from 'fulldev-ui/schemas/block'
+import Container from 'fulldev-ui/structures/Container.astro'
+import Group from 'fulldev-ui/structures/Group.astro'
+import Prose from 'fulldev-ui/structures/Prose.astro'
+import Sidebar from 'fulldev-ui/structures/Sidebar.astro'
+
+interface Props extends BlockSchema {}
+
+const {
+  depth,
+  tagline,
+  heading,
+  paragraph,
+  buttons,
+  image,
+  content,
+  headings,
+} = Astro.props
+---
+
+<Container class="content-6 flex items-start justify-between px-0">
+  <Container class="lg:!max-w-[calc(100%-var(--sidebar-width))]">
+    <Prose class="mx-auto py-8">
+      <Tagline text={tagline} />
+      <Heading
+        text={heading}
+        {depth}
+      />
+      <Paragraph
+        muted
+        size="lg"
+        text={paragraph}
+      />
+      <Image {...image} />
+      <Fragment set:html={content} />
+      <slot />
+      <Group>
+        <Buttons {buttons} />
+      </Group>
+    </Prose>
+  </Container>
+  <Sidebar>
+    <Toc
+      size="sm"
+      {heading}
+      {headings}
+    />
+  </Sidebar>
+</Container>

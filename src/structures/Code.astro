@@ -1,0 +1,53 @@
+---
+import type { ComponentProps } from 'astro/types'
+import { Code as AstroCode } from 'astro:components'
+import Element from 'fulldev-ui/components/Element.astro'
+
+interface Props extends ComponentProps<typeof AstroCode> {}
+
+const { lang = 'astro', code, ...rest } = Astro.props
+---
+
+<Element class:list="code">
+  <div class="example">
+    <slot name="example" />
+    <Fragment set:html={code} />
+  </div>
+  <slot name="code" />
+  {
+    code && (
+      <AstroCode
+        class:list="code"
+        code={code}
+        {lang}
+        {...rest}
+      />
+    )
+  }
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .code {
+      @apply mt-8 rounded-md border first:mt-0;
+
+      .example {
+        @apply flex flex-wrap items-center gap-8 p-8;
+
+        > *,
+        > slot > * {
+          @apply mt-0;
+        }
+
+        .heading,
+        .paragraph {
+          @apply w-full;
+        }
+      }
+
+      .astro-code {
+        @apply mt-0 overflow-x-auto rounded-none border-none p-4 text-sm first:mt-0;
+      }
+    }
+  }
+</style>

@@ -1,0 +1,76 @@
+---
+import Button from 'fulldev-ui/components/Button.astro'
+import Icon from 'fulldev-ui/components/Icon.astro'
+
+interface Props {
+  show?: any
+  size?: any
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | undefined
+}
+
+const { variant = 'secondary', ...rest } = Astro.props
+---
+
+<Button
+  class="themer"
+  {variant}
+  {...rest}
+>
+  <Icon
+    class="themer-light-icon"
+    name="sun"
+  />
+  <Icon
+    class="themer-dark-icon"
+    name="moon"
+  />
+  <select class="themer-select">
+    <option value="light">Light</option>
+    <option value="dark">Dark</option>
+    <option
+      value="system"
+      selected
+    >
+      System
+    </option>
+  </select>
+</Button>
+
+<script>
+  import { navigate } from 'astro:transitions/client'
+
+  function init(document: Document) {
+    document.querySelectorAll('.themer select').forEach((select) => {
+      select.addEventListener('change', (event) => {
+        if (event.target instanceof HTMLSelectElement) {
+          localStorage.setItem('theme', event.target.value)
+          navigate(window.location.href)
+        }
+      })
+    })
+  }
+
+  init(document)
+
+  document.addEventListener('astro:before-swap', (event) => {
+    init(event.newDocument)
+  })
+</script>
+
+<style is:global>
+  .themer {
+    @apply relative px-0;
+
+    .themer-select {
+      @apply absolute inset-0 cursor-pointer appearance-none opacity-0;
+    }
+  }
+
+  html.dark .themer-light-icon {
+    display: none;
+  }
+
+  html:not(.dark) .themer-dark-icon {
+    display: none;
+  }
+</style>

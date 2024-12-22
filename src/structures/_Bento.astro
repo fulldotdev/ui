@@ -1,0 +1,34 @@
+---
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
+
+interface Props extends HTMLAttributes<'div'> {
+  as?: HTMLTag
+}
+
+const { ...rest } = Astro.props
+---
+
+<Element
+  class:list="bento"
+  {...rest}
+>
+  <slot />
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .bento {
+      @apply relative grid w-full grid-cols-1 gap-4 lg:grid-cols-5;
+
+      & > * {
+        @apply lg:grid-col-span-2;
+      }
+
+      & > *:nth-child(3n + 2),
+      & > *:nth-child(3n + 3) {
+        @apply lg:grid-col-span-3;
+      }
+    }
+  }
+</style>
