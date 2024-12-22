@@ -25,7 +25,6 @@ export const cardSchema = z
     link: linkSchema.optional(),
     links: linkSchema.array().optional(),
     menus: menuSchema.array().optional(),
-    sidebar: menuSchema.array().optional(),
     chip: chipSchema.optional(),
     badges: z.string().array().optional(),
     button: buttonSchema.optional(),
@@ -39,5 +38,6 @@ export const cardSchema = z
     rating: z.number().optional(),
     avatar: imageSchema.optional(),
     avatars: imageSchema.array().optional(),
+    soldout: z.boolean().optional(),
   })
   .strict()

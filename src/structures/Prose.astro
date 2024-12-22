@@ -4,6 +4,7 @@ import Element from 'fulldev-ui/components/Element.astro'
 
 interface Props extends HTMLAttributes<'div'> {
   as?: HTMLTag
+  align?: 'center' | 'middle' | 'columns'
 }
 
 const { ...rest } = Astro.props
@@ -19,65 +20,51 @@ const { ...rest } = Astro.props
 <style is:global>
   @layer fulldev {
     .prose {
-      @apply relative w-full max-w-screen-md;
+      @apply w-full max-w-screen-md;
 
-      > * {
-        & + * {
-          @apply mt-6;
-        }
+      &.align-middle {
+        @apply mx-auto max-w-screen-md items-center;
+      }
 
-        &.tagline + .heading,
-        & + p,
-        & > p {
-          @apply mt-4;
-        }
+      &.align-center {
+        @apply mx-auto flex max-w-screen-md;
 
-        & + .group,
-        & + .button,
-        & + .buttons {
-          @apply mt-8;
+        > *:not(* > *) {
+          @apply text-center;
         }
       }
 
-      code:not(.astro-code code) {
-        @apply rounded bg-muted px-1.5 py-0.5 font-mono text-sm font-medium;
+      &.align-columns {
+        @apply max-w-none break-inside-avoid gap-x-8 lg:columns-2;
       }
 
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6 {
-        @apply scroll-m-20 font-bold;
-
-        code {
-          font-size: inherit !important;
-        }
+      > *,
+      .tagline + * {
+        @apply mt-4;
       }
 
-      > h1 {
-        @apply text-4xl;
+      > .group,
+      > .button,
+      > .buttons {
+        @apply mt-8;
       }
 
       > h2 {
-        @apply mt-10 text-2xl;
+        @apply mt-10;
       }
 
       > h3 {
-        @apply mt-8 text-xl;
+        @apply mt-8;
       }
 
-      > h4 {
-        @apply text-lg;
-      }
-
-      > h5 {
-        @apply text-base;
-      }
-
+      > h4,
+      > h5,
       > h6 {
-        @apply text-sm;
+        @apply mt-6;
+      }
+
+      code:not(:is(.astro-code, h1, h2, h3, h4, h5, h6) code) {
+        @apply rounded bg-muted px-1.5 py-0.5 font-mono text-sm font-medium;
       }
 
       > aside {

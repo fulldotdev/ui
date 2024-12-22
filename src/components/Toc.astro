@@ -2,21 +2,18 @@
 import type { MarkdownHeading } from 'astro'
 import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
 import Link from 'fulldev-ui/components/Link.astro'
+import Links from './Links.astro'
 
 interface Props extends HTMLAttributes<'div'> {
-  headings?: MarkdownHeading[] | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
   heading?: string | undefined
+  headings?: MarkdownHeading[] | undefined
 }
 
-const { headings, heading, ...rest } = Astro.props
+const { size = 'md', heading, headings, ...rest } = Astro.props
 
-const filteredHeadings = headings?.filter(
-  (heading: any) => heading.depth >= 2 && heading.depth <= 4
-)
-
-const h1 = headings?.find((heading: any) => heading.depth === 1)
+const filteredHeadings = headings?.filter((heading: any) => heading.depth <= 4)
 
 const links = filteredHeadings?.map((button: any) => ({
   text: button.text,
@@ -27,34 +24,35 @@ const links = filteredHeadings?.map((button: any) => ({
 
 <Element
   class:list="toc"
-  show={filteredHeadings?.length}
   {...rest}
 >
-  <Heading text={h1?.text || heading} />
-  {
-    links?.map((link) => (
-      <Link
-        variant="muted"
-        size="sm"
-        {...link}
-      />
-    ))
-  }
-</Element>
+  <Link
+    text={heading}
+    href="#"
+    size="sm"
+  />
+  <Links
+    {size}
+    {links}
+  />
 
-<style is:global>
-  @layer fulldev {
-    .toc {
-      @apply sticky bottom-0 top-sticky-16 z-10 hidden w-48 shrink-0 flex-col items-start justify-start gap-3 overflow-y-auto md:flex;
-      @apply scrollbar scrollbar-track-transparent scrollbar-thumb-accent scrollbar-thumb-rounded-full scrollbar-w-2 hover:scrollbar-thumb-accent-hover;
+  <style is:global>
+    @layer fulldev {
+      .toc {
+        @apply flex flex-col gap-2;
 
-      .depth-3 {
-        @apply pl-3;
-      }
+        .link:first-child {
+          @apply font-bold text-foreground;
+        }
 
-      .depth-4 {
-        @apply relative pl-6;
+        .link.depth-3 {
+          @apply pl-3;
+        }
+
+        .link.depth-4 {
+          @apply pl-6;
+        }
       }
     }
-  }
-</style>
+  </style>
+</Element>

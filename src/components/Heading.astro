@@ -7,7 +7,6 @@ interface Props
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | undefined
   depth?: 1 | 2 | 3 | 4 | 5 | 6 | undefined
   text?: string | undefined
-  muted?: boolean | undefined
   size?:
     | 'xs'
     | 'sm'
@@ -35,12 +34,9 @@ const { depth = 2, as = `h${depth}`, text, ...rest } = Astro.props
 </Element>
 
 <style is:global>
-  .heading {
+  .heading,
+  .prose > :is(h1, h2, h3, h4, h5, h6) {
     @apply scroll-mt-20 font-bold tracking-tight text-foreground;
-
-    &.muted {
-      @apply text-muted-foreground;
-    }
 
     &.size-xs {
       @apply text-xs;
@@ -50,30 +46,37 @@ const { depth = 2, as = `h${depth}`, text, ...rest } = Astro.props
       @apply text-sm;
     }
 
+    &:where(.prose > h6),
     &.size-md {
       @apply text-base;
     }
 
+    &:where(.prose > h5),
     &.size-lg {
       @apply text-lg;
     }
 
+    &:where(.prose > h4),
     &.size-xl {
       @apply text-xl;
     }
 
+    &:where(.prose > h3),
     &.size-2xl {
       @apply text-2xl;
     }
 
+    &:where(.prose > h1),
     &.size-3xl {
       @apply text-3xl;
     }
 
+    &:where(.prose > h2:not(:is(h1 ~ h2))),
     &.size-4xl {
       @apply text-4xl;
     }
 
+    &:where(.prose > h1),
     &.size-5xl {
       @apply text-4xl lg:text-5xl;
     }

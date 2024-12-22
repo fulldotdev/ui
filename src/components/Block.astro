@@ -2,17 +2,9 @@
 import { getEntries } from 'astro:content'
 import type { BlockSchema } from 'fulldev-ui/schemas/block'
 
-interface Props extends BlockSchema {
-  headings?: any
-  depth?: number
-  toc?: any
-  sidebar?: any
-  first?: boolean
-}
+interface Props extends BlockSchema {}
 
-let { _block, pages, ...rest } = Astro.props
-
-pages = pages && (await getEntries(pages))
+let { _block, cards, pages, records, ...rest } = Astro.props
 
 const blocks = {
   ...import.meta.glob('/src/blocks/**/*.astro'),
@@ -24,12 +16,24 @@ const path = Object.keys(blocks).find(
 )
 
 const BlockComponent = path && (await (blocks[path] as any)()).default
+
+cards = [
+  ...(cards || []),
+  ...(await getEntries(records || [])).map(({ data, ...rest }) => ({
+    ...data,
+    ...rest,
+  })),
+  ...(await getEntries(pages || [])).map(({ data, ...rest }) => ({
+    ...rest,
+    ...data,
+  })),
+]
 ---
 
 {
   BlockComponent && (
     <BlockComponent
-      {pages}
+      {cards}
       {...rest}
     >
       <slot />

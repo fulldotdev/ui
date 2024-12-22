@@ -9,16 +9,14 @@ import Layout from 'fulldev-ui/structures/Layout.astro'
 type Props = ComponentProps<typeof Layout> &
   PageSchema & {
     render: CollectionEntry<'pages'>['render']
-    headings?: any
-    heading?: string
-    paragraph?: string
   }
 
 const {
-  heading,
+  _block,
   title,
-  paragraph,
+  heading,
   description,
+  paragraph,
   banner,
   sidebar,
   header,
@@ -30,15 +28,6 @@ const {
 } = Astro.props
 
 const { Content, headings } = await render()
-
-const h1 = headings?.find((heading) => heading.depth === 1)
-const links = headings
-  ?.filter((heading) => heading.depth >= 2 && heading.depth <= 4)
-  .map(({ text, depth, slug }) => ({
-    text,
-    depth,
-    href: `#${slug}`,
-  }))
 ---
 
 <Layout
@@ -51,31 +40,21 @@ const links = headings
   />
   <Block
     _block="Header"
-    {sidebar}
+    {...rest}
     {...header}
   />
   <Element as="main">
     <Block
+      _block={_block || 'Hero1'}
       depth={1}
-      heading={h1 ? undefined : heading || title}
-      paragraph={h1 ? undefined : paragraph || description}
-      toc={{
-        heading: h1?.text || heading || title,
-        links,
-      }}
-      {sidebar}
+      heading={heading || title}
+      paragraph={paragraph || description}
+      {headings}
       {...rest}
     >
       <Content />
     </Block>
-    {
-      sections?.map((section, i) => (
-        <Block
-          depth={i === 0 && !rest._block ? 1 : 2}
-          {...section}
-        />
-      ))
-    }
+    {sections?.map((section) => <Block {...section} />)}
   </Element>
   <Block
     _block="Footer"
