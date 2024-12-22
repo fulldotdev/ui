@@ -8,11 +8,10 @@ import Card from 'fulldev-ui/structures/Card.astro'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Matrix from 'fulldev-ui/structures/Matrix.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
-import { getHref } from 'fulldev-ui/utils/getHref'
 
 interface Props extends BlockSchema {}
 
-const { heading, button, pages, ...rest } = Astro.props
+const { depth = 2, heading, button, cards, ...rest } = Astro.props
 ---
 
 <Section
@@ -24,6 +23,7 @@ const { heading, button, pages, ...rest } = Astro.props
       <Heading
         size="3xl"
         text={heading}
+        {depth}
       />
       <Button
         size="sm"
@@ -33,15 +33,16 @@ const { heading, button, pages, ...rest } = Astro.props
     </Element>
     <Matrix>
       {
-        pages?.map(({ slug, data: { title, list } }) => (
+        cards?.map(({ href, heading, list }) => (
           <Card
             class="jobs-1-card"
-            href={getHref(slug)}
+            {href}
           >
             <Heading
+              depth={(depth + 1) as 3}
               as="h2"
               size="lg"
-              text={title}
+              text={heading}
             />
             <List
               size="sm"

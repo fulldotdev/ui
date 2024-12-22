@@ -1,6 +1,7 @@
 ---
 import { getEntries } from 'astro:content'
 import type { BlockSchema } from 'fulldev-ui/schemas/block'
+import { getHref } from 'fulldev-ui/utils/getHref'
 
 interface Props extends BlockSchema {}
 
@@ -19,13 +20,13 @@ const BlockComponent = path && (await (blocks[path] as any)()).default
 
 cards = [
   ...(cards || []),
-  ...(await getEntries(records || [])).map(({ data, ...rest }) => ({
+  ...(await getEntries(records || [])).map(({ data }) => ({
     ...data,
-    ...rest,
   })),
-  ...(await getEntries(pages || [])).map(({ data, ...rest }) => ({
-    ...rest,
+  ...(await getEntries(pages || [])).map(({ slug, data }) => ({
+    href: getHref(slug),
     ...data,
+    heading: data.title,
   })),
 ]
 ---
@@ -34,6 +35,8 @@ cards = [
   BlockComponent && (
     <BlockComponent
       {cards}
+      {pages}
+      {records}
       {...rest}
     >
       <slot />

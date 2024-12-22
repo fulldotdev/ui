@@ -16,12 +16,10 @@ export default defineConfig({
     }),
     svelte(),
   ],
-  redirects: {
-    // '/structure/[...slug]': '/docs/components/[...slug]',
-    // '/segment/[...slug]': '/docs/components/[...slug]',
-    // '/typography/[...slug]': '/docs/components/[...slug]',
-    // '/base/[...slug]': '/docs/components/[...slug]',
-    // '/overview/theming/': '/docs/customization/',
-    // '/overview/[...slug]': '/docs/[...slug]',
-  },
+  // redirects: {
+  //   '/overview/[...slug]': '/docs/[...slug]',
+  //   '/typography/[...slug]': '/docs/components/[...slug]',
+  //   '/structure/[...slug]': '/docs/structures/[...slug]',
+  //   '/blocks': '/docs/blocks/banner/',
+  // },
 })
