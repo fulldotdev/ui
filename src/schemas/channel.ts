@@ -10,5 +10,6 @@ export const channelSchema = z
     href: z.string().optional(),
     size: z.enum(['sm', 'md', 'lg']).optional(),
     variant: z.enum(['secondary', 'outline']).optional(),
+    target: z.enum(['_blank', '_self', '_parent', '_top']).optional(),
   })
   .strict() satisfies z.ZodType<ComponentProps<typeof Channel>>

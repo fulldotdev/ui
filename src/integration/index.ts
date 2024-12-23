@@ -50,6 +50,7 @@ export default function fulldevIntegration(
                 URL: envField.string({
                   context: 'client',
                   access: 'public',
+                  optional: true,
                 }),
                 STRIPE_RESTRICTED_KEY: envField.string({
                   context: 'client',
