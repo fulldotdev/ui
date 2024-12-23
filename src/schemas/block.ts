@@ -17,6 +17,13 @@ export const blockSchema = cardSchema
     variants: z.record(z.string(), z.string().array()).optional(),
     categories: pathSchema('pages').array().optional(),
     menus: menuSchema.array().optional(),
+    form: z
+      .object({
+        fields: z.array(z.any()).optional(),
+        submit: z.string().optional(),
+      })
+      .strict()
+      .optional(),
     headings: z
       .array(
         z.object({
