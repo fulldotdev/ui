@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content'
-import { getCollection } from 'astro:content'
+import { getCollection, getEntries } from 'astro:content'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import List from 'fulldev-ui/components/List.astro'
@@ -28,6 +28,8 @@ const jobs = await getCollection('pages', (page) =>
       category.slug == slug || pages?.some((p) => p.slug == category.slug)
   )
 )
+
+const pageEntries = pages && (await getEntries(pages))
 ---
 
 <Section
@@ -47,13 +49,13 @@ const jobs = await getCollection('pages', (page) =>
   <Container class="flex flex-col gap-12">
     <Matrix class="gap-2">
       {
-        pages?.map(({ slug, data: { title, image } }) => (
+        pageEntries?.map(({ slug, data: { title, image } }) => (
           <Card
             class="grid grid-cols-3 items-center bg-transparent p-0"
             href={getHref(slug)}
           >
             <Image
-              class="h-full w-auto rounded-sm object-cover"
+              class="h-auto w-full rounded-sm object-cover"
               {...image}
             />
             <Heading
