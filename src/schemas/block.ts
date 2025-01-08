@@ -11,6 +11,8 @@ export const blockSchema = cardSchema
     search: z.boolean().optional(),
     cart: z.boolean().optional(),
     cards: cardSchema.array().optional(),
+    pros: cardSchema.optional(),
+    cons: cardSchema.optional(),
     pages: pathSchema('pages').array().optional(),
     records: pathSchema('records').array().optional(),
     soldout: z.boolean().optional(),
