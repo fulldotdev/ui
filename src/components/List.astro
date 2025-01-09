@@ -1,28 +1,32 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
+import Icon from 'fulldev-ui/components/Icon.astro'
 
 interface Props extends HTMLAttributes<'ul' | 'ol'> {
   as?: 'ul' | 'ol' | undefined
   size?: 'sm' | 'md' | 'lg' | undefined
   items?: string[] | undefined
   muted?: boolean | undefined
+  icon?: string | undefined
 }
 
-const { as = 'ul', items, ...rest } = Astro.props
+const { as = 'ul', items, icon, ...rest } = Astro.props
 ---
 
 <Element
-  class:list="list"
+  class:list={['list', icon ? 'has-icon' : undefined]}
   {as}
   {...rest}
 >
   {
     items?.map((item) => (
-      <Element
-        as="li"
-        set:html={item}
-      />
+      <Element as="li">
+        <Icon name={icon} />
+        <span>
+          <Fragment set:html={item} />
+        </span>
+      </Element>
     ))
   }
   <slot />
@@ -32,14 +36,14 @@ const { as = 'ul', items, ...rest } = Astro.props
   @layer fulldev {
     .list,
     .prose :is(ul, ol) {
-      @apply ml-6;
+      @apply pl-4;
 
       &:is(ul) {
         @apply list-disc;
       }
 
       ul {
-        @apply ml-6 mt-2 list-disc;
+        @apply ml-5 mt-2 list-disc;
       }
 
       &:is(ol) {
@@ -47,7 +51,7 @@ const { as = 'ul', items, ...rest } = Astro.props
       }
 
       ol {
-        @apply ml-6 mt-2 list-decimal;
+        @apply ml-5 mt-2 list-decimal;
       }
 
       li {
@@ -57,11 +61,35 @@ const { as = 'ul', items, ...rest } = Astro.props
       &.size-sm,
       &:where(.size-sm &) {
         @apply text-sm;
+
+        .icon {
+          @apply mt-0;
+        }
       }
 
       &.size-lg,
       &:where(.size-lg &) {
         @apply text-lg;
+
+        .icon {
+          @apply mt-1;
+        }
+      }
+
+      &.muted {
+        @apply text-muted-foreground;
+      }
+
+      .icon {
+        @apply -ml-5 mt-0.5 shrink-0 text-inherit;
+      }
+
+      &.has-icon {
+        @apply ml-0 list-none;
+
+        li {
+          @apply flex gap-2;
+        }
       }
     }
   }
