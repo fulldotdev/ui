@@ -2,24 +2,14 @@
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
 import Element from 'fulldev-ui/components/Element.astro'
-import Input from 'fulldev-ui/components/Input.astro'
-import Select from 'fulldev-ui/components/Select.astro'
-import Textarea from 'fulldev-ui/components/Textarea.astro'
+import Fields from 'fulldev-ui/components/Fields.astro'
 
 interface Props extends HTMLAttributes<'form'> {
-  submit?: ComponentProps<typeof Button>['text']
-  fields?:
-    | (
-        | ComponentProps<typeof Input>
-        | ComponentProps<typeof Select>
-        | (ComponentProps<typeof Textarea> & {
-            type?: 'textarea' | undefined
-          })
-      )[]
-    | undefined
+  fields?: ComponentProps<typeof Fields>['fields']
+  button?: ComponentProps<typeof Button> | undefined
 }
 
-const { fields, submit, ...rest } = Astro.props
+const { fields, button, ...rest } = Astro.props
 ---
 
 <Element
@@ -27,18 +17,11 @@ const { fields, submit, ...rest } = Astro.props
   as="form"
   {...rest}
 >
-  {
-    fields?.map((field) => {
-      if ('options' in field) return <Select {...field} />
-      if ('type' in field && field.type === 'textarea')
-        return <Textarea {...field} />
-      return <Input {...(field as any)} />
-    })
-  }
+  <Fields {fields} />
   <slot />
   <Button
     type="submit"
-    text={submit}
+    {...button}
   />
 </Element>
 
