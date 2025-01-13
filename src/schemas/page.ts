@@ -7,6 +7,7 @@ export const pageSchema = blockSchema
   .extend({
     _layout: z.string().optional(),
     _schema: z.string().optional(),
+    slug: z.string().optional(),
     title: z.string().optional(),
     description: z.string().optional(),
     head: headSchema.optional(),

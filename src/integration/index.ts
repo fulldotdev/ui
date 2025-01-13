@@ -78,7 +78,10 @@ export default function fulldevIntegration(
             },
             css: {
               postcss: {
-                plugins: [tailwindcss(tailwindConfig), tailwindcssNesting],
+                plugins: [
+                  tailwindcss(tailwindConfig) as any,
+                  tailwindcssNesting,
+                ],
               },
             },
           },

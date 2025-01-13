@@ -13,19 +13,18 @@ import Section from 'fulldev-ui/structures/Section.astro'
 import { getHref } from 'fulldev-ui/utils/getHref'
 
 interface Props {
-  slug?: CollectionEntry<'pages'>['slug']
+  id?: CollectionEntry<'pages'>['id']
   heading?: string | undefined
   paragraph?: string | undefined
   pages?: CollectionEntry<'pages'>[]
 }
 
-const { slug, heading, paragraph, pages, ...rest } = Astro.props
+const { id, heading, paragraph, pages, ...rest } = Astro.props
 
 // Jobs that reference the current category, or any of `pages` select categories
 const jobs = await getCollection('pages', (page) =>
   page.data.categories?.some(
-    (category) =>
-      category.slug == slug || pages?.some((p) => p.slug == category.slug)
+    (category) => category.id == id || pages?.some((p) => p.id == category.id)
   )
 )
 
@@ -49,10 +48,10 @@ const pageEntries = pages && (await getEntries(pages))
   <Container class="flex flex-col gap-12">
     <Matrix class="gap-2">
       {
-        pageEntries?.map(({ slug, data: { title, image } }) => (
+        pageEntries?.map(({ id, data: { title, image } }) => (
           <Card
             class="grid grid-cols-3 items-center bg-transparent p-0"
-            href={getHref(slug)}
+            href={getHref(id)}
           >
             <Image
               class="h-auto w-full rounded-sm object-cover"
@@ -70,10 +69,10 @@ const pageEntries = pages && (await getEntries(pages))
     </Matrix>
     <Matrix>
       {
-        jobs?.map(({ slug, data: { title, list } }) => (
+        jobs?.map(({ id, data: { title, list } }) => (
           <Card
             class="jobs-1-card flex flex-col gap-3"
-            href={getHref(slug)}
+            href={getHref(id)}
           >
             <Heading
               as="h2"
