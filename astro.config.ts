@@ -1,4 +1,3 @@
-import svelte from '@astrojs/svelte'
 import { defineConfig } from 'astro/config'
 import integration from 'fulldev-ui/integration'
 
@@ -14,12 +13,5 @@ export default defineConfig({
       css: '/src/css/custom.css',
       injectRoutes: false,
     }),
-    svelte(),
   ],
-  // redirects: {
-  //   '/overview/[...slug]': '/docs/[...slug]',
-  //   '/typography/[...slug]': '/docs/components/[...slug]',
-  //   '/structure/[...slug]': '/docs/structures/[...slug]',
-  //   '/blocks': '/docs/blocks/banner/',
-  // },
 })
