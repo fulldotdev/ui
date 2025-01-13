@@ -24,47 +24,44 @@ const {
 } = Astro.props
 ---
 
-<Element
-  class:list="select"
-  show={options}
-  as="label"
-  for={id}
-  {size}
->
-  <Label
-    for={name}
-    text={label}
-  />
-  <Icon name="chevron-down" />
-  <Element
-    class:list="select-select"
-    as="select"
-    {id}
-    {name}
-    {...rest}
-  >
-    <Element
-      class:list="select-option"
-      as="option"
-      value={placeholder}
-      set:html={placeholder}
-      disabled
-      selected
-    />
-    {
-      options?.map((option: any) => (
+{
+  options && (
+    <Label
+      class:list="select"
+      for={id}
+      {size}
+    >
+      <Fragment set:html={label} />
+      <Element
+        class:list="select-select"
+        as="select"
+        {id}
+        {name}
+        {...rest}
+      >
         <Element
           class:list="select-option"
           as="option"
-          selected={value === option}
-          set:html={option}
-          value={option}
+          value={placeholder}
+          set:html={placeholder}
+          disabled
+          selected
         />
-      ))
-    }
-    <slot />
-  </Element>
-</Element>
+        {options?.map((option: any) => (
+          <Element
+            class:list="select-option"
+            as="option"
+            selected={value === option}
+            set:html={option}
+            value={option}
+          />
+        ))}
+        <slot />
+      </Element>
+      <Icon name="chevron-down" />
+    </Label>
+  )
+}
 
 <style is:global>
   @layer fulldev {

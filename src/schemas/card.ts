@@ -1,7 +1,7 @@
 import { z } from 'astro:content'
+import { badgeSchema } from 'fulldev-ui/schemas/badge.ts'
 import { buttonSchema } from 'fulldev-ui/schemas/button.ts'
 import { channelSchema } from 'fulldev-ui/schemas/channel.ts'
-import { chipSchema } from 'fulldev-ui/schemas/chip.ts'
 import { imageSchema } from 'fulldev-ui/schemas/image.ts'
 import { linkSchema } from 'fulldev-ui/schemas/link.ts'
 import { logoSchema } from 'fulldev-ui/schemas/logo.ts'
@@ -16,6 +16,7 @@ export const cardSchema = z
     dark: z.boolean().optional(),
     text: z.string().optional(),
     content: z.string().optional(),
+    badge: badgeSchema.optional(),
     tagline: z.string().optional(),
     heading: z.string().optional(),
     paragraph: z.string().optional(),
@@ -25,7 +26,6 @@ export const cardSchema = z
     link: linkSchema.optional(),
     links: linkSchema.array().optional(),
     menus: menuSchema.array().optional(),
-    chip: chipSchema.optional(),
     badges: z.string().array().optional(),
     button: buttonSchema.optional(),
     buttons: buttonSchema.array().optional(),
