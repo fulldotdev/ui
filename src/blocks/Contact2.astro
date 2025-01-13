@@ -1,15 +1,17 @@
 ---
-import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Channels from 'fulldev-ui/components/Channels.astro'
+import Form from 'fulldev-ui/components/Form.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Socials from 'fulldev-ui/components/Socials.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Group from 'fulldev-ui/structures/Group.astro'
-import Panel from 'fulldev-ui/structures/Panel.astro'
 import Prose from 'fulldev-ui/structures/Prose.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
+import Split from 'fulldev-ui/structures/Split.astro'
 
 interface Props extends BlockSchema {}
 
@@ -19,51 +21,70 @@ const {
   heading,
   paragraph,
   content,
-  button,
-  buttons,
+  channels,
+  socials,
+  form,
   image,
+  ...rest
 } = Astro.props
 ---
 
-<Section class:list="cta-1">
+<Section
+  class:list="contact-2"
+  {...rest}
+>
   <Container>
-    <Panel>
-      <Prose align="center">
+    <Split>
+      <Prose
+        align="middle"
+        class="max-w-xl"
+      >
         <Tagline text={tagline} />
         <Heading
-          size="5xl"
-          as="h2"
+          size="4xl"
           text={heading}
           {depth}
         />
         <Paragraph
-          size="xl"
+          muted
+          size="lg"
           text={paragraph}
         />
         <Fragment set:html={content} />
+        <Channels {channels} />
         <Group>
-          <Buttons
-            variant="primary"
-            size="lg"
-            {button}
-            {buttons}
-          />
+          <Socials {socials} />
         </Group>
+        <Form
+          action="/thank-you"
+          method="POST"
+          {...form}
+        />
       </Prose>
       <Image {...image} />
-    </Panel>
+    </Split>
   </Container>
 </Section>
 
 <style is:global>
   @layer fulldev {
-    .cta-1 {
-      .text {
-        @apply text-pretty;
+    .contact-2 {
+      @apply relative w-full;
+
+      .container {
+        @apply flex flex-col gap-16;
+      }
+
+      .contact-2-segment {
+        @apply flex flex-col items-start gap-8;
+      }
+
+      .contact-2-content {
+        @apply flex max-w-screen-md flex-col gap-4;
       }
 
       .image {
-        @apply rounded-lg;
+        @apply rounded-md;
       }
     }
   }

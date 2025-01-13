@@ -12,7 +12,6 @@ import { assign } from 'radash'
 import tailwindcss from 'tailwindcss'
 import tailwindcssNesting from 'tailwindcss/nesting'
 import { loadEnv } from 'vite'
-import virtual from 'vite-plugin-virtual'
 import tailwindConfig from '../../tailwind.config.ts'
 
 interface Config {
@@ -43,27 +42,25 @@ export default function fulldevIntegration(
         // ----------------------
         updateConfig({
           site: loadEnv(process.env.NODE_ENV as any, process.cwd(), '').URL,
-          experimental: {
-            contentLayer: true,
-            env: {
-              schema: {
-                URL: envField.string({
-                  context: 'client',
-                  access: 'public',
-                }),
-                STRIPE_RESTRICTED_KEY: envField.string({
-                  context: 'client',
-                  access: 'public',
-                  optional: true,
-                }),
-                STRIPE_SECRET_KEY: envField.string({
-                  context: 'server',
-                  access: 'secret',
-                  optional: true,
-                }),
-              },
-              validateSecrets: true,
+          env: {
+            schema: {
+              URL: envField.string({
+                context: 'client',
+                access: 'public',
+                optional: true,
+              }),
+              STRIPE_RESTRICTED_KEY: envField.string({
+                context: 'client',
+                access: 'public',
+                optional: true,
+              }),
+              STRIPE_SECRET_KEY: envField.string({
+                context: 'server',
+                access: 'secret',
+                optional: true,
+              }),
             },
+            validateSecrets: true,
           },
           integrations: [
             mdx(),
@@ -79,14 +76,12 @@ export default function fulldevIntegration(
                 ...config?.overrides,
               },
             },
-            plugins: [
-              virtual({
-                'virtual:fulldev-ui/config': config ?? {},
-              }),
-            ],
             css: {
               postcss: {
-                plugins: [tailwindcss(tailwindConfig), tailwindcssNesting],
+                plugins: [
+                  tailwindcss(tailwindConfig) as any,
+                  tailwindcssNesting,
+                ],
               },
             },
           },

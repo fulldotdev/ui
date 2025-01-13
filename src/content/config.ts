@@ -1,18 +1,25 @@
+import { glob } from 'astro/loaders'
 import { defineCollection } from 'astro:content'
 import { cardSchema } from 'fulldev-ui/schemas/card.ts'
 import { pageSchema } from 'fulldev-ui/schemas/page.ts'
 
 export const collections = {
   pages: defineCollection({
-    type: 'content',
+    loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/pages' }),
     schema: pageSchema,
   }),
   layouts: defineCollection({
-    type: 'data',
+    loader: glob({
+      pattern: '**/[^_]*.{yml,yaml}',
+      base: './src/content/layouts',
+    }),
     schema: pageSchema,
   }),
   records: defineCollection({
-    type: 'data',
+    loader: glob({
+      pattern: '**/[^_]*.{yml,yaml}',
+      base: './src/content/records',
+    }),
     schema: cardSchema,
   }),
 }

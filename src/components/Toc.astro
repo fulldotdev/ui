@@ -2,7 +2,7 @@
 import type { MarkdownHeading } from 'astro'
 import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
-import Link from 'fulldev-ui/components/Link.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
 import Links from './Links.astro'
 
 interface Props extends HTMLAttributes<'div'> {
@@ -17,8 +17,8 @@ const filteredHeadings = headings?.filter((heading: any) => heading.depth <= 4)
 
 const links = filteredHeadings?.map((button: any) => ({
   text: button.text,
-  href: `#${button.slug}`,
-  class: `depth-${button.depth}`,
+  href: `#${button?.slug}`,
+  class: `depth-${button?.depth}`,
 }))
 ---
 
@@ -26,11 +26,15 @@ const links = filteredHeadings?.map((button: any) => ({
   class:list="toc"
   {...rest}
 >
-  <Link
-    text={heading}
-    href="#"
-    size="sm"
-  />
+  {
+    (links?.length || 0) > 0 && (
+      <Heading
+        as="h6"
+        text={heading}
+        size="sm"
+      />
+    )
+  }
   <Links
     {size}
     {links}

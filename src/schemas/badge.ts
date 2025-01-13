@@ -1,8 +1,8 @@
 import type { ComponentProps } from 'astro/types'
 import { z } from 'astro:content'
-import type Chip from 'fulldev-ui/components/Chip.astro'
+import type Badge from 'fulldev-ui/components/Badge.astro'
 
-export const chipSchema = z
+export const badgeSchema = z
   .object({
     icon: z.string().optional(),
     text: z.string().optional(),
@@ -11,4 +11,4 @@ export const chipSchema = z
     size: z.enum(['sm', 'md', 'lg']).optional(),
     variant: z.enum(['primary', 'secondary', 'outline']).optional(),
   })
-  .strict() satisfies z.ZodType<ComponentProps<typeof Chip>>
+  .strict() satisfies z.ZodType<ComponentProps<typeof Badge>>

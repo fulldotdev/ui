@@ -1,10 +1,8 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
-import type Link from 'fulldev-ui/components/Link.astro'
-import type { ComponentProps } from 'svelte'
-import Links from './Links.astro'
+import Link from 'fulldev-ui/components/Link.astro'
 
 interface Props extends HTMLAttributes<'div'> {
   size?: 'sm' | 'md' | 'lg' | undefined
@@ -17,6 +15,7 @@ const { size = 'md', heading, links, ...rest } = Astro.props
 
 <Element
   class:list="menu"
+  as="menu"
   {...rest}
 >
   {
@@ -28,10 +27,16 @@ const { size = 'md', heading, links, ...rest } = Astro.props
       />
     )
   }
-  <Links
-    {size}
-    {links}
-  />
+  {
+    links?.map((link) => (
+      <Element as="li">
+        <Link
+          {size}
+          {...link}
+        />
+      </Element>
+    ))
+  }
 </Element>
 
 <style is:global>
