@@ -1,6 +1,4 @@
-import type { ComponentProps } from 'astro/types'
 import { z } from 'astro:content'
-import type Badge from 'fulldev-ui/components/Badge.astro'
 
 export const badgeSchema = z
   .object({
@@ -11,4 +9,4 @@ export const badgeSchema = z
     size: z.enum(['sm', 'md', 'lg']).optional(),
     variant: z.enum(['primary', 'secondary', 'outline']).optional(),
   })
-  .strict() satisfies z.ZodType<ComponentProps<typeof Badge>>
+  .strict()

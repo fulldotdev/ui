@@ -1,6 +1,4 @@
-import type { ComponentProps } from 'astro/types'
 import { z } from 'astro:content'
-import type Textarea from 'fulldev-ui/components/Textarea.astro'
 
 export const textareaSchema = z
   .object({
@@ -8,4 +6,4 @@ export const textareaSchema = z
     placeholder: z.string().optional(),
     value: z.string().optional(),
   })
-  .strict() satisfies z.ZodType<ComponentProps<typeof Textarea>>
+  .strict()

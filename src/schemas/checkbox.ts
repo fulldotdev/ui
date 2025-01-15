@@ -1,6 +1,4 @@
-import type { ComponentProps } from 'astro/types'
 import { z } from 'astro:content'
-import type Checkbox from 'fulldev-ui/components/Checkbox.astro'
 
 export const checkboxSchema = z
   .object({
@@ -10,4 +8,4 @@ export const checkboxSchema = z
     value: z.string().optional(),
     size: z.enum(['sm', 'md', 'lg']).optional(),
   })
-  .strict() satisfies z.ZodType<ComponentProps<typeof Checkbox>>
+  .strict()

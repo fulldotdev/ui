@@ -1,6 +1,4 @@
-import type { ComponentProps } from 'astro/types'
 import { z } from 'astro:content'
-import Input from 'fulldev-ui/components/Input.astro'
 
 export const inputSchema = z
   .object({
@@ -10,4 +8,4 @@ export const inputSchema = z
     value: z.string().optional(),
     size: z.enum(['sm', 'md', 'lg']).optional(),
   })
-  .strict() satisfies z.ZodType<ComponentProps<typeof Input>>
+  .strict()
