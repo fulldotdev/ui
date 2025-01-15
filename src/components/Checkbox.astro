@@ -1,7 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
-import Icon from 'fulldev-ui/components/Icon.astro'
 import Label from 'fulldev-ui/components/Label.astro'
 
 interface Props extends HTMLAttributes<'input'> {
@@ -13,9 +12,8 @@ const { label, name = label, id = name, size = 'md', ...rest } = Astro.props
 ---
 
 <Label
-  class:list="checkbox"
+  class:list={`checkbox size-${size}`}
   for={id}
-  {size}
 >
   <Element
     as="input"
@@ -25,10 +23,6 @@ const { label, name = label, id = name, size = 'md', ...rest } = Astro.props
     {name}
     {...rest}
   />
-  <Icon
-    name="check"
-    {size}
-  />
   <Fragment set:html={label} />
 </Label>
 
@@ -37,48 +31,48 @@ const { label, name = label, id = name, size = 'md', ...rest } = Astro.props
     .checkbox {
       display: flex;
       align-items: center;
-      gap: var(--spacing-2);
 
       input {
-        appearance: none;
         cursor: pointer;
-        border: 1px solid var(--color-primary);
-        border-radius: var(--radius-sm);
-        background-color: transparent;
-        width: 1em;
-        height: 1em;
-        accent-color: var(--color-primary);
-      }
+        border-radius: var(--radius-md);
+        accent-color: var(--color-ring);
 
-      .icon {
-        position: absolute;
-        background-color: transparent;
-        padding: var(--spacing-0-5);
-        color: var(--color-background);
+        &:focus-visible {
+          outline: none;
+          box-shadow: 0 0 0 2px var(--color-ring);
+        }
 
-        * {
-          stroke-width: 3.5px !important;
+        &[readonly] {
+          pointer-events: none;
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          pointer-events: none;
         }
       }
 
       &.size-sm {
-        input,
-        .icon {
+        gap: var(--spacing-1-5);
+
+        input {
           width: var(--spacing-3-5) !important;
           height: var(--spacing-3-5) !important;
         }
       }
       &.size-md {
-        input,
-        .icon {
+        gap: var(--spacing-2);
+
+        input {
           width: var(--spacing-4) !important;
           height: var(--spacing-4) !important;
         }
       }
 
       &.size-lg {
-        input,
-        .icon {
+        gap: var(--spacing-2-5);
+
+        input {
           width: 1.125rem !important;
           height: 1.125rem !important;
         }

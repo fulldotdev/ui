@@ -13,7 +13,6 @@ export const cardSchema = z
     target: z.string().optional(),
     href: z.string().optional(),
     order: z.number().optional(),
-    dark: z.boolean().optional(),
     text: z.string().optional(),
     content: z.string().optional(),
     badge: badgeSchema.optional(),
