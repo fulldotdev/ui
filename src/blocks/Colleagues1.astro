@@ -12,13 +12,10 @@ import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
 interface Props extends BlockSchema {}
 
-const { depth = 2, tagline, heading, paragraph, cards, ...rest } = Astro.props
+const { depth = 2, tagline, heading, paragraph, cards } = Astro.props
 ---
 
-<Section
-  class:list="colleagues-1"
-  {...rest}
->
+<Section class="colleagues-1">
   <Container>
     <Writeup align="center">
       <Tagline
@@ -35,7 +32,7 @@ const { depth = 2, tagline, heading, paragraph, cards, ...rest } = Astro.props
     <Matrix>
       {
         cards?.map(({ image, heading, paragraph }) => (
-          <Element class:list="colleagues-card">
+          <Element class="colleagues-card">
             <Image {...image} />
             <Heading
               depth={(depth + 1) as 3}
@@ -53,38 +50,36 @@ const { depth = 2, tagline, heading, paragraph, cards, ...rest } = Astro.props
 
 <style>
   @layer fulldev {
-    .colleagues-1 {
-      .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: var(--spacing-16);
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--spacing-16);
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      gap: var(--spacing-8);
+
+      @media (min-width: 1024px) {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
+    }
 
-      .matrix {
-        display: grid;
-        grid-template-columns: repeat(1, minmax(0, 1fr));
-        gap: var(--spacing-8);
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
 
-        @media (min-width: 1024px) {
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-      }
-
-      .card {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-
-        > .image {
-          margin-bottom: var(--spacing-4);
-          border-radius: var(--radius-full);
-          aspect-ratio: 1 / 1;
-          width: 66.666667%;
-          object-fit: cover;
-        }
-      }
+    .image {
+      margin-bottom: var(--spacing-4);
+      border-radius: var(--radius-full);
+      aspect-ratio: 1 / 1;
+      width: 66.666667%;
+      object-fit: cover;
     }
   }
 </style>

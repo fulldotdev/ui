@@ -13,15 +13,12 @@ import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
 interface Props extends BlockSchema {}
 
-const { depth = 2, heading, button, cards, ...rest } = Astro.props
+const { depth = 2, heading, button, cards } = Astro.props
 ---
 
-<Section
-  class="job-categories-1"
-  {...rest}
->
-  <Container class="flex flex-col gap-12">
-    <Element class="flex items-center justify-between gap-8">
+<Section class="job-categories-1">
+  <Container>
+    <Element class="spread">
       <Heading
         size="3xl"
         text={heading}
@@ -36,12 +33,9 @@ const { depth = 2, heading, button, cards, ...rest } = Astro.props
     <Matrix>
       {
         cards?.map(({ href, heading, list, image }) => (
-          <Card
-            class="p-0"
-            {href}
-          >
+          <Card {href}>
             <Image {...image} />
-            <Writeup class="p-4">
+            <Writeup>
               <Heading
                 depth={(depth + 1) as 3}
                 as="h2"
@@ -59,3 +53,29 @@ const { depth = 2, heading, button, cards, ...rest } = Astro.props
     </Matrix>
   </Container>
 </Section>
+
+<style>
+  @layer fulldev {
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-12);
+    }
+
+    .spread {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--spacing-8);
+    }
+
+    .card {
+      padding: 0px;
+
+      .writeup {
+        padding: var(--spacing-4);
+      }
+    }
+  }
+</style>
