@@ -1,13 +1,13 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
-
+import Element from 'fulldev-ui/components/Element.astro'
 interface Props extends ComponentProps<typeof Button> {
-  button?: ComponentProps<typeof Button> | undefined
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | undefined
   buttons?: ComponentProps<typeof Button>[] | undefined
 }
 
-const { variant = 'primary', button, buttons, ...rest } = Astro.props
+const { variant = 'primary', size = 'md', buttons, ...rest } = Astro.props
 
 const buttonVariant = (i: number) => {
   if (variant === 'primary' && i === 0) return 'primary'
@@ -17,12 +17,29 @@ const buttonVariant = (i: number) => {
 }
 ---
 
-{
-  [button, ...(buttons || [])].filter(Boolean).map((button, i) => (
-    <Button
-      variant={buttonVariant(i)}
-      {...rest}
-      {...button}
-    />
-  ))
-}
+<Element
+  class:list="buttons"
+  {...rest}
+>
+  {
+    buttons?.map((button, i) => (
+      <Button
+        variant={buttonVariant(i)}
+        {size}
+        {...button}
+      />
+    ))
+  }
+  <slot />
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: stretch;
+      gap: var(--spacing-2);
+    }
+  }
+</style>
