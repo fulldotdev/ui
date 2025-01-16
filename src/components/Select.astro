@@ -27,46 +27,47 @@ const {
 } = Astro.props
 ---
 
-{
-  options && (
-    <Label
-      class:list={`select size-${size}`}
-      for={id}
-    >
-      <Fragment set:html={label} />
-      <Element
-        class:list="select-select"
-        as="select"
-        {id}
-        {name}
-        {disabled}
-        {required}
-        {form}
-        {...rest}
-      >
+<Element
+  class:list={`select size-${size}`}
+  for={id}
+>
+  <Label
+    text={label}
+    for={id}
+  />
+  <Element
+    class:list="select-select"
+    as="select"
+    {id}
+    {name}
+    {disabled}
+    {required}
+    {form}
+    {...rest}
+  >
+    <Element
+      class:list="select-option"
+      as="option"
+      value={placeholder}
+      set:html={placeholder}
+      disabled
+      selected
+    />
+    {
+      options?.map((option: any) => (
         <Element
           class:list="select-option"
           as="option"
-          value={placeholder}
-          set:html={placeholder}
-          disabled
-          selected
+          selected={value === option}
+          set:html={option}
+          value={option}
         />
-        {options?.map((option: any) => (
-          <Element
-            class:list="select-option"
-            as="option"
-            selected={value === option}
-            set:html={option}
-            value={option}
-          />
-        ))}
-        <slot />
-      </Element>
-      <Icon name="chevron-down" />
-    </Label>
-  )
-}
+      ))
+    }
+    <slot />
+  </Element>
+  {options && <Icon name="chevron-down" />}
+</Element>
 
 <style is:global>
   @layer fulldev {
@@ -74,14 +75,17 @@ const {
       display: flex;
       position: relative;
       flex-direction: column;
-      gap: var(--spacing-1-5);
+
+      .label {
+        padding-bottom: var(--spacing-1-5);
+      }
 
       .icon {
         position: absolute;
         pointer-events: none;
       }
 
-      .select-select {
+      select {
         display: flex;
         appearance: none;
         border: 1px solid var(--color-input);
@@ -89,6 +93,7 @@ const {
         background-color: var(--color-background);
         padding-right: var(--spacing-10);
         width: 100%;
+        color: var(--color-foreground);
         font-size: var(--text-sm);
 
         &:focus-visible {
@@ -107,51 +112,47 @@ const {
       }
 
       &.size-sm {
-        .select-select {
-          padding-top: var(--spacing-1-5);
-          padding-right: var(--spacing-9);
-          padding-right: var(--spacing-9);
-          padding-bottom: var(--spacing-1-5);
-          padding-left: var(--spacing-2-5);
-          height: var(--spacing-9);
-          font-size: var(--text-xs);
+        .icon {
+          right: var(--spacing-1-5);
+          bottom: var(--spacing-1-5);
         }
 
-        .icon {
-          right: var(--spacing-2);
-          bottom: var(--spacing-2);
+        select {
+          padding-top: var(--spacing-1-5);
+          padding-right: var(--spacing-8);
+          padding-bottom: var(--spacing-1-5);
+          padding-left: var(--spacing-2-5);
+          height: var(--spacing-8);
         }
       }
 
       &.size-md {
-        .select-select {
-          padding-top: var(--spacing-2-5);
-          padding-right: var(--spacing-10);
-          padding-bottom: var(--spacing-2-5);
-          padding-left: var(--spacing-3);
-          height: var(--spacing-10);
-          font-size: var(--text-sm);
-        }
-
         .icon {
           right: var(--spacing-2-5);
           bottom: var(--spacing-2-5);
         }
+
+        select {
+          padding-top: var(--spacing-2);
+          padding-right: var(--spacing-10);
+          padding-bottom: var(--spacing-2);
+          padding-left: var(--spacing-3);
+          height: var(--spacing-10);
+        }
       }
 
       &.size-lg {
-        .select-select {
-          padding-top: var(--spacing-3-5);
-          padding-right: var(--spacing-11);
-          padding-bottom: var(--spacing-3-5);
-          padding-left: var(--spacing-3);
-          height: var(--spacing-12);
-          font-size: var(--text-base);
+        .icon {
+          right: var(--spacing-3);
+          bottom: var(--spacing-3);
         }
 
-        .icon {
-          right: var(--spacing-3-5);
-          bottom: var(--spacing-3-5);
+        select {
+          padding-top: var(--spacing-2-5);
+          padding-right: var(--spacing-11);
+          padding-bottom: var(--spacing-2-5);
+          padding-left: var(--spacing-3-5);
+          height: var(--spacing-11);
         }
       }
     }
