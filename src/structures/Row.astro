@@ -1,0 +1,39 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
+
+interface Props extends HTMLAttributes<'div'> {
+  direction?: 'row' | 'column'
+  align?: 'start' | 'center' | 'end'
+}
+
+const { direction = 'column', align = 'start', ...rest } = Astro.props
+---
+
+<Element
+  class:list={`column align-${align}`}
+  {...rest}
+>
+  <slot />
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .column {
+      display: flex;
+      flex-direction: column;
+
+      &.align-start {
+        align-items: flex-start;
+      }
+
+      &.align-center {
+        align-items: center;
+      }
+
+      &.align-end {
+        align-items: flex-end;
+      }
+    }
+  }
+</style>
