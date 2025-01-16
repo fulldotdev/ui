@@ -6,6 +6,7 @@ import Label from 'fulldev-ui/components/Label.astro'
 
 interface Props extends HTMLAttributes<'input'> {
   size?: 'sm' | 'md' | 'lg' | undefined
+  type?: 'text' | 'email' | 'tel' | 'url' | undefined
   label?: string | undefined
   icon?: string | undefined
 }
@@ -17,22 +18,28 @@ const {
   id = name,
   type = 'text',
   size = 'md',
-  value,
   icon,
+  value,
+  disabled,
+  readonly,
+  required,
+  minlength,
+  maxlength,
+  pattern,
+  form,
   ...rest
 } = Astro.props
 ---
 
-<Label
+<Element
   class:list={`input size-${size}`}
-  for={id}
   {...rest}
 >
-  <Fragment set:html={label} />
-  <Icon
-    name={icon}
-    {size}
+  <Label
+    text={label}
+    for={id}
   />
+  <Icon name={icon} />
   <Element
     as="input"
     show={name}
@@ -41,8 +48,15 @@ const {
     {placeholder}
     {type}
     {value}
+    {disabled}
+    {readonly}
+    {required}
+    {minlength}
+    {maxlength}
+    {pattern}
+    {form}
   />
-</Label>
+</Element>
 
 <style is:global>
   @layer fulldev {
@@ -50,7 +64,10 @@ const {
       display: flex;
       position: relative;
       flex-direction: column;
-      gap: 1.5rem;
+
+      .label {
+        padding-bottom: var(--spacing-1-5);
+      }
 
       .icon {
         position: absolute;
@@ -58,7 +75,6 @@ const {
       }
 
       input {
-        display: flex;
         border: 1px solid var(--color-input);
         border-radius: var(--radius-md);
         background-color: var(--color-background);
@@ -66,56 +82,56 @@ const {
         color: var(--color-foreground);
         font-size: var(--text-sm);
 
-        &:focus-visible {
-          outline: none;
-          box-shadow: 0 0 0 2px var(--color-ring);
-        }
-
         &::placeholder {
           color: var(--color-muted-foreground);
         }
 
-        &[readonly] {
-          pointer-events: none;
+        &:focus-visible {
+          outline: none;
+          box-shadow: 0 0 0 2px var(--color-ring);
         }
 
         &:disabled {
           opacity: 0.5;
           pointer-events: none;
         }
+
+        &[readonly] {
+          pointer-events: none;
+        }
       }
 
       &.size-sm {
-        gap: var(--spacing-1);
-
-        input {
-          padding: var(--spacing-2-5) var(--spacing-1-5);
-          height: var(--spacing-9);
-          font-size: var(--text-xs);
+        .icon {
+          right: var(--spacing-1-5);
+          bottom: var(--spacing-1-5);
         }
 
-        .icon {
-          right: var(--spacing-2);
-          bottom: var(--spacing-2);
+        input {
+          padding-top: var(--spacing-1-5);
+          padding-right: var(--spacing-2-5);
+          padding-bottom: var(--spacing-1-5);
+          padding-left: var(--spacing-2-5);
+          height: var(--spacing-8);
         }
 
         .icon + input {
-          padding-right: var(--spacing-9);
+          padding-right: var(--spacing-8);
         }
       }
 
       &.size-md {
-        gap: var(--spacing-1-5);
-
-        input {
-          padding: var(--spacing-2-5) var(--spacing-1-5);
-          height: var(--spacing-10);
-          font-size: var(--text-sm);
-        }
-
         .icon {
           right: var(--spacing-2-5);
           bottom: var(--spacing-2-5);
+        }
+
+        input {
+          padding-top: var(--spacing-2);
+          padding-right: var(--spacing-3);
+          padding-bottom: var(--spacing-2);
+          padding-left: var(--spacing-3);
+          height: var(--spacing-10);
         }
 
         .icon + input {
@@ -124,17 +140,17 @@ const {
       }
 
       &.size-lg {
-        gap: var(--spacing-2);
-
-        input {
-          padding: var(--spacing-3-5) var(--spacing-1-5);
-          height: var(--spacing-12);
-          font-size: var(--text-base);
+        .icon {
+          right: var(--spacing-3);
+          bottom: var(--spacing-3);
         }
 
-        .icon {
-          right: var(--spacing-3-5);
-          bottom: var(--spacing-3-5);
+        input {
+          padding-top: var(--spacing-2-5);
+          padding-right: var(--spacing-3-5);
+          padding-bottom: var(--spacing-2-5);
+          padding-left: var(--spacing-3-5);
+          height: var(--spacing-11);
         }
 
         .icon + input {
