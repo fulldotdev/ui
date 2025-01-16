@@ -9,9 +9,9 @@ interface Props
     HTMLAttributes<'label'> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | undefined
   size?: 'sm' | 'md' | 'lg' | undefined
+  href?: string | undefined
   text?: string | undefined
   icon?: string | undefined
-  href?: string | undefined
 }
 
 const {
@@ -23,6 +23,9 @@ const {
   icon,
   ...rest
 } = Astro.props
+
+const slot = await Astro.slots.render('default')
+const hasSlot = slot?.trim().length > 0
 ---
 
 <Element
@@ -32,11 +35,12 @@ const {
   {target}
   {...rest}
 >
-  <Element as="span">
-    <Fragment set:html={text} />
-    <slot />
-  </Element>
-  <Icon name={icon} />
+  <Fragment set:html={text} />
+  <Fragment set:html={slot} />
+  <Icon
+    class:list={{ 'icon-only': !hasSlot }}
+    name={icon}
+  />
 </Element>
 
 <style>
@@ -64,20 +68,16 @@ const {
         pointer-events: none;
       }
 
-      .icon:first-child:last-child {
+      .icon.icon-only {
         position: absolute;
       }
 
-      span {
-        color: inherit;
-      }
-
       &.size-sm {
-        padding-right: var(--spacing-2);
-        padding-left: var(--spacing-2);
-        min-width: var(--spacing-9);
-        height: var(--spacing-9);
-        min-height: var(--spacing-9);
+        padding-right: var(--spacing-3);
+        padding-left: var(--spacing-3);
+        min-width: var(--spacing-8);
+        height: var(--spacing-8);
+        min-height: var(--spacing-8);
       }
 
       &.size-md {
