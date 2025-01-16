@@ -6,63 +6,98 @@ interface Props extends HTMLAttributes<'a'>, HTMLAttributes<'div'> {
   variant?: 'primary' | 'secondary' | 'outline' | undefined
   size?: 'sm' | 'md' | 'lg' | undefined
   text?: string | undefined
-  icon?: string | undefined
   href?: string | undefined
 }
 
 const {
+  href,
+  target = href?.startsWith('http') ? '_blank' : undefined,
   variant = 'outline',
   size = 'md',
   text,
-  icon,
-  href,
-  target = href?.startsWith('http') ? '_blank' : undefined,
   ...rest
 } = Astro.props
 ---
 
 <Element
-  class:list="badge"
+  class:list={`badge variant-${variant} size-${size}`}
   as={href ? 'a' : 'div'}
-  {variant}
-  {size}
-  {href}
-  {target}
+  target={target}
   {...rest}
 >
   <Fragment set:html={text} />
   <slot />
 </Element>
 
-<style is:global>
+<style>
   @layer fulldev {
     .badge {
-      @apply inline-flex h-6 items-center justify-center whitespace-nowrap rounded-full px-2.5 text-xs font-medium leading-none ring-offset-background;
-      @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
-      @apply disabled:pointer-events-none disabled:opacity-50;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      transition: var(--transition);
+      border-radius: var(--radius-full);
+      font-weight: var(--font-weight-medium);
+      font-size: var(--text-xs);
+      line-height: var(--leading-none);
+      white-space: nowrap;
+
+      &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 2px var(--color-ring);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        pointer-events: none;
+      }
 
       &.size-sm {
-        @apply h-6 min-w-6 px-2;
+        padding-right: var(--spacing-2);
+        padding-left: var(--spacing-2);
+        min-width: var(--spacing-6);
+        height: var(--spacing-6);
       }
 
       &.size-md {
-        @apply h-7 min-w-7 px-3;
+        padding-right: var(--spacing-3);
+        padding-left: var(--spacing-3);
+        min-width: var(--spacing-7);
+        height: var(--spacing-7);
       }
 
       &.size-lg {
-        @apply h-8 min-w-8 px-3.5;
+        padding-right: var(--spacing-3-5);
+        padding-left: var(--spacing-3-5);
+        min-width: var(--spacing-8);
+        height: var(--spacing-8);
       }
 
       &.variant-primary {
-        @apply bg-primary text-primary-foreground;
+        background-color: var(--color-primary);
+        color: var(--color-primary-foreground);
+
+        &:is(a):hover {
+          background-color: var(--color-primary-hover);
+        }
       }
 
       &.variant-secondary {
-        @apply bg-secondary text-secondary-foreground;
+        background-color: var(--color-secondary);
+        color: var(--color-secondary-foreground);
+
+        &:is(a):hover {
+          background-color: var(--color-secondary-hover);
+        }
       }
 
       &.variant-outline {
-        @apply border border-input text-accent-foreground;
+        border: 1px solid var(--color-input);
+        color: var(--color-accent-foreground);
+
+        &:is(a):hover {
+          background-color: var(--color-accent-hover);
+        }
       }
     }
   }

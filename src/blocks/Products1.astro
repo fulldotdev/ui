@@ -11,15 +11,12 @@ import Section from 'fulldev-ui/structures/Section.astro'
 
 interface Props extends BlockSchema {}
 
-const { depth = 2, heading, button, cards, ...rest } = Astro.props
+const { depth = 2, heading, button, cards } = Astro.props
 ---
 
-<Section
-  class:list="products-1"
-  {...rest}
->
+<Section class="products-1">
   <Container>
-    <Element class:list="products-1-segment">
+    <Element class="products-1-segment">
       <Heading
         size="2xl"
         text={heading}
@@ -31,12 +28,12 @@ const { depth = 2, heading, button, cards, ...rest } = Astro.props
         {...button}
       />
     </Element>
-    <Element class:list="products-1-cards">
+    <Element class="products-1-cards">
       {
         cards?.map(({ href, images, heading, price }) => (
           <Card {href}>
             <Image {...images?.[0]} />
-            <Element class:list="products-1-card-content">
+            <Element class="products-1-card-content">
               <Heading
                 depth={(depth + 1) as 3}
                 as="h3"
@@ -56,31 +53,63 @@ const { depth = 2, heading, button, cards, ...rest } = Astro.props
   @layer fulldev {
     .products-1 {
       .container {
-        @apply flex flex-col gap-8;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-8);
       }
 
       .products-1-segment {
-        @apply flex items-center justify-between gap-8;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--spacing-8);
       }
 
       .products-1-cards {
-        @apply grid grid-cols-2 items-start gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+        gap: var(--spacing-4);
+
+        @media (min-width: 640px) {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        @media (min-width: 768px) {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        @media (min-width: 1024px) {
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+
+        @media (min-width: 1280px) {
+          grid-template-columns: repeat(6, minmax(0, 1fr));
+        }
       }
 
       .card {
-        @apply relative flex flex-col gap-3;
+        display: flex;
+        position: relative;
+        flex-direction: column;
+        gap: var(--spacing-3);
 
         &:hover > .image {
-          @apply opacity-75 transition-opacity;
+          opacity: 0.75;
+          transition: var(--transition);
         }
 
         .image {
-          @apply rounded-md border;
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-md);
         }
       }
 
       .products-1-card-content {
-        @apply flex h-full flex-col gap-2;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-2);
+        height: 100%;
       }
     }
   }

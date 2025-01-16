@@ -19,7 +19,7 @@ interface Props {
   pages?: CollectionEntry<'pages'>[]
 }
 
-const { id, heading, paragraph, pages, ...rest } = Astro.props
+const { id, heading, paragraph, pages } = Astro.props
 
 // Jobs that reference the current category, or any of `pages` select categories
 const jobs = await getCollection('pages', (page) =>
@@ -31,11 +31,8 @@ const jobs = await getCollection('pages', (page) =>
 const pageEntries = pages && (await getEntries(pages))
 ---
 
-<Section
-  class:list="job-category-1 flex flex-col gap-12 pt-0"
-  {...rest}
->
-  <Container class="border-b py-12">
+<Section class="job-category-1">
+  <Container>
     <Prose>
       <Heading
         as="h1"
@@ -45,20 +42,16 @@ const pageEntries = pages && (await getEntries(pages))
       <Paragraph text={paragraph} />
     </Prose>
   </Container>
-  <Container class="flex flex-col gap-12">
+  <Container>
     <Matrix class="gap-2">
       {
         pageEntries?.map(({ id, data: { title, image } }) => (
           <Card
-            class="grid grid-cols-3 items-center bg-transparent p-0"
+            class="category-card"
             href={getHref(id)}
           >
-            <Image
-              class="h-auto w-full rounded-sm object-cover"
-              {...image}
-            />
+            <Image {...image} />
             <Heading
-              class="col-span-2 p-4"
               as="h3"
               size="md"
               text={title}
@@ -71,7 +64,7 @@ const pageEntries = pages && (await getEntries(pages))
       {
         jobs?.map(({ id, data: { title, list } }) => (
           <Card
-            class="jobs-1-card flex flex-col gap-3"
+            class="job-card"
             href={getHref(id)}
           >
             <Heading
@@ -89,3 +82,53 @@ const pageEntries = pages && (await getEntries(pages))
     </Matrix>
   </Container>
 </Section>
+
+<style>
+  @layer fulldev {
+    .section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-12);
+      padding-top: 0px;
+    }
+
+    .container:first-child {
+      border-bottom: 1px solid var(--color-border);
+      padding-top: var(--spacing-12);
+      padding-bottom: var(--spacing-12);
+    }
+
+    .container:last-child {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-12);
+    }
+
+    .category-card {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: center;
+      border-radius: var(--radius-sm);
+      background-color: transparent;
+      padding: 0px;
+
+      .image {
+        border-radius: var(--radius-sm);
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+      }
+
+      .heading {
+        grid-column: span 2;
+        padding: var(--spacing-4);
+      }
+    }
+
+    .job-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-3);
+    }
+  }
+</style>

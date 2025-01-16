@@ -19,11 +19,11 @@ const { logo, links, menus, socials, search, themer, button } = Astro.props
 ---
 
 <Element
-  class:list="header"
+  class="header"
   as="header"
 >
   <Container>
-    <Element class:list="header-start">
+    <Element class="header-start">
       <Logo {...logo} />
       <Links
         size="sm"
@@ -31,7 +31,7 @@ const { logo, links, menus, socials, search, themer, button } = Astro.props
         {links}
       />
     </Element>
-    <Element class:list="header-end">
+    <Element class="header-end">
       {
         search && (
           <Search
@@ -69,7 +69,7 @@ const { logo, links, menus, socials, search, themer, button } = Astro.props
         {...button}
       />
       <!-- <Button
-        class:list="menu-button"
+        class="menu-button"
         as="label"
         for="sidebar-toggle"
         icon="menu-2"
@@ -92,49 +92,90 @@ const { logo, links, menus, socials, search, themer, button } = Astro.props
 <style is:global>
   @layer fulldev {
     .header {
-      @apply sticky left-0 top-0 z-20 flex h-14 w-full items-center border-b bg-background;
+      display: flex;
+      position: sticky;
+      top: 0;
+      left: 0;
+      align-items: center;
+      z-index: 20;
+      border-bottom: 1px solid var(--color-border);
+      background-color: var(--color-background);
+      width: 100%;
       height: var(--header-height);
 
       &,
       & ~ * {
-        --header-height: 3.5rem;
+        --header-height: var(--spacing-14);
       }
 
       .container {
-        @apply flex items-center gap-6;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-6);
       }
 
       .header-start {
-        @apply flex items-center gap-6;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-6);
 
         .link {
-          @apply max-lg:hidden;
+          display: none;
+
+          @media (min-width: 1024px) {
+            display: inline-flex;
+          }
         }
       }
 
       .header-home {
-        @apply flex items-center gap-2;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-2);
       }
 
       .header-end {
-        @apply ml-auto flex items-center gap-1;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-1);
+        margin-left: auto;
 
         .social,
         .themer {
-          @apply max-lg:hidden;
+          display: none;
+
+          @media (min-width: 1024px) {
+            display: inline-flex;
+          }
         }
 
         .menu-button {
-          @apply lg:hidden;
+          @media (min-width: 1024px) {
+            display: none;
+          }
         }
       }
 
       .drawer {
-        @apply lg:hidden;
+        @media (min-width: 1024px) {
+          display: none;
+        }
 
         .container {
-          @apply flex w-full flex-col items-start gap-6 overflow-y-auto px-gutter pb-14 pt-8;
-          @apply scrollbar scrollbar-track-transparent scrollbar-thumb-accent scrollbar-thumb-rounded-full scrollbar-w-2 hover:scrollbar-thumb-accent-hover;
+          display: flex;
+          flex-direction: column;
+          align-items: start;
+          gap: var(--spacing-6);
+          padding-top: var(--spacing-8);
+          padding-right: var(--gutter);
+          padding-bottom: var(--spacing-14);
+          /* TODO check gutter var */
+          padding-left: var(--gutter);
+          width: 100%;
+          overflow-y: auto;
+
+          /* TODO scrollbar */
+          /* @apply scrollbar scrollbar-track-transparent scrollbar-thumb-accent scrollbar-thumb-rounded-full scrollbar-w-2 hover:scrollbar-thumb-accent-hover; */
         }
       }
     }

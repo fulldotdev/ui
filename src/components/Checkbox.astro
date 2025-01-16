@@ -1,7 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
-import Icon from 'fulldev-ui/components/Icon.astro'
 import Label from 'fulldev-ui/components/Label.astro'
 
 interface Props extends HTMLAttributes<'input'> {
@@ -13,12 +12,10 @@ const { label, name = label, id = name, size = 'md', ...rest } = Astro.props
 ---
 
 <Label
-  class:list="checkbox"
+  class:list={`checkbox size-${size}`}
   for={id}
-  {size}
 >
   <Element
-    class:list="checkbox-input"
     as="input"
     type="checkbox"
     show={id}
@@ -26,49 +23,58 @@ const { label, name = label, id = name, size = 'md', ...rest } = Astro.props
     {name}
     {...rest}
   />
-  <Icon
-    class="checkbox-icon"
-    name="check"
-    {size}
-  />
   <Fragment set:html={label} />
 </Label>
 
-<style is:global>
+<style>
   @layer fulldev {
     .checkbox {
-      @apply relative flex items-center gap-2;
+      display: flex;
+      align-items: center;
 
-      .checkbox-input {
-        @apply size-[1em] cursor-pointer rounded-sm border border-primary bg-transparent accent-primary;
-        @apply appearance-none border border-primary bg-background checked:bg-primary;
-      }
+      input {
+        cursor: pointer;
+        border-radius: var(--radius-md);
+        accent-color: var(--color-ring);
 
-      .icon.checkbox-icon {
-        @apply absolute bg-transparent p-0.5 text-background;
+        &:focus-visible {
+          outline: none;
+          box-shadow: 0 0 0 2px var(--color-ring);
+        }
 
-        * {
-          stroke-width: 3.5px !important;
+        &[readonly] {
+          pointer-events: none;
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          pointer-events: none;
         }
       }
 
       &.size-sm {
-        .checkbox-input,
-        .icon.checkbox-icon {
-          @apply !size-3.5;
+        gap: var(--spacing-1-5);
+
+        input {
+          width: var(--spacing-3-5) !important;
+          height: var(--spacing-3-5) !important;
         }
       }
       &.size-md {
-        .checkbox-input,
-        .checkbox-icon {
-          @apply !size-4;
+        gap: var(--spacing-2);
+
+        input {
+          width: var(--spacing-4) !important;
+          height: var(--spacing-4) !important;
         }
       }
 
       &.size-lg {
-        .checkbox-input,
-        .checkbox-icon {
-          @apply !size-[1.125rem];
+        gap: var(--spacing-2-5);
+
+        input {
+          width: 1.125rem !important;
+          height: 1.125rem !important;
         }
       }
     }

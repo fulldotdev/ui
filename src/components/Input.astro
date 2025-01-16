@@ -24,14 +24,16 @@ const {
 ---
 
 <Label
-  class:list="input"
+  class:list={`input size-${size}`}
   for={id}
-  {size}
   {...rest}
 >
   <Fragment set:html={label} />
+  <Icon
+    name={icon}
+    {size}
+  />
   <Element
-    class:list="input-input"
     as="input"
     show={name}
     id={name}
@@ -40,74 +42,103 @@ const {
     {type}
     {value}
   />
-  <Icon
-    name={icon}
-    {size}
-  />
 </Label>
 
 <style is:global>
   @layer fulldev {
-    .input-input {
-      @apply flex w-full rounded-md border border-input bg-background text-sm text-foreground ring-offset-background;
-      @apply file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground;
-      @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
-      @apply disabled:pointer-events-none disabled:opacity-50;
-      @apply [&[readonly]]:pointer-events-none;
-    }
-
     .input {
-      @apply relative flex flex-col gap-1.5;
+      display: flex;
+      position: relative;
+      flex-direction: column;
+      gap: 1.5rem;
 
       .icon {
-        @apply pointer-events-none absolute;
+        position: absolute;
+        pointer-events: none;
+      }
+
+      input {
+        display: flex;
+        border: 1px solid var(--color-input);
+        border-radius: var(--radius-md);
+        background-color: var(--color-background);
+        width: 100%;
+        color: var(--color-foreground);
+        font-size: var(--text-sm);
+
+        &:focus-visible {
+          outline: none;
+          box-shadow: 0 0 0 2px var(--color-ring);
+        }
+
+        &::placeholder {
+          color: var(--color-muted-foreground);
+        }
+
+        &[readonly] {
+          pointer-events: none;
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          pointer-events: none;
+        }
       }
 
       &.size-sm {
-        @apply gap-1;
+        gap: var(--spacing-1);
 
-        .input-input {
-          @apply h-9 px-2.5 py-1.5 text-xs;
+        input {
+          padding: var(--spacing-2-5) var(--spacing-1-5);
+          height: var(--spacing-9);
+          font-size: var(--text-xs);
         }
 
         .icon {
-          @apply bottom-2 right-2;
+          right: var(--spacing-2);
+          bottom: var(--spacing-2);
         }
 
-        .icon + .input-input {
-          @apply pr-9;
+        .icon + input {
+          padding-right: var(--spacing-9);
         }
       }
 
       &.size-md {
-        @apply gap-1.5;
+        gap: var(--spacing-1-5);
 
-        .input-input {
-          @apply h-10 px-3 py-2 text-sm;
+        input {
+          padding: var(--spacing-2-5) var(--spacing-1-5);
+          height: var(--spacing-10);
+          font-size: var(--text-sm);
         }
 
         .icon {
-          @apply bottom-2.5 right-2.5;
+          right: var(--spacing-2-5);
+          bottom: var(--spacing-2-5);
         }
 
-        .icon + .input-input {
-          @apply pr-10;
+        .icon + input {
+          padding-right: var(--spacing-10);
         }
       }
 
       &.size-lg {
-        @apply gap-2;
+        gap: var(--spacing-2);
 
-        .input-input {
-          @apply h-12 px-3.5 py-2.5 text-base;
+        input {
+          padding: var(--spacing-3-5) var(--spacing-1-5);
+          height: var(--spacing-12);
+          font-size: var(--text-base);
         }
 
         .icon {
-          @apply bottom-3.5 right-3.5;
+          right: var(--spacing-3-5);
+          bottom: var(--spacing-3-5);
         }
 
-        .icon + .input-input {
-          @apply pr-11;
+        .icon + input {
+          padding-right: var(--spacing-11);
         }
       }
     }

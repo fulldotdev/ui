@@ -1,5 +1,5 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
@@ -11,7 +11,6 @@ interface Props extends HTMLAttributes<'div'> {
   text?: string | undefined
   href?: string | undefined
   icon?: string | undefined
-  target?: ComponentProps<typeof Button>['target']
 }
 
 const {
@@ -21,14 +20,12 @@ const {
   icon,
   heading,
   text,
-  target,
   ...rest
 } = Astro.props
 ---
 
 <Element
-  class:list="channel"
-  {size}
+  class:list={`channel size-${size}`}
   {...rest}
 >
   <Button
@@ -36,53 +33,48 @@ const {
     {size}
     {href}
     {icon}
-    {target}
   />
-  <Element class:list="channel-content">
+  <Element>
     <Heading
       as="h6"
-      {size}
       text={heading}
+      {size}
     />
     <Fragment set:html={text} />
     <slot />
   </Element>
 </Element>
 
-<style is:global>
+<style>
   .channel {
-    @apply flex gap-3;
+    display: flex;
+    gap: var(--spacing-3);
 
-    .channel-content {
-      @apply flex flex-col text-muted-foreground;
+    div {
+      display: flex;
+      flex-direction: column;
+      color: var(--color-muted-foreground);
+      font-size: inherit;
+      line-height: var(--leading-tight);
+    }
 
-      .heading {
-        @apply leading-snug;
-      }
+    .heading {
+      line-height: var(--leading-snug);
     }
 
     &.size-sm {
-      @apply gap-2;
-
-      .channel-content {
-        @apply text-xs leading-tight;
-      }
+      gap: var(--spacing-2);
+      font-size: var(--text-xs);
     }
 
     &.size-md {
-      @apply gap-2.5;
-
-      .channel-content {
-        @apply text-sm leading-tight;
-      }
+      gap: var(--spacing-2-5);
+      font-size: var(--text-sm);
     }
 
     &.size-lg {
-      @apply gap-3;
-
-      .channel-content {
-        @apply text-base leading-tight;
-      }
+      gap: var(--spacing-3);
+      font-size: var(--text-base);
     }
   }
 </style>

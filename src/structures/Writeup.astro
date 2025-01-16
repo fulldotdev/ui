@@ -7,12 +7,11 @@ interface Props extends HTMLAttributes<'div'> {
   align?: 'left' | 'center' | 'right'
 }
 
-const { align = 'start', ...rest } = Astro.props
+const { align = 'left', ...rest } = Astro.props
 ---
 
 <Element
-  class:list="writeup"
-  {align}
+  class:list={`writeup align-${align}`}
   {...rest}
 >
   <slot />
@@ -21,45 +20,61 @@ const { align = 'start', ...rest } = Astro.props
 <style is:global>
   @layer fulldev {
     .writeup {
-      @apply relative w-full;
+      position: relative;
+      width: 100%;
 
       &.align-left {
-        @apply mr-auto flex flex-col items-start text-left;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+
+        margin-right: auto;
+        text-align: left;
       }
 
       &.align-center {
-        @apply mx-auto flex flex-col items-center text-center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-right: auto;
+        margin-left: auto;
+        text-align: center;
 
         .paragraph {
-          @apply text-balance;
+          text-wrap: balance;
         }
       }
 
       &.align-right {
-        @apply ml-auto flex flex-col items-end text-right;
+        display: flex;
+        flex-direction: column;
+        align-items: end;
+        margin-left: auto;
+        text-align: right;
       }
 
       .heading {
-        @apply max-w-screen-lg text-balance;
+        max-width: var(--breakpoint-lg);
+        text-wrap: balance;
       }
 
       .paragraph {
-        @apply max-w-screen-md;
+        max-width: var(--breakpoint-md);
       }
 
       > * {
         & + * {
-          @apply mt-2;
+          margin-top: var(--spacing-2);
         }
 
         &:is(h1, h2) + * {
-          @apply mt-4;
+          margin-top: var(--spacing-4);
         }
 
         & + .group,
         & + .button,
         & + .buttons {
-          @apply mt-8;
+          margin-top: var(--spacing-8);
         }
       }
     }
