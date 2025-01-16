@@ -1,20 +1,40 @@
 ---
-import type { ComponentProps } from 'astro/types'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import Avatar from 'fulldev-ui/components/Avatar.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 
-interface Props extends ComponentProps<typeof Avatar> {
-  avatar?: ComponentProps<typeof Avatar> | undefined
+interface Props extends HTMLAttributes<'div'> {
+  size?: 'sm' | 'md' | 'lg' | undefined
   avatars?: ComponentProps<typeof Avatar>[] | undefined
 }
 
-const { avatar, avatars, ...rest } = Astro.props
+const { size = 'md', avatars, ...rest } = Astro.props
 ---
 
-{
-  [avatar, ...(avatars || [])].filter(Boolean).map((avatar) => (
-    <Avatar
-      {...rest}
-      {...avatar}
-    />
-  ))
-}
+<Element
+  class="avatars"
+  {...rest}
+>
+  {
+    avatars?.map((avatar) => (
+      <Avatar
+        {size}
+        {...avatar}
+      />
+    ))
+  }
+</Element>
+
+<style>
+  .avatars {
+    display: flex;
+
+    .avatar {
+      box-shadow: 0 0 0 2px var(--color-background);
+
+      &:not(:first-child) {
+        margin-left: calc(var(--spacing-3) * -1);
+      }
+    }
+  }
+</style>
