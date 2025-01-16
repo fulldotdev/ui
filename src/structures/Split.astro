@@ -1,9 +1,8 @@
 ---
-import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 
 interface Props extends HTMLAttributes<'div'> {
-  as?: HTMLTag
   align?: 'start' | 'center' | 'sticky'
 }
 
@@ -17,39 +16,52 @@ const { align = 'start', ...rest } = Astro.props
   <slot />
 </Element>
 
-<style is:global>
+<style>
   @layer fulldev {
     .split {
       display: grid;
       column-gap: var(--spacing-4);
       row-gap: var(--spacing-16);
 
-      @media (min-width: 640px) {
+      @media (min-width: 768px) {
         column-gap: var(--spacing-8);
       }
 
       @media (min-width: 1024px) {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: var(--spacing-12);
       }
-    }
 
-    .align-start {
-      align-items: start;
-    }
+      @media (min-width: 1280px) {
+        column-gap: var(--spacing-16);
+      }
 
-    .align-center {
-      align-items: center;
-    }
+      @media (min-width: 1536px) {
+        column-gap: var(--spacing-20);
+      }
 
-    .align-sticky {
-      align-items: start;
+      &.align-start {
+        align-items: start;
+      }
 
-      @media (min-width: 1024px) {
-        > * {
-          position: sticky;
-          /* TODO right value */
-          top: 0;
-          /* lg:[&>*]:top-sticky-16; */
+      &.align-center {
+        align-items: center;
+      }
+
+      &.align-end {
+        align-items: end;
+      }
+
+      .align-sticky {
+        align-items: start;
+
+        @media (min-width: 1024px) {
+          > * {
+            position: sticky;
+            /* TODO right value */
+            top: 0;
+            /* lg:[&>*]:top-sticky-16; */
+          }
         }
       }
     }
