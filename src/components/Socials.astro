@@ -1,25 +1,40 @@
 ---
 import type { ComponentProps } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
 import Social from 'fulldev-ui/components/Social.astro'
 
 interface Props extends ComponentProps<typeof Social> {
-  social?:
-    | ComponentProps<typeof Social>
-    | ComponentProps<typeof Social>['href']
-    | undefined
-  socials?:
-    | (ComponentProps<typeof Social> | ComponentProps<typeof Social>['href'])[]
-    | undefined
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
+  socials?: string[] | undefined
 }
 
-const { social, socials, ...rest } = Astro.props
+const { variant = 'ghost', size = 'sm', socials, ...rest } = Astro.props
 ---
 
-{
-  [social, ...(socials || [])].filter(Boolean).map((social) => (
-    <Social
-      {...rest}
-      {...(typeof social === 'string' ? { href: social } : social)}
-    />
-  ))
-}
+<Element
+  class:list="socials"
+  {...rest}
+>
+  {
+    socials?.map((social) => (
+      <Social
+        href={social}
+        {variant}
+        {size}
+      />
+    ))
+  }
+  <slot />
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .socials {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: stretch;
+      gap: var(--spacing-1-5);
+    }
+  }
+</style>

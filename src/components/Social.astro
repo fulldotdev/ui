@@ -2,18 +2,11 @@
 import type { ComponentProps } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
 
-interface Props extends ComponentProps<typeof Button> {}
+interface Props extends Omit<ComponentProps<typeof Button>, 'text'> {
+  icon?: string | undefined
+}
 
-const {
-  variant = 'ghost',
-  target = '_blank',
-  size = 'sm',
-  icon,
-  href,
-  ...rest
-} = Astro.props
-
-const platform = () => {
+const platform = (href: string | undefined) => {
   if (typeof href !== 'string') return
   if (href.includes('x.com')) return 'brand-x'
   if (href.includes('facebook')) return 'brand-facebook'
@@ -26,14 +19,23 @@ const platform = () => {
   if (href.includes('discord')) return 'brand-discord'
   return undefined
 }
+
+const {
+  href,
+  icon = platform(href),
+  variant = 'ghost',
+  target = '_blank',
+  size = 'sm',
+  ...rest
+} = Astro.props
 ---
 
 <Button
   class:list="social"
-  icon={icon ?? platform()}
+  {icon}
   {variant}
-  {href}
   {target}
   {size}
+  {href}
   {...rest}
 />
