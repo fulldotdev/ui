@@ -1,22 +1,46 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import Image from 'fulldev-ui/components/Image.astro'
+import type { HTMLAttributes } from 'astro/types'
+import { Image } from 'astro:assets'
 
-interface Props extends ComponentProps<typeof Image> {
+interface Props extends Omit<HTMLAttributes<'img'>, 'width' | 'height'> {
   size?: 'sm' | 'md' | 'lg' | undefined
+  src?: string | undefined
+  alt?: string | undefined
 }
 
-const { size = 'md', ...rest } = Astro.props
+const altBySrc = (src: string | undefined) => {
+  const filename = src?.split('/').pop()
+  const slug = filename && filename.split('.')[0]
+  const unslugged = slug?.replace(/-/g, ' ')
+  return unslugged || ''
+}
+
+const { size = 'md', src, alt = altBySrc(src), ...rest } = Astro.props
+
+const sizeMap = {
+  sm: 36,
+  md: 40,
+  lg: 44,
+}
 ---
 
-<Image
-  class:list=`avatar size-${size}`
-  {...rest}
-/>
+{
+  src && (
+    <Image
+      class:list={`avatar size-${size}`}
+      width={sizeMap[size]}
+      height={sizeMap[size]}
+      alt={alt || altBySrc(src)}
+      {src}
+      {...rest}
+    />
+  )
+}
 
 <style>
   @layer fulldev {
     .avatar {
+      display: block;
       border-radius: var(--radius-full);
       object-fit: cover;
 
