@@ -1,31 +1,31 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Avatar from 'fulldev-ui/components/Avatar.astro'
-import Avatars from 'fulldev-ui/components/Avatars.astro'
 import Element from 'fulldev-ui/components/Element.astro'
-import Rating from 'fulldev-ui/components/Rating.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
 import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
 interface Props extends HTMLAttributes<'div'> {
-  avatar?: ComponentProps<typeof Avatar> | undefined
-  avatars?: ComponentProps<typeof Avatars>['avatars']
-  rating?: number | undefined
+  src?: string | undefined
+  heading?: string | undefined
   text?: string | undefined
 }
 
-const { avatar, avatars, rating, text, ...rest } = Astro.props
+const { src, heading, text, ...rest } = Astro.props
 ---
 
 <Element
-  class:list="proof"
+  class:list="person"
   {...rest}
 >
-  <Avatar {...avatar} />
-  <Avatars {avatars} />
+  <Avatar
+    {src}
+    alt={[heading, text].join(' - ')}
+  />
   <Writeup>
-    <Rating
-      score={rating}
-      size="sm"
+    <Heading
+      text={heading}
+      size="md"
     />
     <Fragment set:html={text} />
   </Writeup>
@@ -33,7 +33,7 @@ const { avatar, avatars, rating, text, ...rest } = Astro.props
 
 <style is:global>
   @layer fulldev {
-    .proof {
+    .person {
       display: flex;
       align-items: center;
       gap: var(--spacing-2);
