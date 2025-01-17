@@ -1,42 +1,35 @@
 ---
-import Badge from 'fulldev-ui/components/Badge.astro'
+import type { ComponentProps } from 'astro/types'
+import Feature from 'fulldev-ui/blocks/Feature.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
-import Proof from 'fulldev-ui/components/Proof.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
-interface Props extends BlockSchema {
-  align?: 'start' | 'center' | 'end'
-}
+interface Props extends ComponentProps<typeof Feature> {}
 
 const {
-  align = 'start',
-  depth = 2,
+  align = 'center',
+  depth,
+  proof,
   badge,
   tagline,
   heading,
   paragraph,
-  content,
   buttons,
   image,
-  proof,
+  content,
+  ...rest
 } = Astro.props
 ---
 
-<Section class="feature-1">
+<Section {...rest}>
   <Container>
     <Writeup {align}>
-      <Proof {...proof} />
-      <Badge
-        size="lg"
-        {...badge}
-      />
       <Tagline
         size="sm"
         text={tagline}
@@ -52,16 +45,25 @@ const {
       />
       <Fragment set:html={content} />
       <slot />
-      <Buttons {buttons} />
+      <Buttons
+        variant="secondary"
+        {buttons}
+      />
     </Writeup>
     <Image {...image} />
   </Container>
 </Section>
 
 <style>
-  .container {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacer);
+  @layer fulldev {
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer);
+
+      .image {
+        border-radius: var(--radius-lg);
+      }
+    }
   }
 </style>

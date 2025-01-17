@@ -1,75 +1,75 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import Hero from 'fulldev-ui/blocks/Hero.astro'
-import Badge from 'fulldev-ui/components/Badge.astro'
+import Cta from 'fulldev-ui/blocks/Cta.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
-import Proof from 'fulldev-ui/components/Proof.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Container from 'fulldev-ui/structures/Container.astro'
+import Panel from 'fulldev-ui/structures/Panel.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 import Spread from 'fulldev-ui/structures/Spread.astro'
 import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
-interface Props extends ComponentProps<typeof Hero> {}
+interface Props extends ComponentProps<typeof Cta> {}
 
 const {
   align = 'center',
-  depth,
-  proof,
-  badge,
+  depth = 2,
   tagline,
   heading,
   paragraph,
+  content,
   buttons,
   image,
-  content,
   ...rest
 } = Astro.props
 ---
 
 <Section {...rest}>
   <Container>
-    <Spread {align}>
-      <Writeup>
-        <Proof {...proof} />
-        <Badge
+    <Panel>
+      <Spread {align}>
+        <Writeup>
+          <Tagline text={tagline} />
+          <Heading
+            size="5xl"
+            as="h2"
+            text={heading}
+            {depth}
+          />
+          <Paragraph
+            size="lg"
+            text={paragraph}
+          />
+          <Fragment set:html={content} />
+        </Writeup>
+        <Buttons
+          variant="primary"
           size="lg"
-          {...badge}
+          {buttons}
         />
-        <Tagline
-          size="sm"
-          text={tagline}
-        />
-        <Heading
-          size="6xl"
-          text={heading}
-          {depth}
-        />
-        <Paragraph
-          size="xl"
-          text={paragraph}
-        />
-        <Fragment set:html={content} />
-        <slot />
-      </Writeup>
-      <Buttons
-        size="lg"
-        {buttons}
-      />
-    </Spread>
+      </Spread>
+      <Image {...image} />
+    </Panel>
   </Container>
-  <Image {...image} />
 </Section>
 
 <style>
   @layer fulldev {
-    .section {
+    .panel {
       display: flex;
       flex-direction: column;
       gap: var(--spacer);
+      padding-top: var(--spacer);
+      padding-right: var(--gutter);
+      padding-bottom: var(--spacer);
+      padding-left: var(--gutter);
+    }
+
+    .image {
+      border-radius: var(--radius-lg);
     }
   }
 </style>

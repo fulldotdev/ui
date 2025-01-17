@@ -1,19 +1,17 @@
 ---
 import type { ComponentProps } from 'astro/types'
-import Hero from 'fulldev-ui/blocks/Hero.astro'
-import Badge from 'fulldev-ui/components/Badge.astro'
+import Feature from 'fulldev-ui/blocks/Feature.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
-import Proof from 'fulldev-ui/components/Proof.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
-import Spread from 'fulldev-ui/structures/Spread.astro'
+import Split from 'fulldev-ui/structures/Split.astro'
 import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
-interface Props extends ComponentProps<typeof Hero> {}
+interface Props extends ComponentProps<typeof Feature> {}
 
 const {
   align = 'center',
@@ -32,44 +30,48 @@ const {
 
 <Section {...rest}>
   <Container>
-    <Spread {align}>
+    <Split {align}>
       <Writeup>
-        <Proof {...proof} />
-        <Badge
-          size="lg"
-          {...badge}
-        />
         <Tagline
           size="sm"
           text={tagline}
         />
         <Heading
-          size="6xl"
+          size="4xl"
           text={heading}
           {depth}
         />
         <Paragraph
-          size="xl"
+          size="lg"
           text={paragraph}
         />
         <Fragment set:html={content} />
         <slot />
+        <Buttons
+          variant="secondary"
+          {buttons}
+        />
       </Writeup>
-      <Buttons
-        size="lg"
-        {buttons}
-      />
-    </Spread>
+      <Image {...image} />
+    </Split>
   </Container>
-  <Image {...image} />
 </Section>
 
 <style>
   @layer fulldev {
     .section {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacer);
+      overflow: hidden;
+    }
+
+    .image {
+      border-radius: var(--radius-lg);
+      width: 100vw;
+      min-width: 100vw;
+
+      @media (min-width: 1024px) {
+        width: 50vw;
+        min-width: 50vw;
+      }
     }
   }
 </style>

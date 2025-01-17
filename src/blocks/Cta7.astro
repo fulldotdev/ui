@@ -9,19 +9,20 @@ import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Panel from 'fulldev-ui/structures/Panel.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
+import Split from 'fulldev-ui/structures/Split.astro'
 import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
 interface Props extends ComponentProps<typeof Cta> {}
 
 const {
   align = 'center',
-  depth = 2,
+  depth,
   tagline,
   heading,
   paragraph,
-  content,
   buttons,
   image,
+  content,
   ...rest
 } = Astro.props
 ---
@@ -29,35 +30,35 @@ const {
 <Section {...rest}>
   <Container>
     <Panel>
-      <Writeup {align}>
-        <Tagline text={tagline} />
-        <Heading
-          size="5xl"
-          as="h2"
-          text={heading}
-          {depth}
-        />
-        <Paragraph
-          size="lg"
-          text={paragraph}
-        />
-        <Fragment set:html={content} />
-        <Buttons
-          variant="primary"
-          size="lg"
-          {buttons}
-        />
-      </Writeup>
-      <Image {...image} />
+      <Split {align}>
+        <Writeup align="start">
+          <Tagline text={tagline} />
+          <Heading
+            size="5xl"
+            text={heading}
+            {depth}
+          />
+          <Paragraph
+            size="lg"
+            text={paragraph}
+          />
+          <Fragment set:html={content} />
+          <slot />
+          <Buttons
+            size="lg"
+            {buttons}
+          />
+        </Writeup>
+        <Image {...image} />
+      </Split>
     </Panel>
   </Container>
 </Section>
 
 <style>
   @layer fulldev {
-    .panel {
-      display: flex;
-      flex-direction: column;
+    .split {
+      row-gap: 0;
     }
 
     .writeup {
@@ -65,6 +66,11 @@ const {
       padding-right: var(--gutter);
       padding-bottom: var(--spacer);
       padding-left: var(--gutter);
+    }
+
+    .image {
+      height: 100%;
+      object-fit: cover;
     }
   }
 </style>

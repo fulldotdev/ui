@@ -7,6 +7,7 @@ import { pathSchema } from 'fulldev-ui/schemas/path.ts'
 export const blockSchema = cardSchema
   .extend({
     _block: z.string().optional(),
+    variant: z.number().optional(),
     align: z.enum(['start', 'center', 'end', 'sticky']).optional(),
     depth: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
     themer: z.boolean().optional(),

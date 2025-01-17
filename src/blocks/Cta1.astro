@@ -1,18 +1,17 @@
 ---
+import type { ComponentProps } from 'astro/types'
+import Cta from 'fulldev-ui/blocks/Cta.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Panel from 'fulldev-ui/structures/Panel.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
-interface Props extends BlockSchema {
-  align?: 'start' | 'center' | 'end'
-}
+interface Props extends ComponentProps<typeof Cta> {}
 
 const {
   align = 'center',
@@ -23,10 +22,11 @@ const {
   content,
   buttons,
   image,
+  ...rest
 } = Astro.props
 ---
 
-<Section class="cta-1">
+<Section {...rest}>
   <Container>
     <Panel>
       <Writeup {align}>
@@ -56,10 +56,17 @@ const {
 <style>
   @layer fulldev {
     .panel {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer);
       padding-top: var(--spacer);
       padding-right: var(--gutter);
       padding-bottom: var(--spacer);
       padding-left: var(--gutter);
+    }
+
+    .image {
+      border-radius: var(--radius-lg);
     }
   }
 </style>

@@ -10,7 +10,7 @@ import Proof from 'fulldev-ui/components/Proof.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
-import Spread from 'fulldev-ui/structures/Spread.astro'
+import Split from 'fulldev-ui/structures/Split.astro'
 import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
 interface Props extends ComponentProps<typeof Hero> {}
@@ -32,7 +32,7 @@ const {
 
 <Section {...rest}>
   <Container>
-    <Spread {align}>
+    <Split {align}>
       <Writeup>
         <Proof {...proof} />
         <Badge
@@ -54,12 +54,12 @@ const {
         />
         <Fragment set:html={content} />
         <slot />
+        <Buttons
+          size="lg"
+          {buttons}
+        />
       </Writeup>
-      <Buttons
-        size="lg"
-        {buttons}
-      />
-    </Spread>
+    </Split>
   </Container>
   <Image {...image} />
 </Section>
@@ -69,7 +69,28 @@ const {
     .section {
       display: flex;
       flex-direction: column;
+      justify-content: stretch;
       gap: var(--spacer);
+
+      @media (min-width: 1024px) {
+        flex-direction: row;
+        min-height: calc(100vh - var(--header-height));
+      }
+    }
+
+    .container {
+      display: flex;
+    }
+
+    .image {
+      @media (min-width: 1024px) {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: calc((100% - var(--gutter)) / 2);
+        height: 100%;
+        object-fit: cover;
+      }
     }
   }
 </style>
