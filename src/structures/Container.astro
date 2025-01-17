@@ -1,8 +1,10 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 
-interface Props extends HTMLAttributes<'div'> {}
+interface Props extends HTMLAttributes<'div'> {
+  as?: HTMLTag
+}
 
 const { ...rest } = Astro.props
 ---
@@ -14,35 +16,35 @@ const { ...rest } = Astro.props
   <slot />
 </Element>
 
-<style is:global>
+<style>
   @layer fulldev {
-    .container {
-      margin-right: auto;
-      margin-left: auto;
-      padding-right: var(--spacing-4);
-      padding-left: var(--spacing-4);
-      width: 100%;
-      max-width: var(--breakpoint-2xl);
+    :global(:root) {
+      --gutter: var(--spacing-4);
 
-      @media (min-width: 768px) {
-        padding-right: var(--spacing-8);
-        padding-left: var(--spacing-8);
+      @media (min-width: 640px) {
+        --gutter: var(--spacing-6);
       }
 
       @media (min-width: 1024px) {
-        padding-right: var(--spacing-12);
-        padding-left: var(--spacing-12);
+        --gutter: var(--spacing-8);
       }
 
       @media (min-width: 1280px) {
-        padding-right: var(--spacing-16);
-        padding-left: var(--spacing-16);
+        --gutter: var(--spacing-12);
       }
 
       @media (min-width: 1536px) {
-        padding-right: var(--spacing-20);
-        padding-left: var(--spacing-20);
+        --gutter: var(--spacing-20);
       }
+    }
+
+    .container {
+      margin-right: auto;
+      margin-left: auto;
+      padding-right: var(--gutter);
+      padding-left: var(--gutter);
+      width: 100%;
+      max-width: var(--breakpoint-2xl);
     }
   }
 </style>

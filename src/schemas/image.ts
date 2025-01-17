@@ -43,9 +43,7 @@ const image = z
   })
   .strict()
 
-export const imageSchema = z
-  .preprocess(
-    (data: unknown) => (typeof data === 'string' ? { src: data } : data),
-    image
-  )
-  .optional()
+export const imageSchema = z.preprocess(
+  (data: unknown) => (typeof data === 'string' ? { src: data } : data),
+  image
+)

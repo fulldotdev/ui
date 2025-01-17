@@ -3,8 +3,9 @@ import { imageSchema } from 'fulldev-ui/schemas/image.ts'
 
 export const proofSchema = z
   .object({
-    rating: z.number().optional(),
+    avatar: imageSchema.optional(),
     avatars: imageSchema.array().optional(),
+    rating: z.number().optional(),
     text: z.string().optional(),
   })
   .strict()

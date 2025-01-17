@@ -1,13 +1,12 @@
 ---
-import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 
 interface Props extends HTMLAttributes<'div'> {
-  as?: HTMLTag
-  align?: 'left' | 'center' | 'right'
+  align?: 'start' | 'center' | 'end'
 }
 
-const { align = 'left', ...rest } = Astro.props
+const { align = 'start', ...rest } = Astro.props
 ---
 
 <Element
@@ -21,13 +20,18 @@ const { align = 'left', ...rest } = Astro.props
   @layer fulldev {
     .writeup {
       display: flex;
-      position: relative;
       flex-direction: column;
+      width: 100%;
+      max-width: var(--container-2xl);
 
       &.align-start {
-        align-items: start;
+        align-items: flex-start;
         margin-right: auto;
         text-align: left;
+
+        > *:not(> * > *) {
+          text-align: left;
+        }
       }
 
       &.align-center {
@@ -35,37 +39,86 @@ const { align = 'left', ...rest } = Astro.props
         margin-right: auto;
         margin-left: auto;
         text-align: center;
+
+        > *:not(> * > *) {
+          text-align: center;
+        }
       }
 
       &.align-end {
-        align-items: end;
+        align-items: flex-end;
         margin-left: auto;
         text-align: right;
-      }
 
-      .heading {
-        max-width: var(--breakpoint-lg);
-        text-wrap: balance;
+        > *:not(> * > *) {
+          text-align: right;
+        }
       }
 
       .paragraph {
-        max-width: var(--breakpoint-md);
+        max-width: var(--container-xl);
       }
 
-      > * {
-        & + * {
-          margin-top: var(--spacing-2);
-        }
+      > *,
+      .tagline + *,
+      .proof + *,
+      .channel + .channel {
+        margin-top: var(--spacing-4);
+      }
 
-        &:is(h1, h2) + * {
-          margin-top: var(--spacing-4);
-        }
+      > .group,
+      > .button,
+      > .buttons,
+      > .channel {
+        margin-top: var(--spacing-8);
+      }
 
-        & + .group,
-        & + .button,
-        & + .buttons {
-          margin-top: var(--spacing-8);
-        }
+      > .form,
+      > img,
+      > p > img {
+        margin-top: var(--spacing-12);
+        margin-bottom: var(--spacing-12);
+      }
+
+      > h2 {
+        margin-top: var(--spacing-10);
+      }
+
+      > h3 {
+        margin-top: var(--spacing-8);
+      }
+
+      > h4,
+      > h5,
+      > h6 {
+        margin-top: var(--spacing-6);
+      }
+
+      code:not(:is(.astro-code, h1, h2, h3, h4, h5, h6) code) {
+        border-radius: var(--radius-sm);
+        background-color: var(--color-muted);
+        padding-top: var(--spacing-0-5);
+        padding-right: var(--spacing-1-5);
+        padding-bottom: var(--spacing-0-5);
+        padding-left: var(--spacing-1-5);
+        font-weight: var(--font-medium);
+        font-size: var(--text-sm);
+        font-family: var(--font-mono);
+      }
+
+      > aside {
+        border: 1px solid var(--color-destructive);
+        border-radius: var(--radius-md);
+        padding: var(--spacing-4);
+        color: var(--color-destructive);
+      }
+
+      blockquote > p + p {
+        margin-top: var(--spacing-1);
+      }
+
+      > *:first-child {
+        margin-top: var(--spacing-0);
       }
     }
   }

@@ -1,42 +1,63 @@
 ---
+import Badge from 'fulldev-ui/components/Badge.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Proof from 'fulldev-ui/components/Proof.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
-import Group from 'fulldev-ui/structures/Group.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 import Split from 'fulldev-ui/structures/Split.astro'
 import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
-interface Props extends BlockSchema {}
+interface Props extends BlockSchema {
+  align?: 'start' | 'center' | 'end'
+}
 
-const { depth, tagline, heading, paragraph, buttons, image, content } =
-  Astro.props
+const {
+  align = 'center',
+  depth,
+  proof,
+  badge,
+  tagline,
+  heading,
+  paragraph,
+  buttons,
+  image,
+  content,
+} = Astro.props
 ---
 
-<Section class="content-2">
+<Section class="hero-2">
   <Container>
-    <Split align="center">
+    <Split {align}>
       <Writeup>
-        <Tagline text={tagline} />
+        <Proof {...proof} />
+        <Badge
+          size="lg"
+          {...badge}
+        />
+        <Tagline
+          size="sm"
+          text={tagline}
+        />
         <Heading
-          size="4xl"
+          size="6xl"
           text={heading}
           {depth}
         />
         <Paragraph
-          muted
-          size="lg"
+          size="xl"
           text={paragraph}
         />
         <Fragment set:html={content} />
         <slot />
-        <Group>
-          <Buttons {buttons} />
-        </Group>
+        <Buttons
+          size="lg"
+          {buttons}
+        />
       </Writeup>
       <Image {...image} />
     </Split>

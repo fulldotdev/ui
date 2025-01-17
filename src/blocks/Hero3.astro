@@ -1,13 +1,15 @@
 ---
+import Badge from 'fulldev-ui/components/Badge.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Proof from 'fulldev-ui/components/Proof.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
-import Panel from 'fulldev-ui/structures/Panel.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
+import Split from 'fulldev-ui/structures/Split.astro'
 import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
 interface Props extends BlockSchema {
@@ -16,24 +18,33 @@ interface Props extends BlockSchema {
 
 const {
   align = 'center',
-  depth = 2,
+  depth,
+  proof,
+  badge,
   tagline,
   heading,
   paragraph,
-  content,
   buttons,
   image,
+  content,
 } = Astro.props
 ---
 
-<Section class="cta-1">
+<Section class="hero-2">
   <Container>
-    <Panel>
-      <Writeup {align}>
-        <Tagline text={tagline} />
+    <Split {align}>
+      <Writeup>
+        <Proof {...proof} />
+        <Badge
+          size="lg"
+          {...badge}
+        />
+        <Tagline
+          size="sm"
+          text={tagline}
+        />
         <Heading
-          size="5xl"
-          as="h2"
+          size="6xl"
           text={heading}
           {depth}
         />
@@ -42,24 +53,44 @@ const {
           text={paragraph}
         />
         <Fragment set:html={content} />
+        <slot />
         <Buttons
-          variant="primary"
           size="lg"
           {buttons}
         />
       </Writeup>
-      <Image {...image} />
-    </Panel>
+    </Split>
   </Container>
+  <Image {...image} />
 </Section>
 
 <style>
-  @layer fulldev {
-    .panel {
-      padding-top: var(--spacer);
-      padding-right: var(--gutter);
-      padding-bottom: var(--spacer);
-      padding-left: var(--gutter);
+  .section {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    gap: var(--spacer);
+
+    @media (min-width: 1024px) {
+      flex-direction: row;
+      min-height: calc(100vh - var(--header-height));
+    }
+  }
+
+  .container {
+    display: flex;
+  }
+
+  .image {
+    border-radius: var(--radius-none);
+
+    @media (min-width: 1024px) {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: calc((100% - var(--gutter)) / 2);
+      height: 100%;
+      object-fit: cover;
     }
   }
 </style>
