@@ -2,6 +2,7 @@
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
+import List from 'fulldev-ui/components/List.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
 import type { BlockSchema } from 'fulldev-ui/schemas/block'
@@ -10,17 +11,30 @@ import Group from 'fulldev-ui/structures/Group.astro'
 import Prose from 'fulldev-ui/structures/Prose.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 import Split from 'fulldev-ui/structures/Split.astro'
+import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
-interface Props extends BlockSchema {}
+interface Props extends BlockSchema {
+  align?: 'start' | 'center' | 'end' | 'sticky'
+}
 
-const { depth, tagline, heading, paragraph, buttons, image, content } =
-  Astro.props
+const {
+  align = 'sticky',
+  depth,
+  tagline,
+  heading,
+  paragraph,
+  buttons,
+  image,
+  content,
+  list,
+  ...rest
+} = Astro.props
 ---
 
-<Section class="content-3">
+<Section {...rest}>
   <Container>
-    <Split align="sticky">
-      <Prose>
+    <Split {align}>
+      <Writeup>
         <Tagline text={tagline} />
         <Heading
           size="4xl"
@@ -32,13 +46,30 @@ const { depth, tagline, heading, paragraph, buttons, image, content } =
           size="lg"
           text={paragraph}
         />
-        <Fragment set:html={content} />
-        <slot />
+        <List items={list} />
         <Group>
           <Buttons {buttons} />
         </Group>
+      </Writeup>
+      <Prose>
+        <Image {...image} />
+        <Fragment set:html={content} />
+        <slot />
+        <Buttons
+          class="content-4-buttons"
+          {buttons}
+        />
       </Prose>
-      <Image {...image} />
     </Split>
   </Container>
 </Section>
+
+<style>
+  @layer fulldev {
+    .content-4-buttons {
+      @media (min-width: 1024px) {
+        display: none;
+      }
+    }
+  }
+</style>

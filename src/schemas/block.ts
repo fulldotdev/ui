@@ -8,7 +8,7 @@ export const blockSchema = cardSchema
   .extend({
     _block: z.string().optional(),
     variant: z.number().optional(),
-    align: z.enum(['start', 'center', 'end', 'sticky']).optional(),
+    align: z.enum(['start', 'center', 'end', 'sticky', 'columns']).optional(),
     depth: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
     themer: z.boolean().optional(),
     search: z.boolean().optional(),

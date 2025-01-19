@@ -4,31 +4,21 @@ import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
-import Toc from 'fulldev-ui/components/Toc.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/block.ts'
+import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Prose from 'fulldev-ui/structures/Prose.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
-import Sidebar from 'fulldev-ui/structures/Sidebar.astro'
+import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
 interface Props extends BlockSchema {}
 
-const {
-  depth,
-  tagline,
-  heading,
-  headings,
-  paragraph,
-  buttons,
-  image,
-  content,
-  ...rest
-} = Astro.props
+const { depth, tagline, heading, paragraph, buttons, image, content } =
+  Astro.props
 ---
 
-<Section {...rest}>
+<Section class="content-2">
   <Container>
-    <Prose align="center">
+    <Writeup>
       <Tagline text={tagline} />
       <Heading
         size="5xl"
@@ -40,39 +30,24 @@ const {
         size="lg"
         text={paragraph}
       />
-      <Image {...image} />
+    </Writeup>
+    <Prose align="columns">
       <Fragment set:html={content} />
       <slot />
-      <Buttons {buttons} />
     </Prose>
-    <Sidebar>
-      <Toc
-        size="sm"
-        {heading}
-        {headings}
-      />
-    </Sidebar>
+    <Buttons {buttons} />
+    <Image {...image} />
   </Container>
 </Section>
 
 <style>
-  @layer fulldev {
-    .section {
-      padding-top: 0;
-      padding-bottom: 0;
-    }
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-8);
+  }
 
-    .prose,
-    .sidebar {
-      padding-top: var(--spacer);
-      padding-bottom: var(--spacer);
-    }
-
-    .container {
-      display: flex;
-      column-gap: var(--gutter);
-      justify-content: space-between;
-      align-items: flex-start;
-    }
+  .image {
+    border-radius: var(--radius-lg);
   }
 </style>
