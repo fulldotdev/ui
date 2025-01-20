@@ -38,8 +38,6 @@ const image = z
   .object({
     src: z.string().optional(),
     alt: z.string().optional(),
-    width: z.number().optional(),
-    height: z.number().optional(),
   })
   .strict()
 
