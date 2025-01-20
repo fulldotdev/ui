@@ -1,6 +1,6 @@
 import { z } from 'astro:content'
-import { buttonSchema } from 'fulldev-ui/schemas/button.ts'
 import { cardSchema } from 'fulldev-ui/schemas/card.ts'
+import { formSchema } from 'fulldev-ui/schemas/form.ts'
 import { menuSchema } from 'fulldev-ui/schemas/menu.ts'
 import { pathSchema } from 'fulldev-ui/schemas/path.ts'
 
@@ -22,13 +22,7 @@ export const blockSchema = cardSchema
     variants: z.record(z.string(), z.string().array()).optional(),
     categories: pathSchema('pages').array().optional(),
     menus: menuSchema.array().optional(),
-    form: z
-      .object({
-        fields: z.array(z.any()).optional(),
-        button: buttonSchema.optional(),
-      })
-      .strict()
-      .optional(),
+    form: formSchema.optional(),
     headings: z
       .array(
         z.object({

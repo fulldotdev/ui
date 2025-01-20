@@ -1,0 +1,28 @@
+---
+import { getCollection, getEntry } from 'astro:content'
+import Blocks from 'fulldev-ui/layouts/Blocks.astro'
+import { getHref } from 'fulldev-ui/utils/getHref.ts'
+import { mergeDeep } from 'remeda'
+
+export async function getStaticPaths() {
+  const collection = await getCollection('pages', ({ id }) =>
+    id.includes('blocks/')
+  )
+  return collection.map((entry) => ({
+    params: {
+      block: getHref(entry.id),
+    },
+    props: entry,
+  }))
+}
+
+const baseLayout = await getEntry('layouts', 'base')
+const merged = mergeDeep(baseLayout || {}, Astro.props)
+
+const { data, ...rest } = merged
+---
+
+<Blocks
+  {...data}
+  {...rest}
+/>
