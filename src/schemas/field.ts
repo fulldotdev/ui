@@ -7,8 +7,8 @@ export const fieldSchema = z
       .optional(),
     label: z.string().optional(),
     placeholder: z.string().optional(),
+    options: z.string().array().optional(),
     value: z.string().optional(),
     required: z.boolean().optional(),
-    disabled: z.boolean().optional(),
   })
   .strict()

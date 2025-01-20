@@ -2,9 +2,9 @@ import { z } from 'astro:content'
 import { blockSchema } from 'fulldev-ui/schemas/block.ts'
 import { buttonSchema } from 'fulldev-ui/schemas/button.ts'
 import { formSchema } from 'fulldev-ui/schemas/form.ts'
-import { headSchema } from 'fulldev-ui/schemas/head.ts'
 import { imageSchema } from 'fulldev-ui/schemas/image.ts'
 import { pathSchema } from 'fulldev-ui/schemas/path.ts'
+import { seoSchema } from 'fulldev-ui/schemas/seo.ts'
 
 export const pageSchema = z
   .object({
@@ -23,7 +23,8 @@ export const pageSchema = z
     categories: pathSchema('pages').array().optional(),
     form: formSchema.optional(),
     sections: blockSchema.array().optional(),
-    head: headSchema.optional(),
+    seo: seoSchema.optional(),
+    code: z.string().optional(),
   })
   .strict()
 

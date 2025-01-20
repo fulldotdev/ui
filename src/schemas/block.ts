@@ -13,15 +13,9 @@ import { proofSchema } from 'fulldev-ui/schemas/proof.ts'
 
 export const blockSchema = z
   .object({
-    // Config
     block: z.string().optional(),
     variant: z.number().optional(),
-    // Options
     align: z.enum(['start', 'center', 'end', 'sticky']).optional(),
-    themer: z.boolean().optional(),
-    search: z.boolean().optional(),
-    cart: z.boolean().optional(),
-    // Block
     logo: logoSchema.optional(),
     socials: z.string().array().optional(),
     channels: channelSchema.array().optional(),

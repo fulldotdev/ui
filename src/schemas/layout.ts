@@ -22,6 +22,7 @@ export const layoutSchema = z
       menus: menuSchema.array().optional(),
       search: z.boolean().optional(),
       themer: z.boolean().optional(),
+      cart: z.boolean().optional(),
     }),
     footer: z.object({
       block: z.string().optional(),
