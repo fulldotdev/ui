@@ -1,6 +1,4 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import Hero from 'fulldev-ui/blocks/Hero.astro'
 import Badge from 'fulldev-ui/components/Badge.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
@@ -8,16 +6,18 @@ import Image from 'fulldev-ui/components/Image.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Proof from 'fulldev-ui/components/Proof.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
+import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 import Spread from 'fulldev-ui/structures/Spread.astro'
 import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
-interface Props extends ComponentProps<typeof Hero> {}
+interface Props extends BlockSchema {}
 
 const {
+  size = 'lg',
   align = 'center',
-  depth,
+  depth = 1,
   proof,
   badge,
   tagline,
@@ -25,15 +25,14 @@ const {
   paragraph,
   buttons,
   image,
-  content,
-  ...rest
+  writeup,
 } = Astro.props
 ---
 
-<Section {...rest}>
+<Section class:list={`hero hero-4 size-${size} align-${align} depth-${depth}`}>
   <Container>
     <Spread {align}>
-      <Writeup>
+      <Writeup {size}>
         <Proof {...proof} />
         <Badge
           size="lg"
@@ -52,11 +51,11 @@ const {
           size="xl"
           text={paragraph}
         />
-        <Fragment set:html={content} />
+        <Fragment set:html={writeup} />
         <slot />
       </Writeup>
       <Buttons
-        size="lg"
+        {size}
         {buttons}
       />
     </Spread>

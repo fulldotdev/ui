@@ -1,37 +1,36 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import Feature from 'fulldev-ui/blocks/Feature.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
+import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 import Split from 'fulldev-ui/structures/Split.astro'
 import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
-interface Props extends ComponentProps<typeof Feature> {}
+interface Props extends BlockSchema {}
 
 const {
+  size = 'md',
   align = 'center',
-  depth,
-  proof,
-  badge,
+  depth = 2,
   tagline,
   heading,
   paragraph,
   buttons,
   image,
-  content,
-  ...rest
+  writeup,
 } = Astro.props
 ---
 
-<Section {...rest}>
+<Section
+  class:list={`feature feature-5 size-${size} align-${align} depth-${depth}`}
+>
   <Container>
     <Split {align}>
-      <Writeup>
+      <Writeup {size}>
         <Tagline
           size="sm"
           text={tagline}
@@ -45,10 +44,11 @@ const {
           size="lg"
           text={paragraph}
         />
-        <Fragment set:html={content} />
+        <Fragment set:html={writeup} />
         <slot />
         <Buttons
           variant="secondary"
+          {size}
           {buttons}
         />
       </Writeup>

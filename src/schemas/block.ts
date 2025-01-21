@@ -15,7 +15,9 @@ export const blockSchema = z
   .object({
     block: z.string().optional(),
     variant: z.number().optional(),
-    align: z.enum(['start', 'center', 'end', 'sticky']).optional(),
+    align: z.enum(['start', 'center', 'end']).optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    depth: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
     logo: logoSchema.optional(),
     socials: z.string().array().optional(),
     channels: channelSchema.array().optional(),
@@ -23,6 +25,7 @@ export const blockSchema = z
     tagline: z.string().optional(),
     heading: z.string().optional(),
     paragraph: z.string().optional(),
+    writeup: z.string().optional(),
     list: z.string().array().optional(),
     image: imageSchema.optional(),
     images: imageSchema.array().optional(),

@@ -1,0 +1,48 @@
+---
+import Block from 'fulldev-ui/components/Block.astro'
+import type { BlockSchema } from 'fulldev-ui/schemas/block'
+import Layout from 'fulldev-ui/structures/Layout.astro'
+
+const blocks = import.meta.glob('../blocks/**/*.astro')
+const keys = Object.keys(blocks)
+const names = keys.map((key) => key.split('/').pop()?.split('.')[0])
+
+const props = {
+  writeup: `
+    <h1>Lorem ipsum dolor sit amet consectetur</h1>
+    <p>Consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+  `,
+  image: {
+    src: '/images/placeholder.webp',
+    alt: 'Image',
+  },
+  buttons: [
+    {
+      text: 'Primary button',
+      href: '/',
+    },
+    {
+      text: 'Secondary',
+      href: '/',
+    },
+  ],
+} satisfies BlockSchema
+---
+
+<Layout>
+  {
+    names.map((name) => (
+      <h2>{name}:</h2>
+      <Block
+        block={name}
+        {...props}
+      />
+    ))
+  }
+</Layout>
+
+<style>
+  h2 {
+    border-top: 1px solid black;
+  }
+</style>

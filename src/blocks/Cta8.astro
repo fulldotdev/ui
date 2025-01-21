@@ -1,38 +1,38 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import Hero from 'fulldev-ui/blocks/Hero.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
+import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Panel from 'fulldev-ui/structures/Panel.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
-interface Props extends ComponentProps<typeof Hero> {}
+interface Props extends BlockSchema {}
 
 const {
+  size = 'lg',
   align = 'center',
-  depth,
-  proof,
-  badge,
+  depth = 2,
   tagline,
   heading,
   paragraph,
+  writeup,
   buttons,
   image,
-  content,
-  ...rest
 } = Astro.props
 ---
 
-<Section {...rest}>
+<Section class:list={`cta cta-8 size-${size} align-${align} depth-${depth}`}>
   <Container>
     <Panel>
       <Image {...image} />
-      <Writeup {align}>
+      <Writeup
+        {size}
+        {align}
+      >
         <Tagline
           size="sm"
           text={tagline}
@@ -46,10 +46,10 @@ const {
           size="lg"
           text={paragraph}
         />
-        <Fragment set:html={content} />
+        <Fragment set:html={writeup} />
         <slot />
         <Buttons
-          size="lg"
+          {size}
           {buttons}
         />
       </Writeup>

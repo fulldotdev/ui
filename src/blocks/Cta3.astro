@@ -1,37 +1,36 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import Cta from 'fulldev-ui/blocks/Cta.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Tagline from 'fulldev-ui/components/Tagline.astro'
+import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Panel from 'fulldev-ui/structures/Panel.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 import Spread from 'fulldev-ui/structures/Spread.astro'
 import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
-interface Props extends ComponentProps<typeof Cta> {}
+interface Props extends BlockSchema {}
 
 const {
+  size = 'lg',
   align = 'center',
   depth = 2,
   tagline,
   heading,
   paragraph,
-  content,
+  writeup,
   buttons,
   image,
-  ...rest
 } = Astro.props
 ---
 
-<Section {...rest}>
+<Section class:list={`cta cta-3 size-${size} align-${align} depth-${depth}`}>
   <Container>
     <Panel>
       <Spread {align}>
-        <Writeup>
+        <Writeup {size}>
           <Tagline text={tagline} />
           <Heading
             size="5xl"
@@ -43,11 +42,11 @@ const {
             size="lg"
             text={paragraph}
           />
-          <Fragment set:html={content} />
+          <Fragment set:html={writeup} />
+          <slot />
         </Writeup>
         <Buttons
-          variant="primary"
-          size="lg"
+          {size}
           {buttons}
         />
       </Spread>

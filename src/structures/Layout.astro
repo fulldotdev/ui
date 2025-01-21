@@ -1,27 +1,17 @@
 ---
-interface Props {
-  title?: string | undefined
-  description?: string | undefined
-  image?:
-    | {
-        src?: string | undefined
-        alt?: string | undefined
-      }
-    | undefined
-  seo?:
-    | {
-        title?: string | undefined
-        description?: string | undefined
-      }
-    | undefined
-  code?: string | undefined
-}
+import type { GlobalSchema } from 'fulldev-ui/schemas/global'
+import type { PageSchema } from 'fulldev-ui/schemas/page'
 
-const { title, description, image, seo, code } = Astro.props
+interface Props extends GlobalSchema, PageSchema {}
+
+const { title, description, image, seo, code, sections, logo, company } =
+  Astro.props
 const { href } = Astro.params
 
 // FIXME
 const theme = 'light'
+
+// const url = href ? new URL(href, Astro.url) : Astro.url
 ---
 
 <!doctype html>
@@ -50,6 +40,10 @@ const theme = 'light'
       name="generator"
       content={Astro.generator}
     />
+    <meta
+      name="copyright"
+      content={company}
+    />
     <!-- OG -->
     <meta
       property="og:title"
@@ -61,7 +55,7 @@ const theme = 'light'
     />
     <meta
       property="og:image"
-      content={image?.src}
+      content={image?.src ?? sections?.[0]?.image?.src ?? logo?.src}
     />
     <meta
       property="og:url"
@@ -70,6 +64,10 @@ const theme = 'light'
     <meta
       property="og:type"
       content="website"
+    />
+    <meta
+      name="og:site_name"
+      content="IMDb"
     />
 
     <!-- Code -->
