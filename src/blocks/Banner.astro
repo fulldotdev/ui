@@ -1,45 +1,23 @@
 ---
-import Element from 'fulldev-ui/components/Element.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/block'
-import Container from 'fulldev-ui/structures/Container.astro'
+import Banner1 from 'fulldev-ui/blocks/Banner1.astro'
 
-interface Props extends BlockSchema {}
+interface Props {
+  variant?: keyof typeof variants | undefined
+  text?: string | undefined
+}
 
-const { text } = Astro.props
+const variants = {
+  1: Banner1,
+}
+
+const { variant = 1, ...rest } = Astro.props
+
+const Block = variants[variant]
 ---
 
-<Element
-  class="banner"
-  as="header"
+<Block
+  class:list={`banner variant-${variant}`}
+  {...rest}
 >
-  <Container>
-    <Fragment set:html={text} />
-  </Container>
-</Element>
-
-<style>
-  @layer fulldev {
-    .banner {
-      display: flex;
-      position: relative;
-      align-items: center;
-      background-color: var(--color-primary);
-      padding-top: var(--spacing-2-5);
-      padding-bottom: var(--spacing-2-5);
-      width: 100%;
-      color: var(--color-primary-foreground);
-    }
-
-    .container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: var(--color-primary);
-      overflow: hidden;
-      color: var(--color-primary-foreground);
-      font-size: var(--text-sm);
-      line-height: 1;
-      text-align: center;
-    }
-  }
-</style>
+  <slot />
+</Block>

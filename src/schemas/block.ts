@@ -43,6 +43,8 @@ export const blockSchema = z
     link: linkSchema.optional(),
     links: linkSchema.array().optional(),
     proof: proofSchema.optional(),
+    search: z.boolean().optional(),
+    themer: z.boolean().optional(),
   })
   .strict()
 

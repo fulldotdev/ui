@@ -1,6 +1,6 @@
 import { glob } from 'astro/loaders'
 import { defineCollection } from 'astro:content'
-import { cardSchema } from 'fulldev-ui/schemas/card.ts'
+import { globalSchema } from 'fulldev-ui/schemas/global.ts'
 import { pageSchema } from 'fulldev-ui/schemas/page.ts'
 
 export const collections = {
@@ -8,18 +8,18 @@ export const collections = {
     loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/pages' }),
     schema: pageSchema,
   }),
-  layouts: defineCollection({
+  globals: defineCollection({
     loader: glob({
       pattern: '**/[^_]*.{yml,yaml}',
-      base: './src/content/layouts',
+      base: './src/content/globals',
     }),
-    schema: pageSchema,
+    schema: globalSchema,
   }),
-  records: defineCollection({
-    loader: glob({
-      pattern: '**/[^_]*.{yml,yaml}',
-      base: './src/content/records',
-    }),
-    schema: cardSchema,
-  }),
+  // blocks: defineCollection({
+  //   loader: glob({
+  //     pattern: '**/[^_]*.{md,mdx}',
+  //     base: './src/content/blocks',
+  //   }),
+  //   schema: blockSchema.extend({ variants: z.number().optional() }),
+  // }),
 }

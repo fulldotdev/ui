@@ -1,0 +1,183 @@
+---
+// import Button from 'fulldev-ui/components/Button.astro'
+import Button from 'fulldev-ui/components/Button.astro'
+// import Cart from 'fulldev-ui/components/Cart.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Links from 'fulldev-ui/components/Links.astro'
+import Logo from 'fulldev-ui/components/Logo.astro'
+import Menus from 'fulldev-ui/components/Menus.astro'
+import Search from 'fulldev-ui/components/Search.astro'
+import Socials from 'fulldev-ui/components/Socials.astro'
+import Themer from 'fulldev-ui/components/Themer.astro'
+import type { BlockSchema } from 'fulldev-ui/schemas/block'
+import Container from 'fulldev-ui/structures/Container.astro'
+import Drawer from 'fulldev-ui/structures/Drawer.astro'
+
+interface Props extends BlockSchema {}
+
+const { logo, links, menus, socials, search, themer, button } = Astro.props
+---
+
+<Element
+  class="header"
+  as="header"
+>
+  <Container>
+    <Element class="header-start">
+      <Logo {...logo} />
+      <Links
+        size="sm"
+        variant="muted"
+        {links}
+      />
+    </Element>
+    <Element class="header-end">
+      {
+        search && (
+          <Search
+            show={search}
+            variant="ghost"
+            size="sm"
+          />
+        )
+      }
+      <!-- {
+        cart && (
+          <Cart
+            variant="ghost"
+            size="sm"
+          />
+        )
+      } -->
+      {
+        themer && (
+          <Themer
+            show={themer}
+            variant="ghost"
+            size="sm"
+          />
+        )
+      }
+      <Socials
+        size="sm"
+        {socials}
+      />
+
+      <Button
+        size="sm"
+        variant="outline"
+        {...button}
+      />
+      <!-- <Button
+        class="menu-button"
+        as="label"
+        for="sidebar-toggle"
+        icon="menu-2"
+        variant="ghost"
+        size="sm"
+      /> -->
+      <Drawer
+        id="header-drawer"
+        icon="menu-2"
+        size="sm"
+      >
+        <Container>
+          <Menus {menus} />
+        </Container>
+      </Drawer>
+    </Element>
+  </Container>
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .header {
+      display: flex;
+      position: sticky;
+      top: 0;
+      left: 0;
+      align-items: center;
+      z-index: 20;
+      border-bottom: 1px solid var(--color-border);
+      background-color: var(--color-background);
+      width: 100%;
+      height: var(--header-height);
+
+      &,
+      & ~ * {
+        --header-height: var(--spacing-14);
+      }
+
+      .container {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-6);
+      }
+
+      .header-start {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-6);
+
+        .link {
+          display: none;
+
+          @media (min-width: 1024px) {
+            display: inline-flex;
+          }
+        }
+      }
+
+      .header-home {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-2);
+      }
+
+      .header-end {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-1);
+        margin-left: auto;
+
+        .social,
+        .themer {
+          display: none;
+
+          @media (min-width: 1024px) {
+            display: inline-flex;
+          }
+        }
+
+        .menu-button {
+          @media (min-width: 1024px) {
+            display: none;
+          }
+        }
+      }
+
+      .drawer {
+        @media (min-width: 1024px) {
+          display: none;
+        }
+
+        .container {
+          display: flex;
+          flex-direction: column;
+          align-items: start;
+          gap: var(--spacing-6);
+          padding-top: var(--spacing-8);
+          padding-right: var(--gutter);
+          padding-bottom: var(--spacing-14);
+          /* TODO check gutter var */
+          padding-left: var(--gutter);
+          width: 100%;
+          overflow-y: auto;
+
+          /* TODO scrollbar */
+          /* @apply scrollbar scrollbar-track-transparent scrollbar-thumb-accent scrollbar-thumb-rounded-full scrollbar-w-2 hover:scrollbar-thumb-accent-hover; */
+        }
+      }
+    }
+  }
+</style>

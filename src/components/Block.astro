@@ -3,9 +3,12 @@ import { getEntries } from 'astro:content'
 import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import { getHref } from 'fulldev-ui/utils/getHref'
 
-interface Props extends BlockSchema {}
+interface Props extends BlockSchema {
+  depth?: number
+  headings?: any
+}
 
-let { _block, cards, pages, records, ...rest } = Astro.props
+let { block, cards, pages, records, ...rest } = Astro.props
 
 const blocks = {
   ...import.meta.glob('/src/blocks/**/*.astro'),
@@ -13,7 +16,7 @@ const blocks = {
 }
 
 const path = Object.keys(blocks).find(
-  (path) => path.split('/').pop()?.split('.')[0] === _block
+  (path) => path.split('/').pop()?.split('.')[0] === block
 )
 
 const BlockComponent = path && (await (blocks[path] as any)()).default

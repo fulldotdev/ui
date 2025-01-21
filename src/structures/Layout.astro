@@ -1,41 +1,134 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import Head from 'fulldev-ui/components/Head.astro'
+import type { LayoutSchema } from 'fulldev-ui/schemas/layout'
+import type { PageSchema } from 'fulldev-ui/schemas/page'
 
-type Props = Omit<HTMLAttributes<'body'>, 'title'> & {
-  head?: ComponentProps<typeof Head>
-}
+interface Props extends PageSchema, LayoutSchema {}
 
-const { head } = Astro.props
+const { title, description, image, seo, code } = Astro.props
+const { href } = Astro.params
+
+// FIXME
+const theme = 'light'
 ---
 
 <!doctype html>
 <html>
-  <Head {...head} />
+  <head>
+    <!-- General -->
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1"
+    />
+    <title>{seo?.title ?? title}</title>
+    <meta
+      content={seo?.description ?? description}
+      name="description"
+    />
+    <meta
+      name="robots"
+      content="index, follow"
+    />
+    <link
+      rel="canonical"
+      href={href}
+    />
+    <meta
+      name="generator"
+      content={Astro.generator}
+    />
+    <!-- OG -->
+    <meta
+      property="og:title"
+      content={title}
+    />
+    <meta
+      property="og:description"
+      content={description}
+    />
+    <meta
+      property="og:image"
+      content={image?.src}
+    />
+    <meta
+      property="og:url"
+      content={href}
+    />
+    <meta
+      property="og:type"
+      content="website"
+    />
+
+    <!-- Code -->
+    <Fragment set:html={code} />
+    <slot />
+
+    <!-- Light / Dark theme -->
+    <script is:inline define:vars={{ theme }}>
+      function setTheme(document) {
+        const value = localStorage.getItem('theme') || theme
+
+        const isDark =
+          value === 'dark' ||
+          (value === 'system' &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches)
+
+        document.documentElement.classList.toggle('dark', isDark)
+
+        document.querySelectorAll('.themer').forEach((themer) => {
+          themer?.querySelectorAll('option').forEach((option) => {
+            option.selected = option.value === value
+          })
+        })
+      }
+
+      function setOption(document) {
+        const value = localStorage.getItem('theme') || theme
+
+        document.querySelectorAll('.themer').forEach((themer) => {
+          themer?.querySelectorAll('option').forEach((option) => {
+            option.selected = option.value === value
+          })
+        })
+      }
+
+      setTheme(document)
+      setOption(document)
+
+      document.addEventListener('astro:before-swap', (event) => {
+        setTheme(event.newDocument)
+      })
+
+      document.addEventListener('astro:page-load', (event) => {
+        setOption(document)
+      })
+    </script>
+  </head>
   <body>
     <slot />
-    <style is:global>
-      @layer fulldev {
-        html {
-          width: 100%;
-          color: var(--color-foreground);
-          color-scheme: light;
-          font-size: var(--text-base);
-          line-height: var(--line-height-relaxed);
-          font-family: var(--font-sans);
-        }
-
-        .dark {
-          color-scheme: dark;
-        }
-
-        body {
-          background-color: var(--color-background);
-          width: 100%;
-          color: var(--color-foreground);
-          font-family: var(--font-sans);
-        }
-      }
-    </style>
   </body>
 </html>
+
+<style>
+  @layer fulldev {
+    html {
+      width: 100%;
+      color: var(--color-foreground);
+      color-scheme: light;
+      font-size: var(--text-base);
+      line-height: var(--line-height-relaxed);
+      font-family: var(--font-sans);
+    }
+
+    .dark {
+      color-scheme: dark;
+    }
+
+    body {
+      background-color: var(--color-background);
+      width: 100%;
+      color: var(--color-foreground);
+      font-family: var(--font-sans);
+    }
+  }
+</style>
