@@ -8,7 +8,7 @@ import { menuSchema } from 'fulldev-ui/schemas/menu.ts'
 export const globalSchema = z
   .object({
     _schema: z.string().optional(),
-    block: z.number().optional(),
+    block: z.string().optional(),
     company: z.string().optional(),
     slug: z.string().optional(),
     logo: logoSchema.optional(),
@@ -24,6 +24,7 @@ export const globalSchema = z
     themer: z.boolean().optional(),
     cart: z.boolean().optional(),
     paragraph: z.string().optional(),
+    button: buttonSchema.optional(),
   })
   .strict()
 

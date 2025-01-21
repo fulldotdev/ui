@@ -14,18 +14,29 @@ interface Props extends BlockSchema {
   headings?: any
 }
 
-const { title, description, list, headings, buttons, image } = Astro.props
+const {
+  size = 'md',
+  title,
+  description,
+  list,
+  headings,
+  buttons,
+  image,
+} = Astro.props
 ---
 
-<Section class:list={`content content-2`}>
+<Section class:list={`content content-2 size-${size}`}>
   <Container>
-    <Prose>
+    <Prose {size}>
       <Element as="h1">{title}</Element>
       <Element as="p">{description}</Element>
       <List items={list} />
       <Image {...image} />
       <slot />
-      <Buttons {buttons} />
+      <Buttons
+        {size}
+        {buttons}
+      />
     </Prose>
     <Sidebar>
       <Toc
@@ -51,6 +62,8 @@ const { title, description, list, headings, buttons, image } = Astro.props
 
     .prose,
     .sidebar {
+      position: sticky;
+      top: var(--header-height, 0px);
       padding-top: var(--spacer);
       padding-bottom: var(--spacer);
     }

@@ -3,6 +3,7 @@ import { getCollection, getEntry, render } from 'astro:content'
 import Block from 'fulldev-ui/components/Block.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Layout from 'fulldev-ui/structures/Layout.astro'
+import { getHref } from 'fulldev-ui/utils/getHref'
 
 export async function getStaticPaths() {
   const collection = await getCollection('pages')
@@ -10,7 +11,7 @@ export async function getStaticPaths() {
     const slug = entry.data.slug ?? entry.id
     return {
       params: {
-        slug: slug === 'index' ? undefined : slug,
+        page: getHref(slug),
       },
       props: entry,
     }
@@ -41,7 +42,6 @@ const { Content, headings } = await render(Astro.props)
       <Content />
     </Block>
     {page.sections?.map((section) => <Block {...section} />)}
-    <slot />
   </Element>
   <Block
     {...general}

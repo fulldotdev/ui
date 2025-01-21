@@ -2,12 +2,13 @@ import { z } from 'astro:content'
 import { blockSchema } from 'fulldev-ui/schemas/block.ts'
 import { buttonSchema } from 'fulldev-ui/schemas/button.ts'
 import { formSchema } from 'fulldev-ui/schemas/form.ts'
+import { globalSchema } from 'fulldev-ui/schemas/global.ts'
 import { imageSchema } from 'fulldev-ui/schemas/image.ts'
 import { pathSchema } from 'fulldev-ui/schemas/path.ts'
 import { seoSchema } from 'fulldev-ui/schemas/seo.ts'
 
-export const pageSchema = z
-  .object({
+export const pageSchema = globalSchema
+  .extend({
     _schema: z.string().optional(),
     size: z.enum(['sm', 'md', 'lg']).optional(),
     align: z.enum(['start', 'center', 'end']).optional(),

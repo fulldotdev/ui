@@ -1,11 +1,9 @@
 ---
 import Channels from 'fulldev-ui/components/Channels.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Form from 'fulldev-ui/components/Form.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Socials from 'fulldev-ui/components/Socials.astro'
-import Tagline from 'fulldev-ui/components/Tagline.astro'
 import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Prose from 'fulldev-ui/structures/Prose.astro'
@@ -14,7 +12,7 @@ import Split from 'fulldev-ui/structures/Split.astro'
 
 interface Props extends BlockSchema {}
 
-const { tagline, heading, paragraph, channels, socials, form, image } =
+const { title, description, content, channels, socials, form, image } =
   Astro.props
 ---
 
@@ -22,16 +20,9 @@ const { tagline, heading, paragraph, channels, socials, form, image } =
   <Container>
     <Split>
       <Prose>
-        <Tagline text={tagline} />
-        <Heading
-          size="4xl"
-          text={heading}
-        />
-        <Paragraph
-          muted
-          size="lg"
-          text={paragraph}
-        />
+        <Element as="h1">{title}</Element>
+        <Element as="p">{description}</Element>
+        <Fragment set:html={content} />
         <Channels {channels} />
         <Socials
           variant="secondary"
@@ -39,15 +30,33 @@ const { tagline, heading, paragraph, channels, socials, form, image } =
         />
         <Form {...form} />
       </Prose>
-      <Image {...image} />
     </Split>
   </Container>
+  <Image {...image} />
 </Section>
 
 <style>
   @layer fulldev {
-    .prose {
-      max-width: var(--container-xl);
+    .section {
+      display: flex;
+      flex-direction: column;
+      justify-content: stretch;
+      gap: var(--spacer);
+
+      @media (min-width: 1024px) {
+        flex-direction: row;
+      }
+    }
+
+    .image {
+      @media (min-width: 1024px) {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: calc((100% - var(--gutter)) / 2);
+        height: 100%;
+        object-fit: cover;
+      }
     }
   }
 </style>

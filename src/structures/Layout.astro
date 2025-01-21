@@ -2,11 +2,12 @@
 import type { GlobalSchema } from 'fulldev-ui/schemas/global'
 import type { PageSchema } from 'fulldev-ui/schemas/page'
 
-interface Props extends GlobalSchema, PageSchema {}
+type Props = GlobalSchema & PageSchema
 
 const { title, description, image, seo, code, sections, logo, company } =
   Astro.props
-const { href } = Astro.params
+
+const url = Astro.url.href.endsWith('/') ? Astro.url.href : `${Astro.url.href}/`
 
 // FIXME
 const theme = 'light'
@@ -34,7 +35,7 @@ const theme = 'light'
     />
     <link
       rel="canonical"
-      href={href}
+      href={url}
     />
     <meta
       name="generator"
@@ -59,7 +60,7 @@ const theme = 'light'
     />
     <meta
       property="og:url"
-      content={href}
+      content={url}
     />
     <meta
       property="og:type"
@@ -72,7 +73,7 @@ const theme = 'light'
 
     <!-- Code -->
     <Fragment set:html={code} />
-    <slot />
+    <slot name="head" />
 
     <!-- Light / Dark theme -->
     <script is:inline define:vars={{ theme }}>

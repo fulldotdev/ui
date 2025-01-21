@@ -1,52 +1,42 @@
 ---
 import Channels from 'fulldev-ui/components/Channels.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Form from 'fulldev-ui/components/Form.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Socials from 'fulldev-ui/components/Socials.astro'
 import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Prose from 'fulldev-ui/structures/Prose.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
+import Split from 'fulldev-ui/structures/Split.astro'
 
 interface Props extends BlockSchema {}
 
-const { heading, paragraph, channels, socials, form, image } = Astro.props
+const { title, description, content, channels, socials, form, image } =
+  Astro.props
 ---
 
-<Section class="contact-1">
+<Section class="contact-2">
   <Container>
-    <Prose align="center">
-      <Heading
-        size="4xl"
-        text={heading}
-      />
-      <Paragraph
-        muted
-        size="lg"
-        text={paragraph}
-      />
-      <Channels {channels} />
-      <Socials
-        variant="secondary"
-        {socials}
-      />
-      <Form {...form} />
+    <Split>
+      <Prose>
+        <Element as="h1">{title}</Element>
+        <Element as="p">{description}</Element>
+        <Fragment set:html={content} />
+        <Channels {channels} />
+        <Socials
+          variant="secondary"
+          {socials}
+        />
+        <Form {...form} />
+      </Prose>
       <Image {...image} />
-    </Prose>
+    </Split>
   </Container>
 </Section>
 
 <style>
   @layer fulldev {
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--spacing-16);
-    }
-
     .prose {
       max-width: var(--container-xl);
     }

@@ -1,7 +1,9 @@
 ---
-import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Channels from 'fulldev-ui/components/Channels.astro'
 import Element from 'fulldev-ui/components/Element.astro'
+import Form from 'fulldev-ui/components/Form.astro'
 import Image from 'fulldev-ui/components/Image.astro'
+import Socials from 'fulldev-ui/components/Socials.astro'
 import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
 import Prose from 'fulldev-ui/structures/Prose.astro'
@@ -9,34 +11,26 @@ import Section from 'fulldev-ui/structures/Section.astro'
 
 interface Props extends BlockSchema {}
 
-const {
-  size = 'md',
-  align = 'center',
-  buttons,
-  image,
-  content,
-  title,
-  description,
-} = Astro.props
+const { title, description, content, channels, socials, form, image } =
+  Astro.props
+
+console.log(Astro.props)
 ---
 
-<Section class:list={`feature feature-1 size-${size} align-${align}`}>
+<Section class="contact-1">
   <Container>
-    <Prose
-      {size}
-      {align}
-    >
+    <Prose>
       <Element as="h1">{title}</Element>
       <Element as="p">{description}</Element>
       <Fragment set:html={content} />
-      <slot />
-      <Buttons
+      <Channels {channels} />
+      <Socials
         variant="secondary"
-        {size}
-        {buttons}
+        {socials}
       />
+      <Form {...form} />
+      <Image {...image} />
     </Prose>
-    <Image {...image} />
   </Container>
 </Section>
 
@@ -45,11 +39,14 @@ const {
     .container {
       display: flex;
       flex-direction: column;
-      gap: var(--spacer);
+      align-items: center;
+      gap: var(--spacing-16);
+    }
 
-      .image {
-        border-radius: var(--radius-lg);
-      }
+    .prose {
+      margin-right: auto;
+      margin-left: auto;
+      max-width: var(--container-xl);
     }
   }
 </style>

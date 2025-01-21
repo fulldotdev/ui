@@ -1,6 +1,5 @@
-import type { CollectionEntry } from 'astro:content'
-
-export function getHref(id: CollectionEntry<'pages'>['id']) {
-  if (id === 'index') return '/'
-  else return `/${id}/`
+export function getHref(slug: string | undefined) {
+  if (slug === undefined) return '/'
+  if (slug === 'index') return '/'
+  else return `/${slug}/`
 }
