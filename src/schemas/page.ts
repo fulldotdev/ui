@@ -9,8 +9,9 @@ import { seoSchema } from 'fulldev-ui/schemas/seo.ts'
 export const pageSchema = z
   .object({
     _schema: z.string().optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    align: z.enum(['start', 'center', 'end']).optional(),
     block: z.string().optional(),
-    variant: z.number().optional(),
     slug: z.string().optional(),
     title: z.string().optional(),
     description: z.string().optional(),
@@ -27,6 +28,7 @@ export const pageSchema = z
     sections: blockSchema.array().optional(),
     seo: seoSchema.optional(),
     code: z.string().optional(),
+    content: z.string().optional(),
   })
   .strict()
 

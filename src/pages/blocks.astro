@@ -1,32 +1,18 @@
 ---
+import { render } from 'astro:content'
+import { getEntry } from 'astro:content'
 import Block from 'fulldev-ui/components/Block.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Layout from 'fulldev-ui/structures/Layout.astro'
 
 const blocks = import.meta.glob('../blocks/**/*.astro')
 const keys = Object.keys(blocks)
 const names = keys.map((key) => key.split('/').pop()?.split('.')[0])
 
-const props = {
-  writeup: `
-    <h1>Lorem ipsum dolor sit amet consectetur</h1>
-    <p>Consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-  `,
-  image: {
-    src: '/images/placeholder.webp',
-    alt: 'Image',
-  },
-  buttons: [
-    {
-      text: 'Primary button',
-      href: '/',
-    },
-    {
-      text: 'Secondary',
-      href: '/',
-    },
-  ],
-} satisfies BlockSchema
+const entry = await getEntry('pages', 'blocks')
+const rendered = entry && await render(entry)
+
+const Content = rendered?.Content
+const headings = rendered?.headings
 ---
 
 <Layout>
@@ -35,8 +21,11 @@ const props = {
       <h2>{name}:</h2>
       <Block
         block={name}
-        {...props}
-      />
+        {headings}
+        {...entry?.data}
+      >
+        {Content && <Content />}
+      </Block>
     ))
   }
 </Layout>

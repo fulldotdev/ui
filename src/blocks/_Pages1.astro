@@ -1,4 +1,5 @@
 ---
+// Heading etc left, image and content right, sticky
 import Badges from 'fulldev-ui/components/Badges.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Element from 'fulldev-ui/components/Element.astro'
@@ -15,28 +16,24 @@ import Split from 'fulldev-ui/structures/Split.astro'
 
 interface Props extends BlockSchema {}
 
-const {
-  depth = 2,
-  tagline,
-  heading,
-  paragraph,
-  buttons,
-  content,
-  cards,
-} = Astro.props
+const { tagline, heading, paragraph, buttons, content, cards } = Astro.props
 ---
 
-<Section class="projects-1">
+<Section class="pages-1">
   <Container>
     <Split align="sticky">
       <Prose>
         <Tagline text={tagline} />
         <Heading
-          size="3xl"
+          as="h2"
+          size="4xl"
           text={heading}
-          {depth}
         />
-        <Paragraph text={paragraph} />
+        <Paragraph
+          muted
+          size="lg"
+          text={paragraph}
+        />
         <Fragment set:html={content} />
         <Group>
           <Buttons
@@ -49,8 +46,8 @@ const {
         {
           cards?.map(({ href, image, badges, heading, paragraph }) => (
             <Element
-              class="item"
               as="a"
+              class="item"
               {href}
             >
               <Image {...image} />
@@ -61,7 +58,6 @@ const {
                 />
               </Group>
               <Heading
-                depth={(depth + 1) as 3}
                 as="h3"
                 size="xl"
                 text={heading}
@@ -77,8 +73,10 @@ const {
 
 <style>
   @layer fulldev {
-    .prose {
-      max-width: var(--container-xl);
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-16);
     }
 
     .column {

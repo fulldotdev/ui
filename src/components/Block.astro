@@ -4,11 +4,10 @@ import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import { getHref } from 'fulldev-ui/utils/getHref'
 
 interface Props extends BlockSchema {
-  depth?: number
-  headings?: any
+  headings?: any | undefined
 }
 
-let { block, cards, pages, records, ...rest } = Astro.props
+let { block, cards, pages, ...rest } = Astro.props
 
 const blocks = {
   ...import.meta.glob('/src/blocks/**/*.astro'),
@@ -23,9 +22,6 @@ const BlockComponent = path && (await (blocks[path] as any)()).default
 
 cards = [
   ...(cards || []),
-  ...(await getEntries(records || [])).map(({ data }) => ({
-    ...data,
-  })),
   ...(await getEntries(pages || [])).map(({ id, data }) => ({
     href: getHref(id),
     heading: data.title,
@@ -40,7 +36,6 @@ cards = [
     <BlockComponent
       {cards}
       {pages}
-      {records}
       {...rest}
     >
       <slot />

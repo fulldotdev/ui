@@ -1,58 +1,42 @@
 ---
 import Buttons from 'fulldev-ui/components/Buttons.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import Paragraph from 'fulldev-ui/components/Paragraph.astro'
-import Tagline from 'fulldev-ui/components/Tagline.astro'
 import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
+import Prose from 'fulldev-ui/structures/Prose.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
-import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
 interface Props extends BlockSchema {}
 
 const {
   size = 'md',
   align = 'center',
-  depth = 2,
-  tagline,
-  heading,
-  paragraph,
+
   buttons,
   image,
-  writeup,
+  content,
+  title,
+  description,
 } = Astro.props
 ---
 
-<Section
-  class:list={`feature feature-2 size-${size} align-${align} depth-${depth}`}
->
+<Section class:list={`feature feature-2 size-${size} align-${align}`}>
   <Container>
-    <Writeup
+    <Prose
       {size}
       {align}
     >
-      <Tagline
-        size="sm"
-        text={tagline}
-      />
-      <Heading
-        size="4xl"
-        text={heading}
-        {depth}
-      />
-      <Paragraph
-        size="lg"
-        text={paragraph}
-      />
-      <Fragment set:html={writeup} />
+      <Element as="h1">{title}</Element>
+      <Element as="p">{description}</Element>
+      <Fragment set:html={content} />
       <slot />
       <Buttons
         variant="secondary"
         {size}
         {buttons}
       />
-    </Writeup>
+    </Prose>
   </Container>
   <Image {...image} />
 </Section>

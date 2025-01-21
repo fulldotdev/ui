@@ -1,9 +1,8 @@
 ---
 import Buttons from 'fulldev-ui/components/Buttons.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import Paragraph from 'fulldev-ui/components/Paragraph.astro'
-import Tagline from 'fulldev-ui/components/Tagline.astro'
+import List from 'fulldev-ui/components/List.astro'
 import Toc from 'fulldev-ui/components/Toc.astro'
 import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
@@ -11,34 +10,19 @@ import Prose from 'fulldev-ui/structures/Prose.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 import Sidebar from 'fulldev-ui/structures/Sidebar.astro'
 
-interface Props extends BlockSchema {}
+interface Props extends BlockSchema {
+  headings?: any
+}
 
-const {
-  depth,
-  tagline,
-  heading,
-  headings,
-  paragraph,
-  buttons,
-  image,
-  ...rest
-} = Astro.props
+const { title, description, list, headings, buttons, image } = Astro.props
 ---
 
-<Section {...rest}>
+<Section class:list={`content content-2`}>
   <Container>
-    <Prose align="center">
-      <Tagline text={tagline} />
-      <Heading
-        size="5xl"
-        text={heading}
-        {depth}
-      />
-      <Paragraph
-        muted
-        size="lg"
-        text={paragraph}
-      />
+    <Prose>
+      <Element as="h1">{title}</Element>
+      <Element as="p">{description}</Element>
+      <List items={list} />
       <Image {...image} />
       <slot />
       <Buttons {buttons} />
@@ -46,7 +30,7 @@ const {
     <Sidebar>
       <Toc
         size="sm"
-        {heading}
+        heading={title}
         {headings}
       />
     </Sidebar>
@@ -58,6 +42,11 @@ const {
     .section {
       padding-top: 0;
       padding-bottom: 0;
+    }
+
+    .prose {
+      margin-right: auto;
+      margin-left: auto;
     }
 
     .prose,

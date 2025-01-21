@@ -1,63 +1,51 @@
 ---
 import Badge from 'fulldev-ui/components/Badge.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Proof from 'fulldev-ui/components/Proof.astro'
-import Tagline from 'fulldev-ui/components/Tagline.astro'
 import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
+import Prose from 'fulldev-ui/structures/Prose.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 import Split from 'fulldev-ui/structures/Split.astro'
-import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
 interface Props extends BlockSchema {}
 
 const {
   size = 'lg',
   align = 'center',
-  depth = 1,
   proof,
   badge,
-  tagline,
-  heading,
-  paragraph,
   buttons,
   image,
-  writeup,
+  content,
+  title,
+  description,
 } = Astro.props
 ---
 
-<Section class:list={`hero hero-5 size-${size} align-${align} depth-${depth}`}>
+<Section class:list={`hero hero-5 size-${size} align-${align}`}>
   <Container>
     <Split {align}>
-      <Writeup {size}>
-        <Proof {...proof} />
+      <Prose {size}>
+        <Proof
+          {size}
+          {...proof}
+        />
         <Badge
-          size="lg"
+          {size}
           {...badge}
         />
-        <Tagline
-          size="sm"
-          text={tagline}
-        />
-        <Heading
-          size="6xl"
-          text={heading}
-          {depth}
-        />
-        <Paragraph
-          size="xl"
-          text={paragraph}
-        />
-        <Fragment set:html={writeup} />
+        <Element as="h1">{title}</Element>
+        <Element as="p">{description}</Element>
+        <Fragment set:html={content} />
         <slot />
         <Buttons
           {size}
           {buttons}
         />
-      </Writeup>
+      </Prose>
       <Image {...image} />
     </Split>
   </Container>

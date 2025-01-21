@@ -1,58 +1,33 @@
 ---
 import Buttons from 'fulldev-ui/components/Buttons.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import List from 'fulldev-ui/components/List.astro'
-import Paragraph from 'fulldev-ui/components/Paragraph.astro'
-import Tagline from 'fulldev-ui/components/Tagline.astro'
 import type { BlockSchema } from 'fulldev-ui/schemas/block'
 import Container from 'fulldev-ui/structures/Container.astro'
-import Group from 'fulldev-ui/structures/Group.astro'
 import Prose from 'fulldev-ui/structures/Prose.astro'
 import Section from 'fulldev-ui/structures/Section.astro'
 import Split from 'fulldev-ui/structures/Split.astro'
-import Writeup from 'fulldev-ui/structures/Writeup.astro'
 
 interface Props extends BlockSchema {}
 
-const {
-  align = 'sticky',
-  depth,
-  tagline,
-  heading,
-  paragraph,
-  buttons,
-  image,
-  list,
-  ...rest
-} = Astro.props
+const { title, description, list, buttons, image } = Astro.props
 ---
 
-<Section {...rest}>
+<Section class:list={`content content-3`}>
   <Container>
     <Split align="sticky">
-      <Writeup>
-        <Tagline text={tagline} />
-        <Heading
-          size="4xl"
-          text={heading}
-          {depth}
-        />
-        <Paragraph
-          muted
-          size="lg"
-          text={paragraph}
-        />
+      <Prose>
+        <Element as="h1">{title}</Element>
+        <Element as="p">{description}</Element>
         <List items={list} />
-        <Group>
-          <Buttons {buttons} />
-        </Group>
-      </Writeup>
+        <Buttons {buttons} />
+      </Prose>
       <Prose>
         <Image {...image} />
         <slot />
         <Buttons
-          class="content-4-buttons"
+          class="end"
           {buttons}
         />
       </Prose>
@@ -62,7 +37,7 @@ const {
 
 <style>
   @layer fulldev {
-    .content-4-buttons {
+    .buttons.end {
       @media (min-width: 1024px) {
         display: none;
       }
