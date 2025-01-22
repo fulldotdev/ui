@@ -1,0 +1,85 @@
+---
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
+
+interface Props extends HTMLAttributes<'div'> {
+  as?: HTMLTag
+  size?: 'sm' | 'md' | 'lg' | undefined
+  length?: number | undefined
+}
+
+const { size = 'md', length = 4, ...rest } = Astro.props
+---
+
+<Element
+  class:list={`grid size-${size} length-${length}`}
+  {...rest}
+>
+  <slot />
+</Element>
+
+<style>
+  @layer fulldev {
+    .grid {
+      display: grid;
+      position: relative;
+      width: 100%;
+
+      &.length-1,
+      &.length-2 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+        gap: var(--spacing-20);
+
+        @media (min-width: 768px) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      &.length-4,
+      &.length-7,
+      &.length-8 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+        gap: min(var(--spacing-8), var(--gutter));
+
+        @media (min-width: 768px) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        @media (min-width: 1280px) {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+      }
+
+      &.length-3,
+      &.length-6 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+        gap: min(var(--spacing-8), var(--gutter));
+
+        @media (min-width: 768px) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        @media (min-width: 1280px) {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      &.length-5 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+        gap: min(var(--spacing-8), var(--gutter));
+
+        @media (min-width: 768px) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        @media (min-width: 1024px) {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        @media (min-width: 1280px) {
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+      }
+    }
+  }
+</style>

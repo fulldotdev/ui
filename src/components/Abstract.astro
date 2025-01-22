@@ -4,14 +4,15 @@ import Element from 'fulldev-ui/components/Element.astro'
 
 interface Props extends HTMLAttributes<'div'> {
   as?: HTMLTag
-  align?: 'left' | 'center' | 'right'
+  align?: 'left' | 'center' | 'right' | undefined
+  size?: 'sm' | 'md' | 'lg' | undefined
 }
 
-const { align = 'left', ...rest } = Astro.props
+const { size = 'md', align = 'left', ...rest } = Astro.props
 ---
 
 <Element
-  class:list={`abstract align-${align}`}
+  class:list={`abstract size-${size} align-${align}`}
   {...rest}
 >
   <slot />
@@ -23,11 +24,18 @@ const { align = 'left', ...rest } = Astro.props
       display: flex;
       position: relative;
       flex-direction: column;
+      width: 100%;
+      max-width: var(--container-3xl);
+      color: var(--color-foreground);
 
       &.align-start {
-        align-items: start;
+        align-items: flex-start;
         margin-right: auto;
         text-align: left;
+
+        > *:not(> * > *) {
+          text-align: left;
+        }
       }
 
       &.align-center {
@@ -35,21 +43,163 @@ const { align = 'left', ...rest } = Astro.props
         margin-right: auto;
         margin-left: auto;
         text-align: center;
+
+        > *:not(> * > *) {
+          text-align: center;
+        }
       }
 
       &.align-end {
-        align-items: end;
+        align-items: flex-end;
         margin-left: auto;
         text-align: right;
+
+        > *:not(> * > *) {
+          text-align: right;
+        }
       }
 
-      .heading {
-        max-width: var(--breakpoint-lg);
-        text-wrap: balance;
+      &.size-sm {
+        font-size: var(--text-sm);
+
+        h1 {
+          font-size: var(--text-3xl);
+          line-height: var(--text-3xl--line-height);
+        }
+
+        h2 {
+          font-size: var(--text-2xl);
+          line-height: var(--text-2xl--line-height);
+        }
+
+        h3 {
+          font-size: var(--text-base);
+          line-height: var(--text-base--line-height);
+        }
+
+        h4 {
+          font-size: var(--text-base);
+          line-height: var(--text-lg--line-height);
+        }
+
+        h5,
+        h6 {
+          font-size: var(--text-base);
+          line-height: var(--text-base--line-height);
+        }
       }
 
-      .paragraph {
-        max-width: var(--breakpoint-md);
+      &.size-md {
+        font-size: var(--text-sm);
+
+        h1 {
+          font-size: var(--text-4xl);
+          line-height: var(--text-4xl--line-height);
+
+          @media (min-width: 1024px) {
+            font-size: var(--text-5xl);
+            line-height: var(--text-5xl--line-height);
+          }
+
+          + p {
+            font-size: var(--text-lg);
+          }
+        }
+
+        h2 {
+          font-size: var(--text-3xl);
+          line-height: var(--text-3xl--line-height);
+        }
+
+        h3 {
+          font-size: var(--text-lg);
+          line-height: var(--text-lg--line-height);
+        }
+
+        h4 {
+          font-size: var(--text-xl);
+          line-height: var(--text-xl--line-height);
+        }
+
+        h5 {
+          font-size: var(--text-lg);
+          line-height: var(--text-lg--line-height);
+        }
+
+        h6 {
+          font-size: var(--text-base);
+          line-height: var(--text-base--line-height);
+        }
+      }
+
+      &.size-lg {
+        font-size: var(--text-lg);
+
+        h1 {
+          font-weight: var(--font-weight-bold);
+          font-size: var(--text-5xl);
+          line-height: var(--text-5xl--line-height);
+
+          @media (min-width: 1024px) {
+            font-size: var(--text-6xl);
+            line-height: var(--text-6xl--line-height);
+          }
+
+          + p {
+            font-size: var(--text-xl);
+          }
+        }
+
+        h2 {
+          font-size: var(--text-4xl);
+          line-height: var(--text-4xl--line-height);
+        }
+
+        h3 {
+          font-size: var(--text-3xl);
+          line-height: var(--text-3xl--line-height);
+        }
+
+        h4 {
+          font-size: var(--text-2xl);
+          line-height: var(--text-2xl--line-height);
+        }
+
+        h5 {
+          font-size: var(--text-xl);
+          line-height: var(--text-xl--line-height);
+        }
+
+        h6 {
+          font-size: var(--text-lg);
+          line-height: var(--text-lg--line-height);
+        }
+      }
+
+      h1 + p {
+        max-width: var(--container-2xl);
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        scroll-margin-top: var(--spacing-20);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: var(--tracking-tight);
+        text-wrap: pretty;
+      }
+
+      p {
+        line-height: var(--leading-relaxed);
+        text-wrap: pretty;
+      }
+
+      .image,
+      img {
+        border-radius: var(--radius-md);
       }
 
       > * {

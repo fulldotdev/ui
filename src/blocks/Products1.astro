@@ -1,0 +1,85 @@
+---
+import Abstract from 'fulldev-ui/components/Abstract.astro'
+import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Container from 'fulldev-ui/components/Container.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Grid from 'fulldev-ui/components/Grid.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Price from 'fulldev-ui/components/Price.astro'
+import Prose from 'fulldev-ui/components/Prose.astro'
+import Section from 'fulldev-ui/components/Section.astro'
+import Spread from 'fulldev-ui/components/Spread.astro'
+import type { BlockSchema } from 'fulldev-ui/schemas/block'
+
+interface Props extends BlockSchema {}
+
+const { size = 'sm', title, description, content, buttons, cards } = Astro.props
+---
+
+<Section class:list={`products-1 size-${size}`}>
+  <Container>
+    <Spread>
+      <Prose {size}>
+        <Element as="h1">{title}</Element>
+        <Element as="p">{description}</Element>
+        <Fragment set:html={content} />
+        <slot />
+      </Prose>
+      <Buttons
+        class="start"
+        variant="secondary"
+        {size}
+        {buttons}
+      />
+    </Spread>
+    <Grid length={cards?.length}>
+      {
+        cards?.map(({ image, title, price }) => (
+          <Abstract {size}>
+            <Image {...image} />
+            <Spread align="center">
+              <Element as="h4">{title}</Element>
+              <Price amount={price} />
+            </Spread>
+          </Abstract>
+        ))
+      }
+    </Grid>
+    <Buttons
+      class="end"
+      variant="secondary"
+      {size}
+      {buttons}
+    />
+  </Container>
+</Section>
+
+<style>
+  @layer fulldev {
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-8);
+    }
+
+    .buttons.start {
+      @media (max-width: 768px) {
+        display: none;
+      }
+    }
+
+    .buttons.end {
+      @media (min-width: 768px) {
+        display: none;
+      }
+    }
+
+    .buttons.end {
+      margin-bottom: var(--spacing-8);
+    }
+
+    .icon {
+      color: var(--color-primary);
+    }
+  }
+</style>
