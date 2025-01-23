@@ -1,0 +1,51 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import Element from 'fulldev-ui/components/Element.astro'
+
+interface Props extends HTMLAttributes<'div'> {
+  isTransition?: boolean | undefined
+  text?: string | undefined
+  placement?: 'top' | 'right' | 'bottom' | 'left' | undefined
+}
+
+const { isTransition = true, text, placement = 'bottom', ...rest } = Astro.props
+
+const transitonClasses = isTransition ? 'transition' : ''
+const placementClasses = (() => {
+  switch (placement) {
+    case 'top':
+      return 'bottom-full'
+    case 'right':
+      return 'left-full top-0'
+    case 'left':
+      return 'right-full top-0'
+    case 'bottom':
+      return ''
+    default:
+      return ''
+  }
+})()
+---
+
+<Element
+  class="tooltip"
+  {...rest}
+>
+  <slot />
+
+  <aside class:list={['tooltip-text', transitonClasses, placementClasses]}>
+    {text}
+  </aside>
+</Element>
+
+<style is:global>
+  @layer fulldev {
+    .tooltip {
+      @apply group relative max-w-xs;
+
+      .tooltip-text {
+        @apply absolute z-10 w-full rounded border px-3 py-1.5 text-center text-sm opacity-0 shadow-sm group-hover:opacity-100;
+      }
+    }
+  }
+</style>
