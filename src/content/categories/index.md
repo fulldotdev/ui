@@ -1,0 +1,3 @@
+---
+title: All product categories
+---

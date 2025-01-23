@@ -1,0 +1,49 @@
+---
+import { getCollection, getEntry, render } from 'astro:content'
+import Docs1 from 'fulldev-ui/blocks/Docs1.astro'
+import Block from 'fulldev-ui/components/Block.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Layout from 'fulldev-ui/components/Layout.astro'
+
+export async function getStaticPaths() {
+  const collection = await getCollection('docs')
+  const overview = await getEntry('overviews', 'docs')
+  return collection.map((entry) => ({
+    params: {
+      docs: overview?.data.slug ?? overview?.id ?? 'docs',
+      doc: entry.data.slug ?? entry.id,
+    },
+    props: entry,
+  }))
+}
+
+const entry = Astro.props.data
+const general = (await getEntry('globals', 'general'))?.data
+const header = (await getEntry('globals', 'header'))?.data
+const footer = (await getEntry('globals', 'footer'))?.data
+const { Content, headings } = await render(Astro.props)
+---
+
+<Layout
+  {...entry}
+  {...general}
+>
+  <Block
+    {...general}
+    {...header}
+  />
+  <Element as="main">
+    <Docs1
+      {headings}
+      {...general}
+      {...entry}
+    >
+      <Content />
+    </Docs1>
+    {entry.sections?.map((section) => <Block {...section} />)}
+  </Element>
+  <Block
+    {...general}
+    {...footer}
+  />
+</Layout>
