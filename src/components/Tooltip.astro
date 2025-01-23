@@ -14,15 +14,15 @@ const transitionClasses = isTransition ? 'transition' : ''
 const placementClasses = (() => {
   switch (placement) {
     case 'top':
-      return 'bottom-full'
+      return 'placeTop'
     case 'right':
-      return 'left-full top-0'
+      return 'placeRight'
     case 'left':
-      return 'right-full top-0'
+      return 'placeLeft'
     case 'bottom':
-      return ''
+      return 'placeBottom'
     default:
-      return ''
+      return 'placeBottom'
   }
 })()
 ---
@@ -41,10 +41,43 @@ const placementClasses = (() => {
 <style is:global>
   @layer fulldev {
     .tooltip {
-      @apply group relative max-w-xs;
+      position: relative;
+
+      &:hover {
+        .tooltip-text {
+          opacity: 1;
+        }
+      }
 
       .tooltip-text {
-        @apply absolute z-10 w-full rounded border px-3 py-1.5 text-center text-sm opacity-0 shadow-sm group-hover:opacity-100;
+        position: absolute;
+        opacity: 0;
+        z-index: 10;
+        border-width: 1px;
+        border-radius: 12px;
+        /* padding: var(--space-4) var(--space-8); */
+        padding: 6px 12px;
+        width: 100%;
+      }
+
+      /* presets */
+      .placeTop {
+        bottom: 120%;
+      }
+      .placeRight {
+        top: 0;
+        left: 120%;
+      }
+      .placeLeft {
+        top: 0;
+        right: 120%;
+      }
+      .placeBottom {
+        top: 120%;
+      }
+      .transition {
+        /* transition: var(--transition); */
+        transition: all 150ms ease-in-out;
       }
     }
   }
