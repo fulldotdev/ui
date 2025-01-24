@@ -1,5 +1,5 @@
 import { z } from 'astro:content'
-import { linkSchema } from 'fulldev-ui/schemas/components/link.ts'
+import { linkSchema } from 'fulldev-ui/schemas/fields/link.ts'
 
 export const menuSchema = z
   .object({

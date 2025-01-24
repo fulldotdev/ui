@@ -1,18 +1,27 @@
 ---
-import type { GlobalSchema } from 'fulldev-ui/schemas/components/global'
-import type { PageSchema } from 'fulldev-ui/schemas/components/page'
+import type { CategorySchema } from 'fulldev-ui/schemas/collections/category'
+import type { DocSchema } from 'fulldev-ui/schemas/collections/doc'
+import type { GlobalSchema } from 'fulldev-ui/schemas/collections/global.ts'
+import type { JobSchema } from 'fulldev-ui/schemas/collections/job'
+import type { PageSchema } from 'fulldev-ui/schemas/collections/page.ts'
+import type { PostSchema } from 'fulldev-ui/schemas/collections/post.ts'
+import type { ProductSchema } from 'fulldev-ui/schemas/collections/product.ts'
 
-type Props = GlobalSchema & PageSchema
+interface Props
+  extends GlobalSchema,
+    PageSchema,
+    PostSchema,
+    ProductSchema,
+    CategorySchema,
+    JobSchema,
+    DocSchema {}
 
-const { title, description, image, seo, code, sections, logo, company } =
-  Astro.props
+const { title, description, image, meta, sections, logo, company } = Astro.props
 
 const url = Astro.url.href.endsWith('/') ? Astro.url.href : `${Astro.url.href}/`
 
 // FIXME
 const theme = 'light'
-
-// const url = href ? new URL(href, Astro.url) : Astro.url
 ---
 
 <!doctype html>
@@ -24,9 +33,9 @@ const theme = 'light'
       name="viewport"
       content="width=device-width, initial-scale=1"
     />
-    <title>{seo?.title ?? title}</title>
+    <title>{meta?.title ?? title}</title>
     <meta
-      content={seo?.description ?? description}
+      content={meta?.description ?? description}
       name="description"
     />
     <meta
@@ -56,7 +65,9 @@ const theme = 'light'
     />
     <meta
       property="og:image"
-      content={image?.src ?? sections?.[0]?.image?.src ?? logo?.src}
+      content={image?.src ??
+        sections?.find((section) => section.image?.src)?.image?.src ??
+        logo?.src}
     />
     <meta
       property="og:url"
@@ -70,9 +81,8 @@ const theme = 'light'
       name="og:site_name"
       content="IMDb"
     />
-
     <!-- Code -->
-    <Fragment set:html={code} />
+    <Fragment set:html={meta?.head} />
     <slot name="head" />
 
     <!-- Light / Dark theme -->
@@ -116,7 +126,11 @@ const theme = 'light'
       })
     </script>
   </head>
-  <slot />
+  <body>
+    <slot />
+    <style set:html={meta?.css}></style>
+    <Fragment set:html={meta?.body} />
+  </body>
 </html>
 
 <style>

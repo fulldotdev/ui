@@ -1,4 +1,4 @@
-import { z } from 'astro:content'
+import { reference, z } from 'astro:content'
 import { badgeSchema } from 'fulldev-ui/schemas/fields/badge.ts'
 import { buttonSchema } from 'fulldev-ui/schemas/fields/button.ts'
 import { cardSchema } from 'fulldev-ui/schemas/fields/card.ts'
@@ -8,7 +8,6 @@ import { imageSchema } from 'fulldev-ui/schemas/fields/image.ts'
 import { linkSchema } from 'fulldev-ui/schemas/fields/link.ts'
 import { logoSchema } from 'fulldev-ui/schemas/fields/logo.ts'
 import { menuSchema } from 'fulldev-ui/schemas/fields/menu.ts'
-import { pathSchema } from 'fulldev-ui/schemas/fields/path.ts'
 import { proofSchema } from 'fulldev-ui/schemas/fields/proof.ts'
 
 export const blockSchema = z
@@ -35,12 +34,12 @@ export const blockSchema = z
     price: z.number().optional(),
     soldout: z.boolean().optional(),
     variants: z.record(z.string(), z.string().array()).optional(),
-    categories: pathSchema('pages').array().optional(),
+    categories: reference('pages').array().optional(),
     form: formSchema.optional(),
     cards: cardSchema.array().optional(),
     pros: cardSchema.optional(),
     cons: cardSchema.optional(),
-    pages: pathSchema('pages').array().optional(),
+    pages: reference('pages').array().optional(),
     badge: badgeSchema.optional(),
     badges: badgeSchema.array().optional(),
     link: linkSchema.optional(),

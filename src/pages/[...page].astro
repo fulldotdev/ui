@@ -1,15 +1,28 @@
 ---
 import { getCollection, getEntry } from 'astro:content'
-import Footer1 from 'fulldev-ui/blocks/Footer1.astro'
-import Header1 from 'fulldev-ui/blocks/Header1.astro'
+import Footer from 'fulldev-ui/blocks/Footer.astro'
+import Header from 'fulldev-ui/blocks/Header.astro'
 import Block from 'fulldev-ui/components/Block.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Layout from 'fulldev-ui/components/Layout.astro'
 import { getHref } from 'fulldev-ui/utils/getHref'
 
 export async function getStaticPaths() {
-  const collection = await getCollection('pages')
-  return collection.map((entry) => ({
+  const pages = await getCollection('pages')
+  const posts = await getCollection('posts')
+  const products = await getCollection('products')
+  const categories = await getCollection('categories')
+  const docs = await getCollection('docs')
+  const jobs = await getCollection('jobs')
+  const entries = [
+    ...pages,
+    ...posts,
+    ...products,
+    ...categories,
+    ...docs,
+    ...jobs,
+  ]
+  return entries.map((entry) => ({
     params: {
       page: getHref(entry),
     },
@@ -17,15 +30,19 @@ export async function getStaticPaths() {
   }))
 }
 
-const { sections } = Astro.props.data
+const { data } = Astro.props
 const header = (await getEntry('globals', 'header'))?.data
 const footer = (await getEntry('globals', 'footer'))?.data
 ---
 
-<Layout>
-  <Header1 {...header} />
+<Layout {...data}>
+  <Header {...header} />
   <Element as="main">
-    {sections?.map((section) => <Block {...section} />)}
+    <Block {...data} />
+    {
+      'sections' in data &&
+        data.sections?.map((section) => <Block {...section} />)
+    }
   </Element>
-  <Footer1 {...footer} />
+  <Footer {...footer} />
 </Layout>

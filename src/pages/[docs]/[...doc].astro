@@ -1,7 +1,7 @@
 ---
 import { getCollection, getEntry, render } from 'astro:content'
-import Footer1 from 'fulldev-ui/blocks/Footer1.astro'
-import Header1 from 'fulldev-ui/blocks/Header1.astro'
+import Footer from 'fulldev-ui/blocks/Footer.astro'
+import Header from 'fulldev-ui/blocks/Header.astro'
 import Container from 'fulldev-ui/components/Container.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Layout from 'fulldev-ui/components/Layout.astro'
@@ -10,6 +10,7 @@ import Menus from 'fulldev-ui/components/Menus.astro'
 import Prose from 'fulldev-ui/components/Prose.astro'
 import Sidebar from 'fulldev-ui/components/Sidebar.astro'
 import Toc from 'fulldev-ui/components/Toc.astro'
+import { getHref } from 'fulldev-ui/utils/getHref'
 import { getMenus } from 'fulldev-ui/utils/getMenus'
 
 export async function getStaticPaths() {
@@ -17,8 +18,7 @@ export async function getStaticPaths() {
   return collection.map((entry, index) => ({
     params: {
       docs: 'docs',
-      doc:
-        entry.data.meta?.slug ?? (entry.id === 'index' ? undefined : entry.id),
+      doc: getHref(entry),
     },
     props: {
       ...entry,
@@ -36,13 +36,10 @@ const { title, description } = Astro.props.data
 
 const docs = await getCollection('docs')
 const menus = getMenus(docs)
-
-const ids = docs.map((doc) => doc.id)
-console.log(ids)
 ---
 
 <Layout>
-  <Header1 {...header} />
+  <Header {...header} />
   <Element as="main">
     <Container>
       <Sidebar>
@@ -66,7 +63,7 @@ console.log(ids)
       </Sidebar>
     </Container>
   </Element>
-  <Footer1 {...footer} />
+  <Footer {...footer} />
 </Layout>
 
 <style>

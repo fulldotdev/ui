@@ -7,16 +7,13 @@ import { menuSchema } from 'fulldev-ui/schemas/fields/menu.ts'
 
 export const globalSchema = z
   .object({
-    _schema: z.string().optional(),
     block: z.string().optional(),
     company: z.string().optional(),
-    slug: z.string().optional(),
     logo: logoSchema.optional(),
     channels: channelSchema.array().optional(),
     socials: z.string().array().optional(),
     menus: menuSchema.array().optional(),
     links: linkSchema.array().optional(),
-    code: z.string().optional(),
     favicon: z.string().optional(),
     text: z.string().optional(),
     buttons: buttonSchema.array().optional(),
