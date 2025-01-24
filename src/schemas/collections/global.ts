@@ -1,9 +1,9 @@
 import { z } from 'astro:content'
-import { buttonSchema } from 'fulldev-ui/schemas/button.ts'
-import { channelSchema } from 'fulldev-ui/schemas/channel.ts'
-import { linkSchema } from 'fulldev-ui/schemas/link.ts'
-import { logoSchema } from 'fulldev-ui/schemas/logo.ts'
-import { menuSchema } from 'fulldev-ui/schemas/menu.ts'
+import { buttonSchema } from 'fulldev-ui/schemas/fields/button.ts'
+import { channelSchema } from 'fulldev-ui/schemas/fields/channel.ts'
+import { linkSchema } from 'fulldev-ui/schemas/fields/link.ts'
+import { logoSchema } from 'fulldev-ui/schemas/fields/logo.ts'
+import { menuSchema } from 'fulldev-ui/schemas/fields/menu.ts'
 
 export const globalSchema = z
   .object({

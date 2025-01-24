@@ -10,7 +10,7 @@ export default defineConfig({
     integration({
       company: 'Fulldev UI',
       favicon: 'public/images/favicon.svg',
-      css: '/src/css/custom.css',
+      css: '/src/styles/custom.css',
       injectRoutes: false,
     }),
   ],

@@ -1,49 +1,97 @@
 ---
 import { getCollection, getEntry, render } from 'astro:content'
-import Docs1 from 'fulldev-ui/blocks/Docs1.astro'
-import Block from 'fulldev-ui/components/Block.astro'
+import Footer1 from 'fulldev-ui/blocks/Footer1.astro'
+import Header1 from 'fulldev-ui/blocks/Header1.astro'
+import Container from 'fulldev-ui/components/Container.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Layout from 'fulldev-ui/components/Layout.astro'
+import Menus from 'fulldev-ui/components/Menus.astro'
+// import Menus from 'fulldev-ui/components/Menus.astro'
+import Prose from 'fulldev-ui/components/Prose.astro'
+import Sidebar from 'fulldev-ui/components/Sidebar.astro'
+import Toc from 'fulldev-ui/components/Toc.astro'
+import { getMenus } from 'fulldev-ui/utils/getMenus'
 
 export async function getStaticPaths() {
   const collection = await getCollection('docs')
-  const overview = await getEntry('overviews', 'docs')
-  return collection.map((entry) => ({
+  return collection.map((entry, index) => ({
     params: {
-      docs: overview?.data.slug ?? overview?.id ?? 'docs',
-      doc: entry.data.slug ?? entry.id,
+      docs: 'docs',
+      doc:
+        entry.data.meta?.slug ?? (entry.id === 'index' ? undefined : entry.id),
     },
-    props: entry,
+    props: {
+      ...entry,
+      prev: collection[index - 1],
+      next: collection[index + 1],
+    },
   }))
 }
 
-const entry = Astro.props.data
-const general = (await getEntry('globals', 'general'))?.data
 const header = (await getEntry('globals', 'header'))?.data
 const footer = (await getEntry('globals', 'footer'))?.data
+
 const { Content, headings } = await render(Astro.props)
+const { title, description } = Astro.props.data
+
+const docs = await getCollection('docs')
+const menus = getMenus(docs)
+
+const ids = docs.map((doc) => doc.id)
+console.log(ids)
 ---
 
-<Layout
-  {...entry}
-  {...general}
->
-  <Block
-    {...general}
-    {...header}
-  />
+<Layout>
+  <Header1 {...header} />
   <Element as="main">
-    <Docs1
-      {headings}
-      {...general}
-      {...entry}
-    >
-      <Content />
-    </Docs1>
-    {entry.sections?.map((section) => <Block {...section} />)}
+    <Container>
+      <Sidebar>
+        <Menus
+          {menus}
+          size="sm"
+        />
+      </Sidebar>
+      <Prose size="sm">
+        <Element as="h1">{title}</Element>
+        <Element as="p">{description}</Element>
+        <Content />
+        <slot />
+      </Prose>
+      <Sidebar>
+        <Toc
+          size="sm"
+          heading={title}
+          {headings}
+        />
+      </Sidebar>
+    </Container>
   </Element>
-  <Block
-    {...general}
-    {...footer}
-  />
+  <Footer1 {...footer} />
 </Layout>
+
+<style>
+  @layer fulldev {
+    .section {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .prose,
+    .sidebar {
+      padding-top: var(--spacing-8);
+      padding-bottom: var(--spacing-8);
+    }
+
+    .prose {
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .container {
+      display: flex;
+      column-gap: var(--gutter);
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+  }
+</style>

@@ -1,94 +1,134 @@
 paths:
-  static: public
   uploads: public/images
+  static: public
 
 collection_groups:
-  - heading: Content
+  - heading: Collections
     collections:
       - pages
-      - records
-  - heading: Settings
+      - posts
+      - products
+      - categories
+      - docs
+      - jobs
+  - heading: Data
     collections:
-      - layouts
+      - globals
 
 collections_config:
   pages:
-    path: src/content/pages
+    path: src/collections/pages
     url: /[full_slug]/
-    disable_add_folder: true
     _enabled_editors:
       - visual
       - content
     schemas:
-      page:
+      default:
         remove_extra_inputs: false
         remove_empty_inputs: true
         hide_extra_inputs: true
-        path: schemas/page.md
-      job:
-        remove_extra_inputs: false
-        remove_empty_inputs: true
-        hide_extra_inputs: true
-        path: schemas/job.md
-      jobs:
-        remove_extra_inputs: false
-        remove_empty_inputs: true
-        hide_extra_inputs: true
-        path: schemas/jobs.md
-      post:
-        remove_extra_inputs: false
-        remove_empty_inputs: true
-        hide_extra_inputs: true
-        path: schemas/post.md
-  records:
-    path: src/content/records
-    name: Records
-    disable_url: true
-    disable_add_folder: true
+        path: node_modules/fulldev-ui/src/schemas/page.md
+  posts:
+    path: src/collections/posts
+    url: /blog/[full_slug]/
     _enabled_editors:
-      - data
-  layouts:
-    path: src/content/layouts
-    name: Layouts
-    icon: web
-    disable_url: true
-    disable_add: true
-    disable_add_folder: true
-    disable_file_actions: true
+      - content
+      - visual
+    schemas:
+      default:
+        remove_extra_inputs: false
+        remove_empty_inputs: true
+        hide_extra_inputs: true
+        path: node_modules/fulldev-ui/src/schemas/post.md
+  products:
+    path: src/collections/products
+    url: /producten/[full_slug]/
     _enabled_editors:
-      - data
-_inputs:
-  pages:
-    type: multiselect
-    label: Categorieën
-    options:
-      values: collections.pages
+      - content
+      - visual
+    schemas:
+      default:
+        path: node_modules/fulldev-ui/src/schemas/product.md
   categories:
-    type: multiselect
-    label: Categorieën
-    options:
-      values: collections.pages
-  href:
-    type: url
-    label: Link
-  rating:
-    label: Rating
-    type: range
-    options:
-      min: 0
-      max: 5
-      step: 0.1
+    path: src/collections/categories
+    url: /categorieen/[full_slug]/
+    _enabled_editors:
+      - content
+      - visual
+    schemas:
+      default:
+        path: node_modules/fulldev-ui/src/schemas/category.md
+  docs:
+    path: src/collections/docs
+    url: /docs/[full_slug]/
+    _enabled_editors:
+      - content
+      - visual
+    schemas:
+      default:
+        path: node_modules/fulldev-ui/src/schemas/doc.md
+  jobs:
+    path: src/collections/jobs
+    url: /vacatures/[full_slug]/
+    _enabled_editors:
+      - content
+      - visual
+    schemas:
+      default:
+        path: node_modules/fulldev-ui/src/schemas/job.md
+  globals:
+    path: src/collections/globals
+    disable_url: true
+    _enabled_editors:
+      - data
+
+_inputs:
   head:
     label: SEO / Settings
     type: object
     options:
       empty_type: object
+      structures:
+        remove_empty_inputs: true
+        hide_extra_inputs: true
+        values:
+          - label: SEO / Settings
+            value:
+              title:
+              description:
+              image:
+              code:
   head.title:
     label: SEO title
     comment: 50-60 characters
   head.description:
     label: SEO description
     comment: 50-120 characters
+  categories:
+    type: multiselect
+    label: Categorieën
+    options:
+      values: collections.pages
+  children:
+    type: multiselect
+    label: Subcategorieën
+    options:
+      values: collections.pages
+  siblings:
+    type: multiselect
+    label: Aanbevolen pagina's
+    options:
+      values: collections.pages
+  href:
+    type: url
+    label: Link
+  rating.value:
+    label: Rating
+    type: range
+    options:
+      min: 0
+      max: 5
+      step: 0.1
   head.image:
     type: image
     label: Image
@@ -165,26 +205,42 @@ _inputs:
       resize_style: contain
       width: 260
       height: 32
+  rating:
+    type: range
+    options:
+      min: 0
+      max: 5
+      step: 0.1
+    label: Rating
   price:
     type: number
-  content:
-    type: html
+    label: Prijs
+  presets:
+    hidden: true
+  component:
+    hidden: true
+  dark:
+    hidden: true
   name:
     hidden: true
-  id:
+  color:
     hidden: true
-
-_structures:
-  head:
-    remove_empty_inputs: true
-    id_key: title
-    values:
-      - label: SEO / Settings
-        value:
-          title: null
-          description: null
-          image: null
-          code: null
+  layout:
+    hidden: true
+  position:
+    hidden: true
+  scheme:
+    hidden: true
+  hue:
+    hidden: true
+  align:
+    hidden: true
+  frame:
+    hidden: true
+  variant:
+    hidden: true
+  content:
+    type: html
 _editables:
   content:
     allow_custom_markup: false
@@ -192,8 +248,6 @@ _editables:
     bold: true
     bulletedlist: true
     format: p h1 h2 h3 h4 h5 h6
-    image: true
-    image_size_attributes: true
     italic: true
     link: true
     numberedlist: true
@@ -201,6 +255,8 @@ _editables:
     table: true
     underline: true
     undo: true
+    image: true
+    image_size_attributes: true
     mime_type: image/webp
     resize_style: contain
     width: 1920

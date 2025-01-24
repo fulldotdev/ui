@@ -1,0 +1,11 @@
+---
+title:
+description:
+images:
+list:
+price:
+soldout:
+variants:
+categories:
+meta:
+---
