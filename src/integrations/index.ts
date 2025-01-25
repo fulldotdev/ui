@@ -97,24 +97,24 @@ export default function fulldevIntegration(
             entrypoint: 'fulldev-ui/pages/[...page].astro',
           })
           injectRoute({
-            pattern: '/[categories]/[...category]',
-            entrypoint: 'fulldev-ui/pages/[categories]/[...category].astro',
+            pattern: '/[...category]',
+            entrypoint: 'fulldev-ui/pages/[...category].astro',
           })
           injectRoute({
-            pattern: '/[docs]/[...doc]',
-            entrypoint: 'fulldev-ui/pages/[docs]/[...doc].astro',
+            pattern: '/[...doc]',
+            entrypoint: 'fulldev-ui/pages/[...doc].astro',
           })
           injectRoute({
-            pattern: '/[jobs]/[...job]',
-            entrypoint: 'fulldev-ui/pages/[jobs]/[...job].astro',
+            pattern: '/[...job]',
+            entrypoint: 'fulldev-ui/pages/[...job].astro',
           })
           injectRoute({
-            pattern: '/[posts]/[...post]',
-            entrypoint: 'fulldev-ui/pages/[posts]/[...post].astro',
+            pattern: '/[...post]',
+            entrypoint: 'fulldev-ui/pages/[...post].astro',
           })
           injectRoute({
-            pattern: '/[products]/[...product]',
-            entrypoint: 'fulldev-ui/pages/[products]/[...product].astro',
+            pattern: '/[...product]',
+            entrypoint: 'fulldev-ui/pages/[...product].astro',
           })
         }
 

@@ -8,7 +8,7 @@ export const pageSchema = z
     title: z.string().optional(),
     description: z.string().optional(),
     image: imageSchema.optional(),
-    sections: blockSchema.array().optional(),
+    blocks: blockSchema.array().optional(),
     meta: metaSchema.optional(),
   })
   .strict()

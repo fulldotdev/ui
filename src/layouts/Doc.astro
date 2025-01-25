@@ -1,50 +1,33 @@
 ---
+import type { CollectionEntry } from 'astro:content'
 import { getCollection, getEntry, render } from 'astro:content'
-import Footer from 'fulldev-ui/blocks/Footer.astro'
-import Header from 'fulldev-ui/blocks/Header.astro'
 import Container from 'fulldev-ui/components/Container.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Layout from 'fulldev-ui/components/Layout.astro'
 import Menus from 'fulldev-ui/components/Menus.astro'
-// import Menus from 'fulldev-ui/components/Menus.astro'
 import Prose from 'fulldev-ui/components/Prose.astro'
 import Sidebar from 'fulldev-ui/components/Sidebar.astro'
 import Toc from 'fulldev-ui/components/Toc.astro'
-import { getHref } from 'fulldev-ui/utils/getHref'
+import Footer from 'fulldev-ui/globals/Footer.astro'
+import Header from 'fulldev-ui/globals/Header.astro'
 import { getMenus } from 'fulldev-ui/utils/getMenus'
 
-export async function getStaticPaths() {
-  const collection = await getCollection('docs')
-  return collection.map((entry, index) => ({
-    params: {
-      docs: 'docs',
-      doc: getHref(entry),
-    },
-    props: {
-      ...entry,
-      prev: collection[index - 1],
-      next: collection[index + 1],
-    },
-  }))
-}
+interface Props extends CollectionEntry<'docs'> {}
 
+const { title, description, ...rest } = Astro.props.data
+const { Content, headings } = await render(Astro.props)
 const header = (await getEntry('globals', 'header'))?.data
 const footer = (await getEntry('globals', 'footer'))?.data
-
-const { Content, headings } = await render(Astro.props)
-const { title, description } = Astro.props.data
-
 const docs = await getCollection('docs')
-const menus = getMenus(docs)
 ---
 
-<Layout>
+<Layout {...rest}>
   <Header {...header} />
   <Element as="main">
     <Container>
       <Sidebar>
         <Menus
-          {menus}
+          menus={getMenus(docs)}
           size="sm"
         />
       </Sidebar>
@@ -52,7 +35,6 @@ const menus = getMenus(docs)
         <Element as="h1">{title}</Element>
         <Element as="p">{description}</Element>
         <Content />
-        <slot />
       </Prose>
       <Sidebar>
         <Toc
@@ -71,6 +53,10 @@ const menus = getMenus(docs)
     .section {
       padding-top: 0;
       padding-bottom: 0;
+    }
+
+    .prose {
+      width: 100%;
     }
 
     .prose,

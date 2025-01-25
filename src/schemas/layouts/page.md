@@ -2,6 +2,6 @@
 title:
 description:
 image:
-sections:
+blocks:
 meta:
 ---

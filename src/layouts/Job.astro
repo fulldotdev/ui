@@ -1,0 +1,58 @@
+---
+import type { CollectionEntry } from 'astro:content'
+import { getEntry } from 'astro:content'
+import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Container from 'fulldev-ui/components/Container.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Layout from 'fulldev-ui/components/Layout.astro'
+import List from 'fulldev-ui/components/List.astro'
+import Prose from 'fulldev-ui/components/Prose.astro'
+import Section from 'fulldev-ui/components/Section.astro'
+import Split from 'fulldev-ui/components/Split.astro'
+import Footer from 'fulldev-ui/globals/Footer.astro'
+import Header from 'fulldev-ui/globals/Header.astro'
+
+interface Props extends CollectionEntry<'jobs'> {}
+
+const { title, description, list, buttons, image, ...rest } = Astro.props.data
+const header = (await getEntry('globals', 'header'))?.data
+const footer = (await getEntry('globals', 'footer'))?.data
+---
+
+<Layout {...rest}>
+  <Header {...header} />
+  <Element as="main">
+    <Section>
+      <Container>
+        <Split align="sticky">
+          <Prose>
+            <Element as="h1">{title}</Element>
+            <Element as="p">{description}</Element>
+            <List items={list} />
+            <Buttons {buttons} />
+          </Prose>
+          <Prose>
+            <Image {...image} />
+            <slot />
+            <Buttons
+              class="end"
+              {buttons}
+            />
+          </Prose>
+        </Split>
+      </Container>
+    </Section>
+  </Element>
+  <Footer {...footer} />
+</Layout>
+
+<style>
+  @layer fulldev {
+    .buttons.end {
+      @media (min-width: 1024px) {
+        display: none;
+      }
+    }
+  }
+</style>

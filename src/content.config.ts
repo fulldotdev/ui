@@ -1,12 +1,13 @@
 import { glob } from 'astro/loaders'
-import { defineCollection } from 'astro:content'
-import { categorySchema } from 'fulldev-ui/schemas/collections/category.ts'
-import { docSchema } from 'fulldev-ui/schemas/collections/doc.ts'
-import { globalSchema } from 'fulldev-ui/schemas/collections/global.ts'
-import { jobSchema } from 'fulldev-ui/schemas/collections/job.ts'
-import { pageSchema } from 'fulldev-ui/schemas/collections/page.ts'
-import { postSchema } from 'fulldev-ui/schemas/collections/post.ts'
-import { productSchema } from 'fulldev-ui/schemas/collections/product.ts'
+import { defineCollection, z } from 'astro:content'
+import { footerSchema } from 'fulldev-ui/schemas/globals/footer.ts'
+import { headerSchema } from 'fulldev-ui/schemas/globals/header.ts'
+import { categorySchema } from 'fulldev-ui/schemas/layouts/category.ts'
+import { docSchema } from 'fulldev-ui/schemas/layouts/doc.ts'
+import { jobSchema } from 'fulldev-ui/schemas/layouts/job.ts'
+import { pageSchema } from 'fulldev-ui/schemas/layouts/page.ts'
+import { postSchema } from 'fulldev-ui/schemas/layouts/post.ts'
+import { productSchema } from 'fulldev-ui/schemas/layouts/product.ts'
 
 export const collections = {
   categories: defineCollection({
@@ -28,7 +29,7 @@ export const collections = {
       pattern: '**/[^_]*.{yml,yaml}',
       base: './src/collections/globals',
     }),
-    schema: globalSchema,
+    schema: z.union([headerSchema, footerSchema]),
   }),
   jobs: defineCollection({
     loader: glob({

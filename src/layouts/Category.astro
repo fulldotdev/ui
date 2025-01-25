@@ -1,0 +1,24 @@
+---
+import type { CollectionEntry } from 'astro:content'
+import { getEntry } from 'astro:content'
+import Block from 'fulldev-ui/components/Block.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Layout from 'fulldev-ui/components/Layout.astro'
+import Footer from 'fulldev-ui/globals/Footer.astro'
+import Header from 'fulldev-ui/globals/Header.astro'
+
+interface Props extends CollectionEntry<'categories'> {}
+
+const { blocks, ...rest } = Astro.props.data
+const header = (await getEntry('globals', 'header'))?.data
+const footer = (await getEntry('globals', 'footer'))?.data
+---
+
+<Layout {...rest}>
+  <Header {...header} />
+  <Element as="main">
+    <Block {...rest} />
+    {blocks?.map((block) => <Block {...block} />)}
+  </Element>
+  <Footer {...footer} />
+</Layout>

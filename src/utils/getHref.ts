@@ -14,7 +14,7 @@ export function getHref({
   else if (collection === 'docs') collectionSlug = 'docs'
   else if (collection === 'jobs') collectionSlug = 'vacatures'
 
-  const entrySlug = data.meta?.slug ?? (id === 'index' ? '' : id)
+  const entrySlug = data?.meta?.slug ?? (id === 'index' ? '' : id)
   const slug = `/${collectionSlug}/${entrySlug}/`.replace(/\/\/$/, '/')
   return slug
 }
