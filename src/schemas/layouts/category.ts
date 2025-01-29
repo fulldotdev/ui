@@ -1,4 +1,4 @@
-import { z } from 'astro:content'
+import { reference, z } from 'astro:content'
 import { blockSchema } from 'fulldev-ui/schemas/fields/block.ts'
 import { imageSchema } from 'fulldev-ui/schemas/fields/image.ts'
 import { metaSchema } from 'fulldev-ui/schemas/fields/meta.ts'
@@ -8,6 +8,7 @@ export const categorySchema = z
     title: z.string().optional(),
     description: z.string().optional(),
     image: imageSchema.optional(),
+    categories: reference('categories').array().optional(),
     blocks: blockSchema.array().optional(),
     meta: metaSchema.optional(),
   })

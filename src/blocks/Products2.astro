@@ -1,0 +1,159 @@
+---
+import { getEntries } from 'astro:content'
+import Card from 'fulldev-ui/components/Card.astro'
+import Container from 'fulldev-ui/components/Container.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Grid from 'fulldev-ui/components/Grid.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Price from 'fulldev-ui/components/Price.astro'
+import Prose from 'fulldev-ui/components/Prose.astro'
+import Section from 'fulldev-ui/components/Section.astro'
+import Select from 'fulldev-ui/components/Select.astro'
+import type { BlockSchema } from 'fulldev-ui/schemas/fields/block.ts'
+import { getHref } from 'fulldev-ui/utils/getHref'
+
+interface Props extends BlockSchema {}
+
+const { title, description, content, products } = Astro.props
+
+const entries = products && (await getEntries(products))
+
+const sortOptions = [
+  {
+    label: 'Aanbevolen',
+    function: (a: any, b: any) => a.data.title.localeCompare(b.data.title),
+  },
+  {
+    label: 'Prijs (laag - hoog)',
+    function: (a: any, b: any) => a.data.price - b.data.price,
+  },
+  {
+    label: 'Prijs (hoog - laag)',
+    function: (a: any, b: any) => b.data.price - a.data.price,
+  },
+]
+---
+
+<Section class:list={`products products-2`}>
+  <Container>
+    <Prose>
+      <Element as="h1">{title}</Element>
+      <Element as="p">{description}</Element>
+      <Fragment set:html={content} />
+    </Prose>
+    <Element class="toolbar">
+      <Paragraph size="sm">{products?.length} producten</Paragraph>
+      <Select
+        options={sortOptions.map((option) => option.label)}
+        size="sm"
+      />
+    </Element>
+    {
+      sortOptions.map((option) => (
+        <Grid
+          data-sort={option.label}
+          length={products?.length}
+        >
+          {entries?.sort(option.function).map((product) => (
+            <Card href={getHref(product)}>
+              <Image {...product.data.images?.[0]} />
+              <Element class="row">
+                <Heading as="h3">{product.data.title}</Heading>
+                <Price amount={product.data.price} />
+              </Element>
+            </Card>
+          ))}
+        </Grid>
+      ))
+    }
+  </Container>
+</Section>
+
+<style>
+  @layer fulldev {
+    .section {
+      padding-top: 0px;
+      padding-bottom: var(--spacing-12);
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+
+      .grid {
+        display: none;
+      }
+
+      &:has(option[value='Aanbevolen']:checked) {
+        .grid[data-sort='Aanbevolen'] {
+          display: grid;
+        }
+      }
+
+      &:has(option[value='Prijs (laag - hoog)']:checked) {
+        .grid[data-sort='Prijs (laag - hoog)'] {
+          display: grid;
+        }
+      }
+
+      &:has(option[value='Prijs (hoog - laag)']:checked) {
+        .grid[data-sort='Prijs (hoog - laag)'] {
+          display: grid;
+        }
+      }
+    }
+
+    .prose {
+      padding-top: var(--spacing-12);
+      padding-bottom: var(--spacing-12);
+
+      p {
+        color: var(--color-muted-foreground);
+      }
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--color-border);
+      padding-top: var(--spacing-6);
+      padding-bottom: var(--spacing-6);
+
+      .paragraph {
+        color: var(--color-muted-foreground);
+      }
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-4);
+
+      .image {
+        transition: var(--transition);
+        border-radius: var(--radius-lg);
+      }
+
+      &:hover .image {
+        opacity: 0.75;
+      }
+
+      .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        gap: var(--spacing-4);
+      }
+
+      .heading,
+      .price {
+        font-weight: var(--font-weight-medium);
+        font-size: var(--text-base);
+        line-height: var(--text-base--line-height);
+      }
+    }
+  }
+</style>

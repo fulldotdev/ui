@@ -1,0 +1,171 @@
+---
+import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Price from 'fulldev-ui/components/Price.astro'
+import Prose from 'fulldev-ui/components/Prose.astro'
+import Section from 'fulldev-ui/components/Section.astro'
+import type { BlockSchema } from 'fulldev-ui/schemas/fields/block'
+
+interface Props extends BlockSchema {}
+
+const { title, description, content, images, price } = Astro.props
+---
+
+<Section class={`product product-1`}>
+  <Element class="gallery">
+    <Element class="carousel large">
+      {
+        images?.map((image, i) => (
+          <Element class="carousel-item">
+            <Element
+              class="carousel-item-scroll-target"
+              id={`image-${i}`}
+            >
+              scroll
+            </Element>
+            <Image {...image} />
+          </Element>
+        ))
+      }
+    </Element>
+    <Buttons
+      buttons={images?.map((_, i) => ({
+        href: `#image-${i}`,
+        variant: 'ghost',
+        size: 'sm',
+        icon: 'circle',
+      }))}
+    />
+    <Element
+      as="a"
+      class="carousel small"
+    >
+      {
+        images?.map((image, i) => (
+          <Element
+            class="carousel-item"
+            as="a"
+            href={`#image-${i}`}
+          >
+            <Image {...image} />
+          </Element>
+        ))
+      }
+    </Element>
+  </Element>
+  <Prose>
+    <Element as="h1">{title}</Element>
+    <Price amount={price} />
+    <Element as="p">{description}</Element>
+    <Fragment set:html={content} />
+    <slot />
+  </Prose>
+</Section>
+
+<style>
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-8);
+    padding-top: 0px;
+
+    @media (min-width: 1024px) {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-right: auto;
+      margin-left: auto;
+      padding-top: var(--spacing-8);
+      padding-right: var(--gutter);
+      padding-left: var(--gutter);
+      max-width: var(--breakpoint-2xl);
+    }
+  }
+
+  .gallery {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    align-self: flex-start;
+    justify-self: flex-start;
+    width: 100%;
+    max-height: 80vh;
+
+    @media (min-width: 1024px) {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .buttons {
+      position: absolute;
+      bottom: var(--spacing-8);
+      z-index: 10;
+    }
+  }
+
+  .carousel {
+    display: inline-flex;
+    box-sizing: border-box;
+    width: 100%;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+
+    .carousel-item {
+      display: flex;
+      flex: none;
+      flex-direction: column;
+      box-sizing: content-box;
+      width: 100%;
+      scroll-margin-top: var(--spacing-14);
+      scroll-snap-align: center;
+
+      .carousel-item-scroll-target {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        transform: translateY(-100vh);
+        opacity: 0;
+        z-index: -10;
+        width: 100%;
+        height: 0px;
+        pointer-events: none;
+      }
+
+      .image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+
+    &.large,
+    &.large .carousel-item {
+      width: 100%;
+    }
+  }
+
+  .images {
+    display: inline-flex;
+    box-sizing: border-box;
+    width: 100%;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+
+    > .image {
+      width: auto;
+      height: 100px;
+    }
+  }
+  .prose {
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: var(--gutter);
+    padding-left: var(--gutter);
+    width: 100%;
+    max-width: var(--breakpoint-2xl);
+  }
+</style>

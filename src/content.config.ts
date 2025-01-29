@@ -1,5 +1,6 @@
 import { glob } from 'astro/loaders'
 import { defineCollection, z } from 'astro:content'
+import { blockSchema } from 'fulldev-ui/schemas/fields/block.ts'
 import { footerSchema } from 'fulldev-ui/schemas/globals/footer.ts'
 import { headerSchema } from 'fulldev-ui/schemas/globals/header.ts'
 import { categorySchema } from 'fulldev-ui/schemas/layouts/category.ts'
@@ -58,5 +59,12 @@ export const collections = {
       base: './src/collections/products',
     }),
     schema: productSchema,
+  }),
+  blocks: defineCollection({
+    loader: glob({
+      pattern: '**/[^_]*.{yml,yaml}',
+      base: './src/collections/blocks',
+    }),
+    schema: blockSchema,
   }),
 }

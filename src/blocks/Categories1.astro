@@ -1,0 +1,107 @@
+---
+import { getEntries } from 'astro:content'
+import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Card from 'fulldev-ui/components/Card.astro'
+import Container from 'fulldev-ui/components/Container.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import Prose from 'fulldev-ui/components/Prose.astro'
+import Section from 'fulldev-ui/components/Section.astro'
+import Spread from 'fulldev-ui/components/Spread.astro'
+import type { BlockSchema } from 'fulldev-ui/schemas/fields/block.ts'
+import { getHref } from 'fulldev-ui/utils/getHref'
+
+interface Props extends BlockSchema {}
+
+const {
+  size = 'sm',
+  categories,
+  title,
+  description,
+  content,
+  buttons,
+} = Astro.props
+
+const entries = categories && (await getEntries(categories))
+---
+
+<Element class:list={`product-categories-1 size-${size}`}>
+  <Spread align="end">
+    <Prose {size}>
+      <Element as="h1">{title}</Element>
+      <Element as="p">{description}</Element>
+      <Fragment set:html={content} />
+      <slot />
+    </Prose>
+    <Buttons
+      class="start"
+      variant="secondary"
+      {size}
+      {buttons}
+    />
+  </Spread>
+  <Element
+    class="grid"
+    length={entries?.length}
+  >
+    {
+      entries?.map((category) => (
+        <Card href={getHref(category)}>
+          <Image {...category.data.image} />
+          <Heading as="h4">{category.data.title}</Heading>
+        </Card>
+      ))
+    }
+  </Element>
+  <Buttons
+    class="end"
+    variant="secondary"
+    {size}
+    {buttons}
+  />
+</Element>
+
+<style>
+  @layer fulldev {
+    .section {
+      padding-top: var(--spacing-12);
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-12);
+    }
+
+    .buttons.start {
+      @media (max-width: 768px) {
+        display: none;
+      }
+    }
+
+    .buttons.end {
+      margin-bottom: var(--spacing-8);
+
+      @media (min-width: 768px) {
+        display: none;
+      }
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-3);
+    }
+
+    .image {
+      border-radius: var(--radius-lg);
+    }
+
+    @media (min-width: 1024px) {
+      .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+  }
+</style>
