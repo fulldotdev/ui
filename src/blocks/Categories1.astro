@@ -2,57 +2,51 @@
 import type { ComponentProps } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
 import Card from 'fulldev-ui/components/Card.astro'
+import Container from 'fulldev-ui/components/Container.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Grid from 'fulldev-ui/components/Grid.astro'
 import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import Prose from 'fulldev-ui/components/Prose.astro'
+import Price from 'fulldev-ui/components/Price.astro'
 
 interface Props {
-  size?: 'sm' | 'md' | 'lg' | undefined
   title?: string | undefined
-  description?: string | undefined
-  content?: string | undefined
   button?: ComponentProps<typeof Button> | undefined
   categories?: {
     href?: string | undefined
     title?: string | undefined
-    image?: ComponentProps<typeof Image>
+    image?: ComponentProps<typeof Image>[] | undefined
+    price?: number | undefined
   }[]
 }
 
-const {
-  size = 'sm',
-  title,
-  description,
-  content,
-  button,
-  categories,
-} = Astro.props
+const { title, button, categories } = Astro.props
 ---
 
-<Element class:list={`categories categories-1 size-${size}`}>
-  <Element class="container">
-    <Element class:list="spread">
-      <Prose {size}>
-        <Element as="h1">{title}</Element>
-        <Element as="p">{description}</Element>
-        <Fragment set:html={content} />
-        <slot />
-      </Prose>
+<Element class:list={`categories categories-1`}>
+  <Container>
+    <Element class="spread">
+      <Heading
+        as="h2"
+        size="2xl"
+        text={title}
+      />
       <Button
         class="start"
         variant="secondary"
-        {size}
+        size="sm"
         {...button}
       />
     </Element>
-    <Grid size="lg">
+    <Grid>
       {
-        categories?.map(({ href, title, image }) => (
+        categories?.map(({ href, title, image, price }) => (
           <Card {href}>
             <Image {...image} />
-            <Heading as="h4">{title}</Heading>
+            <Element class="spread">
+              <Heading as="h3">{title}</Heading>
+              <Price amount={price} />
+            </Element>
           </Card>
         ))
       }
@@ -60,10 +54,9 @@ const {
     <Button
       class="end"
       variant="secondary"
-      {size}
       {...button}
     />
-  </Element>
+  </Container>
 </Element>
 
 <style>
@@ -73,14 +66,16 @@ const {
       row-gap: var(--spacing-8);
       flex-direction: column;
       align-items: flex-start;
-      margin-right: auto;
-      margin-left: auto;
       padding-top: var(--spacing-16);
-      padding-right: var(--gutter);
       padding-bottom: var(--spacing-16);
-      padding-left: var(--gutter);
+    }
+
+    .spread {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--spacing-8);
       width: 100%;
-      max-width: var(--breakpoint-2xl);
     }
 
     .button.start {
@@ -95,20 +90,30 @@ const {
       &:hover .image {
         opacity: 0.75;
       }
+
+      .spread {
+        font-weight: var(--font-weight-medium) !important;
+        line-height: var(--text-base--line-height);
+      }
+
+      .heading {
+        font-weight: var(--font-weight-medium) !important;
+        font-size: var(--text-base) !important;
+        line-height: var(--text-base--line-height) !important;
+      }
+
+      .price {
+        line-height: var(--text-base--line-height);
+      }
     }
 
     .image {
       transition: var(--transition);
       border-radius: var(--radius-lg);
+      aspect-ratio: 1 / 1;
     }
 
     @media (min-width: 1024px) {
-      .spread {
-        display: flex;
-        align-items: center;
-        width: 100%;
-      }
-
       .button.start {
         display: flex;
       }
