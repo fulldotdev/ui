@@ -1,0 +1,168 @@
+---
+import type { ComponentProps } from 'astro/types'
+import Card from 'fulldev-ui/components/Card.astro'
+import Container from 'fulldev-ui/components/Container.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Grid from 'fulldev-ui/components/Grid.astro'
+import Header from 'fulldev-ui/components/Header.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Image from 'fulldev-ui/components/Image.astro'
+import List from 'fulldev-ui/components/List.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Price from 'fulldev-ui/components/Price.astro'
+import Prose from 'fulldev-ui/components/Prose.astro'
+import Select from 'fulldev-ui/components/Select.astro'
+
+interface Props {
+  title?: string | undefined
+  description?: string | undefined
+  products?: {
+    href?: string | undefined
+    title?: string | undefined
+    description?: string | undefined
+    images?: ComponentProps<typeof Image>[] | undefined
+    price?: number | undefined
+    list?: string[] | undefined
+  }[]
+}
+
+const { title, description, products } = Astro.props
+
+const sortOptions = [
+  {
+    label: 'Aanbevolen',
+    products: [...(products ?? [])].sort((a, b) =>
+      (a?.title ?? '').localeCompare(b?.title ?? '')
+    ),
+  },
+  {
+    label: 'Prijs (laag - hoog)',
+    products: [...(products ?? [])].sort(
+      (a, b) => (a?.price ?? 0) - (b?.price ?? 0)
+    ),
+  },
+  {
+    label: 'Prijs (hoog - laag)',
+    products: [...(products ?? [])].sort(
+      (a, b) => (b?.price ?? 0) - (a?.price ?? 0)
+    ),
+  },
+]
+---
+
+<Element class:list={`products products-2`}>
+  <Container class="container">
+    <Prose>
+      <Heading
+        as="h1"
+        size="3xl"
+        text={title}
+      />
+      <Paragraph
+        muted
+        text={description}
+      />
+    </Prose>
+    <Header>
+      <Paragraph
+        size="sm"
+        muted
+      >
+        {products?.length} producten
+      </Paragraph>
+      <Select
+        options={sortOptions.map((option) => option.label)}
+        size="sm"
+      />
+    </Header>
+    {
+      sortOptions.map((option) => (
+        <Grid data-sort={option.label}>
+          {option.products?.map(({ href, images, title, price, list }) => (
+            <Card {href}>
+              <Image {...images?.[0]} />
+              <Heading
+                as="h3"
+                text={title}
+              />
+              <List
+                size="sm"
+                muted
+                items={list}
+              />
+              <Price amount={price} />
+            </Card>
+          ))}
+        </Grid>
+      ))
+    }
+  </Container>
+</Element>
+
+<style>
+  @layer fulldev {
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding-bottom: var(--spacing-16);
+
+      .grid {
+        display: none;
+      }
+
+      &:has(option[value='Aanbevolen']:checked) {
+        .grid[data-sort='Aanbevolen'] {
+          display: grid;
+        }
+      }
+
+      &:has(option[value='Prijs (laag - hoog)']:checked) {
+        .grid[data-sort='Prijs (laag - hoog)'] {
+          display: grid;
+        }
+      }
+
+      &:has(option[value='Prijs (hoog - laag)']:checked) {
+        .grid[data-sort='Prijs (hoog - laag)'] {
+          display: grid;
+        }
+      }
+    }
+
+    .prose {
+      padding-top: var(--spacing-16);
+      padding-bottom: var(--spacing-16);
+    }
+
+    .header {
+      border-top: 1px solid var(--color-border);
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-2);
+    }
+
+    .image {
+      margin-bottom: var(--spacing-2);
+      border-radius: var(--radius-lg);
+      aspect-ratio: 1 / 1;
+    }
+
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-1);
+
+      @media (min-width: 640px) {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: var(--spacing-8);
+        width: 100%;
+        font-size: var(--text-base) !important;
+      }
+    }
+  }
+</style>

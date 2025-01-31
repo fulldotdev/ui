@@ -1,15 +1,17 @@
 ---
+import type { ComponentProps } from 'astro/types'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
-import Container from 'fulldev-ui/components/Container.astro'
 import Element from 'fulldev-ui/components/Element.astro'
-import Image from 'fulldev-ui/components/Image.astro'
-import Panel from 'fulldev-ui/components/Panel.astro'
 import Prose from 'fulldev-ui/components/Prose.astro'
-import Section from 'fulldev-ui/components/Section.astro'
-import Spread from 'fulldev-ui/components/Spread.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/fields/block.ts'
 
-interface Props extends BlockSchema {}
+interface Props {
+  size?: 'sm' | 'md' | 'lg' | undefined
+  align?: 'start' | 'center' | 'end' | undefined
+  title?: string | undefined
+  description?: string | undefined
+  content?: string | undefined
+  buttons?: ComponentProps<typeof Buttons>['buttons']
+}
 
 const {
   size = 'lg',
@@ -18,42 +20,69 @@ const {
   title,
   description,
   buttons,
-  image,
 } = Astro.props
 ---
 
-<Section class:list={`cta cta-4 size-${size} align-${align}`}>
-  <Container>
-    <Panel>
-      <Spread {align}>
-        <Prose {size}>
-          <Element as="h1">{title}</Element>
-          <Element as="p">{description}</Element>
-          <Fragment set:html={content} />
-          <slot />
-        </Prose>
-        <Buttons
-          {size}
-          {buttons}
-        />
-      </Spread>
-      <Image {...image} />
-    </Panel>
-  </Container>
-</Section>
+<Element class:list={`cta cta-4 size-${size} align-${align}`}>
+  <Element class="container">
+    <Element class:list={`panel align-${align}`}>
+      <Prose {size}>
+        <Element as="h1">{title}</Element>
+        <Element as="p">{description}</Element>
+        <Fragment set:html={content} />
+        <slot />
+      </Prose>
+      <Buttons
+        {size}
+        {buttons}
+      />
+    </Element>
+  </Element>
+</Element>
 
 <style>
   @layer fulldev {
-    .panel {
-      display: flex;
-      flex-direction: column;
+    .container {
+      margin-right: auto;
+      margin-left: auto;
+      padding-top: var(--spacing-16);
+      padding-right: var(--gutter);
+      padding-bottom: var(--spacing-16);
+      padding-left: var(--gutter);
+      width: 100%;
+      max-width: var(--breakpoint-2xl);
     }
 
-    .spread {
-      padding-top: var(--spacer);
+    .panel {
+      display: flex;
+      position: relative;
+      flex-direction: column;
+      gap: var(--spacing-8);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background-color: var(--color-card);
+      padding-top: var(--spacing-16);
       padding-right: var(--gutter);
-      padding-bottom: var(--spacer);
+      padding-bottom: var(--spacing-16);
       padding-left: var(--gutter);
+      width: 100%;
+      overflow: hidden;
+
+      @media (min-width: 1024px) {
+        flex-direction: row;
+
+        &.align-start {
+          align-items: flex-start;
+        }
+
+        &.align-center {
+          align-items: center;
+        }
+
+        &.align-end {
+          align-items: flex-end;
+        }
+      }
     }
   }
 </style>

@@ -6,16 +6,23 @@ import Icon from 'fulldev-ui/components/Icon.astro'
 interface Props extends HTMLAttributes<'ul' | 'ol'> {
   as?: 'ul' | 'ol' | undefined
   size?: 'sm' | 'md' | 'lg' | undefined
-  items?: string[] | undefined
   muted?: boolean | undefined
+  items?: string[] | undefined
   icon?: string | undefined
 }
 
-const { as = 'ul', muted = false, items, icon, ...rest } = Astro.props
+const {
+  as = 'ul',
+  size = 'md',
+  muted = false,
+  items,
+  icon,
+  ...rest
+} = Astro.props
 ---
 
 <Element
-  class:list={['list', { 'has-icon': icon, muted }]}
+  class:list={[`list size-${size}`, { muted }]}
   {as}
   {...rest}
 >
@@ -34,17 +41,12 @@ const { as = 'ul', muted = false, items, icon, ...rest } = Astro.props
 
 <style is:global>
   @layer fulldev {
-    .list,
-    .prose :is(ul, ol) {
-      padding-left: var(--spacing-4);
+    .list {
+      display: flex;
+      flex-direction: column;
+      padding-left: var(--spacing-5);
 
       &:is(ul) {
-        list-style-type: disc;
-      }
-
-      ul {
-        margin-top: var(--spacing-2);
-        margin-left: var(--spacing-5);
         list-style-type: disc;
       }
 
@@ -52,28 +54,30 @@ const { as = 'ul', muted = false, items, icon, ...rest } = Astro.props
         list-style-type: decimal;
       }
 
-      ol {
-        margin-top: var(--spacing-2);
-        margin-left: var(--spacing-5);
-        list-style-type: decimal;
-      }
-
-      li:not(:first-child) {
-        margin-top: var(--spacing-2);
-      }
-
-      &.size-sm,
-      &:where(.size-sm &) {
+      &.size-sm {
+        gap: var(--spacing-1-5);
         font-size: var(--text-sm);
+        line-height: var(--text-sm--line-height);
 
         .icon {
           margin-top: var(--spacing-0);
         }
       }
 
-      &.size-lg,
-      &:where(.size-lg &) {
+      &.size-md {
+        gap: var(--spacing-2);
+        font-size: var(--text-base);
+        line-height: var(--text-base--line-height);
+
+        .icon {
+          margin-top: var(--spacing-0-5);
+        }
+      }
+
+      &.size-lg {
+        gap: var(--spacing-2);
         font-size: var(--text-lg);
+        line-height: var(--text-lg--line-height);
 
         .icon {
           margin-top: var(--spacing-1);
@@ -84,13 +88,7 @@ const { as = 'ul', muted = false, items, icon, ...rest } = Astro.props
         color: var(--color-muted-foreground);
       }
 
-      .icon {
-        margin-top: var(--spacing-0-5);
-        margin-left: calc(var(--spacing-5) * -1);
-        color: inherit;
-      }
-
-      &.has-icon {
+      &:has(.icon) {
         margin-left: var(--spacing-0);
         list-style-type: none;
 
@@ -99,6 +97,12 @@ const { as = 'ul', muted = false, items, icon, ...rest } = Astro.props
           gap: var(--spacing-2);
         }
       }
+    }
+
+    .icon {
+      margin-top: var(--spacing-0-5);
+      margin-left: calc(var(--spacing-5) * -1);
+      color: inherit;
     }
   }
 </style>

@@ -1,207 +1,95 @@
 ---
-// @ts-nocheck
 import type { ComponentProps } from 'astro/types'
-import Button from 'fulldev-ui/components/Button.astro'
+import Carousel from 'fulldev-ui/components/Carousel.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 
 interface Props {
-  images?:
-    | (ComponentProps<typeof Image> | ComponentProps<typeof Image>['src'])[]
-    | undefined
+  images?: ComponentProps<typeof Image>[] | undefined
 }
 
 const { images } = Astro.props
-
-const hasMultiple = images?.length > 1
-const hasMany = images?.length > 5
 ---
 
-<script>
-  function scrollLeft(carousel: HTMLElement) {
-    carousel.scrollLeft -= carousel.clientWidth
-  }
-
-  function scrollRight(carousel: HTMLElement) {
-    carousel.scrollLeft += carousel.clientWidth
-  }
-
-  function scrollTo(carousel: HTMLElement, index: number) {
-    carousel.scrollLeft = index * carousel.clientWidth
-  }
-
-  document.addEventListener('astro:page-load', () => {
-    const galleries = document.querySelectorAll('.gallery')
-    galleries.forEach((gallery) => {
-      // Apply left and right event listeners to large and small carousels
-      const containers = gallery.querySelectorAll(
-        '.gallery-small, .gallery-large'
-      )
-      containers?.forEach((element) => {
-        const left = element?.querySelector('.gallery-left')
-        const right = element?.querySelector('.gallery-right')
-        const carousel = element?.querySelector(
-          '.gallery-carousel'
-        ) as HTMLElement
-
-        left?.addEventListener('click', () => scrollLeft(carousel))
-        right?.addEventListener('click', () => scrollRight(carousel))
-      })
-
-      // Apply item click event listener to small carousel items
-      const items = gallery.querySelectorAll('.gallery-small .gallery-item')
-      const largeCarousel = gallery.querySelector(
-        '.gallery-large .gallery-carousel'
-      ) as HTMLElement
-      items?.forEach((item, i) => {
-        item.addEventListener('click', () => {
-          scrollTo(largeCarousel, i)
-        })
-      })
-    })
-  })
-</script>
-
-<Element class:list="gallery">
-  <Element class:list="gallery-large">
-    <Button
-      show={hasMultiple}
-      class="gallery-left"
-      icon="chevron-left"
-      variant="secondary"
-      size="sm"
-    />
-    <Element class:list="gallery-carousel">
-      {
-        images?.map((image: any) => (
-          <Element class:list="gallery-item">
-            <Image {...(typeof image === 'string' ? { src: image } : image)} />
-          </Element>
-        ))
-      }
-    </Element>
-    <Button
-      show={hasMultiple}
-      class="gallery-right"
-      icon="chevron-right"
-      variant="secondary"
-      size="sm"
-    />
-  </Element>
-  <Element
-    show={hasMultiple}
-    class:list="gallery-small"
-  >
-    <Button
-      show={hasMany}
-      class="gallery-left"
-      icon="chevron-left"
-      variant="secondary"
-      size="sm"
-    />
-    <Element class:list="gallery-carousel">
-      {
-        images?.map((image: any) => (
-          <Element
-            as="button"
-            class:list="gallery-item"
-          >
-            <Image {...(typeof image === 'string' ? { src: image } : image)} />
-          </Element>
-        ))
-      }
-    </Element>
-    <Button
-      show={hasMany}
-      class="gallery-right"
-      icon="chevron-right"
-      variant="ghost"
-      size="sm"
-    />
-  </Element>
+<Element class="gallery">
+  <Carousel class="large">
+    {
+      images?.map((image, i) => (
+        <Element class="item">
+          <div
+            class="target"
+            id={`image-${i}`}
+          />
+          <Image {...image} />
+        </Element>
+      ))
+    }
+  </Carousel>
+  <Carousel class="small">
+    {
+      images?.map((image, i) => (
+        <Element
+          class="item"
+          as="a"
+          href={`#image-${i}`}
+        >
+          <Image {...image} />
+        </Element>
+      ))
+    }
+  </Carousel>
 </Element>
 
-<style is:global>
+<style>
   @layer fulldev {
     .gallery {
       display: flex;
       position: relative;
       flex-direction: column;
+      align-items: center;
+      gap: var(--spacing-2);
+      width: 100%;
+    }
+
+    .large {
+      .item {
+        width: 100%;
+      }
+
+      .target {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        transform: translateY(-100vh);
+        opacity: 0;
+        z-index: -10;
+        width: 100%;
+        height: 0px;
+        pointer-events: none;
+      }
+    }
+
+    .small {
       gap: var(--spacing-2);
 
-      .gallery-large,
-      .gallery-small {
-        display: flex;
-        position: relative;
-        align-items: center;
-      }
+      .item {
+        width: var(--spacing-28);
 
-      .image {
-        border-radius: var(--radius-sm);
-      }
-
-      .button {
-        position: absolute;
-        opacity: 0.5;
-        z-index: 10;
-        transition: var(--transition);
-        cursor: pointer;
-        background-color: var(--color-secondary);
-
-        &:hover {
-          opacity: 1;
+        &:hover .image {
+          opacity: 0.75;
         }
       }
+    }
 
-      .gallery-left {
-        left: var(--spacing-2);
-      }
-
-      .gallery-right {
-        right: var(--spacing-2);
-      }
-
-      .gallery-carousel {
-        display: inline-flex;
-        width: 100%;
-        overflow-x: auto;
-        scroll-behavior: smooth;
-        scroll-snap-type: x mandatory;
-        scrollbar-width: none;
-      }
-
-      .gallery-large {
-        .gallery-item {
-          display: flex;
-          width: 100%;
-          min-width: 100%;
-          scroll-snap-align: start;
-        }
-
-        .image {
-          width: 100%;
-          height: 100%;
-          max-height: 768px;
-          object-fit: contain;
-        }
-      }
-
-      .gallery-small {
-        .gallery-carousel {
-          gap: var(--spacing-2);
-        }
-
-        .gallery-item {
-          transition: var(--transition);
-          min-width: calc(20% - 0.4rem);
-          overflow: hidden;
-          scroll-snap-align: start;
-
-          &:hover {
-            opacity: 0.8;
-          }
-        }
-      }
+    .image {
+      transition: var(--transition);
+      background-color: var(--color-muted);
+      aspect-ratio: 1/1;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
     }
   }
 </style>

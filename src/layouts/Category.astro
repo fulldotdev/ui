@@ -1,12 +1,13 @@
 ---
 import type { CollectionEntry } from 'astro:content'
 import { getCollection, getEntry } from 'astro:content'
-import Products2 from 'fulldev-ui/blocks/Products2.astro'
+import Category1 from 'fulldev-ui/blocks/Category1.astro'
 import Block from 'fulldev-ui/components/Block.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Layout from 'fulldev-ui/components/Layout.astro'
 import Footer from 'fulldev-ui/globals/Footer.astro'
 import Header from 'fulldev-ui/globals/Header.astro'
+import { getHref } from 'fulldev-ui/utils/getHref'
 
 interface Props extends CollectionEntry<'categories'> {}
 
@@ -14,15 +15,20 @@ const { blocks, categories, ...rest } = Astro.props.data
 const header = (await getEntry('globals', 'header'))?.data
 const footer = (await getEntry('globals', 'footer'))?.data
 
-const products = await getCollection('products', ({ data }) =>
-  data.categories?.find((category) => category.id === Astro.props.id)
-)
+const products = (
+  await getCollection('products', ({ data }) =>
+    data.categories?.find((category) => category.id === Astro.props.id)
+  )
+)?.map((product) => ({
+  href: getHref(product),
+  ...product.data,
+}))
 ---
 
 <Layout {...rest}>
   <Header {...header} />
   <Element as="main">
-    <Products2
+    <Category1
       {products}
       {...rest}
     />

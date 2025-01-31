@@ -1,14 +1,17 @@
 ---
+import type { ComponentProps } from 'astro/types'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
-import Container from 'fulldev-ui/components/Container.astro'
 import Element from 'fulldev-ui/components/Element.astro'
-import Image from 'fulldev-ui/components/Image.astro'
-import Panel from 'fulldev-ui/components/Panel.astro'
 import Prose from 'fulldev-ui/components/Prose.astro'
-import Section from 'fulldev-ui/components/Section.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/fields/block.ts'
 
-interface Props extends BlockSchema {}
+interface Props {
+  size?: 'sm' | 'md' | 'lg' | undefined
+  align?: 'start' | 'center' | 'end' | undefined
+  title?: string | undefined
+  description?: string | undefined
+  content?: string | undefined
+  buttons?: ComponentProps<typeof Buttons>['buttons']
+}
 
 const {
   size = 'lg',
@@ -17,45 +20,38 @@ const {
   title,
   description,
   buttons,
-  image,
 } = Astro.props
 ---
 
-<Section class:list={`cta cta-1 size-${size} align-${align}`}>
-  <Container>
-    <Panel>
-      <Prose
+<Element class:list={`cta cta-1 size-${size} align-${align}`}>
+  <Element>
+    <Prose
+      {size}
+      {align}
+    >
+      <Element as="h1">{title}</Element>
+      <Element as="p">{description}</Element>
+      <Fragment set:html={content} />
+      <slot />
+      <Buttons
         {size}
-        {align}
-      >
-        <Element as="h1">{title}</Element>
-        <Element as="p">{description}</Element>
-        <Fragment set:html={content} />
-        <slot />
-        <Buttons
-          {size}
-          {buttons}
-        />
-      </Prose>
-      <Image {...image} />
-    </Panel>
-  </Container>
-</Section>
+        {buttons}
+      />
+    </Prose>
+  </Element>
+</Element>
 
 <style>
   @layer fulldev {
-    .panel {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacer);
-      padding-top: var(--spacer);
+    .container {
+      margin-right: auto;
+      margin-left: auto;
+      padding-top: var(--spacing-16);
       padding-right: var(--gutter);
-      padding-bottom: var(--spacer);
+      padding-bottom: var(--spacing-16);
       padding-left: var(--gutter);
-    }
-
-    .image {
-      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: var(--breakpoint-2xl);
     }
   }
 </style>

@@ -9,6 +9,10 @@ images:
   - src: /images/products/earthen-mug.jpg
     alt: Earthen Mug
 price: 28
+list:
+  - Lorem ipsum dolor sit amet
+  - Sed do eiusmod tempor incididunt
+  - Ut enim ad minim veniam
 categories:
   - productivity
 ---

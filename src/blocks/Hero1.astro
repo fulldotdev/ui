@@ -1,31 +1,39 @@
 ---
+import type { ComponentProps } from 'astro/types'
 import Badge from 'fulldev-ui/components/Badge.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
-import Container from 'fulldev-ui/components/Container.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Proof from 'fulldev-ui/components/Proof.astro'
 import Prose from 'fulldev-ui/components/Prose.astro'
-import Section from 'fulldev-ui/components/Section.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/fields/block.ts'
 
-interface Props extends BlockSchema {}
+interface Props {
+  size?: 'sm' | 'md' | 'lg' | undefined
+  align?: 'start' | 'center' | 'end' | undefined
+  proof?: ComponentProps<typeof Proof>
+  badge?: ComponentProps<typeof Badge>
+  title?: string | undefined
+  description?: string | undefined
+  content?: string | undefined
+  buttons?: ComponentProps<typeof Buttons>['buttons']
+  image?: ComponentProps<typeof Image>
+}
 
 const {
   size = 'lg',
   align = 'center',
-  title,
-  description,
   proof,
   badge,
+  title,
+  description,
   content,
   buttons,
   image,
 } = Astro.props
 ---
 
-<Section class:list={`hero hero-1 size-${size} align-${align}`}>
-  <Container>
+<Element class:list={`hero hero-1 size-${size} align-${align}`}>
+  <Element class="container">
     <Prose
       {size}
       {align}
@@ -48,19 +56,27 @@ const {
       />
     </Prose>
     <Image {...image} />
-  </Container>
-</Section>
+  </Element>
+</Element>
 
 <style>
   @layer fulldev {
     .container {
       display: flex;
+      row-gap: var(--spacing-16);
       flex-direction: column;
-      gap: var(--spacer);
+      margin-right: auto;
+      margin-left: auto;
+      padding-top: var(--spacing-16);
+      padding-right: var(--gutter);
+      padding-bottom: var(--spacing-16);
+      padding-left: var(--gutter);
+      width: 100%;
+      max-width: var(--breakpoint-2xl);
+    }
 
-      .image {
-        border-radius: var(--radius-lg);
-      }
+    .image {
+      border-radius: var(--radius-lg);
     }
   }
 </style>

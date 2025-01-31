@@ -1,85 +1,135 @@
 ---
-import Abstract from 'fulldev-ui/components/Abstract.astro'
-import Buttons from 'fulldev-ui/components/Buttons.astro'
-import Container from 'fulldev-ui/components/Container.astro'
+import type { ComponentProps } from 'astro/types'
+import Button from 'fulldev-ui/components/Button.astro'
+import Card from 'fulldev-ui/components/Card.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Grid from 'fulldev-ui/components/Grid.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Price from 'fulldev-ui/components/Price.astro'
-import Prose from 'fulldev-ui/components/Prose.astro'
-import Section from 'fulldev-ui/components/Section.astro'
-import Spread from 'fulldev-ui/components/Spread.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/fields/block.ts'
 
-interface Props extends BlockSchema {}
+interface Props {
+  title?: string | undefined
+  button?: ComponentProps<typeof Button> | undefined
+  products?: {
+    href?: string | undefined
+    title?: string | undefined
+    images?: ComponentProps<typeof Image>[] | undefined
+    price?: number | undefined
+  }[]
+}
 
-const { size = 'sm', title, description, content, buttons, cards } = Astro.props
+const { title, button, products } = Astro.props
 ---
 
-<Section class:list={`products-1 size-${size}`}>
-  <Container>
-    <Spread>
-      <Prose {size}>
-        <Element as="h1">{title}</Element>
-        <Element as="p">{description}</Element>
-        <Fragment set:html={content} />
-        <slot />
-      </Prose>
-      <Buttons
+<Element class:list={`products products-1`}>
+  <Element class="container">
+    <Element class="spread">
+      <Heading
+        as="h2"
+        size="2xl"
+        text={title}
+      />
+      <Button
         class="start"
         variant="secondary"
-        {size}
-        {buttons}
+        size="sm"
+        {...button}
       />
-    </Spread>
-    <Grid length={cards?.length}>
+    </Element>
+    <Grid>
       {
-        cards?.map(({ image, title, price }) => (
-          <Abstract {size}>
-            <Image {...image} />
-            <Spread align="center">
-              <Element as="h4">{title}</Element>
+        products?.map(({ href, title, images, price }) => (
+          <Card {href}>
+            <Image {...images?.[0]} />
+            <Element class="spread">
+              <Heading as="h3">{title}</Heading>
               <Price amount={price} />
-            </Spread>
-          </Abstract>
+            </Element>
+          </Card>
         ))
       }
     </Grid>
-    <Buttons
+    <Button
       class="end"
       variant="secondary"
-      {size}
-      {buttons}
+      {...button}
     />
-  </Container>
-</Section>
+  </Element>
+</Element>
 
 <style>
   @layer fulldev {
     .container {
       display: flex;
+      row-gap: var(--spacing-8);
       flex-direction: column;
+      align-items: flex-start;
+      margin-right: auto;
+      margin-left: auto;
+      padding-top: var(--spacing-16);
+      padding-right: var(--gutter);
+      padding-bottom: var(--spacing-16);
+      padding-left: var(--gutter);
+      width: 100%;
+      max-width: var(--container-2xl);
+    }
+
+    .spread {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       gap: var(--spacing-8);
+      width: 100%;
     }
 
-    .buttons.start {
-      @media (max-width: 768px) {
-        display: none;
+    .button.start {
+      display: none;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-3);
+
+      &:hover .image {
+        opacity: 0.75;
+      }
+
+      .spread {
+        font-weight: var(--font-weight-medium) !important;
+        line-height: var(--text-base--line-height);
+      }
+
+      .heading {
+        font-weight: var(--font-weight-medium) !important;
+        font-size: var(--text-base) !important;
+        line-height: var(--text-base--line-height) !important;
+      }
+
+      .price {
+        line-height: var(--text-base--line-height);
       }
     }
 
-    .buttons.end {
-      @media (min-width: 768px) {
+    .image {
+      transition: var(--transition);
+      border-radius: var(--radius-lg);
+      aspect-ratio: 1 / 1;
+    }
+
+    @media (min-width: 1024px) {
+      .container {
+        max-width: var(--breakpoint-2xl);
+      }
+
+      .button.start {
+        display: flex;
+      }
+
+      .button.end {
         display: none;
       }
-    }
-
-    .buttons.end {
-      margin-bottom: var(--spacing-8);
-    }
-
-    .icon {
-      color: var(--color-primary);
     }
   }
 </style>

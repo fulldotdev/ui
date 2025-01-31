@@ -1,126 +1,35 @@
 ---
-import Button from 'fulldev-ui/components/Button.astro'
+import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 
-interface Props {}
+interface Props extends HTMLAttributes<'div'> {}
+
+const { ...rest } = Astro.props
 ---
 
-<script>
-  function scrollLeft(content: HTMLElement) {
-    content.scrollLeft -= content.clientWidth
-  }
-
-  function scrollRight(content: HTMLElement) {
-    content.scrollLeft += content.clientWidth
-  }
-
-  const updateButtons = (
-    left: HTMLElement,
-    right: HTMLElement,
-    content: HTMLElement
-  ) => {
-    const isScrollable = content.scrollWidth > content.clientWidth
-    const atStart = content.scrollLeft <= 0
-    const atEnd =
-      content.scrollLeft >= content.scrollWidth - content.clientWidth
-
-    left?.classList.toggle('hide', !isScrollable || atStart)
-    right?.classList.toggle('hide', !isScrollable || atEnd)
-  }
-
-  document.addEventListener('astro:page-load', () => {
-    const carousels = document.querySelectorAll('.carousel')
-    carousels.forEach((carousel) => {
-      const left = carousel?.querySelector('.carousel-left')
-      const right = carousel?.querySelector('.carousel-right')
-      const content = carousel?.querySelector('.carousel-content')
-
-      if (!(content instanceof HTMLElement)) return
-      if (!(left instanceof HTMLElement)) return
-      if (!(right instanceof HTMLElement)) return
-
-      left?.addEventListener('click', () => scrollLeft(content))
-      right?.addEventListener('click', () => scrollRight(content))
-
-      const observer = new ResizeObserver(() => {
-        updateButtons(left, right, content)
-      })
-
-      observer.observe(content)
-
-      content.addEventListener('scroll', () => {
-        updateButtons(left, right, content)
-      })
-    })
-  })
-</script>
-
-<Element class:list="carousel">
-  <Button
-    class="carousel-left hide"
-    icon="chevron-left"
-    variant="secondary"
-    size="sm"
-  />
-  <Element class:list="carousel-content">
-    <slot />
-  </Element>
-  <Button
-    class="carousel-right hide"
-    icon="chevron-right"
-    variant="secondary"
-    size="sm"
-  />
+<Element
+  class:list="carousel"
+  {...rest}
+>
+  <slot />
 </Element>
 
 <style>
   @layer fulldev {
     .carousel {
-      display: flex;
-      position: relative;
-      align-items: center;
-      padding: 0;
+      display: inline-flex;
+      box-sizing: border-box;
       width: 100%;
-      max-width: var(--breakpoint-xl);
-      overflow: hidden;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
 
-      .button {
-        position: absolute;
-        opacity: 0.5;
-        z-index: 10;
-        background-color: var(--color-secondary);
-
-        &:hover {
-          opacity: 1;
-        }
-
-        &.hide {
-          display: none !important;
-        }
-      }
-
-      .carousel-left {
-        left: var(--spacing-2);
-      }
-
-      .carousel-right {
-        right: var(--spacing-2);
-      }
-
-      .carousel-content {
-        display: inline-flex;
-        gap: var(--spacing-2);
-        padding-right: var(--gutter);
-        padding-left: var(--gutter);
-        width: 100%;
-        overflow-x: auto;
-        scroll-behavior: smooth;
-        scroll-snap-type: x mandatory;
-        scrollbar-width: none;
-
-        > * {
-          scroll-snap-align: center;
-        }
+      & > :global(*) {
+        display: flex;
+        flex: none;
+        flex-direction: column;
+        box-sizing: content-box;
+        scroll-snap-align: center;
       }
     }
   }

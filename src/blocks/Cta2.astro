@@ -1,14 +1,17 @@
 ---
+import type { ComponentProps } from 'astro/types'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
-import Container from 'fulldev-ui/components/Container.astro'
 import Element from 'fulldev-ui/components/Element.astro'
-import Image from 'fulldev-ui/components/Image.astro'
-import Panel from 'fulldev-ui/components/Panel.astro'
 import Prose from 'fulldev-ui/components/Prose.astro'
-import Section from 'fulldev-ui/components/Section.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/fields/block.ts'
 
-interface Props extends BlockSchema {}
+interface Props {
+  size?: 'sm' | 'md' | 'lg' | undefined
+  align?: 'start' | 'center' | 'end' | undefined
+  title?: string | undefined
+  description?: string | undefined
+  content?: string | undefined
+  buttons?: ComponentProps<typeof Buttons>['buttons']
+}
 
 const {
   size = 'lg',
@@ -17,13 +20,12 @@ const {
   title,
   description,
   buttons,
-  image,
 } = Astro.props
 ---
 
-<Section class:list={`cta cta-2 size-${size} align-${align}`}>
-  <Container>
-    <Panel>
+<Element class:list={`cta cta-2 size-${size} align-${align}`}>
+  <Element class="container">
+    <Element class="panel">
       <Prose
         {size}
         {align}
@@ -37,23 +39,34 @@ const {
           {buttons}
         />
       </Prose>
-      <Image {...image} />
-    </Panel>
-  </Container>
-</Section>
+    </Element>
+  </Element>
+</Element>
 
 <style>
   @layer fulldev {
-    .panel {
-      display: flex;
-      flex-direction: column;
+    .container {
+      margin-right: auto;
+      margin-left: auto;
+      padding-top: var(--spacing-16);
+      padding-right: var(--gutter);
+      padding-bottom: var(--spacing-16);
+      padding-left: var(--gutter);
+      width: 100%;
+      max-width: var(--breakpoint-2xl);
     }
 
-    .prose {
-      padding-top: var(--spacer);
+    .panel {
+      position: relative;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background-color: var(--color-card);
+      padding-top: var(--spacing-16);
       padding-right: var(--gutter);
-      padding-bottom: var(--spacer);
+      padding-bottom: var(--spacing-16);
       padding-left: var(--gutter);
+      width: 100%;
+      overflow: hidden;
     }
   }
 </style>

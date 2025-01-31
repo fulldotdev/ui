@@ -8,14 +8,14 @@ interface Props extends HTMLAttributes<'div'> {
 }
 
 const formatPrice = (price: number): string => {
-  return `€${price?.toFixed(2).replace('.', ',')}`
+  return `€${price?.toFixed(2).replace('.', ',').replace(',00', '')}`
 }
 
-const { amount, ...rest } = Astro.props
+const { size = 'md', amount, ...rest } = Astro.props
 ---
 
 <Element
-  class:list="price"
+  class:list={`price size-${size}`}
   {...rest}
 >
   {amount && <Fragment set:html={formatPrice(amount)} />}
@@ -24,11 +24,23 @@ const { amount, ...rest } = Astro.props
 <style is:global>
   @layer fulldev {
     .price {
-      margin: 0;
-      max-width: calc(var(--space-4) * 44);
-      color: var(--color-12);
-      font-size: var(--text-5);
-      line-height: 1.25;
+      color: var(--color-foreground);
+      font-weight: var(--font-weight-medium);
+
+      &.size-sm {
+        font-size: var(--text-sm);
+        line-height: var(--text-sm--line-height);
+      }
+
+      &.size-md {
+        font-size: var(--text-base);
+        line-height: var(--text-base--line-height);
+      }
+
+      &.size-lg {
+        font-size: var(--text-lg);
+        line-height: var(--text-lg--line-height);
+      }
     }
   }
 </style>

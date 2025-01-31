@@ -1,17 +1,15 @@
 ---
-import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 
-interface Props extends HTMLAttributes<'a'>, HTMLAttributes<'div'> {
-  as?: HTMLTag
-}
+interface Props extends HTMLAttributes<'a'>, HTMLAttributes<'div'> {}
 
-const { href, as = href ? 'a' : 'div', ...rest } = Astro.props
+const { href, ...rest } = Astro.props
 ---
 
 <Element
   class:list="card"
-  {as}
+  as={href ? 'a' : 'div'}
   {href}
   {...rest}
 >
@@ -21,9 +19,6 @@ const { href, as = href ? 'a' : 'div', ...rest } = Astro.props
 <style>
   @layer fulldev {
     .card {
-      /* border: 1px solid var(--color-border); */
-      /* border-radius: var(--radius-lg); */
-      /* background-color: var(--color-card); */
       width: 100%;
       overflow: hidden;
       color: var(--color-foreground);
@@ -34,14 +29,10 @@ const { href, as = href ? 'a' : 'div', ...rest } = Astro.props
           box-shadow: 0 0 0 2px var(--color-ring);
         }
 
-        &:hover .image {
+        &:hover > :global(.image) {
           opacity: 0.75;
           transition: var(--transition);
         }
-      }
-
-      .writeup {
-        padding: var(--spacing-4);
       }
     }
   }
