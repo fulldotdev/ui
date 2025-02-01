@@ -2,13 +2,12 @@
 import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
+import { buttonVariants } from 'fulldev-ui/shadcn/components/button'
+import { type VariantProps } from "class-variance-authority";
 
 interface Props
-  extends HTMLAttributes<'button'>,
-    Omit<HTMLAttributes<'a'>, 'type'>,
-    HTMLAttributes<'label'> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
+  extends HTMLAttributes<'a'>,
+  VariantProps<typeof buttonVariants> {
   href?: string | undefined
   text?: string | undefined
   icon?: string | undefined
@@ -17,8 +16,8 @@ interface Props
 const {
   href,
   target = Astro.props.href?.startsWith('http') ? '_blank' : undefined,
-  variant = 'primary',
-  size = 'md',
+  variant,
+  size,
   text,
   icon,
   ...rest
@@ -29,8 +28,8 @@ const hasSlot = slot?.trim().length > 0
 ---
 
 <Element
-  class:list={`button variant-${variant} size-${size}`}
-  as={href ? 'a' : rest.for ? 'label' : 'button'}
+  class:list={buttonVariants({ variant, size })}
+  as='a'
   {href}
   {target}
   {...rest}

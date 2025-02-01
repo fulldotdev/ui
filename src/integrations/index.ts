@@ -1,5 +1,7 @@
 import mdx from '@astrojs/mdx'
+import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
+import tailwindcss from '@tailwindcss/vite'
 import type { AstroIntegration } from 'astro'
 import liveCode from 'astro-live-code'
 import robotsTxt from 'astro-robots-txt'
@@ -55,6 +57,7 @@ export default function fulldevIntegration(config: Partial<Config> | undefined):
             liveCode({
               layout: '/src/components/Code.astro',
             }),
+            react(),
           ],
           vite: {
             resolve: {
@@ -62,6 +65,7 @@ export default function fulldevIntegration(config: Partial<Config> | undefined):
                 ...config?.overrides,
               },
             },
+            plugins: [tailwindcss()],
           },
         })
 

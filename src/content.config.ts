@@ -5,7 +5,6 @@ import { footerSchema } from 'fulldev-ui/schemas/globals/footer.ts'
 import { headerSchema } from 'fulldev-ui/schemas/globals/header.ts'
 import { categorySchema } from 'fulldev-ui/schemas/layouts/category.ts'
 import { docSchema } from 'fulldev-ui/schemas/layouts/doc.ts'
-import { jobSchema } from 'fulldev-ui/schemas/layouts/job.ts'
 import { pageSchema } from 'fulldev-ui/schemas/layouts/page.ts'
 import { postSchema } from 'fulldev-ui/schemas/layouts/post.ts'
 import { productSchema } from 'fulldev-ui/schemas/layouts/product.ts'
@@ -31,13 +30,6 @@ export const collections = {
       base: './src/collections/globals',
     }),
     schema: z.union([headerSchema, footerSchema]),
-  }),
-  jobs: defineCollection({
-    loader: glob({
-      pattern: '**/[^_]*.{md,mdx}',
-      base: './src/collections/jobs',
-    }),
-    schema: jobSchema,
   }),
   pages: defineCollection({
     loader: glob({

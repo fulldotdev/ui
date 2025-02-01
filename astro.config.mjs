@@ -1,10 +1,8 @@
 // @ts-check
-import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'astro/config'
+import fulldev from 'fulldev-ui/integration'
 
 // https://astro.build/config
 export default defineConfig({
-  vite: {
-    plugins: [tailwindcss()],
-  },
+  integrations: [fulldev({})],
 })
