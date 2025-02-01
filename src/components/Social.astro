@@ -2,8 +2,8 @@
 import type { ComponentProps } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
 
-interface Props extends Omit<ComponentProps<typeof Button>, 'text'> {
-  icon?: string | undefined
+interface Props extends Omit<ComponentProps<typeof Button>, 'text' | 'icon' | 'target' | 'size'> {
+  variant?: ComponentProps<typeof Button>['variant'] | undefined
 }
 
 const platform = (href: string | undefined) => {
@@ -20,22 +20,15 @@ const platform = (href: string | undefined) => {
   return undefined
 }
 
-const {
-  href,
-  icon = platform(href),
-  variant = 'ghost',
-  target = '_blank',
-  size = 'sm',
-  ...rest
-} = Astro.props
+const { href, variant = 'ghost', ...rest } = Astro.props
 ---
 
 <Button
   class:list="social"
-  {icon}
-  {variant}
-  {target}
-  {size}
+  icon={platform(href)}
+  target="_blank"
+  size="sm"
   {href}
+  {variant}
   {...rest}
 />

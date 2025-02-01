@@ -1,134 +1,45 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+import { type VariantProps } from 'class-variance-authority'
 import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
 import { buttonVariants } from 'fulldev-ui/shadcn/components/button'
-import { type VariantProps } from "class-variance-authority";
 
 interface Props
-  extends HTMLAttributes<'a'>,
-  VariantProps<typeof buttonVariants> {
+  extends Omit<HTMLAttributes<'a'>, 'type'>,
+    Omit<HTMLAttributes<'button'>, 'type'>,
+    VariantProps<typeof buttonVariants> {
+  type?: HTMLAttributes<'a'>['type'] | HTMLAttributes<'button'>['type'] | undefined
   href?: string | undefined
   text?: string | undefined
   icon?: string | undefined
 }
 
+const slot = await Astro.slots.render('default')
+const hasSlot = slot?.trim().length > 0
+
 const {
   href,
-  target = Astro.props.href?.startsWith('http') ? '_blank' : undefined,
-  variant,
-  size,
   text,
+  target = href?.startsWith('http') ? '_blank' : undefined,
+  size = !(hasSlot || text) ? 'icon' : undefined,
+  variant,
   icon,
   ...rest
 } = Astro.props
-
-const slot = await Astro.slots.render('default')
-const hasSlot = slot?.trim().length > 0
 ---
 
 <Element
   class:list={buttonVariants({ variant, size })}
-  as='a'
+  as={href ? 'a' : 'button'}
   {href}
   {target}
   {...rest}
 >
   <Fragment set:html={text} />
   <Icon
-    class:list={{ 'icon-only': !(hasSlot || text) }}
+    class={!(hasSlot || text) ? 'absolute' : undefined}
     name={icon}
   />
   <Fragment set:html={slot} />
 </Element>
-
-<style>
-  @layer fulldev {
-    .button {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      gap: var(--spacing-2);
-      transition: var(--transition);
-      cursor: pointer;
-      border-radius: var(--radius-md);
-      font-weight: var(--font-weight-medium);
-      font-size: var(--text-sm);
-      line-height: var(--leading-none);
-      white-space: nowrap;
-
-      &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 2px var(--color-ring);
-      }
-
-      &:disabled {
-        opacity: 0.5;
-        pointer-events: none;
-      }
-
-      .icon.icon-only {
-        position: absolute;
-      }
-
-      &.size-sm {
-        padding-right: var(--spacing-3);
-        padding-left: var(--spacing-3);
-        min-width: var(--spacing-8);
-        height: var(--spacing-8);
-        min-height: var(--spacing-8);
-      }
-
-      &.size-md {
-        padding-right: var(--spacing-4);
-        padding-left: var(--spacing-4);
-        min-width: var(--spacing-10);
-        height: var(--spacing-10);
-        min-height: var(--spacing-10);
-      }
-
-      &.size-lg {
-        padding-right: var(--spacing-5);
-        padding-left: var(--spacing-5);
-        min-width: var(--spacing-11);
-        height: var(--spacing-11);
-        min-height: var(--spacing-11);
-      }
-    }
-
-    .variant-primary {
-      background-color: var(--color-primary);
-      color: var(--color-primary-foreground);
-
-      &:hover {
-        background-color: var(--color-primary-hover);
-      }
-    }
-
-    .variant-secondary {
-      background-color: var(--color-secondary);
-      color: var(--color-secondary-foreground);
-
-      &:hover {
-        background-color: var(--color-secondary-hover);
-      }
-    }
-
-    .variant-outline {
-      border: 1px solid var(--color-input);
-      color: var(--color-accent-foreground);
-
-      &:hover {
-        background-color: var(--color-accent-hover);
-      }
-    }
-
-    .variant-ghost {
-      color: var(--color-accent-foreground);
-
-      &:hover {
-        background-color: var(--color-accent-hover);
-      }
-    }
-  }
-</style>

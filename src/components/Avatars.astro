@@ -3,40 +3,24 @@ import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import Avatar from 'fulldev-ui/components/Avatar.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 
-interface Props
-  extends HTMLAttributes<'div'>,
-    Pick<ComponentProps<typeof Avatar>, 'size'> {
+interface Props extends HTMLAttributes<'div'> {
   avatars?: ComponentProps<typeof Avatar>[] | undefined
 }
 
-const { size = 'md', avatars, ...rest } = Astro.props
+const { avatars, ...rest } = Astro.props
 ---
 
 <Element
-  class:list="avatars"
+  class:list="flex -space-x-3"
   {...rest}
 >
   {
     avatars?.map((avatar) => (
       <Avatar
-        {size}
+        class="ring-background ring-2"
         {...avatar}
       />
     ))
   }
   <slot />
 </Element>
-
-<style>
-  .avatars {
-    display: flex;
-
-    .avatar {
-      box-shadow: 0 0 0 2px var(--color-background);
-
-      &:not(:first-child) {
-        margin-left: calc(var(--spacing-3) * -1);
-      }
-    }
-  }
-</style>

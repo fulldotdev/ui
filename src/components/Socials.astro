@@ -4,16 +4,15 @@ import Element from 'fulldev-ui/components/Element.astro'
 import Social from 'fulldev-ui/components/Social.astro'
 
 interface Props extends ComponentProps<typeof Social> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
-  socials?: string[] | undefined
+  variant?: ComponentProps<typeof Social>['variant'] | undefined
+  socials?: ComponentProps<typeof Social>['href'][] | undefined
 }
 
-const { variant = 'ghost', size = 'sm', socials, ...rest } = Astro.props
+const { variant, socials, ...rest } = Astro.props
 ---
 
 <Element
-  class:list="socials"
+  class:list="flex flex-wrap gap-1.5 justify-stretch"
   {...rest}
 >
   {
@@ -21,20 +20,8 @@ const { variant = 'ghost', size = 'sm', socials, ...rest } = Astro.props
       <Social
         href={social}
         {variant}
-        {size}
       />
     ))
   }
   <slot />
 </Element>
-
-<style is:global>
-  @layer fulldev {
-    .socials {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: stretch;
-      gap: var(--spacing-1-5);
-    }
-  }
-</style>

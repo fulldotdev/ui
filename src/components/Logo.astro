@@ -11,61 +11,19 @@ interface Props extends HTMLAttributes<'a'>, HTMLAttributes<'div'> {
   alt?: string | undefined
 }
 
-const {
-  href = '/',
-  size = 'md',
-  image,
-  text,
-  src,
-  alt,
-  ...rest
-} = Astro.props as Props
+const { href = '/', size = 'md', image, text, src, alt, ...rest } = Astro.props as Props
 ---
 
 <Element
-  class:list={`logo size-${size}`}
+  class:list="flex items-center gap-2 text-foreground font-bold text-base leading-none whitespace-nowrap"
   as={href ? 'a' : 'div'}
   {href}
   {...rest}
 >
   <Image
+    class="h-8 w-auto object-contain"
     {src}
     {alt}
   />
   <Fragment set:html={text} />
 </Element>
-
-<style is:global>
-  @layer fulldev {
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-2);
-      width: auto;
-      object-fit: contain;
-      color: var(--color-foreground);
-      font-weight: var(--font-weight-bold);
-      font-size: var(--text-base);
-      line-height: var(--leading-none);
-      white-space: nowrap;
-
-      .image {
-        width: auto;
-        height: 100%;
-        object-fit: contain;
-      }
-
-      &.size-sm {
-        height: var(--spacing-6);
-      }
-
-      &.size-md {
-        height: var(--spacing-7);
-      }
-
-      &.size-lg {
-        height: var(--spacing-8);
-      }
-    }
-  }
-</style>

@@ -3,25 +3,25 @@ import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import Button from 'fulldev-ui/components/Button.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 
-interface Props
-  extends HTMLAttributes<'div'>,
-    Pick<ComponentProps<typeof Button>, 'variant' | 'size'> {
+interface Props extends HTMLAttributes<'div'> {
+  variant?: ComponentProps<typeof Button>['variant'] | undefined
+  size?: ComponentProps<typeof Button>['size'] | undefined
   buttons?: ComponentProps<typeof Button>[] | undefined
 }
 
-const { variant = 'primary', size = 'md', buttons, ...rest } = Astro.props
+const { variant = 'default', size, buttons, ...rest } = Astro.props
 
 const buttonVariant = (i: number) => {
-  if (variant === 'primary' && i === 0) return 'primary'
-  else if (variant === 'primary' && i === 1) return 'secondary'
+  if (variant === 'default' && i === 0) return 'default'
+  else if (variant === 'default' && i === 1) return 'secondary'
   else if (variant === 'secondary' && i === 0) return 'secondary'
-  if (variant === 'outline' && i === 0) return 'outline'
+  else if (variant === 'outline' && i === 0) return 'outline'
   else return 'ghost'
 }
 ---
 
 <Element
-  class:list="buttons"
+  class:list="flex justify-stretch gap-2"
   {...rest}
 >
   {
@@ -35,13 +35,3 @@ const buttonVariant = (i: number) => {
   }
   <slot />
 </Element>
-
-<style is:global>
-  @layer fulldev {
-    .buttons {
-      display: flex;
-      justify-content: stretch;
-      gap: var(--spacing-2);
-    }
-  }
-</style>

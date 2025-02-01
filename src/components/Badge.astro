@@ -1,105 +1,24 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+import { type VariantProps } from 'class-variance-authority'
 import Element from 'fulldev-ui/components/Element.astro'
+import { badgeVariants } from 'fulldev-ui/shadcn/components/badge'
 
-interface Props extends HTMLAttributes<'a'>, HTMLAttributes<'div'> {
-  variant?: 'primary' | 'secondary' | 'outline' | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
+interface Props extends HTMLAttributes<'a'>, HTMLAttributes<'div'>, VariantProps<typeof badgeVariants> {
   text?: string | undefined
   href?: string | undefined
 }
 
-const {
-  href,
-  target = href?.startsWith('http') ? '_blank' : undefined,
-  variant = 'outline',
-  size = 'md',
-  text,
-  ...rest
-} = Astro.props
+const { href, target = href?.startsWith('http') ? '_blank' : undefined, variant, text, ...rest } = Astro.props
 ---
 
 <Element
-  class:list={`badge variant-${variant} size-${size}`}
+  class:list={badgeVariants({ variant })}
   as={href ? 'a' : 'div'}
-  target={target}
   {href}
+  {target}
   {...rest}
 >
   <Fragment set:html={text} />
   <slot />
 </Element>
-
-<style>
-  @layer fulldev {
-    .badge {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      transition: var(--transition);
-      border-radius: var(--radius-full);
-      font-weight: var(--font-weight-medium);
-      font-size: var(--text-sm);
-      line-height: var(--leading-none);
-      white-space: nowrap;
-
-      &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 2px var(--color-ring);
-      }
-
-      &:disabled {
-        opacity: 0.5;
-        pointer-events: none;
-      }
-
-      &.size-sm {
-        padding-right: var(--spacing-2);
-        padding-left: var(--spacing-2);
-        min-width: var(--spacing-6);
-        height: var(--spacing-6);
-      }
-
-      &.size-md {
-        padding-right: var(--spacing-3);
-        padding-left: var(--spacing-3);
-        min-width: var(--spacing-7);
-        height: var(--spacing-7);
-      }
-
-      &.size-lg {
-        padding-right: var(--spacing-3-5);
-        padding-left: var(--spacing-3-5);
-        min-width: var(--spacing-8);
-        height: var(--spacing-8);
-      }
-
-      &.variant-primary {
-        background-color: var(--color-primary);
-        color: var(--color-primary-foreground);
-
-        &:is(a):hover {
-          background-color: var(--color-primary-hover);
-        }
-      }
-
-      &.variant-secondary {
-        background-color: var(--color-secondary);
-        color: var(--color-secondary-foreground);
-
-        &:is(a):hover {
-          background-color: var(--color-secondary-hover);
-        }
-      }
-
-      &.variant-outline {
-        border: 1px solid var(--color-input);
-        color: var(--color-accent-foreground);
-
-        &:is(a):hover {
-          background-color: var(--color-accent-hover);
-        }
-      }
-    }
-  }
-</style>
