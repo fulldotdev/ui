@@ -1,3 +1,5 @@
+import react from '@astrojs/react'
+import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'astro/config'
 import integration from 'fulldev-ui/integration'
 
@@ -13,5 +15,9 @@ export default defineConfig({
       css: '/src/styles/custom.css',
       injectRoutes: false,
     }),
+    react(),
   ],
+  vite: {
+    plugins: [tailwindcss()],
+  },
 })
