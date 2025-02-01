@@ -1,16 +1,16 @@
 ---
-import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 
 interface Props extends HTMLAttributes<'div'> {
-  as?: HTMLTag
+  size?: 'sm' | 'md' | 'lg' | undefined
 }
 
-const { ...rest } = Astro.props
+const { size = 'md', ...rest } = Astro.props
 ---
 
 <Element
-  class:list="masonry"
+  class:list={`masonry size-${size}`}
   {...rest}
 >
   <slot />
@@ -19,11 +19,10 @@ const { ...rest } = Astro.props
 <style is:global>
   @layer fulldev {
     .masonry {
-      --column-width: 20rem;
       position: relative;
       gap: var(--spacing-5);
       row-gap: var(--spacing-5);
-      columns: 2;
+      columns: var(--column-width);
       width: 100%;
 
       & > * {
@@ -34,17 +33,17 @@ const { ...rest } = Astro.props
         }
       }
 
-      /* &.size-sm {
-        --column-width: 16rem;
+      &.size-sm {
+        --column-width: var(--spacing-52);
       }
 
       &.size-md {
-        --column-width: 20rem;
+        --column-width: var(--spacing-64);
       }
 
       &.size-lg {
-        --column-width: 26rem;
-      } */
+        --column-width: var(--spacing-80);
+      }
     }
   }
 </style>

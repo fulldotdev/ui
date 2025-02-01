@@ -1,0 +1,81 @@
+---
+import Card from 'fulldev-ui/components/Card.astro'
+import Container from 'fulldev-ui/components/Container.astro'
+import Heading from 'fulldev-ui/components/Heading.astro'
+import Masonry from 'fulldev-ui/components/Masonry.astro'
+import Paragraph from 'fulldev-ui/components/Paragraph.astro'
+import Prose from 'fulldev-ui/components/Prose.astro'
+import Rating from 'fulldev-ui/components/Rating.astro'
+import Section from 'fulldev-ui/components/Section.astro'
+
+interface Props {
+  size?: 'sm' | 'md' | 'lg' | undefined
+  align?: 'start' | 'center' | 'end' | undefined
+  content: string | undefined
+  cards: {
+    title: string | undefined
+    description: string | undefined
+    rating: number | undefined
+  }[]
+}
+
+const { size = 'md', align = 'center', content, cards } = Astro.props
+---
+
+<Section class="reviews-1">
+  <Container>
+    <Prose
+      {size}
+      {align}
+    >
+      <Fragment set:html={content} />
+      <slot />
+    </Prose>
+    <Masonry {size}>
+      {
+        cards?.map(({ title, description, rating }) => (
+          <Card>
+            <Rating score={rating} />
+            <Heading
+              as="h3"
+              size="md"
+              text={title}
+            />
+            <Paragraph
+              size="sm"
+              text={description}
+            />
+          </Card>
+        ))
+      }
+    </Masonry>
+  </Container>
+</Section>
+
+<style>
+  @layer fulldev {
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--spacing-16);
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: var(--spacing-4);
+    }
+
+    .rating {
+      margin-bottom: var(--spacing-1);
+    }
+
+    .icon {
+      color: var(--color-primary);
+    }
+  }
+</style>
