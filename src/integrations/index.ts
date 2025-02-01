@@ -18,17 +18,11 @@ interface Config {
   }
 }
 
-export default function fulldevIntegration(
-  config: Partial<Config> | undefined
-): AstroIntegration {
+export default function fulldevIntegration(config: Partial<Config> | undefined): AstroIntegration {
   return {
     name: '/integration',
     hooks: {
-      'astro:config:setup': async ({
-        updateConfig,
-        injectRoute,
-        injectScript,
-      }) => {
+      'astro:config:setup': async ({ updateConfig, injectRoute, injectScript }) => {
         // ----------------------
         // Update config
         // ----------------------
@@ -121,7 +115,7 @@ export default function fulldevIntegration(
         // ----------------------
         // Inject css
         // ----------------------
-        config?.css && injectScript('page-ssr', `import "${config?.css}";`)
+        // config?.css && injectScript('page-ssr', `import "${config?.css}";`)
 
         // ----------------------
         // merge Cloudcannon configs

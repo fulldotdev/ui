@@ -1,20 +1,15 @@
 ---
-import type { GlobalSchema } from 'fulldev-ui/schemas/collections/global.ts'
-import type { JobSchema } from 'fulldev-ui/schemas/collections/job'
 import type { CategorySchema } from 'fulldev-ui/schemas/layouts/category'
 import type { DocSchema } from 'fulldev-ui/schemas/layouts/doc'
 import type { PageSchema } from 'fulldev-ui/schemas/layouts/page'
 import type { PostSchema } from 'fulldev-ui/schemas/layouts/post'
 import type { ProductSchema } from 'fulldev-ui/schemas/layouts/product'
+import "../styles/global.css";
 
-interface Props
-  extends GlobalSchema,
-    PageSchema,
-    PostSchema,
-    ProductSchema,
-    CategorySchema,
-    JobSchema,
-    DocSchema {}
+interface Props extends PageSchema, PostSchema, ProductSchema, CategorySchema, DocSchema {
+  logo?: any
+  company?: any
+}
 
 const { title, description, image, meta, blocks, logo, company } = Astro.props
 
@@ -65,9 +60,7 @@ const theme = 'light'
     />
     <meta
       property="og:image"
-      content={image?.src ??
-        blocks?.find((block) => block.image?.src)?.image?.src ??
-        logo?.src}
+      content={image?.src ?? blocks?.find((block) => block.image?.src)?.image?.src ?? logo?.src}
     />
     <meta
       property="og:url"
@@ -91,9 +84,7 @@ const theme = 'light'
         const value = localStorage.getItem('theme') || theme
 
         const isDark =
-          value === 'dark' ||
-          (value === 'system' &&
-            window.matchMedia('(prefers-color-scheme: dark)').matches)
+          value === 'dark' || (value === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
 
         document.documentElement.classList.toggle('dark', isDark)
 
