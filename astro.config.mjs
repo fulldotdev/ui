@@ -1,8 +1,9 @@
 // @ts-check
+import vue from '@astrojs/vue'
 import { defineConfig } from 'astro/config'
-import fulldev from 'fulldev-ui/integration'
+import preset from 'fulldev-ui/integrations/preset.ts'
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [fulldev({})],
+  integrations: [preset(), vue()],
 })

@@ -10,7 +10,7 @@ import Matrix from 'fulldev-ui/components/Matrix.astro'
 import Paragraph from 'fulldev-ui/components/Paragraph.astro'
 import Prose from 'fulldev-ui/components/Prose.astro'
 import Section from 'fulldev-ui/components/Section.astro'
-import { getHref } from 'fulldev-ui/utils/getHref'
+import { getHref } from 'fulldev-ui/lib/getHref'
 
 interface Props {
   id?: CollectionEntry<'pages'>['id']
@@ -23,9 +23,7 @@ const { id, heading, paragraph, pages } = Astro.props
 
 // Jobs that reference the current category, or any of `pages` select categories
 const jobs = await getCollection('pages', (page) =>
-  page.data.categories?.some(
-    (category) => category.id == id || pages?.some((p) => p.id == category.id)
-  )
+  page.data.categories?.some((category) => category.id == id || pages?.some((p) => p.id == category.id))
 )
 
 const pageEntries = pages && (await getEntries(pages))

@@ -1,30 +1,23 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
-import Element from 'fulldev-ui/components/Element.astro'
+import type { ComponentProps } from 'astro/types'
+import LabelShadcn from 'fulldev-ui/components/shadcn/label/Label.vue'
+import Element from './Element.astro'
 
-interface Props extends HTMLAttributes<'label'> {
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | undefined
-  text?: string | undefined
+interface Props extends ComponentProps<typeof LabelShadcn> {
+  text?: string
 }
 
-const { size = 'md', text, ...rest } = Astro.props
+const { text, ...rest } = Astro.props
 ---
 
 <Element
-  class:list={`label size-${size}`}
+  class:list={[
+    'label',
+    'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70', // copied shadcn styles, because this component gave an error
+  ]}
   as="label"
   {...rest}
 >
   <Fragment set:html={text} />
   <slot />
 </Element>
-
-<style is:global>
-  @layer fulldev {
-    .label {
-      font-weight: var(--font-weight-medium);
-      font-size: var(--text-sm);
-      line-height: var(--text-sm--line-height);
-    }
-  }
-</style>

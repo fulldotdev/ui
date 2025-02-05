@@ -2,44 +2,35 @@
 import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import { Input as ShadcnInput } from 'fulldev-ui/shadcn/components/input'
-import { Label } from 'fulldev-ui/shadcn/components/label'
-import type { ComponentProps } from 'react'
+import Label from 'fulldev-ui/components/Label.astro'
+import { inputVariants } from './shadcn/input'
 
 interface Props extends HTMLAttributes<'div'> {
   label?: string | undefined
   icon?: string | undefined
   // input
-  id?: ComponentProps<typeof ShadcnInput>['id']
-  name?: ComponentProps<typeof ShadcnInput>['name']
-  type?: ComponentProps<typeof ShadcnInput>['type']
-  value?: ComponentProps<typeof ShadcnInput>['value']
-  disabled?: ComponentProps<typeof ShadcnInput>['disabled']
-  required?: ComponentProps<typeof ShadcnInput>['required']
-  pattern?: ComponentProps<typeof ShadcnInput>['pattern']
-  form?: ComponentProps<typeof ShadcnInput>['form']
-  readonly?: ComponentProps<typeof ShadcnInput>['readOnly']
-  minlength?: ComponentProps<typeof ShadcnInput>['minLength']
-  maxlength?: ComponentProps<typeof ShadcnInput>['maxLength']
-  placeholder?: ComponentProps<typeof ShadcnInput>['placeholder']
+  type?: 'text' | 'email' | 'tel' | 'password' | 'file'
+  placeholder?: string
+  name?: string
+  id?: string
+  value?: string
+  disabled?: boolean
+  required?: boolean
+  readonly?: boolean
 }
 
 const {
   label,
   icon,
   // input
+  type = 'text',
   placeholder,
   name = label || placeholder,
   id = name,
-  type = 'text',
   value,
   disabled,
   required,
-  pattern,
-  form,
   readonly,
-  minlength,
-  maxlength,
   ...rest
 } = Astro.props
 ---
@@ -48,36 +39,26 @@ const {
   class:list="input flex flex-col relative"
   {...rest}
 >
-  {
-    label && (
-      <Label
-        className="pb-1.5"
-        htmlFor={id}
-      >
-        {label}
-      </Label>
-    )
-  }
+  <Label
+    class="pb-1.5"
+    for={id}
+    text={label}
+  />
   <Icon
     class="absolute bottom-2.5 right-2.5"
     name={icon}
   />
-  {
-    id && (
-      <ShadcnInput
-        id={name}
-        readOnly={readonly}
-        minLength={minlength}
-        maxLength={maxlength}
-        {type}
-        {placeholder}
-        {name}
-        {disabled}
-        {required}
-        {pattern}
-        {form}
-        {value}
-      />
-    )
-  }
+  <Element
+    show={id}
+    class:list={[inputVariants()]}
+    as="input"
+    {type}
+    {placeholder}
+    {name}
+    {id}
+    {value}
+    {disabled}
+    {required}
+    {readonly}
+  />
 </Element>

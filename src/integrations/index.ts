@@ -1,10 +1,5 @@
-import mdx from '@astrojs/mdx'
-import react from '@astrojs/react'
-import sitemap from '@astrojs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
 import type { AstroIntegration } from 'astro'
-import liveCode from 'astro-live-code'
-import robotsTxt from 'astro-robots-txt'
 import { envField } from 'astro/config'
 import { loadEnv } from 'vite'
 
@@ -50,15 +45,16 @@ export default function fulldevIntegration(config: Partial<Config> | undefined):
             },
             validateSecrets: true,
           },
-          integrations: [
-            mdx(),
-            sitemap(),
-            robotsTxt(),
-            liveCode({
-              layout: '/src/components/Code.astro',
-            }),
-            react(),
-          ],
+          // integrations: [
+          //   mdx(),
+          //   sitemap(),
+          //   robotsTxt(),
+          //   liveCode({
+          //     layout: '/src/components/Code.astro',
+          //   }),
+          //   vue(),
+          //   // react(),
+          // ],
           vite: {
             resolve: {
               alias: {
@@ -89,7 +85,7 @@ export default function fulldevIntegration(config: Partial<Config> | undefined):
         // ----------------------
         // Inject routes
         // ----------------------
-        if (config?.injectRoutes) {
+        if (config?.injectRoutes || true) {
           injectRoute({
             pattern: '/[...page]',
             entrypoint: 'fulldev-ui/pages/[...page].astro',

@@ -1,22 +1,20 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
-import { Label } from 'fulldev-ui/shadcn/components/label'
-import { Textarea as ShadcnTextarea } from 'fulldev-ui/shadcn/components/textarea'
-import type { ComponentProps } from 'react'
+import Label from 'fulldev-ui/components/Label.astro'
+import { textareaVariants } from 'fulldev-ui/components/shadcn/textarea/index.ts'
 
 interface Props extends HTMLAttributes<'div'> {
   label?: string | undefined
   // input
-  id?: ComponentProps<typeof ShadcnTextarea>['id']
-  name?: ComponentProps<typeof ShadcnTextarea>['name']
-  disabled?: ComponentProps<typeof ShadcnTextarea>['disabled']
-  required?: ComponentProps<typeof ShadcnTextarea>['required']
-  form?: ComponentProps<typeof ShadcnTextarea>['form']
-  readonly?: ComponentProps<typeof ShadcnTextarea>['readOnly']
-  minlength?: ComponentProps<typeof ShadcnTextarea>['minLength']
-  maxlength?: ComponentProps<typeof ShadcnTextarea>['maxLength']
-  placeholder?: ComponentProps<typeof ShadcnTextarea>['placeholder']
+  type?: 'text' | 'email' | 'tel'
+  placeholder?: string
+  name?: string
+  id?: string
+  value?: string
+  disabled?: boolean
+  required?: boolean
+  readonly?: boolean
 }
 
 const {
@@ -25,12 +23,10 @@ const {
   placeholder,
   name = label || placeholder,
   id = name,
+  value,
   disabled,
   required,
-  form,
   readonly,
-  minlength,
-  maxlength,
   ...rest
 } = Astro.props
 ---
@@ -39,29 +35,23 @@ const {
   class:list="textarea flex flex-col"
   {...rest}
 >
-  {
-    label && (
-      <Label
-        className="pb-1.5"
-        htmlFor={id}
-      >
-        {label}
-      </Label>
-    )
-  }
-  {
-    id && (
-      <ShadcnTextarea
-        id={name}
-        readOnly={readonly}
-        minLength={minlength}
-        maxLength={maxlength}
-        {placeholder}
-        {name}
-        {disabled}
-        {required}
-        {form}
-      />
-    )
-  }
+  <Label
+    class="pb-1.5"
+    for={id}
+    text={label}
+  />
+  <Element
+    show={id}
+    class:list={[textareaVariants()]}
+    as="textarea"
+    {placeholder}
+    {name}
+    {id}
+    {value}
+    {disabled}
+    {required}
+    {readonly}
+  >
+    {value}
+  </Element>
 </Element>

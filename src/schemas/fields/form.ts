@@ -6,9 +6,7 @@ export const formSchema = z
     action: z.string().optional(),
     fields: z
       .object({
-        type: z
-          .enum(['text', 'email', 'tel', 'password', 'number', 'textarea'])
-          .optional(),
+        type: z.enum(['text', 'email', 'tel', 'password', 'number', 'textarea', 'file']).optional(),
         label: z.string().optional(),
         placeholder: z.string().optional(),
         options: z.string().array().optional(),

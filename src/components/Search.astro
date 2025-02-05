@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content'
-import { getHref } from 'fulldev-ui/utils/getHref'
+import { getHref } from 'fulldev-ui/lib/getHref.ts'
 import Button from './Button.astro'
 import Element from './Element.astro'
 import Heading from './Heading.astro'
@@ -21,10 +21,8 @@ const pages = await getCollection('pages')
       items.forEach((item) => {
         if (!(item instanceof HTMLElement)) return
 
-        const title =
-          item.querySelector('.heading')?.textContent?.toLowerCase() || ''
-        const description =
-          item.querySelector('.paragraph')?.textContent?.toLowerCase() || ''
+        const title = item.querySelector('.heading')?.textContent?.toLowerCase() || ''
+        const description = item.querySelector('.paragraph')?.textContent?.toLowerCase() || ''
 
         const isVisible = title.includes(value) || description.includes(value)
         item.classList.toggle('hide', !isVisible)
@@ -66,9 +64,7 @@ const pages = await getCollection('pages')
                 as="h6"
                 size="md"
               />
-              <Paragraph
-                set:text={'description' in data ? data.description : undefined}
-              />
+              <Paragraph set:text={'description' in data ? data.description : undefined} />
             </Element>
           ))
         }
