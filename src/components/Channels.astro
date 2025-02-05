@@ -1,38 +1,53 @@
 ---
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import Channel from 'fulldev-ui/components/Channel.astro'
+import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
+import Icon from './Icon.astro'
 
-interface Props
-  extends HTMLAttributes<'div'>,
-    Pick<ComponentProps<typeof Channel>, 'variant' | 'size'> {
-  channels?: ComponentProps<typeof Channel>[] | undefined
+interface Props extends HTMLAttributes<'div'> {
+  phone?: string | undefined
+  email?: string | undefined
+  address?: string | undefined
 }
 
-const { variant = 'secondary', size = 'md', channels, ...rest } = Astro.props
+const { phone, email, address, ...rest } = Astro.props
+
+const channels = [
+  {
+    text: phone,
+    href: `tel:${phone}`,
+    icon: 'phone',
+  },
+  {
+    text: email,
+    href: `mailto:${email}`,
+    icon: 'mail',
+  },
+  {
+    text: address,
+    href: `https://maps.google.com/?q=${address}`,
+    icon: 'map-pin',
+  },
+]
 ---
 
 <Element
-  class:list="channels"
+  class:list="flex flex-col gap-2"
   {...rest}
 >
   {
-    channels?.map((channel) => (
-      <Channel
-        {variant}
-        {size}
-        {...channel}
-      />
-    ))
+    channels
+      .filter((channel) => channel.text)
+      .map(({ text, href, icon }) => (
+        <Element
+          class:list="channel text-foreground/80 hover:text-foreground flex items-center gap-2 transition-colors"
+          as="a"
+          target="_blank"
+          href={href}
+          {...rest}
+        >
+          <Icon name={icon} />
+          <Fragment set:html={text} />
+        </Element>
+      ))
   }
 </Element>
-
-<style is:global>
-  @layer fulldev {
-    .channels {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-3);
-    }
-  }
-</style>

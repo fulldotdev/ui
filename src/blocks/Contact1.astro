@@ -1,50 +1,46 @@
 ---
-import Channels from 'fulldev-ui/components/Channels.astro'
 import Container from 'fulldev-ui/components/Container.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Form from 'fulldev-ui/components/Form.astro'
-import Image from 'fulldev-ui/components/Image.astro'
-import Prose from 'fulldev-ui/components/Prose.astro'
+import Link from 'fulldev-ui/components/Link.astro'
 import Section from 'fulldev-ui/components/Section.astro'
 import Socials from 'fulldev-ui/components/Socials.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/fields/block.ts'
+import Writeup from 'fulldev-ui/components/Writeup.astro'
+import type { ComponentProps } from 'react'
 
-interface Props extends BlockSchema {}
+interface Props {
+  title?: string | undefined
+  description?: string | undefined
+  content?: string | undefined
+  channels?: {
+    href?: string | undefined
+    icon?: string | undefined
+    text?: string | undefined
+  }[]
+  socials?: ComponentProps<typeof Socials>['socials']
+  form?: ComponentProps<typeof Form> | undefined
+}
 
-const { title, description, content, channels, socials, form, image } =
-  Astro.props
+const { title, description, content, channels, socials, form } = Astro.props
 ---
 
-<Section class="contact-1">
-  <Container>
-    <Prose>
+<Section class="contact contact-1">
+  <Container class="flex flex-col items-start gap-y-16 lg:grid lg:grid-cols-2">
+    <Writeup class="lg:pr-16">
       <Element as="h1">{title}</Element>
       <Element as="p">{description}</Element>
       <Fragment set:html={content} />
-      <Channels {channels} />
+      <Element class="flex flex-col items-start gap-2.5">
+        {channels?.map((channel) => <Link {...channel} />)}
+      </Element>
       <Socials
         variant="secondary"
         {socials}
       />
-      <Form {...form} />
-      <Image {...image} />
-    </Prose>
+    </Writeup>
+    <Form
+      class="border-border border-1 rounded-xl p-8"
+      {...form}
+    />
   </Container>
 </Section>
-
-<style>
-  @layer fulldev {
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--spacing-16);
-    }
-
-    .prose {
-      margin-right: auto;
-      margin-left: auto;
-      max-width: var(--container-xl);
-    }
-  }
-</style>

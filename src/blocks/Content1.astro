@@ -1,17 +1,13 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import Badge from 'fulldev-ui/components/Badge.astro'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
 import Container from 'fulldev-ui/components/Container.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Image from 'fulldev-ui/components/Image.astro'
 import Section from 'fulldev-ui/components/Section.astro'
 import Writeup from 'fulldev-ui/components/Writeup.astro'
+import type { ComponentProps } from 'react'
 
 interface Props {
-  size?: ComponentProps<typeof Writeup>['size']
-  align?: ComponentProps<typeof Writeup>['align']
-  badge?: ComponentProps<typeof Badge>
   title?: string | undefined
   description?: string | undefined
   content?: string | undefined
@@ -19,30 +15,20 @@ interface Props {
   image?: ComponentProps<typeof Image>
 }
 
-const { size = 'lg', align = 'center', badge, title, description, content, buttons, image } = Astro.props
+const { title, description, content, buttons, image } = Astro.props
 ---
 
-<Section class="hero hero-2 flex flex-col gap-16">
-  <Container class="flex flex-col gap-16">
-    <Writeup
-      {size}
-      {align}
-    >
-      <Badge
-        variant="outline"
-        {...badge}
-      />
+<Section class="feature feature-1 overflow-hidden">
+  <Container class="flex w-full flex-col gap-y-16 lg:grid lg:grid-cols-2 lg:items-center">
+    <Writeup class="lg:pr-16">
       <Element as="h1">{title}</Element>
       <Element as="p">{description}</Element>
       <Fragment set:html={content} />
       <slot />
-      <Buttons
-        {size}
-        {buttons}
-      />
+      <Buttons {buttons} />
     </Writeup>
     <Image
-      class="rounded-xl"
+      class="rounded-lg"
       {...image}
     />
   </Container>

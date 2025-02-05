@@ -1,77 +1,42 @@
 ---
 import Abstract from 'fulldev-ui/components/Abstract.astro'
 import Container from 'fulldev-ui/components/Container.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
+import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import Paragraph from 'fulldev-ui/components/Paragraph.astro'
-import Prose from 'fulldev-ui/components/Prose.astro'
 import Section from 'fulldev-ui/components/Section.astro'
-import Stack from 'fulldev-ui/components/Stack.astro'
-import Tagline from 'fulldev-ui/components/Tagline.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/fields/block.ts'
+import Writeup from 'fulldev-ui/components/Writeup.astro'
 
-interface Props extends BlockSchema {}
+interface Props {
+  title?: string | undefined
+  description?: string | undefined
+  content?: string | undefined
+  cards?: any[]
+}
 
-const {
-  size = 'md',
-  align = 'center',
-  tagline,
-  heading,
-  paragraph,
-  cards,
-} = Astro.props
+const { title, description, content, cards } = Astro.props
 ---
 
-<Section class:list={`features-1 size-${size}`}>
-  <Container>
-    <Prose
-      {size}
-      {align}
-    >
-      <Tagline
-        size="sm"
-        text={tagline}
-      />
-      <Heading
-        size="4xl"
-        text={heading}
-      />
-      <Paragraph
-        size="lg"
-        text={paragraph}
-      />
-    </Prose>
-    <Stack>
+<Section class="features features-1">
+  <Container class="flex flex-col gap-16">
+    <Writeup>
+      <Element as="h1">{title}</Element>
+      <Element as="p">{description}</Element>
+      <Fragment set:html={content} />
+      <slot />
+    </Writeup>
+    <Element class="grid gap-x-12 gap-y-8 md:auto-cols-fr md:grid-flow-col">
       {
-        cards?.map(({ icon, heading, paragraph }) => (
-          <Abstract>
-            <Icon
-              size="lg"
-              name={icon}
-            />
-            <Heading
-              as="h3"
-              size="xl"
-              text={heading}
-            />
-            <Paragraph text={paragraph} />
+        cards?.map(({ icon, title, description, content }) => (
+          <Abstract size="lg">
+            <Element class="bg-muted text-muted-foreground inline-flex size-10 items-center justify-center rounded-md">
+              <Icon name={icon} />
+            </Element>
+            <Element as="h3">{title}</Element>
+            <Element as="p">{description}</Element>
+            <Fragment set:html={content} />
           </Abstract>
         ))
       }
-    </Stack>
+    </Element>
   </Container>
 </Section>
-
-<style>
-  @layer fulldev {
-    .container {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-12);
-    }
-
-    .icon {
-      color: var(--color-primary);
-    }
-  }
-</style>

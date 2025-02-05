@@ -9,7 +9,7 @@ interface Props extends HTMLAttributes<'div'> {
   buttons?: ComponentProps<typeof Button>[] | undefined
 }
 
-const { variant = 'default', size, buttons, ...rest } = Astro.props
+const { size = 'default', variant = 'default', buttons, ...rest } = Astro.props
 
 const buttonVariant = (i: number) => {
   if (variant === 'default' && i === 0) return 'default'
@@ -21,7 +21,15 @@ const buttonVariant = (i: number) => {
 ---
 
 <Element
-  class:list="flex justify-stretch gap-2"
+  class:list={[
+    'buttons not-prose inline-flex',
+    {
+      // size
+      'gap-2': size === 'sm',
+      'gap-2.5': size === 'default',
+      'gap-3': size === 'lg',
+    },
+  ]}
   {...rest}
 >
   {

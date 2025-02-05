@@ -23,5 +23,6 @@ export const cardSchema = z
     avatar: imageSchema.optional(),
     avatars: imageSchema.array().optional(),
     soldout: z.boolean().optional(),
+    content: z.string().optional(),
   })
   .strict()

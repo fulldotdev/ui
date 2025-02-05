@@ -1,11 +1,10 @@
 ---
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
 import Link from 'fulldev-ui/components/Link.astro'
 
 interface Props extends HTMLAttributes<'div'> {
-  size?: 'sm' | 'md' | 'lg' | undefined
+  size?: 'sm' | 'defaut' | 'lg' | undefined
   heading?: string | undefined
   links?: ComponentProps<typeof Link>[] | undefined
 }
@@ -14,41 +13,33 @@ const { size = 'md', heading, links, ...rest } = Astro.props
 ---
 
 <Element
-  class:list="menu"
-  as="menu"
+  class:list="menu inline-flex flex-col items-start gap-4 "
+  as="div"
   {...rest}
 >
   {
     links && links.length > 0 && (
-      <Heading
-        text={heading}
+      <Element
+        class="text-sm font-semibold"
+        set:html={heading}
         as="h6"
-        {size}
+        size="sm"
       />
     )
   }
-  {
-    links?.map((link) => (
-      <Element as="li">
-        <Link
-          {size}
-          {...link}
-        />
-      </Element>
-    ))
-  }
-</Element>
-
-<style is:global>
-  @layer fulldev {
-    .menu {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-2);
-
-      .heading {
-        margin-bottom: var(--spacing-1);
-      }
+  <Element
+    as="menu"
+    class="flex flex-col gap-2"
+  >
+    {
+      links?.map((link) => (
+        <Element as="li">
+          <Link
+            size="sm"
+            {...link}
+          />
+        </Element>
+      ))
     }
-  }
-</style>
+  </Element>
+</Element>

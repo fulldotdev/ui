@@ -6,8 +6,9 @@ import { menuSchema } from 'fulldev-ui/schemas/fields/menu.ts'
 export const footerSchema = z
   .object({
     logo: logoSchema.optional(),
-    channels: channelSchema.array().optional(),
+    description: z.string().optional(),
     socials: z.string().array().optional(),
+    channels: channelSchema.array().optional(),
     menus: menuSchema.array().optional(),
     text: z.string().optional(),
   })

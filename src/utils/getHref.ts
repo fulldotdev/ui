@@ -4,9 +4,7 @@ export function getHref({
   collection,
   id,
   data,
-}: CollectionEntry<
-  'pages' | 'posts' | 'products' | 'categories' | 'docs' | 'jobs'
->) {
+}: CollectionEntry<'pages' | 'posts' | 'products' | 'categories' | 'docs' | 'jobs'>) {
   let collectionSlug = ''
   if (collection === 'posts') collectionSlug = 'blog'
   else if (collection === 'products') collectionSlug = 'producten'

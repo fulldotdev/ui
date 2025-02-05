@@ -1,126 +1,71 @@
 ---
 import type { ComponentProps } from 'astro/types'
+import Abstract from 'fulldev-ui/components/Abstract.astro'
 import Button from 'fulldev-ui/components/Button.astro'
 import Card from 'fulldev-ui/components/Card.astro'
 import Container from 'fulldev-ui/components/Container.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Grid from 'fulldev-ui/components/Grid.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
 import Image from 'fulldev-ui/components/Image.astro'
-import Price from 'fulldev-ui/components/Price.astro'
+import Section from 'fulldev-ui/components/Section.astro'
+import Writeup from 'fulldev-ui/components/Writeup.astro'
 
 interface Props {
   title?: string | undefined
+  description?: string | undefined
+  content?: string | undefined
   button?: ComponentProps<typeof Button> | undefined
   categories?: {
     href?: string | undefined
-    title?: string | undefined
     image?: ComponentProps<typeof Image>[] | undefined
-    price?: number | undefined
+    title?: string | undefined
+    description?: string | undefined
+    content?: string | undefined
   }[]
 }
 
-const { title, button, categories } = Astro.props
+const { title, description, content, button, categories } = Astro.props
 ---
 
-<Element class:list={`categories categories-1`}>
-  <Container>
-    <Element class="spread">
-      <Heading
-        as="h2"
-        size="2xl"
-        text={title}
-      />
+<Section class="categories categories-1">
+  <Container class="flex flex-col gap-8">
+    <Element class="flex w-full items-center justify-between gap-8">
+      <Writeup size="sm">
+        <Element as="h1">{title}</Element>
+        <Element as="p">{description}</Element>
+        <Fragment set:html={content} />
+        <slot />
+      </Writeup>
       <Button
-        class="start"
-        variant="secondary"
+        class="!hidden lg:!flex"
+        variant="link"
         size="sm"
         {...button}
       />
     </Element>
-    <Grid>
+    <Grid class="gap-4">
       {
-        categories?.map(({ href, title, image, price }) => (
-          <Card {href}>
-            <Image {...image} />
-            <Element class="spread">
-              <Heading as="h3">{title}</Heading>
-              <Price amount={price} />
-            </Element>
+        categories?.map(({ href, image, title, content }) => (
+          <Card
+            {href}
+            class="group flex flex-col gap-3"
+          >
+            <Image
+              class="aspect-square rounded-lg transition-opacity group-hover:opacity-75"
+              {...image}
+            />
+            <Abstract class="spread">
+              <Element as="h3">{title}</Element>
+              <Fragment set:html={content} />
+            </Abstract>
           </Card>
         ))
       }
     </Grid>
     <Button
-      class="end"
+      class="lg:hidden"
       variant="secondary"
       {...button}
     />
   </Container>
-</Element>
-
-<style>
-  @layer fulldev {
-    .container {
-      display: flex;
-      row-gap: var(--spacing-8);
-      flex-direction: column;
-      align-items: flex-start;
-      padding-top: var(--spacing-16);
-      padding-bottom: var(--spacing-16);
-    }
-
-    .spread {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: var(--spacing-8);
-      width: 100%;
-    }
-
-    .button.start {
-      display: none;
-    }
-
-    .card {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-3);
-
-      &:hover .image {
-        opacity: 0.75;
-      }
-
-      .spread {
-        font-weight: var(--font-weight-medium) !important;
-        line-height: var(--text-base--line-height);
-      }
-
-      .heading {
-        font-weight: var(--font-weight-medium) !important;
-        font-size: var(--text-base) !important;
-        line-height: var(--text-base--line-height) !important;
-      }
-
-      .price {
-        line-height: var(--text-base--line-height);
-      }
-    }
-
-    .image {
-      transition: var(--transition);
-      border-radius: var(--radius-lg);
-      aspect-ratio: 1 / 1;
-    }
-
-    @media (min-width: 1024px) {
-      .button.start {
-        display: flex;
-      }
-
-      .button.end {
-        display: none;
-      }
-    }
-  }
-</style>
+</Section>

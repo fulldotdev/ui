@@ -1,57 +1,37 @@
 ---
 import type { ComponentProps } from 'astro/types'
 import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Container from 'fulldev-ui/components/Container.astro'
 import Element from 'fulldev-ui/components/Element.astro'
-import Prose from 'fulldev-ui/components/Prose.astro'
+import Panel from 'fulldev-ui/components/Panel.astro'
+import Section from 'fulldev-ui/components/Section.astro'
+import Writeup from 'fulldev-ui/components/Writeup.astro'
 
 interface Props {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  align?: 'start' | 'center' | 'end' | undefined
+  size?: ComponentProps<typeof Writeup>['size']
+  align?: ComponentProps<typeof Writeup>['align']
   title?: string | undefined
   description?: string | undefined
   content?: string | undefined
   buttons?: ComponentProps<typeof Buttons>['buttons']
 }
 
-const {
-  size = 'lg',
-  align = 'center',
-  content,
-  title,
-  description,
-  buttons,
-} = Astro.props
+const { content, title, description, buttons } = Astro.props
 ---
 
-<Element class:list={`cta cta-1 size-${size} align-${align}`}>
-  <Element>
-    <Prose
-      {size}
-      {align}
-    >
-      <Element as="h1">{title}</Element>
-      <Element as="p">{description}</Element>
-      <Fragment set:html={content} />
-      <slot />
-      <Buttons
-        {size}
-        {buttons}
-      />
-    </Prose>
-  </Element>
-</Element>
-
-<style>
-  @layer fulldev {
-    .container {
-      margin-right: auto;
-      margin-left: auto;
-      padding-top: var(--spacing-16);
-      padding-right: var(--gutter);
-      padding-bottom: var(--spacing-16);
-      padding-left: var(--gutter);
-      width: 100%;
-      max-width: var(--breakpoint-2xl);
-    }
-  }
-</style>
+<Section class="cta cta-1">
+  <Container>
+    <Panel>
+      <Writeup
+        size="lg"
+        align="center"
+      >
+        <Element as="h1">{title}</Element>
+        <Element as="p">{description}</Element>
+        <Fragment set:html={content} />
+        <slot />
+        <Buttons {buttons} />
+      </Writeup>
+    </Panel>
+  </Container>
+</Section>

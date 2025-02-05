@@ -1,0 +1,85 @@
+---
+import type Image from 'astro/components/Image.astro'
+import Abstract from 'fulldev-ui/components/Abstract.astro'
+import Card from 'fulldev-ui/components/Card.astro'
+import Container from 'fulldev-ui/components/Container.astro'
+import Element from 'fulldev-ui/components/Element.astro'
+import Masonry from 'fulldev-ui/components/Masonry.astro'
+import Rating from 'fulldev-ui/components/Rating.astro'
+import Section from 'fulldev-ui/components/Section.astro'
+import Writeup from 'fulldev-ui/components/Writeup.astro'
+import type { ComponentProps } from 'react'
+
+interface Props {
+  title?: string | undefined
+  description?: string | undefined
+  content?: string | undefined
+  reviews?: {
+    tagline?: string | undefined
+    rating?: number | undefined
+    avatar?: ComponentProps<typeof Image> | undefined
+    heading?: string | undefined
+    paragraph?: string | undefined
+    title?: string | undefined
+    description?: string | undefined
+    content?: string | undefined
+  }[]
+}
+
+const { title, description, content, reviews } = Astro.props
+---
+
+<Section class="reviews reviews-1">
+  <Container class="flex flex-col gap-12">
+    <Writeup align="center">
+      <Element as="h1">{title}</Element>
+      <Element as="p">{description}</Element>
+      <Fragment set:html={content} />
+      <slot />
+    </Writeup>
+    <Masonry class="gap-4">
+      {
+        reviews?.map(({ rating, title, description, content }) => (
+          <Card class="border-border border-1 rounded-lg p-5">
+            <Abstract>
+              <Rating score={rating} />
+              <Element as="h3">{title}</Element>
+              <Element as="p">{description}</Element>
+              <Fragment set:html={content} />
+            </Abstract>
+          </Card>
+        ))
+      }
+    </Masonry>
+  </Container>
+</Section>
+
+<style>
+  @layer fulldev {
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--spacing-16);
+    }
+
+    .masonry {
+      display: grid;
+      gap: var(--spacing-6);
+
+      @media (min-width: 1024px) {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-3);
+    }
+
+    .icon {
+      color: var(--color-primary);
+    }
+  }
+</style>

@@ -10,47 +10,17 @@ const { align = 'start', ...rest } = Astro.props
 ---
 
 <Element
-  class:list={`split align-${align}`}
+  class:list={[
+    'split flex w-full flex-col lg:grid lg:grid-cols-2',
+    {
+      // align
+      'lg:items-start': align === 'start',
+      'lg:items-center': align === 'center',
+      'lg:items-end': align === 'end',
+      'lg:child:sticky lg:child:top-20 items-start': align === 'sticky',
+    },
+  ]}
   {...rest}
 >
   <slot />
 </Element>
-
-<style>
-  @layer fulldev {
-    .split {
-      display: flex;
-      column-gap: var(--gutter);
-      row-gap: var(--spacer);
-      flex-direction: column;
-
-      @media (min-width: 1024px) {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-
-        &.align-start {
-          align-items: start;
-        }
-
-        &.align-center {
-          align-items: center;
-        }
-
-        &.align-end {
-          align-items: end;
-        }
-
-        &.align-sticky {
-          align-items: start;
-
-          @media (min-width: 1024px) {
-            > :global(*) {
-              position: sticky;
-              top: calc(var(--spacer) + var(--header-height, 0px));
-            }
-          }
-        }
-      }
-    }
-  }
-</style>

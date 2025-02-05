@@ -1,24 +1,31 @@
 ---
-let { block, cards, pages, ...rest } = Astro.props
+import { getEntries } from 'astro:content'
+import { getHref } from 'fulldev-ui/utils/getHref'
+
+let { block, cards, pages, categories, products, ...rest } = Astro.props
 
 const blocks = {
   ...import.meta.glob('/src/blocks/**/*.astro'),
   ...import.meta.glob('../blocks/**/*.astro'),
 }
 
-const path = Object.keys(blocks).find(
-  (path) => path.split('/').pop()?.split('.')[0] === block
-)
+const path = Object.keys(blocks).find((path) => path.split('/').pop()?.split('.')[0] === block)
 
 const BlockComponent = path && (await (blocks[path] as any)()).default
 
-// cards = [
-//   ...(cards || []),
-//   ...(await getEntries(pages || [])).map(({ id, data }) => ({
-//     href: getHref(id),
-//     ...data,
-//   })),
-// ]
+const categoriesEntries =
+  categories &&
+  (await getEntries(categories)).map((category) => ({
+    href: getHref(category),
+    ...category.data,
+  }))
+
+const productsEntries =
+  products &&
+  (await getEntries(products)).map((product) => ({
+    href: getHref(product),
+    ...product.data,
+  }))
 ---
 
 {
@@ -26,6 +33,8 @@ const BlockComponent = path && (await (blocks[path] as any)()).default
     <BlockComponent
       {cards}
       {pages}
+      categories={categoriesEntries}
+      products={productsEntries}
       {...rest}
     >
       <slot />

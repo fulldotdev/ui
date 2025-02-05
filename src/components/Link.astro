@@ -1,93 +1,44 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
-import Icon from 'fulldev-ui/components/Icon.astro'
+import Icon from './Icon.astro'
 
 interface Props extends HTMLAttributes<'a'> {
-  variant?: 'primary' | 'underline' | 'muted' | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
+  size?: 'sm' | 'default' | 'lg' | undefined
   text?: string | undefined
-  icon?: string | undefined
   href?: string | undefined
+  icon?: string | undefined
 }
 
 const {
+  size = 'default',
   href,
-  variant = 'muted',
-  size = 'md',
+  target = href?.startsWith('http') ? '_blank' : undefined,
   text,
   icon,
-  target = href?.startsWith('http') ? '_blank' : undefined,
   ...rest
 } = Astro.props
 ---
 
 <Element
-  class:list={[
-    `link variant-${variant} size-${size}`,
-    { current: Astro.params.page === href },
-  ]}
   as="a"
+  class:list={[
+    'link text-foreground/80 hover:text-foreground inline-flex items-center gap-2  transition',
+    {
+      'text-foreground': Astro.params.page === href,
+      'gap-1.5 text-sm': size === 'sm',
+      'gap-2 text-base': size === 'default',
+      'gap-2.5 text-lg': size === 'lg',
+    },
+  ]}
   {href}
   {target}
   {...rest}
 >
+  <Icon
+    class="size-[1.25em] origin-center scale-125"
+    name={icon}
+  />
   <Fragment set:html={text} />
   <slot />
-  <Icon name={icon} />
 </Element>
-
-<style>
-  @layer fulldev {
-    .link,
-    .prose-content > *:not(.prose-footer) > a {
-      transition: var(--transition);
-      cursor: pointer;
-
-      &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 2px var(--color-ring);
-      }
-
-      &.variant-primary,
-      &:is(.prose-content > *:not(.prose-footer) > a) {
-        color: var(--color-primary);
-        text-decoration: underline;
-        text-underline-offset: var(--spacing-1);
-      }
-
-      &.variant-underline {
-        text-decoration: underline;
-        text-underline-offset: var(--spacing-1);
-      }
-
-      &.variant-muted {
-        color: var(--color-muted-foreground);
-
-        &:hover {
-          color: var(--color-foreground);
-        }
-
-        &.current {
-          color: var(--color-foreground);
-        }
-      }
-
-      &.size-sm {
-        font-size: var(--text-sm);
-      }
-
-      &.size-md {
-        font-size: var(--text-base);
-      }
-
-      &.size-lg {
-        font-size: var(--text-lg);
-      }
-
-      .icon {
-        margin-bottom: var(--spacing-0-5);
-      }
-    }
-  }
-</style>

@@ -51,6 +51,7 @@ export const blockSchema = z
     proof: proofSchema.optional(),
     search: z.boolean().optional(),
     themer: z.boolean().optional(),
+    reviews: z.any().array().optional(),
   })
   .strict()
 

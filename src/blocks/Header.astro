@@ -1,41 +1,52 @@
 ---
-import Buttons from 'fulldev-ui/components/Buttons.astro'
+import Button from 'fulldev-ui/components/Button.astro'
+import Container from 'fulldev-ui/components/Container.astro'
 import Element from 'fulldev-ui/components/Element.astro'
 import Links from 'fulldev-ui/components/Links.astro'
 import Logo from 'fulldev-ui/components/Logo.astro'
 import Socials from 'fulldev-ui/components/Socials.astro'
-import Themer from 'fulldev-ui/components/Themer.astro'
+import type { ComponentProps } from 'react'
 
-const { logo, links, menus, socials, search, themer, button } = Astro.props
+interface Props {
+  logo: ComponentProps<typeof Logo>
+  links: ComponentProps<typeof Links>['links']
+  socials: ComponentProps<typeof Socials>['socials']
+  buttons: ComponentProps<typeof Button>[]
+}
+
+const { logo, links, socials, buttons } = Astro.props
 ---
 
 <Element
   as="header"
-  class="border-border bg-background sticky top-0 z-20 flex h-12 w-full items-center justify-between gap-12 border-b"
+  class="border-border bg-background sticky top-0 z-20 flex h-14 w-full items-center justify-between gap-12 border-b"
 >
-  <Element class="px-container mx-auto flex w-full max-w-screen-xl items-center justify-between gap-6">
+  <Container class="flex items-center justify-between gap-6">
     <Element class="flex items-center gap-6">
       <Logo {...logo} />
       <Links
         size="sm"
-        variant="muted"
         {links}
       />
     </Element>
     <Element class="flex justify-stretch gap-2">
-      <Themer
+      <!-- <Themer
         show={themer}
         variant="ghost"
         size="sm"
-      />
+      /> -->
       <Socials {socials} />
-      <Buttons
-        size="sm"
-        variant="outline"
-        {...button}
-      />
+      {
+        buttons?.map((button) => (
+          <Button
+            variant="outline"
+            size="sm"
+            {...button}
+          />
+        ))
+      }
     </Element>
-  </Element>
+  </Container>
 </Element>
 
 <!-- <style>

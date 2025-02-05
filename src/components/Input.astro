@@ -2,162 +2,82 @@
 import type { HTMLAttributes } from 'astro/types'
 import Element from 'fulldev-ui/components/Element.astro'
 import Icon from 'fulldev-ui/components/Icon.astro'
-import Label from 'fulldev-ui/components/Label.astro'
+import { Input as ShadcnInput } from 'fulldev-ui/shadcn/components/input'
+import { Label } from 'fulldev-ui/shadcn/components/label'
+import type { ComponentProps } from 'react'
 
-interface Props extends HTMLAttributes<'input'> {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  type?: 'text' | 'email' | 'tel' | 'url' | undefined
+interface Props extends HTMLAttributes<'div'> {
   label?: string | undefined
   icon?: string | undefined
+  // input
+  id?: ComponentProps<typeof ShadcnInput>['id']
+  name?: ComponentProps<typeof ShadcnInput>['name']
+  type?: ComponentProps<typeof ShadcnInput>['type']
+  value?: ComponentProps<typeof ShadcnInput>['value']
+  disabled?: ComponentProps<typeof ShadcnInput>['disabled']
+  required?: ComponentProps<typeof ShadcnInput>['required']
+  pattern?: ComponentProps<typeof ShadcnInput>['pattern']
+  form?: ComponentProps<typeof ShadcnInput>['form']
+  readonly?: ComponentProps<typeof ShadcnInput>['readOnly']
+  minlength?: ComponentProps<typeof ShadcnInput>['minLength']
+  maxlength?: ComponentProps<typeof ShadcnInput>['maxLength']
+  placeholder?: ComponentProps<typeof ShadcnInput>['placeholder']
 }
 
 const {
   label,
+  icon,
+  // input
   placeholder,
   name = label || placeholder,
   id = name,
   type = 'text',
-  size = 'md',
-  icon,
   value,
   disabled,
-  readonly,
   required,
-  minlength,
-  maxlength,
   pattern,
   form,
+  readonly,
+  minlength,
+  maxlength,
   ...rest
 } = Astro.props
 ---
 
 <Element
-  class:list={`input size-${size}`}
+  class:list="input flex flex-col relative"
   {...rest}
 >
-  <Label
-    text={label}
-    for={id}
-  />
-  <Icon name={icon} />
-  <Element
-    as="input"
-    show={name}
-    id={name}
-    {name}
-    {placeholder}
-    {type}
-    {value}
-    {disabled}
-    {readonly}
-    {required}
-    {minlength}
-    {maxlength}
-    {pattern}
-    {form}
-  />
-</Element>
-
-<style is:global>
-  @layer fulldev {
-    .input {
-      display: flex;
-      position: relative;
-      flex-direction: column;
-
-      .label {
-        padding-bottom: var(--spacing-1-5);
-      }
-
-      .icon {
-        position: absolute;
-        pointer-events: none;
-      }
-
-      input {
-        display: flex;
-        border: 1px solid var(--color-input);
-        border-radius: var(--radius-md);
-        background-color: var(--color-background);
-        width: 100%;
-        color: var(--color-foreground);
-        font-size: var(--text-sm);
-
-        &::placeholder {
-          color: var(--color-muted-foreground);
-        }
-
-        &:focus-visible {
-          outline: none;
-          box-shadow: 0 0 0 2px var(--color-ring);
-        }
-
-        &:disabled {
-          opacity: 0.5;
-          pointer-events: none;
-        }
-
-        &[readonly] {
-          pointer-events: none;
-        }
-      }
-
-      &.size-sm {
-        .icon {
-          right: var(--spacing-1-5);
-          bottom: var(--spacing-1-5);
-        }
-
-        input {
-          padding-top: var(--spacing-1-5);
-          padding-right: var(--spacing-2-5);
-          padding-bottom: var(--spacing-1-5);
-          padding-left: var(--spacing-2-5);
-          height: var(--spacing-8);
-        }
-
-        .icon + input {
-          padding-right: var(--spacing-8);
-        }
-      }
-
-      &.size-md {
-        .icon {
-          right: var(--spacing-2-5);
-          bottom: var(--spacing-2-5);
-        }
-
-        input {
-          padding-top: var(--spacing-2);
-          padding-right: var(--spacing-3);
-          padding-bottom: var(--spacing-2);
-          padding-left: var(--spacing-3);
-          height: var(--spacing-10);
-        }
-
-        .icon + input {
-          padding-right: var(--spacing-10);
-        }
-      }
-
-      &.size-lg {
-        .icon {
-          right: var(--spacing-3);
-          bottom: var(--spacing-3);
-        }
-
-        input {
-          padding-top: var(--spacing-2-5);
-          padding-right: var(--spacing-3-5);
-          padding-bottom: var(--spacing-2-5);
-          padding-left: var(--spacing-3-5);
-          height: var(--spacing-11);
-        }
-
-        .icon + input {
-          padding-right: var(--spacing-11);
-        }
-      }
-    }
+  {
+    label && (
+      <Label
+        className="pb-1.5"
+        htmlFor={id}
+      >
+        {label}
+      </Label>
+    )
   }
-</style>
+  <Icon
+    class="absolute bottom-2.5 right-2.5"
+    name={icon}
+  />
+  {
+    id && (
+      <ShadcnInput
+        id={name}
+        readOnly={readonly}
+        minLength={minlength}
+        maxLength={maxlength}
+        {type}
+        {placeholder}
+        {name}
+        {disabled}
+        {required}
+        {pattern}
+        {form}
+        {value}
+      />
+    )
+  }
+</Element>
