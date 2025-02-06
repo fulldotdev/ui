@@ -1,19 +1,11 @@
 ---
-import Footer from '@/blocks/Footer.astro'
-import Header from '@/blocks/Header.astro'
+// @ts-nocheck
 import BlockComponent from '@/components/Block.astro'
-import Element from '@/components/Element.astro'
-import Layout from '@/components/Layout.astro'
+import Navigation from '@/layouts/Navigation.astro'
 import { getHref } from '@/lib/getHref'
-import type { CollectionEntry } from 'astro:content'
-import { getEntries, getEntry, render } from 'astro:content'
-
-interface Props extends CollectionEntry<'blocks'> {}
+import { getEntries } from 'astro:content'
 
 const { categories, products, ...rest } = Astro.props.data
-const { Content } = await render(Astro.props)
-const header = (await getEntry('globals', 'header'))?.data
-const footer = (await getEntry('globals', 'footer'))?.data
 
 const categoriesEntries =
   categories &&
@@ -30,22 +22,15 @@ const productsEntries =
   }))
 ---
 
-<Layout
-  class:list="product"
-  {...rest}
->
-  <Header {...header} />
-  <Element as="main">
-    <BlockComponent
-      categories={categoriesEntries}
-      products={productsEntries}
-      {...rest}
-    >
-      <Content />
-    </BlockComponent>
-  </Element>
-  <Footer {...footer} />
-</Layout>
+<Navigation {...Astro.props}>
+  <BlockComponent
+    categories={categoriesEntries}
+    products={productsEntries}
+    {...rest}
+  >
+    <slot />
+  </BlockComponent>
+</Navigation>
 
 <style>
   .carousel {

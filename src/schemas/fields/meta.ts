@@ -6,9 +6,9 @@ export const metaSchema = z
     description: z.string().optional(),
     noindex: z.boolean().optional(),
     nofollow: z.boolean().optional(),
-    slug: z.string().optional(),
-    canonical: z.string().optional(),
-    css: z.string().array().optional(),
+    slug: z.string().optional(), // TODO implement in layouts
+    canonical: z.string().optional(), // TODO implement in layouts
+    css: z.string().optional(),
     head: z.string().optional(),
     body: z.string().optional(),
   })

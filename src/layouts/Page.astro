@@ -1,45 +1,15 @@
 ---
-import Footer from '@/blocks/Footer.astro'
-import Header from '@/blocks/Header.astro'
 import Block from '@/components/Block.astro'
-import Container from '@/components/Container.astro'
-import Element from '@/components/Element.astro'
-import Image from '@/components/Image.astro'
-import Layout from '@/components/Layout.astro'
-import Prose from '@/components/Prose.astro'
-import Section from '@/components/Section.astro'
-import type { CollectionEntry } from 'astro:content'
-import { getEntry, render } from 'astro:content'
+import Navigation from '@/layouts/Navigation.astro'
+import type { ComponentProps } from 'astro/types'
 
-interface Props extends CollectionEntry<'pages'> {}
+interface Props extends ComponentProps<typeof Navigation> {
+  blocks?: any[]
+}
 
-const { title, description, image, blocks, ...rest } = Astro.props.data
-const { Content, headings } = await render(Astro.props)
-const header = (await getEntry('globals', 'header'))?.data
-const footer = (await getEntry('globals', 'footer'))?.data
+const { blocks } = Astro.props
 ---
 
-<Layout
-  class:list="page"
-  {...rest}
->
-  <Header {...header} />
-  <Element as="main">
-    {
-      Astro.props?.body?.trim() && (
-        <Section>
-          <Container>
-            <Prose class="mx-auto">
-              <Element as="h1">{title}</Element>
-              <Element as="p">{description}</Element>
-              <Image {...image} />
-              <Content />
-            </Prose>
-          </Container>
-        </Section>
-      )
-    }
-    {blocks?.map((block) => <Block {...block} />)}
-  </Element>
-  <Footer {...footer} />
-</Layout>
+<Navigation {...Astro.props}>
+  {blocks?.map((block) => <Block {...block} />)}
+</Navigation>

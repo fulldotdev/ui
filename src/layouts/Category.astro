@@ -1,19 +1,17 @@
 ---
 import Category1 from '@/blocks/Category1.astro'
-import Footer from '@/blocks/Footer.astro'
-import Header from '@/blocks/Header.astro'
 import Block from '@/components/Block.astro'
-import Element from '@/components/Element.astro'
-import Layout from '@/components/Layout.astro'
+import Navigation from '@/layouts/Navigation.astro'
 import { getHref } from '@/lib/getHref'
-import type { CollectionEntry } from 'astro:content'
-import { getCollection, getEntry } from 'astro:content'
+import type { ComponentProps } from 'astro/types'
+import { getCollection } from 'astro:content'
 
-interface Props extends CollectionEntry<'categories'> {}
+interface Props extends ComponentProps<typeof Navigation> {
+  blocks?: any[]
+  categories?: any[]
+}
 
-const { blocks, categories, ...rest } = Astro.props.data
-const header = (await getEntry('globals', 'header'))?.data
-const footer = (await getEntry('globals', 'footer'))?.data
+const { blocks, categories, ...rest } = Astro.props
 
 const products = (
   await getCollection('products', ({ data }) => data.categories?.find((category) => category.id === Astro.props.id))
@@ -23,17 +21,13 @@ const products = (
 }))
 ---
 
-<Layout {...rest}>
-  <Header {...header} />
-  <Element as="main">
-    <Category1
-      {products}
-      {...rest}
-    />
-    {blocks?.map((block) => <Block {...block} />)}
-  </Element>
-  <Footer {...footer} />
-</Layout>
+<Navigation {...Astro.props}>
+  <Category1
+    {products}
+    {...rest}
+  />
+  {blocks?.map((block) => <Block {...block} />)}
+</Navigation>
 
 <style>
   .intro {

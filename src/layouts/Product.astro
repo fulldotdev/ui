@@ -1,32 +1,22 @@
 ---
-import Footer from '@/blocks/Footer.astro'
-import Header from '@/blocks/Header.astro'
 import Product1 from '@/blocks/Product1.astro'
-import Element from '@/components/Element.astro'
-import Layout from '@/components/Layout.astro'
-import type { CollectionEntry } from 'astro:content'
-import { getEntry, render } from 'astro:content'
+import Block from '@/components/Block.astro'
+import Navigation from '@/layouts/Navigation.astro'
+import type { ComponentProps } from 'astro/types'
 
-interface Props extends CollectionEntry<'products'> {}
+interface Props extends ComponentProps<typeof Navigation> {
+  blocks?: any[]
+}
 
-const { blocks, ...rest } = Astro.props.data
-const { Content } = await render(Astro.props)
-const header = (await getEntry('globals', 'header'))?.data
-const footer = (await getEntry('globals', 'footer'))?.data
+const { blocks, ...rest } = Astro.props
 ---
 
-<Layout
-  class:list="product"
-  {...rest}
->
-  <Header {...header} />
-  <Element as="main">
-    <Product1 {...rest}>
-      <Content />
-    </Product1>
-  </Element>
-  <Footer {...footer} />
-</Layout>
+<Navigation {...Astro.props}>
+  <Product1 {...rest}>
+    <slot />
+  </Product1>
+  {blocks?.map((block) => <Block {...block} />)}
+</Navigation>
 
 <style>
   .carousel {
