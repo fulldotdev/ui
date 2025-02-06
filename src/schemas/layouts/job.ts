@@ -1,8 +1,8 @@
+import { blockSchema } from '@/schemas/fields/block.ts'
+import { buttonSchema } from '@/schemas/fields/button.ts'
+import { imageSchema } from '@/schemas/fields/image.ts'
+import { metaSchema } from '@/schemas/fields/meta.ts'
 import { z } from 'astro:content'
-import { blockSchema } from 'fulldev-ui/schemas/fields/block.ts'
-import { buttonSchema } from 'fulldev-ui/schemas/fields/button.ts'
-import { imageSchema } from 'fulldev-ui/schemas/fields/image.ts'
-import { metaSchema } from 'fulldev-ui/schemas/fields/meta.ts'
 
 export const jobSchema = z
   .object({

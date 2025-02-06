@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PopoverRoot, PopoverContent, PopoverTrigger } from 'fulldev-ui/components/shadcn/popover/index.ts'
+import { PopoverRoot, PopoverContent, PopoverTrigger } from '@/components/shadcn/popover/index.ts'
 </script>
 
 <template>

@@ -1,6 +1,6 @@
+import { blockSchema } from '@/schemas/fields/block.ts'
+import { metaSchema } from '@/schemas/fields/meta.ts'
 import { z } from 'astro:content'
-import { blockSchema } from 'fulldev-ui/schemas/fields/block.ts'
-import { metaSchema } from 'fulldev-ui/schemas/fields/meta.ts'
 
 export const docSchema = z
   .object({

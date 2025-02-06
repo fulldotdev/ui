@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { buttonVariants } from 'fulldev-ui/components/shadcn/button/index.ts'
-import { cn } from 'fulldev-ui/lib/utils'
+import { buttonVariants } from '@/components/shadcn/button/index.ts'
+import { cn } from '@/lib/utils'
 import { CalendarCellTrigger, type CalendarCellTriggerProps, useForwardProps } from 'radix-vue'
 import { computed, type HTMLAttributes } from 'vue'
 

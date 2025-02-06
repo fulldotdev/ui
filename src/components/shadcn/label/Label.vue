@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from 'fulldev-ui/lib/utils'
+import { cn } from '@/lib/utils'
 import { Label, type LabelProps } from 'radix-vue'
 import { computed, type HTMLAttributes } from 'vue'
 import { labelVariants } from '.'

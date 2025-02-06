@@ -1,25 +1,17 @@
 ---
-import tablerIcons from '@iconify-json/tabler/icons.json'
-import type { HTMLAttributes } from 'astro/types'
-import Element from 'fulldev-ui/components/Element.astro'
+import { Icon as AstroIcon } from 'astro-icon/components'
+import type { ComponentProps } from 'astro/types'
 
-interface Props extends HTMLAttributes<'svg'> {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  name?: string | undefined
-}
+interface Props extends ComponentProps<typeof AstroIcon> {}
 
-const { size = 'md', name, ...rest } = Astro.props
-
-const trimmedName = name?.trim()
-const icon = trimmedName ? (tablerIcons as any)?.icons[trimmedName]?.body : undefined
+const { name, ...rest } = Astro.props
 ---
 
-<Element
-  class:list="icon size-[1em] text-inherit inline-flex overflow-visible"
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 24 24"
-  as="svg"
-  {...rest}
->
-  <Fragment set:html={icon} />
-</Element>
+{
+  name && (
+    <AstroIcon
+      name={'tabler:' + name}
+      {...rest}
+    />
+  )
+}

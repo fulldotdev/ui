@@ -1,13 +1,13 @@
+import { blockSchema } from '@/schemas/fields/block.ts'
+import { footerSchema } from '@/schemas/globals/footer.ts'
+import { headerSchema } from '@/schemas/globals/header.ts'
+import { categorySchema } from '@/schemas/layouts/category.ts'
+import { docSchema } from '@/schemas/layouts/doc.ts'
+import { pageSchema } from '@/schemas/layouts/page.ts'
+import { postSchema } from '@/schemas/layouts/post.ts'
+import { productSchema } from '@/schemas/layouts/product.ts'
 import { glob } from 'astro/loaders'
 import { defineCollection, z } from 'astro:content'
-import { blockSchema } from 'fulldev-ui/schemas/fields/block.ts'
-import { footerSchema } from 'fulldev-ui/schemas/globals/footer.ts'
-import { headerSchema } from 'fulldev-ui/schemas/globals/header.ts'
-import { categorySchema } from 'fulldev-ui/schemas/layouts/category.ts'
-import { docSchema } from 'fulldev-ui/schemas/layouts/doc.ts'
-import { pageSchema } from 'fulldev-ui/schemas/layouts/page.ts'
-import { postSchema } from 'fulldev-ui/schemas/layouts/post.ts'
-import { productSchema } from 'fulldev-ui/schemas/layouts/product.ts'
 
 export const collections = {
   categories: defineCollection({
