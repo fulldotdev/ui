@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { Button } from 'fulldev-ui/components/ui/button'
+import { Calendar } from 'fulldev-ui/components/ui/calendar'
+import { FormControl, FormDescription, FormField, FormItem, FormMessage } from 'fulldev-ui/components/ui/form'
+import { Popover, PopoverContent, PopoverTrigger } from 'fulldev-ui/components/ui/popover'
+import { cn } from 'fulldev-ui/lib/utils'
 import type { FieldProps } from './interface'
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
-import { FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
 
 import { DateFormatter, getLocalTimeZone } from '@internationalized/date'
 import { CalendarIcon } from 'lucide-vue-next'
@@ -19,29 +19,50 @@ const df = new DateFormatter('en-US', {
 </script>
 
 <template>
-  <FormField v-slot="slotProps" :name="fieldName">
+  <FormField
+    v-slot="slotProps"
+    :name="fieldName"
+  >
     <FormItem>
-      <AutoFormLabel v-if="!config?.hideLabel" :required="required">
+      <AutoFormLabel
+        v-if="!config?.hideLabel"
+        :required="required"
+      >
         {{ config?.label || beautifyObjectName(label ?? fieldName) }}
       </AutoFormLabel>
       <FormControl>
         <slot v-bind="slotProps">
           <div>
             <Popover>
-              <PopoverTrigger as-child :disabled="maybeBooleanishToBoolean(config?.inputProps?.disabled) ?? disabled">
+              <PopoverTrigger
+                as-child
+                :disabled="maybeBooleanishToBoolean(config?.inputProps?.disabled) ?? disabled"
+              >
                 <Button
                   variant="outline"
-                  :class="cn(
-                    'w-full justify-start text-left font-normal',
-                    !slotProps.componentField.modelValue && 'text-muted-foreground',
-                  )"
+                  :class="
+                    cn(
+                      'w-full justify-start text-left font-normal',
+                      !slotProps.componentField.modelValue && 'text-muted-foreground'
+                    )
+                  "
                 >
-                  <CalendarIcon class="mr-2 h-4 w-4" :size="16" />
-                  {{ slotProps.componentField.modelValue ? df.format(slotProps.componentField.modelValue.toDate(getLocalTimeZone())) : "Pick a date" }}
+                  <CalendarIcon
+                    class="mr-2 h-4 w-4"
+                    :size="16"
+                  />
+                  {{
+                    slotProps.componentField.modelValue
+                      ? df.format(slotProps.componentField.modelValue.toDate(getLocalTimeZone()))
+                      : 'Pick a date'
+                  }}
                 </Button>
               </PopoverTrigger>
               <PopoverContent class="w-auto p-0">
-                <Calendar initial-focus v-bind="slotProps.componentField" />
+                <Calendar
+                  initial-focus
+                  v-bind="slotProps.componentField"
+                />
               </PopoverContent>
             </Popover>
           </div>

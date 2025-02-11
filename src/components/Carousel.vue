@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from 'fulldev-ui/components/ui/carousel'
 import { parse } from 'node-html-parser'
 import { renderToString } from 'vue/server-renderer'
 

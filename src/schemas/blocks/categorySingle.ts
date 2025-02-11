@@ -1,5 +1,5 @@
-import { imageSchema } from '@/schemas/fields/image.ts'
 import { z } from 'astro:content'
+import { imageSchema } from 'fulldev-ui/schemas/fields/image.ts'
 
 export const categorySingleSchema = z
   .object({

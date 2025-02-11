@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from 'fulldev-ui/components/ui/collapsible'
 import { ref } from 'vue'
 
 const isOpen = ref(false)

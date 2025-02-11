@@ -1,7 +1,7 @@
-import { buttonSchema } from '@/schemas/fields/button.ts'
-import { logoSchema } from '@/schemas/fields/logo.ts'
-import { menuSchema } from '@/schemas/fields/menu.ts'
 import { z } from 'astro:content'
+import { buttonSchema } from 'fulldev-ui/schemas/fields/button.ts'
+import { logoSchema } from 'fulldev-ui/schemas/fields/logo.ts'
+import { menuSchema } from 'fulldev-ui/schemas/fields/menu.ts'
 
 export const headerSchema = z
   .object({

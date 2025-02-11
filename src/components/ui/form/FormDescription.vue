@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import { cn } from 'fulldev-ui/lib/utils'
 import type { HTMLAttributes } from 'vue'
-import { cn } from '@/lib/utils'
 import { useFormField } from './useFormField'
 
 const props = defineProps<{

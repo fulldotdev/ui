@@ -1,5 +1,5 @@
-import { buttonSchema } from '@/schemas/fields/button.ts'
 import { z } from 'astro:content'
+import { buttonSchema } from 'fulldev-ui/schemas/fields/button.ts'
 import { badgeSchema } from '../fields/badge'
 import { imageSchema } from '../fields/image'
 

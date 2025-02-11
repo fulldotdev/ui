@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { cn } from 'fulldev-ui/lib/utils'
 import type { ComboboxRootEmits, ComboboxRootProps } from 'radix-vue'
-import { cn } from '@/lib/utils'
 import { ComboboxRoot, useForwardPropsEmits } from 'radix-vue'
 import { computed, type HTMLAttributes } from 'vue'
 
@@ -23,7 +23,9 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
 <template>
   <ComboboxRoot
     v-bind="forwarded"
-    :class="cn('flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground', props.class)"
+    :class="
+      cn('flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground', props.class)
+    "
   >
     <slot />
   </ComboboxRoot>

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import { cn } from 'fulldev-ui/lib/utils'
 import type { DialogOverlayProps } from 'radix-vue'
-import { cn } from '@/lib/utils'
 import { DrawerOverlay } from 'vaul-vue'
 import { computed, type HtmlHTMLAttributes } from 'vue'
 
@@ -14,5 +14,8 @@ const delegatedProps = computed(() => {
 </script>
 
 <template>
-  <DrawerOverlay v-bind="delegatedProps" :class="cn('fixed inset-0 z-50 bg-black/80', props.class)" />
+  <DrawerOverlay
+    v-bind="delegatedProps"
+    :class="cn('fixed inset-0 z-50 bg-black/80', props.class)"
+  />
 </template>

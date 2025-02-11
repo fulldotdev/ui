@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
+import { Button } from 'fulldev-ui/components/ui/button'
 import {
   Drawer,
   DrawerContent,
@@ -8,7 +8,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from '@/components/ui/drawer'
+} from 'fulldev-ui/components/ui/drawer'
 import type { HTMLAttributes } from 'vue'
 
 interface Props {

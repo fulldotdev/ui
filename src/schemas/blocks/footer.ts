@@ -1,7 +1,7 @@
-import { channelSchema } from '@/schemas/fields/channel.ts'
-import { logoSchema } from '@/schemas/fields/logo.ts'
-import { menuSchema } from '@/schemas/fields/menu.ts'
 import { z } from 'astro:content'
+import { channelSchema } from 'fulldev-ui/schemas/fields/channel.ts'
+import { logoSchema } from 'fulldev-ui/schemas/fields/logo.ts'
+import { menuSchema } from 'fulldev-ui/schemas/fields/menu.ts'
 
 export const footerSchema = z
   .object({

@@ -13,7 +13,7 @@ import {
   MenubarSubContent,
   MenubarSubTrigger,
   MenubarTrigger,
-} from '@/components/ui/menubar'
+} from 'fulldev-ui/components/ui/menubar'
 
 interface Props {
   sort?: {

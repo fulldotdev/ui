@@ -1,19 +1,22 @@
 <script setup lang="ts">
-import type { FieldProps } from './interface'
-import { Checkbox } from '@/components/ui/checkbox'
-import { FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { Switch } from '@/components/ui/switch'
+import { Checkbox } from 'fulldev-ui/components/ui/checkbox'
+import { FormControl, FormDescription, FormField, FormItem, FormMessage } from 'fulldev-ui/components/ui/form'
+import { Switch } from 'fulldev-ui/components/ui/switch'
 import { computed } from 'vue'
 import AutoFormLabel from './AutoFormLabel.vue'
+import type { FieldProps } from './interface'
 import { beautifyObjectName, maybeBooleanishToBoolean } from './utils'
 
 const props = defineProps<FieldProps>()
 
-const booleanComponent = computed(() => props.config?.component === 'switch' ? Switch : Checkbox)
+const booleanComponent = computed(() => (props.config?.component === 'switch' ? Switch : Checkbox))
 </script>
 
 <template>
-  <FormField v-slot="slotProps" :name="fieldName">
+  <FormField
+    v-slot="slotProps"
+    :name="fieldName"
+  >
     <FormItem>
       <div class="space-y-0 mb-3 flex items-center gap-3">
         <FormControl>
@@ -27,7 +30,10 @@ const booleanComponent = computed(() => props.config?.component === 'switch' ? S
             />
           </slot>
         </FormControl>
-        <AutoFormLabel v-if="!config?.hideLabel" :required="required">
+        <AutoFormLabel
+          v-if="!config?.hideLabel"
+          :required="required"
+        >
           {{ config?.label || beautifyObjectName(label ?? fieldName) }}
         </AutoFormLabel>
       </div>

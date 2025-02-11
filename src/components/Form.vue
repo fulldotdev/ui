@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { AutoForm } from '@/components/ui/auto-form'
-import { Button } from '@/components/ui/button'
+import { AutoForm } from 'fulldev-ui/components/ui/auto-form'
+import { Button } from 'fulldev-ui/components/ui/button'
 import type { FormHTMLAttributes } from 'vue'
 import { z } from 'zod'
 
