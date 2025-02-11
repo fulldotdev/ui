@@ -1,46 +1,45 @@
 ---
+import Box from '@/components/Box.astro'
+import Button from '@/components/Button.astro'
+import Card from '@/components/Card.astro'
 import Container from '@/components/Container.astro'
-import Element from '@/components/Element.astro'
-import Form from '@/components/Form.astro'
-import Link from '@/components/Link.astro'
+import Form from '@/components/Form.vue'
 import Section from '@/components/Section.astro'
 import Socials from '@/components/Socials.astro'
 import Writeup from '@/components/Writeup.astro'
-import type { ComponentProps } from 'astro/types'
+import type { ContactSchema } from '@/schemas/blocks/contact'
 
-interface Props {
-  title?: string | undefined
-  description?: string | undefined
-  content?: string | undefined
-  channels?: {
-    href?: string | undefined
-    icon?: string | undefined
-    text?: string | undefined
-  }[]
-  socials?: ComponentProps<typeof Socials>['socials']
-  form?: ComponentProps<typeof Form> | undefined
-}
+interface Props extends ContactSchema {}
 
-const { title, description, content, channels, socials, form } = Astro.props
+const { writeup, channels, socials, form } = Astro.props
 ---
 
 <Section class="contact contact-1">
-  <Container class="flex flex-col items-start gap-y-16 lg:grid lg:grid-cols-2">
-    <Writeup class="lg:pr-16">
-      <Element as="h1">{title}</Element>
-      <Element as="p">{description}</Element>
-      <Fragment set:html={content} />
-      <Element class="flex flex-col items-start gap-2.5">
-        {channels?.map((channel) => <Link {...channel} />)}
-      </Element>
-      <Socials
-        variant="secondary"
-        {socials}
-      />
+  <Container
+    class="flex flex-col"
+    size="sm"
+  >
+    <Writeup>
+      <Fragment set:html={writeup} />
+      <slot />
+      <Box class="flex flex-col items-start">
+        {
+          channels?.map((channel) => (
+            <Button
+              class="px-0"
+              variant="link"
+              {...channel}
+            />
+          ))
+        }
+      </Box>
+      <Socials {socials} />
     </Writeup>
-    <Form
-      class="border-1 rounded-xl border-border p-8"
-      {...form}
-    />
+    <Card>
+      <Form
+        client:load
+        {...form}
+      />
+    </Card>
   </Container>
 </Section>

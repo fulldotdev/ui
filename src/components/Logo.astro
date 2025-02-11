@@ -1,21 +1,22 @@
 ---
 import Image from '@/components/Image.astro'
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import Element from './Element.astro'
+import type { HTMLAttributes } from 'astro/types'
+import Box from './Box.astro'
 
 interface Props extends HTMLAttributes<'a'>, HTMLAttributes<'div'> {
-  image?: ComponentProps<typeof Image> | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
-  text?: string | undefined
-  src?: string | undefined
-  alt?: string | undefined
+  src?: string
+  alt?: string
+  text?: string
 }
 
-const { href = '/', size = 'md', image, text, src, alt, ...rest } = Astro.props as Props
+const { href = '/', class: className, text, src, alt, ...rest } = Astro.props as Props
 ---
 
-<Element
-  class:list="flex items-center gap-3 text-foreground font-bold text-base leading-none whitespace-nowrap"
+<Box
+  class:list={[
+    'flex items-center gap-3 whitespace-nowrap text-base font-medium leading-none text-foreground',
+    className,
+  ]}
   as={href ? 'a' : 'div'}
   {href}
   {...rest}
@@ -26,4 +27,4 @@ const { href = '/', size = 'md', image, text, src, alt, ...rest } = Astro.props 
     {alt}
   />
   <Fragment set:html={text} />
-</Element>
+</Box>

@@ -3,7 +3,8 @@ import { z } from 'astro:content'
 
 export const menuSchema = z
   .object({
-    heading: z.string().optional(),
+    text: z.string().optional(),
+    href: z.string().optional(),
     links: linkSchema.array().optional(),
   })
   .strict()

@@ -1,24 +1,31 @@
 ---
+import { avatarVariant, type AvatarVariants } from '@/components/ui/avatar'
 import type { HTMLAttributes } from 'astro/types'
 import { Image } from 'astro:assets'
+import Box from './Box.astro'
 
-interface Props extends Omit<HTMLAttributes<'img'>, 'width' | 'height'> {
-  src?: string | undefined
-  alt?: string | undefined
+interface Props extends HTMLAttributes<'span'>, AvatarVariants {
+  src?: string
+  alt?: string
 }
 
-const {  alt = '', src, ...rest } = Astro.props
+const { class: className, size, shape, alt = '', src, ...rest } = Astro.props
 ---
 
-{
-  src && (
-    <Image
-      class:list="aspect-square h-10 w-10 object-cover rounded-full overflow-hidden shrink-0 flex relative bg-muted"
-      width={40}
-      height={40}
-      {alt}
-      {src}
-      {...rest}
-    />
-  )
-}
+<Box
+  class:list={['avatar', avatarVariant({ size, shape }), className]}
+  as="span"
+  {...rest}
+>
+  {
+    src && (
+      <Image
+        class:list="h-full w-full object-cover"
+        width={40}
+        height={40}
+        {alt}
+        {src}
+      />
+    )
+  }
+</Box>

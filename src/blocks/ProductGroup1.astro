@@ -1,0 +1,82 @@
+---
+import Box from '@/components/Box.astro'
+import Container from '@/components/Container.astro'
+import Grid from '@/components/Grid.astro'
+import Image from '@/components/Image.astro'
+import Price from '@/components/Price.astro'
+import Prose from '@/components/Prose.astro'
+import Section from '@/components/Section.astro'
+// import Sort from '@/components/Sort.vue'
+import Writeup from '@/components/Writeup.astro'
+import type { ProductGroupSchema } from '@/schemas/blocks/productGroup'
+
+interface Props extends ProductGroupSchema {}
+
+const { title, description, products } = Astro.props
+---
+
+<Section class="pt-0">
+  <Container class="flex flex-col gap-12">
+    <Box class="border-b py-12">
+      <Writeup
+        align="start"
+        size="sm"
+      >
+        <Box as="h1">{title}</Box>
+        <Box as="p">{description}</Box>
+      </Writeup>
+    </Box>
+    <!-- <Box class="flex shrink items-center justify-between gap-4 border-t py-4">
+          <Box
+            as="p"
+            class="text-sm text-muted-foreground"
+          >
+            {products?.length} producten
+          </Box>
+          <Sort
+            client:load
+            options={[
+              { label: 'Aanbevolen', value: 'recommended' },
+              { label: 'Prijs (laag - hoog)', value: 'price-low' },
+              { label: 'Prijs (hoog - laag)', value: 'price-high' },
+            ]}
+          />
+        </Box> -->
+    <Grid
+      length={products?.length}
+      data-sort
+    >
+      {
+        products?.map(({ href, images, title, price }, i) => (
+          <Box
+            data-sort-recommended={i}
+            data-sort-price-low={price}
+            data-sort-price-high={(price || 0) * -1}
+            class="group flex flex-col gap-4"
+            {href}
+          >
+            <Image
+              class="aspect-square rounded-lg object-contain ring-1 ring-inset ring-border transition-opacity group-hover:opacity-75"
+              {...images?.[0]}
+            />
+            <Box class="flex flex-col gap-1">
+              <Box
+                as="h3"
+                class="text-sm font-medium"
+              >
+                {title}
+              </Box>
+              <Price
+                class="text-sm text-muted-foreground"
+                amount={price}
+              />
+            </Box>
+          </Box>
+        ))
+      }
+    </Grid>
+    <Prose>
+      <slot />
+    </Prose>
+  </Container>
+</Section>

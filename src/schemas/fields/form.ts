@@ -1,4 +1,3 @@
-import { buttonSchema } from '@/schemas/fields/button.ts'
 import { z } from 'astro:content'
 
 export const formSchema = z
@@ -6,16 +5,16 @@ export const formSchema = z
     action: z.string().optional(),
     fields: z
       .object({
-        type: z.enum(['text', 'email', 'tel', 'password', 'number', 'textarea', 'file']).optional(),
+        type: z.enum(['text', 'email', 'textarea', 'date', 'select']).optional(),
         label: z.string().optional(),
         placeholder: z.string().optional(),
         options: z.string().array().optional(),
         value: z.string().optional(),
-        required: z.boolean().optional(),
+        optional: z.boolean().optional(),
       })
       .strict()
       .array()
       .optional(),
-    button: buttonSchema.optional(),
+    submit: z.string().optional(),
   })
   .strict()

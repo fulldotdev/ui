@@ -1,0 +1,45 @@
+---
+import Box from '@/components/Box.astro'
+import Button from '@/components/Button.astro'
+import Card from '@/components/Card.astro'
+import Container from '@/components/Container.astro'
+import Form from '@/components/Form.vue'
+import Section from '@/components/Section.astro'
+import Socials from '@/components/Socials.astro'
+import Split from '@/components/Split.astro'
+import Writeup from '@/components/Writeup.astro'
+import type { ContactSchema } from '@/schemas/blocks/contact'
+
+interface Props extends ContactSchema {}
+
+const { writeup, channels, socials, form } = Astro.props
+---
+
+<Section class="contact contact-2">
+  <Container>
+    <Split>
+      <Writeup>
+        <Fragment set:html={writeup} />
+        <slot />
+        <Box class="flex flex-col items-start">
+          {
+            channels?.map((channel) => (
+              <Button
+                class="px-0"
+                variant="link"
+                {...channel}
+              />
+            ))
+          }
+        </Box>
+        <Socials {socials} />
+      </Writeup>
+      <Card>
+        <Form
+          client:load
+          {...form}
+        />
+      </Card>
+    </Split>
+  </Container>
+</Section>

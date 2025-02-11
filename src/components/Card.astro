@@ -1,39 +1,20 @@
 ---
-import Element from '@/components/Element.astro'
+import Box from '@/components/Box.astro'
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'a'>, HTMLAttributes<'div'> {}
 
-const { href, ...rest } = Astro.props
+const { href, class: className, ...rest } = Astro.props
 ---
 
-<Element
-  class:list="card"
+<Box
+  class:list={[
+    'card color-card-foreground relative flex flex-col gap-3 overflow-hidden rounded-lg border bg-card p-6',
+    className,
+  ]}
   as={href ? 'a' : 'div'}
   {href}
   {...rest}
 >
   <slot />
-</Element>
-
-<style>
-  @layer fulldev {
-    .card {
-      width: 100%;
-      overflow: hidden;
-      color: var(--color-foreground);
-
-      &:is(a) {
-        &:focus-visible {
-          outline: none;
-          box-shadow: 0 0 0 2px var(--color-ring);
-        }
-
-        &:hover > :global(.image) {
-          opacity: 0.75;
-          transition: var(--transition);
-        }
-      }
-    }
-  }
-</style>
+</Box>

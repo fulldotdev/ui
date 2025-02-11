@@ -1,45 +1,48 @@
 ---
-import Element from '@/components/Element.astro'
-import Link from '@/components/Link.astro'
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Box from '@/components/Box.astro'
+import type { HTMLAttributes } from 'astro/types'
+import Link from './Link.astro'
 
 interface Props extends HTMLAttributes<'div'> {
-  size?: 'sm' | 'defaut' | 'lg' | undefined
-  heading?: string | undefined
-  links?: ComponentProps<typeof Link>[] | undefined
+  text?: string | undefined
+  links?:
+    | {
+        text?: string
+        href?: string
+      }[]
+    | undefined
 }
 
-const { size = 'md', heading, links, ...rest } = Astro.props
+const { text, links, ...rest } = Astro.props
 ---
 
-<Element
-  class:list="menu inline-flex flex-col items-start gap-4 "
+<Box
+  class:list="menu inline-flex flex-col items-start gap-4"
   as="div"
   {...rest}
 >
   {
     links && links.length > 0 && (
-      <Element
-        class="text-sm font-semibold"
-        set:html={heading}
+      <Box
+        class="font-medium"
         as="h6"
-        size="sm"
+        set:html={text}
       />
     )
   }
-  <Element
+  <Box
     as="menu"
     class="flex flex-col gap-2"
   >
     {
       links?.map((link) => (
-        <Element as="li">
+        <Box as="li">
           <Link
-            size="sm"
+            class="font-normal text-muted-foreground transition-colors hover:text-foreground"
             {...link}
           />
-        </Element>
+        </Box>
       ))
     }
-  </Element>
-</Element>
+  </Box>
+</Box>

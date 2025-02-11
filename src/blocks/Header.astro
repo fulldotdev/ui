@@ -1,0 +1,82 @@
+---
+import Box from '@/components/Box.astro'
+import Buttons from '@/components/Buttons.astro'
+import Container from '@/components/Container.astro'
+import Drawer from '@/components/Drawer.vue'
+import Icon from '@/components/Icon.astro'
+import Link from '@/components/Link.astro'
+import Logo from '@/components/Logo.astro'
+import Menu from '@/components/Menu.astro'
+import Navigation from '@/components/Navigation.vue'
+import Search from '@/components/Search.vue'
+import Socials from '@/components/Socials.astro'
+import type { HeaderSchema } from '@/schemas/blocks/header'
+
+interface Props extends HeaderSchema {}
+
+const { logo, menus, socials, buttons } = Astro.props
+---
+
+<Box
+  class="sticky top-0 z-20 flex h-14 w-full border-b bg-background"
+  as="header"
+>
+  <Container class="flex items-center justify-between gap-8">
+    <Box class="flex items-center gap-4">
+      <Logo {...logo} />
+      <Navigation
+        class="max-lg:hidden"
+        client:load
+        items={menus}
+      />
+    </Box>
+    <Box class="inline-flex items-center gap-2">
+      <Search client:load />
+      <Socials {socials} />
+      <Buttons
+        class="max-sm:hidden"
+        size="sm"
+        {buttons}
+        reverse
+      />
+      <Drawer
+        class="size-9 lg:hidden"
+        client:load
+        button={{
+          variant: 'secondary',
+          size: 'sm',
+        }}
+      >
+        <Icon
+          slot="trigger"
+          name="menu-2"
+          class="!text-xl"
+        />
+        <Container class="min-w-lg flex flex-col gap-2">
+          {
+            menus?.map(({ text, href, links }) =>
+              links ? (
+                <Menu
+                  class="mb-4"
+                  {text}
+                  {links}
+                />
+              ) : (
+                <Link
+                  class="text-foreground"
+                  {href}
+                  {text}
+                />
+              )
+            )
+          }
+          <Buttons
+            class="mt-4 flex-col gap-2"
+            reverse
+            {buttons}
+          />
+        </Container>
+      </Drawer>
+    </Box>
+  </Container>
+</Box>

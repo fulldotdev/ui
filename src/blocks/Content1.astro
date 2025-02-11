@@ -1,35 +1,29 @@
 ---
 import Buttons from '@/components/Buttons.astro'
 import Container from '@/components/Container.astro'
-import Element from '@/components/Element.astro'
 import Image from '@/components/Image.astro'
 import Section from '@/components/Section.astro'
+import Split from '@/components/Split.astro'
 import Writeup from '@/components/Writeup.astro'
-import type { ComponentProps } from 'astro/types'
+import type { ContentSchema } from '@/schemas/blocks/content'
 
-interface Props {
-  title?: string | undefined
-  description?: string | undefined
-  content?: string | undefined
-  buttons?: ComponentProps<typeof Buttons>['buttons']
-  image?: ComponentProps<typeof Image>
-}
+interface Props extends ContentSchema {}
 
-const { title, description, content, buttons, image } = Astro.props
+const { writeup, buttons, image } = Astro.props
 ---
 
-<Section class="feature feature-1 overflow-hidden">
-  <Container class="flex w-full flex-col gap-y-16 lg:grid lg:grid-cols-2 lg:items-center">
-    <Writeup class="lg:pr-16">
-      <Element as="h1">{title}</Element>
-      <Element as="p">{description}</Element>
-      <Fragment set:html={content} />
-      <slot />
-      <Buttons {buttons} />
-    </Writeup>
-    <Image
-      class="rounded-lg"
-      {...image}
-    />
+<Section class="content content-1">
+  <Container>
+    <Split align="center">
+      <Writeup>
+        <Fragment set:html={writeup} />
+        <slot />
+        <Buttons {buttons} />
+      </Writeup>
+      <Image
+        class="rounded-lg"
+        {...image}
+      />
+    </Split>
   </Container>
 </Section>

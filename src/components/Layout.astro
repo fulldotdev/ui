@@ -1,0 +1,126 @@
+---
+import '@/styles/global.css'
+import '@fontsource/geist-sans/100.css'
+import '@fontsource/geist-sans/200.css'
+import '@fontsource/geist-sans/300.css'
+import '@fontsource/geist-sans/400.css'
+import '@fontsource/geist-sans/500.css'
+import '@fontsource/geist-sans/600.css'
+import '@fontsource/geist-sans/700.css'
+import '@fontsource/geist-sans/800.css'
+import '@fontsource/geist-sans/900.css'
+import { SEO } from 'astro-seo'
+
+interface Props {
+  lang?: string
+  company?: string
+  title?: string
+  description?: string
+  image?: {
+    src?: string
+    alt?: string
+  }
+  canonical?: string
+  noindex?: boolean
+  nofollow?: boolean
+  head?: string
+  body?: string
+  css?: string
+}
+
+const { lang = 'en', company, title, description, image, canonical, noindex, nofollow, head, body, css } = Astro.props
+
+// TODO: shadcn theme switcher
+const theme = 'light'
+---
+
+<!doctype html>
+<html
+  class="scheme-light dark:scheme-dark h-full w-full font-sans text-base text-foreground"
+  {lang}
+>
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1"
+    />
+    <meta
+      name="generator"
+      content={Astro.generator}
+    />
+    <SEO
+      charset="UTF-8"
+      title={title}
+      description={description || description}
+      noindex={noindex}
+      nofollow={nofollow}
+      canonical={canonical || Astro.url.href}
+      openGraph={{
+        basic: {
+          title: title || '',
+          image: Astro.url.origin + image?.src,
+          type: 'website',
+          url: Astro.url.href,
+        },
+        image: {
+          url: Astro.url.origin + image?.src,
+          alt: image?.alt || title || title || company,
+        },
+        optional: {
+          description: description,
+          siteName: company,
+        },
+      }}
+    />
+
+    <!-- Code -->
+    <Fragment set:html={head} />
+    <slot name="head" />
+
+    <!-- Light / Dark theme -->
+    <script is:inline define:vars={{ theme }}>
+      function setTheme(document) {
+        const value = localStorage.getItem('theme') || theme
+
+        const isDark =
+          value === 'dark' || (value === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+
+        document.documentElement.classList.toggle('dark', isDark)
+
+        document.querySelectorAll('.themer').forEach((themer) => {
+          themer?.querySelectorAll('option').forEach((option) => {
+            option.selected = option.value === value
+          })
+        })
+      }
+
+      function setOption(document) {
+        const value = localStorage.getItem('theme') || theme
+
+        document.querySelectorAll('.themer').forEach((themer) => {
+          themer?.querySelectorAll('option').forEach((option) => {
+            option.selected = option.value === value
+          })
+        })
+      }
+
+      setTheme(document)
+      setOption(document)
+
+      document.addEventListener('astro:before-swap', (event) => {
+        setTheme(event.newDocument)
+      })
+
+      document.addEventListener('astro:page-load', () => {
+        setOption(document)
+      })
+    </script>
+  </head>
+  <body
+    class="scheme-light dark:scheme-dark flex min-h-full w-full flex-col justify-start bg-background font-sans text-base text-foreground"
+  >
+    <slot />
+    <style set:html={css}></style>
+    <Fragment set:html={body} />
+  </body>
+</html>

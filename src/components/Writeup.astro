@@ -1,35 +1,37 @@
 ---
-import Element from '@/components/Element.astro'
+import Box from '@/components/Box.astro'
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'div'> {
-  size?: 'sm' | 'default' | 'lg' | undefined
+  size?: 'sm' | 'default' | 'lg' | 'xl' | undefined
   align?: 'start' | 'center' | 'end' | undefined
 }
 
 const { size = 'default', align = 'start', ...rest } = Astro.props
 ---
 
-<Element
+<Box
   class:list={[
     'writeup',
     'flex-flex-col w-full max-w-screen-md',
-    'child:first:mt-0',
-    'headings:font-medium headings:scroll-mt-20 headings:text-pretty headings:tracking-tight',
-    'p:max-w-[85%] p:text-pretty p:leading-[1.8] p:text-foreground/80',
+    'first:child:mt-0',
+    'headings:scroll-mt-20 headings:text-pretty headings:font-semibold headings:tracking-tight',
+    'p:max-w-[85%] p:text-pretty p:leading-[1.75] p:text-muted-foreground',
+    'lead:leading-[1.75]',
+    'ul:my-6 ul:ml-4 ul:list-disc ul:li:mt-2',
     {
       // size
-      'headings:text-2xl child:mt-6 p:mt-3 headings:mt-3': size === 'sm',
-      'headings:text-4xl child:mt-6 p:mt-4 headings:mt-4': size === 'default',
-      'headings:text-4xl md:headings:text-5xl h1:text-5xl md:h1:text-6xl child:mt-9 p:mt-6 headings:mt-6 lead:text-xl text-lg':
-        size === 'lg',
+      'text-sm headings:mt-2 headings:text-2xl p:mt-2': size === 'sm',
+      'child:mt-6 headings:mt-4 headings:text-4xl p:mt-4': size === 'default',
+      'text-lg child:mt-8 headings:mt-6 headings:text-4xl p:mt-6 md:headings:text-5xl': size === 'lg',
+      'text-lg child:mt-8 headings:mt-6 headings:text-5xl p:mt-6 md:text-xl md:headings:text-6xl': size === 'xl',
       // align
-      'child:mr-auto mr-auto items-start text-left': align === 'start',
-      'child:mx-auto mx-auto items-center text-center': align === 'center',
-      'child:ml-auto ml-auto items-end text-right': align === 'end',
+      'mr-auto items-start text-left child:mr-auto': align === 'start',
+      'mx-auto items-center text-center child:mx-auto': align === 'center',
+      'ml-auto items-end text-right child:ml-auto': align === 'end',
     },
   ]}
   {...rest}
 >
   <slot />
-</Element>
+</Box>

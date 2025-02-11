@@ -1,50 +1,35 @@
 ---
-import Element from '@/components/Element.astro'
-import type { HTMLAttributes, HTMLTag } from 'astro/types'
+import Box from '@/components/Box.astro'
+import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'div'> {
-  as?: HTMLTag
+  size?: 'sm' | 'default' | 'lg'
+  length: number | undefined
 }
 
-const { ...rest } = Astro.props
+const { size = 'default', length = 4, class: className, ...rest } = Astro.props
 ---
 
-<Element
-  class:list="masonry"
+<Box
+  class:list={[
+    'masonry relative w-full gap-x-4 space-y-4',
+    {
+      'sm:columns-2': size === 'default',
+      'md:columns-3': size === 'default' && length === 3,
+      'lg:columns-4': size === 'default' && length === 4,
+      'md:columns-3 xl:columns-5': size === 'default' && length === 5,
+      'lg:columns-3': size === 'default' && length === 6,
+      'md:columns-3 lg:columns-4': size === 'default' && length > 6,
+    },
+    {
+      'md:columns-2': size === 'lg',
+      'md:columns-3': size === 'lg' && length === 3,
+      'xl:columns-4': size === 'lg' && length === 4,
+      'lg:columns-3': size === 'lg' && length > 4,
+    },
+    className,
+  ]}
   {...rest}
 >
   <slot />
-</Element>
-
-<style is:global>
-  @layer fulldev {
-    .masonry {
-      --column-width: 20rem;
-      position: relative;
-      gap: var(--spacing-5);
-      row-gap: var(--spacing-5);
-      columns: 2;
-      width: 100%;
-
-      & > * {
-        break-inside: avoid;
-
-        &:not(:first-child) {
-          margin-top: var(--spacing-5);
-        }
-      }
-
-      /* &.size-sm {
-        --column-width: 16rem;
-      }
-
-      &.size-md {
-        --column-width: 20rem;
-      }
-
-      &.size-lg {
-        --column-width: 26rem;
-      } */
-    }
-  }
-</style>
+</Box>

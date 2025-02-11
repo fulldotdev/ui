@@ -1,42 +1,36 @@
 ---
 import Abstract from '@/components/Abstract.astro'
+import Box from '@/components/Box.astro'
 import Container from '@/components/Container.astro'
-import Element from '@/components/Element.astro'
+import Grid from '@/components/Grid.astro'
 import Icon from '@/components/Icon.astro'
 import Section from '@/components/Section.astro'
 import Writeup from '@/components/Writeup.astro'
+import type { FeaturesSchema } from '@/schemas/blocks/features'
 
-interface Props {
-  title?: string | undefined
-  description?: string | undefined
-  content?: string | undefined
-  cards?: any[]
-}
+interface Props extends FeaturesSchema {}
 
-const { title, description, content, cards } = Astro.props
+const { writeup, features } = Astro.props
 ---
 
-<Section class="features features-1">
+<Section class="">
   <Container class="flex flex-col gap-16">
     <Writeup>
-      <Element as="h1">{title}</Element>
-      <Element as="p">{description}</Element>
-      <Fragment set:html={content} />
+      <Fragment set:html={writeup} />
       <slot />
     </Writeup>
-    <Element class="grid gap-x-12 gap-y-8 md:auto-cols-fr md:grid-flow-col">
+    <Grid length={features?.length}>
       {
-        cards?.map(({ icon, title, description, content }) => (
-          <Abstract size="lg">
-            <Element class="inline-flex size-10 items-center justify-center rounded-md bg-muted text-muted-foreground">
+        features?.map(({ icon, title, description }) => (
+          <Abstract size="xl">
+            <Box class="inline-flex size-9 items-center justify-center rounded-md bg-muted text-muted-foreground">
               <Icon name={icon} />
-            </Element>
-            <Element as="h3">{title}</Element>
-            <Element as="p">{description}</Element>
-            <Fragment set:html={content} />
+            </Box>
+            <Box as="h3">{title}</Box>
+            <Box as="p">{description}</Box>
           </Abstract>
         ))
       }
-    </Element>
+    </Grid>
   </Container>
 </Section>

@@ -1,51 +1,33 @@
 ---
 import Abstract from '@/components/Abstract.astro'
+import Box from '@/components/Box.astro'
 import Card from '@/components/Card.astro'
 import Container from '@/components/Container.astro'
-import Element from '@/components/Element.astro'
 import Masonry from '@/components/Masonry.astro'
 import Rating from '@/components/Rating.astro'
 import Section from '@/components/Section.astro'
 import Writeup from '@/components/Writeup.astro'
-import type Image from 'astro/components/Image.astro'
-import type { ComponentProps } from 'astro/types'
+import type { ReviewsSchema } from '@/schemas/blocks/reviews'
 
-interface Props {
-  title?: string | undefined
-  description?: string | undefined
-  content?: string | undefined
-  reviews?: {
-    tagline?: string | undefined
-    rating?: number | undefined
-    avatar?: ComponentProps<typeof Image> | undefined
-    heading?: string | undefined
-    paragraph?: string | undefined
-    title?: string | undefined
-    description?: string | undefined
-    content?: string | undefined
-  }[]
-}
+interface Props extends ReviewsSchema {}
 
-const { title, description, content, reviews } = Astro.props
+const { writeup, reviews } = Astro.props
 ---
 
 <Section class="reviews reviews-1">
   <Container class="flex flex-col gap-12">
     <Writeup align="center">
-      <Element as="h1">{title}</Element>
-      <Element as="p">{description}</Element>
-      <Fragment set:html={content} />
+      <Fragment set:html={writeup} />
       <slot />
     </Writeup>
-    <Masonry class="gap-4">
+    <Masonry length={reviews?.length}>
       {
-        reviews?.map(({ rating, title, description, content }) => (
-          <Card class="border-1 rounded-lg border-border p-5">
-            <Abstract>
+        reviews?.map(({ rating, title, description }) => (
+          <Card class="flex flex-col">
+            <Abstract size="lg">
               <Rating score={rating} />
-              <Element as="h3">{title}</Element>
-              <Element as="p">{description}</Element>
-              <Fragment set:html={content} />
+              <Box as="h3">{title}</Box>
+              <Box as="p">{description}</Box>
             </Abstract>
           </Card>
         ))
@@ -53,33 +35,3 @@ const { title, description, content, reviews } = Astro.props
     </Masonry>
   </Container>
 </Section>
-
-<style>
-  @layer fulldev {
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--spacing-16);
-    }
-
-    .masonry {
-      display: grid;
-      gap: var(--spacing-6);
-
-      @media (min-width: 1024px) {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-    }
-
-    .card {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-3);
-    }
-
-    .icon {
-      color: var(--color-primary);
-    }
-  }
-</style>

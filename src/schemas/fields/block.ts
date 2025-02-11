@@ -52,6 +52,8 @@ export const blockSchema = z
     search: z.boolean().optional(),
     themer: z.boolean().optional(),
     reviews: z.any().array().optional(),
+    features: z.any().array().optional(),
+    faqs: z.any().array().optional(),
   })
   .strict()
 
