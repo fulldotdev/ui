@@ -1,5 +1,6 @@
 import { reference, z } from 'astro:content'
 import { imageSchema } from 'fulldev-ui/schemas/fields/image.ts'
+import { buttonSchema } from '../fields/button'
 
 export const productSingleSchema = z
   .object({
@@ -9,6 +10,7 @@ export const productSingleSchema = z
     images: imageSchema.array().optional(),
     price: z.number().optional(),
     category: reference('categories').optional(),
+    button: buttonSchema.optional(),
   })
   .strict()
 
