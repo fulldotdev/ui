@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Checkbox } from 'fulldev-ui/components/ui/checkbox'
-import { FormControl, FormDescription, FormField, FormItem, FormMessage } from 'fulldev-ui/components/ui/form'
-import { Switch } from 'fulldev-ui/components/ui/switch'
+import { Checkbox } from '@/components/ui/checkbox'
+import { FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Switch } from '@/components/ui/switch'
 import { computed } from 'vue'
 import AutoFormLabel from './AutoFormLabel.vue'
 import type { FieldProps } from './interface'

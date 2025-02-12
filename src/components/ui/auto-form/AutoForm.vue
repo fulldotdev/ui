@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="T extends ZodObjectOrWrapped">
+import { Form } from '@/components/ui/form'
 import { toTypedSchema } from '@vee-validate/zod'
-import { Form } from 'fulldev-ui/components/ui/form'
 import type { FormContext, GenericObject } from 'vee-validate'
 import { computed, toRefs } from 'vue'
 import type { z, ZodAny } from 'zod'

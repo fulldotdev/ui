@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Button } from 'fulldev-ui/components/ui/button'
-import { FormControl, FormDescription, FormField, FormItem, FormMessage } from 'fulldev-ui/components/ui/form'
-import { Input } from 'fulldev-ui/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import { TrashIcon } from 'lucide-vue-next'
 import { ref } from 'vue'
 import AutoFormLabel from './AutoFormLabel.vue'

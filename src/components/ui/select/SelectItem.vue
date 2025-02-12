@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from 'fulldev-ui/lib/utils'
+import { cn } from '@/lib/utils'
 import { Check } from 'lucide-vue-next'
 import { SelectItem, SelectItemIndicator, type SelectItemProps, SelectItemText, useForwardProps } from 'radix-vue'
 import { computed, type HTMLAttributes } from 'vue'

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { cn } from 'fulldev-ui/lib/utils'
+import { cn } from '@/lib/utils'
 import type { DrawerTitleProps } from 'vaul-vue'
 import { DrawerTitle } from 'vaul-vue'
 import { computed, type HtmlHTMLAttributes } from 'vue'

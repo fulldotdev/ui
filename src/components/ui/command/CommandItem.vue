@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from 'fulldev-ui/lib/utils'
+import { cn } from '@/lib/utils'
 import type { ComboboxItemEmits, ComboboxItemProps } from 'radix-vue'
 import { ComboboxItem, useForwardPropsEmits } from 'radix-vue'
 import { computed, type HTMLAttributes } from 'vue'

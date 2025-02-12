@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Button from 'fulldev-ui/components/ui/button/Button.vue'
+import Button from '@/components/ui/button/Button.vue'
 import {
   CommandDialog,
   CommandEmpty,
@@ -7,7 +7,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from 'fulldev-ui/components/ui/command'
+} from '@/components/ui/command'
 import { SearchIcon } from 'lucide-vue-next'
 import { ref } from 'vue'
 

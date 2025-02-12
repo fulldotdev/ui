@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from 'fulldev-ui/lib/utils'
+import { cn } from '@/lib/utils'
 import { SelectLabel, type SelectLabelProps } from 'radix-vue'
 import type { HTMLAttributes } from 'vue'
 

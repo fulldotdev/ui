@@ -1,6 +1,6 @@
+import { pageSchema } from '@/schemas/collections/page'
 import { glob } from 'astro/loaders'
 import { defineCollection, z } from 'astro:content'
-import { pageSchema } from 'fulldev-ui/schemas/collections/page'
 
 export const collections = {
   pages: defineCollection({

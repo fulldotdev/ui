@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from 'fulldev-ui/lib/utils'
+import { cn } from '@/lib/utils'
 import { Check } from 'lucide-vue-next'
 import type { CheckboxRootEmits, CheckboxRootProps } from 'radix-vue'
 import { CheckboxIndicator, CheckboxRoot, useForwardPropsEmits } from 'radix-vue'

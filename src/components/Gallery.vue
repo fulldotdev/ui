@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { watchOnce } from '@vueuse/core'
 import {
   Carousel,
   type CarouselApi,
@@ -7,7 +6,8 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from 'fulldev-ui/components/ui/carousel'
+} from '@/components/ui/carousel'
+import { watchOnce } from '@vueuse/core'
 import { parse } from 'node-html-parser'
 import { ref } from 'vue'
 import { renderToString } from 'vue/server-renderer'

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from 'fulldev-ui/lib/utils'
+import { cn } from '@/lib/utils'
 import { Separator, type SeparatorProps } from 'radix-vue'
 import { computed, type HTMLAttributes } from 'vue'
 

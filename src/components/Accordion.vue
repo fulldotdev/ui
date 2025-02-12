@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from 'fulldev-ui/components/ui/accordion'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 
 interface Props {
   items?: {

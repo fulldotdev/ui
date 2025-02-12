@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { FormControl, FormDescription, FormField, FormItem, FormMessage } from 'fulldev-ui/components/ui/form'
-import { Label } from 'fulldev-ui/components/ui/label'
-import { RadioGroup, RadioGroupItem } from 'fulldev-ui/components/ui/radio-group'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'fulldev-ui/components/ui/select'
+import { FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import AutoFormLabel from './AutoFormLabel.vue'
 import type { FieldProps } from './interface'
 import { beautifyObjectName, maybeBooleanishToBoolean } from './utils'

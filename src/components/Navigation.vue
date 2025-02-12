@@ -8,7 +8,7 @@ import {
   NavigationMenuTrigger,
   NavigationMenuViewport,
   navigationMenuTriggerStyle,
-} from 'fulldev-ui/components/ui/navigation-menu'
+} from '@/components/ui/navigation-menu'
 import { ref, type HTMLAttributes } from 'vue'
 
 interface Props {

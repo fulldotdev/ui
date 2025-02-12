@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from 'fulldev-ui/lib/utils'
+import { cn } from '@/lib/utils'
 import type { ComboboxGroupProps } from 'radix-vue'
 import { ComboboxGroup, ComboboxLabel } from 'radix-vue'
 import { computed, type HTMLAttributes } from 'vue'

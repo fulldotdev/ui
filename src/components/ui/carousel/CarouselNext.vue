@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Button } from 'fulldev-ui/components/ui/button'
-import { cn } from 'fulldev-ui/lib/utils'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { ArrowRight } from 'lucide-vue-next'
 import type { WithClassAsProps } from './interface'
 import { useCarousel } from './useCarousel'

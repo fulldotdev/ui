@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="T extends ZodRawShape">
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from 'fulldev-ui/components/ui/accordion'
-import { FormItem } from 'fulldev-ui/components/ui/form'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { FormItem } from '@/components/ui/form'
 import { FieldContextKey, useField } from 'vee-validate'
 import { computed, provide } from 'vue'
 import type { ZodAny, ZodObject, ZodRawShape } from 'zod'

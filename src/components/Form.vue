@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { AutoForm } from 'fulldev-ui/components/ui/auto-form'
-import { Button } from 'fulldev-ui/components/ui/button'
+import { AutoForm } from '@/components/ui/auto-form'
+import { Button } from '@/components/ui/button'
 import { z } from 'zod'
 
 interface Props {

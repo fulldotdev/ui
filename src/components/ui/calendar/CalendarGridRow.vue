@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { cn } from 'fulldev-ui/lib/utils'
+import { cn } from '@/lib/utils'
 import { CalendarGridRow, type CalendarGridRowProps, useForwardProps } from 'radix-vue'
 import { computed, type HTMLAttributes } from 'vue'
 

@@ -1,7 +1,7 @@
+import { categorySingleSchema } from '@/schemas/blocks/categorySingle'
+import { metaSchema } from '@/schemas/fields/meta'
+import { sectionSchema } from '@/schemas/fields/section'
 import { z } from 'astro:content'
-import { categorySingleSchema } from 'fulldev-ui/schemas/blocks/categorySingle'
-import { metaSchema } from 'fulldev-ui/schemas/fields/meta'
-import { sectionSchema } from 'fulldev-ui/schemas/fields/section'
 
 export const categorySchema = categorySingleSchema.extend({
   meta: metaSchema.optional(),

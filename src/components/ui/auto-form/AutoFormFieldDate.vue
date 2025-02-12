@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Button } from 'fulldev-ui/components/ui/button'
-import { Calendar } from 'fulldev-ui/components/ui/calendar'
-import { FormControl, FormDescription, FormField, FormItem, FormMessage } from 'fulldev-ui/components/ui/form'
-import { Popover, PopoverContent, PopoverTrigger } from 'fulldev-ui/components/ui/popover'
-import { cn } from 'fulldev-ui/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import { FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { cn } from '@/lib/utils'
 import type { FieldProps } from './interface'
 
 import { DateFormatter, getLocalTimeZone } from '@internationalized/date'

@@ -1,5 +1,5 @@
+import { buttonSchema } from '@/schemas/fields/button'
 import { z } from 'astro:content'
-import { buttonSchema } from 'fulldev-ui/schemas/fields/button.ts'
 
 export const ctaSchema = z
   .object({

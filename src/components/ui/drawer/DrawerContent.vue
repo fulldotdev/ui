@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { cn } from 'fulldev-ui/lib/utils'
+import { cn } from '@/lib/utils'
 import type { DialogContentEmits, DialogContentProps } from 'radix-vue'
 import { useForwardPropsEmits } from 'radix-vue'
 import { DrawerContent, DrawerPortal } from 'vaul-vue'

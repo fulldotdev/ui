@@ -1,7 +1,7 @@
+import { productSingleSchema } from '@/schemas/blocks/productSingle'
+import { metaSchema } from '@/schemas/fields/meta'
+import { sectionSchema } from '@/schemas/fields/section'
 import { z } from 'astro:content'
-import { productSingleSchema } from 'fulldev-ui/schemas/blocks/productSingle'
-import { metaSchema } from 'fulldev-ui/schemas/fields/meta'
-import { sectionSchema } from 'fulldev-ui/schemas/fields/section'
 
 export const productSchema = productSingleSchema.extend({
   meta: metaSchema.optional(),

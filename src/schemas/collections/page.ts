@@ -1,6 +1,6 @@
+import { metaSchema } from '@/schemas/fields/meta'
+import { sectionSchema } from '@/schemas/fields/section'
 import { z } from 'astro:content'
-import { metaSchema } from 'fulldev-ui/schemas/fields/meta'
-import { sectionSchema } from 'fulldev-ui/schemas/fields/section'
 
 export const pageSchema = z
   .object({

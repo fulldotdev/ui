@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Select from 'fulldev-ui/components/Select.vue'
+import Select from '@/components/Select.vue'
 import type { SelectRootProps } from 'radix-vue'
 
 interface Props extends SelectRootProps {

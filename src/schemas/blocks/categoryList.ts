@@ -1,5 +1,5 @@
+import { buttonSchema } from '@/schemas/fields/button'
 import { z } from 'astro:content'
-import { buttonSchema } from 'fulldev-ui/schemas/fields/button'
 import { categorySingleSchema } from '../blocks/categorySingle'
 
 export const categoryListSchema = z

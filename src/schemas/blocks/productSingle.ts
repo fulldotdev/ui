@@ -1,5 +1,5 @@
+import { imageSchema } from '@/schemas/fields/image'
 import { reference, z } from 'astro:content'
-import { imageSchema } from 'fulldev-ui/schemas/fields/image.ts'
 import { buttonSchema } from '../fields/button'
 
 export const productSingleSchema = z

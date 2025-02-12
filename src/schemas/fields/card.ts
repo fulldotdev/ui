@@ -1,7 +1,7 @@
+import { badgeSchema } from '@/schemas/fields/badge'
+import { buttonSchema } from '@/schemas/fields/button'
+import { imageSchema } from '@/schemas/fields/image'
 import { z } from 'astro:content'
-import { badgeSchema } from 'fulldev-ui/schemas/fields/badge.ts'
-import { buttonSchema } from 'fulldev-ui/schemas/fields/button.ts'
-import { imageSchema } from 'fulldev-ui/schemas/fields/image.ts'
 
 export const cardSchema = z
   .object({
