@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { AutoForm } from 'fulldev-ui/components/ui/auto-form'
 import { Button } from 'fulldev-ui/components/ui/button'
-import type { FormHTMLAttributes } from 'vue'
 import { z } from 'zod'
 
-interface Props extends /* @vue-ignore */ FormHTMLAttributes {
+interface Props {
   fields?: {
     label: string
     type: 'text' | 'email' | 'checkbox' | 'select'
@@ -14,7 +13,7 @@ interface Props extends /* @vue-ignore */ FormHTMLAttributes {
   submit?: string
 }
 
-const { fields, action, method } = defineProps<Props>()
+const { fields, submit } = defineProps<Props>()
 
 // Conditionally add the optional flag to the zod schema
 const withOptional = (optional: boolean | undefined, schema: z.ZodSchema) => (optional ? schema.optional() : schema)
@@ -71,8 +70,6 @@ const config = (fields || []).reduce((acc: any, field) => {
     class="w-full space-y-6 [&>div>p[role='alert']]:hidden"
     :field-config="config"
     :schema="schema"
-    :action
-    :method
   >
     <slot />
     <Button type="submit">

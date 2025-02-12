@@ -1,11 +1,7 @@
 ---
-// @ts-nocheck
-// FIXME
 import { getEntries } from 'astro:content'
 
-// interface Props extends BlockSchema {}
-
-let { block, cards, pages, categories, products, ...rest } = Astro.props
+let { block, categories, products, ...rest } = Astro.props
 
 const blocks = {
   ...import.meta.glob('/src/blocks/**/*.astro'),
@@ -16,28 +12,26 @@ const path = Object.keys(blocks).find((path) => path.split('/').pop()?.split('.'
 
 const BlockComponent = path && (await (blocks[path] as any)()).default
 
-const categoriesEntries =
-  categories &&
-  (await getEntries(categories)).map((category) => ({
+if (categories && categories[0]?.id) {
+  categories = (await getEntries(categories)).map((category: any) => ({
     slug: category.id,
     ...category.data,
   }))
+}
 
-const productsEntries =
-  products &&
-  (await getEntries(products)).map((product) => ({
+if (products && products[0]?.id) {
+  products = (await getEntries(products)).map((product: any) => ({
     slug: product.id,
     ...product.data,
   }))
+}
 ---
 
 {
   BlockComponent && (
     <BlockComponent
-      {cards}
-      {pages}
-      categories={categoriesEntries}
-      products={productsEntries}
+      {categories}
+      {products}
       {...rest}
     >
       <slot />

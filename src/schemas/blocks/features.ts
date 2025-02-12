@@ -5,11 +5,12 @@ export const featuresSchema = z
     writeup: z.string().optional(),
     features: z
       .object({
-        icon: z.string(),
-        title: z.string(),
-        description: z.string(),
+        icon: z.string().optional(),
+        title: z.string().optional(),
+        description: z.string().optional(),
       })
-      .array(),
+      .array()
+      .optional(),
   })
   .strict()
 

@@ -10,7 +10,7 @@ import { introSchema } from '../blocks/intro'
 import { productListSchema } from '../blocks/productList'
 import { reviewsSchema } from '../blocks/reviews'
 
-export const section = z.union([
+export const sectionSchema = z.union([
   categoryListSchema.extend({
     block: z.string(),
     categories: reference('categories').array().optional(),
@@ -45,4 +45,4 @@ export const section = z.union([
   }),
 ])
 
-export type SectionSchema = z.infer<typeof section>
+export type SectionSchema = z.infer<typeof sectionSchema>

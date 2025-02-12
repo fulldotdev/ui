@@ -1,0 +1,24 @@
+---
+import { getCollection, render } from 'astro:content'
+import Block from 'fulldev-ui/components/Block.astro'
+import NavigationLayout from 'fulldev-ui/layouts/NavigationLayout.astro'
+
+export async function getStaticPaths() {
+  const collection = await getCollection('blocks')
+  return collection.map((entry) => ({
+    params: {
+      block: entry.id,
+    },
+    props: entry,
+  }))
+}
+
+const { Content } = await render(Astro.props)
+const { data } = Astro.props
+---
+
+<NavigationLayout>
+  <Block {...data}>
+    <Content />
+  </Block>
+</NavigationLayout>

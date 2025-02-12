@@ -7,7 +7,7 @@ export const categoryGroupSchema = z
     description: z.string().optional(),
     categories: categorySingleSchema
       .extend({
-        href: z.string(),
+        href: z.string().optional(),
       })
       .array()
       .optional(),

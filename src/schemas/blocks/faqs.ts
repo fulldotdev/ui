@@ -7,10 +7,11 @@ export const faqsSchema = z
     buttons: buttonSchema.array().optional(),
     faqs: z
       .object({
-        title: z.string(),
-        description: z.string(),
+        title: z.string().optional(),
+        description: z.string().optional(),
       })
-      .array(),
+      .array()
+      .optional(),
   })
   .strict()
 
