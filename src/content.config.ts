@@ -1,7 +1,6 @@
 import { glob } from 'astro/loaders'
-import { defineCollection } from 'astro:content'
+import { defineCollection, z } from 'astro:content'
 import { pageSchema } from 'fulldev-ui/schemas/collections/page'
-import { blockSchema } from './schemas/collections/block'
 
 export const collections = {
   pages: defineCollection({
@@ -16,6 +15,6 @@ export const collections = {
       pattern: '**/[^_]*.{md,mdx}',
       base: './src/content/blocks',
     }),
-    schema: blockSchema,
+    schema: z.any(),
   }),
 }
