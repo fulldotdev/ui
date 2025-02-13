@@ -1,135 +1,54 @@
 ---
+import Icon from '@/components/Icon.astro'
+import type { ButtonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import type { HTMLAttributes } from 'astro/types'
-import Element from 'fulldev-ui/components/Element.astro'
-import Icon from 'fulldev-ui/components/Icon.astro'
+import Box from './Box.astro'
 
-interface Props
-  extends HTMLAttributes<'button'>,
-    Omit<HTMLAttributes<'a'>, 'type'>,
-    HTMLAttributes<'label'> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
-  href?: string | undefined
-  text?: string | undefined
-  icon?: string | undefined
+interface Props extends HTMLAttributes<'button'>, Omit<HTMLAttributes<'a'>, 'type'>, ButtonVariants {
+  href?: string
+  text?: string
+  icon?: string
+  reverse?: boolean
 }
-
-const {
-  href,
-  target = Astro.props.href?.startsWith('http') ? '_blank' : undefined,
-  variant = 'primary',
-  size = 'md',
-  text,
-  icon,
-  ...rest
-} = Astro.props
 
 const slot = await Astro.slots.render('default')
 const hasSlot = slot?.trim().length > 0
+
+const {
+  href,
+  text,
+  size = !(hasSlot || text) ? 'icon' : undefined,
+  variant,
+  icon,
+  reverse,
+  class: className,
+  ...rest
+} = Astro.props
 ---
 
-<Element
-  class:list={`button variant-${variant} size-${size}`}
-  as={href ? 'a' : rest.for ? 'label' : 'button'}
+<Box
+  class:list={['button', buttonVariants({ variant, size }), className]}
+  as={href ? 'a' : 'button'}
   {href}
-  {target}
   {...rest}
 >
-  <Fragment set:html={text} />
-  <Icon
-    class:list={{ 'icon-only': !(hasSlot || text) }}
-    name={icon}
-  />
-  <Fragment set:html={slot} />
-</Element>
-
-<style>
-  @layer fulldev {
-    .button {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      gap: var(--spacing-2);
-      transition: var(--transition);
-      cursor: pointer;
-      border-radius: var(--radius-md);
-      font-weight: var(--font-weight-medium);
-      font-size: var(--text-sm);
-      line-height: var(--leading-none);
-      white-space: nowrap;
-
-      &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 2px var(--color-ring);
-      }
-
-      &:disabled {
-        opacity: 0.5;
-        pointer-events: none;
-      }
-
-      .icon.icon-only {
-        position: absolute;
-      }
-
-      &.size-sm {
-        padding-right: var(--spacing-3);
-        padding-left: var(--spacing-3);
-        min-width: var(--spacing-8);
-        height: var(--spacing-8);
-        min-height: var(--spacing-8);
-      }
-
-      &.size-md {
-        padding-right: var(--spacing-4);
-        padding-left: var(--spacing-4);
-        min-width: var(--spacing-10);
-        height: var(--spacing-10);
-        min-height: var(--spacing-10);
-      }
-
-      &.size-lg {
-        padding-right: var(--spacing-5);
-        padding-left: var(--spacing-5);
-        min-width: var(--spacing-11);
-        height: var(--spacing-11);
-        min-height: var(--spacing-11);
-      }
-    }
-
-    .variant-primary {
-      background-color: var(--color-primary);
-      color: var(--color-primary-foreground);
-
-      &:hover {
-        background-color: var(--color-primary-hover);
-      }
-    }
-
-    .variant-secondary {
-      background-color: var(--color-secondary);
-      color: var(--color-secondary-foreground);
-
-      &:hover {
-        background-color: var(--color-secondary-hover);
-      }
-    }
-
-    .variant-outline {
-      border: 1px solid var(--color-input);
-      color: var(--color-accent-foreground);
-
-      &:hover {
-        background-color: var(--color-accent-hover);
-      }
-    }
-
-    .variant-ghost {
-      color: var(--color-accent-foreground);
-
-      &:hover {
-        background-color: var(--color-accent-hover);
-      }
-    }
+  {
+    !reverse && (
+      <Icon
+        class={!(hasSlot || text) ? 'absolute' : undefined}
+        name={icon}
+      />
+    )
   }
-</style>
+  <Fragment set:html={text} />
+  <Fragment set:html={slot} />
+  {
+    reverse && (
+      <Icon
+        class={!(hasSlot || text) ? 'absolute' : undefined}
+        name={icon}
+      />
+    )
+  }
+</Box>

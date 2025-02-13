@@ -1,0 +1,28 @@
+---
+import { cn } from '@/lib/utils'
+
+const {
+  href,
+  as: As = href ? 'a' : 'div',
+  show = 'content',
+  target = href?.startsWith('http') ? '_blank' : undefined,
+  class: className,
+  ...rest
+} = Astro.props
+
+const slot = await Astro.slots.render('default')
+const render = show === 'content' ? slot?.trim().length > 0 : show
+---
+
+{
+  render && (
+    <As
+      class:list={cn('box', className)}
+      {href}
+      {target}
+      {...rest}
+    >
+      <Fragment set:html={slot} />
+    </As>
+  )
+}

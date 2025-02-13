@@ -1,0 +1,59 @@
+---
+import Abstract from '@/components/Abstract.astro'
+import Box from '@/components/Box.astro'
+import Button from '@/components/Button.astro'
+import Container from '@/components/Container.astro'
+import Grid from '@/components/Grid.astro'
+import Logo from '@/components/Logo.astro'
+import Menu from '@/components/Menu.astro'
+import Section from '@/components/Section.astro'
+import Socials from '@/components/Socials.astro'
+import type { FooterSchema } from '@/schemas/blocks/footer'
+
+interface Props extends FooterSchema {}
+
+const { logo, description, socials, channels, menus } = Astro.props
+---
+
+<Section
+  class="footer mt-auto border-t"
+  as="footer"
+>
+  <Container class="flex justify-between gap-16">
+    <Grid
+      length={4}
+      size="lg"
+    >
+      <Abstract
+        size="sm"
+        class="flex max-w-xs flex-col gap-3"
+      >
+        <Logo {...logo} />
+        <Box
+          as="p"
+          set:html={description}
+        />
+        <Socials {socials} />
+      </Abstract>
+      <Box class="flex flex-col items-start">
+        {
+          channels?.map((channel) => (
+            <Button
+              class="px-0 py-1"
+              variant="link"
+              {...channel}
+            />
+          ))
+        }
+      </Box>
+      {
+        menus?.map((menu) => (
+          <Menu
+            class="w-full text-sm"
+            {...menu}
+          />
+        ))
+      }
+    </Grid>
+  </Container>
+</Section>

@@ -1,56 +1,31 @@
 ---
+import { avatarVariant, type AvatarVariants } from '@/components/ui/avatar'
 import type { HTMLAttributes } from 'astro/types'
 import { Image } from 'astro:assets'
+import Box from './Box.astro'
 
-interface Props extends Omit<HTMLAttributes<'img'>, 'width' | 'height'> {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  src?: string | undefined
-  alt?: string | undefined
+interface Props extends HTMLAttributes<'span'>, AvatarVariants {
+  src?: string
+  alt?: string
 }
 
-const { size = 'md', alt = '', src, ...rest } = Astro.props
-
-const sizeMap = {
-  sm: 36,
-  md: 40,
-  lg: 44,
-}
+const { class: className, size, shape, alt = '', src, ...rest } = Astro.props
 ---
 
-{
-  src && (
-    <Image
-      class:list={`avatar size-${size}`}
-      width={sizeMap[size]}
-      height={sizeMap[size]}
-      alt={alt}
-      {src}
-      {...rest}
-    />
-  )
-}
-
-<style>
-  @layer fulldev {
-    .avatar {
-      display: block;
-      border-radius: var(--radius-full);
-      object-fit: cover;
-
-      &.size-sm {
-        width: var(--spacing-9);
-        height: var(--spacing-9);
-      }
-
-      &.size-md {
-        width: var(--spacing-10);
-        height: var(--spacing-10);
-      }
-
-      &.size-lg {
-        width: var(--spacing-11);
-        height: var(--spacing-11);
-      }
-    }
+<Box
+  class:list={['avatar', avatarVariant({ size, shape }), className]}
+  as="span"
+  {...rest}
+>
+  {
+    src && (
+      <Image
+        class:list="h-full w-full object-cover"
+        width={40}
+        height={40}
+        {alt}
+        {src}
+      />
+    )
   }
-</style>
+</Box>

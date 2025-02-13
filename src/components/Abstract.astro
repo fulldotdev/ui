@@ -1,222 +1,36 @@
 ---
-import type { HTMLAttributes, HTMLTag } from 'astro/types'
-import Element from 'fulldev-ui/components/Element.astro'
+import type { HTMLAttributes } from 'astro/types'
+import Box from './Box.astro'
 
 interface Props extends HTMLAttributes<'div'> {
-  as?: HTMLTag
-  align?: 'left' | 'center' | 'right' | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
+  size?: 'sm' | 'default' | 'lg' | 'xl'
+  align?: 'start' | 'center' | 'end'
 }
 
-const { size = 'md', align = 'left', ...rest } = Astro.props
+const { size = 'default', align = 'start', class: className, ...rest } = Astro.props
 ---
 
-<Element
-  class:list={`abstract size-${size} align-${align}`}
+<Box
+  class:list={[
+    'abstract',
+    'flex-flex-col w-full max-w-lg',
+    'first:child:mt-0',
+    'headings:text-pretty headings:font-medium headings:tracking-tight',
+    'p:max-w-[90%] p:text-pretty p:leading-[1.8] p:text-muted-foreground',
+    {
+      // size
+      'text-sm child:mt-1 headings:text-sm': size === 'sm',
+      'text-sm child:mt-1 headings:text-base': size === 'default',
+      'text-base child:mt-1.5 headings:mt-3 headings:text-lg': size === 'lg',
+      'text-base child:mt-2.5 headings:mt-5 headings:text-xl': size === 'xl',
+      // align
+      'mr-auto items-start text-left child:mr-auto': align === 'start',
+      'mx-auto items-center text-center child:mx-auto': align === 'center',
+      'ml-auto items-end text-right child:ml-auto': align === 'end',
+    },
+    className,
+  ]}
   {...rest}
 >
   <slot />
-</Element>
-
-<style is:global>
-  @layer fulldev {
-    .abstract {
-      display: flex;
-      position: relative;
-      flex-direction: column;
-      width: 100%;
-      max-width: var(--container-3xl);
-      color: var(--color-foreground);
-
-      &.align-start {
-        align-items: flex-start;
-        margin-right: auto;
-        text-align: left;
-
-        > *:not(> * > *) {
-          text-align: left;
-        }
-      }
-
-      &.align-center {
-        align-items: center;
-        margin-right: auto;
-        margin-left: auto;
-        text-align: center;
-
-        > *:not(> * > *) {
-          text-align: center;
-        }
-      }
-
-      &.align-end {
-        align-items: flex-end;
-        margin-left: auto;
-        text-align: right;
-
-        > *:not(> * > *) {
-          text-align: right;
-        }
-      }
-
-      &.size-sm {
-        font-size: var(--text-sm);
-
-        h1 {
-          font-size: var(--text-3xl);
-          line-height: var(--text-3xl--line-height);
-        }
-
-        h2 {
-          font-size: var(--text-2xl);
-          line-height: var(--text-2xl--line-height);
-        }
-
-        h3 {
-          font-size: var(--text-base);
-          line-height: var(--text-base--line-height);
-        }
-
-        h4 {
-          font-size: var(--text-base);
-          line-height: var(--text-lg--line-height);
-        }
-
-        h5,
-        h6 {
-          font-size: var(--text-base);
-          line-height: var(--text-base--line-height);
-        }
-      }
-
-      &.size-md {
-        font-size: var(--text-sm);
-
-        h1 {
-          font-size: var(--text-4xl);
-          line-height: var(--text-4xl--line-height);
-
-          @media (min-width: 1024px) {
-            font-size: var(--text-5xl);
-            line-height: var(--text-5xl--line-height);
-          }
-
-          + p {
-            font-size: var(--text-lg);
-          }
-        }
-
-        h2 {
-          font-size: var(--text-3xl);
-          line-height: var(--text-3xl--line-height);
-        }
-
-        h3 {
-          font-size: var(--text-lg);
-          line-height: var(--text-lg--line-height);
-        }
-
-        h4 {
-          font-size: var(--text-xl);
-          line-height: var(--text-xl--line-height);
-        }
-
-        h5 {
-          font-size: var(--text-lg);
-          line-height: var(--text-lg--line-height);
-        }
-
-        h6 {
-          font-size: var(--text-base);
-          line-height: var(--text-base--line-height);
-        }
-      }
-
-      &.size-lg {
-        font-size: var(--text-lg);
-
-        h1 {
-          font-weight: var(--font-weight-bold);
-          font-size: var(--text-5xl);
-          line-height: var(--text-5xl--line-height);
-
-          @media (min-width: 1024px) {
-            font-size: var(--text-6xl);
-            line-height: var(--text-6xl--line-height);
-          }
-
-          + p {
-            font-size: var(--text-xl);
-          }
-        }
-
-        h2 {
-          font-size: var(--text-4xl);
-          line-height: var(--text-4xl--line-height);
-        }
-
-        h3 {
-          font-size: var(--text-3xl);
-          line-height: var(--text-3xl--line-height);
-        }
-
-        h4 {
-          font-size: var(--text-2xl);
-          line-height: var(--text-2xl--line-height);
-        }
-
-        h5 {
-          font-size: var(--text-xl);
-          line-height: var(--text-xl--line-height);
-        }
-
-        h6 {
-          font-size: var(--text-lg);
-          line-height: var(--text-lg--line-height);
-        }
-      }
-
-      h1 + p {
-        max-width: var(--container-2xl);
-      }
-
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6 {
-        scroll-margin-top: var(--spacing-20);
-        font-weight: var(--font-weight-bold);
-        letter-spacing: var(--tracking-tight);
-        text-wrap: pretty;
-      }
-
-      p {
-        line-height: var(--leading-relaxed);
-        text-wrap: pretty;
-      }
-
-      .image,
-      img {
-        border-radius: var(--radius-md);
-      }
-
-      > * {
-        & + * {
-          margin-top: var(--spacing-2);
-        }
-
-        &:is(h1, h2) + * {
-          margin-top: var(--spacing-4);
-        }
-
-        & + .group,
-        & + .button,
-        & + .buttons {
-          margin-top: var(--spacing-8);
-        }
-      }
-    }
-  }
-</style>
+</Box>

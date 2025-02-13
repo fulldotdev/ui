@@ -1,108 +1,32 @@
 ---
+import Box from '@/components/Box.astro'
+import Icon from '@/components/Icon.astro'
 import type { HTMLAttributes } from 'astro/types'
-import Element from 'fulldev-ui/components/Element.astro'
-import Icon from 'fulldev-ui/components/Icon.astro'
 
 interface Props extends HTMLAttributes<'ul' | 'ol'> {
-  as?: 'ul' | 'ol' | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
-  muted?: boolean | undefined
-  items?: string[] | undefined
-  icon?: string | undefined
+  as?: 'ul' | 'ol'
+  muted?: boolean
+  items?: string[]
+  icon?: string
 }
 
-const {
-  as = 'ul',
-  size = 'md',
-  muted = false,
-  items,
-  icon,
-  ...rest
-} = Astro.props
+const { as = 'ul', muted = false, class: className, items, icon, ...rest } = Astro.props
 ---
 
-<Element
-  class:list={[`list size-${size}`, { muted }]}
+<Box
+  class:list={['list ml-4 list-disc space-y-2', className]}
   {as}
   {...rest}
 >
   {
     items?.map((item) => (
-      <Element as="li">
+      <Box as="li">
         <Icon name={icon} />
-        <Element as="span">
+        <Box as="span">
           <Fragment set:html={item} />
-        </Element>
-      </Element>
+        </Box>
+      </Box>
     ))
   }
   <slot />
-</Element>
-
-<style>
-  @layer fulldev {
-    .list {
-      display: flex;
-      flex-direction: column;
-      padding-left: var(--spacing-5);
-
-      &:is(ul) {
-        list-style-type: disc;
-      }
-
-      &:is(ol) {
-        list-style-type: decimal;
-      }
-
-      &.size-sm {
-        gap: var(--spacing-1-5);
-        font-size: var(--text-sm);
-        line-height: var(--text-sm--line-height);
-
-        .icon {
-          margin-top: var(--spacing-0);
-        }
-      }
-
-      &.size-md {
-        gap: var(--spacing-2);
-        font-size: var(--text-base);
-        line-height: var(--text-base--line-height);
-
-        .icon {
-          margin-top: var(--spacing-0-5);
-        }
-      }
-
-      &.size-lg {
-        gap: var(--spacing-2);
-        font-size: var(--text-lg);
-        line-height: var(--text-lg--line-height);
-
-        .icon {
-          margin-top: var(--spacing-1);
-        }
-      }
-
-      &.muted {
-        color: var(--color-muted-foreground);
-      }
-
-      &:has(.icon) {
-        margin-left: var(--spacing-0);
-        list-style-type: none;
-
-        li {
-          display: flex;
-          gap: var(--spacing-2);
-        }
-      }
-    }
-
-    .icon {
-      margin-top: var(--spacing-0-5);
-      margin-left: calc(var(--spacing-5) * -1);
-      color: inherit;
-    }
-  }
-</style>
+</Box>

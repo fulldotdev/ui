@@ -1,42 +1,25 @@
 ---
+import Box from '@/components/Box.astro'
 import type { HTMLAttributes } from 'astro/types'
-import Element from 'fulldev-ui/components/Element.astro'
 
 interface Props extends HTMLAttributes<'div'> {
-  size?: 'sm' | 'md' | 'lg' | undefined
+  size?: 'sm' | 'default' | 'lg'
 }
 
-const { ...rest } = Astro.props
+const { size = 'default', class: className, ...rest } = Astro.props
 ---
 
-<Element
-  class:list={`container`}
+<Box
+  class:list={[
+    'mx-auto w-full gap-x-8 gap-y-16 px-4 lg:px-8',
+    {
+      'max-w-screen-md lg:px-16': size === 'sm',
+      'max-w-screen-xl': size === 'default',
+      'max-w-screen-2xl': size === 'lg',
+    },
+    className,
+  ]}
   {...rest}
 >
   <slot />
-</Element>
-
-<style>
-  @layer fulldev {
-    :global(:root) {
-      --gutter: var(--spacing-4);
-
-      @media (min-width: 1024px) {
-        --gutter: var(--spacing-8);
-      }
-
-      @media (min-width: 1280px) {
-        --gutter: var(--spacing-12);
-      }
-    }
-
-    .container {
-      margin-right: auto;
-      margin-left: auto;
-      padding-right: var(--gutter);
-      padding-left: var(--gutter);
-      width: 100%;
-      max-width: var(--breakpoint-xl);
-    }
-  }
-</style>
+</Box>

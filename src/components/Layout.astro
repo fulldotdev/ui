@@ -1,88 +1,70 @@
 ---
-import type { GlobalSchema } from 'fulldev-ui/schemas/collections/global.ts'
-import type { JobSchema } from 'fulldev-ui/schemas/collections/job'
-import type { CategorySchema } from 'fulldev-ui/schemas/layouts/category'
-import type { DocSchema } from 'fulldev-ui/schemas/layouts/doc'
-import type { PageSchema } from 'fulldev-ui/schemas/layouts/page'
-import type { PostSchema } from 'fulldev-ui/schemas/layouts/post'
-import type { ProductSchema } from 'fulldev-ui/schemas/layouts/product'
+import { SEO } from 'astro-seo'
 
-interface Props
-  extends GlobalSchema,
-    PageSchema,
-    PostSchema,
-    ProductSchema,
-    CategorySchema,
-    JobSchema,
-    DocSchema {}
+interface Props {
+  lang?: string
+  company?: string
+  title?: string
+  description?: string
+  image?: {
+    src?: string
+    alt?: string
+  }
+  canonical?: string
+  noindex?: boolean
+  nofollow?: boolean
+  head?: string
+  body?: string
+  css?: string
+}
 
-const { title, description, image, meta, blocks, logo, company } = Astro.props
+const { lang = 'en', company, title, description, image, canonical, noindex, nofollow, head, body, css } = Astro.props
 
-const url = Astro.url.href.endsWith('/') ? Astro.url.href : `${Astro.url.href}/`
-
-// FIXME
+// TODO: shadcn theme switcher
 const theme = 'light'
 ---
 
 <!doctype html>
-<html>
+<html
+  class="scheme-light dark:scheme-dark h-full w-full font-sans text-base text-foreground"
+  {lang}
+>
   <head>
-    <!-- General -->
-    <meta charset="UTF-8" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1"
-    />
-    <title>{meta?.title ?? title}</title>
-    <meta
-      content={meta?.description ?? description}
-      name="description"
-    />
-    <meta
-      name="robots"
-      content="index, follow"
-    />
-    <link
-      rel="canonical"
-      href={url}
     />
     <meta
       name="generator"
       content={Astro.generator}
     />
-    <meta
-      name="copyright"
-      content={company}
+    <SEO
+      charset="UTF-8"
+      title={title}
+      description={description || description}
+      noindex={noindex}
+      nofollow={nofollow}
+      canonical={canonical || Astro.url.href}
+      openGraph={{
+        basic: {
+          title: title || '',
+          image: Astro.url.origin + image?.src,
+          type: 'website',
+          url: Astro.url.href,
+        },
+        image: {
+          url: Astro.url.origin + image?.src,
+          alt: image?.alt || title || title || company,
+        },
+        optional: {
+          description: description,
+          siteName: company,
+        },
+      }}
     />
-    <!-- OG -->
-    <meta
-      property="og:title"
-      content={title}
-    />
-    <meta
-      property="og:description"
-      content={description}
-    />
-    <meta
-      property="og:image"
-      content={image?.src ??
-        blocks?.find((block) => block.image?.src)?.image?.src ??
-        logo?.src}
-    />
-    <meta
-      property="og:url"
-      content={url}
-    />
-    <meta
-      property="og:type"
-      content="website"
-    />
-    <meta
-      name="og:site_name"
-      content="IMDb"
-    />
+
     <!-- Code -->
-    <Fragment set:html={meta?.head} />
+    <Fragment set:html={head} />
     <slot name="head" />
 
     <!-- Light / Dark theme -->
@@ -91,9 +73,7 @@ const theme = 'light'
         const value = localStorage.getItem('theme') || theme
 
         const isDark =
-          value === 'dark' ||
-          (value === 'system' &&
-            window.matchMedia('(prefers-color-scheme: dark)').matches)
+          value === 'dark' || (value === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
 
         document.documentElement.classList.toggle('dark', isDark)
 
@@ -121,39 +101,16 @@ const theme = 'light'
         setTheme(event.newDocument)
       })
 
-      document.addEventListener('astro:page-load', (event) => {
+      document.addEventListener('astro:page-load', () => {
         setOption(document)
       })
     </script>
   </head>
-  <body>
+  <body
+    class="scheme-light dark:scheme-dark flex min-h-full w-full flex-col justify-start bg-background font-sans text-base text-foreground"
+  >
     <slot />
-    <style set:html={meta?.css}></style>
-    <Fragment set:html={meta?.body} />
+    <style set:html={css}></style>
+    <Fragment set:html={body} />
   </body>
 </html>
-
-<style>
-  @layer fulldev {
-    html {
-      width: 100%;
-      height: 100%;
-      color: var(--color-foreground);
-      color-scheme: light;
-      font-size: var(--text-base);
-      line-height: var(--line-height-relaxed);
-      font-family: var(--font-sans);
-    }
-
-    .dark {
-      color-scheme: dark;
-    }
-
-    body {
-      background-color: var(--color-background);
-      width: 100%;
-      color: var(--color-foreground);
-      font-family: var(--font-sans);
-    }
-  }
-</style>

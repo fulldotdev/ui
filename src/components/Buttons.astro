@@ -1,47 +1,50 @@
 ---
+import Button from '@/components/Button.astro'
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import Button from 'fulldev-ui/components/Button.astro'
-import Element from 'fulldev-ui/components/Element.astro'
+import Box from './Box.astro'
 
-interface Props
-  extends HTMLAttributes<'div'>,
-    Pick<ComponentProps<typeof Button>, 'variant' | 'size'> {
-  buttons?: ComponentProps<typeof Button>[] | undefined
+interface Props extends HTMLAttributes<'div'> {
+  justify?: 'start' | 'center' | 'end'
+  size?: ComponentProps<typeof Button>['size']
+  buttons?: ComponentProps<typeof Button>[]
+  reverse?: boolean
 }
 
-const { variant = 'primary', size = 'md', buttons, ...rest } = Astro.props
+const { size = 'default', justify = 'start', reverse = false, class: className, buttons, ...rest } = Astro.props
 
-const buttonVariant = (i: number) => {
-  if (variant === 'primary' && i === 0) return 'primary'
-  else if (variant === 'primary' && i === 1) return 'secondary'
-  else if (variant === 'secondary' && i === 0) return 'secondary'
-  if (variant === 'outline' && i === 0) return 'outline'
-  else return 'ghost'
+const getButtonVariant = (index: number) => {
+  if (reverse) {
+    const length = buttons?.length || 0
+    if (index === length - 1) return 'default'
+    if (index === length - 2) return 'outline'
+    return 'ghost'
+  }
+  if (index === 0) return 'default'
+  if (index === 1) return 'outline'
+  return 'ghost'
 }
 ---
 
-<Element
-  class:list="buttons"
+<Box
+  class:list={[
+    'buttons justify-inherit inline-flex flex-wrap gap-2',
+    {
+      'justify-start': justify === 'start',
+      'justify-center': justify === 'center',
+      'justify-end': justify === 'end',
+    },
+    className,
+  ]}
   {...rest}
 >
   {
     buttons?.map((button, i) => (
       <Button
-        variant={buttonVariant(i)}
+        variant={getButtonVariant(i)}
         {size}
         {...button}
       />
     ))
   }
   <slot />
-</Element>
-
-<style is:global>
-  @layer fulldev {
-    .buttons {
-      display: flex;
-      justify-content: stretch;
-      gap: var(--spacing-2);
-    }
-  }
-</style>
+</Box>

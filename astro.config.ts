@@ -1,17 +1,26 @@
+import mdx from '@astrojs/mdx'
+import sitemap from '@astrojs/sitemap'
+import tailwind from '@astrojs/tailwind'
+import vue from '@astrojs/vue'
+import robotsTxt from 'astro-robots-txt'
 import { defineConfig } from 'astro/config'
-import integration from 'fulldev-ui/integration'
 
-// https://astro.build/config
 export default defineConfig({
+  site: 'https://ui.full.dev',
+  trailingSlash: 'always',
+  prefetch: {
+    prefetchAll: true,
+  },
+  integrations: [
+    robotsTxt(),
+    vue(),
+    mdx(),
+    sitemap(),
+    tailwind({
+      applyBaseStyles: false,
+    }),
+  ],
   devToolbar: {
     enabled: false,
   },
-  integrations: [
-    integration({
-      company: 'Fulldev UI',
-      favicon: 'public/images/favicon.svg',
-      css: '/src/styles/custom.css',
-      injectRoutes: false,
-    }),
-  ],
 })

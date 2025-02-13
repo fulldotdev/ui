@@ -1,49 +1,25 @@
 ---
-import Buttons from 'fulldev-ui/components/Buttons.astro'
-import Container from 'fulldev-ui/components/Container.astro'
-import Element from 'fulldev-ui/components/Element.astro'
-import Prose from 'fulldev-ui/components/Prose.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/fields/block.ts'
+import Box from '@/components/Box.astro'
+import Container from '@/components/Container.astro'
+import Section from '@/components/Section.astro'
+import Writeup from '@/components/Writeup.astro'
+import type { IntroSchema } from '@/schemas/blocks/intro'
 
-interface Props extends BlockSchema {}
+interface Props extends IntroSchema {}
 
-const {
-  size = 'sm',
-  align = 'center',
-  title,
-  description,
-  content,
-  buttons,
-} = Astro.props
+const { writeup } = Astro.props
 ---
 
-<Element class:list={`intro intro-1 size-${size} align-${align}`}>
+<Section class="py-0">
   <Container>
-    <Element class="box">
-      <Prose {align}>
-        <Element as="h1">{title}</Element>
-        <Element as="p">{description}</Element>
-        <Fragment set:html={content} />
+    <Box class="border-b py-12">
+      <Writeup
+        align="start"
+        size="sm"
+      >
+        <Fragment set:html={writeup} />
         <slot />
-        <Buttons
-          {size}
-          {buttons}
-        />
-      </Prose>
-    </Element>
+      </Writeup>
+    </Box>
   </Container>
-</Element>
-
-<style>
-  @layer fulldev {
-    .box {
-      border-bottom: 1px solid var(--color-border);
-      padding-top: var(--spacing-12);
-      padding-bottom: var(--spacing-12);
-    }
-
-    p {
-      color: var(--color-muted-foreground);
-    }
-  }
-</style>
+</Section>

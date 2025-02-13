@@ -1,0 +1,60 @@
+---
+import Abstract from '@/components/Abstract.astro'
+import Box from '@/components/Box.astro'
+import Button from '@/components/Button.astro'
+import Container from '@/components/Container.astro'
+import Grid from '@/components/Grid.astro'
+import Image from '@/components/Image.astro'
+import Price from '@/components/Price.astro'
+import Section from '@/components/Section.astro'
+import Writeup from '@/components/Writeup.astro'
+import type { ProductListSchema } from '@/schemas/blocks/productList'
+
+interface Props extends ProductListSchema {}
+
+const { writeup, button, products } = Astro.props
+---
+
+<Section class="products products-1">
+  <Container class="flex flex-col items-start gap-8">
+    <Writeup class="flex w-full items-center justify-between gap-8">
+      <Writeup size="sm">
+        <Fragment set:html={writeup} />
+        <slot />
+      </Writeup>
+      <Button
+        class="max-lg:hidden"
+        variant="link"
+        size="sm"
+        {...button}
+      />
+    </Writeup>
+    <Grid
+      length={products?.length}
+      class="gap-4"
+    >
+      {
+        products?.map(({ href, title, images, price }) => (
+          <Box
+            class="group flex flex-col gap-3"
+            {href}
+          >
+            <Image
+              class="aspect-square rounded-lg bg-muted object-contain transition-opacity group-hover:opacity-75"
+              {...images?.[0]}
+            />
+            <Abstract>
+              <Box as="h3">{title}</Box>
+              <Price amount={price} />
+            </Abstract>
+          </Box>
+        ))
+      }
+    </Grid>
+    <Button
+      class="hidden"
+      variant="secondary"
+      {...button}
+    />
+  </Container>
+</Section>

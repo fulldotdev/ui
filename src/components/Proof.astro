@@ -1,30 +1,26 @@
 ---
+import Abstract from '@/components/Abstract.astro'
+import Avatar from '@/components/Avatar.astro'
+import Box from '@/components/Box.astro'
+import Rating from '@/components/Rating.astro'
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
-import Abstract from 'fulldev-ui/components/Abstract.astro'
-import Avatar from 'fulldev-ui/components/Avatar.astro'
-import Avatars from 'fulldev-ui/components/Avatars.astro'
-import Element from 'fulldev-ui/components/Element.astro'
-import Rating from 'fulldev-ui/components/Rating.astro'
 
 interface Props extends HTMLAttributes<'div'> {
-  avatar?: ComponentProps<typeof Avatar> | undefined
-  avatars?: ComponentProps<typeof Avatars>['avatars']
-  rating?: number | undefined
-  text?: string | undefined
-  size?: 'sm' | 'md' | 'lg' | undefined
+  avatars?: ComponentProps<typeof Avatar>[]
+  rating?: ComponentProps<typeof Rating>['score']
+  text?: string
 }
 
-const { avatar, avatars, rating, text, ...rest } = Astro.props
-
-// TODO implement size
+const { avatars, rating, text, ...rest } = Astro.props
 ---
 
-<Element
-  class:list="proof"
+<Box
+  class:list="flex items-center gap-2 text-sm"
   {...rest}
 >
-  <Avatar {...avatar} />
-  <Avatars {avatars} />
+  <Box class:list="flex -space-x-3">
+    {avatars?.map((avatar) => <Avatar {...avatar} />)}
+  </Box>
   <Abstract>
     <Rating
       score={rating}
@@ -32,16 +28,4 @@ const { avatar, avatars, rating, text, ...rest } = Astro.props
     />
     <Fragment set:html={text} />
   </Abstract>
-</Element>
-
-<style is:global>
-  @layer fulldev {
-    .proof {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-2);
-      font-size: var(--text-sm);
-      line-height: var(--text-sm--line-height);
-    }
-  }
-</style>
+</Box>
