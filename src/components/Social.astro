@@ -2,9 +2,15 @@
 import Button from '@/components/Button.astro'
 import type { ComponentProps } from 'astro/types'
 
-interface Props extends Omit<ComponentProps<typeof Button>, 'text' | 'icon' | 'target' | 'size'> {}
+interface Props
+  extends Omit<
+    ComponentProps<typeof Button>,
+    'text' | 'icon' | 'target' | 'size'
+  > {}
 
-const platform = (href: string | undefined) => {
+const { href, variant = 'ghost', ...rest } = Astro.props
+
+const platform = () => {
   if (typeof href !== 'string') return
   if (href.includes('x.com')) return 'brand-x'
   if (href.includes('facebook')) return 'brand-facebook'
@@ -17,13 +23,11 @@ const platform = (href: string | undefined) => {
   if (href.includes('discord')) return 'brand-discord'
   return undefined
 }
-
-const { href, variant = 'ghost', ...rest } = Astro.props
 ---
 
 <Button
   class:list="social"
-  icon={platform(href)}
+  icon={platform()}
   target="_blank"
   size="sm"
   {href}

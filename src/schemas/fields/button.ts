@@ -2,10 +2,13 @@ import { z } from 'astro:content'
 
 export const buttonSchema = z
   .object({
-    text: z.string().optional(),
-    href: z.string().optional(),
-    icon: z.string().optional(),
-    variant: z.enum(['default', 'secondary', 'outline', 'ghost']).optional(),
+    text: z.string().nullish(),
+    href: z.string().nullish(),
+    icon: z.string().nullish(),
+    variant: z
+      .enum(['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'])
+      .nullish(),
+    size: z.enum(['default', 'sm', 'lg']).nullish(),
   })
   .strict()
 

@@ -2,13 +2,13 @@ import { z } from 'astro:content'
 
 export const metaSchema = z
   .object({
-    title: z.string().optional(),
-    description: z.string().optional(),
-    canonical: z.string().optional(),
-    noindex: z.boolean().optional(),
-    nofollow: z.boolean().optional(),
-    css: z.string().optional(),
-    head: z.string().optional(),
-    body: z.string().optional(),
+    title: z.string().nullish(),
+    description: z.string().nullish(),
+    canonical: z.string().nullish(),
+    noindex: z.boolean().nullish(),
+    nofollow: z.boolean().nullish(),
+    css: z.string().nullish(),
+    head: z.string().nullish(),
+    body: z.string().nullish(),
   })
   .strict()

@@ -2,10 +2,9 @@ import tailwind from '@astrojs/tailwind'
 import vue from '@astrojs/vue'
 import type { AstroIntegration } from 'astro'
 
-// interface Config {}
-// export default function fulldevIntegration(config?: Partial<Config> | undefined): AstroIntegration {
+interface Config {}
 
-export default function fulldevIntegration(): AstroIntegration {
+export default function fulldevIntegration(config?: Partial<Config> | undefined): AstroIntegration {
   return {
     name: '/integration',
     hooks: {
@@ -19,6 +18,7 @@ export default function fulldevIntegration(): AstroIntegration {
             }),
           ],
         })
+
         // Inject the global CSS file
         injectScript('page-ssr', `import "@/styles/global.css";`)
       },

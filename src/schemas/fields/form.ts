@@ -2,19 +2,19 @@ import { z } from 'astro:content'
 
 export const formSchema = z
   .object({
-    action: z.string().optional(),
+    action: z.string().nullish(),
     fields: z
       .object({
-        type: z.enum(['text', 'email', 'textarea', 'date', 'select']).optional(),
-        label: z.string().optional(),
-        placeholder: z.string().optional(),
-        options: z.string().array().optional(),
-        value: z.string().optional(),
-        optional: z.boolean().optional(),
+        type: z.enum(['text', 'email', 'textarea', 'date', 'select']).nullish(),
+        label: z.string().nullish(),
+        placeholder: z.string().nullish(),
+        options: z.string().array().nullish(),
+        value: z.string().nullish(),
+        nullish: z.boolean().nullish(),
       })
       .strict()
       .array()
-      .optional(),
-    submit: z.string().optional(),
+      .nullish(),
+    submit: z.string().nullish(),
   })
   .strict()

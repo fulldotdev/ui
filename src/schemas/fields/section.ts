@@ -1,47 +1,49 @@
-import { reference, z } from 'astro:content'
-import { categoryListSchema } from '../blocks/categoryList'
-import { contactSchema } from '../blocks/contact'
-import { contentSchema } from '../blocks/content'
-import { ctaSchema } from '../blocks/cta'
-import { faqsSchema } from '../blocks/faqs'
-import { featuresSchema } from '../blocks/features'
-import { heroSchema } from '../blocks/hero'
-import { introSchema } from '../blocks/intro'
-import { productListSchema } from '../blocks/productList'
-import { reviewsSchema } from '../blocks/reviews'
+import { collectionSelectionSchema } from '@/schemas/models/collectionSelection'
+import { contactSchema } from '@/schemas/models/contact'
+import { contentSchema } from '@/schemas/models/content'
+import { ctaSchema } from '@/schemas/models/cta'
+import { faqsSchema } from '@/schemas/models/faqs'
+import { featuresSchema } from '@/schemas/models/features'
+import { heroSchema } from '@/schemas/models/hero'
+import { introSchema } from '@/schemas/models/intro'
+import { postSelectionSchema } from '@/schemas/models/postSelection'
+import { productSelectionSchema } from '@/schemas/models/productSelection'
+import { reviewsSchema } from '@/schemas/models/reviews'
+import { z } from 'astro:content'
 
-export const sectionSchema = z.union([
-  categoryListSchema.extend({
-    block: z.string(),
-    categories: reference('categories').array().optional(),
+export const sectionSchema = z.discriminatedUnion('type', [
+  collectionSelectionSchema.extend({
+    type: z.literal('CollectionSelection'),
   }),
   contactSchema.extend({
-    block: z.string(),
+    type: z.literal('Contact'),
   }),
   contentSchema.extend({
-    block: z.string(),
+    type: z.literal('Content'),
   }),
   ctaSchema.extend({
-    block: z.string(),
+    type: z.literal('Cta'),
   }),
   faqsSchema.extend({
-    block: z.string(),
+    type: z.literal('Faqs'),
   }),
   featuresSchema.extend({
-    block: z.string(),
+    type: z.literal('Features'),
   }),
   heroSchema.extend({
-    block: z.string(),
+    type: z.literal('Hero'),
   }),
   introSchema.extend({
-    block: z.string(),
+    type: z.literal('Intro'),
   }),
-  productListSchema.extend({
-    block: z.string(),
-    products: reference('products').array().optional(),
+  postSelectionSchema.extend({
+    type: z.literal('PostSelection'),
+  }),
+  productSelectionSchema.extend({
+    type: z.literal('ProductSelection'),
   }),
   reviewsSchema.extend({
-    block: z.string(),
+    type: z.literal('Reviews'),
   }),
 ])
 

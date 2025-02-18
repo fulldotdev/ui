@@ -1,37 +1,19 @@
 ---
-import { getHref } from '@/lib/getHref'
-import { getEntries } from 'astro:content'
-
-let { block, categories, products, ...rest } = Astro.props
+let { type, ...rest } = Astro.props
 
 const blocks = import.meta.glob('../blocks/**/*.astro')
 
-const path = Object.keys(blocks).find((path) => path.split('/').pop()?.split('.')[0] === block)
+const blockName = `${type}1`
+const path = Object.keys(blocks).find(
+  (path) => path.split('/').pop()?.split('.')[0] === blockName
+)
 
 const BlockComponent = path && (await (blocks[path] as any)()).default
-
-if (categories && categories[0]?.id) {
-  categories = (await getEntries(categories)).map((category: any) => ({
-    href: getHref('categories', category.id),
-    ...category.data,
-  }))
-}
-
-if (products && products[0]?.id) {
-  products = (await getEntries(products)).map((product: any) => ({
-    href: getHref('products', product.id),
-    ...product.data,
-  }))
-}
 ---
 
 {
   BlockComponent && (
-    <BlockComponent
-      {categories}
-      {products}
-      {...rest}
-    >
+    <BlockComponent {...rest}>
       <slot />
     </BlockComponent>
   )

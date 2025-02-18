@@ -2,13 +2,15 @@
 import Icon from '@/components/Icon.astro'
 import type { ButtonVariants } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button'
+import type { ButtonSchema } from '@/schemas/fields/button'
 import type { HTMLAttributes } from 'astro/types'
 import Box from './Box.astro'
 
-interface Props extends HTMLAttributes<'button'>, Omit<HTMLAttributes<'a'>, 'type'>, ButtonVariants {
-  href?: string
-  text?: string
-  icon?: string
+interface Props
+  extends HTMLAttributes<'button'>,
+    Omit<HTMLAttributes<'a'>, 'type' | 'href'>,
+    Omit<ButtonVariants, 'size'>,
+    ButtonSchema {
   reverse?: boolean
 }
 
@@ -18,7 +20,7 @@ const hasSlot = slot?.trim().length > 0
 const {
   href,
   text,
-  size = !(hasSlot || text) ? 'icon' : undefined,
+  size,
   variant,
   icon,
   reverse,

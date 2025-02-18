@@ -1,35 +1,34 @@
 ---
 import Box from '@/components/Box.astro'
+import type { MenuSchema } from '@/schemas/fields/menu'
 import type { HTMLAttributes } from 'astro/types'
 import Link from './Link.astro'
 
-interface Props extends HTMLAttributes<'div'> {
-  text?: string | undefined
-  links?:
-    | {
-        text?: string
-        href?: string
-      }[]
-    | undefined
-}
+interface Props extends HTMLAttributes<'div'>, MenuSchema {}
 
-const { text, links, ...rest } = Astro.props
+const { text, href, links, ...rest } = Astro.props
 ---
 
 <Box
-  class:list="menu inline-flex flex-col items-start gap-4"
+  class:list="menu inline-flex flex-col items-start gap-2"
   as="div"
   {...rest}
 >
-  {
-    links && links.length > 0 && (
-      <Box
-        class="font-medium"
-        as="h6"
-        set:html={text}
-      />
-    )
-  }
+  <Box
+    class="font-medium"
+    as={text ? 'h6' : 'div'}
+  >
+    {
+      href ? (
+        <Link
+          {href}
+          {text}
+        />
+      ) : (
+        <Fragment set:html={text} />
+      )
+    }
+  </Box>
   <Box
     as="menu"
     class="flex flex-col gap-2"

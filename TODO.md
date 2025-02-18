@@ -7,6 +7,8 @@
 - [X] Contact2 to Contact1, add Contact1 block which is simple centered just like Content1
 - [X] FAQ block
 - [X] Textarea component in Formbuilder
+- [ ] Move padelracketwinkel code improvements into this repo
+- [ ] GraphQL type safety
 
 ## Ideas
 - [ ] Simple `center` prop on blocks.
@@ -15,6 +17,8 @@
 - [ ] Number input
 - [ ] Themer component
 - [ ] Calculate average aspect-ratio for images and use that is blocks/cards/etc.
+- [ ] .cursorrules
+- [ ] Motion.dev for animations
 
 ## Awaiting 3rd party
 

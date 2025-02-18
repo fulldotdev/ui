@@ -1,19 +1,33 @@
 ---
-import type { BadgeVariants } from '@/components/ui/badge'
-import { badgeVariants } from '@/components/ui/badge/index'
+import Box from '@/components/Box.astro'
+import { buttonVariants } from '@/components/ui/button'
+import type { BadgeSchema } from '@/schemas/fields/badge'
 import type { HTMLAttributes } from 'astro/types'
-import Box from './Box.astro'
+import { badgeVariants, type BadgeVariants } from './ui/badge'
 
-interface Props extends HTMLAttributes<'span'>, BadgeVariants {
-  text?: string
+interface Props
+  extends Omit<HTMLAttributes<'a'>, 'href'>,
+    BadgeSchema,
+    BadgeVariants {
+  size?: 'default' | 'lg'
 }
 
-const { variant, text, class: className, ...rest } = Astro.props
+const test: URL = new URL('https://www.google.com')
+
+const { href, text, variant, class: className, size, ...rest } = Astro.props
 ---
 
 <Box
-  class:list={['badge', badgeVariants({ variant }), className]}
-  as="span"
+  class:list={[
+    'badge ',
+    href ? buttonVariants({ variant }) : '',
+    badgeVariants({ variant }),
+    {
+      'h-7 px-3.5 ': size === 'lg',
+    },
+    className,
+  ]}
+  {href}
   {...rest}
 >
   <Fragment set:html={text} />

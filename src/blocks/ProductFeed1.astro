@@ -1,0 +1,60 @@
+---
+import Abstract from '@/components/Abstract.astro'
+import Box from '@/components/Box.astro'
+import Container from '@/components/Container.astro'
+import Grid from '@/components/Grid.astro'
+import Image from '@/components/Image.astro'
+import Price from '@/components/Price.astro'
+import Prose from '@/components/Prose.astro'
+import Section from '@/components/Section.astro'
+// import Sort from '@/components/Sort.vue'
+import Writeup from '@/components/Writeup.astro'
+import { getHref } from '@/lib/getHref'
+import type { ProductFeedSchema } from '@/schemas/models/productFeed'
+import { getCollection } from 'astro:content'
+
+interface Props extends ProductFeedSchema {}
+
+const { writeup } = Astro.props
+
+const collection = await getCollection('products')
+---
+
+<Section class="product-feed product-feed-1 pt-0">
+  <Container class="flex flex-col gap-12">
+    <Box class="border-b py-12">
+      <Writeup
+        align="start"
+        size="sm"
+        markdown={writeup}
+      />
+    </Box>
+    <Grid
+      length={collection?.length}
+      class="gap-4"
+    >
+      {
+        collection?.map(
+          ({ collection, id, data: { title, images, price } }) => (
+            <Box
+              class="group flex flex-col gap-3"
+              href={getHref(collection, id)}
+            >
+              <Image
+                class="aspect-square rounded-lg bg-muted object-contain transition-opacity group-hover:opacity-75"
+                {...images?.[0]}
+              />
+              <Abstract>
+                <Box as="h3">{title}</Box>
+                <Price amount={price} />
+              </Abstract>
+            </Box>
+          )
+        )
+      }
+    </Grid>
+    <Prose>
+      <slot />
+    </Prose>
+  </Container>
+</Section>

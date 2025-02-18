@@ -1,24 +1,37 @@
 ---
 import { SEO } from 'astro-seo'
+import type { HTMLAttributes } from 'astro/types'
 
-interface Props {
-  lang?: string
-  company?: string
-  title?: string
-  description?: string
+interface Props extends HTMLAttributes<'html'> {
+  company?: string | null
+  title?: string | null
+  description?: string | null
   image?: {
-    src?: string
-    alt?: string
-  }
-  canonical?: string
-  noindex?: boolean
-  nofollow?: boolean
-  head?: string
-  body?: string
-  css?: string
+    src?: string | null
+    alt?: string | null
+  } | null
+  canonical?: string | null
+  noindex?: boolean | null
+  nofollow?: boolean | null
+  head?: string | null
+  body?: string | null
+  css?: string | null
 }
 
-const { lang = 'en', company, title, description, image, canonical, noindex, nofollow, head, body, css } = Astro.props
+const {
+  lang = 'en',
+  company,
+  title,
+  description,
+  image,
+  canonical,
+  noindex,
+  nofollow,
+  head,
+  body,
+  css,
+  ...rest
+} = Astro.props
 
 // TODO: shadcn theme switcher
 const theme = 'light'
@@ -28,6 +41,7 @@ const theme = 'light'
 <html
   class="scheme-light dark:scheme-dark h-full w-full font-sans text-base text-foreground"
   {lang}
+  {...rest}
 >
   <head>
     <meta
@@ -40,10 +54,10 @@ const theme = 'light'
     />
     <SEO
       charset="UTF-8"
-      title={title}
-      description={description || description}
-      noindex={noindex}
-      nofollow={nofollow}
+      title={title || undefined}
+      description={description || description || undefined}
+      noindex={noindex || undefined}
+      nofollow={nofollow || undefined}
       canonical={canonical || Astro.url.href}
       openGraph={{
         basic: {
@@ -54,11 +68,11 @@ const theme = 'light'
         },
         image: {
           url: Astro.url.origin + image?.src,
-          alt: image?.alt || title || title || company,
+          alt: image?.alt || title || title || company || undefined,
         },
         optional: {
-          description: description,
-          siteName: company,
+          description: description || undefined,
+          siteName: company || undefined,
         },
       }}
     />
@@ -73,7 +87,9 @@ const theme = 'light'
         const value = localStorage.getItem('theme') || theme
 
         const isDark =
-          value === 'dark' || (value === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          value === 'dark' ||
+          (value === 'system' &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches)
 
         document.documentElement.classList.toggle('dark', isDark)
 
