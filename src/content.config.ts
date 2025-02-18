@@ -38,7 +38,7 @@ export const collections = {
       base: './src/content/posts',
     }),
     schema: pageSchema.merge(postSchema).extend({
-      type: z.literal('Post'),
+      type: z.literal('Post').default('Post'),
     }),
   }),
   products: defineCollection({
@@ -47,7 +47,7 @@ export const collections = {
       base: './src/content/products',
     }),
     schema: pageSchema.merge(productSchema).extend({
-      type: z.literal('Product'),
+      type: z.literal('Product').default('Product'),
     }),
   }),
   collections: defineCollection({
@@ -56,7 +56,7 @@ export const collections = {
       base: './src/content/collections',
     }),
     schema: pageSchema.merge(collectionSchema).extend({
-      type: z.literal('Collection'),
+      type: z.literal('Collection').default('Collection'),
     }),
   }),
 }

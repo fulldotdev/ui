@@ -1,5 +1,5 @@
 import { type ObjectModel } from '@stackbit/types'
-import { ButtonField } from '../fields/button'
+import { ButtonField } from '../fields/Button'
 import { WriteupField } from '../fields/Writeup'
 
 export const CollectionSelectionModel: ObjectModel = {
@@ -9,7 +9,7 @@ export const CollectionSelectionModel: ObjectModel = {
     WriteupField,
     ButtonField,
     {
-      name: 'categories',
+      name: 'collections',
       type: 'list',
       items: {
         type: 'reference',
