@@ -1,4 +1,4 @@
-import { collectionSelectionSchema } from '@/schemas/models/collectionSelection'
+import { collectionsSchema } from '@/schemas/models/collections'
 import { contactSchema } from '@/schemas/models/contact'
 import { contentSchema } from '@/schemas/models/content'
 import { ctaSchema } from '@/schemas/models/cta'
@@ -6,14 +6,14 @@ import { faqsSchema } from '@/schemas/models/faqs'
 import { featuresSchema } from '@/schemas/models/features'
 import { heroSchema } from '@/schemas/models/hero'
 import { introSchema } from '@/schemas/models/intro'
-import { postSelectionSchema } from '@/schemas/models/postSelection'
-import { productSelectionSchema } from '@/schemas/models/productSelection'
+import { postsSchema } from '@/schemas/models/posts'
+import { productsSchema } from '@/schemas/models/products'
 import { reviewsSchema } from '@/schemas/models/reviews'
 import { z } from 'astro:content'
 
 export const sectionSchema = z.discriminatedUnion('type', [
-  collectionSelectionSchema.extend({
-    type: z.literal('CollectionSelection'),
+  collectionsSchema.extend({
+    type: z.literal('Collections'),
     variant: z.number().default(1),
   }),
   contactSchema.extend({
@@ -44,12 +44,12 @@ export const sectionSchema = z.discriminatedUnion('type', [
     type: z.literal('Intro'),
     variant: z.number().default(1),
   }),
-  postSelectionSchema.extend({
-    type: z.literal('PostSelection'),
+  postsSchema.extend({
+    type: z.literal('Posts'),
     variant: z.number().default(1),
   }),
-  productSelectionSchema.extend({
-    type: z.literal('ProductSelection'),
+  productsSchema.extend({
+    type: z.literal('Products'),
     variant: z.number().default(1),
   }),
   reviewsSchema.extend({

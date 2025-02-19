@@ -4,9 +4,6 @@ import { postSchema } from '@/schemas/models/post'
 import { productSchema } from '@/schemas/models/product'
 import { glob } from 'astro/loaders'
 import { defineCollection, z } from 'astro:content'
-import { collectionFeedSchema } from './schemas/models/collectionFeed'
-import { postFeedSchema } from './schemas/models/postFeed'
-import { productFeedSchema } from './schemas/models/productFeed'
 
 export const collections = {
   pages: defineCollection({
@@ -20,15 +17,6 @@ export const collections = {
       }),
       pageSchema.extend({
         type: z.literal('Home'),
-      }),
-      pageSchema.merge(postFeedSchema).extend({
-        type: z.literal('PostFeed'),
-      }),
-      pageSchema.merge(productFeedSchema).extend({
-        type: z.literal('ProductFeed'),
-      }),
-      pageSchema.merge(collectionFeedSchema).extend({
-        type: z.literal('CollectionFeed'),
       }),
     ]),
   }),

@@ -1,40 +1,46 @@
 ---
 import Abstract from '@/components/Abstract.astro'
 import Box from '@/components/Box.astro'
+import Button from '@/components/Button.astro'
 import Container from '@/components/Container.astro'
 import Grid from '@/components/Grid.astro'
 import Image from '@/components/Image.astro'
 import Price from '@/components/Price.astro'
-import Prose from '@/components/Prose.astro'
 import Section from '@/components/Section.astro'
-// import Sort from '@/components/Sort.vue'
 import Writeup from '@/components/Writeup.astro'
 import { getHref } from '@/lib/getHref'
-import type { ProductFeedSchema } from '@/schemas/models/productFeed'
-import { getCollection } from 'astro:content'
+import type { ProductsSchema } from '@/schemas/models/products'
+import { getCollection, getEntries } from 'astro:content'
 
-interface Props extends ProductFeedSchema {}
+interface Props extends ProductsSchema {}
 
-const { writeup } = Astro.props
+const { writeup, button, products } = Astro.props
 
-const collection = await getCollection('products')
+const entries = products ? await getEntries(products) : await getCollection('products')
 ---
 
-<Section class="product-feed product-feed-1 pt-0">
-  <Container class="flex flex-col gap-12">
-    <Box class="border-b py-12">
+<Section class="product-selection product-selection-1">
+  <Container class="flex flex-col items-start gap-8">
+    <Writeup class="flex w-full items-center justify-between gap-8">
       <Writeup
-        align="start"
         size="sm"
         markdown={writeup}
+      >
+        <slot />
+      </Writeup>
+      <Button
+        class="max-lg:hidden"
+        variant="link"
+        size="sm"
+        {...button}
       />
-    </Box>
+    </Writeup>
     <Grid
-      length={collection?.length}
+      length={entries?.length}
       class="gap-4"
     >
       {
-        collection?.map(({ collection, id, data: { title, images, price } }) => (
+        entries?.map(({ collection, id, data: { title, images, price } }) => (
           <Box
             class="group flex flex-col gap-3"
             href={getHref(collection, id)}
@@ -51,8 +57,10 @@ const collection = await getCollection('products')
         ))
       }
     </Grid>
-    <Prose>
-      <slot />
-    </Prose>
+    <Button
+      class="hidden"
+      variant="secondary"
+      {...button}
+    />
   </Container>
 </Section>

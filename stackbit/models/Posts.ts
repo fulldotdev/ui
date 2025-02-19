@@ -2,18 +2,18 @@ import { type ObjectModel } from '@stackbit/types'
 import { ButtonField } from '../fields/Button'
 import { WriteupField } from '../fields/Writeup'
 
-export const CollectionSelectionModel: ObjectModel = {
-  name: 'CollectionSelection',
+export const PostsModel: ObjectModel = {
+  name: 'Posts',
   type: 'object',
   fields: [
     WriteupField,
     ButtonField,
     {
-      name: 'collections',
+      name: 'posts',
       type: 'list',
       items: {
         type: 'reference',
-        models: ['Collection'],
+        models: ['Post'],
       },
     },
   ],

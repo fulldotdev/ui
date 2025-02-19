@@ -6,7 +6,7 @@ export const SectionsField: FieldList = {
   items: {
     type: 'model',
     models: [
-      'CategorySelection',
+      'Collections',
       'Contact',
       'Content',
       'Cta',
@@ -14,8 +14,8 @@ export const SectionsField: FieldList = {
       'Features',
       'Hero',
       'Intro',
-      'PostSelection',
-      'ProductSelection',
+      'Posts',
+      'Products',
       'Reviews',
     ],
   },

@@ -1,7 +1,7 @@
 import { buttonSchema } from '@/schemas/fields/button'
 import { reference, z } from 'astro:content'
 
-export const productSelectionSchema = z
+export const productsSchema = z
   .object({
     writeup: z.string().nullish(),
     button: buttonSchema.nullish(),
@@ -9,4 +9,4 @@ export const productSelectionSchema = z
   })
   .strict()
 
-export type ProductSelectionSchema = z.infer<typeof productSelectionSchema>
+export type ProductsSchema = z.infer<typeof productsSchema>
