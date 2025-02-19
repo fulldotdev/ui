@@ -1,11 +1,12 @@
 import { buttonSchema } from '@/schemas/fields/button'
-import { reference, z } from 'astro:content'
+import { pathSchema } from '@/schemas/fields/path'
+import { z } from 'astro:content'
 
 export const productsSchema = z
   .object({
     writeup: z.string().nullish(),
     button: buttonSchema.nullish(),
-    products: reference('products').array().nullish(),
+    products: pathSchema('products').array().nullish(),
   })
   .strict()
 
