@@ -73,7 +73,7 @@ const htmlItems = children.map((child) => child.outerHTML)
         <CarouselItem
           v-for="(htmlItem, index) in htmlItems"
           :key="index"
-          class="pl-0 basis-1/5 cursor-pointer border rounded-md"
+          class="pl-0 basis-1/5 cursor-pointer border rounded-md overflow-hidden"
           :class="index === selectedIndex ? 'border-ring' : ''"
           @click="onThumbClick(index)"
         >

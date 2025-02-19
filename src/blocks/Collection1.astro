@@ -20,7 +20,7 @@ interface Props extends CollectionSchema {
 const { id, title, description } = Astro.props
 
 const collection = await getCollection('products', ({ data }) =>
-  data.collections?.some(({ id }) => id === id)
+  data.collections?.some((collection) => collection.id === id)
 )
 ---
 
@@ -40,23 +40,21 @@ const collection = await getCollection('products', ({ data }) =>
       class="gap-4"
     >
       {
-        collection?.map(
-          ({ collection, id, data: { title, images, price } }) => (
-            <Box
-              class="group flex flex-col gap-3"
-              href={getHref(collection, id)}
-            >
-              <Image
-                class="aspect-square rounded-lg bg-muted object-contain transition-opacity group-hover:opacity-75"
-                {...images?.[0]}
-              />
-              <Abstract>
-                <Box as="h3">{title}</Box>
-                <Price amount={price} />
-              </Abstract>
-            </Box>
-          )
-        )
+        collection?.map(({ collection, id, data: { title, images, price } }) => (
+          <Box
+            class="group flex flex-col gap-3"
+            href={getHref(collection, id)}
+          >
+            <Image
+              class="aspect-square rounded-lg bg-card object-contain transition-opacity group-hover:opacity-75"
+              {...images?.[0]}
+            />
+            <Abstract size="sm">
+              <Box as="h3">{title}</Box>
+              <Price amount={price} />
+            </Abstract>
+          </Box>
+        ))
       }
     </Grid>
     <Prose>

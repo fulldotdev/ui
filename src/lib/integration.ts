@@ -20,7 +20,7 @@ export default function fulldevIntegration(config?: Partial<Config> | undefined)
         })
 
         // Inject the global CSS file
-        injectScript('page-ssr', `import "@/styles/global.css";`)
+        // injectScript('page-ssr', `import "@/styles/global.css";`)
       },
     },
   }
