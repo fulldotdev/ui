@@ -24,7 +24,7 @@ const collection = await getCollection('products', ({ data }) =>
 )
 ---
 
-<Section class="collection collection-1 pt-0">
+<Section class="product-feed product-feed-1 pt-0">
   <Container class="flex flex-col gap-12">
     <Box class="border-b py-12">
       <Writeup
@@ -35,23 +35,28 @@ const collection = await getCollection('products', ({ data }) =>
         <Box as="p">{description}</Box>
       </Writeup>
     </Box>
-    <Grid
-      length={collection?.length}
-      class="gap-4"
-    >
+    <Grid length={collection?.length}>
       {
-        collection?.map(({ collection, id, data: { title, images, price } }) => (
+        collection?.map(({ collection, id, data: { title, images, price, compare_price } }) => (
           <Box
-            class="group flex flex-col gap-3"
+            class="group relative flex flex-col gap-4"
             href={getHref(collection, id)}
           >
             <Image
               class="aspect-square rounded-lg bg-card object-contain transition-opacity group-hover:opacity-75"
               {...images?.[0]}
             />
-            <Abstract size="sm">
+
+            <Abstract
+              size="sm"
+              class="flex flex-col gap-1"
+            >
               <Box as="h3">{title}</Box>
-              <Price amount={price} />
+              <Price
+                class="text-muted-foreground"
+                amount={price}
+                compare={compare_price}
+              />
             </Abstract>
           </Box>
         ))

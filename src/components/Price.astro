@@ -1,46 +1,39 @@
 ---
 import Box from '@/components/Box.astro'
 import type { HTMLAttributes } from 'astro/types'
+import Badge from './Badge.astro'
 
 interface Props extends HTMLAttributes<'div'> {
   size?: 'sm' | 'md' | 'lg' | undefined
   amount?: number | null | undefined
+  compare?: number | null | undefined
 }
 
-const formatPrice = (price: number): string => {
-  return `€${price?.toFixed(2).replace('.', ',').replace(',00', '')}`
+const formatPrice = (number: number | null | undefined): string => {
+  return `€${number?.toFixed(2).replace('.', ',').replace(',00', '')}`
 }
 
-const { size = 'md', amount, ...rest } = Astro.props
+const { size = 'md', amount, compare, class: className, ...rest } = Astro.props
 ---
 
 <Box
-  class:list={`price size-${size}`}
+  class:list={['price', className]}
   {...rest}
 >
-  {amount && <Fragment set:html={formatPrice(amount)} />}
-</Box>
-
-<style is:global>
-  @layer fulldev {
-    .price {
-      color: var(--color-foreground);
-      font-weight: var(--font-weight-medium);
-
-      &.size-sm {
-        font-size: var(--text-sm);
-        line-height: var(--text-sm--line-height);
-      }
-
-      &.size-md {
-        font-size: var(--text-base);
-        line-height: var(--text-base--line-height);
-      }
-
-      &.size-lg {
-        font-size: var(--text-lg);
-        line-height: var(--text-lg--line-height);
-      }
-    }
+  {
+    compare ? (
+      <Box class="flex items-center gap-2.5 text-foreground">
+        {formatPrice(amount)}
+        <Box
+          as="span"
+          class="text-muted-foreground line-through"
+        >
+          {formatPrice(compare)}
+        </Box>
+        <Badge text={`-${Math.round(((compare - (amount || 0)) / compare) * 100)}%`} />
+      </Box>
+    ) : (
+      formatPrice(amount)
+    )
   }
-</style>
+</Box>

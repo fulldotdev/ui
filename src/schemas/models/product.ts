@@ -10,6 +10,7 @@ export const productSchema = z
     list: z.string().array().nullish(),
     images: imageSchema.array().nullish(),
     price: z.number().nullish(),
+    compare_price: z.number().nullish(),
     collections: pathSchema('collections').array().nullish(),
     button: buttonSchema.nullish(),
   })
