@@ -1,72 +1,38 @@
 ---
-import Heading from 'fulldev-ui/components/Heading.astro'
-import Icon from 'fulldev-ui/components/Icon.astro'
-import Paragraph from 'fulldev-ui/components/Paragraph.astro'
-import Tagline from 'fulldev-ui/components/Tagline.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/block'
-import Container from 'fulldev-ui/structures/Container.astro'
-import Prose from 'fulldev-ui/structures/Prose.astro'
-import Section from 'fulldev-ui/structures/Section.astro'
-import Stack from 'fulldev-ui/structures/Stack.astro'
-import Writeup from 'fulldev-ui/structures/Writeup.astro'
+import Abstract from '@/components/Abstract.astro'
+import Box from '@/components/Box.astro'
+import Container from '@/components/Container.astro'
+import Grid from '@/components/Grid.astro'
+import Icon from '@/components/Icon.astro'
+import Section from '@/components/Section.astro'
+import Writeup from '@/components/Writeup.astro'
+import type { FeaturesSchema } from '@/schemas/models/features'
 
-interface Props extends BlockSchema {}
+interface Props extends FeaturesSchema {}
 
-const { depth = 2, tagline, heading, paragraph, cards, ...rest } = Astro.props
+const { writeup, features } = Astro.props
 ---
 
-<Section
-  class:list="features-1"
-  {...rest}
->
-  <Container>
-    <Prose>
-      <Tagline
-        size="sm"
-        text={tagline}
-      />
-      <Heading
-        size="4xl"
-        text={heading}
-        {depth}
-      />
-      <Paragraph
-        size="lg"
-        text={paragraph}
-      />
-    </Prose>
-    <Stack>
+<Section class="features features-1">
+  <Container class="flex flex-col gap-8">
+    <Writeup
+      size="sm"
+      markdown={writeup}
+    >
+      <slot />
+    </Writeup>
+    <Grid length={features?.length}>
       {
-        cards?.map(({ icon, heading, paragraph }) => (
-          <Writeup>
-            <Icon
-              size="lg"
-              name={icon}
-            />
-            <Heading
-              depth={(depth + 1) as 3}
-              as="h3"
-              size="xl"
-              text={heading}
-            />
-            <Paragraph text={paragraph} />
-          </Writeup>
+        features?.map(({ icon, title, description }) => (
+          <Abstract size="xl">
+            <Box class="inline-flex size-9 items-center justify-center rounded-md bg-muted text-muted-foreground">
+              <Icon name={icon} />
+            </Box>
+            <Box as="h3">{title}</Box>
+            <Box as="p">{description}</Box>
+          </Abstract>
         ))
       }
-    </Stack>
+    </Grid>
   </Container>
 </Section>
-
-<style is:global>
-  @layer fulldev {
-    .features-1 {
-      .container {
-        @apply flex flex-col gap-12;
-      }
-
-      .icon {
-        @apply text-primary;
-      }
-    }
-  }
-</style>

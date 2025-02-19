@@ -1,53 +1,47 @@
 ---
+import Box from '@/components/Box.astro'
+import type { MenuSchema } from '@/schemas/fields/menu'
 import type { HTMLAttributes } from 'astro/types'
-import Element from 'fulldev-ui/components/Element.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
-import Link from 'fulldev-ui/components/Link.astro'
-import type { ComponentProps } from 'svelte'
+import Link from './Link.astro'
 
-interface Props extends HTMLAttributes<'div'> {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  heading?: string | undefined
-  links?: ComponentProps<typeof Link>[] | undefined
-}
+interface Props extends HTMLAttributes<'div'>, MenuSchema {}
 
-const { size = 'md', heading, links, ...rest } = Astro.props
+const { text, href, links, ...rest } = Astro.props
 ---
 
-<Element
-  class:list="menu"
-  as="menu"
+<Box
+  class:list="menu inline-flex flex-col items-start gap-2"
+  as="div"
   {...rest}
 >
-  {
-    links && links.length > 0 && (
-      <Heading
-        text={heading}
-        as="h6"
-        {size}
-      />
-    )
-  }
-  {
-    links?.map((link) => (
-      <Element as="li">
+  <Box
+    class="font-medium"
+    as={text ? 'h6' : 'div'}
+  >
+    {
+      href ? (
         <Link
-          {size}
-          {...link}
+          {href}
+          {text}
         />
-      </Element>
-    ))
-  }
-</Element>
-
-<style is:global>
-  @layer fulldev {
-    .menu {
-      @apply flex flex-col gap-2;
-
-      .heading {
-        @apply mb-1;
-      }
+      ) : (
+        <Fragment set:html={text} />
+      )
     }
-  }
-</style>
+  </Box>
+  <Box
+    as="menu"
+    class="flex flex-col gap-2"
+  >
+    {
+      links?.map((link) => (
+        <Box as="li">
+          <Link
+            class="font-normal text-muted-foreground transition-colors hover:text-foreground"
+            {...link}
+          />
+        </Box>
+      ))
+    }
+  </Box>
+</Box>

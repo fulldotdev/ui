@@ -3,13 +3,14 @@
 The [Astro][astro] UI library to build entire websites
 
 Make websites with prebuilt components and blocks
+
 ## Documentation
 
 Please visit the [documentation site][docs]
 
 ## Contributing
 
-We welcome all contributions. Please read our [contributing guide](/CONTRIBUTING.md) to get started.
+We welcome all contributions. Please checkout the repository to get started, it is structured just like a normal Astro project.
 
 ## Support
 

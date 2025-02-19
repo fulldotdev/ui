@@ -1,17 +1,14 @@
 ---
+import Button from '@/components/Button.astro'
 import type { ComponentProps } from 'astro/types'
-import Button from 'fulldev-ui/components/Button.astro'
 
-interface Props extends ComponentProps<typeof Button> {}
+interface Props
+  extends Omit<
+    ComponentProps<typeof Button>,
+    'text' | 'icon' | 'target' | 'size'
+  > {}
 
-const {
-  variant = 'ghost',
-  target = '_blank',
-  size = 'sm',
-  icon,
-  href,
-  ...rest
-} = Astro.props
+const { href, variant = 'ghost', ...rest } = Astro.props
 
 const platform = () => {
   if (typeof href !== 'string') return
@@ -30,10 +27,10 @@ const platform = () => {
 
 <Button
   class:list="social"
-  icon={icon ?? platform()}
-  {variant}
+  icon={platform()}
+  target="_blank"
+  size="sm"
   {href}
-  {target}
-  {size}
+  {variant}
   {...rest}
 />

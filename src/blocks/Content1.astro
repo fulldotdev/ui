@@ -1,41 +1,28 @@
 ---
-import Buttons from 'fulldev-ui/components/Buttons.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
-import Image from 'fulldev-ui/components/Image.astro'
-import Paragraph from 'fulldev-ui/components/Paragraph.astro'
-import Tagline from 'fulldev-ui/components/Tagline.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/block.ts'
-import Container from 'fulldev-ui/structures/Container.astro'
-import Group from 'fulldev-ui/structures/Group.astro'
-import Prose from 'fulldev-ui/structures/Prose.astro'
-import Section from 'fulldev-ui/structures/Section.astro'
+import Buttons from '@/components/Buttons.astro'
+import Container from '@/components/Container.astro'
+import Image from '@/components/Image.astro'
+import Section from '@/components/Section.astro'
+import Split from '@/components/Split.astro'
+import Writeup from '@/components/Writeup.astro'
+import type { ContentSchema } from '@/schemas/models/content'
 
-interface Props extends BlockSchema {}
+interface Props extends ContentSchema {}
 
-const { depth, tagline, heading, paragraph, buttons, image, content } =
-  Astro.props
+const { writeup, buttons, image } = Astro.props
 ---
 
-<Section class="content-1">
+<Section class="content content-1">
   <Container>
-    <Prose align="middle">
-      <Tagline text={tagline} />
-      <Heading
-        size="5xl"
-        text={heading}
-        {depth}
-      />
-      <Paragraph
-        muted
-        size="lg"
-        text={paragraph}
-      />
-      <Image {...image} />
-      <Fragment set:html={content} />
-      <slot />
-      <Group>
+    <Split align="center">
+      <Writeup markdown={writeup}>
+        <slot />
         <Buttons {buttons} />
-      </Group>
-    </Prose>
+      </Writeup>
+      <Image
+        class="rounded-lg"
+        {...image}
+      />
+    </Split>
   </Container>
 </Section>

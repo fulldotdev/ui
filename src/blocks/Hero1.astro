@@ -1,68 +1,39 @@
 ---
-import Badge from 'fulldev-ui/components/Badge.astro'
-import Buttons from 'fulldev-ui/components/Buttons.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
-import Image from 'fulldev-ui/components/Image.astro'
-import Paragraph from 'fulldev-ui/components/Paragraph.astro'
-import Proof from 'fulldev-ui/components/Proof.astro'
-import Tagline from 'fulldev-ui/components/Tagline.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/block'
-import Container from 'fulldev-ui/structures/Container.astro'
-import Group from 'fulldev-ui/structures/Group.astro'
-import Prose from 'fulldev-ui/structures/Prose.astro'
-import Section from 'fulldev-ui/structures/Section.astro'
+import Badge from '@/components/Badge.astro'
+import Buttons from '@/components/Buttons.astro'
+import Container from '@/components/Container.astro'
+import Image from '@/components/Image.astro'
+import Section from '@/components/Section.astro'
+import Writeup from '@/components/Writeup.astro'
+import type { HeroSchema } from '@/schemas/models/hero'
 
-interface Props extends BlockSchema {}
+interface Props extends HeroSchema {}
 
-const {
-  depth = 2,
-  badge,
-  tagline,
-  heading,
-  paragraph,
-  content,
-  buttons,
-  image,
-  proof,
-  ...rest
-} = Astro.props
+const { badge, writeup, buttons, image } = Astro.props
 ---
 
-<Section
-  class:list="hero-1"
-  {...rest}
->
-  <Container class="flex flex-col items-center gap-16">
-    <Prose align="center">
-      <Proof {...proof} />
+<Section class="hero hero-1">
+  <Container class="flex flex-col">
+    <Writeup
+      size="xl"
+      align="center"
+      markdown={writeup}
+    >
       <Badge
         size="lg"
+        slot="before"
+        variant="outline"
         {...badge}
       />
-      <Tagline
-        size="sm"
-        text={tagline}
+      <slot />
+      <Buttons
+        size="lg"
+        justify="center"
+        {buttons}
       />
-      <Heading
-        size="6xl"
-        text={heading}
-        {depth}
-      />
-      <Paragraph
-        class="text-balance"
-        size="xl"
-        text={paragraph}
-      />
-      <Fragment set:html={content} />
-      <Group>
-        <Buttons
-          size="lg"
-          {buttons}
-        />
-      </Group>
-    </Prose>
+    </Writeup>
     <Image
-      class="mx-auto max-h-[700px] w-auto rounded-lg"
+      class="rounded-lg"
       {...image}
     />
   </Container>

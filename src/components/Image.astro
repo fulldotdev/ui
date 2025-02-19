@@ -1,27 +1,19 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { ImageSchema } from '@/schemas/fields/image'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
 import { Image as AstroImage } from 'astro:assets'
 
-interface Props extends HTMLAttributes<'img'> {
-  src?: string | undefined
-  alt?: string | undefined
-  height?: number | undefined
-  width?: number | undefined
-}
-
-function getAltBySrc() {
-  if (!src) return
-  const filename = src?.split('/').pop()
-  const slug = filename && filename.split('.')[0]
-  const unslugged = slug?.replace(/-/g, ' ')
-  return unslugged || ''
+interface Props extends HTMLAttributes<'img'>, ImageSchema {
+  height?: ComponentProps<typeof AstroImage>['height']
+  width?: ComponentProps<typeof AstroImage>['width']
 }
 
 const {
   src,
-  alt = getAltBySrc(),
+  alt = '',
   height = 1920,
   width = 1920,
+  class: className,
   ...rest
 } = Astro.props
 ---
@@ -29,8 +21,8 @@ const {
 {
   src && (
     <AstroImage
-      class:list="image"
-      {alt}
+      class:list={['image block', className]}
+      alt={alt || ''}
       {src}
       {width}
       {height}
@@ -38,11 +30,3 @@ const {
     />
   )
 }
-
-<style is:global>
-  @layer fulldev {
-    .image {
-      @apply block rounded-md;
-    }
-  }
-</style>
