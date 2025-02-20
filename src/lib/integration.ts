@@ -12,7 +12,7 @@ export default function fulldevIntegration(config?: Partial<Config> | undefined)
         // Update the config with required integrations
         updateConfig({
           integrations: [
-            vue(),
+            vue({ appEntrypoint: 'fulldev-ui/_app' }),
             tailwind({
               applyBaseStyles: false,
             }),
@@ -20,7 +20,7 @@ export default function fulldevIntegration(config?: Partial<Config> | undefined)
         })
 
         // Inject the global CSS file
-        // injectScript('page-ssr', `import "@/styles/global.css";`)
+        injectScript('page-ssr', `import "@/styles/global.css";`)
       },
     },
   }

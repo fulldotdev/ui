@@ -13,9 +13,9 @@ export default defineConfig({
   },
   integrations: [
     robotsTxt(),
-    vue(),
     mdx(),
     sitemap(),
+    vue(),
     tailwind({
       applyBaseStyles: false,
     }),

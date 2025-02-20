@@ -1,76 +1,81 @@
 #! /usr/bin/env node
+import { execSync } from 'child_process'
 import fs from 'fs-extra'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
-
-console.log('running fulldev-ui cli...')
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const components = [
-  {
-    source: './src/blocks',
-    target: 'src/blocks',
-  },
-  {
-    source: './src/components',
-    target: 'src/components',
-  },
-  {
-    source: './src/lib',
-    target: 'src/lib',
-  },
-  {
-    source: './src/schemas',
-    target: 'src/schemas',
-  },
-  {
-    source: './src/styles',
-    target: 'src/styles',
-  },
-  {
-    source: './components.json',
-    target: 'components.json',
-  },
-  {
-    source: './tailwind.config.js',
-    target: 'tailwind.config.js',
-  },
-]
+const base = {
+  dependencies: [
+    '@astrojs/tailwind@6.0.0',
+    '@astrojs/vue',
+    '@iconify-json/tabler',
+    '@internationalized/date',
+    '@vee-validate/zod',
+    '@vueuse/core',
+    'astro',
+    'astro-seo',
+    'class-variance-authority',
+    'clsx',
+    'embla-carousel-vue',
+    'lucide-vue-next',
+    'marked',
+    'node-html-parser',
+    'radix-vue',
+    'tailwind-merge@2.6.0',
+    'tailwindcss@3.4.17',
+    'tailwindcss-animate@1.0.7',
+    'typescript',
+    'vaul-vue',
+    'vee-validate',
+    'vue',
+    'zod',
+  ],
+  devDependencies: [],
+  files: [
+    'components.json',
+    'tailwind.config.js',
+    'astro.config.ts',
+    'src/blocks',
+    'src/components',
+    'src/lib',
+    'src/schemas',
+    'src/styles',
+  ],
+}
 
-const content = [
-  {
-    source: './netlify',
-    target: 'netlify',
-  },
-  {
-    source: './src/content.config.ts',
-    target: 'src/content.config.ts',
-  },
-  {
-    source: './stackbit',
-    target: 'stackbit',
-  },
-  {
-    source: './netlify.toml',
-    target: 'netlify.toml',
-  },
-  {
-    source: './renovate.json',
-    target: 'renovate.json',
-  },
-  {
-    source: './stackbit.config.ts',
-    target: 'stackbit.config.ts',
-  },
-]
+const advanced = {
+  dependencies: ['@astrojs/netlify', '@astrojs/sitemap', 'astro-robots-txt', '@stackbit/cms-git'],
+  devDependencies: [
+    '@stackbit/types',
+    '@astrojs/check',
+    'prettier',
+    'prettier-plugin-astro',
+    'prettier-plugin-astro-organize-imports',
+    'prettier-plugin-css-order',
+    'prettier-plugin-organize-imports',
+    'prettier-plugin-tailwindcss',
+  ],
+  files: [
+    '.gitignore',
+    '.prettierignore',
+    '.prettierrc.yaml',
+    'tsconfig.json',
+    'netlify',
+    'netlify.toml',
+    'renovate.json',
+    'stackbit',
+    'stackbit.config.ts',
+    'src/content.config.ts',
+  ],
+}
 
-function copyItems(items) {
-  items.forEach((item) => {
-    const sourcePath = path.join(__dirname, item.source)
-    const targetPath = path.join(process.cwd(), item.target)
+function addFiles(files) {
+  files.forEach((file) => {
+    const sourcePath = path.join(__dirname, `./${file}`)
+    const targetPath = path.join(process.cwd(), file)
 
     // Create parent directory for files
     const targetDir = fs.statSync(sourcePath).isDirectory() ? targetPath : path.dirname(targetPath)
@@ -78,22 +83,42 @@ function copyItems(items) {
 
     // Copy item
     fs.copySync(sourcePath, targetPath)
-    console.log(`${item.target} copied successfully!`)
+    console.log(`added successfully: "${file}"`)
   })
 }
 
+function installDependencies(dependencies) {
+  console.log(`Installing dependencies: "${dependencies}"...`)
+  const command = `pnpm i ${dependencies.join(' ')}`
+  execSync(command, { cwd: process.cwd(), stdio: 'inherit' })
+}
+
+function installDevDependencies(devDependencies) {
+  console.log(`Installing dev dependencies: "${devDependencies}"...`)
+  const command = `pnpm i ${devDependencies.join(' ')} --save-dev`
+  execSync(command, { cwd: process.cwd(), stdio: 'inherit' })
+}
+
 yargs(hideBin(process.argv))
-  .command('components', 'Copy components and related files', () => {
-    console.log('copying components...')
-    copyItems(components)
+  .command('init', 'Initialize fulldev-ui', () => {
+    console.log('initializing fulldev-ui...')
+    installDependencies(base.dependencies)
+    installDevDependencies(base.devDependencies)
+    addFiles(base.files)
   })
-  .command('content', 'Copy content and related files', () => {
-    console.log('copying content...')
-    copyItems(content)
+  .command('add', 'Add project files', () => {
+    console.log('adding project files...')
+    addFiles(base.files)
   })
-  .command('all', 'Copy both components and content files', () => {
-    console.log('copying all files...')
-    copyItems([...components, ...content])
+  .command('advanced-init', 'UNSTABLE: Initialize advanced files', () => {
+    console.log('initializing advanced...')
+    installDependencies([...base.dependencies, ...advanced.dependencies])
+    installDevDependencies([...base.devDependencies, ...advanced.devDependencies])
+    addFiles([...base.files, ...advanced.files])
   })
-  .demandCommand(1, 'You need to specify either "components", "content", or "all"')
+  .command('advanced-add', 'UNSTABLE: Update advanced files', () => {
+    console.log('updating advanced...')
+    addFiles([...base.files, ...advanced.files])
+  })
+  .demandCommand(1, 'You need to specify either "init" or "add"')
   .parse()

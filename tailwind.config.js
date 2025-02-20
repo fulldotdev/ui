@@ -103,7 +103,6 @@ module.exports = {
       addVariant('buttons', '&>.buttons')
       addVariant('img', '&>img')
       addVariant('form', '&>form')
-
       addVariant('list', '&>*:is(ul,ol)')
       addVariant('ul', '&>ul')
       addVariant('ol', '&>ol')
