@@ -48,7 +48,7 @@ const handleUpdate = (value: string) => {
       >
         <NavigationMenuTrigger
           v-if="item.links"
-          class="px-3 py-0 h-9"
+          class="px-3 py-0 h-9 text-muted-foreground"
         >
           <NavigationMenuLink
             v-if="item.href"
@@ -64,7 +64,7 @@ const handleUpdate = (value: string) => {
             <li v-for="link in item.links">
               <NavigationMenuLink
                 :href="link.href"
-                class="text-muted-foreground hover:text-foreground transition-colors font-normal"
+                class="text-muted-foreground hover:text-foreground transition-colors font-normal whitespace-nowrap"
               >
                 {{ link.text }}
               </NavigationMenuLink>

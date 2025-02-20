@@ -34,7 +34,7 @@ function handleOpenChange() {
   <Button
     @click="handleOpenChange"
     size="sm"
-    class="gap-8"
+    class="gap-8 text-foreground"
     variant="outline"
   >
     Zoeken...
