@@ -1,8 +1,10 @@
 import { collectionSchema } from '@/schemas/models/collection'
 import { pageSchema } from '@/schemas/models/page'
+import { personSchema } from '@/schemas/models/person'
 import { postSchema } from '@/schemas/models/post'
 import { productSchema } from '@/schemas/models/product'
-import { glob } from 'astro/loaders'
+import { projectSchema } from '@/schemas/models/project'
+import { file, glob } from 'astro/loaders'
 import { defineCollection, z } from 'astro:content'
 
 export const collections = {
@@ -24,6 +26,24 @@ export const collections = {
       type: z.literal('Post').default('Post'),
     }),
   }),
+  projects: defineCollection({
+    loader: glob({
+      pattern: '**/[^_]*.{md,mdx}',
+      base: './src/content/projects',
+    }),
+    schema: pageSchema.merge(projectSchema).extend({
+      type: z.literal('Project').default('Project'),
+    }),
+  }),
+  persons: defineCollection({
+    loader: glob({
+      pattern: '**/[^_]*.{md,mdx}',
+      base: './src/content/persons',
+    }),
+    schema: pageSchema.merge(personSchema).extend({
+      type: z.literal('Person').default('Person'),
+    }),
+  }),
   products: defineCollection({
     loader: glob({
       pattern: '**/[^_]*.{md,mdx}',
@@ -40,6 +60,16 @@ export const collections = {
     }),
     schema: pageSchema.merge(collectionSchema).extend({
       type: z.literal('Collection').default('Collection'),
+    }),
+  }),
+  reviews: defineCollection({
+    loader: file('src/data/reviews.json', {
+      parser: (text) => JSON.parse(text).map((item: any, index: number) => ({ ...item, id: index })),
+    }),
+    schema: z.object({
+      rating: z.number().min(1).max(5),
+      title: z.string(),
+      description: z.string(),
     }),
   }),
 }

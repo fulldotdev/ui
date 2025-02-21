@@ -5,8 +5,8 @@ import { z } from 'zod'
 
 interface Props {
   fields?: {
-    label: string
-    type: 'text' | 'email' | 'checkbox' | 'select'
+    label?: string
+    type?: 'text' | 'email' | 'checkbox' | 'select'
     optional?: boolean
     options?: string[]
   }[]

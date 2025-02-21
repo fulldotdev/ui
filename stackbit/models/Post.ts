@@ -1,8 +1,8 @@
+import { DescriptionField } from '@/schemas/fields/Description'
+import { ImageField } from '@/schemas/fields/Image'
+import { MetaField } from '@/schemas/fields/Meta'
+import { TitleField } from '@/schemas/fields/Title'
 import { type PageModel } from '@stackbit/types'
-import { DescriptionField } from '../fields/Description'
-import { ImageField } from '../fields/Image'
-import { MetaField } from '../fields/Meta'
-import { TitleField } from '../fields/Title'
 
 export const PostModel: PageModel = {
   name: 'Post',

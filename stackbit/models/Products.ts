@@ -1,6 +1,6 @@
+import { ButtonField } from '@/schemas/fields/Button'
+import { WriteupField } from '@/schemas/fields/Writeup'
 import { type ObjectModel } from '@stackbit/types'
-import { ButtonField } from '../fields/Button'
-import { WriteupField } from '../fields/Writeup'
 
 export const ProductsModel: ObjectModel = {
   name: 'Products',

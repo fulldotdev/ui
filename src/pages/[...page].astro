@@ -4,21 +4,25 @@ import NavigationLayout from '@/layouts/NavigationLayout.astro'
 import { getCollection, render } from 'astro:content'
 
 export async function getStaticPaths() {
-  const collection = await getCollection('blocks')
+  const collection = await getCollection('pages')
   return collection.map((entry) => ({
     params: {
-      block: entry.id,
+      page: entry.id === 'index' ? undefined : entry.id,
     },
     props: entry,
   }))
 }
 
 const { Content } = await render(Astro.props)
-const { data } = Astro.props
+const { sections, meta, ...rest } = Astro.props.data
 ---
 
-<NavigationLayout>
-  <Block {...data}>
+<NavigationLayout
+  {...rest}
+  {...meta}
+>
+  <Block {...rest}>
     <Content />
   </Block>
+  {sections?.map((section) => <Block {...section} />)}
 </NavigationLayout>

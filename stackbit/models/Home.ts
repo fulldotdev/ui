@@ -1,7 +1,7 @@
+import { MetaField } from '@/schemas/fields/Meta'
+import { SectionsField } from '@/schemas/fields/Sections'
+import { TitleField } from '@/schemas/fields/Title'
 import type { PageModel } from '@stackbit/types'
-import { MetaField } from '../fields/Meta'
-import { SectionsField } from '../fields/Sections'
-import { TitleField } from '../fields/Title'
 
 export const HomeModel: PageModel = {
   name: 'Home',

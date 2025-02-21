@@ -1,0 +1,29 @@
+---
+import Collection1 from '@/blocks/Collection1.astro'
+import settings from '@/data/settings.json'
+import NavigationLayout from '@/layouts/NavigationLayout.astro'
+import { getCollection, render } from 'astro:content'
+
+export async function getStaticPaths() {
+  const collection = await getCollection('collections')
+  return collection.map((entry) => ({
+    params: {
+      collections: settings.collections.slug,
+      collection: entry.id,
+    },
+    props: entry,
+  }))
+}
+
+const { Content } = await render(Astro.props)
+const { ...rest } = Astro.props.data
+---
+
+<NavigationLayout {...rest}>
+  <Collection1
+    id={Astro.props.id}
+    {...rest}
+  >
+    <Content />
+  </Collection1>
+</NavigationLayout>

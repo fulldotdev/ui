@@ -1,7 +1,7 @@
 import { buttonSchema } from '@/schemas/fields/button'
 import { imageSchema } from '@/schemas/fields/image'
+import { pathSchema } from '@/schemas/fields/path'
 import { z } from 'astro:content'
-import { pathSchema } from '../fields/path'
 
 export const productSchema = z
   .object({

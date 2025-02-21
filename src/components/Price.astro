@@ -4,36 +4,26 @@ import Box from '@/components/Box.astro'
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'div'> {
-  size?: 'sm' | 'md' | 'lg' | undefined
   amount?: number | null | undefined
   compare?: number | null | undefined
+  unit?: string | null | undefined
 }
 
 const formatPrice = (number: number | null | undefined): string => {
   return `€${number?.toFixed(2).replace('.', ',').replace(',00', '')}`
 }
 
-const { size = 'md', amount, compare, class: className, ...rest } = Astro.props
+const { amount, compare, unit, class: className, ...rest } = Astro.props
 ---
 
 <Box
-  class:list={['price', className]}
+  class:list={['price flex items-center gap-2.5', className]}
   {...rest}
 >
-  {
-    compare ? (
-      <Box class="flex items-center gap-2.5 text-foreground">
-        {formatPrice(amount)}
-        <Box
-          as="span"
-          class="text-muted-foreground line-through"
-        >
-          {formatPrice(compare)}
-        </Box>
-        <Badge text={`-${Math.round(((compare - (amount || 0)) / compare) * 100)}%`} />
-      </Box>
-    ) : (
-      formatPrice(amount)
-    )
-  }
+  <Box>
+    {amount && formatPrice(amount)}
+    {compare && <span class="ml-2 text-sm text-muted-foreground line-through">{formatPrice(compare)}</span>}
+    {unit && <span class="text-sm text-muted-foreground">{unit ? ` / ${unit}` : ''}</span>}
+  </Box>
+  {compare && <Badge text={`-${Math.round(((compare - (amount || 0)) / compare) * 100)}%`} />}
 </Box>

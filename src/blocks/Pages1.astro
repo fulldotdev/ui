@@ -8,25 +8,24 @@ import Image from '@/components/Image.astro'
 import Section from '@/components/Section.astro'
 import Writeup from '@/components/Writeup.astro'
 import { getHref } from '@/lib/getHref'
-import type { CollectionsSchema } from '@/schemas/models/collections'
+import type { PagesSchema } from '@/schemas/models/pages'
 import { getCollection, getEntries } from 'astro:content'
 
-interface Props extends CollectionsSchema {}
+interface Props extends PagesSchema {}
 
-const { writeup, button, collections } = Astro.props
+const { writeup, button, pages } = Astro.props
 
-const entries = collections ? await getEntries(collections) : await getCollection('collections')
+const entries = pages ? await getEntries(pages) : await getCollection('pages')
 ---
 
-<Section class="collections collections-1">
-  <Container class="flex flex-col gap-8">
+<Section class="pages pages-1">
+  <Container class="flex flex-col items-center gap-16">
     <Writeup
       class="items-center text-center"
       markdown={writeup}
     >
       <slot />
       <Button
-        class="max-lg:hidden"
         variant="link"
         reverse
         {...button}
@@ -34,17 +33,18 @@ const entries = collections ? await getEntries(collections) : await getCollectio
     </Writeup>
     <Grid length={entries?.length}>
       {
-        entries?.map(({ collection, id, data: { title, image } }) => (
+        entries?.map(({ collection, id, data: { title, description, image } }) => (
           <Box
             class="group flex flex-col gap-4"
             href={getHref(collection, id)}
           >
             <Image
-              class="aspect-square rounded-lg transition-opacity group-hover:opacity-75"
+              class="rounded-lg transition-opacity group-hover:opacity-75"
               {...image}
             />
             <Abstract>
               <Box as="h3">{title}</Box>
+              <Box as="p">{description}</Box>
             </Abstract>
           </Box>
         ))

@@ -1,0 +1,30 @@
+---
+import Block from '@/components/Block.astro'
+import settings from '@/data/settings.json'
+import NavigationLayout from '@/layouts/NavigationLayout.astro'
+import { getCollection, render } from 'astro:content'
+
+export async function getStaticPaths() {
+  const collection = await getCollection('posts')
+  return collection.map((entry) => ({
+    params: {
+      posts: settings.posts.slug,
+      post: entry.id,
+    },
+    props: entry,
+  }))
+}
+
+const { Content } = await render(Astro.props)
+const { meta, sections, ...rest } = Astro.props.data
+---
+
+<NavigationLayout
+  {...rest}
+  {...meta}
+>
+  <Block {...rest}>
+    <Content />
+  </Block>
+  {sections?.map((section) => <Block {...section} />)}
+</NavigationLayout>

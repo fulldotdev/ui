@@ -8,42 +8,41 @@ import Image from '@/components/Image.astro'
 import Section from '@/components/Section.astro'
 import Writeup from '@/components/Writeup.astro'
 import { getHref } from '@/lib/getHref'
-import type { CollectionsSchema } from '@/schemas/models/collections'
+import type { ProjectsSchema } from '@/schemas/models/projects'
 import { getCollection, getEntries } from 'astro:content'
 
-interface Props extends CollectionsSchema {}
+interface Props extends ProjectsSchema {}
 
-const { writeup, button, collections } = Astro.props
+const { writeup, button, projects } = Astro.props
 
-const entries = collections ? await getEntries(collections) : await getCollection('collections')
+const entries = projects ? await getEntries(projects) : await getCollection('projects')
 ---
 
-<Section class="collections collections-1">
-  <Container class="flex flex-col gap-8">
+<Section class="projects projects-1">
+  <Container class="flex flex-col items-center gap-16">
     <Writeup
       class="items-center text-center"
+      size="lg"
       markdown={writeup}
     >
       <slot />
-      <Button
-        class="max-lg:hidden"
-        variant="link"
-        reverse
-        {...button}
-      />
     </Writeup>
-    <Grid length={entries?.length}>
+    <Grid
+      length={entries?.length}
+      size="lg"
+      class="gap-x-8"
+    >
       {
         entries?.map(({ collection, id, data: { title, image } }) => (
           <Box
-            class="group flex flex-col gap-4"
+            class="group flex flex-col gap-3"
             href={getHref(collection, id)}
           >
             <Image
-              class="aspect-square rounded-lg transition-opacity group-hover:opacity-75"
+              class="rounded-lg bg-card object-contain transition-opacity group-hover:opacity-75"
               {...image}
             />
-            <Abstract>
+            <Abstract size="lg">
               <Box as="h3">{title}</Box>
             </Abstract>
           </Box>
@@ -51,7 +50,7 @@ const entries = collections ? await getEntries(collections) : await getCollectio
       }
     </Grid>
     <Button
-      class="lg:hidden"
+      class="hidden"
       variant="secondary"
       {...button}
     />

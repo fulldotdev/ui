@@ -43,6 +43,7 @@ const base = {
     'src/lib',
     'src/schemas',
     'src/styles',
+    'src/pages',
   ],
 }
 

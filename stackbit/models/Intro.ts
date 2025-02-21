@@ -1,5 +1,5 @@
+import { WriteupField } from '@/schemas/fields/Writeup'
 import { type ObjectModel } from '@stackbit/types'
-import { WriteupField } from '../fields/Writeup'
 
 export const IntroModel: ObjectModel = {
   name: 'Intro',

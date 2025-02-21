@@ -1,13 +1,10 @@
+import settings from '@/data/settings.json'
+
 export function getHref(
-  collection: 'pages' | 'posts' | 'products' | 'collections' | 'docs',
+  collection: 'pages' | 'posts' | 'products' | 'collections' | 'projects' | 'persons',
   slugOrId: string
 ) {
-  let collectionSlug = ''
-  if (collection === 'posts') collectionSlug = 'blog'
-  else if (collection === 'products') collectionSlug = 'producten'
-  else if (collection === 'collections') collectionSlug = 'collecties'
-  else if (collection === 'docs') collectionSlug = 'docs'
-
+  const collectionSlug = collection === 'pages' ? '' : settings[collection].slug
   const entrySlug = slugOrId === 'index' ? '' : slugOrId
   const slug = `/${collectionSlug}/${entrySlug}/`.replace(/\/{2,}/g, '/')
   return slug

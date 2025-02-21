@@ -1,0 +1,55 @@
+---
+import Abstract from '@/components/Abstract.astro'
+import Box from '@/components/Box.astro'
+import Button from '@/components/Button.astro'
+import Card from '@/components/Card.astro'
+import Container from '@/components/Container.astro'
+import Grid from '@/components/Grid.astro'
+import List from '@/components/List.astro'
+import Price from '@/components/Price.astro'
+import Section from '@/components/Section.astro'
+import Writeup from '@/components/Writeup.astro'
+import type { PricingsSchema } from '@/schemas/models/pricings'
+
+interface Props extends PricingsSchema {}
+
+const { writeup, pricings } = Astro.props
+---
+
+<Section class="features features-1">
+  <Container class="flex flex-col items-center gap-16">
+    <Writeup
+      class="flex flex-col items-center text-center"
+      size="lg"
+      markdown={writeup}
+    >
+      <slot />
+    </Writeup>
+    <Grid length={pricings?.length}>
+      {
+        pricings?.map(({ title, description, price, price_unit, list, button }) => (
+          <Card>
+            <Abstract size="xl">
+              <Box as="h3">{title}</Box>
+              <Box as="p">{description}</Box>
+              <Price
+                class="text-2xl font-medium"
+                amount={price}
+                unit={price_unit}
+                compare={1200}
+              />
+              <List
+                class="!mt-8"
+                items={list}
+              />
+              <Button
+                class="!mt-8"
+                {...button}
+              />
+            </Abstract>
+          </Card>
+        ))
+      }
+    </Grid>
+  </Container>
+</Section>

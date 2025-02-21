@@ -6,11 +6,14 @@ import { faqsSchema } from '@/schemas/models/faqs'
 import { featuresSchema } from '@/schemas/models/features'
 import { heroSchema } from '@/schemas/models/hero'
 import { introSchema } from '@/schemas/models/intro'
+import { pagesSchema } from '@/schemas/models/pages'
+import { personsSchema } from '@/schemas/models/persons'
 import { postsSchema } from '@/schemas/models/posts'
+import { pricingsSchema } from '@/schemas/models/pricings'
 import { productsSchema } from '@/schemas/models/products'
+import { projectsSchema } from '@/schemas/models/projects'
 import { reviewsSchema } from '@/schemas/models/reviews'
 import { z } from 'astro:content'
-import { personsSchema } from '../models/persons'
 
 export const sectionSchema = z.discriminatedUnion('type', [
   collectionsSchema.extend({
@@ -59,6 +62,18 @@ export const sectionSchema = z.discriminatedUnion('type', [
   }),
   personsSchema.extend({
     type: z.literal('Persons'),
+    variant: z.number().default(1),
+  }),
+  projectsSchema.extend({
+    type: z.literal('Projects'),
+    variant: z.number().default(1),
+  }),
+  pricingsSchema.extend({
+    type: z.literal('Pricings'),
+    variant: z.number().default(1),
+  }),
+  pagesSchema.extend({
+    type: z.literal('Pages'),
     variant: z.number().default(1),
   }),
 ])

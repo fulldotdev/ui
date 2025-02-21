@@ -8,10 +8,13 @@ import Rating from '@/components/Rating.astro'
 import Section from '@/components/Section.astro'
 import Writeup from '@/components/Writeup.astro'
 import type { ReviewsSchema } from '@/schemas/models/reviews'
+import { getCollection, getEntries } from 'astro:content'
 
 interface Props extends ReviewsSchema {}
 
 const { writeup, reviews } = Astro.props
+
+const entries = reviews ? await getEntries(reviews) : await getCollection('reviews')
 ---
 
 <Section class="reviews reviews-1">
@@ -22,9 +25,9 @@ const { writeup, reviews } = Astro.props
     >
       <slot />
     </Writeup>
-    <Masonry length={reviews?.length}>
+    <Masonry length={entries?.length}>
       {
-        reviews?.map(({ rating, title, description }) => (
+        entries?.map(({ data: { rating, title, description } }) => (
           <Card class="flex flex-col">
             <Abstract size="lg">
               <Rating score={rating} />
