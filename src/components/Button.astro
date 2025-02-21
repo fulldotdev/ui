@@ -9,13 +9,10 @@ import type { HTMLAttributes } from 'astro/types'
 interface Props
   extends HTMLAttributes<'button'>,
     Omit<HTMLAttributes<'a'>, 'type' | 'href'>,
-    Omit<ButtonVariants, 'size'>,
-    ButtonSchema {
+    ButtonVariants,
+    Omit<ButtonSchema, 'size'> {
   reverse?: boolean
 }
-
-const slot = await Astro.slots.render('default')
-const hasSlot = slot?.trim().length > 0
 
 const { href, text, size, variant, icon, reverse, class: className, ...rest } = Astro.props
 ---
@@ -26,22 +23,8 @@ const { href, text, size, variant, icon, reverse, class: className, ...rest } = 
   {href}
   {...rest}
 >
-  {
-    !reverse && (
-      <Icon
-        class={!(hasSlot || text) ? 'absolute' : undefined}
-        name={icon}
-      />
-    )
-  }
+  {!reverse && <Icon name={icon} />}
   <Fragment set:html={text} />
-  <Fragment set:html={slot} />
-  {
-    reverse && (
-      <Icon
-        class={!(hasSlot || text) ? 'absolute' : undefined}
-        name={icon}
-      />
-    )
-  }
+  <slot />
+  {reverse && <Icon name={icon} />}
 </Box>

@@ -67,12 +67,15 @@ const config = (fields || []).reduce((acc: any, field) => {
 
 <template>
   <AutoForm
-    class="w-full space-y-6 [&>div>p[role='alert']]:hidden"
+    class="w-full flex flex-col space-y-6 [&>*:not(button[type='submit'])]:w-full [&>div>p[role='alert']]:hidden max-w-xl"
     :field-config="config"
     :schema="schema"
   >
     <slot />
-    <Button type="submit">
+    <Button
+      class="flex submit"
+      type="submit"
+    >
       {{ submit }}
     </Button>
   </AutoForm>

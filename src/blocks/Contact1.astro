@@ -1,44 +1,60 @@
 ---
+import Abstract from '@/components/Abstract.astro'
 import Box from '@/components/Box.astro'
 import Button from '@/components/Button.astro'
-import Card from '@/components/Card.astro'
 import Container from '@/components/Container.astro'
 import Form from '@/components/Form.vue'
+import Grid from '@/components/Grid.astro'
 import Section from '@/components/Section.astro'
-import Socials from '@/components/Socials.astro'
 import Writeup from '@/components/Writeup.astro'
 import type { ContactSchema } from '@/schemas/models/contact'
 
 interface Props extends ContactSchema {}
 
-const { writeup, channels, socials, form } = Astro.props
+const { writeup, channels, form } = Astro.props
 ---
 
 <Section class="contact contact-1">
-  <Container
-    class="flex flex-col"
-    size="sm"
-  >
-    <Writeup markdown={writeup}>
+  <Container class="flex flex-col items-center gap-16">
+    <Writeup
+      class="items-center text-center"
+      size="lg"
+      markdown={writeup}
+    >
       <slot />
-      <Box class="flex flex-col items-start">
-        {
-          channels?.map((channel) => (
-            <Button
-              class="px-0"
-              variant="link"
-              {...channel}
-            />
-          ))
-        }
-      </Box>
-      <Socials {socials} />
     </Writeup>
-    <Card>
-      <Form
-        client:load
-        {...form}
-      />
-    </Card>
+    <Grid
+      length={channels?.length}
+      class="gap-8"
+    >
+      {
+        channels?.map(({ href, icon, title, description }) => (
+          <Box class="flex flex-col items-center gap-4 text-center">
+            <Abstract
+              class="items-center text-center"
+              size="lg"
+            >
+              <Button
+                size="icon"
+                variant="secondary"
+                {icon}
+                {href}
+              />
+              <Box as="h3">{title}</Box>
+              <Box
+                class="text-muted-foreground transition-colors hover:text-foreground"
+                {href}
+              >
+                {description}
+              </Box>
+            </Abstract>
+          </Box>
+        ))
+      }
+    </Grid>
+    <Form
+      client:load
+      {...form}
+    />
   </Container>
 </Section>

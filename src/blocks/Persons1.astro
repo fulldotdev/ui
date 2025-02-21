@@ -1,0 +1,49 @@
+---
+import Abstract from '@/components/Abstract.astro'
+import Box from '@/components/Box.astro'
+import Container from '@/components/Container.astro'
+import Grid from '@/components/Grid.astro'
+import Image from '@/components/Image.astro'
+import Section from '@/components/Section.astro'
+import Writeup from '@/components/Writeup.astro'
+import type { PersonsSchema } from '@/schemas/models/persons'
+
+interface Props extends PersonsSchema {
+  align?: 'start' | 'center' | 'end'
+}
+
+const { writeup, persons } = Astro.props
+---
+
+<Section class="features features-1">
+  <Container class="flex flex-col items-center gap-16">
+    <Writeup
+      class="items-center text-center"
+      markdown={writeup}
+    >
+      <slot />
+    </Writeup>
+    <Grid
+      length={persons?.length}
+      class="gap-16"
+    >
+      {
+        persons?.map(({ image, title, description }) => (
+          <Box class="flex max-w-md flex-col items-center gap-6">
+            <Image
+              class="aspect-square w-full max-w-60 rounded-full object-cover"
+              {...image}
+            />
+            <Abstract
+              class="items-center text-center"
+              size="lg"
+            >
+              <Box as="h3">{title}</Box>
+              <Box as="p">{description}</Box>
+            </Abstract>
+          </Box>
+        ))
+      }
+    </Grid>
+  </Container>
+</Section>

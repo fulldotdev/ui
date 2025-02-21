@@ -11,14 +11,9 @@ export const collections = {
       pattern: '**/[^_]*.{md,mdx}',
       base: './src/content/pages',
     }),
-    schema: z.discriminatedUnion('type', [
-      pageSchema.extend({
-        type: z.literal('Page'),
-      }),
-      pageSchema.extend({
-        type: z.literal('Home'),
-      }),
-    ]),
+    schema: pageSchema.extend({
+      type: z.enum(['Page', 'Home']).default('Page'),
+    }),
   }),
   posts: defineCollection({
     loader: glob({

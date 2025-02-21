@@ -10,6 +10,7 @@ import { postsSchema } from '@/schemas/models/posts'
 import { productsSchema } from '@/schemas/models/products'
 import { reviewsSchema } from '@/schemas/models/reviews'
 import { z } from 'astro:content'
+import { personsSchema } from '../models/persons'
 
 export const sectionSchema = z.discriminatedUnion('type', [
   collectionsSchema.extend({
@@ -54,6 +55,10 @@ export const sectionSchema = z.discriminatedUnion('type', [
   }),
   reviewsSchema.extend({
     type: z.literal('Reviews'),
+    variant: z.number().default(1),
+  }),
+  personsSchema.extend({
+    type: z.literal('Persons'),
     variant: z.number().default(1),
   }),
 ])

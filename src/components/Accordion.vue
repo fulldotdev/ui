@@ -14,7 +14,7 @@ const { items } = defineProps<Props>()
 <template v-if="items">
   <Accordion
     type="single"
-    class="w-full"
+    class="w-full max-w-xl"
     collapsible
   >
     <AccordionItem
