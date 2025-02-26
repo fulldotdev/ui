@@ -31,33 +31,43 @@ export function Form({ items, submit }: Props) {
 
   return (
     <FormRoot {...form}>
-      {items?.map(
-        ({ type, name, label, placeholder, description, required }) =>
-          name && (
-            <FormField
-              control={form.control}
-              name={name}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{label}</FormLabel>
-                  <FormControl>
-                    {(type === 'text' || type === 'number' || type === 'email') && (
-                      <Input
-                        type={type}
-                        required={required}
-                        placeholder={placeholder || undefined}
-                        {...field}
-                      />
-                    )}
-                  </FormControl>
-                  <FormDescription>{description}</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )
-      )}
-      <Button type="submit">{submit}</Button>
+      <form
+        action=""
+        className="w-full flex flex-col gap-6 max-w-xl"
+      >
+        {items?.map(
+          ({ type, name, label, placeholder, description, required }) =>
+            name && (
+              <FormField
+                control={form.control}
+                name={name}
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>{label}</FormLabel>
+                    <FormControl>
+                      {(type === 'text' || type === 'number' || type === 'email') && (
+                        <Input
+                          type={type}
+                          required={required}
+                          placeholder={placeholder || undefined}
+                          {...field}
+                        />
+                      )}
+                    </FormControl>
+                    <FormDescription>{description}</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )
+        )}
+        <Button
+          className="flex cursor-pointer"
+          type="submit"
+        >
+          {submit}
+        </Button>
+      </form>
     </FormRoot>
   )
 }

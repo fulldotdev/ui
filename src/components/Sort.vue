@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import Select from '@/components/Select.vue'
 import type { SelectRootProps } from 'radix-vue'
 
@@ -43,4 +43,4 @@ const handleChange = (value: string) => {
     :options="options"
     @update:modelValue="handleChange"
   />
-</template>
+</template> -->
