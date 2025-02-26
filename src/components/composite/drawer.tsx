@@ -1,4 +1,4 @@
-import { Button, type ButtonProps } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   DrawerContent,
   DrawerDescription,
@@ -8,11 +8,12 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer'
+import type { ComponentProps } from 'react'
 
 interface Props {
   className?: string
-  variant?: ButtonProps['variant']
-  size?: ButtonProps['size']
+  variant?: ComponentProps<typeof Button>['variant']
+  size?: ComponentProps<typeof Button>['size']
   title?: string
   description?: string
   children?: any
