@@ -1,0 +1,41 @@
+---
+import { Drawer as DrawerComposite } from '@/components/composite/drawer'
+import type { ComponentProps } from 'astro/types'
+
+type DrawerProps = ComponentProps<typeof DrawerComposite>
+
+interface Props extends Omit<DrawerProps, 'className'> {
+  class?: DrawerProps['className']
+}
+
+const defaultSlot = await Astro.slots.render('default')
+const triggerSlot = await Astro.slots.render('trigger')
+const headerSlot = await Astro.slots.render('header')
+const footerSlot = await Astro.slots.render('footer')
+
+const { class: className, ...rest } = Astro.props
+---
+
+{
+  (defaultSlot.trim().length || triggerSlot.trim().length || headerSlot.trim().length || footerSlot.trim().length) && (
+    <DrawerComposite
+      client:load
+      {className}
+      {...rest}
+    >
+      <Fragment
+        set:html={headerSlot}
+        slot="header"
+      />
+      <Fragment
+        set:html={triggerSlot}
+        slot="trigger"
+      />
+      <Fragment set:html={defaultSlot} />
+      <Fragment
+        set:html={footerSlot}
+        slot="footer"
+      />
+    </DrawerComposite>
+  )
+}
