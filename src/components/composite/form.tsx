@@ -62,7 +62,7 @@ export function Form({ items, submit }: Props) {
             )
         )}
         <Button
-          className="flex cursor-pointer"
+          className="flex"
           type="submit"
         >
           {submit}
