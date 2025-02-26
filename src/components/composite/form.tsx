@@ -36,9 +36,10 @@ export function Form({ items, submit }: Props) {
         className="w-full flex flex-col gap-6 max-w-xl"
       >
         {items?.map(
-          ({ type, name, label, placeholder, description, required }) =>
+          ({ type, name, label, placeholder, description, required }, index) =>
             name && (
               <FormField
+                key={index}
                 control={form.control}
                 name={name}
                 render={({ field }) => (

@@ -48,7 +48,12 @@ export function Search({ groups }: Props) {
                   asChild
                   onSelect={() => href && (window.location.href = href)}
                 >
-                  <a href={href || undefined}>{text}</a>
+                  <a 
+                    key={index}
+                    href={href || undefined}
+                  >
+                    {text}
+                  </a>
                 </CommandItem>
               ))}
             </CommandGroup>
