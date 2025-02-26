@@ -19,7 +19,3 @@
 - [ ] Calculate average aspect-ratio for images and use that is blocks/cards/etc.
 - [ ] .cursorrules
 - [ ] Motion.dev for animations
-
-## Awaiting 3rd party
-
-- [ ] Shadcn-vue Tailwind v4 support
