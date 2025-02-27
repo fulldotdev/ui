@@ -30,7 +30,7 @@ export function Search({ groups }: Props) {
   return (
     <>
       <Button
-        className=" text-muted-foreground bg-muted/50 transition-colors"
+        className="bg-muted/50 hover:bg-muted/70 transition-colors"
         variant="outline"
         onClick={() => setOpen(true)}
       >
