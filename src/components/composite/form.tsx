@@ -9,8 +9,8 @@ import {
   Form as FormRoot,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
-import { Textarea } from '../ui/textarea'
 
 interface Props {
   submit?: string
@@ -47,21 +47,26 @@ export function Form({ fields, submit }: Props) {
                   <FormItem className="w-full">
                     <FormLabel>{label}</FormLabel>
                     <FormControl>
-                      {(type === 'text' || type === 'number' || type === 'email') && (
-                        <Input
-                          type={type}
-                          required={required}
-                          placeholder={placeholder || undefined}
-                          {...field}
-                        />
-                      )}
-                      {type === 'textarea' && (
-                        <Textarea
-                          required={required}
-                          placeholder={placeholder || undefined}
-                          {...field}
-                        />
-                      )}
+                      {(() => {
+                        if (type === 'textarea') {
+                          return (
+                            <Textarea
+                              required={required}
+                              placeholder={placeholder || undefined}
+                              {...field}
+                            />
+                          )
+                        } else {
+                          return (
+                            <Input
+                              type={type}
+                              required={required}
+                              placeholder={placeholder || undefined}
+                              {...field}
+                            />
+                          )
+                        }
+                      })()}
                     </FormControl>
                     <FormDescription>{description}</FormDescription>
                     <FormMessage />
