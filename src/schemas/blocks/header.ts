@@ -5,6 +5,7 @@ import { z } from 'astro:content'
 
 export const headerSchema = z
   .object({
+    class: z.string().nullish(),
     logo: logoSchema.nullish(),
     socials: z.string().array().nullish(),
     menus: menuSchema.array().nullish(),

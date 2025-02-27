@@ -60,11 +60,11 @@ export function NavigationMenu({ items, class: className }: Props) {
           >
             {item.links ? (
               <>
-                <NavigationMenuTrigger className="px-3 py-0 h-9 text-muted-foreground HELLO">
+                <NavigationMenuTrigger className="px-3 py-0 h-9 text-muted-foreground font-normal">
                   {item.text}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <ul className="w-full min-w-48 gap-3 p-6 flex flex-col">
+                  <ul className="w-full min-w-48 gap-3 p-3 flex flex-col">
                     {item.links.map((link, index) => (
                       <li key={index}>
                         <NavigationMenuLink

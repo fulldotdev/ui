@@ -30,8 +30,9 @@ export function Search({ groups }: Props) {
   return (
     <>
       <Button
-        className="bg-muted/50 hover:bg-muted/70 transition-colors"
-        variant="outline"
+        className="border border-input"
+        variant="secondary"
+        size="sm"
         onClick={() => setOpen(true)}
       >
         Begin met zoeken...

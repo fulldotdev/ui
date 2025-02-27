@@ -3,39 +3,36 @@ import BezierEasing from 'bezier-easing'
 import Color from 'colorjs.io'
 
 export function generateColors({
-  appearance = 'light',
+  lightBackground,
+  darkBackground,
   primary,
   base,
-  background,
 }: {
-  appearance?: 'light' | 'dark'
+  lightBackground: string
+  darkBackground: string
   primary: string
   base: string
-  background: string
 }) {
-  const defaultColors = generateRadixColors({
-    appearance,
-    background,
+  const lightColors = generateRadixColors({
+    appearance: 'light',
+    background: lightBackground,
     accent: primary,
     gray: base,
   })
 
-  const {
-    background: backgroundDefault,
-    accentContrast: primaryContractDefault,
-    accentScaleWideGamut: primaryDefault,
-    grayScaleWideGamut: baseDefault,
-  } = defaultColors
+  const darkColors = generateRadixColors({
+    appearance: 'dark',
+    accent: primary,
+    gray: base,
+    background: darkBackground,
+  })
 
-  const darkColors =
-    appearance === 'light'
-      ? generateRadixColors({
-          appearance: 'dark',
-          accent: primary,
-          gray: base,
-          background: baseDefault[11],
-        })
-      : defaultColors
+  const {
+    background: backgroundLight,
+    accentContrast: primaryContractLight,
+    accentScaleWideGamut: primaryLight,
+    grayScaleWideGamut: baseLight,
+  } = lightColors
 
   const {
     background: backgroundDark,
@@ -46,31 +43,31 @@ export function generateColors({
 
   const css = `
     :root {
-      --background: ${backgroundDefault};
-      --foreground: ${baseDefault[11]};
-      --card: ${baseDefault[1]};
-      --card-foreground: ${baseDefault[11]};
-      --popover: ${baseDefault[1]};
-      --popover-foreground: ${baseDefault[11]};
-      --primary: ${primaryDefault[8]};
-      --primary-foreground: ${primaryContractDefault};
-      --secondary: ${baseDefault[2]};
-      --secondary-foreground: ${baseDefault[11]};
-      --muted: ${baseDefault[2]};
-      --muted-foreground: ${baseDefault[10]};
-      --accent: ${baseDefault[1]};
-      --accent-foreground: ${baseDefault[11]};
-      --border: ${baseDefault[4]};
-      --input: ${baseDefault[6]};
-      --ring: ${baseDefault[7]};
+      --background: ${baseLight[0]};
+      --foreground: ${baseLight[11]};
+      --card: ${baseLight[0]};
+      --card-foreground: ${baseLight[11]};
+      --popover: ${baseLight[0]};
+      --popover-foreground: ${baseLight[11]};
+      --primary: ${primaryLight[8]};
+      --primary-foreground: ${primaryContractLight};
+      --secondary: ${baseLight[2]};
+      --secondary-foreground: ${baseLight[11]};
+      --muted: ${baseLight[2]};
+      --muted-foreground: ${baseLight[10]};
+      --accent: ${baseLight[2]};
+      --accent-foreground: ${baseLight[11]};
+      --border: ${baseLight[4]};
+      --input: ${baseLight[6]};
+      --ring: ${baseLight[7]};
     }
 
     .dark {
-      --background: ${backgroundDark};
+      --background: ${baseDark[0]};
       --foreground: ${baseDark[11]};
       --card: ${baseDark[1]};
       --card-foreground: ${baseDark[11]};
-      --popover: ${baseDark[1]};
+      --popover: ${baseDark[0]};
       --popover-foreground: ${baseDark[11]};
       --primary: ${primaryDark[8]};
       --primary-foreground: ${primaryContractDark};
@@ -78,7 +75,7 @@ export function generateColors({
       --secondary-foreground: ${baseDark[11]};
       --muted: ${baseDark[2]};
       --muted-foreground: ${baseDark[10]};
-      --accent: ${baseDark[1]};
+      --accent: ${baseDark[2]};
       --accent-foreground: ${baseDark[11]};
       --border: ${baseDark[4]};
       --input: ${baseDark[6]};

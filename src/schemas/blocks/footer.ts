@@ -5,6 +5,7 @@ import { z } from 'astro:content'
 
 export const footerSchema = z
   .object({
+    class: z.string().nullish(),
     logo: logoSchema.nullish(),
     description: z.string().nullish(),
     socials: z.string().array().nullish(),
