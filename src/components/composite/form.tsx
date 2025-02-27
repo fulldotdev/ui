@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useForm } from 'react-hook-form'
+import { Textarea } from '../ui/textarea'
 
 interface Props {
   submit?: string
@@ -49,6 +50,13 @@ export function Form({ fields, submit }: Props) {
                       {(type === 'text' || type === 'number' || type === 'email') && (
                         <Input
                           type={type}
+                          required={required}
+                          placeholder={placeholder || undefined}
+                          {...field}
+                        />
+                      )}
+                      {type === 'textarea' && (
+                        <Textarea
                           required={required}
                           placeholder={placeholder || undefined}
                           {...field}
