@@ -1,5 +1,5 @@
-import type { CarouselApi } from '@/components/ui/carousel'
 import {
+  type CarouselApi,
   CarouselContent,
   CarouselItem,
   CarouselNext,
