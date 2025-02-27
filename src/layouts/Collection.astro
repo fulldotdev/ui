@@ -1,0 +1,79 @@
+---
+import Abstract from '@/components/Abstract.astro'
+import Box from '@/components/Box.astro'
+import Container from '@/components/Container.astro'
+import Grid from '@/components/Grid.astro'
+import Image from '@/components/Image.astro'
+import Price from '@/components/Price.astro'
+import Prose from '@/components/Prose.astro'
+import Section from '@/components/Section.astro'
+import Writeup from '@/components/Writeup.astro'
+import Page from '@/layouts/Page.astro'
+import { getHref } from '@/lib/getHref'
+import type { CollectionSchema } from '@/schemas/layouts/collection'
+import type { ComponentProps } from 'astro/types'
+import { getCollection, getEntry } from 'astro:content'
+import Layout from './Layout.astro'
+
+interface Props extends CollectionSchema, ComponentProps<typeof Page> {
+  id: string
+}
+
+const layout = await getEntry('layouts', 'collections')
+
+const { meta, id, title, description } = Astro.props
+
+const collection = await getCollection('products', ({ data }) =>
+  data.collections?.some((collection) => collection.id === id)
+)
+---
+
+<Layout
+  class="collection"
+  {...layout?.data}
+  {...meta}
+>
+  <Section class="pt-0">
+    <Container class="flex flex-col gap-12">
+      <Box class="border-b py-12">
+        <Writeup
+          align="start"
+          size="sm"
+        >
+          <Box as="h1">{title}</Box>
+          <Box as="p">{description}</Box>
+        </Writeup>
+      </Box>
+      <Grid length={collection?.length}>
+        {
+          collection?.map(({ collection, id, data: { title, images, price, compare_price } }) => (
+            <Box
+              class="group relative flex flex-col gap-4"
+              href={getHref(collection, id)}
+            >
+              <Image
+                class="bg-card aspect-square rounded-lg object-contain transition-opacity group-hover:opacity-75"
+                {...images?.[0]}
+              />
+
+              <Abstract
+                size="sm"
+                class="flex flex-col gap-1"
+              >
+                <Box as="h3">{title}</Box>
+                <Price
+                  class="text-muted-foreground"
+                  amount={price}
+                  compare={compare_price}
+                />
+              </Abstract>
+            </Box>
+          ))
+        }
+      </Grid>
+      <Prose>
+        <slot />
+      </Prose>
+    </Container>
+  </Section>
+</Layout>

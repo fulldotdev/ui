@@ -13,7 +13,7 @@ import { useForm } from 'react-hook-form'
 
 interface Props {
   submit?: string
-  items?:
+  fields?:
     | {
         type?: 'text' | 'number' | 'email' | 'checkbox' | 'select' | 'textarea'
         name?: string | null
@@ -26,7 +26,7 @@ interface Props {
     | null
 }
 
-export function Form({ items, submit }: Props) {
+export function Form({ fields, submit }: Props) {
   const form = useForm()
 
   return (
@@ -35,13 +35,13 @@ export function Form({ items, submit }: Props) {
         action=""
         className="w-full flex flex-col gap-6 max-w-xl"
       >
-        {items?.map(
+        {fields?.map(
           ({ type, name, label, placeholder, description, required }, index) =>
-            name && (
+            (name || label) && (
               <FormField
                 key={index}
                 control={form.control}
-                name={name}
+                name={name || label || ''}
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormLabel>{label}</FormLabel>

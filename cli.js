@@ -16,7 +16,7 @@ const files =  [
   'src/lib',
   'src/pages',
   'src/schemas',
-  'src/styles',
+  'src/styles/global.css',
   'src/content.config.ts',
   'stackbit',
   '.gitignore',
@@ -39,7 +39,7 @@ function pullFiles(files) {
     
     fs.ensureDirSync(targetDir)
     fs.copySync(sourcePath, targetPath)
-    console.log(`Added: ${file}`)
+    console.log(`Pulled: ${file}`)
   })
 }
 
@@ -51,7 +51,21 @@ function resetFiles(files) {
 
 function pushFiles(files) {
   files.forEach((file) => {
-    fs.removeSync(path.join(process.cwd(), file))
+    const sourcePath = path.join(process.cwd(), file)
+    
+    // Check if the file exists before trying to copy it
+    if (!fs.existsSync(sourcePath)) {
+      console.log(`Skipped: ${file} (does not exist)`)
+      return
+    }
+    
+    const targetPath = path.join(__dirname, file)
+    const isDirectory = fs.existsSync(sourcePath) && fs.statSync(sourcePath).isDirectory()
+    const targetDir = isDirectory ? targetPath : path.dirname(targetPath)
+    
+    fs.ensureDirSync(targetDir)
+    fs.copySync(sourcePath, targetPath)
+    console.log(`Pushed: ${file}`)
   })
 }
 

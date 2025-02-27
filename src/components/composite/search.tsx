@@ -11,13 +11,17 @@ import { Search as SearchIcon } from 'lucide-react'
 import * as React from 'react'
 
 interface Props {
-  groups?: {
-    heading?: string
-    links?: {
-      text?: string
-      href?: string
-    }[]
-  }[]
+  groups?:
+    | {
+        heading?: string | null
+        links?:
+          | {
+              text?: string | null
+              href?: string | null
+            }[]
+          | null
+      }[]
+    | null
 }
 
 export function Search({ groups }: Props) {
@@ -48,7 +52,7 @@ export function Search({ groups }: Props) {
                   asChild
                   onSelect={() => href && (window.location.href = href)}
                 >
-                  <a 
+                  <a
                     key={index}
                     href={href || undefined}
                   >

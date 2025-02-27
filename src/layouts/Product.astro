@@ -1,0 +1,77 @@
+---
+import Box from '@/components/Box.astro'
+import Button from '@/components/Button.astro'
+import Container from '@/components/Container.astro'
+import Gallery from '@/components/Gallery.astro'
+import Image from '@/components/Image.astro'
+import List from '@/components/List.astro'
+import Price from '@/components/Price.astro'
+import Prose from '@/components/Prose.astro'
+import Section from '@/components/Section.astro'
+import Split from '@/components/Split.astro'
+import Writeup from '@/components/Writeup.astro'
+import Page from '@/layouts/Page.astro'
+import type { ProductSchema } from '@/schemas/layouts/product'
+import type { ComponentProps } from 'astro/types'
+import { getEntry } from 'astro:content'
+import Layout from './Layout.astro'
+
+interface Props extends ProductSchema, ComponentProps<typeof Page> {}
+
+const layout = await getEntry('layouts', 'products')
+
+const { meta, title, description, list, images, price } = Astro.props
+---
+
+<Layout
+  class="product"
+  {...layout?.data}
+  {...meta}
+>
+  <Section class="pt-4 lg:pt-16">
+    <Container>
+      <Split>
+        <Box class="flex flex-col gap-16">
+          <Gallery>
+            {
+              images?.map((image) => (
+                <Image
+                  class="bg-card aspect-square h-full w-full object-contain"
+                  src={image.src}
+                  alt={image.alt}
+                />
+              ))
+            }
+          </Gallery>
+          <Prose class="max-lg:hidden">
+            <slot />
+          </Prose>
+        </Box>
+        <Writeup
+          size="sm"
+          class="lg:pl-8"
+        >
+          <Box as="h1">{title}</Box>
+          <Box as="p">{description}</Box>
+          <Price
+            class="mt-4 text-lg font-medium"
+            amount={price}
+          />
+          <Button
+            class="mt-4"
+            size="lg"
+            href="/contact/"
+            text="Plaats aanvraag"
+          />
+          <List
+            class="text-muted-foreground pt-4"
+            items={list}
+          />
+        </Writeup>
+        <Prose class="lg:hidden">
+          <slot />
+        </Prose>
+      </Split>
+    </Container>
+  </Section>
+</Layout>

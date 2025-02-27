@@ -1,15 +1,15 @@
 import { imageSchema } from '@/schemas/components/image'
-import { metaSchema } from '@/schemas/misc/meta'
 import { sectionSchema } from '@/schemas/components/section'
-import { z } from 'zod'
+import { metaSchema } from '@/schemas/misc/meta'
+import { z } from 'astro:content'
 
 export const pageSchema = z
   .object({
-    title: z.string(),
+    title: z.string().nullish(),
     description: z.string().nullish(),
     image: imageSchema.nullish(),
-    meta: metaSchema.nullish(),
     sections: sectionSchema.array().nullish(),
+    meta: metaSchema.nullish(),
   })
   .strict()
 

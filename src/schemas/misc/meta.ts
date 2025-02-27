@@ -10,5 +10,7 @@ export const metaSchema = z
     css: z.string().nullish(),
     head: z.string().nullish(),
     body: z.string().nullish(),
+    class: z.string().nullish(),
+    lang: z.string().default('en'),
   })
   .strict()

@@ -1,4 +1,5 @@
 import { collectionSchema } from '@/schemas/layouts/collection'
+import { layoutSchema } from '@/schemas/layouts/layout'
 import { pageSchema } from '@/schemas/layouts/page'
 import { personSchema } from '@/schemas/layouts/person'
 import { postSchema } from '@/schemas/layouts/post'
@@ -63,7 +64,7 @@ export const collections = {
     }),
   }),
   reviews: defineCollection({
-    loader: file('src/data/reviews.json', {
+    loader: file('src/content/reviews.json', {
       parser: (text) => JSON.parse(text).map((item: any, index: number) => ({ ...item, id: index })),
     }),
     schema: z.object({
@@ -71,5 +72,12 @@ export const collections = {
       title: z.string(),
       description: z.string(),
     }),
+  }),
+  layouts: defineCollection({
+    loader: glob({
+      pattern: '**/[^_]*.{json,yaml,yml}',
+      base: './src/content/layouts',
+    }),
+    schema: layoutSchema,
   }),
 }

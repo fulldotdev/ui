@@ -1,0 +1,22 @@
+---
+import Block from '@/components/Block.astro'
+import Layout from '@/layouts/Layout.astro'
+import type { PageSchema } from '@/schemas/layouts/page'
+import '@/styles/global.css'
+import { getEntry } from 'astro:content'
+
+interface Props extends PageSchema {}
+
+const layout = await getEntry('layouts', 'persons')
+
+const { meta, sections } = Astro.props
+---
+
+<Layout
+  class="person"
+  {...layout?.data}
+  {...meta}
+>
+  <slot />
+  {sections?.map((section) => <Block {...section} />)}
+</Layout>

@@ -1,0 +1,34 @@
+---
+import Block from '@/components/Block.astro'
+import Container from '@/components/Container.astro'
+import Prose from '@/components/Prose.astro'
+import Section from '@/components/Section.astro'
+import Layout from '@/layouts/Layout.astro'
+import type { PageSchema } from '@/schemas/layouts/page'
+import '@/styles/global.css'
+import { getEntry } from 'astro:content'
+
+interface Props extends PageSchema {}
+
+const layout = await getEntry('layouts', 'pages')
+
+const { meta, sections } = Astro.props
+---
+
+<Layout
+  class="page"
+  {...layout?.data}
+  {...meta}
+>
+  <Section class="page page-1">
+    <Container
+      class="flex flex-col"
+      size="sm"
+    >
+      <Prose>
+        <slot />
+      </Prose>
+    </Container>
+  </Section>
+  {sections?.map((section) => <Block {...section} />)}
+</Layout>

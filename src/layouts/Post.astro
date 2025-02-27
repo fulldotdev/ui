@@ -1,0 +1,41 @@
+---
+import Box from '@/components/Box.astro'
+import Container from '@/components/Container.astro'
+import Image from '@/components/Image.astro'
+import Prose from '@/components/Prose.astro'
+import Section from '@/components/Section.astro'
+import Page from '@/layouts/Page.astro'
+import type { PostSchema } from '@/schemas/layouts/post'
+import type { ComponentProps } from 'astro/types'
+import { getEntry } from 'astro:content'
+import Layout from './Layout.astro'
+
+interface Props extends PostSchema, ComponentProps<typeof Page> {}
+
+const layout = await getEntry('layouts', 'posts')
+
+const { meta, title, description, image } = Astro.props
+---
+
+<Layout
+  class="post"
+  {...layout?.data}
+  {...meta}
+>
+  <Section>
+    <Container
+      class="flex flex-col"
+      size="sm"
+    >
+      <Prose>
+        <Box as="h1">{title}</Box>
+        <Box as="p">{description}</Box>
+        <Image
+          class="rounded-lg"
+          {...image}
+        />
+        <slot />
+      </Prose>
+    </Container>
+  </Section>
+</Layout>

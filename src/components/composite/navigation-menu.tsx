@@ -34,10 +34,10 @@ export function NavigationMenu({ items, class: className }: Props) {
       setOffset(undefined)
       return
     }
-    const trigger = document.querySelector(`[id$="${value}"]`)
-    if (trigger instanceof HTMLElement) {
-      const triggerOffset = trigger.offsetLeft
-      setOffset(`${triggerOffset}px`)
+    const selectedItem = document.getElementById(value)
+    if (selectedItem instanceof HTMLElement) {
+      const selectedItemOffset = selectedItem.offsetLeft
+      setOffset(`${selectedItemOffset}px`)
     }
   }
 
@@ -52,17 +52,21 @@ export function NavigationMenu({ items, class: className }: Props) {
       )}
     >
       <NavigationMenuList className="gap-0">
-        {items?.map((item) => (
-          <NavigationMenuItem key={item.text}>
+        {items?.map((item, index) => (
+          <NavigationMenuItem
+            key={index}
+            value={`navigation-menu-item-${index}`}
+            id={`navigation-menu-item-${index}`}
+          >
             {item.links ? (
               <>
-                <NavigationMenuTrigger className="px-3 py-0 h-9 text-muted-foreground">
+                <NavigationMenuTrigger className="px-3 py-0 h-9 text-muted-foreground HELLO">
                   {item.text}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="w-full min-w-48 gap-3 p-6 flex flex-col">
-                    {item.links.map((link) => (
-                      <li key={link.text}>
+                    {item.links.map((link, index) => (
+                      <li key={index}>
                         <NavigationMenuLink
                           href={link.href ?? ''}
                           className="text-muted-foreground hover:text-foreground transition-colors font-normal whitespace-nowrap"

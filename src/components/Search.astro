@@ -1,10 +1,50 @@
 ---
 import { Search as SearchComposite } from '@/components/composite/search'
+import { getHref } from '@/lib/getHref'
+import { getCollection } from 'astro:content'
 import type { ComponentProps } from 'react'
 
 interface Props extends ComponentProps<typeof SearchComposite> {}
 
-const { groups, ...rest } = Astro.props
+const pages = await getCollection('pages')
+const posts = await getCollection('posts')
+const products = await getCollection('products')
+const projects = await getCollection('projects')
+const persons = await getCollection('persons')
+
+function collectionToLinks(
+  collection: typeof pages | typeof posts | typeof products | typeof projects | typeof persons
+) {
+  return collection.map((item) => ({
+    text: item.data.title,
+    href: getHref(item.collection, item.id),
+  }))
+}
+
+const allGroups = [
+  {
+    heading: "Pagina's",
+    links: collectionToLinks(pages),
+  },
+  {
+    heading: 'Posts',
+    links: collectionToLinks(posts),
+  },
+  {
+    heading: 'Producten',
+    links: collectionToLinks(products),
+  },
+  {
+    heading: 'Projecten',
+    links: collectionToLinks(projects),
+  },
+  {
+    heading: 'Personen',
+    links: collectionToLinks(persons),
+  },
+]
+
+const { groups = allGroups, ...rest } = Astro.props
 ---
 
 {

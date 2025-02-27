@@ -1,0 +1,131 @@
+---
+import Footer from '@/blocks/Footer.astro'
+import Header from '@/blocks/Header.astro'
+import { cn } from '@/lib/utils'
+import type { LayoutSchema } from '@/schemas/layouts/layout'
+import '@/styles/global.css'
+import { SEO } from 'astro-seo'
+import { getEntry } from 'astro:content'
+
+interface Props extends LayoutSchema {}
+
+const layout = await getEntry('layouts', 'layout')
+
+const {
+  lang = 'en',
+  title,
+  description,
+  noindex,
+  nofollow,
+  canonical,
+  image,
+  company,
+  logo,
+  header,
+  footer,
+  css,
+  body,
+  class: className,
+} = { ...layout?.data, ...Astro.props }
+
+// TODO remove
+const theme = 'light'
+---
+
+<!doctype html>
+<html
+  class={cn('layout text-foreground h-full w-full font-sans text-base scheme-light dark:scheme-dark', className)}
+  {lang}
+>
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1"
+    />
+    <meta
+      name="generator"
+      content={Astro.generator}
+    />
+    <SEO
+      charset="UTF-8"
+      title={title || undefined}
+      description={description || description || undefined}
+      noindex={noindex || undefined}
+      nofollow={nofollow || undefined}
+      canonical={canonical || Astro.url.href}
+      openGraph={{
+        basic: {
+          title: title || '',
+          image: Astro.url.origin + image?.src,
+          type: 'website',
+          url: Astro.url.href,
+        },
+        image: {
+          url: Astro.url.origin + image?.src,
+          alt: image?.alt || title || title || company || undefined,
+        },
+        optional: {
+          description: description || undefined,
+          siteName: company || undefined,
+        },
+      }}
+    />
+
+    <!-- Light / Dark theme -->
+    <script is:inline define:vars={{ theme }}>
+      function setTheme(document) {
+        const value = localStorage.getItem('theme') || theme
+
+        const isDark =
+          value === 'dark' || (value === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+
+        document.documentElement.classList.toggle('dark', isDark)
+
+        document.querySelectorAll('.themer').forEach((themer) => {
+          themer?.querySelectorAll('option').forEach((option) => {
+            option.selected = option.value === value
+          })
+        })
+      }
+
+      function setOption(document) {
+        const value = localStorage.getItem('theme') || theme
+
+        document.querySelectorAll('.themer').forEach((themer) => {
+          themer?.querySelectorAll('option').forEach((option) => {
+            option.selected = option.value === value
+          })
+        })
+      }
+
+      setTheme(document)
+      setOption(document)
+
+      document.addEventListener('astro:before-swap', (event) => {
+        setTheme(event.newDocument)
+      })
+
+      document.addEventListener('astro:page-load', () => {
+        setOption(document)
+      })
+    </script>
+  </head>
+
+  <body
+    class="bg-background text-foreground flex min-h-full w-full flex-col justify-start font-sans text-base scheme-light dark:scheme-dark"
+  >
+    <Header
+      {logo}
+      {...header}
+    />
+    <main>
+      <slot />
+      <style set:html={css}></style>
+      <Fragment set:html={body} />
+    </main>
+    <Footer
+      {logo}
+      {...footer}
+    />
+  </body>
+</html>

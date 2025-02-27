@@ -1,23 +1,26 @@
 ---
 import config from '@/data/config.json'
-import PersonLayout from '@/layouts/Person.astro'
+import CollectionLayout from '@/layouts/Collection.astro'
 import { getCollection, render } from 'astro:content'
 
 export async function getStaticPaths() {
-  const collection = await getCollection('persons')
+  const collection = await getCollection('collections')
   return collection.map((entry) => ({
     params: {
-      persons: config.persons.slug,
-      person: entry.id,
+      collections: config.collections.slug,
+      collection: entry.id,
     },
     props: entry,
   }))
 }
 
 const { Content } = await render(Astro.props)
-const { data } = Astro.props
+const { id, data } = Astro.props
 ---
 
-<PersonLayout {...data}>
+<CollectionLayout
+  {id}
+  {...data}
+>
   <Content />
-</PersonLayout>
+</CollectionLayout>

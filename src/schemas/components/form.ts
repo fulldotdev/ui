@@ -10,7 +10,7 @@ export const formSchema = z
         placeholder: z.string().nullish(),
         options: z.string().array().nullish(),
         value: z.string().nullish(),
-        optional: z.boolean().nullish(),
+        required: z.boolean().nullish(),
       })
       .strict()
       .array()
