@@ -1,79 +1,58 @@
 ---
-import Badges from 'fulldev-ui/components/Badges.astro'
-import Buttons from 'fulldev-ui/components/Buttons.astro'
-import Element from 'fulldev-ui/components/Element.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
-import Image from 'fulldev-ui/components/Image.astro'
-import Paragraph from 'fulldev-ui/components/Paragraph.astro'
-import Tagline from 'fulldev-ui/components/Tagline.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/block'
-import Container from 'fulldev-ui/structures/Container.astro'
-import Group from 'fulldev-ui/structures/Group.astro'
-import Prose from 'fulldev-ui/structures/Prose.astro'
-import Section from 'fulldev-ui/structures/Section.astro'
-import Split from 'fulldev-ui/structures/Split.astro'
+import Abstract from '@/components/Abstract.astro'
+import Box from '@/components/Box.astro'
+import Button from '@/components/Button.astro'
+import Container from '@/components/Container.astro'
+import Grid from '@/components/Grid.astro'
+import Image from '@/components/Image.astro'
+import Section from '@/components/Section.astro'
+import Writeup from '@/components/Writeup.astro'
+import { getHref } from '@/lib/getHref'
+import type { ProjectsSchema } from '@/schemas/models/projects'
+import { getCollection, getEntries } from 'astro:content'
 
-interface Props extends BlockSchema {}
+interface Props extends ProjectsSchema {}
 
-const {
-  depth = 2,
-  tagline,
-  heading,
-  paragraph,
-  buttons,
-  content,
-  cards,
-} = Astro.props
+const { writeup, button, projects } = Astro.props
+
+const entries = projects ? await getEntries(projects) : await getCollection('projects')
 ---
 
-<Section class="projects-1">
-  <Container>
-    <Split align="sticky">
-      <Prose class="max-w-xl">
-        <Tagline text={tagline} />
-        <Heading
-          size="3xl"
-          text={heading}
-          {depth}
-        />
-        <Paragraph text={paragraph} />
-        <Fragment set:html={content} />
-        <Group>
-          <Buttons
-            variant="secondary"
-            {buttons}
-          />
-        </Group>
-      </Prose>
-      <Element class="flex flex-col gap-8">
-        {
-          cards?.map(({ href, image, badges, heading, paragraph }) => (
-            <Element
-              class="flex flex-col gap-2"
-              as="a"
-              {href}
-            >
-              <Image
-                class="mb-4"
-                {...image}
-              />
-              <Group>
-                <Badges
-                  size="sm"
-                  {badges}
-                />
-              </Group>
-              <Heading
-                depth={(depth + 1) as 3}
-                as="h3"
-                size="xl"
-                text={heading}
-              />
-              <Paragraph text={paragraph} />
-            </Element>
-          ))
-        }
-      </Element>
-    </Split>
+<Section class="projects projects-1">
+  <Container class="flex flex-col items-center gap-16">
+    <Writeup
+      class="items-center text-center"
+      size="lg"
+      markdown={writeup}
+    >
+      <slot />
+    </Writeup>
+    <Grid
+      length={entries?.length}
+      size="lg"
+      class="gap-x-8"
+    >
+      {
+        entries?.map(({ collection, id, data: { title, image } }) => (
+          <Box
+            class="group flex flex-col gap-3"
+            href={getHref(collection, id)}
+          >
+            <Image
+              class="rounded-lg bg-card object-contain transition-opacity group-hover:opacity-75"
+              {...image}
+            />
+            <Abstract size="lg">
+              <Box as="h3">{title}</Box>
+            </Abstract>
+          </Box>
+        ))
+      }
+    </Grid>
+    <Button
+      class="hidden"
+      variant="secondary"
+      {...button}
+    />
   </Container>
 </Section>

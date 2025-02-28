@@ -1,14 +1,13 @@
 ---
+import Box from '@/components/Box.astro'
 import tablerIcons from '@iconify-json/tabler/icons.json'
 import type { HTMLAttributes } from 'astro/types'
-import Element from 'fulldev-ui/components/Element.astro'
 
 interface Props extends HTMLAttributes<'svg'> {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  name?: string | undefined
+  name?: string | null | undefined
 }
 
-const { size = 'md', name, ...rest } = Astro.props
+const { name, ...rest } = Astro.props
 
 const trimmedName = name?.trim()
 const icon = trimmedName
@@ -16,35 +15,12 @@ const icon = trimmedName
   : undefined
 ---
 
-<Element
-  class:list="icon"
+<Box
+  class:list="icon size-[1em] inline-flex child:stroke-[calc(1em/12)]"
   xmlns="http://www.w3.org/2000/svg"
   viewBox="0 0 24 24"
   as="svg"
-  {size}
   {...rest}
 >
   <Fragment set:html={icon} />
-</Element>
-
-<style is:global>
-  .icon {
-    @apply inline-flex h-[1em] w-[1em];
-
-    * {
-      stroke-width: 1.6;
-    }
-
-    &.size-sm {
-      @apply text-lg;
-    }
-
-    &.size-md {
-      @apply text-xl;
-    }
-
-    &.size-lg {
-      @apply text-2xl;
-    }
-  }
-</style>
+</Box>

@@ -1,87 +1,66 @@
 ---
-import Button from 'fulldev-ui/components/Button.astro'
-import Element from 'fulldev-ui/components/Element.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
-import Image from 'fulldev-ui/components/Image.astro'
-import Price from 'fulldev-ui/components/Price.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/block'
-import Card from 'fulldev-ui/structures/Card.astro'
-import Container from 'fulldev-ui/structures/Container.astro'
-import Section from 'fulldev-ui/structures/Section.astro'
+import Abstract from '@/components/Abstract.astro'
+import Box from '@/components/Box.astro'
+import Button from '@/components/Button.astro'
+import Container from '@/components/Container.astro'
+import Grid from '@/components/Grid.astro'
+import Image from '@/components/Image.astro'
+import Price from '@/components/Price.astro'
+import Section from '@/components/Section.astro'
+import Writeup from '@/components/Writeup.astro'
+import { getHref } from '@/lib/getHref'
+import type { ProductsSchema } from '@/schemas/models/products'
+import { getCollection, getEntries } from 'astro:content'
 
-interface Props extends BlockSchema {}
+interface Props extends ProductsSchema {}
 
-const { depth = 2, heading, button, cards, ...rest } = Astro.props
+const { writeup, button, products } = Astro.props
+
+const entries = products ? await getEntries(products) : await getCollection('products')
 ---
 
-<Section
-  class:list="products-1"
-  {...rest}
->
-  <Container>
-    <Element class:list="products-1-segment">
-      <Heading
-        size="2xl"
-        text={heading}
-        {depth}
-      />
+<Section class="products products-1">
+  <Container class="flex flex-col items-start gap-8">
+    <Writeup class="flex w-full items-center justify-between gap-8">
+      <Writeup
+        size="sm"
+        markdown={writeup}
+      >
+        <slot />
+      </Writeup>
       <Button
-        variant="ghost"
+        class="max-lg:hidden"
+        variant="link"
         size="sm"
         {...button}
       />
-    </Element>
-    <Element class:list="products-1-cards">
+    </Writeup>
+    <Grid
+      length={entries?.length}
+      class="gap-4"
+    >
       {
-        cards?.map(({ href, images, heading, price }) => (
-          <Card {href}>
-            <Image {...images?.[0]} />
-            <Element class:list="products-1-card-content">
-              <Heading
-                depth={(depth + 1) as 3}
-                as="h3"
-                size="md"
-                text={heading}
-              />
+        entries?.map(({ collection, id, data: { title, images, price } }) => (
+          <Box
+            class="group flex flex-col gap-3"
+            href={getHref(collection, id)}
+          >
+            <Image
+              class="aspect-square rounded-lg bg-card object-contain transition-opacity group-hover:opacity-75"
+              {...images?.[0]}
+            />
+            <Abstract>
+              <Box as="h3">{title}</Box>
               <Price amount={price} />
-            </Element>
-          </Card>
+            </Abstract>
+          </Box>
         ))
       }
-    </Element>
+    </Grid>
+    <Button
+      class="hidden"
+      variant="secondary"
+      {...button}
+    />
   </Container>
 </Section>
-
-<style is:global>
-  @layer fulldev {
-    .products-1 {
-      .container {
-        @apply flex flex-col gap-8;
-      }
-
-      .products-1-segment {
-        @apply flex items-center justify-between gap-8;
-      }
-
-      .products-1-cards {
-        @apply grid grid-cols-2 items-start gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6;
-      }
-
-      .card {
-        @apply relative flex flex-col gap-3;
-
-        &:hover > .image {
-          @apply opacity-75 transition-opacity;
-        }
-
-        .image {
-          @apply rounded-md border;
-        }
-      }
-
-      .products-1-card-content {
-        @apply flex h-full flex-col gap-2;
-      }
-    }
-  }
-</style>

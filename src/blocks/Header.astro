@@ -1,142 +1,87 @@
 ---
-// import Button from 'fulldev-ui/components/Button.astro'
-import Button from 'fulldev-ui/components/Button.astro'
-// import Cart from 'fulldev-ui/components/Cart.astro'
-import Element from 'fulldev-ui/components/Element.astro'
-import Links from 'fulldev-ui/components/Links.astro'
-import Logo from 'fulldev-ui/components/Logo.astro'
-import Menus from 'fulldev-ui/components/Menus.astro'
-import Search from 'fulldev-ui/components/Search.astro'
-import Socials from 'fulldev-ui/components/Socials.astro'
-import Themer from 'fulldev-ui/components/Themer.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/block'
-import Container from 'fulldev-ui/structures/Container.astro'
-import Drawer from 'fulldev-ui/structures/Drawer.astro'
+import Box from '@/components/Box.astro'
+import Buttons from '@/components/Buttons.astro'
+import Container from '@/components/Container.astro'
+import Drawer from '@/components/Drawer.vue'
+import Icon from '@/components/Icon.astro'
+import Link from '@/components/Link.astro'
+import Logo from '@/components/Logo.astro'
+import Menu from '@/components/Menu.astro'
+import Navigation from '@/components/Navigation.vue'
+import Search from '@/components/Search.vue'
+import Socials from '@/components/Socials.astro'
+import type { HeaderSchema } from '@/schemas/models/header'
 
-interface Props extends BlockSchema {}
+interface Props extends HeaderSchema {
+  search?: any
+}
 
-const { logo, links, menus, socials, search, themer, button } = Astro.props
+const { logo, menus, socials, buttons, search } = Astro.props
 ---
 
-<Element
-  class:list="header"
+<Box
+  class="header sticky top-0 z-20 flex h-14 w-full border-b bg-background"
   as="header"
 >
-  <Container>
-    <Element class:list="header-start">
+  <Container class="flex items-center justify-between gap-8">
+    <Box class="flex items-center gap-4">
       <Logo {...logo} />
-      <Links
-        size="sm"
-        variant="muted"
-        {links}
+      <Navigation
+        class="max-lg:hidden"
+        client:load
+        items={menus}
       />
-    </Element>
-    <Element class:list="header-end">
-      {
-        search && (
-          <Search
-            show={search}
-            variant="ghost"
-            size="sm"
-          />
-        )
-      }
-      <!-- {
-        cart && (
-          <Cart
-            variant="ghost"
-            size="sm"
-          />
-        )
-      } -->
-      {
-        themer && (
-          <Themer
-            show={themer}
-            variant="ghost"
-            size="sm"
-          />
-        )
-      }
-      <Socials
-        size="sm"
-        {socials}
+    </Box>
+    <Box class="inline-flex items-center gap-2">
+      <Search
+        client:load
+        groups={search}
       />
-
-      <Button
+      <Socials {socials} />
+      <Buttons
+        class="max-sm:hidden"
         size="sm"
-        variant="outline"
-        {...button}
+        {buttons}
+        reverse
       />
-      <!-- <Button
-        class:list="menu-button"
-        as="label"
-        for="sidebar-toggle"
-        icon="menu-2"
-        variant="ghost"
-        size="sm"
-      /> -->
       <Drawer
-        id="header-drawer"
-        icon="menu-2"
-        size="sm"
+        class="size-9 lg:hidden"
+        client:load
+        button={{
+          variant: 'secondary',
+          size: 'sm',
+        }}
       >
-        <Container>
-          <Menus {menus} />
+        <Icon
+          slot="trigger"
+          name="menu-2"
+          class="!text-xl"
+        />
+        <Container class="min-w-lg flex flex-col gap-2">
+          {
+            menus?.map(({ text, href, links }) =>
+              links ? (
+                <Menu
+                  class="mb-4"
+                  {text}
+                  {links}
+                />
+              ) : (
+                <Link
+                  class="text-foreground"
+                  {href}
+                  {text}
+                />
+              )
+            )
+          }
+          <Buttons
+            class="mt-4 flex-col gap-2"
+            reverse
+            {buttons}
+          />
         </Container>
       </Drawer>
-    </Element>
+    </Box>
   </Container>
-</Element>
-
-<style is:global>
-  @layer fulldev {
-    .header {
-      @apply sticky left-0 top-0 z-20 flex h-14 w-full items-center border-b bg-background;
-      height: var(--header-height);
-
-      &,
-      & ~ * {
-        --header-height: 3.5rem;
-      }
-
-      .container {
-        @apply flex items-center gap-6;
-      }
-
-      .header-start {
-        @apply flex items-center gap-6;
-
-        .link {
-          @apply max-lg:hidden;
-        }
-      }
-
-      .header-home {
-        @apply flex items-center gap-2;
-      }
-
-      .header-end {
-        @apply ml-auto flex items-center gap-1;
-
-        .social,
-        .themer {
-          @apply max-lg:hidden;
-        }
-
-        .menu-button {
-          @apply lg:hidden;
-        }
-      }
-
-      .drawer {
-        @apply lg:hidden;
-
-        .container {
-          @apply flex w-full flex-col items-start gap-6 overflow-y-auto px-gutter pb-14 pt-8;
-          @apply scrollbar scrollbar-track-transparent scrollbar-thumb-accent scrollbar-thumb-rounded-full scrollbar-w-2 hover:scrollbar-thumb-accent-hover;
-        }
-      }
-    }
-  }
-</style>
+</Box>

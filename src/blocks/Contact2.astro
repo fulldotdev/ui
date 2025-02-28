@@ -1,91 +1,60 @@
 ---
-import Channels from 'fulldev-ui/components/Channels.astro'
-import Form from 'fulldev-ui/components/Form.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
-import Image from 'fulldev-ui/components/Image.astro'
-import Paragraph from 'fulldev-ui/components/Paragraph.astro'
-import Socials from 'fulldev-ui/components/Socials.astro'
-import Tagline from 'fulldev-ui/components/Tagline.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/block'
-import Container from 'fulldev-ui/structures/Container.astro'
-import Group from 'fulldev-ui/structures/Group.astro'
-import Prose from 'fulldev-ui/structures/Prose.astro'
-import Section from 'fulldev-ui/structures/Section.astro'
-import Split from 'fulldev-ui/structures/Split.astro'
+import Abstract from '@/components/Abstract.astro'
+import Box from '@/components/Box.astro'
+import Button from '@/components/Button.astro'
+import Card from '@/components/Card.astro'
+import Container from '@/components/Container.astro'
+import Form from '@/components/Form.vue'
+import Section from '@/components/Section.astro'
+import Socials from '@/components/Socials.astro'
+import Split from '@/components/Split.astro'
+import Writeup from '@/components/Writeup.astro'
+import type { ContactSchema } from '@/schemas/models/contact'
 
-interface Props extends BlockSchema {}
+interface Props extends ContactSchema {}
 
-const {
-  depth = 2,
-  tagline,
-  heading,
-  paragraph,
-  content,
-  channels,
-  socials,
-  form,
-  image,
-  ...rest
-} = Astro.props
+const { writeup, channels, socials, form } = Astro.props
 ---
 
-<Section
-  class:list="contact-2"
-  {...rest}
->
+<Section class="contact contact-2">
   <Container>
     <Split>
-      <Prose
-        align="middle"
-        class="max-w-xl"
-      >
-        <Tagline text={tagline} />
-        <Heading
-          size="4xl"
-          text={heading}
-          {depth}
-        />
-        <Paragraph
-          muted
-          size="lg"
-          text={paragraph}
-        />
-        <Fragment set:html={content} />
-        <Channels {channels} />
-        <Group>
-          <Socials {socials} />
-        </Group>
+      <Writeup markdown={writeup}>
+        <slot />
+        <Box class="flex flex-col items-start">
+          {
+            channels?.map(({ href, icon, title, description }) => (
+              <Box class="flex flex-col items-center gap-4 text-center">
+                <Abstract
+                  class="items-center text-center"
+                  size="lg"
+                >
+                  <Button
+                    size="icon"
+                    variant="secondary"
+                    {icon}
+                    {href}
+                  />
+                  <Box as="h3">{title}</Box>
+                  <Box
+                    class="text-muted-foreground transition-colors hover:text-foreground"
+                    {href}
+                  >
+                    {description}
+                  </Box>
+                </Abstract>
+              </Box>
+            ))
+          }
+        </Box>
+        <Socials {socials} />
+      </Writeup>
+      <Card>
         <Form
-          action="/thank-you"
-          method="POST"
+          client:load
           {...form}
         />
-      </Prose>
-      <Image {...image} />
+      </Card>
     </Split>
   </Container>
 </Section>
-
-<style is:global>
-  @layer fulldev {
-    .contact-2 {
-      @apply relative w-full;
-
-      .container {
-        @apply flex flex-col gap-16;
-      }
-
-      .contact-2-segment {
-        @apply flex flex-col items-start gap-8;
-      }
-
-      .contact-2-content {
-        @apply flex max-w-screen-md flex-col gap-4;
-      }
-
-      .image {
-        @apply rounded-md;
-      }
-    }
-  }
-</style>

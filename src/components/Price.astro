@@ -1,31 +1,29 @@
 ---
+import Badge from '@/components/Badge.astro'
+import Box from '@/components/Box.astro'
 import type { HTMLAttributes } from 'astro/types'
-import Element from 'fulldev-ui/components/Element.astro'
-import { formatPrice } from 'fulldev-ui/utils/cart'
 
 interface Props extends HTMLAttributes<'div'> {
-  size?: 'sm' | 'md' | 'lg' | undefined
-  amount?: number | undefined
+  amount?: number | null | undefined
+  compare?: number | null | undefined
+  unit?: string | null | undefined
 }
 
-const { amount, ...rest } = Astro.props
+const formatPrice = (number: number | null | undefined): string => {
+  return `€${number?.toFixed(2).replace('.', ',').replace(',00', '')}`
+}
+
+const { amount, compare, unit, class: className, ...rest } = Astro.props
 ---
 
-<Element
-  class:list="price"
+<Box
+  class:list={['price flex items-center gap-2.5', className]}
   {...rest}
 >
-  {amount && <Fragment set:html={formatPrice(amount)} />}
-</Element>
-
-<style is:global>
-  @layer fulldev {
-    .price {
-      margin: 0;
-      max-width: calc(var(--space-4) * 44);
-      color: var(--color-12);
-      font-size: var(--text-5);
-      line-height: 1.25;
-    }
-  }
-</style>
+  <Box>
+    {amount && formatPrice(amount)}
+    {compare && <span class="ml-2 text-sm text-muted-foreground line-through">{formatPrice(compare)}</span>}
+    {unit && <span class="text-sm text-muted-foreground">{unit ? ` / ${unit}` : ''}</span>}
+  </Box>
+  {compare && <Badge text={`-${Math.round(((compare - (amount || 0)) / compare) * 100)}%`} />}
+</Box>

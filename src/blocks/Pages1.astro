@@ -1,85 +1,59 @@
 ---
-// Heading etc left, image and content right, sticky
-import Badges from 'fulldev-ui/components/Badges.astro'
-import Buttons from 'fulldev-ui/components/Buttons.astro'
-import Element from 'fulldev-ui/components/Element.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
-import Image from 'fulldev-ui/components/Image.astro'
-import Paragraph from 'fulldev-ui/components/Paragraph.astro'
-import Tagline from 'fulldev-ui/components/Tagline.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/block'
-import Container from 'fulldev-ui/structures/Container.astro'
-import Group from 'fulldev-ui/structures/Group.astro'
-import Prose from 'fulldev-ui/structures/Prose.astro'
-import Section from 'fulldev-ui/structures/Section.astro'
-import Split from 'fulldev-ui/structures/Split.astro'
+import Abstract from '@/components/Abstract.astro'
+import Box from '@/components/Box.astro'
+import Button from '@/components/Button.astro'
+import Container from '@/components/Container.astro'
+import Grid from '@/components/Grid.astro'
+import Image from '@/components/Image.astro'
+import Section from '@/components/Section.astro'
+import Writeup from '@/components/Writeup.astro'
+import { getHref } from '@/lib/getHref'
+import type { PagesSchema } from '@/schemas/models/pages'
+import { getCollection, getEntries } from 'astro:content'
 
-interface Props extends BlockSchema {}
+interface Props extends PagesSchema {}
 
-const {
-  depth = 2,
-  tagline,
-  heading,
-  paragraph,
-  buttons,
-  content,
-  cards,
-} = Astro.props
+const { writeup, button, pages } = Astro.props
+
+const entries = pages ? await getEntries(pages) : await getCollection('pages')
 ---
 
-<Section class="pages-1">
-  <Container>
-    <Split class="items-start">
-      <Prose class="lg:sticky lg:top-sticky-16 lg:max-w-xl">
-        <Tagline text={tagline} />
-        <Heading
-          as="h2"
-          size="4xl"
-          text={heading}
-          {depth}
-        />
-        <Paragraph
-          muted
-          size="lg"
-          text={paragraph}
-        />
-        <Fragment set:html={content} />
-        <Group>
-          <Buttons
-            variant="secondary"
-            {buttons}
-          />
-        </Group>
-      </Prose>
-      <Element class="flex flex-col gap-8">
-        {
-          cards?.map(({ href, image, badges, heading, paragraph }) => (
-            <Element
-              as="a"
-              class="flex flex-col gap-2"
-              {href}
-            >
-              <Image
-                class="mb-4"
-                {...image}
-              />
-              <Group>
-                <Badges
-                  size="sm"
-                  {badges}
-                />
-              </Group>
-              <Heading
-                depth={(depth + 1) as 3}
-                as="h3"
-                size="xl"
-                text={heading}
-              />
-              <Paragraph text={paragraph} />
-            </Element>
-          ))
-        }
-      </Element>
-    </Split>
+<Section class="pages pages-1">
+  <Container class="flex flex-col items-center gap-16">
+    <Writeup
+      class="items-center text-center"
+      markdown={writeup}
+    >
+      <slot />
+      <Button
+        variant="link"
+        reverse
+        {...button}
+      />
+    </Writeup>
+    <Grid length={entries?.length}>
+      {
+        entries?.map(({ collection, id, data: { title, description, image } }) => (
+          <Box
+            class="group flex flex-col gap-4"
+            href={getHref(collection, id)}
+          >
+            <Image
+              class="rounded-lg transition-opacity group-hover:opacity-75"
+              {...image}
+            />
+            <Abstract>
+              <Box as="h3">{title}</Box>
+              <Box as="p">{description}</Box>
+            </Abstract>
+          </Box>
+        ))
+      }
+    </Grid>
+    <Button
+      class="lg:hidden"
+      variant="secondary"
+      {...button}
+    />
   </Container>
 </Section>

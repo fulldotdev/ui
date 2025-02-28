@@ -1,25 +1,27 @@
 ---
-import type { ComponentProps } from 'astro/types'
-import Social from 'fulldev-ui/components/Social.astro'
+import Box from '@/components/Box.astro'
+import Social from '@/components/Social.astro'
+import type { ComponentProps, HTMLAttributes } from 'astro/types'
 
-interface Props extends ComponentProps<typeof Social> {
-  social?:
-    | ComponentProps<typeof Social>
-    | ComponentProps<typeof Social>['href']
-    | undefined
-  socials?:
-    | (ComponentProps<typeof Social> | ComponentProps<typeof Social>['href'])[]
-    | undefined
+interface Props extends HTMLAttributes<'div'> {
+  variant?: ComponentProps<typeof Social>['variant'] | undefined
+  socials?: ComponentProps<typeof Social>['href'][] | undefined
 }
 
-const { social, socials, ...rest } = Astro.props
+const { variant = 'secondary', socials, ...rest } = Astro.props
 ---
 
-{
-  [social, ...(socials || [])].filter(Boolean).map((social) => (
-    <Social
-      {...rest}
-      {...(typeof social === 'string' ? { href: social } : social)}
-    />
-  ))
-}
+<Box
+  class:list="socials inline-flex gap-1"
+  {...rest}
+>
+  {
+    socials?.map((social) => (
+      <Social
+        href={social}
+        {variant}
+      />
+    ))
+  }
+  <slot />
+</Box>

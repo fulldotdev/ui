@@ -1,0 +1,41 @@
+---
+import Box from '@/components/Box.astro'
+import type { HTMLAttributes } from 'astro/types'
+import { marked } from 'marked'
+
+interface Props extends HTMLAttributes<'div'> {
+  size?: 'sm' | 'default' | 'lg' | 'xl' | undefined
+  align?: 'start' | 'center' | 'end' | undefined
+  markdown?: string | null | undefined
+  html?: string | null | undefined
+}
+
+const { size = 'default', align = 'start', markdown, html, class: className, ...rest } = Astro.props
+
+const markdownHtml = marked(markdown || '')
+---
+
+<Box
+  class:list={[
+    'writeup',
+    'flex w-full max-w-screen-md flex-col text-foreground',
+    'first:child:mt-0',
+    'headings:scroll-mt-20 headings:text-pretty headings:font-semibold headings:tracking-tight headings:text-foreground',
+    'p:max-w-[85%] p:text-pretty p:leading-[1.75]',
+    'lead:leading-[1.75]',
+    'ul:my-6 ul:ml-4 ul:list-disc ul:li:mt-2',
+    {
+      'text-sm headings:mt-2 headings:text-2xl p:mt-2': size === 'sm',
+      'child:mt-6 headings:mt-4 headings:text-4xl p:mt-4': size === 'default',
+      'text-lg child:mt-8 headings:mt-6 headings:text-4xl p:mt-6 md:headings:text-5xl': size === 'lg',
+      'text-lg child:mt-8 headings:mt-6 headings:text-5xl p:mt-6 md:text-xl md:headings:text-6xl': size === 'xl',
+    },
+    className,
+  ]}
+  {...rest}
+>
+  <slot name="before" />
+  <Fragment set:html={html} />
+  <Fragment set:html={markdownHtml} />
+  <slot />
+</Box>

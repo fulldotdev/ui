@@ -1,61 +1,55 @@
 ---
-import Button from 'fulldev-ui/components/Button.astro'
-import Heading from 'fulldev-ui/components/Heading.astro'
-import List from 'fulldev-ui/components/List.astro'
-import Paragraph from 'fulldev-ui/components/Paragraph.astro'
-import Tagline from 'fulldev-ui/components/Tagline.astro'
-import type { BlockSchema } from 'fulldev-ui/schemas/block'
-import Card from 'fulldev-ui/structures/Card.astro'
-import Container from 'fulldev-ui/structures/Container.astro'
-import Prose from 'fulldev-ui/structures/Prose.astro'
-import Section from 'fulldev-ui/structures/Section.astro'
-import Stack from 'fulldev-ui/structures/Stack.astro'
+import Abstract from '@/components/Abstract.astro'
+import Box from '@/components/Box.astro'
+import Button from '@/components/Button.astro'
+import Card from '@/components/Card.astro'
+import Container from '@/components/Container.astro'
+import Grid from '@/components/Grid.astro'
+import List from '@/components/List.astro'
+import Price from '@/components/Price.astro'
+import Section from '@/components/Section.astro'
+import Writeup from '@/components/Writeup.astro'
+import type { PricingsSchema } from '@/schemas/models/pricings'
 
-interface Props extends BlockSchema {}
+interface Props extends PricingsSchema {}
 
-const { depth = 2, heading, paragraph, cards } = Astro.props
+const { writeup, pricings } = Astro.props
 ---
 
-<Section class="pricings-1">
+<Section class="features features-1">
   <Container class="flex flex-col items-center gap-16">
-    <Prose class="text-center">
-      <Heading
-        size="5xl"
-        text={heading}
-        {depth}
-      />
-      <Paragraph
-        size="xl"
-        text={paragraph}
-      />
-    </Prose>
-    <Stack class="mx-auto flex flex-wrap items-stretch justify-center">
+    <Writeup
+      class="flex flex-col items-center text-center"
+      size="lg"
+      markdown={writeup}
+    >
+      <slot />
+    </Writeup>
+    <Grid length={pricings?.length}>
       {
-        cards?.map(({ tagline, heading, paragraph, list, button }) => (
-          <Card class="min-w-sm flex max-w-md flex-col justify-between gap-8 p-8">
-            <Prose>
-              <Tagline text={tagline} />
-              <Heading
-                depth={(depth + 1) as 3}
-                size="3xl"
-                text={heading}
-              />
-              <Paragraph
-                muted
-                text={paragraph}
+        pricings?.map(({ title, description, price, price_unit, list, button }) => (
+          <Card>
+            <Abstract size="xl">
+              <Box as="h3">{title}</Box>
+              <Box as="p">{description}</Box>
+              <Price
+                class="text-2xl font-medium"
+                amount={price}
+                unit={price_unit}
+                compare={1200}
               />
               <List
-                size="sm"
+                class="!mt-8"
                 items={list}
               />
-            </Prose>
-            <Button
-              class=""
-              {...button}
-            />
+              <Button
+                class="!mt-8"
+                {...button}
+              />
+            </Abstract>
           </Card>
         ))
       }
-    </Stack>
+    </Grid>
   </Container>
 </Section>

@@ -1,0 +1,42 @@
+---
+import Product1 from '@/blocks/Product1.astro'
+import Block from '@/components/Block.astro'
+import settings from '@/data/settings.json'
+import NavigationLayout from '@/layouts/NavigationLayout.astro'
+import { getCollection, render } from 'astro:content'
+
+export async function getStaticPaths() {
+  const collection = await getCollection('products')
+  return collection.map((entry) => ({
+    params: {
+      products: settings.products.slug,
+      product: entry.id,
+    },
+    props: entry,
+  }))
+}
+
+const { Content } = await render(Astro.props)
+const { sections, meta, title, description, images, list, price, collections } = Astro.props.data
+const { button } = settings.products
+---
+
+<NavigationLayout
+  {title}
+  {description}
+  image={images?.[0]}
+  {...meta}
+>
+  <Product1
+    {title}
+    {description}
+    {images}
+    {list}
+    {price}
+    {collections}
+    {button}
+  >
+    <Content />
+  </Product1>
+  {sections?.map((block) => <Block {...block} />)}
+</NavigationLayout>
