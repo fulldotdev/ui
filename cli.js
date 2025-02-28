@@ -1,5 +1,4 @@
 #! /usr/bin/env node
-import { execSync } from 'child_process'
 import fs from 'fs-extra'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -7,13 +6,15 @@ import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const files =  [
+const files = [
   '.vscode',
   'netlify',
+  'src/actions',
   'src/blocks',
   'src/components',
   'src/layouts',
   'src/lib',
+  'src/loaders',
   'src/pages',
   'src/schemas',
   'src/styles/global.css',
@@ -36,7 +37,7 @@ function pullFiles(files) {
     const sourcePath = path.join(__dirname, file)
     const targetPath = path.join(process.cwd(), file)
     const targetDir = fs.statSync(sourcePath).isDirectory() ? targetPath : path.dirname(targetPath)
-    
+
     fs.ensureDirSync(targetDir)
     fs.copySync(sourcePath, targetPath)
     console.log(`Pulled: ${file}`)
@@ -52,17 +53,17 @@ function resetFiles(files) {
 function pushFiles(files) {
   files.forEach((file) => {
     const sourcePath = path.join(process.cwd(), file)
-    
+
     // Check if the file exists before trying to copy it
     if (!fs.existsSync(sourcePath)) {
       console.log(`Skipped: ${file} (does not exist)`)
       return
     }
-    
+
     const targetPath = path.join(__dirname, file)
     const isDirectory = fs.existsSync(sourcePath) && fs.statSync(sourcePath).isDirectory()
     const targetDir = isDirectory ? targetPath : path.dirname(targetPath)
-    
+
     fs.ensureDirSync(targetDir)
     fs.copySync(sourcePath, targetPath)
     console.log(`Pushed: ${file}`)
@@ -80,7 +81,6 @@ function addPackageJson() {
   }
   fs.writeJsonSync(path.join(process.cwd(), 'package.json'), targetPackage, { spaces: 2 })
 }
-
 
 yargs(hideBin(process.argv))
   .command('pull', 'Add project files', () => {
