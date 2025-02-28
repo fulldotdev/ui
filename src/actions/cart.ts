@@ -1,3 +1,14 @@
+import { createStorefrontApiClient } from '@shopify/storefront-api-client'
+import { defineAction } from 'astro:actions'
+import { z } from 'astro:schema'
+import config from '../data/config.json'
+
+export const client = createStorefrontApiClient({
+  storeDomain: config.shopify.storeDomain,
+  apiVersion: '2025-01',
+  publicAccessToken: config.shopify.publicAccessToken,
+})
+
 const FRAGMENT = `#graphql
   fragment cartFragment on Cart {
     id
@@ -22,8 +33,8 @@ const FRAGMENT = `#graphql
 `
 
 const CartCreateMutation = `#graphql
-  mutation ($variantId: ID!, $quantity: Int!) {
-    cartCreate(input: { variantId: $variantId, quantity: $quantity }) {
+  mutation {
+    cartCreate {
       cart {
         ...cartFragment
       }
@@ -31,12 +42,45 @@ const CartCreateMutation = `#graphql
   }
   ${FRAGMENT}
 `
-// export const cartCreate = defineAction({
-//   input: z.object({
-//     variantId: z.string(),
-//     quantity: z.number(),
-//   }),
-//   handler: async (input) => {
-//     return `Hello, ${input.name}!`
-//   },
-// })
+
+const CartLinesAddMutation = `#graphql
+  mutation ($cartId: ID!, $lines: [CartLineInput!]!) {
+    cartLinesAdd(cartId: $cartId, lines: $lines) {
+      cart {
+        ...cartFragment
+      }
+    }
+  }
+  ${FRAGMENT}
+`
+
+const CartLinesRemoveMutation = `#graphql
+  mutation ($cartId: ID!, $lineIds: [ID!]!) {
+    cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+      cart {
+        ...cartFragment
+      }
+    }
+  }
+  ${FRAGMENT}
+`
+
+const CartLinesUpdateMutation = `#graphql
+  mutation ($cartId: ID!, $lines: [CartLineInput!]!) {
+    cartLinesUpdate(cartId: $cartId, lines: $lines) {
+      cart {
+        ...cartFragment
+      }
+    }
+  }
+  ${FRAGMENT}
+`
+
+export const cartCreate = defineAction({
+  input: z.never(),
+  handler: async (_, context) => {
+    const response = await client.request(CartCreateMutation)
+    console.log('response', response)
+    return response.data.cartCreate.cart
+  },
+})
