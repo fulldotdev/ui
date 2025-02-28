@@ -1,37 +1,41 @@
 ---
-import Badge from '@/components/Badge.astro'
+import Box from '@/components/Box.astro'
 import Buttons from '@/components/Buttons.astro'
 import Container from '@/components/Container.astro'
 import Image from '@/components/Image.astro'
 import Section from '@/components/Section.astro'
 import Writeup from '@/components/Writeup.astro'
-import type { HeroSchema } from '@/schemas/blocks/hero'
 
-interface Props extends HeroSchema {}
+interface Props {
+  buttons?: {
+    text?: string
+    href?: string
+    variant?: 'default' | 'secondary' | 'outline' | 'ghost' | 'link'
+  }[]
+  image?: {
+    src?: string
+    alt?: string
+  }
+}
 
-const { badge, writeup, buttons, image } = Astro.props
+const { buttons, image } = Astro.props
 ---
 
 <Section class="hero hero-1">
   <Container class="flex flex-col items-center gap-16">
-    <Writeup
-      class="items-center text-center"
-      size="xl"
-      markdown={writeup}
-    >
-      <Badge
-        size="lg"
-        slot="before"
-        variant="outline"
-        {...badge}
-      />
-      <slot />
+    <Box class="flex flex-col items-center gap-8">
+      <Writeup
+        class="items-center text-center"
+        size="xl"
+      >
+        <slot />
+      </Writeup>
       <Buttons
         class="justify-center"
         size="lg"
         {buttons}
       />
-    </Writeup>
+    </Box>
     <Image
       class="rounded-lg"
       {...image}

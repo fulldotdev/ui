@@ -1,66 +1,72 @@
 ---
-import Abstract from '@/components/Abstract.astro'
 import Box from '@/components/Box.astro'
-import Button from '@/components/Button.astro'
+import Buttons from '@/components/Buttons.astro'
 import Container from '@/components/Container.astro'
 import Grid from '@/components/Grid.astro'
+import Heading from '@/components/Heading.astro'
 import Image from '@/components/Image.astro'
 import { Price } from '@/components/price'
 import Section from '@/components/Section.astro'
 import Writeup from '@/components/Writeup.astro'
-import { getHref } from '@/lib/getHref'
-import type { ProductsSchema } from '@/schemas/blocks/products'
-import { getCollection, getEntries } from 'astro:content'
 
-interface Props extends ProductsSchema {}
+interface Props {
+  buttons?: {
+    text?: string
+    href?: string
+    variant?: 'default' | 'secondary' | 'outline' | 'ghost' | 'link'
+  }[]
+  products?: {
+    href?: string
+    title?: string
+    images?: {
+      src?: string
+      alt?: string
+    }[]
+    price?: {
+      amount?: number
+      compare?: number
+    }
+  }[]
+}
 
-const { writeup, button, products } = Astro.props
-
-const entries = products ? await getEntries(products) : await getCollection('products')
+const { buttons, products } = Astro.props
 ---
 
 <Section class="products products-1">
   <Container class="flex flex-col items-start gap-8">
     <Writeup class="flex w-full items-center justify-between gap-8">
-      <Writeup
-        size="sm"
-        markdown={writeup}
-      >
+      <Writeup size="sm">
         <slot />
       </Writeup>
-      <Button
+      <Buttons
         class="max-lg:hidden"
-        variant="link"
         size="sm"
-        {...button}
+        {buttons}
       />
     </Writeup>
     <Grid
-      length={entries?.length}
+      length={products?.length}
       class="gap-4"
     >
       {
-        entries?.map(({ collection, id, data: { title, images, price } }) => (
+        products?.map(({ href, title, images, price }) => (
           <Box
             class="group flex flex-col gap-3"
-            href={getHref(collection, id)}
+            href={href}
           >
             <Image
               class="bg-card aspect-square rounded-lg object-contain transition-opacity group-hover:opacity-75"
               {...images?.[0]}
             />
-            <Abstract>
-              <Box as="h3">{title}</Box>
-              <Price {...price} />
-            </Abstract>
+            <Heading as="h3">{title}</Heading>
+            <Price {...price} />
           </Box>
         ))
       }
     </Grid>
-    <Button
+    <Buttons
       class="hidden"
-      variant="secondary"
-      {...button}
+      {buttons}
     />
   </Container>
 </Section>

@@ -4,21 +4,32 @@ import Box from '@/components/Box.astro'
 import Button from '@/components/Button.astro'
 import Container from '@/components/Container.astro'
 import Form from '@/components/Form.astro'
+import Heading from '@/components/Heading.astro'
 import Section from '@/components/Section.astro'
 import Split from '@/components/Split.astro'
 import Writeup from '@/components/Writeup.astro'
-import type { ContactSchema } from '@/schemas/blocks/contact'
+import type { ComponentProps } from 'astro/types'
 
-interface Props extends ContactSchema {}
+interface Props {
+  channels?: {
+    href?: string
+    icon?: string
+    title?: string
+    description?: string
+  }[]
+  form?: ComponentProps<typeof Form>
+}
 
-const { writeup, channels, form } = Astro.props
+const { channels, form } = Astro.props
 ---
 
 <Section class="contact contact-2">
   <Container>
     <Split>
-      <Writeup markdown={writeup}>
-        <slot />
+      <Box>
+        <Writeup>
+          <slot />
+        </Writeup>
         <Box class="flex flex-col items-start gap-4">
           {
             channels?.map(({ href, icon, title, description }) => (
@@ -33,7 +44,7 @@ const { writeup, channels, form } = Astro.props
                     {icon}
                     {href}
                   />
-                  <Box as="h3">{title}</Box>
+                  <Heading as="h3">{title}</Heading>
                   <Box
                     class="text-muted-foreground hover:text-foreground transition-colors"
                     {href}
@@ -45,8 +56,8 @@ const { writeup, channels, form } = Astro.props
             ))
           }
         </Box>
-      </Writeup>
-      <Form {...form} />
+      </Box>
     </Split>
+    <Form {...form} />
   </Container>
 </Section>

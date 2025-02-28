@@ -4,6 +4,7 @@ import { priceSchema } from '../components/price'
 
 export const pricingsSchema = z
   .object({
+    type: z.literal('Pricings').default('Pricings'),
     writeup: z.string().nullish(),
     pricings: z
       .object({
@@ -19,5 +20,3 @@ export const pricingsSchema = z
       .nullish(),
   })
   .strict()
-
-export type PricingsSchema = z.infer<typeof pricingsSchema>

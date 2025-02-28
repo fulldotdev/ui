@@ -1,58 +1,66 @@
 ---
-import Abstract from '@/components/Abstract.astro'
 import Box from '@/components/Box.astro'
-import Button from '@/components/Button.astro'
+import Buttons from '@/components/Buttons.astro'
 import Container from '@/components/Container.astro'
 import Grid from '@/components/Grid.astro'
+import Heading from '@/components/Heading.astro'
 import Image from '@/components/Image.astro'
 import Section from '@/components/Section.astro'
 import Writeup from '@/components/Writeup.astro'
-import { getHref } from '@/lib/getHref'
-import type { ProjectsSchema } from '@/schemas/blocks/projects'
-import { getCollection, getEntries } from 'astro:content'
 
-interface Props extends ProjectsSchema {}
+interface Props {
+  buttons?: {
+    text?: string
+    href?: string
+    variant?: 'default' | 'secondary' | 'outline' | 'ghost' | 'link'
+  }[]
+  projects?: {
+    href?: string
+    title?: string
+    image?: {
+      src?: string
+      alt?: string
+    }
+  }[]
+}
 
-const { writeup, button, projects } = Astro.props
-
-const entries = projects ? await getEntries(projects) : await getCollection('projects')
+const { buttons, projects } = Astro.props
 ---
 
 <Section class="projects projects-1">
   <Container class="flex flex-col items-center gap-16">
-    <Writeup
-      class="items-center text-center"
-      size="lg"
-      markdown={writeup}
-    >
-      <slot />
-    </Writeup>
+    <Box class="flex flex-col items-center gap-8">
+      <Writeup
+        class="items-center text-center"
+        size="lg"
+      >
+        <slot />
+      </Writeup>
+      <Buttons {buttons} />
+    </Box>
     <Grid
-      length={entries?.length}
+      length={projects?.length}
       size="lg"
       class="gap-x-8"
     >
       {
-        entries?.map(({ collection, id, data: { title, image } }) => (
+        projects?.map(({ href, title, image }) => (
           <Box
             class="group flex flex-col gap-3"
-            href={getHref(collection, id)}
+            href={href}
           >
             <Image
-              class="rounded-lg bg-card object-contain transition-opacity group-hover:opacity-75"
+              class="bg-card rounded-lg object-contain transition-opacity group-hover:opacity-75"
               {...image}
             />
-            <Abstract size="lg">
-              <Box as="h3">{title}</Box>
-            </Abstract>
+            <Heading as="h3">{title}</Heading>
           </Box>
         ))
       }
     </Grid>
-    <Button
+    <Buttons
       class="hidden"
-      variant="secondary"
-      {...button}
+      {buttons}
     />
   </Container>
 </Section>

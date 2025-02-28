@@ -6,20 +6,23 @@ import Container from '@/components/Container.astro'
 import Grid from '@/components/Grid.astro'
 import Logo from '@/components/Logo.astro'
 import Menu from '@/components/Menu.astro'
-import Section from '@/components/Section.astro'
 import Socials from '@/components/Socials.astro'
 import { cn } from '@/lib/utils'
-import type { FooterSchema } from '@/schemas/blocks/footer'
+import type { ComponentProps } from 'astro/types'
 
-interface Props extends FooterSchema {}
+interface Props {
+  class?: string
+  logo?: ComponentProps<typeof Logo>
+  description?: string
+  socials?: ComponentProps<typeof Socials>['socials']
+  channels?: ComponentProps<typeof Button>[]
+  menus?: ComponentProps<typeof Menu>[]
+}
 
 const { logo, description, socials, channels, menus, class: className } = Astro.props
 ---
 
-<Section
-  class={cn('footer bg-background mt-auto border-t', className)}
-  as="footer"
->
+<Box class={cn('footer bg-background mt-auto border-t relative w-full py-16', className)}>
   <Container class="flex justify-between gap-16">
     <Grid
       length={4}
@@ -57,4 +60,4 @@ const { logo, description, socials, channels, menus, class: className } = Astro.
       }
     </Grid>
   </Container>
-</Section>
+</Box>

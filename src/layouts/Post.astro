@@ -1,25 +1,38 @@
 ---
-import Box from '@/components/Box.astro'
+import Block from '@/components/Block.astro'
 import Container from '@/components/Container.astro'
+import Heading from '@/components/Heading.astro'
 import Image from '@/components/Image.astro'
+import Paragraph from '@/components/Paragraph.astro'
 import Prose from '@/components/Prose.astro'
 import Section from '@/components/Section.astro'
 import Layout from '@/layouts/Layout.astro'
-import Page from '@/layouts/Page.astro'
-import type { PostSchema } from '@/schemas/layouts/post'
-import type { ComponentProps } from 'astro/types'
-import { getEntry } from 'astro:content'
 
-interface Props extends PostSchema, ComponentProps<typeof Page> {}
+interface Props {
+  title?: string
+  description?: string
+  image?: {
+    src?: string
+    alt?: string
+  }
+  sections?: any[]
+  meta?: {
+    title?: string
+    description?: string
+    canonical?: string
+    noindex?: boolean
+    nofollow?: boolean
+  }
+}
 
-const layout = await getEntry('layouts', 'posts')
-
-const { meta, title, description, image } = Astro.props
+const { title, description, image, sections, meta } = Astro.props
 ---
 
 <Layout
   class="post"
-  {...layout?.data}
+  {title}
+  {description}
+  {image}
   {...meta}
 >
   <Section>
@@ -28,8 +41,8 @@ const { meta, title, description, image } = Astro.props
       size="sm"
     >
       <Prose>
-        <Box as="h1">{title}</Box>
-        <Box as="p">{description}</Box>
+        <Heading as="h1">{title}</Heading>
+        <Paragraph>{description}</Paragraph>
         <Image
           class="rounded-lg"
           {...image}
@@ -38,4 +51,5 @@ const { meta, title, description, image } = Astro.props
       </Prose>
     </Container>
   </Section>
+  {sections?.map((section) => <Block {...section} />)}
 </Layout>

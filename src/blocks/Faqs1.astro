@@ -1,25 +1,28 @@
 ---
 import Accordion from '@/components/Accordion.astro'
+import Box from '@/components/Box.astro'
 import Buttons from '@/components/Buttons.astro'
 import Container from '@/components/Container.astro'
 import Section from '@/components/Section.astro'
 import Writeup from '@/components/Writeup.astro'
-import type { FaqsSchema } from '@/schemas/blocks/faqs'
+import type { ComponentProps } from 'astro/types'
 
-interface Props extends FaqsSchema {}
+interface Props {
+  buttons?: ComponentProps<typeof Buttons>['buttons']
+  faqs?: ComponentProps<typeof Accordion>['items']
+}
 
-const { writeup, buttons, faqs } = Astro.props
+const { buttons, faqs } = Astro.props
 ---
 
 <Section class="faqs faqs-1">
   <Container class="flex flex-col items-center gap-y-16">
-    <Writeup
-      class="items-center text-center"
-      markdown={writeup}
-    >
-      <slot />
+    <Box class="flex flex-col items-center gap-8">
+      <Writeup class="items-center text-center">
+        <slot />
+      </Writeup>
       <Buttons {buttons} />
-    </Writeup>
+    </Box>
     <Accordion items={faqs} />
   </Container>
 </Section>

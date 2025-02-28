@@ -3,6 +3,7 @@ import { z } from 'astro:content'
 
 export const faqsSchema = z
   .object({
+    type: z.literal('Faqs').default('Faqs'),
     writeup: z.string().nullish(),
     buttons: buttonSchema.array().nullish(),
     faqs: z
@@ -15,5 +16,3 @@ export const faqsSchema = z
       .nullish(),
   })
   .strict()
-
-export type FaqsSchema = z.infer<typeof faqsSchema>

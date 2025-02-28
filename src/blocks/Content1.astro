@@ -1,24 +1,30 @@
 ---
+import Box from '@/components/Box.astro'
 import Buttons from '@/components/Buttons.astro'
 import Container from '@/components/Container.astro'
 import Image from '@/components/Image.astro'
 import Section from '@/components/Section.astro'
 import Split from '@/components/Split.astro'
 import Writeup from '@/components/Writeup.astro'
-import type { ContentSchema } from '@/schemas/blocks/content'
+import type { ComponentProps } from 'astro/types'
 
-interface Props extends ContentSchema {}
+interface Props {
+  buttons?: ComponentProps<typeof Buttons>['buttons']
+  image?: ComponentProps<typeof Image>
+}
 
-const { writeup, buttons, image } = Astro.props
+const { buttons, image } = Astro.props
 ---
 
 <Section class="content content-1">
   <Container>
     <Split align="center">
-      <Writeup markdown={writeup}>
-        <slot />
+      <Box class="flex flex-col gap-8">
+        <Writeup>
+          <slot />
+        </Writeup>
         <Buttons {buttons} />
-      </Writeup>
+      </Box>
       <Image
         class="rounded-lg"
         {...image}

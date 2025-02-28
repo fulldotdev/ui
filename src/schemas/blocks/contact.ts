@@ -3,6 +3,7 @@ import { z } from 'astro:content'
 
 export const contactSchema = z
   .object({
+    type: z.literal('Contact').default('Contact'),
     writeup: z.string().nullish(),
     channels: z
       .object({
@@ -17,5 +18,3 @@ export const contactSchema = z
     form: formSchema.nullish(),
   })
   .strict()
-
-export type ContactSchema = z.infer<typeof contactSchema>

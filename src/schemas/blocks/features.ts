@@ -2,6 +2,7 @@ import { z } from 'astro:content'
 
 export const featuresSchema = z
   .object({
+    type: z.literal('Features').default('Features'),
     writeup: z.string().nullish(),
     features: z
       .object({
@@ -14,5 +15,3 @@ export const featuresSchema = z
       .nullish(),
   })
   .strict()
-
-export type FeaturesSchema = z.infer<typeof featuresSchema>

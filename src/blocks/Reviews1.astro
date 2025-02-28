@@ -1,39 +1,46 @@
 ---
-import Abstract from '@/components/Abstract.astro'
 import Box from '@/components/Box.astro'
+import Buttons from '@/components/Buttons.astro'
 import Card from '@/components/Card.astro'
 import Container from '@/components/Container.astro'
+import Heading from '@/components/Heading.astro'
 import Masonry from '@/components/Masonry.astro'
+import Paragraph from '@/components/Paragraph.astro'
 import Rating from '@/components/Rating.astro'
 import Section from '@/components/Section.astro'
 import Writeup from '@/components/Writeup.astro'
-import type { ReviewsSchema } from '@/schemas/blocks/reviews'
-import { getCollection, getEntries } from 'astro:content'
 
-interface Props extends ReviewsSchema {}
+interface Props {
+  buttons?: {
+    text?: string
+    href?: string
+    variant?: 'default' | 'secondary' | 'outline' | 'ghost' | 'link'
+  }[]
+  reviews?: {
+    rating?: number
+    title?: string
+    description?: string
+  }[]
+}
 
-const { writeup, reviews } = Astro.props
-
-const entries = reviews ? await getEntries(reviews) : await getCollection('reviews')
+const { buttons, reviews } = Astro.props
 ---
 
 <Section class="reviews reviews-1">
   <Container class="flex flex-col items-center gap-12">
-    <Writeup
-      class="items-center text-center"
-      markdown={writeup}
-    >
-      <slot />
-    </Writeup>
-    <Masonry length={entries?.length}>
+    <Box class="flex flex-col items-center gap-8">
+      <Writeup class="items-center text-center">
+        <slot />
+      </Writeup>
+      <Buttons {buttons} />
+    </Box>
+    <Masonry length={reviews?.length}>
       {
-        entries?.map(({ data: { rating, title, description } }) => (
+        reviews?.map(({ rating, title, description }) => (
           <Card class="flex flex-col">
-            <Abstract size="lg">
-              <Rating score={rating} />
-              <Box as="h3">{title}</Box>
-              <Box as="p">{description}</Box>
-            </Abstract>
+            <Rating score={rating} />
+            <Heading as="h3">{title}</Heading>
+            <Paragraph>{description}</Paragraph>
           </Card>
         ))
       }

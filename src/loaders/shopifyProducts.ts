@@ -2,6 +2,7 @@ import { productSchema } from '@/schemas/layouts/product'
 import type { Product } from '@shopify/hydrogen/storefront-api-types'
 import { createStorefrontApiClient } from '@shopify/storefront-api-client'
 import type { Loader, LoaderContext } from 'astro/loaders'
+import { z } from 'astro:schema'
 import config from '../data/config.json'
 
 export const client = createStorefrontApiClient({
@@ -131,6 +132,8 @@ export function shopifyProductsLoader(options: { storeDomain: string; publicAcce
         })
       }
     },
-    schema: productSchema,
+    schema: productSchema.extend({
+      id: z.string(),
+    }),
   }
 }

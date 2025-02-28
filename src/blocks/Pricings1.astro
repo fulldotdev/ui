@@ -1,19 +1,34 @@
 ---
-import Abstract from '@/components/Abstract.astro'
-import Box from '@/components/Box.astro'
 import Button from '@/components/Button.astro'
 import Card from '@/components/Card.astro'
 import Container from '@/components/Container.astro'
 import Grid from '@/components/Grid.astro'
+import Heading from '@/components/Heading.astro'
 import List from '@/components/List.astro'
+import Paragraph from '@/components/Paragraph.astro'
 import { Price } from '@/components/price'
 import Section from '@/components/Section.astro'
 import Writeup from '@/components/Writeup.astro'
-import type { PricingsSchema } from '@/schemas/blocks/pricings'
 
-interface Props extends PricingsSchema {}
+interface Props {
+  pricings?: {
+    title?: string
+    description?: string
+    price?: {
+      amount?: number
+      compare?: number
+      unit?: string
+    }
+    list?: string[]
+    button?: {
+      text?: string
+      href?: string
+      variant?: 'default' | 'secondary'
+    }
+  }[]
+}
 
-const { writeup, pricings } = Astro.props
+const { pricings } = Astro.props
 ---
 
 <Section class="features features-1">
@@ -21,30 +36,27 @@ const { writeup, pricings } = Astro.props
     <Writeup
       class="flex flex-col items-center text-center"
       size="lg"
-      markdown={writeup}
     >
       <slot />
     </Writeup>
     <Grid length={pricings?.length}>
       {
         pricings?.map(({ title, description, price, list, button }) => (
-          <Card>
-            <Abstract size="xl">
-              <Box as="h3">{title}</Box>
-              <Box as="p">{description}</Box>
-              <Price
-                class="text-2xl font-medium"
-                {...price}
-              />
-              <List
-                class="!mt-8"
-                items={list}
-              />
-              <Button
-                class="!mt-8"
-                {...button}
-              />
-            </Abstract>
+          <Card class="flex flex-col gap-4 text-lg">
+            <Heading as="h3">{title}</Heading>
+            <Paragraph>{description}</Paragraph>
+            <Price
+              class="text-2xl font-medium"
+              {...price}
+            />
+            <List
+              class="!mt-8"
+              items={list}
+            />
+            <Button
+              class="!mt-8"
+              {...button}
+            />
           </Card>
         ))
       }

@@ -4,20 +4,33 @@ import Container from '@/components/Container.astro'
 import Prose from '@/components/Prose.astro'
 import Section from '@/components/Section.astro'
 import Layout from '@/layouts/Layout.astro'
-import type { PageSchema } from '@/schemas/layouts/page'
 import '@/styles/global.css'
-import { getEntry } from 'astro:content'
 
-interface Props extends PageSchema {}
+interface Props {
+  title?: string
+  description?: string
+  image?: {
+    src?: string
+    alt?: string
+  }
+  sections?: any[]
+  meta?: {
+    title?: string
+    description?: string
+    canonical?: string
+    noindex?: boolean
+    nofollow?: boolean
+  }
+}
 
-const layout = await getEntry('layouts', 'pages')
-
-const { meta, sections } = Astro.props
+const { title, description, image, sections, meta } = Astro.props
 ---
 
 <Layout
   class="page"
-  {...layout?.data}
+  {title}
+  {description}
+  {image}
   {...meta}
 >
   <Section class="page page-1">

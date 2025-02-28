@@ -4,28 +4,50 @@ import Button from '@/components/Button.astro'
 import { CartForm } from '@/components/cart-form'
 import Container from '@/components/Container.astro'
 import Gallery from '@/components/Gallery.astro'
+import Heading from '@/components/Heading.astro'
 import Image from '@/components/Image.astro'
+import Paragraph from '@/components/Paragraph.astro'
 import Price from '@/components/Price.astro'
 import Prose from '@/components/Prose.astro'
 import Section from '@/components/Section.astro'
 import Split from '@/components/Split.astro'
 import Writeup from '@/components/Writeup.astro'
 import Layout from '@/layouts/Layout.astro'
-import Page from '@/layouts/Page.astro'
-import type { ProductSchema } from '@/schemas/layouts/product'
-import type { ComponentProps } from 'astro/types'
-import { getEntry } from 'astro:content'
 
-interface Props extends ProductSchema, ComponentProps<typeof Page> {}
+interface Props {
+  gid?: string
+  title?: string
+  description?: string
+  price?: {
+    amount?: number
+    compare?: number
+    unit?: string
+  }
+  images?: {
+    src?: string
+    alt?: string
+  }[]
+  options?: {
+    name?: string
+    values?: string[]
+  }[]
+  meta?: {
+    title?: string
+    description?: string
+    canonical?: string
+    noindex?: boolean
+    nofollow?: boolean
+  }
+}
 
-const layout = await getEntry('layouts', 'products')
-
-const { id, meta, title, description, list, images, price, options, variants } = Astro.props
+const { gid, title, description, images, price, options, meta } = Astro.props
 ---
 
 <Layout
   class="product"
-  {...layout?.data}
+  {title}
+  {description}
+  image={images?.[0]}
   {...meta}
 >
   <Section class="pt-4 lg:pt-16">
@@ -49,15 +71,15 @@ const { id, meta, title, description, list, images, price, options, variants } =
         </Box>
         <Box class="flex flex-col gap-8 lg:pl-8">
           <Writeup size="sm">
-            <Box as="h1">{title}</Box>
-            <Box as="p">{description}</Box>
+            <Heading as="h1">{title}</Heading>
+            <Paragraph>{description}</Paragraph>
           </Writeup>
           {
-            id ? (
+            gid ? (
               <CartForm
                 client:load
-                variants={variants}
                 options={options}
+                variants={variants}
               />
             ) : (
               <>

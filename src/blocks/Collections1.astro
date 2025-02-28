@@ -1,59 +1,56 @@
 ---
-import Abstract from '@/components/Abstract.astro'
 import Box from '@/components/Box.astro'
-import Button from '@/components/Button.astro'
+import Buttons from '@/components/Buttons.astro'
 import Container from '@/components/Container.astro'
 import Grid from '@/components/Grid.astro'
+import Heading from '@/components/Heading.astro'
 import Image from '@/components/Image.astro'
 import Section from '@/components/Section.astro'
 import Writeup from '@/components/Writeup.astro'
-import { getHref } from '@/lib/getHref'
-import type { CollectionsSchema } from '@/schemas/blocks/collections'
-import { getCollection, getEntries } from 'astro:content'
+import type { ComponentProps } from 'astro/types'
 
-interface Props extends CollectionsSchema {}
+interface Props {
+  buttons?: ComponentProps<typeof Buttons>['buttons']
+  collections?: {
+    href?: string
+    image?: ComponentProps<typeof Image>
+    title?: string
+  }[]
+}
 
-const { writeup, button, collections } = Astro.props
-
-const entries = collections ? await getEntries(collections) : await getCollection('collections')
+const { buttons, collections } = Astro.props
 ---
 
 <Section class="collections collections-1">
   <Container class="flex flex-col gap-8">
-    <Writeup
-      class="items-center text-center"
-      markdown={writeup}
-    >
-      <slot />
-      <Button
+    <Box class="flex flex-col items-center gap-8">
+      <Writeup class="items-center text-center">
+        <slot />
+      </Writeup>
+      <Buttons
         class="max-lg:hidden"
-        variant="link"
-        reverse
-        {...button}
+        {buttons}
       />
-    </Writeup>
-    <Grid length={entries?.length}>
+    </Box>
+    <Grid length={collections?.length}>
       {
-        entries?.map(({ collection, id, data: { title, image } }) => (
+        collections?.map(({ href, title, image }) => (
           <Box
             class="group flex flex-col gap-4"
-            href={getHref(collection, id)}
+            href={href}
           >
             <Image
               class="aspect-square rounded-lg transition-opacity group-hover:opacity-75"
               {...image}
             />
-            <Abstract>
-              <Box as="h3">{title}</Box>
-            </Abstract>
+            <Heading as="h3">{title}</Heading>
           </Box>
         ))
       }
     </Grid>
-    <Button
+    <Buttons
       class="lg:hidden"
-      variant="secondary"
-      {...button}
+      {buttons}
     />
   </Container>
 </Section>

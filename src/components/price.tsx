@@ -2,12 +2,12 @@ import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
 interface Props {
-  className?: string | null | undefined
-  class?: string | null | undefined
-  amount?: number | null | undefined
-  compare?: number | null | undefined
-  currency?: string | null | undefined
-  unit?: string | null | undefined
+  className?: string
+  class?: string
+  amount?: number
+  compare?: number
+  currency?: string
+  unit?: string
 }
 
 const formatPrice = (number: number | null | undefined): string => {

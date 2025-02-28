@@ -5,13 +5,22 @@ import Button from '@/components/Button.astro'
 import Container from '@/components/Container.astro'
 import Form from '@/components/Form.astro'
 import Grid from '@/components/Grid.astro'
+import Heading from '@/components/Heading.astro'
 import Section from '@/components/Section.astro'
 import Writeup from '@/components/Writeup.astro'
-import type { ContactSchema } from '@/schemas/blocks/contact'
+import type { ComponentProps } from 'astro/types'
 
-interface Props extends ContactSchema {}
+interface Props {
+  channels?: {
+    href?: string
+    icon?: string
+    title?: string
+    description?: string
+  }[]
+  form?: ComponentProps<typeof Form>
+}
 
-const { writeup, channels, form } = Astro.props
+const { channels, form } = Astro.props
 ---
 
 <Section class="contact contact-1">
@@ -19,7 +28,6 @@ const { writeup, channels, form } = Astro.props
     <Writeup
       class="items-center text-center"
       size="lg"
-      markdown={writeup}
     >
       <slot />
     </Writeup>
@@ -40,7 +48,7 @@ const { writeup, channels, form } = Astro.props
                 {icon}
                 {href}
               />
-              <Box as="h3">{title}</Box>
+              <Heading as="h3">{title}</Heading>
               <Box
                 class="text-muted-foreground hover:text-foreground transition-colors"
                 {href}

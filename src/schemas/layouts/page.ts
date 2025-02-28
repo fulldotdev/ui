@@ -5,6 +5,7 @@ import { z } from 'astro:content'
 
 export const pageSchema = z
   .object({
+    type: z.enum(['Page', 'Home']).default('Page'),
     title: z.string().nullish(),
     description: z.string().nullish(),
     image: imageSchema.nullish(),
@@ -12,5 +13,3 @@ export const pageSchema = z
     meta: metaSchema.nullish(),
   })
   .strict()
-
-export type PageSchema = z.infer<typeof pageSchema>

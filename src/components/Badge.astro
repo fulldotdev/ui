@@ -2,27 +2,28 @@
 import Box from '@/components/Box.astro'
 import { badgeVariants } from '@/components/ui/badge'
 import { buttonVariants } from '@/components/ui/button'
-import type { BadgeSchema } from '@/schemas/components/badge'
+import { cn } from '@/lib/utils'
 import type { HTMLAttributes } from 'astro/types'
 import type { VariantProps } from 'class-variance-authority'
 
-interface Props extends Omit<HTMLAttributes<'a'>, 'href'>, BadgeSchema, VariantProps<typeof badgeVariants> {
+interface Props extends HTMLAttributes<'a'>, VariantProps<typeof badgeVariants> {
   size?: 'default' | 'lg'
+  text?: string
 }
 
 const { href, text, variant, class: className, size, ...rest } = Astro.props
 ---
 
 <Box
-  class:list={[
+  class={cn(
     'badge',
     href ? buttonVariants({ variant }) : '',
     badgeVariants({ variant }),
     {
       'h-7 px-3.5': size === 'lg',
     },
-    className,
-  ]}
+    className
+  )}
   {href}
   {...rest}
 >

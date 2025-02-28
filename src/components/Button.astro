@@ -2,23 +2,25 @@
 import Box from '@/components/Box.astro'
 import Icon from '@/components/Icon.astro'
 import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import type { HTMLAttributes } from 'astro/types'
 import type { VariantProps } from 'class-variance-authority'
 
 interface Props
-  extends VariantProps<typeof buttonVariants>,
-    HTMLAttributes<'button'>,
-    Omit<HTMLAttributes<'a'>, 'type'> {
-  reverse?: boolean | null
-  text?: string | null
-  icon?: string | null
+  extends Omit<HTMLAttributes<'button'>, 'type'>,
+    Omit<HTMLAttributes<'a'>, 'type'>,
+    VariantProps<typeof buttonVariants> {
+  type?: HTMLAttributes<'button'>['type'] & HTMLAttributes<'a'>['type']
+  reverse?: boolean
+  text?: string
+  icon?: string
 }
 
 const { href, text, size, variant, icon, reverse, class: className, ...rest } = Astro.props
 ---
 
 <Box
-  class:list={['button', buttonVariants({ variant, size }), className]}
+  class={cn('button', buttonVariants({ variant, size }), className)}
   as={href ? 'a' : 'button'}
   {href}
   {...rest}

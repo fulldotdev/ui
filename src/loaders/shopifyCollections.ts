@@ -2,6 +2,7 @@ import { collectionSchema } from '@/schemas/layouts/collection'
 import type { Collection } from '@shopify/hydrogen/storefront-api-types'
 import { createStorefrontApiClient } from '@shopify/storefront-api-client'
 import type { Loader, LoaderContext } from 'astro/loaders'
+import { z } from 'astro:schema'
 import config from '../data/config.json'
 
 export const client = createStorefrontApiClient({
@@ -33,7 +34,7 @@ const CollectionsQuery = `#graphql
 
 export function shopifyProductsLoader(options: { storeDomain: string; publicAccessToken: string }): Loader {
   return {
-    name: 'shopify-products',
+    name: 'shopify-collections',
     load: async ({ store }: LoaderContext): Promise<void> => {
       const response = await client.request(CollectionsQuery)
       const collections = response.data.collections.nodes as Partial<Collection>[]
@@ -62,6 +63,8 @@ export function shopifyProductsLoader(options: { storeDomain: string; publicAcce
         })
       }
     },
-    schema: collectionSchema,
+    schema: collectionSchema.extend({
+      id: z.string(),
+    }),
   }
 }

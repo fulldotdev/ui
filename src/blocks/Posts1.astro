@@ -1,21 +1,30 @@
 ---
-import Abstract from '@/components/Abstract.astro'
 import Box from '@/components/Box.astro'
 import Button from '@/components/Button.astro'
 import Container from '@/components/Container.astro'
 import Grid from '@/components/Grid.astro'
+import Heading from '@/components/Heading.astro'
 import Image from '@/components/Image.astro'
 import Section from '@/components/Section.astro'
 import Writeup from '@/components/Writeup.astro'
-import { getHref } from '@/lib/getHref'
-import type { PostsSchema } from '@/schemas/blocks/posts'
-import { getCollection, getEntries } from 'astro:content'
 
-interface Props extends PostsSchema {}
+interface Props {
+  button?: {
+    text?: string
+    href?: string
+    variant?: 'default' | 'secondary' | 'outline' | 'ghost' | 'link'
+  }
+  posts?: {
+    href?: string
+    title?: string
+    image?: {
+      src?: string
+      alt?: string
+    }
+  }[]
+}
 
-const { writeup, button, posts } = Astro.props
-
-const entries = posts ? await getEntries(posts) : await getCollection('posts')
+const { button, posts } = Astro.props
 ---
 
 <Section class="posts posts-1">
@@ -23,28 +32,25 @@ const entries = posts ? await getEntries(posts) : await getCollection('posts')
     <Writeup
       class="items-center text-center"
       size="lg"
-      markdown={writeup}
     >
       <slot />
     </Writeup>
     <Grid
-      length={entries?.length}
+      length={posts?.length}
       size="lg"
       class="gap-x-8"
     >
       {
-        entries?.map(({ collection, id, data: { title, image } }) => (
+        posts?.map(({ href, title, image }) => (
           <Box
             class="group flex flex-col gap-3"
-            href={getHref(collection, id)}
+            href={href}
           >
             <Image
-              class="rounded-lg bg-card object-contain transition-opacity group-hover:opacity-75"
+              class="bg-card rounded-lg object-contain transition-opacity group-hover:opacity-75"
               {...image}
             />
-            <Abstract size="lg">
-              <Box as="h3">{title}</Box>
-            </Abstract>
+            <Heading as="h3">{title}</Heading>
           </Box>
         ))
       }

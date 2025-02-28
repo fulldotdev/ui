@@ -3,25 +3,35 @@ import Abstract from '@/components/Abstract.astro'
 import Box from '@/components/Box.astro'
 import Container from '@/components/Container.astro'
 import Grid from '@/components/Grid.astro'
+import Heading from '@/components/Heading.astro'
 import Image from '@/components/Image.astro'
+import Paragraph from '@/components/Paragraph.astro'
 import Price from '@/components/Price.astro'
 import Prose from '@/components/Prose.astro'
 import Section from '@/components/Section.astro'
 import Writeup from '@/components/Writeup.astro'
 import Layout from '@/layouts/Layout.astro'
-import Page from '@/layouts/Page.astro'
 import { getHref } from '@/lib/getHref'
-import type { CollectionSchema } from '@/schemas/layouts/collection'
-import type { ComponentProps } from 'astro/types'
-import { getCollection, getEntry } from 'astro:content'
+import { getCollection } from 'astro:content'
 
-interface Props extends CollectionSchema, ComponentProps<typeof Page> {
+interface Props {
   id: string
+  title?: string
+  description?: string
+  image?: {
+    src: string
+    alt: string
+  }
+  meta?: {
+    title?: string
+    description?: string
+    canonical?: string
+    noindex?: boolean
+    nofollow?: boolean
+  }
 }
 
-const layout = await getEntry('layouts', 'collections')
-
-const { meta, id, title, description } = Astro.props
+const { title, description, image, meta, id } = Astro.props
 
 const collection = await getCollection('products', ({ data }) =>
   data.collections?.some((collection) => collection.id === id)
@@ -30,7 +40,9 @@ const collection = await getCollection('products', ({ data }) =>
 
 <Layout
   class="collection"
-  {...layout?.data}
+  {title}
+  {description}
+  {image}
   {...meta}
 >
   <Section class="pt-0">
@@ -40,13 +52,13 @@ const collection = await getCollection('products', ({ data }) =>
           align="start"
           size="sm"
         >
-          <Box as="h1">{title}</Box>
-          <Box as="p">{description}</Box>
+          <Heading as="h1">{title}</Heading>
+          <Paragraph>{description}</Paragraph>
         </Writeup>
       </Box>
       <Grid length={collection?.length}>
         {
-          collection?.map(({ collection, id, data: { title, images, price, compare_price } }) => (
+          collection?.map(({ collection, id, data: { title, images, price } }) => (
             <Box
               class="group relative flex flex-col gap-4"
               href={getHref(collection, id)}
@@ -60,11 +72,10 @@ const collection = await getCollection('products', ({ data }) =>
                 size="sm"
                 class="flex flex-col gap-1"
               >
-                <Box as="h3">{title}</Box>
+                <Heading as="h3">{title}</Heading>
                 <Price
                   class="text-muted-foreground"
-                  amount={price}
-                  compare={compare_price}
+                  {...price}
                 />
               </Abstract>
             </Box>

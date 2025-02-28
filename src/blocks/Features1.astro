@@ -1,16 +1,22 @@
 ---
-import Abstract from '@/components/Abstract.astro'
 import Box from '@/components/Box.astro'
 import Container from '@/components/Container.astro'
 import Grid from '@/components/Grid.astro'
+import Heading from '@/components/Heading.astro'
 import Icon from '@/components/Icon.astro'
+import Paragraph from '@/components/Paragraph.astro'
 import Section from '@/components/Section.astro'
 import Writeup from '@/components/Writeup.astro'
-import type { FeaturesSchema } from '@/schemas/blocks/features'
 
-interface Props extends FeaturesSchema {}
+interface Props {
+  features?: {
+    icon?: string
+    title?: string
+    description?: string
+  }[]
+}
 
-const { writeup, features } = Astro.props
+const { features } = Astro.props
 ---
 
 <Section class="features features-1">
@@ -18,23 +24,19 @@ const { writeup, features } = Astro.props
     <Writeup
       class="flex flex-col items-center text-center"
       size="default"
-      markdown={writeup}
     >
       <slot />
     </Writeup>
     <Grid length={features?.length}>
       {
         features?.map(({ icon, title, description }) => (
-          <Abstract
-            size="xl"
-            class="flex flex-col items-center text-center"
-          >
-            <Box class="inline-flex size-9 items-center justify-center rounded-md bg-muted text-muted-foreground">
+          <Box class="flex flex-col items-center gap-4 text-center">
+            <Box class="bg-muted text-muted-foreground inline-flex size-9 items-center justify-center rounded-md">
               <Icon name={icon} />
             </Box>
-            <Box as="h3">{title}</Box>
-            <Box as="p">{description}</Box>
-          </Abstract>
+            <Heading as="h3">{title}</Heading>
+            <Paragraph>{description}</Paragraph>
+          </Box>
         ))
       }
     </Grid>

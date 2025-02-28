@@ -1,35 +1,26 @@
 ---
 import Footer from '@/blocks/Footer.astro'
 import Header from '@/blocks/Header.astro'
+import layout from '@/data/layout.json'
 import { cn } from '@/lib/utils'
-import type { LayoutSchema } from '@/schemas/layouts/layout'
 import '@/styles/global.css'
 import { SEO } from 'astro-seo'
-import { getEntry } from 'astro:content'
 
-interface Props extends LayoutSchema {}
+interface Props {
+  class?: string
+  title?: string
+  description?: string
+  image?: {
+    src?: string
+    alt?: string
+  }
+  canonical?: string
+  noindex?: boolean
+  nofollow?: boolean
+}
 
-const layout = await getEntry('layouts', 'layout')
-
-const {
-  lang = 'en',
-  title,
-  description,
-  noindex,
-  nofollow,
-  canonical,
-  image,
-  company,
-  logo,
-  header,
-  footer,
-  css,
-  body,
-  class: className,
-} = { ...layout?.data, ...Astro.props }
-
-// TODO remove
-const theme = 'light'
+const { title, description, image, canonical, noindex, nofollow, class: className } = Astro.props
+const { lang = 'en', company, header, footer, head, body, css } = layout
 ---
 
 <!doctype html>
@@ -70,62 +61,17 @@ const theme = 'light'
         },
       }}
     />
-
-    <!-- Light / Dark theme -->
-    <script is:inline define:vars={{ theme }}>
-      function setTheme(document) {
-        const value = localStorage.getItem('theme') || theme
-
-        const isDark =
-          value === 'dark' || (value === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-
-        document.documentElement.classList.toggle('dark', isDark)
-
-        document.querySelectorAll('.themer').forEach((themer) => {
-          themer?.querySelectorAll('option').forEach((option) => {
-            option.selected = option.value === value
-          })
-        })
-      }
-
-      function setOption(document) {
-        const value = localStorage.getItem('theme') || theme
-
-        document.querySelectorAll('.themer').forEach((themer) => {
-          themer?.querySelectorAll('option').forEach((option) => {
-            option.selected = option.value === value
-          })
-        })
-      }
-
-      setTheme(document)
-      setOption(document)
-
-      document.addEventListener('astro:before-swap', (event) => {
-        setTheme(event.newDocument)
-      })
-
-      document.addEventListener('astro:page-load', () => {
-        setOption(document)
-      })
-    </script>
+    <Fragment set:html={head} />
   </head>
-
   <body
     class="bg-background text-foreground flex min-h-full w-full flex-col justify-start font-sans text-base scheme-light dark:scheme-dark"
   >
-    <Header
-      {logo}
-      {...header}
-    />
+    <Header {...header} />
     <main>
       <slot />
       <style set:html={css}></style>
       <Fragment set:html={body} />
     </main>
-    <Footer
-      {logo}
-      {...footer}
-    />
+    <Footer {...footer} />
   </body>
 </html>

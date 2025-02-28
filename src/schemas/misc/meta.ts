@@ -7,10 +7,5 @@ export const metaSchema = z
     canonical: z.string().nullish(),
     noindex: z.boolean().nullish(),
     nofollow: z.boolean().nullish(),
-    css: z.string().nullish(),
-    head: z.string().nullish(),
-    body: z.string().nullish(),
-    class: z.string().nullish(),
-    lang: z.string().nullish(),
   })
   .strict()

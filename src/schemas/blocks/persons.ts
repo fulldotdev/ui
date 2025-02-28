@@ -3,9 +3,8 @@ import { z } from 'astro:content'
 
 export const personsSchema = z
   .object({
+    type: z.literal('Persons').default('Persons'),
     writeup: z.string().nullish(),
     persons: pathSchema('persons').array().nullish(),
   })
   .strict()
-
-export type PersonsSchema = z.infer<typeof personsSchema>

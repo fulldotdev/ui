@@ -4,10 +4,9 @@ import { z } from 'astro:content'
 
 export const productsSchema = z
   .object({
+    type: z.literal('Products').default('Products'),
     writeup: z.string().nullish(),
     button: buttonSchema.nullish(),
     products: pathSchema('products').array().nullish(),
   })
   .strict()
-
-export type ProductsSchema = z.infer<typeof productsSchema>
