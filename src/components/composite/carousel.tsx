@@ -19,14 +19,16 @@ export function Carousel({ children }: Props) {
   const items = root.children.map((child) => child.outerHTML)
 
   return (
-    <CarouselRoot>
-      <CarouselContent>
-        {items.map((item, index) => (
-          <CarouselItem key={index}>{parseReact(item)}</CarouselItem>
-        ))}
-      </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
-    </CarouselRoot>
+    items && (
+      <CarouselRoot>
+        <CarouselContent>
+          {items.map((item, index) => (
+            <CarouselItem key={index}>{parseReact(item)}</CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </CarouselRoot>
+    )
   )
 }

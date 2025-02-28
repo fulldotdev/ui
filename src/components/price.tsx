@@ -1,8 +1,8 @@
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
+import type { HTMLAttributes } from 'react'
 
-interface Props {
-  className?: string
+interface Props extends HTMLAttributes<HTMLDivElement> {
   class?: string
   amount?: number
   compare?: number

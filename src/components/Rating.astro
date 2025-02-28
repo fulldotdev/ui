@@ -1,14 +1,14 @@
 ---
 import Box from '@/components/Box.astro'
 import Icon from '@/components/Icon.astro'
+import { cn } from '@/lib/utils'
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'div'> {
-  size?: 'sm' | 'md' | 'lg' | undefined | null
   score?: number | undefined | null
 }
 
-const { size = 'md', score, ...rest } = Astro.props
+const { score, class: className, ...rest } = Astro.props
 
 const getIcon = (count: number) => {
   if (!score) return
@@ -20,16 +20,15 @@ const getIcon = (count: number) => {
 ---
 
 <Box
-  class:list="flex gap-1"
+  class={cn('flex gap-1 text-base', className)}
   {...rest}
 >
   {
     score &&
       [1, 2, 3, 4, 5].map((count) => (
         <Icon
-          class="!h-4 !w-4 !text-primary"
+          class="!text-primary size-[1em]"
           name={getIcon(count)}
-          {size}
         />
       ))
   }
