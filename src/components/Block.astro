@@ -1,5 +1,7 @@
 ---
-let { type, variant, ...rest } = Astro.props
+import { marked } from 'marked'
+
+let { type, variant, content, ...rest } = Astro.props
 
 const blocks = import.meta.glob('../blocks/**/*.astro')
 
@@ -7,12 +9,14 @@ const blockName = `${type}${variant || 1}`
 const path = Object.keys(blocks).find((path) => path.split('/').pop()?.split('.')[0] === blockName)
 
 const BlockComponent = path && (await (blocks[path] as any)()).default
+
+const markdownHtml = marked(content || '')
 ---
 
 {
   BlockComponent && (
     <BlockComponent {...rest}>
-      <slot />
+      <Fragment set:html={markdownHtml} />
     </BlockComponent>
   )
 }

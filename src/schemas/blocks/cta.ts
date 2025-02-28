@@ -4,7 +4,8 @@ import { z } from 'astro:content'
 export const ctaSchema = z
   .object({
     type: z.literal('Cta').default('Cta'),
-    writeup: z.string().nullish(),
-    buttons: buttonSchema.array().nullish(),
+    content: z.string(),
+    buttons: buttonSchema.array(),
   })
+  .partial()
   .strict()

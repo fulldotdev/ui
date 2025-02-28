@@ -5,9 +5,10 @@ import { z } from 'astro:content'
 export const personSchema = z
   .object({
     type: z.literal('Person').default('Person'),
-    title: z.string().nullish(),
-    description: z.string().nullish(),
-    image: imageSchema.nullish(),
-    meta: metaSchema.nullish(),
+    title: z.string(),
+    description: z.string(),
+    image: imageSchema,
+    meta: metaSchema,
   })
+  .partial()
   .strict()

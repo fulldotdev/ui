@@ -8,39 +8,39 @@ import { priceSchema } from '../components/price'
 export const productSchema = z
   .object({
     type: z.literal('Product').default('Product'),
-    title: z.string().nullish(),
-    description: z.string().nullish(),
-    sections: sectionSchema.array().nullish(),
-    meta: metaSchema.nullish(),
-    list: z.string().array().nullish(),
-    images: imageSchema.array().nullish(),
-    price: priceSchema.nullish(),
-    collections: pathSchema('collections').array().nullish(),
+    title: z.string(),
+    description: z.string(),
+    sections: sectionSchema.array(),
+    meta: metaSchema,
+    list: z.string().array(),
+    images: imageSchema.array(),
+    price: priceSchema,
+    collections: pathSchema('collections').array(),
     options: z
       .object({
         name: z.string(),
         values: z.string().array(),
       })
-      .array()
-      .nullish(),
+      .array(),
     variants: z
       .object({
-        id: z.string().nullish(),
-        title: z.string().nullish(),
-        price: priceSchema.nullish(),
-        quantityAvailable: z.number().nullish(),
-        availableForSale: z.boolean().nullish(),
+        id: z.string(),
+        title: z.string(),
+        price: priceSchema,
+        quantityAvailable: z.number(),
+        availableForSale: z.boolean(),
         selectedOptions: z
           .object({
             name: z.string(),
             value: z.string(),
           })
+          .partial()
           .strict()
-          .array()
-          .nullish(),
+          .array(),
       })
+      .partial()
       .strict()
-      .array()
-      .nullish(),
+      .array(),
   })
+  .partial()
   .strict()

@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import type { ProductSchema } from '@/schemas/layouts/product'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Price } from './price'
+import { Price } from './Price'
 
 interface Props extends ProductSchema {}
 

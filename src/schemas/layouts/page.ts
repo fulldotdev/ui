@@ -6,10 +6,11 @@ import { z } from 'astro:content'
 export const pageSchema = z
   .object({
     type: z.enum(['Page', 'Home']).default('Page'),
-    title: z.string().nullish(),
-    description: z.string().nullish(),
-    image: imageSchema.nullish(),
-    sections: sectionSchema.array().nullish(),
-    meta: metaSchema.nullish(),
+    title: z.string(),
+    description: z.string(),
+    image: imageSchema,
+    sections: sectionSchema.array(),
+    meta: metaSchema,
   })
+  .partial()
   .strict()

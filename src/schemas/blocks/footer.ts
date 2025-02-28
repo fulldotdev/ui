@@ -5,13 +5,14 @@ import { z } from 'astro:content'
 
 export const footerSchema = z
   .object({
-    class: z.string().nullish(),
-    logo: logoSchema.nullish(),
-    description: z.string().nullish(),
-    socials: z.string().array().nullish(),
-    channels: linkSchema.array().nullish(),
-    menus: menuSchema.array().nullish(),
+    class: z.string(),
+    logo: logoSchema,
+    description: z.string(),
+    socials: z.string().array(),
+    channels: linkSchema.array(),
+    menus: menuSchema.array(),
   })
+  .partial()
   .strict()
 
 export type FooterSchema = z.infer<typeof footerSchema>

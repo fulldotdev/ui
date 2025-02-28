@@ -1,8 +1,7 @@
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import type { HTMLAttributes } from 'react'
 
-interface Props extends HTMLAttributes<HTMLDivElement> {
+interface Props {
   class?: string
   amount?: number
   compare?: number
@@ -14,13 +13,10 @@ const formatPrice = (number: number | null | undefined): string => {
   return `€${number?.toFixed(2).replace('.', ',').replace(',00', '')}`
 }
 
-export function Price({ amount, compare, unit, currency, className, class: classList, ...rest }: Props) {
+function Price({ amount, compare, unit, currency, class: className }: Props) {
   return (
     amount && (
-      <div
-        className={cn('price flex items-center gap-4', classList, className)}
-        {...rest}
-      >
+      <div className={cn('price flex items-center gap-4', className)}>
         <div>
           {amount && formatPrice(amount)}
           {compare ? (
@@ -33,3 +29,5 @@ export function Price({ amount, compare, unit, currency, className, class: class
     )
   )
 }
+
+export default Price

@@ -3,15 +3,16 @@ import { z } from 'astro:content'
 export const featuresSchema = z
   .object({
     type: z.literal('Features').default('Features'),
-    writeup: z.string().nullish(),
+    content: z.string(),
     features: z
       .object({
-        icon: z.string().nullish(),
-        title: z.string().nullish(),
-        description: z.string().nullish(),
+        icon: z.string(),
+        title: z.string(),
+        description: z.string(),
       })
+      .partial()
       .strict()
-      .array()
-      .nullish(),
+      .array(),
   })
+  .partial()
   .strict()

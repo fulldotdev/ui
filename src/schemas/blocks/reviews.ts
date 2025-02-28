@@ -4,7 +4,8 @@ import { z } from 'astro:content'
 export const reviewsSchema = z
   .object({
     type: z.literal('Reviews').default('Reviews'),
-    writeup: z.string().nullish(),
-    reviews: pathSchema('projects').array().nullish(),
+    content: z.string(),
+    reviews: pathSchema('projects').array(),
   })
+  .partial()
   .strict()

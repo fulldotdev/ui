@@ -4,17 +4,18 @@ import { z } from 'astro:content'
 export const contactSchema = z
   .object({
     type: z.literal('Contact').default('Contact'),
-    writeup: z.string().nullish(),
+    content: z.string(),
     channels: z
       .object({
-        href: z.string().nullish(),
-        icon: z.string().nullish(),
-        title: z.string().nullish(),
-        description: z.string().nullish(),
+        href: z.string(),
+        icon: z.string(),
+        title: z.string(),
+        description: z.string(),
       })
+      .partial()
       .strict()
-      .array()
-      .nullish(),
-    form: formSchema.nullish(),
+      .array(),
+    form: formSchema,
   })
+  .partial()
   .strict()

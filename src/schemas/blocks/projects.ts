@@ -5,8 +5,9 @@ import { z } from 'astro:content'
 export const projectsSchema = z
   .object({
     type: z.literal('Projects').default('Projects'),
-    writeup: z.string().nullish(),
-    button: buttonSchema.nullish(),
-    projects: pathSchema('projects').array().nullish(),
+    content: z.string(),
+    button: buttonSchema,
+    projects: pathSchema('projects').array(),
   })
+  .partial()
   .strict()

@@ -4,15 +4,16 @@ import { z } from 'astro:content'
 export const faqsSchema = z
   .object({
     type: z.literal('Faqs').default('Faqs'),
-    writeup: z.string().nullish(),
-    buttons: buttonSchema.array().nullish(),
+    content: z.string(),
+    buttons: buttonSchema.array(),
     faqs: z
       .object({
-        title: z.string().nullish(),
-        description: z.string().nullish(),
+        title: z.string(),
+        description: z.string(),
       })
+      .partial()
       .strict()
-      .array()
-      .nullish(),
+      .array(),
   })
+  .partial()
   .strict()

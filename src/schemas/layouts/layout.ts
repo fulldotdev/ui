@@ -6,22 +6,23 @@ import { z } from 'astro:content'
 
 export const layoutSchema = z
   .object({
-    lang: z.string().nullish(),
-    class: z.string().nullish(),
-    company: z.string().nullish(),
-    logo: logoSchema.nullish(),
-    header: headerSchema.nullish(),
-    footer: footerSchema.nullish(),
-    title: z.string().nullish(),
-    description: z.string().nullish(),
-    image: imageSchema.nullish(),
-    canonical: z.string().nullish(),
-    noindex: z.boolean().nullish(),
-    nofollow: z.boolean().nullish(),
-    css: z.string().nullish(),
-    head: z.string().nullish(),
-    body: z.string().nullish(),
+    lang: z.string(),
+    class: z.string(),
+    company: z.string(),
+    logo: logoSchema,
+    header: headerSchema,
+    footer: footerSchema,
+    title: z.string(),
+    description: z.string(),
+    image: imageSchema,
+    canonical: z.string(),
+    noindex: z.boolean(),
+    nofollow: z.boolean(),
+    css: z.string(),
+    head: z.string(),
+    body: z.string(),
   })
+  .partial()
   .strict()
 
 export type LayoutSchema = z.infer<typeof layoutSchema>
