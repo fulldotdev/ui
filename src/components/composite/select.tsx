@@ -9,6 +9,7 @@ import {
 import type { ComponentProps } from 'react'
 
 interface Props extends ComponentProps<typeof SelectRoot> {
+  className?: string
   placeholder?: string
   options: {
     label: string
@@ -16,10 +17,10 @@ interface Props extends ComponentProps<typeof SelectRoot> {
   }[]
 }
 
-export function Select({ placeholder, options, ...props }: Props) {
+export function Select({ placeholder, options, className, ...props }: Props) {
   return (
     <SelectRoot {...props}>
-      <SelectTrigger>
+      <SelectTrigger className={className}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

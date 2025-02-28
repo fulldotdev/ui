@@ -11,6 +11,6 @@ export const metaSchema = z
     head: z.string().nullish(),
     body: z.string().nullish(),
     class: z.string().nullish(),
-    lang: z.string().default('en'),
+    lang: z.string().nullish(),
   })
   .strict()

@@ -5,10 +5,10 @@ import { generateColors } from '../lib/generateColors'
 
 interface Config {
   colors: {
-    appearance: 'light' | 'dark'
     primary: string
     base: string
-    background: string
+    lightBackground: string
+    darkBackground: string
   }
   slugs: {
     collections: string

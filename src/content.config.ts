@@ -1,3 +1,5 @@
+import config from '@/data/config.json'
+import { shopifyProductsLoader } from '@/loaders/shopifyProducts'
 import { collectionSchema } from '@/schemas/layouts/collection'
 import { layoutSchema } from '@/schemas/layouts/layout'
 import { pageSchema } from '@/schemas/layouts/page'
@@ -46,9 +48,9 @@ export const collections = {
     }),
   }),
   products: defineCollection({
-    loader: glob({
-      pattern: '**/[^_]*.{md,mdx}',
-      base: './src/content/products',
+    loader: shopifyProductsLoader({
+      storeDomain: config.shopify.storeDomain,
+      publicAccessToken: config.shopify.publicAccessToken,
     }),
     schema: pageSchema.merge(productSchema).extend({
       type: z.literal('Product').default('Product'),

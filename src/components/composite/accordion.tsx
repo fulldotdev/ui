@@ -16,20 +16,22 @@ interface Props {
 
 export function Accordion({ items }: Props) {
   return (
-    <AccordionRoot
-      type="single"
-      collapsible
-      className="w-full max-w-xl"
-    >
-      {items?.map((item, index) => (
-        <AccordionItem
-          value={`item-${index}`}
-          key={`item-${index}`}
-        >
-          <AccordionTrigger>{item.title}</AccordionTrigger>
-          <AccordionContent>{item.description}</AccordionContent>
-        </AccordionItem>
-      ))}
-    </AccordionRoot>
+    items && (
+      <AccordionRoot
+        type="single"
+        collapsible
+        className="w-full max-w-xl"
+      >
+        {items?.map((item, index) => (
+          <AccordionItem
+            value={`item-${index}`}
+            key={`item-${index}`}
+          >
+            <AccordionTrigger>{item.title}</AccordionTrigger>
+            <AccordionContent>{item.description}</AccordionContent>
+          </AccordionItem>
+        ))}
+      </AccordionRoot>
+    )
   )
 }

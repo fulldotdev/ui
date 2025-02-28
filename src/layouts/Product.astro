@@ -1,10 +1,10 @@
 ---
 import Box from '@/components/Box.astro'
 import Button from '@/components/Button.astro'
+import { CartForm } from '@/components/cart-form'
 import Container from '@/components/Container.astro'
 import Gallery from '@/components/Gallery.astro'
 import Image from '@/components/Image.astro'
-import List from '@/components/List.astro'
 import Price from '@/components/Price.astro'
 import Prose from '@/components/Prose.astro'
 import Section from '@/components/Section.astro'
@@ -20,7 +20,7 @@ interface Props extends ProductSchema, ComponentProps<typeof Page> {}
 
 const layout = await getEntry('layouts', 'products')
 
-const { meta, title, description, list, images, price } = Astro.props
+const { id, meta, title, description, list, images, price, options, variants } = Astro.props
 ---
 
 <Layout
@@ -47,27 +47,35 @@ const { meta, title, description, list, images, price } = Astro.props
             <slot />
           </Prose>
         </Box>
-        <Writeup
-          size="sm"
-          class="lg:pl-8"
-        >
-          <Box as="h1">{title}</Box>
-          <Box as="p">{description}</Box>
-          <Price
-            class="mt-4 text-lg font-medium"
-            amount={price}
-          />
-          <Button
-            class="mt-4"
-            size="lg"
-            href="/contact/"
-            text="Plaats aanvraag"
-          />
-          <List
-            class="text-muted-foreground pt-4"
-            items={list}
-          />
-        </Writeup>
+        <Box class="flex flex-col gap-8 lg:pl-8">
+          <Writeup size="sm">
+            <Box as="h1">{title}</Box>
+            <Box as="p">{description}</Box>
+          </Writeup>
+          {
+            id ? (
+              <CartForm
+                client:load
+                variants={variants}
+                options={options}
+              />
+            ) : (
+              <>
+                <Price
+                  class="mt-4 text-lg font-medium"
+                  {...price}
+                />
+                <Button
+                  class="mt-4"
+                  size="lg"
+                  href="/contact/"
+                  text="Plaats aanvraag"
+                />
+              </>
+            )
+          }
+        </Box>
+
         <Prose class="lg:hidden">
           <slot />
         </Prose>
