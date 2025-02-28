@@ -8,10 +8,9 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
 import { cn } from '@/lib/utils'
-import { useState } from 'react'
+import { useState, type ComponentProps } from 'react'
 
-interface Props {
-  class?: string | null
+interface Props extends ComponentProps<typeof NavigationMenuRoot> {
   items?:
     | {
         text?: string | null
@@ -26,7 +25,7 @@ interface Props {
     | null
 }
 
-export function NavigationMenu({ items, class: className }: Props) {
+export function NavigationMenu({ items, className }: Props) {
   const [offset, setOffset] = useState<string | undefined>(undefined)
 
   function handleChange(value: string) {

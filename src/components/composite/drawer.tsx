@@ -1,13 +1,5 @@
 import { Button } from '@/components/ui/button'
-import {
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  Drawer as DrawerRoot,
-  DrawerTitle,
-  DrawerTrigger,
-} from '@/components/ui/drawer'
+import { DrawerContent, Drawer as DrawerRoot, DrawerTrigger } from '@/components/ui/drawer'
 import type { ComponentProps } from 'react'
 
 interface Props {
@@ -27,23 +19,15 @@ export function Drawer({ variant, size, title, description, className, children,
     <DrawerRoot>
       <DrawerTrigger asChild>
         <Button
-          variant={variant}
           size={size}
-          className={className}
+          variant={variant}
           name="drawer-trigger"
+          className={className}
         >
           {trigger}
         </Button>
       </DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>{title}</DrawerTitle>
-          <DrawerDescription>{description}</DrawerDescription>
-          {header}
-        </DrawerHeader>
-        {children}
-        <DrawerFooter>{footer}</DrawerFooter>
-      </DrawerContent>
+      <DrawerContent className="max-h-[60svh] p-0">{children}</DrawerContent>
     </DrawerRoot>
   )
 }

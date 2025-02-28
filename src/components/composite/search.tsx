@@ -35,7 +35,7 @@ export function Search({ groups }: Props) {
         size="sm"
         onClick={() => setOpen(true)}
       >
-        Begin met zoeken...
+        Zoeken...
         <SearchIcon className="ml-4" />
       </Button>
       <CommandDialog

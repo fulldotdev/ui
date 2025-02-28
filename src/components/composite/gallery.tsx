@@ -75,7 +75,7 @@ export function Gallery({ children }: Props) {
             <CarouselItem
               key={index}
               className={`pl-0 basis-1/5 cursor-pointer border rounded-md overflow-hidden ${
-                index === selectedIndex ? 'border-ring' : ''
+                index === selectedIndex ? 'border-ring border-2' : ''
               }`}
               onClick={() => onThumbClick(index)}
             >

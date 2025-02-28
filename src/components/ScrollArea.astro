@@ -1,0 +1,26 @@
+---
+import { ScrollArea as ScrollAreaUI } from '@/components/ui/scroll-area'
+import type { ComponentProps } from 'astro/types'
+
+type ScrollAreaProps = ComponentProps<typeof ScrollAreaUI>
+
+interface Props extends Omit<ScrollAreaProps, 'className'> {
+  class?: ScrollAreaProps['className']
+}
+
+const slot = await Astro.slots.render('default')
+
+const { class: className, ...rest } = Astro.props
+---
+
+{
+  slot.trim().length && (
+    <ScrollAreaUI
+      client:load
+      {className}
+      {...rest}
+    >
+      <Fragment set:html={slot} />
+    </ScrollAreaUI>
+  )
+}
