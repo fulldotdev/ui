@@ -10,6 +10,7 @@ const files = [
   '.vscode',
   'netlify',
   'src/actions',
+  'src/stores',
   'src/blocks',
   'src/components',
   'src/layouts',
