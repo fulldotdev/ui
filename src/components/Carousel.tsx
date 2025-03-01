@@ -9,11 +9,11 @@ import parseReact from 'html-react-parser'
 import { parse as parseNode } from 'node-html-parser'
 
 interface Props {
-  class?: string
+  className?: string
   children: any
 }
 
-export function Carousel({ children, class: className }: Props) {
+export function Carousel({ children, className }: Props) {
   // TODO: typesafe als also working for non-astro use
   const value = children.props.value
   const root = parseNode(value)

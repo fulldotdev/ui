@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
 interface Props {
-  class?: string
+  className?: string
   amount?: number
   compare?: number
   currency?: string
@@ -13,7 +13,7 @@ const formatPrice = (number: number | null | undefined): string => {
   return `€${number?.toFixed(2).replace('.', ',').replace(',00', '')}`
 }
 
-function Price({ amount, compare, unit, currency, class: className }: Props) {
+function Price({ amount, compare, unit, currency, className }: Props) {
   return (
     amount && (
       <div className={cn('price flex items-center gap-4', className)}>

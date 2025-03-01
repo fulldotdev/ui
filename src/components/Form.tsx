@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils'
 import { useForm } from 'react-hook-form'
 
 interface Props {
-  class?: string
+  className?: string
   action?: string
   method?: string
   submit?: string
@@ -29,7 +29,7 @@ interface Props {
   }[]
 }
 
-function Form({ action, method, fields, submit, class: className }: Props) {
+function Form({ action, method, fields, submit, className }: Props) {
   const form = useForm()
 
   return (

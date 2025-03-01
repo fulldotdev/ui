@@ -4,14 +4,14 @@ import { cn } from '@/lib/utils'
 import type { ComponentProps, ReactNode } from 'react'
 
 interface Props {
-  class?: string
+  className?: string
   variant?: ComponentProps<typeof Button>['variant']
   size?: ComponentProps<typeof Button>['size']
   children?: ReactNode
   trigger?: ReactNode
 }
 
-function Drawer({ children, trigger, variant, size, class: className }: Props) {
+function Drawer({ children, trigger, variant, size, className }: Props) {
   return (
     <DrawerRoot>
       <DrawerTrigger asChild>

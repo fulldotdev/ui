@@ -13,7 +13,7 @@ import type { ComponentProps } from 'react'
 import { useState } from 'react'
 
 interface Props {
-  class?: string
+  className?: string
   variant?: ComponentProps<typeof Button>['variant']
   size?: ComponentProps<typeof Button>['size']
   groups?: {
@@ -25,7 +25,7 @@ interface Props {
   }[]
 }
 
-export function Search({ groups, variant, size, class: className }: Props) {
+export function Search({ groups, variant, size, className }: Props) {
   const [open, setOpen] = useState(false)
 
   return (

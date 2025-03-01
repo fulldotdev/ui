@@ -12,11 +12,11 @@ import { parse as parseNode } from 'node-html-parser'
 import { useEffect, useState } from 'react'
 
 interface Props {
+  className?: string
   children: any
-  class?: string
 }
 
-function Gallery({ children, class: className }: Props) {
+function Gallery({ children, className }: Props) {
   const [emblaMainApi, setEmblaMainApi] = useState<CarouselApi>()
   const [emblaThumbnailApi, setEmblaThumbnailApi] = useState<CarouselApi>()
   const [selectedIndex, setSelectedIndex] = useState(0)

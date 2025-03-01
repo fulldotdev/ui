@@ -11,7 +11,8 @@ import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
 interface Props {
-  class?: string
+  className?: string
+
   items?: {
     text?: string
     href?: string
@@ -22,7 +23,7 @@ interface Props {
   }[]
 }
 
-function NavigationMenu({ items, class: className }: Props) {
+function NavigationMenu({ items, className }: Props) {
   const [offset, setOffset] = useState<string | undefined>(undefined)
 
   function handleChange(value: string) {

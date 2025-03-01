@@ -8,16 +8,16 @@ import { cn } from '@/lib/utils'
 import type { ComponentProps } from 'react'
 
 interface Props {
+  className?: string
   type?: ComponentProps<typeof AccordionRoot>['type']
   collapsible?: boolean
-  class?: string
   items?: {
     title?: string
     description?: string
   }[]
 }
 
-export function Accordion({ items, class: className, type = 'single', collapsible = true }: Props) {
+export default function Accordion({ items, type = 'single', collapsible = true, className }: Props) {
   return (
     items && (
       <AccordionRoot
