@@ -1,4 +1,4 @@
-import Price from '@/components/Price.tsx'
+import { Price } from '@/components/price'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'

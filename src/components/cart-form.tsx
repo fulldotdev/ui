@@ -1,11 +1,26 @@
+import { Price } from '@/components/price'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { cartLineAdd } from '@/stores/cart'
+import { Loader2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import Price from './Price.tsx'
 
-export function CartForm({ options, variants }: any) {
+interface Props {
+  options?: {
+    name: string
+    values: string[]
+  }[]
+  variants?: {
+    selectedOptions: {
+      name: string
+      value: string
+    }[]
+  }[]
+}
+
+export default function CartForm({ options, variants }: Props) {
   const form = useForm({
     defaultValues: options?.reduce(
       (acc, { name, values }) => ({ ...acc, [name]: values?.[0] || '' }),
@@ -14,18 +29,21 @@ export function CartForm({ options, variants }: any) {
   })
 
   const formValues = form.watch()
-
-  const [foundVariant, setFoundVariant] = useState<any>(variants?.[0])
+  const [loading, setLoading] = useState(false)
+  const [variant, setVariant] = useState<any>(variants?.[0])
 
   useEffect(() => {
-    const foundVariant = variants?.find((variant) =>
-      variant.selectedOptions?.every((option) => formValues[option.name] === option.value)
+    setVariant(
+      variants?.find((variant) =>
+        variant.selectedOptions?.every((option) => formValues[option?.name ?? ''] === option?.value)
+      )
     )
-    setFoundVariant(foundVariant)
   }, [formValues])
 
-  const handleSubmit = (data: any) => {
-    console.log({ data, foundVariant })
+  const handleSubmit = async (data: any) => {
+    setLoading(true)
+    await cartLineAdd(variant.id, 1)
+    setLoading(false)
   }
 
   return (
@@ -40,7 +58,7 @@ export function CartForm({ options, variants }: any) {
             control={form.control}
             name={name}
             render={({ field }) => (
-              <FormItem>
+              <FormItem className={values.length === 1 ? 'hidden' : ''}>
                 <FormLabel>{name}</FormLabel>
                 <FormControl>
                   <Select
@@ -70,9 +88,9 @@ export function CartForm({ options, variants }: any) {
         ))}
         <Price
           className="text-xl"
-          {...foundVariant?.price}
+          {...variant?.price}
         />
-        <Button size="lg">In winkelwagen</Button>
+        <Button size="lg">{loading ? <Loader2 className="animate-spin" /> : 'In winkelwagen'}</Button>
       </form>
     </Form>
   )

@@ -13,10 +13,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import { useForm } from 'react-hook-form'
 
-interface Props {
-  className?: string
-  action?: string
-  method?: string
+interface Props extends React.FormHTMLAttributes<HTMLFormElement> {
   submit?: string
   fields?: {
     type?: 'text' | 'number' | 'email' | 'checkbox' | 'select' | 'textarea'
@@ -29,15 +26,14 @@ interface Props {
   }[]
 }
 
-function Form({ action, method, fields, submit, className }: Props) {
+function Form({ fields, submit, className, ...props }: Props) {
   const form = useForm()
 
-  return (
+  return fields ? (
     <FormRoot {...form}>
       <form
-        action={action}
-        method={method}
         className={cn('w-full flex flex-col gap-6 max-w-xl', className)}
+        {...props}
       >
         {fields?.map(
           ({ type, name, label, placeholder, description, required }, index) =>
@@ -86,7 +82,7 @@ function Form({ action, method, fields, submit, className }: Props) {
         </Button>
       </form>
     </FormRoot>
-  )
+  ) : null
 }
 
-export default Form
+export { Form }

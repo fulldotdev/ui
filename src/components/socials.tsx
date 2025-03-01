@@ -1,0 +1,54 @@
+import { Box } from '@/components/box'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import {
+  SiDiscord,
+  SiFacebook,
+  SiGithub,
+  SiInstagram,
+  SiTiktok,
+  SiTwitch,
+  SiX,
+  SiYoutube,
+} from '@icons-pack/react-simple-icons'
+import * as React from 'react'
+
+interface Props extends React.ComponentProps<typeof Box> {
+  socials?: string[]
+}
+
+function Socials({ socials, className, ...props }: Props) {
+  return (
+    <Box
+      className={cn('socials inline-flex gap-1', className)}
+      {...props}
+    >
+      {socials?.map((social, index) => (
+        <Button
+          key={index}
+          variant="ghost"
+          size="icon"
+          className="size-8 [&>svg]:fill-current"
+          asChild
+        >
+          <a
+            href={social}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {social.includes('x.com') && <SiX />}
+            {social.includes('facebook') && <SiFacebook />}
+            {social.includes('instagram') && <SiInstagram />}
+            {social.includes('youtube') && <SiYoutube />}
+            {social.includes('tiktok') && <SiTiktok />}
+            {social.includes('twitch') && <SiTwitch />}
+            {social.includes('github') && <SiGithub />}
+            {social.includes('discord') && <SiDiscord />}
+          </a>
+        </Button>
+      ))}
+    </Box>
+  )
+}
+
+export { Socials }

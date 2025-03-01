@@ -5,25 +5,21 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { cn } from '@/lib/utils'
-import type { ComponentProps } from 'react'
+import * as React from 'react'
 
-interface Props {
-  className?: string
-  type?: ComponentProps<typeof AccordionRoot>['type']
-  collapsible?: boolean
+type Props = React.ComponentProps<typeof AccordionRoot> & {
   items?: {
     title?: string
     description?: string
   }[]
 }
 
-export default function Accordion({ items, type = 'single', collapsible = true, className }: Props) {
+function Accordion({ items, className, ...props }: Props) {
   return (
     items && (
       <AccordionRoot
-        type={type}
-        collapsible={collapsible}
         className={cn('w-full max-w-xl', className)}
+        {...props}
       >
         {items?.map((item, index) => (
           <AccordionItem
@@ -38,3 +34,5 @@ export default function Accordion({ items, type = 'single', collapsible = true, 
     )
   )
 }
+
+export { Accordion }

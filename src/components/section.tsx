@@ -5,7 +5,7 @@ import React from 'react'
 
 interface SectionProps extends React.HTMLAttributes<HTMLElement> {}
 
-export default function Section({ className, children, ...props }: SectionProps) {
+function Section({ className, children, ...props }: SectionProps) {
   return (
     <Box
       className={cn('section relative w-full py-16', className)}
@@ -16,3 +16,5 @@ export default function Section({ className, children, ...props }: SectionProps)
     </Box>
   )
 }
+
+export { Section }

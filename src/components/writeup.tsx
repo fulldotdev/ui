@@ -6,7 +6,7 @@ interface WriteupProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: 'sm' | 'default' | 'lg' | 'xl'
 }
 
-export default function Writeup({ size = 'default', className, children, ...props }: WriteupProps) {
+function Writeup({ size = 'default', className, children, ...props }: WriteupProps) {
   return (
     <Box
       className={cn(
@@ -30,3 +30,5 @@ export default function Writeup({ size = 'default', className, children, ...prop
     </Box>
   )
 }
+
+export { Writeup }

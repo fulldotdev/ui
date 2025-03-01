@@ -9,7 +9,7 @@ interface Props {
   unit?: string
 }
 
-export default function Price({ amount, compare, unit, currency = 'EUR', className }: Props) {
+function Price({ amount, compare, unit, currency = 'EUR', className }: Props) {
   function formatPrice(number: number): string {
     if (number === null || number === undefined) return ''
     return new Intl.NumberFormat('nl-NL', {
@@ -35,3 +35,5 @@ export default function Price({ amount, compare, unit, currency = 'EUR', classNa
     )
   )
 }
+
+export { Price }
