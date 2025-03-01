@@ -1,7 +1,7 @@
 import config from '@/data/config.json'
 
 export function getHref(
-  collection: 'pages' | 'posts' | 'products' | 'collections' | 'projects' | 'persons',
+  collection: 'pages' | 'articles' | 'products' | 'collections' | 'projects' | 'persons',
   slugOrId: string
 ) {
   const collectionSlug = collection === 'pages' ? '' : config.slugs[collection]

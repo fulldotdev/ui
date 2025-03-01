@@ -13,7 +13,7 @@ interface Config {
   slugs: {
     collections: string
     persons: string
-    posts: string
+    articles: string
     products: string
     projects: string
   }

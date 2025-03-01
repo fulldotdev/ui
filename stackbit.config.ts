@@ -1,6 +1,5 @@
 import { GitContentSource } from '@stackbit/cms-git'
 import { defineStackbitConfig } from '@stackbit/types'
-import { CollectionModel } from 'stackbit/layouts/Collection'
 import { CollectionsModel } from 'stackbit/blocks/Collections'
 import { ContactModel } from 'stackbit/blocks/Contact'
 import { ContentModel } from 'stackbit/blocks/Content'
@@ -8,14 +7,14 @@ import { CtaModel } from 'stackbit/blocks/Cta'
 import { FaqsModel } from 'stackbit/blocks/Faqs'
 import { FeaturesModel } from 'stackbit/blocks/Features'
 import { HeroModel } from 'stackbit/blocks/Hero'
-import { HomeModel } from 'stackbit/layouts/Home'
 import { IntroModel } from 'stackbit/blocks/Intro'
 import { PageModel } from 'stackbit/blocks/Page'
-import { PostModel } from 'stackbit/layouts/Post'
-import { PostsModel } from 'stackbit/blocks/Posts'
-import { ProductModel } from 'stackbit/layouts/Product'
 import { ProductsModel } from 'stackbit/blocks/Products'
 import { ReviewsModel } from 'stackbit/blocks/Reviews'
+import { ArticleModel } from 'stackbit/layouts/Article'
+import { CollectionModel } from 'stackbit/layouts/Collection'
+import { HomeModel } from 'stackbit/layouts/Home'
+import { ProductModel } from 'stackbit/layouts/Product'
 
 export default defineStackbitConfig({
   stackbitVersion: '~0.6.0',
@@ -52,8 +51,7 @@ export default defineStackbitConfig({
         HeroModel,
         IntroModel,
         PageModel,
-        PostModel,
-        PostsModel,
+        ArticleModel,
         ProductModel,
         ProductsModel,
         ReviewsModel,

@@ -14,7 +14,7 @@ export const SectionsField: FieldList = {
       'Features',
       'Hero',
       'Intro',
-      'Posts',
+      'Articles',
       'Products',
       'Reviews',
     ],

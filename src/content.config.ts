@@ -1,9 +1,9 @@
 import config from '@/data/config.json'
 import { shopifyProductsLoader } from '@/loaders/shopifyProducts'
+import { articleSchema } from '@/schemas/layouts/article'
 import { collectionSchema } from '@/schemas/layouts/collection'
 import { pageSchema } from '@/schemas/layouts/page'
 import { personSchema } from '@/schemas/layouts/person'
-import { postSchema } from '@/schemas/layouts/post'
 import { productSchema } from '@/schemas/layouts/product'
 import { projectSchema } from '@/schemas/layouts/project'
 import { reviewSchema } from '@/schemas/layouts/review'
@@ -18,12 +18,12 @@ export const collections = {
     }),
     schema: pageSchema,
   }),
-  posts: defineCollection({
+  articles: defineCollection({
     loader: glob({
       pattern: '**/[^_]*.{md,mdx}',
-      base: './src/content/posts',
+      base: './src/content/articles',
     }),
-    schema: postSchema,
+    schema: articleSchema,
   }),
   projects: defineCollection({
     loader: glob({
