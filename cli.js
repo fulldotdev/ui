@@ -9,7 +9,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const files = [
   '.vscode',
   'netlify',
-  'src/actions',
   'src/stores',
   'src/blocks',
   'src/components',

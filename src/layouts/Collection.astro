@@ -1,14 +1,5 @@
 ---
-import Box from '@/components/Box.astro'
-import Container from '@/components/Container.astro'
-import Grid from '@/components/Grid.astro'
-import Heading from '@/components/Heading.astro'
-import Image from '@/components/Image.astro'
-import Paragraph from '@/components/Paragraph.astro'
-import Price from '@/components/price'
-import Prose from '@/components/Prose.astro'
-import Section from '@/components/Section.astro'
-import Writeup from '@/components/Writeup.astro'
+import { Collection1 } from '@/blocks/collection-1'
 import Layout from '@/layouts/Layout.astro'
 import { getHref } from '@/lib/getHref'
 import { getCollection } from 'astro:content'
@@ -32,9 +23,14 @@ interface Props {
 
 const { title, description, image, meta, id } = Astro.props
 
-const collection = await getCollection('products', ({ data }) =>
-  data.collections?.some((collection) => collection.id === id)
-)
+const products = (
+  await getCollection('products', ({ data }) => data.collections?.some((collection) => collection.id === id))
+)?.map(({ collection, id, data }) => ({
+  href: getHref(collection, id),
+  title: data.title,
+  image: data.images?.[0],
+  price: data.price,
+}))
 ---
 
 <Layout
@@ -44,40 +40,11 @@ const collection = await getCollection('products', ({ data }) =>
   {image}
   {...meta}
 >
-  <Section class="pt-0">
-    <Container class="flex flex-col gap-12">
-      <Box class="border-b py-12">
-        <Writeup
-          align="start"
-          size="sm"
-        >
-          <Heading as="h1">{title}</Heading>
-          <Paragraph>{description}</Paragraph>
-        </Writeup>
-      </Box>
-      <Grid length={collection?.length}>
-        {
-          collection?.map(({ collection, id, data: { title, images, price } }) => (
-            <Box
-              class="group relative flex flex-col gap-4"
-              href={getHref(collection, id)}
-            >
-              <Image
-                class="bg-card aspect-square rounded-lg object-contain transition-opacity group-hover:opacity-75"
-                {...images?.[0]}
-              />
-              <Heading as="h3">{title}</Heading>
-              <Price
-                className="text-muted-foreground"
-                {...price}
-              />
-            </Box>
-          ))
-        }
-      </Grid>
-      <Prose>
-        <slot />
-      </Prose>
-    </Container>
-  </Section>
+  <Collection1
+    {title}
+    {description}
+    {products}
+  >
+    <slot />
+  </Collection1>
 </Layout>

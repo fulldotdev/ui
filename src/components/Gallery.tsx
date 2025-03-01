@@ -92,4 +92,4 @@ function Gallery({ children, className }: Props) {
   )
 }
 
-export default Gallery
+export { Gallery }

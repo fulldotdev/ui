@@ -9,7 +9,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
   reverse?: boolean
 }
 
-export default function Buttons({ size, reverse = false, className, buttons, ...rest }: Props) {
+function Buttons({ size, reverse = false, className, buttons, ...rest }: Props) {
   const getButtonVariant = (index: number) => {
     if (reverse) {
       const length = buttons?.length || 0
@@ -41,3 +41,5 @@ export default function Buttons({ size, reverse = false, className, buttons, ...
     </Box>
   )
 }
+
+export { Buttons }

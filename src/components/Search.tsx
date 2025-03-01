@@ -72,4 +72,4 @@ export function Search({ groups, variant, size, className }: Props) {
   )
 }
 
-export default Search
+export { Search }

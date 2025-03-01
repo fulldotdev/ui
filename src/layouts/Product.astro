@@ -1,28 +1,16 @@
 ---
-import Box from '@/components/Box.astro'
-import Button from '@/components/Button.astro'
-import CartForm from '@/components/cart-form'
-import Container from '@/components/Container.astro'
-import Gallery from '@/components/gallery'
-import Heading from '@/components/Heading.astro'
-import Image from '@/components/Image.astro'
-import Paragraph from '@/components/Paragraph.astro'
-import Price from '@/components/price'
-import Prose from '@/components/Prose.astro'
-import Section from '@/components/Section.astro'
-import Split from '@/components/Split.astro'
-import Writeup from '@/components/Writeup.astro'
+import { Product1 } from '@/blocks/product-1'
 import Layout from '@/layouts/Layout.astro'
 import type { ComponentProps } from 'astro/types'
 
 interface Props {
-  gid?: string
-  title?: string
-  description?: string
-  price?: ComponentProps<typeof Price>
-  images?: ComponentProps<typeof Image>[]
-  options?: ComponentProps<typeof CartForm>['options']
-  variants?: ComponentProps<typeof CartForm>['variants']
+  title?: ComponentProps<typeof Product1>['title']
+  description?: ComponentProps<typeof Product1>['description']
+  gid?: ComponentProps<typeof Product1>['gid']
+  price?: ComponentProps<typeof Product1>['price']
+  images?: ComponentProps<typeof Product1>['images']
+  options?: ComponentProps<typeof Product1>['options']
+  variants?: ComponentProps<typeof Product1>['variants']
   meta?: Pick<ComponentProps<typeof Layout>, 'title' | 'description' | 'canonical' | 'noindex' | 'nofollow'>
 }
 
@@ -36,58 +24,13 @@ const { gid, title, description, images, price, options, variants, meta } = Astr
   image={images?.[0]}
   {...meta}
 >
-  <Section class="pt-4 lg:pt-16">
-    <Container>
-      <Split>
-        <Box class="flex flex-col gap-16">
-          <Gallery client:load>
-            {
-              images?.map((image) => (
-                <Image
-                  class="bg-card aspect-square h-full w-full object-contain"
-                  src={image.src}
-                  alt={image.alt}
-                />
-              ))
-            }
-          </Gallery>
-          <Prose class="max-lg:hidden">
-            <slot />
-          </Prose>
-        </Box>
-        <Box class="flex flex-col gap-8 lg:pl-8">
-          <Writeup size="sm">
-            <Heading as="h1">{title}</Heading>
-            <Paragraph>{description}</Paragraph>
-          </Writeup>
-          {
-            gid ? (
-              <CartForm
-                client:load
-                options={options}
-                variants={variants}
-              />
-            ) : (
-              <>
-                <Price
-                  className="mt-4 text-lg font-medium"
-                  {...price}
-                />
-                <Button
-                  class="mt-4"
-                  size="lg"
-                  href="/contact/"
-                  text="Plaats aanvraag"
-                />
-              </>
-            )
-          }
-        </Box>
-
-        <Prose class="lg:hidden">
-          <slot />
-        </Prose>
-      </Split>
-    </Container>
-  </Section>
+  <Product1
+    {gid}
+    {title}
+    {description}
+    {images}
+    {price}
+    {options}
+    {variants}
+  />
 </Layout>

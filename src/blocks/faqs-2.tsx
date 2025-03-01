@@ -1,6 +1,6 @@
 import { Accordion } from '@/components/accordion'
 import { Box } from '@/components/box'
-import Buttons from '@/components/buttons'
+import { Buttons } from '@/components/buttons'
 import { Container } from '@/components/container'
 import { Section } from '@/components/section'
 import { Split } from '@/components/split'

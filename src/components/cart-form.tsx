@@ -20,7 +20,7 @@ interface Props {
   }[]
 }
 
-export default function CartForm({ options, variants }: Props) {
+function CartForm({ options, variants }: Props) {
   const form = useForm({
     defaultValues: options?.reduce(
       (acc, { name, values }) => ({ ...acc, [name]: values?.[0] || '' }),
@@ -95,3 +95,5 @@ export default function CartForm({ options, variants }: Props) {
     </Form>
   )
 }
+
+export { CartForm }

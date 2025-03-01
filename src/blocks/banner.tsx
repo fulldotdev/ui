@@ -7,7 +7,7 @@ interface Props extends React.HTMLAttributes<HTMLElement> {
   text?: string
 }
 
-function Banner1({ text, className, ...props }: Props) {
+function Banner({ text, className, ...props }: Props) {
   return (
     <Box
       className={cn('banner bg-primary text-primary-foreground py-1 text-center text-sm font-medium', className)}
@@ -19,4 +19,4 @@ function Banner1({ text, className, ...props }: Props) {
   )
 }
 
-export { Banner1 }
+export { Banner }

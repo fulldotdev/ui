@@ -1,5 +1,5 @@
 import { Box } from '@/components/box'
-import Buttons from '@/components/buttons'
+import { Buttons } from '@/components/buttons'
 import { Container } from '@/components/container'
 import { Grid } from '@/components/grid'
 import { Heading } from '@/components/heading'

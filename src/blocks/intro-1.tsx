@@ -20,4 +20,4 @@ function Intro({ children }: Props) {
   )
 }
 
-export default Intro
+export { Intro }

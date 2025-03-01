@@ -11,7 +11,7 @@ interface Props {
   className?: string
 }
 
-export default function CartForm({ className }: Props) {
+function CartForm({ className }: Props) {
   const $cart = useStore(cart)
   const $isCartOpen = useStore(isCartOpen)
   const [loading, setLoading] = useState(false)
@@ -95,3 +95,5 @@ export default function CartForm({ className }: Props) {
     </Sheet>
   )
 }
+
+export { CartForm }

@@ -17,63 +17,63 @@ import { z } from 'astro:content'
 
 export const sectionSchema = z.discriminatedUnion('type', [
   collectionsSchema.extend({
-    type: z.literal('Collection'),
+    type: z.literal('collections'),
     variant: z.number().default(1),
   }),
   contactSchema.extend({
-    type: z.literal('Contact'),
+    type: z.literal('contact'),
     variant: z.number().default(1),
   }),
   contentSchema.extend({
-    type: z.literal('Content'),
+    type: z.literal('content'),
     variant: z.number().default(1),
   }),
   ctaSchema.extend({
-    type: z.literal('Cta'),
+    type: z.literal('cta'),
     variant: z.number().default(1),
   }),
   faqsSchema.extend({
-    type: z.literal('Faqs'),
+    type: z.literal('faqs'),
     variant: z.number().default(1),
   }),
   featuresSchema.extend({
-    type: z.literal('Features'),
+    type: z.literal('features'),
     variant: z.number().default(1),
   }),
   heroSchema.extend({
-    type: z.literal('Hero'),
+    type: z.literal('hero'),
     variant: z.number().default(1),
   }),
   introSchema.extend({
-    type: z.literal('Intro'),
+    type: z.literal('intro'),
     variant: z.number().default(1),
   }),
   articlesSchema.extend({
-    type: z.literal('Articles'),
+    type: z.literal('articles'),
     variant: z.number().default(1),
   }),
   productsSchema.extend({
-    type: z.literal('Products'),
+    type: z.literal('products'),
     variant: z.number().default(1),
   }),
   reviewsSchema.extend({
-    type: z.literal('Reviews'),
+    type: z.literal('reviews'),
     variant: z.number().default(1),
   }),
   personsSchema.extend({
-    type: z.literal('Persons'),
+    type: z.literal('persons'),
     variant: z.number().default(1),
   }),
   projectsSchema.extend({
-    type: z.literal('Projects'),
+    type: z.literal('projects'),
     variant: z.number().default(1),
   }),
   pricingsSchema.extend({
-    type: z.literal('Pricings'),
+    type: z.literal('pricings'),
     variant: z.number().default(1),
   }),
   pagesSchema.extend({
-    type: z.literal('Pages'),
+    type: z.literal('pages'),
     variant: z.number().default(1),
   }),
 ])
