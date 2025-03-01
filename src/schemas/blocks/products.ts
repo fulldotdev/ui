@@ -4,7 +4,6 @@ import { z } from 'astro:content'
 
 export const productsSchema = z
   .object({
-    variant: z.number().default(1),
     content: z.string(),
     button: buttonSchema,
     products: pathSchema('products').array(),
