@@ -1,14 +1,11 @@
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import type { ProductSchema } from '@/schemas/layouts/product'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Price } from './Price'
+import Price from './Price.tsx'
 
-interface Props extends ProductSchema {}
-
-export function CartForm({ options, variants }: Props) {
+export function CartForm({ options, variants }: any) {
   const form = useForm({
     defaultValues: options?.reduce(
       (acc, { name, values }) => ({ ...acc, [name]: values?.[0] || '' }),
