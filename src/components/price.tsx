@@ -9,25 +9,29 @@ interface Props {
   unit?: string
 }
 
-const formatPrice = (number: number | null | undefined): string => {
-  return `€${number?.toFixed(2).replace('.', ',').replace(',00', '')}`
-}
+export default function Price({ amount, compare, unit, currency = 'EUR', className }: Props) {
+  function formatPrice(number: number): string {
+    if (number === null || number === undefined) return ''
+    return new Intl.NumberFormat('nl-NL', {
+      style: 'currency',
+      currency: currency,
+    }).format(number)
+  }
 
-function Price({ amount, compare, unit, currency, className }: Props) {
   return (
     amount && (
       <div className={cn('price flex items-center gap-4', className)}>
         <div>
-          {amount && formatPrice(amount)}
-          {compare ? (
-            <span className="text-muted-foreground ml-2 text-sm line-through">{formatPrice(compare)}</span>
-          ) : null}
+          <span>{formatPrice(amount)}</span>
           {unit && <span className="text-muted-foreground text-sm">{unit ? ` / ${unit}` : ''}</span>}
         </div>
-        {compare ? <Badge>{`-${Math.round(((compare - (amount || 0)) / compare) * 100)}%`}</Badge> : null}
+        {compare ? (
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground text-sm line-through">{formatPrice(compare)}</span>
+            <Badge>{`-${Math.round(((compare - (amount || 0)) / compare) * 100)}%`}</Badge>
+          </div>
+        ) : null}
       </div>
     )
   )
 }
-
-export default Price

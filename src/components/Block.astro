@@ -1,7 +1,9 @@
 ---
+import { getHref } from '@/lib/getHref'
+import { getCollection } from 'astro:content'
 import { marked } from 'marked'
 
-let { type, variant, content,  ...rest } = Astro.props
+let { type, variant, content, pages, articles, products, projects, persons, ...rest } = Astro.props
 
 const blocks = import.meta.glob('../blocks/**/*.astro')
 
@@ -12,12 +14,38 @@ const BlockComponent = path && (await (blocks[path] as any)()).default
 
 const markdownHtml = marked(content || '')
 
-const 
+pages = (await getCollection('pages'))?.map(({ collection, id, data }) => ({
+  href: getHref(collection, id),
+  ...data,
+}))
+articles = (await getCollection('articles')).map(({ collection, id, data }) => ({
+  href: getHref(collection, id),
+  ...data,
+}))
+products = (await getCollection('products')).map(({ collection, id, data }) => ({
+  href: getHref(collection, id),
+  ...data,
+}))
+projects = (await getCollection('projects')).map(({ collection, id, data }) => ({
+  href: getHref(collection, id),
+  ...data,
+}))
+persons = (await getCollection('persons')).map(({ collection, id, data }) => ({
+  href: getHref(collection, id),
+  ...data,
+}))
 ---
 
 {
   BlockComponent && (
-    <BlockComponent {...rest}>
+    <BlockComponent
+      {pages}
+      {articles}
+      {products}
+      {projects}
+      {persons}
+      {...rest}
+    >
       <Fragment set:html={markdownHtml} />
     </BlockComponent>
   )

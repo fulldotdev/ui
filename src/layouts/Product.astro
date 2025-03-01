@@ -1,7 +1,7 @@
 ---
 import Box from '@/components/Box.astro'
 import Button from '@/components/Button.astro'
-import { CartForm } from '@/components/cart-form'
+import CartForm from '@/components/CartForm.tsx'
 import Container from '@/components/Container.astro'
 import Gallery from '@/components/Gallery.tsx'
 import Heading from '@/components/Heading.astro'
@@ -13,34 +13,20 @@ import Section from '@/components/Section.astro'
 import Split from '@/components/Split.astro'
 import Writeup from '@/components/Writeup.astro'
 import Layout from '@/layouts/Layout.astro'
+import type { ComponentProps } from 'astro/types'
 
 interface Props {
   gid?: string
   title?: string
   description?: string
-  price?: {
-    amount?: number
-    compare?: number
-    unit?: string
-  }
-  images?: {
-    src?: string
-    alt?: string
-  }[]
-  options?: {
-    name?: string
-    values?: string[]
-  }[]
-  meta?: {
-    title?: string
-    description?: string
-    canonical?: string
-    noindex?: boolean
-    nofollow?: boolean
-  }
+  price?: ComponentProps<typeof Price>
+  images?: ComponentProps<typeof Image>[]
+  options?: ComponentProps<typeof CartForm>['options']
+  variants?: ComponentProps<typeof CartForm>['variants']
+  meta?: Pick<ComponentProps<typeof Layout>, 'title' | 'description' | 'canonical' | 'noindex' | 'nofollow'>
 }
 
-const { gid, title, description, images, price, options, meta } = Astro.props
+const { gid, title, description, images, price, options, variants, meta } = Astro.props
 ---
 
 <Layout

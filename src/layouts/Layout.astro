@@ -1,9 +1,12 @@
 ---
+import Banner from '@/blocks/Banner.astro'
 import Footer from '@/blocks/Footer.astro'
 import Header from '@/blocks/Header.astro'
 import Box from '@/components/Box.astro'
 import layout from '@/data/layout.json'
 import '@/styles/global.css'
+import '@/styles/theme.css'
+
 import { SEO } from 'astro-seo'
 import type { HTMLAttributes } from 'astro/types'
 
@@ -20,12 +23,15 @@ interface Props extends HTMLAttributes<'html'> {
 }
 
 const { title, description, image, canonical, noindex, nofollow, class: className } = Astro.props
-const { lang = 'en', company, header, footer, head, body, css } = layout
+const { lang = 'en', company, banner, header, footer, head, body, css } = layout
 ---
 
 <!doctype html>
 <Box
-  class:list={['layout text-foreground h-full w-full font-sans text-base scheme-light dark:scheme-dark', className]}
+  class:list={[
+    'layout text-foreground bg-background h-full w-full font-sans text-base scheme-light dark:scheme-dark',
+    className,
+  ]}
   as="html"
   {lang}
 >
@@ -64,9 +70,8 @@ const { lang = 'en', company, header, footer, head, body, css } = layout
     />
     <Fragment set:html={head} />
   </head>
-  <body
-    class="bg-background text-foreground flex min-h-full w-full flex-col justify-start font-sans text-base scheme-light dark:scheme-dark"
-  >
+  <body>
+    <Banner text={banner} />
     <Header {...header} />
     <main>
       <slot />

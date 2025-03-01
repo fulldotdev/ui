@@ -32,7 +32,7 @@ const CollectionsQuery = `#graphql
   }
 `
 
-export function shopifyProductsLoader(options: { storeDomain: string; publicAccessToken: string }): Loader {
+export function shopifyCollectionsLoader(options: { storeDomain: string; publicAccessToken: string }): Loader {
   return {
     name: 'shopify-collections',
     load: async ({ store }: LoaderContext): Promise<void> => {
@@ -45,8 +45,7 @@ export function shopifyProductsLoader(options: { storeDomain: string; publicAcce
         store.set({
           id: collection.handle,
           data: {
-            type: 'Collection',
-            id: collection.id,
+            gid: collection.id,
             title: collection.title,
             image: {
               src: collection.image?.url,
@@ -64,7 +63,7 @@ export function shopifyProductsLoader(options: { storeDomain: string; publicAcce
       }
     },
     schema: collectionSchema.extend({
-      id: z.string(),
+      gid: z.string(),
     }),
   }
 }

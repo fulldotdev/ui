@@ -4,7 +4,6 @@ import { z } from 'astro:content'
 
 export const pagesSchema = z
   .object({
-    type: z.literal('Pages').default('Pages'),
     variant: z.number().default(1),
     content: z.string(),
     button: buttonSchema,

@@ -3,7 +3,6 @@ import sitemap from '@astrojs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
 import robotsTxt from 'astro-robots-txt'
 import { defineConfig } from 'astro/config'
-import config from './src/data/config.json'
 import integration from './src/lib/integration'
 
 export default defineConfig({
@@ -15,7 +14,7 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
-  integrations: [robotsTxt(), sitemap(), react(), integration(config as any)],
+  integrations: [robotsTxt(), sitemap(), react(), integration()],
   vite: {
     plugins: [tailwindcss()],
   },

@@ -1,4 +1,5 @@
 import config from '@/data/config.json'
+import { shopifyCollectionsLoader } from '@/loaders/shopifyCollections'
 import { shopifyProductsLoader } from '@/loaders/shopifyProducts'
 import { articleSchema } from '@/schemas/layouts/article'
 import { collectionSchema } from '@/schemas/layouts/collection'
@@ -47,9 +48,9 @@ export const collections = {
     schema: productSchema,
   }),
   collections: defineCollection({
-    loader: glob({
-      pattern: '**/[^_]*.{md,mdx}',
-      base: './src/content/collections',
+    loader: shopifyCollectionsLoader({
+      storeDomain: config.shopify.storeDomain,
+      publicAccessToken: config.shopify.publicAccessToken,
     }),
     schema: collectionSchema,
   }),

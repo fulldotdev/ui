@@ -90,7 +90,7 @@ export function shopifyProductsLoader(options: { storeDomain: string; publicAcce
         store.set({
           id: product.handle,
           data: {
-            id: product.id,
+            gid: product.id,
             title: product.title,
             price: {
               amount: Number(product.priceRange?.minVariantPrice?.amount ?? null),
@@ -133,7 +133,7 @@ export function shopifyProductsLoader(options: { storeDomain: string; publicAcce
       }
     },
     schema: productSchema.extend({
-      id: z.string(),
+      gid: z.string(),
     }),
   }
 }

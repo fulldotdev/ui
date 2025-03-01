@@ -3,53 +3,113 @@ import Box from '@/components/Box.astro'
 import Button from '@/components/Button.astro'
 import Container from '@/components/Container.astro'
 import Grid from '@/components/Grid.astro'
+import Heading from '@/components/Heading.astro'
+import Link from '@/components/Link.astro'
 import Logo from '@/components/Logo.astro'
-import Menu from '@/components/Menu.astro'
+import Paragraph from '@/components/Paragraph.astro'
 import Socials from '@/components/Socials.astro'
 import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import { Mail, MapPin, Phone } from 'lucide-react'
 
 interface Props extends HTMLAttributes<'footer'> {
   logo?: ComponentProps<typeof Logo>
   description?: string
   socials?: ComponentProps<typeof Socials>['socials']
-  channels?: ComponentProps<typeof Button>[]
-  menus?: ComponentProps<typeof Menu>[]
+  channels?: any
+  hours?: Record<string, string>
+  menus?: {
+    heading?: string
+    links?: {
+      text?: string
+      href?: string
+    }[]
+  }[]
 }
 
-const { logo, description, socials, channels, menus, class: className } = Astro.props
+const { logo, description, socials, channels, hours, menus, class: className } = Astro.props
 ---
 
-<Box class:list={['footer bg-background relative mt-auto w-full border-t py-16', className]}>
+<Box
+  class:list={['footer bg-background relative mt-auto w-full justify-end justify-self-end border-t py-16', className]}
+>
   <Container class="flex justify-between gap-16">
     <Grid
-      length={4}
-      size="lg"
+      length={5}
+      class="w-full gap-8"
     >
-      <Box class="flex max-w-xs flex-col gap-3">
+      <Box class="flex max-w-xs flex-col gap-2">
         <Logo {...logo} />
-        <Box
-          as="p"
-          set:html={description}
+        <Paragraph class="text-muted-foreground text-sm leading-6">
+          {description}
+        </Paragraph>
+        <Socials
+          class="mt-3"
+          {socials}
         />
-        <Socials {socials} />
       </Box>
-      <Box class="flex flex-col items-start">
-        {
-          channels?.map((channel) => (
-            <Button
-              class="px-0 py-1"
-              variant="link"
-              {...channel}
-            />
-          ))
-        }
+      <Box class="flex flex-col items-start gap-3">
+        <Button
+          variant="secondary"
+          href={`tel:${channels?.phone}`}
+        >
+          <Phone />
+          {channels?.phone}
+        </Button>
+        <Button
+          variant="secondary"
+          href={`mailto:${channels?.email}`}
+        >
+          <Mail />
+          {channels?.email}
+        </Button>
+        <Button
+          variant="secondary"
+          href={`https://www.google.com/maps/search/?api=1&query=${channels?.address}`}
+        >
+          <MapPin />
+          {channels?.address}
+        </Button>
+      </Box>
+      <Box class="flex flex-col items-start gap-2">
+        <Heading
+          as="h6"
+          class="text-sm"
+        >
+          Openingstijden
+        </Heading>
+        <Box
+          as="ul"
+          class="text-muted-foreground flex flex-col justify-between gap-0.5 text-sm"
+        >
+          {
+            Object.entries(hours).map(([key, value]) => (
+              <Box
+                as="li"
+                class="flex items-center justify-between gap-3"
+              >
+                <Box as="span">{key}.</Box>
+                <Box as="span">{value}</Box>
+              </Box>
+            ))
+          }
+        </Box>
       </Box>
       {
         menus?.map((menu) => (
-          <Menu
-            class="w-full text-sm"
-            {...menu}
-          />
+          <Box
+            as="ul"
+            class="flex w-full flex-col gap-2 text-sm"
+          >
+            <Heading
+              as="h6"
+              class="text-sm"
+            >
+              {menu.heading}
+            </Heading>
+            {menu.links?.map(({ text, href }) => (
+              <Link href={href}>{text}</Link>
+            ))}
+          </Box>
         ))
       }
     </Grid>

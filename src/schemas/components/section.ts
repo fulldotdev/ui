@@ -16,21 +16,51 @@ import { reviewsSchema } from '@/schemas/blocks/reviews'
 import { z } from 'astro:content'
 
 export const sectionSchema = z.discriminatedUnion('type', [
-  collectionsSchema,
-  contactSchema,
-  contentSchema,
-  ctaSchema,
-  faqsSchema,
-  featuresSchema,
-  heroSchema,
-  introSchema,
-  articlesSchema,
-  productsSchema,
-  reviewsSchema,
-  personsSchema,
-  projectsSchema,
-  pricingsSchema,
-  pagesSchema,
+  collectionsSchema.extend({
+    type: z.literal('Collection'),
+  }),
+  contactSchema.extend({
+    type: z.literal('Contact'),
+  }),
+  contentSchema.extend({
+    type: z.literal('Content'),
+  }),
+  ctaSchema.extend({
+    type: z.literal('Cta'),
+  }),
+  faqsSchema.extend({
+    type: z.literal('Faqs'),
+  }),
+  featuresSchema.extend({
+    type: z.literal('Features'),
+  }),
+  heroSchema.extend({
+    type: z.literal('Hero'),
+  }),
+  introSchema.extend({
+    type: z.literal('Intro'),
+  }),
+  articlesSchema.extend({
+    type: z.literal('Articles'),
+  }),
+  productsSchema.extend({
+    type: z.literal('Products'),
+  }),
+  reviewsSchema.extend({
+    type: z.literal('Reviews'),
+  }),
+  personsSchema.extend({
+    type: z.literal('Persons'),
+  }),
+  projectsSchema.extend({
+    type: z.literal('Projects'),
+  }),
+  pricingsSchema.extend({
+    type: z.literal('Pricings'),
+  }),
+  pagesSchema.extend({
+    type: z.literal('Pages'),
+  }),
 ])
 
 export type SectionSchema = z.infer<typeof sectionSchema>

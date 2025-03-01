@@ -1,14 +1,23 @@
 ---
 import Box from '@/components/Box.astro'
-import Social from '@/components/Social.astro'
-import type { ComponentProps, HTMLAttributes } from 'astro/types'
+import Button from '@/components/Button.astro'
+import {
+  SiDiscord,
+  SiFacebook,
+  SiGithub,
+  SiInstagram,
+  SiTiktok,
+  SiTwitch,
+  SiX,
+  SiYoutube,
+} from '@icons-pack/react-simple-icons'
+import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'div'> {
-  variant?: ComponentProps<typeof Social>['variant'] | undefined
-  socials?: ComponentProps<typeof Social>['href'][] | undefined
+  socials?: string[] | undefined
 }
 
-const { variant = 'secondary', socials, class: className, ...rest } = Astro.props
+const { socials, class: className, ...rest } = Astro.props
 ---
 
 <Box
@@ -17,11 +26,20 @@ const { variant = 'secondary', socials, class: className, ...rest } = Astro.prop
 >
   {
     socials?.map((social) => (
-      <Social
-        href={social}
-        {variant}
-      />
+      <Button
+        variant="ghost"
+        size="icon"
+        class="size-8 [&>svg]:fill-current"
+      >
+        {social.includes('x.com') ? <SiX /> : null}
+        {social.includes('facebook') ? <SiFacebook /> : null}
+        {social.includes('instagram') ? <SiInstagram /> : null}
+        {social.includes('youtube') ? <SiYoutube /> : null}
+        {social.includes('tiktok') ? <SiTiktok /> : null}
+        {social.includes('twitch') ? <SiTwitch /> : null}
+        {social.includes('github') ? <SiGithub /> : null}
+        {social.includes('discord') ? <SiDiscord /> : null}
+      </Button>
     ))
   }
-  <slot />
 </Box>

@@ -3,7 +3,6 @@ import { z } from 'astro:content'
 
 export const contactSchema = z
   .object({
-    type: z.literal('Contact').default('Contact'),
     variant: z.number().default(1),
     content: z.string(),
     channels: z

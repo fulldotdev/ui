@@ -12,7 +12,6 @@ import { useState } from 'react'
 
 interface Props {
   className?: string
-
   items?: {
     text?: string
     href?: string

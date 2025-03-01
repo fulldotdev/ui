@@ -4,7 +4,6 @@ import { priceSchema } from '../components/price'
 
 export const pricingsSchema = z
   .object({
-    type: z.literal('Pricings').default('Pricings'),
     variant: z.number().default(1),
     content: z.string(),
     pricings: z

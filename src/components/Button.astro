@@ -1,6 +1,5 @@
 ---
 import Box from '@/components/Box.astro'
-import Icon from '@/components/Icon.astro'
 import { buttonVariants } from '@/components/ui/button'
 import type { HTMLAttributes } from 'astro/types'
 import type { VariantProps } from 'class-variance-authority'
@@ -10,22 +9,16 @@ interface Props
     Omit<HTMLAttributes<'a'>, 'type'>,
     VariantProps<typeof buttonVariants> {
   type?: HTMLAttributes<'button'>['type'] & HTMLAttributes<'a'>['type']
-  reverse?: boolean
-  text?: string
-  icon?: string
 }
 
-const { href, text, size, variant, icon, reverse, class: className, ...rest } = Astro.props
+const { href, size, variant, class: className, ...rest } = Astro.props
 ---
 
 <Box
-  class:list={['button', buttonVariants({ variant, size }), className]}
+  class:list={['button text-foreground', buttonVariants({ variant, size }), className]}
   as={href ? 'a' : 'button'}
   {href}
   {...rest}
 >
-  {!reverse && <Icon name={icon} />}
-  <Fragment set:html={text} />
   <slot />
-  {reverse && <Icon name={icon} />}
 </Box>

@@ -1,10 +1,9 @@
 ---
 import Box from '@/components/Box.astro'
 import Buttons from '@/components/Buttons.astro'
+import Cart from '@/components/Cart.tsx'
 import Container from '@/components/Container.astro'
-import Drawer from '@/components/Drawer.tsx'
-import Icon from '@/components/Icon.astro'
-import Link from '@/components/Link.astro'
+import DrawerMenu from '@/components/DrawerMenu'
 import Logo from '@/components/Logo.astro'
 import Menu from '@/components/Menu.astro'
 import NavigationMenu from '@/components/NavigationMenu.tsx'
@@ -45,47 +44,12 @@ const { logo, menus, buttons, search, class: className } = Astro.props
         {buttons}
         reverse
       />
-
-      <!-- fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] border bg-background max-h-[60svh] p-0 -->
-      <!-- max-h-[60svh] -->
-      <Drawer
+      <Cart client:load />
+      <DrawerMenu
         client:load
         className="size-8 lg:hidden"
-        size="icon"
-        variant="ghost"
-      >
-        <Icon
-          slot="trigger"
-          name="menu-2"
-          class="!text-xl"
-        />
-        <Box class="overflow-auto">
-          <Container class="flex min-w-lg flex-col gap-2">
-            {
-              menus?.map(({ text, href, links }) =>
-                links ? (
-                  <Menu
-                    class="my-4"
-                    {text}
-                    {links}
-                  />
-                ) : (
-                  <Link
-                    class="text-foreground"
-                    {href}
-                    {text}
-                  />
-                )
-              )
-            }
-            <Buttons
-              class="mt-4 flex-col gap-2"
-              reverse
-              {buttons}
-            />
-          </Container>
-        </Box>
-      </Drawer>
+        items={menus}
+      />
     </Box>
   </Container>
 </Box>
