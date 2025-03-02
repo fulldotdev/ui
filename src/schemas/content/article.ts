@@ -1,5 +1,5 @@
 import { imageSchema } from '@/schemas/components/image'
-import { metaSchema } from '@/schemas/misc/meta'
+import { seoSchema } from '@/schemas/misc/seo'
 import { z } from 'astro:content'
 import { sectionSchema } from '../components/section'
 
@@ -10,7 +10,7 @@ export const articleSchema = z
     description: z.string(),
     image: imageSchema,
     sections: sectionSchema.array(),
-    meta: metaSchema,
+    seo: seoSchema,
   })
   .partial()
   .strict()

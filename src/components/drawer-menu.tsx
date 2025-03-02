@@ -25,7 +25,7 @@ function DrawerMenu({ items, className }: Props) {
           size="icon"
           name="drawer-trigger"
         >
-          <Menu className="size-6" />
+          <Menu className="size-5" />
         </Button>
       </DrawerTrigger>
       <DrawerContent>

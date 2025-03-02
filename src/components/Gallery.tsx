@@ -7,24 +7,20 @@ import {
   Carousel as CarouselRoot,
 } from '@/components/ui/carousel'
 import { cn } from '@/lib/utils'
-import parseReact from 'html-react-parser'
-import { parse as parseNode } from 'node-html-parser'
 import { useEffect, useState } from 'react'
 
 interface Props {
   className?: string
-  children: any
+  images?: {
+    src?: string
+    alt?: string
+  }[]
 }
 
-function Gallery({ children, className }: Props) {
+function Gallery({ images, className }: Props) {
   const [emblaMainApi, setEmblaMainApi] = useState<CarouselApi>()
   const [emblaThumbnailApi, setEmblaThumbnailApi] = useState<CarouselApi>()
   const [selectedIndex, setSelectedIndex] = useState(0)
-
-  // Parse children to get HTML items
-  const value = children.props?.value
-  const root = parseNode(value)
-  const items = root.children.map((child) => child.outerHTML)
 
   useEffect(() => {
     if (!emblaMainApi || !emblaThumbnailApi) return
@@ -52,19 +48,22 @@ function Gallery({ children, className }: Props) {
   }
 
   return (
-    items && (
+    images && (
       <div className={cn('w-full flex flex-col gap-2', className)}>
         <CarouselRoot
           className="relative"
           setApi={setEmblaMainApi}
         >
           <CarouselContent>
-            {items.map((item, index) => (
+            {images.map((image, index) => (
               <CarouselItem
                 key={index}
                 className="rounded-md overflow-hidden"
               >
-                {parseReact(item)}
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                />
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -74,7 +73,7 @@ function Gallery({ children, className }: Props) {
 
         <CarouselRoot setApi={setEmblaThumbnailApi}>
           <CarouselContent className="flex gap-2 ml-0">
-            {items.map((item, index) => (
+            {images.map((image, index) => (
               <CarouselItem
                 key={index}
                 className={`pl-0 basis-1/5 cursor-pointer border rounded-md overflow-hidden ${
@@ -82,7 +81,10 @@ function Gallery({ children, className }: Props) {
                 }`}
                 onClick={() => onThumbClick(index)}
               >
-                {parseReact(item)}
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                />
               </CarouselItem>
             ))}
           </CarouselContent>

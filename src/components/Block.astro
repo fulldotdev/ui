@@ -19,7 +19,7 @@ import { Products1 } from '@/blocks/products-1'
 import { Projects1 } from '@/blocks/projects-1'
 import { Reviews1 } from '@/blocks/reviews-1'
 import { getHref } from '@/lib/get-href'
-import { getCollection } from 'astro:content'
+import { getCollection, getEntries } from 'astro:content'
 import { marked } from 'marked'
 
 interface Props {
@@ -31,105 +31,247 @@ interface Props {
   products?: any[]
   projects?: any[]
   persons?: any[]
+  collections?: any[]
+  reviews?: any[]
 }
 
-let { type, variant = 1, content, pages, articles, products, projects, persons, ...rest } = Astro.props
+let {
+  type,
+  variant = 1,
+  content,
+  pages,
+  articles,
+  products,
+  projects,
+  persons,
+  collections,
+  reviews,
+  ...rest
+} = Astro.props
 
-pages = (await getCollection('pages'))?.map(({ collection, id, data }) => ({
-  href: getHref(collection, id),
-  ...data,
-}))
-articles = (await getCollection('articles')).map(({ collection, id, data }) => ({
-  href: getHref(collection, id),
-  ...data,
-}))
-products = (await getCollection('products')).map(({ collection, id, data }) => ({
-  href: getHref(collection, id),
-  ...data,
-}))
-projects = (await getCollection('projects')).map(({ collection, id, data }) => ({
-  href: getHref(collection, id),
-  ...data,
-}))
-persons = (await getCollection('persons')).map(({ collection, id, data }) => ({
-  href: getHref(collection, id),
-  ...data,
-}))
+const pageEntries = pages ? await getEntries(pages) : await getCollection('pages')
+const articleEntries = articles ? await getEntries(articles) : await getCollection('articles')
+const productEntries = products ? await getEntries(products) : await getCollection('products')
+const projectEntries = projects ? await getEntries(projects) : await getCollection('projects')
+const personEntries = persons ? await getEntries(persons) : await getCollection('persons')
+const collectionEntries = collections ? await getEntries(collections) : await getCollection('collections')
+const reviewEntries = reviews ? await getEntries(reviews) : await getCollection('reviews')
 
-const sections = {
-  article: {
-    1: Article1,
-  },
-  articles: {
-    1: Articles1,
-  },
-  collection: {
-    1: Collection1,
-  },
-  collections: {
-    1: Collections1,
-  },
-  contact: {
-    1: Contact1,
-    2: Contact2,
-  },
-  cta: {
-    1: Cta1,
-  },
-  faqs: {
-    1: Faqs1,
-    2: Faqs2,
-  },
-  features: {
-    1: Features1,
-  },
-  hero: {
-    1: Hero1,
-  },
-  intro: {
-    1: Intro1,
-  },
-  page: {
-    1: Page1,
-  },
-  pages: {
-    1: Pages1,
-  },
-  persons: {
-    1: Persons1,
-  },
-  product: {
-    1: Product1,
-  },
-  products: {
-    1: Products1,
-  },
-  projects: {
-    1: Projects1,
-  },
-  reviews: {
-    1: Reviews1,
-  },
-}
-
-const BlockComponent = (sections as any)[type as any]?.[variant as any] as any
+const mapEntries = (
+  entries:
+    | typeof pageEntries
+    | typeof articleEntries
+    | typeof productEntries
+    | typeof projectEntries
+    | typeof personEntries
+    | typeof collectionEntries
+    | typeof reviewEntries
+) =>
+  entries.map(({ collection, id, data }) => ({
+    href: getHref(collection, id),
+    ...data,
+  }))
 
 const markdownHtml = marked(content || '')
 ---
 
 {
-  BlockComponent && (
-    <BlockComponent
-      {pages}
-      {articles}
-      {products}
-      {projects}
-      {persons}
+  type === 'article' && variant === 1 && (
+    <Article1 {...rest}>
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Article1>
+  )
+}
+
+{
+  type === 'articles' && variant === 1 && (
+    <Articles1
+      articles={mapEntries(articleEntries)}
       {...rest}
     >
-      <slot>
-        <Fragment set:html={markdownHtml} />
-      </slot>
-    </BlockComponent>
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Articles1>
+  )
+}
+
+{
+  type === 'collection' && variant === 1 && (
+    <Collection1 {...rest}>
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Collection1>
+  )
+}
+
+{
+  type === 'collections' && variant === 1 && (
+    <Collections1
+      collections={mapEntries(collectionEntries)}
+      {...rest}
+    >
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Collections1>
+  )
+}
+
+{
+  type === 'contact' && variant === 1 && (
+    <Contact1 {...rest}>
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Contact1>
+  )
+}
+
+{
+  type === 'contact' && variant === 2 && (
+    <Contact2 {...rest}>
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Contact2>
+  )
+}
+
+{
+  type === 'cta' && variant === 1 && (
+    <Cta1 {...rest}>
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Cta1>
+  )
+}
+
+{
+  type === 'faqs' && variant === 1 && (
+    <Faqs1
+      client:load
+      {...rest}
+    >
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Faqs1>
+  )
+}
+
+{
+  type === 'faqs' && variant === 2 && (
+    <Faqs2
+      client:load
+      {...rest}
+    >
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Faqs2>
+  )
+}
+
+{
+  type === 'features' && variant === 1 && (
+    <Features1 {...rest}>
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Features1>
+  )
+}
+
+{
+  type === 'hero' && variant === 1 && (
+    <Hero1 {...rest}>
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Hero1>
+  )
+}
+
+{
+  type === 'intro' && variant === 1 && (
+    <Intro1 {...rest}>
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Intro1>
+  )
+}
+
+{
+  type === 'page' && variant === 1 && (
+    <Page1 {...rest}>
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Page1>
+  )
+}
+
+{
+  type === 'pages' && variant === 1 && (
+    <Pages1
+      pages={mapEntries(pageEntries)}
+      {...rest}
+    >
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Pages1>
+  )
+}
+
+{
+  type === 'persons' && variant === 1 && (
+    <Persons1
+      persons={mapEntries(personEntries)}
+      {...rest}
+    >
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Persons1>
+  )
+}
+
+{
+  type === 'product' && variant === 1 && (
+    <Product1
+      client:load
+      {...rest}
+    >
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Product1>
+  )
+}
+
+{
+  type === 'products' && variant === 1 && (
+    <Products1
+      products={mapEntries(productEntries)}
+      {...rest}
+    >
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Products1>
+  )
+}
+
+{
+  type === 'projects' && variant === 1 && (
+    <Projects1
+      projects={mapEntries(projectEntries)}
+      {...rest}
+    >
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Projects1>
+  )
+}
+
+{
+  type === 'reviews' && variant === 1 && (
+    <Reviews1
+      reviews={mapEntries(reviewEntries)}
+      {...rest}
+    >
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Reviews1>
   )
 }

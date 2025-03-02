@@ -1,7 +1,11 @@
-import { productSchema } from '@/schemas/content/product'
+import { imageSchema } from '@/schemas/components/image'
+import { priceSchema } from '@/schemas/components/price'
+import { sectionSchema } from '@/schemas/components/section'
+import { seoSchema } from '@/schemas/misc/seo'
 import type { Product } from '@shopify/hydrogen/storefront-api-types'
 import { createStorefrontApiClient } from '@shopify/storefront-api-client'
 import type { Loader, LoaderContext } from 'astro/loaders'
+import { reference } from 'astro:content'
 import { z } from 'astro:schema'
 import config from '../data/config.json'
 
@@ -77,63 +81,79 @@ const ProductsQuery = `#graphql
   }
 `
 
-export function shopifyProductsLoader(options: { storeDomain: string; publicAccessToken: string }): Loader {
+const productSchema = z
+  .object({
+    type: z.literal('product').default('product'),
+    title: z.string(),
+    description: z.string(),
+    images: imageSchema.array(),
+    price: priceSchema,
+    collections: reference('collections').array(),
+    options: z
+      .object({
+        name: z.string(),
+        values: z.string().array(),
+      })
+      .array(),
+    sections: sectionSchema.array(),
+    seo: seoSchema,
+  })
+  .partial()
+  .strict()
+
+export function shopifyProductsLoader(): Loader {
   return {
     name: 'shopify-products',
-    load: async ({ store }: LoaderContext): Promise<void> => {
+    load: async ({ store, logger, parseData, generateDigest }: LoaderContext): Promise<void> => {
+      logger.info('Loading Shopify products')
+      store.clear()
+
       const response = await client.request(ProductsQuery)
       const products = response.data.products.nodes as Partial<Product>[]
 
       for (const product of products) {
         if (!product.handle) return
+        if (!product.id) return
+
+        const data = await parseData({
+          id: product.handle,
+          data: {
+            type: 'product',
+            id: product.id,
+            title: product.title,
+            price: {
+              amount: Number(product.priceRange?.minVariantPrice?.amount),
+              compare: Number(product.compareAtPriceRange?.minVariantPrice?.amount),
+              currency: product.priceRange?.minVariantPrice?.currencyCode,
+            },
+            images: product.images?.nodes.map((image) => ({
+              src: image.url,
+              alt: image.altText ?? undefined,
+            })),
+            collections: product.collections?.nodes.map((collection) => collection.handle),
+            seo: {
+              title: product.seo?.title ?? undefined,
+              description: product.seo?.description ?? undefined,
+            },
+            variants: product.variants,
+          },
+        })
+
+        const digest = generateDigest(data)
 
         store.set({
           id: product.handle,
-          data: {
-            gid: product.id,
-            title: product.title,
-            price: {
-              amount: Number(product.priceRange?.minVariantPrice?.amount ?? null),
-              compare: Number(product.compareAtPriceRange?.minVariantPrice?.amount ?? null),
-              currency: product.priceRange?.minVariantPrice?.currencyCode,
-            },
-
-            images: product.images?.nodes.map((image) => ({
-              src: image.url,
-              alt: image.altText,
-            })),
-            collections: product.collections?.nodes.map((collection) => collection.handle) as any,
-            meta: {
-              title: product.seo?.title,
-              description: product.seo?.description,
-            },
-            options: product.options?.map(({ name, optionValues }) => ({
-              name,
-              values: optionValues?.map(({ name }) => name),
-            })),
-            variants: product.variants?.nodes.map(
-              ({ id, title, price, compareAtPrice, quantityAvailable, availableForSale, selectedOptions }) => ({
-                id,
-                title,
-                price: {
-                  amount: Number(price?.amount ?? null),
-                  compare: Number(compareAtPrice?.amount ?? null),
-                  currency: price?.currencyCode,
-                },
-                quantityAvailable,
-                availableForSale,
-                selectedOptions,
-              })
-            ),
-          },
+          data: data,
           rendered: {
             html: product.descriptionHtml || '',
           },
+          digest,
         })
       }
     },
     schema: productSchema.extend({
-      gid: z.string(),
+      id: z.string(),
+      variants: z.any(),
     }),
   }
 }

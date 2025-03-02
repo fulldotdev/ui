@@ -28,13 +28,13 @@ function Socials({ socials, className, ...props }: Props) {
           key={index}
           variant="ghost"
           size="icon"
-          className="size-8 [&>svg]:fill-current"
           asChild
         >
           <a
             href={social}
             target="_blank"
             rel="noopener noreferrer"
+            className="text-foreground"
           >
             {social.includes('x.com') && <SiX />}
             {social.includes('facebook') && <SiFacebook />}

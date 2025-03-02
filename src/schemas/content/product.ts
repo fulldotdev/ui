@@ -1,8 +1,8 @@
 import { imageSchema } from '@/schemas/components/image'
 import { priceSchema } from '@/schemas/components/price'
 import { sectionSchema } from '@/schemas/components/section'
-import { metaSchema } from '@/schemas/misc/meta'
-import { pathSchema } from '@/schemas/misc/path'
+import { seoSchema } from '@/schemas/misc/seo'
+import { reference } from 'astro:content'
 import { z } from 'zod'
 
 export const productSchema = z
@@ -10,37 +10,17 @@ export const productSchema = z
     type: z.literal('product').default('product'),
     title: z.string(),
     description: z.string(),
-    meta: metaSchema,
-    list: z.string().array(),
     images: imageSchema.array(),
     price: priceSchema,
-    collections: pathSchema('collections').array(),
+    collections: reference('collections').array(),
     options: z
       .object({
         name: z.string(),
         values: z.string().array(),
       })
       .array(),
-    variants: z
-      .object({
-        id: z.string(),
-        title: z.string(),
-        price: priceSchema,
-        quantityAvailable: z.number(),
-        availableForSale: z.boolean(),
-        selectedOptions: z
-          .object({
-            name: z.string(),
-            value: z.string(),
-          })
-          .partial()
-          .strict()
-          .array(),
-      })
-      .partial()
-      .strict()
-      .array(),
     sections: sectionSchema.array(),
+    seo: seoSchema,
   })
   .partial()
   .strict()

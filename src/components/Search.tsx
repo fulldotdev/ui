@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils'
 import { Search as SearchIcon } from 'lucide-react'
 import type { ComponentProps } from 'react'
 import { useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 
 interface Props {
   className?: string
@@ -32,13 +33,12 @@ function Search({ groups, variant, size, className }: Props) {
     groups && (
       <>
         <Button
-          className={cn('border border-input', className)}
-          variant={variant}
-          size={size}
+          className={cn('bg-muted/50 text-sm font-normal text-muted-foreground shadow-none justify-between', className)}
+          variant="outline"
           onClick={() => setOpen(true)}
         >
-          Zoeken...
-          <SearchIcon className="ml-4" />
+          <span>Zoek door alles....</span>
+          <SearchIcon className="ml-4 size-4.5" />
         </Button>
         <CommandDialog
           open={open}
@@ -48,19 +48,17 @@ function Search({ groups, variant, size, className }: Props) {
           <CommandList>
             <CommandEmpty>Geen resultaten gevonden.</CommandEmpty>
             {groups?.map(({ heading, links }) => (
-              <CommandGroup heading={heading}>
-                {links?.map(({ text, href }, index) => (
+              <CommandGroup
+                key={uuidv4()}
+                heading={heading}
+              >
+                {links?.map(({ text, href }) => (
                   <CommandItem
-                    key={index}
+                    key={uuidv4()}
                     asChild
                     onSelect={() => href && (window.location.href = href)}
                   >
-                    <a
-                      key={index}
-                      href={href || undefined}
-                    >
-                      {text}
-                    </a>
+                    <a href={href || undefined}>{text}</a>
                   </CommandItem>
                 ))}
               </CommandGroup>

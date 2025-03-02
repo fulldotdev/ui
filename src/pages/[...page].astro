@@ -25,17 +25,61 @@ export async function getStaticPaths() {
 }
 
 const { Content } = await render(Astro.props)
-const { sections, meta, type, ...restData } = Astro.props.data
+const { sections, seo, type, ...restData } = Astro.props.data
 const { banner, header, footer, ...restSettings } = settings
+
+const pages = await getCollection('pages')
+const articles = await getCollection('articles')
+const products = await getCollection('products')
+const projects = await getCollection('projects')
+const persons = await getCollection('persons')
+const collections = await getCollection('collections')
+
+function collectionToLinks(
+  collection: typeof pages | typeof articles | typeof products | typeof projects | typeof persons | typeof collections
+) {
+  return collection.map((item) => ({
+    text: item.data.title,
+    href: getHref(item.collection, item.id),
+  }))
+}
+
+const search = [
+  {
+    heading: "Pagina's",
+    links: collectionToLinks(pages),
+  },
+  {
+    heading: 'Artikelen',
+    links: collectionToLinks(articles),
+  },
+  {
+    heading: 'Producten',
+    links: collectionToLinks(products),
+  },
+  {
+    heading: 'Collecties',
+    links: collectionToLinks(collections),
+  },
+  {
+    heading: 'Projecten',
+    links: collectionToLinks(projects),
+  },
+  {
+    heading: 'Personen',
+    links: collectionToLinks(persons),
+  },
+]
 ---
 
 <Layout
   {...restSettings}
   {...restData}
-  {...meta}
+  {...seo}
 >
   <Header
     client:load
+    search={search}
     {...header}
   />
   <main>

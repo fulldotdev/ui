@@ -70,6 +70,7 @@ function Footer({ logo, description, socials, channels, hours, menus, className,
           )}
           {menus?.map((menu) => (
             <Menu
+              className="text-sm"
               key={uuidv4()}
               {...menu}
             />

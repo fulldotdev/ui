@@ -1,5 +1,18 @@
 ---
+import { ShopifyCart } from '@/components/shopify-cart'
 import '@/styles/global.css'
+import { getCollection } from 'astro:content'
+
+const collections = await getCollection('collections')
+const collectionIds = collections?.map((collection) => collection.id)
+
+const products = await getCollection('products')
+const productCollections = products?.map((product) => ({
+  collections: product.data.collections,
+}))
+
+// console.log(collectionIds)
+// console.log(productCollections)
 ---
 
 <html>
@@ -11,6 +24,6 @@ import '@/styles/global.css'
     />
   </head>
   <body>
-    <!--  -->
+    <ShopifyCart client:load />
   </body>
 </html>

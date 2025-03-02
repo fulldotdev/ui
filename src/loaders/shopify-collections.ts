@@ -32,38 +32,50 @@ const CollectionsQuery = `#graphql
   }
 `
 
-export function shopifyCollectionsLoader(options: { storeDomain: string; publicAccessToken: string }): Loader {
+export function shopifyCollectionsLoader(): Loader {
   return {
     name: 'shopify-collections',
-    load: async ({ store }: LoaderContext): Promise<void> => {
+    load: async ({ store, logger, parseData, generateDigest }: LoaderContext): Promise<void> => {
+      logger.info('Loading Shopify collections')
+      store.clear()
+
       const response = await client.request(CollectionsQuery)
       const collections = response.data.collections.nodes as Partial<Collection>[]
 
       for (const collection of collections) {
         if (!collection.handle) return
+        if (!collection.id) return
 
-        store.set({
+        const data = await parseData({
           id: collection.handle,
           data: {
-            gid: collection.id,
+            id: collection.id,
             title: collection.title,
             image: {
               src: collection.image?.url,
-              alt: collection.image?.altText,
+              alt: collection.image?.altText ?? undefined,
             },
-            meta: {
-              title: collection.seo?.title,
-              description: collection.seo?.description,
+            seo: {
+              title: collection.seo?.title ?? undefined,
+              description: collection.seo?.description ?? undefined,
             },
           },
+        })
+
+        const digest = generateDigest(data)
+
+        store.set({
+          id: collection.handle,
+          data: data,
           rendered: {
             html: collection.descriptionHtml || '',
           },
+          digest,
         })
       }
     },
     schema: collectionSchema.extend({
-      gid: z.string(),
+      id: z.string(),
     }),
   }
 }
