@@ -38,7 +38,7 @@ function Footer({ logo, description, socials, channels, hours, menus, className,
             <Logo {...logo} />
             <Paragraph className="text-muted-foreground text-sm leading-6">{description}</Paragraph>
             <Socials
-              className="mt-3"
+              className="-ml-2 mt-3"
               socials={socials}
             />
           </Box>

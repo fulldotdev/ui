@@ -20,16 +20,12 @@ function Price({ amount, compare, unit, currency = 'EUR', className }: Props) {
 
   return (
     amount && (
-      <div className={cn('price flex items-center gap-4', className)}>
-        <div>
-          <span>{formatPrice(amount)}</span>
-          {unit && <span className="text-muted-foreground text-sm">{unit ? ` / ${unit}` : ''}</span>}
-        </div>
+      <div className={cn('price flex items-center gap-2.5', className)}>
+        <span>{formatPrice(amount)}</span>
+        {unit ? <span className="text-muted-foreground text-sm">{unit ? ` / ${unit}` : ''}</span> : null}
+        {compare ? <span className="text-muted-foreground text-sm line-through">{formatPrice(compare)}</span> : null}
         {compare ? (
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground text-sm line-through">{formatPrice(compare)}</span>
-            <Badge>{`-${Math.round(((compare - (amount || 0)) / compare) * 100)}%`}</Badge>
-          </div>
+          <Badge className="absolute top-2 left-2">{`-${Math.round(((compare - (amount || 0)) / compare) * 100)}%`}</Badge>
         ) : null}
       </div>
     )

@@ -5,7 +5,7 @@ import { z } from 'astro:content'
 export const productsSchema = z
   .object({
     content: z.string(),
-    button: buttonSchema,
+    buttons: buttonSchema.array(),
     products: pathSchema('products').array(),
   })
   .partial()

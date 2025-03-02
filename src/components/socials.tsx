@@ -20,7 +20,7 @@ interface Props extends React.ComponentProps<typeof Box> {
 function Socials({ socials, className, ...props }: Props) {
   return (
     <Box
-      className={cn('socials inline-flex gap-1', className)}
+      className={cn('socials inline-flex gap-0.5', className)}
       {...props}
     >
       {socials?.map((social, index) => (

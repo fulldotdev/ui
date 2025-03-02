@@ -49,39 +49,42 @@ function Gallery({ images, className }: Props) {
 
   return (
     images && (
-      <div className={cn('w-full flex flex-col gap-2', className)}>
+      <div className={cn('w-full flex flex-col bg-muted', className)}>
         <CarouselRoot
           className="relative"
           setApi={setEmblaMainApi}
         >
-          <CarouselContent>
+          <CarouselContent className="ml-0 mr-4 mt-4">
             {images.map((image, index) => (
               <CarouselItem
                 key={index}
-                className="rounded-md overflow-hidden"
+                className="pl-4"
               >
                 <img
+                  className="rounded-md"
                   src={image.src}
                   alt={image.alt}
                 />
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="left-2" />
-          <CarouselNext className="right-2" />
+          <CarouselPrevious className="left-1 max-md:hidden" />
+          <CarouselNext className="right-1 max-md:hidden" />
         </CarouselRoot>
 
         <CarouselRoot setApi={setEmblaThumbnailApi}>
-          <CarouselContent className="flex gap-2 ml-0">
+          <CarouselContent className="flex ml-2 mr-4">
             {images.map((image, index) => (
               <CarouselItem
                 key={index}
-                className={`pl-0 basis-1/5 cursor-pointer border rounded-md overflow-hidden ${
-                  index === selectedIndex ? 'border-ring border-2' : ''
-                }`}
-                onClick={() => onThumbClick(index)}
+                className="basis-1/5 pl-2"
               >
                 <img
+                  className={cn(
+                    'cursor-pointer rounded-sm ring-1 my-4',
+                    index === selectedIndex ? 'ring-ring' : 'ring-transparent'
+                  )}
+                  onClick={() => onThumbClick(index)}
                   src={image.src}
                   alt={image.alt}
                 />

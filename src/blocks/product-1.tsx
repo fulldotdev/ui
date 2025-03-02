@@ -1,4 +1,3 @@
-import { Box } from '@/components/box'
 import { Container } from '@/components/container'
 import { Gallery } from '@/components/gallery'
 import { Heading } from '@/components/heading'
@@ -8,7 +7,6 @@ import { Price } from '@/components/price'
 import { Prose } from '@/components/prose'
 import { Section } from '@/components/section'
 import { ShopifyProduct } from '@/components/shopify-product'
-import { Split } from '@/components/split'
 import { Button } from '@/components/ui/button'
 import { Writeup } from '@/components/writeup'
 import * as React from 'react'
@@ -25,41 +23,39 @@ interface Props {
 
 function Product1({ id, title, description, images, price, variants, children }: Props) {
   return (
-    <Section className="pt-4 lg:pt-16">
-      <Container>
-        <Split>
-          <Box className="flex flex-col gap-16">
-            <Gallery images={images} />
-            <Prose className="max-lg:hidden">{children}</Prose>
-          </Box>
-          <Box className="flex flex-col gap-8 lg:pl-8">
-            <Writeup size="sm">
-              <Heading as="h1">{title}</Heading>
-              <Paragraph>{description}</Paragraph>
-            </Writeup>
-            {id ? (
-              <ShopifyProduct
-                id={id}
-                variants={variants}
+    <Section className="pt-0 sm:pt-8">
+      <Container className="max-lg:px-0 max-lg:max-w-screen-sm lg:grid-cols-2 grid gap-8 items-start">
+        <Gallery
+          className="sm:rounded-md sm:ring ring-muted"
+          images={images}
+        />
+        <Container className="flex flex-col gap-8 lg:px-0 xl:pl-8 lg:sticky top-22">
+          <Writeup size="sm">
+            <Heading as="h1">{title}</Heading>
+            <Paragraph>{description}</Paragraph>
+          </Writeup>
+          {id ? (
+            <ShopifyProduct
+              id={id}
+              variants={variants}
+            />
+          ) : (
+            <>
+              <Price
+                className="mt-4 text-lg font-medium"
+                {...price}
               />
-            ) : (
-              <>
-                <Price
-                  className="mt-4 text-lg font-medium"
-                  {...price}
-                />
-                <Button
-                  className="mt-4"
-                  size="lg"
-                  asChild
-                >
-                  <a href="/contact/">Plaats aanvraag</a>
-                </Button>
-              </>
-            )}
-          </Box>
-          <Prose className="lg:hidden">{children}</Prose>
-        </Split>
+              <Button
+                className="mt-4"
+                size="lg"
+                asChild
+              >
+                <a href="/contact/">Plaats aanvraag</a>
+              </Button>
+            </>
+          )}
+        </Container>
+        <Prose className="max-lg:px-4">{children}</Prose>
       </Container>
     </Section>
   )

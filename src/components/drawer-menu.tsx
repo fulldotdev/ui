@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { DrawerContent, Drawer as DrawerRoot, DrawerTrigger } from '@/components/ui/drawer'
 import { cn } from '@/lib/utils'
 import { Menu } from 'lucide-react'
+import { v4 as uuidv4 } from 'uuid'
 
 interface Props {
   className?: string
@@ -23,15 +24,17 @@ function DrawerMenu({ items, className }: Props) {
           className={cn('', className)}
           variant="ghost"
           size="icon"
-          name="drawer-trigger"
         >
-          <Menu className="size-5" />
+          <Menu className="size-5 !w-9" />
         </Button>
       </DrawerTrigger>
       <DrawerContent>
         <div className="flex flex-col gap-3 overflow-auto p-6">
           {items?.map(({ text, href, links }) => (
-            <div className={`flex flex-col gap-3 ${links ? 'mt-3' : ''}`}>
+            <div
+              className={`flex flex-col gap-3 ${links ? 'mt-3' : ''}`}
+              key={uuidv4()}
+            >
               <a
                 className="text-foreground text-base font-medium hover:underline"
                 href={href}
@@ -41,6 +44,7 @@ function DrawerMenu({ items, className }: Props) {
               {links?.map(({ text, href }) => (
                 <a
                   className="text-muted-foreground hover:text-foreground transition-colors"
+                  key={uuidv4()}
                   href={href}
                 >
                   {text}

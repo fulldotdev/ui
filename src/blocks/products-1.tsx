@@ -1,3 +1,4 @@
+import { Box } from '@/components/box'
 import { Buttons } from '@/components/buttons'
 import { Container } from '@/components/container'
 import { Grid } from '@/components/grid'
@@ -24,31 +25,38 @@ interface Props {
 function Products1({ buttons, products, children }: Props) {
   return (
     <Section className="products products-1">
-      <Container className="flex flex-col items-start gap-8">
-        <Writeup className="flex w-full items-center justify-between gap-8">
-          <Writeup size="sm">{children}</Writeup>
+      <Container className="flex flex-col items-center gap-16">
+        <Box className="flex flex-col items-center gap-8">
+          <Writeup className="flex w-full items-center text-center justify-between">{children}</Writeup>
           <Buttons
             className="max-lg:hidden"
-            size="sm"
             buttons={buttons}
           />
-        </Writeup>
+        </Box>
         <Grid
           length={products?.length}
-          className="gap-4"
+          className="gap-x-4 gap-4-8"
         >
           {products?.map(({ href, title, images, price }) => (
             <Link
-              className="group flex flex-col gap-3"
+              className="group flex flex-col"
               key={uuidv4()}
               href={href}
             >
               <Image
-                className="bg-card aspect-square rounded-lg object-contain transition-opacity group-hover:opacity-75"
+                className="bg-card aspect-square rounded-md object-contain transition-opacity group-hover:opacity-75 bg-muted p-4 ring-1 ring-muted"
                 {...images?.[0]}
               />
-              <Heading as="h3">{title}</Heading>
-              <Price {...price} />
+              <Heading
+                as="h3"
+                className="text-sm mt-5 mb-1"
+              >
+                {title}
+              </Heading>
+              <Price
+                className="text-sm text-muted-foreground"
+                {...price}
+              />
             </Link>
           ))}
         </Grid>

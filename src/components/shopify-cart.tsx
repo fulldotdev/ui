@@ -29,9 +29,9 @@ function ShopifyCart({ className }: Props) {
 
   return (
     <Sheet onOpenChange={() => setRerenderKey((prev) => prev + 1)}>
-      <SheetTrigger asChild>
+      <SheetTrigger>
         <Button
-          className={cn('relative !px-2', className)}
+          className={cn('relative', className)}
           variant="ghost"
           name="drawer-trigger"
         >

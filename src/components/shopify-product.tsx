@@ -47,7 +47,6 @@ function ShopifyProductContent() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1>{product?.title}</h1>
       <div className="flex flex-col gap-2">
         {options?.map((option) => (
           <Select

@@ -23,33 +23,32 @@ function Header({ logo, menus, buttons, search, className, ...props }: Props) {
       as="header"
       {...props}
     >
-      <Container className="flex items-center justify-between gap-8 max-sm:gap-0">
-        <Box className="flex items-center gap-4">
+      <Container className="flex items-center justify-between gap-4 max-sm:gap-0">
+        <Box className="flex items-center gap-2">
+          <DrawerMenu
+            className="lg:hidden -ml-2.5"
+            items={menus}
+          />
           <Logo
-            className="max-sm:hidden lg:hidden xl:flex"
+            className="max-sm:hidden lg:hidden xl:flex mr-3"
             {...logo}
           />
           <NavigationMenu
-            className="max-lg:hidden"
+            className="max-lg:hidden max-xl:-ml-3"
             items={menus}
           />
         </Box>
-        <Box className="inline-flex items-center gap-2 max-lg:w-full">
+        <Box className="inline-flex items-center justify-end gap-2 w-full">
           <Search
             groups={search}
-            className="mx-2 max-lg:w-full"
+            className="w-full"
           />
           <Buttons
             className="max-sm:hidden"
-            size="sm"
             buttons={buttons}
             reverse
           />
-          <ShopifyCart />
-          <DrawerMenu
-            className="lg:hidden max-sm:order-first"
-            items={menus}
-          />
+          <ShopifyCart className="-mr-2.5" />
         </Box>
       </Container>
     </Box>

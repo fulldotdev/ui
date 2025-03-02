@@ -8,7 +8,7 @@ function Link({ href, target, className, children, ...props }: Props) {
 
   return React.Children.count(children) > 0 ? (
     <a
-      className={cn('link text-muted-foreground hover:text-foreground transition-colors', className)}
+      className={cn('link', className)}
       href={href}
       target={linkTarget}
       {...props}
