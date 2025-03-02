@@ -1,16 +1,24 @@
 ---
 import { Footer } from '@/blocks/footer'
 import { Header } from '@/blocks/header'
-import Block from '@/components/Block.astro'
-import layout from '@/data/layout.json'
-import Layout from '@/layouts/Layout.astro'
+import Block from '@/components/block.astro'
+import Layout from '@/components/layout.astro'
+import settings from '@/data/settings.json'
+import { getHref } from '@/lib/get-href'
 import { getCollection, render } from 'astro:content'
 
 export async function getStaticPaths() {
-  const collection = await getCollection('pages')
-  return collection.map((entry) => ({
+  const articles = await getCollection('articles')
+  const collections = await getCollection('collections')
+  const pages = await getCollection('pages')
+  const persons = await getCollection('persons')
+  const products = await getCollection('products')
+  const projects = await getCollection('projects')
+  const entries = [...pages, ...articles, ...collections, ...products, ...projects, ...persons]
+
+  return entries.map((entry) => ({
     params: {
-      page: entry.id === 'index' ? undefined : entry.id,
+      page: getHref(entry.collection, entry.id),
     },
     props: entry,
   }))
@@ -18,11 +26,11 @@ export async function getStaticPaths() {
 
 const { Content } = await render(Astro.props)
 const { sections, meta, type, ...restData } = Astro.props.data
-const { banner, header, footer, ...restLayout } = layout
+const { banner, header, footer, ...restSettings } = settings
 ---
 
 <Layout
-  {...restLayout}
+  {...restSettings}
   {...restData}
   {...meta}
 >
@@ -37,7 +45,7 @@ const { banner, header, footer, ...restLayout } = layout
     >
       <Content />
     </Block>
-    {sections?.map((section) => <Block {...section}></Block>)}
+    {sections?.map((section) => <Block {...section} />)}
   </main>
   <Footer {...footer} />
 </Layout>

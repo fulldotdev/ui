@@ -1,13 +1,15 @@
 import { imageSchema } from '@/schemas/components/image'
+import { sectionSchema } from '@/schemas/components/section'
 import { metaSchema } from '@/schemas/misc/meta'
 import { z } from 'astro:content'
 
-export const personSchema = z
+export const projectSchema = z
   .object({
-    type: z.literal('Person').default('Person'),
+    type: z.literal('project').default('project'),
     title: z.string(),
     description: z.string(),
     image: imageSchema,
+    sections: sectionSchema.array(),
     meta: metaSchema,
   })
   .partial()

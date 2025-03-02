@@ -1,4 +1,4 @@
-import { collectionSchema } from '@/schemas/layouts/collection'
+import { collectionSchema } from '@/schemas/content/collection'
 import type { Collection } from '@shopify/hydrogen/storefront-api-types'
 import { createStorefrontApiClient } from '@shopify/storefront-api-client'
 import type { Loader, LoaderContext } from 'astro/loaders'

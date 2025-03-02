@@ -1,18 +1,39 @@
 ---
-import { getHref } from '@/lib/getHref'
+import { Article1 } from '@/blocks/article-1'
+import { Articles1 } from '@/blocks/articles-1'
+import { Collection1 } from '@/blocks/collection-1'
+import { Collections1 } from '@/blocks/collections-1'
+import { Contact1 } from '@/blocks/contact-1'
+import { Contact2 } from '@/blocks/contact-2'
+import { Cta1 } from '@/blocks/cta-1'
+import { Faqs1 } from '@/blocks/faqs-1'
+import { Faqs2 } from '@/blocks/faqs-2'
+import { Features1 } from '@/blocks/features-1'
+import { Hero1 } from '@/blocks/hero-1'
+import { Intro1 } from '@/blocks/intro-1'
+import { Page1 } from '@/blocks/page-1'
+import { Pages1 } from '@/blocks/pages-1'
+import { Persons1 } from '@/blocks/persons-1'
+import { Product1 } from '@/blocks/product-1'
+import { Products1 } from '@/blocks/products-1'
+import { Projects1 } from '@/blocks/projects-1'
+import { Reviews1 } from '@/blocks/reviews-1'
+import { getHref } from '@/lib/get-href'
 import { getCollection } from 'astro:content'
 import { marked } from 'marked'
 
-let { type, variant, content, pages, articles, products, projects, persons, ...rest } = Astro.props
+interface Props {
+  type?: string
+  variant?: number
+  content?: string
+  pages?: any[]
+  articles?: any[]
+  products?: any[]
+  projects?: any[]
+  persons?: any[]
+}
 
-const blocks = import.meta.glob('../blocks/**/*.tsx')
-
-const blockName = `${type}-${variant || 1}`
-const path = Object.keys(blocks).find((path) => path.split('/').pop()?.split('.')[0] === blockName)
-
-const BlockComponent = path && (await (blocks[path] as any)()).default
-
-const markdownHtml = marked(content || '')
+let { type, variant = 1, content, pages, articles, products, projects, persons, ...rest } = Astro.props
 
 pages = (await getCollection('pages'))?.map(({ collection, id, data }) => ({
   href: getHref(collection, id),
@@ -34,6 +55,66 @@ persons = (await getCollection('persons')).map(({ collection, id, data }) => ({
   href: getHref(collection, id),
   ...data,
 }))
+
+const sections = {
+  article: {
+    1: Article1,
+  },
+  articles: {
+    1: Articles1,
+  },
+  collection: {
+    1: Collection1,
+  },
+  collections: {
+    1: Collections1,
+  },
+  contact: {
+    1: Contact1,
+    2: Contact2,
+  },
+  cta: {
+    1: Cta1,
+  },
+  faqs: {
+    1: Faqs1,
+    2: Faqs2,
+  },
+  features: {
+    1: Features1,
+  },
+  hero: {
+    1: Hero1,
+  },
+  intro: {
+    1: Intro1,
+  },
+  page: {
+    1: Page1,
+  },
+  pages: {
+    1: Pages1,
+  },
+  persons: {
+    1: Persons1,
+  },
+  product: {
+    1: Product1,
+  },
+  products: {
+    1: Products1,
+  },
+  projects: {
+    1: Projects1,
+  },
+  reviews: {
+    1: Reviews1,
+  },
+}
+
+const BlockComponent = (sections as any)[type as any]?.[variant as any] as any
+
+const markdownHtml = marked(content || '')
 ---
 
 {
@@ -46,7 +127,9 @@ persons = (await getCollection('persons')).map(({ collection, id, data }) => ({
       {persons}
       {...rest}
     >
-      <Fragment set:html={markdownHtml} />
+      <slot>
+        <Fragment set:html={markdownHtml} />
+      </slot>
     </BlockComponent>
   )
 }

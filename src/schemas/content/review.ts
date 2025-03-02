@@ -2,7 +2,7 @@ import { z } from 'astro:content'
 
 export const reviewSchema = z
   .object({
-    type: z.literal('Review').default('Review'),
+    type: z.literal('review').default('review'),
     title: z.string(),
     description: z.string(),
     rating: z.number(),

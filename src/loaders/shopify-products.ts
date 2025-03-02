@@ -1,4 +1,4 @@
-import { productSchema } from '@/schemas/layouts/product'
+import { productSchema } from '@/schemas/content/product'
 import type { Product } from '@shopify/hydrogen/storefront-api-types'
 import { createStorefrontApiClient } from '@shopify/storefront-api-client'
 import type { Loader, LoaderContext } from 'astro/loaders'

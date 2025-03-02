@@ -1,16 +1,15 @@
 import { imageSchema } from '@/schemas/components/image'
+import { priceSchema } from '@/schemas/components/price'
 import { sectionSchema } from '@/schemas/components/section'
 import { metaSchema } from '@/schemas/misc/meta'
 import { pathSchema } from '@/schemas/misc/path'
 import { z } from 'zod'
-import { priceSchema } from '../components/price'
 
 export const productSchema = z
   .object({
-    type: z.literal('Product').default('Product'),
+    type: z.literal('product').default('product'),
     title: z.string(),
     description: z.string(),
-    sections: sectionSchema.array(),
     meta: metaSchema,
     list: z.string().array(),
     images: imageSchema.array(),
@@ -41,6 +40,7 @@ export const productSchema = z
       .partial()
       .strict()
       .array(),
+    sections: sectionSchema.array(),
   })
   .partial()
   .strict()

@@ -8,7 +8,7 @@ interface Props {
   children?: React.ReactNode
 }
 
-function Intro({ children }: Props) {
+function Intro1({ children }: Props) {
   return (
     <Section className="intro intro-1 py-0">
       <Container>
@@ -20,4 +20,4 @@ function Intro({ children }: Props) {
   )
 }
 
-export { Intro }
+export { Intro1 }
