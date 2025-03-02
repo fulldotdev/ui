@@ -1,16 +1,15 @@
 ---
-import { Banner } from '@/blocks/banner'
-import { Footer } from '@/blocks/footer'
-import { Header } from '@/blocks/header'
-import { Box } from '@/components/box'
-import layout from '@/data/layout.json'
 import '@/styles/global.css'
 import '@/styles/theme.css'
-
 import { SEO } from 'astro-seo'
 import type { HTMLAttributes } from 'astro/types'
+import { twMerge } from 'tailwind-merge'
 
 interface Props extends HTMLAttributes<'html'> {
+  company?: string
+  head?: string
+  body?: string
+  css?: string
   title?: string
   description?: string
   image?: {
@@ -22,17 +21,28 @@ interface Props extends HTMLAttributes<'html'> {
   nofollow?: boolean
 }
 
-const { title, description, image, canonical, noindex, nofollow, class: className } = Astro.props
-const { lang = 'en', company, banner, header, footer, head, body, css } = layout
+const {
+  lang = 'en',
+  company,
+  title,
+  description,
+  image,
+  canonical,
+  noindex,
+  nofollow,
+  head,
+  body,
+  css,
+  class: className,
+} = Astro.props
 ---
 
 <!doctype html>
-<Box
-  class:list={[
+<html
+  class:list={twMerge(
     'layout text-foreground bg-background h-full w-full font-sans text-base scheme-light dark:scheme-dark',
-    className,
-  ]}
-  as="html"
+    className
+  )}
   {lang}
 >
   <head>
@@ -71,13 +81,8 @@ const { lang = 'en', company, banner, header, footer, head, body, css } = layout
     <Fragment set:html={head} />
   </head>
   <body>
-    <Banner text={banner} />
-    <Header {...header} />
-    <main>
-      <slot />
-      <style set:html={css}></style>
-      <Fragment set:html={body} />
-    </main>
-    <Footer {...footer} />
+    <slot />
+    <style set:html={css}></style>
+    <Fragment set:html={body} />
   </body>
-</Box>
+</html>

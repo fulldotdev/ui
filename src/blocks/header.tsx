@@ -1,6 +1,5 @@
 import { Box } from '@/components/box'
 import { Buttons } from '@/components/buttons'
-import { Cart } from '@/components/cart'
 import { Container } from '@/components/container'
 import { DrawerMenu } from '@/components/drawer-menu'
 import { Logo } from '@/components/logo'
@@ -39,7 +38,7 @@ function Header({ logo, menus, buttons, search, className, ...props }: Props) {
             buttons={buttons}
             reverse
           />
-          <Cart />
+          {/* <Cart /> */}
           <DrawerMenu
             className="size-8 lg:hidden"
             items={menus}

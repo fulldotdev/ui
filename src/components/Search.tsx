@@ -25,7 +25,7 @@ interface Props {
   }[]
 }
 
-export function Search({ groups, variant, size, className }: Props) {
+function Search({ groups, variant, size, className }: Props) {
   const [open, setOpen] = useState(false)
 
   return (

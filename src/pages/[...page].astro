@@ -1,5 +1,9 @@
 ---
-import PageLayout from '@/layouts/Page.astro'
+import { Footer } from '@/blocks/footer'
+import { Header } from '@/blocks/header'
+import Block from '@/components/Block.astro'
+import layout from '@/data/layout.json'
+import Layout from '@/layouts/Layout.astro'
 import { getCollection, render } from 'astro:content'
 
 export async function getStaticPaths() {
@@ -13,9 +17,27 @@ export async function getStaticPaths() {
 }
 
 const { Content } = await render(Astro.props)
-const { data } = Astro.props
+const { sections, meta, type, ...restData } = Astro.props.data
+const { banner, header, footer, ...restLayout } = layout
 ---
 
-<PageLayout {...data}>
-  <Content />
-</PageLayout>
+<Layout
+  {...restLayout}
+  {...restData}
+  {...meta}
+>
+  <Header
+    client:load
+    {...header}
+  />
+  <main>
+    <Block
+      {type}
+      {...restData}
+    >
+      <Content />
+    </Block>
+    {sections?.map((section) => <Block {...section}></Block>)}
+  </main>
+  <Footer {...footer} />
+</Layout>

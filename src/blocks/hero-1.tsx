@@ -38,4 +38,4 @@ function Hero1({ buttons, image, children }: Props) {
   )
 }
 
-export { Hero1 }
+export { Hero1 as default, Hero1 }
