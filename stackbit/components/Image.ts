@@ -4,7 +4,7 @@ export const ImageField: FieldObject = {
   name: 'image',
   type: 'object',
   fields: [
-    { name: 'src', type: 'image' },
-    { name: 'alt', type: 'string' },
+    { name: 'src', type: 'image', required: true },
+    { name: 'alt', type: 'string', required: true },
   ],
 }

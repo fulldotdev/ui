@@ -4,13 +4,9 @@ import { Section } from '@/components/section'
 import { cn } from '@/lib/utils'
 import * as React from 'react'
 
-interface Props extends React.ComponentProps<typeof Section> {
-  children?: React.ReactNode
-  className?: string
-}
-
-function Page1({ children, className = '', ...props }: Props) {
-  return (
+function Page1({ className, children, ...props }: React.ComponentProps<typeof Section>) {
+  console.log('PAGEEEE', children)
+  return React.Children.count(children) > 0 ? (
     <Section
       className={cn('page page-1', className)}
       {...props}
@@ -19,7 +15,7 @@ function Page1({ children, className = '', ...props }: Props) {
         <Prose>{children}</Prose>
       </Container>
     </Section>
-  )
+  ) : null
 }
 
 export { Page1 }

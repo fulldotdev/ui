@@ -12,7 +12,6 @@ const files = [
   'src/stores',
   'src/blocks',
   'src/components',
-  'src/layouts',
   'src/lib',
   'src/loaders',
   'src/pages',

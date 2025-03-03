@@ -1,4 +1,3 @@
-import { Box } from '@/components/box'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import {
@@ -13,17 +12,13 @@ import {
 } from '@icons-pack/react-simple-icons'
 import * as React from 'react'
 
-interface Props extends React.ComponentProps<typeof Box> {
-  socials?: string[]
-}
-
-function Socials({ socials, className, ...props }: Props) {
-  return (
-    <Box
+function Socials({ className, socials, ...props }: React.ComponentProps<'div'> & { socials?: string[] }) {
+  return socials ? (
+    <div
       className={cn('socials inline-flex gap-0.5', className)}
       {...props}
     >
-      {socials?.map((social, index) => (
+      {socials.map((social, index) => (
         <Button
           key={index}
           variant="ghost"
@@ -47,8 +42,8 @@ function Socials({ socials, className, ...props }: Props) {
           </a>
         </Button>
       ))}
-    </Box>
-  )
+    </div>
+  ) : null
 }
 
 export { Socials }

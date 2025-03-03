@@ -4,7 +4,7 @@ export const MetaField: FieldObject = {
   name: 'meta',
   type: 'object',
   fields: [
-    { name: 'title', type: 'string' },
+    { name: 'title', type: 'string', required: true },
     { name: 'description', type: 'string' },
     { name: 'canonical', type: 'string' },
     { name: 'noindex', type: 'boolean' },

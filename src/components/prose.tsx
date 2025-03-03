@@ -1,12 +1,9 @@
-import { Box } from '@/components/box'
 import { cn } from '@/lib/utils'
 import * as React from 'react'
 
-interface Props extends React.ComponentProps<typeof Box> {}
-
-function Prose({ className, children, ...props }: Props) {
-  return (
-    <Box
+function Prose({ className, ...props }: React.ComponentProps<'div'>) {
+  return React.Children.count(props.children) > 0 ? (
+    <div
       className={cn(
         'prose',
         'flex-flex-col text-foreground mx-auto w-full max-w-screen-sm',
@@ -24,10 +21,8 @@ function Prose({ className, children, ...props }: Props) {
         className
       )}
       {...props}
-    >
-      {children}
-    </Box>
-  )
+    />
+  ) : null
 }
 
 export { Prose }

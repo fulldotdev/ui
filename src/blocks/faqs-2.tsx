@@ -2,8 +2,8 @@ import { Accordion } from '@/components/accordion'
 import { Box } from '@/components/box'
 import { Buttons } from '@/components/buttons'
 import { Container } from '@/components/container'
+import { Grid } from '@/components/grid'
 import { Section } from '@/components/section'
-import { Split } from '@/components/split'
 import { Writeup } from '@/components/writeup'
 import * as React from 'react'
 
@@ -20,7 +20,7 @@ function Faqs2({ buttons, faqs, children }: Props) {
   return (
     <Section className="faqs faqs-2">
       <Container>
-        <Split>
+        <Grid size="xl">
           <Box className="flex flex-col items-center gap-8">
             <Writeup>{children}</Writeup>
             <Buttons buttons={buttons} />
@@ -30,7 +30,7 @@ function Faqs2({ buttons, faqs, children }: Props) {
             collapsible
             items={faqs}
           />
-        </Split>
+        </Grid>
       </Container>
     </Section>
   )

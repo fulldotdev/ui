@@ -1,16 +1,21 @@
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
-interface Props {
-  className?: string
+function Price({
+  className,
+  currency = 'EUR',
+  amount,
+  compare,
+  unit,
+  badge,
+  ...props
+}: React.ComponentProps<'div'> & {
   amount?: number
   compare?: number
-  currency?: string
   unit?: string
+  currency?: string
   badge?: boolean
-}
-
-function Price({ amount, compare, unit, currency = 'EUR', className, badge }: Props) {
+}) {
   function formatPrice(number: number): string {
     if (number === null || number === undefined) return ''
     return new Intl.NumberFormat('nl-NL', {
@@ -21,7 +26,10 @@ function Price({ amount, compare, unit, currency = 'EUR', className, badge }: Pr
 
   return (
     amount && (
-      <div className={cn('price flex items-center gap-2.5', className)}>
+      <div
+        className={cn('price flex items-center gap-2.5', className)}
+        {...props}
+      >
         <span>{formatPrice(amount)}</span>
         {unit ? <span className="text-muted-foreground text-sm">{unit ? ` / ${unit}` : ''}</span> : null}
         {compare ? <span className="text-muted-foreground text-sm line-through">{formatPrice(compare)}</span> : null}
