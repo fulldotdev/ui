@@ -1,19 +1,17 @@
-import { Box } from '@/components/box'
-import { cn } from '@/lib/utils'
+import { cn, hasChildren } from '@/lib/utils'
 import * as React from 'react'
 
-interface Props extends React.ComponentProps<typeof Box> {}
+interface Props extends React.ComponentProps<'p'> {}
 
 function Paragraph({ className, children, ...props }: Props) {
-  return (
-    <Box
+  return hasChildren(children) ? (
+    <p
       className={cn('paragraph text-foreground leading-[1.8] text-balance', className)}
-      as="p"
       {...props}
     >
       {children}
-    </Box>
-  )
+    </p>
+  ) : null
 }
 
 export { Paragraph }

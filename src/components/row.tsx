@@ -1,30 +1,27 @@
-import { cn } from '@/lib/utils'
-import { cva, type VariantProps } from 'class-variance-authority'
+import { cn, hasChildren } from '@/lib/utils'
 import React from 'react'
 
-interface Props extends React.HTMLAttributes<HTMLElement> {
+interface Props extends React.ComponentProps<'div'> {
   align?: 'start' | 'center' | 'end'
 }
 
-export const rowVariants = cva('row flex flex-row w-full justify-between gap-8', {
-  variants: {
-    align: {
-      start: 'items-start',
-      center: 'items-center',
-      end: 'items-end',
-    },
-  },
-})
-
-function Row({ align, className, children, ...props }: React.ComponentProps<'div'> & VariantProps<typeof rowVariants>) {
-  return (
+function Row({ align = 'center', className, children, ...props }: Props) {
+  return hasChildren(children) ? (
     <div
-      className={cn(rowVariants({ align, className }))}
+      className={cn(
+        'row flex flex-row w-full justify-between gap-8',
+        {
+          'items-start': align === 'start',
+          'items-center': align === 'center',
+          'items-end': align === 'end',
+        },
+        className
+      )}
       {...props}
     >
       {children}
     </div>
-  )
+  ) : null
 }
 
 export { Row }

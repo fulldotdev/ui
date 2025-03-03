@@ -1,5 +1,5 @@
-import { Box } from '@/components/box'
 import { Buttons } from '@/components/buttons'
+import { Column } from '@/components/column'
 import { Container } from '@/components/container'
 import { Grid } from '@/components/grid'
 import { Heading } from '@/components/heading'
@@ -11,6 +11,9 @@ import * as React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 interface Props {
+  align?: 'start' | 'center' | 'end'
+  title?: React.ComponentProps<typeof Writeup>['title']
+  description?: React.ComponentProps<typeof Writeup>['description']
   buttons?: React.ComponentProps<typeof Buttons>['buttons']
   projects?: {
     href?: React.ComponentProps<typeof Link>['href']
@@ -20,24 +23,22 @@ interface Props {
   children?: React.ReactNode
 }
 
-function Projects1({ buttons, projects, children }: Props) {
+function Projects1({ align = 'center', title, description, buttons, projects, children }: Props) {
   return (
     <Section className="projects projects-1">
       <Container className="flex flex-col items-center gap-16">
-        <Box className="flex flex-col items-center gap-8">
+        <Column align={align}>
           <Writeup
             className="items-center text-center"
             size="lg"
+            title={title}
+            description={description}
           >
             {children}
           </Writeup>
           <Buttons buttons={buttons} />
-        </Box>
-        <Grid
-          length={projects?.length}
-          size="lg"
-          className="gap-x-8"
-        >
+        </Column>
+        <Grid size="lg">
           {projects?.map(({ href, title, image }) => (
             <Link
               className="group flex flex-col gap-3"

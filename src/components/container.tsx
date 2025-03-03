@@ -1,5 +1,4 @@
-import { Box } from '@/components/box'
-import { cn } from '@/lib/utils'
+import { cn, hasChildren } from '@/lib/utils'
 import React from 'react'
 
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -7,8 +6,8 @@ interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 function Container({ align, className, children, ...props }: ContainerProps) {
-  return (
-    <Box
+  return hasChildren(children) ? (
+    <div
       className={cn(
         'mx-auto w-full max-w-screen-xl px-4 lg:px-8',
         {
@@ -21,8 +20,8 @@ function Container({ align, className, children, ...props }: ContainerProps) {
       {...props}
     >
       {children}
-    </Box>
-  )
+    </div>
+  ) : null
 }
 
 export { Container }

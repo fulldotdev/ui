@@ -1,5 +1,5 @@
-import { Box } from '@/components/box'
 import { Buttons } from '@/components/buttons'
+import { Column } from '@/components/column'
 import { Container } from '@/components/container'
 import { Grid } from '@/components/grid'
 import { Heading } from '@/components/heading'
@@ -11,27 +11,37 @@ import * as React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 interface Props {
+  align?: 'start' | 'center' | 'end'
+  title?: React.ComponentProps<typeof Writeup>['title']
+  description?: React.ComponentProps<typeof Writeup>['description']
+  children?: React.ComponentProps<typeof Writeup>['children']
   buttons?: React.ComponentProps<typeof Buttons>['buttons']
   collections?: {
     href?: React.ComponentProps<typeof Link>['href']
     image?: React.ComponentProps<typeof Image>
     title?: string
   }[]
-  children?: React.ReactNode
 }
 
-function Collections1({ buttons, collections, children }: Props) {
+function Collections1({ align, title, description, children, buttons, collections }: Props) {
   return (
     <Section className="collections collections-1">
-      <Container className="flex flex-col gap-8">
-        <Box className="flex flex-col items-center gap-8">
-          <Writeup className="items-center text-center">{children}</Writeup>
+      <Container align={align}>
+        <Column align={align}>
+          <Writeup
+            align={align}
+            title={title}
+            description={description}
+          >
+            {children}
+          </Writeup>
           <Buttons
             className="max-lg:hidden"
+            align={align}
             buttons={buttons}
           />
-        </Box>
-        <Grid length={collections?.length}>
+        </Column>
+        <Grid>
           {collections?.map(({ href, title, image }) => (
             <Link
               className="group flex flex-col gap-4"

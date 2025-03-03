@@ -1,17 +1,16 @@
-import { Box } from '@/components/box'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Mail, MapPin, Phone } from 'lucide-react'
 
-interface Props extends React.ComponentProps<typeof Box> {
+interface Props extends React.ComponentProps<'div'> {
   phone?: string
   email?: string
   address?: string
 }
 
 function Channels({ phone, email, address, className }: Props) {
-  return (
-    <Box className={cn('flex flex-col items-start gap-3', className)}>
+  return phone || email || address ? (
+    <div className={cn('flex flex-col items-start gap-3', className)}>
       {phone && (
         <Button
           variant="secondary"
@@ -45,8 +44,8 @@ function Channels({ phone, email, address, className }: Props) {
           </a>
         </Button>
       )}
-    </Box>
-  )
+    </div>
+  ) : null
 }
 
 export { Channels }

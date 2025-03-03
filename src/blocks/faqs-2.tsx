@@ -1,30 +1,40 @@
 import { Accordion } from '@/components/accordion'
-import { Box } from '@/components/box'
 import { Buttons } from '@/components/buttons'
+import { Column } from '@/components/column'
 import { Container } from '@/components/container'
 import { Grid } from '@/components/grid'
 import { Section } from '@/components/section'
 import { Writeup } from '@/components/writeup'
 import * as React from 'react'
 
-interface Props {
+interface Props extends React.ComponentProps<typeof Section> {
+  align?: 'start' | 'center' | 'end'
+  title?: React.ComponentProps<typeof Writeup>['title']
+  description?: React.ComponentProps<typeof Writeup>['description']
   buttons?: React.ComponentProps<typeof Buttons>['buttons']
   faqs?: {
     title?: string
     description?: string
   }[]
-  children?: React.ReactNode
 }
 
-function Faqs2({ buttons, faqs, children }: Props) {
+function Faqs2({ align = 'center', title, description, buttons, faqs, children }: Props) {
   return (
     <Section className="faqs faqs-2">
       <Container>
-        <Grid size="xl">
-          <Box className="flex flex-col items-center gap-8">
-            <Writeup>{children}</Writeup>
+        <Grid
+          align={align}
+          size="xl"
+        >
+          <Column align={align}>
+            <Writeup
+              title={title}
+              description={description}
+            >
+              {children}
+            </Writeup>
             <Buttons buttons={buttons} />
-          </Box>
+          </Column>
           <Accordion
             type="single"
             collapsible

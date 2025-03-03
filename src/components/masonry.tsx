@@ -1,15 +1,14 @@
-import { Box } from '@/components/box'
-import { cn } from '@/lib/utils'
+import { cn, hasChildren } from '@/lib/utils'
 import * as React from 'react'
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   size?: 'sm' | 'default' | 'lg'
-  length: number | undefined
+  length?: number
 }
 
-function Masonry({ size = 'default', length = 4, className, children, ...props }: Props) {
-  return (
-    <Box
+function Masonry({ size = 'default', children, length = React.Children.count(children), className, ...props }: Props) {
+  return hasChildren(children) ? (
+    <div
       className={cn(
         'masonry relative w-full space-y-4 gap-x-4',
         {
@@ -31,8 +30,8 @@ function Masonry({ size = 'default', length = 4, className, children, ...props }
       {...props}
     >
       {children}
-    </Box>
-  )
+    </div>
+  ) : null
 }
 
 export { Masonry }

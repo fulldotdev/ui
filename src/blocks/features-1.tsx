@@ -1,4 +1,4 @@
-import { Box } from '@/components/box'
+import { Column } from '@/components/column'
 import { Container } from '@/components/container'
 import { Grid } from '@/components/grid'
 import { Heading } from '@/components/heading'
@@ -9,31 +9,40 @@ import { Check } from 'lucide-react'
 import * as React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
-interface Props {
+interface Props extends React.ComponentProps<typeof Section> {
+  align?: 'start' | 'center' | 'end'
+  title?: React.ComponentProps<typeof Writeup>['title']
+  description?: React.ComponentProps<typeof Writeup>['description']
   features?: {
     title?: string
     description?: string
   }[]
-  children?: React.ReactNode
 }
 
-function Features1({ features, children }: Props) {
+function Features1({ align = 'center', title, description, features, children }: Props) {
   return (
     <Section className="features features-1">
-      <Container className="flex flex-col items-center gap-16">
-        <Writeup className="flex flex-col items-center text-center">{children}</Writeup>
-        <Grid length={features?.length}>
+      <Container align={align}>
+        <Writeup
+          title={title}
+          description={description}
+          align={align}
+        >
+          {children}
+        </Writeup>
+        <Grid>
           {features?.map(({ title, description }) => (
-            <Box
+            <Column
+              className="gap-4"
               key={uuidv4()}
-              className="flex flex-col items-center gap-4 text-center"
+              align={align}
             >
-              <Box className="bg-muted text-muted-foreground inline-flex size-9 items-center justify-center rounded-md">
+              <div className="bg-muted text-muted-foreground inline-flex size-9 items-center justify-center rounded-md">
                 <Check />
-              </Box>
+              </div>
               <Heading as="h3">{title}</Heading>
               <Paragraph>{description}</Paragraph>
-            </Box>
+            </Column>
           ))}
         </Grid>
       </Container>

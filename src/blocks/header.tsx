@@ -1,4 +1,3 @@
-import { Box } from '@/components/box'
 import { Buttons } from '@/components/buttons'
 import { Container } from '@/components/container'
 import { DrawerMenu } from '@/components/drawer-menu'
@@ -18,13 +17,12 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 
 function Header({ logo, menus, buttons, search, className, ...props }: Props) {
   return (
-    <Box
+    <header
       className={cn('header bg-background sticky top-0 z-20 flex h-14 w-full border-b', className)}
-      as="header"
       {...props}
     >
       <Container className="flex items-center justify-between gap-4 max-sm:gap-0">
-        <Box className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
           <DrawerMenu
             className="lg:hidden -ml-2.5"
             items={menus}
@@ -37,8 +35,8 @@ function Header({ logo, menus, buttons, search, className, ...props }: Props) {
             className="max-lg:hidden max-xl:-ml-3"
             items={menus}
           />
-        </Box>
-        <Box className="inline-flex items-center justify-end gap-2 w-full">
+        </div>
+        <div className="inline-flex items-center justify-end gap-2 w-full">
           <Search
             groups={search}
             className="w-full"
@@ -49,9 +47,9 @@ function Header({ logo, menus, buttons, search, className, ...props }: Props) {
             reverse
           />
           <ShopifyCart className="-mr-2.5" />
-        </Box>
+        </div>
       </Container>
-    </Box>
+    </header>
   )
 }
 

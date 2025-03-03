@@ -1,20 +1,20 @@
-import { Box } from '@/components/box'
 import { Buttons } from '@/components/buttons'
+import { Column } from '@/components/column'
 import { Container } from '@/components/container'
 import { Section } from '@/components/section'
 import { Writeup } from '@/components/writeup'
 import * as React from 'react'
 
-interface Props {
+interface Props extends React.ComponentProps<typeof Section> {
+  align?: 'start' | 'center' | 'end'
   buttons?: React.ComponentProps<typeof Buttons>['buttons']
-  children?: React.ReactNode
 }
 
-function Cta1({ buttons, children }: Props) {
+function Cta1({ align = 'center', buttons, children }: Props) {
   return (
     <Section className="cta cta-1">
       <Container>
-        <Box className="flex flex-col items-center gap-8">
+        <Column align={align}>
           <Writeup
             className="items-center text-center"
             size="lg"
@@ -22,11 +22,11 @@ function Cta1({ buttons, children }: Props) {
             {children}
           </Writeup>
           <Buttons
-            className="justify-center"
-            size="lg"
             buttons={buttons}
+            align={align}
+            size="lg"
           />
-        </Box>
+        </Column>
       </Container>
     </Section>
   )

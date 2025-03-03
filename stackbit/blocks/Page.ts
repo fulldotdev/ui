@@ -3,6 +3,7 @@ import { ImageField } from '../components/Image'
 import { MetaField } from '../components/Meta'
 import { SectionsField } from '../components/Sections'
 import { TitleField } from '../components/Title'
+
 export const PageModel: PageModelType = {
   name: 'Page',
   type: 'page',

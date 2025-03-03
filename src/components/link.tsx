@@ -1,12 +1,12 @@
-import { cn } from '@/lib/utils'
+import { cn, hasChildren } from '@/lib/utils'
 import * as React from 'react'
 
-interface Props extends React.AnchorHTMLAttributes<HTMLAnchorElement> {}
+interface Props extends React.ComponentProps<'a'> {}
 
-function Link({ href, target, className, children, ...props }: Props) {
+function Link({ className, href, target, children, ...props }: Props) {
   const linkTarget = href?.startsWith('http') ? '_blank' : target
 
-  return React.Children.count(children) > 0 ? (
+  return hasChildren(children) ? (
     <a
       className={cn('link', className)}
       href={href}

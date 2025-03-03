@@ -1,4 +1,4 @@
-import { Box } from '@/components/box'
+import { Column } from '@/components/column'
 import { Container } from '@/components/container'
 import { Grid } from '@/components/grid'
 import { Heading } from '@/components/heading'
@@ -23,12 +23,9 @@ function Persons1({ persons, children }: Props) {
     <Section className="features features-1">
       <Container className="flex flex-col items-center gap-16">
         <Writeup className="items-center text-center">{children}</Writeup>
-        <Grid
-          length={persons?.length}
-          className="gap-16"
-        >
+        <Grid className="gap-16">
           {persons?.map(({ image, title, description }) => (
-            <Box
+            <Column
               className="flex max-w-md flex-col items-center gap-6"
               key={uuidv4()}
             >
@@ -38,7 +35,7 @@ function Persons1({ persons, children }: Props) {
               />
               <Heading as="h3">{title}</Heading>
               <Paragraph>{description}</Paragraph>
-            </Box>
+            </Column>
           ))}
         </Grid>
       </Container>

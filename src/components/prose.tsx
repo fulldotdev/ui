@@ -1,8 +1,10 @@
-import { cn } from '@/lib/utils'
+import { cn, hasChildren } from '@/lib/utils'
 import * as React from 'react'
 
-function Prose({ className, ...props }: React.ComponentProps<'div'>) {
-  return React.Children.count(props.children) > 0 ? (
+interface Props extends React.ComponentProps<'div'> {}
+
+function Prose({ className, ...props }: Props) {
+  return hasChildren(props.children) ? (
     <div
       className={cn(
         'prose',

@@ -12,7 +12,11 @@ import {
 } from '@icons-pack/react-simple-icons'
 import * as React from 'react'
 
-function Socials({ className, socials, ...props }: React.ComponentProps<'div'> & { socials?: string[] }) {
+interface Props extends React.ComponentProps<'div'> {
+  socials?: string[]
+}
+
+function Socials({ className, socials, ...props }: Props) {
   return socials ? (
     <div
       className={cn('socials inline-flex gap-0.5', className)}

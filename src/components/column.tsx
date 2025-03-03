@@ -1,5 +1,4 @@
-import { Box } from '@/components/box'
-import { cn } from '@/lib/utils'
+import { cn, hasChildren } from '@/lib/utils'
 import React from 'react'
 
 interface Props extends React.HTMLAttributes<HTMLElement> {
@@ -7,8 +6,8 @@ interface Props extends React.HTMLAttributes<HTMLElement> {
 }
 
 function Column({ align = 'default', className, children, ...props }: Props) {
-  return (
-    <Box
+  return hasChildren(children) ? (
+    <div
       className={cn(
         'column flex flex-col gap-8',
         {
@@ -21,8 +20,8 @@ function Column({ align = 'default', className, children, ...props }: Props) {
       {...props}
     >
       {children}
-    </Box>
-  )
+    </div>
+  ) : null
 }
 
 export { Column }

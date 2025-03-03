@@ -1,9 +1,8 @@
-import { Box } from '@/components/box'
 import { cn } from '@/lib/utils'
 import { Star, StarHalf } from 'lucide-react'
 import * as React from 'react'
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
+interface Props extends React.ComponentProps<'div'> {
   score?: number | undefined | null
 }
 
@@ -16,22 +15,22 @@ function Rating({ score, className, ...props }: Props) {
     return <Star className="size-[1em]" />
   }
 
-  return (
-    <Box
+  return score ? (
+    <div
       className={cn('flex gap-1 text-base', className)}
       {...props}
     >
       {score &&
         [1, 2, 3, 4, 5].map((count) => (
-          <Box
+          <div
             key={count}
             className="!text-primary size-[1em]"
           >
             {getIcon(count)}
-          </Box>
+          </div>
         ))}
-    </Box>
-  )
+    </div>
+  ) : null
 }
 
 export { Rating }

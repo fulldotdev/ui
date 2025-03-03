@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils'
 import * as React from 'react'
 
 function Page1({ className, children, ...props }: React.ComponentProps<typeof Section>) {
-  console.log('PAGEEEE', children)
   return React.Children.count(children) > 0 ? (
     <Section
       className={cn('page page-1', className)}

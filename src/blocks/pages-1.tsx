@@ -1,5 +1,5 @@
-import { Box } from '@/components/box'
 import { Buttons } from '@/components/buttons'
+import { Column } from '@/components/column'
 import { Container } from '@/components/container'
 import { Grid } from '@/components/grid'
 import { Heading } from '@/components/heading'
@@ -12,6 +12,9 @@ import * as React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 interface Props {
+  align?: 'start' | 'center' | 'end'
+  title?: React.ComponentProps<typeof Writeup>['title']
+  description?: React.ComponentProps<typeof Writeup>['description']
   buttons?: React.ComponentProps<typeof Buttons>['buttons']
   pages?: {
     href?: string
@@ -22,15 +25,21 @@ interface Props {
   children?: React.ReactNode
 }
 
-function Pages1({ buttons, pages, children }: Props) {
+function Pages1({ align = 'center', title, description, buttons, pages, children }: Props) {
   return (
     <Section className="pages pages-1">
       <Container className="flex flex-col items-center gap-16">
-        <Box className="flex flex-col items-center gap-8">
-          <Writeup className="items-center text-center">{children}</Writeup>
+        <Column align={align}>
+          <Writeup
+            title={title}
+            description={description}
+            align={align}
+          >
+            {children}
+          </Writeup>
           <Buttons buttons={buttons} />
-        </Box>
-        <Grid length={pages?.length}>
+        </Column>
+        <Grid>
           {pages?.map(({ href, title, description, image }) => (
             <Link
               key={uuidv4()}
