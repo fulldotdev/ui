@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/button'
 import { cn } from '@/lib/utils'
 import { Mail, MapPin, Phone } from 'lucide-react'
 
@@ -17,34 +17,28 @@ function Channels({ phone, email, address, className, ...props }: Props) {
       {phone ? (
         <Button
           variant="secondary"
-          asChild
+          href={`tel:${phone}`}
         >
-          <a href={`tel:${phone}`}>
-            <Phone className="mr-2 h-4 w-4" />
-            {phone}
-          </a>
+          <Phone className="mr-2 h-4 w-4" />
+          {phone}
         </Button>
       ) : null}
       {email ? (
         <Button
           variant="secondary"
-          asChild
+          href={`mailto:${email}`}
         >
-          <a href={`mailto:${email}`}>
-            <Mail className="mr-2 h-4 w-4" />
-            {email}
-          </a>
+          <Mail className="mr-2 h-4 w-4" />
+          {email}
         </Button>
       ) : null}
       {address ? (
         <Button
           variant="secondary"
-          asChild
+          href={`https://www.google.com/maps/search/?api=1&query=${address}`}
         >
-          <a href={`https://www.google.com/maps/search/?api=1&query=${address}`}>
-            <MapPin className="mr-2 h-4 w-4" />
-            {address}
-          </a>
+          <MapPin className="mr-2 h-4 w-4" />
+          {address}
         </Button>
       ) : null}
     </div>

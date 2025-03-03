@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/button'
 import { cn } from '@/lib/utils'
 import {
   SiDiscord,
@@ -29,22 +29,17 @@ function Socials({ className, socials, ...props }: Props) {
           variant="ghost"
           size="icon"
           asChild
+          href={social}
+          className="text-foreground"
         >
-          <a
-            href={social}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-foreground"
-          >
-            {social.includes('x.com') && <SiX />}
-            {social.includes('facebook') && <SiFacebook />}
-            {social.includes('instagram') && <SiInstagram />}
-            {social.includes('youtube') && <SiYoutube />}
-            {social.includes('tiktok') && <SiTiktok />}
-            {social.includes('twitch') && <SiTwitch />}
-            {social.includes('github') && <SiGithub />}
-            {social.includes('discord') && <SiDiscord />}
-          </a>
+          {social.includes('x.com') && <SiX />}
+          {social.includes('facebook') && <SiFacebook />}
+          {social.includes('instagram') && <SiInstagram />}
+          {social.includes('youtube') && <SiYoutube />}
+          {social.includes('tiktok') && <SiTiktok />}
+          {social.includes('twitch') && <SiTwitch />}
+          {social.includes('github') && <SiGithub />}
+          {social.includes('discord') && <SiDiscord />}
         </Button>
       ))}
     </div>

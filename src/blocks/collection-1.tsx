@@ -1,3 +1,4 @@
+import { Button } from '@/components/button'
 import { Column } from '@/components/column'
 import { Container } from '@/components/container'
 import { Grid } from '@/components/grid'
@@ -7,7 +8,6 @@ import { Price } from '@/components/price'
 import { Prose } from '@/components/prose'
 import { Row } from '@/components/row'
 import { Section } from '@/components/section'
-import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,

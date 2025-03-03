@@ -5,7 +5,7 @@ import * as React from 'react'
 
 type Props = React.ComponentProps<typeof Link> &
   Omit<React.ComponentProps<typeof UIButton>, 'size'> & {
-    size?: 'xs' | 'sm' | 'default' | 'lg' | 'xl' | '2xl'
+    size?: 'xs' | 'sm' | 'default' | 'lg' | 'xl' | '2xl' | 'icon'
     text?: string
   }
 
