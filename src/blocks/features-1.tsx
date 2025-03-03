@@ -1,8 +1,6 @@
 import { Column } from '@/components/column'
 import { Container } from '@/components/container'
 import { Grid } from '@/components/grid'
-import { Heading } from '@/components/heading'
-import { Paragraph } from '@/components/paragraph'
 import { Section } from '@/components/section'
 import { Writeup } from '@/components/writeup'
 import { Check } from 'lucide-react'
@@ -40,8 +38,8 @@ function Features1({ align = 'center', title, description, features, children }:
               <div className="bg-muted text-muted-foreground inline-flex size-9 items-center justify-center rounded-md">
                 <Check />
               </div>
-              <Heading as="h3">{title}</Heading>
-              <Paragraph>{description}</Paragraph>
+              <h3 className="font-medium">{title}</h3>
+              <p className="text-sm">{description}</p>
             </Column>
           ))}
         </Grid>

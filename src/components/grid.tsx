@@ -8,9 +8,9 @@ interface Props extends React.ComponentProps<'div'> {
 }
 
 function Grid({
-  className,
   size = 'default',
   align,
+  className,
   children,
   length = React.Children.count(children),
   ...props

@@ -8,10 +8,13 @@ interface Props extends React.ComponentProps<'div'> {
   address?: string
 }
 
-function Channels({ phone, email, address, className }: Props) {
+function Channels({ phone, email, address, className, ...props }: Props) {
   return phone || email || address ? (
-    <div className={cn('flex flex-col items-start gap-3', className)}>
-      {phone && (
+    <div
+      className={cn('flex flex-col items-start gap-3', className)}
+      {...props}
+    >
+      {phone ? (
         <Button
           variant="secondary"
           asChild
@@ -21,8 +24,8 @@ function Channels({ phone, email, address, className }: Props) {
             {phone}
           </a>
         </Button>
-      )}
-      {email && (
+      ) : null}
+      {email ? (
         <Button
           variant="secondary"
           asChild
@@ -32,8 +35,8 @@ function Channels({ phone, email, address, className }: Props) {
             {email}
           </a>
         </Button>
-      )}
-      {address && (
+      ) : null}
+      {address ? (
         <Button
           variant="secondary"
           asChild
@@ -43,7 +46,7 @@ function Channels({ phone, email, address, className }: Props) {
             {address}
           </a>
         </Button>
-      )}
+      ) : null}
     </div>
   ) : null
 }

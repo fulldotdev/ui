@@ -1,15 +1,16 @@
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import * as React from 'react'
+import { v4 as uuidv4 } from 'uuid'
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
-  align?: 'start' | 'center' | 'end'
-  size?: React.ComponentProps<typeof Button>['size']
-  buttons?: ({ text: string; href: string } & React.ComponentProps<typeof Button>)[]
+interface Props extends React.ComponentProps<'div'> {
+  align?: 'default' | 'start' | 'center' | 'end'
   reverse?: boolean
+  size?: React.ComponentProps<typeof Button>['size']
+  buttons?: ({ text?: string; href?: string } & React.ComponentProps<typeof Button>)[]
 }
 
-function Buttons({ align, size, reverse = false, className, buttons, ...rest }: Props) {
+function Buttons({ align = 'default', reverse = false, size, buttons, className, ...props }: Props) {
   const getButtonVariant = (index: number) => {
     if (reverse) {
       const length = buttons?.length || 0
@@ -33,19 +34,21 @@ function Buttons({ align, size, reverse = false, className, buttons, ...rest }: 
         },
         className
       )}
-      {...rest}
+      {...props}
     >
-      {buttons?.map(({ text, href, ...button }, i) => (
-        <Button
-          key={i}
-          variant={getButtonVariant(i)}
-          size={size}
-          asChild
-          {...button}
-        >
-          <a href={href}>{text}</a>
-        </Button>
-      ))}
+      {buttons?.map(({ text, href, ...button }, i) =>
+        text && href ? (
+          <Button
+            key={uuidv4()}
+            variant={getButtonVariant(i)}
+            size={size}
+            asChild
+            {...button}
+          >
+            <a href={href}>{text}</a>
+          </Button>
+        ) : null
+      )}
     </div>
   ) : null
 }

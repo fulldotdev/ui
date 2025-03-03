@@ -2,6 +2,7 @@ import { cn, hasChildren } from '@/lib/utils'
 import React from 'react'
 
 interface WriteupProps extends React.ComponentProps<'div'> {
+  level?: 1 | 2 | 3
   size?: 'sm' | 'default' | 'lg' | 'xl'
   align?: 'start' | 'center' | 'end'
   title?: string
@@ -9,14 +10,16 @@ interface WriteupProps extends React.ComponentProps<'div'> {
 }
 
 function Writeup({
+  level = 2,
   size = 'default',
   align = 'start',
   title,
   description,
-  className,
   children,
+  className,
   ...props
 }: WriteupProps) {
+  const Heading = `h${level}` as const
   return hasChildren(children) ? (
     <div
       className={cn(
@@ -41,6 +44,8 @@ function Writeup({
       )}
       {...props}
     >
+      {title ? <Heading>{title}</Heading> : null}
+      {description ? <p>{description}</p> : null}
       {children}
     </div>
   ) : null

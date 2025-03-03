@@ -7,7 +7,9 @@ import { Writeup } from '@/components/writeup'
 import * as React from 'react'
 
 interface Props {
-  align?: 'start' | 'center' | 'end'
+  level?: React.ComponentProps<typeof Writeup>['level']
+  size?: React.ComponentProps<typeof Writeup>['size']
+  align?: React.ComponentProps<typeof Writeup>['align']
   title?: React.ComponentProps<typeof Writeup>['title']
   description?: React.ComponentProps<typeof Writeup>['description']
   children?: React.ComponentProps<typeof Writeup>['children']
@@ -15,18 +17,20 @@ interface Props {
   image?: React.ComponentProps<typeof Image>
 }
 
-function Hero1({ align = 'center', title, description, buttons, image, children }: Props) {
+function Hero1({ level = 1, size = 'xl', align = 'center', title, description, buttons, image, children }: Props) {
   return (
     <Section className="hero hero-1">
       <Container align={align}>
         <Column align={align}>
           <Writeup
+            level={level}
+            size={size}
             align={align}
             title={title}
             description={description}
-            children={children}
-            size="xl"
-          />
+          >
+            {children}
+          </Writeup>
           <Buttons
             align={align}
             buttons={buttons}

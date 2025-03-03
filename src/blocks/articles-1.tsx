@@ -1,25 +1,27 @@
 import { Container } from '@/components/container'
 import { Grid } from '@/components/grid'
-import { Heading } from '@/components/heading'
 import { Image } from '@/components/image'
 import { Link } from '@/components/link'
 import { Section } from '@/components/section'
 import { Writeup } from '@/components/writeup'
+import { cn } from '@/lib/utils'
 import * as React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
-interface Props {
+interface Props extends React.ComponentProps<typeof Section> {
   articles?: {
     href?: React.ComponentProps<typeof Link>['href']
     title?: string
     image?: React.ComponentProps<typeof Image>
   }[]
-  children?: React.ReactNode
 }
 
-function Articles1({ articles, children }: Props) {
+function Articles1({ articles, className, children, ...props }: Props) {
   return (
-    <Section className="articles articles-1">
+    <Section
+      className={cn('articles articles-1', className)}
+      {...props}
+    >
       <Container className="flex flex-col items-center gap-16">
         <Writeup
           className="items-center text-center"
@@ -42,7 +44,7 @@ function Articles1({ articles, children }: Props) {
                 className="bg-card rounded-lg object-contain transition-opacity group-hover:opacity-75"
                 {...image}
               />
-              <Heading as="h3">{title}</Heading>
+              <h3 className="text-md">{title}</h3>
             </Link>
           ))}
         </Grid>

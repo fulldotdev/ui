@@ -11,6 +11,7 @@ import {
   SiYoutube,
 } from '@icons-pack/react-simple-icons'
 import * as React from 'react'
+import { v4 as uuidv4 } from 'uuid'
 
 interface Props extends React.ComponentProps<'div'> {
   socials?: string[]
@@ -22,9 +23,9 @@ function Socials({ className, socials, ...props }: Props) {
       className={cn('socials inline-flex gap-0.5', className)}
       {...props}
     >
-      {socials.map((social, index) => (
+      {socials.map((social) => (
         <Button
-          key={index}
+          key={uuidv4()}
           variant="ghost"
           size="icon"
           asChild

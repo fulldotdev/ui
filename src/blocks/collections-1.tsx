@@ -2,7 +2,6 @@ import { Buttons } from '@/components/buttons'
 import { Column } from '@/components/column'
 import { Container } from '@/components/container'
 import { Grid } from '@/components/grid'
-import { Heading } from '@/components/heading'
 import { Image } from '@/components/image'
 import { Link } from '@/components/link'
 import { Section } from '@/components/section'
@@ -52,7 +51,7 @@ function Collections1({ align, title, description, children, buttons, collection
                 className="aspect-square rounded-lg transition-opacity group-hover:opacity-75"
                 {...image}
               />
-              <Heading as="h3">{title}</Heading>
+              <h3 className="font-medium">{title}</h3>
             </Link>
           ))}
         </Grid>

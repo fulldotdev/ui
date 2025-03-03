@@ -1,7 +1,6 @@
 import { Column } from '@/components/column'
 import { Container } from '@/components/container'
 import { Grid } from '@/components/grid'
-import { Heading } from '@/components/heading'
 import { Image } from '@/components/image'
 import { Link } from '@/components/link'
 import { Price } from '@/components/price'
@@ -94,12 +93,7 @@ function Collection1({ align = 'start', title, description, products, children }
                   className="bg-card aspect-square rounded-md object-contain transition-opacity group-hover:opacity-75 bg-muted p-4 ring-1 ring-muted"
                   {...image}
                 />
-                <Heading
-                  className="text-sm mt-5 mb-1"
-                  as="h3"
-                >
-                  {title}
-                </Heading>
+                <h3 className="text-sm mt-5 mb-1">{title}</h3>
                 <Price
                   className="text-sm text-muted-foreground"
                   {...price}

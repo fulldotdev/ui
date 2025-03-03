@@ -3,8 +3,8 @@ import * as React from 'react'
 
 interface Props extends React.ComponentProps<'div'> {}
 
-function Prose({ className, ...props }: Props) {
-  return hasChildren(props.children) ? (
+function Prose({ children, className, ...props }: Props) {
+  return hasChildren(children) ? (
     <div
       className={cn(
         'prose',
@@ -23,7 +23,9 @@ function Prose({ className, ...props }: Props) {
         className
       )}
       {...props}
-    />
+    >
+      {children}
+    </div>
   ) : null
 }
 

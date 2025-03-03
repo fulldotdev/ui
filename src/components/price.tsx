@@ -18,21 +18,19 @@ function Price({ className, currency = 'EUR', amount, compare, unit, badge, ...p
     }).format(number)
   }
 
-  return (
-    amount && (
-      <div
-        className={cn('price flex items-center gap-2.5', className)}
-        {...props}
-      >
-        <span>{formatPrice(amount)}</span>
-        {unit ? <span className="text-muted-foreground text-sm">{unit ? ` / ${unit}` : ''}</span> : null}
-        {compare ? <span className="text-muted-foreground text-sm line-through">{formatPrice(compare)}</span> : null}
-        {compare && badge ? (
-          <Badge className="absolute top-2 left-2">{`-${Math.round(((compare - (amount || 0)) / compare) * 100)}%`}</Badge>
-        ) : null}
-      </div>
-    )
-  )
+  return amount ? (
+    <div
+      className={cn('price flex items-center gap-2.5', className)}
+      {...props}
+    >
+      <span>{formatPrice(amount)}</span>
+      {unit ? <span className="text-muted-foreground text-sm">{unit ? ` / ${unit}` : ''}</span> : null}
+      {compare ? <span className="text-muted-foreground text-sm line-through">{formatPrice(compare)}</span> : null}
+      {compare && badge ? (
+        <Badge className="absolute top-2 left-2">{`-${Math.round(((compare - (amount || 0)) / compare) * 100)}%`}</Badge>
+      ) : null}
+    </div>
+  ) : null
 }
 
 export { Price }

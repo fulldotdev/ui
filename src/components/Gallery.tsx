@@ -8,16 +8,14 @@ import {
 } from '@/components/ui/carousel'
 import { cn } from '@/lib/utils'
 import { useEffect, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
+import { Image } from './image'
 
-interface Props {
-  className?: string
-  images?: {
-    src?: string
-    alt?: string
-  }[]
+interface Props extends React.ComponentProps<'div'> {
+  images?: React.ComponentProps<typeof Image>[]
 }
 
-function Gallery({ images, className }: Props) {
+function Gallery({ images, className, ...props }: Props) {
   const [emblaMainApi, setEmblaMainApi] = useState<CarouselApi>()
   const [emblaThumbnailApi, setEmblaThumbnailApi] = useState<CarouselApi>()
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -49,21 +47,23 @@ function Gallery({ images, className }: Props) {
 
   return (
     images && (
-      <div className={cn('w-full flex flex-col bg-muted', className)}>
+      <div
+        className={cn('w-full flex flex-col bg-muted', className)}
+        {...props}
+      >
         <CarouselRoot
           className="relative"
           setApi={setEmblaMainApi}
         >
           <CarouselContent className="ml-0 mr-4 mt-4">
-            {images.map((image, index) => (
+            {images.map((image) => (
               <CarouselItem
-                key={index}
                 className="pl-4"
+                key={uuidv4()}
               >
-                <img
+                <Image
                   className="rounded-md"
-                  src={image.src}
-                  alt={image.alt}
+                  {...image}
                 />
               </CarouselItem>
             ))}
@@ -76,17 +76,15 @@ function Gallery({ images, className }: Props) {
           <CarouselContent className="flex ml-2 mr-4">
             {images.map((image, index) => (
               <CarouselItem
-                key={index}
                 className="basis-1/5 pl-2"
+                key={uuidv4()}
               >
-                <img
-                  className={cn(
-                    'cursor-pointer rounded-sm ring-1 my-4',
-                    index === selectedIndex ? 'ring-ring' : 'ring-transparent'
-                  )}
+                <Image
+                  className={cn('cursor-pointer rounded-sm ring-1 my-4', {
+                    'ring-ring': index === selectedIndex,
+                  })}
                   onClick={() => onThumbClick(index)}
-                  src={image.src}
-                  alt={image.alt}
+                  {...image}
                 />
               </CarouselItem>
             ))}

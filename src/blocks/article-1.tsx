@@ -1,16 +1,13 @@
 import { Container } from '@/components/container'
-import { Heading } from '@/components/heading'
 import { Image } from '@/components/image'
-import { Paragraph } from '@/components/paragraph'
 import { Prose } from '@/components/prose'
 import { Section } from '@/components/section'
 import * as React from 'react'
 
-interface Props {
+interface Props extends React.ComponentProps<typeof Section> {
   title?: string
   description?: string
   image?: React.ComponentProps<typeof Image>
-  children?: React.ReactNode
 }
 
 function Article1({ title, description, image, children }: Props) {
@@ -18,8 +15,8 @@ function Article1({ title, description, image, children }: Props) {
     <Section>
       <Container className="flex flex-col">
         <Prose>
-          <Heading as="h1">{title}</Heading>
-          <Paragraph>{description}</Paragraph>
+          {title ? <h1>{title}</h1> : null}
+          {description ? <p>{description}</p> : null}
           <Image
             className="rounded-lg"
             {...image}
