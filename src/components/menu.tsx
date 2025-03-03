@@ -1,4 +1,3 @@
-import { Heading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { cn } from '@/lib/utils'
 import * as React from 'react'
@@ -18,7 +17,7 @@ function Menu({ heading, links, className, ...props }: Props) {
       className={cn('menu text-foreground flex flex-col items-start gap-2', className)}
       {...props}
     >
-      <Heading as="h6">{heading}</Heading>
+      <h6>{heading}</h6>
       <menu className="flex w-full flex-col gap-2">
         {links?.map(({ text, href }) => (
           <Link
