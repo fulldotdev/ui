@@ -27,6 +27,7 @@ function Faqs1({ level, size, align, title, description, buttons, faqs, children
     >
       <Container
         className="gap-8"
+        size="sm"
         align={align}
       >
         <Writeup
@@ -44,7 +45,7 @@ function Faqs1({ level, size, align, title, description, buttons, faqs, children
           buttons={buttons}
         />
         <Accordion
-          className="w-full max-w-xl mt-8 first:mt-0"
+          className="mt-8 first:mt-0"
           type="single"
           collapsible
           items={faqs}

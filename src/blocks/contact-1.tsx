@@ -25,10 +25,10 @@ function Contact1({ level, size, align, title, description, channels, form, chil
     >
       <Container
         className="gap-8"
+        size="sm"
         align={align}
       >
         <Writeup
-          className="items-center text-center"
           level={level}
           size={size}
           align={align}

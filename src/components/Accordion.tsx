@@ -18,7 +18,7 @@ type Props = React.ComponentProps<typeof AccordionRoot> & {
 function Accordion({ items, className, ...props }: Props) {
   return items ? (
     <AccordionRoot
-      className={cn('accordion w-full max-w-xl', className)}
+      className={cn('accordion w-full max-w-2xl', className)}
       {...props}
     >
       {items?.map((item, index) => (

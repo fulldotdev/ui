@@ -24,7 +24,7 @@ function Writeup({
     <div
       className={cn(
         'writeup',
-        'text-foreground flex w-full max-w-screen-md flex-col gap-4',
+        'text-foreground flex w-full max-w-2xl flex-col gap-4',
         'headings:scroll-mt-20 headings:text-pretty headings:font-semibold headings:tracking-tight headings:text-foreground',
         'p:max-w-[85%] p:text-pretty p:leading-[1.75]',
         'lead:leading-[1.75]',

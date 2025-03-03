@@ -32,7 +32,7 @@ function Form({ fields, submit, className, ...props }: Props) {
   return fields ? (
     <FormRoot {...form}>
       <form
-        className={cn('w-full flex flex-col gap-6 max-w-xl', className)}
+        className={cn('w-full flex flex-col gap-6 max-w-2xl', className)}
         {...props}
       >
         {fields?.map(

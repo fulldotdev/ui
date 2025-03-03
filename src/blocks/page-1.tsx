@@ -10,7 +10,7 @@ function Page1({ className, children, ...props }: React.ComponentProps<typeof Se
       className={cn('page page-1', className)}
       {...props}
     >
-      <Container className="flex flex-col">
+      <Container size="sm">
         <Prose>{children}</Prose>
       </Container>
     </Section>

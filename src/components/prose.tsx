@@ -8,7 +8,7 @@ function Prose({ children, className, ...props }: Props) {
     <div
       className={cn(
         'prose',
-        'flex-flex-col text-foreground mx-auto w-full max-w-screen-sm',
+        'flex-flex-col text-foreground mx-auto w-full max-w-2xl',
         'child:mt-9 child:first:mt-0',
         'headings:scroll-mt-20 headings:text-pretty headings:font-semibold headings:tracking-tight',
         'h1:text-4xl h1:font-extrabold lg:h1:text-5xl',

@@ -26,7 +26,10 @@ function Contact2({ level, size, align, title, description, channels, form, chil
       {...props}
     >
       <Container>
-        <Split align={align}>
+        <Split
+          className="gap-x-0"
+          align={align}
+        >
           <Column className="gap-8">
             <Writeup
               level={level}
