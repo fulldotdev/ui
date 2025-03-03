@@ -79,7 +79,7 @@ const ProductsQuery = `#graphql
 
 export function shopifyProductsLoader(): Loader {
   return {
-    name: 'shopify-products',
+    name: 'shopify-products-loader',
     load: async ({ store, logger, parseData, generateDigest }: LoaderContext): Promise<void> => {
       logger.info('Loading Shopify products')
       store.clear()

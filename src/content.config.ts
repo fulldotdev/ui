@@ -1,5 +1,5 @@
-import { shopifyCollectionsLoader } from '@/loaders/shopify-collections'
-import { shopifyProductsLoader } from '@/loaders/shopify-products'
+import { shopifyCollectionsLoader } from '@/loaders/shopify-collections-loader'
+import { shopifyProductsLoader } from '@/loaders/shopify-products-loader'
 import { articleSchema } from '@/schemas/content/article'
 import { pageSchema } from '@/schemas/content/page'
 import { personSchema } from '@/schemas/content/person'

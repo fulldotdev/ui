@@ -34,7 +34,7 @@ const CollectionsQuery = `#graphql
 
 export function shopifyCollectionsLoader(): Loader {
   return {
-    name: 'shopify-collections',
+    name: 'shopify-collections-loader',
     load: async ({ store, logger, parseData, generateDigest }: LoaderContext): Promise<void> => {
       logger.info('Loading Shopify collections')
       store.clear()
