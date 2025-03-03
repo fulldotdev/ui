@@ -49,6 +49,7 @@ export function shopifyCollectionsLoader(): Loader {
         const data = await parseData({
           id: collection.handle,
           data: {
+            type: 'collection',
             id: collection.id,
             title: collection.title,
             image: {

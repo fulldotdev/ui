@@ -4,12 +4,13 @@ import { cn } from '@/lib/utils'
 import * as React from 'react'
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
+  align?: 'start' | 'center' | 'end'
   size?: React.ComponentProps<typeof Button>['size']
   buttons?: ({ text?: string; href?: string } & React.ComponentProps<typeof Button>)[]
   reverse?: boolean
 }
 
-function Buttons({ size, reverse = false, className, buttons, ...rest }: Props) {
+function Buttons({ align, size, reverse = false, className, buttons, ...rest }: Props) {
   const getButtonVariant = (index: number) => {
     if (reverse) {
       const length = buttons?.length || 0
@@ -24,7 +25,15 @@ function Buttons({ size, reverse = false, className, buttons, ...rest }: Props) 
 
   return (
     <Box
-      className={cn('buttons inline-flex flex-wrap gap-2', className)}
+      className={cn(
+        'buttons inline-flex flex-wrap gap-2',
+        {
+          'justify-start': align === 'start',
+          'justify-center': align === 'center',
+          'justify-end': align === 'end',
+        },
+        className
+      )}
       {...rest}
     >
       {buttons?.map(({ text, href, ...button }, i) => (

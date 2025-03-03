@@ -1,4 +1,3 @@
-import { Box } from '@/components/box'
 import { Buttons } from '@/components/buttons'
 import { Container } from '@/components/container'
 import { Grid } from '@/components/grid'
@@ -12,6 +11,10 @@ import * as React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 interface Props {
+  align?: 'start' | 'center' | 'end'
+  title?: React.ComponentProps<typeof Writeup>['title']
+  description?: React.ComponentProps<typeof Writeup>['description']
+  children?: React.ComponentProps<typeof Writeup>['children']
   buttons?: React.ComponentProps<typeof Buttons>['buttons']
   products?: {
     href?: string
@@ -19,24 +22,19 @@ interface Props {
     images?: React.ComponentProps<typeof Image>[]
     price?: React.ComponentProps<typeof Price>
   }[]
-  children?: React.ReactNode
 }
 
-function Products1({ buttons, products, children }: Props) {
+function Products1({ align = 'center', title, description, children, buttons, products }: Props) {
   return (
     <Section className="products products-1">
-      <Container className="flex flex-col items-center gap-16">
-        <Box className="flex flex-col items-center gap-8">
-          <Writeup className="flex w-full items-center text-center justify-between">{children}</Writeup>
-          <Buttons
-            className="max-lg:hidden"
-            buttons={buttons}
-          />
-        </Box>
-        <Grid
-          length={products?.length}
-          className="gap-x-4 gap-4-8"
-        >
+      <Container align={align}>
+        <Writeup
+          align={align}
+          title={title}
+          description={description}
+          children={children}
+        />
+        <Grid>
           {products?.map(({ href, title, images, price }) => (
             <Link
               className="group flex flex-col"
@@ -61,7 +59,7 @@ function Products1({ buttons, products, children }: Props) {
           ))}
         </Grid>
         <Buttons
-          className="hidden"
+          className="max-lg:hidden"
           buttons={buttons}
         />
       </Container>

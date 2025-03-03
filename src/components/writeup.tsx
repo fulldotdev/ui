@@ -4,9 +4,20 @@ import React from 'react'
 
 interface WriteupProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: 'sm' | 'default' | 'lg' | 'xl'
+  align?: 'start' | 'center' | 'end'
+  title?: string
+  description?: string
 }
 
-function Writeup({ size = 'default', className, children, ...props }: WriteupProps) {
+function Writeup({
+  size = 'default',
+  align = 'start',
+  title,
+  description,
+  className,
+  children,
+  ...props
+}: WriteupProps) {
   console.log(className)
   return (
     <Box
@@ -23,10 +34,17 @@ function Writeup({ size = 'default', className, children, ...props }: WriteupPro
           'headings:text-4xl md:headings:text-5xl gap-6 text-lg': size === 'lg',
           'headings:text-5xl md:headings:text-6xl gap-6 text-lg md:text-xl': size === 'xl',
         },
+        {
+          'items-start text-left': align === 'start',
+          'items-center text-center': align === 'center',
+          'items-end text-right': align === 'end',
+        },
         className
       )}
       {...props}
     >
+      {title && <h1>{title}</h1>}
+      {description && <p>{description}</p>}
       {children}
     </Box>
   )

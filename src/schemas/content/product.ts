@@ -10,6 +10,7 @@ export const productSchema = z
     type: z.literal('product').default('product'),
     title: z.string(),
     description: z.string(),
+    image: imageSchema,
     images: imageSchema.array(),
     price: priceSchema,
     collections: reference('collections').array(),

@@ -1,5 +1,5 @@
-import { Box } from '@/components/box'
 import { Buttons } from '@/components/buttons'
+import { Column } from '@/components/column'
 import { Container } from '@/components/container'
 import { Image } from '@/components/image'
 import { Section } from '@/components/section'
@@ -7,28 +7,32 @@ import { Writeup } from '@/components/writeup'
 import * as React from 'react'
 
 interface Props {
+  align?: 'start' | 'center' | 'end'
+  title?: React.ComponentProps<typeof Writeup>['title']
+  description?: React.ComponentProps<typeof Writeup>['description']
+  children?: React.ComponentProps<typeof Writeup>['children']
   buttons?: React.ComponentProps<typeof Buttons>['buttons']
   image?: React.ComponentProps<typeof Image>
-  children?: React.ReactNode
 }
 
-function Hero1({ buttons, image, children }: Props) {
+function Hero1({ align = 'center', title, description, buttons, image, children }: Props) {
   return (
     <Section className="hero hero-1">
-      <Container className="flex flex-col items-center gap-16">
-        <Box className="flex flex-col items-center gap-8">
+      <Container align={align}>
+        <Column align={align}>
           <Writeup
-            className="items-center text-center"
+            align={align}
+            title={title}
+            description={description}
+            children={children}
             size="xl"
-          >
-            {children}
-          </Writeup>
-          <Buttons
-            className="justify-center"
-            size="lg"
-            buttons={buttons}
           />
-        </Box>
+          <Buttons
+            align={align}
+            buttons={buttons}
+            size="lg"
+          />
+        </Column>
         <Image
           className="rounded-lg"
           {...image}

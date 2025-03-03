@@ -1,32 +1,39 @@
-import { Box } from '@/components/box'
 import { Buttons } from '@/components/buttons'
+import { Column } from '@/components/column'
 import { Container } from '@/components/container'
+import { Grid } from '@/components/grid'
 import { Image } from '@/components/image'
 import { Section } from '@/components/section'
-import { Split } from '@/components/split'
 import { Writeup } from '@/components/writeup'
 import * as React from 'react'
 
 interface Props {
+  align?: 'start' | 'center' | 'end'
+  title?: React.ComponentProps<typeof Writeup>['title']
+  description?: React.ComponentProps<typeof Writeup>['description']
+  children?: React.ComponentProps<typeof Writeup>['children']
   buttons?: React.ComponentProps<typeof Buttons>['buttons']
   image?: React.ComponentProps<typeof Image>
-  children?: React.ReactNode
 }
 
-function Content1({ buttons, image, children }: Props) {
+function Content1({ align = 'center', title, description, children, buttons, image }: Props) {
   return (
     <Section className="content content-1">
       <Container>
-        <Split className="items-center">
-          <Box className="flex flex-col gap-8">
-            <Writeup>{children}</Writeup>
+        <Grid align={align}>
+          <Column>
+            <Writeup
+              title={title}
+              description={description}
+              children={children}
+            />
             <Buttons buttons={buttons} />
-          </Box>
+          </Column>
           <Image
             className="rounded-lg"
             {...image}
           />
-        </Split>
+        </Grid>
       </Container>
     </Section>
   )

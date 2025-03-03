@@ -1,11 +1,7 @@
-import { imageSchema } from '@/schemas/components/image'
-import { priceSchema } from '@/schemas/components/price'
-import { sectionSchema } from '@/schemas/components/section'
-import { seoSchema } from '@/schemas/misc/seo'
+import { productSchema } from '@/schemas/content/product'
 import type { Product } from '@shopify/hydrogen/storefront-api-types'
 import { createStorefrontApiClient } from '@shopify/storefront-api-client'
 import type { Loader, LoaderContext } from 'astro/loaders'
-import { reference } from 'astro:content'
 import { z } from 'astro:schema'
 import config from '../data/config.json'
 
@@ -80,26 +76,6 @@ const ProductsQuery = `#graphql
     }
   }
 `
-
-const productSchema = z
-  .object({
-    type: z.literal('product').default('product'),
-    title: z.string(),
-    description: z.string(),
-    images: imageSchema.array(),
-    price: priceSchema,
-    collections: reference('collections').array(),
-    options: z
-      .object({
-        name: z.string(),
-        values: z.string().array(),
-      })
-      .array(),
-    sections: sectionSchema.array(),
-    seo: seoSchema,
-  })
-  .partial()
-  .strict()
 
 export function shopifyProductsLoader(): Loader {
   return {

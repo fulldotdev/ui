@@ -5,6 +5,7 @@ import { Collection1 } from '@/blocks/collection-1'
 import { Collections1 } from '@/blocks/collections-1'
 import { Contact1 } from '@/blocks/contact-1'
 import { Contact2 } from '@/blocks/contact-2'
+import { Content1 } from '@/blocks/content-1'
 import { Cta1 } from '@/blocks/cta-1'
 import { Faqs1 } from '@/blocks/faqs-1'
 import { Faqs2 } from '@/blocks/faqs-2'
@@ -23,6 +24,7 @@ import { getCollection, getEntries } from 'astro:content'
 import { marked } from 'marked'
 
 interface Props {
+  entryId?: string
   type?: string
   variant?: number
   content?: string
@@ -36,6 +38,7 @@ interface Props {
 }
 
 let {
+  entryId,
   type,
   variant = 1,
   content,
@@ -54,8 +57,19 @@ const articleEntries = articles ? await getEntries(articles) : await getCollecti
 const productEntries = products ? await getEntries(products) : await getCollection('products')
 const projectEntries = projects ? await getEntries(projects) : await getCollection('projects')
 const personEntries = persons ? await getEntries(persons) : await getCollection('persons')
-const collectionEntries = collections ? await getEntries(collections) : await getCollection('collections')
 const reviewEntries = reviews ? await getEntries(reviews) : await getCollection('reviews')
+const collectionEntries = collections ? await getEntries(collections) : await getCollection('collections')
+
+const productInCollectionEntries = productEntries?.filter((product) =>
+  product.data.collections?.find((c) => {
+    if (typeof c === 'string') return false
+    if ('id' in c) return c.id === entryId
+    if ('slug' in c) return c.slug === entryId
+    return false
+  })
+)
+
+console.log({ productEntries, productInCollectionEntries })
 
 const mapEntries = (
   entries:
@@ -69,6 +83,7 @@ const mapEntries = (
 ) =>
   entries.map(({ collection, id, data }) => ({
     href: getHref(collection, id),
+    image: 'images' in data ? data.images?.[0] : undefined,
     ...data,
   }))
 
@@ -98,7 +113,11 @@ const markdownHtml = marked(content || '')
 
 {
   type === 'collection' && variant === 1 && (
-    <Collection1 {...rest}>
+    <Collection1
+      client:load
+      products={mapEntries(productInCollectionEntries)}
+      {...rest}
+    >
       <Fragment set:html={markdownHtml} />
       <slot />
     </Collection1>
@@ -132,6 +151,15 @@ const markdownHtml = marked(content || '')
       <Fragment set:html={markdownHtml} />
       <slot />
     </Contact2>
+  )
+}
+
+{
+  type === 'content' && variant === 1 && (
+    <Content1 {...rest}>
+      <Fragment set:html={markdownHtml} />
+      <slot />
+    </Content1>
   )
 }
 

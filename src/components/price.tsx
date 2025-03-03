@@ -7,9 +7,10 @@ interface Props {
   compare?: number
   currency?: string
   unit?: string
+  badge?: boolean
 }
 
-function Price({ amount, compare, unit, currency = 'EUR', className }: Props) {
+function Price({ amount, compare, unit, currency = 'EUR', className, badge }: Props) {
   function formatPrice(number: number): string {
     if (number === null || number === undefined) return ''
     return new Intl.NumberFormat('nl-NL', {
@@ -24,7 +25,7 @@ function Price({ amount, compare, unit, currency = 'EUR', className }: Props) {
         <span>{formatPrice(amount)}</span>
         {unit ? <span className="text-muted-foreground text-sm">{unit ? ` / ${unit}` : ''}</span> : null}
         {compare ? <span className="text-muted-foreground text-sm line-through">{formatPrice(compare)}</span> : null}
-        {compare ? (
+        {compare && badge ? (
           <Badge className="absolute top-2 left-2">{`-${Math.round(((compare - (amount || 0)) / compare) * 100)}%`}</Badge>
         ) : null}
       </div>

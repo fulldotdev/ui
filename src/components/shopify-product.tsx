@@ -1,6 +1,6 @@
 import { buttonVariants } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { cartTotalQuantity } from '@/stores/cart'
+import { cartTotalQuantity } from '@/stores/shopify'
 import {
   AddToCartButton,
   CartProvider,
