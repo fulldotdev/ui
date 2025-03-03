@@ -1,18 +1,19 @@
+import { Abstract } from '@/components/abstract'
 import { Buttons } from '@/components/buttons'
-import { Column } from '@/components/column'
 import { Container } from '@/components/container'
-import { Heading } from '@/components/heading'
 import { Masonry } from '@/components/masonry'
-import { Paragraph } from '@/components/paragraph'
 import { Rating } from '@/components/rating'
 import { Section } from '@/components/section'
 import { Card } from '@/components/ui/card'
 import { Writeup } from '@/components/writeup'
+import { cn } from '@/lib/utils'
 import * as React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
-interface Props {
-  align?: 'start' | 'center' | 'end'
+interface Props extends React.ComponentProps<typeof Section> {
+  level?: React.ComponentProps<typeof Writeup>['level']
+  size?: React.ComponentProps<typeof Writeup>['size']
+  align?: React.ComponentProps<typeof Writeup>['align']
   title?: React.ComponentProps<typeof Writeup>['title']
   description?: React.ComponentProps<typeof Writeup>['description']
   buttons?: React.ComponentProps<typeof Buttons>['buttons']
@@ -21,35 +22,41 @@ interface Props {
     title?: string
     description?: string
   }[]
-  children?: React.ReactNode
 }
 
-function Reviews1({ align = 'center', title, description, buttons, reviews, children }: Props) {
+function Reviews1({ level, size, align, title, description, buttons, reviews, children, className, ...props }: Props) {
   return (
-    <Section className="reviews reviews-1">
+    <Section
+      className={cn('reviews reviews-1', className)}
+      {...props}
+    >
       <Container
         align={align}
-        className="flex flex-col items-center gap-12"
+        className="gap-8"
       >
-        <Column align={align}>
-          <Writeup
-            title={title}
-            description={description}
-            align={align}
-          >
-            {children}
-          </Writeup>
-          <Buttons buttons={buttons} />
-        </Column>
-        <Masonry length={reviews?.length}>
+        <Writeup
+          level={level}
+          size={size}
+          align={align}
+          title={title}
+          description={description}
+        >
+          {children}
+        </Writeup>
+        <Buttons buttons={buttons} />
+        <Masonry className="mt-8 first:mt-0 gap-y-8 gap-x-4">
           {reviews?.map(({ rating, title, description }) => (
             <Card
               className="flex flex-col"
               key={uuidv4()}
             >
               <Rating score={rating} />
-              <Heading as="h3">{title}</Heading>
-              <Paragraph>{description}</Paragraph>
+              <Abstract
+                level={level}
+                size={size}
+                title={title}
+                description={description}
+              />
             </Card>
           ))}
         </Masonry>

@@ -21,6 +21,7 @@ import * as React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 interface Props {
+  size?: 'default' | 'lg' | 'xl'
   align?: 'start' | 'center' | 'end'
   title?: React.ComponentProps<typeof Writeup>['title']
   description?: React.ComponentProps<typeof Writeup>['description']
@@ -33,7 +34,7 @@ interface Props {
   children?: React.ReactNode
 }
 
-function Collection1({ align = 'start', title, description, products, children }: Props) {
+function Collection1({ size = 'default', align = 'start', title, description, products, children }: Props) {
   const [sortedProducts, setSortedProducts] = React.useState(products)
   const [sort, setSort] = React.useState('aanbevolen')
 
@@ -53,10 +54,10 @@ function Collection1({ align = 'start', title, description, products, children }
     <Section className="collection collection-1">
       <Container align={align}>
         <Writeup
+          size={size}
           align={align}
           title={title}
           description={description}
-          size="sm"
         />
         <Column className="gap-0">
           <Row className="py-4 border-t">

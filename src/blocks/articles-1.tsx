@@ -9,6 +9,11 @@ import * as React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 interface Props extends React.ComponentProps<typeof Section> {
+  level?: React.ComponentProps<typeof Writeup>['level']
+  size?: React.ComponentProps<typeof Writeup>['size']
+  align?: React.ComponentProps<typeof Writeup>['align']
+  title?: React.ComponentProps<typeof Writeup>['title']
+  description?: React.ComponentProps<typeof Writeup>['description']
   articles?: {
     href?: React.ComponentProps<typeof Link>['href']
     title?: string
@@ -16,23 +21,28 @@ interface Props extends React.ComponentProps<typeof Section> {
   }[]
 }
 
-function Articles1({ articles, className, children, ...props }: Props) {
+function Articles1({ level, size, align, title, description, articles, className, children, ...props }: Props) {
   return (
     <Section
       className={cn('articles articles-1', className)}
       {...props}
     >
-      <Container className="flex flex-col items-center gap-16">
+      <Container
+        className="gap-8"
+        align={align}
+      >
         <Writeup
-          className="items-center text-center"
-          size="lg"
+          level={level}
+          size={size}
+          align={align}
+          title={title}
+          description={description}
         >
           {children}
         </Writeup>
         <Grid
-          length={articles?.length}
           size="lg"
-          className="gap-x-8"
+          className="mt-8 first:mt-0 gap-y-8 gap-x-4"
         >
           {articles?.map(({ href, title, image }) => (
             <Link

@@ -1,12 +1,12 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/button'
 import { cn } from '@/lib/utils'
 import * as React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 interface Props extends React.ComponentProps<'div'> {
+  size?: React.ComponentProps<typeof Button>['size']
   align?: 'default' | 'start' | 'center' | 'end'
   reverse?: boolean
-  size?: React.ComponentProps<typeof Button>['size']
   buttons?: ({ text?: string; href?: string } & React.ComponentProps<typeof Button>)[]
 }
 
@@ -43,9 +43,10 @@ function Buttons({ align = 'default', reverse = false, size, buttons, className,
             variant={getButtonVariant(i)}
             size={size}
             asChild
+            href={href}
             {...button}
           >
-            <a href={href}>{text}</a>
+            {text}
           </Button>
         ) : null
       )}

@@ -9,7 +9,7 @@ function Column({ align = 'default', className, children, ...props }: Props) {
   return hasChildren(children) ? (
     <div
       className={cn(
-        'column flex flex-col gap-8',
+        'column flex flex-col',
         {
           'items-start': align === 'start',
           'items-center': align === 'center',

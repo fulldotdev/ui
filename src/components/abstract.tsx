@@ -1,15 +1,15 @@
 import { cn, hasChildren } from '@/lib/utils'
 import React from 'react'
 
-interface WriteupProps extends React.ComponentProps<'div'> {
+interface Props extends React.ComponentProps<'div'> {
   level?: 1 | 2 | 3
-  size?: 'xs' | 'sm' | 'default' | 'lg' | 'xl' | '2xl'
+  size?: '2xs' | 'xs' | 'sm' | 'default' | 'lg' | 'xl' | '2xl'
   align?: 'start' | 'center' | 'end'
   title?: string
   description?: string
 }
 
-function Writeup({
+function Abstract({
   level = 2,
   size = 'default',
   align = 'start',
@@ -18,24 +18,20 @@ function Writeup({
   children,
   className,
   ...props
-}: WriteupProps) {
-  const Heading = `h${level}` as 'h1' | 'h2' | 'h3'
+}: Props) {
+  const Heading = `h${level + 1}` as 'h2' | 'h3' | 'h4'
   return title || description || hasChildren(children) ? (
     <div
       className={cn(
-        'writeup',
-        'text-foreground flex w-full max-w-screen-md flex-col gap-4',
+        'abstract',
+        'text-foreground flex w-full max-w-screen-md flex-col',
         'headings:scroll-mt-20 headings:text-pretty headings:font-semibold headings:tracking-tight headings:text-foreground',
         'p:max-w-[85%] p:text-pretty p:leading-[1.75]',
-        'lead:leading-[1.75]',
-        'list:my-6 list:ml-4 ul:list-disc list:li:mt-2',
         {
-          'headings:text-2xl text-sm': size === 'xs',
-          'headings:text-3xl text-sm': size === 'sm',
-          'headings:text-4xl text-base': size === 'default',
-          'headings:text-4xl md:headings:text-5xl text-lg': size === 'lg',
-          'headings:text-5xl md:headings:text-6xl text-lg md:text-xl': size === 'xl',
-          'headings:text-5xl text-lg md:headings:text-7xl md:text-xl': size === '2xl',
+          'text-sm gap-1': size === 'xs',
+          'headings:text-lg text-sm gap-2': size === 'sm',
+          'headings:text-xl text-base gap-3': size === 'default',
+          'headings:text-2xl text-lg gap-4': size === 'lg',
         },
         {
           'items-start text-left': align === 'start',
@@ -53,4 +49,4 @@ function Writeup({
   ) : null
 }
 
-export { Writeup }
+export { Abstract }

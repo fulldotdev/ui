@@ -1,19 +1,20 @@
 import { cn, hasChildren } from '@/lib/utils'
 import React from 'react'
 
-interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
+interface ContainerProps extends React.ComponentProps<'div'> {
   align?: 'start' | 'center' | 'end'
 }
 
-function Container({ align, className, children, ...props }: ContainerProps) {
+function Container({ className, children, ...props }: ContainerProps) {
   return hasChildren(children) ? (
     <div
       className={cn(
         'mx-auto w-full max-w-screen-xl px-4 lg:px-8',
         {
-          'flex flex-col gap-16 items-start': align === 'start',
-          'flex flex-col gap-16 items-center': align === 'center',
-          'flex flex-col gap-16 items-end': align === 'end',
+          'flex flex-col': 'align' in props,
+          'items-start': props.align === 'start',
+          'items-center': props.align === 'center',
+          'items-end': props.align === 'end',
         },
         className
       )}

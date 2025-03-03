@@ -1,13 +1,15 @@
 import { Accordion } from '@/components/accordion'
 import { Buttons } from '@/components/buttons'
-import { Column } from '@/components/column'
 import { Container } from '@/components/container'
 import { Section } from '@/components/section'
 import { Writeup } from '@/components/writeup'
+import { cn } from '@/lib/utils'
 import * as React from 'react'
 
 interface Props extends React.ComponentProps<typeof Section> {
-  align?: 'start' | 'center' | 'end'
+  level?: React.ComponentProps<typeof Writeup>['level']
+  size?: React.ComponentProps<typeof Writeup>['size']
+  align?: React.ComponentProps<typeof Writeup>['align']
   title?: React.ComponentProps<typeof Writeup>['title']
   description?: React.ComponentProps<typeof Writeup>['description']
   buttons?: React.ComponentProps<typeof Buttons>['buttons']
@@ -17,27 +19,34 @@ interface Props extends React.ComponentProps<typeof Section> {
   }[]
 }
 
-function Faqs1({ align = 'center', title, description, buttons, faqs, children }: Props) {
+function Faqs1({ level, size, align, title, description, buttons, faqs, children, className, ...props }: Props) {
   return (
-    <Section className="faqs faqs-1">
-      <Container align={align}>
-        <Column align={align}>
-          <Writeup
-            className="items-center text-center"
-            title={title}
-            description={description}
-          >
-            {children}
-          </Writeup>
-          <Buttons
-            buttons={buttons}
-            align={align}
-          />
-        </Column>
+    <Section
+      className={cn('faqs faqs-1', className)}
+      {...props}
+    >
+      <Container
+        className="gap-8"
+        align={align}
+      >
+        <Writeup
+          level={level}
+          size={size}
+          align={align}
+          title={title}
+          description={description}
+        >
+          {children}
+        </Writeup>
+        <Buttons
+          size={size}
+          align={align}
+          buttons={buttons}
+        />
         <Accordion
+          className="w-full max-w-xl mt-8 first:mt-0"
           type="single"
           collapsible
-          className="w-full max-w-xl"
           items={faqs}
         />
       </Container>

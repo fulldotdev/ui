@@ -1,9 +1,9 @@
-import { Channels } from '@/components/channels'
+import { Buttons } from '@/components/buttons'
 import { Column } from '@/components/column'
 import { Container } from '@/components/container'
-import { Form } from '@/components/form'
+import { Grid } from '@/components/grid'
+import { Image } from '@/components/image'
 import { Section } from '@/components/section'
-import { Split } from '@/components/split'
 import { Writeup } from '@/components/writeup'
 import { cn } from '@/lib/utils'
 import * as React from 'react'
@@ -14,36 +14,42 @@ interface Props extends React.ComponentProps<typeof Section> {
   align?: React.ComponentProps<typeof Writeup>['align']
   title?: React.ComponentProps<typeof Writeup>['title']
   description?: React.ComponentProps<typeof Writeup>['description']
-  channels?: React.ComponentProps<typeof Channels>
-  form?: React.ComponentProps<typeof Form>
-  children?: React.ReactNode
+  buttons?: React.ComponentProps<typeof Buttons>['buttons']
+  image?: React.ComponentProps<typeof Image>
 }
-
-function Contact2({ level, size, align, title, description, channels, form, children, className, ...props }: Props) {
+function Content2({ level, size, align, title, description, buttons, image, children, className, ...props }: Props) {
   return (
     <Section
-      className={cn('contact contact-2', className)}
+      className={cn('content content-1', className)}
       {...props}
     >
       <Container>
-        <Split align={align}>
+        <Grid
+          className="gap-16"
+          align={align}
+        >
           <Column className="gap-8">
             <Writeup
               level={level}
               size={size}
-              align={align}
               title={title}
               description={description}
             >
               {children}
             </Writeup>
-            <Channels {...channels} />
+            <Buttons
+              size={size}
+              buttons={buttons}
+            />
           </Column>
-          <Form {...form} />
-        </Split>
+          <Image
+            className="rounded-lg"
+            {...image}
+          />
+        </Grid>
       </Container>
     </Section>
   )
 }
 
-export { Contact2 }
+export { Content2 }

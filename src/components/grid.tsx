@@ -18,23 +18,20 @@ function Grid({
   return hasChildren(children) ? (
     <div
       className={cn(
-        'relative grid gap-x-4 gap-y-8',
+        'relative grid',
         {
-          'sm:grid-cols-2': size === 'default',
-          'md:grid-cols-3': size === 'default' && length === 3,
-          'lg:grid-cols-4': size === 'default' && length === 4,
-          'md:grid-cols-3 xl:grid-cols-5': size === 'default' && length === 5,
-          'lg:grid-cols-3': size === 'default' && length === 6,
-          'md:grid-cols-3 lg:grid-cols-4': size === 'default' && length > 6,
+          'md:grid-cols-2': size === 'default' && length >= 2,
+          'sm:grid-cols-2 md:grid-cols-3': size === 'default' && length === 3,
+          'sm:grid-cols-2 lg:grid-cols-4': size === 'default' && length === 4,
+          'sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5': size === 'default' && length === 5,
+          'sm:grid-cols-2 lg:grid-cols-3': size === 'default' && length === 6,
+          'sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4': size === 'default' && length >= 6,
         },
         {
-          'md:grid-cols-2': size === 'lg',
+          'lg:grid-cols-2': size === 'lg' && length >= 2,
           'md:grid-cols-3': size === 'lg' && length === 3,
-          'xl:grid-cols-4': size === 'lg' && length === 4,
-          'lg:grid-cols-3': size === 'lg' && length > 4,
-        },
-        {
-          'lg:grid-cols-2 grid gap-8 xl:gap-x-16': size === 'xl',
+          'md:grid-cols-2 xl:grid-cols-4': size === 'lg' && length === 4,
+          'md:grid-cols-2 lg:grid-cols-3': size === 'lg' && length >= 5,
         },
         {
           'items-start': align === 'start',

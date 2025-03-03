@@ -1,7 +1,7 @@
+import { Abstract } from '@/components/abstract'
 import { Buttons } from '@/components/buttons'
 import { Container } from '@/components/container'
 import { Grid } from '@/components/grid'
-import { Heading } from '@/components/heading'
 import { Image } from '@/components/image'
 import { Link } from '@/components/link'
 import { Price } from '@/components/price'
@@ -11,7 +11,9 @@ import * as React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 interface Props {
-  align?: 'start' | 'center' | 'end'
+  level?: React.ComponentProps<typeof Writeup>['level']
+  size?: React.ComponentProps<typeof Writeup>['size']
+  align?: React.ComponentProps<typeof Writeup>['align']
   title?: React.ComponentProps<typeof Writeup>['title']
   description?: React.ComponentProps<typeof Writeup>['description']
   children?: React.ComponentProps<typeof Writeup>['children']
@@ -24,20 +26,31 @@ interface Props {
   }[]
 }
 
-function Products1({ align = 'center', title, description, children, buttons, products }: Props) {
+function Products1({ level, size, align, title, description, children, buttons, products }: Props) {
   return (
     <Section className="products products-1">
-      <Container align={align}>
+      <Container
+        className="gap-8"
+        align={align}
+      >
         <Writeup
+          level={level}
+          size={size}
           align={align}
           title={title}
           description={description}
           children={children}
         />
-        <Grid>
+        <Buttons
+          className="max-sm:hidden"
+          size={size}
+          align={align}
+          buttons={buttons}
+        />
+        <Grid className="mt-8 first:mt-0 gap-y-8 gap-x-4">
           {products?.map(({ href, title, images, price }) => (
             <Link
-              className="group flex flex-col"
+              className="group flex flex-col gap-4"
               key={uuidv4()}
               href={href}
             >
@@ -45,21 +58,21 @@ function Products1({ align = 'center', title, description, children, buttons, pr
                 className="bg-card aspect-square rounded-md object-contain transition-opacity group-hover:opacity-75 bg-muted p-4 ring-1 ring-muted"
                 {...images?.[0]}
               />
-              <Heading
-                as="h3"
-                className="text-sm mt-5 mb-1"
+              <Abstract
+                size="xs"
+                level={level}
+                title={title}
               >
-                {title}
-              </Heading>
-              <Price
-                className="text-sm text-muted-foreground"
-                {...price}
-              />
+                <Price
+                  className="text-sm text-muted-foreground"
+                  {...price}
+                />
+              </Abstract>
             </Link>
           ))}
         </Grid>
         <Buttons
-          className="max-lg:hidden"
+          className="sm:hidden"
           buttons={buttons}
         />
       </Container>

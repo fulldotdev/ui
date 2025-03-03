@@ -1,18 +1,19 @@
+import { Abstract } from '@/components/abstract'
 import { Buttons } from '@/components/buttons'
-import { Column } from '@/components/column'
 import { Container } from '@/components/container'
 import { Grid } from '@/components/grid'
-import { Heading } from '@/components/heading'
 import { Image } from '@/components/image'
 import { Link } from '@/components/link'
-import { Paragraph } from '@/components/paragraph'
 import { Section } from '@/components/section'
 import { Writeup } from '@/components/writeup'
+import { cn } from '@/lib/utils'
 import * as React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
-interface Props {
-  align?: 'start' | 'center' | 'end'
+interface Props extends React.ComponentProps<typeof Section> {
+  level?: React.ComponentProps<typeof Writeup>['level']
+  size?: React.ComponentProps<typeof Writeup>['size']
+  align?: React.ComponentProps<typeof Writeup>['align']
   title?: React.ComponentProps<typeof Writeup>['title']
   description?: React.ComponentProps<typeof Writeup>['description']
   buttons?: React.ComponentProps<typeof Buttons>['buttons']
@@ -25,21 +26,27 @@ interface Props {
   children?: React.ReactNode
 }
 
-function Pages1({ align = 'center', title, description, buttons, pages, children }: Props) {
+function Pages1({ level, size, align, title, description, buttons, pages, children, className, ...props }: Props) {
   return (
-    <Section className="pages pages-1">
-      <Container className="flex flex-col items-center gap-16">
-        <Column align={align}>
-          <Writeup
-            title={title}
-            description={description}
-            align={align}
-          >
-            {children}
-          </Writeup>
-          <Buttons buttons={buttons} />
-        </Column>
-        <Grid>
+    <Section
+      className={cn('pages pages-1', className)}
+      {...props}
+    >
+      <Container
+        className="gap-8"
+        align={align}
+      >
+        <Writeup
+          level={level}
+          size={size}
+          align={align}
+          title={title}
+          description={description}
+        >
+          {children}
+        </Writeup>
+        <Buttons buttons={buttons} />
+        <Grid className="mt-8 first:mt-0 gap-y-8 gap-x-4">
           {pages?.map(({ href, title, description, image }) => (
             <Link
               key={uuidv4()}
@@ -50,8 +57,12 @@ function Pages1({ align = 'center', title, description, buttons, pages, children
                 className="rounded-lg transition-opacity group-hover:opacity-75"
                 {...image}
               />
-              <Heading as="h3">{title}</Heading>
-              <Paragraph>{description}</Paragraph>
+              <Abstract
+                level={level}
+                size={size}
+                title={title}
+                description={description}
+              />
             </Link>
           ))}
         </Grid>

@@ -1,5 +1,4 @@
 import { Buttons } from '@/components/buttons'
-import { Column } from '@/components/column'
 import { Container } from '@/components/container'
 import { Grid } from '@/components/grid'
 import { Image } from '@/components/image'
@@ -9,11 +8,12 @@ import { Writeup } from '@/components/writeup'
 import * as React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
-interface Props {
-  align?: 'start' | 'center' | 'end'
+interface Props extends React.ComponentProps<typeof Section> {
+  level?: React.ComponentProps<typeof Writeup>['level']
+  size?: React.ComponentProps<typeof Writeup>['size']
+  align?: React.ComponentProps<typeof Writeup>['align']
   title?: React.ComponentProps<typeof Writeup>['title']
   description?: React.ComponentProps<typeof Writeup>['description']
-  children?: React.ComponentProps<typeof Writeup>['children']
   buttons?: React.ComponentProps<typeof Buttons>['buttons']
   collections?: {
     href?: React.ComponentProps<typeof Link>['href']
@@ -22,25 +22,28 @@ interface Props {
   }[]
 }
 
-function Collections1({ align, title, description, children, buttons, collections }: Props) {
+function Collections1({ level, size, align, title, description, buttons, collections, children }: Props) {
   return (
     <Section className="collections collections-1">
-      <Container align={align}>
-        <Column align={align}>
-          <Writeup
-            align={align}
-            title={title}
-            description={description}
-          >
-            {children}
-          </Writeup>
-          <Buttons
-            className="max-lg:hidden"
-            align={align}
-            buttons={buttons}
-          />
-        </Column>
-        <Grid>
+      <Container
+        className="gap-8"
+        align={align}
+      >
+        <Writeup
+          level={level}
+          size={size}
+          align={align}
+          title={title}
+          description={description}
+        >
+          {children}
+        </Writeup>
+        <Buttons
+          className="max-lg:hidden"
+          align={align}
+          buttons={buttons}
+        />
+        <Grid className="mt-8 first:mt-0">
           {collections?.map(({ href, title, image }) => (
             <Link
               className="group flex flex-col gap-4"
