@@ -16,7 +16,7 @@ const files = [
   'src/loaders',
   'src/pages',
   'src/schemas',
-  'src/styles/global.css',
+  'src/styles/globals.css',
   'src/content.config.ts',
   'stackbit',
   '.gitignore',
