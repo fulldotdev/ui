@@ -1,8 +1,9 @@
-import { Container } from '@/components/container'
-import { Image } from '@/components/image'
-import { Prose } from '@/components/prose'
-import { Section } from '@/components/section'
-import * as React from 'react'
+import * as React from "react"
+
+import { Container } from "@/components/container"
+import { Image } from "@/components/image"
+import { Prose } from "@/components/prose"
+import { Section } from "@/components/section"
 
 interface Props extends React.ComponentProps<typeof Section> {
   title?: string
@@ -17,10 +18,7 @@ function Article1({ title, description, image, children }: Props) {
         <Prose>
           {title ? <h1>{title}</h1> : null}
           {description ? <p>{description}</p> : null}
-          <Image
-            className="rounded-lg"
-            {...image}
-          />
+          <Image className="rounded-lg" {...image} />
           {children}
         </Prose>
       </Container>

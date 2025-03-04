@@ -1,4 +1,4 @@
-import type { AstroIntegration } from 'astro'
+import type { AstroIntegration } from "astro"
 
 interface Config {
   colors: {
@@ -18,10 +18,10 @@ interface Config {
 
 export default function fulldevIntegration(config?: Config): AstroIntegration {
   return {
-    name: '/integration',
+    name: "/integration",
     hooks: {
-      'astro:config:setup': async ({ updateConfig, injectScript }) => {
-        injectScript('page-ssr', `import "@/styles/theme.css";`)
+      "astro:config:setup": async ({ updateConfig, injectScript }) => {
+        injectScript("page-ssr", `import "@/styles/theme.css";`)
       },
     },
   }

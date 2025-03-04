@@ -1,22 +1,23 @@
-import { Abstract } from '@/components/abstract'
-import { Buttons } from '@/components/buttons'
-import { Container } from '@/components/container'
-import { Grid } from '@/components/grid'
-import { Image } from '@/components/image'
-import { Link } from '@/components/link'
-import { Section } from '@/components/section'
-import { Writeup } from '@/components/writeup'
-import { cn } from '@/lib/utils'
-import * as React from 'react'
-import { v4 as uuidv4 } from 'uuid'
+import * as React from "react"
+import { v4 as uuidv4 } from "uuid"
+
+import { cn } from "@/lib/utils"
+import { Abstract } from "@/components/abstract"
+import { Buttons } from "@/components/buttons"
+import { Container } from "@/components/container"
+import { Grid } from "@/components/grid"
+import { Image } from "@/components/image"
+import { Link } from "@/components/link"
+import { Section } from "@/components/section"
+import { Writeup } from "@/components/writeup"
 
 interface Props extends React.ComponentProps<typeof Section> {
-  level?: React.ComponentProps<typeof Writeup>['level']
-  size?: React.ComponentProps<typeof Writeup>['size']
-  align?: React.ComponentProps<typeof Writeup>['align']
-  title?: React.ComponentProps<typeof Writeup>['title']
-  description?: React.ComponentProps<typeof Writeup>['description']
-  buttons?: React.ComponentProps<typeof Buttons>['buttons']
+  level?: React.ComponentProps<typeof Writeup>["level"]
+  size?: React.ComponentProps<typeof Writeup>["size"]
+  align?: React.ComponentProps<typeof Writeup>["align"]
+  title?: React.ComponentProps<typeof Writeup>["title"]
+  description?: React.ComponentProps<typeof Writeup>["description"]
+  buttons?: React.ComponentProps<typeof Buttons>["buttons"]
   pages?: {
     href?: string
     title?: string
@@ -26,16 +27,21 @@ interface Props extends React.ComponentProps<typeof Section> {
   children?: React.ReactNode
 }
 
-function Pages1({ level, size, align, title, description, buttons, pages, children, className, ...props }: Props) {
+function Pages1({
+  level,
+  size,
+  align,
+  title,
+  description,
+  buttons,
+  pages,
+  children,
+  className,
+  ...props
+}: Props) {
   return (
-    <Section
-      className={cn('pages pages-1', className)}
-      {...props}
-    >
-      <Container
-        className="gap-8"
-        align={align}
-      >
+    <Section className={cn("pages pages-1", className)} {...props}>
+      <Container className="gap-8" align={align}>
         <Writeup
           level={level}
           size={size}
@@ -46,7 +52,7 @@ function Pages1({ level, size, align, title, description, buttons, pages, childr
           {children}
         </Writeup>
         <Buttons buttons={buttons} />
-        <Grid className="mt-8 first:mt-0 gap-y-8 gap-x-4">
+        <Grid className="mt-8 gap-x-4 gap-y-8 first:mt-0">
           {pages?.map(({ href, title, description, image }) => (
             <Link
               key={uuidv4()}

@@ -6,17 +6,17 @@ writeup: |
     Neem contact op voor reparaties en vragen. Bezoek onze winkel op Hogeweg 26, Amsterdam.
   </p>
 channels:
-  - text: '1234566'
-    href: '#'
+  - text: "1234566"
+    href: "#"
     icon: phone
-  - text: 'lorem@ipsum.com'
-    href: '#'
+  - text: "lorem@ipsum.com"
+    href: "#"
     icon: mail
   - text: Lorem ipsum, dolor sit, amet
-    href: '#'
+    href: "#"
     icon: map-pin
 form:
-  action: '#'
+  action: "#"
   fields:
     - type: text
       label: Name

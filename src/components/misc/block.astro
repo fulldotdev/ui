@@ -1,35 +1,37 @@
 ---
-import { Article1 } from '@/blocks/article-1'
-import { Articles1 } from '@/blocks/articles-1'
-import { Collection1 } from '@/blocks/collection-1'
-import { Collections1 } from '@/blocks/collections-1'
-import { Contact1 } from '@/blocks/contact-1'
-import { Contact2 } from '@/blocks/contact-2'
-import { Content1 } from '@/blocks/content-1'
-import { Content2 } from '@/blocks/content-2'
-import { Cta1 } from '@/blocks/cta-1'
-import { Faqs1 } from '@/blocks/faqs-1'
-import { Faqs2 } from '@/blocks/faqs-2'
-import { Features1 } from '@/blocks/features-1'
-import { Hero1 } from '@/blocks/hero-1'
-import { Hero2 } from '@/blocks/hero-2'
-import { Hero3 } from '@/blocks/hero-3'
-import { Page1 } from '@/blocks/page-1'
-import { Pages1 } from '@/blocks/pages-1'
-import { Persons1 } from '@/blocks/persons-1'
-import { Product1 } from '@/blocks/product-1'
-import { Products1 } from '@/blocks/products-1'
-import { Projects1 } from '@/blocks/projects-1'
-import { Reviews1 } from '@/blocks/reviews-1'
-import { getHref } from '@/lib/get-href'
-import { getCollection, getEntries } from 'astro:content'
-import { marked } from 'marked'
+import { Article1 } from "@/blocks/article-1"
+import { Articles1 } from "@/blocks/articles-1"
+import { Collection1 } from "@/blocks/collection-1"
+import { Collections1 } from "@/blocks/collections-1"
+import { Contact1 } from "@/blocks/contact-1"
+import { Contact2 } from "@/blocks/contact-2"
+import { Content1 } from "@/blocks/content-1"
+import { Content2 } from "@/blocks/content-2"
+import { Cta1 } from "@/blocks/cta-1"
+import { Faqs1 } from "@/blocks/faqs-1"
+import { Faqs2 } from "@/blocks/faqs-2"
+import { Features1 } from "@/blocks/features-1"
+import { Hero1 } from "@/blocks/hero-1"
+import { Hero2 } from "@/blocks/hero-2"
+import { Hero3 } from "@/blocks/hero-3"
+import { Page1 } from "@/blocks/page-1"
+import { Pages1 } from "@/blocks/pages-1"
+import { Persons1 } from "@/blocks/persons-1"
+import { Product1 } from "@/blocks/product-1"
+import { Products1 } from "@/blocks/products-1"
+import { Projects1 } from "@/blocks/projects-1"
+import { Reviews1 } from "@/blocks/reviews-1"
+import { getCollection, getEntries } from "astro:content"
+import { marked } from "marked"
+
+import { getHref } from "@/lib/get-href"
 
 interface Props {
   entryId?: string
   type?: string
   variant?: number
   content?: string
+
   pages?: any[]
   articles?: any[]
   products?: any[]
@@ -54,19 +56,33 @@ let {
   ...rest
 } = Astro.props
 
-const pageEntries = pages ? await getEntries(pages) : await getCollection('pages')
-const articleEntries = articles ? await getEntries(articles) : await getCollection('articles')
-const productEntries = products ? await getEntries(products) : await getCollection('products')
-const projectEntries = projects ? await getEntries(projects) : await getCollection('projects')
-const personEntries = persons ? await getEntries(persons) : await getCollection('persons')
-const reviewEntries = reviews ? await getEntries(reviews) : await getCollection('reviews')
-const collectionEntries = collections ? await getEntries(collections) : await getCollection('collections')
+const pageEntries = pages
+  ? await getEntries(pages)
+  : await getCollection("pages")
+const articleEntries = articles
+  ? await getEntries(articles)
+  : await getCollection("articles")
+const productEntries = products
+  ? await getEntries(products)
+  : await getCollection("products")
+const projectEntries = projects
+  ? await getEntries(projects)
+  : await getCollection("projects")
+const personEntries = persons
+  ? await getEntries(persons)
+  : await getCollection("persons")
+const reviewEntries = reviews
+  ? await getEntries(reviews)
+  : await getCollection("reviews")
+const collectionEntries = collections
+  ? await getEntries(collections)
+  : await getCollection("collections")
 
 const productInCollectionEntries = productEntries?.filter((product) =>
   product.data.collections?.find((c) => {
-    if (typeof c === 'string') return false
-    if ('id' in c) return c.id === entryId
-    if ('slug' in c) return c.slug === entryId
+    if (typeof c === "string") return false
+    if ("id" in c) return c.id === entryId
+    if ("slug" in c) return c.slug === entryId
     return false
   })
 )
@@ -82,18 +98,18 @@ const mapEntries = (
 ) =>
   entries.map(({ collection, id, data }) => ({
     href: getHref(collection, id),
-    image: 'images' in data ? data.images?.[0] : undefined,
+    image: "images" in data ? data.images?.[0] : undefined,
     ...data,
   }))
 
-const markdownHtml = marked(content || '')
+const markdownHtml = marked(content || "")
 
-const slot = await Astro.slots.render('default')
+const slot = await Astro.slots.render("default")
 const hasContent = slot && slot.trim().length > 0
 ---
 
 {
-  type === 'article' && variant === 1 && (
+  type === "article" && variant === 1 && (
     <Article1 {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
@@ -102,11 +118,8 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'articles' && variant === 1 && (
-    <Articles1
-      articles={mapEntries(articleEntries)}
-      {...rest}
-    >
+  type === "articles" && variant === 1 && (
+    <Articles1 articles={mapEntries(articleEntries)} {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
     </Articles1>
@@ -114,7 +127,7 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'collection' && variant === 1 && (
+  type === "collection" && variant === 1 && (
     <Collection1
       client:load
       products={mapEntries(productInCollectionEntries)}
@@ -127,11 +140,8 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'collections' && variant === 1 && (
-    <Collections1
-      collections={mapEntries(collectionEntries)}
-      {...rest}
-    >
+  type === "collections" && variant === 1 && (
+    <Collections1 collections={mapEntries(collectionEntries)} {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
     </Collections1>
@@ -139,7 +149,7 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'contact' && variant === 1 && (
+  type === "contact" && variant === 1 && (
     <Contact1 {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
@@ -148,7 +158,7 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'contact' && variant === 2 && (
+  type === "contact" && variant === 2 && (
     <Contact2 {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
@@ -157,7 +167,7 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'content' && variant === 1 && (
+  type === "content" && variant === 1 && (
     <Content1 {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
@@ -165,7 +175,7 @@ const hasContent = slot && slot.trim().length > 0
   )
 }
 {
-  type === 'content' && variant === 2 && (
+  type === "content" && variant === 2 && (
     <Content2 {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
@@ -173,7 +183,7 @@ const hasContent = slot && slot.trim().length > 0
   )
 }
 {
-  type === 'cta' && variant === 1 && (
+  type === "cta" && variant === 1 && (
     <Cta1 {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
@@ -182,11 +192,8 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'faqs' && variant === 1 && (
-    <Faqs1
-      client:load
-      {...rest}
-    >
+  type === "faqs" && variant === 1 && (
+    <Faqs1 client:load {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
     </Faqs1>
@@ -194,11 +201,8 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'faqs' && variant === 2 && (
-    <Faqs2
-      client:load
-      {...rest}
-    >
+  type === "faqs" && variant === 2 && (
+    <Faqs2 client:load {...rest}>
       <Fragment set:html={markdownHtml} />
       <slot />
     </Faqs2>
@@ -206,7 +210,7 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'features' && variant === 1 && (
+  type === "features" && variant === 1 && (
     <Features1 {...rest}>
       <Fragment set:html={markdownHtml} />
       <slot />
@@ -215,7 +219,7 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'hero' && variant === 1 && (
+  type === "hero" && variant === 1 && (
     <Hero1 {...rest}>
       <Fragment set:html={markdownHtml} />
       <slot />
@@ -224,7 +228,7 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'hero' && variant === 3 && (
+  type === "hero" && variant === 3 && (
     <Hero3 {...rest}>
       <Fragment set:html={markdownHtml} />
       <slot />
@@ -233,7 +237,7 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'hero' && variant === 2 && (
+  type === "hero" && variant === 2 && (
     <Hero2 {...rest}>
       <Fragment set:html={markdownHtml} />
       <slot />
@@ -242,7 +246,7 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'page' && variant === 1 && hasContent && (
+  type === "page" && variant === 1 && hasContent && (
     <Page1 {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
@@ -251,11 +255,8 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'pages' && variant === 1 && (
-    <Pages1
-      pages={mapEntries(pageEntries)}
-      {...rest}
-    >
+  type === "pages" && variant === 1 && (
+    <Pages1 pages={mapEntries(pageEntries)} {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
     </Pages1>
@@ -263,11 +264,8 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'persons' && variant === 1 && (
-    <Persons1
-      persons={mapEntries(personEntries)}
-      {...rest}
-    >
+  type === "persons" && variant === 1 && (
+    <Persons1 persons={mapEntries(personEntries)} {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
     </Persons1>
@@ -275,11 +273,8 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'product' && variant === 1 && (
-    <Product1
-      client:load
-      {...rest}
-    >
+  type === "product" && variant === 1 && (
+    <Product1 client:load {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
     </Product1>
@@ -287,11 +282,8 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'products' && variant === 1 && (
-    <Products1
-      products={mapEntries(productEntries)}
-      {...rest}
-    >
+  type === "products" && variant === 1 && (
+    <Products1 products={mapEntries(productEntries)} {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
     </Products1>
@@ -299,11 +291,8 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'projects' && variant === 1 && (
-    <Projects1
-      projects={mapEntries(projectEntries)}
-      {...rest}
-    >
+  type === "projects" && variant === 1 && (
+    <Projects1 projects={mapEntries(projectEntries)} {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
     </Projects1>
@@ -311,11 +300,8 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
-  type === 'reviews' && variant === 1 && (
-    <Reviews1
-      reviews={mapEntries(reviewEntries)}
-      {...rest}
-    >
+  type === "reviews" && variant === 1 && (
+    <Reviews1 reviews={mapEntries(reviewEntries)} {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
     </Reviews1>

@@ -1,9 +1,10 @@
-import { Link } from '@/components/link'
-import { cn } from '@/lib/utils'
-import * as React from 'react'
-import { v4 as uuidv4 } from 'uuid'
+import * as React from "react"
+import { v4 as uuidv4 } from "uuid"
 
-interface Props extends React.ComponentProps<'div'> {
+import { cn } from "@/lib/utils"
+import { Link } from "@/components/link"
+
+interface Props extends React.ComponentProps<"div"> {
   heading?: string
   links?: {
     text?: string
@@ -14,7 +15,10 @@ interface Props extends React.ComponentProps<'div'> {
 function Menu({ heading, links, className, ...props }: Props) {
   return heading && links?.length ? (
     <div
-      className={cn('menu text-foreground flex flex-col items-start gap-2', className)}
+      className={cn(
+        "menu text-foreground flex flex-col items-start gap-2",
+        className
+      )}
       {...props}
     >
       <h6>{heading}</h6>

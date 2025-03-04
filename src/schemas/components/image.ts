@@ -1,4 +1,4 @@
-import { z } from 'astro:content'
+import { z } from "astro:content"
 
 export const imageSchema = z
   .object({

@@ -1,4 +1,4 @@
-import { reference, z, type AnyEntryMap } from 'astro:content'
+import { reference, z, type AnyEntryMap } from "astro:content"
 
 // TODO: preprocess instead
 export const pathSchema = <C extends keyof AnyEntryMap>(collection: C) =>
@@ -6,8 +6,8 @@ export const pathSchema = <C extends keyof AnyEntryMap>(collection: C) =>
     .string()
     .transform((value) => {
       const fullpath = value?.split(`${collection}/`).pop()
-      const slug = fullpath?.split('.').shift()
-      const noIndexEnding = slug?.replace('/index', '')
+      const slug = fullpath?.split(".").shift()
+      const noIndexEnding = slug?.replace("/index", "")
       return noIndexEnding
     })
     .pipe(reference(collection))

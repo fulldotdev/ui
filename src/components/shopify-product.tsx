@@ -1,6 +1,5 @@
-import { buttonVariants } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { cartTotalQuantity } from '@/stores/shopify'
+import React from "react"
+import { cartTotalQuantity } from "@/stores/shopify"
 import {
   AddToCartButton,
   CartProvider,
@@ -9,13 +8,21 @@ import {
   ShopifyProvider,
   useCart,
   useProduct,
-} from '@shopify/hydrogen-react'
+} from "@shopify/hydrogen-react"
+import type { Product } from "@shopify/hydrogen-react/storefront-api-types"
 
-import type { Product } from '@shopify/hydrogen-react/storefront-api-types'
-import React from 'react'
+import { buttonVariants } from "@/components/ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 interface Props {
-  id: Product['id']
-  variants: Product['variants']
+  id: Product["id"]
+  variants: Product["variants"]
 }
 
 function ShopifyProduct(product: Props) {
@@ -53,17 +60,16 @@ function ShopifyProductContent() {
             key={option?.name}
             name={option?.name}
             defaultValue={option?.values?.[0]}
-            onValueChange={(value) => setSelectedOption(option?.name ?? '', value)}
+            onValueChange={(value) =>
+              setSelectedOption(option?.name ?? "", value)
+            }
           >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {option?.values?.map((value) => (
-                <SelectItem
-                  key={value}
-                  value={value ?? ''}
-                >
+                <SelectItem key={value} value={value ?? ""}>
                   {value}
                 </SelectItem>
               ))}
@@ -72,13 +78,10 @@ function ShopifyProductContent() {
         ))}
       </div>
       {product && (
-        <ProductPrice
-          data={product}
-          variantId={selectedVariant?.id}
-        />
+        <ProductPrice data={product} variantId={selectedVariant?.id} />
       )}
       <AddToCartButton
-        className={buttonVariants({ size: 'lg' })}
+        className={buttonVariants({ size: "lg" })}
         variantId={selectedVariant?.id}
         quantity={1}
       >

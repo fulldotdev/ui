@@ -1,20 +1,21 @@
-import { WriteupField } from '../components/Writeup'
-import { type ObjectModel } from '@stackbit/types'
+import { type ObjectModel } from "@stackbit/types"
+
+import { WriteupField } from "../components/Writeup"
 
 export const FeaturesModel: ObjectModel = {
-  name: 'Features',
-  type: 'object',
+  name: "Features",
+  type: "object",
   fields: [
     WriteupField,
     {
-      name: 'features',
-      type: 'list',
+      name: "features",
+      type: "list",
       items: {
-        type: 'object',
+        type: "object",
         fields: [
-          { name: 'icon', type: 'string' },
-          { name: 'title', type: 'string' },
-          { name: 'description', type: 'string' },
+          { name: "icon", type: "string" },
+          { name: "title", type: "string" },
+          { name: "description", type: "string" },
         ],
       },
     },

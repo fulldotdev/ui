@@ -1,22 +1,23 @@
-import { Abstract } from '@/components/abstract'
-import { Buttons } from '@/components/buttons'
-import { Column } from '@/components/column'
-import { Container } from '@/components/container'
-import { Grid } from '@/components/grid'
-import { Image } from '@/components/image'
-import { Section } from '@/components/section'
-import { Writeup } from '@/components/writeup'
-import { cn } from '@/lib/utils'
-import * as React from 'react'
-import { v4 as uuidv4 } from 'uuid'
+import * as React from "react"
+import { v4 as uuidv4 } from "uuid"
+
+import { cn } from "@/lib/utils"
+import { Abstract } from "@/components/abstract"
+import { Buttons } from "@/components/buttons"
+import { Column } from "@/components/column"
+import { Container } from "@/components/container"
+import { Grid } from "@/components/grid"
+import { Image } from "@/components/image"
+import { Section } from "@/components/section"
+import { Writeup } from "@/components/writeup"
 
 interface Props extends React.ComponentProps<typeof Section> {
-  level?: React.ComponentProps<typeof Writeup>['level']
-  size?: React.ComponentProps<typeof Writeup>['size']
-  align?: React.ComponentProps<typeof Writeup>['align']
-  title?: React.ComponentProps<typeof Writeup>['title']
-  description?: React.ComponentProps<typeof Writeup>['description']
-  buttons?: React.ComponentProps<typeof Buttons>['buttons']
+  level?: React.ComponentProps<typeof Writeup>["level"]
+  size?: React.ComponentProps<typeof Writeup>["size"]
+  align?: React.ComponentProps<typeof Writeup>["align"]
+  title?: React.ComponentProps<typeof Writeup>["title"]
+  description?: React.ComponentProps<typeof Writeup>["description"]
+  buttons?: React.ComponentProps<typeof Buttons>["buttons"]
   persons?: {
     title?: string
     description?: string
@@ -24,16 +25,21 @@ interface Props extends React.ComponentProps<typeof Section> {
   }[]
 }
 
-function Persons1({ level, size, align, title, description, buttons, persons, children, className, ...props }: Props) {
+function Persons1({
+  level,
+  size,
+  align,
+  title,
+  description,
+  buttons,
+  persons,
+  children,
+  className,
+  ...props
+}: Props) {
   return (
-    <Section
-      className={cn('persons persons-1', className)}
-      {...props}
-    >
-      <Container
-        className="gap-8"
-        align={align}
-      >
+    <Section className={cn("persons persons-1", className)} {...props}>
+      <Container className="gap-8" align={align}>
         <Writeup
           className="items-center text-center"
           level={level}
@@ -44,12 +50,8 @@ function Persons1({ level, size, align, title, description, buttons, persons, ch
         >
           {children}
         </Writeup>
-        <Buttons
-          size={size}
-          align={align}
-          buttons={buttons}
-        />
-        <Grid className="gap-16 mt-8 first:mt-0">
+        <Buttons size={size} align={align} buttons={buttons} />
+        <Grid className="mt-8 gap-16 first:mt-0">
           {persons?.map(({ image, title, description }) => (
             <Column
               className="flex max-w-md flex-col items-center gap-6"

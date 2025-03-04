@@ -1,3 +1,6 @@
+import { useState } from "react"
+
+import { cn } from "@/lib/utils"
 import {
   NavigationMenuContent,
   NavigationMenuItem,
@@ -6,9 +9,7 @@ import {
   NavigationMenu as NavigationMenuRoot,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu'
-import { cn } from '@/lib/utils'
-import { useState } from 'react'
+} from "@/components/ui/navigation-menu"
 
 interface Props {
   className?: string
@@ -41,10 +42,10 @@ function NavigationMenu({ items, className }: Props) {
     items && (
       <NavigationMenuRoot
         onValueChange={handleChange}
-        style={{ '--offset': offset } as React.CSSProperties}
+        style={{ "--offset": offset } as React.CSSProperties}
         className={cn(
-          '[&>div:last-child]:translate-x-[var(--offset)] [&>div:last-child]:transition-transform',
-          offset === undefined ? '[&>div:last-child]:hidden' : '',
+          "[&>div:last-child]:translate-x-[var(--offset)] [&>div:last-child]:transition-transform",
+          offset === undefined ? "[&>div:last-child]:hidden" : "",
           className
         )}
       >
@@ -57,16 +58,16 @@ function NavigationMenu({ items, className }: Props) {
             >
               {item.links ? (
                 <>
-                  <NavigationMenuTrigger className="px-3 py-0 h-9 text-foreground/80 bg-transparent font-normal">
+                  <NavigationMenuTrigger className="text-foreground/80 h-9 bg-transparent px-3 py-0 font-normal">
                     {item.text}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="w-full min-w-48 gap-3 p-3 flex flex-col">
+                    <ul className="flex w-full min-w-48 flex-col gap-3 p-3">
                       {item.links.map((link, index) => (
                         <li key={index}>
                           <NavigationMenuLink
-                            href={link.href ?? ''}
-                            className="text-foreground/80 hover:text-foreground transition-colors font-normal whitespace-nowrap"
+                            href={link.href ?? ""}
+                            className="text-foreground/80 hover:text-foreground font-normal whitespace-nowrap transition-colors"
                           >
                             {link.text}
                           </NavigationMenuLink>
@@ -77,8 +78,8 @@ function NavigationMenu({ items, className }: Props) {
                 </>
               ) : (
                 <NavigationMenuLink
-                  href={item.href ?? ''}
-                  className={`${navigationMenuTriggerStyle()} px-3 py-0 h-9 text-foreground/80 hover:text-foreground bg-transparent transition-colors font-normal`}
+                  href={item.href ?? ""}
+                  className={`${navigationMenuTriggerStyle()} text-foreground/80 hover:text-foreground h-9 bg-transparent px-3 py-0 font-normal transition-colors`}
                 >
                   {item.text}
                 </NavigationMenuLink>

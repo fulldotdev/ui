@@ -1,9 +1,10 @@
-import { type ObjectModel } from '@stackbit/types'
-import { WriteupField } from '../components/Writeup'
+import { type ObjectModel } from "@stackbit/types"
+
+import { WriteupField } from "../components/Writeup"
 
 export const ContactModel: ObjectModel = {
-  name: 'Contact',
-  type: 'object',
+  name: "Contact",
+  type: "object",
   fields: [
     WriteupField,
     // channels: linkSchema.array(),

@@ -1,6 +1,6 @@
-import { type FieldText } from '@stackbit/types'
+import { type FieldText } from "@stackbit/types"
 
 export const DescriptionField: FieldText = {
-  name: 'description',
-  type: 'text',
+  name: "description",
+  type: "text",
 }

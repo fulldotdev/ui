@@ -1,19 +1,20 @@
-import { Image } from '@/components/image'
-import { Link } from '@/components/link'
-import { cn } from '@/lib/utils'
-import * as React from 'react'
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
+import { Image } from "@/components/image"
+import { Link } from "@/components/link"
 
 interface Props extends React.ComponentProps<typeof Link> {
-  src?: React.ComponentProps<typeof Image>['src']
-  alt?: React.ComponentProps<typeof Image>['alt']
+  src?: React.ComponentProps<typeof Image>["src"]
+  alt?: React.ComponentProps<typeof Image>["alt"]
   text?: string
 }
 
-function Logo({ href = '/', src, alt, text, className, ...props }: Props) {
+function Logo({ href = "/", src, alt, text, className, ...props }: Props) {
   return src || text ? (
     <Link
       className={cn(
-        'logo text-foreground flex items-center gap-3 text-base leading-none font-medium whitespace-nowrap',
+        "logo text-foreground flex items-center gap-3 text-base leading-none font-medium whitespace-nowrap",
         className
       )}
       href={href}

@@ -1,21 +1,29 @@
 ---
-import { Banner } from '@/blocks/banner'
-import { Footer } from '@/blocks/footer'
-import { Header } from '@/blocks/header'
-import Block from '@/components/misc/block.astro'
-import Layout from '@/components/misc/layout.astro'
-import settings from '@/data/settings.json'
-import { getHref } from '@/lib/get-href'
-import { getCollection, render } from 'astro:content'
+import { Banner } from "@/blocks/banner"
+import { Footer } from "@/blocks/footer"
+import { Header } from "@/blocks/header"
+import settings from "@/data/settings.json"
+import { getCollection, render } from "astro:content"
+
+import { getHref } from "@/lib/get-href"
+import Block from "@/components/misc/block.astro"
+import Layout from "@/components/misc/layout.astro"
 
 export async function getStaticPaths() {
-  const articles = await getCollection('articles')
-  const collections = await getCollection('collections')
-  const pages = await getCollection('pages')
-  const persons = await getCollection('persons')
-  const products = await getCollection('products')
-  const projects = await getCollection('projects')
-  const entries = [...pages, ...articles, ...collections, ...products, ...projects, ...persons]
+  const articles = await getCollection("articles")
+  const collections = await getCollection("collections")
+  const pages = await getCollection("pages")
+  const persons = await getCollection("persons")
+  const products = await getCollection("products")
+  const projects = await getCollection("projects")
+  const entries = [
+    ...pages,
+    ...articles,
+    ...collections,
+    ...products,
+    ...projects,
+    ...persons,
+  ]
 
   return entries.map((entry) => ({
     params: {
@@ -32,15 +40,21 @@ const {
 } = Astro.props
 const { banner, header, footer, ...restSettings } = settings
 
-const pages = await getCollection('pages')
-const articles = await getCollection('articles')
-const products = await getCollection('products')
-const projects = await getCollection('projects')
-const persons = await getCollection('persons')
-const collections = await getCollection('collections')
+const pages = await getCollection("pages")
+const articles = await getCollection("articles")
+const products = await getCollection("products")
+const projects = await getCollection("projects")
+const persons = await getCollection("persons")
+const collections = await getCollection("collections")
 
 function collectionToLinks(
-  collection: typeof pages | typeof articles | typeof products | typeof projects | typeof persons | typeof collections
+  collection:
+    | typeof pages
+    | typeof articles
+    | typeof products
+    | typeof projects
+    | typeof persons
+    | typeof collections
 ) {
   return collection.map((item) => ({
     text: item.data.title,
@@ -54,47 +68,35 @@ const search = [
     links: collectionToLinks(pages),
   },
   {
-    heading: 'Artikelen',
+    heading: "Artikelen",
     links: collectionToLinks(articles),
   },
   {
-    heading: 'Producten',
+    heading: "Producten",
     links: collectionToLinks(products),
   },
   {
-    heading: 'Collecties',
+    heading: "Collecties",
     links: collectionToLinks(collections),
   },
   {
-    heading: 'Projecten',
+    heading: "Projecten",
     links: collectionToLinks(projects),
   },
   {
-    heading: 'Personen',
+    heading: "Personen",
     links: collectionToLinks(persons),
   },
 ]
 ---
 
-<Layout
-  {...restSettings}
-  {...restData}
-  {...seo}
->
+<Layout {...restSettings} {...restData} {...seo}>
   <Banner>
     {banner}
   </Banner>
-  <Header
-    client:load
-    search={search}
-    {...header}
-  />
+  <Header client:load search={search} {...header} />
   <main>
-    <Block
-      entryId={id}
-      {type}
-      {...restData}
-    >
+    <Block entryId={id} {type} {...restData}>
       <Content />
     </Block>
     {sections?.map((section) => <Block {...section} />)}

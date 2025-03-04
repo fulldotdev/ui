@@ -1,10 +1,10 @@
-import { buttonSchema } from '@/schemas/components/button'
-import { z } from 'astro:content'
+import { buttonSchema } from "@/schemas/components/button"
+import { z } from "astro:content"
 
 export const featuresSchema = z
   .object({
-    size: z.enum(['default', 'lg', 'xl']),
-    align: z.enum(['start', 'center', 'end']),
+    size: z.enum(["default", "lg", "xl"]),
+    align: z.enum(["start", "center", "end"]),
     content: z.string(),
     buttons: buttonSchema.array().optional(),
     features: z

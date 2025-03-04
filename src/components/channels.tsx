@@ -1,8 +1,9 @@
-import { Button } from '@/components/button'
-import { cn } from '@/lib/utils'
-import { Mail, MapPin, Phone } from 'lucide-react'
+import { Mail, MapPin, Phone } from "lucide-react"
 
-interface Props extends React.ComponentProps<'div'> {
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/button"
+
+interface Props extends React.ComponentProps<"div"> {
   phone?: string
   email?: string
   address?: string
@@ -11,23 +12,17 @@ interface Props extends React.ComponentProps<'div'> {
 function Channels({ phone, email, address, className, ...props }: Props) {
   return phone || email || address ? (
     <div
-      className={cn('flex flex-col items-start gap-3', className)}
+      className={cn("flex flex-col items-start gap-3", className)}
       {...props}
     >
       {phone ? (
-        <Button
-          variant="secondary"
-          href={`tel:${phone}`}
-        >
+        <Button variant="secondary" href={`tel:${phone}`}>
           <Phone className="mr-2 h-4 w-4" />
           {phone}
         </Button>
       ) : null}
       {email ? (
-        <Button
-          variant="secondary"
-          href={`mailto:${email}`}
-        >
+        <Button variant="secondary" href={`mailto:${email}`}>
           <Mail className="mr-2 h-4 w-4" />
           {email}
         </Button>

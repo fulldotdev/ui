@@ -1,8 +1,9 @@
-import { cn } from '@/lib/utils'
-import { Star, StarHalf } from 'lucide-react'
-import * as React from 'react'
+import * as React from "react"
+import { Star, StarHalf } from "lucide-react"
 
-interface Props extends React.ComponentProps<'div'> {
+import { cn } from "@/lib/utils"
+
+interface Props extends React.ComponentProps<"div"> {
   score?: number | undefined | null
 }
 
@@ -16,16 +17,10 @@ function Rating({ score, className, ...props }: Props) {
   }
 
   return score ? (
-    <div
-      className={cn('flex gap-1 text-base', className)}
-      {...props}
-    >
+    <div className={cn("flex gap-1 text-base", className)} {...props}>
       {score &&
         [1, 2, 3, 4, 5].map((count) => (
-          <div
-            key={count}
-            className="!text-primary size-[1em]"
-          >
+          <div key={count} className="!text-primary size-[1em]">
             {getIcon(count)}
           </div>
         ))}

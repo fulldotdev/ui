@@ -1,5 +1,5 @@
-import { linkSchema } from '@/schemas/components/link'
-import { z } from 'astro:content'
+import { linkSchema } from "@/schemas/components/link"
+import { z } from "astro:content"
 
 export const menuSchema = z
   .object({

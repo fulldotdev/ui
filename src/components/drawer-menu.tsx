@@ -1,10 +1,17 @@
-import { Button } from '@/components/ui/button'
-import { DrawerContent, Drawer as DrawerRoot, DrawerTrigger } from '@/components/ui/drawer'
-import { cn } from '@/lib/utils'
-import { Menu } from 'lucide-react'
-import { v4 as uuidv4 } from 'uuid'
+import { Menu } from "lucide-react"
+import { v4 as uuidv4 } from "uuid"
 
-interface Props extends React.ComponentProps<typeof Button>, React.ComponentProps<typeof DrawerTrigger> {
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+  DrawerContent,
+  Drawer as DrawerRoot,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+
+interface Props
+  extends React.ComponentProps<typeof Button>,
+    React.ComponentProps<typeof DrawerTrigger> {
   items?: {
     text?: string
     href?: string
@@ -20,7 +27,7 @@ function DrawerMenu({ items, className, ...props }: Props) {
     <DrawerRoot>
       <DrawerTrigger asChild>
         <Button
-          className={cn('', className)}
+          className={cn("", className)}
           variant="ghost"
           size="icon"
           {...props}
@@ -33,7 +40,7 @@ function DrawerMenu({ items, className, ...props }: Props) {
           {items?.map(({ text, href, links }) =>
             text || links ? (
               <div
-                className={`flex flex-col gap-3 ${links ? 'mt-3' : ''}`}
+                className={`flex flex-col gap-3 ${links ? "mt-3" : ""}`}
                 key={uuidv4()}
               >
                 <a

@@ -1,4 +1,7 @@
-import { Button } from '@/components/ui/button'
+import { useForm } from "react-hook-form"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import {
   FormControl,
   FormDescription,
@@ -7,16 +10,14 @@ import {
   FormLabel,
   FormMessage,
   Form as FormRoot,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { cn } from '@/lib/utils'
-import { useForm } from 'react-hook-form'
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 
 interface Props extends React.FormHTMLAttributes<HTMLFormElement> {
   submit?: string
   fields?: {
-    type?: 'text' | 'number' | 'email' | 'checkbox' | 'select' | 'textarea'
+    type?: "text" | "number" | "email" | "checkbox" | "select" | "textarea"
     name?: string
     label?: string
     placeholder?: string
@@ -32,7 +33,7 @@ function Form({ fields, submit, className, ...props }: Props) {
   return fields ? (
     <FormRoot {...form}>
       <form
-        className={cn('w-full flex flex-col gap-6 max-w-2xl', className)}
+        className={cn("flex w-full max-w-2xl flex-col gap-6", className)}
         {...props}
       >
         {fields?.map(
@@ -41,13 +42,13 @@ function Form({ fields, submit, className, ...props }: Props) {
               <FormField
                 key={index}
                 control={form.control}
-                name={name || label || ''}
+                name={name || label || ""}
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormLabel>{label}</FormLabel>
                     <FormControl>
                       {(() => {
-                        if (type === 'textarea') {
+                        if (type === "textarea") {
                           return (
                             <Textarea
                               required={required}
@@ -74,10 +75,7 @@ function Form({ fields, submit, className, ...props }: Props) {
               />
             )
         )}
-        <Button
-          className="flex"
-          type="submit"
-        >
+        <Button className="flex" type="submit">
           {submit}
         </Button>
       </form>

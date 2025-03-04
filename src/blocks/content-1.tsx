@@ -1,31 +1,37 @@
-import { Buttons } from '@/components/buttons'
-import { Container } from '@/components/container'
-import { Image } from '@/components/image'
-import { Section } from '@/components/section'
-import { Writeup } from '@/components/writeup'
-import { cn } from '@/lib/utils'
-import * as React from 'react'
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
+import { Buttons } from "@/components/buttons"
+import { Container } from "@/components/container"
+import { Image } from "@/components/image"
+import { Section } from "@/components/section"
+import { Writeup } from "@/components/writeup"
 
 interface Props extends React.ComponentProps<typeof Section> {
-  level?: React.ComponentProps<typeof Writeup>['level']
-  size?: React.ComponentProps<typeof Writeup>['size']
-  align?: React.ComponentProps<typeof Writeup>['align']
-  title?: React.ComponentProps<typeof Writeup>['title']
-  description?: React.ComponentProps<typeof Writeup>['description']
-  buttons?: React.ComponentProps<typeof Buttons>['buttons']
+  level?: React.ComponentProps<typeof Writeup>["level"]
+  size?: React.ComponentProps<typeof Writeup>["size"]
+  align?: React.ComponentProps<typeof Writeup>["align"]
+  title?: React.ComponentProps<typeof Writeup>["title"]
+  description?: React.ComponentProps<typeof Writeup>["description"]
+  buttons?: React.ComponentProps<typeof Buttons>["buttons"]
   image?: React.ComponentProps<typeof Image>
 }
 
-function Content1({ level, size, align, title, description, buttons, image, className, children, ...props }: Props) {
+function Content1({
+  level,
+  size,
+  align,
+  title,
+  description,
+  buttons,
+  image,
+  className,
+  children,
+  ...props
+}: Props) {
   return (
-    <Section
-      className={cn('hero hero-1', className)}
-      {...props}
-    >
-      <Container
-        className="gap-8"
-        align={align}
-      >
+    <Section className={cn("hero hero-1", className)} {...props}>
+      <Container className="gap-8" align={align}>
         <Writeup
           level={level}
           size={size}
@@ -35,15 +41,8 @@ function Content1({ level, size, align, title, description, buttons, image, clas
         >
           {children}
         </Writeup>
-        <Buttons
-          size={size}
-          align={align}
-          buttons={buttons}
-        />
-        <Image
-          className="rounded-lg mt-8 first:mt-0"
-          {...image}
-        />
+        <Buttons size={size} align={align} buttons={buttons} />
+        <Image className="mt-8 rounded-lg first:mt-0" {...image} />
       </Container>
     </Section>
   )

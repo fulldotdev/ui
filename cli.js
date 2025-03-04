@@ -1,41 +1,42 @@
 #! /usr/bin/env node
-import fs from 'fs-extra'
-import path from 'path'
-import { fileURLToPath } from 'url'
-import yargs from 'yargs'
-import { hideBin } from 'yargs/helpers'
+import path from "path"
+import { fileURLToPath } from "url"
+import fs from "fs-extra"
+import yargs from "yargs"
+import { hideBin } from "yargs/helpers"
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const files = [
-  '.vscode',
-  'netlify',
-  'src/stores',
-  'src/blocks',
-  'src/components',
-  'src/lib',
-  'src/loaders',
-  'src/pages',
-  'src/schemas',
-  'src/styles/globals.css',
-  'src/content.config.ts',
-  'stackbit',
-  '.gitignore',
-  '.prettierignore',
-  '.prettierrc.yaml',
-  'astro.config.ts',
-  'components.json',
-  'netlify.toml',
-  'renovate.json',
-  'stackbit.config.ts',
-  'tailwind.config.js',
-  'tsconfig.json',
+  "netlify",
+  "src/stores",
+  "src/blocks",
+  "src/components",
+  "src/lib",
+  "src/loaders",
+  "src/pages",
+  "src/schemas",
+  "src/styles/globals.css",
+  "src/content.config.ts",
+  "stackbit",
+  ".gitignore",
+  ".prettierignore",
+  "astro.config.ts",
+  "components.json",
+  "netlify.toml",
+  "prettier.config.cjs",
+  "renovate.json",
+  "stackbit.config.ts",
+  "tsconfig.json",
 ]
 
 function pullFiles(files) {
   files.forEach((file) => {
     const sourcePath = path.join(__dirname, file)
     const targetPath = path.join(process.cwd(), file)
-    const targetDir = fs.statSync(sourcePath).isDirectory() ? targetPath : path.dirname(targetPath)
+    const targetDir = fs.statSync(sourcePath).isDirectory()
+      ? targetPath
+      : path.dirname(targetPath)
 
     fs.ensureDirSync(targetDir)
     fs.copySync(sourcePath, targetPath)
@@ -60,7 +61,8 @@ function pushFiles(files) {
     }
 
     const targetPath = path.join(__dirname, file)
-    const isDirectory = fs.existsSync(sourcePath) && fs.statSync(sourcePath).isDirectory()
+    const isDirectory =
+      fs.existsSync(sourcePath) && fs.statSync(sourcePath).isDirectory()
     const targetDir = isDirectory ? targetPath : path.dirname(targetPath)
 
     fs.ensureDirSync(targetDir)
@@ -70,7 +72,7 @@ function pushFiles(files) {
 }
 
 function addPackageJson() {
-  const packageJson = fs.readJsonSync(path.join(__dirname, 'package.json'))
+  const packageJson = fs.readJsonSync(path.join(__dirname, "package.json"))
   const targetPackage = {
     name: packageJson.name,
     type: packageJson.type,
@@ -78,18 +80,20 @@ function addPackageJson() {
     dependencies: packageJson.dependencies,
     devDependencies: packageJson.devDependencies,
   }
-  fs.writeJsonSync(path.join(process.cwd(), 'package.json'), targetPackage, { spaces: 2 })
+  fs.writeJsonSync(path.join(process.cwd(), "package.json"), targetPackage, {
+    spaces: 2,
+  })
 }
 
 yargs(hideBin(process.argv))
-  .command('pull', 'Add project files', () => {
+  .command("pull", "Add project files", () => {
     pullFiles(files)
     addPackageJson()
   })
-  .command('push', 'Push project files', () => {
+  .command("push", "Push project files", () => {
     pushFiles(files)
   })
-  .command('reset', 'Remove project files', () => {
+  .command("reset", "Remove project files", () => {
     resetFiles(files)
   })
   .demandCommand(1, 'You need to specify "pull" or "push" or "reset"')

@@ -1,5 +1,5 @@
-import { buttonSchema } from '@/schemas/components/button'
-import { z } from 'astro:content'
+import { buttonSchema } from "@/schemas/components/button"
+import { z } from "astro:content"
 
 export const faqsSchema = z
   .object({

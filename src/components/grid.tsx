@@ -1,14 +1,15 @@
-import { cn, hasChildren } from '@/lib/utils'
-import * as React from 'react'
+import * as React from "react"
 
-interface Props extends React.ComponentProps<'div'> {
-  size?: 'sm' | 'default' | 'lg' | 'xl'
-  align?: 'start' | 'center' | 'end'
+import { cn, hasChildren } from "@/lib/utils"
+
+interface Props extends React.ComponentProps<"div"> {
+  size?: "sm" | "default" | "lg" | "xl"
+  align?: "start" | "center" | "end"
   length?: number
 }
 
 function Grid({
-  size = 'default',
+  size = "default",
   align,
   className,
   children,
@@ -18,25 +19,27 @@ function Grid({
   return hasChildren(children) ? (
     <div
       className={cn(
-        'relative grid',
+        "relative grid",
         {
-          'md:grid-cols-2': size === 'default' && length >= 2,
-          'sm:grid-cols-2 md:grid-cols-3': size === 'default' && length === 3,
-          'sm:grid-cols-2 lg:grid-cols-4': size === 'default' && length === 4,
-          'sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5': size === 'default' && length === 5,
-          'sm:grid-cols-2 lg:grid-cols-3': size === 'default' && length === 6,
-          'sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4': size === 'default' && length >= 6,
+          "md:grid-cols-2": size === "default" && length >= 2,
+          "sm:grid-cols-2 md:grid-cols-3": size === "default" && length === 3,
+          "sm:grid-cols-2 lg:grid-cols-4": size === "default" && length === 4,
+          "sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5":
+            size === "default" && length === 5,
+          "sm:grid-cols-2 lg:grid-cols-3": size === "default" && length === 6,
+          "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4":
+            size === "default" && length >= 6,
         },
         {
-          'lg:grid-cols-2': size === 'lg' && length >= 2,
-          'md:grid-cols-3': size === 'lg' && length === 3,
-          'md:grid-cols-2 xl:grid-cols-4': size === 'lg' && length === 4,
-          'md:grid-cols-2 lg:grid-cols-3': size === 'lg' && length >= 5,
+          "lg:grid-cols-2": size === "lg" && length >= 2,
+          "md:grid-cols-3": size === "lg" && length === 3,
+          "md:grid-cols-2 xl:grid-cols-4": size === "lg" && length === 4,
+          "md:grid-cols-2 lg:grid-cols-3": size === "lg" && length >= 5,
         },
         {
-          'items-start': align === 'start',
-          'items-center': align === 'center',
-          'items-end': align === 'end',
+          "items-start": align === "start",
+          "items-center": align === "center",
+          "items-end": align === "end",
         },
         className
       )}

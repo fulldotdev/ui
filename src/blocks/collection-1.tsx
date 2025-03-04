@@ -1,32 +1,33 @@
-import { Button } from '@/components/button'
-import { Column } from '@/components/column'
-import { Container } from '@/components/container'
-import { Grid } from '@/components/grid'
-import { Image } from '@/components/image'
-import { Link } from '@/components/link'
-import { Price } from '@/components/price'
-import { Prose } from '@/components/prose'
-import { Row } from '@/components/row'
-import { Section } from '@/components/section'
+import * as React from "react"
+import { ChevronDown } from "lucide-react"
+import { v4 as uuidv4 } from "uuid"
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Writeup } from '@/components/writeup'
-import { ChevronDown } from 'lucide-react'
-import * as React from 'react'
-import { v4 as uuidv4 } from 'uuid'
+} from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/button"
+import { Column } from "@/components/column"
+import { Container } from "@/components/container"
+import { Grid } from "@/components/grid"
+import { Image } from "@/components/image"
+import { Link } from "@/components/link"
+import { Price } from "@/components/price"
+import { Prose } from "@/components/prose"
+import { Row } from "@/components/row"
+import { Section } from "@/components/section"
+import { Writeup } from "@/components/writeup"
 
 interface Props {
-  size?: 'default' | 'lg' | 'xl'
-  align?: 'start' | 'center' | 'end'
-  title?: React.ComponentProps<typeof Writeup>['title']
-  description?: React.ComponentProps<typeof Writeup>['description']
+  size?: "default" | "lg" | "xl"
+  align?: "start" | "center" | "end"
+  title?: React.ComponentProps<typeof Writeup>["title"]
+  description?: React.ComponentProps<typeof Writeup>["description"]
   products?: {
-    href?: React.ComponentProps<typeof Link>['href']
+    href?: React.ComponentProps<typeof Link>["href"]
     title?: string
     image?: React.ComponentProps<typeof Image>
     price?: React.ComponentProps<typeof Price>
@@ -34,17 +35,28 @@ interface Props {
   children?: React.ReactNode
 }
 
-function Collection1({ size = 'default', align = 'start', title, description, products, children }: Props) {
+function Collection1({
+  size = "default",
+  align = "start",
+  title,
+  description,
+  products,
+  children,
+}: Props) {
   const [sortedProducts, setSortedProducts] = React.useState(products)
-  const [sort, setSort] = React.useState('aanbevolen')
+  const [sort, setSort] = React.useState("aanbevolen")
 
   const onSortChange = (value: string) => {
     setSort(value)
     const sorted = [...(products || [])].sort((a, b) => {
-      if (value === 'prijs-laag-hoog') return (a.price?.amount || 0) - (b.price?.amount || 0)
-      if (value === 'prijs-hoog-laag') return (b.price?.amount || 0) - (a.price?.amount || 0)
-      if (value === 'titel-a-z') return (a.title || '').localeCompare(b.title || '')
-      if (value === 'titel-z-a') return (b.title || '').localeCompare(a.title || '')
+      if (value === "prijs-laag-hoog")
+        return (a.price?.amount || 0) - (b.price?.amount || 0)
+      if (value === "prijs-hoog-laag")
+        return (b.price?.amount || 0) - (a.price?.amount || 0)
+      if (value === "titel-a-z")
+        return (a.title || "").localeCompare(b.title || "")
+      if (value === "titel-z-a")
+        return (b.title || "").localeCompare(a.title || "")
       return 0
     })
     setSortedProducts(sorted)
@@ -60,8 +72,8 @@ function Collection1({ size = 'default', align = 'start', title, description, pr
           description={description}
         />
         <Column className="gap-0">
-          <Row className="py-4 border-t">
-            <span className="text-sm text-muted-foreground">{`${sortedProducts?.length || 0} producten`}</span>
+          <Row className="border-t py-4">
+            <span className="text-muted-foreground text-sm">{`${sortedProducts?.length || 0} producten`}</span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">
@@ -74,31 +86,34 @@ function Collection1({ size = 'default', align = 'start', title, description, pr
                   value={sort}
                   onValueChange={onSortChange}
                 >
-                  <DropdownMenuRadioItem value="aanbevolen">Aanbevolen</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="prijs-laag-hoog">Prijs (laag-hoog)</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="prijs-hoog-laag">Prijs (hoog-laag)</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="titel-a-z">Alfabetisch (A-Z)</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="titel-z-a">Alfabetisch (Z-A)</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="aanbevolen">
+                    Aanbevolen
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="prijs-laag-hoog">
+                    Prijs (laag-hoog)
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="prijs-hoog-laag">
+                    Prijs (hoog-laag)
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="titel-a-z">
+                    Alfabetisch (A-Z)
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="titel-z-a">
+                    Alfabetisch (Z-A)
+                  </DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
               </DropdownMenuContent>
             </DropdownMenu>
           </Row>
           <Grid>
             {sortedProducts?.map(({ href, title, image, price }) => (
-              <Link
-                className="group flex flex-col"
-                key={uuidv4()}
-                href={href}
-              >
+              <Link className="group flex flex-col" key={uuidv4()} href={href}>
                 <Image
-                  className="bg-card aspect-square rounded-md object-contain transition-opacity group-hover:opacity-75 bg-muted p-4 ring-1 ring-muted"
+                  className="bg-card bg-muted ring-muted aspect-square rounded-md object-contain p-4 ring-1 transition-opacity group-hover:opacity-75"
                   {...image}
                 />
-                <h3 className="text-sm mt-5 mb-1">{title}</h3>
-                <Price
-                  className="text-sm text-muted-foreground"
-                  {...price}
-                />
+                <h3 className="mt-5 mb-1 text-sm">{title}</h3>
+                <Price className="text-muted-foreground text-sm" {...price} />
               </Link>
             ))}
           </Grid>

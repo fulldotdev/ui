@@ -1,11 +1,11 @@
-import { imageSchema } from '@/schemas/components/image'
-import { sectionSchema } from '@/schemas/components/section'
-import { seoSchema } from '@/schemas/misc/seo'
-import { z } from 'astro:content'
+import { imageSchema } from "@/schemas/components/image"
+import { sectionSchema } from "@/schemas/components/section"
+import { seoSchema } from "@/schemas/misc/seo"
+import { z } from "astro:content"
 
 export const pageSchema = z
   .object({
-    type: z.enum(['page', 'home']).default('page'),
+    type: z.enum(["page", "home"]).default("page"),
     title: z.string(),
     description: z.string(),
     image: imageSchema,

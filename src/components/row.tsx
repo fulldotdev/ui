@@ -1,19 +1,20 @@
-import { cn, hasChildren } from '@/lib/utils'
-import React from 'react'
+import React from "react"
 
-interface Props extends React.ComponentProps<'div'> {
-  align?: 'start' | 'center' | 'end'
+import { cn, hasChildren } from "@/lib/utils"
+
+interface Props extends React.ComponentProps<"div"> {
+  align?: "start" | "center" | "end"
 }
 
-function Row({ align = 'center', className, children, ...props }: Props) {
+function Row({ align = "center", className, children, ...props }: Props) {
   return hasChildren(children) ? (
     <div
       className={cn(
-        'row flex flex-row w-full justify-between',
+        "row flex w-full flex-row justify-between",
         {
-          'items-start': align === 'start',
-          'items-center': align === 'center',
-          'items-end': align === 'end',
+          "items-start": align === "start",
+          "items-center": align === "center",
+          "items-end": align === "end",
         },
         className
       )}

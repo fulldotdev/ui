@@ -1,13 +1,13 @@
-import type { FieldList } from '@stackbit/types'
+import type { FieldList } from "@stackbit/types"
 
 export const ButtonsField: FieldList = {
-  name: 'buttons',
-  type: 'list',
+  name: "buttons",
+  type: "list",
   items: {
-    type: 'object',
+    type: "object",
     fields: [
-      { name: 'text', type: 'string' },
-      { name: 'href', type: 'string' },
+      { name: "text", type: "string" },
+      { name: "href", type: "string" },
     ],
   },
 }
