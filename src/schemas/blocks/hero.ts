@@ -6,6 +6,7 @@ export const heroSchema = z
   .object({
     size: z.enum(['lg', 'xl', '2xl']),
     align: z.enum(['start', 'center', 'end']),
+    dark: z.boolean().optional(),
     content: z.string(),
     buttons: buttonSchema.array(),
     image: imageSchema,

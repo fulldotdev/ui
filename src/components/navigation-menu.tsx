@@ -57,7 +57,7 @@ function NavigationMenu({ items, className }: Props) {
             >
               {item.links ? (
                 <>
-                  <NavigationMenuTrigger className="px-3 py-0 h-9 text-muted-foreground font-normal">
+                  <NavigationMenuTrigger className="px-3 py-0 h-9 text-foreground/80 bg-transparent font-normal">
                     {item.text}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -66,7 +66,7 @@ function NavigationMenu({ items, className }: Props) {
                         <li key={index}>
                           <NavigationMenuLink
                             href={link.href ?? ''}
-                            className="text-muted-foreground hover:text-foreground transition-colors font-normal whitespace-nowrap"
+                            className="text-foreground/80 hover:text-foreground transition-colors font-normal whitespace-nowrap"
                           >
                             {link.text}
                           </NavigationMenuLink>
@@ -78,7 +78,7 @@ function NavigationMenu({ items, className }: Props) {
               ) : (
                 <NavigationMenuLink
                   href={item.href ?? ''}
-                  className={`${navigationMenuTriggerStyle()} px-3 py-0 h-9 text-muted-foreground hover:text-foreground transition-colors font-normal`}
+                  className={`${navigationMenuTriggerStyle()} px-3 py-0 h-9 text-foreground/80 hover:text-foreground bg-transparent transition-colors font-normal`}
                 >
                   {item.text}
                 </NavigationMenuLink>

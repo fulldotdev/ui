@@ -18,7 +18,7 @@ function Prose({ children, className, ...props }: Props) {
         'h5:text-lg',
         'h6:text-base',
         'p:mt-6 p:leading-[1.8]',
-        'img:p:rounded-lg',
+        'img:p:rounded-lg img:rounded-lg',
         'list:ml-4 list:space-y-2 ul:list-disc ol:list-decimal',
         className
       )}

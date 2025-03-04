@@ -7,15 +7,16 @@ interface ContainerProps extends React.ComponentProps<'div'> {
 }
 
 function Container({ size, className, children, ...props }: ContainerProps) {
+  const { align, ...restProps } = props
   return hasChildren(children) ? (
     <div
       className={cn(
         'mx-auto w-full max-w-screen-xl px-4',
         {
           'flex flex-col': 'align' in props,
-          'items-start': props.align === 'start',
-          'items-center': props.align === 'center',
-          'items-end': props.align === 'end',
+          'items-start': align === 'start',
+          'items-center': align === 'center',
+          'items-end': align === 'end',
         },
         {
           'max-w-screen-md md:px-12': size === 'sm',
@@ -23,7 +24,7 @@ function Container({ size, className, children, ...props }: ContainerProps) {
         },
         className
       )}
-      {...props}
+      {...restProps}
     >
       {children}
     </div>

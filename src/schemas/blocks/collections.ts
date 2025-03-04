@@ -4,7 +4,7 @@ import { z } from 'astro:content'
 
 export const collectionsSchema = z
   .object({
-    size: z.enum(['default', 'lg', 'xl']),
+    size: z.enum(['xs', 'sm', 'default', 'lg', 'xl']),
     align: z.enum(['start', 'center', 'end']),
     content: z.string(),
     buttons: buttonSchema.array(),

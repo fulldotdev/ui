@@ -18,7 +18,10 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 function Header({ logo, menus, buttons, search, className, ...props }: Props) {
   return (
     <header
-      className={cn('header bg-background sticky top-0 z-20 flex h-14 w-full border-b', className)}
+      className={cn(
+        'header bg-background/95 sticky top-0 z-50 backdrop-blur flex h-14 w-full border-b supports-[backdrop-filter]:bg-background/80',
+        className
+      )}
       {...props}
     >
       <Container className="flex items-center justify-between gap-4 max-sm:gap-0">
@@ -49,6 +52,13 @@ function Header({ logo, menus, buttons, search, className, ...props }: Props) {
           <ShopifyCart className="-mr-2.5" />
         </div>
       </Container>
+      <style>
+        {`
+          :root {
+            --header-height: calc(var(--spacing) * 14);
+          }
+        `}
+      </style>
     </header>
   )
 }

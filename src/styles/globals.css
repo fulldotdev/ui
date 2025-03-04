@@ -3,7 +3,6 @@
 @plugin 'tailwindcss-animate';
 
 @custom-variant dark (&:is(.dark *));
-@custom-variant light (&:is(.light *));
 @custom-variant child (&>*);
 @custom-variant headings (& *:is(h1, h2, h3, h4, h5, h6));
 @custom-variant h1 (& h1);
@@ -19,7 +18,7 @@
 @custom-variant ol (& ol);
 @custom-variant li (& li);
 
-@theme {
+@theme inline {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
 
@@ -86,6 +85,11 @@
       height: 0;
     }
   }
+
+  /* Custom non-shadcn theme extend */
+  --spacing-header: var(--header-height, 0px);
+  --spacing-banner: var(--banner-height, 0px);
+  --spacing-headers: calc(var(--spacing-header) + var(--spacing-banner));
 }
 
 /*
@@ -184,6 +188,19 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased; /* font classes custom added */
+    @apply bg-background text-foreground;
+  }
+
+  /* Custom non-shadcn styles */
+  body {
+    @apply font-sans antialiased; /* font classes custom added */
+  }
+  /* For some reason not working on some buttons */
+  button {
+    @apply cursor-pointer;
+  }
+  /* otherwise some components use light text when darkmode is set on a specific component instead of body */
+  :where(.dark, .dark *) {
+    @apply text-foreground;
   }
 }
