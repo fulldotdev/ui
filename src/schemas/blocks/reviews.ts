@@ -1,5 +1,5 @@
 import { pathSchema } from "@/schemas/misc/path"
-import { z } from "astro:content"
+import { z } from "zod"
 
 export const reviewsSchema = z
   .object({

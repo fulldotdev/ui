@@ -1,6 +1,6 @@
 import { buttonSchema } from "@/schemas/components/button"
 import { pathSchema } from "@/schemas/misc/path"
-import { z } from "astro:content"
+import { z } from "zod"
 
 export const productsSchema = z
   .object({

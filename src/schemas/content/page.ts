@@ -1,7 +1,7 @@
 import { imageSchema } from "@/schemas/components/image"
 import { sectionSchema } from "@/schemas/components/section"
 import { seoSchema } from "@/schemas/misc/seo"
-import { z } from "astro:content"
+import { z } from "zod"
 
 export const pageSchema = z
   .object({
