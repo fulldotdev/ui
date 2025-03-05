@@ -7,6 +7,14 @@ import { hideBin } from "yargs/helpers"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+const initFiles = [
+  "src/content.config.ts",
+  "src/styles/theme.css",
+  "astro.config.ts",
+  "src/data",
+  "src/content",
+]
+
 const files = [
   "netlify",
   "src/stores",
@@ -17,11 +25,9 @@ const files = [
   "src/pages",
   "src/schemas",
   "src/styles/globals.css",
-  "src/content.config.ts",
   "stackbit",
   ".gitignore",
   ".prettierignore",
-  "astro.config.ts",
   "components.json",
   "netlify.toml",
   "prettier.config.cjs",
@@ -92,6 +98,10 @@ yargs(hideBin(process.argv))
   })
   .command("push", "Push project files", () => {
     pushFiles(files)
+  })
+  .command("init", "Initialize project", () => {
+    pullFiles([...initFiles, ...files])
+    addPackageJson()
   })
   .command("reset", "Remove project files", () => {
     resetFiles(files)

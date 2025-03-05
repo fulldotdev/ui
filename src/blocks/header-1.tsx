@@ -13,10 +13,19 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
   logo?: React.ComponentProps<typeof Logo>
   menus?: React.ComponentProps<typeof NavigationMenu>["items"]
   buttons?: React.ComponentProps<typeof Buttons>["buttons"]
-  search?: React.ComponentProps<typeof Search>["groups"]
+  search?: React.ComponentProps<typeof Search>["groups"] | boolean
+  cart?: boolean
 }
 
-function Header1({ logo, menus, buttons, search, className, ...props }: Props) {
+function Header1({
+  logo,
+  menus,
+  buttons,
+  search,
+  cart,
+  className,
+  ...props
+}: Props) {
   return (
     <header
       className={cn(
@@ -35,9 +44,9 @@ function Header1({ logo, menus, buttons, search, className, ...props }: Props) {
           />
         </div>
         <div className="inline-flex w-full items-center justify-end gap-2">
-          <Search groups={search} className="w-full" />
+          {search ? <Search groups={search} className="w-full" /> : null}
           <Buttons className="max-sm:hidden" buttons={buttons} reverse />
-          <ShopifyCart className="-mr-2.5" />
+          {cart ? <ShopifyCart className="-mr-2.5" /> : null}
         </div>
       </Container>
       <style>
