@@ -1,6 +1,5 @@
 import { buttonSchema } from "@/schemas/components/button"
-import { reference } from "astro:content"
-import { z } from "zod"
+import { reference, z } from "astro:content"
 
 export const articlesSchema = z
   .object({

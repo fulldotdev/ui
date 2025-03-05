@@ -1,6 +1,6 @@
 import { imageSchema } from "@/schemas/components/image"
 import { seoSchema } from "@/schemas/misc/seo"
-import { z } from "zod"
+import { z } from "astro:content"
 
 import { sectionSchema } from "../components/section"
 

@@ -1,6 +1,6 @@
 import { channelsSchema } from "@/schemas/components/channels"
 import { formSchema } from "@/schemas/components/form"
-import { z } from "zod"
+import { z } from "astro:content"
 
 export const contactSchema = z
   .object({

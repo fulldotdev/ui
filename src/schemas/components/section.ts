@@ -13,7 +13,7 @@ import { pricingsSchema } from "@/schemas/blocks/pricings"
 import { productsSchema } from "@/schemas/blocks/products"
 import { projectsSchema } from "@/schemas/blocks/projects"
 import { reviewsSchema } from "@/schemas/blocks/reviews"
-import { z } from "zod"
+import { z } from "astro:content"
 
 export const sectionSchema = z.discriminatedUnion("type", [
   collectionsSchema.extend({

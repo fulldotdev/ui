@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "astro:content"
 
 export const channelsSchema = z.object({
   phone: z.string().optional(),
