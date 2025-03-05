@@ -2,8 +2,7 @@ import { imageSchema } from "@/schemas/components/image"
 import { priceSchema } from "@/schemas/components/price"
 import { sectionSchema } from "@/schemas/components/section"
 import { seoSchema } from "@/schemas/misc/seo"
-import { reference } from "astro:content"
-import { z } from "zod"
+import { reference, z } from "astro:content"
 
 export const productSchema = z
   .object({
