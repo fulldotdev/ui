@@ -49,7 +49,7 @@ function NavigationMenu({ items, className }: Props) {
           className
         )}
       >
-        <NavigationMenuList className="gap-0">
+        <NavigationMenuList>
           {items?.map((item, index) => (
             <NavigationMenuItem
               key={index}

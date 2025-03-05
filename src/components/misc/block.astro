@@ -79,7 +79,7 @@ const collectionEntries = collections
   : await getCollection("collections")
 
 const productInCollectionEntries = productEntries?.filter((product) =>
-  product.data.collections?.find((c) => {
+  product?.data.collections?.find((c) => {
     if (typeof c === "string") return false
     if ("id" in c) return c.id === entryId
     if ("slug" in c) return c.slug === entryId
@@ -96,7 +96,7 @@ const mapEntries = (
     | typeof collectionEntries
     | typeof reviewEntries
 ) =>
-  entries.map(({ collection, id, data }) => ({
+  entries?.filter(Boolean).map(({ collection, id, data }) => ({
     href: getHref(collection, id),
     image: "images" in data ? data.images?.[0] : undefined,
     ...data,

@@ -50,36 +50,41 @@ function Gallery({ images, className, ...props }: Props) {
   return (
     images && (
       <div
-        className={cn("bg-muted flex w-full flex-col", className)}
+        className={cn("bg-muted flex w-full flex-col pb-2", className)}
         {...props}
       >
         <CarouselRoot className="relative" setApi={setEmblaMainApi}>
-          <CarouselContent className="mt-4 mr-4 ml-0">
+          <CarouselContent className="mt-4 mr-4 mb-2 ml-0">
             {images.map((image) => (
               <CarouselItem className="pl-4" key={uuidv4()}>
                 <Image className="rounded-md" {...image} />
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="left-1 max-md:hidden" />
-          <CarouselNext className="right-1 max-md:hidden" />
+          {images.length > 1 && (
+            <>
+              <CarouselPrevious className="left-1 max-md:hidden" />
+              <CarouselNext className="right-1 max-md:hidden" />
+            </>
+          )}
         </CarouselRoot>
-
-        <CarouselRoot setApi={setEmblaThumbnailApi}>
-          <CarouselContent className="mr-4 ml-2 flex">
-            {images.map((image, index) => (
-              <CarouselItem className="basis-1/5 pl-2" key={uuidv4()}>
-                <Image
-                  className={cn("my-4 cursor-pointer rounded-sm ring-1", {
-                    "ring-ring": index === selectedIndex,
-                  })}
-                  onClick={() => onThumbClick(index)}
-                  {...image}
-                />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </CarouselRoot>
+        {images.length > 1 && (
+          <CarouselRoot setApi={setEmblaThumbnailApi}>
+            <CarouselContent className="mr-4 ml-2 flex">
+              {images.map((image, index) => (
+                <CarouselItem className="basis-1/5 pl-2" key={uuidv4()}>
+                  <Image
+                    className={cn("my-2 cursor-pointer rounded-sm ring-1", {
+                      "ring-ring": index === selectedIndex,
+                    })}
+                    onClick={() => onThumbClick(index)}
+                    {...image}
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </CarouselRoot>
+        )}
       </div>
     )
   )

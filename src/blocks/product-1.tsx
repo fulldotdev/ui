@@ -41,17 +41,14 @@ function Product1({
   ...props
 }: Props) {
   return (
-    <Section
-      className={cn("product product-1 pt-0 sm:pt-8", className)}
-      {...props}
-    >
+    <Section className={cn("product product-1 pt-0", className)} {...props}>
       <Container className="max-sm:px-0">
         <Split className="items-start">
           <Gallery
-            className="ring-muted sm:rounded-md sm:ring"
+            className="ring-muted sm:mt-12 sm:rounded-md sm:ring"
             images={images}
           />
-          <Column className="top-22 gap-8 max-sm:px-4 lg:sticky">
+          <Column className="top-header gap-8 max-sm:px-4 md:mt-12 lg:sticky">
             <Writeup
               level={level}
               size={size}

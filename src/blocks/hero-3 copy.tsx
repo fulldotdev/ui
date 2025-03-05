@@ -32,19 +32,16 @@ function Hero3({
   return (
     <Section
       className={cn(
-        "hero hero-3 bg-background -mt-header mb-16 flex items-center md:py-32",
+        "hero hero-3 bg-background -mt-headers flex min-h-screen items-center",
         className
       )}
       {...props}
     >
       <Image
-        className="absolute top-0 left-0 size-full object-cover opacity-40"
+        className="absolute top-0 left-0 size-full object-cover opacity-50"
         {...image}
       />
-      <Container
-        className="pt-header h-full justify-center gap-8"
-        align={align}
-      >
+      <Container className="h-full justify-center gap-8" align={align}>
         <Writeup
           className="relative"
           level={level}

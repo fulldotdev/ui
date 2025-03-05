@@ -1,4 +1,5 @@
 import * as React from "react"
+import config from "@/data/config.json"
 import { cartTotalQuantity } from "@/stores/shopify"
 import { useStore } from "@nanostores/react"
 import {
@@ -12,7 +13,9 @@ import {
   ShopifyProvider,
   useCart,
   useCartLine,
+  type CartWithActions,
 } from "@shopify/hydrogen-react"
+import type { CartBase } from "@shopify/hydrogen-react/dist/types/cart-types"
 import type { CartLine } from "@shopify/hydrogen-react/storefront-api-types"
 import { ShoppingBag, Trash } from "lucide-react"
 
@@ -36,7 +39,7 @@ function ShopifyCart({ className }: Props) {
 
   return (
     <Sheet onOpenChange={() => setRerenderKey((prev) => prev + 1)}>
-      <SheetTrigger>
+      <SheetTrigger asChild>
         <Button
           className={cn("relative", className)}
           variant="ghost"
@@ -51,8 +54,8 @@ function ShopifyCart({ className }: Props) {
         countryIsoCode="NL"
         languageIsoCode="NL"
         storefrontApiVersion="2025-01"
-        storeDomain="https://padelracketwinkel.myshopify.com"
-        storefrontToken="5817d7fdddda0c1fa13f131de5d91794"
+        storeDomain={config.shopify.storeDomain}
+        storefrontToken={config.shopify.publicAccessToken}
       >
         <CartProvider>
           <ShopifyCartContent />
@@ -63,7 +66,7 @@ function ShopifyCart({ className }: Props) {
 }
 
 function ShopifyCartContent() {
-  const { lines, totalQuantity } = useCart()
+  const { lines, totalQuantity } = useCart() as CartWithActions & CartBase // Manual type according to docs. It works but types were incorrect.
 
   // Update global quantity state, because components may be on different islands
   React.useEffect(() => {
