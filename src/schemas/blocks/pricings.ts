@@ -1,5 +1,5 @@
 import { buttonSchema } from "@/schemas/components/button"
-import { z } from "astro:content"
+import { z } from "zod"
 
 import { priceSchema } from "../components/price"
 

@@ -18,7 +18,7 @@ interface Props extends React.ComponentProps<"footer"> {
   menus?: React.ComponentProps<typeof Menu>[]
 }
 
-function Footer({
+function Footer1({
   logo,
   description,
   socials,
@@ -71,4 +71,4 @@ function Footer({
   )
 }
 
-export { Footer }
+export { Footer1 }
