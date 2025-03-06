@@ -5,16 +5,18 @@ import { cn, hasChildren } from "@/lib/utils"
 interface Props extends React.ComponentProps<"p"> {
   size?: "xs" | "sm" | "default" | "lg" | "xl" | "2xl"
   align?: "start" | "center" | "end"
+  text?: string
 }
 
 function Description({
   size = "default",
   align = "start",
+  text,
   children,
   className,
   ...props
 }: Props) {
-  return hasChildren(children) ? (
+  return text || hasChildren(children) ? (
     <p
       className={cn(
         "description text-foreground text-prett max-w-[85%] leading-[1.75]",
@@ -33,6 +35,7 @@ function Description({
       )}
       {...props}
     >
+      {text}
       {children}
     </p>
   ) : null

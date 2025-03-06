@@ -3,23 +3,24 @@ import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
 import { Card } from "@/components/ui/card"
-import { Abstract } from "@/components/abstract"
 import { Button } from "@/components/button"
+import { Column } from "@/components/column"
 import { Container } from "@/components/container"
+import { Description } from "@/components/description"
 import { Grid } from "@/components/grid"
 import { List } from "@/components/list"
 import { Price } from "@/components/price"
 import { Section } from "@/components/section"
-import { Writeup } from "@/components/writeup"
+import { Title } from "@/components/title"
 
 interface Props extends React.ComponentProps<typeof Section> {
-  level?: React.ComponentProps<typeof Writeup>["level"]
-  size?: React.ComponentProps<typeof Writeup>["size"]
-  align?: React.ComponentProps<typeof Writeup>["align"]
-  title?: React.ComponentProps<typeof Writeup>["title"]
-  description?: React.ComponentProps<typeof Writeup>["description"]
+  level: React.ComponentProps<typeof Title>["level"]
+  size?: React.ComponentProps<typeof Title>["size"]
+  align?: React.ComponentProps<typeof Title>["align"]
+  title?: React.ComponentProps<typeof Title>["text"]
+  description?: React.ComponentProps<typeof Description>["text"]
   pricings?: {
-    title?: string
+    title?: React.ComponentProps<typeof Title>["text"]
     description?: string
     price?: React.ComponentProps<typeof Price>
     list?: React.ComponentProps<typeof List>["items"]
@@ -34,37 +35,42 @@ function Pricings1({
   title,
   description,
   pricings,
-  children,
   className,
   ...props
 }: Props) {
   return (
-    <Section className={cn("pricings pricings-1", className)} {...props}>
-      <Container className="gap-8" align={align}>
-        <Writeup
-          level={level}
-          size={size}
-          align={align}
-          title={title}
-          description={description}
-        >
-          {children}
-        </Writeup>
-        <Grid className="mt-8 gap-x-4 gap-y-8 first:mt-0">
-          {pricings?.map(({ title, description, price, list, button }) => (
-            <Card className="flex flex-col gap-4 text-lg" key={uuidv4()}>
-              <Abstract
-                level={level}
-                size={size}
-                title={title}
-                description={description}
-              />
-              <Price className="text-2xl font-medium" {...price} />
-              <List className="mt-8" items={list} />
-              <Button className="mt-8" {...button} />
-            </Card>
-          ))}
-        </Grid>
+    <Section className={cn(className)} {...props}>
+      <Container>
+        <Column align={align}>
+          <Title level={level} size={size} align={align} text={title} />
+          <Description
+            className="not-first:mt-4"
+            size={size}
+            align={align}
+            text={description}
+          />
+          <Grid className="gap-x-4 gap-y-8 not-first:mt-16">
+            {pricings?.map(({ title, description, price, list, button }) => (
+              <Card className="flex flex-col gap-4 text-lg" key={uuidv4()}>
+                <Title
+                  level={level + 1}
+                  size={size}
+                  align={align}
+                  text={title}
+                />
+                <Description
+                  className="not-first:mt-4"
+                  size={size}
+                  align={align}
+                  text={description}
+                />
+                <Price className="text-2xl font-medium" {...price} />
+                <List className="mt-8" items={list} />
+                <Button className="mt-8" {...button} />
+              </Card>
+            ))}
+          </Grid>
+        </Column>
       </Container>
     </Section>
   )

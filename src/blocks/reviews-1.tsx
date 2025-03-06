@@ -5,22 +5,25 @@ import { cn } from "@/lib/utils"
 import { Card } from "@/components/ui/card"
 import { Abstract } from "@/components/abstract"
 import { Buttons } from "@/components/buttons"
+import { Column } from "@/components/column"
 import { Container } from "@/components/container"
+import { Description } from "@/components/description"
 import { Masonry } from "@/components/masonry"
 import { Rating } from "@/components/rating"
 import { Section } from "@/components/section"
+import { Title } from "@/components/title"
 import { Writeup } from "@/components/writeup"
 
 interface Props extends React.ComponentProps<typeof Section> {
-  level?: React.ComponentProps<typeof Writeup>["level"]
-  size?: React.ComponentProps<typeof Writeup>["size"]
-  align?: React.ComponentProps<typeof Writeup>["align"]
-  title?: React.ComponentProps<typeof Writeup>["title"]
-  description?: React.ComponentProps<typeof Writeup>["description"]
+  level: React.ComponentProps<typeof Title>["level"]
+  size?: React.ComponentProps<typeof Title>["size"]
+  align?: React.ComponentProps<typeof Title>["align"]
+  title?: React.ComponentProps<typeof Title>["text"]
+  description?: React.ComponentProps<typeof Description>["text"]
   buttons?: React.ComponentProps<typeof Buttons>["buttons"]
   reviews?: {
     rating?: React.ComponentProps<typeof Rating>["score"]
-    title?: string
+    title?: React.ComponentProps<typeof Title>["text"]
     description?: string
   }[]
 }
@@ -39,33 +42,33 @@ function Reviews1({
 }: Props) {
   return (
     <Section className={cn("reviews reviews-1", className)} {...props}>
-      <Container align={align} className="gap-8">
-        <Writeup
-          level={level}
-          size={size}
-          align={align}
-          title={title}
-          description={description}
-        >
-          {children}
-        </Writeup>
-        <Buttons buttons={buttons} />
-        <Masonry className="mt-8 gap-x-4 gap-y-8 first:mt-0">
-          {reviews?.map(({ rating, title, description }) => (
-            <div
-              className="flex flex-col gap-3 rounded-lg border p-6"
-              key={uuidv4()}
-            >
-              <Rating score={rating} />
-              <Abstract
-                level={level}
-                size={size}
-                title={title}
-                description={description}
-              />
-            </div>
-          ))}
-        </Masonry>
+      <Container className="gap-8">
+        <Column align={align}>
+          <Title level={level} size={size} align={align} text={title} />
+          <Description
+            className="not-first:mt-4"
+            size={size}
+            align={align}
+            text={description}
+          />
+          <Buttons buttons={buttons} />
+          <Masonry className="mt-8 gap-x-4 gap-y-8 first:mt-0">
+            {reviews?.map(({ rating, title, description }) => (
+              <div
+                className="flex flex-col gap-3 rounded-lg border p-6"
+                key={uuidv4()}
+              >
+                <Rating score={rating} />
+                <Title level={level + 1} size={size} align={align} />
+                <Description
+                  className="not-first:mt-4"
+                  size={size}
+                  align={align}
+                />
+              </div>
+            ))}
+          </Masonry>
+        </Column>
       </Container>
     </Section>
   )

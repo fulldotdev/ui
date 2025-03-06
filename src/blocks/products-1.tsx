@@ -1,27 +1,29 @@
 import * as React from "react"
 import { v4 as uuidv4 } from "uuid"
 
+import { cn } from "@/lib/utils"
 import { Abstract } from "@/components/abstract"
 import { Buttons } from "@/components/buttons"
 import { Container } from "@/components/container"
+import { Description } from "@/components/description"
 import { Grid } from "@/components/grid"
 import { Image } from "@/components/image"
 import { Link } from "@/components/link"
 import { Price } from "@/components/price"
 import { Section } from "@/components/section"
+import { Title } from "@/components/title"
 import { Writeup } from "@/components/writeup"
 
-interface Props {
-  level?: React.ComponentProps<typeof Writeup>["level"]
-  size?: React.ComponentProps<typeof Writeup>["size"]
-  align?: React.ComponentProps<typeof Writeup>["align"]
-  title?: React.ComponentProps<typeof Writeup>["title"]
-  description?: React.ComponentProps<typeof Writeup>["description"]
-  children?: React.ComponentProps<typeof Writeup>["children"]
+interface Props extends React.ComponentProps<typeof Section> {
+  level: React.ComponentProps<typeof Title>["level"]
+  size?: React.ComponentProps<typeof Title>["size"]
+  align?: React.ComponentProps<typeof Title>["align"]
+  title?: React.ComponentProps<typeof Title>["text"]
+  description?: React.ComponentProps<typeof Description>["text"]
   buttons?: React.ComponentProps<typeof Buttons>["buttons"]
   products?: {
     href?: string
-    title?: string
+    title?: React.ComponentProps<typeof Title>["text"]
     images?: React.ComponentProps<typeof Image>[]
     price?: React.ComponentProps<typeof Price>
   }[]
@@ -33,20 +35,20 @@ function Products1({
   align,
   title,
   description,
-  children,
   buttons,
   products,
+  className,
+  ...props
 }: Props) {
   return (
-    <Section className="products products-1">
-      <Container className="gap-8" align={align}>
-        <Writeup
-          level={level}
+    <Section className={cn(className)} {...props}>
+      <Container className="gap-8">
+        <Title level={level} size={size} align={align} text={title} />
+        <Description
+          className="not-first:mt-4"
           size={size}
           align={align}
-          title={title}
-          description={description}
-          children={children}
+          text={description}
         />
         <Buttons
           className="max-sm:hidden"
@@ -62,12 +64,11 @@ function Products1({
               href={href}
             >
               <Image
-                className="bg-card bg-muted ring-muted aspect-square rounded-md object-contain p-4 ring-1 transition-opacity group-hover:opacity-75"
+                className="bg-muted ring-muted aspect-square rounded-md object-contain p-4 ring-1 transition-opacity group-hover:opacity-75"
                 {...images?.[0]}
               />
-              <Abstract size="xs" level={level} title={title}>
-                <Price className="text-muted-foreground text-sm" {...price} />
-              </Abstract>
+              <Title level={level + 1} size={size} align={align} />
+              <Price className="text-muted-foreground text-sm" {...price} />
             </Link>
           ))}
         </Grid>

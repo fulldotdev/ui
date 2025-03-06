@@ -6,7 +6,7 @@ interface WriteupProps extends React.ComponentProps<"div"> {
   level?: 1 | 2 | 3
   size?: "xs" | "sm" | "default" | "lg" | "xl" | "2xl"
   align?: "start" | "center" | "end"
-  title?: string
+  title?: React.ComponentProps<typeof Title>["text"]
   description?: string
 }
 

@@ -8,15 +8,17 @@ import {
   Accordion as AccordionRoot,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { Title } from "@/components/title"
 
 type Props = React.ComponentProps<typeof AccordionRoot> & {
+  level: React.ComponentProps<typeof Title>["level"]
   items?: {
     title?: string
     description?: string
   }[]
 }
 
-function Accordion({ items, className, ...props }: Props) {
+function Accordion({ level, items, className, ...props }: Props) {
   return items ? (
     <AccordionRoot
       className={cn("accordion w-full max-w-2xl", className)}
@@ -24,7 +26,10 @@ function Accordion({ items, className, ...props }: Props) {
     >
       {items?.map((item, index) => (
         <AccordionItem key={uuid()} value={`${index}-${item.title}`}>
-          <AccordionTrigger>{item.title}</AccordionTrigger>
+          <AccordionTrigger asChild>
+            {/* <Title level={level}>{item.title}</Title> */}
+            {item.title}
+          </AccordionTrigger>
           <AccordionContent>{item.description}</AccordionContent>
         </AccordionItem>
       ))}

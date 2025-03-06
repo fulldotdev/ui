@@ -2,7 +2,7 @@ import React from "react"
 
 import { cn, hasChildren } from "@/lib/utils"
 
-interface Props extends React.ComponentProps<"section"> {
+interface Props extends Omit<React.ComponentProps<"section">, "title"> {
   dark?: boolean
 }
 
