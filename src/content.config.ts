@@ -48,7 +48,7 @@ export const collections = {
       parser: (text) =>
         JSON.parse(text).map((item: any, index: number) => ({
           ...item,
-          id: index,
+          id: `review-${index}`,
         })),
     }),
     schema: reviewSchema,

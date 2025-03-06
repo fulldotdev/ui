@@ -13,6 +13,9 @@ import { productsSchema } from "@/schemas/blocks/products"
 import { reviewsSchema } from "@/schemas/blocks/reviews"
 import { z } from "astro:content"
 
+import { locationsSchema } from "../blocks/locations"
+import { mediaSchema } from "../blocks/media"
+
 export const sectionSchema = z.discriminatedUnion("type", [
   collectionsSchema.extend({
     type: z.literal("collections"),
@@ -40,6 +43,18 @@ export const sectionSchema = z.discriminatedUnion("type", [
   }),
   heroSchema.extend({
     type: z.literal("hero"),
+    variant: z.number().default(1),
+  }),
+  locationsSchema.extend({
+    type: z.literal("locations"),
+    variant: z.number().default(1),
+  }),
+  mediaSchema.extend({
+    type: z.literal("media"),
+    variant: z.number().default(1),
+  }),
+  pagesSchema.extend({
+    type: z.literal("pages"),
     variant: z.number().default(1),
   }),
   personsSchema.extend({

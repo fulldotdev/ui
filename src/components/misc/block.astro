@@ -93,7 +93,7 @@ const locationEntries = await getRightEntries("locations", locations)
 
 const productInCollectionEntries = productEntries
   ?.filter((product) =>
-    product?.data.collections?.find((c) => {
+    product?.collections?.find((c) => {
       if (typeof c === "string") return false
       if ("id" in c) return c.id === entryId
       if ("slug" in c) return c.slug === entryId
@@ -107,11 +107,11 @@ const productInCollectionEntries = productEntries
   }))
 
 const slot = await Astro.slots.render("default")
-const hasSlot = slot.trim().length > 0
+const hasSlot = slot?.trim().length > 0
 const markdownContent = marked(content || "")
 ---
 
-<!--  content -->{
+{
   (type === "content" ||
     (type === "page" && hasSlot) ||
     type == "location" ||
@@ -151,7 +151,6 @@ const markdownContent = marked(content || "")
   )
 }
 
-<!-- entries -->
 {type === "pages" && variant === 1 && <Pages1 pages={pageEntries} {...rest} />}
 
 {
@@ -185,7 +184,6 @@ const markdownContent = marked(content || "")
   )
 }
 
-<!-- globals -->
 {type === "banner" && variant === 1 && <Banner1 {...rest} />}
 
 {type === "header" && variant === 1 && <Header1 client:load {...rest} />}
@@ -193,7 +191,6 @@ const markdownContent = marked(content || "")
 
 {type === "footer" && variant === 1 && <Footer1 {...rest} />}
 
-<!-- sections -->
 {type === "contact" && variant === 1 && <Contact1 {...rest} />}
 {type === "contact" && variant === 2 && <Contact2 {...rest} />}
 
