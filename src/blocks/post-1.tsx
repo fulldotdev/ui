@@ -17,7 +17,7 @@ interface Props extends React.ComponentProps<typeof Section> {
 function Post1({ level = 1, title, description, image, children }: Props) {
   return (
     <Section>
-      <Container className="flex flex-col">
+      <Container className="flex flex-col" size="sm">
         <Prose>
           {title ? <Title level={level} text={title} /> : null}
           {description ? <Description text={description} /> : null}

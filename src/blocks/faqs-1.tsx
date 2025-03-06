@@ -51,7 +51,6 @@ function Faqs1({
             buttons={buttons}
           />
           <Accordion
-            level={level + 1}
             className="not-first:mt-16"
             type="single"
             collapsible

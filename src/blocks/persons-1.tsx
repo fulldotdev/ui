@@ -58,20 +58,23 @@ function Persons1({
           />
           <Grid className="gap-16 not-first:mt-16">
             {persons?.map(({ href, image, title, description }) => (
-              <Link className="max-w-md" key={uuidv4()} href={href}>
-                <Column className="gap-6" align={align}>
-                  <Image
-                    className="aspect-square w-full max-w-60 rounded-full object-cover"
-                    {...image}
-                  />
-                  <Title
-                    level={level + 1}
-                    size={size}
-                    align={align}
-                    text={title}
-                  />
-                  <Description size={size} align={align} text={description} />
-                </Column>
+              <Link className="group max-w-md" key={uuidv4()} href={href}>
+                <Image
+                  className="aspect-square w-full max-w-60 rounded-full object-cover transition-opacity group-hover:opacity-75"
+                  {...image}
+                />
+                <Title
+                  className="text-xl not-first:mt-4"
+                  level={level + 1}
+                  align={align}
+                  text={title}
+                />
+                <Description
+                  className="not-first:mt-1"
+                  size={size}
+                  align={align}
+                  text={description}
+                />
               </Link>
             ))}
           </Grid>

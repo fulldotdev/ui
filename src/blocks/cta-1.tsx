@@ -41,7 +41,12 @@ function Cta1({
               align={align}
               text={description}
             />
-            <Buttons size={size} align={align} buttons={buttons} />
+            <Buttons
+              className="not-first:mt-8"
+              size={size}
+              align={align}
+              buttons={buttons}
+            />
           </Column>
         </Panel>
       </Container>

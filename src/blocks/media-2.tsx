@@ -8,6 +8,7 @@ import { Description } from "@/components/description"
 import { Grid } from "@/components/grid"
 import { Image } from "@/components/image"
 import { Section } from "@/components/section"
+import { Split } from "@/components/split"
 import { Title } from "@/components/title"
 
 interface Props extends React.ComponentProps<typeof Section> {
@@ -35,19 +36,18 @@ function Media2({
   return (
     <Section className={cn("content content-1", className)} {...props}>
       <Container>
-        <Grid className="gap-16" align={align}>
-          <Column className="gap-8">
-            <Title level={level} size={size} align={align} text={title} />
+        <Split align={align}>
+          <Column>
+            <Title level={level} size={size} text={title} />
             <Description
               className="not-first:mt-4"
               size={size}
-              align={align}
               text={description}
             />
-            <Buttons size={size} buttons={buttons} />
+            <Buttons className="mt-8" size={size} buttons={buttons} />
           </Column>
           <Image className="rounded-lg" {...image} />
-        </Grid>
+        </Split>
       </Container>
     </Section>
   )

@@ -29,7 +29,7 @@ function Title({
   return text || hasChildren(children) ? (
     <Comp
       className={cn(
-        "title text-foreground scroll-mt-20 font-semibold tracking-tight text-pretty",
+        "title text-foreground max-w-2xl scroll-mt-20 font-semibold tracking-tight text-pretty",
         {
           "text-2xl": size === "xs",
           "text-3xl": size === "sm",

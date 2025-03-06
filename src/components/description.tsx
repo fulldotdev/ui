@@ -19,7 +19,7 @@ function Description({
   return text || hasChildren(children) ? (
     <p
       className={cn(
-        "description text-foreground text-prett max-w-[85%] leading-[1.75]",
+        "description text-foreground text-prett max-w-lg leading-[1.75]",
         {
           "text-sm": size === "xs" || size === "sm",
           "text-base": size === "default",

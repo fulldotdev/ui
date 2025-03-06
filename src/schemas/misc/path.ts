@@ -9,7 +9,12 @@ export const pathSchema = z
     const id = value?.split("/").slice(1).join("/").split(".").shift() as
       | string
       | undefined
-    return { collection, id }
+    const ref = {
+      collection,
+      id,
+    }
+    console.log({ ref })
+    return ref
   })
   .refine(
     async ({ collection, id }) => {

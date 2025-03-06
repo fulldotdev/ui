@@ -26,6 +26,7 @@ import { Pricings1 } from "@/blocks/pricings-1"
 import { Product1 } from "@/blocks/product-1"
 import { Products1 } from "@/blocks/products-1"
 import { Reviews1 } from "@/blocks/reviews-1"
+import config from "@/data/config.json"
 import { getCollection, getEntries } from "astro:content"
 import type { AnyEntryMap } from "astro:content"
 import { marked } from "marked"
@@ -67,44 +68,44 @@ async function getRightEntries(
   collection: string,
   value: undefined | Parameters<typeof getEntries>[0]
 ) {
-  if (value === undefined) {
-    const currentPageSlug = Astro.params.slug as keyof AnyEntryMap
-    const childrenCollection = await getCollection(currentPageSlug)
-    if (childrenCollection && childrenCollection.length > 0)
-      return childrenCollection
-    const keyCollection = await getCollection(collection as keyof AnyEntryMap)
-    const mapped = keyCollection?.map((entry) => ({
-      href: getHref(collection, entry.id),
-      image: "images" in entry.data ? entry.data.images?.[0] : undefined,
-      ...entry.data,
-    }))
-    return mapped as any[]
-  }
+  if (value) return await getEntries(value)
+
+  const currentPageSlug = Astro.params.page as keyof AnyEntryMap
+  const matchingCollection = Object.entries(config.slugs).find(
+    ([key, value]) => value === currentPageSlug
+  )
+  const matchingKey = matchingCollection?.[0]
+  const childrenCollection = matchingKey && (await getCollection(matchingKey))
+  if (childrenCollection && childrenCollection.length > 0)
+    return childrenCollection
+
+  return await getCollection(collection as keyof AnyEntryMap)
+}
+
+function MapEntries(entries: any[]) {
+  return entries.map((entry) => ({
+    href: getHref(entry.collection, entry.id),
+    image: "images" in entry.data ? entry.data.images?.[0] : undefined,
+    ...entry.data,
+  }))
 }
 
 const pageEntries = await getRightEntries("pages", pages)
-const articleEntries = await getRightEntries("posts", posts)
+const postEntries = await getRightEntries("posts", posts)
 const productEntries = await getRightEntries("products", products)
-const projectEntries = await getRightEntries("projects", projects)
 const personEntries = await getRightEntries("persons", persons)
 const reviewEntries = await getRightEntries("reviews", reviews)
 const collectionEntries = await getRightEntries("collections", collections)
 const locationEntries = await getRightEntries("locations", locations)
 
-const productInCollectionEntries = productEntries
-  ?.filter((product) =>
-    product?.collections?.find((c) => {
-      if (typeof c === "string") return false
-      if ("id" in c) return c.id === entryId
-      if ("slug" in c) return c.slug === entryId
-      return false
-    })
-  )
-  .map((product) => ({
-    href: getHref("products", product.id),
-    image: "images" in product.data ? product.data.images?.[0] : undefined,
-    ...product.data,
-  }))
+const productInCollectionEntries = productEntries?.filter((product) =>
+  product?.collections?.find((c) => {
+    if (typeof c === "string") return false
+    if ("id" in c) return c.id === entryId
+    if ("slug" in c) return c.slug === entryId
+    return false
+  })
+)
 
 const slot = await Astro.slots.render("default")
 const hasSlot = slot?.trim().length > 0
@@ -126,7 +127,7 @@ const markdownContent = marked(content || "")
 
 {
   type === "collection" && variant === 1 && (
-    <Collection1 products={productInCollectionEntries} {...rest}>
+    <Collection1 products={MapEntries(productInCollectionEntries)} {...rest}>
       <Fragment set:html={slot} />
       <Fragment set:html={markdownContent} />
     </Collection1>
@@ -135,52 +136,56 @@ const markdownContent = marked(content || "")
 
 {
   type === "product" && variant === 1 && (
-    <Products1 {...rest}>
+    <Product1 {...rest}>
       <Fragment set:html={slot} />
       <Fragment set:html={markdownContent} />
-    </Products1>
+    </Product1>
   )
 }
 
 {
   type === "post" && variant === 1 && (
-    <Posts1 posts={articleEntries} {...rest}>
+    <Post1 {...rest}>
       <Fragment set:html={slot} />
       <Fragment set:html={markdownContent} />
-    </Posts1>
+    </Post1>
   )
 }
 
-{type === "pages" && variant === 1 && <Pages1 pages={pageEntries} {...rest} />}
+{
+  type === "pages" && variant === 1 && (
+    <Pages1 pages={MapEntries(pageEntries)} {...rest} />
+  )
+}
 
 {
   type === "posts" && variant === 1 && (
-    <Posts1 posts={articleEntries} {...rest} />
+    <Posts1 posts={MapEntries(postEntries)} {...rest} />
   )
 }
 {
   type === "products" && variant === 1 && (
-    <Products1 products={productEntries} {...rest} />
+    <Products1 products={MapEntries(productEntries)} {...rest} />
   )
 }
 {
   type === "persons" && variant === 1 && (
-    <Persons1 persons={personEntries} {...rest} />
+    <Persons1 persons={MapEntries(personEntries)} {...rest} />
   )
 }
 {
   type === "collections" && variant === 1 && (
-    <Collections1 collections={collectionEntries} {...rest} />
+    <Collections1 collections={MapEntries(collectionEntries)} {...rest} />
   )
 }
 {
   type === "reviews" && variant === 1 && (
-    <Reviews1 reviews={reviewEntries} {...rest} />
+    <Reviews1 reviews={MapEntries(reviewEntries)} {...rest} />
   )
 }
 {
   type === "locations" && variant === 1 && (
-    <Locations1 locations={locationEntries} {...rest} />
+    <Locations1 locations={MapEntries(locationEntries)} {...rest} />
   )
 }
 

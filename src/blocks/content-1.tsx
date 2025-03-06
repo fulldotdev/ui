@@ -32,8 +32,6 @@ function Content1({
     <Section className={cn(className)} {...props}>
       <Container className="flex flex-col">
         <Prose>
-          {title ? <Title level={level} text={title} /> : null}
-          {description ? <Description text={description} /> : null}
           <Image className="rounded-lg" {...image} />
           {children}
         </Prose>

@@ -61,7 +61,13 @@ function Pages1({
                   className="rounded-lg transition-opacity group-hover:opacity-75"
                   {...image}
                 />
-                <Title level={level} size={size} align={align} text={title} />
+                <Title
+                  className="text-2xl"
+                  level={level}
+                  size={size}
+                  align={align}
+                  text={title}
+                />
                 <Description
                   className="not-first:mt-4"
                   size={size}

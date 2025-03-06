@@ -26,10 +26,7 @@ function Accordion({ level, items, className, ...props }: Props) {
     >
       {items?.map((item, index) => (
         <AccordionItem key={uuid()} value={`${index}-${item.title}`}>
-          <AccordionTrigger asChild>
-            {/* <Title level={level}>{item.title}</Title> */}
-            {item.title}
-          </AccordionTrigger>
+          <AccordionTrigger>{item.title}</AccordionTrigger>
           <AccordionContent>{item.description}</AccordionContent>
         </AccordionItem>
       ))}
