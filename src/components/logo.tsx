@@ -11,7 +11,7 @@ interface Props extends React.ComponentProps<typeof Link> {
 }
 
 function Logo({ href = "/", src, alt, text, className, ...props }: Props) {
-  return src || text ? (
+  return (src || text) ? (
     <Link
       className={cn(
         "logo text-foreground flex items-center gap-3 text-base leading-none font-medium whitespace-nowrap",

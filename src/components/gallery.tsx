@@ -74,9 +74,12 @@ function Gallery({ images, className, ...props }: Props) {
               {images.map((image, index) => (
                 <CarouselItem className="basis-1/5 pl-2" key={uuidv4()}>
                   <Image
-                    className={cn("my-2 cursor-pointer rounded-sm ring-1", {
-                      "ring-ring": index === selectedIndex,
-                    })}
+                    className={cn(
+                      "my-2 cursor-pointer rounded-sm ring-1 ring-transparent",
+                      {
+                        "ring-ring": index === selectedIndex,
+                      }
+                    )}
                     onClick={() => onThumbClick(index)}
                     {...image}
                   />

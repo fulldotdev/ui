@@ -18,7 +18,7 @@ interface Props extends React.ComponentProps<"footer"> {
   menus?: React.ComponentProps<typeof Menu>[]
 }
 
-function Footer1({
+function Footer({
   logo,
   description,
   socials,
@@ -45,7 +45,7 @@ function Footer1({
             </p>
             <Socials className="mt-3 -ml-2" socials={socials} />
           </div>
-          <Channels align="start" {...channels} />
+          <Channels {...channels} />
           {hours && (
             <div className="flex flex-col items-start gap-2">
               <h6 className="text-sm font-medium">Openingstijden</h6>
@@ -71,4 +71,4 @@ function Footer1({
   )
 }
 
-export { Footer1 }
+export { Footer }

@@ -17,11 +17,14 @@ import { Header2 } from "@/blocks/header-2"
 import { Hero1 } from "@/blocks/hero-1"
 import { Hero2 } from "@/blocks/hero-2"
 import { Hero3 } from "@/blocks/hero-3"
+import { Locations1 } from "@/blocks/locations-1"
 import { Page1 } from "@/blocks/page-1"
 import { Pages1 } from "@/blocks/pages-1"
+import { Person1 } from "@/blocks/person-1"
 import { Persons1 } from "@/blocks/persons-1"
 import { Product1 } from "@/blocks/product-1"
 import { Products1 } from "@/blocks/products-1"
+import { Project1 } from "@/blocks/project-1"
 import { Projects1 } from "@/blocks/projects-1"
 import { Reviews1 } from "@/blocks/reviews-1"
 import { getCollection, getEntries } from "astro:content"
@@ -34,7 +37,6 @@ interface Props {
   type?: string
   variant?: number
   content?: string
-
   pages?: any[]
   articles?: any[]
   products?: any[]
@@ -42,6 +44,7 @@ interface Props {
   persons?: any[]
   collections?: any[]
   reviews?: any[]
+  locations?: any[]
 }
 
 let {
@@ -56,6 +59,7 @@ let {
   persons,
   collections,
   reviews,
+  locations,
   ...rest
 } = Astro.props
 
@@ -80,6 +84,9 @@ const reviewEntries = reviews
 const collectionEntries = collections
   ? await getEntries(collections)
   : await getCollection("collections")
+const locationEntries = locations
+  ? await getEntries(locations)
+  : await getCollection("locations")
 
 const productInCollectionEntries = productEntries?.filter((product) =>
   product?.data.collections?.find((c) => {
@@ -98,6 +105,7 @@ const mapEntries = (
     | typeof personEntries
     | typeof collectionEntries
     | typeof reviewEntries
+    | typeof locationEntries
 ) =>
   entries?.filter(Boolean).map(({ collection, id, data }) => ({
     href: getHref(collection, id),
@@ -232,7 +240,7 @@ const hasContent = slot && slot.trim().length > 0
 
 {
   type === "header" && variant === 1 && (
-    <Header1 {...rest}>
+    <Header1 client:load {...rest}>
       <Fragment set:html={markdownHtml} />
       <slot />
     </Header1>
@@ -241,7 +249,7 @@ const hasContent = slot && slot.trim().length > 0
 
 {
   type === "header" && variant === 2 && (
-    <Header2 {...rest}>
+    <Header2 client:load {...rest}>
       <Fragment set:html={markdownHtml} />
       <slot />
     </Header2>
@@ -284,11 +292,29 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
+  type === "location" && variant === 1 && hasContent && (
+    <Page1 {...rest}>
+      <Fragment set:html={markdownHtml} />
+      <Fragment set:html={slot} />
+    </Page1>
+  )
+}
+
+{
   type === "pages" && variant === 1 && (
     <Pages1 pages={mapEntries(pageEntries)} {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
     </Pages1>
+  )
+}
+
+{
+  type === "person" && variant === 1 && (
+    <Person1 person={mapEntries(personEntries)} {...rest}>
+      <Fragment set:html={markdownHtml} />
+      <Fragment set:html={slot} />
+    </Person1>
   )
 }
 
@@ -320,6 +346,15 @@ const hasContent = slot && slot.trim().length > 0
 }
 
 {
+  type === "project" && variant === 1 && (
+    <Projects1 projects={mapEntries(projectEntries)} {...rest}>
+      <Fragment set:html={markdownHtml} />
+      <Fragment set:html={slot} />
+    </Projects1>
+  )
+}
+
+{
   type === "projects" && variant === 1 && (
     <Projects1 projects={mapEntries(projectEntries)} {...rest}>
       <Fragment set:html={markdownHtml} />
@@ -334,5 +369,14 @@ const hasContent = slot && slot.trim().length > 0
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
     </Reviews1>
+  )
+}
+
+{
+  type === "locations" && variant === 1 && (
+    <Locations1 locations={mapEntries(locationEntries)} {...rest}>
+      <Fragment set:html={markdownHtml} />
+      <Fragment set:html={slot} />
+    </Locations1>
   )
 }

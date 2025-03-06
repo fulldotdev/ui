@@ -1,15 +1,16 @@
 import * as React from "react"
+import { Check } from "lucide-react"
 import { v4 as uuidv4 } from "uuid"
 
+import { getHref } from "@/lib/get-href"
 import { cn } from "@/lib/utils"
 import { Card } from "@/components/ui/card"
 import { Abstract } from "@/components/abstract"
+import { Button } from "@/components/button"
 import { Buttons } from "@/components/buttons"
 import { Column } from "@/components/column"
 import { Container } from "@/components/container"
 import { Grid } from "@/components/grid"
-import { Image } from "@/components/image"
-import { Link } from "@/components/link"
 import { Section } from "@/components/section"
 import { Writeup } from "@/components/writeup"
 
@@ -20,29 +21,27 @@ interface Props extends React.ComponentProps<typeof Section> {
   title?: React.ComponentProps<typeof Writeup>["title"]
   description?: React.ComponentProps<typeof Writeup>["description"]
   buttons?: React.ComponentProps<typeof Buttons>["buttons"]
-  persons?: {
-    href?: string
+  features?: {
     title?: string
     description?: string
-    image?: React.ComponentProps<typeof Image>
   }[]
 }
 
-function Persons1({
-  level,
+function Locations1({
+  level = 2,
   size,
   align,
   title,
   description,
   buttons,
-  persons,
+  locations,
   children,
   className,
   ...props
 }: Props) {
   return (
-    <Section className={cn("persons persons-1", className)} {...props}>
-      <Container className="gap-8" align={align}>
+    <Section className={cn("features features-1", className)} {...props}>
+      <Container className="gap-16" size="sm">
         <Writeup
           level={level}
           size={size}
@@ -52,29 +51,28 @@ function Persons1({
         >
           {children}
         </Writeup>
-        <Buttons size={size} align={align} buttons={buttons} />
-        <Grid className="mt-8 gap-16 first:mt-0">
-          {persons?.map(({ href, image, title, description }) => (
-            <Link className="max-w-md" key={uuidv4()} href={href}>
-              <Column className="gap-6" align={align}>
-                <Image
-                  className="aspect-square w-full max-w-60 rounded-full object-cover"
-                  {...image}
-                />
-                <Abstract
-                  align={align}
-                  level={level}
-                  size={size}
-                  title={title}
-                  description={description}
-                />
-              </Column>
-            </Link>
+        <Buttons buttons={buttons} />
+        <Column className="mt-16 gap-x-4 gap-y-4">
+          {locations?.map(({ href, title, description }) => (
+            <Card
+              className="flex flex-col items-start gap-4 p-6"
+              key={uuidv4()}
+            >
+              <Abstract
+                level={level}
+                align={align}
+                title={title}
+                description={description}
+              />
+              <Button variant="secondary" size="sm" href={href}>
+                Bekijk locatie
+              </Button>
+            </Card>
           ))}
-        </Grid>
+        </Column>
       </Container>
     </Section>
   )
 }
 
-export { Persons1 }
+export { Locations1 }

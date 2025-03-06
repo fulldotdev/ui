@@ -8,7 +8,8 @@ export function getHref(
     | "collections"
     | "projects"
     | "persons"
-    | "reviews",
+    | "reviews"
+    | "locations",
   slugOrId: string
 ) {
   if (collection === "reviews") return undefined

@@ -3,6 +3,7 @@ import { z } from "astro:content"
 
 export const reviewsSchema = z
   .object({
+    align: z.enum(["start", "center", "end"]),
     content: z.string(),
     reviews: pathSchema("projects").array(),
   })

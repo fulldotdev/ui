@@ -4,8 +4,9 @@ import { z } from "astro:content"
 
 export const contactSchema = z
   .object({
-    align: z.enum(["start", "center", "end"]),
-    size: z.enum(["xs", "sm", "default", "lg", "xl", "2xl"]),
+    variant: z.number().optional(),
+    align: z.enum(["start", "center", "end"]).optional(),
+    size: z.enum(["xs", "sm", "default", "lg", "xl", "2xl"]).optional(),
     content: z.string(),
     channels: channelsSchema,
     form: formSchema,

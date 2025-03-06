@@ -15,67 +15,61 @@ import { projectsSchema } from "@/schemas/blocks/projects"
 import { reviewsSchema } from "@/schemas/blocks/reviews"
 import { z } from "astro:content"
 
-export const sectionSchema = z.discriminatedUnion("type", [
-  collectionsSchema.extend({
-    type: z.literal("collections"),
-    variant: z.number().default(1),
-  }),
-  contactSchema.extend({
-    type: z.literal("contact"),
-    variant: z.number().default(1),
-  }),
-  contentSchema.extend({
-    type: z.literal("content"),
-    variant: z.number().default(1),
-  }),
-  ctaSchema.extend({
-    type: z.literal("cta"),
-    variant: z.number().default(1),
-  }),
-  faqsSchema.extend({
-    type: z.literal("faqs"),
-    variant: z.number().default(1),
-  }),
-  featuresSchema.extend({
-    type: z.literal("features"),
-    variant: z.number().default(1),
-  }),
-  heroSchema.extend({
-    type: z.literal("hero"),
-    variant: z.number().default(1),
-  }),
-  introSchema.extend({
-    type: z.literal("intro"),
-    variant: z.number().default(1),
-  }),
-  articlesSchema.extend({
-    type: z.literal("articles"),
-    variant: z.number().default(1),
-  }),
-  productsSchema.extend({
-    type: z.literal("products"),
-    variant: z.number().default(1),
-  }),
-  reviewsSchema.extend({
-    type: z.literal("reviews"),
-    variant: z.number().default(1),
-  }),
-  personsSchema.extend({
-    type: z.literal("persons"),
-    variant: z.number().default(1),
-  }),
-  projectsSchema.extend({
-    type: z.literal("projects"),
-    variant: z.number().default(1),
-  }),
-  pricingsSchema.extend({
-    type: z.literal("pricings"),
-    variant: z.number().default(1),
-  }),
-  pagesSchema.extend({
-    type: z.literal("pages"),
-    variant: z.number().default(1),
-  }),
-])
+import { pathSchema } from "../misc/path"
+import { buttonSchema } from "./button"
+import { channelsSchema } from "./channels"
+import { formSchema } from "./form"
+import { imageSchema } from "./image"
+import { priceSchema } from "./price"
+
+const itemSchema = z
+  .object({
+    title: z.string(),
+    description: z.string(),
+    image: imageSchema,
+    button: buttonSchema,
+    list: z.string().array(),
+    price: priceSchema,
+  })
+  .partial()
+
+export const sectionSchema = z.object({
+  type: z.enum([
+    "articles",
+    "collections",
+    "contact",
+    "content",
+    "cta",
+    "faqs",
+    "features",
+    "hero",
+    "intro",
+    "pages",
+    "persons",
+    "pricings",
+    "products",
+    "projects",
+    "locations",
+    "reviews",
+  ]),
+  variant: z.number().default(1),
+  align: z.enum(["start", "center", "end"]).optional(),
+  size: z.enum(["xs", "sm", "default", "lg", "xl", "2xl"]).optional(),
+  content: z.string().optional(),
+  buttons: buttonSchema.array().optional(),
+  channels: channelsSchema.optional(),
+  socials: z.string().array().optional(),
+  form: formSchema.optional(),
+  faqs: itemSchema.array().optional(),
+  image: imageSchema.optional(),
+  features: itemSchema.array().optional(),
+  pages: pathSchema("pages").array().optional(),
+  persons: pathSchema("persons").array().optional(),
+  projects: pathSchema("projects").array().optional(),
+  products: pathSchema("products").array().optional(),
+  reviews: pathSchema("reviews").array().optional(),
+  articles: pathSchema("articles").array().optional(),
+  collections: pathSchema("collections").array().optional(),
+})
 
 export type SectionSchema = z.infer<typeof sectionSchema>

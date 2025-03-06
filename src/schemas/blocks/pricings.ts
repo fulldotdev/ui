@@ -5,6 +5,8 @@ import { priceSchema } from "../components/price"
 
 export const pricingsSchema = z
   .object({
+    variant: z.number().optional(),
+    align: z.enum(["start", "center", "end"]).optional(),
     content: z.string(),
     pricings: z
       .object({

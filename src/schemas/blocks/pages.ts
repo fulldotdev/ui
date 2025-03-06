@@ -4,6 +4,7 @@ import { z } from "astro:content"
 
 export const pagesSchema = z
   .object({
+    align: z.enum(["start", "center", "end"]),
     content: z.string(),
     button: buttonSchema,
     pages: pathSchema("pages").array(),

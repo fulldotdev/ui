@@ -42,7 +42,7 @@ function Contact1({
         >
           {children}
         </Writeup>
-        <Channels {...channels} />
+        <Channels align={align} {...channels} />
         <Form className="mt-8 first:mt-0" {...form} />
       </Container>
     </Section>

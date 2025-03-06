@@ -16,6 +16,7 @@ export async function getStaticPaths() {
   const persons = await getCollection("persons")
   const products = await getCollection("products")
   const projects = await getCollection("projects")
+  const locations = await getCollection("locations")
   const entries = [
     ...pages,
     ...articles,
@@ -23,6 +24,7 @@ export async function getStaticPaths() {
     ...products,
     ...projects,
     ...persons,
+    ...locations,
   ]
 
   return entries.map((entry) => ({
@@ -46,7 +48,7 @@ const products = await getCollection("products")
 const projects = await getCollection("projects")
 const persons = await getCollection("persons")
 const collections = await getCollection("collections")
-
+const locations = await getCollection("locations")
 function collectionToLinks(
   collection:
     | typeof pages
@@ -55,6 +57,7 @@ function collectionToLinks(
     | typeof projects
     | typeof persons
     | typeof collections
+    | typeof locations
 ) {
   return collection.map((item) => ({
     text: item.data.title,
@@ -87,7 +90,13 @@ const search = [
     heading: "Personen",
     links: collectionToLinks(persons),
   },
+  {
+    heading: "Locaties",
+    links: collectionToLinks(locations),
+  },
 ]
+
+console.log(sections)
 ---
 
 <Layout {...restSettings} {...restData} {...seo}>

@@ -17,7 +17,7 @@ function Masonry({
   return hasChildren(children) ? (
     <div
       className={cn(
-        "masonry relative w-full space-y-4 gap-x-4",
+        "masonry child:break-inside-avoid relative w-full space-y-4 gap-x-4",
         {
           "sm:columns-2": size === "default",
           "md:columns-3": size === "default" && length === 3,

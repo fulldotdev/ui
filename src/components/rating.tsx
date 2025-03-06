@@ -4,16 +4,18 @@ import { Star, StarHalf } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface Props extends React.ComponentProps<"div"> {
-  score?: number | undefined | null
+  score?: number | undefined
 }
 
 function Rating({ score, className, ...props }: Props) {
   const getIcon = (count: number) => {
     if (!score) return undefined
     const difference = score - count
-    if (difference >= -0.25) return <Star className="size-[1em]" />
-    if (difference >= -0.75) return <StarHalf className="size-[1em]" />
-    return <Star className="size-[1em]" />
+    if (difference >= -0.25)
+      return <Star className="size-[1em]" fill="currentColor" />
+    if (difference >= -0.75)
+      return <StarHalf className="size-[1em]" fill="currentColor" />
+    return <Star className="size-[1em]" fill="currentColor" />
   }
 
   return score ? (

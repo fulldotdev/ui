@@ -19,7 +19,7 @@ interface Props extends React.ComponentProps<typeof Section> {
 
 function Hero1({
   level = 1,
-  size = "xl",
+  size = "lg",
   align,
   title,
   description,
@@ -29,6 +29,7 @@ function Hero1({
   children,
   ...props
 }: Props) {
+  console.log(image)
   return (
     <Section className={cn("hero hero-1", className)} {...props}>
       <Container className="gap-8" align={align}>
