@@ -10,7 +10,7 @@ import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
 interface Props extends React.ComponentProps<typeof Section> {
-  level: React.ComponentProps<typeof Title>["level"]
+  level?: React.ComponentProps<typeof Title>["level"]
   size?: React.ComponentProps<typeof Title>["size"]
   align?: React.ComponentProps<typeof Title>["align"]
   title?: React.ComponentProps<typeof Title>["text"]
@@ -19,8 +19,8 @@ interface Props extends React.ComponentProps<typeof Section> {
   image?: React.ComponentProps<typeof Image>
 }
 
-function Content1({
-  level,
+function Media1({
+  level = 2,
   size,
   align,
   title,
@@ -55,4 +55,4 @@ function Content1({
   )
 }
 
-export { Content1 }
+export { Media1 }

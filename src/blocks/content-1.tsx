@@ -9,7 +9,7 @@ import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
 interface Props extends React.ComponentProps<typeof Section> {
-  level: React.ComponentProps<typeof Title>["level"]
+  level?: React.ComponentProps<typeof Title>["level"]
   size?: React.ComponentProps<typeof Title>["size"]
   align?: React.ComponentProps<typeof Title>["align"]
   title?: React.ComponentProps<typeof Title>["text"]
@@ -18,6 +18,9 @@ interface Props extends React.ComponentProps<typeof Section> {
 }
 
 function Content1({
+  level = 1,
+  size,
+  align,
   title,
   description,
   image,
@@ -29,8 +32,8 @@ function Content1({
     <Section className={cn(className)} {...props}>
       <Container className="flex flex-col">
         <Prose>
-          {title ? <Title level={1}>{title}</Title> : null}
-          {description ? <Description>{description}</Description> : null}
+          {title ? <Title level={level} text={title} /> : null}
+          {description ? <Description text={description} /> : null}
           <Image className="rounded-lg" {...image} />
           {children}
         </Prose>

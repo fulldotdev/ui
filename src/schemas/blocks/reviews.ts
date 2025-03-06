@@ -3,9 +3,11 @@ import { z } from "astro:content"
 
 export const reviewsSchema = z
   .object({
-    align: z.enum(["start", "center", "end"]),
-    content: z.string(),
-    reviews: pathSchema("projects").array(),
+    level: z.number().optional(),
+    size: z.enum(["xs", "sm", "default", "lg", "xl", "2xl"]).optional(),
+    align: z.enum(["start", "center", "end"]).optional(),
+    title: z.string().optional(),
+    description: z.string().optional(),
+    reviews: pathSchema.array().optional(),
   })
-  .partial()
   .strict()

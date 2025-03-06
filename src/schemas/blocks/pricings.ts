@@ -5,21 +5,22 @@ import { priceSchema } from "../components/price"
 
 export const pricingsSchema = z
   .object({
-    variant: z.number().optional(),
+    level: z.number().optional(),
+    size: z.enum(["xs", "sm", "default", "lg", "xl", "2xl"]).optional(),
     align: z.enum(["start", "center", "end"]).optional(),
-    content: z.string(),
+    title: z.string().optional(),
+    description: z.string().optional(),
     pricings: z
       .object({
-        title: z.string(),
-        description: z.string(),
-        price: priceSchema,
-        price_unit: z.string(),
-        list: z.string().array(),
-        button: buttonSchema,
+        title: z.string().optional(),
+        description: z.string().optional(),
+        price: priceSchema.optional(),
+        price_unit: z.string().optional(),
+        list: z.string().array().optional(),
+        button: buttonSchema.optional(),
       })
-      .partial()
       .strict()
-      .array(),
+      .array()
+      .optional(),
   })
-  .partial()
   .strict()

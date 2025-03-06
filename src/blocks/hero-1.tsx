@@ -21,7 +21,7 @@ interface Props extends React.ComponentProps<typeof Section> {
 
 function Hero1({
   level = 1,
-  size = "lg",
+  size = "xl",
   align,
   title,
   description,

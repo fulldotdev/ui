@@ -3,14 +3,12 @@ import { sectionSchema } from "@/schemas/components/section"
 import { seoSchema } from "@/schemas/misc/seo"
 import { z } from "astro:content"
 
-export const articleSchema = z
+export const locationSchema = z
   .object({
-    type: z.literal("article").default("article"),
-    title: z.string(),
-    description: z.string(),
-    image: imageSchema,
-    sections: sectionSchema.array(),
-    seo: seoSchema,
+    title: z.string().optional(),
+    description: z.string().optional(),
+    image: imageSchema.optional(),
+    sections: sectionSchema.array().optional(),
+    seo: seoSchema.optional(),
   })
-  .partial()
   .strict()

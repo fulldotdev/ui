@@ -3,19 +3,20 @@ import { z } from "astro:content"
 
 export const featuresSchema = z
   .object({
-    size: z.enum(["default", "lg", "xl"]),
-    align: z.enum(["start", "center", "end"]),
-    content: z.string(),
+    level: z.number().optional(),
+    size: z.enum(["xs", "sm", "default", "lg", "xl", "2xl"]).optional(),
+    align: z.enum(["start", "center", "end"]).optional(),
+    title: z.string().optional(),
+    description: z.string().optional(),
     buttons: buttonSchema.array().optional(),
     features: z
       .object({
-        icon: z.string(),
-        title: z.string(),
-        description: z.string(),
+        icon: z.string().optional(),
+        title: z.string().optional(),
+        description: z.string().optional(),
       })
-      .partial()
       .strict()
-      .array(),
+      .array()
+      .optional(),
   })
-  .partial()
   .strict()

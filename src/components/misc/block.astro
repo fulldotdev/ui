@@ -1,9 +1,10 @@
 ---
+import { Banner1 } from "@/blocks/banner-1"
 import { Collection1 } from "@/blocks/collection-1"
 import { Collections1 } from "@/blocks/collections-1"
 import { Contact1 } from "@/blocks/contact-1"
 import { Contact2 } from "@/blocks/contact-2"
-import { Article1 } from "@/blocks/content-1"
+import { Content1 } from "@/blocks/content-1"
 import { Cta1 } from "@/blocks/cta-1"
 import { Faqs1 } from "@/blocks/faqs-1"
 import { Faqs2 } from "@/blocks/faqs-2"
@@ -15,12 +16,13 @@ import { Hero1 } from "@/blocks/hero-1"
 import { Hero2 } from "@/blocks/hero-2"
 import { Hero3 } from "@/blocks/hero-3"
 import { Locations1 } from "@/blocks/locations-1"
-import { Content1 } from "@/blocks/media-1"
-import { Content2 } from "@/blocks/media-2"
+import { Media1 } from "@/blocks/media-1"
+import { Media2 } from "@/blocks/media-2"
 import { Pages1 } from "@/blocks/pages-1"
 import { Persons1 } from "@/blocks/persons-1"
 import { Post1 } from "@/blocks/post-1"
 import { Posts1 } from "@/blocks/posts-1"
+import { Pricings1 } from "@/blocks/pricings-1"
 import { Product1 } from "@/blocks/product-1"
 import { Products1 } from "@/blocks/products-1"
 import { Reviews1 } from "@/blocks/reviews-1"
@@ -31,12 +33,12 @@ import { marked } from "marked"
 import { getHref } from "@/lib/get-href"
 
 interface Props {
+  type: string
+  variant: number
   entryId?: string
-  type?: string
-  variant?: number
   content?: string
   pages?: any[]
-  articles?: any[]
+  posts?: any[]
   products?: any[]
   projects?: any[]
   persons?: any[]
@@ -46,12 +48,12 @@ interface Props {
 }
 
 let {
-  entryId,
   type,
-  variant = 1,
+  variant,
+  entryId,
   content,
   pages,
-  articles,
+  posts,
   products,
   projects,
   persons,
@@ -71,12 +73,17 @@ async function getRightEntries(
     if (childrenCollection && childrenCollection.length > 0)
       return childrenCollection
     const keyCollection = await getCollection(collection as keyof AnyEntryMap)
-    return keyCollection
+    const mapped = keyCollection?.map((entry) => ({
+      href: getHref(collection, entry.id),
+      image: "images" in entry.data ? entry.data.images?.[0] : undefined,
+      ...entry.data,
+    }))
+    return mapped as any[]
   }
 }
 
 const pageEntries = await getRightEntries("pages", pages)
-const articleEntries = await getRightEntries("posts", articles)
+const articleEntries = await getRightEntries("posts", posts)
 const productEntries = await getRightEntries("products", products)
 const projectEntries = await getRightEntries("projects", projects)
 const personEntries = await getRightEntries("persons", persons)
@@ -84,286 +91,128 @@ const reviewEntries = await getRightEntries("reviews", reviews)
 const collectionEntries = await getRightEntries("collections", collections)
 const locationEntries = await getRightEntries("locations", locations)
 
-const productInCollectionEntries = productEntries?.filter((product) =>
-  product?.data.collections?.find((c) => {
-    if (typeof c === "string") return false
-    if ("id" in c) return c.id === entryId
-    if ("slug" in c) return c.slug === entryId
-    return false
-  })
-)
-const mapEntries = (
-  entries:
-    | typeof pageEntries
-    | typeof articleEntries
-    | typeof productEntries
-    | typeof projectEntries
-    | typeof personEntries
-    | typeof collectionEntries
-    | typeof reviewEntries
-    | typeof locationEntries
-) =>
-  entries?.filter(Boolean).map(({ collection, id, data }) => ({
-    href: getHref(collection, id),
-    image: "images" in data ? data.images?.[0] : undefined,
-    ...data,
+const productInCollectionEntries = productEntries
+  ?.filter((product) =>
+    product?.data.collections?.find((c) => {
+      if (typeof c === "string") return false
+      if ("id" in c) return c.id === entryId
+      if ("slug" in c) return c.slug === entryId
+      return false
+    })
+  )
+  .map((product) => ({
+    href: getHref("products", product.id),
+    image: "images" in product.data ? product.data.images?.[0] : undefined,
+    ...product.data,
   }))
 
-const markdownHtml = marked(content || "")
-
 const slot = await Astro.slots.render("default")
-const hasContent = slot && slot.trim().length > 0
+const hasSlot = slot.trim().length > 0
+const markdownContent = marked(content || "")
 ---
 
-{
-  type === "banner" && variant === 1 && (
-    <Banner1 {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Banner1>
-  )
+<!--  content -->{
+  (type === "content" ||
+    type === "page" ||
+    type == "location" ||
+    type === "person") &&
+    variant === 1 && (
+      <Content1 {...rest}>
+        <slot>
+          <Fragment set:html={markdownContent} />
+        </slot>
+      </Content1>
+    )
 }
 
 {
   type === "collection" && variant === 1 && (
-    <Collection1
-      client:load
-      products={mapEntries(productInCollectionEntries)}
-      {...rest}
-    >
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
+    <Collection1 products={productInCollectionEntries} {...rest}>
+      <slot>
+        <Fragment set:html={markdownContent} />
+      </slot>
     </Collection1>
   )
 }
 
 {
-  type === "collections" && variant === 1 && (
-    <Collections1 collections={mapEntries(collectionEntries)} {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Collections1>
-  )
-}
-
-{
-  type === "contact" && variant === 1 && (
-    <Contact1 {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Contact1>
-  )
-}
-
-{
-  type === "contact" && variant === 2 && (
-    <Contact2 {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Contact2>
-  )
-}
-
-{
-  type === "content" && variant === 1 && (
-    <Content1 {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Content1>
-  )
-}
-{
-  type === "content" && variant === 2 && (
-    <Content2 {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Content2>
-  )
-}
-{
-  type === "cta" && variant === 1 && (
-    <Cta1 {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Cta1>
-  )
-}
-
-{
-  type === "faqs" && variant === 1 && (
-    <Faqs1 client:load {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Faqs1>
-  )
-}
-
-{
-  type === "faqs" && variant === 2 && (
-    <Faqs2 client:load {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <slot />
-    </Faqs2>
-  )
-}
-
-{
-  type === "features" && variant === 1 && (
-    <Features1 {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <slot />
-    </Features1>
-  )
-}
-
-{
-  type === "footer" && variant === 1 && (
-    <Footer1 {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <slot />
-    </Footer1>
-  )
-}
-
-{
-  type === "header" && variant === 1 && (
-    <Header1 client:load {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <slot />
-    </Header1>
-  )
-}
-
-{
-  type === "header" && variant === 2 && (
-    <Header2 client:load {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <slot />
-    </Header2>
-  )
-}
-{
-  type === "hero" && variant === 1 && (
-    <Hero1 {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <slot />
-    </Hero1>
-  )
-}
-
-{
-  type === "hero" && variant === 3 && (
-    <Hero3 {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <slot />
-    </Hero3>
-  )
-}
-
-{
-  type === "hero" && variant === 2 && (
-    <Hero2 {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <slot />
-    </Hero2>
-  )
-}
-
-{
-  type === "page" && variant === 1 && hasContent && (
-    <Page1 {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Page1>
-  )
-}
-
-{
-  type === "location" && variant === 1 && hasContent && (
-    <Page1 {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Page1>
-  )
-}
-
-{
-  type === "pages" && variant === 1 && (
-    <Pages1 pages={mapEntries(pageEntries)} {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Pages1>
-  )
-}
-
-{
-  type === "person" && variant === 1 && (
-    <Person1 person={mapEntries(personEntries)} {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Person1>
-  )
-}
-
-{
-  type === "persons" && variant === 1 && (
-    <Persons1 persons={mapEntries(personEntries)} {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Persons1>
-  )
-}
-
-{
   type === "product" && variant === 1 && (
-    <Product1 client:load {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Product1>
-  )
-}
-
-{
-  type === "products" && variant === 1 && (
-    <Products1 products={mapEntries(productEntries)} {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
+    <Products1 {...rest}>
+      <slot>
+        <Fragment set:html={markdownContent} />
+      </slot>
     </Products1>
   )
 }
 
 {
-  type === "project" && variant === 1 && (
-    <Projects1 projects={mapEntries(projectEntries)} {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Projects1>
+  type === "post" && variant === 1 && (
+    <Posts1 posts={articleEntries} {...rest}>
+      <slot>
+        <Fragment set:html={markdownContent} />
+      </slot>
+    </Posts1>
   )
 }
+
+<!-- entries -->
+{type === "pages" && variant === 1 && <Pages1 pages={pageEntries} {...rest} />}
 
 {
-  type === "projects" && variant === 1 && (
-    <Projects1 projects={mapEntries(projectEntries)} {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Projects1>
+  type === "posts" && variant === 1 && (
+    <Posts1 posts={articleEntries} {...rest} />
   )
 }
-
+{
+  type === "products" && variant === 1 && (
+    <Products1 products={productEntries} {...rest} />
+  )
+}
+{
+  type === "persons" && variant === 1 && (
+    <Persons1 persons={personEntries} {...rest} />
+  )
+}
+{
+  type === "collections" && variant === 1 && (
+    <Collections1 collections={collectionEntries} {...rest} />
+  )
+}
 {
   type === "reviews" && variant === 1 && (
-    <Reviews1 reviews={mapEntries(reviewEntries)} {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Reviews1>
+    <Reviews1 reviews={reviewEntries} {...rest} />
+  )
+}
+{
+  type === "locations" && variant === 1 && (
+    <Locations1 locations={locationEntries} {...rest} />
   )
 }
 
-{
-  type === "locations" && variant === 1 && (
-    <Locations1 locations={mapEntries(locationEntries)} {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Locations1>
-  )
-}
+<!-- globals -->
+{type === "banner" && variant === 1 && <Banner1 {...rest} />}
+
+{type === "header" && variant === 1 && <Header1 client:load {...rest} />}
+{type === "header" && variant === 2 && <Header2 client:load {...rest} />}
+
+{type === "footer" && variant === 1 && <Footer1 {...rest} />}
+
+<!-- sections -->
+{type === "contact" && variant === 1 && <Contact1 {...rest} />}
+{type === "contact" && variant === 2 && <Contact2 {...rest} />}
+
+{type === "cta" && variant === 1 && <Cta1 {...rest} />}
+
+{type === "faqs" && variant === 1 && <Faqs1 client:load {...rest} />}
+{type === "faqs" && variant === 2 && <Faqs2 client:load {...rest} />}
+
+{type === "features" && variant === 1 && <Features1 {...rest} />}
+
+{type === "hero" && variant === 1 && <Hero1 {...rest} />}
+{type === "hero" && variant === 2 && <Hero2 {...rest} />}
+{type === "hero" && variant === 3 && <Hero3 {...rest} />}
+
+{type === "media" && variant === 1 && <Media1 {...rest} />}
+{type === "media" && variant === 2 && <Media2 {...rest} />}
+
+{type === "pricings" && variant === 1 && <Pricings1 {...rest} />}

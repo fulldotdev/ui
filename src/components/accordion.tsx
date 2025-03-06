@@ -11,7 +11,7 @@ import {
 import { Title } from "@/components/title"
 
 type Props = React.ComponentProps<typeof AccordionRoot> & {
-  level: React.ComponentProps<typeof Title>["level"]
+  level?: React.ComponentProps<typeof Title>["level"]
   items?: {
     title?: string
     description?: string

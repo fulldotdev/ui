@@ -6,6 +6,8 @@ import { reviewSchema } from "@/schemas/content/review"
 import { defineCollection } from "astro:content"
 import { file, glob } from "astro/loaders"
 
+import { collectionSchema } from "./schemas/content/collection"
+
 export const collections = {
   pages: defineCollection({
     loader: glob({
@@ -35,12 +37,12 @@ export const collections = {
     }),
     schema: pageSchema,
   }),
-  products: defineCollection({
-    loader: shopifyProductsLoader(),
-  }),
-  collections: defineCollection({
-    loader: shopifyCollectionsLoader(),
-  }),
+  // products: defineCollection({
+  //   loader: shopifyProductsLoader(),
+  // }),
+  // collections: defineCollection({
+  //   loader: shopifyCollectionsLoader(),
+  // }),
   reviews: defineCollection({
     loader: file("src/content/reviews.json", {
       parser: (text) =>

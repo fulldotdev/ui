@@ -10,7 +10,7 @@ import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
 interface Props extends React.ComponentProps<typeof Section> {
-  level: React.ComponentProps<typeof Title>["level"]
+  level?: React.ComponentProps<typeof Title>["level"]
   size?: React.ComponentProps<typeof Title>["size"]
   align?: React.ComponentProps<typeof Title>["align"]
   title?: React.ComponentProps<typeof Title>["text"]
@@ -20,7 +20,7 @@ interface Props extends React.ComponentProps<typeof Section> {
 }
 
 function Hero3({
-  level,
+  level = 1,
   size = "xl",
   align,
   title,

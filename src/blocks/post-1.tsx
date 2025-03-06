@@ -8,17 +8,18 @@ import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
 interface Props extends React.ComponentProps<typeof Section> {
+  level?: React.ComponentProps<typeof Title>["level"]
   title?: React.ComponentProps<typeof Title>["text"]
   description?: string
   image?: React.ComponentProps<typeof Image>
 }
 
-function Post1({ title, description, image, children }: Props) {
+function Post1({ level = 1, title, description, image, children }: Props) {
   return (
     <Section>
       <Container className="flex flex-col">
         <Prose>
-          {title ? <Title level={1} text={title} /> : null}
+          {title ? <Title level={level} text={title} /> : null}
           {description ? <Description text={description} /> : null}
           <Image className="rounded-lg" {...image} />
           {children}

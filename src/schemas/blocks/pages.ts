@@ -4,10 +4,12 @@ import { z } from "astro:content"
 
 export const pagesSchema = z
   .object({
-    align: z.enum(["start", "center", "end"]),
-    content: z.string(),
-    button: buttonSchema,
-    pages: pathSchema("pages").array(),
+    level: z.number().optional(),
+    size: z.enum(["xs", "sm", "default", "lg", "xl", "2xl"]).optional(),
+    align: z.enum(["start", "center", "end"]).optional(),
+    title: z.string().optional(),
+    description: z.string().optional(),
+    button: buttonSchema.optional(),
+    pages: pathSchema.array().optional(),
   })
-  .partial()
   .strict()

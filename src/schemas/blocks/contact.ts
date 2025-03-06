@@ -4,12 +4,12 @@ import { z } from "astro:content"
 
 export const contactSchema = z
   .object({
-    variant: z.number().optional(),
-    align: z.enum(["start", "center", "end"]).optional(),
+    level: z.number().optional(),
     size: z.enum(["xs", "sm", "default", "lg", "xl", "2xl"]).optional(),
-    content: z.string(),
-    channels: channelsSchema,
-    form: formSchema,
+    align: z.enum(["start", "center", "end"]).optional(),
+    title: z.string().optional(),
+    description: z.string().optional(),
+    channels: channelsSchema.optional(),
+    form: formSchema.optional(),
   })
-  .partial()
   .strict()

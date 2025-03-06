@@ -4,11 +4,13 @@ import { z } from "astro:content"
 
 export const contentSchema = z
   .object({
-    size: z.enum(["default", "lg", "xl"]),
-    align: z.enum(["start", "center", "end"]),
-    content: z.string(),
-    buttons: buttonSchema.array(),
-    image: imageSchema,
+    level: z.number().optional(),
+    size: z.enum(["xs", "sm", "default", "lg", "xl", "2xl"]).optional(),
+    align: z.enum(["start", "center", "end"]).optional(),
+    title: z.string().optional(),
+    description: z.string().optional(),
+    content: z.string().optional(),
+    buttons: buttonSchema.array().optional(),
+    image: imageSchema.optional(),
   })
-  .partial()
   .strict()

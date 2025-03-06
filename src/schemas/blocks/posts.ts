@@ -1,22 +1,16 @@
 import { buttonSchema } from "@/schemas/components/button"
 import { reference, z } from "astro:content"
 
-export const articlesSchema = z
-  .object({
-    align: z.enum(["start", "center", "end"]),
-    size: z.enum(["xs", "sm", "md", "lg", "xl", "2xl"]),
-    title: z.string(),
-    description: z.string(),
-    content: z.string(),
-    buttons: buttonSchema.array(),
-    posts: reference("posts").array(),
-  })
-  .partial()
-  .strict()
+import { pathSchema } from "../misc/path"
 
-const test = z.object({
-  posts: z.union([z.literal("children"), "articles"]),
-  postt: z.object({
-    posts: z.literal("children"),
-  }),
-})
+export const postsSchema = z
+  .object({
+    level: z.number().optional(),
+    size: z.enum(["xs", "sm", "default", "lg", "xl", "2xl"]).optional(),
+    align: z.enum(["start", "center", "end"]).optional(),
+    title: z.string().optional(),
+    description: z.string().optional(),
+    buttons: buttonSchema.array().optional(),
+    posts: pathSchema.array().optional(),
+  })
+  .strict()
