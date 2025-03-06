@@ -10,7 +10,7 @@ interface Props extends React.HTMLAttributes<HTMLElement> {
   items?: ((React.ComponentProps<typeof Link> & { text: string }) | string)[]
 }
 
-function Banner({ children, items, className, ...props }: Props) {
+function Banner1({ children, items, className, ...props }: Props) {
   return items ? (
     <header
       className={cn(
@@ -61,4 +61,4 @@ function Banner({ children, items, className, ...props }: Props) {
   ) : null
 }
 
-export { Banner }
+export { Banner1 }

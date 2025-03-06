@@ -3,8 +3,10 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
 import { Container } from "@/components/container"
+import { Description } from "@/components/description"
 import { Image } from "@/components/image"
 import { Section } from "@/components/section"
+import { Title } from "@/components/title"
 import { Writeup } from "@/components/writeup"
 
 interface Props extends React.ComponentProps<typeof Section> {
@@ -26,24 +28,24 @@ function Hero1({
   buttons,
   image,
   className,
-  children,
   ...props
 }: Props) {
-  console.log(image)
   return (
     <Section className={cn("hero hero-1", className)} {...props}>
-      <Container className="gap-8" align={align}>
-        <Writeup
-          level={level}
+      <Container align={align}>
+        <Title level={level} size={size} align={align} title={title}>
+          {title}
+        </Title>
+        <Description className="not-first:mt-4" size={size} align={align}>
+          {description}
+        </Description>
+        <Buttons
+          className="not-first:mt-8"
           size={size}
           align={align}
-          title={title}
-          description={description}
-        >
-          {children}
-        </Writeup>
-        <Buttons size={size} align={align} buttons={buttons} />
-        <Image className="mt-8 rounded-lg first:mt-0" {...image} />
+          buttons={buttons}
+        />
+        <Image className="rounded-lg not-first:mt-16" {...image} />
       </Container>
     </Section>
   )

@@ -3,8 +3,10 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
 import { Container } from "@/components/container"
+import { Description } from "@/components/description"
 import { Image } from "@/components/image"
 import { Section } from "@/components/section"
+import { Title } from "@/components/title"
 import { Writeup } from "@/components/writeup"
 
 interface Props extends React.ComponentProps<typeof Section> {
@@ -26,7 +28,6 @@ function Hero3({
   buttons,
   image,
   className,
-  children,
   ...props
 }: Props) {
   return (
@@ -42,21 +43,17 @@ function Hero3({
         {...image}
       />
       <Container
-        className="pt-header h-full justify-center gap-8"
+        className="pt-header relative h-full justify-center"
         align={align}
       >
-        <Writeup
-          className="relative"
-          level={level}
-          size={size}
-          align={align}
-          title={title}
-          description={description}
-        >
-          {children}
-        </Writeup>
+        <Title level={level} size={size} align={align} title={title}>
+          {title}
+        </Title>
+        <Description className="not-first:mt-4" size={size} align={align}>
+          {description}
+        </Description>
         <Buttons
-          className="relative"
+          className="not-first:mt-8"
           size={size}
           align={align}
           buttons={buttons}

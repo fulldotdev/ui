@@ -2,6 +2,8 @@ import * as React from "react"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
+import { Abstract } from "@/components/abstract"
+import { Buttons } from "@/components/buttons"
 import { Container } from "@/components/container"
 import { Grid } from "@/components/grid"
 import { Image } from "@/components/image"
@@ -15,26 +17,28 @@ interface Props extends React.ComponentProps<typeof Section> {
   align?: React.ComponentProps<typeof Writeup>["align"]
   title?: React.ComponentProps<typeof Writeup>["title"]
   description?: React.ComponentProps<typeof Writeup>["description"]
-  articles?: {
+  buttons?: React.ComponentProps<typeof Buttons>["buttons"]
+  posts?: {
     href?: React.ComponentProps<typeof Link>["href"]
     title?: string
     image?: React.ComponentProps<typeof Image>
   }[]
 }
 
-function Articles1({
+function Posts1({
   level,
   size,
   align,
   title,
   description,
-  articles,
-  className,
+  buttons,
+  posts,
   children,
+  className,
   ...props
 }: Props) {
   return (
-    <Section className={cn("articles articles-1", className)} {...props}>
+    <Section className={cn("posts posts-1", className)} {...props}>
       <Container className="gap-8" align={align}>
         <Writeup
           level={level}
@@ -45,8 +49,9 @@ function Articles1({
         >
           {children}
         </Writeup>
-        <Grid size="lg" className="mt-8 gap-x-4 gap-y-8 first:mt-0">
-          {articles?.map(({ href, title, image }) => (
+        <Buttons buttons={buttons} />
+        <Grid className="mt-8 gap-x-4 gap-y-8 first:mt-0" size="lg">
+          {posts?.map(({ href, title, image }) => (
             <Link
               className="group flex flex-col gap-3"
               key={uuidv4()}
@@ -56,7 +61,7 @@ function Articles1({
                 className="bg-card rounded-lg object-contain transition-opacity group-hover:opacity-75"
                 {...image}
               />
-              <h3 className="text-md">{title}</h3>
+              <Abstract level={level} size={size} title={title} />
             </Link>
           ))}
         </Grid>
@@ -65,4 +70,4 @@ function Articles1({
   )
 }
 
-export { Articles1 }
+export { Posts1 }

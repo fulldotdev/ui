@@ -11,7 +11,7 @@ interface Props extends React.ComponentProps<typeof Section> {
   image?: React.ComponentProps<typeof Image>
 }
 
-function Article1({ title, description, image, children }: Props) {
+function Post1({ title, description, image, children }: Props) {
   return (
     <Section>
       <Container className="flex flex-col">
@@ -26,4 +26,4 @@ function Article1({ title, description, image, children }: Props) {
   )
 }
 
-export { Article1 }
+export { Post1 }

@@ -9,7 +9,14 @@ export const articlesSchema = z
     description: z.string(),
     content: z.string(),
     buttons: buttonSchema.array(),
-    articles: reference("articles").array(),
+    posts: reference("posts").array(),
   })
   .partial()
   .strict()
+
+const test = z.object({
+  posts: z.union([z.literal("children"), "articles"]),
+  postt: z.object({
+    posts: z.literal("children"),
+  }),
+})

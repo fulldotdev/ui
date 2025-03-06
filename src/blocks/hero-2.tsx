@@ -4,9 +4,12 @@ import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
 import { Column } from "@/components/column"
 import { Container } from "@/components/container"
+import { Description } from "@/components/description"
 import { Grid } from "@/components/grid"
 import { Image } from "@/components/image"
 import { Section } from "@/components/section"
+import { Split } from "@/components/split"
+import { Title } from "@/components/title"
 import { Writeup } from "@/components/writeup"
 
 interface Props extends React.ComponentProps<typeof Section> {
@@ -26,27 +29,22 @@ function Hero2({
   description,
   buttons,
   image,
-  children,
   className,
   ...props
 }: Props) {
   return (
     <Section className={cn("content content-1", className)} {...props}>
       <Container>
-        <Grid className="gap-16" align={align}>
-          <Column className="gap-8">
-            <Writeup
-              level={level}
-              size={size}
-              title={title}
-              description={description}
-            >
-              {children}
-            </Writeup>
-            <Buttons size={size} buttons={buttons} />
-          </Column>
-          <Image className="rounded-lg" {...image} />
-        </Grid>
+        <Split align={align}>
+          <Title level={level} size={size} align={align}>
+            {title}
+          </Title>
+          <Description className="not-first:mt-4" size={size} align={align}>
+            {description}
+          </Description>
+          <Buttons className="not-first:mt-8" size={size} buttons={buttons} />
+          <Image className="rounded-lg not-first:mt-16" {...image} />
+        </Split>
       </Container>
     </Section>
   )

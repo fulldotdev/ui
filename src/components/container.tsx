@@ -8,7 +8,7 @@ interface ContainerProps extends React.ComponentProps<"div"> {
 }
 
 function Container({
-  size,
+  size = "default",
   className,
   children,
   ...propsWithAlign
@@ -17,7 +17,7 @@ function Container({
   return hasChildren(children) ? (
     <div
       className={cn(
-        "mx-auto w-full max-w-screen-xl px-4",
+        "mx-auto w-full px-4",
         {
           "flex flex-col": "align" in propsWithAlign,
           "items-start": align === "start",

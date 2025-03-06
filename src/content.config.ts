@@ -1,9 +1,7 @@
 import { shopifyCollectionsLoader } from "@/loaders/shopify-collections-loader"
 import { shopifyProductsLoader } from "@/loaders/shopify-products-loader"
-import { articleSchema } from "@/schemas/content/article"
 import { pageSchema } from "@/schemas/content/page"
-import { personSchema } from "@/schemas/content/person"
-import { projectSchema } from "@/schemas/content/project"
+import { postSchema } from "@/schemas/content/post"
 import { reviewSchema } from "@/schemas/content/review"
 import { defineCollection } from "astro:content"
 import { file, glob } from "astro/loaders"
@@ -16,26 +14,26 @@ export const collections = {
     }),
     schema: pageSchema,
   }),
-  articles: defineCollection({
+  posts: defineCollection({
     loader: glob({
       pattern: "**/[^_]*.{md,mdx}",
-      base: "./src/content/articles",
+      base: "./src/content/posts",
     }),
-    schema: articleSchema,
+    schema: postSchema,
   }),
   projects: defineCollection({
     loader: glob({
       pattern: "**/[^_]*.{md,mdx}",
       base: "./src/content/projects",
     }),
-    schema: projectSchema,
+    schema: pageSchema,
   }),
   persons: defineCollection({
     loader: glob({
       pattern: "**/[^_]*.{md,mdx}",
       base: "./src/content/persons",
     }),
-    schema: personSchema,
+    schema: pageSchema,
   }),
   products: defineCollection({
     loader: shopifyProductsLoader(),

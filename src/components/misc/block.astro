@@ -1,12 +1,9 @@
 ---
-import { Article1 } from "@/blocks/article-1"
-import { Articles1 } from "@/blocks/articles-1"
 import { Collection1 } from "@/blocks/collection-1"
 import { Collections1 } from "@/blocks/collections-1"
 import { Contact1 } from "@/blocks/contact-1"
 import { Contact2 } from "@/blocks/contact-2"
-import { Content1 } from "@/blocks/content-1"
-import { Content2 } from "@/blocks/content-2"
+import { Article1 } from "@/blocks/content-1"
 import { Cta1 } from "@/blocks/cta-1"
 import { Faqs1 } from "@/blocks/faqs-1"
 import { Faqs2 } from "@/blocks/faqs-2"
@@ -18,16 +15,17 @@ import { Hero1 } from "@/blocks/hero-1"
 import { Hero2 } from "@/blocks/hero-2"
 import { Hero3 } from "@/blocks/hero-3"
 import { Locations1 } from "@/blocks/locations-1"
-import { Page1 } from "@/blocks/page-1"
+import { Content1 } from "@/blocks/media-1"
+import { Content2 } from "@/blocks/media-2"
 import { Pages1 } from "@/blocks/pages-1"
-import { Person1 } from "@/blocks/person-1"
 import { Persons1 } from "@/blocks/persons-1"
+import { Post1 } from "@/blocks/post-1"
+import { Posts1 } from "@/blocks/posts-1"
 import { Product1 } from "@/blocks/product-1"
 import { Products1 } from "@/blocks/products-1"
-import { Project1 } from "@/blocks/project-1"
-import { Projects1 } from "@/blocks/projects-1"
 import { Reviews1 } from "@/blocks/reviews-1"
 import { getCollection, getEntries } from "astro:content"
+import type { AnyEntryMap } from "astro:content"
 import { marked } from "marked"
 
 import { getHref } from "@/lib/get-href"
@@ -63,30 +61,28 @@ let {
   ...rest
 } = Astro.props
 
-const pageEntries = pages
-  ? await getEntries(pages)
-  : await getCollection("pages")
-const articleEntries = articles
-  ? await getEntries(articles)
-  : await getCollection("articles")
-const productEntries = products
-  ? await getEntries(products)
-  : await getCollection("products")
-const projectEntries = projects
-  ? await getEntries(projects)
-  : await getCollection("projects")
-const personEntries = persons
-  ? await getEntries(persons)
-  : await getCollection("persons")
-const reviewEntries = reviews
-  ? await getEntries(reviews)
-  : await getCollection("reviews")
-const collectionEntries = collections
-  ? await getEntries(collections)
-  : await getCollection("collections")
-const locationEntries = locations
-  ? await getEntries(locations)
-  : await getCollection("locations")
+async function getRightEntries(
+  collection: string,
+  value: undefined | Parameters<typeof getEntries>[0]
+) {
+  if (value === undefined) {
+    const currentPageSlug = Astro.params.slug as keyof AnyEntryMap
+    const childrenCollection = await getCollection(currentPageSlug)
+    if (childrenCollection && childrenCollection.length > 0)
+      return childrenCollection
+    const keyCollection = await getCollection(collection as keyof AnyEntryMap)
+    return keyCollection
+  }
+}
+
+const pageEntries = await getRightEntries("pages", pages)
+const articleEntries = await getRightEntries("posts", articles)
+const productEntries = await getRightEntries("products", products)
+const projectEntries = await getRightEntries("projects", projects)
+const personEntries = await getRightEntries("persons", persons)
+const reviewEntries = await getRightEntries("reviews", reviews)
+const collectionEntries = await getRightEntries("collections", collections)
+const locationEntries = await getRightEntries("locations", locations)
 
 const productInCollectionEntries = productEntries?.filter((product) =>
   product?.data.collections?.find((c) => {
@@ -120,20 +116,11 @@ const hasContent = slot && slot.trim().length > 0
 ---
 
 {
-  type === "article" && variant === 1 && (
-    <Article1 {...rest}>
+  type === "banner" && variant === 1 && (
+    <Banner1 {...rest}>
       <Fragment set:html={markdownHtml} />
       <Fragment set:html={slot} />
-    </Article1>
-  )
-}
-
-{
-  type === "articles" && variant === 1 && (
-    <Articles1 articles={mapEntries(articleEntries)} {...rest}>
-      <Fragment set:html={markdownHtml} />
-      <Fragment set:html={slot} />
-    </Articles1>
+    </Banner1>
   )
 }
 
