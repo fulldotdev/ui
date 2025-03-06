@@ -6,6 +6,7 @@ import { z } from "astro:content"
 
 export const pageSchema = z
   .object({
+    type: z.literal("page").default("page"),
     title: z.string().optional(),
     description: z.string().optional(),
     image: imageSchema.optional(),

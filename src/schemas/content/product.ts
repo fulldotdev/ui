@@ -7,6 +7,7 @@ import { z } from "astro:content"
 
 export const productSchema = z
   .object({
+    type: z.literal("product").default("product"),
     title: z.string().optional(),
     description: z.string().optional(),
     image: imageSchema.optional(),

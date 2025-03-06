@@ -5,6 +5,7 @@ import { z } from "astro:content"
 
 export const postSchema = z
   .object({
+    type: z.literal("post").default("post"),
     title: z.string().optional(),
     description: z.string().optional(),
     image: imageSchema.optional(),

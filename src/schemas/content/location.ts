@@ -5,6 +5,7 @@ import { z } from "astro:content"
 
 export const locationSchema = z
   .object({
+    type: z.literal("location").default("location"),
     title: z.string().optional(),
     description: z.string().optional(),
     image: imageSchema.optional(),
