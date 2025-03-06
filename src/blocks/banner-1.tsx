@@ -48,7 +48,6 @@ function Banner1({ children, items, className, ...props }: Props) {
             </Link>
           )
         )}
-        {children}
       </Container>
       <style>
         {`

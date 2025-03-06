@@ -41,7 +41,6 @@ function Cta1({
               align={align}
               text={description}
             />
-            {children}
             <Buttons size={size} align={align} buttons={buttons} />
           </Column>
         </Panel>

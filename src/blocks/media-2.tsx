@@ -44,7 +44,6 @@ function Content2({
               align={align}
               text={description}
             />
-            {children}
             <Buttons size={size} buttons={buttons} />
           </Column>
           <Image className="rounded-lg" {...image} />

@@ -42,7 +42,6 @@ function Content1({
             align={align}
             text={description}
           />
-          {children}
           <Buttons
             className="not-first:mt-8"
             size={size}
