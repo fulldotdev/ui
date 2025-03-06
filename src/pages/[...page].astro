@@ -1,7 +1,4 @@
 ---
-import { Banner } from "@/blocks/banner"
-import { Footer } from "@/blocks/footer-1"
-import { Header2 } from "@/blocks/header-2"
 import settings from "@/data/settings.json"
 import { getCollection, render } from "astro:content"
 
@@ -38,6 +35,7 @@ export async function getStaticPaths() {
 const { Content } = await render(Astro.props)
 const {
   id,
+  body,
   data: { sections, seo, type, ...restData },
 } = Astro.props
 const { banner, header, footer, ...restSettings } = settings
@@ -96,17 +94,29 @@ const search = [
   },
 ]
 
-console.log(type)
+const hasHero =
+  type === "product" ||
+  type === "collection" ||
+  type === "post" ||
+  body?.trim().length > 0
+    ? true
+    : false
+
+console.log({ hasHero })
 ---
 
 <Layout {...restSettings} {...restData} {...seo}>
   <Block type="banner" variant={1} {...banner} />
   <Block type="header" variant={1} search={search} {...header} />
   <main>
-    <Block entryId={id} type={type} variant={1} {...restData}>
+    <Block level={1} entryId={id} type={type} variant={1} {...restData}>
       <Content />
     </Block>
-    {sections?.map((section) => <Block {...section} />)}
+    {
+      sections?.map((section, i) => (
+        <Block level={!hasHero && i === 0 ? 1 : 2} {...section} />
+      ))
+    }
   </main>
   <Block type="footer" variant={1} {...footer} />
 </Layout>
