@@ -29,29 +29,29 @@ import { Reviews1 } from "@/blocks/reviews-1"
 import config from "@/data/config.json"
 import { getCollection, getEntries } from "astro:content"
 import type { AnyEntryMap } from "astro:content"
-import { marked } from "marked"
 
 import { getHref } from "@/lib/get-href"
 
-interface Props {
-  type: string
-  variant: number
-  entryId?: string
+type Props = {
+  type?: string
+  variant?: number
+  id?: string
   content?: string
-  pages?: any[]
-  posts?: any[]
-  products?: any[]
-  projects?: any[]
-  persons?: any[]
-  collections?: any[]
-  reviews?: any[]
-  locations?: any[]
+  pages?: Parameters<typeof getEntries>[0]
+  posts?: Parameters<typeof getEntries>[0]
+  products?: Parameters<typeof getEntries>[0]
+  projects?: Parameters<typeof getEntries>[0]
+  persons?: Parameters<typeof getEntries>[0]
+  collections?: Parameters<typeof getEntries>[0]
+  reviews?: Parameters<typeof getEntries>[0]
+  locations?: Parameters<typeof getEntries>[0]
+  [key: string]: any
 }
 
 let {
+  id,
   type,
-  variant,
-  entryId,
+  variant = 1,
   content,
   pages,
   posts,
@@ -61,7 +61,7 @@ let {
   collections,
   reviews,
   locations,
-  ...rest
+  ...props
 } = Astro.props
 
 async function getRightEntries(
@@ -70,11 +70,11 @@ async function getRightEntries(
 ) {
   if (value) return await getEntries(value)
 
-  const currentPageSlug = Astro.params.page as keyof AnyEntryMap
+  const currentPageSlug = Astro.params.page
   const matchingCollection = Object.entries(config.slugs).find(
-    ([key, value]) => value === currentPageSlug
+    ([_, value]) => value === currentPageSlug
   )
-  const matchingKey = matchingCollection?.[0]
+  const matchingKey = matchingCollection?.[0] as keyof AnyEntryMap
   const childrenCollection = matchingKey && (await getCollection(matchingKey))
   if (childrenCollection && childrenCollection.length > 0)
     return childrenCollection
@@ -95,124 +95,118 @@ const postEntries = await getRightEntries("posts", posts)
 const productEntries = await getRightEntries("products", products)
 const personEntries = await getRightEntries("persons", persons)
 const reviewEntries = await getRightEntries("reviews", reviews)
+const projectEntries = await getRightEntries("projects", projects)
 const collectionEntries = await getRightEntries("collections", collections)
 const locationEntries = await getRightEntries("locations", locations)
 
-const productInCollectionEntries = productEntries?.filter((product) =>
-  product?.collections?.find((c) => {
-    if (typeof c === "string") return false
-    if ("id" in c) return c.id === entryId
-    if ("slug" in c) return c.slug === entryId
-    return false
-  })
+const productInCollectionEntries = (await getCollection("products"))?.filter(
+  (product) =>
+    product?.data?.collections?.find((reference) => reference.id === id)
 )
-
-const slot = await Astro.slots.render("default")
-const hasSlot = slot?.trim().length > 0
-const markdownContent = marked(content || "")
-
-console.log(rest.level)
 ---
 
 {
-  (type === "content" ||
-    (type === "page" && hasSlot) ||
-    type == "location" ||
-    type === "person") &&
+  (type === "post" ||
+    type === "location" ||
+    type === "person" ||
+    type === "project") &&
     variant === 1 && (
-      <Content1 {...rest}>
-        <Fragment set:html={slot} />
-        <Fragment set:html={markdownContent} />
-      </Content1>
+      <Post1 {...props}>
+        <slot />
+      </Post1>
     )
 }
 
 {
   type === "collection" && variant === 1 && (
-    <Collection1 products={MapEntries(productInCollectionEntries)} {...rest}>
-      <Fragment set:html={slot} />
-      <Fragment set:html={markdownContent} />
+    <Collection1 products={MapEntries(productInCollectionEntries)} {...props}>
+      <slot />
     </Collection1>
   )
 }
 
 {
   type === "product" && variant === 1 && (
-    <Product1 {...rest}>
-      <Fragment set:html={slot} />
-      <Fragment set:html={markdownContent} />
+    <Product1 {...props}>
+      <slot />
     </Product1>
   )
 }
 
 {
-  type === "post" && variant === 1 && (
-    <Post1 {...rest}>
-      <Fragment set:html={slot} />
-      <Fragment set:html={markdownContent} />
-    </Post1>
-  )
-}
-
-{
-  type === "pages" && variant === 1 && (
-    <Pages1 pages={MapEntries(pageEntries)} {...rest} />
+  type === "page" && variant === 1 && (
+    <Content1 {...props}>
+      <slot />
+    </Content1>
   )
 }
 
 {
   type === "posts" && variant === 1 && (
-    <Posts1 posts={MapEntries(postEntries)} {...rest} />
+    <Posts1 posts={MapEntries(postEntries)} {...props} />
   )
 }
+
+{
+  type === "projects" && variant === 1 && (
+    <Posts1 posts={MapEntries(projectEntries)} {...props} />
+  )
+}
+
+{
+  type === "pages" && variant === 1 && (
+    <Pages1 pages={MapEntries(pageEntries)} {...props} />
+  )
+}
+
 {
   type === "products" && variant === 1 && (
-    <Products1 products={MapEntries(productEntries)} {...rest} />
+    <Products1 products={MapEntries(productEntries)} {...props} />
   )
 }
 {
   type === "persons" && variant === 1 && (
-    <Persons1 persons={MapEntries(personEntries)} {...rest} />
+    <Persons1 persons={MapEntries(personEntries)} {...props} />
   )
 }
 {
   type === "collections" && variant === 1 && (
-    <Collections1 collections={MapEntries(collectionEntries)} {...rest} />
+    <Collections1 collections={MapEntries(collectionEntries)} {...props} />
   )
 }
 {
   type === "reviews" && variant === 1 && (
-    <Reviews1 reviews={MapEntries(reviewEntries)} {...rest} />
+    <Reviews1 reviews={MapEntries(reviewEntries)} {...props} />
   )
 }
 {
   type === "locations" && variant === 1 && (
-    <Locations1 locations={MapEntries(locationEntries)} {...rest} />
+    <Locations1 locations={MapEntries(locationEntries)} {...props} />
   )
 }
 
-{type === "banner" && variant === 1 && <Banner1 {...rest} />}
+{type === "banner" && variant === 1 && <Banner1 {...props} />}
 
-{type === "header" && variant === 1 && <Header1 client:load {...rest} />}
-{type === "header" && variant === 2 && <Header2 client:load {...rest} />}
+{type === "header" && variant === 1 && <Header1 client:load {...props} />}
+{type === "header" && variant === 2 && <Header2 client:load {...props} />}
 
-{type === "footer" && variant === 1 && <Footer1 {...rest} />}
+{type === "footer" && variant === 1 && <Footer1 {...props} />}
 
-{type === "contact" && variant === 1 && <Contact1 {...rest} />}
-{type === "contact" && variant === 2 && <Contact2 {...rest} />}
+{type === "contact" && variant === 1 && <Contact1 {...props} />}
+{type === "contact" && variant === 2 && <Contact2 {...props} />}
 
-{type === "cta" && variant === 1 && <Cta1 {...rest} />}
+{type === "cta" && variant === 1 && <Cta1 {...props} />}
 
-{type === "faqs" && variant === 1 && <Faqs1 client:load {...rest} />}
-{type === "faqs" && variant === 2 && <Faqs2 client:load {...rest} />}
+{type === "faqs" && variant === 1 && <Faqs1 client:load {...props} />}
+{type === "faqs" && variant === 2 && <Faqs2 client:load {...props} />}
 
-{type === "features" && variant === 1 && <Features1 {...rest} />}
+{type === "features" && variant === 1 && <Features1 {...props} />}
 
-{type === "hero" && variant === 1 && <Hero1 {...rest} />}
-{type === "hero" && variant === 2 && <Hero2 {...rest} />}
-{type === "hero" && variant === 3 && <Hero3 {...rest} />}
+{type === "hero" && variant === 1 && <Hero1 {...props} />}
+{type === "hero" && variant === 2 && <Hero2 {...props} />}
+{type === "hero" && variant === 3 && <Hero3 {...props} />}
 
-{type === "media" && variant === 1 && <Media1 {...rest} />}
-{type === "media" && variant === 2 && <Media2 {...rest} />}
+{type === "media" && variant === 1 && <Media1 {...props} />}
+{type === "media" && variant === 2 && <Media2 {...props} />}
 
-{type === "pricings" && variant === 1 && <Pricings1 {...rest} />}
+{type === "pricings" && variant === 1 && <Pricings1 {...props} />}

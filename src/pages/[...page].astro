@@ -1,122 +1,97 @@
 ---
-import settings from "@/data/settings.json"
-import { getCollection, render } from "astro:content"
+import config from "@/data/config.json"
+import settingJson from "@/data/settings.json"
+import { getCollection, getEntries, render } from "astro:content"
 
 import { getHref } from "@/lib/get-href"
 import Block from "@/components/misc/block.astro"
 import Layout from "@/components/misc/layout.astro"
 
 export async function getStaticPaths() {
-  const articles = await getCollection("articles")
-  const collections = await getCollection("collections")
   const pages = await getCollection("pages")
-  const persons = await getCollection("persons")
-  const products = await getCollection("products")
-  const projects = await getCollection("projects")
-  const locations = await getCollection("locations")
+  const collections = config.content.collections.slug
+    ? await getCollection("collections")
+    : []
+  const locations = config.content.collections.slug
+    ? await getCollection("locations")
+    : []
+  const persons = config.content.collections.slug
+    ? await getCollection("persons")
+    : []
+  const posts = config.content.collections.slug
+    ? await getCollection("posts")
+    : []
+  const products = config.content.collections.slug
+    ? await getCollection("products")
+    : []
+  const projects = config.content.collections.slug
+    ? await getCollection("projects")
+    : []
+
   const entries = [
     ...pages,
-    ...articles,
     ...collections,
+    ...locations,
+    ...posts,
+    ...persons,
     ...products,
     ...projects,
-    ...persons,
-    ...locations,
   ]
 
   return entries.map((entry) => ({
     params: {
       page: getHref(entry.collection, entry.id),
     },
-    props: entry,
+    props: {
+      entry,
+      search: entries.map((entry) => ({
+        text: entry.data.title,
+        href: getHref(entry.collection, entry.id),
+      })),
+      content: {
+        pages,
+        collections,
+        locations,
+        posts,
+        persons,
+        products,
+        projects,
+      },
+    },
   }))
 }
 
-const { Content } = await render(Astro.props)
-const {
-  id,
-  body,
-  data: { sections, seo, type, ...restData },
-} = Astro.props
-const { banner, header, footer, ...restSettings } = settings
+const { entry, search, content } = Astro.props
 
-const pages = await getCollection("pages")
-const articles = await getCollection("articles")
-const products = await getCollection("products")
-const projects = await getCollection("projects")
-const persons = await getCollection("persons")
-const collections = await getCollection("collections")
-const locations = await getCollection("locations")
-function collectionToLinks(
-  collection:
-    | typeof pages
-    | typeof articles
-    | typeof products
-    | typeof projects
-    | typeof persons
-    | typeof collections
-    | typeof locations
-) {
-  return collection.map((item) => ({
-    text: item.data.title,
-    href: getHref(item.collection, item.id),
-  }))
+const { Content } = await render(entry)
+const { body } = entry
+const { type, sections, seo, ...data } = entry.data
+const { banner, header, footer, ...settings } = settingJson
+
+const firstType = type === "page" && !body?.trim() ? undefined : type
+
+const entries = async (
+  collection: keyof typeof content,
+  references?: Parameters<typeof getEntries>[0]
+) => {
+  if (!references) return content[collection]
+  else return await getEntries(references)
 }
-
-const search = [
-  {
-    heading: "Pagina's",
-    links: collectionToLinks(pages),
-  },
-  {
-    heading: "Artikelen",
-    links: collectionToLinks(articles),
-  },
-  {
-    heading: "Producten",
-    links: collectionToLinks(products),
-  },
-  {
-    heading: "Collecties",
-    links: collectionToLinks(collections),
-  },
-  {
-    heading: "Projecten",
-    links: collectionToLinks(projects),
-  },
-  {
-    heading: "Personen",
-    links: collectionToLinks(persons),
-  },
-  {
-    heading: "Locaties",
-    links: collectionToLinks(locations),
-  },
-]
-
-const hasHero =
-  type === "product" ||
-  type === "collection" ||
-  type === "post" ||
-  body?.trim().length > 0
-    ? true
-    : false
-
-console.log({ hasHero })
 ---
 
-<Layout {...restSettings} {...restData} {...seo}>
-  <Block type="banner" variant={1} {...banner} />
-  <Block type="header" variant={1} search={search} {...header} />
+<Layout {...settings} {...data} {...seo}>
+  <Block type="banner" {...banner} />
+  <Block type="header" search={search} {...header} />
+  <Block type="header" search={search} {...header} />
   <main>
-    <Block level={1} entryId={id} type={type} variant={1} {...restData}>
+    <Block type={firstType} level={1} {...data}>
       <Content />
     </Block>
     {
       sections?.map((section, i) => (
-        <Block level={!hasHero && i === 0 ? 1 : 2} {...section} />
+        <Block level={!firstType && i === 0 ? 1 : 2} {...section} />
       ))
     }
   </main>
-  <Block type="footer" variant={1} {...footer} />
+  <Block type="footer" {...footer} />
 </Layout>

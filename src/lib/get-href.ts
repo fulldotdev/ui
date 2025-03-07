@@ -1,20 +1,15 @@
 import config from "@/data/config.json"
+import type {
+  AnyEntryMap,
+  CollectionEntry,
+  ContentCollectionKey,
+} from "astro:content"
 
-export function getHref(
-  collection:
-    | "pages"
-    | "articles"
-    | "products"
-    | "collections"
-    | "projects"
-    | "persons"
-    | "reviews"
-    | "locations",
-  slugOrId: string
-) {
+export function getHref(collection: keyof AnyEntryMap, slugOrId: string) {
   if (collection === "reviews") return undefined
-  const collectionSlug = collection === "pages" ? "" : config.slugs[collection]
+  const collectionSlug =
+    collection === "pages" ? "" : config.content[collection].slug
   const entrySlug = slugOrId === "index" ? "" : slugOrId
-  const slug = `/${collectionSlug}/${entrySlug}/`.replace(/\/{2,}/g, "/")
-  return slug
+  const href = `/${collectionSlug}/${entrySlug}/`.replace(/\/{2,}/g, "/")
+  return href
 }

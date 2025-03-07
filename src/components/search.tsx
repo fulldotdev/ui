@@ -16,19 +16,16 @@ import {
 import { Link } from "./link"
 
 interface Props extends React.ComponentProps<typeof Button> {
-  groups?: {
-    heading?: string
-    links?: {
-      text?: string
-      href?: string
-    }[]
+  links?: {
+    text?: string
+    href?: string
   }[]
 }
 
-function Search({ groups, className, ...props }: Props) {
+function Search({ links, className, ...props }: Props) {
   const [open, setOpen] = useState(false)
 
-  return groups ? (
+  return links ? (
     <>
       <Button
         className={cn(
@@ -46,21 +43,19 @@ function Search({ groups, className, ...props }: Props) {
         <CommandInput placeholder="Zoek door alles..." />
         <CommandList>
           <CommandEmpty>Geen resultaten gevonden.</CommandEmpty>
-          {groups.map(({ heading, links }) => (
-            <CommandGroup key={uuidv4()} heading={heading}>
-              {links?.map(({ text, href }) =>
-                text && href ? (
-                  <CommandItem
-                    key={uuidv4()}
-                    asChild
-                    onSelect={() => href && (window.location.href = href)}
-                  >
-                    <Link href={href}>{text}</Link>
-                  </CommandItem>
-                ) : null
-              )}
-            </CommandGroup>
-          ))}
+          <CommandGroup>
+            {links?.map(({ text, href }) =>
+              text && href ? (
+                <CommandItem
+                  key={uuidv4()}
+                  asChild
+                  onSelect={() => href && (window.location.href = href)}
+                >
+                  <Link href={href}>{text}</Link>
+                </CommandItem>
+              ) : null
+            )}
+          </CommandGroup>
         </CommandList>
       </CommandDialog>
     </>

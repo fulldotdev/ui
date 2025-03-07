@@ -1,19 +1,19 @@
 import { imageSchema } from "@/schemas/components/image"
 import { priceSchema } from "@/schemas/components/price"
-import { sectionSchema } from "@/schemas/components/section"
-import { pathSchema } from "@/schemas/misc/path"
+import { sectionSchema } from "@/schemas/misc/section"
 import { seoSchema } from "@/schemas/misc/seo"
-import { z } from "astro:content"
+import { reference, z } from "astro:content"
 
 export const productSchema = z
   .object({
     type: z.literal("product").default("product"),
-    title: z.string().optional(),
+    variant: z.number().default(1),
+    title: z.string(),
     description: z.string().optional(),
     image: imageSchema.optional(),
     images: imageSchema.array().optional(),
     price: priceSchema.optional(),
-    collections: pathSchema.array().optional(),
+    collections: reference("collections").array().optional(),
     options: z
       .object({
         name: z.string(),
@@ -23,5 +23,7 @@ export const productSchema = z
       .optional(),
     sections: sectionSchema.array().optional(),
     seo: seoSchema.optional(),
+    id: z.string().optional(),
+    variants: z.any(),
   })
   .strict()
