@@ -53,7 +53,12 @@ function Features1({
                 <div className="bg-muted text-muted-foreground inline-flex size-9 items-center justify-center rounded-md">
                   <Check />
                 </div>
-                <Title level={level + 1} align={align} text={title} />
+                <Title
+                  className="text-xl"
+                  level={level + 1}
+                  align={align}
+                  text={title}
+                />
                 <Description align={align} text={description} />
               </Column>
             ))}

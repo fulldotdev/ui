@@ -38,7 +38,7 @@ function Contact2({
     <Section className={cn(className)} {...props}>
       <Container>
         <Split className="gap-x-0" align={align}>
-          <Column className="gap-8">
+          <Column className="items-start">
             <Title level={level} size={size} align={align} text={title} />
             <Description
               className="not-first:mt-4"
@@ -46,8 +46,7 @@ function Contact2({
               align={align}
               text={description}
             />
-            <Channels {...channels} />
-            <Buttons className="not-first:mt-8" size={size} buttons={buttons} />
+            <Channels className="items-start not-first:mt-8" {...channels} />
           </Column>
           <Form {...form} />
         </Split>

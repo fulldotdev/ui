@@ -51,8 +51,8 @@ function Reviews1({
             align={align}
             text={description}
           />
-          <Buttons buttons={buttons} />
-          <Masonry className="mt-8 gap-x-4 gap-y-8 first:mt-0">
+          <Buttons className="not-first:mt-8" buttons={buttons} />
+          <Masonry className="gap-x-4 gap-y-8 not-first:mt-16">
             {reviews?.map(({ rating, title, description }) => (
               <div
                 className="flex flex-col rounded-lg border p-6"

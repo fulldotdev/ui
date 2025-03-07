@@ -79,7 +79,7 @@ function Collection1({
             align={align}
             text={description}
           />
-          <Column className="gap-0">
+          <Column className="gap-0 not-first:mt-16">
             <Row className="border-t py-4">
               <span className="text-muted-foreground text-sm">{`${sortedProducts?.length || 0} producten`}</span>
               <DropdownMenu>
@@ -113,7 +113,7 @@ function Collection1({
                 </DropdownMenuContent>
               </DropdownMenu>
             </Row>
-            <Grid>
+            <Grid className="gap-x-4 gap-y-8">
               {sortedProducts?.map(({ href, title, image, price }) => (
                 <Link
                   className="group flex flex-col"

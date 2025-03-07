@@ -19,7 +19,7 @@ function Grid({
   return hasChildren(children) ? (
     <div
       className={cn(
-        "relative grid",
+        "relative grid items-start",
         {
           "md:grid-cols-2": size === "default" && length >= 2,
           "sm:grid-cols-2 md:grid-cols-3": size === "default" && length === 3,

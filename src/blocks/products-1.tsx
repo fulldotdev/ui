@@ -42,7 +42,7 @@ function Products1({
 }: Props) {
   return (
     <Section className={cn(className)} {...props}>
-      <Container className="gap-8">
+      <Container>
         <Title level={level} size={size} align={align} text={title} />
         <Description
           className="not-first:mt-4"
@@ -51,12 +51,12 @@ function Products1({
           text={description}
         />
         <Buttons
-          className="max-sm:hidden"
+          className="not-first:mt-8 max-sm:hidden"
           size={size}
           align={align}
           buttons={buttons}
         />
-        <Grid className="mt-8 gap-x-4 gap-y-8 first:mt-0">
+        <Grid className="gap-x-4 gap-y-8 not-first:mt-16">
           {products?.map(({ href, title, images, price }) => (
             <Link
               className="group flex flex-col gap-4"
@@ -67,7 +67,13 @@ function Products1({
                 className="bg-muted ring-muted aspect-square rounded-md object-contain p-4 ring-1 transition-opacity group-hover:opacity-75"
                 {...images?.[0]}
               />
-              <Title level={level + 1} size={size} align={align} />
+              <Title
+                className="text-sm"
+                level={level + 1}
+                size={size}
+                align={align}
+                text={title}
+              />
               <Price className="text-muted-foreground text-sm" {...price} />
             </Link>
           ))}

@@ -40,7 +40,9 @@ function Footer1({
         <Grid className="w-full gap-8">
           <div className="flex max-w-xs flex-col gap-2">
             <Logo {...logo} />
-            <p className="text-muted-foreground text-sm leading-6"></p>
+            <p className="text-muted-foreground text-sm leading-6">
+              {description}
+            </p>
             <Socials className="mt-3 -ml-2" socials={socials} />
           </div>
           <Channels align="start" {...channels} />
