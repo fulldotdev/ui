@@ -15,6 +15,7 @@ import { z } from "astro:content"
 
 import { locationsSchema } from "../blocks/locations"
 import { mediaSchema } from "../blocks/media"
+import { projectsSchema } from "../blocks/projects"
 
 export const sectionSchema = z.discriminatedUnion("type", [
   collectionsSchema.extend({
@@ -71,6 +72,10 @@ export const sectionSchema = z.discriminatedUnion("type", [
   }),
   productsSchema.extend({
     type: z.literal("products"),
+    variant: z.number().default(1),
+  }),
+  projectsSchema.extend({
+    type: z.literal("projects"),
     variant: z.number().default(1),
   }),
   reviewsSchema.extend({

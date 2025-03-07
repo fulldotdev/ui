@@ -8,7 +8,6 @@ import { hideBin } from "yargs/helpers"
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const initFiles = [
-  "src/content.config.ts",
   "src/styles/theme.css",
   "astro.config.ts",
   "src/data",
@@ -25,6 +24,7 @@ const files = [
   "src/pages",
   "src/schemas",
   "src/styles/globals.css",
+  "src/content.config.ts",
   "stackbit",
   ".gitignore",
   ".prettierignore",

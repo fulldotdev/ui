@@ -33,11 +33,20 @@ import type { AnyEntryMap } from "astro:content"
 import { getHref } from "@/lib/get-href"
 
 type Props = {
+  content: {
+    pages?: Parameters<typeof getEntries>[0]
+    posts?: Parameters<typeof getEntries>[0]
+    products?: Parameters<typeof getEntries>[0]
+    projects?: Parameters<typeof getEntries>[0]
+    persons?: Parameters<typeof getEntries>[0]
+    collections?: Parameters<typeof getEntries>[0]
+    reviews?: Parameters<typeof getEntries>[0]
+    locations?: Parameters<typeof getEntries>[0]
+  }
   type?: string
   variant?: number
   id?: string
   content?: string
-  pages?: Parameters<typeof getEntries>[0]
   posts?: Parameters<typeof getEntries>[0]
   products?: Parameters<typeof getEntries>[0]
   projects?: Parameters<typeof getEntries>[0]
@@ -71,8 +80,8 @@ async function getRightEntries(
   if (value) return await getEntries(value)
 
   const currentPageSlug = Astro.params.page
-  const matchingCollection = Object.entries(config.slugs).find(
-    ([_, value]) => value === currentPageSlug
+  const matchingCollection = Object.entries(config.content).find(
+    ([_, value]) => value.slug === currentPageSlug
   )
   const matchingKey = matchingCollection?.[0] as keyof AnyEntryMap
   const childrenCollection = matchingKey && (await getCollection(matchingKey))

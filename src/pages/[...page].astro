@@ -1,7 +1,35 @@
 ---
+import { Banner1 } from "@/blocks/banner-1"
+import { Collection1 } from "@/blocks/collection-1"
+import { Collections1 } from "@/blocks/collections-1"
+import { Contact1 } from "@/blocks/contact-1"
+import { Contact2 } from "@/blocks/contact-2"
+import { Content1 } from "@/blocks/content-1"
+import { Cta1 } from "@/blocks/cta-1"
+import { Faqs1 } from "@/blocks/faqs-1"
+import { Faqs2 } from "@/blocks/faqs-2"
+import { Features1 } from "@/blocks/features-1"
+import { Footer1 } from "@/blocks/footer-1"
+import { Header1 } from "@/blocks/header-1"
+import { Header2 } from "@/blocks/header-2"
+import { Hero1 } from "@/blocks/hero-1"
+import { Hero2 } from "@/blocks/hero-2"
+import { Hero3 } from "@/blocks/hero-3"
+import { Locations1 } from "@/blocks/locations-1"
+import { Media1 } from "@/blocks/media-1"
+import { Media2 } from "@/blocks/media-2"
+import { Pages1 } from "@/blocks/pages-1"
+import { Persons1 } from "@/blocks/persons-1"
+import { Post1 } from "@/blocks/post-1"
+import { Posts1 } from "@/blocks/posts-1"
+import { Pricings1 } from "@/blocks/pricings-1"
+import { Product1 } from "@/blocks/product-1"
+import { Products1 } from "@/blocks/products-1"
+import { Reviews1 } from "@/blocks/reviews-1"
 import config from "@/data/config.json"
 import settingJson from "@/data/settings.json"
 import { getCollection, getEntries, render } from "astro:content"
+import type { AnyEntryMap } from "astro:content"
 
 import { getHref } from "@/lib/get-href"
 import Block from "@/components/misc/block.astro"
@@ -26,6 +54,9 @@ export async function getStaticPaths() {
     : []
   const projects = config.content.collections.slug
     ? await getCollection("projects")
+    : []
+  const reviews = config.content.collections.slug
+    ? await getCollection("reviews")
     : []
 
   const entries = [
@@ -56,6 +87,7 @@ export async function getStaticPaths() {
         persons,
         products,
         projects,
+        reviews,
       },
     },
   }))
@@ -64,36 +96,174 @@ export async function getStaticPaths() {
 const { entry, search, content } = Astro.props
 
 const { Content } = await render(entry)
-const { body } = entry
-const { type, sections, seo, ...data } = entry.data
+const { id, body } = entry
+const { type, variant = 1, sections, seo, ...data } = entry.data
 const { banner, header, footer, ...settings } = settingJson
 
-const firstType = type === "page" && !body?.trim() ? undefined : type
+async function getRightEntries(
+  collection: keyof AnyEntryMap,
+  references?: Parameters<typeof getEntries>[0]
+) {
+  if (!references) return content[collection]
+  else return await getEntries(references)
+}
 
-// const entries = async (
-//   collection: keyof typeof content,
-//   references?: Parameters<typeof getEntries>[0]
-// ) => {
-//   if (!references) return content[collection]
-//   else return await getEntries(references)
-// }
+function mapEntries(entries: any[]) {
+  return entries.map((entry) => ({
+    href: getHref(entry.collection, entry.id),
+    image: "images" in entry.data ? entry.data.images?.[0] : undefined,
+    ...entry.data,
+  }))
+}
 
-// TODO inline blocks.astro component in this file
+const productInCollectionEntries = (await getCollection("products"))?.filter(
+  (product) =>
+    product?.data?.collections?.find((reference) => reference.id === id)
+)
+
+function getLevel(index: number) {
+  return !(type === "page" && !body?.trim()) && index === 0 ? 1 : 2
+}
+
+const pageEntries = await getRightEntries("pages")
+const collectionEntries = await getRightEntries("collections")
+const locationEntries = await getRightEntries("locations")
+const personEntries = await getRightEntries("persons")
+const postEntries = await getRightEntries("posts")
+const productEntries = await getRightEntries("products")
+const projectEntries = await getRightEntries("projects")
+const reviewEntries = await getRightEntries("reviews")
 ---
 
 <Layout {...settings} {...data} {...seo}>
-  <Block type="banner" {...banner} />
-  <Block type="header" search={search} {...header} />
-  <Block type="header" search={search} {...header} />
+  {banner.variant === 1 && <Banner1 {...banner} />}
+  {header.variant === 1 && <Header1 client:load search={search} {...header} />}
+  {header.variant === 2 && <Header2 client:load search={search} {...header} />}
   <main>
-    <Block type={firstType} level={1} {...data}>
-      <Content />
-    </Block>
     {
-      sections?.map((section, i) => (
-        <Block level={!firstType && i === 0 ? 1 : 2} {...section} />
+      (type === "post" ||
+        type === "location" ||
+        type === "person" ||
+        type === "project") &&
+        variant === 1 && (
+          <Post1 level={1} {...data}>
+            <Content />
+          </Post1>
+        )
+    }
+    {
+      type === "collection" && variant === 1 && (
+        <Collection1
+          level={1}
+          products={mapEntries(productInCollectionEntries)}
+          {...data}
+        >
+          <Content />
+        </Collection1>
+      )
+    }
+    {
+      type === "product" && variant === 1 && (
+        <Product1 level={1} {...data}>
+          <Content />
+        </Product1>
+      )
+    }
+    {
+      type === "page" && body?.trim() && variant === 1 && (
+        <Content1 level={1} {...data}>
+          <Content />
+        </Content1>
+      )
+    }
+    {
+      sections?.map(({ type, variant, ...section }, i) => (
+        <>
+          {type === "posts" && variant === 1 && (
+            <Posts1
+              level={getLevel(i)}
+              posts={mapEntries(postEntries)}
+              {...section}
+            />
+          )}
+
+          {type === "projects" && variant === 1 && (
+            <Posts1
+              level={getLevel(i)}
+              posts={mapEntries(projectEntries)}
+              {...section}
+            />
+          )}
+
+          {type === "pages" && variant === 1 && (
+            <Pages1
+              level={getLevel(i)}
+              pages={mapEntries(pageEntries)}
+              {...section}
+            />
+          )}
+
+          {type === "products" && variant === 1 && (
+            <Products1
+              level={getLevel(i)}
+              products={mapEntries(productEntries)}
+              {...section}
+            />
+          )}
+          {type === "persons" && variant === 1 && (
+            <Persons1
+              level={getLevel(i)}
+              persons={mapEntries(personEntries)}
+              {...section}
+            />
+          )}
+          {type === "collections" && variant === 1 && (
+            <Collections1
+              level={getLevel(i)}
+              collections={mapEntries(collectionEntries)}
+              {...section}
+            />
+          )}
+          {type === "reviews" && variant === 1 && (
+            <Reviews1
+              level={getLevel(i)}
+              reviews={mapEntries(reviewEntries)}
+              {...section}
+            />
+          )}
+          {type === "locations" && variant === 1 && (
+            <Locations1
+              level={getLevel(i)}
+              locations={mapEntries(locationEntries)}
+              {...section}
+            />
+          )}
+
+          {type === "contact" && variant === 1 && <Contact1 {...section} />}
+          {type === "contact" && variant === 2 && <Contact2 {...section} />}
+
+          {type === "cta" && variant === 1 && <Cta1 {...section} />}
+
+          {type === "faqs" && variant === 1 && (
+            <Faqs1 client:load {...section} />
+          )}
+          {type === "faqs" && variant === 2 && (
+            <Faqs2 client:load {...section} />
+          )}
+
+          {type === "features" && variant === 1 && <Features1 {...section} />}
+
+          {type === "hero" && variant === 1 && <Hero1 {...section} />}
+          {type === "hero" && variant === 2 && <Hero2 {...section} />}
+          {type === "hero" && variant === 3 && <Hero3 {...section} />}
+
+          {type === "media" && variant === 1 && <Media1 {...section} />}
+          {type === "media" && variant === 2 && <Media2 {...section} />}
+
+          {type === "pricings" && variant === 1 && <Pricings1 {...section} />}
+        </>
       ))
     }
   </main>
-  <Block type="footer" {...footer} />
+  {footer.variant === 1 && <Footer1 {...footer} />}
 </Layout>
