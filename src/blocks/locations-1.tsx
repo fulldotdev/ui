@@ -57,7 +57,9 @@ function Locations1({
                 className="flex flex-col items-start gap-4 p-6"
                 key={uuidv4()}
               >
-                <Title level={level + 1} align={align} />
+                <Title level={level + 1} align={align}>
+                  {title}
+                </Title>
                 <Description align={align}>{description}</Description>
                 <Button variant="secondary" size="sm" href={href}>
                   Bekijk locatie
