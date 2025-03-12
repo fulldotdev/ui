@@ -6,7 +6,7 @@ import { z } from "astro:content"
 
 export const pageSchema = z
   .object({
-    type: z.literal("page").default("page"),
+    type: z.enum(["page", "home"]).default("page"),
     variant: z.number().default(1),
     title: z.string(),
     description: z.string().optional(),

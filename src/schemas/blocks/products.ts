@@ -1,5 +1,6 @@
 import { buttonSchema } from "@/schemas/components/button"
-import { reference, z } from "astro:content"
+import { pathSchema } from "@/schemas/misc/path"
+import { z } from "astro:content"
 
 export const productsSchema = z
   .object({
@@ -8,6 +9,6 @@ export const productsSchema = z
     title: z.string().optional(),
     description: z.string().optional(),
     buttons: buttonSchema.array().optional(),
-    products: reference("products").array().optional(),
+    products: pathSchema("products").array().optional(),
   })
   .strict()

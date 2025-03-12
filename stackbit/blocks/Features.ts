@@ -1,22 +1,21 @@
 import { type ObjectModel } from "@stackbit/types"
+import { buttonsField } from "stackbit/components/buttons"
+import { descriptionField } from "stackbit/components/description"
+import { titleField } from "stackbit/components/title"
 
-import { WriteupField } from "../components/Writeup"
-
-export const FeaturesModel: ObjectModel = {
-  name: "Features",
+export const featuresModel: ObjectModel = {
+  name: "features",
   type: "object",
   fields: [
-    WriteupField,
+    titleField,
+    descriptionField,
+    buttonsField,
     {
       name: "features",
       type: "list",
       items: {
         type: "object",
-        fields: [
-          { name: "icon", type: "string" },
-          { name: "title", type: "string" },
-          { name: "description", type: "string" },
-        ],
+        fields: [titleField, descriptionField],
       },
     },
   ],

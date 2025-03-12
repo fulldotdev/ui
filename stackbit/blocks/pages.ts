@@ -3,19 +3,19 @@ import { buttonsField } from "stackbit/components/buttons"
 import { descriptionField } from "stackbit/components/description"
 import { titleField } from "stackbit/components/title"
 
-export const productsModel: ObjectModel = {
-  name: "products",
+export const pagesModel: ObjectModel = {
+  name: "pages",
   type: "object",
   fields: [
     titleField,
     descriptionField,
     buttonsField,
     {
-      name: "products",
+      name: "pages",
       type: "list",
       items: {
         type: "reference",
-        models: ["product"],
+        models: ["page"],
       },
     },
   ],

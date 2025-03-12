@@ -1,6 +1,6 @@
 import { type FieldObject } from "@stackbit/types"
 
-export const ImageField: FieldObject = {
+export const imageField: FieldObject = {
   name: "image",
   type: "object",
   fields: [

@@ -1,12 +1,13 @@
 import { type ObjectModel } from "@stackbit/types"
+import { descriptionField } from "stackbit/components/description"
+import { titleField } from "stackbit/components/title"
 
-import { WriteupField } from "../components/Writeup"
-
-export const ReviewsModel: ObjectModel = {
-  name: "Reviews",
+export const reviewsModel: ObjectModel = {
+  name: "reviews",
   type: "object",
   fields: [
-    WriteupField,
+    titleField,
+    descriptionField,
     {
       name: "reviews",
       type: "list",
@@ -14,8 +15,8 @@ export const ReviewsModel: ObjectModel = {
         type: "object",
         fields: [
           { name: "rating", type: "number" },
-          { name: "title", type: "string" },
-          { name: "description", type: "string" },
+          titleField,
+          descriptionField,
         ],
       },
     },

@@ -1,22 +1,21 @@
 import type { FieldList } from "@stackbit/types"
 
-export const SectionsField: FieldList = {
+export const sectionsField: FieldList = {
   name: "sections",
   type: "list",
   items: {
     type: "model",
     models: [
-      "Collections",
-      "Contact",
-      "Content",
-      "Cta",
-      "Faqs",
-      "Features",
-      "Hero",
-      "Intro",
-      "Articles",
-      "Products",
-      "Reviews",
+      "hero",
+      "media",
+      "cta",
+      "faqs",
+      "features",
+      "pages",
+      "posts",
+      "products",
+      "reviews",
+      "persons",
     ],
   },
 }

@@ -1,6 +1,6 @@
 import type { FieldList } from "@stackbit/types"
 
-export const ButtonsField: FieldList = {
+export const buttonsField: FieldList = {
   name: "buttons",
   type: "list",
   items: {

@@ -1,10 +1,10 @@
 import { type ObjectModel } from "@stackbit/types"
+import { buttonsField } from "stackbit/components/buttons"
+import { descriptionField } from "stackbit/components/description"
+import { titleField } from "stackbit/components/title"
 
-import { ButtonsField } from "../components/Buttons"
-import { WriteupField } from "../components/Writeup"
-
-export const CtaModel: ObjectModel = {
-  name: "Cta",
+export const ctaModel: ObjectModel = {
+  name: "cta",
   type: "object",
-  fields: [WriteupField, ButtonsField],
+  fields: [titleField, descriptionField, buttonsField],
 }

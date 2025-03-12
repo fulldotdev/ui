@@ -1,4 +1,5 @@
-import { reference, z } from "astro:content"
+import { pathSchema } from "@/schemas/misc/path"
+import { z } from "astro:content"
 
 export const reviewsSchema = z
   .object({
@@ -6,6 +7,6 @@ export const reviewsSchema = z
     align: z.enum(["start", "center", "end"]).optional(),
     title: z.string().optional(),
     description: z.string().optional(),
-    reviews: reference("reviews").array().optional(),
+    reviews: pathSchema("reviews").array().optional(),
   })
   .strict()

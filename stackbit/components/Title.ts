@@ -1,7 +1,6 @@
 import { type FieldText } from "@stackbit/types"
 
-export const TitleField: FieldText = {
+export const titleField: FieldText = {
   name: "title",
   type: "text",
-  required: true,
 }
