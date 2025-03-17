@@ -1,9 +1,9 @@
 import { buttonSchema } from "@/schemas/components/button"
-import { z } from "astro:content"
+import { z } from "zod"
 
 export const faqsSchema = z
   .object({
-    size: z.enum(["xs", "sm", "default", "lg", "xl", "2xl"]).optional(),
+    level: z.number().min(1).max(3).optional(),
     align: z.enum(["start", "center", "end"]).optional(),
     title: z.string().optional(),
     description: z.string().optional(),
@@ -13,8 +13,9 @@ export const faqsSchema = z
         title: z.string().optional(),
         description: z.string().optional(),
       })
-      .strict()
       .array()
       .optional(),
   })
-  .strict()
+  .passthrough()
+
+export type FaqsProps = z.infer<typeof faqsSchema>

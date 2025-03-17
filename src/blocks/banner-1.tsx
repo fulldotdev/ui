@@ -1,4 +1,5 @@
 import * as React from "react"
+import type { BannerProps } from "@/schemas/blocks/banner"
 import { ChevronRight } from "lucide-react"
 import { v4 as uuidv4 } from "uuid"
 
@@ -6,11 +7,11 @@ import { cn } from "@/lib/utils"
 import { Container } from "@/components/container"
 import { Link } from "@/components/link"
 
-interface Props extends React.HTMLAttributes<HTMLElement> {
-  items?: ((React.ComponentProps<typeof Link> & { text: string }) | string)[]
-}
-
-function Banner1({ children, items, className, ...props }: Props) {
+function Banner1({
+  items,
+  className,
+  ...props
+}: BannerProps & React.ComponentProps<"header">) {
   return items ? (
     <header
       className={cn(
@@ -42,8 +43,9 @@ function Banner1({ children, items, className, ...props }: Props) {
                 "max-xl:hidden": i > 2,
                 hidden: i > 3,
               })}
-              {...item}
+              href={item.href}
             >
+              {item.text}
               <ChevronRight className="ml-0.5 inline-flex size-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
           )

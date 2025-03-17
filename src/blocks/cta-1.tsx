@@ -1,4 +1,4 @@
-import * as React from "react"
+import type { CtaProps } from "@/schemas/blocks/cta"
 
 import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
@@ -9,41 +9,30 @@ import { Panel } from "@/components/panel"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
-interface Props extends React.ComponentProps<typeof Section> {
-  level?: React.ComponentProps<typeof Title>["level"]
-  size?: React.ComponentProps<typeof Title>["size"]
-  align?: React.ComponentProps<typeof Title>["align"]
-  title?: React.ComponentProps<typeof Title>["text"]
-  description?: React.ComponentProps<typeof Description>["text"]
-  buttons?: React.ComponentProps<typeof Buttons>["buttons"]
-}
-
 function Cta1({
   level = 2,
-  size = "lg",
   align,
   title,
   description,
   buttons,
-  children,
   className,
   ...props
-}: Props) {
+}: CtaProps & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
         <Panel>
           <Column align={align}>
-            <Title level={level} size={size} align={align} text={title} />
+            <Title size="5xl" level={level} align={align} text={title} />
             <Description
               className="not-first:mt-4"
-              size={size}
+              size="lg"
               align={align}
               text={description}
             />
             <Buttons
               className="not-first:mt-8"
-              size={size}
+              size="lg"
               align={align}
               buttons={buttons}
             />

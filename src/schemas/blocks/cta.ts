@@ -1,12 +1,14 @@
 import { buttonSchema } from "@/schemas/components/button"
-import { z } from "astro:content"
+import { z } from "zod"
 
 export const ctaSchema = z
   .object({
-    size: z.enum(["xs", "sm", "default", "lg", "xl", "2xl"]).optional(),
+    level: z.number().min(1).max(3).optional(),
     align: z.enum(["start", "center", "end"]).optional(),
     title: z.string().optional(),
     description: z.string().optional(),
     buttons: buttonSchema.array().optional(),
   })
-  .strict()
+  .passthrough()
+
+export type CtaProps = z.infer<typeof ctaSchema>

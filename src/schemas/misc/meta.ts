@@ -9,4 +9,3 @@ export const metaSchema = z
     nofollow: z.boolean(),
   })
   .partial()
-  .strict()

@@ -13,9 +13,8 @@ export const formSchema = z
         required: z.boolean(),
       })
       .partial()
-      .strict()
+
       .array(),
     submit: z.string(),
   })
   .partial()
-  .strict()

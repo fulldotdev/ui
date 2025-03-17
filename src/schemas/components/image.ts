@@ -6,6 +6,5 @@ export const imageSchema = z
     alt: z.string(),
   })
   .partial()
-  .strict()
 
 export type ImageSchema = z.infer<typeof imageSchema>

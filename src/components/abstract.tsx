@@ -3,10 +3,10 @@ import React from "react"
 import { cn, hasChildren } from "@/lib/utils"
 
 interface Props extends React.ComponentProps<"div"> {
-  level?: 1 | 2 | 3
-  size?: "2xs" | "xs" | "sm" | "default" | "lg" | "xl" | "2xl"
+  level: 1 | 2 | 3 | 4 | 5 | 6 | number
+  size?: "xs" | "sm" | "default" | "lg" | "xl" | "2xl"
   align?: "start" | "center" | "end"
-  title?: React.ComponentProps<typeof Title>["text"]
+  title?: string
   description?: string
 }
 
@@ -32,7 +32,7 @@ function Abstract({
           "gap-1 text-sm": size === "xs",
           "headings:text-lg gap-2 text-sm": size === "sm",
           "headings:text-xl gap-3 text-base": size === "default",
-          "headings:text-2xl gap-4 text-lg": size === "lg",
+          "headings:text-2xl gap-4 text-base": size === "lg",
         },
         {
           "items-start text-left": align === "start",

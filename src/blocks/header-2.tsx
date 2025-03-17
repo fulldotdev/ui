@@ -1,4 +1,5 @@
 import * as React from "react"
+import type { HeaderProps } from "@/schemas/blocks/header"
 
 import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
@@ -9,14 +10,15 @@ import { NavigationMenu } from "@/components/navigation-menu"
 import { Search } from "@/components/search"
 import { ShopifyCart } from "@/components/shopify-cart"
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
-  logo?: React.ComponentProps<typeof Logo>
-  menus?: React.ComponentProps<typeof NavigationMenu>["items"]
-  buttons?: React.ComponentProps<typeof Buttons>["buttons"]
-  search?: React.ComponentProps<typeof Search>["groups"]
-}
-
-function Header2({ logo, menus, buttons, search, className, ...props }: Props) {
+function Header2({
+  logo,
+  menus,
+  buttons,
+  search,
+  cart,
+  className,
+  ...props
+}: HeaderProps & React.ComponentProps<"header">) {
   return (
     <header
       className={cn(
@@ -29,9 +31,14 @@ function Header2({ logo, menus, buttons, search, className, ...props }: Props) {
         <div className="flex h-14 items-center gap-2">
           <DrawerMenu className="-ml-2.5 lg:hidden" items={menus} />
           <Logo className="mr-3 hidden md:flex" {...logo} />
-          <Search groups={search} className="mx-auto w-full lg:mx-6" />
+          {search ? (
+            <Search
+              links={search === true ? [] : search}
+              className="mx-auto w-full lg:mx-6"
+            />
+          ) : null}
           <Buttons className="max-sm:hidden" buttons={buttons} reverse />
-          <ShopifyCart className="-mr-2.5" />
+          {cart ? <ShopifyCart className="-mr-2.5" /> : null}
         </div>
         <div className="-mx-2.5 flex h-12 items-center pb-2.5 max-lg:hidden">
           <NavigationMenu items={menus} />

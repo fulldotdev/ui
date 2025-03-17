@@ -1,9 +1,9 @@
 import * as React from "react"
+import type { CollectionProps } from "@/schemas/blocks/collection"
 import { ChevronDown } from "lucide-react"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
-import { CardTitle } from "@/components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,23 +24,8 @@ import { Row } from "@/components/row"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
-interface Props extends React.ComponentProps<typeof Section> {
-  level?: React.ComponentProps<typeof Title>["level"]
-  size?: React.ComponentProps<typeof Title>["size"]
-  align?: React.ComponentProps<typeof Title>["align"]
-  title?: React.ComponentProps<typeof Title>["text"]
-  description?: React.ComponentProps<typeof Description>["text"]
-  products?: {
-    href?: React.ComponentProps<typeof Link>["href"]
-    title?: React.ComponentProps<typeof Title>["text"]
-    image?: React.ComponentProps<typeof Image>
-    price?: React.ComponentProps<typeof Price>
-  }[]
-}
-
 function Collection1({
   level = 1,
-  size,
   align,
   title,
   description,
@@ -48,7 +33,7 @@ function Collection1({
   children,
   className,
   ...props
-}: Props) {
+}: CollectionProps & React.ComponentProps<typeof Section>) {
   const [sortedProducts, setSortedProducts] = React.useState(products)
   const [sort, setSort] = React.useState("aanbevolen")
 
@@ -72,10 +57,9 @@ function Collection1({
     <Section className={cn(className)} {...props}>
       <Container>
         <Column align={align}>
-          <Title level={level} size={size} align={align} text={title} />
+          <Title size="4xl" level={level} align={align} text={title} />
           <Description
             className="not-first:mt-4"
-            size={size}
             align={align}
             text={description}
           />

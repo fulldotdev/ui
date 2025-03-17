@@ -1,4 +1,5 @@
 import * as React from "react"
+import type { HeaderProps } from "@/schemas/blocks/header"
 
 import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
@@ -9,14 +10,6 @@ import { NavigationMenu } from "@/components/navigation-menu"
 import { Search } from "@/components/search"
 import { ShopifyCart } from "@/components/shopify-cart"
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
-  logo?: React.ComponentProps<typeof Logo>
-  menus?: React.ComponentProps<typeof NavigationMenu>["items"]
-  buttons?: React.ComponentProps<typeof Buttons>["buttons"]
-  search?: React.ComponentProps<typeof Search>["groups"] | boolean
-  cart?: boolean
-}
-
 function Header1({
   logo,
   menus,
@@ -25,7 +18,7 @@ function Header1({
   cart,
   className,
   ...props
-}: Props) {
+}: HeaderProps & React.ComponentProps<"header">) {
   return (
     <header
       className={cn(
@@ -44,7 +37,9 @@ function Header1({
           />
         </div>
         <div className="inline-flex w-full items-center justify-end gap-2">
-          {search ? <Search groups={search} className="w-full" /> : null}
+          {search ? (
+            <Search links={search === true ? [] : search} className="w-full" />
+          ) : null}
           <Buttons className="max-sm:hidden" buttons={buttons} reverse />
           {cart ? <ShopifyCart className="-mr-2.5" /> : null}
         </div>

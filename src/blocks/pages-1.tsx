@@ -1,4 +1,5 @@
 import * as React from "react"
+import type { PagesProps } from "@/schemas/blocks/pages"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
@@ -12,24 +13,8 @@ import { Link } from "@/components/link"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
-interface Props extends React.ComponentProps<typeof Section> {
-  level?: React.ComponentProps<typeof Title>["level"]
-  size?: React.ComponentProps<typeof Title>["size"]
-  align?: React.ComponentProps<typeof Title>["align"]
-  title?: React.ComponentProps<typeof Title>["text"]
-  description?: React.ComponentProps<typeof Description>["text"]
-  buttons?: React.ComponentProps<typeof Buttons>["buttons"]
-  pages?: {
-    href?: string
-    title?: React.ComponentProps<typeof Title>["text"]
-    description?: string
-    image?: React.ComponentProps<typeof Image>
-  }[]
-}
-
 function Pages1({
   level = 2,
-  size,
   align,
   title,
   description,
@@ -37,15 +22,14 @@ function Pages1({
   pages,
   className,
   ...props
-}: Props) {
+}: PagesProps & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
         <Column align={align}>
-          <Title level={level} size={size} align={align} text={title} />
+          <Title size="4xl" level={level} align={align} text={title} />
           <Description
             className="not-first:mt-4"
-            size={size}
             align={align}
             text={description}
           />
@@ -61,16 +45,9 @@ function Pages1({
                   className="rounded-lg transition-opacity group-hover:opacity-75"
                   {...image}
                 />
-                <Title
-                  className="text-2xl"
-                  level={level}
-                  size={size}
-                  align={align}
-                  text={title}
-                />
+                <Title size="xl" level={level} align={align} text={title} />
                 <Description
                   className="not-first:mt-4"
-                  size={size}
                   align={align}
                   text={description}
                 />

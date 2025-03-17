@@ -1,4 +1,5 @@
 import * as React from "react"
+import type { ProductProps } from "@/schemas/blocks/product"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/button"
@@ -6,7 +7,6 @@ import { Column } from "@/components/column"
 import { Container } from "@/components/container"
 import { Description } from "@/components/description"
 import { Gallery } from "@/components/gallery"
-import { Image } from "@/components/image"
 import { Price } from "@/components/price"
 import { Prose } from "@/components/prose"
 import { Section } from "@/components/section"
@@ -14,32 +14,19 @@ import { ShopifyProduct } from "@/components/shopify-product"
 import { Split } from "@/components/split"
 import { Title } from "@/components/title"
 
-interface Props extends React.ComponentProps<typeof Section> {
-  id?: string
-  variants?: any
-  level?: React.ComponentProps<typeof Title>["level"]
-  size?: React.ComponentProps<typeof Title>["size"]
-  align?: React.ComponentProps<typeof Title>["align"]
-  title?: React.ComponentProps<typeof Title>["text"]
-  description?: React.ComponentProps<typeof Description>["text"]
-  price?: React.ComponentProps<typeof Price>
-  images?: React.ComponentProps<typeof Image>[]
-}
-
 function Product1({
-  id,
   level = 1,
-  size,
   align,
   title,
   description,
   images,
   price,
+  id,
   variants,
   children,
   className,
   ...props
-}: Props) {
+}: ProductProps & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn("product product-1 pt-0", className)} {...props}>
       <Container className="max-sm:px-0">
@@ -49,15 +36,14 @@ function Product1({
             images={images}
           />
           <Column className="top-header gap-8 max-sm:px-4 md:mt-12 lg:sticky">
-            <Title level={level} size={size} align={align} text={title} />
+            <Title size="4xl" level={level} align={align} text={title} />
             <Description
               className="not-first:mt-4"
-              size={size}
               align={align}
               text={description}
             />
             {id ? (
-              <ShopifyProduct id={id} variants={variants} />
+              <ShopifyProduct id={id} variants={variants as any} />
             ) : (
               <>
                 <Price className="mt-4 text-lg font-medium" {...price} />

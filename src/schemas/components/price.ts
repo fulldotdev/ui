@@ -8,6 +8,5 @@ export const priceSchema = z
     currency: z.string(),
   })
   .partial()
-  .strict()
 
 export type PriceSchema = z.infer<typeof priceSchema>

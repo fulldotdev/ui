@@ -1,4 +1,5 @@
 import * as React from "react"
+import type { FaqsProps } from "@/schemas/blocks/faqs"
 
 import { cn } from "@/lib/utils"
 import { Accordion } from "@/components/accordion"
@@ -10,22 +11,8 @@ import { Section } from "@/components/section"
 import { Split } from "@/components/split"
 import { Title } from "@/components/title"
 
-interface Props extends React.ComponentProps<typeof Section> {
-  level?: React.ComponentProps<typeof Title>["level"]
-  size?: React.ComponentProps<typeof Title>["size"]
-  align?: React.ComponentProps<typeof Title>["align"]
-  title?: React.ComponentProps<typeof Title>["text"]
-  description?: React.ComponentProps<typeof Description>["text"]
-  buttons?: React.ComponentProps<typeof Buttons>["buttons"]
-  faqs?: {
-    title?: React.ComponentProps<typeof Title>["text"]
-    description?: string
-  }[]
-}
-
 function Faqs2({
   level = 2,
-  size,
   align,
   title,
   description,
@@ -33,19 +20,15 @@ function Faqs2({
   faqs,
   className,
   ...props
-}: Props) {
+}: FaqsProps & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
         <Split align={align}>
           <Column>
-            <Title level={level} size={size} text={title} />
-            <Description
-              className="not-first:mt-4"
-              size={size}
-              text={description}
-            />
-            <Buttons className="not-first:mt-8" size={size} buttons={buttons} />
+            <Title size="4xl" level={level} text={title} />
+            <Description className="not-first:mt-4" text={description} />
+            <Buttons className="not-first:mt-8" buttons={buttons} />
           </Column>
           <Accordion level={level + 1} type="single" collapsible items={faqs} />
         </Split>

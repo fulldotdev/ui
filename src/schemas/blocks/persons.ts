@@ -1,12 +1,24 @@
-import { pathSchema } from "@/schemas/misc/path"
-import { z } from "astro:content"
+import { buttonSchema } from "@/schemas/components/button"
+import { imageSchema } from "@/schemas/components/image"
+import { z } from "zod"
 
 export const personsSchema = z
   .object({
-    size: z.enum(["xs", "sm", "default", "lg", "xl", "2xl"]).optional(),
+    level: z.number().min(1).max(3).optional(),
     align: z.enum(["start", "center", "end"]).optional(),
     title: z.string().optional(),
     description: z.string().optional(),
-    persons: pathSchema("persons").array().optional(),
+    buttons: buttonSchema.array().optional(),
+    persons: z
+      .object({
+        href: z.string().optional(),
+        image: imageSchema.optional(),
+        title: z.string().optional(),
+        description: z.string().optional(),
+      })
+      .array()
+      .optional(),
   })
-  .strict()
+  .passthrough()
+
+export type PersonsProps = z.infer<typeof personsSchema>

@@ -1,7 +1,7 @@
 import * as React from "react"
+import type { ContactProps } from "@/schemas/blocks/contact"
 
 import { cn } from "@/lib/utils"
-import { Buttons } from "@/components/buttons"
 import { Channels } from "@/components/channels"
 import { Column } from "@/components/column"
 import { Container } from "@/components/container"
@@ -11,41 +11,23 @@ import { Section } from "@/components/section"
 import { Split } from "@/components/split"
 import { Title } from "@/components/title"
 
-interface Props extends React.ComponentProps<typeof Section> {
-  level?: React.ComponentProps<typeof Title>["level"]
-  size?: React.ComponentProps<typeof Title>["size"]
-  align?: React.ComponentProps<typeof Title>["align"]
-  title?: React.ComponentProps<typeof Title>["text"]
-  description?: React.ComponentProps<typeof Description>["text"]
-  channels?: React.ComponentProps<typeof Channels>
-  form?: React.ComponentProps<typeof Form>
-  buttons?: React.ComponentProps<typeof Buttons>["buttons"]
-}
-
 function Contact2({
-  level = 1,
-  size,
+  level = 2,
   align,
   title,
   description,
   channels,
   form,
   className,
-  buttons,
   ...props
-}: Props) {
+}: ContactProps & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
         <Split className="gap-x-0" align={align}>
           <Column className="items-start">
-            <Title level={level} size={size} align={align} text={title} />
-            <Description
-              className="not-first:mt-4"
-              size={size}
-              align={align}
-              text={description}
-            />
+            <Title size="4xl" level={level} text={title} />
+            <Description className="not-first:mt-4" text={description} />
             <Channels className="items-start not-first:mt-8" {...channels} />
           </Column>
           <Form {...form} />

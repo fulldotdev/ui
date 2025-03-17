@@ -1,36 +1,47 @@
-import { collectionsLoader } from "@/loaders/collections-loader"
-import { locationsLoader } from "@/loaders/locations-loader"
-import { pagesLoader } from "@/loaders/pages-loader"
-import { personsLoader } from "@/loaders/persons-loader"
-import { postsLoader } from "@/loaders/posts-loader"
-import { productsLoader } from "@/loaders/products-loader"
-import { projectsLoader } from "@/loaders/projects-loader"
-import { reviewsLoader } from "@/loaders/reviews-loader"
-import { defineCollection } from "astro:content"
+import { collectionSchema } from "@/schemas/blocks/collection"
+import { locationSchema } from "@/schemas/blocks/location"
+import { pageSchema } from "@/schemas/blocks/page"
+import { personSchema } from "@/schemas/blocks/person"
+import { postSchema } from "@/schemas/blocks/post"
+import { productSchema } from "@/schemas/blocks/product"
+import { reviewSchema } from "@/schemas/blocks/review"
+import { pathSchema } from "@/schemas/misc/path"
+import { sectionSchema } from "@/schemas/misc/section"
+import { seoSchema } from "@/schemas/misc/seo"
+import { defineCollection, z } from "astro:content"
+import { glob } from "astro/loaders"
 
 export const collections = {
   pages: defineCollection({
-    loader: pagesLoader(),
-  }),
-  locations: defineCollection({
-    loader: locationsLoader(),
-  }),
-  persons: defineCollection({
-    loader: personsLoader(),
-  }),
-  projects: defineCollection({
-    loader: projectsLoader(),
+    loader: glob({
+      pattern: "**/[^_]*.{md,mdx}",
+      base: `./src/content/pages`,
+    }),
+    schema: pageSchema
+      .merge(postSchema)
+      .merge(personSchema)
+      .merge(locationSchema)
+      .merge(productSchema)
+      .merge(collectionSchema)
+      .extend({
+        type: z.enum([
+          "page",
+          "post",
+          "person",
+          "location",
+          "product",
+          "collection",
+        ]),
+        variant: z.number().default(1),
+        sections: sectionSchema.array().optional(),
+        seo: seoSchema.optional(),
+      }),
   }),
   reviews: defineCollection({
-    loader: reviewsLoader(),
-  }),
-  products: defineCollection({
-    loader: productsLoader(),
-  }),
-  collections: defineCollection({
-    loader: collectionsLoader(),
-  }),
-  posts: defineCollection({
-    loader: postsLoader(),
+    loader: glob({
+      pattern: "**/[^_]*.{yml,yaml}",
+      base: `./src/content/reviews`,
+    }),
+    schema: reviewSchema,
   }),
 }

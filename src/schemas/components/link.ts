@@ -6,6 +6,5 @@ export const linkSchema = z
     href: z.string(),
   })
   .partial()
-  .strict()
 
 export type LinkSchema = z.infer<typeof linkSchema>

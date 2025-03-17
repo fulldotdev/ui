@@ -1,4 +1,5 @@
 import * as React from "react"
+import type { CollectionsProps } from "@/schemas/blocks/collections"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
@@ -12,23 +13,8 @@ import { Link } from "@/components/link"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
-interface Props extends React.ComponentProps<typeof Section> {
-  level?: React.ComponentProps<typeof Title>["level"]
-  size?: React.ComponentProps<typeof Title>["size"]
-  align?: React.ComponentProps<typeof Title>["align"]
-  title?: React.ComponentProps<typeof Title>["text"]
-  description?: React.ComponentProps<typeof Description>["text"]
-  buttons?: React.ComponentProps<typeof Buttons>["buttons"]
-  collections?: {
-    href?: React.ComponentProps<typeof Link>["href"]
-    image?: React.ComponentProps<typeof Image>
-    title?: React.ComponentProps<typeof Title>["text"]
-  }[]
-}
-
 function Collections1({
   level = 2,
-  size,
   align,
   title,
   description,
@@ -36,15 +22,14 @@ function Collections1({
   collections,
   className,
   ...props
-}: Props) {
+}: CollectionsProps & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
         <Column align={align}>
-          <Title level={level} size={size} align={align} text={title} />
+          <Title size="4xl" level={level} align={align} text={title} />
           <Description
             className="not-first:mt-4"
-            size={size}
             align={align}
             text={description}
           />

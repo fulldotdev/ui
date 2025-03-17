@@ -1,4 +1,5 @@
 import * as React from "react"
+import type { PersonsProps } from "@/schemas/blocks/persons"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
@@ -13,24 +14,8 @@ import { Link } from "@/components/link"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
-interface Props extends React.ComponentProps<typeof Section> {
-  level?: React.ComponentProps<typeof Title>["level"]
-  size?: React.ComponentProps<typeof Title>["size"]
-  align?: React.ComponentProps<typeof Title>["align"]
-  title?: React.ComponentProps<typeof Title>["text"]
-  description?: React.ComponentProps<typeof Description>["text"]
-  buttons?: React.ComponentProps<typeof Buttons>["buttons"]
-  persons?: {
-    href?: string
-    title?: React.ComponentProps<typeof Title>["text"]
-    description?: string
-    image?: React.ComponentProps<typeof Image>
-  }[]
-}
-
 function Persons1({
   level = 2,
-  size,
   align,
   title,
   description,
@@ -38,24 +23,18 @@ function Persons1({
   persons,
   className,
   ...props
-}: Props) {
+}: PersonsProps & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
         <Column align={align}>
-          <Title level={level} size={size} align={align} text={title} />
+          <Title level={level} size="4xl" align={align} text={title} />
           <Description
             className="not-first:mt-4"
-            size={size}
             align={align}
             text={description}
           />
-          <Buttons
-            className="not-first:mt-8"
-            size={size}
-            align={align}
-            buttons={buttons}
-          />
+          <Buttons className="not-first:mt-8" align={align} buttons={buttons} />
           <Grid className="gap-16 not-first:mt-16">
             {persons?.map(({ href, image, title, description }) => (
               <Link className="group max-w-md" key={uuidv4()} href={href}>
@@ -71,7 +50,6 @@ function Persons1({
                 />
                 <Description
                   className="not-first:mt-1"
-                  size={size}
                   align={align}
                   text={description}
                 />

@@ -8,6 +8,5 @@ export const menuSchema = z
     links: linkSchema.array(),
   })
   .partial()
-  .strict()
 
 export type MenuSchema = z.infer<typeof menuSchema>

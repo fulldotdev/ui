@@ -5,6 +5,8 @@ import { ctaSchema } from "@/schemas/blocks/cta"
 import { faqsSchema } from "@/schemas/blocks/faqs"
 import { featuresSchema } from "@/schemas/blocks/features"
 import { heroSchema } from "@/schemas/blocks/hero"
+import { locationsSchema } from "@/schemas/blocks/locations"
+import { mediaSchema } from "@/schemas/blocks/media"
 import { pagesSchema } from "@/schemas/blocks/pages"
 import { personsSchema } from "@/schemas/blocks/persons"
 import { postsSchema } from "@/schemas/blocks/posts"
@@ -13,14 +15,13 @@ import { productsSchema } from "@/schemas/blocks/products"
 import { reviewsSchema } from "@/schemas/blocks/reviews"
 import { z } from "astro:content"
 
-import { locationsSchema } from "../blocks/locations"
-import { mediaSchema } from "../blocks/media"
-import { projectsSchema } from "../blocks/projects"
+import { pathSchema } from "./path"
 
 export const sectionSchema = z.discriminatedUnion("type", [
   collectionsSchema.extend({
     type: z.literal("collections"),
     variant: z.number().default(1),
+    collections: pathSchema("pages").array().optional(),
   }),
   contactSchema.extend({
     type: z.literal("contact"),
@@ -49,6 +50,7 @@ export const sectionSchema = z.discriminatedUnion("type", [
   locationsSchema.extend({
     type: z.literal("locations"),
     variant: z.number().default(1),
+    locations: pathSchema("pages").array().optional(),
   }),
   mediaSchema.extend({
     type: z.literal("media"),
@@ -57,14 +59,17 @@ export const sectionSchema = z.discriminatedUnion("type", [
   pagesSchema.extend({
     type: z.literal("pages"),
     variant: z.number().default(1),
+    pages: pathSchema("pages").array().optional(),
   }),
   personsSchema.extend({
     type: z.literal("persons"),
     variant: z.number().default(1),
+    persons: pathSchema("pages").array().optional(),
   }),
   postsSchema.extend({
     type: z.literal("posts"),
     variant: z.number().default(1),
+    posts: pathSchema("pages").array().optional(),
   }),
   pricingsSchema.extend({
     type: z.literal("pricings"),
@@ -73,13 +78,11 @@ export const sectionSchema = z.discriminatedUnion("type", [
   productsSchema.extend({
     type: z.literal("products"),
     variant: z.number().default(1),
-  }),
-  projectsSchema.extend({
-    type: z.literal("projects"),
-    variant: z.number().default(1),
+    products: pathSchema("pages").array().optional(),
   }),
   reviewsSchema.extend({
     type: z.literal("reviews"),
     variant: z.number().default(1),
+    reviews: pathSchema("reviews").array().optional(),
   }),
 ])

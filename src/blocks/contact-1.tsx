@@ -1,4 +1,4 @@
-import * as React from "react"
+import type { ContactProps } from "@/schemas/blocks/contact"
 
 import { cn } from "@/lib/utils"
 import { Channels } from "@/components/channels"
@@ -9,19 +9,8 @@ import { Form } from "@/components/form"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
-interface Props extends React.ComponentProps<typeof Section> {
-  level?: React.ComponentProps<typeof Title>["level"]
-  size?: React.ComponentProps<typeof Title>["size"]
-  align?: React.ComponentProps<typeof Title>["align"]
-  title?: React.ComponentProps<typeof Title>["text"]
-  description?: React.ComponentProps<typeof Description>["text"]
-  channels?: React.ComponentProps<typeof Channels>
-  form?: React.ComponentProps<typeof Form>
-}
-
 function Contact1({
   level = 2,
-  size,
   align,
   title,
   description,
@@ -29,15 +18,14 @@ function Contact1({
   form,
   className,
   ...props
-}: Props) {
+}: ContactProps & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container size="sm">
         <Column align={align}>
-          <Title level={level} size={size} align={align} text={title} />
+          <Title size="4xl" level={level} align={align} text={title} />
           <Description
             className="not-first:mt-4"
-            size={size}
             align={align}
             text={description}
           />

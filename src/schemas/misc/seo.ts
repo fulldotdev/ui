@@ -9,4 +9,3 @@ export const seoSchema = z
     nofollow: z.boolean(),
   })
   .partial()
-  .strict()

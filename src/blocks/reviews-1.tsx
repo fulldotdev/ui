@@ -1,4 +1,5 @@
 import * as React from "react"
+import type { ReviewsProps } from "@/schemas/blocks/reviews"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
@@ -14,40 +15,23 @@ import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 import { Writeup } from "@/components/writeup"
 
-interface Props extends React.ComponentProps<typeof Section> {
-  level?: React.ComponentProps<typeof Title>["level"]
-  size?: React.ComponentProps<typeof Title>["size"]
-  align?: React.ComponentProps<typeof Title>["align"]
-  title?: React.ComponentProps<typeof Title>["text"]
-  description?: React.ComponentProps<typeof Description>["text"]
-  buttons?: React.ComponentProps<typeof Buttons>["buttons"]
-  reviews?: {
-    rating?: React.ComponentProps<typeof Rating>["score"]
-    title?: React.ComponentProps<typeof Title>["text"]
-    description?: string
-  }[]
-}
-
 function Reviews1({
   level = 2,
-  size,
   align,
   title,
   description,
   buttons,
   reviews,
-  children,
   className,
   ...props
-}: Props) {
+}: ReviewsProps & React.ComponentProps<typeof Section>) {
   return (
-    <Section className={cn("reviews reviews-1", className)} {...props}>
+    <Section className={cn(className)} {...props}>
       <Container className="gap-8">
         <Column align={align}>
-          <Title level={level} size={size} align={align} text={title} />
+          <Title level={level} size="4xl" align={align} text={title} />
           <Description
             className="not-first:mt-4"
-            size={size}
             align={align}
             text={description}
           />

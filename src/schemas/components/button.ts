@@ -7,6 +7,5 @@ export const buttonSchema = z
     variant: z.enum(["default", "outline", "secondary", "ghost", "link"]),
   })
   .partial()
-  .strict()
 
 export type ButtonSchema = z.infer<typeof buttonSchema>

@@ -1,14 +1,22 @@
 import { buttonSchema } from "@/schemas/components/button"
-import { pathSchema } from "@/schemas/misc/path"
-import { z } from "astro:content"
+import { z } from "zod"
 
 export const locationsSchema = z
   .object({
-    size: z.enum(["xs", "sm", "default", "lg", "xl", "2xl"]).optional(),
+    level: z.number().min(1).max(3).optional(),
     align: z.enum(["start", "center", "end"]).optional(),
     title: z.string().optional(),
     description: z.string().optional(),
     buttons: buttonSchema.array().optional(),
-    locations: pathSchema("locations").array().optional(),
+    locations: z
+      .object({
+        href: z.string().optional(),
+        title: z.string().optional(),
+        description: z.string().optional(),
+      })
+      .array()
+      .optional(),
   })
-  .strict()
+  .passthrough()
+
+export type LocationsProps = z.infer<typeof locationsSchema>

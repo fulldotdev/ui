@@ -1,37 +1,27 @@
 import { GitContentSource } from "@stackbit/cms-git"
 import { defineStackbitConfig } from "@stackbit/types"
-import { ctaModel } from "stackbit/blocks/Cta"
-import { faqsModel } from "stackbit/blocks/Faqs"
-import { featuresModel } from "stackbit/blocks/Features"
-import { heroModel } from "stackbit/blocks/hero"
-import { mediaModel } from "stackbit/blocks/media"
-import { pagesModel } from "stackbit/blocks/pages"
-import { personsModel } from "stackbit/blocks/persons"
-import { postsModel } from "stackbit/blocks/posts"
-import { productsModel } from "stackbit/blocks/Products"
-import { reviewsModel } from "stackbit/blocks/Reviews"
-import { collectionModel } from "stackbit/content/collection"
-import { homeModel } from "stackbit/content/home"
-import { locationModel } from "stackbit/content/location"
-// import { CollectionsModel } from "stackbit/blocks/Collections"
-// import { ContactModel } from "stackbit/blocks/Contact"
-// import { ContentModel } from "stackbit/blocks/Content"
-// import { CtaModel } from "stackbit/blocks/Cta"
-// import { FaqsModel } from "stackbit/blocks/Faqs"
-// import { FeaturesModel } from "stackbit/blocks/Features"
-// import { HeroModel } from "stackbit/blocks/hero"
-// import { IntroModel } from "stackbit/blocks/Intro"
-// import { ProductsModel } from "stackbit/blocks/Products"
-// import { ReviewsModel } from "stackbit/blocks/Reviews"
-// import { CollectionModel } from "stackbit/content/collection"
-import { pageModel } from "stackbit/content/page"
-import { partnerModel, projectModel } from "stackbit/content/partner"
-import { personModel } from "stackbit/content/person"
-import { postModel } from "stackbit/content/post"
-import { productModel } from "stackbit/content/product"
-
-// import { ArticleModel } from "stackbit/content/post"
-// import { ProductModel } from "stackbit/content/product"
+import { collectionModel } from "stackbit/blocks/collection-model"
+import { collectionsModel } from "stackbit/blocks/collections-model"
+import { contactModel } from "stackbit/blocks/contact-model"
+import { contentModel } from "stackbit/blocks/content-model"
+import { ctaModel } from "stackbit/blocks/cta-model"
+import { faqsModel } from "stackbit/blocks/faqs-model"
+import { featuresModel } from "stackbit/blocks/features-model"
+import { heroModel } from "stackbit/blocks/hero-model"
+import { locationModel } from "stackbit/blocks/location-model"
+import { locationsModel } from "stackbit/blocks/locations-model"
+import { mediaModel } from "stackbit/blocks/media-model"
+import { pageModel } from "stackbit/blocks/page-model"
+import { pagesModel } from "stackbit/blocks/pages-model"
+import { personModel } from "stackbit/blocks/person-model"
+import { personsModel } from "stackbit/blocks/persons-model"
+import { postModel } from "stackbit/blocks/post-model"
+import { postsModel } from "stackbit/blocks/posts-model"
+import { pricingsModel } from "stackbit/blocks/pricings-model"
+import { productModel } from "stackbit/blocks/product-model"
+import { productsModel } from "stackbit/blocks/products-model"
+import { reviewModel } from "stackbit/blocks/review-model"
+import { reviewsModel } from "stackbit/blocks/reviews-model"
 
 export default defineStackbitConfig({
   stackbitVersion: "~0.6.0",
@@ -55,25 +45,28 @@ export default defineStackbitConfig({
       rootPath: __dirname,
       contentDirs: ["src/content"],
       models: [
-        // content
-        homeModel,
-        locationModel,
-        pageModel,
-        partnerModel,
-        personModel,
-        postModel,
-        productModel,
-        // blocks
-        mediaModel,
+        collectionModel,
+        collectionsModel,
+        contactModel,
+        contentModel,
         ctaModel,
         faqsModel,
         featuresModel,
         heroModel,
+        locationModel,
+        locationsModel,
+        mediaModel,
+        pageModel,
         pagesModel,
-        postsModel,
-        productsModel,
-        reviewsModel,
+        personModel,
         personsModel,
+        postModel,
+        postsModel,
+        pricingsModel,
+        productModel,
+        productsModel,
+        reviewModel,
+        reviewsModel,
       ],
       assetsConfig: {
         referenceType: "static",
@@ -83,4 +76,8 @@ export default defineStackbitConfig({
       },
     }),
   ],
+  presetSource: {
+    type: "files",
+    presetDirs: ["./stackbit/presets"],
+  },
 })

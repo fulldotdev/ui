@@ -1,5 +1,5 @@
 import * as React from "react"
-import config from "@/data/config.json"
+import config from "@/data/config"
 import { cartTotalQuantity } from "@/stores/shopify"
 import { useStore } from "@nanostores/react"
 import {

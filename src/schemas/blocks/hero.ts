@@ -1,15 +1,16 @@
 import { buttonSchema } from "@/schemas/components/button"
 import { imageSchema } from "@/schemas/components/image"
-import { z } from "astro:content"
+import { z } from "zod"
 
 export const heroSchema = z
   .object({
-    size: z.enum(["xs", "sm", "default", "lg", "xl", "2xl"]).optional(),
+    level: z.number().min(1).max(3).optional(),
     align: z.enum(["start", "center", "end"]).optional(),
-    dark: z.boolean().optional(),
     title: z.string().optional(),
     description: z.string().optional(),
     buttons: buttonSchema.array().optional(),
     image: imageSchema.optional(),
   })
-  .strict()
+  .passthrough()
+
+export type HeroProps = z.infer<typeof heroSchema>

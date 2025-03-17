@@ -1,4 +1,5 @@
 import * as React from "react"
+import type { FaqsProps } from "@/schemas/blocks/faqs"
 
 import { cn } from "@/lib/utils"
 import { Accordion } from "@/components/accordion"
@@ -9,22 +10,8 @@ import { Description } from "@/components/description"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
-interface Props extends React.ComponentProps<typeof Section> {
-  level?: React.ComponentProps<typeof Title>["level"]
-  size?: React.ComponentProps<typeof Title>["size"]
-  align?: React.ComponentProps<typeof Title>["align"]
-  title?: React.ComponentProps<typeof Title>["text"]
-  description?: React.ComponentProps<typeof Description>["text"]
-  buttons?: React.ComponentProps<typeof Buttons>["buttons"]
-  faqs?: {
-    title?: React.ComponentProps<typeof Title>["text"]
-    description?: string
-  }[]
-}
-
 function Faqs1({
   level = 2,
-  size,
   align,
   title,
   description,
@@ -32,24 +19,18 @@ function Faqs1({
   faqs,
   className,
   ...props
-}: Props) {
+}: FaqsProps & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
         <Column align={align}>
-          <Title level={level} size={size} align={align} text={title} />
+          <Title size="4xl" level={level} align={align} text={title} />
           <Description
             className="not-first:mt-4"
-            size={size}
             align={align}
             text={description}
           />
-          <Buttons
-            className="not-first:mt-8"
-            size={size}
-            align={align}
-            buttons={buttons}
-          />
+          <Buttons className="not-first:mt-8" align={align} buttons={buttons} />
           <Accordion
             className="not-first:mt-16"
             type="single"

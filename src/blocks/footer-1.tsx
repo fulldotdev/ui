@@ -1,4 +1,5 @@
 import * as React from "react"
+import type { FooterProps } from "@/schemas/blocks/footer"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
@@ -9,15 +10,6 @@ import { Logo } from "@/components/logo"
 import { Menu } from "@/components/menu"
 import { Socials } from "@/components/socials"
 
-interface Props extends React.ComponentProps<"footer"> {
-  logo?: React.ComponentProps<typeof Logo>
-  description?: string
-  socials?: React.ComponentProps<typeof Socials>["socials"]
-  channels?: React.ComponentProps<typeof Channels>
-  hours?: Record<string, string>
-  menus?: React.ComponentProps<typeof Menu>[]
-}
-
 function Footer1({
   logo,
   description,
@@ -27,7 +19,7 @@ function Footer1({
   menus,
   className,
   ...props
-}: Props) {
+}: FooterProps & React.ComponentProps<"footer">) {
   return (
     <footer
       className={cn(

@@ -1,8 +1,8 @@
 import * as React from "react"
+import type { ProductsProps } from "@/schemas/blocks/products"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
-import { Abstract } from "@/components/abstract"
 import { Buttons } from "@/components/buttons"
 import { Container } from "@/components/container"
 import { Description } from "@/components/description"
@@ -12,26 +12,9 @@ import { Link } from "@/components/link"
 import { Price } from "@/components/price"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
-import { Writeup } from "@/components/writeup"
-
-interface Props extends React.ComponentProps<typeof Section> {
-  level?: React.ComponentProps<typeof Title>["level"]
-  size?: React.ComponentProps<typeof Title>["size"]
-  align?: React.ComponentProps<typeof Title>["align"]
-  title?: React.ComponentProps<typeof Title>["text"]
-  description?: React.ComponentProps<typeof Description>["text"]
-  buttons?: React.ComponentProps<typeof Buttons>["buttons"]
-  products?: {
-    href?: string
-    title?: React.ComponentProps<typeof Title>["text"]
-    images?: React.ComponentProps<typeof Image>[]
-    price?: React.ComponentProps<typeof Price>
-  }[]
-}
 
 function Products1({
   level = 2,
-  size,
   align,
   title,
   description,
@@ -39,25 +22,23 @@ function Products1({
   products,
   className,
   ...props
-}: Props) {
+}: ProductsProps & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
-        <Title level={level} size={size} align={align} text={title} />
+        <Title level={level} size="4xl" align={align} text={title} />
         <Description
           className="not-first:mt-4"
-          size={size}
           align={align}
           text={description}
         />
         <Buttons
           className="not-first:mt-8 max-sm:hidden"
-          size={size}
           align={align}
           buttons={buttons}
         />
         <Grid className="gap-x-4 gap-y-8 not-first:mt-16">
-          {products?.map(({ href, title, images, price }) => (
+          {products?.map(({ href, title, image, price }) => (
             <Link
               className="group flex flex-col gap-4"
               key={uuidv4()}
@@ -65,12 +46,12 @@ function Products1({
             >
               <Image
                 className="bg-muted ring-muted aspect-square rounded-md object-contain p-4 ring-1 transition-opacity group-hover:opacity-75"
-                {...images?.[0]}
+                {...image}
               />
               <Title
                 className="text-sm"
                 level={level + 1}
-                size={size}
+                size="xl"
                 align={align}
                 text={title}
               />

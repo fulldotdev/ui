@@ -3,10 +3,10 @@ import React from "react"
 import { cn, hasChildren } from "@/lib/utils"
 
 interface WriteupProps extends React.ComponentProps<"div"> {
-  level?: 1 | 2 | 3
+  level: 1 | 2 | 3 | 4 | 5 | 6 | number
   size?: "xs" | "sm" | "default" | "lg" | "xl" | "2xl"
   align?: "start" | "center" | "end"
-  title?: React.ComponentProps<typeof Title>["text"]
+  title?: string
   description?: string
 }
 

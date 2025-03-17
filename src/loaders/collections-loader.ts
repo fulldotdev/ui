@@ -1,10 +1,10 @@
-import { collectionSchema } from "@/schemas/content/collection"
+import { collectionSchema } from "@/schemas/blocks/collection"
 import type { Collection } from "@shopify/hydrogen/storefront-api-types"
 import { createStorefrontApiClient } from "@shopify/storefront-api-client"
 import { glob } from "astro/loaders"
 import type { Loader, LoaderContext } from "astro/loaders"
 
-import config from "../data/config.json"
+import config from "../data/config"
 
 const CollectionsQuery = `#graphql
   query {
@@ -37,8 +37,9 @@ export function collectionsLoader(): Loader {
   return {
     name: "collections-loader",
     load: async (context: LoaderContext): Promise<void> => {
+      if (!config.content.collections) return
       const { logger, store, parseData, generateDigest } = context
-      logger.info("Loading collections collections")
+      logger.info("Loading collections")
       store.clear()
 
       // Loading local markdown files

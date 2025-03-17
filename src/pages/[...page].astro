@@ -1,140 +1,84 @@
 ---
-import { Banner1 } from "@/blocks/banner-1"
-import { Collection1 } from "@/blocks/collection-1"
-import { Content1 } from "@/blocks/content-1"
-import { Footer1 } from "@/blocks/footer-1"
-import { Header1 } from "@/blocks/header-1"
-import { Header2 } from "@/blocks/header-2"
-import { Post1 } from "@/blocks/post-1"
-import { Product1 } from "@/blocks/product-1"
-import config from "@/data/config.json"
-import settingJson from "@/data/settings.json"
+import type { LayoutSettings } from "@/data/settings.d"
+import settings from "@/data/settings.json"
 import { getCollection, render } from "astro:content"
 
 import { getHref } from "@/lib/get-href"
+import Block from "@/components/misc/block.astro"
 import Layout from "@/components/misc/layout.astro"
-import Section from "@/components/misc/section.astro"
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages")
-  const collections = config.content.collections.slug
-    ? await getCollection("collections")
-    : []
-  const locations = config.content.collections.slug
-    ? await getCollection("locations")
-    : []
-  const persons = config.content.collections.slug
-    ? await getCollection("persons")
-    : []
-  const posts = config.content.collections.slug
-    ? await getCollection("posts")
-    : []
-  const products = config.content.collections.slug
-    ? await getCollection("products")
-    : []
-  const projects = config.content.collections.slug
-    ? await getCollection("projects")
-    : []
-
-  const entries = [
-    ...pages,
-    ...collections,
-    ...locations,
-    ...posts,
-    ...persons,
-    ...products,
-    ...projects,
-  ]
-
-  return entries.map((entry) => ({
+  return pages.map((page) => ({
     params: {
-      page: getHref(entry.collection, entry.id),
+      page: getHref(page.id) === "/" ? undefined : getHref(page.id),
     },
     props: {
-      entry,
-      search: entries.map((entry) => ({
-        text: entry.data.title,
-        href: getHref(entry.collection, entry.id),
+      page,
+      search: pages.map((page) => ({
+        text: page.data.title,
+        href: getHref(page.id),
       })),
     },
   }))
 }
 
-const { entry, search } = Astro.props
+const { page, search } = Astro.props
+const { Content } = await render(page)
+const { body } = page
+const { seo, type, ...data } = page.data
 
-const { Content } = await render(entry)
-const { id, body } = entry
-const { type, variant = 1, sections, seo, ...data } = entry.data
+const mergedLayout: LayoutSettings = { ...settings.layouts.base }
+const { banner, header, footer, ...layout } = mergedLayout
 
-const {
-  banner: { variant: bannerVariant, ...banner },
-  header: { variant: headerVariant, ...header },
-  footer: { variant: footerVariant, ...footer },
-  ...settings
-} = settingJson
-
-const productInCollectionEntries = (await getCollection("products"))
-  ?.filter((product) =>
-    product?.data?.collections?.find((reference) => reference.id === id)
-  )
-  .map((product) => ({
-    href: getHref("products", product.id),
-    image: product.data.images?.[0],
-    ...product.data,
-  }))
-
-function getLevel(index: number) {
-  return !(type === "page" && !body?.trim()) && index === 0 ? 1 : 2
-}
+const hasContent = body && body.trim().length > 0
+const hasSections = "sections" in data
 ---
 
-<Layout {...settings} {...data} {...seo}>
-  {bannerVariant === 1 && <Banner1 {...banner} />}
-  {headerVariant === 1 && <Header1 client:load search={search} {...header} />}
-  {headerVariant === 2 && <Header2 client:load search={search} {...header} />}
+<Layout data-sb-object-id={page.filePath} {...settings} {...data} {...seo}>
+  <Block type="banner" {...banner} />
+  <Block type="header" search={search} {...header} />
   <main>
+    <!-- {
+      type === "page" ? (
+        <>
+          {hasContent && (
+            <Block type="content" level={1} {...data}>
+              <Content />
+            </Block>
+          )}
+          {hasSections &&
+            data.sections?.map((section, i) => (
+              <Block
+                key={i}
+                level={!hasContent && i === 0 ? 1 : 2}
+                {...section}
+              />
+            ))}
+        </> -->
     {
-      (type === "post" ||
-        type === "location" ||
-        type === "person" ||
-        type === "project") &&
-        variant === 1 && (
-          <Post1 level={1} {...data}>
-            <Content />
-          </Post1>
-        )
-    }
-    {
-      type === "collection" && variant === 1 && (
-        <Collection1 level={1} products={productInCollectionEntries} {...data}>
+      hasContent && (
+        <Block
+          level={1}
+          type={type === "page" ? "content" : type}
+          {...data}
+          data-sb-field-path="."
+        >
           <Content />
-        </Collection1>
+        </Block>
       )
     }
     {
-      type === "product" && variant === 1 && (
-        <Product1 level={1} {...data}>
-          <Content />
-        </Product1>
-      )
-    }
-    {
-      type === "page" && body?.trim() && variant === 1 && (
-        <Content1 level={1} {...data}>
-          <Content />
-        </Content1>
-      )
-    }
-    {
-      sections?.map(({ type, variant, ...section }, i) => (
-        <Section
-          level={getLevel(i)}
-          type={type}
-          variant={variant}
-          {...section}
-        />
-      ))
+      hasSections &&
+        data.sections?.map((section, i) => (
+          <Block
+            key={i}
+            level={!hasContent && i === 0 ? 1 : 2}
+            data-sb-field-path={`sections.${i}`}
+            {...section}
+          />
+        ))
     }
   </main>
-  {footerVariant === 1 && <Footer1 {...footer} />}
+  <Block type="footer" {...footer} />
 </Layout>

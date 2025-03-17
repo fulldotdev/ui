@@ -1,10 +1,10 @@
-import { productSchema } from "@/schemas/content/product"
+import { productSchema } from "@/schemas/blocks/product"
 import type { Product } from "@shopify/hydrogen/storefront-api-types"
 import { createStorefrontApiClient } from "@shopify/storefront-api-client"
 import { glob } from "astro/loaders"
 import type { Loader, LoaderContext } from "astro/loaders"
 
-import config from "../data/config.json"
+import config from "../data/config"
 
 const ProductsQuery = `#graphql
     query {
@@ -83,8 +83,10 @@ export function productsLoader(): Loader {
   return {
     name: "products-loader",
     load: async (context: LoaderContext): Promise<void> => {
+      if (!config.content.products) return
+
       const { logger, store, parseData, generateDigest } = context
-      logger.info("Loading products collections")
+      logger.info("Loading products")
       store.clear()
 
       // Loading local markdown files

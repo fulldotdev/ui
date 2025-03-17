@@ -3,7 +3,7 @@ import React from "react"
 import { cn, hasChildren } from "@/lib/utils"
 
 interface Props extends React.ComponentProps<"p"> {
-  size?: "xs" | "sm" | "default" | "lg" | "xl" | "2xl"
+  size?: "sm" | "default" | "lg" | "xl"
   align?: "start" | "center" | "end"
   text?: string
 }
@@ -21,10 +21,10 @@ function Description({
       className={cn(
         "description text-foreground text-prett max-w-lg leading-[1.75]",
         {
-          "text-sm": size === "xs" || size === "sm",
-          "text-base": size === "default",
-          "text-lg": size === "lg",
-          "text-lg md:text-xl": size === "xl" || size === "2xl",
+          "text-sm leading-[1.75]": size === "sm",
+          "text-base leading-[1.75]": size === "default",
+          "text-lg leading-[1.75]": size === "lg",
+          "text-lg leading-[1.75] md:text-xl": size === "xl",
         },
         {
           "text-left": align === "start",

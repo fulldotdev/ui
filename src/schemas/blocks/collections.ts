@@ -1,14 +1,24 @@
 import { buttonSchema } from "@/schemas/components/button"
-import { pathSchema } from "@/schemas/misc/path"
-import { z } from "astro:content"
+import { imageSchema } from "@/schemas/components/image"
+import { z } from "zod"
 
 export const collectionsSchema = z
   .object({
-    size: z.enum(["xs", "sm", "default", "lg", "xl", "2xl"]).optional(),
+    level: z.number().min(1).max(3).optional(),
     align: z.enum(["start", "center", "end"]).optional(),
     title: z.string().optional(),
     description: z.string().optional(),
     buttons: buttonSchema.array().optional(),
-    collections: pathSchema("collections").array().optional(),
+    collections: z
+      .object({
+        href: z.string().optional(),
+        image: imageSchema.optional(),
+        title: z.string().optional(),
+        description: z.string().optional(),
+      })
+      .array()
+      .optional(),
   })
-  .strict()
+  .passthrough()
+
+export type CollectionsProps = z.infer<typeof collectionsSchema>

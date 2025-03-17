@@ -1,4 +1,5 @@
 import * as React from "react"
+import type { PostsProps } from "@/schemas/blocks/posts"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
@@ -12,23 +13,8 @@ import { Link } from "@/components/link"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
-interface Props extends React.ComponentProps<typeof Section> {
-  level?: React.ComponentProps<typeof Title>["level"]
-  size?: React.ComponentProps<typeof Title>["size"]
-  align?: React.ComponentProps<typeof Title>["align"]
-  title?: React.ComponentProps<typeof Title>["text"]
-  description?: React.ComponentProps<typeof Description>["text"]
-  buttons?: React.ComponentProps<typeof Buttons>["buttons"]
-  posts?: {
-    href?: React.ComponentProps<typeof Link>["href"]
-    title?: React.ComponentProps<typeof Title>["text"]
-    image?: React.ComponentProps<typeof Image>
-  }[]
-}
-
 function Posts1({
   level = 2,
-  size,
   align,
   title,
   description,
@@ -36,19 +22,18 @@ function Posts1({
   posts,
   className,
   ...props
-}: Props) {
+}: PostsProps & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
         <Column align={align}>
-          <Title level={level} size={size} align={align} text={title} />
+          <Title size="4xl" level={level} align={align} text={title} />
           <Description
             className="not-first:mt-4"
-            size={size}
             align={align}
             text={description}
           />
-          <Buttons className="not-first:mt-8" buttons={buttons} />
+          <Buttons className="not-first:mt-8" align={align} buttons={buttons} />
           <Grid className="gap-x-4 gap-y-8 not-first:mt-16" size="lg">
             {posts?.map(({ href, title, image }) => (
               <Link
@@ -60,12 +45,7 @@ function Posts1({
                   className="bg-card rounded-lg object-contain transition-opacity group-hover:opacity-75"
                   {...image}
                 />
-                <Title
-                  level={level + 1}
-                  size={size}
-                  align={align}
-                  text={title}
-                />
+                <Title level={level + 1} size="xl" align={align} text={title} />
               </Link>
             ))}
           </Grid>
