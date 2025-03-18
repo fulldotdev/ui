@@ -23,7 +23,7 @@ export async function getStaticPaths() {
 
 const { page, search } = Astro.props
 const { Content } = await render(page)
-const { body } = page
+const { body, id } = page
 const { seo, type, layout, ...pageData } = page.data
 const {
   data: { banner, header, footer, ...layoutData },
@@ -43,13 +43,15 @@ const hasSections = "sections" in pageData
   <Block type="header" search={search} {...header} />
   <main>
     {
-      hasContent && (
-        <Block
-          level={1}
-          type={type === "page" ? "content" : type}
-          {...pageData}
-          data-sb-field-path="."
-        >
+      hasContent && type === "page" && id !== "index" && (
+        <Block level={1} type={"content"} {...pageData} data-sb-field-path=".">
+          <Content />
+        </Block>
+      )
+    }
+    {
+      hasContent && type !== "page" && (
+        <Block level={1} type={type} {...pageData} data-sb-field-path=".">
           <Content />
         </Block>
       )
@@ -59,11 +61,18 @@ const hasSections = "sections" in pageData
         pageData.sections?.map((section, i) => (
           <Block
             key={i}
-            level={!hasContent && i === 0 ? 1 : 2}
+            level={(!hasContent || id === "index") && i === 0 ? 1 : 2}
             data-sb-field-path={`sections.${i}`}
             {...section}
           />
         ))
+    }
+    {
+      hasContent && type === "page" && id === "index" && (
+        <Block level={1} type={"content"} {...pageData} data-sb-field-path=".">
+          <Content />
+        </Block>
+      )
     }
   </main>
   <Block type="footer" {...footer} />

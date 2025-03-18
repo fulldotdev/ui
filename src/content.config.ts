@@ -58,9 +58,15 @@ export const collections = {
     schema: z.object({
       lang: z.string(),
       company: z.string(),
-      banner: bannerSchema,
-      header: headerSchema,
-      footer: footerSchema,
+      banner: bannerSchema.extend({
+        variant: z.number().default(1),
+      }),
+      header: headerSchema.extend({
+        variant: z.number().default(1),
+      }),
+      footer: footerSchema.extend({
+        variant: z.number().default(1),
+      }),
       sections: sectionSchema.array().optional(),
     }),
   }),
