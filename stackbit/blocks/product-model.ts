@@ -1,4 +1,5 @@
 import { type PageModel } from "@stackbit/types"
+import config from "fulldev.json"
 import { descriptionField } from "stackbit/components/description-field"
 import { imageField } from "stackbit/components/image-field"
 import { levelField } from "stackbit/components/level-field"
@@ -12,6 +13,7 @@ export const productModel = {
   type: "page",
   urlPath: "/{slug}",
   filePath: `src/content/pages/{slug}.md`,
+  hidden: !config.models.products,
   fields: [
     variantField,
     levelField,

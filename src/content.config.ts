@@ -1,4 +1,7 @@
+import { bannerSchema } from "@/schemas/blocks/banner"
 import { collectionSchema } from "@/schemas/blocks/collection"
+import { footerSchema } from "@/schemas/blocks/footer"
+import { headerSchema } from "@/schemas/blocks/header"
 import { locationSchema } from "@/schemas/blocks/location"
 import { pageSchema } from "@/schemas/blocks/page"
 import { personSchema } from "@/schemas/blocks/person"
@@ -33,15 +36,32 @@ export const collections = {
           "collection",
         ]),
         variant: z.number().default(1),
+        layout: pathSchema("layouts").default("base"),
+        products: pathSchema("pages").array().optional(),
+        collections: pathSchema("pages").array().optional(),
         sections: sectionSchema.array().optional(),
         seo: seoSchema.optional(),
       }),
   }),
   reviews: defineCollection({
     loader: glob({
-      pattern: "**/[^_]*.{yml,yaml}",
+      pattern: "**/[^_]*.{json,yml,yaml}",
       base: `./src/content/reviews`,
     }),
     schema: reviewSchema,
+  }),
+  layouts: defineCollection({
+    loader: glob({
+      pattern: "**/[^_]*.{json,yml,yaml}",
+      base: `./src/content/layouts`,
+    }),
+    schema: z.object({
+      lang: z.string(),
+      company: z.string(),
+      banner: bannerSchema,
+      header: headerSchema,
+      footer: footerSchema,
+      sections: sectionSchema.array().optional(),
+    }),
   }),
 }

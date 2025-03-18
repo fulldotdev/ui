@@ -8,10 +8,10 @@ import { hideBin } from "yargs/helpers"
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const initFiles = [
-  "src/styles/theme.css",
-  "astro.config.ts",
-  "src/data",
   "src/content",
+  "src/styles",
+  "astro.config.ts",
+  "fulldev.json",
 ]
 
 const files = [

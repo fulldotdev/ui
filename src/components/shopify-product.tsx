@@ -1,5 +1,4 @@
 import React from "react"
-import config from "@/data/config"
 import { cartTotalQuantity } from "@/stores/shopify"
 import {
   AddToCartButton,
@@ -16,11 +15,12 @@ import {
   useProduct,
   type CartWithActions,
 } from "@shopify/hydrogen-react"
-import type { CartBase } from "@shopify/hydrogen-react/dist/types/cart-types"
 import type {
+  Cart,
   CartLine,
   Product,
 } from "@shopify/hydrogen-react/storefront-api-types"
+import config from "fulldev.json"
 import { Loader2, Minus, Plus, ShoppingBag, Trash } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -61,7 +61,7 @@ function ShopifyProduct(product: Props) {
 
 function ShopifyProductContent() {
   const { product, options, setSelectedOption, selectedVariant } = useProduct()
-  const { totalQuantity, lines } = useCart() as CartWithActions & CartBase // Manual type according to docs. It works but types were incorrect.
+  const { totalQuantity, lines } = useCart() as CartWithActions & Cart // Manual type according to docs. It works but types were incorrect.
 
   const currentLine = lines.find(
     (line) => line.merchandise.id === selectedVariant?.id

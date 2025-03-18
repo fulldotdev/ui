@@ -1,7 +1,5 @@
 ---
-import type { LayoutSettings } from "@/data/settings.d"
-import settings from "@/data/settings.json"
-import { getCollection, render } from "astro:content"
+import { getCollection, getEntry, render } from "astro:content"
 
 import { getHref } from "@/lib/get-href"
 import Block from "@/components/misc/block.astro"
@@ -26,42 +24,30 @@ export async function getStaticPaths() {
 const { page, search } = Astro.props
 const { Content } = await render(page)
 const { body } = page
-const { seo, type, ...data } = page.data
-
-const mergedLayout: LayoutSettings = { ...settings.layouts.base }
-const { banner, header, footer, ...layout } = mergedLayout
+const { seo, type, layout, ...pageData } = page.data
+const {
+  data: { banner, header, footer, ...layoutData },
+} = layout && (await getEntry(layout))
 
 const hasContent = body && body.trim().length > 0
-const hasSections = "sections" in data
+const hasSections = "sections" in pageData
 ---
 
-<Layout data-sb-object-id={page.filePath} {...settings} {...data} {...seo}>
+<Layout
+  data-sb-object-id={page.filePath}
+  {...layoutData}
+  {...pageData}
+  {...seo}
+>
   <Block type="banner" {...banner} />
   <Block type="header" search={search} {...header} />
   <main>
-    <!-- {
-      type === "page" ? (
-        <>
-          {hasContent && (
-            <Block type="content" level={1} {...data}>
-              <Content />
-            </Block>
-          )}
-          {hasSections &&
-            data.sections?.map((section, i) => (
-              <Block
-                key={i}
-                level={!hasContent && i === 0 ? 1 : 2}
-                {...section}
-              />
-            ))}
-        </> -->
     {
       hasContent && (
         <Block
           level={1}
           type={type === "page" ? "content" : type}
-          {...data}
+          {...pageData}
           data-sb-field-path="."
         >
           <Content />
@@ -70,7 +56,7 @@ const hasSections = "sections" in data
     }
     {
       hasSections &&
-        data.sections?.map((section, i) => (
+        pageData.sections?.map((section, i) => (
           <Block
             key={i}
             level={!hasContent && i === 0 ? 1 : 2}
