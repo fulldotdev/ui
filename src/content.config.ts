@@ -20,28 +20,7 @@ export const collections = {
       pattern: "**/[^_]*.{md,mdx}",
       base: `./src/content/pages`,
     }),
-    schema: pageSchema
-      .merge(postSchema)
-      .merge(personSchema)
-      .merge(locationSchema)
-      .merge(productSchema)
-      .merge(collectionSchema)
-      .extend({
-        type: z.enum([
-          "page",
-          "post",
-          "person",
-          "location",
-          "product",
-          "collection",
-        ]),
-        variant: z.number().default(1),
-        layout: pathSchema("layouts").default("base"),
-        products: pathSchema("pages").array().optional(),
-        collections: pathSchema("pages").array().optional(),
-        sections: sectionSchema.array().optional(),
-        seo: seoSchema.optional(),
-      }),
+    schema: pageSchema,
   }),
   reviews: defineCollection({
     loader: glob({
