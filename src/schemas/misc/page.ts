@@ -10,8 +10,11 @@ import { pathSchema } from "./path"
 
 export const pageSchema = z
   .object({
-    type: z.enum(["page", "post", "product", "collection"]).default("page"),
+    type: z
+      .enum(["page", "post", "location", "person", "product", "collection"])
+      .default("page"),
     variant: z.number().default(1),
+    layout: pathSchema("layouts").default("base"),
     collections: pathSchema("pages").array().optional(),
     products: pathSchema("pages").array().optional(),
     sections: sectionSchema.array().optional(),

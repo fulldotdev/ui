@@ -29,7 +29,7 @@ function Contact1({
             align={align}
             text={description}
           />
-          <Channels align={align} {...channels} />
+          <Channels className="not-first:mt-8" align={align} {...channels} />
           <Form className="not-first:mt-16" {...form} />
         </Column>
       </Container>

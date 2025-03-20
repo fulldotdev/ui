@@ -23,6 +23,7 @@ export const contactSchema = z
                   "email",
                   "checkbox",
                   "select",
+                  "tel",
                   "textarea",
                 ])
                 .optional(),

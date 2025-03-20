@@ -3,11 +3,11 @@ import { collectionSchema } from "@/schemas/blocks/collection"
 import { footerSchema } from "@/schemas/blocks/footer"
 import { headerSchema } from "@/schemas/blocks/header"
 import { locationSchema } from "@/schemas/blocks/location"
-import { pageSchema } from "@/schemas/blocks/page"
 import { personSchema } from "@/schemas/blocks/person"
 import { postSchema } from "@/schemas/blocks/post"
 import { productSchema } from "@/schemas/blocks/product"
 import { reviewSchema } from "@/schemas/blocks/review"
+import { pageSchema } from "@/schemas/misc/page"
 import { pathSchema } from "@/schemas/misc/path"
 import { sectionSchema } from "@/schemas/misc/section"
 import { seoSchema } from "@/schemas/misc/seo"
@@ -37,15 +37,21 @@ export const collections = {
     schema: z.object({
       lang: z.string(),
       company: z.string(),
-      banner: bannerSchema.extend({
-        variant: z.number().default(1),
-      }),
-      header: headerSchema.extend({
-        variant: z.number().default(1),
-      }),
-      footer: footerSchema.extend({
-        variant: z.number().default(1),
-      }),
+      banner: bannerSchema
+        .extend({
+          variant: z.number().default(1),
+        })
+        .optional(),
+      header: headerSchema
+        .extend({
+          variant: z.number().default(1),
+        })
+        .optional(),
+      footer: footerSchema
+        .extend({
+          variant: z.number().default(1),
+        })
+        .optional(),
       sections: sectionSchema.array().optional(),
     }),
   }),

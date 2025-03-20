@@ -22,7 +22,7 @@ function Faqs1({
 }: FaqsProps & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
-      <Container>
+      <Container size="sm">
         <Column align={align}>
           <Title size="4xl" level={level} align={align} text={title} />
           <Description
