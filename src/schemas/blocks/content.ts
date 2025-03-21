@@ -1,7 +1,6 @@
+import { buttonSchema } from "@/schemas/components/button"
 import { imageSchema } from "@/schemas/components/image"
 import { z } from "zod"
-
-import { buttonSchema } from "../components/button"
 
 export const contentSchema = z
   .object({

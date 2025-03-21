@@ -1,6 +1,5 @@
 import { reference, z, type AnyEntryMap } from "astro:content"
 
-// TODO: preprocess instead
 export const pathSchema = <C extends keyof AnyEntryMap>(collection: C) =>
   z
     .string()

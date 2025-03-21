@@ -1,165 +1,78 @@
 ---
 import { Content1 } from "@/blocks/content-1"
 import ShopifyLayout from "@/layouts/shopify-layout.astro"
-import type {
-  Collection,
-  MediaImage,
-  Metaobject,
-  Page,
-  Product,
-} from "@shopify/hydrogen-react/storefront-api-types"
+import type { CollectionProps } from "@/schemas/blocks/collection"
+import type { ContactProps } from "@/schemas/blocks/contact"
+import type { HeroProps } from "@/schemas/blocks/hero"
+import type { MediaProps } from "@/schemas/blocks/media"
+import type { ProductProps } from "@/schemas/blocks/product"
 
-import { requestShopify } from "@/lib/shopify"
+import { getPage } from "@/lib/shopify"
 import Block from "@/components/misc/block.astro"
 
 export const prerender = false
 
 const { shopifyPageHandle } = Astro.params
 
-const { page } = (await requestShopify(
-  `#graphql
-  query {
-    page(handle: "${shopifyPageHandle || `index`}") {
-      handle
-      title
-      body
-      metafield(namespace: "custom", key: "sections") {
-        references(first: 250) {
-          nodes {
-            ... on Metaobject {
-              type
-              fields {
-                key
-                value
-                reference {
-                  ... on MediaImage {
-                    image {
-                      url
-                      altText
-                    }
-                  }
-                  ... on Metaobject {
-                    id
-                  }
-                }
-                references(first: 10) {
-                  nodes {
-                    ... on Collection {
-                      title
-                      image {
-                        url
-                        altText
-                      }
-                    }
-                    ... on Product {
-                      handle
-                      title
-                      featuredImage {
-                        url
-                        altText
-                      }
-                      priceRange {
-                        minVariantPrice {
-                          amount
-                          currencyCode
-                        }
-                      }
-                      compareAtPriceRange {
-                        minVariantPrice {
-                          amount
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`
-)) as { page: Partial<Page> | null }
-
+const page = await getPage(shopifyPageHandle || "index")
 if (!page) return Astro.redirect("/404")
 
-const isIndex = page.handle === "index"
+const { title, sections, seo, body } = page
+
+const isIndex = shopifyPageHandle === undefined
 const hasContent = page.body && page.body.trim().length > 0
 
-const sections = page.metafield?.references?.nodes.map((node) => {
-  const section = node as Partial<Metaobject> | undefined
-
-  const imageReference = section?.fields?.find((field) => field.key === "image")
-    ?.reference as Partial<MediaImage> | undefined
-
-  const productNodes = section?.fields?.find(
-    (field) => field.key === "products"
-  )?.references?.nodes as Partial<Product>[] | undefined
-
-  const collectionNodes = section?.fields?.find(
-    (field) => field.key === "collections"
-  )?.references?.nodes as Partial<Collection>[] | undefined
-
-  return {
-    type: section?.type,
-    title: section?.fields?.find((field) => field.key === "title")?.value,
-    description: section?.fields?.find((field) => field.key === "description")
-      ?.value,
-    buttons: JSON.parse(
-      section?.fields?.find((field) => field.key === "buttons")?.value ?? "[]"
-    ).map((button: any) => ({
-      text: button.text,
-      href: button.url,
-    })),
-    image: {
-      src: imageReference?.image?.url,
-      alt: imageReference?.image?.altText,
+const blockPropsMap = {
+  hero: {
+    variant: 3,
+    align: "start",
+  } satisfies HeroProps,
+  products: {
+    variant: 1,
+    align: "start",
+  } satisfies ProductProps,
+  collections: {
+    variant: 1,
+    align: "start",
+  } satisfies CollectionProps,
+  media: {
+    variant: 2,
+    align: "center",
+  } satisfies MediaProps,
+  contact: {
+    variant: 1,
+    align: "start",
+    form: {
+      fields: [
+        {
+          type: "text",
+          label: "Naam",
+        },
+        {
+          type: "email",
+          label: "Email",
+          required: true,
+        },
+        {
+          type: "tel",
+          label: "Telefoon",
+        },
+        {
+          type: "textarea",
+          label: "Bericht",
+        },
+      ],
+      submit: "Verstuur",
     },
-    products: productNodes?.map((product) => ({
-      href: `/producten/${product.handle}`,
-      title: product.title,
-      image: {
-        src: product?.featuredImage?.url,
-        alt: product?.featuredImage?.altText,
-      },
-    })),
-    collections: collectionNodes?.map((collection) => ({
-      href: `/collecties/${collection.handle}`,
-      title: collection.title,
-      image: {
-        src: collection?.image?.url,
-        alt: collection?.image?.altText,
-      },
-    })),
-  }
-})
-
-const blockVariantMap = {
-  hero: 3,
-  products: 1,
-  collections: 1,
-  media: 2,
-  contact: 1,
-}
-
-const blockAlignMap = {
-  hero: "start",
-  products: "start",
-  collections: "start",
-  media: "center",
-  contact: "start",
+  } satisfies ContactProps,
 }
 ---
 
-<ShopifyLayout
-  title={page.seo?.title ?? undefined}
-  description={page.seo?.description ?? undefined}
->
+<ShopifyLayout title={title} {...seo}>
   {
     !isIndex && hasContent && (
       <Content1 level={1}>
-        <Fragment set:html={page.body} />
+        <Fragment set:html={body} />
       </Content1>
     )
   }
@@ -168,10 +81,7 @@ const blockAlignMap = {
       <>
         <Block
           level={(!hasContent || isIndex) && i === 0 ? 1 : 2}
-          variant={
-            blockVariantMap[section.type as keyof typeof blockVariantMap]
-          }
-          align={blockAlignMap[section.type as keyof typeof blockAlignMap]}
+          {...blockPropsMap[section.type as keyof typeof blockPropsMap]}
           {...section}
         />
       </>
@@ -179,8 +89,8 @@ const blockAlignMap = {
   }
   {
     isIndex && hasContent && (
-      <Content1 level={1}>
-        <Fragment set:html={page.body} />
+      <Content1 level={2}>
+        <Fragment set:html={body} />
       </Content1>
     )
   }
