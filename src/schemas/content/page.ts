@@ -92,6 +92,7 @@ export const pageSchema = contentSchema
         description: z.string().optional(),
       })
       .optional(),
+    body: z.string().optional(),
   })
 
 export type PageSchema = z.infer<typeof pageSchema>

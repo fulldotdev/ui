@@ -1,13 +1,9 @@
-import type { ButtonSchema } from "@/schemas/components/button"
-import type { ImageSchema } from "@/schemas/components/image"
-import type { PriceSchema } from "@/schemas/components/price"
 import type { PageSchema } from "@/schemas/content/page"
 import type {
   Article,
   Collection,
   Image,
   MediaImage,
-  Metafield,
   Metaobject,
   MetaobjectField,
   Page,
@@ -114,7 +110,6 @@ export const transformPage = (page: Partial<Page>): PageSchema => {
 
       return {
         type: section.type as any,
-        variant: 1,
         title: getField("title")?.value ?? undefined,
         description: getField("description")?.value ?? undefined,
         image: transformMediaImage(imageReference),
