@@ -6,10 +6,10 @@ import type {
   Article,
   Collection,
   Image,
-  Maybe,
   MediaImage,
   Metafield,
   Metaobject,
+  MetaobjectField,
   Page,
   Product,
   Seo,
@@ -40,16 +40,17 @@ export const transformMediaImage = (media?: MediaImage | null) => {
   }
 }
 
-export const transformButton = (button: Metafield) => {
-  const parsedButton = JSON.parse(button.value) as { text: string; url: string }
-  return {
-    text: parsedButton.text,
-    href: parsedButton.url,
-  }
-}
-
-export const transformButtons = (buttons?: Metafield[] | null) => {
-  return buttons?.map(transformButton) ?? []
+export const transformButtons = (buttons?: MetaobjectField | null) => {
+  const parsedButtonsArray = JSON.parse(buttons?.value ?? "[]") as {
+    text: string
+    url: string
+  }[]
+  return (
+    parsedButtonsArray?.map((button) => ({
+      text: button.text,
+      href: button.url,
+    })) ?? []
+  )
 }
 
 export const transformPrice = (product: Partial<Product>) => {
@@ -80,7 +81,6 @@ export const transformCollection = (
 ): PageSchema => {
   return {
     href: `/collecties/${collection.handle}/`,
-    id: collection.id,
     title: collection.title,
     image: transformImage(collection.image),
     products: collection.products?.nodes.map(transformProduct),
@@ -91,6 +91,7 @@ export const transformCollection = (
 
 export const transformPage = (page: Partial<Page>): PageSchema => {
   return {
+    href: `/${page.handle}/`,
     title: page.title,
     sections: page.metafield?.references?.nodes.map((node) => {
       const section = node as Metaobject
@@ -119,6 +120,7 @@ export const transformPage = (page: Partial<Page>): PageSchema => {
         image: transformMediaImage(imageReference),
         products: productNodes?.map(transformProduct),
         collections: collectionNodes?.map(transformCollection),
+        buttons: transformButtons(getField("buttons")),
       }
     }),
     seo: transformSeo(page.seo),
