@@ -28,8 +28,8 @@ export default function fulldevIntegration(config: Config): AstroIntegration {
         // injectScript("page-ssr", `import "@/styles/globals.css";`)
         // injectScript("page-ssr", `import "@/styles/theme.css";`)
         if ("shopify" in config && config.shopify) {
-          await syncShopifyProducts(config.shopify)
-          await syncShopifyCollections(config.shopify)
+          // await syncShopifyProducts(config.shopify)
+          // await syncShopifyCollections(config.shopify)
         }
       },
     },

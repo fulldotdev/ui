@@ -1,0 +1,83 @@
+---
+import { Collection1 } from "@/blocks/collection-1.tsx"
+import ShopifyLayout from "@/layouts/shopify-layout.astro"
+import type { Collection } from "@shopify/hydrogen-react/storefront-api-types"
+
+import { requestShopify } from "@/lib/shopify"
+
+export const prerender = false
+
+const { shopifyCollectionHandle } = Astro.params
+
+const { collection } = (await requestShopify(
+  `#graphql
+  query {
+    collection(handle: "${shopifyCollectionHandle}") {
+      title
+      image {
+        url
+        altText
+      }
+      descriptionHtml
+      products(first: 250) {
+        nodes {
+          handle
+          title
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          compareAtPriceRange {
+            minVariantPrice {
+              amount
+            }
+          }
+          featuredImage {
+            url
+            altText
+          }
+        }
+      }
+      seo {
+        title
+        description
+      }
+    }
+  }
+`
+)) as { collection: Collection | null }
+
+if (!collection) return Astro.redirect("/404")
+---
+
+<ShopifyLayout
+  title={collection.seo?.title ?? undefined}
+  description={collection.seo?.description ?? undefined}
+  image={{
+    src: collection.image?.url,
+    alt: collection.image?.altText ?? undefined,
+  }}
+>
+  <Collection1
+    title={collection.title}
+    products={collection.products.nodes.map((product) => ({
+      title: product.title,
+      href: `/producten/${product.handle}`,
+      price: {
+        amount: Number(product.priceRange.minVariantPrice.amount),
+        currency: product.priceRange.minVariantPrice.currencyCode ?? undefined,
+        compare:
+          Number(product.compareAtPriceRange.minVariantPrice.amount) ??
+          undefined,
+      },
+      image: {
+        src: product.featuredImage?.url,
+        alt: product.featuredImage?.altText ?? undefined,
+      },
+    }))}
+  >
+    <Fragment set:html={collection.descriptionHtml} />
+  </Collection1>
+</ShopifyLayout>

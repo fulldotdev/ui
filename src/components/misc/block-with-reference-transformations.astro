@@ -26,8 +26,72 @@ import { Pricings1 } from "@/blocks/pricings-1"
 import { Product1 } from "@/blocks/product-1"
 import { Products1 } from "@/blocks/products-1"
 import { Reviews1 } from "@/blocks/reviews-1"
+import { getEntries } from "astro:content"
+
+import { getHref } from "@/lib/get-href"
 
 let { type, variant, ...props } = Astro.props
+
+if (props.pages) {
+  const entries = await getEntries(props.pages)
+  const mapped = entries.map((entry: any) => ({
+    href: getHref(entry?.id),
+    ...entry?.data,
+  }))
+  props.pages = mapped
+}
+
+if (props.posts) {
+  const entries = await getEntries(props.posts)
+  const mapped = entries.map((entry: any) => ({
+    href: getHref(entry?.id),
+    ...entry?.data,
+  }))
+  props.posts = mapped
+}
+
+if (props.persons) {
+  const entries = await getEntries(props.persons)
+  const mapped = entries.map((entry: any) => ({
+    href: getHref(entry?.id),
+    ...entry?.data,
+  }))
+  props.persons = mapped
+}
+
+if (props.locations) {
+  const entries = await getEntries(props.locations)
+  const mapped = entries.map((entry: any) => ({
+    href: getHref(entry?.id),
+    ...entry?.data,
+  }))
+  props.locations = mapped
+}
+
+if (props.collections) {
+  const entries = await getEntries(props.collections)
+  const mapped = entries.map((entry: any) => ({
+    href: getHref(entry?.id),
+    ...entry?.data,
+  }))
+  props.collections = mapped
+}
+
+if (props.products) {
+  const entries = await getEntries(props.products)
+  const mapped = entries.map((entry: any) => ({
+    href: getHref(entry?.id),
+    image: entry?.data?.images?.[0],
+    ...entry?.data,
+  }))
+  props.products = mapped
+}
+
+if (props.reviews) {
+  const entries = await getEntries(props.reviews)
+  const mapped = entries.map((entry: any) => entry.data)
+  props.reviews = mapped
+}
 ---
 
 {type === "banner" && variant === 1 && <Banner1 {...props} />}

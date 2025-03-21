@@ -9,7 +9,6 @@ import integration from "./src/lib/integration"
 
 export default defineConfig({
   site: "https://ui.full.dev",
-  trailingSlash: "always",
   prefetch: {
     prefetchAll: true,
   },

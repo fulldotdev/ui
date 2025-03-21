@@ -1,0 +1,76 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import Block from "@/components/misc/block.astro"
+import Layout from "@/components/misc/layout.astro"
+
+interface Props
+  extends ComponentProps<typeof Layout>,
+    ComponentProps<typeof Block> {
+  banner?: any
+  header?: any
+  footer?: any
+  sections?: any[]
+  search?: any[]
+  type?: string
+  id?: string
+  filePath?: string
+}
+
+const {
+  banner,
+  header,
+  footer,
+  sections,
+  search,
+  type,
+  id,
+  filePath,
+  ...props
+} = Astro.props
+
+const slot = await Astro.slots.render("default")
+const hasContent = slot.trim().length > 0
+const hasSections = sections?.length && sections.length > 0
+---
+
+<Layout data-sb-object-id={filePath} {...props}>
+  <Block type="banner" {...banner} />
+  <Block type="header" search={search} {...header} />
+  <main>
+    {
+      hasContent && type === "page" && id !== "index" && (
+        <Block level={1} type={"content"} {...props} data-sb-field-path=".">
+          <Fragment set:html={slot} />
+        </Block>
+      )
+    }
+    {
+      hasContent && type !== "page" && (
+        <Block level={1} type={type} {...props} data-sb-field-path=".">
+          <Fragment set:html={slot} />
+        </Block>
+      )
+    }
+    {
+      hasSections &&
+        sections?.map((section, i) => (
+          <Block
+            key={i}
+            level={(!hasContent || id === "index") && i === 0 ? 1 : 2}
+            data-sb-field-path={`sections.${i}`}
+            {...section}
+          />
+        ))
+    }
+    <slot />
+    {
+      hasContent && type === "page" && id === "index" && (
+        <Block level={1} type="content" {...props} data-sb-field-path=".">
+          <Fragment set:html={slot} />
+        </Block>
+      )
+    }
+  </main>
+  <Block type="footer" {...footer} />
+</Layout>
