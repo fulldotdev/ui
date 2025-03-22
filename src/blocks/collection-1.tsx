@@ -1,4 +1,5 @@
 import * as React from "react"
+import type { BlockSchema } from "@/schemas/block"
 import type { CollectionProps } from "@/schemas/blocks/collection"
 import { ChevronDown } from "lucide-react"
 import { v4 as uuidv4 } from "uuid"
@@ -33,7 +34,7 @@ function Collection1({
   children,
   className,
   ...props
-}: CollectionProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema & React.ComponentProps<typeof Section>) {
   const [sortedProducts, setSortedProducts] = React.useState(products)
   const [sort, setSort] = React.useState("aanbevolen")
 

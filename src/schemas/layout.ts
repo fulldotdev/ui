@@ -1,15 +1,13 @@
-import { bannerSchema } from "@/schemas/blocks/banner"
-import { footerSchema } from "@/schemas/blocks/footer"
-import { headerSchema } from "@/schemas/blocks/header"
+import { blockSchema } from "@/schemas/block"
 import { z } from "zod"
 
 export const layoutSchema = z
   .object({
     lang: z.string().optional(),
     company: z.string().optional(),
-    banner: bannerSchema.optional(),
-    header: headerSchema.optional(),
-    footer: footerSchema.optional(),
+    banner: blockSchema.optional(),
+    header: blockSchema.optional(),
+    footer: blockSchema.optional(),
     head: z.string().optional(),
     body: z.string().optional(),
     css: z.string().optional(),

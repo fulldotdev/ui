@@ -33,7 +33,7 @@ function Buttons({
     return "ghost"
   }
 
-  return buttons ? (
+  return buttons && buttons.length > 0 ? (
     <div
       className={cn(
         "buttons inline-flex flex-wrap gap-2",

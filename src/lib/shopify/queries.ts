@@ -185,6 +185,14 @@ export const LAYOUT_QUERY = `#graphql
             }
           }
         }
+        reference {
+          ... on MediaImage {
+            image {
+              url
+              altText
+            }
+          }
+        }
       }
     }
   }

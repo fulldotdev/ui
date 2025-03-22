@@ -1,20 +1,30 @@
-import { z } from "astro:content"
+import { z } from "zod"
 
-export const formSchema = z
-  .object({
-    action: z.string(),
-    fields: z
-      .object({
-        type: z.enum(["text", "email", "textarea", "date", "select", "tel"]),
-        label: z.string().optional(),
-        placeholder: z.string().optional(),
-        options: z.string().array().optional(),
-        value: z.string().optional(),
-        required: z.boolean().optional(),
-      })
-      .partial()
+export const formSchema = z.object({
+  action: z.string().optional(),
+  fields: z
+    .object({
+      type: z
+        .enum([
+          "text",
+          "number",
+          "email",
+          "checkbox",
+          "select",
+          "tel",
+          "textarea",
+        ])
+        .optional(),
+      name: z.string().optional(),
+      label: z.string().optional(),
+      placeholder: z.string().optional(),
+      description: z.string().optional(),
+      required: z.boolean().optional(),
+      options: z.array(z.string()).optional(),
+    })
+    .array()
+    .optional(),
+  submit: z.string().optional(),
+})
 
-      .array(),
-    submit: z.string(),
-  })
-  .partial()
+export type Form = z.infer<typeof formSchema>
