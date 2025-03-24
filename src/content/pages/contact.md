@@ -1,4 +1,3 @@
 ---
-type: page
 title: Contact
 ---

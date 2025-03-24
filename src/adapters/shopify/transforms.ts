@@ -143,10 +143,8 @@ const blockPropsMap: Record<string, BlockSchema & { variant: number }> = {
 }
 
 export function shopifyBlockTransform(block: ShopifyBlockSchema): BlockSchema {
-  const getField = (key: string) =>
+  const getField = (key: (typeof block.fields)[number]["key"]) =>
     block.fields?.find((field) => field.key === key)
-
-  const references = getField("items")
 
   return {
     type: block.type,
@@ -165,6 +163,7 @@ export function shopifyBlockTransform(block: ShopifyBlockSchema): BlockSchema {
 
 export const shopifyPageTransform = (page: ShopifyPageSchema): PageSchema => {
   return {
+    id: page.id,
     type: getPageType(page.id),
     variant: 1,
     slug: getPageSlug(page.id, page.handle),
@@ -173,7 +172,7 @@ export const shopifyPageTransform = (page: ShopifyPageSchema): PageSchema => {
     image: shopifyImageTransform(page.featuredImage || page.image),
     images: page.images?.nodes.map(shopifyImageTransform),
     price: shopifyPriceTransform(page),
-    variants: page.variants?.nodes,
+    variants: page.variants,
     sections: page.metafield?.references?.nodes.map(shopifyBlockTransform),
     items:
       page.products?.nodes.map(shopifyItemTransform) ||

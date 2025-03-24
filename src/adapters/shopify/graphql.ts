@@ -52,7 +52,14 @@ const PRODUCT_FRAGMENT = `#graphql
       nodes {
         id
         title
+        selectedOptions {
+          value
+          name
+        }
       }
+    }
+    options(first: 10) {
+      id
     }
     seo {
       ...SeoFragment

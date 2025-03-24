@@ -27,6 +27,7 @@ function Product1({
   className,
   ...props
 }: BlockSchema & React.ComponentProps<typeof Section>) {
+  console.log(title, id)
   return (
     <Section className={cn("product product-1 pt-0", className)} {...props}>
       <Container className="max-sm:px-0">
@@ -43,7 +44,7 @@ function Product1({
               text={description}
             />
             {id ? (
-              <ShopifyProduct id={id} variants={variants as any} />
+              <ShopifyProduct id={id} variants={variants} />
             ) : (
               <>
                 <Price className="mt-4 text-lg font-medium" {...price} />

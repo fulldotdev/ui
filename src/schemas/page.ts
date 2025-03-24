@@ -3,6 +3,7 @@ import { z } from "zod"
 
 export const pageSchema = blockSchema
   .extend({
+    id: z.string().optional(),
     slug: z
       .string()
       .optional()

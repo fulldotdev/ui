@@ -17,17 +17,17 @@ interface Config {
   }
 }
 
-export default function fulldevIntegration(config: Config): AstroIntegration {
+export default function fulldevIntegration(config?: Config): AstroIntegration {
   return {
     name: "/integration",
     hooks: {
       "astro:config:setup": async ({ injectScript }) => {
         // injectScript("page-ssr", `import "@/styles/globals.css";`)
         // injectScript("page-ssr", `import "@/styles/theme.css";`)
-        if ("shopify" in config && config.shopify) {
-          // await syncShopifyProducts(config.shopify)
-          // await syncShopifyCollections(config.shopify)
-        }
+        // if ("shopify" in config && config.shopify) {
+        // await syncShopifyProducts(config.shopify)
+        // await syncShopifyCollections(config.shopify)
+        // }
       },
     },
   }

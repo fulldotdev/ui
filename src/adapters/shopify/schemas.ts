@@ -50,10 +50,17 @@ export type ShopifyItemSchema = z.infer<typeof shopifyItemSchema>
 // --------------------------------------------------------------------------
 
 export const shopifyBlockSchema = z.object({
-  type: z.string(),
+  type: z.enum(["hero", "media", "faqs", "contact", "collections", "products"]),
   fields: z
     .object({
-      key: z.string(),
+      key: z.enum([
+        "title",
+        "description",
+        "image",
+        "buttons",
+        "items",
+        "block",
+      ]),
       value: z.string(),
       reference: z
         .object({
@@ -94,9 +101,7 @@ export const shopifyPageSchema = z
     collections: z.object({
       nodes: shopifyItemSchema.array(),
     }),
-    variants: z.object({
-      nodes: z.any().array(),
-    }),
+    variants: z.any(),
     seo: shopifySeoSchema,
     descriptionHtml: z.string(),
     body: z.string(),
