@@ -12,7 +12,7 @@ export const pageModel = {
   type: "page",
   urlPath: "/{slug}",
   filePath: `src/content/pages/{slug}.md`,
-  hidden: !config.models.pages,
+  // hidden: !config.models.pages,
   fields: [
     variantField,
     titleField,

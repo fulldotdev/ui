@@ -11,6 +11,7 @@ import { z } from "zod"
 
 export const blockSchema = z
   .object({
+    cart: z.boolean().optional(),
     type: z.string().optional(),
     variant: z.number().optional(),
     className: z.string().optional(),

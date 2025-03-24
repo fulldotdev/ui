@@ -146,6 +146,8 @@ export function shopifyBlockTransform(block: ShopifyBlockSchema): BlockSchema {
   const getField = (key: string) =>
     block.fields?.find((field) => field.key === key)
 
+  const references = getField("items")
+
   return {
     type: block.type,
     title: getField("title")?.value,

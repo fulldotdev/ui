@@ -240,38 +240,6 @@ export const PAGES_QUERY = `#graphql
 `
 
 // --------------------------------------------------------------------------
-// Search
-// --------------------------------------------------------------------------
-
-export const SEARCH_QUERY = `#graphql
-  query GetSearch($endCursor: String) {
-    search(query: " ", first: 100, after: $endCursor) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-      nodes {
-        ... on Article {
-          id
-          handle
-          title
-        }
-        ... on Page {
-          id
-          handle
-          title
-        }
-        ... on Product {
-          id
-          handle
-          title
-        }
-      }
-    }
-  }
-`
-
-// --------------------------------------------------------------------------
 // Layout
 // --------------------------------------------------------------------------
 

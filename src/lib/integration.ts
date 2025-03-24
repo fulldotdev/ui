@@ -1,8 +1,5 @@
 import type { AstroIntegration } from "astro"
 
-import { syncShopifyCollections } from "./sync-shopify-collections"
-import { syncShopifyProducts } from "./sync-shopify-products"
-
 interface Config {
   models: {
     pages: boolean
