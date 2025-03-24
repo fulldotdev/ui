@@ -1,9 +1,8 @@
 import * as React from "react"
-import type { PersonsProps } from "@/schemas/blocks/persons"
+import type { BlockSchema } from "@/schemas/block"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
-import { Card } from "@/components/ui/card"
 import { Buttons } from "@/components/buttons"
 import { Column } from "@/components/column"
 import { Container } from "@/components/container"
@@ -20,10 +19,10 @@ function Persons1({
   title,
   description,
   buttons,
-  persons,
+  items,
   className,
   ...props
-}: PersonsProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
@@ -36,7 +35,7 @@ function Persons1({
           />
           <Buttons className="not-first:mt-8" align={align} buttons={buttons} />
           <Grid className="gap-16 not-first:mt-16">
-            {persons?.map(({ href, image, title, description }) => (
+            {items?.map(({ href, image, title, description }) => (
               <Link className="group max-w-md" key={uuidv4()} href={href}>
                 <Image
                   className="aspect-square w-full max-w-60 rounded-full object-cover transition-opacity group-hover:opacity-75"

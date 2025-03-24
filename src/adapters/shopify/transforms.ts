@@ -10,12 +10,11 @@ import {
   shopifyImageSchema,
   shopifySeoSchema,
 } from "@/adapters/shopify/schemas"
-import { imageSchema, type ImageSchema } from "@/schemas/components/image"
-import type { PriceSchema } from "@/schemas/components/price"
-import type { LayoutSchema } from "@/schemas/content/layout"
-import type { PageSchema } from "@/schemas/content/page"
-import type { SectionSchema } from "@/schemas/content/section"
-import type { SeoSchema } from "@/schemas/content/seo"
+import type { BlockSchema } from "@/schemas/block"
+import { imageSchema, type ImageSchema } from "@/schemas/fields/image"
+import type { PriceSchema } from "@/schemas/fields/price"
+import type { LayoutSchema } from "@/schemas/layout"
+import type { PageSchema } from "@/schemas/page"
 import type {
   Article,
   Collection,
@@ -35,7 +34,9 @@ export const shopifyImageTransform = (
   alt: image?.altText ?? undefined,
 })
 
-export const shopifySeoTransform = (seo?: ShopifySeoSchema): SeoSchema => ({
+export const shopifySeoTransform = (
+  seo?: ShopifySeoSchema
+): PageSchema["seo"] => ({
   title: seo?.title ?? undefined,
   description: seo?.description ?? undefined,
 })
@@ -97,7 +98,7 @@ export const shopifyCollectionTransform = (
 
 export const shopifySectionTransform = (
   section: ShopifySectionSchema
-): SectionSchema => {
+): BlockSchema => {
   const getField = (key: string) =>
     section.fields?.find((field) => field.key === key)
 
@@ -107,9 +108,7 @@ export const shopifySectionTransform = (
     description: getField("description")?.value,
     image: shopifyImageTransform(getField("image")?.reference?.image),
     buttons: shopifyButtonsTransform(getField("buttons")),
-    products: getField("products")?.references?.nodes.map(
-      shopifyProductTransform
-    ),
+    items: getField("products")?.references?.nodes.map(shopifyProductTransform),
     // collections: getField("collections")?.references?.nodes.map(
     //   shopifyCollectionTransform
     // ),

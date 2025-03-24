@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { HeaderProps } from "@/schemas/blocks/header"
+import type { BlockSchema } from "@/schemas/block"
 
 import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
@@ -18,7 +18,7 @@ function Header1({
   cart,
   className,
   ...props
-}: HeaderProps & React.ComponentProps<"header">) {
+}: BlockSchema & React.ComponentProps<"header">) {
   return (
     <header
       className={cn(
@@ -37,9 +37,7 @@ function Header1({
           />
         </div>
         <div className="inline-flex w-full items-center justify-end gap-2">
-          {search ? (
-            <Search links={search === true ? [] : search} className="w-full" />
-          ) : null}
+          {search ? <Search links={search} className="w-full" /> : null}
           <Buttons className="max-sm:hidden" buttons={buttons} reverse />
           {cart ? <ShopifyCart className="-mr-2.5" /> : null}
         </div>

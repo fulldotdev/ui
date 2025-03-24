@@ -1,11 +1,10 @@
-import { productSchema } from "@/schemas/blocks/product"
-import type { reference } from "astro:content"
 import { z } from "zod"
 
 export const shopifyImageSchema = z.object({
   url: z.string(),
   altText: z.string().nullable(),
 })
+
 export type ShopifyImageSchema = z.infer<typeof shopifyImageSchema>
 
 export const shopifyPriceRangeSchema = z.object({
@@ -23,7 +22,6 @@ export const shopifySeoSchema = z.object({
 export type ShopifySeoSchema = z.infer<typeof shopifySeoSchema>
 
 export const shopifyProductSchema = z.object({
-  type: z.literal("product").default("product"),
   id: z.string(),
   handle: z.string(),
   title: z.string(),
@@ -40,7 +38,6 @@ export const shopifyProductSchema = z.object({
 export type ShopifyProductSchema = z.infer<typeof shopifyProductSchema>
 
 export const shopifyCollectionSchema = z.object({
-  type: z.literal("collection").default("collection"),
   id: z.string(),
   handle: z.string(),
   title: z.string(),
@@ -54,15 +51,7 @@ export const shopifyCollectionSchema = z.object({
 export type ShopifyCollectionSchema = z.infer<typeof shopifyCollectionSchema>
 
 export const shopifySectionSchema = z.object({
-  type: z.enum([
-    "hero",
-    "media",
-    "cta",
-    "faqs",
-    "contact",
-    "products",
-    "collections",
-  ]),
+  type: z.string(),
   fields: z
     .object({
       key: z.string(),
@@ -72,23 +61,13 @@ export const shopifySectionSchema = z.object({
           image: shopifyImageSchema,
         })
         .nullable(),
-      references: z.object({
-        nodes: shopifyProductSchema.array(),
-      }),
-      // references: z
-      //   .object({
-      //     nodes: z
-      //       .discriminatedUnion("type", [
-      //         shopifyProductSchema.extend({
-      //           type: z.literal("product"),
-      //         }),
-      //         shopifyCollectionSchema.extend({
-      //           type: z.literal("collection"),
-      //         }),
-      //       ])
-      //       .array(),
-      //   })
-      //   .nullable(),
+      references: z
+        .object({
+          nodes: z
+            .union([shopifyProductSchema, shopifyCollectionSchema])
+            .array(),
+        })
+        .nullable(),
     })
     .array(),
 })

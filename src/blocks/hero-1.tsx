@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { HeroProps } from "@/schemas/blocks/hero"
+import type { BlockSchema } from "@/schemas/block"
 
 import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
@@ -11,6 +11,7 @@ import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
 function Hero1({
+  id,
   level = 1,
   align,
   title,
@@ -18,10 +19,9 @@ function Hero1({
   buttons,
   image,
   className,
-  ...props
-}: HeroProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema) {
   return (
-    <Section className={cn(className)} {...props}>
+    <Section id={id} className={cn(className)}>
       <Container>
         <Column align={align}>
           <Title size="6xl" level={level} align={align} text={title} />

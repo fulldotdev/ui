@@ -1,6 +1,5 @@
 import * as React from "react"
 import type { BlockSchema } from "@/schemas/block"
-import type { CollectionProps } from "@/schemas/blocks/collection"
 import { ChevronDown } from "lucide-react"
 import { v4 as uuidv4 } from "uuid"
 
@@ -30,17 +29,17 @@ function Collection1({
   align,
   title,
   description,
-  products,
+  items,
   children,
   className,
   ...props
 }: BlockSchema & React.ComponentProps<typeof Section>) {
-  const [sortedProducts, setSortedProducts] = React.useState(products)
+  const [sortedItems, setSortedItems] = React.useState(items)
   const [sort, setSort] = React.useState("aanbevolen")
 
   const onSortChange = (value: string) => {
     setSort(value)
-    const sorted = [...(products || [])].sort((a, b) => {
+    const sorted = [...(items || [])].sort((a, b) => {
       if (value === "prijs-laag-hoog")
         return (a.price?.amount || 0) - (b.price?.amount || 0)
       if (value === "prijs-hoog-laag")
@@ -51,7 +50,7 @@ function Collection1({
         return (b.title || "").localeCompare(a.title || "")
       return 0
     })
-    setSortedProducts(sorted)
+    setSortedItems(sorted)
   }
 
   return (
@@ -66,7 +65,7 @@ function Collection1({
           />
           <Column className="gap-0 not-first:mt-16">
             <Row className="border-t py-4">
-              <span className="text-muted-foreground text-sm">{`${sortedProducts?.length || 0} producten`}</span>
+              <span className="text-muted-foreground text-sm">{`${sortedItems?.length || 0} producten`}</span>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">
@@ -99,7 +98,7 @@ function Collection1({
               </DropdownMenu>
             </Row>
             <Grid className="gap-x-4 gap-y-8">
-              {sortedProducts?.map(({ href, title, image, price }) => (
+              {sortedItems?.map(({ href, title, image, price }) => (
                 <Link
                   className="group flex flex-col"
                   key={uuidv4()}

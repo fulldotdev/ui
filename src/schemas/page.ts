@@ -1,21 +1,27 @@
 import { blockSchema } from "@/schemas/block"
-import { collectionSchema } from "@/schemas/blocks/collection"
-import { contentSchema } from "@/schemas/blocks/content"
-import { productSchema } from "@/schemas/blocks/product"
-import { imageSchema } from "@/schemas/components/image"
-import { seoSchema } from "@/schemas/content/seo"
 import { z } from "zod"
 
-export const pageSchema = contentSchema
-  .merge(productSchema)
-  .merge(collectionSchema)
+export const pageSchema = blockSchema
   .extend({
-    title: z.string(),
-    description: z.string().optional(),
-    image: imageSchema.optional(),
-    sections: blockSchema.array().optional(),
-    seo: seoSchema.optional(),
+    type: z
+      .enum(["content", "post", "product", "collection"])
+      .default("content"),
+    variant: z.number().default(1),
+    sections: blockSchema
+      .extend({
+        type: z.string(),
+        variant: z.number().default(1),
+      })
+      .array()
+      .optional(),
+    seo: z
+      .object({
+        title: z.string().optional(),
+        description: z.string().optional(),
+      })
+      .optional(),
     content: z.string().optional(),
   })
+  .strict()
 
 export type PageSchema = z.infer<typeof pageSchema>

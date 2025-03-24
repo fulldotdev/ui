@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { FeaturesProps } from "@/schemas/blocks/features"
+import type { BlockSchema } from "@/schemas/block"
 import { Check } from "lucide-react"
 import { v4 as uuidv4 } from "uuid"
 
@@ -18,10 +18,10 @@ function Features1({
   title,
   description,
   buttons,
-  features,
+  items,
   className,
   ...props
-}: FeaturesProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
@@ -34,7 +34,7 @@ function Features1({
           />
           <Buttons className="not-first:mt-8" align={align} buttons={buttons} />
           <Grid className="gap-x-4 gap-y-8 not-first:mt-16">
-            {features?.map(({ title, description }) => (
+            {items?.map(({ title, description }) => (
               <Column key={uuidv4()} align={align}>
                 <div className="bg-muted text-muted-foreground inline-flex size-9 items-center justify-center rounded-md">
                   <Check />

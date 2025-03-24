@@ -1,4 +1,4 @@
-import type { ContactProps } from "@/schemas/blocks/contact"
+import type { BlockSchema } from "@/schemas/block"
 
 import { cn } from "@/lib/utils"
 import { Channels } from "@/components/channels"
@@ -18,7 +18,7 @@ function Contact1({
   form,
   className,
   ...props
-}: ContactProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container size="sm">

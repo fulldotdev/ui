@@ -2,49 +2,31 @@
 import "@/styles/globals.css"
 import "@/styles/theme.css"
 
+import type { LayoutSchema } from "@/schemas/layout"
 import { SEO } from "astro-seo"
-import type { HTMLAttributes } from "astro/types"
-import { twMerge } from "tailwind-merge"
 
-interface Props extends HTMLAttributes<"body"> {
-  company?: string
-  head?: string
-  body?: string
-  css?: string
-  title?: string
-  description?: string
-  image?: {
-    src?: string
-    alt?: string
-  }
-  canonical?: string
-  noindex?: boolean
-  nofollow?: boolean
-}
+import Block from "@/components/misc/block.astro"
+
+interface Props extends LayoutSchema {}
 
 const {
   lang = "en",
-  company,
   title,
   description,
   image,
-  canonical,
-  noindex,
-  nofollow,
+  company,
   head,
   body,
   css,
-  class: className,
-  ...props
+  banner,
+  header,
+  footer,
 } = Astro.props
 ---
 
 <!doctype html>
 <html
-  class:list={twMerge(
-    "layout text-foreground bg-background h-full w-full font-sans text-base scheme-light dark:scheme-dark",
-    className
-  )}
+  class="layout text-foreground bg-background h-full w-full font-sans text-base scheme-light dark:scheme-dark"
   {lang}
 >
   <head>
@@ -53,10 +35,7 @@ const {
     <SEO
       charset="UTF-8"
       title={title || undefined}
-      description={description || description || undefined}
-      noindex={noindex || undefined}
-      nofollow={nofollow || undefined}
-      canonical={canonical || Astro.url.href}
+      description={description || undefined}
       openGraph={{
         basic: {
           title: title || "",
@@ -78,8 +57,13 @@ const {
     ></script> -->
     <Fragment set:html={head} />
   </head>
-  <body {...props}>
-    <slot />
+  <body data-sb-object-id={Astro.url.pathname}>
+    <Block type="banner" {...banner} />
+    <Block type="h eader" {...header} />
+    <main>
+      <slot />
+    </main>
+    <Block type="footer" {...footer} />
     <style set:html={css}></style>
     <Fragment set:html={body} />
   </body>

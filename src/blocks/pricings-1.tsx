@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { PricingsProps } from "@/schemas/blocks/pricings"
+import type { BlockSchema } from "@/schemas/block"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
@@ -20,10 +20,10 @@ function Pricings1({
   title,
   description,
   buttons,
-  pricings,
+  items,
   className,
   ...props
-}: PricingsProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
@@ -36,7 +36,7 @@ function Pricings1({
             text={description}
           />
           <Grid className="gap-x-4 gap-y-8 not-first:mt-16">
-            {pricings?.map(({ title, description, price, list, button }) => (
+            {items?.map(({ title, description, price, list, button }) => (
               <Card className="flex flex-col gap-4 px-6 text-lg" key={uuidv4()}>
                 <Title level={level + 1} size="xl" align={align} text={title} />
                 <Description

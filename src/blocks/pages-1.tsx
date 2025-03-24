@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { PagesProps } from "@/schemas/blocks/pages"
+import type { BlockSchema } from "@/schemas/block"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
@@ -19,10 +19,10 @@ function Pages1({
   title,
   description,
   buttons,
-  pages,
+  items,
   className,
   ...props
-}: PagesProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
@@ -35,7 +35,7 @@ function Pages1({
           />
           <Buttons className="not-first:mt-8" buttons={buttons} />
           <Grid className="gap-x-4 gap-y-8 not-first:mt-16">
-            {pages?.map(({ href, title, description, image }) => (
+            {items?.map(({ href, title, description, image }) => (
               <Link
                 key={uuidv4()}
                 className="group flex flex-col gap-4"
@@ -45,7 +45,7 @@ function Pages1({
                   className="rounded-lg transition-opacity group-hover:opacity-75"
                   {...image}
                 />
-                <Title size="xl" level={level} align={align} text={title} />
+                <Title size="lg" level={level} align={align} text={title} />
                 <Description
                   className="not-first:mt-4"
                   align={align}

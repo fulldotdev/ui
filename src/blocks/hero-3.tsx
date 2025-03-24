@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { HeroProps } from "@/schemas/blocks/hero"
+import type { BlockSchema } from "@/schemas/block"
 
 import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
@@ -19,7 +19,7 @@ function Hero3({
   image,
   className,
   ...props
-}: HeroProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema & React.ComponentProps<typeof Section>) {
   return (
     <Section
       className={cn(

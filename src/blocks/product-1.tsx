@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { ProductProps } from "@/schemas/blocks/product"
+import type { BlockSchema } from "@/schemas/block"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/button"
@@ -26,7 +26,7 @@ function Product1({
   children,
   className,
   ...props
-}: ProductProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn("product product-1 pt-0", className)} {...props}>
       <Container className="max-sm:px-0">

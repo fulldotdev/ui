@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { HeaderProps } from "@/schemas/blocks/header"
+import type { BlockSchema } from "@/schemas/block"
 
 import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
@@ -12,13 +12,13 @@ import { ShopifyCart } from "@/components/shopify-cart"
 
 function Header2({
   logo,
-  menus,
+  items,
   buttons,
   search,
   cart,
   className,
   ...props
-}: HeaderProps & React.ComponentProps<"header">) {
+}: BlockSchema & React.ComponentProps<"header">) {
   return (
     <header
       className={cn(
@@ -29,19 +29,16 @@ function Header2({
     >
       <Container>
         <div className="flex h-14 items-center gap-2">
-          <DrawerMenu className="-ml-2.5 lg:hidden" items={menus} />
+          <DrawerMenu className="-ml-2.5 lg:hidden" items={items} />
           <Logo className="mr-3 hidden md:flex" {...logo} />
           {search ? (
-            <Search
-              links={search === true ? [] : search}
-              className="mx-auto w-full lg:mx-6"
-            />
+            <Search links={search} className="mx-auto w-full lg:mx-6" />
           ) : null}
           <Buttons className="max-sm:hidden" buttons={buttons} reverse />
           {cart ? <ShopifyCart className="-mr-2.5" /> : null}
         </div>
         <div className="-mx-2.5 flex h-12 items-center pb-2.5 max-lg:hidden">
-          <NavigationMenu items={menus} />
+          <NavigationMenu items={items} />
         </div>
       </Container>
       <style>

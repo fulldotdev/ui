@@ -1,8 +1,9 @@
 ---
-import BaseLayout from "@/layouts/base-layout.astro"
 import { getCollection, getEntry, render } from "astro:content"
 
 import { getHref } from "@/lib/get-href"
+import Layout from "@/components/misc/layout.astro"
+import Page from "@/components/misc/page.astro"
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages")
@@ -10,37 +11,18 @@ export async function getStaticPaths() {
     params: {
       page: getHref(page.id) === "/" ? undefined : getHref(page.id),
     },
-    props: {
-      page,
-      search: pages.map((page) => ({
-        text: page.data.title,
-        href: getHref(page.id),
-      })),
-    },
+    props: page,
   }))
 }
 
-const { page, search } = Astro.props
-const { id, filePath } = page
-const { Content } = await render(page)
-const { seo, layout, sections: pageSections, ...pageData } = page.data
-const {
-  data: { banner, header, footer, company, lang, sections: layoutSections },
-} = layout && (await getEntry(layout))
+const { Content } = await render(Astro.props)
+const { seo, ...page } = Astro.props.data
+
+const layout = await getEntry("layouts", "base")
 ---
 
-<BaseLayout
-  id={id}
-  filePath={filePath}
-  banner={banner}
-  header={header}
-  footer={footer}
-  search={search}
-  company={company}
-  lang={lang}
-  sections={[...(pageSections ?? []), ...(layoutSections ?? [])]}
-  {...pageData}
-  {...seo}
->
-  <Content />
-</BaseLayout>
+<Layout {...layout?.data} {...seo}>
+  <Page {...page}>
+    <Content />
+  </Page>
+</Layout>

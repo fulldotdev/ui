@@ -1,0 +1,30 @@
+---
+import "@/styles/globals.css"
+import "@/styles/theme.css"
+
+import type { PageSchema } from "@/schemas/page"
+
+import Block from "@/components/misc/block.astro"
+
+interface Props extends PageSchema {}
+
+const { title, description, image, seo, sections, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+const hasContent = slot.trim().length > 0
+---
+
+<Block
+  level={1}
+  title={title}
+  description={description}
+  image={image}
+  {...props}
+>
+  <slot />
+</Block>
+{
+  sections?.map((section, i) => (
+    <Block level={i === 0 && !hasContent ? 1 : 2} {...section} />
+  ))
+}

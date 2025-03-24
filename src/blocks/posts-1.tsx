@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { PostsProps } from "@/schemas/blocks/posts"
+import type { BlockSchema } from "@/schemas/block"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
@@ -19,10 +19,10 @@ function Posts1({
   title,
   description,
   buttons,
-  posts,
+  items,
   className,
   ...props
-}: PostsProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
@@ -35,7 +35,7 @@ function Posts1({
           />
           <Buttons className="not-first:mt-8" align={align} buttons={buttons} />
           <Grid className="gap-x-4 gap-y-8 not-first:mt-16" size="lg">
-            {posts?.map(({ href, title, image }) => (
+            {items?.map(({ href, title, image }) => (
               <Link
                 className="group flex flex-col gap-3"
                 key={uuidv4()}

@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { CollectionsProps } from "@/schemas/blocks/collections"
+import type { BlockSchema } from "@/schemas/block"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
@@ -19,10 +19,10 @@ function Collections1({
   title,
   description,
   buttons,
-  collections,
+  items,
   className,
   ...props
-}: CollectionsProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
@@ -39,7 +39,7 @@ function Collections1({
             buttons={buttons}
           />
           <Grid className="not-first:mt-16 first:mt-0">
-            {collections?.map(({ href, title, image }) => (
+            {items?.map(({ href, title, image }) => (
               <Link
                 className="group flex flex-col gap-4"
                 key={uuidv4()}

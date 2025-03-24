@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { MediaProps } from "@/schemas/blocks/media"
+import type { BlockSchema } from "@/schemas/block"
 
 import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
@@ -20,7 +20,7 @@ function Media2({
   image,
   className,
   ...props
-}: MediaProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>

@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { PostProps } from "@/schemas/blocks/post"
+import type { BlockSchema } from "@/schemas/block"
 
 import { cn } from "@/lib/utils"
 import { Container } from "@/components/container"
@@ -17,7 +17,7 @@ function Post1({
   children,
   className,
   ...props
-}: PostProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container className="flex flex-col" size="sm">

@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { FaqsProps } from "@/schemas/blocks/faqs"
+import type { BlockSchema } from "@/schemas/block"
 
 import { cn } from "@/lib/utils"
 import { Accordion } from "@/components/accordion"
@@ -17,10 +17,10 @@ function Faqs2({
   title,
   description,
   buttons,
-  faqs,
+  items,
   className,
   ...props
-}: FaqsProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
@@ -30,7 +30,12 @@ function Faqs2({
             <Description className="not-first:mt-4" text={description} />
             <Buttons className="not-first:mt-8" buttons={buttons} />
           </Column>
-          <Accordion level={level + 1} type="single" collapsible items={faqs} />
+          <Accordion
+            level={level + 1}
+            type="single"
+            collapsible
+            items={items}
+          />
         </Split>
       </Container>
     </Section>

@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { FooterProps } from "@/schemas/blocks/footer"
+import type { BlockSchema } from "@/schemas/block"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
@@ -15,11 +15,10 @@ function Footer1({
   description,
   socials,
   channels,
-  hours,
-  menus,
+  items,
   className,
   ...props
-}: FooterProps & React.ComponentProps<"footer">) {
+}: BlockSchema & React.ComponentProps<"footer">) {
   return (
     <footer
       className={cn(
@@ -38,23 +37,7 @@ function Footer1({
             <Socials className="mt-3 -ml-2" socials={socials} />
           </div>
           <Channels align="start" {...channels} />
-          {hours && (
-            <div className="flex flex-col items-start gap-2">
-              <h6 className="text-sm font-medium">Openingstijden</h6>
-              <ul className="text-muted-foreground flex flex-col justify-between gap-0.5 text-sm">
-                {Object.entries(hours || {}).map(([key, value]) => (
-                  <li
-                    key={key}
-                    className="flex items-center justify-between gap-3"
-                  >
-                    <span>{key}.</span>
-                    <span>{value}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {menus?.map((menu) => (
+          {items?.map((menu) => (
             <Menu className="text-sm" key={uuidv4()} {...menu} />
           ))}
         </Grid>

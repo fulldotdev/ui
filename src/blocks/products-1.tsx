@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { ProductsProps } from "@/schemas/blocks/products"
+import type { BlockSchema } from "@/schemas/block"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
@@ -19,10 +19,10 @@ function Products1({
   title,
   description,
   buttons,
-  products,
+  items,
   className,
   ...props
-}: ProductsProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
@@ -38,7 +38,7 @@ function Products1({
           buttons={buttons}
         />
         <Grid className="gap-x-4 gap-y-8 not-first:mt-16">
-          {products?.map(({ href, title, image, price }) => (
+          {items?.map(({ href, title, image, price }) => (
             <Link
               className="group flex flex-col gap-4"
               key={uuidv4()}

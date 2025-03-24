@@ -1,4 +1,4 @@
-import type { CtaProps } from "@/schemas/blocks/cta"
+import type { BlockSchema } from "@/schemas/block"
 
 import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
@@ -10,16 +10,16 @@ import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
 function Cta1({
+  id,
   level = 2,
   align,
   title,
   description,
   buttons,
   className,
-  ...props
-}: CtaProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema) {
   return (
-    <Section className={cn(className)} {...props}>
+    <Section id={id} className={cn(className)}>
       <Container>
         <Panel>
           <Column align={align}>

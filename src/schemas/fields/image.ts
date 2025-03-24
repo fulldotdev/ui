@@ -1,10 +1,10 @@
-import { z } from "astro:content"
+import { z } from "zod"
 
 export const imageSchema = z
   .object({
-    src: z.string(),
-    alt: z.string(),
+    src: z.string().optional(),
+    alt: z.string().optional(),
   })
-  .partial()
+  .strict()
 
 export type ImageSchema = z.infer<typeof imageSchema>

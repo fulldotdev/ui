@@ -59,7 +59,7 @@ function NavigationMenu({ items, className }: Props) {
               {item.links ? (
                 <>
                   <NavigationMenuTrigger className="text-foreground/80 h-9 bg-transparent px-3 py-0 font-normal">
-                    {item.text}
+                    <a href={item.href}>{item.text}</a>
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="flex w-full min-w-48 flex-col gap-3 p-3">

@@ -1,16 +1,12 @@
 import * as React from "react"
-import type { LocationsProps } from "@/schemas/blocks/locations"
+import type { BlockSchema } from "@/schemas/block"
 import { v4 as uuidv4 } from "uuid"
 
-import { getHref } from "@/lib/get-href"
 import { cn } from "@/lib/utils"
-import { Card } from "@/components/ui/card"
-import { Button } from "@/components/button"
 import { Buttons } from "@/components/buttons"
 import { Column } from "@/components/column"
 import { Container } from "@/components/container"
 import { Description } from "@/components/description"
-import { Grid } from "@/components/grid"
 import { Link } from "@/components/link"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
@@ -21,10 +17,10 @@ function Locations1({
   title,
   description,
   buttons,
-  locations,
+  items,
   className,
   ...props
-}: LocationsProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container size="sm">
@@ -37,7 +33,7 @@ function Locations1({
           />
           <Buttons className="not-first:mt-8" buttons={buttons} />
           <Column className="gap-x-4 gap-y-4 not-first:mt-16">
-            {locations?.map(({ href, title, description }) => (
+            {items?.map(({ href, title, description }) => (
               <Link
                 href={href}
                 className="flex flex-col items-start gap-4 rounded-lg border p-6"

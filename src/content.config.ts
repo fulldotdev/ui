@@ -1,6 +1,5 @@
-import { layoutSchema } from "@/schemas/content/layout"
-import { pageSchema } from "@/schemas/content/page"
-import { reviewSchema } from "@/schemas/content/review"
+import { layoutSchema } from "@/schemas/layout"
+import { pageSchema } from "@/schemas/page"
 import { defineCollection } from "astro:content"
 import { glob } from "astro/loaders"
 
@@ -11,13 +10,6 @@ export const collections = {
       base: `./src/content/pages`,
     }),
     schema: pageSchema,
-  }),
-  reviews: defineCollection({
-    loader: glob({
-      pattern: "**/[^_]*.{json,yml,yaml}",
-      base: `./src/content/reviews`,
-    }),
-    schema: reviewSchema,
   }),
   layouts: defineCollection({
     loader: glob({

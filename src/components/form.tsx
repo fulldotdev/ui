@@ -17,7 +17,14 @@ import { Textarea } from "@/components/ui/textarea"
 interface Props extends React.FormHTMLAttributes<HTMLFormElement> {
   submit?: string
   fields?: {
-    type?: "text" | "number" | "email" | "checkbox" | "select" | "textarea"
+    type?:
+      | "text"
+      | "email"
+      | "tel"
+      | "number"
+      | "checkbox"
+      | "select"
+      | "textarea"
     name?: string
     label?: string
     placeholder?: string

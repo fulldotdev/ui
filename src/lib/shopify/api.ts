@@ -28,6 +28,10 @@ export const requestShopify = async (
   query: string,
   variables?: Record<string, any>
 ) => {
+  if (!config.shopify) {
+    throw new Error("Shopify config not found")
+  }
+
   const client = createStorefrontApiClient({
     apiVersion: "2025-01",
     storeDomain: config.shopify.storeDomain,

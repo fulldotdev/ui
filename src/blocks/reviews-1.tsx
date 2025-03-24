@@ -1,10 +1,8 @@
 import * as React from "react"
-import type { ReviewsProps } from "@/schemas/blocks/reviews"
+import type { BlockSchema } from "@/schemas/block"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
-import { Card } from "@/components/ui/card"
-import { Abstract } from "@/components/abstract"
 import { Buttons } from "@/components/buttons"
 import { Column } from "@/components/column"
 import { Container } from "@/components/container"
@@ -13,7 +11,6 @@ import { Masonry } from "@/components/masonry"
 import { Rating } from "@/components/rating"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
-import { Writeup } from "@/components/writeup"
 
 function Reviews1({
   level = 2,
@@ -21,10 +18,10 @@ function Reviews1({
   title,
   description,
   buttons,
-  reviews,
+  items,
   className,
   ...props
-}: ReviewsProps & React.ComponentProps<typeof Section>) {
+}: BlockSchema & React.ComponentProps<typeof Section>) {
   return (
     <Section className={cn(className)} {...props}>
       <Container className="gap-8">
@@ -37,7 +34,7 @@ function Reviews1({
           />
           <Buttons className="not-first:mt-8" buttons={buttons} />
           <Masonry className="gap-x-4 gap-y-8 not-first:mt-16">
-            {reviews?.map(({ rating, title, description }) => (
+            {items?.map(({ rating, title, description }) => (
               <div
                 className="flex flex-col rounded-lg border p-6"
                 key={uuidv4()}
