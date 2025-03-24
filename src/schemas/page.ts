@@ -4,6 +4,7 @@ import { z } from "zod"
 export const pageSchema = blockSchema
   .extend({
     slug: z.string().optional(),
+    href: z.string().optional(),
     type: z
       .enum(["content", "post", "product", "collection"])
       .default("content"),

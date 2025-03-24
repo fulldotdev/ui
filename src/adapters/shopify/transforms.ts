@@ -5,6 +5,7 @@ import type {
   ShopifyLayoutSchema,
   ShopifyMenuSchema,
   ShopifyPageSchema,
+  ShopifySearchSchema,
   ShopifySeoSchema,
 } from "@/adapters/shopify/schemas"
 import type { BlockSchema } from "@/schemas/block"
@@ -14,13 +15,10 @@ import type { PriceSchema } from "@/schemas/fields/price"
 import type { ItemSchema } from "@/schemas/item"
 import type { LayoutSchema } from "@/schemas/layout"
 import type { PageSchema } from "@/schemas/page"
-import type {
-  Article,
-  MediaImage,
-  Metaobject,
-  Page,
-  Product,
-} from "@shopify/hydrogen-react/storefront-api-types"
+
+// --------------------------------------------------------------------------
+// Shared
+// --------------------------------------------------------------------------
 
 export const shopifyImageTransform = (
   image?: ShopifyImageSchema
@@ -66,21 +64,30 @@ function getPageType(id?: string) {
   return "content"
 }
 
-function getPageSlug(type?: string, handle?: string) {
-  if (type === "product") return `/producten/${handle}/`
-  if (type === "collection") return `/collecties/${handle}/`
-  if (type === "post") return `/blog/${handle}/`
+function getPageHref(id?: string, handle?: string) {
+  if (id?.includes("Product")) return `/producten/${handle}/`
+  else if (id?.includes("Collection")) return `/collecties/${handle}/`
+  else if (id?.includes("Article")) return `/blog/${handle}/`
+  else if (id?.includes("Page") && handle === "home") return `/`
   return `/${handle}/`
 }
 
+// --------------------------------------------------------------------------
+// Item
+// --------------------------------------------------------------------------
+
 export function shopifyItemTransform(item: ShopifyItemSchema): ItemSchema {
   return {
-    href: getPageSlug(getPageType(item.id), item.handle),
+    href: getPageHref(item.id, item.handle),
     title: item.title,
     image: shopifyImageTransform(item.featuredImage || item.image),
     price: shopifyPriceTransform(item),
   }
 }
+
+// --------------------------------------------------------------------------
+// Block
+// --------------------------------------------------------------------------
 
 // TODO move to a different file
 const blockPropsMap: Record<string, BlockSchema & { variant: number }> = {
@@ -143,11 +150,15 @@ export function shopifyBlockTransform(block: ShopifyBlockSchema): BlockSchema {
   }
 }
 
+// --------------------------------------------------------------------------
+// Page
+// --------------------------------------------------------------------------
+
 export const shopifyPageTransform = (page: ShopifyPageSchema): PageSchema => {
   return {
     type: getPageType(page.id),
     variant: 1,
-    slug: getPageSlug(getPageType(page.id), page.handle),
+    href: getPageHref(page.id, page.handle),
     title: page.title,
     image: shopifyImageTransform(page.featuredImage || page.image),
     images: page.images?.nodes.map(shopifyImageTransform),
@@ -162,27 +173,14 @@ export const shopifyPageTransform = (page: ShopifyPageSchema): PageSchema => {
   }
 }
 
-export function transformSearch(search: Partial<Page | Article | Product>) {
-  let folderSlug = ""
-  if (search.id?.includes("Product")) folderSlug = "producten"
-  if (search.id?.includes("Article")) folderSlug = "artikelen"
-
-  let itemSlug = ""
-  if (search.handle !== "index" && search.handle !== "home")
-    itemSlug = search.handle ?? ""
-
-  const fullSlug = `${folderSlug}/${itemSlug}`
-  const withLeadingSlash = fullSlug.startsWith("/") ? fullSlug : `/${fullSlug}`
-  const withTrailingSlash = fullSlug.endsWith("/")
-    ? withLeadingSlash
-    : `${withLeadingSlash}/`
-
-  return { text: search.title, href: withTrailingSlash }
-}
+// --------------------------------------------------------------------------
+// Layout
+// --------------------------------------------------------------------------
 
 export function shopifyMenuTransform(menu: ShopifyMenuSchema): MenuSchema {
-  const findField = (key: string) =>
-    menu?.fields?.find((field) => field.key === key)
+  function findField(key: string) {
+    return menu?.fields?.find((field) => field.key === key)
+  }
 
   return {
     text: findField("title")?.value,
@@ -213,5 +211,16 @@ export function shopifyLayoutTransform(
       logo: shopifyImageTransform(getField("logo")?.reference?.image),
       menus: getField("footer")?.references?.nodes.map(shopifyMenuTransform),
     },
+  }
+}
+
+// --------------------------------------------------------------------------
+// Search
+// --------------------------------------------------------------------------
+
+export function shopifySearchTransform(search: ShopifySearchSchema) {
+  return {
+    text: search.title,
+    href: getPageHref(search.id, search.handle),
   }
 }

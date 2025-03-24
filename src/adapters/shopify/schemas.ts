@@ -123,20 +123,13 @@ export const shopifyLayoutSchema = z.object({
     })
     .array(),
 })
+
 export type ShopifyLayoutSchema = z.infer<typeof shopifyLayoutSchema>
 
 export const shopifySearchSchema = z.object({
-  pageInfo: z.object({
-    hasNextPage: z.boolean(),
-    endCursor: z.string(),
-  }),
-  nodes: z.array(
-    z.object({
-      id: z.string(),
-      handle: z.string(),
-      title: z.string(),
-    })
-  ),
+  id: z.string(),
+  handle: z.string(),
+  title: z.string(),
 })
 
 export type ShopifySearchSchema = z.infer<typeof shopifySearchSchema>

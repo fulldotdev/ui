@@ -1,27 +1,26 @@
-import type {
-  Article,
-  Collection,
-  Metaobject,
-  Page,
-  PageInfo,
-  Product,
-} from "@shopify/hydrogen-react/storefront-api-types"
-import { createStorefrontApiClient } from "@shopify/storefront-api-client"
-import config from "fulldev.json"
-
 import {
   COLLECTION_QUERY,
   LAYOUT_QUERY,
   PAGE_QUERY,
   PRODUCT_QUERY,
   SEARCH_QUERY,
-} from "./graphql"
+} from "@/adapters/shopify/graphql"
 import {
   shopifyLayoutSchema,
   shopifyPageSchema,
   shopifySearchSchema,
-} from "./schemas"
-import { shopifyLayoutTransform, shopifyPageTransform } from "./transforms"
+} from "@/adapters/shopify/schemas"
+import {
+  shopifyLayoutTransform,
+  shopifyPageTransform,
+  shopifySearchTransform,
+} from "@/adapters/shopify/transforms"
+import { createStorefrontApiClient } from "@shopify/storefront-api-client"
+import config from "fulldev.json"
+
+// --------------------------------------------------------------------------
+// Shared
+// --------------------------------------------------------------------------
 
 export const requestShopify = async (
   query: string,
@@ -52,6 +51,10 @@ export const requestShopify = async (
   return data
 }
 
+// --------------------------------------------------------------------------
+// Page
+// --------------------------------------------------------------------------
+
 export async function getPage(slug?: string) {
   let type: keyof typeof queryMap = "page"
   if (slug?.startsWith("producten/")) type = "product"
@@ -76,13 +79,32 @@ export async function getPage(slug?: string) {
   return shopifyPageSchema.transform(shopifyPageTransform).parse(data)
 }
 
+// --------------------------------------------------------------------------
+// Layout
+// --------------------------------------------------------------------------
+
 export async function getLayout() {
   const { metaobject } = await requestShopify(LAYOUT_QUERY)
   return shopifyLayoutSchema.transform(shopifyLayoutTransform).parse(metaobject)
 }
 
+// --------------------------------------------------------------------------
+// Search
+// --------------------------------------------------------------------------
+
+async function getSearchRequest(endCursor?: string) {
+  const { search } = await requestShopify(SEARCH_QUERY, { endCursor })
+  return search
+}
+
 export const getSearch = async () => {
-  const { search } = await requestShopify(SEARCH_QUERY)
-  const parsedSearch = shopifySearchSchema.parse(search)
-  return parsedSearch
+  const search = await getSearchRequest()
+  let allNodes = [...search.nodes]
+
+  while (search.pageInfo.hasNextPage) {
+    const nextSearch = await getSearchRequest(search.pageInfo.endCursor)
+    allNodes = [...allNodes, ...nextSearch.nodes]
+  }
+
+  return shopifySearchSchema.transform(shopifySearchTransform).parse(allNodes)
 }
