@@ -1,3 +1,7 @@
+// --------------------------------------------------------------------------
+// Shared
+// --------------------------------------------------------------------------
+
 const IMAGE_FRAGMENT = `#graphql
   fragment ImageFragment on Image {
     url
@@ -20,6 +24,10 @@ const SEO_FRAGMENT = `#graphql
     description
   }
 `
+
+// --------------------------------------------------------------------------
+// Product
+// --------------------------------------------------------------------------
 
 const PRODUCT_FRAGMENT = `#graphql
   fragment ProductFragment on Product {
@@ -51,7 +59,38 @@ const PRODUCT_FRAGMENT = `#graphql
     }
     descriptionHtml
   }
+  ${IMAGE_FRAGMENT}
+  ${PRICE_RANGE_FRAGMENT}
+  ${SEO_FRAGMENT}
 `
+
+export const PRODUCT_QUERY = `#graphql
+  query GetProduct($handle: String!) {
+    product(handle: $handle) {
+      ...ProductFragment
+    }
+  }
+  ${PRODUCT_FRAGMENT}
+`
+
+export const PRODUCTS_QUERY = `#graphql
+  query GetProducts($endCursor: String) {
+    products(first: 250, after: $endCursor) {
+      nodes {
+        ...ProductFragment
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+  ${PRODUCT_FRAGMENT}
+`
+
+// --------------------------------------------------------------------------
+// Collection
+// --------------------------------------------------------------------------
 
 const COLLECTION_FRAGMENT = `#graphql
   fragment CollectionFragment on Collection {
@@ -63,7 +102,18 @@ const COLLECTION_FRAGMENT = `#graphql
     }
     products(first: 250) {
       nodes {
-        ...ProductFragment
+        id
+        handle
+        title
+        featuredImage {
+          ...ImageFragment
+        }
+        priceRange {
+          ...PriceFragment
+        }
+        compareAtPriceRange {
+          ...PriceFragment
+        }
       }
     }
     seo {
@@ -71,7 +121,38 @@ const COLLECTION_FRAGMENT = `#graphql
     }
     descriptionHtml
   }
+  ${IMAGE_FRAGMENT}
+  ${PRICE_RANGE_FRAGMENT}
+  ${SEO_FRAGMENT}
 `
+
+export const COLLECTION_QUERY = `#graphql
+  query GetCollection($handle: String!) {
+    collection(handle: $handle) {
+      ...CollectionFragment
+    }
+  }
+  ${COLLECTION_FRAGMENT}
+`
+
+export const COLLECTIONS_QUERY = `#graphql
+  query GetCollections($endCursor: String) {
+    collections(first: 250, after: $endCursor) {
+      nodes {
+        ...CollectionFragment
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+  ${COLLECTION_FRAGMENT}
+`
+
+// --------------------------------------------------------------------------
+// Page
+// --------------------------------------------------------------------------
 
 export const PAGE_FRAGMENT = `#graphql
   fragment PageFragment on Page {
@@ -96,10 +177,26 @@ export const PAGE_FRAGMENT = `#graphql
               references(first: 10) {
                 nodes {
                   ... on Collection {
-                    ...CollectionFragment
+                    id
+                    handle
+                    title
+                    image {
+                      ...ImageFragment
+                    }
                   }
                   ... on Product {
-                    ...ProductFragment
+                    id
+                    handle
+                    title
+                    featuredImage {
+                      ...ImageFragment
+                    }
+                    priceRange {
+                      ...PriceFragment
+                    }
+                    compareAtPriceRange {
+                      ...PriceFragment
+                    }
                   }
                 }
               }
@@ -113,28 +210,6 @@ export const PAGE_FRAGMENT = `#graphql
     }
     body
   }
-`
-
-export const PRODUCT_QUERY = `#graphql
-  query GetProduct($handle: String!) {
-    product(handle: $handle) {
-      ...ProductFragment
-    }
-  }
-  ${PRODUCT_FRAGMENT}
-  ${IMAGE_FRAGMENT}
-  ${PRICE_RANGE_FRAGMENT}
-  ${SEO_FRAGMENT}
-`
-
-export const COLLECTION_QUERY = `#graphql
-  query GetCollection($handle: String!) {
-    collection(handle: $handle) {
-      ...CollectionFragment
-    }
-  }
-  ${COLLECTION_FRAGMENT}
-  ${PRODUCT_FRAGMENT}
   ${IMAGE_FRAGMENT}
   ${PRICE_RANGE_FRAGMENT}
   ${SEO_FRAGMENT}
@@ -147,12 +222,26 @@ export const PAGE_QUERY = `#graphql
     }
   }
   ${PAGE_FRAGMENT}
-  ${IMAGE_FRAGMENT}
-  ${PRICE_RANGE_FRAGMENT}
-  ${SEO_FRAGMENT}
-  ${PRODUCT_FRAGMENT}
-  ${COLLECTION_FRAGMENT}
 `
+
+export const PAGES_QUERY = `#graphql
+  query GetPages($endCursor: String) {
+    pages(first: 250, after: $endCursor) {
+      nodes {
+        ...PageFragment
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+  ${PAGE_FRAGMENT}
+`
+
+// --------------------------------------------------------------------------
+// Search
+// --------------------------------------------------------------------------
 
 export const SEARCH_QUERY = `#graphql
   query GetSearch($endCursor: String) {
@@ -181,6 +270,10 @@ export const SEARCH_QUERY = `#graphql
     }
   }
 `
+
+// --------------------------------------------------------------------------
+// Layout
+// --------------------------------------------------------------------------
 
 export const LAYOUT_QUERY = `#graphql
   query {

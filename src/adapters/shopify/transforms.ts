@@ -5,7 +5,6 @@ import type {
   ShopifyLayoutSchema,
   ShopifyMenuSchema,
   ShopifyPageSchema,
-  ShopifySearchSchema,
   ShopifySeoSchema,
 } from "@/adapters/shopify/schemas"
 import type { BlockSchema } from "@/schemas/block"
@@ -51,9 +50,10 @@ export const shopifyButtonsTransform = (
 
 export const shopifyPriceTransform = (page: ShopifyPageSchema): PriceSchema => {
   return {
-    amount: Number(page.priceRange?.minVariantPrice.amount),
+    amount: Number(page.priceRange?.minVariantPrice.amount) || undefined,
     currency: page.priceRange?.minVariantPrice.currencyCode,
-    compare: Number(page.compareAtPriceRange?.minVariantPrice.amount),
+    compare:
+      Number(page.compareAtPriceRange?.minVariantPrice.amount) || undefined,
   }
 }
 
@@ -62,6 +62,13 @@ function getPageType(id?: string) {
   if (id?.includes("Collection")) return "collection"
   if (id?.includes("Article")) return "post"
   return "content"
+}
+
+function getPageSlug(id?: string, handle?: string) {
+  if (id?.includes("Product")) return `producten/${handle}`
+  if (id?.includes("Collection")) return `collecties/${handle}`
+  if (id?.includes("Article")) return `blog/${handle}`
+  return handle
 }
 
 function getPageHref(id?: string, handle?: string) {
@@ -158,6 +165,7 @@ export const shopifyPageTransform = (page: ShopifyPageSchema): PageSchema => {
   return {
     type: getPageType(page.id),
     variant: 1,
+    slug: getPageSlug(page.id, page.handle),
     href: getPageHref(page.id, page.handle),
     title: page.title,
     image: shopifyImageTransform(page.featuredImage || page.image),
@@ -211,16 +219,5 @@ export function shopifyLayoutTransform(
       logo: shopifyImageTransform(getField("logo")?.reference?.image),
       menus: getField("footer")?.references?.nodes.map(shopifyMenuTransform),
     },
-  }
-}
-
-// --------------------------------------------------------------------------
-// Search
-// --------------------------------------------------------------------------
-
-export function shopifySearchTransform(search: ShopifySearchSchema) {
-  return {
-    text: search.title,
-    href: getPageHref(search.id, search.handle),
   }
 }

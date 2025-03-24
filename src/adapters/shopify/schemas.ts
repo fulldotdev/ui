@@ -1,5 +1,9 @@
 import { z } from "zod"
 
+// --------------------------------------------------------------------------
+// Shared
+// --------------------------------------------------------------------------
+
 export const shopifyImageSchema = z.object({
   url: z.string(),
   altText: z.string().nullable(),
@@ -23,19 +27,27 @@ export const shopifySeoSchema = z.object({
 
 export type ShopifySeoSchema = z.infer<typeof shopifySeoSchema>
 
+// --------------------------------------------------------------------------
+// Item
+// --------------------------------------------------------------------------
+
 export const shopifyItemSchema = z
   .object({
     id: z.string(),
     handle: z.string(),
     title: z.string(),
     image: shopifyImageSchema,
-    featuredImage: shopifyImageSchema,
+    featuredImage: shopifyImageSchema.nullable(),
     priceRange: shopifyPriceRangeSchema,
     compareAtPriceRange: shopifyPriceRangeSchema,
   })
   .partial()
 
 export type ShopifyItemSchema = z.infer<typeof shopifyItemSchema>
+
+// --------------------------------------------------------------------------
+// Block
+// --------------------------------------------------------------------------
 
 export const shopifyBlockSchema = z.object({
   type: z.string(),
@@ -60,13 +72,17 @@ export const shopifyBlockSchema = z.object({
 
 export type ShopifyBlockSchema = z.infer<typeof shopifyBlockSchema>
 
+// --------------------------------------------------------------------------
+// Page
+// --------------------------------------------------------------------------
+
 export const shopifyPageSchema = z
   .object({
     id: z.string(),
     handle: z.string(),
     title: z.string(),
     image: shopifyImageSchema,
-    featuredImage: shopifyImageSchema,
+    featuredImage: shopifyImageSchema.nullable(),
     priceRange: shopifyPriceRangeSchema,
     compareAtPriceRange: shopifyPriceRangeSchema,
     images: z.object({
@@ -84,15 +100,21 @@ export const shopifyPageSchema = z
     seo: shopifySeoSchema,
     descriptionHtml: z.string(),
     body: z.string(),
-    metafield: z.object({
-      references: z.object({
-        nodes: shopifyBlockSchema.array(),
-      }),
-    }),
+    metafield: z
+      .object({
+        references: z.object({
+          nodes: shopifyBlockSchema.array(),
+        }),
+      })
+      .nullable(),
   })
   .partial()
 
 export type ShopifyPageSchema = z.infer<typeof shopifyPageSchema>
+
+// --------------------------------------------------------------------------
+// Layout
+// --------------------------------------------------------------------------
 
 export const shopifyMenuSchema = z.object({
   fields: z
@@ -125,11 +147,3 @@ export const shopifyLayoutSchema = z.object({
 })
 
 export type ShopifyLayoutSchema = z.infer<typeof shopifyLayoutSchema>
-
-export const shopifySearchSchema = z.object({
-  id: z.string(),
-  handle: z.string(),
-  title: z.string(),
-})
-
-export type ShopifySearchSchema = z.infer<typeof shopifySearchSchema>

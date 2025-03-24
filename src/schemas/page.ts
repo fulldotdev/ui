@@ -3,7 +3,12 @@ import { z } from "zod"
 
 export const pageSchema = blockSchema
   .extend({
-    slug: z.string().optional(),
+    slug: z
+      .string()
+      .optional()
+      .transform((slug) =>
+        slug === "index" || slug === "home" ? undefined : slug
+      ),
     href: z.string().optional(),
     type: z
       .enum(["content", "post", "product", "collection"])

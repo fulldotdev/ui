@@ -9,21 +9,9 @@ export const layoutSchema = z
     image: imageSchema.optional(),
     lang: z.string().optional(),
     company: z.string().optional(),
-    banner: blockSchema
-      .extend({
-        variant: z.number().default(1),
-      })
-      .optional(),
-    header: blockSchema
-      .extend({
-        variant: z.number().default(1),
-      })
-      .optional(),
-    footer: blockSchema
-      .extend({
-        variant: z.number().default(1),
-      })
-      .optional(),
+    banner: blockSchema.optional(),
+    header: blockSchema.optional(),
+    footer: blockSchema.optional(),
     head: z.string().optional(),
     body: z.string().optional(),
     css: z.string().optional(),

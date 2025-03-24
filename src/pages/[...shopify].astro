@@ -1,24 +1,37 @@
 ---
-import { getLayout, getPage, getSearch } from "@/adapters/shopify/api"
+import { getLayout, getPages } from "@/adapters/shopify/api"
 
 import Layout from "@/components/misc/layout.astro"
 import Page from "@/components/misc/page.astro"
 
-export const prerender = false
+export async function getStaticPaths() {
+  const pages = await getPages()
+  return pages.map((page) => ({
+    params: {
+      shopify: page.slug,
+    },
+    props: {
+      page,
+      search: pages.map((page) => ({
+        text: page.title,
+        href: page.slug ? `/${page.slug}/` : "/",
+      })),
+    },
+  }))
+}
 
-const { shopify } = Astro.params
+const { search, ...props } = Astro.props
+const { title, seo, content, ...page } = props.page
 
-const data = await getPage(shopify)
-if (!data) return Astro.redirect("/404")
-
-const { title, seo, content, ...page } = data
-
-const layout = await getLayout()
-
-const search = await getSearch()
+const { header, ...layout } = await getLayout()
 ---
 
-<Layout {...layout} title={title} {...seo} search={search}>
+<Layout
+  header={{ ...header, cart: true, search }}
+  {...layout}
+  title={title}
+  {...seo}
+>
   <Page {...page}>
     <Fragment set:html={content} />
   </Page>
