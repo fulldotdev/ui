@@ -1,5 +1,3 @@
-import { productSchema } from "@/schemas/blocks/product"
-import { pageSchema } from "@/schemas/content/page"
 import type {
   Article,
   Collection,
@@ -19,13 +17,11 @@ import {
   SEARCH_QUERY,
 } from "./graphql"
 import {
-  shopifyCollectionSchema,
   shopifyLayoutSchema,
   shopifyPageSchema,
-  shopifyProductSchema,
   shopifySearchSchema,
 } from "./schemas"
-import { shopifyProductTransform } from "./transforms"
+import { shopifyLayoutTransform, shopifyPageTransform } from "./transforms"
 
 export const requestShopify = async (
   query: string,
@@ -56,36 +52,33 @@ export const requestShopify = async (
   return data
 }
 
-export const getProduct = async (handle: string) => {
-  const { product } = await requestShopify(PRODUCT_QUERY, {
-    handle,
+export async function getPage(slug?: string) {
+  let type: keyof typeof queryMap = "page"
+  if (slug?.startsWith("producten/")) type = "product"
+  if (slug?.startsWith("collecties/")) type = "collection"
+
+  let handle = slug
+  if (type === "product") handle = slug?.replace("producten/", "")
+  if (type === "collection") handle = slug?.replace("collecties/", "")
+
+  const queryMap = {
+    page: PAGE_QUERY,
+    product: PRODUCT_QUERY,
+    collection: COLLECTION_QUERY,
+  } as const
+
+  const query = queryMap[type]
+  const response = await requestShopify(query, {
+    handle: handle || "home",
   })
-  return shopifyProductSchema
-    .transform(shopifyProductTransform)
-    .pipe(pageSchema)
-    .parse(product)
+
+  const data = response[type]
+  return shopifyPageSchema.transform(shopifyPageTransform).parse(data)
 }
 
-export const getCollection = async (handle: string) => {
-  const { collection } = await requestShopify(COLLECTION_QUERY, {
-    handle,
-  })
-  const parsedCollection = shopifyCollectionSchema.parse(collection)
-  return parsedCollection
-}
-
-export const getPage = async (handle: string) => {
-  const { page } = await requestShopify(PAGE_QUERY, {
-    handle,
-  })
-  const parsedPage = shopifyPageSchema.parse(page)
-  return parsedPage
-}
-
-export const getLayout = async () => {
+export async function getLayout() {
   const { metaobject } = await requestShopify(LAYOUT_QUERY)
-  const parsedLayout = shopifyLayoutSchema.parse(metaobject)
-  return parsedLayout
+  return shopifyLayoutSchema.transform(shopifyLayoutTransform).parse(metaobject)
 }
 
 export const getSearch = async () => {

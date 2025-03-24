@@ -1,30 +1,25 @@
 import type {
-  ShopifyCollectionSchema,
+  ShopifyBlockSchema,
   ShopifyImageSchema,
+  ShopifyItemSchema,
+  ShopifyLayoutSchema,
+  ShopifyMenuSchema,
   ShopifyPageSchema,
-  ShopifyProductSchema,
-  ShopifySectionSchema,
   ShopifySeoSchema,
 } from "@/adapters/shopify/schemas"
-import {
-  shopifyImageSchema,
-  shopifySeoSchema,
-} from "@/adapters/shopify/schemas"
 import type { BlockSchema } from "@/schemas/block"
-import { imageSchema, type ImageSchema } from "@/schemas/fields/image"
+import { type ImageSchema } from "@/schemas/fields/image"
+import type { MenuSchema } from "@/schemas/fields/menu"
 import type { PriceSchema } from "@/schemas/fields/price"
+import type { ItemSchema } from "@/schemas/item"
 import type { LayoutSchema } from "@/schemas/layout"
 import type { PageSchema } from "@/schemas/page"
 import type {
   Article,
-  Collection,
-  Image,
   MediaImage,
   Metaobject,
-  MetaobjectField,
   Page,
   Product,
-  Seo,
 } from "@shopify/hydrogen-react/storefront-api-types"
 
 export const shopifyImageTransform = (
@@ -42,7 +37,7 @@ export const shopifySeoTransform = (
 })
 
 export const shopifyButtonsTransform = (
-  buttons?: ShopifySectionSchema["fields"][number]
+  buttons?: ShopifyBlockSchema["fields"][number]
 ) => {
   const parsedButtonsArray = JSON.parse(buttons?.value ?? "[]") as {
     text: string
@@ -56,101 +51,114 @@ export const shopifyButtonsTransform = (
   )
 }
 
-export const shopifyPriceTransform = (
-  product: ShopifyProductSchema
-): PriceSchema => {
+export const shopifyPriceTransform = (page: ShopifyPageSchema): PriceSchema => {
   return {
-    amount: Number(product.priceRange?.minVariantPrice.amount),
-    currency: product.priceRange?.minVariantPrice.currencyCode,
-    compare: Number(product.compareAtPriceRange?.minVariantPrice.amount),
+    amount: Number(page.priceRange?.minVariantPrice.amount),
+    currency: page.priceRange?.minVariantPrice.currencyCode,
+    compare: Number(page.compareAtPriceRange?.minVariantPrice.amount),
   }
 }
 
-export const shopifyProductTransform = (
-  product: ShopifyProductSchema
-): PageSchema => {
+function getPageType(id?: string) {
+  if (id?.includes("Product")) return "product"
+  if (id?.includes("Collection")) return "collection"
+  if (id?.includes("Article")) return "post"
+  return "content"
+}
+
+function getPageSlug(type?: string, handle?: string) {
+  if (type === "product") return `/producten/${handle}/`
+  if (type === "collection") return `/collecties/${handle}/`
+  if (type === "post") return `/blog/${handle}/`
+  return `/${handle}/`
+}
+
+export function shopifyItemTransform(item: ShopifyItemSchema): ItemSchema {
   return {
-    id: product.id,
-    href: `/producten/${product.handle}/`,
-    title: product.title,
-    image: shopifyImageTransform(product.featuredImage),
-    images: product.images?.nodes.map(shopifyImageTransform),
-    price: shopifyPriceTransform(product),
-    variants: product.variants?.nodes,
-    seo: shopifySeoTransform(product.seo),
-    body: product.descriptionHtml ?? undefined,
+    href: getPageSlug(getPageType(item.id), item.handle),
+    title: item.title,
+    image: shopifyImageTransform(item.featuredImage || item.image),
+    price: shopifyPriceTransform(item),
   }
 }
 
-export const shopifyCollectionTransform = (
-  collection: ShopifyCollectionSchema
-): PageSchema => {
-  return {
-    id: collection.id,
-    href: `/collecties/${collection.handle}/`,
-    title: collection.title,
-    image: shopifyImageTransform(collection.image),
-    products: collection.products?.nodes.map(shopifyProductTransform),
-    seo: shopifySeoTransform(collection.seo),
-    body: collection.descriptionHtml ?? undefined,
-  }
+// TODO move to a different file
+const blockPropsMap: Record<string, BlockSchema & { variant: number }> = {
+  hero: {
+    variant: 3,
+    align: "start",
+  },
+  products: {
+    variant: 1,
+    align: "start",
+  },
+  collections: {
+    variant: 1,
+    align: "start",
+  },
+  media: {
+    variant: 2,
+    align: "center",
+  },
+  contact: {
+    variant: 1,
+    align: "start",
+    form: {
+      fields: [
+        {
+          type: "text",
+          label: "Naam",
+        },
+        {
+          type: "email",
+          label: "Email",
+          required: true,
+        },
+        {
+          type: "tel",
+          label: "Telefoon",
+        },
+        {
+          type: "textarea",
+          label: "Bericht",
+        },
+      ],
+      submit: "Verstuur",
+    },
+  },
 }
 
-export const shopifySectionTransform = (
-  section: ShopifySectionSchema
-): BlockSchema => {
+export function shopifyBlockTransform(block: ShopifyBlockSchema): BlockSchema {
   const getField = (key: string) =>
-    section.fields?.find((field) => field.key === key)
+    block.fields?.find((field) => field.key === key)
 
   return {
-    type: section.type,
+    type: block.type,
     title: getField("title")?.value,
     description: getField("description")?.value,
     image: shopifyImageTransform(getField("image")?.reference?.image),
     buttons: shopifyButtonsTransform(getField("buttons")),
-    items: getField("products")?.references?.nodes.map(shopifyProductTransform),
-    // collections: getField("collections")?.references?.nodes.map(
-    //   shopifyCollectionTransform
-    // ),
+    items: getField("items")?.references?.nodes.map(shopifyItemTransform),
+    ...blockPropsMap[block.type],
   }
 }
 
 export const shopifyPageTransform = (page: ShopifyPageSchema): PageSchema => {
   return {
-    id: page.id,
-    href: `/${page.handle}/`,
+    type: getPageType(page.id),
+    variant: 1,
+    slug: getPageSlug(getPageType(page.id), page.handle),
     title: page.title,
-    sections: page.metafield?.references?.nodes.map((node) => {
-      const section = node as Metaobject
-
-      function getField(key: string) {
-        return section.fields?.find((field) => field.key === key)
-      }
-
-      const imageReference = getField("image")?.reference as
-        | MediaImage
-        | undefined
-
-      const productNodes = section?.fields?.find(
-        (field) => field.key === "products"
-      )?.references?.nodes as Partial<Product>[] | undefined
-
-      const collectionNodes = section?.fields?.find(
-        (field) => field.key === "collections"
-      )?.references?.nodes as Partial<Collection>[] | undefined
-
-      return {
-        type: section.type as any,
-        title: getField("title")?.value ?? undefined,
-        description: getField("description")?.value ?? undefined,
-        image: transformMediaImage(imageReference),
-        products: productNodes?.map(transformProduct),
-        collections: collectionNodes?.map(transformCollection),
-        buttons: transformButtons(getField("buttons")),
-      }
-    }),
-    seo: transformSeo(page.seo),
-    body: page.body ?? undefined,
+    image: shopifyImageTransform(page.featuredImage || page.image),
+    images: page.images?.nodes.map(shopifyImageTransform),
+    price: shopifyPriceTransform(page),
+    variants: page.variants?.nodes,
+    sections: page.metafield?.references?.nodes.map(shopifyBlockTransform),
+    items:
+      page.products?.nodes.map(shopifyItemTransform) ||
+      page.collections?.nodes.map(shopifyItemTransform),
+    seo: shopifySeoTransform(page.seo),
+    content: page.descriptionHtml || page.body || undefined,
   }
 }
 
@@ -172,53 +180,38 @@ export function transformSearch(search: Partial<Page | Article | Product>) {
   return { text: search.title, href: withTrailingSlash }
 }
 
-export const transformLayout = (layout: Partial<Metaobject>): LayoutSchema => {
+export function shopifyMenuTransform(menu: ShopifyMenuSchema): MenuSchema {
+  const findField = (key: string) =>
+    menu?.fields?.find((field) => field.key === key)
+
+  return {
+    text: findField("title")?.value,
+    links: JSON.parse(findField("links")?.value ?? "[]"),
+  }
+}
+
+export function shopifyLayoutTransform(
+  layout: ShopifyLayoutSchema
+): LayoutSchema {
   const getField = (key: string) =>
     layout.fields?.find((field) => field.key === key)
 
-  const footerMenuNodes = getField("footer")?.references
-    ?.nodes as Partial<Metaobject>[]
-  const footerMenus = footerMenuNodes?.map((menu) => ({
-    text: menu?.fields?.find((field) => field.key === "title")?.value,
-    links: JSON.parse(
-      menu?.fields?.find((field) => field.key === "links")?.value ?? "[]"
-    ).map((link: any) => ({
-      text: link.text,
-      href: link.url,
-    })),
-  }))
-
-  const headerMenuNodes = getField("header")?.references
-    ?.nodes as Partial<Metaobject>[]
-  const headerMenus = headerMenuNodes?.map((menu) => ({
-    text: menu?.fields?.find((field) => field.key === "title")?.value,
-    links: JSON.parse(
-      menu?.fields?.find((field) => field.key === "links")?.value ?? "[]"
-    ).map((link: any) => ({
-      text: link.text,
-      href: link.url,
-    })),
-  }))
-
-  const bannerItems = JSON.parse(getField("banner")?.value ?? "[]")
-
-  const logoReference = getField("logo")?.reference as MediaImage | undefined
-
-  console.log({ logoReference })
-
   return {
-    lang: getField("language")?.value ?? undefined,
-    company: getField("company")?.value ?? undefined,
+    lang: getField("language")?.value,
+    company: getField("company")?.value,
     banner: {
-      items: bannerItems,
+      variant: 1,
+      list: JSON.parse(getField("banner")?.value ?? "[]"),
     },
     header: {
-      logo: transformMediaImage(logoReference),
-      menus: headerMenus,
+      variant: 2,
+      logo: shopifyImageTransform(getField("logo")?.reference?.image),
+      menus: getField("header")?.references?.nodes.map(shopifyMenuTransform),
     },
     footer: {
-      logo: transformMediaImage(logoReference),
-      menus: footerMenus,
+      variant: 1,
+      logo: shopifyImageTransform(getField("logo")?.reference?.image),
+      menus: getField("footer")?.references?.nodes.map(shopifyMenuTransform),
     },
   }
 }

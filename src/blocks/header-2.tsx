@@ -12,7 +12,7 @@ import { ShopifyCart } from "@/components/shopify-cart"
 
 function Header2({
   logo,
-  items,
+  menus,
   buttons,
   search,
   cart,
@@ -29,7 +29,7 @@ function Header2({
     >
       <Container>
         <div className="flex h-14 items-center gap-2">
-          <DrawerMenu className="-ml-2.5 lg:hidden" items={items} />
+          <DrawerMenu className="-ml-2.5 lg:hidden" items={menus} />
           <Logo className="mr-3 hidden md:flex" {...logo} />
           {search ? (
             <Search links={search} className="mx-auto w-full lg:mx-6" />
@@ -38,7 +38,7 @@ function Header2({
           {cart ? <ShopifyCart className="-mr-2.5" /> : null}
         </div>
         <div className="-mx-2.5 flex h-12 items-center pb-2.5 max-lg:hidden">
-          <NavigationMenu items={items} />
+          <NavigationMenu items={menus} />
         </div>
       </Container>
       <style>

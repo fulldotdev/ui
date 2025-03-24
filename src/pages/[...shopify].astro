@@ -1,0 +1,25 @@
+---
+import { getLayout, getPage, getSearch } from "@/adapters/shopify/api"
+
+import Layout from "@/components/misc/layout.astro"
+import Page from "@/components/misc/page.astro"
+
+export const prerender = false
+
+const { shopify } = Astro.params
+
+const data = await getPage(shopify)
+if (!data) return Astro.redirect("/404")
+
+const { title, seo, content, ...page } = data
+
+const layout = await getLayout()
+
+const search = await getSearch()
+---
+
+<Layout {...layout} title={title} {...seo} search={search}>
+  <Page {...page}>
+    <Fragment set:html={content} />
+  </Page>
+</Layout>

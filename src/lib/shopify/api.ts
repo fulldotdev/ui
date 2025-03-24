@@ -72,7 +72,8 @@ export const getProduct = async (handle: string) => {
   })) as {
     product: Partial<Product>
   }
-  return transformProduct(product)
+  return product
+  // return transformProduct(product)
 }
 
 export const getCollection = async (handle: string) => {

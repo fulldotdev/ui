@@ -3,17 +3,12 @@ import { z } from "zod"
 
 export const pageSchema = blockSchema
   .extend({
+    slug: z.string().optional(),
     type: z
       .enum(["content", "post", "product", "collection"])
       .default("content"),
     variant: z.number().default(1),
-    sections: blockSchema
-      .extend({
-        type: z.string(),
-        variant: z.number().default(1),
-      })
-      .array()
-      .optional(),
+    sections: blockSchema.array().optional(),
     seo: z
       .object({
         title: z.string().optional(),

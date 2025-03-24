@@ -12,19 +12,39 @@ const { title, description, image, seo, sections, ...props } = Astro.props
 
 const slot = await Astro.slots.render("default")
 const hasContent = slot.trim().length > 0
+const isIndex = Astro.url.pathname === "/"
 ---
 
-<Block
-  level={1}
-  title={title}
-  description={description}
-  image={image}
-  {...props}
->
-  <slot />
-</Block>
+{
+  !isIndex && hasContent && (
+    <Block
+      level={1}
+      title={title}
+      description={description}
+      image={image}
+      {...props}
+    >
+      <slot />
+    </Block>
+  )
+}
+
 {
   sections?.map((section, i) => (
-    <Block level={i === 0 && !hasContent ? 1 : 2} {...section} />
+    <Block level={isIndex || (i === 0 && !hasContent) ? 1 : 2} {...section} />
   ))
+}
+
+{
+  isIndex && hasContent && (
+    <Block
+      level={1}
+      title={title}
+      description={description}
+      image={image}
+      {...props}
+    >
+      <slot />
+    </Block>
+  )
 }

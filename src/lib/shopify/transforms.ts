@@ -174,8 +174,6 @@ export const transformLayout = (layout: Partial<Metaobject>): LayoutSchema => {
 
   const logoReference = getField("logo")?.reference as MediaImage | undefined
 
-  console.log({ logoReference })
-
   return {
     lang: getField("language")?.value ?? undefined,
     company: getField("company")?.value ?? undefined,
