@@ -36,7 +36,7 @@ export const shopifyItemSchema = z
     id: z.string(),
     handle: z.string(),
     title: z.string(),
-    image: shopifyImageSchema,
+    image: shopifyImageSchema.nullable(),
     featuredImage: shopifyImageSchema.nullable(),
     priceRange: shopifyPriceRangeSchema,
     compareAtPriceRange: shopifyPriceRangeSchema,

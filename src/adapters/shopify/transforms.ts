@@ -84,7 +84,7 @@ export function shopifyItemTransform(item: ShopifyItemSchema): ItemSchema {
   return {
     href: getPageHref(item.id, item.handle),
     title: item.title,
-    image: shopifyImageTransform(item.featuredImage || item.image),
+    image: shopifyImageTransform(item.featuredImage || item.image || undefined),
     price: shopifyPriceTransform(item),
   }
 }
@@ -166,7 +166,7 @@ export const shopifyPageTransform = (page: ShopifyPageSchema): PageSchema => {
     slug: getPageSlug(page.id, page.handle),
     href: getPageHref(page.id, page.handle),
     title: page.title,
-    image: shopifyImageTransform(page.featuredImage || page.image),
+    image: shopifyImageTransform(page.featuredImage || page.image || undefined),
     images: page.images?.nodes.map(shopifyImageTransform),
     price: shopifyPriceTransform(page),
     variants: page.variants,
