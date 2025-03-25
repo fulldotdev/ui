@@ -60,21 +60,18 @@ export const shopifyPriceTransform = (page: ShopifyPageSchema): PriceSchema => {
 function getPageType(id?: string) {
   if (id?.includes("Product")) return "product"
   if (id?.includes("Collection")) return "collection"
-  if (id?.includes("Article")) return "post"
   return "content"
 }
 
 function getPageSlug(id?: string, handle?: string) {
-  if (id?.includes("Product")) return `producten/${handle}`
-  if (id?.includes("Collection")) return `collecties/${handle}`
-  if (id?.includes("Article")) return `blog/${handle}`
+  if (id?.includes("Product")) return `products/${handle}`
+  if (id?.includes("Collection")) return `collections/${handle}`
   return handle
 }
 
 function getPageHref(id?: string, handle?: string) {
-  if (id?.includes("Product")) return `/producten/${handle}/`
-  else if (id?.includes("Collection")) return `/collecties/${handle}/`
-  else if (id?.includes("Article")) return `/blog/${handle}/`
+  if (id?.includes("Product")) return `/products/${handle}/`
+  else if (id?.includes("Collection")) return `/collections/${handle}/`
   else if (id?.includes("Page") && handle === "home") return `/`
   return `/${handle}/`
 }
@@ -191,9 +188,28 @@ export function shopifyMenuTransform(menu: ShopifyMenuSchema): MenuSchema {
     return menu?.fields?.find((field) => field.key === key)
   }
 
+  function getRelativeUrl(url: string) {
+    // If the URL is from the same origin, just return the pathname
+    try {
+      const currentUrl =
+        typeof window !== "undefined" ? window.location.origin : ""
+      const urlObj = new URL(url)
+
+      if (currentUrl && urlObj.origin === currentUrl) {
+        return urlObj.pathname
+      }
+    } catch (error) {
+      // If URL parsing fails, continue with the default behavior
+    }
+    return new URL(url).pathname
+  }
+
   return {
     text: findField("title")?.value,
-    links: JSON.parse(findField("links")?.value ?? "[]"),
+    links: JSON.parse(findField("links")?.value ?? "[]").map((link: any) => ({
+      text: link.text,
+      href: getRelativeUrl(link.url),
+    })),
   }
 }
 

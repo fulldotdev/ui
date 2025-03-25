@@ -15,7 +15,7 @@ function Footer1({
   description,
   socials,
   channels,
-  items,
+  menus,
   className,
   ...props
 }: BlockSchema & React.ComponentProps<"footer">) {
@@ -37,7 +37,7 @@ function Footer1({
             <Socials className="mt-3 -ml-2" socials={socials} />
           </div>
           <Channels align="start" {...channels} />
-          {items?.map((menu) => (
+          {menus?.map((menu) => (
             <Menu className="text-sm" key={uuidv4()} {...menu} />
           ))}
         </Grid>

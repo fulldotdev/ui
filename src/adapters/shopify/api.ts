@@ -12,6 +12,7 @@ import {
   shopifyLayoutTransform,
   shopifyPageTransform,
 } from "@/adapters/shopify/transforms"
+import { layoutSchema } from "@/schemas/layout"
 import { pageSchema } from "@/schemas/page"
 import { createStorefrontApiClient } from "@shopify/storefront-api-client"
 import config from "fulldev.json"
@@ -89,5 +90,8 @@ export async function getPages() {
 
 export async function getLayout() {
   const { metaobject } = await requestShopify(LAYOUT_QUERY)
-  return shopifyLayoutSchema.transform(shopifyLayoutTransform).parse(metaobject)
+  return shopifyLayoutSchema
+    .transform(shopifyLayoutTransform)
+    .pipe(layoutSchema)
+    .parse(metaobject)
 }

@@ -27,7 +27,6 @@ function Product1({
   className,
   ...props
 }: BlockSchema & React.ComponentProps<typeof Section>) {
-  console.log(title, id)
   return (
     <Section className={cn("product product-1 pt-0", className)} {...props}>
       <Container className="max-sm:px-0">
