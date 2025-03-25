@@ -16,11 +16,11 @@ const initFiles = [
 
 const files = [
   "netlify",
+  "src/adapters",
   "src/stores",
   "src/blocks",
   "src/components",
   "src/lib",
-  "src/loaders",
   "src/pages",
   "src/schemas",
   "src/styles/globals.css",
