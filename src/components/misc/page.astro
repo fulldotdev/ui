@@ -3,48 +3,114 @@ import "@/styles/globals.css"
 import "@/styles/theme.css"
 
 import type { PageSchema } from "@/schemas/page"
+import { SEO } from "astro-seo"
 
 import Block from "@/components/misc/block.astro"
 
 interface Props extends PageSchema {}
 
-const { title, description, image, seo, sections, ...props } = Astro.props
+const {
+  lang = "en",
+  company,
+  title,
+  description,
+  image,
+  head,
+  body,
+  css,
+  banner,
+  header,
+  footer,
+  search,
+  seo,
+  sections,
+  content,
+  ...props
+} = Astro.props
 
-const slot = await Astro.slots.render("default")
-const hasContent = slot.trim().length > 0
+const hasContent = content && content.trim().length > 0
 const isIndex = Astro.url.pathname === "/"
 ---
 
-{
-  !isIndex && props.type === "content" && hasContent && (
-    <Block
-      level={1}
-      title={title}
-      description={description}
-      image={image}
-      {...props}
-    >
-      <slot />
-    </Block>
-  )
-}
+<!doctype html>
+<html
+  class="layout text-foreground bg-background h-full w-full font-sans text-base scheme-light dark:scheme-dark"
+  {lang}
+>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <SEO
+      charset="UTF-8"
+      title={seo?.title || undefined}
+      description={seo?.description || undefined}
+      openGraph={{
+        basic: {
+          title: seo?.title || "",
+          image: Astro.url.origin + image?.src,
+          type: "website",
+          url: Astro.url.href,
+        },
+        image: {
+          url: Astro.url.origin + image?.src,
+          alt: image?.alt || seo?.title || company || undefined,
+        },
+        optional: {
+          description: seo?.description || undefined,
+          siteName: company || undefined,
+        },
+      }}
+    />
+    <!-- <script is:inline src="https://unpkg.com/react-scan/dist/auto.global.js"
+    ></script> -->
+    <Fragment set:html={head} />
+  </head>
+  <body data-sb-object-id={Astro.url.pathname}>
+    <Block type="banner" variant={1} {...banner} />
+    <Block type="header" variant={1} search={search} {...header} />
+    <main>
+      {
+        !isIndex && props.type === "content" && hasContent && (
+          <Block
+            variant={1}
+            level={1}
+            title={title}
+            description={description}
+            image={image}
+            {...props}
+          >
+            <Fragment set:html={content} />
+          </Block>
+        )
+      }
 
-{
-  sections?.map((section, i) => (
-    <Block level={isIndex || (i === 0 && !hasContent) ? 1 : 2} {...section} />
-  ))
-}
+      {
+        sections?.map((section, i) => (
+          <Block
+            variant={1}
+            level={isIndex || (i === 0 && !hasContent) ? 1 : 2}
+            {...section}
+          />
+        ))
+      }
 
-{
-  isIndex && hasContent && (
-    <Block
-      level={1}
-      title={title}
-      description={description}
-      image={image}
-      {...props}
-    >
-      <slot />
-    </Block>
-  )
-}
+      {
+        isIndex && hasContent && (
+          <Block
+            variant={1}
+            level={1}
+            title={title}
+            description={description}
+            image={image}
+            {...props}
+          >
+            <Fragment set:html={content} />
+          </Block>
+        )
+      }
+    </main>
+    <Block type="footer" variant={1} {...footer} />
+    <style set:html={css}></style>
+    <Fragment set:html={body} />
+  </body>
+</html>

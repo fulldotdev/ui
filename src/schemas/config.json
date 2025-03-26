@@ -1,24 +1,34 @@
 {
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
-    "content": {
+    "$schema": { "type": "string" },
+    "pages": {
       "type": "object",
       "properties": {
-        "pages": { "type": "boolean" },
-        "posts": { "type": "boolean" },
-        "persons": { "type": "boolean" },
-        "locations": { "type": "boolean" },
-        "products": { "type": "boolean" },
-        "collections": { "type": "boolean" },
-        "reviews": { "type": "boolean" }
+        "astro": { "type": "boolean" },
+        "shopify": {
+          "type": "object",
+          "properties": {
+            "storeDomain": { "type": "string" },
+            "publicAccessToken": { "type": "string" }
+          },
+          "required": ["storeDomain", "publicAccessToken"]
+        }
       }
     },
-    "shopify": {
+    "blocks": {
       "type": "object",
-      "properties": {
-        "storeDomain": { "type": "string" },
-        "publicAccessToken": { "type": "string" }
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "string" },
+          {
+            "type": "object",
+            "additionalProperties": true
+          }
+        ]
       }
     }
-  }
+  },
+  "required": ["pages", "blocks"]
 }

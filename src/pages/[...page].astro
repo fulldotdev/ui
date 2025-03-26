@@ -1,28 +1,35 @@
 ---
-import { getCollection, getEntry, render } from "astro:content"
+import { getPages } from "@/adapters/shopify/api"
+import { getCollection } from "astro:content"
+import type { CollectionEntry } from "astro:content"
+import config from "fulldev.json"
 
-import { getHref } from "@/lib/get-href"
-import Layout from "@/components/misc/layout.astro"
 import Page from "@/components/misc/page.astro"
 
 export async function getStaticPaths() {
-  const pages = await getCollection("pages")
-  return pages.map((page) => ({
+  const astroPages = (await getCollection("pages")).map((page) => ({
+    id: page.id,
+    slug: page.id,
+    content: page.body,
+    ...page.data,
+  }))
+  const shopifyPages = "shopify" in config.pages ? await getPages() : []
+  const pages = [...shopifyPages, ...astroPages]
+  return pages.map(({ slug, ...page }) => ({
     params: {
-      page: getHref(page.id) === "/" ? undefined : getHref(page.id),
+      page: slug === "home" || slug === "index" ? undefined : slug,
     },
-    props: page,
+    props: {
+      page,
+      search: pages.map((page) => ({
+        text: page.title,
+        href: page.slug ? `/${page.slug}/` : "/",
+      })),
+    },
   }))
 }
 
-const { Content } = await render(Astro.props)
-const { seo, ...page } = Astro.props.data
-
-const layout = await getEntry("layouts", "base")
+const { page, search } = Astro.props
 ---
 
-<Layout {...layout?.data} {...seo}>
-  <Page {...page}>
-    <Content />
-  </Page>
-</Layout>
+<Page search={search} {...page} />

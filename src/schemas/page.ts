@@ -3,27 +3,25 @@ import { z } from "zod"
 
 export const pageSchema = blockSchema
   .extend({
-    id: z.string().optional(),
-    slug: z
-      .string()
-      .optional()
-      .transform((slug) =>
-        slug === "index" || slug === "home" ? undefined : slug
-      ),
-    href: z.string().optional(),
-    type: z
-      .enum(["content", "post", "product", "collection"])
-      .default("content"),
-    variant: z.number().default(1),
-    sections: blockSchema.array().optional(),
+    slug: z.string(),
+    lang: z.string(),
+    company: z.string(),
+    banner: blockSchema,
+    header: blockSchema,
+    sections: blockSchema.array(),
+    footer: blockSchema,
+    head: z.string(),
+    body: z.string(),
+    css: z.string(),
     seo: z
       .object({
-        title: z.string().optional(),
-        description: z.string().optional(),
+        title: z.string(),
+        description: z.string(),
       })
+      .partial()
       .optional(),
-    content: z.string().optional(),
   })
+  .partial()
   .strict()
 
 export type PageSchema = z.infer<typeof pageSchema>

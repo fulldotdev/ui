@@ -12,7 +12,6 @@ import { type ImageSchema } from "@/schemas/fields/image"
 import type { MenuSchema } from "@/schemas/fields/menu"
 import type { PriceSchema } from "@/schemas/fields/price"
 import type { ItemSchema } from "@/schemas/item"
-import type { LayoutSchema } from "@/schemas/layout"
 import type { PageSchema } from "@/schemas/page"
 
 // --------------------------------------------------------------------------
@@ -162,9 +161,7 @@ export const shopifyPageTransform = (page: ShopifyPageSchema): PageSchema => {
   return {
     id: page.id,
     type: getPageType(page.id),
-    variant: 1,
     slug: getPageSlug(page.id, page.handle),
-    href: getPageHref(page.id, page.handle),
     title: page.title,
     image: shopifyImageTransform(page.featuredImage || page.image || undefined),
     images: page.images?.nodes.map(shopifyImageTransform),
@@ -215,7 +212,7 @@ export function shopifyMenuTransform(menu: ShopifyMenuSchema): MenuSchema {
 
 export function shopifyLayoutTransform(
   layout: ShopifyLayoutSchema
-): LayoutSchema {
+): PageSchema {
   const getField = (key: string) =>
     layout.fields?.find((field) => field.key === key)
 
@@ -223,16 +220,13 @@ export function shopifyLayoutTransform(
     lang: getField("language")?.value,
     company: getField("company")?.value,
     banner: {
-      variant: 1,
       list: JSON.parse(getField("banner")?.value ?? "[]"),
     },
     header: {
-      variant: 2,
       logo: shopifyImageTransform(getField("logo")?.reference?.image),
       menus: getField("header")?.references?.nodes.map(shopifyMenuTransform),
     },
     footer: {
-      variant: 1,
       logo: shopifyImageTransform(getField("logo")?.reference?.image),
       menus: getField("footer")?.references?.nodes.map(shopifyMenuTransform),
     },

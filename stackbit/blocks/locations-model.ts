@@ -20,11 +20,29 @@ export const locationsModel = {
     buttonsField,
     {
       name: "locations",
-      type: "list",
+      type: "reference",
       items: {
-        type: "reference",
-        models: ["location"],
+        type: "object",
+        fields: [],
       },
     },
   ],
 } satisfies ObjectModel
+
+banner = block
+collection = block
+collections = block
+cta = block
+faqs = block
+features = block
+hero = block
+header = block
+footer = block
+features = block
+posts = page
+pricing = block
+product = block
+review = block
+shop = block
+
+// ALLES als page met live preview

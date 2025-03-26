@@ -27,13 +27,18 @@ import { Product1 } from "@/blocks/product-1"
 import { Products1 } from "@/blocks/products-1"
 import { Reviews1 } from "@/blocks/reviews-1"
 import type { BlockSchema } from "@/schemas/block"
+import config from "fulldev.json"
 
 interface Props extends BlockSchema {
   type?: string
   variant?: number
 }
 
-let { type, variant, ...props } = Astro.props
+const defaultProps = config.blocks[
+  Astro.props.type as keyof typeof config.blocks
+] as BlockSchema
+
+const { type, variant = 1, ...props } = { ...defaultProps, ...Astro.props }
 ---
 
 {type === "banner" && variant === 1 && <Banner1 {...props} />}

@@ -8,7 +8,7 @@ buttons:
     href: "#"
   - text: "Lorem ipsum"
     href: "#"
-faqs:
+items:
   - title: "Lorem ipsum 1"
     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
   - title: "Lorem ipsum 2"

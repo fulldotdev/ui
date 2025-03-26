@@ -6,16 +6,18 @@ import { z } from "zod"
 
 export const itemSchema = z
   .object({
-    href: z.string().optional(),
-    image: imageSchema.optional(),
-    rating: z.number().min(1).max(5).optional(),
-    title: z.string().optional(),
-    description: z.string().optional(),
-    price: priceSchema.optional(),
-    button: buttonSchema.optional(),
-    links: linkSchema.array().optional(),
-    list: z.string().array().optional(),
+    text: z.string(),
+    href: z.string(),
+    image: imageSchema,
+    rating: z.number().min(1).max(5),
+    title: z.string(),
+    description: z.string(),
+    price: priceSchema,
+    button: buttonSchema,
+    links: linkSchema.array(),
+    list: z.string().array(),
   })
+  .partial()
   .strict()
 
 export type ItemSchema = z.infer<typeof itemSchema>

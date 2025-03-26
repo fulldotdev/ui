@@ -126,6 +126,14 @@ export const shopifyPageSchema = z
 
 export type ShopifyPageSchema = z.infer<typeof shopifyPageSchema>
 
+export const shopifyPagesSchema = z.object({
+  pages: z.object({
+    nodes: shopifyPageSchema.array(),
+  }),
+})
+
+export type ShopifyPagesSchema = z.infer<typeof shopifyPagesSchema>
+
 // --------------------------------------------------------------------------
 // Layout
 // --------------------------------------------------------------------------
@@ -161,3 +169,41 @@ export const shopifyLayoutSchema = z.object({
 })
 
 export type ShopifyLayoutSchema = z.infer<typeof shopifyLayoutSchema>
+
+// --------------------------------------------------------------------------
+// Responses
+// --------------------------------------------------------------------------
+
+export const shopifyProductsResponseSchema = z.object({
+  products: z.object({
+    nodes: shopifyItemSchema.array(),
+    pageInfo: z.object({
+      hasNextPage: z.boolean(),
+      endCursor: z.string(),
+    }),
+  }),
+})
+
+export const shopifyCollectionsResponseSchema = z.object({
+  collections: z.object({
+    nodes: shopifyItemSchema.array(),
+    pageInfo: z.object({
+      hasNextPage: z.boolean(),
+      endCursor: z.string(),
+    }),
+  }),
+})
+
+export const shopifyPagesResponseSchema = z.object({
+  pages: z.object({
+    nodes: shopifyPageSchema.array(),
+    pageInfo: z.object({
+      hasNextPage: z.boolean(),
+      endCursor: z.string(),
+    }),
+  }),
+})
+
+export const shopifyLayoutResponseSchema = z.object({
+  metaobject: shopifyLayoutSchema,
+})
