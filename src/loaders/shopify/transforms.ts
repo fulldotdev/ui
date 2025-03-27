@@ -124,7 +124,7 @@ export function transformShopifyPage(page: ShopifyPageSchema): PageSchema {
         ? transformShopifyPrice(page.priceRange, page.compareAtPriceRange)
         : undefined,
     items: page.products?.nodes.map(transformShopifyItem),
-    sections: page.metafield?.references.nodes.map(transformShopifyBlock),
+    sections: page.metafield?.references?.nodes.map(transformShopifyBlock),
     variants: page.variants,
     seo: {
       title: page.seo?.title || undefined,

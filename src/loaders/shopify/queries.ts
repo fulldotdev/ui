@@ -85,6 +85,7 @@ export const ShopifyCollectionsQuery = `#graphql
         products(first: 250) {
           nodes {
             id
+            handle
             title
             featuredImage {
               ...ShopifyImage
@@ -130,7 +131,7 @@ export const ShopifyBlockFragment = `#graphql
           }
         }
       }
-      references {
+      references(first: 250) {
         nodes {
           ... on Collection {
             id

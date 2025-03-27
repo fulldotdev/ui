@@ -48,26 +48,34 @@ export const shopifyBlockSchema = z
   .object({
     type: z.string(),
     fields: z.array(
-      z.object({
-        key: z.string(),
-        value: z.string(),
-        reference: z.object({
-          image: shopifyImageSchema.nullable(),
-        }),
-        references: z.object({
-          nodes: z.array(
-            z.object({
-              id: z.string(),
-              handle: z.string(),
-              title: z.string(),
+      z
+        .object({
+          key: z.string(),
+          value: z.string(),
+          reference: z
+            .object({
               image: shopifyImageSchema.nullable(),
-              featuredImage: shopifyImageSchema.nullable(),
-              priceRange: shopifyProductPriceRangeSchema,
-              compareAtPriceRange: shopifyProductPriceRangeSchema,
             })
-          ),
-        }),
-      })
+            .nullable(),
+          references: z
+            .object({
+              nodes: z.array(
+                z
+                  .object({
+                    id: z.string(),
+                    handle: z.string(),
+                    title: z.string(),
+                    image: shopifyImageSchema.nullable(),
+                    featuredImage: shopifyImageSchema.nullable(),
+                    priceRange: shopifyProductPriceRangeSchema,
+                    compareAtPriceRange: shopifyProductPriceRangeSchema,
+                  })
+                  .partial()
+              ),
+            })
+            .nullable(),
+        })
+        .partial()
     ),
   })
   .partial()
@@ -115,11 +123,15 @@ export const shopifyPageSchema = z
         })
         .array(),
     }),
-    metafield: z.object({
-      references: z.object({
-        nodes: z.array(shopifyBlockSchema),
-      }),
-    }),
+    metafield: z
+      .object({
+        references: z
+          .object({
+            nodes: z.array(shopifyBlockSchema),
+          })
+          .nullable(),
+      })
+      .nullable(),
     seo: z.object({
       title: z.string().nullable(),
       description: z.string().nullable(),
@@ -153,7 +165,7 @@ export const shopifyLayoutSchema = z.object({
       value: z.string(),
       reference: z
         .object({
-          image: shopifyImageSchema,
+          image: shopifyImageSchema.nullable(),
         })
         .nullable(),
       references: z
@@ -162,6 +174,7 @@ export const shopifyLayoutSchema = z.object({
         })
         .nullable(),
     })
+    .partial()
     .array(),
 })
 

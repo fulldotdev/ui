@@ -1,3 +1,4 @@
+import { error } from "console"
 import {
   ShopifyCollectionsQuery,
   ShopifyLayoutQuery,
@@ -34,15 +35,14 @@ export async function requestShopify(
     publicAccessToken: config.pages.shopify.publicAccessToken,
   })
 
-  try {
-    const { data } = await client.request(query, { variables })
-    return data
-  } catch (error: any) {
-    const errorMessage = error.graphQLErrors?.[0]?.message || error.message
-    throw new Error(
-      `Shopify API Error: ${errorMessage}\nQuery: ${query}\nVariables: ${JSON.stringify(variables)}`
-    )
+  const { data, errors } = await client.request(query, { variables })
+
+  if (errors) {
+    const errorMessage = errors.graphQLErrors?.[0]?.message || errors.message
+    throw new Error("Error requesting Shopify API: " + errorMessage)
   }
+
+  return data
 }
 
 // --------------------------------------------------------------------------
@@ -56,12 +56,15 @@ export async function getShopifyPages() {
 
   while (hasNextPage) {
     const response = await requestShopify(ShopifyPagesQuery, { endCursor })
-    const parsedResponse = shopifyPagesResponseSchema.parse(response)
-    const data = parsedResponse.pages
 
-    nodes.push(...data.nodes)
-    hasNextPage = data.pageInfo.hasNextPage
-    endCursor = data.pageInfo.endCursor
+    const { data, error } = shopifyPagesResponseSchema.safeParse(response)
+    if (error) {
+      throw new Error("Error parsing Shopify pages: " + error.message)
+    }
+
+    nodes.push(...data.pages.nodes)
+    hasNextPage = data.pages.pageInfo.hasNextPage
+    endCursor = data.pages.pageInfo.endCursor
   }
 
   return nodes
@@ -78,12 +81,15 @@ export async function getShopifyProducts() {
 
   while (hasNextPage) {
     const response = await requestShopify(ShopifyProductsQuery, { endCursor })
-    const parsedResponse = shopifyProductsResponseSchema.parse(response)
-    const data = parsedResponse.products
 
-    nodes.push(...data.nodes)
-    hasNextPage = data.pageInfo.hasNextPage
-    endCursor = data.pageInfo.endCursor
+    const { data, error } = shopifyProductsResponseSchema.safeParse(response)
+    if (error) {
+      throw new Error("Error parsing Shopify products: " + error.message)
+    }
+
+    nodes.push(...data.products.nodes)
+    hasNextPage = data.products.pageInfo.hasNextPage
+    endCursor = data.products.pageInfo.endCursor
   }
 
   return nodes
@@ -102,12 +108,15 @@ export async function getShopifyCollections() {
     const response = await requestShopify(ShopifyCollectionsQuery, {
       endCursor,
     })
-    const parsedResponse = shopifyCollectionsResponseSchema.parse(response)
-    const data = parsedResponse.collections
 
-    nodes.push(...data.nodes)
-    hasNextPage = data.pageInfo.hasNextPage
-    endCursor = data.pageInfo.endCursor
+    const { data, error } = shopifyCollectionsResponseSchema.safeParse(response)
+    if (error) {
+      throw new Error("Error parsing Shopify collections: " + error.message)
+    }
+
+    nodes.push(...data.collections.nodes)
+    hasNextPage = data.collections.pageInfo.hasNextPage
+    endCursor = data.collections.pageInfo.endCursor
   }
 
   return nodes
