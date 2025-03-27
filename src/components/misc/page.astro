@@ -66,20 +66,19 @@ const isIndex = Astro.url.pathname === "/"
     <Fragment set:html={head} />
   </head>
   <body data-sb-object-id={Astro.url.pathname}>
-    <Block type="banner" variant={1} {...banner} />
-    <Block type="header" variant={1} search={search} {...header} />
+    <Block type="banner" {...banner} />
+    <Block type="header" search={search} {...header} />
     <main>
       {
         !isIndex && props.type === "content" && hasContent && (
           <Block
-            variant={1}
             level={1}
             title={title}
             description={description}
             image={image}
             {...props}
           >
-            <Fragment set:html={content} />
+            <slot />
           </Block>
         )
       }
@@ -87,29 +86,26 @@ const isIndex = Astro.url.pathname === "/"
       {
         sections?.map((section, i) => (
           <Block
-            variant={1}
             level={isIndex || (i === 0 && !hasContent) ? 1 : 2}
             {...section}
           />
         ))
       }
-
       {
         isIndex && hasContent && (
           <Block
-            variant={1}
             level={1}
             title={title}
             description={description}
             image={image}
             {...props}
           >
-            <Fragment set:html={content} />
+            <slot />
           </Block>
         )
       }
     </main>
-    <Block type="footer" variant={1} {...footer} />
+    <Block type="footer" {...footer} />
     <style set:html={css}></style>
     <Fragment set:html={body} />
   </body>

@@ -1,4 +1,3 @@
-import { error } from "console"
 import {
   ShopifyCollectionsQuery,
   ShopifyLayoutQuery,
@@ -6,22 +5,23 @@ import {
   ShopifyProductsQuery,
 } from "@/loaders/shopify/queries"
 import {
-  shopifyCollectionsResponseSchema,
-  shopifyLayoutResponseSchema,
-  shopifyPagesResponseSchema,
-  shopifyProductsResponseSchema,
-  type ShopifyPageSchema,
-} from "@/loaders/shopify/schemas"
-import { createStorefrontApiClient } from "@shopify/storefront-api-client"
+  transformShopifyLayout,
+  transformShopifyPage,
+} from "@/loaders/shopify/transforms"
+import { createStorefrontClient } from "@shopify/hydrogen-react"
+import type {
+  Collection,
+  Page,
+  Product,
+  QueryRoot,
+} from "@shopify/hydrogen-react/storefront-api-types"
 import config from "fulldev.json"
-
-import { transformShopifyPage } from "./transforms"
 
 // --------------------------------------------------------------------------
 // Shopify API Client
 // --------------------------------------------------------------------------
 
-export async function requestShopify(
+export async function queryShopify(
   query: string,
   variables?: Record<string, any>
 ) {
@@ -29,18 +29,27 @@ export async function requestShopify(
     throw new Error("Shopify requested, but no config found")
   }
 
-  const client = createStorefrontApiClient({
-    apiVersion: "2025-01",
+  const client = createStorefrontClient({
+    storefrontApiVersion: "2025-01",
     storeDomain: config.pages.shopify.storeDomain,
-    publicAccessToken: config.pages.shopify.publicAccessToken,
+    publicStorefrontToken: config.pages.shopify.publicAccessToken,
   })
 
-  const { data, errors } = await client.request(query, { variables })
+  const response = await fetch(client.getStorefrontApiUrl(), {
+    method: "POST",
+    headers: client.getPublicTokenHeaders(),
+    body: JSON.stringify({
+      query: query,
+      variables: variables,
+    }),
+  })
 
-  if (errors) {
-    const errorMessage = errors.graphQLErrors?.[0]?.message || errors.message
-    throw new Error("Error requesting Shopify API: " + errorMessage)
+  if (!response.ok) {
+    throw new Error(response.statusText)
   }
+
+  const json = await response.json()
+  const data = json.data as QueryRoot
 
   return data
 }
@@ -50,21 +59,18 @@ export async function requestShopify(
 // --------------------------------------------------------------------------
 
 export async function getShopifyPages() {
-  let nodes: ShopifyPageSchema[] = []
-  let hasNextPage: boolean = true
-  let endCursor: string | undefined
+  let nodes: Page[] = []
+  let hasNextPage = true
+  let endCursor = undefined
 
   while (hasNextPage) {
-    const response = await requestShopify(ShopifyPagesQuery, { endCursor })
+    const { pages } = await queryShopify(ShopifyPagesQuery, {
+      endCursor: endCursor,
+    })
 
-    const { data, error } = shopifyPagesResponseSchema.safeParse(response)
-    if (error) {
-      throw new Error("Error parsing Shopify pages: " + error.message)
-    }
-
-    nodes.push(...data.pages.nodes)
-    hasNextPage = data.pages.pageInfo.hasNextPage
-    endCursor = data.pages.pageInfo.endCursor
+    nodes.push(...pages.nodes)
+    endCursor = pages.pageInfo.endCursor
+    hasNextPage = pages.pageInfo.hasNextPage
   }
 
   return nodes
@@ -75,21 +81,18 @@ export async function getShopifyPages() {
 // --------------------------------------------------------------------------
 
 export async function getShopifyProducts() {
-  let nodes: ShopifyPageSchema[] = []
-  let hasNextPage: boolean = true
-  let endCursor: string | undefined
+  let nodes: Product[] = []
+  let hasNextPage = true
+  let endCursor = undefined
 
   while (hasNextPage) {
-    const response = await requestShopify(ShopifyProductsQuery, { endCursor })
+    const { products } = await queryShopify(ShopifyProductsQuery, {
+      endCursor: endCursor,
+    })
 
-    const { data, error } = shopifyProductsResponseSchema.safeParse(response)
-    if (error) {
-      throw new Error("Error parsing Shopify products: " + error.message)
-    }
-
-    nodes.push(...data.products.nodes)
-    hasNextPage = data.products.pageInfo.hasNextPage
-    endCursor = data.products.pageInfo.endCursor
+    nodes.push(...products.nodes)
+    endCursor = products.pageInfo.endCursor
+    hasNextPage = products.pageInfo.hasNextPage
   }
 
   return nodes
@@ -100,26 +103,31 @@ export async function getShopifyProducts() {
 // --------------------------------------------------------------------------
 
 export async function getShopifyCollections() {
-  let nodes: ShopifyPageSchema[] = []
-  let hasNextPage: boolean = true
-  let endCursor: string | undefined
+  let nodes: Collection[] = []
+  let hasNextPage = true
+  let endCursor = undefined
 
   while (hasNextPage) {
-    const response = await requestShopify(ShopifyCollectionsQuery, {
-      endCursor,
+    const { collections } = await queryShopify(ShopifyCollectionsQuery, {
+      endCursor: endCursor,
     })
 
-    const { data, error } = shopifyCollectionsResponseSchema.safeParse(response)
-    if (error) {
-      throw new Error("Error parsing Shopify collections: " + error.message)
-    }
-
-    nodes.push(...data.collections.nodes)
-    hasNextPage = data.collections.pageInfo.hasNextPage
-    endCursor = data.collections.pageInfo.endCursor
+    nodes.push(...collections.nodes)
+    endCursor = collections.pageInfo.endCursor
+    hasNextPage = collections.pageInfo.hasNextPage
   }
 
   return nodes
+}
+
+// --------------------------------------------------------------------------
+// Layout
+// --------------------------------------------------------------------------
+
+async function getShopifyLayout() {
+  const { metaobject } = await queryShopify(ShopifyLayoutQuery)
+  if (!metaobject) return
+  return metaobject
 }
 
 // --------------------------------------------------------------------------
@@ -127,23 +135,22 @@ export async function getShopifyCollections() {
 // --------------------------------------------------------------------------
 
 export async function getPages() {
-  const [shopifyPages, shopifyProducts, shopifyCollections] = await Promise.all(
-    [getShopifyPages(), getShopifyProducts(), getShopifyCollections()]
-  )
+  const [shopifyPages, shopifyProducts, shopifyCollections, shopifyLayout] =
+    await Promise.all([
+      getShopifyPages(),
+      getShopifyProducts(),
+      getShopifyCollections(),
+      getShopifyLayout(),
+    ])
 
-  const all = [...shopifyPages, ...shopifyProducts, ...shopifyCollections]
-  const transformedNodes = all.map(transformShopifyPage)
+  const layout = shopifyLayout && transformShopifyLayout(shopifyLayout)
+  const pages = [...shopifyPages, ...shopifyProducts, ...shopifyCollections]
 
-  return transformedNodes
+  return pages.map((page) => {
+    const transformedPage = transformShopifyPage(page)
+    return {
+      ...layout,
+      ...transformedPage,
+    }
+  })
 }
-
-// --------------------------------------------------------------------------
-// Layout
-// --------------------------------------------------------------------------
-
-// async function getShopifyLayout() {
-//   const response = await requestShopify(ShopifyLayoutQuery)
-//   const parsedResponse = shopifyLayoutResponseSchema.parse(response)
-//   const transformedLayout = transformShopifyLayout(parsedResponse.metaobject)
-//   return transformedLayout
-// }

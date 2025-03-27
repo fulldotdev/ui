@@ -1,31 +1,37 @@
-import type {
-  ShopifyBlockSchema,
-  ShopifyImageSchema,
-  ShopifyItemSchema,
-  ShopifyLayoutSchema,
-  ShopifyPageSchema,
-  ShopifyProductPriceRangeSchema,
-} from "@/loaders/shopify/schemas"
 import type { BlockSchema } from "@/schemas/block"
 import type { ImageSchema } from "@/schemas/fields/image"
+import type { MenuSchema } from "@/schemas/fields/menu"
 import type { PriceSchema } from "@/schemas/fields/price"
 import type { ItemSchema } from "@/schemas/item"
-import type { PageSchema } from "@/schemas/page"
+import type { LayoutSchema } from "@/schemas/layout"
+import { pageSchema, type PageSchema } from "@/schemas/page"
+import type {
+  Collection,
+  Image,
+  Maybe,
+  MediaImage,
+  MetafieldReference,
+  Metaobject,
+  MetaobjectField,
+  Page,
+  Product,
+  ProductPriceRange,
+} from "@shopify/hydrogen-react/storefront-api-types"
 
 // --------------------------------------------------------------------------
 // Shared
 // --------------------------------------------------------------------------
 
-function transformShopifyImage(image: ShopifyImageSchema) {
+function transformShopifyImage(image: Image): ImageSchema {
   return {
     src: image.url,
     alt: image.altText ?? undefined,
-  } satisfies ImageSchema
+  }
 }
 
 function transformShopifyPrice(
-  priceRange: ShopifyProductPriceRangeSchema,
-  compareAtPriceRange: ShopifyProductPriceRangeSchema
+  priceRange: ProductPriceRange,
+  compareAtPriceRange: ProductPriceRange
 ): PriceSchema {
   return {
     amount: Number(priceRange.minVariantPrice.amount),
@@ -34,7 +40,7 @@ function transformShopifyPrice(
   }
 }
 
-export const shopifyButtonsTransform = (buttons: string) => {
+export const shopifyButtonsTransform = (buttons: MetaobjectField["value"]) => {
   const parsedButtonsArray = JSON.parse(buttons ?? "[]") as {
     text?: string
     url?: string
@@ -46,64 +52,71 @@ export const shopifyButtonsTransform = (buttons: string) => {
 }
 
 // --------------------------------------------------------------------------
-// Helpers
+// Type Guards
 // --------------------------------------------------------------------------
 
-function getType(id: string) {
-  if (id.includes("gid://shopify/Product")) return "product"
-  if (id.includes("gid://shopify/Collection")) return "collection"
-  if (id.includes("gid://shopify/Page")) return "page"
+function isProduct(input: Product | Collection | Page): input is Product {
+  return "featuredImage" in input
 }
 
-function getSlug(id: string, handle: string) {
-  const type = getType(id)
-  if (type === "product") return `products/${handle}`
-  if (type === "collection") return `collections/${handle}`
-  if (type === "page") return handle
+function isCollection(input: Product | Collection | Page): input is Collection {
+  return "products" in input
 }
 
-function getHref(id: string, handle: string) {
-  const type = getType(id)
-  if (type === "product") return `/products/${handle}/`
-  if (type === "collection") return `/collections/${handle}/`
-  if (type === "page") return `/${handle}/`
+function isMetaobjects(
+  input?: Maybe<MetafieldReference>[]
+): input is Metaobject[] {
+  return input?.every((ref) => ref && "fields" in ref) ?? false
+}
+
+function isMediaImage(input?: Maybe<MetafieldReference>): input is MediaImage {
+  return (input && "image" in input) ?? false
 }
 
 // --------------------------------------------------------------------------
 // Item
 // --------------------------------------------------------------------------
 
-export function transformShopifyItem(item: ShopifyItemSchema): ItemSchema {
-  const image = item.featuredImage || item.image || undefined
+export function transformShopifyItem(item: Product | Collection): ItemSchema {
+  if (isProduct(item)) {
+    return {
+      href: `/products/${item.handle}/`,
+      title: item.title,
+      image: item.featuredImage
+        ? transformShopifyImage(item.featuredImage)
+        : undefined,
+      price: transformShopifyPrice(item.priceRange, item.compareAtPriceRange),
+    }
+  }
+
+  // isCollection
   return {
-    href: item.id && item.handle && getHref(item.id, item.handle),
+    href: `/collections/${item.handle}/`,
     title: item.title,
-    image: image && transformShopifyImage(image),
-    price:
-      item.priceRange &&
-      item.compareAtPriceRange &&
-      transformShopifyPrice(item.priceRange, item.compareAtPriceRange),
+    image: item.image ? transformShopifyImage(item.image) : undefined,
   }
 }
-
 // --------------------------------------------------------------------------
 // Blocks
 // --------------------------------------------------------------------------
 
-function transformShopifyBlock(block: ShopifyBlockSchema): BlockSchema {
+function transformShopifyBlock(block: Metaobject): BlockSchema {
   const getField = (key: string) =>
     block.fields?.find((field) => field.key === key)
 
-  const image = getField("image")?.reference?.image || undefined
+  const imageReference = getField("image")?.reference as MediaImage
   const buttons = getField("buttons")?.value || undefined
+  const items = getField("items")?.references?.nodes as (Product | Collection)[]
 
   return {
     type: block.type,
-    title: getField("title")?.value,
-    description: getField("description")?.value,
-    image: image ? transformShopifyImage(image) : undefined,
+    title: getField("title")?.value || undefined,
+    description: getField("description")?.value || undefined,
+    image: imageReference?.image
+      ? transformShopifyImage(imageReference.image)
+      : undefined,
     buttons: buttons ? shopifyButtonsTransform(buttons) : undefined,
-    items: getField("items")?.references?.nodes.map(transformShopifyItem),
+    items: items?.map(transformShopifyItem),
   }
 }
 
@@ -111,84 +124,111 @@ function transformShopifyBlock(block: ShopifyBlockSchema): BlockSchema {
 // Page
 // --------------------------------------------------------------------------
 
-export function transformShopifyPage(page: ShopifyPageSchema): PageSchema {
-  const image = page.image || page.featuredImage || undefined
-  return {
-    id: page.id,
-    slug: page.id && page.handle ? getSlug(page.id, page.handle) : undefined,
-    title: page.title,
-    image: image ? transformShopifyImage(image) : undefined,
-    images: page.images?.nodes.map(transformShopifyImage),
-    price:
-      page.priceRange && page.compareAtPriceRange
-        ? transformShopifyPrice(page.priceRange, page.compareAtPriceRange)
+export function transformShopifyPage(page: Page | Product | Collection) {
+  if (isProduct(page)) {
+    return {
+      type: "product",
+      id: page.id,
+      slug: `products/${page.handle}`,
+      title: page.title,
+      image: page.featuredImage
+        ? transformShopifyImage(page.featuredImage)
         : undefined,
-    items: page.products?.nodes.map(transformShopifyItem),
-    sections: page.metafield?.references?.nodes.map(transformShopifyBlock),
-    variants: page.variants,
+      images: page.images?.nodes.map(transformShopifyImage),
+      variants: page.variants,
+      seo: {
+        title: page.seo?.title || undefined,
+        description: page.seo?.description || undefined,
+      },
+      content: page.descriptionHtml,
+    } satisfies PageSchema
+  }
+
+  if (isCollection(page)) {
+    return {
+      type: "collection",
+      id: page.id,
+      slug: `collections/${page.handle}`,
+      title: page.title,
+      image: page.image ? transformShopifyImage(page.image) : undefined,
+      items: page.products?.nodes.map(transformShopifyItem),
+      seo: {
+        title: page.seo?.title || undefined,
+        description: page.seo?.description || undefined,
+      },
+      content: page.descriptionHtml,
+    } satisfies PageSchema
+  }
+
+  // isPage
+  const blocks = page.metafield?.references?.nodes as Metaobject[]
+  return {
+    type: "content",
+    id: page.id,
+    slug: page.handle,
+    title: page.title,
+    sections: blocks?.map(transformShopifyBlock),
     seo: {
       title: page.seo?.title || undefined,
       description: page.seo?.description || undefined,
     },
-    content: page.descriptionHtml || page.body,
+    content: page.body,
+  } satisfies PageSchema
+}
+
+// --------------------------------------------------------------------------
+// Menu
+// --------------------------------------------------------------------------
+
+export function transformShopifyMenu(menu: Metaobject): MenuSchema {
+  function findField(key: string) {
+    return menu?.fields?.find((field) => field.key === key)
+  }
+
+  return {
+    text: findField("title")?.value || undefined,
+    links: JSON.parse(findField("links")?.value ?? "[]").map((link: any) => ({
+      text: link.text,
+      href: link.url,
+    })),
   }
 }
 
 // --------------------------------------------------------------------------
-// Layout
+// Menu
 // --------------------------------------------------------------------------
 
-// export function shopifyMenuTransform(menu: ShopifyMenuSchema): MenuSchema {
-//   function findField(key: string) {
-//     return menu?.fields?.find((field) => field.key === key)
-//   }
+export function transformShopifyLayout(layout: Metaobject): LayoutSchema {
+  const getField = (key: string) =>
+    layout.fields?.find((field) => field.key === key)
 
-//   function getRelativeUrl(url: string) {
-//     // If the URL is from the same origin, just return the pathname
-//     try {
-//       const currentUrl =
-//         typeof window !== "undefined" ? window.location.origin : ""
-//       const urlObj = new URL(url)
+  const logoRef = getField("logo")?.reference
+  const headerRefs = getField("header")?.references?.nodes
+  const footerRefs = getField("footer")?.references?.nodes
 
-//       if (currentUrl && urlObj.origin === currentUrl) {
-//         return urlObj.pathname
-//       }
-//     } catch (error) {
-//       // If URL parsing fails, continue with the default behavior
-//     }
-//     return new URL(url).pathname
-//   }
-
-//   return {
-//     text: findField("title")?.value,
-//     links: JSON.parse(findField("links")?.value ?? "[]").map((link: any) => ({
-//       text: link.text,
-//       href: getRelativeUrl(link.url),
-//     })),
-//   }
-// }
-
-// export function shopifyLayoutTransform(
-//   layout: ShopifyLayoutSchema
-// ): PageSchema {
-//   const getField = (key: string) =>
-//     layout.fields?.find((field) => field.key === key)
-
-//   const logo = getField("logo")?.reference?.image
-
-//   return {
-//     lang: getField("language")?.value,
-//     company: getField("company")?.value,
-//     banner: {
-//       list: JSON.parse(getField("banner")?.value ?? "[]"),
-//     },
-//     header: {
-//       logo: logo ? transformShopifyImage(logo) : undefined,
-//       menus: getField("header")?.references?.nodes.map(shopifyMenuTransform),
-//     },
-//     footer: {
-//       logo: logo ? transformShopifyImage(logo) : undefined,
-//       menus: getField("footer")?.references?.nodes.map(shopifyMenuTransform),
-//     },
-//   }
-// }
+  return {
+    lang: getField("language")?.value || undefined,
+    company: getField("company")?.value || undefined,
+    banner: {
+      list: JSON.parse(getField("banner")?.value ?? "[]"),
+    },
+    header: {
+      logo:
+        isMediaImage(logoRef) && logoRef.image
+          ? transformShopifyImage(logoRef.image)
+          : undefined,
+      menus: isMetaobjects(headerRefs)
+        ? headerRefs.map(transformShopifyMenu)
+        : undefined,
+    },
+    footer: {
+      logo:
+        isMediaImage(logoRef) && logoRef.image
+          ? transformShopifyImage(logoRef.image)
+          : undefined,
+      menus: isMetaobjects(footerRefs)
+        ? footerRefs.map(transformShopifyMenu)
+        : undefined,
+    },
+  }
+}

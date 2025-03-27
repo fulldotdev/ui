@@ -1,25 +1,44 @@
 ---
-import { getCollection } from "astro:content"
+import { getCollection, render } from "astro:content"
 
 import Page from "@/components/misc/page.astro"
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages")
-  return pages.map(({ id, ...page }) => ({
-    params: {
-      page: id === "home" || id === "index" ? undefined : id,
-    },
-    props: {
-      page,
-      search: pages.map((page) => ({
-        text: page.data.title,
-        href: page.id ? `/${page.id}/` : "/",
-      })),
-    },
-  }))
+  const shopify = await getCollection("shopify")
+  const entries = [...pages, ...shopify]
+  return entries.map((entry) => {
+    const getSlug = (e: typeof entry) => {
+      if (e.data.slug === "home") return undefined
+      if (e.data.slug === "index") return undefined
+      if (e.data.slug) return e.data.slug
+      if (e.id === "index") return undefined
+      return e.id
+    }
+    const getHref = (e: typeof entry) => {
+      if (e.data.slug) return e.data.slug
+      if (e.id === "index") return "/"
+      return `/${e.id}/`
+    }
+    return {
+      params: {
+        page: getSlug(entry),
+      },
+      props: {
+        page: entry,
+        search: entries.map((entry) => ({
+          text: entry.data.title,
+          href: getHref(entry),
+        })),
+      },
+    }
+  })
 }
 
 const { page, search } = Astro.props
+const { Content, headings } = await render(page)
 ---
 
-<Page search={search} {...page.data} />
+<Page search={search} {...page.data}>
+  <Content />
+</Page>

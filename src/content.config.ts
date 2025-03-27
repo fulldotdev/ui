@@ -1,4 +1,4 @@
-import { getShopifyPages } from "@/loaders/shopify/api"
+import { shopifyLoader } from "@/loaders/shopify"
 import { blockSchema } from "@/schemas/block"
 import { itemSchema } from "@/schemas/item"
 import { pageSchema } from "@/schemas/page"
@@ -28,9 +28,7 @@ export const collections = {
     schema: blockSchema,
   }),
   shopify: defineCollection({
-    loader: async () => {
-      const shopifyPages = await getShopifyPages()
-      return shopifyPages
-    },
+    loader: shopifyLoader(),
+    schema: pageSchema,
   }),
 }

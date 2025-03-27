@@ -3,7 +3,8 @@ import { importSchema } from "@/schemas/fields/import"
 import { layoutSchema } from "@/schemas/layout"
 import { z } from "zod"
 
-export const pageSchema = blockSchema
+export const pageSchema = layoutSchema
+  .merge(blockSchema)
   .extend({
     layout: importSchema.pipe(layoutSchema).or(layoutSchema),
     slug: z.string(),
