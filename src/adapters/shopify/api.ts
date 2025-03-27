@@ -4,6 +4,7 @@ import {
   PAGES_QUERY,
   PRODUCTS_QUERY,
 } from "@/adapters/shopify/graphql"
+import type { Page } from "@shopify/hydrogen-react/storefront-api-types"
 import { createStorefrontApiClient } from "@shopify/storefront-api-client"
 import config from "fulldev.json"
 
@@ -32,6 +33,10 @@ async function requestShopify(query: string, variables?: Record<string, any>) {
 
   try {
     const { data } = await client.request(query, { variables })
+
+    if (data?.pages) {
+      console.log(data.pages.nodes[0].metafield)
+    }
     return data
   } catch (error: any) {
     const errorMessage = error.graphQLErrors?.[0]?.message || error.message
@@ -60,7 +65,7 @@ async function getAllShopifyPages() {
     endCursor = data.pageInfo.endCursor
   }
 
-  return nodes
+  return nodes as Page[]
 }
 
 async function getAllShopifyProducts() {

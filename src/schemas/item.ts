@@ -9,7 +9,7 @@ export const itemSchema = z
     text: z.string(),
     href: z.string(),
     image: imageSchema,
-    rating: z.number().min(1).max(5),
+    rating: z.number(),
     title: z.string(),
     description: z.string(),
     price: priceSchema,

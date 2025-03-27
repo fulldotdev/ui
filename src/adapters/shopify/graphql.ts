@@ -167,6 +167,8 @@ export const PAGE_FRAGMENT = `#graphql
     handle
     title
     metafield(namespace: "custom", key: "sections") {
+      id
+      value
       references(first: 250) {
         nodes {
           ... on Metaobject {

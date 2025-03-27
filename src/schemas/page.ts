@@ -1,18 +1,13 @@
 import { blockSchema } from "@/schemas/block"
+import { importSchema } from "@/schemas/fields/import"
+import { layoutSchema } from "@/schemas/layout"
 import { z } from "zod"
 
 export const pageSchema = blockSchema
   .extend({
+    layout: importSchema.pipe(layoutSchema).or(layoutSchema),
     slug: z.string(),
-    lang: z.string(),
-    company: z.string(),
-    banner: blockSchema,
-    header: blockSchema,
-    sections: blockSchema.array(),
-    footer: blockSchema,
-    head: z.string(),
-    body: z.string(),
-    css: z.string(),
+    sections: importSchema.pipe(blockSchema).or(blockSchema).array(),
     seo: z
       .object({
         title: z.string(),

@@ -1,29 +1,19 @@
 ---
-import { getPages } from "@/adapters/shopify/api"
 import { getCollection } from "astro:content"
-import type { CollectionEntry } from "astro:content"
-import config from "fulldev.json"
 
 import Page from "@/components/misc/page.astro"
 
 export async function getStaticPaths() {
-  const astroPages = (await getCollection("pages")).map((page) => ({
-    id: page.id,
-    slug: page.id,
-    content: page.body,
-    ...page.data,
-  }))
-  const shopifyPages = "shopify" in config.pages ? await getPages() : []
-  const pages = [...shopifyPages, ...astroPages]
-  return pages.map(({ slug, ...page }) => ({
+  const pages = await getCollection("pages")
+  return pages.map(({ id, ...page }) => ({
     params: {
-      page: slug === "home" || slug === "index" ? undefined : slug,
+      page: id === "home" || id === "index" ? undefined : id,
     },
     props: {
       page,
       search: pages.map((page) => ({
-        text: page.title,
-        href: page.slug ? `/${page.slug}/` : "/",
+        text: page.data.title,
+        href: page.id ? `/${page.id}/` : "/",
       })),
     },
   }))
@@ -32,4 +22,4 @@ export async function getStaticPaths() {
 const { page, search } = Astro.props
 ---
 
-<Page search={search} {...page} />
+<Page search={search} {...page.data} />

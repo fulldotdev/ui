@@ -1,8 +1,16 @@
 ---
-import { getPages } from "@/adapters/shopify/api"
-import { getCollection } from "astro:content"
+import { createStorefrontApiClient } from "@shopify/storefront-api-client"
+import config from "fulldev.json"
 
-const pages = await getCollection("pages")
+import { ShopifyPagesQuery } from "../loaders/shopify/queries.ts"
 
-console.log(pages)
+const client = createStorefrontApiClient({
+  apiVersion: "2025-01",
+  storeDomain: config.pages.shopify.storeDomain,
+  publicAccessToken: config.pages.shopify.publicAccessToken,
+})
+
+const { data, errors } = await client.request(ShopifyPagesQuery)
+
+console.log(data, errors)
 ---
