@@ -1,3 +1,7 @@
+// --------------------------------------------------------------------------
+// Shared
+// --------------------------------------------------------------------------
+
 const ShopifyImageFragment = `#graphql
   fragment ShopifyImage on Image {
     url
@@ -11,20 +15,6 @@ const ShopifyProductPriceRangeFragment = `#graphql
       amount
       currencyCode
     }
-  }
-`
-
-const ShopifySeoFragment = `#graphql
-  fragment SeoFragment on SEO {
-    title
-    description
-  }
-`
-
-const ShopifyPageInfoFragment = `#graphql
-  fragment ShopifyPageInfo on PageInfo {
-    hasNextPage
-    endCursor
   }
 `
 
@@ -63,18 +53,19 @@ export const ShopifyProductsQuery = `#graphql
           }
         }
         seo {
-          ...SeoFragment
+          title
+          description
         }
         descriptionHtml
       }
       pageInfo {
-        ...ShopifyPageInfo
+        hasNextPage
+        endCursor
       }
     }
   }
   ${ShopifyImageFragment}
   ${ShopifyProductPriceRangeFragment}
-  ${ShopifySeoFragment}
 `
 
 // --------------------------------------------------------------------------
@@ -107,26 +98,27 @@ export const ShopifyCollectionsQuery = `#graphql
           }
         }
         seo {
-          ...SeoFragment
+          title
+          description
         }
         descriptionHtml
       }
       pageInfo {
-        ...ShopifyPageInfo
+        hasNextPage
+        endCursor
       }
     }
   }
   ${ShopifyImageFragment}
   ${ShopifyProductPriceRangeFragment}
-  ${ShopifySeoFragment}
 `
 
 // --------------------------------------------------------------------------
-// Sections
+// Blocks
 // --------------------------------------------------------------------------
 
-export const ShopifySectionFragment = `#graphql
-  fragment ShopifySection on Metaobject {
+export const ShopifyBlockFragment = `#graphql
+  fragment ShopifyBlock on Metaobject {
     type
     fields {
       key
@@ -186,20 +178,54 @@ export const ShopifyPagesQuery = `#graphql
           value
           references(first: 250) {
             nodes {
-              ...ShopifySection
+              ...ShopifyBlock
             }
           }
         }
         seo {
-          ...SeoFragment
+          title
+          description
         }
         body
       }
       pageInfo {
-        ...ShopifyPageInfo
+        hasNextPage
+        endCursor
       }
     }
   }
-  ${ShopifySectionFragment}
-  ${ShopifySeoFragment}
+  ${ShopifyBlockFragment}
+`
+
+// --------------------------------------------------------------------------
+// Layout
+// --------------------------------------------------------------------------
+
+export const ShopifyLayoutQuery = `#graphql
+  query ShopifyLayout {
+    metaobject(handle: {type: "layout", handle: "base" }) {
+      fields {
+        key
+        value
+        references(first: 50) {
+          nodes {
+            ... on Metaobject {
+              fields {
+                key
+                value
+              }
+            }
+          }
+        }
+        reference {
+          ... on MediaImage {
+            image {
+              url
+              altText
+            }
+          }
+        }
+      }
+    }
+  }
 `

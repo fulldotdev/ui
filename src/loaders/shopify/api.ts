@@ -1,16 +1,20 @@
 import {
   ShopifyCollectionsQuery,
+  ShopifyLayoutQuery,
   ShopifyPagesQuery,
   ShopifyProductsQuery,
 } from "@/loaders/shopify/queries"
 import {
-  shopifyCollectionsSchema,
-  shopifyPagesSchema,
-  shopifyProductsSchema,
+  shopifyCollectionsResponseSchema,
+  shopifyLayoutResponseSchema,
+  shopifyPagesResponseSchema,
+  shopifyProductsResponseSchema,
+  type ShopifyPageSchema,
 } from "@/loaders/shopify/schemas"
-import type { Page } from "@shopify/hydrogen-react/storefront-api-types"
 import { createStorefrontApiClient } from "@shopify/storefront-api-client"
 import config from "fulldev.json"
+
+import { transformShopifyPage } from "./transforms"
 
 // --------------------------------------------------------------------------
 // Shopify API Client
@@ -42,17 +46,17 @@ export async function requestShopify(
 }
 
 // --------------------------------------------------------------------------
-// Shopify Products, Collections, and Pages - Recursively
+// Shopify Pages
 // --------------------------------------------------------------------------
 
 export async function getShopifyPages() {
-  let nodes: any[] = []
+  let nodes: ShopifyPageSchema[] = []
   let hasNextPage: boolean = true
   let endCursor: string | undefined
 
   while (hasNextPage) {
     const response = await requestShopify(ShopifyPagesQuery, { endCursor })
-    const parsedResponse = shopifyPagesSchema.parse(response)
+    const parsedResponse = shopifyPagesResponseSchema.parse(response)
     const data = parsedResponse.pages
 
     nodes.push(...data.nodes)
@@ -60,17 +64,21 @@ export async function getShopifyPages() {
     endCursor = data.pageInfo.endCursor
   }
 
-  return nodes as Page[]
+  return nodes
 }
 
+// --------------------------------------------------------------------------
+// Shopify Products
+// --------------------------------------------------------------------------
+
 export async function getShopifyProducts() {
-  let nodes: any[] = []
+  let nodes: ShopifyPageSchema[] = []
   let hasNextPage: boolean = true
   let endCursor: string | undefined
 
   while (hasNextPage) {
     const response = await requestShopify(ShopifyProductsQuery, { endCursor })
-    const parsedResponse = shopifyProductsSchema.parse(response)
+    const parsedResponse = shopifyProductsResponseSchema.parse(response)
     const data = parsedResponse.products
 
     nodes.push(...data.nodes)
@@ -81,8 +89,12 @@ export async function getShopifyProducts() {
   return nodes
 }
 
+// --------------------------------------------------------------------------
+// Shopify Collections
+// --------------------------------------------------------------------------
+
 export async function getShopifyCollections() {
-  let nodes: any[] = []
+  let nodes: ShopifyPageSchema[] = []
   let hasNextPage: boolean = true
   let endCursor: string | undefined
 
@@ -90,7 +102,7 @@ export async function getShopifyCollections() {
     const response = await requestShopify(ShopifyCollectionsQuery, {
       endCursor,
     })
-    const parsedResponse = shopifyCollectionsSchema.parse(response)
+    const parsedResponse = shopifyCollectionsResponseSchema.parse(response)
     const data = parsedResponse.collections
 
     nodes.push(...data.nodes)
@@ -101,43 +113,28 @@ export async function getShopifyCollections() {
   return nodes
 }
 
-// // --------------------------------------------------------------------------
-// // Shopify Layout
-// // --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// Pages
+// --------------------------------------------------------------------------
+
+export async function getPages() {
+  const [shopifyPages, shopifyProducts, shopifyCollections] = await Promise.all(
+    [getShopifyPages(), getShopifyProducts(), getShopifyCollections()]
+  )
+
+  const all = [...shopifyPages, ...shopifyProducts, ...shopifyCollections]
+  const transformedNodes = all.map(transformShopifyPage)
+
+  return transformedNodes
+}
+
+// --------------------------------------------------------------------------
+// Layout
+// --------------------------------------------------------------------------
 
 // async function getShopifyLayout() {
-//   const response = await requestShopify(LAYOUT_QUERY)
+//   const response = await requestShopify(ShopifyLayoutQuery)
 //   const parsedResponse = shopifyLayoutResponseSchema.parse(response)
-//   return parsedResponse.metaobject
-// }
-
-// // --------------------------------------------------------------------------
-// // Fulldev Pages with Layout - Recursively
-// // --------------------------------------------------------------------------
-
-// export async function getPages() {
-//   // Fetch all data in parallel
-//   const [pageNodes, productNodes, collectionNodes, layoutData] =
-//     await Promise.all([
-//       getAllShopifyPages(),
-//       getAllShopifyProducts(),
-//       getAllShopifyCollections(),
-//       getShopifyLayout(),
-//     ])
-
-//   // Combine all nodes
-//   const allNodes = [...pageNodes, ...productNodes, ...collectionNodes]
-//   const transformedNodes = allNodes.map(shopifyPageTransform)
-
-//   const transformedLayout = shopifyLayoutTransform(layoutData)
-
-//   // Merge layout data with each page
-//   const transformedPagesWithLayout = transformedNodes.map(
-//     (transformedNode) => ({
-//       ...transformedLayout,
-//       ...transformedNode,
-//     })
-//   )
-
-//   return transformedPagesWithLayout
+//   const transformedLayout = transformShopifyLayout(parsedResponse.metaobject)
+//   return transformedLayout
 // }

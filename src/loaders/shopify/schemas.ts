@@ -22,179 +22,185 @@ export type ShopifyProductPriceRangeSchema = z.infer<
   typeof shopifyProductPriceRangeSchema
 >
 
-const shopifySeoSchema = z.object({
-  title: z.string().nullable(),
-  description: z.string().nullable(),
-})
-
-export type ShopifySeoSchema = z.infer<typeof shopifySeoSchema>
-
-const shopifyPageInfoSchema = z.object({
-  hasNextPage: z.boolean(),
-  endCursor: z.string(),
-})
-
-export type ShopifyPageInfoSchema = z.infer<typeof shopifyPageInfoSchema>
-
 // --------------------------------------------------------------------------
-// Entry
+// Item
 // --------------------------------------------------------------------------
 
-export const shopifyEntrySchema = z.object({
-  id: z.string(),
-  handle: z.string(),
-  title: z.string(),
-  featuredImage: shopifyImageSchema.nullable(),
-  images: z.object({
-    nodes: z.array(shopifyImageSchema),
-  }),
-  priceRange: shopifyProductPriceRangeSchema,
-  compareAtPriceRange: shopifyProductPriceRangeSchema,
-  variants: z.object({
-    nodes: z
-      .object({
-        id: z.string(),
-        selectedOptions: z
-          .object({
-            value: z.string(),
-            name: z.string(),
-          })
-          .array(),
-      })
-      .array(),
-  }),
-  seo: shopifySeoSchema,
-  descriptionHtml: z.string(),
-})
+export const shopifyItemSchema = z
+  .object({
+    id: z.string(),
+    handle: z.string(),
+    title: z.string(),
+    image: shopifyImageSchema.nullable(),
+    featuredImage: shopifyImageSchema.nullable(),
+    priceRange: shopifyProductPriceRangeSchema,
+    compareAtPriceRange: shopifyProductPriceRangeSchema,
+  })
+  .partial()
+
+export type ShopifyItemSchema = z.infer<typeof shopifyItemSchema>
 
 // --------------------------------------------------------------------------
-// Products
+// Block
 // --------------------------------------------------------------------------
 
-export const shopifyProductsSchema = z.object({
-  products: z.object({
-    nodes: z
-      .object({
-        id: z.string(),
-        handle: z.string(),
-        title: z.string(),
-        featuredImage: shopifyImageSchema.nullable(),
-        images: z.object({
-          nodes: z.array(shopifyImageSchema),
+export const shopifyBlockSchema = z
+  .object({
+    type: z.string(),
+    fields: z.array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+        reference: z.object({
+          image: shopifyImageSchema.nullable(),
         }),
-        priceRange: shopifyProductPriceRangeSchema,
-        compareAtPriceRange: shopifyProductPriceRangeSchema,
-        variants: z.object({
-          nodes: z
-            .object({
-              id: z.string(),
-              selectedOptions: z
-                .object({
-                  value: z.string(),
-                  name: z.string(),
-                })
-                .array(),
-            })
-            .array(),
-        }),
-        seo: shopifySeoSchema,
-        descriptionHtml: z.string(),
-      })
-      .array(),
-    pageInfo: shopifyPageInfoSchema,
-  }),
-})
-
-export type ShopifyProductsSchema = z.infer<typeof shopifyProductsSchema>
-
-// --------------------------------------------------------------------------
-// Collections
-// --------------------------------------------------------------------------
-
-export const shopifyCollectionsSchema = z.object({
-  collections: z.object({
-    nodes: z
-      .object({
-        id: z.string(),
-        handle: z.string(),
-        title: z.string(),
-        image: shopifyImageSchema.nullable(),
-        products: z.object({
-          nodes: z
-            .object({
+        references: z.object({
+          nodes: z.array(
+            z.object({
               id: z.string(),
               handle: z.string(),
               title: z.string(),
+              image: shopifyImageSchema.nullable(),
               featuredImage: shopifyImageSchema.nullable(),
               priceRange: shopifyProductPriceRangeSchema,
               compareAtPriceRange: shopifyProductPriceRangeSchema,
             })
-            .array(),
+          ),
         }),
-        seo: shopifySeoSchema,
-        descriptionHtml: z.string(),
       })
-      .array(),
-    pageInfo: shopifyPageInfoSchema,
-  }),
-})
+    ),
+  })
+  .partial()
 
-export type ShopifyCollectionsSchema = z.infer<typeof shopifyCollectionsSchema>
+export type ShopifyBlockSchema = z.infer<typeof shopifyBlockSchema>
 
 // --------------------------------------------------------------------------
-// Section
+// Page
 // --------------------------------------------------------------------------
 
-export const shopifySectionSchema = z.object({
-  type: z.string(),
-  fields: z.array(
-    z.object({
+export const shopifyPageSchema = z
+  .object({
+    id: z.string(),
+    handle: z.string(),
+    title: z.string(),
+    image: shopifyImageSchema.nullable(),
+    featuredImage: shopifyImageSchema.nullable(),
+    images: z.object({
+      nodes: z.array(shopifyImageSchema),
+    }),
+    priceRange: shopifyProductPriceRangeSchema,
+    compareAtPriceRange: shopifyProductPriceRangeSchema,
+    products: z.object({
+      nodes: z
+        .object({
+          id: z.string(),
+          handle: z.string(),
+          title: z.string(),
+          featuredImage: shopifyImageSchema.nullable(),
+          priceRange: shopifyProductPriceRangeSchema,
+          compareAtPriceRange: shopifyProductPriceRangeSchema,
+        })
+        .array(),
+    }),
+    variants: z.object({
+      nodes: z
+        .object({
+          id: z.string(),
+          selectedOptions: z
+            .object({
+              value: z.string(),
+              name: z.string(),
+            })
+            .array(),
+        })
+        .array(),
+    }),
+    metafield: z.object({
+      references: z.object({
+        nodes: z.array(shopifyBlockSchema),
+      }),
+    }),
+    seo: z.object({
+      title: z.string().nullable(),
+      description: z.string().nullable(),
+    }),
+    descriptionHtml: z.string(),
+    body: z.string(),
+  })
+  .partial()
+
+export type ShopifyPageSchema = z.infer<typeof shopifyPageSchema>
+
+// --------------------------------------------------------------------------
+// Layout
+// --------------------------------------------------------------------------
+
+export const shopifyMenuSchema = z.object({
+  fields: z
+    .object({
       key: z.string(),
       value: z.string(),
-      reference: z.object({
-        image: shopifyImageSchema.nullable(),
-      }),
-      references: z.object({
-        nodes: z.array(
-          z.object({
-            id: z.string(),
-            handle: z.string(),
-            title: z.string(),
-            image: shopifyImageSchema.nullable(),
-            featuredImage: shopifyImageSchema.nullable(),
-            priceRange: shopifyProductPriceRangeSchema,
-            compareAtPriceRange: shopifyProductPriceRangeSchema,
-          })
-        ),
-      }),
     })
-  ),
+    .array(),
 })
 
-export type ShopifySectionSchema = z.infer<typeof shopifySectionSchema>
+export type ShopifyMenuSchema = z.infer<typeof shopifyMenuSchema>
+
+export const shopifyLayoutSchema = z.object({
+  fields: z
+    .object({
+      key: z.string(),
+      value: z.string(),
+      reference: z
+        .object({
+          image: shopifyImageSchema,
+        })
+        .nullable(),
+      references: z
+        .object({
+          nodes: shopifyMenuSchema.array(),
+        })
+        .nullable(),
+    })
+    .array(),
+})
+
+export type ShopifyLayoutSchema = z.infer<typeof shopifyLayoutSchema>
 
 // --------------------------------------------------------------------------
-// Pages
+// Responses
 // --------------------------------------------------------------------------
 
-export const shopifyPagesSchema = z.object({
+export const shopifyPagesResponseSchema = z.object({
   pages: z.object({
-    nodes: z
-      .object({
-        id: z.string(),
-        handle: z.string(),
-        title: z.string(),
-        metafield: z.object({
-          references: z.object({
-            nodes: z.array(shopifySectionSchema),
-          }),
-        }),
-        seo: shopifySeoSchema,
-        body: z.string(),
-      })
-      .array(),
-    pageInfo: shopifyPageInfoSchema,
+    nodes: z.array(shopifyPageSchema),
+    pageInfo: z.object({
+      hasNextPage: z.boolean(),
+      endCursor: z.string(),
+    }),
   }),
 })
 
-export type ShopifyPagesSchema = z.infer<typeof shopifyPagesSchema>
+export const shopifyProductsResponseSchema = z.object({
+  products: z.object({
+    nodes: z.array(shopifyPageSchema),
+    pageInfo: z.object({
+      hasNextPage: z.boolean(),
+      endCursor: z.string(),
+    }),
+  }),
+})
+
+export const shopifyCollectionsResponseSchema = z.object({
+  collections: z.object({
+    nodes: z.array(shopifyPageSchema),
+    pageInfo: z.object({
+      hasNextPage: z.boolean(),
+      endCursor: z.string(),
+    }),
+  }),
+})
+
+export const shopifyLayoutResponseSchema = z.object({
+  metaobject: shopifyLayoutSchema,
+})
