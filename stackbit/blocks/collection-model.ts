@@ -1,5 +1,4 @@
 import { type PageModel } from "@stackbit/types"
-import config from "fulldev.json"
 import { descriptionField } from "stackbit/components/description-field"
 import { imageField } from "stackbit/components/image-field"
 import { sectionsField } from "stackbit/components/sections-field"
@@ -12,18 +11,17 @@ export const collectionModel = {
   type: "page",
   urlPath: "/{slug}",
   filePath: `src/content/pages/{slug}.md`,
-  hidden: !config.models.collections,
   fields: [
     variantField,
     titleField,
     descriptionField,
     imageField,
     {
-      name: "products",
+      name: "items",
       type: "list",
       items: {
         type: "reference",
-        models: ["product"],
+        models: ["product", "shopify-product"],
       },
     },
     sectionsField,

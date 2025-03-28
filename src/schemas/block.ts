@@ -7,16 +7,11 @@ import { logoSchema } from "@/schemas/fields/logo"
 import { menuSchema } from "@/schemas/fields/menu"
 import { priceSchema } from "@/schemas/fields/price"
 import { itemSchema } from "@/schemas/item"
-import { reference } from "astro:content"
 import { z } from "zod"
-
-import { importSchema } from "./fields/import"
 
 export const blockSchema = z
   .object({
     id: z.string(),
-    type: z.string(),
-    variant: z.number(),
     className: z.string(),
     level: z.number().min(1).max(3),
     align: z.enum(["start", "center", "end"]),
@@ -36,9 +31,8 @@ export const blockSchema = z
     menus: menuSchema.array(),
     variants: z.any(),
     cart: z.boolean(),
-    items: importSchema.pipe(itemSchema).or(itemSchema).array(),
+    items: itemSchema.array(),
   })
   .partial()
-  .strict()
 
 export type BlockSchema = z.infer<typeof blockSchema>

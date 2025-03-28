@@ -1,4 +1,5 @@
 import * as React from "react"
+import config from "@/data/config.json"
 import { cartTotalQuantity } from "@/stores/shopify"
 import { useStore } from "@nanostores/react"
 import {
@@ -18,7 +19,6 @@ import type {
   Cart,
   CartLine,
 } from "@shopify/hydrogen-react/storefront-api-types"
-import config from "fulldev.json"
 import { ShoppingBag, Trash } from "lucide-react"
 
 import { cn } from "@/lib/utils"

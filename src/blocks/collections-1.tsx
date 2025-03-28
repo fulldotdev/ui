@@ -46,7 +46,7 @@ function Collections1({
                 href={href}
               >
                 <Image
-                  className="aspect-square rounded-lg transition-opacity group-hover:opacity-75"
+                  className="bg-muted ring-muted aspect-square rounded-md object-contain p-4 ring-1 transition-opacity group-hover:opacity-75"
                   {...image}
                 />
                 <Title className="font-medium" level={level + 1} text={title} />

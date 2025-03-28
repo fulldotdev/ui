@@ -22,6 +22,8 @@ import { productModel } from "stackbit/blocks/product-model"
 import { productsModel } from "stackbit/blocks/products-model"
 import { reviewModel } from "stackbit/blocks/review-model"
 import { reviewsModel } from "stackbit/blocks/reviews-model"
+import { shopifyCollectionModel } from "stackbit/blocks/shopify-collection-model"
+import { shopifyProductModel } from "stackbit/blocks/shopify-product-model"
 
 export default defineStackbitConfig({
   stackbitVersion: "~0.6.0",
@@ -67,6 +69,8 @@ export default defineStackbitConfig({
         productsModel,
         reviewModel,
         reviewsModel,
+        shopifyCollectionModel,
+        shopifyProductModel,
       ],
       assetsConfig: {
         referenceType: "static",

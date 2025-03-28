@@ -1,5 +1,4 @@
 import { type ObjectModel } from "@stackbit/types"
-import config from "fulldev.json"
 import { alignField } from "stackbit/components/align-field"
 import { buttonsField } from "stackbit/components/buttons-field"
 import { descriptionField } from "stackbit/components/description-field"
@@ -10,7 +9,6 @@ import { variantField } from "stackbit/components/variant-field"
 export const productsModel = {
   name: "products",
   type: "object",
-  hidden: !config.models.products,
   fields: [
     variantField,
     levelField,
@@ -19,11 +17,11 @@ export const productsModel = {
     descriptionField,
     buttonsField,
     {
-      name: "products",
+      name: "items",
       type: "list",
       items: {
         type: "reference",
-        models: ["product"],
+        models: ["product", "shopify-product"],
       },
     },
   ],

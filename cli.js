@@ -7,20 +7,15 @@ import { hideBin } from "yargs/helpers"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const initFiles = [
-  "src/content",
-  "src/styles",
-  "astro.config.ts",
-  "fulldev.json",
-]
+const initFiles = ["src/content", "src/data", "src/styles", "astro.config.ts"]
 
 const files = [
   "netlify",
-  "src/adapters",
   "src/stores",
   "src/blocks",
   "src/components",
   "src/lib",
+  "src/shopify",
   "src/pages",
   "src/schemas",
   "src/styles/globals.css",
@@ -46,7 +41,7 @@ function pullFiles(files) {
 
     fs.ensureDirSync(targetDir)
     fs.copySync(sourcePath, targetPath)
-    console.log(`Pulled: ${file}`)
+    console.info(`Pulled: ${file}`)
   })
 }
 
@@ -62,7 +57,7 @@ function pushFiles(files) {
 
     // Check if the file exists before trying to copy it
     if (!fs.existsSync(sourcePath)) {
-      console.log(`Skipped: ${file} (does not exist)`)
+      console.info(`Skipped: ${file} (does not exist)`)
       return
     }
 
@@ -73,7 +68,7 @@ function pushFiles(files) {
 
     fs.ensureDirSync(targetDir)
     fs.copySync(sourcePath, targetPath)
-    console.log(`Pushed: ${file}`)
+    console.info(`Pushed: ${file}`)
   })
 }
 

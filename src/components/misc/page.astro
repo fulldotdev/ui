@@ -2,12 +2,14 @@
 import "@/styles/globals.css"
 import "@/styles/theme.css"
 
-import type { PageSchema } from "@/schemas/page"
+import type { Page } from "@/content.config.ts"
 import { SEO } from "astro-seo"
 
 import Block from "@/components/misc/block.astro"
 
-interface Props extends PageSchema {}
+interface Props extends Page {
+  type: string
+}
 
 const {
   lang = "en",
@@ -28,7 +30,8 @@ const {
   ...props
 } = Astro.props
 
-const hasContent = content && content.trim().length > 0
+const slot = await Astro.slots.render("default")
+const hasContent = slot && slot.trim().length > 0
 const isIndex = Astro.url.pathname === "/"
 ---
 
@@ -70,15 +73,17 @@ const isIndex = Astro.url.pathname === "/"
     <Block type="header" search={search} {...header} />
     <main>
       {
-        !isIndex && props.type === "content" && hasContent && (
+        ((!isIndex && props.type === "content" && hasContent) ||
+          props.type !== "content") && (
           <Block
             level={1}
             title={title}
             description={description}
             image={image}
+            usecase="page"
             {...props}
           >
-            <slot />
+            <Fragment set:html={slot} />
           </Block>
         )
       }
@@ -86,6 +91,7 @@ const isIndex = Astro.url.pathname === "/"
       {
         sections?.map((section, i) => (
           <Block
+            usecase="section"
             level={isIndex || (i === 0 && !hasContent) ? 1 : 2}
             {...section}
           />
@@ -94,13 +100,14 @@ const isIndex = Astro.url.pathname === "/"
       {
         isIndex && hasContent && (
           <Block
+            usecase="page"
             level={1}
             title={title}
             description={description}
             image={image}
             {...props}
           >
-            <slot />
+            <Fragment set:html={slot} />
           </Block>
         )
       }

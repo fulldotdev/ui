@@ -1,6 +1,7 @@
 ---
 import { Banner1 } from "@/blocks/banner-1"
 import { Collection1 } from "@/blocks/collection-1"
+import { Collection2 } from "@/blocks/collection-2"
 import { Collections1 } from "@/blocks/collections-1"
 import { Contact1 } from "@/blocks/contact-1"
 import { Contact2 } from "@/blocks/contact-2"
@@ -24,38 +25,45 @@ import { Post1 } from "@/blocks/post-1"
 import { Posts1 } from "@/blocks/posts-1"
 import { Pricings1 } from "@/blocks/pricings-1"
 import { Product1 } from "@/blocks/product-1"
-import { Products1 } from "@/blocks/products-1"
 import { Reviews1 } from "@/blocks/reviews-1"
-import type { BlockSchema } from "@/schemas/block"
-import config from "fulldev.json"
+import type { Block } from "@/content.config"
+import config from "@/data/config.json"
 
-interface Props extends BlockSchema {
-  type?: string
-  variant?: number
+interface Props extends Block {
+  usecase?: "page" | "section"
 }
 
-const defaultProps = config.blocks[
-  Astro.props.type as keyof typeof config.blocks
-] as BlockSchema
+const { type, usecase } = Astro.props
 
-const { type, variant, ...props } = {
+const blockConfig = config.blocks[type as keyof typeof config.blocks]
+
+const blockDefaults =
+  blockConfig && usecase && usecase in blockConfig
+    ? blockConfig[usecase as keyof typeof blockConfig]
+    : blockConfig
+
+const { variant, ...props } = {
   variant: 1,
-  ...defaultProps,
+  ...blockDefaults,
   ...Astro.props,
-}
-
-if (type === "header") {
-  console.log("hero props", props, variant)
 }
 ---
 
 {type === "banner" && variant === 1 && <Banner1 {...props} />}
 
 {
-  type === "collection" && variant === 1 && (
-    <Collection1 client:load {...props}>
+  (type === "collection" || type === "shopify-collection") && variant === 1 && (
+    <Collection1 {...props}>
       <slot />
     </Collection1>
+  )
+}
+
+{
+  (type === "collection" || type === "shopify-collection") && variant === 2 && (
+    <Collection2 client:load {...props}>
+      <slot />
+    </Collection2>
   )
 }
 
@@ -246,18 +254,10 @@ if (type === "header") {
 }
 
 {
-  type === "product" && variant === 1 && (
+  (type === "product" || type === "shopify-product") && variant === 1 && (
     <Product1 client:load {...props}>
       <slot />
     </Product1>
-  )
-}
-
-{
-  type === "products" && variant === 1 && (
-    <Products1 {...props}>
-      <slot />
-    </Products1>
   )
 }
 

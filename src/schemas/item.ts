@@ -8,6 +8,7 @@ export const itemSchema = z
   .object({
     text: z.string(),
     href: z.string(),
+    icon: z.string(),
     image: imageSchema,
     rating: z.number(),
     title: z.string(),
@@ -18,6 +19,5 @@ export const itemSchema = z
     list: z.string().array(),
   })
   .partial()
-  .strict()
 
 export type ItemSchema = z.infer<typeof itemSchema>

@@ -17,7 +17,7 @@ export const featuresModel = {
     descriptionField,
     buttonsField,
     {
-      name: "features",
+      name: "items",
       type: "list",
       items: {
         type: "object",

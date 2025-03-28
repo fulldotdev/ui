@@ -1,5 +1,4 @@
 import { type ObjectModel } from "@stackbit/types"
-import config from "fulldev.json"
 import { alignField } from "stackbit/components/align-field"
 import { buttonsField } from "stackbit/components/buttons-field"
 import { descriptionField } from "stackbit/components/description-field"
@@ -10,7 +9,6 @@ import { variantField } from "stackbit/components/variant-field"
 export const locationsModel = {
   name: "locations",
   type: "object",
-  hidden: !config.models.locations,
   fields: [
     variantField,
     levelField,
@@ -19,30 +17,12 @@ export const locationsModel = {
     descriptionField,
     buttonsField,
     {
-      name: "locations",
-      type: "reference",
+      name: "items",
+      type: "list",
       items: {
-        type: "object",
-        fields: [],
+        type: "reference",
+        models: ["location"],
       },
     },
   ],
 } satisfies ObjectModel
-
-banner = block
-collection = block
-collections = block
-cta = block
-faqs = block
-features = block
-hero = block
-header = block
-footer = block
-features = block
-posts = page
-pricing = block
-product = block
-review = block
-shop = block
-
-// ALLES als page met live preview

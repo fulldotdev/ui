@@ -17,7 +17,7 @@ export const pricingsModel = {
     descriptionField,
     buttonsField,
     {
-      name: "pricings",
+      name: "items",
       type: "list",
       items: {
         type: "object",

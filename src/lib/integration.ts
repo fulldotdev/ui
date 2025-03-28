@@ -1,33 +1,21 @@
 import type { AstroIntegration } from "astro"
 
-interface Config {
-  models: {
-    pages: boolean
-    posts: boolean
-    persons: boolean
-    locations: boolean
-    products: boolean
-    collections: boolean
-  }
-  shopify?: {
-    storeDomain: string
-    publicAccessToken: string
-    productsFolder: string
-    collectionsFolder: string
-  }
-}
+import config from "../data/config.json"
+import { syncCollections, syncProducts } from "../shopify/sync"
 
-export default function fulldevIntegration(config?: Config): AstroIntegration {
+export default function fulldevIntegration(): AstroIntegration {
   return {
     name: "/integration",
     hooks: {
-      "astro:config:setup": async ({ injectScript }) => {
-        // injectScript("page-ssr", `import "@/styles/globals.css";`)
-        // injectScript("page-ssr", `import "@/styles/theme.css";`)
-        // if ("shopify" in config && config.shopify) {
-        // await syncShopifyProducts(config.shopify)
-        // await syncShopifyCollections(config.shopify)
-        // }
+      "astro:config:setup": async () => {
+        if (
+          "shopify" in config &&
+          "storeDomain" in config.shopify &&
+          "publicAccessToken" in config.shopify
+        ) {
+          syncCollections()
+          syncProducts()
+        }
       },
     },
   }
