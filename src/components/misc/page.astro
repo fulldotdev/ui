@@ -8,7 +8,7 @@ import { SEO } from "astro-seo"
 import Block from "@/components/misc/block.astro"
 
 interface Props extends Page {
-  type: string
+  pathname?: string
 }
 
 const {
@@ -27,6 +27,7 @@ const {
   seo,
   sections,
   content,
+  pathname,
   ...props
 } = Astro.props
 
@@ -68,7 +69,7 @@ const isIndex = Astro.url.pathname === "/"
     ></script> -->
     <Fragment set:html={head} />
   </head>
-  <body data-sb-object-id={Astro.url.pathname}>
+  <body data-sb-object-id={pathname}>
     <Block type="banner" {...banner} />
     <Block type="header" search={search} {...header} />
     <main>
@@ -81,6 +82,7 @@ const isIndex = Astro.url.pathname === "/"
             description={description}
             image={image}
             usecase="page"
+            data-sb-field-path="."
             {...props}
           >
             <Fragment set:html={slot} />
@@ -93,6 +95,7 @@ const isIndex = Astro.url.pathname === "/"
           <Block
             usecase="section"
             level={isIndex || (i === 0 && !hasContent) ? 1 : 2}
+            data-sb-field-path={`sections.${i}`}
             {...section}
           />
         ))
@@ -105,6 +108,7 @@ const isIndex = Astro.url.pathname === "/"
             title={title}
             description={description}
             image={image}
+            data-sb-field-path="."
             {...props}
           >
             <Fragment set:html={slot} />

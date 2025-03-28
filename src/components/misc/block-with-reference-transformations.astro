@@ -1,7 +1,6 @@
 ---
 import { Banner1 } from "@/blocks/banner-1"
 import { Collection1 } from "@/blocks/collection-1"
-import { Collection2 } from "@/blocks/collection-2"
 import { Collections1 } from "@/blocks/collections-1"
 import { Contact1 } from "@/blocks/contact-1"
 import { Contact2 } from "@/blocks/contact-2"
@@ -25,66 +24,81 @@ import { Post1 } from "@/blocks/post-1"
 import { Posts1 } from "@/blocks/posts-1"
 import { Pricings1 } from "@/blocks/pricings-1"
 import { Product1 } from "@/blocks/product-1"
+import { Products1 } from "@/blocks/products-1"
 import { Reviews1 } from "@/blocks/reviews-1"
-import type { Block } from "@/content.config"
-import config from "@/data/config.json"
-import { getEntry } from "astro:content"
+import { getEntries } from "astro:content"
 
 import { getHref } from "@/lib/get-href"
 
-interface Props extends Block {
-  usecase?: "page" | "section"
+let { type, variant, ...props } = Astro.props
+
+if (props.pages) {
+  const entries = await getEntries(props.pages)
+  const mapped = entries.map((entry: any) => ({
+    href: getHref(entry?.id),
+    ...entry?.data,
+  }))
+  props.pages = mapped
 }
 
-const { type, usecase } = Astro.props
-
-const blockConfig = config.blocks[type as keyof typeof config.blocks]
-
-const blockDefaults =
-  blockConfig && usecase && usecase in blockConfig
-    ? blockConfig[usecase as keyof typeof blockConfig]
-    : blockConfig
-
-const { variant, ...props } = {
-  variant: 1,
-  ...blockDefaults,
-  ...Astro.props,
+if (props.posts) {
+  const entries = await getEntries(props.posts)
+  const mapped = entries.map((entry: any) => ({
+    href: getHref(entry?.id),
+    ...entry?.data,
+  }))
+  props.posts = mapped
 }
 
-props.items = props.items
-  ? await Promise.all(
-      props.items.map(async (item: any) => {
-        if (item.collection && item.id) {
-          const entry = await getEntry(item.collection, item.id)
-          if (!entry) {
-            throw new Error(`${item.collection}/${item.id} not found`)
-          }
-          return {
-            href: getHref(entry),
-            ...entry.data,
-          }
-        }
-        return item
-      })
-    )
-  : undefined
+if (props.persons) {
+  const entries = await getEntries(props.persons)
+  const mapped = entries.map((entry: any) => ({
+    href: getHref(entry?.id),
+    ...entry?.data,
+  }))
+  props.persons = mapped
+}
+
+if (props.locations) {
+  const entries = await getEntries(props.locations)
+  const mapped = entries.map((entry: any) => ({
+    href: getHref(entry?.id),
+    ...entry?.data,
+  }))
+  props.locations = mapped
+}
+
+if (props.collections) {
+  const entries = await getEntries(props.collections)
+  const mapped = entries.map((entry: any) => ({
+    href: getHref(entry?.id),
+    ...entry?.data,
+  }))
+  props.collections = mapped
+}
+
+if (props.products) {
+  const entries = await getEntries(props.products)
+  const mapped = entries.map((entry: any) => ({
+    href: getHref(entry?.id),
+    image: entry?.data?.images?.[0],
+    ...entry?.data,
+  }))
+  props.products = mapped
+}
+
+if (props.reviews) {
+  const entries = await getEntries(props.reviews)
+  const mapped = entries.map((entry: any) => entry.data)
+  props.reviews = mapped
+}
 ---
 
 {type === "banner" && variant === 1 && <Banner1 {...props} />}
 
 {
   type === "collection" && variant === 1 && (
-    <Collection1 {...props}>
-      <slot />
-    </Collection1>
-  )
-}
-
-{
-  type === "collection" && variant === 2 && (
-    <Collection2 client:load {...props}>
-      <slot />
-    </Collection2>
+    <Collection1 client:load {...props} />
   )
 }
 
@@ -276,9 +290,17 @@ props.items = props.items
 
 {
   type === "product" && variant === 1 && (
-    <Product1 client:load {...props}>
+    <Product1 {...props}>
       <slot />
     </Product1>
+  )
+}
+
+{
+  type === "products" && variant === 1 && (
+    <Products1 {...props}>
+      <slot />
+    </Products1>
   )
 }
 

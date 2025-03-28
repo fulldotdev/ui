@@ -1,18 +1,14 @@
-import { type ObjectModel } from "@stackbit/types"
-import { alignField } from "stackbit/components/align-field"
+import { type DataModel } from "@stackbit/types"
 import { buttonsField } from "stackbit/components/buttons-field"
 import { descriptionField } from "stackbit/components/description-field"
-import { levelField } from "stackbit/components/level-field"
 import { titleField } from "stackbit/components/title-field"
-import { variantField } from "stackbit/components/variant-field"
 
 export const faqsModel = {
   name: "faqs",
-  type: "object",
+  label: "FAQ's blok",
+  type: "data",
+  filePath: `src/content/blocks/{slug}.md`,
   fields: [
-    variantField,
-    levelField,
-    alignField,
     titleField,
     descriptionField,
     buttonsField,
@@ -25,4 +21,4 @@ export const faqsModel = {
       },
     },
   ],
-} satisfies ObjectModel
+} satisfies DataModel

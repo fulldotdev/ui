@@ -19,7 +19,7 @@ function Hero3({
   image,
   className,
   ...props
-}: BlockSchema & React.ComponentProps<typeof Section>) {
+}: BlockSchema) {
   return (
     <Section
       className={cn(

@@ -45,7 +45,7 @@ export function transformShopifyProduct(product: Product): {
     collection: "pages",
     id: `products/${product.handle}`,
     data: {
-      type: "shopify-product",
+      type: "product",
       id: product.id,
       title: product.title,
       image: product.featuredImage
@@ -80,7 +80,7 @@ export function transformShopifyCollection(collection: Collection): {
     collection: "pages",
     id: `collections/${collection.handle}`,
     data: {
-      type: "shopify-collection",
+      type: "collection",
       id: collection.id,
       title: collection.title,
       image: collection.image

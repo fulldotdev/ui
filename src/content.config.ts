@@ -6,43 +6,40 @@ import { glob } from "astro/loaders"
 import { z } from "zod"
 
 // Helper schema for content file references with auto-loaded frontmatter
-export const referenceSchema = z.string().transform(async (path) => {
-  const allEntries = import.meta.glob("src/content/**/**/*.{md,mdx}")
+export const pathSchema = z
+  .string()
+  .transform(async (path) => {
+    const contentPath = path.split("content/")[1]
+    const collection = contentPath.split("/")[0]
+    const filePath = contentPath.split("/").slice(1).join("/")
+    const id = filePath.split(".")[0]
 
-  const foundKey = Object.keys(allEntries).find((key) => key.endsWith(path))
+    return {
+      collection,
+      id,
+    }
+  })
+  .pipe(
+    z.object({
+      collection: z.string(),
+      id: z.string(),
+    })
+  )
 
-  if (!foundKey) {
-    throw new Error(`Referenced file not found: ${path}`)
-  }
+const itemOrPath = z.union([pathSchema, itemSchema])
 
-  const foundValue = allEntries[foundKey]
-  if (!foundValue) return path
-
-  const loadedFile = await foundValue()
-  if (!loadedFile) return path
-  if (typeof loadedFile !== "object") return path
-  if (!("frontmatter" in loadedFile)) return path
-  return loadedFile.frontmatter
-})
-
-// Helper schema for auto-loading frontmatter from referenced content files
 const block = blockSchema.extend({
   type: z.string(),
-  items: z
-    .array(z.union([referenceSchema.pipe(itemSchema), itemSchema]))
-    .optional(),
+  items: z.array(itemOrPath).optional(),
 })
 
-// Helper schema for auto-loading frontmatter from referenced content files
-const blockOrReference = z.union([referenceSchema.pipe(block), block])
-
-// Helper schema for auto-loading frontmatter from referenced content files
+const blockOrPath = z.union([pathSchema, block])
 const page = pageSchema.extend({
   type: z.string(),
-  banner: blockOrReference.optional(),
-  header: blockOrReference.optional(),
-  sections: blockOrReference.array().optional(),
-  footer: blockOrReference.optional(),
+  banner: blockOrPath.optional(),
+  header: blockOrPath.optional(),
+  sections: blockOrPath.array().optional(),
+  footer: blockOrPath.optional(),
 })
 
 export const collections = {
@@ -59,13 +56,6 @@ export const collections = {
       base: `./src/content/blocks`,
     }),
     schema: block,
-  }),
-  items: defineCollection({
-    loader: glob({
-      pattern: "**/[^_]*.{md,mdx}",
-      base: `./src/content/items`,
-    }),
-    schema: itemSchema,
   }),
 }
 

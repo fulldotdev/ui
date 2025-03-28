@@ -9,5 +9,4 @@ export const alignField: FieldEnum = {
     { label: "End", value: "end" },
   ],
   default: "center",
-  group: "settings",
 }

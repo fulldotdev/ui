@@ -19,9 +19,10 @@ function Hero1({
   buttons,
   image,
   className,
+  ...props
 }: BlockSchema) {
   return (
-    <Section id={id} className={cn(className)}>
+    <Section id={id} className={cn(className)} {...props}>
       <Container>
         <Column align={align}>
           <Title size="6xl" level={level} align={align} text={title} />

@@ -7,5 +7,4 @@ export const levelField: FieldNumber = {
   min: 1,
   max: 3,
   controlType: "slider",
-  group: "settings",
 }

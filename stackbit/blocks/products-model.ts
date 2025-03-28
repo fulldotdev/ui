@@ -1,18 +1,13 @@
-import { type ObjectModel } from "@stackbit/types"
-import { alignField } from "stackbit/components/align-field"
+import { type DataModel } from "@stackbit/types"
 import { buttonsField } from "stackbit/components/buttons-field"
 import { descriptionField } from "stackbit/components/description-field"
-import { levelField } from "stackbit/components/level-field"
 import { titleField } from "stackbit/components/title-field"
-import { variantField } from "stackbit/components/variant-field"
 
 export const productsModel = {
   name: "products",
-  type: "object",
+  type: "data",
+  filePath: `src/content/blocks/{slug}.md`,
   fields: [
-    variantField,
-    levelField,
-    alignField,
     titleField,
     descriptionField,
     buttonsField,
@@ -21,8 +16,8 @@ export const productsModel = {
       type: "list",
       items: {
         type: "reference",
-        models: ["product", "shopify-product"],
+        models: ["product"],
       },
     },
   ],
-} satisfies ObjectModel
+} satisfies DataModel

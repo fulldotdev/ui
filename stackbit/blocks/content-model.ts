@@ -1,12 +1,14 @@
-import { type ObjectModel } from "@stackbit/types"
-import { alignField } from "stackbit/components/align-field"
+import { type PageModel } from "@stackbit/types"
 import { descriptionField } from "stackbit/components/description-field"
-import { levelField } from "stackbit/components/level-field"
+import { sectionsField } from "stackbit/components/sections-field"
+import { seoField } from "stackbit/components/seo-field"
 import { titleField } from "stackbit/components/title-field"
-import { variantField } from "stackbit/components/variant-field"
 
 export const contentModel = {
   name: "content",
-  type: "object",
-  fields: [variantField, levelField, alignField, titleField, descriptionField],
-} satisfies ObjectModel
+  label: "Content",
+  type: "page",
+  urlPath: "/{slug}",
+  filePath: `src/content/pages/{slug}.md`,
+  fields: [titleField, descriptionField, sectionsField, seoField],
+} satisfies PageModel

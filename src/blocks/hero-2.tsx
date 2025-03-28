@@ -19,7 +19,7 @@ function Hero2({
   image,
   className,
   ...props
-}: BlockSchema & React.ComponentProps<typeof Section>) {
+}: BlockSchema) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>

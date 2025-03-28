@@ -22,12 +22,12 @@ function Collections1({
   items,
   className,
   ...props
-}: BlockSchema & React.ComponentProps<typeof Section>) {
+}: BlockSchema) {
   return (
     <Section className={cn(className)} {...props}>
       <Container>
         <Column align={align}>
-          <Title size="4xl" level={level} align={align} text={title} />
+          <Title size="3xl" level={level} align={align} text={title} />
           <Description
             className="not-first:mt-4"
             align={align}
@@ -38,18 +38,19 @@ function Collections1({
             align={align}
             buttons={buttons}
           />
-          <Grid className="not-first:mt-16 first:mt-0">
+          <Grid className="gap-4 not-first:mt-8 first:mt-0">
             {items?.map(({ href, title, image }) => (
-              <Link
-                className="group flex flex-col gap-4"
-                key={uuidv4()}
-                href={href}
-              >
+              <Link className="group flex flex-col" key={uuidv4()} href={href}>
                 <Image
                   className="bg-muted ring-muted aspect-square rounded-md object-contain p-4 ring-1 transition-opacity group-hover:opacity-75"
                   {...image}
                 />
-                <Title className="font-medium" level={level + 1} text={title} />
+                <Title
+                  size="lg"
+                  className="font-medium not-first:mt-4"
+                  level={level + 1}
+                  text={title}
+                />
               </Link>
             ))}
           </Grid>

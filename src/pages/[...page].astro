@@ -1,6 +1,6 @@
 ---
 import settings from "@/data/settings.json"
-import { getCollection, render } from "astro:content"
+import { getCollection, getEntry, render } from "astro:content"
 
 import { getHref } from "@/lib/get-href"
 import { getSlug } from "@/lib/get-slug"
@@ -26,8 +26,31 @@ export async function getStaticPaths() {
 
 const { page, search } = Astro.props
 const { Content } = await render(page)
+
+const { sections: sectionsOrRef, ...data } = page.data
+
+const sections = sectionsOrRef
+  ? await Promise.all(
+      sectionsOrRef.map(async (section: any) => {
+        if (section.collection && section.id) {
+          const entry = await getEntry(section.collection, section.id)
+          if (!entry) {
+            throw new Error(`${section.collection}/${section.id} not found`)
+          }
+          return entry.data
+        }
+        return section
+      })
+    )
+  : undefined
 ---
 
-<Page search={search} {...page.data} {...settings}>
+<Page
+  search={search}
+  sections={sections}
+  {...data}
+  {...settings}
+  pathname={page.filePath}
+>
   <Content />
 </Page>

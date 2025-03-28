@@ -13,7 +13,7 @@ import { Price } from "@/components/price"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
-function Collection1({
+function Products1({
   level = 2,
   align,
   title,
@@ -26,7 +26,7 @@ function Collection1({
   return (
     <Section className={cn(className)} {...props}>
       <Container>
-        <Title level={level} size="3xl" align={align} text={title} />
+        <Title level={level} size="4xl" align={align} text={title} />
         <Description
           className="not-first:mt-4"
           align={align}
@@ -37,24 +37,25 @@ function Collection1({
           align={align}
           buttons={buttons}
         />
-        <Grid className="gap-x-4 gap-y-8 not-first:mt-8">
+        <Grid className="gap-x-4 gap-y-8 not-first:mt-16">
           {items?.map(({ href, title, image, price }) => (
-            <Link className="group flex flex-col" key={uuidv4()} href={href}>
+            <Link
+              className="group flex flex-col gap-4"
+              key={uuidv4()}
+              href={href}
+            >
               <Image
                 className="bg-muted ring-muted aspect-square rounded-md object-contain p-4 ring-1 transition-opacity group-hover:opacity-75"
                 {...image}
               />
               <Title
-                className="text-sm not-first:mt-4"
+                className="text-sm"
                 level={level + 1}
                 size="xl"
                 align={align}
                 text={title}
               />
-              <Price
-                className="text-muted-foreground text-sm not-first:mt-2"
-                {...price}
-              />
+              <Price className="text-muted-foreground text-sm" {...price} />
             </Link>
           ))}
         </Grid>
@@ -64,4 +65,4 @@ function Collection1({
   )
 }
 
-export { Collection1 }
+export { Products1 }

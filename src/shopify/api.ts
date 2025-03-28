@@ -6,6 +6,7 @@ import type {
 } from "@shopify/hydrogen-react/storefront-api-types"
 
 import config from "../data/config.json"
+import { hasShopify } from "../lib/has-shopify"
 import { ShopifyCollectionsQuery, ShopifyProductsQuery } from "./queries"
 import {
   transformShopifyCollection,
@@ -17,11 +18,7 @@ import {
 // --------------------------------------------------------------------------
 
 export async function query(query: string, variables?: Record<string, any>) {
-  if (
-    !("shopify" in config) ||
-    !("storeDomain" in config.shopify) ||
-    !("publicAccessToken" in config.shopify)
-  ) {
+  if (!hasShopify()) {
     throw new Error("Shopify requested, but no config found")
   }
 
