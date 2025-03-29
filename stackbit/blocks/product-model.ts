@@ -8,7 +8,7 @@ import { titleField } from "stackbit/components/title-field"
 
 export const productModel = {
   name: "product",
-  label: "Producten",
+  label: "Product",
   type: "page",
   urlPath: "/{slug}",
   filePath: `src/content/pages/{slug}.md`,

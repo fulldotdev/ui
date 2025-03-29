@@ -46,7 +46,10 @@ const allModels = [
 ]
 
 const filteredModels = allModels.filter((model) => {
-  return model.name in config.blocks
+  return (
+    model.name in config.blocks &&
+    config.blocks[model.name as keyof typeof config.blocks].variant
+  )
 })
 
 export default defineStackbitConfig({

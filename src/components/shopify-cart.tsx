@@ -21,6 +21,7 @@ import type {
 } from "@shopify/hydrogen-react/storefront-api-types"
 import { ShoppingBag, Trash } from "lucide-react"
 
+import { hasShopify } from "@/lib/has-shopify"
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -40,30 +41,32 @@ function ShopifyCart({ className }: Props) {
   const [rerenderKey, setRerenderKey] = React.useState(0)
 
   return (
-    <Sheet onOpenChange={() => setRerenderKey((prev) => prev + 1)}>
-      <SheetTrigger asChild>
-        <Button
-          className={cn("relative", className)}
-          variant="ghost"
-          name="drawer-trigger"
+    hasShopify() && (
+      <Sheet onOpenChange={() => setRerenderKey((prev) => prev + 1)}>
+        <SheetTrigger asChild>
+          <Button
+            className={cn("relative", className)}
+            variant="ghost"
+            name="drawer-trigger"
+          >
+            <ShoppingBag className="size-5" />
+            <span className="text-muted-foreground">{$cartTotalQuantity}</span>
+          </Button>
+        </SheetTrigger>
+        <ShopifyProvider
+          key={rerenderKey}
+          countryIsoCode="NL"
+          languageIsoCode="NL"
+          storefrontApiVersion="2025-01"
+          storeDomain={config.shopify.storeDomain}
+          storefrontToken={config.shopify.publicAccessToken}
         >
-          <ShoppingBag className="size-5" />
-          <span className="text-muted-foreground">{$cartTotalQuantity}</span>
-        </Button>
-      </SheetTrigger>
-      <ShopifyProvider
-        key={rerenderKey}
-        countryIsoCode="NL"
-        languageIsoCode="NL"
-        storefrontApiVersion="2025-01"
-        storeDomain={config.shopify.storeDomain}
-        storefrontToken={config.shopify.publicAccessToken}
-      >
-        <CartProvider>
-          <ShopifyCartContent />
-        </CartProvider>
-      </ShopifyProvider>
-    </Sheet>
+          <CartProvider>
+            <ShopifyCartContent />
+          </CartProvider>
+        </ShopifyProvider>
+      </Sheet>
+    )
   )
 }
 

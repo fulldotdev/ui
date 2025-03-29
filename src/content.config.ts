@@ -29,13 +29,32 @@ export const pathSchema = z
 const itemOrPath = z.union([pathSchema, itemSchema])
 
 const block = blockSchema.extend({
-  type: z.string(),
+  type: z.enum([
+    "collection",
+    "collections",
+    "contact",
+    "content",
+    "cta",
+    "faqs",
+    "features",
+    "footer",
+    "header",
+    "hero",
+    "locations",
+    "media",
+    "pages",
+    "persons",
+    "posts",
+    "pricing",
+    "products",
+    "reviews",
+  ]),
   items: z.array(itemOrPath).optional(),
 })
 
 const blockOrPath = z.union([pathSchema, block])
 const page = pageSchema.extend({
-  type: z.string(),
+  type: z.enum(["content", "page", "collection", "post", "person", "location"]),
   banner: blockOrPath.optional(),
   header: blockOrPath.optional(),
   sections: blockOrPath.array().optional(),
@@ -51,6 +70,13 @@ export const collections = {
     schema: page,
   }),
   blocks: defineCollection({
+    loader: glob({
+      pattern: "**/[^_]*.{md,mdx}",
+      base: `./src/content/blocks`,
+    }),
+    schema: block,
+  }),
+  data: defineCollection({
     loader: glob({
       pattern: "**/[^_]*.{md,mdx}",
       base: `./src/content/blocks`,

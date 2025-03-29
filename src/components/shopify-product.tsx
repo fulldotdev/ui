@@ -23,6 +23,7 @@ import type {
 } from "@shopify/hydrogen-react/storefront-api-types"
 import { Loader2, Minus, Plus, ShoppingBag, Trash } from "lucide-react"
 
+import { hasShopify } from "@/lib/has-shopify"
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -43,19 +44,21 @@ interface Props {
 
 function ShopifyProduct(product: Props) {
   return (
-    <ShopifyProvider
-      countryIsoCode="NL"
-      languageIsoCode="NL"
-      storefrontApiVersion="2025-01"
-      storeDomain={config.shopify.storeDomain}
-      storefrontToken={config.shopify.publicAccessToken}
-    >
-      <CartProvider>
-        <ProductProvider data={product}>
-          <ShopifyProductContent />
-        </ProductProvider>
-      </CartProvider>
-    </ShopifyProvider>
+    hasShopify() && (
+      <ShopifyProvider
+        countryIsoCode="NL"
+        languageIsoCode="NL"
+        storefrontApiVersion="2025-01"
+        storeDomain={config.shopify.storeDomain}
+        storefrontToken={config.shopify.publicAccessToken}
+      >
+        <CartProvider>
+          <ProductProvider data={product}>
+            <ShopifyProductContent />
+          </ProductProvider>
+        </CartProvider>
+      </ShopifyProvider>
+    )
   )
 }
 
