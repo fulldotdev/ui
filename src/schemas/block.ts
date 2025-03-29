@@ -17,6 +17,8 @@ export const blockSchema = z
     align: z.enum(["start", "center", "end"]),
     title: z.string(),
     description: z.string(),
+    when: z.string(),
+    where: z.string(),
     content: z.string(),
     buttons: buttonSchema.array(),
     image: imageSchema,

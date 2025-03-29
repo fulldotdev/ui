@@ -2,6 +2,7 @@ import { type FieldNumber } from "@stackbit/types"
 
 export const ratingField: FieldNumber = {
   name: "rating",
+  label: "Beoordeling",
   type: "number",
   min: 0,
   max: 5,

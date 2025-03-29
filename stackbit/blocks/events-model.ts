@@ -5,7 +5,7 @@ import { titleField } from "stackbit/components/title-field"
 
 export const eventsModel = {
   name: "events",
-  label: "Events blok",
+  label: "Evenementen blok",
   type: "data",
   filePath: `src/content/blocks/{slug}.md`,
   fields: [

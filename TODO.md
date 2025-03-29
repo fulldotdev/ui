@@ -32,3 +32,7 @@ wordt
 ```
 
 Ook bestaan pages dan ALLEEN maar uit blocks. Dus product-page gebruikt product-block.
+
+## stakcbit
+
+slug field volledig weghalen, alleen nog maar title field en slug op basis hiervan generaten. Title is dan direct mooi required.
