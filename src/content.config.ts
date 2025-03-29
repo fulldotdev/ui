@@ -40,6 +40,7 @@ const block = blockSchema.extend({
     "footer",
     "header",
     "hero",
+    "events",
     "locations",
     "media",
     "pages",
@@ -54,7 +55,7 @@ const block = blockSchema.extend({
 
 const blockOrPath = z.union([pathSchema, block])
 const page = pageSchema.extend({
-  type: z.enum(["content", "page", "collection", "post", "person", "location"]),
+  type: z.enum(["content", "page", "collection", "post", "person", "event"]),
   banner: blockOrPath.optional(),
   header: blockOrPath.optional(),
   sections: blockOrPath.array().optional(),

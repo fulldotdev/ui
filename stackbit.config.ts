@@ -6,6 +6,8 @@ import { collectionsModel } from "stackbit/blocks/collections-model"
 import { contactModel } from "stackbit/blocks/contact-model"
 import { contentModel } from "stackbit/blocks/content-model"
 import { ctaModel } from "stackbit/blocks/cta-model"
+import { eventModel } from "stackbit/blocks/event-model"
+import { eventsModel } from "stackbit/blocks/events-model"
 import { faqsModel } from "stackbit/blocks/faqs-model"
 import { featuresModel } from "stackbit/blocks/features-model"
 import { heroModel } from "stackbit/blocks/hero-model"
@@ -31,6 +33,8 @@ const allModels = [
   faqsModel,
   featuresModel,
   heroModel,
+  eventModel,
+  eventsModel,
   locationModel,
   locationsModel,
   mediaModel,
