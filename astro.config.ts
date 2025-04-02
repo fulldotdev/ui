@@ -3,7 +3,6 @@ import sitemap from "@astrojs/sitemap"
 import tailwindcss from "@tailwindcss/vite"
 import robotsTxt from "astro-robots-txt"
 import { defineConfig, envField } from "astro/config"
-import graphqlLoader from "vite-plugin-graphql-loader"
 
 import integration from "./src/lib/integration"
 
@@ -31,6 +30,6 @@ export default defineConfig({
   },
   integrations: [robotsTxt(), sitemap(), react(), integration()],
   vite: {
-    plugins: [tailwindcss(), graphqlLoader()],
+    plugins: [tailwindcss()],
   },
 })
