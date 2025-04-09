@@ -13,7 +13,7 @@ import { Price } from "@/components/price"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
-function Collection1({
+function Blog1({
   level = 2,
   align,
   title,
@@ -64,4 +64,4 @@ function Collection1({
   )
 }
 
-export { Collection1 }
+export { Blog1 }

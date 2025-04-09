@@ -7,11 +7,11 @@ import { Container } from "@/components/container"
 import { Description } from "@/components/description"
 import { Image } from "@/components/image"
 import { Link } from "@/components/link"
-import { Row } from "@/components/row"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
+import { Wrap } from "@/components/wrap"
 
-function Hero2({
+function Hero4({
   level = 1,
   align,
   title,
@@ -22,8 +22,18 @@ function Hero2({
   ...props
 }: BlockSchema) {
   return (
-    <Section className={cn(className)} {...props}>
-      <Container>
+    <Section
+      className={cn(
+        "bg-background -mt-header mb-16 flex min-h-screen items-center md:py-32",
+        className
+      )}
+      {...props}
+    >
+      <Image
+        className="absolute top-0 left-0 size-full object-cover opacity-40"
+        {...image}
+      />
+      <Container className="pt-header relative h-full justify-center">
         <Column align={align}>
           <Title size="6xl" level={level} align={align} text={title} />
           <Description
@@ -32,18 +42,17 @@ function Hero2({
             align={align}
             text={description}
           />
-          <Row className="flex-wrap not-first:mt-8" align={align}>
+          <Wrap className="not-first:mt-8">
             {buttons?.map(({ text, href, ...button }) => (
               <Button asChild key={uuid()} size="lg" {...button}>
                 <Link href={href}>{text}</Link>
               </Button>
             ))}
-          </Row>
-          <Image className="rounded-lg not-first:mt-16" {...image} />
+          </Wrap>
         </Column>
       </Container>
     </Section>
   )
 }
 
-export { Hero2 }
+export { Hero4 }

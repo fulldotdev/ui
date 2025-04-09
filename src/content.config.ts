@@ -49,17 +49,43 @@ const block = blockSchema.extend({
     "pricing",
     "products",
     "reviews",
+    "blogs",
+    "articles",
+    "blog",
+    "article",
+    "product",
+    "pricing",
+    "banner",
+    "location",
+    "event",
+    "post",
+    "header",
+    "footer",
   ]),
   items: z.array(itemOrPath).optional(),
 })
 
 const blockOrPath = z.union([pathSchema, block])
 const page = pageSchema.extend({
-  type: z.enum(["content", "page", "collection", "post", "person", "event"]),
+  type: z.enum([
+    "content",
+    "page",
+    "collection",
+    "post",
+    "person",
+    "event",
+    "contact",
+    "hero",
+    "product",
+    "collections",
+    "blog",
+    "article",
+  ]),
   banner: blockOrPath.optional(),
   header: blockOrPath.optional(),
   sections: blockOrPath.array().optional(),
   footer: blockOrPath.optional(),
+  items: z.array(itemOrPath).optional(),
 })
 
 export const collections = {

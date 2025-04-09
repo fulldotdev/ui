@@ -113,3 +113,108 @@ export const ShopifyCollectionsQuery = `#graphql
   ${ShopifyImageFragment}
   ${ShopifyProductPriceRangeFragment}
 `
+
+// --------------------------------------------------------------------------
+// Articles
+// --------------------------------------------------------------------------
+
+export const ShopifyArticlesQuery = `#graphql
+  query ShopifyArticles($endCursor: String) {
+    articles(first: 250, after: $endCursor) {
+      nodes {
+        id
+        handle
+        title
+        image {
+          ...ShopifyImage
+        }
+        blog {
+          handle
+        }
+        seo {
+          title
+          description
+        }
+        contentHtml
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+  ${ShopifyImageFragment}
+`
+
+// --------------------------------------------------------------------------
+// Blogs
+// --------------------------------------------------------------------------
+
+export const ShopifyBlogsQuery = `#graphql
+  query ShopifyBlogs($endCursor: String) {
+    blogs(first: 250, after: $endCursor) {
+      nodes {
+        id
+        handle
+        title
+        articles(first: 250) {
+          nodes {
+            id
+            handle
+            title
+            excerptHtml
+            image {
+              ...ShopifyImage
+            }
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+  ${ShopifyImageFragment}
+`
+
+// --------------------------------------------------------------------------
+// Policies
+// --------------------------------------------------------------------------
+
+export const ShopifyShopQuery = `#graphql
+  query ShopifyShop {
+    shop {
+      privacyPolicy {
+        id
+        handle
+        title
+        body
+      }
+      refundPolicy {
+        id
+        handle
+        title
+        body
+      }
+      shippingPolicy {
+        id
+        handle
+        title
+        body
+      }
+      subscriptionPolicy {
+        id
+        handle
+        title
+        body
+      }
+      termsOfService {
+        id
+        handle
+        title
+        body
+      }
+    }
+  }
+`

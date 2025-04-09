@@ -1,5 +1,6 @@
 ---
 import { Banner1 } from "@/blocks/banner-1"
+import { Blog1 } from "@/blocks/blog-1"
 import { Collection1 } from "@/blocks/collection-1"
 import { Collection2 } from "@/blocks/collection-2"
 import { Collections1 } from "@/blocks/collections-1"
@@ -17,6 +18,7 @@ import { Header2 } from "@/blocks/header-2"
 import { Hero1 } from "@/blocks/hero-1"
 import { Hero2 } from "@/blocks/hero-2"
 import { Hero3 } from "@/blocks/hero-3"
+import { Hero4 } from "@/blocks/hero-4"
 import { Locations1 } from "@/blocks/locations-1"
 import { Media1 } from "@/blocks/media-1"
 import { Media2 } from "@/blocks/media-2"
@@ -39,7 +41,7 @@ interface Props extends Block {
 
 const { type, usecase } = Astro.props
 
-const blockConfig = config.blocks[type as keyof typeof config.blocks]
+const blockConfig = config[usecase === "page" ? "pages" : "sections"][type]
 
 const blockDefaults =
   blockConfig && usecase && usecase in blockConfig
@@ -69,9 +71,19 @@ props.items = props.items
       })
     )
   : undefined
+
+console.log({ props })
 ---
 
 {type === "banner" && variant === 1 && <Banner1 {...props} />}
+
+{
+  type === "blog" && variant === 1 && (
+    <Blog1 {...props}>
+      <slot />
+    </Blog1>
+  )
+}
 
 {
   type === "collection" && variant === 1 && (
@@ -193,6 +205,14 @@ props.items = props.items
     <Hero3 {...props}>
       <slot />
     </Hero3>
+  )
+}
+
+{
+  type === "hero" && variant === 4 && (
+    <Hero4 {...props}>
+      <slot />
+    </Hero4>
   )
 }
 

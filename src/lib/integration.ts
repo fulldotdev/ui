@@ -1,6 +1,12 @@
 import type { AstroIntegration } from "astro"
 
-import { syncCollections, syncProducts } from "../shopify/sync"
+import {
+  syncArticles,
+  syncBlogs,
+  syncCollections,
+  syncPolicies,
+  syncProducts,
+} from "../shopify/sync"
 import { hasShopify } from "./has-shopify"
 
 export default function fulldevIntegration(): AstroIntegration {
@@ -9,8 +15,11 @@ export default function fulldevIntegration(): AstroIntegration {
     hooks: {
       "astro:config:setup": async () => {
         if (hasShopify()) {
-          syncCollections()
-          syncProducts()
+          await syncCollections()
+          await syncProducts()
+          await syncBlogs()
+          await syncArticles()
+          await syncPolicies()
         }
       },
     },

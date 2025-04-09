@@ -42,7 +42,7 @@ function Collections1({
             {items?.map(({ href, title, image }) => (
               <Link className="group flex flex-col" key={uuidv4()} href={href}>
                 <Image
-                  className="bg-muted ring-muted aspect-square rounded-md object-contain p-4 ring-1 transition-opacity group-hover:opacity-75"
+                  className="rounded-md transition-opacity group-hover:opacity-75"
                   {...image}
                 />
                 <Title

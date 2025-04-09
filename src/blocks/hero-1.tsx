@@ -1,4 +1,3 @@
-import * as React from "react"
 import type { BlockSchema } from "@/schemas/block"
 
 import { cn } from "@/lib/utils"

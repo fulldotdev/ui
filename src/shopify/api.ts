@@ -1,15 +1,28 @@
 import { createStorefrontClient } from "@shopify/hydrogen-react"
 import type {
+  Article,
+  Blog,
   Collection,
   Product,
   QueryRoot,
+  ShopPolicy,
+  ShopPolicyWithDefault,
 } from "@shopify/hydrogen-react/storefront-api-types"
 
 import config from "../data/config.json"
 import { hasShopify } from "../lib/has-shopify"
-import { ShopifyCollectionsQuery, ShopifyProductsQuery } from "./queries"
 import {
+  ShopifyArticlesQuery,
+  ShopifyBlogsQuery,
+  ShopifyCollectionsQuery,
+  ShopifyProductsQuery,
+  ShopifyShopQuery,
+} from "./queries"
+import {
+  transformShopifyArticle,
+  transformShopifyBlog,
   transformShopifyCollection,
+  transformShopifyPolicy,
   transformShopifyProduct,
 } from "./transformers"
 
@@ -91,4 +104,67 @@ export async function getCollections() {
 
   const transformedCollections = nodes.map(transformShopifyCollection)
   return transformedCollections
+}
+
+// --------------------------------------------------------------------------
+// Articles
+// --------------------------------------------------------------------------
+
+export async function getArticles() {
+  let nodes: Article[] = []
+  let hasNextPage = true
+  let endCursor = undefined
+
+  while (hasNextPage) {
+    const { articles } = await query(ShopifyArticlesQuery, {
+      endCursor: endCursor,
+    })
+
+    nodes.push(...articles.nodes)
+    endCursor = articles.pageInfo.endCursor
+    hasNextPage = articles.pageInfo.hasNextPage
+  }
+
+  const transformedArticles = nodes.map(transformShopifyArticle)
+  return transformedArticles
+}
+
+// --------------------------------------------------------------------------
+// Blogs
+// --------------------------------------------------------------------------
+
+export async function getBlogs() {
+  let nodes: Blog[] = []
+  let hasNextPage = true
+  let endCursor = undefined
+
+  while (hasNextPage) {
+    const { blogs } = await query(ShopifyBlogsQuery, {
+      endCursor: endCursor,
+    })
+
+    nodes.push(...blogs.nodes)
+    endCursor = blogs.pageInfo.endCursor
+    hasNextPage = blogs.pageInfo.hasNextPage
+  }
+
+  const transformedBlogs = nodes.map(transformShopifyBlog)
+  return transformedBlogs
+}
+
+// --------------------------------------------------------------------------
+// Policies
+// --------------------------------------------------------------------------
+
+export async function getPolicies() {
+  const { shop } = await query(ShopifyShopQuery)
+  let policies: (ShopPolicy | ShopPolicyWithDefault)[] = []
+  if (shop.privacyPolicy) policies.push(shop.privacyPolicy)
+  if (shop.refundPolicy) policies.push(shop.refundPolicy)
+  if (shop.shippingPolicy) policies.push(shop.shippingPolicy)
+  if (shop.subscriptionPolicy) policies.push(shop.subscriptionPolicy)
+  if (shop.termsOfService) policies.push(shop.termsOfService)
+
+  const transformedPolicies = policies.map(transformShopifyPolicy)
+  return transformedPolicies
 }

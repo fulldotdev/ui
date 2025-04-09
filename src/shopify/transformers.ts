@@ -1,13 +1,17 @@
 import type {
+  Article,
+  Blog,
   Collection,
   Image,
   Product,
   ProductPriceRange,
+  ShopPolicy,
+  ShopPolicyWithDefault,
 } from "@shopify/hydrogen-react/storefront-api-types"
 
+import type { Page } from "../content.config"
 import type { ImageSchema } from "../schemas/fields/image"
 import type { PriceSchema } from "../schemas/fields/price"
-import type { PageSchema } from "../schemas/page"
 
 // --------------------------------------------------------------------------
 // Shared
@@ -38,7 +42,7 @@ function transformShopifyPrice(
 export function transformShopifyProduct(product: Product): {
   collection: string
   id: string
-  data?: PageSchema
+  data?: Page
   body?: string
 } {
   return {
@@ -73,7 +77,7 @@ export function transformShopifyProduct(product: Product): {
 export function transformShopifyCollection(collection: Collection): {
   collection: string
   id: string
-  data?: PageSchema
+  data?: Page
   body?: string
 } {
   return {
@@ -103,5 +107,92 @@ export function transformShopifyCollection(collection: Collection): {
       },
     },
     body: collection.descriptionHtml,
+  }
+}
+
+// --------------------------------------------------------------------------
+// Article
+// --------------------------------------------------------------------------
+
+export function transformShopifyArticle(article: Article): {
+  collection: string
+  id: string
+  data?: Page
+  body?: string
+} {
+  return {
+    collection: "pages",
+    id: `blogs/${article.blog.handle}/${article.handle}`,
+    data: {
+      type: "post",
+      id: article.id,
+      title: article.title,
+      image: article.image ? transformShopifyImage(article.image) : undefined,
+      seo: {
+        title: article.seo?.title || undefined,
+        description: article.seo?.description || undefined,
+      },
+    },
+    body: article.contentHtml,
+  }
+}
+
+// --------------------------------------------------------------------------
+// Blog
+// --------------------------------------------------------------------------
+
+export function transformShopifyBlog(blog: Blog): {
+  collection: string
+  id: string
+  data?: Page
+  body?: string
+} {
+  return {
+    collection: "pages",
+    id: `blogs/${blog.handle}`,
+    data: {
+      type: "blog",
+      id: blog.id,
+      title: blog.title,
+      items: blog.articles?.nodes.map((article) => ({
+        href: `/blogs/${blog.handle}/${article.handle}`,
+        title: article.title,
+        description: article.excerptHtml,
+        image: article.image ? transformShopifyImage(article.image) : undefined,
+      })),
+      // TODO: simply use refs
+      // items: blog.articles?.nodes.map(
+      //   (article) => `src/content/pages/blogs/${blog.handle}/${article.handle}`
+      // ),
+      seo: {
+        title: blog.seo?.title || undefined,
+        description: blog.seo?.description || undefined,
+      },
+    },
+  }
+}
+
+// --------------------------------------------------------------------------
+// Policy
+// --------------------------------------------------------------------------
+
+export function transformShopifyPolicy(
+  policy: ShopPolicy | ShopPolicyWithDefault
+): {
+  collection: string
+  id: string
+  data?: Page
+  body?: string
+} {
+  return {
+    collection: "pages",
+    id: `policies/${policy.handle}`,
+    data: {
+      type: "content",
+      id: policy.id,
+      title: policy.title,
+      body: policy.body,
+    },
+    body: policy.body,
   }
 }
