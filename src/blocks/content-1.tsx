@@ -1,29 +1,25 @@
-import * as React from "react"
 import type { BlockSchema } from "@/schemas/block"
-
-import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
 import { Container } from "@/components/container"
 import { Prose } from "@/components/prose"
 import { Section } from "@/components/section"
 
 function Content1({
-  level = 2,
-  align,
-  title,
-  description,
-  buttons,
-  image,
-  children,
   className,
-  ...props
-}: BlockSchema & React.ComponentProps<typeof Section>) {
+  id,
+  buttons,
+  content,
+  children,
+}: BlockSchema & {
+  children: React.ReactNode
+}) {
   return (
-    <Section className={cn(className)} {...props}>
+    <Section className={className} id={id}>
       <Container className="flex flex-col">
         <Prose>
+          {content}
           {children}
-          <Buttons className="not-first:mt-8" align={align} buttons={buttons} />
+          <Buttons className="not-first:mt-8" buttons={buttons} />
         </Prose>
       </Container>
     </Section>

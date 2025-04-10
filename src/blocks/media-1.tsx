@@ -1,9 +1,5 @@
-import * as React from "react"
 import type { BlockSchema } from "@/schemas/block"
-
-import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
-import { Column } from "@/components/column"
 import { Container } from "@/components/container"
 import { Description } from "@/components/description"
 import { Image } from "@/components/image"
@@ -11,28 +7,23 @@ import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
 function Media1({
+  className,
+  id,
   level = 2,
-  align,
   title,
   description,
   buttons,
   image,
-  className,
-  ...props
-}: BlockSchema & React.ComponentProps<typeof Section>) {
+}: BlockSchema) {
   return (
-    <Section className={cn(className)} {...props}>
-      <Container>
-        <Column align={align}>
-          <Title size="4xl" level={level} align={align} text={title} />
-          <Description
-            className="not-first:mt-4"
-            align={align}
-            text={description}
-          />
-          <Buttons className="not-first:mt-8" align={align} buttons={buttons} />
-          <Image className="rounded-lg not-first:mt-16" {...image} />
-        </Column>
+    <Section className={className} id={id}>
+      <Container className="flex flex-col">
+        <Title size="4xl" level={level}>
+          {title}
+        </Title>
+        <Description className="not-first:mt-4">{description}</Description>
+        <Buttons className="not-first:mt-8" buttons={buttons} />
+        <Image className="rounded-lg not-first:mt-16" {...image} />
       </Container>
     </Section>
   )

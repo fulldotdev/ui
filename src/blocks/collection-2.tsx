@@ -1,9 +1,7 @@
 import * as React from "react"
-import type { BlockSchema } from "@/schemas/block"
 import { ChevronDown } from "lucide-react"
-import { v4 as uuidv4 } from "uuid"
 
-import { cn } from "@/lib/utils"
+import type { BlockSchema } from "@/schemas/block"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,27 +10,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/button"
-import { Column } from "@/components/column"
 import { Container } from "@/components/container"
 import { Description } from "@/components/description"
-import { Grid } from "@/components/grid"
 import { Image } from "@/components/image"
 import { Link } from "@/components/link"
 import { Price } from "@/components/price"
 import { Prose } from "@/components/prose"
-import { Row } from "@/components/row"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
 function Collection2({
+  className,
+  id,
   level = 1,
-  align,
   title,
   description,
   items,
   children,
-  className,
-  ...props
 }: BlockSchema & React.ComponentProps<typeof Section>) {
   const [sortedItems, setSortedItems] = React.useState(items)
   const [sort, setSort] = React.useState("aanbevolen")
@@ -54,68 +48,62 @@ function Collection2({
   }
 
   return (
-    <Section className={cn(className)} {...props}>
-      <Container>
-        <Column align={align}>
-          <Title size="4xl" level={level} align={align} text={title} />
-          <Description
-            className="not-first:mt-4"
-            align={align}
-            text={description}
-          />
-          <Column className="gap-0 not-first:mt-16">
-            <Row className="border-t py-4">
-              <span className="text-muted-foreground text-sm">{`${sortedItems?.length || 0} producten`}</span>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="text-foreground">
-                    Sorteren
-                    <ChevronDown />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                  <DropdownMenuRadioGroup
-                    value={sort}
-                    onValueChange={onSortChange}
-                  >
-                    <DropdownMenuRadioItem value="aanbevolen">
-                      Aanbevolen
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="prijs-laag-hoog">
-                      Prijs (laag-hoog)
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="prijs-hoog-laag">
-                      Prijs (hoog-laag)
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="titel-a-z">
-                      Alfabetisch (A-Z)
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="titel-z-a">
-                      Alfabetisch (Z-A)
-                    </DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </Row>
-            <Grid className="gap-x-4 gap-y-8" length={4}>
-              {sortedItems?.map(({ href, title, image, price }) => (
-                <Link
-                  className="group flex flex-col"
-                  key={uuidv4()}
-                  href={href}
+    <Section className={className} id={id}>
+      <Container className="flex flex-col">
+        <Title size="4xl" level={level}>
+          {title}
+        </Title>
+        <Description className="not-first:mt-4">{description}</Description>
+        <div className="flex flex-col gap-0 not-first:mt-16">
+          <div className="flex items-center justify-between border-t py-4">
+            <span className="text-muted-foreground text-sm">{`${sortedItems?.length || 0} producten`}</span>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="text-foreground">
+                  Sorteren
+                  <ChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuRadioGroup
+                  value={sort}
+                  onValueChange={onSortChange}
                 >
-                  <Image
-                    className="rounded-md transition-opacity group-hover:opacity-75"
-                    {...image}
-                  />
-                  <Title level={3} className="mt-5 mb-1 text-sm" text={title} />
-                  <Price className="text-muted-foreground text-sm" {...price} />
-                </Link>
-              ))}
-            </Grid>
-          </Column>
-          <Prose className="mt-16">{children}</Prose>
-        </Column>
+                  <DropdownMenuRadioItem value="aanbevolen">
+                    Aanbevolen
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="prijs-laag-hoog">
+                    Prijs (laag-hoog)
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="prijs-hoog-laag">
+                    Prijs (hoog-laag)
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="titel-a-z">
+                    Alfabetisch (A-Z)
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="titel-z-a">
+                    Alfabetisch (Z-A)
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <div className="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {sortedItems?.map(({ href, title, image, price }) => (
+              <Link className="group flex flex-col" key={href} href={href}>
+                <Image
+                  className="rounded-md transition-opacity group-hover:opacity-75"
+                  {...image}
+                />
+                <Title level={3} className="mt-5 mb-1 text-sm">
+                  {title}
+                </Title>
+                <Price className="text-muted-foreground text-sm" {...price} />
+              </Link>
+            ))}
+          </div>
+        </div>
+        <Prose className="mt-16">{children}</Prose>
       </Container>
     </Section>
   )

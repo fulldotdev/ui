@@ -58,8 +58,8 @@ function ShopifyCart({ className }: Props) {
           countryIsoCode="NL"
           languageIsoCode="NL"
           storefrontApiVersion="2025-01"
-          storeDomain={config.shopify.storeDomain}
-          storefrontToken={config.shopify.publicAccessToken}
+          storeDomain={(config as any).shopify.storeDomain}
+          storefrontToken={(config as any).shopify.publicAccessToken}
         >
           <CartProvider>
             <ShopifyCartContent />
@@ -124,7 +124,9 @@ function ShopifyCartLineContent() {
       />
       <div className="relative flex w-full flex-col justify-between gap-1">
         <h3 className="font-medium">{merchandise?.product?.title}</h3>
-        <p className="text-muted-foreground text-sm">{merchandise?.title}</p>
+        {merchandise?.title !== "Default Title" ? (
+          <p className="text-muted-foreground text-sm">{merchandise?.title}</p>
+        ) : null}
         {cost?.totalAmount && (
           <Money
             className="text-muted-foreground text-sm"

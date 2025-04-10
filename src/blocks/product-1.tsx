@@ -1,6 +1,6 @@
 import * as React from "react"
-import type { BlockSchema } from "@/schemas/block"
 
+import type { BlockSchema } from "@/schemas/block"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/button"
 import { Column } from "@/components/column"
@@ -16,7 +16,6 @@ import { Title } from "@/components/title"
 
 function Product1({
   level = 1,
-  align,
   title,
   description,
   images,
@@ -36,12 +35,10 @@ function Product1({
             images={images}
           />
           <Column className="top-header gap-8 max-sm:px-4 md:mt-12 lg:sticky">
-            <Title size="4xl" level={level} align={align} text={title} />
-            <Description
-              className="not-first:mt-4"
-              align={align}
-              text={description}
-            />
+            <Title size="4xl" level={level}>
+              {title}
+            </Title>
+            <Description className="not-first:mt-4">{description}</Description>
             {id ? (
               <ShopifyProduct id={id} variants={variants} />
             ) : (

@@ -1,61 +1,45 @@
-import * as React from "react"
 import type { BlockSchema } from "@/schemas/block"
-import { v4 as uuidv4 } from "uuid"
-
-import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
-import { Column } from "@/components/column"
 import { Container } from "@/components/container"
 import { Description } from "@/components/description"
-import { Grid } from "@/components/grid"
 import { Image } from "@/components/image"
 import { Link } from "@/components/link"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
 function Persons1({
+  className,
+  id,
   level = 2,
-  align,
   title,
   description,
   buttons,
   items,
-  className,
-  ...props
-}: BlockSchema & React.ComponentProps<typeof Section>) {
+}: BlockSchema) {
   return (
-    <Section className={cn(className)} {...props}>
-      <Container>
-        <Column align={align}>
-          <Title level={level} size="4xl" align={align} text={title} />
-          <Description
-            className="not-first:mt-4"
-            align={align}
-            text={description}
-          />
-          <Buttons className="not-first:mt-8" align={align} buttons={buttons} />
-          <Grid className="gap-16 not-first:mt-16">
-            {items?.map(({ href, image, title, description }) => (
-              <Link className="group max-w-md" key={uuidv4()} href={href}>
-                <Image
-                  className="aspect-square w-full max-w-60 rounded-full object-cover transition-opacity group-hover:opacity-75"
-                  {...image}
-                />
-                <Title
-                  className="text-xl not-first:mt-4"
-                  level={level + 1}
-                  align={align}
-                  text={title}
-                />
-                <Description
-                  className="not-first:mt-1"
-                  align={align}
-                  text={description}
-                />
-              </Link>
-            ))}
-          </Grid>
-        </Column>
+    <Section className={className} id={id}>
+      <Container className="flex flex-col">
+        <Title level={level} size="4xl">
+          {title}
+        </Title>
+        <Description className="not-first:mt-4">{description}</Description>
+        <Buttons className="not-first:mt-8" buttons={buttons} />
+        <div className="grid gap-16 not-first:mt-16 md:grid-cols-2 lg:grid-cols-3">
+          {items?.map(({ href, image, title, description }) => (
+            <Link className="group max-w-md" key={href} href={href}>
+              <Image
+                className="aspect-square w-full max-w-60 rounded-full object-cover transition-opacity group-hover:opacity-75"
+                {...image}
+              />
+              <Title className="text-xl not-first:mt-4" level={level + 1}>
+                {title}
+              </Title>
+              <Description className="not-first:mt-1">
+                {description}
+              </Description>
+            </Link>
+          ))}
+        </div>
       </Container>
     </Section>
   )

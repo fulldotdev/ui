@@ -1,12 +1,10 @@
 import * as React from "react"
-import { v4 as uuidv4 } from "uuid"
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/button"
+import { cn, uuid } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 
 interface Props extends React.ComponentProps<"div"> {
   size?: React.ComponentProps<typeof Button>["size"]
-  align?: "default" | "start" | "center" | "end"
   reverse?: boolean
   buttons?: ({ text?: string; href?: string } & React.ComponentProps<
     typeof Button
@@ -14,7 +12,6 @@ interface Props extends React.ComponentProps<"div"> {
 }
 
 function Buttons({
-  align = "default",
   reverse = false,
   size,
   buttons,
@@ -35,28 +32,19 @@ function Buttons({
 
   return buttons && buttons.length > 0 ? (
     <div
-      className={cn(
-        "buttons inline-flex flex-wrap gap-2",
-        {
-          "justify-start": align === "start",
-          "justify-center": align === "center",
-          "justify-end": align === "end",
-        },
-        className
-      )}
+      className={cn("buttons inline-flex flex-wrap gap-2", className)}
       {...props}
     >
       {buttons?.map(({ text, href, ...button }, i) =>
-        text && href ? (
+        text ? (
           <Button
-            key={uuidv4()}
+            key={uuid()}
             variant={getButtonVariant(i)}
             size={size}
-            asChild
-            href={href}
+            asChild={href ? true : false}
             {...button}
           >
-            {text}
+            {href ? <a href={href}>{text}</a> : text}
           </Button>
         ) : null
       )}

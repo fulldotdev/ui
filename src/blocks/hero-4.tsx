@@ -1,55 +1,37 @@
 import type { BlockSchema } from "@/schemas/block"
-
-import { cn, uuid } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Column } from "@/components/column"
+import { Buttons } from "@/components/buttons"
 import { Container } from "@/components/container"
 import { Description } from "@/components/description"
 import { Image } from "@/components/image"
-import { Link } from "@/components/link"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
-import { Wrap } from "@/components/wrap"
 
 function Hero4({
+  className,
+  id,
   level = 1,
-  align,
   title,
   description,
   buttons,
   image,
-  className,
-  ...props
 }: BlockSchema) {
   return (
     <Section
-      className={cn(
-        "bg-background -mt-header mb-16 flex min-h-screen items-center md:py-32",
-        className
-      )}
-      {...props}
+      className={`bg-background -mt-header mb-16 flex min-h-screen items-center md:py-32 ${className}`}
+      id={id}
     >
       <Image
         className="absolute top-0 left-0 size-full object-cover opacity-40"
         {...image}
       />
-      <Container className="pt-header relative h-full justify-center">
-        <Column align={align}>
-          <Title size="6xl" level={level} align={align} text={title} />
-          <Description
-            className="not-first:mt-4"
-            size="xl"
-            align={align}
-            text={description}
-          />
-          <Wrap className="not-first:mt-8">
-            {buttons?.map(({ text, href, ...button }) => (
-              <Button asChild key={uuid()} size="lg" {...button}>
-                <Link href={href}>{text}</Link>
-              </Button>
-            ))}
-          </Wrap>
-        </Column>
+      <Container className="pt-header relative flex h-full flex-col justify-center">
+        <Title size="6xl" level={level}>
+          {title}
+        </Title>
+        <Description className="not-first:mt-4" size="xl">
+          {description}
+        </Description>
+        <Buttons className="not-first:mt-8" size="lg" buttons={buttons} />
       </Container>
     </Section>
   )

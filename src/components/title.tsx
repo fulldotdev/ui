@@ -4,6 +4,7 @@ import { cn, hasChildren } from "@/lib/utils"
 
 interface Props
   extends React.ComponentProps<"h1" | "h2" | "h3" | "h4" | "h5" | "h6"> {
+  level: 1 | 2 | 3 | 4 | 5 | 6 | number
   size?:
     | "xs"
     | "sm"
@@ -16,16 +17,11 @@ interface Props
     | "5xl"
     | "6xl"
     | "7xl"
-  align?: "start" | "center" | "end"
-  level: 1 | 2 | 3 | 4 | 5 | 6 | number
-  text?: string
 }
 
 function Title({
   size = "default",
-  align = "start",
   level,
-  text,
   children,
   className,
   ...props
@@ -37,7 +33,7 @@ function Title({
     | "h4"
     | "h5"
     | "h6"
-  return text || hasChildren(children) ? (
+  return hasChildren(children) ? (
     <Comp
       className={cn(
         "title text-foreground max-w-2xl scroll-mt-20 font-semibold tracking-tight text-pretty",
@@ -54,16 +50,10 @@ function Title({
           "text-5xl font-semibold md:text-6xl": size === "6xl",
           "text-5xl font-semibold md:text-7xl": size === "7xl",
         },
-        {
-          "text-left": align === "start",
-          "text-center": align === "center",
-          "text-right": align === "end",
-        },
         className
       )}
       {...props}
     >
-      {text}
       {children}
     </Comp>
   ) : null

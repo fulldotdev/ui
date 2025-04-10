@@ -1,8 +1,4 @@
-import * as React from "react"
 import type { BlockSchema } from "@/schemas/block"
-import { v4 as uuidv4 } from "uuid"
-
-import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
 import { Container } from "@/components/container"
 import { Description } from "@/components/description"
@@ -14,32 +10,25 @@ import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
 function Collection1({
+  className,
+  id,
   level = 2,
-  align,
   title,
   description,
   buttons,
   items,
-  className,
-  ...props
-}: BlockSchema & React.ComponentProps<typeof Section>) {
+}: BlockSchema) {
   return (
-    <Section className={cn(className)} {...props}>
-      <Container>
-        <Title level={level} size="3xl" align={align} text={title} />
-        <Description
-          className="not-first:mt-4"
-          align={align}
-          text={description}
-        />
-        <Buttons
-          className="not-first:mt-8 max-sm:hidden"
-          align={align}
-          buttons={buttons}
-        />
+    <Section className={className} id={id}>
+      <Container className="flex flex-col">
+        <Title level={level} size="3xl">
+          {title}
+        </Title>
+        <Description className="not-first:mt-4">{description}</Description>
+        <Buttons className="not-first:mt-8 max-sm:hidden" buttons={buttons} />
         <Grid className="gap-x-4 gap-y-8 not-first:mt-8">
           {items?.map(({ href, title, image, price }) => (
-            <Link className="group flex flex-col" key={uuidv4()} href={href}>
+            <Link className="group flex flex-col" key={href} href={href}>
               <Image
                 className="rounded-md transition-opacity group-hover:opacity-75"
                 {...image}
@@ -48,9 +37,9 @@ function Collection1({
                 className="text-sm not-first:mt-4"
                 level={level + 1}
                 size="xl"
-                align={align}
-                text={title}
-              />
+              >
+                {title}
+              </Title>
               <Price
                 className="text-muted-foreground text-sm not-first:mt-2"
                 {...price}
