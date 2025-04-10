@@ -38,7 +38,7 @@ function Collections1({
             align={align}
             buttons={buttons}
           />
-          <Grid className="gap-4 not-first:mt-8 first:mt-0">
+          <Grid className="gap-8 not-first:mt-8 first:mt-0">
             {items?.map(({ href, title, image }) => (
               <Link className="group flex flex-col" key={uuidv4()} href={href}>
                 <Image
@@ -46,8 +46,7 @@ function Collections1({
                   {...image}
                 />
                 <Title
-                  size="lg"
-                  className="font-medium not-first:mt-4"
+                  className="font-medium not-first:mt-3"
                   level={level + 1}
                   text={title}
                 />

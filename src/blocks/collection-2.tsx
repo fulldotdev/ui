@@ -97,7 +97,7 @@ function Collection2({
                 </DropdownMenuContent>
               </DropdownMenu>
             </Row>
-            <Grid className="gap-x-4 gap-y-8">
+            <Grid className="gap-x-4 gap-y-8" length={4}>
               {sortedItems?.map(({ href, title, image, price }) => (
                 <Link
                   className="group flex flex-col"
@@ -105,20 +105,16 @@ function Collection2({
                   href={href}
                 >
                   <Image
-                    className="bg-muted ring-muted aspect-square rounded-md object-contain p-4 ring-1 transition-opacity group-hover:opacity-75"
+                    className="rounded-md transition-opacity group-hover:opacity-75"
                     {...image}
                   />
-                  <Title
-                    level={level + 1}
-                    className="mt-5 mb-1 text-sm"
-                    text={title}
-                  />
+                  <Title level={3} className="mt-5 mb-1 text-sm" text={title} />
                   <Price className="text-muted-foreground text-sm" {...price} />
                 </Link>
               ))}
             </Grid>
           </Column>
-          <Prose>{children}</Prose>
+          <Prose className="mt-16">{children}</Prose>
         </Column>
       </Container>
     </Section>

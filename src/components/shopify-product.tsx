@@ -99,12 +99,17 @@ function ShopifyProductContent() {
           </Select>
         ) : null
       )}
-      {product && (
+
+      {product && selectedVariant?.id && (
         <ProductPrice
+          priceType="regular"
+          valueType="max"
           className="my-2 text-xl font-semibold first:mt-0"
           data={product}
           variantId={selectedVariant?.id}
-        />
+        >
+          price
+        </ProductPrice>
       )}
       {currentLine ? (
         <CartLineProvider key={currentLine.id} line={currentLine}>

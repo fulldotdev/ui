@@ -46,6 +46,11 @@ export const ShopifyProductsQuery = `#graphql
         variants(first: 250) {
           nodes {
             id
+            title
+            price {
+              amount
+              currencyCode
+            }
             selectedOptions {
               value
               name

@@ -37,7 +37,7 @@ function Blog1({
           align={align}
           buttons={buttons}
         />
-        <Grid className="gap-x-4 gap-y-8 not-first:mt-8">
+        <Grid className="gap-8 not-first:mt-8">
           {items?.map(({ href, title, image, price }) => (
             <Link className="group flex flex-col" key={uuidv4()} href={href}>
               <Image
@@ -45,7 +45,7 @@ function Blog1({
                 {...image}
               />
               <Title
-                className="text-sm not-first:mt-4"
+                className="not-first:mt-4"
                 level={level + 1}
                 size="xl"
                 align={align}

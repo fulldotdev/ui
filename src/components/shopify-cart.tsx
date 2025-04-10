@@ -122,28 +122,29 @@ function ShopifyCartLineContent() {
         src={merchandise?.image?.url}
         alt={merchandise?.image?.altText || ""}
       />
-      <div className="relative flex w-full flex-col gap-1">
-        <h3 className="font-medium">{merchandise?.title}</h3>
+      <div className="relative flex w-full flex-col justify-between gap-1">
+        <h3 className="font-medium">{merchandise?.product?.title}</h3>
+        <p className="text-muted-foreground text-sm">{merchandise?.title}</p>
         {cost?.totalAmount && (
           <Money
             className="text-muted-foreground text-sm"
             data={cost?.totalAmount}
           />
         )}
-        <div className="mt-auto flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <span className="text-muted-foreground text-sm">
             Aantal: <CartLineQuantity />
           </span>
-          <CartLineQuantityAdjustButton
-            adjust="remove"
-            className={cn(
-              "size-8",
-              buttonVariants({ size: "icon", variant: "ghost" })
-            )}
-          >
-            <Trash className="size-4" />
-          </CartLineQuantityAdjustButton>
         </div>
+        <CartLineQuantityAdjustButton
+          adjust="remove"
+          className={cn(
+            "absolute -right-1 -bottom-1 size-8",
+            buttonVariants({ size: "icon", variant: "ghost" })
+          )}
+        >
+          <Trash className="size-4" />
+        </CartLineQuantityAdjustButton>
       </div>
     </div>
   )
