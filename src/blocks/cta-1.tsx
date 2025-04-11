@@ -17,14 +17,18 @@ function Cta1({
   return (
     <Section className={className} id={id}>
       <Container>
-        <Panel className="flex flex-col">
-          <Title size="5xl" level={level}>
+        <Panel className="flex flex-col items-center">
+          <Title className="text-center" size="5xl" level={level}>
             {title}
           </Title>
-          <Description className="not-first:mt-4" size="lg">
+          <Description className="text-center not-first:mt-4" size="lg">
             {description}
           </Description>
-          <Buttons className="not-first:mt-8" size="lg" buttons={buttons} />
+          <Buttons
+            className="justify-center not-first:mt-8"
+            size="lg"
+            buttons={buttons}
+          />
         </Panel>
       </Container>
     </Section>

@@ -1,9 +1,10 @@
-import { blockSchema } from "@/schemas/block"
-import { itemSchema } from "@/schemas/item"
-import { pageSchema } from "@/schemas/page"
 import { defineCollection } from "astro:content"
 import { glob } from "astro/loaders"
 import { z } from "zod"
+
+import { blockSchema } from "@/schemas/block"
+import { itemSchema } from "@/schemas/item"
+import { pageSchema } from "@/schemas/page"
 
 // Helper schema for content file references with auto-loaded frontmatter
 export const pathSchema = z
@@ -42,6 +43,7 @@ const block = blockSchema.extend({
     "hero",
     "events",
     "locations",
+    "pricings",
     "media",
     "pages",
     "persons",
@@ -60,6 +62,7 @@ const block = blockSchema.extend({
     "event",
     "post",
     "header",
+    "location",
     "footer",
   ]),
   items: z.array(itemOrPath).optional(),
@@ -80,6 +83,7 @@ const page = pageSchema.extend({
     "collections",
     "blog",
     "article",
+    "location",
   ]),
   banner: blockOrPath.optional(),
   header: blockOrPath.optional(),

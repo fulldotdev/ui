@@ -4,6 +4,7 @@ import type { BlockSchema } from "@/schemas/block"
 import { Buttons } from "@/components/buttons"
 import { Container } from "@/components/container"
 import { Description } from "@/components/description"
+import { Grid } from "@/components/grid"
 import { Section } from "@/components/section"
 import { Title } from "@/components/title"
 
@@ -26,7 +27,7 @@ function Features1({
           {description}
         </Description>
         <Buttons className="not-first:mt-8" buttons={buttons} />
-        <div className="grid gap-x-4 gap-y-8 not-first:mt-16 md:grid-cols-2 lg:grid-cols-3">
+        <Grid className="gap-x-16 gap-y-8 not-first:mt-16">
           {items?.map(({ title, description }) => (
             <div key={title} className="flex flex-col">
               <div className="bg-muted text-muted-foreground inline-flex size-9 items-center justify-center rounded-md">
@@ -40,7 +41,7 @@ function Features1({
               </Description>
             </div>
           ))}
-        </div>
+        </Grid>
       </Container>
     </Section>
   )

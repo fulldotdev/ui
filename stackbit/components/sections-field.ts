@@ -23,8 +23,8 @@ const allModels = [
 
 const filteredModels = allModels.filter((model) => {
   return (
-    model in config.blocks &&
-    config.blocks[model as keyof typeof config.blocks].variant
+    config.sections?.[model] &&
+    config.sections?.[model as keyof typeof config.sections].variant
   )
 })
 
