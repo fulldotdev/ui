@@ -20,7 +20,7 @@ function Collections1({
   return (
     <Section className={className} id={id}>
       <Container className="flex flex-col">
-        <Title size="3xl" level={level}>
+        <Title size="2xl" level={level}>
           {title}
         </Title>
         <Description className="not-first:mt-4">{description}</Description>

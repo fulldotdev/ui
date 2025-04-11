@@ -1,6 +1,6 @@
 import * as React from "react"
-import type { BlockSchema } from "@/schemas/block"
 
+import type { BlockSchema } from "@/schemas/block"
 import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
 import { Container } from "@/components/container"
@@ -38,7 +38,11 @@ function Header1({
         </div>
         <div className="inline-flex w-full items-center justify-end gap-2">
           {search ? <Search links={search} className="w-full" /> : null}
-          <Buttons className="max-sm:hidden" buttons={buttons} reverse />
+          <Buttons
+            className="flex-nowrap max-sm:hidden"
+            buttons={buttons}
+            reverse
+          />
           {cart ? <ShopifyCart className="-mr-2.5" /> : null}
         </div>
       </Container>

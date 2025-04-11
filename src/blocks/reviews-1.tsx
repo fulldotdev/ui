@@ -20,7 +20,7 @@ function Reviews1({
   return (
     <Section className={className} id={id}>
       <Container className="flex flex-col items-center">
-        <Title className="text-center" level={level} size="5xl">
+        <Title className="text-center" level={level} size="4xl">
           {title}
         </Title>
         <Description className="text-center not-first:mt-4">
