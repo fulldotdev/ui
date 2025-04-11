@@ -2,6 +2,7 @@ import type { BlockSchema } from "@/schemas/block"
 import { Buttons } from "@/components/buttons"
 import { Container } from "@/components/container"
 import { Description } from "@/components/description"
+import { Grid } from "@/components/grid"
 import { Image } from "@/components/image"
 import { Link } from "@/components/link"
 import { Price } from "@/components/price"
@@ -27,7 +28,7 @@ function Blog1({
           {description}
         </Description>
         <Buttons className="not-first:mt-8 max-sm:hidden" buttons={buttons} />
-        <div className="grid grid-cols-1 gap-8 not-first:mt-8 md:grid-cols-2 lg:grid-cols-3">
+        <Grid className="gap-8 not-first:mt-8">
           {items?.map(({ href, title, image, price }) => (
             <Link className="group flex flex-col" key={href} href={href}>
               <Image
@@ -43,7 +44,7 @@ function Blog1({
               />
             </Link>
           ))}
-        </div>
+        </Grid>
         <Buttons className="sm:hidden" buttons={buttons} />
       </Container>
     </Section>

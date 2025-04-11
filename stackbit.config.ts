@@ -51,8 +51,10 @@ const allModels = [
 
 const filteredModels = allModels.filter((model) => {
   return (
-    model.name in config.blocks &&
-    config.blocks[model.name as keyof typeof config.blocks].variant
+    (config.sections?.[model.name] &&
+      config.sections?.[model.name as keyof typeof config.sections].variant) ||
+    (config.pages?.[model.name] &&
+      config.pages?.[model.name as keyof typeof config.blocks].variant)
   )
 })
 

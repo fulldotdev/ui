@@ -48,7 +48,7 @@ function Title({
           "text-4xl font-semibold": size === "4xl",
           "text-4xl font-semibold md:text-5xl": size === "5xl",
           "text-5xl font-semibold md:text-6xl": size === "6xl",
-          "text-5xl font-semibold md:text-7xl": size === "7xl",
+          "text-5xl font-semibold md:text-6xl lg:text-7xl": size === "7xl",
         },
         className
       )}

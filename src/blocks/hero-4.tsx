@@ -25,10 +25,10 @@ function Hero4({
         {...image}
       />
       <Container className="pt-header relative flex h-full flex-col justify-center">
-        <Title size="6xl" level={level}>
+        <Title size="7xl" level={level}>
           {title}
         </Title>
-        <Description className="not-first:mt-4" size="xl">
+        <Description className="text-lg not-first:mt-4 sm:text-xl">
           {description}
         </Description>
         <Buttons className="not-first:mt-8" size="lg" buttons={buttons} />
