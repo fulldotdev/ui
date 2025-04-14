@@ -89,18 +89,23 @@ function Collection2({
             </DropdownMenu>
           </div>
           <div className="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {sortedItems?.map(({ href, title, image, price }) => (
-              <Link className="group flex flex-col" key={href} href={href}>
-                <Image
-                  className="rounded-md transition-opacity group-hover:opacity-75"
-                  {...image}
-                />
-                <Title level={3} className="mt-5 mb-1 text-sm">
-                  {title}
-                </Title>
-                <Price className="text-muted-foreground text-sm" {...price} />
-              </Link>
-            ))}
+            {sortedItems?.map(
+              ({ href, title, image, price, priceString, images }) => (
+                <Link className="group flex flex-col" key={href} href={href}>
+                  <Image
+                    className="rounded-md transition-opacity group-hover:opacity-75"
+                    {...(image || images?.[0])}
+                  />
+                  <Title level={3} className="text-sm not-first:mt-3">
+                    {title}
+                  </Title>
+                  <Description className="text-muted-foreground text-sm not-first:mt-1">
+                    {priceString}
+                  </Description>
+                  <Price className="text-muted-foreground text-sm" {...price} />
+                </Link>
+              )
+            )}
           </div>
         </div>
         <Prose className="mt-16">{children}</Prose>

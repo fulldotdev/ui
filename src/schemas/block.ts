@@ -1,3 +1,5 @@
+import { z } from "zod"
+
 import { buttonSchema } from "@/schemas/fields/button"
 import { channelsSchema } from "@/schemas/fields/channels"
 import { formSchema } from "@/schemas/fields/form"
@@ -7,7 +9,6 @@ import { logoSchema } from "@/schemas/fields/logo"
 import { menuSchema } from "@/schemas/fields/menu"
 import { priceSchema } from "@/schemas/fields/price"
 import { itemSchema } from "@/schemas/item"
-import { z } from "zod"
 
 export const blockSchema = z
   .object({
@@ -26,6 +27,8 @@ export const blockSchema = z
     logo: logoSchema,
     channels: channelsSchema,
     price: priceSchema,
+    priceString: z.string(),
+    energyLabel: z.string(),
     form: formSchema,
     list: z.string().array(),
     socials: z.string().array(),

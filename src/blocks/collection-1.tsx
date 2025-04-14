@@ -27,11 +27,11 @@ function Collection1({
         <Description className="not-first:mt-4">{description}</Description>
         <Buttons className="not-first:mt-8 max-sm:hidden" buttons={buttons} />
         <Grid className="gap-x-4 gap-y-8 not-first:mt-8">
-          {items?.map(({ href, title, image, price }) => (
+          {items?.map(({ href, title, image, price, images }) => (
             <Link className="group flex flex-col" key={href} href={href}>
               <Image
                 className="rounded-md transition-opacity group-hover:opacity-75"
-                {...image}
+                {...(image || images?.[0])}
               />
               <Title
                 className="text-sm not-first:mt-4"
