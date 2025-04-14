@@ -11,11 +11,13 @@ function Rating({ score, className, ...props }: Props) {
   const getIcon = (count: number) => {
     if (!score) return undefined
     const difference = score - count
-    if (difference >= -0.25)
+    if (difference >= -0.25) {
       return <Star className="size-[1em]" fill="currentColor" />
-    if (difference >= -0.75)
+    }
+    if (difference >= -0.75) {
       return <StarHalf className="size-[1em]" fill="currentColor" />
-    return <Star className="size-[1em]" fill="currentColor" />
+    }
+    return null
   }
 
   return score ? (

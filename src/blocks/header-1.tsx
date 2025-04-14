@@ -37,7 +37,7 @@ function Header1({
           />
         </div>
         <div className="inline-flex w-full items-center justify-end gap-2">
-          {search ? <Search links={search} className="w-full" /> : null}
+          {search ? <Search links={search} /> : null}
           <Buttons
             className="flex-nowrap max-sm:hidden"
             buttons={buttons}

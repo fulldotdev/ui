@@ -1,6 +1,6 @@
 import * as React from "react"
-import type { BlockSchema } from "@/schemas/block"
 
+import type { BlockSchema } from "@/schemas/block"
 import { cn } from "@/lib/utils"
 import { Buttons } from "@/components/buttons"
 import { Container } from "@/components/container"
@@ -32,7 +32,7 @@ function Header2({
           <DrawerMenu className="-ml-2.5 lg:hidden" items={menus} />
           <Logo className="mr-3 hidden md:flex" {...logo} />
           {search ? (
-            <Search links={search} className="mx-auto w-full lg:mx-6" />
+            <Search links={search} className="mx-auto lg:mx-6" />
           ) : null}
           <Buttons className="max-sm:hidden" buttons={buttons} reverse />
           {cart ? <ShopifyCart className="-mr-2.5" /> : null}

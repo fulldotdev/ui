@@ -10,6 +10,8 @@ export const formSchema = z
             "text",
             "email",
             "tel",
+            "date",
+            "address",
             "number",
             "checkbox",
             "select",
@@ -22,6 +24,21 @@ export const formSchema = z
         description: z.string().optional(),
         required: z.boolean().optional(),
         options: z.string().array().optional(),
+        disabled: z
+          .object({
+            mon: z.boolean().optional(),
+            tue: z.boolean().optional(),
+            wed: z.boolean().optional(),
+            thu: z.boolean().optional(),
+            fri: z.boolean().optional(),
+            sat: z.boolean().optional(),
+            sun: z.boolean().optional(),
+            future: z.boolean().optional(),
+            past: z.boolean().optional(),
+            today: z.boolean().optional(),
+            dates: z.string().array().optional(),
+          })
+          .optional(),
       })
       .strict()
       .array()

@@ -29,7 +29,7 @@ function Search({ links, className, ...props }: Props) {
     <>
       <Button
         className={cn(
-          "bg-muted/50 text-muted-foreground justify-between text-sm font-normal shadow-none",
+          "bg-muted/50 text-muted-foreground flex-grow-1 justify-between text-sm font-normal shadow-none",
           className
         )}
         variant="outline"

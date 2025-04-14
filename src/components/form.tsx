@@ -1,7 +1,10 @@
+import { format } from "date-fns"
+import { CalendarIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import {
   FormControl,
   FormDescription,
@@ -12,25 +15,54 @@ import {
   Form as FormRoot,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 
 interface Props extends React.FormHTMLAttributes<HTMLFormElement> {
   submit?: string
   fields?: {
-    type?:
-      | "text"
-      | "email"
-      | "tel"
-      | "number"
-      | "checkbox"
-      | "select"
-      | "textarea"
     name?: string
     label?: string
     placeholder?: string
     description?: string
     required?: boolean
     options?: string[]
+    redirect?: string
+    type?:
+      | "text"
+      | "email"
+      | "tel"
+      | "number"
+      | "date"
+      | "checkbox"
+      | "select"
+      | "textarea"
+      | "address"
+    disabled?: {
+      mon?: boolean
+      tue?: boolean
+      wed?: boolean
+      thu?: boolean
+      fri?: boolean
+      sat?: boolean
+      sun?: boolean
+      future?: boolean
+      past?: boolean
+      today?: boolean
+      dates?: string[]
+    }
   }[]
 }
 
@@ -44,10 +76,19 @@ function Form({ fields, submit, className, ...props }: Props) {
         {...props}
       >
         {fields?.map(
-          ({ type, name, label, placeholder, description, required }, index) =>
+          ({
+            type,
+            name,
+            label,
+            placeholder,
+            description,
+            required,
+            options,
+            disabled,
+          }) =>
             (name || label) && (
               <FormField
-                key={index}
+                key={name}
                 control={form.control}
                 name={name || label || ""}
                 render={({ field }) => (
@@ -55,7 +96,88 @@ function Form({ fields, submit, className, ...props }: Props) {
                     <FormLabel>{label}</FormLabel>
                     <FormControl>
                       {(() => {
-                        if (type === "textarea") {
+                        if (type === "date") {
+                          return (
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "border-ring w-full pl-3 text-left font-normal",
+                                      !field.value && "text-muted-foreground"
+                                    )}
+                                  >
+                                    {field.value ? (
+                                      format(field.value, "dd-MM-yyyy")
+                                    ) : (
+                                      <span>{placeholder}</span>
+                                    )}
+                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent
+                                className="w-auto p-0"
+                                align="start"
+                              >
+                                <Calendar
+                                  mode="single"
+                                  selected={field.value}
+                                  onSelect={field.onChange}
+                                  disabled={(date) => {
+                                    // Check all conditions and return true if any of them match
+                                    const day = date.getDay()
+                                    const today = new Date()
+                                    today.setHours(0, 0, 0, 0)
+
+                                    const formatDate = (d: Date) =>
+                                      d.toISOString().split("T")[0]
+
+                                    return Boolean(
+                                      // Day of week checks
+                                      (disabled?.mon && day === 1) ||
+                                        (disabled?.tue && day === 2) ||
+                                        (disabled?.wed && day === 3) ||
+                                        (disabled?.thu && day === 4) ||
+                                        (disabled?.fri && day === 5) ||
+                                        (disabled?.sat && day === 6) ||
+                                        (disabled?.sun && day === 0) ||
+                                        // Date checks
+                                        (disabled?.future && date > today) ||
+                                        (disabled?.past && date < today) ||
+                                        (disabled?.today &&
+                                          date.getTime() === today.getTime()) ||
+                                        // Specific dates check
+                                        (disabled?.dates &&
+                                          disabled.dates.includes(
+                                            formatDate(date)
+                                          ))
+                                    )
+                                  }}
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
+                          )
+                        } else if (type === "select") {
+                          return (
+                            <Select>
+                              <SelectTrigger>
+                                <SelectValue placeholder={placeholder} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectGroup>
+                                  {options?.map((option) => (
+                                    <SelectItem key={option} value={option}>
+                                      {option}
+                                    </SelectItem>
+                                  ))}
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                          )
+                        } else if (type === "textarea") {
                           return (
                             <Textarea
                               required={required}
