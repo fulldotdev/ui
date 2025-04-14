@@ -8,6 +8,7 @@ import Page from "@/components/misc/page.astro"
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages")
+  const slug = pages.map((page) => getSlug(page))
   return pages.map((page) => {
     return {
       params: {
@@ -35,7 +36,8 @@ const sections = sectionsOrRef
         if (section.collection && section.id) {
           const entry = await getEntry(section.collection, section.id)
           if (!entry) {
-            throw new Error(`${section.collection}/${section.id} not found`)
+            console.warn(`${section.collection}/${section.id} not found`)
+            return
           }
           return {
             id: section.id,
@@ -50,7 +52,7 @@ const sections = sectionsOrRef
 
 <Page
   search={search}
-  sections={sections}
+  sections={sections?.filter(Boolean)}
   {...data}
   {...settings}
   pathname={page.filePath}

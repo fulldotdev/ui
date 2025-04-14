@@ -56,23 +56,26 @@ const { variant, ...props } = {
   ...Astro.props,
 }
 
-props.items = props.items
-  ? await Promise.all(
-      props.items.map(async (item: any) => {
-        if (item.collection && item.id) {
-          const entry = await getEntry(item.collection, item.id)
-          if (!entry) {
-            throw new Error(`${item.collection}/${item.id} not found`)
+props.items = (
+  props.items
+    ? await Promise.all(
+        props.items.map(async (item: any) => {
+          if (item.collection && item.id) {
+            const entry = await getEntry(item.collection, item.id)
+            if (!entry) {
+              console.warn(`${item.collection}/${item.id} not found`)
+              return
+            }
+            return {
+              href: getHref(entry),
+              ...entry.data,
+            }
           }
-          return {
-            href: getHref(entry),
-            ...entry.data,
-          }
-        }
-        return item
-      })
-    )
-  : undefined
+          return item
+        })
+      )
+    : undefined
+)?.filter(Boolean)
 
 props.className = `${props.className || ""} ${type}-${variant}`
 ---
