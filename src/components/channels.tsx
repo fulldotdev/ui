@@ -14,7 +14,7 @@ function Channels({ phone, email, address, className, ...props }: Props) {
   return phone || email || address ? (
     <div
       className={cn(
-        "text-muted-foreground flex flex-col items-start gap-4 text-sm",
+        "text-muted-foreground flex flex-col items-start gap-5 text-sm",
         className
       )}
       {...props}

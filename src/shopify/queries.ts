@@ -51,10 +51,16 @@ export const ShopifyProductsQuery = `#graphql
               amount
               currencyCode
             }
+            compareAtPrice {
+              amount
+              currencyCode
+            }
             selectedOptions {
               value
               name
             }
+            availableForSale
+            quantityAvailable
           }
         }
         seo {

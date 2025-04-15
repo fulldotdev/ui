@@ -1,27 +1,21 @@
 import React from "react"
 import config from "@/data/config.json"
 import { cartTotalQuantity } from "@/stores/shopify"
+import { Label } from "@radix-ui/react-label"
 import {
   AddToCartButton,
-  CartLineProvider,
-  CartLineQuantity,
-  CartLineQuantityAdjustButton,
   CartProvider,
-  Money,
-  ProductPrice,
   ProductProvider,
   ShopifyProvider,
   useCart,
-  useCartLine,
   useProduct,
   type CartWithActions,
 } from "@shopify/hydrogen-react"
 import type {
   Cart,
-  CartLine,
   Product,
 } from "@shopify/hydrogen-react/storefront-api-types"
-import { Loader2, Minus, Plus, ShoppingBag, Trash } from "lucide-react"
+import { Loader2, Minus, Plus, ShoppingBag } from "lucide-react"
 
 import { hasShopify } from "@/lib/has-shopify"
 import { cn } from "@/lib/utils"
@@ -34,8 +28,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { NumberInput } from "@/components/number-input"
-import { ShopifyLineUpdate } from "@/components/shopify-line-update"
+import { Discount } from "@/components/discount"
+import { Price } from "@/components/price"
 
 interface Props {
   id: Product["id"]
@@ -63,69 +57,117 @@ function ShopifyProduct(product: Props) {
 }
 
 function ShopifyProductContent() {
-  const { product, options, setSelectedOption, selectedVariant } = useProduct()
-  const { totalQuantity, lines } = useCart() as CartWithActions & Cart // Manual type according to docs. It works but types were incorrect.
+  const { options, setSelectedOption, selectedVariant } = useProduct()
+  const { totalQuantity } = useCart() as CartWithActions & Cart
+  const [quantity, setQuantity] = React.useState(1)
 
-  const currentLine = lines.find(
-    (line) => line.merchandise.id === selectedVariant?.id
-  )
+  const handleQuantityChange = (newValue: number) => {
+    const quantity = Math.max(1, newValue)
+    setQuantity(quantity)
+  }
+
   // Update global quantity state, because components may be on different islands
   React.useEffect(() => {
     cartTotalQuantity.set(totalQuantity)
   }, [totalQuantity])
 
   return (
-    <div className="flex flex-col gap-2">
-      {options?.map((option) =>
-        option?.values.length > 1 ? (
-          <Select
-            key={option?.name}
-            name={option?.name}
-            defaultValue={option?.values?.[0]}
-            onValueChange={(value) =>
-              setSelectedOption(option?.name ?? "", value)
-            }
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {option?.values?.map((value) => (
-                <SelectItem key={value} value={value ?? ""}>
-                  {value}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        ) : null
-      )}
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center">
+        <Price
+          className="text-muted-foreground mr-3 text-lg line-through"
+          amount={Number(selectedVariant?.compareAtPrice?.amount)}
+          currency={selectedVariant?.compareAtPrice?.currencyCode}
+        />
+        <Price
+          className="text-foreground mr-4 text-lg"
+          amount={Number(selectedVariant?.price?.amount)}
+          currency={selectedVariant?.price?.currencyCode}
+        />
+        <Discount
+          before={Number(selectedVariant?.price?.amount)}
+          after={Number(selectedVariant?.compareAtPrice?.amount)}
+        />
+      </div>
 
-      {product && selectedVariant?.id && (
-        <ProductPrice
-          priceType="regular"
-          valueType="max"
-          className="my-2 text-xl font-semibold first:mt-0"
-          data={product}
-          variantId={selectedVariant?.id}
-        >
-          price
-        </ProductPrice>
-      )}
-      {currentLine ? (
-        <CartLineProvider key={currentLine.id} line={currentLine}>
-          <ShopifyLineUpdate size="lg" />
-        </CartLineProvider>
-      ) : (
-        <AddToCartButton
-          className={cn(buttonVariants({ size: "lg" }), "group w-full")}
-          variantId={selectedVariant?.id}
-          quantity={1}
-        >
-          <Loader2 className="hidden animate-spin group-disabled:block" />
-          <ShoppingBag className="group-disabled:hidden" />
-          <span className="group-disabled:hidden">In winkelwagen</span>
-        </AddToCartButton>
-      )}
+      {options
+        ?.filter(
+          (option) => option?.values?.length && option?.values?.length > 1
+        )
+        .map((option) => (
+          <div className="flex flex-col">
+            <Label className="text-muted-foreground pb-1 text-sm">
+              {option?.name}
+            </Label>
+            <Select
+              key={option?.name}
+              name={option?.name}
+              defaultValue={option?.values?.[0]}
+              onValueChange={(value) =>
+                setSelectedOption(option?.name ?? "", value)
+              }
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {option?.values?.map((value) => (
+                  <SelectItem key={value} value={value ?? ""}>
+                    {value}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        ))}
+
+      <div className="flex flex-col">
+        <Label className="text-muted-foreground pb-1 text-sm">Aantal</Label>
+        <div className="border-input relative flex w-full items-center rounded-md border">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handleQuantityChange(quantity - 1)}
+            disabled={quantity <= 1 || !selectedVariant?.availableForSale}
+          >
+            <Minus />
+          </Button>
+          <Input
+            disabled={!selectedVariant?.availableForSale}
+            name="quantity"
+            type="number"
+            min={1}
+            value={quantity}
+            onChange={(e) => handleQuantityChange(Number(e.target.value))}
+            className="relative w-full [appearance:textfield] border-transparent text-center [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handleQuantityChange(quantity + 1)}
+            disabled={!selectedVariant?.availableForSale}
+          >
+            <Plus />
+          </Button>
+        </div>
+      </div>
+
+      <AddToCartButton
+        className={cn(buttonVariants({ size: "lg" }), "group")}
+        variantId={selectedVariant?.id}
+        quantity={quantity}
+        disabled={!selectedVariant?.availableForSale}
+      >
+        {selectedVariant?.availableForSale ? (
+          <>
+            <Loader2 className="hidden animate-spin group-disabled:block" />
+            <ShoppingBag className="group-disabled:hidden" />
+            <span className="group-disabled:hidden">In winkelwagen</span>
+          </>
+        ) : (
+          <span>Niet op voorraad</span>
+        )}
+      </AddToCartButton>
     </div>
   )
 }

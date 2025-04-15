@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import { Command as CommandPrimitive } from "cmdk"
 import { SearchIcon } from "lucide-react"
@@ -33,7 +35,7 @@ function CommandDialog({
   children,
   ...props
 }: React.ComponentProps<typeof Dialog> & {
-  title?: React.ComponentProps<typeof Title>["text"]
+  title?: string
   description?: string
 }) {
   return (

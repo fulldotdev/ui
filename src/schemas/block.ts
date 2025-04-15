@@ -34,6 +34,14 @@ export const blockSchema = z
     socials: z.string().array(),
     search: linkSchema.array(),
     menus: menuSchema.array(),
+    hours: z
+      .object({
+        label: z.string(),
+        value: z.string(),
+      })
+      .partial()
+      .array()
+      .optional(),
     variants: z.any(),
     cart: z.boolean(),
     items: itemSchema.array(),

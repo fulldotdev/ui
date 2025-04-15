@@ -39,8 +39,8 @@ function Product1({
             className="ring-muted sm:mt-12 sm:rounded-md sm:ring"
             images={images}
           />
-          <div className="top-header max-sm:px-4 md:mt-12 lg:sticky">
-            <Title size="4xl" level={level}>
+          <div className="top-header flex flex-col gap-6 max-sm:px-4 md:mt-12 lg:sticky">
+            <Title size="3xl" level={level}>
               {title}
             </Title>
             <Description className="text-muted-foreground text-sm not-first:mt-4">
@@ -63,8 +63,8 @@ function Product1({
                 <Form className="gap-2 not-first:mt-6" {...form} />
               </>
             )}
+            <Prose className="text-foreground/80 -mt-2">{children}</Prose>
           </div>
-          <Prose className="max-sm:px-4">{children}</Prose>
         </Split>
       </Container>
     </Section>
