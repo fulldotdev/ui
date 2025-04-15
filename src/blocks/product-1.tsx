@@ -1,4 +1,5 @@
 import * as React from "react"
+import { Check, CheckIcon } from "lucide-react"
 
 import type { BlockSchema } from "@/schemas/block"
 import { cn } from "@/lib/utils"
@@ -51,7 +52,6 @@ function Product1({
               alt="Energie label"
               className="h-8 w-auto not-first:mt-4"
             />
-            <List className="not-first:mt-6" items={list} />
             {id ? (
               <ShopifyProduct id={id} variants={variants} />
             ) : (
@@ -62,6 +62,16 @@ function Product1({
                 />
                 <Form className="gap-2 not-first:mt-6" {...form} />
               </>
+            )}
+            {list && (
+              <ul className="text-muted-foreground flex flex-col gap-3 text-sm not-first:mt-4">
+                {list.map((item) => (
+                  <li className="flex gap-2 leading-4" key={item}>
+                    <CheckIcon className="text-primary size-4" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
             )}
             <Prose className="text-foreground/80 -mt-2">{children}</Prose>
           </div>
