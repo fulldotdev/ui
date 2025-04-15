@@ -21,6 +21,13 @@ function Grid({
       className={cn(
         "relative grid items-start",
         {
+          "md:grid-cols-2": size === "sm" && length >= 2,
+          "md:grid-cols-3": size === "sm" && length === 3,
+          "md:grid-cols-4": size === "sm" && length === 4,
+          "md:grid-cols-5": size === "sm" && length === 5,
+          "md:grid-cols-6": size === "sm" && length >= 6,
+        },
+        {
           "md:grid-cols-2": size === "default" && length >= 2,
           "sm:grid-cols-2 md:grid-cols-3": size === "default" && length === 3,
           "sm:grid-cols-2 lg:grid-cols-4": size === "default" && length === 4,

@@ -20,6 +20,7 @@ export const itemSchema = z
     button: buttonSchema,
     links: linkSchema.array(),
     list: z.string().array(),
+    energyLabel: z.string(),
   })
   .partial()
 

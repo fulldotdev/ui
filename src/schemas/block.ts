@@ -37,6 +37,8 @@ export const blockSchema = z
     variants: z.any(),
     cart: z.boolean(),
     items: itemSchema.array(),
+    policies: linkSchema.array(),
+    company: z.string(),
   })
   .partial()
 

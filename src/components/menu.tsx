@@ -15,14 +15,11 @@ interface Props extends React.ComponentProps<"div"> {
 function Menu({ text, links, className, ...props }: Props) {
   return text && links?.length ? (
     <div
-      className={cn(
-        "menu text-foreground flex flex-col items-start gap-2",
-        className
-      )}
+      className={cn("menu flex flex-col items-start gap-2", className)}
       {...props}
     >
-      <h6>{text}</h6>
-      <menu className="flex w-full flex-col gap-2">
+      <h6 className="text-foreground text-sm font-medium">{text}</h6>
+      <menu className="flex w-full flex-col items-start gap-2">
         {links?.map(({ text, href }) => (
           <Link
             key={uuidv4()}

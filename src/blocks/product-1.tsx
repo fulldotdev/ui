@@ -5,7 +5,9 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/button"
 import { Container } from "@/components/container"
 import { Description } from "@/components/description"
+import { Form } from "@/components/form"
 import { Gallery } from "@/components/gallery"
+import { Image } from "@/components/image"
 import { List } from "@/components/list"
 import { Price } from "@/components/price"
 import { Prose } from "@/components/prose"
@@ -23,6 +25,8 @@ function Product1({
   price,
   id,
   variants,
+  energyLabel,
+  form,
   children,
   className,
   ...props
@@ -42,6 +46,11 @@ function Product1({
             <Description className="text-muted-foreground text-sm not-first:mt-4">
               {description}
             </Description>
+            <Image
+              src={energyLabel}
+              alt="Energie label"
+              className="h-8 w-auto not-first:mt-4"
+            />
             <List className="not-first:mt-6" items={list} />
             {id ? (
               <ShopifyProduct id={id} variants={variants} />
@@ -51,9 +60,7 @@ function Product1({
                   className="text-lg font-medium not-first:mt-6"
                   {...price}
                 />
-                <Button className="not-first:mt-6" size="lg" href="/contact/">
-                  Plaats aanvraag
-                </Button>
+                <Form className="gap-2 not-first:mt-6" {...form} />
               </>
             )}
           </div>

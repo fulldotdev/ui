@@ -50,7 +50,7 @@ function Gallery({ images, className, ...props }: Props) {
   return (
     images && (
       <div
-        className={cn("bg-muted flex w-full flex-col pb-2", className)}
+        className={cn("gallery bg-muted flex w-full flex-col pb-2", className)}
         {...props}
       >
         <CarouselRoot className="relative" setApi={setEmblaMainApi}>

@@ -28,7 +28,6 @@ function Socials({ className, socials, ...props }: Props) {
           size="icon"
           asChild
           href={social}
-          className="text-foreground"
         >
           {social.includes("x.com") && <SiX />}
           {social.includes("facebook") && <SiFacebook />}
