@@ -90,32 +90,34 @@ function ShopifyProductContent() {
         />
       </div>
 
-      {options?.map((option) => (
-        <div className="flex flex-col">
-          <Label className="text-muted-foreground pb-1 text-sm">
-            {option?.name}
-          </Label>
-          <Select
-            key={option?.name}
-            name={option?.name}
-            defaultValue={option?.values?.[0]}
-            onValueChange={(value) =>
-              setSelectedOption(option?.name ?? "", value)
-            }
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {option?.values?.map((value) => (
-                <SelectItem key={value} value={value ?? ""}>
-                  {value}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      ))}
+      {options
+        ?.filter((option) => option?.values?.[0] !== "Default Title")
+        .map((option) => (
+          <div className="flex flex-col">
+            <Label className="text-muted-foreground pb-1 text-sm">
+              {option?.name}
+            </Label>
+            <Select
+              key={option?.name}
+              name={option?.name}
+              defaultValue={option?.values?.[0]}
+              onValueChange={(value) =>
+                setSelectedOption(option?.name ?? "", value)
+              }
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {option?.values?.map((value) => (
+                  <SelectItem key={value} value={value ?? ""}>
+                    {value}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        ))}
 
       {Number(selectedVariant?.quantityAvailable) > 1 ? (
         <div className="flex flex-col">
