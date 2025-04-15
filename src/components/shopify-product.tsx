@@ -90,68 +90,69 @@ function ShopifyProductContent() {
         />
       </div>
 
-      {options
-        ?.filter(
-          (option) => option?.values?.length && option?.values?.length > 1
-        )
-        .map((option) => (
-          <div className="flex flex-col">
-            <Label className="text-muted-foreground pb-1 text-sm">
-              {option?.name}
-            </Label>
-            <Select
-              key={option?.name}
-              name={option?.name}
-              defaultValue={option?.values?.[0]}
-              onValueChange={(value) =>
-                setSelectedOption(option?.name ?? "", value)
+      {options?.map((option) => (
+        <div className="flex flex-col">
+          <Label className="text-muted-foreground pb-1 text-sm">
+            {option?.name}
+          </Label>
+          <Select
+            key={option?.name}
+            name={option?.name}
+            defaultValue={option?.values?.[0]}
+            onValueChange={(value) =>
+              setSelectedOption(option?.name ?? "", value)
+            }
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {option?.values?.map((value) => (
+                <SelectItem key={value} value={value ?? ""}>
+                  {value}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      ))}
+
+      {Number(selectedVariant?.quantityAvailable) > 1 ? (
+        <div className="flex flex-col">
+          <Label className="text-muted-foreground pb-1 text-sm">Aantal</Label>
+          <div className="border-input relative flex w-full items-center rounded-md border">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleQuantityChange(quantity - 1)}
+              disabled={quantity <= 1 || !selectedVariant?.availableForSale}
+            >
+              <Minus />
+            </Button>
+            <Input
+              disabled={!selectedVariant?.availableForSale}
+              name="quantity"
+              type="number"
+              min={1}
+              max={Number(selectedVariant?.quantityAvailable)}
+              value={quantity}
+              onChange={(e) => handleQuantityChange(Number(e.target.value))}
+              className="relative w-full [appearance:textfield] border-transparent text-center [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleQuantityChange(quantity + 1)}
+              disabled={
+                quantity >= Number(selectedVariant?.quantityAvailable) ||
+                !selectedVariant?.availableForSale
               }
             >
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {option?.values?.map((value) => (
-                  <SelectItem key={value} value={value ?? ""}>
-                    {value}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              <Plus />
+            </Button>
           </div>
-        ))}
-
-      <div className="flex flex-col">
-        <Label className="text-muted-foreground pb-1 text-sm">Aantal</Label>
-        <div className="border-input relative flex w-full items-center rounded-md border">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => handleQuantityChange(quantity - 1)}
-            disabled={quantity <= 1 || !selectedVariant?.availableForSale}
-          >
-            <Minus />
-          </Button>
-          <Input
-            disabled={!selectedVariant?.availableForSale}
-            name="quantity"
-            type="number"
-            min={1}
-            value={quantity}
-            onChange={(e) => handleQuantityChange(Number(e.target.value))}
-            className="relative w-full [appearance:textfield] border-transparent text-center [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-          />
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => handleQuantityChange(quantity + 1)}
-            disabled={!selectedVariant?.availableForSale}
-          >
-            <Plus />
-          </Button>
         </div>
-      </div>
-
+      ) : null}
       <AddToCartButton
         className={cn(buttonVariants({ size: "lg" }), "group")}
         variantId={selectedVariant?.id}
