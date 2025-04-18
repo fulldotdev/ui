@@ -1,22 +1,20 @@
 import * as React from "react"
 
 import { cn, hasChildren } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
 
 interface Props extends React.ComponentProps<"a"> {
-  text?: string
+  variant?: "default" | "outline" | "ghost" | "link"
 }
 
-function Link({ className, href, target, children, text, ...props }: Props) {
-  const linkTarget = href?.startsWith("http") ? "_blank" : target
-
-  return text || hasChildren(children) ? (
+function Link({ className, href, target, children, variant, ...props }: Props) {
+  return hasChildren(children) ? (
     <a
-      className={cn("link", className)}
+      className={cn("link", buttonVariants({ variant }), className)}
       href={href}
-      target={linkTarget}
+      target={href?.startsWith("http") ? "_blank" : target}
       {...props}
     >
-      {text}
       {children}
     </a>
   ) : null
