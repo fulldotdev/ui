@@ -4,7 +4,7 @@ import { Description } from "@/components/description"
 import { Image } from "@/components/image"
 import { Title } from "@/components/title"
 
-export interface Hero4Props extends React.ComponentProps<"section"> {
+export interface Hero6Props extends React.ComponentProps<"section"> {
   level?: number
   title: string
   description?: string
@@ -15,7 +15,7 @@ export interface Hero4Props extends React.ComponentProps<"section"> {
   image?: React.ComponentProps<typeof Image>
 }
 
-function Hero4({
+function Hero6({
   className,
   level = 1,
   title,
@@ -23,7 +23,7 @@ function Hero4({
   buttons,
   image,
   ...props
-}: Hero4Props) {
+}: Hero6Props) {
   return (
     <section
       className={cn(
@@ -38,17 +38,17 @@ function Hero4({
           {...image}
         />
       )}
-      <div className="relative mx-auto flex w-full max-w-screen-xl flex-col justify-center px-4 lg:px-8">
-        <Title size="7xl" level={level}>
+      <div className="pt-heade relative mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center px-4 lg:px-8">
+        <Title className="text-center" size="8xl" level={level}>
           {title}
         </Title>
         {description && (
-          <Description size="xl" className="not-first:mt-4">
+          <Description size="xl" className="text-center not-first:mt-6">
             {description}
           </Description>
         )}
         {buttons && (
-          <div className="inline-flex flex-wrap gap-2 not-first:mt-8">
+          <div className="inline-flex flex-wrap justify-center gap-2 not-first:mt-12">
             {buttons.map(({ text, href, ...button }, i) => (
               <Button
                 key={text}
@@ -67,4 +67,4 @@ function Hero4({
   )
 }
 
-export { Hero4 }
+export { Hero6 }

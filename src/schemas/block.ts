@@ -26,7 +26,7 @@ export const blockSchema = z
     images: imageSchema.array(),
     logo: logoSchema,
     channels: channelsSchema,
-    price: priceSchema,
+    price: z.any(),
     priceString: z.string(),
     energyLabel: z.string(),
     form: formSchema,
