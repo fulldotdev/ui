@@ -20,7 +20,6 @@ import { Title } from "@/components/title"
 
 function Code1({
   className,
-  id,
   level = 2,
   title,
   code,
@@ -30,7 +29,7 @@ function Code1({
   code: string
 }) {
   return (
-    <Section className={className} id={id}>
+    <Section className={className}>
       <Container className="flex flex-col">
         <Tabs defaultValue="preview" className="w-full not-first:mt-8">
           <div className="flex items-center gap-4">

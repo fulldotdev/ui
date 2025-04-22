@@ -8,7 +8,6 @@ import { Title } from "@/components/title"
 
 function Faqs2({
   className,
-  id,
   level = 2,
   title,
   description,
@@ -16,7 +15,7 @@ function Faqs2({
   items,
 }: BlockSchema) {
   return (
-    <Section className={className} id={id}>
+    <Section className={className}>
       <Container className="grid gap-8 md:grid-cols-2">
         <div className="flex flex-col items-start">
           <Title size="4xl" level={level}>

@@ -35,18 +35,15 @@ function Hero1({
           {title}
         </Title>
         {description && (
-          <Description
-            className="max-w-xl text-center not-first:mt-4"
-            size="xl"
-          >
+          <Description className="mt-4 max-w-xl text-center" size="xl">
             {description}
           </Description>
         )}
         {buttons && (
-          <div className="inline-flex flex-wrap justify-center gap-2 not-first:mt-8">
-            {buttons?.map(({ text, href, ...button }, i) => (
+          <div className="mt-8 inline-flex flex-wrap justify-center gap-2">
+            {buttons.map(({ href, text, ...button }, i) => (
               <Button
-                key={text}
+                key={href}
                 variant={i === 0 ? "default" : "outline"}
                 size="lg"
                 asChild
@@ -57,7 +54,7 @@ function Hero1({
             ))}
           </div>
         )}
-        {image && <Image className="rounded-lg not-first:mt-16" {...image} />}
+        {image && <Image className="mt-16 rounded-lg" {...image} />}
       </div>
     </section>
   )

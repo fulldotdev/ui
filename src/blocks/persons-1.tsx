@@ -10,7 +10,6 @@ import { Title } from "@/components/title"
 
 function Persons1({
   className,
-  id,
   level = 2,
   title,
   description,
@@ -18,7 +17,7 @@ function Persons1({
   items,
 }: BlockSchema) {
   return (
-    <Section className={className} id={id}>
+    <Section className={className}>
       <Container className="flex flex-col items-center">
         <Title className="text-center" level={level} size="4xl">
           {title}
@@ -29,7 +28,7 @@ function Persons1({
         <Buttons className="justify-center not-first:mt-8" buttons={buttons} />
         <Grid className="gap-16 not-first:mt-16">
           {items?.map(({ href, image, title, description }) => (
-            <Link
+            <a
               className="group flex max-w-md flex-col items-center"
               key={href}
               href={href}
@@ -44,7 +43,7 @@ function Persons1({
               <Description className="not-first:mt-1" size="sm">
                 {description}
               </Description>
-            </Link>
+            </a>
           ))}
         </Grid>
       </Container>

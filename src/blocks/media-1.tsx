@@ -1,31 +1,58 @@
-import type { BlockSchema } from "@/schemas/block"
-import { Buttons } from "@/components/buttons"
-import { Container } from "@/components/container"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import { Description } from "@/components/description"
 import { Image } from "@/components/image"
-import { Section } from "@/components/section"
 import { Title } from "@/components/title"
+
+export interface Media1Props extends React.ComponentProps<"section"> {
+  level?: number
+  title: string
+  description?: string
+  buttons?: (React.ComponentProps<typeof Button> & {
+    text: string
+    href: string
+  })[]
+  image: React.ComponentProps<typeof Image>
+}
 
 function Media1({
   className,
-  id,
   level = 2,
   title,
   description,
   buttons,
   image,
-}: BlockSchema) {
+  ...props
+}: Media1Props) {
   return (
-    <Section className={className} id={id}>
-      <Container className="flex flex-col">
-        <Title size="4xl" level={level}>
+    <section className={cn("relative w-full py-16", className)} {...props}>
+      <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center px-4 lg:px-8">
+        <Title className="text-center" size="5xl" level={level}>
           {title}
         </Title>
-        <Description className="not-first:mt-4">{description}</Description>
-        <Buttons className="not-first:mt-8" buttons={buttons} />
-        <Image className="rounded-lg not-first:mt-16" {...image} />
-      </Container>
-    </Section>
+        {description && (
+          <Description className="mt-4 text-center" size="lg">
+            {description}
+          </Description>
+        )}
+        {buttons && (
+          <div className="mt-8 inline-flex flex-wrap justify-center gap-2">
+            {buttons?.map(({ text, href, ...button }, i) => (
+              <Button
+                key={text}
+                size="lg"
+                variant={i === 0 ? "default" : "outline"}
+                asChild
+                {...button}
+              >
+                <a href={href}>{text}</a>
+              </Button>
+            ))}
+          </div>
+        )}
+        <Image className="mt-16 rounded-lg" {...image} />
+      </div>
+    </section>
   )
 }
 

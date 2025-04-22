@@ -1,31 +1,41 @@
-import type { BlockSchema } from "@/schemas/block"
+import { cn } from "@/lib/utils"
 import { Channels } from "@/components/channels"
-import { Container } from "@/components/container"
 import { Description } from "@/components/description"
 import { Form } from "@/components/form"
-import { Section } from "@/components/section"
 import { Title } from "@/components/title"
+
+export interface Contact1Props extends React.ComponentProps<"section"> {
+  level?: number
+  title: string
+  description?: string
+  channels?: React.ComponentProps<typeof Channels>
+  form?: React.ComponentProps<typeof Form>
+}
 
 function Contact1({
   className,
-  id,
   level = 2,
   title,
   description,
   channels,
   form,
-}: BlockSchema) {
+  ...props
+}: Contact1Props) {
   return (
-    <Section className={className} id={id}>
-      <Container className="flex flex-col" size="sm">
-        <Title size="4xl" level={level}>
-          {title}
-        </Title>
-        <Description className="not-first:mt-4">{description}</Description>
-        <Channels className="not-first:mt-8" {...channels} />
-        <Form className="not-first:mt-16" {...form} />
-      </Container>
-    </Section>
+    <section className={cn("relative w-full py-16", className)} {...props}>
+      <div className="mx-auto w-full max-w-screen-md px-4 lg:px-8">
+        <div className="flex flex-col">
+          <Title size="4xl" level={level}>
+            {title}
+          </Title>
+          {description && (
+            <Description className="not-first:mt-4">{description}</Description>
+          )}
+          {channels && <Channels className="not-first:mt-8" {...channels} />}
+          {form && <Form className="not-first:mt-16" {...form} />}
+        </div>
+      </div>
+    </section>
   )
 }
 

@@ -8,14 +8,13 @@ import { Title } from "@/components/title"
 
 function Cta1({
   className,
-  id,
   level = 2,
   title,
   description,
   buttons,
 }: BlockSchema) {
   return (
-    <Section className={className} id={id}>
+    <Section className={className}>
       <Container>
         <Panel className="flex flex-col items-center">
           <Title className="text-center" size="5xl" level={level}>

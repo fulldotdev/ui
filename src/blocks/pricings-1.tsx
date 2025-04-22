@@ -11,14 +11,13 @@ import { Title } from "@/components/title"
 
 function Pricings1({
   className,
-  id,
   level = 2,
   title,
   description,
   items,
 }: BlockSchema) {
   return (
-    <Section className={className} id={id}>
+    <Section className={className}>
       <Container className="flex flex-col">
         <Title size="4xl" level={level}>
           {title}

@@ -40,15 +40,15 @@ function Hero3({
           {title}
         </Title>
         {description && (
-          <Description className="not-first:mt-4" size="xl">
+          <Description className="mt-4" size="xl">
             {description}
           </Description>
         )}
         {buttons && (
-          <div className="inline-flex flex-wrap gap-2 not-first:mt-8">
-            {buttons.map(({ text, href, ...button }, i) => (
+          <div className="mt-8 inline-flex flex-wrap gap-2">
+            {buttons.map(({ href, text, ...button }, i) => (
               <Button
-                key={text}
+                key={href}
                 variant={i === 0 ? "default" : "outline"}
                 size="lg"
                 asChild

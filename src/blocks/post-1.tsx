@@ -10,7 +10,6 @@ import { Title } from "@/components/title"
 
 function Post1({
   className,
-  id,
   level = 1,
   title,
   description,
@@ -20,7 +19,7 @@ function Post1({
   children: React.ReactNode
 }) {
   return (
-    <Section className={className} id={id}>
+    <Section className={className}>
       <Container className="flex flex-col" size="sm">
         <Prose>
           {title ? <Title level={level}>{title}</Title> : null}

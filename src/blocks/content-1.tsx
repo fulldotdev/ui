@@ -6,7 +6,6 @@ import { Section } from "@/components/section"
 
 function Content1({
   className,
-  id,
   buttons,
   content,
   children,
@@ -14,7 +13,7 @@ function Content1({
   children: React.ReactNode
 }) {
   return (
-    <Section className={className} id={id}>
+    <Section className={className}>
       <Container className="flex flex-col">
         <Prose>
           {content}

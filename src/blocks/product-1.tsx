@@ -53,7 +53,7 @@ function Product1({
               className="h-8 w-auto not-first:mt-4"
             />
             {id ? (
-              <ShopifyProduct id={id} variants={variants} />
+              <ShopifyProduct variants={variants} />
             ) : (
               <>
                 <Price

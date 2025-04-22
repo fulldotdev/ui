@@ -1,47 +1,58 @@
-import type { BlockSchema } from "@/schemas/block"
-import { Buttons } from "@/components/buttons"
-import { Column } from "@/components/column"
-import { Container } from "@/components/container"
+import { cn } from "@/lib/utils"
 import { Description } from "@/components/description"
-import { Masonry } from "@/components/masonry"
 import { Rating } from "@/components/rating"
-import { Section } from "@/components/section"
 import { Title } from "@/components/title"
+
+export interface Reviews1Props extends React.ComponentProps<"section"> {
+  level?: number
+  title?: string
+  description?: string
+  items: {
+    rating?: number
+    title?: string
+    description?: string
+  }[]
+}
 
 function Reviews1({
   className,
-  id,
   level = 2,
   title,
   description,
-  buttons,
   items,
-}: BlockSchema) {
+  ...props
+}: Reviews1Props) {
   return (
-    <Section className={className} id={id}>
-      <Container className="flex flex-col items-center">
-        <Title className="text-center" level={level} size="4xl">
-          {title}
-        </Title>
-        <Description className="text-center not-first:mt-4">
-          {description}
-        </Description>
-        <Buttons className="justify-center not-first:mt-8" buttons={buttons} />
-        <Masonry className="gap-x-4 gap-y-8 not-first:mt-16">
-          {items?.map(({ rating, title, description }) => (
-            <div className="flex flex-col rounded-lg border p-6" key={title}>
-              <Rating score={rating} />
-              <Title className="not-first:mt-3" level={level + 1}>
-                {title}
-              </Title>
-              <Description className="not-first:mt-1">
-                {description}
-              </Description>
+    <section className={cn("relative w-full py-16", className)} {...props}>
+      <div className="mx-auto flex w-full max-w-screen-xl flex-col px-4 lg:px-8">
+        {title && (
+          <Title size="4xl" level={level}>
+            {title}
+          </Title>
+        )}
+        {description && (
+          <Description className="not-first:mt-4">{description}</Description>
+        )}
+        <div className="columns-3xs gap-4 not-first:mt-12">
+          {items.map(({ title, description, rating = 5 }) => (
+            <div
+              key={title}
+              className="flex break-inside-avoid flex-col rounded-lg border p-6"
+            >
+              {rating && <Rating score={rating} />}
+              {title && (
+                <Title className="mt-4" level={level + 1}>
+                  {title}
+                </Title>
+              )}
+              {description && (
+                <Description className="mt-3">{description}</Description>
+              )}
             </div>
           ))}
-        </Masonry>
-      </Container>
-    </Section>
+        </div>
+      </div>
+    </section>
   )
 }
 

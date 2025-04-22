@@ -9,7 +9,6 @@ import { Title } from "@/components/title"
 
 function Contact2({
   className,
-  id,
   level = 2,
   title,
   description,
@@ -17,7 +16,7 @@ function Contact2({
   form,
 }: BlockSchema) {
   return (
-    <Section className={className} id={id}>
+    <Section className={className}>
       <Container className="grid gap-8 md:grid-cols-2">
         <div className="flex flex-col items-start">
           <Title size="4xl" level={level}>

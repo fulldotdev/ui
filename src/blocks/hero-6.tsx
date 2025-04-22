@@ -38,20 +38,20 @@ function Hero6({
           {...image}
         />
       )}
-      <div className="pt-heade relative mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center px-4 lg:px-8">
+      <div className="pt-header relative mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center px-4 lg:px-8">
         <Title className="text-center" size="8xl" level={level}>
           {title}
         </Title>
         {description && (
-          <Description size="xl" className="text-center not-first:mt-6">
+          <Description size="xl" className="mt-6 text-center">
             {description}
           </Description>
         )}
         {buttons && (
-          <div className="inline-flex flex-wrap justify-center gap-2 not-first:mt-12">
-            {buttons.map(({ text, href, ...button }, i) => (
+          <div className="mt-12 inline-flex flex-wrap justify-center gap-2">
+            {buttons.map(({ href, text, ...button }, i) => (
               <Button
-                key={text}
+                key={href}
                 variant={i === 0 ? "default" : "outline"}
                 size="lg"
                 asChild

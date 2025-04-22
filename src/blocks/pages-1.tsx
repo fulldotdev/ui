@@ -10,7 +10,6 @@ import { Title } from "@/components/title"
 
 function Pages1({
   className,
-  id,
   level = 2,
   title,
   description,
@@ -18,7 +17,7 @@ function Pages1({
   items,
 }: BlockSchema) {
   return (
-    <Section className={className} id={id}>
+    <Section className={className}>
       <Container className="flex flex-col">
         <Title size="4xl" level={level}>
           {title}
@@ -27,7 +26,7 @@ function Pages1({
         <Buttons className="not-first:mt-8" buttons={buttons} />
         <Grid className="gap-4 gap-y-8 not-first:mt-16">
           {items?.map(({ href, title, description, image }) => (
-            <Link key={href} className="group flex flex-col" href={href}>
+            <a key={href} className="group flex flex-col" href={href}>
               <Image
                 className="rounded-lg transition-opacity group-hover:opacity-75"
                 {...image}
@@ -38,7 +37,7 @@ function Pages1({
               <Description className="not-first:mt-1">
                 {description}
               </Description>
-            </Link>
+            </a>
           ))}
         </Grid>
         <Buttons className="not-first:mt-8" buttons={buttons} />

@@ -1,15 +1,22 @@
-import type { BlockSchema } from "@/schemas/block"
 import { cn } from "@/lib/utils"
-import { Container } from "@/components/container"
 
-function Banner1({ className, id, list }: BlockSchema) {
-  return list ? (
+export interface Banner1Props extends React.ComponentProps<"header"> {
+  list?: string[]
+}
+
+function Banner1({ className, id, list, ...props }: Banner1Props) {
+  if (!list || list.length === 0) return null
+
+  return (
     <header
-      className={`banner bg-primary text-primary-foreground relative z-10 flex h-8 items-center text-center text-sm leading-3.5 font-medium ${className}`}
-      id={id}
+      className={cn(
+        "banner bg-primary text-primary-foreground relative z-10 flex h-8 items-center text-center text-sm leading-3.5 font-medium",
+        className
+      )}
+      {...props}
     >
-      <Container className="flex items-center justify-evenly text-xs">
-        {list?.map((item, i) => (
+      <div className="mx-auto flex w-full max-w-screen-xl items-center justify-evenly px-4 text-xs lg:px-8">
+        {list.map((item, i) => (
           <span
             key={item}
             className={cn({
@@ -22,7 +29,7 @@ function Banner1({ className, id, list }: BlockSchema) {
             {item}
           </span>
         ))}
-      </Container>
+      </div>
       <style>
         {`
           :root {
@@ -31,7 +38,7 @@ function Banner1({ className, id, list }: BlockSchema) {
         `}
       </style>
     </header>
-  ) : null
+  )
 }
 
 export { Banner1 }

@@ -8,7 +8,6 @@ import { Title } from "@/components/title"
 
 function Events1({
   className,
-  id,
   level = 2,
   title,
   description,
@@ -16,7 +15,7 @@ function Events1({
   items,
 }: BlockSchema) {
   return (
-    <Section className={className} id={id}>
+    <Section className={className}>
       <Container className="flex flex-col" size="sm">
         <Title size="4xl" level={level}>
           {title}

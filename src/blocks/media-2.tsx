@@ -1,36 +1,57 @@
-import type { BlockSchema } from "@/schemas/block"
-import { Buttons } from "@/components/buttons"
-import { Container } from "@/components/container"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import { Description } from "@/components/description"
 import { Image } from "@/components/image"
-import { Section } from "@/components/section"
-import { Split } from "@/components/split"
 import { Title } from "@/components/title"
+
+export interface Media2Props extends React.ComponentProps<"section"> {
+  level?: number
+  title: string
+  description?: string
+  buttons?: (React.ComponentProps<typeof Button> & {
+    text: string
+    href: string
+  })[]
+  image: React.ComponentProps<typeof Image>
+}
 
 function Media2({
   className,
-  id,
   level = 2,
   title,
   description,
   buttons,
   image,
-}: BlockSchema) {
+  ...props
+}: Media2Props) {
   return (
-    <Section className={className} id={id}>
-      <Container>
-        <Split className="items-center">
-          <div className="flex flex-col items-start">
-            <Title size="4xl" level={level}>
-              {title}
-            </Title>
-            <Description className="not-first:mt-4">{description}</Description>
-            <Buttons className="not-first:mt-8" buttons={buttons} />
-          </div>
-          <Image className="rounded-lg" {...image} />
-        </Split>
-      </Container>
-    </Section>
+    <section className={cn("relative w-full py-16", className)} {...props}>
+      <div className="relative mx-auto grid w-full max-w-screen-xl items-center gap-y-8 px-4 md:grid-cols-2 md:gap-x-8 lg:gap-x-16 lg:px-8">
+        <div className="flex flex-col items-start">
+          <Title size="4xl" level={level}>
+            {title}
+          </Title>
+          {description && (
+            <Description className="mt-4">{description}</Description>
+          )}
+          {buttons && (
+            <div className="mt-8 inline-flex flex-wrap justify-center gap-2">
+              {buttons?.map(({ text, href, ...button }, i) => (
+                <Button
+                  key={text}
+                  variant={i === 0 ? "default" : "outline"}
+                  asChild
+                  {...button}
+                >
+                  <a href={href}>{text}</a>
+                </Button>
+              ))}
+            </div>
+          )}
+        </div>
+        {image && <Image className="rounded-lg" {...image} />}
+      </div>
+    </section>
   )
 }
 

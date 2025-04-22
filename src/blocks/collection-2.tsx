@@ -12,29 +12,24 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Description } from "@/components/description"
 import { Image } from "@/components/image"
-import { Link } from "@/components/link"
-import { Price } from "@/components/price"
+import { Money } from "@/components/money"
 import { Prose } from "@/components/prose"
 import { Title } from "@/components/title"
 
 export interface Collection2Props extends React.ComponentProps<"section"> {
   level?: number
-  title: string
+  title?: string
   description?: string
-  items?: {
+  items: {
+    image: React.ComponentProps<typeof Image>
     href: string
     title: string
-    image?: React.ComponentProps<typeof Image>
-    images?: React.ComponentProps<typeof Image>[]
-    price?: React.ComponentProps<typeof Price> & { amount?: number }
-    priceString?: string
+    price: number
   }[]
-  children?: React.ReactNode
 }
 
 function Collection2({
   className,
-  id,
   level = 1,
   title,
   description,
@@ -48,10 +43,8 @@ function Collection2({
   const onSortChange = (value: string) => {
     setSort(value)
     const sorted = [...(items || [])].sort((a, b) => {
-      if (value === "prijs-laag-hoog")
-        return (a.price?.amount || 0) - (b.price?.amount || 0)
-      if (value === "prijs-hoog-laag")
-        return (b.price?.amount || 0) - (a.price?.amount || 0)
+      if (value === "prijs-laag-hoog") return (a.price || 0) - (b.price || 0)
+      if (value === "prijs-hoog-laag") return (b.price || 0) - (a.price || 0)
       if (value === "titel-a-z")
         return (a.title || "").localeCompare(b.title || "")
       if (value === "titel-z-a")
@@ -62,16 +55,14 @@ function Collection2({
   }
 
   return (
-    <section
-      className={cn("relative w-full py-16", className)}
-      id={id}
-      {...props}
-    >
+    <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">
         <div className="flex flex-col">
-          <Title size="4xl" level={level}>
-            {title}
-          </Title>
+          {title && (
+            <Title size="4xl" level={level}>
+              {title}
+            </Title>
+          )}
           {description && (
             <Description className="not-first:mt-4">{description}</Description>
           )}
@@ -110,31 +101,22 @@ function Collection2({
               </DropdownMenu>
             </div>
             {sortedItems && sortedItems.length > 0 && (
-              <div className="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {sortedItems.map(
-                  ({ href, title, image, price, priceString, images }) => (
-                    <Link
-                      className="group flex flex-col"
-                      key={href}
-                      href={href}
-                    >
-                      <Image
-                        className="rounded-md transition-opacity group-hover:opacity-75"
-                        {...(image || images?.[0])}
-                      />
-                      <Title level={3} className="text-sm not-first:mt-3">
-                        {title}
-                      </Title>
-                      <Description className="text-muted-foreground text-sm not-first:mt-1">
-                        {priceString}
-                      </Description>
-                      <Price
-                        className="text-muted-foreground text-sm"
-                        {...price}
-                      />
-                    </Link>
-                  )
-                )}
+              <div className="grid grid-cols-2 gap-x-4 gap-y-8 not-first:mt-8 sm:grid-cols-[repeat(auto-fill,minmax(236px,1fr))]">
+                {sortedItems.map(({ href, title, image, price }) => (
+                  <a className="group flex flex-col" key={href} href={href}>
+                    <Image
+                      className="rounded-md transition-opacity group-hover:opacity-75"
+                      {...image}
+                    />
+                    <Title className="mt-3.5" size="sm" level={level + 1}>
+                      {title}
+                    </Title>
+                    <Money
+                      className="text-muted-foreground mt-1 text-sm"
+                      amount={price}
+                    />
+                  </a>
+                ))}
               </div>
             )}
           </div>

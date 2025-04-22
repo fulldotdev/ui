@@ -2,28 +2,25 @@ import { Check } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Container } from "@/components/container"
 import { Description } from "@/components/description"
-import { Grid } from "@/components/grid"
 import { Title } from "@/components/title"
 
 export interface Features2Props extends React.ComponentProps<"section"> {
   level?: number
-  title: string
+  title?: string
   description?: string
   buttons?: (React.ComponentProps<typeof Button> & {
     text: string
     href: string
   })[]
-  items?: {
+  items: {
     title: string
-    description: string
+    description?: string
   }[]
 }
 
 function Features2({
   className,
-  id,
   level = 2,
   title,
   description,
@@ -32,15 +29,13 @@ function Features2({
   ...props
 }: Features2Props) {
   return (
-    <section
-      className={cn("relative w-full py-16", className)}
-      id={id}
-      {...props}
-    >
+    <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center px-4 lg:px-8">
-        <Title className="text-center" size="5xl" level={level}>
-          {title}
-        </Title>
+        {title && (
+          <Title className="text-center" size="5xl" level={level}>
+            {title}
+          </Title>
+        )}
         {description && (
           <Description className="text-center not-first:mt-4" size="lg">
             {description}
@@ -50,7 +45,7 @@ function Features2({
           <div className="inline-flex flex-wrap justify-center gap-2 not-first:mt-8">
             {buttons.map(({ text, href, ...button }, i) => (
               <Button
-                key={text}
+                key={href}
                 variant={i === 0 ? "default" : "outline"}
                 size="lg"
                 asChild
@@ -61,27 +56,23 @@ function Features2({
             ))}
           </div>
         )}
-        {items && items.length > 0 && (
-          <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-16 not-first:mt-16">
-            {items.map(({ title, description }) => (
-              <div key={title} className="flex flex-col items-center">
-                <div className="bg-muted text-muted-foreground inline-flex size-9 items-center justify-center rounded-md">
-                  <Check />
-                </div>
-                <Title
-                  className="text-center not-first:mt-4"
-                  size="xl"
-                  level={level + 1}
-                >
-                  {title}
-                </Title>
-                <Description className="text-center not-first:mt-2">
+        <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(280px,1fr))] justify-center justify-items-center gap-16 not-first:mt-16">
+          {items.map(({ title, description }) => (
+            <div key={title} className="flex max-w-md flex-col items-center">
+              <div className="bg-muted text-muted-foreground inline-flex size-9 items-center justify-center rounded-md">
+                <Check />
+              </div>
+              <Title className="mt-4 text-center" size="xl" level={level + 1}>
+                {title}
+              </Title>
+              {description && (
+                <Description className="mt-2 text-center">
                   {description}
                 </Description>
-              </div>
-            ))}
-          </div>
-        )}
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )
