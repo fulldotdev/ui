@@ -49,7 +49,7 @@ function Hero3({
             {buttons.map(({ href, text, ...button }, i) => (
               <Button
                 key={href}
-                variant={i === 0 ? "default" : "outline"}
+                variant={i === 0 ? "default" : "ghost"}
                 size="lg"
                 asChild
                 {...button}

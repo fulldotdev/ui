@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react"
-import { v4 as uuidv4 } from "uuid"
+import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import {
@@ -18,11 +17,12 @@ interface Props extends React.ComponentProps<"div"> {
 }
 
 function Gallery({ images, className, ...props }: Props) {
-  const [emblaMainApi, setEmblaMainApi] = useState<CarouselApi>()
-  const [emblaThumbnailApi, setEmblaThumbnailApi] = useState<CarouselApi>()
-  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [emblaMainApi, setEmblaMainApi] = React.useState<CarouselApi>()
+  const [emblaThumbnailApi, setEmblaThumbnailApi] =
+    React.useState<CarouselApi>()
+  const [selectedIndex, setSelectedIndex] = React.useState(0)
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!emblaMainApi || !emblaThumbnailApi) return
 
     const onSelect = () => {
@@ -56,7 +56,7 @@ function Gallery({ images, className, ...props }: Props) {
         <CarouselRoot className="relative" setApi={setEmblaMainApi}>
           <CarouselContent className="mt-4 mr-4 mb-2 ml-0">
             {images.map((image) => (
-              <CarouselItem className="pl-4" key={uuidv4()}>
+              <CarouselItem className="pl-4" key={image.src}>
                 <Image className="rounded-md" {...image} />
               </CarouselItem>
             ))}
@@ -72,7 +72,7 @@ function Gallery({ images, className, ...props }: Props) {
           <CarouselRoot setApi={setEmblaThumbnailApi}>
             <CarouselContent className="mr-4 ml-2 flex">
               {images.map((image, index) => (
-                <CarouselItem className="basis-1/5 pl-2" key={uuidv4()}>
+                <CarouselItem className="basis-1/5 pl-2" key={image.src}>
                   <Image
                     className={cn(
                       "my-2 cursor-pointer rounded-sm ring-1 ring-transparent",

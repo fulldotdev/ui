@@ -1,14 +1,26 @@
 import * as React from "react"
 
-import type { BlockSchema } from "@/schemas/block"
 import { cn } from "@/lib/utils"
-import { Buttons } from "@/components/buttons"
-import { Container } from "@/components/container"
+import { Button } from "@/components/ui/button"
 import { DrawerMenu } from "@/components/drawer-menu"
 import { Logo } from "@/components/logo"
 import { NavigationMenu } from "@/components/navigation-menu"
 import { Search } from "@/components/search"
 import { ShopifyCart } from "@/components/shopify-cart"
+
+export interface Header2Props extends React.ComponentProps<"header"> {
+  logo?: React.ComponentProps<typeof Logo>
+  menus?: {
+    text: string
+    href: string
+  }[]
+  buttons?: (React.ComponentProps<typeof Button> & {
+    text: string
+    href: string
+  })[]
+  search?: React.ComponentProps<typeof Search>["links"]
+  cart?: boolean
+}
 
 function Header2({
   logo,
@@ -18,7 +30,7 @@ function Header2({
   cart,
   className,
   ...props
-}: BlockSchema & React.ComponentProps<"header">) {
+}: Header2Props) {
   return (
     <header
       className={cn(
@@ -27,20 +39,28 @@ function Header2({
       )}
       {...props}
     >
-      <Container>
+      <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">
         <div className="flex h-14 items-center gap-2">
-          <DrawerMenu className="-ml-2.5 lg:hidden" items={menus} />
-          <Logo className="mr-3 hidden md:flex" {...logo} />
-          {search ? (
-            <Search links={search} className="mx-auto lg:mx-6" />
-          ) : null}
-          <Buttons className="max-sm:hidden" buttons={buttons} reverse />
-          {cart ? <ShopifyCart className="-mr-2.5" /> : null}
+          {menus && <DrawerMenu className="-ml-2.5 lg:hidden" items={menus} />}
+          {logo && <Logo className="mr-3 hidden md:flex" {...logo} />}
+          {search && <Search links={search} className="mx-auto lg:mx-6" />}
+          {buttons?.map(({ href, text, ...button }, i) => (
+            <Button
+              className="max-sm:hidden"
+              key={href}
+              variant={i === buttons.length - 1 ? "default" : "outline"}
+              asChild
+              {...button}
+            >
+              <a href={href}>{text}</a>
+            </Button>
+          ))}
+          {cart && <ShopifyCart className="-mr-2.5" />}
         </div>
         <div className="-mx-2.5 flex h-12 items-center pb-2.5 max-lg:hidden">
-          <NavigationMenu items={menus} />
+          {menus && <NavigationMenu items={menus} />}
         </div>
-      </Container>
+      </div>
       <style>
         {`
           :root {

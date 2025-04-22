@@ -1,5 +1,4 @@
 import { Menu } from "lucide-react"
-import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -41,7 +40,7 @@ function DrawerMenu({ items, className, ...props }: Props) {
             text || links ? (
               <div
                 className={`flex flex-col gap-3 ${links ? "mt-3" : ""}`}
-                key={uuidv4()}
+                key={href}
               >
                 <a
                   className="text-foreground text-base font-medium hover:underline"
@@ -53,7 +52,7 @@ function DrawerMenu({ items, className, ...props }: Props) {
                   text && href ? (
                     <a
                       className="text-muted-foreground hover:text-foreground transition-colors"
-                      key={uuidv4()}
+                      key={href}
                       href={href}
                     >
                       {text}

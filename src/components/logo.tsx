@@ -2,9 +2,8 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { Image } from "@/components/image"
-import { Link } from "@/components/link"
 
-interface Props extends React.ComponentProps<typeof Link> {
+interface Props extends React.ComponentProps<"a"> {
   src?: React.ComponentProps<typeof Image>["src"]
   alt?: React.ComponentProps<typeof Image>["alt"]
   text?: string

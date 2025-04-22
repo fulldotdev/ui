@@ -36,12 +36,11 @@ function Media1({
           </Description>
         )}
         {buttons && (
-          <div className="mt-8 inline-flex flex-wrap justify-center gap-2">
-            {buttons?.map(({ text, href, ...button }, i) => (
+          <div className="mt-6 flex flex-row flex-wrap gap-2">
+            {buttons.map(({ text, href, ...button }, i) => (
               <Button
-                key={text}
-                size="lg"
-                variant={i === 0 ? "default" : "outline"}
+                key={href}
+                variant={i === 0 ? "default" : "ghost"}
                 asChild
                 {...button}
               >

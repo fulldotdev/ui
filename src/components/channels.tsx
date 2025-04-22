@@ -1,10 +1,8 @@
 import { Mail, MapPin, Phone } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/button"
-import { Column } from "@/components/column"
 
-interface Props extends React.ComponentProps<typeof Column> {
+interface Props extends React.ComponentProps<"div"> {
   phone?: string
   email?: string
   address?: string
@@ -46,27 +44,6 @@ function Channels({ phone, email, address, className, ...props }: Props) {
           <span className="leading-4">{address}</span>
         </a>
       ) : null}
-      {/* {phone ? (
-        <Button variant="outline" href={`tel:${phone}`}>
-          <Phone className="mr-2 h-4 w-4" />
-          {phone}
-        </Button>
-      ) : null}
-      {email ? (
-        <Button variant="outline" href={`mailto:${email}`}>
-          <Mail className="mr-2 h-4 w-4" />
-          {email}
-        </Button>
-      ) : null}
-      {address ? (
-        <Button
-          variant="outline"
-          href={`https://www.google.com/maps/search/?api=1&query=${address}`}
-        >
-          <MapPin className="mr-2 h-4 w-4" />
-          {address}
-        </Button>
-      ) : null} */}
     </div>
   ) : null
 }

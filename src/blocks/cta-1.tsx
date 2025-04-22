@@ -1,10 +1,17 @@
-import type { BlockSchema } from "@/schemas/block"
-import { Buttons } from "@/components/buttons"
-import { Container } from "@/components/container"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import { Description } from "@/components/description"
-import { Panel } from "@/components/panel"
-import { Section } from "@/components/section"
 import { Title } from "@/components/title"
+
+export interface Cta1Props extends React.ComponentProps<"section"> {
+  level?: number
+  title: string
+  description?: string
+  buttons?: (React.ComponentProps<typeof Button> & {
+    text: string
+    href: string
+  })[]
+}
 
 function Cta1({
   className,
@@ -12,25 +19,38 @@ function Cta1({
   title,
   description,
   buttons,
-}: BlockSchema) {
+  ...props
+}: Cta1Props) {
   return (
-    <Section className={className}>
-      <Container>
-        <Panel className="flex flex-col items-center">
+    <section className={cn("relative w-full py-16", className)} {...props}>
+      <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">
+        <div className="bg-card flex flex-col items-center rounded-lg border p-8 md:p-12">
           <Title className="text-center" size="5xl" level={level}>
             {title}
           </Title>
-          <Description className="text-center not-first:mt-4" size="lg">
-            {description}
-          </Description>
-          <Buttons
-            className="justify-center not-first:mt-8"
-            size="lg"
-            buttons={buttons}
-          />
-        </Panel>
-      </Container>
-    </Section>
+          {description && (
+            <Description className="mt-4 text-center" size="lg">
+              {description}
+            </Description>
+          )}
+          {buttons && (
+            <div className="mt-8 inline-flex flex-wrap justify-center gap-2">
+              {buttons.map(({ href, text, ...button }, i) => (
+                <Button
+                  key={href}
+                  variant={i === 0 ? "default" : "ghost"}
+                  size="lg"
+                  asChild
+                  {...button}
+                >
+                  <a href={href}>{text}</a>
+                </Button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
   )
 }
 

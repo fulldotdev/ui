@@ -39,10 +39,10 @@ function Locations1({
           )}
           {buttons && buttons.length > 0 && (
             <div className="inline-flex flex-wrap gap-2 not-first:mt-8">
-              {buttons.map(({ text, href, ...button }, i) => (
+              {buttons.map(({ href, text, ...button }, i) => (
                 <Button
-                  key={text}
-                  variant={i === 0 ? "default" : "outline"}
+                  key={href}
+                  variant={i === 0 ? "default" : "ghost"}
                   asChild
                   {...button}
                 >

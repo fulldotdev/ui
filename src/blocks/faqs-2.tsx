@@ -1,32 +1,56 @@
-import type { BlockSchema } from "@/schemas/block"
-import { Accordion } from "@/components/accordion"
-import { Buttons } from "@/components/buttons"
-import { Container } from "@/components/container"
+import { cn } from "@/lib/utils"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { Description } from "@/components/description"
-import { Section } from "@/components/section"
 import { Title } from "@/components/title"
+
+export interface Faqs2Props extends React.ComponentProps<"section"> {
+  level?: number
+  title: string
+  description?: string
+  items: {
+    title: string
+    description: string
+  }[]
+}
 
 function Faqs2({
   className,
   level = 2,
   title,
   description,
-  buttons,
   items,
-}: BlockSchema) {
+  ...props
+}: Faqs2Props) {
   return (
-    <Section className={className}>
-      <Container className="grid gap-8 md:grid-cols-2">
+    <section className={cn("relative w-full py-16", className)} {...props}>
+      <div className="mx-auto grid w-full max-w-screen-xl gap-8 px-4 md:grid-cols-2 lg:px-8">
         <div className="flex flex-col items-start">
           <Title size="4xl" level={level}>
             {title}
           </Title>
-          <Description className="not-first:mt-4">{description}</Description>
-          <Buttons className="not-first:mt-8" buttons={buttons} />
+          {description && (
+            <Description className="mt-4">{description}</Description>
+          )}
         </div>
-        <Accordion level={level + 1} type="single" collapsible items={items} />
-      </Container>
-    </Section>
+        <Accordion
+          className="w-full max-w-2xl not-first:mt-16"
+          type="single"
+          collapsible
+        >
+          {items.map(({ title, description }) => (
+            <AccordionItem key={title} value={title}>
+              <AccordionTrigger>{title}</AccordionTrigger>
+              <AccordionContent>{description}</AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </div>
+    </section>
   )
 }
 

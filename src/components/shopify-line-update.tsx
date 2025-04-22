@@ -3,14 +3,10 @@ import {
   CartLineQuantity,
   CartLineQuantityAdjustButton,
 } from "@shopify/hydrogen-react"
-import { cva } from "class-variance-authority"
-import type { VariantProps } from "class-variance-authority"
 import { Loader2, Minus, Plus } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/button"
-
-import { buttonVariants } from "./ui/button"
+import { buttonVariants } from "@/components/ui/button"
 
 interface Props extends React.ComponentProps<"div"> {
   size?: "sm" | "default" | "lg"

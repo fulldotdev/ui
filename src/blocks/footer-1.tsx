@@ -1,5 +1,4 @@
 import * as React from "react"
-import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
 import { Channels } from "@/components/channels"
@@ -69,7 +68,7 @@ function Footer1({
                     key={value}
                   >
                     <span className="w-8">{label}:</span>
-                    <span>10:00 - 17:30</span>
+                    <span>{value}</span>
                   </li>
                 ))}
               </ul>
@@ -79,7 +78,7 @@ function Footer1({
               menus.map((menu) => (
                 <Menu
                   className="col-span-2 basis-[192px] text-sm"
-                  key={uuidv4()}
+                  key={menu.text}
                   {...menu}
                 />
               ))}

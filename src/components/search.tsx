@@ -1,6 +1,5 @@
-import { useState } from "react"
+import * as React from "react"
 import { Search as SearchIcon } from "lucide-react"
-import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -13,8 +12,6 @@ import {
   CommandList,
 } from "@/components/ui/command"
 
-import { Link } from "./link"
-
 interface Props extends React.ComponentProps<typeof Button> {
   links?: {
     text?: string
@@ -23,7 +20,7 @@ interface Props extends React.ComponentProps<typeof Button> {
 }
 
 function Search({ links, className, ...props }: Props) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = React.useState(false)
 
   return links ? (
     <>
@@ -47,11 +44,11 @@ function Search({ links, className, ...props }: Props) {
             {links?.map(({ text, href }) =>
               text && href ? (
                 <CommandItem
-                  key={uuidv4()}
+                  key={href}
                   asChild
                   onSelect={() => href && (window.location.href = href)}
                 >
-                  <Link href={href}>{text}</Link>
+                  <a href={href}>{text}</a>
                 </CommandItem>
               ) : null
             )}

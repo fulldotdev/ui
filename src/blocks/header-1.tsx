@@ -55,11 +55,11 @@ function Header1({
         <div className="inline-flex w-full items-center justify-end gap-2">
           {search && <Search links={search} />}
           {buttons && buttons.length > 0 && (
-            <div className="inline-flex flex-nowrap flex-wrap gap-2 max-sm:hidden">
+            <div className="inline-flex flex-nowrap gap-2 max-sm:hidden">
               {buttons.map(({ text, href, ...button }, i) => (
                 <Button
-                  key={text}
-                  variant={i === 0 ? "default" : "outline"}
+                  key={href}
+                  variant={i === 0 ? "default" : "ghost"}
                   asChild
                   {...button}
                 >

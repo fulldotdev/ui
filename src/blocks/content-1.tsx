@@ -1,27 +1,23 @@
-import type { BlockSchema } from "@/schemas/block"
-import { Buttons } from "@/components/buttons"
-import { Container } from "@/components/container"
+import { cn } from "@/lib/utils"
 import { Prose } from "@/components/prose"
-import { Section } from "@/components/section"
 
-function Content1({
-  className,
-  buttons,
-  content,
-  children,
-}: BlockSchema & {
-  children: React.ReactNode
-}) {
+export interface Content1Props extends React.ComponentProps<"section"> {
+  content?: string
+  children?: React.ReactNode
+}
+
+function Content1({ className, content, children, ...props }: Content1Props) {
   return (
-    <Section className={className}>
-      <Container className="flex flex-col">
-        <Prose>
-          {content}
-          {children}
-          <Buttons className="not-first:mt-8" buttons={buttons} />
-        </Prose>
-      </Container>
-    </Section>
+    <section className={cn("relative w-full py-16", className)} {...props}>
+      <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">
+        <div className="flex flex-col">
+          <Prose>
+            {content}
+            {children}
+          </Prose>
+        </div>
+      </div>
+    </section>
   )
 }
 

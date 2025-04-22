@@ -1,4 +1,4 @@
-import React from "react"
+import * as React from "react"
 import config from "@/data/config.json"
 import { cartTotalQuantity } from "@/stores/shopify"
 import { Label } from "@radix-ui/react-label"

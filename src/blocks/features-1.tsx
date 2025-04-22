@@ -7,7 +7,7 @@ import { Title } from "@/components/title"
 
 export interface Features1Props extends React.ComponentProps<"section"> {
   level?: number
-  title?: string
+  title: string
   description?: string
   buttons?: (React.ComponentProps<typeof Button> & {
     text: string
@@ -31,20 +31,18 @@ function Features1({
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto flex w-full max-w-screen-xl flex-col px-4 lg:px-8">
-        {title && (
-          <Title size="4xl" level={level}>
-            {title}
-          </Title>
-        )}
+        <Title size="4xl" level={level}>
+          {title}
+        </Title>
         {description && (
-          <Description className="not-first:mt-4">{description}</Description>
+          <Description className="mt-4">{description}</Description>
         )}
         {buttons && buttons.length > 0 && (
-          <div className="inline-flex flex-wrap gap-2 not-first:mt-8">
+          <div className="mt-8 inline-flex flex-wrap gap-2">
             {buttons.map(({ text, href, ...button }, i) => (
               <Button
                 key={href}
-                variant={i === 0 ? "default" : "outline"}
+                variant={i === 0 ? "default" : "ghost"}
                 asChild
                 {...button}
               >

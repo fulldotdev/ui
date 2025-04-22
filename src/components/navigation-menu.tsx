@@ -1,4 +1,4 @@
-import { useState } from "react"
+import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import {
@@ -24,7 +24,7 @@ interface Props {
 }
 
 function NavigationMenu({ items, className }: Props) {
-  const [offset, setOffset] = useState<string | undefined>(undefined)
+  const [offset, setOffset] = React.useState<string | undefined>(undefined)
 
   function handleChange(value: string) {
     if (!value) {
