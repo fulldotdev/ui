@@ -1,19 +1,20 @@
-import { cn } from "@/lib/utils"
+import { Check, CheckIcon } from "lucide-react"
+
+import { cn, money } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Description } from "@/components/description"
-import { List } from "@/components/list"
-import { Price } from "@/components/price"
-import { Title } from "@/components/title"
+import { Heading } from "@/components/ui/heading"
+import { List, ListItem } from "@/components/ui/list"
+import { Paragraph } from "@/components/ui/paragraph"
 
 export interface Pricings1Props extends React.ComponentProps<"section"> {
   level?: number
-  title?: string
+  title: string
   description?: string
-  items?: {
+  items: {
     title: string
-    description: string
-    price: React.ComponentProps<typeof Price>
-    list: string[]
+    description?: string
+    price?: number
+    list?: string[]
     button?: {
       text: string
       href: string
@@ -33,31 +34,44 @@ function Pricings1({
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">
         <div className="flex flex-col">
-          <Title size="4xl" level={level}>
+          <Heading size="4xl" level={level}>
             {title}
-          </Title>
+          </Heading>
           {description && (
-            <Description className="not-first:mt-4" size="xl">
+            <Paragraph className="not-first:mt-4" size="lg">
               {description}
-            </Description>
+            </Paragraph>
           )}
-          <div className="grid grid-cols-1 gap-x-4 gap-y-8 not-first:mt-16 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-x-8 gap-y-8 not-first:mt-16 md:grid-cols-2 lg:grid-cols-3">
             {items?.map(({ title, description, price, list, button }) => (
-              <a className="flex flex-col gap-4 px-6 text-lg" key={title}>
-                <Title level={level + 1} size="xl">
+              <div className="flex flex-col rounded-md border p-8" key={title}>
+                <Heading level={level + 1} size="xl">
                   {title}
-                </Title>
-                <Description className="not-first:mt-4" size="xl">
-                  {description}
-                </Description>
-                <Price className="text-2xl font-medium" {...price} />
-                <List className="mt-8" items={list} />
+                </Heading>
+                {description && (
+                  <Paragraph className="mt-3">{description}</Paragraph>
+                )}
+                {price && (
+                  <div className="mt-4 text-2xl font-medium">
+                    {money(price)}
+                  </div>
+                )}
+                {list && list.length > 0 && (
+                  <List className="mt-6 text-sm">
+                    {list.map((item) => (
+                      <ListItem key={item}>
+                        <Check className="text-primary" />
+                        {item}
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
                 {button && (
                   <Button className="mt-8" asChild>
                     <a href={button.href}>{button.text}</a>
                   </Button>
                 )}
-              </a>
+              </div>
             ))}
           </div>
         </div>

@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
-import { Image } from "@/components/image"
+import { Image } from "@/components/ui/image"
 
 interface Props extends React.ComponentProps<"a"> {
   src?: React.ComponentProps<typeof Image>["src"]

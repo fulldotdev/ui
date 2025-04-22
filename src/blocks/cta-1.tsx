@@ -1,16 +1,17 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Description } from "@/components/description"
-import { Title } from "@/components/title"
+import { Heading } from "@/components/ui/heading"
+import { Paragraph } from "@/components/ui/paragraph"
 
 export interface Cta1Props extends React.ComponentProps<"section"> {
   level?: number
   title: string
   description?: string
-  buttons?: (React.ComponentProps<typeof Button> & {
+  buttons?: {
+    variant?: "default" | "outline" | "secondary" | "ghost"
     text: string
     href: string
-  })[]
+  }[]
 }
 
 function Cta1({
@@ -25,13 +26,13 @@ function Cta1({
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">
         <div className="bg-card flex flex-col items-center rounded-lg border p-8 md:p-12">
-          <Title className="text-center" size="5xl" level={level}>
+          <Heading className="text-center" size="5xl" level={level}>
             {title}
-          </Title>
+          </Heading>
           {description && (
-            <Description className="mt-4 text-center" size="lg">
+            <Paragraph className="mt-4 text-center" size="lg">
               {description}
-            </Description>
+            </Paragraph>
           )}
           {buttons && (
             <div className="mt-8 inline-flex flex-wrap justify-center gap-2">

@@ -1,17 +1,19 @@
 import { cn } from "@/lib/utils"
-import { Description } from "@/components/description"
-import { Image } from "@/components/image"
-import { Title } from "@/components/title"
+import { Heading } from "@/components/ui/heading"
+import { Paragraph } from "@/components/ui/paragraph"
 
 export interface Pages1Props extends React.ComponentProps<"section"> {
   level?: number
-  title?: string
+  title: string
   description?: string
-  items?: {
+  items: {
     href: string
     title: string
     description: string
-    image: React.ComponentProps<typeof Image>
+    image: {
+      src: string
+      alt: string
+    }
   }[]
 }
 
@@ -27,25 +29,21 @@ function Pages1({
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">
         <div className="flex flex-col">
-          <Title size="4xl" level={level}>
+          <Heading size="4xl" level={level}>
             {title}
-          </Title>
-          {description && (
-            <Description className="not-first:mt-4">{description}</Description>
-          )}
-          <div className="grid grid-cols-1 gap-4 gap-y-8 not-first:mt-16 md:grid-cols-2 lg:grid-cols-3">
+          </Heading>
+          {description && <Paragraph className="mt-4">{description}</Paragraph>}
+          <div className="mt-16 grid grid-cols-1 gap-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
             {items?.map(({ href, title, description, image }) => (
               <a key={href} className="group flex flex-col" href={href}>
-                <Image
+                <img
                   className="rounded-lg transition-opacity group-hover:opacity-75"
                   {...image}
                 />
-                <Title className="not-first:mt-3" size="lg" level={level}>
+                <Heading className="mt-3" size="lg" level={level}>
                   {title}
-                </Title>
-                <Description className="not-first:mt-1">
-                  {description}
-                </Description>
+                </Heading>
+                <Paragraph className="mt-1">{description}</Paragraph>
               </a>
             ))}
           </div>

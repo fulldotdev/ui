@@ -18,7 +18,8 @@ import type {
 import { Loader2, Minus, Plus, ShoppingBag } from "lucide-react"
 
 import { hasShopify } from "@/lib/has-shopify"
-import { cn } from "@/lib/utils"
+import { cn, discount, money } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -28,8 +29,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Discount } from "@/components/discount"
-import { Price } from "@/components/price"
 
 interface Props {
   id: Product["id"]
@@ -74,20 +73,23 @@ function ShopifyProductContent() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center">
-        <Price
-          className="text-muted-foreground mr-3 text-lg line-through"
-          amount={Number(selectedVariant?.compareAtPrice?.amount)}
-          currency={selectedVariant?.compareAtPrice?.currencyCode}
-        />
-        <Price
-          className="text-foreground mr-4 text-lg"
-          amount={Number(selectedVariant?.price?.amount)}
-          currency={selectedVariant?.price?.currencyCode}
-        />
-        <Discount
-          before={Number(selectedVariant?.price?.amount)}
-          after={Number(selectedVariant?.compareAtPrice?.amount)}
-        />
+        {selectedVariant?.compareAtPrice?.amount && (
+          <div className="text-muted-foreground mr-3 text-lg line-through">
+            {money(Number(selectedVariant?.compareAtPrice?.amount))}
+          </div>
+        )}
+        <div className="text-foreground mr-4 text-lg">
+          {money(Number(selectedVariant?.price?.amount))}
+        </div>
+
+        {selectedVariant?.compareAtPrice?.amount && (
+          <Badge>
+            {discount(
+              Number(selectedVariant?.price?.amount),
+              Number(selectedVariant?.compareAtPrice?.amount)
+            )}
+          </Badge>
+        )}
       </div>
 
       {options

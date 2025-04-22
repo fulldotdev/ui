@@ -1,15 +1,15 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { Social } from "@/components/ui/social"
 import { Channels } from "@/components/channels"
 import { Logo } from "@/components/logo"
 import { Menu } from "@/components/menu"
-import { Socials } from "@/components/socials"
 
 export interface Footer1Props extends React.ComponentProps<"footer"> {
   logo?: React.ComponentProps<typeof Logo>
   description?: string
-  socials?: React.ComponentProps<typeof Socials>["socials"]
+  socials?: string[]
   channels?: React.ComponentProps<typeof Channels>
   menus?: React.ComponentProps<typeof Menu>[]
   company?: string
@@ -102,10 +102,11 @@ function Footer1({
                   </a>
                 ))}
               {socials && (
-                <Socials
-                  className="text-muted-foreground ml-auto"
-                  socials={socials}
-                />
+                <div className="flex gap-0.5">
+                  {socials.map((social) => (
+                    <Social href={social} />
+                  ))}
+                </div>
               )}
             </div>
           </div>

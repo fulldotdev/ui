@@ -10,7 +10,7 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel"
 
-import { Image } from "./image"
+import { Image } from "./ui/image"
 
 interface Props extends React.ComponentProps<"div"> {
   images?: React.ComponentProps<typeof Image>[]

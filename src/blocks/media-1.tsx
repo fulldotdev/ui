@@ -1,18 +1,21 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Description } from "@/components/description"
-import { Image } from "@/components/image"
-import { Title } from "@/components/title"
+import { Heading } from "@/components/ui/heading"
+import { Paragraph } from "@/components/ui/paragraph"
 
 export interface Media1Props extends React.ComponentProps<"section"> {
   level?: number
   title: string
   description?: string
-  buttons?: (React.ComponentProps<typeof Button> & {
+  buttons?: {
+    variant?: "default" | "outline" | "secondary" | "ghost"
     text: string
     href: string
-  })[]
-  image: React.ComponentProps<typeof Image>
+  }[]
+  image: {
+    src: string
+    alt: string
+  }
 }
 
 function Media1({
@@ -27,20 +30,21 @@ function Media1({
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center px-4 lg:px-8">
-        <Title className="text-center" size="5xl" level={level}>
+        <Heading className="text-center" size="5xl" level={level}>
           {title}
-        </Title>
+        </Heading>
         {description && (
-          <Description className="mt-4 text-center" size="lg">
+          <Paragraph className="mt-4 text-center" size="lg">
             {description}
-          </Description>
+          </Paragraph>
         )}
-        {buttons && (
-          <div className="mt-6 flex flex-row flex-wrap gap-2">
+        {buttons && buttons.length > 0 && (
+          <div className="mt-8 flex flex-row flex-wrap gap-2">
             {buttons.map(({ text, href, ...button }, i) => (
               <Button
                 key={href}
                 variant={i === 0 ? "default" : "ghost"}
+                size="lg"
                 asChild
                 {...button}
               >
@@ -49,7 +53,7 @@ function Media1({
             ))}
           </div>
         )}
-        <Image className="mt-16 rounded-lg" {...image} />
+        <img className="mt-16 rounded-lg" {...image} />
       </div>
     </section>
   )

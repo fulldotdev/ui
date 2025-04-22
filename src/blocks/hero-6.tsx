@@ -1,18 +1,21 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Description } from "@/components/description"
-import { Image } from "@/components/image"
-import { Title } from "@/components/title"
+import { Heading } from "@/components/ui/heading"
+import { Paragraph } from "@/components/ui/paragraph"
 
 export interface Hero6Props extends React.ComponentProps<"section"> {
   level?: number
   title: string
   description?: string
-  buttons?: (React.ComponentProps<typeof Button> & {
+  buttons?: {
+    variant?: "default" | "outline" | "secondary" | "ghost"
     text: string
     href: string
-  })[]
-  image?: React.ComponentProps<typeof Image>
+  }[]
+  image?: {
+    src: string
+    alt: string
+  }
 }
 
 function Hero6({
@@ -33,19 +36,19 @@ function Hero6({
       {...props}
     >
       {image && (
-        <Image
+        <img
           className="absolute top-0 left-0 size-full object-cover"
           {...image}
         />
       )}
       <div className="pt-header relative mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center px-4 lg:px-8">
-        <Title className="text-center" size="8xl" level={level}>
+        <Heading className="text-center" size="8xl" level={level}>
           {title}
-        </Title>
+        </Heading>
         {description && (
-          <Description size="xl" className="mt-6 text-center">
+          <Paragraph size="xl" className="mt-6 text-center">
             {description}
-          </Description>
+          </Paragraph>
         )}
         {buttons && (
           <div className="mt-12 inline-flex flex-wrap justify-center gap-2">

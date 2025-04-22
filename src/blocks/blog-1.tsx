@@ -1,16 +1,18 @@
 import { cn } from "@/lib/utils"
-import { Description } from "@/components/description"
-import { Image } from "@/components/image"
-import { Title } from "@/components/title"
+import { Heading } from "@/components/ui/heading"
+import { Paragraph } from "@/components/ui/paragraph"
 
 export interface Posts1Props extends React.ComponentProps<"section"> {
   level?: number
   title: string
   description?: string
-  items?: {
+  items: {
     href: string
     title: string
-    image: React.ComponentProps<typeof Image>
+    image: {
+      src: string
+      alt: string
+    }
   }[]
 }
 
@@ -25,27 +27,25 @@ function Blog1({
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto flex w-full max-w-screen-xl flex-col px-4 lg:px-8">
-        <Title size="4xl" level={level}>
+        <Heading size="4xl" level={level}>
           {title}
-        </Title>
+        </Heading>
         {description && (
-          <Description className="not-first:mt-4">{description}</Description>
+          <Paragraph className="not-first:mt-4">{description}</Paragraph>
         )}
-        {items && items.length > 0 && (
-          <div className="grid gap-4 gap-y-8 not-first:mt-16 md:grid-cols-2 lg:grid-cols-3">
-            {items.map(({ href, title, image }) => (
-              <a className="group flex flex-col gap-3" key={href} href={href}>
-                <Image
-                  className="bg-card rounded-lg object-contain transition-opacity group-hover:opacity-75"
-                  {...image}
-                />
-                <Title level={level + 1} size="xl">
-                  {title}
-                </Title>
-              </a>
-            ))}
-          </div>
-        )}
+        <div className="grid gap-4 gap-y-8 not-first:mt-16 md:grid-cols-2 lg:grid-cols-3">
+          {items.map(({ href, title, image }) => (
+            <a className="group flex flex-col gap-3" key={href} href={href}>
+              <img
+                className="bg-card rounded-lg object-contain transition-opacity group-hover:opacity-75"
+                {...image}
+              />
+              <Heading level={level + 1} size="xl">
+                {title}
+              </Heading>
+            </a>
+          ))}
+        </div>
       </div>
     </section>
   )

@@ -2,6 +2,7 @@ import * as React from "react"
 
 import { highlightCode } from "@/lib/highlight-code"
 import { cn } from "@/lib/utils"
+import { Heading } from "@/components/ui/heading"
 import {
   ResizableHandle,
   ResizablePanel,
@@ -9,7 +10,6 @@ import {
 } from "@/components/ui/resizable"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Code } from "@/components/code"
-import { Title } from "@/components/title"
 
 export interface Code1Props extends React.ComponentProps<"section"> {
   level?: number
@@ -36,7 +36,7 @@ function Code1({
                 <TabsTrigger value="preview">Preview</TabsTrigger>
                 <TabsTrigger value="code">Code</TabsTrigger>
               </TabsList>
-              <Title level={level}>{title}</Title>
+              <Heading level={level}>{title}</Heading>
             </div>
             <TabsContent value="preview">
               <ResizablePanelGroup direction="horizontal">

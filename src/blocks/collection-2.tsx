@@ -1,7 +1,7 @@
 import * as React from "react"
 import { ChevronDown } from "lucide-react"
 
-import { cn } from "@/lib/utils"
+import { cn, money } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -10,21 +10,22 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Description } from "@/components/description"
-import { Image } from "@/components/image"
-import { Money } from "@/components/money"
-import { Prose } from "@/components/prose"
-import { Title } from "@/components/title"
+import { Heading } from "@/components/ui/heading"
+import { Paragraph } from "@/components/ui/paragraph"
+import { Prose } from "@/components/ui/prose"
 
 export interface Collection2Props extends React.ComponentProps<"section"> {
   level?: number
-  title?: string
+  title: string
   description?: string
   items: {
-    image: React.ComponentProps<typeof Image>
     href: string
     title: string
     price: number
+    image: {
+      src: string
+      alt: string
+    }
   }[]
 }
 
@@ -58,15 +59,11 @@ function Collection2({
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">
         <div className="flex flex-col">
-          {title && (
-            <Title size="4xl" level={level}>
-              {title}
-            </Title>
-          )}
-          {description && (
-            <Description className="not-first:mt-4">{description}</Description>
-          )}
-          <div className="flex flex-col gap-0 not-first:mt-16">
+          <Heading size="4xl" level={level}>
+            {title}
+          </Heading>
+          {description && <Paragraph className="mt-4">{description}</Paragraph>}
+          <div className="mt-16 flex flex-col gap-0">
             <div className="flex items-center justify-between border-t py-4">
               <span className="text-muted-foreground text-sm">{`${sortedItems?.length || 0} producten`}</span>
               <DropdownMenu>
@@ -100,25 +97,22 @@ function Collection2({
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-            {sortedItems && sortedItems.length > 0 && (
-              <div className="grid grid-cols-2 gap-x-4 gap-y-8 not-first:mt-8 sm:grid-cols-[repeat(auto-fill,minmax(236px,1fr))]">
-                {sortedItems.map(({ href, title, image, price }) => (
-                  <a className="group flex flex-col" key={href} href={href}>
-                    <Image
-                      className="rounded-md transition-opacity group-hover:opacity-75"
-                      {...image}
-                    />
-                    <Title className="mt-3.5" size="sm" level={level + 1}>
-                      {title}
-                    </Title>
-                    <Money
-                      className="text-muted-foreground mt-1 text-sm"
-                      amount={price}
-                    />
-                  </a>
-                ))}
-              </div>
-            )}
+            <div className="grid grid-cols-2 gap-x-4 gap-y-8 not-first:mt-8 sm:grid-cols-[repeat(auto-fill,minmax(236px,1fr))]">
+              {sortedItems.map(({ href, title, image, price }) => (
+                <a className="group flex flex-col" key={href} href={href}>
+                  <img
+                    className="rounded-md transition-opacity group-hover:opacity-75"
+                    {...image}
+                  />
+                  <Heading className="mt-3.5" size="sm" level={level + 1}>
+                    {title}
+                  </Heading>
+                  <div className="text-muted-foreground mt-1 text-sm">
+                    {money(price, "EUR", "nl-NL")}
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
           {children && <Prose className="mt-16">{children}</Prose>}
         </div>

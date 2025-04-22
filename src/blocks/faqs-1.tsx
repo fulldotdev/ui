@@ -7,8 +7,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Description } from "@/components/description"
-import { Title } from "@/components/title"
+import { Heading } from "@/components/ui/heading"
+import { Paragraph } from "@/components/ui/paragraph"
 
 export interface Faqs1Props extends React.ComponentProps<"section"> {
   level?: number
@@ -30,27 +30,23 @@ function Faqs1({
 }: Faqs1Props) {
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
-      <div className="mx-auto w-full max-w-screen-md px-4 md:px-12">
-        <div className="flex flex-col">
-          <Title size="4xl" level={level}>
-            {title}
-          </Title>
-          {description && (
-            <Description className="mt-4">{description}</Description>
-          )}
-          <Accordion
-            className="w-full max-w-2xl not-first:mt-16"
-            type="single"
-            collapsible
-          >
-            {items.map(({ title, description }) => (
-              <AccordionItem key={title} value={title}>
-                <AccordionTrigger>{title}</AccordionTrigger>
-                <AccordionContent>{description}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
+      <div className="mx-auto flex w-full max-w-screen-md flex-col px-4 md:px-12">
+        <Heading size="4xl" level={level}>
+          {title}
+        </Heading>
+        {description && <Paragraph className="mt-4">{description}</Paragraph>}
+        <Accordion
+          className="w-full max-w-2xl not-first:mt-16"
+          type="single"
+          collapsible
+        >
+          {items.map(({ title, description }) => (
+            <AccordionItem key={title} value={title}>
+              <AccordionTrigger>{title}</AccordionTrigger>
+              <AccordionContent>{description}</AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </div>
     </section>
   )

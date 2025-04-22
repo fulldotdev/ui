@@ -2,17 +2,18 @@ import { Check } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Description } from "@/components/description"
-import { Title } from "@/components/title"
+import { Heading } from "@/components/ui/heading"
+import { Paragraph } from "@/components/ui/paragraph"
 
 export interface Features2Props extends React.ComponentProps<"section"> {
   level?: number
   title: string
   description?: string
-  buttons?: (React.ComponentProps<typeof Button> & {
+  buttons?: {
+    variant?: "default" | "outline" | "secondary" | "ghost"
     text: string
     href: string
-  })[]
+  }[]
   items: {
     title: string
     description?: string
@@ -31,13 +32,13 @@ function Features2({
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center px-4 lg:px-8">
-        <Title className="text-center" size="5xl" level={level}>
+        <Heading className="text-center" size="5xl" level={level}>
           {title}
-        </Title>
+        </Heading>
         {description && (
-          <Description className="mt-4 text-center" size="lg">
+          <Paragraph className="mt-4 text-center" size="lg">
             {description}
-          </Description>
+          </Paragraph>
         )}
         {buttons && buttons.length > 0 && (
           <div className="mt-8 inline-flex flex-wrap justify-center gap-2">
@@ -60,13 +61,13 @@ function Features2({
               <div className="bg-muted text-muted-foreground inline-flex size-9 items-center justify-center rounded-md">
                 <Check />
               </div>
-              <Title className="mt-4 text-center" size="xl" level={level + 1}>
+              <Heading className="mt-4 text-center" size="xl" level={level + 1}>
                 {title}
-              </Title>
+              </Heading>
               {description && (
-                <Description className="mt-2 text-center">
+                <Paragraph className="mt-2 text-center">
                   {description}
-                </Description>
+                </Paragraph>
               )}
             </div>
           ))}

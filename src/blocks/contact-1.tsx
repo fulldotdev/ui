@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils"
+import { Heading } from "@/components/ui/heading"
+import { Paragraph } from "@/components/ui/paragraph"
 import { Channels } from "@/components/channels"
-import { Description } from "@/components/description"
 import { Form } from "@/components/form"
-import { Title } from "@/components/title"
 
 export interface Contact1Props extends React.ComponentProps<"section"> {
   level?: number
@@ -23,17 +23,13 @@ function Contact1({
 }: Contact1Props) {
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
-      <div className="mx-auto w-full max-w-screen-md px-4 lg:px-8">
-        <div className="flex flex-col">
-          <Title size="4xl" level={level}>
-            {title}
-          </Title>
-          {description && (
-            <Description className="not-first:mt-4">{description}</Description>
-          )}
-          {channels && <Channels className="not-first:mt-8" {...channels} />}
-          {form && <Form className="not-first:mt-16" {...form} />}
-        </div>
+      <div className="mx-auto flex w-full max-w-screen-md flex-col px-4 lg:px-8">
+        <Heading size="4xl" level={level}>
+          {title}
+        </Heading>
+        {description && <Paragraph className="mt-4">{description}</Paragraph>}
+        {channels && <Channels className="mt-8" {...channels} />}
+        {form && <Form className="mt-16" {...form} />}
       </div>
     </section>
   )

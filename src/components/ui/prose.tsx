@@ -1,11 +1,9 @@
 import * as React from "react"
 
-import { cn, hasChildren } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
-interface Props extends React.ComponentProps<"div"> {}
-
-function Prose({ children, className, ...props }: Props) {
-  return hasChildren(children) ? (
+function Prose({ className, ...props }: React.ComponentProps<"div">) {
+  return (
     <div
       className={cn(
         "prose",
@@ -25,10 +23,8 @@ function Prose({ children, className, ...props }: Props) {
         className
       )}
       {...props}
-    >
-      {children}
-    </div>
-  ) : null
+    />
+  )
 }
 
 export { Prose }

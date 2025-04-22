@@ -20,16 +20,15 @@ function Rating({ score, className, ...props }: Props) {
     return null
   }
 
-  return score ? (
+  return (
     <div className={cn("flex gap-1 text-base", className)} {...props}>
-      {score &&
-        [1, 2, 3, 4, 5].map((count) => (
-          <div key={count} className="!text-primary size-[1em]">
-            {getIcon(count)}
-          </div>
-        ))}
+      {[1, 2, 3, 4, 5].map((count) => (
+        <div key={count} className="!text-primary size-[1em]">
+          {getIcon(count)}
+        </div>
+      ))}
     </div>
-  ) : null
+  )
 }
 
 export { Rating }

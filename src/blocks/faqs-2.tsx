@@ -5,8 +5,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Description } from "@/components/description"
-import { Title } from "@/components/title"
+import { Heading } from "@/components/ui/heading"
+import { Paragraph } from "@/components/ui/paragraph"
 
 export interface Faqs2Props extends React.ComponentProps<"section"> {
   level?: number
@@ -30,18 +30,12 @@ function Faqs2({
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto grid w-full max-w-screen-xl gap-8 px-4 md:grid-cols-2 lg:px-8">
         <div className="flex flex-col items-start">
-          <Title size="4xl" level={level}>
+          <Heading size="4xl" level={level}>
             {title}
-          </Title>
-          {description && (
-            <Description className="mt-4">{description}</Description>
-          )}
+          </Heading>
+          {description && <Paragraph className="mt-4">{description}</Paragraph>}
         </div>
-        <Accordion
-          className="w-full max-w-2xl not-first:mt-16"
-          type="single"
-          collapsible
-        >
+        <Accordion className="w-full max-w-2xl" type="single" collapsible>
           {items.map(({ title, description }) => (
             <AccordionItem key={title} value={title}>
               <AccordionTrigger>{title}</AccordionTrigger>
