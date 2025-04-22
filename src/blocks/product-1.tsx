@@ -3,7 +3,6 @@ import { CheckIcon } from "lucide-react"
 
 import { cn, money } from "@/lib/utils"
 import { Heading } from "@/components/ui/heading"
-import { Image } from "@/components/ui/image"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Prose } from "@/components/ui/prose"
 import { Form } from "@/components/form"
@@ -60,7 +59,7 @@ function Product1({
               </Paragraph>
             )}
             {energyLabel && (
-              <Image
+              <img
                 src={energyLabel}
                 alt="Energie label"
                 className="h-8 w-auto not-first:mt-4"

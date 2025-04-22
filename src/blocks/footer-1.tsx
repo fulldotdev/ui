@@ -1,13 +1,18 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { Heading } from "@/components/ui/heading"
+import { Logo } from "@/components/ui/logo"
 import { Social } from "@/components/ui/social"
 import { Channels } from "@/components/channels"
-import { Logo } from "@/components/logo"
 import { Menu } from "@/components/menu"
 
 export interface Footer1Props extends React.ComponentProps<"footer"> {
-  logo?: React.ComponentProps<typeof Logo>
+  logo?: {
+    src: string
+    alt: string
+  }
+  title?: string
   description?: string
   socials?: string[]
   channels?: React.ComponentProps<typeof Channels>
@@ -25,6 +30,7 @@ export interface Footer1Props extends React.ComponentProps<"footer"> {
 
 function Footer1({
   logo,
+  title,
   description,
   socials,
   channels,
@@ -47,7 +53,14 @@ function Footer1({
         <div className="flex flex-col">
           <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(30px,1fr))] justify-between gap-16 border-t py-16">
             <div className="col-span-3 flex max-w-xs flex-col">
-              {logo && <Logo {...logo} />}
+              <div className="flex items-center gap-2">
+                {logo && <Logo {...logo} />}
+                {title && (
+                  <Heading size="xl" level={6}>
+                    {title}
+                  </Heading>
+                )}
+              </div>
               {description && (
                 <p className="text-muted-foreground text-sm leading-6 not-first:mt-3">
                   {description}

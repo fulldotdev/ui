@@ -2,27 +2,34 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { Heading } from "@/components/ui/heading"
+import { Logo } from "@/components/ui/logo"
 import { DrawerMenu } from "@/components/drawer-menu"
-import { Logo } from "@/components/logo"
 import { NavigationMenu } from "@/components/navigation-menu"
 import { Search } from "@/components/search"
 import { ShopifyCart } from "@/components/shopify-cart"
 
 export interface Header1Props extends React.ComponentProps<"header"> {
-  logo?: React.ComponentProps<typeof Logo>
+  title?: string
+  logo?: {
+    src: string
+    alt: string
+  }
   menus?: {
     text: string
     href: string
   }[]
-  buttons?: (React.ComponentProps<typeof Button> & {
+  buttons?: {
+    variant?: "default" | "secondary" | "outline" | "ghost"
     text: string
     href: string
-  })[]
+  }[]
   search?: any
   cart?: boolean
 }
 
 function Header1({
+  title,
   logo,
   menus,
   buttons,
@@ -44,6 +51,15 @@ function Header1({
           {menus && <DrawerMenu className="-ml-2.5 lg:hidden" items={menus} />}
           {logo && (
             <Logo className="mr-3 max-sm:hidden lg:hidden xl:flex" {...logo} />
+          )}
+          {title && (
+            <Heading
+              size="lg"
+              level={6}
+              className="mr-3 max-sm:hidden lg:hidden xl:flex"
+            >
+              {title}
+            </Heading>
           )}
           {menus && (
             <NavigationMenu

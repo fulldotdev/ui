@@ -1,7 +1,5 @@
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import { Heading } from "@/components/ui/heading"
-import { Image } from "@/components/ui/image"
 import { Paragraph } from "@/components/ui/paragraph"
 
 export interface Collections1Props extends React.ComponentProps<"section"> {
@@ -36,7 +34,7 @@ function Collections1({
         <div className="mt-16 grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-8">
           {items.map(({ href, title, image }) => (
             <a className="group flex flex-col" key={href} href={href}>
-              <Image
+              <img
                 className="rounded-md transition-opacity group-hover:opacity-75"
                 {...image}
               />

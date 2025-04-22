@@ -2,14 +2,19 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { Heading } from "@/components/ui/heading"
+import { Logo } from "@/components/ui/logo"
 import { DrawerMenu } from "@/components/drawer-menu"
-import { Logo } from "@/components/logo"
 import { NavigationMenu } from "@/components/navigation-menu"
 import { Search } from "@/components/search"
 import { ShopifyCart } from "@/components/shopify-cart"
 
 export interface Header2Props extends React.ComponentProps<"header"> {
-  logo?: React.ComponentProps<typeof Logo>
+  logo?: {
+    src: string
+    alt: string
+  }
+  title?: string
   menus?: {
     text: string
     href: string
@@ -24,6 +29,7 @@ export interface Header2Props extends React.ComponentProps<"header"> {
 
 function Header2({
   logo,
+  title,
   menus,
   buttons,
   search,
@@ -42,7 +48,18 @@ function Header2({
       <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">
         <div className="flex h-14 items-center gap-2">
           {menus && <DrawerMenu className="-ml-2.5 lg:hidden" items={menus} />}
-          {logo && <Logo className="mr-3 hidden md:flex" {...logo} />}
+          {logo && (
+            <Logo className="mr-3 max-sm:hidden lg:hidden xl:flex" {...logo} />
+          )}
+          {title && (
+            <Heading
+              size="lg"
+              level={6}
+              className="mr-3 max-sm:hidden lg:hidden xl:flex"
+            >
+              {title}
+            </Heading>
+          )}
           {search && <Search links={search} className="mx-auto lg:mx-6" />}
           {buttons?.map(({ href, text, ...button }, i) => (
             <Button
