@@ -6,6 +6,8 @@ import { defineConfig, envField } from "astro/config"
 
 import integration from "./src/lib/integration"
 
+import favicons from "astro-favicons";
+
 export default defineConfig({
   site: "https://ui.full.dev",
   prefetch: {
@@ -28,7 +30,7 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
-  integrations: [robotsTxt(), sitemap(), react(), integration()],
+  integrations: [robotsTxt(), sitemap(), react(), integration(), favicons()],
   vite: {
     plugins: [tailwindcss()],
   },
