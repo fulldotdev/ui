@@ -73,6 +73,7 @@ function Form({ fields, submit, className, ...props }: Props) {
     <FormRoot {...form}>
       <form
         className={cn("flex w-full max-w-2xl flex-col gap-6", className)}
+        method="POST"
         {...props}
       >
         {fields?.map(
@@ -101,20 +102,15 @@ function Form({ fields, submit, className, ...props }: Props) {
                             <Popover>
                               <PopoverTrigger asChild>
                                 <FormControl>
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "border-ring w-full pl-3 text-left font-normal",
-                                      !field.value && "text-muted-foreground"
-                                    )}
-                                  >
-                                    {field.value ? (
-                                      format(field.value, "dd-MM-yyyy")
-                                    ) : (
-                                      <span>{placeholder}</span>
-                                    )}
-                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                  </Button>
+                                  <Input
+                                    className="text-left"
+                                    placeholder={placeholder}
+                                    value={
+                                      field.value
+                                        ? format(field.value, "dd-MM-yyyy")
+                                        : ""
+                                    }
+                                  />
                                 </FormControl>
                               </PopoverTrigger>
                               <PopoverContent
