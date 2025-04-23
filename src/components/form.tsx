@@ -103,6 +103,7 @@ function Form({ fields, submit, className, ...props }: Props) {
                               <PopoverTrigger asChild>
                                 <FormControl>
                                   <Input
+                                    name={name || label}
                                     className="text-left"
                                     placeholder={placeholder}
                                     value={
