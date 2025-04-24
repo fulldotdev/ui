@@ -15,6 +15,7 @@ export const pagesModel = {
     {
       name: "items",
       type: "list",
+      required: true,
       items: {
         type: "reference",
         models: ["content"],

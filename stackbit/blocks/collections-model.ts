@@ -11,10 +11,10 @@ export const collectionsModel = {
   fields: [
     titleField,
     descriptionField,
-    buttonsField,
     {
       name: "items",
       type: "list",
+      required: true,
       items: {
         type: "reference",
         models: ["collection"],

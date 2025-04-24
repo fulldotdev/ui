@@ -15,6 +15,7 @@ export const featuresModel = {
     {
       name: "items",
       type: "list",
+      required: true,
       items: {
         type: "object",
         fields: [titleField, descriptionField],

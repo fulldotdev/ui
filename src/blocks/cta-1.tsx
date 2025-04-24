@@ -25,17 +25,17 @@ function Cta1({
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">
-        <div className="bg-card flex flex-col items-center rounded-lg border p-8 md:p-12">
+        <div className="bg-card flex flex-col items-center rounded-lg border px-4 py-16 lg:px-8">
           <Heading className="text-center" size="5xl" level={level}>
             {title}
           </Heading>
           {description && (
-            <Paragraph className="mt-4 text-center" size="lg">
+            <Paragraph className="mt-6 text-center" size="lg">
               {description}
             </Paragraph>
           )}
           {buttons && (
-            <div className="mt-8 inline-flex flex-wrap justify-center gap-2">
+            <div className="mt-10 inline-flex flex-wrap justify-center gap-2">
               {buttons.map(({ href, text, ...button }, i) => (
                 <Button
                   key={href}

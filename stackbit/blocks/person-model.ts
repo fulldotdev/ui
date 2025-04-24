@@ -1,10 +1,10 @@
-import config from "@/data/config.json"
 import { type PageModel } from "@stackbit/types"
-import { descriptionField } from "stackbit/components/description-field"
 import { imageField } from "stackbit/components/image-field"
-import { sectionsField } from "stackbit/components/sections-field"
 import { seoField } from "stackbit/components/seo-field"
 import { slugField } from "stackbit/components/slug-field"
+import { socialsField } from "stackbit/components/socials-field"
+import { buttonsField } from "stackbit/components/buttons-field"
+import { taglineField } from "stackbit/components/tagline-field"
 import { titleField } from "stackbit/components/title-field"
 
 export const personModel = {
@@ -15,10 +15,11 @@ export const personModel = {
   filePath: `src/content/pages/{slug}.md`,
   fields: [
     slugField,
-    titleField,
-    descriptionField,
     imageField,
-    sectionsField,
+    titleField,
+    taglineField,
+    socialsField,
+    buttonsField,
     seoField,
   ],
 } satisfies PageModel

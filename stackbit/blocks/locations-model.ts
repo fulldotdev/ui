@@ -15,6 +15,7 @@ export const locationsModel = {
     {
       name: "items",
       type: "list",
+      required: true,
       items: {
         type: "reference",
         models: ["location"],

@@ -14,6 +14,7 @@ export const pricingsModel = {
     {
       name: "items",
       type: "list",
+      required: true,
       items: {
         type: "object",
         fields: [titleField, descriptionField],

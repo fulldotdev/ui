@@ -7,7 +7,7 @@ function Prose({ className, ...props }: React.ComponentProps<"div">) {
     <div
       className={cn(
         "prose",
-        "flex-flex-col text-foreground mx-auto w-full max-w-2xl",
+        "text-foreground flex w-full max-w-2xl flex-col",
         "child:mt-4 child:first:mt-0",
         "headings:scroll-mt-20 headings:mt-8 headings:text-pretty headings:font-semibold headings:tracking-tight",
         "h1:text-4xl h1:font-extrabold lg:h1:text-5xl",

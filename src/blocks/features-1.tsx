@@ -54,7 +54,7 @@ function Features1({
           {items.map(({ title, description }) => (
             <div key={title} className="flex max-w-md flex-col">
               <div className="bg-muted text-muted-foreground inline-flex size-9 items-center justify-center rounded-md">
-                <Check />
+                <Check className="text-primary" />
               </div>
               <Heading className="mt-4" size="lg" level={level + 1}>
                 {title}

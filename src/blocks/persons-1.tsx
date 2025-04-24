@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils"
 import { Heading } from "@/components/ui/heading"
 import { Paragraph } from "@/components/ui/paragraph"
+import { Social } from "@/components/ui/social"
 
 export interface Persons1Props extends React.ComponentProps<"section"> {
   level?: number
@@ -14,6 +15,7 @@ export interface Persons1Props extends React.ComponentProps<"section"> {
       src: string
       alt: string
     }
+    socials?: string[]
   }[]
 }
 
@@ -36,23 +38,30 @@ function Persons1({
             <Paragraph className="mt-4 text-center">{description}</Paragraph>
           )}
           <div className="mt-16 flex flex-wrap justify-center gap-16">
-            {items?.map(({ href, image, title, tagline }) => (
-              <a
-                className="group flex shrink-1 basis-3xs flex-col items-center"
+            {items?.map(({ href, image, title, tagline, socials }) => (
+              <div
+                className="relative flex shrink-1 basis-3xs flex-col items-center"
                 key={href}
-                href={href}
               >
-                <img
-                  className="aspect-square w-full rounded-full object-cover transition-opacity group-hover:opacity-75"
-                  {...image}
-                />
-                <Heading className="mt-6" size="lg" level={level + 1}>
-                  {title}
-                </Heading>
-                <p className="text-muted-foreground mt-1.5 text-center text-sm">
-                  {tagline}
-                </p>
-              </a>
+                <a href={href} className="group flex flex-col items-center">
+                  <img
+                    className="aspect-square w-full rounded-full object-cover transition-opacity group-hover:opacity-75"
+                    {...image}
+                  />
+                  <Heading className="mt-6" size="lg" level={level + 1}>
+                    {title}
+                  </Heading>
+                  <p className="text-muted-foreground mt-1.5 text-center text-sm">
+                    {tagline}
+                  </p>
+                </a>
+
+                <div className="relative mt-4 flex gap-2">
+                  {socials?.map((social) => (
+                    <Social key={social} href={social} />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </div>

@@ -30,7 +30,7 @@ function Social({
   className,
   href,
   ...props
-}: React.ComponentProps<"button"> & {
+}: React.ComponentProps<typeof Button> & {
   href?: string
 }) {
   return (
@@ -41,7 +41,7 @@ function Social({
       asChild
       {...props}
     >
-      <a href={href}>
+      <a href={href} target="_blank">
         {href?.includes("x.com") && <SiX />}
         {href?.includes("twitter") && <SiX />}
         {href?.includes("facebook") && <SiFacebook />}

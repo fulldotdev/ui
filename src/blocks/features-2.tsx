@@ -60,7 +60,7 @@ function Features2({
               className="flex max-w-md min-w-2xs grow-1 basis-xs flex-col items-center"
             >
               <div className="bg-muted text-muted-foreground inline-flex size-9 items-center justify-center rounded-md">
-                <Check />
+                <Check className="text-primary" />
               </div>
               <Heading className="mt-4 text-center" size="xl" level={level + 1}>
                 {title}

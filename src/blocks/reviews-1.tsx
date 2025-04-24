@@ -25,7 +25,6 @@ function Reviews1({
   items,
   ...props
 }: Reviews1Props) {
-  console.log(items)
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto flex w-full max-w-screen-xl flex-col px-4 lg:px-8">

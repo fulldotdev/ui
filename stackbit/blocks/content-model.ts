@@ -11,5 +11,5 @@ export const contentModel = {
   type: "page",
   urlPath: "/{slug}",
   filePath: `src/content/pages/{slug}.md`,
-  fields: [slugField, titleField, descriptionField, sectionsField, seoField],
+  fields: [titleField, descriptionField, sectionsField, seoField],
 } satisfies PageModel

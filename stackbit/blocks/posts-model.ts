@@ -14,6 +14,7 @@ export const postsModel = {
     {
       name: "items",
       type: "list",
+      required: true,
       items: {
         type: "reference",
         models: ["post"],
