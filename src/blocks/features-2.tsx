@@ -32,13 +32,11 @@ function Features2({
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center px-4 lg:px-8">
-        <Heading className="text-center" size="5xl" level={level}>
+        <Heading className="text-center" size="4xl" level={level}>
           {title}
         </Heading>
         {description && (
-          <Paragraph className="mt-4 text-center" size="lg">
-            {description}
-          </Paragraph>
+          <Paragraph className="mt-4 text-center">{description}</Paragraph>
         )}
         {buttons && buttons.length > 0 && (
           <div className="mt-8 inline-flex flex-wrap justify-center gap-2">
@@ -55,9 +53,12 @@ function Features2({
             ))}
           </div>
         )}
-        <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(280px,1fr))] justify-center justify-items-center gap-16 not-first:mt-16">
+        <div className="mt-16 flex flex-wrap justify-center gap-16">
           {items.map(({ title, description }) => (
-            <div key={title} className="flex max-w-md flex-col items-center">
+            <div
+              key={title}
+              className="flex max-w-md min-w-2xs grow-1 basis-xs flex-col items-center"
+            >
               <div className="bg-muted text-muted-foreground inline-flex size-9 items-center justify-center rounded-md">
                 <Check />
               </div>

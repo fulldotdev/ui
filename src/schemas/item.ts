@@ -14,6 +14,7 @@ export const itemSchema = z
     images: imageSchema.array(),
     rating: z.number(),
     title: z.string(),
+    tagline: z.string(),
     description: z.string(),
     price: priceSchema,
     priceString: z.string(),

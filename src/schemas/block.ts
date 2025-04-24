@@ -29,6 +29,7 @@ export const blockSchema = z
     price: z.any(),
     priceString: z.string(),
     energyLabel: z.string(),
+    tagline: z.string(),
     form: formSchema,
     list: z.string().array(),
     socials: z.string().array(),

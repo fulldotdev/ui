@@ -9,7 +9,7 @@ export interface Persons1Props extends React.ComponentProps<"section"> {
   items?: {
     href: string
     title: string
-    description: string
+    tagline?: string
     image: {
       src: string
       alt: string
@@ -35,23 +35,23 @@ function Persons1({
           {description && (
             <Paragraph className="mt-4 text-center">{description}</Paragraph>
           )}
-          <div className="mt-16 grid grid-cols-1 gap-16 md:grid-cols-2 lg:grid-cols-3">
-            {items?.map(({ href, image, title, description }) => (
+          <div className="mt-16 flex flex-wrap justify-center gap-16">
+            {items?.map(({ href, image, title, tagline }) => (
               <a
-                className="group flex max-w-md flex-col items-center"
+                className="group flex shrink-1 basis-3xs flex-col items-center"
                 key={href}
                 href={href}
               >
                 <img
-                  className="aspect-square w-full max-w-60 rounded-full object-cover transition-opacity group-hover:opacity-75"
+                  className="aspect-square w-full rounded-full object-cover transition-opacity group-hover:opacity-75"
                   {...image}
                 />
-                <Heading className="not-first:mt-4" size="xl" level={level + 1}>
+                <Heading className="mt-6" size="lg" level={level + 1}>
                   {title}
                 </Heading>
-                <Paragraph className="mt-3 text-center" size="sm">
-                  {description}
-                </Paragraph>
+                <p className="text-muted-foreground mt-1.5 text-center text-sm">
+                  {tagline}
+                </p>
               </a>
             ))}
           </div>

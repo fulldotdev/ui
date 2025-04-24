@@ -33,17 +33,23 @@ function Pages1({
             {title}
           </Heading>
           {description && <Paragraph className="mt-4">{description}</Paragraph>}
-          <div className="mt-16 grid grid-cols-1 gap-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-16 not-first:mt-16">
             {items?.map(({ href, title, description, image }) => (
-              <a key={href} className="group flex flex-col" href={href}>
+              <a
+                key={href}
+                className="group flex max-w-xl flex-col"
+                href={href}
+              >
                 <img
                   className="rounded-lg transition-opacity group-hover:opacity-75"
                   {...image}
                 />
-                <Heading className="mt-3" size="lg" level={level}>
+                <Heading className="mt-5" size="lg" level={level}>
                   {title}
                 </Heading>
-                <Paragraph className="mt-1">{description}</Paragraph>
+                {description && (
+                  <Paragraph className="mt-2">{description}</Paragraph>
+                )}
               </a>
             ))}
           </div>
