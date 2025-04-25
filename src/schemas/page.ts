@@ -1,7 +1,6 @@
-import { blockSchema } from "@/schemas/block"
 import { z } from "zod"
 
-import { referenceSchema } from "./fields/reference"
+import { blockSchema } from "@/schemas/block"
 
 export const pageSchema = blockSchema
   .extend({

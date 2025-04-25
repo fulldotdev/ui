@@ -18,7 +18,7 @@ function Prose({ className, ...props }: React.ComponentProps<"div">) {
         "h6:text-base",
         "p:mt-4 p:leading-[1.8]",
         "img:p:rounded-lg img:rounded-lg",
-        "list:ml-4 list:space-y-2 ul:list-disc ol:list-decimal",
+        "list:ml-4 list:mt-4 list:space-y-2 ul:list-disc ol:list-decimal",
         "[&_a[href]]:text-primary [&_a[href]]:hover:underline",
         className
       )}

@@ -56,7 +56,7 @@ function Header1({
             <Heading
               size="lg"
               level={6}
-              className="mr-3 max-sm:hidden lg:hidden xl:flex"
+              className="mr-3 whitespace-nowrap max-sm:hidden lg:hidden xl:flex"
             >
               {title}
             </Heading>

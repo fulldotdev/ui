@@ -121,7 +121,9 @@ function ShopifyProductContent() {
           </div>
         ))}
 
-      {Number(selectedVariant?.quantityAvailable) > 1 ? (
+      {Number(selectedVariant?.quantityAvailable) > 1 ||
+      (selectedVariant.availableForSale &&
+        Number(selectedVariant?.quantityAvailable) < 0) ? (
         <div className="flex flex-col">
           <Label className="text-muted-foreground pb-1 text-sm">Aantal</Label>
           <div className="border-input relative flex w-full items-center rounded-md border">
@@ -129,7 +131,7 @@ function ShopifyProductContent() {
               variant="ghost"
               size="icon"
               onClick={() => handleQuantityChange(quantity - 1)}
-              disabled={quantity <= 1 || !selectedVariant?.availableForSale}
+              disabled={quantity <= 1}
             >
               <Minus />
             </Button>
@@ -148,7 +150,9 @@ function ShopifyProductContent() {
               size="icon"
               onClick={() => handleQuantityChange(quantity + 1)}
               disabled={
-                quantity >= Number(selectedVariant?.quantityAvailable) ||
+                (quantity >= Number(selectedVariant?.quantityAvailable) &&
+                  !selectedVariant?.availableForSale &&
+                  Number(selectedVariant?.quantityAvailable) < 0) ||
                 !selectedVariant?.availableForSale
               }
             >

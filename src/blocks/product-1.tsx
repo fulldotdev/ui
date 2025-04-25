@@ -40,11 +40,11 @@ function Product1({
 }: Product1Props) {
   return (
     <section
-      className={cn("product product-1 relative w-full pt-0", className)}
+      className={cn("product product-1 relative w-full pt-0 pb-16", className)}
       {...props}
     >
       <div className="mx-auto w-full max-w-screen-xl px-4 max-sm:px-0 lg:px-8">
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid gap-8 md:grid-cols-2 md:items-start">
           <Gallery
             className="ring-muted sm:mt-12 sm:rounded-md sm:ring"
             images={images}

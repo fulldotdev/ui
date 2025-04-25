@@ -69,7 +69,7 @@ const block = blockSchema.extend({
 })
 
 const blockOrPath = z.union([pathSchema, block])
-const page = pageSchema.extend({
+export const page = pageSchema.extend({
   type: z.enum([
     "content",
     "page",

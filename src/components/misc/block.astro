@@ -21,6 +21,8 @@ import { Hero2 } from "@/blocks/hero-2"
 import { Hero3 } from "@/blocks/hero-3"
 import { Hero4 } from "@/blocks/hero-4"
 import { Hero5 } from "@/blocks/hero-5"
+import { Hero6 } from "@/blocks/hero-6"
+import { Hero7 } from "@/blocks/hero-7"
 import { Locations1 } from "@/blocks/locations-1"
 import { Media1 } from "@/blocks/media-1"
 import { Media2 } from "@/blocks/media-2"
@@ -38,21 +40,16 @@ import { getCollection, getEntry } from "astro:content"
 import { getHref } from "@/lib/get-href"
 
 interface Props extends Block {
-  usecase?: "page" | "section"
+  type: string
 }
 
-const { type, usecase } = Astro.props
+const { type } = Astro.props
 
-const blockConfig = config?.[usecase === "page" ? "pages" : "sections"]?.[type]
-
-const blockDefaults =
-  blockConfig && usecase && usecase in blockConfig
-    ? blockConfig[usecase as keyof typeof blockConfig]
-    : blockConfig
+const blockConfig = config?.sections?.[type]
 
 const { variant, ...props } = {
   variant: 1,
-  ...blockDefaults,
+  ...blockConfig,
   ...Astro.props,
 }
 
@@ -233,6 +230,22 @@ props.className = `${props.className || ""} ${type}-${variant}`
     <Hero5 {...props}>
       <slot />
     </Hero5>
+  )
+}
+
+{
+  type === "hero" && variant === 6 && (
+    <Hero6 {...props}>
+      <slot />
+    </Hero6>
+  )
+}
+
+{
+  type === "hero" && variant === 7 && (
+    <Hero7 {...props}>
+      <slot />
+    </Hero7>
   )
 }
 

@@ -7,6 +7,7 @@ import { Paragraph } from "@/components/ui/paragraph"
 export interface Media2Props extends React.ComponentProps<"section"> {
   level?: number
   title: string
+  tagline?: string
   description?: string
   buttons?: {
     variant?: "default" | "outline" | "secondary" | "ghost"
@@ -23,6 +24,7 @@ function Media2({
   className,
   level = 2,
   title,
+  tagline,
   description,
   buttons,
   image,
@@ -32,7 +34,12 @@ function Media2({
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="relative mx-auto grid w-full max-w-screen-xl items-center gap-y-8 px-4 md:grid-cols-2 md:gap-x-8 lg:gap-x-16 lg:px-8">
         <div className="flex flex-col items-start">
-          <Heading size="4xl" level={level}>
+          {tagline && (
+            <Paragraph className="text-primary" size="sm">
+              {tagline}
+            </Paragraph>
+          )}
+          <Heading className="not-first:mt-4" size="4xl" level={level}>
             {title}
           </Heading>
           {description && <Paragraph className="mt-4">{description}</Paragraph>}

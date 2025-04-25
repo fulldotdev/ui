@@ -39,7 +39,7 @@ function Collection1({
                 {title}
               </Heading>
               <div className="text-muted-foreground mt-1 text-sm">
-                {money(price)}
+                {money(price?.amount || price)}
               </div>
             </a>
           ))}
