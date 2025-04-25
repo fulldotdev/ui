@@ -83,7 +83,7 @@ function ShopifyCartContent() {
       <SheetHeader className="border-b">
         <SheetTitle>Winkelwagen</SheetTitle>
       </SheetHeader>
-      <div className="flex flex-col divide-y px-4">
+      <div className="flex flex-col divide-y overflow-y-auto px-4">
         {lines?.map(
           (line) =>
             line && <ShopifyCartLine key={line.id} line={line as CartLine} />
