@@ -49,7 +49,12 @@ function Header2({
         <div className="flex h-14 items-center gap-2">
           {menus && <DrawerMenu className="-ml-2.5 lg:hidden" items={menus} />}
           {logo && (
-            <Logo className="mr-3 max-sm:hidden lg:hidden xl:flex" {...logo} />
+            <a href="/">
+              <Logo
+                className="mr-3 max-sm:hidden lg:hidden xl:flex"
+                {...logo}
+              />
+            </a>
           )}
           {title && (
             <Heading

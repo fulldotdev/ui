@@ -36,8 +36,20 @@ function Hero7({
       className={cn("relative flex flex-col gap-16 pb-16", className)}
       {...props}
     >
-      {image && <img className="h-auto w-full" {...image} />}
-      <div className="pt-header relative mx-auto flex w-full max-w-screen-xl flex-col items-start px-4 lg:px-8">
+      {/* {image && <img className="h-auto w-full" {...image} />} */}
+      <div className="relative mx-auto flex w-full max-w-screen-xl flex-col items-start px-4 lg:px-8">
+        <div className="bg-foreground ring-foreground mt-8 mb-12 aspect-[2.5170603675] w-full overflow-hidden rounded-lg ring-4 ring-inset">
+          <iframe
+            className="aspect-[2.5170603675] h-full w-full max-w-screen-xl"
+            src="https://player.vimeo.com/video/831834222?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;loop=1&amp;autoplay=1&amp;muted=1"
+            width="1918"
+            height="762"
+            frameBorder="0"
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; loop"
+            title="anti-slip-profiles video noaudio"
+          ></iframe>
+        </div>
+
         {taglineField && (
           <Paragraph size="sm" className="text-primary">
             {tagline}

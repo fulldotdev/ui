@@ -35,6 +35,7 @@ const block = blockSchema.extend({
     "collections",
     "contact",
     "content",
+    "media",
     "cta",
     "faqs",
     "features",
@@ -44,7 +45,6 @@ const block = blockSchema.extend({
     "events",
     "locations",
     "pricings",
-    "media",
     "pages",
     "persons",
     "posts",
@@ -73,6 +73,7 @@ export const page = pageSchema.extend({
   type: z.enum([
     "content",
     "page",
+    "media",
     "collection",
     "post",
     "person",

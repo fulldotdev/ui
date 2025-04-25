@@ -2,6 +2,7 @@ import { z } from "zod"
 
 export const formSchema = z
   .object({
+    inbox: z.string().optional(),
     action: z.string().optional(),
     fields: z
       .object({

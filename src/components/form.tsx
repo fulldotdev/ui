@@ -31,6 +31,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 
 interface Props extends React.FormHTMLAttributes<HTMLFormElement> {
+  inbox?: string
   submit?: string
   fields?: {
     name?: string
@@ -66,16 +67,24 @@ interface Props extends React.FormHTMLAttributes<HTMLFormElement> {
   }[]
 }
 
-function Form({ fields, submit, className, ...props }: Props) {
+function Form({ inbox, fields, submit, className, ...props }: Props) {
   const form = useForm()
 
   return fields ? (
     <FormRoot {...form}>
       <form
-        className={cn("flex w-full max-w-2xl flex-col gap-6", className)}
         method="POST"
+        className={cn("flex w-full max-w-2xl flex-col gap-6", className)}
         {...props}
       >
+        {inbox && <input type="hidden" name="inbox_key" value={inbox} />}
+        <input type="text" name="_gotcha" style={{ display: "none" }} />
+        <input
+          type="text"
+          name="page"
+          value={typeof window !== "undefined" ? window.location.pathname : ""}
+          style={{ display: "none" }}
+        />
         {fields?.map(
           ({
             type,
@@ -99,79 +108,99 @@ function Form({ fields, submit, className, ...props }: Props) {
                       {(() => {
                         if (type === "date") {
                           return (
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <FormControl>
-                                  <Input
-                                    className="text-left"
-                                    placeholder={placeholder}
-                                    value={
-                                      field.value
-                                        ? format(field.value, "dd-MM-yyyy")
-                                        : ""
-                                    }
+                            <>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    className={cn(
+                                      "w-full justify-start text-left font-normal",
+                                      !field.value && "text-muted-foreground"
+                                    )}
+                                  >
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {field.value ? (
+                                      format(field.value, "LLL dd, yyyy")
+                                    ) : (
+                                      <span>Pick a date</span>
+                                    )}
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  className="w-auto p-0"
+                                  align="start"
+                                >
+                                  <Calendar
+                                    mode="single"
+                                    selected={field.value}
+                                    onSelect={field.onChange}
+                                    disabled={(date) => {
+                                      const day = date.getDay()
+                                      const today = new Date()
+                                      today.setHours(0, 0, 0, 0)
+
+                                      const formatDate = (d: Date) =>
+                                        d.toISOString().split("T")[0]
+
+                                      return Boolean(
+                                        (disabled?.mon && day === 1) ||
+                                          (disabled?.tue && day === 2) ||
+                                          (disabled?.wed && day === 3) ||
+                                          (disabled?.thu && day === 4) ||
+                                          (disabled?.fri && day === 5) ||
+                                          (disabled?.sat && day === 6) ||
+                                          (disabled?.sun && day === 0) ||
+                                          (disabled?.future && date > today) ||
+                                          (disabled?.past && date < today) ||
+                                          (disabled?.today &&
+                                            date.getTime() ===
+                                              today.getTime()) ||
+                                          (disabled?.dates &&
+                                            disabled.dates.includes(
+                                              formatDate(date)
+                                            ))
+                                      )
+                                    }}
+                                    initialFocus
                                   />
-                                </FormControl>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                className="w-auto p-0"
-                                align="start"
-                              >
-                                <Calendar
-                                  mode="single"
-                                  selected={field.value}
-                                  onSelect={field.onChange}
-                                  disabled={(date) => {
-                                    // Check all conditions and return true if any of them match
-                                    const day = date.getDay()
-                                    const today = new Date()
-                                    today.setHours(0, 0, 0, 0)
-
-                                    const formatDate = (d: Date) =>
-                                      d.toISOString().split("T")[0]
-
-                                    return Boolean(
-                                      // Day of week checks
-                                      (disabled?.mon && day === 1) ||
-                                        (disabled?.tue && day === 2) ||
-                                        (disabled?.wed && day === 3) ||
-                                        (disabled?.thu && day === 4) ||
-                                        (disabled?.fri && day === 5) ||
-                                        (disabled?.sat && day === 6) ||
-                                        (disabled?.sun && day === 0) ||
-                                        // Date checks
-                                        (disabled?.future && date > today) ||
-                                        (disabled?.past && date < today) ||
-                                        (disabled?.today &&
-                                          date.getTime() === today.getTime()) ||
-                                        // Specific dates check
-                                        (disabled?.dates &&
-                                          disabled.dates.includes(
-                                            formatDate(date)
-                                          ))
-                                    )
-                                  }}
-                                  initialFocus
+                                </PopoverContent>
+                              </Popover>
+                              {field.value && (
+                                <input
+                                  type="hidden"
+                                  name={name || label || ""}
+                                  value={
+                                    field.value.toISOString().split("T")[0]
+                                  }
                                 />
-                              </PopoverContent>
-                            </Popover>
+                              )}
+                            </>
                           )
                         } else if (type === "select") {
                           return (
-                            <Select>
-                              <SelectTrigger>
-                                <SelectValue placeholder={placeholder} />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  {options?.map((option) => (
-                                    <SelectItem key={option} value={option}>
-                                      {option}
-                                    </SelectItem>
-                                  ))}
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
+                            <>
+                              <Select onValueChange={field.onChange}>
+                                <SelectTrigger>
+                                  <SelectValue placeholder={placeholder} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    {options?.map((option) => (
+                                      <SelectItem key={option} value={option}>
+                                        {option}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                              {field.value && (
+                                <input
+                                  type="hidden"
+                                  name={name || label || ""}
+                                  value={field.value}
+                                />
+                              )}
+                            </>
                           )
                         } else if (type === "textarea") {
                           return (
