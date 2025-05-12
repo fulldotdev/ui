@@ -2,15 +2,14 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Heading } from "@/components/ui/heading"
 import { Paragraph } from "@/components/ui/paragraph"
+import { Writeup } from "@/components/ui/writeup"
 
 export interface Locations1Props extends React.ComponentProps<"section"> {
-  level?: number
-  title: string
-  description?: string
-  buttons?: (React.ComponentProps<typeof Button> & {
+  buttons?: {
+    variant?: "default" | "outline" | "secondary" | "ghost"
     text: string
     href: string
-  })[]
+  }[]
   items: {
     href: string
     title: string
@@ -20,9 +19,7 @@ export interface Locations1Props extends React.ComponentProps<"section"> {
 
 function Locations1({
   className,
-  level = 2,
-  title,
-  description,
+  children,
   buttons,
   items,
   ...props
@@ -30,10 +27,11 @@ function Locations1({
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto flex w-full max-w-screen-md flex-col px-4 lg:px-8">
-        <Heading size="4xl" level={level}>
-          {title}
-        </Heading>
-        {description && <Paragraph className="mt-4">{description}</Paragraph>}
+        {children && (
+          <Writeup className="text-center" size="4xl">
+            {children}
+          </Writeup>
+        )}
         {buttons && buttons.length > 0 && (
           <div className="mt-8 inline-flex flex-wrap gap-2">
             {buttons.map(({ href, text, ...button }, i) => (
@@ -55,7 +53,7 @@ function Locations1({
               key={href}
               href={href}
             >
-              <Heading level={level + 1}>{title}</Heading>
+              <Heading as="h3">{title}</Heading>
               <Paragraph>{description}</Paragraph>
             </a>
           ))}

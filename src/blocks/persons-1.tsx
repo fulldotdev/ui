@@ -1,12 +1,9 @@
 import { cn } from "@/lib/utils"
 import { Heading } from "@/components/ui/heading"
-import { Paragraph } from "@/components/ui/paragraph"
 import { Social } from "@/components/ui/social"
+import { Writeup } from "@/components/ui/writeup"
 
 export interface Persons1Props extends React.ComponentProps<"section"> {
-  level?: number
-  title: string
-  description?: string
   items?: {
     href: string
     title: string
@@ -19,23 +16,15 @@ export interface Persons1Props extends React.ComponentProps<"section"> {
   }[]
 }
 
-function Persons1({
-  className,
-  level = 2,
-  title,
-  description,
-  items,
-  ...props
-}: Persons1Props) {
+function Persons1({ className, children, items, ...props }: Persons1Props) {
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">
         <div className="flex flex-col items-center">
-          <Heading className="text-center" level={level} size="4xl">
-            {title}
-          </Heading>
-          {description && (
-            <Paragraph className="mt-4 text-center">{description}</Paragraph>
+          {children && (
+            <Writeup className="text-center" size="4xl">
+              {children}
+            </Writeup>
           )}
           <div className="mt-16 flex flex-wrap justify-center gap-16">
             {items?.map(({ href, image, title, tagline, socials }) => (
@@ -48,14 +37,13 @@ function Persons1({
                     className="aspect-square w-full rounded-full object-cover transition-opacity group-hover:opacity-75"
                     {...image}
                   />
-                  <Heading className="mt-6" size="lg" level={level + 1}>
+                  <Heading className="mt-6" size="lg" as="h3">
                     {title}
                   </Heading>
                   <p className="text-muted-foreground mt-1.5 text-center text-sm">
                     {tagline}
                   </p>
                 </a>
-
                 <div className="relative mt-4 flex gap-2">
                   {socials?.map((social) => (
                     <Social key={social} href={social} />

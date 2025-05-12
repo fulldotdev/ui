@@ -4,11 +4,9 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Heading } from "@/components/ui/heading"
 import { Paragraph } from "@/components/ui/paragraph"
+import { Writeup } from "@/components/ui/writeup"
 
 export interface Features1Props extends React.ComponentProps<"section"> {
-  level?: number
-  title: string
-  description?: string
   buttons?: {
     variant?: "default" | "outline" | "secondary" | "ghost"
     text: string
@@ -22,9 +20,7 @@ export interface Features1Props extends React.ComponentProps<"section"> {
 
 function Features1({
   className,
-  level = 2,
-  title,
-  description,
+  children,
   buttons,
   items,
   ...props
@@ -32,10 +28,11 @@ function Features1({
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto flex w-full max-w-screen-xl flex-col px-4 lg:px-8">
-        <Heading className="max-w-3xl" size="4xl" level={level}>
-          {title}
-        </Heading>
-        {description && <Paragraph className="mt-4">{description}</Paragraph>}
+        {children && (
+          <Writeup className="max-w-3xl" size="4xl">
+            {children}
+          </Writeup>
+        )}
         {buttons && buttons.length > 0 && (
           <div className="mt-8 inline-flex flex-wrap gap-2">
             {buttons.map(({ text, href, ...button }, i) => (
@@ -56,7 +53,7 @@ function Features1({
               <div className="bg-muted text-muted-foreground inline-flex size-9 items-center justify-center rounded-md">
                 <Check className="text-primary" />
               </div>
-              <Heading className="mt-4" size="lg" level={level + 1}>
+              <Heading className="mt-4" size="lg" as="h3">
                 {title}
               </Heading>
               {description && (

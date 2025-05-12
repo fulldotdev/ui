@@ -1,12 +1,8 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Heading } from "@/components/ui/heading"
-import { Paragraph } from "@/components/ui/paragraph"
+import { Writeup } from "@/components/ui/writeup"
 
 export interface Hero6Props extends React.ComponentProps<"section"> {
-  level?: number
-  title: string
-  description?: string
   buttons?: {
     variant?: "default" | "outline" | "secondary" | "ghost"
     text: string
@@ -18,15 +14,7 @@ export interface Hero6Props extends React.ComponentProps<"section"> {
   }
 }
 
-function Hero6({
-  className,
-  level = 1,
-  title,
-  description,
-  buttons,
-  image,
-  ...props
-}: Hero6Props) {
+function Hero6({ className, children, buttons, image, ...props }: Hero6Props) {
   return (
     <section
       className={cn(
@@ -42,16 +30,13 @@ function Hero6({
         />
       )}
       <div className="pt-header relative mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center px-4 lg:px-8">
-        <Heading className="text-center" size="8xl" level={level}>
-          {title}
-        </Heading>
-        {description && (
-          <Paragraph size="xl" className="mt-6 text-center">
-            {description}
-          </Paragraph>
+        {children && (
+          <Writeup className="text-center" size="8xl">
+            {children}
+          </Writeup>
         )}
         {buttons && (
-          <div className="mt-12 inline-flex flex-wrap justify-center gap-2">
+          <div className="inline-flex flex-wrap justify-center gap-2 not-first:mt-12">
             {buttons.map(({ href, text, ...button }, i) => (
               <Button
                 key={href}

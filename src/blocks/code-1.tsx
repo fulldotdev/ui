@@ -12,20 +12,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Code } from "@/components/code"
 
 export interface Code1Props extends React.ComponentProps<"section"> {
-  level?: number
   title?: string
   code: string
   children: React.ReactNode
 }
 
-function Code1({
-  className,
-  level = 2,
-  title,
-  code,
-  children,
-  ...props
-}: Code1Props) {
+function Code1({ className, title, code, children, ...props }: Code1Props) {
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">
@@ -36,7 +28,7 @@ function Code1({
                 <TabsTrigger value="preview">Preview</TabsTrigger>
                 <TabsTrigger value="code">Code</TabsTrigger>
               </TabsList>
-              <Heading level={level}>{title}</Heading>
+              <Heading as="h2">{title}</Heading>
             </div>
             <TabsContent value="preview">
               <ResizablePanelGroup direction="horizontal">

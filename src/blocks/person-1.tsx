@@ -1,15 +1,11 @@
-import { Mail, Phone, Send } from "lucide-react"
-
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Heading } from "@/components/ui/heading"
 import { Prose } from "@/components/ui/prose"
 import { Social } from "@/components/ui/social"
 import { Form } from "@/components/form"
-import { Card } from "@/components/ui/card"
 
 export interface Person1Props extends React.ComponentProps<"section"> {
-  level?: number
   title: string
   tagline?: string
   image: {
@@ -27,7 +23,6 @@ export interface Person1Props extends React.ComponentProps<"section"> {
 
 function Person1({
   className,
-  level = 1,
   title,
   tagline,
   image,
@@ -46,7 +41,7 @@ function Person1({
               className="aspect-square w-full max-w-36 rounded-full object-cover"
               {...image}
             />
-            <Heading className="mt-5" size="xl" level={level + 1}>
+            <Heading className="mt-5" size="xl" as="h1">
               {title}
             </Heading>
             <p className="text-muted-foreground mt-1.5 text-center text-sm">

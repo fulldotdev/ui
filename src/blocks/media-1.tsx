@@ -1,12 +1,8 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Heading } from "@/components/ui/heading"
-import { Paragraph } from "@/components/ui/paragraph"
+import { Writeup } from "@/components/ui/writeup"
 
 export interface Media1Props extends React.ComponentProps<"section"> {
-  level?: number
-  title: string
-  description?: string
   buttons?: {
     variant?: "default" | "outline" | "secondary" | "ghost"
     text: string
@@ -20,9 +16,7 @@ export interface Media1Props extends React.ComponentProps<"section"> {
 
 function Media1({
   className,
-  level = 2,
-  title,
-  description,
+  children,
   buttons,
   image,
   ...props
@@ -30,16 +24,13 @@ function Media1({
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center px-4 lg:px-8">
-        <Heading className="text-center" size="5xl" level={level}>
-          {title}
-        </Heading>
-        {description && (
-          <Paragraph className="mt-4 text-center" size="lg">
-            {description}
-          </Paragraph>
+        {children && (
+          <Writeup className="text-center" size="5xl">
+            {children}
+          </Writeup>
         )}
         {buttons && buttons.length > 0 && (
-          <div className="mt-8 flex flex-row flex-wrap gap-2">
+          <div className="flex flex-row flex-wrap gap-2 not-first:mt-8">
             {buttons.map(({ text, href, ...button }, i) => (
               <Button
                 key={href}

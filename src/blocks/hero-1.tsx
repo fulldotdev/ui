@@ -1,12 +1,8 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Heading } from "@/components/ui/heading"
-import { Paragraph } from "@/components/ui/paragraph"
+import { Writeup } from "@/components/ui/writeup"
 
 export interface Hero1Props extends React.ComponentProps<"section"> {
-  level?: number
-  title: string
-  description?: string
   buttons?: {
     variant?: "default" | "outline" | "secondary" | "ghost"
     text: string
@@ -18,32 +14,17 @@ export interface Hero1Props extends React.ComponentProps<"section"> {
   }
 }
 
-function Hero1({
-  className,
-  level = 1,
-  title,
-  description,
-  buttons,
-  image,
-  ...props
-}: Hero1Props) {
+function Hero1({ className, children, buttons, image, ...props }: Hero1Props) {
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center px-4 lg:px-8">
-        <Heading
-          className="max-w-4xl text-center text-balance"
-          size="7xl"
-          level={level}
-        >
-          {title}
-        </Heading>
-        {description && (
-          <Paragraph className="mt-4 max-w-xl text-center" size="xl">
-            {description}
-          </Paragraph>
+        {children && (
+          <Writeup className="text-center" size="7xl">
+            {children}
+          </Writeup>
         )}
         {buttons && buttons.length > 0 && (
-          <div className="mt-8 inline-flex flex-wrap justify-center gap-2">
+          <div className="inline-flex flex-wrap justify-center gap-2 not-first:mt-8">
             {buttons.map(({ href, text, ...button }, i) => (
               <Button
                 key={href}

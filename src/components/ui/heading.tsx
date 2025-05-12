@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const headingVariants = cva(
-  "heading text-foreground max-w-2xl scroll-mt-20 font-semibold tracking-tight text-pretty",
+  "heading max-w-2xl scroll-mt-20 font-semibold tracking-tight text-pretty text-foreground",
   {
     variants: {
       size: {
@@ -30,20 +30,14 @@ const headingVariants = cva(
 
 function Heading({
   className,
-  size = "default",
-  level,
+  size,
+  as,
   ...props
 }: React.ComponentProps<"h1" | "h2" | "h3" | "h4" | "h5" | "h6"> &
   VariantProps<typeof headingVariants> & {
-    level: 1 | 2 | 3 | 4 | 5 | 6 | number
+    as: "h1" | "h2" | "h3" | "h4" | "h5" | "h6"
   }) {
-  const Comp = `h${level > 6 || level < 1 ? 2 : level}` as
-    | "h1"
-    | "h2"
-    | "h3"
-    | "h4"
-    | "h5"
-    | "h6"
+  const Comp = as
   return (
     <Comp className={cn(headingVariants({ size }), className)} {...props} />
   )

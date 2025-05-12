@@ -1,14 +1,10 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Heading } from "@/components/ui/heading"
-import { Image } from "@/components/ui/image"
 import { Paragraph } from "@/components/ui/paragraph"
+import { Writeup } from "@/components/ui/writeup"
 
 export interface Media2Props extends React.ComponentProps<"section"> {
-  level?: number
-  title: string
   tagline?: string
-  description?: string
   buttons?: {
     variant?: "default" | "outline" | "secondary" | "ghost"
     text: string
@@ -22,10 +18,8 @@ export interface Media2Props extends React.ComponentProps<"section"> {
 
 function Media2({
   className,
-  level = 2,
-  title,
+  children,
   tagline,
-  description,
   buttons,
   image,
   ...props
@@ -34,17 +28,13 @@ function Media2({
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="relative mx-auto grid w-full max-w-screen-xl items-center gap-y-8 px-4 md:grid-cols-2 md:gap-x-8 lg:gap-x-16 lg:px-8">
         <div className="flex flex-col items-start">
-          {tagline && (
-            <Paragraph className="text-primary" size="sm">
-              {tagline}
-            </Paragraph>
+          {children && (
+            <Writeup className="text-center" size="5xl">
+              {children}
+            </Writeup>
           )}
-          <Heading className="not-first:mt-4" size="4xl" level={level}>
-            {title}
-          </Heading>
-          {description && <Paragraph className="mt-4">{description}</Paragraph>}
           {buttons && buttons.length > 0 && (
-            <div className="mt-6 flex flex-row flex-wrap gap-2">
+            <div className="flex flex-row flex-wrap gap-2 not-first:mt-6">
               {buttons.map(({ text, href, ...button }, i) => (
                 <Button
                   key={href}

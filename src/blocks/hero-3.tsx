@@ -1,12 +1,8 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Heading } from "@/components/ui/heading"
-import { Paragraph } from "@/components/ui/paragraph"
+import { Writeup } from "@/components/ui/writeup"
 
 export interface Hero3Props extends React.ComponentProps<"section"> {
-  level?: number
-  title: string
-  description?: string
   buttons?: {
     variant?: "default" | "outline" | "secondary" | "ghost"
     text: string
@@ -18,15 +14,7 @@ export interface Hero3Props extends React.ComponentProps<"section"> {
   }
 }
 
-function Hero3({
-  className,
-  level = 1,
-  title,
-  description,
-  buttons,
-  image,
-  ...props
-}: Hero3Props) {
+function Hero3({ className, children, buttons, image, ...props }: Hero3Props) {
   return (
     <section
       className={cn("bg-background relative py-32", className)}
@@ -39,16 +27,9 @@ function Hero3({
         />
       )}
       <div className="relative mx-auto flex w-full max-w-screen-xl flex-col items-start px-4 lg:px-8">
-        <Heading size="6xl" level={level}>
-          {title}
-        </Heading>
-        {description && (
-          <Paragraph className="mt-4" size="xl">
-            {description}
-          </Paragraph>
-        )}
+        {children && <Writeup size="6xl">{children}</Writeup>}
         {buttons && (
-          <div className="mt-8 inline-flex flex-wrap gap-2">
+          <div className="inline-flex flex-wrap gap-2 not-first:mt-8">
             {buttons.map(({ href, text, ...button }, i) => (
               <Button
                 key={href}

@@ -10,11 +10,10 @@ import { Gallery } from "@/components/gallery"
 import { ShopifyProduct } from "@/components/shopify-product"
 
 export interface Product1Props extends React.ComponentProps<"section"> {
-  level?: number
   title?: string
   description?: string
   list?: string[]
-  images?: React.ComponentProps<typeof Gallery>["images"]
+  images: React.ComponentProps<typeof Gallery>["images"]
   price?: number
   id?: string
   variants?: React.ComponentProps<typeof ShopifyProduct>["variants"]
@@ -24,7 +23,6 @@ export interface Product1Props extends React.ComponentProps<"section"> {
 }
 
 function Product1({
-  level = 1,
   title,
   description,
   list,
@@ -50,7 +48,7 @@ function Product1({
             images={images}
           />
           <div className="top-header flex flex-col gap-6 max-sm:px-4 md:mt-12 lg:sticky">
-            <Heading size="3xl" level={level}>
+            <Heading size="3xl" as="h1">
               {title}
             </Heading>
             {description && (

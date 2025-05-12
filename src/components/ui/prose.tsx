@@ -9,7 +9,7 @@ function Prose({ className, ...props }: React.ComponentProps<"div">) {
         "prose",
         "text-foreground flex w-full max-w-2xl flex-col",
         "child:mt-4 child:first:mt-0",
-        "headings:scroll-mt-20 headings:mt-8 headings:text-pretty headings:font-semibold headings:tracking-tight",
+        "heading:scroll-mt-20 heading:mt-8 heading:text-pretty heading:font-semibold heading:tracking-tight",
         "h1:text-4xl h1:font-extrabold lg:h1:text-5xl",
         "h2:text-3xl",
         "h3:text-2xl",

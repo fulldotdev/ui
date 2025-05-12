@@ -1,12 +1,8 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Heading } from "@/components/ui/heading"
-import { Paragraph } from "@/components/ui/paragraph"
+import { Writeup } from "@/components/ui/writeup"
 
 export interface Hero4Props extends React.ComponentProps<"section"> {
-  level?: number
-  title: string
-  description?: string
   buttons?: {
     variant?: "default" | "outline" | "secondary" | "ghost"
     text: string
@@ -18,15 +14,7 @@ export interface Hero4Props extends React.ComponentProps<"section"> {
   }
 }
 
-function Hero4({
-  className,
-  level = 1,
-  title,
-  description,
-  buttons,
-  image,
-  ...props
-}: Hero4Props) {
+function Hero4({ className, children, buttons, image, ...props }: Hero4Props) {
   return (
     <section
       className={cn(
@@ -42,16 +30,9 @@ function Hero4({
         />
       )}
       <div className="relative mx-auto flex w-full max-w-screen-xl flex-col justify-center px-4 lg:px-8">
-        <Heading size="7xl" level={level}>
-          {title}
-        </Heading>
-        {description && (
-          <Paragraph size="xl" className="mt-4">
-            {description}
-          </Paragraph>
-        )}
+        {children && <Writeup size="7xl">{children}</Writeup>}
         {buttons && (
-          <div className="mt-8 inline-flex flex-wrap gap-2">
+          <div className="inline-flex flex-wrap gap-2 not-first:mt-8">
             {buttons.map(({ href, text, ...button }, i) => (
               <Button
                 key={href}

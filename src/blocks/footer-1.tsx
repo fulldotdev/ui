@@ -56,7 +56,7 @@ function Footer1({
               <div className="flex items-center gap-2">
                 {logo && <Logo {...logo} />}
                 {title && (
-                  <Heading size="xl" level={6}>
+                  <Heading size="xl" as="h6">
                     {title}
                   </Heading>
                 )}

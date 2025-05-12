@@ -60,7 +60,7 @@ function Header1({
           {title && (
             <Heading
               size="lg"
-              level={6}
+              as="h6"
               className="mr-3 whitespace-nowrap max-sm:hidden lg:hidden xl:flex"
             >
               {title}

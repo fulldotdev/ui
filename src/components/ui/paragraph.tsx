@@ -22,7 +22,7 @@ const paragraphVariants = cva(
 
 function Paragraph({
   className,
-  size = "default",
+  size,
   ...props
 }: React.ComponentProps<"p"> & VariantProps<typeof paragraphVariants>) {
   return <p className={cn(paragraphVariants({ size }), className)} {...props} />

@@ -73,6 +73,7 @@ function Form({ inbox, fields, submit, className, ...props }: Props) {
   return fields ? (
     <FormRoot {...form}>
       <form
+        data-netlify="true"
         method="POST"
         className={cn("flex w-full max-w-2xl flex-col gap-6", className)}
         {...props}
