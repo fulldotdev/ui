@@ -1,3 +1,6 @@
+import * as React from "react"
+
+import type { BlockSchema } from "@/schemas/block"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Heading } from "@/components/ui/heading"
@@ -5,33 +8,17 @@ import { Prose } from "@/components/ui/prose"
 import { Social } from "@/components/ui/social"
 import { Form } from "@/components/form"
 
-export interface Person1Props extends React.ComponentProps<"section"> {
-  title: string
-  tagline?: string
-  image: {
-    src: string
-    alt: string
-  }
-  socials?: string[]
-  buttons?: {
-    variant?: "default" | "outline" | "secondary" | "ghost"
-    text: string
-    href: string
-  }[]
-  form?: any
-}
-
 function Person1({
   className,
+  children,
   title,
   tagline,
   image,
   socials,
   buttons,
   form,
-  children,
   ...props
-}: Person1Props) {
+}: BlockSchema & React.ComponentProps<"section">) {
   return (
     <section className={cn("relative w-full", className)} {...props}>
       <div className="mx-auto grid w-full max-w-screen-xl flex-col items-start md:grid-cols-3">

@@ -1,10 +1,14 @@
+import * as React from "react"
+
+import type { BlockSchema } from "@/schemas/block"
 import { cn } from "@/lib/utils"
 
-export interface Banner1Props extends React.ComponentProps<"header"> {
-  list?: string[]
-}
-
-function Banner1({ className, id, list, ...props }: Banner1Props) {
+function Banner1({
+  className,
+  id,
+  list,
+  ...props
+}: BlockSchema & React.ComponentProps<"header">) {
   if (!list || list.length === 0) return null
 
   return (

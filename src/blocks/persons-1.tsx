@@ -1,22 +1,17 @@
+import * as React from "react"
+
+import type { BlockSchema } from "@/schemas/block"
 import { cn } from "@/lib/utils"
 import { Heading } from "@/components/ui/heading"
 import { Social } from "@/components/ui/social"
 import { Writeup } from "@/components/ui/writeup"
 
-export interface Persons1Props extends React.ComponentProps<"section"> {
-  items?: {
-    href: string
-    title: string
-    tagline?: string
-    image: {
-      src: string
-      alt: string
-    }
-    socials?: string[]
-  }[]
-}
-
-function Persons1({ className, children, items, ...props }: Persons1Props) {
+function Persons1({
+  className,
+  children,
+  items,
+  ...props
+}: BlockSchema & React.ComponentProps<"section">) {
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">

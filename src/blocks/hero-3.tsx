@@ -1,20 +1,17 @@
+import * as React from "react"
+
+import type { BlockSchema } from "@/schemas/block"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Writeup } from "@/components/ui/writeup"
 
-export interface Hero3Props extends React.ComponentProps<"section"> {
-  buttons?: {
-    variant?: "default" | "outline" | "secondary" | "ghost"
-    text: string
-    href: string
-  }[]
-  image?: {
-    src: string
-    alt: string
-  }
-}
-
-function Hero3({ className, children, buttons, image, ...props }: Hero3Props) {
+function Hero3({
+  className,
+  children,
+  buttons,
+  image,
+  ...props
+}: BlockSchema & React.ComponentProps<"section">) {
   return (
     <section
       className={cn("bg-background relative py-32", className)}

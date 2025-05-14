@@ -17,7 +17,11 @@ export interface Header2Props extends React.ComponentProps<"header"> {
   title?: string
   menus?: {
     text: string
-    href: string
+    href?: string
+    links?: {
+      text: string
+      href: string
+    }[]
   }[]
   buttons?: (React.ComponentProps<typeof Button> & {
     text: string

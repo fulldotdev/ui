@@ -1,5 +1,7 @@
+import * as React from "react"
 import { Check } from "lucide-react"
 
+import type { BlockSchema } from "@/schemas/block"
 import { cn, money } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Heading } from "@/components/ui/heading"
@@ -7,20 +9,12 @@ import { List, ListItem } from "@/components/ui/list"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Writeup } from "@/components/ui/writeup"
 
-export interface Pricings1Props extends React.ComponentProps<"section"> {
-  items: {
-    title: string
-    description?: string
-    price?: number
-    list?: string[]
-    button?: {
-      text: string
-      href: string
-    }
-  }[]
-}
-
-function Pricings1({ className, children, items, ...props }: Pricings1Props) {
+function Pricings1({
+  className,
+  children,
+  items,
+  ...props
+}: BlockSchema & React.ComponentProps<"section">) {
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">

@@ -1,5 +1,6 @@
 import * as React from "react"
 
+import type { BlockSchema } from "@/schemas/block"
 import { highlightCode } from "@/lib/highlight-code"
 import { cn } from "@/lib/utils"
 import { Heading } from "@/components/ui/heading"
@@ -11,13 +12,16 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Code } from "@/components/code"
 
-export interface Code1Props extends React.ComponentProps<"section"> {
-  title?: string
-  code: string
-  children: React.ReactNode
-}
-
-function Code1({ className, title, code, children, ...props }: Code1Props) {
+function Code1({
+  className,
+  title,
+  code,
+  children,
+  ...props
+}: BlockSchema &
+  React.ComponentProps<"section"> & {
+    code: string
+  }) {
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">

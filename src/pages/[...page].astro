@@ -1,16 +1,13 @@
 ---
-import { page as pageSchema } from "@/content.config"
-import config from "@/data/config.json"
-import settings from "@/data/settings.json"
 import { getCollection, getEntry, render } from "astro:content"
 
 import { getHref } from "@/lib/get-href"
 import { getSlug } from "@/lib/get-slug"
+import Layout from "@/components/misc/layout.astro"
 import Page from "@/components/misc/page.astro"
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages")
-  const slug = pages.map((page) => getSlug(page))
   return pages.map((page) => {
     return {
       params: {
@@ -28,38 +25,15 @@ export async function getStaticPaths() {
 }
 
 const { page, search } = Astro.props
-const { Content } = await render(page)
 
-const { sections: sectionsOrRef, ...data } = {
-  ...page.data,
+const layoutReference = page.data.layout || {
+  collection: "layouts",
+  id: "base",
 }
 
-const sections = sectionsOrRef
-  ? await Promise.all(
-      sectionsOrRef.map(async (section: any) => {
-        if (section.collection && section.id) {
-          const entry = await getEntry(section.collection, section.id)
-          if (!entry) {
-            console.warn(`${section.collection}/${section.id} not found`)
-            return
-          }
-          return {
-            id: section.id,
-            ...entry.data,
-          }
-        }
-        return section
-      })
-    )
-  : undefined
+const layout = await getEntry(layoutReference)
 ---
 
-<Page
-  search={search}
-  sections={sections?.filter(Boolean)}
-  {...data}
-  {...settings}
-  pathname={page.filePath}
->
-  <Content />
-</Page>
+<Layout {...layout?.data} {...page.data} {...page.data.seo} search={search}>
+  <Page {...page} />
+</Layout>

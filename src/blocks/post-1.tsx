@@ -1,18 +1,10 @@
 import * as React from "react"
 
+import type { BlockSchema } from "@/schemas/block"
 import { cn } from "@/lib/utils"
 import { Heading } from "@/components/ui/heading"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Prose } from "@/components/ui/prose"
-
-export interface Post1Props extends React.ComponentProps<"section"> {
-  title: string
-  description?: string
-  image?: {
-    src: string
-    alt: string
-  }
-}
 
 function Post1({
   className,
@@ -21,7 +13,7 @@ function Post1({
   image,
   children,
   ...props
-}: Post1Props) {
+}: BlockSchema & React.ComponentProps<"section">) {
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto flex w-full max-w-screen-md flex-col px-4 md:px-12">

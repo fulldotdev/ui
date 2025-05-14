@@ -1,6 +1,7 @@
 import * as React from "react"
 import { CheckIcon } from "lucide-react"
 
+import type { BlockSchema } from "@/schemas/block"
 import { cn, money } from "@/lib/utils"
 import { Heading } from "@/components/ui/heading"
 import { Paragraph } from "@/components/ui/paragraph"
@@ -8,19 +9,6 @@ import { Prose } from "@/components/ui/prose"
 import { Form } from "@/components/form"
 import { Gallery } from "@/components/gallery"
 import { ShopifyProduct } from "@/components/shopify-product"
-
-export interface Product1Props extends React.ComponentProps<"section"> {
-  title?: string
-  description?: string
-  list?: string[]
-  images: React.ComponentProps<typeof Gallery>["images"]
-  price?: number
-  id?: string
-  variants?: React.ComponentProps<typeof ShopifyProduct>["variants"]
-  energyLabel?: string
-  form?: React.ComponentProps<typeof Form>
-  children?: React.ReactNode
-}
 
 function Product1({
   title,
@@ -35,7 +23,7 @@ function Product1({
   children,
   className,
   ...props
-}: Product1Props) {
+}: BlockSchema & React.ComponentProps<"section">) {
   return (
     <section
       className={cn("product product-1 relative w-full pt-0 pb-16", className)}
@@ -43,10 +31,12 @@ function Product1({
     >
       <div className="mx-auto w-full max-w-screen-xl px-4 max-sm:px-0 lg:px-8">
         <div className="grid gap-8 md:grid-cols-2 md:items-start">
-          <Gallery
-            className="ring-muted sm:mt-12 sm:rounded-md sm:ring"
-            images={images}
-          />
+          {images && (
+            <Gallery
+              className="ring-muted sm:mt-12 sm:rounded-md sm:ring"
+              images={images}
+            />
+          )}
           <div className="top-header flex flex-col gap-6 max-sm:px-4 md:mt-12 lg:sticky">
             <Heading size="3xl" as="h1">
               {title}

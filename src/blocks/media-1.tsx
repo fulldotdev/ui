@@ -1,18 +1,9 @@
+import * as React from "react"
+
+import type { BlockSchema } from "@/schemas/block"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Writeup } from "@/components/ui/writeup"
-
-export interface Media1Props extends React.ComponentProps<"section"> {
-  buttons?: {
-    variant?: "default" | "outline" | "secondary" | "ghost"
-    text: string
-    href: string
-  }[]
-  image: {
-    src: string
-    alt: string
-  }
-}
 
 function Media1({
   className,
@@ -20,7 +11,7 @@ function Media1({
   buttons,
   image,
   ...props
-}: Media1Props) {
+}: BlockSchema & React.ComponentProps<"section">) {
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center px-4 lg:px-8">

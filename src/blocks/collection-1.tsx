@@ -1,6 +1,7 @@
 import * as React from "react"
 import { ChevronDown } from "lucide-react"
 
+import type { BlockSchema } from "@/schemas/block"
 import { cn, money } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,28 +15,14 @@ import { Heading } from "@/components/ui/heading"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Prose } from "@/components/ui/prose"
 
-export interface Collection2Props extends React.ComponentProps<"section"> {
-  title: string
-  description?: string
-  items: {
-    href: string
-    title: string
-    price: number
-    image: {
-      src: string
-      alt: string
-    }
-  }[]
-}
-
-function Collection2({
+function Collection1({
   className,
   children,
   title,
   description,
   items,
   ...props
-}: Collection2Props) {
+}: BlockSchema & React.ComponentProps<"section">) {
   const [sortedItems, setSortedItems] = React.useState(items)
   const [sort, setSort] = React.useState("aanbevolen")
 
@@ -96,7 +83,7 @@ function Collection2({
               </DropdownMenu>
             </div>
             <div className="grid grid-cols-2 gap-x-4 gap-y-8 not-first:mt-8 sm:grid-cols-[repeat(auto-fill,minmax(236px,1fr))]">
-              {sortedItems.map(({ href, title, image, price }) => (
+              {sortedItems?.map(({ href, title, image, price }) => (
                 <a className="group flex flex-col" key={href} href={href}>
                   <img
                     className="rounded-md transition-opacity group-hover:opacity-75"
@@ -119,4 +106,4 @@ function Collection2({
   )
 }
 
-export { Collection2 }
+export { Collection1 }

@@ -1,125 +1,24 @@
 ---
 import "@/styles/globals.css"
-// pause
 import "@/styles/theme.css"
 
-import type { Page } from "@/content.config.ts"
-import config from "@/data/config.json"
-import { SEO } from "astro-seo"
+import { getEntries, render } from "astro:content"
+import type { CollectionEntry } from "astro:content"
 
 import Block from "@/components/misc/block.astro"
+import Section from "@/components/misc/section.astro"
 
-interface Props extends Page {
-  pathname?: string
-}
+type Props = CollectionEntry<"pages">
 
-const {
-  lang = "en",
-  company,
-  title,
-  description,
-  image,
-  head,
-  body,
-  css,
-  banner,
-  header,
-  footer,
-  search,
-  seo,
-  sections,
-  content,
-  pathname,
-  ...props
-} = Astro.props
+const { Content } = await render(Astro.props)
+const { type, variant, sections, layout, seo, ...data } = Astro.props.data
 
-const slot = await Astro.slots.render("default")
-const hasContent = slot && slot.trim().length > 0
-const isIndex = Astro.url.pathname === "/"
+const sectionEntries = sections && (await getEntries(sections))
 ---
 
-<!doctype html>
-<html
-  class="layout text-foreground bg-background h-full w-full font-sans text-base scheme-light dark:scheme-dark"
-  {lang}
->
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="generator" content={Astro.generator} />
-    <SEO
-      charset="UTF-8"
-      title={seo?.title || undefined}
-      description={seo?.description || undefined}
-      openGraph={{
-        basic: {
-          title: seo?.title || "",
-          image: Astro.url.origin + image?.src,
-          type: "website",
-          url: Astro.url.href,
-        },
-        image: {
-          url: Astro.url.origin + image?.src,
-          alt: image?.alt || seo?.title || company || undefined,
-        },
-        optional: {
-          description: seo?.description || undefined,
-          siteName: company || undefined,
-        },
-      }}
-    />
-    <!-- <script is:inline src="https://unpkg.com/react-scan/dist/auto.global.js"
-    ></script> -->
-    <Fragment set:html={head} />
-  </head>
-  <body data-sb-object-id={pathname}>
-    <Block type="banner" variant={1} {...banner} />
-    <Block type="header" search={search} {...header} />
-    <main>
-      {
-        ((!isIndex && props.type === "content" && hasContent) ||
-          props.type !== "content") && (
-          <Block
-            level={1}
-            title={title}
-            description={description}
-            image={image}
-            usecase="page"
-            data-sb-field-path="."
-            {...props}
-          >
-            <Fragment set:html={slot} />
-          </Block>
-        )
-      }
-
-      {
-        sections?.map((section, i) => (
-          <Block
-            usecase="section"
-            level={i === 0 && !hasContent ? 1 : 2}
-            data-sb-field-path={`sections.${i}`}
-            {...section}
-          />
-        ))
-      }
-      {
-        isIndex && hasContent && (
-          <Block
-            usecase="page"
-            level={1}
-            title={title}
-            description={description}
-            image={image}
-            data-sb-field-path="."
-            {...props}
-          >
-            <Fragment set:html={slot} />
-          </Block>
-        )
-      }
-    </main>
-    <Block type="footer" {...footer} />
-    <style set:html={css}></style>
-    <Fragment set:html={body} />
-  </body>
-</html>
+<main>
+  <Block {...data}>
+    <Content />
+  </Block>
+  {sectionEntries?.map((section) => <Section {...section} />)}
+</main>

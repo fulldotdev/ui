@@ -1,29 +1,17 @@
+import * as React from "react"
+
+import type { BlockSchema } from "@/schemas/block"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Paragraph } from "@/components/ui/paragraph"
 import { Writeup } from "@/components/ui/writeup"
-
-export interface Media2Props extends React.ComponentProps<"section"> {
-  tagline?: string
-  buttons?: {
-    variant?: "default" | "outline" | "secondary" | "ghost"
-    text: string
-    href: string
-  }[]
-  image: {
-    src: string
-    alt: string
-  }
-}
 
 function Media2({
   className,
   children,
-  tagline,
   buttons,
   image,
   ...props
-}: Media2Props) {
+}: BlockSchema & React.ComponentProps<"section">) {
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="relative mx-auto grid w-full max-w-screen-xl items-center gap-y-8 px-4 md:grid-cols-2 md:gap-x-8 lg:gap-x-16 lg:px-8">

@@ -5,49 +5,49 @@ import { channelsSchema } from "@/schemas/fields/channels"
 import { formSchema } from "@/schemas/fields/form"
 import { imageSchema } from "@/schemas/fields/image"
 import { linkSchema } from "@/schemas/fields/link"
-import { logoSchema } from "@/schemas/fields/logo"
 import { menuSchema } from "@/schemas/fields/menu"
-import { priceSchema } from "@/schemas/fields/price"
-import { itemSchema } from "@/schemas/item"
 
 export const blockSchema = z
   .object({
-    id: z.string(),
-    className: z.string(),
-    level: z.number().min(1).max(3),
-    align: z.enum(["start", "center", "end"]),
     title: z.string(),
     description: z.string(),
+    variants: z.any(),
+    energyLabel: z.any(),
+    id: z.string(),
+    className: z.string(),
     when: z.string(),
     where: z.string(),
-    content: z.string(),
     buttons: buttonSchema.array(),
     image: imageSchema,
     images: imageSchema.array(),
-    logo: logoSchema,
     channels: channelsSchema,
-    price: z.any(),
-    priceString: z.string(),
-    energyLabel: z.string(),
+    price: z.number(),
     tagline: z.string(),
     form: formSchema,
     list: z.string().array(),
     socials: z.string().array(),
-    search: linkSchema.array(),
-    menus: menuSchema.array(),
-    hours: z
+    items: z
       .object({
-        label: z.string(),
-        value: z.string(),
+        href: z.string(),
+        tagline: z.string(),
+        title: z.string(),
+        description: z.string(),
+        image: imageSchema,
+        images: imageSchema.array(),
+        rating: z.number(),
+        price: z.number(),
+        button: buttonSchema,
+        links: linkSchema.array(),
+        list: z.string().array(),
+        socials: z.string().array(),
+        avatar: z.string(),
       })
       .partial()
-      .array()
-      .optional(),
-    variants: z.any(),
-    cart: z.boolean(),
-    items: itemSchema.array(),
-    policies: linkSchema.array(),
-    company: z.string(),
+      .array(),
+    logo: imageSchema,
+    menus: menuSchema.array(),
+    search: z.any(),
+    cart: z.any(),
   })
   .partial()
 

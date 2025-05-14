@@ -16,7 +16,14 @@ export interface Footer1Props extends React.ComponentProps<"footer"> {
   description?: string
   socials?: string[]
   channels?: React.ComponentProps<typeof Channels>
-  menus?: React.ComponentProps<typeof Menu>[]
+  menus?: {
+    text: string
+    href?: string
+    links?: {
+      text: string
+      href: string
+    }[]
+  }[]
   company?: string
   policies?: {
     text: string

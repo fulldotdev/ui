@@ -1,22 +1,12 @@
+import * as React from "react"
 import { Check } from "lucide-react"
 
+import type { BlockSchema } from "@/schemas/block"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Heading } from "@/components/ui/heading"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Writeup } from "@/components/ui/writeup"
-
-export interface Features2Props extends React.ComponentProps<"section"> {
-  buttons?: {
-    variant?: "default" | "outline" | "secondary" | "ghost"
-    text: string
-    href: string
-  }[]
-  items: {
-    title: string
-    description?: string
-  }[]
-}
 
 function Features2({
   className,
@@ -24,7 +14,7 @@ function Features2({
   buttons,
   items,
   ...props
-}: Features2Props) {
+}: BlockSchema & React.ComponentProps<"section">) {
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center px-4 lg:px-8">
@@ -49,7 +39,7 @@ function Features2({
           </div>
         )}
         <div className="mt-16 flex flex-wrap justify-center gap-16">
-          {items.map(({ title, description }) => (
+          {items?.map(({ title, description }) => (
             <div
               key={title}
               className="flex max-w-md min-w-2xs grow-1 basis-xs flex-col items-center"

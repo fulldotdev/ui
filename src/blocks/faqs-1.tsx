@@ -1,5 +1,6 @@
 import * as React from "react"
 
+import type { BlockSchema } from "@/schemas/block"
 import { cn } from "@/lib/utils"
 import {
   Accordion,
@@ -9,14 +10,12 @@ import {
 } from "@/components/ui/accordion"
 import { Writeup } from "@/components/ui/writeup"
 
-export interface Faqs1Props extends React.ComponentProps<"section"> {
-  items: {
-    title: string
-    description: string
-  }[]
-}
-
-function Faqs1({ className, children, items, ...props }: Faqs1Props) {
+function Faqs1({
+  className,
+  children,
+  items,
+  ...props
+}: BlockSchema & React.ComponentProps<"section">) {
   return (
     <section className={cn("relative w-full py-16", className)} {...props}>
       <div className="mx-auto flex w-full max-w-screen-md flex-col px-4 md:px-12">
@@ -26,10 +25,13 @@ function Faqs1({ className, children, items, ...props }: Faqs1Props) {
           type="single"
           collapsible
         >
-          {items.map(({ title, description }) => (
-            <AccordionItem key={title} value={title}>
-              <AccordionTrigger>{title}</AccordionTrigger>
-              <AccordionContent>{description}</AccordionContent>
+          {items?.map((item) => (
+            <AccordionItem
+              key={JSON.stringify(item)}
+              value={JSON.stringify(item)}
+            >
+              <AccordionTrigger>{item.title}</AccordionTrigger>
+              <AccordionContent>{item.description}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>

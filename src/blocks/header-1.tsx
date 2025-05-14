@@ -1,5 +1,7 @@
 import * as React from "react"
+import type { Block } from "typescript"
 
+import type { BlockSchema } from "@/schemas/block"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Heading } from "@/components/ui/heading"
@@ -17,7 +19,11 @@ export interface Header1Props extends React.ComponentProps<"header"> {
   }
   menus?: {
     text: string
-    href: string
+    href?: string
+    links?: {
+      text: string
+      href: string
+    }[]
   }[]
   buttons?: {
     variant?: "default" | "secondary" | "outline" | "ghost"
@@ -37,7 +43,7 @@ function Header1({
   cart,
   className,
   ...props
-}: Header1Props) {
+}: BlockSchema & React.ComponentProps<"header">) {
   return (
     <header
       className={cn(

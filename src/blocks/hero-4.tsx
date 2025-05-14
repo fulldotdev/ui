@@ -1,20 +1,17 @@
+import * as React from "react"
+
+import type { BlockSchema } from "@/schemas/block"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Writeup } from "@/components/ui/writeup"
 
-export interface Hero4Props extends React.ComponentProps<"section"> {
-  buttons?: {
-    variant?: "default" | "outline" | "secondary" | "ghost"
-    text: string
-    href: string
-  }[]
-  image?: {
-    src: string
-    alt: string
-  }
-}
-
-function Hero4({ className, children, buttons, image, ...props }: Hero4Props) {
+function Hero4({
+  className,
+  children,
+  buttons,
+  image,
+  ...props
+}: BlockSchema & React.ComponentProps<"section">) {
   return (
     <section
       className={cn(

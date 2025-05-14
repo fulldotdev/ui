@@ -1,7 +1,6 @@
 ---
 import { Banner1 } from "@/blocks/banner-1"
 import { Blog1 } from "@/blocks/blog-1"
-import { Collection2 } from "@/blocks/collection-1"
 import { Collections1 } from "@/blocks/collections-1"
 import { Contact1 } from "@/blocks/contact-1"
 import { Contact2 } from "@/blocks/contact-2"
@@ -33,47 +32,40 @@ import { Pricings1 } from "@/blocks/pricings-1"
 import { Product1 } from "@/blocks/product-1"
 import { Collection1 } from "@/blocks/products-1"
 import { Reviews1 } from "@/blocks/reviews-1"
-import type { Block } from "@/content.config"
 import config from "@/data/config.json"
-import { getCollection, getEntry } from "astro:content"
+import { getEntries } from "astro:content"
+import type { CollectionEntry } from "astro:content"
 
+import type { BlockSchema } from "@/schemas/block"
 import { getHref } from "@/lib/get-href"
 
-interface Props extends Block {
-  type: string
+// Use a combination of BlockSchema and props needed for rendering
+type Props = BlockSchema & {
+  type?: string
+  variant?: number
+  pages?: CollectionEntry<"sections">["data"]["pages"]
 }
 
 const { type } = Astro.props
 
-const blockConfig = config?.sections?.[type]
+// Get default props from config
+const defaultProps = config?.blocks?.[type as keyof typeof config.blocks]
 
-const { variant, ...props } = {
-  variant: 1,
-  ...blockConfig,
+// Merge default props with Astro props
+const { variant, pages, ...props } = {
+  ...defaultProps,
   ...Astro.props,
 }
 
-props.items = (
-  props.items
-    ? await Promise.all(
-        props.items.map(async (item: any) => {
-          if (item.collection && item.id) {
-            const entry = await getEntry(item.collection, item.id)
-            if (!entry) {
-              console.warn(`${item.collection}/${item.id} not found`)
-              return
-            }
-            return {
-              href: getHref(entry),
-              ...entry.data,
-            }
-          }
-          return item
-        })
-      )
-    : undefined
-)?.filter(Boolean)
+// Get page entries and use them as items
+props.items = pages
+  ? (await getEntries(pages)).map((page) => ({
+      href: getHref(page),
+      ...page.data,
+    }))
+  : props.items
 
+// Add the block name and variant as classNames for easy css targeting
 props.className = `${props.className || ""} ${type}-${variant}`
 ---
 
@@ -92,14 +84,6 @@ props.className = `${props.className || ""} ${type}-${variant}`
     <Collection1 {...props}>
       <slot />
     </Collection1>
-  )
-}
-
-{
-  type === "collection" && variant === 2 && (
-    <Collection2 client:load {...props}>
-      <slot />
-    </Collection2>
   )
 }
 

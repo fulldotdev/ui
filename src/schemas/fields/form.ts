@@ -47,4 +47,5 @@ export const formSchema = z
     submit: z.string().optional(),
   })
   .strict()
+
 export type Form = z.infer<typeof formSchema>

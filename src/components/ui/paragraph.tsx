@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const paragraphVariants = cva(
-  "description text-foreground max-w-xl leading-[1.75] text-pretty",
+  "paragraph text-foreground max-w-xl leading-[1.75] text-pretty",
   {
     variants: {
       size: {

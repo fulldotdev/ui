@@ -1,30 +1,29 @@
-import { z } from "zod"
+import { reference, z } from "astro:content"
 
 import { blockSchema } from "@/schemas/block"
+import { pathSchema } from "@/schemas/fields/path"
 
 export const pageSchema = blockSchema
   .extend({
-    type: z.string(),
+    type: z.enum([
+      "page",
+      "collection",
+      "post",
+      "location",
+      "person",
+      "event",
+      "blog",
+      "product",
+    ]),
     variant: z.number(),
-    slug: z.string(),
-    lang: z.string(),
-    company: z.string(),
-    banner: blockSchema,
-    header: blockSchema,
-    sections: blockSchema.array(),
-    footer: blockSchema,
-    head: z.string(),
-    body: z.string(),
-    css: z.string(),
+    layout: pathSchema.pipe(reference("layouts")),
+    pages: pathSchema.pipe(reference("pages")).array(),
+    sections: pathSchema.pipe(reference("sections")).array(),
     seo: z
       .object({
         title: z.string(),
         description: z.string(),
       })
-      .partial()
-      .optional(),
+      .partial(),
   })
   .partial()
-  .strict()
-
-export type PageSchema = z.infer<typeof pageSchema>
