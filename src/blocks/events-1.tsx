@@ -18,7 +18,7 @@ export default function ({ children, items }: BlockProps) {
   return (
     <Section>
       <SectionContainer className="max-w-screen-md lg:px-12">
-        {children && <SectionContent size="4xl">{children}</SectionContent>}
+        {children && <SectionContent>{children}</SectionContent>}
         <div className="flex flex-col gap-4 not-first:mt-12">
           {items?.map(({ href, title, description, tagline, links }, i) => (
             <Tile className="gap-2" key={i} href={href}>

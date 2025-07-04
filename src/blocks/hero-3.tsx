@@ -14,7 +14,7 @@ export default function ({ children, links, image }: BlockProps) {
       <SectionContainer className="px-0 lg:px-0">
         <SectionSplit className="items-center gap-y-16 md:grid-cols-1 lg:grid-cols-2">
           <div className="flex flex-col items-start px-4 lg:px-8">
-            <SectionContent className="w-full" size="5xl">
+            <SectionContent className="w-full" size="lg">
               {children}
             </SectionContent>
             {links && links.length > 0 && (

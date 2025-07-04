@@ -11,8 +11,8 @@ export default function ({ children, links }: BlockProps) {
   return (
     <Section>
       <SectionContainer>
-        <div className="bg-card text-card-foreground flex flex-col justify-between gap-8 rounded-lg border px-4 py-16 md:flex-row md:items-center lg:px-8 lg:py-24">
-          {children && <SectionContent size="5xl">{children}</SectionContent>}
+        <div className="bg-card text-card-foreground flex flex-col justify-between gap-8 rounded-lg border px-4 py-16 lg:flex-row lg:items-center lg:px-8 lg:py-24">
+          {children && <SectionContent size="xl">{children}</SectionContent>}
           {links && (
             <SectionFooter>
               {links?.map(({ href, text }, i) => (

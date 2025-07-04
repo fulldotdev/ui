@@ -11,13 +11,10 @@ export default function ({ children, links, image }: BlockProps) {
   return (
     <Section className="flex min-h-screen items-center">
       {image && (
-        <img
-          className="absolute inset-0 size-full mask-t-from-30% object-cover object-top"
-          {...image}
-        />
+        <img className="absolute inset-0 size-full object-cover" {...image} />
       )}
       <SectionContainer className="relative flex flex-col items-center">
-        <SectionContent size="6xl" className="text-center">
+        <SectionContent size="xl" className="text-center">
           {children}
         </SectionContent>
         {links && links.length > 0 && (

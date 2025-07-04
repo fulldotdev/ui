@@ -22,7 +22,7 @@ export default function ({ children, links, items }: BlockProps) {
       <SectionContainer className="flex flex-col">
         <SectionSplit sticky={true}>
           <div className="flex flex-col">
-            {children && <SectionContent size="4xl">{children}</SectionContent>}
+            {children && <SectionContent>{children}</SectionContent>}
             {links && links.length > 0 && (
               <SectionFooter className="not-first:mt-8">
                 {links.map(({ text, href }, i) => (

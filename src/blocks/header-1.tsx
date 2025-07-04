@@ -28,7 +28,7 @@ export default function ({ logo, menus, links }: BlockProps) {
             {links.map(({ text, href }, i) => (
               <Link
                 className={i < links.length - 1 ? "max-sm:hidden" : ""}
-                key={href}
+                key={i}
                 href={href}
                 variant={i === links.length - 1 ? "default" : "ghost"}
               >

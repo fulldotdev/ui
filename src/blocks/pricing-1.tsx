@@ -29,7 +29,7 @@ export default function ({
   return (
     <Section>
       <SectionContainer className="max-w-screen-md lg:px-12">
-        {children && <SectionContent size="4xl">{children}</SectionContent>}
+        {children && <SectionContent>{children}</SectionContent>}
         <Tile className="not-first:mt-12">
           <TileContent>
             <TileTitle className="text-xl">{title}</TileTitle>

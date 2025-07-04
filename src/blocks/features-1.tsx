@@ -23,9 +23,7 @@ export default function ({ children, links, items }: BlockProps) {
     <Section>
       <SectionContainer className="flex flex-col items-center">
         {children && (
-          <SectionContent className="text-center" size="4xl">
-            {children}
-          </SectionContent>
+          <SectionContent className="text-center">{children}</SectionContent>
         )}
         {links && links.length > 0 && (
           <SectionFooter className="mt-8">

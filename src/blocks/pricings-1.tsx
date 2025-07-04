@@ -34,7 +34,7 @@ export default function ({ children, items }: BlockProps) {
     <Section>
       <SectionContainer className="flex flex-col">
         <div className="flex flex-col sm:flex-row sm:justify-between">
-          {children && <SectionContent size="4xl">{children}</SectionContent>}
+          {children && <SectionContent>{children}</SectionContent>}
           {hasPrices && (
             <Select
               value={duration}

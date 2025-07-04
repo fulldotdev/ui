@@ -18,7 +18,7 @@ export default function ({ children, items }: BlockProps) {
   return (
     <Section>
       <SectionContainer>
-        <Writeup size="4xl">{children}</Writeup>
+        <Writeup>{children}</Writeup>
         <SectionMasonry className="not-first:mt-12">
           {items?.map(({ title, description, rating, avatar }, i) => (
             <Tile className="break-inside-avoid" key={i}>

@@ -1,29 +1,21 @@
 ---
+import { slugs } from "@/content.config.ts"
 import Article from "@/layouts/article.astro"
+import Block from "@/layouts/block.astro"
 import Doc from "@/layouts/doc.astro"
-import Event from "@/layouts/event.astro"
 import Job from "@/layouts/job.astro"
 import Location from "@/layouts/location.astro"
 import Page from "@/layouts/page.astro"
 import Person from "@/layouts/person.astro"
 import Policy from "@/layouts/policy.astro"
 import { getCollection, render } from "astro:content"
+import { keys } from "remeda"
 
 import { getHref } from "@/lib/get-href"
 import { transformEntry } from "@/lib/transform"
 
 export async function getStaticPaths() {
-  const collectionKeys = [
-    "articles",
-    "events",
-    "jobs",
-    "locations",
-    "pages",
-    "persons",
-    "policies",
-    "services",
-    "docs",
-  ] as const
+  const collectionKeys = keys(slugs)
   const entries = await Promise.all(
     collectionKeys.map(async (collectionKey) => {
       const entries = await getCollection(collectionKey)
@@ -55,15 +47,14 @@ const layouts = {
   policies: Policy,
   services: Page,
   docs: Doc,
+  blocks: Block,
 }
-
-console.log(collection)
 
 const Layout = layouts[collection]
 
-const { data } = await transformEntry(Astro.props)
+const { data, ...entry } = await transformEntry(Astro.props)
 ---
 
-<Layout id={id} {...data}>
+<Layout {...entry} {...data}>
   <Content />
 </Layout>

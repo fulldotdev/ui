@@ -14,7 +14,7 @@ export default function ({ children, channels, form }: BlockProps) {
       <SectionContainer>
         <SectionSplit>
           <div className="mx-auto flex w-full max-w-2xl flex-col">
-            {children && <SectionContent size="4xl">{children}</SectionContent>}
+            {children && <SectionContent>{children}</SectionContent>}
             {channels && channels.length > 0 && (
               <div className="flex flex-col items-start gap-3 not-first:mt-8">
                 {channels.map((channel, i) => (

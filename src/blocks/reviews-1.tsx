@@ -13,7 +13,7 @@ export default function ({ children, items }: BlockProps) {
   return (
     <Section>
       <SectionContainer className="flex flex-col">
-        <SectionContent size="4xl">{children}</SectionContent>
+        <SectionContent>{children}</SectionContent>
         <SectionMasonry className="gap-4 space-y-6 not-first:mt-12">
           {items?.map(({ title, description, rating, avatar, image }, i) => (
             <Tile key={i}>

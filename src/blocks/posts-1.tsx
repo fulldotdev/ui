@@ -43,9 +43,7 @@ export default function ({ children, items }: BlockProps) {
     <Section>
       <SectionContainer className="max-w-screen-md lg:px-12">
         {children && (
-          <SectionContent className="text-center" size="4xl">
-            {children}
-          </SectionContent>
+          <SectionContent className="text-center">{children}</SectionContent>
         )}
         <div className="flex flex-col gap-4 not-first:mt-16">
           <div className="mb-8 flex flex-row flex-wrap justify-center gap-2">

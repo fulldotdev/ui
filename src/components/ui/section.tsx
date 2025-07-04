@@ -21,61 +21,6 @@ function SectionContainer({
   )
 }
 
-const sectionContentVariants = cva(
-  [
-    "text-pretty max-w-2xl text-left text-foreground !leading-[1.75] relative z-1",
-    "[&_*]:not-first:mt-4",
-    "[&_:is(h1,h2,h3,h4,h5,h6)]:scroll-mt-20 [&_:is(h1,h2,h3,h4,h5,h6)]:font-semibold [&_:is(h1,h2,h3,h4,h5,h6)]:tracking-tight [&_:is(h1,h2,h3,h4,h5,h6)]:text-foreground",
-    "[&_blockquote]:border-l-2 [&_blockquote]:pl-6 [&_blockquote]:italic",
-    "[&_a]:text-primary [&_a]:hover:underline",
-    "list:ml-4 list:mt-4  ul:list-['✓'] ol:list-decimal li:pl-2 li:not-first:mt-1",
-  ],
-  {
-    variants: {
-      size: {
-        xs: "text-xs [&_:is(h1,h2,h3,h4,h5,h6)]:text-xs",
-        sm: "text-sm [&_:is(h1,h2,h3,h4,h5,h6)]:text-sm",
-        default: "text-base [&_:is(h1,h2,h3,h4,h5,h6)]:text-base",
-        lg: "text-base [&_:is(h1,h2,h3,h4,h5,h6)]:text-lg",
-        xl: "text-base [&_:is(h1,h2,h3,h4,h5,h6)]:text-xl",
-        "2xl": "text-base [&_:is(h1,h2,h3,h4,h5,h6)]:text-2xl",
-        "3xl": "text-base [&_:is(h1,h2,h3,h4,h5,h6)]:text-3xl",
-        "4xl": "text-base [&_:is(h1,h2,h3,h4,h5,h6)]:text-4xl",
-        "5xl":
-          "text-base md:text-lg [&_:is(h1,h2,h3,h4,h5,h6)]:text-4xl lg:[&_:is(h1,h2,h3,h4,h5,h6)]:text-5xl",
-        "6xl":
-          "text-lg md:text-xl [&_:is(h1,h2,h3,h4,h5,h6)]:text-5xl lg:[&_:is(h1,h2,h3,h4,h5,h6)]:text-6xl",
-        "7xl":
-          "text-lg md:text-xl [&_:is(h1,h2,h3,h4,h5,h6)]:text-5xl lg:[&_:is(h1,h2,h3,h4,h5,h6)]:text-7xl",
-        "8xl":
-          "text-lg md:text-xl [&_:is(h1,h2,h3,h4,h5,h6)]:text-5xl lg:[&_:is(h1,h2,h3,h4,h5,h6)]:text-8xl",
-      },
-    },
-    defaultVariants: {
-      size: "default",
-    },
-  }
-)
-
-function SectionContent({
-  className,
-  size,
-  ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof sectionContentVariants>) {
-  return (
-    <div
-      className={cn(sectionContentVariants({ size }), className)}
-      {...props}
-    />
-  )
-}
-
-function SectionFooter({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div className={cn("inline-flex flex-wrap gap-2", className)} {...props} />
-  )
-}
-
 export const sectionSplitVariants = cva(
   "grid w-full gap-y-8 auto-cols-fr lg:grid-flow-col lg:gap-x-16 items-start",
   {
@@ -126,7 +71,7 @@ function SectionGrid({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "grid w-full grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-8",
+        "grid w-full grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6",
         className
       )}
       {...props}
@@ -134,28 +79,48 @@ function SectionGrid({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-function SectionProse({ className, ...props }: React.ComponentProps<"div">) {
+const sectionContentVariants = cva(
+  [
+    "w-full max-w-2xl",
+    "[&_p]:leading-[1.8] [&_p]:not-first:mt-4",
+    "[&_ul]:list-inside [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:not-first:mt-4",
+    "[&_ol]:list-inside [&_ol]:list-decimal [&_ol]:space-y-2 [&_ol]:not-first:mt-4",
+    "[&_a]:text-primary [&_a]:hover:underline",
+    "[&_:is(h1,h2,h3,h4,h5,h6)]:scroll-mt-20 [&_:is(h1,h2,h3,h4,h5,h6)]:not-first:mt-12 [&_:is(h1,h2,h3,h4,h5,h6)]:text-pretty [&_:is(h1,h2,h3,h4,h5,h6)]:font-semibold [&_:is(h1,h2,h3,h4,h5,h6)]:leading-[1.1]",
+    "[&_img]:rounded-lg [&_img]:not-first:mt-12",
+  ],
+  {
+    variants: {
+      size: {
+        sm: "text-sm [&_h1]:text-2xl [&_h2]:text-xl [&_h3]:text-lg [&_h4]:text-base [&_h5]:text-sm [&_h6]:text-sm max-w-xl",
+        default:
+          "[&_h1]:text-4xl [&_h2]:text-3xl [&_h3]:text-2xl [&_h4]:text-xl [&_h5]:text-lg [&_h6]:text-base max-w-2xl",
+        lg: "text-lg [&_h1]:text-5xl [&_h2]:text-4xl [&_h3]:text-3xl [&_h4]:text-2xl [&_h5]:text-xl [&_h6]:text-lg max-w-3xl",
+        xl: "text-xl [&_h1]:text-6xl [&_h2]:text-5xl [&_h3]:text-4xl [&_h4]:text-3xl [&_h5]:text-2xl [&_h6]:text-xl max-w-4xl",
+      },
+    },
+    defaultVariants: {
+      size: "default",
+    },
+  }
+)
+
+function SectionContent({
+  className,
+  size,
+  ...props
+}: React.ComponentProps<"div"> & VariantProps<typeof sectionContentVariants>) {
   return (
     <div
-      className={cn(
-        "prose",
-        "flex w-full max-w-2xl flex-col",
-        "child:not-first:mt-4",
-        "heading:scroll-mt-20 heading:not-first:mt-8 heading:text-pretty heading:font-semibold heading:tracking-tight",
-        "h1:text-4xl lg:h1:text-5xl",
-        "h2:text-3xl",
-        "h3:text-2xl",
-        "h4:text-xl",
-        "h5:text-lg",
-        "h6:text-base",
-        "p:mt-4 p:leading-[1.8]",
-        "img:p:rounded-lg img:rounded-lg",
-        "list:ml-4 list:mt-4 list:space-y-2 ul:list-disc ol:list-decimal",
-        "[&_a[href]]:text-primary [&_a[href]]:hover:underline",
-        className
-      )}
+      className={cn(sectionContentVariants({ size }), className)}
       {...props}
     />
+  )
+}
+
+function SectionFooter({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div className={cn("inline-flex flex-wrap gap-2", className)} {...props} />
   )
 }
 
@@ -198,12 +163,11 @@ function SectionTagline({ className, ...props }: React.ComponentProps<"p">) {
 export {
   Section,
   SectionContainer,
-  SectionContent,
   SectionFooter,
   SectionSplit,
   SectionMasonry,
   SectionGrid,
-  SectionProse,
+  SectionContent,
   SectionTitle,
   SectionDescription,
   SectionTagline,

@@ -187,7 +187,6 @@ function AutoForm({
   ...props
 }: Props) {
   const form = useForm()
-  console.log(inbox)
   return (
     <FormRoot {...form}>
       <form

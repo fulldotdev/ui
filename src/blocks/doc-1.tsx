@@ -2,8 +2,8 @@ import type { BlockProps } from "@/lib/types"
 import {
   Section,
   SectionContainer,
+  SectionContent,
   SectionDescription,
-  SectionProse,
   SectionTitle,
 } from "@/components/ui/section"
 import { SidebarNav } from "@/components/sidebar-nav"
@@ -16,13 +16,13 @@ export default function ({ menus, title, description, children }: BlockProps) {
           className="sticky top-24 h-[calc(100vh-56px)] w-3xs max-lg:hidden"
           items={menus}
         />
-        <SectionProse className="mx-auto py-12">
+        <SectionContent className="mx-auto py-12">
           <SectionTitle>{title}</SectionTitle>
           <SectionDescription className="!text-lg">
             {description}
           </SectionDescription>
           {children}
-        </SectionProse>
+        </SectionContent>
       </SectionContainer>
     </Section>
   )

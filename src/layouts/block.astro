@@ -1,0 +1,30 @@
+---
+import { type EntryProps } from "@/lib/types"
+import Layout from "@/components/layout.astro"
+
+type Props = EntryProps & {
+  id: string
+}
+
+const { id, rendered, ...props } = Astro.props
+
+// Get all block files
+const blockFiles = import.meta.glob("/src/blocks/*.tsx")
+
+// Get an array of all block names in the category, for example hero-1 to hero-6
+const blockNamesInCategory = Object.keys(blockFiles)
+  .filter((file) => file.includes(`${id}-`))
+  .map((file) => {
+    const name = file.split("/").pop()?.split(".")[0]
+    return name
+  })
+
+// Combine the block name with the props
+const blocks = blockNamesInCategory.map((name) => ({
+  block: name,
+  children: rendered?.html,
+  ...props,
+}))
+---
+
+<Layout blocks={blocks} />

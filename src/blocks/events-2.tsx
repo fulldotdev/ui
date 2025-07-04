@@ -20,7 +20,7 @@ export default function ({ children, items }: BlockProps) {
     <Section>
       <SectionContainer>
         <SectionSplit sticky>
-          {children && <SectionContent size="4xl">{children}</SectionContent>}
+          {children && <SectionContent>{children}</SectionContent>}
           <div className="flex flex-col gap-4">
             {items?.map(({ href, title, description, tagline, links }, i) => (
               <Tile className="gap-2" key={i} href={href}>

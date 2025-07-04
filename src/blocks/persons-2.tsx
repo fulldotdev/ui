@@ -18,7 +18,7 @@ export default function ({ children, items }: BlockProps) {
   return (
     <Section>
       <SectionContainer className="flex flex-col items-start">
-        {children && <SectionContent size="4xl">{children}</SectionContent>}
+        {children && <SectionContent>{children}</SectionContent>}
         <SectionGrid className="not-first:mt-12">
           {items?.map(({ href, image, title, tagline, description }, i) => (
             <Tile className="gap-2" key={i} href={href} panel={false}>

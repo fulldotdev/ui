@@ -13,7 +13,7 @@ export default function ({ children, links }: BlockProps) {
       <SectionContainer>
         <div className="bg-card text-card-foreground flex flex-col items-center rounded-lg border px-4 py-16 lg:px-8">
           {children && (
-            <SectionContent className="text-center" size="5xl">
+            <SectionContent className="text-center" size="xl">
               {children}
             </SectionContent>
           )}

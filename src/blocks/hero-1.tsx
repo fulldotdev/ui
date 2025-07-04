@@ -36,8 +36,8 @@ export default function ({
           </div>
         )}
         <SectionContent
-          size="6xl"
-          className="max-w-3xl text-center not-first:mt-5"
+          size="xl"
+          className="text-center text-balance not-first:mt-5"
         >
           {children}
         </SectionContent>

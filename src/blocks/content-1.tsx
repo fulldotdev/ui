@@ -14,12 +14,12 @@ export default function ({ children, links, image, reverse }: BlockProps) {
       <SectionContainer>
         <SectionSplit className="items-center" reverse={reverse}>
           <div className="flex flex-col items-start">
-            {children && <SectionContent size="4xl">{children}</SectionContent>}
+            {children && <SectionContent>{children}</SectionContent>}
             {links && links.length > 0 && (
               <SectionFooter className="not-first:mt-6">
                 {links?.map(({ text, href, ...link }, i) => (
                   <Link
-                    key={href}
+                    key={i}
                     href={href}
                     variant={i === 0 ? "default" : "ghost"}
                     {...link}

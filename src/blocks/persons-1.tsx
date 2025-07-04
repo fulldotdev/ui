@@ -9,11 +9,7 @@ export default function ({ children, items }: BlockProps) {
   return (
     <Section>
       <SectionContainer className="flex flex-col items-center">
-        {children && (
-          <Writeup className="text-center" size="4xl">
-            {children}
-          </Writeup>
-        )}
+        {children && <Writeup className="text-center">{children}</Writeup>}
         <div className="flex flex-wrap justify-center gap-16 not-first:mt-16">
           {items?.map(({ href, image, title, tagline }, i) => (
             <Tile

@@ -6,7 +6,6 @@ import {
   SectionContainer,
   SectionContent,
   SectionFooter,
-  SectionProse,
   SectionSplit,
 } from "@/components/ui/section"
 
@@ -23,7 +22,7 @@ export default function ({
       <SectionContainer>
         <SectionSplit className="gap-y-16">
           <div className="top-24 flex flex-col lg:sticky">
-            <SectionContent size="4xl">
+            <SectionContent>
               {published && (
                 <span>{new Date(published).toLocaleDateString("nl-NL")}</span>
               )}
@@ -56,7 +55,7 @@ export default function ({
             )}
           </div>
           <div className="flex flex-col">
-            <SectionProse>{children}</SectionProse>
+            <SectionContent>{children}</SectionContent>
             {links && links.length > 0 && (
               <SectionFooter className="mt-8 md:hidden">
                 {links.map(({ href, text }, i) => (

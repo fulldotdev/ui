@@ -19,7 +19,7 @@ export default function ({ children, links, items }: BlockProps) {
   return (
     <Section>
       <SectionContainer>
-        {children && <SectionContent size="4xl">{children}</SectionContent>}
+        {children && <SectionContent>{children}</SectionContent>}
         {links && links.length > 0 && (
           <SectionFooter className="not-first:mt-8">
             {links.map(({ href, text }, i) => (

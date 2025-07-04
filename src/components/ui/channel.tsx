@@ -17,8 +17,8 @@ function Channel({
   value,
   ...props
 }: React.ComponentProps<typeof Link> & {
-  type: "email" | "phone" | "address" | "website"
-  value: string
+  type?: "email" | "phone" | "address" | "website"
+  value?: string
 }) {
   const hrefMap = {
     email: `mailto:${value}`,
@@ -26,11 +26,11 @@ function Channel({
     address: `https://maps.app.goo.gl/${value}`,
     website: `https://${value}`,
   }
-  const Icon = iconMap[type]
+  const Icon = type && iconMap[type]
   return (
     <Link
       className={cn("leading-4", className)}
-      href={hrefMap[type]}
+      href={type && hrefMap[type]}
       variant="secondary"
       size="sm"
       target="_blank"

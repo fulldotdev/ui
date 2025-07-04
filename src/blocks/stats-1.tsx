@@ -10,7 +10,7 @@ export default function ({ children, items }: BlockProps) {
   return (
     <Section>
       <SectionContainer>
-        {children && <SectionContent size="4xl">{children}</SectionContent>}
+        {children && <SectionContent>{children}</SectionContent>}
         <div className="mt-16 flex flex-wrap justify-center gap-16">
           {items?.map(({ title, description }, i) => (
             <Tile

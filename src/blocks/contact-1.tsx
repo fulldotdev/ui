@@ -8,11 +8,10 @@ import {
 import { AutoForm } from "@/components/auto-form"
 
 export default function ({ children, channels, form }: BlockProps) {
-  console.log(channels)
   return (
     <Section id="contact">
       <SectionContainer className="max-w-screen-md lg:px-12">
-        {children && <SectionContent size="4xl">{children}</SectionContent>}
+        {children && <SectionContent>{children}</SectionContent>}
         {channels && channels.length > 0 && (
           <div className="flex flex-col items-start gap-3 not-first:mt-8">
             {channels.map((channel, i) => (

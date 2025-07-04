@@ -14,7 +14,7 @@ export default function ({ children, links, image }: BlockProps) {
       <SectionContainer>
         <SectionSplit className="items-center">
           <div className="flex flex-col items-start">
-            <SectionContent size="5xl">{children}</SectionContent>
+            <SectionContent size="lg">{children}</SectionContent>
             {links && links.length > 0 && (
               <SectionFooter className="mt-8">
                 {links.map(({ href, text }, i) => (

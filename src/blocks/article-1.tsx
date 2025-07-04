@@ -1,11 +1,10 @@
+import { CalendarIcon } from "lucide-react"
+
 import type { BlockProps } from "@/lib/types"
 import {
   Section,
   SectionContainer,
-  SectionDescription,
-  SectionProse,
-  SectionTagline,
-  SectionTitle,
+  SectionContent,
 } from "@/components/ui/section"
 
 export default function ({
@@ -17,20 +16,19 @@ export default function ({
 }: BlockProps) {
   return (
     <Section>
-      <SectionContainer className="max-w-screen-md lg:px-12">
-        {published && (
-          <SectionTagline>
-            {new Date(published).toLocaleDateString("nl-NL")}
-          </SectionTagline>
-        )}
-        {title && <SectionTitle>{title}</SectionTitle>}
-        {description && (
-          <SectionDescription className="mt-4">
-            {description}
-          </SectionDescription>
-        )}
-        {image && <img className="mt-8 rounded-md" {...image} />}
-        <SectionProse className="not-first:mt-8">{children}</SectionProse>
+      <SectionContainer className="flex flex-col items-center gap-16">
+        <SectionContent className="text-center" size="xl">
+          {published && (
+            <p className="inline-flex items-center gap-2 text-sm font-medium">
+              <CalendarIcon className="size-4" />
+              {new Date(published).toLocaleDateString("nl-NL")}
+            </p>
+          )}
+          {title && <h1 className="!mt-4">{title}</h1>}
+          {description && <p>{description}</p>}
+        </SectionContent>
+        {image && <img className="max-w-5xl rounded-md" {...image} />}
+        <SectionContent>{children}</SectionContent>
       </SectionContainer>
     </Section>
   )
