@@ -37,9 +37,10 @@ export default function ({
             )}
             {channels && <Channels className="not-first:mt-6" {...channels} />}
             <div className="mt-6 flex gap-4">
-              {socials?.map((social) => (
+              {socials?.map((social, i) => (
                 <Social
                   className="text-muted-foreground hover:text-foreground !size-auto"
+                  key={i}
                   variant="link"
                   href={social}
                 />
@@ -85,10 +86,10 @@ export default function ({
               </p>
             </div>
           )}
-          {menus?.map((menu) => (
+          {menus?.map((menu, i) => (
             <Menu
               className="col-span-2 basis-[300px] text-sm"
-              key={menu.text}
+              key={i}
               {...menu}
             />
           ))}
@@ -100,10 +101,10 @@ export default function ({
             </p>
           )}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-            {links?.map(({ text, href }) => (
+            {links?.map(({ text, href }, i) => (
               <a
                 className="text-muted-foreground hover:text-foreground text-xs transition-colors"
-                key={href}
+                key={i}
                 href={href}
               >
                 {text}

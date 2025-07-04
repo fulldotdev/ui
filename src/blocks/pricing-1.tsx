@@ -44,8 +44,8 @@ export default function ({
             )}
             {list && list.length > 0 && (
               <List className="mt-6">
-                {list.map((item) => (
-                  <ListItem key={item}>
+                {list.map((item, i) => (
+                  <ListItem key={i}>
                     <Check className="text-primary" />
                     {item}
                   </ListItem>
@@ -57,8 +57,8 @@ export default function ({
             {links?.map(({ href, text }, i) => (
               <Link
                 className="w-full"
+                key={i}
                 href={href}
-                key={href}
                 variant={i === 0 ? "default" : "ghost"}
               >
                 {text}

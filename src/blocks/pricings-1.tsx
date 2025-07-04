@@ -53,18 +53,21 @@ export default function ({ children, items }: BlockProps) {
         </div>
         <SectionGrid className="not-first:mt-12">
           {items?.map(
-            ({
-              tagline,
-              title,
-              description,
-              price,
-              prices,
-              unit,
-              list,
-              links,
-              icon = "check",
-            }) => (
-              <Tile key={title} className="justify-between">
+            (
+              {
+                tagline,
+                title,
+                description,
+                price,
+                prices,
+                unit,
+                list,
+                links,
+                icon = "check",
+              },
+              i
+            ) => (
+              <Tile className="justify-between" key={i}>
                 <TileContent>
                   {tagline && (
                     <TileTagline className="text-sm">{tagline}</TileTagline>
@@ -81,8 +84,8 @@ export default function ({ children, items }: BlockProps) {
                   )}
                   {list && list.length > 0 && (
                     <List className="mt-6 text-sm">
-                      {list.map((item) => (
-                        <ListItem key={item}>
+                      {list.map((item: string, j: number) => (
+                        <ListItem key={j}>
                           {icon === "check" && (
                             <Check className="text-primary" />
                           )}
@@ -97,15 +100,20 @@ export default function ({ children, items }: BlockProps) {
                 </TileContent>
                 {links && links.length > 0 && (
                   <TileFooter className="flex flex-col gap-2">
-                    {links.map(({ href, text }, id) => (
-                      <Link
-                        key={href}
-                        href={href}
-                        variant={id === 0 ? "default" : "outline"}
-                      >
-                        {text}
-                      </Link>
-                    ))}
+                    {links.map(
+                      (
+                        { href, text }: { href: string; text: string },
+                        j: number
+                      ) => (
+                        <Link
+                          key={j}
+                          href={href}
+                          variant={j === 0 ? "default" : "outline"}
+                        >
+                          {text}
+                        </Link>
+                      )
+                    )}
                   </TileFooter>
                 )}
               </Tile>

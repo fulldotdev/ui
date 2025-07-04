@@ -24,7 +24,7 @@ export default function ({ children, links, items }: BlockProps) {
           <SectionFooter className="not-first:mt-8">
             {links.map(({ href, text }, i) => (
               <Link
-                key={href}
+                key={i}
                 href={href}
                 variant={i === 0 ? "default" : "ghost"}
                 size="lg"
@@ -35,8 +35,8 @@ export default function ({ children, links, items }: BlockProps) {
           </SectionFooter>
         )}
         <SectionGrid className="not-first:mt-12">
-          {items?.map(({ title, description, image, href }) => (
-            <Tile href={href} key={title}>
+          {items?.map(({ title, description, image, href }, i) => (
+            <Tile className="gap-2" key={i} href={href}>
               <TileImage {...image} />
               <TileContent>
                 <TileTitle>{title}</TileTitle>

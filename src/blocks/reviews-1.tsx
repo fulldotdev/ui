@@ -15,8 +15,8 @@ export default function ({ children, items }: BlockProps) {
       <SectionContainer className="flex flex-col">
         <SectionContent size="4xl">{children}</SectionContent>
         <SectionMasonry className="gap-4 space-y-6 not-first:mt-12">
-          {items?.map(({ title, description, rating, avatar, image }) => (
-            <Tile key={title}>
+          {items?.map(({ title, description, rating, avatar, image }, i) => (
+            <Tile key={i}>
               <TileImage {...image} />
               <TileContent>
                 <div className="flex w-full items-center gap-4">

@@ -21,7 +21,7 @@ export default function ({ children, items }: BlockProps) {
         <Writeup size="4xl">{children}</Writeup>
         <SectionMasonry className="not-first:mt-12">
           {items?.map(({ title, description, rating, avatar }, i) => (
-            <Tile className="break-inside-avoid" key={title}>
+            <Tile className="break-inside-avoid" key={i}>
               {avatar?.src && <TileImage alt={`Review ${i + 1}`} {...avatar} />}
               <TileContent>
                 {rating && <Rating score={rating} />}

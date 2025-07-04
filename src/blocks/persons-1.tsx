@@ -15,10 +15,10 @@ export default function ({ children, items }: BlockProps) {
           </Writeup>
         )}
         <div className="flex flex-wrap justify-center gap-16 not-first:mt-16">
-          {items?.map(({ href, image, title, tagline }) => (
+          {items?.map(({ href, image, title, tagline }, i) => (
             <Tile
               className="relative flex shrink-1 basis-3xs flex-col items-center"
-              key={href}
+              key={i}
               href={href}
               panel={false}
             >

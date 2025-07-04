@@ -12,11 +12,11 @@ export default function ({ children, items }: BlockProps) {
       <SectionContainer>
         {children && <SectionContent size="4xl">{children}</SectionContent>}
         <div className="mt-16 flex flex-wrap justify-center gap-16">
-          {items?.map(({ title, description }) => (
+          {items?.map(({ title, description }, i) => (
             <Tile
-              key={title}
-              panel={false}
               className="flex max-w-md min-w-2xs grow-1 basis-xs flex-col"
+              key={i}
+              panel={false}
             >
               <TileTitle className="text-3xl">{title}</TileTitle>
               {description && (

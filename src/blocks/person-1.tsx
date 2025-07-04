@@ -42,12 +42,12 @@ export default function ({
             </TileContent>
             <TileFooter className="flex flex-col">
               <div className="flex gap-2">
-                {socials?.map((social) => (
-                  <Social key={social} href={social} />
+                {socials?.map((social, i) => (
+                  <Social key={i} href={social} />
                 ))}
               </div>
-              {links?.map(({ href, text }) => (
-                <Link key={href} href={href} variant="outline" size="lg">
+              {links?.map(({ href, text }, i) => (
+                <Link key={i} href={href} variant="outline" size="lg">
                   {text}
                 </Link>
               ))}

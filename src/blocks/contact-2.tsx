@@ -1,4 +1,5 @@
 import type { BlockProps } from "@/lib/types"
+import { Channel } from "@/components/ui/channel"
 import {
   Section,
   SectionContainer,
@@ -6,7 +7,6 @@ import {
   SectionSplit,
 } from "@/components/ui/section"
 import { AutoForm } from "@/components/auto-form"
-import { Channels } from "@/components/channels"
 
 export default function ({ children, channels, form }: BlockProps) {
   return (
@@ -15,7 +15,13 @@ export default function ({ children, channels, form }: BlockProps) {
         <SectionSplit>
           <div className="mx-auto flex w-full max-w-2xl flex-col">
             {children && <SectionContent size="4xl">{children}</SectionContent>}
-            {channels && <Channels className="not-first:mt-8" {...channels} />}
+            {channels && channels.length > 0 && (
+              <div className="flex flex-col items-start gap-3 not-first:mt-8">
+                {channels.map((channel, i) => (
+                  <Channel key={i} {...channel} />
+                ))}
+              </div>
+            )}
           </div>
           {form && <AutoForm className="mx-auto" {...form} />}
         </SectionSplit>

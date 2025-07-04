@@ -21,8 +21,8 @@ export default function ({ children, items }: BlockProps) {
           type="single"
           collapsible
         >
-          {items?.map(({ title, description }) => (
-            <AccordionItem key={title} value={title ?? ""}>
+          {items?.map(({ title, description }, i) => (
+            <AccordionItem key={i} value={title ?? ""}>
               <AccordionTrigger>{title}</AccordionTrigger>
               <AccordionContent>{description}</AccordionContent>
             </AccordionItem>

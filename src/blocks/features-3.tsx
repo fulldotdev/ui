@@ -27,7 +27,7 @@ export default function ({ children, links, items }: BlockProps) {
               <SectionFooter className="not-first:mt-8">
                 {links.map(({ text, href }, i) => (
                   <Link
-                    key={href}
+                    key={i}
                     href={href}
                     variant={i === 0 ? "default" : "ghost"}
                   >
@@ -39,7 +39,7 @@ export default function ({ children, links, items }: BlockProps) {
           </div>
           <SectionGrid className="grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-16 lg:col-span-2">
             {items?.map(({ title, description, icon }, i) => (
-              <Tile key={title} panel={false} className="flex flex-col">
+              <Tile className="flex flex-col" key={i} panel={false}>
                 <TileContent>
                   {icon && <Icon name={icon} className="text-primary size-8" />}
                   <TileTitle className="text-xl">{title}</TileTitle>

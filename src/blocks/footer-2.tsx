@@ -15,10 +15,10 @@ export default function ({ logo, links, socials, copyright }: BlockProps) {
         )}
         {links && links.length > 0 && (
           <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
-            {links?.map(({ text, href }) => (
+            {links?.map(({ text, href }, i) => (
               <a
                 className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-                key={href}
+                key={i}
                 href={href}
               >
                 {text}
@@ -28,9 +28,10 @@ export default function ({ logo, links, socials, copyright }: BlockProps) {
         )}
         {socials && socials.length > 0 && (
           <div className="flex gap-4">
-            {socials?.map((social) => (
+            {socials?.map((social, i) => (
               <Social
                 className="text-muted-foreground hover:text-foreground !size-auto"
+                key={i}
                 variant="link"
                 href={social}
               />

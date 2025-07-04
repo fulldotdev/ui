@@ -26,7 +26,7 @@ export default function ({ children, links, items }: BlockProps) {
               <SectionFooter className="not-first:mt-8">
                 {links.map(({ href, text }, i) => (
                   <Link
-                    key={href}
+                    key={i}
                     href={href}
                     variant={i === 0 ? "default" : "ghost"}
                     size="lg"
@@ -38,8 +38,8 @@ export default function ({ children, links, items }: BlockProps) {
             )}
           </div>
           <div className="flex flex-col gap-4">
-            {items?.map(({ title, description, image }) => (
-              <Tile className="break-inside-avoid" key={title}>
+            {items?.map(({ title, description, image }, i) => (
+              <Tile className="break-inside-avoid" key={i}>
                 <TileImage {...image} />
                 <TileContent>
                   <TileTitle>{title}</TileTitle>

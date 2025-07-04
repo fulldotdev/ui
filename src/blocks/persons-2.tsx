@@ -20,8 +20,8 @@ export default function ({ children, items }: BlockProps) {
       <SectionContainer className="flex flex-col items-start">
         {children && <SectionContent size="4xl">{children}</SectionContent>}
         <SectionGrid className="not-first:mt-12">
-          {items?.map(({ href, image, title, tagline, description }) => (
-            <Tile key={href} href={href} panel={false}>
+          {items?.map(({ href, image, title, tagline, description }, i) => (
+            <Tile className="gap-2" key={i} href={href} panel={false}>
               <TileImage
                 className="aspect-square object-cover"
                 alt={`${title} ${tagline}`}

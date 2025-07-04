@@ -23,8 +23,8 @@ export default function ({
           <div className="flex items-center">
             {avatars?.map((avatar, i) => (
               <img
-                key={avatar.src}
                 className="size-10 rounded-full object-cover not-first:-ml-4"
+                key={i}
                 alt={`Avatar ${i + 1}`}
                 {...avatar}
               />
@@ -45,7 +45,7 @@ export default function ({
           <SectionFooter className="mt-8">
             {links.map(({ href, text }, i) => (
               <Link
-                key={href}
+                key={i}
                 href={href}
                 variant={i === 0 ? "default" : "ghost"}
                 size="lg"

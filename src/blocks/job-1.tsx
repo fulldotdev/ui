@@ -34,8 +34,8 @@ export default function ({
             </SectionContent>
             {list && list.length > 0 && (
               <List className="mt-3">
-                {list.map((item) => (
-                  <ListItem className="text-sm" key={item}>
+                {list.map((item, i) => (
+                  <ListItem className="text-sm" key={i}>
                     {item}
                   </ListItem>
                 ))}
@@ -45,7 +45,7 @@ export default function ({
               <SectionFooter className="mt-8">
                 {links.map(({ href, text }, i) => (
                   <Link
-                    key={href}
+                    key={i}
                     href={href}
                     variant={i === 0 ? "default" : "ghost"}
                   >
@@ -61,7 +61,7 @@ export default function ({
               <SectionFooter className="mt-8 md:hidden">
                 {links.map(({ href, text }, i) => (
                   <Link
-                    key={href}
+                    key={i}
                     href={href}
                     variant={i === 0 ? "default" : "ghost"}
                   >

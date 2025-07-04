@@ -49,9 +49,9 @@ export default function ({ children, items }: BlockProps) {
         )}
         <div className="flex flex-col gap-4 not-first:mt-16">
           <div className="mb-8 flex flex-row flex-wrap justify-center gap-2">
-            {uniqueTags?.map((tag) => (
+            {uniqueTags?.map((tag: string, i: number) => (
               <Toggle
-                key={tag}
+                key={i}
                 size="sm"
                 variant="outline"
                 onPressedChange={handleTagToggle(tag)}
@@ -62,11 +62,11 @@ export default function ({ children, items }: BlockProps) {
           </div>
           <div className="mx-auto flex max-w-screen-md flex-col gap-4">
             {filteredPosts?.map(
-              ({ href, title, description, published, tags }) => (
-                <Tile href={href} key={href} panel={false}>
+              ({ href, title, description, published, tags }, i: number) => (
+                <Tile className="gap-2" key={i} href={href} panel={false}>
                   <TileContent>
-                    {tags?.map((tag) => (
-                      <Badge variant="secondary" key={tag}>
+                    {tags?.map((tag: string, j: number) => (
+                      <Badge key={j} variant="secondary">
                         {tag}
                       </Badge>
                     ))}

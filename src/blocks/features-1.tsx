@@ -30,21 +30,17 @@ export default function ({ children, links, items }: BlockProps) {
         {links && links.length > 0 && (
           <SectionFooter className="mt-8">
             {links.map(({ text, href }, i) => (
-              <Link
-                key={href}
-                href={href}
-                variant={i === 0 ? "default" : "ghost"}
-              >
+              <Link key={i} href={href} variant={i === 0 ? "default" : "ghost"}>
                 {text}
               </Link>
             ))}
           </SectionFooter>
         )}
         <div className="mt-16 flex flex-wrap justify-center gap-16">
-          {items?.map(({ title, description, icon }) => (
+          {items?.map(({ title, description, icon }, i) => (
             <Tile
               className="flex max-w-md min-w-2xs grow-1 basis-xs flex-col items-center"
-              key={title}
+              key={i}
               panel={false}
             >
               <TileContent className="flex flex-col items-center">
