@@ -1,51 +1,40 @@
-import * as React from "react"
+import type { BlockProps } from "@/lib/types"
+import { Link } from "@/components/ui/link"
+import {
+  Section,
+  SectionContainer,
+  SectionContent,
+  SectionFooter,
+} from "@/components/ui/section"
 
-import type { BlockSchema } from "@/schemas/block"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Writeup } from "@/components/ui/writeup"
-
-function Hero4({
-  className,
-  children,
-  buttons,
-  image,
-  ...props
-}: BlockSchema & React.ComponentProps<"section">) {
+export default function ({ children, links, image }: BlockProps) {
   return (
-    <section
-      className={cn(
-        "bg-background relative flex min-h-screen items-center py-32",
-        className
-      )}
-      {...props}
-    >
+    <Section className="flex min-h-screen items-center">
       {image && (
         <img
-          className="absolute top-0 left-0 size-full object-cover"
+          className="absolute inset-0 size-full mask-t-from-30% object-cover object-top"
           {...image}
         />
       )}
-      <div className="relative mx-auto flex w-full max-w-screen-xl flex-col justify-center px-4 lg:px-8">
-        {children && <Writeup size="7xl">{children}</Writeup>}
-        {buttons && (
-          <div className="inline-flex flex-wrap gap-2 not-first:mt-8">
-            {buttons.map(({ href, text, ...button }, i) => (
-              <Button
+      <SectionContainer className="relative flex flex-col items-center">
+        <SectionContent size="6xl" className="text-center">
+          {children}
+        </SectionContent>
+        {links && links.length > 0 && (
+          <SectionFooter className="mt-8">
+            {links.map(({ href, text }, i) => (
+              <Link
                 key={href}
-                variant={i === 0 ? "default" : "ghost"}
+                href={href}
+                variant={i === 0 ? "default" : "outline"}
                 size="lg"
-                asChild
-                {...button}
               >
-                <a href={href}>{text}</a>
-              </Button>
+                {text}
+              </Link>
             ))}
-          </div>
+          </SectionFooter>
         )}
-      </div>
-    </section>
+      </SectionContainer>
+    </Section>
   )
 }
-
-export { Hero4 }

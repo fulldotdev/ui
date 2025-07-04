@@ -1,40 +1,44 @@
-import * as React from "react"
+import type { BlockProps } from "@/lib/types"
+import { Link } from "@/components/ui/link"
+import {
+  Section,
+  SectionContainer,
+  SectionContent,
+  SectionFooter,
+  SectionSplit,
+} from "@/components/ui/section"
 
-import type { BlockSchema } from "@/schemas/block"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Writeup } from "@/components/ui/writeup"
-
-function Hero5({
-  className,
-  children,
-  buttons,
-  image,
-  ...props
-}: BlockSchema & React.ComponentProps<"section">) {
+export default function ({ children, links, image }: BlockProps) {
   return (
-    <section className={cn("relative w-full py-16", className)} {...props}>
-      <div className="mx-auto flex w-full max-w-screen-xl flex-col items-start px-4 lg:px-8">
-        {children && <Writeup size="6xl">{children}</Writeup>}
-        {buttons && (
-          <div className="inline-flex flex-wrap gap-2 not-first:mt-8">
-            {buttons.map(({ href, text, ...button }, i) => (
-              <Button
-                key={href}
-                variant={i === 0 ? "default" : "ghost"}
-                size="lg"
-                asChild
-                {...button}
-              >
-                <a href={href}>{text}</a>
-              </Button>
-            ))}
+    <Section className="overflow-hidden">
+      <SectionContainer>
+        <SectionSplit className="items-center">
+          <div className="flex flex-col items-start lg:col-span-2">
+            <SectionContent size="5xl">{children}</SectionContent>
+            {links && links.length > 0 && (
+              <SectionFooter className="mt-8">
+                {links.map(({ href, text, ...link }, i) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    variant={i === 0 ? "default" : "ghost"}
+                    size="lg"
+                    {...link}
+                  >
+                    {text}
+                  </Link>
+                ))}
+              </SectionFooter>
+            )}
           </div>
-        )}
-        {image && <img className="mt-16 rounded-lg" {...image} />}
-      </div>
-    </section>
+          {image && (
+            <img
+              className="mb-[20%] origin-top-left scale-120 rounded-lg lg:col-span-3"
+              {...image}
+            />
+          )}
+        </SectionSplit>
+      </SectionContainer>
+    </Section>
   )
 }
-
-export { Hero5 }

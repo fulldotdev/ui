@@ -1,30 +1,84 @@
 import { defineCollection } from "astro:content"
 import { glob } from "astro/loaders"
 
-import { layoutSchema } from "@/schemas/layout"
-import { pageSchema } from "@/schemas/page"
-import { sectionSchema } from "@/schemas/section"
+import { entrySchema, formSchema, itemSchema } from "@/lib/schemas"
 
 export const collections = {
+  articles: defineCollection({
+    loader: glob({
+      pattern: "**/[^_]*.{md,mdx}",
+      base: "src/content/articles",
+    }),
+    schema: entrySchema,
+  }),
+  events: defineCollection({
+    loader: glob({
+      pattern: "**/[^_]*.{md,mdx}",
+      base: "src/content/events",
+    }),
+    schema: entrySchema,
+  }),
+  forms: defineCollection({
+    loader: glob({
+      pattern: "**/[^_]*.{yml,yaml}",
+      base: "src/content/forms",
+    }),
+    schema: formSchema,
+  }),
+  jobs: defineCollection({
+    loader: glob({
+      pattern: "**/[^_]*.{md,mdx}",
+      base: "src/content/jobs",
+    }),
+    schema: entrySchema,
+  }),
+  locations: defineCollection({
+    loader: glob({
+      pattern: "**/[^_]*.{md,mdx}",
+      base: "src/content/locations",
+    }),
+    schema: entrySchema,
+  }),
   pages: defineCollection({
     loader: glob({
       pattern: "**/[^_]*.{md,mdx}",
-      base: `./src/content/pages`,
+      base: "src/content/pages",
     }),
-    schema: pageSchema,
+    schema: entrySchema,
   }),
-  sections: defineCollection({
+  persons: defineCollection({
     loader: glob({
       pattern: "**/[^_]*.{md,mdx}",
-      base: `./src/content/sections`,
+      base: "src/content/persons",
     }),
-    schema: sectionSchema,
+    schema: entrySchema,
   }),
-  layouts: defineCollection({
+  policies: defineCollection({
     loader: glob({
-      pattern: "**/[^_]*.{json,yml,yaml}",
-      base: `./src/content/layouts`,
+      pattern: "**/[^_]*.{md,mdx}",
+      base: "src/content/policies",
     }),
-    schema: layoutSchema,
+    schema: entrySchema,
+  }),
+  reviews: defineCollection({
+    loader: glob({
+      pattern: "**/[^_]*.{yml,yaml}",
+      base: "src/content/reviews",
+    }),
+    schema: itemSchema,
+  }),
+  services: defineCollection({
+    loader: glob({
+      pattern: "**/[^_]*.{md,mdx}",
+      base: "src/content/services",
+    }),
+    schema: entrySchema,
+  }),
+  docs: defineCollection({
+    loader: glob({
+      pattern: "**/[^_]*.{md,mdx}",
+      base: "src/content/docs",
+    }),
+    schema: entrySchema,
   }),
 }

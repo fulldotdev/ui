@@ -1,22 +1,38 @@
-import * as React from "react"
+import type { BlockProps } from "@/lib/types"
+import { Link } from "@/components/ui/link"
+import {
+  Section,
+  SectionContainer,
+  SectionContent,
+  SectionFooter,
+  SectionSplit,
+} from "@/components/ui/section"
 
-import type { BlockSchema } from "@/schemas/block"
-import { cn } from "@/lib/utils"
-import { Prose } from "@/components/ui/prose"
-
-function Content1({
-  className,
-  content,
-  children,
-  ...props
-}: BlockSchema & React.ComponentProps<"section">) {
+export default function ({ children, links, image, reverse }: BlockProps) {
   return (
-    <section className={cn("relative w-full py-16", className)} {...props}>
-      <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center px-4 lg:px-8">
-        <Prose>{children}</Prose>
-      </div>
-    </section>
+    <Section>
+      <SectionContainer>
+        <SectionSplit className="items-center" reverse={reverse}>
+          <div className="flex flex-col items-start">
+            {children && <SectionContent size="4xl">{children}</SectionContent>}
+            {links && links.length > 0 && (
+              <SectionFooter className="not-first:mt-6">
+                {links?.map(({ text, href, ...link }, i) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    variant={i === 0 ? "default" : "ghost"}
+                    {...link}
+                  >
+                    {text}
+                  </Link>
+                ))}
+              </SectionFooter>
+            )}
+          </div>
+          {image && <img className="rounded-lg" {...image} />}
+        </SectionSplit>
+      </SectionContainer>
+    </Section>
   )
 }
-
-export { Content1 }

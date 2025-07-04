@@ -1,0 +1,96 @@
+---
+import site from "@/data/site.json"
+import { Font } from "astro:assets"
+
+import { Block } from "@/components/block"
+
+import "@/styles/globals.css"
+
+import { SEO } from "astro-seo"
+
+import Banner1 from "@/blocks/banner-1"
+import Footer2 from "@/blocks/footer-2"
+import Header1 from "@/blocks/header-1"
+
+type Props = {
+  id?: string
+  title?: string
+  description?: string
+  image?: {
+    src?: string
+    alt?: string
+  }
+  head?: string
+  body?: string
+  css?: string
+  blocks?: any[]
+}
+
+let {
+  name,
+  title,
+  description,
+  image,
+  head,
+  body,
+  css,
+  blocks,
+  banner,
+  header,
+  footer,
+  logo,
+} = {
+  ...site,
+  ...Astro.props,
+}
+---
+
+<!doctype html>
+<html class="layout light" lang="nl">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <SEO
+      charset="UTF-8"
+      title={title}
+      description={description}
+      canonical={Astro.url.href.endsWith("/")
+        ? Astro.url.href
+        : Astro.url.href + "/"}
+      openGraph={{
+        basic: {
+          title: title || "",
+          image: Astro.url.origin + image?.src,
+          type: "website",
+          url: Astro.url.href,
+        },
+        image: {
+          url: Astro.url.origin + image?.src,
+          alt: image?.alt,
+        },
+        optional: {
+          description: description,
+          siteName: name,
+        },
+      }}
+    />
+    <Font cssVariable="--font-sans" preload />
+    <Font cssVariable="--font-serif" preload />
+    <Fragment set:html={head} />
+  </head>
+  <body
+    class="text-foreground bg-background group/body overscroll-none font-sans antialiased"
+  >
+    <div class="bg-background relative z-10 flex min-h-svh flex-col">
+      {banner && <Banner1 {...banner} />}
+      {header && <Header1 client:load {...header} logo={logo} />}
+      <main class="flex flex-1 flex-col">
+        <slot />
+        {blocks?.map((block) => <Block client:load {...block} />)}
+      </main>
+      {footer && <Footer2 {...footer} logo={logo} copyright={name} />}
+      <style set:html={css}></style>
+      <Fragment set:html={body} />
+    </div>
+  </body>
+</html>

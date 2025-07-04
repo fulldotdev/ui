@@ -1,60 +1,67 @@
-import * as React from "react"
 import { Check } from "lucide-react"
 
-import type { BlockSchema } from "@/schemas/block"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import type { BlockProps } from "@/lib/types"
 import { Heading } from "@/components/ui/heading"
+import { Icon } from "@/components/ui/icon"
+import { Link } from "@/components/ui/link"
 import { Paragraph } from "@/components/ui/paragraph"
-import { Writeup } from "@/components/ui/writeup"
+import {
+  Section,
+  SectionContainer,
+  SectionContent,
+  SectionFooter,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileTitle,
+} from "@/components/ui/tile"
 
-function Features1({
-  className,
-  children,
-  buttons,
-  items,
-  ...props
-}: BlockSchema & React.ComponentProps<"section">) {
+export default function ({ children, links, items }: BlockProps) {
   return (
-    <section className={cn("relative w-full py-16", className)} {...props}>
-      <div className="mx-auto flex w-full max-w-screen-xl flex-col px-4 lg:px-8">
+    <Section>
+      <SectionContainer className="flex flex-col items-center">
         {children && (
-          <Writeup className="max-w-3xl" size="4xl">
+          <SectionContent className="text-center" size="4xl">
             {children}
-          </Writeup>
+          </SectionContent>
         )}
-        {buttons && buttons.length > 0 && (
-          <div className="mt-8 inline-flex flex-wrap gap-2">
-            {buttons.map(({ text, href, ...button }, i) => (
-              <Button
+        {links && links.length > 0 && (
+          <SectionFooter className="mt-8">
+            {links.map(({ text, href }, i) => (
+              <Link
                 key={href}
+                href={href}
                 variant={i === 0 ? "default" : "ghost"}
-                asChild
-                {...button}
               >
-                <a href={href}>{text}</a>
-              </Button>
+                {text}
+              </Link>
             ))}
-          </div>
+          </SectionFooter>
         )}
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-16 not-first:mt-16">
-          {items?.map(({ title, description }) => (
-            <div key={title} className="flex max-w-md flex-col">
-              <div className="bg-muted text-muted-foreground inline-flex size-9 items-center justify-center rounded-md">
-                <Check className="text-primary" />
-              </div>
-              <Heading className="mt-4" size="lg" as="h3">
-                {title}
-              </Heading>
-              {description && (
-                <Paragraph className="mt-2">{description}</Paragraph>
-              )}
-            </div>
+        <div className="mt-16 flex flex-wrap justify-center gap-16">
+          {items?.map(({ title, description, icon }) => (
+            <Tile
+              className="flex max-w-md min-w-2xs grow-1 basis-xs flex-col items-center"
+              key={title}
+              panel={false}
+            >
+              <TileContent className="flex flex-col items-center">
+                {icon && <Icon className="text-primary" name={icon} />}
+                <TileTitle className="mt-3 text-center text-lg">
+                  {title}
+                </TileTitle>
+                {description && (
+                  <TileDescription className="mt-2 text-center text-base/7">
+                    {description}
+                  </TileDescription>
+                )}
+              </TileContent>
+            </Tile>
           ))}
         </div>
-      </div>
-    </section>
+      </SectionContainer>
+    </Section>
   )
 }
-
-export { Features1 }

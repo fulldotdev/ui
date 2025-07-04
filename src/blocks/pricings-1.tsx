@@ -1,61 +1,118 @@
-import * as React from "react"
-import { Check } from "lucide-react"
+import { useState } from "react"
+import { Check, X } from "lucide-react"
 
-import type { BlockSchema } from "@/schemas/block"
-import { cn, money } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Heading } from "@/components/ui/heading"
+import type { BlockProps } from "@/lib/types"
+import { money } from "@/lib/utils"
+import { Link } from "@/components/ui/link"
 import { List, ListItem } from "@/components/ui/list"
 import { Paragraph } from "@/components/ui/paragraph"
-import { Writeup } from "@/components/ui/writeup"
+import {
+  Section,
+  SectionContainer,
+  SectionContent,
+  SectionGrid,
+} from "@/components/ui/section"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Tile,
+  TileContent,
+  TileFooter,
+  TileTagline,
+  TileTitle,
+} from "@/components/ui/tile"
 
-function Pricings1({
-  className,
-  children,
-  items,
-  ...props
-}: BlockSchema & React.ComponentProps<"section">) {
+export default function ({ children, items }: BlockProps) {
+  const [duration, setDuration] = useState<string>("month")
+  const hasPrices = items?.some((item) => "prices" in item)
   return (
-    <section className={cn("relative w-full py-16", className)} {...props}>
-      <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">
-        <div className="flex flex-col">
-          {children && <Writeup size="4xl">{children}</Writeup>}
-          <div className="grid grid-cols-1 gap-x-8 gap-y-8 not-first:mt-16 md:grid-cols-2 lg:grid-cols-3">
-            {items?.map(({ title, description, price, list, button }) => (
-              <div className="flex flex-col rounded-md border p-8" key={title}>
-                <Heading as="h3" size="xl">
-                  {title}
-                </Heading>
-                {description && (
-                  <Paragraph className="mt-3">{description}</Paragraph>
-                )}
-                {price && (
-                  <div className="mt-4 text-2xl font-medium">
-                    {money(price)}
-                  </div>
-                )}
-                {list && list.length > 0 && (
-                  <List className="mt-6 text-sm">
-                    {list.map((item) => (
-                      <ListItem key={item}>
-                        <Check className="text-primary" />
-                        {item}
-                      </ListItem>
-                    ))}
-                  </List>
-                )}
-                {button && (
-                  <Button className="mt-8" asChild>
-                    <a href={button.href}>{button.text}</a>
-                  </Button>
-                )}
-              </div>
-            ))}
-          </div>
+    <Section>
+      <SectionContainer className="flex flex-col">
+        <div className="flex flex-col sm:flex-row sm:justify-between">
+          {children && <SectionContent size="4xl">{children}</SectionContent>}
+          {hasPrices && (
+            <Select
+              value={duration}
+              onValueChange={(value) => setDuration(value)}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="month">Maand abonnement</SelectItem>
+                <SelectItem value="year">Jaarlijks abonnement</SelectItem>
+                <SelectItem value="twoyears">2 jaarlijks abonnement</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
         </div>
-      </div>
-    </section>
+        <SectionGrid className="not-first:mt-12">
+          {items?.map(
+            ({
+              tagline,
+              title,
+              description,
+              price,
+              prices,
+              unit,
+              list,
+              links,
+              icon = "check",
+            }) => (
+              <Tile key={title} className="justify-between">
+                <TileContent>
+                  {tagline && (
+                    <TileTagline className="text-sm">{tagline}</TileTagline>
+                  )}
+                  <TileTitle>{title}</TileTitle>
+                  {description && <Paragraph>{description}</Paragraph>}
+                  {(price || prices?.[duration]) && (
+                    <div className="mt-4">
+                      <span className="text-2xl font-medium">
+                        {money(prices?.[duration] || price)}
+                      </span>
+                      {unit && <span className="text-sm">/ {unit}</span>}
+                    </div>
+                  )}
+                  {list && list.length > 0 && (
+                    <List className="mt-6 text-sm">
+                      {list.map((item) => (
+                        <ListItem key={item}>
+                          {icon === "check" && (
+                            <Check className="text-primary" />
+                          )}
+                          {icon === "cross" && (
+                            <X className="text-muted-foreground" />
+                          )}
+                          {item}
+                        </ListItem>
+                      ))}
+                    </List>
+                  )}
+                </TileContent>
+                {links && links.length > 0 && (
+                  <TileFooter className="flex flex-col gap-2">
+                    {links.map(({ href, text }, id) => (
+                      <Link
+                        key={href}
+                        href={href}
+                        variant={id === 0 ? "default" : "outline"}
+                      >
+                        {text}
+                      </Link>
+                    ))}
+                  </TileFooter>
+                )}
+              </Tile>
+            )
+          )}
+        </SectionGrid>
+      </SectionContainer>
+    </Section>
   )
 }
-
-export { Pricings1 }

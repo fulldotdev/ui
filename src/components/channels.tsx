@@ -1,6 +1,7 @@
 import { Mail, MapPin, Phone } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { Link } from "@/components/ui/link"
 
 interface Props extends React.ComponentProps<"div"> {
   phone?: string
@@ -11,38 +12,38 @@ interface Props extends React.ComponentProps<"div"> {
 function Channels({ phone, email, address, className, ...props }: Props) {
   return phone || email || address ? (
     <div
-      className={cn(
-        "text-muted-foreground flex flex-col items-start gap-5 text-sm",
-        className
-      )}
+      className={cn("flex flex-col items-start text-sm", className)}
       {...props}
     >
       {phone ? (
-        <a
+        <Link
+          className="text-foreground !px-0"
           href={`tel:${phone}`}
-          className="hover:text-foreground flex items-start gap-2"
+          variant="link"
         >
           <Phone className="size-4" />
           <span className="leading-4">{phone}</span>
-        </a>
+        </Link>
       ) : null}
       {email ? (
-        <a
+        <Link
+          className="text-foreground !px-0"
+          variant="link"
           href={`mailto:${email}`}
-          className="hover:text-foreground flex items-start gap-2"
         >
           <Mail className="size-4" />
           <span className="leading-4">{email}</span>
-        </a>
+        </Link>
       ) : null}
       {address ? (
-        <a
+        <Link
+          className="text-foreground !px-0"
+          variant="link"
           href={`https://www.google.com/maps/search/?api=1&query=${address}`}
-          className="hover:text-foreground flex items-start gap-2"
         >
           <MapPin className="size-4" />
           <span className="leading-4">{address}</span>
-        </a>
+        </Link>
       ) : null}
     </div>
   ) : null

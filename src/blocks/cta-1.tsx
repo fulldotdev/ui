@@ -1,42 +1,38 @@
-import * as React from "react"
+import type { BlockProps } from "@/lib/types"
+import { Link } from "@/components/ui/link"
+import {
+  Section,
+  SectionContainer,
+  SectionContent,
+  SectionFooter,
+} from "@/components/ui/section"
 
-import type { BlockSchema } from "@/schemas/block"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Writeup } from "@/components/ui/writeup"
-
-function Cta1({
-  className,
-  children,
-  buttons,
-  ...props
-}: BlockSchema & React.ComponentProps<"section">) {
+export default function ({ children, links }: BlockProps) {
   return (
-    <section className={cn("relative w-full py-16", className)} {...props}>
-      <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">
-        <div className="bg-card flex flex-col items-center rounded-lg border px-4 py-16 lg:px-8">
-          <Writeup className="text-center" size="5xl">
-            {children}
-          </Writeup>
-          {buttons && (
-            <div className="mt-10 inline-flex flex-wrap justify-center gap-2">
-              {buttons.map(({ href, text, ...button }, i) => (
-                <Button
+    <Section>
+      <SectionContainer>
+        <div className="bg-card text-card-foreground flex flex-col items-center rounded-lg border px-4 py-16 lg:px-8">
+          {children && (
+            <SectionContent className="text-center" size="5xl">
+              {children}
+            </SectionContent>
+          )}
+          {links && (
+            <SectionFooter className="mt-10 justify-center">
+              {links?.map(({ href, text }, i) => (
+                <Link
                   key={href}
+                  href={href}
                   variant={i === 0 ? "default" : "ghost"}
                   size="lg"
-                  asChild
-                  {...button}
                 >
-                  <a href={href}>{text}</a>
-                </Button>
+                  {text}
+                </Link>
               ))}
-            </div>
+            </SectionFooter>
           )}
         </div>
-      </div>
-    </section>
+      </SectionContainer>
+    </Section>
   )
 }
-
-export { Cta1 }

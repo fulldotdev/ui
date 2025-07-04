@@ -1,66 +1,56 @@
-import * as React from "react"
 import { Check } from "lucide-react"
 
-import type { BlockSchema } from "@/schemas/block"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Heading } from "@/components/ui/heading"
-import { Paragraph } from "@/components/ui/paragraph"
-import { Writeup } from "@/components/ui/writeup"
+import type { BlockProps } from "@/lib/types"
+import { Icon } from "@/components/ui/icon"
+import { Link } from "@/components/ui/link"
+import {
+  Section,
+  SectionContainer,
+  SectionContent,
+  SectionFooter,
+  SectionGrid,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileTitle,
+} from "@/components/ui/tile"
 
-function Features2({
-  className,
-  children,
-  buttons,
-  items,
-  ...props
-}: BlockSchema & React.ComponentProps<"section">) {
+export default function ({ children, links, items }: BlockProps) {
   return (
-    <section className={cn("relative w-full py-16", className)} {...props}>
-      <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center px-4 lg:px-8">
-        {children && (
-          <Writeup className="text-center" size="4xl">
-            {children}
-          </Writeup>
-        )}
-        {buttons && buttons.length > 0 && (
-          <div className="mt-8 inline-flex flex-wrap justify-center gap-2">
-            {buttons.map(({ text, href, ...button }, i) => (
-              <Button
+    <Section>
+      <SectionContainer>
+        {children && <SectionContent size="4xl">{children}</SectionContent>}
+        {links && links.length > 0 && (
+          <SectionFooter className="mt-8">
+            {links.map(({ text, href }, i) => (
+              <Link
                 key={href}
+                href={href}
                 variant={i === 0 ? "default" : "ghost"}
-                size="lg"
-                asChild
-                {...button}
               >
-                <a href={href}>{text}</a>
-              </Button>
+                {text}
+              </Link>
             ))}
-          </div>
+          </SectionFooter>
         )}
-        <div className="mt-16 flex flex-wrap justify-center gap-16">
-          {items?.map(({ title, description }) => (
-            <div
-              key={title}
-              className="flex max-w-md min-w-2xs grow-1 basis-xs flex-col items-center"
-            >
-              <div className="bg-muted text-muted-foreground inline-flex size-9 items-center justify-center rounded-md">
-                <Check className="text-primary" />
-              </div>
-              <Heading className="mt-4 text-center" size="xl" as="h3">
-                {title}
-              </Heading>
-              {description && (
-                <Paragraph className="mt-2 text-center">
-                  {description}
-                </Paragraph>
-              )}
-            </div>
+        <SectionGrid className="not-first:mt-16">
+          {items?.map(({ title, description, icon }) => (
+            <Tile key={title} panel={false}>
+              <TileContent>
+                {icon && <Icon name={icon} className="text-primary" />}
+                <TileTitle className="mt-3 text-lg">{title}</TileTitle>
+                {description && (
+                  <TileDescription className="mt-2 text-base/7">
+                    {description}
+                  </TileDescription>
+                )}
+              </TileContent>
+            </Tile>
           ))}
-        </div>
-      </div>
-    </section>
+        </SectionGrid>
+      </SectionContainer>
+    </Section>
   )
 }
-
-export { Features2 }

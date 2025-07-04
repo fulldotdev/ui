@@ -16,7 +16,7 @@ function Menu({ text, links, className, ...props }: Props) {
       className={cn("menu flex flex-col items-start gap-4", className)}
       {...props}
     >
-      <h6 className="text-foreground text-sm font-semibold">{text}</h6>
+      <h4 className="text-foreground text-sm font-semibold">{text}</h4>
       <menu className="flex w-full flex-col items-start gap-3">
         {links?.map(({ href, text }) => (
           <a

@@ -1,0 +1,69 @@
+---
+import Article from "@/layouts/article.astro"
+import Doc from "@/layouts/doc.astro"
+import Event from "@/layouts/event.astro"
+import Job from "@/layouts/job.astro"
+import Location from "@/layouts/location.astro"
+import Page from "@/layouts/page.astro"
+import Person from "@/layouts/person.astro"
+import Policy from "@/layouts/policy.astro"
+import { getCollection, render } from "astro:content"
+
+import { getHref } from "@/lib/get-href"
+import { transformEntry } from "@/lib/transform"
+
+export async function getStaticPaths() {
+  const collectionKeys = [
+    "articles",
+    "events",
+    "jobs",
+    "locations",
+    "pages",
+    "persons",
+    "policies",
+    "services",
+    "docs",
+  ] as const
+  const entries = await Promise.all(
+    collectionKeys.map(async (collectionKey) => {
+      const entries = await getCollection(collectionKey)
+      return entries.map((entry) => {
+        const href = getHref(entry)
+        if (href === undefined) return undefined
+        return {
+          params: {
+            entry: href === "/" ? undefined : href,
+          },
+          props: entry,
+        }
+      })
+    })
+  )
+  return entries.flat().filter((entry) => entry !== undefined)
+}
+
+const { Content } = await render(Astro.props)
+const { collection, id } = Astro.props
+
+const layouts = {
+  articles: Article,
+  events: Article,
+  jobs: Job,
+  locations: Location,
+  pages: Page,
+  persons: Person,
+  policies: Policy,
+  services: Page,
+  docs: Doc,
+}
+
+console.log(collection)
+
+const Layout = layouts[collection]
+
+const { data } = await transformEntry(Astro.props)
+---
+
+<Layout id={id} {...data}>
+  <Content />
+</Layout>

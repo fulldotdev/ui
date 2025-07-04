@@ -1,43 +1,34 @@
-import * as React from "react"
-
-import type { BlockSchema } from "@/schemas/block"
-import { cn } from "@/lib/utils"
+import type { BlockProps } from "@/lib/types"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Writeup } from "@/components/ui/writeup"
+import {
+  Section,
+  SectionContainer,
+  SectionContent,
+} from "@/components/ui/section"
 
-function Faqs1({
-  className,
-  children,
-  items,
-  ...props
-}: BlockSchema & React.ComponentProps<"section">) {
+export default function ({ children, items }: BlockProps) {
   return (
-    <section className={cn("relative w-full py-16", className)} {...props}>
-      <div className="mx-auto flex w-full max-w-screen-md flex-col px-4 md:px-12">
-        <Writeup size="4xl">{children}</Writeup>
+    <Section>
+      <SectionContainer className="max-w-screen-md lg:px-12">
+        {children && <SectionContent size="4xl">{children}</SectionContent>}
         <Accordion
           className="w-full max-w-2xl not-first:mt-16"
           type="single"
           collapsible
         >
-          {items?.map((item) => (
-            <AccordionItem
-              key={JSON.stringify(item)}
-              value={JSON.stringify(item)}
-            >
-              <AccordionTrigger>{item.title}</AccordionTrigger>
-              <AccordionContent>{item.description}</AccordionContent>
+          {items?.map(({ title, description }) => (
+            <AccordionItem key={title} value={title ?? ""}>
+              <AccordionTrigger>{title}</AccordionTrigger>
+              <AccordionContent>{description}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
-      </div>
-    </section>
+      </SectionContainer>
+    </Section>
   )
 }
-
-export { Faqs1 }

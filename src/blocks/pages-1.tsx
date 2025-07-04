@@ -1,46 +1,53 @@
-import * as React from "react"
+import type { BlockProps } from "@/lib/types"
+import { Link } from "@/components/ui/link"
+import {
+  Section,
+  SectionContainer,
+  SectionContent,
+  SectionFooter,
+  SectionGrid,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileImage,
+  TileTitle,
+} from "@/components/ui/tile"
 
-import type { BlockSchema } from "@/schemas/block"
-import { cn } from "@/lib/utils"
-import { Heading } from "@/components/ui/heading"
-import { Paragraph } from "@/components/ui/paragraph"
-import { Writeup } from "@/components/ui/writeup"
-
-function Pages1({
-  className,
-  children,
-  items,
-  ...props
-}: BlockSchema & React.ComponentProps<"section">) {
+export default function ({ children, links, items }: BlockProps) {
   return (
-    <section className={cn("relative w-full py-16", className)} {...props}>
-      <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">
-        <div className="flex flex-col">
-          {children && <Writeup size="4xl">{children}</Writeup>}
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-16 not-first:mt-16">
-            {items?.map(({ href, title, description, image }) => (
-              <a
+    <Section>
+      <SectionContainer>
+        {children && <SectionContent size="4xl">{children}</SectionContent>}
+        {links && links.length > 0 && (
+          <SectionFooter className="not-first:mt-8">
+            {links.map(({ href, text }, i) => (
+              <Link
                 key={href}
-                className="group flex max-w-xl flex-col"
                 href={href}
+                variant={i === 0 ? "default" : "ghost"}
+                size="lg"
               >
-                <img
-                  className="rounded-lg transition-opacity group-hover:opacity-75"
-                  {...image}
-                />
-                <Heading className="mt-5" size="lg" as="h3">
-                  {title}
-                </Heading>
-                {description && (
-                  <Paragraph className="mt-2">{description}</Paragraph>
-                )}
-              </a>
+                {text}
+              </Link>
             ))}
-          </div>
-        </div>
-      </div>
-    </section>
+          </SectionFooter>
+        )}
+        <SectionGrid className="not-first:mt-12">
+          {items?.map(({ title, description, image, href }) => (
+            <Tile href={href} key={title}>
+              <TileImage {...image} />
+              <TileContent>
+                <TileTitle>{title}</TileTitle>
+                {description && (
+                  <TileDescription>{description}</TileDescription>
+                )}
+              </TileContent>
+            </Tile>
+          ))}
+        </SectionGrid>
+      </SectionContainer>
+    </Section>
   )
 }
-
-export { Pages1 }

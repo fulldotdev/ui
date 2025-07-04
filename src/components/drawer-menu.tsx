@@ -26,6 +26,7 @@ function DrawerMenu({ items, className, ...props }: Props) {
     <DrawerRoot>
       <DrawerTrigger asChild>
         <Button
+          name="menu-button"
           className={cn("", className)}
           variant="ghost"
           size="icon"
