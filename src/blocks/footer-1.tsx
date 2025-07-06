@@ -1,10 +1,8 @@
 import type { BlockProps } from "@/lib/types"
+import { Channel } from "@/components/ui/channel"
 import { Logo, LogoImage } from "@/components/ui/logo"
-import { Paragraph } from "@/components/ui/paragraph"
 import { Section, SectionContainer } from "@/components/ui/section"
 import { Social } from "@/components/ui/social"
-import { Channels } from "@/components/channels"
-import { Menu } from "@/components/menu"
 
 export default function ({
   logo,
@@ -28,14 +26,17 @@ export default function ({
               </Logo>
             )}
             {description && (
-              <Paragraph
-                className="text-muted-foreground not-first:mt-3"
-                size="sm"
-              >
+              <p className="text-muted-foreground text-sm not-first:mt-3">
                 {description}
-              </Paragraph>
+              </p>
             )}
-            {channels && <Channels className="not-first:mt-6" {...channels} />}
+            {channels && channels.length > 0 && (
+              <div className="flex flex-col items-start gap-3 not-first:mt-8">
+                {channels.map((channel, i) => (
+                  <Channel key={i} {...channel} />
+                ))}
+              </div>
+            )}{" "}
             <div className="mt-6 flex gap-4">
               {socials?.map((social, i) => (
                 <Social
@@ -87,11 +88,22 @@ export default function ({
             </div>
           )}
           {menus?.map((menu, i) => (
-            <Menu
-              className="col-span-2 basis-[300px] text-sm"
-              key={i}
-              {...menu}
-            />
+            <div className="menu flex flex-col items-start gap-4" key={i}>
+              <h4 className="text-foreground text-sm font-semibold">
+                {menu.text}
+              </h4>
+              <menu className="flex w-full flex-col items-start gap-3">
+                {menu.links?.map(({ href, text }) => (
+                  <a
+                    className="text-muted-foreground hover:text-foreground font-normal transition-colors"
+                    key={href}
+                    href={href}
+                  >
+                    {text}
+                  </a>
+                ))}
+              </menu>
+            </div>
           ))}
         </div>
         <div className="flex flex-col flex-wrap items-start justify-between gap-x-6 gap-y-4 border-t py-6 md:flex-row md:items-center">

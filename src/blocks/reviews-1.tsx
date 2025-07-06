@@ -1,12 +1,17 @@
 import type { BlockProps } from "@/lib/types"
-import { Paragraph } from "@/components/ui/paragraph"
 import {
   Section,
   SectionContainer,
   SectionContent,
   SectionMasonry,
 } from "@/components/ui/section"
-import { Tile, TileContent, TileImage, TileTitle } from "@/components/ui/tile"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileImage,
+  TileTitle,
+} from "@/components/ui/tile"
 import { Rating } from "@/components/rating"
 
 export default function ({ children, items }: BlockProps) {
@@ -31,7 +36,9 @@ export default function ({ children, items }: BlockProps) {
                     <TileTitle>{title}</TileTitle>
                   </div>
                 </div>
-                {description && <Paragraph>{description}</Paragraph>}
+                {description && (
+                  <TileDescription>{description}</TileDescription>
+                )}
               </TileContent>
             </Tile>
           ))}

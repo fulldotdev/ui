@@ -1,9 +1,9 @@
 import type { BlockProps } from "@/lib/types"
 import { Link } from "@/components/ui/link"
-import { Prose } from "@/components/ui/prose"
 import {
   Section,
   SectionContainer,
+  SectionContent,
   SectionSplit,
 } from "@/components/ui/section"
 import { Social } from "@/components/ui/social"
@@ -50,7 +50,7 @@ export default function ({
               ))}
             </TileFooter>
           </Tile>
-          <Prose>{children}</Prose>
+          <SectionContent>{children}</SectionContent>
         </SectionSplit>
       </SectionContainer>
     </Section>

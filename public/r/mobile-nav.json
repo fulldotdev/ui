@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "mobile-nav",
+  "type": "registry:ui",
+  "registryDependencies": [
+    "popover"
+  ],
+  "files": [
+    {
+      "path": "src/components/mobile-nav.tsx",
+      "content": "import * as React from \"react\"\nimport { Menu, X } from \"lucide-react\"\n\nimport {\n  Popover,\n  PopoverContent,\n  PopoverTrigger,\n} from \"@/components/ui/popover\"\n\nfunction MobileMenu({\n  items,\n  ...props\n}: React.ComponentProps<typeof PopoverTrigger> & {\n  items?: {\n    text?: string\n    href?: string\n    links?: {\n      text?: string\n      href?: string\n    }[]\n  }[]\n}) {\n  const [open, setOpen] = React.useState(false)\n\n  return (\n    <Popover open={open} onOpenChange={setOpen} {...props}>\n      <PopoverTrigger {...props}>\n        {open ? <X className=\"!size-6\" /> : <Menu className=\"!size-6\" />}\n      </PopoverTrigger>\n      <PopoverContent\n        className=\"h-[calc(100vh-56px)] w-screen overflow-y-auto rounded-none border-none p-0 shadow-none\"\n        align=\"start\"\n        side=\"bottom\"\n        alignOffset={-16}\n        sideOffset={14}\n      >\n        <div className=\"mx-auto flex h-auto max-w-screen-xl flex-col gap-4 overflow-auto px-4 py-8 lg:px-8\">\n          {items?.map((item, i) =>\n            item.links ? (\n              <div\n                className=\"flex flex-col items-start gap-4 not-first:mt-4\"\n                key={i}\n              >\n                <div className=\"text-muted-foreground text-sm font-medium\">\n                  {item.text}\n                </div>\n                {item.links?.map((link, i) => (\n                  <a\n                    key={i}\n                    className=\"text-xl font-medium hover:underline\"\n                    {...link}\n                  >\n                    {link.text}\n                  </a>\n                ))}\n              </div>\n            ) : (\n              <a\n                className=\"text-xl font-medium hover:underline\"\n                key={i}\n                {...item}\n              >\n                {item.text}\n              </a>\n            )\n          )}\n        </div>\n      </PopoverContent>\n    </Popover>\n  )\n}\n\nexport { MobileMenu }\n",
+      "type": "registry:ui"
+    }
+  ]
+}

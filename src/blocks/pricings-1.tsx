@@ -5,7 +5,6 @@ import type { BlockProps } from "@/lib/types"
 import { money } from "@/lib/utils"
 import { Link } from "@/components/ui/link"
 import { List, ListItem } from "@/components/ui/list"
-import { Paragraph } from "@/components/ui/paragraph"
 import {
   Section,
   SectionContainer,
@@ -73,7 +72,7 @@ export default function ({ children, items }: BlockProps) {
                     <TileTagline className="text-sm">{tagline}</TileTagline>
                   )}
                   <TileTitle>{title}</TileTitle>
-                  {description && <Paragraph>{description}</Paragraph>}
+                  {description && <p className="text-sm">{description}</p>}
                   {(price || prices?.[duration as keyof typeof prices]) && (
                     <div className="mt-4">
                       <span className="text-2xl font-medium">

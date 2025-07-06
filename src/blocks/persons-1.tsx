@@ -1,13 +1,18 @@
 import type { BlockProps } from "@/lib/types"
-import { Section, SectionContainer } from "@/components/ui/section"
+import {
+  Section,
+  SectionContainer,
+  SectionContent,
+} from "@/components/ui/section"
 import { Tile, TileImage, TileTagline, TileTitle } from "@/components/ui/tile"
-import { Writeup } from "@/components/ui/writeup"
 
 export default function ({ children, items }: BlockProps) {
   return (
     <Section>
       <SectionContainer className="flex flex-col items-center">
-        {children && <Writeup className="text-center">{children}</Writeup>}
+        {children && (
+          <SectionContent className="text-center">{children}</SectionContent>
+        )}
         <div className="flex flex-wrap justify-center gap-16 not-first:mt-16">
           {items?.map(({ href, image, title, tagline }, i) => (
             <Tile
