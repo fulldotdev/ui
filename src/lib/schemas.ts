@@ -26,7 +26,7 @@ const linkSchema = z
     href: z.string(),
     text: z.string(),
     variant: z.enum(["default", "outline", "secondary", "ghost", "link"]),
-    size: z.enum(["default", "sm", "lg", "xl", "icon"]),
+    size: z.enum(["default", "sm", "lg", "icon"]),
   })
   .partial()
   .strict()
