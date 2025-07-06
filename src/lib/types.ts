@@ -1,4 +1,12 @@
-import type { transformBlock, transformEntry } from "@/lib/transform"
+import config from "fulldev.config.json"
+import { z } from "zod"
 
-export type EntryProps = Awaited<ReturnType<typeof transformEntry>>
-export type BlockProps = Awaited<ReturnType<typeof transformBlock>>
+import { blockSchema, formSchema } from "@/lib/schemas"
+
+export type BlockSchema = z.infer<typeof blockSchema>
+export type BlockProps = Omit<
+  z.infer<typeof blockSchema>,
+  keyof typeof config | "form"
+> & {
+  form?: z.infer<typeof formSchema>
+}

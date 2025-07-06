@@ -7,8 +7,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-import { Button } from "./ui/button"
-
 function MobileMenu({
   items,
   ...props

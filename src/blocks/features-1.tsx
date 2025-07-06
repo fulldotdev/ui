@@ -1,10 +1,6 @@
-import { Check } from "lucide-react"
-
 import type { BlockProps } from "@/lib/types"
-import { Heading } from "@/components/ui/heading"
 import { Icon } from "@/components/ui/icon"
 import { Link } from "@/components/ui/link"
-import { Paragraph } from "@/components/ui/paragraph"
 import {
   Section,
   SectionContainer,

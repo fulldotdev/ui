@@ -1,0 +1,36 @@
+---
+import config from "fulldev.config.json"
+import { keys, omit } from "remeda"
+
+import { getItem } from "@/lib/get-item"
+import type { BlockSchema } from "@/lib/types"
+import { Block as ReactBlock } from "@/components/block"
+
+type Props = BlockSchema
+
+const { form, ...props } = Astro.props
+const collectionKeys = keys(config)
+
+// fetch all paths and put into the items array
+const items = (
+  await Promise.all(
+    collectionKeys.map(async (collectionKey) => {
+      const paths = props[collectionKey]
+      if (!paths) return undefined
+      return Promise.all(paths.map(getItem))
+    })
+  )
+)
+  .flat()
+  .filter((item) => item !== undefined)
+
+// get form by path
+const formItem = form && getItem(form)
+---
+
+<ReactBlock
+  client:load
+  items={items}
+  form={formItem}
+  {...omit(props, collectionKeys)}
+/>

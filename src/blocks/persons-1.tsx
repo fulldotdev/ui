@@ -1,7 +1,5 @@
 import type { BlockProps } from "@/lib/types"
-import { Heading } from "@/components/ui/heading"
 import { Section, SectionContainer } from "@/components/ui/section"
-import { Social } from "@/components/ui/social"
 import { Tile, TileImage, TileTagline, TileTitle } from "@/components/ui/tile"
 import { Writeup } from "@/components/ui/writeup"
 

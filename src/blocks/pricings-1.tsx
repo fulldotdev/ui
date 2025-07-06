@@ -74,10 +74,14 @@ export default function ({ children, items }: BlockProps) {
                   )}
                   <TileTitle>{title}</TileTitle>
                   {description && <Paragraph>{description}</Paragraph>}
-                  {(price || prices?.[duration]) && (
+                  {(price || prices?.[duration as keyof typeof prices]) && (
                     <div className="mt-4">
                       <span className="text-2xl font-medium">
-                        {money(prices?.[duration] || price)}
+                        {money(
+                          prices?.[duration as keyof typeof prices] ||
+                            price ||
+                            0
+                        )}
                       </span>
                       {unit && <span className="text-sm">/ {unit}</span>}
                     </div>
@@ -100,20 +104,15 @@ export default function ({ children, items }: BlockProps) {
                 </TileContent>
                 {links && links.length > 0 && (
                   <TileFooter className="flex flex-col gap-2">
-                    {links.map(
-                      (
-                        { href, text }: { href: string; text: string },
-                        j: number
-                      ) => (
-                        <Link
-                          key={j}
-                          href={href}
-                          variant={j === 0 ? "default" : "outline"}
-                        >
-                          {text}
-                        </Link>
-                      )
-                    )}
+                    {links.map(({ href, text }, i) => (
+                      <Link
+                        key={i}
+                        href={href}
+                        variant={i === 0 ? "default" : "outline"}
+                      >
+                        {text}
+                      </Link>
+                    ))}
                   </TileFooter>
                 )}
               </Tile>

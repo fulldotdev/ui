@@ -1,14 +1,15 @@
-import { slugs } from "@/content.config.ts"
 import type { CollectionEntry, CollectionKey } from "astro:content"
+import config from "fulldev.config.json"
 
 export function getHref({
   collection,
   id,
   data,
 }: CollectionEntry<CollectionKey>) {
-  if (data.draft) return undefined
+  if ("draft" in data && data.draft) return undefined
 
-  const slug = slugs[collection]
+  const slug =
+    collection in config && config[collection as keyof typeof config].slug
   if (slug === undefined) return undefined
 
   const href = `/${slug}/${id}/`

@@ -1,5 +1,4 @@
 import type { BlockProps } from "@/lib/types"
-import { Heading } from "@/components/ui/heading"
 import { Link } from "@/components/ui/link"
 import { Prose } from "@/components/ui/prose"
 import {
@@ -16,7 +15,6 @@ import {
   TileImage,
   TileTitle,
 } from "@/components/ui/tile"
-import { AutoForm } from "@/components/auto-form"
 
 export default function ({
   children,
@@ -25,7 +23,6 @@ export default function ({
   image,
   socials,
   links,
-  form,
 }: BlockProps) {
   return (
     <Section>

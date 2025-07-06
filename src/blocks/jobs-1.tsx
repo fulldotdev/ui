@@ -1,5 +1,3 @@
-import { Check } from "lucide-react"
-
 import type { BlockProps } from "@/lib/types"
 import { Link } from "@/components/ui/link"
 import { List, ListItem } from "@/components/ui/list"

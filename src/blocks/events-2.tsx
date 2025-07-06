@@ -33,21 +33,16 @@ export default function ({ children, items }: BlockProps) {
                 </TileContent>
                 {links && links.length > 0 && (
                   <TileFooter>
-                    {links.map(
-                      (
-                        { href, text }: { href: string; text: string },
-                        j: number
-                      ) => (
-                        <Link
-                          key={j}
-                          href={href}
-                          variant={j === 0 ? "outline" : "ghost"}
-                          size="sm"
-                        >
-                          {text}
-                        </Link>
-                      )
-                    )}
+                    {links.map(({ href, text }, i) => (
+                      <Link
+                        key={i}
+                        href={href}
+                        variant={i === 0 ? "outline" : "ghost"}
+                        size="sm"
+                      >
+                        {text}
+                      </Link>
+                    ))}
                   </TileFooter>
                 )}
               </Tile>

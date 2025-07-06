@@ -1,14 +1,8 @@
-import { reference, z, type CollectionKey } from "astro:content"
+import { z } from "astro:content"
+import config from "fulldev.config.json"
+import { mapValues } from "remeda"
 
-const pathSchema = <C extends CollectionKey>(collection: C) => {
-  return z.preprocess((value) => {
-    if (typeof value !== "string") return value
-    const path = value.split(`/${collection}/`)[1]
-    if (!path) return value
-    const id = path.split(".")[0]
-    return id
-  }, reference(collection))
-}
+export const pathSchema = z.string()
 
 const channelSchema = z
   .object({
@@ -124,6 +118,7 @@ export const itemSchema = z
     price: z.number(),
     prices: subscriptionSchema,
     icon: z.enum(["check", "cross"]),
+    hours: hoursSchema,
   })
   .partial()
   .strict()
@@ -132,27 +127,10 @@ export const blockSchema = itemSchema
   .extend({
     block: z.string(),
     items: itemSchema.array(),
-    hours: hoursSchema,
     // Collection references
-    articles: pathSchema("articles").array(),
-    _articles: z.string(),
-    events: pathSchema("events").array(),
-    _events: z.string(),
-    form: pathSchema("forms"),
-    jobs: pathSchema("jobs").array(),
-    _jobs: z.string(),
-    locations: pathSchema("locations").array(),
-    _locations: z.string(),
-    pages: pathSchema("pages").array(),
-    _pages: z.string(),
-    persons: pathSchema("persons").array(),
-    _persons: z.string(),
-    policies: pathSchema("policies").array(),
-    _policies: z.string(),
-    reviews: pathSchema("reviews").array(),
-    _reviews: z.string(),
-    services: pathSchema("services").array(),
-    _services: z.string(),
+    entries: pathSchema.array(),
+    form: pathSchema,
+    ...mapValues(config, () => pathSchema.array()),
   })
   .partial()
   .strict()
@@ -165,7 +143,3 @@ export const entrySchema = blockSchema
   })
   .partial()
   .strict()
-
-export type ItemSchema = z.infer<typeof itemSchema>
-export type BlockSchema = z.infer<typeof blockSchema>
-export type EntrySchema = z.infer<typeof entrySchema>
