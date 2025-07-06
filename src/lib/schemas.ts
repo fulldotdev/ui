@@ -128,7 +128,7 @@ export const blockSchema = itemSchema
     block: z.string(),
     items: itemSchema.array(),
     // Collection references
-    entries: pathSchema.array(),
+    collection: z.string(),
     form: pathSchema,
     ...mapValues(config, () => pathSchema.array()),
   })

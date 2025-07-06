@@ -31,12 +31,12 @@ export default function ({
               </p>
             )}
             {channels && channels.length > 0 && (
-              <div className="flex flex-col items-start gap-3 not-first:mt-8">
+              <div className="-ml-2.5 flex flex-col items-start not-first:mt-4">
                 {channels.map((channel, i) => (
-                  <Channel key={i} {...channel} />
+                  <Channel variant="ghost" key={i} {...channel} />
                 ))}
               </div>
-            )}{" "}
+            )}
             <div className="mt-6 flex gap-4">
               {socials?.map((social, i) => (
                 <Social
@@ -95,7 +95,7 @@ export default function ({
               <menu className="flex w-full flex-col items-start gap-3">
                 {menu.links?.map(({ href, text }) => (
                   <a
-                    className="text-muted-foreground hover:text-foreground font-normal transition-colors"
+                    className="text-muted-foreground hover:text-foreground text-sm font-normal transition-colors"
                     key={href}
                     href={href}
                   >

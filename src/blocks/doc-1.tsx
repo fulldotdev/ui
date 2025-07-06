@@ -17,8 +17,8 @@ export default function ({ menus, title, description, children }: BlockProps) {
           items={menus}
         />
         <SectionContent className="mx-auto py-12">
-          <SectionTitle>{title}</SectionTitle>
-          <SectionDescription className="!text-lg">
+          <SectionTitle className="mb-4">{title}</SectionTitle>
+          <SectionDescription className="mb-12 !text-lg">
             {description}
           </SectionDescription>
           {children}

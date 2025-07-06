@@ -11,11 +11,11 @@ export default function ({ children, logos }: BlockProps) {
     <Section>
       <SectionContainer className="flex flex-col items-center">
         {children && (
-          <SectionContent className="text-center" size="xl">
+          <SectionContent className="text-center" size="sm">
             {children}
           </SectionContent>
         )}
-        <div className="mt-16 flex flex-wrap justify-center gap-8">
+        <div className="flex flex-wrap justify-center gap-8 not-first:mt-8">
           {logos?.map(({ src, alt, title }, i) => (
             <Logo key={i}>
               {src && <LogoImage src={src} alt={alt} title={title} />}

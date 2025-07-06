@@ -12,7 +12,10 @@ export default function ({ children, links }: BlockProps) {
     <Section className="bg-primary py-24">
       <SectionContainer className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
         {children && (
-          <SectionContent className="**:!text-primary-foreground" size="xl">
+          <SectionContent
+            className="**:!text-primary-foreground max-w-2xl"
+            size="xl"
+          >
             {children}
           </SectionContent>
         )}

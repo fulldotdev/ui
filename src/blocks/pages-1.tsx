@@ -37,7 +37,7 @@ export default function ({ children, links, items }: BlockProps) {
         <SectionGrid className="not-first:mt-12">
           {items?.map(({ title, description, image, href }, i) => (
             <Tile className="gap-2" key={i} href={href}>
-              <TileImage {...image} />
+              <TileImage className="aspect-4/3 object-cover" {...image} />
               <TileContent>
                 <TileTitle>{title}</TileTitle>
                 {description && (

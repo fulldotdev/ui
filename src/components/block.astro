@@ -1,14 +1,17 @@
 ---
+import { getCollection } from "astro:content"
+import type { CollectionKey } from "astro:content"
 import config from "fulldev.config.json"
 import { keys, omit } from "remeda"
 
+import { getHref } from "@/lib/get-href"
 import { getItem } from "@/lib/get-item"
 import type { BlockSchema } from "@/lib/types"
 import { Block as ReactBlock } from "@/components/block"
 
 type Props = BlockSchema
 
-const { form, ...props } = Astro.props
+const { form, children, ...props } = Astro.props
 const collectionKeys = keys(config)
 
 // fetch all paths and put into the items array
@@ -24,13 +27,26 @@ const items = (
   .flat()
   .filter((item) => item !== undefined)
 
+// get all items in a collection
+const collection = (await getCollection(props.collection as CollectionKey)).map(
+  (entry) => ({
+    href: getHref(entry),
+    ...entry.data,
+  })
+)
+
 // get form by path
 const formItem = form && getItem(form)
+
+console.log(props)
 ---
 
 <ReactBlock
   client:load
-  items={items}
+  items={[...items, ...collection]}
   form={formItem}
   {...omit(props, collectionKeys)}
-/>
+>
+  <slot />
+  <Fragment set:html={children} />
+</ReactBlock>

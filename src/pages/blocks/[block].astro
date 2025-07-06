@@ -1,0 +1,232 @@
+---
+import fs from "fs/promises"
+import { Code } from "astro:components"
+
+import type { BlockProps } from "@/lib/types"
+import { Section, SectionContainer } from "@/components/ui/section"
+import { Block as BlockComponent } from "@/components/block.tsx"
+import Layout from "@/components/layout.astro"
+import Block1 from "@/blocks/block-1"
+
+export async function getStaticPaths() {
+  const blockFiles = import.meta.glob("/src/blocks/*.tsx")
+
+  const uniqueBlockCategories = [
+    ...new Set(
+      Object.keys(blockFiles)
+        .map((file) => {
+          const fileName = file.split("/").pop()?.split(".")[0]
+          return fileName?.split("-")[0]
+        })
+        .filter(Boolean)
+    ),
+  ]
+
+  return uniqueBlockCategories.map((category) => {
+    const blocksInCategory = Object.keys(blockFiles)
+      .filter((file) => file.includes(`${category}-`))
+      .map((file) => {
+        const name = file.split("/").pop()?.split(".")[0]
+        return name
+      })
+      .filter(Boolean)
+
+    return {
+      params: {
+        block: category,
+      },
+      props: {
+        category,
+        blocks: blocksInCategory,
+      },
+    }
+  })
+}
+
+const { category, blocks } = Astro.props
+
+const hTag = category === "hero" ? "h1" : "h2"
+
+const props: BlockProps = {
+  title: "Lorem ipsum dolor sit amet",
+  description:
+    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
+  children: `
+    <${hTag}>Lorem ipsum dolor sit amet consectetur elit</${hTag}>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+  `,
+  links: [
+    {
+      href: "#",
+      text: "Lorem ipsum",
+    },
+    {
+      href: "#",
+      text: "Dolor sit",
+    },
+  ],
+  price: 100,
+  unit: "month",
+  list: [
+    "Lorem ipsum dolor sit amet",
+    "Dolor sit amet",
+    "Amet consectetur",
+    "Adipisicing elit",
+  ],
+  image: {
+    src: "/images/placeholder.webp",
+    alt: "Lorem ipsum dolor sit amet consectetur",
+  },
+  items: [1, 2, 3].map(() => ({
+    rating: 5,
+    image: {
+      src: "/images/placeholder.webp",
+      alt: "Lorem ipsum dolor sit amet consectetur",
+    },
+    avatar: {
+      src: "/images/placeholder.webp",
+      alt: "Lorem ipsum dolor sit amet consectetur",
+    },
+    icon: "check",
+    href: "#",
+    price: 100,
+    unit: "month",
+    published: new Date("2025-03-09"),
+    title: "Lorem ipsum",
+    description: "Lorem ipsum dolor sit amet consectetur",
+    list: [
+      "Lorem ipsum dolor sit amet",
+      "Dolor sit amet",
+      "Amet consectetur",
+      "Adipisicing elit",
+    ],
+    links: [
+      {
+        href: "#",
+        text: "Lorem ipsum",
+      },
+    ],
+  })),
+  form: {
+    fields: [
+      {
+        name: "name",
+        type: "text",
+        label: "Name",
+      },
+      {
+        name: "email",
+        type: "email",
+        label: "Email",
+      },
+      {
+        name: "message",
+        type: "textarea",
+        label: "Message",
+      },
+    ],
+    submit: "Submit",
+  },
+  logo: {
+    title: "fulldev/ui",
+  },
+  copyright: "fulldev",
+  menus: [
+    {
+      text: "Lorem",
+      links: [
+        {
+          text: "Lorem ipsum",
+          href: "#",
+        },
+        {
+          text: "Lorem ipsum",
+          href: "#",
+        },
+      ],
+    },
+    {
+      text: "Lorem",
+      links: [
+        {
+          text: "Lorem ipsum",
+          href: "#",
+        },
+        {
+          text: "Lorem ipsum",
+          href: "#",
+        },
+      ],
+    },
+    {
+      text: "Lorem",
+      links: [
+        {
+          text: "Lorem ipsum",
+          href: "#",
+        },
+        {
+          text: "Lorem ipsum",
+          href: "#",
+        },
+      ],
+    },
+  ],
+  channels: [
+    {
+      type: "email",
+      value: "contact@full.dev",
+    },
+    {
+      type: "phone",
+      value: "+316 83485163",
+    },
+  ],
+  socials: [
+    "https://twitter.com/silveltm",
+    "https://github.com/fulldotdev",
+    "https://linkedin.com/in/silveltman",
+  ],
+  logos: [
+    {
+      src: "/images/placeholder.webp",
+      alt: "Lorem ipsum dolor sit amet consectetur",
+    },
+    {
+      src: "/images/placeholder.webp",
+      alt: "Lorem ipsum dolor sit amet consectetur",
+    },
+    {
+      src: "/images/placeholder.webp",
+      alt: "Lorem ipsum dolor sit amet consectetur",
+    },
+  ],
+}
+
+const blockNamesAndCodes = await Promise.all(
+  blocks?.map(async (block) => {
+    const filePath = `src/blocks/${block}.tsx`
+    const code = await fs.readFile(filePath, "utf-8")
+    return {
+      name: block,
+      code: code,
+    }
+  })
+)
+---
+
+<Layout>
+  {
+    blockNamesAndCodes?.map(({ name, code }) => (
+      <Block1 client:load title={name}>
+        <Code
+          class="rounded-lg p-4 text-sm"
+          slot="code"
+          lang="tsx"
+          code={code}
+        />
+        <BlockComponent slot="preview" client:load block={name} {...props} />
+      </Block1>
+    ))
+  }
+</Layout>

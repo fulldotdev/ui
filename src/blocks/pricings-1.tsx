@@ -28,13 +28,13 @@ import {
 
 export default function ({ children, items }: BlockProps) {
   const [duration, setDuration] = useState<string>("month")
-  const hasPrices = items?.some((item) => "prices" in item)
+  const hasSubscription = items?.some((item) => "subscription" in item)
   return (
     <Section>
       <SectionContainer className="flex flex-col">
         <div className="flex flex-col sm:flex-row sm:justify-between">
           {children && <SectionContent>{children}</SectionContent>}
-          {hasPrices && (
+          {hasSubscription && (
             <Select
               value={duration}
               onValueChange={(value) => setDuration(value)}
@@ -58,7 +58,7 @@ export default function ({ children, items }: BlockProps) {
                 title,
                 description,
                 price,
-                prices,
+                subscription,
                 unit,
                 list,
                 links,
@@ -73,11 +73,14 @@ export default function ({ children, items }: BlockProps) {
                   )}
                   <TileTitle>{title}</TileTitle>
                   {description && <p className="text-sm">{description}</p>}
-                  {(price || prices?.[duration as keyof typeof prices]) && (
+                  {(price ||
+                    subscription?.[duration as keyof typeof subscription]) && (
                     <div className="mt-4">
                       <span className="text-2xl font-medium">
                         {money(
-                          prices?.[duration as keyof typeof prices] ||
+                          subscription?.[
+                            duration as keyof typeof subscription
+                          ] ||
                             price ||
                             0
                         )}

@@ -20,9 +20,8 @@ export default function ({ children, items }: BlockProps) {
       <SectionContainer className="flex flex-col">
         <SectionContent>{children}</SectionContent>
         <SectionMasonry className="gap-4 space-y-6 not-first:mt-12">
-          {items?.map(({ title, description, rating, avatar, image }, i) => (
+          {items?.map(({ title, description, rating, avatar }, i) => (
             <Tile key={i}>
-              <TileImage {...image} />
               <TileContent>
                 <div className="flex w-full items-center gap-4">
                   {avatar?.src && (
@@ -31,7 +30,7 @@ export default function ({ children, items }: BlockProps) {
                       {...avatar}
                     />
                   )}
-                  <div className="flex w-full flex-col gap-3">
+                  <div className="flex w-full flex-col gap-1">
                     {rating && <Rating score={rating} />}
                     <TileTitle>{title}</TileTitle>
                   </div>

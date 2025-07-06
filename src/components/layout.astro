@@ -1,0 +1,83 @@
+---
+import site from "@/data/site.json"
+import { Font } from "astro:assets"
+
+import type { EntrySchema } from "@/lib/types"
+import Block from "@/components/block.astro"
+
+import "@/styles/globals.css"
+
+import { SEO } from "astro-seo"
+
+type Props = Pick<
+  EntrySchema,
+  "title" | "description" | "image" | "blocks" | "seo"
+> & {
+  block?: string
+}
+
+const { block, title, description, image, seo, blocks, ...data } = Astro.props
+---
+
+<!doctype html>
+<html class="layout light" lang="nl">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <SEO
+      charset="UTF-8"
+      title={seo?.title || title}
+      description={seo?.description || description}
+      canonical={Astro.url.href.endsWith("/")
+        ? Astro.url.href
+        : Astro.url.href + "/"}
+      openGraph={{
+        basic: {
+          title: seo?.title || title || "",
+          image: Astro.url.origin + image?.src,
+          type: "website",
+          url: Astro.url.href,
+        },
+        image: {
+          url: Astro.url.origin + image?.src,
+          alt: image?.alt,
+        },
+        optional: {
+          description: seo?.description || description,
+          siteName: site.name,
+        },
+      }}
+    />
+    <Font cssVariable="--font-sans" preload />
+    <Font cssVariable="--font-serif" preload />
+    <Fragment set:html={seo?.head} />
+  </head>
+  <body
+    class="text-foreground bg-background group/body overscroll-none font-sans antialiased"
+  >
+    <div class="bg-background relative z-10 flex min-h-svh flex-col">
+      <Block {...site.banner} />
+      <Block {...site.header} />
+      {
+        block ? (
+          <Block
+            block={block}
+            title={title}
+            description={description}
+            image={image}
+            menus={site.header.menus}
+            {...data}
+          >
+            <slot />
+          </Block>
+        ) : (
+          <slot />
+        )
+      }
+      {blocks?.map((block) => <Block {...block} />)}
+      <Block {...site.footer} />
+    </div>
+    <style set:html={seo?.css}></style>
+    <Fragment set:html={seo?.body} />
+  </body>
+</html>

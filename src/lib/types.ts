@@ -1,7 +1,9 @@
 import config from "fulldev.config.json"
 import { z } from "zod"
 
-import { blockSchema, formSchema } from "@/lib/schemas"
+import { blockSchema, entrySchema, formSchema } from "@/lib/schemas"
+
+export type EntrySchema = z.infer<typeof entrySchema>
 
 export type BlockSchema = z.infer<typeof blockSchema>
 export type BlockProps = Omit<

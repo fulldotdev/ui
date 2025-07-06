@@ -1,17 +1,12 @@
 ---
-import site from "@/data/site.json"
-import { Font } from "astro:assets"
 import { getCollection, render } from "astro:content"
 import config from "fulldev.config.json"
 import { keys } from "remeda"
 
-import Block from "@/components/block.astro"
-
 import "@/styles/globals.css"
 
-import { SEO } from "astro-seo"
-
 import { getHref } from "@/lib/get-href"
+import Layout from "@/components/layout.astro"
 
 export async function getStaticPaths() {
   const collectionKeys = keys(config)
@@ -34,63 +29,10 @@ export async function getStaticPaths() {
 }
 
 const { Content } = await render(Astro.props)
-const {
-  collection,
-  body,
-  data: { title, description, image, seo, blocks, ...data },
-} = Astro.props
+const { collection, data } = Astro.props
+const block = config[collection].block
 ---
 
-<!doctype html>
-<html class="layout light" lang="nl">
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="generator" content={Astro.generator} />
-    <SEO
-      charset="UTF-8"
-      title={seo?.title || title}
-      description={seo?.description || description}
-      canonical={Astro.url.href.endsWith("/")
-        ? Astro.url.href
-        : Astro.url.href + "/"}
-      openGraph={{
-        basic: {
-          title: seo?.title || title || "",
-          image: Astro.url.origin + image?.src,
-          type: "website",
-          url: Astro.url.href,
-        },
-        image: {
-          url: Astro.url.origin + image?.src,
-          alt: image?.alt,
-        },
-        optional: {
-          description: seo?.description || description,
-          siteName: site.name,
-        },
-      }}
-    />
-    <Font cssVariable="--font-sans" preload />
-    <Font cssVariable="--font-serif" preload />
-    <Fragment set:html={seo?.head} />
-  </head>
-  <body
-    class="text-foreground bg-background group/body overscroll-none font-sans antialiased"
-  >
-    <div class="bg-background relative z-10 flex min-h-svh flex-col">
-      <Block {...site.banner} />
-      <Block {...site.header} />
-      {
-        body?.trim() && (
-          <Block block={config[collection].block} {...data}>
-            <Content />
-          </Block>
-        )
-      }
-      {blocks?.map((block) => <Block {...block} />)}
-      <Block {...site.footer} />
-    </div>
-    <style set:html={seo?.css}></style>
-    <Fragment set:html={seo?.body} />
-  </body>
-</html>
+<Layout block={block} {...data}>
+  <Content />
+</Layout>
