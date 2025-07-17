@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content"
-import collections from "collections.json"
 import { keys } from "remeda"
+import collections from "src/data/collections.json"
 
 import { getEntryByPath, getItemByEntry } from "@/lib/collections"
 import type { BlockSchema } from "@/lib/schemas"
@@ -11,8 +11,10 @@ type Props = BlockSchema
 
 const { children, collection, items, ...props } = Astro.props
 
+const collectionKeys = keys(collections).filter((key) => key !== "index")
+
 // Get all paths from the props
-const paths = keys(collections)
+const paths = collectionKeys
   .map((collection) => props[collection])
   .flat()
   .filter((path) => path !== undefined)
@@ -25,9 +27,7 @@ const pathEntries = await Promise.all(
 )
 
 // Get all entries from the collection
-const collectionEntries = collection
-  ? await getCollection(collection as keyof typeof collections)
-  : []
+const collectionEntries = collection ? await getCollection(collection) : []
 
 // Merge the path entries with the collection entries
 const entries = [...(collectionEntries ?? []), ...(pathEntries ?? [])]

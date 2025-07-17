@@ -1,16 +1,18 @@
 ---
 import { getCollection, render } from "astro:content"
-import collections from "collections.json"
-import { keys } from "remeda"
+import { keys, omit } from "remeda"
+import collections from "src/data/collections.json"
 
 import "@/styles/globals.css"
+
+import { getEntry } from "astro:content"
 
 import { getHrefByEntry } from "@/lib/collections"
 import Layout from "@/components/layout.astro"
 
 export async function getStaticPaths() {
   // Get all entries from all collections
-  const collectionKeys = keys(collections)
+  const collectionKeys = keys(omit(collections, ["index"]))
   const entries = await Promise.all(
     collectionKeys.map(async (collectionKey) => {
       const entries = await getCollection(collectionKey)
@@ -31,12 +33,25 @@ export async function getStaticPaths() {
 }
 
 const { Content } = await render(Astro.props)
-const { data } = Astro.props
+const { collection, data } = Astro.props
 
-// Get the block from the collection based on the config
-const block = collections[data.collection as keyof typeof collections]?.block
+// Get base collection preset and collection-specific preset from collections collection
+const basePreset = await getEntry("collections", "index")
+const collectionPreset = await getEntry("collections", collection)
+
+// Merge the presets and entry
+const merged = {
+  ...basePreset?.data,
+  ...collectionPreset?.data,
+  ...data,
+  blocks: [
+    ...(data?.blocks ?? []),
+    ...(collectionPreset?.data.blocks ?? []),
+    ...(basePreset?.data.blocks ?? []),
+  ],
+}
 ---
 
-<Layout block={block} {...data}>
+<Layout {...merged}>
   <Content />
 </Layout>

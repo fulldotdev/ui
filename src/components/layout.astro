@@ -1,5 +1,4 @@
 ---
-import site from "@/data/site.json"
 import { Font } from "astro:assets"
 
 import type { EntrySchema } from "@/lib/schemas"
@@ -9,29 +8,21 @@ import "@/styles/globals.css"
 
 import { SEO } from "astro-seo"
 
-import { getEntryByPath } from "@/lib/collections"
+type Props = EntrySchema
 
-type Props = Pick<
-  EntrySchema,
-  "title" | "description" | "image" | "blocks" | "seo"
-> & {
-  block?: string
-}
-
-const { block, title, description, image, seo, blocks, ...data } = Astro.props
-
-// Replace paths to blocks with the actual block data
-const mappedBlocks = blocks
-  ? await Promise.all(
-      blocks.map(async (block) => {
-        if (typeof block === "string") {
-          const entry = await getEntryByPath(block)
-          return entry?.data ?? null
-        }
-        return block
-      })
-    )
-  : []
+const {
+  block,
+  title,
+  description,
+  image,
+  seo,
+  blocks,
+  name,
+  banner,
+  header,
+  footer,
+  ...data
+} = Astro.props
 ---
 
 <!doctype html>
@@ -59,7 +50,7 @@ const mappedBlocks = blocks
         },
         optional: {
           description: seo?.description || description,
-          siteName: site.name,
+          siteName: name,
         },
       }}
     />
@@ -71,8 +62,8 @@ const mappedBlocks = blocks
     class="text-foreground bg-background group/body overscroll-none font-sans antialiased"
   >
     <div class="bg-background relative z-10 flex min-h-svh flex-col">
-      <Block {...site.banner} />
-      <Block {...site.header} />
+      <Block {...banner} />
+      <Block {...header} />
       {
         block ? (
           <Block
@@ -80,7 +71,7 @@ const mappedBlocks = blocks
             title={title}
             description={description}
             image={image}
-            menus={site.header.menus}
+            menus={header?.menus}
             {...data}
           >
             <slot />
@@ -89,8 +80,8 @@ const mappedBlocks = blocks
           <slot />
         )
       }
-      {mappedBlocks?.map((block) => <Block {...block} />)}
-      <Block {...site.footer} />
+      {blocks?.map((block) => <Block {...block} />)}
+      <Block {...footer} />
     </div>
     <style set:html={seo?.css}></style>
     <Fragment set:html={seo?.body} />

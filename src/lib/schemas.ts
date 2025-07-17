@@ -1,6 +1,6 @@
 import { z } from "astro:content"
-import config from "collections.json"
-import { mapValues } from "remeda"
+import { keys, mapValues, omit } from "remeda"
+import collections from "src/data/collections.json"
 
 export const pathSchema = z.string().startsWith("/src/content/")
 
@@ -89,6 +89,9 @@ export const subscriptionSchema = z
 export const itemSchema = z
   .object({
     _schema: z.string(),
+    block: z.string(),
+    prefix: z.string(),
+    name: z.string(),
     draft: z.boolean(),
     href: z.string(),
     children: z.any(),
@@ -120,25 +123,31 @@ export const itemSchema = z
     subscription: subscriptionSchema,
     icon: z.enum(["check", "cross"]),
     hours: hoursSchema,
+    form: formSchema,
   })
   .partial()
   .strict()
+
+const filteredCollections = omit(collections, ["index"])
+const collectionKeys = keys(filteredCollections)
 
 export const blockSchema = itemSchema
   .extend({
-    block: z.string(),
     items: itemSchema.array(),
-    collection: z.string(),
-    form: formSchema,
-    ...mapValues(config, () => pathSchema.array()),
+    collection: z.enum(["pages", ...collectionKeys]),
+    ...mapValues(filteredCollections, () => pathSchema.array()),
   })
   .partial()
   .strict()
 
-export const entrySchema = blockSchema
+export const pageSchema = blockSchema
   .extend({
-    blocks: z.union([pathSchema, blockSchema]).array(),
+    layout: pathSchema,
+    banner: blockSchema,
+    header: blockSchema,
+    blocks: blockSchema.array(),
     seo: seoSchema,
+    footer: blockSchema,
   })
   .partial()
   .strict()
@@ -146,4 +155,4 @@ export const entrySchema = blockSchema
 export type FormSchema = z.infer<typeof formSchema>
 export type ItemSchema = z.infer<typeof itemSchema>
 export type BlockSchema = z.infer<typeof blockSchema>
-export type EntrySchema = z.infer<typeof entrySchema>
+export type EntrySchema = z.infer<typeof pageSchema>

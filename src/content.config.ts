@@ -1,27 +1,24 @@
 import { defineCollection } from "astro:content"
-import { glob } from "astro/loaders"
-import config from "collections.json"
-import { mapValues } from "remeda"
+import { file, glob } from "astro/loaders"
+import { mapValues, omit } from "remeda"
+import collectionsJson from "src/data/collections.json"
 
-import { blockSchema, entrySchema } from "@/lib/schemas"
+import { pageSchema } from "@/lib/schemas"
 
 export const collections = {
   // Collection for re-usable blocks
-  blocks: defineCollection({
-    loader: glob({
-      pattern: "**/[^_]*.{yml,yaml}",
-      base: "src/content/blocks",
-    }),
-    schema: blockSchema,
+  collections: defineCollection({
+    loader: file("src/data/collections.json"),
+    schema: pageSchema,
   }),
   // 🚫 DO NO TOUCH: code for auto-generated collections
-  ...mapValues(config, (_, collection) =>
+  ...mapValues(omit(collectionsJson, ["index"]), (_, collection) =>
     defineCollection({
       loader: glob({
-        pattern: "**/[^_]*.{md,mdx}",
+        pattern: "**/[^_]*.{md,mdx,yml,yaml}",
         base: `src/content/${collection}`,
       }),
-      schema: entrySchema,
+      schema: pageSchema,
     })
   ),
 }
