@@ -1,10 +1,10 @@
 import { z } from "astro:content"
-import config from "fulldev.config.json"
+import config from "collections.json"
 import { mapValues } from "remeda"
 
-export const pathSchema = z.string()
+export const pathSchema = z.string().startsWith("/src/content/")
 
-const channelSchema = z
+export const channelSchema = z
   .object({
     type: z.enum(["email", "phone", "address", "website"]),
     value: z.string(),
@@ -12,7 +12,7 @@ const channelSchema = z
   .partial()
   .strict()
 
-const imageSchema = z
+export const imageSchema = z
   .object({
     src: z.string(),
     alt: z.string(),
@@ -21,7 +21,7 @@ const imageSchema = z
   .partial()
   .strict()
 
-const linkSchema = z
+export const linkSchema = z
   .object({
     href: z.string(),
     text: z.string(),
@@ -38,7 +38,7 @@ export const menuSchema = linkSchema
   .partial()
   .strict()
 
-const seoSchema = z
+export const seoSchema = z
   .object({
     title: z.string(),
     description: z.string(),
@@ -77,7 +77,7 @@ export const formSchema = z
   .partial()
   .strict()
 
-const subscriptionSchema = z
+export const subscriptionSchema = z
   .object({
     month: z.number(),
     year: z.number(),
@@ -89,6 +89,7 @@ const subscriptionSchema = z
 export const itemSchema = z
   .object({
     _schema: z.string(),
+    draft: z.boolean(),
     href: z.string(),
     children: z.any(),
     title: z.string(),
@@ -116,7 +117,7 @@ export const itemSchema = z
     tags: z.string().array(),
     unit: z.string(),
     price: z.number(),
-    prices: subscriptionSchema,
+    subscription: subscriptionSchema,
     icon: z.enum(["check", "cross"]),
     hours: hoursSchema,
   })
@@ -127,9 +128,8 @@ export const blockSchema = itemSchema
   .extend({
     block: z.string(),
     items: itemSchema.array(),
-    // Collection references
     collection: z.string(),
-    form: pathSchema,
+    form: formSchema,
     ...mapValues(config, () => pathSchema.array()),
   })
   .partial()
@@ -137,9 +137,13 @@ export const blockSchema = itemSchema
 
 export const entrySchema = blockSchema
   .extend({
-    draft: z.boolean(),
-    blocks: blockSchema.array(),
+    blocks: z.union([pathSchema, blockSchema]).array(),
     seo: seoSchema,
   })
   .partial()
   .strict()
+
+export type FormSchema = z.infer<typeof formSchema>
+export type ItemSchema = z.infer<typeof itemSchema>
+export type BlockSchema = z.infer<typeof blockSchema>
+export type EntrySchema = z.infer<typeof entrySchema>

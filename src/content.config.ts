@@ -1,18 +1,20 @@
 import { defineCollection } from "astro:content"
 import { glob } from "astro/loaders"
-import config from "fulldev.config.json"
+import config from "collections.json"
 import { mapValues } from "remeda"
 
-import { entrySchema, formSchema } from "@/lib/schemas"
+import { blockSchema, entrySchema } from "@/lib/schemas"
 
 export const collections = {
-  forms: defineCollection({
+  // Collection for re-usable blocks
+  blocks: defineCollection({
     loader: glob({
       pattern: "**/[^_]*.{yml,yaml}",
-      base: "src/content/forms",
+      base: "src/content/blocks",
     }),
-    schema: formSchema,
+    schema: blockSchema,
   }),
+  // 🚫 DO NO TOUCH: code for auto-generated collections
   ...mapValues(config, (_, collection) =>
     defineCollection({
       loader: glob({

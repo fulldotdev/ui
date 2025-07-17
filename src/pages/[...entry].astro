@@ -1,36 +1,40 @@
 ---
 import { getCollection, render } from "astro:content"
-import config from "fulldev.config.json"
+import collections from "collections.json"
 import { keys } from "remeda"
 
 import "@/styles/globals.css"
 
-import { getHref } from "@/lib/get-href"
+import { getHrefByEntry } from "@/lib/collections"
 import Layout from "@/components/layout.astro"
 
 export async function getStaticPaths() {
-  const collectionKeys = keys(config)
+  // Get all entries from all collections
+  const collectionKeys = keys(collections)
   const entries = await Promise.all(
     collectionKeys.map(async (collectionKey) => {
       const entries = await getCollection(collectionKey)
-      return entries.map((entry) => {
-        const href = getHref(entry)
-        if (href === undefined) return undefined
-        return {
-          params: {
-            entry: href === "/" ? undefined : href,
-          },
-          props: entry,
-        }
-      })
+      return entries
     })
   )
-  return entries.flat().filter((entry) => entry !== undefined)
+
+  // Transform the entries into paths
+  return entries.flat().map((entry) => {
+    const href = getHrefByEntry(entry)
+    return {
+      params: {
+        entry: href === "/" ? undefined : href,
+      },
+      props: entry,
+    }
+  })
 }
 
 const { Content } = await render(Astro.props)
-const { collection, data } = Astro.props
-const block = config[collection].block
+const { data } = Astro.props
+
+// Get the block from the collection based on the config
+const block = collections[data.collection as keyof typeof collections]?.block
 ---
 
 <Layout block={block} {...data}>

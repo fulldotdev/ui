@@ -1,49 +1,47 @@
 ---
 import { getCollection } from "astro:content"
-import type { CollectionKey } from "astro:content"
-import config from "fulldev.config.json"
-import { keys, omit } from "remeda"
+import collections from "collections.json"
+import { keys } from "remeda"
 
-import { getHref } from "@/lib/get-href"
-import { getItem } from "@/lib/get-item"
-import type { BlockSchema } from "@/lib/types"
+import { getEntryByPath, getItemByEntry } from "@/lib/collections"
+import type { BlockSchema } from "@/lib/schemas"
 import { Block as ReactBlock } from "@/components/block"
 
 type Props = BlockSchema
 
-const { form, children, ...props } = Astro.props
-const collectionKeys = keys(config)
+const { children, collection, items, ...props } = Astro.props
 
-// fetch all paths and put into the items array
-const items = (
-  await Promise.all(
-    collectionKeys.map(async (collectionKey) => {
-      const paths = props[collectionKey]
-      if (!paths) return undefined
-      return Promise.all(paths.map(getItem))
-    })
-  )
-)
+// Get all paths from the props
+const paths = keys(collections)
+  .map((collection) => props[collection])
   .flat()
-  .filter((item) => item !== undefined)
+  .filter((path) => path !== undefined)
 
-// get all items in a collection
-const collection = (await getCollection(props.collection as CollectionKey)).map(
-  (entry) => ({
-    href: getHref(entry),
-    ...entry.data,
+// Get all entries from the paths
+const pathEntries = await Promise.all(
+  paths.map(async (path) => {
+    return await getEntryByPath(path)
   })
 )
 
-const formItem = form && getItem(form)
+// Get all entries from the collection
+const collectionEntries = collection
+  ? await getCollection(collection as keyof typeof collections)
+  : []
+
+// Merge the path entries with the collection entries
+const entries = [...(collectionEntries ?? []), ...(pathEntries ?? [])]
+
+// Transform the entries into items
+const entryItems = entries
+  .map((entry) => {
+    if (!entry) return undefined
+    return getItemByEntry(entry)
+  })
+  .filter((item) => item !== undefined)
 ---
 
-<ReactBlock
-  client:load
-  items={[...items, ...collection]}
-  form={formItem}
-  {...omit(props, collectionKeys)}
->
+<ReactBlock client:load {...props} items={[...entryItems, ...(items ?? [])]}>
   <slot />
   <Fragment set:html={children} />
 </ReactBlock>

@@ -2,12 +2,14 @@
 import site from "@/data/site.json"
 import { Font } from "astro:assets"
 
-import type { EntrySchema } from "@/lib/types"
+import type { EntrySchema } from "@/lib/schemas"
 import Block from "@/components/block.astro"
 
 import "@/styles/globals.css"
 
 import { SEO } from "astro-seo"
+
+import { getEntryByPath } from "@/lib/collections"
 
 type Props = Pick<
   EntrySchema,
@@ -17,6 +19,19 @@ type Props = Pick<
 }
 
 const { block, title, description, image, seo, blocks, ...data } = Astro.props
+
+// Replace paths to blocks with the actual block data
+const mappedBlocks = blocks
+  ? await Promise.all(
+      blocks.map(async (block) => {
+        if (typeof block === "string") {
+          const entry = await getEntryByPath(block)
+          return entry?.data ?? null
+        }
+        return block
+      })
+    )
+  : []
 ---
 
 <!doctype html>
@@ -74,7 +89,7 @@ const { block, title, description, image, seo, blocks, ...data } = Astro.props
           <slot />
         )
       }
-      {blocks?.map((block) => <Block {...block} />)}
+      {mappedBlocks?.map((block) => <Block {...block} />)}
       <Block {...site.footer} />
     </div>
     <style set:html={seo?.css}></style>

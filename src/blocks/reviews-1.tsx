@@ -9,7 +9,6 @@ import {
   Tile,
   TileContent,
   TileDescription,
-  TileImage,
   TileTitle,
 } from "@/components/ui/tile"
 import { Rating } from "@/components/rating"
