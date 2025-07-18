@@ -3,8 +3,8 @@ import { file, glob } from "astro/loaders"
 import { pageSchema } from "src/lib/schemas"
 
 export const collections = {
-  collections: defineCollection({
-    loader: file("src/data/collections.json"),
+  layouts: defineCollection({
+    loader: file("src/data/layouts.yaml"),
     schema: pageSchema,
   }),
   content: defineCollection({

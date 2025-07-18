@@ -4,6 +4,8 @@ import { getEntry, type CollectionEntry } from "astro:content"
 export function getHrefByEntry({ id, data }: CollectionEntry<"content">) {
   // If draft, it should not be visible
   if (data.draft) return undefined
+  if (id === "index") return "/"
+  return id
   // If no /, then it's the index of the collection; return the prefix (or home)
   if (!id.includes("/")) return data.prefix || "/"
 
