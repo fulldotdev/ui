@@ -10,15 +10,18 @@ import Layout from "@/components/misc/layout.astro"
 
 export async function getStaticPaths() {
   const entries = await getCollection("content")
-  return entries.map((entry) => {
-    const href = getHrefByEntry(entry)
-    return {
-      params: {
-        entry: href === "/" ? undefined : href,
-      },
-      props: entry,
-    }
-  })
+  return entries
+    .map((entry) => {
+      const href = getHrefByEntry(entry)
+      if (!href) return undefined
+      return {
+        params: {
+          entry: href === "/" ? undefined : href,
+        },
+        props: entry,
+      }
+    })
+    .filter(Boolean)
 }
 
 const { Content } = await render(Astro.props)

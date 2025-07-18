@@ -3,7 +3,10 @@ import { getEntry, type CollectionEntry } from "astro:content"
 // Get the href for an entry in the content collection
 export function getHrefByEntry({ id, data }: CollectionEntry<"content">) {
   // Only return href if published is true and the entry is not in the future
-  if (data.published !== new Date()) return undefined
+  const todayDate = new Date()
+  const publishedDate = data.published
+  const isPublished = publishedDate && publishedDate < todayDate
+  if (!isPublished) return undefined
   if (id === "index") return "/"
   return id
 }
