@@ -3,7 +3,7 @@ import { Logo, LogoImage } from "@/components/ui/logo"
 import { Section, SectionContainer } from "@/components/ui/section"
 import { Social } from "@/components/ui/social"
 
-export default function ({ logo, links, socials, copyright }: BlockProps) {
+export default function ({ logo, links, socials, name }: BlockProps) {
   return (
     <Section>
       <SectionContainer className="flex flex-col items-center gap-8">
@@ -38,9 +38,9 @@ export default function ({ logo, links, socials, copyright }: BlockProps) {
             ))}
           </div>
         )}
-        {copyright && (
+        {name && (
           <p className="text-muted-foreground text-xs">
-            © {new Date().getFullYear()} {copyright}
+            © {new Date().getFullYear()} {name}
           </p>
         )}
       </SectionContainer>

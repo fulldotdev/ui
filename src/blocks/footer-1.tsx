@@ -11,7 +11,7 @@ export default function ({
   socials,
   channels,
   menus,
-  copyright,
+  name,
   hours,
 }: BlockProps) {
   return (
@@ -107,9 +107,9 @@ export default function ({
           ))}
         </div>
         <div className="flex flex-col flex-wrap items-start justify-between gap-x-6 gap-y-4 border-t py-6 md:flex-row md:items-center">
-          {copyright && (
+          {name && (
             <p className="text-muted-foreground mr-auto text-xs">
-              © {new Date().getFullYear()} {copyright}
+              © {new Date().getFullYear()} {name}
             </p>
           )}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">

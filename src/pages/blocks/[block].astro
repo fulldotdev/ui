@@ -1,6 +1,7 @@
 ---
 import fs from "fs/promises"
 import { Code } from "astro:components"
+import { getEntry } from "astro:content"
 
 import type { BlockProps } from "@/lib/types"
 import { Block as BlockComponent } from "@/components/misc/block"
@@ -56,11 +57,11 @@ const props: BlockProps = {
   `,
   links: [
     {
-      href: "#",
+      href: "#href",
       text: "Lorem ipsum",
     },
     {
-      href: "#",
+      href: "#href",
       text: "Dolor sit",
     },
   ],
@@ -87,7 +88,7 @@ const props: BlockProps = {
       alt: "Lorem ipsum dolor sit amet consectetur",
     },
     icon: "check",
-    href: "#",
+    href: "#href",
     price: 100,
     unit: "month",
     published: new Date("2025-03-09"),
@@ -101,7 +102,7 @@ const props: BlockProps = {
     ],
     links: [
       {
-        href: "#",
+        href: "#href",
         text: "Lorem ipsum",
       },
     ],
@@ -129,31 +130,18 @@ const props: BlockProps = {
   logo: {
     title: "fulldev/ui",
   },
-  copyright: "fulldev",
+  name: "fulldev/ui",
   menus: [
     {
       text: "Lorem",
       links: [
         {
           text: "Lorem ipsum",
-          href: "#",
+          href: "#href",
         },
         {
           text: "Lorem ipsum",
-          href: "#",
-        },
-      ],
-    },
-    {
-      text: "Lorem",
-      links: [
-        {
-          text: "Lorem ipsum",
-          href: "#",
-        },
-        {
-          text: "Lorem ipsum",
-          href: "#",
+          href: "#href",
         },
       ],
     },
@@ -162,11 +150,24 @@ const props: BlockProps = {
       links: [
         {
           text: "Lorem ipsum",
-          href: "#",
+          href: "#href",
         },
         {
           text: "Lorem ipsum",
-          href: "#",
+          href: "#href",
+        },
+      ],
+    },
+    {
+      text: "Lorem",
+      links: [
+        {
+          text: "Lorem ipsum",
+          href: "#href",
+        },
+        {
+          text: "Lorem ipsum",
+          href: "#href",
         },
       ],
     },
@@ -212,9 +213,11 @@ const blockNamesAndCodes = await Promise.all(
     }
   })
 )
+
+const indexLayout = await getEntry("layouts", "index")
 ---
 
-<Layout>
+<Layout {...indexLayout?.data}>
   {
     blockNamesAndCodes?.map(({ name, code }) => (
       <Block1 client:load title={name}>
