@@ -1,7 +1,5 @@
 ---
 import { getCollection } from "astro:content"
-import { keys } from "remeda"
-import collections from "src/data/collections.json"
 
 import { getEntryByPath, getItemByEntry } from "@/lib/collections"
 import type { BlockSchema } from "@/lib/schemas"
@@ -9,31 +7,27 @@ import { Block as ReactBlock } from "@/components/block"
 
 type Props = BlockSchema
 
-const { children, collection, items, ...props } = Astro.props
-
-const collectionKeys = keys(collections).filter((key) => key !== "index")
-
-// Get all paths from the props
-const paths = collectionKeys
-  .map((collection) => props[collection])
-  .flat()
-  .filter((path) => path !== undefined)
+const { children, glob, references, items, ...props } = Astro.props
 
 // Get all entries from the paths
-const pathEntries = await Promise.all(
-  paths.map(async (path) => {
-    return await getEntryByPath(path)
-  })
-)
+const referenceEntries = references
+  ? await Promise.all(
+      references.map(async (path) => {
+        return await getEntryByPath(path)
+      })
+    )
+  : []
 
 // Get all entries from the collection
-const collectionEntries = collection ? await getCollection(collection) : []
+const globEntries = glob
+  ? await getCollection("content", (entry) => entry.id.startsWith(glob))
+  : []
 
 // Merge the path entries with the collection entries
-const entries = [...(collectionEntries ?? []), ...(pathEntries ?? [])]
+const allEntries = [...(referenceEntries ?? []), ...(globEntries ?? [])]
 
 // Transform the entries into items
-const entryItems = entries
+const entryItems = allEntries
   .map((entry) => {
     if (!entry) return undefined
     return getItemByEntry(entry)

@@ -1,6 +1,4 @@
 import { z } from "astro:content"
-import { keys, mapValues, omit } from "remeda"
-import collections from "src/data/collections.json"
 
 export const pathSchema = z.string().startsWith("/src/content/")
 
@@ -128,14 +126,11 @@ export const itemSchema = z
   .partial()
   .strict()
 
-const filteredCollections = omit(collections, ["index"])
-const collectionKeys = keys(filteredCollections)
-
 export const blockSchema = itemSchema
   .extend({
     items: itemSchema.array(),
-    collection: z.enum(["pages", ...collectionKeys]),
-    ...mapValues(filteredCollections, () => pathSchema.array()),
+    glob: z.string(),
+    references: pathSchema.array(),
   })
   .partial()
   .strict()

@@ -1,28 +1,19 @@
 ---
 import { getCollection, render } from "astro:content"
-import { keys, omit } from "remeda"
-import collections from "src/data/collections.json"
 
 import "@/styles/globals.css"
 
 import { getEntry } from "astro:content"
+import { isIndexSignatureDeclaration } from "typescript"
 
 import { getHrefByEntry } from "@/lib/collections"
 import Layout from "@/components/layout.astro"
 
 export async function getStaticPaths() {
-  // Get all entries from all collections
-  const collectionKeys = keys(omit(collections, ["index"]))
-  const entries = await Promise.all(
-    collectionKeys.map(async (collectionKey) => {
-      const entries = await getCollection(collectionKey)
-      return entries
-    })
-  )
-
-  // Transform the entries into paths
-  return entries.flat().map((entry) => {
+  const entries = await getCollection("content")
+  return entries.map((entry) => {
     const href = getHrefByEntry(entry)
+    console.log({ href })
     return {
       params: {
         entry: href === "/" ? undefined : href,
@@ -36,8 +27,7 @@ const { Content } = await render(Astro.props)
 const { collection, data } = Astro.props
 
 // Get base collection preset and collection-specific preset from collections collection
-const basePreset = await getEntry("collections", "index")
-const collectionPreset = await getEntry("collections", collection)
+const layouts = await getCollection("layouts")
 
 // Merge the presets and entry
 const merged = {
