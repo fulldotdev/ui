@@ -1,4 +1,5 @@
 ---
+published: 2025-07-18
 title: "Home"
 blocks:
   - block: hero-1
