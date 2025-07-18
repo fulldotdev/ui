@@ -86,42 +86,43 @@ export const subscriptionSchema = z
 
 export const itemSchema = z
   .object({
-    _schema: z.string(),
+    // Config
+    layout: z.string(),
     block: z.string(),
-    prefix: z.string(),
+    reverse: z.boolean(),
+    // Options
+    published: z.date(),
+    // Base
     name: z.string(),
-    draft: z.boolean(),
-    href: z.string(),
-    children: z.any(),
     title: z.string(),
     description: z.string(),
-    image: imageSchema,
-    images: imageSchema.array(),
-    avatar: imageSchema,
-    avatars: imageSchema.array(),
-    logo: imageSchema,
-    logos: imageSchema.array(),
-    published: z.date(),
+    href: z.string(),
+    icon: z.enum(["check", "cross"]),
+    rating: z.number().min(0).max(5).step(0.25).nullable(),
+    unit: z.string(),
+    price: z.number().nullable(),
+    comparePrice: z.number().nullable(),
+    // Images
     link: linkSchema,
     links: linkSchema.array(),
     menu: menuSchema,
     menus: menuSchema.array(),
     channels: channelSchema.array(),
     socials: z.string().array(),
-    reverse: z.boolean(),
-    rating: z.number().min(0).max(5).step(0.25),
-    when: z.string(),
-    where: z.string(),
-    copyright: z.string(),
-    tagline: z.string(),
     list: z.string().array(),
     tags: z.string().array(),
-    unit: z.string(),
-    price: z.number(),
     subscription: subscriptionSchema,
-    icon: z.enum(["check", "cross"]),
     hours: hoursSchema,
     form: formSchema,
+    // Objects and arrays
+    image: imageSchema,
+    images: imageSchema.array(),
+    avatar: imageSchema,
+    avatars: imageSchema.array(),
+    logo: imageSchema,
+    logos: imageSchema.array(),
+    // Richtext
+    children: z.any(),
   })
   .partial()
   .strict()
@@ -137,7 +138,6 @@ export const blockSchema = itemSchema
 
 export const pageSchema = blockSchema
   .extend({
-    layout: pathSchema,
     banner: blockSchema,
     header: blockSchema,
     blocks: blockSchema.array(),

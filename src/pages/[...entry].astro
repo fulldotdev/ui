@@ -4,16 +4,14 @@ import { getCollection, render } from "astro:content"
 import "@/styles/globals.css"
 
 import { getEntry } from "astro:content"
-import { isIndexSignatureDeclaration } from "typescript"
 
 import { getHrefByEntry } from "@/lib/collections"
-import Layout from "@/components/layout.astro"
+import Layout from "@/components/misc/layout.astro"
 
 export async function getStaticPaths() {
   const entries = await getCollection("content")
   return entries.map((entry) => {
     const href = getHrefByEntry(entry)
-    console.log({ href })
     return {
       params: {
         entry: href === "/" ? undefined : href,
@@ -24,24 +22,29 @@ export async function getStaticPaths() {
 }
 
 const { Content } = await render(Astro.props)
-const { collection, data } = Astro.props
+const { id, data } = Astro.props
 
-// Get base collection preset and collection-specific preset from collections collection
-// const layouts = await getCollection("layouts")
+// Get the index layout, which applies to all pages
+const indexLayout = await getEntry("layouts", "index")
 
-// // Merge the presets and entry
-// const merged = {
-//   ...basePreset?.data,
-//   ...collectionPreset?.data,
-//   ...data,
-//   blocks: [
-//     ...(data?.blocks ?? []),
-//     ...(collectionPreset?.data.blocks ?? []),
-//     ...(basePreset?.data.blocks ?? []),
-//   ],
-// }
+// Get the layout for the current page
+const folder = id.split("/").length > 1 ? id.split("/")[0] : undefined
+const layout = data.layout || folder
+const entryLayout = layout ? await getEntry("layouts", layout) : undefined
+
+// // Merge the layouts with the entry
+const merged = {
+  ...indexLayout?.data,
+  ...entryLayout?.data,
+  ...data,
+  blocks: [
+    ...(data?.blocks ?? []),
+    ...(entryLayout?.data.blocks ?? []),
+    ...(indexLayout?.data.blocks ?? []),
+  ],
+}
 ---
 
-<Layout {...data}>
+<Layout {...merged}>
   <Content />
 </Layout>

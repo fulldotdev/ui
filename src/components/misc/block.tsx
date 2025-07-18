@@ -1,7 +1,7 @@
 import type { BlockProps } from "@/lib/types"
 
 // Get all blocks as an object
-const blockImports = import.meta.glob("../blocks/**/*.tsx", {
+const blockImports = import.meta.glob("../../blocks/**/*.tsx", {
   eager: true,
 })
 

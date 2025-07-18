@@ -9,7 +9,7 @@ export const collections = {
   }),
   content: defineCollection({
     loader: glob({
-      pattern: "**/[^_]*.{md,mdx,yml,yaml}",
+      pattern: "**/[^_]*.{md,mdx}",
       base: `src/content`,
     }),
     schema: pageSchema,

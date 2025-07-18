@@ -2,18 +2,10 @@ import { getEntry, type CollectionEntry } from "astro:content"
 
 // Get the href for an entry in the content collection
 export function getHrefByEntry({ id, data }: CollectionEntry<"content">) {
-  // If draft, it should not be visible
-  if (data.draft) return undefined
+  // Only return href if published is true and the entry is not in the future
+  if (data.published !== new Date()) return undefined
   if (id === "index") return "/"
   return id
-  // If no /, then it's the index of the collection; return the prefix (or home)
-  if (!id.includes("/")) return data.prefix || "/"
-
-  const folder = id.split("/")[0]
-  const slug = id.replace(`${folder}/`, `${data.prefix || ""}/`)
-  const href = slug.replace("/index/", "/").replace(/\/\//g, "/")
-  console.log({ id, folder, slug, href })
-  return href
 }
 
 // Get an entry by path
