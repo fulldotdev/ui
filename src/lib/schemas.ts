@@ -88,7 +88,7 @@ export const itemSchema = z
   .object({
     // Config
     layout: z.string(),
-    block: z.string(),
+    _bookshop_name: z.string(),
     reverse: z.boolean(),
     // Options
     published: z.date(),

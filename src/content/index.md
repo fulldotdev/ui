@@ -2,7 +2,7 @@
 published: 2025-07-16
 title: "Home"
 blocks:
-  - block: hero-1
+  - _bookshop_name: hero-1
     children: >-
       <h1>The UI library for building content sites with Shadcn, React, Tailwind and Astro</h1>
       <p>Components, blocks and utilities purposefully built for content sites. Works seamlessly with your headless CMS or Astro content collections.</p>
@@ -11,7 +11,7 @@ blocks:
         href: "/docs/"
       - text: "GitHub "
         href: "https://github.com/fulldotdev/ui"
-  - block: features-1
+  - _bookshop_name: features-1
     items:
       - title: "Great AI agents experience"
         description: "Built using Shadcn, React and Tailwind so that AI agents understand your code."
