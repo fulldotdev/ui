@@ -1,9 +1,6 @@
 ---
-import { getCollection, render } from "astro:content"
-
-import "@/styles/globals.css"
-
-import { getEntry } from "astro:content"
+// import "@/styles/globals.css"
+import { getCollection, getEntry, render } from "astro:content"
 
 import { getHrefByEntry } from "@/lib/collections"
 import Layout from "@/components/layout.astro"
@@ -18,7 +15,10 @@ export async function getStaticPaths() {
         params: {
           entry: href === "/" ? undefined : href,
         },
-        props: entry,
+        props: {
+          ...entry,
+          frontmatter: entry.data,
+        },
       }
     })
     .filter(Boolean)
@@ -46,8 +46,10 @@ const merged = {
     ...(indexLayout?.data.blocks ?? []),
   ],
 }
+
+const page = Astro.props.frontmatter
 ---
 
-<Layout {...merged}>
+<Layout bookshop:live {...page}>
   <Content />
 </Layout>

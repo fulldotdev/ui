@@ -5,9 +5,7 @@ import { getEntryByPath, getItemByEntry } from "@/lib/collections"
 import type { BlockSchema } from "@/lib/schemas"
 import { Block as ReactBlock } from "@/components/block"
 
-type Props = BlockSchema & {
-  frontmatter?: any
-}
+type Props = BlockSchema
 
 const { children, glob, references, items, ...props } = Astro.props
 
@@ -35,12 +33,9 @@ const entryItems = allEntries
     return getItemByEntry(entry)
   })
   .filter((item) => item !== undefined)
-
-const data = Astro.props.frontmatter
 ---
 
-<!-- items={[...entryItems, ...(items ?? [])]} -->
-<ReactBlock client:load bookshop:live {...data}>
+<ReactBlock client:load {...props} items={[...entryItems, ...(items ?? [])]}>
   <slot />
   <Fragment set:html={children} />
 </ReactBlock>
