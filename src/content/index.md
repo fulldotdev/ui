@@ -2,7 +2,7 @@
 published: 2025-07-16T00:00:00Z
 title: Home
 blocks:
-  - _bookshop_name: hero-1
+  - block: hero-1
     children: >-
       <h1>The UI library for building content sites with Shadcn, React, Tailwind
       and Astro</h1> <p>Components, blocks and utilities purposefully built for
@@ -13,7 +13,7 @@ blocks:
         href: /docs/
       - text: "GitHub "
         href: https://github.com/fulldotdev/ui
-  - _bookshop_name: features-1
+  - block: features-1
     items:
       - title: Great AI agents experience
         description: >-
@@ -27,7 +27,7 @@ blocks:
         description: >-
           Each component and block is publicly available on GitHub and via a
           shadcn registry.
-  - _bookshop_name: hero-2
+  - block: hero-2
     children: <p>Hello there!</p>
     links: []
     image: {}
