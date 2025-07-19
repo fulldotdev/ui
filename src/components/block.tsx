@@ -6,7 +6,13 @@ const blockImports = import.meta.glob("../blocks/**/*.tsx", {
 })
 
 // Render all blocks
-function Block({ block, ...props }: BlockProps & { block?: string }) {
+function Block({
+  block,
+  ...props
+}: BlockProps & {
+  block?: string
+  "bookshop:live"?: boolean
+}) {
   // Find the block in the blockImports object
   const blockPath = `../blocks/${block}.tsx`
   const blockImport = blockImports[blockPath] as any

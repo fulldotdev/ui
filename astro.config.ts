@@ -1,5 +1,7 @@
 import react from "@astrojs/react"
 import sitemap from "@astrojs/sitemap"
+// @ts-ignore
+import bookshop from "@bookshop/astro-bookshop"
 import tailwindcss from "@tailwindcss/vite"
 import favicons from "astro-favicons"
 import robotsTxt from "astro-robots-txt"
@@ -50,7 +52,7 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
-  integrations: [robotsTxt(), sitemap(), react(), favicons()],
+  integrations: [robotsTxt(), sitemap(), react(), favicons(), bookshop()],
   vite: {
     plugins: [tailwindcss()],
   },
