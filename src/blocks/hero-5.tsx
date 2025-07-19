@@ -31,7 +31,7 @@ export default function ({ children, links, image }: BlockProps) {
               </SectionFooter>
             )}
           </div>
-          {image && (
+          {image?.src && (
             <img
               className="mb-[20%] origin-top-left scale-120 rounded-lg lg:col-span-3"
               {...image}

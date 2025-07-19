@@ -55,7 +55,9 @@ export default function ({
             ))}
           </SectionFooter>
         )}
-        {image && <img className="rounded-lg not-first:mt-16" {...image} />}
+        {image?.src && (
+          <img className="rounded-lg not-first:mt-16" {...image} />
+        )}
       </SectionContainer>
     </Section>
   )

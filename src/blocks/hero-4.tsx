@@ -10,7 +10,7 @@ import {
 export default function ({ children, links, image }: BlockProps) {
   return (
     <Section className="flex min-h-screen items-center">
-      {image && (
+      {image?.src && (
         <img className="absolute inset-0 size-full object-cover" {...image} />
       )}
       <SectionContainer className="relative flex flex-col items-center">

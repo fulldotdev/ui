@@ -30,7 +30,7 @@ export default function ({ children, links, image }: BlockProps) {
               </SectionFooter>
             )}
           </div>
-          {image && <img className="rounded-lg" {...image} />}
+          {image?.src && <img className="rounded-lg" {...image} />}
         </SectionSplit>
       </SectionContainer>
     </Section>

@@ -32,7 +32,7 @@ export default function ({ children, links, image }: BlockProps) {
               </SectionFooter>
             )}
           </div>
-          {image && (
+          {image?.src && (
             <img
               className="top-0 right-0 h-full w-1/2 object-cover lg:absolute"
               {...image}
