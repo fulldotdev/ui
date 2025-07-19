@@ -97,6 +97,7 @@ export const itemSchema = z
     title: z.string(),
     description: z.string(),
     href: z.string(),
+    tagline: z.string(),
     icon: z.enum(["check", "cross"]),
     rating: z.number().min(0).max(5).step(0.25).nullable(),
     unit: z.string(),

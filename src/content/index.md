@@ -11,7 +11,7 @@ blocks:
     links:
       - text: Get Started
         href: /docs/
-      - text: 'GitHub '
+      - text: "GitHub "
         href: https://github.com/fulldotdev/ui
   - _bookshop_name: features-1
     items:
@@ -27,8 +27,8 @@ blocks:
         description: >-
           Each component and block is publicly available on GitHub and via a
           shadcn registry.
-  - _bookshop_name: src/bookshop/hero-2
+  - _bookshop_name: hero-2
     children: <p>Hello there!</p>
-    links:
-    image:
+    links: []
+    image: {}
 ---
