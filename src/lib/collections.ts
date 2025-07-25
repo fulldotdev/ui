@@ -27,5 +27,5 @@ export function getHrefByEntry({ id, data }: CollectionEntry<"content">) {
   const isPublished = publishedDate && publishedDate < todayDate
   if (!isPublished) return undefined
   if (id === "index") return "/"
-  return id
+  return `/${id}`
 }
