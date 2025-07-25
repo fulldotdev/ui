@@ -139,11 +139,8 @@ export const blockSchema = itemSchema
 
 export const pageSchema = blockSchema
   .extend({
-    banner: blockSchema,
-    header: blockSchema,
     blocks: blockSchema.array(),
     seo: seoSchema,
-    footer: blockSchema,
   })
   .partial()
   .strict()

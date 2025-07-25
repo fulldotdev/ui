@@ -1,28 +1,19 @@
 ---
+import layout from "@/data/layout.yaml"
 import { Font } from "astro:assets"
 
 import type { EntrySchema } from "@/lib/schemas"
-import Block from "@/components/block.astro"
 
 import "@/styles/globals.css"
 
 import { SEO } from "astro-seo"
 
-type Props = EntrySchema
+import { Block } from "@/components/block"
 
-const {
-  block,
-  title,
-  description,
-  image,
-  seo,
-  blocks,
-  name,
-  banner,
-  header,
-  footer,
-  ...data
-} = Astro.props
+type Props = Pick<EntrySchema, "title" | "description" | "image" | "seo">
+
+const { title, description, image, seo } = Astro.props as Props
+const { banner, header, footer, name } = layout
 ---
 
 <!doctype html>
@@ -50,7 +41,7 @@ const {
         },
         optional: {
           description: seo?.description || description,
-          siteName: name,
+          siteName: name || "",
         },
       }}
     />
@@ -62,26 +53,12 @@ const {
     class="text-foreground bg-background group/body overscroll-none font-sans antialiased"
   >
     <div class="bg-background relative z-10 flex min-h-svh flex-col">
-      <Block {...banner} />
-      <Block {...header} />
-      {
-        block ? (
-          <Block
-            block={block}
-            title={title}
-            description={description}
-            image={image}
-            menus={header?.menus}
-            {...data}
-          >
-            <slot />
-          </Block>
-        ) : (
-          <slot />
-        )
-      }
-      {blocks?.map((block) => <Block {...block} />)}
-      <Block {...footer} />
+      <Block client:load {...banner} />
+      <Block client:load {...header} />
+      <main>
+        <slot />
+      </main>
+      <Block client:load {...footer} />
     </div>
     <style set:html={seo?.css}></style>
     <Fragment set:html={seo?.body} />

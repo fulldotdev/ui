@@ -1,13 +1,24 @@
 ---
-import { getCollection, getEntry, render } from "astro:content"
+import { i18n } from "astro:config/server"
+import { getCollection, getEntry } from "astro:content"
 
 import { getHrefByEntry } from "@/lib/collections"
 import Layout from "@/components/layout.astro"
+import { Page as CloudCannonPage } from "@/components/page"
 
+// Generate static paths
 export async function getStaticPaths() {
   const entries = await getCollection("content")
+  const locales = i18n?.locales
+
   return entries
     .map((entry) => {
+      // Try to find translated entries, so a warning is shown if a translated entry is not found
+      locales?.forEach(async (locale) => {
+        if (locales?.includes(entry.id.split("/")[0])) return
+        await getEntry("content", `${locale}/${entry.id}`)
+      })
+
       const href = getHrefByEntry(entry)
       if (!href) return undefined
       return {
@@ -15,38 +26,18 @@ export async function getStaticPaths() {
           entry: href === "/" ? undefined : href,
         },
         props: {
-          ...entry,
-          frontmatter: entry.data,
+          entry,
+          entries,
         },
       }
     })
     .filter(Boolean)
 }
 
-const { Content } = await render(Astro.props)
-const { id, data } = Astro.props
-
-// Get the index layout, which applies to all pages
-const indexLayout = await getEntry("layouts", "index")
-
-// Get the layout for the current page
-const folder = id.split("/").length > 1 ? id.split("/")[0] : undefined
-const layout = data.layout || folder
-const entryLayout = layout ? await getEntry("layouts", layout) : undefined
-
-// // Merge the layouts with the entry
-const merged = {
-  ...indexLayout?.data,
-  ...entryLayout?.data,
-  ...data,
-  blocks: [
-    ...(data?.blocks ?? []),
-    ...(entryLayout?.data.blocks ?? []),
-    ...(indexLayout?.data.blocks ?? []),
-  ],
-}
+const { body, data } = Astro.props.entry
+const entries = Astro.props.entries
 ---
 
-<Layout {...merged}>
-  <Content />
+<Layout {...data}>
+  <CloudCannonPage client:load {...data} children={body} entries={entries} />
 </Layout>

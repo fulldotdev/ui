@@ -1,7 +1,8 @@
 ---
 import fs from "fs/promises"
+import layout from "@/data/layout.yaml"
 import { Code } from "astro:components"
-import { getEntry } from "astro:content"
+import { getCollection } from "astro:content"
 
 import type { BlockProps } from "@/lib/types"
 import { Block as BlockComponent } from "@/components/block"
@@ -130,7 +131,6 @@ const props: BlockProps = {
   logo: {
     title: "fulldev/ui",
   },
-  name: "fulldev/ui",
   menus: [
     {
       text: "Lorem",
@@ -214,10 +214,10 @@ const blockNamesAndCodes = await Promise.all(
   })
 )
 
-const indexLayout = await getEntry("layouts", "index")
+const entries = await getCollection("content")
 ---
 
-<Layout {...indexLayout?.data}>
+<Layout {...layout}>
   {
     blockNamesAndCodes?.map(({ name, code }) => (
       <Block1 client:load title={name}>
@@ -227,7 +227,13 @@ const indexLayout = await getEntry("layouts", "index")
           lang="tsx"
           code={code}
         />
-        <BlockComponent slot="preview" client:load block={name} {...props} />
+        <BlockComponent
+          slot="preview"
+          client:load
+          block={name}
+          {...props}
+          entries={entries}
+        />
       </Block1>
     ))
   }

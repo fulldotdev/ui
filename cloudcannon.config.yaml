@@ -5,7 +5,7 @@ paths:
 collections_config:
   content:
     path: src/content
-    url: /[full_slug]/
+    url: "/[full_slug|unless=href]{href|if=href}"
     name: Content
     icon: article
     disable_add: false
@@ -97,7 +97,18 @@ _inputs:
     type: text
     options:
       empty_type: string
+  # References
+  references:
+    type: multiselect
+    options:
+      values: collections.content
+      empty_type: array
   # Objects and arrays
+  blocks:
+    type: array
+    options:
+      empty_type: array
+      disable_add: true
   list:
     type: array
     options:
@@ -129,6 +140,7 @@ _inputs:
     options:
       empty_type: array
       structures: _structures.link
+      max_items: 2
   link.href:
     type: url
     options:
@@ -148,22 +160,18 @@ _inputs:
     type: object
     options:
       structures: _structures.image
-    cascade: true
   avatars:
     type: array
     options:
       structures: _structures.image
-    cascade: true
   logo:
     type: object
     options:
       structures: _structures.image
-    cascade: true
   logos:
     type: array
     options:
       structures: _structures.image
-    cascade: true
   src:
     type: image
     options:
@@ -172,7 +180,6 @@ _inputs:
       resize_style: contain
       width: 1920
       height: 1920
-    cascade: true
   avatar.src:
     type: image
     options:
@@ -181,7 +188,6 @@ _inputs:
       resize_style: cover
       width: 100
       height: 100
-    cascade: true
   avatars[*].src:
     type: image
     options:
@@ -190,7 +196,6 @@ _inputs:
       resize_style: cover
       width: 100
       height: 100
-    cascade: true
   logo.src:
     type: image
     options:
@@ -199,7 +204,6 @@ _inputs:
       resize_style: contain
       width: 200
       height: 36
-    cascade: true
   logos[*].src:
     type: image
     options:
@@ -208,7 +212,6 @@ _inputs:
       resize_style: contain
       width: 200
       height: 36
-    cascade: true
   # Content
   head:
     type: code
@@ -219,7 +222,6 @@ _inputs:
       theme: monokai
       show_gutter: true
       syntax: html
-    cascade: true
   body:
     type: code
     options:
@@ -229,7 +231,6 @@ _inputs:
       theme: monokai
       show_gutter: true
       syntax: html
-    cascade: true
   css:
     type: code
     options:
@@ -239,16 +240,16 @@ _inputs:
       theme: monokai
       show_gutter: true
       syntax: css
-    cascade: true
 
   # Richtext
   children:
     type: html
+    label: Content
     options:
       allow_resize: true
+      initial_height: 640
       allow_custom_markup: false
       remove_custom_markup: false
-      initial_height: 320
       blockquote: true
       bold: true
       bulletedlist: true
@@ -257,8 +258,7 @@ _inputs:
       italic: true
       underline: true
       undo: true
-    label: Content
-    cascade: true
+      empty_type: string
 
 _editables:
   content:

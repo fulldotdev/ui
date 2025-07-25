@@ -1,5 +1,6 @@
 import react from "@astrojs/react"
 import sitemap from "@astrojs/sitemap"
+import yaml from "@rollup/plugin-yaml"
 import tailwindcss from "@tailwindcss/vite"
 import favicons from "astro-favicons"
 import robotsTxt from "astro-robots-txt"
@@ -52,7 +53,7 @@ export default defineConfig({
   },
   integrations: [robotsTxt(), sitemap(), react(), favicons()],
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), yaml()],
   },
   redirects: {},
 })
