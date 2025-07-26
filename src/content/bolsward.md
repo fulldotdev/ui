@@ -1,0 +1,87 @@
+---
+published: 2025-07-16T00:00:00Z
+title: Home
+blocks:
+  - block: hero-1
+    children: >-
+      <h1>Het leukste <b>evenement</b> in <b>Bolsward</b> deze zomer</h1> <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      </p>
+    links:
+      - text: Meld je nu aan
+        href: /docs/
+      - text: "Bekijk deelnemers"
+        href: "#"
+    image:
+      src: /images/bolsward.jpg
+      alt: "Hero 1"
+  - block: features-1
+    items:
+      - icon: "check"
+        title: Lorem ipsum
+        description: >-
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      - icon: "check"
+        title: Lorem ipsum
+        description: >-
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      - icon: "check"
+        title: Lorem ipsum
+        description: >-
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  - block: tiles-2
+    children: |
+      <h2>Wie er al deelnemen</h2>
+    items:
+      - image:
+          src: /images/bolsward.jpg
+          alt: "Hero 1"
+        title: Lorem ipsum
+        description: >-
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      - image:
+          src: /images/bolsward.jpg
+          alt: "Hero 1"
+        title: Lorem ipsum
+        description: >-
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      - image:
+          src: /images/bolsward.jpg
+          alt: "Hero 1"
+        title: Lorem ipsum
+        description: >-
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  - block: contact-1
+    children: |
+      <h2>Meld je nu aan</h2>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      </p>
+    channels:
+      - type: "email"
+        value: "info@bolsward.nl"
+      - type: "phone"
+        value: "+316 12345678"
+    socials:
+      - "https://www.facebook.com/bolsward"
+      - "https://www.instagram.com/bolsward"
+    form:
+      action: /bedankt
+      fields:
+        - name: naam
+          type: text
+          label: Name
+          required: true
+        - name: email
+          type: email
+          label: E-Mail
+          required: false
+        - name: telefoon
+          type: tel
+          label: Telefonnummer
+          required: false
+        - name: bericht
+          type: textarea
+          label: Bericht
+      submit: Verstuur aanmelding
+---

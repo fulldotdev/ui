@@ -31,7 +31,7 @@ export default function ({ children, tagline, items }: BlockProps) {
               key={i}
               panel={false}
             >
-              <TileContent className="flex flex-col items-center">
+              <TileContent className="flex flex-col items-center text-center">
                 {icon && (
                   <div className="bg-accent rounded-full p-3">
                     <Icon name={icon} />

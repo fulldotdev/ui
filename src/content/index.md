@@ -33,8 +33,4 @@ blocks:
         description: >-
           Each component and block is publicly available on GitHub and via a
           shadcn registry.
-  - block: hero-2
-    children: <p>Hello there!</p>
-    links: []
-    image: {}
 ---
