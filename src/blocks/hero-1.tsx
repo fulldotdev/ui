@@ -1,43 +1,46 @@
 import type { BlockProps } from "@/lib/types"
+import { Chip } from "@/components/ui/chip"
 import { Link } from "@/components/ui/link"
+import {
+  Review,
+  ReviewContent,
+  ReviewImage,
+  ReviewRating,
+} from "@/components/ui/review"
 import {
   Section,
   SectionContainer,
   SectionContent,
   SectionFooter,
 } from "@/components/ui/section"
-import { Rating } from "@/components/rating"
 
-export default function ({
-  children,
-  links,
-  image,
-  rating,
-  tagline,
-  avatars,
-}: BlockProps) {
+export default function ({ children, links, image, review, chip }: BlockProps) {
   return (
     <Section>
       <SectionContainer className="flex flex-col items-center">
-        {rating && tagline && avatars && (
-          <div className="flex items-center">
-            {avatars?.map((avatar, i) => (
-              <img
-                className="size-10 rounded-full object-cover not-first:-ml-4"
-                key={i}
-                alt={`Avatar ${i + 1}`}
-                {...avatar}
-              />
+        {chip && (
+          <Chip
+            className="animate-in fade-in fill-mode-backwards delay-700 duration-500 ease-in"
+            variant="secondary"
+            href={chip.href}
+          >
+            {chip.text}
+          </Chip>
+        )}
+        {review && (
+          <Review className="animate-in fade-in fill-mode-backwards delay-700 duration-500 ease-in not-first:mt-5">
+            {review.images?.map((image, i) => (
+              <ReviewImage key={i} {...image} />
             ))}
-            <div className="flex flex-col gap-1 not-first:ml-3.5">
-              <Rating score={rating} />
-              <span className="text-muted-foreground text-sm">{tagline}</span>
-            </div>
-          </div>
+            <ReviewContent>
+              <ReviewRating rating={review.rating} />
+              {review.tagline}
+            </ReviewContent>
+          </Review>
         )}
         <SectionContent
           size="xl"
-          className="text-center text-balance not-first:mt-5"
+          className="animate-in fade-in fill-mode-backwards text-center text-balance delay-250 duration-750 ease-in not-first:mt-5"
         >
           {children}
         </SectionContent>
@@ -45,9 +48,10 @@ export default function ({
           <SectionFooter className="mt-8">
             {links.map(({ href, text }, i) => (
               <Link
+                className={`animate-in fade-in fill-mode-backwards duration-500 ease-in ${i === 0 ? "delay-500" : "delay-600"}`}
                 key={i}
                 href={href}
-                variant={i === 0 ? "default" : "ghost"}
+                variant={i === 0 ? "default" : "outline"}
                 size="lg"
               >
                 {text}
@@ -56,7 +60,10 @@ export default function ({
           </SectionFooter>
         )}
         {image?.src && (
-          <img className="rounded-lg not-first:mt-16" {...image} />
+          <img
+            className="animate-in fade-in fill-mode-backwards rounded-lg delay-800 duration-1000 ease-in not-first:mt-16"
+            {...image}
+          />
         )}
       </SectionContainer>
     </Section>

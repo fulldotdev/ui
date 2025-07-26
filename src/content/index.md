@@ -13,6 +13,12 @@ blocks:
         href: /docs/
       - text: "GitHub "
         href: https://github.com/fulldotdev/ui
+    image:
+      src: /images/placeholder.webp
+      alt: "Hero 1"
+    chip:
+      text: "100+ downloads"
+      href: /docs/
   - block: features-1
     items:
       - title: Great AI agents experience

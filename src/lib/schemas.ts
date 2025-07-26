@@ -84,6 +84,16 @@ export const subscriptionSchema = z
   .partial()
   .strict()
 
+export const reviewSchema = z
+  .object({
+    rating: z.number().min(0).max(5).step(0.25),
+    images: imageSchema.array(),
+    title: z.string(),
+    tagline: z.string(),
+  })
+  .partial()
+  .strict()
+
 export const itemSchema = z
   .object({
     // Config
@@ -92,6 +102,7 @@ export const itemSchema = z
     reverse: z.boolean(),
     // Options
     published: z.date(),
+    chip: linkSchema,
     // Base
     name: z.string(),
     title: z.string(),
@@ -99,7 +110,7 @@ export const itemSchema = z
     href: z.string(),
     tagline: z.string(),
     icon: z.enum(["check", "cross"]),
-    rating: z.number().min(0).max(5).step(0.25).nullable(),
+    rating: z.number().min(0).max(5).step(0.25),
     unit: z.string(),
     price: z.number().nullable(),
     comparePrice: z.number().nullable(),
@@ -115,6 +126,7 @@ export const itemSchema = z
     subscription: subscriptionSchema,
     hours: hoursSchema,
     form: formSchema,
+    review: reviewSchema,
     // Objects and arrays
     image: imageSchema,
     images: imageSchema.array(),
