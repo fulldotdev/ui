@@ -21,8 +21,9 @@ declare global {
 
 function Page({
   entries,
+  children,
   ...page
-}: EntrySchema & { entries: CollectionEntry<"content">[] }) {
+}: EntrySchema & { entries: CollectionEntry<"content">[]; children: any }) {
   // State to manage live page data from CloudCannon
   const [pageData, setPageData] = useState(page)
 
@@ -89,7 +90,7 @@ function Page({
     <>
       {page.block && (
         <Block {...pageData} entries={entries}>
-          {typeof pageData.children === "string" && parse(pageData.children)}
+          {children}
         </Block>
       )}
       {pageData.blocks?.map((block, index) => (

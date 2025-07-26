@@ -21,8 +21,8 @@ export default function ({ children, links, items }: BlockProps) {
       <SectionContainer>
         {children && <SectionContent>{children}</SectionContent>}
         <SectionGrid className="not-first:mt-12">
-          {items?.map(({ title, description, image, href }, i) => (
-            <Tile key={i} href={href} panel={false}>
+          {items?.map(({ title, image, href }, i) => (
+            <Tile key={i} href={href}>
               <TileImage className="aspect-4/3 object-cover" {...image} />
               <TileContent>
                 <TileTitle>{title}</TileTitle>

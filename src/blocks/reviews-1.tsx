@@ -18,16 +18,19 @@ import {
   TileTitle,
 } from "@/components/ui/tile"
 
-export default function ({ children, items }: BlockProps) {
+export default function ({ children, tagline, items }: BlockProps) {
   return (
     <Section>
       <SectionContainer className="flex flex-col items-center">
+        {tagline && (
+          <span className="text-primary text-sm font-semibold">{tagline}</span>
+        )}
         {children && (
-          <SectionContent className="text-center" size="lg">
+          <SectionContent className="text-center not-first:mt-4" size="lg">
             {children}
           </SectionContent>
         )}
-        <SectionMasonry className="gap-4 space-y-6 not-first:mt-12">
+        <SectionMasonry className="gap-4 space-y-6 not-first:mt-16">
           {items?.map(({ title, description, rating, image, tagline }, i) => (
             <Tile key={i}>
               <TileContent>

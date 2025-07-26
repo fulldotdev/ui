@@ -71,7 +71,7 @@ function SectionGrid({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "grid w-full grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6",
+        "grid w-full grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-start gap-6",
         className
       )}
       {...props}
