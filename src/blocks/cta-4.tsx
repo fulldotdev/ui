@@ -14,7 +14,7 @@ export default function ({ children, links }: BlockProps) {
         {children && (
           <SectionContent
             className="**:!text-primary-foreground max-w-2xl"
-            size="xl"
+            size="lg"
           >
             {children}
           </SectionContent>
