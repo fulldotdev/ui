@@ -37,7 +37,7 @@ const iconMap = {
   snapchat: <SiSnapchat />,
   reddit: <SiReddit />,
   tumblr: <SiTumblr />,
-  whatsapp: <SiWhatsapp />,
+  "wa.me": <SiWhatsapp />,
   telegram: <SiTelegram />,
   discord: <SiDiscord />,
   vimeo: <SiVimeo />,
