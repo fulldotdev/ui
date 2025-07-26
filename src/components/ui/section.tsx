@@ -30,7 +30,7 @@ export const sectionSplitVariants = cva(
         false: null,
       },
       sticky: {
-        true: "lg:*:sticky lg:*:top-24",
+        true: "lg:*:sticky lg:*:top-16",
         false: null,
       },
     },
