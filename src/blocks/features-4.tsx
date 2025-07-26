@@ -24,16 +24,15 @@ export default function ({ children, tagline, items }: BlockProps) {
             {children}
           </SectionContent>
         )}
-        <div className="flex flex-wrap justify-center gap-x-16 gap-y-8 not-first:mt-16">
+        <div className="flex flex-wrap justify-center gap-8 not-first:mt-16">
           {items?.map(({ title, description, icon }, i) => (
             <Tile
-              className="flex max-w-md min-w-2xs grow-1 basis-2xs flex-col items-center"
+              className="bg-accent flex max-w-md min-w-2xs grow-1 basis-2xs flex-col items-center border-none"
               key={i}
-              panel={false}
             >
-              <TileContent className="flex flex-col items-center">
+              <TileContent className="flex flex-col items-start">
                 {icon && (
-                  <div className="bg-accent rounded-full p-3">
+                  <div className="bg-background rounded-full p-2">
                     <Icon name={icon} />
                   </div>
                 )}

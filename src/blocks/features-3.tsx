@@ -1,11 +1,9 @@
 import type { BlockProps } from "@/lib/types"
 import { Icon } from "@/components/ui/icon"
-import { Link } from "@/components/ui/link"
 import {
   Section,
   SectionContainer,
   SectionContent,
-  SectionFooter,
   SectionGrid,
   SectionSplit,
 } from "@/components/ui/section"
@@ -16,37 +14,37 @@ import {
   TileTitle,
 } from "@/components/ui/tile"
 
-export default function ({ children, links, items }: BlockProps) {
+export default function ({ children, tagline, items }: BlockProps) {
   return (
     <Section>
       <SectionContainer className="flex flex-col">
         <SectionSplit sticky={true}>
-          <div className="flex flex-col">
-            {children && <SectionContent>{children}</SectionContent>}
-            {links && links.length > 0 && (
-              <SectionFooter className="not-first:mt-8">
-                {links.map(({ text, href }, i) => (
-                  <Link
-                    key={i}
-                    href={href}
-                    variant={i === 0 ? "default" : "ghost"}
-                  >
-                    {text}
-                  </Link>
-                ))}
-              </SectionFooter>
+          <div className="flex flex-col lg:col-span-2">
+            {tagline && (
+              <span className="text-primary text-sm font-semibold">
+                {tagline}
+              </span>
+            )}
+            {children && (
+              <SectionContent className="not-first:mt-4" size="lg">
+                {children}
+              </SectionContent>
             )}
           </div>
-          <SectionGrid className="grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-16 lg:col-span-2">
+          <SectionGrid className="grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-8 lg:col-span-3">
             {items?.map(({ title, description, icon }, i) => (
-              <Tile className="flex flex-col" key={i} panel={false}>
-                <TileContent>
-                  {icon && <Icon name={icon} className="text-primary size-8" />}
-                  <TileTitle className="text-xl">{title}</TileTitle>
+              <Tile key={i} panel={false}>
+                <TileContent className="items-start">
+                  {icon && (
+                    <div className="bg-accent rounded-full p-3">
+                      <Icon name={icon} />
+                    </div>
+                  )}
+                  <TileTitle className="text-lg not-first:mt-2">
+                    {title}
+                  </TileTitle>
                   {description && (
-                    <TileDescription className="text-base/7">
-                      {description}
-                    </TileDescription>
+                    <TileDescription>{description}</TileDescription>
                   )}
                 </TileContent>
               </Tile>
