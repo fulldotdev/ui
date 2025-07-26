@@ -21,8 +21,12 @@ import {
 export default function ({ children, items }: BlockProps) {
   return (
     <Section>
-      <SectionContainer className="flex flex-col">
-        {children && <SectionContent>{children}</SectionContent>}
+      <SectionContainer className="flex flex-col items-center">
+        {children && (
+          <SectionContent className="text-center" size="lg">
+            {children}
+          </SectionContent>
+        )}
         <SectionMasonry className="gap-4 space-y-6 not-first:mt-12">
           {items?.map(({ title, description, rating, image, tagline }, i) => (
             <Tile key={i}>

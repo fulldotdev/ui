@@ -89,7 +89,7 @@ export default function ({
           )}
           {menus?.map((menu, i) => (
             <div className="menu flex flex-col items-start gap-4" key={i}>
-              <h4 className="text-foreground text-sm font-semibold">
+              <h4 className="text-foreground text-sm font-semibold whitespace-nowrap">
                 {menu.text}
               </h4>
               <menu className="flex w-full flex-col items-start gap-3">

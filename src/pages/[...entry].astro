@@ -1,6 +1,6 @@
 ---
 import { i18n } from "astro:config/server"
-import { getCollection, getEntry } from "astro:content"
+import { getCollection, getEntry, render } from "astro:content"
 
 import { getHrefByEntry } from "@/lib/collections"
 import Layout from "@/components/layout.astro"
@@ -9,7 +9,9 @@ import { Page as CloudCannonPage } from "@/components/page"
 // Generate static paths
 export async function getStaticPaths() {
   const entries = await getCollection("content")
-  const locales = i18n?.locales
+  const locales = i18n?.locales.filter(
+    (locale) => locale !== i18n?.defaultLocale
+  )
 
   return entries
     .map((entry) => {
@@ -34,10 +36,13 @@ export async function getStaticPaths() {
     .filter(Boolean)
 }
 
-const { body, data } = Astro.props.entry
+const { Content } = await render(Astro.props.entry)
+const { data } = Astro.props.entry
 const entries = Astro.props.entries
 ---
 
 <Layout {...data}>
-  <CloudCannonPage client:load {...data} children={body} entries={entries} />
+  <CloudCannonPage client:load {...data} entries={entries}>
+    <Content />
+  </CloudCannonPage>
 </Layout>
