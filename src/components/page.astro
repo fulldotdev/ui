@@ -1,25 +1,21 @@
 ---
-import Block from "@/components/block.astro"
+import { Block } from "@/components/block"
 
-const { blocks, ...page } = Astro.props
+const { block, blocks, ...page } = Astro.props
 ---
 
-<Block {...page} />
+{
+  block && (
+    <Block client:load {...page}>
+      <slot />
+    </Block>
+  )
+}
 
-{blocks?.map((block: any) => <Block {...block} />)}
-
-<!-- {
+{
   blocks?.map((block: any) => (
-    <>
-      {clientLoad.includes(block) ? (
-        <Block client:load {...block}>
-          <Fragment set:html={block.children} />
-        </Block>
-      ) : (
-        <Block {...block}>
-          <Fragment set:html={block.children} />
-        </Block>
-      )}
-    </>
+    <Block client:load {...block}>
+      <Fragment set:html={block.children} />
+    </Block>
   ))
-} -->
+}
