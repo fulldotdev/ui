@@ -42,4 +42,5 @@ blocks:
     references:
       - /src/content/bolsward.md
       - /src/content/bolsward.md
+      - /src/content/bolsward.md
 ---

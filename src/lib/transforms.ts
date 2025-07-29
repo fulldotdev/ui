@@ -36,19 +36,15 @@ export function getItemsByReference(
   content: ContentEntry[]
 ) {
   if (!paths) return
-  const references = paths?.map((path) => {
-    const slug = path.split("/src/content/")[1].split(".")[0]
-    const id = slug.replace("/index", "")
-    const ref = {
-      collection: "content",
-      id,
-    }
-    return ref
-  })
-  const entries = content.filter((entry) =>
-    references.some((reference) => reference.id === entry.id)
-  )
-  const items = entries.map(getItemByEntry)
+  const items = paths
+    .map((path) => {
+      if (!path) return
+      const slug = path.split("/src/content/")[1].split(".")[0]
+      const id = slug.replace("/index", "")
+      const entry = content.find((entry) => entry.id === id)
+      return entry ? getItemByEntry(entry) : undefined
+    })
+    .filter((item) => item !== undefined)
   return items
 }
 
