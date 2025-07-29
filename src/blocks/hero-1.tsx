@@ -17,18 +17,15 @@ import {
 export default function ({ children, links, image, review, chip }: BlockProps) {
   return (
     <Section>
+      <div className="from-primary/10 pointer-events-none absolute -top-14 bottom-0 left-0 z-20 w-full bg-radial-[at_50%_0%] via-transparent to-transparent" />
       <SectionContainer className="flex flex-col items-center">
         {chip && (
-          <Chip
-            className="animate-in fade-in fill-mode-backwards delay-700 duration-500 ease-in"
-            variant="secondary"
-            href={chip.href}
-          >
+          <Chip className="animate-fade-4" variant="secondary" href={chip.href}>
             {chip.text}
           </Chip>
         )}
         {review && (
-          <Review className="animate-in fade-in fill-mode-backwards delay-700 duration-500 ease-in not-first:mt-5">
+          <Review className="animate-fade-4 not-first:mt-5">
             {review.images?.map((image, i) => (
               <ReviewImage key={i} {...image} />
             ))}
@@ -40,7 +37,7 @@ export default function ({ children, links, image, review, chip }: BlockProps) {
         )}
         <SectionContent
           size="xl"
-          className="animate-in fade-in fill-mode-backwards text-center text-balance delay-250 duration-750 ease-in not-first:mt-5"
+          className="animate-fade-1 text-center text-balance not-first:mt-5"
         >
           {children}
         </SectionContent>
@@ -48,7 +45,7 @@ export default function ({ children, links, image, review, chip }: BlockProps) {
           <SectionFooter className="mt-8">
             {links.map(({ href, text }, i) => (
               <Link
-                className={`animate-in fade-in fill-mode-backwards duration-500 ease-in ${i === 0 ? "delay-500" : "delay-600"}`}
+                className={i === 0 ? "animate-fade-2" : "animate-fade-3"}
                 key={i}
                 href={href}
                 variant={i === 0 ? "default" : "outline"}
@@ -61,7 +58,7 @@ export default function ({ children, links, image, review, chip }: BlockProps) {
         )}
         {image?.src && (
           <img
-            className="animate-in fade-in fill-mode-backwards rounded-lg delay-800 duration-1000 ease-in not-first:mt-16"
+            className="animate-fade-5 rounded-lg not-first:mt-16"
             {...image}
           />
         )}

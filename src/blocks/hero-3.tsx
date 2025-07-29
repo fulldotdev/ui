@@ -23,7 +23,7 @@ export default function ({ children, links, image, chip, review }: BlockProps) {
           <div className="flex flex-col items-start px-4 lg:px-8">
             {chip && (
               <Chip
-                className="animate-in fade-in fill-mode-backwards delay-700 duration-500 ease-in"
+                className="animate-fade-4"
                 variant="secondary"
                 href={chip.href}
               >
@@ -31,7 +31,7 @@ export default function ({ children, links, image, chip, review }: BlockProps) {
               </Chip>
             )}
             {review && (
-              <Review className="animate-in fade-in fill-mode-backwards delay-700 duration-500 ease-in not-first:mt-5">
+              <Review className="animate-fade-4 not-first:mt-5">
                 {review.images?.map((image, i) => (
                   <ReviewImage key={i} {...image} />
                 ))}
@@ -42,7 +42,7 @@ export default function ({ children, links, image, chip, review }: BlockProps) {
               </Review>
             )}
             <SectionContent
-              className="animate-in fade-in fill-mode-backwards text-balance delay-250 duration-750 ease-in not-first:mt-5"
+              className="animate-fade-1 text-balance not-first:mt-5"
               size="lg"
             >
               {children}
@@ -51,7 +51,7 @@ export default function ({ children, links, image, chip, review }: BlockProps) {
               <SectionFooter className="mt-8">
                 {links.map(({ href, text }, i) => (
                   <Link
-                    className={`animate-in fade-in fill-mode-backwards duration-500 ease-in ${i === 0 ? "delay-500" : "delay-600"}`}
+                    className={i === 0 ? "animate-fade-2" : "animate-fade-3"}
                     key={href}
                     href={href}
                     variant={i === 0 ? "default" : "outline"}

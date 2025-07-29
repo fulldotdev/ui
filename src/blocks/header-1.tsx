@@ -7,7 +7,7 @@ import { MobileMenu } from "@/components/mobile-nav"
 
 export default function ({ logo, menus, links }: BlockProps) {
   return (
-    <Header>
+    <Header className="z-10">
       <HeaderContainer>
         <div className="flex items-center gap-2">
           {menus && menus.length > 0 && (

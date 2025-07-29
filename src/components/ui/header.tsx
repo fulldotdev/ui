@@ -6,7 +6,7 @@ function Header({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <header
       className={cn(
-        "bg-background sticky top-0 z-50 flex h-14 w-full items-center border-b",
+        "bg-background sticky top-0 z-50 flex h-14 w-full items-center",
         className
       )}
       {...props}

@@ -26,7 +26,7 @@ export default function ({
   }
 
   return (
-    <Section className="-z-10">
+    <Section>
       <SectionContainer className="flex flex-col items-center gap-4">
         <Tabs defaultValue="preview" className="w-full">
           <div className="flex w-full items-center justify-between">
