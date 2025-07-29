@@ -40,9 +40,7 @@ function Page({
       CloudCannonInstance.value()
         .then((latestValue: any) => {
           if (latestValue) {
-            console.log({ latestValue })
             const transformed = transformEntry(latestValue, content, images)
-            console.log({ transformed })
             setPageData(transformed)
           }
         })
@@ -57,9 +55,7 @@ function Page({
       try {
         const latestValue = await CloudCannonInstance.value()
         if (latestValue) {
-          console.log({ latestValue })
           const transformed = transformEntry(latestValue, content, images)
-          console.log({ transformed })
           setPageData(transformed)
         }
       } catch (error) {
