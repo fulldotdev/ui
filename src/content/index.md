@@ -41,6 +41,4 @@ blocks:
       <h2>Wie er al deelnemen</h2>
     references:
       - /src/content/bolsward.md
-      - /src/content/bolsward.md
-      - /src/content/bolsward.md
 ---
