@@ -40,6 +40,7 @@ async function Page({
       CloudCannonInstance.value()
         .then((latestValue: any) => {
           if (latestValue) {
+            console.log({ latestValue })
             const transformed = transformEntry(latestValue, content, images)
             setPageData(transformed)
           }
@@ -55,6 +56,7 @@ async function Page({
       try {
         const latestValue = await CloudCannonInstance.value()
         if (latestValue) {
+          console.log({ latestValue })
           const transformed = transformEntry(latestValue, content, images)
           setPageData(transformed)
         }
