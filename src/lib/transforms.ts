@@ -63,6 +63,7 @@ export function getItemsByGlob(
 export function transformImage(image: Image | undefined, images: Image[]) {
   if (!image) return
   const found = images.find((img) => img.id === image.src)
+  console.log({ image, images, found })
   if (!found) return image
   return {
     ...found.attributes,

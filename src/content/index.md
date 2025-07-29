@@ -2,7 +2,7 @@
 published: 2025-07-16T00:00:00Z
 title: Home
 image:
-  src: placeholder.webp
+  src: /placeholder.webp
   alt: "Hero 1"
 blocks:
   - block: hero-1
@@ -17,7 +17,7 @@ blocks:
       - text: "GitHub "
         href: https://github.com/fulldotdev/ui
     image:
-      src: placeholder.webp
+      src: /placeholder.webp
       alt: "Hero 1"
     chip:
       text: "100+ downloads"

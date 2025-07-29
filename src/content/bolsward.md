@@ -2,7 +2,7 @@
 published: 2025-07-16T00:00:00Z
 title: Home
 image:
-  src: bolsward.jpg
+  src: /bolsward.jpg
   alt: "Hero 1"
 blocks:
   - block: hero-1
@@ -16,7 +16,7 @@ blocks:
       - text: "Bekijk deelnemers"
         href: "#"
     image:
-      src: bolsward.jpg
+      src: /bolsward.jpg
       alt: "Hero 1"
   - block: features-1
     items:
@@ -37,19 +37,19 @@ blocks:
       <h2>Wie er al deelnemen</h2>
     items:
       - image:
-          src: bolsward.jpg
+          src: /bolsward.jpg
           alt: "Hero 1"
         title: Lorem ipsum
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
       - image:
-          src: bolsward.jpg
+          src: /bolsward.jpg
           alt: "Hero 1"
         title: Lorem ipsum
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
       - image:
-          src: bolsward.jpg
+          src: /bolsward.jpg
           alt: "Hero 1"
         title: Lorem ipsum
         description: >-
