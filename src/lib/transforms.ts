@@ -39,8 +39,8 @@ export function getItemsByReference(
   const items = paths
     .map((path) => {
       if (!path) return
-      const slug = path.split("/src/content/")[1].split(".")[0]
-      const id = slug.replace("/index", "")
+      const slug = path.split("/src/content/")[1]?.split(".")[0]
+      const id = slug?.replace("/index", "")
       const entry = content.find((entry) => entry.id === id)
       return entry ? getItemByEntry(entry) : undefined
     })
