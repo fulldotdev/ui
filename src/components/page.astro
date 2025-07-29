@@ -2,20 +2,46 @@
 import { Block } from "@/components/block"
 
 const { block, blocks, ...page } = Astro.props
+
+const clientLoad = [
+  "block-1",
+  "header-1",
+  "faqs-1",
+  "faqs-2",
+  "contact-1",
+  "contact-2",
+  "contact-2",
+]
 ---
 
 {
   block && (
-    <Block client:load {...page}>
-      <slot />
-    </Block>
+    <>
+      {clientLoad.includes(block) ? (
+        <Block client:load {...page}>
+          <slot />
+        </Block>
+      ) : (
+        <Block {...page}>
+          <slot />
+        </Block>
+      )}
+    </>
   )
 }
 
 {
   blocks?.map((block: any) => (
-    <Block client:load {...block}>
-      <Fragment set:html={block.children} />
-    </Block>
+    <>
+      {clientLoad.includes(block) ? (
+        <Block client:load {...block}>
+          <Fragment set:html={block.children} />
+        </Block>
+      ) : (
+        <Block {...block}>
+          <Fragment set:html={block.children} />
+        </Block>
+      )}
+    </>
   ))
 }
