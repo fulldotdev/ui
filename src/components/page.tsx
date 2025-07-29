@@ -19,7 +19,7 @@ declare global {
   }
 }
 
-async function Page({
+function Page({
   children,
   content,
   images,

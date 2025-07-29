@@ -39,8 +39,8 @@ export function getItemsByReference(
   const items = paths
     .map((path) => {
       if (!path) return
-      const slug = path.split("/src/content/")[1]?.split(".")[0]
-      const id = slug?.replace("/index", "")
+      const slug = path.split("/src/content/")[1].split(".")[0]
+      const id = slug.replace("/index", "")
       const entry = content.find((entry) => entry.id === id)
       return entry ? getItemByEntry(entry) : undefined
     })
@@ -73,9 +73,11 @@ export function transformImage(image: Image | undefined, images: Image[]) {
 
 export function transformEntry(
   { image, blocks = [], ...data }: EntrySchema,
-  content: ContentEntry[]
+  content: ContentEntry[],
+  images: Image[]
 ) {
   return {
+    image: transformImage(image, images),
     blocks: blocks?.map(({ image, references, glob, items, ...block }, i) => {
       const referenceItems = getItemsByReference(references, content)
       const globItems = getItemsByGlob(glob, content)
@@ -85,8 +87,10 @@ export function transformEntry(
         ...(items ?? []),
       ]
       return {
+        image: transformImage(image, images),
         items: mergedItems?.map(({ image, ...item }) => ({
           ...item,
+          image: transformImage(image, images),
         })),
         ...block,
       }
