@@ -73,11 +73,9 @@ export function transformImage(image: Image | undefined, images: Image[]) {
 
 export function transformEntry(
   { image, blocks = [], ...data }: EntrySchema,
-  content: ContentEntry[],
-  images: Image[]
+  content: ContentEntry[]
 ) {
   return {
-    image: transformImage(image, images),
     blocks: blocks?.map(({ image, references, glob, items, ...block }, i) => {
       const referenceItems = getItemsByReference(references, content)
       const globItems = getItemsByGlob(glob, content)
@@ -87,10 +85,8 @@ export function transformEntry(
         ...(items ?? []),
       ]
       return {
-        image: transformImage(image, images),
         items: mergedItems?.map(({ image, ...item }) => ({
           ...item,
-          image: transformImage(image, images),
         })),
         ...block,
       }
