@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import parse from "html-react-parser"
 
 import type { EntrySchema } from "@/lib/schemas"
+import { transformEntry } from "@/lib/transforms"
 import { Block } from "@/components/block"
 
 // CloudCannon types for live editing functionality
@@ -18,7 +19,7 @@ declare global {
   }
 }
 
-function Page({ children, ...page }: EntrySchema) {
+async function Page({ children, ...page }: EntrySchema) {
   // State to manage live page data from CloudCannon
   const [pageData, setPageData] = useState(page)
 

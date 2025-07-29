@@ -7,7 +7,7 @@ import {
   type CollectionEntry,
 } from "astro:content"
 
-import { imageSchema } from "@/lib/schemas"
+import { imageSchema, type EntrySchema } from "@/lib/schemas"
 
 const images = import.meta.glob("/src/images/**", { eager: true })
 
@@ -52,18 +52,13 @@ export async function getItemsByGlob(glob?: string) {
   return items
 }
 
-export async function transformImage(
-  image?: z.infer<typeof imageSchema>,
-  priority?: boolean
-) {
+export async function transformImage(image?: z.infer<typeof imageSchema>) {
   if (!image) return image
   const found = images[`/src/images/${image.src}`] as any
   const metadata = found.default as ImageMetadata
   const generated = await getImage({
     src: metadata,
     format: "webp",
-    inferSize: true,
-    priority,
   })
   return {
     ...image,
@@ -72,41 +67,34 @@ export async function transformImage(
   }
 }
 
-export async function transformEntry(entry: CollectionEntry<"content">) {
-  if (!entry) return
-
-  const {
-    data: { image, blocks = [], ...restData },
-    ...restEntry
-  } = entry
-
+export async function transformEntry({
+  image,
+  blocks = [],
+  ...data
+}: EntrySchema) {
   return {
-    data: {
-      href: getHrefByEntry(entry),
-      image: await transformImage(image, true),
-      blocks: await Promise.all(
-        blocks?.map(async ({ image, references, glob, items, ...block }, i) => {
-          const referenceItems = await getItemsByReference(references)
-          const globItems = await getItemsByGlob(glob)
-          const mergedItems = [
-            ...(referenceItems ?? []),
-            ...(globItems ?? []),
-            ...(items ?? []),
-          ]
-          return {
-            image: await transformImage(image, i === 0),
-            items: await Promise.all(
-              mergedItems?.map(async ({ image, ...item }) => ({
-                ...item,
-                image: await transformImage(image),
-              }))
-            ),
-            ...block,
-          }
-        })
-      ),
-      ...restData,
-    },
-    ...restEntry,
+    image: await transformImage(image),
+    blocks: await Promise.all(
+      blocks?.map(async ({ image, references, glob, items, ...block }, i) => {
+        const referenceItems = await getItemsByReference(references)
+        const globItems = await getItemsByGlob(glob)
+        const mergedItems = [
+          ...(referenceItems ?? []),
+          ...(globItems ?? []),
+          ...(items ?? []),
+        ]
+        return {
+          image: await transformImage(image),
+          items: await Promise.all(
+            mergedItems?.map(async ({ image, ...item }) => ({
+              ...item,
+              image: await transformImage(image),
+            }))
+          ),
+          ...block,
+        }
+      })
+    ),
+    ...data,
   }
 }
