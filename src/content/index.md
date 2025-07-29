@@ -40,6 +40,6 @@ blocks:
     children: >-
       <h2>Wie er al deelnemen</h2>
     references:
-      - title: Bolsward
-        href: /bolsward
+      - /src/content/bolsward.md
+      - /src/content/bolsward.md
 ---

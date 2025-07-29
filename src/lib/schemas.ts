@@ -136,7 +136,7 @@ export const blockSchema = itemSchema
   .extend({
     items: itemSchema.array(),
     glob: z.string(),
-    references: z.any().array(),
+    references: pathSchema.array(),
   })
   .partial()
   .strict()
