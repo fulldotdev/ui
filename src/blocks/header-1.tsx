@@ -8,29 +8,25 @@ import { MobileMenu } from "@/components/mobile-nav"
 export default function ({ logo, menus, links }: BlockProps) {
   return (
     <Header className="z-10">
-      <HeaderContainer>
-        <div className="flex items-center gap-2">
-          {menus && menus.length > 0 && (
-            <MobileMenu className="lg:hidden" items={menus} />
-          )}
-          {logo && (
-            <Logo href="/" className="mr-4 max-sm:hidden">
-              {logo.src && <LogoImage {...logo} />}
-              {logo.title && logo.title}
-            </Logo>
-          )}
-          {menus && (
-            <MainMenu className="max-xl:-ml-3 max-lg:hidden" items={menus} />
-          )}
-        </div>
+      <HeaderContainer className="flex items-center gap-2">
+        {menus && menus.length > 0 && (
+          <MobileMenu className="lg:hidden" items={menus} />
+        )}
+        {logo && (
+          <Logo href="/" className="mr-4 max-sm:hidden">
+            {logo.src && <LogoImage {...logo} />}
+            {logo.title && logo.title}
+          </Logo>
+        )}
+        {menus && <MainMenu className="mr-auto max-lg:hidden" items={menus} />}
         {links && links.length > 0 && (
-          <div className="inline-flex flex-nowrap items-center gap-2">
+          <div className="ml-auto inline-flex flex-nowrap items-center gap-2">
             {links.map(({ text, href }, i) => (
               <Link
                 className={i < links.length - 1 ? "max-sm:hidden" : ""}
                 key={i}
                 href={href}
-                variant={i === links.length - 1 ? "default" : "ghost"}
+                variant={i === links.length - 1 ? "outline" : "ghost"}
               >
                 {text}
               </Link>

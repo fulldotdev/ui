@@ -18,12 +18,12 @@ export default function ({ children, tagline, items }: BlockProps) {
     <Section>
       <SectionContainer>
         {tagline && (
-          <span className="text-primary text-sm font-semibold">{tagline}</span>
+          <span className="text-accent-foreground text-sm font-medium">
+            {tagline}
+          </span>
         )}
         {children && (
-          <SectionContent className="not-first:mt-4" size="lg">
-            {children}
-          </SectionContent>
+          <SectionContent className="not-first:mt-4">{children}</SectionContent>
         )}
         <SectionGrid className="gap-8 not-first:mt-16">
           {items?.map(({ title, description, icon }, i) => (

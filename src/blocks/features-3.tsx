@@ -21,7 +21,7 @@ export default function ({ children, tagline, items }: BlockProps) {
         <SectionSplit sticky={true}>
           <div className="flex flex-col lg:col-span-2">
             {tagline && (
-              <span className="text-primary text-sm font-semibold">
+              <span className="text-accent-foreground text-sm font-medium">
                 {tagline}
               </span>
             )}

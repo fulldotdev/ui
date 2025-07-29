@@ -69,13 +69,13 @@ export default function ({ children, links, review, chip, items }: BlockProps) {
             <Tile
               key={i}
               href={href}
-              className={
+              className={`${
                 i === 0
                   ? "animate-fade-2"
                   : i === 1
                     ? "animate-fade-3"
                     : "animate-fade-4"
-              }
+              }`}
             >
               <TileImage className="aspect-4/3 object-cover" {...image} />
               <TileContent>

@@ -4,7 +4,13 @@ import {
   SectionContainer,
   SectionContent,
 } from "@/components/ui/section"
-import { Tile, TileImage, TileTagline, TileTitle } from "@/components/ui/tile"
+import {
+  Tile,
+  TileContent,
+  TileImage,
+  TileTagline,
+  TileTitle,
+} from "@/components/ui/tile"
 
 export default function ({ children, items }: BlockProps) {
   return (
@@ -15,21 +21,18 @@ export default function ({ children, items }: BlockProps) {
         )}
         <div className="flex flex-wrap justify-center gap-16 not-first:mt-16">
           {items?.map(({ href, image, title, tagline }, i) => (
-            <Tile
-              className="relative flex shrink-1 basis-3xs flex-col items-center"
-              key={i}
-              href={href}
-              panel={false}
-            >
+            <Tile key={i} href={href} panel={false}>
               <TileImage
                 className="aspect-square !rounded-full object-cover"
                 alt={`${title} ${tagline}`}
                 {...image}
               />
-              <TileTitle>{title}</TileTitle>
-              <TileTagline className="text-muted-foreground text-center text-sm">
-                {tagline}
-              </TileTagline>
+              <TileContent>
+                <TileTitle>{title}</TileTitle>
+                <TileTagline className="text-muted-foreground text-center text-sm">
+                  {tagline}
+                </TileTagline>
+              </TileContent>
             </Tile>
           ))}
         </div>

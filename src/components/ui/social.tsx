@@ -22,6 +22,7 @@ import {
   SiYelp,
   SiYoutube,
 } from "@icons-pack/react-simple-icons"
+import { Mail, MapPin, Phone } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Link } from "@/components/ui/link"
@@ -49,6 +50,9 @@ const iconMap = {
   soundcloud: <SiSoundcloud />,
   github: <SiGithub />,
   twitch: <SiTwitch />,
+  "tel:": <Phone />,
+  "mailto:": <Mail />,
+  "https://maps.app.goo.gl/": <MapPin />,
   linkedin: (
     <svg
       width="24"

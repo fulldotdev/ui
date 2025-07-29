@@ -23,7 +23,9 @@ export default function ({ children, tagline, items }: BlockProps) {
     <Section>
       <SectionContainer className="flex flex-col items-center">
         {tagline && (
-          <span className="text-primary text-sm font-semibold">{tagline}</span>
+          <span className="text-accent-foreground text-sm font-medium">
+            {tagline}
+          </span>
         )}
         {children && (
           <SectionContent className="text-center not-first:mt-4" size="lg">

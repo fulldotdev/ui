@@ -17,10 +17,12 @@ function Tile({
       className={cn(
         "text-card-foreground flex flex-col gap-6",
         panel &&
-          "bg-card gap-0 overflow-hidden rounded-lg border **:data-[slot=tile-content]:p-6 **:data-[slot=tile-footer]:p-6",
+          "gap-0 overflow-hidden rounded-lg border **:data-[slot=tile-content]:p-6 **:data-[slot=tile-footer]:p-6",
         !panel && "**:data-[slot=tile-image]:rounded-lg",
         Comp === "a" && "group",
-        panel && Comp === "a" && "shadow-xs transition-shadow hover:shadow-sm",
+        panel &&
+          Comp === "a" &&
+          "bg-card shadow-sm transition-shadow hover:shadow-md",
         className
       )}
       {...props}

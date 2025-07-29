@@ -10,9 +10,9 @@ import {
 
 export default function ({ children, links, image, reverse }: BlockProps) {
   return (
-    <Section className="overflow-hidden">
+    <Section>
       <SectionContainer>
-        <SectionSplit className="items-center" reverse={reverse}>
+        <SectionSplit sticky={true} reverse={reverse}>
           <div className="flex flex-col items-start">
             {children && <SectionContent>{children}</SectionContent>}
             {links && links.length > 0 && (
@@ -30,12 +30,7 @@ export default function ({ children, links, image, reverse }: BlockProps) {
               </SectionFooter>
             )}
           </div>
-          {image?.src && (
-            <img
-              className="mb-[20%] origin-top-left scale-120 rounded-lg"
-              {...image}
-            />
-          )}{" "}
+          {image && <img className="rounded-lg" {...image} />}
         </SectionSplit>
       </SectionContainer>
     </Section>

@@ -2,14 +2,6 @@ import { z } from "astro:content"
 
 export const pathSchema = z.string().startsWith("/src/content/")
 
-export const channelSchema = z
-  .object({
-    type: z.enum(["email", "phone", "address", "website"]),
-    value: z.string(),
-  })
-  .partial()
-  .strict()
-
 export const imageSchema = z
   .object({
     src: z.string(),
@@ -119,7 +111,7 @@ export const itemSchema = z
     links: linkSchema.array(),
     menu: menuSchema,
     menus: menuSchema.array(),
-    channels: channelSchema.array(),
+    channels: linkSchema.array(),
     socials: z.string().array(),
     list: z.string().array(),
     tags: z.string().array(),

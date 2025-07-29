@@ -7,51 +7,30 @@ import {
   SectionSplit,
 } from "@/components/ui/section"
 import { Social } from "@/components/ui/social"
-import {
-  Tile,
-  TileContent,
-  TileDescription,
-  TileFooter,
-  TileImage,
-  TileTitle,
-} from "@/components/ui/tile"
 
 export default function ({
   children,
   title,
   tagline,
   image,
-  socials,
-  links,
+  description,
 }: BlockProps) {
   return (
-    <Section>
-      <SectionContainer>
-        <SectionSplit sticky={true}>
-          <Tile className="flex max-w-sm flex-col">
-            <TileImage
-              className="aspect-square w-full object-cover"
-              {...image}
-            />
-            <TileContent>
-              <TileTitle>{title}</TileTitle>
-              <TileDescription>{tagline}</TileDescription>
-            </TileContent>
-            <TileFooter className="flex flex-col">
-              <div className="flex gap-2">
-                {socials?.map((social, i) => (
-                  <Social key={i} href={social} />
-                ))}
-              </div>
-              {links?.map(({ href, text }, i) => (
-                <Link key={i} href={href} variant="outline" size="lg">
-                  {text}
-                </Link>
-              ))}
-            </TileFooter>
-          </Tile>
-          <SectionContent>{children}</SectionContent>
+    <Section className="pt-12">
+      <SectionContainer className="max-w-screen-lg">
+        <SectionSplit className="bg-muted items-center !gap-0 overflow-hidden rounded-2xl">
+          <img className="aspect-square w-full object-cover" {...image} />
+          <SectionContent className="flex flex-col gap-1.5 p-12">
+            <p className="text-accent-foreground text-sm font-medium">
+              {tagline}
+            </p>
+            <h1 className="not-first:!mt-3">{title}</h1>
+            <p className="text-muted-foreground text-lg">{description}</p>
+          </SectionContent>
         </SectionSplit>
+        <SectionContent className="mx-auto not-first:mt-16">
+          {children}
+        </SectionContent>
       </SectionContainer>
     </Section>
   )

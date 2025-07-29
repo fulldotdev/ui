@@ -30,7 +30,7 @@ export const sectionSplitVariants = cva(
         false: null,
       },
       sticky: {
-        true: "lg:*:sticky lg:*:top-16",
+        true: "lg:*:sticky lg:*:top-16 items-start",
         false: null,
       },
     },
@@ -59,7 +59,7 @@ function SectionMasonry({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "columns-3xs gap-4 space-y-6 [&>*]:break-inside-avoid",
+        "columns-3xs gap-4 space-y-6 *:break-inside-avoid",
         className
       )}
       {...props}

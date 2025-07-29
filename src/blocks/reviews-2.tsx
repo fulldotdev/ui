@@ -21,7 +21,7 @@ export default function ({ children, items }: BlockProps) {
         {children && <SectionContent>{children}</SectionContent>}
         <SectionMasonry className="not-first:mt-12">
           {items?.map(({ title, description, rating, image, tagline }, i) => (
-            <Tile className="break-inside-avoid" key={i}>
+            <Tile key={i}>
               {image && <TileImage {...image} />}
               <TileContent>
                 {(rating || tagline) && (

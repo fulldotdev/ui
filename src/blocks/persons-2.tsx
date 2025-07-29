@@ -21,7 +21,7 @@ export default function ({ children, items }: BlockProps) {
         {children && <SectionContent>{children}</SectionContent>}
         <SectionGrid className="not-first:mt-12">
           {items?.map(({ href, image, title, tagline, description }, i) => (
-            <Tile className="gap-2" key={i} href={href} panel={false}>
+            <Tile key={i} href={href} panel={false}>
               <TileImage
                 className="aspect-square object-cover"
                 alt={`${title} ${tagline}`}
@@ -30,9 +30,6 @@ export default function ({ children, items }: BlockProps) {
               <TileContent>
                 {tagline && <TileTagline>{tagline}</TileTagline>}
                 <TileTitle>{title}</TileTitle>
-                {description && (
-                  <TileDescription>{description}</TileDescription>
-                )}
               </TileContent>
             </Tile>
           ))}
