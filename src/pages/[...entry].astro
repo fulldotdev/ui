@@ -6,6 +6,7 @@ import { getCollection, getEntry, render } from "astro:content"
 import { getHrefByEntry, transformEntry } from "@/lib/transforms"
 import Layout from "@/components/layout.astro"
 import { Page as CloudCannonPage } from "@/components/page"
+import AstroPage from "@/components/page.astro"
 
 // Generate static paths
 export async function getStaticPaths() {
@@ -53,7 +54,6 @@ const images = await Promise.all(
       widths: [480, 768, 1024, 1280, 1536, 1920],
       quality: "mid",
     })
-    console.log({ generated })
     return {
       id: key.replace("/src/images", ""),
       ...generated,
@@ -65,7 +65,10 @@ const transformed = await transformEntry(data, content, images)
 ---
 
 <Layout {...transformed}>
-  <CloudCannonPage client:load {...transformed} {content} {images}>
+  <!-- <CloudCannonPage client:load {...transformed} {content} {images}>
     <Content />
-  </CloudCannonPage>
+  </CloudCannonPage> -->
+  <AstroPage {...transformed}>
+    <Content />
+  </AstroPage>
 </Layout>
