@@ -1,17 +1,19 @@
-import { getImage } from "astro:assets"
-import {
-  getCollection,
-  getEntries,
-  reference,
-  z,
-  type CollectionEntry,
-} from "astro:content"
+import { type EntrySchema } from "@/lib/schemas"
 
-import { imageSchema, type EntrySchema } from "@/lib/schemas"
+type ContentEntry = {
+  id: string
+  data: EntrySchema
+}
 
-const images = import.meta.glob("/src/images/**", { eager: true })
+type Image = {
+  id?: string
+  src?: string
+  title?: string
+  alt?: string
+  [key: string]: any
+}
 
-export function getHrefByEntry({ id, data }: CollectionEntry<"content">) {
+export function getHrefByEntry({ id, data }: ContentEntry) {
   const todayDate = new Date()
   const publishedDate = data.published
   const isPublished = publishedDate && publishedDate < todayDate
@@ -22,79 +24,81 @@ export function getHrefByEntry({ id, data }: CollectionEntry<"content">) {
   return `/${id}/`
 }
 
-export function getItemByEntry(entry: CollectionEntry<"content">) {
+export function getItemByEntry(entry: ContentEntry) {
   return {
     href: getHrefByEntry(entry),
     ...entry.data,
   }
 }
 
-export async function getItemsByReference(paths?: string[]) {
+export function getItemsByReference(
+  paths: string[] | undefined,
+  content: ContentEntry[]
+) {
   if (!paths) return
   const references = paths?.map((path) => {
     const slug = path.split("/src/content/")[1].split(".")[0]
     const id = slug.replace("/index", "")
-    const ref = reference("content").parse(id)
+    const ref = {
+      collection: "content",
+      id,
+    }
     return ref
   })
-  const entries = await getEntries(references)
+  const entries = content.filter((entry) =>
+    references.some((reference) => reference.id === entry.id)
+  )
   const items = entries.map(getItemByEntry)
   return items
 }
 
-export async function getItemsByGlob(glob?: string) {
+export function getItemsByGlob(
+  glob: string | undefined,
+  content: ContentEntry[]
+) {
   if (!glob) return
-  const entries = await getCollection(
-    "content",
+  const entries = content.filter(
     (entry) => entry.id.startsWith(glob) && !entry.id.endsWith(glob)
   )
   const items = entries.map(getItemByEntry)
   return items
 }
 
-export async function transformImage(image?: z.infer<typeof imageSchema>) {
-  if (!image) return image
-  const found = images[`/src/images/${image.src}`] as any
-  const metadata = found.default as ImageMetadata
-  const generated = await getImage({
-    src: metadata,
-    format: "webp",
-  })
+export function transformImage(image: Image | undefined, images: Image[]) {
+  if (!image) return
+  const found = images.find((img) => img.id === image.src)
+  if (!found) return image
   return {
+    ...found.attributes,
     ...image,
-    ...generated.attributes,
-    src: generated.src,
+    src: found.src,
   }
 }
 
-export async function transformEntry({
-  image,
-  blocks = [],
-  ...data
-}: EntrySchema) {
+export function transformEntry(
+  { image, blocks = [], ...data }: EntrySchema,
+  content: ContentEntry[],
+  images: Image[]
+) {
   return {
-    image: await transformImage(image),
-    blocks: await Promise.all(
-      blocks?.map(async ({ image, references, glob, items, ...block }, i) => {
-        const referenceItems = await getItemsByReference(references)
-        const globItems = await getItemsByGlob(glob)
-        const mergedItems = [
-          ...(referenceItems ?? []),
-          ...(globItems ?? []),
-          ...(items ?? []),
-        ]
-        return {
-          image: await transformImage(image),
-          items: await Promise.all(
-            mergedItems?.map(async ({ image, ...item }) => ({
-              ...item,
-              image: await transformImage(image),
-            }))
-          ),
-          ...block,
-        }
-      })
-    ),
+    image: transformImage(image, images),
+    blocks: blocks?.map(({ image, references, glob, items, ...block }, i) => {
+      const referenceItems = getItemsByReference(references, content)
+      const globItems = getItemsByGlob(glob, content)
+      const mergedItems = [
+        ...(referenceItems ?? []),
+        ...(globItems ?? []),
+        ...(items ?? []),
+      ]
+      return {
+        image: transformImage(image, images),
+        items: mergedItems?.map(({ image, ...item }) => ({
+          ...item,
+          image: transformImage(image, images),
+        })),
+        ...block,
+      }
+    }),
     ...data,
   }
 }

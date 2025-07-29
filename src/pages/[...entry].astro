@@ -1,4 +1,5 @@
 ---
+import { getImage } from "astro:assets"
 import { i18n } from "astro:config/server"
 import { getCollection, getEntry, render } from "astro:content"
 
@@ -38,11 +39,29 @@ export async function getStaticPaths() {
 
 const { Content } = await render(Astro.props.entry)
 const { data } = Astro.props.entry
-const transformed = await transformEntry(data)
+const content = await getCollection("content")
+
+// Generate all transformed images
+const imageImports = import.meta.glob("/src/images/**", { eager: true })
+const images = await Promise.all(
+  Object.entries(imageImports).map(async ([key, image]: any) => {
+    const metadata = image.default
+    const generated = await getImage({
+      src: metadata,
+      format: "webp",
+    })
+    return {
+      id: key.replace("/src/images/", ""),
+      ...generated,
+    }
+  })
+)
+
+const transformed = await transformEntry(data, content, images)
 ---
 
 <Layout {...transformed}>
-  <CloudCannonPage client:load {...transformed}>
+  <CloudCannonPage client:load {...transformed} {content} {images}>
     <Content />
   </CloudCannonPage>
 </Layout>

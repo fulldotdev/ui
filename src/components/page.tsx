@@ -19,7 +19,12 @@ declare global {
   }
 }
 
-async function Page({ children, ...page }: EntrySchema) {
+async function Page({
+  children,
+  content,
+  images,
+  ...page
+}: EntrySchema & { content: any[]; images: any[] }) {
   // State to manage live page data from CloudCannon
   const [pageData, setPageData] = useState(page)
 
@@ -35,7 +40,8 @@ async function Page({ children, ...page }: EntrySchema) {
       CloudCannonInstance.value()
         .then((latestValue: any) => {
           if (latestValue) {
-            setPageData(latestValue)
+            const transformed = transformEntry(latestValue, content, images)
+            setPageData(transformed)
           }
         })
         .catch((error: any) => {
@@ -49,7 +55,8 @@ async function Page({ children, ...page }: EntrySchema) {
       try {
         const latestValue = await CloudCannonInstance.value()
         if (latestValue) {
-          setPageData(latestValue)
+          const transformed = transformEntry(latestValue, content, images)
+          setPageData(transformed)
         }
       } catch (error) {
         console.error("Error fetching updated data:", error)
