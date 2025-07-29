@@ -42,6 +42,7 @@ async function Page({
           if (latestValue) {
             console.log({ latestValue })
             const transformed = transformEntry(latestValue, content, images)
+            console.log({ transformed })
             setPageData(transformed)
           }
         })
@@ -58,6 +59,7 @@ async function Page({
         if (latestValue) {
           console.log({ latestValue })
           const transformed = transformEntry(latestValue, content, images)
+          console.log({ transformed })
           setPageData(transformed)
         }
       } catch (error) {
