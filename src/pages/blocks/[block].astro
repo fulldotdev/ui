@@ -2,7 +2,6 @@
 import fs from "fs/promises"
 import layout from "@/data/layout.yaml"
 import { Code } from "astro:components"
-import { getCollection } from "astro:content"
 
 import type { BlockProps } from "@/lib/types"
 import { Block as BlockComponent } from "@/components/block"
@@ -188,16 +187,6 @@ const props: BlockProps = {
       ],
     },
   ],
-  channels: [
-    {
-      type: "email",
-      value: "contact@full.dev",
-    },
-    {
-      type: "phone",
-      value: "+316 83485163",
-    },
-  ],
   socials: [
     "https://twitter.com/silveltm",
     "https://github.com/fulldotdev",
@@ -229,8 +218,6 @@ const blockNamesAndCodes = await Promise.all(
     }
   })
 )
-
-const entries = await getCollection("content")
 ---
 
 <Layout {...layout}>
@@ -243,13 +230,7 @@ const entries = await getCollection("content")
           lang="tsx"
           code={code}
         />
-        <BlockComponent
-          slot="preview"
-          client:load
-          block={name}
-          {...props}
-          entries={entries}
-        />
+        <BlockComponent slot="preview" client:load block={name} {...props} />
       </Block1>
     ))
   }

@@ -8,7 +8,6 @@ import {
 import {
   Tile,
   TileContent,
-  TileDescription,
   TileImage,
   TileTagline,
   TileTitle,
@@ -20,7 +19,7 @@ export default function ({ children, items }: BlockProps) {
       <SectionContainer className="flex flex-col items-start">
         {children && <SectionContent>{children}</SectionContent>}
         <SectionGrid className="not-first:mt-12">
-          {items?.map(({ href, image, title, tagline, description }, i) => (
+          {items?.map(({ href, image, title, tagline }, i) => (
             <Tile key={i} href={href} panel={false}>
               <TileImage
                 className="aspect-square object-cover"

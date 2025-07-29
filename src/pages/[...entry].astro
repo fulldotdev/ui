@@ -2,7 +2,7 @@
 import { i18n } from "astro:config/server"
 import { getCollection, getEntry, render } from "astro:content"
 
-import { getHrefByEntry } from "@/lib/collections"
+import { getHrefByEntry, transformEntry } from "@/lib/transforms"
 import Layout from "@/components/layout.astro"
 import { Page as CloudCannonPage } from "@/components/page"
 
@@ -37,12 +37,12 @@ export async function getStaticPaths() {
 }
 
 const { Content } = await render(Astro.props.entry)
-const { data } = Astro.props.entry
-const entries = Astro.props.entries
+
+const transformedEntry = await transformEntry(Astro.props.entry)
 ---
 
-<Layout {...data}>
-  <CloudCannonPage client:load {...data} entries={entries}>
+<Layout {...transformedEntry?.data}>
+  <CloudCannonPage client:load {...transformedEntry?.data}>
     <Content />
   </CloudCannonPage>
 </Layout>

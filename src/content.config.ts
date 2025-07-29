@@ -1,5 +1,5 @@
 import { defineCollection } from "astro:content"
-import { file, glob } from "astro/loaders"
+import { glob } from "astro/loaders"
 import { pageSchema } from "src/lib/schemas"
 
 export const collections = {

@@ -1,6 +1,9 @@
 ---
 published: 2025-07-16T00:00:00Z
 title: Home
+image:
+  src: bolsward.jpg
+  alt: "Hero 1"
 blocks:
   - block: hero-1
     children: >-
@@ -13,7 +16,7 @@ blocks:
       - text: "Bekijk deelnemers"
         href: "#"
     image:
-      src: /images/bolsward.jpg
+      src: bolsward.jpg
       alt: "Hero 1"
   - block: features-1
     items:
@@ -34,19 +37,19 @@ blocks:
       <h2>Wie er al deelnemen</h2>
     items:
       - image:
-          src: /images/bolsward.jpg
+          src: bolsward.jpg
           alt: "Hero 1"
         title: Lorem ipsum
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
       - image:
-          src: /images/bolsward.jpg
+          src: bolsward.jpg
           alt: "Hero 1"
         title: Lorem ipsum
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
       - image:
-          src: /images/bolsward.jpg
+          src: bolsward.jpg
           alt: "Hero 1"
         title: Lorem ipsum
         description: >-
@@ -58,10 +61,10 @@ blocks:
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
       </p>
     channels:
-      - type: "email"
-        value: "info@bolsward.nl"
-      - type: "phone"
-        value: "+316 12345678"
+      - text: "info@bolsward.nl"
+        href: "mailto:info@bolsward.nl"
+      - text: "+316 12345678"
+        href: "tel:+31612345678"
     socials:
       - "https://www.facebook.com/bolsward"
       - "https://www.instagram.com/bolsward"

@@ -1,21 +1,13 @@
 import type { BlockProps } from "@/lib/types"
-import { Link } from "@/components/ui/link"
 import {
   Section,
   SectionContainer,
   SectionContent,
-  SectionFooter,
   SectionGrid,
 } from "@/components/ui/section"
-import {
-  Tile,
-  TileContent,
-  TileDescription,
-  TileImage,
-  TileTitle,
-} from "@/components/ui/tile"
+import { Tile, TileContent, TileImage, TileTitle } from "@/components/ui/tile"
 
-export default function ({ children, links, items }: BlockProps) {
+export default function ({ children, items }: BlockProps) {
   return (
     <Section>
       <SectionContainer>

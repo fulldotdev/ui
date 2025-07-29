@@ -1,12 +1,10 @@
 import type { BlockProps } from "@/lib/types"
-import { Link } from "@/components/ui/link"
 import {
   Section,
   SectionContainer,
   SectionContent,
   SectionSplit,
 } from "@/components/ui/section"
-import { Social } from "@/components/ui/social"
 
 export default function ({
   children,

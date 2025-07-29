@@ -22,7 +22,7 @@ import {
   SiYelp,
   SiYoutube,
 } from "@icons-pack/react-simple-icons"
-import { Mail, MapPin, Phone } from "lucide-react"
+import { Link as LinkIcon, Mail, MapPin, Phone } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Link } from "@/components/ui/link"
@@ -77,7 +77,7 @@ function Social({
   const platform = Object.keys(iconMap).find((key) => href?.includes(key)) as
     | keyof typeof iconMap
     | undefined
-  const Icon = platform ? iconMap[platform] : null
+  const Icon = platform ? iconMap[platform] : <LinkIcon />
   return (
     <Link
       className={cn(className)}

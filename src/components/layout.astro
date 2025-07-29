@@ -11,9 +11,10 @@ import { SEO } from "astro-seo"
 import { Social } from "@/components/ui/social"
 import { Block } from "@/components/block"
 
-type Props = Pick<EntrySchema, "title" | "description" | "image" | "seo">
+type Props = EntrySchema
 
-const { title, description, image, seo } = Astro.props as Props
+const { title, description, image, seo, published, block } =
+  Astro.props as Props
 const { banner, header, footer, name, bubble } = layout
 ---
 
@@ -43,6 +44,11 @@ const { banner, header, footer, name, bubble } = layout
         optional: {
           description: seo?.description || description,
           siteName: name || "",
+        },
+        article: {
+          publishedTime: block?.startsWith("article")
+            ? published?.toISOString()
+            : undefined,
         },
       }}
     />

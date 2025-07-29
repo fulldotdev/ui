@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import type { CollectionEntry } from "astro:content"
 import parse from "html-react-parser"
 
 import type { EntrySchema } from "@/lib/schemas"
@@ -19,11 +18,7 @@ declare global {
   }
 }
 
-function Page({
-  entries,
-  children,
-  ...page
-}: EntrySchema & { entries: CollectionEntry<"content">[]; children: any }) {
+function Page({ children, ...page }: EntrySchema) {
   // State to manage live page data from CloudCannon
   const [pageData, setPageData] = useState(page)
 
@@ -88,18 +83,14 @@ function Page({
 
   return (
     <>
-      {page.block && (
-        <Block {...pageData} entries={entries}>
-          {children}
-        </Block>
-      )}
+      {page.block && <Block {...pageData}>{children}</Block>}
       {pageData.blocks?.map((block, index) => (
         <div
           key={index}
           data-cms-bind={`#blocks[${index}]`}
           data-cms-bind-style="sidebar"
         >
-          <Block {...block} entries={entries}>
+          <Block {...block}>
             {typeof block.children === "string" && parse(block.children)}
           </Block>
         </div>

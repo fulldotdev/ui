@@ -1,5 +1,4 @@
 import type { BlockProps } from "@/lib/types"
-import { Channel } from "@/components/ui/channel"
 import { Logo, LogoImage } from "@/components/ui/logo"
 import { Section, SectionContainer } from "@/components/ui/section"
 import { Social } from "@/components/ui/social"

@@ -1,5 +1,4 @@
 import type { BlockProps } from "@/lib/types"
-import { Channel } from "@/components/ui/channel"
 import {
   Section,
   SectionContainer,
