@@ -90,7 +90,7 @@ export const itemSchema = z
 
 export const blockSchema = itemSchema
   .extend({
-    items: itemSchema.array(),
+    items: z.union([itemSchema, entrySchema]).array(),
     entries: entrySchema.array(),
   })
   .partial()
