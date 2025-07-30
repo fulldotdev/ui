@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-export const pathSchema = z.string().startsWith("/src/content/")
+export const entrySchema = z.string().startsWith("/src/content/")
 
 export const imageSchema = z
   .object({
@@ -90,20 +90,20 @@ export const itemSchema = z
 
 export const blockSchema = itemSchema
   .extend({
-    items: z.union([itemSchema, pathSchema]).array(),
+    items: itemSchema.array(),
+    entries: entrySchema.array(),
   })
   .partial()
   .strict()
 
 export const pageSchema = blockSchema
   .extend({
-    blocks: z.union([blockSchema, pathSchema]).array(),
+    blocks: blockSchema.array(),
     seo: seoSchema,
   })
   .partial()
   .strict()
 
-export type FormSchema = z.infer<typeof formSchema>
 export type ItemSchema = z.infer<typeof itemSchema>
 export type BlockSchema = z.infer<typeof blockSchema>
-export type EntrySchema = z.infer<typeof pageSchema>
+export type PageSchema = z.infer<typeof pageSchema>
