@@ -41,4 +41,10 @@ blocks:
       <h2>Wie er al deelnemen</h2>
     items:
       - /src/content/bolsward.md
+      - title: Bolsward
+        description: >-
+          Bolsward is a small village in the Netherlands.
+        image:
+          src: /placeholder.webp
+          alt: "Bolsward"
 ---
