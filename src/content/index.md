@@ -6,7 +6,7 @@ image:
   alt: "Hero 1"
 blocks:
   - block: hero-1
-    children: >-
+    html: >-
       <h1>The UI library for building content sites with Shadcn, React, Tailwind
       and Astro</h1> <p>Components, blocks and utilities purposefully built for
       content sites. Works seamlessly with your headless CMS or Astro content
@@ -37,8 +37,8 @@ blocks:
           Each component and block is publicly available on GitHub and via a
           shadcn registry.
   - block: tiles-1
-    children: >-
+    html: >-
       <h2>Wie er al deelnemen</h2>
-    references:
+    items:
       - /src/content/bolsward.md
 ---

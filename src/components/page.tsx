@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import type { CollectionEntry } from "astro:content"
 import parse from "html-react-parser"
 
 import type { EntrySchema } from "@/lib/schemas"
@@ -24,7 +25,7 @@ function Page({
   content,
   images,
   ...page
-}: EntrySchema & { content: any[]; images: any[] }) {
+}: EntrySchema & { content: CollectionEntry<"content">[]; images: any[] }) {
   // State to manage live page data from CloudCannon
   const [pageData, setPageData] = useState(page)
 

@@ -16,7 +16,6 @@ export const linkSchema = z
     href: z.string(),
     text: z.string(),
     variant: z.enum(["default", "outline", "secondary", "ghost", "link"]),
-    size: z.enum(["default", "sm", "lg", "icon"]),
   })
   .partial()
   .strict()
@@ -41,21 +40,6 @@ export const seoSchema = z
   .partial()
   .strict()
 
-export const hoursSchema = z
-  .object({
-    title: z.string(),
-    description: z.string(),
-    ma: z.string(),
-    di: z.string(),
-    wo: z.string(),
-    do: z.string(),
-    vr: z.string(),
-    za: z.string(),
-    zo: z.string(),
-  })
-  .partial()
-  .strict()
-
 export const formSchema = z
   .object({
     inbox: z.string(),
@@ -67,83 +51,53 @@ export const formSchema = z
   .partial()
   .strict()
 
-export const subscriptionSchema = z
-  .object({
-    month: z.number(),
-    year: z.number(),
-    twoyears: z.number(),
-  })
-  .partial()
-  .strict()
-
-export const reviewSchema = z
-  .object({
-    rating: z.number().min(0).max(5).step(0.25),
-    images: imageSchema.array(),
-    title: z.string(),
-    tagline: z.string(),
-  })
-  .partial()
-  .strict()
+export const priceSchema = z.object({
+  base: z.number().nullable(),
+  compare: z.number().nullable(),
+  unit: z.string(),
+})
 
 export const itemSchema = z
   .object({
-    // Config
-    layout: z.string(),
-    block: z.string(),
-    reverse: z.boolean(),
     // Options
+    id: z.string(),
+    href: z.string(),
+    block: z.string(),
     published: z.date(),
-    chip: linkSchema,
-    // Base
-    name: z.string(),
+    // Content
     title: z.string(),
     description: z.string(),
-    href: z.string(),
+    chip: linkSchema,
     tagline: z.string(),
-    icon: z.enum(["check", "cross"]),
-    rating: z.number().min(0).max(5).step(0.25),
-    unit: z.string(),
-    price: z.number().nullable(),
-    comparePrice: z.number().nullable(),
-    // Images
     link: linkSchema,
     links: linkSchema.array(),
-    menu: menuSchema,
-    menus: menuSchema.array(),
-    channels: linkSchema.array(),
-    socials: z.string().array(),
-    list: z.string().array(),
-    tags: z.string().array(),
-    subscription: subscriptionSchema,
-    hours: hoursSchema,
-    form: formSchema,
-    review: reviewSchema,
-    // Objects and arrays
+    icon: z.enum(["check", "cross"]),
+    rating: z.number().min(0).max(5).step(0.25),
     image: imageSchema,
     images: imageSchema.array(),
-    avatar: imageSchema,
-    avatars: imageSchema.array(),
-    logo: imageSchema,
-    logos: imageSchema.array(),
-    // Richtext
-    children: z.any(),
+    price: priceSchema,
+    prices: priceSchema.array(),
+    social: z.string(),
+    socials: z.string().array(),
+    menu: menuSchema,
+    list: z.string().array(),
+    form: formSchema,
+    html: z.string(),
+    markdown: z.string(),
   })
   .partial()
   .strict()
 
 export const blockSchema = itemSchema
   .extend({
-    items: itemSchema.array(),
-    glob: z.string(),
-    references: pathSchema.array(),
+    items: z.union([itemSchema, pathSchema]).array(),
   })
   .partial()
   .strict()
 
 export const pageSchema = blockSchema
   .extend({
-    blocks: blockSchema.array(),
+    blocks: z.union([blockSchema, pathSchema]).array(),
     seo: seoSchema,
   })
   .partial()

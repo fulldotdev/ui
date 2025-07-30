@@ -6,7 +6,7 @@ image:
   alt: "Hero 1"
 blocks:
   - block: hero-1
-    children: >-
+    html: >-
       <h1>Het leukste <b>evenement</b> in <b>Bolsward</b> deze zomer</h1> <p>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
       </p>
@@ -33,7 +33,7 @@ blocks:
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
   - block: tiles-2
-    children: |
+    html: |
       <h2>Wie er al deelnemen</h2>
     items:
       - image:
@@ -55,12 +55,12 @@ blocks:
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
   - block: contact-1
-    children: |
+    html: |
       <h2>Meld je nu aan</h2>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
       </p>
-    channels:
+    links:
       - text: "info@bolsward.nl"
         href: "mailto:info@bolsward.nl"
       - text: "+316 12345678"

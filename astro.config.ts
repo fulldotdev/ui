@@ -45,6 +45,11 @@ export default defineConfig({
       },
     ],
   },
+  trailingSlash: "never",
+  i18n: {
+    defaultLocale: "nl",
+    locales: ["nl", "en"],
+  },
   prefetch: {
     prefetchAll: true,
   },
