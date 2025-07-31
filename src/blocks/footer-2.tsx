@@ -3,14 +3,14 @@ import { Logo, LogoImage } from "@/components/ui/logo"
 import { Section, SectionContainer } from "@/components/ui/section"
 import { Social } from "@/components/ui/social"
 
-export default function ({ logo, links, socials, name }: BlockProps) {
+export default function ({ image, links, socials }: BlockProps) {
   return (
     <Section>
       <SectionContainer className="flex flex-col items-center gap-8">
-        {logo && (
+        {image && (
           <Logo href="/">
-            {logo?.src && <LogoImage {...logo} />}
-            {logo?.title && logo.title}
+            {image?.src && <LogoImage {...image} />}
+            {image?.title && image.title}
           </Logo>
         )}
         {links && links.length > 0 && (
@@ -37,11 +37,6 @@ export default function ({ logo, links, socials, name }: BlockProps) {
               />
             ))}
           </div>
-        )}
-        {name && (
-          <p className="text-muted-foreground text-xs">
-            © {new Date().getFullYear()} {name}
-          </p>
         )}
       </SectionContainer>
     </Section>

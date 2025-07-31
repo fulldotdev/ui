@@ -14,7 +14,15 @@ import {
   SectionFooter,
 } from "@/components/ui/section"
 
-export default function ({ children, links, image, review, chip }: BlockProps) {
+export default function ({
+  children,
+  links,
+  image,
+  chip,
+  rating,
+  tagline,
+  images,
+}: BlockProps) {
   return (
     <Section>
       <div className="from-primary/10 pointer-events-none absolute -top-14 bottom-0 left-0 z-20 w-full bg-radial-[at_50%_0%] via-transparent to-transparent" />
@@ -24,14 +32,14 @@ export default function ({ children, links, image, review, chip }: BlockProps) {
             {chip.text}
           </Chip>
         )}
-        {review && (
+        {rating && (
           <Review className="animate-fade-4 not-first:mt-5">
-            {review.images?.map((image, i) => (
+            {images?.map((image, i) => (
               <ReviewImage key={i} {...image} />
             ))}
             <ReviewContent>
-              <ReviewRating rating={review.rating} />
-              {review.tagline}
+              <ReviewRating rating={rating} />
+              {tagline}
             </ReviewContent>
           </Review>
         )}

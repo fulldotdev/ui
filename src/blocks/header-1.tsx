@@ -5,17 +5,17 @@ import { Logo, LogoImage } from "@/components/ui/logo"
 import { MainMenu } from "@/components/main-nav"
 import { MobileMenu } from "@/components/mobile-nav"
 
-export default function ({ logo, menus, links }: BlockProps) {
+export default function ({ image, menus, links }: BlockProps) {
   return (
     <Header className="z-50">
       <HeaderContainer className="flex items-center gap-2">
         {menus && menus.length > 0 && (
           <MobileMenu className="lg:hidden" items={menus} />
         )}
-        {logo && (
+        {image && (
           <Logo href="/" className="mr-4 max-sm:hidden">
-            {logo.src && <LogoImage {...logo} />}
-            {logo.title && logo.title}
+            {image.src && <LogoImage {...image} />}
+            {image.title && image.title}
           </Logo>
         )}
         {menus && <MainMenu className="mr-auto max-lg:hidden" items={menus} />}

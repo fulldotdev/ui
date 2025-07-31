@@ -15,7 +15,15 @@ import {
   SectionSplit,
 } from "@/components/ui/section"
 
-export default function ({ children, links, image, chip, review }: BlockProps) {
+export default function ({
+  children,
+  links,
+  image,
+  chip,
+  rating,
+  tagline,
+  images,
+}: BlockProps) {
   return (
     <Section className="flex min-h-screen items-center">
       <SectionContainer className="px-0 lg:px-0">
@@ -30,14 +38,14 @@ export default function ({ children, links, image, chip, review }: BlockProps) {
                 {chip.text}
               </Chip>
             )}
-            {review && (
+            {rating && (
               <Review className="animate-fade-4 not-first:mt-5">
-                {review.images?.map((image, i) => (
+                {images?.map((image, i) => (
                   <ReviewImage key={i} {...image} />
                 ))}
                 <ReviewContent>
-                  <ReviewRating rating={review.rating} />
-                  {review.tagline}
+                  <ReviewRating rating={rating} />
+                  {tagline}
                 </ReviewContent>
               </Review>
             )}

@@ -14,10 +14,11 @@ export type ItemProps = Omit<ItemSchema, "image" | "images"> & {
   images?: ImageProps[]
 }
 
-export type BlockProps = ItemProps & {
+export type BlockProps = Omit<ItemProps, "children"> & {
   image?: ImageProps
   images?: ImageProps[]
   items?: ItemProps[]
+  children?: React.ReactNode
 }
 
 export type PageProps = BlockProps & {

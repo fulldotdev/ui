@@ -76,6 +76,7 @@ export const itemSchema = z
     social: z.string(),
     socials: z.string().array(),
     menu: menuSchema,
+    menus: menuSchema.array(),
     list: z.string().array(),
     form: formSchema,
     html: z.string(),

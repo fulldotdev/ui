@@ -8,11 +8,11 @@ import {
   SectionSplit,
 } from "@/components/ui/section"
 
-export default function ({ children, links, image, reverse }: BlockProps) {
+export default function ({ children, links, image }: BlockProps) {
   return (
     <Section className="overflow-hidden">
       <SectionContainer>
-        <SectionSplit className="items-center" reverse={reverse}>
+        <SectionSplit className="items-center">
           <div className="flex flex-col items-start">
             {children && <SectionContent>{children}</SectionContent>}
             {links && links.length > 0 && (

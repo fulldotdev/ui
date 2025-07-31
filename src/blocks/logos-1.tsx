@@ -6,7 +6,7 @@ import {
   SectionContent,
 } from "@/components/ui/section"
 
-export default function ({ children, logos }: BlockProps) {
+export default function ({ children, images }: BlockProps) {
   return (
     <Section>
       <SectionContainer className="flex flex-col items-center">
@@ -16,10 +16,10 @@ export default function ({ children, logos }: BlockProps) {
           </SectionContent>
         )}
         <div className="flex flex-wrap justify-center gap-8 not-first:mt-8">
-          {logos?.map(({ src, alt, title }, i) => (
+          {images?.map(({ src, alt, title }, i) => (
             <Logo key={i}>
               {src && <LogoImage src={src} alt={alt} title={title} />}
-              {title && title}
+              {title}
             </Logo>
           ))}
         </div>

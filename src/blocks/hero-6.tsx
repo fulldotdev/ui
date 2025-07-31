@@ -22,7 +22,15 @@ import {
   TileTitle,
 } from "@/components/ui/tile"
 
-export default function ({ children, links, review, chip, items }: BlockProps) {
+export default function ({
+  children,
+  links,
+  chip,
+  rating,
+  tagline,
+  images,
+  items,
+}: BlockProps) {
   return (
     <Section className="pt-16">
       <div className="from-primary/15 pointer-events-none absolute -top-14 bottom-0 left-0 z-20 w-full bg-radial-[at_15%_0%] via-transparent to-transparent" />
@@ -32,14 +40,14 @@ export default function ({ children, links, review, chip, items }: BlockProps) {
             {chip.text}
           </Chip>
         )}
-        {review && (
+        {rating && (
           <Review className="animate-fade-4 not-first:mt-5">
-            {review.images?.map((image, i) => (
+            {images?.map((image, i) => (
               <ReviewImage key={i} {...image} />
             ))}
             <ReviewContent>
-              <ReviewRating rating={review.rating} />
-              {review.tagline}
+              <ReviewRating rating={rating} />
+              {tagline}
             </ReviewContent>
           </Review>
         )}
