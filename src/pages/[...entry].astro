@@ -1,70 +1,54 @@
 ---
 import { getImage } from "astro:assets"
-import { i18n } from "astro:config/server"
-import { getCollection, getEntry, render } from "astro:content"
+import { getCollection } from "astro:content"
 
-import { getHrefByEntry, transformEntry } from "@/lib/transforms"
+import { transformEntry } from "@/lib/transforms"
 import Layout from "@/components/layout.astro"
-import { Page as CloudCannonPage } from "@/components/page"
+import { Page } from "@/components/page.tsx"
 
-// Generate static paths
 export async function getStaticPaths() {
+  // ------------------------------------------------------------
+  // Data Loading
+  // ------------------------------------------------------------
   const entries = await getCollection("content")
-  const locales = i18n?.locales.filter(
-    (locale) => locale !== i18n?.defaultLocale
-  )
 
-  return entries
-    .map((entry) => {
-      // Try to find translated entries, so a warning is shown if a translated entry is not found
-      locales?.forEach(async (locale) => {
-        if (locales?.includes(entry.id.split("/")[0])) return
-        await getEntry("content", `${locale}/${entry.id}`)
+  const imageImports = import.meta.glob("/src/images/**", { eager: true })
+  const images = await Promise.all(
+    Object.entries(imageImports).map(async ([key, image]: any) => {
+      const metadata = image.default
+      const generated = await getImage({
+        src: metadata,
+        format: "webp",
+        sizes: "100vw",
+        widths: [320, 480, 768, 1024, 1440, 1920],
+        quality: "mid",
       })
-
-      const href = getHrefByEntry(entry)
-      if (!href) return undefined
       return {
-        params: {
-          entry: href === "/" ? undefined : href,
-        },
-        props: {
-          entry,
-          entries,
-        },
+        id: key.replace("/src/images", ""),
+        ...generated,
       }
     })
-    .filter(Boolean)
-}
-
-const { Content } = await render(Astro.props.entry)
-const { data } = Astro.props.entry
-const content = await getCollection("content")
-
-// Generate all transformed images
-const imageImports = import.meta.glob("/src/images/**", { eager: true })
-const images = await Promise.all(
-  Object.entries(imageImports).map(async ([key, image]: any) => {
-    const metadata = image.default
-    const generated = await getImage({
-      src: metadata,
-      format: "webp",
-      sizes: "100vw",
-      widths: [320, 480, 768, 1024, 1440, 1920],
-      quality: "mid",
-    })
+  )
+  // ------------------------------------------------------------
+  // Generate Static Paths
+  // ------------------------------------------------------------
+  return entries.map((entry) => {
+    const transformed = transformEntry(entry, { entries, images })
     return {
-      id: key.replace("/src/images", ""),
-      ...generated,
+      params: {
+        entry: transformed.href === "/" ? undefined : transformed.href,
+      },
+      props: {
+        page: transformed,
+        context: { entries, images },
+      },
     }
   })
-)
+}
 
-const transformed = transformEntry(Astro.props.entry, content, images)
+const { page, context } = Astro.props
 ---
 
-<Layout {...transformed}>
-  <CloudCannonPage client:load {...transformed} {content} {images}>
-    <Content />
-  </CloudCannonPage>
+<Layout {...page}>
+  <Page client:load page={page} context={context} />
 </Layout>

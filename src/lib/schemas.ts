@@ -1,7 +1,5 @@
 import { z } from "zod"
 
-export const entrySchema = z.string().startsWith("/src/content/")
-
 export const imageSchema = z
   .object({
     src: z.string(),
@@ -59,12 +57,10 @@ export const priceSchema = z.object({
 
 export const itemSchema = z
   .object({
-    // Options
     id: z.string(),
     href: z.string(),
     block: z.string(),
     published: z.date(),
-    // Content
     title: z.string(),
     description: z.string(),
     chip: linkSchema,
@@ -88,10 +84,12 @@ export const itemSchema = z
   .partial()
   .strict()
 
+export const globSchema = z.string()
+export const referenceSchema = z.string().startsWith("/src/content/")
+
 export const blockSchema = itemSchema
   .extend({
-    items: z.union([itemSchema, entrySchema]).array(),
-    entries: entrySchema.array(),
+    items: z.union([itemSchema.array(), referenceSchema.array(), globSchema]),
   })
   .partial()
   .strict()
@@ -104,6 +102,10 @@ export const pageSchema = blockSchema
   .partial()
   .strict()
 
+export type SeoSchema = z.infer<typeof seoSchema>
+export type ImageSchema = z.infer<typeof imageSchema>
+export type GlobSchema = z.infer<typeof globSchema>
+export type ReferenceSchema = z.infer<typeof referenceSchema>
 export type ItemSchema = z.infer<typeof itemSchema>
 export type BlockSchema = z.infer<typeof blockSchema>
 export type PageSchema = z.infer<typeof pageSchema>

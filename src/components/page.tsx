@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react"
-import type { CollectionEntry } from "astro:content"
 import parse from "html-react-parser"
 
-import type { EntrySchema } from "@/lib/schemas"
-import { transformEntry } from "@/lib/transforms"
+import { transformEntry, type TransformContext } from "@/lib/transforms"
+import type { PageProps } from "@/lib/types"
 import { Block } from "@/components/block"
 
 // CloudCannon types for live editing functionality
@@ -21,11 +20,12 @@ declare global {
 }
 
 function Page({
-  children,
-  content,
-  images,
-  ...page
-}: EntrySchema & { content: CollectionEntry<"content">[]; images: any[] }) {
+  page,
+  context,
+}: {
+  page: PageProps
+  context: TransformContext
+}) {
   // State to manage live page data from CloudCannon
   const [pageData, setPageData] = useState(page)
 
@@ -41,7 +41,7 @@ function Page({
       CloudCannonInstance.value()
         .then((latestValue: any) => {
           if (latestValue) {
-            const transformed = transformEntry(latestValue, content, images)
+            const transformed = transformEntry(latestValue, context)
             setPageData(transformed)
           }
         })
@@ -56,7 +56,7 @@ function Page({
       try {
         const latestValue = await CloudCannonInstance.value()
         if (latestValue) {
-          const transformed = transformEntry(latestValue, content, images)
+          const transformed = transformEntry(latestValue, context)
           setPageData(transformed)
         }
       } catch (error) {
@@ -92,7 +92,11 @@ function Page({
 
   return (
     <>
-      {page.block && <Block {...pageData}>{children}</Block>}
+      {page.block && (
+        <Block {...pageData}>
+          {typeof page.html === "string" && parse(page.html)}
+        </Block>
+      )}
       {pageData.blocks?.map((block, index) => (
         <div
           key={index}
@@ -100,7 +104,7 @@ function Page({
           data-cms-bind-style="sidebar"
         >
           <Block {...block}>
-            {typeof block.children === "string" && parse(block.children)}
+            {typeof block.html === "string" && parse(block.html)}
           </Block>
         </div>
       ))}

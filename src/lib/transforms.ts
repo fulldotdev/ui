@@ -1,59 +1,49 @@
+import type { GetImageResult } from "astro"
 import type { CollectionEntry } from "astro:content"
 
-export function getHrefByEntry({ id, data }: CollectionEntry<"content">) {
-  const todayDate = new Date()
-  const publishedDate = data.published
-  const isPublished = publishedDate && publishedDate < todayDate
-  if (!isPublished) return undefined
+import type {
+  BlockSchema,
+  GlobSchema,
+  ImageSchema,
+  ItemSchema,
+  ReferenceSchema,
+} from "@/lib/schemas"
+import type { BlockProps, ImageProps, ItemProps, PageProps } from "@/lib/types"
 
-  if ("href" in data && data.href) return data.href
-  if (id === "index") return "/"
-  return `/${id}/`
+// ------------------------------------------------------------
+// Helpers
+// ------------------------------------------------------------
+
+function isPublished(publishedDate?: Date): boolean {
+  if (!publishedDate) return false
+  return publishedDate < new Date()
 }
 
-export function getItemByEntry(entry: CollectionEntry<"content">) {
+function getHrefByEntry({
+  id,
+  data,
+}: CollectionEntry<"content">): string | undefined {
+  if (!isPublished(data.published)) return undefined
+  if ("href" in data && data.href) return data.href
+  if (id === "index") return "/"
+  return `/${id}`
+}
+
+function getItemByEntry(entry: CollectionEntry<"content">): ItemSchema {
   return {
     href: getHrefByEntry(entry),
     ...entry.data,
   }
 }
 
-export function getItemsByReference(
-  paths: string[] | undefined,
-  entries: CollectionEntry<"content">[]
-) {
-  if (!paths) return
-  const items = paths
-    .map((path) => {
-      if (!path) return
-      const slug = path.split("/src/content/")[1]?.split(".")[0]
-      const id = slug?.replace("/index", "")
-      const entry = entries.find((entry) => entry.id === id)
-      return entry ? getItemByEntry(entry) : undefined
-    })
-    .filter((item) => item !== undefined)
-  return items
-}
+// ------------------------------------------------------------
+// Transform Functions
+// ------------------------------------------------------------
 
-export function getItemsByGlob(
-  glob: string | undefined,
-  entries: CollectionEntry<"content">[]
-) {
-  if (!glob) return
-  const filteredEntries = entries.filter(
-    (entry) => entry.id.startsWith(glob) && !entry.id.endsWith(glob)
-  )
-  const items = filteredEntries.map(getItemByEntry)
-  return items
-}
-
-export function transformImage(
-  image: CollectionEntry<"content">["data"]["image"] | undefined,
-  images: any[]
-) {
-  if (!image) return
-  const found = images.find((img) => img.id === image.src)
+function transformImage(image: ImageSchema): ImageProps {
+  const found = context.images.find((img) => img.id === image.src)
   if (!found) return image
+
   return {
     ...found.attributes,
     ...image,
@@ -62,40 +52,86 @@ export function transformImage(
   }
 }
 
+function transformReference(reference: ReferenceSchema): ItemProps {
+  const slug = reference.replace("/src/content/", "").replace(".md", "")
+  const id = slug.replace("/index", "")
+  const entry = context.entries.find((entry) => entry.id === id)
+
+  if (!entry) {
+    throw new Error(`Entry not found: ${reference}`)
+  }
+
+  return getItemByEntry(entry)
+}
+
+function transformGlob(glob: GlobSchema): ItemProps[] {
+  const filteredEntries = context.entries.filter(
+    (entry) => entry.id.startsWith(glob) && !entry.id.endsWith(glob)
+  )
+  return filteredEntries.map(getItemByEntry)
+}
+
+function transformItems(
+  items: GlobSchema | ReferenceSchema[] | ItemSchema[]
+): ItemProps[] {
+  let transformedItems: ItemProps[]
+
+  if (typeof items === "string") {
+    transformedItems = transformGlob(items)
+  } else if (items.every((item) => typeof item === "string")) {
+    transformedItems = items.map(transformReference)
+  } else {
+    transformedItems = items as ItemSchema[]
+  }
+
+  return transformedItems.map((item) => ({
+    ...item,
+    image: item.image && transformImage(item.image),
+    images: item.images?.map(transformImage),
+  }))
+}
+
+function transformBlock(block: BlockSchema): BlockProps {
+  const { image, images, items, ...rest } = block
+  return {
+    image: image ? transformImage(image) : undefined,
+    images: images?.map(transformImage),
+    items: items ? transformItems(items) : undefined,
+    ...rest,
+  }
+}
+
+// ------------------------------------------------------------
+// Context
+// ------------------------------------------------------------
+
+export type TransformContext = {
+  entries: CollectionEntry<"content">[]
+  images: (GetImageResult & { id: string })[]
+}
+
+let context: TransformContext
+
+// ------------------------------------------------------------
+// Main Export
+// ------------------------------------------------------------
+
 export function transformEntry(
   entry: CollectionEntry<"content">,
-  entries: CollectionEntry<"content">[],
-  images: CollectionEntry<"content">["data"]["image"][]
-) {
+  ctx: typeof context
+): PageProps {
+  context = ctx
+  const { id, rendered } = entry
+  const { image, images, items, blocks, ...rest } = entry.data
+
   return {
-    ...entry,
-    data: {
-      ...entry.data,
-      items: getItemsByGlob(entry.collection, entries),
-      image: transformImage(entry.data.image, images),
-      images: entry.data.images?.map((image) => transformImage(image, images)),
-      blocks: entry.data.blocks?.map(
-        ({ image, references, glob, items, ...block }, i) => {
-          const referenceItems = getItemsByReference(references, entries)
-          const globItems = getItemsByGlob(glob, entries)
-          const mergedItems = [
-            ...(referenceItems ?? []),
-            ...(globItems ?? []),
-            ...(items ?? []),
-          ]
-          return {
-            image: transformImage(image, images),
-            items: mergedItems?.map(({ image, ...item }) => ({
-              ...item,
-              image: transformImage(image, images),
-              images: item.images?.map((image) =>
-                transformImage(image, images)
-              ),
-            })),
-            ...block,
-          }
-        }
-      ),
-    },
+    id,
+    href: getHrefByEntry(entry),
+    image: image ? transformImage(image) : undefined,
+    images: images?.map(transformImage),
+    items: items ? transformItems(items) : undefined,
+    blocks: blocks?.map(transformBlock),
+    html: rendered?.html,
+    ...rest,
   }
 }
