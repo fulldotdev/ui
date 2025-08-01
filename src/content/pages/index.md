@@ -1,6 +1,5 @@
 ---
-layout: base
-published: 2025-07-16T00:00:00Z
+layout: /src/content/layouts/base.yaml
 title: Home
 image:
   src: /placeholder.webp
@@ -41,5 +40,5 @@ blocks:
     html: >-
       <h2>Wie er al deelnemen</h2>
     items:
-      - /src/content/bolsward.md
+      - /src/content/pages/bolsward.md
 ---

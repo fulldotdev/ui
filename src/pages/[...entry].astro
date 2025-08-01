@@ -1,38 +1,13 @@
 ---
-import { getImage } from "astro:assets"
 import { getCollection } from "astro:content"
 
-import { transformEntry } from "@/lib/transforms"
+import { transformPage } from "@/lib/transforms"
 import Page from "@/components/page.astro"
 
 export async function getStaticPaths() {
-  // ------------------------------------------------------------
-  // Data Loading
-  // ------------------------------------------------------------
-  const entries = await getCollection("content")
-  const layouts = await getCollection("layouts")
-  const imageImports = import.meta.glob("/src/images/**", { eager: true })
-  const images = await Promise.all(
-    Object.entries(imageImports).map(async ([key, image]: any) => {
-      const metadata = image.default
-      const generated = await getImage({
-        src: metadata,
-        format: "webp",
-        sizes: "100vw",
-        widths: [320, 480, 768, 1024, 1440, 1920],
-        quality: "mid",
-      })
-      return {
-        id: key.replace("/src/images", ""),
-        ...generated,
-      }
-    })
-  )
-  // ------------------------------------------------------------
-  // Generate Static Paths
-  // ------------------------------------------------------------
-  return entries.map((entry) => {
-    const transformed = transformEntry(entry, { entries, images, layouts })
+  const pages = await getCollection("pages")
+  return pages.map((page) => {
+    const transformed = transformPage(page)
     return {
       params: {
         entry: transformed.href === "/" ? undefined : transformed.href,

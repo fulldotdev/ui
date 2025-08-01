@@ -1,6 +1,5 @@
 ---
-layout: base
-published: 2025-07-16
+layout: /src/content/layouts/base.yaml
 block: doc-1
 title: Test123
 description: >-

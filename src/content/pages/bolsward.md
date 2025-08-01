@@ -1,6 +1,5 @@
 ---
-layout: base
-published: 2025-07-16T00:00:00Z
+layout: /src/content/layouts/base.yaml
 title: Home
 image:
   src: /bolsward.jpg

@@ -1,6 +1,7 @@
-import type * as React from "react"
-import type { GetImageResult } from "astro"
+import { getImage } from "astro:assets"
+import { i18n } from "astro:config/server"
 import type { CollectionEntry } from "astro:content"
+import { getCollection } from "astro:content"
 
 import type {
   BlockSchema,
@@ -9,30 +10,63 @@ import type {
   ItemSchema,
   ReferenceSchema,
 } from "@/lib/schemas"
-import type { BlockProps, ImageProps, ItemProps, PageProps } from "@/lib/types"
+import type { BlockProps, PageProps } from "@/lib/types"
+
+// ------------------------------------------------------------
+// Data Loading
+// ------------------------------------------------------------
+const content = await getCollection("content")
+const imageImports = import.meta.glob("/src/images/**", { eager: true })
+const images = await Promise.all(
+  Object.entries(imageImports).map(async ([key, image]: any) => {
+    const metadata = image.default
+    const generated = await getImage({
+      src: metadata,
+      format: "webp",
+      sizes: "100vw",
+      widths: [320, 480, 768, 1024, 1440, 1920],
+      quality: "mid",
+    })
+    return {
+      id: key.replace("/src/images", ""),
+      ...generated,
+    }
+  })
+)
 
 // ------------------------------------------------------------
 // Helpers
 // ------------------------------------------------------------
 
-function isPublished(publishedDate?: Date): boolean {
-  if (!publishedDate) return false
-  return publishedDate < new Date()
-}
-
-function getHrefByEntry({
-  id,
-  data,
-}: CollectionEntry<"content">): string | undefined {
-  if (!isPublished(data.published)) return undefined
-  if ("href" in data && data.href) return data.href
+function getHrefById(id: string) {
   if (id === "index") return "/"
   return `/${id}`
 }
 
-function getItemByEntry(entry: CollectionEntry<"content">): ItemSchema {
+function getEntryByReference(reference: ReferenceSchema) {
+  const entry = content.find((entry) => {
+    if (!entry.filePath) throw new Error(`Entry not found: ${reference}`)
+    return reference.endsWith(entry.filePath)
+  })
+
+  if (!entry) {
+    throw new Error(`Entry not found: ${reference}`)
+  }
+
+  return entry
+}
+
+function getEntriesByGlob(glob: GlobSchema) {
+  const entries = content.filter(
+    (entry) => entry.id.startsWith(glob) && !entry.id.endsWith(glob)
+  )
+
+  return entries
+}
+
+function getItemByEntry(entry: CollectionEntry<"content">) {
   return {
-    href: getHrefByEntry(entry),
+    href: getHrefById(entry.id),
     ...entry.data,
   }
 }
@@ -41,55 +75,43 @@ function getItemByEntry(entry: CollectionEntry<"content">): ItemSchema {
 // Transform Functions
 // ------------------------------------------------------------
 
-function transformImage(
-  image: ImageSchema
-): ImageProps & React.ComponentProps<"img"> {
-  const found = context.images.find((img) => img.id === image.src)
-  if (!found) return image
+function transformImage(image: ImageSchema) {
+  const found = images.find((img) => img.id === image.src)
 
   return {
     fetchPriority: "auto",
     decoding: "async",
     loading: "lazy",
-    height: found.attributes.height,
-    width: found.attributes.width,
-    sizes: found.attributes.sizes,
+    height: found?.attributes.height,
+    width: found?.attributes.width,
+    sizes: found?.attributes.sizes,
     alt: image.alt,
-    src: found.src,
-    srcSet: found.srcSet.attribute,
+    title: image.title,
+    src: found?.src || image.src,
+    srcSet: found?.srcSet.attribute,
   }
 }
 
-function transformReference(reference: ReferenceSchema): ItemProps {
-  const slug = reference.replace("/src/content/", "").replace(".md", "")
-  const id = slug.replace("/index", "")
-  const entry = context.entries.find((entry) => entry.id === id)
+function transformItems(items: GlobSchema | ReferenceSchema[] | ItemSchema[]) {
+  let transformedItems
 
-  if (!entry) {
-    throw new Error(`Entry not found: ${reference}`)
-  }
-
-  return getItemByEntry(entry)
-}
-
-function transformGlob(glob: GlobSchema): ItemProps[] {
-  const filteredEntries = context.entries.filter(
-    (entry) => entry.id.startsWith(glob) && !entry.id.endsWith(glob)
-  )
-  return filteredEntries.map(getItemByEntry)
-}
-
-function transformItems(
-  items: GlobSchema | ReferenceSchema[] | ItemSchema[]
-): ItemProps[] {
-  let transformedItems: ItemProps[]
-
+  // glob: string
   if (typeof items === "string") {
-    transformedItems = transformGlob(items)
-  } else if (items.every((item) => typeof item === "string")) {
-    transformedItems = items.map(transformReference)
-  } else {
-    transformedItems = items as ItemSchema[]
+    const entries = getEntriesByGlob(items)
+    return entries.map(getItemByEntry)
+  }
+
+  // references: string[]
+  if (items.every((item) => typeof item === "string")) {
+    transformedItems = items.map((item) => {
+      const entry = getEntryByReference(item)
+      return getItemByEntry(entry)
+    })
+  }
+
+  // items: object[]
+  else {
+    transformedItems = items
   }
 
   return transformedItems.map((item) => ({
@@ -110,41 +132,64 @@ function transformBlock(block: BlockSchema): BlockProps {
 }
 
 // ------------------------------------------------------------
-// Context
-// ------------------------------------------------------------
-
-export type TransformContext = {
-  entries: CollectionEntry<"content">[]
-  layouts: CollectionEntry<"layouts">[]
-  images: (GetImageResult & { id: string })[]
-}
-
-let context: TransformContext
-
-// ------------------------------------------------------------
 // Main Export
 // ------------------------------------------------------------
 
-export function transformEntry(
-  entry: CollectionEntry<"content">,
-  ctx: typeof context
-): PageProps {
-  context = ctx
-  const { id, rendered } = entry
-  const layout = context.layouts.find(
-    (layout) => layout.id === entry.data.layout
+export function transformPage(page: CollectionEntry<"pages">): PageProps {
+  const { id, filePath, rendered } = page
+
+  const layout = page.data.layout
+    ? getEntryByReference(page.data.layout)
+    : undefined
+
+  const currentLocale = i18n?.locales.find(
+    (locale) =>
+      typeof locale === "string" &&
+      (page.id === locale || page.id.startsWith(`${locale}/`))
+  ) as string | undefined
+
+  const baseLocaleReference = currentLocale && id.replace(currentLocale, "")
+  const baseLocalePage = content.find(
+    (entry) => entry.id === baseLocaleReference
   )
-  const mergedData = { ...layout?.data, ...entry.data }
-  const { image, images, items, blocks, ...rest } = mergedData
+
+  console.log({
+    id,
+    currentLocale,
+    baseLocaleReference,
+    baseLocalePage,
+  })
+
+  const mergedData = {
+    ...layout?.data,
+    ...baseLocalePage?.data,
+    ...page.data,
+  }
+
+  const {
+    image,
+    images,
+    items,
+    banner,
+    header,
+    blocks,
+    footer,
+    legal,
+    ...rest
+  } = mergedData
 
   return {
     id,
-    href: getHrefByEntry(entry),
+    href: id === "index" ? "/" : `/${id}`,
+    html: rendered?.html,
     image: image ? transformImage(image) : undefined,
     images: images?.map(transformImage),
     items: items ? transformItems(items) : undefined,
+    banner: banner ? transformBlock(banner) : undefined,
+    header: header ? transformBlock(header) : undefined,
+    footer: footer ? transformBlock(footer) : undefined,
+    legal: legal ? transformBlock(legal) : undefined,
     blocks: blocks?.map(transformBlock),
-    html: rendered?.html,
     ...rest,
   }
 }
