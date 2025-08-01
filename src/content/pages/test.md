@@ -1,7 +1,7 @@
 ---
 layout: /src/content/layouts/base.yaml
 title: test
-image: /bolsward.jpg
+image: ../../images/placeholder.webp
 blocks:
   - block: hero-1
     html: >-
@@ -13,7 +13,7 @@ blocks:
         href: /docs/
       - text: Bekijk deelnemers
         href: '#'
-    image: /bolsward.jpg
+    image: ../../images/placeholder.webp
   - block: features-1
     items:
       - icon: check
