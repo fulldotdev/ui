@@ -1,7 +1,7 @@
 ---
 layout: /src/content/layouts/base.yaml
 title: Home
-image: /placeholder.webp
+image: ../../../1-6.jpg
 blocks:
   - block: hero-1
     html: >-
@@ -12,11 +12,11 @@ blocks:
     links:
       - text: Get Started
         href: /docs/
-      - text: "GitHub "
+      - text: 'GitHub '
         href: https://github.com/fulldotdev/ui
     image: /placeholder.webp
     chip:
-      text: "100+ downloads"
+      text: 100+ downloads
       href: /docs/
     images:
       - /bolsward.jpg
@@ -35,8 +35,7 @@ blocks:
           Each component and block is publicly available on GitHub and via a
           shadcn registry.
   - block: tiles-1
-    html: >-
-      <h2>Wie er al deelnemen</h2>
+    html: <h2>Wie er al deelnemen</h2>
     items:
       - /src/content/pages/bolsward.md
 ---
