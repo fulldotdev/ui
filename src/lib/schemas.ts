@@ -1,3 +1,4 @@
+import type { SchemaContext } from "astro:content"
 import { z } from "zod"
 
 export const imageSchema = z.string()
@@ -83,22 +84,24 @@ export const blockSchema = itemSchema
   .partial()
   .strict()
 
-export const pageSchema = blockSchema
-  .extend({
-    layout: z.string(),
-    banner: blockSchema,
-    header: blockSchema,
-    blocks: blockSchema.array(),
-    footer: blockSchema,
-    legal: blockSchema,
-    bubble: z.string(),
-    seo: seoSchema,
-    css: z.string(),
-    head: z.string(),
-    body: z.string(),
-  })
-  .partial()
-  .strict()
+export const pageSchema = ({ image }: SchemaContext) =>
+  blockSchema
+    .extend({
+      layout: z.string(),
+      image: image(),
+      banner: blockSchema,
+      header: blockSchema,
+      blocks: blockSchema.array(),
+      footer: blockSchema,
+      legal: blockSchema,
+      bubble: z.string(),
+      seo: seoSchema,
+      css: z.string(),
+      head: z.string(),
+      body: z.string(),
+    })
+    .partial()
+    .strict()
 
 export type SeoSchema = z.infer<typeof seoSchema>
 export type ImageSchema = z.infer<typeof imageSchema>

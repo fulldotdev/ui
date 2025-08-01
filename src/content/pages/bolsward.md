@@ -1,7 +1,6 @@
 ---
 layout: /src/content/layouts/base.yaml
 title: Bolsward
-image: /bolsward.jpg
 blocks:
   - block: hero-1
     html: >-

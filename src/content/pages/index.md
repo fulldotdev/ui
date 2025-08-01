@@ -1,7 +1,7 @@
 ---
 layout: /src/content/layouts/base.yaml
 title: Home
-image: ../../../1-6.jpg
+image: ../../images/1-6.jpg
 blocks:
   - block: hero-1
     html: >-
@@ -12,7 +12,7 @@ blocks:
     links:
       - text: Get Started
         href: /docs/
-      - text: 'GitHub '
+      - text: "GitHub "
         href: https://github.com/fulldotdev/ui
     image: /placeholder.webp
     chip:
