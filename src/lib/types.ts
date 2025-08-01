@@ -5,13 +5,16 @@ import type {
   SeoSchema,
 } from "@/lib/schemas"
 
-export type ImageProps = ImageSchema & {
-  srcSet?: string
-  width?: number
+export type ImageProps = {
+  fetchPriority: string
+  decoding: string
+  loading: string
   height?: number
-  format?: string
-  quality?: number
-  aspectRatio?: number
+  width?: number
+  sizes?: string
+  alt: string
+  src: string
+  srcSet?: string
 }
 
 export type ItemProps = Omit<ItemSchema, "image" | "images"> & {
@@ -26,4 +29,23 @@ export type BlockProps = Omit<ItemProps, "children"> & {
   children?: React.ReactNode
 }
 
-export type PageProps = PageSchema & {}
+export type PageProps = Omit<
+  PageSchema,
+  | "image"
+  | "images"
+  | "items"
+  | "banner"
+  | "header"
+  | "footer"
+  | "legal"
+  | "blocks"
+> & {
+  image?: ImageProps
+  images?: ImageProps[]
+  items?: ItemProps[]
+  banner?: BlockProps
+  header?: BlockProps
+  footer?: BlockProps
+  legal?: BlockProps
+  blocks?: BlockProps[]
+}

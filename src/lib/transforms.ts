@@ -2,6 +2,7 @@ import { getImage } from "astro:assets"
 import { i18n } from "astro:config/server"
 import type { CollectionEntry } from "astro:content"
 import { getCollection } from "astro:content"
+import { title } from "radash"
 
 import type {
   BlockSchema,
@@ -10,7 +11,7 @@ import type {
   ItemSchema,
   ReferenceSchema,
 } from "@/lib/schemas"
-import type { BlockProps, PageProps } from "@/lib/types"
+import type { BlockProps, ImageProps, ItemProps, PageProps } from "@/lib/types"
 
 // ------------------------------------------------------------
 // Data Loading
@@ -65,9 +66,12 @@ function getEntriesByGlob(glob: GlobSchema) {
 }
 
 function getItemByEntry(entry: CollectionEntry<"content">) {
+  const { image, images, ...rest } = entry.data
   return {
     href: getHrefById(entry.id),
-    ...entry.data,
+    image: image ? transformImage(image) : undefined,
+    images: images?.map(transformImage),
+    ...rest,
   }
 }
 
@@ -75,8 +79,15 @@ function getItemByEntry(entry: CollectionEntry<"content">) {
 // Transform Functions
 // ------------------------------------------------------------
 
-function transformImage(image: ImageSchema) {
-  const found = images.find((img) => img.id === image.src)
+function transformImage(image: ImageSchema | ImageProps): ImageProps {
+  // If image is already transformed, return it
+  if (typeof image === "object" && "src" in image) {
+    return image as ImageProps
+  }
+
+  // Otherwise, transform the string image
+  const imageString = image as string
+  const found = images.find((img) => img.id === imageString)
 
   return {
     fetchPriority: "auto",
@@ -85,15 +96,16 @@ function transformImage(image: ImageSchema) {
     height: found?.attributes.height,
     width: found?.attributes.width,
     sizes: found?.attributes.sizes,
-    alt: image.alt,
-    title: image.title,
-    src: found?.src || image.src,
+    alt: title(imageString.split(".")[0]),
+    src: found?.src || imageString,
     srcSet: found?.srcSet.attribute,
   }
 }
 
-function transformItems(items: GlobSchema | ReferenceSchema[] | ItemSchema[]) {
-  let transformedItems
+function transformItems(
+  items: GlobSchema | ReferenceSchema[] | ItemSchema[]
+): ItemProps[] {
+  let transformedItems: ItemProps[]
 
   // glob: string
   if (typeof items === "string") {
@@ -111,14 +123,14 @@ function transformItems(items: GlobSchema | ReferenceSchema[] | ItemSchema[]) {
 
   // items: object[]
   else {
-    transformedItems = items
+    transformedItems = items.map((item) => ({
+      ...item,
+      image: item.image ? transformImage(item.image) : undefined,
+      images: item.images?.map(transformImage),
+    }))
   }
 
-  return transformedItems.map((item) => ({
-    ...item,
-    image: item.image && transformImage(item.image),
-    images: item.images?.map(transformImage),
-  }))
+  return transformedItems
 }
 
 function transformBlock(block: BlockSchema): BlockProps {
@@ -136,7 +148,7 @@ function transformBlock(block: BlockSchema): BlockProps {
 // ------------------------------------------------------------
 
 export function transformPage(page: CollectionEntry<"pages">): PageProps {
-  const { id, filePath, rendered } = page
+  const { id, rendered } = page
 
   const layout = page.data.layout
     ? getEntryByReference(page.data.layout)
@@ -152,13 +164,6 @@ export function transformPage(page: CollectionEntry<"pages">): PageProps {
   const baseLocalePage = content.find(
     (entry) => entry.id === baseLocaleReference
   )
-
-  console.log({
-    id,
-    currentLocale,
-    baseLocaleReference,
-    baseLocalePage,
-  })
 
   const mergedData = {
     ...layout?.data,

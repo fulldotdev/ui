@@ -1,9 +1,7 @@
 ---
 layout: /src/content/layouts/base.yaml
-title: Home
-image:
-  src: /bolsward.jpg
-  alt: "Hero 1"
+title: Bolsward
+image: /bolsward.jpg
 blocks:
   - block: hero-1
     html: >-
@@ -15,9 +13,7 @@ blocks:
         href: /docs/
       - text: "Bekijk deelnemers"
         href: "#"
-    image:
-      src: /bolsward.jpg
-      alt: "Hero 1"
+    image: /bolsward.jpg
   - block: features-1
     items:
       - icon: "check"
@@ -36,21 +32,15 @@ blocks:
     html: |
       <h2>Wie er al deelnemen</h2>
     items:
-      - image:
-          src: /bolsward.jpg
-          alt: "Hero 1"
+      - image: /bolsward.jpg
         title: Lorem ipsum
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      - image:
-          src: /bolsward.jpg
-          alt: "Hero 1"
+      - image: /bolsward.jpg
         title: Lorem ipsum
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      - image:
-          src: /bolsward.jpg
-          alt: "Hero 1"
+      - image: /bolsward.jpg
         title: Lorem ipsum
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.

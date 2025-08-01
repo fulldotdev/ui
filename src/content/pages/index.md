@@ -1,9 +1,7 @@
 ---
 layout: /src/content/layouts/base.yaml
 title: Home
-image:
-  src: /placeholder.webp
-  alt: "Hero 1"
+image: /placeholder.webp
 blocks:
   - block: hero-1
     html: >-
@@ -16,14 +14,12 @@ blocks:
         href: /docs/
       - text: "GitHub "
         href: https://github.com/fulldotdev/ui
-    image:
-      src: /placeholder.webp
-      alt: "Hero 1"
+    image: /placeholder.webp
     chip:
       text: "100+ downloads"
       href: /docs/
     images:
-      - /src/content/images/bolsward.jpg.yaml
+      - /bolsward.jpg
   - block: features-1
     items:
       - title: Great AI agents experience
