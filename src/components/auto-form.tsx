@@ -196,19 +196,21 @@ function AutoForm({
         {...props}
       >
         {/* Cloudcannon fields */}
-        {inbox && <input type="hidden" name="inbox_key" value={inbox} />}
+        {inbox && <input type="hidden" name="inbox_key" defaultValue={inbox} />}
         <input type="text" name="_gotcha" style={{ display: "none" }} />
         {/* Always include the page path in the form data */}
         <input
           type="text"
           name="Pagina"
-          value={typeof window !== "undefined" ? window.location.pathname : ""}
+          defaultValue={
+            typeof window !== "undefined" ? window.location.pathname : ""
+          }
           style={{ display: "none" }}
         />
         {/* Fields definitions */}
-        {fields?.map(({ type, ...field }) => {
+        {fields?.map(({ type, ...field }, i) => {
           const Field = fieldComponents[type]
-          return <Field control={form.control} {...field} />
+          return <Field key={i} control={form.control} {...field} />
         })}
         <Button className="flex" type="submit">
           {submit}
