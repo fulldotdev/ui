@@ -1,13 +1,15 @@
 import { z } from "zod"
 
-export const imageSchema = z
-  .object({
-    src: z.string(),
-    alt: z.string(),
-    title: z.string(),
-  })
-  .partial()
-  .strict()
+// export const imageSchema = z
+//   .object({
+//     src: z.string(),
+//     alt: z.string(),
+//     title: z.string(),
+//   })
+//   .partial()
+//   .strict()
+
+export const imageSchema = z.any()
 
 export const linkSchema = z
   .object({

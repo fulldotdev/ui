@@ -22,6 +22,8 @@ blocks:
     chip:
       text: "100+ downloads"
       href: /docs/
+    images:
+      - /src/content/images/bolsward.jpg.yaml
   - block: features-1
     items:
       - title: Great AI agents experience
