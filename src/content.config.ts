@@ -10,13 +10,6 @@ export const collections = {
     }),
     schema: pageSchema,
   }),
-  layouts: defineCollection({
-    loader: glob({
-      pattern: "**/[^_]*.{yaml,yml,json}",
-      base: `src/data/layouts`,
-    }),
-    schema: pageSchema,
-  }),
   content: defineCollection({
     loader: glob({
       pattern: "**/[^_]*.{md,mdx,yaml,yml,json}",
