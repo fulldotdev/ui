@@ -3,15 +3,14 @@ import { getImage } from "astro:assets"
 import { getCollection } from "astro:content"
 
 import { transformEntry } from "@/lib/transforms"
-import Layout from "@/components/layout.astro"
-import { Page } from "@/components/page.tsx"
+import Page from "@/components/page.astro"
 
 export async function getStaticPaths() {
   // ------------------------------------------------------------
   // Data Loading
   // ------------------------------------------------------------
   const entries = await getCollection("content")
-
+  const layouts = await getCollection("layouts")
   const imageImports = import.meta.glob("/src/images/**", { eager: true })
   const images = await Promise.all(
     Object.entries(imageImports).map(async ([key, image]: any) => {
@@ -33,22 +32,15 @@ export async function getStaticPaths() {
   // Generate Static Paths
   // ------------------------------------------------------------
   return entries.map((entry) => {
-    const transformed = transformEntry(entry, { entries, images })
+    const transformed = transformEntry(entry, { entries, images, layouts })
     return {
       params: {
         entry: transformed.href === "/" ? undefined : transformed.href,
       },
-      props: {
-        page: transformed,
-        context: { entries, images },
-      },
+      props: transformed,
     }
   })
 }
-
-const { page, context } = Astro.props
 ---
 
-<Layout {...page}>
-  <Page client:load page={page} context={context} />
-</Layout>
+<Page {...Astro.props} />

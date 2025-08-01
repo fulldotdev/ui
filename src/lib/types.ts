@@ -1,4 +1,9 @@
-import type { ImageSchema, ItemSchema, SeoSchema } from "@/lib/schemas"
+import type {
+  ImageSchema,
+  ItemSchema,
+  PageSchema,
+  SeoSchema,
+} from "@/lib/schemas"
 
 export type ImageProps = ImageSchema & {
   srcSet?: string
@@ -21,7 +26,4 @@ export type BlockProps = Omit<ItemProps, "children"> & {
   children?: React.ReactNode
 }
 
-export type PageProps = BlockProps & {
-  blocks?: BlockProps[]
-  seo?: SeoSchema
-}
+export type PageProps = PageSchema & {}

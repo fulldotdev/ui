@@ -1,4 +1,5 @@
 ---
+layout: base
 published: 2025-07-16T00:00:00Z
 title: Home
 image:

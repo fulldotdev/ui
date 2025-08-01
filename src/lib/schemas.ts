@@ -30,10 +30,6 @@ export const seoSchema = z
     title: z.string(),
     description: z.string(),
     image: z.any(),
-    code: z.string(),
-    head: z.string(),
-    body: z.string(),
-    css: z.string(),
   })
   .partial()
   .strict()
@@ -44,7 +40,6 @@ export const formSchema = z
     action: z.string(),
     fields: z.any(),
     submit: z.string(),
-    description: z.string(),
   })
   .partial()
   .strict()
@@ -97,8 +92,17 @@ export const blockSchema = itemSchema
 
 export const pageSchema = blockSchema
   .extend({
+    layout: z.string(),
+    banner: blockSchema,
+    header: blockSchema,
     blocks: blockSchema.array(),
+    footer: blockSchema,
+    legal: blockSchema,
+    bubble: z.string(),
     seo: seoSchema,
+    css: z.string(),
+    head: z.string(),
+    body: z.string(),
   })
   .partial()
   .strict()

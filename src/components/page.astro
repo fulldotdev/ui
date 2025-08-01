@@ -1,21 +1,111 @@
 ---
+import { Font } from "astro:assets"
+
+import "@/styles/globals.css"
+
+import { SEO } from "astro-seo"
+
+import type { PageProps } from "@/lib/types"
+import { Social } from "@/components/ui/social"
 import { Block } from "@/components/block"
 
-const { block, blocks, ...page } = Astro.props
+type Props = PageProps
+
+const {
+  id,
+  published,
+  block,
+  banner,
+  header,
+  blocks,
+  footer,
+  legal,
+  bubble,
+  title,
+  description,
+  image,
+  seo,
+  css,
+  head,
+  body,
+  ...rest
+} = Astro.props as Props
 ---
 
-{
-  block && (
-    <Block client:load {...page}>
-      <Fragment set:html={page.html} />
-    </Block>
-  )
-}
-
-{
-  blocks?.map((block: any) => (
-    <Block client:load {...block}>
-      <Fragment set:html={block.html} />
-    </Block>
-  ))
-}
+<!doctype html>
+<html class="layout light" lang="nl">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <SEO
+      charset="UTF-8"
+      title={seo?.title || title}
+      description={seo?.description || description}
+      canonical={Astro.url.href.endsWith("/")
+        ? Astro.url.href
+        : Astro.url.href + "/"}
+      openGraph={{
+        basic: {
+          title: seo?.title || title || "",
+          image: Astro.url.origin + image?.src,
+          type: "website",
+          url: Astro.url.href,
+        },
+        image: {
+          url: Astro.url.origin + image?.src,
+          alt: image?.alt,
+        },
+        optional: {
+          description: seo?.description || description,
+        },
+        article: {
+          publishedTime: block?.startsWith("article")
+            ? published?.toISOString()
+            : undefined,
+        },
+      }}
+    />
+    <Font cssVariable="--font-sans" preload />
+    <Font cssVariable="--font-serif" preload />
+    <Fragment set:html={head} />
+  </head>
+  <body
+    class="text-foreground bg-background overscroll-none font-sans antialiased"
+    id={id}
+  >
+    <Block client:load {...banner} />
+    <Block client:load {...header} />
+    <main>
+      <Block
+        client:load
+        block={block}
+        title={title}
+        description={description}
+        image={image}
+        {...rest}
+      >
+        <Fragment set:html={rest.html} />
+      </Block>
+      <slot />
+      {
+        blocks?.map((block: any) => (
+          <Block client:load {...block}>
+            <Fragment set:html={block.html} />
+          </Block>
+        ))
+      }
+    </main>
+    <Block client:load {...footer} />
+    {
+      bubble && (
+        <Social
+          className="fixed right-4 bottom-4 p-6 *:!size-6 z-50"
+          variant="default"
+          href={bubble}
+        />
+      )
+    }
+    <Fragment set:html={body} />
+    <style set:html={css}></style>
+  </body>
+</html>

@@ -1,3 +1,4 @@
+import type * as React from "react"
 import type { GetImageResult } from "astro"
 import type { CollectionEntry } from "astro:content"
 
@@ -40,13 +41,20 @@ function getItemByEntry(entry: CollectionEntry<"content">): ItemSchema {
 // Transform Functions
 // ------------------------------------------------------------
 
-function transformImage(image: ImageSchema): ImageProps {
+function transformImage(
+  image: ImageSchema
+): ImageProps & React.ComponentProps<"img"> {
   const found = context.images.find((img) => img.id === image.src)
   if (!found) return image
 
   return {
-    ...found.attributes,
-    ...image,
+    fetchPriority: "auto",
+    decoding: "async",
+    loading: "lazy",
+    height: found.attributes.height,
+    width: found.attributes.width,
+    sizes: found.attributes.sizes,
+    alt: image.alt,
     src: found.src,
     srcSet: found.srcSet.attribute,
   }
@@ -107,6 +115,7 @@ function transformBlock(block: BlockSchema): BlockProps {
 
 export type TransformContext = {
   entries: CollectionEntry<"content">[]
+  layouts: CollectionEntry<"layouts">[]
   images: (GetImageResult & { id: string })[]
 }
 
@@ -122,7 +131,11 @@ export function transformEntry(
 ): PageProps {
   context = ctx
   const { id, rendered } = entry
-  const { image, images, items, blocks, ...rest } = entry.data
+  const layout = context.layouts.find(
+    (layout) => layout.id === entry.data.layout
+  )
+  const mergedData = { ...layout?.data, ...entry.data }
+  const { image, images, items, blocks, ...rest } = mergedData
 
   return {
     id,
