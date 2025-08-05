@@ -1,0 +1,86 @@
+import react from "@astrojs/react"
+import sitemap from "@astrojs/sitemap"
+import tailwindcss from "@tailwindcss/vite"
+import type { AstroIntegration } from "astro"
+import favicons from "astro-favicons"
+import robotsTxt from "astro-robots-txt"
+import { fontProviders } from "astro/config"
+
+export interface FulldevOptions {
+  name: string
+  site: string
+  font: string
+  defaultLocale: string
+  locales: string[]
+  favicon: string
+}
+
+export default function (options: FulldevOptions): AstroIntegration {
+  return {
+    name: "fulldev",
+    hooks: {
+      "astro:config:setup": ({ updateConfig }) => {
+        updateConfig({
+          site: options.site,
+          i18n: {
+            defaultLocale: options.defaultLocale,
+            locales: options.locales,
+            routing: {
+              prefixDefaultLocale: false,
+              redirectToDefaultLocale: false,
+              fallbackType: "rewrite",
+            },
+          },
+          image: {
+            responsiveStyles: true,
+            layout: "constrained",
+            objectFit: "cover",
+            objectPosition: "center",
+            breakpoints: [320, 768, 1024, 1280, 1536, 1920],
+          },
+          trailingSlash: "never",
+          experimental: {
+            fonts: [
+              {
+                provider: fontProviders.google(),
+                cssVariable: "--font-sans",
+                name: options.font,
+              },
+            ],
+          },
+          integrations: [
+            robotsTxt(),
+            react(),
+            sitemap({
+              changefreq: "weekly",
+              lastmod: new Date(),
+              i18n: {
+                defaultLocale: options.defaultLocale,
+                locales: options.locales.reduce(
+                  (acc, locale) => {
+                    acc[locale] = locale
+                    return acc
+                  },
+                  {} as Record<string, string>
+                ),
+              },
+            }),
+            favicons({
+              input: {
+                favicons: [options.favicon],
+              },
+              name: options.name,
+              short_name: options.name,
+            }),
+          ],
+          vite: {
+            plugins: [tailwindcss()],
+          },
+          prefetch: {
+            prefetchAll: true,
+          },
+        })
+      },
+    },
+  }
+}

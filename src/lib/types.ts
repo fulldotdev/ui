@@ -12,10 +12,7 @@ export type ItemProps = Omit<ItemSchema, "image" | "images"> & {
   images?: ImageProps[]
 }
 
-export type BlockProps = Omit<
-  BlockSchema,
-  "image" | "images" | "items" | "html"
-> & {
+export type BlockProps = Omit<BlockSchema, "image" | "images" | "items"> & {
   image?: ImageProps
   images?: ImageProps[]
   items?: ItemProps[]
