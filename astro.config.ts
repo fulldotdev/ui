@@ -1,12 +1,10 @@
 import react from "@astrojs/react"
 import sitemap from "@astrojs/sitemap"
-import yaml from "@rollup/plugin-yaml"
 import tailwindcss from "@tailwindcss/vite"
 import favicons from "astro-favicons"
 import robotsTxt from "astro-robots-txt"
 import { defineConfig, fontProviders } from "astro/config"
 
-// https://astro.build/config
 export default defineConfig({
   site: "https://ui.full.dev",
   experimental: {
@@ -27,22 +25,6 @@ export default defineConfig({
           "900",
         ],
       },
-      {
-        provider: fontProviders.google(),
-        name: "Geist",
-        cssVariable: "--font-serif",
-        weights: [
-          "100",
-          "200",
-          "300",
-          "400",
-          "500",
-          "600",
-          "700",
-          "800",
-          "900",
-        ],
-      },
     ],
   },
   trailingSlash: "never",
@@ -50,13 +32,13 @@ export default defineConfig({
     defaultLocale: "nl",
     locales: ["nl", "en"],
   },
-  // image: {
-  //   responsiveStyles: true,
-  //   layout: "constrained",
-  //   objectFit: "cover",
-  //   objectPosition: "center",
-  //   breakpoints: [320, 768, 1024, 1280, 1536, 1920],
-  // },
+  image: {
+    responsiveStyles: true,
+    layout: "constrained",
+    objectFit: "cover",
+    objectPosition: "center",
+    breakpoints: [320, 768, 1024, 1280, 1536, 1920],
+  },
   prefetch: {
     prefetchAll: true,
   },
@@ -65,7 +47,6 @@ export default defineConfig({
   },
   integrations: [robotsTxt(), sitemap(), react(), favicons()],
   vite: {
-    plugins: [tailwindcss(), yaml()],
+    plugins: [tailwindcss()],
   },
-  redirects: {},
 })

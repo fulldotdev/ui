@@ -5,6 +5,7 @@ import { getCollection, getEntry } from "astro:content"
 import { title } from "radash"
 
 import type { BlockSchema, GlobSchema, ItemSchema } from "@/lib/schemas"
+import type { PageProps } from "@/lib/types"
 
 // ------------------------------------------------------------
 // Helpers
@@ -208,7 +209,7 @@ export async function transformPage(page: CollectionEntry<"pages">) {
       footer: footer ? await transformBlock(footer) : undefined,
       legal: legal ? await transformBlock(legal) : undefined,
       ...rest,
-    },
+    } satisfies PageProps,
   }
 }
 

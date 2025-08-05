@@ -5,6 +5,7 @@ import { Social } from "@/components/ui/social"
 
 export default function ({
   image,
+  title,
   description,
   links,
   socials,
@@ -17,7 +18,7 @@ export default function ({
           {image && (
             <Logo href="/">
               {image?.src && <LogoImage {...image} />}
-              {image?.title && image.title}
+              {title}
             </Logo>
           )}
           {description && (

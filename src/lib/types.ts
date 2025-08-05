@@ -5,17 +5,7 @@ import type {
   PageSchema,
 } from "@/lib/schemas"
 
-export type ImageProps = {
-  alt: string
-  height: number
-  width: number
-  sizes: string
-  src: string
-  srcSet: string
-  fetchPriority: "auto"
-  decoding: "async"
-  loading: "lazy"
-}
+export type ImageProps = any
 
 export type ItemProps = Omit<ItemSchema, "image" | "images"> & {
   image?: ImageProps
@@ -42,12 +32,10 @@ export type LayoutProps = Omit<
   legal?: BlockProps
 }
 
-export type PageProps = Omit<
-  PageSchema,
-  "image" | "images" | "items" | "blocks"
-> & {
-  image?: ImageProps
-  images?: ImageProps[]
-  items?: ItemProps[]
-  blocks?: BlockProps[]
-}
+export type PageProps = LayoutProps &
+  Omit<PageSchema, "image" | "images" | "items" | "blocks"> & {
+    image?: ImageProps
+    images?: ImageProps[]
+    items?: ItemProps[]
+    blocks?: BlockProps[]
+  }

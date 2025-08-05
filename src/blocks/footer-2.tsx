@@ -3,14 +3,14 @@ import { Logo, LogoImage } from "@/components/ui/logo"
 import { Section, SectionContainer } from "@/components/ui/section"
 import { Social } from "@/components/ui/social"
 
-export default function ({ image, links, socials }: BlockProps) {
+export default function ({ image, title, links, socials }: BlockProps) {
   return (
     <Section>
       <SectionContainer className="flex flex-col items-center gap-8">
         {image && (
           <Logo href="/">
             {image?.src && <LogoImage {...image} />}
-            {image?.title && image.title}
+            {title}
           </Logo>
         )}
         {links && links.length > 0 && (

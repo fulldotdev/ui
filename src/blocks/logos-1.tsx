@@ -16,11 +16,8 @@ export default function ({ children, images }: BlockProps) {
           </SectionContent>
         )}
         <div className="flex flex-wrap justify-center gap-8 not-first:mt-8">
-          {images?.map(({ src, alt, title }, i) => (
-            <Logo key={i}>
-              {src && <LogoImage src={src} alt={alt} title={title} />}
-              {title}
-            </Logo>
+          {images?.map(({ src, alt }, i) => (
+            <Logo key={i}>{src && <LogoImage src={src} alt={alt} />}</Logo>
           ))}
         </div>
       </SectionContainer>
