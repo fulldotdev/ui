@@ -1,200 +1,217 @@
 import { getImage } from "astro:assets"
 import { i18n } from "astro:config/server"
 import type { CollectionEntry } from "astro:content"
-import { getCollection } from "astro:content"
+import { getCollection, getEntry } from "astro:content"
 import { title } from "radash"
 
-import type {
-  BlockSchema,
-  GlobSchema,
-  ImageSchema,
-  ItemSchema,
-  ReferenceSchema,
-} from "@/lib/schemas"
-import type { BlockProps, ImageProps, ItemProps, PageProps } from "@/lib/types"
-
-// ------------------------------------------------------------
-// Data Loading
-// ------------------------------------------------------------
-const content = await getCollection("content")
-const imageImports = import.meta.glob("/src/images/**", { eager: true })
-const images = await Promise.all(
-  Object.entries(imageImports).map(async ([key, image]: any) => {
-    const metadata = image.default
-    const generated = await getImage({
-      src: metadata,
-      format: "webp",
-      sizes: "100vw",
-      widths: [320, 480, 768, 1024, 1440, 1920],
-      quality: "mid",
-    })
-    return {
-      id: key.replace("/src/images", ""),
-      ...generated,
-    }
-  })
-)
+import type { BlockSchema, GlobSchema, ItemSchema } from "@/lib/schemas"
 
 // ------------------------------------------------------------
 // Helpers
 // ------------------------------------------------------------
 
-function getHrefById(id: string) {
-  if (id === "index") return "/"
-  return `/${id}`
+export function getHref(page: CollectionEntry<"pages">) {
+  if (!page.body && !page.data.blocks) return
+  if (page.data.draft) return
+  if (page.id === "index") return "/"
+  return `/${page.id}`
 }
 
-function getEntryByReference(reference: ReferenceSchema) {
-  const entry = content.find((entry) => {
-    if (!entry.filePath) throw new Error(`Entry not found: ${reference}`)
-    return reference.endsWith(entry.filePath)
-  })
-
-  if (!entry) {
-    throw new Error(`Entry not found: ${reference}`)
-  }
-
-  return entry
-}
-
-function getEntriesByGlob(glob: GlobSchema) {
-  const entries = content.filter(
-    (entry) => entry.id.startsWith(glob) && !entry.id.endsWith(glob)
+async function mergePage(page: CollectionEntry<"pages">) {
+  // Get locale strings from i18n config
+  const locales = i18n?.locales.map((locale) =>
+    typeof locale === "string" ? locale : locale.path
   )
 
-  return entries
-}
+  // Get current locale from page id
+  const currentLocale =
+    locales?.find(
+      (locale) => page.id.startsWith(`${locale}/`) || page.id === locale
+    ) || i18n?.defaultLocale
 
-function getItemByEntry(entry: CollectionEntry<"content">) {
-  const { image, images, ...rest } = entry.data
-  return {
-    href: getHrefById(entry.id),
-    image: image ? transformImage(image) : undefined,
-    images: images?.map(transformImage),
-    ...rest,
-  }
-}
+  // Get i18n id from the equivalent page in the default locale
+  const i18nId =
+    page.id === currentLocale
+      ? "index"
+      : page.id.replace(`${currentLocale}/`, "")
 
-// ------------------------------------------------------------
-// Transform Functions
-// ------------------------------------------------------------
+  // If the i18n id differs from the page id, get it
+  const i18nPage =
+    page.id !== i18nId ? await getEntry("pages", i18nId) : undefined
 
-function transformImage(image: ImageSchema | ImageProps): ImageProps {
-  // If image is already transformed, return it
-  if (typeof image === "object" && "src" in image) {
-    return image as ImageProps
-  }
-
-  // Otherwise, transform the string image
-  const imageString = image as string
-  const found = images.find((img) => img.id === imageString)
-
-  return {
-    fetchPriority: "auto",
-    decoding: "async",
-    loading: "lazy",
-    height: found?.attributes.height,
-    width: found?.attributes.width,
-    sizes: found?.attributes.sizes,
-    alt: title(imageString.split(".")[0]),
-    src: found?.src || imageString,
-    srcSet: found?.srcSet.attribute,
-  }
-}
-
-function transformItems(
-  items: GlobSchema | ReferenceSchema[] | ItemSchema[]
-): ItemProps[] {
-  let transformedItems: ItemProps[]
-
-  // glob: string
-  if (typeof items === "string") {
-    const entries = getEntriesByGlob(items)
-    return entries.map(getItemByEntry)
-  }
-
-  // references: string[]
-  if (items.every((item) => typeof item === "string")) {
-    transformedItems = items.map((item) => {
-      const entry = getEntryByReference(item)
-      return getItemByEntry(entry)
-    })
-  }
-
-  // items: object[]
-  else {
-    transformedItems = items.map((item) => ({
-      ...item,
-      image: item.image ? transformImage(item.image) : undefined,
-      images: item.images?.map(transformImage),
-    }))
-  }
-
-  return transformedItems
-}
-
-function transformBlock(block: BlockSchema): BlockProps {
-  const { image, images, items, ...rest } = block
-  return {
-    image: image ? transformImage(image) : undefined,
-    images: images?.map(transformImage),
-    items: items ? transformItems(items) : undefined,
-    ...rest,
-  }
-}
-
-// ------------------------------------------------------------
-// Main Export
-// ------------------------------------------------------------
-
-export function transformPage(page: CollectionEntry<"pages">): PageProps {
-  const { id, rendered } = page
-
-  const layout = page.data.layout
-    ? getEntryByReference(page.data.layout)
+  // Get layout for current locale
+  const layout = currentLocale
+    ? await getEntry("layouts", currentLocale)
     : undefined
 
-  const currentLocale = i18n?.locales.find(
-    (locale) =>
-      typeof locale === "string" &&
-      (page.id === locale || page.id.startsWith(`${locale}/`))
-  ) as string | undefined
-
-  const baseLocaleReference = currentLocale && id.replace(currentLocale, "")
-  const baseLocalePage = content.find(
-    (entry) => entry.id === baseLocaleReference
-  )
-
+  // Merge all data
   const mergedData = {
     ...layout?.data,
-    ...baseLocalePage?.data,
+    ...i18nPage?.data,
     ...page.data,
   }
 
+  return {
+    ...page,
+    data: mergedData,
+  }
+}
+
+// ------------------------------------------------------------
+// Transforms level 1
+// ------------------------------------------------------------
+
+async function transformImage(image: ImageMetadata) {
+  const generated = await getImage({
+    src: image,
+    format: "webp",
+    sizes: "100vw",
+    widths: [320, 480, 768, 1024, 1440, 1920],
+    quality: "mid",
+  })
+
+  return {
+    alt: title(image.src.split(".")[0]),
+    height: generated.attributes.height,
+    width: generated.attributes.width,
+    sizes: generated.attributes.sizes,
+    src: generated.src,
+    srcSet: generated.srcSet.attribute,
+    fetchPriority: "auto",
+    decoding: "async",
+    loading: "lazy",
+  }
+}
+
+async function transformImages(images: ImageMetadata[]) {
+  return await Promise.all(images?.map(transformImage))
+}
+
+async function transformItem(item: ItemSchema) {
+  const { image, images, ...rest } = item
+  return {
+    image: image ? await transformImage(image) : undefined,
+    images: images ? await transformImages(images) : undefined,
+    ...rest,
+  }
+}
+
+async function transformItems(items: ItemSchema[]) {
+  return await Promise.all(items.map(transformItem))
+}
+
+// ------------------------------------------------------------
+// Transforms level 2
+// ------------------------------------------------------------
+
+export async function transformPath(path: string) {
+  const pages = await getCollection("pages")
+  const page = pages.find(
+    (entry) => entry.filePath && path?.endsWith(entry.filePath)
+  )
+
+  if (!page) {
+    throw new Error(`Entry with path ${path} not found`)
+  }
+
+  const mergedPage = await mergePage(page)
+
+  const item = {
+    href: getHref(mergedPage),
+    ...mergedPage.data,
+  }
+
+  return await transformItem(item)
+}
+
+export async function transformPaths(
+  paths: Parameters<typeof transformPath>[0][]
+) {
+  return await Promise.all(paths.map((path) => transformPath(path)))
+}
+
+export async function transformGlob(glob: GlobSchema) {
+  const entries = await getCollection("pages", (page) =>
+    page.id.startsWith(glob)
+  )
+
+  const items = await Promise.all(
+    entries.map(async (entry) => {
+      const mergedPage = await mergePage(entry)
+      return {
+        href: getHref(mergedPage),
+        ...mergedPage.data,
+      }
+    })
+  )
+
+  return await transformItems(items)
+}
+
+// ------------------------------------------------------------
+// Transforms level 3
+// ------------------------------------------------------------
+
+async function transformBlock(block: BlockSchema) {
+  const { image, images, glob, paths, items, ...rest } = block
+
+  const transformedImage = image ? await transformImage(image) : undefined
+  const transformedImages = images ? await transformImages(images) : undefined
+  const transformedGlob = glob ? await transformGlob(glob) : []
+  const transformedPaths = paths ? await transformPaths(paths) : []
+  const transformedItems = items ? await transformItems(items) : []
+  const mergedItems = [
+    ...transformedItems,
+    ...transformedGlob,
+    ...transformedPaths,
+  ]
+
+  return {
+    image: transformedImage,
+    images: transformedImages,
+    items: mergedItems,
+    ...rest,
+  }
+}
+
+async function transformBlocks(blocks: BlockSchema[]) {
+  return await Promise.all(blocks.map(transformBlock))
+}
+
+// ------------------------------------------------------------
+// Main export
+// ------------------------------------------------------------
+
+export async function transformPage(page: CollectionEntry<"pages">) {
+  const mergedPage = await mergePage(page)
   const {
     image,
     images,
     items,
+    blocks,
     banner,
     header,
-    blocks,
     footer,
     legal,
     ...rest
-  } = mergedData
-
+  } = mergedPage.data
   return {
-    id,
-    href: id === "index" ? "/" : `/${id}`,
-    html: rendered?.html,
-    image: image ? transformImage(image) : undefined,
-    images: images?.map(transformImage),
-    items: items ? transformItems(items) : undefined,
-    banner: banner ? transformBlock(banner) : undefined,
-    header: header ? transformBlock(header) : undefined,
-    footer: footer ? transformBlock(footer) : undefined,
-    legal: legal ? transformBlock(legal) : undefined,
-    blocks: blocks?.map(transformBlock),
-    ...rest,
+    ...page,
+    data: {
+      href: getHref(mergedPage),
+      image: image ? await transformImage(image) : undefined,
+      images: images ? await transformImages(images) : undefined,
+      items: items ? await transformItems(items) : undefined,
+      banner: banner ? await transformBlock(banner) : undefined,
+      header: header ? await transformBlock(header) : undefined,
+      blocks: blocks ? await transformBlocks(blocks) : undefined,
+      footer: footer ? await transformBlock(footer) : undefined,
+      legal: legal ? await transformBlock(legal) : undefined,
+      ...rest,
+    },
   }
+}
+
+export async function transformPages(pages: CollectionEntry<"pages">[]) {
+  return await Promise.all(pages.map(transformPage))
 }

@@ -5,35 +5,35 @@ import "@/styles/globals.css"
 
 import { SEO } from "astro-seo"
 
-import type { PageProps } from "@/lib/types"
 import { Social } from "@/components/ui/social"
 import { Block } from "@/components/block"
 
-type Props = PageProps
+type Props = any
 
 const {
   id,
-  published,
-  block,
-  banner,
-  header,
-  blocks,
-  footer,
-  legal,
-  bubble,
-  title,
-  description,
-  image,
-  seo,
-  css,
-  head,
-  body,
-  ...rest
-} = Astro.props as Props
+  data: {
+    title,
+    description,
+    image,
+    seo,
+    published,
+    block,
+    blocks,
+    body,
+    css,
+    head,
+    banner,
+    header,
+    bubble,
+    footer,
+    ...data
+  },
+} = Astro.props
 ---
 
 <!doctype html>
-<html class="layout light" lang="nl">
+<html class="layout light" lang={Astro.currentLocale}>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
@@ -41,9 +41,7 @@ const {
       charset="UTF-8"
       title={seo?.title || title}
       description={seo?.description || description}
-      canonical={Astro.url.href.endsWith("/")
-        ? Astro.url.href
-        : Astro.url.href + "/"}
+      canonical={Astro.params.page}
       openGraph={{
         basic: {
           title: seo?.title || title || "",
@@ -59,9 +57,7 @@ const {
           description: seo?.description || description,
         },
         article: {
-          publishedTime: block?.startsWith("article")
-            ? published?.toISOString()
-            : undefined,
+          publishedTime: published?.toISOString(),
         },
       }}
     />
@@ -82,13 +78,13 @@ const {
         title={title}
         description={description}
         image={image}
-        {...rest}
+        glob={id}
+        {...data}
       >
-        <Fragment set:html={rest.html} />
+        <slot />
       </Block>
-      <slot />
       {
-        blocks?.map((block: any) => (
+        blocks?.map((block) => (
           <Block client:load {...block}>
             <Fragment set:html={block.html} />
           </Block>

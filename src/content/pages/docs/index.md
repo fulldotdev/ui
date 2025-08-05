@@ -1,5 +1,4 @@
 ---
-layout: /src/content/layouts/base.yaml
 block: doc-1
 title: "Introduction"
 description: "Everything you need to rapidly build content-driven websites. Components, blocks, layouts and complete page generation. "

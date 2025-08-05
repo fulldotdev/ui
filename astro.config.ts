@@ -50,6 +50,13 @@ export default defineConfig({
     defaultLocale: "nl",
     locales: ["nl", "en"],
   },
+  // image: {
+  //   responsiveStyles: true,
+  //   layout: "constrained",
+  //   objectFit: "cover",
+  //   objectPosition: "center",
+  //   breakpoints: [320, 768, 1024, 1280, 1536, 1920],
+  // },
   prefetch: {
     prefetchAll: true,
   },

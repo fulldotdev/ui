@@ -1,0 +1,24 @@
+---
+import { getCollection } from "astro:content"
+
+import { transformPages } from "@/lib/transforms"
+import Page from "@/components/page.astro"
+
+export async function getStaticPaths() {
+  const pages = await getCollection("pages")
+  const transformedPages = await transformPages(pages)
+  return transformedPages
+    .map((page) => {
+      if (!page.data.href) return
+      return {
+        params: {
+          page: page.data.href === "/" ? undefined : page.data.href,
+        },
+        props: page,
+      }
+    })
+    .filter(Boolean)
+}
+---
+
+<Page {...Astro.props} />

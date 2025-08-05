@@ -1,5 +1,4 @@
 ---
-layout: /src/content/layouts/base.yaml
 block: doc-1
 title: Test123
 description: >-

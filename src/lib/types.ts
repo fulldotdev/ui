@@ -1,20 +1,20 @@
 import type {
-  ImageSchema,
+  BlockSchema,
   ItemSchema,
+  LayoutSchema,
   PageSchema,
-  SeoSchema,
 } from "@/lib/schemas"
 
 export type ImageProps = {
-  fetchPriority: string
-  decoding: string
-  loading: string
-  height?: number
-  width?: number
-  sizes?: string
   alt: string
+  height: number
+  width: number
+  sizes: string
   src: string
-  srcSet?: string
+  srcSet: string
+  fetchPriority: "auto"
+  decoding: "async"
+  loading: "lazy"
 }
 
 export type ItemProps = Omit<ItemSchema, "image" | "images"> & {
@@ -22,30 +22,32 @@ export type ItemProps = Omit<ItemSchema, "image" | "images"> & {
   images?: ImageProps[]
 }
 
-export type BlockProps = Omit<ItemProps, "children"> & {
+export type BlockProps = Omit<
+  BlockSchema,
+  "image" | "images" | "items" | "html"
+> & {
   image?: ImageProps
   images?: ImageProps[]
   items?: ItemProps[]
   children?: React.ReactNode
 }
 
-export type PageProps = Omit<
-  PageSchema,
-  | "image"
-  | "images"
-  | "items"
-  | "banner"
-  | "header"
-  | "footer"
-  | "legal"
-  | "blocks"
+export type LayoutProps = Omit<
+  LayoutSchema,
+  "banner" | "header" | "footer" | "legal"
 > & {
-  image?: ImageProps
-  images?: ImageProps[]
-  items?: ItemProps[]
   banner?: BlockProps
   header?: BlockProps
   footer?: BlockProps
   legal?: BlockProps
+}
+
+export type PageProps = Omit<
+  PageSchema,
+  "image" | "images" | "items" | "blocks"
+> & {
+  image?: ImageProps
+  images?: ImageProps[]
+  items?: ItemProps[]
   blocks?: BlockProps[]
 }

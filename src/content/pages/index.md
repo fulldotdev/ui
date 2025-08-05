@@ -1,7 +1,6 @@
 ---
-layout: /src/content/layouts/base.yaml
 title: Home
-image: ../../images/1-6.jpg
+image: ../../images/large.png
 blocks:
   - block: hero-1
     html: >-
@@ -14,12 +13,12 @@ blocks:
         href: /docs/
       - text: "GitHub "
         href: https://github.com/fulldotdev/ui
-    image: /placeholder.webp
+    image: ../../images/placeholder.webp
     chip:
       text: 100+ downloads
       href: /docs/
     images:
-      - /bolsward.jpg
+      - ../../images/bolsward.jpg
   - block: features-1
     items:
       - title: Great AI agents experience
@@ -36,6 +35,6 @@ blocks:
           shadcn registry.
   - block: tiles-1
     html: <h2>Wie er al deelnemen</h2>
-    items:
+    paths:
       - /src/content/pages/bolsward.md
 ---

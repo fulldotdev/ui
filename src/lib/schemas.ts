@@ -1,7 +1,4 @@
-import type { SchemaContext } from "astro:content"
-import { z } from "zod"
-
-export const imageSchema = z.string()
+import { reference, z, type SchemaContext } from "astro:content"
 
 export const linkSchema = z
   .object({
@@ -19,14 +16,15 @@ export const menuSchema = linkSchema
   .partial()
   .strict()
 
-export const seoSchema = z
-  .object({
-    title: z.string(),
-    description: z.string(),
-    image: z.any(),
-  })
-  .partial()
-  .strict()
+export const seoSchema = ({ image }: SchemaContext) =>
+  z
+    .object({
+      title: z.string(),
+      description: z.string(),
+      image: image(),
+    })
+    .partial()
+    .strict()
 
 export const formSchema = z
   .object({
@@ -44,58 +42,71 @@ export const priceSchema = z.object({
   unit: z.string(),
 })
 
-export const itemSchema = z
-  .object({
-    id: z.string(),
-    href: z.string(),
-    block: z.string(),
-    published: z.date(),
-    title: z.string(),
-    description: z.string(),
-    chip: linkSchema,
-    tagline: z.string(),
-    link: linkSchema,
-    links: linkSchema.array(),
-    icon: z.enum(["check", "cross"]),
-    rating: z.number().min(0).max(5).step(0.25),
-    image: imageSchema,
-    images: imageSchema.array(),
-    price: priceSchema,
-    prices: priceSchema.array(),
-    social: z.string(),
-    socials: z.string().array(),
-    menu: menuSchema,
-    menus: menuSchema.array(),
-    list: z.string().array(),
-    form: formSchema,
-    html: z.string(),
-    markdown: z.string(),
-  })
-  .partial()
-  .strict()
+export const itemSchema = ({ image }: SchemaContext) =>
+  z
+    .object({
+      slug: z.string(),
+      image: image(),
+      images: image().array(),
+      id: z.string(),
+      href: z.string(),
+      block: z.string(),
+      published: z.date(),
+      title: z.string(),
+      description: z.string(),
+      chip: linkSchema,
+      tagline: z.string(),
+      link: linkSchema,
+      links: linkSchema.array(),
+      icon: z.enum(["check", "cross"]),
+      rating: z.number().min(0).max(5).step(0.25),
+      price: priceSchema,
+      prices: priceSchema.array(),
+      social: z.string(),
+      socials: z.string().array(),
+      menu: menuSchema,
+      menus: menuSchema.array(),
+      list: z.string().array(),
+      form: formSchema,
+      html: z.string(),
+      markdown: z.string(),
+    })
+    .partial()
+    .strict()
 
 export const globSchema = z.string()
-export const referenceSchema = z.string().startsWith("/src/content/")
+export const pathSchema = z.string()
 
-export const blockSchema = itemSchema
-  .extend({
-    items: z.union([itemSchema.array(), referenceSchema.array(), globSchema]),
-  })
-  .partial()
-  .strict()
-
-export const pageSchema = ({ image }: SchemaContext) =>
-  blockSchema
+export const blockSchema = (ctx: SchemaContext) =>
+  itemSchema(ctx)
     .extend({
-      layout: z.string(),
-      image: image(),
-      banner: blockSchema,
-      header: blockSchema,
-      blocks: blockSchema.array(),
-      footer: blockSchema,
-      legal: blockSchema,
+      // items: itemSchema(ctx).array(),
+      items: itemSchema(ctx).array(),
+      paths: pathSchema.array(),
+      glob: globSchema,
+    })
+    .partial()
+    .strict()
+
+export const pageSchema = (ctx: SchemaContext) =>
+  blockSchema(ctx)
+    .extend({
+      draft: z.boolean(),
+      layout: reference("layouts"),
+      blocks: blockSchema(ctx).array(),
+      seo: seoSchema(ctx),
+    })
+    .partial()
+    .strict()
+
+export const layoutSchema = (ctx: SchemaContext) =>
+  z
+    .object({
+      banner: blockSchema(ctx),
+      header: blockSchema(ctx),
+      footer: blockSchema(ctx),
+      legal: blockSchema(ctx),
       bubble: z.string(),
-      seo: seoSchema,
       css: z.string(),
       head: z.string(),
       body: z.string(),
@@ -103,10 +114,8 @@ export const pageSchema = ({ image }: SchemaContext) =>
     .partial()
     .strict()
 
-export type SeoSchema = z.infer<typeof seoSchema>
-export type ImageSchema = z.infer<typeof imageSchema>
 export type GlobSchema = z.infer<typeof globSchema>
-export type ReferenceSchema = z.infer<typeof referenceSchema>
-export type ItemSchema = z.infer<typeof itemSchema>
-export type BlockSchema = z.infer<typeof blockSchema>
-export type PageSchema = z.infer<typeof pageSchema>
+export type ItemSchema = z.infer<ReturnType<typeof itemSchema>>
+export type BlockSchema = z.infer<ReturnType<typeof blockSchema>>
+export type PageSchema = z.infer<ReturnType<typeof pageSchema>>
+export type LayoutSchema = z.infer<ReturnType<typeof layoutSchema>>

@@ -1,5 +1,4 @@
 ---
-layout: /src/content/layouts/base.yaml
 title: test
 image: ../../images/placeholder.webp
 blocks:
@@ -12,7 +11,7 @@ blocks:
       - text: Meld je nu aan
         href: /docs/
       - text: Bekijk deelnemers
-        href: '#'
+        href: "#"
     image: ../../images/placeholder.webp
   - block: features-1
     items:
@@ -35,17 +34,17 @@ blocks:
     html: |
       <h2>Wie er al deelnemen</h2>
     items:
-      - image: /bolsward.jpg
+      - image: ../../images/bolsward.jpg
         title: Lorem ipsum
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      - image: /bolsward.jpg
+      - image: ../../images/bolsward.jpg
         title: Lorem ipsum
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      - image: /bolsward.jpg
+      - image: ../../images/bolsward.jpg
         title: Lorem ipsum
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
