@@ -12,9 +12,9 @@ export default function ({ image, title, menus, links }: BlockProps) {
         {menus && menus.length > 0 && (
           <MobileMenu className="lg:hidden" items={menus} />
         )}
-        {image && (
+        {(image || title) && (
           <Logo href="/" className="mr-4 max-sm:hidden">
-            {image.src && <LogoImage {...image} />}
+            {image?.src && <LogoImage {...image} />}
             {title}
           </Logo>
         )}

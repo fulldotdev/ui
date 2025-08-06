@@ -106,14 +106,11 @@ async function transformItems(items: ItemSchema[]) {
 // ------------------------------------------------------------
 
 export async function transformPath(path: string) {
-  const pages = await getCollection("pages")
-  const page = pages.find(
-    (entry) => entry.filePath && path?.endsWith(entry.filePath)
-  )
-
-  if (!page) {
-    throw new Error(`Entry with path ${path} not found`)
-  }
+  // TODO: support other collections
+  const slug = path.split("/pages/").pop()?.split(".")[0]
+  const id = slug?.replace("/index", "")
+  const page = id && (await getEntry("pages", id))
+  if (!page) return
 
   const mergedPage = await mergePage(page)
 
@@ -128,12 +125,15 @@ export async function transformPath(path: string) {
 export async function transformPaths(
   paths: Parameters<typeof transformPath>[0][]
 ) {
-  return await Promise.all(paths.map((path) => transformPath(path)))
+  return (await Promise.all(paths.map((path) => transformPath(path)))).filter(
+    (item) => item !== undefined
+  )
 }
 
 export async function transformGlob(glob: GlobSchema) {
-  const entries = await getCollection("pages", (page) =>
-    page.id.startsWith(glob)
+  const entries = await getCollection(
+    "pages",
+    (page) => page.id.startsWith(glob) && page.id !== glob
   )
 
   const items = await Promise.all(

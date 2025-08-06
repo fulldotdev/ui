@@ -5,7 +5,11 @@ import type {
   PageSchema,
 } from "@/lib/schemas"
 
-export type ImageProps = any
+export type ImageProps = {
+  src: string
+  alt: string
+  [key: string]: any
+}
 
 export type ItemProps = Omit<ItemSchema, "image" | "images"> & {
   image?: ImageProps

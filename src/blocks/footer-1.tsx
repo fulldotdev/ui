@@ -15,7 +15,7 @@ export default function ({
     <Section className="py-0">
       <SectionContainer className="grid w-full grid-cols-[repeat(auto-fit,minmax(30px,1fr))] justify-between gap-16 py-16">
         <div className="col-span-3 flex max-w-xs flex-col">
-          {image && (
+          {(image || title) && (
             <Logo href="/">
               {image?.src && <LogoImage {...image} />}
               {title}

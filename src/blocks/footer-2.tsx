@@ -7,7 +7,7 @@ export default function ({ image, title, links, socials }: BlockProps) {
   return (
     <Section>
       <SectionContainer className="flex flex-col items-center gap-8">
-        {image && (
+        {(image || title) && (
           <Logo href="/">
             {image?.src && <LogoImage {...image} />}
             {title}
