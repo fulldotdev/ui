@@ -1,9 +1,4 @@
-import type {
-  BlockSchema,
-  ItemSchema,
-  LayoutSchema,
-  PageSchema,
-} from "@/lib/schemas"
+import type { BlockSchema, ItemSchema, PageSchema } from "@/lib/schemas"
 
 export type ImageProps = {
   src: string
@@ -23,20 +18,23 @@ export type BlockProps = Omit<BlockSchema, "image" | "images" | "items"> & {
   children?: React.ReactNode
 }
 
-export type LayoutProps = Omit<
-  LayoutSchema,
-  "banner" | "header" | "footer" | "legal"
+export type PageProps = Omit<
+  PageSchema,
+  | "banner"
+  | "header"
+  | "blocks"
+  | "footer"
+  | "legal"
+  | "image"
+  | "images"
+  | "items"
 > & {
+  image?: ImageProps
+  images?: ImageProps[]
+  items?: ItemProps[]
   banner?: BlockProps
   header?: BlockProps
+  blocks?: BlockProps[]
   footer?: BlockProps
   legal?: BlockProps
 }
-
-export type PageProps = LayoutProps &
-  Omit<PageSchema, "image" | "images" | "items" | "blocks"> & {
-    image?: ImageProps
-    images?: ImageProps[]
-    items?: ItemProps[]
-    blocks?: BlockProps[]
-  }

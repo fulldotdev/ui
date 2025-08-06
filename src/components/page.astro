@@ -9,12 +9,9 @@ import type { PageProps } from "@/lib/types"
 import { Social } from "@/components/ui/social"
 import { Block } from "@/components/block"
 
-type Props = PageProps & {
-  id: string
-}
+type Props = PageProps
 
 const {
-  id,
   href,
   title,
   description,
@@ -70,22 +67,28 @@ const {
   </head>
   <body
     class="text-foreground bg-background overscroll-none font-sans antialiased"
-    id={id}
+    id={Astro.params.page}
   >
     <Block client:load {...banner} />
     <Block client:load {...header} />
     <main>
-      <Block
-        client:load
-        block={block}
-        title={title}
-        description={description}
-        image={image}
-        glob={id}
-        {...data}
-      >
-        <slot />
-      </Block>
+      {
+        block ? (
+          <Block
+            client:load
+            block={block}
+            title={title}
+            description={description}
+            image={image}
+            glob={Astro.params.page}
+            {...data}
+          >
+            <slot />
+          </Block>
+        ) : (
+          <slot />
+        )
+      }
       {
         blocks?.map((block) => (
           <Block client:load {...block}>

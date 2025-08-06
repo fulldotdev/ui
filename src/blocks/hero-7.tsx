@@ -12,7 +12,6 @@ import {
   SectionContainer,
   SectionContent,
   SectionFooter,
-  SectionGrid,
   SectionSplit,
 } from "@/components/ui/section"
 import {

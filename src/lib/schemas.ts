@@ -1,4 +1,4 @@
-import { reference, z, type SchemaContext } from "astro:content"
+import { z, type SchemaContext } from "astro:content"
 
 export const linkSchema = z
   .object({
@@ -80,7 +80,6 @@ export const pathSchema = z.string()
 export const blockSchema = (ctx: SchemaContext) =>
   itemSchema(ctx)
     .extend({
-      // items: itemSchema(ctx).array(),
       items: itemSchema(ctx).array(),
       paths: pathSchema.array(),
       glob: globSchema,
@@ -92,24 +91,16 @@ export const pageSchema = (ctx: SchemaContext) =>
   blockSchema(ctx)
     .extend({
       draft: z.boolean(),
-      layout: reference("layouts"),
-      blocks: blockSchema(ctx).array(),
-      seo: seoSchema(ctx),
-    })
-    .partial()
-    .strict()
-
-export const layoutSchema = (ctx: SchemaContext) =>
-  z
-    .object({
       banner: blockSchema(ctx),
       header: blockSchema(ctx),
+      blocks: blockSchema(ctx).array(),
       footer: blockSchema(ctx),
       legal: blockSchema(ctx),
       bubble: z.string(),
       css: z.string(),
       head: z.string(),
       body: z.string(),
+      seo: seoSchema(ctx),
     })
     .partial()
     .strict()
@@ -118,4 +109,3 @@ export type GlobSchema = z.infer<typeof globSchema>
 export type ItemSchema = z.infer<ReturnType<typeof itemSchema>>
 export type BlockSchema = z.infer<ReturnType<typeof blockSchema>>
 export type PageSchema = z.infer<ReturnType<typeof pageSchema>>
-export type LayoutSchema = z.infer<ReturnType<typeof layoutSchema>>
