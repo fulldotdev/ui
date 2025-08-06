@@ -28,7 +28,7 @@ export default function (options: FulldevOptions): AstroIntegration {
             routing: {
               prefixDefaultLocale: false,
               redirectToDefaultLocale: false,
-              fallbackType: "rewrite",
+              fallbackType: "redirect",
             },
           },
           image: {
