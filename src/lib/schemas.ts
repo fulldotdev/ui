@@ -2,7 +2,12 @@ import { z, type SchemaContext } from "astro:content"
 
 export const linkSchema = z
   .object({
-    href: z.string(),
+    href: z.string().transform((href) => {
+      console.log(href)
+      if (href.includes("#")) return href
+      else if (!href.endsWith("/")) return href + "/"
+      return href
+    }),
     text: z.string(),
     variant: z.enum(["default", "outline", "secondary", "ghost", "link"]),
   })
@@ -36,11 +41,14 @@ export const formSchema = z
   .partial()
   .strict()
 
-export const priceSchema = z.object({
-  base: z.number().nullable(),
-  compare: z.number().nullable(),
-  unit: z.string(),
-})
+export const priceSchema = z
+  .object({
+    base: z.number().nullable(),
+    compare: z.number().nullable(),
+    unit: z.string(),
+  })
+  .or(z.string())
+  .or(z.number())
 
 export const itemSchema = ({ image }: SchemaContext) =>
   z
@@ -64,6 +72,7 @@ export const itemSchema = ({ image }: SchemaContext) =>
       prices: priceSchema.array(),
       social: z.string(),
       socials: z.string().array(),
+      locales: z.enum(["nl", "en", "de", "fr"]).array(),
       menu: menuSchema,
       menus: menuSchema.array(),
       list: z.string().array(),

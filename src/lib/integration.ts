@@ -9,7 +9,10 @@ import { fontProviders } from "astro/config"
 export interface FulldevOptions {
   name: string
   site: string
-  font: string
+  fonts: {
+    base: string
+    heading: string
+  }
   defaultLocale: string
   locales: string[]
   favicon: string
@@ -38,13 +41,29 @@ export default function (options: FulldevOptions): AstroIntegration {
             objectPosition: "center",
             breakpoints: [320, 768, 1024, 1280, 1536, 1920],
           },
-          trailingSlash: "never",
+          // trailingSlash: "never",
           experimental: {
             fonts: [
               {
                 provider: fontProviders.google(),
-                cssVariable: "--font-sans",
-                name: options.font,
+                cssVariable: "--font-base",
+                name: options.fonts.base,
+                weights: [
+                  "100",
+                  "200",
+                  "300",
+                  "400",
+                  "500",
+                  "600",
+                  "700",
+                  "800",
+                  "900",
+                ],
+              },
+              {
+                provider: fontProviders.google(),
+                cssVariable: "--font-heading",
+                name: options.fonts.heading,
                 weights: [
                   "100",
                   "200",

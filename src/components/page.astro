@@ -30,10 +30,16 @@ const {
   legal,
   ...data
 } = Astro.props
+
+const slot = await Astro.slots.render("default")
+
+// Simple structured data
+const baseUrl = Astro.site?.origin || ""
+const currentUrl = `${baseUrl}${href}`
 ---
 
 <!doctype html>
-<html class="layout light" lang={Astro.currentLocale}>
+<html class="layout dark" lang={Astro.currentLocale}>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
@@ -41,17 +47,17 @@ const {
       charset="UTF-8"
       title={seo?.title || title}
       description={seo?.description || description}
-      canonical={href}
+      canonical={currentUrl}
       openGraph={{
         basic: {
           title: seo?.title || title || "",
-          image: Astro.url.origin + image?.src,
+          image: baseUrl + seo?.image?.src,
           type: "website",
           url: Astro.url.href,
         },
         image: {
-          url: Astro.url.origin + image?.src,
-          alt: image?.alt,
+          url: baseUrl + seo?.image?.src,
+          alt: seo?.image?.alt,
         },
         optional: {
           description: seo?.description || description,
@@ -62,31 +68,77 @@ const {
         },
       }}
     />
-    <Font cssVariable="--font-sans" preload />
+    <Font cssVariable="--font-base" preload />
+    <Font cssVariable="--font-heading" preload />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": ["Organization", "LocalBusiness"],
+              "@id": `${baseUrl}#organization`,
+              name: "van Dillen antieke bouwmaterialen",
+              url: baseUrl,
+              telephone: "+31-6-49670696",
+              email: "info@vdabouwmaterialen.nl",
+              address: {
+                "@type": "PostalAddress",
+                streetAddress: "Hichtumerweg 29",
+                postalCode: "8701PG",
+                addressLocality: "Bolsward",
+                addressCountry: "NL",
+              },
+              sameAs: [
+                "https://www.facebook.com/vdabouwmaterialen",
+                "https://instagram.com/Vdabouwmaterialen",
+              ],
+              description:
+                "Specialist in antique building materials including old bricks, floor tiles, and roof tiles.",
+            },
+            {
+              "@type": "WebPage",
+              "@id": currentUrl,
+              url: currentUrl,
+              name: seo?.title || title,
+              description: seo?.description || description,
+              inLanguage: Astro.currentLocale || "nl",
+              isPartOf: {
+                "@type": "WebSite",
+                url: baseUrl,
+                name: "van Dillen antieke bouwmaterialen",
+              },
+            },
+          ],
+        },
+        null,
+        2
+      )}
+    />
     <Fragment set:html={head} />
   </head>
   <body
-    class="text-foreground bg-background overscroll-none font-sans antialiased"
+    class="text-foreground bg-background font-base overscroll-none antialiased"
     id={Astro.params.page}
   >
-    <Block client:load {...banner} />
     <Block client:load {...header} />
+    <Block client:load {...banner}>
+      <Fragment set:html={banner?.html} />
+    </Block>
     <main>
       {
-        block ? (
+        block && (
           <Block
             client:load
             block={block}
             title={title}
             description={description}
             image={image}
-            glob={Astro.params.page}
             {...data}
           >
             <slot />
           </Block>
-        ) : (
-          <slot />
         )
       }
       {
@@ -95,6 +147,13 @@ const {
             <Fragment set:html={block.html} />
           </Block>
         ))
+      }
+      {
+        !block && slot.trim().length > 0 && (
+          <Block client:load block={"article-1"} {...data}>
+            <slot />
+          </Block>
+        )
       }
     </main>
     <Block client:load {...footer} />
@@ -110,5 +169,15 @@ const {
     }
     <Fragment set:html={body} />
     <style set:html={css}></style>
+    <style>
+      body {
+        font-family: var(--font-base);
+
+        h1,
+        h2 {
+          font-family: var(--font-heading);
+        }
+      }
+    </style>
   </body>
 </html>

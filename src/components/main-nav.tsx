@@ -30,7 +30,13 @@ function MainMenu({
           <NavigationMenuItem key={i}>
             {item.links ? (
               <>
-                <NavigationMenuTrigger>{item.text}</NavigationMenuTrigger>
+                <NavigationMenuTrigger>
+                  {item.href ? (
+                    <a href={item.href}>{item.text}</a>
+                  ) : (
+                    <>{item.text}</>
+                  )}
+                </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="flex w-[200px] flex-col gap-2">
                     {item.links?.map((link, i) => (

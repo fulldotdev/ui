@@ -21,7 +21,7 @@ export default function ({ children, links, image }: BlockProps) {
                   <Link
                     key={i}
                     href={href}
-                    variant={i === 0 ? "secondary" : "ghost"}
+                    variant={i === 0 ? "outline" : "ghost"}
                     {...link}
                   >
                     {text}

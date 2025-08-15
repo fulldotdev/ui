@@ -37,4 +37,9 @@ export type PageProps = Omit<
   blocks?: BlockProps[]
   footer?: BlockProps
   legal?: BlockProps
+  seo?: {
+    title?: string
+    description?: string
+    image?: ImageProps
+  }
 }

@@ -12,39 +12,33 @@ export default function ({
   title,
   menus,
   links,
-  locales,
   socials,
-  href,
+  locales,
 }: BlockProps) {
   return (
-    <Header className="z-50">
-      <HeaderContainer className="flex justify-between">
-        <div className="flex items-center gap-2">
+    <>
+      <Header className="-mb-2.5 lg:relative">
+        <HeaderContainer className="flex h-14 w-full items-center gap-2">
           {menus && menus.length > 0 && (
             <MobileMenu className="lg:hidden" items={menus} />
           )}
           {(image || title) && (
-            <Logo href={href} className="mr-4">
+            <Logo href="/" className="mr-4 max-sm:hidden">
               {image?.src && <LogoImage {...image} />}
               {title}
             </Logo>
           )}
-          {menus && (
-            <MainMenu className="mr-auto max-lg:hidden" items={menus} />
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          {socials?.map((social, i) => (
-            <Social
-              className="-ml-1.5 hidden sm:flex lg:hidden xl:flex"
-              key={i}
-              variant="ghost"
-              href={social}
-            />
-          ))}
-          {locales && <Locales locales={locales} />}
           {links && links.length > 0 && (
-            <div className="inline-flex flex-nowrap items-center gap-2">
+            <div className="ml-auto inline-flex flex-nowrap items-center gap-2">
+              {socials?.map((social, i) => (
+                <Social
+                  className="-ml-1.5"
+                  key={i}
+                  variant="ghost"
+                  href={social}
+                />
+              ))}
+              {locales && <Locales locales={locales} />}
               {links.map(({ text, href }, i) => (
                 <Link
                   className={i < links.length - 1 ? "max-sm:hidden" : ""}
@@ -57,8 +51,13 @@ export default function ({
               ))}
             </div>
           )}
-        </div>
-      </HeaderContainer>
-    </Header>
+        </HeaderContainer>
+      </Header>
+      <Header className="max-lg:hidden">
+        <HeaderContainer>
+          {menus && <MainMenu className="mx-auto" items={menus} />}
+        </HeaderContainer>
+      </Header>
+    </>
   )
 }

@@ -16,12 +16,20 @@ import {
   TileTitle,
 } from "@/components/ui/tile"
 
-export default function ({ children, items, link }: BlockProps) {
+export default function ({
+  title,
+  description,
+  children,
+  items,
+  link,
+}: BlockProps) {
   return (
     <Section>
       <SectionContainer className="flex flex-col items-center">
         {children && (
           <SectionContent className="text-center" size="lg">
+            {title && <h1>{title}</h1>}
+            {description && <p>{description}</p>}
             {children}
           </SectionContent>
         )}

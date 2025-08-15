@@ -11,7 +11,7 @@ export default function ({ title, links }: BlockProps) {
               © {new Date().getFullYear()} {title}
             </p>
           )}
-          <div className="ml-auto flex flex-wrap items-center gap-x-4 gap-y-1">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
             {links?.map(({ text, href }, i) => (
               <a
                 className="text-muted-foreground hover:text-foreground text-xs transition-colors"

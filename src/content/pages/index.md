@@ -4,7 +4,7 @@ image: ../../images/large.png
 blocks:
   - block: hero-1
     html: >-
-      <h1>The UI library for building content sites with Shadcn, React, Tailwind
+      <h1>!The UI library for building content sites with Shadcn, React, Tailwind
       and Astro</h1> <p>Components, blocks and utilities purposefully built for
       content sites. Works seamlessly with your headless CMS or Astro content
       collections.</p>

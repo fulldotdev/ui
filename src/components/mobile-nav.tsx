@@ -38,12 +38,21 @@ function MobileMenu({
           {items?.map((item, i) =>
             item.links ? (
               <div
-                className="flex flex-col items-start gap-4 not-first:mt-4"
+                className="mr-4 flex flex-col items-start gap-4 pt-8 not-first:mt-4 not-first:border-t"
                 key={i}
               >
-                <div className="text-muted-foreground text-sm font-medium">
-                  {item.text}
-                </div>
+                {item.href ? (
+                  <a
+                    className="text-muted-foreground text-sm font-medium hover:underline"
+                    {...item}
+                  >
+                    {item.text}
+                  </a>
+                ) : (
+                  <div className="text-muted-foreground text-sm font-medium">
+                    {item.text}
+                  </div>
+                )}
                 {item.links?.map((link, i) => (
                   <a
                     key={i}
@@ -56,7 +65,7 @@ function MobileMenu({
               </div>
             ) : (
               <a
-                className="text-xl font-medium hover:underline"
+                className="mr-4 border-t text-xl font-medium not-first:mt-4 not-first:pt-8 hover:underline"
                 key={i}
                 {...item}
               >

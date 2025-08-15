@@ -28,7 +28,7 @@ import { cn } from "@/lib/utils"
 import { Link } from "@/components/ui/link"
 
 const iconMap = {
-  x: <SiX />,
+  "x.com": <SiX />,
   twitter: <SiX />,
   facebook: <SiFacebook />,
   instagram: <SiInstagram />,
@@ -52,7 +52,7 @@ const iconMap = {
   twitch: <SiTwitch />,
   "tel:": <Phone />,
   "mailto:": <Mail />,
-  "https://maps.app.goo.gl/": <MapPin />,
+  "maps.app.goo.gl": <MapPin />,
   linkedin: (
     <svg
       width="24"
