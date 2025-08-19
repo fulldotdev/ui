@@ -11,7 +11,6 @@ import type {
   ItemSchema,
   PathSchema,
 } from "@/lib/schemas"
-import type { BlockProps, ImageProps, ItemProps, PageProps } from "@/lib/types"
 
 // ------------------------------------------------------------
 // Data loading
@@ -21,35 +20,35 @@ const pages = await getCollection("pages")
 
 const layouts = await getCollection("layouts")
 
-const imagesMeta = import.meta.glob("src/assets/**/*", {
-  eager: true,
-}) as Record<string, { default: ImageMetadata }>
-const images = await Promise.all(
-  Object.values(imagesMeta).map(async (image) => {
-    const generated = await getImage({
-      src: image.default,
-      format: "webp",
-      sizes: "100vw",
-      widths: [320, 480, 768, 1024, 1440, 1920],
-      quality: "mid",
-    })
+// const imagesMeta = import.meta.glob("src/assets/**/*", {
+//   eager: true,
+// }) as Record<string, { default: ImageMetadata }>
+// const images = await Promise.all(
+//   Object.values(imagesMeta).map(async (image) => {
+//     return image.default
+//     const generated = await getImage({
+//       src: image.default,
+//       format: "webp",
+//       sizes: "100vw",
+//       widths: [320, 480, 768, 1024, 1440, 1920],
+//       quality: "mid",
+//     })
 
-    const attributes = {
-      inputSrc: (generated.options.src as ImageMetadata).src,
-      fetchPriority: "auto",
-      decoding: "async",
-      loading: "lazy",
-      height: generated.attributes.height,
-      width: generated.attributes.width,
-      sizes: generated.attributes.sizes,
-      src: generated.src,
-      srcSet: generated.srcSet.attribute,
-      alt: title(generated.src.split(".")[0].split("/").pop() || ""),
-    }
+//     const attributes = {
+//       inputSrc: (generated.options.src as ImageMetadata).src,
+//       fetchPriority: "auto",
+//       decoding: "async",
+//       loading: "lazy",
+//       height: generated.attributes.height,
+//       width: generated.attributes.width,
+//       sizes: generated.options.sizes,
+//       src: generated.src,
+//       srcSet: generated.srcSet.attribute,
+//     } as const
 
-    return attributes
-  })
-)
+//     return attributes
+//   })
+// )
 
 // ------------------------------------------------------------
 // Helpers
@@ -137,38 +136,58 @@ export function transformLayouts({
 // Image transforms
 // ------------------------------------------------------------
 
-function transformImage(image?: ImageSchema): ImageProps | undefined {
+async function transformImage(image?: ImageSchema) {
   if (!image) return
-  const found = images.find((transformed) => image.src === transformed.inputSrc)
-  if (!found) return image
-  return found
+  const generated = await getImage({
+    src: image,
+    format: "webp",
+    sizes: "100vw",
+    widths: [320, 480, 768, 1024, 1440, 1920],
+    quality: "mid",
+  })
+
+  const attributes = {
+    fetchPriority: "auto",
+    decoding: "async",
+    loading: "lazy",
+    height: generated.attributes.height,
+    width: generated.attributes.width,
+    sizes: generated.options.sizes,
+    src: generated.src,
+    srcSet: generated.srcSet.attribute,
+    alt: title(image.src.split(".")[0].split("/").pop() || ""),
+  } as const
+
+  return attributes
 }
 
-function transformImages(images?: ImageSchema[]): ImageProps[] | undefined {
-  return images?.map(transformImage).filter((image) => image !== undefined)
+async function transformImages(images?: ImageSchema[]) {
+  if (!images) return
+  const transformedImages = await Promise.all(images.map(transformImage))
+  return transformedImages.filter((image) => image !== undefined)
 }
 
 // ------------------------------------------------------------
 // Item transforms
 // ------------------------------------------------------------
 
-function transformItem(item?: ItemSchema): ItemProps | undefined {
+async function transformItem(item?: ItemSchema) {
   if (!item) return
   const { image, images, ...rest } = item
   return {
-    image: transformImage(image),
-    images: transformImages(images),
+    image: await transformImage(image),
+    images: await transformImages(images),
     ...rest,
   }
 }
 
-function transformItems(items?: ItemSchema[]): ItemProps[] | undefined {
-  return items?.map(transformItem).filter((item) => item !== undefined)
+async function transformItems(items?: ItemSchema[]) {
+  if (!items) return
+  const transformedItems = await Promise.all(items?.map(transformItem))
+  return transformedItems.filter((item) => item !== undefined)
 }
 
-function transformReferencedPage(
-  page?: CollectionEntry<"pages">
-): ItemProps | undefined {
+async function transformReferencedPage(page?: CollectionEntry<"pages">) {
   if (!page) return
   const withTranslations = transformTranslations(page)
   const withLayouts = transformLayouts(withTranslations)
@@ -180,35 +199,39 @@ function transformReferencedPage(
   return transformedItem
 }
 
-function transformPath(path?: PathSchema): ItemProps | undefined {
+async function transformPath(path?: PathSchema) {
+  if (!path) return
   const page = pages.find((page) => page.id === path)
-  const transformed = transformReferencedPage(page)
+  const transformed = await transformReferencedPage(page)
   return transformed
 }
 
-function transformPaths(paths?: PathSchema[]): ItemProps[] | undefined {
-  return paths?.map(transformPath).filter((item) => item !== undefined)
+async function transformPaths(paths?: PathSchema[]) {
+  if (!paths) return
+  const transformedPaths = await Promise.all(paths?.map(transformPath))
+  return transformedPaths.filter((path) => path !== undefined)
 }
 
-function transformGlob(glob?: GlobSchema): ItemProps[] | undefined {
+async function transformGlob(glob?: GlobSchema) {
   if (!glob) return
   const entries = pages.filter((page) => page.id.startsWith(glob))
-  const transformedItems = entries.map(transformReferencedPage)
-  const filteredItems = transformedItems.filter((item) => item !== undefined)
-  return filteredItems
+  const transformedItems = await Promise.all(
+    entries.map(transformReferencedPage)
+  )
+  return transformedItems.filter((item) => item !== undefined)
 }
 
 // ------------------------------------------------------------
 // Block transforms
 // ------------------------------------------------------------
 
-function transformBlock(block?: BlockSchema): BlockProps | undefined {
+async function transformBlock(block?: BlockSchema) {
   if (!block) return
   const { image, images, glob, paths, items, ...rest } = block
 
-  const transformedGlob = transformGlob(glob) || []
-  const transformedPaths = transformPaths(paths) || []
-  const transformedItems = transformItems(items) || []
+  const transformedGlob = (await transformGlob(glob)) || []
+  const transformedPaths = (await transformPaths(paths)) || []
+  const transformedItems = (await transformItems(items)) || []
   const mergedItems = [
     ...transformedItems,
     ...transformedGlob,
@@ -216,22 +239,24 @@ function transformBlock(block?: BlockSchema): BlockProps | undefined {
   ]
 
   return {
-    image: transformImage(image),
-    images: transformImages(images),
+    image: await transformImage(image),
+    images: await transformImages(images),
     items: mergedItems,
     ...rest,
   }
 }
 
-function transformBlocks(blocks?: BlockSchema[]): BlockProps[] | undefined {
-  return blocks?.map(transformBlock).filter((block) => block !== undefined)
+async function transformBlocks(blocks?: BlockSchema[]) {
+  if (!blocks) return
+  const transformedBlocks = await Promise.all(blocks?.map(transformBlock))
+  return transformedBlocks.filter((block) => block !== undefined)
 }
 
 // ------------------------------------------------------------
 // Block transforms
 // ------------------------------------------------------------
 
-export function transformPage(page: CollectionEntry<"pages">) {
+async function transformPage(page: CollectionEntry<"pages">) {
   const withTranslations = transformTranslations(page)
   const withLayouts = transformLayouts(withTranslations)
 
@@ -247,12 +272,12 @@ export function transformPage(page: CollectionEntry<"pages">) {
     items,
     glob = paths ? undefined : page.id,
     seo,
-    ...rest
+    ...data
   } = withLayouts.data
 
-  const transformedGlob = transformGlob(glob) || []
-  const transformedPaths = transformPaths(paths) || []
-  const transformedItems = transformItems(items) || []
+  const transformedGlob = (await transformGlob(glob)) || []
+  const transformedPaths = (await transformPaths(paths)) || []
+  const transformedItems = (await transformItems(items)) || []
   const mergedItems = [
     ...transformedItems,
     ...transformedGlob,
@@ -263,23 +288,37 @@ export function transformPage(page: CollectionEntry<"pages">) {
     ...page,
     data: {
       href: getHref(page),
-      image: transformImage(image),
-      images: transformImages(images),
+      image: await transformImage(image),
+      images: await transformImages(images),
       items: mergedItems,
-      banner: transformBlock(banner),
-      header: transformBlock(header),
-      blocks: transformBlocks(blocks),
-      footer: transformBlock(footer),
-      legal: transformBlock(legal),
+      banner: await transformBlock(banner),
+      header: await transformBlock(header),
+      blocks: await transformBlocks(blocks),
+      footer: await transformBlock(footer),
+      legal: await transformBlock(legal),
       seo: {
+        title: data.title,
+        description: data.description,
+        image: await transformImage(
+          seo?.image || image || images?.[0] || blocks?.[0]?.image
+        ),
         ...seo,
-        image: transformImage(seo?.image),
       },
-      ...rest,
-    } satisfies PageProps,
+      ...data,
+    },
   }
 }
 
-export function transformPages(pages: CollectionEntry<"pages">[]) {
-  return pages.map(transformPage)
+export async function transformPages(pages: CollectionEntry<"pages">[]) {
+  return await Promise.all(pages.map(transformPage))
 }
+
+// ------------------------------------------------------------
+// Types
+// ------------------------------------------------------------
+
+export type BlockProps = Awaited<ReturnType<typeof transformBlock>> & {
+  children?: React.ReactNode
+}
+
+export type PageProps = Awaited<ReturnType<typeof transformPage>>["data"]
