@@ -270,8 +270,8 @@ async function transformPage(page: CollectionEntry<"pages">) {
     legal,
     paths,
     items,
-    glob = paths ? undefined : page.id,
     seo,
+    glob = paths ? undefined : page.id,
     ...data
   } = withLayouts.data
 
@@ -297,12 +297,11 @@ async function transformPage(page: CollectionEntry<"pages">) {
       footer: await transformBlock(footer),
       legal: await transformBlock(legal),
       seo: {
-        title: data.title,
-        description: data.description,
+        title: seo?.title || data.title,
+        description: seo?.description || data.description,
         image: await transformImage(
           seo?.image || image || images?.[0] || blocks?.[0]?.image
         ),
-        ...seo,
       },
       ...data,
     },

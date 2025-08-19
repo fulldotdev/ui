@@ -40,7 +40,7 @@ export default function ({
                 />
                 <TileImage
                   className="aspect-4/3 object-cover group-hover:opacity-35"
-                  {...images?.[0]}
+                  {...(image || images?.[0])}
                 />
                 <span className="text-accent-foreground absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-medium opacity-0 transition-opacity group-hover:opacity-100">
                   + Bekijk product
