@@ -17,38 +17,7 @@ import type {
 // ------------------------------------------------------------
 
 const pages = await getCollection("pages")
-
 const layouts = await getCollection("layouts")
-
-// const imagesMeta = import.meta.glob("src/assets/**/*", {
-//   eager: true,
-// }) as Record<string, { default: ImageMetadata }>
-// const images = await Promise.all(
-//   Object.values(imagesMeta).map(async (image) => {
-//     return image.default
-//     const generated = await getImage({
-//       src: image.default,
-//       format: "webp",
-//       sizes: "100vw",
-//       widths: [320, 480, 768, 1024, 1440, 1920],
-//       quality: "mid",
-//     })
-
-//     const attributes = {
-//       inputSrc: (generated.options.src as ImageMetadata).src,
-//       fetchPriority: "auto",
-//       decoding: "async",
-//       loading: "lazy",
-//       height: generated.attributes.height,
-//       width: generated.attributes.width,
-//       sizes: generated.options.sizes,
-//       src: generated.src,
-//       srcSet: generated.srcSet.attribute,
-//     } as const
-
-//     return attributes
-//   })
-// )
 
 // ------------------------------------------------------------
 // Helpers
