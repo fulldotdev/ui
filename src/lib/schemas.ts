@@ -1,13 +1,10 @@
 import { z, type SchemaContext } from "astro:content"
 
+export const imageSchema = ({ image }: SchemaContext) => image()
+
 export const linkSchema = z
   .object({
-    href: z.string().transform((href) => {
-      console.log(href)
-      if (href.includes("#")) return href
-      else if (!href.endsWith("/")) return href + "/"
-      return href
-    }),
+    href: z.string(),
     text: z.string(),
     variant: z.enum(["default", "outline", "secondary", "ghost", "link"]),
   })
@@ -21,12 +18,12 @@ export const menuSchema = linkSchema
   .partial()
   .strict()
 
-export const seoSchema = ({ image }: SchemaContext) =>
+export const seoSchema = (ctx: SchemaContext) =>
   z
     .object({
       title: z.string(),
       description: z.string(),
-      image: image(),
+      image: imageSchema(ctx),
     })
     .partial()
     .strict()
@@ -50,12 +47,12 @@ export const priceSchema = z
   .or(z.string())
   .or(z.number())
 
-export const itemSchema = ({ image }: SchemaContext) =>
+export const itemSchema = (ctx: SchemaContext) =>
   z
     .object({
       slug: z.string(),
-      image: image(),
-      images: image().array(),
+      image: imageSchema(ctx),
+      images: imageSchema(ctx).array(),
       id: z.string(),
       href: z.string(),
       block: z.string(),
@@ -114,7 +111,9 @@ export const pageSchema = (ctx: SchemaContext) =>
     .partial()
     .strict()
 
+export type PathSchema = z.infer<typeof pathSchema>
 export type GlobSchema = z.infer<typeof globSchema>
+export type ImageSchema = z.infer<ReturnType<typeof imageSchema>>
 export type ItemSchema = z.infer<ReturnType<typeof itemSchema>>
 export type BlockSchema = z.infer<ReturnType<typeof blockSchema>>
 export type PageSchema = z.infer<ReturnType<typeof pageSchema>>

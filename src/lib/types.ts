@@ -1,8 +1,8 @@
 import type { BlockSchema, ItemSchema, PageSchema } from "@/lib/schemas"
 
 export type ImageProps = {
-  src: string
-  alt: string
+  src?: string
+  alt?: string
   [key: string]: any
 }
 
@@ -28,6 +28,7 @@ export type PageProps = Omit<
   | "image"
   | "images"
   | "items"
+  | "seo"
 > & {
   image?: ImageProps
   images?: ImageProps[]

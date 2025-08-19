@@ -1,6 +1,6 @@
 ---
 title: Home
-image: ../../images/large.png
+image: ../../assets/large.png
 blocks:
   - block: hero-1
     html: >-
@@ -13,12 +13,12 @@ blocks:
         href: /docs/
       - text: "GitHub "
         href: https://github.com/fulldotdev/ui
-    image: ../../images/placeholder.webp
+    image: ../../assets/placeholder.webp
     chip:
       text: 100+ downloads
       href: /docs/
     images:
-      - ../../images/bolsward.jpg
+      - ../../assets/bolsward.jpg
   - block: features-1
     items:
       - title: Great AI agents experience
@@ -37,40 +37,40 @@ blocks:
     html: <h2>Wie er al deelnemen</h2>
     paths:
       - /src/content/pages/bolsward.md
-  - block: product-1
-    title: My product
-    description: >-
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-    list:
-      - "Voorraad: 9.5M2"
-      - "Maat: 22x22"
-    images:
-      - ../../images/bolsward.jpg
-      - ../../images/bolsward.jpg
-      - ../../images/bolsward.jpg
-      - ../../images/bolsward.jpg
-      - ../../images/bolsward.jpg
-      - ../../images/bolsward.jpg
-      - ../../images/bolsward.jpg
-      - ../../images/bolsward.jpg
-      - ../../images/bolsward.jpg
-      - ../../images/bolsward.jpg
-      - ../../images/bolsward.jpg
-      - ../../images/bolsward.jpg
-      - ../../images/bolsward.jpg
-    form:
-      action: /bedankt
-      fields:
-        - name: email
-          type: email
-          label: Email
-          required: true
-        - name: phone
-          type: tel
-          label: Telefoonnummer
-          required: true
-        - name: opmerking
-          type: textarea
-          label: Vragen of opmerkingen
-      submit: Verstuur aanvraag
+  # - block: product-1
+  #   title: My product
+  #   description: >-
+  #     Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+  #   list:
+  #     - "Voorraad: 9.5M2"
+  #     - "Maat: 22x22"
+  #   images:
+  #     - ../../assets/bolsward.jpg
+  #     - ../../assets/bolsward.jpg
+  #     - ../../assets/bolsward.jpg
+  #     - ../../assets/bolsward.jpg
+  #     - ../../assets/bolsward.jpg
+  #     - ../../assets/bolsward.jpg
+  #     - ../../assets/bolsward.jpg
+  #     - ../../assets/bolsward.jpg
+  #     - ../../assets/bolsward.jpg
+  #     - ../../assets/bolsward.jpg
+  #     - ../../assets/bolsward.jpg
+  #     - ../../assets/bolsward.jpg
+  #     - ../../assets/bolsward.jpg
+  # form:
+  #   action: /bedankt
+  #   fields:
+  #     - name: email
+  #       type: email
+  #       label: Email
+  #       required: true
+  #     - name: phone
+  #       type: tel
+  #       label: Telefoonnummer
+  #       required: true
+  #     - name: opmerking
+  #       type: textarea
+  #       label: Vragen of opmerkingen
+  #   submit: Verstuur aanvraag
 ---
