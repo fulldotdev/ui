@@ -5,6 +5,7 @@ import type { AstroIntegration } from "astro"
 import favicons from "astro-favicons"
 import robotsTxt from "astro-robots-txt"
 import { fontProviders } from "astro/config"
+import { mapToObj } from "remeda"
 
 export interface FulldevOptions {
   name: string
@@ -41,7 +42,7 @@ export default function (options: FulldevOptions): AstroIntegration {
             objectPosition: "center",
             breakpoints: [320, 768, 1024, 1280, 1536, 1920],
           },
-          // trailingSlash: "never",
+          trailingSlash: "always",
           experimental: {
             fonts: [
               {
@@ -86,13 +87,10 @@ export default function (options: FulldevOptions): AstroIntegration {
               lastmod: new Date(),
               i18n: {
                 defaultLocale: options.defaultLocale,
-                locales: options.locales.reduce(
-                  (acc, locale) => {
-                    acc[locale] = locale
-                    return acc
-                  },
-                  {} as Record<string, string>
-                ),
+                locales: mapToObj(options.locales, (locale) => [
+                  locale,
+                  locale,
+                ]),
               },
             }),
             favicons({

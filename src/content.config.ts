@@ -12,7 +12,7 @@ export const collections = {
   }),
   layouts: defineCollection({
     loader: glob({
-      pattern: "**/[^_]*.{yaml,json}",
+      pattern: "**/[^_]*.{yaml,yml,json}",
       base: "src/content/layouts",
     }),
     schema: pageSchema,
