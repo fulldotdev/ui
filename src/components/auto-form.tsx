@@ -12,6 +12,7 @@ import {
   Form as FormRoot,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Select,
   SelectContent,
@@ -152,6 +153,56 @@ function AutoFormSelect({
   )
 }
 
+function AutoFormRadioGroup({
+  control,
+  name,
+  label,
+  description,
+  options,
+  required,
+  disabled,
+}: Pick<React.ComponentProps<typeof FormField>, "control" | "name"> & {
+  label?: string
+  description?: string
+  options?: string[]
+  required?: boolean
+  disabled?: boolean
+}) {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="space-y-3">
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <RadioGroup
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+              className="flex flex-col space-y-2"
+              disabled={disabled}
+            >
+              {options?.map((option) => (
+                <FormItem
+                  key={option}
+                  className="flex items-center space-y-0 space-x-3"
+                >
+                  <FormControl>
+                    <RadioGroupItem value={option} />
+                  </FormControl>
+                  <FormLabel className="font-normal">{option}</FormLabel>
+                </FormItem>
+              ))}
+            </RadioGroup>
+          </FormControl>
+          <FormDescription>{description}</FormDescription>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  )
+}
+
 interface Props extends React.ComponentProps<"form"> {
   inbox?: string
   fields?: (
@@ -164,18 +215,12 @@ interface Props extends React.ComponentProps<"form"> {
     | ({
         type: "select"
       } & React.ComponentProps<typeof AutoFormSelect>)
+    | ({
+        type: "radio"
+      } & React.ComponentProps<typeof AutoFormRadioGroup>)
   )[]
   submit?: string
   description?: string
-}
-
-const fieldComponents = {
-  text: AutoFormInput,
-  email: AutoFormInput,
-  tel: AutoFormInput,
-  number: AutoFormInput,
-  textarea: AutoFormTextarea,
-  select: AutoFormSelect,
 }
 
 function AutoForm({
@@ -209,6 +254,15 @@ function AutoForm({
         />
         {/* Fields definitions */}
         {fields?.map(({ type, ...field }, i) => {
+          const fieldComponents = {
+            text: AutoFormInput,
+            email: AutoFormInput,
+            tel: AutoFormInput,
+            number: AutoFormInput,
+            textarea: AutoFormTextarea,
+            select: AutoFormSelect,
+            radio: AutoFormRadioGroup,
+          }
           const Field = fieldComponents[type]
           return <Field key={i} control={form.control} {...field} />
         })}
