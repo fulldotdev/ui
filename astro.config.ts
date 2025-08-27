@@ -1,25 +1,19 @@
-import svelte from '@astrojs/svelte'
-import { defineConfig } from 'astro/config'
-import integration from 'fulldev-ui/integration'
+import { defineConfig } from "astro/config"
 
-// https://astro.build/config
+import fulldev from "./src/lib/integration"
+
 export default defineConfig({
-  devToolbar: {
-    enabled: false,
-  },
   integrations: [
-    integration({
-      company: 'Fulldev UI',
-      favicon: 'public/images/favicon.svg',
-      css: '/src/css/custom.css',
-      injectRoutes: false,
+    fulldev({
+      name: "Van Dillen antieke bouwmaterialen",
+      site: "https://vdabouwmaterialen.nl",
+      fonts: {
+        base: "Mulish",
+        heading: "Marcellus",
+      },
+      defaultLocale: "nl",
+      locales: ["nl", "en", "de", "fr"],
+      favicon: "src/assets/favicon.svg",
     }),
-    svelte(),
   ],
-  // redirects: {
-  //   '/overview/[...slug]': '/docs/[...slug]',
-  //   '/typography/[...slug]': '/docs/components/[...slug]',
-  //   '/structure/[...slug]': '/docs/structures/[...slug]',
-  //   '/blocks': '/docs/blocks/banner/',
-  // },
 })
