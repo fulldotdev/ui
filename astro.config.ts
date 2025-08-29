@@ -8,8 +8,8 @@ export default defineConfig({
       name: "Van Dillen antieke bouwmaterialen",
       site: "https://vdabouwmaterialen.nl",
       fonts: {
-        base: "Mulish",
-        heading: "Marcellus",
+        base: "Geist",
+        heading: "Geist",
       },
       defaultLocale: "nl",
       locales: ["nl", "en", "de", "fr"],

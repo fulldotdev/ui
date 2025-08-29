@@ -8,10 +8,11 @@ import { badgeVariants } from "@/components/ui/badge"
 function Chip({
   className,
   variant,
-  children,
   href,
+  text,
   ...props
-}: React.ComponentProps<"a"> & VariantProps<typeof badgeVariants>) {
+}: React.ComponentProps<"a"> &
+  VariantProps<typeof badgeVariants> & { text?: string }) {
   const Comp = href ? "a" : "span"
   return (
     <Comp
@@ -19,7 +20,7 @@ function Chip({
       href={href}
       {...props}
     >
-      {children}
+      {text}
       {href && <ArrowUpRight />}
     </Comp>
   )

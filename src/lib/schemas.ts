@@ -11,6 +11,15 @@ export const linkSchema = z
   .partial()
   .strict()
 
+export const chipSchema = z
+  .object({
+    href: z.string(),
+    text: z.string(),
+    variant: z.enum(["default", "outline", "secondary"]),
+  })
+  .partial()
+  .strict()
+
 export const menuSchema = linkSchema
   .extend({
     links: linkSchema.array(),
@@ -59,10 +68,12 @@ export const itemSchema = (ctx: SchemaContext) =>
       published: z.date(),
       title: z.string(),
       description: z.string(),
-      chip: linkSchema,
+      chip: chipSchema,
+      badge: linkSchema,
       tagline: z.string(),
       link: linkSchema,
       links: linkSchema.array(),
+      buttons: linkSchema.array(),
       icon: z.enum(["check", "cross"]),
       rating: z.number().min(0).max(5).step(0.25),
       price: priceSchema,
