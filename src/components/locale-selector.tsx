@@ -1,12 +1,12 @@
 import { Flag } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Link } from "@/components/ui/link"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { Link } from "@/components/elements/link"
 
 const labels = {
   nl: "Nederlands",

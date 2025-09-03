@@ -1,0 +1,71 @@
+import { ArrowRightIcon, CalendarIcon } from "lucide-react"
+
+import type { BlockProps } from "@/lib/types"
+import { Link } from "@/components/elements/link"
+import {
+  Container,
+  Section,
+  SectionContent,
+  SectionGrid,
+} from "@/components/elements/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileImage,
+  TileTitle,
+} from "@/components/elements/tile"
+
+export default function ({
+  title,
+  description,
+  children,
+  items,
+  link,
+}: BlockProps) {
+  return (
+    <Section>
+      <Container className="flex flex-col items-center">
+        {children && (
+          <SectionContent className="text-center" size="lg">
+            {title && <h1>{title}</h1>}
+            {description && <p>{description}</p>}
+            {children}
+          </SectionContent>
+        )}
+        {link && (
+          <Link
+            className="not-first:mt-4"
+            href={link.href}
+            variant="link"
+            size="lg"
+          >
+            {link.text}
+            <ArrowRightIcon />
+          </Link>
+        )}
+        <SectionGrid className="grid-cols-[repeat(auto-fit,minmax(300px,1fr))] not-first:mt-16">
+          {items?.map(({ href, title, description, image, published }, i) => (
+            <Tile key={i} href={href}>
+              {image && (
+                <TileImage className="aspect-4/3 object-cover" {...image} />
+              )}
+              <TileContent>
+                {published && (
+                  <p className="inline-flex items-center gap-2 text-xs leading-none font-medium">
+                    <CalendarIcon className="size-[1em]" />
+                    {new Date(published).toLocaleDateString("nl-NL")}
+                  </p>
+                )}
+                <TileTitle className="mt-1 text-lg">{title}</TileTitle>
+                {description && (
+                  <TileDescription>{description}</TileDescription>
+                )}
+              </TileContent>
+            </Tile>
+          ))}
+        </SectionGrid>
+      </Container>
+    </Section>
+  )
+}

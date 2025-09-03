@@ -1,19 +1,19 @@
 import type { BlockProps } from "@/lib/types"
-import { Chip } from "@/components/ui/chip"
-import { Link } from "@/components/ui/link"
+import { Background } from "@/components/elements/background"
+import { Chip } from "@/components/elements/chip"
+import { Column } from "@/components/elements/column"
+import { Container } from "@/components/elements/container"
+import { Link } from "@/components/elements/link"
 import {
   Review,
   ReviewContent,
   ReviewImage,
   ReviewRating,
-} from "@/components/ui/review"
-import {
-  Section,
-  SectionContainer,
-  SectionContent,
-  SectionFooter,
-  SectionSplit,
-} from "@/components/ui/section"
+} from "@/components/elements/review"
+import { Section } from "@/components/elements/section"
+import { Split } from "@/components/elements/split"
+import { Typography } from "@/components/elements/typography"
+import { Wrap } from "@/components/elements/wrap"
 
 export default function ({
   children,
@@ -23,20 +23,27 @@ export default function ({
   rating,
   tagline,
   images,
+  background,
+  align = "center",
+  size = "lg",
 }: BlockProps) {
   return (
-    <Section className="from-primary/5 bg-radial-[at_0%_0%] via-transparent">
-      <SectionContainer>
-        <SectionSplit className="items-center">
-          <div className="flex flex-col items-start">
-            {chip && (
-              <Chip
-                className="animate-fade-4"
-                variant="secondary"
-                href={chip.href}
+    <Section>
+      <Background
+        className="mask-b-from-white mask-b-from-50% mask-b-to-transparent"
+        variant={background}
+      />
+      <Container>
+        <Split align={align}>
+          <Column align="start">
+            {chip && <Chip {...chip} />}
+            {children && (
+              <Typography
+                className="animate-fade-1 text-balance not-first:mt-5"
+                size={size}
               >
-                {chip.text}
-              </Chip>
+                {children}
+              </Typography>
             )}
             {rating && (
               <Review className="animate-fade-4 not-first:mt-5">
@@ -49,33 +56,24 @@ export default function ({
                 </ReviewContent>
               </Review>
             )}
-            <SectionContent
-              className="animate-fade-1 text-balance not-first:mt-5"
-              size="lg"
-            >
-              {children}
-            </SectionContent>
             {links && links.length > 0 && (
-              <SectionFooter className="mt-8">
-                {links.map(({ href, text }, i) => (
+              <Wrap className="gap-2 not-first:mt-8">
+                {links.map((link, i) => (
                   <Link
-                    className={i === 0 ? "animate-fade-2" : "animate-fade-3"}
-                    key={href}
-                    href={href}
+                    key={i}
                     variant={i === 0 ? "default" : "outline"}
-                    size="lg"
-                  >
-                    {text}
-                  </Link>
+                    size={size === "xl" ? "lg" : size}
+                    {...link}
+                  />
                 ))}
-              </SectionFooter>
+              </Wrap>
             )}
-          </div>
+          </Column>
           {image?.src && (
             <img className="animate-fade-5 rounded-lg" {...image} />
           )}
-        </SectionSplit>
-      </SectionContainer>
+        </Split>
+      </Container>
     </Section>
   )
 }

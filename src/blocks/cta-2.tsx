@@ -1,34 +1,40 @@
 import type { BlockProps } from "@/lib/types"
-import { Link } from "@/components/ui/link"
-import {
-  Section,
-  SectionContainer,
-  SectionContent,
-  SectionFooter,
-} from "@/components/ui/section"
+import { Container } from "@/components/elements/container"
+import { Link } from "@/components/elements/link"
+import { Section } from "@/components/elements/section"
+import { Wrap } from "@/components/elements/wrap"
+import { Writeup } from "@/components/elements/writeup"
 
-export default function ({ children, links }: BlockProps) {
+export default function ({ children, links, size, align }: BlockProps) {
   return (
     <Section>
-      <SectionContainer>
-        <div className="bg-card text-card-foreground flex flex-col justify-between gap-8 rounded-lg border px-4 py-16 lg:flex-row lg:items-center lg:px-8 lg:py-24">
-          {children && <SectionContent size="lg">{children}</SectionContent>}
+      <Container>
+        <div className="bg-card text-card-foreground flex flex-col items-center rounded-lg border px-4 py-16 lg:px-8">
+          {children && (
+            <Writeup
+              className="max-w-3xl text-center"
+              size={size}
+              align={align}
+            >
+              {children}
+            </Writeup>
+          )}
           {links && (
-            <SectionFooter>
+            <Wrap className="not-first:mt-10" align={align}>
               {links?.map(({ href, text }, i) => (
                 <Link
                   key={href}
                   href={href}
-                  variant={i === 0 ? "default" : "ghost"}
-                  size="lg"
+                  variant={i === 0 ? "default" : "outline"}
+                  size={size}
                 >
                   {text}
                 </Link>
               ))}
-            </SectionFooter>
+            </Wrap>
           )}
         </div>
-      </SectionContainer>
+      </Container>
     </Section>
   )
 }

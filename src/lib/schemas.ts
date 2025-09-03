@@ -68,6 +68,7 @@ export const itemSchema = (ctx: SchemaContext) =>
       published: z.date(),
       title: z.string(),
       description: z.string(),
+      disclaimer: z.string(),
       chip: chipSchema,
       badge: linkSchema,
       tagline: z.string(),
@@ -87,6 +88,22 @@ export const itemSchema = (ctx: SchemaContext) =>
       form: formSchema,
       html: z.string(),
       markdown: z.string(),
+      // styling
+      align: z.enum(["start", "center", "end"]),
+      size: z.enum(["sm", "default", "lg"]),
+      background: z.enum([
+        "grid",
+        "animated-grid",
+        "flickering-grid",
+        "retro-grid",
+        "dots",
+        "meteors",
+        "particles",
+        "ripple",
+        "warp",
+        "gradient",
+        "ai",
+      ]),
     })
     .partial()
     .strict()

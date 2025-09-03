@@ -1,38 +1,70 @@
 import type { BlockProps } from "@/lib/types"
-import { Link } from "@/components/ui/link"
+import { Background } from "@/components/elements/background"
+import { Column } from "@/components/elements/column"
+import { Container } from "@/components/elements/container"
+import { Link } from "@/components/elements/link"
 import {
-  Section,
-  SectionContainer,
-  SectionContent,
-  SectionFooter,
-} from "@/components/ui/section"
+  Review,
+  ReviewContent,
+  ReviewImage,
+  ReviewRating,
+} from "@/components/elements/review"
+import { Section } from "@/components/elements/section"
+import { Wrap } from "@/components/elements/wrap"
+import { Writeup } from "@/components/elements/writeup"
 
-export default function ({ children, links }: BlockProps) {
+export default function ({
+  children,
+  links,
+  rating,
+  tagline,
+  images,
+  background,
+  size = "lg",
+  align = "center",
+}: BlockProps) {
   return (
-    <Section>
-      <SectionContainer>
-        <div className="bg-card text-card-foreground flex flex-col items-center rounded-lg border px-4 py-16 lg:px-8">
-          {children && (
-            <SectionContent className="max-w-3xl text-center" size="xl">
-              {children}
-            </SectionContent>
-          )}
-          {links && (
-            <SectionFooter className="mt-10 justify-center">
-              {links?.map(({ href, text }, i) => (
-                <Link
-                  key={href}
-                  href={href}
-                  variant={i === 0 ? "default" : "ghost"}
-                  size="lg"
-                >
-                  {text}
-                </Link>
+    <Section className="-my-16 overflow-hidden py-40">
+      <Background
+        className="mask-y-from-white mask-y-from-75% mask-y-to-transparent"
+        variant={background}
+      />
+      <Container>
+        <Column align={align}>
+          {rating && (
+            <Review className="not-first:mt-6">
+              {images?.map((image, i) => (
+                <ReviewImage key={i} {...image} />
               ))}
-            </SectionFooter>
+              <ReviewContent>
+                <ReviewRating rating={rating} />
+                {tagline}
+              </ReviewContent>
+            </Review>
           )}
-        </div>
-      </SectionContainer>
+          {children && (
+            <Writeup
+              className="text-balance not-first:mt-6"
+              size={size}
+              align={align}
+            >
+              {children}
+            </Writeup>
+          )}
+          {links && links.length > 0 && (
+            <Wrap className="gap-2 not-first:mt-8" align={align}>
+              {links.map((link, i) => (
+                <Link
+                  key={i}
+                  variant={i === 0 ? "default" : "outline"}
+                  size={size}
+                  {...link}
+                />
+              ))}
+            </Wrap>
+          )}
+        </Column>
+      </Container>
     </Section>
   )
 }
