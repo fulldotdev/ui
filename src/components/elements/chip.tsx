@@ -10,6 +10,7 @@ function Chip({
   variant = "secondary",
   href,
   text,
+  children,
   ...props
 }: React.ComponentProps<"a"> &
   VariantProps<typeof badgeVariants> & { text?: string }) {
@@ -21,6 +22,7 @@ function Chip({
       {...props}
     >
       {text}
+      {children}
       {href && <ArrowUpRight />}
     </Comp>
   )

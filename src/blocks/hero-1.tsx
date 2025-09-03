@@ -31,7 +31,7 @@ export default function ({
       <Container>
         <Column align={align} className="relative py-24">
           <Background
-            className="mask-b-from-white mask-b-from-75% mask-b-to-transparent"
+            className="mask-y-from-white mask-y-from-75% mask-y-to-transparent"
             variant={background}
           />
           {chip && <Chip {...chip} />}

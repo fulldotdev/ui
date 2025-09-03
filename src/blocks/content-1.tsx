@@ -1,5 +1,6 @@
 import type { BlockProps } from "@/lib/types"
 import { Background } from "@/components/elements/background"
+import { Chip } from "@/components/elements/chip"
 import { Column } from "@/components/elements/column"
 import { Container } from "@/components/elements/container"
 import { Link } from "@/components/elements/link"
@@ -16,32 +17,19 @@ import { Writeup } from "@/components/elements/writeup"
 export default function ({
   children,
   links,
+  image,
+  chip,
   rating,
   tagline,
   images,
   background,
   size,
-  align = "center",
+  align,
 }: BlockProps) {
   return (
-    <Section className="-my-16 overflow-hidden py-40">
-      <Background
-        className="mask-y-from-white mask-y-from-75% mask-y-to-transparent"
-        variant={background}
-      />
+    <Section className="overflow-hidden pt-0">
       <Container>
-        <Column align={align}>
-          {rating && (
-            <Review className="not-first:mt-6">
-              {images?.map((image, i) => (
-                <ReviewImage key={i} {...image} />
-              ))}
-              <ReviewContent>
-                <ReviewRating rating={rating} />
-                {tagline}
-              </ReviewContent>
-            </Review>
-          )}
+        <Column align={align} className="relative py-24">
           {children && (
             <Writeup
               className="text-balance not-first:mt-6"
@@ -62,6 +50,11 @@ export default function ({
                 />
               ))}
             </Wrap>
+          )}
+        </Column>
+        <Column align={align}>
+          {image?.src && (
+            <img className="rounded-lg not-first:mt-16" {...image} />
           )}
         </Column>
       </Container>

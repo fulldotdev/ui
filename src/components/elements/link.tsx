@@ -9,12 +9,14 @@ function Link({
   variant,
   size,
   text,
+  children,
   ...props
 }: React.ComponentProps<"a"> &
   VariantProps<typeof buttonVariants> & { text?: string }) {
   return (
     <a className={cn(buttonVariants({ variant, size, className }))} {...props}>
       {text}
+      {children}
     </a>
   )
 }

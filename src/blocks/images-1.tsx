@@ -11,14 +11,73 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel"
+import { Abstract } from "@/components/elements/abstract"
 import { Column } from "@/components/elements/column"
 import { Container } from "@/components/elements/container"
 import { Link } from "@/components/elements/link"
 import { Section } from "@/components/elements/section"
-import { Typography } from "@/components/elements/typography"
+import { Tile } from "@/components/elements/tile"
 import { Wrap } from "@/components/elements/wrap"
+import { Writeup } from "@/components/elements/writeup"
 
-export default function ({ images, children, links, size }: BlockProps) {
+const items = [
+  {
+    title: "Image 1",
+    description: "Description 1",
+    href: "/image-1",
+    image: {
+      src: "https://placehold.co/600x400",
+      alt: "Image 1",
+    },
+  },
+  {
+    title: "Image 2",
+    description: "Description 2",
+    href: "/image-2",
+    image: {
+      src: "https://placehold.co/600x400",
+      alt: "Image 2",
+    },
+  },
+  {
+    title: "Image 3",
+    description: "Description 3",
+    href: "/image-3",
+    image: {
+      src: "https://placehold.co/600x400",
+      alt: "Image 3",
+    },
+  },
+  {
+    title: "Image 4",
+    description: "Description 4",
+    href: "/image-4",
+    image: {
+      src: "https://placehold.co/600x400",
+      alt: "Image 4",
+    },
+  },
+  {
+    title: "Image 5",
+    description: "Description 5",
+    href: "/image-5",
+    image: {
+      src: "https://placehold.co/600x400",
+      alt: "Image 5",
+    },
+  },
+  {
+    title: "Image 6",
+    description: "Description 6",
+    href: "/image-6",
+    image: {
+      src: "https://placehold.co/600x400",
+      alt: "Image 6",
+    },
+  },
+]
+
+export default function ({ children, links, size }: BlockProps) {
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(0)
   const [count, setCount] = useState(0)
@@ -41,13 +100,13 @@ export default function ({ images, children, links, size }: BlockProps) {
       <Container>
         <Column align="center">
           {children && (
-            <Typography
+            <Writeup
               className="text-balance not-first:mt-6"
               align="center"
               size={size}
             >
               {children}
-            </Typography>
+            </Writeup>
           )}
           {links && links.length > 0 && (
             <Wrap className="gap-2 not-first:mt-8" align="center">
@@ -62,16 +121,17 @@ export default function ({ images, children, links, size }: BlockProps) {
             </Wrap>
           )}
           <Carousel
-            className="mx-auto w-full max-w-[50rem] not-first:mt-16 [&>div:nth-child(1)]:md:overflow-visible"
+            className="mx-auto w-full max-w-[50rem] not-first:mt-12 [&>div:nth-child(1)]:md:overflow-visible"
             setApi={setApi}
             opts={{
               startIndex: 1,
             }}
           >
             <CarouselContent>
-              {images?.map((image, i) => (
+              {items?.map(({ image, title, href, description }, i) => (
                 <CarouselItem key={i}>
-                  <div
+                  <Tile
+                    href={href}
                     className={`overflow-hidden rounded-xl transition-all duration-300 ${
                       current === i + 1
                         ? "scale-100 opacity-100"
@@ -79,10 +139,19 @@ export default function ({ images, children, links, size }: BlockProps) {
                     }`}
                   >
                     <img
-                      className="block size-full object-cover object-center"
+                      className="block size-full rounded-xl object-cover object-center"
                       {...image}
                     />
-                  </div>
+                    {(title || description) && (
+                      <Abstract
+                        align="center"
+                        className="mx-auto not-first:mt-5"
+                      >
+                        {title && <h3>{title}</h3>}
+                        {description && <p>{description}</p>}
+                      </Abstract>
+                    )}
+                  </Tile>
                 </CarouselItem>
               ))}
             </CarouselContent>

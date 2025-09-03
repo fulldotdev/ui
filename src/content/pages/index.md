@@ -48,7 +48,7 @@ blocks:
       - ../../assets/bolsward.jpg
       - ../../assets/bolsward.jpg
       - ../../assets/bolsward.jpg
-  - block: hero-2
+  - block: content-2
     align: center
     html: >-
       <h2>Wij geven vrijblijvend advies</h2> 
@@ -156,7 +156,7 @@ blocks:
         description: >-
           Amazing experience! The quality of work is outstanding and the customer support is second to none.
         image: ../../assets/bolsward.jpg
-  - block: hero-1
+  - block: cta-1
     html: |
       <p>Binnen 1 minuut klaar</p>
       <h2>Meld je nu aan voor het leukste evenement in Bolsward deze zomer</h2>
@@ -168,52 +168,4 @@ blocks:
         href: /docs/
       - text: "Bekijk deelnemers"
         href: "#"
-  # - block: tiles-1
-  #   html: <h2>Wie er al deelnemen</h2>
-  #   paths:
-  #     - /src/content/pages/bolsward.md
-  # - block: product-1
-  #   title: My product
-  #   description: >-
-  #     Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-  #   list:
-  #     - "Voorraad: 9.5M2"
-  #     - "Maat: 22x22"
-  #   images:
-  #     - ../../assets/bolsward.jpg
-  #     - ../../assets/bolsward.jpg
-  #     - ../../assets/bolsward.jpg
-  #     - ../../assets/bolsward.jpg
-  #     - ../../assets/bolsward.jpg
-  #     - ../../assets/bolsward.jpg
-  #     - ../../assets/bolsward.jpg
-  #     - ../../assets/bolsward.jpg
-  #     - ../../assets/bolsward.jpg
-  #     - ../../assets/bolsward.jpg
-  #     - ../../assets/bolsward.jpg
-  #     - ../../assets/bolsward.jpg
-  #     - ../../assets/bolsward.jpg
-  # - block: contact-1
-  #   form:
-  #     action: /bedankt
-  #     fields:
-  #       - name: email
-  #         type: email
-  #         label: Email
-  #         required: true
-  #       - name: phone
-  #         type: tel
-  #         label: Telefoonnummer
-  #         required: true
-  #       - name: opmerking
-  #         type: textarea
-  #         label: Vragen of opmerkingen
-  #       - name: select
-  #         type: select
-  #         label: Select
-  #         options:
-  #           - Option 1
-  #           - Option 2
-  #           - Option 3
-  #     submit: Verstuur aanvraag
 ---

@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 const abstractVariants = cva(
   [
     "w-full max-w-2xl",
-    "[&_p]:leading-[1.8] [&_p]:not-first:mt-3 [&_p]:text-muted-foreground",
+    "[&_p]:leading-[1.8] [&_p]:not-first:mt-2 [&_p]:text-muted-foreground",
     "[&_a]:text-primary [&_a]:hover:underline",
     "[&_:is(h1,h2,h3,h4,h5,h6)]:scroll-mt-20 [&_:is(h1,h2,h3,h4,h5,h6)]:not-first:mt-12 [&_:is(h1,h2,h3,h4,h5,h6)]:text-pretty [&_:is(h1,h2,h3,h4,h5,h6)]:font-semibold [&_:is(h1,h2,h3,h4,h5,h6)]:leading-[1.1]",
   ],

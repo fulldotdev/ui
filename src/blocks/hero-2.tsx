@@ -12,8 +12,8 @@ import {
 } from "@/components/elements/review"
 import { Section } from "@/components/elements/section"
 import { Split } from "@/components/elements/split"
-import { Typography } from "@/components/elements/typography"
 import { Wrap } from "@/components/elements/wrap"
+import { Writeup } from "@/components/elements/writeup"
 
 export default function ({
   children,
@@ -38,12 +38,12 @@ export default function ({
           <Column align="start">
             {chip && <Chip {...chip} />}
             {children && (
-              <Typography
+              <Writeup
                 className="animate-fade-1 text-balance not-first:mt-5"
                 size={size}
               >
                 {children}
-              </Typography>
+              </Writeup>
             )}
             {rating && (
               <Review className="animate-fade-4 not-first:mt-5">
@@ -62,7 +62,7 @@ export default function ({
                   <Link
                     key={i}
                     variant={i === 0 ? "default" : "outline"}
-                    size={size === "xl" ? "lg" : size}
+                    size={size}
                     {...link}
                   />
                 ))}

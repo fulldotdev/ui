@@ -4,6 +4,7 @@ import { Chip } from "@/components/elements/chip"
 import { Column } from "@/components/elements/column"
 import { Container } from "@/components/elements/container"
 import { Link } from "@/components/elements/link"
+import { Typography } from "@/components/elements/prose"
 import {
   Review,
   ReviewContent,
@@ -12,7 +13,6 @@ import {
 } from "@/components/elements/review"
 import { Section } from "@/components/elements/section"
 import { Split } from "@/components/elements/split"
-import { Typography } from "@/components/elements/typography"
 
 export default function ({
   children,

@@ -7,12 +7,13 @@ import {
   SectionFooter,
   SectionSplit,
 } from "@/components/elements/section"
+import { Split } from "@/components/elements/split"
 
 export default function ({ children, links, image }: BlockProps) {
   return (
     <Section className="overflow-hidden">
       <Container>
-        <SectionSplit className="items-center">
+        <Split className="items-center">
           <div className="flex flex-col items-start">
             {children && <SectionContent>{children}</SectionContent>}
             {links && links.length > 0 && (

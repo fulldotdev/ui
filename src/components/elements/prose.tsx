@@ -3,10 +3,10 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-const typographyVariants = cva(
+const proseVariants = cva(
   [
     "w-full max-w-2xl",
-    "[&_p]:leading-[1.8] [&_p]:not-first:mt-4 [&_p]:text-muted-foreground",
+    "[&_p]:leading-[1.8] [&_p]:not-first:mt-4",
     "[&_ul]:list-inside [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:not-first:mt-4",
     "[&_ol]:list-inside [&_ol]:list-decimal [&_ol]:space-y-2 [&_ol]:not-first:mt-4",
     "[&_a]:text-primary [&_a]:hover:underline",
@@ -18,34 +18,22 @@ const typographyVariants = cva(
       size: {
         sm: "[&_h1]:text-4xl [&_h2]:text-3xl [&_h3]:text-xl [&_h4]:text-xl [&_h5]:text-lg [&_h6]:text-base max-w-2xl",
         default:
-          "text-lg [&_h1]:text-4xl lg:[&_h1]:text-5xl [&_h2]:text-4xl [&_h3]:text-3xl [&_h4]:text-2xl [&_h5]:text-xl [&_h6]:text-lg max-w-3xl",
+          "text-base [&_h1]:text-4xl [&_h2]:text-3xl [&_h3]:text-2xl [&_h4]:text-xl [&_h5]:text-lg [&_h6]:text-base max-w-2xl",
         lg: "text-xl [&_h1]:text-4xl lg:[&_h1]:text-6xl [&_h2]:text-5xl [&_h3]:text-4xl [&_h4]:text-3xl [&_h5]:text-2xl [&_h6]:text-xl max-w-4xl",
-      },
-      align: {
-        start: "text-start",
-        center: "text-center",
-        end: "text-end",
       },
     },
     defaultVariants: {
       size: "default",
-      align: "start",
     },
   }
 )
 
-function Typography({
+function Prose({
   className,
   size,
-  align,
   ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof typographyVariants>) {
-  return (
-    <div
-      className={cn(typographyVariants({ size, align }), className)}
-      {...props}
-    />
-  )
+}: React.ComponentProps<"div"> & VariantProps<typeof proseVariants>) {
+  return <div className={cn(proseVariants({ size }), className)} {...props} />
 }
 
-export { Typography }
+export { Prose }
