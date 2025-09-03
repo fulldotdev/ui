@@ -45,15 +45,13 @@ export default function ({
           {locales && <Locales locales={locales} />}
           {links && links.length > 0 && (
             <div className="inline-flex flex-nowrap items-center gap-2">
-              {links.map(({ text, href }, i) => (
+              {links.map((link, i) => (
                 <Link
-                  className={i < links.length - 1 ? "max-sm:hidden" : ""}
                   key={i}
-                  href={href}
+                  className={i < links.length - 1 ? "max-sm:hidden" : ""}
                   variant={i === links.length - 1 ? "outline" : "ghost"}
-                >
-                  {text}
-                </Link>
+                  {...link}
+                />
               ))}
             </div>
           )}

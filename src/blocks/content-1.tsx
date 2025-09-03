@@ -1,31 +1,12 @@
 import type { BlockProps } from "@/lib/types"
-import { Background } from "@/components/elements/background"
-import { Chip } from "@/components/elements/chip"
 import { Column } from "@/components/elements/column"
 import { Container } from "@/components/elements/container"
 import { Link } from "@/components/elements/link"
-import {
-  Review,
-  ReviewContent,
-  ReviewImage,
-  ReviewRating,
-} from "@/components/elements/review"
 import { Section } from "@/components/elements/section"
 import { Wrap } from "@/components/elements/wrap"
 import { Writeup } from "@/components/elements/writeup"
 
-export default function ({
-  children,
-  links,
-  image,
-  chip,
-  rating,
-  tagline,
-  images,
-  background,
-  size,
-  align,
-}: BlockProps) {
+export default function ({ children, links, image, size, align }: BlockProps) {
   return (
     <Section className="overflow-hidden pt-0">
       <Container>

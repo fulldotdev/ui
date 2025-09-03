@@ -73,7 +73,7 @@ export default function ({
               >
                 {column?.map(
                   ({ title, description, rating, image, tagline }, i) => (
-                    <Tile className="p-6" key={i} variant="outline" size={size}>
+                    <Tile className="p-6" key={i} variant="outline">
                       <Review>
                         {image && <ReviewImage {...image} />}
                         <ReviewContent>

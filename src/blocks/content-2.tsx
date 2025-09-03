@@ -1,15 +1,8 @@
 import type { BlockProps } from "@/lib/types"
 import { Background } from "@/components/elements/background"
-import { Chip } from "@/components/elements/chip"
 import { Column } from "@/components/elements/column"
 import { Container } from "@/components/elements/container"
 import { Link } from "@/components/elements/link"
-import {
-  Review,
-  ReviewContent,
-  ReviewImage,
-  ReviewRating,
-} from "@/components/elements/review"
 import { Section } from "@/components/elements/section"
 import { Split } from "@/components/elements/split"
 import { Wrap } from "@/components/elements/wrap"
@@ -19,13 +12,10 @@ export default function ({
   children,
   links,
   image,
-  chip,
-  rating,
-  tagline,
-  images,
   background,
   size,
   align = "center",
+  index,
 }: BlockProps) {
   return (
     <Section>
@@ -34,27 +24,12 @@ export default function ({
         variant={background}
       />
       <Container>
-        <Split align={align}>
+        <Split align={align} reverse={index !== undefined && index % 2 === 1}>
           <Column align="start">
-            {chip && <Chip {...chip} />}
             {children && (
-              <Writeup
-                className="animate-fade-1 text-balance not-first:mt-5"
-                size={size}
-              >
+              <Writeup className="animate-fade-1 text-balance" size={size}>
                 {children}
               </Writeup>
-            )}
-            {rating && (
-              <Review className="animate-fade-4 not-first:mt-5">
-                {images?.map((image, i) => (
-                  <ReviewImage key={i} {...image} />
-                ))}
-                <ReviewContent>
-                  <ReviewRating rating={rating} />
-                  {tagline}
-                </ReviewContent>
-              </Review>
             )}
             {links && links.length > 0 && (
               <Wrap className="gap-2 not-first:mt-8">

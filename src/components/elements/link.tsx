@@ -4,6 +4,8 @@ import { type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 
+import { rainbowButtonVariants } from "../magicui/rainbow-button"
+
 function Link({
   className,
   variant,
@@ -11,10 +13,27 @@ function Link({
   text,
   children,
   ...props
-}: React.ComponentProps<"a"> &
-  VariantProps<typeof buttonVariants> & { text?: string }) {
+}: React.ComponentProps<"a"> & {
+  text?: string
+  size?: "default" | "sm" | "lg" | "icon"
+  variant?:
+    | "default"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link"
+    | "rainbow"
+    | "rainbow-outline"
+}) {
+  let c: string = ""
+  if (variant === "rainbow")
+    c = rainbowButtonVariants({ variant: "default", size, className })
+  else if (variant === "rainbow-outline")
+    c = rainbowButtonVariants({ variant: "outline", size, className })
+  else c = buttonVariants({ variant, size, className })
+
   return (
-    <a className={cn(buttonVariants({ variant, size, className }))} {...props}>
+    <a className={cn(c)} {...props}>
       {text}
       {children}
     </a>

@@ -39,6 +39,72 @@ function AiBackground({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+function RainbowBackground({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      className={cn(
+        "pointer-events-none absolute inset-0 h-full w-full overflow-hidden",
+        className
+      )}
+      {...props}
+    >
+      <style>{`
+        @keyframes rainbow-smooth-1 {
+          0%, 100% { background-position: 0% 0% }
+          25% { background-position: 100% 25% }
+          50% { background-position: 200% 50% }
+          75% { background-position: 100% 75% }
+        }
+        @keyframes rainbow-smooth-2 {
+          0%, 100% { background-position: 0% 100% }
+          33% { background-position: 150% 0% }
+          66% { background-position: 300% 100% }
+        }
+        @keyframes rainbow-smooth-3 {
+          0%, 100% { background-position: 50% 50% }
+          50% { background-position: 150% 150% }
+        }
+      `}</style>
+
+      {/* Primary seamless rainbow gradient */}
+      <div
+        className="absolute inset-0 opacity-8"
+        style={{
+          background:
+            "linear-gradient(120deg, var(--color-1), var(--color-2), var(--color-3), var(--color-4), var(--color-5), var(--color-1), var(--color-2), var(--color-3))",
+          backgroundSize: "400% 400%",
+          animation: "rainbow-smooth-1 25s ease-in-out infinite",
+        }}
+      />
+
+      {/* Secondary layer with different seamless pattern */}
+      <div
+        className="absolute inset-0 opacity-5"
+        style={{
+          background:
+            "linear-gradient(-60deg, transparent 0%, var(--color-3) 20%, transparent 40%, var(--color-5) 60%, transparent 80%, var(--color-1) 100%)",
+          backgroundSize: "500% 500%",
+          animation: "rainbow-smooth-2 35s ease-in-out infinite reverse",
+        }}
+      />
+
+      {/* Subtle slow-moving radial overlay */}
+      <div
+        className="absolute inset-0 opacity-3"
+        style={{
+          background:
+            "radial-gradient(ellipse 120% 80% at 50% 50%, var(--color-2) 0%, transparent 35%, var(--color-4) 65%, transparent 100%)",
+          backgroundSize: "300% 300%",
+          animation: "rainbow-smooth-3 50s ease-in-out infinite",
+        }}
+      />
+    </div>
+  )
+}
+
 type Props =
   | ({
       variant?: "grid"
@@ -73,7 +139,9 @@ type Props =
   | ({
       variant?: "ai"
     } & React.ComponentProps<typeof AiBackground>)
-
+  | ({
+      variant?: "rainbow"
+    } & React.ComponentProps<typeof RainbowBackground>)
 const COMPONENTS = {
   grid: GridPattern,
   "animated-grid": AnimatedGridPattern,
@@ -86,6 +154,7 @@ const COMPONENTS = {
   warp: WarpBackground,
   gradient: GradientBackground,
   ai: AiBackground,
+  rainbow: RainbowBackground,
 } as const
 
 const backgroundVariants = cva("", {
@@ -102,6 +171,7 @@ const backgroundVariants = cva("", {
       warp: "absolute inset-0",
       gradient: "",
       ai: "",
+      rainbow: "",
     },
   },
 })

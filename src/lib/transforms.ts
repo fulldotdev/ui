@@ -287,6 +287,7 @@ export async function transformPages(pages: CollectionEntry<"pages">[]) {
 
 export type BlockProps = Awaited<ReturnType<typeof transformBlock>> & {
   children?: React.ReactNode
+  index?: number
 }
 
 export type PageProps = Awaited<ReturnType<typeof transformPage>>["data"]

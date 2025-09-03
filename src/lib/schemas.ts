@@ -6,7 +6,7 @@ export const linkSchema = z
   .object({
     href: z.string(),
     text: z.string(),
-    variant: z.enum(["default", "outline", "secondary", "ghost", "link"]),
+    variant: z.any(),
   })
   .partial()
   .strict()
@@ -91,19 +91,7 @@ export const itemSchema = (ctx: SchemaContext) =>
       // styling
       align: z.enum(["start", "center", "end"]),
       size: z.enum(["sm", "default", "lg"]),
-      background: z.enum([
-        "grid",
-        "animated-grid",
-        "flickering-grid",
-        "retro-grid",
-        "dots",
-        "meteors",
-        "particles",
-        "ripple",
-        "warp",
-        "gradient",
-        "ai",
-      ]),
+      background: z.any(),
     })
     .partial()
     .strict()

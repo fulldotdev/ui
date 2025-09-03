@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-const columnVariants = cva("flex flex-col", {
+const columnVariants = cva("flex flex-col w-full", {
   variants: {
     align: {
       center: "items-center",

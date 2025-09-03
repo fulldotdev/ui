@@ -1,4 +1,5 @@
 import type { BlockProps } from "@/lib/types"
+import { cn } from "@/lib/utils"
 import { Abstract } from "@/components/elements/abstract"
 import { Column } from "@/components/elements/column"
 import { Container } from "@/components/elements/container"
@@ -40,7 +41,13 @@ export default function ({
           <div className="flex flex-wrap justify-center gap-x-16 gap-y-8 not-first:mt-12">
             {items?.map(({ title, description, icon }, i) => (
               <Tile
-                className="flex max-w-md min-w-2xs grow-1 basis-2xs flex-col items-center"
+                className={cn(
+                  "flex max-w-md grow-1 basis-2xs flex-col items-center",
+                  {
+                    "max-w-sm min-w-3xs basis-3xs": size === "sm",
+                    "min-w-5xs basis-5xs max-w-lg": size === "lg",
+                  }
+                )}
                 key={i}
               >
                 <Column align={align}>

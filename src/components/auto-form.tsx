@@ -1,6 +1,11 @@
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
-import { useForm } from "react-hook-form"
+import {
+  useForm,
+  type Control,
+  type FieldPath,
+  type FieldValues,
+} from "react-hook-form"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -32,7 +37,28 @@ import {
 import { Slider } from "@/components/ui/slider"
 import { Textarea } from "@/components/ui/textarea"
 
-function AutoFormInput({
+// Base interface for typed AutoForm components
+// This provides type safety for all AutoForm components by ensuring:
+// 1. The 'name' prop must be a valid field path in the form schema
+// 2. The 'control' prop is properly typed for the form
+// 3. IntelliSense support for field names
+// 4. Compile-time errors when field names change in the schema
+interface AutoFormBaseProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> {
+  control: Control<TFieldValues>
+  name: TName
+  label?: string
+  description?: string
+  required?: boolean
+  disabled?: boolean
+}
+
+function AutoFormInput<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
   control,
   name,
   placeholder,
@@ -41,14 +67,8 @@ function AutoFormInput({
   type,
   label,
   description,
-}: Pick<React.ComponentProps<typeof FormField>, "control" | "name"> &
-  Pick<
-    React.ComponentProps<typeof Input>,
-    "placeholder" | "required" | "disabled" | "type"
-  > & {
-    label?: string
-    description?: string
-  }) {
+}: AutoFormBaseProps<TFieldValues, TName> &
+  Pick<React.ComponentProps<typeof Input>, "placeholder" | "type">) {
   return (
     <FormField
       control={control}
@@ -73,7 +93,10 @@ function AutoFormInput({
   )
 }
 
-function AutoFormTextarea({
+function AutoFormTextarea<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
   control,
   name,
   label,
@@ -81,14 +104,8 @@ function AutoFormTextarea({
   placeholder,
   required,
   disabled,
-}: Pick<React.ComponentProps<typeof FormField>, "control" | "name"> &
-  Pick<
-    React.ComponentProps<typeof Textarea>,
-    "placeholder" | "required" | "disabled"
-  > & {
-    label?: string
-    description?: string
-  }) {
+}: AutoFormBaseProps<TFieldValues, TName> &
+  Pick<React.ComponentProps<typeof Textarea>, "placeholder">) {
   return (
     <FormField
       control={control}
@@ -113,7 +130,10 @@ function AutoFormTextarea({
   )
 }
 
-function AutoFormSelect({
+function AutoFormSelect<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
   control,
   name,
   label,
@@ -122,13 +142,10 @@ function AutoFormSelect({
   placeholder,
   required,
   disabled,
-}: Pick<React.ComponentProps<typeof FormField>, "control" | "name"> &
-  Pick<React.ComponentProps<typeof Select>, "required" | "disabled"> & {
-    label?: string
-    description?: string
-    options?: string[]
-    placeholder?: string
-  }) {
+}: AutoFormBaseProps<TFieldValues, TName> & {
+  options?: (string | { label: string; value: string })[]
+  placeholder?: string
+}) {
   return (
     <FormField
       control={control}
@@ -148,11 +165,15 @@ function AutoFormSelect({
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {options?.map((option) => (
-                <SelectItem key={option} value={option}>
-                  {option}
-                </SelectItem>
-              ))}
+              {options?.map((option) => {
+                const value = typeof option === "string" ? option : option.value
+                const label = typeof option === "string" ? option : option.label
+                return (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                )
+              })}
             </SelectContent>
           </Select>
           <FormDescription>{description}</FormDescription>
@@ -163,7 +184,10 @@ function AutoFormSelect({
   )
 }
 
-function AutoFormRadio({
+function AutoFormRadio<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
   control,
   name,
   label,
@@ -171,12 +195,8 @@ function AutoFormRadio({
   options,
   required,
   disabled,
-}: Pick<React.ComponentProps<typeof FormField>, "control" | "name"> & {
-  label?: string
-  description?: string
-  options?: string[]
-  required?: boolean
-  disabled?: boolean
+}: AutoFormBaseProps<TFieldValues, TName> & {
+  options?: (string | { label: string; value: string; description?: string })[]
 }) {
   return (
     <FormField
@@ -194,14 +214,25 @@ function AutoFormRadio({
               required={required}
               name={name}
             >
-              {options?.map((option) => (
-                <FormItem key={option} className="flex items-center gap-3">
-                  <FormControl>
-                    <RadioGroupItem value={option} />
-                  </FormControl>
-                  <FormLabel className="font-normal">{option}</FormLabel>
-                </FormItem>
-              ))}
+              {options?.map((option) => {
+                const value = typeof option === "string" ? option : option.value
+                const label = typeof option === "string" ? option : option.label
+                const description =
+                  typeof option === "string" ? undefined : option.description
+                return (
+                  <FormItem key={value} className="flex items-start gap-3">
+                    <FormControl>
+                      <RadioGroupItem value={value} />
+                    </FormControl>
+                    <FormLabel className="flex flex-col items-start gap-1 font-normal">
+                      <span>{label}</span>
+                      {description && (
+                        <FormDescription>{description}</FormDescription>
+                      )}
+                    </FormLabel>
+                  </FormItem>
+                )
+              })}
             </RadioGroup>
           </FormControl>
           <FormDescription>{description}</FormDescription>
@@ -212,19 +243,17 @@ function AutoFormRadio({
   )
 }
 
-function AutoFormCheckbox({
+function AutoFormCheckbox<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
   control,
   name,
   label,
   description,
   required,
   disabled,
-}: Pick<React.ComponentProps<typeof FormField>, "control" | "name"> & {
-  label?: string
-  description?: string
-  required?: boolean
-  disabled?: boolean
-}) {
+}: AutoFormBaseProps<TFieldValues, TName>) {
   return (
     <FormField
       control={control}
@@ -251,7 +280,10 @@ function AutoFormCheckbox({
   )
 }
 
-function AutoFormChoice({
+function AutoFormChoice<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
   control,
   name,
   label,
@@ -259,12 +291,8 @@ function AutoFormChoice({
   options = [],
   required,
   disabled,
-}: Pick<React.ComponentProps<typeof FormField>, "control" | "name"> & {
-  label?: string
-  description?: string
-  options?: string[]
-  required?: boolean
-  disabled?: boolean
+}: AutoFormBaseProps<TFieldValues, TName> & {
+  options?: (string | { label: string; value: string; description?: string })[]
 }) {
   return (
     <FormField
@@ -277,23 +305,34 @@ function AutoFormChoice({
             <RadioGroup
               onValueChange={field.onChange}
               defaultValue={field.value}
-              className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-2"
+              className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-2"
               disabled={disabled}
               required={required}
               name={name}
             >
-              {options.map((option) => (
-                <FormLabel
-                  key={option}
-                  htmlFor={`${name}-${option}`}
-                  className="hover:bg-accent/50 has-[[aria-checked=true]]:border-ring has-[[aria-checked=true]]:bg-ring/5 flex items-start gap-3 rounded-lg border p-3"
-                >
-                  <RadioGroupItem value={option} id={`${name}-${option}`} />
-                  <div className="grid gap-1.5 font-normal">
-                    <p className="text-sm leading-none font-medium">{option}</p>
-                  </div>
-                </FormLabel>
-              ))}
+              {options.map((option) => {
+                const value = typeof option === "string" ? option : option.value
+                const label = typeof option === "string" ? option : option.label
+                const description =
+                  typeof option === "string" ? undefined : option.description
+                return (
+                  <FormLabel
+                    key={value}
+                    htmlFor={`${name}-${value}`}
+                    className="hover:bg-accent/50 has-[[aria-checked=true]]:border-ring has-[[aria-checked=true]]:bg-ring/5 flex items-start gap-3 rounded-lg border p-3"
+                  >
+                    <RadioGroupItem value={value} id={`${name}-${value}`} />
+                    <div className="grid gap-1.5 font-normal">
+                      <p className="text-sm leading-none font-medium">
+                        {label}
+                      </p>
+                      {description && (
+                        <FormDescription>{description}</FormDescription>
+                      )}
+                    </div>
+                  </FormLabel>
+                )
+              })}
             </RadioGroup>
           </FormControl>
           <FormDescription>{description}</FormDescription>
@@ -304,7 +343,10 @@ function AutoFormChoice({
   )
 }
 
-function AutoFormMultiChoice({
+function AutoFormMultiChoice<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
   control,
   name,
   label,
@@ -312,12 +354,8 @@ function AutoFormMultiChoice({
   options = [],
   required,
   disabled,
-}: Pick<React.ComponentProps<typeof FormField>, "control" | "name"> & {
-  label?: string
-  description?: string
-  options?: string[]
-  required?: boolean
-  disabled?: boolean
+}: AutoFormBaseProps<TFieldValues, TName> & {
+  options?: (string | { label: string; value: string; description?: string })[]
 }) {
   return (
     <FormField
@@ -327,34 +365,45 @@ function AutoFormMultiChoice({
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-2">
-              {options.map((option) => (
-                <FormLabel
-                  key={option}
-                  htmlFor={`${name}-${option}`}
-                  className="hover:bg-accent/50 has-[[aria-checked=true]]:border-ring has-[[aria-checked=true]]:bg-ring/5 flex items-start gap-3 rounded-lg border p-3"
-                >
-                  <Checkbox
-                    id={`${name}-${option}`}
-                    checked={field.value?.includes(option)}
-                    onCheckedChange={(checked) => {
-                      return checked
-                        ? field.onChange([...(field.value || []), option])
-                        : field.onChange(
-                            field.value?.filter(
-                              (value: string) => value !== option
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-2">
+              {options.map((option) => {
+                const value = typeof option === "string" ? option : option.value
+                const label = typeof option === "string" ? option : option.label
+                const description =
+                  typeof option === "string" ? undefined : option.description
+                return (
+                  <FormLabel
+                    key={value}
+                    htmlFor={`${name}-${value}`}
+                    className="hover:bg-accent/50 has-[[aria-checked=true]]:border-ring has-[[aria-checked=true]]:bg-ring/5 flex items-start gap-3 rounded-lg border p-3"
+                  >
+                    <Checkbox
+                      id={`${name}-${value}`}
+                      checked={field.value?.includes(value)}
+                      onCheckedChange={(checked) => {
+                        return checked
+                          ? field.onChange([...(field.value || []), value])
+                          : field.onChange(
+                              field.value?.filter(
+                                (value: string) => value !== value
+                              )
                             )
-                          )
-                    }}
-                    disabled={disabled}
-                    required={required}
-                    name={name}
-                  />
-                  <div className="grid gap-1.5 font-normal">
-                    <p className="text-sm leading-none font-medium">{option}</p>
-                  </div>
-                </FormLabel>
-              ))}
+                      }}
+                      disabled={disabled}
+                      required={required}
+                      name={name}
+                    />
+                    <div className="grid gap-1.5 font-normal">
+                      <p className="text-sm leading-none font-medium">
+                        {label}
+                      </p>
+                      {description && (
+                        <FormDescription>{description}</FormDescription>
+                      )}
+                    </div>
+                  </FormLabel>
+                )
+              })}
             </div>
           </FormControl>
           <FormDescription>{description}</FormDescription>
@@ -365,7 +414,10 @@ function AutoFormMultiChoice({
   )
 }
 
-function AutoFormSlider({
+function AutoFormSlider<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
   control,
   name,
   label,
@@ -376,13 +428,9 @@ function AutoFormSlider({
   defaultValue = (min + max) / 2,
   required,
   disabled,
-}: Pick<React.ComponentProps<typeof FormField>, "control" | "name"> &
+}: AutoFormBaseProps<TFieldValues, TName> &
   Pick<React.ComponentProps<typeof Slider>, "min" | "max" | "step"> & {
-    label?: string
-    description?: string
     defaultValue?: number
-    required?: boolean
-    disabled?: boolean
   }) {
   return (
     <FormField
@@ -422,7 +470,10 @@ function AutoFormSlider({
   )
 }
 
-function AutoFormDate({
+function AutoFormDate<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
   control,
   name,
   label,
@@ -430,12 +481,8 @@ function AutoFormDate({
   placeholder = "Pick a date",
   required,
   disabled,
-}: Pick<React.ComponentProps<typeof FormField>, "control" | "name"> & {
-  label?: string
-  description?: string
+}: AutoFormBaseProps<TFieldValues, TName> & {
   placeholder?: string
-  required?: boolean
-  disabled?: boolean
 }) {
   return (
     <FormField
@@ -493,31 +540,31 @@ interface Props extends React.ComponentProps<"form"> {
   fields?: (
     | ({
         type: "text" | "email" | "tel" | "number"
-      } & React.ComponentProps<typeof AutoFormInput>)
+      } & Omit<React.ComponentProps<typeof AutoFormInput>, "control">)
     | ({
         type: "textarea"
-      } & React.ComponentProps<typeof AutoFormTextarea>)
+      } & Omit<React.ComponentProps<typeof AutoFormTextarea>, "control">)
     | ({
         type: "select"
-      } & React.ComponentProps<typeof AutoFormSelect>)
+      } & Omit<React.ComponentProps<typeof AutoFormSelect>, "control">)
     | ({
         type: "radio"
-      } & React.ComponentProps<typeof AutoFormRadio>)
+      } & Omit<React.ComponentProps<typeof AutoFormRadio>, "control">)
     | ({
         type: "checkbox"
-      } & React.ComponentProps<typeof AutoFormCheckbox>)
+      } & Omit<React.ComponentProps<typeof AutoFormCheckbox>, "control">)
     | ({
         type: "choice"
-      } & React.ComponentProps<typeof AutoFormChoice>)
+      } & Omit<React.ComponentProps<typeof AutoFormChoice>, "control">)
     | ({
         type: "multichoice"
-      } & React.ComponentProps<typeof AutoFormMultiChoice>)
+      } & Omit<React.ComponentProps<typeof AutoFormMultiChoice>, "control">)
     | ({
         type: "slider"
-      } & React.ComponentProps<typeof AutoFormSlider>)
+      } & Omit<React.ComponentProps<typeof AutoFormSlider>, "control">)
     | ({
         type: "date"
-      } & React.ComponentProps<typeof AutoFormDate>)
+      } & Omit<React.ComponentProps<typeof AutoFormDate>, "control">)
   )[]
   submit?: string
   description?: string
@@ -571,9 +618,11 @@ function AutoForm({
           const Field = fieldComponents[type]
           return <Field key={i} control={form.control} {...field} />
         })}
-        <Button className="flex" type="submit">
-          {submit}
-        </Button>
+        {submit && (
+          <Button className="flex" type="submit">
+            {submit}
+          </Button>
+        )}
         {description && (
           <p className="text-muted-foreground text-sm">{description}</p>
         )}
