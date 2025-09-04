@@ -107,27 +107,38 @@ export function transformLayouts({
 
 async function transformImage(image?: ImageSchema) {
   if (!image) return
-  const generated = await getImage({
-    src: image,
-    format: "webp",
-    sizes: "100vw",
-    widths: [320, 480, 768, 1024, 1440, 1920],
-    quality: "mid",
-  })
 
-  const attributes = {
+  const baseAttributes = {
+    src: image.src,
+    height: image.height,
+    width: image.width,
     fetchPriority: "auto",
     decoding: "async",
     loading: "lazy",
-    height: generated.attributes.height,
-    width: generated.attributes.width,
-    sizes: generated.options.sizes,
-    src: generated.src,
-    srcSet: generated.srcSet.attribute,
     alt: title(image.src.split(".")[0].split("/").pop() || ""),
-  } as const
+  }
 
-  return attributes
+  if (import.meta.env.DEV) {
+    return baseAttributes
+  }
+
+  const generatedResult = await getImage({
+    src: image,
+    format: "png",
+    width: 600,
+    height: 315,
+    fit: "cover",
+    position: "center",
+    quality: 75,
+  })
+
+  const generatedAttributes = {
+    height: generatedResult.attributes.height,
+    width: generatedResult.attributes.width,
+    src: generatedResult.src + "?format=png",
+  }
+
+  return generatedAttributes
 }
 
 async function transformImages(images?: ImageSchema[]) {

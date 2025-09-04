@@ -1,6 +1,7 @@
 import type { BlockProps } from "@/lib/types"
+import { Container } from "@/components/elements/container"
 import { Logo, LogoImage } from "@/components/elements/logo"
-import { Container, Section } from "@/components/elements/section"
+import { Section } from "@/components/elements/section"
 import { Social } from "@/components/elements/social"
 
 export default function ({ image, title, links, socials }: BlockProps) {

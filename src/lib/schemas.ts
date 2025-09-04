@@ -7,6 +7,7 @@ export const linkSchema = z
     href: z.string(),
     text: z.string(),
     variant: z.any(),
+    target: z.any(),
   })
   .partial()
   .strict()
