@@ -35,13 +35,14 @@ export default function (options: FulldevOptions): AstroIntegration {
               fallbackType: "redirect",
             },
           },
-          // image: {
-          //   responsiveStyles: true,
-          //   layout: "constrained",
-          //   objectFit: "cover",
-          //   objectPosition: "center",
-          //   breakpoints: [320, 768, 1024, 1280, 1536, 1920],
-          // },
+          publicDir: new URL("./src/assets", import.meta.url),
+          image: {
+            responsiveStyles: true,
+            layout: "constrained",
+            objectFit: "cover",
+            objectPosition: "center",
+            breakpoints: [320, 768, 1024, 1280, 1536, 1920],
+          },
           trailingSlash: "always",
           experimental: {
             fonts: [

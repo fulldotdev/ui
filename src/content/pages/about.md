@@ -2,7 +2,6 @@
 block: article-1
 title: About Our Company
 description: Discover our story, mission, and the passionate team behind our innovative solutions
-image: ../../assets/bolsward.jpg
 ---
 
 Founded in 2020, we began as a small team of passionate innovators with a simple yet ambitious goal: to transform the way businesses approach digital solutions. What started as a garage startup has evolved into a thriving company that serves clients across multiple industries, delivering cutting-edge technology solutions that drive real business results.

@@ -1,29 +1,38 @@
 ---
 import { getCollection, render } from "astro:content"
 
-import { transformPages } from "@/lib/transforms"
+import { transformHref } from "@/lib/transform-href"
+import { transformImages } from "@/lib/transform-images"
+import { transformItems } from "@/lib/transform-items"
+import { transformLayouts } from "@/lib/transform-layouts"
 import Page from "@/components/page.astro"
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages")
-  const transformedPages = await transformPages(pages)
-  return transformedPages
-    .map((page) => {
-      if (!page.data.href) return
-      return {
-        params: {
-          page: page.data.href === "/" ? undefined : page.data.href,
-        },
-        props: page,
-      }
-    })
-    .filter(Boolean)
+  return (
+    await Promise.all(
+      pages.map(async (page) => {
+        page = transformHref(page)
+        page = transformLayouts(page)
+        page = transformItems(page)
+        page = await transformImages(page)
+
+        if (!page.data.href) return undefined
+
+        return {
+          params: {
+            page: page.data.href === "/" ? undefined : page.data.href,
+          },
+          props: page,
+        }
+      })
+    )
+  ).filter(Boolean)
 }
 
-const { data } = Astro.props
-const { Content } = await render(Astro.props as any)
+const { Content } = await render(Astro.props)
 ---
 
-<Page {...data}>
+<Page {...Astro.props.data}>
   <Content />
 </Page>

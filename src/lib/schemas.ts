@@ -1,4 +1,4 @@
-import { z, type SchemaContext } from "astro:content"
+import { getCollection, z, type SchemaContext } from "astro:content"
 
 export const imageSchema = ({ image }: SchemaContext) => image()
 
@@ -127,6 +127,20 @@ export const pageSchema = (ctx: SchemaContext) =>
     })
     .partial()
     .strict()
+    .transform(async (data) => {
+      console.log("transforming page")
+      const pages = await getCollection("pages")
+      const layouts = await getCollection("layouts")
+      console.log({ pages, layouts })
+      console.log(pages.length)
+      console.log(layouts.length)
+
+      return {
+        ...data,
+        pagesLength: pages.length,
+        layoutsLength: layouts.length,
+      }
+    })
 
 export type PathSchema = z.infer<typeof pathSchema>
 export type GlobSchema = z.infer<typeof globSchema>

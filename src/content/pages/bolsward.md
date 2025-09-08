@@ -11,7 +11,6 @@ blocks:
         href: /docs/
       - text: "Bekijk deelnemers"
         href: "#"
-    image: ../../assets/bolsward.jpg
   - block: features-1
     items:
       - icon: "check"
@@ -30,16 +29,13 @@ blocks:
     html: |
       <h2>Wie er al deelnemen</h2>
     items:
-      - image: ../../assets/bolsward.jpg
-        title: Lorem ipsum
+      - title: Lorem ipsum
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      - image: ../../assets/bolsward.jpg
-        title: Lorem ipsum
+      - title: Lorem ipsum
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      - image: ../../assets/bolsward.jpg
-        title: Lorem ipsum
+      - title: Lorem ipsum
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
   - block: contact-1

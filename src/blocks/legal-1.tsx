@@ -1,5 +1,6 @@
 import type { BlockProps } from "@/lib/types"
-import { Container, Section } from "@/components/elements/section"
+import { Container } from "@/components/elements/container"
+import { Section } from "@/components/elements/section"
 
 export default function ({ title, links }: BlockProps) {
   return (

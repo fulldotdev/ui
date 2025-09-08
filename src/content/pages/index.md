@@ -6,7 +6,7 @@ blocks:
     background: ripple
     align: center
     badge:
-      text: 100+ downloads
+      text: 100+ downloads!
       href: /docs/
     html: >-
       <h1>The UI library for building content sites with Shadcn, React, Tailwind
@@ -21,7 +21,6 @@ blocks:
     chip:
       text: 100+ downloads
       href: /docs/
-    image: ../../assets/bolsward.jpg
   - block: features-1
     align: center
     items:
@@ -44,10 +43,6 @@ blocks:
     html: |
       <h2>Eerder gemaakte sites en shops</h2>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    images:
-      - ../../assets/bolsward.jpg
-      - ../../assets/bolsward.jpg
-      - ../../assets/bolsward.jpg
   - block: content-2
     align: center
     html: >-
@@ -56,7 +51,6 @@ blocks:
     links:
       - text: Meer over ons
         href: /docs/
-    image: ../../assets/bolsward.jpg
   - block: reviews-2
     html: <h2>Wat mensen zeggen over ons</h2>
     items:
@@ -65,97 +59,81 @@ blocks:
         tagline: 5.0 out of 127 reviews
         description: >-
           Absolutely fantastic service! The team went above and beyond to deliver exactly what we needed. Professional, timely, and exceeded all expectations. Their attention to detail was remarkable and they kept us informed throughout the entire process.
-        image: ../../assets/bolsward.jpg
       - title: Michael Chen
         rating: 4
         tagline: 4.8 out of 89 reviews
         description: >-
           Great experience working with this team. They were responsive and creative.
-        image: ../../assets/bolsward.jpg
       - title: Emma Rodriguez
         rating: 5
         tagline: 5.0 out of 156 reviews
         description: >-
           Outstanding results! The attention to detail and customer service was exceptional. They truly understood our vision and brought it to life perfectly. From the initial consultation to the final delivery, everything was handled with utmost professionalism. I couldn't be happier with the outcome and would recommend them to anyone looking for quality work.
-        image: ../../assets/bolsward.jpg
       - title: David Thompson
         rating: 4
         tagline: 4.7 out of 203 reviews
         description: >-
           Very pleased with the outcome. The process was smooth and communication was clear.
-        image: ../../assets/bolsward.jpg
       - title: Lisa Wang
         rating: 5
         tagline: 5.0 out of 94 reviews
         description: >-
           Incredible work! They took our ideas and transformed them into something even better than we imagined. Highly professional and creative team with excellent project management skills.
-        image: ../../assets/bolsward.jpg
       - title: James Miller
         rating: 5
         tagline: 4.9 out of 178 reviews
         description: >-
           Top-notch service from start to finish.
-        image: ../../assets/bolsward.jpg
       - title: Anna Kowalski
         rating: 4
         tagline: 4.6 out of 142 reviews
         description: >-
           Really impressed with their expertise and professionalism. They listened to our needs and provided solutions that perfectly matched our requirements. The team was always available to answer questions and made the entire experience stress-free. Their innovative approach and technical skills are truly impressive.
-        image: ../../assets/bolsward.jpg
       - title: Robert Garcia
         rating: 5
         tagline: 5.0 out of 231 reviews
         description: >-
           Amazing experience! The quality of work is outstanding and the customer support is second to none.
-        image: ../../assets/bolsward.jpg
       - title: Sarah Johnson
         rating: 5
         tagline: 5.0 out of 127 reviews
         description: >-
           Absolutely fantastic service! The team went above and beyond to deliver exactly what we needed. Professional, timely, and exceeded all expectations. Their attention to detail was remarkable and they kept us informed throughout the entire process.
-        image: ../../assets/bolsward.jpg
       - title: Michael Chen
         rating: 4
         tagline: 4.8 out of 89 reviews
         description: >-
           Great experience working with this team. They were responsive and creative.
-        image: ../../assets/bolsward.jpg
       - title: Emma Rodriguez
         rating: 5
         tagline: 5.0 out of 156 reviews
         description: >-
           Outstanding results! The attention to detail and customer service was exceptional. They truly understood our vision and brought it to life perfectly. From the initial consultation to the final delivery, everything was handled with utmost professionalism. I couldn't be happier with the outcome and would recommend them to anyone looking for quality work.
-        image: ../../assets/bolsward.jpg
       - title: David Thompson
         rating: 4
         tagline: 4.7 out of 203 reviews
         description: >-
           Very pleased with the outcome. The process was smooth and communication was clear.
-        image: ../../assets/bolsward.jpg
       - title: Lisa Wang
         rating: 5
         tagline: 5.0 out of 94 reviews
         description: >-
           Incredible work! They took our ideas and transformed them into something even better than we imagined. Highly professional and creative team with excellent project management skills.
-        image: ../../assets/bolsward.jpg
       - title: James Miller
         rating: 5
         tagline: 4.9 out of 178 reviews
         description: >-
           Top-notch service from start to finish.
-        image: ../../assets/bolsward.jpg
       - title: Anna Kowalski
         rating: 4
         tagline: 4.6 out of 142 reviews
         description: >-
           Really impressed with their expertise and professionalism. They listened to our needs and provided solutions that perfectly matched our requirements. The team was always available to answer questions and made the entire experience stress-free. Their innovative approach and technical skills are truly impressive.
-        image: ../../assets/bolsward.jpg
       - title: Robert Garcia
         rating: 5
         tagline: 5.0 out of 231 reviews
         description: >-
           Amazing experience! The quality of work is outstanding and the customer support is second to none.
-        image: ../../assets/bolsward.jpg
   - block: cta-1
     html: |
       <p>Binnen 1 minuut klaar</p>
