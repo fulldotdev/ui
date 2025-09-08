@@ -142,6 +142,7 @@ type Props =
   | ({
       variant?: "rainbow"
     } & React.ComponentProps<typeof RainbowBackground>)
+
 const COMPONENTS = {
   grid: GridPattern,
   "animated-grid": AnimatedGridPattern,

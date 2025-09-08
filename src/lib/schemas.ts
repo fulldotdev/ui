@@ -1,6 +1,11 @@
-import { getCollection, z, type SchemaContext } from "astro:content"
+import { z } from "astro:content"
 
-export const imageSchema = ({ image }: SchemaContext) => image()
+export const imageSchema = z
+  .object({
+    src: z.string(),
+    alt: z.string(),
+  })
+  .or(z.string())
 
 export const linkSchema = z
   .object({
@@ -28,15 +33,14 @@ export const menuSchema = linkSchema
   .partial()
   .strict()
 
-export const seoSchema = (ctx: SchemaContext) =>
-  z
-    .object({
-      title: z.string(),
-      description: z.string(),
-      image: imageSchema(ctx),
-    })
-    .partial()
-    .strict()
+export const seoSchema = z
+  .object({
+    title: z.string(),
+    description: z.string(),
+    image: imageSchema,
+  })
+  .partial()
+  .strict()
 
 export const formSchema = z
   .object({
@@ -57,94 +61,75 @@ export const priceSchema = z
   .or(z.string())
   .or(z.number())
 
-export const itemSchema = (ctx: SchemaContext) =>
-  z
-    .object({
-      slug: z.string(),
-      image: imageSchema(ctx),
-      images: imageSchema(ctx).array(),
-      id: z.string(),
-      href: z.string(),
-      block: z.string(),
-      published: z.date(),
-      title: z.string(),
-      description: z.string(),
-      disclaimer: z.string(),
-      chip: chipSchema,
-      badge: linkSchema,
-      tagline: z.string(),
-      link: linkSchema,
-      links: linkSchema.array(),
-      buttons: linkSchema.array(),
-      icon: z.enum(["check", "cross"]),
-      rating: z.number().min(0).max(5).step(0.25),
-      price: priceSchema,
-      prices: priceSchema.array(),
-      social: z.string(),
-      socials: z.string().array(),
-      locales: z.enum(["nl", "en", "de", "fr"]).array(),
-      menu: menuSchema,
-      menus: menuSchema.array(),
-      list: z.string().array(),
-      form: formSchema,
-      html: z.string(),
-      markdown: z.string(),
-      // styling
-      align: z.enum(["start", "center", "end"]),
-      size: z.enum(["sm", "default", "lg"]),
-      background: z.any(),
-    })
-    .partial()
-    .strict()
+export const itemSchema = z
+  .object({
+    slug: z.string(),
+    image: imageSchema,
+    images: imageSchema.array(),
+    id: z.string(),
+    href: z.string(),
+    block: z.string(),
+    published: z.date(),
+    title: z.string(),
+    description: z.string(),
+    disclaimer: z.string(),
+    chip: chipSchema,
+    badge: linkSchema,
+    tagline: z.string(),
+    link: linkSchema,
+    links: linkSchema.array(),
+    buttons: linkSchema.array(),
+    icon: z.enum(["check", "cross"]),
+    rating: z.number().min(0).max(5).step(0.25),
+    price: priceSchema,
+    prices: priceSchema.array(),
+    social: z.string(),
+    socials: z.string().array(),
+    locales: z.enum(["nl", "en", "de", "fr"]).array(),
+    menu: menuSchema,
+    menus: menuSchema.array(),
+    list: z.string().array(),
+    form: formSchema,
+    html: z.string(),
+    markdown: z.string(),
+    align: z.enum(["start", "center", "end"]),
+    size: z.enum(["sm", "default", "lg"]),
+    avatars: imageSchema.array(),
+    avatar: imageSchema,
+    background: z.any(),
+  })
+  .partial()
+  .strict()
 
-export const globSchema = z.string()
 export const pathSchema = z.string()
+export const globSchema = z.string()
 
-export const blockSchema = (ctx: SchemaContext) =>
-  itemSchema(ctx)
-    .extend({
-      items: itemSchema(ctx).array(),
-      paths: pathSchema.array(),
-      glob: globSchema,
-    })
-    .partial()
-    .strict()
+export const itemsSchema = z.union([
+  globSchema,
+  pathSchema.array(),
+  itemSchema.array(),
+])
 
-export const pageSchema = (ctx: SchemaContext) =>
-  blockSchema(ctx)
-    .extend({
-      draft: z.boolean(),
-      banner: blockSchema(ctx),
-      header: blockSchema(ctx),
-      blocks: blockSchema(ctx).array(),
-      footer: blockSchema(ctx),
-      legal: blockSchema(ctx),
-      bubble: z.string(),
-      css: z.string(),
-      head: z.string(),
-      body: z.string(),
-      seo: seoSchema(ctx),
-    })
-    .partial()
-    .strict()
-    .transform(async (data) => {
-      console.log("transforming page")
-      const pages = await getCollection("pages")
-      const layouts = await getCollection("layouts")
-      console.log({ pages, layouts })
-      console.log(pages.length)
-      console.log(layouts.length)
+export const blockSchema = itemSchema
+  .extend({
+    items: itemsSchema,
+  })
+  .partial()
+  .strict()
 
-      return {
-        ...data,
-        pagesLength: pages.length,
-        layoutsLength: layouts.length,
-      }
-    })
-
-export type PathSchema = z.infer<typeof pathSchema>
-export type GlobSchema = z.infer<typeof globSchema>
-export type ImageSchema = z.infer<ReturnType<typeof imageSchema>>
-export type ItemSchema = z.infer<ReturnType<typeof itemSchema>>
-export type BlockSchema = z.infer<ReturnType<typeof blockSchema>>
-export type PageSchema = z.infer<ReturnType<typeof pageSchema>>
+export const dataSchema = blockSchema
+  .extend({
+    draft: z.boolean(),
+    banner: blockSchema,
+    header: blockSchema,
+    blocks: blockSchema.array(),
+    footer: blockSchema,
+    legal: blockSchema,
+    bubble: z.string(),
+    css: z.string(),
+    head: z.string(),
+    body: z.string(),
+    seo: seoSchema,
+  })
+  .partial()
+  .strict()
