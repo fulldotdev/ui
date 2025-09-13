@@ -35,7 +35,6 @@ export default function (options: FulldevOptions): AstroIntegration {
               fallbackType: "redirect",
             },
           },
-          publicDir: new URL("./src/assets", import.meta.url),
           image: {
             responsiveStyles: true,
             layout: "constrained",

@@ -1,0 +1,23 @@
+---
+import { getCollection, getEntries } from "astro:content"
+
+import { type ArticlesSchema } from "@/schemas/blocks/articles"
+
+type Props = ArticlesSchema
+
+const { variant = "1", articles, blog, html, ...block } = Astro.props
+
+const articlesData = (
+  blog
+    ? await getCollection(
+        "articles",
+        (article) => article.data.blog?.id === blog.id
+      )
+    : articles
+      ? await getEntries(articles)
+      : await getCollection("articles")
+).map((article) => ({
+  href: `/articles/${article.id}/`,
+  ...article.data,
+}))
+---

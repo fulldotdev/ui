@@ -1,0 +1,27 @@
+---
+import { getCollection, getEntries } from "astro:content"
+
+import { blogSchema } from "@/schemas/blocks/blog"
+import type { BlogSchema } from "@/schemas/blocks/blog"
+
+// import Blog1 from "@/components/blocks/blog-1"
+
+type Props = BlogSchema
+
+const { variant = "1", id, ...block } = Astro.props
+
+const articlesData = (
+  await getCollection("articles", (article) => article.data.blog?.id === id)
+).map((article) => ({
+  href: `/blogs/${id}/${article.id}/`,
+  ...article.data,
+}))
+---
+
+<!-- {
+  variant === "1" && (
+    <Blog1 blog={items} {...block}>
+      <Fragment set:html={html} />
+    </Blog1>
+  )
+} -->

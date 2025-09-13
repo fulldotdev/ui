@@ -1,0 +1,106 @@
+---
+import { Font } from "astro:assets"
+
+import "@/styles/globals.css"
+
+import { SEO } from "astro-seo"
+
+import type { PageProps } from "@/lib/types"
+import { Block } from "@/components/block"
+import { Social } from "@/components/elements/social"
+
+const {
+  href,
+  title,
+  description,
+  image,
+  seo,
+  published,
+  block,
+  blocks,
+  body,
+  css,
+  head,
+  banner,
+  header,
+  bubble,
+  footer,
+  legal,
+  ...data
+} = Astro.props
+
+// Simple structured data
+const baseUrl = Astro.site?.origin || ""
+const currentUrl = `${baseUrl}${href}`
+---
+
+<!doctype html>
+<html lang={Astro.currentLocale}>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <SEO
+      charset="UTF-8"
+      title={seo?.title}
+      description={seo?.description}
+      canonical={currentUrl}
+      openGraph={{
+        basic: {
+          title: seo?.title || "",
+          image: seo?.image ? baseUrl + seo?.image.src : "",
+          type: "website",
+          url: Astro.url.href,
+        },
+        image: seo?.image
+          ? {
+              url: baseUrl + seo?.image.src,
+              alt: seo?.image?.alt,
+            }
+          : undefined,
+        optional: {
+          description: seo?.description,
+          locale: Astro.currentLocale,
+        },
+        article: {
+          publishedTime: published?.toISOString(),
+        },
+      }}
+    />
+    <Font cssVariable="--font-base" preload />
+    <Font cssVariable="--font-heading" preload />
+    <Fragment set:html={head} />
+  </head>
+  <body
+    class="text-foreground bg-background font-base overscroll-none antialiased"
+    id={Astro.params.page}
+  >
+    <Block client:load {...banner} />
+    <Block client:load {...header} />
+    <main>
+      <slot />
+    </main>
+    <Block client:load {...footer} />
+    <Block client:load {...legal} />
+    {
+      bubble && (
+        <Social
+          className="fixed right-4 bottom-4 p-6 *:!size-6 z-50"
+          variant="default"
+          href={bubble}
+        />
+      )
+    }
+    <Fragment set:html={body} />
+    <style set:html={css}></style>
+    <style>
+      body {
+        font-family: var(--font-base);
+
+        h1,
+        h2 {
+          font-family: var(--font-heading);
+        }
+      }
+    </style>
+  </body>
+</html>

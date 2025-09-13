@@ -1,62 +1,53 @@
 import * as React from "react"
-import { Star, StarHalf } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { Rating } from "@/components/elements/rating"
 
-function Review({ className, ...props }: React.ComponentProps<"div">) {
-  return <div className={cn("flex items-center gap-3", className)} {...props} />
+interface ReviewProps extends React.ComponentProps<"div"> {
+  image?: React.ComponentProps<"img">
+  rating?: number
+  title?: string
+  description?: string
+  tagline?: string
 }
 
-function ReviewImage({ className, ...props }: React.ComponentProps<"img">) {
-  return (
-    <img
-      className={cn(
-        "size-10 rounded-full object-cover not-first:-ml-6",
-        className
-      )}
-      {...props}
-    />
-  )
-}
-
-function ReviewContent({ className, ...props }: React.ComponentProps<"div">) {
+function Review({
+  className,
+  image,
+  rating,
+  title,
+  description,
+  tagline,
+  ...props
+}: ReviewProps) {
   return (
     <div
       className={cn(
-        "text-muted-foreground flex flex-col gap-1 text-sm",
+        "flex break-inside-avoid flex-col overflow-hidden rounded-lg border p-6",
         className
       )}
       {...props}
-    />
-  )
-}
-
-function ReviewRating({
-  rating,
-  className,
-  ...props
-}: React.ComponentProps<"div"> & { rating?: number }) {
-  const getIcon = (count: number) => {
-    if (!rating) return undefined
-    const difference = rating - count
-    if (difference >= -0.25) {
-      return <Star className="size-[1em]" fill="currentColor" />
-    }
-    if (difference >= -0.75) {
-      return <StarHalf className="size-[1em]" fill="currentColor" />
-    }
-    return null
-  }
-
-  return (
-    <div className={cn("flex gap-1 text-base", className)} {...props}>
-      {[1, 2, 3, 4, 5].map((count) => (
-        <div key={count} className="!text-primary size-[1em]">
-          {getIcon(count)}
+    >
+      <div className="flex items-center gap-3">
+        {image && (
+          <img
+            className="size-10 rounded-full object-cover not-first:-ml-6"
+            {...image}
+          />
+        )}
+        <div className="text-muted-foreground flex flex-col gap-1 text-sm">
+          {rating && <Rating rating={rating} />}
+          {tagline && <span>{tagline}</span>}
         </div>
-      ))}
+      </div>
+      {(title || description) && (
+        <div className="not-first:mt-4">
+          {title && <h3>{title}</h3>}
+          {description && <p>{description}</p>}
+        </div>
+      )}
     </div>
   )
 }
 
-export { Review, ReviewImage, ReviewContent, ReviewRating }
+export { Review }

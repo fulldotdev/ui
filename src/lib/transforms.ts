@@ -52,7 +52,8 @@ const transformImage = imageSchema.transform(async (image) => {
         }
       : image
 
-  const found = Object.keys(IMAGES).find((key) => key.endsWith(imageObject.src))
+  const id = imageObject.src.split("/assets/").pop()
+  const found = Object.keys(IMAGES).find((key) => key === `/src/assets/${id}`)
   if (!found) return imageObject
 
   const file = ((await IMAGES[found as keyof typeof IMAGES]()) as any).default

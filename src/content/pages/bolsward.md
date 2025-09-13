@@ -1,18 +1,8 @@
 ---
 title: Bolsward
-blocks:
-  - block: hero-1
-    html: >-
-      <h1>Het leukste <b>evenement</b> in <b>Bolsward</b> deze zomer</h1> <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      </p>
-    links:
-      - text: Meld je nu aan
-        href: /docs/
-      - text: "Bekijk deelnemers"
-        href: "#"
-  - block: features-1
-    items:
+sections:
+  - type: features
+    features:
       - icon: "check"
         title: Lorem ipsum
         description: >-
@@ -25,30 +15,12 @@ blocks:
         title: Lorem ipsum
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-  - block: tiles-2
-    html: |
-      <h2>Wie er al deelnemen</h2>
-    items:
-      - title: Lorem ipsum
-        description: >-
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      - title: Lorem ipsum
-        description: >-
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      - title: Lorem ipsum
-        description: >-
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-  - block: contact-1
+  - type: contact
     html: |
       <h2>Meld je nu aan</h2>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
       </p>
-    links:
-      - text: "info@bolsward.nl"
-        href: "mailto:info@bolsward.nl"
-      - text: "+316 12345678"
-        href: "tel:+31612345678"
     socials:
       - "https://www.facebook.com/bolsward"
       - "https://www.instagram.com/bolsward"

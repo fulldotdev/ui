@@ -4,7 +4,7 @@ import {
   ReviewContent,
   ReviewImage,
   ReviewRating,
-} from "@/components/elements/review"
+} from "@/components/elements/review-old"
 import {
   Container,
   Section,

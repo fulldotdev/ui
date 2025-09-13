@@ -1,0 +1,28 @@
+---
+import { getCollection, getEntries } from "astro:content"
+
+import { type CollectionsSchema } from "@/schemas/blocks/collections"
+
+// import Collections1 from "@/components/blocks/collections-1"
+
+type Props = CollectionsSchema
+
+const { variant = "1", collections, html, ...block } = Astro.props
+
+const collectionsData = (
+  collections
+    ? await getEntries(collections)
+    : await getCollection("collections")
+).map((collection) => ({
+  href: `/collections/${collection.id}/`,
+  ...collection.data,
+}))
+---
+
+<!-- {
+  variant === "1" && (
+    <Collections1 collections={items} {...block}>
+      <Fragment set:html={html} />
+    </Collections1>
+  )
+} -->

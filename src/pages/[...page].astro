@@ -1,0 +1,33 @@
+---
+import { getCollection, getEntry, render } from "astro:content"
+
+import { transformPage } from "@/lib/structured-transforms"
+import { Block } from "@/components/block.tsx"
+import Layout from "@/components/layout.astro"
+import Page from "@/components/page.astro"
+
+export async function getStaticPaths() {
+  const pages = await getCollection("pages")
+  return pages.map((page) => {
+    return {
+      params: {
+        page: page.id === "index" ? undefined : page.id,
+      },
+      props: page,
+    }
+  })
+}
+
+const { Content } = await render(Astro.props)
+const { blocks, ...data } = Astro.props.data
+---
+
+<Layout {...data}>
+  {
+    blocks?.map(({ html, ...block }, i) => (
+      <Block client:load key={i} {...block}>
+        {block.html && <Fragment set:html={block.html} />}
+      </Block>
+    ))
+  }
+</Layout>

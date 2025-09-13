@@ -10,7 +10,7 @@ import {
   ReviewContent,
   ReviewImage,
   ReviewRating,
-} from "@/components/elements/review"
+} from "@/components/elements/review-old"
 import { Section } from "@/components/elements/section"
 import { Split } from "@/components/elements/split"
 

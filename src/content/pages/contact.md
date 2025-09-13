@@ -1,18 +1,17 @@
 ---
-blocks:
-  - block: contact-1
+sections:
+  - type: contact
     html: |
       <h1>Meld je nu aan</h1>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
       </p>
-    items:
-      - title: Mailen
-        description: "info@bolsward.nl"
-        href: "mailto:info@bolsward.nl"
-      - title: Telefoon
-        description: "+316 12345678"
-        href: "tel:+31612345678"
+    email: info@bolsward.nl
+    phone: 31612345678
+    address: Bolsward, The Netherlands
+    socials:
+      - "https://www.instagram.com/bolsward/"
+      - "https://www.facebook.com/bolsward/"
     form:
       submit: Verstuur aanmelding
       action: /bedankt

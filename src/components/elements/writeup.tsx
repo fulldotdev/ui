@@ -19,15 +19,9 @@ const writeupVariants = cva(
           "text-lg [&_h1]:text-4xl [&_h1]:lg:text-5xl [&_:is(h1,h2,h3,h4,h5,h6)]:text-3xl",
         lg: "text-lg [&_h1+p]:text-xl [&_h1]:text-4xl lg:[&_h1]:text-6xl [&_:is(h1,h2,h3,h4,h5,h6)]:text-3xl [&_:is(h1,h2,h3,h4,h5,h6)]:lg:text-4xl max-w-4xl",
       },
-      align: {
-        start: "text-start",
-        center: "text-center",
-        end: "text-end",
-      },
     },
     defaultVariants: {
       size: "default",
-      align: "start",
     },
   }
 )
@@ -35,14 +29,14 @@ const writeupVariants = cva(
 function Writeup({
   className,
   size,
-  align,
+  children,
   ...props
 }: React.ComponentProps<"div"> & VariantProps<typeof writeupVariants>) {
+  if (React.Children.toArray(children).every((child) => !child)) return null
   return (
-    <div
-      className={cn(writeupVariants({ size, align }), className)}
-      {...props}
-    />
+    <div className={cn(writeupVariants({ size }), className)} {...props}>
+      {children}
+    </div>
   )
 }
 

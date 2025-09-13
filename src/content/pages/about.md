@@ -1,5 +1,4 @@
 ---
-block: article-1
 title: About Our Company
 description: Discover our story, mission, and the passionate team behind our innovative solutions
 ---
