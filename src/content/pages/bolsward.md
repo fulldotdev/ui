@@ -1,7 +1,9 @@
 ---
+type: page
 title: Bolsward
 sections:
   - type: features
+    variant: "1"
     features:
       - icon: "check"
         title: Lorem ipsum
@@ -16,6 +18,7 @@ sections:
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
   - type: contact
+    variant: "1"
     html: |
       <h2>Meld je nu aan</h2>
       <p>

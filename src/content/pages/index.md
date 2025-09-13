@@ -1,4 +1,5 @@
 ---
+type: page
 title: Home
 image:
   src: ../../assets/large.png
@@ -19,6 +20,7 @@ sections:
   #     - text: "GitHub "
   #       href: https://github.com/fulldotdev/ui
   - type: features
+    variant: "1"
     features:
       - icon: check
         title: Great AI agents experience

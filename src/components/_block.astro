@@ -12,34 +12,30 @@ const articlesData =
   props.type === "articles" &&
   (props.blog
     ? await getCollection(
-        "pages",
-        (page) =>
-          page.data.type === "article" && page.data.blog?.id === props.blog?.id
+        "articles",
+        (article) => article.data.blog?.id === props.blog?.id
       )
     : props.articles
       ? await getEntries(props.articles)
-      : await getCollection("pages", (page) => page.data.type === "article")
+      : await getCollection("articles")
   ).map((article) => ({
-    href: `/${article.id}/`,
+    href: `/articles/${article.id}/`,
     ...article.data,
   }))
 
 const productsData =
   props.type === "products" &&
   (props.collection
-    ? await getCollection(
-        "pages",
-        (page) =>
-          page.data.type === "product" &&
-          page.data.collections?.some(
-            (collection) => collection.id === props.collection?.id
-          )
+    ? await getCollection("products", (product) =>
+        product.data.collections?.some(
+          (collection) => collection.id === props.collection?.id
+        )
       )
     : props.products
       ? await getEntries(props.products)
-      : await getCollection("pages", (page) => page.data.type === "product")
+      : await getCollection("products")
   ).map((product) => ({
-    href: `/${product.id}/`,
+    href: `/products/${product.id}/`,
     ...product.data,
   }))
 
@@ -47,9 +43,9 @@ const collectionsData =
   props.type === "collections" &&
   (props.collections
     ? await getEntries(props.collections)
-    : await getCollection("pages", (page) => page.data.type === "collection")
+    : await getCollection("collections")
   ).map((collection) => ({
-    href: `/${collection.id}/`,
+    href: `/collections/${collection.id}/`,
     ...collection.data,
   }))
 
@@ -57,9 +53,9 @@ const personsData =
   props.type === "persons" &&
   (props.persons
     ? await getEntries(props.persons)
-    : await getCollection("pages", (page) => page.data.type === "person")
+    : await getCollection("persons")
   ).map((person) => ({
-    href: `/${person.id}/`,
+    href: `/persons/${person.id}/`,
     ...person.data,
   }))
 
@@ -67,10 +63,8 @@ const reviewsData =
   props.type === "reviews" &&
   (props.reviews
     ? await getEntries(props.reviews)
-    : await getCollection("pages", (page) => page.data.type === "review")
-  ).map((review) => ({
-    ...review.data,
-  }))
+    : await getCollection("reviews")
+  ).map((review) => review.data)
 ---
 
 <ReactBlock

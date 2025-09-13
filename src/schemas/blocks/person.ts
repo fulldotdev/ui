@@ -4,7 +4,6 @@ import { imageSchema } from "@/schemas/fields/image"
 
 export const personSchema = z
   .object({
-    variant: z.enum(["1"]),
     title: z.string(),
     description: z.string(),
     email: z.string().email(),
@@ -16,8 +15,6 @@ export const personSchema = z
   .partial()
   .strict()
 
-export type PersonSchema = z.infer<typeof personSchema>
-
-export type PersonProps = Omit<PersonSchema, "variant"> & {
+export type PersonProps = z.infer<typeof personSchema> & {
   children?: React.ReactNode
 }

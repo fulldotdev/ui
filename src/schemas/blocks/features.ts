@@ -5,7 +5,6 @@ import { linkSchema } from "@/schemas/fields/link"
 
 export const featuresSchema = z
   .object({
-    variant: z.enum(["1"]),
     align: z.enum(["start", "center", "end"]),
     size: z.enum(["sm", "default", "lg"]),
     html: z.string(),
@@ -25,8 +24,6 @@ export const featuresSchema = z
   .partial()
   .strict()
 
-export type FeaturesSchema = z.infer<typeof featuresSchema>
-
-export type FeaturesProps = Omit<FeaturesSchema, "variant" | "html"> & {
+export type FeaturesProps = Omit<z.infer<typeof featuresSchema>, "html"> & {
   children?: React.ReactNode
 }

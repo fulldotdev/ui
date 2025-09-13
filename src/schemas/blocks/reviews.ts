@@ -1,8 +1,7 @@
 import { z } from "astro:schema"
 
-import { type ReviewProps } from "@/schemas/blocks/review"
+import { reviewSchema } from "@/schemas/blocks/review"
 import { linkSchema } from "@/schemas/fields/link"
-import { pathSchema } from "@/schemas/fields/path"
 
 export const reviewsSchema = z
   .object({
@@ -11,17 +10,11 @@ export const reviewsSchema = z
     size: z.enum(["sm", "default", "lg"]),
     html: z.string(),
     links: linkSchema.array(),
-    reviews: pathSchema("reviews").array(),
+    reviews: reviewSchema.array(),
   })
   .partial()
   .strict()
 
-export type ReviewsSchema = z.infer<typeof reviewsSchema>
-
-export type ReviewsProps = Omit<
-  ReviewsSchema,
-  "variant" | "html" | "reviews"
-> & {
-  children: React.ReactNode
-  reviews: ReviewProps[]
+export type ReviewsProps = Omit<z.infer<typeof reviewsSchema>, "html"> & {
+  children?: React.ReactNode
 }

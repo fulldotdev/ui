@@ -4,7 +4,6 @@ import { linkSchema } from "@/schemas/fields/link"
 
 export const ctaSchema = z
   .object({
-    variant: z.enum(["1", "2", "3"]),
     align: z.enum(["start", "center", "end"]),
     size: z.enum(["sm", "default", "lg"]),
     background: z.any(),
@@ -14,8 +13,6 @@ export const ctaSchema = z
   .partial()
   .strict()
 
-export type CtaSchema = z.infer<typeof ctaSchema>
-
-export type CtaProps = Omit<CtaSchema, "variant" | "html"> & {
-  children: React.ReactNode
+export type CtaProps = Omit<z.infer<typeof ctaSchema>, "html"> & {
+  children?: React.ReactNode
 }
