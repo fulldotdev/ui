@@ -8,49 +8,44 @@ import { contentSchema } from "@/schemas/blocks/content"
 import { personSchema } from "@/schemas/blocks/person"
 import { productSchema } from "@/schemas/blocks/product"
 import { reviewSchema } from "@/schemas/blocks/review"
+import { imageSchema } from "@/schemas/fields/image"
 import { pathSchema } from "@/schemas/fields/path"
 import { seoSchema } from "@/schemas/fields/seo"
+
+const baseSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  image: imageSchema.optional(),
+  sections: blockSchema.array().optional(),
+  seo: seoSchema.optional(),
+})
 
 export const pageSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("page"),
-    sections: blockSchema.array().optional(),
-    seo: seoSchema.optional(),
   }),
-  contentSchema.extend({
+  contentSchema.merge(baseSchema).extend({
     type: z.literal("content"),
-    sections: blockSchema.array().optional(),
-    seo: seoSchema.optional(),
   }),
-  collectionSchema.extend({
+  collectionSchema.merge(baseSchema).extend({
     type: z.literal("collection"),
-    sections: blockSchema.array().optional(),
-    seo: seoSchema.optional(),
   }),
-  productSchema.extend({
+  productSchema.merge(baseSchema).extend({
     type: z.literal("product"),
-    collections: pathSchema("collections").array().optional(),
-    sections: blockSchema.array().optional(),
-    seo: seoSchema.optional(),
+    collections: pathSchema.array().optional(),
   }),
-  articleSchema.extend({
+  articleSchema.merge(baseSchema).extend({
     type: z.literal("article"),
-    blog: pathSchema("blogs").optional(),
-    person: pathSchema("persons").optional(),
-    sections: blockSchema.array().optional(),
-    seo: seoSchema.optional(),
+    blog: pathSchema.optional(),
+    person: pathSchema.optional(),
   }),
-  blogSchema.extend({
+  blogSchema.merge(baseSchema).extend({
     type: z.literal("blog"),
-    sections: blockSchema.array().optional(),
-    seo: seoSchema.optional(),
   }),
-  personSchema.extend({
+  personSchema.merge(baseSchema).extend({
     type: z.literal("person"),
-    sections: blockSchema.array().optional(),
-    seo: seoSchema.optional(),
   }),
-  reviewSchema.extend({
+  reviewSchema.merge(baseSchema).extend({
     type: z.literal("review"),
   }),
 ])

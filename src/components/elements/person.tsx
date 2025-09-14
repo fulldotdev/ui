@@ -1,19 +1,27 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import Image from "@/components/elements/image"
 
-interface PersonProps extends React.ComponentProps<"div"> {
-  image?: React.ComponentProps<"img">
+interface Props {
+  className?: string
+  image?: React.ComponentProps<typeof Image>
   title?: string
   tagline?: string
 }
 
-function Person({ className, image, title, tagline, ...props }: PersonProps) {
+export default function ({
+  className,
+  image,
+  title,
+  tagline,
+  ...props
+}: Props) {
   if (!title && !tagline && !image?.src) return null
   return (
     <div className={cn("flex items-center gap-3.5", className)} {...props}>
       {image && (
-        <img className="size-10 rounded-full object-cover" {...image} />
+        <Image className="size-10 rounded-full object-cover" {...image} />
       )}
       {(title || tagline) && (
         <div className="flex flex-col gap-0.5">
@@ -26,5 +34,3 @@ function Person({ className, image, title, tagline, ...props }: PersonProps) {
     </div>
   )
 }
-
-export { Person }

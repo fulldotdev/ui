@@ -1,10 +1,23 @@
-import type { ReviewsProps } from "@/schemas/blocks/reviews"
 import { cn } from "@/lib/utils"
-import { Links } from "@/components/elements/links"
-import { Person } from "@/components/elements/person"
-import { Rating } from "@/components/elements/rating"
-import { Writeup } from "@/components/elements/writeup"
+import Links from "@/components/elements/links"
+import Person from "@/components/elements/person"
+import Rating from "@/components/elements/rating"
+import Writeup from "@/components/elements/writeup"
 import { Marquee } from "@/components/magicui/marquee"
+
+interface Props {
+  align?: "start" | "center" | "end"
+  size?: "sm" | "default" | "lg"
+  children?: React.ReactNode
+  links?: React.ComponentProps<typeof Links>["links"]
+  reviews?: {
+    title?: string
+    description?: string
+    rating?: number
+    image?: React.ComponentProps<typeof Person>["image"]
+    tagline?: string
+  }[]
+}
 
 export default function ({
   children,
@@ -12,7 +25,7 @@ export default function ({
   reviews,
   size,
   align = "center",
-}: ReviewsProps) {
+}: Props) {
   const oneFifth = Math.floor((reviews?.length || 0) / 5)
   const columns = [
     reviews,
@@ -29,7 +42,7 @@ export default function ({
       ? [...reviews.slice(oneFifth * 4), ...reviews.slice(0, oneFifth * 4)]
       : undefined,
   ]
-  const duration = reviews?.length * 5
+  const duration = (reviews?.length || 0) * 5
   return (
     <section className="py-24">
       <div className="container">

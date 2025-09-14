@@ -1,13 +1,13 @@
-import * as React from "react"
 import { Star, StarHalf } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-function Rating({
-  rating,
-  className,
-  ...props
-}: React.ComponentProps<"div"> & { rating?: number }) {
+interface Props {
+  rating?: number
+  className?: string
+}
+
+function Rating({ rating, className, ...props }: Props) {
   const getIcon = (count: number) => {
     if (!rating) return undefined
     const difference = rating - count
@@ -31,4 +31,4 @@ function Rating({
   )
 }
 
-export { Rating }
+export default Rating

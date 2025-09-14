@@ -1,14 +1,19 @@
-import type { CtaProps } from "@/schemas/blocks/cta"
-import { cn } from "@/lib/utils"
-import { Links } from "@/components/elements/links"
-import { Writeup } from "@/components/elements/writeup"
+import * as React from "react"
 
-export default function ({
-  children,
-  links,
-  size,
-  align = "center",
-}: CtaProps) {
+import { cn } from "@/lib/utils"
+import Background from "@/components/elements/background"
+import Links from "@/components/elements/links"
+import Writeup from "@/components/elements/writeup"
+
+interface Props {
+  size?: "sm" | "default" | "lg"
+  align?: "start" | "center" | "end"
+  children?: React.ReactNode
+  links?: React.ComponentProps<typeof Links>["links"]
+  background?: React.ComponentProps<typeof Background>["variant"]
+}
+
+export default function ({ children, links, size, align = "center" }: Props) {
   return (
     <section className="container py-24">
       <div

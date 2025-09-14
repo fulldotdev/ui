@@ -5,15 +5,21 @@ import { ArrowUpRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { badgeVariants } from "@/components/ui/badge"
 
-function Chip({
+interface Props extends VariantProps<typeof badgeVariants> {
+  text?: string
+  href?: string
+  className?: string
+  children?: React.ReactNode
+}
+
+export default function ({
   className,
   variant = "secondary",
   href,
   text,
   children,
   ...props
-}: React.ComponentProps<"a"> &
-  VariantProps<typeof badgeVariants> & { text?: string }) {
+}: Props) {
   const Comp = href ? "a" : "span"
   return (
     <Comp
@@ -27,5 +33,3 @@ function Chip({
     </Comp>
   )
 }
-
-export { Chip }

@@ -177,7 +177,11 @@ const backgroundVariants = cva("", {
   },
 })
 
-function Background({ variant, className, ...props }: Omit<Props, "children">) {
+export default function Background({
+  variant,
+  className,
+  ...props
+}: Omit<Props, "children">) {
   if (!variant) return null
   const Comp = COMPONENTS[variant]
   return (
@@ -189,5 +193,3 @@ function Background({ variant, className, ...props }: Omit<Props, "children">) {
     </div>
   )
 }
-
-export { Background }

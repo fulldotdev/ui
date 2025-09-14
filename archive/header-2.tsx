@@ -2,10 +2,10 @@ import type { BlockProps } from "@/lib/types"
 import { Header, HeaderContainer } from "@/components/elements/header"
 import { Link } from "@/components/elements/link"
 import { Logo, LogoImage } from "@/components/elements/logo"
+import { MainMenu } from "@/components/elements/main-menu"
+import { MobileMenu } from "@/components/elements/menu"
 import { Social } from "@/components/elements/social"
 import Locales from "@/components/locale-selector"
-import { MainMenu } from "@/components/main-nav"
-import { MobileMenu } from "@/components/mobile-nav"
 
 export default function ({
   image,

@@ -1,4 +1,5 @@
-import type { FaqsProps } from "@/schemas/blocks/faqs"
+import * as React from "react"
+
 import { cn } from "@/lib/utils"
 import {
   Accordion,
@@ -6,8 +7,19 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Links } from "@/components/elements/links"
-import { Writeup } from "@/components/elements/writeup"
+import Links from "@/components/elements/links"
+import Writeup from "@/components/elements/writeup"
+
+interface Props {
+  size?: "sm" | "default" | "lg"
+  align?: "start" | "center" | "end"
+  children?: React.ReactNode
+  links?: React.ComponentProps<typeof Links>["links"]
+  faqs?: {
+    question?: string
+    answer?: string
+  }[]
+}
 
 export default function ({
   align = "center",
@@ -15,7 +27,7 @@ export default function ({
   faqs,
   size,
   links,
-}: FaqsProps) {
+}: Props) {
   return (
     <section className="py-16">
       <div
@@ -27,18 +39,23 @@ export default function ({
       >
         <Writeup size={size}>{children}</Writeup>
         <Links size={size} links={links} />
-        <Accordion
-          className="w-full max-w-2xl not-first:mt-12"
-          type="single"
-          collapsible
-        >
-          {faqs?.map(({ question, answer }, i) => (
-            <AccordionItem key={i} value={`${i}. ${question}`}>
-              <AccordionTrigger>{question}</AccordionTrigger>
-              <AccordionContent>{answer}</AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        {faqs && faqs.length > 0 && (
+          <Accordion
+            className="w-full max-w-2xl not-first:mt-12"
+            type="single"
+            collapsible
+          >
+            {faqs?.map(({ question, answer }, i) => {
+              if (!question && !answer) return null
+              return (
+                <AccordionItem key={i} value={`${i}. ${question}`}>
+                  <AccordionTrigger>{question}</AccordionTrigger>
+                  <AccordionContent>{answer}</AccordionContent>
+                </AccordionItem>
+              )
+            })}
+          </Accordion>
+        )}
       </div>
     </section>
   )

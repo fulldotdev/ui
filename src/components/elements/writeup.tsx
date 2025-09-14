@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-const writeupVariants = cva(
+const variants = cva(
   [
     "w-full max-w-2xl",
     "[&_p]:leading-[1.8] [&_p]:not-first:mt-4 [&_p]:text-muted-foreground",
@@ -26,18 +26,16 @@ const writeupVariants = cva(
   }
 )
 
-function Writeup({
-  className,
-  size,
-  children,
-  ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof writeupVariants>) {
+interface Props extends VariantProps<typeof variants> {
+  children?: React.ReactNode
+  className?: string
+}
+
+export default function ({ className, size, children, ...props }: Props) {
   if (React.Children.toArray(children).every((child) => !child)) return null
   return (
-    <div className={cn(writeupVariants({ size }), className)} {...props}>
+    <div className={cn(variants({ size }), className)} {...props}>
       {children}
     </div>
   )
 }
-
-export { Writeup }

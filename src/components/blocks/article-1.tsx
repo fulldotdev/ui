@@ -1,10 +1,22 @@
+import type React from "react"
 import { CalendarIcon } from "lucide-react"
 
-import type { ArticleProps } from "@/schemas/blocks/article"
 import { cn } from "@/lib/utils"
-import { Person } from "@/components/elements/person"
-import { Prose } from "@/components/elements/prose"
-import { Writeup } from "@/components/elements/writeup"
+import Image from "@/components/elements/image"
+import Person from "@/components/elements/person"
+import Prose from "@/components/elements/prose"
+import Writeup from "@/components/elements/writeup"
+
+interface Props {
+  size?: "sm" | "default" | "lg"
+  align?: "start" | "center" | "end"
+  title?: string
+  description?: string
+  published?: Date
+  person?: React.ComponentProps<typeof Person>
+  image?: React.ComponentProps<typeof Image>
+  children?: React.ReactNode
+}
 
 export default function ({
   children,
@@ -15,7 +27,7 @@ export default function ({
   align,
   person,
   published,
-}: ArticleProps) {
+}: Props) {
   return (
     <section className="py-16" id="article">
       <div className="container flex flex-col items-center gap-16">
@@ -37,9 +49,7 @@ export default function ({
             {description && <p>{description}</p>}
           </Writeup>
           <Person className="not-first:mt-8" {...person} />
-          {image?.src && (
-            <img className="rounded-lg not-first:mt-16" {...image} />
-          )}
+          <Image className="rounded-lg not-first:mt-16" {...image} />
         </div>
         <Prose size={size}>{children}</Prose>
       </div>

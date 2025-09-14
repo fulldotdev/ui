@@ -1,8 +1,17 @@
-import type { CtaProps } from "@/schemas/blocks/cta"
+import * as React from "react"
+
 import { cn } from "@/lib/utils"
-import { Background } from "@/components/elements/background"
-import { Links } from "@/components/elements/links"
-import { Writeup } from "@/components/elements/writeup"
+import Background from "@/components/elements/background"
+import Links from "@/components/elements/links"
+import Writeup from "@/components/elements/writeup"
+
+interface Props {
+  size?: "sm" | "default" | "lg"
+  align?: "start" | "center" | "end"
+  children?: React.ReactNode
+  links?: React.ComponentProps<typeof Links>["links"]
+  background?: React.ComponentProps<typeof Background>["variant"]
+}
 
 export default function ({
   children,
@@ -10,7 +19,7 @@ export default function ({
   background,
   size,
   align = "center",
-}: CtaProps) {
+}: Props) {
   return (
     <section className="container overflow-hidden">
       <Background

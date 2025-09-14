@@ -25,7 +25,7 @@ import {
 import { Link as LinkIcon, Mail, MapPin, Phone } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Link } from "@/components/elements/link"
+import Link from "@/components/elements/link"
 
 const iconMap = {
   "x.com": <SiX />,
@@ -69,11 +69,9 @@ const iconMap = {
   ),
 }
 
-function Social({
-  className,
-  href,
-  ...props
-}: React.ComponentProps<typeof Link>) {
+interface Props extends React.ComponentProps<typeof Link> {}
+
+export default function ({ className, href, ...props }: Props) {
   const platform = Object.keys(iconMap).find((key) => href?.includes(key)) as
     | keyof typeof iconMap
     | undefined
@@ -91,5 +89,3 @@ function Social({
     </Link>
   )
 }
-
-export { Social }

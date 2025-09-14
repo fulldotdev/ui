@@ -1,9 +1,22 @@
-import type { ReviewsProps } from "@/schemas/blocks/reviews"
 import { cn } from "@/lib/utils"
-import { Links } from "@/components/elements/links"
-import { Person } from "@/components/elements/person"
-import { Rating } from "@/components/elements/rating"
-import { Writeup } from "@/components/elements/writeup"
+import Links from "@/components/elements/links"
+import Person from "@/components/elements/person"
+import Rating from "@/components/elements/rating"
+import Writeup from "@/components/elements/writeup"
+
+interface Props {
+  align?: "start" | "center" | "end"
+  size?: "sm" | "default" | "lg"
+  children?: React.ReactNode
+  links?: React.ComponentProps<typeof Links>["links"]
+  reviews?: {
+    title?: string
+    description?: string
+    rating?: number
+    image?: React.ComponentProps<typeof Person>["image"]
+    tagline?: string
+  }[]
+}
 
 export default function ({
   align = "center",
@@ -11,7 +24,7 @@ export default function ({
   children,
   links,
   reviews,
-}: ReviewsProps) {
+}: Props) {
   return (
     <section className="relative w-full py-24">
       <div

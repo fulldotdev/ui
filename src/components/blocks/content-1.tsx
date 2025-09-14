@@ -1,7 +1,17 @@
-import type { ContentProps } from "@/schemas/blocks/content"
+import * as React from "react"
+
 import { cn } from "@/lib/utils"
-import { Links } from "@/components/elements/links"
-import { Writeup } from "@/components/elements/writeup"
+import Image from "@/components/elements/image"
+import Links from "@/components/elements/links"
+import Writeup from "@/components/elements/writeup"
+
+interface Props {
+  size?: "sm" | "default" | "lg"
+  align?: "start" | "center" | "end"
+  children?: React.ReactNode
+  links?: React.ComponentProps<typeof Links>["links"]
+  image?: React.ComponentProps<typeof Image>
+}
 
 export default function ({
   align = "center",
@@ -9,7 +19,7 @@ export default function ({
   links,
   image,
   size,
-}: ContentProps) {
+}: Props) {
   return (
     <section className="overflow-hidden py-24">
       <div
@@ -23,9 +33,7 @@ export default function ({
           {children}
         </Writeup>
         <Links className="not-first:mt-8" size={size} links={links} />
-        {image?.src && (
-          <img className="rounded-lg not-first:mt-16" {...image} />
-        )}
+        <Image className="rounded-lg not-first:mt-16" {...image} />
       </div>
     </section>
   )

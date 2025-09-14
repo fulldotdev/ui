@@ -1,8 +1,18 @@
-import type { BlockProps } from "@/lib/types"
-import { Container } from "@/components/elements/container"
-import { Logo, LogoImage } from "@/components/elements/logo"
-import { Section } from "@/components/elements/section"
-import { Social } from "@/components/elements/social"
+import Links from "@/components/elements/links"
+import Logo from "@/components/elements/logo"
+import Social from "@/components/elements/social"
+
+interface Props {
+  image?: React.ComponentProps<typeof Logo>["image"]
+  title?: string
+  description?: string
+  links?: React.ComponentProps<typeof Links>["links"]
+  socials?: string[]
+  menus?: {
+    text?: string
+    links?: React.ComponentProps<typeof Links>["links"]
+  }[]
+}
 
 export default function ({
   image,
@@ -11,17 +21,12 @@ export default function ({
   links,
   socials,
   menus,
-}: BlockProps) {
+}: Props) {
   return (
-    <Section className="py-0">
-      <Container className="flex w-full flex-col justify-between gap-8 py-16 md:grid md:grid-cols-[repeat(auto-fit,minmax(160px,1fr))]">
+    <section className="py-0">
+      <div className="container flex w-full flex-col justify-between gap-8 py-16 md:grid md:grid-cols-[repeat(auto-fit,minmax(160px,1fr))]">
         <div className="col-span-2 flex max-w-xs flex-col">
-          {(image || title) && (
-            <Logo href="/">
-              {image?.src && <LogoImage {...image} />}
-              {title}
-            </Logo>
-          )}
+          <Logo title={title} {...image} />
           {description && (
             <p className="text-muted-foreground text-sm not-first:mt-3">
               {description}
@@ -29,10 +34,10 @@ export default function ({
           )}
           {links && links.length > 0 && (
             <div className="flex flex-col items-start gap-2 not-first:mt-8">
-              {links.map((link, i) => (
+              {links.map(({ text, ...link }, i) => (
                 <div className="flex items-center gap-3 text-sm" key={i}>
                   <Social variant="outline" href={link.href} />
-                  {link.text}
+                  {text}
                 </div>
               ))}
             </div>
@@ -66,7 +71,7 @@ export default function ({
             </menu>
           </div>
         ))}
-      </Container>
-    </Section>
+      </div>
+    </section>
   )
 }

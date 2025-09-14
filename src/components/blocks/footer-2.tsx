@@ -1,19 +1,24 @@
-import type { BlockProps } from "@/lib/types"
-import { Container } from "@/components/elements/container"
-import { Logo, LogoImage } from "@/components/elements/logo"
-import { Section } from "@/components/elements/section"
-import { Social } from "@/components/elements/social"
+import Links from "@/components/elements/links"
+import Logo from "@/components/elements/logo"
+import Social from "@/components/elements/social"
 
-export default function ({ image, title, links, socials }: BlockProps) {
+interface Props {
+  image?: React.ComponentProps<typeof Logo>["image"]
+  title?: string
+  description?: string
+  links?: React.ComponentProps<typeof Links>["links"]
+  socials?: string[]
+  menus?: {
+    text?: string
+    links?: React.ComponentProps<typeof Links>["links"]
+  }[]
+}
+
+export default function ({ image, title, links, socials }: Props) {
   return (
-    <Section>
-      <Container className="flex flex-col items-center gap-8">
-        {(image || title) && (
-          <Logo href="/">
-            {image?.src && <LogoImage {...image} />}
-            {title}
-          </Logo>
-        )}
+    <section className="py-16">
+      <div className="container flex flex-col items-center gap-8">
+        <Logo title={title} {...image} />
         {links && links.length > 0 && (
           <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
             {links?.map(({ text, href }, i) => (
@@ -39,7 +44,7 @@ export default function ({ image, title, links, socials }: BlockProps) {
             ))}
           </div>
         )}
-      </Container>
-    </Section>
+      </div>
+    </section>
   )
 }

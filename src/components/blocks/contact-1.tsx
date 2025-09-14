@@ -1,9 +1,16 @@
 import type { ContactProps } from "@/schemas/blocks/contact"
 import { cn } from "@/lib/utils"
-import { Form } from "@/components/elements/form"
-import { Writeup } from "@/components/elements/writeup"
+import Form from "@/components/elements/form"
+import Writeup from "@/components/elements/writeup"
 
-export default function ({ children, form, size, align }: ContactProps) {
+interface Props extends ContactProps {
+  size?: "sm" | "default" | "lg"
+  align?: "start" | "center" | "end"
+  form?: any
+  children?: React.ReactNode
+}
+
+export default function ({ children, form, size, align }: Props) {
   return (
     <section className="py-16" id="contact">
       <div

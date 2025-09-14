@@ -570,7 +570,7 @@ interface Props extends React.ComponentProps<"form"> {
   description?: string
 }
 
-function Form({
+export default function ({
   inbox,
   fields,
   submit,
@@ -630,17 +630,4 @@ function Form({
       </form>
     </FormRoot>
   )
-}
-
-export {
-  FormInput,
-  FormTextarea,
-  FormSelect,
-  FormRadio,
-  FormDate,
-  FormSlider,
-  FormCheckbox,
-  FormChoice,
-  FormMultiChoice,
-  Form,
 }

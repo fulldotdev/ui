@@ -1,18 +1,30 @@
-import type { FeaturesProps } from "@/schemas/blocks/features"
 import { cn } from "@/lib/utils"
-import { Abstract } from "@/components/elements/abstract"
-import { Icon } from "@/components/elements/icon"
-import { Link } from "@/components/elements/link"
-import { Links } from "@/components/elements/links"
-import { Writeup } from "@/components/elements/writeup"
+import Abstract from "@/components/elements/abstract"
+import Icon from "@/components/elements/icon"
+import Link from "@/components/elements/link"
+import Links from "@/components/elements/links"
+import Writeup from "@/components/elements/writeup"
+
+interface Props {
+  size?: "sm" | "default" | "lg"
+  align?: "start" | "center" | "end"
+  children?: React.ReactNode
+  links?: React.ComponentProps<typeof Links>["links"]
+  features?: {
+    title?: string
+    description?: string
+    icon?: string
+    link?: React.ComponentProps<typeof Link>
+  }[]
+}
 
 export default function ({
   align = "center",
+  size = "default",
   children,
   links,
   features,
-  size,
-}: FeaturesProps) {
+}: Props) {
   return (
     <section className="py-16">
       <div
@@ -31,16 +43,14 @@ export default function ({
             {features?.map(({ title, description, icon, link }, i) => (
               <div
                 key={i}
-                className={cn(
-                  "flex max-w-md grow-1 basis-2xs flex-col items-center",
-                  {
-                    "max-w-sm min-w-3xs basis-3xs": size === "sm",
-                    "min-w-5xs basis-5xs max-w-lg": size === "lg",
-                    "items-start text-start": align === "start",
-                    "items-center text-center": align === "center",
-                    "items-end text-end": align === "end",
-                  }
-                )}
+                className={cn("flex max-w-md grow-1 flex-col items-center", {
+                  "max-w-sm min-w-3xs basis-3xs": size === "sm",
+                  "min-w-4xs basis-4xs max-w-md": size === "default",
+                  "min-w-5xs basis-5xs max-w-lg": size === "lg",
+                  "items-start text-start": align === "start",
+                  "items-center text-center": align === "center",
+                  "items-end text-end": align === "end",
+                })}
               >
                 {icon && (
                   <div className="bg-accent rounded-full p-2">

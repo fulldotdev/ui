@@ -1,14 +1,20 @@
-import type { QuoteProps } from "@/schemas/blocks/quote"
 import { cn } from "@/lib/utils"
-import { Background } from "@/components/elements/background"
+import Background from "@/components/elements/background"
 import { TextAnimate } from "@/components/magicui/text-animate"
+
+interface Props {
+  align?: "start" | "center" | "end"
+  background?: React.ComponentProps<typeof Background>["variant"]
+  title?: string
+  description?: string
+}
 
 export default function ({
   align = "center",
   background,
   title,
   description,
-}: QuoteProps) {
+}: Props) {
   return (
     <section className="relative py-16">
       <Background

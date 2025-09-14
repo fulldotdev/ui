@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-const abstractVariants = cva(
+const variants = cva(
   [
     "w-full max-w-2xl",
     "[&_p]:leading-[1.8] [&_p]:not-first:mt-2 [&_p]:text-muted-foreground",
@@ -30,18 +30,21 @@ const abstractVariants = cva(
   }
 )
 
-function Abstract({
+interface Props extends VariantProps<typeof variants> {
+  className?: string
+  children?: React.ReactNode
+}
+
+export default function ({
   className,
   size,
   align,
+  children,
   ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof abstractVariants>) {
+}: React.ComponentProps<"div"> & VariantProps<typeof variants>) {
   return (
-    <div
-      className={cn(abstractVariants({ size, align }), className)}
-      {...props}
-    />
+    <div className={cn(variants({ size, align }), className)} {...props}>
+      {children}
+    </div>
   )
 }
-
-export { Abstract }

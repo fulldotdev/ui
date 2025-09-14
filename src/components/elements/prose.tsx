@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-const proseVariants = cva(
+const variants = cva(
   [
     "w-full max-w-2xl",
     "[&_p]:leading-[1.8] [&_p]:not-first:mt-4",
@@ -28,12 +28,15 @@ const proseVariants = cva(
   }
 )
 
-function Prose({
-  className,
-  size,
-  ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof proseVariants>) {
-  return <div className={cn(proseVariants({ size }), className)} {...props} />
+interface Props extends VariantProps<typeof variants> {
+  className?: string
+  children?: React.ReactNode
 }
 
-export { Prose }
+export default function ({ className, size, children, ...props }: Props) {
+  return (
+    <div className={cn(variants({ size }), className)} {...props}>
+      {children}
+    </div>
+  )
+}

@@ -22,8 +22,8 @@ export const blockSchema = z.discriminatedUnion("type", [
   articlesSchema.extend({
     type: z.literal("articles"),
     variant: z.enum(["1", "2"]),
-    articles: pathSchema("articles").array().optional(),
-    blog: pathSchema("blogs").optional(),
+    articles: pathSchema.array().optional(),
+    blog: pathSchema.optional(),
   }),
   bannerSchema.extend({
     type: z.literal("banner"),
@@ -36,7 +36,7 @@ export const blockSchema = z.discriminatedUnion("type", [
   collectionsSchema.extend({
     type: z.literal("collections"),
     variant: z.enum(["1", "2"]),
-    collections: pathSchema("collections").array().optional(),
+    collections: pathSchema.array().optional(),
   }),
   contactSchema.extend({
     type: z.literal("contact"),
@@ -73,13 +73,13 @@ export const blockSchema = z.discriminatedUnion("type", [
   personsSchema.extend({
     type: z.literal("persons"),
     variant: z.enum(["1", "2"]),
-    persons: pathSchema("persons").array().optional(),
+    persons: pathSchema.array().optional(),
   }),
   productsSchema.extend({
     type: z.literal("products"),
     variant: z.enum(["1", "2"]),
-    products: pathSchema("products").array().optional(),
-    collection: pathSchema("collections").optional(),
+    products: pathSchema.array().optional(),
+    collection: pathSchema.optional(),
   }),
   quoteSchema.extend({
     type: z.literal("quote"),
@@ -88,7 +88,7 @@ export const blockSchema = z.discriminatedUnion("type", [
   reviewsSchema.extend({
     type: z.literal("reviews"),
     variant: z.enum(["1", "2"]),
-    reviews: pathSchema("reviews").array().optional(),
+    reviews: pathSchema.array().optional(),
   }),
 ])
 

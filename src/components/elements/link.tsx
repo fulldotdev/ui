@@ -3,28 +3,28 @@ import { type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
+import { rainbowButtonVariants } from "@/components/magicui/rainbow-button"
 
-import { rainbowButtonVariants } from "../magicui/rainbow-button"
+interface Props extends Omit<VariantProps<typeof buttonVariants>, "variant"> {
+  children?: React.ReactNode
+  className?: string
+  text?: string
+  href?: string
+  target?: string
+  variant?:
+    | VariantProps<typeof buttonVariants>["variant"]
+    | "rainbow"
+    | "rainbow-outline"
+}
 
-function Link({
+export default function ({
   className,
   variant,
   size,
   text,
   children,
   ...props
-}: React.ComponentProps<"a"> & {
-  text?: string
-  size?: "default" | "sm" | "lg" | "icon"
-  variant?:
-    | "default"
-    | "outline"
-    | "secondary"
-    | "ghost"
-    | "link"
-    | "rainbow"
-    | "rainbow-outline"
-}) {
+}: Props) {
   let c: string = ""
   if (variant === "rainbow")
     c = rainbowButtonVariants({ variant: "default", size, className })
@@ -39,5 +39,3 @@ function Link({
     </a>
   )
 }
-
-export { Link }
