@@ -1,9 +1,11 @@
-import { cn } from "@/lib/utils"
 import Abstract from "@/components/elements/abstract"
 import Image from "@/components/elements/image"
-import Link from "@/components/elements/link"
 import Links from "@/components/elements/links"
 import Writeup from "@/components/elements/writeup"
+import Column from "@/components/structures/column"
+import Container from "@/components/structures/container"
+import Grid from "@/components/structures/grid"
+import Section from "@/components/structures/section"
 
 interface Props {
   size?: "sm" | "default" | "lg"
@@ -21,56 +23,41 @@ interface Props {
 
 export default function ({ align, size, children, links, persons }: Props) {
   return (
-    <section id="persons">
-      <div className="container">
-        <div
-          className={cn("flex flex-col items-center", {
-            "items-start text-start": align === "start",
-            "items-center text-center": align === "center",
-            "items-end text-end": align === "end",
-          })}
-        >
-          <Writeup className="not-first:mt-4" size={size}>
+    <Section id="persons">
+      <Container className="container">
+        <Column align={align}>
+          <Writeup className="not-first:mt-4" size={size} align={align}>
             {children}
           </Writeup>
-        </div>
-        <Links className="not-first:mt-8" size={size} links={links} />
-        {persons && persons.length > 0 && (
-          <div
-            className={cn(
-              "grid w-full grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-x-4 gap-y-8 not-first:mt-16 lg:gap-x-12",
-              {
-                "justify-between": align === "start",
-                "justify-center": align === "center",
-                "justify-end": align === "end",
-              }
-            )}
-          >
-            {persons?.map(({ title, tagline, image, href }, i) => (
-              <div
-                key={i}
-                className={cn("flex flex-col items-center", {
-                  "items-start text-start": align === "start",
-                  "items-center text-center": align === "center",
-                  "items-end text-end": align === "end",
-                })}
-              >
-                {image && (
+          <Links
+            className="not-first:mt-8"
+            size={size}
+            links={links}
+            align={align}
+          />
+          {persons && persons.length > 0 && (
+            <Grid size={size} className="not-first:mt-16">
+              {persons?.map(({ title, tagline, image, href }, i) => (
+                <Column key={i} align="center">
                   <Image
                     className="aspect-square h-full w-full max-w-56 overflow-hidden rounded-full object-cover"
                     sizes="200px"
                     {...image}
                   />
-                )}
-                <Abstract className="not-first:mt-6" size={size} align={align}>
-                  {title && <h3>{title}</h3>}
-                  {tagline && <p>{tagline}</p>}
-                </Abstract>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
+                  <Abstract
+                    className="not-first:mt-6"
+                    size={size}
+                    align="center"
+                  >
+                    {title && <h3>{title}</h3>}
+                    {tagline && <p>{tagline}</p>}
+                  </Abstract>
+                </Column>
+              ))}
+            </Grid>
+          )}
+        </Column>
+      </Container>
+    </Section>
   )
 }
