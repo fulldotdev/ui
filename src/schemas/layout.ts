@@ -1,14 +1,18 @@
 import { z } from "astro:schema"
 
 import { blockSchema } from "@/schemas/block"
+import { bannerSchema } from "@/schemas/blocks/banner"
+import { footerSchema } from "@/schemas/blocks/footer"
+import { headerSchema } from "@/schemas/blocks/header"
 import { linkSchema } from "@/schemas/fields/link"
 import { seoSchema } from "@/schemas/fields/seo"
 
 export const layoutSchema = z
   .object({
-    headers: blockSchema.array(),
+    header: headerSchema,
+    banner: bannerSchema,
     sections: blockSchema.array(),
-    footers: blockSchema.array(),
+    footer: footerSchema,
     bubble: linkSchema,
     head: z.string(),
     body: z.string(),

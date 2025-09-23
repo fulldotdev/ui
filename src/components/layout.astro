@@ -1,17 +1,20 @@
 ---
 import { SEO } from "astro-seo"
 import { Font } from "astro:assets"
-import { getEntry } from "astro:content"
 
 import { type LayoutSchema } from "@/schemas/layout"
 import Block from "@/components/block.astro"
+import Banner from "@/components/blocks/banner.astro"
+import Footer from "@/components/blocks/footer.astro"
+import Header from "@/components/blocks/header.astro"
 import Social from "@/components/elements/social"
 
 import "@/styles/globals.css"
 
 type Props = LayoutSchema
 
-const { headers, sections, footers, bubble, head, body, css, seo } = Astro.props
+const { header, banner, sections, footer, bubble, head, body, css, seo } =
+  Astro.props
 
 const baseUrl = Astro.site?.origin || Astro.url.origin
 const pagePathname = Astro.url.pathname.endsWith("/")
@@ -56,12 +59,13 @@ const pageUrl = `${baseUrl}${pagePathname}`
     class="text-foreground bg-background font-base overscroll-none antialiased"
     id={Astro.url.pathname}
   >
-    {headers?.map((header) => <Block {...header} />)}
+    {header && <Header {...header} />}
+    {banner && <Banner {...banner} />}
     <main>
       <slot />
       {sections?.map((section) => <Block {...section} />)}
     </main>
-    {footers?.map((footer) => <Block {...footer} />)}
+    {footer && <Footer {...footer} />}
     {
       bubble && (
         <Social
