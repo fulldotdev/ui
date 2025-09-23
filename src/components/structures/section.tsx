@@ -6,7 +6,7 @@ export default function ({
   ...props
 }: React.ComponentProps<"section">) {
   return (
-    <section className={cn("relative w-full py-24", className)} {...props}>
+    <section className={cn("relative w-full py-16", className)} {...props}>
       {children}
     </section>
   )

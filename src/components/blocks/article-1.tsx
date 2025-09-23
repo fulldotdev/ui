@@ -31,7 +31,7 @@ export default function ({
 }: Props) {
   return (
     <Section id="article">
-      <Container className="flex max-w-screen-lg flex-col items-center">
+      <Container className="flex max-w-screen-lg flex-col">
         <Column align={align}>
           <Date date={published} />
           <Writeup className="not-first:mt-8" size={size} align={align}>
@@ -41,7 +41,7 @@ export default function ({
           <Person className="not-first:mt-8" {...person} />
         </Column>
         <Image className="rounded-lg not-first:mt-16" {...image} />
-        <Prose className="not-first:mt-16" size={size}>
+        <Prose className="mx-auto not-first:mt-16" size={size}>
           {children}
         </Prose>
       </Container>

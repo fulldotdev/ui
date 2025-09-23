@@ -25,8 +25,7 @@ import Container from "../structures/container"
 
 interface Props {
   align?: "start" | "center" | "end"
-  logo?: React.ComponentProps<typeof Logo>["image"]
-  title?: string
+  logo?: React.ComponentProps<typeof Logo>
   links?: React.ComponentProps<typeof Links>["links"]
   socials?: React.ComponentProps<typeof Socials>["socials"]
   menus?: {
@@ -42,7 +41,6 @@ interface Props {
 export default function ({
   align = "start",
   logo,
-  title,
   menus,
   links,
   socials,
@@ -53,7 +51,7 @@ export default function ({
       id="header"
     >
       <Container className="flex justify-between gap-8">
-        <Logo href="/" title={title} image={logo} />
+        <Logo href="/" {...logo} />
         {/* Desktop Menu */}
         {menus && menus.length > 0 && (
           <NavigationMenu

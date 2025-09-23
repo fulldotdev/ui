@@ -3,23 +3,12 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 import Image from "@/components/elements/image"
 
-interface Props {
-  className?: string
-  image?: React.ComponentProps<typeof Image>
-  children?: React.ReactNode
+interface Props extends React.ComponentProps<typeof Image> {
   href?: string
-  title?: string
 }
 
-export default function ({
-  className,
-  image,
-  title,
-  children,
-  href,
-  ...props
-}: Props) {
-  if (!image?.src && !title) return null
+export default function ({ className, src, title, href, ...props }: Props) {
+  if (!src && !title) return null
   const Comp = href ? "a" : "div"
   return (
     <Comp
@@ -28,12 +17,11 @@ export default function ({
         className
       )}
       href={href}
-      {...props}
     >
       <Image
         className="h-8 w-auto max-w-[200px] shrink-0 object-contain"
         sizes="200px"
-        {...image}
+        {...props}
       />
       {title}
     </Comp>

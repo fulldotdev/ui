@@ -3,8 +3,7 @@ import Logo from "@/components/elements/logo"
 import Social from "@/components/elements/social"
 
 interface Props {
-  image?: React.ComponentProps<typeof Logo>["image"]
-  title?: string
+  logo?: React.ComponentProps<typeof Logo>
   description?: string
   links?: React.ComponentProps<typeof Links>["links"]
   socials?: string[]
@@ -14,11 +13,11 @@ interface Props {
   }[]
 }
 
-export default function ({ image, title, links, socials }: Props) {
+export default function ({ logo, links, socials }: Props) {
   return (
     <section className="py-16">
       <div className="container flex flex-col items-center gap-8">
-        <Logo href="/" title={title} {...image} />
+        <Logo href="/" {...logo} />
         {links && links.length > 0 && (
           <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
             {links?.map(({ text, href }, i) => (
