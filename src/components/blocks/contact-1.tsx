@@ -24,7 +24,6 @@ interface Props {
 }
 
 export default function ({ align, children, form, size, channels }: Props) {
-  console.log({ form })
   return (
     <Section id="contact">
       <Container className="max-w-screen-md">

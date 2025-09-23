@@ -1,5 +1,6 @@
 import react from "@astrojs/react"
 import sitemap from "@astrojs/sitemap"
+import bookshop from "@bookshop/astro-bookshop"
 import tailwindcss from "@tailwindcss/vite"
 import favicons from "astro-favicons"
 import robotsTxt from "astro-robots-txt"
@@ -82,6 +83,7 @@ export default defineConfig({
       name: "deuitzender",
       short_name: "deuitzender",
     }),
+    bookshop(),
   ],
   vite: {
     plugins: [tailwindcss()],
