@@ -1,10 +1,11 @@
 import { z } from "astro:schema"
 
 import { imageSchema } from "@/schemas/fields/image"
-import { blockSchema } from "@/lib/structured-data"
+import { pathSchema } from "@/schemas/fields/path"
 
 export const productSchema = z
   .object({
+    variant: z.enum(["1", "2"]),
     title: z.string(),
     description: z.string(),
     images: imageSchema.array(),
@@ -17,10 +18,9 @@ export const productSchema = z
       .partial()
       .strict(),
     variants: z.any(),
+    collections: pathSchema("collections").array(),
   })
   .partial()
   .strict()
 
-export type ProductProps = z.infer<typeof productSchema> & {
-  children?: React.ReactNode
-}
+export type ProductSchema = z.infer<typeof productSchema>

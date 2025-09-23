@@ -6,13 +6,29 @@ interface Props {
   width?: number
   height?: number
   sizes?: string
+  className?: string
+  srcSet?: string
+  title?: string
   loading?: "eager" | "lazy"
   decoding?: "async" | "auto" | "sync"
-  fetchpriority?: string
-  className?: string
+  fetchPriority?: "auto" | "high" | "low"
 }
 
-export default function ({ className, ...props }: Props) {
+export default function ({
+  loading = "lazy",
+  decoding = "async",
+  fetchPriority = "auto",
+  className,
+  ...props
+}: Props) {
   if (!props.src) return null
-  return <img className={cn(className)} {...props} />
+  return (
+    <img
+      className={cn(className)}
+      loading={loading}
+      decoding={decoding}
+      fetchPriority={fetchPriority}
+      {...props}
+    />
+  )
 }

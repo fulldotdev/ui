@@ -31,6 +31,7 @@ export default function ({
     >
       <Image
         className="h-8 w-auto max-w-[200px] shrink-0 object-contain"
+        sizes="200px"
         {...image}
       />
       {title}

@@ -4,6 +4,7 @@ import { imageSchema } from "@/schemas/fields/image"
 
 export const reviewSchema = z
   .object({
+    variant: z.enum(["1", "2"]),
     title: z.string(),
     description: z.string(),
     tagline: z.string(),

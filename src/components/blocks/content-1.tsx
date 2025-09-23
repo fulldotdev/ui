@@ -1,9 +1,7 @@
-import * as React from "react"
-
 import { cn } from "@/lib/utils"
 import Image from "@/components/elements/image"
 import Links from "@/components/elements/links"
-import Writeup from "@/components/elements/writeup"
+import Prose from "@/components/elements/prose"
 
 interface Props {
   size?: "sm" | "default" | "lg"
@@ -23,15 +21,15 @@ export default function ({
   return (
     <section className="overflow-hidden py-24">
       <div
-        className={cn("container", {
-          "items-start text-start": align === "start",
-          "items-center text-center": align === "center",
-          "items-end text-end": align === "end",
+        className={cn("container flex flex-col", {
+          "items-start": align === "start",
+          "items-center": align === "center",
+          "items-end": align === "end",
         })}
       >
-        <Writeup className="text-balance not-first:mt-6" size={size}>
+        <Prose className="not-first:mt-6" size={size}>
           {children}
-        </Writeup>
+        </Prose>
         <Links className="not-first:mt-8" size={size} links={links} />
         <Image className="rounded-lg not-first:mt-16" {...image} />
       </div>

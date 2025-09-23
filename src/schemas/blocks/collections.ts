@@ -1,17 +1,13 @@
 import { z } from "astro:schema"
 
-import { collectionSchema } from "@/schemas/blocks/collection"
+import { pathSchema } from "@/schemas/fields/path"
 
 export const collectionsSchema = z.object({
+  variant: z.enum(["1", "2"]),
   size: z.enum(["sm", "default", "lg"]),
   align: z.enum(["start", "center", "end"]),
   html: z.string(),
-  collections: collectionSchema.array(),
+  collections: pathSchema("collections").array(),
 })
 
-export type CollectionsProps = Omit<
-  z.infer<typeof collectionsSchema>,
-  "html"
-> & {
-  children?: React.ReactNode
-}
+export type CollectionsSchema = z.infer<typeof collectionsSchema>

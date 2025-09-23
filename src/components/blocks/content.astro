@@ -1,0 +1,30 @@
+---
+import type { ContentSchema } from "@/schemas/blocks/content"
+import { transformImage } from "@/lib/transform-image"
+import Content1 from "@/components/blocks/content-1"
+import Content2 from "@/components/blocks/content-2"
+
+type Props = ContentSchema
+
+const { variant, html, image, ...schema } = Astro.props
+
+const props = {
+  ...schema,
+  image: await transformImage(image),
+}
+---
+
+{
+  variant === "1" && (
+    <Content1 {...props}>
+      <Fragment set:html={html} />
+    </Content1>
+  )
+}
+{
+  variant === "2" && (
+    <Content2 {...props}>
+      <Fragment set:html={html} />
+    </Content2>
+  )
+}

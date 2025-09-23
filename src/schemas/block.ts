@@ -13,82 +13,62 @@ import { featuresSchema } from "@/schemas/blocks/features"
 import { footerSchema } from "@/schemas/blocks/footer"
 import { headerSchema } from "@/schemas/blocks/header"
 import { personsSchema } from "@/schemas/blocks/persons"
+import { pricingsSchema } from "@/schemas/blocks/pricings"
 import { productsSchema } from "@/schemas/blocks/products"
 import { quoteSchema } from "@/schemas/blocks/quote"
 import { reviewsSchema } from "@/schemas/blocks/reviews"
-import { pathSchema } from "@/schemas/fields/path"
 
 export const blockSchema = z.discriminatedUnion("type", [
   articlesSchema.extend({
     type: z.literal("articles"),
-    variant: z.enum(["1", "2"]),
-    articles: pathSchema.array().optional(),
-    blog: pathSchema.optional(),
   }),
   bannerSchema.extend({
     type: z.literal("banner"),
-    variant: z.enum(["1", "2"]),
   }),
   blogSchema.extend({
     type: z.literal("blog"),
-    variant: z.enum(["1", "2"]),
   }),
   collectionsSchema.extend({
     type: z.literal("collections"),
-    variant: z.enum(["1", "2"]),
-    collections: pathSchema.array().optional(),
   }),
   contactSchema.extend({
     type: z.literal("contact"),
-    variant: z.enum(["1", "2"]),
   }),
   contentSchema.extend({
     type: z.literal("content"),
-    variant: z.enum(["1", "2"]),
   }),
   ctaSchema.extend({
     type: z.literal("cta"),
-    variant: z.enum(["1", "2"]),
   }),
   faqsSchema.extend({
     type: z.literal("faqs"),
-    variant: z.enum(["1", "2"]),
   }),
   featureSchema.extend({
     type: z.literal("feature"),
-    variant: z.enum(["1", "2"]),
   }),
   featuresSchema.extend({
     type: z.literal("features"),
-    variant: z.enum(["1", "2"]),
+  }),
+  pricingsSchema.extend({
+    type: z.literal("pricings"),
   }),
   footerSchema.extend({
     type: z.literal("footer"),
-    variant: z.enum(["1", "2"]),
   }),
   headerSchema.extend({
     type: z.literal("header"),
-    variant: z.enum(["1", "2"]),
   }),
   personsSchema.extend({
     type: z.literal("persons"),
-    variant: z.enum(["1", "2"]),
-    persons: pathSchema.array().optional(),
   }),
   productsSchema.extend({
     type: z.literal("products"),
-    variant: z.enum(["1", "2"]),
-    products: pathSchema.array().optional(),
-    collection: pathSchema.optional(),
   }),
   quoteSchema.extend({
     type: z.literal("quote"),
-    variant: z.enum(["1", "2"]),
   }),
   reviewsSchema.extend({
     type: z.literal("reviews"),
-    variant: z.enum(["1", "2"]),
-    reviews: pathSchema.array().optional(),
   }),
 ])
 

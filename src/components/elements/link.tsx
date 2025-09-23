@@ -23,8 +23,10 @@ export default function ({
   size,
   text,
   children,
+  href,
   ...props
 }: Props) {
+  if (!href) return null
   let c: string = ""
   if (variant === "rainbow")
     c = rainbowButtonVariants({ variant: "default", size, className })
@@ -33,7 +35,7 @@ export default function ({
   else c = buttonVariants({ variant, size, className })
 
   return (
-    <a className={cn(c)} {...props}>
+    <a className={cn(c)} {...props} href={href}>
       {text}
       {children}
     </a>

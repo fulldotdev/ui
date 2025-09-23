@@ -1,0 +1,35 @@
+---
+import { getEntries } from "astro:content"
+
+import { type PersonsSchema } from "@/schemas/blocks/persons"
+import { getHref } from "@/lib/get-href"
+import { transformImage } from "@/lib/transform-image"
+import Persons1 from "@/components/blocks/persons-1"
+
+type Props = PersonsSchema
+
+const { variant, persons, html, ...schema } = Astro.props
+
+const personEntries = persons && (await getEntries(persons))
+
+const props = {
+  ...schema,
+  persons:
+    personEntries &&
+    (await Promise.all(
+      personEntries.map(async (person) => ({
+        href: getHref(person),
+        ...person.data,
+        image: await transformImage(person.data.image),
+      }))
+    )),
+}
+---
+
+{
+  variant === "1" && (
+    <Persons1 {...props}>
+      <Fragment set:html={html} />
+    </Persons1>
+  )
+}

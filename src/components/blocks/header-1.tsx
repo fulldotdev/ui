@@ -23,7 +23,7 @@ import Socials from "@/components/elements/socials"
 
 interface Props {
   align?: "start" | "center" | "end"
-  image?: React.ComponentProps<typeof Logo>["image"]
+  logo?: React.ComponentProps<typeof Logo>["image"]
   title?: string
   links?: React.ComponentProps<typeof Links>["links"]
   socials?: React.ComponentProps<typeof Socials>["socials"]
@@ -39,7 +39,7 @@ interface Props {
 
 export default function ({
   align = "start",
-  image,
+  logo,
   title,
   menus,
   links,
@@ -51,7 +51,7 @@ export default function ({
       id="header"
     >
       <div className="container flex justify-between gap-8">
-        <Logo title={title} image={image} />
+        <Logo title={title} image={logo} />
         {/* Desktop Menu */}
         {menus && menus.length > 0 && (
           <NavigationMenu

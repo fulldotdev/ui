@@ -1,5 +1,3 @@
-import * as React from "react"
-
 import { cn } from "@/lib/utils"
 import Background from "@/components/elements/background"
 import Links from "@/components/elements/links"
@@ -21,7 +19,7 @@ export default function ({
   links,
 }: Props) {
   return (
-    <section className="-my-16 overflow-hidden py-40">
+    <section className="relative -my-16 overflow-hidden py-40">
       <Background
         className="mask-y-from-white mask-y-from-75% mask-y-to-transparent"
         variant={background}

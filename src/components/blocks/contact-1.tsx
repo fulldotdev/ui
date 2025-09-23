@@ -1,9 +1,8 @@
-import type { ContactProps } from "@/schemas/blocks/contact"
 import { cn } from "@/lib/utils"
 import Form from "@/components/elements/form"
 import Writeup from "@/components/elements/writeup"
 
-interface Props extends ContactProps {
+interface Props {
   size?: "sm" | "default" | "lg"
   align?: "start" | "center" | "end"
   form?: any

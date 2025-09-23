@@ -1,31 +1,38 @@
 ---
-import { getCollection, render } from "astro:content"
+import { getCollection } from "astro:content"
+import { mergeAll } from "remeda"
 
-import { Block } from "@/components/block.tsx"
+import { getHref } from "@/lib/get-href"
+import Block from "@/components/block.astro"
 import Layout from "@/components/layout.astro"
+
+import "@/styles/globals.css"
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages")
   return pages.map((page) => {
     return {
       params: {
-        page: page.id === "index" ? undefined : page.id,
+        page: getHref(page),
       },
       props: page,
     }
   })
 }
 
-const { Content } = await render(Astro.props)
-const { sections, ...data } = Astro.props.data
+const { id } = Astro.props
+const { seo, sections, ...page } = Astro.props.data
+
+const layoutEntry = mergeAll(
+  await getCollection(
+    "layouts",
+    (layout) => layout.id === "index" || id.startsWith(layout.id)
+  )
+)
+
+const layout = "data" in layoutEntry ? layoutEntry.data : undefined
 ---
 
-<Layout {...data}>
-  {
-    blocks?.map(({ html, ...block }, i) => (
-      <Block client:load key={i} {...block}>
-        {block.html && <Fragment set:html={block.html} />}
-      </Block>
-    ))
-  }
+<Layout {...layout} seo={seo}>
+  {sections?.map((section) => <Block {...section} />)}
 </Layout>

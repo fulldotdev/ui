@@ -8,11 +8,12 @@ const iconMap = {
 }
 
 interface Props extends React.ComponentProps<"svg"> {
-  name: string
+  name?: string
   className?: string
 }
 
 export default function ({ className, name, ...props }: Props) {
+  if (!name) return null
   const Icon = name in iconMap && iconMap[name as keyof typeof iconMap]
   return Icon ? (
     <Icon className={cn(className)} {...props} />

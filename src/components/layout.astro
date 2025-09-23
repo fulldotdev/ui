@@ -1,41 +1,25 @@
 ---
+import { SEO } from "astro-seo"
 import { Font } from "astro:assets"
+
+import { type LayoutSchema } from "@/schemas/layout"
+import Block from "@/components/block.astro"
+import Social from "@/components/elements/social"
 
 import "@/styles/globals.css"
 
-import { SEO } from "astro-seo"
+type Props = LayoutSchema
 
-import type { PageProps } from "@/lib/types"
-import { Block } from "@/components/block"
-import { Social } from "@/components/elements/social"
+const { headers, sections, footers, bubble, head, body, css, seo } = Astro.props
 
-const {
-  href,
-  title,
-  description,
-  image,
-  seo,
-  published,
-  block,
-  blocks,
-  body,
-  css,
-  head,
-  banner,
-  header,
-  bubble,
-  footer,
-  legal,
-  ...data
-} = Astro.props
-
-// Simple structured data
-const baseUrl = Astro.site?.origin || ""
-const currentUrl = `${baseUrl}${href}`
+const baseUrl = Astro.site?.origin || Astro.url.origin
+const pagePathname = Astro.url.pathname.endsWith("/")
+  ? Astro.url.pathname
+  : `${Astro.url.pathname}/`
+const pageUrl = `${baseUrl}${pagePathname}`
 ---
 
-<!doctype html>
-<html lang={Astro.currentLocale}>
+<html class="layout" lang={Astro.currentLocale}>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
@@ -43,26 +27,23 @@ const currentUrl = `${baseUrl}${href}`
       charset="UTF-8"
       title={seo?.title}
       description={seo?.description}
-      canonical={currentUrl}
+      canonical={pageUrl}
       openGraph={{
         basic: {
           title: seo?.title || "",
-          image: seo?.image ? baseUrl + seo?.image.src : "",
+          image: seo?.image?.src ? baseUrl + seo.image.src : "",
           type: "website",
           url: Astro.url.href,
         },
-        image: seo?.image
+        image: seo?.image?.src
           ? {
-              url: baseUrl + seo?.image.src,
+              url: baseUrl + seo.image.src,
               alt: seo?.image?.alt,
             }
           : undefined,
         optional: {
           description: seo?.description,
           locale: Astro.currentLocale,
-        },
-        article: {
-          publishedTime: published?.toISOString(),
         },
       }}
     />
@@ -72,21 +53,20 @@ const currentUrl = `${baseUrl}${href}`
   </head>
   <body
     class="text-foreground bg-background font-base overscroll-none antialiased"
-    id={Astro.params.page}
+    id={Astro.url.pathname}
   >
-    <Block client:load {...banner} />
-    <Block client:load {...header} />
+    {headers?.map((header) => <Block {...header} />)}
     <main>
       <slot />
+      {sections?.map((section) => <Block {...section} />)}
     </main>
-    <Block client:load {...footer} />
-    <Block client:load {...legal} />
+    {footers?.map((footer) => <Block {...footer} />)}
     {
       bubble && (
         <Social
           className="fixed right-4 bottom-4 p-6 *:!size-6 z-50"
           variant="default"
-          href={bubble}
+          {...bubble}
         />
       )
     }

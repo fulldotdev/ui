@@ -5,6 +5,7 @@ import { linkSchema } from "@/schemas/fields/link"
 
 export const contentSchema = z
   .object({
+    variant: z.enum(["1", "2"]),
     size: z.enum(["sm", "default", "lg"]),
     align: z.enum(["start", "center", "end"]),
     html: z.string(),
@@ -14,6 +15,4 @@ export const contentSchema = z
   .partial()
   .strict()
 
-export type ContentProps = Omit<z.infer<typeof contentSchema>, "html"> & {
-  children?: React.ReactNode
-}
+export type ContentSchema = z.infer<typeof contentSchema>

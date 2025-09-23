@@ -5,6 +5,7 @@ import { imageSchema } from "@/schemas/fields/image"
 
 export const contactSchema = z
   .object({
+    variant: z.enum(["1", "2"]),
     align: z.enum(["start", "center", "end"]),
     size: z.enum(["sm", "default", "lg"]),
     html: z.string(),
@@ -18,6 +19,4 @@ export const contactSchema = z
   .partial()
   .strict()
 
-export type ContactProps = Omit<z.infer<typeof contactSchema>, "html"> & {
-  children?: React.ReactNode
-}
+export type ContactSchema = z.infer<typeof contactSchema>

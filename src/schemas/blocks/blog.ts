@@ -4,6 +4,7 @@ import { imageSchema } from "@/schemas/fields/image"
 
 export const blogSchema = z
   .object({
+    variant: z.enum(["1", "2"]),
     size: z.enum(["sm", "default", "lg"]),
     align: z.enum(["start", "center", "end"]),
     title: z.string(),
@@ -13,6 +14,4 @@ export const blogSchema = z
   .partial()
   .strict()
 
-export type BlogProps = z.infer<typeof blogSchema> & {
-  children?: React.ReactNode
-}
+export type BlogSchema = z.infer<typeof blogSchema>

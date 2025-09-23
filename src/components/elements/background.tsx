@@ -162,7 +162,7 @@ const backgroundVariants = cva("", {
   variants: {
     variant: {
       grid: "",
-      "animated-grid": "opacity-50",
+      "animated-grid": "opacity-35",
       "flickering-grid": "opacity-50",
       "retro-grid": "",
       dots: "",

@@ -1,83 +1,30 @@
 ---
-import { getCollection, getEntries } from "astro:content"
-
 import { type BlockSchema } from "@/schemas/block"
-import { Block as ReactBlock } from "@/components/block"
+import Content from "@/components/blocks/content.astro"
+import Cta from "@/components/blocks/cta.astro"
+import Faqs from "@/components/blocks/faqs.astro"
+import Feature from "@/components/blocks/feature.astro"
+import Features from "@/components/blocks/features.astro"
+import Footer from "@/components/blocks/footer.astro"
+import Header from "@/components/blocks/header.astro"
+import Persons from "@/components/blocks/persons.astro"
+import Pricings from "@/components/blocks/pricings.astro"
+import Quote from "@/components/blocks/quote.astro"
+import Reviews from "@/components/blocks/reviews.astro"
 
 type Props = BlockSchema
 
 const props = Astro.props
-
-const articlesData =
-  props.type === "articles" &&
-  (props.blog
-    ? await getCollection(
-        "pages",
-        (page) =>
-          page.data.type === "article" && page.data.blog?.id === props.blog?.id
-      )
-    : props.articles
-      ? await getEntries(props.articles)
-      : await getCollection("pages", (page) => page.data.type === "article")
-  ).map((article) => ({
-    href: `/${article.id}/`,
-    ...article.data,
-  }))
-
-const productsData =
-  props.type === "products" &&
-  (props.collection
-    ? await getCollection(
-        "pages",
-        (page) =>
-          page.data.type === "product" &&
-          page.data.collections?.some(
-            (collection) => collection.id === props.collection?.id
-          )
-      )
-    : props.products
-      ? await getEntries(props.products)
-      : await getCollection("pages", (page) => page.data.type === "product")
-  ).map((product) => ({
-    href: `/${product.id}/`,
-    ...product.data,
-  }))
-
-const collectionsData =
-  props.type === "collections" &&
-  (props.collections
-    ? await getEntries(props.collections)
-    : await getCollection("pages", (page) => page.data.type === "collection")
-  ).map((collection) => ({
-    href: `/${collection.id}/`,
-    ...collection.data,
-  }))
-
-const personsData =
-  props.type === "persons" &&
-  (props.persons
-    ? await getEntries(props.persons)
-    : await getCollection("pages", (page) => page.data.type === "person")
-  ).map((person) => ({
-    href: `/${person.id}/`,
-    ...person.data,
-  }))
-
-const reviewsData =
-  props.type === "reviews" &&
-  (props.reviews
-    ? await getEntries(props.reviews)
-    : await getCollection("pages", (page) => page.data.type === "review")
-  ).map((review) => ({
-    ...review.data,
-  }))
 ---
 
-<ReactBlock
-  articles={articlesData}
-  products={productsData}
-  collections={collectionsData}
-  persons={personsData}
-  reviews={reviewsData}
-  {...props}
-/>
+{props.type === "header" && <Header {...props} />}
+{props.type === "content" && <Content {...props} />}
+{props.type === "quote" && <Quote {...props} />}
+{props.type === "cta" && <Cta {...props} />}
+{props.type === "faqs" && <Faqs {...props} />}
+{props.type === "feature" && <Feature {...props} />}
+{props.type === "features" && <Features {...props} />}
+{props.type === "pricings" && <Pricings {...props} />}
+{props.type === "footer" && <Footer {...props} />}
+{props.type === "reviews" && <Reviews {...props} />}
+{props.type === "persons" && <Persons {...props} />}
