@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils"
 import Image from "@/components/elements/image"
 import Links from "@/components/elements/links"
-import Writeup from "@/components/elements/writeup"
+import Prose from "@/components/elements/prose"
 
 interface Props {
   size?: "sm" | "default" | "lg"
@@ -32,8 +32,8 @@ export default function ({
           )}
         >
           <div className="flex w-full flex-col items-start">
-            <Writeup size={size}>{children}</Writeup>
-            <Links size={size} links={links} />
+            <Prose size={size}>{children}</Prose>
+            <Links className="not-first:mt-8" size={size} links={links} />
           </div>
           <Image className="rounded-lg" {...image} />
         </div>

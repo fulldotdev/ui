@@ -17,7 +17,12 @@ const variants = cva(
         sm: "text-base [&_h1]:text-4xl [&_:is(h1,h2,h3,h4,h5,h6)]:text-2xl",
         default:
           "text-lg [&_h1]:text-4xl [&_h1]:lg:text-5xl [&_:is(h1,h2,h3,h4,h5,h6)]:text-3xl",
-        lg: "text-lg [&_h1+p]:text-xl [&_h1]:text-4xl lg:[&_h1]:text-6xl [&_:is(h1,h2,h3,h4,h5,h6)]:text-3xl [&_:is(h1,h2,h3,h4,h5,h6)]:lg:text-4xl max-w-4xl",
+        lg: "text-lg lg:[&_h1+p]:text-xl [&_h1]:text-4xl lg:[&_h1]:text-6xl [&_:is(h1,h2,h3,h4,h5,h6)]:text-3xl [&_:is(h1,h2,h3,h4,h5,h6)]:lg:text-4xl max-w-4xl",
+      },
+      align: {
+        start: "text-start",
+        center: "text-center",
+        end: "text-end",
       },
     },
     defaultVariants: {

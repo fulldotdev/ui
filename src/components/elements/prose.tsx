@@ -9,6 +9,7 @@ const variants = cva(
     "[&_p]:leading-[1.8] [&_p]:not-first:mt-4",
     "[&_ul]:list-inside [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:not-first:mt-4",
     "[&_ol]:list-inside [&_ol]:list-decimal [&_ol]:space-y-2 [&_ol]:not-first:mt-4",
+    "[&_li_p]:inline",
     "[&_a]:text-primary [&_a]:hover:underline",
     "[&_:is(h1,h2,h3,h4,h5,h6)]:scroll-mt-20 [&_:is(h1,h2,h3,h4,h5,h6)]:not-first:mt-12 [&_:is(h1,h2,h3,h4,h5,h6)]:text-pretty [&_:is(h1,h2,h3,h4,h5,h6)]:font-semibold [&_:is(h1,h2,h3,h4,h5,h6)]:leading-[1.1]",
     "[&_img]:rounded-lg [&_img]:not-first:mt-12",

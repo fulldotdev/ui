@@ -1,0 +1,37 @@
+---
+import { getCollection, getEntries } from "astro:content"
+
+import { type ServicesSchema } from "@/schemas/blocks/services"
+import { getHref } from "@/lib/get-href"
+import { transformImage } from "@/lib/transform-image"
+import Services1 from "@/components/blocks/services-1"
+
+type Props = ServicesSchema
+
+const { variant, services, html, ...schema } = Astro.props
+
+const serviceEntries = services
+  ? await getEntries(services)
+  : await getCollection("services")
+
+const props = {
+  ...schema,
+  services:
+    serviceEntries &&
+    (await Promise.all(
+      serviceEntries.map(async (service) => ({
+        href: getHref(service),
+        ...service.data,
+        image: await transformImage(service.data.image),
+      }))
+    )),
+}
+---
+
+{
+  variant === "1" && (
+    <Services1 {...props}>
+      <Fragment set:html={html} />
+    </Services1>
+  )
+}

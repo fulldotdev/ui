@@ -19,7 +19,7 @@ interface Props {
 }
 
 export default function ({
-  align = "center",
+  align = "start",
   size = "default",
   children,
   links,
@@ -39,14 +39,20 @@ export default function ({
         </Writeup>
         <Links size={size} links={links} />
         {features && features.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-x-16 gap-y-8 not-first:mt-12">
+          <div
+            className={cn(
+              "grid w-full grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-x-16 gap-y-8 not-first:mt-16",
+              {
+                "justify-between": align === "start",
+                "justify-center": align === "center",
+                "justify-end": align === "end",
+              }
+            )}
+          >
             {features?.map(({ title, description, icon, link }, i) => (
               <div
                 key={i}
-                className={cn("flex max-w-md grow-1 flex-col items-center", {
-                  "max-w-sm min-w-3xs basis-3xs": size === "sm",
-                  "min-w-4xs basis-4xs max-w-md": size === "default",
-                  "min-w-5xs basis-5xs max-w-lg": size === "lg",
+                className={cn("flex flex-col items-center", {
                   "items-start text-start": align === "start",
                   "items-center text-center": align === "center",
                   "items-end text-end": align === "end",

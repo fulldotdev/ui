@@ -18,7 +18,7 @@ export default function ({ image, title, links, socials }: Props) {
   return (
     <section className="py-16">
       <div className="container flex flex-col items-center gap-8">
-        <Logo title={title} {...image} />
+        <Logo href="/" title={title} {...image} />
         {links && links.length > 0 && (
           <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
             {links?.map(({ text, href }, i) => (

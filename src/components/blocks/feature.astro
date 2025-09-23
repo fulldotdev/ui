@@ -1,13 +1,22 @@
 ---
 import type { FeatureSchema } from "@/schemas/blocks/feature"
 import { transformImage } from "@/lib/transform-image"
+import Feature1 from "@/components/blocks/feature-1"
 
 type Props = FeatureSchema
 
-const { variant, image, ...schema } = Astro.props
+const { variant, image, html, ...schema } = Astro.props
 
 const props = {
   ...schema,
   image: await transformImage(image),
 }
 ---
+
+{
+  variant === "1" && (
+    <Feature1 client:load {...props}>
+      <Fragment set:html={html} />
+    </Feature1>
+  )
+}

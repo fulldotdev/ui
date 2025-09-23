@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils"
 import {
   Accordion,
   AccordionContent,
@@ -7,6 +6,9 @@ import {
 } from "@/components/ui/accordion"
 import Links from "@/components/elements/links"
 import Writeup from "@/components/elements/writeup"
+import Column from "@/components/structures/column"
+import Container from "@/components/structures/container"
+import Section from "@/components/structures/section"
 
 interface Props {
   size?: "sm" | "default" | "lg"
@@ -27,34 +29,37 @@ export default function ({
   links,
 }: Props) {
   return (
-    <section className="py-16">
-      <div
-        className={cn("container max-w-screen-md lg:px-12", {
-          "items-start text-start": align === "start",
-          "items-center text-center": align === "center",
-          "items-end text-end": align === "end",
-        })}
-      >
-        <Writeup size={size}>{children}</Writeup>
-        <Links size={size} links={links} />
-        {faqs && faqs.length > 0 && (
-          <Accordion
-            className="w-full max-w-2xl not-first:mt-12"
-            type="single"
-            collapsible
-          >
-            {faqs?.map(({ question, answer }, i) => {
-              if (!question && !answer) return null
-              return (
-                <AccordionItem key={i} value={`${i}. ${question}`}>
-                  <AccordionTrigger>{question}</AccordionTrigger>
-                  <AccordionContent>{answer}</AccordionContent>
-                </AccordionItem>
-              )
-            })}
-          </Accordion>
-        )}
-      </div>
-    </section>
+    <Section>
+      <Container className="max-w-screen-md">
+        <Column align={align}>
+          <Writeup size={size} align={align}>
+            {children}
+          </Writeup>
+          <Links
+            className="not-first:mt-8"
+            size={size}
+            links={links}
+            align={align}
+          />
+          {faqs && faqs.length > 0 && (
+            <Accordion
+              className="w-full max-w-2xl not-first:mt-12"
+              type="single"
+              collapsible
+            >
+              {faqs?.map(({ question, answer }, i) => {
+                if (!question && !answer) return null
+                return (
+                  <AccordionItem key={i} value={`${i}. ${question}`}>
+                    <AccordionTrigger>{question}</AccordionTrigger>
+                    <AccordionContent>{answer}</AccordionContent>
+                  </AccordionItem>
+                )
+              })}
+            </Accordion>
+          )}
+        </Column>
+      </Container>
+    </Section>
   )
 }

@@ -1,5 +1,5 @@
 ---
-import { getEntries } from "astro:content"
+import { getCollection, getEntries } from "astro:content"
 
 import { type PersonsSchema } from "@/schemas/blocks/persons"
 import { getHref } from "@/lib/get-href"
@@ -10,7 +10,9 @@ type Props = PersonsSchema
 
 const { variant, persons, html, ...schema } = Astro.props
 
-const personEntries = persons && (await getEntries(persons))
+const personEntries = persons
+  ? await getEntries(persons)
+  : await getCollection("persons")
 
 const props = {
   ...schema,

@@ -1,5 +1,5 @@
 ---
-import { getEntries } from "astro:content"
+import { getCollection, getEntries } from "astro:content"
 
 import { type ReviewsSchema } from "@/schemas/blocks/reviews"
 import { getHref } from "@/lib/get-href"
@@ -8,9 +8,11 @@ import Reviews1 from "@/components/blocks/reviews-1"
 
 type Props = ReviewsSchema
 
-const { variant, reviews, ...schema } = Astro.props
+const { variant, reviews, html, ...schema } = Astro.props
 
-const reviewEntries = reviews && (await getEntries(reviews))
+const reviewEntries = reviews
+  ? await getEntries(reviews)
+  : await getCollection("reviews")
 
 const props = {
   ...schema,
@@ -29,7 +31,7 @@ const props = {
 {
   variant === "1" && (
     <Reviews1 {...props}>
-      <slot />
+      <Fragment set:html={html} />
     </Reviews1>
   )
 }

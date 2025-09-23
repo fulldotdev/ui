@@ -21,6 +21,8 @@ import Links from "@/components/elements/links"
 import Logo from "@/components/elements/logo"
 import Socials from "@/components/elements/socials"
 
+import Container from "../structures/container"
+
 interface Props {
   align?: "start" | "center" | "end"
   logo?: React.ComponentProps<typeof Logo>["image"]
@@ -50,12 +52,12 @@ export default function ({
       className="bg-background sticky top-0 z-50 flex h-14 items-center"
       id="header"
     >
-      <div className="container flex justify-between gap-8">
-        <Logo title={title} image={logo} />
+      <Container className="flex justify-between gap-8">
+        <Logo href="/" title={title} image={logo} />
         {/* Desktop Menu */}
         {menus && menus.length > 0 && (
           <NavigationMenu
-            className={cn("max-lg:hidden", {
+            className={cn("first:-ml-2 max-lg:hidden", {
               "mr-auto": align === "start",
               "absolute left-1/2 -translate-x-1/2": align === "center",
               "ml-auto": align === "end",
@@ -157,7 +159,7 @@ export default function ({
             </Sheet>
           )}
         </div>
-      </div>
+      </Container>
     </header>
   )
 }

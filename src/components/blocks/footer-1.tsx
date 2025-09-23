@@ -26,7 +26,7 @@ export default function ({
     <section className="py-0">
       <div className="container flex w-full flex-col justify-between gap-8 py-16 md:grid md:grid-cols-[repeat(auto-fit,minmax(160px,1fr))]">
         <div className="col-span-2 flex max-w-xs flex-col">
-          <Logo title={title} {...image} />
+          <Logo href="/" title={title} {...image} />
           {description && (
             <p className="text-muted-foreground text-sm not-first:mt-3">
               {description}

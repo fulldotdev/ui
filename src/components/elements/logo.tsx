@@ -19,6 +19,7 @@ export default function ({
   href,
   ...props
 }: Props) {
+  if (!image?.src && !title) return null
   const Comp = href ? "a" : "div"
   return (
     <Comp
@@ -35,7 +36,6 @@ export default function ({
         {...image}
       />
       {title}
-      {children}
     </Comp>
   )
 }

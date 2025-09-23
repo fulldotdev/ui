@@ -20,7 +20,7 @@ interface Props {
 }
 
 export default function ({
-  align = "center",
+  align = "start",
   size = "default",
   children,
   links,
@@ -28,43 +28,49 @@ export default function ({
 }: Props) {
   return (
     <section className="py-16">
-      <div
-        className={cn("container flex flex-col items-center", {
-          "items-start text-start": align === "start",
-          "items-center text-center": align === "center",
-          "items-end text-end": align === "end",
-        })}
-      >
-        <Writeup className="not-first:mt-4" size={size}>
-          {children}
-        </Writeup>
+      <div className="container">
+        <div
+          className={cn("flex flex-col items-center", {
+            "items-start text-start": align === "start",
+            "items-center text-center": align === "center",
+            "items-end text-end": align === "end",
+          })}
+        >
+          <Writeup className="not-first:mt-4" size={size}>
+            {children}
+          </Writeup>
+        </div>
         <Links className="not-first:mt-8" size={size} links={links} />
         {persons && persons.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-x-16 gap-y-8 not-first:mt-12">
-            {persons?.map(({ title, description, image, href }, i) => (
+          <div
+            className={cn(
+              "grid w-full grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-x-4 gap-y-8 not-first:mt-16 lg:gap-x-12",
+              {
+                "justify-between": align === "start",
+                "justify-center": align === "center",
+                "justify-end": align === "end",
+              }
+            )}
+          >
+            {persons?.map(({ title, tagline, image, href }, i) => (
               <div
                 key={i}
-                className={cn("flex max-w-md grow-1 flex-col items-center", {
-                  "max-w-sm min-w-3xs basis-3xs": size === "sm",
-                  "min-w-4xs basis-4xs max-w-md": size === "default",
-                  "min-w-5xs basis-5xs max-w-lg": size === "lg",
+                className={cn("flex flex-col items-center", {
                   "items-start text-start": align === "start",
                   "items-center text-center": align === "center",
                   "items-end text-end": align === "end",
                 })}
               >
                 {image && (
-                  <div className="aspect-square w-48 overflow-hidden rounded-full">
-                    <Image
-                      className="h-full w-full object-cover"
-                      sizes="200px"
-                      {...image}
-                    />
-                  </div>
+                  <Image
+                    className="aspect-square h-full w-full max-w-56 overflow-hidden rounded-full object-cover"
+                    sizes="200px"
+                    {...image}
+                  />
                 )}
                 <Abstract className="not-first:mt-6" size={size} align={align}>
                   {title && <h3>{title}</h3>}
-                  {description && <p>{description}</p>}
+                  {tagline && <p>{tagline}</p>}
                 </Abstract>
               </div>
             ))}

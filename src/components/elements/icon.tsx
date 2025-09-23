@@ -1,13 +1,15 @@
-import * as React from "react"
-import { Check } from "lucide-react"
+import { Check, Mail, MapPin, Phone, Pin } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
 const iconMap = {
   check: Check,
+  mail: Mail,
+  phone: Phone,
+  "map-pin": MapPin,
 }
 
-interface Props extends React.ComponentProps<"svg"> {
+interface Props {
   name?: string
   className?: string
 }
@@ -18,8 +20,8 @@ export default function ({ className, name, ...props }: Props) {
   return Icon ? (
     <Icon className={cn(className)} {...props} />
   ) : (
-    <svg className={cn("size-4 text-base", className)} {...props}>
+    <span className={cn("size-4 text-base", className)} {...props}>
       {name}
-    </svg>
+    </span>
   )
 }

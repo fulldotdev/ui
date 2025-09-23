@@ -1,0 +1,35 @@
+---
+import { getCollection, getEntries } from "astro:content"
+
+import { type JobsSchema } from "@/schemas/blocks/jobs"
+import { getHref } from "@/lib/get-href"
+import { transformImage } from "@/lib/transform-image"
+import Jobs1 from "@/components/blocks/jobs-1"
+
+type Props = JobsSchema
+
+const { variant, jobs, html, ...schema } = Astro.props
+
+const jobEntries = jobs ? await getEntries(jobs) : await getCollection("jobs")
+
+const props = {
+  ...schema,
+  jobs:
+    jobEntries &&
+    (await Promise.all(
+      jobEntries.map(async (job) => ({
+        href: getHref(job),
+        ...job.data,
+        image: await transformImage(job.data.image),
+      }))
+    )),
+}
+---
+
+{
+  variant === "1" && (
+    <Jobs1 {...props}>
+      <Fragment set:html={html} />
+    </Jobs1>
+  )
+}

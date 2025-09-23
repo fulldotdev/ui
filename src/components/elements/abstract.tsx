@@ -33,6 +33,8 @@ const variants = cva(
 interface Props extends VariantProps<typeof variants> {
   className?: string
   children?: React.ReactNode
+  title?: string
+  description?: string
 }
 
 export default function ({
@@ -40,10 +42,16 @@ export default function ({
   size,
   align,
   children,
+  title,
+  description,
   ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof variants>) {
+}: Props) {
+  const hasChildren = React.Children.toArray(children).some((child) => child)
+  if (!hasChildren && !title && !description) return null
   return (
     <div className={cn(variants({ size, align }), className)} {...props}>
+      {title && <h3>{title}</h3>}
+      {description && <p>{description}</p>}
       {children}
     </div>
   )
