@@ -5,5 +5,6 @@ description: >-
 tagline: 4.8 out of 89 reviews
 rating: 4
 image:
-  src: ../../assets/michael.jpg
+  src: ../../assets/placeholder.webp
+  alt: Michael Chen
 ---

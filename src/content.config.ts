@@ -1,70 +1,71 @@
+import { articleLoader } from "@/loaders/article"
+import { blockLoader } from "@/loaders/block"
+import { blogLoader } from "@/loaders/blog"
+import { collectionLoader } from "@/loaders/collection"
+import { jobLoader } from "@/loaders/job"
+import { layoutLoader } from "@/loaders/layout"
+import { pageLoader } from "@/loaders/page"
+import { personLoader } from "@/loaders/person"
+import { productLoader } from "@/loaders/product"
+import { reviewLoader } from "@/loaders/review"
+import { serviceLoader } from "@/loaders/service"
 import { defineCollection } from "astro:content"
-import { glob } from "astro/loaders"
 
+import { blockSchema } from "@/schemas/block"
 import { articleSchema } from "@/schemas/blocks/article"
 import { blogSchema } from "@/schemas/blocks/blog"
 import { collectionSchema } from "@/schemas/blocks/collection"
+import { jobSchema } from "@/schemas/blocks/job"
 import { personSchema } from "@/schemas/blocks/person"
 import { productSchema } from "@/schemas/blocks/product"
 import { reviewSchema } from "@/schemas/blocks/review"
+import { serviceSchema } from "@/schemas/blocks/service"
 import { layoutSchema } from "@/schemas/layout"
 import { pageSchema } from "@/schemas/page"
 
 export const collections = {
   pages: defineCollection({
-    loader: glob({
-      pattern: "**/[^_]*.{md,mdx}",
-      base: "src/content/pages",
-    }),
+    loader: pageLoader(),
     schema: pageSchema,
   }),
   articles: defineCollection({
-    loader: glob({
-      pattern: "**/[^_]*.{md,mdx}",
-      base: "src/content/articles",
-    }),
-    schema: articleSchema.merge(pageSchema),
+    loader: articleLoader(),
+    schema: articleSchema,
   }),
   blogs: defineCollection({
-    loader: glob({
-      pattern: "**/[^_]*.{md,mdx}",
-      base: "src/content/blogs",
-    }),
-    schema: blogSchema.merge(pageSchema),
+    loader: blogLoader(),
+    schema: blogSchema,
   }),
   products: defineCollection({
-    loader: glob({
-      pattern: "**/[^_]*.{md,mdx}",
-      base: "src/content/products",
-    }),
-    schema: productSchema.merge(pageSchema),
+    loader: productLoader(),
+    schema: productSchema,
   }),
   collections: defineCollection({
-    loader: glob({
-      pattern: "**/[^_]*.{md,mdx}",
-      base: "src/content/collections",
-    }),
-    schema: collectionSchema.merge(pageSchema),
+    loader: collectionLoader(),
+    schema: collectionSchema,
   }),
   persons: defineCollection({
-    loader: glob({
-      pattern: "**/[^_]*.{md,mdx}",
-      base: "src/content/persons",
-    }),
-    schema: personSchema.merge(pageSchema),
+    loader: personLoader(),
+    schema: personSchema,
   }),
   reviews: defineCollection({
-    loader: glob({
-      pattern: "**/[^_]*.{md,mdx}",
-      base: "src/content/reviews",
-    }),
-    schema: reviewSchema.merge(pageSchema),
+    loader: reviewLoader(),
+    schema: reviewSchema,
+  }),
+  jobs: defineCollection({
+    loader: jobLoader(),
+    schema: jobSchema,
+  }),
+  services: defineCollection({
+    loader: serviceLoader(),
+    schema: serviceSchema,
+  }),
+  blocks: defineCollection({
+    loader: blockLoader(),
+    schema: blockSchema,
   }),
   layouts: defineCollection({
-    loader: glob({
-      pattern: "**/[^_]*.{yaml,yml,json}",
-      base: "src/content/layouts",
-    }),
-    schema: layoutSchema.merge(pageSchema),
+    loader: layoutLoader(),
+    schema: layoutSchema,
   }),
 }

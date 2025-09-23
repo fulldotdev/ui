@@ -22,6 +22,11 @@ const variants = cva(
           "text-base [&_h1]:text-4xl [&_h2]:text-3xl [&_h3]:text-2xl [&_h4]:text-xl [&_h5]:text-lg [&_h6]:text-base max-w-2xl",
         lg: "text-xl [&_h1]:text-4xl lg:[&_h1]:text-6xl [&_h2]:text-5xl [&_h3]:text-4xl [&_h4]:text-3xl [&_h5]:text-2xl [&_h6]:text-xl max-w-4xl",
       },
+      align: {
+        start: "text-start",
+        center: "text-center",
+        end: "text-end",
+      },
     },
     defaultVariants: {
       size: "default",

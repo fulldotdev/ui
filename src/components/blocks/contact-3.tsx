@@ -3,7 +3,6 @@ import Form from "@/components/elements/form"
 import Links from "@/components/elements/links"
 import Social from "@/components/elements/social"
 import Writeup from "@/components/elements/writeup"
-import Column from "@/components/structures/column"
 import Container from "@/components/structures/container"
 import Panel from "@/components/structures/panel"
 import Section from "@/components/structures/section"
@@ -30,7 +29,7 @@ export default function ({
   form,
 }: Props) {
   return (
-    <Section>
+    <Section id="contact">
       <Container>
         <Panel>
           <Split align={align}>

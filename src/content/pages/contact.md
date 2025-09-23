@@ -1,5 +1,4 @@
 ---
-type: page
 sections:
   - type: contact
     variant: "1"
@@ -8,9 +7,6 @@ sections:
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
       </p>
-    email: info@bolsward.nl
-    phone: 31612345678
-    address: Bolsward, The Netherlands
     socials:
       - "https://www.instagram.com/bolsward/"
       - "https://www.facebook.com/bolsward/"

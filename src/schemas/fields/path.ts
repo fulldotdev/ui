@@ -6,7 +6,7 @@ export const pathSchema = <T extends CollectionKey = CollectionKey>(
   z.preprocess((value) => {
     if (typeof value === "string") {
       const folder = value.split(`/${collection}/`)[0]
-      const path = folder.replace(`${folder}/${collection}/`, "")
+      const path = value.replace(`${folder}/${collection}/`, "")
       const slug = path.split(".")[0]
       const id = slug?.replace("/index", "")
       return id

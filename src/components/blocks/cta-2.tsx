@@ -14,11 +14,15 @@ interface Props {
   background?: React.ComponentProps<typeof Background>["variant"]
 }
 
-export default function ({ children, links, size, align = "center" }: Props) {
+export default function ({ children, links, size, align, background }: Props) {
   return (
-    <Section>
+    <Section id="cta">
       <Container>
         <Panel>
+          <Background
+            className="mask-y-from-white mask-y-from-75% mask-y-to-transparent"
+            variant={background}
+          />
           <Column align={align}>
             <Writeup className="max-w-3xl" size={size} align={align}>
               {children}

@@ -1,7 +1,9 @@
-import { cn } from "@/lib/utils"
 import Image from "@/components/elements/image"
 import Links from "@/components/elements/links"
 import Prose from "@/components/elements/prose"
+import Column from "@/components/structures/column"
+import Container from "@/components/structures/container"
+import Section from "@/components/structures/section"
 
 interface Props {
   size?: "sm" | "default" | "lg"
@@ -11,28 +13,23 @@ interface Props {
   image?: React.ComponentProps<typeof Image>
 }
 
-export default function ({
-  align = "center",
-  children,
-  links,
-  image,
-  size,
-}: Props) {
+export default function ({ align, children, links, image, size }: Props) {
   return (
-    <section className="overflow-hidden py-24">
-      <div
-        className={cn("container flex flex-col", {
-          "items-start": align === "start",
-          "items-center": align === "center",
-          "items-end": align === "end",
-        })}
-      >
-        <Prose className="not-first:mt-6" size={size}>
-          {children}
-        </Prose>
-        <Links className="not-first:mt-8" size={size} links={links} />
-        <Image className="rounded-lg not-first:mt-16" {...image} />
-      </div>
-    </section>
+    <Section id="content">
+      <Container className="flex max-w-screen-lg flex-col items-center">
+        <Image className="rounded-lg" {...image} />
+        <Column align={align} className="not-first:mt-16">
+          <Prose size={size} align={align}>
+            {children}
+          </Prose>
+          <Links
+            className="not-first:mt-8"
+            size={size}
+            links={links}
+            align={align}
+          />
+        </Column>
+      </Container>
+    </Section>
   )
 }

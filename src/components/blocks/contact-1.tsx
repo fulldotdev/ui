@@ -23,25 +23,13 @@ interface Props {
   }[]
 }
 
-export default function ({
-  align = "center",
-  children,
-  form,
-  size,
-  channels,
-}: Props) {
+export default function ({ align, children, form, size, channels }: Props) {
+  console.log({ form })
   return (
     <Section id="contact">
       <Container className="max-w-screen-md">
         <Column align={align}>
-          <Writeup
-            className={cn({
-              "text-start": align === "start",
-              "text-center": align === "center",
-              "text-end": align === "end",
-            })}
-            size={size}
-          >
+          <Writeup size={size} align={align}>
             {children}
           </Writeup>
           {channels && channels.length > 0 && (

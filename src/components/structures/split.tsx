@@ -12,6 +12,9 @@ const variants = cva(
         end: "items-end",
       },
     },
+    defaultVariants: {
+      align: "start",
+    },
   }
 )
 

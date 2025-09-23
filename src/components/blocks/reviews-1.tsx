@@ -29,16 +29,17 @@ export default function ({
   reviews,
 }: Props) {
   return (
-    <Section className="relative w-full py-24">
+    <Section>
       <Container>
         <Column align={align}>
-          <Writeup className="not-first:mt-4" size={size}>
+          <Writeup className="not-first:mt-4" size={size} align={align}>
             {children}
           </Writeup>
           <Links
-            className="not-first:mt-8 not-last:mb-4"
+            className="not-first:mt-8"
             size={size}
             links={links}
+            align={align}
           />
           <Masonry className="not-first:mt-16">
             {reviews?.map(

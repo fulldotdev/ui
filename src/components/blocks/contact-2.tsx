@@ -3,7 +3,6 @@ import Form from "@/components/elements/form"
 import Links from "@/components/elements/links"
 import Social from "@/components/elements/social"
 import Writeup from "@/components/elements/writeup"
-import Column from "@/components/structures/column"
 import Container from "@/components/structures/container"
 import Section from "@/components/structures/section"
 import Split from "@/components/structures/split"
@@ -29,31 +28,31 @@ export default function ({
   form,
 }: Props) {
   return (
-    <Section>
+    <Section id="contact">
       <Container>
         <Split align={align}>
-          <Column align={align}>
+          <div className="flex flex-col items-start">
             <Writeup className="max-w-3xl" size={size}>
               {children}
             </Writeup>
-            <Links className="not-first:mt-8" size={size} links={links} />
+            <Links
+              className="not-first:mt-8 not-last:mb-4"
+              size={size}
+              links={links}
+            />
             {channels && channels.length > 0 && (
-              <Column className="not-first:mt-16">
+              <div className="flex flex-col items-start gap-4 not-first:mt-12">
                 {channels?.map(({ text, href }, i) => (
-                  <Column key={i} align={align}>
+                  <div className="flex items-center gap-4" key={i}>
                     <Social variant="secondary" size={size} href={href} />
-                    <Abstract
-                      className="not-first:mt-4"
-                      size={size}
-                      align={align}
-                    >
+                    <Abstract size={size} align={align}>
                       {text}
                     </Abstract>
-                  </Column>
+                  </div>
                 ))}
-              </Column>
+              </div>
             )}
-          </Column>
+          </div>
           <Form {...form} />
         </Split>
       </Container>

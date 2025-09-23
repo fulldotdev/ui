@@ -1,6 +1,4 @@
 ---
-type: page
-title: Bolsward
 sections:
   - type: features
     variant: "1"

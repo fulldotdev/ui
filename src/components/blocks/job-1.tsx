@@ -33,7 +33,7 @@ export default function ({
   links,
 }: Props) {
   return (
-    <Section id="article">
+    <Section id="job">
       <Container className="max-w-screen-md">
         <Column align={align}>
           <Date date={published} />

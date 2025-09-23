@@ -1,6 +1,5 @@
 import { z } from "astro:schema"
 
-import { personSchema } from "@/schemas/blocks/person"
 import { linkSchema } from "@/schemas/fields/link"
 import { pathSchema } from "@/schemas/fields/path"
 

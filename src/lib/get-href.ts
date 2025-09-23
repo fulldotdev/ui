@@ -11,6 +11,9 @@ export function getHref({
   | "collections"
   | "persons"
   | "reviews"
+  | "blocks"
+  | "jobs"
+  | "services"
 >) {
   switch (collection) {
     case "pages":
@@ -27,6 +30,12 @@ export function getHref({
       return `/persons/${id}/`
     case "reviews":
       return `/reviews/${id}/`
+    case "blocks":
+      return `/blocks/${id}/`
+    case "jobs":
+      return `/jobs/${id}/`
+    case "services":
+      return `/services/${id}/`
     default:
       return undefined
   }

@@ -15,15 +15,9 @@ interface Props {
   image?: React.ComponentProps<typeof Image>
 }
 
-export default function ({
-  align = "center",
-  children,
-  links,
-  image,
-  size,
-}: Props) {
+export default function ({ align, children, links, image, size }: Props) {
   return (
-    <Section className="py-24">
+    <Section id="feature">
       <Container className="container">
         <Split align={align}>
           <Column align="start">

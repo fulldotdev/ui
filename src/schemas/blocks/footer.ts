@@ -16,6 +16,8 @@ export const footerSchema = z
         text: z.string(),
         links: linkSchema.array(),
       })
+      .partial()
+      .strict()
       .array(),
   })
   .partial()

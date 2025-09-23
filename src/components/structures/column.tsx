@@ -10,6 +10,9 @@ const variants = cva("flex flex-col", {
       end: "items-end",
     },
   },
+  defaultVariants: {
+    align: "start",
+  },
 })
 
 export default function ({

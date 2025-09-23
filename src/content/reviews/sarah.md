@@ -5,5 +5,6 @@ description: >-
 tagline: 5.0 out of 127 reviews
 rating: 5
 image:
-  src: ../../assets/sarah.jpg
+  src: ../../assets/placeholder.webp
+  alt: Sarah Johnson
 ---

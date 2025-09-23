@@ -5,5 +5,6 @@ description: >-
 tagline: 4.6 out of 142 reviews
 rating: 5
 image:
-  src: ../../assets/anna.jpg
+  src: ../../assets/placeholder.webp
+  alt: Anna Kowalski
 ---

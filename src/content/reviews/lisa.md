@@ -5,5 +5,6 @@ description: >-
 tagline: 5.0 out of 94 reviews
 rating: 5
 image:
-  src: ../../assets/lisa.jpg
+  src: ../../assets/placeholder.webp
+  alt: Lisa Wang
 ---

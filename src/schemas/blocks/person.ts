@@ -5,6 +5,7 @@ import { imageSchema } from "@/schemas/fields/image"
 export const personSchema = z
   .object({
     variant: z.enum(["1", "2"]),
+    tagline: z.string(),
     title: z.string(),
     description: z.string(),
     email: z.string().email(),

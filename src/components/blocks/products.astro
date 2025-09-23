@@ -19,18 +19,16 @@ const productEntries = collection
 
 const props = {
   ...schema,
-  products:
-    productEntries &&
-    (await Promise.all(
-      productEntries.map(async (product) => ({
-        href: getHref(product),
-        ...product.data,
-        images:
-          product.data.images &&
-          (await Promise.all(
-            product.data.images.map(async (image) => transformImage(image))
-          )),
-      }))
-    )),
+  products: await Promise.all(
+    productEntries.map(async (product) => ({
+      href: getHref(product),
+      ...product.data,
+      images:
+        product.data.images &&
+        (await Promise.all(
+          product.data.images.map(async (image) => transformImage(image))
+        )),
+    }))
+  ),
 }
 ---

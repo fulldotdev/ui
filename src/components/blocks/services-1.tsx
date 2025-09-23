@@ -20,15 +20,9 @@ interface Props {
   }[]
 }
 
-export default function ({
-  align = "center",
-  size,
-  children,
-  links,
-  services,
-}: Props) {
+export default function ({ align, size, children, links, services }: Props) {
   return (
-    <Section className="relative w-full py-24">
+    <Section id="services">
       <Container>
         <Column align={align}>
           <Writeup className="not-first:mt-4" size={size}>

@@ -1,0 +1,40 @@
+---
+import { getCollection, getEntry, render } from "astro:content"
+
+import { getHref } from "@/lib/get-href"
+import Block from "@/components/block.astro"
+import Layout from "@/components/layout.astro"
+
+export async function getStaticPaths() {
+  const entries = await getCollection("blocks")
+  const indexLayout = await getEntry("layouts", "index")
+  const entryLayout = await getEntry("layouts", "blocks")
+
+  return entries.map((entry) => {
+    return {
+      params: {
+        block: getHref(entry),
+      },
+      props: {
+        entry,
+        indexLayout,
+        entryLayout,
+      },
+    }
+  })
+}
+
+const { entry, indexLayout, entryLayout } = Astro.props
+
+const { Content } = await render(Astro.props.entry)
+---
+
+<Layout {...indexLayout?.data} {...entryLayout?.data}>
+  {
+    ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map((item) => (
+      <Block variant={item as any} {...entry.data}>
+        <Content />
+      </Block>
+    ))
+  }
+</Layout>

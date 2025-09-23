@@ -1,38 +1,43 @@
 ---
-import { getCollection } from "astro:content"
-import { mergeAll } from "remeda"
+import { getCollection, getEntry, render } from "astro:content"
 
 import { getHref } from "@/lib/get-href"
 import Block from "@/components/block.astro"
+import ContentBlock from "@/components/blocks/content.astro"
 import Layout from "@/components/layout.astro"
 
-import "@/styles/globals.css"
-
 export async function getStaticPaths() {
-  const pages = await getCollection("pages")
-  return pages.map((page) => {
+  const entries = await getCollection("pages")
+  const indexLayout = await getEntry("layouts", "index")
+  const entryLayout = await getEntry("layouts", "collections")
+
+  return entries.map((entry) => {
     return {
       params: {
-        page: getHref(page),
+        page: getHref(entry),
       },
-      props: page,
+      props: {
+        entry,
+        indexLayout,
+        entryLayout,
+      },
     }
   })
 }
 
-const { id } = Astro.props
-const { seo, sections, ...page } = Astro.props.data
+const { entry, indexLayout, entryLayout } = Astro.props
+const { sections, seo } = entry.data
 
-const layoutEntry = mergeAll(
-  await getCollection(
-    "layouts",
-    (layout) => layout.id === "index" || id.startsWith(layout.id)
-  )
-)
-
-const layout = "data" in layoutEntry ? layoutEntry.data : undefined
+const { Content } = await render(Astro.props.entry)
 ---
 
-<Layout {...layout} seo={seo}>
+<Layout {...indexLayout?.data} {...entryLayout?.data} seo={seo}>
+  {
+    Content && (
+      <ContentBlock>
+        <Content />
+      </ContentBlock>
+    )
+  }
   {sections?.map((section) => <Block {...section} />)}
 </Layout>

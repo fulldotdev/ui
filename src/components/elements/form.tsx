@@ -580,6 +580,8 @@ export default function ({
 }: Props) {
   if (!fields || !fields.length) return null
   const form = useForm()
+
+  console.log({ submit })
   return (
     <FormRoot {...form}>
       <form

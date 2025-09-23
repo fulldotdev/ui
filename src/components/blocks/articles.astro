@@ -1,0 +1,26 @@
+---
+import { getCollection, getEntries } from "astro:content"
+
+import { type ArticlesSchema } from "@/schemas/blocks/articles"
+import { getHref } from "@/lib/get-href"
+import { transformImage } from "@/lib/transform-image"
+
+type Props = ArticlesSchema
+
+const { variant, articles, html, ...schema } = Astro.props
+
+const articleEntries = articles
+  ? await getEntries(articles)
+  : await getCollection("articles")
+
+const props = {
+  ...schema,
+  articles: await Promise.all(
+    articleEntries.map(async (article) => ({
+      href: getHref(article),
+      ...article.data,
+      image: await transformImage(article.data.image),
+    }))
+  ),
+}
+---

@@ -24,7 +24,7 @@ interface Props {
 
 export default function ({ align, children, jobs, size, links }: Props) {
   return (
-    <Section>
+    <Section id="jobs">
       <Container className="max-w-screen-md">
         <Column align={align}>
           <Writeup size={size} align={align}>

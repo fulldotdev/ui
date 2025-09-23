@@ -5,5 +5,6 @@ description: >-
 tagline: 5.0 out of 156 reviews
 rating: 5
 image:
-  src: ../../assets/emma.jpg
+  src: ../../assets/placeholder.webp
+  alt: Emma Rodriguez
 ---

@@ -21,15 +21,9 @@ interface Props {
   }[]
 }
 
-export default function ({
-  align = "center",
-  children,
-  faqs,
-  size,
-  links,
-}: Props) {
+export default function ({ align, children, faqs, size, links }: Props) {
   return (
-    <Section>
+    <Section id="faqs">
       <Container className="max-w-screen-md">
         <Column align={align}>
           <Writeup size={size} align={align}>

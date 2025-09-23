@@ -19,15 +19,9 @@ interface Props {
   }[]
 }
 
-export default function ({
-  align = "start",
-  size = "default",
-  children,
-  links,
-  persons,
-}: Props) {
+export default function ({ align, size, children, links, persons }: Props) {
   return (
-    <section className="py-16">
+    <section id="persons">
       <div className="container">
         <div
           className={cn("flex flex-col items-center", {

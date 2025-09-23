@@ -15,7 +15,7 @@ interface Props {
 
 export default function ({ align, size, background, children, links }: Props) {
   return (
-    <Section className="relative -my-16 overflow-hidden py-40">
+    <Section className="relative -my-16 overflow-hidden py-40" id="cta">
       <Background
         className="mask-y-from-white mask-y-from-75% mask-y-to-transparent"
         variant={background}

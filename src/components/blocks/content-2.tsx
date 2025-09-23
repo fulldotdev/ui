@@ -2,6 +2,9 @@ import { cn } from "@/lib/utils"
 import Image from "@/components/elements/image"
 import Links from "@/components/elements/links"
 import Prose from "@/components/elements/prose"
+import Container from "@/components/structures/container"
+import Section from "@/components/structures/section"
+import Split from "@/components/structures/split"
 
 interface Props {
   size?: "sm" | "default" | "lg"
@@ -11,33 +14,18 @@ interface Props {
   image?: React.ComponentProps<typeof Image>
 }
 
-export default function ({
-  align = "center",
-  children,
-  links,
-  image,
-  size,
-}: Props) {
+export default function ({ align, children, links, image, size }: Props) {
   return (
-    <section className="py-24">
-      <div className="container">
-        <div
-          className={cn(
-            "grid w-full auto-cols-fr items-start gap-y-8 lg:grid-flow-col lg:gap-x-16",
-            {
-              "items-start": align === "start",
-              "items-center": align === "center",
-              "items-end": align === "end",
-            }
-          )}
-        >
+    <Section id="content">
+      <Container>
+        <Split align={align}>
           <div className="flex w-full flex-col items-start">
             <Prose size={size}>{children}</Prose>
             <Links className="not-first:mt-8" size={size} links={links} />
           </div>
           <Image className="rounded-lg" {...image} />
-        </div>
-      </div>
-    </section>
+        </Split>
+      </Container>
+    </Section>
   )
 }

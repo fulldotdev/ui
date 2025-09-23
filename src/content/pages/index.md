@@ -1,8 +1,4 @@
 ---
-type: page
-title: Home
-image:
-  src: ../../assets/large.png
 sections:
   # - type: hero
   #   background: ripple
@@ -69,6 +65,10 @@ sections:
   #       href: /docs/
   #     - text: "Bekijk deelnemers"
   #       href: "#"
+seo:
+  title: Home
+  image:
+    src: ../../assets/large.png
 ---
 
 ![test](src/assets/large.png)

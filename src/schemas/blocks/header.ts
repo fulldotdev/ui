@@ -16,6 +16,8 @@ export const headerSchema = z
         href: z.string(),
         links: linkSchema.array(),
       })
+      .partial()
+      .strict()
       .array(),
   })
   .partial()
