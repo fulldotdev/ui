@@ -6,7 +6,7 @@ import robotsTxt from "astro-robots-txt"
 import { defineConfig, fontProviders } from "astro/config"
 
 export default defineConfig({
-  site: "https://deuitzender.nl",
+  site: "https://ui.full.dev",
   i18n: {
     defaultLocale: "nl",
     locales: ["nl"],

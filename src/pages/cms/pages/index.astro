@@ -1,0 +1,50 @@
+---
+import { getCollection } from "astro:content"
+
+import { getHref } from "@/lib/get-href"
+import { transformImage } from "@/lib/transform-image"
+import CmsLayout from "@/components/cms/cms-layout"
+import Image from "@/components/elements/image"
+import Layout from "@/components/layout.astro"
+import Grid from "@/components/structures/grid"
+
+const pages = await getCollection("pages")
+
+const pageItems = await Promise.all(
+  pages.map(async (page) => ({
+    href: getHref(page),
+    id: page.id,
+    ...page.data,
+    image: await transformImage(page.data.seo?.image),
+  }))
+)
+
+console.log(Astro.url.pathname)
+---
+
+<Layout>
+  <CmsLayout
+    client:load
+    currentPath={Astro.url.pathname}
+    site={Astro.site?.hostname}
+  >
+    <Grid className="gap-4">
+      {
+        pageItems.map((item) => (
+          <a
+            href={`/cms/pages/${item.id}/`}
+            class="hover:bg-muted flex flex-col overflow-hidden rounded-lg border transition-colors"
+          >
+            <Image className="aspect-video object-cover" {...item.image} />
+            <div class="mt-auto p-4">
+              <h2 class="font-semibold whitespace-nowrap">{item.seo?.title}</h2>
+              <p class="text-muted-foreground text-sm whitespace-nowrap not-first:mt-2">
+                {item.href}
+              </p>
+            </div>
+          </a>
+        ))
+      }
+    </Grid>
+  </CmsLayout>
+</Layout>

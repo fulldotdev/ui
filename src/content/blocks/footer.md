@@ -1,6 +1,7 @@
 ---
 type: footer
-title: "Your Brand"
+logo:
+  title: "Your Brand"
 description: "Building amazing products and experiences."
 links:
   - text: Privacy Policy

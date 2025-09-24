@@ -633,3 +633,15 @@ export default function ({
     </FormRoot>
   )
 }
+
+export {
+  FormInput,
+  FormTextarea,
+  FormSelect,
+  FormRadio,
+  FormCheckbox,
+  FormChoice,
+  FormMultiChoice,
+  FormSlider,
+  FormDate,
+}
