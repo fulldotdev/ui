@@ -24,6 +24,8 @@ export const formSchema = z
         name: z.string(),
         label: z.string(),
         required: z.boolean(),
+        placeholder: z.string(),
+        options: z.string().array(),
       })
       .partial()
       .strict()
