@@ -1,4 +1,8 @@
 ---
+title: Bolsward
+description: Bolsward
+image:
+  src: ../../assets/placeholder.webp
 sections:
   - type: features
     variant: "1"

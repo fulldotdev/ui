@@ -2,15 +2,18 @@
 import { getCollection, getEntry, render } from "astro:content"
 
 import { getHref } from "@/lib/get-href"
+import { transformImage } from "@/lib/transform-image"
+import CmsToolbar from "@/components/cms/cms-toolbar"
 import Layout from "@/components/layout.astro"
 import Page from "@/components/page.astro"
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages")
   return pages.map((page) => {
+    const href = getHref(page)
     return {
       params: {
-        page: getHref(page),
+        page: href === "/" ? undefined : href,
       },
       props: page,
     }
@@ -22,16 +25,25 @@ const page = Astro.props
 
 const indexLayout = await getEntry("layouts", "index")
 const typeLayout = page.data.type && (await getEntry("layouts", page.data.type))
+
+const transformedPage = {
+  ...page,
+  data: {
+    ...page.data,
+    image: await transformImage(page.data.image),
+  },
+}
 ---
 
 <Layout
   {...indexLayout?.data}
   {...typeLayout?.data}
-  title={page.data.title}
-  description={page.data.description}
-  image={page.data.image}
+  title={transformedPage.data.title}
+  description={transformedPage.data.description}
+  image={transformedPage.data.image}
 >
-  <Page {...page.data}>
+  <Page {...transformedPage.data}>
     <Content />
   </Page>
+  <CmsToolbar client:load {...transformedPage} />
 </Layout>

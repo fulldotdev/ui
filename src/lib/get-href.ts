@@ -1,6 +1,6 @@
-import type { CollectionEntry } from "astro:content"
+// import type { CollectionEntry } from "astro:content"
 
-export function getHref({ collection, id }: CollectionEntry<"pages">) {
+export function getHref({ collection, id }: any) {
   switch (collection) {
     case "pages":
       return id === "index" ? "/" : `/${id}/`
