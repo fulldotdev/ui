@@ -10,12 +10,15 @@ type Props = ProductsSchema
 const { variant, products, collection, html, ...schema } = Astro.props
 
 const productEntries = collection
-  ? await getCollection("products", (product) =>
-      product.data.collections?.some((c) => c.id === collection.id)
+  ? await getCollection(
+      "pages",
+      (product) =>
+        product.data.type === "product" &&
+        product.data.collections?.some((c) => c.id === collection.id)
     )
   : products
     ? await getEntries(products)
-    : await getCollection("products")
+    : await getCollection("pages", (page) => page.data.type === "product")
 
 const props = {
   ...schema,
@@ -24,6 +27,7 @@ const props = {
       href: getHref(product),
       ...product.data,
       images:
+        "images" in product.data &&
         product.data.images &&
         (await Promise.all(
           product.data.images.map(async (image) => transformImage(image))

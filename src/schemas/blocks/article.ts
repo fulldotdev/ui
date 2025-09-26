@@ -12,7 +12,7 @@ export const articleSchema = z
     description: z.string(),
     published: z.date(),
     image: imageSchema,
-    person: pathSchema("persons"),
+    person: pathSchema,
   })
   .partial()
   .strict()

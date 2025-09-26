@@ -10,7 +10,7 @@ export const personsSchema = z
     align: z.enum(["start", "center", "end"]),
     html: z.string(),
     links: linkSchema.array(),
-    persons: pathSchema("persons").array(),
+    persons: pathSchema.array(),
   })
   .partial()
   .strict()

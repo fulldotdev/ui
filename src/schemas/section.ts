@@ -11,13 +11,13 @@ import { featureSchema } from "@/schemas/blocks/feature"
 import { featuresSchema } from "@/schemas/blocks/features"
 import { jobsSchema } from "@/schemas/blocks/jobs"
 import { mapSchema } from "@/schemas/blocks/map"
+import { pagesSchema } from "@/schemas/blocks/pages"
 import { personsSchema } from "@/schemas/blocks/persons"
 import { pricingsSchema } from "@/schemas/blocks/pricings"
 import { productsSchema } from "@/schemas/blocks/products"
 import { quoteSchema } from "@/schemas/blocks/quote"
 import { reviewSchema } from "@/schemas/blocks/review"
 import { reviewsSchema } from "@/schemas/blocks/reviews"
-import { servicesSchema } from "@/schemas/blocks/services"
 
 export const sectionSchema = z.discriminatedUnion("type", [
   articlesSchema.extend({
@@ -71,8 +71,8 @@ export const sectionSchema = z.discriminatedUnion("type", [
   reviewsSchema.extend({
     type: z.literal("reviews"),
   }),
-  servicesSchema.extend({
-    type: z.literal("services"),
+  pagesSchema.extend({
+    type: z.literal("pages"),
   }),
 ])
 

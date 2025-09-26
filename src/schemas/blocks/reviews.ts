@@ -10,7 +10,7 @@ export const reviewsSchema = z
     size: z.enum(["sm", "default", "lg"]),
     html: z.string(),
     links: linkSchema.array(),
-    reviews: pathSchema("reviews").array(),
+    reviews: pathSchema.array(),
   })
   .partial()
   .strict()

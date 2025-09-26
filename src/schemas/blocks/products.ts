@@ -10,8 +10,8 @@ export const productsSchema = z
     align: z.enum(["start", "center", "end"]),
     html: z.string(),
     links: linkSchema.array(),
-    products: pathSchema("products").array(),
-    collection: pathSchema("collections"),
+    products: pathSchema.array(),
+    collection: pathSchema,
   })
   .partial()
   .strict()

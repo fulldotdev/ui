@@ -10,7 +10,7 @@ export const blocksSchema = z
     size: z.enum(["sm", "default", "lg"]),
     html: z.string(),
     links: linkSchema.array(),
-    blocks: pathSchema("blocks").array(),
+    blocks: pathSchema.array(),
   })
   .partial()
   .strict()

@@ -2,42 +2,36 @@
 import { getCollection, getEntry, render } from "astro:content"
 
 import { getHref } from "@/lib/get-href"
-import ContentBlock from "@/components/blocks/content.astro"
 import Layout from "@/components/layout.astro"
-import Section from "@/components/section.astro"
+import Page from "@/components/page.astro"
 
 export async function getStaticPaths() {
-  const entries = await getCollection("pages")
-  const indexLayout = await getEntry("layouts", "index")
-  const entryLayout = await getEntry("layouts", "collections")
-
-  return entries.map((entry) => {
+  const pages = await getCollection("pages")
+  return pages.map((page) => {
     return {
       params: {
-        page: getHref(entry),
+        page: getHref(page),
       },
-      props: {
-        entry,
-        indexLayout,
-        entryLayout,
-      },
+      props: page,
     }
   })
 }
 
-const { entry, indexLayout, entryLayout } = Astro.props
-const { sections, seo } = entry.data
+const { Content } = await render(Astro.props)
+const page = Astro.props
 
-const { Content } = await render(Astro.props.entry)
+const indexLayout = await getEntry("layouts", "index")
+const typeLayout = page.data.type && (await getEntry("layouts", page.data.type))
 ---
 
-<Layout {...indexLayout?.data} {...entryLayout?.data} seo={seo}>
-  {
-    Content && (
-      <ContentBlock {...entry.data}>
-        <Content />
-      </ContentBlock>
-    )
-  }
-  {sections?.map((section) => <Section {...section} />)}
+<Layout
+  {...indexLayout?.data}
+  {...typeLayout?.data}
+  title={page.data.title}
+  description={page.data.description}
+  image={page.data.image}
+>
+  <Page {...page.data}>
+    <Content />
+  </Page>
 </Layout>

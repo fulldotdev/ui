@@ -10,7 +10,7 @@ export const jobsSchema = z
     align: z.enum(["start", "center", "end"]),
     html: z.string(),
     links: linkSchema.array(),
-    jobs: pathSchema("jobs").array(),
+    jobs: pathSchema.array(),
   })
   .partial()
   .strict()

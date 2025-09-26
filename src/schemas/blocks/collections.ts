@@ -7,7 +7,7 @@ export const collectionsSchema = z.object({
   size: z.enum(["sm", "default", "lg"]),
   align: z.enum(["start", "center", "end"]),
   html: z.string(),
-  collections: pathSchema("collections").array(),
+  collections: pathSchema.array(),
 })
 
 export type CollectionsSchema = z.infer<typeof collectionsSchema>

@@ -18,7 +18,7 @@ export const productSchema = z
       .partial()
       .strict(),
     variants: z.any(),
-    collections: pathSchema("collections").array(),
+    collections: pathSchema.array(),
   })
   .partial()
   .strict()

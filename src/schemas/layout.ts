@@ -1,23 +1,25 @@
 import { z } from "astro:schema"
 
-import { blockSchema } from "@/schemas/block"
 import { bannerSchema } from "@/schemas/blocks/banner"
 import { footerSchema } from "@/schemas/blocks/footer"
 import { headerSchema } from "@/schemas/blocks/header"
+import { imageSchema } from "@/schemas/fields/image"
 import { linkSchema } from "@/schemas/fields/link"
-import { seoSchema } from "@/schemas/fields/seo"
+import { sectionSchema } from "@/schemas/section"
 
 export const layoutSchema = z
   .object({
+    title: z.string(),
+    description: z.string(),
+    image: imageSchema,
     header: headerSchema,
     banner: bannerSchema,
-    sections: blockSchema.array(),
+    sections: sectionSchema.array(),
     footer: footerSchema,
     bubble: linkSchema,
     head: z.string(),
     body: z.string(),
     css: z.string(),
-    seo: seoSchema,
   })
   .partial()
   .strict()

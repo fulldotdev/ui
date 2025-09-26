@@ -1,0 +1,36 @@
+---
+import { getCollection, getEntries } from "astro:content"
+
+import { type PagesSchema } from "@/schemas/blocks/pages"
+import { getHref } from "@/lib/get-href"
+import { transformImage } from "@/lib/transform-image"
+import Pages1 from "@/components/blocks/pages-1"
+
+type Props = PagesSchema
+
+const { variant, pages, html, ...schema } = Astro.props
+
+const pageEntries = pages
+  ? await getEntries(pages)
+  : await getCollection("pages", (page) => page.data.type === undefined)
+
+const props = {
+  ...schema,
+  pages: await Promise.all(
+    pageEntries.map(async (page) => ({
+      href: getHref(page),
+      ...page.data,
+      image: await transformImage(page.data.image),
+    }))
+  ),
+}
+---
+
+{
+  variant === "1" && (
+    <Pages1 {...props}>
+      <Fragment set:html={html} />
+      <slot />
+    </Pages1>
+  )
+}
