@@ -8,8 +8,8 @@ import { defineConfig, fontProviders } from "astro/config"
 export default defineConfig({
   site: "https://ui.full.dev",
   i18n: {
-    defaultLocale: "nl",
-    locales: ["nl"],
+    defaultLocale: "en",
+    locales: ["en"],
     routing: {
       prefixDefaultLocale: false,
       redirectToDefaultLocale: false,
@@ -69,9 +69,9 @@ export default defineConfig({
       changefreq: "weekly",
       lastmod: new Date(),
       i18n: {
-        defaultLocale: "nl",
+        defaultLocale: "en",
         locales: {
-          nl: "nl",
+          en: "en",
         },
       },
     }),
@@ -79,8 +79,8 @@ export default defineConfig({
       input: {
         favicons: ["src/assets/favicon.svg"],
       },
-      name: "deuitzender",
-      short_name: "deuitzender",
+      name: "fulldev/ui",
+      short_name: "fulldev/ui",
     }),
   ],
   vite: {
