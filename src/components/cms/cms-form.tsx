@@ -1,7 +1,10 @@
 "use client"
 
 import { useState } from "react"
+import { ZodProvider } from "@autoform/zod"
+import { z } from "zod"
 
+import { AutoForm } from "@/components/ui/autoform"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -51,6 +54,38 @@ export default function CmsForm({
     setImageFile(file)
   }
 
+  const mySchema = z.object({
+    seo: z.object({
+      title: z.string(),
+      description: z.string(),
+      image: z.object({
+        src: z.string(),
+        alt: z.string(),
+        title: z.string(),
+      }),
+    }),
+    sections: z.array(
+      z.object({
+        variant: z.enum(["1", "2", "3"]),
+        title: z.string(),
+        description: z.string(),
+        image: z.object({
+          src: z.string(),
+          alt: z.string(),
+          title: z.string(),
+        }),
+        links: z
+          .object({
+            href: z.string(),
+            text: z.string(),
+          })
+          .array(),
+      })
+    ),
+  })
+
+  const schemaProvider = new ZodProvider(mySchema)
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid w-full items-center gap-3">
@@ -88,6 +123,16 @@ export default function CmsForm({
       <div className="grid w-full items-center gap-3">
         <Label htmlFor="body">Body Content</Label>
         <MinimalTiptapEditor editorContentClassName="p-5" />
+      </div>
+
+      <div>
+        <AutoForm
+          schema={schemaProvider}
+          onSubmit={(data, form) => {
+            console.log(data)
+          }}
+          withSubmit
+        />
       </div>
 
       <Button type="submit" className="w-full">

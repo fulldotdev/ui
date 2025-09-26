@@ -1,11 +1,11 @@
 import { z } from "astro:schema"
 
-import { blockSchema } from "@/schemas/block"
 import { seoSchema } from "@/schemas/fields/seo"
+import { sectionSchema } from "@/schemas/section"
 
 export const pageSchema = z
   .object({
-    sections: blockSchema.array(),
+    sections: sectionSchema.array(),
     seo: seoSchema,
   })
   .partial()

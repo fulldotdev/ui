@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content"
 
 import { transformImage } from "@/lib/transform-image"
-import CmsForm from "@/components/cms/cms-form"
+import CmsEntry from "@/components/cms/cms-entry"
 import CmsLayout from "@/components/cms/cms-layout"
 import Writeup from "@/components/elements/writeup"
 import Layout from "@/components/layout.astro"
@@ -35,19 +35,6 @@ const transformedImage = await transformImage(entry.data.seo?.image)
     currentPath={Astro.url.pathname}
     site={Astro.site?.hostname}
   >
-    <Section>
-      <Container className="max-w-screen-md">
-        <Writeup className="mb-8">
-          <h1>{entry.data.seo?.title}</h1>
-        </Writeup>
-        <CmsForm
-          client:only
-          title={entry.data.seo?.title ?? ""}
-          description={entry.data.seo?.description ?? ""}
-          image={transformedImage}
-          body={entry.body}
-        />
-      </Container>
-    </Section>
+    <CmsEntry client:load {...entry} />
   </CmsLayout>
 </Layout>

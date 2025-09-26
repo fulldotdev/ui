@@ -10,6 +10,7 @@ import { faqsSchema } from "@/schemas/blocks/faqs"
 import { featureSchema } from "@/schemas/blocks/feature"
 import { featuresSchema } from "@/schemas/blocks/features"
 import { jobsSchema } from "@/schemas/blocks/jobs"
+import { mapSchema } from "@/schemas/blocks/map"
 import { personsSchema } from "@/schemas/blocks/persons"
 import { pricingsSchema } from "@/schemas/blocks/pricings"
 import { productsSchema } from "@/schemas/blocks/products"
@@ -48,6 +49,9 @@ export const sectionSchema = z.discriminatedUnion("type", [
   }),
   jobsSchema.extend({
     type: z.literal("jobs"),
+  }),
+  mapSchema.extend({
+    type: z.literal("map"),
   }),
   personsSchema.extend({
     type: z.literal("persons"),
