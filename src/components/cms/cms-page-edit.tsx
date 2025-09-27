@@ -88,10 +88,6 @@ export default function CmsPage(entry: CollectionEntry<"pages">) {
     return null
   }
 
-  const [imageSrc, setImageSrc] = useState("")
-  const [imageAlt, setImageAlt] = useState("")
-  const [imageTitle, setImageTitle] = useState("")
-
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -106,10 +102,9 @@ export default function CmsPage(entry: CollectionEntry<"pages">) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Tabs defaultValue="details" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="details">Details</TabsTrigger>
                 <TabsTrigger value="content">Content</TabsTrigger>
-                <TabsTrigger value="sections">Sections</TabsTrigger>
               </TabsList>
               <TabsContent value="details" className="mt-6 space-y-6">
                 <FormField
@@ -328,47 +323,6 @@ export default function CmsPage(entry: CollectionEntry<"pages">) {
                                 </div>
                               </PopoverContent>
                             </Popover>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button variant="outline" size="icon">
-                                  <ImageIcon />
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent className="flex w-80 flex-col gap-2">
-                                <Input
-                                  type="src"
-                                  defaultValue={imageSrc}
-                                  onChange={(e) => setImageSrc(e.target.value)}
-                                />
-                                <Input
-                                  type="alt"
-                                  defaultValue={imageAlt}
-                                  onChange={(e) => setImageAlt(e.target.value)}
-                                />
-                                <Input
-                                  type="title"
-                                  defaultValue={imageTitle}
-                                  onChange={(e) =>
-                                    setImageTitle(e.target.value)
-                                  }
-                                />
-                                <Button
-                                  onClick={() => {
-                                    editor
-                                      .chain()
-                                      .focus()
-                                      .setImage({
-                                        src: imageSrc,
-                                        alt: imageAlt,
-                                        title: imageTitle,
-                                      })
-                                      .run()
-                                  }}
-                                >
-                                  Insert
-                                </Button>
-                              </PopoverContent>
-                            </Popover>
                           </div>
                           <Prose>
                             <EditorContent
@@ -383,36 +337,6 @@ export default function CmsPage(entry: CollectionEntry<"pages">) {
                     </FormItem>
                   )}
                 />
-              </TabsContent>
-              <TabsContent value="sections" className="space-y-4">
-                <p className="text-muted-foreground py-4 text-center text-base">
-                  Coming soon...
-                </p>
-                {/* {entry.data.sections?.map((section, index) => (
-                  <Collapsible key={index}>
-                    <CollapsibleTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        className="h-auto w-full justify-between p-4"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Section className="h-4 w-4" />
-                          <span>
-                            {section.data.type || `Section ${index + 1}`}
-                          </span>
-                        </div>
-                        <ChevronDown className="h-4 w-4" />
-                      </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="px-4 pb-4">
-                      <div className="space-y-4">
-                        <pre className="bg-muted rounded p-4 text-sm">
-                          {JSON.stringify(section.data, null, 2)}
-                        </pre>
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-                ))} */}
               </TabsContent>
             </Tabs>
             <DialogFooter className="mt-auto pt-8">
