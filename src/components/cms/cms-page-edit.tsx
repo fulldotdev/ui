@@ -2,39 +2,28 @@
 
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import Bold from "@tiptap/extension-bold"
-import Document from "@tiptap/extension-document"
-import Heading from "@tiptap/extension-heading"
-import Italic from "@tiptap/extension-italic"
-import Paragraph from "@tiptap/extension-paragraph"
-import Strike from "@tiptap/extension-strike"
-import Text from "@tiptap/extension-text"
-import Underline from "@tiptap/extension-underline"
+import Image from "@tiptap/extension-image"
 import { EditorContent, useEditor } from "@tiptap/react"
+import StarterKit from "@tiptap/starter-kit"
 import type { CollectionEntry } from "astro:content"
 import { z } from "astro:schema"
 import {
   BoldIcon,
-  ChevronDown,
+  ImageIcon,
   ItalicIcon,
+  LinkIcon,
   PencilIcon,
-  Section,
   StrikethroughIcon,
+  TrashIcon,
   UnderlineIcon,
 } from "lucide-react"
 import { useForm } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
-import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -49,10 +38,14 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import CmsEditorBody from "@/components/cms/cms-editor-body"
 import Prose from "@/components/elements/prose"
 
 const FormSchema = z.object({
@@ -79,18 +72,7 @@ export default function CmsPage(entry: CollectionEntry<"pages">) {
   const [editorState, setEditorState] = useState(0)
 
   const editor = useEditor({
-    extensions: [
-      Document,
-      Text,
-      Paragraph,
-      Bold,
-      Italic,
-      Strike,
-      Underline,
-      Heading.configure({
-        levels: [1, 2, 3],
-      }),
-    ],
+    extensions: [StarterKit, Image],
     immediatelyRender: false,
     content: entry.rendered?.html || "",
     onUpdate: ({ editor }) => {
@@ -106,6 +88,10 @@ export default function CmsPage(entry: CollectionEntry<"pages">) {
     return null
   }
 
+  const [imageSrc, setImageSrc] = useState("")
+  const [imageAlt, setImageAlt] = useState("")
+  const [imageTitle, setImageTitle] = useState("")
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -113,21 +99,19 @@ export default function CmsPage(entry: CollectionEntry<"pages">) {
           <PencilIcon className="h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="flex h-[95vh] w-full !max-w-screen-md flex-col justify-start overflow-y-auto">
-        <DialogHeader>
+      <DialogContent className="flex h-[95vh] w-full !max-w-screen-md flex-col justify-start overflow-y-auto pt-0">
+        <DialogHeader className="pt-6">
           <DialogTitle>Edit this page</DialogTitle>
-          <DialogDescription>
-            Make sure to click save when you&apos;re done.
-          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Tabs defaultValue="details" className="w-full">
-              <TabsList className="mb-4 grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="details">Details</TabsTrigger>
+                <TabsTrigger value="content">Content</TabsTrigger>
                 <TabsTrigger value="sections">Sections</TabsTrigger>
               </TabsList>
-              <TabsContent value="details" className="space-y-6">
+              <TabsContent value="details" className="mt-6 space-y-6">
                 <FormField
                   control={form.control}
                   name="title"
@@ -172,15 +156,16 @@ export default function CmsPage(entry: CollectionEntry<"pages">) {
                   src={entry.data.image?.src}
                   alt={entry.data.image?.alt}
                 />
+              </TabsContent>
+              <TabsContent value="content">
                 <FormField
                   control={form.control}
                   name="body"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="mt-4 mb-2">Body</FormLabel>
                       <FormControl>
                         <div className="flex w-full flex-col gap-2">
-                          <div className="flex gap-2">
+                          <div className="bg-background sticky top-0 z-10 flex w-full gap-2 border-b py-4">
                             <ToggleGroup variant="outline" type="single">
                               <ToggleGroupItem
                                 value="p"
@@ -291,6 +276,99 @@ export default function CmsPage(entry: CollectionEntry<"pages">) {
                                 <UnderlineIcon />
                               </ToggleGroupItem>
                             </ToggleGroup>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button variant="outline" size="icon">
+                                  <LinkIcon />
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="flex w-80 flex-col gap-2">
+                                <Input
+                                  type="text"
+                                  placeholder="Click me"
+                                  defaultValue={(() => {
+                                    const { from, to } = editor.state.selection
+                                    return editor.state.doc.textBetween(
+                                      from,
+                                      to
+                                    )
+                                  })()}
+                                />
+                                <Input
+                                  type="href"
+                                  defaultValue={
+                                    editor.getAttributes("link").href
+                                  }
+                                />
+                                <div className="flex gap-2">
+                                  <Button
+                                    className="grow"
+                                    onClick={() => {
+                                      editor
+                                        .chain()
+                                        .focus()
+                                        .toggleLink({
+                                          href: editor.getAttributes("link")
+                                            .href,
+                                        })
+                                        .run()
+                                    }}
+                                  >
+                                    Insert
+                                  </Button>
+                                  <Button
+                                    size="icon"
+                                    variant="outline"
+                                    onClick={() => {
+                                      editor.chain().focus().unsetLink().run()
+                                    }}
+                                  >
+                                    <TrashIcon />
+                                  </Button>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button variant="outline" size="icon">
+                                  <ImageIcon />
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="flex w-80 flex-col gap-2">
+                                <Input
+                                  type="src"
+                                  defaultValue={imageSrc}
+                                  onChange={(e) => setImageSrc(e.target.value)}
+                                />
+                                <Input
+                                  type="alt"
+                                  defaultValue={imageAlt}
+                                  onChange={(e) => setImageAlt(e.target.value)}
+                                />
+                                <Input
+                                  type="title"
+                                  defaultValue={imageTitle}
+                                  onChange={(e) =>
+                                    setImageTitle(e.target.value)
+                                  }
+                                />
+                                <Button
+                                  onClick={() => {
+                                    editor
+                                      .chain()
+                                      .focus()
+                                      .setImage({
+                                        src: imageSrc,
+                                        alt: imageAlt,
+                                        title: imageTitle,
+                                      })
+                                      .run()
+                                  }}
+                                >
+                                  Insert
+                                </Button>
+                              </PopoverContent>
+                            </Popover>
                           </div>
                           <Prose>
                             <EditorContent
@@ -306,12 +384,11 @@ export default function CmsPage(entry: CollectionEntry<"pages">) {
                   )}
                 />
               </TabsContent>
-
               <TabsContent value="sections" className="space-y-4">
                 <p className="text-muted-foreground py-4 text-center text-base">
                   Coming soon...
                 </p>
-                {entry.data.sections?.map((section, index) => (
+                {/* {entry.data.sections?.map((section, index) => (
                   <Collapsible key={index}>
                     <CollapsibleTrigger asChild>
                       <Button
@@ -335,10 +412,9 @@ export default function CmsPage(entry: CollectionEntry<"pages">) {
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
-                ))}
+                ))} */}
               </TabsContent>
             </Tabs>
-
             <DialogFooter className="mt-auto pt-8">
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>

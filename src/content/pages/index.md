@@ -11,6 +11,8 @@ image:
 
 This is a test of the editor.
 
+![Hello world](/placeholder.webp)
+
 ## Subheading
 
 This is a subheading.
