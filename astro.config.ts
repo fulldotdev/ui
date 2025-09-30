@@ -1,11 +1,10 @@
+import netlify from "@astrojs/netlify"
 import react from "@astrojs/react"
 import sitemap from "@astrojs/sitemap"
 import tailwindcss from "@tailwindcss/vite"
 import favicons from "astro-favicons"
 import robotsTxt from "astro-robots-txt"
 import { defineConfig, fontProviders } from "astro/config"
-
-import netlify from "@astrojs/netlify";
 
 export default defineConfig({
   site: "https://ui.full.dev",
@@ -92,6 +91,9 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      allowedHosts: ["devserver-cms-2--fulldev-cms.netlify.app"],
+    },
   },
 
   adapter: netlify(),
