@@ -7,12 +7,7 @@ function Block({ type, variant = "1", children, ...props }: any) {
   const blockImport = blockImports[blockPath] as any
   const BlockComponent = blockImport?.default
   return BlockComponent ? (
-    <BlockComponent {...props}>
-      {props.html && (
-        <div dangerouslySetInnerHTML={{ __html: props.html || "" }} />
-      )}
-      {children}
-    </BlockComponent>
+    <BlockComponent {...props}>{children}</BlockComponent>
   ) : null
 }
 

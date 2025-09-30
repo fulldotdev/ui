@@ -19,6 +19,7 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
+import { Block } from "@/components/block"
 import AutoFormImage from "@/components/elements/auto-form/auto-form-image"
 import AutoFormInput from "@/components/elements/auto-form/auto-form-input"
 import AutoFormProse from "@/components/elements/auto-form/auto-form-prose"
@@ -67,16 +68,16 @@ export default function CmsLayout({
     })
     if (error) throw error
 
-    // if (window !== undefined) {
-    //   sessionStorage.setItem(
-    //     filePath,
-    //     JSON.stringify({
-    //       digest: digest,
-    //       data: formValues.data,
-    //       body: formValues.body,
-    //     })
-    //   )
-    // }
+    if (window !== undefined) {
+      sessionStorage.setItem(
+        filePath,
+        JSON.stringify({
+          digest: digest,
+          data: formValues.data,
+          body: formValues.body,
+        })
+      )
+    }
 
     return result
   }
@@ -177,6 +178,24 @@ export default function CmsLayout({
                           label="writeup"
                         />
                       )}
+                      {"links" in section &&
+                        section.links?.map((_, linkIndex) => (
+                          <div
+                            key={linkIndex}
+                            className="grid grid-cols-2 gap-2"
+                          >
+                            <AutoFormInput
+                              control={form.control}
+                              name={`data.sections.${sectionIndex}.links.${linkIndex}.text`}
+                              label={`Link ${linkIndex + 1} text`}
+                            />
+                            <AutoFormInput
+                              control={form.control}
+                              name={`data.sections.${sectionIndex}.links.${linkIndex}.href`}
+                              label={`Link ${linkIndex + 1} href`}
+                            />
+                          </div>
+                        ))}
                       <Accordion
                         type="single"
                         collapsible
@@ -210,6 +229,33 @@ export default function CmsLayout({
                               </AccordionContent>
                             </AccordionItem>
                           ))}
+                        {"faqs" in section &&
+                          section.faqs?.map((faq, faqIndex) => (
+                            <AccordionItem
+                              key={faqIndex}
+                              value={`section-${sectionIndex}-faq-${faqIndex}`}
+                            >
+                              <AccordionTrigger className="flex w-full items-center justify-between">
+                                FAQ {faqIndex + 1}
+                              </AccordionTrigger>
+                              <AccordionContent className="space-y-4 py-4">
+                                {"title" in faq && (
+                                  <AutoFormInput
+                                    control={form.control}
+                                    name={`data.sections.${sectionIndex}.faqs.${faqIndex}.question`}
+                                    label="Title"
+                                  />
+                                )}
+                                {"description" in faq && (
+                                  <AutoFormTextarea
+                                    control={form.control}
+                                    name={`data.sections.${sectionIndex}.faqs.${faqIndex}.answer`}
+                                    label="Description"
+                                  />
+                                )}
+                              </AccordionContent>
+                            </AccordionItem>
+                          ))}
                       </Accordion>
                     </AccordionContent>
                   </AccordionItem>
@@ -219,9 +265,18 @@ export default function CmsLayout({
             </SidebarContent>
           </Sidebar>
           <SidebarInset>
-            <Page {...props}>
+            {/* <Page {...props}></Page> */}
+            <Block {...props}>
               <AutoFormProse control={form.control} name="body" />
-            </Page>
+            </Block>
+            {props.sections?.map((section, sectionIndex) => (
+              <Block key={sectionIndex} {...section}>
+                <AutoFormWriteup
+                  control={form.control}
+                  name={`data.sections.${sectionIndex}.html`}
+                />
+              </Block>
+            ))}
           </SidebarInset>
         </SidebarProvider>
       </form>
