@@ -2,7 +2,7 @@
 title: hoi
 description: Home adsfsdf
 image:
-  src: qrcode-open.spotify.com.png
+  src: /images/hero.webp
   alt: Home
 sections:
   - variant: "1"
