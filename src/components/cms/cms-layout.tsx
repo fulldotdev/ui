@@ -50,7 +50,7 @@ export default function CmsLayout({
   const formValues = form.watch()
   const props = pageProps.parse(formValues.data)
 
-  async function onSubmit() {
+  async function handleSubmit() {
     if (!filePath) return
     const { data: result, error } = await actions.updatePage({
       filePath,
@@ -62,15 +62,27 @@ export default function CmsLayout({
     return result
   }
 
+  // Auto-save before page unload if there are unsaved changes
+  React.useEffect(() => {
+    const handleBeforeUnload = () => {
+      const hasChanged =
+        JSON.stringify({ data: formValues.data, body: formValues.body }) !==
+        JSON.stringify({ data, body })
+
+      if (hasChanged) {
+        handleSubmit()
+      }
+    }
+
+    window.addEventListener("beforeunload", handleBeforeUnload)
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload)
+  }, [formValues.data, formValues.body, data, body, handleSubmit])
+
   async function handleUpload(file: File) {
     const formData = new FormData()
     formData.append("file", file)
     const { data, error } = await actions.uploadImage(formData)
-
-    if (error) {
-      throw error
-    }
-
+    if (error) throw error
     return data
   }
 
@@ -86,7 +98,10 @@ export default function CmsLayout({
       <Sidebar>
         <SidebarContent className="p-4">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-4"
+            >
               {"title" in data && (
                 <AutoFormInput
                   control={form.control}
@@ -186,8 +201,7 @@ export default function CmsLayout({
           <CmsEditor
             content={body}
             onUpdate={(content) => {
-              // Handle body content updates if needed
-              console.log("Body updated:", content)
+              form.setValue("body", content)
             }}
           />
         </Page>

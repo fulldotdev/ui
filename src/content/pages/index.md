@@ -1,5 +1,5 @@
 ---
-title: Home!!!!
+title: hoi daar! :)!!!!!!
 description: Home
 image:
   src: /placeholder.webp
@@ -30,7 +30,7 @@ sections:
     description: Features
     features:
       - icon: check
-        title: Lorem ipsum
+        title: Lorem ipsum!!!!!!
         description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua.
       - icon: check
@@ -49,12 +49,4 @@ type: article
 
 ---
 
-# Hello World
-
-This is a test of the editor.
-
-![Hello world](/placeholder.webp)
-
-## Subheading
-
-This is a subheading.
+<p>Hello World This is a test of the editor. ![Hello world](/placeholder.webp) ## Subheading This is a subheading.</p><p></p>
