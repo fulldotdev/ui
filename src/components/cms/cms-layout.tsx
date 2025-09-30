@@ -82,20 +82,20 @@ export default function CmsLayout({
   }
 
   // Auto-save before page unload if there are unsaved changes
-  React.useEffect(() => {
-    const handleBeforeUnload = () => {
-      const hasChanged =
-        JSON.stringify({ data: formValues.data, body: formValues.body }) !==
-        JSON.stringify({ data, body })
+  // React.useEffect(() => {
+  //   const handleBeforeUnload = () => {
+  //     const hasChanged =
+  //       JSON.stringify({ data: formValues.data, body: formValues.body }) !==
+  //       JSON.stringify({ data, body })
 
-      if (hasChanged) {
-        handleSubmit()
-      }
-    }
+  //     if (hasChanged) {
+  //       handleSubmit()
+  //     }
+  //   }
 
-    window.addEventListener("beforeunload", handleBeforeUnload)
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload)
-  }, [formValues.data, formValues.body, data, body, handleSubmit])
+  //   window.addEventListener("beforeunload", handleBeforeUnload)
+  //   return () => window.removeEventListener("beforeunload", handleBeforeUnload)
+  // }, [formValues.data, formValues.body, data, body, handleSubmit])
 
   async function handleUpload(file: File) {
     const formData = new FormData()
