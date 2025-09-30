@@ -15,13 +15,15 @@ interface Props {
   image?: React.ComponentProps<typeof Image>
 }
 
-export default function ({ align, children, links, image, size }: Props) {
+export default function ({ align, children, links, image, size, html }: Props) {
   return (
     <Section id="feature">
       <Container className="container">
         <Split align={align}>
           <Column align="start">
-            <Writeup size={size}>{children}</Writeup>
+            <Writeup size={size} html={html}>
+              {children}
+            </Writeup>
             <Links className="not-first:mt-8" size={size} links={links} />
           </Column>
           <Image className="rounded-lg" {...image} />

@@ -34,9 +34,10 @@ const variants = cva(
 interface Props extends VariantProps<typeof variants> {
   children?: React.ReactNode
   className?: string
+  html?: string
 }
 
-export default function ({ className, size, children, ...props }: Props) {
+export default function ({ className, size, children, html, ...props }: Props) {
   if (React.Children.toArray(children).every((child) => !child)) return null
   return (
     <div className={cn(variants({ size }), className)} {...props}>

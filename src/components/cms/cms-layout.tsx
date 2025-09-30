@@ -22,7 +22,9 @@ import {
 import CmsEditor from "@/components/cms/cms-editor"
 import AutoFormImage from "@/components/elements/auto-form/auto-form-image"
 import AutoFormInput from "@/components/elements/auto-form/auto-form-input"
+import AutoFormProse from "@/components/elements/auto-form/auto-form-prose"
 import AutoFormTextarea from "@/components/elements/auto-form/auto-form-textarea"
+import AutoFormWriteup from "@/components/elements/auto-form/auto-form-writeup"
 import { Page } from "@/components/page"
 
 export default function CmsLayout({
@@ -87,21 +89,18 @@ export default function CmsLayout({
   }
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "32rem",
-          "--sidebar-width-mobile": "100%",
-        } as React.CSSProperties
-      }
-    >
-      <Sidebar>
-        <SidebarContent className="p-4">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-4"
-            >
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+        <SidebarProvider
+          style={
+            {
+              "--sidebar-width": "32rem",
+              "--sidebar-width-mobile": "100%",
+            } as React.CSSProperties
+          }
+        >
+          <Sidebar>
+            <SidebarContent className="p-4">
               {"title" in data && (
                 <AutoFormInput
                   control={form.control}
@@ -116,6 +115,7 @@ export default function CmsLayout({
                   label="Description"
                 />
               )}
+
               {"image" in data && (
                 <AutoFormImage
                   control={form.control}
@@ -151,6 +151,13 @@ export default function CmsLayout({
                           control={form.control}
                           name={`data.sections.${sectionIndex}.description`}
                           label="Description"
+                        />
+                      )}
+                      {"html" in section && (
+                        <AutoFormWriteup
+                          control={form.control}
+                          name={`data.sections.${sectionIndex}.html`}
+                          label="writeup"
                         />
                       )}
                       <Accordion
@@ -192,20 +199,15 @@ export default function CmsLayout({
                 ))}
               </Accordion>
               <Button type="submit">Save</Button>
-            </form>
-          </Form>
-        </SidebarContent>
-      </Sidebar>
-      <SidebarInset>
-        <Page {...props}>
-          <CmsEditor
-            content={body}
-            onUpdate={(content) => {
-              form.setValue("body", content)
-            }}
-          />
-        </Page>
-      </SidebarInset>
-    </SidebarProvider>
+            </SidebarContent>
+          </Sidebar>
+          <SidebarInset>
+            <Page {...props}>
+              <AutoFormProse control={form.control} name="body" />
+            </Page>
+          </SidebarInset>
+        </SidebarProvider>
+      </form>
+    </Form>
   )
 }
