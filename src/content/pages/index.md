@@ -59,9 +59,8 @@ sections:
           eiusmod tempor incididunt ut labore et dolore magna aliqua.
     type: features
   - variant: "1"
-    html: |
-      <h2>Hello World</h2>
-      <p>This is a test of <strong>the</strong> editor.</p>
+    html: <h2>Hello <strong>World!!!!!</strong></h2><p>This is a test of
+      <strong>the</strong> editor. how are you doing todat sire?</p>
     faqs:
       - question: What services do you offer?
         answer:
