@@ -6,9 +6,12 @@ image:
   alt: Home
 sections:
   - variant: "1"
-    title: Features
-    description: Features
     html: <p>this is pretty cool bruh!!!!!!! :)))!!!!!!</p>
+    links:
+      - href: /about
+        text: About
+      - href: /contact
+        text: Contact
     features:
       - icon: check
         title: jhasdhfkhdsaf
@@ -48,9 +51,8 @@ sections:
           eiusmod tempor incididunt ut labore et dolore magna aliqua.
     type: features
   - variant: "1"
-    html: |
-      <h2>Hello World</h2>
-      <p>This is a test of <strong>the</strong> editor.</p>
+    html: <h2>Hello <strong>World</strong></h2><p>This is a test of
+      <strong>the</strong> editor. how are you doing todat sire?</p>
     faqs:
       - question: What services do you offer?
         answer: We offer a wide range of services including consulting, development, and
