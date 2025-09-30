@@ -28,13 +28,20 @@ import { Page } from "@/components/page"
 
 export default function CmsLayout({
   filePath,
+  digest,
   data,
   body,
 }: {
   filePath?: string
+  digest?: string
   data: PageSchema
   body?: string
 }) {
+  const stored =
+    typeof window !== "undefined" && sessionStorage.getItem(filePath || "")
+  const storedData = stored ? JSON.parse(stored) : undefined
+  const myData = storedData?.digest === digest ? storedData.data : data
+
   const form = useForm({
     resolver: zodResolver(
       z.object({
@@ -43,7 +50,7 @@ export default function CmsLayout({
       })
     ),
     defaultValues: {
-      data,
+      data: myData,
       body,
     },
   })
@@ -58,8 +65,19 @@ export default function CmsLayout({
       data: formValues.data,
       body: formValues.body,
     })
-
     if (error) throw error
+
+    if (window !== undefined) {
+      sessionStorage.setItem(
+        filePath,
+        JSON.stringify({
+          digest: digest,
+          data: formValues.data,
+          body: formValues.body,
+        })
+      )
+    }
+
     return result
   }
 

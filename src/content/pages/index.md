@@ -1,8 +1,8 @@
 ---
-title: Hi there
+title: hoi
 description: Home adsfsdf
 image:
-  src: /placeholder.webp
+  src: /images/hero.webp
   alt: Home
 sections:
   - variant: "1"

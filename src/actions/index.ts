@@ -1,8 +1,8 @@
 import { writeFile } from "fs/promises"
 import { join } from "path"
+import { Octokit } from "@octokit/rest"
 import { defineAction } from "astro:actions"
 import { z } from "astro:schema"
-import { rehype } from "rehype"
 import rehypeParse from "rehype-parse"
 import rehypeRemark from "rehype-remark"
 import { remark } from "remark"
@@ -19,13 +19,48 @@ export const server = {
     }),
     handler: async (input) => {
       const { file } = input
-      const fileName = `${Date.now()}-${file.name}`
-      const filePath = join(process.cwd(), "public", "images", fileName)
+      const filePath = join(process.cwd(), "public", "images", file.name)
 
       const buffer = Buffer.from(await file.arrayBuffer())
       await writeFile(filePath, buffer)
 
-      return `/images/${fileName}`
+      // Upload to GitHub
+      if (
+        import.meta.env.GITHUB_TOKEN &&
+        import.meta.env.GITHUB_USER &&
+        import.meta.env.GITHUB_REPO
+      ) {
+        const octokit = new Octokit({ auth: import.meta.env.GITHUB_TOKEN })
+        const githubPath = `public/images/${file.name}`
+
+        // Get existing file SHA if it exists
+        let sha: string | undefined
+        try {
+          const { data } = await octokit.repos.getContent({
+            owner: import.meta.env.GITHUB_USER,
+            repo: import.meta.env.GITHUB_REPO,
+            path: githubPath,
+            ref: import.meta.env.GITHUB_BRANCH,
+          })
+          if ("sha" in data) {
+            sha = data.sha
+          }
+        } catch (error) {
+          // File doesn't exist yet, that's okay
+        }
+
+        await octokit.repos.createOrUpdateFileContents({
+          owner: import.meta.env.GITHUB_USER,
+          repo: import.meta.env.GITHUB_REPO,
+          path: githubPath,
+          message: `Upload image: ${file.name}`,
+          content: buffer.toString("base64"),
+          branch: import.meta.env.GITHUB_BRANCH,
+          sha,
+        })
+      }
+
+      return `/images/${file.name}`
     },
   }),
   updatePage: defineAction({
@@ -46,6 +81,42 @@ export const server = {
         .process(body || "")
       const content = `---\n${frontmatter}\n---\n\n${markdown || ""}`
       await writeFile(filePath, content, "utf-8")
+
+      // Upload to GitHub
+      if (
+        import.meta.env.GITHUB_TOKEN &&
+        import.meta.env.GITHUB_USER &&
+        import.meta.env.GITHUB_REPO
+      ) {
+        const octokit = new Octokit({ auth: import.meta.env.GITHUB_TOKEN })
+        const githubPath = filePath.replace(process.cwd() + "/", "")
+
+        // Get existing file SHA if it exists
+        let sha: string | undefined
+        try {
+          const { data } = await octokit.repos.getContent({
+            owner: import.meta.env.GITHUB_USER,
+            repo: import.meta.env.GITHUB_REPO,
+            path: githubPath,
+            ref: import.meta.env.GITHUB_BRANCH,
+          })
+          if ("sha" in data) {
+            sha = data.sha
+          }
+        } catch (error) {
+          // File doesn't exist yet, that's okay
+        }
+
+        await octokit.repos.createOrUpdateFileContents({
+          owner: import.meta.env.GITHUB_USER,
+          repo: import.meta.env.GITHUB_REPO,
+          path: githubPath,
+          message: `Update page: ${githubPath}`,
+          content: Buffer.from(content).toString("base64"),
+          branch: import.meta.env.GITHUB_BRANCH,
+          sha,
+        })
+      }
 
       console.log(`Page saved to: ${filePath}`)
       return { success: true, filePath, data }
