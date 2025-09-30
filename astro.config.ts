@@ -5,8 +5,11 @@ import favicons from "astro-favicons"
 import robotsTxt from "astro-robots-txt"
 import { defineConfig, fontProviders } from "astro/config"
 
+import netlify from "@astrojs/netlify";
+
 export default defineConfig({
   site: "https://ui.full.dev",
+
   i18n: {
     defaultLocale: "en",
     locales: ["en"],
@@ -16,6 +19,7 @@ export default defineConfig({
       fallbackType: "redirect",
     },
   },
+
   // image: {
   //   responsiveStyles: true,
   //   layout: "constrained",
@@ -26,6 +30,7 @@ export default defineConfig({
   prefetch: {
     prefetchAll: true,
   },
+
   experimental: {
     fonts: [
       {
@@ -62,6 +67,7 @@ export default defineConfig({
       },
     ],
   },
+
   integrations: [
     robotsTxt(),
     react(),
@@ -83,7 +89,10 @@ export default defineConfig({
       short_name: "fulldev/ui",
     }),
   ],
+
   vite: {
     plugins: [tailwindcss()],
   },
+
+  adapter: netlify(),
 })

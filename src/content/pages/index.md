@@ -1,6 +1,6 @@
 ---
-title: Hello there sir, how are you doing?adafdaddsf
-description: Home
+title: Hi there
+description: Home adsfsdf
 image:
   src: /placeholder.webp
   alt: Home
@@ -8,10 +8,10 @@ sections:
   - variant: "1"
     title: Features
     description: Features
-    html: <p>this is pretty cool bruh!!!!!!! :)))</p>
+    html: <p>this is pretty cool bruh!!!!!!! :)))!!!!!!</p>
     features:
       - icon: check
-        title: Lorem ipsum!!!!!
+        title: jhasdhfkhdsaf
         description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua.
       - icon: check
@@ -65,10 +65,4 @@ type: article
 
 ---
 
-# Hello **World**!!!!
-
-This is a test of the editor.
-
-## Subheading
-
-This is a subheading.
+Dit is een inline **blog** editor
