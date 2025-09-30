@@ -19,7 +19,6 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
-import CmsEditor from "@/components/cms/cms-editor"
 import AutoFormImage from "@/components/elements/auto-form/auto-form-image"
 import AutoFormInput from "@/components/elements/auto-form/auto-form-input"
 import AutoFormProse from "@/components/elements/auto-form/auto-form-prose"
