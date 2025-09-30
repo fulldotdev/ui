@@ -1,8 +1,8 @@
 ---
-title: Hi there
+title: hoi
 description: Home adsfsdf
 image:
-  src: /placeholder.webp
+  src: qrcode-open.spotify.com.png
   alt: Home
 sections:
   - variant: "1"
