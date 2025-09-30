@@ -67,16 +67,16 @@ export default function CmsLayout({
     })
     if (error) throw error
 
-    if (window !== undefined) {
-      sessionStorage.setItem(
-        filePath,
-        JSON.stringify({
-          digest: digest,
-          data: formValues.data,
-          body: formValues.body,
-        })
-      )
-    }
+    // if (window !== undefined) {
+    //   sessionStorage.setItem(
+    //     filePath,
+    //     JSON.stringify({
+    //       digest: digest,
+    //       data: formValues.data,
+    //       body: formValues.body,
+    //     })
+    //   )
+    // }
 
     return result
   }
