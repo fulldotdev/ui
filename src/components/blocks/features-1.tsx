@@ -22,9 +22,16 @@ interface Props {
   }[]
 }
 
-export default function ({ align, size, children, links, features }: Props) {
+export default function ({
+  align,
+  size,
+  children,
+  links,
+  features,
+  ...props
+}: Props) {
   return (
-    <Section id="features">
+    <Section id="features" {...props}>
       <Container>
         <Column align={align}>
           <Writeup className="not-first:mt-4" size={size} align={align}>

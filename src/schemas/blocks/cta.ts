@@ -1,6 +1,6 @@
 import { z } from "astro:schema"
 
-import { linkSchema } from "@/schemas/fields/link"
+import { linksSchema } from "@/schemas/fields/links"
 
 export const ctaSchema = z
   .object({
@@ -9,9 +9,12 @@ export const ctaSchema = z
     size: z.enum(["sm", "default", "lg"]),
     background: z.any(),
     html: z.string(),
-    links: linkSchema.array(),
+    links: linksSchema,
   })
   .partial()
   .strict()
 
+export const ctaProps = ctaSchema
+
 export type CtaSchema = z.infer<typeof ctaSchema>
+export type CtaProps = z.infer<typeof ctaProps>

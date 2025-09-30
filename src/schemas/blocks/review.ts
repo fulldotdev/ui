@@ -14,4 +14,7 @@ export const reviewSchema = z
   .partial()
   .strict()
 
+export const reviewProps = reviewSchema
+
 export type ReviewSchema = z.infer<typeof reviewSchema>
+export type ReviewProps = z.infer<typeof reviewProps>

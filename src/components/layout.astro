@@ -1,13 +1,11 @@
 ---
 import { SEO } from "astro-seo"
 import { Font } from "astro:assets"
-import { type CollectionEntry } from "astro:content"
 
 import { type LayoutSchema } from "@/schemas/layout"
 import Banner from "@/components/blocks/banner.astro"
 import Footer from "@/components/blocks/footer.astro"
 import Header from "@/components/blocks/header.astro"
-import CmsLayout from "@/components/cms/cms-layout"
 import Social from "@/components/elements/social"
 import Section from "@/components/section.astro"
 
@@ -15,12 +13,9 @@ import "@/styles/globals.css"
 import "@/styles/_variables.scss"
 import "@/styles/_keyframe-animations.scss"
 
-type Props = LayoutSchema & {
-  entry: CollectionEntry<"pages">
-}
+type Props = LayoutSchema
 
 const {
-  entry,
   header,
   banner,
   sections,
@@ -77,35 +72,33 @@ const pageUrl = `${baseUrl}${pagePathname}`
     class="text-foreground bg-background font-base overscroll-none antialiased"
     id={Astro.url.pathname}
   >
-    <CmsLayout client:load entry={entry}>
-      {header && <Header {...header} />}
-      {banner && <Banner {...banner} />}
-      <main>
-        <slot />
-        {sections?.map((section) => <Section {...section} />)}
-      </main>
-      {footer && <Footer {...footer} />}
-      {
-        bubble && (
-          <Social
-            className="fixed right-4 bottom-4 p-6 *:!size-6 z-50"
-            variant="default"
-            {...bubble}
-          />
-        )
-      }
-      <Fragment set:html={body} />
-      <style set:html={css}></style>
-      <style>
-        body {
-          font-family: var(--font-base);
+    {header && <Header {...header} />}
+    {banner && <Banner {...banner} />}
+    <main>
+      <slot />
+      {sections?.map((section) => <Section {...section} />)}
+    </main>
+    {footer && <Footer {...footer} />}
+    {
+      bubble && (
+        <Social
+          className="fixed right-4 bottom-4 p-6 *:!size-6 z-50"
+          variant="default"
+          {...bubble}
+        />
+      )
+    }
+    <Fragment set:html={body} />
+    <style set:html={css}></style>
+    <style>
+      body {
+        font-family: var(--font-base);
 
-          h1,
-          h2 {
-            font-family: var(--font-heading);
-          }
+        h1,
+        h2 {
+          font-family: var(--font-heading);
         }
-      </style>
-    </CmsLayout>
+      }
+    </style>
   </body>
 </html>

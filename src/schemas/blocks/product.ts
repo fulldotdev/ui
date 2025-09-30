@@ -1,7 +1,6 @@
 import { z } from "astro:schema"
 
 import { imageSchema } from "@/schemas/fields/image"
-import { pathSchema } from "@/schemas/fields/path"
 
 export const productSchema = z
   .object({
@@ -18,9 +17,11 @@ export const productSchema = z
       .partial()
       .strict(),
     variants: z.any(),
-    collections: pathSchema.array(),
   })
   .partial()
   .strict()
 
+export const productProps = productSchema
+
 export type ProductSchema = z.infer<typeof productSchema>
+export type ProductProps = z.infer<typeof productProps>

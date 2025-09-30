@@ -1,12 +1,10 @@
 ---
 import { getCollection, getEntry, render } from "astro:content"
 
+import { pageProps } from "@/schemas/page"
 import { getHref } from "@/lib/get-href"
-import { transformImage } from "@/lib/transform-image"
-import CmsEditor from "@/components/cms/cms-editor"
 import CmsLayout from "@/components/cms/cms-layout"
 import Layout from "@/components/layout.astro"
-import Page from "@/components/page.astro"
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages")
@@ -21,30 +19,14 @@ export async function getStaticPaths() {
   })
 }
 
+const props = Astro.props
 const { Content } = await render(Astro.props)
-const page = Astro.props
-
-const indexLayout = await getEntry("layouts", "index")
-const typeLayout = page.data.type && (await getEntry("layouts", page.data.type))
-
-const transformedPage = {
-  ...page,
-  data: {
-    ...page.data,
-    image: await transformImage(page.data.image),
-  },
-}
+// const indexLayout = await getEntry("layouts", "index")
+// const typeLayout = page.type && (await getEntry("layouts", page.type))
 ---
 
-<Layout
-  {...indexLayout?.data}
-  {...typeLayout?.data}
-  title={transformedPage.data.title}
-  description={transformedPage.data.description}
-  image={transformedPage.data.image}
-  entry={transformedPage}
->
-  <Page {...transformedPage.data}>
+<Layout>
+  <CmsLayout client:load {...props}>
     <Content />
-  </Page>
+  </CmsLayout>
 </Layout>

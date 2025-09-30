@@ -1,16 +1,14 @@
 import { z } from "astro:schema"
 
-import { articleSchema } from "@/schemas/blocks/article"
-import { blogSchema } from "@/schemas/blocks/blog"
-import { collectionSchema } from "@/schemas/blocks/collection"
-import { jobSchema } from "@/schemas/blocks/job"
-import { personSchema } from "@/schemas/blocks/person"
-import { productSchema } from "@/schemas/blocks/product"
-import { reviewSchema } from "@/schemas/blocks/review"
+import { articleProps, articleSchema } from "@/schemas/blocks/article"
+import { jobProps, jobSchema } from "@/schemas/blocks/job"
+import { personProps, personSchema } from "@/schemas/blocks/person"
+import { productProps, productSchema } from "@/schemas/blocks/product"
+import { reviewProps, reviewSchema } from "@/schemas/blocks/review"
 import { imageSchema } from "@/schemas/fields/image"
-import { sectionSchema } from "@/schemas/section"
+import { sectionProps, sectionSchema } from "@/schemas/section"
 
-const defaultPageSchema = z
+const baseSchema = z
   .object({
     title: z.string(),
     description: z.string(),
@@ -21,30 +19,53 @@ const defaultPageSchema = z
   .strict()
 
 export const pageSchema = z.discriminatedUnion("type", [
-  defaultPageSchema.extend({
+  baseSchema.extend({
     type: z.undefined(),
   }),
-  articleSchema.merge(defaultPageSchema).extend({
+  articleSchema.merge(baseSchema).extend({
     type: z.literal("article"),
   }),
-  blogSchema.merge(defaultPageSchema).extend({
-    type: z.literal("blog"),
-  }),
-  productSchema.merge(defaultPageSchema).extend({
+  productSchema.merge(baseSchema).extend({
     type: z.literal("product"),
   }),
-  collectionSchema.merge(defaultPageSchema).extend({
-    type: z.literal("collection"),
-  }),
-  personSchema.merge(defaultPageSchema).extend({
+  personSchema.merge(baseSchema).extend({
     type: z.literal("person"),
   }),
-  reviewSchema.merge(defaultPageSchema).extend({
+  reviewSchema.merge(baseSchema).extend({
     type: z.literal("review"),
   }),
-  jobSchema.merge(defaultPageSchema).extend({
+  jobSchema.merge(baseSchema).extend({
+    type: z.literal("job"),
+  }),
+])
+
+const baseProps = baseSchema
+  .extend({
+    sections: sectionProps.array(),
+  })
+  .partial()
+  .strict()
+
+export const pageProps = z.discriminatedUnion("type", [
+  baseProps.extend({
+    type: z.undefined(),
+  }),
+  articleProps.merge(baseProps).extend({
+    type: z.literal("article"),
+  }),
+  productProps.merge(baseProps).extend({
+    type: z.literal("product"),
+  }),
+  personProps.merge(baseProps).extend({
+    type: z.literal("person"),
+  }),
+  reviewProps.merge(baseProps).extend({
+    type: z.literal("review"),
+  }),
+  jobProps.merge(baseProps).extend({
     type: z.literal("job"),
   }),
 ])
 
 export type PageSchema = z.infer<typeof pageSchema>
+export type PageProps = z.infer<typeof pageProps>

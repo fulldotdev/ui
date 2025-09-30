@@ -2,14 +2,17 @@ import { z } from "astro:schema"
 
 import { imageSchema } from "@/schemas/fields/image"
 import { linkSchema } from "@/schemas/fields/link"
+import { linksSchema } from "@/schemas/fields/links"
 
 export const featuresSchema = z
   .object({
     variant: z.enum(["1", "2"]),
     align: z.enum(["start", "center", "end"]),
     size: z.enum(["sm", "default", "lg"]),
+    title: z.string(),
+    description: z.string(),
     html: z.string(),
-    links: linkSchema.array(),
+    links: linksSchema,
     features: z
       .object({
         image: imageSchema,
@@ -25,4 +28,7 @@ export const featuresSchema = z
   .partial()
   .strict()
 
+export const featuresProps = featuresSchema
+
 export type FeaturesSchema = z.infer<typeof featuresSchema>
+export type FeaturesProps = z.infer<typeof featuresProps>

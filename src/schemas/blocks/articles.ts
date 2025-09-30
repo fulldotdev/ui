@@ -1,7 +1,8 @@
 import { z } from "astro:schema"
 
-import { linkSchema } from "@/schemas/fields/link"
-import { pathSchema } from "@/schemas/fields/path"
+import { articleProps } from "@/schemas/blocks/article"
+import { linksSchema } from "@/schemas/fields/links"
+import { referencesProps, referencesSchema } from "@/schemas/fields/references"
 
 export const articlesSchema = z
   .object({
@@ -9,11 +10,15 @@ export const articlesSchema = z
     size: z.enum(["sm", "default", "lg"]),
     align: z.enum(["start", "center", "end"]),
     html: z.string(),
-    links: linkSchema.array(),
-    articles: pathSchema.array(),
-    blog: pathSchema,
+    links: linksSchema,
+    articles: referencesSchema,
   })
   .partial()
   .strict()
 
+export const articlesProps = articlesSchema.extend({
+  articles: referencesProps.pipe(articleProps.array()),
+})
+
 export type ArticlesSchema = z.infer<typeof articlesSchema>
+export type ArticlesProps = z.infer<typeof articlesProps>

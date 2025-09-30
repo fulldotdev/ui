@@ -1,23 +1,21 @@
 import { z } from "astro:schema"
 
-import { articlesSchema } from "@/schemas/blocks/articles"
-import { blocksSchema } from "@/schemas/blocks/blocks"
-import { collectionsSchema } from "@/schemas/blocks/collections"
-import { contactSchema } from "@/schemas/blocks/contact"
-import { contentSchema } from "@/schemas/blocks/content"
-import { ctaSchema } from "@/schemas/blocks/cta"
-import { faqsSchema } from "@/schemas/blocks/faqs"
-import { featureSchema } from "@/schemas/blocks/feature"
-import { featuresSchema } from "@/schemas/blocks/features"
-import { jobsSchema } from "@/schemas/blocks/jobs"
-import { mapSchema } from "@/schemas/blocks/map"
-import { pagesSchema } from "@/schemas/blocks/pages"
-import { personsSchema } from "@/schemas/blocks/persons"
-import { pricingsSchema } from "@/schemas/blocks/pricings"
-import { productsSchema } from "@/schemas/blocks/products"
-import { quoteSchema } from "@/schemas/blocks/quote"
-import { reviewSchema } from "@/schemas/blocks/review"
-import { reviewsSchema } from "@/schemas/blocks/reviews"
+import { articlesProps, articlesSchema } from "@/schemas/blocks/articles"
+import { blocksProps, blocksSchema } from "@/schemas/blocks/blocks"
+import { contactProps, contactSchema } from "@/schemas/blocks/contact"
+import { contentProps, contentSchema } from "@/schemas/blocks/content"
+import { ctaProps, ctaSchema } from "@/schemas/blocks/cta"
+import { faqsProps, faqsSchema } from "@/schemas/blocks/faqs"
+import { featureProps, featureSchema } from "@/schemas/blocks/feature"
+import { featuresProps, featuresSchema } from "@/schemas/blocks/features"
+import { jobsProps, jobsSchema } from "@/schemas/blocks/jobs"
+import { mapProps, mapSchema } from "@/schemas/blocks/map"
+import { pagesProps, pagesSchema } from "@/schemas/blocks/pages"
+import { personsProps, personsSchema } from "@/schemas/blocks/persons"
+import { pricingsProps, pricingsSchema } from "@/schemas/blocks/pricings"
+import { productsProps, productsSchema } from "@/schemas/blocks/products"
+import { quoteProps, quoteSchema } from "@/schemas/blocks/quote"
+import { reviewsProps, reviewsSchema } from "@/schemas/blocks/reviews"
 
 export const sectionSchema = z.discriminatedUnion("type", [
   articlesSchema.extend({
@@ -25,9 +23,6 @@ export const sectionSchema = z.discriminatedUnion("type", [
   }),
   blocksSchema.extend({
     type: z.literal("blocks"),
-  }),
-  collectionsSchema.extend({
-    type: z.literal("collections"),
   }),
   contactSchema.extend({
     type: z.literal("contact"),
@@ -65,9 +60,6 @@ export const sectionSchema = z.discriminatedUnion("type", [
   quoteSchema.extend({
     type: z.literal("quote"),
   }),
-  reviewSchema.extend({
-    type: z.literal("review"),
-  }),
   reviewsSchema.extend({
     type: z.literal("reviews"),
   }),
@@ -76,4 +68,56 @@ export const sectionSchema = z.discriminatedUnion("type", [
   }),
 ])
 
+export const sectionProps = z.discriminatedUnion("type", [
+  articlesProps.extend({
+    type: z.literal("articles"),
+  }),
+  blocksProps.extend({
+    type: z.literal("blocks"),
+  }),
+  contactProps.extend({
+    type: z.literal("contact"),
+  }),
+  contentProps.extend({
+    type: z.literal("content"),
+  }),
+  ctaProps.extend({
+    type: z.literal("cta"),
+  }),
+  faqsProps.extend({
+    type: z.literal("faqs"),
+  }),
+  featureProps.extend({
+    type: z.literal("feature"),
+  }),
+  featuresProps.extend({
+    type: z.literal("features"),
+  }),
+  jobsProps.extend({
+    type: z.literal("jobs"),
+  }),
+  mapProps.extend({
+    type: z.literal("map"),
+  }),
+  personsProps.extend({
+    type: z.literal("persons"),
+  }),
+  pricingsProps.extend({
+    type: z.literal("pricings"),
+  }),
+  productsProps.extend({
+    type: z.literal("products"),
+  }),
+  quoteProps.extend({
+    type: z.literal("quote"),
+  }),
+  reviewsProps.extend({
+    type: z.literal("reviews"),
+  }),
+  pagesProps.extend({
+    type: z.literal("pages"),
+  }),
+])
+
 export type SectionSchema = z.infer<typeof sectionSchema>
+export type SectionProps = z.infer<typeof sectionProps>

@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils"
 import Date from "@/components/elements/date"
 import Image from "@/components/elements/image"
 import Person from "@/components/elements/person"

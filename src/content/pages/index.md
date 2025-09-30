@@ -1,10 +1,52 @@
 ---
-type: article
-title: Home
+title: Home!!!!
 description: Home
 image:
-  src: ../../assets/placeholder.webp
+  src: /placeholder.webp
   alt: Home
+sections:
+  - variant: "1"
+    title: Features
+    description: Features
+    features:
+      - icon: check
+        title: Lorem ipsum!!!!!
+        description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      - icon: check
+        title: Lorem ipsum
+        description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      - icon: check
+        title: Lorem ipsum
+        description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      - title: Lorem ipsum
+        description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    type: features
+  - variant: "1"
+    title: Features
+    description: Features
+    features:
+      - icon: check
+        title: Lorem ipsum
+        description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      - icon: check
+        title: Lorem ipsum
+        description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      - icon: check
+        title: Lorem ipsum
+        description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      - title: Lorem ipsum
+        description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    type: features
+type: article
+
 ---
 
 # Hello World

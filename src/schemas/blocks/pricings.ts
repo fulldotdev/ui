@@ -1,6 +1,7 @@
 import { z } from "astro:schema"
 
 import { linkSchema } from "@/schemas/fields/link"
+import { linksSchema } from "@/schemas/fields/links"
 
 export const pricingsSchema = z
   .object({
@@ -8,7 +9,7 @@ export const pricingsSchema = z
     align: z.enum(["start", "center", "end"]),
     size: z.enum(["sm", "default", "lg"]),
     html: z.string(),
-    links: linkSchema.array(),
+    links: linksSchema,
     pricings: z
       .object({
         icon: z.enum(["check", "cross"]),
@@ -26,4 +27,7 @@ export const pricingsSchema = z
   .partial()
   .strict()
 
+export const pricingsProps = pricingsSchema
+
 export type PricingsSchema = z.infer<typeof pricingsSchema>
+export type PricingsProps = z.infer<typeof pricingsProps>

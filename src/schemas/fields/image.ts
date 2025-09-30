@@ -63,6 +63,7 @@ export const imageSchema = z
   })
   .partial()
   .strict()
+  .or(z.string())
 
 export type ImageSchema = z.infer<typeof imageSchema>
 // export const imageSchema = z

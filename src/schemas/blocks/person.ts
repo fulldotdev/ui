@@ -17,4 +17,7 @@ export const personSchema = z
   .partial()
   .strict()
 
+export const personProps = personSchema
+
 export type PersonSchema = z.infer<typeof personSchema>
+export type PersonProps = z.infer<typeof personProps>

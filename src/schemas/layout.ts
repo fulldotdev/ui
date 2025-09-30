@@ -1,11 +1,11 @@
 import { z } from "astro:schema"
 
-import { bannerSchema } from "@/schemas/blocks/banner"
-import { footerSchema } from "@/schemas/blocks/footer"
-import { headerSchema } from "@/schemas/blocks/header"
+import { bannerProps, bannerSchema } from "@/schemas/blocks/banner"
+import { footerProps, footerSchema } from "@/schemas/blocks/footer"
+import { headerProps, headerSchema } from "@/schemas/blocks/header"
 import { imageSchema } from "@/schemas/fields/image"
 import { linkSchema } from "@/schemas/fields/link"
-import { sectionSchema } from "@/schemas/section"
+import { sectionProps, sectionSchema } from "@/schemas/section"
 
 export const layoutSchema = z
   .object({
@@ -24,4 +24,15 @@ export const layoutSchema = z
   .partial()
   .strict()
 
+export const layoutProps = layoutSchema
+  .extend({
+    header: headerProps,
+    banner: bannerProps,
+    footer: footerProps,
+    sections: sectionProps.array(),
+  })
+  .partial()
+  .strict()
+
 export type LayoutSchema = z.infer<typeof layoutSchema>
+export type LayoutProps = z.infer<typeof layoutProps>

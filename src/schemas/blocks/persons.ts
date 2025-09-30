@@ -1,7 +1,8 @@
 import { z } from "astro:schema"
 
-import { linkSchema } from "@/schemas/fields/link"
-import { pathSchema } from "@/schemas/fields/path"
+import { personProps } from "@/schemas/blocks/person"
+import { linksSchema } from "@/schemas/fields/links"
+import { referencesProps, referencesSchema } from "@/schemas/fields/references"
 
 export const personsSchema = z
   .object({
@@ -9,10 +10,15 @@ export const personsSchema = z
     size: z.enum(["sm", "default", "lg"]),
     align: z.enum(["start", "center", "end"]),
     html: z.string(),
-    links: linkSchema.array(),
-    persons: pathSchema.array(),
+    links: linksSchema,
+    persons: referencesSchema,
   })
   .partial()
   .strict()
 
+export const personsProps = personsSchema.extend({
+  persons: referencesProps.pipe(personProps.array()),
+})
+
 export type PersonsSchema = z.infer<typeof personsSchema>
+export type PersonsProps = z.infer<typeof personsProps>

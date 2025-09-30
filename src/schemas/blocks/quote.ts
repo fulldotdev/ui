@@ -12,4 +12,7 @@ export const quoteSchema = z
   .partial()
   .strict()
 
+export const quoteProps = quoteSchema
+
 export type QuoteSchema = z.infer<typeof quoteSchema>
+export type QuoteProps = z.infer<typeof quoteProps>

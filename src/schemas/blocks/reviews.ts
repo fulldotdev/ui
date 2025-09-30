@@ -1,7 +1,8 @@
 import { z } from "astro:schema"
 
-import { linkSchema } from "@/schemas/fields/link"
-import { pathSchema } from "@/schemas/fields/path"
+import { reviewProps } from "@/schemas/blocks/review"
+import { linksSchema } from "@/schemas/fields/links"
+import { referencesProps, referencesSchema } from "@/schemas/fields/references"
 
 export const reviewsSchema = z
   .object({
@@ -9,10 +10,15 @@ export const reviewsSchema = z
     align: z.enum(["start", "center", "end"]),
     size: z.enum(["sm", "default", "lg"]),
     html: z.string(),
-    links: linkSchema.array(),
-    reviews: pathSchema.array(),
+    links: linksSchema,
+    reviews: referencesSchema,
   })
   .partial()
   .strict()
 
+export const reviewsProps = reviewsSchema.extend({
+  reviews: referencesProps.pipe(reviewProps.array()),
+})
+
 export type ReviewsSchema = z.infer<typeof reviewsSchema>
+export type ReviewsProps = z.infer<typeof reviewsProps>

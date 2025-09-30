@@ -8,4 +8,7 @@ export const bannerSchema = z
   .partial()
   .strict()
 
+export const bannerProps = bannerSchema
+
 export type BannerSchema = z.infer<typeof bannerSchema>
+export type BannerProps = z.infer<typeof bannerProps>
