@@ -11,6 +11,9 @@ import { stringify } from "yaml"
 
 import { pageSchema } from "@/schemas/page"
 
+const WRITE_FILE = false
+const WRITE_GITHUB = true
+
 export const server = {
   uploadImage: defineAction({
     accept: "form",
@@ -22,10 +25,13 @@ export const server = {
       const filePath = join(process.cwd(), "public", "images", file.name)
 
       const buffer = Buffer.from(await file.arrayBuffer())
-      await writeFile(filePath, buffer)
+      if (WRITE_FILE) {
+        await writeFile(filePath, buffer)
+      }
 
       // Upload to GitHub
       if (
+        WRITE_GITHUB &&
         import.meta.env.GITHUB_TOKEN &&
         import.meta.env.GITHUB_USER &&
         import.meta.env.GITHUB_REPO
@@ -80,10 +86,13 @@ export const server = {
         .use(remarkStringify)
         .process(body || "")
       const content = `---\n${frontmatter}\n---\n\n${markdown || ""}`
-      await writeFile(filePath, content, "utf-8")
+      if (WRITE_FILE) {
+        await writeFile(filePath, content, "utf-8")
+      }
 
       // Upload to GitHub
       if (
+        WRITE_GITHUB &&
         import.meta.env.GITHUB_TOKEN &&
         import.meta.env.GITHUB_USER &&
         import.meta.env.GITHUB_REPO
