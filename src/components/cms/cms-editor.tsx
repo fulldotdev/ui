@@ -49,7 +49,7 @@ export default function CmsEditor({ content, onUpdate }: CmsEditorProps) {
   return (
     <EditorContext.Provider value={{ editor }}>
       <div className="flex flex-col gap-4">
-        <div className="flex flex-row gap-2">
+        <div className="bg-background sticky top-0 z-10 mt-4 flex flex-row gap-2 border-b py-2">
           <HeadingButton editor={editor} level={1} />
           <HeadingButton editor={editor} level={2} />
           <HeadingButton editor={editor} level={3} />

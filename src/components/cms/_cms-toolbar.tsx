@@ -1,6 +1,6 @@
 import type { CollectionEntry } from "astro:content"
 
-import CmsPageEdit from "@/components/cms/cms-page-edit"
+import CmsPageEdit from "@/components/cms/_cms-page-edit"
 
 export default function CmsPage(entry: CollectionEntry<"pages">) {
   return (

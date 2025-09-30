@@ -120,9 +120,7 @@ export default function CmsLayout({
             </BreadcrumbList>
           </Breadcrumb>
         </header>
-        <div className="mx-auto flex w-full max-w-screen-md flex-1 flex-col gap-4 p-4">
-          {children}
-        </div>
+        <div>{children}</div>
       </SidebarInset>
     </SidebarProvider>
   )
