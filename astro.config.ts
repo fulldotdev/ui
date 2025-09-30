@@ -18,7 +18,6 @@ export default defineConfig({
       fallbackType: "redirect",
     },
   },
-
   // image: {
   //   responsiveStyles: true,
   //   layout: "constrained",
@@ -66,7 +65,6 @@ export default defineConfig({
       },
     ],
   },
-
   integrations: [
     robotsTxt(),
     react(),
@@ -88,13 +86,11 @@ export default defineConfig({
       short_name: "fulldev/ui",
     }),
   ],
-
   vite: {
     plugins: [tailwindcss()],
     server: {
       allowedHosts: ["devserver-cms-2--fulldev-cms.netlify.app"],
     },
   },
-
   adapter: netlify(),
 })
