@@ -1,6 +1,6 @@
 ---
-title: Hello sir, how are you doing???!!!!wfe
-description: Home adsfsdf
+title: Heading
+description: Description
 image:
   src: /images/hero.webp
   alt: Home
