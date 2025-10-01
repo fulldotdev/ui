@@ -18,7 +18,7 @@ sections:
         description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua.
       - icon: check
-        title: Lorem ipsum
+        title: Hello there!!!!
         description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua.
       - icon: check
