@@ -18,6 +18,7 @@ function AutoInput<TFieldValues extends FieldValues>({
   type,
   label,
   description,
+  className,
 }: {
   control: Control<TFieldValues>
   name: FieldPath<TFieldValues>
@@ -26,19 +27,21 @@ function AutoInput<TFieldValues extends FieldValues>({
   disabled?: boolean
   label?: string
   description?: string
+  className?: string
 }) {
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="w-full">
           {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
             <Input
               placeholder={placeholder}
               disabled={disabled}
               type={type}
+              className={className}
               {...field}
             />
           </FormControl>

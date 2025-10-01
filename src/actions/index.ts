@@ -69,7 +69,7 @@ export const server = {
       return `/images/${file.name}`
     },
   }),
-  updatePage: defineAction({
+  savePage: defineAction({
     input: z.object({
       filePath: z.string(),
       data: pageSchema,

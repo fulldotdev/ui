@@ -11,6 +11,11 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 function AutoFormImage<TFieldValues extends FieldValues>({
   control,
@@ -20,6 +25,7 @@ function AutoFormImage<TFieldValues extends FieldValues>({
   label,
   description,
   upload,
+  className,
 }: {
   control: Control<TFieldValues>
   name: FieldPath<TFieldValues>
@@ -27,6 +33,7 @@ function AutoFormImage<TFieldValues extends FieldValues>({
   disabled?: boolean
   label?: string
   description?: string
+  className?: string
   upload?: (file: File) => Promise<string>
 }) {
   const handleChange = async (
@@ -55,7 +62,7 @@ function AutoFormImage<TFieldValues extends FieldValues>({
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="w-full">
           {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
             <div className="flex gap-2">
@@ -63,22 +70,28 @@ function AutoFormImage<TFieldValues extends FieldValues>({
                 placeholder={placeholder}
                 disabled={disabled}
                 type="text"
+                className={className}
                 {...field}
               />
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="relative"
-              >
-                <Upload />
-                <Input
-                  type="file"
-                  accept="image/*"
-                  className="absolute inset-0 opacity-0"
-                  onChange={(e) => handleChange(e, field.onChange)}
-                />
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="relative"
+                  >
+                    <Upload />
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      className="absolute inset-0 opacity-0"
+                      onChange={(e) => handleChange(e, field.onChange)}
+                    />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Upload a new image</TooltipContent>
+              </Tooltip>
             </div>
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}

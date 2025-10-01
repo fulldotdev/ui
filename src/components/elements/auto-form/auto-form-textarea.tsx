@@ -17,6 +17,7 @@ function AutoTextarea<TFieldValues extends FieldValues>({
   disabled,
   label,
   description,
+  className,
 }: {
   control: Control<TFieldValues>
   name: FieldPath<TFieldValues>
@@ -24,18 +25,20 @@ function AutoTextarea<TFieldValues extends FieldValues>({
   disabled?: boolean
   label?: string
   description?: string
+  className?: string
 }) {
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="w-full">
           {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
             <Textarea
               placeholder={placeholder}
               disabled={disabled}
+              className={className}
               {...field}
             />
           </FormControl>
