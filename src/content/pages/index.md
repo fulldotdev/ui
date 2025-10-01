@@ -1,4 +1,5 @@
 ---
+title: Dit is mijn product titel
 description: Home adsfsdf
 image:
   src: /images/hero.webp
