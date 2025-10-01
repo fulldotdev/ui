@@ -1,5 +1,4 @@
 ---
-title: Hello sir, how are you doing???!!!!
 description: Home adsfsdf
 image:
   src: /images/hero.webp
