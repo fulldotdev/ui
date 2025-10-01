@@ -1,12 +1,11 @@
 ---
-title: Heading
+title: Hello world
 description: Description
 image:
   src: /images/hero.webp
   alt: Home
 sections:
   - variant: "1"
-    html: <p>this is pretty cool bruh!!!!!!! :)))!!!!!!</p>
     links:
       - href: /about
         text: About
@@ -35,17 +34,8 @@ sections:
       <p>This is a test of <strong>the</strong> editor.</p>
     features:
       - icon: check
-        title: Lorem ipsum!!!!!!
-        description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
       - icon: check
-        title: Lorem ipsum
-        description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
       - icon: check
-        title: Lorem ipsum
-        description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
       - title: Lorem ipsum
         description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua.
