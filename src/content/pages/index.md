@@ -1,5 +1,4 @@
 ---
-title: Hello world
 description: Description
 image:
   src: /images/hero.webp
