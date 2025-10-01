@@ -1,6 +1,6 @@
 ---
-title: Dit is mijn product titel
-description: Home adsfsdf
+title: Hello sir, how are you doing???!!!!
+description: Hello world, how are you doing today?
 image:
   src: /images/hero.webp
   alt: Home
