@@ -6,11 +6,12 @@ image:
   alt: Home
 sections:
   - variant: "1"
+    title: Hello World
     html: <h2>Hello <strong>World!!!!!</strong></h2><p>This is a test of
     links:
-      - href: /about
+      - href: /about/
         text: About
-      - href: /contact
+      - href: /contact/
         text: Contact
     features:
       - icon: check

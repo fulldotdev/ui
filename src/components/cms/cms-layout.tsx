@@ -3,9 +3,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { actions } from "astro:actions"
 import { z } from "astro:schema"
 import {
+  ArrowLeft,
   ChevronDown,
   ChevronRight,
   CopyPlusIcon,
+  Dot,
   Heading1,
   HomeIcon,
   ImagePlus,
@@ -57,6 +59,7 @@ import {
 import { Block } from "@/components/block"
 import AutoFormImage from "@/components/elements/auto-form/auto-form-image"
 import AutoFormInput from "@/components/elements/auto-form/auto-form-input"
+import AutoFormLink from "@/components/elements/auto-form/auto-form-link"
 import AutoFormProse from "@/components/elements/auto-form/auto-form-prose"
 import AutoFormTextarea from "@/components/elements/auto-form/auto-form-textarea"
 import AutoFormWriteup from "@/components/elements/auto-form/auto-form-writeup"
@@ -138,7 +141,10 @@ export default function CmsLayout({
 
   const [hasChanges, setHasChanges] = React.useState(false)
   const [isSaving, setIsSaving] = React.useState(false)
-  const [activeSection, setActiveSection] = React.useState<number | null>(null)
+  const [activeScope, setActiveScope] = React.useState<
+    "data" | `data.sections.${number}`
+  >("data")
+  const activeScopeValue = form.getValues(activeScope)
 
   React.useEffect(() => {
     setHasChanges(
@@ -153,7 +159,7 @@ export default function CmsLayout({
         <SidebarProvider
           style={
             {
-              "--sidebar-width": "40rem",
+              "--sidebar-width": "36rem",
             } as React.CSSProperties
           }
         >
@@ -166,13 +172,12 @@ export default function CmsLayout({
             </SidebarHeader>
             <SidebarContent className="grid grid-cols-3 gap-4">
               <SidebarGroup>
-                {/* <SidebarGroupLabel>Pages</SidebarGroupLabel> */}
                 <SidebarGroupContent>
                   <SidebarMenu>
                     <SidebarMenuItem>
                       <SidebarMenuButton
-                        isActive={activeSection === null}
-                        onClick={() => setActiveSection(null)}
+                        isActive={activeScope === "data"}
+                        onClick={() => setActiveScope("data")}
                       >
                         {id === "index" ? <HomeIcon /> : <StickyNoteIcon />}
                         {id === "index" ? "home" : id}
@@ -181,13 +186,15 @@ export default function CmsLayout({
                         {data.sections?.map((section, sectionIndex) => (
                           <SidebarMenuSubItem key={sectionIndex}>
                             <SidebarMenuSubButton
-                              isActive={activeSection === sectionIndex}
-                              onClick={() => setActiveSection(sectionIndex)}
+                              isActive={
+                                activeScope === `data.sections.${sectionIndex}`
+                              }
+                              onClick={() =>
+                                setActiveScope(`data.sections.${sectionIndex}`)
+                              }
                             >
                               <SquareDashed />
-                              {"title" in section
-                                ? section.title
-                                : `section ${sectionIndex + 1}`}
+                              section {sectionIndex + 1}
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                         ))}
@@ -196,62 +203,115 @@ export default function CmsLayout({
                   </SidebarMenu>
                 </SidebarGroupContent>
               </SidebarGroup>
-              <SidebarGroup className="col-span-2">
-                {/* <SidebarGroupLabel>
-                  {activeSection === null ? "Home" : "Section"}
-                </SidebarGroupLabel> */}
-                <SidebarGroupContent className="flex flex-col gap-6">
-                  {activeSection === null ? (
-                    <>
-                      {"title" in formValues.data && (
-                        <AutoFormInput
-                          control={form.control}
-                          name="data.title"
-                          label="Title"
-                          className="bg-background"
-                        />
-                      )}
-                      {"description" in formValues.data && (
-                        <AutoFormTextarea
-                          control={form.control}
-                          name="data.description"
-                          label="Description"
-                          className="bg-background"
-                        />
-                      )}
-                      {"image" in formValues.data && (
-                        <AutoFormImage
-                          control={form.control}
-                          name="data.image.src"
-                          label="Image"
-                          upload={handleUpload}
-                          className="bg-background"
-                        />
-                      )}
-                    </>
-                  ) : (
-                    formValues.data.sections?.[activeSection] && (
+              <div className="col-span-2 col-start-2 flex flex-col">
+                <SidebarGroup>
+                  <SidebarGroupContent className="flex flex-col gap-6 p-2">
+                    <Button variant="secondary">
+                      <Undo2Icon />
+                      Back
+                    </Button>
+                    {"title" in activeScopeValue && (
+                      <AutoFormInput
+                        control={form.control}
+                        key={`${activeScope}.title`}
+                        name={`${activeScope}.title`}
+                        label="Title"
+                      />
+                    )}
+                    {"description" in activeScopeValue && (
+                      <AutoFormTextarea
+                        control={form.control}
+                        key={`${activeScope}.description`}
+                        name={`${activeScope}.description`}
+                        label="Description"
+                      />
+                    )}
+                    {"image" in activeScopeValue && (
+                      <AutoFormImage
+                        control={form.control}
+                        key={`${activeScope}.image`}
+                        name={`${activeScope}.image`}
+                      />
+                    )}
+                    <div className="flex flex-col gap-2">
+                      <Button
+                        variant="secondary"
+                        className="flex justify-between"
+                      >
+                        Section 1
+                        <ChevronRight />
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        className="flex justify-between"
+                      >
+                        Section 2
+                        <ChevronRight />
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        className="flex justify-between"
+                      >
+                        Section 2
+                        <ChevronRight />
+                      </Button>
+                    </div>
+                    {activeScope !== "data" && (
                       <>
-                        {"html" in formValues.data.sections[activeSection] && (
+                        {"html" in activeScopeValue && (
                           <AutoFormWriteup
                             control={form.control}
-                            name={`data.sections.${activeSection}.html`}
+                            key={`${activeScope}.html`}
+                            name={`${activeScope}.html`}
                           />
                         )}
-                        {"image" in formValues.data.sections[activeSection] && (
+                        {"links" in activeScopeValue &&
+                          activeScopeValue.links?.map((_, linkIndex) => (
+                            <AutoFormLink
+                              control={form.control}
+                              key={`${activeScope}.links.${linkIndex}`}
+                              name={`${activeScope}.links.${linkIndex}`}
+                              label={`Link ${linkIndex + 1}`}
+                            />
+                          ))}
+                      </>
+                    )}
+                  </SidebarGroupContent>
+                </SidebarGroup>
+
+                {"features" in activeScopeValue &&
+                  activeScopeValue.features?.map((_, featureIndex) => (
+                    <>
+                      <SidebarSeparator />
+
+                      <SidebarGroup>
+                        <SidebarGroupLabel>
+                          Feature {featureIndex + 1}
+                        </SidebarGroupLabel>
+                        <SidebarGroupContent className="flex flex-col gap-6 p-2">
+                          <AutoFormInput
+                            control={form.control}
+                            key={`${activeScope}.features.${featureIndex}.title`}
+                            name={`${activeScope}.features.${featureIndex}.title`}
+                            label="Title"
+                          />
+                          <AutoFormTextarea
+                            control={form.control}
+                            key={`${activeScope}.features.${featureIndex}.description`}
+                            name={`${activeScope}.features.${featureIndex}.description`}
+                            label="Description"
+                          />
                           <AutoFormImage
                             control={form.control}
-                            name={`data.sections.${activeSection}.image.src`}
+                            key={`${activeScope}.features.${featureIndex}.image`}
+                            name={`${activeScope}.features.${featureIndex}.image`}
                             label="Image"
-                            upload={handleUpload}
-                            className="bg-background"
                           />
-                        )}
-                      </>
-                    )
-                  )}
-                </SidebarGroupContent>
-              </SidebarGroup>
+                        </SidebarGroupContent>
+                      </SidebarGroup>
+                    </>
+                  ))}
+              </div>
             </SidebarContent>
           </Sidebar>
           <SidebarInset>
