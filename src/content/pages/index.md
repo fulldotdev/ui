@@ -1,5 +1,5 @@
 ---
-title: Home
+title: Homeasdfsdf
 description: Description
 image:
   src: /images/hero.webp
