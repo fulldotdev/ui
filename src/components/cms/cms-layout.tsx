@@ -68,6 +68,7 @@ import AutoFormImage from "@/components/elements/auto-form/auto-form-image"
 import AutoFormInput from "@/components/elements/auto-form/auto-form-input"
 import AutoFormLink from "@/components/elements/auto-form/auto-form-link"
 import AutoFormProse from "@/components/elements/auto-form/auto-form-prose"
+import AutoFormSelect from "@/components/elements/auto-form/auto-form-select"
 import AutoFormTextarea from "@/components/elements/auto-form/auto-form-textarea"
 import AutoFormWriteup from "@/components/elements/auto-form/auto-form-writeup"
 import { Page } from "@/components/page"
@@ -252,6 +253,22 @@ export default function CmsLayout({
                               Section {activeSection + 1}
                             </SidebarGroupLabel>
                             <SidebarGroupContent className="flex flex-col gap-6 p-2">
+                              {"align" in section && (
+                                <AutoFormSelect
+                                  control={form.control}
+                                  name={`data.sections.${sectionIndex}.align`}
+                                  options={["start", "center", "end"]}
+                                  label="Align"
+                                />
+                              )}
+                              {"size" in section && (
+                                <AutoFormSelect
+                                  control={form.control}
+                                  name={`data.sections.${sectionIndex}.size`}
+                                  options={["sm", "default", "lg"]}
+                                  label="Size"
+                                />
+                              )}
                               {"image" in section && (
                                 <AutoFormImage
                                   control={form.control}
@@ -379,7 +396,7 @@ export default function CmsLayout({
                 id={index.toString()}
               >
                 <Block {...section}>
-                  <AutoFormProse
+                  <AutoFormWriteup
                     control={form.control}
                     name={`data.sections.${index}.html`}
                   />

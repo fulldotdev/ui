@@ -31,8 +31,11 @@ function AutoSelect<TFieldValues extends FieldValues>({
   disabled?: boolean
   label?: string
   description?: string
-  options: { value: string; label: string }[]
+  options: (string | { value: string; label: string })[]
 }) {
+  const optionsArray = options.map((option) =>
+    typeof option === "string" ? { value: option, label: option } : option
+  )
   return (
     <FormField
       control={control}
@@ -46,12 +49,12 @@ function AutoSelect<TFieldValues extends FieldValues>({
             disabled={disabled}
           >
             <FormControl>
-              <SelectTrigger>
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {options.map((option) => (
+              {optionsArray.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
                 </SelectItem>

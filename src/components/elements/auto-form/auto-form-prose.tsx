@@ -67,29 +67,27 @@ function AutoFormProse<TFieldValues extends FieldValues>({
           <FormItem>
             {label && <FormLabel>{label}</FormLabel>}
             <FormControl>
-              <div>
+              <div className="relative flex flex-col items-start">
                 <EditorContext.Provider value={{ editor }}>
-                  <div className="flex flex-col gap-4">
-                    <div className="bg-background sticky top-0 z-10 mt-4 flex flex-row gap-2 border-b py-2">
-                      <HeadingButton editor={editor} level={1} />
-                      <HeadingButton editor={editor} level={2} />
-                      <HeadingButton editor={editor} level={3} />
-                      <MarkButton editor={editor} type="bold" />
-                      <MarkButton editor={editor} type="italic" />
-                      <MarkButton editor={editor} type="strike" />
-                      <MarkButton editor={editor} type="underline" />
-                      <ListButton editor={editor} type="bulletList" />
-                      <ListButton editor={editor} type="orderedList" />
-                      <LinkPopover editor={editor} />
-                      <ImageUploadButton editor={editor} />
-                    </div>
-                    <Prose>
-                      <EditorContent
-                        className="mt-4 min-h-80 w-full *:outline-none"
-                        editor={editor}
-                      />
-                    </Prose>
+                  <div className="bg-background sticky top-2 z-10 flex flex-row gap-2 rounded-xl border p-1">
+                    <HeadingButton editor={editor} level={1} />
+                    <HeadingButton editor={editor} level={2} />
+                    <HeadingButton editor={editor} level={3} />
+                    <MarkButton editor={editor} type="bold" />
+                    <MarkButton editor={editor} type="italic" />
+                    <MarkButton editor={editor} type="strike" />
+                    <MarkButton editor={editor} type="underline" />
+                    <ListButton editor={editor} type="bulletList" />
+                    <ListButton editor={editor} type="orderedList" />
+                    <LinkPopover editor={editor} />
+                    <ImageUploadButton editor={editor} />
                   </div>
+                  <Prose>
+                    <EditorContent
+                      className="mt-4 min-h-80 w-full *:outline-none"
+                      editor={editor}
+                    />
+                  </Prose>
                 </EditorContext.Provider>
                 <Input
                   className="hidden"

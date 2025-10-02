@@ -57,26 +57,24 @@ function AutoFormWriteup<TFieldValues extends FieldValues>({
           <FormItem>
             {label && <FormLabel>{label}</FormLabel>}
             <FormControl>
-              <div>
+              <div className="relative flex flex-col items-start">
                 <EditorContext.Provider value={{ editor }}>
-                  <div className="border-input w-full overflow-hidden rounded-md border bg-transparent text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50">
-                    <div className="bg-background sticky top-0 z-10 flex flex-row gap-2 border-b px-2 py-2">
-                      <HeadingButton editor={editor} level={1} />
-                      <HeadingButton editor={editor} level={2} />
-                      <HeadingButton editor={editor} level={3} />
-                      <MarkButton editor={editor} type="bold" />
-                      <MarkButton editor={editor} type="italic" />
-                      <MarkButton editor={editor} type="strike" />
-                      <MarkButton editor={editor} type="underline" />
-                      <LinkPopover editor={editor} />
-                    </div>
-                    <Writeup className="px-3 py-1">
-                      <EditorContent
-                        className="mt-4 min-h-80 w-full *:outline-none"
-                        editor={editor}
-                      />
-                    </Writeup>
+                  <div className="bg-background sticky top-2 z-10 flex flex-row gap-2 rounded-xl border p-1">
+                    <HeadingButton editor={editor} level={1} />
+                    <HeadingButton editor={editor} level={2} />
+                    <HeadingButton editor={editor} level={3} />
+                    <MarkButton editor={editor} type="bold" />
+                    <MarkButton editor={editor} type="italic" />
+                    <MarkButton editor={editor} type="strike" />
+                    <MarkButton editor={editor} type="underline" />
+                    <LinkPopover editor={editor} />
                   </div>
+                  <Writeup className="px-3 py-1">
+                    <EditorContent
+                      className="mt-4 min-h-80 w-full *:outline-none"
+                      editor={editor}
+                    />
+                  </Writeup>
                 </EditorContext.Provider>
                 <Input
                   className="hidden"
