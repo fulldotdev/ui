@@ -1,6 +1,7 @@
 ---
-title: Lorem ipsum
-description: Description
+title: jhasdhfkhdsaf
+description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+  eiusmod tempor incididunt ut labore et dolore magna aliqua.
 image:
   src: /images/hero.webp
   alt: Home
@@ -14,9 +15,6 @@ sections:
         text: Contact
     features:
       - icon: check
-        title: jhasdhfkhdsaf
-        description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
       - icon: check
         title: Hello there!!!!
         description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
