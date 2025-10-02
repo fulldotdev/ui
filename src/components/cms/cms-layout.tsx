@@ -6,12 +6,14 @@ import {
   ArrowLeft,
   ChevronDown,
   ChevronRight,
+  ChevronsUpDown,
   CopyPlusIcon,
   Dot,
   Heading1,
   HomeIcon,
   ImagePlus,
   InfoIcon,
+  Link,
   Redo2Icon,
   SaveIcon,
   SquareDashed,
@@ -19,15 +21,20 @@ import {
   StickyNoteIcon,
   TextAlignStart,
   TrashIcon,
+  Undo2,
   Undo2Icon,
 } from "lucide-react"
 import { useForm } from "react-hook-form"
+import type { FieldValues } from "react-hook-form"
 
 import { pageSchema, type PageSchema } from "@/schemas/page"
+import { cn } from "@/lib/utils"
 import {
   Breadcrumb,
   BreadcrumbItem,
+  BreadcrumbLink,
   BreadcrumbList,
+  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
@@ -141,10 +148,7 @@ export default function CmsLayout({
 
   const [hasChanges, setHasChanges] = React.useState(false)
   const [isSaving, setIsSaving] = React.useState(false)
-  const [activeScope, setActiveScope] = React.useState<
-    "data" | `data.sections.${number}`
-  >("data")
-  const activeScopeValue = form.getValues(activeScope)
+  const [activeSection, setActiveSection] = React.useState<number>(-1)
 
   React.useEffect(() => {
     setHasChanges(
@@ -170,213 +174,212 @@ export default function CmsLayout({
                 Save
               </Button>
             </SidebarHeader>
-            <SidebarContent className="grid grid-cols-3 gap-4">
-              <SidebarGroup>
-                <SidebarGroupContent>
-                  <SidebarMenu>
-                    <SidebarMenuItem>
-                      <SidebarMenuButton
-                        isActive={activeScope === "data"}
-                        onClick={() => setActiveScope("data")}
-                      >
-                        {id === "index" ? <HomeIcon /> : <StickyNoteIcon />}
-                        {id === "index" ? "home" : id}
-                      </SidebarMenuButton>
-                      <SidebarMenuSub>
-                        {data.sections?.map((section, sectionIndex) => (
-                          <SidebarMenuSubItem key={sectionIndex}>
-                            <SidebarMenuSubButton
-                              isActive={
-                                activeScope === `data.sections.${sectionIndex}`
-                              }
-                              onClick={() =>
-                                setActiveScope(`data.sections.${sectionIndex}`)
-                              }
-                            >
-                              <SquareDashed />
-                              section {sectionIndex + 1}
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </SidebarMenuSub>
-                    </SidebarMenuItem>
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </SidebarGroup>
-              <div className="col-span-2 col-start-2 flex flex-col">
-                <SidebarGroup>
-                  <SidebarGroupContent className="flex flex-col gap-6 p-2">
-                    <Button variant="secondary">
-                      <Undo2Icon />
-                      Back
-                    </Button>
-                    {"title" in activeScopeValue && (
-                      <AutoFormInput
-                        control={form.control}
-                        key={`${activeScope}.title`}
-                        name={`${activeScope}.title`}
-                        label="Title"
-                      />
-                    )}
-                    {"description" in activeScopeValue && (
-                      <AutoFormTextarea
-                        control={form.control}
-                        key={`${activeScope}.description`}
-                        name={`${activeScope}.description`}
-                        label="Description"
-                      />
-                    )}
-                    {"image" in activeScopeValue && (
-                      <AutoFormImage
-                        control={form.control}
-                        key={`${activeScope}.image`}
-                        name={`${activeScope}.image`}
-                      />
-                    )}
-                    <div className="flex flex-col gap-2">
-                      <Button
-                        variant="secondary"
-                        className="flex justify-between"
-                      >
-                        Section 1
-                        <ChevronRight />
-                      </Button>
-                      <Button
-                        variant="secondary"
-                        className="flex justify-between"
-                      >
-                        Section 2
-                        <ChevronRight />
-                      </Button>
-                      <Button
-                        variant="secondary"
-                        className="flex justify-between"
-                      >
-                        Section 2
-                        <ChevronRight />
-                      </Button>
-                    </div>
-                    {activeScope !== "data" && (
-                      <>
-                        {"html" in activeScopeValue && (
-                          <AutoFormWriteup
-                            control={form.control}
-                            key={`${activeScope}.html`}
-                            name={`${activeScope}.html`}
-                          />
-                        )}
-                        {"links" in activeScopeValue &&
-                          activeScopeValue.links?.map((_, linkIndex) => (
-                            <AutoFormLink
-                              control={form.control}
-                              key={`${activeScope}.links.${linkIndex}`}
-                              name={`${activeScope}.links.${linkIndex}`}
-                              label={`Link ${linkIndex + 1}`}
-                            />
-                          ))}
-                      </>
-                    )}
-                  </SidebarGroupContent>
-                </SidebarGroup>
-
-                {"features" in activeScopeValue &&
-                  activeScopeValue.features?.map((_, featureIndex) => (
-                    <>
-                      <SidebarSeparator />
-
-                      <SidebarGroup>
-                        <SidebarGroupLabel>
-                          Feature {featureIndex + 1}
-                        </SidebarGroupLabel>
-                        <SidebarGroupContent className="flex flex-col gap-6 p-2">
-                          <AutoFormInput
-                            control={form.control}
-                            key={`${activeScope}.features.${featureIndex}.title`}
-                            name={`${activeScope}.features.${featureIndex}.title`}
-                            label="Title"
-                          />
-                          <AutoFormTextarea
-                            control={form.control}
-                            key={`${activeScope}.features.${featureIndex}.description`}
-                            name={`${activeScope}.features.${featureIndex}.description`}
-                            label="Description"
-                          />
-                          <AutoFormImage
-                            control={form.control}
-                            key={`${activeScope}.features.${featureIndex}.image`}
-                            name={`${activeScope}.features.${featureIndex}.image`}
-                            label="Image"
-                          />
-                        </SidebarGroupContent>
-                      </SidebarGroup>
-                    </>
-                  ))}
-              </div>
-            </SidebarContent>
-          </Sidebar>
-          <SidebarInset>
-            <Page {...(formValues.data as any)}>
-              <AutoFormProse control={form.control} name="body" />
-            </Page>
-          </SidebarInset>
-          {/* <Sidebar variant="inset" side="right">
-            <SidebarHeader className="flex flex-row justify-end gap-2">
-              <Button type="submit" disabled={!hasChanges || isSaving}>
-                Save
-              </Button>
-            </SidebarHeader>
-            <SidebarContent className="gap-6 p-2">
-              {activeSection === null ? (
+            <SidebarContent>
+              {activeSection === -1 ? (
                 <>
-                  {"title" in formValues.data && (
-                    <AutoFormInput
-                      control={form.control}
-                      name="data.title"
-                      label="Title"
-                      className="bg-background"
-                    />
-                  )}
-                  {"description" in formValues.data && (
-                    <AutoFormTextarea
-                      control={form.control}
-                      name="data.description"
-                      label="Description"
-                      className="bg-background"
-                    />
-                  )}
-                  {"image" in formValues.data && (
-                    <AutoFormImage
-                      control={form.control}
-                      name="data.image.src"
-                      label="Image"
-                      upload={handleUpload}
-                      className="bg-background"
-                    />
+                  <SidebarGroup>
+                    <SidebarGroupLabel>Page</SidebarGroupLabel>
+                    <SidebarGroupContent className="flex flex-col gap-6 p-2">
+                      {"title" in data && (
+                        <AutoFormInput
+                          control={form.control}
+                          name={`data.title`}
+                          label="Title"
+                        />
+                      )}
+                      {"description" in data && (
+                        <AutoFormTextarea
+                          control={form.control}
+                          name={`data.description`}
+                          label="Description"
+                        />
+                      )}
+                      {"image" in data && (
+                        <AutoFormImage
+                          control={form.control}
+                          name={`data.image`}
+                          label="Image"
+                          upload={handleUpload}
+                        />
+                      )}
+                    </SidebarGroupContent>
+                  </SidebarGroup>
+                  {"sections" in data && (
+                    <SidebarGroup>
+                      <SidebarGroupLabel>Sections</SidebarGroupLabel>
+                      <SidebarGroupContent className="flex flex-col gap-2 p-2">
+                        {data.sections?.map((_, sectionIndex) => (
+                          <Button
+                            key={sectionIndex}
+                            variant="secondary"
+                            className="flex justify-between"
+                            onClick={() => setActiveSection(sectionIndex)}
+                          >
+                            Section {sectionIndex + 1}
+                            <ChevronRight />
+                          </Button>
+                        ))}
+                      </SidebarGroupContent>
+                    </SidebarGroup>
                   )}
                 </>
               ) : (
-                formValues.data.sections?.[activeSection] && (
-                  <>
-                    {"html" in formValues.data.sections[activeSection] && (
-                      <AutoFormWriteup
-                        control={form.control}
-                        name={`data.sections.${activeSection}.html`}
-                      />
-                    )}
-                    {"image" in formValues.data.sections[activeSection] && (
-                      <AutoFormImage
-                        control={form.control}
-                        name={`data.sections.${activeSection}.image.src`}
-                        label="Image"
-                        upload={handleUpload}
-                        className="bg-background"
-                      />
-                    )}
-                  </>
-                )
+                <>
+                  <SidebarGroup>
+                    <SidebarGroupContent className="flex flex-col gap-2 p-2">
+                      <Button
+                        variant="outline"
+                        className="flex"
+                        onClick={() => setActiveSection(-1)}
+                      >
+                        Back
+                        <Undo2 />
+                      </Button>
+                    </SidebarGroupContent>
+                  </SidebarGroup>
+                  {data.sections?.map((section, sectionIndex) => (
+                    <>
+                      {activeSection === sectionIndex && (
+                        <>
+                          <SidebarGroup>
+                            <SidebarGroupLabel>
+                              Section {activeSection + 1}
+                            </SidebarGroupLabel>
+                            <SidebarGroupContent className="flex flex-col gap-6 p-2">
+                              {"html" in section && (
+                                <AutoFormWriteup
+                                  control={form.control}
+                                  name={`data.sections.${sectionIndex}.html`}
+                                />
+                              )}
+                              {"image" in section && (
+                                <AutoFormImage
+                                  control={form.control}
+                                  name={`data.sections.${sectionIndex}.image`}
+                                  upload={handleUpload}
+                                  label="Image"
+                                />
+                              )}
+                              {"links" in section &&
+                                section.links?.map((_, linkIndex) => (
+                                  <AutoFormLink
+                                    key={linkIndex}
+                                    control={form.control}
+                                    name={`data.sections.${sectionIndex}.links.${linkIndex}`}
+                                    label="Link"
+                                  />
+                                ))}
+                            </SidebarGroupContent>
+                          </SidebarGroup>
+                          {"features" in section && (
+                            <SidebarGroup>
+                              <SidebarGroupLabel>Features</SidebarGroupLabel>
+                              <SidebarGroupContent className="flex flex-col gap-2 p-2">
+                                {section.features?.map(
+                                  (feature, featureIndex) => (
+                                    <Collapsible>
+                                      <CollapsibleTrigger asChild>
+                                        <Button
+                                          variant="secondary"
+                                          className="flex w-full justify-between"
+                                        >
+                                          Feature {featureIndex + 1}
+                                          <ChevronDown />
+                                        </Button>
+                                      </CollapsibleTrigger>
+                                      <CollapsibleContent className="flex flex-col gap-6 p-6">
+                                        {"title" in feature && (
+                                          <AutoFormInput
+                                            control={form.control}
+                                            name={`data.sections.${sectionIndex}.features.${featureIndex}.title`}
+                                            label="Title"
+                                          />
+                                        )}
+                                        {"description" in feature && (
+                                          <AutoFormTextarea
+                                            control={form.control}
+                                            name={`data.sections.${sectionIndex}.features.${featureIndex}.description`}
+                                            label="Description"
+                                          />
+                                        )}
+                                        {"image" in feature && (
+                                          <AutoFormImage
+                                            control={form.control}
+                                            name={`data.sections.${sectionIndex}.features.${featureIndex}.image`}
+                                            label="Image"
+                                            upload={handleUpload}
+                                          />
+                                        )}
+                                      </CollapsibleContent>
+                                    </Collapsible>
+                                  )
+                                )}
+                              </SidebarGroupContent>
+                            </SidebarGroup>
+                          )}
+                          {"faqs" in section && (
+                            <SidebarGroup>
+                              <SidebarGroupLabel>FAQs</SidebarGroupLabel>
+                              <SidebarGroupContent className="flex flex-col gap-2 p-2">
+                                {section.faqs?.map((faq, faqIndex) => (
+                                  <Collapsible>
+                                    <CollapsibleTrigger asChild>
+                                      <Button
+                                        variant="secondary"
+                                        className="flex w-full justify-between"
+                                      >
+                                        FAQ {faqIndex + 1}
+                                        <ChevronRight />
+                                      </Button>
+                                    </CollapsibleTrigger>
+                                    <CollapsibleContent className="flex flex-col gap-6 py-6">
+                                      {"question" in faq && (
+                                        <AutoFormInput
+                                          control={form.control}
+                                          name={`data.sections.${sectionIndex}.faqs.${faqIndex}.question`}
+                                          label="Question"
+                                        />
+                                      )}
+                                      {"answer" in faq && (
+                                        <AutoFormTextarea
+                                          control={form.control}
+                                          name={`data.sections.${sectionIndex}.faqs.${faqIndex}.answer`}
+                                          label="Answer"
+                                        />
+                                      )}
+                                    </CollapsibleContent>
+                                  </Collapsible>
+                                ))}
+                              </SidebarGroupContent>
+                            </SidebarGroup>
+                          )}
+                        </>
+                      )}
+                    </>
+                  ))}
+                </>
               )}
             </SidebarContent>
-          </Sidebar> */}
+          </Sidebar>
+          <SidebarInset>
+            <div
+              onClick={() => setActiveSection(-1)}
+              className="hover:ring-primary/25 rounded-2xl ring-4 ring-transparent transition ring-inset"
+            >
+              <Block {...formValues.data}>
+                <AutoFormProse control={form.control} name="body" />
+              </Block>
+            </div>
+            {formValues.data.sections?.map((section, index) => (
+              <div
+                key={index}
+                onClick={() => setActiveSection(index)}
+                className="hover:ring-primary/25 rounded-2xl ring-4 ring-transparent transition ring-inset"
+              >
+                <Block {...section} />
+              </div>
+            ))}
+          </SidebarInset>
         </SidebarProvider>
       </form>
     </Form>
