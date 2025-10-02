@@ -1,10 +1,12 @@
 ---
+title: Home
 description: Description
 image:
   src: /images/hero.webp
   alt: Home
 sections:
   - variant: "1"
+    html: <h2>Hello <strong>World!!!!!</strong></h2><p>This is a test of
     links:
       - href: /about
         text: About
@@ -28,17 +30,13 @@ sections:
           eiusmod tempor incididunt ut labore et dolore magna aliqua.
     type: features
   - variant: "1"
+    title: Lorem ipsum
     features:
-      - icon: check
-      - icon: check
-      - icon: check
       - title: Lorem ipsum
         description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua.
     type: features
   - variant: "1"
-    html: <h2>Hello <strong>World!!!!!</strong></h2><p>This is a test of
-      <strong>the</strong> editor. how are you doing todat sire?</p>
     faqs:
       - question: What services do you offer?
         answer: We offer a wide range of services including consulting, development, and
@@ -53,4 +51,4 @@ type: article
 
 ---
 
-***Dit is een inline blog editor***
+Dit is een inline **blog** editor
