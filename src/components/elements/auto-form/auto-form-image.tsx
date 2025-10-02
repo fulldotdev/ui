@@ -21,7 +21,6 @@ function AutoFormImage<TFieldValues extends FieldValues>({
   control,
   name,
   placeholder,
-  disabled,
   label,
   description,
   upload,
@@ -30,7 +29,6 @@ function AutoFormImage<TFieldValues extends FieldValues>({
   control: Control<TFieldValues>
   name: FieldPath<TFieldValues>
   placeholder?: string
-  disabled?: boolean
   label?: string
   description?: string
   className?: string
@@ -68,7 +66,7 @@ function AutoFormImage<TFieldValues extends FieldValues>({
             <div className="flex gap-2">
               <Input
                 placeholder={placeholder}
-                disabled={disabled}
+                disabled={true}
                 type="text"
                 className={className}
                 {...field}

@@ -214,9 +214,12 @@ export default function CmsLayout({
                             variant="secondary"
                             className="flex justify-between"
                             onClick={() => setActiveSection(sectionIndex)}
+                            asChild
                           >
-                            Section {sectionIndex + 1}
-                            <ChevronRight />
+                            <a href={`#${sectionIndex}`}>
+                              Section {sectionIndex + 1}
+                              <ChevronRight />
+                            </a>
                           </Button>
                         ))}
                       </SidebarGroupContent>
@@ -231,9 +234,12 @@ export default function CmsLayout({
                         variant="outline"
                         className="flex"
                         onClick={() => setActiveSection(-1)}
+                        asChild
                       >
-                        Back
-                        <Undo2 />
+                        <a href="#-1">
+                          Back
+                          <Undo2 />
+                        </a>
                       </Button>
                     </SidebarGroupContent>
                   </SidebarGroup>
@@ -246,12 +252,6 @@ export default function CmsLayout({
                               Section {activeSection + 1}
                             </SidebarGroupLabel>
                             <SidebarGroupContent className="flex flex-col gap-6 p-2">
-                              {"html" in section && (
-                                <AutoFormWriteup
-                                  control={form.control}
-                                  name={`data.sections.${sectionIndex}.html`}
-                                />
-                              )}
                               {"image" in section && (
                                 <AutoFormImage
                                   control={form.control}
@@ -319,7 +319,7 @@ export default function CmsLayout({
                           )}
                           {"faqs" in section && (
                             <SidebarGroup>
-                              <SidebarGroupLabel>FAQs</SidebarGroupLabel>
+                              <SidebarGroupLabel>Faqs</SidebarGroupLabel>
                               <SidebarGroupContent className="flex flex-col gap-2 p-2">
                                 {section.faqs?.map((faq, faqIndex) => (
                                   <Collapsible>
@@ -328,7 +328,7 @@ export default function CmsLayout({
                                         variant="secondary"
                                         className="flex w-full justify-between"
                                       >
-                                        FAQ {faqIndex + 1}
+                                        Faq {faqIndex + 1}
                                         <ChevronRight />
                                       </Button>
                                     </CollapsibleTrigger>
@@ -365,6 +365,7 @@ export default function CmsLayout({
             <div
               onClick={() => setActiveSection(-1)}
               className="hover:ring-primary/25 rounded-2xl ring-4 ring-transparent transition ring-inset"
+              id="-1"
             >
               <Block {...formValues.data}>
                 <AutoFormProse control={form.control} name="body" />
@@ -375,8 +376,14 @@ export default function CmsLayout({
                 key={index}
                 onClick={() => setActiveSection(index)}
                 className="hover:ring-primary/25 rounded-2xl ring-4 ring-transparent transition ring-inset"
+                id={index.toString()}
               >
-                <Block {...section} />
+                <Block {...section}>
+                  <AutoFormProse
+                    control={form.control}
+                    name={`data.sections.${index}.html`}
+                  />
+                </Block>
               </div>
             ))}
           </SidebarInset>
