@@ -11,8 +11,8 @@ import { stringify } from "yaml"
 
 import { pageSchema } from "@/schemas/page"
 
-const WRITE_FILE = false
-const WRITE_GITHUB = true
+const WRITE_FILE = true
+const WRITE_GITHUB = false
 
 export const server = {
   uploadImage: defineAction({
@@ -25,6 +25,7 @@ export const server = {
       const filePath = join(process.cwd(), "public", "images", file.name)
 
       const buffer = Buffer.from(await file.arrayBuffer())
+
       if (WRITE_FILE) {
         await writeFile(filePath, buffer)
       }
