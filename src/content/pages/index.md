@@ -1,5 +1,5 @@
 ---
-title: jhasdhfkhdsaf
+title: Hello world!
 description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
   eiusmod tempor incididunt ut labore et dolore magna aliqua.
 image:
@@ -7,7 +7,7 @@ image:
   alt: Home
 sections:
   - variant: "1"
-    html: <h3>Hello <strong>World!!!!!</strong></h3><p>This is a test of</p>
+    html: <h2>Hello <strong>World!!!!!</strong></h2><p>This is a test of
     links:
       - href: /about/
         text: About
@@ -28,6 +28,7 @@ sections:
           eiusmod tempor incididunt ut labore et dolore magna aliqua.
     type: features
   - variant: "1"
+    html: <h1>Hello</h1><p></p><p></p>
     features:
       - title: Lorem ipsum
         description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
