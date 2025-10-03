@@ -28,6 +28,7 @@ sections:
           eiusmod tempor incididunt ut labore et dolore magna aliqua.
     type: features
   - variant: "1"
+    html: <h1>Hello</h1><p></p><p></p>
     features:
       - title: Lorem ipsum
         description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
