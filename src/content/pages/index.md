@@ -1,5 +1,5 @@
 ---
-title: Home!
+title: Home!!!!!
 description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
   eiusmod tempor incididunt ut labore et dolore magna aliqua.
 image:
@@ -7,7 +7,7 @@ image:
   alt: Home
 sections:
   - variant: "1"
-    html: <h2>Features</h2>
+    html: <h2>Features</h2><p></p>
     links:
       - href: /about/
         text: About
@@ -27,7 +27,7 @@ sections:
           eiusmod tempor incididunt ut labore et dolore magna aliqua.
     type: features
   - variant: "1"
-    html: <h2>FAQs</h2>
+    html: <h2>FAQs</h2><p></p>
     faqs:
       - question: What services do you offer?
         answer: We offer a wide range of services including consulting, development, and
@@ -39,7 +39,7 @@ sections:
         answer: We are open Monday through Friday from 9 AM to 6 PM EST.
     type: faqs
   - variant: "1"
-    html: <h2>My reviews</h2>
+    html: <h2>My reviews</h2><p></p>
     type: reviews
 type: article
 
