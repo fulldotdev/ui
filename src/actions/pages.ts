@@ -1,8 +1,8 @@
 import { Octokit } from "@octokit/rest"
-import { ActionError, defineAction } from "astro:actions"
+import { defineAction } from "astro:actions"
 import {
+  GITHUB_BRANCH,
   GITHUB_OWNER,
-  GITHUB_REF,
   GITHUB_REPO,
   GITHUB_TOKEN,
 } from "astro:env/server"
@@ -18,10 +18,8 @@ import { githubPageSchema } from "@/schemas/github-page"
 const octokit = new Octokit({ auth: GITHUB_TOKEN })
 
 async function getEntryByFile(file: any) {
-  if (!file.download_url) return
-
-  const response = await fetch(file.download_url)
-  const content = await response.text()
+  if (!file.content) return
+  const content = Buffer.from(file.content, "base64").toString("utf-8")
 
   const id = file.name.replace("/index.md", "").replace(".md", "") as string
   const data = parse(content.split("---")[1])
@@ -48,67 +46,59 @@ export const pages = {
   createOrUpdatePage: defineAction({
     input: githubPageSchema,
     handler: async (input) => {
-      try {
-        const frontmatter = stringify(input.data)
-        const markdown =
-          input.rendered?.html &&
-          (await remark()
-            .use(rehypeParse)
-            .use(rehypeRemark)
-            .use(remarkStringify)
-            .process(input.rendered?.html))
-        const content = `---\n${frontmatter}\n---\n\n${markdown || ""}`
+      const frontmatter = stringify(input.data)
+      const markdown =
+        input.rendered?.html &&
+        (await remark()
+          .use(rehypeParse)
+          .use(rehypeRemark)
+          .use(remarkStringify)
+          .process(input.rendered?.html))
+      const content = `---\n${frontmatter}\n---\n\n${markdown || ""}`
 
-        const { data } = await octokit.repos.createOrUpdateFileContents({
-          owner: GITHUB_OWNER,
-          repo: GITHUB_REPO,
-          ref: GITHUB_REF,
-          path: input.filePath,
-          message: `Created page: ${input.filePath}`,
-          content: Buffer.from(content).toString("base64"),
-          sha: input.sha,
-        })
-        return data
-      } catch (error: any) {
-        throw new ActionError({
-          code: "BAD_REQUEST",
-          message: error.message,
-        })
-      }
-    },
-  }),
-  getPages: defineAction({
-    input: z.never(),
-    handler: async () => {
-      const { data } = await octokit.repos.getContent({
+      const { data } = await octokit.repos.createOrUpdateFileContents({
         owner: GITHUB_OWNER,
         repo: GITHUB_REPO,
-        ref: GITHUB_REF,
-        path: "src/content/pages",
+        branch: GITHUB_BRANCH,
+        path: input.filePath,
+        message: `page: ${input.filePath}`,
+        content: Buffer.from(content).toString("base64"),
+        sha: input.sha,
       })
 
-      const files = (Array.isArray(data) ? data : [data]).filter(
-        (file) => file.type === "file"
-      )
-
-      const entries = await Promise.all(files.map(getEntryByFile))
-      const filtered = entries.filter((entry) => entry !== undefined)
-      return filtered
+      return data
     },
   }),
+  // getPages: defineAction({
+  //   input: z.never(),
+  //   handler: async () => {
+  //     const { data } = await octokit.repos.getContent({
+  //       owner: GITHUB_OWNER,
+  //       repo: GITHUB_REPO,
+  //       ref: GITHUB_BRANCH,
+  //       path: "src/content/pages",
+  //     })
+
+  //     const files = (Array.isArray(data) ? data : [data]).filter(
+  //       (file) => file.type === "file"
+  //     )
+
+  //     const entries = await Promise.all(files.map(getEntryByFile))
+  //     const filtered = entries.filter((entry) => entry !== undefined)
+  //     return filtered
+  //   },
+  // }),
   getPage: defineAction({
     input: z.string(),
     handler: async (input) => {
       const { data } = await octokit.repos.getContent({
         owner: GITHUB_OWNER,
         repo: GITHUB_REPO,
-        ref: GITHUB_REF,
+        ref: GITHUB_BRANCH,
         path: `src/content/pages/${input}.md`,
       })
 
-      const file = data
-      const entry = await getEntryByFile(file)
-
+      const entry = await getEntryByFile(data)
       return entry
     },
   }),

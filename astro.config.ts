@@ -18,7 +18,7 @@ export default defineConfig({
         context: "server",
         access: "public",
       }),
-      GITHUB_REF: envField.string({
+      GITHUB_BRANCH: envField.string({
         context: "server",
         access: "public",
       }),

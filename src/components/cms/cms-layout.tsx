@@ -1,8 +1,9 @@
 import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { actions } from "astro:actions"
-import { ChevronDown, ChevronRight, Undo2 } from "lucide-react"
+import { ChevronDown, ChevronRight, Loader2, Save, Undo2 } from "lucide-react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 import { githubPageSchema, type GithubPageSchema } from "@/schemas/github-page"
 import { Button } from "@/components/ui/button"
@@ -22,6 +23,7 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
+import { Toaster } from "@/components/ui/sonner"
 import { Block } from "@/components/block"
 import AutoFormImage from "@/components/elements/auto-form/auto-form-image"
 import AutoFormInput from "@/components/elements/auto-form/auto-form-input"
@@ -40,11 +42,18 @@ export default function CmsLayout(entry: GithubPageSchema) {
   const formValues = form.watch()
   const hasChanges = form.formState.isDirty
   const formErrors = form.formState.errors
+  const [isSaving, setIsSaving] = React.useState(false)
 
   async function onSubmit() {
+    setIsSaving(true)
     const { error, data } = await actions.pages.createOrUpdatePage(formValues)
-    if (error) console.error(error)
-    if (data) console.log(data)
+    if (error) {
+      toast("Something went wrong")
+    }
+    if (data) {
+      toast("Page saved successfully")
+    }
+    setIsSaving(false)
   }
 
   // async function handleUpload(file: File) {
@@ -68,7 +77,8 @@ export default function CmsLayout(entry: GithubPageSchema) {
         >
           <Sidebar variant="inset">
             <SidebarHeader className="flex flex-row justify-end gap-2">
-              <Button type="submit" disabled={!hasChanges}>
+              <Button type="submit" disabled={!hasChanges || isSaving}>
+                {isSaving ? <Loader2 className="animate-spin" /> : <Save />}
                 Save
               </Button>
             </SidebarHeader>
@@ -298,6 +308,7 @@ export default function CmsLayout(entry: GithubPageSchema) {
                 </Block>
               </div>
             ))}
+            <Toaster />
           </SidebarInset>
         </SidebarProvider>
       </form>

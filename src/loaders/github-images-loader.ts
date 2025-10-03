@@ -1,7 +1,7 @@
 // import { Octokit } from "@octokit/rest"
 // import {
 //   GITHUB_OWNER,
-//   GITHUB_REF,
+//   GITHUB_BRANCH,
 //   GITHUB_REPO,
 //   GITHUB_TOKEN,
 // } from "astro:env/server"
@@ -43,7 +43,7 @@
 //       const response = await octokit.repos.getContent({
 //         owner: GITHUB_OWNER,
 //         repo: GITHUB_REPO,
-//         ref: GITHUB_REF,
+//         ref: GITHUB_BRANCH,
 //         path: "src/assets/images",
 //       })
 
@@ -63,7 +63,7 @@
 //       const response = await octokit.repos.getContent({
 //         owner: GITHUB_OWNER,
 //         repo: GITHUB_REPO,
-//         ref: GITHUB_REF,
+//         ref: GITHUB_BRANCH,
 //         path: filePath,
 //       })
 
