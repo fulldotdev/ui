@@ -1,98 +1,95 @@
-import { Octokit } from "@octokit/rest"
-import {
-  GITHUB_OWNER,
-  GITHUB_REF,
-  GITHUB_REPO,
-  GITHUB_TOKEN,
-} from "astro:env/server"
-import type { LiveLoader } from "astro/loaders"
-import rehypeParse from "rehype-parse"
-import rehypeRemark from "rehype-remark"
-import { remark } from "remark"
-import remarkStringify from "remark-stringify"
-import { parse } from "yaml"
+// import { Octokit } from "@octokit/rest"
+// import {
+//   GITHUB_OWNER,
+//   GITHUB_REF,
+//   GITHUB_REPO,
+//   GITHUB_TOKEN,
+// } from "astro:env/server"
+// import { z } from "astro:schema"
+// import type { LiveLoader } from "astro/loaders"
+// import rehypeParse from "rehype-parse"
+// import rehypeRemark from "rehype-remark"
+// import { remark } from "remark"
+// import remarkStringify from "remark-stringify"
+// import { parse } from "yaml"
 
-import type { PageSchema } from "@/schemas/page"
+// import { pageSchema } from "@/schemas/page"
 
-const octokit = new Octokit({ auth: GITHUB_TOKEN })
+// const octokit = new Octokit({ auth: GITHUB_TOKEN })
 
-async function transformFile(file: any) {
-  if (!file.download_url) return
+// export const githubPageSchema = z.object({
+//   id: z.string(),
+//   filePath: z.string(),
+//   data: pageSchema,
+//   body: z.string().optional(),
+//   rendered: z
+//     .object({
+//       html: z.any(),
+//     })
+//     .optional(),
+//   sha: z.string().optional(),
+// })
 
-  const response = await fetch(file.download_url)
-  const content = await response.text()
-  const frontmatter = content.split("---")[1]
-  const body = content.split("---")[2]
-  const html = await remark()
-    .use(rehypeParse)
-    .use(rehypeRemark)
-    .use(remarkStringify)
-    .process(body)
+// export type GithubPageSchema = z.infer<typeof githubPageSchema>
 
-  return {
-    id: file.name.replace("/index.md", "").replace(".md", ""),
-    filePath: file.path,
-    collection: "github-pages",
-    data: parse(frontmatter),
-    body: body,
-    rendered: {
-      html: html,
-    },
-  }
-}
+// async function transformFile(file: any) {
+//   if (!file.download_url) return
 
-interface Entry {
-  id: string
-  collection: "github-pages"
-  filePath: string
-  data: PageSchema
-  body: string
-  rendered: {
-    html: string
-  }
-}
+//   const response = await fetch(file.download_url)
+//   const content = await response.text()
 
-interface EntryFilter {
-  id?: string
-}
+//   const id = file.name.replace("/index.md", "").replace(".md", "") as string
+//   const data = parse(content.split("---")[1])
+//   const body = content.split("---")[2]
+//   const html = await remark()
+//     .use(rehypeParse)
+//     .use(rehypeRemark)
+//     .use(remarkStringify)
+//     .process(body)
 
-export function githubPagesLoader(): LiveLoader<Entry, EntryFilter> {
-  return {
-    name: "github-pages-loader",
-    loadCollection: async () => {
-      const response = await octokit.repos.getContent({
-        owner: GITHUB_OWNER,
-        repo: GITHUB_REPO,
-        ref: GITHUB_REF,
-        path: "src/content/pages",
-      })
+//   return {
+//     id,
+//     data,
+//     body,
+//     rendered: {
+//       html,
+//     },
+//   }
+// }
 
-      const files = Array.isArray(response.data)
-        ? response.data
-        : [response.data]
+// export function githubPagesLoader(): LiveLoader<GithubPageSchema> {
+//   return {
+//     name: "github-pages-loader",
+//     loadCollection: async () => {
+//       const response = await octokit.repos.getContent({
+//         owner: GITHUB_OWNER,
+//         repo: GITHUB_REPO,
+//         ref: GITHUB_REF,
+//         path: "src/content/pages",
+//       })
 
-      const entries = await Promise.all(files.map(transformFile))
-      const filtered = entries.filter((entry) => entry !== undefined)
+//       const files = Array.isArray(response.data)
+//         ? response.data
+//         : [response.data]
 
-      return {
-        entries: filtered,
-      }
-    },
-    loadEntry: async ({ filter }) => {
-      const filePath = `src/content/pages/${filter?.id}.md`
-      const response = await octokit.repos.getContent({
-        owner: GITHUB_OWNER,
-        repo: GITHUB_REPO,
-        ref: GITHUB_REF,
-        path: filePath,
-      })
+//       const entries = await Promise.all(files.map(transformFile))
+//       const filtered = entries.filter((entry) => entry !== undefined)
 
-      const file = response.data
-      const entry = await transformFile(file)
+//       return { entries: filtered }
+//     },
+//     loadEntry: async ({ filter }: any) => {
+//       const filePath = `src/content/pages/${filter?.id}.md`
+//       const response = await octokit.repos.getContent({
+//         owner: GITHUB_OWNER,
+//         repo: GITHUB_REPO,
+//         ref: GITHUB_REF,
+//         path: filePath,
+//       })
 
-      if (!entry) return { error: new Error(`File not found: ${filePath}`) }
+//       const file = response.data
+//       const entry = await transformFile(file)
 
-      return entry
-    },
-  }
-}
+//       return entry
+//     },
+//   }
+// }

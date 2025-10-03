@@ -1,20 +1,19 @@
 ---
-import { getCollection, getEntry, getLiveEntry, render } from "astro:content"
+import { actions } from "astro:actions"
 
-import { pageProps } from "@/schemas/page"
-import { getHref } from "@/lib/get-href"
 import CmsLayout from "@/components/cms/cms-layout"
 import Layout from "@/components/layout.astro"
 
 export const prerender = false
-const { resource, githubPage } = Astro.params
+const { githubPage } = Astro.params
 const id = githubPage === undefined ? "index" : githubPage
 
-const { error, entry } = await getLiveEntry("github-pages", id)
-if (error) return Astro.rewrite("/404/")
-if (entry === undefined) return Astro.rewrite("/404/")
+const { error, data } = await Astro.callAction(actions.pages.getPage, id)
+if (error || data === undefined) return Astro.redirect("/404/")
+
+console.log({ error, data })
 ---
 
 <Layout>
-  <pre>{JSON.stringify(entry, null, 2)}</pre>
+  <CmsLayout client:load {...data} />
 </Layout>

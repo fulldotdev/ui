@@ -1,43 +1,10 @@
 import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { actions } from "astro:actions"
-import { z } from "astro:schema"
-import {
-  ArrowLeft,
-  ChevronDown,
-  ChevronRight,
-  ChevronsUpDown,
-  CopyPlusIcon,
-  Dot,
-  Heading1,
-  HomeIcon,
-  ImagePlus,
-  InfoIcon,
-  Link,
-  Redo2Icon,
-  SaveIcon,
-  SquareDashed,
-  StickyNote,
-  StickyNoteIcon,
-  TextAlignStart,
-  TrashIcon,
-  Undo2,
-  Undo2Icon,
-} from "lucide-react"
+import { ChevronDown, ChevronRight, Undo2 } from "lucide-react"
 import { useForm } from "react-hook-form"
-import type { FieldValues } from "react-hook-form"
 
-import { pageSchema, type PageSchema } from "@/schemas/page"
-import { getItem, setItem } from "@/lib/local-storage"
-import { cn } from "@/lib/utils"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+import { githubPageSchema, type GithubPageSchema } from "@/schemas/github-page"
 import { Button } from "@/components/ui/button"
 import {
   Collapsible,
@@ -53,16 +20,7 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarInset,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
   SidebarProvider,
-  SidebarRail,
-  SidebarSeparator,
-  SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { Block } from "@/components/block"
 import AutoFormImage from "@/components/elements/auto-form/auto-form-image"
@@ -73,46 +31,34 @@ import AutoFormSelect from "@/components/elements/auto-form/auto-form-select"
 import AutoFormTextarea from "@/components/elements/auto-form/auto-form-textarea"
 import AutoFormWriteup from "@/components/elements/auto-form/auto-form-writeup"
 
-const schema = z.object({
-  id: z.string(),
-  data: pageSchema,
-  filePath: z.string(),
-  body: z.string().optional(),
-  digest: z.string().optional(),
-})
-
-type Props = z.infer<typeof schema>
-
-export default function CmsLayout(entry: Props) {
+export default function CmsLayout(entry: GithubPageSchema) {
   const form = useForm({
-    resolver: zodResolver(schema),
-    defaultValues: schema.or(z.undefined()).parse(getItem(entry.id)) || entry,
+    resolver: zodResolver(githubPageSchema),
+    defaultValues: entry,
   })
 
   const formValues = form.watch()
   const hasChanges = form.formState.isDirty
+  const formErrors = form.formState.errors
 
-  async function handleSubmit() {
-    if (!hasChanges) return
-    const { data: result, error } = await actions.savePage(formValues)
-    if (error) throw error
-    setItem(entry.id, formValues)
-    return result
+  async function onSubmit() {
+    const { error, data } = await actions.pages.createOrUpdatePage(formValues)
+    if (error) console.error(error)
+    if (data) console.log(data)
   }
 
-  async function handleUpload(file: File) {
-    const formData = new FormData()
-    formData.append("file", file)
-    const { data, error } = await actions.uploadImage(formData)
-    if (error) throw error
-    return data
-  }
+  // async function handleUpload(file: File) {
+  //   const formData = new FormData()
+  //   formData.append("file", file)
+  //   const { data, error } = await actions.images.uploadImage(formData)
+  //   if (error) throw error
+  // }
 
   const [activeSection, setActiveSection] = React.useState<number>(-1)
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <SidebarProvider
           style={
             {
@@ -127,6 +73,7 @@ export default function CmsLayout(entry: Props) {
               </Button>
             </SidebarHeader>
             <SidebarContent>
+              <div>{JSON.stringify(formErrors)}</div>
               {activeSection === -1 ? (
                 <>
                   {"sections" in entry.data && (
@@ -151,7 +98,6 @@ export default function CmsLayout(entry: Props) {
                             control={form.control}
                             name={`data.image`}
                             label="Image"
-                            upload={handleUpload}
                           />
                         )}
                       </SidebarGroupContent>
@@ -222,7 +168,6 @@ export default function CmsLayout(entry: Props) {
                                 <AutoFormImage
                                   control={form.control}
                                   name={`data.sections.${sectionIndex}.image`}
-                                  upload={handleUpload}
                                   label="Image"
                                 />
                               )}
@@ -273,7 +218,6 @@ export default function CmsLayout(entry: Props) {
                                             control={form.control}
                                             name={`data.sections.${sectionIndex}.features.${featureIndex}.image`}
                                             label="Image"
-                                            upload={handleUpload}
                                           />
                                         )}
                                       </CollapsibleContent>
@@ -334,7 +278,7 @@ export default function CmsLayout(entry: Props) {
               id="-1"
             >
               <Block {...formValues.data}>
-                <AutoFormProse control={form.control} name="body" />
+                <AutoFormProse control={form.control} name="rendered.html" />
               </Block>
             </div>
             {formValues.data.sections?.map((section, index) => (
