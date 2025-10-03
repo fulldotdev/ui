@@ -69,9 +69,9 @@ function AutoFormWriteup<TFieldValues extends FieldValues>({
                     <MarkButton editor={editor} type="underline" />
                     <LinkPopover editor={editor} />
                   </div>
-                  <Writeup className="px-3 py-1">
+                  <Writeup>
                     <EditorContent
-                      className="mt-4 min-h-80 w-full *:outline-none"
+                      className="mt-4 w-full *:outline-none"
                       editor={editor}
                     />
                   </Writeup>

@@ -28,6 +28,7 @@ import { useForm } from "react-hook-form"
 import type { FieldValues } from "react-hook-form"
 
 import { pageSchema, type PageSchema } from "@/schemas/page"
+import { getItem, setItem } from "@/lib/local-storage"
 import { cn } from "@/lib/utils"
 import {
   Breadcrumb,
@@ -71,72 +72,32 @@ import AutoFormProse from "@/components/elements/auto-form/auto-form-prose"
 import AutoFormSelect from "@/components/elements/auto-form/auto-form-select"
 import AutoFormTextarea from "@/components/elements/auto-form/auto-form-textarea"
 import AutoFormWriteup from "@/components/elements/auto-form/auto-form-writeup"
-import { Page } from "@/components/page"
 
-export default function CmsLayout({
-  filePath,
-  id,
-  digest,
-  data,
-  body,
-}: {
-  filePath?: string
-  id?: string
-  digest?: string
-  data: PageSchema
-  body?: string
-}) {
-  const getStoredData = () => {
-    if (typeof window === "undefined" || !filePath) return null
-    const stored = sessionStorage.getItem(filePath)
-    if (!stored) return null
-    const parsed = JSON.parse(stored)
-    return parsed.digest === digest ? parsed.data : null
-  }
+const schema = z.object({
+  id: z.string(),
+  data: pageSchema,
+  filePath: z.string(),
+  body: z.string().optional(),
+  digest: z.string().optional(),
+})
 
-  const myData = getStoredData() ?? data
+type Props = z.infer<typeof schema>
 
+export default function CmsLayout(entry: Props) {
   const form = useForm({
-    resolver: zodResolver(
-      z.object({
-        id: z.string(),
-        data: pageSchema,
-        body: z.string().optional(),
-      })
-    ),
-    defaultValues: {
-      id,
-      data: myData,
-      body,
-    },
+    resolver: zodResolver(schema),
+    defaultValues: schema.or(z.undefined()).parse(getItem(entry.id)) || entry,
   })
 
   const formValues = form.watch()
+  const hasChanges = form.formState.isDirty
 
   async function handleSubmit() {
-    if (!filePath || !hasChanges) return
-
-    setIsSaving(true)
-    try {
-      const { data: result, error } = await actions.savePage({
-        filePath,
-        data: formValues.data,
-        body: formValues.body,
-      })
-      if (error) throw error
-
-      sessionStorage.setItem(
-        filePath,
-        JSON.stringify({
-          digest,
-          data: formValues.data,
-          body: formValues.body,
-        })
-      )
-      return result
-    } finally {
-      setIsSaving(false)
-    }
+    if (!hasChanges) return
+    const { data: result, error } = await actions.savePage(formValues)
+    if (error) throw error
+    setItem(entry.id, formValues)
+    return result
   }
 
   async function handleUpload(file: File) {
@@ -147,16 +108,7 @@ export default function CmsLayout({
     return data
   }
 
-  const [hasChanges, setHasChanges] = React.useState(false)
-  const [isSaving, setIsSaving] = React.useState(false)
   const [activeSection, setActiveSection] = React.useState<number>(-1)
-
-  React.useEffect(() => {
-    setHasChanges(
-      JSON.stringify({ data: formValues.data, body: formValues.body }) !==
-        JSON.stringify({ data: myData, body })
-    )
-  }, [formValues.data, formValues.body, myData, body])
 
   return (
     <Form {...form}>
@@ -164,56 +116,57 @@ export default function CmsLayout({
         <SidebarProvider
           style={
             {
-              "--sidebar-width": "36rem",
+              "--sidebar-width": "24rem",
             } as React.CSSProperties
           }
         >
           <Sidebar variant="inset">
             <SidebarHeader className="flex flex-row justify-end gap-2">
               <SidebarTrigger className="fixed top-4 left-4" />
-              <Button type="submit" disabled={!hasChanges || isSaving}>
+              <Button type="submit" disabled={!hasChanges}>
                 Save
               </Button>
             </SidebarHeader>
             <SidebarContent>
               {activeSection === -1 ? (
                 <>
-                  <SidebarGroup>
-                    <SidebarGroupLabel>Page</SidebarGroupLabel>
-                    <SidebarGroupContent className="flex flex-col gap-6 p-2">
-                      {"title" in data && (
-                        <AutoFormInput
-                          control={form.control}
-                          name={`data.title`}
-                          label="Title"
-                        />
-                      )}
-                      {"description" in data && (
-                        <AutoFormTextarea
-                          control={form.control}
-                          name={`data.description`}
-                          label="Description"
-                        />
-                      )}
-                      {"image" in data && (
-                        <AutoFormImage
-                          control={form.control}
-                          name={`data.image`}
-                          label="Image"
-                          upload={handleUpload}
-                        />
-                      )}
-                    </SidebarGroupContent>
-                  </SidebarGroup>
-                  {"sections" in data && (
+                  {"sections" in entry.data && (
+                    <SidebarGroup>
+                      <SidebarGroupContent className="flex flex-col gap-6 p-2">
+                        {"title" in entry.data && (
+                          <AutoFormInput
+                            control={form.control}
+                            name={`data.title`}
+                            label="Title"
+                          />
+                        )}
+                        {"description" in entry.data && (
+                          <AutoFormTextarea
+                            control={form.control}
+                            name={`data.description`}
+                            label="Description"
+                          />
+                        )}
+                        {"image" in entry.data && (
+                          <AutoFormImage
+                            control={form.control}
+                            name={`data.image`}
+                            label="Image"
+                            upload={handleUpload}
+                          />
+                        )}
+                      </SidebarGroupContent>
+                    </SidebarGroup>
+                  )}
+                  {"sections" in entry.data && (
                     <SidebarGroup>
                       <SidebarGroupLabel>Sections</SidebarGroupLabel>
                       <SidebarGroupContent className="flex flex-col gap-2 p-2">
-                        {data.sections?.map((_, sectionIndex) => (
+                        {entry.data.sections?.map((_, sectionIndex) => (
                           <Button
                             key={sectionIndex}
                             variant="secondary"
-                            className="flex justify-between"
+                            className="flex justify-between border"
                             onClick={() => setActiveSection(sectionIndex)}
                             asChild
                           >
@@ -244,7 +197,7 @@ export default function CmsLayout({
                       </Button>
                     </SidebarGroupContent>
                   </SidebarGroup>
-                  {data.sections?.map((section, sectionIndex) => (
+                  {entry.data.sections?.map((section, sectionIndex) => (
                     <>
                       {activeSection === sectionIndex && (
                         <>
@@ -294,7 +247,7 @@ export default function CmsLayout({
                               <SidebarGroupContent className="flex flex-col gap-2 p-2">
                                 {section.features?.map(
                                   (feature, featureIndex) => (
-                                    <Collapsible>
+                                    <Collapsible className="rounded-md border">
                                       <CollapsibleTrigger asChild>
                                         <Button
                                           variant="secondary"
@@ -339,7 +292,7 @@ export default function CmsLayout({
                               <SidebarGroupLabel>Faqs</SidebarGroupLabel>
                               <SidebarGroupContent className="flex flex-col gap-2 p-2">
                                 {section.faqs?.map((faq, faqIndex) => (
-                                  <Collapsible>
+                                  <Collapsible className="rounded-md border">
                                     <CollapsibleTrigger asChild>
                                       <Button
                                         variant="secondary"
@@ -349,7 +302,7 @@ export default function CmsLayout({
                                         <ChevronRight />
                                       </Button>
                                     </CollapsibleTrigger>
-                                    <CollapsibleContent className="flex flex-col gap-6 py-6">
+                                    <CollapsibleContent className="flex flex-col gap-6 p-6">
                                       {"question" in faq && (
                                         <AutoFormInput
                                           control={form.control}

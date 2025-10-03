@@ -30,8 +30,6 @@ export default function ({
   features,
   ...props
 }: Props) {
-  console.log(children, links)
-
   return (
     <Section id="features" {...props}>
       <Container>
