@@ -4,11 +4,30 @@ import sitemap from "@astrojs/sitemap"
 import tailwindcss from "@tailwindcss/vite"
 import favicons from "astro-favicons"
 import robotsTxt from "astro-robots-txt"
-import { defineConfig, fontProviders } from "astro/config"
+import { defineConfig, envField, fontProviders } from "astro/config"
 
 export default defineConfig({
   site: "https://ui.full.dev",
-
+  env: {
+    schema: {
+      GITHUB_OWNER: envField.string({
+        context: "server",
+        access: "public",
+      }),
+      GITHUB_REPO: envField.string({
+        context: "server",
+        access: "public",
+      }),
+      GITHUB_REF: envField.string({
+        context: "server",
+        access: "public",
+      }),
+      GITHUB_TOKEN: envField.string({
+        context: "server",
+        access: "secret",
+      }),
+    },
+  },
   i18n: {
     defaultLocale: "en",
     locales: ["en"],
@@ -30,6 +49,7 @@ export default defineConfig({
   },
 
   experimental: {
+    liveContentCollections: true,
     fonts: [
       {
         provider: fontProviders.google(),

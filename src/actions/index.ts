@@ -34,7 +34,7 @@ export const server = {
       if (
         WRITE_GITHUB &&
         import.meta.env.GITHUB_TOKEN &&
-        import.meta.env.GITHUB_USER &&
+        import.meta.env.GITHUB_OWNER &&
         import.meta.env.GITHUB_REPO
       ) {
         const octokit = new Octokit({ auth: import.meta.env.GITHUB_TOKEN })
@@ -44,10 +44,10 @@ export const server = {
         let sha: string | undefined
         try {
           const { data } = await octokit.repos.getContent({
-            owner: import.meta.env.GITHUB_USER,
+            owner: import.meta.env.GITHUB_OWNER,
             repo: import.meta.env.GITHUB_REPO,
             path: githubPath,
-            ref: import.meta.env.GITHUB_BRANCH,
+            ref: import.meta.env.GITHUB_REF,
           })
           if ("sha" in data) {
             sha = data.sha
@@ -57,12 +57,12 @@ export const server = {
         }
 
         await octokit.repos.createOrUpdateFileContents({
-          owner: import.meta.env.GITHUB_USER,
+          owner: import.meta.env.GITHUB_OWNER,
           repo: import.meta.env.GITHUB_REPO,
           path: githubPath,
           message: `Upload image: ${file.name}`,
           content: buffer.toString("base64"),
-          branch: import.meta.env.GITHUB_BRANCH,
+          branch: import.meta.env.GITHUB_REF,
           sha,
         })
       }
@@ -101,7 +101,7 @@ export const server = {
       if (
         WRITE_GITHUB &&
         import.meta.env.GITHUB_TOKEN &&
-        import.meta.env.GITHUB_USER &&
+        import.meta.env.GITHUB_OWNER &&
         import.meta.env.GITHUB_REPO
       ) {
         const octokit = new Octokit({ auth: import.meta.env.GITHUB_TOKEN })
@@ -111,10 +111,10 @@ export const server = {
         let sha: string | undefined
         try {
           const { data } = await octokit.repos.getContent({
-            owner: import.meta.env.GITHUB_USER,
+            owner: import.meta.env.GITHUB_OWNER,
             repo: import.meta.env.GITHUB_REPO,
             path: githubPath,
-            ref: import.meta.env.GITHUB_BRANCH,
+            ref: import.meta.env.GITHUB_REF,
           })
           if ("sha" in data) {
             sha = data.sha
@@ -124,12 +124,12 @@ export const server = {
         }
 
         await octokit.repos.createOrUpdateFileContents({
-          owner: import.meta.env.GITHUB_USER,
+          owner: import.meta.env.GITHUB_OWNER,
           repo: import.meta.env.GITHUB_REPO,
           path: githubPath,
           message: `Update page: ${githubPath}`,
           content: Buffer.from(content).toString("base64"),
-          branch: import.meta.env.GITHUB_BRANCH,
+          branch: import.meta.env.GITHUB_REF,
           sha,
         })
       }
