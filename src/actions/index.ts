@@ -68,6 +68,12 @@ export const server = {
       }
 
       return `/images/${file.name}`
+
+      // const dataUrl = `data:${file.type};base64,${buffer.toString("base64")}`
+      // return {
+      //   src: `/images/${file.name}`,
+      //   dataUrl,
+      // }
     },
   }),
   savePage: defineAction({
