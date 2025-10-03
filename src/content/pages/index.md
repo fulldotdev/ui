@@ -7,7 +7,7 @@ image:
   alt: Home
 sections:
   - variant: "1"
-    html: <h2>Hello <strong>World!!!!!</strong></h2><p>This is a test of
+    html: <h3>Hello <strong>World!!!!!</strong></h3><p>This is a test of</p>
     links:
       - href: /about/
         text: About
