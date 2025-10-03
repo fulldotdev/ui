@@ -122,7 +122,6 @@ export default function CmsLayout(entry: Props) {
         >
           <Sidebar variant="inset">
             <SidebarHeader className="flex flex-row justify-end gap-2">
-              <SidebarTrigger className="fixed top-4 left-4" />
               <Button type="submit" disabled={!hasChanges}>
                 Save
               </Button>
@@ -202,9 +201,6 @@ export default function CmsLayout(entry: Props) {
                       {activeSection === sectionIndex && (
                         <>
                           <SidebarGroup>
-                            <SidebarGroupLabel>
-                              Section {activeSection + 1}
-                            </SidebarGroupLabel>
                             <SidebarGroupContent className="flex flex-col gap-6 p-2">
                               {"align" in section && (
                                 <AutoFormSelect
@@ -344,7 +340,9 @@ export default function CmsLayout(entry: Props) {
             {formValues.data.sections?.map((section, index) => (
               <div
                 key={index}
-                onClick={() => setActiveSection(index)}
+                onClick={() => {
+                  setActiveSection(index)
+                }}
                 className="hover:ring-primary/25 rounded-2xl ring-4 ring-transparent transition ring-inset"
                 id={index.toString()}
               >
