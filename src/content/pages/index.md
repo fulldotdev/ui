@@ -7,7 +7,7 @@ image:
   alt: Home
 sections:
   - variant: "1"
-    html: <h2>Features</h2><p></p>
+    html: <h2>Features this a cool section</h2><p></p>
     links:
       - href: /about/
         text: About
