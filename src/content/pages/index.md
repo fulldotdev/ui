@@ -1,5 +1,5 @@
 ---
-title: "!"
+title: sdfsdfwfeasdfawefasdfwefasdf
 description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
   eiusmod tempor incididunt ut labore et dolore magna aliqua.
 image:
@@ -7,7 +7,7 @@ image:
   alt: Home
 sections:
   - variant: "1"
-    html: <h2>Features</h2><p></p>
+    html: <h2>Features thwfeis a cool section!!!</h2><p></p>
     links:
       - href: /about/
         text: About
