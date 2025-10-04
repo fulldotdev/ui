@@ -1,7 +1,7 @@
 import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { actions } from "astro:actions"
-import { ChevronDown, ChevronRight, Loader2, Save, Undo2 } from "lucide-react"
+import { ChevronDown, ChevronRight, Undo2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -40,20 +40,34 @@ export default function CmsLayout(entry: GithubPageSchema) {
   })
 
   const formValues = form.watch()
-  const hasChanges = form.formState.isDirty
-  const formErrors = form.formState.errors
-  const [isSaving, setIsSaving] = React.useState(false)
+  const [saved, setSaved] = React.useState(true)
 
   async function onSubmit() {
-    setIsSaving(true)
-    const { error, data } = await actions.pages.createOrUpdatePage(formValues)
-    if (error) {
-      toast("Something went wrong")
-    }
-    if (data) {
-      toast("Page saved successfully")
-    }
-    setIsSaving(false)
+    setSaved(true)
+    const promise = actions.pages.createOrUpdatePage(formValues)
+    toast.promise(promise, {
+      loading: "Saving ...",
+      success: {
+        message: "Saved successfully",
+        description: "Your updated page is now live.",
+      },
+      error: (error) => {
+        setSaved(false)
+        return {
+          message: "Something went wrong",
+          description: error.message,
+          action: {
+            label: "Notify Sil",
+            onClick: () => {
+              window.open(
+                `mailto:sil@full.dev?subject=CMS Error&body=${encodeURIComponent(error.message)}`,
+                "_blank"
+              )
+            },
+          },
+        }
+      },
+    })
   }
 
   // async function handleUpload(file: File) {
@@ -67,7 +81,11 @@ export default function CmsLayout(entry: GithubPageSchema) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        onChange={() => setSaved(false)}
+        className="space-y-4"
+      >
         <SidebarProvider
           style={
             {
@@ -77,13 +95,12 @@ export default function CmsLayout(entry: GithubPageSchema) {
         >
           <Sidebar variant="inset">
             <SidebarHeader className="flex flex-row justify-end gap-2">
-              <Button type="submit" disabled={!hasChanges || isSaving}>
-                {isSaving ? <Loader2 className="animate-spin" /> : <Save />}
+              <Button type="submit" disabled={saved}>
                 Save
               </Button>
+              <Toaster richColors position="top-center" theme="light" />
             </SidebarHeader>
             <SidebarContent>
-              <div>{JSON.stringify(formErrors)}</div>
               {activeSection === -1 ? (
                 <>
                   {"sections" in entry.data && (
@@ -308,7 +325,6 @@ export default function CmsLayout(entry: GithubPageSchema) {
                 </Block>
               </div>
             ))}
-            <Toaster />
           </SidebarInset>
         </SidebarProvider>
       </form>
