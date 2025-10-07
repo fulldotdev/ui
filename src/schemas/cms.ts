@@ -1,8 +1,8 @@
 import { z } from "astro:schema"
 
-import { page } from "@/schemas/page"
+import page from "@/schemas/page"
 
-export const githubPage = z.object({
+export default z.object({
   sha: z.string().optional(),
   id: z.string(),
   filePath: z.string(),

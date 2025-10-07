@@ -1,20 +1,16 @@
 import { z } from "astro:schema"
 
-import { align } from "@/schemas/fields/align"
-import { html } from "@/schemas/fields/html"
-import { jobs as jobsRef } from "@/schemas/fields/jobs"
-import { links } from "@/schemas/fields/links"
-import { size } from "@/schemas/fields/size"
-import { variant } from "@/schemas/fields/variant"
+import job from "@/schemas/blocks/job"
+import links from "@/schemas/elements/links"
+import section from "@/schemas/elements/section"
+import writeup from "@/schemas/elements/writeup"
 
-export const jobs = z
-  .object({
-    variant,
-    size,
-    align,
-    html,
-    links,
-    jobs: jobsRef,
+export default section
+  .extend({
+    variant: z.enum(["1", "2"]),
+    writeup: writeup,
+    links: links,
+    jobs: z.union([z.string(), job.array()]),
   })
   .partial()
   .strict()

@@ -1,19 +1,17 @@
 import { z } from "astro:schema"
 
-import { description } from "@/schemas/fields/description"
-import { image } from "@/schemas/fields/image"
-import { tagline } from "@/schemas/fields/tagline"
-import { title } from "@/schemas/fields/title"
-import { variant } from "@/schemas/fields/variant"
+import image from "@/schemas/elements/image"
+import rating from "@/schemas/elements/rating"
+import section from "@/schemas/elements/section"
 
-export const review = z
-  .object({
-    variant,
-    title,
-    description,
-    tagline,
-    rating: z.number().min(1).max(5),
-    image,
+export default section
+  .extend({
+    variant: z.enum(["1", "2"]),
+    title: z.string(),
+    description: z.string(),
+    tagline: z.string(),
+    rating: rating,
+    image: image,
   })
   .partial()
   .strict()

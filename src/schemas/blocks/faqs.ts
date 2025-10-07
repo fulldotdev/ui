@@ -1,18 +1,12 @@
 import { z } from "astro:schema"
 
-import { align } from "@/schemas/fields/align"
-import { html } from "@/schemas/fields/html"
-import { links } from "@/schemas/fields/links"
-import { size } from "@/schemas/fields/size"
-import { variant } from "@/schemas/fields/variant"
+import section from "@/schemas/elements/section"
+import writeup from "@/schemas/elements/writeup"
 
-export const faqs = z
-  .object({
-    variant,
-    align,
-    size,
-    html,
-    links,
+export default section
+  .extend({
+    variant: z.enum(["1", "2"]),
+    writeup: writeup,
     faqs: z
       .object({
         question: z.string(),

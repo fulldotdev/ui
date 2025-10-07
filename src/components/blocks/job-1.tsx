@@ -11,9 +11,9 @@ import Section from "@/components/elements/section"
 import Writeup from "@/components/elements/writeup"
 
 interface Props extends React.ComponentProps<typeof Section> {
+  published?: React.ComponentProps<typeof Date>["date"]
   title?: string
   description?: string
-  published?: React.ComponentProps<typeof Date>["date"]
   location?: string
   salary?: string
   hours?: string

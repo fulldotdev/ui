@@ -1,20 +1,16 @@
 import { z } from "astro:schema"
 
-import { align } from "@/schemas/fields/align"
-import { html } from "@/schemas/fields/html"
-import { image } from "@/schemas/fields/image"
-import { links } from "@/schemas/fields/links"
-import { size } from "@/schemas/fields/size"
-import { variant } from "@/schemas/fields/variant"
+import image from "@/schemas/elements/image"
+import links from "@/schemas/elements/links"
+import section from "@/schemas/elements/section"
+import writeup from "@/schemas/elements/writeup"
 
-export const feature = z
-  .object({
-    variant,
-    align,
-    size,
-    html,
-    links,
-    image,
+export default section
+  .extend({
+    variant: z.enum(["1", "2"]),
+    writeup: writeup,
+    links: links,
+    image: image,
   })
   .partial()
   .strict()

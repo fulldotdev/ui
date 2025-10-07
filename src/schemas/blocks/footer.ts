@@ -1,22 +1,21 @@
 import { z } from "astro:schema"
 
-import { description } from "@/schemas/fields/description"
-import { image } from "@/schemas/fields/image"
-import { links } from "@/schemas/fields/links"
-import { socials } from "@/schemas/fields/socials"
-import { variant } from "@/schemas/fields/variant"
+import image from "@/schemas/elements/image"
+import links from "@/schemas/elements/links"
+import section from "@/schemas/elements/section"
+import socials from "@/schemas/elements/socials"
 
-export const footer = z
-  .object({
-    variant,
-    description,
-    links,
-    socials,
+export default section
+  .extend({
+    variant: z.enum(["1", "2"]),
+    description: z.string(),
+    links: links,
+    socials: socials,
     logo: image,
     menus: z
       .object({
         text: z.string(),
-        links,
+        links: links,
       })
       .partial()
       .strict()

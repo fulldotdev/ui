@@ -1,94 +1,40 @@
 import { z } from "astro:schema"
 
-import { article } from "@/schemas/blocks/article"
-import { job } from "@/schemas/blocks/job"
-import { person } from "@/schemas/blocks/person"
-import { product } from "@/schemas/blocks/product"
-import { review } from "@/schemas/blocks/review"
-import { description } from "@/schemas/fields/description"
-import { image } from "@/schemas/fields/image"
-import { title } from "@/schemas/fields/title"
-import { section } from "@/schemas/section"
+import article from "@/schemas/blocks/article"
+import job from "@/schemas/blocks/job"
+import person from "@/schemas/blocks/person"
+import product from "@/schemas/blocks/product"
+import review from "@/schemas/blocks/review"
+import section from "@/schemas/section"
 
-export const page = z.discriminatedUnion("type", [
-  z
-    .object({
-      type: z.undefined(),
-      title,
-      description,
-      image,
-      sections: section.array(),
-    })
-    .partial()
-    .strict(),
-  article
-    .merge(
-      z.object({
-        title,
-        description,
-        image,
-        sections: section.array(),
-      })
-    )
-    .extend({
-      type: z.literal("article"),
-    })
-    .partial()
-    .strict(),
-  product
-    .merge(
-      z.object({
-        title,
-        description,
-        image,
-        sections: section.array(),
-      })
-    )
-    .extend({
-      type: z.literal("product"),
-    })
-    .partial()
-    .strict(),
-  person
-    .merge(
-      z.object({
-        title,
-        description,
-        image,
-        sections: section.array(),
-      })
-    )
-    .extend({
-      type: z.literal("person"),
-    })
-    .partial()
-    .strict(),
-  review
-    .merge(
-      z.object({
-        title,
-        description,
-        image,
-        sections: section.array(),
-      })
-    )
-    .extend({
-      type: z.literal("review"),
-    })
-    .partial()
-    .strict(),
-  job
-    .merge(
-      z.object({
-        title,
-        description,
-        image,
-        sections: section.array(),
-      })
-    )
-    .extend({
-      type: z.literal("job"),
-    })
-    .partial()
-    .strict(),
+export default z.discriminatedUnion("type", [
+  z.object({
+    type: z.literal(undefined),
+    sections: section.array().optional(),
+  }),
+  z.object({
+    type: z.literal("article"),
+    sections: section.array().optional(),
+    ...article.shape,
+  }),
+  z.object({
+    type: z.literal("job"),
+    sections: section.array().optional(),
+    ...job.shape,
+  }),
+  z.object({
+    type: z.literal("person"),
+    sections: section.array().optional(),
+    ...person.shape,
+  }),
+  z.object({
+    type: z.literal("product"),
+    sections: section.array().optional(),
+    ...product.shape,
+  }),
+  z.object({
+    type: z.literal("review"),
+    sections: section.array().optional(),
+    ...review.shape,
+  }),
 ])

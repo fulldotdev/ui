@@ -13,7 +13,7 @@ import { remark } from "remark"
 import remarkStringify from "remark-stringify"
 import { parse, stringify } from "yaml"
 
-import { githubPageSchema } from "@/schemas/github-page"
+import githubPageSchema from "@/schemas/cms"
 
 const octokit = new Octokit({ auth: GITHUB_TOKEN })
 

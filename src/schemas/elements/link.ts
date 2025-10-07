@@ -1,6 +1,6 @@
 import { z } from "astro:schema"
 
-export const link = z
+export default z
   .object({
     href: z.string(),
     text: z.string(),

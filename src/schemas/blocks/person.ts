@@ -1,25 +1,19 @@
 import { z } from "astro:schema"
 
-import { address } from "@/schemas/fields/address"
-import { description } from "@/schemas/fields/description"
-import { email } from "@/schemas/fields/email"
-import { image } from "@/schemas/fields/image"
-import { socials } from "@/schemas/fields/socials"
-import { tagline } from "@/schemas/fields/tagline"
-import { title } from "@/schemas/fields/title"
-import { variant } from "@/schemas/fields/variant"
+import image from "@/schemas/elements/image"
+import socials from "@/schemas/elements/socials"
 
-export const person = z
+export default z
   .object({
-    variant,
-    tagline,
-    title,
-    description,
-    email,
+    variant: z.enum(["1", "2"]),
+    title: z.string(),
+    description: z.string(),
+    tagline: z.string(),
+    email: z.string(),
     phone: z.number(),
-    address,
-    socials,
-    image,
+    address: z.string(),
+    socials: socials,
+    image: image,
   })
   .partial()
   .strict()

@@ -1,6 +1,9 @@
 import { getImage } from "astro:assets"
+import { z } from "astro:schema"
 
-import { type ImageSchema } from "@/schemas/fields/image"
+import imageSchema from "@/schemas/elements/image"
+
+type ImageSchema = z.infer<typeof imageSchema>
 
 const IMAGES = import.meta.glob("src/assets/**/*.{webp,png,jpg,jpeg,gif,svg}")
 

@@ -1,12 +1,9 @@
 import { z } from "astro:schema"
 
-import { html } from "@/schemas/fields/html"
-import { variant } from "@/schemas/fields/variant"
-
-export const banner = z
+export default z
   .object({
-    variant,
-    html,
+    variant: z.enum(["1", "2"]),
+    description: z.string(),
   })
   .partial()
   .strict()

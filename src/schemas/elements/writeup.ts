@@ -1,3 +1,3 @@
 import { z } from "astro:schema"
 
-export const background = z.any()
+export default z.string()

@@ -1,11 +1,12 @@
 import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { actions } from "astro:actions"
+import { z } from "astro:schema"
 import { ChevronDown, ChevronRight, Undo2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
-import { githubPageSchema, type GithubPageSchema } from "@/schemas/github-page"
+import cmsSchema from "@/schemas/cms"
 import { Button } from "@/components/ui/button"
 import {
   Collapsible,
@@ -33,9 +34,9 @@ import AutoFormSelect from "@/components/elements/auto-form/auto-form-select"
 import AutoFormTextarea from "@/components/elements/auto-form/auto-form-textarea"
 import AutoFormWriteup from "@/components/elements/auto-form/auto-form-writeup"
 
-export default function CmsLayout(entry: GithubPageSchema) {
+export default function CmsLayout(entry: z.infer<typeof cmsSchema>) {
   const form = useForm({
-    resolver: zodResolver(githubPageSchema),
+    resolver: zodResolver(cmsSchema),
     defaultValues: entry,
   })
 
@@ -320,7 +321,7 @@ export default function CmsLayout(entry: GithubPageSchema) {
                 <Block {...section}>
                   <AutoFormWriteup
                     control={form.control}
-                    name={`data.sections.${index}.html`}
+                    name={`data.sections.${index}.writeup`}
                   />
                 </Block>
               </div>

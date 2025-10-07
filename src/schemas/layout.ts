@@ -1,38 +1,25 @@
 import { z } from "astro:schema"
 
-import { bannerProps, bannerSchema } from "@/schemas/blocks/banner"
-import { footerProps, footerSchema } from "@/schemas/blocks/footer"
-import { headerProps, headerSchema } from "@/schemas/blocks/header"
-import { imageSchema } from "@/schemas/fields/image"
-import { linkSchema } from "@/schemas/fields/link"
-import { sectionProps, sectionSchema } from "@/schemas/section"
+import banner from "@/schemas/blocks/banner"
+import footer from "@/schemas/blocks/footer"
+import header from "@/schemas/blocks/header"
+import image from "@/schemas/elements/image"
+import link from "@/schemas/elements/link"
+import section from "@/schemas/section"
 
-export const layoutSchema = z
+export default z
   .object({
     title: z.string(),
     description: z.string(),
-    image: imageSchema,
-    header: headerSchema,
-    banner: bannerSchema,
-    sections: sectionSchema.array(),
-    footer: footerSchema,
-    bubble: linkSchema,
+    image: image,
+    header: header,
+    banner: banner,
+    sections: section.array(),
+    footer: footer,
+    bubble: link,
     head: z.string(),
     body: z.string(),
     css: z.string(),
   })
   .partial()
   .strict()
-
-export const layoutProps = layoutSchema
-  .extend({
-    header: headerProps,
-    banner: bannerProps,
-    footer: footerProps,
-    sections: sectionProps.array(),
-  })
-  .partial()
-  .strict()
-
-export type LayoutSchema = z.infer<typeof layoutSchema>
-export type LayoutProps = z.infer<typeof layoutProps>

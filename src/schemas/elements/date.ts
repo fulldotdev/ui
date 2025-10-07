@@ -1,3 +1,3 @@
 import { z } from "astro:schema"
 
-export const address = z.string()
+export default z.coerce.date()

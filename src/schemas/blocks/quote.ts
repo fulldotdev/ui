@@ -1,20 +1,14 @@
 import { z } from "astro:schema"
 
-import { align } from "@/schemas/fields/align"
-import { background } from "@/schemas/fields/background"
-import { description } from "@/schemas/fields/description"
-import { size } from "@/schemas/fields/size"
-import { title } from "@/schemas/fields/title"
-import { variant } from "@/schemas/fields/variant"
+import background from "@/schemas/elements/background"
+import section from "@/schemas/elements/section"
 
-export const quote = z
-  .object({
-    variant,
-    size,
-    align,
-    background,
-    title,
-    description,
+export default section
+  .extend({
+    variant: z.enum(["1", "2"]),
+    background: background,
+    title: z.string(),
+    description: z.string(),
   })
   .partial()
   .strict()

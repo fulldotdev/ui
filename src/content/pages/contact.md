@@ -1,7 +1,6 @@
 ---
 sections:
   - type: contact
-    variant: "1"
     html: |
       <h1>Meld je nu aan</h1>
       <p>

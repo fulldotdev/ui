@@ -1,20 +1,15 @@
 import { z } from "astro:schema"
 
-import { align } from "@/schemas/fields/align"
-import { html } from "@/schemas/fields/html"
-import { links } from "@/schemas/fields/links"
-import { reviews as reviewsRef } from "@/schemas/fields/reviews"
-import { size } from "@/schemas/fields/size"
-import { variant } from "@/schemas/fields/variant"
+import review from "@/schemas/blocks/review"
+import links from "@/schemas/elements/links"
+import section from "@/schemas/elements/section"
+import writeup from "@/schemas/elements/writeup"
 
-export const reviews = z
-  .object({
-    variant,
-    align,
-    size,
-    html,
-    links,
-    reviews: reviewsRef,
+export default section
+  .extend({
+    writeup: writeup,
+    links: links,
+    reviews: z.union([z.string(), review.array()]),
   })
   .partial()
   .strict()

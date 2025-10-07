@@ -1,15 +1,13 @@
 import { z } from "astro:schema"
 
-import { description } from "@/schemas/fields/description"
-import { image } from "@/schemas/fields/image"
-import { title } from "@/schemas/fields/title"
-import { variant } from "@/schemas/fields/variant"
+import image from "@/schemas/elements/image"
+import section from "@/schemas/elements/section"
 
-export const product = z
-  .object({
-    variant,
-    title,
-    description,
+export default section
+  .extend({
+    variant: z.enum(["1", "2"]),
+    title: z.string(),
+    description: z.string(),
     images: image.array(),
     category: z.string(),
     offers: z

@@ -1,9 +1,8 @@
 ---
 import { getCollection, getEntry, render } from "astro:content"
 
-import { pageProps } from "@/schemas/page"
 import { getHref } from "@/lib/get-href"
-import CmsLayout from "@/components/cms/cms-layout"
+import { Block } from "@/components/block"
 import Layout from "@/components/layout.astro"
 
 export async function getStaticPaths() {
@@ -19,18 +18,21 @@ export async function getStaticPaths() {
   })
 }
 
-const props = Astro.props
+const { sections, ...data } = Astro.props.data
 const { Content } = await render(Astro.props)
-// const indexLayout = await getEntry("layouts", "index")
-// const typeLayout = page.type && (await getEntry("layouts", page.type))
+const indexLayout = await getEntry("layouts", "index")
+const typeLayout = data.type && (await getEntry("layouts", data.type))
 ---
 
-<Layout>
+<Layout {...indexLayout} {...typeLayout} {...data}>
+  <Block client:load {...data}>
+    <Content />
+  </Block>
   {
-    props.filePath && (
-      <CmsLayout client:load {...props} body={props.rendered?.html}>
+    sections?.map((section, index) => (
+      <Block client:load {...section} index={index + 1}>
         <Content />
-      </CmsLayout>
-    )
+      </Block>
+    ))
   }
 </Layout>

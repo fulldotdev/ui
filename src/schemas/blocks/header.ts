@@ -1,23 +1,19 @@
 import { z } from "astro:schema"
 
-import { image } from "@/schemas/fields/image"
-import { links } from "@/schemas/fields/links"
-import { socials } from "@/schemas/fields/socials"
-import { title } from "@/schemas/fields/title"
-import { variant } from "@/schemas/fields/variant"
+import image from "@/schemas/elements/image"
+import link from "@/schemas/elements/link"
+import links from "@/schemas/elements/links"
+import socials from "@/schemas/elements/socials"
 
-export const header = z
+export default z
   .object({
-    variant,
-    title,
-    links,
-    socials,
+    variant: z.enum(["1", "2"]),
     logo: image,
-    menus: z
-      .object({
-        text: z.string(),
-        href: z.string(),
-        links,
+    links: links,
+    socials: socials,
+    menus: link
+      .extend({
+        links: links,
       })
       .partial()
       .strict()

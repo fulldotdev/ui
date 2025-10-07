@@ -1,20 +1,16 @@
 import { z } from "astro:schema"
 
-import { align } from "@/schemas/fields/align"
-import { html } from "@/schemas/fields/html"
-import { links } from "@/schemas/fields/links"
-import { persons as personsRef } from "@/schemas/fields/persons"
-import { size } from "@/schemas/fields/size"
-import { variant } from "@/schemas/fields/variant"
+import person from "@/schemas/blocks/person"
+import links from "@/schemas/elements/links"
+import section from "@/schemas/elements/section"
+import writeup from "@/schemas/elements/writeup"
 
-export const persons = z
-  .object({
-    variant,
-    size,
-    align,
-    html,
-    links,
-    persons: personsRef,
+export default section
+  .extend({
+    variant: z.enum(["1", "2"]),
+    writeup: writeup,
+    links: links,
+    persons: z.union([z.string(), person.array()]),
   })
   .partial()
   .strict()

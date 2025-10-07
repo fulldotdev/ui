@@ -1,18 +1,14 @@
 import { z } from "astro:schema"
 
-import { description } from "@/schemas/fields/description"
-import { image } from "@/schemas/fields/image"
-import { published } from "@/schemas/fields/published"
-import { title } from "@/schemas/fields/title"
-import { variant } from "@/schemas/fields/variant"
+import date from "@/schemas/elements/date"
+import section from "@/schemas/elements/section"
 
-export const job = z
-  .object({
-    variant,
-    title,
-    description,
-    image,
-    published,
+export default section
+  .extend({
+    variant: z.enum(["1", "2"]),
+    title: z.string(),
+    description: z.string(),
+    published: date,
     location: z.any(),
     salary: z.any(),
     hours: z.any(),

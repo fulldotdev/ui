@@ -1,24 +1,20 @@
 import { z } from "astro:schema"
 
-import { align } from "@/schemas/fields/align"
-import { form } from "@/schemas/fields/form"
-import { html } from "@/schemas/fields/html"
-import { image } from "@/schemas/fields/image"
-import { links } from "@/schemas/fields/links"
-import { size } from "@/schemas/fields/size"
-import { socials } from "@/schemas/fields/socials"
-import { variant3 } from "@/schemas/fields/variant"
+import form from "@/schemas/elements/form"
+import image from "@/schemas/elements/image"
+import links from "@/schemas/elements/links"
+import section from "@/schemas/elements/section"
+import socials from "@/schemas/elements/socials"
+import writeup from "@/schemas/elements/writeup"
 
-export const contact = z
-  .object({
-    variant: variant3,
-    align,
-    size,
-    html,
+export default section
+  .extend({
+    variant: z.enum(["1", "2", "3"]),
+    writeup: writeup,
     channels: links,
-    socials,
-    image,
-    form,
+    socials: socials,
+    image: image,
+    form: form,
   })
   .partial()
   .strict()

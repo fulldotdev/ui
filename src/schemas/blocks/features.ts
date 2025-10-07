@@ -1,31 +1,23 @@
 import { z } from "astro:schema"
 
-import { align } from "@/schemas/fields/align"
-import { description } from "@/schemas/fields/description"
-import { html } from "@/schemas/fields/html"
-import { image } from "@/schemas/fields/image"
-import { link } from "@/schemas/fields/link"
-import { links } from "@/schemas/fields/links"
-import { size } from "@/schemas/fields/size"
-import { title } from "@/schemas/fields/title"
-import { variant } from "@/schemas/fields/variant"
+import image from "@/schemas/elements/image"
+import link from "@/schemas/elements/link"
+import links from "@/schemas/elements/links"
+import section from "@/schemas/elements/section"
+import writeup from "@/schemas/elements/writeup"
 
-export const features = z
-  .object({
-    variant,
-    align,
-    size,
-    title,
-    description,
-    html,
-    links,
+export default section
+  .extend({
+    variant: z.enum(["1", "2"]),
+    writeup: writeup,
+    links: links,
     features: z
       .object({
-        image,
-        icon: z.enum(["check", "cross"]),
-        title,
-        description,
-        link,
+        image: image,
+        icon: z.string(),
+        title: z.string(),
+        description: z.string(),
+        link: link,
       })
       .partial()
       .strict()
