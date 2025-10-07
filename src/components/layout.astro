@@ -1,6 +1,7 @@
 ---
 import { SEO } from "astro-seo"
 import { Font } from "astro:assets"
+import { getEntry } from "astro:content"
 
 import { Block } from "@/components/block"
 import Social from "@/components/elements/social"
@@ -10,23 +11,24 @@ import "@/styles/_keyframe-animations.scss"
 import "@/styles/globals.css"
 
 type Props = {
+  layout?: string
   title?: string
   description?: string
   image?: {
     src?: string
     alt?: string
   }
-  header?: React.ComponentProps<typeof Block>
-  banner?: React.ComponentProps<typeof Block>
-  sections?: React.ComponentProps<typeof Block>[]
-  footer?: React.ComponentProps<typeof Block>
-  bubble?: React.ComponentProps<typeof Social>
-  head?: string
-  body?: string
-  css?: string
 }
 
+const { layout, ...props } = Astro.props
+
+const indexLayout = await getEntry("layouts", "index")
+const pageLayout = layout ? await getEntry("layouts", layout) : undefined
+
 const {
+  title,
+  description,
+  image,
   header,
   banner,
   sections,
@@ -35,10 +37,11 @@ const {
   head,
   body,
   css,
-  title,
-  description,
-  image,
-} = Astro.props
+} = {
+  ...indexLayout?.data,
+  ...pageLayout?.data,
+  ...props,
+}
 
 const baseUrl = Astro.site?.origin || Astro.url.origin
 const pagePathname = Astro.url.pathname.endsWith("/")
