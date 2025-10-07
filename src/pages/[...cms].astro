@@ -1,7 +1,8 @@
 ---
 import { actions } from "astro:actions"
+import { getEntry } from "astro:content"
 
-import CmsLayout from "@/components/cms/cms-layout"
+import Cms from "@/components/cms"
 import Layout from "@/components/layout.astro"
 
 export const prerender = false
@@ -9,10 +10,14 @@ export const prerender = false
 const { githubPage } = Astro.params
 const id = githubPage === undefined ? "index" : githubPage
 
-const { error, data } = await Astro.callAction(actions.pages.getPage, id)
-if (error || data === undefined) return Astro.redirect("/404/")
+const { error, data: entry } = await Astro.callAction(actions.pages.getPage, id)
+if (error || entry === undefined) return Astro.redirect("/404/")
+const { sections, ...data } = entry.data
+
+const indexLayout = await getEntry("layouts", "index")
+const pageLayout = data.layout && (await getEntry("layouts", data.layout))
 ---
 
-<Layout {...data}>
-  <CmsLayout client:load {...data} />
+<Layout {...indexLayout} {...pageLayout} {...data}>
+  <Cms client:load {...entry} />
 </Layout>

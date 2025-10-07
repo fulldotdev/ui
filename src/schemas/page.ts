@@ -9,32 +9,38 @@ import section from "@/schemas/section"
 
 export default z.discriminatedUnion("type", [
   z.object({
+    layout: z.string().optional(),
     type: z.literal(undefined),
     sections: section.array().optional(),
   }),
   z.object({
+    layout: z.string().optional(),
     type: z.literal("article"),
-    sections: section.array().optional(),
     ...article.shape,
+    sections: section.array().optional(),
   }),
   z.object({
+    layout: z.string().optional(),
     type: z.literal("job"),
-    sections: section.array().optional(),
     ...job.shape,
+    sections: section.array().optional(),
   }),
   z.object({
+    layout: z.string().optional(),
     type: z.literal("person"),
-    sections: section.array().optional(),
     ...person.shape,
+    sections: section.array().optional(),
   }),
   z.object({
+    layout: z.string().optional(),
     type: z.literal("product"),
-    sections: section.array().optional(),
     ...product.shape,
+    sections: section.array().optional(),
   }),
   z.object({
+    layout: z.string().optional(),
     type: z.literal("review"),
-    sections: section.array().optional(),
     ...review.shape,
+    sections: section.array().optional(),
   }),
 ])
