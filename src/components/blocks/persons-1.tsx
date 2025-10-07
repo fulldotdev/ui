@@ -6,6 +6,7 @@ import Column from "@/components/elements/column"
 import Container from "@/components/elements/container"
 import Grid from "@/components/elements/grid"
 import Image from "@/components/elements/image"
+import Linkbox from "@/components/elements/linkbox"
 import Links from "@/components/elements/links"
 import Section from "@/components/elements/section"
 import Writeup from "@/components/elements/writeup"
@@ -46,21 +47,23 @@ export default function ({
           {persons && persons.length > 0 && (
             <Grid size={size} className="not-first:mt-16">
               {persons?.map(({ title, tagline, image, href }, i) => (
-                <Column key={i} align="center">
-                  <Image
-                    className="aspect-square h-full w-full max-w-56 overflow-hidden rounded-full object-cover"
-                    sizes="200px"
-                    {...image}
-                  />
-                  <Abstract
-                    className="not-first:mt-6"
-                    size={size}
-                    align="center"
-                  >
-                    {title && <h3>{title}</h3>}
-                    {tagline && <p>{tagline}</p>}
-                  </Abstract>
-                </Column>
+                <Linkbox key={i} href={href}>
+                  <Column align="center">
+                    <Image
+                      className="aspect-square h-full w-full max-w-56 overflow-hidden rounded-full object-cover"
+                      sizes="200px"
+                      {...image}
+                    />
+                    <Abstract
+                      className="not-first:mt-6"
+                      size={size}
+                      align="center"
+                    >
+                      {title && <h3>{title}</h3>}
+                      {tagline && <p>{tagline}</p>}
+                    </Abstract>
+                  </Column>
+                </Linkbox>
               ))}
             </Grid>
           )}

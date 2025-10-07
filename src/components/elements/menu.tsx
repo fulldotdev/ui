@@ -29,7 +29,7 @@ interface Props {
   }[]
 }
 
-export default function ({ className, items, ...props }: Props) {
+export default function ({ className, items }: Props) {
   if (!items || items.length === 0) return null
 
   const [open, setOpen] = React.useState(false)

@@ -1,8 +1,7 @@
-import { Upload, UploadIcon } from "lucide-react"
+import { UploadIcon } from "lucide-react"
 import type { Control, FieldPath, FieldValues } from "react-hook-form"
 import { useWatch } from "react-hook-form"
 
-import { Button } from "@/components/ui/button"
 import {
   FormControl,
   FormDescription,

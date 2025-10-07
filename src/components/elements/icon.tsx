@@ -1,4 +1,4 @@
-import { Check, Mail, MapPin, Phone, Pin } from "lucide-react"
+import { Check, Mail, MapPin, Phone } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
