@@ -1,24 +1,24 @@
 import { z } from "astro:schema"
 
-import { formSchema } from "@/schemas/fields/form"
-import { imageSchema } from "@/schemas/fields/image"
-import { linksSchema } from "@/schemas/fields/links"
+import { align } from "@/schemas/fields/align"
+import { form } from "@/schemas/fields/form"
+import { html } from "@/schemas/fields/html"
+import { image } from "@/schemas/fields/image"
+import { links } from "@/schemas/fields/links"
+import { size } from "@/schemas/fields/size"
+import { socials } from "@/schemas/fields/socials"
+import { variant3 } from "@/schemas/fields/variant"
 
-export const contactSchema = z
+export const contact = z
   .object({
-    variant: z.enum(["1", "2", "3"]),
-    align: z.enum(["start", "center", "end"]),
-    size: z.enum(["sm", "default", "lg"]),
-    html: z.string(),
-    channels: linksSchema,
-    socials: z.string().array(),
-    image: imageSchema,
-    form: formSchema,
+    variant: variant3,
+    align,
+    size,
+    html,
+    channels: links,
+    socials,
+    image,
+    form,
   })
   .partial()
   .strict()
-
-export const contactProps = contactSchema
-
-export type ContactSchema = z.infer<typeof contactSchema>
-export type ContactProps = z.infer<typeof contactProps>

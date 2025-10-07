@@ -55,7 +55,7 @@ import { z } from "astro:schema"
 //   })
 // )
 
-export const imageSchema = z
+export const image = z
   .object({
     src: z.string(),
     alt: z.string(),
@@ -63,8 +63,6 @@ export const imageSchema = z
   })
   .partial()
   .strict()
-
-export type ImageSchema = z.infer<typeof imageSchema>
 // export const imageSchema = z
 //   .object({
 //     src: z.string(),

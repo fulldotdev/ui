@@ -1,13 +1,16 @@
 import { z } from "astro:schema"
 
-import { imageSchema } from "@/schemas/fields/image"
+import { description } from "@/schemas/fields/description"
+import { image } from "@/schemas/fields/image"
+import { title } from "@/schemas/fields/title"
+import { variant } from "@/schemas/fields/variant"
 
-export const productSchema = z
+export const product = z
   .object({
-    variant: z.enum(["1", "2"]),
-    title: z.string(),
-    description: z.string(),
-    images: imageSchema.array(),
+    variant,
+    title,
+    description,
+    images: image.array(),
     category: z.string(),
     offers: z
       .object({
@@ -20,8 +23,3 @@ export const productSchema = z
   })
   .partial()
   .strict()
-
-export const productProps = productSchema
-
-export type ProductSchema = z.infer<typeof productSchema>
-export type ProductProps = z.infer<typeof productProps>

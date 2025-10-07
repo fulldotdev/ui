@@ -1,20 +1,20 @@
 import { z } from "astro:schema"
 
-import { linksSchema } from "@/schemas/fields/links"
+import { align } from "@/schemas/fields/align"
+import { html } from "@/schemas/fields/html"
+import { links } from "@/schemas/fields/links"
+import { size } from "@/schemas/fields/size"
+import { src } from "@/schemas/fields/src"
+import { variant } from "@/schemas/fields/variant"
 
-export const mapSchema = z
+export const map = z
   .object({
-    variant: z.enum(["1", "2"]),
-    align: z.enum(["start", "center", "end"]),
-    size: z.enum(["sm", "default", "lg"]),
-    html: z.string(),
-    links: linksSchema,
-    src: z.string(),
+    variant,
+    align,
+    size,
+    html,
+    links,
+    src,
   })
   .partial()
   .strict()
-
-export const mapProps = mapSchema
-
-export type MapSchema = z.infer<typeof mapSchema>
-export type MapProps = z.infer<typeof mapProps>

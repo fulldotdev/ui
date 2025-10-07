@@ -1,22 +1,28 @@
 import { z } from "astro:schema"
 
-import { linkSchema } from "@/schemas/fields/link"
-import { linksSchema } from "@/schemas/fields/links"
+import { align } from "@/schemas/fields/align"
+import { description } from "@/schemas/fields/description"
+import { html } from "@/schemas/fields/html"
+import { link } from "@/schemas/fields/link"
+import { links } from "@/schemas/fields/links"
+import { size } from "@/schemas/fields/size"
+import { title } from "@/schemas/fields/title"
+import { variant } from "@/schemas/fields/variant"
 
-export const pricingsSchema = z
+export const pricings = z
   .object({
-    variant: z.enum(["1", "2"]),
-    align: z.enum(["start", "center", "end"]),
-    size: z.enum(["sm", "default", "lg"]),
-    html: z.string(),
-    links: linksSchema,
+    variant,
+    align,
+    size,
+    html,
+    links,
     pricings: z
       .object({
         icon: z.enum(["check", "cross"]),
-        title: z.string(),
-        description: z.string(),
+        title,
+        description,
         list: z.string().array(),
-        link: linkSchema,
+        link,
         price: z.string(),
         unit: z.string(),
       })
@@ -26,8 +32,3 @@ export const pricingsSchema = z
   })
   .partial()
   .strict()
-
-export const pricingsProps = pricingsSchema
-
-export type PricingsSchema = z.infer<typeof pricingsSchema>
-export type PricingsProps = z.infer<typeof pricingsProps>

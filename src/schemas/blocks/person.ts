@@ -1,23 +1,25 @@
 import { z } from "astro:schema"
 
-import { imageSchema } from "@/schemas/fields/image"
+import { address } from "@/schemas/fields/address"
+import { description } from "@/schemas/fields/description"
+import { email } from "@/schemas/fields/email"
+import { image } from "@/schemas/fields/image"
+import { socials } from "@/schemas/fields/socials"
+import { tagline } from "@/schemas/fields/tagline"
+import { title } from "@/schemas/fields/title"
+import { variant } from "@/schemas/fields/variant"
 
-export const personSchema = z
+export const person = z
   .object({
-    variant: z.enum(["1", "2"]),
-    tagline: z.string(),
-    title: z.string(),
-    description: z.string(),
-    email: z.string().email(),
+    variant,
+    tagline,
+    title,
+    description,
+    email,
     phone: z.number(),
-    address: z.string(),
-    socials: z.string().array(),
-    image: imageSchema,
+    address,
+    socials,
+    image,
   })
   .partial()
   .strict()
-
-export const personProps = personSchema
-
-export type PersonSchema = z.infer<typeof personSchema>
-export type PersonProps = z.infer<typeof personProps>

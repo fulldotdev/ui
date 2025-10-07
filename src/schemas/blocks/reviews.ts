@@ -1,24 +1,20 @@
 import { z } from "astro:schema"
 
-import { reviewProps } from "@/schemas/blocks/review"
-import { linksSchema } from "@/schemas/fields/links"
-import { referencesProps, referencesSchema } from "@/schemas/fields/references"
+import { align } from "@/schemas/fields/align"
+import { html } from "@/schemas/fields/html"
+import { links } from "@/schemas/fields/links"
+import { reviews as reviewsRef } from "@/schemas/fields/reviews"
+import { size } from "@/schemas/fields/size"
+import { variant } from "@/schemas/fields/variant"
 
-export const reviewsSchema = z
+export const reviews = z
   .object({
-    variant: z.enum(["1", "2"]),
-    align: z.enum(["start", "center", "end"]),
-    size: z.enum(["sm", "default", "lg"]),
-    html: z.string(),
-    links: linksSchema,
-    reviews: referencesSchema,
+    variant,
+    align,
+    size,
+    html,
+    links,
+    reviews: reviewsRef,
   })
   .partial()
   .strict()
-
-export const reviewsProps = reviewsSchema.extend({
-  reviews: referencesProps.pipe(reviewProps.array()),
-})
-
-export type ReviewsSchema = z.infer<typeof reviewsSchema>
-export type ReviewsProps = z.infer<typeof reviewsProps>

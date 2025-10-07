@@ -1,7 +1,7 @@
-// import { images } from "./images"
+import { images } from "./images"
 import { pages } from "./pages"
 
 export const server = {
-  // images,
+  images,
   pages,
 }

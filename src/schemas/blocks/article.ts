@@ -1,29 +1,24 @@
 import { z } from "astro:schema"
 
-import { personProps } from "@/schemas/blocks/person"
-import { imageSchema } from "@/schemas/fields/image"
-import { referenceProps, referenceSchema } from "@/schemas/fields/reference"
+import { align } from "@/schemas/fields/align"
+import { description } from "@/schemas/fields/description"
+import { image } from "@/schemas/fields/image"
+import { person } from "@/schemas/fields/person"
+import { published } from "@/schemas/fields/published"
+import { size } from "@/schemas/fields/size"
+import { title } from "@/schemas/fields/title"
+import { variant } from "@/schemas/fields/variant"
 
-export const articleSchema = z
+export const article = z
   .object({
-    variant: z.enum(["1", "2"]),
-    align: z.enum(["start", "center", "end"]),
-    size: z.enum(["sm", "default", "lg"]),
-    title: z.string(),
-    description: z.string(),
-    image: imageSchema,
-    published: z.date(),
-    person: referenceSchema,
+    variant,
+    align,
+    size,
+    title,
+    description,
+    image,
+    published,
+    person,
   })
   .partial()
   .strict()
-
-export const articleProps = articleSchema
-  .extend({
-    person: referenceProps.pipe(personProps),
-  })
-  .partial()
-  .strict()
-
-export type ArticleSchema = z.infer<typeof articleSchema>
-export type ArticleProps = z.infer<typeof articleProps>

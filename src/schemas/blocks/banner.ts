@@ -1,14 +1,12 @@
 import { z } from "astro:schema"
 
-export const bannerSchema = z
+import { html } from "@/schemas/fields/html"
+import { variant } from "@/schemas/fields/variant"
+
+export const banner = z
   .object({
-    variant: z.enum(["1", "2"]),
-    html: z.string(),
+    variant,
+    html,
   })
   .partial()
   .strict()
-
-export const bannerProps = bannerSchema
-
-export type BannerSchema = z.infer<typeof bannerSchema>
-export type BannerProps = z.infer<typeof bannerProps>

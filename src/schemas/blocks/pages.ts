@@ -1,24 +1,20 @@
 import { z } from "astro:schema"
 
-import { contentProps } from "@/schemas/blocks/content"
-import { linksSchema } from "@/schemas/fields/links"
-import { referencesProps, referencesSchema } from "@/schemas/fields/references"
+import { align } from "@/schemas/fields/align"
+import { html } from "@/schemas/fields/html"
+import { links } from "@/schemas/fields/links"
+import { pages as pagesRef } from "@/schemas/fields/pages"
+import { size } from "@/schemas/fields/size"
+import { variant } from "@/schemas/fields/variant"
 
-export const pagesSchema = z
+export const pages = z
   .object({
-    variant: z.enum(["1", "2"]),
-    size: z.enum(["sm", "default", "lg"]),
-    align: z.enum(["start", "center", "end"]),
-    html: z.string(),
-    links: linksSchema,
-    pages: referencesSchema,
+    variant,
+    size,
+    align,
+    html,
+    links,
+    pages: pagesRef,
   })
   .partial()
   .strict()
-
-export const pagesProps = pagesSchema.extend({
-  pages: referencesProps.pipe(contentProps.array()),
-})
-
-export type PagesSchema = z.infer<typeof pagesSchema>
-export type PagesProps = z.infer<typeof pagesProps>

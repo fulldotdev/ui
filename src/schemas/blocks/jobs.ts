@@ -1,21 +1,20 @@
 import { z } from "astro:schema"
 
-import { linksSchema } from "@/schemas/fields/links"
-import { referencesSchema } from "@/schemas/fields/references"
+import { align } from "@/schemas/fields/align"
+import { html } from "@/schemas/fields/html"
+import { jobs as jobsRef } from "@/schemas/fields/jobs"
+import { links } from "@/schemas/fields/links"
+import { size } from "@/schemas/fields/size"
+import { variant } from "@/schemas/fields/variant"
 
-export const jobsSchema = z
+export const jobs = z
   .object({
-    variant: z.enum(["1", "2"]),
-    size: z.enum(["sm", "default", "lg"]),
-    align: z.enum(["start", "center", "end"]),
-    html: z.string(),
-    links: linksSchema,
-    jobs: referencesSchema,
+    variant,
+    size,
+    align,
+    html,
+    links,
+    jobs: jobsRef,
   })
   .partial()
   .strict()
-
-export const jobsProps = jobsSchema
-
-export type JobsSchema = z.infer<typeof jobsSchema>
-export type JobsProps = z.infer<typeof jobsProps>

@@ -1,21 +1,20 @@
 import { z } from "astro:schema"
 
-import { linksSchema } from "@/schemas/fields/links"
-import { referencesSchema } from "@/schemas/fields/references"
+import { align } from "@/schemas/fields/align"
+import { blocks as blocksRef } from "@/schemas/fields/blocks"
+import { html } from "@/schemas/fields/html"
+import { links } from "@/schemas/fields/links"
+import { size } from "@/schemas/fields/size"
+import { variant } from "@/schemas/fields/variant"
 
-export const blocksSchema = z
+export const blocks = z
   .object({
-    variant: z.enum(["1", "2"]),
-    align: z.enum(["start", "center", "end"]),
-    size: z.enum(["sm", "default", "lg"]),
-    html: z.string(),
-    links: linksSchema,
-    blocks: referencesSchema,
+    variant,
+    align,
+    size,
+    html,
+    links,
+    blocks: blocksRef,
   })
   .partial()
   .strict()
-
-export const blocksProps = blocksSchema
-
-export type BlocksSchema = z.infer<typeof blocksSchema>
-export type BlocksProps = z.infer<typeof blocksProps>

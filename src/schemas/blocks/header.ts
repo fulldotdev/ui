@@ -1,20 +1,23 @@
 import { z } from "astro:schema"
 
-import { imageSchema } from "@/schemas/fields/image"
-import { linksSchema } from "@/schemas/fields/links"
+import { image } from "@/schemas/fields/image"
+import { links } from "@/schemas/fields/links"
+import { socials } from "@/schemas/fields/socials"
+import { title } from "@/schemas/fields/title"
+import { variant } from "@/schemas/fields/variant"
 
-export const headerSchema = z
+export const header = z
   .object({
-    variant: z.enum(["1", "2"]),
-    title: z.string(),
-    links: linksSchema,
-    socials: z.string().array(),
-    logo: imageSchema,
+    variant,
+    title,
+    links,
+    socials,
+    logo: image,
     menus: z
       .object({
         text: z.string(),
         href: z.string(),
-        links: linksSchema,
+        links,
       })
       .partial()
       .strict()
@@ -22,8 +25,3 @@ export const headerSchema = z
   })
   .partial()
   .strict()
-
-export const headerProps = headerSchema
-
-export type HeaderSchema = z.infer<typeof headerSchema>
-export type HeaderProps = z.infer<typeof headerProps>

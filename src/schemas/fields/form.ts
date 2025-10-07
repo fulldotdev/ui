@@ -1,6 +1,6 @@
 import { z } from "astro:schema"
 
-export const formSchema = z
+export const form = z
   .object({
     inbox: z.string(),
     action: z.string(),

@@ -1,14 +1,18 @@
 import { z } from "astro:schema"
 
-import { linksSchema } from "@/schemas/fields/links"
+import { align } from "@/schemas/fields/align"
+import { html } from "@/schemas/fields/html"
+import { links } from "@/schemas/fields/links"
+import { size } from "@/schemas/fields/size"
+import { variant } from "@/schemas/fields/variant"
 
-export const faqsSchema = z
+export const faqs = z
   .object({
-    variant: z.enum(["1", "2"]),
-    align: z.enum(["start", "center", "end"]),
-    size: z.enum(["sm", "default", "lg"]),
-    html: z.string(),
-    links: linksSchema,
+    variant,
+    align,
+    size,
+    html,
+    links,
     faqs: z
       .object({
         question: z.string(),
@@ -20,8 +24,3 @@ export const faqsSchema = z
   })
   .partial()
   .strict()
-
-export const faqsProps = faqsSchema
-
-export type FaqsSchema = z.infer<typeof faqsSchema>
-export type FaqsProps = z.infer<typeof faqsProps>

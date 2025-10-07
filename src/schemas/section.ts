@@ -1,123 +1,69 @@
 import { z } from "astro:schema"
 
-import { articlesProps, articlesSchema } from "@/schemas/blocks/articles"
-import { blocksProps, blocksSchema } from "@/schemas/blocks/blocks"
-import { contactProps, contactSchema } from "@/schemas/blocks/contact"
-import { contentProps, contentSchema } from "@/schemas/blocks/content"
-import { ctaProps, ctaSchema } from "@/schemas/blocks/cta"
-import { faqsProps, faqsSchema } from "@/schemas/blocks/faqs"
-import { featureProps, featureSchema } from "@/schemas/blocks/feature"
-import { featuresProps, featuresSchema } from "@/schemas/blocks/features"
-import { jobsProps, jobsSchema } from "@/schemas/blocks/jobs"
-import { mapProps, mapSchema } from "@/schemas/blocks/map"
-import { pagesProps, pagesSchema } from "@/schemas/blocks/pages"
-import { personsProps, personsSchema } from "@/schemas/blocks/persons"
-import { pricingsProps, pricingsSchema } from "@/schemas/blocks/pricings"
-import { productsProps, productsSchema } from "@/schemas/blocks/products"
-import { quoteProps, quoteSchema } from "@/schemas/blocks/quote"
-import { reviewsProps, reviewsSchema } from "@/schemas/blocks/reviews"
+import { articles } from "@/schemas/blocks/articles"
+import { blocks } from "@/schemas/blocks/blocks"
+import { contact } from "@/schemas/blocks/contact"
+import { content } from "@/schemas/blocks/content"
+import { cta } from "@/schemas/blocks/cta"
+import { faqs } from "@/schemas/blocks/faqs"
+import { feature } from "@/schemas/blocks/feature"
+import { features } from "@/schemas/blocks/features"
+import { jobs } from "@/schemas/blocks/jobs"
+import { map } from "@/schemas/blocks/map"
+import { pages } from "@/schemas/blocks/pages"
+import { persons } from "@/schemas/blocks/persons"
+import { pricings } from "@/schemas/blocks/pricings"
+import { products } from "@/schemas/blocks/products"
+import { quote } from "@/schemas/blocks/quote"
+import { reviews } from "@/schemas/blocks/reviews"
 
-export const sectionSchema = z.discriminatedUnion("type", [
-  articlesSchema.extend({
+export const section = z.discriminatedUnion("type", [
+  articles.extend({
     type: z.literal("articles"),
   }),
-  blocksSchema.extend({
+  blocks.extend({
     type: z.literal("blocks"),
   }),
-  contactSchema.extend({
+  contact.extend({
     type: z.literal("contact"),
   }),
-  contentSchema.extend({
+  content.extend({
     type: z.literal("content"),
   }),
-  ctaSchema.extend({
+  cta.extend({
     type: z.literal("cta"),
   }),
-  faqsSchema.extend({
+  faqs.extend({
     type: z.literal("faqs"),
   }),
-  featureSchema.extend({
+  feature.extend({
     type: z.literal("feature"),
   }),
-  featuresSchema.extend({
+  features.extend({
     type: z.literal("features"),
   }),
-  jobsSchema.extend({
+  jobs.extend({
     type: z.literal("jobs"),
   }),
-  mapSchema.extend({
+  map.extend({
     type: z.literal("map"),
   }),
-  personsSchema.extend({
+  persons.extend({
     type: z.literal("persons"),
   }),
-  pricingsSchema.extend({
+  pricings.extend({
     type: z.literal("pricings"),
   }),
-  productsSchema.extend({
+  products.extend({
     type: z.literal("products"),
   }),
-  quoteSchema.extend({
+  quote.extend({
     type: z.literal("quote"),
   }),
-  reviewsSchema.extend({
+  reviews.extend({
     type: z.literal("reviews"),
   }),
-  pagesSchema.extend({
+  pages.extend({
     type: z.literal("pages"),
   }),
 ])
-
-export const sectionProps = z.discriminatedUnion("type", [
-  articlesProps.extend({
-    type: z.literal("articles"),
-  }),
-  blocksProps.extend({
-    type: z.literal("blocks"),
-  }),
-  contactProps.extend({
-    type: z.literal("contact"),
-  }),
-  contentProps.extend({
-    type: z.literal("content"),
-  }),
-  ctaProps.extend({
-    type: z.literal("cta"),
-  }),
-  faqsProps.extend({
-    type: z.literal("faqs"),
-  }),
-  featureProps.extend({
-    type: z.literal("feature"),
-  }),
-  featuresProps.extend({
-    type: z.literal("features"),
-  }),
-  jobsProps.extend({
-    type: z.literal("jobs"),
-  }),
-  mapProps.extend({
-    type: z.literal("map"),
-  }),
-  personsProps.extend({
-    type: z.literal("persons"),
-  }),
-  pricingsProps.extend({
-    type: z.literal("pricings"),
-  }),
-  productsProps.extend({
-    type: z.literal("products"),
-  }),
-  quoteProps.extend({
-    type: z.literal("quote"),
-  }),
-  reviewsProps.extend({
-    type: z.literal("reviews"),
-  }),
-  pagesProps.extend({
-    type: z.literal("pages"),
-  }),
-])
-
-export type SectionSchema = z.infer<typeof sectionSchema>
-export type SectionProps = z.infer<typeof sectionProps>

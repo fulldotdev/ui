@@ -1,25 +1,31 @@
 import { z } from "astro:schema"
 
-import { imageSchema } from "@/schemas/fields/image"
-import { linkSchema } from "@/schemas/fields/link"
-import { linksSchema } from "@/schemas/fields/links"
+import { align } from "@/schemas/fields/align"
+import { description } from "@/schemas/fields/description"
+import { html } from "@/schemas/fields/html"
+import { image } from "@/schemas/fields/image"
+import { link } from "@/schemas/fields/link"
+import { links } from "@/schemas/fields/links"
+import { size } from "@/schemas/fields/size"
+import { title } from "@/schemas/fields/title"
+import { variant } from "@/schemas/fields/variant"
 
-export const featuresSchema = z
+export const features = z
   .object({
-    variant: z.enum(["1", "2"]),
-    align: z.enum(["start", "center", "end"]),
-    size: z.enum(["sm", "default", "lg"]),
-    title: z.string(),
-    description: z.string(),
-    html: z.string(),
-    links: linksSchema,
+    variant,
+    align,
+    size,
+    title,
+    description,
+    html,
+    links,
     features: z
       .object({
-        image: imageSchema,
+        image,
         icon: z.enum(["check", "cross"]),
-        title: z.string(),
-        description: z.string(),
-        link: linkSchema,
+        title,
+        description,
+        link,
       })
       .partial()
       .strict()
@@ -27,8 +33,3 @@ export const featuresSchema = z
   })
   .partial()
   .strict()
-
-export const featuresProps = featuresSchema
-
-export type FeaturesSchema = z.infer<typeof featuresSchema>
-export type FeaturesProps = z.infer<typeof featuresProps>

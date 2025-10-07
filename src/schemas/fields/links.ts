@@ -1,3 +1,3 @@
-import { linkSchema } from "@/schemas/fields/link"
+import { link } from "@/schemas/fields/link"
 
-export const linksSchema = linkSchema.array()
+export const links = link.array()

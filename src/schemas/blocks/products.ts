@@ -1,24 +1,20 @@
 import { z } from "astro:schema"
 
-import { productProps } from "@/schemas/blocks/product"
-import { linksSchema } from "@/schemas/fields/links"
-import { referencesProps, referencesSchema } from "@/schemas/fields/references"
+import { align } from "@/schemas/fields/align"
+import { html } from "@/schemas/fields/html"
+import { links } from "@/schemas/fields/links"
+import { products as productsRef } from "@/schemas/fields/products"
+import { size } from "@/schemas/fields/size"
+import { variant } from "@/schemas/fields/variant"
 
-export const productsSchema = z
+export const products = z
   .object({
-    variant: z.enum(["1", "2"]),
-    size: z.enum(["sm", "default", "lg"]),
-    align: z.enum(["start", "center", "end"]),
-    html: z.string(),
-    links: linksSchema,
-    products: referencesSchema,
+    variant,
+    size,
+    align,
+    html,
+    links,
+    products: productsRef,
   })
   .partial()
   .strict()
-
-export const productsProps = productsSchema.extend({
-  products: referencesProps.pipe(productProps.array()),
-})
-
-export type ProductsSchema = z.infer<typeof productsSchema>
-export type ProductsProps = z.infer<typeof productsProps>

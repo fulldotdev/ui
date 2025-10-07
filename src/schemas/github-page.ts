@@ -1,12 +1,12 @@
 import { z } from "astro:schema"
 
-import { pageSchema } from "@/schemas/page"
+import { page } from "@/schemas/page"
 
-export const githubPageSchema = z.object({
+export const githubPage = z.object({
   sha: z.string().optional(),
   id: z.string(),
   filePath: z.string(),
-  data: pageSchema,
+  data: page,
   body: z.string().optional(),
   rendered: z
     .object({
@@ -14,5 +14,3 @@ export const githubPageSchema = z.object({
     })
     .optional(),
 })
-
-export type GithubPageSchema = z.infer<typeof githubPageSchema>
