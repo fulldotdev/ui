@@ -2,18 +2,29 @@
 import { SEO } from "astro-seo"
 import { Font } from "astro:assets"
 
-import { type LayoutSchema } from "@/schemas/layout"
-import Banner from "@/components/blocks/banner.astro"
-import Footer from "@/components/blocks/footer.astro"
-import Header from "@/components/blocks/header.astro"
+import { Block } from "@/components/block"
 import Social from "@/components/elements/social"
-import Section from "@/components/section.astro"
 
 import "@/styles/_variables.scss"
 import "@/styles/_keyframe-animations.scss"
 import "@/styles/globals.css"
 
-type Props = LayoutSchema
+type Props = {
+  title?: string
+  description?: string
+  image?: {
+    src?: string
+    alt?: string
+  }
+  header: React.ComponentProps<typeof Block>
+  banner: React.ComponentProps<typeof Block>
+  sections: React.ComponentProps<typeof Block>[]
+  footer: React.ComponentProps<typeof Block>
+  bubble: React.ComponentProps<typeof Social>
+  head?: string
+  body?: string
+  css?: string
+}
 
 const {
   header,
@@ -72,13 +83,13 @@ const pageUrl = `${baseUrl}${pagePathname}`
     class="text-foreground bg-background font-base overscroll-none antialiased"
     id={Astro.url.pathname}
   >
-    {header && <Header {...header} />}
-    {banner && <Banner {...banner} />}
+    {header && <Block type="header" {...header} />}
+    {banner && <Block type="banner" {...banner} />}
     <main>
       <slot />
-      {sections?.map((section) => <Section {...section} />)}
+      {sections?.map((section) => <Block type="section" {...section} />)}
     </main>
-    {footer && <Footer {...footer} />}
+    {footer && <Block type="footer" {...footer} />}
     {
       bubble && (
         <Social

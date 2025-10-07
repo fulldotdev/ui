@@ -1,21 +1,29 @@
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
+import Column from "@/components/elements/column"
+import Container from "@/components/elements/container"
 import Image from "@/components/elements/image"
 import Links from "@/components/elements/links"
 import Prose from "@/components/elements/prose"
-import Column from "@/components/structures/column"
-import Container from "@/components/structures/container"
-import Section from "@/components/structures/section"
+import Section from "@/components/elements/section"
 
-interface Props {
-  size?: "sm" | "default" | "lg"
-  align?: "start" | "center" | "end"
-  children?: React.ReactNode
+interface Props extends React.ComponentProps<typeof Section> {
   links?: React.ComponentProps<typeof Links>["links"]
   image?: React.ComponentProps<typeof Image>
 }
 
-export default function ({ align, children, links, image, size }: Props) {
+export default function ({
+  className,
+  align,
+  size,
+  links,
+  image,
+  children,
+  ...props
+}: Props) {
   return (
-    <Section id="content">
+    <Section className={cn("", className)} size={size} align={align} {...props}>
       <Container className="flex max-w-screen-lg flex-col items-center">
         <Image className="rounded-lg" {...image} />
         <Column align={align} className="not-first:mt-16">

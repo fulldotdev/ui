@@ -1,21 +1,29 @@
-import Background from "@/components/elements/background"
-import Links from "@/components/elements/links"
-import Writeup from "@/components/elements/writeup"
-import Column from "@/components/structures/column"
-import Container from "@/components/structures/container"
-import Section from "@/components/structures/section"
+import * as React from "react"
 
-interface Props {
-  size?: "sm" | "default" | "lg"
-  align?: "start" | "center" | "end"
-  children?: React.ReactNode
+import { cn } from "@/lib/utils"
+import Background from "@/components/elements/background"
+import Column from "@/components/elements/column"
+import Container from "@/components/elements/container"
+import Links from "@/components/elements/links"
+import Section from "@/components/elements/section"
+import Writeup from "@/components/elements/writeup"
+
+interface Props extends React.ComponentProps<typeof Section> {
   links?: React.ComponentProps<typeof Links>["links"]
   background?: React.ComponentProps<typeof Background>["variant"]
 }
 
-export default function ({ align, size, background, children, links }: Props) {
+export default function ({
+  className,
+  align,
+  size,
+  background,
+  links,
+  children,
+  ...props
+}: Props) {
   return (
-    <Section className="relative -my-16 overflow-hidden py-40" id="cta">
+    <Section className={cn("", className)} size={size} align={align} {...props}>
       <Background
         className="mask-y-from-white mask-y-from-75% mask-y-to-transparent"
         variant={background}

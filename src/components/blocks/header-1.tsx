@@ -1,3 +1,4 @@
+import * as React from "react"
 import { Menu } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -17,13 +18,13 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import Container from "@/components/elements/container"
+import Header from "@/components/elements/header"
 import Links from "@/components/elements/links"
 import Logo from "@/components/elements/logo"
 import Socials from "@/components/elements/socials"
 
-import Container from "../structures/container"
-
-interface Props {
+interface Props extends React.ComponentProps<typeof Header> {
   align?: "start" | "center" | "end"
   logo?: React.ComponentProps<typeof Logo>
   links?: React.ComponentProps<typeof Links>["links"]
@@ -39,16 +40,18 @@ interface Props {
 }
 
 export default function ({
-  align = "start",
+  className,
+  align,
   logo,
   menus,
   links,
   socials,
+  ...props
 }: Props) {
   return (
-    <header
-      className="bg-background sticky top-0 z-50 flex h-14 items-center"
-      id="header"
+    <Header
+      className={cn("sticky top-0 z-50 flex h-14 items-center", className)}
+      {...props}
     >
       <Container className="flex justify-between gap-8">
         <Logo href="/" {...logo} />
@@ -158,6 +161,6 @@ export default function ({
           )}
         </div>
       </Container>
-    </header>
+    </Header>
   )
 }

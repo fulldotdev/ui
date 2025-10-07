@@ -1,29 +1,34 @@
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
+import Column from "@/components/elements/column"
+import Container from "@/components/elements/container"
 import Image from "@/components/elements/image"
 import Links from "@/components/elements/links"
+import Section from "@/components/elements/section"
+import Split from "@/components/elements/split"
 import Writeup from "@/components/elements/writeup"
-import Container from "@/components/structures/container"
-import Section from "@/components/structures/section"
-import Split from "@/components/structures/split"
 
-import Column from "../structures/column"
-
-interface Props {
-  size?: "sm" | "default" | "lg"
-  align?: "start" | "center" | "end"
-  children?: React.ReactNode
+interface Props extends React.ComponentProps<typeof Section> {
   links?: React.ComponentProps<typeof Links>["links"]
   image?: React.ComponentProps<typeof Image>
 }
 
-export default function ({ align, children, links, image, size, html }: Props) {
+export default function ({
+  className,
+  align,
+  size,
+  links,
+  image,
+  children,
+  ...props
+}: Props) {
   return (
-    <Section id="feature">
+    <Section className={cn("", className)} size={size} align={align} {...props}>
       <Container className="container">
         <Split align={align}>
           <Column align="start">
-            <Writeup size={size} html={html}>
-              {children}
-            </Writeup>
+            <Writeup size={size}>{children}</Writeup>
             <Links className="not-first:mt-8" size={size} links={links} />
           </Column>
           <Image className="rounded-lg" {...image} />

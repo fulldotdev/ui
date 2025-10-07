@@ -1,22 +1,29 @@
+import * as React from "react"
+
 import { cn } from "@/lib/utils"
+import Container from "@/components/elements/container"
 import Image from "@/components/elements/image"
 import Links from "@/components/elements/links"
 import Prose from "@/components/elements/prose"
-import Container from "@/components/structures/container"
-import Section from "@/components/structures/section"
-import Split from "@/components/structures/split"
+import Section from "@/components/elements/section"
+import Split from "@/components/elements/split"
 
-interface Props {
-  size?: "sm" | "default" | "lg"
-  align?: "start" | "center" | "end"
-  children?: React.ReactNode
+interface Props extends React.ComponentProps<typeof Section> {
   links?: React.ComponentProps<typeof Links>["links"]
   image?: React.ComponentProps<typeof Image>
 }
 
-export default function ({ align, children, links, image, size }: Props) {
+export default function ({
+  className,
+  align,
+  size,
+  links,
+  image,
+  children,
+  ...props
+}: Props) {
   return (
-    <Section id="content">
+    <Section className={cn("", className)} size={size} align={align} {...props}>
       <Container>
         <Split align={align}>
           <div className="flex w-full flex-col items-start">

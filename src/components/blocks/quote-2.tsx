@@ -1,20 +1,29 @@
+import * as React from "react"
+
 import { cn } from "@/lib/utils"
 import Background from "@/components/elements/background"
+import Column from "@/components/elements/column"
+import Container from "@/components/elements/container"
+import Section from "@/components/elements/section"
 import { TextReveal } from "@/components/magicui/text-reveal"
-import Column from "@/components/structures/column"
-import Container from "@/components/structures/container"
-import Section from "@/components/structures/section"
 
-interface Props {
-  align?: "start" | "center" | "end"
-  background?: React.ComponentProps<typeof Background>["variant"]
+interface Props extends React.ComponentProps<typeof Section> {
   title?: string
   description?: string
+  background?: React.ComponentProps<typeof Background>["variant"]
 }
 
-export default function ({ align, background, title, description }: Props) {
+export default function ({
+  className,
+  align,
+  size,
+  background,
+  title,
+  description,
+  ...props
+}: Props) {
   return (
-    <Section id="quote">
+    <Section className={cn("", className)} size={size} align={align} {...props}>
       <Background
         className="mask-y-from-white mask-y-from-75% mask-y-to-transparent"
         variant={background}

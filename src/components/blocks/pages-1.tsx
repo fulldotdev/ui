@@ -1,16 +1,16 @@
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
 import Abstract from "@/components/elements/abstract"
+import Column from "@/components/elements/column"
+import Container from "@/components/elements/container"
+import Grid from "@/components/elements/grid"
 import Image from "@/components/elements/image"
 import Links from "@/components/elements/links"
+import Section from "@/components/elements/section"
 import Writeup from "@/components/elements/writeup"
-import Column from "@/components/structures/column"
-import Container from "@/components/structures/container"
-import Grid from "@/components/structures/grid"
-import Section from "@/components/structures/section"
 
-interface Props {
-  align?: "start" | "center" | "end"
-  size?: "sm" | "default" | "lg"
-  children?: React.ReactNode
+interface Props extends React.ComponentProps<typeof Section> {
   links?: React.ComponentProps<typeof Links>["links"]
   services?: {
     href?: string
@@ -20,9 +20,17 @@ interface Props {
   }[]
 }
 
-export default function ({ align, size, children, links, services }: Props) {
+export default function ({
+  className,
+  align,
+  size,
+  links,
+  services,
+  children,
+  ...props
+}: Props) {
   return (
-    <Section id="services">
+    <Section className={cn("", className)} size={size} align={align} {...props}>
       <Container>
         <Column align={align}>
           <Writeup className="not-first:mt-4" size={size}>

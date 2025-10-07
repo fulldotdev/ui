@@ -1,16 +1,17 @@
-interface Props {
-  children?: React.ReactNode
-}
+import * as React from "react"
 
-export default function ({ children }: Props) {
+import { cn } from "@/lib/utils"
+import Container from "@/components/elements/container"
+import Header from "@/components/elements/header"
+
+interface Props extends React.ComponentProps<typeof Header> {}
+
+export default function ({ className, children, ...props }: Props) {
   return (
-    <header
-      className="bg-primary top-0 z-10 flex h-auto w-full items-center py-1.5"
-      id="banner"
-    >
-      <div className="text-primary-foreground container justify-center text-center text-sm font-medium">
+    <Header className={cn("bg-primary", className)} {...props}>
+      <Container className="text-primary-foreground justify-center text-center text-sm font-medium">
         {children}
-      </div>
-    </header>
+      </Container>
+    </Header>
   )
 }

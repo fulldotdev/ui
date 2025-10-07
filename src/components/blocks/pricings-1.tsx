@@ -1,3 +1,5 @@
+import * as React from "react"
+
 import { cn } from "@/lib/utils"
 import {
   Card,
@@ -14,9 +16,9 @@ import List from "@/components/elements/list"
 import Writeup from "@/components/elements/writeup"
 
 interface Props {
-  size?: "sm" | "default" | "lg"
+  className?: string
   align?: "start" | "center" | "end"
-  children?: React.ReactNode
+  size?: "sm" | "default" | "lg"
   links?: React.ComponentProps<typeof Links>["links"]
   pricings?: {
     title?: string
@@ -27,17 +29,19 @@ interface Props {
     price?: string
     unit?: string
   }[]
+  children?: React.ReactNode
 }
 
 export default function ({
+  className,
   align = "center",
   size = "default",
-  children,
   links,
   pricings,
+  children,
 }: Props) {
   return (
-    <section className="py-16" id="pricings">
+    <section className={cn("py-16", className)}>
       <div
         className={cn("container flex flex-col items-center", {
           "items-start text-start": align === "start",

@@ -1,16 +1,16 @@
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
+import Column from "@/components/elements/column"
+import Container from "@/components/elements/container"
 import Links from "@/components/elements/links"
+import Masonry from "@/components/elements/masonry"
 import Person from "@/components/elements/person"
 import Rating from "@/components/elements/rating"
+import Section from "@/components/elements/section"
 import Writeup from "@/components/elements/writeup"
-import Column from "@/components/structures/column"
-import Container from "@/components/structures/container"
-import Masonry from "@/components/structures/masonry"
-import Section from "@/components/structures/section"
 
-interface Props {
-  align?: "start" | "center" | "end"
-  size?: "sm" | "default" | "lg"
-  children?: React.ReactNode
+interface Props extends React.ComponentProps<typeof Section> {
   links?: React.ComponentProps<typeof Links>["links"]
   reviews?: {
     title?: string
@@ -22,14 +22,16 @@ interface Props {
 }
 
 export default function ({
+  className,
   align = "center",
   size,
-  children,
   links,
   reviews,
+  children,
+  ...props
 }: Props) {
   return (
-    <Section>
+    <Section className={cn("", className)} size={size} align={align} {...props}>
       <Container>
         <Column align={align}>
           <Writeup className="not-first:mt-4" size={size} align={align}>

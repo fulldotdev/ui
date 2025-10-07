@@ -1,21 +1,17 @@
+import * as React from "react"
+
 import { cn } from "@/lib/utils"
 import Abstract from "@/components/elements/abstract"
+import Column from "@/components/elements/column"
+import Container from "@/components/elements/container"
 import Form from "@/components/elements/form"
-import Icon from "@/components/elements/icon"
-import Links from "@/components/elements/links"
+import Grid from "@/components/elements/grid"
+import Section from "@/components/elements/section"
+import Social from "@/components/elements/social"
 import Writeup from "@/components/elements/writeup"
-import Column from "@/components/structures/column"
-import Container from "@/components/structures/container"
-import Grid from "@/components/structures/grid"
-import Section from "@/components/structures/section"
 
-import Social from "../elements/social"
-
-interface Props {
-  size?: "sm" | "default" | "lg"
-  align?: "start" | "center" | "end"
+interface Props extends React.ComponentProps<typeof Section> {
   form?: any
-  children?: React.ReactNode
   channels?: {
     text?: string
     href?: string
@@ -23,9 +19,17 @@ interface Props {
   }[]
 }
 
-export default function ({ align, children, form, size, channels }: Props) {
+export default function ({
+  className,
+  align,
+  size,
+  form,
+  channels,
+  children,
+  ...props
+}: Props) {
   return (
-    <Section id="contact">
+    <Section className={cn("", className)} size={size} align={align} {...props}>
       <Container className="max-w-screen-md">
         <Column align={align}>
           <Writeup size={size} align={align}>

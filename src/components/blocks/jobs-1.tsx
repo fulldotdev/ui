@@ -1,15 +1,15 @@
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
 import Abstract from "@/components/elements/abstract"
+import Column from "@/components/elements/column"
+import Container from "@/components/elements/container"
 import Links from "@/components/elements/links"
 import List from "@/components/elements/list"
+import Section from "@/components/elements/section"
 import Writeup from "@/components/elements/writeup"
-import Column from "@/components/structures/column"
-import Container from "@/components/structures/container"
-import Section from "@/components/structures/section"
 
-interface Props {
-  size?: "sm" | "default" | "lg"
-  align?: "start" | "center" | "end"
-  children?: React.ReactNode
+interface Props extends React.ComponentProps<typeof Section> {
   links?: React.ComponentProps<typeof Links>["links"]
   jobs?: {
     href?: string
@@ -22,9 +22,17 @@ interface Props {
   }[]
 }
 
-export default function ({ align, children, jobs, size, links }: Props) {
+export default function ({
+  className,
+  align,
+  size,
+  jobs,
+  links,
+  children,
+  ...props
+}: Props) {
   return (
-    <Section id="jobs">
+    <Section className={cn("", className)} size={size} align={align} {...props}>
       <Container className="max-w-screen-md">
         <Column align={align}>
           <Writeup size={size} align={align}>

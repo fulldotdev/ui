@@ -1,39 +1,41 @@
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
+import Column from "@/components/elements/column"
+import Container from "@/components/elements/container"
 import Date from "@/components/elements/date"
 import Links from "@/components/elements/links"
 import List from "@/components/elements/list"
 import Prose from "@/components/elements/prose"
+import Section from "@/components/elements/section"
 import Writeup from "@/components/elements/writeup"
-import Column from "@/components/structures/column"
-import Container from "@/components/structures/container"
-import Section from "@/components/structures/section"
 
-interface Props {
-  size?: "sm" | "default" | "lg"
-  align?: "start" | "center" | "end"
+interface Props extends React.ComponentProps<typeof Section> {
   title?: string
   description?: string
-  published?: Date
+  published?: React.ComponentProps<typeof Date>["date"]
   location?: string
   salary?: string
   hours?: string
   links?: React.ComponentProps<typeof Links>["links"]
-  children?: React.ReactNode
 }
 
 export default function ({
-  children,
+  className,
+  align,
+  size,
   title,
   description,
-  size,
-  align,
   location,
   salary,
   hours,
   published,
   links,
+  children,
+  ...props
 }: Props) {
   return (
-    <Section id="job">
+    <Section className={cn("", className)} size={size} align={align} {...props}>
       <Container className="max-w-screen-md">
         <Column align={align}>
           <Date date={published} />

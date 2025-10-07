@@ -1,3 +1,5 @@
+import * as React from "react"
+
 import { cn } from "@/lib/utils"
 import Links from "@/components/elements/links"
 import Person from "@/components/elements/person"
@@ -6,6 +8,7 @@ import Writeup from "@/components/elements/writeup"
 import { Marquee } from "@/components/magicui/marquee"
 
 interface Props {
+  className?: string
   align?: "start" | "center" | "end"
   size?: "sm" | "default" | "lg"
   children?: React.ReactNode
@@ -20,11 +23,12 @@ interface Props {
 }
 
 export default function ({
-  children,
+  className,
+  align,
+  size,
   links,
   reviews,
-  size,
-  align = "center",
+  children,
 }: Props) {
   const oneFifth = Math.floor((reviews?.length || 0) / 5)
   const columns = [
@@ -44,7 +48,7 @@ export default function ({
   ]
   const duration = (reviews?.length || 0) * 5
   return (
-    <section className="py-24">
+    <section className={cn("py-24", className)}>
       <div className="container">
         <div
           className={cn("flex flex-col", {

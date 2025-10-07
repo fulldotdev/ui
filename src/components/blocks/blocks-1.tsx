@@ -1,18 +1,14 @@
-import { cn } from "@/lib/utils"
-import Abstract from "@/components/elements/abstract"
-import Icon from "@/components/elements/icon"
-import Link from "@/components/elements/link"
-import Links from "@/components/elements/links"
-import Writeup from "@/components/elements/writeup"
-import Column from "@/components/structures/column"
-import Container from "@/components/structures/container"
-import Grid from "@/components/structures/grid"
-import Section from "@/components/structures/section"
+import * as React from "react"
 
-interface Props {
-  size?: "sm" | "default" | "lg"
-  align?: "start" | "center" | "end"
-  children?: React.ReactNode
+import { cn } from "@/lib/utils"
+import Column from "@/components/elements/column"
+import Container from "@/components/elements/container"
+import Grid from "@/components/elements/grid"
+import Links from "@/components/elements/links"
+import Section from "@/components/elements/section"
+import Writeup from "@/components/elements/writeup"
+
+interface Props extends React.ComponentProps<typeof Section> {
   links?: React.ComponentProps<typeof Links>["links"]
   blocks?: {
     title?: string
@@ -20,9 +16,17 @@ interface Props {
   }[]
 }
 
-export default function ({ align, size, children, links, blocks }: Props) {
+export default function ({
+  className,
+  align,
+  size,
+  links,
+  blocks,
+  children,
+  ...props
+}: Props) {
   return (
-    <Section id="blocks">
+    <Section className={cn("", className)} size={size} align={align} {...props}>
       <Container>
         <Column align={align}>
           <Writeup className="not-first:mt-4" size={size} align={align}>

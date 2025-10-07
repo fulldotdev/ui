@@ -1,16 +1,16 @@
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
 import Abstract from "@/components/elements/abstract"
+import Container from "@/components/elements/container"
 import Form from "@/components/elements/form"
 import Links from "@/components/elements/links"
+import Section from "@/components/elements/section"
 import Social from "@/components/elements/social"
+import Split from "@/components/elements/split"
 import Writeup from "@/components/elements/writeup"
-import Container from "@/components/structures/container"
-import Section from "@/components/structures/section"
-import Split from "@/components/structures/split"
 
-interface Props {
-  size?: "sm" | "default" | "lg"
-  align?: "start" | "center" | "end"
-  children?: React.ReactNode
+interface Props extends React.ComponentProps<typeof Section> {
   links?: React.ComponentProps<typeof Links>["links"]
   channels?: {
     text?: string
@@ -20,15 +20,17 @@ interface Props {
 }
 
 export default function ({
-  children,
-  links,
-  size,
+  className,
   align,
+  size,
+  links,
   channels,
   form,
+  children,
+  ...props
 }: Props) {
   return (
-    <Section id="contact">
+    <Section className={cn("", className)} size={size} align={align} {...props}>
       <Container>
         <Split align={align}>
           <div className="flex flex-col items-start">

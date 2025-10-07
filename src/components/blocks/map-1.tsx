@@ -1,22 +1,29 @@
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
+import Column from "@/components/elements/column"
+import Container from "@/components/elements/container"
 import Links from "@/components/elements/links"
+import Section from "@/components/elements/section"
+import Split from "@/components/elements/split"
 import Writeup from "@/components/elements/writeup"
-import Container from "@/components/structures/container"
-import Section from "@/components/structures/section"
-import Split from "@/components/structures/split"
 
-import Column from "../structures/column"
-
-interface Props {
-  size?: "sm" | "default" | "lg"
-  align?: "start" | "center" | "end"
-  children?: React.ReactNode
+interface Props extends React.ComponentProps<typeof Section> {
   links?: React.ComponentProps<typeof Links>["links"]
   src?: string
 }
 
-export default function ({ align, children, links, size, src }: Props) {
+export default function ({
+  className,
+  align,
+  size,
+  links,
+  src,
+  children,
+  ...props
+}: Props) {
   return (
-    <Section id="map">
+    <Section className={cn("", className)} size={size} align={align} {...props}>
       <Container className="container">
         <Split align={align}>
           <Column align="start">

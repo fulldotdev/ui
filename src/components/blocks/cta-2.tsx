@@ -1,22 +1,30 @@
-import Background from "@/components/elements/background"
-import Links from "@/components/elements/links"
-import Writeup from "@/components/elements/writeup"
-import Column from "@/components/structures/column"
-import Container from "@/components/structures/container"
-import Panel from "@/components/structures/panel"
-import Section from "@/components/structures/section"
+import * as React from "react"
 
-interface Props {
-  size?: "sm" | "default" | "lg"
-  align?: "start" | "center" | "end"
-  children?: React.ReactNode
+import { cn } from "@/lib/utils"
+import Background from "@/components/elements/background"
+import Column from "@/components/elements/column"
+import Container from "@/components/elements/container"
+import Links from "@/components/elements/links"
+import Panel from "@/components/elements/panel"
+import Section from "@/components/elements/section"
+import Writeup from "@/components/elements/writeup"
+
+interface Props extends React.ComponentProps<typeof Section> {
   links?: React.ComponentProps<typeof Links>["links"]
   background?: React.ComponentProps<typeof Background>["variant"]
 }
 
-export default function ({ children, links, size, align, background }: Props) {
+export default function ({
+  className,
+  align,
+  size,
+  links,
+  background,
+  children,
+  ...props
+}: Props) {
   return (
-    <Section id="cta">
+    <Section className={cn("", className)} size={size} align={align} {...props}>
       <Container>
         <Panel>
           <Background

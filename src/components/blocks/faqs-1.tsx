@@ -1,19 +1,19 @@
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import Column from "@/components/elements/column"
+import Container from "@/components/elements/container"
 import Links from "@/components/elements/links"
+import Section from "@/components/elements/section"
 import Writeup from "@/components/elements/writeup"
-import Column from "@/components/structures/column"
-import Container from "@/components/structures/container"
-import Section from "@/components/structures/section"
 
-interface Props {
-  size?: "sm" | "default" | "lg"
-  align?: "start" | "center" | "end"
-  children?: React.ReactNode
+interface Props extends React.ComponentProps<typeof Section> {
   links?: React.ComponentProps<typeof Links>["links"]
   faqs?: {
     question?: string
@@ -21,9 +21,17 @@ interface Props {
   }[]
 }
 
-export default function ({ align, children, faqs, size, links }: Props) {
+export default function ({
+  className,
+  align,
+  size,
+  links,
+  faqs,
+  children,
+  ...props
+}: Props) {
   return (
-    <Section id="faqs">
+    <Section className={cn("", className)} size={size} align={align} {...props}>
       <Container className="max-w-screen-md">
         <Column align={align}>
           <Writeup size={size} align={align}>

@@ -1,8 +1,12 @@
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
 import Links from "@/components/elements/links"
 import Logo from "@/components/elements/logo"
 import Social from "@/components/elements/social"
 
 interface Props {
+  className?: string
   logo?: React.ComponentProps<typeof Logo>
   description?: string
   links?: React.ComponentProps<typeof Links>["links"]
@@ -13,9 +17,9 @@ interface Props {
   }[]
 }
 
-export default function ({ logo, links, socials }: Props) {
+export default function ({ className, logo, links, socials }: Props) {
   return (
-    <section className="py-16">
+    <section className={cn("py-16", className)}>
       <div className="container flex flex-col items-center gap-8">
         <Logo href="/" {...logo} />
         {links && links.length > 0 && (
