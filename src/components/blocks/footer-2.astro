@@ -1,0 +1,60 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import Logo from "@/components/elements/logo.astro"
+import Social from "@/components/elements/social.astro"
+
+interface Props {
+  class?: string
+  logo?: ComponentProps<typeof Logo>
+  description?: string
+  links?: {
+    text?: string
+    href?: string
+  }[]
+  socials?: string[]
+  menus?: {
+    text?: string
+    links?: {
+      text?: string
+      href?: string
+    }[]
+  }[]
+}
+
+const { class: className, logo, links, socials } = Astro.props
+---
+
+<section class={cn("py-16", className)}>
+  <div class="container flex flex-col items-center gap-8">
+    <Logo href="/" {...logo} />
+    {
+      links && links.length > 0 && (
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-1">
+          {links?.map(({ text, href }) => (
+            <a
+              class="text-muted-foreground hover:text-foreground text-sm transition-colors"
+              href={href}
+            >
+              {text}
+            </a>
+          ))}
+        </div>
+      )
+    }
+    {
+      socials && socials.length > 0 && (
+        <div class="flex gap-4">
+          {socials?.map((social) => (
+            <Social
+              class="text-muted-foreground hover:text-foreground !size-auto"
+              variant="link"
+              href={social}
+            />
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>

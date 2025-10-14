@@ -15,19 +15,25 @@ const variants = cva("flex relative w-full", {
       center: "items-center",
       end: "items-end",
     },
+    variant: {
+      default: "bg-transparent",
+      outline: "border-border not-first:border-t not-last:border-b",
+      muted: "bg-muted/50",
+    },
   },
   defaultVariants: {
     size: "default",
     align: "start",
+    variant: "default",
   },
 })
 
 interface Props extends VariantProps<typeof variants> {
   class?: string
-  id?: string
 }
 
-const { id, class: className, size, align, ...props } = Astro.props
+const { class: className, size, align, variant, ...props } = Astro.props
+
 const slot = await Astro.slots.render("default")
 const hasSlot = slot.trim().length > 0
 ---
@@ -35,8 +41,7 @@ const hasSlot = slot.trim().length > 0
 {
   hasSlot && (
     <section
-      class={cn(variants({ size, align }), className)}
-      id={id}
+      class={cn(variants({ size, align, variant }), className)}
       {...props}
     >
       <Fragment set:html={slot} />

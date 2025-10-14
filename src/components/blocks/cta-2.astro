@@ -1,0 +1,56 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import Background from "@/components/elements/background.astro"
+import LinkGroup from "@/components/elements/link-group.astro"
+import Link from "@/components/elements/link.astro"
+import SectionContainer from "@/components/elements/section-container.astro"
+import SectionContent from "@/components/elements/section-content.astro"
+import SectionPanel from "@/components/elements/section-panel.astro"
+import Section from "@/components/elements/section.astro"
+import Typography from "@/components/elements/typography.astro"
+
+interface Props extends ComponentProps<typeof Section> {
+  background?: ComponentProps<typeof Background>["variant"]
+  variant?: ComponentProps<typeof SectionPanel>["variant"]
+  links?: ComponentProps<typeof Link>[]
+}
+
+const {
+  class: className,
+  align,
+  size,
+  links,
+  background,
+  variant,
+  ...props
+} = Astro.props
+---
+
+<Section class={cn("", className)} size={size} align={align} {...props}>
+  <SectionContainer>
+    <SectionPanel variant={variant}>
+      <Background
+        class="mask-y-from-white mask-y-from-75% mask-y-to-transparent"
+        variant={background}
+      />
+      <SectionContent align={align}>
+        <Typography size={size} align={align}>
+          <slot />
+        </Typography>
+        <LinkGroup align={align}>
+          {
+            links?.map((link, i) => (
+              <Link
+                variant={i === 0 ? "default" : "outline"}
+                size={size}
+                {...link}
+              />
+            ))
+          }
+        </LinkGroup>
+      </SectionContent>
+    </SectionPanel>
+  </SectionContainer>
+</Section>

@@ -1,0 +1,93 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import Logo from "@/components/elements/logo.astro"
+import Social from "@/components/elements/social.astro"
+
+interface Props {
+  class?: string
+  logo?: ComponentProps<typeof Logo>
+  description?: string
+  links?: {
+    text?: string
+    href?: string
+  }[]
+  socials?: string[]
+  menus?: {
+    text?: string
+    links?: {
+      text?: string
+      href?: string
+    }[]
+  }[]
+}
+
+const {
+  class: className,
+  logo,
+  description,
+  links,
+  socials,
+  menus,
+} = Astro.props
+---
+
+<section class={cn("py-0", className)}>
+  <div
+    class="container flex w-full flex-col justify-between gap-8 py-16 md:grid md:grid-cols-[repeat(auto-fit,minmax(160px,1fr))]"
+  >
+    <div class="col-span-2 flex max-w-xs flex-col">
+      <Logo href="/" {...logo} />
+      {
+        description && (
+          <p class="text-muted-foreground text-sm not-first:mt-3">
+            {description}
+          </p>
+        )
+      }
+      {
+        links && links.length > 0 && (
+          <div class="flex flex-col items-start gap-2 not-first:mt-8">
+            {links.map(({ text, ...link }) => (
+              <div class="flex items-center gap-3 text-sm">
+                <Social variant="outline" href={link.href} />
+                {text}
+              </div>
+            ))}
+          </div>
+        )
+      }
+      <div class="flex gap-4 not-first:mt-8">
+        {
+          socials?.map((social) => (
+            <Social
+              class="text-muted-foreground hover:text-foreground size-5"
+              variant="link"
+              href={social}
+            />
+          ))
+        }
+      </div>
+    </div>
+    {
+      menus?.map((menu) => (
+        <div class="menu flex flex-col items-start gap-4">
+          <h4 class="text-foreground text-sm font-semibold whitespace-nowrap">
+            {menu.text}
+          </h4>
+          <menu class="flex w-full flex-col items-start gap-3">
+            {menu.links?.map(({ href, text }) => (
+              <a
+                class="text-muted-foreground hover:text-foreground text-sm font-normal transition-colors"
+                href={href}
+              >
+                {text}
+              </a>
+            ))}
+          </menu>
+        </div>
+      ))
+    }
+  </div>
+</section>

@@ -1,0 +1,69 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import Date from "@/components/elements/date.astro"
+import LinkGroup from "@/components/elements/link-group.astro"
+import Link from "@/components/elements/link.astro"
+import ListItem from "@/components/elements/list-item.astro"
+import List from "@/components/elements/list.astro"
+import SectionContainer from "@/components/elements/section-container.astro"
+import SectionStack from "@/components/elements/section-stack.astro"
+import Section from "@/components/elements/section.astro"
+import Typography from "@/components/elements/typography.astro"
+
+interface Props extends ComponentProps<typeof Section> {
+  published?: ComponentProps<typeof Date>["date"]
+  title?: string
+  description?: string
+  location?: string
+  salary?: string
+  hours?: string
+  links?: ComponentProps<typeof Link>[]
+}
+
+const {
+  class: className,
+  align,
+  size,
+  title,
+  description,
+  location,
+  salary,
+  hours,
+  published,
+  links,
+  ...props
+} = Astro.props
+---
+
+<Section class={cn("", className)} size={size} align={align} {...props}>
+  <SectionContainer class="max-w-screen-md">
+    <SectionStack align={align}>
+      <Date date={published} />
+      <Typography size={size} align={align}>
+        {title && <h1>{title}</h1>}
+        {description && <p>{description}</p>}
+      </Typography>
+      <List>
+        <ListItem>{location}</ListItem>
+        <ListItem>{salary}</ListItem>
+        <ListItem>{hours}</ListItem>
+      </List>
+    </SectionStack>
+    <LinkGroup>
+      {
+        links?.map((link, i) => (
+          <Link
+            variant={i === 0 ? "default" : "outline"}
+            size={size}
+            {...link}
+          />
+        ))
+      }
+    </LinkGroup>
+    <Typography size={size}>
+      <slot />
+    </Typography>
+  </SectionContainer>
+</Section>

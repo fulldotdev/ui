@@ -2,16 +2,10 @@
 import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
-import Avatar from "@/components/elements/avatar.astro"
-import ItemContent from "@/components/elements/item-content.astro"
-import ItemDescription from "@/components/elements/item-description.astro"
-import ItemMedia from "@/components/elements/item-media.astro"
-import ItemTitle from "@/components/elements/item-title.astro"
-import Item from "@/components/elements/item.astro"
+import Grid from "@/components/elements/grid.astro"
+import Icon from "@/components/elements/icon.astro"
 import LinkGroup from "@/components/elements/link-group.astro"
 import Link from "@/components/elements/link.astro"
-import Masonry from "@/components/elements/masonry.astro"
-import Rating from "@/components/elements/rating.astro"
 import SectionContainer from "@/components/elements/section-container.astro"
 import SectionContent from "@/components/elements/section-content.astro"
 import SectionStack from "@/components/elements/section-stack.astro"
@@ -19,25 +13,22 @@ import Section from "@/components/elements/section.astro"
 import TileContent from "@/components/elements/tile-content.astro"
 import TileDescription from "@/components/elements/tile-description.astro"
 import TileTitle from "@/components/elements/tile-title.astro"
-import Tile from "@/components/elements/tile.astro"
 import Typography from "@/components/elements/typography.astro"
 
 interface Props extends ComponentProps<typeof Section> {
   links?: ComponentProps<typeof Link>[]
-  reviews?: {
+  features?: {
     title?: string
     description?: string
-    rating?: number
-    avatar?: ComponentProps<typeof Avatar>
-    tagline?: string
-    href?: string
+    icon?: string
+    link?: ComponentProps<typeof Link>
   }[]
 }
 
-const { class: classList, align, size, links, reviews, ...props } = Astro.props
+const { class: className, align, size, links, features, ...props } = Astro.props
 ---
 
-<Section class={cn("", classList)} size={size} align={align} {...props}>
+<Section class={cn("", className)} size={size} align={align} {...props}>
   <SectionContainer>
     <SectionStack align={align}>
       <SectionContent align={align}>
@@ -56,30 +47,26 @@ const { class: classList, align, size, links, reviews, ...props } = Astro.props
           }
         </LinkGroup>
       </SectionContent>
-      <Masonry>
-        {
-          reviews?.map(
-            ({ title, description, rating, avatar, tagline, href }) => (
-              <Tile href={href} variant="outline">
-                <TileContent>
-                  <Item class="-m-4" size="sm">
-                    <ItemMedia>
-                      <Avatar class="size-10" {...avatar} />
-                    </ItemMedia>
-                    <ItemContent>
-                      <ItemTitle>{title}</ItemTitle>
-                      <ItemDescription>{tagline}</ItemDescription>
-                    </ItemContent>
-                  </Item>
-                  <Rating rating={rating} />
+      {
+        features && features.length > 0 && (
+          <Grid class="gap-x-16 gap-y-8">
+            {features?.map(({ title, description, icon, link }) => (
+              <SectionStack align={align}>
+                {icon && (
+                  <div class="bg-accent rounded-full p-2">
+                    <Icon name={icon} />
+                  </div>
+                )}
+                <TileContent class="flex flex-col gap-2 p-0">
                   <TileTitle>{title}</TileTitle>
                   <TileDescription>{description}</TileDescription>
+                  <Link class="px-0" variant="link" size={size} {...link} />
                 </TileContent>
-              </Tile>
-            )
-          )
-        }
-      </Masonry>
+              </SectionStack>
+            ))}
+          </Grid>
+        )
+      }
     </SectionStack>
   </SectionContainer>
 </Section>

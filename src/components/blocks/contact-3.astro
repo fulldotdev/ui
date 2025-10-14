@@ -1,0 +1,75 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import Form from "@/components/elements/form.astro"
+import Icon from "@/components/elements/icon.astro"
+import ItemContent from "@/components/elements/item-content.astro"
+import ItemDescription from "@/components/elements/item-description.astro"
+import ItemGroup from "@/components/elements/item-group.astro"
+import ItemMedia from "@/components/elements/item-media.astro"
+import ItemTitle from "@/components/elements/item-title.astro"
+import Item from "@/components/elements/item.astro"
+import Link from "@/components/elements/link.astro"
+import SectionContainer from "@/components/elements/section-container.astro"
+import SectionContent from "@/components/elements/section-content.astro"
+import SectionPanel from "@/components/elements/section-panel.astro"
+import SectionSplit from "@/components/elements/section-split.astro"
+import Section from "@/components/elements/section.astro"
+import Typography from "@/components/elements/typography.astro"
+
+interface Props extends ComponentProps<typeof Section> {
+  links?: ComponentProps<typeof Link>[]
+  channels?: {
+    title?: string
+    description?: string
+    variant?: ComponentProps<typeof Item>["variant"]
+    href?: ComponentProps<typeof Link>["href"]
+    icon?: ComponentProps<typeof Icon>["name"]
+  }[]
+  form?: any
+}
+
+const {
+  class: className,
+  align,
+  size,
+  links,
+  channels,
+  form,
+  variant,
+  ...props
+} = Astro.props
+---
+
+<Section class={cn("", className)} size={size} align={align} {...props}>
+  <SectionContainer>
+    <SectionPanel variant={variant}>
+      <SectionSplit align={align}>
+        <SectionContent>
+          <Typography size={size}>
+            <slot />
+          </Typography>
+          <ItemGroup class="min-w-2xs gap-2">
+            {
+              channels?.map(
+                ({ title, description, href, icon, variant = "muted" }) => (
+                  <Item variant={variant} href={href}>
+                    <ItemMedia variant="icon">
+                      <Icon name={icon} />
+                    </ItemMedia>
+                    <ItemContent>
+                      <ItemTitle>{title}</ItemTitle>
+                      <ItemDescription>{description}</ItemDescription>
+                    </ItemContent>
+                  </Item>
+                )
+              )
+            }
+          </ItemGroup>
+        </SectionContent>
+        <Form {...form} />
+      </SectionSplit>
+    </SectionPanel>
+  </SectionContainer>
+</Section>

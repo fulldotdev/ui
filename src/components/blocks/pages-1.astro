@@ -1,0 +1,70 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import Grid from "@/components/elements/grid.astro"
+import Image from "@/components/elements/image.astro"
+import LinkGroup from "@/components/elements/link-group.astro"
+import Link from "@/components/elements/link.astro"
+import SectionContainer from "@/components/elements/section-container.astro"
+import SectionContent from "@/components/elements/section-content.astro"
+import SectionStack from "@/components/elements/section-stack.astro"
+import Section from "@/components/elements/section.astro"
+import TileContent from "@/components/elements/tile-content.astro"
+import TileDescription from "@/components/elements/tile-description.astro"
+import TileTitle from "@/components/elements/tile-title.astro"
+import Tile from "@/components/elements/tile.astro"
+import Typography from "@/components/elements/typography.astro"
+
+interface Props extends ComponentProps<typeof Section> {
+  links?: ComponentProps<typeof Link>[]
+  services?: {
+    href?: string
+    title?: string
+    description?: string
+    image?: ComponentProps<typeof Image>
+  }[]
+}
+
+const { class: className, align, size, links, services, ...props } = Astro.props
+---
+
+<Section class={cn("", className)} size={size} align={align} {...props}>
+  <SectionContainer>
+    <SectionStack align={align}>
+      <SectionContent align={align}>
+        <Typography class="not-first:mt-4" size={size}>
+          <slot />
+        </Typography>
+        <LinkGroup class="not-first:mt-8 not-last:mb-4">
+          {
+            links?.map((link, i) => (
+              <Link
+                variant={i === 0 ? "default" : "outline"}
+                size={size}
+                {...link}
+              />
+            ))
+          }
+        </LinkGroup>
+      </SectionContent>
+      <Grid class="gap-4">
+        {
+          services?.map(({ title, description, image, href }) => (
+            <Tile href={href} class="group flex flex-col items-start">
+              <Image
+                class="aspect-4/3 rounded-lg object-cover transition-opacity group-hover:opacity-75"
+                sizes="200px"
+                {...image}
+              />
+              <TileContent class="flex flex-col gap-2 not-first:mt-4">
+                <TileTitle>{title}</TileTitle>
+                <TileDescription>{description}</TileDescription>
+              </TileContent>
+            </Tile>
+          ))
+        }
+      </Grid>
+    </SectionStack>
+  </SectionContainer>
+</Section>

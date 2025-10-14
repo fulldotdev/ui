@@ -1,0 +1,64 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import AccordionContent from "@/components/elements/accordion-content.astro"
+import AccordionItem from "@/components/elements/accordion-item.astro"
+import AccordionTrigger from "@/components/elements/accordion-trigger.astro"
+import Accordion from "@/components/elements/accordion.astro"
+import LinkGroup from "@/components/elements/link-group.astro"
+import Link from "@/components/elements/link.astro"
+import SectionContainer from "@/components/elements/section-container.astro"
+import SectionContent from "@/components/elements/section-content.astro"
+import SectionStack from "@/components/elements/section-stack.astro"
+import Section from "@/components/elements/section.astro"
+import Typography from "@/components/elements/typography.astro"
+
+interface Props extends ComponentProps<typeof Section> {
+  links?: ComponentProps<typeof Link>[]
+  faqs?: {
+    question?: string
+    answer?: string
+  }[]
+}
+
+const { class: className, align, size, links, faqs, ...props } = Astro.props
+---
+
+<Section class={cn("", className)} size={size} align={align} {...props}>
+  <SectionContainer class="max-w-screen-md">
+    <SectionStack align={align}>
+      <SectionContent align={align}>
+        <Typography size={size} align={align}>
+          <slot />
+        </Typography>
+        <LinkGroup align={align}>
+          {
+            links?.map((link, i) => (
+              <Link
+                variant={i === 0 ? "default" : "outline"}
+                size={size}
+                {...link}
+              />
+            ))
+          }
+        </LinkGroup>
+      </SectionContent>
+      {
+        faqs && faqs.length > 0 && (
+          <Accordion class="w-full max-w-2xl">
+            {faqs?.map(({ question, answer }, i) => {
+              if (!question && !answer) return null
+              return (
+                <AccordionItem>
+                  <AccordionTrigger>{question}</AccordionTrigger>
+                  <AccordionContent>{answer}</AccordionContent>
+                </AccordionItem>
+              )
+            })}
+          </Accordion>
+        )
+      }
+    </SectionStack>
+  </SectionContainer>
+</Section>

@@ -4,18 +4,17 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const variants = cva(
-  "grid w-full auto-cols-fr items-start lg:grid-flow-col gap-16",
+  "relative overflow-hidden rounded-2xl px-4 py-16 md:px-8 lg:px-12",
   {
     variants: {
-      align: {
-        start: "items-start",
-        center: "items-center",
-        end: "items-end",
-        sticky: "items-start *:sticky *:top-24",
+      variant: {
+        default: "bg-transparent",
+        outline: "border-border border",
+        muted: "bg-muted/50",
       },
     },
     defaultVariants: {
-      align: "start",
+      variant: "default",
     },
   }
 )
@@ -24,14 +23,14 @@ interface Props extends VariantProps<typeof variants> {
   class?: string
 }
 
-const { align, class: className, ...props } = Astro.props
+const { class: className, variant, ...props } = Astro.props
 const slot = await Astro.slots.render("default")
 const hasSlot = slot.trim().length > 0
 ---
 
 {
   hasSlot && (
-    <div class={cn(variants({ align }), className)} {...props} set:html={slot}>
+    <div class={cn(variants({ variant }), className)} {...props}>
       <Fragment set:html={slot} />
     </div>
   )

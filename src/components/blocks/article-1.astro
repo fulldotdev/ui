@@ -1,0 +1,72 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import Avatar from "@/components/elements/avatar.astro"
+import Date from "@/components/elements/date.astro"
+import Image from "@/components/elements/image.astro"
+import ItemContent from "@/components/elements/item-content.astro"
+import ItemDescription from "@/components/elements/item-description.astro"
+import ItemMedia from "@/components/elements/item-media.astro"
+import ItemTitle from "@/components/elements/item-title.astro"
+import Item from "@/components/elements/item.astro"
+import SectionContainer from "@/components/elements/section-container.astro"
+import SectionContent from "@/components/elements/section-content.astro"
+import SectionStack from "@/components/elements/section-stack.astro"
+import Section from "@/components/elements/section.astro"
+import Typography from "@/components/elements/typography.astro"
+
+interface Props extends ComponentProps<typeof Section> {
+  title?: ComponentProps<typeof Typography>["title"]
+  description?: ComponentProps<typeof Typography>["description"]
+  published?: ComponentProps<typeof Date>["date"]
+  image?: ComponentProps<typeof Image>
+  person?: {
+    href?: string
+    avatar?: ComponentProps<typeof Avatar>
+    title?: string
+    tagline?: string
+  }
+}
+
+const {
+  class: className,
+  align,
+  size,
+  title,
+  description,
+  image,
+  person,
+  published,
+  ...props
+} = Astro.props
+---
+
+<Section class={cn("", className)} size={size} align={align} {...props}>
+  <SectionContainer class="max-w-screen-lg">
+    <SectionStack align="center">
+      <SectionContent align={align}>
+        <Date date={published} />
+        <Typography
+          size={size}
+          align={align}
+          title={title}
+          description={description}
+        />
+        <Item class="-m-4" size="sm" href={person?.href}>
+          <ItemMedia>
+            <Avatar class="size-10" {...person?.avatar} />
+          </ItemMedia>
+          <ItemContent>
+            <ItemTitle>{person?.title}</ItemTitle>
+            <ItemDescription>{person?.tagline}</ItemDescription>
+          </ItemContent>
+        </Item>
+      </SectionContent>
+      <Image class="rounded-lg" {...image} />
+      <Typography>
+        <slot />
+      </Typography>
+    </SectionStack>
+  </SectionContainer>
+</Section>

@@ -1,20 +1,21 @@
 ---
+import type { HTMLAttributes } from "astro/types"
+
 import { cn } from "@/lib/utils"
 
-interface Props {
+interface Props extends Omit<HTMLAttributes<"details">, "class"> {
   class?: string
+  open?: boolean
 }
 
-const { class: className, ...props } = Astro.props
-
-const slot = await Astro.slots.render("default")
-const hasSlot = slot.trim().length > 0
+const { class: className, open = false, ...props } = Astro.props
 ---
 
-{
-  hasSlot && (
-    <div class={cn("border-b last:border-b-0", className)} {...props}>
-      <Fragment set:html={slot} />
-    </div>
-  )
-}
+<details
+  data-slot="accordion-item"
+  class={cn("border-b last:border-b-0 group", className)}
+  open={open}
+  {...props}
+>
+  <slot />
+</details>

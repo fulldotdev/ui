@@ -1,0 +1,57 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import Grid from "@/components/elements/grid.astro"
+import LinkGroup from "@/components/elements/link-group.astro"
+import Link from "@/components/elements/link.astro"
+import SectionContainer from "@/components/elements/section-container.astro"
+import SectionContent from "@/components/elements/section-content.astro"
+import SectionStack from "@/components/elements/section-stack.astro"
+import Section from "@/components/elements/section.astro"
+import Typography from "@/components/elements/typography.astro"
+
+interface Props extends ComponentProps<typeof Section> {
+  links?: ComponentProps<typeof Link>[]
+  blocks?: {
+    title?: string
+    href?: string
+  }[]
+}
+
+const { class: className, align, size, links, blocks, ...props } = Astro.props
+---
+
+<Section class={cn("", className)} size={size} align={align} {...props}>
+  <SectionContainer>
+    <SectionStack align={align}>
+      <SectionContent align={align}>
+        <Typography size={size} align={align}>
+          <slot />
+        </Typography>
+        <LinkGroup align={align}>
+          {
+            links?.map((link, i) => (
+              <Link
+                variant={i === 0 ? "default" : "outline"}
+                size={size}
+                {...link}
+              />
+            ))
+          }
+        </LinkGroup>
+      </SectionContent>
+      {
+        blocks && blocks.length > 0 && (
+          <Grid size="sm" class="gap-x-16 gap-y-8">
+            {blocks?.map(({ title, href }, i) => (
+              <a class="text-foreground text-xl hover:underline" href={href}>
+                {title}
+              </a>
+            ))}
+          </Grid>
+        )
+      }
+    </SectionStack>
+  </SectionContainer>
+</Section>

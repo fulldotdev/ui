@@ -1,7 +1,7 @@
 ---
 interface Props {
   class?: string
-  name: string
+  name?: string
 }
 
 const { class: className, name, ...rest } = Astro.props
@@ -9,8 +9,8 @@ const { class: className, name, ...rest } = Astro.props
 const icons = import.meta.glob(`node_modules/lucide-static/icons/*.svg`)
 const icon = icons[`/node_modules/lucide-static/icons/${name}.svg`]
 
-const module = (await icon()) as any
+const module = icon ? ((await icon()) as any) : undefined
 const Comp = module?.default
 ---
 
-<Comp class={className} {...rest} />
+{Comp && <Comp class={className} {...rest} />}

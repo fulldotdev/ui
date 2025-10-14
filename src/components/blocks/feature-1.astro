@@ -1,0 +1,44 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import Image from "@/components/elements/image.astro"
+import LinkGroup from "@/components/elements/link-group.astro"
+import Link from "@/components/elements/link.astro"
+import SectionContainer from "@/components/elements/section-container.astro"
+import SectionContent from "@/components/elements/section-content.astro"
+import SectionSplit from "@/components/elements/section-split.astro"
+import Section from "@/components/elements/section.astro"
+import Typography from "@/components/elements/typography.astro"
+
+interface Props extends ComponentProps<typeof Section> {
+  links?: ComponentProps<typeof Link>[]
+  image?: ComponentProps<typeof Image>
+}
+
+const { class: className, align, size, links, image, ...props } = Astro.props
+---
+
+<Section class={cn("", className)} size={size} align={align} {...props}>
+  <SectionContainer class="container">
+    <SectionSplit align={align}>
+      <SectionContent align="start">
+        <Typography size={size}>
+          <slot />
+        </Typography>
+        <LinkGroup>
+          {
+            links?.map((link, i) => (
+              <Link
+                variant={i === 0 ? "default" : "outline"}
+                size={size}
+                {...link}
+              />
+            ))
+          }
+        </LinkGroup>
+      </SectionContent>
+      <Image class="rounded-lg" {...image} />
+    </SectionSplit>
+  </SectionContainer>
+</Section>
