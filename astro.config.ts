@@ -7,7 +7,7 @@ import robotsTxt from "astro-robots-txt"
 import { defineConfig, envField, fontProviders } from "astro/config"
 
 export default defineConfig({
-  output: "server",
+  output: "static",
   site: "https://ui.full.dev",
   env: {
     schema: {
