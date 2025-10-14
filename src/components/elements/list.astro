@@ -1,0 +1,23 @@
+---
+import { cn } from "@/lib/utils"
+import ListItem from "@/components/elements/list-item.astro"
+
+interface Props {
+  class?: string
+  items?: string[]
+}
+
+const { class: className, items, ...props } = Astro.props
+const slot = await Astro.slots.render("default")
+const hasSlot = slot.trim().length > 0
+const hasItems = items && items.length > 0
+---
+
+{
+  (hasSlot || hasItems) && (
+    <ul class={cn("space-y-4", className)} {...props}>
+      {hasItems && items.map((item) => <ListItem>{item}</ListItem>)}
+      {hasSlot && <Fragment set:html={slot} />}
+    </ul>
+  )
+}

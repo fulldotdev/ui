@@ -1,0 +1,34 @@
+---
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const variants = cva("flex flex-col", {
+  variants: {
+    align: {
+      start: "items-start",
+      center: "items-center",
+      end: "items-end",
+    },
+  },
+  defaultVariants: {
+    align: "start",
+  },
+})
+
+interface Props extends VariantProps<typeof variants> {
+  class?: string
+}
+
+const { align, class: className, ...props } = Astro.props
+const slot = await Astro.slots.render("default")
+const hasSlot = slot.trim().length > 0
+---
+
+{
+  hasSlot && (
+    <div class={cn(variants({ align }), className)} {...props}>
+      <Fragment set:html={slot} />
+    </div>
+  )
+}

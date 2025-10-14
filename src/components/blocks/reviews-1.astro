@@ -1,0 +1,83 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import Avatar from "@/components/elements/avatar.astro"
+import Column from "@/components/elements/column.astro"
+import Container from "@/components/elements/container.astro"
+import ItemContent from "@/components/elements/item-content.astro"
+import ItemDescription from "@/components/elements/item-description.astro"
+import ItemMedia from "@/components/elements/item-media.astro"
+import ItemTitle from "@/components/elements/item-title.astro"
+import Item from "@/components/elements/item.astro"
+import LinkGroup from "@/components/elements/link-group.astro"
+import Link from "@/components/elements/link.astro"
+import Masonry from "@/components/elements/masonry.astro"
+import Person from "@/components/elements/person.astro"
+import Rating from "@/components/elements/rating.astro"
+import Section from "@/components/elements/section.astro"
+import TileContent from "@/components/elements/tile-content.astro"
+import TileDescription from "@/components/elements/tile-description.astro"
+import TileTitle from "@/components/elements/tile-title.astro"
+import Tile from "@/components/elements/tile.astro"
+import Writeup from "@/components/elements/writeup.astro"
+
+interface Props extends ComponentProps<typeof Section> {
+  links?: ComponentProps<typeof Link>[]
+  reviews?: {
+    title?: string
+    description?: string
+    rating?: number
+    image?: ComponentProps<typeof Person>["image"]
+    tagline?: string
+    href?: string
+  }[]
+}
+
+const { class: classList, align, size, links, reviews, ...props } = Astro.props
+---
+
+<Section class={cn("", classList)} size={size} align={align} {...props}>
+  <Container>
+    <Column align={align}>
+      <Writeup class="not-first:mt-4" size={size} align={align}>
+        <slot />
+      </Writeup>
+      <LinkGroup class="not-first:mt-8" align={align}>
+        {
+          links?.map((link, i) => (
+            <Link
+              variant={i === 0 ? "default" : "outline"}
+              size={size}
+              {...link}
+            />
+          ))
+        }
+      </LinkGroup>
+      <Masonry class="not-first:mt-16">
+        {
+          reviews?.map(
+            ({ title, description, rating, image, tagline, href }) => (
+              <Tile href={href}>
+                <TileContent>
+                  <Item class="-m-4">
+                    <ItemMedia>
+                      <Avatar {...image} />
+                    </ItemMedia>
+                    <ItemContent>
+                      <ItemTitle>{title}</ItemTitle>
+                      <ItemDescription>{tagline}</ItemDescription>
+                    </ItemContent>
+                  </Item>
+                  <Rating rating={rating} />
+                  <TileTitle>{title}</TileTitle>
+                  <TileDescription>{description}</TileDescription>
+                </TileContent>
+              </Tile>
+            )
+          )
+        }
+      </Masonry>
+    </Column>
+  </Container>
+</Section>

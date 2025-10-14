@@ -1,0 +1,41 @@
+---
+import { Star, StarHalf } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+
+interface Props {
+  rating?: number
+  class?: string
+}
+
+const { rating, class: className, ...props } = Astro.props
+
+const getIcon = (count: number) => {
+  if (!rating) return undefined
+  const difference = rating - count
+  if (difference >= -0.25) {
+    return "full"
+  }
+  if (difference >= -0.75) {
+    return "half"
+  }
+  return null
+}
+---
+
+{
+  rating && (
+    <div class={cn("flex gap-1 text-base", className)} {...props}>
+      {[1, 2, 3, 4, 5].map((count) => (
+        <div class="!text-primary size-[1em]">
+          {getIcon(count) === "full" && (
+            <Star className="size-[1em]" fill="currentColor" />
+          )}
+          {getIcon(count) === "half" && (
+            <StarHalf className="size-[1em]" fill="currentColor" />
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}

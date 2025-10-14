@@ -1,0 +1,39 @@
+---
+import { Image } from "astro:assets"
+
+import { cn } from "@/lib/utils"
+
+interface Props {
+  src?: string
+  alt?: string
+  width?: number
+  height?: number
+  sizes?: string
+  class?: string
+  title?: string
+  href?: string
+}
+
+const { class: className, src, title, href, ...props } = Astro.props
+const Comp = href ? "a" : "div"
+---
+
+{
+  (src || title) && (
+    <Comp
+      class={cn(
+        "flex items-center justify-start gap-3 text-base font-semibold whitespace-nowrap",
+        className
+      )}
+      href={href}
+    >
+      <Image
+        class="h-8 w-auto max-w-[200px] shrink-0 object-contain"
+        sizes="200px"
+        src={src}
+        {...props}
+      />
+      {title}
+    </Comp>
+  )
+}

@@ -1,0 +1,35 @@
+---
+import { Image } from "astro:assets"
+
+import { cn } from "@/lib/utils"
+
+interface Props {
+  class?: string
+  image?: {
+    src?: string
+    alt?: string
+    width?: number
+    height?: number
+  }
+  title?: string
+  tagline?: string
+}
+
+const { class: className, image, title, tagline, ...props } = Astro.props
+---
+
+{
+  (title || tagline || image?.src) && (
+    <div class={cn("flex items-center gap-3.5", className)} {...props}>
+      {image && <Image class="size-10 rounded-full object-cover" {...image} />}
+      {(title || tagline) && (
+        <div class="flex flex-col gap-0.5">
+          {title && <h4 class="text-sm font-medium">{title}</h4>}
+          {tagline && (
+            <span class="text-muted-foreground text-xs">{tagline}</span>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}

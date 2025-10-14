@@ -1,0 +1,51 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import Background from "@/components/elements/background.astro"
+import Column from "@/components/elements/column.astro"
+import Container from "@/components/elements/container.astro"
+import LinkGroup from "@/components/elements/link-group.astro"
+import Link from "@/components/elements/link.astro"
+import Section from "@/components/elements/section.astro"
+import Writeup from "@/components/elements/writeup.astro"
+
+interface Props extends ComponentProps<typeof Section> {
+  background?: ComponentProps<typeof Background>["variant"]
+  links?: ComponentProps<typeof Link>[]
+}
+
+const {
+  class: className,
+  align,
+  size,
+  background,
+  links,
+  ...props
+} = Astro.props
+---
+
+<Section class={cn("", className)} size={size} align={align} {...props}>
+  <Background
+    class="mask-y-from-white mask-y-from-75% mask-y-to-transparent"
+    variant={background}
+  />
+  <Container>
+    <Column align={align}>
+      <Writeup class="text-balance not-first:mt-6" size={size} align={align}>
+        <slot />
+      </Writeup>
+      <LinkGroup class="not-first:mt-8" align={align}>
+        {
+          links?.map((link, i) => (
+            <Link
+              variant={i === 0 ? "default" : "outline"}
+              size={size}
+              {...link}
+            />
+          ))
+        }
+      </LinkGroup>
+    </Column>
+  </Container>
+</Section>
