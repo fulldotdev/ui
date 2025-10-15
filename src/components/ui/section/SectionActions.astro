@@ -1,4 +1,5 @@
 ---
+import type { HTMLAttributes } from "astro/types"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
@@ -13,18 +14,16 @@ const variants = cva("flex flex-col gap-2 sm:flex-row", {
   },
 })
 
-interface Props extends VariantProps<typeof variants> {
-  class?: string
-}
+interface Props extends HTMLAttributes<"div">, VariantProps<typeof variants> {}
 
-const { class: className, align } = Astro.props
+const { class: className, align, ...props } = Astro.props
 const slot = await Astro.slots.render("default")
 const hasSlot = slot?.trim().length > 0
 ---
 
 {
   hasSlot && (
-    <div class={cn(variants({ align }), className)}>
+    <div class={cn(variants({ align }), className)} {...props}>
       <Fragment set:html={slot} />
     </div>
   )
