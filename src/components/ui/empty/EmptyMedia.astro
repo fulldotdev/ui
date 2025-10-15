@@ -1,0 +1,40 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const variants = cva(
+  "flex shrink-0 items-center justify-center mb-2 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  {
+    variants: {
+      variant: {
+        default: "bg-transparent",
+        icon: "bg-muted text-foreground flex size-10 shrink-0 items-center justify-center rounded-lg [&_svg:not([class*='size-'])]:size-6",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
+
+type Props = VariantProps<typeof variants> & HTMLAttributes<"div">
+
+const { class: className, variant = "default", ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot && (
+    <div
+      data-slot="empty-icon"
+      data-variant={variant}
+      class={cn(variants({ variant, className }))}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </div>
+  )
+}
