@@ -4,29 +4,28 @@ import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-interface Props {
-  class?: string
-  src?: ComponentProps<typeof Image>["src"]
-  alt?: ComponentProps<typeof Image>["alt"]
-  width?: ComponentProps<typeof Image>["width"]
-  height?: ComponentProps<typeof Image>["height"]
-  sizes?: ComponentProps<typeof Image>["sizes"]
-}
+type Props = Partial<ComponentProps<typeof Image>>
 
-const { class: className, src, alt = "", ...props } = Astro.props
+const {
+  class: className,
+  alt = "",
+  width = 44,
+  height = 44,
+  sizes = "44px",
+  ...props
+} = Astro.props
 ---
 
 {
-  src && (
+  props.src && (
     <Image
       data-slot="avatar-image"
       class={cn("aspect-square size-full", className)}
-      src={src as any}
       alt={alt}
-      height="44"
-      width="44"
-      sizes="44px"
-      {...props}
+      width={width}
+      height={height}
+      sizes={sizes}
+      {...(props as any)}
     />
   )
 }

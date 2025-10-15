@@ -8,15 +8,21 @@ type Props = HTMLAttributes<"div"> & HTMLAttributes<"a">
 const { class: className, href, ...props } = Astro.props
 
 const Comp = href ? "a" : "div"
+
+const slot = await Astro.slots.render("default")
 ---
 
-<Comp
-  class={cn(
-    "flex items-center justify-start gap-3 whitespace-nowrap text-base font-semibold",
-    className
-  )}
-  href={href}
-  {...props}
->
-  <slot />
-</Comp>
+{
+  slot && (
+    <Comp
+      class={cn(
+        "flex items-center justify-start gap-3 text-base font-semibold whitespace-nowrap",
+        className
+      )}
+      href={href}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </Comp>
+  )
+}

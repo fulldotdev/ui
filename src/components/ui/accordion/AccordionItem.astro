@@ -9,13 +9,19 @@ interface Props extends Omit<HTMLAttributes<"details">, "class"> {
 }
 
 const { class: className, open = false, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
 ---
 
-<details
-  data-slot="accordion-item"
-  class={cn("border-b last:border-b-0", "group", className)}
-  open={open}
-  {...props}
->
-  <slot />
-</details>
+{
+  slot && (
+    <details
+      data-slot="accordion-item"
+      class={cn("border-b last:border-b-0", "group", className)}
+      open={open}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </details>
+  )
+}

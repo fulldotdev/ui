@@ -33,14 +33,20 @@ interface Props
     VariantProps<typeof fieldVariants> {}
 
 const { class: className, orientation = "vertical", ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
 ---
 
-<div
-  role="group"
-  data-slot="field"
-  data-orientation={orientation}
-  class={cn(fieldVariants({ orientation }), className)}
-  {...props}
->
-  <slot />
-</div>
+{
+  slot && (
+    <div
+      role="group"
+      data-slot="field"
+      data-orientation={orientation}
+      class={cn(fieldVariants({ orientation }), className)}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </div>
+  )
+}

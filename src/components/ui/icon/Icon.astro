@@ -1,16 +1,69 @@
 ---
-interface Props {
-  class?: string
+import type { HTMLAttributes } from "astro/types"
+
+interface Props extends Omit<HTMLAttributes<"div">, "href"> {
+  href?: HTMLAttributes<"a">["href"]
   name?: string
 }
 
-const { class: className, name, ...rest } = Astro.props
+const { class: className, name, href, ...rest } = Astro.props
+
+const iconNameMap = {
+  "x.com": "x",
+  twitter: "x",
+  facebook: "facebook",
+  instagram: "instagram",
+  pinterest: "pinterest",
+  youtube: "youtube",
+  tiktok: "tiktok",
+  snapchat: "snapchat",
+  reddit: "reddit",
+  tumblr: "tumblr",
+  "wa.me": "whatsapp",
+  telegram: "telegram",
+  discord: "discord",
+  vimeo: "vimeo",
+  flickr: "flickr",
+  yelp: "yelp",
+  spotify: "spotify",
+  behance: "behance",
+  dribbble: "dribbble",
+  soundcloud: "soundcloud",
+  github: "github",
+  twitch: "twitch",
+  "tel:": "phone",
+  "mailto:": "mail",
+  "maps.app.goo.gl": "map-pin",
+  linkedin: "linkedin",
+} as const
 
 const icons = import.meta.glob([
   "node_modules/lucide-static/icons/*.svg",
   "node_modules/simple-icons/icons/*.svg",
 ])
-const icon = icons[`/node_modules/lucide-static/icons/${name}.svg`]
+
+// Determine the icon name to use
+let finalIconName = name
+
+// If no name is provided but href is, check the href map
+if (!name && href) {
+  const platform = Object.keys(iconNameMap).find((key) => {
+    return href.toString().includes(key)
+  })
+
+  finalIconName = platform
+    ? (iconNameMap[platform as keyof typeof iconNameMap] ?? "link")
+    : "link"
+}
+
+// Find the icon path, prioritizing lucide when checking href
+const path = Object.keys(icons)
+  .reverse()
+  .find((key) => {
+    return key.includes(`/${finalIconName}.svg`)
+  })
+
+const icon = path ? icons[path] : undefined
 
 const module = icon ? ((await icon()) as any) : undefined
 const Comp = module?.default

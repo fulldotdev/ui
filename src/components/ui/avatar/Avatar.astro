@@ -6,15 +6,21 @@ import { cn } from "@/lib/utils"
 interface Props extends HTMLAttributes<"div"> {}
 
 const { class: className, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
 ---
 
-<div
-  data-slot="avatar"
-  class={cn(
-    "relative flex size-8 shrink-0 overflow-hidden rounded-full",
-    className
-  )}
-  {...props}
->
-  <slot />
-</div>
+{
+  slot && (
+    <div
+      data-slot="avatar"
+      class={cn(
+        "relative flex size-8 shrink-0 overflow-hidden rounded-full",
+        className
+      )}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </div>
+  )
+}

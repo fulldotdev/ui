@@ -26,18 +26,24 @@ interface Props extends HTMLAttributes<"a">, VariantProps<typeof variants> {
 }
 
 const { class: className, variant, href, active, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
 ---
 
-<a
-  data-slot="navigation-menu-link"
-  class={cn(
-    variants({ variant }),
-    active &&
-      "bg-accent/50 text-accent-foreground hover:bg-accent focus:bg-accent",
-    className
-  )}
-  href={href}
-  {...props}
->
-  <slot />
-</a>
+{
+  slot && (
+    <a
+      data-slot="navigation-menu-link"
+      class={cn(
+        variants({ variant }),
+        active &&
+          "bg-accent/50 text-accent-foreground hover:bg-accent focus:bg-accent",
+        className
+      )}
+      href={href}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </a>
+  )
+}

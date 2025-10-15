@@ -4,6 +4,7 @@ import type { ComponentProps } from "astro/types"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Header, HeaderActions, HeaderContainer } from "@/components/ui/header"
+import { Icon } from "@/components/ui/icon"
 import { Logo } from "@/components/ui/logo"
 import {
   NavigationMenu,
@@ -13,13 +14,12 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
-import { Social } from "@/components/ui/social"
 
 interface Props extends ComponentProps<typeof Header> {
   align?: "start" | "center" | "end"
   logo?: ComponentProps<typeof Logo>
   buttons?: ComponentProps<typeof Button>[]
-  socials?: ComponentProps<typeof Social>[]
+  socials?: string[]
   menus?: {
     text?: string
     href?: string
@@ -84,7 +84,13 @@ const {
     </NavigationMenu>
     <div class="flex justify-end gap-4">
       <HeaderActions class="max-sm:hidden">
-        {socials?.map((social) => <Social {...social} />)}
+        {
+          socials?.map((social) => (
+            <Button variant="ghost" size="icon" href={social}>
+              <Icon href={social} />
+            </Button>
+          ))
+        }
       </HeaderActions>
       <HeaderActions class="max-sm:hidden">
         {

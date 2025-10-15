@@ -6,15 +6,21 @@ import { cn } from "@/lib/utils"
 interface Props extends HTMLAttributes<"div"> {}
 
 const { class: className, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
 ---
 
-<div
-  data-slot="field-group"
-  class={cn(
-    "group/field-group @container/field-group flex w-full flex-col gap-7 data-[slot=checkbox-group]:gap-3 [&>[data-slot=field-group]]:gap-4",
-    className
-  )}
-  {...props}
->
-  <slot />
-</div>
+{
+  slot && (
+    <div
+      data-slot="field-group"
+      class={cn(
+        "group/field-group @container/field-group flex w-full flex-col gap-7 data-[slot=checkbox-group]:gap-3 [&>[data-slot=field-group]]:gap-4",
+        className
+      )}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </div>
+  )
+}

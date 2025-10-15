@@ -6,12 +6,18 @@ import { cn } from "@/lib/utils"
 interface Props extends HTMLAttributes<"li"> {}
 
 const { class: className, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
 ---
 
-<li
-  data-slot="navigation-menu-item"
-  class={cn("relative", "group/navigation-menu-item", className)}
-  {...props}
->
-  <slot />
-</li>
+{
+  slot && (
+    <li
+      data-slot="navigation-menu-item"
+      class={cn("relative", "group/navigation-menu-item", className)}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </li>
+  )
+}

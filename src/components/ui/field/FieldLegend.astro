@@ -8,18 +8,24 @@ interface Props extends HTMLAttributes<"legend"> {
 }
 
 const { class: className, variant = "legend", ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
 ---
 
-<legend
-  data-slot="field-legend"
-  data-variant={variant}
-  class={cn(
-    "mb-3 font-medium",
-    "data-[variant=legend]:text-base",
-    "data-[variant=label]:text-sm",
-    className
-  )}
-  {...props}
->
-  <slot />
-</legend>
+{
+  slot && (
+    <legend
+      data-slot="field-legend"
+      data-variant={variant}
+      class={cn(
+        "mb-3 font-medium",
+        "data-[variant=legend]:text-base",
+        "data-[variant=label]:text-sm",
+        className
+      )}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </legend>
+  )
+}
