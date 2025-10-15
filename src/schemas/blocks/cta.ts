@@ -1,16 +1,16 @@
 import { z } from "astro:schema"
 
-import background from "@/schemas/elements/background"
-import links from "@/schemas/elements/links"
-import section from "@/schemas/elements/section"
-import writeup from "@/schemas/elements/writeup"
+import background from "@/schemas/ui/background"
+import button from "@/schemas/ui/button"
+import html from "@/schemas/ui/html"
+import section from "@/schemas/ui/section"
 
 export default section
   .extend({
     variant: z.enum(["1", "2"]),
     background: background,
-    writeup: writeup,
-    buttons: buttons,
+    html: html,
+    buttons: button.array(),
   })
   .partial()
   .strict()

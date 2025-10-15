@@ -1,15 +1,15 @@
 import { z } from "astro:schema"
 
-import image from "@/schemas/elements/image"
-import links from "@/schemas/elements/links"
-import section from "@/schemas/elements/section"
-import writeup from "@/schemas/elements/writeup"
+import button from "@/schemas/ui/button"
+import html from "@/schemas/ui/html"
+import image from "@/schemas/ui/image"
+import section from "@/schemas/ui/section"
 
 export default section
   .extend({
     variant: z.enum(["1", "2"]),
-    writeup: writeup,
-    buttons: buttons,
+    html: html,
+    buttons: button.array(),
     pages: z
       .string()
       .array()

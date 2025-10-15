@@ -1,12 +1,12 @@
 import { z } from "astro:schema"
 
-import section from "@/schemas/elements/section"
-import writeup from "@/schemas/elements/writeup"
+import html from "@/schemas/ui/html"
+import section from "@/schemas/ui/section"
 
 export default section
   .extend({
     variant: z.enum(["1", "2"]),
-    writeup: writeup,
+    html: html,
     faqs: z
       .object({
         question: z.string(),

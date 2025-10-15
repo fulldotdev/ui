@@ -1,7 +1,7 @@
 import { z } from "astro:schema"
 
-import image from "@/schemas/elements/image"
-import socials from "@/schemas/elements/socials"
+import image from "@/schemas/ui/image"
+import socials from "@/schemas/ui/socials"
 
 export default z
   .object({

@@ -3,9 +3,9 @@ import { z } from "astro:schema"
 import banner from "@/schemas/blocks/banner"
 import footer from "@/schemas/blocks/footer"
 import header from "@/schemas/blocks/header"
-import button from "@/schemas/elements/button"
-import image from "@/schemas/elements/image"
 import section from "@/schemas/section"
+import button from "@/schemas/ui/button"
+import image from "@/schemas/ui/image"
 
 export default z
   .object({
@@ -16,7 +16,7 @@ export default z
     banner: banner,
     sections: section.array(),
     footer: footer,
-    bubble: link,
+    bubble: button,
     head: z.string(),
     body: z.string(),
     css: z.string(),

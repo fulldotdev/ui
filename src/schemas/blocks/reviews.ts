@@ -1,14 +1,14 @@
 import { z } from "astro:schema"
 
 import review from "@/schemas/blocks/review"
-import links from "@/schemas/elements/links"
-import section from "@/schemas/elements/section"
-import writeup from "@/schemas/elements/writeup"
+import button from "@/schemas/ui/button"
+import html from "@/schemas/ui/html"
+import section from "@/schemas/ui/section"
 
 export default section
   .extend({
-    writeup: writeup,
-    buttons: buttons,
+    html: html,
+    buttons: button.array(),
     reviews: z.union([z.string(), review.array()]),
   })
   .partial()

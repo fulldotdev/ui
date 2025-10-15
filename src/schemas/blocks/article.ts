@@ -1,9 +1,8 @@
 import { z } from "astro:schema"
 
 import person from "@/schemas/blocks/person"
-import date from "@/schemas/elements/date"
-import image from "@/schemas/elements/image"
-import section from "@/schemas/elements/section"
+import image from "@/schemas/ui/image"
+import section from "@/schemas/ui/section"
 
 export default section
   .extend({
@@ -11,7 +10,6 @@ export default section
     title: z.string(),
     description: z.string(),
     image: image,
-    published: date,
     person: z.union([z.string(), person]),
   })
   .partial()

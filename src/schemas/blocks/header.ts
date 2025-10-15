@@ -1,19 +1,19 @@
 import { z } from "astro:schema"
 
-import button from "@/schemas/elements/button"
-import image from "@/schemas/elements/image"
-import links from "@/schemas/elements/links"
-import socials from "@/schemas/elements/socials"
+import button from "@/schemas/ui/button"
+import image from "@/schemas/ui/image"
+import link from "@/schemas/ui/link"
+import socials from "@/schemas/ui/socials"
 
 export default z
   .object({
     variant: z.enum(["1", "2"]),
     logo: image,
-    buttons: buttons,
+    buttons: button.array(),
     socials: socials,
     menus: link
       .extend({
-        buttons: buttons,
+        links: link.array(),
       })
       .partial()
       .strict()

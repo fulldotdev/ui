@@ -1,7 +1,7 @@
 import { getImage } from "astro:assets"
 import { z } from "astro:schema"
 
-import imageSchema from "@/schemas/elements/image"
+import imageSchema from "@/schemas/ui/image"
 
 type ImageSchema = z.infer<typeof imageSchema>
 

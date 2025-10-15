@@ -1,8 +1,8 @@
 import { z } from "astro:schema"
 
-import image from "@/schemas/elements/image"
-import rating from "@/schemas/elements/rating"
-import section from "@/schemas/elements/section"
+import image from "@/schemas/ui/image"
+import rating from "@/schemas/ui/rating"
+import section from "@/schemas/ui/section"
 
 export default section
   .extend({
