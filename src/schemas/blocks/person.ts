@@ -1,7 +1,6 @@
 import { z } from "astro:schema"
 
 import image from "@/schemas/ui/image"
-import socials from "@/schemas/ui/socials"
 
 export default z
   .object({
@@ -12,7 +11,7 @@ export default z
     email: z.string(),
     phone: z.number(),
     address: z.string(),
-    socials: socials,
+    socials: z.string().array(),
     image: image,
   })
   .partial()
