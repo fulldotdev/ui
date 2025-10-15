@@ -9,13 +9,13 @@ export default section
   .extend({
     variant: z.enum(["1", "2"]),
     description: z.string(),
-    buttons: links,
+    buttons: buttons,
     socials: socials,
     logo: image,
     menus: z
       .object({
         text: z.string(),
-        buttons: links,
+        buttons: buttons,
       })
       .partial()
       .strict()

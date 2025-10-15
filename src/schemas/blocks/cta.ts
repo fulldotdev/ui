@@ -10,7 +10,7 @@ export default section
     variant: z.enum(["1", "2"]),
     background: background,
     writeup: writeup,
-    buttons: links,
+    buttons: buttons,
   })
   .partial()
   .strict()

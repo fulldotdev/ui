@@ -11,7 +11,7 @@ export default section
   .extend({
     variant: z.enum(["1", "2", "3"]),
     writeup: writeup,
-    channels: links,
+    channels: buttons,
     socials: socials,
     image: image,
     form: form,

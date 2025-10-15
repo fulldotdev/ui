@@ -8,7 +8,7 @@ import writeup from "@/schemas/elements/writeup"
 export default section
   .extend({
     writeup: writeup,
-    buttons: links,
+    buttons: buttons,
     reviews: z.union([z.string(), review.array()]),
   })
   .partial()

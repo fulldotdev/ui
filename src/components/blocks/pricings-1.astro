@@ -24,13 +24,20 @@ interface Props extends ComponentProps<typeof Section> {
     description?: string
     icon?: string
     list?: string[]
-    link?: ComponentProps<typeof Button>
+    button?: ComponentProps<typeof Button>
     price?: string
     unit?: string
   }[]
 }
 
-const { class: className, align, size, links, pricings, ...props } = Astro.props
+const {
+  class: className,
+  align,
+  size,
+  buttons,
+  pricings,
+  ...props
+} = Astro.props
 ---
 
 <Section class={cn("", className)} size={size} align={align} {...props}>
@@ -42,11 +49,11 @@ const { class: className, align, size, links, pricings, ...props } = Astro.props
         </Typography>
         <SectionActions align={align}>
           {
-            links?.map((link, i) => (
+            buttons?.map((button, i) => (
               <Button
                 variant={i === 0 ? "default" : "outline"}
                 size={size}
-                {...link}
+                {...button}
               />
             ))
           }
@@ -56,7 +63,7 @@ const { class: className, align, size, links, pricings, ...props } = Astro.props
         pricings && pricings.length > 0 && (
           <div class="flex flex-col items-stretch gap-6 md:flex-row">
             {pricings?.map(
-              ({ title, description, icon, link, list, price, unit }) => (
+              ({ title, description, icon, button, list, price, unit }) => (
                 <Tile
                   class="min-w-4xs basis-4xs flex max-w-md flex-col justify-start text-left"
                   variant="outline"
@@ -95,7 +102,7 @@ const { class: className, align, size, links, pricings, ...props } = Astro.props
                       </List>
                     )}
                     <div class="mt-auto pt-4">
-                      <Button class="w-full" size={size} {...link} />
+                      <Button class="w-full" size={size} {...button} />
                     </div>
                   </TileContent>
                 </Tile>

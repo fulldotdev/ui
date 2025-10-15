@@ -9,7 +9,7 @@ export default section
   .extend({
     variant: z.enum(["1", "2"]),
     prose: prose,
-    buttons: links,
+    buttons: buttons,
     image: image,
   })
   .partial()

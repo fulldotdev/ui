@@ -3,8 +3,8 @@ import { z } from "astro:schema"
 import banner from "@/schemas/blocks/banner"
 import footer from "@/schemas/blocks/footer"
 import header from "@/schemas/blocks/header"
+import button from "@/schemas/elements/button"
 import image from "@/schemas/elements/image"
-import link from "@/schemas/elements/link"
 import section from "@/schemas/section"
 
 export default z

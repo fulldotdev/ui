@@ -1,6 +1,6 @@
 import { z } from "astro:schema"
 
-import link from "@/schemas/elements/link"
+import button from "@/schemas/elements/button"
 import section from "@/schemas/elements/section"
 import writeup from "@/schemas/elements/writeup"
 

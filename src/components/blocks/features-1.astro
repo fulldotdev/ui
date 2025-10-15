@@ -21,11 +21,18 @@ interface Props extends ComponentProps<typeof Section> {
     title?: string
     description?: string
     icon?: string
-    link?: ComponentProps<typeof Button>
+    button?: ComponentProps<typeof Button>
   }[]
 }
 
-const { class: className, align, size, links, features, ...props } = Astro.props
+const {
+  class: className,
+  align,
+  size,
+  buttons,
+  features,
+  ...props
+} = Astro.props
 ---
 
 <Section class={cn("", className)} size={size} align={align} {...props}>
@@ -37,11 +44,11 @@ const { class: className, align, size, links, features, ...props } = Astro.props
         </Typography>
         <SectionActions align={align}>
           {
-            links?.map((link, i) => (
+            buttons?.map((button, i) => (
               <Button
                 variant={i === 0 ? "default" : "outline"}
                 size={size}
-                {...link}
+                {...button}
               />
             ))
           }
@@ -50,7 +57,7 @@ const { class: className, align, size, links, features, ...props } = Astro.props
       {
         features && features.length > 0 && (
           <Grid class="gap-x-16 gap-y-8">
-            {features?.map(({ title, description, icon, link }) => (
+            {features?.map(({ title, description, icon, button }) => (
               <SectionStack align={align}>
                 {icon && (
                   <div class="bg-accent rounded-full p-2">
@@ -60,7 +67,7 @@ const { class: className, align, size, links, features, ...props } = Astro.props
                 <TileContent class="flex flex-col gap-2 p-0">
                   <TileTitle>{title}</TileTitle>
                   <TileDescription>{description}</TileDescription>
-                  <Button class="px-0" variant="link" size={size} {...link} />
+                  <Button class="px-0" variant="link" size={size} {...button} />
                 </TileContent>
               </SectionStack>
             ))}
