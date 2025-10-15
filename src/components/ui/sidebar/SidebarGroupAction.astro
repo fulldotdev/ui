@@ -1,0 +1,29 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"button"> {}
+
+const { class: className, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot && (
+    <button
+      data-slot="sidebar-group-action"
+      data-sidebar="group-action"
+      class={cn(
+        "text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-hidden transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
+        "after:absolute after:-inset-2 md:after:hidden",
+        "peer-[:not(:checked)]/sidebar-toggle:group-data-[collapsible=icon]:hidden",
+        className
+      )}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </button>
+  )
+}

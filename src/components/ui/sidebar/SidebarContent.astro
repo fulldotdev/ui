@@ -1,0 +1,27 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {}
+
+const { class: className, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot && (
+    <div
+      data-slot="sidebar-content"
+      data-sidebar="content"
+      class={cn(
+        "flex min-h-0 flex-1 flex-col gap-2 overflow-auto peer-[:not(:checked)]/sidebar-toggle:group-data-[collapsible=icon]:overflow-hidden",
+        className
+      )}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </div>
+  )
+}
