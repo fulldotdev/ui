@@ -1,0 +1,37 @@
+---
+import { ChevronDown } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+
+interface Props {
+  class?: string
+  href?: string
+}
+
+const { class: className, href, ...props } = Astro.props
+const slot = await Astro.slots.render("default")
+const hasSlot = slot.trim().length > 0
+
+const Comp = href ? "a" : "button"
+---
+
+{
+  hasSlot && (
+    <Comp
+      class={cn(
+        "navigation-menu-trigger bg-background hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-ring/50 inline-flex h-9 w-max cursor-pointer items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-[3px] focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&:where(button)]:border-none [&:where(button)]:bg-transparent",
+        className
+      )}
+      href={href}
+      role="menuitem"
+      aria-haspopup={!href ? "true" : undefined}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+      <ChevronDown
+        className="relative top-[1px] ml-1 size-3 transition-transform duration-300 group-hover/navigation-menu-item:rotate-180 group-focus-within/navigation-menu-item:rotate-180"
+        aria-hidden="true"
+      />
+    </Comp>
+  )
+}

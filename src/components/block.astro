@@ -1,0 +1,23 @@
+---
+interface Props {
+  type: string
+  variant?: string
+  [key: string]: any
+}
+
+const { type, variant = "1", ...props } = Astro.props as Props
+
+const blockImports = import.meta.glob("./blocks/**/*.astro")
+
+const blockPath = `./blocks/${type}-${variant}.astro`
+const blockImport = (await blockImports[blockPath]?.()) as any
+const BlockComponent = blockImport?.default as any
+---
+
+{
+  BlockComponent && (
+    <BlockComponent {...props}>
+      <slot />
+    </BlockComponent>
+  )
+}

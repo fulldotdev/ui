@@ -109,9 +109,9 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwindcss()],
-    server: {
-      allowedHosts: ["devserver-cms-2--fulldev-cms.netlify.app"],
-    },
+    // server: {
+    //   allowedHosts: ["devserver-cms-2--fulldev-cms.netlify.app"],
+    // },
   },
   // adapter: netlify(),
 })

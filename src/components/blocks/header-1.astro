@@ -1,0 +1,155 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import HeaderContainer from "@/components/ui/header-container.astro"
+import Header from "@/components/ui/header.astro"
+import Link from "@/components/ui/link.astro"
+import Logo from "@/components/ui/logo.astro"
+import NavigationMenuContent from "@/components/ui/navigation-menu-content.astro"
+import NavigationMenuItem from "@/components/ui/navigation-menu-item.astro"
+import NavigationMenuLink from "@/components/ui/navigation-menu-link.astro"
+import NavigationMenuList from "@/components/ui/navigation-menu-list.astro"
+import NavigationMenuTrigger from "@/components/ui/navigation-menu-trigger.astro"
+import NavigationMenu from "@/components/ui/navigation-menu.astro"
+import SectionActions from "@/components/ui/section-actions.astro"
+import Socials from "@/components/ui/socials.astro"
+
+interface Props extends ComponentProps<typeof Header> {
+  align?: "start" | "center" | "end"
+  logo?: ComponentProps<typeof Logo>
+  links?: ComponentProps<typeof Link>[]
+  socials?: ComponentProps<typeof Socials>["socials"]
+  menus?: {
+    text?: string
+    href?: string
+    links?: {
+      text?: string
+      href?: string
+    }[]
+  }[]
+}
+
+const {
+  class: className,
+  align,
+  logo,
+  menus,
+  links,
+  socials,
+  ...props
+} = Astro.props
+---
+
+<Header
+  class={cn("sticky top-0 z-50 flex h-14 items-center", className)}
+  {...props}
+>
+  <HeaderContainer class="flex justify-between gap-8">
+    <Logo href="/" {...logo} />
+    <NavigationMenu class={cn("first:-ml-2 max-lg:hidden")}>
+      <NavigationMenuList>
+        {
+          menus?.map((menu) => (
+            <NavigationMenuItem>
+              {menu.links && menu.links.length > 0 ? (
+                <>
+                  <NavigationMenuTrigger href={menu.href}>
+                    {menu.text}
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul class="flex w-[200px] flex-col gap-2">
+                      {menu.links?.map((link) => (
+                        <li>
+                          <NavigationMenuLink href={link.href}>
+                            {link.text}
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </>
+              ) : (
+                <NavigationMenuLink variant="trigger" href={menu.href}>
+                  {menu.text}
+                </NavigationMenuLink>
+              )}
+            </NavigationMenuItem>
+          ))
+        }
+      </NavigationMenuList>
+    </NavigationMenu>
+    <div class="flex justify-end gap-4">
+      <Socials class="max-sm:hidden" socials={socials} />
+      <SectionActions class="max-sm:hidden">
+        {
+          links?.map((link, i) => (
+            <Link
+              variant={i === links.length - 1 ? "default" : "ghost"}
+              {...link}
+            />
+          ))
+        }
+      </SectionActions>
+      <!-- Mobile Menu - Still using React Sheet for now -->
+      <!-- {
+        menus && menus.length > 0 && (
+          <Sheet>
+            <SheetTrigger class="lg:hidden">
+              <Menu class="!size-6" />
+            </SheetTrigger>
+            <SheetContent
+              class="overflow-y-auto px-4 py-8"
+              onOpenAutoFocus={(e) => e.preventDefault()}
+            >
+              <Accordion type="single" collapsible class="flex w-full flex-col">
+                {menus?.map((menu, i) => (
+                  <AccordionItem key={i} value={`${i}. ${menu.text}`}>
+                    {menu.links && menu.links.length > 0 ? (
+                      <>
+                        <AccordionTrigger class="text-base font-medium hover:no-underline">
+                          {menu.href ? (
+                            <a href={menu.href}>{menu.text}</a>
+                          ) : (
+                            <>{menu.text}</>
+                          )}
+                        </AccordionTrigger>
+                        <AccordionContent class="flex flex-col gap-4 pb-6">
+                          {menu.links?.map((link, i) => (
+                            <a
+                              class="text-muted-foreground flex text-base"
+                              key={i}
+                              href={link.href}
+                            >
+                              {link.text}
+                            </a>
+                          ))}
+                        </AccordionContent>
+                      </>
+                    ) : (
+                      <a
+                        class="flex py-4 text-base font-medium"
+                        href={menu.href}
+                      >
+                        {menu.text}
+                      </a>
+                    )}
+                  </AccordionItem>
+                ))}
+              </Accordion>
+              <SectionActions class="w-full flex-col">
+                {links?.map((link, i) => (
+                  <Link
+                    variant={i === links.length - 1 ? "default" : "ghost"}
+                    {...link}
+                  />
+                ))}
+              </SectionActions>
+              <Socials class="mx-auto" socials={socials} />
+            </SheetContent>
+          </Sheet>
+        )
+      } -->
+    </div>
+  </HeaderContainer>
+</Header>

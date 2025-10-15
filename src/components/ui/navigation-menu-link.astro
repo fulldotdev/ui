@@ -1,0 +1,43 @@
+---
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const variants = cva(
+  "inline-flex items-center justify-center rounded-md transition-all outline-none focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+  {
+    variants: {
+      variant: {
+        default:
+          "flex-col gap-1 p-2 text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground",
+        trigger:
+          "h-9 w-max bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
+
+interface Props extends VariantProps<typeof variants> {
+  class?: string
+  href?: string
+  active?: boolean
+}
+
+const { class: className, variant, href, active, ...props } = Astro.props
+---
+
+<a
+  class={cn(
+    variants({ variant }),
+    active &&
+      "bg-accent/50 text-accent-foreground hover:bg-accent focus:bg-accent",
+    className
+  )}
+  href={href}
+  {...props}
+>
+  <slot />
+</a>
