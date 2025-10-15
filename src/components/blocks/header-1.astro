@@ -2,28 +2,28 @@
 import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
+import Button from "@/components/ui/button.astro"
+import HeaderActions from "@/components/ui/header-actions.astro"
 import HeaderContainer from "@/components/ui/header-container.astro"
 import Header from "@/components/ui/header.astro"
-import Link from "@/components/ui/link.astro"
 import Logo from "@/components/ui/logo.astro"
+import NavigationMenuButton from "@/components/ui/navigation-menu-button.astro"
 import NavigationMenuContent from "@/components/ui/navigation-menu-content.astro"
 import NavigationMenuItem from "@/components/ui/navigation-menu-item.astro"
-import NavigationMenuLink from "@/components/ui/navigation-menu-link.astro"
 import NavigationMenuList from "@/components/ui/navigation-menu-list.astro"
 import NavigationMenuTrigger from "@/components/ui/navigation-menu-trigger.astro"
 import NavigationMenu from "@/components/ui/navigation-menu.astro"
-import SectionActions from "@/components/ui/section-actions.astro"
-import Socials from "@/components/ui/socials.astro"
+import Social from "@/components/ui/social.astro"
 
 interface Props extends ComponentProps<typeof Header> {
   align?: "start" | "center" | "end"
   logo?: ComponentProps<typeof Logo>
-  links?: ComponentProps<typeof Link>[]
-  socials?: ComponentProps<typeof Socials>["socials"]
+  buttons?: ComponentProps<typeof Button>[]
+  socials?: ComponentProps<typeof Social>[]
   menus?: {
     text?: string
     href?: string
-    links?: {
+    buttons?: {
       text?: string
       href?: string
     }[]
@@ -80,17 +80,19 @@ const {
       </NavigationMenuList>
     </NavigationMenu>
     <div class="flex justify-end gap-4">
-      <Socials class="max-sm:hidden" socials={socials} />
-      <SectionActions class="max-sm:hidden">
+      <HeaderActions class="max-sm:hidden">
+        {socials?.map((social) => <Social {...social} />)}
+      </HeaderActions>
+      <HeaderActions class="max-sm:hidden">
         {
           links?.map((link, i) => (
-            <Link
+            <Button
               variant={i === links.length - 1 ? "default" : "ghost"}
               {...link}
             />
           ))
         }
-      </SectionActions>
+      </HeaderActions>
       <!-- Mobile Menu - Still using React Sheet for now -->
       <!-- {
         menus && menus.length > 0 && (
@@ -139,7 +141,7 @@ const {
               </Accordion>
               <SectionActions class="w-full flex-col">
                 {links?.map((link, i) => (
-                  <Link
+                  <Button
                     variant={i === links.length - 1 ? "default" : "ghost"}
                     {...link}
                   />

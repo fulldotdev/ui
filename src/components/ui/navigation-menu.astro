@@ -6,16 +6,21 @@ interface Props {
 }
 
 const { class: className, ...props } = Astro.props
+
 const slot = await Astro.slots.render("default")
 const hasSlot = slot.trim().length > 0
 ---
 
-<nav
-  class={cn(
-    "group/navigation-menu relative flex max-w-max flex-1 items-center justify-center",
-    className
-  )}
-  {...props}
->
-  <Fragment set:html={slot} />
-</nav>
+{
+  hasSlot && (
+    <nav
+      class={cn(
+        "group/navigation-menu relative flex max-w-max flex-1 items-center justify-center",
+        className
+      )}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </nav>
+  )
+}

@@ -9,11 +9,11 @@ export default z
   .object({
     variant: z.enum(["1", "2"]),
     logo: image,
-    links: links,
+    buttons: links,
     socials: socials,
     menus: link
       .extend({
-        links: links,
+        buttons: links,
       })
       .partial()
       .strict()

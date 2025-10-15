@@ -9,7 +9,7 @@ image:
 sections:
   - type: features
     html: <h2>Features thwfeis a cool section!!!</h2><p></p>
-    links:
+    buttons:
       - href: /about/
         text: About
       - href: /contact/
