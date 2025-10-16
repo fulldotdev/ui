@@ -1,7 +1,14 @@
 ---
 import type { ComponentProps } from "astro/types"
+import MenuIcon from "lucide-static/icons/menu.svg"
 
 import { cn } from "@/lib/utils"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Header, HeaderActions, HeaderContainer } from "@/components/ui/header"
 import { Icon } from "@/components/ui/icon"
@@ -14,6 +21,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 interface Props extends ComponentProps<typeof Header> {
   align?: "start" | "center" | "end"
@@ -102,65 +110,69 @@ const {
           ))
         }
       </HeaderActions>
-      <!-- Mobile Menu - Still using React Sheet for now -->
-      <!-- {
-        menus && menus.length > 0 && (
-          <Sheet>
-            <SheetTrigger class="lg:hidden">
-              <Menu class="!size-6" />
-            </SheetTrigger>
-            <SheetContent
-              class="overflow-y-auto px-4 py-8"
-              onOpenAutoFocus={(e) => e.preventDefault()}
-            >
-              <Accordion type="single" collapsible class="flex w-full flex-col">
-                {menus?.map((menu, i) => (
-                  <AccordionItem key={i} value={`${i}. ${menu.text}`}>
-                    {menu.links && menu.links.length > 0 ? (
-                      <>
-                        <AccordionTrigger class="text-base font-medium hover:no-underline">
-                          {menu.href ? (
-                            <a href={menu.href}>{menu.text}</a>
-                          ) : (
-                            <>{menu.text}</>
-                          )}
-                        </AccordionTrigger>
-                        <AccordionContent class="flex flex-col gap-4 pb-6">
-                          {menu.buttons?.map((button, i) => (
-                            <a
-                              class="text-muted-foreground flex text-base"
-                              key={i}
-                              href={link.href}
-                            >
-                              {link.text}
-                            </a>
-                          ))}
-                        </AccordionContent>
-                      </>
-                    ) : (
-                      <a
-                        class="flex py-4 text-base font-medium"
-                        href={menu.href}
-                      >
-                        {menu.text}
-                      </a>
-                    )}
-                  </AccordionItem>
-                ))}
-              </Accordion>
-              <SectionActions class="w-full flex-col">
+      <Sheet class="lg:hidden">
+        <SheetTrigger variant="ghost" size="icon">
+          <MenuIcon class="size-6" />
+        </SheetTrigger>
+        <SheetContent class="overflow-y-auto px-4 py-8">
+          <Accordion class="flex w-full flex-col">
+            {
+              menus?.map((menu) => (
+                <AccordionItem>
+                  {menu.links && menu.links.length > 0 ? (
+                    <>
+                      <AccordionTrigger class="text-base font-medium hover:no-underline">
+                        {menu.href ? (
+                          <a href={menu.href}>{menu.text}</a>
+                        ) : (
+                          <span>{menu.text}</span>
+                        )}
+                      </AccordionTrigger>
+                      <AccordionContent class="flex flex-col gap-4 pb-6">
+                        {menu.links?.map((link) => (
+                          <a
+                            class="text-muted-foreground flex text-base"
+                            href={link.href}
+                          >
+                            {link.text}
+                          </a>
+                        ))}
+                      </AccordionContent>
+                    </>
+                  ) : (
+                    <a class="flex py-4 text-base font-medium" href={menu.href}>
+                      {menu.text}
+                    </a>
+                  )}
+                </AccordionItem>
+              ))
+            }
+          </Accordion>
+          {
+            buttons && buttons.length > 0 && (
+              <div class="mt-6 flex w-full flex-col gap-2">
                 {buttons?.map((button, i) => (
                   <Button
-                    variant={i === links.length - 1 ? "default" : "ghost"}
+                    variant={i === buttons.length - 1 ? "default" : "ghost"}
                     {...button}
                   />
                 ))}
-              </SectionActions>
-              <Socials class="mx-auto" socials={socials} />
-            </SheetContent>
-          </Sheet>
-        )
-      } -->
+              </div>
+            )
+          }
+          {
+            socials && socials.length > 0 && (
+              <div class="mx-auto mt-6 flex gap-2">
+                {socials?.map((social) => (
+                  <Button variant="ghost" size="icon" href={social}>
+                    <Icon href={social} />
+                  </Button>
+                ))}
+              </div>
+            )
+          }
+        </SheetContent>
+      </Sheet>
     </div>
   </HeaderContainer>
 </Header>

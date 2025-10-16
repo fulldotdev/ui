@@ -1,0 +1,80 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
+import XIcon from "lucide-static/icons/x.svg"
+
+import { cn } from "@/lib/utils"
+
+const dialogVariants = cva(
+  [
+    "fixed z-50 bg-transparent p-0 border-0 max-w-none max-h-none m-0 inset-0",
+    "backdrop:bg-black/50",
+  ],
+  {
+    variants: {
+      side: {
+        right: "ml-auto h-full w-3/4 sm:max-w-sm",
+        left: "mr-auto h-full w-3/4 sm:max-w-sm",
+        top: "mb-auto w-full h-auto",
+        bottom: "mt-auto w-full h-auto",
+      },
+    },
+    defaultVariants: {
+      side: "right",
+    },
+  }
+)
+
+const contentVariants = cva(
+  "flex flex-col gap-4 bg-background shadow-lg h-full transition-transform duration-500 ease-in-out",
+  {
+    variants: {
+      side: {
+        right: "border-l translate-x-full",
+        left: "border-r -translate-x-full",
+        top: "border-b -translate-y-full",
+        bottom: "border-t translate-y-full",
+      },
+    },
+    defaultVariants: {
+      side: "right",
+    },
+  }
+)
+
+type Props = VariantProps<typeof contentVariants> &
+  HTMLAttributes<"div"> & {
+    showClose?: boolean
+  }
+
+const { class: className, side, showClose = true, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+<dialog
+  data-slot="sheet-dialog"
+  data-side={side}
+  class={cn(dialogVariants({ side }))}
+>
+  <div
+    data-slot="sheet-content"
+    data-side={side}
+    class={cn(contentVariants({ side }), className)}
+    {...props}
+  >
+    {
+      showClose && (
+        <button
+          type="button"
+          data-slot="sheet-close"
+          class="focus-visible:outline-ring absolute top-4 right-4 cursor-pointer rounded-sm border-0 bg-transparent opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2"
+          aria-label="Close"
+        >
+          <XIcon class="size-4" />
+        </button>
+      )
+    }
+    <Fragment set:html={slot} />
+  </div>
+</dialog>
