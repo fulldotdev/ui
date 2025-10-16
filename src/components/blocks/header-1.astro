@@ -3,13 +3,12 @@ import type { ComponentProps } from "astro/types"
 import MenuIcon from "lucide-static/icons/menu.svg"
 
 import { cn } from "@/lib/utils"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 import { Header, HeaderActions, HeaderContainer } from "@/components/ui/header"
 import { Icon } from "@/components/ui/icon"
 import { Logo } from "@/components/ui/logo"
@@ -22,6 +21,14 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+} from "@/components/ui/sidebar"
 
 interface Props extends ComponentProps<typeof Header> {
   align?: "start" | "center" | "end"
@@ -90,7 +97,7 @@ const {
         }
       </NavigationMenuList>
     </NavigationMenu>
-    <div class="flex justify-end gap-4">
+    <div class="ml-auto flex justify-end gap-4">
       <HeaderActions class="max-sm:hidden">
         {
           socials?.map((social) => (
@@ -110,44 +117,41 @@ const {
           ))
         }
       </HeaderActions>
-      <Sheet class="lg:hidden">
-        <SheetTrigger variant="ghost" size="icon">
+      <Sheet class="first:ml-auto">
+        <SheetTrigger variant="ghost" size="icon" class="lg:hidden">
           <MenuIcon class="size-6" />
         </SheetTrigger>
         <SheetContent class="overflow-y-auto px-4 py-8">
-          <Accordion class="flex w-full flex-col">
+          <SidebarMenu>
             {
               menus?.map((menu) => (
-                <AccordionItem>
+                <SidebarMenuItem>
                   {menu.links && menu.links.length > 0 ? (
-                    <>
-                      <AccordionTrigger class="text-base font-medium hover:no-underline">
-                        {menu.href ? (
-                          <a href={menu.href}>{menu.text}</a>
-                        ) : (
-                          <span>{menu.text}</span>
-                        )}
-                      </AccordionTrigger>
-                      <AccordionContent class="flex flex-col gap-4 pb-6">
-                        {menu.links?.map((link) => (
-                          <a
-                            class="text-muted-foreground flex text-base"
-                            href={link.href}
-                          >
-                            {link.text}
-                          </a>
-                        ))}
-                      </AccordionContent>
-                    </>
+                    <Collapsible>
+                      <CollapsibleTrigger>
+                        <SidebarMenuButton>{menu.text}</SidebarMenuButton>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {menu.links?.map((link) => (
+                            <SidebarMenuSubItem>
+                              <SidebarMenuSubButton href={link.href}>
+                                {link.text}
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </Collapsible>
                   ) : (
-                    <a class="flex py-4 text-base font-medium" href={menu.href}>
+                    <SidebarMenuButton href={menu.href}>
                       {menu.text}
-                    </a>
+                    </SidebarMenuButton>
                   )}
-                </AccordionItem>
+                </SidebarMenuItem>
               ))
             }
-          </Accordion>
+          </SidebarMenu>
           {
             buttons && buttons.length > 0 && (
               <div class="mt-6 flex w-full flex-col gap-2">
