@@ -1,12 +1,20 @@
 ---
-import { getCollection, z } from "astro:content"
+import { getCollection, z, type CollectionEntry } from "astro:content"
 
 import blockSchema from "@/schemas/block"
-import { getHref } from "@/lib/get-href"
 
 type Props = z.infer<typeof blockSchema>
 
 const props = Astro.props
+
+function getHref(entry: CollectionEntry<"pages">) {
+  // If there is no content, return undefined
+  if (!entry.data.sections?.length && !entry.body?.length) return undefined
+  // If the page is the index, return the root
+  if (entry.id === "index") return "/"
+  // else return href b yid
+  return `/${entry.id}/`
+}
 
 // Populate references to pages of each type
 async function populateReferences<T extends string[] | object[] | undefined>(

@@ -48,7 +48,6 @@ export default defineConfig({
   prefetch: {
     prefetchAll: true,
   },
-
   experimental: {
     liveContentCollections: true,
     fonts: [

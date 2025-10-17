@@ -12,14 +12,22 @@ const {
   height = 1920,
   width = 1920,
   sizes = "100vw",
+  src,
   ...props
 } = Astro.props
+
+const images = import.meta.glob("src/assets/**/*.{webp,png,jpg,jpeg,gif,svg}")
+const foundPath =
+  typeof src === "string" &&
+  Object.keys(images).find((key) => key.endsWith(src))
+const found = foundPath ? images[foundPath]() : undefined
 ---
 
 {
-  props.src && (
+  src && (
     <AstroImage
       class={cn("h-auto w-full", className)}
+      src={found || src}
       alt={alt}
       height={height}
       width={width}
