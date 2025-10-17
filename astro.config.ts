@@ -1,5 +1,4 @@
 // import netlify from "@astrojs/netlify"
-import react from "@astrojs/react"
 import sitemap from "@astrojs/sitemap"
 import tailwindcss from "@tailwindcss/vite"
 import favicons from "astro-favicons"
@@ -84,7 +83,6 @@ export default defineConfig({
   },
   integrations: [
     robotsTxt(),
-    react(),
     sitemap({
       changefreq: "weekly",
       lastmod: new Date(),
