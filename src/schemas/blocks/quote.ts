@@ -5,7 +5,7 @@ import section from "@/schemas/ui/section"
 
 export default section
   .extend({
-    variant: z.enum(["1", "2"]),
+    block: z.enum(["1", "2"]),
     background: background,
     title: z.string(),
     description: z.string(),

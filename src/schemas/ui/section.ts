@@ -2,7 +2,7 @@ import { z } from "astro:schema"
 
 export default z
   .object({
-    className: z.string(),
+    class: z.string(),
     id: z.string(),
     align: z.enum(["start", "center", "end"]),
     size: z.enum(["sm", "default", "lg"]),

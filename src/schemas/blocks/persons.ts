@@ -7,10 +7,10 @@ import section from "@/schemas/ui/section"
 
 export default section
   .extend({
-    variant: z.enum(["1", "2"]),
+    block: z.enum(["1", "2"]),
     html: html,
     buttons: button.array(),
-    persons: z.union([z.string(), person.array()]),
+    persons: z.union([z.string().array(), person.array()]),
   })
   .partial()
   .strict()

@@ -6,11 +6,18 @@ import person from "@/schemas/blocks/person"
 import product from "@/schemas/blocks/product"
 import review from "@/schemas/blocks/review"
 import section from "@/schemas/section"
+import image from "@/schemas/ui/image"
 
 export default z.discriminatedUnion("type", [
   z.object({
     layout: z.string().optional(),
     type: z.literal(undefined),
+    block: z.string().optional(),
+    id: z.string().optional(),
+    class: z.string().optional(),
+    title: z.string().optional(),
+    description: z.string().optional(),
+    image: image.optional(),
     sections: section.array().optional(),
   }),
   z.object({

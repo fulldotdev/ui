@@ -1,22 +1,69 @@
 ---
-interface Props {
-  type?: string
-  variant?: string
-  [key: string]: any
+import { getCollection, z } from "astro:content"
+
+import blockSchema from "@/schemas/block"
+import { getHref } from "@/lib/get-href"
+
+type Props = z.infer<typeof blockSchema>
+
+const props = Astro.props
+
+// Populate references to pages of each type
+async function populateReferences<T extends string[] | object[] | undefined>(
+  value: T
+) {
+  // If undefined, return undefined
+  if (value === undefined) return
+  // If an array of strings, return an array matching all globs
+  else if (value.every((item) => typeof item === "string")) {
+    return (
+      await getCollection("pages", (entry) =>
+        value.some((item) => entry.id.startsWith(item))
+      )
+    ).map((entry) => ({
+      href: getHref(entry),
+      ...entry.data,
+    }))
+  } else if (value.every((item) => typeof item === "object")) {
+    return value
+  }
 }
 
-const { type, variant = "1", ...props } = Astro.props as Props
+// Populate each page type
+if ("reviews" in props) {
+  props.reviews = (await populateReferences(props.reviews)) as any
+}
+
+if ("articles" in props) {
+  props.articles = (await populateReferences(props.articles)) as any
+}
+
+if ("jobs" in props) {
+  props.jobs = (await populateReferences(props.jobs)) as any
+}
+
+if ("persons" in props) {
+  props.persons = (await populateReferences(props.persons)) as any
+}
+
+if ("pages" in props) {
+  props.pages = (await populateReferences(props.pages)) as any
+}
+
+if ("products" in props) {
+  props.products = (await populateReferences(props.products)) as any
+}
 
 const blockImports = import.meta.glob("./blocks/**/*.astro")
-
-const blockPath = `./blocks/${type}-${variant}.astro`
+const { type, block = "1", ...rest } = props
+const blockPath = `./blocks/${type}-${block}.astro`
 const blockImport = (await blockImports[blockPath]?.()) as any
 const BlockComponent = blockImport?.default as any
 ---
 
 {
   BlockComponent && (
-    <BlockComponent {...props}>
+    <BlockComponent {...rest}>
       <slot />
     </BlockComponent>
   )

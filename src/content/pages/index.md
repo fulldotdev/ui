@@ -4,7 +4,7 @@ title: sdfsdfwfeasdfawefasdfwefasdf
 description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
   eiusmod tempor incididunt ut labore et dolore magna aliqua.
 image:
-  src: /images/hero.webp
+  src: src/assets/placeholder.webp
   alt: Home
 sections:
   - type: features
@@ -44,6 +44,10 @@ sections:
         answer: We are open Monday through Friday from 9 AM to 6 PM EST.
   - type: reviews
     html: <h2>My reviews</h2><p></p>
+    reviews:
+      - reviews/
 ---
 
 Hello world.
+
+![Hero](src/assets/placeholder.webp)

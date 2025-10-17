@@ -6,7 +6,9 @@ import link from "@/schemas/ui/link"
 
 export default z
   .object({
-    variant: z.enum(["1", "2"]),
+    block: z.enum(["1", "2"]),
+    id: z.string(),
+    class: z.string().optional(),
     logo: image,
     buttons: button.array(),
     socials: z.string().array(),
