@@ -50,7 +50,11 @@ const pagePathname = Astro.url.pathname.endsWith("/")
 const pageUrl = `${baseUrl}${pagePathname}`
 ---
 
-<html class="layout scroll-smooth" lang={Astro.currentLocale}>
+<html
+  class="layout scroll-smooth"
+  lang={Astro.currentLocale}
+  transition:name="root"
+>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
@@ -86,21 +90,25 @@ const pageUrl = `${baseUrl}${pagePathname}`
     class="text-foreground bg-background font-base overscroll-none antialiased"
     id={Astro.url.pathname}
   >
-    <Block type="header" {...header} />
-    <Block type="banner" {...banner} />
+    {header && <Block type="header" {...header} />}
+    {banner && <Block type="banner" {...banner} />}
     <main>
       <slot />
       {sections?.map((section) => <Block {...section} />)}
     </main>
-    <Block type="footer" {...footer} />
-    <Button
-      class="absolute right-4 bottom-4"
-      size="icon-lg"
-      target="_blank"
-      {...bubble}
-    >
-      <Icon {...bubble} />
-    </Button>
+    {footer && <Block type="footer" {...footer} />}
+    {
+      bubble && (
+        <Button
+          class="absolute right-4 bottom-4"
+          size="icon-lg"
+          target="_blank"
+          {...bubble}
+        >
+          <Icon {...bubble} />
+        </Button>
+      )
+    }
     <Fragment set:html={body} />
     <style set:html={css}></style>
     <style>

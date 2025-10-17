@@ -1,8 +1,9 @@
 ---
+type: article
 title: About Our Company
 description: Discover our story, mission, and the passionate team behind our innovative solutions
 image:
-  src: ../../assets/placeholder.webp
+  src: placeholder.webp
   alt: About Our Company
 ---
 
