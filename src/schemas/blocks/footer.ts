@@ -9,7 +9,7 @@ export default section
   .extend({
     block: z.enum(["1", "2"]),
     description: z.string(),
-    buttons: button.array(),
+    channels: button.array(),
     socials: z.string().array(),
     logo: image,
     menus: z
@@ -20,6 +20,8 @@ export default section
       .partial()
       .strict()
       .array(),
+    policies: link.array(),
+    copyright: z.string(),
   })
   .partial()
   .strict()
