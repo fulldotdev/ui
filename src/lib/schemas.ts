@@ -1,10 +1,5 @@
 import { z } from "astro:schema"
 
-/**
- * Unified schema for all content types
- * All schemas are flexible (.partial()) - blocks use only the fields they need
- */
-
 const link = z
   .object({
     text: z.string(),
