@@ -3,23 +3,34 @@ import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Grid } from "@/components/ui/grid"
-import { Icon } from "@/components/ui/icon"
-import { Logo } from "@/components/ui/logo"
 import {
-  Section,
-  SectionActions,
-  SectionContainer,
-  SectionContent,
-} from "@/components/ui/section"
+  Footer,
+  FooterActions,
+  FooterContainer,
+  FooterDescription,
+  FooterGrid,
+  FooterGroup,
+  FooterGroupContent,
+  FooterGroupLabel,
+  FooterMenu,
+  FooterMenuItem,
+  FooterMenuLink,
+  FooterSplit,
+  FooterSpread,
+} from "@/components/ui/footer"
+import { Icon } from "@/components/ui/icon"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
 
 interface Props {
   class?: string
   logo?: ComponentProps<typeof Logo>
   description?: string
-  buttons?: {
-    text?: string
-    href?: string
+  copyright?: string
+  channels?: {
+    title?: string
+    description?: string
+    href?: ComponentProps<typeof Button>["href"]
+    icon?: ComponentProps<typeof Icon>["name"]
   }[]
   socials?: string[]
   menus?: {
@@ -29,71 +40,87 @@ interface Props {
       href?: string
     }[]
   }[]
+  policies?: {
+    text?: string
+    href?: string
+  }[]
 }
 
 const {
   class: className,
   logo,
   description,
-  buttons,
+  copyright,
+  channels,
   socials,
   menus,
+  policies,
 } = Astro.props
 ---
 
-<Section class={cn("py-0", className)}>
-  <SectionContainer class="justify-between gap-8 py-16">
-    <Grid>
-      <SectionContent class="col-span-2 flex max-w-xs flex-col">
-        <Logo href="/" {...logo} />
-        {
-          description && (
-            <p class="text-muted-foreground text-sm not-first:mt-3">
-              {description}
-            </p>
-          )
-        }
-        {
-          buttons && buttons.length > 0 && (
-            <div class="flex flex-col items-start gap-2 not-first:mt-8">
-              {buttons.map(({ text, ...button }) => (
-                <div class="flex items-center gap-3 text-sm">
-                  <Icon href={button.href} />
-                  <span>{text}</span>
-                </div>
-              ))}
-            </div>
-          )
-        }
-        <SectionActions class="flex gap-4">
+<Footer class={cn("", className)}>
+  <FooterContainer>
+    <FooterSplit>
+      <FooterGroup>
+        <Logo href="/">
+          <LogoImage {...logo} />
+          <LogoText>{logo?.title}</LogoText>
+        </Logo>
+        <FooterDescription>{description}</FooterDescription>
+        <FooterMenu>
+          {
+            channels?.map(({ href, icon, title }) => (
+              <FooterMenuItem>
+                <FooterMenuLink href={href}>
+                  <Icon name={icon} href={href} />
+                  {title}
+                </FooterMenuLink>
+              </FooterMenuItem>
+            ))
+          }
+        </FooterMenu>
+        <FooterActions class="-mx-2">
           {
             socials?.map((social) => (
-              <Button variant="ghost" size="icon" href={social}>
+              <Button variant="ghost" size="icon-sm" href={social}>
                 <Icon href={social} />
               </Button>
             ))
           }
-        </SectionActions>
-      </SectionContent>
-      {
-        menus?.map((menu) => (
-          <div class="menu flex flex-col items-start gap-4">
-            <h4 class="text-foreground text-sm font-semibold whitespace-nowrap">
-              {menu.text}
-            </h4>
-            <menu class="flex w-full flex-col items-start gap-3">
-              {menu.links?.map(({ href, text }) => (
-                <a
-                  class="text-muted-foreground hover:text-foreground text-sm font-normal transition-colors"
-                  href={href}
-                >
-                  {text}
-                </a>
-              ))}
-            </menu>
-          </div>
-        ))
-      }
-    </Grid>
-  </SectionContainer>
-</Section>
+        </FooterActions>
+      </FooterGroup>
+      <FooterGrid class="lg:col-span-3 lg:justify-end">
+        {
+          menus?.map((menu) => (
+            <FooterGroup>
+              <FooterGroupLabel>{menu.text}</FooterGroupLabel>
+              <FooterGroupContent>
+                <FooterMenu>
+                  {menu.links?.map(({ href, text }) => (
+                    <FooterMenuItem>
+                      <FooterMenuLink href={href}>{text}</FooterMenuLink>
+                    </FooterMenuItem>
+                  ))}
+                </FooterMenu>
+              </FooterGroupContent>
+            </FooterGroup>
+          ))
+        }
+      </FooterGrid>
+    </FooterSplit>
+    <FooterSpread class="mt-8 border-t pt-8">
+      <FooterDescription size="sm">{copyright}</FooterDescription>
+      <FooterMenu orientation="horizontal">
+        {
+          policies?.map((policy) => (
+            <FooterMenuItem>
+              <FooterMenuLink size="sm" href={policy.href}>
+                {policy.text}
+              </FooterMenuLink>
+            </FooterMenuItem>
+          ))
+        }
+      </FooterMenu>
+    </FooterSpread>
+  </FooterContainer>
+</Footer>

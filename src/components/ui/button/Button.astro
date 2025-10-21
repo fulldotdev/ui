@@ -4,6 +4,15 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
+type Props = VariantProps<typeof variants> &
+  HTMLAttributes<"button"> &
+  HTMLAttributes<"a"> &
+  HTMLAttributes<"label"> & {
+    as?: "button" | "a" | "label"
+    text?: string
+    html?: string
+  }
+
 const variants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
@@ -36,15 +45,6 @@ const variants = cva(
   }
 )
 
-type Props = VariantProps<typeof variants> &
-  HTMLAttributes<"button"> &
-  HTMLAttributes<"a"> &
-  HTMLAttributes<"label"> & {
-    as?: "button" | "a" | "label"
-    text?: string
-    html?: string
-  }
-
 const {
   class: className,
   variant,
@@ -60,16 +60,16 @@ const slot = await Astro.slots.render("default")
 ---
 
 {
-  slot && (
+  (slot || text || html) && (
     <Comp
       data-slot="button"
       class={cn(variants({ variant, size }), className)}
       href={href}
-      set:html={html}
-      set:text={text}
       {...props}
     >
+      <Fragment set:text={text} />
       <Fragment set:html={slot} />
+      <Fragment set:html={html} />
     </Comp>
   )
 }

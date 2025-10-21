@@ -1,0 +1,92 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Grid } from "@/components/ui/grid"
+import { Icon } from "@/components/ui/icon"
+import {
+  Section,
+  SectionActions,
+  SectionContainer,
+  SectionContent,
+  SectionPanel,
+  SectionStack,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileTitle,
+} from "@/components/ui/tile"
+import { Typography } from "@/components/ui/typography"
+
+interface Props extends ComponentProps<typeof Section> {
+  buttons?: ComponentProps<typeof Button>[]
+  features?: {
+    title?: string
+    description?: string
+    icon?: string
+    button?: ComponentProps<typeof Button>
+  }[]
+}
+
+const {
+  class: className,
+  align,
+  size,
+  buttons,
+  features,
+  variant,
+  ...props
+} = Astro.props
+---
+
+<Section class={cn("", className)} size={size} align={align} {...props}>
+  <SectionContainer>
+    <SectionPanel variant={variant}>
+      <SectionStack align={align}>
+        <SectionContent align={align}>
+          <Typography size={size} align={align}>
+            <slot />
+          </Typography>
+          <SectionActions align={align}>
+            {
+              buttons?.map((button, i) => (
+                <Button
+                  variant={i === 0 ? "default" : "outline"}
+                  size={size}
+                  {...button}
+                />
+              ))
+            }
+          </SectionActions>
+        </SectionContent>
+        {
+          features && features.length > 0 && (
+            <Grid class="gap-x-16 gap-y-8">
+              {features?.map(({ title, description, icon, button }) => (
+                <Tile class="items-start">
+                  <TileContent class="p-0">
+                    <Icon
+                      class="bg-accent size-9 rounded-full p-2"
+                      name={icon}
+                    />
+                    <TileTitle>{title}</TileTitle>
+                    <TileDescription>{description}</TileDescription>
+                    <Button
+                      class="px-0"
+                      variant="link"
+                      size={size}
+                      {...button}
+                    />
+                  </TileContent>
+                </Tile>
+              ))}
+            </Grid>
+          )
+        }
+      </SectionStack>
+    </SectionPanel>
+  </SectionContainer>
+</Section>

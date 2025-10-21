@@ -1,9 +1,9 @@
 ---
-import { getCollection, z, type CollectionEntry } from "astro:content"
+import { getCollection, type CollectionEntry } from "astro:content"
 
-import blockSchema from "@/schemas/block"
+import type { BlockSchema } from "@/lib/schemas"
 
-type Props = z.infer<typeof blockSchema>
+type Props = BlockSchema
 
 const props = Astro.props
 
@@ -17,54 +17,41 @@ function getHref(entry: CollectionEntry<"pages">) {
 }
 
 // Populate references to pages of each type
-async function populateReferences<T extends string[] | object[] | undefined>(
-  value: T
-) {
+async function populateReferences<
+  T extends string | string[] | object[] | undefined,
+>(value: T) {
   // If undefined, return undefined
   if (value === undefined) return
-  // If an array of strings, return an array matching all globs
-  else if (value.every((item) => typeof item === "string")) {
-    return (
-      await getCollection("pages", (entry) =>
-        value.some((item) => entry.id.startsWith(item))
-      )
-    ).map((entry) => ({
-      href: getHref(entry),
-      ...entry.data,
-    }))
-  } else if (value.every((item) => typeof item === "object")) {
+  // If an array of objects, return the objects
+  else if (
+    Array.isArray(value) &&
+    value.every((item) => typeof item === "object")
+  ) {
     return value
   }
+
+  const pages =
+    value === typeof "string"
+      ? // If a string, return an array of pages matching the glob
+        await getCollection("pages", (entry) => entry.id.startsWith(value))
+      : // else if a single string, return an array of pages matching the id
+        await getCollection("pages", (entry) => entry.id === value)
+
+  // Return an array of page summaries with href and data
+  return pages.map((entry) => ({
+    href: getHref(entry),
+    ...entry.data,
+  }))
 }
 
 // Populate each page type
-if ("reviews" in props) {
-  props.reviews = (await populateReferences(props.reviews)) as any
-}
-
-if ("articles" in props) {
-  props.articles = (await populateReferences(props.articles)) as any
-}
-
-if ("jobs" in props) {
-  props.jobs = (await populateReferences(props.jobs)) as any
-}
-
-if ("persons" in props) {
-  props.persons = (await populateReferences(props.persons)) as any
-}
-
-if ("pages" in props) {
-  props.pages = (await populateReferences(props.pages)) as any
-}
-
-if ("products" in props) {
-  props.products = (await populateReferences(props.products)) as any
+if ("items" in props) {
+  props.items = (await populateReferences(props.items)) as any
 }
 
 const blockImports = import.meta.glob("./blocks/**/*.astro")
-const { type, block = "1", ...rest } = props
-const blockPath = `./blocks/${type}-${block}.astro`
+const { block, ...rest } = props
+const blockPath = `./blocks/${block}.astro`
 const blockImport = (await blockImports[blockPath]?.()) as any
 const BlockComponent = blockImport?.default as any
 ---
@@ -73,6 +60,7 @@ const BlockComponent = blockImport?.default as any
   BlockComponent && (
     <BlockComponent {...rest}>
       <slot />
+      {"html" in rest && <Fragment set:html={rest.html} />}
     </BlockComponent>
   )
 }

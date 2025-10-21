@@ -1,0 +1,70 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Image } from "@/components/ui/image"
+import {
+  Section,
+  SectionActions,
+  SectionContainer,
+  SectionContent,
+  SectionPanel,
+  SectionSplit,
+  SectionStack,
+} from "@/components/ui/section"
+import { Typography } from "@/components/ui/typography"
+
+interface Props extends ComponentProps<typeof Section> {
+  title?: string
+  tagline?: string
+  description?: string
+  image?: ComponentProps<typeof Image>
+  buttons?: ComponentProps<typeof Button>[]
+}
+
+const {
+  class: className,
+  align = "center",
+  size,
+  title,
+  tagline,
+  description,
+  image,
+  buttons,
+  ...props
+} = Astro.props
+---
+
+<Section class={cn("", className)} size={size} align={align} {...props}>
+  <SectionContainer class="max-w-screen-lg">
+    <SectionStack align={align}>
+      <SectionPanel variant="muted">
+        <SectionSplit align={align}>
+          <SectionContent>
+            <Typography size={size} title={title} description={description} />
+            <SectionActions align={align}>
+              {
+                buttons?.map((button, i) => (
+                  <Button
+                    variant={i === 0 ? "default" : "outline"}
+                    size={size}
+                    {...button}
+                  />
+                ))
+              }
+            </SectionActions>
+          </SectionContent>
+          <Image
+            class="aspect-square rounded-lg object-cover"
+            sizes="(max-width: 1024px) 100vw, 1024px"
+            {...image}
+          />
+        </SectionSplit>
+      </SectionPanel>
+      <Typography>
+        <slot />
+      </Typography>
+    </SectionStack>
+  </SectionContainer>
+</Section>

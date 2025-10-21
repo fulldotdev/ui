@@ -1,0 +1,31 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const variants = cva("grid gap-8", {
+  variants: {
+    size: {
+      default: "grid-cols-[repeat(auto-fit,minmax(200px,250px))]",
+    },
+  },
+  defaultVariants: {
+    size: "default",
+  },
+})
+
+interface Props extends HTMLAttributes<"div">, VariantProps<typeof variants> {}
+
+const { size, class: className, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot.trim().length > 0 && (
+    <div class={cn(variants({ size }), className)} {...props}>
+      <Fragment set:html={slot} />
+    </div>
+  )
+}

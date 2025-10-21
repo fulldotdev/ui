@@ -1,0 +1,81 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Grid } from "@/components/ui/grid"
+import { Image } from "@/components/ui/image"
+import {
+  Section,
+  SectionActions,
+  SectionContainer,
+  SectionContent,
+  SectionStack,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileTitle,
+} from "@/components/ui/tile"
+import { Typography } from "@/components/ui/typography"
+
+interface Props extends ComponentProps<typeof Section> {
+  buttons?: ComponentProps<typeof Button>[]
+  persons?: {
+    href?: string
+    title?: string
+    tagline?: string
+    image?: ComponentProps<typeof Image>
+  }[]
+}
+
+const {
+  class: className,
+  align,
+  size,
+  buttons,
+  persons,
+  ...props
+} = Astro.props
+---
+
+<Section class={cn("", className)} size={size} align={align} {...props}>
+  <SectionContainer>
+    <SectionStack align={align}>
+      <SectionContent align={align}>
+        <Typography size={size} align={align}>
+          <slot />
+        </Typography>
+        <SectionActions align={align}>
+          {
+            buttons?.map((button, i) => (
+              <Button
+                variant={i === 0 ? "default" : "outline"}
+                size={size}
+                {...button}
+              />
+            ))
+          }
+        </SectionActions>
+      </SectionContent>
+      <Grid class="gap-4">
+        {
+          persons?.map(({ title, tagline, image, href }) => (
+            <Tile href={href} variant="muted">
+              <Image
+                class="aspect-square rounded-lg object-cover"
+                sizes="300px"
+                {...image}
+              />
+              <TileContent>
+                <TileTitle>{title}</TileTitle>
+                <TileDescription>{tagline}</TileDescription>
+              </TileContent>
+            </Tile>
+          ))
+        }
+      </Grid>
+    </SectionStack>
+  </SectionContainer>
+</Section>
