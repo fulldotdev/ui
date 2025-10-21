@@ -1,1 +1,1 @@
-export { default as Pattern } from "./Pattern.astro"
+export { default as Pattern } from "./pattern.astro"

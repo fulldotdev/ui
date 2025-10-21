@@ -1,1 +1,1 @@
-export { default as Spinner } from "./Spinner.astro"
+export { default as Spinner } from "./spinner.astro"

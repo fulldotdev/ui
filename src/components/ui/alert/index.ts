@@ -1,3 +1,3 @@
-export { default as Alert } from "./Alert.astro"
-export { default as AlertTitle } from "./AlertTitle.astro"
-export { default as AlertDescription } from "./AlertDescription.astro"
+export { default as Alert } from "./alert.astro"
+export { default as AlertTitle } from "./alert-title.astro"
+export { default as AlertDescription } from "./alert-description.astro"

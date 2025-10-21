@@ -1,1 +1,1 @@
-export { default as Masonry } from "./Masonry.astro"
+export { default as Masonry } from "./masonry.astro"

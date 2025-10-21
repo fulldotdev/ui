@@ -1,1 +1,1 @@
-export { default as Grid } from "./Grid.astro"
+export { default as Grid } from "./grid.astro"

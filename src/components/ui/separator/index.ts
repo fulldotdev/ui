@@ -1,1 +1,1 @@
-export { default as Separator } from "./Separator.astro"
+export { default as Separator } from "./separator.astro"

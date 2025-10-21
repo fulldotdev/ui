@@ -1,1 +1,1 @@
-export { default as Checkbox } from "./Checkbox.astro"
+export { default as Checkbox } from "./checkbox.astro"

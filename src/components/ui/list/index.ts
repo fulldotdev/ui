@@ -1,2 +1,2 @@
-export { default as List } from "./List.astro"
-export { default as ListItem } from "./ListItem.astro"
+export { default as List } from "./list.astro"
+export { default as ListItem } from "./list-item.astro"

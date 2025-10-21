@@ -1,3 +1,3 @@
-export { default as Logo } from "./Logo.astro"
-export { default as LogoImage } from "./LogoImage.astro"
-export { default as LogoText } from "./LogoText.astro"
+export { default as Logo } from "./logo.astro"
+export { default as LogoImage } from "./logo-image.astro"
+export { default as LogoText } from "./logo-text.astro"

@@ -1,1 +1,1 @@
-export { default as Image } from "./Image.astro"
+export { default as Image } from "./image.astro"

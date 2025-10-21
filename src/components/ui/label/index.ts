@@ -1,1 +1,1 @@
-export { default as Label } from "./Label.astro"
+export { default as Label } from "./label.astro"

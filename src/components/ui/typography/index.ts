@@ -1,1 +1,1 @@
-export { default as Typography } from "./Typography.astro"
+export { default as Typography } from "./typography.astro"
