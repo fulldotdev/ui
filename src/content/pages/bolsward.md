@@ -2,10 +2,10 @@
 title: Bolsward
 description: Bolsward
 image:
-  src: ../../assets/placeholder.webp
+  src: /placeholder.webp
 sections:
-  - type: features
-    features:
+  - block: features-1
+    items:
       - icon: "check"
         title: Lorem ipsum
         description: >-
@@ -18,7 +18,7 @@ sections:
         title: Lorem ipsum
         description: >-
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-  - type: contact
+  - block: contact-1
     html: |
       <h2>Meld je nu aan</h2>
       <p>

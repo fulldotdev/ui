@@ -6,19 +6,18 @@ image:
   src: placeholder.webp
   alt: Home
 sections:
-  - type: reviews
-    block: ""
+  - block: reviews-2
     html: <h2>Articles</h2><p></p>
-    reviews:
+    items:
       - about
-  # - type: features
+  # - block: features-1
   #   html: <h2>Features thwfeis a cool section!!!</h2><p></p>
   #   buttons:
   #     - href: /about/
   #       text: About
   #     - href: /contact/
   #       text: Contact
-  #   features:
+  #   items:
   #     - icon: check
   #       title: Lorem ipsum
   #       description:
@@ -33,21 +32,21 @@ sections:
   #       description:
   #         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
   #         eiusmod tempor incididunt ut labore et dolore magna aliqua.
-  # - type: faqs
+  # - block: faqs-1
   #   html: <h2>FAQs</h2><p></p>
-  #   faqs:
-  #     - question: What services do you offer?
-  #       answer:
+  #   items:
+  #     - title: What services do you offer?
+  #       description:
   #         We offer a wide range of services including consulting, development, and
   #         support.
-  #     - question: How can I contact support?
-  #       answer:
+  #     - title: How can I contact support?
+  #       description:
   #         You can reach our support team via email at support@example.com or phone
   #         at (555) 123-4567.
-  #     - question: What are your business hours?
-  #       answer: We are open Monday through Friday from 9 AM to 6 PM EST.
-  # - type: reviews
+  #     - title: What are your business hours?
+  #       description: We are open Monday through Friday from 9 AM to 6 PM EST.
+  # - block: reviews-1
   #   html: <h2>My reviews</h2><p></p>
-  #   reviews:
+  #   items:
   #     - reviews/
 ---
