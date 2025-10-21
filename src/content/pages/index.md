@@ -7,7 +7,7 @@ image:
   alt: Home
 sections:
   - type: reviews
-    block: "2"
+    block: ""
     html: <h2>Articles</h2><p></p>
     reviews:
       - about
