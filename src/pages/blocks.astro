@@ -1,32 +1,10 @@
 ---
-import Article1 from "@/components/blocks/article-1.astro"
-import Banner1 from "@/components/blocks/banner-1.astro"
-import Blocks1 from "@/components/blocks/blocks-1.astro"
-import Contact1 from "@/components/blocks/contact-1.astro"
-import Contact2 from "@/components/blocks/contact-2.astro"
-import Contact3 from "@/components/blocks/contact-3.astro"
-import Content1 from "@/components/blocks/content-1.astro"
-import Content2 from "@/components/blocks/content-2.astro"
-import Cta1 from "@/components/blocks/cta-1.astro"
-import Cta2 from "@/components/blocks/cta-2.astro"
-import Faqs1 from "@/components/blocks/faqs-1.astro"
-import Feature1 from "@/components/blocks/feature-1.astro"
-import Features1 from "@/components/blocks/features-1.astro"
-import Footer1 from "@/components/blocks/footer-1.astro"
-import Footer2 from "@/components/blocks/footer-2.astro"
-import Header1 from "@/components/blocks/header-1.astro"
-import Job1 from "@/components/blocks/job-1.astro"
-import Jobs1 from "@/components/blocks/jobs-1.astro"
-import Map1 from "@/components/blocks/map-1.astro"
-import Pages1 from "@/components/blocks/pages-1.astro"
-import Reviews1 from "@/components/blocks/reviews-1.astro"
-import Reviews2 from "@/components/blocks/reviews-2.astro"
 import Layout from "@/components/layout.astro"
 
 const props = {
   background: "rainbow",
   align: "center",
-  variant: "outline",
+  variant: "muted",
   size: "default",
   title: "Lorem ipsum dolor sit amet",
   description:
@@ -239,74 +217,26 @@ const props = {
 }
 const html =
   "<p>Lorem ipsum</p><h2>Lorem ipsum dolor sit amet</h2><p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>"
+
+const allBlocks = import.meta.glob("src/components/blocks/**/*.astro", {
+  eager: true,
+})
 ---
 
 <Layout>
-  <Header1 {...props as any}>
-    <Fragment set:html={html} />
-  </Header1>
-  <Article1 {...props as any}>
-    <Fragment set:html={html} />
-  </Article1>
-  <Banner1 {...props as any}>
-    <Fragment set:html={html} />
-  </Banner1>
-  <Blocks1 {...props as any}>
-    <Fragment set:html={html} />
-  </Blocks1>
-  <Contact1 {...props as any}>
-    <Fragment set:html={html} />
-  </Contact1>
-  <Contact2 {...props as any}>
-    <Fragment set:html={html} />
-  </Contact2>
-  <Contact3 {...props as any}>
-    <Fragment set:html={html} />
-  </Contact3>
-  <Content1 {...props as any}>
-    <Fragment set:html={html} />
-  </Content1>
-  <Content2 {...props as any}>
-    <Fragment set:html={html} />
-  </Content2>
-  <Cta1 {...props as any}>
-    <Fragment set:html={html} />
-  </Cta1>
-  <Cta2 {...props as any}>
-    <Fragment set:html={html} />
-  </Cta2>
-  <Faqs1 {...props as any}>
-    <Fragment set:html={html} />
-  </Faqs1>
-  <Feature1 {...props as any}>
-    <Fragment set:html={html} />
-  </Feature1>
-  <Features1 {...props as any}>
-    <Fragment set:html={html} />
-  </Features1>
-  <Footer1 {...props as any}>
-    <Fragment set:html={html} />
-  </Footer1>
-  <Footer2 {...props as any}>
-    <Fragment set:html={html} />
-  </Footer2>
-
-  <Job1 {...props as any}>
-    <Fragment set:html={html} />
-  </Job1>
-  <Jobs1 {...props as any}>
-    <Fragment set:html={html} />
-  </Jobs1>
-  <Map1 {...props as any}>
-    <Fragment set:html={html} />
-  </Map1>
-  <Pages1 {...props as any}>
-    <Fragment set:html={html} />
-  </Pages1>
-  <Reviews1 {...props as any}>
-    <Fragment set:html={html} />
-  </Reviews1>
-  <Reviews2 {...props as any}>
-    <Fragment set:html={html} />
-  </Reviews2>
+  {
+    Object.entries(allBlocks).map(([path, block]: [string, any], i) => {
+      const BlockComponent = block.default
+      return BlockComponent ? (
+        <>
+          <div class="flex justify-center py-1 text-sm text-gray-500">
+            {path.split("/").pop()?.split(".")[0]}
+          </div>
+          <BlockComponent {...(props as any)} key={i}>
+            <Fragment set:html={html} />
+          </BlockComponent>
+        </>
+      ) : null
+    })
+  }
 </Layout>

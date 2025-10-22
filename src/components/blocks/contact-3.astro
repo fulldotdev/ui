@@ -24,7 +24,7 @@ import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
   buttons?: ComponentProps<typeof Button>[]
-  channels?: {
+  items?: {
     title?: string
     description?: string
     variant?: ComponentProps<typeof Item>["variant"]
@@ -39,7 +39,7 @@ const {
   align,
   size,
   buttons,
-  channels,
+  items,
   form,
   variant,
   ...props
@@ -49,31 +49,33 @@ const {
 <Section class={cn("", className)} size={size} align={align} {...props}>
   <SectionContainer>
     <SectionPanel variant={variant}>
-      <SectionSplit align={align}>
-        <SectionContent>
-          <Typography size={size}>
-            <slot />
-          </Typography>
-          <ItemGroup class="min-w-2xs gap-2">
-            {
-              channels?.map(
-                ({ title, description, href, icon, variant = "muted" }) => (
-                  <Item variant={variant} href={href}>
-                    <ItemMedia variant="icon">
-                      <Icon name={icon} href={href} />
-                    </ItemMedia>
-                    <ItemContent>
-                      <ItemTitle>{title}</ItemTitle>
-                      <ItemDescription>{description}</ItemDescription>
-                    </ItemContent>
-                  </Item>
+      <SectionContainer>
+        <SectionSplit align={align}>
+          <SectionContent>
+            <Typography size={size}>
+              <slot />
+            </Typography>
+            <ItemGroup class="min-w-2xs gap-2">
+              {
+                items?.map(
+                  ({ title, description, href, icon, variant = "muted" }) => (
+                    <Item variant={variant} href={href}>
+                      <ItemMedia variant="icon">
+                        <Icon name={icon} href={href} />
+                      </ItemMedia>
+                      <ItemContent>
+                        <ItemTitle>{title}</ItemTitle>
+                        <ItemDescription>{description}</ItemDescription>
+                      </ItemContent>
+                    </Item>
+                  )
                 )
-              )
-            }
-          </ItemGroup>
-        </SectionContent>
-        <Form {...form} />
-      </SectionSplit>
+              }
+            </ItemGroup>
+          </SectionContent>
+          <Form {...form} />
+        </SectionSplit>
+      </SectionContainer>
     </SectionPanel>
   </SectionContainer>
 </Section>

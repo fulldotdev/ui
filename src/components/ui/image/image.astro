@@ -11,13 +11,16 @@ const {
   alt = "",
   sizes = "100vw",
   src,
+  widths = [320, 768, 1024, 1280, 1536, 1920],
   ...props
 } = Astro.props
 
 const images = import.meta.glob("src/assets/**/*.{webp,png,jpg,jpeg,gif,svg}")
 const foundPath =
   typeof src === "string" &&
-  Object.keys(images).find((key) => key.endsWith(src))
+  Object.keys(images).find((key) =>
+    key.endsWith(src.replace("/src/assets/", ""))
+  )
 const found = foundPath ? images[foundPath]() : undefined
 ---
 

@@ -22,26 +22,28 @@ async function populateReferences<
 >(value: T) {
   // If undefined, return undefined
   if (value === undefined) return
-  // If an array of objects, return the objects
-  else if (
-    Array.isArray(value) &&
-    value.every((item) => typeof item === "object")
-  ) {
+  // If a single string, return an array matching the glob
+  else if (typeof value === "string") {
+    return (
+      await getCollection("pages", (entry) => entry.id.startsWith(value))
+    ).map((entry) => ({
+      href: getHref(entry),
+      ...entry.data,
+    }))
+  }
+  // If an array of strings, return an array matching all ids
+  else if (value.every((item) => typeof item === "string")) {
+    return (
+      await getCollection("pages", (entry) =>
+        value.some((item) => entry.id === item)
+      )
+    ).map((entry) => ({
+      href: getHref(entry),
+      ...entry.data,
+    }))
+  } else if (value.every((item) => typeof item === "object")) {
     return value
   }
-
-  const pages =
-    value === typeof "string"
-      ? // If a string, return an array of pages matching the glob
-        await getCollection("pages", (entry) => entry.id.startsWith(value))
-      : // else if a single string, return an array of pages matching the id
-        await getCollection("pages", (entry) => entry.id === value)
-
-  // Return an array of page summaries with href and data
-  return pages.map((entry) => ({
-    href: getHref(entry),
-    ...entry.data,
-  }))
 }
 
 // Populate each page type

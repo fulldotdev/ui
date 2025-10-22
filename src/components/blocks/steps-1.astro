@@ -1,0 +1,86 @@
+---
+import type { ComponentProps } from "astro/types"
+import CircleCheck from "lucide-static/icons/circle-check.svg"
+import X from "lucide-static/icons/x.svg"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { List, ListItem } from "@/components/ui/list"
+import {
+  Section,
+  SectionActions,
+  SectionContainer,
+  SectionContent,
+  SectionSplit,
+  SectionStack,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileTitle,
+} from "@/components/ui/tile"
+import { Typography } from "@/components/ui/typography"
+
+interface Props extends ComponentProps<typeof Section> {
+  buttons?: ComponentProps<typeof Button>[]
+  items?: {
+    title?: string
+    description?: string
+    list?: string[]
+  }[]
+}
+
+const { class: className, align, size, buttons, items, ...props } = Astro.props
+---
+
+<Section class={cn("", className)} size={size} align={align} {...props}>
+  <SectionContainer>
+    <SectionStack align={align}>
+      <SectionContent align={align}>
+        <Typography size={size} align={align}>
+          <slot />
+        </Typography>
+        <SectionActions align={align}>
+          {
+            buttons?.map((button, i) => (
+              <Button
+                variant={i === 0 ? "default" : "outline"}
+                size={size}
+                {...button}
+              />
+            ))
+          }
+        </SectionActions>
+      </SectionContent>
+      {
+        items && items.length > 0 && (
+          <SectionSplit class="relative gap-8">
+            <div class="bg-border absolute left-5.5 h-full w-px lg:top-5.5 lg:h-px lg:w-full" />
+            {items?.map(({ title, description, list }, i) => (
+              <Tile class="items-start gap-8 gap-x-4 max-lg:flex-row">
+                <div class="bg-accent text-accent-foreground flex size-10 shrink-0 items-center justify-center rounded-full text-lg">
+                  {i + 1}
+                </div>
+                <TileContent class="p-0">
+                  <TileTitle class="not-first:mt-4">{title}</TileTitle>
+                  <TileDescription>{description}</TileDescription>
+                  <List
+                    class={`not-first:mt-4 ${i === 0 ? "text-muted-foreground" : "text-foreground"}`}
+                  >
+                    {list?.map((item) => (
+                      <ListItem>
+                        {i === 0 ? <X /> : <CircleCheck />}
+                        {item}
+                      </ListItem>
+                    ))}
+                  </List>
+                </TileContent>
+              </Tile>
+            ))}
+          </SectionSplit>
+        )
+      }
+    </SectionStack>
+  </SectionContainer>
+</Section>

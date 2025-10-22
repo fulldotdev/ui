@@ -1,15 +1,17 @@
 ---
 import type { ComponentProps } from "astro/types"
+import CircleCheck from "lucide-static/icons/circle-check.svg"
+import X from "lucide-static/icons/x.svg"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Grid } from "@/components/ui/grid"
-import { Image } from "@/components/ui/image"
+import { List, ListItem } from "@/components/ui/list"
 import {
   Section,
   SectionActions,
   SectionContainer,
   SectionContent,
+  SectionSplit,
   SectionStack,
 } from "@/components/ui/section"
 import {
@@ -23,10 +25,9 @@ import { Typography } from "@/components/ui/typography"
 interface Props extends ComponentProps<typeof Section> {
   buttons?: ComponentProps<typeof Button>[]
   items?: {
-    href?: string
     title?: string
     description?: string
-    image?: ComponentProps<typeof Image>
+    list?: string[]
   }[]
 }
 
@@ -37,10 +38,10 @@ const { class: className, align, size, buttons, items, ...props } = Astro.props
   <SectionContainer>
     <SectionStack align={align}>
       <SectionContent align={align}>
-        <Typography class="not-first:mt-4" size={size}>
+        <Typography size={size} align={align}>
           <slot />
         </Typography>
-        <SectionActions class="not-first:mt-8 not-last:mb-4">
+        <SectionActions align={align}>
           {
             buttons?.map((button, i) => (
               <Button
@@ -52,23 +53,30 @@ const { class: className, align, size, buttons, items, ...props } = Astro.props
           }
         </SectionActions>
       </SectionContent>
-      <Grid class="gap-4">
-        {
-          items?.map(({ title, description, image, href }) => (
-            <Tile href={href} class="group flex flex-col items-start">
-              <Image
-                class="aspect-4/3 rounded-lg object-cover transition-opacity group-hover:opacity-75"
-                sizes="200px"
-                {...image}
-              />
-              <TileContent class="flex flex-col gap-2 not-first:mt-4">
-                <TileTitle>{title}</TileTitle>
-                <TileDescription>{description}</TileDescription>
-              </TileContent>
-            </Tile>
-          ))
-        }
-      </Grid>
+      {
+        items && items.length > 0 && (
+          <SectionSplit class="gap-8">
+            {items?.map(({ title, description, list }, i) => (
+              <Tile class="items-start" variant={i === 0 ? "outline" : "muted"}>
+                <TileContent>
+                  <TileTitle>{title}</TileTitle>
+                  <TileDescription>{description}</TileDescription>
+                  <List
+                    class={`not-first:mt-4 ${i === 0 ? "text-muted-foreground" : "text-foreground"}`}
+                  >
+                    {list?.map((item) => (
+                      <ListItem>
+                        {i === 0 ? <X /> : <CircleCheck />}
+                        {item}
+                      </ListItem>
+                    ))}
+                  </List>
+                </TileContent>
+              </Tile>
+            ))}
+          </SectionSplit>
+        )
+      }
     </SectionStack>
   </SectionContainer>
 </Section>
