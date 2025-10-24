@@ -11,13 +11,13 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item"
-import { Masonry } from "@/components/ui/masonry"
 import { Rating } from "@/components/ui/rating"
 import {
   Section,
   SectionActions,
-  SectionContainer,
   SectionContent,
+  SectionGroup,
+  SectionMasonry,
   SectionSplit,
 } from "@/components/ui/section"
 import {
@@ -29,8 +29,10 @@ import {
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
+  align?: ComponentProps<typeof Typography>["align"]
+  size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
-  reviews?: {
+  items?: {
     title?: string
     description?: string
     rating?: number
@@ -40,20 +42,13 @@ interface Props extends ComponentProps<typeof Section> {
   }[]
 }
 
-const {
-  class: classList,
-  align,
-  size,
-  buttons,
-  reviews,
-  ...props
-} = Astro.props
+const { class: classList, align, size, buttons, items, ...props } = Astro.props
 ---
 
-<Section class={cn("", classList)} size={size} align={align} {...props}>
-  <SectionContainer>
+<Section class={cn("", classList)} {...props}>
+  <SectionContent>
     <SectionSplit align={align}>
-      <SectionContent>
+      <SectionGroup>
         <Typography size={size}>
           <slot />
         </Typography>
@@ -68,10 +63,10 @@ const {
             ))
           }
         </SectionActions>
-      </SectionContent>
-      <Masonry>
+      </SectionGroup>
+      <SectionMasonry>
         {
-          reviews?.map(
+          items?.map(
             ({ title, description, rating, avatar, tagline, href }) => (
               <Tile href={href} variant="outline">
                 <TileContent>
@@ -94,7 +89,7 @@ const {
             )
           )
         }
-      </Masonry>
+      </SectionMasonry>
     </SectionSplit>
-  </SectionContainer>
+  </SectionContent>
 </Section>

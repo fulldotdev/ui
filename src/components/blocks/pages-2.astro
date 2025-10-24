@@ -4,13 +4,13 @@ import ChevronRightIcon from "lucide-static/icons/chevron-right.svg"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Grid } from "@/components/ui/grid"
 import { Image } from "@/components/ui/image"
 import {
   Section,
   SectionActions,
-  SectionContainer,
   SectionContent,
+  SectionGrid,
+  SectionGroup,
   SectionSplit,
 } from "@/components/ui/section"
 import {
@@ -22,8 +22,10 @@ import {
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
+  align?: ComponentProps<typeof Typography>["align"]
+  size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
-  pages?: {
+  items?: {
     href?: string
     title?: string
     description?: string
@@ -31,13 +33,13 @@ interface Props extends ComponentProps<typeof Section> {
   }[]
 }
 
-const { class: className, align, size, buttons, pages, ...props } = Astro.props
+const { class: className, align, size, buttons, items, ...props } = Astro.props
 ---
 
-<Section class={cn("", className)} size={size} align={align} {...props}>
-  <SectionContainer>
+<Section class={cn("", className)} {...props}>
+  <SectionContent>
     <SectionSplit align={align}>
-      <SectionContent align={align} class="lg:col-span-2">
+      <SectionGroup align={align} class="lg:col-span-2">
         <Typography class="not-first:mt-4" size={size}>
           <slot />
         </Typography>
@@ -52,10 +54,10 @@ const { class: className, align, size, buttons, pages, ...props } = Astro.props
             ))
           }
         </SectionActions>
-      </SectionContent>
-      <Grid class="gap-4 lg:col-span-3">
+      </SectionGroup>
+      <SectionGrid class="gap-4 lg:col-span-3">
         {
-          pages?.map(({ title, description, image, href }) => (
+          items?.map(({ title, description, image, href }) => (
             <Tile
               href={href}
               variant="muted"
@@ -78,7 +80,7 @@ const { class: className, align, size, buttons, pages, ...props } = Astro.props
             </Tile>
           ))
         }
-      </Grid>
+      </SectionGrid>
     </SectionSplit>
-  </SectionContainer>
+  </SectionContent>
 </Section>

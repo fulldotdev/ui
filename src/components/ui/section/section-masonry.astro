@@ -6,24 +6,27 @@ import { cn } from "@/lib/utils"
 
 interface Props extends HTMLAttributes<"div">, VariantProps<typeof variants> {}
 
-const variants = cva("flex gap-2 flex-wrap", {
+const variants = cva("w-full gap-4 space-y-4 *:break-inside-avoid", {
   variants: {
-    align: {
-      start: "justify-start",
-      center: "justify-center",
-      end: "justify-end",
+    size: {
+      sm: "columns-3xs",
+      default: "columns-2xs",
+      lg: "columns-xs",
     },
+  },
+  defaultVariants: {
+    size: "default",
   },
 })
 
-const { class: className, align, ...props } = Astro.props
+const { class: className, size, ...props } = Astro.props
 
 const slot = await Astro.slots.render("default")
 ---
 
 {
   slot.trim().length > 0 && (
-    <div class={cn(variants({ align }), className)} {...props}>
+    <div class={cn(variants({ size }), className)} {...props}>
       <Fragment set:html={slot} />
     </div>
   )

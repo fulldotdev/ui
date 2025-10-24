@@ -13,17 +13,14 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item"
-import {
-  Section,
-  SectionContainer,
-  SectionContent,
-  SectionStack,
-} from "@/components/ui/section"
+import { Section, SectionContent, SectionGroup } from "@/components/ui/section"
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
+  align?: ComponentProps<typeof Typography>["align"]
+  size?: ComponentProps<typeof Typography>["size"]
   form?: any
-  channels?: {
+  items?: {
     title?: string
     description?: string
     variant?: ComponentProps<typeof Item>["variant"]
@@ -32,35 +29,33 @@ interface Props extends ComponentProps<typeof Section> {
   }[]
 }
 
-const { class: className, align, size, form, channels, ...props } = Astro.props
+const { class: className, align, size, form, items, ...props } = Astro.props
 ---
 
-<Section class={cn("", className)} size={size} align={align} {...props}>
-  <SectionContainer class="max-w-screen-md">
-    <SectionStack align={align}>
-      <SectionContent align={align}>
-        <Typography size={size} align={align}>
-          <slot />
-        </Typography>
-        <ItemGroup class="w-full flex-row flex-wrap gap-2">
-          {
-            channels?.map(
-              ({ title, description, href, icon, variant = "muted" }) => (
-                <Item variant={variant} href={href}>
-                  <ItemMedia variant="icon">
-                    <Icon name={icon} href={href} />
-                  </ItemMedia>
-                  <ItemContent>
-                    <ItemTitle>{title}</ItemTitle>
-                    <ItemDescription>{description}</ItemDescription>
-                  </ItemContent>
-                </Item>
-              )
+<Section class={cn("", className)} {...props}>
+  <SectionContent class="max-w-screen-md">
+    <SectionGroup align={align}>
+      <Typography size={size} align={align}>
+        <slot />
+      </Typography>
+      <ItemGroup class="w-full flex-row flex-wrap gap-2">
+        {
+          items?.map(
+            ({ title, description, href, icon, variant = "muted" }) => (
+              <Item variant={variant} href={href}>
+                <ItemMedia variant="icon">
+                  <Icon name={icon} href={href} />
+                </ItemMedia>
+                <ItemContent>
+                  <ItemTitle>{title}</ItemTitle>
+                  <ItemDescription>{description}</ItemDescription>
+                </ItemContent>
+              </Item>
             )
-          }
-        </ItemGroup>
-      </SectionContent>
-      <Form {...form} />
-    </SectionStack>
-  </SectionContainer>
+          )
+        }
+      </ItemGroup>
+    </SectionGroup>
+    <Form {...form} />
+  </SectionContent>
 </Section>

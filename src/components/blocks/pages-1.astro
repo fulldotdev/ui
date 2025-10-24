@@ -3,14 +3,13 @@ import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Grid } from "@/components/ui/grid"
 import { Image } from "@/components/ui/image"
 import {
   Section,
   SectionActions,
-  SectionContainer,
   SectionContent,
-  SectionStack,
+  SectionGrid,
+  SectionGroup,
 } from "@/components/ui/section"
 import {
   Tile,
@@ -21,6 +20,8 @@ import {
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
+  align?: ComponentProps<typeof Typography>["align"]
+  size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
   items?: {
     href?: string
@@ -33,42 +34,40 @@ interface Props extends ComponentProps<typeof Section> {
 const { class: className, align, size, buttons, items, ...props } = Astro.props
 ---
 
-<Section class={cn("", className)} size={size} align={align} {...props}>
-  <SectionContainer>
-    <SectionStack align={align}>
-      <SectionContent align={align}>
-        <Typography class="not-first:mt-4" size={size}>
-          <slot />
-        </Typography>
-        <SectionActions class="not-first:mt-8 not-last:mb-4">
-          {
-            buttons?.map((button, i) => (
-              <Button
-                variant={i === 0 ? "default" : "outline"}
-                size={size}
-                {...button}
-              />
-            ))
-          }
-        </SectionActions>
-      </SectionContent>
-      <Grid class="gap-4">
+<Section class={cn("", className)} {...props}>
+  <SectionContent align={align}>
+    <SectionGroup align={align}>
+      <Typography class="not-first:mt-4" size={size}>
+        <slot />
+      </Typography>
+      <SectionActions class="not-first:mt-8 not-last:mb-4">
         {
-          items?.map(({ title, description, image, href }) => (
-            <Tile href={href} class="group flex flex-col items-start">
-              <Image
-                class="aspect-4/3 rounded-lg object-cover transition-opacity group-hover:opacity-75"
-                sizes="200px"
-                {...image}
-              />
-              <TileContent class="flex flex-col gap-2 not-first:mt-4">
-                <TileTitle>{title}</TileTitle>
-                <TileDescription>{description}</TileDescription>
-              </TileContent>
-            </Tile>
+          buttons?.map((button, i) => (
+            <Button
+              variant={i === 0 ? "default" : "outline"}
+              size={size}
+              {...button}
+            />
           ))
         }
-      </Grid>
-    </SectionStack>
-  </SectionContainer>
+      </SectionActions>
+    </SectionGroup>
+    <SectionGrid class="gap-4">
+      {
+        items?.map(({ title, description, image, href }) => (
+          <Tile href={href} class="group flex flex-col items-start">
+            <Image
+              class="aspect-4/3 rounded-lg object-cover transition-opacity group-hover:opacity-75"
+              sizes="200px"
+              {...image}
+            />
+            <TileContent class="flex flex-col gap-2 not-first:mt-4">
+              <TileTitle>{title}</TileTitle>
+              <TileDescription>{description}</TileDescription>
+            </TileContent>
+          </Tile>
+        ))
+      }
+    </SectionGrid>
+  </SectionContent>
 </Section>

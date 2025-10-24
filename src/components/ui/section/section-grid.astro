@@ -4,12 +4,14 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-const variants = cva("w-full gap-4 space-y-4 *:break-inside-avoid", {
+interface Props extends HTMLAttributes<"div">, VariantProps<typeof variants> {}
+
+const variants = cva("grid w-full p-8", {
   variants: {
     size: {
-      sm: "columns-3xs",
-      default: "columns-2xs",
-      lg: "columns-xs",
+      sm: "grid-cols-[repeat(auto-fit,minmax(200px,1fr))]",
+      default: "grid-cols-[repeat(auto-fit,minmax(260px,1fr))]",
+      lg: "grid-cols-[repeat(auto-fit,minmax(400px,1fr))]",
     },
   },
   defaultVariants: {
@@ -17,9 +19,7 @@ const variants = cva("w-full gap-4 space-y-4 *:break-inside-avoid", {
   },
 })
 
-interface Props extends HTMLAttributes<"div">, VariantProps<typeof variants> {}
-
-const { size, class: className, ...props } = Astro.props
+const { class: className, size, ...props } = Astro.props
 
 const slot = await Astro.slots.render("default")
 ---

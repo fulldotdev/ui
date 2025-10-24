@@ -15,14 +15,15 @@ import {
 } from "@/components/ui/item"
 import {
   Section,
-  SectionContainer,
   SectionContent,
-  SectionPanel,
+  SectionGroup,
   SectionSplit,
 } from "@/components/ui/section"
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
+  align?: ComponentProps<typeof Typography>["align"]
+  size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
   items?: {
     title?: string
@@ -46,36 +47,32 @@ const {
 } = Astro.props
 ---
 
-<Section class={cn("", className)} size={size} align={align} {...props}>
-  <SectionContainer>
-    <SectionPanel variant={variant}>
-      <SectionContainer>
-        <SectionSplit align={align}>
-          <SectionContent>
-            <Typography size={size}>
-              <slot />
-            </Typography>
-            <ItemGroup class="min-w-2xs gap-2">
-              {
-                items?.map(
-                  ({ title, description, href, icon, variant = "muted" }) => (
-                    <Item variant={variant} href={href}>
-                      <ItemMedia variant="icon">
-                        <Icon name={icon} href={href} />
-                      </ItemMedia>
-                      <ItemContent>
-                        <ItemTitle>{title}</ItemTitle>
-                        <ItemDescription>{description}</ItemDescription>
-                      </ItemContent>
-                    </Item>
-                  )
-                )
-              }
-            </ItemGroup>
-          </SectionContent>
-          <Form {...form} />
-        </SectionSplit>
-      </SectionContainer>
-    </SectionPanel>
-  </SectionContainer>
+<Section class={cn("", className)} {...props}>
+  <SectionContent>
+    <SectionSplit align={align}>
+      <SectionGroup>
+        <Typography size={size}>
+          <slot />
+        </Typography>
+        <ItemGroup class="min-w-2xs gap-2">
+          {
+            items?.map(
+              ({ title, description, href, icon, variant = "muted" }) => (
+                <Item variant={variant} href={href}>
+                  <ItemMedia variant="icon">
+                    <Icon name={icon} href={href} />
+                  </ItemMedia>
+                  <ItemContent>
+                    <ItemTitle>{title}</ItemTitle>
+                    <ItemDescription>{description}</ItemDescription>
+                  </ItemContent>
+                </Item>
+              )
+            )
+          }
+        </ItemGroup>
+      </SectionGroup>
+      <Form {...form} />
+    </SectionSplit>
+  </SectionContent>
 </Section>

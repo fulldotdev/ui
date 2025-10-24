@@ -7,13 +7,14 @@ import { Image } from "@/components/ui/image"
 import {
   Section,
   SectionActions,
-  SectionContainer,
   SectionContent,
-  SectionStack,
+  SectionGroup,
 } from "@/components/ui/section"
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
+  align?: ComponentProps<typeof Typography>["align"]
+  size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
   image?: ComponentProps<typeof Image>
 }
@@ -21,26 +22,24 @@ interface Props extends ComponentProps<typeof Section> {
 const { class: className, align, size, buttons, image, ...props } = Astro.props
 ---
 
-<Section class={cn("", className)} size={size} align={align} {...props}>
-  <SectionContainer variant="outline">
-    <SectionStack align={align}>
-      <SectionContent align={align}>
-        <Typography size={size} align={align}>
-          <slot />
-        </Typography>
-        <SectionActions align={align}>
-          {
-            buttons?.map((button, i) => (
-              <Button
-                variant={i === 0 ? "default" : "outline"}
-                size={size}
-                {...button}
-              />
-            ))
-          }
-        </SectionActions>
-      </SectionContent>
-      <Image class="rounded-lg" {...image} />
-    </SectionStack>
-  </SectionContainer>
+<Section class={cn("", className)} {...props}>
+  <SectionContent>
+    <SectionGroup align={align}>
+      <Typography size={size} align={align}>
+        <slot />
+      </Typography>
+      <SectionActions align={align}>
+        {
+          buttons?.map((button, i) => (
+            <Button
+              variant={i === 0 ? "default" : "outline"}
+              size={size}
+              {...button}
+            />
+          ))
+        }
+      </SectionActions>
+    </SectionGroup>
+    <Image class="rounded-lg" {...image} />
+  </SectionContent>
 </Section>

@@ -11,20 +11,17 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item"
-import {
-  Section,
-  SectionContainer,
-  SectionContent,
-  SectionStack,
-} from "@/components/ui/section"
+import { Section, SectionContent, SectionGroup } from "@/components/ui/section"
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
+  align?: ComponentProps<typeof Typography>["align"]
+  size?: ComponentProps<typeof Typography>["size"]
   title?: ComponentProps<typeof Typography>["title"]
   description?: ComponentProps<typeof Typography>["description"]
   image?: ComponentProps<typeof Image>
   person?: {
-    href?: string
+    href?: ComponentProps<typeof Item>["href"]
     avatar?: ComponentProps<typeof Avatar>
     title?: string
     tagline?: string
@@ -43,32 +40,30 @@ const {
 } = Astro.props
 ---
 
-<Section class={cn("", className)} size={size} align={align} {...props}>
-  <SectionContainer class="max-w-screen-lg">
-    <SectionStack align="center">
-      <SectionContent align={align}>
-        <Typography
-          size={size}
-          align={align}
-          title={title}
-          description={description}
-        />
-        <Item class="-m-4" size="sm" href={person?.href}>
-          <ItemMedia>
-            <Avatar class="size-10">
-              <AvatarImage {...person?.avatar} />
-            </Avatar>
-          </ItemMedia>
-          <ItemContent>
-            <ItemTitle>{person?.title}</ItemTitle>
-            <ItemDescription>{person?.tagline}</ItemDescription>
-          </ItemContent>
-        </Item>
-      </SectionContent>
-      <Image class="rounded-lg" {...image} />
-      <Typography>
-        <slot />
-      </Typography>
-    </SectionStack>
-  </SectionContainer>
+<Section class={cn("", className)} {...props}>
+  <SectionContent class="max-w-screen-lg" align={align}>
+    <SectionGroup align={align}>
+      <Typography
+        size={size}
+        align={align}
+        title={title}
+        description={description}
+      />
+      <Item class="-m-4" size="sm" href={person?.href}>
+        <ItemMedia>
+          <Avatar class="size-10">
+            <AvatarImage {...person?.avatar} />
+          </Avatar>
+        </ItemMedia>
+        <ItemContent>
+          <ItemTitle>{person?.title}</ItemTitle>
+          <ItemDescription>{person?.tagline}</ItemDescription>
+        </ItemContent>
+      </Item>
+    </SectionGroup>
+    <Image class="rounded-lg" {...image} />
+    <Typography class="mx-auto max-w-screen-md">
+      <slot />
+    </Typography>
+  </SectionContent>
 </Section>

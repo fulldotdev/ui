@@ -6,13 +6,15 @@ import { Button } from "@/components/ui/button"
 import {
   Section,
   SectionActions,
-  SectionContainer,
   SectionContent,
+  SectionGroup,
   SectionSplit,
 } from "@/components/ui/section"
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
+  align?: ComponentProps<typeof Typography>["align"]
+  size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
   src?: string
 }
@@ -20,10 +22,10 @@ interface Props extends ComponentProps<typeof Section> {
 const { class: className, align, size, buttons, src, ...props } = Astro.props
 ---
 
-<Section class={cn("", className)} size={size} align={align} {...props}>
-  <SectionContainer class="container">
+<Section class={cn("", className)} {...props}>
+  <SectionContent class="container">
     <SectionSplit align={align}>
-      <SectionContent align="start">
+      <SectionGroup align="start">
         <Typography size={size}>
           <slot />
         </Typography>
@@ -38,7 +40,7 @@ const { class: className, align, size, buttons, src, ...props } = Astro.props
             ))
           }
         </SectionActions>
-      </SectionContent>
+      </SectionGroup>
       <iframe
         src={src}
         width="640"
@@ -46,5 +48,5 @@ const { class: className, align, size, buttons, src, ...props } = Astro.props
         class="bg-muted aspect-video h-full w-full overflow-hidden rounded-lg"
       ></iframe>
     </SectionSplit>
-  </SectionContainer>
+  </SectionContent>
 </Section>

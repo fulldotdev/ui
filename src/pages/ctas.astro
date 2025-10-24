@@ -2,9 +2,9 @@
 import Layout from "@/components/layout.astro"
 
 const props = {
-  frame: "float",
+  order: "reverse",
   align: "center",
-  variant: "muted",
+  variant: "float",
   size: "default",
   title: "Lorem ipsum dolor sit amet",
   description:
@@ -225,18 +225,20 @@ const allBlocks = import.meta.glob("src/components/blocks/**/*.astro", {
 
 <Layout>
   {
-    Object.entries(allBlocks).map(([path, block]: [string, any], i) => {
-      const BlockComponent = block.default
-      return BlockComponent ? (
-        <>
-          <div class="flex justify-center py-1 text-sm text-gray-500">
-            {path.split("/").pop()?.split(".")[0]}
-          </div>
-          <BlockComponent {...(props as any)} key={i}>
-            <Fragment set:html={html} />
-          </BlockComponent>
-        </>
-      ) : null
-    })
+    Object.entries(allBlocks)
+      .filter(([path]) => path.includes("cta-"))
+      .map(([path, block]: [string, any], i) => {
+        const BlockComponent = block.default
+        return BlockComponent ? (
+          <>
+            <div class="flex justify-center py-1 text-sm text-gray-500">
+              {path.split("/").pop()?.split(".")[0]}
+            </div>
+            <BlockComponent {...(props as any)} key={i}>
+              <Fragment set:html={html} />
+            </BlockComponent>
+          </>
+        ) : null
+      })
   }
 </Layout>

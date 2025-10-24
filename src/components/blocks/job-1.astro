@@ -7,12 +7,14 @@ import { List, ListItem } from "@/components/ui/list"
 import {
   Section,
   SectionActions,
-  SectionContainer,
-  SectionStack,
+  SectionContent,
+  SectionGroup,
 } from "@/components/ui/section"
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
+  align?: ComponentProps<typeof Typography>["align"]
+  size?: ComponentProps<typeof Typography>["size"]
   title?: string
   description?: string
   location?: string
@@ -23,10 +25,10 @@ interface Props extends ComponentProps<typeof Section> {
 
 const {
   class: className,
-  align,
-  size,
   title,
   description,
+  align,
+  size,
   location,
   salary,
   hours,
@@ -35,19 +37,21 @@ const {
 } = Astro.props
 ---
 
-<Section class={cn("", className)} size={size} align={align} {...props}>
-  <SectionContainer class="max-w-screen-md">
-    <SectionStack align={align}>
-      <Typography size={size} align={align}>
-        {title && <h1>{title}</h1>}
-        {description && <p>{description}</p>}
-      </Typography>
+<Section class={cn("", className)} {...props}>
+  <SectionContent class="max-w-screen-md">
+    <SectionGroup align={align}>
+      <Typography
+        size={size}
+        align={align}
+        title={title}
+        description={description}
+      />
       <List>
         <ListItem>{location}</ListItem>
         <ListItem>{salary}</ListItem>
         <ListItem>{hours}</ListItem>
       </List>
-    </SectionStack>
+    </SectionGroup>
     <SectionActions>
       {
         buttons?.map((button, i) => (
@@ -62,5 +66,5 @@ const {
     <Typography size={size}>
       <slot />
     </Typography>
-  </SectionContainer>
+  </SectionContent>
 </Section>

@@ -4,7 +4,6 @@ import type { ComponentProps } from "astro/types"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Image } from "@/components/ui/image"
-import { Pattern } from "@/components/ui/pattern"
 import {
   Section,
   SectionActions,
@@ -19,19 +18,15 @@ interface Props extends ComponentProps<typeof Section> {
   image?: ComponentProps<typeof Image>
 }
 
-const {
-  class: className,
-  align,
-  order,
-  size,
-  buttons,
-  image,
-  ...props
-} = Astro.props
+const { class: className, buttons, align, size, image, ...props } = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContent align={align} order={order}>
+  <Image
+    class="absolute inset-0 size-full object-cover opacity-25"
+    {...image}
+  />
+  <SectionContent class="relative">
     <SectionGroup align={align}>
       <Typography align={align} size={size}>
         <slot />
@@ -48,6 +43,5 @@ const {
         }
       </SectionActions>
     </SectionGroup>
-    <Image class="rounded-lg" {...image} />
   </SectionContent>
 </Section>

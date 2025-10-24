@@ -7,13 +7,15 @@ import { Image } from "@/components/ui/image"
 import {
   Section,
   SectionActions,
-  SectionContainer,
   SectionContent,
+  SectionGroup,
   SectionSplit,
 } from "@/components/ui/section"
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
+  align?: ComponentProps<typeof Typography>["align"]
+  size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
   image?: ComponentProps<typeof Image>
 }
@@ -21,10 +23,10 @@ interface Props extends ComponentProps<typeof Section> {
 const { class: className, align, size, buttons, image, ...props } = Astro.props
 ---
 
-<Section class={cn("", className)} size={size} align={align} {...props}>
-  <SectionContainer class="container">
+<Section class={cn("", className)} {...props}>
+  <SectionContent>
     <SectionSplit align={align}>
-      <SectionContent align="start">
+      <SectionGroup>
         <Typography size={size}>
           <slot />
         </Typography>
@@ -39,8 +41,8 @@ const { class: className, align, size, buttons, image, ...props } = Astro.props
             ))
           }
         </SectionActions>
-      </SectionContent>
+      </SectionGroup>
       <Image class="rounded-lg" {...image} />
     </SectionSplit>
-  </SectionContainer>
+  </SectionContent>
 </Section>

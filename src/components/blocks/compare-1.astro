@@ -9,10 +9,9 @@ import { List, ListItem } from "@/components/ui/list"
 import {
   Section,
   SectionActions,
-  SectionContainer,
   SectionContent,
+  SectionGroup,
   SectionSplit,
-  SectionStack,
 } from "@/components/ui/section"
 import {
   Tile,
@@ -23,6 +22,8 @@ import {
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
+  align?: ComponentProps<typeof Typography>["align"]
+  size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
   items?: {
     title?: string
@@ -34,49 +35,45 @@ interface Props extends ComponentProps<typeof Section> {
 const { class: className, align, size, buttons, items, ...props } = Astro.props
 ---
 
-<Section class={cn("", className)} size={size} align={align} {...props}>
-  <SectionContainer>
-    <SectionStack align={align}>
-      <SectionContent align={align}>
-        <Typography size={size} align={align}>
-          <slot />
-        </Typography>
-        <SectionActions align={align}>
-          {
-            buttons?.map((button, i) => (
-              <Button
-                variant={i === 0 ? "default" : "outline"}
-                size={size}
-                {...button}
-              />
-            ))
-          }
-        </SectionActions>
-      </SectionContent>
+<Section class={cn("", className)} {...props}>
+  <SectionContent>
+    <SectionGroup align={align}>
+      <Typography size={size} align={align}>
+        <slot />
+      </Typography>
+      <SectionActions align={align}>
+        {
+          buttons?.map((button, i) => (
+            <Button
+              variant={i === 0 ? "default" : "outline"}
+              size={size}
+              {...button}
+            />
+          ))
+        }
+      </SectionActions>
+    </SectionGroup>
+    <SectionSplit class="gap-8">
       {
-        items && items.length > 0 && (
-          <SectionSplit class="gap-8">
-            {items?.map(({ title, description, list }, i) => (
-              <Tile class="items-start" variant={i === 0 ? "outline" : "muted"}>
-                <TileContent>
-                  <TileTitle>{title}</TileTitle>
-                  <TileDescription>{description}</TileDescription>
-                  <List
-                    class={`not-first:mt-4 ${i === 0 ? "text-muted-foreground" : "text-foreground"}`}
-                  >
-                    {list?.map((item) => (
-                      <ListItem>
-                        {i === 0 ? <X /> : <CircleCheck />}
-                        {item}
-                      </ListItem>
-                    ))}
-                  </List>
-                </TileContent>
-              </Tile>
-            ))}
-          </SectionSplit>
-        )
+        items?.map(({ title, description, list }, i) => (
+          <Tile class="items-start" variant={i === 0 ? "outline" : "muted"}>
+            <TileContent>
+              <TileTitle>{title}</TileTitle>
+              <TileDescription>{description}</TileDescription>
+              <List
+                class={`not-first:mt-4 ${i === 0 ? "text-muted-foreground" : "text-foreground"}`}
+              >
+                {list?.map((item) => (
+                  <ListItem>
+                    {i === 0 ? <X /> : <CircleCheck />}
+                    {item}
+                  </ListItem>
+                ))}
+              </List>
+            </TileContent>
+          </Tile>
+        ))
       }
-    </SectionStack>
-  </SectionContainer>
+    </SectionSplit>
+  </SectionContent>
 </Section>

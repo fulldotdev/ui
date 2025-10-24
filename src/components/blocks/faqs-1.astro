@@ -12,57 +12,56 @@ import { Button } from "@/components/ui/button"
 import {
   Section,
   SectionActions,
-  SectionContainer,
   SectionContent,
-  SectionStack,
+  SectionGroup,
 } from "@/components/ui/section"
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
+  align?: ComponentProps<typeof Typography>["align"]
+  size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
-  faqs?: {
+  items?: {
     question?: string
     answer?: string
   }[]
 }
 
-const { class: className, align, size, buttons, faqs, ...props } = Astro.props
+const { class: className, align, size, buttons, items, ...props } = Astro.props
 ---
 
-<Section class={cn("", className)} size={size} align={align} {...props}>
-  <SectionContainer class="max-w-screen-md">
-    <SectionStack align={align}>
-      <SectionContent align={align}>
-        <Typography size={size} align={align}>
-          <slot />
-        </Typography>
-        <SectionActions align={align}>
-          {
-            buttons?.map((button, i) => (
-              <Button
-                variant={i === 0 ? "default" : "outline"}
-                size={size}
-                {...button}
-              />
-            ))
-          }
-        </SectionActions>
-      </SectionContent>
-      {
-        faqs && faqs.length > 0 && (
-          <Accordion class="w-full max-w-2xl">
-            {faqs?.map(({ question, answer }) => {
-              if (!question && !answer) return null
-              return (
-                <AccordionItem>
-                  <AccordionTrigger>{question}</AccordionTrigger>
-                  <AccordionContent>{answer}</AccordionContent>
-                </AccordionItem>
-              )
-            })}
-          </Accordion>
-        )
-      }
-    </SectionStack>
-  </SectionContainer>
+<Section class={cn("", className)} {...props}>
+  <SectionContent class="max-w-screen-md">
+    <SectionGroup align={align}>
+      <Typography size={size} align={align}>
+        <slot />
+      </Typography>
+      <SectionActions align={align}>
+        {
+          buttons?.map((button, i) => (
+            <Button
+              variant={i === 0 ? "default" : "outline"}
+              size={size}
+              {...button}
+            />
+          ))
+        }
+      </SectionActions>
+    </SectionGroup>
+    {
+      items && items.length > 0 && (
+        <Accordion class="w-full max-w-2xl">
+          {items?.map(({ question, answer }) => {
+            if (!question && !answer) return null
+            return (
+              <AccordionItem>
+                <AccordionTrigger>{question}</AccordionTrigger>
+                <AccordionContent>{answer}</AccordionContent>
+              </AccordionItem>
+            )
+          })}
+        </Accordion>
+      )
+    }
+  </SectionContent>
 </Section>

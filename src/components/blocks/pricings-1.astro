@@ -8,9 +8,8 @@ import { List, ListItem } from "@/components/ui/list"
 import {
   Section,
   SectionActions,
-  SectionContainer,
   SectionContent,
-  SectionStack,
+  SectionGroup,
 } from "@/components/ui/section"
 import {
   Tile,
@@ -21,8 +20,10 @@ import {
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
+  align?: ComponentProps<typeof Typography>["align"]
+  size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
-  pricings?: {
+  items?: {
     title?: string
     description?: string
     icon?: string
@@ -33,87 +34,78 @@ interface Props extends ComponentProps<typeof Section> {
   }[]
 }
 
-const {
-  class: className,
-  align,
-  size,
-  buttons,
-  pricings,
-  ...props
-} = Astro.props
+const { class: className, align, size, buttons, items, ...props } = Astro.props
 ---
 
-<Section class={cn("", className)} size={size} align={align} {...props}>
-  <SectionContainer>
-    <SectionStack align={align}>
-      <SectionContent align={align}>
-        <Typography size={size} align={align}>
-          <slot />
-        </Typography>
-        <SectionActions align={align}>
-          {
-            buttons?.map((button, i) => (
-              <Button
-                variant={i === 0 ? "default" : "outline"}
-                size={size}
-                {...button}
-              />
-            ))
-          }
-        </SectionActions>
-      </SectionContent>
-      {
-        pricings && pricings.length > 0 && (
-          <div class="flex flex-col items-stretch gap-6 md:flex-row">
-            {pricings?.map(
-              ({ title, description, icon, button, list, price, unit }) => (
-                <Tile
-                  class="min-w-4xs basis-4xs flex max-w-md flex-col justify-start text-left"
-                  variant="outline"
-                >
-                  <TileContent class="flex h-full flex-col">
-                    {icon && (
-                      <div class="mb-3">
-                        <Icon name={icon} />
-                      </div>
-                    )}
-                    {title && (
-                      <TileTitle class="not-first:mt-3">{title}</TileTitle>
-                    )}
-                    {description && (
-                      <TileDescription class="text-muted-foreground text-base not-first:mt-2">
-                        {description}
-                      </TileDescription>
-                    )}
-                    {(price || unit) && (
-                      <div class="font-semibold not-first:mt-4">
-                        {price && (
-                          <span class="text-foreground text-3xl">{price}</span>
-                        )}
-                        {unit && (
-                          <span class="text-muted-foreground ml-1.5 text-base">
-                            {unit}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                    {list && list.length > 0 && (
-                      <List class="not-first:mt-4">
-                        {list?.map((item) => (
-                          <ListItem>{item}</ListItem>
-                        ))}
-                      </List>
-                    )}
-                    <div class="mt-auto pt-4">
-                      <Button class="w-full" size={size} {...button} />
+<Section class={cn("", className)} {...props}>
+  <SectionContent align={align}>
+    <SectionGroup align={align}>
+      <Typography size={size} align={align}>
+        <slot />
+      </Typography>
+      <SectionActions align={align}>
+        {
+          buttons?.map((button, i) => (
+            <Button
+              variant={i === 0 ? "default" : "outline"}
+              size={size}
+              {...button}
+            />
+          ))
+        }
+      </SectionActions>
+    </SectionGroup>
+    {
+      items && items.length > 0 && (
+        <div class="flex flex-col items-stretch gap-6 md:flex-row">
+          {items?.map(
+            ({ title, description, icon, button, list, price, unit }) => (
+              <Tile
+                class="min-w-4xs basis-4xs flex max-w-md flex-col justify-start text-left"
+                variant="outline"
+              >
+                <TileContent class="flex h-full flex-col">
+                  {icon && (
+                    <div class="mb-3">
+                      <Icon name={icon} />
                     </div>
-                  </TileContent>
-                </Tile>
-              )
-            )}
-          </div>
-        )
-      }
-    </SectionStack>
-  </SectionContainer>
+                  )}
+                  {title && (
+                    <TileTitle class="not-first:mt-3">{title}</TileTitle>
+                  )}
+                  {description && (
+                    <TileDescription class="text-muted-foreground text-base not-first:mt-2">
+                      {description}
+                    </TileDescription>
+                  )}
+                  {(price || unit) && (
+                    <div class="font-semibold not-first:mt-4">
+                      {price && (
+                        <span class="text-foreground text-3xl">{price}</span>
+                      )}
+                      {unit && (
+                        <span class="text-muted-foreground ml-1.5 text-base">
+                          {unit}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  {list && list.length > 0 && (
+                    <List class="not-first:mt-4">
+                      {list?.map((item) => (
+                        <ListItem>{item}</ListItem>
+                      ))}
+                    </List>
+                  )}
+                  <div class="mt-auto pt-4">
+                    <Button class="w-full" size={size} {...button} />
+                  </div>
+                </TileContent>
+              </Tile>
+            )
+          )}
+        </div>
+      )
+    }
+  </SectionContent>
 </Section>

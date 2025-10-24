@@ -1,9 +1,11 @@
 ---
 import type { HTMLAttributes } from "astro/types"
 
+import { cn } from "@/lib/utils"
+
 interface Props extends Omit<HTMLAttributes<"div">, "href"> {
   href?: HTMLAttributes<"a">["href"]
-  name?: string
+  name?: string | number
 }
 
 const { class: className, name, href, ...rest } = Astro.props
@@ -69,4 +71,18 @@ const module = icon ? ((await icon()) as any) : undefined
 const Comp = module?.default
 ---
 
-{Comp && <Comp class={className} {...rest} />}
+{
+  Comp ? (
+    <Comp class={className} {...rest} />
+  ) : (
+    <div
+      class={cn(
+        "flex size-6 items-center justify-center text-[100%]",
+        className
+      )}
+      {...rest}
+    >
+      {name}
+    </div>
+  )
+}
