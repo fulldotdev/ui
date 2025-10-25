@@ -10,12 +10,17 @@ interface Props
 
 const variants = cva("relative flex flex-col mx-auto", {
   variants: {
-    variant: {
+    frame: {
       default: "w-full max-w-none",
       float: [
         "bg-card border rounded-xl my-16 overflow-hidden max-w-screen-xl",
         "w-[calc(100%-16px)] md:w-[calc(100%-48px)] xl:w-[calc(100%-128px)]",
       ],
+    },
+    variant: {
+      default: "bg-transparent",
+      outline: "border-border",
+      muted: "bg-muted/50",
     },
     align: {
       start: "items-start",
@@ -29,12 +34,13 @@ const variants = cva("relative flex flex-col mx-auto", {
   },
   defaultVariants: {
     variant: "default",
+    frame: "default",
     align: "start",
     order: "default",
   },
 })
 
-const { class: className, variant, align, order, ...props } = Astro.props
+const { class: className, frame, variant, align, order, ...props } = Astro.props
 
 const slot = await Astro.slots.render("default")
 ---
@@ -42,10 +48,10 @@ const slot = await Astro.slots.render("default")
 {
   slot.trim().length > 0 && (
     <section
-      class={cn(variants({ variant, align, order }), className)}
+      class={cn(variants({ frame, variant, align, order }), className)}
       {...props}
       style={{
-        "--section-gutter": variant === "float" ? "8px" : "0px",
+        "--section-gutter": frame === "float" ? "8px" : "0px",
       }}
     >
       <Fragment set:html={slot} />
