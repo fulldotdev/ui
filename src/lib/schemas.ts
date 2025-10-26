@@ -25,6 +25,13 @@ const image = z
   .partial()
   .strict()
 
+const logo = image
+  .extend({
+    href: z.string(),
+  })
+  .partial()
+  .strict()
+
 const form = z
   .object({
     action: z.string(),
@@ -92,6 +99,7 @@ const section = z
     image: image,
     form: form,
     socials: z.string().array(),
+    item: item,
     items: items,
   })
   .partial()
@@ -136,7 +144,7 @@ const header = z
     block: z.string(), // Block variant: "header-1", "header-2", "header-3"
     align: z.enum(["start", "center", "end"]),
     variant: z.enum(["default", "outline", "muted"]),
-    logo: image,
+    logo: logo,
     buttons: button.array(),
     socials: z.string().array(),
     menus: menu.array(),
@@ -147,10 +155,11 @@ const header = z
 const footer = z
   .object({
     block: z.string(), // Block variant: "footer-1", "footer-2", "footer-3"
-    logo: image,
+    logo: logo,
     description: z.string(),
     channels: link.array(), // Contact channels: email, phone, address
     socials: z.string().array(), // Social media URLs
+    links: link.array(), // Links
     menus: menu.array(), // Site navigation menu columns
     policies: link.array(), // Legal policy links
     copyright: z.string(),

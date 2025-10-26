@@ -2,8 +2,16 @@
 import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Image } from "@/components/ui/image"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+} from "@/components/ui/item"
+import { Rating } from "@/components/ui/rating"
 import {
   Section,
   SectionActions,
@@ -16,6 +24,11 @@ interface Props extends ComponentProps<typeof Section> {
   size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
   image?: ComponentProps<typeof Image>
+  item?: {
+    avatars?: ComponentProps<typeof Avatar>[]
+    rating?: ComponentProps<typeof Rating>["rating"]
+    text?: string
+  }
 }
 
 const {
@@ -25,6 +38,7 @@ const {
   size,
   buttons,
   image,
+  item,
   ...props
 } = Astro.props
 ---
@@ -32,7 +46,22 @@ const {
 <Section class={cn("", className)} {...props}>
   <SectionContent align={align} order={order}>
     <SectionGroup align={align}>
-      <Typography align={align} size={size}>
+      <Item>
+        <ItemMedia>
+          {
+            item?.avatars?.map((avatar) => (
+              <Avatar>
+                <AvatarImage {...avatar} />
+              </Avatar>
+            ))
+          }
+        </ItemMedia>
+        <ItemContent>
+          <Rating rating={item?.rating} />
+          <ItemDescription>{item?.text}</ItemDescription>
+        </ItemContent>
+      </Item>
+      <Typography class="text-balance" align={align} size={size}>
         <slot />
       </Typography>
       <SectionActions align={align}>

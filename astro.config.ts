@@ -1,42 +1,25 @@
 // import netlify from "@astrojs/netlify"
+import mdx from "@astrojs/mdx"
 import sitemap from "@astrojs/sitemap"
+import starlight from "@astrojs/starlight"
 import tailwindcss from "@tailwindcss/vite"
 import favicons from "astro-favicons"
+import liveCode from "astro-live-code"
 import robotsTxt from "astro-robots-txt"
 import { defineConfig, envField, fontProviders } from "astro/config"
 
 export default defineConfig({
   output: "static",
   site: "https://ui.full.dev",
-  env: {
-    schema: {
-      GITHUB_OWNER: envField.string({
-        context: "server",
-        access: "public",
-      }),
-      GITHUB_REPO: envField.string({
-        context: "server",
-        access: "public",
-      }),
-      GITHUB_BRANCH: envField.string({
-        context: "server",
-        access: "public",
-      }),
-      GITHUB_TOKEN: envField.string({
-        context: "server",
-        access: "secret",
-      }),
-    },
-  },
-  i18n: {
-    defaultLocale: "en",
-    locales: ["en"],
-    routing: {
-      prefixDefaultLocale: false,
-      redirectToDefaultLocale: false,
-      fallbackType: "redirect",
-    },
-  },
+  // i18n: {
+  //   defaultLocale: "en",
+  //   locales: ["en"],
+  //   routing: {
+  //     prefixDefaultLocale: false,
+  //     redirectToDefaultLocale: false,
+  //     fallbackType: "redirect",
+  //   },
+  // },
   image: {
     responsiveStyles: true,
     breakpoints: [320, 768, 1024, 1280, 1536, 1920],
@@ -100,6 +83,58 @@ export default defineConfig({
       name: "fulldev/ui",
       short_name: "fulldev/ui",
     }),
+    // liveCode({}),
+    starlight({
+      title: "fulldev/ui",
+      description:
+        "The Astro UI component and block library for content-driven websites.",
+      sidebar: [
+        {
+          label: "Get started",
+          items: [
+            "docs",
+            "docs/installation",
+            "docs/theming",
+            "docs/components",
+            {
+              label: "Blocks",
+              link: "/blocks/",
+            },
+            {
+              label: "About",
+              link: "/about/",
+            },
+          ],
+        },
+        {
+          label: "Components",
+          autogenerate: { directory: "docs/components" },
+        },
+      ],
+      social: [
+        {
+          icon: "discord",
+          label: "Discord",
+          href: "https://discord.gg/vXZqMbadm8",
+        },
+        {
+          icon: "github",
+          label: "GitHub",
+          href: "https://github.com/fulldotdev/ui",
+        },
+        {
+          icon: "x.com",
+          label: "X",
+          href: "https://x.com/silveltm",
+        },
+      ],
+      customCss: [
+        "./src/styles/globals.css",
+        "@fontsource/geist/400.css",
+        "@fontsource/geist/600.css",
+      ],
+    }),
+    mdx(),
   ],
   vite: {
     plugins: [tailwindcss()],

@@ -1,52 +1,21 @@
 ---
-title: sdfsdfwfeasdfawefasdfwefasdf
-description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-  eiusmod tempor incididunt ut labore et dolore magna aliqua.
-image:
-  src: placeholder.webp
-  alt: Home
 sections:
-  - block: reviews-2
-    html: <h2>Articles</h2><p></p>
-    items:
-      - about
-  # - block: features-1
-  #   html: <h2>Features thwfeis a cool section!!!</h2><p></p>
-  #   buttons:
-  #     - href: /about/
-  #       text: About
-  #     - href: /contact/
-  #       text: Contact
-  #   items:
-  #     - icon: check
-  #       title: Lorem ipsum
-  #       description:
-  #         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-  #         eiusmod tempor incididunt ut labore et dolore magna aliqua.
-  #     - icon: check
-  #       title: Lorem ipsum
-  #       description:
-  #         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-  #         eiusmod tempor incididunt ut labore et dolore magna aliqua.
-  #     - title: Lorem ipsum
-  #       description:
-  #         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-  #         eiusmod tempor incididunt ut labore et dolore magna aliqua.
-  # - block: faqs-1
-  #   html: <h2>FAQs</h2><p></p>
-  #   items:
-  #     - title: What services do you offer?
-  #       description:
-  #         We offer a wide range of services including consulting, development, and
-  #         support.
-  #     - title: How can I contact support?
-  #       description:
-  #         You can reach our support team via email at support@example.com or phone
-  #         at (555) 123-4567.
-  #     - title: What are your business hours?
-  #       description: We are open Monday through Friday from 9 AM to 6 PM EST.
-  # - block: reviews-1
-  #   html: <h2>My reviews</h2><p></p>
-  #   items:
-  #     - reviews/
+  - block: cta-1
+    align: center
+    size: lg
+    html: |
+      <p>Built with ❤️ for Astro</p>
+      <h1>The Astro UI component and block library for content-driven websites</h1>
+      <p>Built to integrate with the <strong>Astro</strong> <i>and</i> <strong>Shadcn/ui</strong> ecosystem. Think of Astro <strong>content-collections</strong> and Shadcn/ui styling defaults and customizations.</p>
+    buttons:
+      - text: Get Started
+        href: /docs/installation/
+      - text: GitHub
+        href: https://github.com/fulldotdev/ui
+seo:
+  title: The Astro UI component and block library for content-driven websites - fulldev/ui
+  description: FullDev UI is a complete Astro component library with ready-to-use UI components and blocks. Build content-driven websites faster with our Astro UI components library designed for developers.
+  image:
+    src: placeholder.webp
+    alt: Home
 ---
