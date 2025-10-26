@@ -80,7 +80,7 @@ import { Button } from "@/components/ui/button"
     <title>Astro + fulldev/ui</title>
   </head>
   <body>
-    <div className="grid h-screen place-items-center content-center">
+    <div class="grid h-screen place-items-center content-center">
       <Button>Button</Button>
     </div>
   </body>

@@ -124,7 +124,9 @@ export default defineConfig({
         "@fontsource/geist/600.css",
       ],
     }),
-    liveCode({}),
+    liveCode({
+      layout: "./src/components/live-code-layout.astro",
+    }),
     mdx(),
   ],
   vite: {
