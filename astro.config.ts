@@ -27,6 +27,9 @@ export default defineConfig({
   prefetch: {
     prefetchAll: true,
   },
+  devToolbar: {
+    enabled: false,
+  },
   experimental: {
     liveContentCollections: true,
     fonts: [
@@ -83,7 +86,6 @@ export default defineConfig({
       name: "fulldev/ui",
       short_name: "fulldev/ui",
     }),
-    // liveCode({}),
     starlight({
       title: "fulldev/ui",
       description:
@@ -91,20 +93,7 @@ export default defineConfig({
       sidebar: [
         {
           label: "Get started",
-          items: [
-            "docs",
-            "docs/installation",
-            "docs/theming",
-            "docs/components",
-            {
-              label: "Blocks",
-              link: "/blocks/",
-            },
-            {
-              label: "About",
-              link: "/about/",
-            },
-          ],
+          items: ["docs", "docs/installation", "docs/theming"],
         },
         {
           label: "Components",
@@ -131,9 +120,11 @@ export default defineConfig({
       customCss: [
         "./src/styles/globals.css",
         "@fontsource/geist/400.css",
+        "@fontsource/geist/500.css",
         "@fontsource/geist/600.css",
       ],
     }),
+    liveCode({}),
     mdx(),
   ],
   vite: {
