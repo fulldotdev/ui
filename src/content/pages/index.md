@@ -6,7 +6,7 @@ sections:
     html: |
       <p>Built with ❤️ for Astro</p>
       <h1>The Astro UI component and block library for content-driven websites</h1>
-      <p>Built to integrate with the <strong>Astro</strong> <i>and</i> <strong>Shadcn/ui</strong> ecosystem. Think of Astro <strong>content-collections</strong> and Shadcn/ui styling defaults and customizations.</p>
+      <p>Built to integrate with the <strong>Astro</strong> and <strong>Shadcn/ui</strong> ecosystem. Think of Astro <strong>content-collections</strong> and Shadcn/ui styling defaults and customizations.</p>
     buttons:
       - text: Get Started
         href: /docs/installation/
