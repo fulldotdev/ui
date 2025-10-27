@@ -1,5 +1,5 @@
-// import netlify from "@astrojs/netlify"
 import mdx from "@astrojs/mdx"
+import netlify from "@astrojs/netlify"
 import sitemap from "@astrojs/sitemap"
 import starlight from "@astrojs/starlight"
 import tailwindcss from "@tailwindcss/vite"
@@ -125,7 +125,7 @@ export default defineConfig({
       ],
     }),
     liveCode({
-      layout: "./src/components/live-code-layout.astro",
+      layout: "/src/components/live-code-layout.astro",
     }),
     mdx(),
   ],
@@ -135,5 +135,5 @@ export default defineConfig({
     //   allowedHosts: ["devserver-cms-2--fulldev-cms.netlify.app"],
     // },
   },
-  // adapter: netlify(),
+  adapter: netlify(),
 })
