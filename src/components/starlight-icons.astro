@@ -1,0 +1,41 @@
+---
+import { getEntry } from "astro:content"
+
+import { Button } from "@/components/ui/button"
+import { HeaderActions } from "@/components/ui/header"
+import { Icon } from "@/components/ui/icon"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
+import { ModeToggle } from "@/components/ui/mode-toggle"
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu"
+
+const layout = await getEntry("layouts", "index")
+
+const socials = layout?.data?.header?.socials
+const buttons = layout?.data?.header?.buttons
+---
+
+<HeaderActions>
+  {
+    socials?.map((social) => (
+      <Button variant="ghost" size="icon" href={social} target="_blank">
+        <Icon href={social} />
+      </Button>
+    ))
+  }
+  {
+    buttons?.map((button, i) => (
+      <Button
+        variant={i === buttons.length - 1 ? "default" : "ghost"}
+        {...button}
+      />
+    ))
+  }
+  <ModeToggle />
+</HeaderActions>

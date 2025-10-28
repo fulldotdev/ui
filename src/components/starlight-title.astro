@@ -1,0 +1,36 @@
+---
+import { getEntry } from "astro:content"
+
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu"
+
+const layout = await getEntry("layouts", "index")
+
+const logo = layout?.data?.header?.logo
+const menus = layout?.data?.header?.menus
+---
+
+<div class="flex items-center gap-8">
+  <Logo href="/">
+    <LogoImage src={logo?.src} alt={logo?.alt} />
+    <LogoText>{logo?.title}</LogoText>
+  </Logo>
+  <NavigationMenu class="mr-auto max-lg:hidden">
+    <NavigationMenuList>
+      {
+        menus?.map((menu) => (
+          <NavigationMenuLink variant="trigger" href={menu.href}>
+            {menu.text}
+          </NavigationMenuLink>
+        ))
+      }
+    </NavigationMenuList>
+  </NavigationMenu>
+</div>

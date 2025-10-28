@@ -100,23 +100,6 @@ export default defineConfig({
           autogenerate: { directory: "docs/components" },
         },
       ],
-      social: [
-        {
-          icon: "discord",
-          label: "Discord",
-          href: "https://discord.gg/vXZqMbadm8",
-        },
-        {
-          icon: "github",
-          label: "GitHub",
-          href: "https://github.com/fulldotdev/ui",
-        },
-        {
-          icon: "x.com",
-          label: "X",
-          href: "https://x.com/silveltm",
-        },
-      ],
       customCss: [
         "./src/styles/globals.css",
         "@fontsource/geist/400.css",
@@ -124,7 +107,10 @@ export default defineConfig({
         "@fontsource/geist/600.css",
       ],
       components: {
-        ThemeSelect: "/src/components/ui/mode-toggle/mode-toggle.astro",
+        SiteTitle: "/src/components/starlight-title.astro",
+        ThemeSelect: "/src/components/starlight-icons.astro",
+        ThemeProvider:
+          "/src/components/ui/mode-toggle/mode-toggle-provider.astro",
       },
     }),
     liveCode({
