@@ -123,6 +123,9 @@ export default defineConfig({
         "@fontsource/geist/500.css",
         "@fontsource/geist/600.css",
       ],
+      components: {
+        ThemeSelect: "/src/components/ui/mode-toggle/mode-toggle.astro",
+      },
     }),
     liveCode({
       layout: "/src/components/live-code-layout.astro",
