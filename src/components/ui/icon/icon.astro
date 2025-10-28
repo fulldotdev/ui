@@ -1,18 +1,16 @@
 ---
 import type { HTMLAttributes } from "astro/types"
 
-import { cn } from "@/lib/utils"
-
-interface Props extends Omit<HTMLAttributes<"div">, "href"> {
+interface Props extends Omit<HTMLAttributes<"svg">, "name" | "href"> {
   href?: HTMLAttributes<"a">["href"]
   name?: string | number
 }
 
 const { class: className, name, href, ...rest } = Astro.props
 
-const iconNameMap = {
+const hrefMap = {
   "x.com": "x",
-  twitter: "x",
+  twitter: "twitter",
   facebook: "facebook",
   instagram: "instagram",
   pinterest: "pinterest",
@@ -44,45 +42,31 @@ const icons = import.meta.glob([
   "node_modules/simple-icons/icons/*.svg",
 ])
 
-// Determine the icon name to use
-let finalIconName = name
-
-// If no name is provided but href is, check the href map
-if (!name && href) {
-  const platform = Object.keys(iconNameMap).find((key) => {
-    return href.toString().includes(key)
-  })
-
-  finalIconName = platform
-    ? (iconNameMap[platform as keyof typeof iconNameMap] ?? "link")
-    : "link"
+// Get the right path from the icons glob
+const foundPath = () => {
+  let foundPath: string | undefined = undefined
+  // For x.com, we use the simple-icons X instead of the lucide-static X, since they overlap
+  if (name === "x.com") {
+    foundPath = "/node_modules/simple-icons/icons/x.svg"
+  } else if (href) {
+    const hrefKey =
+      Object.keys(hrefMap).find((key) => href.toString().includes(key)) || name
+    const hrefValue = hrefMap[hrefKey as keyof typeof hrefMap]
+    const foundPath = Object.keys(icons)
+      // If href, reverse so that simple-icons takes precedence
+      .reverse()
+      .find((key) => key.includes(`/${hrefValue}.svg`))
+    return foundPath
+  } else {
+    foundPath = Object.keys(icons).find((key) => key.includes(`/${name}.svg`))
+  }
+  // Else return the found path with lucide-icons taking precedence
+  return foundPath
 }
 
-// Find the icon path, prioritizing lucide when checking href
-const path = Object.keys(icons)
-  .reverse()
-  .find((key) => {
-    return key.includes(`/${finalIconName}.svg`)
-  })
-
-const icon = path ? icons[path] : undefined
-
-const module = icon ? ((await icon()) as any) : undefined
+const foundModule = foundPath() && icons[foundPath() as keyof typeof icons]
+const module = foundModule && ((await foundModule()) as any)
 const Comp = module?.default
 ---
 
-{
-  Comp ? (
-    <Comp class={cn("color-inherit inline-flex", className)} {...rest} />
-  ) : (
-    <div
-      class={cn(
-        "inline-flex size-6 items-center justify-center text-[100%]",
-        className
-      )}
-      {...rest}
-    >
-      {name}
-    </div>
-  )
-}
+{Comp && <Comp height={24} width={24} {...rest} />}
