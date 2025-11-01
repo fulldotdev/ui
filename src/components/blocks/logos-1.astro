@@ -3,11 +3,12 @@ import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Image } from "@/components/ui/image"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
 import {
   Section,
   SectionActions,
   SectionContent,
+  SectionGrid,
   SectionGroup,
 } from "@/components/ui/section"
 import { Typography } from "@/components/ui/typography"
@@ -15,7 +16,11 @@ import { Typography } from "@/components/ui/typography"
 interface Props extends ComponentProps<typeof Section> {
   size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
-  image?: ComponentProps<typeof Image>
+  logos?: {
+    src?: string
+    alt?: string
+    title?: string
+  }[]
 }
 
 const {
@@ -24,7 +29,7 @@ const {
   order,
   size,
   buttons,
-  image,
+  logos,
   ...props
 } = Astro.props
 ---
@@ -47,6 +52,15 @@ const {
         }
       </SectionActions>
     </SectionGroup>
-    <Image class="rounded-lg" {...image} />
+    <SectionGrid class="flex flex-wrap justify-between gap-8">
+      {
+        logos?.map(({ src, alt, title }, i) => (
+          <Logo href="/">
+            <LogoImage src={src} alt={alt} />
+            <LogoText>{title}</LogoText>
+          </Logo>
+        ))
+      }
+    </SectionGrid>
   </SectionContent>
 </Section>

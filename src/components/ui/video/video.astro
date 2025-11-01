@@ -1,0 +1,27 @@
+---
+import { Vimeo } from "@astro-community/astro-embed-vimeo"
+import { YouTube } from "@astro-community/astro-embed-youtube"
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends Omit<HTMLAttributes<"div">, "src"> {
+  src?: string
+}
+
+const { class: className, src, ...props } = Astro.props
+---
+
+{
+  src?.includes("youtube.com/watch") && (
+    <iframe
+      src={
+        src.replace("youtube.com/watch?v=", "youtube.com/embed/").split("&")[0]
+      }
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen
+      class={cn("aspect-[16/9] h-auto w-full", className)}
+      {...props}
+    />
+  )
+}

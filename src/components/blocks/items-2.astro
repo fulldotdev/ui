@@ -6,29 +6,32 @@ import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { Image } from "@/components/ui/image"
 import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
+import {
   Section,
   SectionActions,
   SectionContent,
   SectionGrid,
   SectionGroup,
+  SectionSpread,
 } from "@/components/ui/section"
-import {
-  Tile,
-  TileContent,
-  TileMedia,
-  TileTypography,
-} from "@/components/ui/tile"
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
   size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
   items?: {
+    href?: string
     title?: string
     description?: string
-    icon?: string
-    button?: ComponentProps<typeof Button>
     image?: ComponentProps<typeof Image>
+    icon?: string
   }[]
 }
 
@@ -44,12 +47,12 @@ const {
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContent align={align} order={order}>
-    <SectionGroup align={align}>
-      <Typography size={size} align={align}>
+  <SectionContent order={order}>
+    <SectionSpread>
+      <Typography size={size}>
         <slot />
       </Typography>
-      <SectionActions align={align}>
+      <SectionActions>
         {
           buttons?.map((button, i) => (
             <Button
@@ -60,24 +63,22 @@ const {
           ))
         }
       </SectionActions>
-    </SectionGroup>
-    <SectionGrid class="gap-x-16 gap-y-8">
+    </SectionSpread>
+    <SectionGrid class="gap-4">
       {
-        items?.map(({ title, description, icon, button, image }) => (
-          <Tile>
-            <TileContent class="p-0" align={align}>
-              <TileMedia variant="icon">
-                <Icon class="bg-accent size-9 rounded-full p-2" name={icon} />
-              </TileMedia>
-              <TileTypography
-                align={align}
-                size={size}
-                title={title}
-                description={description}
-              />
-              <Button class="px-0" variant="link" size={size} {...button} />
-            </TileContent>
-          </Tile>
+        items?.map(({ title, description, href, icon }) => (
+          <Item href={href} variant="muted">
+            <ItemMedia variant="icon">
+              <Icon name={icon} />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>{title}</ItemTitle>
+              <ItemDescription>{description}</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Icon name="chevron-right" class="size-4" />
+            </ItemActions>
+          </Item>
         ))
       }
     </SectionGrid>

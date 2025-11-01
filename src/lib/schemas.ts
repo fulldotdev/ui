@@ -11,7 +11,7 @@ const link = z
 
 const button = link
   .extend({
-    variant: z.enum(["default", "outline", "secondary"]),
+    variant: z.enum(["default", "outline", "secondary", "ghost", "link"]),
   })
   .partial()
   .strict()
@@ -34,6 +34,7 @@ const logo = image
 
 const form = z
   .object({
+    inbox: z.string(),
     action: z.string(),
     fields: z.array(
       z
@@ -43,6 +44,8 @@ const form = z
           label: z.string(),
           placeholder: z.string(),
           required: z.boolean(),
+          options: z.array(z.string()),
+          value: z.string(),
         })
         .partial()
         .strict()
@@ -67,14 +70,17 @@ const item = z
     href: z.string(),
     image: image,
     icon: z.string(),
-    title: z.string(),
+    name: z.string(),
     tagline: z.string(),
+    title: z.string(),
     description: z.string(),
     rating: rating,
     list: z.string().array(),
     button: button,
     price: z.string(),
     unit: z.string(),
+    avatar: image,
+    avatars: image.array(),
   })
   .partial()
   .strict()
@@ -94,8 +100,11 @@ const section = z
     align: z.enum(["start", "center", "end"]),
     size: z.enum(["sm", "default", "lg"]),
     variant: z.enum(["default", "outline", "muted"]),
+    order: z.enum(["default", "reverse"]),
+    frame: z.enum(["default", "float", "inset"]),
     html: z.string(),
     buttons: button.array(),
+    logos: logo.array(),
     image: image,
     form: form,
     socials: z.string().array(),
@@ -113,6 +122,7 @@ const page = z
     align: z.enum(["start", "center", "end"]),
     size: z.enum(["sm", "default", "lg"]),
     variant: z.enum(["default", "outline", "muted"]),
+    frame: z.enum(["default", "float", "inset"]),
     href: z.string(),
     title: z.string(),
     tagline: z.string(),
@@ -155,6 +165,7 @@ const header = z
 const footer = z
   .object({
     block: z.string(), // Block variant: "footer-1", "footer-2", "footer-3"
+    variant: z.enum(["default", "outline", "muted"]),
     logo: logo,
     description: z.string(),
     channels: link.array(), // Contact channels: email, phone, address
@@ -196,7 +207,7 @@ const layout = z
   .strict()
 
 // exports are used in astro content collections. See src/content.config.ts
-export { page, layout }
+export { page, layout, header, footer, banner, section }
 
 // Export for dynamic block rendering in src/components/block.astro
 export type BlockSchema =

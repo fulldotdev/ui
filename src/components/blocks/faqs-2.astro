@@ -2,8 +2,13 @@
 import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
-import { Image } from "@/components/ui/image"
 import {
   Section,
   SectionActions,
@@ -16,7 +21,10 @@ import { Typography } from "@/components/ui/typography"
 interface Props extends ComponentProps<typeof Section> {
   size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
-  image?: ComponentProps<typeof Image>
+  items?: {
+    title?: string
+    description?: string
+  }[]
 }
 
 const {
@@ -25,16 +33,16 @@ const {
   order,
   size,
   buttons,
-  image,
+  items,
   ...props
 } = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContent>
-    <SectionSplit align={align} order={order}>
-      <SectionGroup>
-        <Typography size={size}>
+  <SectionContent order={order}>
+    <SectionSplit align={align}>
+      <SectionGroup class="lg:col-span-2">
+        <Typography size={size} align={align}>
           <slot />
         </Typography>
         <SectionActions>
@@ -49,7 +57,18 @@ const {
           }
         </SectionActions>
       </SectionGroup>
-      <Image class="rounded-lg" {...image} />
+      {
+        items && items.length > 0 && (
+          <Accordion class="lg:col-span-3">
+            {items?.map(({ title, description }) => (
+              <AccordionItem>
+                <AccordionTrigger>{title}</AccordionTrigger>
+                <AccordionContent>{description}</AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        )
+      }
     </SectionSplit>
   </SectionContent>
 </Section>

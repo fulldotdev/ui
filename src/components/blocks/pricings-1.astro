@@ -9,6 +9,7 @@ import {
   Section,
   SectionActions,
   SectionContent,
+  SectionGrid,
   SectionGroup,
 } from "@/components/ui/section"
 import {
@@ -54,57 +55,35 @@ const { class: className, align, size, buttons, items, ...props } = Astro.props
         }
       </SectionActions>
     </SectionGroup>
-    {
-      items && items.length > 0 && (
-        <div class="flex flex-col items-stretch gap-6 md:flex-row">
-          {items?.map(
-            ({ title, description, icon, button, list, price, unit }) => (
-              <Tile
-                class="min-w-4xs basis-4xs flex max-w-md flex-col justify-start text-left"
-                variant="outline"
-              >
-                <TileContent class="flex h-full flex-col">
-                  {icon && (
-                    <div class="mb-3">
-                      <Icon name={icon} />
-                    </div>
+    <SectionGrid class="gap-6">
+      {
+        items?.map(({ title, description, button, list, price, unit }) => (
+          <Tile variant="accent">
+            <TileContent>
+              <TileTitle>{title}</TileTitle>
+              <TileDescription>{description}</TileDescription>
+              {(price || unit) && (
+                <div class="font-semibold">
+                  {price && (
+                    <span class="text-foreground text-2xl">{price}</span>
                   )}
-                  {title && (
-                    <TileTitle class="not-first:mt-3">{title}</TileTitle>
+                  {unit && (
+                    <span class="text-muted-foreground ml-1.5 text-sm font-normal">
+                      / {unit}
+                    </span>
                   )}
-                  {description && (
-                    <TileDescription class="text-muted-foreground text-base not-first:mt-2">
-                      {description}
-                    </TileDescription>
-                  )}
-                  {(price || unit) && (
-                    <div class="font-semibold not-first:mt-4">
-                      {price && (
-                        <span class="text-foreground text-3xl">{price}</span>
-                      )}
-                      {unit && (
-                        <span class="text-muted-foreground ml-1.5 text-base">
-                          {unit}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                  {list && list.length > 0 && (
-                    <List class="not-first:mt-4">
-                      {list?.map((item) => (
-                        <ListItem>{item}</ListItem>
-                      ))}
-                    </List>
-                  )}
-                  <div class="mt-auto pt-4">
-                    <Button class="w-full" size={size} {...button} />
-                  </div>
-                </TileContent>
-              </Tile>
-            )
-          )}
-        </div>
-      )
-    }
+                </div>
+              )}
+              <List>
+                {list?.map((item) => (
+                  <ListItem>{item}</ListItem>
+                ))}
+              </List>
+              <Button class="mt-auto w-full" size={size} {...button} />
+            </TileContent>
+          </Tile>
+        ))
+      }
+    </SectionGrid>
   </SectionContent>
 </Section>

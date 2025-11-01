@@ -124,5 +124,5 @@ export default defineConfig({
     //   allowedHosts: ["devserver-cms-2--fulldev-cms.netlify.app"],
     // },
   },
-  adapter: netlify(),
+  // adapter: netlify(),
 })

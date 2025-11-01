@@ -3,19 +3,31 @@ import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Image } from "@/components/ui/image"
+import { Icon } from "@/components/ui/icon"
 import {
   Section,
   SectionActions,
   SectionContent,
+  SectionGrid,
   SectionGroup,
 } from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileMedia,
+  TileTitle,
+} from "@/components/ui/tile"
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
   size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
-  image?: ComponentProps<typeof Image>
+  items?: {
+    title?: string
+    description?: string
+    icon?: string
+  }[]
 }
 
 const {
@@ -24,7 +36,7 @@ const {
   order,
   size,
   buttons,
-  image,
+  items,
   ...props
 } = Astro.props
 ---
@@ -47,6 +59,18 @@ const {
         }
       </SectionActions>
     </SectionGroup>
-    <Image class="rounded-lg" {...image} />
+    <SectionGrid class="gap-x-16 gap-y-8">
+      {
+        items?.map(({ title, description, icon }) => (
+          <Tile class="items-start">
+            <TileContent class="p-0">
+              <Icon class="text-primary" name={icon} />
+              <TileTitle class="text-2xl">{title}</TileTitle>
+              <TileDescription>{description}</TileDescription>
+            </TileContent>
+          </Tile>
+        ))
+      }
+    </SectionGrid>
   </SectionContent>
 </Section>

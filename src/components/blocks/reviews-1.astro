@@ -2,7 +2,15 @@
 import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
 import { Rating } from "@/components/ui/rating"
 import {
   Section,
@@ -23,11 +31,13 @@ interface Props extends ComponentProps<typeof Section> {
   size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
   items?: {
+    name?: string
     title?: string
     description?: string
     rating?: number
-    tagline?: string
     href?: string
+    avatar?: ComponentProps<typeof Avatar>
+    tagline?: string
   }[]
 }
 
@@ -54,15 +64,30 @@ const { class: className, align, size, buttons, items, ...props } = Astro.props
     </SectionGroup>
     <SectionMasonry>
       {
-        items?.map(({ title, description, rating, href }) => (
-          <Tile href={href} variant="outline">
-            <TileContent>
-              <Rating rating={rating} />
-              <TileTitle>{title}</TileTitle>
-              <TileDescription>{description}</TileDescription>
-            </TileContent>
-          </Tile>
-        ))
+        items?.map(
+          ({ title, description, rating, href, avatar, name, tagline }) => (
+            <Tile href={href} variant="outline">
+              <TileContent>
+                <Item class="items-center p-0">
+                  <ItemMedia class="-space-x-4">
+                    <Avatar class="ring-background size-10 ring-2">
+                      <AvatarImage {...avatar} />
+                    </Avatar>
+                  </ItemMedia>
+                  <ItemContent class="gap-1.5">
+                    <ItemTitle>{name}</ItemTitle>
+                    <ItemDescription class="leading-none">
+                      {tagline}
+                    </ItemDescription>
+                  </ItemContent>
+                </Item>
+                <Rating rating={rating} />
+                <TileTitle>{title}</TileTitle>
+                <TileDescription>{description}</TileDescription>
+              </TileContent>
+            </Tile>
+          )
+        )
       }
     </SectionMasonry>
   </SectionContent>

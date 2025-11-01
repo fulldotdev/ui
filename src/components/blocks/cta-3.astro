@@ -2,8 +2,16 @@
 import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Image } from "@/components/ui/image"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+} from "@/components/ui/item"
+import { Rating } from "@/components/ui/rating"
 import {
   Section,
   SectionActions,
@@ -16,21 +24,26 @@ interface Props extends ComponentProps<typeof Section> {
   size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
   image?: ComponentProps<typeof Image>
+  item?: {
+    avatars?: ComponentProps<typeof Avatar>[]
+    rating?: ComponentProps<typeof Rating>["rating"]
+    description?: string
+  }
 }
 
 const {
   class: className,
   align,
-  order,
   size,
   buttons,
   image,
+  item,
   ...props
 } = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContent align={align} order={order}>
+  <SectionContent align={align}>
     <SectionGroup align={align}>
       <Typography align={align} size={size}>
         <slot />
@@ -46,10 +59,27 @@ const {
           ))
         }
       </SectionActions>
+      <Item class="items-center p-0">
+        <ItemMedia class="-space-x-4">
+          {
+            item?.avatars?.map((avatar) => (
+              <Avatar class="ring-background size-10 ring-2">
+                <AvatarImage {...avatar} />
+              </Avatar>
+            ))
+          }
+        </ItemMedia>
+        <ItemContent class="gap-1.5">
+          <Rating rating={item?.rating} />
+          <ItemDescription class="leading-none">
+            {item?.description}
+          </ItemDescription>
+        </ItemContent>
+      </Item>
     </SectionGroup>
   </SectionContent>
   <Image
-    class="mx-auto max-h-[80vh] max-w-screen-2xl object-cover"
+    class="mx-auto max-h-[80vh] max-w-screen-2xl object-cover 2xl:rounded-lg"
     {...image}
   />
 </Section>

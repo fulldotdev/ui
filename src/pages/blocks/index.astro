@@ -1,0 +1,60 @@
+---
+import { getEntry } from "astro:content"
+
+import { Badge } from "@/components/ui/badge"
+import { Header, HeaderContent } from "@/components/ui/header"
+import { Input } from "@/components/ui/input"
+import Layout from "@/components/layout.astro"
+
+const indexBlock = await getEntry("blocks", "index")
+
+const allBlocks = import.meta.glob("src/components/blocks/**/*.astro", {
+  eager: true,
+})
+---
+
+<Layout>
+  <Header class="sticky top-15 z-20">
+    <HeaderContent class="max-w-lg">
+      <Input id="search" type="text" placeholder="Search" />
+    </HeaderContent>
+  </Header>
+  {
+    Object.entries(allBlocks).map(([path, block]: [string, any], i) => {
+      const id = path.split("/").pop()?.split(".")[0]
+      const BlockComponent = block.default
+      return BlockComponent ? (
+        <div id={id} class="block-preview relative flex flex-col items-center">
+          <Badge class="mx-auto my-2 flex" href={`/blocks/${id}/`}>
+            {path.split("/").pop()?.split(".")[0]}
+          </Badge>
+          <BlockComponent {...indexBlock?.data}>
+            <Fragment set:html={indexBlock?.data?.html} />
+          </BlockComponent>
+        </div>
+      ) : null
+    })
+  }
+</Layout>
+
+<script>
+  const searchInput = document.getElementById("search") as HTMLInputElement
+
+  function filterBlocks(query: string) {
+    const blocks = document.querySelectorAll(".block-preview")
+    const searchQuery = query.toLowerCase()
+
+    blocks.forEach((block) => {
+      const blockId = (block as HTMLElement).id.toLowerCase()
+      const isMatch = blockId.includes(searchQuery)
+      ;(block as HTMLElement).style.display = isMatch ? "block" : "none"
+    })
+  }
+
+  searchInput?.addEventListener("input", (e) => {
+    const query = (e.target as HTMLInputElement).value
+    filterBlocks(query)
+  })
+
+  filterBlocks("")
+</script>

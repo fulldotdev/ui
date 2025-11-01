@@ -2,8 +2,16 @@
 import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Image } from "@/components/ui/image"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+} from "@/components/ui/item"
+import { Rating } from "@/components/ui/rating"
 import {
   Section,
   SectionActions,
@@ -17,6 +25,11 @@ interface Props extends ComponentProps<typeof Section> {
   size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
   image?: ComponentProps<typeof Image>
+  item?: {
+    avatars?: ComponentProps<typeof Avatar>[]
+    rating?: ComponentProps<typeof Rating>["rating"]
+    description?: string
+  }
 }
 
 const {
@@ -26,13 +39,14 @@ const {
   size,
   buttons,
   image,
+  item,
   ...props
 } = Astro.props
 ---
 
-<Section class={cn("", className)} {...props}>
-  <SectionContent>
-    <SectionSplit align={align} order={order}>
+<Section class={cn("grid", className)} {...props}>
+  <SectionContent class="lg:col-start-1 lg:row-start-1">
+    <SectionSplit class="z-10 h-full" align={align} order={order}>
       <SectionGroup>
         <Typography size={size}>
           <slot />
@@ -48,11 +62,30 @@ const {
             ))
           }
         </SectionActions>
+        <Item class="items-center p-0">
+          <ItemMedia class="-space-x-4">
+            {
+              item?.avatars?.map((avatar) => (
+                <Avatar class="ring-background size-10 ring-2">
+                  <AvatarImage {...avatar} />
+                </Avatar>
+              ))
+            }
+          </ItemMedia>
+          <ItemContent class="gap-1.5">
+            <Rating rating={item?.rating} />
+            <ItemDescription class="leading-none">
+              {item?.description}
+            </ItemDescription>
+          </ItemContent>
+        </Item>
       </SectionGroup>
     </SectionSplit>
   </SectionContent>
-  <Image
-    class="h-full lg:absolute lg:left-1/2 lg:w-1/2 lg:max-w-5xl lg:object-cover"
-    {...image}
-  />
+  <SectionSplit
+    class="mx-auto max-w-screen-2xl lg:col-start-1 lg:row-start-1"
+    order={order === "reverse" ? "default" : "reverse"}
+  >
+    <Image class="size-full object-cover 2xl:rounded-lg" {...image} />
+  </SectionSplit>
 </Section>
