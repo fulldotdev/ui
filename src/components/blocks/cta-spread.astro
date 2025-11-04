@@ -1,5 +1,4 @@
 ---
-// split - inset
 import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
@@ -18,12 +17,11 @@ import {
   SectionActions,
   SectionContent,
   SectionGroup,
-  SectionSplit,
+  SectionSpread,
 } from "@/components/ui/section"
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
-  align?: ComponentProps<typeof SectionContent>["align"]
   size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
   image?: ComponentProps<typeof Image>
@@ -46,17 +44,18 @@ const {
 } = Astro.props
 ---
 
-<Section class={cn("grid", className)} {...props}>
-  <SectionSplit align={align} order={order}>
-    <SectionContent>
+<Section class={cn("", className)} {...props}>
+  <SectionContent order={order}>
+    <SectionSpread align={align}>
+      <Typography class="text-balance" size={size}>
+        <slot />
+      </Typography>
       <SectionGroup>
-        <Typography size={size}>
-          <slot />
-        </Typography>
         <SectionActions>
           {
             buttons?.map((button, i) => (
               <Button
+                class="lg:w-full"
                 variant={i === 0 ? "default" : "outline"}
                 size={size}
                 {...button}
@@ -82,7 +81,7 @@ const {
           </ItemContent>
         </Item>
       </SectionGroup>
-    </SectionContent>
-    <Image class="size-full object-cover" {...image} />
-  </SectionSplit>
+    </SectionSpread>
+    <Image class="rounded-lg" {...image} />
+  </SectionContent>
 </Section>

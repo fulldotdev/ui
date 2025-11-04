@@ -1,5 +1,4 @@
 ---
-// stack - inset
 import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
@@ -22,7 +21,6 @@ import {
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
-  align?: ComponentProps<typeof SectionContent>["align"]
   size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
   image?: ComponentProps<typeof Image>
@@ -36,6 +34,7 @@ interface Props extends ComponentProps<typeof Section> {
 const {
   class: className,
   align,
+  order,
   size,
   buttons,
   image,
@@ -44,10 +43,14 @@ const {
 } = Astro.props
 ---
 
-<Section class={cn("", className)} {...props}>
-  <SectionContent align={align}>
+<Section class={cn("", className)} align={align} order={order} {...props}>
+  <Image
+    class="absolute inset-0 size-full object-cover opacity-25"
+    {...image}
+  />
+  <SectionContent>
     <SectionGroup align={align}>
-      <Typography align={align} size={size}>
+      <Typography class="text-balance" align={align} size={size}>
         <slot />
       </Typography>
       <SectionActions align={align}>
@@ -80,8 +83,4 @@ const {
       </Item>
     </SectionGroup>
   </SectionContent>
-  <Image
-    class="mx-auto max-h-[80vh] max-w-screen-2xl object-cover 2xl:rounded-lg"
-    {...image}
-  />
 </Section>
