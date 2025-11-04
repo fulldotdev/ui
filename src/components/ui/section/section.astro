@@ -54,11 +54,27 @@ const slot = await Astro.slots.render("default")
     <section
       class={cn(variants({ frame, variant, align, order }), className)}
       {...props}
-      style={{
-        "--section-gutter": frame === "float" ? "8px" : "0px",
-      }}
+      data-slot="section"
+      data-frame={frame}
     >
       <Fragment set:html={slot} />
     </section>
   )
 }
+
+<style is:global>
+  [data-slot="section"][data-frame="float"] {
+    --section-gutter: 16px;
+  }
+
+  [data-slot="section"] {
+    --section-gutter: 24px;
+    --section-spacer: 64px;
+  }
+
+  @media (min-width: 1280px) {
+    [data-slot="section"] {
+      --section-gutter: 64px;
+    }
+  }
+</style>

@@ -1,5 +1,5 @@
 ---
-// Stack
+// stack
 import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
@@ -10,6 +10,7 @@ import {
   Item,
   ItemContent,
   ItemDescription,
+  ItemGroup,
   ItemMedia,
 } from "@/components/ui/item"
 import { Rating } from "@/components/ui/rating"
@@ -18,14 +19,14 @@ import {
   SectionActions,
   SectionContent,
   SectionGroup,
+  SectionMedia,
 } from "@/components/ui/section"
 import { Typography } from "@/components/ui/typography"
-import { Video } from "@/components/ui/video"
 
 interface Props extends ComponentProps<typeof Section> {
   size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
-  image?: ComponentProps<typeof Image>
+  image?: ComponentProps<typeof Image> & ComponentProps<typeof SectionMedia>
   item?: {
     avatars?: ComponentProps<typeof Avatar>[]
     rating?: ComponentProps<typeof Rating>["rating"]
@@ -47,8 +48,8 @@ const {
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContent align={align} order={order}>
-    <SectionGroup align={align}>
+  <SectionContent align={align}>
+    <SectionGroup>
       <Typography class="text-balance" align={align} size={size}>
         <slot />
       </Typography>
@@ -81,6 +82,8 @@ const {
         </ItemContent>
       </Item>
     </SectionGroup>
-    <Image class="rounded-lg" {...image} />
+    <SectionMedia variant={image?.variant}>
+      <Image {...image} />
+    </SectionMedia>
   </SectionContent>
 </Section>

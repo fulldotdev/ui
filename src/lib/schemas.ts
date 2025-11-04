@@ -21,6 +21,16 @@ const image = z
     src: z.string(), // Local images in /src/assets/ can be referenced as /myimage.webp
     alt: z.string(),
     title: z.string(),
+    variant: z.enum([
+      "default",
+      "inset-x",
+      "inset-y",
+      "inset-top",
+      "inset-bottom",
+      "inset-left",
+      "inset-right",
+      "background",
+    ]),
   })
   .partial()
   .strict()
