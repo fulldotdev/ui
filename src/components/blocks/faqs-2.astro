@@ -1,4 +1,5 @@
 ---
+// split
 import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
@@ -27,22 +28,14 @@ interface Props extends ComponentProps<typeof Section> {
   }[]
 }
 
-const {
-  class: className,
-  align,
-  order,
-  size,
-  buttons,
-  items,
-  ...props
-} = Astro.props
+const { class: className, align, size, buttons, items, ...props } = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContent order={order}>
+  <SectionContent>
     <SectionSplit align={align}>
-      <SectionGroup class="lg:col-span-2">
-        <Typography size={size} align={align}>
+      <SectionGroup>
+        <Typography size={size}>
           <slot />
         </Typography>
         <SectionActions>
@@ -59,7 +52,7 @@ const {
       </SectionGroup>
       {
         items && items.length > 0 && (
-          <Accordion class="lg:col-span-3">
+          <Accordion class="w-full">
             {items?.map(({ title, description }) => (
               <AccordionItem>
                 <AccordionTrigger>{title}</AccordionTrigger>

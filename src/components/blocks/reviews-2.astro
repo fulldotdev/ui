@@ -31,6 +31,7 @@ import { Typography } from "@/components/ui/typography"
 interface Props extends ComponentProps<typeof Section> {
   size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
+  variant?: ComponentProps<typeof Tile>["variant"]
   items?: {
     title?: string
     description?: string
@@ -41,17 +42,26 @@ interface Props extends ComponentProps<typeof Section> {
   }[]
 }
 
-const { class: className, align, size, buttons, items, ...props } = Astro.props
+const {
+  class: className,
+  align,
+  order,
+  size,
+  buttons,
+  variant,
+  items,
+  ...props
+} = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
   <SectionContent>
-    <SectionSplit align={align}>
+    <SectionSplit align={align} order={order}>
       <SectionGroup>
         <Typography size={size}>
           <slot />
         </Typography>
-        <SectionActions align={align}>
+        <SectionActions>
           {
             buttons?.map((button, i) => (
               <Button
@@ -67,17 +77,17 @@ const { class: className, align, size, buttons, items, ...props } = Astro.props
         {
           items?.map(
             ({ title, description, rating, avatar, tagline, href }) => (
-              <Tile href={href} variant="outline">
+              <Tile href={href} variant={variant}>
                 <TileContent>
-                  <Item class="-m-4" size="sm">
+                  <Item class="-m-4">
                     <ItemMedia>
-                      <Avatar class="size-10">
+                      <Avatar>
                         <AvatarImage {...avatar} />
                       </Avatar>
                     </ItemMedia>
                     <ItemContent>
-                      <ItemTitle>{title}</ItemTitle>
-                      <ItemDescription>{tagline}</ItemDescription>
+                      <ItemTitle>{tagline}</ItemTitle>
+                      <ItemDescription>{title}</ItemDescription>
                     </ItemContent>
                   </Item>
                   <Rating rating={rating} />

@@ -1,10 +1,11 @@
 ---
-// Stack
+// stack
 import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
 import { Image } from "@/components/ui/image"
 import {
   Item,
@@ -12,15 +13,22 @@ import {
   ItemDescription,
   ItemMedia,
 } from "@/components/ui/item"
+import Video from "@/components/ui/media/video.astro"
 import { Rating } from "@/components/ui/rating"
 import {
   Section,
   SectionActions,
   SectionContent,
+  SectionGrid,
   SectionGroup,
 } from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileMedia,
+  TileTypography,
+} from "@/components/ui/tile"
 import { Typography } from "@/components/ui/typography"
-import { Video } from "@/components/ui/video"
 
 interface Props extends ComponentProps<typeof Section> {
   size?: ComponentProps<typeof Typography>["size"]
@@ -32,6 +40,14 @@ interface Props extends ComponentProps<typeof Section> {
     description?: string
   }
   video?: any
+  items?: {
+    title?: string
+    description?: string
+    html?: string
+    icon?: string
+    button?: ComponentProps<typeof Button>
+    variant?: ComponentProps<typeof Tile>["variant"]
+  }[]
 }
 
 const {
@@ -42,6 +58,7 @@ const {
   buttons,
   image,
   item,
+  items,
   ...props
 } = Astro.props
 ---
@@ -82,5 +99,26 @@ const {
       </Item>
     </SectionGroup>
     <Image class="rounded-lg" {...image} />
+    <SectionGrid class="gap-x-16">
+      {
+        items?.map(({ title, description, html, icon, button }) => (
+          <Tile class="hover:bg-transparent" variant="default">
+            <TileContent class="p-0" align={align}>
+              <TileMedia variant="icon">
+                <Icon name={icon} />
+              </TileMedia>
+              <TileTypography
+                align={align}
+                size={size}
+                title={title}
+                description={description}
+                html={html}
+              />
+              <Button class="px-0" variant="link" size={size} {...button} />
+            </TileContent>
+          </Tile>
+        ))
+      }
+    </SectionGrid>
   </SectionContent>
 </Section>

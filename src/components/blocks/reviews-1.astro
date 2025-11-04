@@ -1,4 +1,5 @@
 ---
+// grid
 import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
@@ -19,12 +20,7 @@ import {
   SectionGroup,
   SectionMasonry,
 } from "@/components/ui/section"
-import {
-  Tile,
-  TileContent,
-  TileDescription,
-  TileTitle,
-} from "@/components/ui/tile"
+import { Tile, TileContent, TileTypography } from "@/components/ui/tile"
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
@@ -34,6 +30,7 @@ interface Props extends ComponentProps<typeof Section> {
     name?: string
     title?: string
     description?: string
+    html?: string
     rating?: number
     href?: string
     avatar?: ComponentProps<typeof Avatar>
@@ -41,7 +38,15 @@ interface Props extends ComponentProps<typeof Section> {
   }[]
 }
 
-const { class: className, align, size, buttons, items, ...props } = Astro.props
+const {
+  class: className,
+  align,
+  size,
+  buttons,
+  variant,
+  items,
+  ...props
+} = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
@@ -65,25 +70,36 @@ const { class: className, align, size, buttons, items, ...props } = Astro.props
     <SectionMasonry>
       {
         items?.map(
-          ({ title, description, rating, href, avatar, name, tagline }) => (
-            <Tile href={href} variant="outline">
+          ({
+            title,
+            description,
+            html,
+            rating,
+            href,
+            avatar,
+            name,
+            tagline,
+          }) => (
+            <Tile href={href} variant={variant}>
               <TileContent>
-                <Item class="items-center p-0">
-                  <ItemMedia class="-space-x-4">
-                    <Avatar class="ring-background size-10 ring-2">
+                <Item class="-m-4">
+                  <ItemMedia>
+                    <Avatar>
                       <AvatarImage {...avatar} />
                     </Avatar>
                   </ItemMedia>
-                  <ItemContent class="gap-1.5">
+                  <ItemContent>
                     <ItemTitle>{name}</ItemTitle>
-                    <ItemDescription class="leading-none">
-                      {tagline}
-                    </ItemDescription>
+                    <ItemDescription>{tagline}</ItemDescription>
                   </ItemContent>
                 </Item>
                 <Rating rating={rating} />
-                <TileTitle>{title}</TileTitle>
-                <TileDescription>{description}</TileDescription>
+                <TileTypography
+                  size={size}
+                  title={title}
+                  description={description}
+                  html={html}
+                />
               </TileContent>
             </Tile>
           )

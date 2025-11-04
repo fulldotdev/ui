@@ -26,9 +26,11 @@ interface Props extends ComponentProps<typeof Section> {
   items?: {
     title?: string
     description?: string
+    html?: string
     icon?: string
     button?: ComponentProps<typeof Button>
     image?: ComponentProps<typeof Image>
+    variant?: ComponentProps<typeof Tile>["variant"]
   }[]
 }
 
@@ -39,6 +41,7 @@ const {
   size,
   buttons,
   items,
+  variant,
   ...props
 } = Astro.props
 ---
@@ -61,19 +64,20 @@ const {
         }
       </SectionActions>
     </SectionGroup>
-    <SectionGrid class="gap-x-16 gap-y-8">
+    <SectionGrid>
       {
-        items?.map(({ title, description, icon, button, image }) => (
-          <Tile>
-            <TileContent class="p-0" align={align}>
+        items?.map(({ title, description, html, icon, button }) => (
+          <Tile variant={variant}>
+            <TileContent align={align}>
               <TileMedia variant="icon">
-                <Icon class="bg-accent size-9 rounded-full p-2" name={icon} />
+                <Icon name={icon} />
               </TileMedia>
               <TileTypography
                 align={align}
                 size={size}
                 title={title}
                 description={description}
+                html={html}
               />
               <Button class="px-0" variant="link" size={size} {...button} />
             </TileContent>

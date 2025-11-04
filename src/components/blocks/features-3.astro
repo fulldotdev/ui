@@ -3,34 +3,34 @@
 import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
-import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Image } from "@/components/ui/image"
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-} from "@/components/ui/item"
-import { Rating } from "@/components/ui/rating"
+import { Icon } from "@/components/ui/icon"
 import {
   Section,
   SectionActions,
   SectionContent,
+  SectionGrid,
   SectionGroup,
   SectionSplit,
 } from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileMedia,
+  TileTypography,
+} from "@/components/ui/tile"
 import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
   size?: ComponentProps<typeof Typography>["size"]
   buttons?: ComponentProps<typeof Button>[]
-  image?: ComponentProps<typeof Image>
-  item?: {
-    avatars?: ComponentProps<typeof Avatar>[]
-    rating?: ComponentProps<typeof Rating>["rating"]
+  items?: {
+    title?: string
     description?: string
-  }
+    html?: string
+    icon?: string
+    button?: ComponentProps<typeof Button>
+  }[]
 }
 
 const {
@@ -39,8 +39,8 @@ const {
   order,
   size,
   buttons,
-  image,
-  item,
+  items,
+  variant,
   ...props
 } = Astro.props
 ---
@@ -48,7 +48,7 @@ const {
 <Section class={cn("", className)} {...props}>
   <SectionContent>
     <SectionSplit align={align} order={order}>
-      <SectionGroup>
+      <SectionGroup class="col-span-2">
         <Typography size={size}>
           <slot />
         </Typography>
@@ -63,25 +63,27 @@ const {
             ))
           }
         </SectionActions>
-        <Item class="items-center p-0">
-          <ItemMedia class="-space-x-4">
-            {
-              item?.avatars?.map((avatar) => (
-                <Avatar class="ring-background size-10 ring-2">
-                  <AvatarImage {...avatar} />
-                </Avatar>
-              ))
-            }
-          </ItemMedia>
-          <ItemContent class="gap-1.5">
-            <Rating rating={item?.rating} />
-            <ItemDescription class="leading-none">
-              {item?.description}
-            </ItemDescription>
-          </ItemContent>
-        </Item>
       </SectionGroup>
-      <Image class="rounded-lg" {...image} />
+      <SectionGrid class="col-span-3">
+        {
+          items?.map(({ title, description, html, icon, button }) => (
+            <Tile variant={variant}>
+              <TileContent>
+                <TileMedia variant="icon">
+                  <Icon name={icon} />
+                </TileMedia>
+                <TileTypography
+                  size={size}
+                  title={title}
+                  description={description}
+                  html={html}
+                />
+                <Button class="px-0" variant="link" size={size} {...button} />
+              </TileContent>
+            </Tile>
+          ))
+        }
+      </SectionGrid>
     </SectionSplit>
   </SectionContent>
 </Section>
