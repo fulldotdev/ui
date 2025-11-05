@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/tile"
 
 interface Props extends ComponentProps<typeof Section> {
+  position?: ComponentProps<typeof TileMedia>["position"]
   size?: ComponentProps<typeof SectionTypography>["size"]
   buttons?: ComponentProps<typeof Button>[]
   items?: {
@@ -42,6 +43,7 @@ const {
   items,
   variant,
   frame,
+  position,
   ...props
 } = Astro.props
 ---
@@ -65,23 +67,26 @@ const {
   </SectionContent>
   <SectionGrid>
     {
-      items?.map(({ title, description, html, icon, button }) => (
-        <Tile variant={variant}>
-          <TileContent align={align}>
-            <TileMedia variant="icon">
-              <Icon name={icon} />
+      items?.map(
+        ({ title, description, html, icon, image, button, ...tile }) => (
+          <Tile variant={variant} frame={frame} {...tile}>
+            <TileMedia position={position}>
+              <Image {...image} />
             </TileMedia>
-            <TileTypography
-              align={align}
-              size={size}
-              title={title}
-              description={description}
-              html={html}
-            />
-            <Button class="px-0" variant="link" size={size} {...button} />
-          </TileContent>
-        </Tile>
-      ))
+            <Icon class="bg-muted size-9 rounded-sm border p-2" name={icon} />
+            <TileContent align={align}>
+              <TileTypography
+                align={align}
+                size={size}
+                title={title}
+                description={description}
+                html={html}
+              />
+              <Button class="px-0" variant="link" size={size} {...button} />
+            </TileContent>
+          </Tile>
+        )
+      )
     }
   </SectionGrid>
 </Section>

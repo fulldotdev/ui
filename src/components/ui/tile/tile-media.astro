@@ -5,26 +5,32 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const variants = cva(
-  "flex shrink-0 items-center justify-center gap-2 group-has-[[data-slot=item-description]]/item:self-start [&_svg]:pointer-events-none group-has-[[data-slot=item-description]]/item:translate-y-0.5",
+  [
+    "flex shrink-0 items-center justify-center gap-2 group-has-[[data-slot=tile-description]]/tile:self-start [&_svg]:pointer-events-none group-has-[[data-slot=tile-description]]/tile:translate-y-0.5",
+    "[&:is(a:hover>&)]:opacity-75 transition-opacity duration-100",
+    "relative size-full overflow-hidden *:size-full *:object-cover",
+  ],
   {
     variants: {
-      variant: {
-        default: "bg-transparent rounded-lg",
-        inset: "-m-6 size-[calc(100%+12px)]",
-        icon: "size-8 border rounded-sm bg-muted [&_svg:not([class*='size-'])]:size-4",
-        image:
-          "size-10 rounded-sm overflow-hidden [&_img]:size-full [&_img]:object-cover",
+      position: {
+        default: "*:rounded-md",
+        background: "absolute inset-0 size-full *:opacity-25",
+        inset: [
+          "-mx-6 -mt-6 w-[calc(100%+48px)]",
+          "[a:has(&)]:overflow-hidden",
+          "[div:has(&)]:overflow-hidden",
+        ],
       },
     },
     defaultVariants: {
-      variant: "default",
+      position: "default",
     },
   }
 )
 
 interface Props extends HTMLAttributes<"div">, VariantProps<typeof variants> {}
 
-const { class: className, variant, ...props } = Astro.props
+const { class: className, position, ...props } = Astro.props
 
 const slot = await Astro.slots.render("default")
 ---
@@ -32,8 +38,8 @@ const slot = await Astro.slots.render("default")
 {
   slot.trim().length > 0 && (
     <div
-      data-slot="item-media"
-      class={cn(variants({ variant }), className)}
+      data-slot="tile-media"
+      class={cn(variants({ position }), className)}
       {...props}
     >
       <Fragment set:html={slot} />

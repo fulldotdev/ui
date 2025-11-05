@@ -9,7 +9,11 @@ type Props = VariantProps<typeof variants> &
   HTMLAttributes<"a">
 
 const variants = cva(
-  "group/tile relative flex border border-transparent flex-col gap-6 rounded-lg transition-colors [a]:hover:bg-accent/50 [a]:transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+  [
+    "group/tile relative overflow-hidden flex flex-col gap-6 p-6 rounded-md transition-colors [a]:hover:bg-accent/50 [a]:transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+    // If SectionMedia is inset, add extra spacer
+    "has-[>[data-slot=tile-media][data-position=inset]]:gap-y-[48px]",
+  ],
   {
     variants: {
       variant: {
@@ -18,14 +22,26 @@ const variants = cva(
         muted: "bg-muted/50",
         accent: "bg-accent/50",
       },
+      frame: {
+        default: "p-3 -m-3",
+        float: ["max-w-[calc(var(--section-width)-2*var(--section-gutter))]"],
+        inset: null,
+      },
+      align: {
+        start: "items-start",
+        center: "items-center",
+        end: "items-end",
+      },
     },
     defaultVariants: {
       variant: "default",
+      align: "start",
+      frame: "default",
     },
   }
 )
 
-const { class: className, variant, href, ...props } = Astro.props
+const { class: className, variant, frame, align, href, ...props } = Astro.props
 
 const slot = await Astro.slots.render("default")
 
@@ -37,7 +53,7 @@ const Comp = href ? "a" : "div"
     <Comp
       data-slot="tile"
       data-variant={variant}
-      class={cn(variants({ variant }), className)}
+      class={cn(variants({ variant, frame, align }), className)}
       href={href}
       {...props}
     >

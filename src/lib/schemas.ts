@@ -99,9 +99,10 @@ const section = z
     id: z.string(),
     align: z.enum(["start", "center", "end"]),
     size: z.enum(["sm", "default", "lg"]),
-    variant: z.enum(["default", "outline", "muted", "accent"]),
+    variant: z.enum(["default", "outline", "muted", "accent", "card"]),
     order: z.enum(["default", "reverse"]),
     frame: z.enum(["default", "float", "inset"]),
+    position: z.enum(["default", "background", "inset"]),
     html: z.string(),
     buttons: button.array(),
     logos: logo.array(),
@@ -121,8 +122,9 @@ const page = z
     block: z.string(), // Block variant: "article-1", "person-3", "job-2"
     align: z.enum(["start", "center", "end"]),
     size: z.enum(["sm", "default", "lg"]),
-    variant: z.enum(["default", "outline", "muted", "accent"]),
+    variant: z.enum(["default", "outline", "muted", "accent", "card"]),
     frame: z.enum(["default", "float", "inset"]),
+    position: z.enum(["default", "background", "inset"]),
     href: z.string(),
     title: z.string(),
     tagline: z.string(),
@@ -153,7 +155,7 @@ const header = z
   .object({
     block: z.string(), // Block variant: "header-1", "header-2", "header-3"
     align: z.enum(["start", "center", "end"]),
-    variant: z.enum(["default", "outline", "muted", "accent"]),
+    variant: z.enum(["default", "outline", "muted", "accent", "card"]),
     logo: logo,
     buttons: button.array(),
     socials: z.string().array(),
@@ -165,7 +167,7 @@ const header = z
 const footer = z
   .object({
     block: z.string(), // Block variant: "footer-1", "footer-2", "footer-3"
-    variant: z.enum(["default", "outline", "muted", "accent"]),
+    variant: z.enum(["default", "outline", "muted", "accent", "card"]),
     logo: logo,
     description: z.string(),
     channels: link.array(), // Contact channels: email, phone, address
@@ -182,7 +184,7 @@ const banner = z
   .object({
     block: z.string(), // Block variant: "banner-1", "banner-2", "banner-3"
     align: z.enum(["start", "center", "end"]),
-    variant: z.enum(["default", "outline", "muted", "accent"]),
+    variant: z.enum(["default", "outline", "muted", "accent", "card"]),
     html: z.string(), // HTML content with optional <a>, <b>, <i>, <u>, <s>
   })
   .partial()
