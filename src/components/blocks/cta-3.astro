@@ -19,6 +19,8 @@ import {
   SectionActions,
   SectionContent,
   SectionGroup,
+  SectionMedia,
+  SectionSpread,
 } from "@/components/ui/section"
 import { Typography } from "@/components/ui/typography"
 
@@ -37,7 +39,6 @@ interface Props extends ComponentProps<typeof Section> {
 const {
   class: className,
   align,
-  order,
   size,
   list,
   buttons,
@@ -47,54 +48,58 @@ const {
 } = Astro.props
 ---
 
-<Section class={cn("", className)} align={align} order={order} {...props}>
-  <Image
-    class="absolute inset-0 size-full object-cover opacity-25"
-    {...image}
-  />
+<Section class={cn("", className)} {...props}>
   <SectionContent>
-    <SectionGroup align={align}>
-      <Typography class="text-balance" align={align} size={size}>
-        <slot />
-      </Typography>
-      <List>
-        {
-          list?.map((item) => (
-            <ListItem>
-              <Icon name="check" />
-              {item}
-            </ListItem>
-          ))
-        }
-      </List>
-      <SectionActions align={align}>
-        {
-          buttons?.map((button, i) => (
-            <Button
-              variant={i === 0 ? "default" : "outline"}
-              size={size}
-              {...button}
-            />
-          ))
-        }
-      </SectionActions>
-      <Item class="items-center p-0">
-        <ItemMedia class="-space-x-4">
+    <SectionSpread align={align}>
+      <SectionGroup>
+        <Typography class="text-balance" size={size}>
+          <slot />
+        </Typography>
+        <List>
           {
-            item?.avatars?.map((avatar) => (
-              <Avatar class="ring-background size-10 ring-2">
-                <AvatarImage {...avatar} />
-              </Avatar>
+            list?.map((item) => (
+              <ListItem>
+                <Icon name="check" />
+                {item}
+              </ListItem>
             ))
           }
-        </ItemMedia>
-        <ItemContent class="gap-1.5">
-          <Rating rating={item?.rating} />
-          <ItemDescription class="leading-none">
-            {item?.description}
-          </ItemDescription>
-        </ItemContent>
-      </Item>
-    </SectionGroup>
+        </List>
+      </SectionGroup>
+      <SectionGroup>
+        <SectionActions>
+          {
+            buttons?.map((button, i) => (
+              <Button
+                class="lg:w-full"
+                variant={i === 0 ? "default" : "outline"}
+                size={size}
+                {...button}
+              />
+            ))
+          }
+        </SectionActions>
+        <Item class="items-center p-0">
+          <ItemMedia class="-space-x-4">
+            {
+              item?.avatars?.map((avatar) => (
+                <Avatar class="ring-background size-10 ring-2">
+                  <AvatarImage {...avatar} />
+                </Avatar>
+              ))
+            }
+          </ItemMedia>
+          <ItemContent class="gap-1.5">
+            <Rating rating={item?.rating} />
+            <ItemDescription class="leading-none">
+              {item?.description}
+            </ItemDescription>
+          </ItemContent>
+        </Item>
+      </SectionGroup>
+    </SectionSpread>
   </SectionContent>
+  <SectionMedia variant="inset">
+    <Image {...image} />
+  </SectionMedia>
 </Section>

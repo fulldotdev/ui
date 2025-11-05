@@ -19,7 +19,9 @@ import {
   SectionActions,
   SectionContent,
   SectionGroup,
+  SectionMedia,
   SectionSplit,
+  SectionSpread,
 } from "@/components/ui/section"
 import { Typography } from "@/components/ui/typography"
 
@@ -38,7 +40,6 @@ interface Props extends ComponentProps<typeof Section> {
 const {
   class: className,
   align,
-  order,
   size,
   list,
   buttons,
@@ -50,21 +51,11 @@ const {
 
 <Section class={cn("", className)} {...props}>
   <SectionContent>
-    <SectionSplit align={align} order={order}>
-      <SectionGroup>
-        <Typography size={size}>
+    <SectionSplit align={align}>
+      <SectionGroup class="lg:col-span-3">
+        <Typography class="text-balance" size={size}>
           <slot />
         </Typography>
-        <List>
-          {
-            list?.map((item) => (
-              <ListItem>
-                <Icon name="check" />
-                {item}
-              </ListItem>
-            ))
-          }
-        </List>
         <SectionActions>
           {
             buttons?.map((button, i) => (
@@ -76,6 +67,18 @@ const {
             ))
           }
         </SectionActions>
+      </SectionGroup>
+      <SectionGroup class="lg:col-span-2">
+        <List>
+          {
+            list?.map((item) => (
+              <ListItem>
+                <Icon name="check" />
+                {item}
+              </ListItem>
+            ))
+          }
+        </List>
         <Item class="items-center p-0">
           <ItemMedia class="-space-x-4">
             {
@@ -94,7 +97,9 @@ const {
           </ItemContent>
         </Item>
       </SectionGroup>
-      <Image class="rounded-lg" {...image} />
     </SectionSplit>
   </SectionContent>
+  <SectionMedia variant="inset">
+    <Image {...image} />
+  </SectionMedia>
 </Section>

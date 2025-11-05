@@ -1,0 +1,88 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionGrid,
+  SectionGroup,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileMedia,
+  TileTypography,
+} from "@/components/ui/tile"
+import { Typography } from "@/components/ui/typography"
+
+interface Props extends ComponentProps<typeof Section> {
+  size?: ComponentProps<typeof Typography>["size"]
+  buttons?: ComponentProps<typeof Button>[]
+  items?: {
+    title?: string
+    description?: string
+    html?: string
+    button?: ComponentProps<typeof Button>
+    image?: ComponentProps<typeof Image>
+    variant?: ComponentProps<typeof Tile>["variant"]
+  }[]
+}
+
+const {
+  class: className,
+  align,
+  order,
+  size,
+  buttons,
+  items,
+  variant,
+  ...props
+} = Astro.props
+---
+
+<Section class={cn("", className)} {...props}>
+  <SectionContent align={align} order={order}>
+    <SectionGroup align={align}>
+      <Typography size={size} align={align}>
+        <slot />
+      </Typography>
+      <SectionActions align={align}>
+        {
+          buttons?.map((button, i) => (
+            <Button
+              variant={i === 0 ? "default" : "outline"}
+              size={size}
+              {...button}
+            />
+          ))
+        }
+      </SectionActions>
+    </SectionGroup>
+    <SectionGrid>
+      {
+        items?.map(({ title, description, html, image, button }) => (
+          <Tile variant={variant} variant="default">
+            <TileMedia variant="inset">
+              <Image {...image} />
+            </TileMedia>
+            <TileContent align={align}>
+              <TileTypography
+                align={align}
+                size={size}
+                title={title}
+                description={description}
+                html={html}
+              />
+              <Button class="px-0" variant="link" size={size} {...button} />
+            </TileContent>
+          </Tile>
+        ))
+      }
+    </SectionGrid>
+  </SectionContent>
+</Section>
