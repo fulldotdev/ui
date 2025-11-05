@@ -1,9 +1,11 @@
 ---
+// Stack
 import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
 import { Image } from "@/components/ui/image"
 import {
   Item,
@@ -11,6 +13,7 @@ import {
   ItemDescription,
   ItemMedia,
 } from "@/components/ui/item"
+import { List, ListItem } from "@/components/ui/list"
 import { Rating } from "@/components/ui/rating"
 import {
   Section,
@@ -22,6 +25,7 @@ import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
   size?: ComponentProps<typeof Typography>["size"]
+  list?: string[]
   buttons?: ComponentProps<typeof Button>[]
   image?: ComponentProps<typeof Image>
   item?: {
@@ -36,6 +40,7 @@ const {
   align,
   order,
   size,
+  list,
   buttons,
   image,
   item,
@@ -43,12 +48,22 @@ const {
 } = Astro.props
 ---
 
-<Section class={cn("", className)} align={align} order={order} {...props}>
-  <SectionContent>
+<Section class={cn("", className)} {...props}>
+  <SectionContent align={align} order={order}>
     <SectionGroup align={align}>
       <Typography class="text-balance" align={align} size={size}>
         <slot />
       </Typography>
+      <List>
+        {
+          list?.map((item) => (
+            <ListItem>
+              <Icon name="check" />
+              {item}
+            </ListItem>
+          ))
+        }
+      </List>
       <SectionActions align={align}>
         {
           buttons?.map((button, i) => (
@@ -70,14 +85,14 @@ const {
             ))
           }
         </ItemMedia>
-        <ItemContent class="gap-1.5">
+        <ItemContent>
           <Rating rating={item?.rating} />
-          <ItemDescription class="leading-none">
+          <ItemDescription>
             {item?.description}
           </ItemDescription>
         </ItemContent>
       </Item>
     </SectionGroup>
+    <Image class="rounded-lg" {...image} />
   </SectionContent>
-  <Image {...image} />
 </Section>

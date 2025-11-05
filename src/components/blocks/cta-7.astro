@@ -4,6 +4,7 @@ import type { ComponentProps } from "astro/types"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
 import { Image } from "@/components/ui/image"
 import {
   Item,
@@ -11,6 +12,7 @@ import {
   ItemDescription,
   ItemMedia,
 } from "@/components/ui/item"
+import { List, ListItem } from "@/components/ui/list"
 import { Rating } from "@/components/ui/rating"
 import {
   Section,
@@ -23,6 +25,7 @@ import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
   size?: ComponentProps<typeof Typography>["size"]
+  list?: string[]
   buttons?: ComponentProps<typeof Button>[]
   image?: ComponentProps<typeof Image>
   item?: {
@@ -37,6 +40,7 @@ const {
   align,
   order,
   size,
+  list,
   buttons,
   image,
   item,
@@ -45,15 +49,23 @@ const {
 ---
 
 <Section class={cn("", className)} {...props}>
-  <Image
-    class="absolute inset-0 size-full object-cover opacity-25"
-    {...image}
-  />
   <SectionContent>
     <SectionSpread align={align}>
-      <Typography class="text-balance" size={size}>
-        <slot />
-      </Typography>
+      <SectionGroup>
+        <Typography class="text-balance" size={size}>
+          <slot />
+        </Typography>
+        <List>
+          {
+            list?.map((item) => (
+              <ListItem>
+                <Icon name="check" />
+                {item}
+              </ListItem>
+            ))
+          }
+        </List>
+      </SectionGroup>
       <SectionGroup>
         <SectionActions>
           {
@@ -87,4 +99,5 @@ const {
       </SectionGroup>
     </SectionSpread>
   </SectionContent>
+  <Image {...image} />
 </Section>

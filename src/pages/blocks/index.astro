@@ -11,6 +11,17 @@ const indexBlock = await getEntry("blocks", "index")
 const allBlocks = import.meta.glob("src/components/blocks/**/*.astro", {
   eager: true,
 })
+const sortedBlocks = Object.entries(allBlocks).sort(([a], [b]) => {
+  const aId = a.split("/").pop()?.split(".")[0] ?? ""
+  const bId = b.split("/").pop()?.split(".")[0] ?? ""
+  // Extract numeric parts for proper numeric sorting
+  const aNum = parseInt(aId.replace(/\D/g, "")) || 0
+  const bNum = parseInt(bId.replace(/\D/g, "")) || 0
+  // If both have numbers, compare numerically
+  if (aNum && bNum) return aNum - bNum
+  // Otherwise, fall back to string comparison
+  return aId.localeCompare(bId)
+})
 ---
 
 <Layout>
@@ -20,7 +31,7 @@ const allBlocks = import.meta.glob("src/components/blocks/**/*.astro", {
     </HeaderContent>
   </Header>
   {
-    Object.entries(allBlocks).map(([path, block]: [string, any], i) => {
+    sortedBlocks.map(([path, block]: [string, any], i) => {
       const id = path.split("/").pop()?.split(".")[0]
       const BlockComponent = block.default
       return BlockComponent ? (
