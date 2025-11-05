@@ -2,23 +2,26 @@
 import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
-import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
 import {
   Section,
   SectionActions,
   SectionContent,
-  SectionGrid,
   SectionTypography,
 } from "@/components/ui/section"
 
 interface Props extends ComponentProps<typeof Section> {
   size?: ComponentProps<typeof SectionTypography>["size"]
   buttons?: ComponentProps<typeof Button>[]
-  logos?: {
-    src?: string
-    alt?: string
+  items?: {
     title?: string
+    description?: string
   }[]
 }
 
@@ -28,13 +31,13 @@ const {
   order,
   size,
   buttons,
-  logos,
+  items,
   ...props
 } = Astro.props
 ---
 
-<Section class={cn("", className)} {...props}>
-  <SectionContent order={order}>
+<Section class={cn("", className)} align={align} order={order} {...props}>
+  <SectionContent align={align}>
     <SectionTypography align={align} size={size}>
       <slot />
     </SectionTypography>
@@ -49,15 +52,17 @@ const {
         ))
       }
     </SectionActions>
-    <SectionGrid class="flex flex-wrap justify-between gap-8">
-      {
-        logos?.map(({ src, alt, title }, i) => (
-          <Logo href="/">
-            <LogoImage src={src} alt={alt} />
-            <LogoText>{title}</LogoText>
-          </Logo>
-        ))
-      }
-    </SectionGrid>
   </SectionContent>
+  {
+    items && items.length > 0 && (
+      <Accordion class="w-full">
+        {items?.map(({ title, description }) => (
+          <AccordionItem>
+            <AccordionTrigger>{title}</AccordionTrigger>
+            <AccordionContent>{description}</AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    )
+  }
 </Section>

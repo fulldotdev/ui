@@ -13,12 +13,12 @@ import {
   Section,
   SectionActions,
   SectionContent,
-  SectionGroup,
+  SectionSplit,
+  SectionTypography,
 } from "@/components/ui/section"
-import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
-  size?: ComponentProps<typeof Typography>["size"]
+  size?: ComponentProps<typeof SectionTypography>["size"]
   buttons?: ComponentProps<typeof Button>[]
   items?: {
     title?: string
@@ -37,13 +37,13 @@ const {
 } = Astro.props
 ---
 
-<Section class={cn("", className)} align={align} order={order} {...props}>
-  <SectionContent>
-    <SectionGroup align={align}>
-      <Typography class="text-balance" size={size}>
+<Section class={cn("", className)} {...props}>
+  <SectionSplit align={align} order={order}>
+    <SectionContent>
+      <SectionTypography size={size}>
         <slot />
-      </Typography>
-      <SectionActions align={align}>
+      </SectionTypography>
+      <SectionActions>
         {
           buttons?.map((button, i) => (
             <Button
@@ -54,7 +54,7 @@ const {
           ))
         }
       </SectionActions>
-    </SectionGroup>
+    </SectionContent>
     {
       items && items.length > 0 && (
         <Accordion class="w-full">
@@ -67,5 +67,5 @@ const {
         </Accordion>
       )
     }
-  </SectionContent>
+  </SectionSplit>
 </Section>

@@ -3,33 +3,31 @@ import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { Form } from "@/components/ui/form"
 import { Icon } from "@/components/ui/icon"
-import { Image } from "@/components/ui/image"
 import {
   Item,
-  ItemActions,
   ItemContent,
   ItemDescription,
+  ItemGroup,
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item"
 import {
   Section,
-  SectionActions,
   SectionContent,
-  SectionGrid,
   SectionTypography,
 } from "@/components/ui/section"
 
 interface Props extends ComponentProps<typeof Section> {
   size?: ComponentProps<typeof SectionTypography>["size"]
-  buttons?: ComponentProps<typeof Button>[]
+  form?: any
   items?: {
-    href?: string
     title?: string
     description?: string
-    image?: ComponentProps<typeof Image>
-    icon?: string
+    variant?: ComponentProps<typeof Item>["variant"]
+    href?: ComponentProps<typeof Button>["href"]
+    icon?: ComponentProps<typeof Icon>["name"]
   }[]
 }
 
@@ -38,45 +36,32 @@ const {
   align,
   order,
   size,
-  buttons,
+  form,
   items,
   ...props
 } = Astro.props
 ---
 
-<Section class={cn("", className)} {...props}>
-  <SectionContent order={order}>
+<Section class={cn("", className)} align={align} order={order} {...props}>
+  <SectionContent align={align}>
     <SectionTypography align={align} size={size}>
       <slot />
     </SectionTypography>
-    <SectionActions>
+    <ItemGroup class="gap-4">
       {
-        buttons?.map((button, i) => (
-          <Button
-            variant={i === 0 ? "default" : "outline"}
-            size={size}
-            {...button}
-          />
-        ))
-      }
-    </SectionActions>
-    <SectionGrid class="gap-4">
-      {
-        items?.map(({ title, description, href, icon }) => (
-          <Item href={href} variant="muted">
+        items?.map(({ title, description, href, icon, variant = "muted" }) => (
+          <Item variant={variant} href={href}>
             <ItemMedia variant="icon">
-              <Icon name={icon} />
+              <Icon name={icon} href={href} />
             </ItemMedia>
             <ItemContent>
               <ItemTitle>{title}</ItemTitle>
               <ItemDescription>{description}</ItemDescription>
             </ItemContent>
-            <ItemActions>
-              <Icon name="chevron-right" class="size-4" />
-            </ItemActions>
           </Item>
         ))
       }
-    </SectionGrid>
+    </ItemGroup>
   </SectionContent>
+  <Form {...form} />
 </Section>

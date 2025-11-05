@@ -10,8 +10,8 @@ import {
   SectionActions,
   SectionContent,
   SectionGrid,
-  SectionGroup,
   SectionSplit,
+  SectionTypography,
 } from "@/components/ui/section"
 import {
   Tile,
@@ -19,10 +19,9 @@ import {
   TileDescription,
   TileTitle,
 } from "@/components/ui/tile"
-import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
-  size?: ComponentProps<typeof Typography>["size"]
+  size?: ComponentProps<typeof SectionTypography>["size"]
   buttons?: ComponentProps<typeof Button>[]
   items?: {
     href?: string
@@ -38,10 +37,10 @@ const { class: className, align, size, buttons, items, ...props } = Astro.props
 <Section class={cn("", className)} {...props}>
   <SectionContent>
     <SectionSplit align={align}>
-      <SectionGroup align={align} class="lg:col-span-2">
-        <Typography class="not-first:mt-4" size={size}>
+      <div class="lg:col-span-2">
+        <SectionTypography class="not-first:mt-4" align={align} size={size}>
           <slot />
-        </Typography>
+        </SectionTypography>
         <SectionActions class="not-first:mt-8 not-last:mb-4">
           {
             buttons?.map((button, i) => (
@@ -53,7 +52,7 @@ const { class: className, align, size, buttons, items, ...props } = Astro.props
             ))
           }
         </SectionActions>
-      </SectionGroup>
+      </div>
       <SectionGrid class="gap-4 lg:col-span-3">
         {
           items?.map(({ title, description, image, href }) => (

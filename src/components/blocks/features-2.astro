@@ -1,5 +1,4 @@
 ---
-// split 2/3
 import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
@@ -10,8 +9,8 @@ import {
   SectionActions,
   SectionContent,
   SectionGrid,
-  SectionGroup,
   SectionSplit,
+  SectionTypography,
 } from "@/components/ui/section"
 import {
   Tile,
@@ -19,10 +18,9 @@ import {
   TileMedia,
   TileTypography,
 } from "@/components/ui/tile"
-import { Typography } from "@/components/ui/typography"
 
 interface Props extends ComponentProps<typeof Section> {
-  size?: ComponentProps<typeof Typography>["size"]
+  size?: ComponentProps<typeof SectionTypography>["size"]
   buttons?: ComponentProps<typeof Button>[]
   items?: {
     title?: string
@@ -46,44 +44,42 @@ const {
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContent>
-    <SectionSplit align={align} order={order}>
-      <SectionGroup>
-        <Typography size={size}>
-          <slot />
-        </Typography>
-        <SectionActions>
-          {
-            buttons?.map((button, i) => (
-              <Button
-                variant={i === 0 ? "default" : "outline"}
-                size={size}
-                {...button}
-              />
-            ))
-          }
-        </SectionActions>
-      </SectionGroup>
-      <SectionGrid>
+  <SectionSplit align={align} order={order}>
+    <SectionContent class="xl:col-span-2">
+      <SectionTypography size={size}>
+        <slot />
+      </SectionTypography>
+      <SectionActions>
         {
-          items?.map(({ title, description, html, icon, button }) => (
-            <Tile variant={variant}>
-              <TileContent>
-                <TileMedia variant="icon">
-                  <Icon name={icon} />
-                </TileMedia>
-                <TileTypography
-                  size={size}
-                  title={title}
-                  description={description}
-                  html={html}
-                />
-                <Button class="px-0" variant="link" size={size} {...button} />
-              </TileContent>
-            </Tile>
+          buttons?.map((button, i) => (
+            <Button
+              variant={i === 0 ? "default" : "outline"}
+              size={size}
+              {...button}
+            />
           ))
         }
-      </SectionGrid>
-    </SectionSplit>
-  </SectionContent>
+      </SectionActions>
+    </SectionContent>
+    <SectionGrid class="xl:col-span-3">
+      {
+        items?.map(({ title, description, html, icon, button }) => (
+          <Tile variant={variant}>
+            <TileContent>
+              <TileMedia variant="icon">
+                <Icon name={icon} />
+              </TileMedia>
+              <TileTypography
+                size={size}
+                title={title}
+                description={description}
+                html={html}
+              />
+              <Button class="px-0" variant="link" size={size} {...button} />
+            </TileContent>
+          </Tile>
+        ))
+      }
+    </SectionGrid>
+  </SectionSplit>
 </Section>

@@ -13,19 +13,24 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item"
-import { Section, SectionContent, SectionGroup } from "@/components/ui/section"
-import { Typography } from "@/components/ui/typography"
+import {
+  Section,
+  SectionContent,
+  SectionSplit,
+  SectionTypography,
+} from "@/components/ui/section"
 
 interface Props extends ComponentProps<typeof Section> {
-  size?: ComponentProps<typeof Typography>["size"]
-  form?: any
+  size?: ComponentProps<typeof SectionTypography>["size"]
+  buttons?: ComponentProps<typeof Button>[]
   items?: {
+    variant?: ComponentProps<typeof Item>["variant"]
+    icon?: ComponentProps<typeof Icon>["name"]
+    href?: ComponentProps<typeof Button>["href"]
     title?: string
     description?: string
-    variant?: ComponentProps<typeof Item>["variant"]
-    href?: ComponentProps<typeof Button>["href"]
-    icon?: ComponentProps<typeof Icon>["name"]
   }[]
+  form?: any
 }
 
 const {
@@ -33,18 +38,19 @@ const {
   align,
   order,
   size,
-  form,
+  buttons,
   items,
+  form,
   ...props
 } = Astro.props
 ---
 
-<Section class={cn("", className)} align={align} order={order} {...props}>
-  <SectionContent>
-    <SectionGroup align={align}>
-      <Typography class="text-balance" size={size}>
+<Section class={cn("", className)} {...props}>
+  <SectionSplit align={align} order={order}>
+    <SectionContent>
+      <SectionTypography size={size}>
         <slot />
-      </Typography>
+      </SectionTypography>
       <ItemGroup class="gap-4">
         {
           items?.map(
@@ -62,7 +68,7 @@ const {
           )
         }
       </ItemGroup>
-    </SectionGroup>
+    </SectionContent>
     <Form {...form} />
-  </SectionContent>
+  </SectionSplit>
 </Section>
