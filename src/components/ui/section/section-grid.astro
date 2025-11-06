@@ -8,6 +8,10 @@ interface Props extends HTMLAttributes<"div">, VariantProps<typeof variants> {}
 
 const variants = cva("grid w-full gap-6", {
   variants: {
+    frame: {
+      default: "",
+      inset: ["-mx-6 w-[calc(100%+48px)]"],
+    },
     size: {
       sm: "grid-cols-[repeat(auto-fit,minmax(200px,1fr))]",
       default: "grid-cols-[repeat(auto-fit,minmax(260px,1fr))]",
@@ -16,17 +20,18 @@ const variants = cva("grid w-full gap-6", {
   },
   defaultVariants: {
     size: "default",
+    frame: "default",
   },
 })
 
-const { class: className, size, ...props } = Astro.props
+const { class: className, size, frame, ...props } = Astro.props
 
 const slot = await Astro.slots.render("default")
 ---
 
 {
   slot.trim().length > 0 && (
-    <div class={cn(variants({ size }), className)} {...props}>
+    <div class={cn(variants({ size, frame }), className)} {...props}>
       <Fragment set:html={slot} />
     </div>
   )

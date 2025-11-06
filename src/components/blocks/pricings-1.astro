@@ -3,7 +3,6 @@ import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Icon } from "@/components/ui/icon"
 import { List, ListItem } from "@/components/ui/list"
 import {
   Section,
@@ -12,12 +11,7 @@ import {
   SectionGrid,
   SectionTypography,
 } from "@/components/ui/section"
-import {
-  Tile,
-  TileContent,
-  TileDescription,
-  TileTitle,
-} from "@/components/ui/tile"
+import { Tile, TileContent, TileTypography } from "@/components/ui/tile"
 
 interface Props extends ComponentProps<typeof Section> {
   size?: ComponentProps<typeof SectionTypography>["size"]
@@ -33,7 +27,16 @@ interface Props extends ComponentProps<typeof Section> {
   }[]
 }
 
-const { class: className, align, size, buttons, items, ...props } = Astro.props
+const {
+  class: className,
+  align,
+  size,
+  buttons,
+  items,
+  frame,
+  variant,
+  ...props
+} = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
@@ -52,35 +55,37 @@ const { class: className, align, size, buttons, items, ...props } = Astro.props
         ))
       }
     </SectionActions>
-    <SectionGrid class="gap-6">
-      {
-        items?.map(({ title, description, button, list, price, unit }) => (
-          <Tile variant="accent">
-            <TileContent>
-              <TileTitle>{title}</TileTitle>
-              <TileDescription>{description}</TileDescription>
-              {(price || unit) && (
-                <div class="font-semibold">
-                  {price && (
-                    <span class="text-foreground text-2xl">{price}</span>
-                  )}
-                  {unit && (
-                    <span class="text-muted-foreground ml-1.5 text-sm font-normal">
-                      / {unit}
-                    </span>
-                  )}
-                </div>
-              )}
-              <List>
-                {list?.map((item) => (
-                  <ListItem>{item}</ListItem>
-                ))}
-              </List>
-              <Button class="mt-auto w-full" size={size} {...button} />
-            </TileContent>
-          </Tile>
-        ))
-      }
-    </SectionGrid>
   </SectionContent>
+  <SectionGrid>
+    {
+      items?.map(({ title, description, button, list, price, unit }) => (
+        <Tile frame={frame} variant={variant}>
+          <TileContent>
+            <TileTypography
+              align={align}
+              size={size}
+              title={title}
+              description={description}
+            />
+            {(price || unit) && (
+              <div class="font-semibold">
+                {price && <span class="text-foreground text-2xl">{price}</span>}
+                {unit && (
+                  <span class="text-muted-foreground ml-1.5 text-sm font-normal">
+                    / {unit}
+                  </span>
+                )}
+              </div>
+            )}
+            <List>
+              {list?.map((item) => (
+                <ListItem>{item}</ListItem>
+              ))}
+            </List>
+            <Button class="mt-auto w-full" size={size} {...button} />
+          </TileContent>
+        </Tile>
+      ))
+    }
+  </SectionGrid>
 </Section>
