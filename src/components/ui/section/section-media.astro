@@ -7,18 +7,17 @@ import { cn } from "@/lib/utils"
 interface Props extends HTMLAttributes<"div">, VariantProps<typeof variants> {}
 
 const variants = cva(
-  [
-    "relative size-full overflow-hidden *:size-full *:object-cover max-h-[60vh] flex items-center justify-center",
-  ],
+  ["relative overflow-hidden flex items-center justify-center"],
   {
     variants: {
       variant: {
         default: "*:rounded-lg",
         background: "absolute inset-0 size-full opacity-25",
         inset: [
+          "size-full *:size-full *:object-cover",
           "first:-mt-(--section-py) last:-mb-(--section-py) -mx-(--section-px) w-[calc(100%+2*var(--section-px))]",
           // split
-          "lg:[&:is([data-slot=section-split]>&)]:-my-(--section-py) lg:[&:is([data-slot=section-split]>&)]:h-[calc(100%+2*var(--section-px))]", // y
+          "lg:[&:is([data-slot=section-split]>&)]:-my-(--section-py) lg:[&:is([data-slot=section-split]>&)]:h-[calc(100%+2*var(--section-py))]", // y
           "lg:[&:is([data-slot=section-split]>&)]:mx-0 lg:[&:is([data-slot=section-split]>&)]:w-[calc(100%+1*var(--section-px))]", // x
           "lg:[&:is([data-slot=section-split]>&)]:first:-ml-(--section-px)", // left
           "lg:[&:is([data-slot=section-split]>&)]:last:-mr-(--section-px)", // right
@@ -48,67 +47,3 @@ const slot = await Astro.slots.render("default")
     </div>
   )
 }
-
-<style lang="scss" is:global>
-  [data-slot="section-media"][data-variant="inset"] {
-    --ml: var(--section-px);
-    --mr: var(--section-px);
-    --mt: 0px;
-    --mb: 0px;
-
-    &:first-child {
-      --mt: var(--section-py);
-    }
-
-    &:last-child {
-      --mb: var(--section-py);
-    }
-
-    :is([data-order="reverse"] > &) {
-      --ml: var(--section-px);
-      --mr: var(--section-px);
-      --mt: 0px;
-      --mb: 0px;
-
-      &:first-child {
-        --mb: var(--section-py);
-      }
-
-      &:last-child {
-        --mt: var(--section-py);
-      }
-    }
-
-    @media (min-width: 1024px) {
-      &:is([data-slot="section-split"] > &) {
-        --mt: 0px;
-        --mb: 0px;
-        --mt: var(--section-py);
-        --mb: var(--section-py);
-
-        &:first-child {
-          --ml: var(--section-px);
-        }
-
-        &:last-child {
-          --mr: var(--section-px);
-        }
-
-        &:is([data-order="reverse"] > &) {
-          --ml: var(--section-px);
-          --mr: var(--section-px);
-          --mt: 0px;
-          --mb: 0px;
-
-          &:first-child {
-            --mr: var(--section-px);
-          }
-
-          &:last-child {
-            --ml: var(--section-px);
-          }
-        }
-      }
-    }
-  }
-</style>
