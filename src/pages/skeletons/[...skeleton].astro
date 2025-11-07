@@ -1,0 +1,26 @@
+---
+import Layout from "@/components/layout.astro"
+
+export async function getStaticPaths() {
+  const skeletons = import.meta.glob("src/components/skeletons/**/*.astro")
+  return Object.entries(skeletons).map(([path, value]) => {
+    const id = path.split("/").pop()?.split(".")[0]
+    return {
+      params: {
+        skeleton: id,
+      },
+      props: {
+        id,
+        value,
+      },
+    }
+  })
+}
+
+const { value, id } = Astro.props
+const Comp = ((await value?.()) as any)?.default
+---
+
+<Layout>
+  <Comp />
+</Layout>

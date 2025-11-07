@@ -1,0 +1,68 @@
+---
+import { Badge } from "@/components/ui/badge"
+import { Header, HeaderContent } from "@/components/ui/header"
+import { Input } from "@/components/ui/input"
+import Layout from "@/components/layout.astro"
+
+const allSkeletons = import.meta.glob("src/components/skeletons/**/*.astro", {
+  eager: true,
+})
+const sortedSkeletons = Object.entries(allSkeletons).sort(([a], [b]) => {
+  const aId = a.split("/").pop()?.split(".")[0] ?? ""
+  const bId = b.split("/").pop()?.split(".")[0] ?? ""
+  // Extract numeric parts for proper numeric sorting
+  const aNum = parseInt(aId.replace(/\D/g, "")) || 0
+  const bNum = parseInt(bId.replace(/\D/g, "")) || 0
+  // If both have numbers, compare numerically
+  if (aNum && bNum) return aNum - bNum
+  // Otherwise, fall back to string comparison
+  return aId.localeCompare(bId)
+})
+---
+
+<Layout>
+  <Header class="sticky top-15 z-20">
+    <HeaderContent class="max-w-lg">
+      <Input id="search" type="text" placeholder="Search" />
+    </HeaderContent>
+  </Header>
+  {
+    sortedSkeletons.map(([path, skeleton]: [string, any], i) => {
+      const id = path.split("/").pop()?.split(".")[0]
+      const SkeletonComponent = skeleton.default
+      return SkeletonComponent ? (
+        <div
+          id={id}
+          class="skeleton-preview relative flex flex-col items-center"
+        >
+          <Badge class="mx-auto my-2 flex" href={`/skeletons/${id}/`}>
+            {path.split("/").pop()?.split(".")[0]}
+          </Badge>
+          <SkeletonComponent />
+        </div>
+      ) : null
+    })
+  }
+</Layout>
+
+<script>
+  const searchInput = document.getElementById("search") as HTMLInputElement
+
+  function filterSkeletons(query: string) {
+    const skeletons = document.querySelectorAll(".skeleton-preview")
+    const searchQuery = query.toLowerCase()
+
+    skeletons.forEach((skeleton) => {
+      const skeletonId = (skeleton as HTMLElement).id.toLowerCase()
+      const isMatch = skeletonId.includes(searchQuery)
+      ;(skeleton as HTMLElement).style.display = isMatch ? "block" : "none"
+    })
+  }
+
+  searchInput?.addEventListener("input", (e) => {
+    const query = (e.target as HTMLInputElement).value
+    filterSkeletons(query)
+  })
+
+  filterSkeletons("")
+</script>
