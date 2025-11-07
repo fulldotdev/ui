@@ -10,33 +10,33 @@ interface Props
 
 const variants = cva(
   [
-    "relative @container/section flex flex-col size-full",
-    "gap-y-(--section-spacer) py-(--section-spacer) px-(--section-gutter)",
-    // If SectionMedia is inset, add extra spacer
-    "has-[>[data-slot=section-media][data-variant=inset]]:gap-y-[calc(2*var(--section-spacer))]",
-    // // When spacer is doubled (at breakpoint-xl, see CSS vars), reduce the gap to half
-    // "xl:gap-y-[calc(var(--section-spacer)/2)]",
-    // "xl:has-[>[data-slot=section-media][data-variant=inset]]:gap-y-[calc(1.5*var(--section-spacer))]",
+    "flex flex-col mx-auto gap-y-(--section-py) px-(--section-px) py-(--section-py)",
   ],
   {
     variants: {
       variant: {
         default: "bg-transparent",
         outline: "border",
-        muted: "bg-muted/50 border-0",
+        muted: "bg-muted border-0",
       },
       frame: {
-        default:
-          "w-full px-[max((100%-var(--section-width))/2,var(--section-gutter))]",
-        // Panel that aligns with content
-        float: [
-          "bg-card border rounded-lg overflow-hidden mx-auto my-(--section-spacer) w-[calc(100%-16px)]",
-          // "w-[calc(100%-16px)]", for the cool panel very small gutter effect
-          "max-w-[calc(var(--section-width)-2*var(--section-gutter))]",
+        default: ["w-full"],
+        contain: [
+          "w-full max-w-[calc(var(--section-width)+2*var(--section-px))] overflow-hidden",
         ],
-        // Panel where content aligns with other content
-        inset: [
-          "bg-card border rounded-lg overflow-hidden max-w-screen-xl my-(--section-spacer) mx-auto",
+        float: [
+          "w-[calc(100%-16px)] sm:w-[calc(100%-48px)]",
+          "bg-muted rounded-4xl my-2 sm:my-6 overflow-hidden",
+        ],
+        box: [
+          "w-[calc(100%-16px)] sm:w-[calc(100%-48px)]",
+          "max-w-[calc(var(--section-width)+2*var(--section-px))]",
+          "border -mt-px overflow-hidden",
+        ],
+        panel: [
+          "w-[calc(100%-16px)] sm:w-[calc(100%-48px)]",
+          "max-w-[calc(var(--section-width)+2*var(--section-px))]",
+          "bg-muted rounded-4xl my-2 sm:my-6 overflow-hidden",
         ],
       },
       align: {
@@ -57,7 +57,13 @@ const variants = cva(
   }
 )
 
-const { class: className, variant, frame, order, ...props } = Astro.props
+const {
+  class: className,
+  variant,
+  frame = "float",
+  order,
+  ...props
+} = Astro.props
 
 const slot = await Astro.slots.render("default")
 ---
@@ -68,6 +74,7 @@ const slot = await Astro.slots.render("default")
       class={cn(variants({ variant, frame, order }), className)}
       data-slot="section"
       data-frame={frame}
+      data-order={order}
       {...props}
     >
       <Fragment set:html={slot} />
@@ -77,30 +84,42 @@ const slot = await Astro.slots.render("default")
 
 <style is:global>
   [data-slot="section"] {
-    --section-width: var(--breakpoint-2xl);
-    --section-gutter: 24px;
-    --section-spacer: 48px;
+    --section-width: var(--breakpoint-xl);
+    --section-py: 48px;
+    --section-px: max(24px, calc((100vw - var(--section-width)) / 2));
   }
 
+  [data-slot="section"][data-frame="contain"] {
+    --section-px: 24px;
+  }
+
+  [data-slot="section"][data-frame="box"],
   [data-slot="section"][data-frame="float"],
-  [data-slot="section"][data-frame="inset"] {
-    --section-gutter: 16px;
+  [data-slot="section"][data-frame="panel"] {
+    --section-px: 16px;
   }
 
-  @media (min-width: 1024px) {
-    [data-slot="section"],
+  @media (min-width: 640px) {
+    [data-slot="section"][data-frame="box"],
     [data-slot="section"][data-frame="float"],
-    [data-slot="section"][data-frame="inset"] {
-      --section-gutter: 48px;
+    [data-slot="section"][data-frame="panel"] {
+      --section-px: 24px;
     }
   }
 
   @media (min-width: 1280px) {
-    [data-slot="section"],
-    [data-slot="section"][data-frame="float"],
-    [data-slot="section"][data-frame="inset"] {
-      --section-gutter: 96px;
-      --section-spacer: 96px;
+    [data-slot="section"] {
+      --section-py: 96px;
+    }
+
+    [data-slot="section"][data-frame="contain"],
+    [data-slot="section"][data-frame="box"],
+    [data-slot="section"][data-frame="panel"] {
+      --section-px: 48px;
+    }
+
+    [data-slot="section"][data-frame="float"] {
+      --section-px: calc((100vw - var(--section-width)) / 2);
     }
   }
 </style>

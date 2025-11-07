@@ -16,8 +16,8 @@ const variants = cva(
         default: "*:rounded-lg",
         background: "absolute inset-0 size-full opacity-25",
         inset: [
-          "-mx-(--section-gutter) w-[calc(100%+2*var(--section-gutter))]",
-          "-my-(--section-spacer) h-[calc(100%+2*var(--section-spacer))]",
+          "w-[calc(100%+var(--ml)+var(--mr))] h-[calc(100%+var(--mt)+var(--mb))]",
+          "-ml-(--ml) -mr-(--mr) -mt-(--mt) -mb-(--mb)",
         ],
       },
     },
@@ -44,3 +44,67 @@ const slot = await Astro.slots.render("default")
     </div>
   )
 }
+
+<style lang="scss" is:global>
+  [data-slot="section-media"][data-position="inset"] {
+    --ml: var(--section-px);
+    --mr: var(--section-px);
+    --mt: 0px;
+    --mb: 0px;
+
+    &:first-child {
+      --mt: var(--section-py);
+    }
+
+    &:last-child {
+      --mb: var(--section-py);
+    }
+
+    :is([data-order="reverse"] > &) {
+      --ml: var(--section-px);
+      --mr: var(--section-px);
+      --mt: 0px;
+      --mb: 0px;
+
+      &:first-child {
+        --mb: var(--section-py);
+      }
+
+      &:last-child {
+        --mt: var(--section-py);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      &:is([data-slot="section-split"] > &) {
+        --mt: 0px;
+        --mb: 0px;
+        --mt: var(--section-py);
+        --mb: var(--section-py);
+
+        &:first-child {
+          --ml: var(--section-px);
+        }
+
+        &:last-child {
+          --mr: var(--section-px);
+        }
+
+        &:is([data-order="reverse"] > &) {
+          --ml: var(--section-px);
+          --mr: var(--section-px);
+          --mt: 0px;
+          --mb: 0px;
+
+          &:first-child {
+            --mr: var(--section-px);
+          }
+
+          &:last-child {
+            --ml: var(--section-px);
+          }
+        }
+      }
+    }
+  }
+</style>
