@@ -9,61 +9,47 @@ interface Props
     VariantProps<typeof variants> {}
 
 const variants = cva(
-  [
-    "flex flex-col mx-auto gap-y-(--section-py) px-(--section-px) py-(--section-py)",
-  ],
+  ["flex flex-col mx-auto gap-16 px-(--section-px) py-(--section-py)"],
   {
     variants: {
       variant: {
-        default: "bg-transparent",
-        outline: "border",
-        muted: "bg-muted border-0",
-      },
-      frame: {
-        default: ["w-full"],
+        // Filled on every screen, with content width based on padding
+        default: ["w-full max-w-none"],
+        // Filled on small and medium screens, contained on large screens
         contain: [
           "w-full max-w-[calc(var(--section-width)+2*var(--section-px))] overflow-hidden",
         ],
-        float: [
-          "w-[calc(100%-16px)] sm:w-[calc(100%-48px)]",
-          "bg-muted rounded-4xl my-2 sm:my-6 overflow-hidden",
+        // Filled on every screen, with content width based on padding, and a gutter around for floating effect
+        floating: [
+          "w-[calc(100%-16px)]",
+          "ring ring-inset ring-border bg-muted rounded-lg my-2 overflow-hidden",
         ],
+        // Contained on every screen, with a border, padding and rounded corners for panel effect
+        panel: [
+          "w-[calc(100%-16px)] sm:w-[calc(100%-2*var(--section-px))]",
+          "max-w-[calc(var(--section-width)+2*var(--section-px))]",
+          "ring ring-inset ring-border bg-muted rounded-lg my-(--section-py) overflow-hidden",
+        ],
+        // Contained on every screen, with a border and padding for box effect
         box: [
           "w-[calc(100%-16px)] sm:w-[calc(100%-48px)]",
           "max-w-[calc(var(--section-width)+2*var(--section-px))]",
-          "border -mt-px overflow-hidden",
-        ],
-        panel: [
-          "w-[calc(100%-16px)] sm:w-[calc(100%-48px)]",
-          "max-w-[calc(var(--section-width)+2*var(--section-px))]",
-          "bg-muted rounded-4xl my-2 sm:my-6 overflow-hidden",
+          "ring ring-inset ring-border -mt-px overflow-hidden",
         ],
       },
-      align: {
-        start: "items-start",
-        center: "items-center",
-        end: "items-end",
-      },
-      order: {
-        default: "",
-        reverse: "flex-col-reverse",
+      width: {
+        xl: "",
+        "2xl": "",
       },
     },
     defaultVariants: {
       variant: "default",
-      frame: "default",
-      order: "default",
+      width: "xl",
     },
   }
 )
 
-const {
-  class: className,
-  variant,
-  frame = "float",
-  order,
-  ...props
-} = Astro.props
+const { class: className, variant, width, ...props } = Astro.props
 
 const slot = await Astro.slots.render("default")
 ---
@@ -71,10 +57,10 @@ const slot = await Astro.slots.render("default")
 {
   slot.trim().length > 0 && (
     <section
-      class={cn(variants({ variant, frame, order }), className)}
+      class={cn(variants({ variant }), className)}
       data-slot="section"
-      data-frame={frame}
-      data-order={order}
+      data-variant={variant}
+      data-width={width}
       {...props}
     >
       <Fragment set:html={slot} />
@@ -86,23 +72,27 @@ const slot = await Astro.slots.render("default")
   [data-slot="section"] {
     --section-width: var(--breakpoint-xl);
     --section-py: 48px;
-    --section-px: max(24px, calc((100vw - var(--section-width)) / 2));
+    --section-px: max(24px, calc((100cqw - var(--section-width)) / 2));
   }
 
-  [data-slot="section"][data-frame="contain"] {
+  [data-slot="section"][data-width="2xl"] {
+    --section-width: var(--breakpoint-2xl);
+  }
+
+  [data-slot="section"][data-variant="contain"] {
     --section-px: 24px;
   }
 
-  [data-slot="section"][data-frame="box"],
-  [data-slot="section"][data-frame="float"],
-  [data-slot="section"][data-frame="panel"] {
+  [data-slot="section"][data-variant="box"],
+  [data-slot="section"][data-variant="floating"],
+  [data-slot="section"][data-variant="panel"] {
     --section-px: 16px;
   }
 
   @media (min-width: 640px) {
-    [data-slot="section"][data-frame="box"],
-    [data-slot="section"][data-frame="float"],
-    [data-slot="section"][data-frame="panel"] {
+    [data-slot="section"][data-variant="box"],
+    [data-slot="section"][data-variant="floating"],
+    [data-slot="section"][data-variant="panel"] {
       --section-px: 24px;
     }
   }
@@ -112,14 +102,14 @@ const slot = await Astro.slots.render("default")
       --section-py: 96px;
     }
 
-    [data-slot="section"][data-frame="contain"],
-    [data-slot="section"][data-frame="box"],
-    [data-slot="section"][data-frame="panel"] {
+    [data-slot="section"][data-variant="contain"],
+    [data-slot="section"][data-variant="box"],
+    [data-slot="section"][data-variant="panel"] {
       --section-px: 48px;
     }
 
-    [data-slot="section"][data-frame="float"] {
-      --section-px: calc((100vw - var(--section-width)) / 2);
+    [data-slot="section"][data-variant="floating"] {
+      --section-px: calc((100cqw - var(--section-width)) / 2 - 8px);
     }
   }
 </style>
