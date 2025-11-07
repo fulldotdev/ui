@@ -1,7 +1,4 @@
 ---
-import type { ComponentProps } from "astro/types"
-
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
 import {
@@ -12,9 +9,13 @@ import {
   SectionTypography,
 } from "@/components/ui/section"
 
-interface Props extends ComponentProps<typeof Section> {
-  size?: ComponentProps<typeof SectionTypography>["size"]
-  buttons?: ComponentProps<typeof Button>[]
+interface Props {
+  buttons?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
   logos?: {
     src?: string
     alt?: string
@@ -22,30 +23,21 @@ interface Props extends ComponentProps<typeof Section> {
   }[]
 }
 
-const {
-  class: className,
-  align,
-  order,
-  size,
-  buttons,
-  logos,
-  ...props
-} = Astro.props
+const { buttons, logos } = Astro.props
 ---
 
-<Section class={cn("", className)} {...props}>
-  <SectionContent order={order}>
-    <SectionTypography align={align} size={size}>
+<Section>
+  <SectionContent>
+    <SectionTypography size="lg">
       <slot />
     </SectionTypography>
-    <SectionActions align={align}>
+    <SectionActions>
       {
-        buttons?.map((button, i) => (
-          <Button
-            variant={i === 0 ? "default" : "outline"}
-            size={size}
-            {...button}
-          />
+        buttons?.map(({ icon, text, ...button }, i) => (
+          <Button variant={i === 0 ? "default" : "outline"} size="lg" {...button}>
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
         ))
       }
     </SectionActions>

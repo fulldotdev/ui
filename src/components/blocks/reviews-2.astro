@@ -1,7 +1,4 @@
 ---
-import type { ComponentProps } from "astro/types"
-
-import { cn } from "@/lib/utils"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -20,82 +17,72 @@ import {
   SectionSplit,
   SectionTypography,
 } from "@/components/ui/section"
-import {
-  Tile,
-  TileContent,
-  TileDescription,
-  TileTitle,
-} from "@/components/ui/tile"
+import { Tile, TileContent, TileDescription, TileTitle } from "@/components/ui/tile"
 
-interface Props extends ComponentProps<typeof Section> {
-  size?: ComponentProps<typeof SectionTypography>["size"]
-  buttons?: ComponentProps<typeof Button>[]
-  variant?: ComponentProps<typeof Tile>["variant"]
+interface Props {
+  buttons?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
   items?: {
     title?: string
     description?: string
     rating?: number
-    avatar?: ComponentProps<typeof Avatar>
+    avatar?: {
+      src: string
+      alt: string
+      title?: string
+    }
     tagline?: string
     href?: string
   }[]
 }
 
-const {
-  class: className,
-  align,
-  order,
-  size,
-  buttons,
-  variant,
-  items,
-  ...props
-} = Astro.props
+const { buttons, items } = Astro.props
 ---
 
-<Section class={cn("", className)} {...props}>
+<Section>
   <SectionContent>
-    <SectionSplit align={align} order={order}>
+    <SectionSplit>
       <div>
-        <SectionTypography size={size}>
+        <SectionTypography size="lg">
           <slot />
         </SectionTypography>
         <SectionActions>
           {
-            buttons?.map((button, i) => (
-              <Button
-                variant={i === 0 ? "default" : "outline"}
-                size={size}
-                {...button}
-              />
+            buttons?.map(({ icon, text, ...button }, i) => (
+              <Button variant={i === 0 ? "default" : "outline"} size="lg" {...button}>
+                {icon && <Icon name={icon} />}
+                {text}
+              </Button>
             ))
           }
         </SectionActions>
       </div>
       <SectionMasonry>
         {
-          items?.map(
-            ({ title, description, rating, avatar, tagline, href }) => (
-              <Tile href={href} variant={variant}>
-                <TileContent>
-                  <Item class="-m-4">
-                    <ItemMedia>
-                      <Avatar>
-                        <AvatarImage {...avatar} />
-                      </Avatar>
-                    </ItemMedia>
-                    <ItemContent>
-                      <ItemTitle>{tagline}</ItemTitle>
-                      <ItemDescription>{title}</ItemDescription>
-                    </ItemContent>
-                  </Item>
-                  <Rating rating={rating} />
-                  <TileTitle>{title}</TileTitle>
-                  <TileDescription>{description}</TileDescription>
-                </TileContent>
-              </Tile>
-            )
-          )
+          items?.map(({ title, description, rating, avatar, tagline, href }) => (
+            <Tile href={href} variant="default">
+              <TileContent>
+                <Item class="-m-4">
+                  <ItemMedia>
+                    <Avatar>
+                      <AvatarImage {...avatar} />
+                    </Avatar>
+                  </ItemMedia>
+                  <ItemContent>
+                    <ItemTitle>{tagline}</ItemTitle>
+                    <ItemDescription>{title}</ItemDescription>
+                  </ItemContent>
+                </Item>
+                <Rating rating={rating} />
+                <TileTitle>{title}</TileTitle>
+                <TileDescription>{description}</TileDescription>
+              </TileContent>
+            </Tile>
+          ))
         }
       </SectionMasonry>
     </SectionSplit>

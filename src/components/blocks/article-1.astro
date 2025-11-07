@@ -1,65 +1,68 @@
 ---
-import type { ComponentProps } from "astro/types"
-
-import { cn } from "@/lib/utils"
-import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import { Image } from "@/components/ui/image"
 import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-  ItemTitle,
-} from "@/components/ui/item"
-import { Section, SectionContent, SectionTypography } from "@/components/ui/section"
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionGrid,
+  SectionTypography,
+} from "@/components/ui/section"
+import { Tile, TileContent, TileDescription, TileTitle } from "@/components/ui/tile"
 
-interface Props extends ComponentProps<typeof Section> {
-  size?: ComponentProps<typeof SectionTypography>["size"]
-  title?: ComponentProps<typeof SectionTypography>["title"]
-  description?: ComponentProps<typeof SectionTypography>["description"]
-  image?: ComponentProps<typeof Image>
-  person?: {
-    href?: ComponentProps<typeof Item>["href"]
-    avatar?: ComponentProps<typeof Avatar>
+interface Props {
+  buttons?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  items?: {
+    href?: string
     title?: string
-    tagline?: string
-  }
+    description?: string
+    image?: {
+      src: string
+      alt: string
+      title?: string
+    }
+  }[]
 }
 
-const {
-  class: className,
-  align,
-  size,
-  title,
-  description,
-  image,
-  person,
-  ...props
-} = Astro.props
+const { buttons, items } = Astro.props
 ---
 
-<Section class={cn("", className)} {...props}>
-  <SectionContent class="max-w-screen-lg" align={align}>
-    <SectionTypography
-      align={align}
-      size={size}
-      title={title}
-      description={description}
-    />
-    <Item class="-m-4" size="sm" href={person?.href}>
-      <ItemMedia>
-        <Avatar class="size-10">
-          <AvatarImage {...person?.avatar} />
-        </Avatar>
-      </ItemMedia>
-      <ItemContent>
-        <ItemTitle>{person?.title}</ItemTitle>
-        <ItemDescription>{person?.tagline}</ItemDescription>
-      </ItemContent>
-    </Item>
-    <Image class="rounded-lg" {...image} />
-    <SectionTypography class="mx-auto max-w-screen-md">
+<Section>
+  <SectionContent>
+    <SectionTypography size="lg" class="not-first:mt-4">
       <slot />
     </SectionTypography>
+    <SectionActions class="not-first:mt-8 not-last:mb-4">
+      {
+        buttons?.map(({ icon, text, ...button }, i) => (
+          <Button variant={i === 0 ? "default" : "outline"} size="lg" {...button}>
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
+    </SectionActions>
+    <SectionGrid class="gap-4">
+      {
+        items?.map(({ title, description, image, href }) => (
+          <Tile href={href} class="group flex flex-col items-start">
+            <Image
+              class="aspect-4/3 rounded-lg object-cover transition-opacity group-hover:opacity-75"
+              sizes="200px"
+              {...image}
+            />
+            <TileContent class="flex flex-col gap-2 not-first:mt-4">
+              <TileTitle>{title}</TileTitle>
+              <TileDescription>{description}</TileDescription>
+            </TileContent>
+          </Tile>
+        ))
+      }
+    </SectionGrid>
   </SectionContent>
 </Section>

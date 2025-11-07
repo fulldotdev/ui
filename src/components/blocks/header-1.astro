@@ -1,8 +1,6 @@
 ---
-import type { ComponentProps } from "astro/types"
 import MenuIcon from "lucide-static/icons/menu.svg"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Collapsible,
@@ -31,14 +29,18 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 
-interface Props extends ComponentProps<typeof Header> {
-  align?: "start" | "center" | "end"
+interface Props {
   logo?: {
-    src?: ComponentProps<typeof LogoImage>["src"]
-    alt?: ComponentProps<typeof LogoImage>["alt"]
+    src?: string
+    alt?: string
     title?: string
   }
-  buttons?: ComponentProps<typeof Button>[]
+  buttons?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
   socials?: string[]
   menus?: {
     text?: string
@@ -50,21 +52,10 @@ interface Props extends ComponentProps<typeof Header> {
   }[]
 }
 
-const {
-  class: className,
-  align,
-  logo,
-  menus,
-  buttons,
-  socials,
-  ...props
-} = Astro.props
+const { logo, menus, buttons, socials } = Astro.props
 ---
 
-<Header
-  class={cn("sticky top-0 z-50 flex items-center border-b", className)}
-  {...props}
->
+<Header class="sticky top-0 z-50 flex items-center border-b">
   <HeaderContent class="flex max-w-none justify-between gap-8">
     <Logo href="/">
       <LogoImage src={logo?.src} alt={logo?.alt} />
@@ -114,11 +105,14 @@ const {
         ))
       }
       {
-        buttons?.map((button, i) => (
+        buttons?.map(({ icon, text, ...button }, i) => (
           <Button
             variant={i === buttons.length - 1 ? "default" : "ghost"}
             {...button}
-          />
+          >
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
         ))
       }
       <ModeToggle />
@@ -161,11 +155,14 @@ const {
         {
           buttons && buttons.length > 0 && (
             <div class="mt-6 flex w-full flex-col gap-2">
-              {buttons?.map((button, i) => (
+              {buttons?.map(({ icon, text, ...button }, i) => (
                 <Button
                   variant={i === buttons.length - 1 ? "default" : "ghost"}
                   {...button}
-                />
+                >
+                  {icon && <Icon name={icon} />}
+                  {text}
+                </Button>
               ))}
             </div>
           )

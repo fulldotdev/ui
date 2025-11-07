@@ -1,7 +1,4 @@
 ---
-import type { ComponentProps } from "astro/types"
-
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { Icon } from "@/components/ui/icon"
@@ -19,38 +16,28 @@ import {
   SectionTypography,
 } from "@/components/ui/section"
 
-interface Props extends ComponentProps<typeof Section> {
-  size?: ComponentProps<typeof SectionTypography>["size"]
+interface Props {
   form?: any
   items?: {
+    icon?: string
     title?: string
     description?: string
-    variant?: ComponentProps<typeof Item>["variant"]
-    href?: ComponentProps<typeof Button>["href"]
-    icon?: ComponentProps<typeof Icon>["name"]
+    href?: string
   }[]
 }
 
-const {
-  class: className,
-  align,
-  order,
-  size,
-  form,
-  items,
-  ...props
-} = Astro.props
+const { form, items } = Astro.props
 ---
 
-<Section class={cn("", className)} align={align} order={order} {...props}>
-  <SectionContent align={align}>
-    <SectionTypography align={align} size={size}>
+<Section>
+  <SectionContent>
+    <SectionTypography size="lg">
       <slot />
     </SectionTypography>
     <ItemGroup class="gap-4">
       {
-        items?.map(({ title, description, href, icon, variant = "muted" }) => (
-          <Item variant={variant} href={href}>
+        items?.map(({ icon, title, description, href }) => (
+          <Item variant="muted" href={href}>
             <ItemMedia variant="icon">
               <Icon name={icon} href={href} />
             </ItemMedia>

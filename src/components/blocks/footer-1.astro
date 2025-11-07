@@ -1,7 +1,4 @@
 ---
-import type { ComponentProps } from "astro/types"
-
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Footer,
@@ -23,14 +20,18 @@ import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
 
 interface Props {
   class?: string
-  logo?: ComponentProps<typeof Logo>
+  logo?: {
+    src?: string
+    alt?: string
+    title?: string
+  }
   description?: string
   copyright?: string
   channels?: {
     title?: string
     description?: string
-    href?: ComponentProps<typeof Button>["href"]
-    icon?: ComponentProps<typeof Icon>["name"]
+    href?: string
+    icon?: string
   }[]
   socials?: string[]
   menus?: {
@@ -46,24 +47,15 @@ interface Props {
   }[]
 }
 
-const {
-  class: className,
-  logo,
-  description,
-  copyright,
-  channels,
-  socials,
-  menus,
-  policies,
-} = Astro.props
+const { logo, description, copyright, channels, socials, menus, policies } = Astro.props
 ---
 
-<Footer class={cn("", className)}>
+<Footer>
   <FooterContainer>
     <FooterSplit>
       <FooterGroup>
         <Logo href="/">
-          <LogoImage {...logo} />
+          <LogoImage src={logo?.src} alt={logo?.alt} />
           <LogoText>{logo?.title}</LogoText>
         </Logo>
         <FooterDescription>{description}</FooterDescription>

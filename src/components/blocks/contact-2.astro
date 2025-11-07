@@ -1,7 +1,4 @@
 ---
-import type { ComponentProps } from "astro/types"
-
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { Icon } from "@/components/ui/icon"
@@ -20,52 +17,44 @@ import {
   SectionTypography,
 } from "@/components/ui/section"
 
-interface Props extends ComponentProps<typeof Section> {
-  size?: ComponentProps<typeof SectionTypography>["size"]
-  buttons?: ComponentProps<typeof Button>[]
+interface Props {
+  buttons?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
   items?: {
-    variant?: ComponentProps<typeof Item>["variant"]
-    icon?: ComponentProps<typeof Icon>["name"]
-    href?: ComponentProps<typeof Button>["href"]
+    icon?: string
+    href?: string
     title?: string
     description?: string
   }[]
   form?: any
 }
 
-const {
-  class: className,
-  align,
-  order,
-  size,
-  buttons,
-  items,
-  form,
-  ...props
-} = Astro.props
+const { buttons, items, form } = Astro.props
 ---
 
-<Section class={cn("", className)} {...props}>
-  <SectionSplit align={align} order={order}>
+<Section>
+  <SectionSplit>
     <SectionContent>
-      <SectionTypography size={size}>
+      <SectionTypography size="lg">
         <slot />
       </SectionTypography>
       <ItemGroup class="gap-4">
         {
-          items?.map(
-            ({ title, description, href, icon, variant = "muted" }) => (
-              <Item variant={variant} href={href}>
-                <ItemMedia variant="icon">
-                  <Icon name={icon} href={href} />
-                </ItemMedia>
-                <ItemContent>
-                  <ItemTitle>{title}</ItemTitle>
-                  <ItemDescription>{description}</ItemDescription>
-                </ItemContent>
-              </Item>
-            )
-          )
+          items?.map(({ icon, title, description, href }) => (
+            <Item variant="muted" href={href}>
+              <ItemMedia variant="icon">
+                <Icon name={icon} href={href} />
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle>{title}</ItemTitle>
+                <ItemDescription>{description}</ItemDescription>
+              </ItemContent>
+            </Item>
+          ))
         }
       </ItemGroup>
     </SectionContent>

@@ -1,7 +1,4 @@
 ---
-import type { ComponentProps } from "astro/types"
-
-import { cn } from "@/lib/utils"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Image } from "@/components/ui/image"
 import {
@@ -13,39 +10,32 @@ import {
 } from "@/components/ui/item"
 import { Section, SectionContent, SectionTypography } from "@/components/ui/section"
 
-interface Props extends ComponentProps<typeof Section> {
-  size?: ComponentProps<typeof SectionTypography>["size"]
-  title?: ComponentProps<typeof SectionTypography>["title"]
-  description?: ComponentProps<typeof SectionTypography>["description"]
-  image?: ComponentProps<typeof Image>
+interface Props {
+  title?: string
+  description?: string
+  image?: {
+    src: string
+    alt: string
+    title?: string
+  }
   person?: {
-    href?: ComponentProps<typeof Item>["href"]
-    avatar?: ComponentProps<typeof Avatar>
+    href?: string
+    avatar?: {
+      src: string
+      alt: string
+      title?: string
+    }
     title?: string
     tagline?: string
   }
 }
 
-const {
-  class: className,
-  align,
-  size,
-  title,
-  description,
-  image,
-  person,
-  ...props
-} = Astro.props
+const { title, description, image, person } = Astro.props
 ---
 
-<Section class={cn("", className)} {...props}>
-  <SectionContent class="max-w-screen-md" align={align}>
-    <SectionTypography
-      align={align}
-      size={size}
-      title={title}
-      description={description}
-    />
+<Section>
+  <SectionContent class="max-w-screen-md">
+    <SectionTypography size="lg" title={title} description={description} />
     <SectionTypography>
       <slot />
     </SectionTypography>

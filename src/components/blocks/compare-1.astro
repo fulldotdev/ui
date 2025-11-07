@@ -1,9 +1,7 @@
 ---
-import type { ComponentProps } from "astro/types"
 import CircleCheck from "lucide-static/icons/circle-check.svg"
 import X from "lucide-static/icons/x.svg"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { List, ListItem } from "@/components/ui/list"
 import {
@@ -13,16 +11,15 @@ import {
   SectionSplit,
   SectionTypography,
 } from "@/components/ui/section"
-import {
-  Tile,
-  TileContent,
-  TileDescription,
-  TileTitle,
-} from "@/components/ui/tile"
+import { Tile, TileContent, TileDescription, TileTitle } from "@/components/ui/tile"
 
-interface Props extends ComponentProps<typeof Section> {
-  size?: ComponentProps<typeof SectionTypography>["size"]
-  buttons?: ComponentProps<typeof Button>[]
+interface Props {
+  buttons?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
   items?: {
     title?: string
     description?: string
@@ -30,34 +27,25 @@ interface Props extends ComponentProps<typeof Section> {
   }[]
 }
 
-const {
-  class: className,
-  align,
-  order,
-  size,
-  buttons,
-  items,
-  ...props
-} = Astro.props
+const { buttons, items } = Astro.props
 ---
 
-<Section class={cn("", className)} {...props}>
+<Section>
   <SectionContent>
-    <SectionTypography align={align} size={size}>
+    <SectionTypography size="lg">
       <slot />
     </SectionTypography>
-    <SectionActions align={align}>
+    <SectionActions>
       {
-        buttons?.map((button, i) => (
-          <Button
-            variant={i === 0 ? "default" : "outline"}
-            size={size}
-            {...button}
-          />
+        buttons?.map(({ icon, text, ...button }, i) => (
+          <Button variant={i === 0 ? "default" : "outline"} size="lg" {...button}>
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
         ))
       }
     </SectionActions>
-    <SectionSplit class="gap-8" order={order}>
+    <SectionSplit class="gap-8">
       {
         items?.map(({ title, description, list }, i) => (
           <Tile class="items-start" variant={i === 0 ? "outline" : "muted"}>

@@ -1,7 +1,4 @@
 ---
-import type { ComponentProps } from "astro/types"
-
-import { cn } from "@/lib/utils"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,9 +18,13 @@ import {
 } from "@/components/ui/section"
 import { Tile, TileContent, TileTypography } from "@/components/ui/tile"
 
-interface Props extends ComponentProps<typeof Section> {
-  size?: ComponentProps<typeof SectionTypography>["size"]
-  buttons?: ComponentProps<typeof Button>[]
+interface Props {
+  buttons?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
   items?: {
     name?: string
     title?: string
@@ -31,68 +32,55 @@ interface Props extends ComponentProps<typeof Section> {
     html?: string
     rating?: number
     href?: string
-    avatar?: ComponentProps<typeof Avatar>
+    avatar?: {
+      src: string
+      alt: string
+      title?: string
+    }
     tagline?: string
   }[]
 }
 
-const {
-  class: className,
-  align,
-  size,
-  buttons,
-  variant,
-  items,
-  frame,
-  ...props
-} = Astro.props
+const { buttons, items } = Astro.props
 ---
 
-<Section class={cn("", className)} {...props}>
-  <SectionContent align={align}>
-    <SectionTypography align={align} size={size}>
+<Section>
+  <SectionContent>
+    <SectionTypography size="lg">
       <slot />
     </SectionTypography>
-    <SectionActions align={align}>
+    <SectionActions>
       {
-        buttons?.map((button, i) => (
-          <Button
-            variant={i === 0 ? "default" : "outline"}
-            size={size}
-            {...button}
-          />
+        buttons?.map(({ icon, text, ...button }, i) => (
+          <Button variant={i === 0 ? "default" : "outline"} size="lg" {...button}>
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
         ))
       }
     </SectionActions>
   </SectionContent>
   <SectionMasonry>
     {
-      items?.map(
-        ({ title, description, html, rating, href, avatar, name, tagline }) => (
-          <Tile href={href} frame={frame} variant={variant}>
-            <Item class="-m-4">
-              <ItemMedia>
-                <Avatar>
-                  <AvatarImage {...avatar} />
-                </Avatar>
-              </ItemMedia>
-              <ItemContent>
-                <ItemTitle>{name}</ItemTitle>
-                <ItemDescription>{tagline}</ItemDescription>
-              </ItemContent>
-            </Item>
-            <Rating rating={rating} />
-            <TileContent>
-              <TileTypography
-                size={size}
-                title={title}
-                description={description}
-                html={html}
-              />
-            </TileContent>
-          </Tile>
-        )
-      )
+      items?.map(({ title, description, html, rating, href, avatar, name, tagline }) => (
+        <Tile href={href} variant="default">
+          <Item class="-m-4">
+            <ItemMedia>
+              <Avatar>
+                <AvatarImage {...avatar} />
+              </Avatar>
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>{name}</ItemTitle>
+              <ItemDescription>{tagline}</ItemDescription>
+            </ItemContent>
+          </Item>
+          <Rating rating={rating} />
+          <TileContent>
+            <TileTypography size="lg" title={title} description={description} html={html} />
+          </TileContent>
+        </Tile>
+      ))
     }
   </SectionMasonry>
 </Section>

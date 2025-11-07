@@ -1,7 +1,4 @@
 ---
-import type { ComponentProps } from "astro/types"
-
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { List, ListItem } from "@/components/ui/list"
 import {
@@ -10,16 +7,15 @@ import {
   SectionContent,
   SectionTypography,
 } from "@/components/ui/section"
-import {
-  Tile,
-  TileContent,
-  TileDescription,
-  TileTitle,
-} from "@/components/ui/tile"
+import { Tile, TileContent, TileDescription, TileTitle } from "@/components/ui/tile"
 
-interface Props extends ComponentProps<typeof Section> {
-  size?: ComponentProps<typeof SectionTypography>["size"]
-  buttons?: ComponentProps<typeof Button>[]
+interface Props {
+  buttons?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
   items?: {
     href?: string
     title?: string
@@ -31,45 +27,42 @@ interface Props extends ComponentProps<typeof Section> {
   }[]
 }
 
-const { class: className, align, size, items, buttons, ...props } = Astro.props
+const { items, buttons } = Astro.props
 ---
 
-<Section class={cn("", className)} {...props}>
-  <SectionContent class="max-w-screen-md" align={align}>
-    <SectionTypography align={align} size={size}>
+<Section>
+  <SectionContent class="max-w-screen-md">
+    <SectionTypography size="lg">
       <slot />
     </SectionTypography>
-    <SectionActions align={align}>
+    <SectionActions>
       {
-        buttons?.map((button, i) => (
-          <Button
-            variant={i === 0 ? "default" : "outline"}
-            size={size}
-            {...button}
-          />
+        buttons?.map(({ icon, text, ...button }, i) => (
+          <Button variant={i === 0 ? "default" : "outline"} size="lg" {...button}>
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
         ))
       }
     </SectionActions>
     {
       items && items.length > 0 && (
         <div class="flex w-full flex-col gap-4">
-          {items.map(
-            ({ href, title, description, location, salary, hours }) => {
-              return (
-                <Tile href={href}>
-                  <TileContent>
-                    <TileTitle>{title}</TileTitle>
-                    <TileDescription>{description}</TileDescription>
-                    <List class="not-first:mt-4">
-                      <ListItem>{location}</ListItem>
-                      <ListItem>{salary}</ListItem>
-                      <ListItem>{hours}</ListItem>
-                    </List>
-                  </TileContent>
-                </Tile>
-              )
-            }
-          )}
+          {items.map(({ href, title, description, location, salary, hours }) => {
+            return (
+              <Tile href={href}>
+                <TileContent>
+                  <TileTitle>{title}</TileTitle>
+                  <TileDescription>{description}</TileDescription>
+                  <List class="not-first:mt-4">
+                    <ListItem>{location}</ListItem>
+                    <ListItem>{salary}</ListItem>
+                    <ListItem>{hours}</ListItem>
+                  </List>
+                </TileContent>
+              </Tile>
+            )
+          })}
         </div>
       )
     }

@@ -1,10 +1,6 @@
 ---
-import type { ComponentProps } from "astro/types"
-
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
-import { Image } from "@/components/ui/image"
 import {
   Section,
   SectionActions,
@@ -12,70 +8,48 @@ import {
   SectionGrid,
   SectionTypography,
 } from "@/components/ui/section"
-import {
-  Tile,
-  TileContent,
-  TileMedia,
-  TileTypography,
-} from "@/components/ui/tile"
+import { Tile, TileContent, TileDescription, TileTitle } from "@/components/ui/tile"
 
-interface Props extends ComponentProps<typeof Section> {
-  size?: ComponentProps<typeof SectionTypography>["size"]
-  buttons?: ComponentProps<typeof Button>[]
+interface Props {
+  buttons?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
   items?: {
     title?: string
     description?: string
-    html?: string
-    button?: ComponentProps<typeof Button>
-    image?: ComponentProps<typeof Image>
-    variant?: ComponentProps<typeof Tile>["variant"]
+    icon?: string
   }[]
 }
 
-const {
-  class: className,
-  align,
-  order,
-  size,
-  buttons,
-  items,
-  variant,
-  ...props
-} = Astro.props
+const { buttons, items } = Astro.props
 ---
 
-<Section class={cn("", className)} {...props}>
-  <SectionContent align={align} order={order}>
-    <SectionTypography align={align} size={size}>
+<Section>
+  <SectionContent>
+    <SectionTypography size="lg">
       <slot />
     </SectionTypography>
-    <SectionActions align={align}>
+    <SectionActions>
       {
-        buttons?.map((button, i) => (
-          <Button
-            variant={i === 0 ? "default" : "outline"}
-            size={size}
-            {...button}
-          />
+        buttons?.map(({ icon, text, ...button }, i) => (
+          <Button variant={i === 0 ? "default" : "outline"} size="lg" {...button}>
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
         ))
       }
     </SectionActions>
-    <SectionGrid>
+    <SectionGrid class="gap-x-16 gap-y-8">
       {
-        items?.map(({ title, description, html, image, button }) => (
-          <Tile variant={variant} variant="default">
-            <TileMedia variant="inset">
-              <Image {...image} />
-            </TileMedia>
-            <TileContent align={align}>
-              <TileTypography
-                align={align}
-                size={size}
-                title={title}
-                description={description}
-                html={html}
-              />
-              <Button class="px-0" variant="link" size={size} {...button} />
+        items?.map(({ title, description, icon }) => (
+          <Tile class="items-start">
+            <TileContent class="p-0">
+              <Icon class="text-primary" name={icon} />
+              <TileTitle class="text-2xl">{title}</TileTitle>
+              <TileDescription>{description}</TileDescription>
             </TileContent>
           </Tile>
         ))

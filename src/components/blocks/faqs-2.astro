@@ -1,7 +1,4 @@
 ---
-import type { ComponentProps } from "astro/types"
-
-import { cn } from "@/lib/utils"
 import {
   Accordion,
   AccordionContent,
@@ -17,40 +14,35 @@ import {
   SectionTypography,
 } from "@/components/ui/section"
 
-interface Props extends ComponentProps<typeof Section> {
-  size?: ComponentProps<typeof SectionTypography>["size"]
-  buttons?: ComponentProps<typeof Button>[]
+interface Props {
+  buttons?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
   items?: {
     title?: string
     description?: string
   }[]
 }
 
-const {
-  class: className,
-  align,
-  order,
-  size,
-  buttons,
-  items,
-  ...props
-} = Astro.props
+const { buttons, items } = Astro.props
 ---
 
-<Section class={cn("", className)} {...props}>
-  <SectionSplit align={align} order={order}>
+<Section>
+  <SectionSplit>
     <SectionContent>
-      <SectionTypography size={size}>
+      <SectionTypography size="lg">
         <slot />
       </SectionTypography>
       <SectionActions>
         {
-          buttons?.map((button, i) => (
-            <Button
-              variant={i === 0 ? "default" : "outline"}
-              size={size}
-              {...button}
-            />
+          buttons?.map(({ icon, text, ...button }, i) => (
+            <Button variant={i === 0 ? "default" : "outline"} size="lg" {...button}>
+              {icon && <Icon name={icon} />}
+              {text}
+            </Button>
           ))
         }
       </SectionActions>

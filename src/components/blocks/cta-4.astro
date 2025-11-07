@@ -1,7 +1,4 @@
 ---
-import type { ComponentProps } from "astro/types"
-
-import { cn } from "@/lib/utils"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
@@ -23,44 +20,46 @@ import {
   SectionTypography,
 } from "@/components/ui/section"
 
-interface Props extends ComponentProps<typeof Section> {
-  size?: ComponentProps<typeof SectionTypography>["size"]
+interface Props {
   list?: string[]
-  buttons?: ComponentProps<typeof Button>[]
-  image?: ComponentProps<typeof Image>
+  buttons?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  image?: {
+    src: string
+    alt: string
+    title?: string
+  }
   item?: {
-    avatars?: ComponentProps<typeof Avatar>[]
-    rating?: ComponentProps<typeof Rating>["rating"]
+    avatars?: {
+      src: string
+      alt: string
+      title?: string
+    }[]
+    rating?: number
     description?: string
   }
 }
 
-const {
-  class: className,
-  align,
-  size,
-  list,
-  buttons,
-  image,
-  item,
-  ...props
-} = Astro.props
+const { list, buttons, image, item } = Astro.props
 ---
 
-<Section class={cn("", className)} {...props}>
-  <SectionSplit align={align}>
+<Section>
+  <SectionSplit>
     <SectionContent class="lg:col-span-3">
-      <SectionTypography size={size}>
+      <SectionTypography size="lg">
         <slot />
       </SectionTypography>
       <SectionActions>
         {
-          buttons?.map((button, i) => (
-            <Button
-              variant={i === 0 ? "default" : "outline"}
-              size={size}
-              {...button}
-            />
+          buttons?.map(({ icon, text, ...button }, i) => (
+            <Button variant={i === 0 ? "default" : "outline"} size="lg" {...button}>
+              {icon && <Icon name={icon} />}
+              {text}
+            </Button>
           ))
         }
       </SectionActions>
