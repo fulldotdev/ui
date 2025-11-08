@@ -94,7 +94,7 @@ const reference = z.string() // "services/my-service" - matches single page by i
 const items = z.union([
   glob,
   reference.array(),
-  item.extend({ item: item }).array(),
+  item.extend({ item: item.optional() }).array(),
 ])
 
 // Section - content blocks (hero, cta, features, reviews, etc.)
