@@ -1,4 +1,7 @@
 ---
+import CircleCheck from "lucide-static/icons/circle-check.svg"
+import X from "lucide-static/icons/x.svg"
+
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { List, ListItem } from "@/components/ui/list"
@@ -6,10 +9,10 @@ import {
   Section,
   SectionActions,
   SectionContent,
-  SectionGrid,
+  SectionSpread,
   SectionTypography,
 } from "@/components/ui/section"
-import { Tile, TileContent, TileTypography } from "@/components/ui/tile"
+import { Tile, TileContent, TileDescription, TileMedia, TileTitle } from "@/components/ui/tile"
 
 interface Props {
   buttons?: {
@@ -21,15 +24,7 @@ interface Props {
   items?: {
     title?: string
     description?: string
-    icon?: string
     list?: string[]
-    button?: {
-      text?: string
-      href?: string
-      target?: string
-    }
-    price?: string
-    unit?: string
   }[]
 }
 
@@ -52,31 +47,23 @@ const { buttons, items } = Astro.props
       }
     </SectionActions>
   </SectionContent>
-  <SectionGrid>
+  <SectionSpread>
     {
-      items?.map(({ title, description, button, list, price, unit }) => (
+      items?.map(({ title, description, list }, i) => (
         <Tile>
+          <TileMedia variant="icon">{i + 1}</TileMedia>
           <TileContent>
-            <TileTypography title={title} description={description} />
-            {(price || unit) && (
-              <div class="font-semibold">
-                {price && <span class="text-foreground text-2xl">{price}</span>}
-                {unit && (
-                  <span class="text-muted-foreground ml-1.5 text-sm font-normal">
-                    / {unit}
-                  </span>
-                )}
-              </div>
-            )}
+            <TileTitle>{title}</TileTitle>
+            <TileDescription>{description}</TileDescription>
             <List>
               {list?.map((item) => (
                 <ListItem>{item}</ListItem>
               ))}
             </List>
-            <Button class="mt-auto w-full" {...button} />
           </TileContent>
         </Tile>
       ))
     }
-  </SectionGrid>
+  </SectionSpread>
 </Section>
+

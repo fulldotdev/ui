@@ -1,15 +1,19 @@
 ---
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
-import { List, ListItem } from "@/components/ui/list"
 import {
   Section,
   SectionActions,
   SectionContent,
-  SectionGrid,
+  SectionSpread,
   SectionTypography,
 } from "@/components/ui/section"
-import { Tile, TileContent, TileTypography } from "@/components/ui/tile"
+import {
+  Tile,
+  TileContent,
+  TileMedia,
+  TileTypography,
+} from "@/components/ui/tile"
 
 interface Props {
   buttons?: {
@@ -21,15 +25,13 @@ interface Props {
   items?: {
     title?: string
     description?: string
+    html?: string
     icon?: string
-    list?: string[]
     button?: {
       text?: string
       href?: string
       target?: string
     }
-    price?: string
-    unit?: string
   }[]
 }
 
@@ -52,31 +54,23 @@ const { buttons, items } = Astro.props
       }
     </SectionActions>
   </SectionContent>
-  <SectionGrid>
+  <SectionSpread>
     {
-      items?.map(({ title, description, button, list, price, unit }) => (
+      items?.map(({ title, description, html, icon, button }) => (
         <Tile>
+          <TileMedia variant="icon">
+            <Icon name={icon} />
+          </TileMedia>
           <TileContent>
-            <TileTypography title={title} description={description} />
-            {(price || unit) && (
-              <div class="font-semibold">
-                {price && <span class="text-foreground text-2xl">{price}</span>}
-                {unit && (
-                  <span class="text-muted-foreground ml-1.5 text-sm font-normal">
-                    / {unit}
-                  </span>
-                )}
-              </div>
-            )}
-            <List>
-              {list?.map((item) => (
-                <ListItem>{item}</ListItem>
-              ))}
-            </List>
-            <Button class="mt-auto w-full" {...button} />
+            <TileTypography
+              title={title}
+              description={description}
+              html={html}
+            />
+            <Button class="px-0" variant="link" {...button} />
           </TileContent>
         </Tile>
       ))
     }
-  </SectionGrid>
+  </SectionSpread>
 </Section>

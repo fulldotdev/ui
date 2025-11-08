@@ -1,12 +1,7 @@
 ---
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
 import {
   Section,
   SectionActions,
@@ -14,6 +9,12 @@ import {
   SectionSplit,
   SectionTypography,
 } from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileTitle,
+} from "@/components/ui/tile"
 
 interface Props {
   buttons?: {
@@ -23,8 +24,14 @@ interface Props {
     target?: string
   }[]
   items?: {
+    href?: string
     title?: string
     description?: string
+    image?: {
+      src: string
+      alt: string
+      title?: string
+    }
   }[]
 }
 
@@ -48,19 +55,20 @@ const { buttons, items } = Astro.props
         }
       </SectionActions>
     </SectionContent>
-    <SectionContent>
-      {
-        items && items.length > 0 && (
-          <Accordion>
-            {items?.map(({ title, description }) => (
-              <AccordionItem>
-                <AccordionTrigger>{title}</AccordionTrigger>
-                <AccordionContent>{description}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        )
-      }
-    </SectionContent>
+    {
+      items && items.length > 0 && (
+        <div class="flex flex-col gap-4">
+          {items?.map(({ title, description, image, href }) => (
+            <Tile href={href}>
+              <Image {...image} />
+              <TileContent>
+                <TileTitle>{title}</TileTitle>
+                <TileDescription>{description}</TileDescription>
+              </TileContent>
+            </Tile>
+          ))}
+        </div>
+      )
+    }
   </SectionSplit>
 </Section>

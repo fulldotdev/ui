@@ -5,15 +5,15 @@ import {
   Section,
   SectionActions,
   SectionContent,
-  SectionGrid,
   SectionSplit,
   SectionTypography,
 } from "@/components/ui/section"
 import {
   Tile,
   TileContent,
+  TileDescription,
   TileMedia,
-  TileTypography,
+  TileTitle,
 } from "@/components/ui/tile"
 
 interface Props {
@@ -26,13 +26,7 @@ interface Props {
   items?: {
     title?: string
     description?: string
-    html?: string
     icon?: string
-    button?: {
-      text?: string
-      href?: string
-      target?: string
-    }
   }[]
 }
 
@@ -41,17 +35,14 @@ const { buttons, items } = Astro.props
 
 <Section>
   <SectionSplit>
-    <SectionContent class="xl:col-span-2">
+    <SectionContent>
       <SectionTypography>
         <slot />
       </SectionTypography>
       <SectionActions>
         {
           buttons?.map(({ icon, text, ...button }, i) => (
-            <Button
-              variant={i === 0 ? "default" : "outline"}
-              {...button}
-            >
+            <Button variant={i === 0 ? "default" : "outline"} {...button}>
               {icon && <Icon name={icon} />}
               {text}
             </Button>
@@ -59,25 +50,22 @@ const { buttons, items } = Astro.props
         }
       </SectionActions>
     </SectionContent>
-    <SectionGrid class="xl:col-span-3">
-      {
-        items?.map(({ title, description, html, icon, button }) => (
-          <Tile>
-            <TileContent>
+    {
+      items && items.length > 0 && (
+        <div class="flex flex-col gap-4">
+          {items?.map(({ title, description, icon }) => (
+            <Tile>
               <TileMedia variant="icon">
                 <Icon name={icon} />
               </TileMedia>
-              <TileTypography
-                size="lg"
-                title={title}
-                description={description}
-                html={html}
-              />
-              <Button class="px-0" variant="link" size="lg" {...button} />
-            </TileContent>
-          </Tile>
-        ))
-      }
-    </SectionGrid>
+              <TileContent>
+                <TileTitle>{title}</TileTitle>
+                <TileDescription>{description}</TileDescription>
+              </TileContent>
+            </Tile>
+          ))}
+        </div>
+      )
+    }
   </SectionSplit>
 </Section>

@@ -32,44 +32,42 @@ const { buttons, items } = Astro.props
 ---
 
 <Section>
-  <SectionContent>
-    <SectionTypography>
-      <slot />
-    </SectionTypography>
-    <SectionActions>
-      {
-        buttons?.map(({ icon, text, ...button }, i) => (
-          <Button variant={i === 0 ? "default" : "outline"} {...button}>
-            {icon && <Icon name={icon} />}
-            {text}
-          </Button>
-        ))
-      }
-    </SectionActions>
+  <SectionSplit>
+    <SectionContent>
+      <SectionTypography>
+        <slot />
+      </SectionTypography>
+      <SectionActions>
+        {
+          buttons?.map(({ icon, text, ...button }, i) => (
+            <Button variant={i === 0 ? "default" : "outline"} {...button}>
+              {icon && <Icon name={icon} />}
+              {text}
+            </Button>
+          ))
+        }
+      </SectionActions>
+    </SectionContent>
     {
       items && items.length > 0 && (
-        <SectionSplit class="before:bg-border relative gap-8 before:absolute before:left-5.5 before:h-full before:w-px before:lg:top-5.5 before:lg:h-px before:lg:w-full">
+        <div class="flex flex-col gap-4">
           {items?.map(({ title, description, list }, i) => (
-            <Tile class="items-start gap-8 gap-x-4 max-lg:flex-row">
+            <Tile>
               <TileMedia variant="icon">{i + 1}</TileMedia>
-              <TileContent class="p-0">
-                <TileTitle class="not-first:mt-4">{title}</TileTitle>
+              <TileContent>
+                <TileTitle>{title}</TileTitle>
                 <TileDescription>{description}</TileDescription>
-                <List
-                  class={`not-first:mt-4 ${i === 0 ? "text-muted-foreground" : "text-foreground"}`}
-                >
+                <List>
                   {list?.map((item) => (
-                    <ListItem>
-                      {i === 0 ? <X /> : <CircleCheck />}
-                      {item}
-                    </ListItem>
+                    <ListItem>{item}</ListItem>
                   ))}
                 </List>
               </TileContent>
             </Tile>
           ))}
-        </SectionSplit>
+        </div>
       )
     }
-  </SectionContent>
+  </SectionSplit>
 </Section>
+

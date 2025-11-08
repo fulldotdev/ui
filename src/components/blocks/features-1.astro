@@ -1,7 +1,6 @@
 ---
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
-import { Image } from "@/components/ui/image"
 import {
   Section,
   SectionActions,
@@ -33,11 +32,6 @@ interface Props {
       href?: string
       target?: string
     }
-    image?: {
-      src: string
-      alt: string
-      title?: string
-    }
   }[]
 }
 
@@ -46,17 +40,13 @@ const { buttons, items } = Astro.props
 
 <Section>
   <SectionContent>
-    <SectionTypography size="lg">
+    <SectionTypography>
       <slot />
     </SectionTypography>
     <SectionActions>
       {
         buttons?.map(({ icon, text, ...button }, i) => (
-          <Button
-            variant={i === 0 ? "default" : "outline"}
-            size="lg"
-            {...button}
-          >
+          <Button variant={i === 0 ? "default" : "outline"} {...button}>
             {icon && <Icon name={icon} />}
             {text}
           </Button>
@@ -64,22 +54,20 @@ const { buttons, items } = Astro.props
       }
     </SectionActions>
   </SectionContent>
-  <SectionGrid position="inset">
+  <SectionGrid>
     {
-      items?.map(({ title, description, html, icon, image, button }) => (
-        <Tile variant="default">
-          <TileMedia position="top">
-            <Image {...image} />
+      items?.map(({ title, description, html, icon, button }) => (
+        <Tile>
+          <TileMedia variant="icon">
+            <Icon name={icon} />
           </TileMedia>
-          <Icon class="bg-muted size-9 rounded-sm border p-2" name={icon} />
           <TileContent>
             <TileTypography
-              size="lg"
               title={title}
               description={description}
               html={html}
             />
-            <Button class="px-0" variant="link" size="lg" {...button} />
+            <Button class="px-0" variant="link" {...button} />
           </TileContent>
         </Tile>
       ))

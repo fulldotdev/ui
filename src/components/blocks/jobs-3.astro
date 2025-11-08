@@ -6,14 +6,10 @@ import {
   Section,
   SectionActions,
   SectionContent,
+  SectionSpread,
   SectionTypography,
 } from "@/components/ui/section"
-import {
-  Tile,
-  TileContent,
-  TileDescription,
-  TileTitle,
-} from "@/components/ui/tile"
+import { Tile, TileContent, TileDescription, TileTitle } from "@/components/ui/tile"
 
 interface Props {
   buttons?: {
@@ -26,7 +22,6 @@ interface Props {
     href?: string
     title?: string
     description?: string
-    published?: Date
     location?: string
     salary?: string
     hours?: string
@@ -37,7 +32,7 @@ const { items, buttons } = Astro.props
 ---
 
 <Section>
-  <SectionContent class="max-w-screen-md">
+  <SectionContent>
     <SectionTypography>
       <slot />
     </SectionTypography>
@@ -51,28 +46,29 @@ const { items, buttons } = Astro.props
         ))
       }
     </SectionActions>
+  </SectionContent>
+  <SectionSpread>
     {
       items && items.length > 0 && (
-        <div class="flex w-full flex-col gap-4">
-          {items.map(
-            ({ href, title, description, location, salary, hours }) => {
-              return (
-                <Tile href={href}>
-                  <TileContent>
-                    <TileTitle>{title}</TileTitle>
-                    <TileDescription>{description}</TileDescription>
-                    <List class="not-first:mt-4">
-                      <ListItem>{location}</ListItem>
-                      <ListItem>{salary}</ListItem>
-                      <ListItem>{hours}</ListItem>
-                    </List>
-                  </TileContent>
-                </Tile>
-              )
-            }
-          )}
-        </div>
+        items.map(
+          ({ href, title, description, location, salary, hours }) => {
+            return (
+              <Tile href={href}>
+                <TileContent>
+                  <TileTitle>{title}</TileTitle>
+                  <TileDescription>{description}</TileDescription>
+                  <List class="not-first:mt-4">
+                    <ListItem>{location}</ListItem>
+                    <ListItem>{salary}</ListItem>
+                    <ListItem>{hours}</ListItem>
+                  </List>
+                </TileContent>
+              </Tile>
+            )
+          }
+        )
       )
     }
-  </SectionContent>
+  </SectionSpread>
 </Section>
+

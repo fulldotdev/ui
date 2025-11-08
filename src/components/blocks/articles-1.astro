@@ -1,7 +1,9 @@
 ---
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
 import {
   Item,
   ItemContent,
@@ -9,15 +11,19 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item"
-import { Rating } from "@/components/ui/rating"
 import {
   Section,
   SectionActions,
   SectionContent,
-  SectionMasonry,
+  SectionGrid,
   SectionTypography,
 } from "@/components/ui/section"
-import { Tile, TileContent, TileTypography } from "@/components/ui/tile"
+import {
+  Tile,
+  TileContent,
+  TileMedia,
+  TileTypography,
+} from "@/components/ui/tile"
 
 interface Props {
   buttons?: {
@@ -27,18 +33,24 @@ interface Props {
     target?: string
   }[]
   items?: {
-    name?: string
+    badge?: string
+    href?: string
     title?: string
     description?: string
-    html?: string
-    rating?: number
-    href?: string
-    avatar?: {
+    item?: {
+      avatar?: {
+        src: string
+        alt: string
+        title?: string
+      }
+      title?: string
+      description?: string
+    }
+    image?: {
       src: string
       alt: string
       title?: string
     }
-    tagline?: string
   }[]
 }
 
@@ -61,27 +73,29 @@ const { buttons, items } = Astro.props
       }
     </SectionActions>
   </SectionContent>
-  <SectionMasonry>
+  <SectionGrid>
     {
-      items?.map(({ title, description, html, rating, href, avatar, name, tagline }) => (
+      items?.map(({ badge, title, description, image, href, item }) => (
         <Tile href={href}>
-          <Item class="-m-4">
-            <ItemMedia>
-              <Avatar>
-                <AvatarImage {...avatar} />
-              </Avatar>
-            </ItemMedia>
-            <ItemContent>
-              <ItemTitle>{name}</ItemTitle>
-              <ItemDescription>{tagline}</ItemDescription>
-            </ItemContent>
-          </Item>
-          <Rating rating={rating} />
+          <TileMedia>
+            <Image {...image} />
+          </TileMedia>
           <TileContent>
-            <TileTypography title={title} description={description} html={html} />
+            <TileTypography title={title} description={description} />
+            <Item class="-m-4">
+              <ItemMedia>
+                <Avatar class="size-10">
+                  <AvatarImage {...item?.avatar} />
+                </Avatar>
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle>{item?.title}</ItemTitle>
+                <ItemDescription>{item?.description}</ItemDescription>
+              </ItemContent>
+            </Item>
           </TileContent>
         </Tile>
       ))
     }
-  </SectionMasonry>
+  </SectionGrid>
 </Section>

@@ -6,14 +6,10 @@ import {
   Section,
   SectionActions,
   SectionContent,
+  SectionSplit,
   SectionTypography,
 } from "@/components/ui/section"
-import {
-  Tile,
-  TileContent,
-  TileDescription,
-  TileTitle,
-} from "@/components/ui/tile"
+import { Tile, TileContent, TileDescription, TileTitle } from "@/components/ui/tile"
 
 interface Props {
   buttons?: {
@@ -26,7 +22,6 @@ interface Props {
     href?: string
     title?: string
     description?: string
-    published?: Date
     location?: string
     salary?: string
     hours?: string
@@ -37,23 +32,25 @@ const { items, buttons } = Astro.props
 ---
 
 <Section>
-  <SectionContent class="max-w-screen-md">
-    <SectionTypography>
-      <slot />
-    </SectionTypography>
-    <SectionActions>
-      {
-        buttons?.map(({ icon, text, ...button }, i) => (
-          <Button variant={i === 0 ? "default" : "outline"} {...button}>
-            {icon && <Icon name={icon} />}
-            {text}
-          </Button>
-        ))
-      }
-    </SectionActions>
+  <SectionSplit>
+    <SectionContent>
+      <SectionTypography>
+        <slot />
+      </SectionTypography>
+      <SectionActions>
+        {
+          buttons?.map(({ icon, text, ...button }, i) => (
+            <Button variant={i === 0 ? "default" : "outline"} {...button}>
+              {icon && <Icon name={icon} />}
+              {text}
+            </Button>
+          ))
+        }
+      </SectionActions>
+    </SectionContent>
     {
       items && items.length > 0 && (
-        <div class="flex w-full flex-col gap-4">
+        <div class="flex flex-col gap-4">
           {items.map(
             ({ href, title, description, location, salary, hours }) => {
               return (
@@ -74,5 +71,6 @@ const { items, buttons } = Astro.props
         </div>
       )
     }
-  </SectionContent>
+  </SectionSplit>
 </Section>
+

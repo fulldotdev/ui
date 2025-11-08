@@ -68,6 +68,7 @@ const rating = z.number().min(0).max(5)
 const item = z
   .object({
     href: z.string(),
+    badge: z.string(),
     image: image,
     icon: z.string(),
     name: z.string(),
@@ -90,7 +91,11 @@ const glob = z.string() // "services/" - matches all pages starting with path
 const reference = z.string() // "services/my-service" - matches single page by id
 
 // Items can be: glob "services/" | references ["id-1", "id-2"] | inline [{ title: "..." }]
-const items = z.union([glob, reference.array(), item.array()])
+const items = z.union([
+  glob,
+  reference.array(),
+  item.extend({ item: item }).array(),
+])
 
 // Section - content blocks (hero, cta, features, reviews, etc.)
 const section = z

@@ -1,6 +1,7 @@
 ---
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
 import {
   Item,
   ItemContent,
@@ -13,11 +14,10 @@ import {
   Section,
   SectionActions,
   SectionContent,
-  SectionMasonry,
   SectionSplit,
   SectionTypography,
 } from "@/components/ui/section"
-import { Tile, TileContent, TileDescription, TileTitle } from "@/components/ui/tile"
+import { Tile, TileContent, TileTypography } from "@/components/ui/tile"
 
 interface Props {
   buttons?: {
@@ -27,16 +27,18 @@ interface Props {
     target?: string
   }[]
   items?: {
+    name?: string
     title?: string
     description?: string
+    html?: string
     rating?: number
+    href?: string
     avatar?: {
       src: string
       alt: string
       title?: string
     }
     tagline?: string
-    href?: string
   }[]
 }
 
@@ -44,28 +46,37 @@ const { buttons, items } = Astro.props
 ---
 
 <Section>
-  <SectionContent>
-    <SectionSplit>
-      <div>
-        <SectionTypography size="lg">
-          <slot />
-        </SectionTypography>
-        <SectionActions>
-          {
-            buttons?.map(({ icon, text, ...button }, i) => (
-              <Button variant={i === 0 ? "default" : "outline"} size="lg" {...button}>
-                {icon && <Icon name={icon} />}
-                {text}
-              </Button>
-            ))
-          }
-        </SectionActions>
-      </div>
-      <SectionMasonry>
+  <SectionSplit>
+    <SectionContent>
+      <SectionTypography>
+        <slot />
+      </SectionTypography>
+      <SectionActions>
         {
-          items?.map(({ title, description, rating, avatar, tagline, href }) => (
-            <Tile href={href} variant="default">
-              <TileContent>
+          buttons?.map(({ icon, text, ...button }, i) => (
+            <Button variant={i === 0 ? "default" : "outline"} {...button}>
+              {icon && <Icon name={icon} />}
+              {text}
+            </Button>
+          ))
+        }
+      </SectionActions>
+    </SectionContent>
+    {
+      items && items.length > 0 && (
+        <div class="flex flex-col gap-4">
+          {items?.map(
+            ({
+              title,
+              description,
+              html,
+              rating,
+              href,
+              avatar,
+              name,
+              tagline,
+            }) => (
+              <Tile href={href}>
                 <Item class="-m-4">
                   <ItemMedia>
                     <Avatar>
@@ -73,18 +84,23 @@ const { buttons, items } = Astro.props
                     </Avatar>
                   </ItemMedia>
                   <ItemContent>
-                    <ItemTitle>{tagline}</ItemTitle>
-                    <ItemDescription>{title}</ItemDescription>
+                    <ItemTitle>{name}</ItemTitle>
+                    <ItemDescription>{tagline}</ItemDescription>
                   </ItemContent>
                 </Item>
                 <Rating rating={rating} />
-                <TileTitle>{title}</TileTitle>
-                <TileDescription>{description}</TileDescription>
-              </TileContent>
-            </Tile>
-          ))
-        }
-      </SectionMasonry>
-    </SectionSplit>
-  </SectionContent>
+                <TileContent>
+                  <TileTypography
+                    title={title}
+                    description={description}
+                    html={html}
+                  />
+                </TileContent>
+              </Tile>
+            )
+          )}
+        </div>
+      )
+    }
+  </SectionSplit>
 </Section>

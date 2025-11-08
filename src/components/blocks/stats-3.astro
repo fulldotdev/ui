@@ -1,14 +1,19 @@
 ---
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
-import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
 import {
   Section,
   SectionActions,
   SectionContent,
-  SectionGrid,
+  SectionSpread,
   SectionTypography,
 } from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileTitle,
+} from "@/components/ui/tile"
 
 interface Props {
   buttons?: {
@@ -17,14 +22,14 @@ interface Props {
     href?: string
     target?: string
   }[]
-  logos?: {
-    src?: string
-    alt?: string
+  items?: {
     title?: string
+    description?: string
+    icon?: string
   }[]
 }
 
-const { buttons, logos } = Astro.props
+const { buttons, items } = Astro.props
 ---
 
 <Section>
@@ -42,15 +47,18 @@ const { buttons, logos } = Astro.props
         ))
       }
     </SectionActions>
-    <SectionGrid class="flex flex-wrap justify-between gap-8">
-      {
-        logos?.map(({ src, alt, title }, i) => (
-          <Logo href="/">
-            <LogoImage src={src} alt={alt} />
-            <LogoText>{title}</LogoText>
-          </Logo>
-        ))
-      }
-    </SectionGrid>
   </SectionContent>
+  <SectionSpread>
+    {
+      items?.map(({ title, description, icon }) => (
+        <Tile>
+          <TileContent>
+            <Icon name={icon} />
+            <TileTitle>{title}</TileTitle>
+            <TileDescription>{description}</TileDescription>
+          </TileContent>
+        </Tile>
+      ))
+    }
+  </SectionSpread>
 </Section>

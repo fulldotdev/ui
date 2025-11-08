@@ -10,39 +10,32 @@ type Props = VariantProps<typeof variants> &
 
 const variants = cva(
   [
-    "p-6 max-sm:p-4 max-sm:mx-2",
-    "group/tile relative overflow-hidden flex flex-col gap-6 p-6 rounded-md transition-colors [a]:hover:bg-accent/50 [a]:transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+    "group/tile relative overflow-hidden items-start flex flex-col gap-6 rounded-md transition-colors [a]:hover:bg-accent/50 [a]:transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
     // If SectionMedia is inset, add extra spacer
     "has-[>[data-slot=tile-media][data-position=inset]]:gap-y-[48px]",
   ],
   {
     variants: {
       variant: {
-        default: "bg-transparent",
-        outline: "border-border",
-        muted: "bg-muted/50",
-        accent: "bg-accent/50",
+        default: "bg-transparent p-2 -m-2 sm:p-3 sm:-m-3",
+        outline: "border-border p-4 sm:p-6",
+        muted: "bg-muted/50 p-4 sm:p-6",
+        accent: "bg-accent/50 p-4 sm:p-6",
       },
       frame: {
         default: "p-3 -m-3",
         float: ["max-w-[calc(var(--section-width)-2*var(--section-gutter))]"],
         inset: null,
       },
-      align: {
-        start: "items-start",
-        center: "items-center",
-        end: "items-end",
-      },
     },
     defaultVariants: {
       variant: "default",
-      align: "start",
       // frame: "default",
     },
   }
 )
 
-const { class: className, variant, frame, align, href, ...props } = Astro.props
+const { class: className, variant, frame, href, ...props } = Astro.props
 
 const slot = await Astro.slots.render("default")
 
@@ -54,7 +47,7 @@ const Comp = href ? "a" : "div"
     <Comp
       data-slot="tile"
       data-variant={variant}
-      class={cn(variants({ variant, frame, align }), className)}
+      class={cn(variants({ variant, frame }), className)}
       href={href}
       {...props}
     >

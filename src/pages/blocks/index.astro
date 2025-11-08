@@ -2,8 +2,6 @@
 import { getEntry } from "astro:content"
 
 import { Badge } from "@/components/ui/badge"
-import { Header, HeaderContent } from "@/components/ui/header"
-import { Input } from "@/components/ui/input"
 import Layout from "@/components/layout.astro"
 
 const indexBlock = await getEntry("blocks", "index")
@@ -11,41 +9,43 @@ const indexBlock = await getEntry("blocks", "index")
 const allBlocks = import.meta.glob("src/components/blocks/**/*.astro", {
   eager: true,
 })
-const sortedBlocks = Object.entries(allBlocks).sort(([a], [b]) => {
-  const aId = a.split("/").pop()?.split(".")[0] ?? ""
-  const bId = b.split("/").pop()?.split(".")[0] ?? ""
-  // Extract numeric parts for proper numeric sorting
-  const aNum = parseInt(aId.replace(/\D/g, "")) || 0
-  const bNum = parseInt(bId.replace(/\D/g, "")) || 0
-  // If both have numbers, compare numerically
-  if (aNum && bNum) return aNum - bNum
-  // Otherwise, fall back to string comparison
-  return aId.localeCompare(bId)
-})
+const sortedBlocks = Object.entries(allBlocks).sort(([a], [b]) =>
+  a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" })
+)
 ---
 
 <Layout>
-  <Header class="sticky top-15 z-20">
-    <HeaderContent class="max-w-lg">
-      <Input id="search" type="text" placeholder="Search" />
-    </HeaderContent>
-  </Header>
-  {
-    sortedBlocks.map(([path, block]: [string, any], i) => {
-      const id = path.split("/").pop()?.split(".")[0]
-      const BlockComponent = block.default
-      return BlockComponent ? (
-        <div id={id} class="block-preview relative flex flex-col items-center">
-          <Badge class="mx-auto my-2 flex" href={`/blocks/${id}/`}>
-            {path.split("/").pop()?.split(".")[0]}
-          </Badge>
-          <BlockComponent {...indexBlock?.data}>
-            <Fragment set:html={indexBlock?.data?.html} />
-          </BlockComponent>
-        </div>
-      ) : null
-    })
-  }
+  <div class="px-4 py-8">
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {
+        sortedBlocks.map(([path, block]: [string, any]) => {
+          const id = path.split("/").pop()?.split(".")[0]
+          const BlockComponent = block.default
+          return BlockComponent ? (
+            <div class="flex flex-col gap-2">
+              <div class="flex flex-row items-center justify-between">
+                <Badge variant="secondary" href={`/blocks/${id}/`}>
+                  {id}
+                </Badge>
+              </div>
+              <div
+                id={id}
+                class="block-preview relative overflow-hidden rounded-lg border"
+              >
+                <div class="bg-background relative aspect-video overflow-x-hidden">
+                  <div class="@container h-full w-[200%] origin-top-left scale-50">
+                    <BlockComponent {...indexBlock?.data}>
+                      <Fragment set:html={indexBlock?.data?.html} />
+                    </BlockComponent>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null
+        })
+      }
+    </div>
+  </div>
 </Layout>
 
 <script>

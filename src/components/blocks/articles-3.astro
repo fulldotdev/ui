@@ -3,20 +3,18 @@ import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { Image } from "@/components/ui/image"
 import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-  ItemTitle,
-} from "@/components/ui/item"
-import {
   Section,
   SectionActions,
   SectionContent,
-  SectionGrid,
+  SectionSpread,
   SectionTypography,
 } from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileTitle,
+} from "@/components/ui/tile"
 
 interface Props {
   buttons?: {
@@ -34,7 +32,6 @@ interface Props {
       alt: string
       title?: string
     }
-    icon?: string
   }[]
 }
 
@@ -43,36 +40,31 @@ const { buttons, items } = Astro.props
 
 <Section>
   <SectionContent>
-    <SectionTypography size="lg">
+    <SectionTypography>
       <slot />
     </SectionTypography>
     <SectionActions>
       {
         buttons?.map(({ icon, text, ...button }, i) => (
-          <Button variant={i === 0 ? "default" : "outline"} size="lg" {...button}>
+          <Button variant={i === 0 ? "default" : "outline"} {...button}>
             {icon && <Icon name={icon} />}
             {text}
           </Button>
         ))
       }
     </SectionActions>
-    <SectionGrid class="gap-4">
-      {
-        items?.map(({ title, description, href, icon }) => (
-          <Item href={href} variant="muted">
-            <ItemMedia variant="icon">
-              <Icon name={icon} />
-            </ItemMedia>
-            <ItemContent>
-              <ItemTitle>{title}</ItemTitle>
-              <ItemDescription>{description}</ItemDescription>
-            </ItemContent>
-            <ItemActions>
-              <Icon name="chevron-right" class="size-4" />
-            </ItemActions>
-          </Item>
-        ))
-      }
-    </SectionGrid>
   </SectionContent>
+  <SectionSpread>
+    {
+      items?.map(({ title, description, image, href }) => (
+        <Tile href={href}>
+          <Image {...image} />
+          <TileContent>
+            <TileTitle>{title}</TileTitle>
+            <TileDescription>{description}</TileDescription>
+          </TileContent>
+        </Tile>
+      ))
+    }
+  </SectionSpread>
 </Section>
