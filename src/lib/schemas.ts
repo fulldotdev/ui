@@ -32,6 +32,15 @@ const logo = image
   .partial()
   .strict()
 
+const video = z
+  .object({
+    src: z.string(),
+    alt: z.string(),
+    title: z.string(),
+  })
+  .partial()
+  .strict()
+
 const form = z
   .object({
     inbox: z.string(),
@@ -68,8 +77,8 @@ const rating = z.number().min(0).max(5)
 const item = z
   .object({
     href: z.string(),
-    badge: z.string(),
     image: image,
+    video: video, // Use video object for video content
     icon: z.string(),
     name: z.string(),
     tagline: z.string(),
@@ -91,11 +100,7 @@ const glob = z.string() // "services/" - matches all pages starting with path
 const reference = z.string() // "services/my-service" - matches single page by id
 
 // Items can be: glob "services/" | references ["id-1", "id-2"] | inline [{ title: "..." }]
-const items = z.union([
-  glob,
-  reference.array(),
-  item.extend({ item: item.optional() }).array(),
-])
+const items = z.union([glob, reference.array(), item.array()])
 
 // Section - content blocks (hero, cta, features, reviews, etc.)
 const section = z
@@ -106,12 +111,14 @@ const section = z
     size: z.enum(["sm", "default", "lg"]),
     variant: z.enum(["default", "outline", "muted", "accent", "card"]),
     order: z.enum(["default", "reverse"]),
-    frame: z.enum(["default", "float", "inset"]),
+    frame: z.enum(["default", "float", "box", "contain", "panel"]),
     position: z.enum(["default", "background", "inset"]),
     html: z.string(),
     buttons: button.array(),
     logos: logo.array(),
     image: image,
+    images: image.array(),
+    video: video,
     form: form,
     socials: z.string().array(),
     item: item,
@@ -128,7 +135,7 @@ const page = z
     align: z.enum(["start", "center", "end"]),
     size: z.enum(["sm", "default", "lg"]),
     variant: z.enum(["default", "outline", "muted", "accent", "card"]),
-    frame: z.enum(["default", "float", "inset"]),
+    frame: z.enum(["default", "float", "box", "contain", "panel"]),
     position: z.enum(["default", "background", "inset"]),
     href: z.string(),
     title: z.string(),
@@ -136,6 +143,8 @@ const page = z
     description: z.string(),
     icon: z.string(),
     image: image,
+    images: image.array(),
+    video: video,
     rating: rating,
     list: z.string().array(),
     price: z.string(),

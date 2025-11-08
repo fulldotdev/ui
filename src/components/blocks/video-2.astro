@@ -1,0 +1,98 @@
+---
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+} from "@/components/ui/item"
+import { List, ListItem } from "@/components/ui/list"
+import { Rating } from "@/components/ui/rating"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionMedia,
+  SectionSplit,
+  SectionTypography,
+} from "@/components/ui/section"
+import { Video } from "@/components/ui/video"
+
+interface Props {
+  list?: string[]
+  buttons?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  video?: {
+    src: string
+    alt: string
+    title?: string
+  }
+  item?: {
+    avatars?: {
+      src: string
+      alt: string
+      title?: string
+    }[]
+    rating?: number
+    description?: string
+  }
+}
+
+const { list, buttons, video, item } = Astro.props
+---
+
+<Section>
+  <SectionSplit>
+    <SectionContent>
+      <SectionTypography>
+        <slot />
+      </SectionTypography>
+      <List>
+        {
+          list?.map((item) => (
+            <ListItem>
+              <Icon name="check" />
+              {item}
+            </ListItem>
+          ))
+        }
+      </List>
+      <SectionActions>
+        {
+          buttons?.map(({ icon, text, ...button }, i) => (
+            <Button variant={i === 0 ? "default" : "outline"} {...button}>
+              {icon && <Icon name={icon} />}
+              {text}
+            </Button>
+          ))
+        }
+      </SectionActions>
+      <Item class="-m-4">
+        <ItemMedia class="-space-x-4">
+          {
+            item?.avatars?.map((avatar) => (
+              <Avatar class="ring-background size-10 ring-2">
+                <AvatarImage {...avatar} />
+              </Avatar>
+            ))
+          }
+        </ItemMedia>
+        <ItemContent class="gap-1.5">
+          <Rating rating={item?.rating} />
+          <ItemDescription class="leading-none">
+            {item?.description}
+          </ItemDescription>
+        </ItemContent>
+      </Item>
+    </SectionContent>
+    <SectionMedia>
+      <Video {...video} />
+    </SectionMedia>
+  </SectionSplit>
+</Section>

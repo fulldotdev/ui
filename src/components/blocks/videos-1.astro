@@ -1,0 +1,66 @@
+---
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionGrid,
+  SectionTypography,
+} from "@/components/ui/section"
+import { Tile, TileContent, TileMedia, TileTitle } from "@/components/ui/tile"
+import { Video } from "@/components/ui/video"
+
+interface Props {
+  id?: string
+  buttons?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  items?: {
+    title?: string
+    href?: string
+    video?: {
+      src: string
+      alt: string
+      title?: string
+    }
+  }[]
+}
+
+const { id, buttons, items } = Astro.props
+---
+
+<Section id={id}>
+  <SectionContent>
+    <SectionTypography>
+      <slot />
+    </SectionTypography>
+    <SectionActions>
+      {
+        buttons?.map(({ icon, text, ...button }, i) => (
+          <Button variant={i === 0 ? "default" : "outline"} {...button}>
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
+    </SectionActions>
+  </SectionContent>
+  <SectionGrid size="lg">
+    {
+      items?.map(({ title, video, href }) => (
+        <Tile href={href}>
+          <TileMedia>
+            <Video {...video} />
+          </TileMedia>
+          <TileContent>
+            <TileTitle>{title}</TileTitle>
+          </TileContent>
+        </Tile>
+      ))
+    }
+  </SectionGrid>
+</Section>

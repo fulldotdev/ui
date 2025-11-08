@@ -1,0 +1,79 @@
+---
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionGrid,
+  SectionSplit,
+  SectionTypography,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileMedia,
+  TileTypography,
+} from "@/components/ui/tile"
+
+interface Props {
+  buttons?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  items?: {
+    title?: string
+    description?: string
+    html?: string
+    image?: {
+      src: string
+      alt: string
+      title?: string
+    }
+  }[]
+}
+
+const { buttons, items } = Astro.props
+---
+
+<Section>
+  <SectionSplit>
+    <SectionContent class="xl:col-span-2">
+      <SectionTypography>
+        <slot />
+      </SectionTypography>
+      <SectionActions>
+        {
+          buttons?.map(({ icon, text, ...button }, i) => (
+            <Button variant={i === 0 ? "default" : "outline"} {...button}>
+              {icon && <Icon name={icon} />}
+              {text}
+            </Button>
+          ))
+        }
+      </SectionActions>
+    </SectionContent>
+    <SectionGrid class="xl:col-span-3">
+      {
+        items?.map(({ title, description, html, image }) => (
+          <Tile>
+            <TileContent>
+              <TileMedia variant="icon">
+                <Image {...image} />
+              </TileMedia>
+              <TileTypography
+                size="lg"
+                title={title}
+                description={description}
+                html={html}
+              />
+            </TileContent>
+          </Tile>
+        ))
+      }
+    </SectionGrid>
+  </SectionSplit>
+</Section>
