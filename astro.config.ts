@@ -22,7 +22,7 @@ export default defineConfig({
   // },
   image: {
     responsiveStyles: true,
-    breakpoints: [320, 768, 1024, 1280, 1536, 1920],
+    breakpoints: [640, 750, 828, 1080, 1280, 1668, 2048, 2560],
   },
   prefetch: {
     prefetchAll: true,

@@ -55,130 +55,129 @@ interface Props {
 const { logo, menus, buttons, socials } = Astro.props
 ---
 
-<Header class="sticky top-0 z-50 flex items-center border-b">
-  <HeaderContent class="flex max-w-none justify-between gap-8">
-    <Logo href="/">
-      <LogoImage src={logo?.src} alt={logo?.alt} />
-      <LogoText>{logo?.title}</LogoText>
-    </Logo>
-    <NavigationMenu class="mr-auto max-lg:hidden">
-      <NavigationMenuList>
+<Header>
+  <Logo href="/">
+    <LogoImage src={logo?.src} alt={logo?.alt} />
+    <LogoText>{logo?.title}</LogoText>
+  </Logo>
+  <NavigationMenu class="mr-auto max-lg:hidden">
+    <NavigationMenuList>
+      {
+        menus?.map((menu) => (
+          <NavigationMenuItem>
+            {menu.links && menu.links.length > 0 ? (
+              <>
+                <NavigationMenuTrigger href={menu.href}>
+                  {menu.text}
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul class="flex min-w-[200px] flex-col gap-2">
+                    {menu.links?.map((link) => (
+                      <li class="w-full">
+                        <NavigationMenuLink
+                          class="flex w-full justify-start text-start"
+                          href={link.href}
+                        >
+                          {link.text}
+                        </NavigationMenuLink>
+                      </li>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </>
+            ) : (
+              <NavigationMenuLink variant="trigger" href={menu.href}>
+                {menu.text}
+              </NavigationMenuLink>
+            )}
+          </NavigationMenuItem>
+        ))
+      }
+    </NavigationMenuList>
+  </NavigationMenu>
+  <HeaderActions class="max-lg:hidden">
+    <ModeToggle />
+    {
+      socials?.map((social) => (
+        <Button variant="ghost" size="icon" href={social} target="_blank">
+          <Icon href={social} />
+        </Button>
+      ))
+    }
+    {
+      buttons?.map(({ icon, text, ...button }, i) => (
+        <Button
+          variant={i === buttons.length - 1 ? "default" : "ghost"}
+          size="sm"
+          {...button}
+        >
+          {icon && <Icon name={icon} />}
+          {text}
+        </Button>
+      ))
+    }
+  </HeaderActions>
+  <Sheet class="first:ml-auto lg:hidden">
+    <SheetTrigger variant="ghost" size="icon">
+      <MenuIcon class="size-6" />
+    </SheetTrigger>
+    <SheetContent class="overflow-y-auto px-4 py-8">
+      <SidebarMenu>
         {
           menus?.map((menu) => (
-            <NavigationMenuItem>
+            <SidebarMenuItem>
               {menu.links && menu.links.length > 0 ? (
-                <>
-                  <NavigationMenuTrigger href={menu.href}>
-                    {menu.text}
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul class="flex min-w-[200px] flex-col gap-2">
+                <Collapsible>
+                  <CollapsibleTrigger>
+                    <SidebarMenuButton>{menu.text}</SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
                       {menu.links?.map((link) => (
-                        <li class="w-full">
-                          <NavigationMenuLink
-                            class="flex w-full justify-start text-start"
-                            href={link.href}
-                          >
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton href={link.href}>
                             {link.text}
-                          </NavigationMenuLink>
-                        </li>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
                       ))}
-                    </ul>
-                  </NavigationMenuContent>
-                </>
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </Collapsible>
               ) : (
-                <NavigationMenuLink variant="trigger" href={menu.href}>
+                <SidebarMenuButton href={menu.href}>
                   {menu.text}
-                </NavigationMenuLink>
+                </SidebarMenuButton>
               )}
-            </NavigationMenuItem>
+            </SidebarMenuItem>
           ))
         }
-      </NavigationMenuList>
-    </NavigationMenu>
-    <HeaderActions class="max-lg:hidden">
+      </SidebarMenu>
       {
-        socials?.map((social) => (
-          <Button variant="ghost" size="icon" href={social} target="_blank">
-            <Icon href={social} />
-          </Button>
-        ))
+        buttons && buttons.length > 0 && (
+          <div class="mt-6 flex w-full flex-col gap-2">
+            {buttons?.map(({ icon, text, ...button }, i) => (
+              <Button
+                variant={i === buttons.length - 1 ? "default" : "ghost"}
+                {...button}
+              >
+                {icon && <Icon name={icon} />}
+                {text}
+              </Button>
+            ))}
+          </div>
+        )
       }
       {
-        buttons?.map(({ icon, text, ...button }, i) => (
-          <Button
-            variant={i === buttons.length - 1 ? "default" : "ghost"}
-            {...button}
-          >
-            {icon && <Icon name={icon} />}
-            {text}
-          </Button>
-        ))
+        socials && socials.length > 0 && (
+          <div class="mx-auto mt-6 flex gap-2">
+            {socials?.map((social) => (
+              <Button variant="ghost" size="icon" href={social}>
+                <Icon href={social} />
+              </Button>
+            ))}
+          </div>
+        )
       }
-      <ModeToggle />
-    </HeaderActions>
-    <Sheet class="first:ml-auto lg:hidden">
-      <SheetTrigger variant="ghost" size="icon">
-        <MenuIcon class="size-6" />
-      </SheetTrigger>
-      <SheetContent class="overflow-y-auto px-4 py-8">
-        <SidebarMenu>
-          {
-            menus?.map((menu) => (
-              <SidebarMenuItem>
-                {menu.links && menu.links.length > 0 ? (
-                  <Collapsible>
-                    <CollapsibleTrigger>
-                      <SidebarMenuButton>{menu.text}</SidebarMenuButton>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
-                        {menu.links?.map((link) => (
-                          <SidebarMenuSubItem>
-                            <SidebarMenuSubButton href={link.href}>
-                              {link.text}
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
-                  </Collapsible>
-                ) : (
-                  <SidebarMenuButton href={menu.href}>
-                    {menu.text}
-                  </SidebarMenuButton>
-                )}
-              </SidebarMenuItem>
-            ))
-          }
-        </SidebarMenu>
-        {
-          buttons && buttons.length > 0 && (
-            <div class="mt-6 flex w-full flex-col gap-2">
-              {buttons?.map(({ icon, text, ...button }, i) => (
-                <Button
-                  variant={i === buttons.length - 1 ? "default" : "ghost"}
-                  {...button}
-                >
-                  {icon && <Icon name={icon} />}
-                  {text}
-                </Button>
-              ))}
-            </div>
-          )
-        }
-        {
-          socials && socials.length > 0 && (
-            <div class="mx-auto mt-6 flex gap-2">
-              {socials?.map((social) => (
-                <Button variant="ghost" size="icon" href={social}>
-                  <Icon href={social} />
-                </Button>
-              ))}
-            </div>
-          )
-        }
-      </SheetContent>
-    </Sheet>
-  </HeaderContent>
+    </SheetContent>
+  </Sheet>
 </Header>

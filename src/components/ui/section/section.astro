@@ -10,32 +10,26 @@ interface Props
 
 const variants = cva(
   [
-    "relative flex flex-col mx-auto gap-16 px-(--section-px) py-(--section-py) scroll-m-(--section-py)",
+    "relative flex flex-col mx-auto gap-12 px-(--section-px) py-(--section-py) scroll-m-(--section-py)",
   ],
   {
     variants: {
       variant: {
         // Filled on every screen, with content width based on padding
-        default: ["w-full max-w-none"],
-        // Filled on small and medium screens, contained on large screens
-        contain: [
-          "w-full max-w-[calc(var(--section-width)+2*var(--section-px))] overflow-hidden",
-        ],
+        default: ["w-full max-w-[2560px]"],
         // Filled on every screen, with content width based on padding, and a gutter around for floating effect
         floating: [
-          "w-[calc(100%-16px)]",
-          "ring ring-inset ring-border bg-muted rounded-lg my-2 overflow-hidden",
+          "w-[calc(100%-16px)] max-w-[2560px]",
+          "ring ring-inset ring-border bg-muted rounded-xl first:mt-2 my-(--section-py) overflow-hidden",
         ],
         // Contained on every screen, with a border, padding and rounded corners for panel effect
         panel: [
-          "w-[calc(100%-16px)] sm:w-[calc(100%-2*var(--section-px))]",
-          "max-w-[calc(var(--section-width)+2*var(--section-px))]",
-          "ring ring-inset ring-border bg-muted rounded-lg my-(--section-py) overflow-hidden",
+          "w-[calc(100%-16px)] lg:w-[calc(100%-2*var(--section-px))] max-w-(--section-width)",
+          "ring ring-inset ring-border bg-muted rounded-xl first:mt-2 my-(--section-py) overflow-hidden",
         ],
         // Contained on every screen, with a border and padding for box effect
         box: [
-          "w-[calc(100%-16px)] sm:w-[calc(100%-48px)]",
-          "max-w-[calc(var(--section-width)+2*var(--section-px))]",
+          "w-[calc(100%-16px)] lg:w-[calc(100%-2*var(--section-px))] max-w-(--section-width)",
           "ring ring-inset ring-border -mt-px overflow-hidden",
         ],
       },
@@ -72,10 +66,11 @@ const slot = await Astro.slots.render("default")
 }
 
 <style is:global>
+  /* Section width and padding vor inset calculations */
   [data-slot="section"] {
     --section-width: var(--breakpoint-xl);
     --section-py: 48px;
-    --section-px: max(24px, calc((100cqw - var(--section-width)) / 2));
+    --section-px: 24px;
   }
 
   [data-slot="section"][data-width="sm"] {
@@ -86,37 +81,32 @@ const slot = await Astro.slots.render("default")
     --section-width: var(--breakpoint-2xl);
   }
 
-  [data-slot="section"][data-variant="contain"] {
-    --section-px: 24px;
-  }
-
   [data-slot="section"][data-variant="box"],
   [data-slot="section"][data-variant="floating"],
   [data-slot="section"][data-variant="panel"] {
     --section-px: 16px;
   }
 
-  @media (min-width: 640px) {
-    [data-slot="section"][data-variant="box"],
-    [data-slot="section"][data-variant="floating"],
-    [data-slot="section"][data-variant="panel"] {
-      --section-px: 24px;
-    }
-  }
-
-  @media (min-width: 1280px) {
+  @media (min-width: 1024px) {
     [data-slot="section"] {
       --section-py: 64px;
-    }
-
-    [data-slot="section"][data-variant="contain"],
-    [data-slot="section"][data-variant="box"],
-    [data-slot="section"][data-variant="panel"] {
-      --section-px: 48px;
+      --section-px: min(
+        max(48px, calc((100cqw - var(--section-width)) / 2)),
+        calc((2560px - var(--section-width)) / 2)
+      );
     }
 
     [data-slot="section"][data-variant="floating"] {
-      --section-px: calc((100cqw - var(--section-width)) / 2 - 8px);
+      --section-px: min(
+        max(48px, calc((100cqw - 16px - var(--section-width)) / 2)),
+        calc((2560px - var(--section-width)) / 2)
+      );
+    }
+
+    [data-slot="section"][data-variant="box"],
+    [data-slot="section"][data-variant="panel"] {
+      --section-py: 48px;
+      --section-px: 48px;
     }
   }
 </style>
