@@ -12,9 +12,6 @@ sections:
         href: /docs/installation/
       - text: GitHub
         href: https://github.com/fulldotdev/ui
-    image:
-      src: /hero2.png
-      alt: fulldev/ui
   - block: features-1
     html: |
       <h2>Why use fulldev/ui</h2>
