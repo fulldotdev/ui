@@ -2,6 +2,7 @@
 import { Badge } from "@/components/ui/badge"
 import { Header, HeaderContent } from "@/components/ui/header"
 import { Input } from "@/components/ui/input"
+import { Section, SectionProvider } from "@/components/ui/section"
 import Layout from "@/components/layout.astro"
 
 const allSkeletons = import.meta.glob("src/components/skeletons/**/*.astro", {
@@ -21,28 +22,31 @@ const sortedSkeletons = Object.entries(allSkeletons).sort(([a], [b]) => {
 ---
 
 <Layout>
-  <Header class="sticky top-15 z-20">
-    <HeaderContent class="max-w-lg">
-      <Input id="search" type="text" placeholder="Search" />
-    </HeaderContent>
-  </Header>
-  {
-    sortedSkeletons.map(([path, skeleton]: [string, any], i) => {
-      const id = path.split("/").pop()?.split(".")[0]
-      const SkeletonComponent = skeleton.default
-      return SkeletonComponent ? (
-        <div
-          id={id}
-          class="skeleton-preview relative flex flex-col items-center"
-        >
-          <Badge class="mx-auto my-2 flex" href={`/skeletons/${id}/`}>
-            {path.split("/").pop()?.split(".")[0]}
-          </Badge>
-          <SkeletonComponent />
-        </div>
-      ) : null
-    })
-  }
+  <SectionProvider>
+    {
+      sortedSkeletons.map(([path, skeleton]: [string, any], i) => {
+        const id = path.split("/").pop()?.split(".")[0]
+        const SkeletonComponent = skeleton.default
+        return SkeletonComponent ? (
+          <Section
+            class="@container relative mt-12 mb-0 border-2 border-dashed bg-transparent ring-0"
+            variant="panel"
+            width="2xl"
+            id={id}
+          >
+            <Badge
+              class="absolute top-4 left-4"
+              variant="secondary"
+              href={`/skeletons/${id}/`}
+            >
+              {id}
+            </Badge>
+            <SkeletonComponent />
+          </Section>
+        ) : null
+      })
+    }
+  </SectionProvider>
 </Layout>
 
 <script>

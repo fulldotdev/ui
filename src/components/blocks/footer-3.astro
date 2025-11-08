@@ -1,0 +1,184 @@
+---
+import MenuIcon from "lucide-static/icons/menu.svg"
+
+import { Button } from "@/components/ui/button"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+import { Header, HeaderActions, HeaderContent } from "@/components/ui/header"
+import { Icon } from "@/components/ui/icon"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
+import { ModeToggle } from "@/components/ui/mode-toggle"
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+} from "@/components/ui/sidebar"
+
+interface Props {
+  logo?: {
+    src?: string
+    alt?: string
+    title?: string
+  }
+  buttons?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  socials?: string[]
+  menus?: {
+    text?: string
+    href?: string
+    links?: {
+      text?: string
+      href?: string
+    }[]
+  }[]
+}
+
+const { logo, menus, buttons, socials } = Astro.props
+---
+
+<Header class="sticky top-0 z-50 flex items-center border-t">
+  <HeaderContent class="flex max-w-none justify-between gap-8">
+    <Logo href="/">
+      <LogoImage src={logo?.src} alt={logo?.alt} />
+      <LogoText>{logo?.title}</LogoText>
+    </Logo>
+    <NavigationMenu class="mr-auto max-lg:hidden">
+      <NavigationMenuList>
+        {
+          menus?.map((menu) => (
+            <NavigationMenuItem>
+              {menu.links && menu.links.length > 0 ? (
+                <>
+                  <NavigationMenuTrigger href={menu.href}>
+                    {menu.text}
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul class="flex min-w-[200px] flex-col gap-2">
+                      {menu.links?.map((link) => (
+                        <li class="w-full">
+                          <NavigationMenuLink
+                            class="flex w-full justify-start text-start"
+                            href={link.href}
+                          >
+                            {link.text}
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </>
+              ) : (
+                <NavigationMenuLink variant="trigger" href={menu.href}>
+                  {menu.text}
+                </NavigationMenuLink>
+              )}
+            </NavigationMenuItem>
+          ))
+        }
+      </NavigationMenuList>
+    </NavigationMenu>
+    <HeaderActions class="max-sm:hidden">
+      {
+        socials?.map((social) => (
+          <Button variant="ghost" size="icon" href={social} target="_blank">
+            <Icon href={social} />
+          </Button>
+        ))
+      }
+      {
+        buttons?.map(({ icon, text, ...button }, i) => (
+          <Button
+            variant={i === buttons.length - 1 ? "default" : "ghost"}
+            {...button}
+          >
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
+      <ModeToggle />
+    </HeaderActions>
+    <Sheet class="first:ml-auto lg:hidden">
+      <SheetTrigger variant="ghost" size="icon">
+        <MenuIcon class="size-6" />
+      </SheetTrigger>
+      <SheetContent class="overflow-y-auto px-4 py-8">
+        <SidebarMenu>
+          {
+            menus?.map((menu) => (
+              <SidebarMenuItem>
+                {menu.links && menu.links.length > 0 ? (
+                  <Collapsible>
+                    <CollapsibleTrigger>
+                      <SidebarMenuButton>{menu.text}</SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        {menu.links?.map((link) => (
+                          <SidebarMenuSubItem>
+                            <SidebarMenuSubButton href={link.href}>
+                              {link.text}
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </Collapsible>
+                ) : (
+                  <SidebarMenuButton href={menu.href}>
+                    {menu.text}
+                  </SidebarMenuButton>
+                )}
+              </SidebarMenuItem>
+            ))
+          }
+        </SidebarMenu>
+        {
+          buttons && buttons.length > 0 && (
+            <div class="mt-6 flex w-full flex-col gap-2">
+              {buttons?.map(({ icon, text, ...button }, i) => (
+                <Button
+                  variant={i === buttons.length - 1 ? "default" : "ghost"}
+                  {...button}
+                >
+                  {icon && <Icon name={icon} />}
+                  {text}
+                </Button>
+              ))}
+            </div>
+          )
+        }
+        {
+          socials && socials.length > 0 && (
+            <div class="mx-auto mt-6 flex gap-2">
+              {socials?.map((social) => (
+                <Button variant="ghost" size="icon" href={social}>
+                  <Icon href={social} />
+                </Button>
+              ))}
+            </div>
+          )
+        }
+      </SheetContent>
+    </Sheet>
+  </HeaderContent>
+</Header>
