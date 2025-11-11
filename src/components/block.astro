@@ -3,9 +3,23 @@ import { getCollection, type CollectionEntry } from "astro:content"
 
 import type { BlockSchema } from "@/lib/schemas"
 
-type Props = BlockSchema
+type Props = {
+  block: BlockSchema | string | undefined
+}
 
-const props = Astro.props
+let { block: blockData } = Astro.props
+
+// If block is a string, treat it as a reference and resolve it
+if (typeof blockData === "string") {
+  const entry = await getCollection("pages", (e) => e.id === blockData)
+  if (entry.length > 0) {
+    blockData = entry[0].data as BlockSchema
+  } else {
+    blockData = {} as BlockSchema
+  }
+}
+
+const props = (blockData || {}) as BlockSchema
 
 function getHref(entry: CollectionEntry<"pages">) {
   // If there is no content, return undefined
@@ -59,20 +73,20 @@ async function populateReferences<
 }
 
 // Populate singular references
-if ("item" in props && props.item !== undefined) {
+if (props && "item" in props && props.item !== undefined) {
   props.item = (await resolveReference(props.item)) as any
 }
 
-if ("tile" in props && props.tile !== undefined) {
+if (props && "tile" in props && props.tile !== undefined) {
   props.tile = (await resolveReference(props.tile)) as any
 }
 
 // Populate plural references
-if ("items" in props && props.items !== undefined) {
+if (props && "items" in props && props.items !== undefined) {
   props.items = (await populateReferences(props.items)) as any
 }
 
-if ("tiles" in props && props.tiles !== undefined) {
+if (props && "tiles" in props && props.tiles !== undefined) {
   props.tiles = (await populateReferences(props.tiles)) as any
 }
 

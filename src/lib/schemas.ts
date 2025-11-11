@@ -164,7 +164,6 @@ const layout = block
     bubble: link.optional(),
     head: z.string().optional(),
     body: z.string().optional(),
-    css: z.string().optional(),
   })
   .strict()
 

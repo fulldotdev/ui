@@ -8,12 +8,12 @@ import { fontProviders } from "astro/config"
 export interface Options {
   site: string
   name: string
+  favicon: string
   defaultLocale: string
   locales: string[]
-  favicon: string
   fonts: {
     base: string
-    heading: string
+    heading?: string
   }
 }
 
@@ -65,7 +65,7 @@ export default function (options: Options): AstroIntegration {
               {
                 provider: fontProviders.google(),
                 cssVariable: "--font-heading",
-                name: options.fonts.heading,
+                name: options.fonts.heading || options.fonts.base,
                 weights: [
                   "100",
                   "200",
@@ -101,7 +101,22 @@ export default function (options: Options): AstroIntegration {
             }),
           ],
           vite: {
-            plugins: [tailwindcss()],
+            plugins: [
+              tailwindcss(),
+              {
+                name: "fulldev-config",
+                resolveId(id) {
+                  if (id === "fulldev:config") {
+                    return "\0fulldev:config"
+                  }
+                },
+                load(id) {
+                  if (id === "\0fulldev:config") {
+                    return `export default ${JSON.stringify(options, null, 2)}`
+                  }
+                },
+              },
+            ],
           },
         })
       },

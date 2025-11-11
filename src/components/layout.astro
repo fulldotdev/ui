@@ -1,47 +1,19 @@
 ---
-import { SEO } from "astro-seo"
-import { Font } from "astro:assets"
-import { getEntry } from "astro:content"
-
-import { Button } from "@/components/ui/button"
-import Block from "@/components/block.astro"
+import { getImage } from "astro:assets"
 
 import "@/styles/global.css"
 
-import { Icon } from "@/components/ui/icon"
-import ModeToggleProvider from "@/components/ui/mode-toggle/mode-toggle-provider.astro"
-
 type Props = {
-  layout?: string
-  title?: string
-  description?: string
-  image?: {
-    src?: string
+  name: string
+  title: string
+  description: string
+  image: {
+    src: string
     alt?: string
   }
-}
-
-const { layout, ...props } = Astro.props
-
-const indexLayout = await getEntry("layouts", "index")
-const pageLayout = layout ? await getEntry("layouts", layout) : undefined
-
-const {
-  title,
-  description,
-  image,
-  header,
-  banner,
-  sections,
-  footer,
-  bubble,
-  head,
-  body,
-  css,
-} = {
-  ...indexLayout?.data,
-  ...pageLayout?.data,
-  ...props,
+  noindex?: boolean
+  nofollow?: boolean
+  canonical?: string
 }
 
 const baseUrl = Astro.site?.origin || Astro.url.origin
@@ -49,68 +21,101 @@ const pagePathname = Astro.url.pathname.endsWith("/")
   ? Astro.url.pathname
   : `${Astro.url.pathname}/`
 const pageUrl = `${baseUrl}${pagePathname}`
+
+const {
+  canonical = pageUrl,
+  name,
+  title,
+  description,
+  image,
+  noindex,
+  nofollow,
+} = Astro.props
+
+const images = import.meta.glob("src/assets/**/*.{webp,png,jpg,jpeg,gif,svg}")
+const foundPath =
+  typeof image?.src === "string" &&
+  Object.keys(images).find((key) =>
+    key.endsWith(image?.src?.replace("/src/assets/", "") || "")
+  )
+const found = foundPath ? images[foundPath]() : (undefined as any)
+const transformedImage = found
+  ? await getImage({
+      src: found || image?.src,
+      format: "png",
+      width: 1200,
+      height: 630,
+      quality: "medium",
+    })
+  : undefined
 ---
 
-<html
-  class="bg-background scroll-smooth"
-  lang={Astro.currentLocale}
-  transition:name="root"
->
+<html class="bg-background scroll-smooth" lang={Astro.currentLocale}>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <SEO
-      charset="UTF-8"
-      title={title}
-      description={description}
-      canonical={pageUrl}
-      openGraph={{
-        basic: {
-          title: title || "",
-          image: image?.src ? baseUrl + image.src : "",
-          type: "website",
-          url: Astro.url.href,
-        },
-        image: image?.src
-          ? {
-              url: baseUrl + image.src,
-              alt: image?.alt,
-            }
-          : undefined,
-        optional: {
-          description: description,
-          locale: Astro.currentLocale,
-        },
-      }}
+    <meta charset="UTF-8" />
+    <link rel="canonical" href={canonical} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:locale" content={Astro.currentLocale} />
+    <meta property="og:image" content={transformedImage?.src} />
+    <meta property="og:image:url" content={transformedImage?.src} />
+    <meta property="og:image:secure_url" content={transformedImage?.src} />
+    <meta
+      property="og:image:type"
+      content={transformedImage?.attributes.format || "image/png"}
     />
-    <ModeToggleProvider />
-    <Font cssVariable="--font-base" preload />
-    <Font cssVariable="--font-heading" preload />
-    <Fragment set:html={head} />
+    <meta
+      property="og:image:width"
+      content={transformedImage?.attributes.width.toString()}
+    />
+    <meta
+      property="og:image:height"
+      content={transformedImage?.attributes.height.toString()}
+    />
+    <meta property="og:image:alt" content={image?.alt} />
+    <meta
+      name="robots"
+      content={`${noindex ? "noindex" : "index"}, ${nofollow ? "nofollow" : "follow"}`}
+    />
+    <Fragment
+      set:html={`<script type="application/ld+json">${JSON.stringify(
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: name,
+          url: pageUrl,
+          logo: {
+            "@type": "ImageObject",
+            url: transformedImage?.src,
+            alt: image?.alt,
+            width: transformedImage?.attributes.width.toString(),
+            height: transformedImage?.attributes.height.toString(),
+          },
+          description: description,
+          headline: title,
+          creator: {
+            "@type": "Organization",
+            name: name,
+            url: pageUrl,
+          },
+        },
+        null,
+        2
+      )}</script>`}
+    />
     <slot name="head" />
   </head>
   <body
     class="text-foreground bg-background font-base @container overscroll-none antialiased"
     id={Astro.url.pathname}
   >
-    <Block {...header} />
-    <Block {...banner} />
-    <main class="@container flex flex-col">
-      <slot />
-      {sections?.map((section) => <Block {...section} />)}
-    </main>
-    <Block {...footer} />
-    <Button
-      class="absolute right-4 bottom-4"
-      size="icon-lg"
-      target="_blank"
-      {...bubble}
-    >
-      <Icon {...bubble} />
-    </Button>
-    <Fragment set:html={body} />
-    <style set:html={css}></style>
-    <slot name="body" />
+    <slot />
     <style>
       /* Needed for astro:fonts */
       body {
