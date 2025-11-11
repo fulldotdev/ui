@@ -100,7 +100,11 @@ const glob = z.string() // "services/" - matches all pages starting with path
 const reference = z.string() // "services/my-service" - matches single page by id
 
 // Items can be: glob "services/" | references ["id-1", "id-2"] | inline [{ title: "..." }]
-const items = z.union([glob, reference.array(), item.array()])
+const items = z.union([
+  glob,
+  reference.array(),
+  item.extend({ item: item.optional() }).array(),
+])
 
 // Section - content blocks (hero, cta, features, reviews, etc.)
 const section = z

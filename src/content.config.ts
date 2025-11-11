@@ -6,7 +6,6 @@ import { glob } from "astro/loaders"
 import { banner, footer, header, layout, page, section } from "@/lib/schemas"
 
 export const collections = {
-  // All pages live within the /src/content/pages directory, optionally with subfolders.
   pages: defineCollection({
     loader: glob({
       pattern: "**/[^_]*.{md,mdx}",
@@ -14,7 +13,6 @@ export const collections = {
     }),
     schema: page,
   }),
-  // All layouts live within the /src/content/layouts directory. Pages can reference a layout by name.
   layouts: defineCollection({
     loader: glob({
       pattern: "**/[^_]*.{yaml,yml,json}",
@@ -22,12 +20,12 @@ export const collections = {
     }),
     schema: layout,
   }),
-  // Only add more collections when content comes from other sources than local markdown/mdx files.
+
+  // Docs site specific collections
   docs: defineCollection({
     loader: docsLoader(),
     schema: docsSchema(),
   }),
-
   blocks: defineCollection({
     loader: glob({
       pattern: "**/[^_]*.{yaml,yml,json}",
