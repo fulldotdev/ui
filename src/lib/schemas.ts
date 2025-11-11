@@ -1,238 +1,175 @@
 import { z } from "astro:schema"
 
+const BLOCK_IDS = Object.keys(
+  import.meta.glob("src/components/blocks/**/*.astro")
+)
+  .map((path) => path.split("/").pop()?.split(".")[0])
+  .filter((id) => id !== "index")
+
+const blockKey = z.string().refine(
+  (id) => BLOCK_IDS.includes(id),
+  (id) => ({ message: `Block ${id} not found` })
+)
+
 const link = z
   .object({
-    text: z.string(),
-    href: z.string(), // Use trailing slash for internal links
-    target: z.string(), // Use _blank for external links
+    text: z.string().optional(),
+    href: z.string(), // internal: trailing slash; external: full URL
+    icon: z.string().optional(),
+    target: z.string().optional(), // _blank for external
   })
-  .partial()
   .strict()
 
-const button = link
-  .extend({
-    variant: z.enum(["default", "outline", "secondary", "ghost", "link"]),
-  })
-  .partial()
-  .strict()
-
-const image = z
+const media = z
   .object({
-    src: z.string(), // Local images in /src/assets/ can be referenced as /myimage.webp
-    alt: z.string(),
-    title: z.string(),
+    src: z.string(), // local: /image.webp; remote: full URL
+    alt: z.string().optional(),
+    title: z.string().optional(),
   })
-  .partial()
-  .strict()
-
-const logo = image
-  .extend({
-    href: z.string(),
-  })
-  .partial()
-  .strict()
-
-const video = z
-  .object({
-    src: z.string(),
-    alt: z.string(),
-    title: z.string(),
-  })
-  .partial()
   .strict()
 
 const form = z
   .object({
-    inbox: z.string(),
     action: z.string(),
+    submit: z.string(), // submit button label
+    inbox: z.string().optional(), // CloudCannon inbox key
     fields: z.array(
       z
         .object({
+          type: z.enum([
+            "text",
+            "email",
+            "textarea",
+            "tel",
+            "checkbox",
+            "radio-group",
+            "select",
+          ]),
           name: z.string(),
-          type: z.string(),
-          label: z.string(),
-          placeholder: z.string(),
-          required: z.boolean(),
-          options: z.array(z.string()),
-          value: z.string(),
+          label: z.string().optional(),
+          placeholder: z.string().optional(),
+          required: z.boolean().optional(),
+          value: z.string().optional(),
+          options: z.array(z.string()).optional(),
         })
-        .partial()
         .strict()
     ),
-    submit: z.string(),
   })
-  .partial()
   .strict()
 
-const menu = link
-  .extend({
-    links: link.array(),
+const menu = z
+  .object({
+    text: z.string(),
+    href: z.string().optional(),
+    target: z.string().optional(),
+    links: link.array().optional(),
   })
-  .partial()
   .strict()
 
 const rating = z.number().min(0).max(5)
 
-// Item - data structure for inline/referenced content
+const glob = z.string() // glob: "services/"
+const reference = z.string() // id: "services/my-service"
+
+// ============================================================
+// HIERARCHY: item → tile → block → page
+// ============================================================
+
 const item = z
   .object({
-    href: z.string(),
-    image: image,
-    video: video, // Use video object for video content
-    icon: z.string(),
-    name: z.string(),
-    tagline: z.string(),
-    title: z.string(),
-    description: z.string(),
-    rating: rating,
-    list: z.string().array(),
-    button: button,
-    price: z.string(),
-    unit: z.string(),
-    avatar: image,
-    avatars: image.array(),
+    href: z.string().optional(),
+    title: z.string().optional(),
+    description: z.string().optional(),
+    tagline: z.string().optional(),
+    icon: z.string().optional(),
+    buttons: link.array().max(2).optional(),
+    rating: rating.optional(),
+    image: media.optional(),
+    images: media.array().optional(),
+    avatar: media.optional(),
+    avatars: media.array().optional(),
   })
-  .partial()
   .strict()
 
-// Reference patterns
-const glob = z.string() // "services/" - matches all pages starting with path
-const reference = z.string() // "services/my-service" - matches single page by id
+const items = z.union([glob, reference.array(), item.array()])
 
-// Items can be: glob "services/" | references ["id-1", "id-2"] | inline [{ title: "..." }]
-const items = z.union([
-  glob,
-  reference.array(),
-  item.extend({ item: item.optional() }).array(),
-])
-
-// Section - content blocks (hero, cta, features, reviews, etc.)
-const section = z
-  .object({
-    block: z.string(), // Block variant: "hero-1", "cta-2", "articles-1"
-    id: z.string(),
-    align: z.enum(["start", "center", "end"]),
-    size: z.enum(["sm", "default", "lg"]),
-    variant: z.enum(["default", "outline", "muted", "accent", "card"]),
-    order: z.enum(["default", "reverse"]),
-    frame: z.enum(["default", "float", "box", "contain", "panel"]),
-    position: z.enum(["default", "background", "inset"]),
-    html: z.string(),
-    buttons: button.array(),
-    logos: logo.array(),
-    image: image,
-    images: image.array(),
-    video: video,
-    form: form,
-    socials: z.string().array(),
-    item: item,
-    items: items,
+const tile = item
+  .extend({
+    list: z.string().array().optional(),
+    price: z.string().optional(),
+    unit: z.string().optional(),
+    video: media.optional(),
+    html: z.string().optional(),
+    item: item.optional(),
   })
-  .partial()
   .strict()
 
-// Page - can be simple block OR layout with sections
-const page = z
-  .object({
-    layout: z.string(), // Reference to layout by name
-    block: z.string(), // Block variant: "article-1", "person-3", "job-2"
-    align: z.enum(["start", "center", "end"]),
-    size: z.enum(["sm", "default", "lg"]),
-    variant: z.enum(["default", "outline", "muted", "accent", "card"]),
-    frame: z.enum(["default", "float", "box", "contain", "panel"]),
-    position: z.enum(["default", "background", "inset"]),
-    href: z.string(),
-    title: z.string(),
-    tagline: z.string(),
-    description: z.string(),
-    icon: z.string(),
-    image: image,
-    images: image.array(),
-    video: video,
-    rating: rating,
-    list: z.string().array(),
-    price: z.string(),
-    unit: z.string(),
-    socials: z.string().array(),
-    items: items,
-    sections: section.array(),
+const tiles = z.union([glob, reference.array(), tile.array()])
+
+const block = tile
+  .extend({
+    block: blockKey,
+    id: z.string().optional(),
+    logo: media.optional(),
+    logos: media.array().optional(),
+    menus: menu.array().optional(),
+    links: link.array().optional(),
+    channels: link.array().optional(),
+    policies: link.array().optional(),
+    socials: z.string().array().optional(),
+    copyright: z.string().optional(),
+    form: form.optional(),
+    item: item.optional(),
+    items: items.optional(),
+    tile: tile.optional(),
+    tiles: tiles.optional(),
+  })
+  .strict()
+
+const blocks = z.union([reference, block]).array()
+
+const page = block
+  .omit({ block: true })
+  .extend({
+    block: blockKey.optional(),
+    layout: z.string().optional(),
+    sections: blocks.optional(),
     seo: z
       .object({
         title: z.string(),
         description: z.string(),
-        image: image,
+        image: media.optional(),
       })
-      .partial()
-      .strict(),
+      .strict()
+      .optional(),
   })
-  .partial()
   .strict()
 
-// Layout blocks
-const header = z
-  .object({
-    block: z.string(), // Block variant: "header-1", "header-2", "header-3"
-    align: z.enum(["start", "center", "end"]),
-    variant: z.enum(["default", "outline", "muted", "accent", "card"]),
-    logo: logo,
-    buttons: button.array(),
-    socials: z.string().array(),
-    menus: menu.array(),
+const layout = block
+  .omit({ block: true })
+  .extend({
+    block: blockKey.optional(),
+    header: block.optional(),
+    banner: block.optional(),
+    sections: blocks.optional(),
+    footer: block.optional(),
+    seo: z
+      .object({
+        title: z.string(),
+        description: z.string(),
+        image: media.optional(),
+      })
+      .strict()
+      .optional(),
+    bubble: link.optional(),
+    head: z.string().optional(),
+    body: z.string().optional(),
+    css: z.string().optional(),
   })
-  .partial()
-  .strict()
-
-const footer = z
-  .object({
-    block: z.string(), // Block variant: "footer-1", "footer-2", "footer-3"
-    variant: z.enum(["default", "outline", "muted", "accent", "card"]),
-    logo: logo,
-    description: z.string(),
-    channels: link.array(), // Contact channels: email, phone, address
-    socials: z.string().array(), // Social media URLs
-    links: link.array(), // Links
-    menus: menu.array(), // Site navigation menu columns
-    policies: link.array(), // Legal policy links
-    copyright: z.string(),
-  })
-  .partial()
-  .strict()
-
-const banner = z
-  .object({
-    block: z.string(), // Block variant: "banner-1", "banner-2", "banner-3"
-    align: z.enum(["start", "center", "end"]),
-    variant: z.enum(["default", "outline", "muted", "accent", "card"]),
-    html: z.string(), // HTML content with optional <a>, <b>, <i>, <u>, <s>
-  })
-  .partial()
-  .strict()
-
-// Layout - site-wide layout (referenced by pages via layout field)
-const layout = z
-  .object({
-    title: z.string(), // Default SEO title
-    description: z.string(), // Default SEO description
-    image: image, // Default SEO image
-    header: header,
-    banner: banner,
-    sections: section.array(),
-    footer: footer,
-    bubble: button, // Floating action button
-    head: z.string(), // Custom <head> HTML
-    body: z.string(), // Custom <body> HTML
-    css: z.string(), // Custom CSS
-  })
-  .partial()
   .strict()
 
 // exports are used in astro content collections. See src/content.config.ts
-export { page, layout, header, footer, banner, section }
+export { block, page, layout }
 
 // Export for dynamic block rendering in src/components/block.astro
-export type BlockSchema =
-  | z.infer<typeof page>
-  | z.infer<typeof section>
-  | z.infer<typeof header>
-  | z.infer<typeof footer>
-  | z.infer<typeof banner>
+export type BlockSchema = z.infer<typeof block> | z.infer<typeof page>

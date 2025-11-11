@@ -1,8 +1,6 @@
 ---
 sections:
   - block: cta-1
-    align: center
-    size: lg
     html: |
       <p>Built with ❤️ for Astro</p>
       <h1>Astro UI component and block library for content-driven websites</h1>

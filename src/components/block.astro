@@ -16,13 +16,30 @@ function getHref(entry: CollectionEntry<"pages">) {
   return `/${entry.id}/`
 }
 
-// Populate references to pages of each type
+// Resolve a single reference (string ID or inline object)
+async function resolveReference(value: string | object) {
+  if (typeof value === "string") {
+    // It's a reference ID, fetch from pages collection
+    const entry = await getCollection("pages", (e) => e.id === value)
+    if (entry.length > 0) {
+      return {
+        href: getHref(entry[0]),
+        ...entry[0].data,
+      }
+    }
+    return null
+  }
+  // It's inline, return as-is
+  return value
+}
+
+// Populate references to pages (glob, array of IDs, or inline array)
 async function populateReferences<
   T extends string | string[] | object[] | undefined,
 >(value: T) {
   // If undefined, return undefined
   if (value === undefined) return
-  // If a single string, return an array matching the glob
+  // If a single string, treat as glob pattern
   else if (typeof value === "string") {
     return (
       await getCollection("pages", (entry) => entry.id.startsWith(value))
@@ -31,24 +48,32 @@ async function populateReferences<
       ...entry.data,
     }))
   }
-  // If an array of strings, return an array matching all ids
+  // If an array of strings, resolve each ID
   else if (value.every((item) => typeof item === "string")) {
-    return (
-      await getCollection("pages", (entry) =>
-        value.some((item) => entry.id === item)
-      )
-    ).map((entry) => ({
-      href: getHref(entry),
-      ...entry.data,
-    }))
-  } else if (value.every((item) => typeof item === "object")) {
+    return Promise.all(value.map((id) => resolveReference(id)))
+  }
+  // If an array of objects, return as-is (inline)
+  else if (value.every((item) => typeof item === "object")) {
     return value
   }
 }
 
-// Populate each page type
-if ("items" in props) {
+// Populate singular references
+if ("item" in props && props.item !== undefined) {
+  props.item = (await resolveReference(props.item)) as any
+}
+
+if ("tile" in props && props.tile !== undefined) {
+  props.tile = (await resolveReference(props.tile)) as any
+}
+
+// Populate plural references
+if ("items" in props && props.items !== undefined) {
   props.items = (await populateReferences(props.items)) as any
+}
+
+if ("tiles" in props && props.tiles !== undefined) {
+  props.tiles = (await populateReferences(props.tiles)) as any
 }
 
 const blockImports = import.meta.glob("./blocks/**/*.astro")
