@@ -27,11 +27,13 @@ interface Props {
     description?: string
     html?: string
     icon?: string
-    button?: {
+    href?: string
+    buttons?: {
+      icon?: string
       text?: string
       href?: string
       target?: string
-    }
+    }[]
   }[]
 }
 
@@ -56,8 +58,8 @@ const { buttons, items } = Astro.props
   </SectionContent>
   <SectionGrid>
     {
-      items?.map(({ title, description, html, icon, button }) => (
-        <Tile>
+      items?.map(({ title, description, html, icon, buttons, href }) => (
+        <Tile href={href}>
           <TileMedia variant="icon">
             <Icon name={icon} />
           </TileMedia>
@@ -67,7 +69,12 @@ const { buttons, items } = Astro.props
               description={description}
               html={html}
             />
-            <Button class="px-0" variant="link" {...button} />
+            {buttons?.map(({ icon, text, href, target }, i) => (
+              <Button class="-mx-4" variant="link" href={href} target={target}>
+                {icon && <Icon name={icon} />}
+                {text}
+              </Button>
+            ))}
           </TileContent>
         </Tile>
       ))

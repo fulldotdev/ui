@@ -1,6 +1,10 @@
 ---
+import { Font } from "astro:assets"
 import { getEntry } from "astro:content"
+import config from "fulldev:config"
 
+import ModeToggleProvider from "@/components/ui/mode-toggle/mode-toggle-provider.astro"
+import Block from "@/components/block.astro"
 import Layout from "@/components/layout.astro"
 
 export async function getStaticPaths() {
@@ -23,15 +27,29 @@ const { value } = Astro.props
 const Comp = ((await value?.()) as any)?.default
 const indexBlock = await getEntry("blocks", "index")
 const id = Astro.params.block || "index"
+
+const indexLayout = await getEntry("layouts", "index")
 ---
 
 <Layout
-  name="fulldev/ui"
+  {...config}
+  {...indexLayout?.data.seo}
   title={`${id} - Blocks`}
   description={`${id} block component`}
-  image={{ src: "placeholder.webp", alt: id }}
 >
-  <Comp {...indexBlock?.data}>
-    <Fragment set:html={indexBlock?.data?.html} />
-  </Comp>
+  <Fragment slot="head">
+    <ModeToggleProvider />
+    <Font cssVariable="--font-base" preload />
+    <Font cssVariable="--font-heading" preload />
+    <Fragment set:html={indexLayout?.data.head} />
+  </Fragment>
+  <Block block={indexLayout?.data.header} />
+  <Block block={indexLayout?.data.banner} />
+  <main class="@container flex flex-col">
+    <Comp {...indexBlock?.data}>
+      <Fragment set:html={indexBlock?.data?.html} />
+    </Comp>
+  </main>
+  <Block block={indexLayout?.data.footer} />
+  <Fragment set:html={indexLayout?.data.body} />
 </Layout>

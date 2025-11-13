@@ -1,11 +1,18 @@
 ---
+import { Font } from "astro:assets"
+import { getEntry } from "astro:content"
+import config from "fulldev:config"
+
 import { Badge } from "@/components/ui/badge"
-import { Section, SectionProvider } from "@/components/ui/section"
+import ModeToggleProvider from "@/components/ui/mode-toggle/mode-toggle-provider.astro"
+import { Section } from "@/components/ui/section"
+import Block from "@/components/block.astro"
 import Layout from "@/components/layout.astro"
 
 const allSkeletons = import.meta.glob("src/components/skeletons/**/*.astro", {
   eager: true,
 })
+
 const sortedSkeletons = Object.entries(allSkeletons).sort(([a], [b]) => {
   const aId = a.split("/").pop()?.split(".")[0] ?? ""
   const bId = b.split("/").pop()?.split(".")[0] ?? ""
@@ -17,15 +24,25 @@ const sortedSkeletons = Object.entries(allSkeletons).sort(([a], [b]) => {
   // Otherwise, fall back to string comparison
   return aId.localeCompare(bId)
 })
+
+const indexLayout = await getEntry("layouts", "index")
 ---
 
 <Layout
-  name="fulldev/ui"
+  {...config}
+  {...indexLayout?.data.seo}
   title="Skeletons - fulldev/ui"
   description="Browse all available skeleton components"
-  image={{ src: "placeholder.webp", alt: "Skeletons" }}
 >
-  <SectionProvider>
+  <Fragment slot="head">
+    <ModeToggleProvider />
+    <Font cssVariable="--font-base" preload />
+    <Font cssVariable="--font-heading" preload />
+    <Fragment set:html={indexLayout?.data.head} />
+  </Fragment>
+  <Block block={indexLayout?.data.header} />
+  <Block block={indexLayout?.data.banner} />
+  <main class="@container flex flex-col">
     {
       sortedSkeletons.map(([path, skeleton]: [string, any]) => {
         const id = path.split("/").pop()?.split(".")[0]
@@ -49,27 +66,7 @@ const sortedSkeletons = Object.entries(allSkeletons).sort(([a], [b]) => {
         ) : null
       })
     }
-  </SectionProvider>
+  </main>
+  <Block block={indexLayout?.data.footer} />
+  <Fragment set:html={indexLayout?.data.body} />
 </Layout>
-
-<script>
-  const searchInput = document.getElementById("search") as HTMLInputElement
-
-  function filterSkeletons(query: string) {
-    const skeletons = document.querySelectorAll(".skeleton-preview")
-    const searchQuery = query.toLowerCase()
-
-    skeletons.forEach((skeleton) => {
-      const skeletonId = (skeleton as HTMLElement).id.toLowerCase()
-      const isMatch = skeletonId.includes(searchQuery)
-      ;(skeleton as HTMLElement).style.display = isMatch ? "block" : "none"
-    })
-  }
-
-  searchInput?.addEventListener("input", (e) => {
-    const query = (e.target as HTMLInputElement).value
-    filterSkeletons(query)
-  })
-
-  filterSkeletons("")
-</script>

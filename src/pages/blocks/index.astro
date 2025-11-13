@@ -1,7 +1,11 @@
 ---
+import { Font } from "astro:assets"
 import { getEntry } from "astro:content"
+import config from "fulldev:config"
 
 import { Badge } from "@/components/ui/badge"
+import ModeToggleProvider from "@/components/ui/mode-toggle/mode-toggle-provider.astro"
+import Block from "@/components/block.astro"
 import Layout from "@/components/layout.astro"
 
 const indexBlock = await getEntry("blocks", "index")
@@ -12,15 +16,25 @@ const allBlocks = import.meta.glob("src/components/blocks/**/*.astro", {
 const sortedBlocks = Object.entries(allBlocks).sort(([a], [b]) =>
   a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" })
 )
+
+const indexLayout = await getEntry("layouts", "index")
 ---
 
 <Layout
-  name="fulldev/ui"
+  {...config}
+  {...indexLayout?.data.seo}
   title="Blocks - fulldev/ui"
   description="Browse all available block components"
-  image={{ src: "placeholder.webp", alt: "Blocks" }}
 >
-  <div class="px-4 py-8">
+  <Fragment slot="head">
+    <ModeToggleProvider />
+    <Font cssVariable="--font-base" preload />
+    <Font cssVariable="--font-heading" preload />
+    <Fragment set:html={indexLayout?.data.head} />
+  </Fragment>
+  <Block block={indexLayout?.data.header} />
+  <Block block={indexLayout?.data.banner} />
+  <main class="@container flex flex-col">
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       {
         sortedBlocks.map(([path, block]: [string, any]) => {
@@ -50,7 +64,9 @@ const sortedBlocks = Object.entries(allBlocks).sort(([a], [b]) =>
         })
       }
     </div>
-  </div>
+  </main>
+  <Block block={indexLayout?.data.footer} />
+  <Fragment set:html={indexLayout?.data.body} />
 </Layout>
 
 <script>
