@@ -4,36 +4,45 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-const variants = cva("relative flex w-full", {
-  variants: {
-    size: {
-      sm: "py-16",
-      default: "py-16",
-      lg: "py-16",
+const variants = cva(
+  [
+    "relative mx-auto flex w-full gap-8 border border-transparent px-(--footer-px) py-(--footer-py)",
+  ],
+  {
+    variants: {
+      frame: {
+        default: ["w-full max-w-[2560px]"],
+        muted: ["w-full max-w-[2560px]", "bg-muted/50 border-transparent"],
+      },
+      align: {
+        start: "items-start",
+        center: "items-center",
+        end: "items-end",
+      },
+      variant: {
+        default: "",
+        outline: "border-border not-first:border-t not-last:border-b",
+      },
+      width: {
+        sm: "",
+        xl: "",
+        "2xl": "",
+      },
     },
-    align: {
-      start: "items-start",
-      center: "items-center",
-      end: "items-end",
+    defaultVariants: {
+      frame: "default",
+      align: "start",
+      variant: "default",
+      width: "xl",
     },
-    variant: {
-      default: "bg-transparent",
-      outline: "border-border not-first:border-t not-last:border-b",
-      muted: "bg-muted/50",
-    },
-  },
-  defaultVariants: {
-    size: "default",
-    align: "start",
-    variant: "default",
-  },
-})
+  }
+)
 
 interface Props
   extends HTMLAttributes<"footer">,
     VariantProps<typeof variants> {}
 
-const { class: className, size, align, variant, ...props } = Astro.props
+const { class: className, frame, align, variant, width, ...props } = Astro.props
 
 const slot = await Astro.slots.render("default")
 ---
@@ -41,10 +50,40 @@ const slot = await Astro.slots.render("default")
 {
   slot?.trim().length > 0 && (
     <footer
-      class={cn(variants({ size, align, variant }), className)}
+      class={cn(variants({ frame, align, variant, width }), className)}
+      data-slot="footer"
+      data-frame={frame}
+      data-width={width}
       {...props}
     >
       <Fragment set:html={slot} />
     </footer>
   )
 }
+
+<style is:global>
+  /* Footer width and padding for inset calculations */
+  [data-slot="footer"] {
+    --footer-width: var(--breakpoint-xl);
+    --footer-py: 48px;
+    --footer-px: 24px;
+  }
+
+  [data-slot="footer"][data-width="sm"] {
+    --footer-width: var(--breakpoint-sm);
+  }
+
+  [data-slot="footer"][data-width="2xl"] {
+    --footer-width: var(--breakpoint-2xl);
+  }
+
+  @media (min-width: 1024px) {
+    [data-slot="footer"] {
+      --footer-py: 64px;
+      --footer-px: min(
+        max(48px, calc((100cqw - var(--footer-width)) / 2)),
+        calc((2560px - var(--footer-width)) / 2)
+      );
+    }
+  }
+</style>
