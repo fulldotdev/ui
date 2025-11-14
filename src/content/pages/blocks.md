@@ -1,4 +1,5 @@
-block: cta-1
+---
+block: blocks-1
 title: Lorem ipsum dolor sit amet
 description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
 buttons:
@@ -254,3 +255,4 @@ tiles:
       avatar:
         src: /placeholder.webp
         alt: Avatar
+---

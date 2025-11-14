@@ -5,6 +5,7 @@ import config from "fulldev:config"
 
 import { Badge } from "@/components/ui/badge"
 import ModeToggleProvider from "@/components/ui/mode-toggle/mode-toggle-provider.astro"
+import { Section, SectionContent } from "@/components/ui/section"
 import Block from "@/components/block.astro"
 import Layout from "@/components/layout.astro"
 
@@ -34,36 +35,35 @@ const indexLayout = await getEntry("layouts", "index")
   </Fragment>
   <Block block={indexLayout?.data.header} />
   <Block block={indexLayout?.data.banner} />
-  <main class="@container flex flex-col px-4 py-8">
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {
-        sortedBlocks.map(([path, block]: [string, any]) => {
-          const id = path.split("/").pop()?.split(".")[0]
-          const BlockComponent = block.default
-          return BlockComponent ? (
-            <div class="flex flex-col gap-2">
+  <main class="@container flex flex-col gap-6 px-4 py-8">
+    {
+      sortedBlocks.map(([path, block]: [string, any]) => {
+        const id = path.split("/").pop()?.split(".")[0]
+        const BlockComponent = block.default
+        return BlockComponent ? (
+          <Section class="flex flex-col gap-2">
+            <SectionContent>
+              {/* header */}
               <div class="flex flex-row items-center justify-between">
                 <Badge variant="secondary" href={`/blocks/${id}/`}>
                   {id}
                 </Badge>
               </div>
-              <div
-                id={id}
-                class="relative overflow-hidden rounded-lg border-2 border-dashed"
-              >
-                <div class="bg-background no-scrollbar relative aspect-video overflow-x-hidden">
-                  <div class="@container h-full w-[200%] origin-top-left scale-50">
+              {/* block */}
+              <div id={id} class="relative overflow-hidden rounded-lg border">
+                <div class="bg-background no-scrollbar @container relative aspect-video overflow-x-hidden">
+                  <div class="@container h-full w-[1280px] origin-top-left scale-[calc(100cqw/1280px)]">
                     <BlockComponent {...indexBlock?.data}>
                       <Fragment set:html={indexBlock?.data?.html} />
                     </BlockComponent>
                   </div>
                 </div>
               </div>
-            </div>
-          ) : null
-        })
-      }
-    </div>
+            </SectionContent>
+          </Section>
+        ) : null
+      })
+    }
   </main>
   <Block block={indexLayout?.data.footer} />
   <Fragment set:html={indexLayout?.data.body} />
@@ -90,14 +90,3 @@ const indexLayout = await getEntry("layouts", "index")
 
   filterBlocks("")
 </script>
-
-<style>
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-</style>

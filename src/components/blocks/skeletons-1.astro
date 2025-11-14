@@ -1,0 +1,46 @@
+---
+import { Badge } from "@/components/ui/badge"
+import { Section, SectionContent } from "@/components/ui/section"
+
+const allBlocks = import.meta.glob("src/components/blocks/**/*.astro", {
+  eager: true,
+})
+
+const sortedBlocks = Object.entries(allBlocks).sort(([a], [b]) =>
+  a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" })
+)
+---
+
+<Section>
+  <SectionContent>
+    Hello world!@
+    <!-- {
+      sortedBlocks.map(([path, block]: [string, any]) => {
+        const id = path.split("/").pop()?.split(".")[0]
+        const BlockComponent = block.default
+        return BlockComponent ? (
+          <Section class="flex flex-col gap-2">
+            <SectionContent>
+              {/* header */}
+              <div class="flex flex-row items-center justify-between">
+                <Badge variant="secondary" href={`/blocks/${id}/`}>
+                  {id}
+                </Badge>
+              </div>
+              {/* block */}
+              <div id={id} class="relative overflow-hidden rounded-lg border">
+                <div class="bg-background no-scrollbar @container relative aspect-video overflow-x-hidden">
+                  <div class="@container h-full w-[1280px] origin-top-left scale-[calc(100cqw/1280px)]">
+                    <BlockComponent {...Astro.props}>
+                      <Fragment set:html={Astro.props?.html} />
+                    </BlockComponent>
+                  </div>
+                </div>
+              </div>
+            </SectionContent>
+          </Section>
+        ) : null
+      })
+    } -->
+  </SectionContent>
+</Section>
