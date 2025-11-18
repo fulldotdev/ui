@@ -1,0 +1,3 @@
+---
+block: skeletons-1
+---
