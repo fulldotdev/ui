@@ -3,18 +3,22 @@ import { getImage } from "astro:assets"
 
 import "@/styles/global.css"
 
-type Props = {
-  name: string
-  title: string
-  description: string
-  image: {
-    src: string
-    alt?: string
+import { Font } from "astro:assets"
+import site from "site.json"
+
+import type { LayoutSchema, PageSchema } from "@/lib/schemas"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { ModeToggleProvider } from "@/components/ui/mode-toggle"
+import Block from "@/components/block.astro"
+
+type Props = LayoutSchema &
+  PageSchema & {
+    name?: string
+    canonical?: string
+    noindex?: boolean
+    nofollow?: boolean
   }
-  noindex?: boolean
-  nofollow?: boolean
-  canonical?: string
-}
 
 const baseUrl = Astro.site?.origin || Astro.url.origin
 const pagePathname = Astro.url.pathname.endsWith("/")
@@ -23,25 +27,25 @@ const pagePathname = Astro.url.pathname.endsWith("/")
 const pageUrl = `${baseUrl}${pagePathname}`
 
 const {
-  canonical = pageUrl,
-  name,
+  banner,
+  header,
+  sections,
+  footer,
+  bubble,
+  canonical,
+  name = site.name,
   title,
   description,
   image,
-  noindex,
-  nofollow,
+  noindex = false,
+  nofollow = false,
+  block,
+  ...props
 } = Astro.props
 
-const images = import.meta.glob("src/assets/**/*.{webp,png,jpg,jpeg,gif,svg}")
-const foundPath =
-  typeof image?.src === "string" &&
-  Object.keys(images).find((key) =>
-    key.endsWith(image?.src?.replace("/src/assets/", "") || "")
-  )
-const found = foundPath ? images[foundPath]() : (undefined as any)
-const transformedImage = found
+const transformedImage = image?.src
   ? await getImage({
-      src: found || image?.src,
+      src: image?.src,
       format: "png",
       width: 1200,
       height: 630,
@@ -115,13 +119,48 @@ const transformedImage = found
         2
       )}</script>`}
     />
+    <ModeToggleProvider />
+    <Font cssVariable="--font-base" preload />
+    <Font cssVariable="--font-heading" preload />
     <slot name="head" />
   </head>
   <body
     class="text-foreground bg-background font-base @container overscroll-none antialiased"
     id={Astro.url.pathname}
   >
-    <slot />
+    {banner && <Block {...banner} />}
+    {header && <Block {...header} />}
+    <main class="@container flex flex-col">
+      {
+        block && (
+          <Block
+            data-cms-bind="#"
+            data-cms-bind-style="sidebar"
+            block={block}
+            {...props}
+          >
+            <slot />
+          </Block>
+        )
+      }
+      {
+        sections?.map((section, i) => (
+          <div data-cms-bind={`#sections[${i}]`} data-cms-bind-style="sidebar">
+            <Block {...section} />
+          </div>
+        ))
+      }
+      <slot />
+    </main>
+    <Button
+      class="absolute right-4 bottom-4"
+      size="icon-lg"
+      target="_blank"
+      {...bubble}
+    >
+      <Icon {...bubble} />
+    </Button>
+    {footer && <Block {...footer} />}
     <style>
       /* Needed for astro:fonts */
       body {

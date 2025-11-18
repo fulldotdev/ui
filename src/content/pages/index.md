@@ -10,6 +10,9 @@ sections:
         href: /docs/installation/
       - text: GitHub
         href: https://github.com/fulldotdev/ui
+    image:
+      src: ../../assets/example.jpg
+      alt: Home
     items:
       - title: Built for agents
         description: Because we use the same API as shadcn/ui, AI agent understand how to use it. It's a drop-in replacement.
@@ -33,6 +36,6 @@ seo:
   title: Astro UI component and block library for content-driven websites - fulldev/ui
   description: fulldev/ui is a complete Astro component library with ready-to-use UI components and blocks. Build content-driven websites faster with our Astro UI components library designed for developers.
   image:
-    src: placeholder.webp
+    src: ../../assets/placeholder.webp
     alt: Home
 ---

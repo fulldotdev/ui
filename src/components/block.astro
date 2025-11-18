@@ -1,98 +1,69 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content"
 
-import type { BlockSchema } from "@/lib/schemas"
+import type { BlockSchema, PageSchema } from "@/lib/schemas"
 
-type Props = {
-  block: BlockSchema | string | undefined
-  [key: string]: any
-}
-
-let { block: blockData } = Astro.props
-
-// If block is a string, treat it as a reference and resolve it
-if (typeof blockData === "string") {
-  const entry = await getCollection("pages", (e) => e.id === blockData)
-  if (entry.length > 0) {
-    blockData = entry[0].data as BlockSchema
-  } else {
-    blockData = {} as BlockSchema
-  }
-}
-
-const props = (blockData || {}) as BlockSchema
+type Props = BlockSchema & PageSchema
 
 function getHref(entry: CollectionEntry<"pages">) {
   // If there is no content, return undefined
-  if (!entry.data.sections?.length && !entry.body?.length) return undefined
+  if (!entry.data.sections?.length && !entry.body?.length && !entry.data.block)
+    return undefined
   // If the page is the index, return the root
   if (entry.id === "index") return "/"
   // else return href b yid
   return `/${entry.id}/`
 }
 
-// Resolve a single reference (string ID or inline object)
-async function resolveReference(value: string | object) {
-  if (typeof value === "string") {
-    // It's a reference ID, fetch from pages collection
-    const entry = await getCollection("pages", (e) => e.id === value)
-    if (entry.length > 0) {
-      return {
-        href: getHref(entry[0]),
-        ...entry[0].data,
-      }
-    }
-    return null
+const pages = await getCollection("pages")
+
+// Get a single reference by file path
+async function getRef(value: string) {
+  const entry = pages.find((page) => `/${page.filePath}` === value)
+  if (!entry) return
+  return {
+    href: getHref(entry),
+    ...entry.data,
   }
-  // It's inline, return as-is
-  return value
 }
 
-// Populate references to pages (glob, array of IDs, or inline array)
-async function populateReferences<
-  T extends string | string[] | object[] | undefined,
->(value: T) {
-  // If undefined, return undefined
-  if (value === undefined) return
-  // If a single string, treat as glob pattern
-  else if (typeof value === "string") {
-    return (
-      await getCollection("pages", (entry) => entry.id.startsWith(value))
-    ).map((entry) => ({
-      href: getHref(entry),
-      ...entry.data,
+// Get multiple references by file paths
+async function getRefs(values: string[]) {
+  return (await Promise.all(values.map(getRef))).filter(
+    (item) => item !== undefined
+  )
+}
+
+// Get a glob of pages by folder path
+async function getGlob(value: string) {
+  return pages
+    .filter((page) => page.filePath?.startsWith(`src/content/pages/${value}`))
+    .map((page) => ({
+      href: getHref(page),
+      ...page.data,
     }))
-  }
-  // If an array of strings, resolve each ID
-  else if (value.every((item) => typeof item === "string")) {
-    return Promise.all(value.map((id) => resolveReference(id)))
-  }
-  // If an array of objects, return as-is (inline)
-  else if (value.every((item) => typeof item === "object")) {
-    return value
-  }
 }
 
-// Populate singular references
-if (props && "item" in props && props.item !== undefined) {
-  props.item = (await resolveReference(props.item)) as any
-}
+const {
+  block,
+  itemRef,
+  itemsRefs,
+  itemsGlob,
+  tileRef,
+  tilesRefs,
+  tilesGlob,
+  ...props
+} = Astro.props
 
-if (props && "tile" in props && props.tile !== undefined) {
-  props.tile = (await resolveReference(props.tile)) as any
-}
-
-// Populate plural references
-if (props && "items" in props && props.items !== undefined) {
-  props.items = (await populateReferences(props.items)) as any
-}
-
-if (props && "tiles" in props && props.tiles !== undefined) {
-  props.tiles = (await populateReferences(props.tiles)) as any
-}
+// Populate references
+itemRef && (props.item = await getRef(itemRef))
+itemsRefs && (props.items = await getRefs(itemsRefs))
+itemsGlob && (props.items = await getGlob(itemsGlob))
+tileRef && (props.tile = await getRef(tileRef))
+tilesRefs && (props.tiles = await getRefs(tilesRefs))
+tilesGlob && (props.tiles = await getGlob(tilesGlob))
 
 const blockImports = import.meta.glob("./blocks/**/*.astro")
-const { block, ...rest } = props
 const blockPath = `./blocks/${block}.astro`
 const blockImport = (await blockImports[blockPath]?.()) as any
 const BlockComponent = blockImport?.default as any
@@ -100,9 +71,9 @@ const BlockComponent = blockImport?.default as any
 
 {
   BlockComponent && (
-    <BlockComponent {...rest}>
+    <BlockComponent {...props}>
       <slot />
-      {"html" in rest && <Fragment set:html={rest.html} />}
+      {"html" in props && <Fragment set:html={props.html} />}
     </BlockComponent>
   )
 }

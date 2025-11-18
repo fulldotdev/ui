@@ -1,0 +1,59 @@
+---
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemTitle,
+} from "@/components/ui/item"
+import {
+  Section,
+  SectionContent,
+  SectionSplit,
+  SectionTypography,
+} from "@/components/ui/section"
+
+interface Props {
+  title?: string
+  description?: string
+  items?: {
+    title?: string
+    description?: string
+    href?: string
+    icon?: string
+  }[]
+}
+
+const { title, description, items } = Astro.props
+---
+
+<Section>
+  <SectionSplit align="start">
+    <SectionContent>
+      <SectionTypography title={title} description={description}>
+        <slot />
+      </SectionTypography>
+    </SectionContent>
+    <ItemGroup class="flex flex-col gap-2">
+      {
+        items?.map(({ title, description, href, icon }) => (
+          <Item variant="muted">
+            <ItemContent class="flex-1">
+              <ItemTitle>{title}</ItemTitle>
+              <ItemDescription>{description}</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Button size="sm" variant="outline" href={href} download>
+                <Icon name="download" />
+                Download
+              </Button>
+            </ItemActions>
+          </Item>
+        ))
+      }
+    </ItemGroup>
+  </SectionSplit>
+</Section>

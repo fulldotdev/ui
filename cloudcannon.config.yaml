@@ -1,5 +1,7 @@
 paths:
-  uploads: src/assets
+  uploads: src/assets/
+  static: src/assets/
+timezone: Etc/UTC
 collections_config:
   pages:
     path: src/content/pages
@@ -25,8 +27,6 @@ collection_groups:
   - heading: Content
     collections:
       - pages
-      - layouts
-timezone: Etc/UTC
 _inputs:
   block:
     hidden: true
@@ -42,54 +42,38 @@ _inputs:
     hidden: true
   glob:
     hidden: true
-  published:
-    type: date
-    instance_value: NOW
-    options:
-      empty_type: string
-      timezone: Etc/UTC
+  icon:
+    hidden: true
   title:
     type: text
     options:
       empty_type: string
   description:
-    type: text
+    type: textarea
     options:
       empty_type: string
   href:
     type: url
+    label: Link
     options:
       empty_type: string
   tagline:
     type: text
     options:
       empty_type: string
-  icon:
-    type: select
-    options:
-      empty_type: string
-      values:
-        - value: check
-          label: Check
-        - value: cross
-          label: Cross
-  paths:
-    type: multiselect
-    options:
-      values: collections.pages
   rating:
     type: range
     options:
-      empty_type: "null"
+      empty_type: number
       min: 0
       max: 5
-      step: 0.5
-  blocks:
+      step: 0.1
+  sections:
     type: array
     options:
       empty_type: array
-      disable_add: false
-      disable_remove: false
+      disable_add: true
+      disable_remove: true
       disable_reorder: false
   list:
     type: array
@@ -104,19 +88,26 @@ _inputs:
       empty_type: string
   socials:
     type: array
+    options:
+      empty_type: array
+      disable_add: false
+      disable_remove: false
+      disable_reorder: false
   socials[*]:
     type: url
     options:
       empty_type: string
-  link:
-    type: object
+  links:
+    type: array
     options:
-      structures: _structures.link
+      empty_type: array
+      disable_add: false
+      disable_remove: false
+      disable_reorder: false
   buttons:
     type: array
     options:
       empty_type: array
-      structures: _structures.link
       max_items: 2
       disable_add: false
       disable_remove: false
@@ -129,16 +120,22 @@ _inputs:
     type: text
     options:
       required: true
-  seo:
-    type: object
+  seo.title:
+    type: text
     options:
-      subtype: object
-      structures: _structures.seo
+      required: true
+  seo.description:
+    type: textarea
+    options:
+      required: true
   src:
     type: image
     options:
       mime_type: image/webp
-      accepts_mime_types: image/jpeg,image/jpg,image/png,image/webp
+      accepts_mime_types:
+        - image/jpeg
+        - image/png
+        - image/webp
       resize_style: contain
       width: 2560
       height: 2560
@@ -149,15 +146,26 @@ _inputs:
       disable_add: false
       disable_remove: false
       disable_reorder: false
-  images[*].src:
-    type: image
+  itemRef:
+    type: select
     options:
-      mime_type: image/webp
-      accepts_mime_types: image/jpeg,image/jpg,image/png,image/webp
-      resize_style: contain
-      width: 2560
-      height: 2560
-  # Content
+      values: collections.pages
+  tileRef:
+    type: select
+    options:
+      values: collections.pages
+  tilesGlob:
+    hidden: true
+  tilesRefs:
+    type: multiselect
+    options:
+      values: collections.pages
+  itemsGlob:
+    hidden: true
+  itemsRefs:
+    type: multiselect
+    options:
+      values: collections.pages
   head:
     type: code
     options:
@@ -176,16 +184,6 @@ _inputs:
       theme: monokai
       show_gutter: true
       syntax: html
-  css:
-    type: code
-    options:
-      min_visible_lines: 10
-      max_visible_lines: 30
-      tab_size: 2
-      theme: monokai
-      show_gutter: true
-      syntax: css
-  # Richtext
   html:
     type: html
     label: Content
@@ -212,27 +210,15 @@ _editables:
     bold: true
     bulletedlist: true
     format: p h1 h2 h3 h4 h5 h6
-    image: true
     italic: true
     link: true
-    mime_type: image/webp
     numberedlist: true
     redo: true
-    resize_style: contain
     table: false
     underline: true
     undo: true
+    image: true
     height: 2560
     width: 2560
-
-_structures:
-  link:
-    values:
-      - value:
-          text: ""
-          href: ""
-  seo:
-    values:
-      - value:
-          title: ""
-          description: ""
+    resize_style: contain
+    mime_type: image/webp

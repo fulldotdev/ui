@@ -28,6 +28,9 @@ export default function (options: Options): AstroIntegration {
           image: {
             responsiveStyles: true,
             breakpoints: [640, 750, 828, 1080, 1280, 1668, 2048, 2560],
+            layout: "full-width",
+            objectFit: "contain",
+            objectPosition: "center",
           },
           prefetch: {
             prefetchAll: true,

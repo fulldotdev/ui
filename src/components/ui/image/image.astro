@@ -4,35 +4,13 @@ import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-type Props = Partial<ComponentProps<typeof AstroImage>>
+type Props = ComponentProps<typeof AstroImage>
 
-const {
-  class: className,
-  alt = "",
-  sizes = "100vw",
-  src,
-  widths = [640, 750, 828, 1080, 1280, 1668, 2048, 2560],
-  ...props
-} = Astro.props
-
-const images = import.meta.glob("src/assets/**/*.{webp,png,jpg,jpeg,gif,svg}")
-const foundPath =
-  typeof src === "string" &&
-  Object.keys(images).find((key) =>
-    key.endsWith(src.replace("/src/assets/", ""))
-  )
-const found = foundPath ? images[foundPath]() : undefined
+const props = Astro.props
 ---
 
 {
-  src && (
-    <AstroImage
-      class={cn("h-auto w-full", className)}
-      src={found || src}
-      alt={alt}
-      widths={widths}
-      sizes={sizes}
-      {...(props as any)}
-    />
+  props.src && (
+    <AstroImage {...props} class={cn("h-auto w-full", props.class)} />
   )
 }
