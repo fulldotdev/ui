@@ -6,19 +6,11 @@ import "@/styles/global.css"
 import { Font } from "astro:assets"
 import site from "site.json"
 
-import type { LayoutSchema, PageSchema } from "@/lib/schemas"
-import { Button } from "@/components/ui/button"
-import { Icon } from "@/components/ui/icon"
+import type { PageSchema } from "@/lib/schemas"
 import { ModeToggleProvider } from "@/components/ui/mode-toggle"
 import Block from "@/components/block.astro"
 
-type Props = LayoutSchema &
-  PageSchema & {
-    name?: string
-    canonical?: string
-    noindex?: boolean
-    nofollow?: boolean
-  }
+type Props = PageSchema
 
 const baseUrl = Astro.site?.origin || Astro.url.origin
 const pagePathname = Astro.url.pathname.endsWith("/")
@@ -26,26 +18,14 @@ const pagePathname = Astro.url.pathname.endsWith("/")
   : `${Astro.url.pathname}/`
 const pageUrl = `${baseUrl}${pagePathname}`
 
-const {
-  banner,
-  header,
-  sections,
-  footer,
-  bubble,
-  canonical,
-  name = site.name,
-  title,
-  description,
-  image,
-  noindex = false,
-  nofollow = false,
-  block,
-  ...props
-} = Astro.props
+const { headers, sections, footers, block, meta, ...props } = Astro.props
 
+const title = meta?.title || props?.title
+const description = meta?.description || props?.description
+const image = meta?.image || props?.image
 const transformedImage = image?.src
   ? await getImage({
-      src: image?.src,
+      src: image.src,
       format: "png",
       width: 1200,
       height: 630,
@@ -59,7 +39,7 @@ const transformedImage = image?.src
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta charset="UTF-8" />
-    <link rel="canonical" href={canonical} />
+    <link rel="canonical" href={meta?.canonical} />
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta property="og:title" content={title} />
@@ -91,14 +71,14 @@ const transformedImage = image?.src
     <meta property="og:image:alt" content={image?.alt} />
     <meta
       name="robots"
-      content={`${noindex ? "noindex" : "index"}, ${nofollow ? "nofollow" : "follow"}`}
+      content={`${meta?.noindex ? "noindex" : "index"}, ${meta?.nofollow ? "nofollow" : "follow"}`}
     />
     <Fragment
       set:html={`<script type="application/ld+json">${JSON.stringify(
         {
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: name,
+          name: site.name,
           url: pageUrl,
           logo: {
             "@type": "ImageObject",
@@ -111,7 +91,7 @@ const transformedImage = image?.src
           headline: title,
           creator: {
             "@type": "Organization",
-            name: name,
+            name: site.name,
             url: pageUrl,
           },
         },
@@ -128,21 +108,16 @@ const transformedImage = image?.src
     class="text-foreground bg-background font-base @container overscroll-none antialiased"
     id={Astro.url.pathname}
   >
-    {banner && <Block {...banner} />}
-    {header && <Block {...header} />}
+    {headers?.map((header) => <Block {...header} />)}
     <main class="@container flex flex-col">
-      {
-        block && (
-          <Block
-            data-cms-bind="#"
-            data-cms-bind-style="sidebar"
-            block={block}
-            {...props}
-          >
-            <slot />
-          </Block>
-        )
-      }
+      <Block
+        data-cms-bind="#"
+        data-cms-bind-style="sidebar"
+        block={block}
+        {...props}
+      >
+        <slot />
+      </Block>
       {
         sections?.map((section, i) => (
           <div data-cms-bind={`#sections[${i}]`} data-cms-bind-style="sidebar">
@@ -152,15 +127,7 @@ const transformedImage = image?.src
       }
       <slot />
     </main>
-    <Button
-      class="absolute right-4 bottom-4"
-      size="icon-lg"
-      target="_blank"
-      {...bubble}
-    >
-      <Icon {...bubble} />
-    </Button>
-    {footer && <Block {...footer} />}
+    {footers?.map((footer) => <Block {...footer} />)}
     <style>
       /* Needed for astro:fonts */
       body {

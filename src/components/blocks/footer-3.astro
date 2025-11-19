@@ -1,4 +1,5 @@
 ---
+import type { ComponentProps } from "astro/types"
 import MenuIcon from "lucide-static/icons/menu.svg"
 
 import { Button } from "@/components/ui/button"
@@ -30,12 +31,9 @@ import {
 } from "@/components/ui/sidebar"
 
 interface Props {
-  logo?: {
-    src?: string
-    alt?: string
-    title?: string
-  }
-  buttons?: {
+  title?: string
+  image?: ComponentProps<typeof LogoImage>
+  links?: {
     icon?: string
     text?: string
     href?: string
@@ -52,14 +50,14 @@ interface Props {
   }[]
 }
 
-const { logo, menus, buttons, socials } = Astro.props
+const { title, image, menus, links, socials } = Astro.props
 ---
 
 <Header class="sticky top-0 z-50 flex items-center border-t">
   <HeaderContent class="flex max-w-none justify-between gap-8">
     <Logo href="/">
-      <LogoImage src={logo?.src} alt={logo?.alt} />
-      <LogoText>{logo?.title}</LogoText>
+      <LogoImage {...image} />
+      <LogoText>{title}</LogoText>
     </Logo>
     <NavigationMenu class="mr-auto max-lg:hidden">
       <NavigationMenuList>
@@ -105,9 +103,9 @@ const { logo, menus, buttons, socials } = Astro.props
         ))
       }
       {
-        buttons?.map(({ icon, text, ...button }, i) => (
+        links?.map(({ icon, text, ...button }, i) => (
           <Button
-            variant={i === buttons.length - 1 ? "default" : "ghost"}
+            variant={i === links.length - 1 ? "default" : "ghost"}
             {...button}
           >
             {icon && <Icon name={icon} />}
@@ -153,11 +151,11 @@ const { logo, menus, buttons, socials } = Astro.props
           }
         </SidebarMenu>
         {
-          buttons && buttons.length > 0 && (
+          links && links.length > 0 && (
             <div class="mt-6 flex w-full flex-col gap-2">
-              {buttons?.map(({ icon, text, ...button }, i) => (
+              {links?.map(({ icon, text, ...button }, i) => (
                 <Button
-                  variant={i === buttons.length - 1 ? "default" : "ghost"}
+                  variant={i === links.length - 1 ? "default" : "ghost"}
                   {...button}
                 >
                   {icon && <Icon name={icon} />}

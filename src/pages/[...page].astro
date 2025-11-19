@@ -1,8 +1,5 @@
 ---
-// This page is used for dynamic page building.
-// It is still experimental and not yet documented or included within fulldev/ui.
 import { getCollection, getEntry, render } from "astro:content"
-import config from "site.json"
 
 import Layout from "@/components/layout.astro"
 
@@ -18,27 +15,22 @@ export async function getStaticPaths() {
   })
 }
 
-const { layout, ...page } = Astro.props.data
+const page = Astro.props
+const { layout } = page.data
 const { Content } = await render(Astro.props)
 
-const indexLayout = (await getEntry("layouts", "index"))?.data
-const pageLayout = layout
-  ? (await getEntry("layouts", layout))?.data
-  : undefined
+const indexLayout = await getEntry("layouts", "index")
+const pageLayout = layout ? await getEntry("layouts", layout) : undefined
 ---
 
 <Layout
-  {...config}
-  {...indexLayout}
-  {...pageLayout}
-  {...page}
-  {...indexLayout?.seo}
-  {...pageLayout?.seo}
-  {...page?.seo}
+  {...indexLayout?.data}
+  {...pageLayout?.data}
+  {...page.data}
   sections={[
-    ...(page?.sections || []),
-    ...(pageLayout?.sections || []),
-    ...(indexLayout?.sections || []),
+    ...(page.data?.sections || []),
+    ...(pageLayout?.data?.sections || []),
+    ...(indexLayout?.data?.sections || []),
   ]}
 >
   <Content />

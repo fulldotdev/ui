@@ -1,4 +1,6 @@
 ---
+import type { ComponentProps } from "astro/types"
+
 import { Button } from "@/components/ui/button"
 import {
   Footer,
@@ -19,35 +21,26 @@ import { Icon } from "@/components/ui/icon"
 import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
 
 interface Props {
-  class?: string
-  logo?: {
-    src?: string
-    alt?: string
-    title?: string
-  }
+  title?: string
+  image?: ComponentProps<typeof LogoImage>
   description?: string
-  copyright?: string
-  channels?: {
-    text?: string
-    href?: string
-    icon?: string
-  }[]
   socials?: string[]
   menus?: {
     text?: string
+    href?: string
     links?: {
       text?: string
       href?: string
     }[]
   }[]
-  policies?: {
-    text?: string
+  links?: {
     href?: string
+    text?: string
+    icon?: string
   }[]
 }
 
-const { logo, description, copyright, channels, socials, menus, policies } =
-  Astro.props
+const { title, image, description, links, socials, menus } = Astro.props
 ---
 
 <Footer>
@@ -55,13 +48,13 @@ const { logo, description, copyright, channels, socials, menus, policies } =
     <FooterSplit>
       <FooterGroup>
         <Logo href="/">
-          <LogoImage src={logo?.src} alt={logo?.alt} />
-          <LogoText>{logo?.title}</LogoText>
+          <LogoImage {...image} />
+          <LogoText>{title}</LogoText>
         </Logo>
         <FooterDescription>{description}</FooterDescription>
         <FooterMenu>
           {
-            channels?.map(({ href, icon, text }) => (
+            links?.map(({ href, icon, text }) => (
               <FooterMenuItem>
                 <FooterMenuLink href={href}>
                   <Icon name={icon} href={href} />
@@ -101,18 +94,8 @@ const { logo, description, copyright, channels, socials, menus, policies } =
       </FooterGrid>
     </FooterSplit>
     <FooterSpread class="mt-8 border-t pt-8">
-      <FooterDescription size="sm">{copyright}</FooterDescription>
-      <FooterMenu orientation="horizontal">
-        {
-          policies?.map((policy) => (
-            <FooterMenuItem>
-              <FooterMenuLink size="sm" href={policy.href}>
-                {policy.text}
-              </FooterMenuLink>
-            </FooterMenuItem>
-          ))
-        }
-      </FooterMenu>
+      <FooterDescription size="sm" />
+      <FooterMenu orientation="horizontal" />
     </FooterSpread>
   </FooterContainer>
 </Footer>

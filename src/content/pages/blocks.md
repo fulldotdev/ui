@@ -2,7 +2,7 @@
 block: blocks-1
 title: Lorem ipsum dolor sit amet
 description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-buttons:
+links:
   - text: Lorem ipsum dolor
     href: "#"
   - text: Lorem ipsum
@@ -29,13 +29,6 @@ menus:
   - text: Lorem ipsum
     href: "#"
   - text: Lorem ipsum
-    href: "#"
-channels:
-  - text: "3131 3131"
-    href: "#"
-  - text: "info@example.com"
-    href: "#"
-  - text: "1234567890"
     href: "#"
 socials:
   - https://facebook.com
@@ -91,7 +84,7 @@ items:
     description: Lorem ipsum dolor sit amet consectetur adipisicing elit.
     tagline: CEO
     icon: heart
-    buttons:
+    links:
       - text: Learn More
         href: "#"
     rating: 5
@@ -103,45 +96,12 @@ items:
         alt: Gallery 1
       - src: ../../assets/placeholder.webp
         alt: Gallery 2
-    avatar:
-      src: ../../assets/placeholder.webp
-      alt: Avatar
-    avatars:
-      - src: ../../assets/placeholder.webp
-        alt: Avatar 1
-      - src: ../../assets/placeholder.webp
-        alt: Avatar 2
   - href: "#"
     title: Lorem ipsum
     description: Lorem ipsum dolor sit amet consectetur adipisicing elit.
     tagline: CTO
     icon: star
-    buttons:
-      - text: Learn More
-        href: "#"
-    rating: 5
-    image:
-      src: ../../assets/placeholder.webp
-      alt: Image
-    images:
-      - src: ../../assets/placeholder.webp
-        alt: Gallery 1
-      - src: ../../assets/placeholder.webp
-        alt: Gallery 2
-    avatar:
-      src: ../../assets/placeholder.webp
-      alt: Avatar
-    avatars:
-      - src: ../../assets/placeholder.webp
-        alt: Avatar 1
-      - src: ../../assets/placeholder.webp
-        alt: Avatar 2
-  - href: "#"
-    title: Featured Project
-    description: Lorem ipsum dolor sit amet
-    tagline: Latest
-    icon: star
-    buttons:
+    links:
       - text: Learn More
         href: "#"
     rating: 5
@@ -153,14 +113,23 @@ items:
         alt: Image 1
       - src: ../../assets/placeholder.webp
         alt: Image 2
-    avatar:
+  - href: "#"
+    title: Featured Project
+    description: Lorem ipsum dolor sit amet
+    tagline: Latest
+    icon: star
+    links:
+      - text: Learn More
+        href: "#"
+    rating: 5
+    image:
       src: ../../assets/placeholder.webp
-      alt: Avatar
-    avatars:
+      alt: Image
+    images:
       - src: ../../assets/placeholder.webp
-        alt: Avatar 1
+        alt: Image 1
       - src: ../../assets/placeholder.webp
-        alt: Avatar 2
+        alt: Image 2
     list:
       - Feature 1
       - Feature 2
@@ -177,15 +146,15 @@ items:
       tagline: Project Lead
       icon: user
       rating: 5
-      avatar:
+      image:
         src: ../../assets/placeholder.webp
-        alt: Avatar
+        alt: Image
   - href: "#"
     title: Basic Plan
     description: Perfect for getting started
     tagline: Starter
     icon: zap
-    buttons:
+    links:
       - text: Get Started
         href: "#"
     rating: 4
@@ -207,15 +176,15 @@ items:
       title: Jane Smith
       description: Your dedicated support contact
       tagline: Success Manager
-      avatar:
+      image:
         src: ../../assets/placeholder.webp
-        alt: Avatar
+        alt: Image
   - href: "#"
     title: Pro Plan
     description: Best for growing teams
     tagline: Professional
     icon: rocket
-    buttons:
+    links:
       - text: Get Started
         href: "#"
     rating: 5
@@ -238,7 +207,7 @@ items:
       title: John Doe
       description: 24/7 dedicated support
       tagline: Enterprise Manager
-      avatar:
+      image:
         src: ../../assets/placeholder.webp
-        alt: Avatar
+        alt: Image
 ---

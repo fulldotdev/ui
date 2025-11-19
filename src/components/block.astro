@@ -1,10 +1,11 @@
 ---
-import { getCollection, type CollectionEntry } from "astro:content"
+import { getCollection, getEntry, type CollectionEntry } from "astro:content"
 
 import type { BlockSchema, PageSchema } from "@/lib/schemas"
 
 type Props = BlockSchema & PageSchema
 
+// Helper functions
 function getHref(entry: CollectionEntry<"pages">) {
   // If there is no content, return undefined
   if (!entry.data.sections?.length && !entry.body?.length && !entry.data.block)
@@ -84,7 +85,9 @@ async function resolveItem(item: any): Promise<any> {
   return resolved
 }
 
-const { block, ref, refs, glob, ...props } = Astro.props
+const { block } = Astro.props
+const blockEntry = block ? await getEntry("blocks", block) : undefined
+const { ref, refs, glob, ...props } = { ...blockEntry?.data, ...Astro.props }
 
 // Populate references at top level
 if (ref) {

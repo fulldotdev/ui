@@ -5,7 +5,7 @@ sections:
       <p>Inspired by <strong>shadcn/ui</strong>, built for <strong>Astro</strong> 🚀</p>
       <h1><strong>Astro UI component and block library</strong> compatible with shadcn/ui</h1>
       <p><strong> Vanilla Astro</strong> components with <strong>no framework dependencies</strong> - <strong>Shadcn/ui</strong> compatible - <strong>content-first components</strong> like section, tile and typography.</p>
-    buttons:
+    links:
       - text: Get Started
         href: /docs/installation/
       - text: GitHub
@@ -27,12 +27,12 @@ sections:
     html: |
       <h2>Build performant content websites faster</h2>
       <p>Craft stunning content websites in less time with <strong>fulldev/ui</strong> components.</p>
-    buttons:
+    links:
       - text: Get Started
         href: /docs/installation/
       - text: GitHub
         href: https://github.com/fulldotdev/ui
-seo:
+meta:
   title: Astro UI component and block library for content-driven websites - fulldev/ui
   description: fulldev/ui is a complete Astro component library with ready-to-use UI components and blocks. Build content-driven websites faster with our Astro UI components library designed for developers.
   image:

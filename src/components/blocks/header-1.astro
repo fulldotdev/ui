@@ -1,4 +1,5 @@
 ---
+import type { ComponentProps } from "astro/types"
 import MenuIcon from "lucide-static/icons/menu.svg"
 
 import { Button } from "@/components/ui/button"
@@ -19,12 +20,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTrigger,
-} from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -36,12 +32,8 @@ import {
 
 interface Props {
   title?: string
-  logo?: {
-    src?: string
-    alt?: string
-    title?: string
-  }
-  buttons?: {
+  image?: ComponentProps<typeof LogoImage>
+  links?: {
     icon?: string
     text?: string
     href?: string
@@ -58,12 +50,12 @@ interface Props {
   }[]
 }
 
-const { title, logo, menus, buttons, socials } = Astro.props
+const { title, image, menus, links, socials } = Astro.props
 ---
 
 <Header variant="outline">
   <Logo href="/">
-    <LogoImage src={logo?.src} alt={logo?.alt} />
+    <LogoImage {...image} />
     <LogoText>{title}</LogoText>
   </Logo>
   <NavigationMenu class="mr-auto max-lg:hidden">
@@ -118,9 +110,9 @@ const { title, logo, menus, buttons, socials } = Astro.props
       ))
     }
     {
-      buttons?.map(({ icon, text, ...button }, i) => (
+      links?.map(({ icon, text, ...button }, i) => (
         <Button
-          variant={i === buttons.length - 1 ? "default" : "ghost"}
+          variant={i === links.length - 1 ? "default" : "ghost"}
           size="sm"
           {...button}
         >
@@ -169,29 +161,29 @@ const { title, logo, menus, buttons, socials } = Astro.props
         }
       </SidebarMenu>
       {
-        buttons && buttons.length > 0 && (
-          <div class="mt-6 flex w-full flex-col gap-2">
-            {buttons?.map(({ icon, text, ...button }, i) => (
+        links && links.length > 0 && (
+          <HeaderActions>
+            {links?.map(({ icon, text, ...button }, i) => (
               <Button
-                variant={i === buttons.length - 1 ? "default" : "ghost"}
+                variant={i === links.length - 1 ? "default" : "ghost"}
                 {...button}
               >
                 {icon && <Icon name={icon} />}
                 {text}
               </Button>
             ))}
-          </div>
+          </HeaderActions>
         )
       }
       {
         socials && socials.length > 0 && (
-          <div class="mx-auto mt-6 flex gap-2">
+          <HeaderActions>
             {socials?.map((social) => (
               <Button variant="ghost" size="icon" href={social}>
                 <Icon href={social} />
               </Button>
             ))}
-          </div>
+          </HeaderActions>
         )
       }
     </SheetContent>

@@ -1,47 +1,44 @@
 import { z, type SchemaContext } from "astro:content"
 
-const BLOCK_IDS = Object.keys(
-  import.meta.glob("src/components/blocks/**/*.astro")
-)
-  .map((path) => path.split("/").pop()?.split(".")[0])
-  .filter((id) => id !== "index")
-
-const blockKey = z.string().refine(
-  (id) => BLOCK_IDS.includes(id),
-  (id) => ({ message: `Block ${id} not found` })
-)
-
 const link = z
   .object({
-    text: z.string().optional(),
-    href: z.string().optional(), // internal: trailing slash; external: full URL
-    icon: z.string().optional(),
-    target: z.string().optional(), // _blank for external
+    text: z.string(),
+    href: z.string(), // internal: trailing slash; external: full URL
+    icon: z.string(),
+    target: z.string(), // _blank for external
   })
+  .partial()
   .strict()
 
 const image = ({ image }: SchemaContext) =>
   z
     .object({
       src: image(), // local relative: ../../assets/image.webp; remote: full URL
-      alt: z.string().optional(),
+      alt: z.string(),
     })
+    .partial()
     .strict()
 
-const seo = ({ image }: SchemaContext) =>
+const meta = (ctx: SchemaContext) =>
   z
     .object({
       title: z.string(),
       description: z.string(),
-      image: image().optional(),
+      image: image(ctx),
+      noindex: z.boolean(),
+      nofollow: z.boolean(),
+      canonical: z.string(),
+      head: z.string(),
+      body: z.string(),
     })
+    .partial()
     .strict()
 
 const form = z
   .object({
     action: z.string(),
     submit: z.string(), // submit button label
-    inbox: z.string().optional(), // CloudCannon inbox key
+    inbox: z.string(), // CloudCannon inbox key
     fields: z.array(
       z
         .object({
@@ -57,24 +54,27 @@ const form = z
             ])
             .default("text"),
           name: z.string(),
-          label: z.string().optional(),
-          placeholder: z.string().optional(),
-          required: z.boolean().optional(),
-          value: z.string().optional(),
-          options: z.array(z.string()).optional(),
+          label: z.string(),
+          placeholder: z.string(),
+          required: z.boolean(),
+          value: z.string(),
+          options: z.array(z.string()),
         })
+        .partial()
         .strict()
     ),
   })
+  .partial()
   .strict()
 
 const menu = z
   .object({
     text: z.string(),
-    href: z.string().optional(),
-    target: z.string().optional(),
-    links: link.array().optional(),
+    href: z.string(),
+    target: z.string(),
+    links: link.array(),
   })
+  .partial()
   .strict()
 
 const rating = z.number().min(0).max(5)
@@ -83,91 +83,69 @@ const rating = z.number().min(0).max(5)
 const ref = z.string() // path: "/src/content/pages/services/my-service.md"
 const glob = z.string() // page folder: "services/"
 
-// Shared item, combining all keys
 const item = (ctx: SchemaContext) =>
   z
     .object({
-      id: z.string().optional(),
-      href: z.string().optional(),
-      title: z.string().optional(),
-      description: z.string().optional(),
-      tagline: z.string().optional(),
-      icon: z.string().optional(),
-      buttons: link.array().optional(),
-      rating: rating.optional(),
-      image: image(ctx).optional(),
-      images: image(ctx).array().optional(),
-      avatar: image(ctx).optional(),
-      avatars: image(ctx).array().optional(),
-      video: z.string().url().optional(),
-      list: z.string().array().optional(),
-      price: z.string().optional(),
-      unit: z.string().optional(),
-      html: z.string().optional(),
-      logo: image(ctx).optional(),
-      logos: image(ctx).array().optional(),
-      menus: menu.array().optional(),
-      links: link.array().optional(),
-      channels: link.array().optional(),
-      policies: link.array().optional(),
-      socials: z.string().array().optional(),
-      copyright: z.string().optional(),
-      form: form.optional(),
+      href: z.string(),
+      html: z.string(),
+      title: z.string(),
+      description: z.string(),
+      tagline: z.string(),
+      icon: z.string(),
+      image: image(ctx),
+      images: image(ctx).array(),
+      links: link.array(),
+      rating: rating,
+      price: z.string(),
+      unit: z.string(),
+      socials: z.string().array(),
+      list: z.string().array(),
+      video: z.string(),
     })
+    .partial()
     .strict()
 
 const block = (ctx: SchemaContext) =>
   item(ctx)
     .extend({
-      block: blockKey,
-      item: item(ctx).optional(),
-      ref: ref.optional(),
+      block: z.string(),
+      menus: menu.array(),
+      form: form,
+      item: item(ctx),
+      ref: ref,
       items: item(ctx)
         .extend({
-          item: item(ctx).optional(),
-          ref: ref.optional(),
-          items: item(ctx).array().optional(),
-          refs: ref.array().optional(),
-          glob: glob.optional(),
+          item: item(ctx),
+          ref: ref,
+          items: item(ctx).array(),
+          refs: ref.array(),
+          glob: glob,
         })
-        .array()
-        .optional(),
-      refs: ref.array().optional(),
-      glob: glob.optional(),
+        .partial()
+        .strict()
+        .array(),
+      refs: ref.array(),
+      glob: glob,
     })
+    .partial()
     .strict()
 
 const page = (ctx: SchemaContext) =>
   block(ctx)
-    .omit({ block: true })
     .extend({
-      block: blockKey.optional(),
-      layout: z.string().optional(),
-      sections: block(ctx).array().optional(),
-      seo: seo(ctx).optional(),
+      block: z.string(),
+      layout: z.string(),
+      headers: block(ctx).array(),
+      sections: block(ctx).array(),
+      footers: block(ctx).array(),
+      meta: meta(ctx),
     })
-    .strict()
-
-const layout = (ctx: SchemaContext) =>
-  block(ctx)
-    .omit({ block: true })
-    .extend({
-      block: blockKey.optional(),
-      header: block(ctx).optional(),
-      banner: block(ctx).optional(),
-      sections: block(ctx).array().optional(),
-      footer: block(ctx).optional(),
-      seo: seo(ctx).optional(),
-      bubble: link.optional(),
-      head: z.string().optional(),
-      body: z.string().optional(),
-    })
+    .partial()
     .strict()
 
 // exports are used in astro content collections. See src/content.config.ts
-export { block, page, layout }
+export { block, page }
 
 // Export for dynamic block rendering in src/components/block.astro
 export type BlockSchema = z.infer<ReturnType<typeof block>>
 export type PageSchema = z.infer<ReturnType<typeof page>>
-export type LayoutSchema = z.infer<ReturnType<typeof layout>>
