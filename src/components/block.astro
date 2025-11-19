@@ -44,24 +44,65 @@ async function getGlob(value: string) {
     }))
 }
 
-const {
-  block,
-  itemRef,
-  itemsRefs,
-  itemsGlob,
-  tileRef,
-  tilesRefs,
-  tilesGlob,
-  ...props
-} = Astro.props
+// Recursively resolve references in items
+async function resolveItem(item: any): Promise<any> {
+  if (!item) return item
 
-// Populate references
-itemRef && (props.item = await getRef(itemRef))
-itemsRefs && (props.items = await getRefs(itemsRefs))
-itemsGlob && (props.items = await getGlob(itemsGlob))
-tileRef && (props.tile = await getRef(tileRef))
-tilesRefs && (props.tiles = await getRefs(tilesRefs))
-tilesGlob && (props.tiles = await getGlob(tilesGlob))
+  const resolved = { ...item }
+
+  // Resolve single reference
+  if (resolved.ref) {
+    const referencedItem = await getRef(resolved.ref)
+    resolved.item = referencedItem
+    delete resolved.ref
+  }
+
+  // Resolve multiple references
+  if (resolved.refs) {
+    resolved.items = await getRefs(resolved.refs)
+    delete resolved.refs
+  }
+
+  // Resolve glob pattern
+  if (resolved.glob) {
+    resolved.items = await getGlob(resolved.glob)
+    delete resolved.glob
+  }
+
+  // Recursively resolve nested items
+  if (resolved.items) {
+    resolved.items = await Promise.all(
+      resolved.items.map((nestedItem: any) => resolveItem(nestedItem))
+    )
+  }
+
+  // Recursively resolve single nested item
+  if (resolved.item) {
+    resolved.item = await resolveItem(resolved.item)
+  }
+
+  return resolved
+}
+
+const { block, ref, refs, glob, ...props } = Astro.props
+
+// Populate references at top level
+if (ref) {
+  props.item = await getRef(ref)
+}
+if (refs) {
+  props.items = await getRefs(refs)
+}
+if (glob) {
+  props.items = await getGlob(glob)
+}
+
+// Recursively resolve nested items
+if (props.items) {
+  props.items = await Promise.all(
+    props.items.map((item: any) => resolveItem(item))
+  )
+}
 
 const blockImports = import.meta.glob("./blocks/**/*.astro")
 const blockPath = `./blocks/${block}.astro`

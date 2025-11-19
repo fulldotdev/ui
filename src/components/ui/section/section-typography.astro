@@ -40,19 +40,28 @@ const variants = cva(
 interface Props extends HTMLAttributes<"div">, VariantProps<typeof variants> {
   title?: string
   description?: string
+  html?: string
 }
 
-const { class: className, size, title, description, ...props } = Astro.props
+const {
+  class: className,
+  size,
+  title,
+  description,
+  html,
+  ...props
+} = Astro.props
 
 const slot = await Astro.slots.render("default")
 ---
 
 {
-  (slot || title || description) && (
+  (slot || title || description || html) && (
     <div class={cn(variants({ size }), className)} {...props}>
       {title && <h1>{title}</h1>}
       {description && <p>{description}</p>}
       <Fragment set:html={slot} />
+      <Fragment set:html={html} />
     </div>
   )
 }

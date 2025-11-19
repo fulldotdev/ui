@@ -1,0 +1,105 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {
+  defaultValue?: string
+}
+
+const { class: className, defaultValue, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <div
+      data-slot="tabs"
+      data-default-value={defaultValue}
+      class={cn("flex flex-col gap-2", className)}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </div>
+  )
+}
+
+<script>
+  function initTabs() {
+    const tabsElements = document.querySelectorAll('[data-slot="tabs"]')
+
+    tabsElements.forEach((tabs) => {
+      const defaultValue = tabs.getAttribute("data-default-value")
+      const triggers = tabs.querySelectorAll('[data-slot="tabs-trigger"]')
+      const contents = tabs.querySelectorAll('[data-slot="tabs-content"]')
+
+      // Set initial state
+      if (defaultValue) {
+        contents.forEach((content) => {
+          const value = content.getAttribute("data-value")
+          if (value === defaultValue) {
+            content.removeAttribute("hidden")
+            content.setAttribute("data-state", "active")
+          } else {
+            content.setAttribute("hidden", "")
+            content.setAttribute("data-state", "inactive")
+          }
+        })
+
+        triggers.forEach((trigger) => {
+          const value = trigger.getAttribute("data-value")
+          if (value === defaultValue) {
+            trigger.setAttribute("data-state", "active")
+            trigger.setAttribute("aria-selected", "true")
+          } else {
+            trigger.setAttribute("data-state", "inactive")
+            trigger.setAttribute("aria-selected", "false")
+          }
+        })
+      }
+
+      // Handle click events
+      triggers.forEach((trigger) => {
+        trigger.addEventListener("click", () => {
+          const value = trigger.getAttribute("data-value")
+
+          // Update all triggers
+          triggers.forEach((t) => {
+            const tValue = t.getAttribute("data-value")
+            if (tValue === value) {
+              t.setAttribute("data-state", "active")
+              t.setAttribute("aria-selected", "true")
+            } else {
+              t.setAttribute("data-state", "inactive")
+              t.setAttribute("aria-selected", "false")
+            }
+          })
+
+          // Update all contents
+          contents.forEach((content) => {
+            const cValue = content.getAttribute("data-value")
+            if (cValue === value) {
+              content.removeAttribute("hidden")
+              content.setAttribute("data-state", "active")
+            } else {
+              content.setAttribute("hidden", "")
+              content.setAttribute("data-state", "inactive")
+            }
+          })
+        })
+      })
+    })
+  }
+
+  // Initialize on page load
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initTabs)
+  } else {
+    initTabs()
+  }
+
+  // Re-initialize after page navigation (for view transitions)
+  document.addEventListener("astro:page-load", initTabs)
+</script>
+

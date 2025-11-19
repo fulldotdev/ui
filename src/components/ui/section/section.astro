@@ -34,6 +34,10 @@ const variants = cva(
         outline: "border-border bg-background border",
         accent: "bg-accent/50 border-transparent",
       },
+      size: {
+        default: "",
+        lg: "",
+      },
     },
     defaultVariants: {
       frame: "default",
@@ -42,7 +46,7 @@ const variants = cva(
   }
 )
 
-const { class: className, frame, variant, ...props } = Astro.props
+const { class: className, frame, variant, size, ...props } = Astro.props
 
 const slot = await Astro.slots.render("default")
 ---
@@ -53,6 +57,7 @@ const slot = await Astro.slots.render("default")
       class={cn(variants({ frame, variant }), className)}
       data-slot="section"
       data-frame={frame}
+      data-size={size}
       {...props}
     >
       <Fragment set:html={slot} />
@@ -73,6 +78,10 @@ const slot = await Astro.slots.render("default")
     --section-px: 16px;
   }
 
+  [data-slot="section"][data-size="lg"] {
+    --section-py: 128px;
+  }
+
   @media (min-width: 1024px) {
     [data-slot="section"] {
       --section-py: 64px;
@@ -80,9 +89,11 @@ const slot = await Astro.slots.render("default")
 
     [data-slot="section"][data-frame="box"],
     [data-slot="section"][data-frame="panel"] {
-      /* --section-py: 48px; */
-      /* --section-px: 48px; */
       --section-px: 64px;
+    }
+
+    [data-slot="section"][data-size="lg"] {
+      --section-py: 192px;
     }
   }
 </style>

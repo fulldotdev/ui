@@ -70,48 +70,31 @@ const menu = z
 
 const rating = z.number().min(0).max(5)
 
-const ref = z.string() // id: "services/my-service"
-const glob = z.string() // glob: "services/"
+// References
+const ref = z.string() // path: "/src/content/pages/services/my-service.md"
+const glob = z.string() // page folder: "services/"
 
-// ============================================================
-// HIERARCHY: item → tile → block → page
-// ============================================================
-
+// Shared item, combining all keys
 const item = (ctx: SchemaContext) =>
   z
     .object({
+      id: z.string().optional(),
       href: z.string().optional(),
       title: z.string().optional(),
       description: z.string().optional(),
       tagline: z.string().optional(),
       icon: z.string().optional(),
-      buttons: link.array().max(2).optional(),
+      buttons: link.array().optional(),
       rating: rating.optional(),
       image: media(ctx).optional(),
       images: media(ctx).array().optional(),
       avatar: media(ctx).optional(),
       avatars: media(ctx).array().optional(),
-    })
-    .strict()
-
-const tile = (ctx: SchemaContext) =>
-  item(ctx)
-    .extend({
+      video: media(ctx).optional(),
       list: z.string().array().optional(),
       price: z.string().optional(),
       unit: z.string().optional(),
-      video: media(ctx).optional(),
       html: z.string().optional(),
-      item: item(ctx).optional(),
-      itemRef: ref.optional(),
-    })
-    .strict()
-
-const block = (ctx: SchemaContext) =>
-  tile(ctx)
-    .extend({
-      block: blockKey,
-      id: z.string().optional(),
       logo: media(ctx).optional(),
       logos: media(ctx).array().optional(),
       menus: menu.array().optional(),
@@ -121,14 +104,27 @@ const block = (ctx: SchemaContext) =>
       socials: z.string().array().optional(),
       copyright: z.string().optional(),
       form: form.optional(),
-      items: item(ctx).array().optional(),
-      itemsGlob: glob.optional(),
-      itemsRefs: ref.array().optional(),
-      tile: tile(ctx).optional(),
-      tileRef: ref.optional(),
-      tiles: tile(ctx).array().optional(),
-      tilesGlob: glob.optional(),
-      tilesRefs: ref.array().optional(),
+    })
+    .strict()
+
+const block = (ctx: SchemaContext) =>
+  item(ctx)
+    .extend({
+      block: blockKey,
+      item: item(ctx).optional(),
+      ref: ref.optional(),
+      items: item(ctx)
+        .extend({
+          item: item(ctx).optional(),
+          ref: ref.optional(),
+          items: item(ctx).array().optional(),
+          refs: ref.array().optional(),
+          glob: glob.optional(),
+        })
+        .array()
+        .optional(),
+      refs: ref.array().optional(),
+      glob: glob.optional(),
     })
     .strict()
 
