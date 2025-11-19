@@ -51,29 +51,6 @@ form:
       name: message
       label: Message
       placeholder: Message
-    - type: tel
-      name: phone
-      label: Phone
-      placeholder: Phone
-    - type: checkbox
-      name: checkbox
-      label: Checkbox
-    - type: radio-group
-      name: radio
-      label: Radio
-      options:
-        - radio 1
-        - radio 2
-        - radio 3
-    - type: select
-      name: select
-      label: Select
-      placeholder: Select
-      value: select 1
-      options:
-        - select 1
-        - select 2
-        - select 3
 item:
   href: "#"
   title: Lorem ipsum
@@ -113,8 +90,8 @@ items:
       - Lorem ipsum
       - Lorem ipsum
       - Lorem ipsum
-    price: Lorem ipsum
-    unit: Lorem ipsum
+    price: $100
+    unit: month
     video: https://www.youtube.com/watch?v=dQw4w9WgXcQ
     html: |
       <p>Lorem ipsum</p>
@@ -149,8 +126,8 @@ items:
       - Lorem ipsum
       - Lorem ipsum
       - Lorem ipsum
-    price: Lorem ipsum
-    unit: Lorem ipsum
+    price: $100
+    unit: month
     video: https://www.youtube.com/watch?v=dQw4w9WgXcQ
     html: |
       <p>Lorem ipsum</p>
@@ -185,8 +162,8 @@ items:
       - Lorem ipsum
       - Lorem ipsum
       - Lorem ipsum
-    price: Lorem ipsum
-    unit: Lorem ipsum
+    price: $100
+    unit: month
     video: https://www.youtube.com/watch?v=dQw4w9WgXcQ
     html: |
       <p>Lorem ipsum</p>
@@ -221,8 +198,8 @@ items:
       - Lorem ipsum
       - Lorem ipsum
       - Lorem ipsum
-    price: Lorem ipsum
-    unit: Lorem ipsum
+    price: $100
+    unit: month
     video: https://www.youtube.com/watch?v=dQw4w9WgXcQ
     html: |
       <p>Lorem ipsum</p>

@@ -1,0 +1,54 @@
+---
+import { Image } from "@/components/ui/image"
+import {
+  Section,
+  SectionContent,
+  SectionGrid,
+  SectionTypography,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileMedia,
+  TileSpread,
+  TileTypography,
+} from "@/components/ui/tile"
+
+interface Props {
+  title?: string
+  description?: string
+  price?: string | number
+  items?: {
+    title?: string
+    description?: string
+    price?: string
+    unit?: string
+    image?: {
+      src?: string
+      alt?: string
+    }
+  }[]
+}
+
+const { items } = Astro.props
+---
+
+<Section>
+  <SectionContent>
+    <SectionTypography>
+      <slot />
+    </SectionTypography>
+  </SectionContent>
+  <SectionGrid size="lg">
+    {
+      items?.map(({ title, description, price, image }) => (
+        <Tile class="m-0 rounded-none border-t p-0 pt-6">
+          <TileSpread>
+            <TileTypography title={title} description={description} />
+            <p>{price}</p>
+          </TileSpread>
+        </Tile>
+      ))
+    }
+  </SectionGrid>
+</Section>
