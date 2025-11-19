@@ -9,7 +9,6 @@ import {
   ItemDescription,
   ItemMedia,
 } from "@/components/ui/item"
-import { List, ListItem } from "@/components/ui/list"
 import { Rating } from "@/components/ui/rating"
 import {
   Section,
@@ -21,7 +20,6 @@ import {
 } from "@/components/ui/section"
 
 interface Props {
-  list?: string[]
   links?: {
     icon?: string
     text?: string
@@ -34,35 +32,41 @@ interface Props {
     title?: string
   }
   item?: {
-    avatars?: {
+    images?: {
       src: string
       alt: string
-      title?: string
     }[]
     rating?: number
     description?: string
   }
 }
 
-const { list, links, image, item } = Astro.props
+const { links, image, item } = Astro.props
 ---
 
-<Section>
+<Section frame="panel">
   <SectionSpread>
     <SectionContent>
       <SectionTypography>
         <slot />
       </SectionTypography>
-      <List>
-        {
-          list?.map((item) => (
-            <ListItem>
-              <Icon name="check" />
-              {item}
-            </ListItem>
-          ))
-        }
-      </List>
+      <Item class="-m-4">
+        <ItemMedia class="-space-x-4">
+          {
+            item?.images?.map((image) => (
+              <Avatar class="ring-background size-10 ring-2">
+                <AvatarImage {...image} />
+              </Avatar>
+            ))
+          }
+        </ItemMedia>
+        <ItemContent>
+          <Rating rating={item?.rating} />
+          <ItemDescription>
+            {item?.description}
+          </ItemDescription>
+        </ItemContent>
+      </Item>
     </SectionContent>
     <SectionContent>
       <SectionActions>
@@ -75,26 +79,9 @@ const { list, links, image, item } = Astro.props
           ))
         }
       </SectionActions>
-      <Item class="-m-4">
-        <ItemMedia class="-space-x-4">
-          {
-            item?.avatars?.map((avatar) => (
-              <Avatar class="ring-background size-10 ring-2">
-                <AvatarImage {...avatar} />
-              </Avatar>
-            ))
-          }
-        </ItemMedia>
-        <ItemContent class="gap-1.5">
-          <Rating rating={item?.rating} />
-          <ItemDescription class="leading-none">
-            {item?.description}
-          </ItemDescription>
-        </ItemContent>
-      </Item>
     </SectionContent>
   </SectionSpread>
-  <SectionMedia>
+  <SectionMedia variant="background">
     <Image {...image} />
   </SectionMedia>
 </Section>

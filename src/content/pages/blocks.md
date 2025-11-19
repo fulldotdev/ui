@@ -3,12 +3,12 @@ block: blocks-1
 title: Lorem ipsum dolor sit amet
 description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
 links:
-  - text: Lorem ipsum dolor
+  - text: Click me
     href: "#"
-  - text: Lorem ipsum
+  - text: Click me
     href: "#"
 image:
-  src: ../../assets/placeholder.webp
+  src: ../../assets/example.jpg
   alt: Review 1
 list:
   - Discover innovative solutions tailored to your needs
@@ -19,24 +19,20 @@ html: |
   <h2>Lorem ipsum dolor sit amet</h2>
   <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 menus:
-  - text: Lorem ipsum
+  - text: Click me
     href: "#"
     links:
-      - text: Lorem ipsum
+      - text: Click me
         href: "#"
-      - text: Lorem ipsum
+      - text: Click me
         href: "#"
-  - text: Lorem ipsum
+  - text: Click me
     href: "#"
-  - text: Lorem ipsum
+  - text: Click me
     href: "#"
 socials:
-  - https://facebook.com
-  - https://instagram.com
-  - https://twitter.com
   - https://linkedin.com
-  - https://youtube.com
-  - https://tiktok.com
+  - https://github.com
 form:
   action: "#"
   submit: Submit
@@ -77,137 +73,166 @@ form:
         - select 1
         - select 2
         - select 3
-
+item:
+  href: "#"
+  title: Lorem ipsum
+  description: Lorem
+  tagline: Lorem
+  icon: user
+  rating: 5
+  image:
+    src: ../../assets/example.jpg
+    alt: Lorem ipsum
+  images:
+    - src: ../../assets/example.jpg
+      alt: Lorem ipsum
+    - src: ../../assets/example.jpg
+      alt: Lorem ipsum
+    - src: ../../assets/example.jpg
+      alt: Lorem ipsum
 items:
   - href: "#"
     title: Lorem ipsum
     description: Lorem ipsum dolor sit amet consectetur adipisicing elit.
-    tagline: CEO
+    tagline: Lorem
     icon: heart
     links:
-      - text: Learn More
+      - text: Lorem ipsum
         href: "#"
     rating: 5
     image:
-      src: ../../assets/placeholder.webp
-      alt: Image
+      src: ../../assets/example.jpg
+      alt: Lorem ipsum
     images:
-      - src: ../../assets/placeholder.webp
-        alt: Gallery 1
-      - src: ../../assets/placeholder.webp
-        alt: Gallery 2
-  - href: "#"
-    title: Lorem ipsum
-    description: Lorem ipsum dolor sit amet consectetur adipisicing elit.
-    tagline: CTO
-    icon: star
-    links:
-      - text: Learn More
-        href: "#"
-    rating: 5
-    image:
-      src: ../../assets/placeholder.webp
-      alt: Image
-    images:
-      - src: ../../assets/placeholder.webp
-        alt: Image 1
-      - src: ../../assets/placeholder.webp
-        alt: Image 2
-  - href: "#"
-    title: Featured Project
-    description: Lorem ipsum dolor sit amet
-    tagline: Latest
-    icon: star
-    links:
-      - text: Learn More
-        href: "#"
-    rating: 5
-    image:
-      src: ../../assets/placeholder.webp
-      alt: Image
-    images:
-      - src: ../../assets/placeholder.webp
-        alt: Image 1
-      - src: ../../assets/placeholder.webp
-        alt: Image 2
+      - src: ../../assets/example.jpg
+        alt: Lorem ipsum
+      - src: ../../assets/example.jpg
+        alt: Lorem ipsum
     list:
-      - Feature 1
-      - Feature 2
-      - Feature 3
-    price: "$99"
-    unit: month
+      - Lorem ipsum
+      - Lorem ipsum
+      - Lorem ipsum
+    price: Lorem ipsum
+    unit: Lorem ipsum
     video: https://www.youtube.com/watch?v=dQw4w9WgXcQ
     html: |
-      <p>Additional HTML content</p>
+      <p>Lorem ipsum</p>
     item:
       href: "#"
-      title: John Doe
-      description: Lorem ipsum
-      tagline: Project Lead
+      title: Lorem ipsum
+      description: Lorem
+      tagline: Lorem
       icon: user
       rating: 5
       image:
-        src: ../../assets/placeholder.webp
-        alt: Image
+        src: ../../assets/example.jpg
+        alt: Lorem ipsum
   - href: "#"
-    title: Basic Plan
-    description: Perfect for getting started
-    tagline: Starter
-    icon: zap
+    title: Lorem ipsum
+    description: Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    tagline: Lorem
+    icon: star
     links:
-      - text: Get Started
-        href: "#"
-    rating: 4
-    image:
-      src: ../../assets/placeholder.webp
-      alt: Plan Image
-    images:
-      - src: ../../assets/placeholder.webp
-        alt: Feature 1
-      - src: ../../assets/placeholder.webp
-        alt: Feature 2
-    list:
-      - Up to 10 projects
-      - Basic support
-      - 1GB storage
-    price: "$29"
-    unit: month
-    item:
-      title: Jane Smith
-      description: Your dedicated support contact
-      tagline: Success Manager
-      image:
-        src: ../../assets/placeholder.webp
-        alt: Image
-  - href: "#"
-    title: Pro Plan
-    description: Best for growing teams
-    tagline: Professional
-    icon: rocket
-    links:
-      - text: Get Started
+      - text: Lorem ipsum
         href: "#"
     rating: 5
     image:
-      src: ../../assets/placeholder.webp
-      alt: Plan Image
+      src: ../../assets/example.jpg
+      alt: Lorem ipsum
     images:
-      - src: ../../assets/placeholder.webp
-        alt: Feature 1
-      - src: ../../assets/placeholder.webp
-        alt: Feature 2
+      - src: ../../assets/example.jpg
+        alt: Lorem ipsum
+      - src: ../../assets/example.jpg
+        alt: Lorem ipsum
     list:
-      - Unlimited projects
-      - Priority support
-      - 100GB storage
-      - Custom domain
-    price: "$99"
-    unit: month
+      - Lorem ipsum
+      - Lorem ipsum
+      - Lorem ipsum
+    price: Lorem ipsum
+    unit: Lorem ipsum
+    video: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+    html: |
+      <p>Lorem ipsum</p>
     item:
-      title: John Doe
-      description: 24/7 dedicated support
-      tagline: Enterprise Manager
+      href: "#"
+      title: Lorem ipsum
+      description: Lorem
+      tagline: Lorem
+      icon: user
+      rating: 5
       image:
-        src: ../../assets/placeholder.webp
-        alt: Image
+        src: ../../assets/example.jpg
+        alt: Lorem ipsum
+  - href: "#"
+    title: Lorem ipsum
+    description: Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    tagline: Lorem
+    icon: heart
+    links:
+      - text: Lorem ipsum
+        href: "#"
+    rating: 5
+    image:
+      src: ../../assets/example.jpg
+      alt: Lorem ipsum
+    images:
+      - src: ../../assets/example.jpg
+        alt: Lorem ipsum
+      - src: ../../assets/example.jpg
+        alt: Lorem ipsum
+    list:
+      - Lorem ipsum
+      - Lorem ipsum
+      - Lorem ipsum
+    price: Lorem ipsum
+    unit: Lorem ipsum
+    video: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+    html: |
+      <p>Lorem ipsum</p>
+    item:
+      href: "#"
+      title: Lorem ipsum
+      description: Lorem
+      tagline: Lorem
+      icon: user
+      rating: 5
+      image:
+        src: ../../assets/example.jpg
+        alt: Lorem ipsum
+  - href: "#"
+    title: Lorem ipsum
+    description: Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    tagline: Lorem
+    icon: star
+    links:
+      - text: Lorem ipsum
+        href: "#"
+    rating: 5
+    image:
+      src: ../../assets/example.jpg
+      alt: Lorem ipsum
+    images:
+      - src: ../../assets/example.jpg
+        alt: Lorem ipsum
+      - src: ../../assets/example.jpg
+        alt: Lorem ipsum
+    list:
+      - Lorem ipsum
+      - Lorem ipsum
+      - Lorem ipsum
+    price: Lorem ipsum
+    unit: Lorem ipsum
+    video: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+    html: |
+      <p>Lorem ipsum</p>
+    item:
+      href: "#"
+      title: Lorem ipsum
+      description: Lorem
+      tagline: Lorem
+      icon: user
+      rating: 5
+      image:
+        src: ../../assets/example.jpg
+        alt: Lorem ipsum
 ---

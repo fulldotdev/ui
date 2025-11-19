@@ -1,34 +1,33 @@
 ---
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
+import { List, ListItem } from "@/components/ui/list"
 import {
   Section,
   SectionActions,
   SectionContent,
+  SectionMedia,
   SectionSplit,
   SectionTypography,
 } from "@/components/ui/section"
 
 interface Props {
+  list?: string[]
   links?: {
     icon?: string
     text?: string
     href?: string
     target?: string
   }[]
-  items?: {
+  image?: {
+    src: string
+    alt: string
     title?: string
-    description?: string
-  }[]
+  }
 }
 
-const { links, items } = Astro.props
+const { list, links, image } = Astro.props
 ---
 
 <Section>
@@ -37,6 +36,16 @@ const { links, items } = Astro.props
       <SectionTypography>
         <slot />
       </SectionTypography>
+      <List>
+        {
+          list?.map((item) => (
+            <ListItem>
+              <Icon name="check" />
+              {item}
+            </ListItem>
+          ))
+        }
+      </List>
       <SectionActions>
         {
           links?.map(({ icon, text, ...button }, i) => (
@@ -48,15 +57,8 @@ const { links, items } = Astro.props
         }
       </SectionActions>
     </SectionContent>
-    <Accordion>
-      {
-        items?.map(({ title, description }) => (
-          <AccordionItem>
-            <AccordionTrigger>{title}</AccordionTrigger>
-            <AccordionContent>{description}</AccordionContent>
-          </AccordionItem>
-        ))
-      }
-    </Accordion>
+    <SectionMedia>
+      <Image {...image} />
+    </SectionMedia>
   </SectionSplit>
 </Section>

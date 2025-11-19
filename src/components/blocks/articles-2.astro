@@ -1,7 +1,15 @@
 ---
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { Image } from "@/components/ui/image"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
 import {
   Section,
   SectionActions,
@@ -13,8 +21,8 @@ import {
 import {
   Tile,
   TileContent,
-  TileDescription,
-  TileTitle,
+  TileMedia,
+  TileTypography,
 } from "@/components/ui/tile"
 
 interface Props {
@@ -28,10 +36,17 @@ interface Props {
     href?: string
     title?: string
     description?: string
+    item?: {
+      image?: {
+        src: string
+        alt: string
+      }
+      title?: string
+      description?: string
+    }
     image?: {
       src: string
       alt: string
-      title?: string
     }
   }[]
 }
@@ -58,12 +73,27 @@ const { links, items } = Astro.props
     </SectionContent>
     <SectionGrid class="grid-cols-1">
       {
-        items?.map(({ title, description, image, href }) => (
+        items?.map(({ title, description, image, href, item }) => (
           <Tile href={href}>
-            <Image {...image} />
+            <TileMedia>
+              <Image {...image} />
+            </TileMedia>
             <TileContent>
-              <TileTitle>{title}</TileTitle>
-              <TileDescription>{description}</TileDescription>
+              <TileTypography title={title} description={description} />
+              <Item class="-m-4">
+                <ItemMedia>
+                  <Avatar class="size-10">
+                    <AvatarImage
+                      src={item?.image?.src}
+                      alt={item?.image?.alt}
+                    />
+                  </Avatar>
+                </ItemMedia>
+                <ItemContent>
+                  <ItemTitle>{item?.title}</ItemTitle>
+                  <ItemDescription>{item?.description}</ItemDescription>
+                </ItemContent>
+              </Item>
             </TileContent>
           </Tile>
         ))
