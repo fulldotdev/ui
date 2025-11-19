@@ -20,13 +20,6 @@ export const collections = {
     }),
     schema: page,
   }),
-  blocks: defineCollection({
-    loader: glob({
-      pattern: "**/[^_]*.{yaml,yml,json}",
-      base: "src/content/blocks",
-    }),
-    schema: block,
-  }),
   // Starlight docs
   docs: defineCollection({
     loader: docsLoader(),
