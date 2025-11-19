@@ -20,11 +20,20 @@ const link = z
   })
   .strict()
 
-const media = ({ image }: SchemaContext) =>
+const image = ({ image }: SchemaContext) =>
   z
     .object({
       src: image(), // local relative: ../../assets/image.webp; remote: full URL
       alt: z.string().optional(),
+    })
+    .strict()
+
+const seo = ({ image }: SchemaContext) =>
+  z
+    .object({
+      title: z.string(),
+      description: z.string(),
+      image: image().optional(),
     })
     .strict()
 
@@ -86,17 +95,17 @@ const item = (ctx: SchemaContext) =>
       icon: z.string().optional(),
       buttons: link.array().optional(),
       rating: rating.optional(),
-      image: media(ctx).optional(),
-      images: media(ctx).array().optional(),
-      avatar: media(ctx).optional(),
-      avatars: media(ctx).array().optional(),
-      video: media(ctx).optional(),
+      image: image(ctx).optional(),
+      images: image(ctx).array().optional(),
+      avatar: image(ctx).optional(),
+      avatars: image(ctx).array().optional(),
+      video: z.string().url().optional(),
       list: z.string().array().optional(),
       price: z.string().optional(),
       unit: z.string().optional(),
       html: z.string().optional(),
-      logo: media(ctx).optional(),
-      logos: media(ctx).array().optional(),
+      logo: image(ctx).optional(),
+      logos: image(ctx).array().optional(),
       menus: menu.array().optional(),
       links: link.array().optional(),
       channels: link.array().optional(),
@@ -135,14 +144,7 @@ const page = (ctx: SchemaContext) =>
       block: blockKey.optional(),
       layout: z.string().optional(),
       sections: block(ctx).array().optional(),
-      seo: z
-        .object({
-          title: z.string(),
-          description: z.string(),
-          image: media(ctx).optional(),
-        })
-        .strict()
-        .optional(),
+      seo: seo(ctx).optional(),
     })
     .strict()
 
@@ -155,14 +157,7 @@ const layout = (ctx: SchemaContext) =>
       banner: block(ctx).optional(),
       sections: block(ctx).array().optional(),
       footer: block(ctx).optional(),
-      seo: z
-        .object({
-          title: z.string(),
-          description: z.string(),
-          image: media(ctx).optional(),
-        })
-        .strict()
-        .optional(),
+      seo: seo(ctx).optional(),
       bubble: link.optional(),
       head: z.string().optional(),
       body: z.string().optional(),

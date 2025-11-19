@@ -84,14 +84,6 @@ form:
         - select 1
         - select 2
         - select 3
-item:
-  title: John Doe
-  description: Lorem ipsum
-  tagline: CEO
-  rating: 5
-  avatar:
-    src: ../../assets/placeholder.webp
-    alt: Avatar
 
 items:
   - href: "#"
@@ -144,56 +136,50 @@ items:
         alt: Avatar 1
       - src: ../../assets/placeholder.webp
         alt: Avatar 2
-
-tile:
-  href: "#"
-  title: Featured Project
-  description: Lorem ipsum dolor sit amet
-  tagline: Latest
-  icon: star
-  buttons:
-    - text: Learn More
-      href: "#"
-  rating: 5
-  image:
-    src: ../../assets/placeholder.webp
-    alt: Image
-  images:
-    - src: ../../assets/placeholder.webp
-      alt: Image 1
-    - src: ../../assets/placeholder.webp
-      alt: Image 2
-  avatar:
-    src: ../../assets/placeholder.webp
-    alt: Avatar
-  avatars:
-    - src: ../../assets/placeholder.webp
-      alt: Avatar 1
-    - src: ../../assets/placeholder.webp
-      alt: Avatar 2
-  list:
-    - Feature 1
-    - Feature 2
-    - Feature 3
-  price: "$99"
-  unit: month
-  video:
-    src: ../../assets/placeholder.webp
-    alt: Video
-  html: |
-    <p>Additional HTML content</p>
-  item:
-    href: "#"
-    title: John Doe
-    description: Lorem ipsum
-    tagline: Project Lead
-    icon: user
+  - href: "#"
+    title: Featured Project
+    description: Lorem ipsum dolor sit amet
+    tagline: Latest
+    icon: star
+    buttons:
+      - text: Learn More
+        href: "#"
     rating: 5
+    image:
+      src: ../../assets/placeholder.webp
+      alt: Image
+    images:
+      - src: ../../assets/placeholder.webp
+        alt: Image 1
+      - src: ../../assets/placeholder.webp
+        alt: Image 2
     avatar:
       src: ../../assets/placeholder.webp
       alt: Avatar
-
-tiles:
+    avatars:
+      - src: ../../assets/placeholder.webp
+        alt: Avatar 1
+      - src: ../../assets/placeholder.webp
+        alt: Avatar 2
+    list:
+      - Feature 1
+      - Feature 2
+      - Feature 3
+    price: "$99"
+    unit: month
+    video: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+    html: |
+      <p>Additional HTML content</p>
+    item:
+      href: "#"
+      title: John Doe
+      description: Lorem ipsum
+      tagline: Project Lead
+      icon: user
+      rating: 5
+      avatar:
+        src: ../../assets/placeholder.webp
+        alt: Avatar
   - href: "#"
     title: Basic Plan
     description: Perfect for getting started
