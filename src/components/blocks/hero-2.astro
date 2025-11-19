@@ -16,6 +16,7 @@ import {
   SectionActions,
   SectionContent,
   SectionMedia,
+  SectionSplit,
   SectionTypography,
 } from "@/components/ui/section"
 
@@ -33,7 +34,7 @@ interface Props {
     title?: string
   }
   item?: {
-    avatars?: {
+    images?: {
       src: string
       alt: string
       title?: string
@@ -59,54 +60,56 @@ interface Props {
 const { list, links, image, item } = Astro.props
 ---
 
-<Section class="bg-background dark py-32 lg:py-48">
-  <SectionContent class="relative z-10">
-    <SectionTypography size="lg">
-      <slot />
-    </SectionTypography>
-    <List>
-      {
-        list?.map((item) => (
-          <ListItem>
-            <Icon name="check" />
-            {item}
-          </ListItem>
-        ))
-      }
-    </List>
-    <SectionActions>
-      {
-        links?.map(({ icon, text, ...button }, i) => (
-          <Button
-            variant={i === 0 ? "default" : "secondary"}
-            size="lg"
-            {...button}
-          >
-            {icon && <Icon name={icon} />}
-            {text}
-          </Button>
-        ))
-      }
-    </SectionActions>
-    <Item class="-m-4">
-      <ItemMedia class="-space-x-4">
+<Section>
+  <SectionSplit>
+    <SectionContent class="relative z-10">
+      <SectionTypography size="lg">
+        <slot />
+      </SectionTypography>
+      <List>
         {
-          item?.avatars?.map((avatar) => (
-            <Avatar class="ring-background size-10 ring-2">
-              <AvatarImage {...avatar} />
-            </Avatar>
+          list?.map((item) => (
+            <ListItem>
+              <Icon name="check" />
+              {item}
+            </ListItem>
           ))
         }
-      </ItemMedia>
-      <ItemContent>
-        <Rating rating={item?.rating} />
-        <ItemDescription>
-          {item?.description}
-        </ItemDescription>
-      </ItemContent>
-    </Item>
-  </SectionContent>
-  <SectionMedia variant="background">
-    <Image {...image} />
-  </SectionMedia>
+      </List>
+      <SectionActions>
+        {
+          links?.map(({ icon, text, ...button }, i) => (
+            <Button
+              variant={i === 0 ? "default" : "secondary"}
+              size="lg"
+              {...button}
+            >
+              {icon && <Icon name={icon} />}
+              {text}
+            </Button>
+          ))
+        }
+      </SectionActions>
+      <Item class="-m-4">
+        <ItemMedia class="-space-x-4">
+          {
+            item?.images?.map((image) => (
+              <Avatar class="ring-background size-10 ring-2">
+                <AvatarImage {...image} />
+              </Avatar>
+            ))
+          }
+        </ItemMedia>
+        <ItemContent>
+          <Rating rating={item?.rating} />
+          <ItemDescription>
+            {item?.description}
+          </ItemDescription>
+        </ItemContent>
+      </Item>
+    </SectionContent>
+    <SectionMedia variant="inset">
+      <Image {...image} />
+    </SectionMedia>
+  </SectionSplit>
 </Section>

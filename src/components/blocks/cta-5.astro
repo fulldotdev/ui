@@ -1,8 +1,15 @@
 ---
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { Image } from "@/components/ui/image"
-import { List, ListItem } from "@/components/ui/list"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+} from "@/components/ui/item"
+import { Rating } from "@/components/ui/rating"
 import {
   Section,
   SectionActions,
@@ -13,7 +20,6 @@ import {
 } from "@/components/ui/section"
 
 interface Props {
-  list?: string[]
   links?: {
     icon?: string
     text?: string
@@ -25,27 +31,25 @@ interface Props {
     alt: string
     title?: string
   }
+  item?: {
+    images?: {
+      src: string
+      alt: string
+    }[]
+    rating?: number
+    description?: string
+  }
 }
 
-const { list, links, image } = Astro.props
+const { links, image, item } = Astro.props
 ---
 
-<Section>
-  <SectionSpread align="end">
+<Section frame="panel">
+  <SectionSpread align="center">
     <SectionContent>
       <SectionTypography>
         <slot />
       </SectionTypography>
-      <List>
-        {
-          list?.map((item) => (
-            <ListItem>
-              <Icon name="check" />
-              {item}
-            </ListItem>
-          ))
-        }
-      </List>
     </SectionContent>
     <SectionContent>
       <SectionActions>
@@ -60,7 +64,7 @@ const { list, links, image } = Astro.props
       </SectionActions>
     </SectionContent>
   </SectionSpread>
-  <SectionMedia>
+  <SectionMedia variant="background">
     <Image {...image} />
   </SectionMedia>
 </Section>

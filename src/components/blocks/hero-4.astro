@@ -1,0 +1,60 @@
+---
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionMedia,
+  SectionTypography,
+} from "@/components/ui/section"
+
+interface Props {
+  subtitle?: string
+  links?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  image?: {
+    src: string
+    alt: string
+    title?: string
+  }
+}
+
+const { subtitle, links, image } = Astro.props
+---
+
+<Section size="lg" class="mb-8 items-center">
+  <SectionContent align="center">
+    <SectionTypography align="center" size="lg">
+      <slot />
+    </SectionTypography>
+    <SectionActions align="center">
+      {
+        links?.map(({ icon, text, ...button }, i) => (
+          <Button
+            variant={i === 0 ? "default" : "outline"}
+            size="lg"
+            {...button}
+          >
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
+    </SectionActions>
+  </SectionContent>
+  <SectionTypography
+    align="center"
+    class="absolute bottom-0 z-10 translate-y-1/2"
+  >
+    {subtitle && <h2 set:html={subtitle} />}
+  </SectionTypography>
+  <SectionMedia variant="background">
+    <Image {...image} />
+  </SectionMedia>
+</Section>

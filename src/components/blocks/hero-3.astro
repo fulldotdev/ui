@@ -1,10 +1,12 @@
 ---
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
 import {
   Section,
   SectionActions,
   SectionContent,
+  SectionMedia,
   SectionTypography,
 } from "@/components/ui/section"
 
@@ -15,20 +17,29 @@ interface Props {
     href?: string
     target?: string
   }[]
+  image?: {
+    src: string
+    alt: string
+    title?: string
+  }
 }
 
-const { links } = Astro.props
+const { links, image } = Astro.props
 ---
 
-<Section frame="panel">
+<Section size="lg">
   <SectionContent align="center">
-    <SectionTypography align="center">
+    <SectionTypography align="center" size="lg">
       <slot />
     </SectionTypography>
     <SectionActions align="center">
       {
         links?.map(({ icon, text, ...button }, i) => (
-          <Button variant={i === 0 ? "default" : "outline"} {...button}>
+          <Button
+            variant={i === 0 ? "default" : "outline"}
+            size="lg"
+            {...button}
+          >
             {icon && <Icon name={icon} />}
             {text}
           </Button>
@@ -36,4 +47,7 @@ const { links } = Astro.props
       }
     </SectionActions>
   </SectionContent>
+  <SectionMedia variant="background">
+    <Image {...image} />
+  </SectionMedia>
 </Section>
