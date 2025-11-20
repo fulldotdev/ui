@@ -5,11 +5,15 @@ import {
   Item,
   ItemContent,
   ItemDescription,
-  ItemGroup,
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item"
-import { Section, SectionContent, SectionProse } from "@/components/ui/section"
+import {
+  Section,
+  SectionContent,
+  SectionGrid,
+  SectionProse,
+} from "@/components/ui/section"
 
 interface Props {
   form?: any
@@ -24,26 +28,26 @@ interface Props {
 const { form, items } = Astro.props
 ---
 
-<Section>
+<Section style="--section-width: var(--breakpoint-sm);">
   <SectionContent>
     <SectionProse>
       <slot />
     </SectionProse>
-    <ItemGroup class="gap-4">
-      {
-        items?.map(({ icon, title, description, href }) => (
-          <Item href={href}>
-            <ItemMedia variant="icon">
-              <Icon name={icon} href={href} />
-            </ItemMedia>
-            <ItemContent>
-              <ItemTitle>{title}</ItemTitle>
-              <ItemDescription>{description}</ItemDescription>
-            </ItemContent>
-          </Item>
-        ))
-      }
-    </ItemGroup>
   </SectionContent>
+  <SectionGrid>
+    {
+      items?.map(({ icon, title, description, href }) => (
+        <Item href={href} variant="outline">
+          <ItemMedia variant="icon">
+            <Icon href={href} name={icon} />
+          </ItemMedia>
+          <ItemContent>
+            <ItemTitle>{title}</ItemTitle>
+            <ItemDescription>{description}</ItemDescription>
+          </ItemContent>
+        </Item>
+      ))
+    }
+  </SectionGrid>
   <Form {...form} />
 </Section>

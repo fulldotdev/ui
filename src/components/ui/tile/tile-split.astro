@@ -1,36 +1,11 @@
 ---
 import type { HTMLAttributes } from "astro/types"
-import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-interface Props extends HTMLAttributes<"div">, VariantProps<typeof variants> {}
+interface Props extends HTMLAttributes<"div"> {}
 
-const variants = cva(["grid size-full gap-6 *:w-full"], {
-  variants: {
-    align: {
-      start: "items-start",
-      center: "items-center",
-      end: "items-end",
-    },
-    order: {
-      default: "",
-      reverse: ["*:first:-col-start-2 *:last:not-first:col-start-1"],
-    },
-    ratio: {
-      "2/3": "grid-cols-[2fr_3fr]",
-      "1": "grid-cols-2",
-      "3/2": "grid-cols-[3fr_2fr]",
-    },
-  },
-  defaultVariants: {
-    align: "start",
-    order: "default",
-    ratio: "2/3",
-  },
-})
-
-const { class: className, align, order, ratio, ...props } = Astro.props
+const { class: className, ...props } = Astro.props
 
 const slot = await Astro.slots.render("default")
 ---
@@ -38,7 +13,7 @@ const slot = await Astro.slots.render("default")
 {
   slot?.trim().length > 0 && (
     <div
-      class={cn(variants({ align, order, ratio }), className)}
+      class={cn("grid size-full grid-cols-[2fr_3fr] gap-6 *:w-full", className)}
       data-slot="tile-split"
       {...props}
     >
