@@ -1,13 +1,16 @@
 ---
 block: blocks-1
+name: Lorem ipsum
 title: Lorem ipsum dolor sit amet
 subtitle: Lorem ipsum dolor sit amet
 description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
 links:
   - text: Click me
     href: "#"
+    icon: circle
   - text: Click me
     href: "#"
+    icon: circle
 image:
   src: ../../assets/example.jpg
   alt: Review 1
@@ -27,10 +30,38 @@ menus:
         href: "#"
       - text: Click me
         href: "#"
+      - text: Click me
+        href: "#"
+        icon: circle
+      - text: Click me
+        href: "#"
+        icon: circle
   - text: Click me
     href: "#"
+    links:
+      - text: Click me
+        href: "#"
+      - text: Click me
+        href: "#"
+      - text: Click me
+        href: "#"
+        icon: circle
+      - text: Click me
+        href: "#"
+        icon: circle
   - text: Click me
     href: "#"
+    links:
+      - text: Click me
+        href: "#"
+      - text: Click me
+        href: "#"
+      - text: Click me
+        href: "#"
+        icon: circle
+      - text: Click me
+        href: "#"
+        icon: circle
 socials:
   - https://linkedin.com
   - https://github.com

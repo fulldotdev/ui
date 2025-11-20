@@ -88,6 +88,7 @@ const item = (ctx: SchemaContext) =>
     .object({
       href: z.string(),
       html: z.string(),
+      name: z.string(),
       title: z.string(),
       subtitle: z.string(),
       description: z.string(),

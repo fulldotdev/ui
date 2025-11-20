@@ -1,64 +1,60 @@
 ---
-import { Button } from "@/components/ui/button"
 import {
   Footer,
-  FooterContainer,
+  FooterCopyright,
+  FooterDescription,
+  FooterGroup,
   FooterMenu,
   FooterMenuItem,
   FooterMenuLink,
 } from "@/components/ui/footer"
 import { Icon } from "@/components/ui/icon"
 import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
-import { SectionActions } from "@/components/ui/section"
 
 interface Props {
+  name?: string
+  description?: string
   image?: {
     src: string
     alt: string
   }
-  description?: string
-  items?: {
+  links?: {
     text?: string
     href?: string
   }[]
   socials?: string[]
-  menus?: {
-    text?: string
-    links?: {
-      text?: string
-      href?: string
-    }[]
-  }[]
 }
 
-const { image, items, socials } = Astro.props
+const { name, image, description, links, socials } = Astro.props
 ---
 
-<Footer>
-  <FooterContainer class="flex flex-col items-center gap-8">
+<Footer frame="box" class="items-center gap-8" variant="outline">
+  <FooterGroup class="items-center">
     <Logo href="/">
-      <LogoImage src={image?.src} alt={image?.alt} />
-      <LogoText>{image?.alt}</LogoText>
+      <LogoImage {...image} />
+      <LogoText>{name}</LogoText>
     </Logo>
-    {
-      items && items.length > 0 && (
-        <FooterMenu orientation="horizontal">
-          {items?.map(({ text, href }) => (
-            <FooterMenuItem>
-              <FooterMenuLink href={href}>{text}</FooterMenuLink>
-            </FooterMenuItem>
-          ))}
-        </FooterMenu>
-      )
-    }
-    <SectionActions class="flex gap-4">
+    <FooterDescription>{description}</FooterDescription>
+    <FooterMenu orientation="horizontal">
       {
-        socials?.map((social) => (
-          <Button variant="ghost" size="icon" href={social}>
-            <Icon href={social} />
-          </Button>
+        links?.map(({ href, text }) => (
+          <FooterMenuItem>
+            <FooterMenuLink href={href}>{text}</FooterMenuLink>
+          </FooterMenuItem>
         ))
       }
-    </SectionActions>
-  </FooterContainer>
+    </FooterMenu>
+    <FooterMenu orientation="horizontal">
+      {
+        socials?.map((social) => (
+          <FooterMenuItem>
+            <FooterMenuLink href={social}>
+              <Icon href={social} />
+            </FooterMenuLink>
+          </FooterMenuItem>
+        ))
+      }
+    </FooterMenu>
+  </FooterGroup>
+  <FooterCopyright>{name}</FooterCopyright>
 </Footer>

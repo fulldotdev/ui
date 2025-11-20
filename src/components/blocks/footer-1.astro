@@ -4,24 +4,20 @@ import type { ComponentProps } from "astro/types"
 import { Button } from "@/components/ui/button"
 import {
   Footer,
-  FooterActions,
-  FooterContainer,
   FooterDescription,
   FooterGrid,
   FooterGroup,
-  FooterGroupContent,
   FooterGroupLabel,
   FooterMenu,
   FooterMenuItem,
   FooterMenuLink,
   FooterSplit,
-  FooterSpread,
 } from "@/components/ui/footer"
 import { Icon } from "@/components/ui/icon"
 import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
 
 interface Props {
-  title?: string
+  name?: string
   image?: ComponentProps<typeof LogoImage>
   description?: string
   socials?: string[]
@@ -40,62 +36,56 @@ interface Props {
   }[]
 }
 
-const { title, image, description, links, socials, menus } = Astro.props
+const { name, image, description, links, socials, menus } = Astro.props
 ---
 
 <Footer>
-  <FooterContainer>
-    <FooterSplit>
-      <FooterGroup>
-        <Logo href="/">
-          <LogoImage {...image} />
-          <LogoText>{title}</LogoText>
-        </Logo>
-        <FooterDescription>{description}</FooterDescription>
-        <FooterMenu>
-          {
-            links?.map(({ href, icon, text }) => (
-              <FooterMenuItem>
-                <FooterMenuLink href={href}>
-                  <Icon name={icon} href={href} />
-                  {text}
-                </FooterMenuLink>
-              </FooterMenuItem>
-            ))
-          }
-        </FooterMenu>
-        <FooterActions class="-mx-2">
-          {
-            socials?.map((social) => (
-              <Button variant="ghost" size="icon-sm" href={social}>
-                <Icon href={social} />
-              </Button>
-            ))
-          }
-        </FooterActions>
-      </FooterGroup>
-      <FooterGrid class="lg:col-span-3 lg:justify-end">
+  <FooterSplit class="@5xl:grid-cols-[1fr_3fr]">
+    <FooterGroup>
+      <Logo href="/">
+        <LogoImage {...image} />
+        <LogoText>{name}</LogoText>
+      </Logo>
+      <FooterDescription>{description}</FooterDescription>
+      <FooterMenu>
         {
-          menus?.map((menu) => (
-            <FooterGroup>
-              <FooterGroupLabel>{menu.text}</FooterGroupLabel>
-              <FooterGroupContent>
-                <FooterMenu>
-                  {menu.links?.map(({ href, text }) => (
-                    <FooterMenuItem>
-                      <FooterMenuLink href={href}>{text}</FooterMenuLink>
-                    </FooterMenuItem>
-                  ))}
-                </FooterMenu>
-              </FooterGroupContent>
-            </FooterGroup>
+          links?.map(({ href, icon, text }) => (
+            <FooterMenuItem>
+              <FooterMenuLink href={href}>
+                <Icon href={href} name={icon} />
+                {text}
+              </FooterMenuLink>
+            </FooterMenuItem>
           ))
         }
-      </FooterGrid>
-    </FooterSplit>
-    <FooterSpread class="mt-8 border-t pt-8">
-      <FooterDescription size="sm" />
-      <FooterMenu orientation="horizontal" />
-    </FooterSpread>
-  </FooterContainer>
+      </FooterMenu>
+      <FooterMenu orientation="horizontal">
+        {
+          socials?.map((social) => (
+            <FooterMenuItem>
+              <FooterMenuLink href={social}>
+                <Icon href={social} />
+              </FooterMenuLink>
+            </FooterMenuItem>
+          ))
+        }
+      </FooterMenu>
+    </FooterGroup>
+    <FooterGrid class="@5xl:justify-end">
+      {
+        menus?.map((menu) => (
+          <FooterGroup>
+            <FooterGroupLabel>{menu.text}</FooterGroupLabel>
+            <FooterMenu>
+              {menu.links?.map(({ href, text }) => (
+                <FooterMenuItem>
+                  <FooterMenuLink href={href}>{text}</FooterMenuLink>
+                </FooterMenuItem>
+              ))}
+            </FooterMenu>
+          </FooterGroup>
+        ))
+      }
+    </FooterGrid>
+  </FooterSplit>
 </Footer>
