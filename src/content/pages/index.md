@@ -32,7 +32,7 @@ sections:
         href: /docs/installation/
       - text: GitHub
         href: https://github.com/fulldotdev/ui
-meta:
+seo:
   title: Astro UI component and block library for content-driven websites - fulldev/ui
   description: fulldev/ui is a complete Astro component library with ready-to-use UI components and blocks. Build content-driven websites faster with our Astro UI components library designed for developers.
   image:

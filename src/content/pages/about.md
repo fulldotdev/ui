@@ -1,5 +1,5 @@
 ---
-meta:
+seo:
   title: About Our Company
   description: Discover our story, mission, and the passionate team behind our innovative solutions
   image:

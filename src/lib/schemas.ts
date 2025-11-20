@@ -19,7 +19,7 @@ const image = ({ image }: SchemaContext) =>
     .partial()
     .strict()
 
-const meta = (ctx: SchemaContext) =>
+const seo = (ctx: SchemaContext) =>
   z
     .object({
       title: z.string(),
@@ -28,8 +28,6 @@ const meta = (ctx: SchemaContext) =>
       noindex: z.boolean(),
       nofollow: z.boolean(),
       canonical: z.string(),
-      head: z.string(),
-      body: z.string(),
     })
     .partial()
     .strict()
@@ -140,7 +138,7 @@ const page = (ctx: SchemaContext) =>
       headers: block(ctx).array(),
       sections: block(ctx).array(),
       footers: block(ctx).array(),
-      meta: meta(ctx),
+      seo: seo(ctx),
     })
     .partial()
     .strict()
