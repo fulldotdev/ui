@@ -96,7 +96,7 @@ const item = (ctx: SchemaContext) =>
       images: image(ctx).array(),
       links: link.array(),
       rating: rating,
-      price: z.string(),
+      price: z.string().or(z.number()),
       unit: z.string(),
       socials: z.string().array(),
       list: z.string().array(),
@@ -109,6 +109,8 @@ const block = (ctx: SchemaContext) =>
   item(ctx)
     .extend({
       block: z.string(),
+      id: z.string(),
+      class: z.string(),
       menus: menu.array(),
       form: form,
       item: item(ctx),

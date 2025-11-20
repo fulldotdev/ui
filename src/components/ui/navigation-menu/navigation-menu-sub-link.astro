@@ -1,0 +1,27 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"a"> {}
+
+const { class: className, href, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <a
+      data-slot="navigation-menu-sub-link"
+      class={cn(
+        "hover:bg-accent hover:text-accent-foreground inline-flex w-full items-center justify-start rounded-md p-2 text-sm transition-colors",
+        className
+      )}
+      href={href}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </a>
+  )
+}

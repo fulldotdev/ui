@@ -23,7 +23,7 @@ sections:
       - title: Built for content
         description: Integrates seamlessly with Astro content collections, which works great with AI agents.
         icon: file-text
-  - block: cta-4
+  - block: cta-1
     html: |
       <h2>Build performant content websites faster</h2>
       <p>Craft stunning content websites in less time with <strong>fulldev/ui</strong> components.</p>

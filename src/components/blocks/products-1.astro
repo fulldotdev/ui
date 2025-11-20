@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { Image } from "@/components/ui/image"
+import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
 import {
   Section,
   SectionActions,
@@ -18,8 +19,6 @@ import {
 } from "@/components/ui/tile"
 
 interface Props {
-  title?: string
-  description?: string
   links?: {
     icon?: string
     text?: string
@@ -34,16 +33,17 @@ interface Props {
     }
     title?: string
     description?: string
-    icon?: string
+    price?: string | number
+    unit?: string
   }[]
 }
 
-const { links, items, title, description } = Astro.props
+const { links, items } = Astro.props
 ---
 
 <Section>
   <SectionContent>
-    <SectionProse title={title} description={description}>
+    <SectionProse>
       <slot />
     </SectionProse>
     <SectionActions>
@@ -59,14 +59,18 @@ const { links, items, title, description } = Astro.props
   </SectionContent>
   <SectionGrid>
     {
-      items?.map(({ title, description, image, href }) => (
-        <Tile href={href} frame="panel">
+      items?.map(({ title, description, image, href, price, unit }) => (
+        <Tile href={href}>
           <TileMedia>
             <Image class="aspect-video" {...image} />
           </TileMedia>
           <TileContent>
             <TileTitle>{title}</TileTitle>
             <TileDescription>{description}</TileDescription>
+            <Price>
+              <PriceValue price={price} />
+              <PriceUnit>{unit}</PriceUnit>
+            </Price>
           </TileContent>
         </Tile>
       ))

@@ -18,11 +18,11 @@ const pagePathname = Astro.url.pathname.endsWith("/")
   : `${Astro.url.pathname}/`
 const pageUrl = `${baseUrl}${pagePathname}`
 
-const { headers, sections, footers, block, meta, ...props } = Astro.props
+const { headers, sections, footers, block, seo, ...props } = Astro.props
 
-const title = meta?.title || props?.title
-const description = meta?.description || props?.description
-const image = meta?.image || props?.image
+const title = seo?.title || props?.title
+const description = seo?.description || props?.description
+const image = seo?.image || props?.image
 const transformedImage = image?.src
   ? await getImage({
       src: image.src,
@@ -39,7 +39,7 @@ const transformedImage = image?.src
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta charset="UTF-8" />
-    <link rel="canonical" href={meta?.canonical} />
+    <link rel="canonical" href={seo?.canonical} />
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta property="og:title" content={title} />
@@ -71,7 +71,7 @@ const transformedImage = image?.src
     <meta property="og:image:alt" content={image?.alt} />
     <meta
       name="robots"
-      content={`${meta?.noindex ? "noindex" : "index"}, ${meta?.nofollow ? "nofollow" : "follow"}`}
+      content={`${seo?.noindex ? "noindex" : "index"}, ${seo?.nofollow ? "nofollow" : "follow"}`}
     />
     <Fragment
       set:html={`<script type="application/ld+json">${JSON.stringify(

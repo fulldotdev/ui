@@ -9,7 +9,6 @@ import {
   ItemDescription,
   ItemMedia,
 } from "@/components/ui/item"
-import { List, ListItem } from "@/components/ui/list"
 import { Rating } from "@/components/ui/rating"
 import {
   Section,
@@ -51,7 +50,6 @@ interface Props {
   items?: {
     title?: string
     description?: string
-    html?: string
     icon?: string
     href?: string
     links?: {
@@ -63,7 +61,7 @@ interface Props {
   }[]
 }
 
-const { list, links, image, item, items } = Astro.props
+const { links, image, item, items } = Astro.props
 ---
 
 <Section>
@@ -85,7 +83,7 @@ const { list, links, image, item, items } = Astro.props
         </ItemDescription>
       </ItemContent>
     </Item>
-    <SectionProse class="text-center">
+    <SectionProse class="text-center" size="lg">
       <slot />
     </SectionProse>
     <SectionActions class="justify-center">
@@ -108,17 +106,14 @@ const { list, links, image, item, items } = Astro.props
   </SectionMedia>
   <SectionGrid>
     {
-      items?.map(({ title, description, html, icon, links, href }) => (
+      items?.map(({ title, description, icon, links, href }) => (
         <Tile href={href} class="items-center">
           <TileMedia variant="icon">
             <Icon name={icon} />
           </TileMedia>
-          <TileContent class="items-center">
+          <TileContent class="items-center text-center">
             <TileTitle>{title}</TileTitle>
-            {description && <TileDescription>{description}</TileDescription>}
-            {html && (
-              <p class="text-muted-foreground text-sm" set:html={html} />
-            )}
+            <TileDescription>{description}</TileDescription>
             {links?.map(({ icon, text, href, target }) => (
               <Button class="-mx-4" variant="link" href={href} target={target}>
                 {icon && <Icon name={icon} />}
