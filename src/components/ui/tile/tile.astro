@@ -10,21 +10,19 @@ type Props = VariantProps<typeof variants> &
 
 const variants = cva(
   [
-    "group/tile [a]:hover:bg-accent/50 focus-visible:border-ring focus-visible:ring-ring/50 relative flex flex-col items-start gap-6 rounded-md duration-100 outline-none focus-visible:ring-[3px] [a]:transition-all",
-    // If SectionMedia is inset, add extra spacer
-    "has-[>[data-slot=tile-media][data-position=inset]]:gap-y-[48px]",
+    "group/tile [a]:hover:bg-accent/50 focus-visible:border-ring focus-visible:ring-ring/50 relative flex flex-col items-start gap-6 duration-100 outline-none focus-visible:ring-[3px] [a]:transition-all",
   ],
   {
     variants: {
       frame: {
-        default: "-m-3 bg-transparent p-3",
-        panel: "bg-muted/50 overflow-hidden border p-6",
+        default: "-m-2 overflow-hidden rounded-md bg-transparent p-2",
+        box: "-m-3 overflow-hidden border p-3",
+        panel: "bg-card overflow-hidden rounded-md border p-6",
       },
       variant: {
-        default: "",
-        outline: "border-border bg-transparent",
-        muted: "bg-muted/50 border-transparent",
-        accent: "bg-accent/50 border-transparent",
+        default: "bg-transparent",
+        outline: "border-border border",
+        muted: "bg-muted/50",
       },
     },
     defaultVariants: {
@@ -46,6 +44,7 @@ const Comp = href ? "a" : "div"
     <Comp
       data-slot="tile"
       data-variant={variant}
+      data-frame={frame}
       class={cn(variants({ variant, frame }), className)}
       href={href}
       {...props}
@@ -54,3 +53,13 @@ const Comp = href ? "a" : "div"
     </Comp>
   )
 }
+
+<style is:global>
+  [data-slot="tile"] {
+    --tile-padding: 0px;
+  }
+
+  [data-slot="tile"][data-frame="panel"] {
+    --tile-padding: 24px;
+  }
+</style>

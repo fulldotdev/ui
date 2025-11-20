@@ -17,9 +17,13 @@ const variants = cva(
         background:
           "absolute inset-0 size-full opacity-25 *:size-full *:object-cover",
         inset: [
-          "-mx-6 -mt-6 w-[calc(100%+48px)]",
-          "[a:has(&)]:overflow-hidden",
-          "[div:has(&)]:overflow-hidden",
+          "overflow-hidden rounded-md *:size-full *:object-cover",
+          "-mx-(--tile-padding) h-auto w-[calc(100%+2*var(--tile-padding))] first:-mt-(--tile-padding) last:-mb-(--tile-padding)",
+          // split layout adjustments
+          "[&:is([data-slot=tile-split]>&)]:-my-(--tile-padding) [&:is([data-slot=tile-split]>&)]:h-[calc(100%+2*var(--tile-padding))]",
+          "[&:is([data-slot=tile-split]>&)]:mx-0 [&:is([data-slot=tile-split]>&)]:w-[calc(100%+1*var(--tile-padding))]",
+          "[&:is([data-slot=tile-split]>&)]:first:-ml-(--tile-padding)",
+          "[&:is([data-slot=tile-split]>&)]:last:-mr-(--tile-padding)",
         ],
         icon: "bg-muted size-8 rounded-sm border [&_svg:not([class*='size-'])]:size-4",
       },
@@ -41,6 +45,7 @@ const slot = await Astro.slots.render("default")
   slot?.trim().length > 0 && (
     <div
       data-slot="tile-media"
+      data-variant={variant}
       class={cn(variants({ variant }), className)}
       {...props}
     >

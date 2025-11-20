@@ -1,0 +1,31 @@
+---
+import { getEntry } from "astro:content"
+
+import Layout from "@/components/layout.astro"
+
+export async function getStaticPaths() {
+  const blocks = import.meta.glob("src/components/blocks/**/*.astro")
+  return Object.entries(blocks).map(([path, value]) => {
+    const id = path.split("/").pop()?.split(".")[0]
+    return {
+      params: {
+        block: id,
+      },
+      props: {
+        id,
+        value,
+      },
+    }
+  })
+}
+
+const { value } = Astro.props
+const Comp = ((await value?.()) as any)?.default
+const indexBlock = await getEntry("pages", "blocks")
+---
+
+<Layout>
+  <Comp {...indexBlock?.data}>
+    <Fragment set:html={indexBlock?.data?.html} />
+  </Comp>
+</Layout>

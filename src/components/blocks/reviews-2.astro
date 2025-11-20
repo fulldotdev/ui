@@ -15,10 +15,15 @@ import {
   SectionActions,
   SectionContent,
   SectionGrid,
+  SectionProse,
   SectionSplit,
-  SectionTypography,
 } from "@/components/ui/section"
-import { Tile, TileContent, TileTypography } from "@/components/ui/tile"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileTitle,
+} from "@/components/ui/tile"
 
 interface Props {
   links?: {
@@ -47,9 +52,9 @@ const { links, items } = Astro.props
 <Section>
   <SectionSplit>
     <SectionContent>
-      <SectionTypography>
+      <SectionProse>
         <slot />
-      </SectionTypography>
+      </SectionProse>
       <SectionActions>
         {
           links?.map(({ icon, text, ...button }, i) => (
@@ -64,15 +69,7 @@ const { links, items } = Astro.props
     <SectionGrid class="grid-cols-1">
       {
         items?.map(
-          ({
-            title,
-            description,
-            html,
-            rating,
-            href,
-            image,
-            tagline,
-          }) => (
+          ({ title, description, html, rating, href, image, tagline }) => (
             <Tile href={href}>
               <Item class="-m-4">
                 <ItemMedia>
@@ -87,11 +84,13 @@ const { links, items } = Astro.props
               </Item>
               <Rating rating={rating} />
               <TileContent>
-                <TileTypography
-                  title={title}
-                  description={description}
-                  html={html}
-                />
+                <TileTitle>{title}</TileTitle>
+                {description && (
+                  <TileDescription>{description}</TileDescription>
+                )}
+                {html && (
+                  <p class="text-muted-foreground text-sm" set:html={html} />
+                )}
               </TileContent>
             </Tile>
           )

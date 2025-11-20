@@ -17,13 +17,14 @@ import {
   SectionContent,
   SectionGrid,
   SectionMedia,
-  SectionTypography,
+  SectionProse,
 } from "@/components/ui/section"
 import {
   Tile,
   TileContent,
+  TileDescription,
   TileMedia,
-  TileTypography,
+  TileTitle,
 } from "@/components/ui/tile"
 
 interface Props {
@@ -84,9 +85,9 @@ const { list, links, image, item, items } = Astro.props
         </ItemDescription>
       </ItemContent>
     </Item>
-    <SectionTypography align="center" size="lg">
+    <SectionProse align="center" size="lg">
       <slot />
-    </SectionTypography>
+    </SectionProse>
     <SectionActions align="center">
       {
         links?.map(({ icon, text, ...button }, i) => (
@@ -113,12 +114,11 @@ const { list, links, image, item, items } = Astro.props
             <Icon name={icon} />
           </TileMedia>
           <TileContent class="items-center">
-            <TileTypography
-              class="items-center text-center"
-              title={title}
-              description={description}
-              html={html}
-            />
+            <TileTitle>{title}</TileTitle>
+            {description && <TileDescription>{description}</TileDescription>}
+            {html && (
+              <p class="text-muted-foreground text-sm" set:html={html} />
+            )}
             {links?.map(({ icon, text, href, target }) => (
               <Button class="-mx-4" variant="link" href={href} target={target}>
                 {icon && <Icon name={icon} />}
