@@ -33,6 +33,12 @@ interface Props {
       src: string
       alt: string
     }
+    links?: {
+      icon?: string
+      text?: string
+      href?: string
+      target?: string
+    }[]
   }[]
 }
 
@@ -58,7 +64,7 @@ const { links, items } = Astro.props
   </SectionSpread>
   <SectionGrid>
     {
-      items?.map(({ title, tagline, description, href, image }) => (
+      items?.map(({ title, tagline, description, href, image, links }) => (
         <Tile href={href}>
           <TileMedia>
             <Image {...image} />
@@ -73,6 +79,18 @@ const { links, items } = Astro.props
             </TileContent>
             {href && <Icon name="arrow-right" />}
           </TileSpread>
+          <SectionActions>
+            {links?.map(({ text, icon, href, target }, i) => (
+              <Button
+                variant={i === 0 ? "outline" : "ghost"}
+                href={href}
+                target={target}
+              >
+                {icon && <Icon name={icon} />}
+                {text}
+              </Button>
+            ))}
+          </SectionActions>
         </Tile>
       ))
     }
