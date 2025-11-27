@@ -113,8 +113,6 @@ export default defineConfig({
       components: {
         SiteTitle: "/src/components/starlight-title.astro",
         ThemeSelect: "/src/components/starlight-icons.astro",
-        ThemeProvider:
-          "/src/components/ui/mode-toggle/mode-toggle-provider.astro",
       },
     }),
     liveCode({
