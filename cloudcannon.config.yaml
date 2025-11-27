@@ -1,6 +1,6 @@
 paths:
   uploads: src/assets/
-  static: src/assets/
+  uploads_use_relative_path: true
 timezone: Etc/UTC
 collections_config:
   pages:
@@ -14,11 +14,11 @@ collections_config:
     _enabled_editors:
       - visual
       - content
-  layouts:
-    path: src/content/layouts
-    name: Layouts
-    icon: settings
-    disable_add: true
+  reviews:
+    path: src/content/pages/reviews
+    name: Reviews
+    icon: star
+    disable_add: false
     disable_add_folder: true
     disable_file_actions: true
     _enabled_editors:
@@ -27,7 +27,27 @@ collection_groups:
   - heading: Content
     collections:
       - pages
+      - menu
+      - agenda
+      - reviews
+_structures:
+  sections:
+    id_key: block
+    values:
+      - label: Reviews
+        value:
+          block: reviews-3
+        _inputs:
+          refs:
+            type: multiselect
+            options:
+              values: collections.reviews
+              empty_type: array
 _inputs:
+  id:
+    hidden: true
+  class:
+    hidden: true
   block:
     hidden: true
   size:
@@ -44,6 +64,16 @@ _inputs:
     hidden: true
   icon:
     hidden: true
+  refs:
+    type: multiselect
+    options:
+      values: collections.pages
+      empty_type: array
+  ref:
+    type: select
+    options:
+      values: collections.pages
+      empty_type: string
   title:
     type: text
     options:
@@ -108,6 +138,7 @@ _inputs:
     type: array
     options:
       empty_type: array
+      max_items: 2
       disable_add: false
       disable_remove: false
       disable_reorder: false
@@ -131,10 +162,6 @@ _inputs:
     type: image
     options:
       mime_type: image/webp
-      accepts_mime_types:
-        - image/jpeg
-        - image/png
-        - image/webp
       resize_style: contain
       width: 2560
       height: 2560
@@ -145,26 +172,6 @@ _inputs:
       disable_add: false
       disable_remove: false
       disable_reorder: false
-  itemRef:
-    type: select
-    options:
-      values: collections.pages
-  tileRef:
-    type: select
-    options:
-      values: collections.pages
-  tilesGlob:
-    hidden: true
-  tilesRefs:
-    type: multiselect
-    options:
-      values: collections.pages
-  itemsGlob:
-    hidden: true
-  itemsRefs:
-    type: multiselect
-    options:
-      values: collections.pages
   head:
     type: code
     options:
@@ -188,7 +195,7 @@ _inputs:
     label: Content
     options:
       allow_resize: true
-      initial_height: 640
+      initial_height: 400
       allow_custom_markup: false
       remove_custom_markup: false
       blockquote: true
@@ -200,7 +207,6 @@ _inputs:
       underline: true
       undo: true
       empty_type: string
-
 _editables:
   content:
     allow_custom_markup: false
