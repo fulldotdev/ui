@@ -17,13 +17,13 @@ const variants = cva(
         default: ["w-full"],
         // Contained on every screen, with a border and padding for box effect
         box: [
-          "w-[calc(100%-16px)] max-w-(--footer-width) @5xl:w-[calc(100%-2*var(--footer-px))]",
+          "w-[calc(100%-2*var(--gutter))] max-w-(--footer-width)",
           "overflow-hidden",
           "bg-muted/50 border-border border",
         ],
         // Contained on every screen, with a border, padding and rounded corners for panel effect
         panel: [
-          "w-[calc(100%-16px)] max-w-(--footer-width) @5xl:w-[calc(100%-2*var(--footer-px))]",
+          "w-[calc(100%-2*var(--gutter))] max-w-(--footer-width)",
           "my-(--footer-py) overflow-hidden rounded-xl first:mt-2",
           "bg-muted/50 border-border border",
         ],
@@ -63,26 +63,26 @@ const slot = await Astro.slots.render("default")
 <style is:global>
   /* footer width and padding for inset calculations */
   [data-slot="footer"] {
-    --footer-width: var(--container, var(--breakpoint-xl));
-    --footer-py: 48px;
-    --footer-px: max(24px, calc((100cqw - var(--footer-width)) / 2));
+    --footer-width: var(--container);
+    --footer-py: calc(var(--spacing) * 12);
+    --footer-px: max(var(--gutter), calc((100cqw - var(--footer-width)) / 2));
   }
 
   [data-slot="footer"][data-frame="box"],
   [data-slot="footer"][data-frame="panel"] {
-    --footer-px: 16px;
+    --footer-px: calc(var(--spacing) * 4);
   }
 
   @media (min-width: 1024px) {
     [data-slot="footer"] {
-      --footer-py: 64px;
+      --footer-py: calc(var(--spacing) * 16);
     }
 
     [data-slot="footer"][data-frame="box"],
     [data-slot="footer"][data-frame="panel"] {
       /* --footer-py: 48px; */
       /* --footer-px: 48px; */
-      --footer-px: 64px;
+      --footer-px: calc(var(--spacing) * 16);
     }
   }
 </style>

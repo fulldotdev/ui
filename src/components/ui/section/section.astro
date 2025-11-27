@@ -17,13 +17,13 @@ const variants = cva(
         default: ["bg-background w-full"],
         // Contained on every screen, with a border and padding for box effect
         box: [
-          "w-[calc(100%-16px)] max-w-(--section-width) lg:w-[calc(100%-48px)]",
+          "w-[calc(100%-var(--gutter))] max-w-(--section-width)",
           "overflow-hidden",
           "bg-muted/50 border-border border",
         ],
         // Contained on every screen, with a border, padding and rounded corners for panel effect
         panel: [
-          "w-[calc(100%-16px)] max-w-(--section-width) lg:w-[calc(100%-48px)]",
+          "w-[calc(100%-2*var(--gutter))] max-w-(--section-width)",
           "my-(--section-py) overflow-hidden rounded-xl first:mt-2",
           "bg-muted/50 border-border border",
         ],
@@ -68,32 +68,32 @@ const slot = await Astro.slots.render("default")
 <style is:global>
   /* Section width and padding for inset calculations */
   [data-slot="section"] {
-    --section-width: var(--container, var(--breakpoint-xl));
-    --section-py: 48px;
-    --section-px: max(24px, calc((100cqw - var(--section-width)) / 2));
+    --section-width: var(--container);
+    --section-py: calc(var(--spacing) * 12);
+    --section-px: max(var(--gutter), calc((100cqw - var(--section-width)) / 2));
   }
 
   [data-slot="section"][data-frame="box"],
   [data-slot="section"][data-frame="panel"] {
-    --section-px: 16px;
+    --section-px: calc(var(--spacing) * 4);
   }
 
   [data-slot="section"][data-size="lg"] {
-    --section-py: 128px;
+    --section-py: calc(var(--spacing) * 32);
   }
 
   @media (min-width: 1024px) {
     [data-slot="section"] {
-      --section-py: 64px;
+      --section-py: calc(var(--spacing) * 16);
     }
 
     [data-slot="section"][data-frame="box"],
     [data-slot="section"][data-frame="panel"] {
-      --section-px: 64px;
+      --section-px: calc(var(--spacing) * 16);
     }
 
     [data-slot="section"][data-size="lg"] {
-      --section-py: 192px;
+      --section-py: calc(var(--spacing) * 48);
     }
   }
 </style>
