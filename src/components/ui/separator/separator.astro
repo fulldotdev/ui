@@ -1,30 +1,31 @@
 ---
 import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-interface Props extends HTMLAttributes<"div"> {
+interface Props extends HTMLAttributes<"div">, VariantProps<typeof variants> {
   orientation?: "horizontal" | "vertical"
-  decorative?: boolean
 }
 
-const {
-  class: className,
-  orientation = "horizontal",
-  decorative = true,
-  ...props
-} = Astro.props
+const variants = cva("bg-border block shrink-0", {
+  variants: {
+    orientation: {
+      horizontal: "h-px w-full",
+      vertical: "h-full w-px",
+    },
+  },
+  defaultVariants: {
+    orientation: "horizontal",
+  },
+})
+
+const { class: className, orientation = "horizontal", ...props } = Astro.props
 ---
 
 <div
-  role={decorative ? "none" : "separator"}
-  aria-orientation={orientation}
-  data-orientation={orientation}
   data-slot="separator"
-  class={cn(
-    "bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px",
-    className
-  )}
+  class={cn(variants({ orientation }), className)}
   {...props}
 >
 </div>
