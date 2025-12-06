@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/section"
 import {
   Tile,
+  TileActions,
   TileContent,
   TileDescription,
   TileTitle,
@@ -32,11 +33,11 @@ interface Props {
     description?: string
     icon?: string
     list?: string[]
-    button?: {
+    links?: {
       text?: string
       href?: string
       target?: string
-    }
+    }[]
     price?: string | number
     unit?: string
   }[]
@@ -63,22 +64,31 @@ const { class: className, id, links, items } = Astro.props
   </SectionContent>
   <SectionGrid>
     {
-      items?.map(({ title, description, button, list, price, unit }) => (
-        <Tile>
+      items?.map(({ title, description, links, list, price, unit }) => (
+        <Tile frame="panel" variant="outline" class="justify-between">
           <TileContent>
-            <TileTitle>{title}</TileTitle>
+            <TileTitle class="text-xl">{title}</TileTitle>
             <TileDescription>{description}</TileDescription>
             <Price>
               <PriceValue price={price} />
               <PriceUnit>{unit}</PriceUnit>
             </Price>
-            <List>
+            <List class="mt-4">
               {list?.map((item) => (
-                <ListItem>{item}</ListItem>
+                <ListItem>
+                  <Icon name="check" />
+                  {item}
+                </ListItem>
               ))}
             </List>
-            <Button class="mt-auto w-full" {...button} />
           </TileContent>
+          <TileActions class="w-full">
+            {links?.map(({ text, href, target }) => (
+              <Button class="w-full" href={href} target={target}>
+                {text}
+              </Button>
+            ))}
+          </TileActions>
         </Tile>
       ))
     }
