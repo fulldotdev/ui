@@ -1,0 +1,53 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Command } from "@/components/ui/command"
+
+interface Props extends ComponentProps<typeof Dialog> {
+  title?: string
+  description?: string
+  contentClass?: string
+  showCloseButton?: boolean
+}
+
+const {
+  title = "Command Palette",
+  description = "Search for a command to run...",
+  contentClass,
+  showCloseButton = true,
+  ...props
+} = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+<Dialog {...props}>
+  <DialogContent
+    class:list={[
+      "overflow-hidden p-0",
+      "[&_[data-slot=command]]:border-0",
+      "[&_[data-slot=command]]:bg-transparent",
+      "[&_[data-slot=command-input-wrapper]]:h-12",
+      "[&_[data-slot=command-input-wrapper]_svg]:size-5",
+      "[&_[data-slot=command-input]]:h-12",
+      "[&_[data-slot=command-item]]:px-2",
+      "[&_[data-slot=command-item]]:py-3",
+      "[&_[data-slot=command-item]_svg]:size-5",
+      "[&_[data-slot=command-group-heading]]:text-muted-foreground",
+      "[&_[data-slot=command-group-heading]]:px-2",
+      "[&_[data-slot=command-group-heading]]:font-medium",
+      "[&_[data-slot=command-group]]:px-2",
+      "[&_[data-slot=command-group]:not([hidden])_~[data-slot=command-group]]:pt-0",
+      contentClass,
+    ]}
+    showClose={showCloseButton}
+  >
+    <div class="sr-only">
+      <h2>{title}</h2>
+      <p>{description}</p>
+    </div>
+    <Fragment set:html={slot} />
+  </DialogContent>
+</Dialog>
+

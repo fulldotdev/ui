@@ -1,0 +1,42 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import XIcon from "lucide-static/icons/x.svg"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {
+  showClose?: boolean
+}
+
+const { class: className, showClose = true, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+<dialog
+  data-slot="dialog-element"
+  class="fixed inset-0 z-50 m-0 max-h-none max-w-none border-0 bg-transparent p-0 backdrop:bg-black/50"
+>
+  <div
+    data-slot="dialog-content"
+    class={cn(
+      "bg-background fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg",
+      className
+    )}
+    {...props}
+  >
+    {
+      showClose && (
+        <button
+          type="button"
+          data-slot="dialog-close"
+          class="ring-offset-background focus:ring-ring absolute top-4 right-4 cursor-pointer rounded-sm border-0 bg-transparent opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+          aria-label="Close"
+        >
+          <XIcon class="size-4" />
+        </button>
+      )
+    }
+    <Fragment set:html={slot} />
+  </div>
+</dialog>

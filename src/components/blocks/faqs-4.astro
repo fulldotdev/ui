@@ -1,63 +1,43 @@
 ---
 import { cn } from "@/lib/utils"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
-import { Image } from "@/components/ui/image"
-import { List, ListItem } from "@/components/ui/list"
 import {
   Section,
   SectionActions,
   SectionContent,
-  SectionMedia,
   SectionProse,
 } from "@/components/ui/section"
 
 interface Props {
   class?: string
   id?: string
-  title?: string
-  description?: string
-  list?: string[]
   links?: {
     icon?: string
     text?: string
     href?: string
     target?: string
   }[]
-  image?: {
-    src: string
-    alt: string
+  items?: {
     title?: string
-  }
+    description?: string
+  }[]
 }
 
-const {
-  class: className,
-  id,
-  title,
-  description,
-  list,
-  links,
-  image,
-} = Astro.props
+const { class: className, id, links, items } = Astro.props
 ---
 
-<Section class={cn("", className)} id={id} style={{ "--container": "672px" }}>
+<Section class={cn("", className)} id={id} style="--section-width: 672px;">
   <SectionContent>
     <SectionProse>
-      {title && <h1>{title}</h1>}
-      {description && <p>{description}</p>}
+      <slot />
     </SectionProse>
-    <List>
-      {
-        list?.map((item) => (
-          <ListItem>
-            <Icon name="check" />
-            {item}
-          </ListItem>
-        ))
-      }
-    </List>
     <SectionActions>
       {
         links?.map(({ icon, text, ...button }, i) => (
@@ -69,10 +49,14 @@ const {
       }
     </SectionActions>
   </SectionContent>
-  <SectionMedia>
-    <Image {...image} />
-  </SectionMedia>
-  <SectionProse>
-    <slot />
-  </SectionProse>
+  <Accordion>
+    {
+      items?.map(({ title, description }) => (
+        <AccordionItem>
+          <AccordionTrigger>{title}</AccordionTrigger>
+          <AccordionContent>{description}</AccordionContent>
+        </AccordionItem>
+      ))
+    }
+  </Accordion>
 </Section>
