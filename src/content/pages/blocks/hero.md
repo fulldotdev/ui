@@ -1,7 +1,7 @@
 ---
 block: blocks-2
 title: Hero
-description: Hero you can find all the hero blocks available in the library. We are working on adding more hero blocks.
+description: Here you can find all the hero blocks available in the library.
 refs:
   - /src/content/pages/blocks/hero-1.md
   - /src/content/pages/blocks/hero-2.md
