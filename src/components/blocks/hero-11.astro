@@ -10,7 +10,6 @@ import {
   ItemDescription,
   ItemMedia,
 } from "@/components/ui/item"
-import { List, ListItem } from "@/components/ui/list"
 import { Rating } from "@/components/ui/rating"
 import {
   Section,
@@ -18,13 +17,12 @@ import {
   SectionContent,
   SectionMedia,
   SectionProse,
-  SectionSplit,
+  SectionSpread,
 } from "@/components/ui/section"
 
 interface Props {
   class?: string
   id?: string
-  list?: string[]
   links?: {
     icon?: string
     text?: string
@@ -45,29 +43,24 @@ interface Props {
   }
 }
 
-const { class: className, id, list, links, image, item } = Astro.props
+const { class: className, id, links, image, item } = Astro.props
 ---
 
-<Section class={cn("", className)} id={id}>
-  <SectionSplit class="@5xl:items-center">
-    <SectionContent>
-      <SectionProse class="text-balance" size="lg">
-        <slot />
-      </SectionProse>
-      <List>
-        {
-          list?.map((item) => (
-            <ListItem>
-              <Icon name="check" />
-              {item}
-            </ListItem>
-          ))
-        }
-      </List>
+<Section
+  class={cn("-mt-(--header-height) h-[110vh] justify-start", className)}
+  id={id}
+  size="lg"
+>
+  <SectionSpread class="relative @5xl:items-center">
+    <SectionProse size="lg">
+      <slot />
+    </SectionProse>
+    <SectionContent class="shrink-0">
       <SectionActions>
         {
           links?.map(({ icon, text, ...button }, i) => (
             <Button
+              class="w-full"
               variant={i === 0 ? "default" : "secondary"}
               size="lg"
               {...button}
@@ -96,8 +89,10 @@ const { class: className, id, list, links, image, item } = Astro.props
         </ItemContent>
       </Item>
     </SectionContent>
-    <SectionMedia>
-      <Image {...image} />
-    </SectionMedia>
-  </SectionSplit>
+  </SectionSpread>
+  <SectionMedia
+    class="mask-y-to-black-100% absolute inset-0 size-full rounded-none bg-white mask-y-from-0% dark:bg-black"
+  >
+    <Image {...image} class="opacity-75" />
+  </SectionMedia>
 </Section>

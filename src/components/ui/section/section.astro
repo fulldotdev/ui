@@ -12,41 +12,30 @@ const variants = cva(
   "relative mx-auto flex scroll-m-(--section-py) flex-col gap-16 px-(--section-px) py-(--section-py)",
   {
     variants: {
-      frame: {
-        // Filled on every screen, with content width based on padding
-        default: ["bg-background w-full"],
-        // Contained on every screen, with a border and padding for box effect
-        box: [
-          "w-[calc(100%-var(--gutter))] max-w-(--section-width)",
-          "overflow-hidden",
-          "bg-muted/50 border-border border",
-        ],
-        // Contained on every screen, with a border, padding and rounded corners for panel effect
-        panel: [
+      variant: {
+        default: "bg-background w-full",
+        floating: [
+          "bg-background rounded-lg border shadow-sm",
           "w-[calc(100%-2*var(--gutter))] max-w-(--section-width)",
           "my-(--section-py) overflow-hidden rounded-xl first:mt-2",
-          "bg-muted/50 border-border border",
         ],
-      },
-      variant: {
-        default: "",
         muted: "bg-muted/50 border-transparent",
         outline: "border-border bg-background border",
         accent: "bg-accent/50 border-transparent",
       },
       size: {
+        sm: "",
         default: "",
         lg: "",
       },
     },
     defaultVariants: {
-      frame: "default",
       variant: "default",
     },
   }
 )
 
-const { class: className, frame, variant, size, ...props } = Astro.props
+const { class: className, variant, size, ...props } = Astro.props
 
 const slot = await Astro.slots.render("default")
 ---
@@ -54,10 +43,10 @@ const slot = await Astro.slots.render("default")
 {
   slot?.trim().length > 0 && (
     <section
-      class={cn(variants({ frame, variant }), className)}
+      class={cn(variants({ variant }), className)}
       data-slot="section"
-      data-frame={frame}
       data-size={size}
+      data-variant={variant}
       {...props}
     >
       <Fragment set:html={slot} />
@@ -73,13 +62,16 @@ const slot = await Astro.slots.render("default")
     --section-px: max(var(--gutter), calc((100cqw - var(--section-width)) / 2));
   }
 
-  [data-slot="section"][data-frame="box"],
-  [data-slot="section"][data-frame="panel"] {
+  [data-slot="section"][data-variant="floating"] {
     --section-px: calc(var(--spacing) * 6);
   }
 
+  [data-slot="section"][data-size="sm"] {
+    --section-py: calc(var(--spacing) * 8);
+  }
+
   [data-slot="section"][data-size="lg"] {
-    --section-py: calc(var(--spacing) * 32);
+    --section-py: calc(var(--spacing) * 24);
   }
 
   @media (min-width: 1024px) {
@@ -87,13 +79,16 @@ const slot = await Astro.slots.render("default")
       --section-py: calc(var(--spacing) * 16);
     }
 
-    [data-slot="section"][data-frame="box"],
-    [data-slot="section"][data-frame="panel"] {
+    [data-slot="section"][data-variant="floating"] {
       --section-px: calc(var(--spacing) * 16);
     }
 
+    [data-slot="section"][data-size="sm"] {
+      --section-py: calc(var(--spacing) * 12);
+    }
+
     [data-slot="section"][data-size="lg"] {
-      --section-py: calc(var(--spacing) * 48);
+      --section-py: calc(var(--spacing) * 32);
     }
   }
 </style>

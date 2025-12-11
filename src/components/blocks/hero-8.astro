@@ -1,17 +1,8 @@
 ---
 import { cn } from "@/lib/utils"
-import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { Image } from "@/components/ui/image"
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-} from "@/components/ui/item"
-import { List, ListItem } from "@/components/ui/list"
-import { Rating } from "@/components/ui/rating"
 import {
   Section,
   SectionActions,
@@ -48,22 +39,12 @@ interface Props {
 const { class: className, id, list, links, image, item } = Astro.props
 ---
 
-<Section class={cn("", className)} id={id}>
-  <SectionSplit class="@5xl:items-center">
+<Section class={cn("", className)} id={id} size="lg">
+  <SectionSplit class="@5xl:grid-cols-[2fr_5fr] @5xl:items-center">
     <SectionContent>
       <SectionProse class="text-balance" size="lg">
         <slot />
       </SectionProse>
-      <List>
-        {
-          list?.map((item) => (
-            <ListItem>
-              <Icon name="check" />
-              {item}
-            </ListItem>
-          ))
-        }
-      </List>
       <SectionActions>
         {
           links?.map(({ icon, text, ...button }, i) => (
@@ -78,25 +59,10 @@ const { class: className, id, list, links, image, item } = Astro.props
           ))
         }
       </SectionActions>
-      <Item class="p-0">
-        <ItemMedia class="-space-x-5">
-          {
-            item?.images?.map((image) => (
-              <Avatar class="ring-background size-11 ring">
-                <AvatarImage {...image} />
-              </Avatar>
-            ))
-          }
-        </ItemMedia>
-        <ItemContent class="mt-1">
-          <Rating rating={item?.rating} />
-          <ItemDescription>
-            {item?.description}
-          </ItemDescription>
-        </ItemContent>
-      </Item>
     </SectionContent>
-    <SectionMedia>
+    <SectionMedia
+      class="-mr-(--section-px) rounded-r-none @5xl:-my-(--section-py)"
+    >
       <Image {...image} />
     </SectionMedia>
   </SectionSplit>

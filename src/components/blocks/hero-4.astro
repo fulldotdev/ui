@@ -14,33 +14,35 @@ import {
 interface Props {
   class?: string
   id?: string
-  subtitle?: string
   links?: {
-    icon?: string
     text?: string
     href?: string
+    icon?: string
     target?: string
   }[]
   image?: {
     src: string
     alt: string
-    title?: string
   }
 }
 
-const { class: className, id, subtitle, links, image } = Astro.props
+const { class: className, id, links, image } = Astro.props
 ---
 
-<Section class={cn("mb-8 items-center", className)} id={id} size="lg">
+<Section
+  class={cn("-mt-(--header-height) h-[100vh] justify-center", className)}
+  id={id}
+  size="lg"
+>
   <SectionContent class="items-center">
-    <SectionProse class="text-center" size="lg">
+    <SectionProse class="text-center text-balance" size="lg">
       <slot />
     </SectionProse>
     <SectionActions class="justify-center">
       {
         links?.map(({ icon, text, ...button }, i) => (
           <Button
-            variant={i === 0 ? "default" : "outline"}
+            variant={i === 0 ? "default" : "secondary"}
             size="lg"
             {...button}
           >
@@ -51,12 +53,7 @@ const { class: className, id, subtitle, links, image } = Astro.props
       }
     </SectionActions>
   </SectionContent>
-  <SectionProse
-    class="absolute bottom-0 z-10 flex translate-y-1/2 justify-center text-center"
-  >
-    {subtitle && <h2>{subtitle}</h2>}
-  </SectionProse>
-  <SectionMedia class="absolute inset-0 size-full opacity-50">
-    <Image {...image} />
+  <SectionMedia class="absolute inset-0 rounded-none bg-white dark:bg-black">
+    <Image class="opacity-50" {...image} />
   </SectionMedia>
 </Section>

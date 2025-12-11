@@ -1,92 +1,49 @@
 ---
 import { cn } from "@/lib/utils"
-import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { Image } from "@/components/ui/image"
 import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-} from "@/components/ui/item"
-import { Rating } from "@/components/ui/rating"
-import {
   Section,
   SectionActions,
   SectionContent,
-  SectionGrid,
   SectionMedia,
   SectionProse,
 } from "@/components/ui/section"
-import {
-  Tile,
-  TileContent,
-  TileDescription,
-  TileMedia,
-  TileTitle,
-} from "@/components/ui/tile"
 
 interface Props {
   class?: string
   id?: string
   list?: string[]
-  links?: {
-    icon?: string
+  link?: {
     text?: string
     href?: string
+    icon?: string
+    target?: string
+  }
+  links?: {
+    text?: string
+    href?: string
+    icon?: string
     target?: string
   }[]
   image?: {
     src: string
     alt: string
-    title?: string
   }
-  item?: {
-    images?: {
-      src: string
-      alt: string
-    }[]
-    rating?: number
-    description?: string
-  }
-  items?: {
-    title?: string
-    description?: string
-    icon?: string
-    href?: string
-    links?: {
-      icon?: string
-      text?: string
-      href?: string
-      target?: string
-    }[]
-  }[]
 }
 
-const { class: className, id, links, image, item, items } = Astro.props
+const { class: className, id, links, image, link } = Astro.props
 ---
 
 <Section class={cn("", className)} id={id}>
   <SectionContent class="items-center">
-    <Item class="-m-4">
-      <ItemMedia class="-space-x-4">
-        {
-          item?.images?.map((image) => (
-            <Avatar class="ring-background size-10 ring-2">
-              <AvatarImage {...image} />
-            </Avatar>
-          ))
-        }
-      </ItemMedia>
-      <ItemContent>
-        <Rating rating={item?.rating} />
-        <ItemDescription>
-          {item?.description}
-        </ItemDescription>
-      </ItemContent>
-    </Item>
-    <SectionProse class="text-center" size="lg">
+    <Badge variant="secondary" {...link}>
+      {link?.text}
+      {link?.href && <Icon name={link?.icon} />}
+    </Badge>
+    <SectionProse class="text-center text-balance" size="lg">
       <slot />
     </SectionProse>
     <SectionActions class="justify-center">
@@ -107,25 +64,4 @@ const { class: className, id, links, image, item, items } = Astro.props
   <SectionMedia>
     <Image {...image} />
   </SectionMedia>
-  <SectionGrid>
-    {
-      items?.map(({ title, description, icon, links, href }) => (
-        <Tile href={href} class="items-center">
-          <TileMedia variant="icon">
-            <Icon name={icon} />
-          </TileMedia>
-          <TileContent class="items-center text-center">
-            <TileTitle>{title}</TileTitle>
-            <TileDescription>{description}</TileDescription>
-            {links?.map(({ icon, text, href, target }) => (
-              <Button class="-mx-4" variant="link" href={href} target={target}>
-                {icon && <Icon name={icon} />}
-                {text}
-              </Button>
-            ))}
-          </TileContent>
-        </Tile>
-      ))
-    }
-  </SectionGrid>
 </Section>

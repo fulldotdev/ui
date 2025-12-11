@@ -1,16 +1,19 @@
 ---
 block: blocks-1
 name: Lorem ipsum
-title: Lorem ipsum dolor sit amet
+link:
+  text: Lorem ipsum dolor sit amet
+  href: "#"
+  icon: arrow-up-right
+  target: "_blank"
+title: Lorem ipsum dolor sit amet consectetur adipisicing elit
 subtitle: Lorem ipsum dolor sit amet
 description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
 links:
+  - text: Click me now
+    href: "#"
   - text: Click me
     href: "#"
-    icon: circle
-  - text: Click me
-    href: "#"
-    icon: circle
 image:
   src: ../../assets/example.jpg
   alt: Review 1
@@ -20,7 +23,7 @@ list:
   - Experience seamless integration across all platforms
   - Unlock unlimited potential for your
 html: |
-  <h2>Lorem ipsum dolor sit amet</h2>
+  <h2>Lorem ipsum dolor sit amet consectetur adipisicing elit</h2>
   <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 menus:
   - text: Click me
@@ -85,8 +88,8 @@ form:
 item:
   href: "#"
   title: Lorem ipsum
-  description: Lorem
-  tagline: Lorem
+  description: Lorem ipsum
+  tagline: Lorem ipsum
   icon: user
   rating: 5
   image:
