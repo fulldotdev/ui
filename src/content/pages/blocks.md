@@ -1,250 +1,59 @@
 ---
-block: blocks-1
-name: Lorem ipsum
-link:
-  text: Lorem ipsum dolor sit amet
-  href: "#"
-  icon: arrow-up-right
-  target: "_blank"
-title: Lorem ipsum dolor sit amet consectetur adipisicing elit
-subtitle: Lorem ipsum dolor sit amet
-description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-links:
-  - text: Click me now
-    href: "#"
-  - text: Click me
-    href: "#"
-image:
-  src: ../../assets/example.jpg
-  alt: Review 1
-list:
-  - Discover innovative solutions tailored to your needs
-  - Enhance productivity with our comprehensive
-  - Experience seamless integration across all platforms
-  - Unlock unlimited potential for your
-html: |
-  <h2>Lorem ipsum dolor sit amet consectetur adipisicing elit</h2>
-  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-menus:
-  - text: Click me
-    href: "#"
-    links:
-      - text: Click me
-        href: "#"
-      - text: Click me
-        href: "#"
-      - text: Click me
-        href: "#"
-        icon: circle
-      - text: Click me
-        href: "#"
-        icon: circle
-  - text: Click me
-    href: "#"
-    links:
-      - text: Click me
-        href: "#"
-      - text: Click me
-        href: "#"
-      - text: Click me
-        href: "#"
-        icon: circle
-      - text: Click me
-        href: "#"
-        icon: circle
-  - text: Click me
-    href: "#"
-    links:
-      - text: Click me
-        href: "#"
-      - text: Click me
-        href: "#"
-      - text: Click me
-        href: "#"
-        icon: circle
-      - text: Click me
-        href: "#"
-        icon: circle
-socials:
-  - https://linkedin.com
-  - https://github.com
-form:
-  action: "#"
-  submit: Submit
-  inbox: inbox
-  fields:
-    - type: text
-      name: name
-      label: Name
-      placeholder: Name
-    - type: email
-      name: email
-      label: Email
-      placeholder: Email
-    - type: textarea
-      name: message
-      label: Message
-      placeholder: Message
-item:
-  href: "#"
-  title: Lorem ipsum
-  description: Lorem ipsum
-  tagline: Lorem ipsum
-  icon: user
-  rating: 5
-  image:
-    src: ../../assets/example.jpg
-    alt: Lorem ipsum
-  images:
-    - src: ../../assets/example.jpg
-      alt: Lorem ipsum
-    - src: ../../assets/example.jpg
-      alt: Lorem ipsum
-    - src: ../../assets/example.jpg
-      alt: Lorem ipsum
-items:
-  - href: "#"
-    title: Lorem ipsum
-    description: Lorem ipsum dolor sit amet consectetur adipisicing elit.
-    tagline: Lorem
-    icon: heart
-    links:
-      - text: Lorem ipsum
-        href: "#"
-    rating: 5
-    image:
-      src: ../../assets/example.jpg
-      alt: Lorem ipsum
-    images:
-      - src: ../../assets/example.jpg
-        alt: Lorem ipsum
-      - src: ../../assets/example.jpg
-        alt: Lorem ipsum
-    list:
-      - Lorem ipsum
-      - Lorem ipsum
-      - Lorem ipsum
-    price: $100
-    unit: month
-    video: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+sections:
+  - block: links-1
     html: |
-      <p>Lorem ipsum</p>
-    item:
-      href: "#"
-      title: Lorem ipsum
-      description: Lorem
-      tagline: Lorem
-      icon: user
-      rating: 5
-      image:
-        src: ../../assets/example.jpg
-        alt: Lorem ipsum
-  - href: "#"
-    title: Lorem ipsum
-    description: Lorem ipsum dolor sit amet consectetur adipisicing elit.
-    tagline: Lorem
-    icon: star
+      <h2>Blocks</h2>
+      <p>Here you can find all the blocks available in the library. We are working on adding more blocks.</p>
     links:
-      - text: Lorem ipsum
-        href: "#"
-    rating: 5
-    image:
-      src: ../../assets/example.jpg
-      alt: Lorem ipsum
-    images:
-      - src: ../../assets/example.jpg
-        alt: Lorem ipsum
-      - src: ../../assets/example.jpg
-        alt: Lorem ipsum
-    list:
-      - Lorem ipsum
-      - Lorem ipsum
-      - Lorem ipsum
-    price: $100
-    unit: month
-    video: https://www.youtube.com/watch?v=dQw4w9WgXcQ
-    html: |
-      <p>Lorem ipsum</p>
-    item:
-      href: "#"
-      title: Lorem ipsum
-      description: Lorem
-      tagline: Lorem
-      icon: user
-      rating: 5
-      image:
-        src: ../../assets/example.jpg
-        alt: Lorem ipsum
-  - href: "#"
-    title: Lorem ipsum
-    description: Lorem ipsum dolor sit amet consectetur adipisicing elit.
-    tagline: Lorem
-    icon: heart
-    links:
-      - text: Lorem ipsum
-        href: "#"
-    rating: 5
-    image:
-      src: ../../assets/example.jpg
-      alt: Lorem ipsum
-    images:
-      - src: ../../assets/example.jpg
-        alt: Lorem ipsum
-      - src: ../../assets/example.jpg
-        alt: Lorem ipsum
-    list:
-      - Lorem ipsum
-      - Lorem ipsum
-      - Lorem ipsum
-    price: $100
-    unit: month
-    video: https://www.youtube.com/watch?v=dQw4w9WgXcQ
-    html: |
-      <p>Lorem ipsum</p>
-    item:
-      href: "#"
-      title: Lorem ipsum
-      description: Lorem
-      tagline: Lorem
-      icon: user
-      rating: 5
-      image:
-        src: ../../assets/example.jpg
-        alt: Lorem ipsum
-  - href: "#"
-    title: Lorem ipsum
-    description: Lorem ipsum dolor sit amet consectetur adipisicing elit.
-    tagline: Lorem
-    icon: star
-    links:
-      - text: Lorem ipsum
-        href: "#"
-    rating: 5
-    image:
-      src: ../../assets/example.jpg
-      alt: Lorem ipsum
-    images:
-      - src: ../../assets/example.jpg
-        alt: Lorem ipsum
-      - src: ../../assets/example.jpg
-        alt: Lorem ipsum
-    list:
-      - Lorem ipsum
-      - Lorem ipsum
-      - Lorem ipsum
-    price: $100
-    unit: month
-    video: https://www.youtube.com/watch?v=dQw4w9WgXcQ
-    html: |
-      <p>Lorem ipsum</p>
-    item:
-      href: "#"
-      title: Lorem ipsum
-      description: Lorem
-      tagline: Lorem
-      icon: user
-      rating: 5
-      image:
-        src: ../../assets/example.jpg
-        alt: Lorem ipsum
+      - text: Article
+        href: /blocks/article/
+      - text: Articles
+        href: /blocks/articles/
+      - text: Banner
+        href: /blocks/banner/
+      - text: Contact
+        href: /blocks/contact/
+      - text: Cta
+        href: /blocks/cta/
+      - text: Downloads
+        href: /blocks/downloads/
+      - text: Faqs
+        href: /blocks/faqs/
+      - text: Features
+        href: /blocks/features/
+      - text: Footer
+        href: /blocks/footer/
+      - text: Header
+        href: /blocks/header/
+      - text: Hero
+        href: /blocks/hero/
+      - text: Links
+        href: /blocks/links/
+      - text: Logos
+        href: /blocks/logos/
+      - text: Pricing
+        href: /blocks/pricings/
+      - text: Product
+        href: /blocks/product/
+      - text: Products
+        href: /blocks/products/
+      - text: Reviews
+        href: /blocks/reviews/
+      - text: Services
+        href: /blocks/services/
+      - text: Stats
+        href: /blocks/stats/
+      - text: Steps
+        href: /blocks/steps/
+      - text: Table
+        href: /blocks/table/
+      - text: Tiles
+        href: /blocks/tiles/
+      - text: Video
+        href: /blocks/video/
+      - text: Videos
+        href: /blocks/videos/
+seo:
+  title: Astro Blocks for content-driven websites - fulldev/ui
+  description: fulldev/ui is a complete Astro block library with ready-to-use UI blocks. Build content-driven websites faster with our Astro UI blocks library designed for developers.
 ---

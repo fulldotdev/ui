@@ -1,0 +1,41 @@
+---
+import { cn } from "@/lib/utils"
+import {
+  Section,
+  SectionContent,
+  SectionGrid,
+  SectionProse,
+} from "@/components/ui/section"
+import Block from "@/components/block.astro"
+
+interface Props {
+  class?: string
+  id?: string
+  title?: string
+  description?: string
+  items?: any[]
+}
+
+const { class: className, id, title, description, items } = Astro.props
+---
+
+<Section class={cn("", className)} id={id}>
+  <SectionContent>
+    <SectionProse>
+      {title && <h1>{title}</h1>}
+      {description && <p>{description}</p>}
+    </SectionProse>
+  </SectionContent>
+  <SectionGrid class="grid-cols-1 sm:grid-cols-1 @5xl:grid-cols-2">
+    {
+      items?.map(({ block, href, ...props }) => (
+        <div class="group relative aspect-3/2 overflow-hidden rounded-lg border">
+          <div class="@container w-[200%] origin-top-left scale-50 transition-opacity duration-300 group-hover:opacity-75">
+            <Block block={block} {...props} />
+          </div>
+          <a href={href} class="absolute inset-0 size-full" />
+        </div>
+      ))
+    }
+  </SectionGrid>
+</Section>

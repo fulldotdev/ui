@@ -21,8 +21,12 @@ const pages = await getCollection("pages")
 // Get a single reference by file path
 async function getRef(value: string) {
   const entry = pages.find((page) => `/${page.filePath}` === value)
+  const layout = entry?.data?.layout
+    ? await getEntry("layouts", entry?.data?.layout)
+    : undefined
   if (!entry) return
   return {
+    ...layout?.data,
     href: getHref(entry),
     ...entry.data,
   }
