@@ -14,5 +14,4 @@ refs:
   - /src/content/pages/blocks/hero-9.md
   - /src/content/pages/blocks/hero-10.md
   - /src/content/pages/blocks/hero-11.md
-  - /src/content/pages/blocks/hero-12.md
 ---
