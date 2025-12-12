@@ -1,5 +1,9 @@
 ---
+import fs from "fs"
+
 import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
 import {
   Section,
   SectionContent,
@@ -8,9 +12,6 @@ import {
   SectionSpread,
 } from "@/components/ui/section"
 import Block from "@/components/block.astro"
-
-import { Badge } from "../ui/badge"
-import { Tabs } from "../ui/tabs"
 
 interface Props {
   class?: string
@@ -34,19 +35,55 @@ const { class: className, id, title, description, items } = Astro.props
   </SectionSpread>
   <SectionGrid class="grid-cols-1 sm:grid-cols-1 @6xl:grid-cols-2">
     {
-      items?.map(({ block, href, ...props }) => (
-        <div class="group relative aspect-video overflow-hidden rounded-lg border">
-          <div class="@container w-[400%] origin-top-left scale-25 transition-opacity group-hover:opacity-50 @xl:w-[200%] @xl:scale-50">
-            <Block block={block} {...props} />
+      items?.map(({ block, href, ...props }) => {
+        const fileContent = fs.readFileSync(
+          `src/components/blocks/${block}.astro`,
+          "utf8"
+        )
+        return (
+          <div class="group relative aspect-video overflow-hidden rounded-lg border">
+            <div class="bg-background @container h-full w-[400%] origin-top-left scale-25 @xl:w-[200%] @xl:scale-50">
+              <Block block={block} {...props} />
+            </div>
+            <div class="bg-background absolute bottom-0 left-0 hidden w-full items-center justify-between border-t p-4 text-sm shadow-lg group-hover:flex">
+              <h3 class="text-sm font-medium">{block}</h3>
+              <div class="flex gap-2">
+                <Button
+                  class="copy"
+                  variant="outline"
+                  size="sm"
+                  data-copy={fileContent}
+                >
+                  <Icon name="copy" class="[&:is(.copied_&)]:hidden" />
+                  <Icon name="check" class="hidden [&:is(.copied_&)]:block" />
+                  Copy code
+                </Button>
+                <Button
+                  class="copy"
+                  variant="outline"
+                  size="sm"
+                  data-copy={`npx shadcn add ${block}`}
+                >
+                  <Icon name="terminal" class="[&:is(.copied_&)]:hidden" />
+                  <Icon name="check" class="hidden [&:is(.copied_&)]:block" />
+                  npx shadcn add
+                </Button>
+              </div>
+            </div>
           </div>
-          <a
-            href={href}
-            class="absolute inset-0 flex size-full items-end p-4 text-sm opacity-25 transition-opacity group-hover:opacity-100"
-          >
-            <Badge variant="secondary">{block}</Badge>
-          </a>
-        </div>
-      ))
+        )
+      })
     }
   </SectionGrid>
 </Section>
+
+<script>
+  const buttons = document.querySelectorAll("button.copy")
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const copy = button.getAttribute("data-copy") || ""
+      navigator.clipboard.writeText(copy)
+      button.classList.add("copied")
+    })
+  })
+</script>
