@@ -8,7 +8,7 @@ sections:
       <p>Vanilla Astro components with no framework dependencies - Shadcn/ui compatible - content-first components like section, tile and prose.</p>
     links:
       - text: View Components
-        href: /components/
+        href: /docs/components/
       - text: View Blocks
         href: /blocks/
   - block: features-2

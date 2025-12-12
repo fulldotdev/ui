@@ -105,9 +105,11 @@ export default defineConfig({
       ],
       customCss: [
         "./src/styles/global.css",
-        "@fontsource/geist/400.css",
-        "@fontsource/geist/500.css",
-        "@fontsource/geist/600.css",
+        "@fontsource/Inter/400.css",
+        "@fontsource/Inter/500.css",
+        "@fontsource/Inter/600.css",
+        "@fontsource/Inter/700.css",
+        "@fontsource/Inter/800.css",
       ],
       components: {
         SiteTitle: "/src/components/starlight-title.astro",
