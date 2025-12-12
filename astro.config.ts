@@ -112,6 +112,7 @@ export default defineConfig({
       components: {
         SiteTitle: "/src/components/starlight-title.astro",
         ThemeSelect: "/src/components/starlight-icons.astro",
+        MarkdownContent: "/src/components/starlight-markdown-content.astro",
       },
     }),
     liveCode({

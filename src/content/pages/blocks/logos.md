@@ -1,0 +1,7 @@
+---
+block: blocks-2
+title: Logos
+description: Here you can find all the logos blocks available in the library.
+refs:
+  - /src/content/pages/blocks/logos-1.md
+---
