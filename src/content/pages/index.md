@@ -11,6 +11,17 @@ sections:
         href: /docs/components/
       - text: View Blocks
         href: /blocks/
+  - block: blocks-4
+    refs:
+      - /src/content/pages/blocks/hero-4.md
+      - /src/content/pages/blocks/features-3.md
+      - /src/content/pages/blocks/products-2.md
+      - /src/content/pages/blocks/stats-2.md
+      - /src/content/pages/blocks/logos-1.md
+      - /src/content/pages/blocks/articles-1.md
+      - /src/content/pages/blocks/reviews-1.md
+      - /src/content/pages/blocks/faqs-2.md
+      - /src/content/pages/blocks/services-1.md
   - block: features-2
     items:
       - title: Built for developers
