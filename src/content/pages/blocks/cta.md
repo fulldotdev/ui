@@ -10,5 +10,4 @@ refs:
   - /src/content/pages/blocks/cta-5.md
   - /src/content/pages/blocks/cta-6.md
   - /src/content/pages/blocks/cta-7.md
-  - /src/content/pages/blocks/cta-8.md
 ---

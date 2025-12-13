@@ -1,7 +1,15 @@
 ---
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { Image } from "@/components/ui/image"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+} from "@/components/ui/item"
+import { Rating } from "@/components/ui/rating"
 import {
   Section,
   SectionActions,
@@ -24,9 +32,17 @@ interface Props {
     src: string
     alt: string
   }
+  item?: {
+    images?: {
+      src: string
+      alt: string
+    }[]
+    rating?: number
+    description?: string
+  }
 }
 
-const { class: className, id, links, image } = Astro.props
+const { class: className, id, links, image, item } = Astro.props
 ---
 
 <Section class={className} id={id} variant="floating">
@@ -47,6 +63,23 @@ const { class: className, id, links, image } = Astro.props
           ))
         }
       </SectionActions>
+      <Item class="p-0">
+        <ItemMedia class="-space-x-5">
+          {
+            item?.images?.map((image) => (
+              <Avatar class="ring-background size-11 ring">
+                <AvatarImage {...image} />
+              </Avatar>
+            ))
+          }
+        </ItemMedia>
+        <ItemContent class="mt-1">
+          <Rating rating={item?.rating} />
+          <ItemDescription class="text-foreground">
+            {item?.description}
+          </ItemDescription>
+        </ItemContent>
+      </Item>
     </SectionContent>
   </SectionSpread>
   <SectionMedia class="absolute inset-0 size-full opacity-50">
