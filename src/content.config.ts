@@ -3,7 +3,7 @@ import { docsSchema } from "@astrojs/starlight/schema"
 import { defineCollection } from "astro:content"
 import { glob } from "astro/loaders"
 
-import { block, page } from "@/lib/schemas"
+import { page } from "@/lib/schemas"
 
 export const collections = {
   pages: defineCollection({
