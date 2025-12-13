@@ -6,7 +6,9 @@ import { cn } from "@/lib/utils"
 
 interface Props
   extends HTMLAttributes<"section">,
-    VariantProps<typeof variants> {}
+    VariantProps<typeof variants> {
+  size?: "sm" | "default" | "lg"
+}
 
 const variants = cva(
   "relative mx-auto flex scroll-m-(--section-py) flex-col gap-16 px-(--section-px) py-(--section-py)",
@@ -19,14 +21,6 @@ const variants = cva(
           "w-[calc(100%-2*var(--gutter))] max-w-(--section-width)",
           "my-(--section-py) overflow-hidden rounded-xl first:mt-2",
         ],
-        muted: "bg-muted/50 border-transparent",
-        outline: "border-border bg-background border",
-        accent: "bg-accent/50 border-transparent",
-      },
-      size: {
-        sm: "",
-        default: "",
-        lg: "",
       },
     },
     defaultVariants: {
@@ -45,8 +39,8 @@ const slot = await Astro.slots.render("default")
     <section
       class={cn(variants({ variant }), className)}
       data-slot="section"
-      data-size={size}
       data-variant={variant}
+      data-size={size}
       {...props}
     >
       <Fragment set:html={slot} />
@@ -55,7 +49,6 @@ const slot = await Astro.slots.render("default")
 }
 
 <style is:global>
-  /* Section width and padding for inset calculations */
   [data-slot="section"] {
     --section-width: var(--container);
     --section-py: calc(var(--spacing) * 12);

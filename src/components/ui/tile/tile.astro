@@ -9,30 +9,23 @@ type Props = VariantProps<typeof variants> &
   HTMLAttributes<"a">
 
 const variants = cva(
-  [
-    "group/tile focus-visible:border-ring focus-visible:ring-ring/50 relative flex flex-col items-start gap-6 outline-none focus-visible:ring-[3px] [a]:transition-all",
-  ],
+  "group/tile focus-visible:border-ring focus-visible:ring-ring/50 relative flex flex-col items-start gap-6 outline-none focus-visible:ring-[3px] [a]:transition-all",
   {
     variants: {
-      frame: {
-        default: "bg-transparent",
-        panel:
-          "bg-card text-card-foreground [a]:hover:bg-accent/50 overflow-hidden rounded-md border p-6 duration-100",
-      },
       variant: {
-        default: "",
-        outline: "border-border border bg-transparent",
-        muted: "bg-muted/50 border-0",
+        default:
+          "[a]:hover:bg-accent/50 [a]:hover:ring-accent/50 rounded-sm bg-transparent [a]:hover:ring-12",
+        floating:
+          "bg-card text-card-foreground [a]:hover:bg-accent/50 overflow-hidden rounded-md border p-6 duration-100",
       },
     },
     defaultVariants: {
-      frame: "default",
       variant: "default",
     },
   }
 )
 
-const { class: className, variant, frame, href, ...props } = Astro.props
+const { class: className, variant, href, ...props } = Astro.props
 
 const slot = await Astro.slots.render("default")
 
@@ -44,8 +37,7 @@ const Comp = href ? "a" : "div"
     <Comp
       data-slot="tile"
       data-variant={variant}
-      data-frame={frame}
-      class={cn(variants({ variant, frame }), className)}
+      class={cn(variants({ variant }), className)}
       href={href}
       {...props}
     >
@@ -59,7 +51,7 @@ const Comp = href ? "a" : "div"
     --tile-padding: 0px;
   }
 
-  [data-slot="tile"][data-frame="panel"] {
+  [data-slot="tile"][data-variant="floating"] {
     --tile-padding: 24px;
   }
 </style>

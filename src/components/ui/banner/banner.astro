@@ -9,44 +9,25 @@ interface Props
     VariantProps<typeof variants> {}
 
 const variants = cva(
-  [
-    "relative mx-auto flex min-h-12 items-center justify-between gap-8 py-1",
-    "border border-transparent",
-  ],
+  "relative mx-auto flex min-h-12 items-center justify-between gap-8 py-1 px-(--banner-px) border border-transparent",
   {
     variants: {
-      frame: {
-        // Filled on every screen, with content width based on padding
-        default: [
-          "bg-foreground text-background w-full px-[max(var(--gutter),calc((100cqw-var(--banner-width))/2))]",
-        ],
-        // Contained on every screen, with a border and padding for box effect
-        box: [
-          "w-[calc(100%-2*var(--gutter))] max-w-(--banner-width)",
-          "overflow-hidden",
-          "border-border bg-foreground text-background border",
-        ],
-        // Contained on every screen, with a border, padding and rounded corners for panel effect
-        panel: [
-          "w-[calc(100%-2*var(--gutter))] max-w-(--banner-width)",
-          "my-2 overflow-hidden rounded-xl",
-          "bg-foreground text-background border-border border",
-        ],
-      },
       variant: {
-        default: "",
-        secondary: "bg-secondary text-secondary-foreground",
-        outline: "border-border bg-background text-foreground border",
+        default: "bg-foreground text-background w-full",
+        floating: [
+          "bg-foreground text-background rounded-xl shadow-sm",
+          "w-[calc(100%-2*var(--gutter))] max-w-(--banner-width)",
+          "my-2 overflow-hidden rounded-xl border-border border",
+        ],
       },
     },
     defaultVariants: {
-      frame: "default",
       variant: "default",
     },
   }
 )
 
-const { class: className, frame, variant, ...props } = Astro.props
+const { class: className, variant, ...props } = Astro.props
 
 const slot = await Astro.slots.render("default")
 ---
@@ -63,9 +44,9 @@ const slot = await Astro.slots.render("default")
 {
   slot?.trim().length > 0 && (
     <banner
-      class={cn(variants({ frame, variant }), className)}
+      class={cn(variants({ variant }), className)}
       data-slot="banner"
-      data-frame={frame}
+      data-variant={variant}
       {...props}
     >
       <Fragment set:html={slot} />
@@ -89,5 +70,16 @@ const slot = await Astro.slots.render("default")
 
   [data-slot="banner"] {
     --banner-width: var(--container);
+    --banner-px: max(var(--gutter), calc((100cqw - var(--banner-width)) / 2));
+  }
+
+  [data-slot="banner"][data-variant="floating"] {
+    --banner-px: calc(var(--spacing) * 6);
+  }
+
+  @media (min-width: 1024px) {
+    [data-slot="banner"][data-variant="floating"] {
+      --banner-px: calc(var(--spacing) * 16);
+    }
   }
 </style>

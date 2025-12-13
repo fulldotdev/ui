@@ -12,37 +12,22 @@ const variants = cva(
   "relative mx-auto flex scroll-m-(--footer-py) flex-col gap-16 px-(--footer-px) py-(--footer-py)",
   {
     variants: {
-      frame: {
-        // Filled on every screen, with content width based on padding
-        default: ["w-full"],
-        // Contained on every screen, with a border and padding for box effect
-        box: [
-          "w-[calc(100%-2*var(--gutter))] max-w-(--footer-width)",
-          "overflow-hidden",
-          "bg-muted/50 border-border border",
-        ],
-        // Contained on every screen, with a border, padding and rounded corners for panel effect
-        panel: [
+      variant: {
+        default: "bg-background w-full",
+        floating: [
+          "bg-background rounded-lg border shadow-sm",
           "w-[calc(100%-2*var(--gutter))] max-w-(--footer-width)",
           "my-(--footer-py) overflow-hidden rounded-xl first:mt-2",
-          "bg-muted/50 border-border border",
         ],
-      },
-      variant: {
-        default: "",
-        muted: "bg-muted/50 border-transparent",
-        outline: "border-border bg-background border",
-        accent: "bg-accent/50 border-transparent",
       },
     },
     defaultVariants: {
-      frame: "default",
       variant: "default",
     },
   }
 )
 
-const { class: className, frame, variant, ...props } = Astro.props
+const { class: className, variant, ...props } = Astro.props
 
 const slot = await Astro.slots.render("default")
 ---
@@ -50,9 +35,9 @@ const slot = await Astro.slots.render("default")
 {
   slot?.trim().length > 0 && (
     <footer
-      class={cn(variants({ frame, variant }), className)}
+      class={cn(variants({ variant }), className)}
       data-slot="footer"
-      data-frame={frame}
+      data-variant={variant}
       {...props}
     >
       <Fragment set:html={slot} />
@@ -61,16 +46,14 @@ const slot = await Astro.slots.render("default")
 }
 
 <style is:global>
-  /* footer width and padding for inset calculations */
   [data-slot="footer"] {
     --footer-width: var(--container);
     --footer-py: calc(var(--spacing) * 12);
     --footer-px: max(var(--gutter), calc((100cqw - var(--footer-width)) / 2));
   }
 
-  [data-slot="footer"][data-frame="box"],
-  [data-slot="footer"][data-frame="panel"] {
-    --footer-px: calc(var(--spacing) * 4);
+  [data-slot="footer"][data-variant="floating"] {
+    --footer-px: calc(var(--spacing) * 6);
   }
 
   @media (min-width: 1024px) {
@@ -78,10 +61,7 @@ const slot = await Astro.slots.render("default")
       --footer-py: calc(var(--spacing) * 16);
     }
 
-    [data-slot="footer"][data-frame="box"],
-    [data-slot="footer"][data-frame="panel"] {
-      /* --footer-py: 48px; */
-      /* --footer-px: 48px; */
+    [data-slot="footer"][data-variant="floating"] {
       --footer-px: calc(var(--spacing) * 16);
     }
   }
