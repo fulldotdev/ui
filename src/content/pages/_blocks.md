@@ -66,8 +66,8 @@ menus:
         href: "#"
         icon: circle
 socials:
-  - https://linkedin.com
-  - https://github.com
+  - https://linkedin.com/in/silveltm
+  - https://github.com/fulldotdev/ui
 form:
   action: "#"
   submit: Submit
