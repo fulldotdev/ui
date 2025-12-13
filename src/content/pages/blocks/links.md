@@ -4,4 +4,7 @@ title: Links
 description: Here you can find all the links blocks available in the library.
 refs:
   - /src/content/pages/blocks/links-1.md
+seo:
+  title: Links blocks - fulldev/ui
+  description: Here you can find all the links blocks available in the library.
 ---

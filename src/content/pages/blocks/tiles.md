@@ -10,4 +10,7 @@ refs:
   - /src/content/pages/blocks/tiles-5.md
   - /src/content/pages/blocks/tiles-6.md
   - /src/content/pages/blocks/tiles-7.md
+seo:
+  title: Tiles blocks - fulldev/ui
+  description: Here you can find all the tiles blocks available in the library.
 ---

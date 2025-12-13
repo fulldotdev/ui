@@ -10,4 +10,8 @@ refs:
   - /src/content/pages/blocks/cta-5.md
   - /src/content/pages/blocks/cta-6.md
   - /src/content/pages/blocks/cta-7.md
+  - /src/content/pages/blocks/cta-8.md
+seo:
+  title: CTA blocks - fulldev/ui
+  description: Here you can find all the CTA blocks available in the library.
 ---
