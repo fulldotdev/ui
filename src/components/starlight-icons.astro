@@ -9,9 +9,14 @@ import { ModeToggle } from "@/components/ui/mode-toggle"
 const layout = await getEntry("layouts", "index")
 
 const socials = layout?.data?.headers?.[1]?.socials
+
+const githubStarCount = (
+  await (await fetch("https://api.github.com/repos/fulldotdev/ui")).json()
+).stargazers_count
 ---
 
 <HeaderActions>
+  <ModeToggle />
   {
     socials?.map((social) => (
       <Button variant="ghost" size="icon-sm" href={social} target="_blank">
@@ -19,5 +24,13 @@ const socials = layout?.data?.headers?.[1]?.socials
       </Button>
     ))
   }
-  <ModeToggle />
+  <Button
+    variant="outline"
+    size="sm"
+    href="https://github.com/fulldotdev/ui"
+    target="_blank"
+  >
+    <Icon name="github" />
+    {githubStarCount}
+  </Button>
 </HeaderActions>
