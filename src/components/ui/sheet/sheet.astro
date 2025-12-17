@@ -12,7 +12,12 @@ const slot = await Astro.slots.render("default")
 
 {
   slot?.trim().length > 0 && (
-    <div data-slot="sheet" class={cn("relative", className)} {...props}>
+    <div
+      class="contents!"
+      data-slot="sheet"
+      class={cn("relative", className)}
+      {...props}
+    >
       <Fragment set:html={slot} />
     </div>
   )
@@ -21,48 +26,26 @@ const slot = await Astro.slots.render("default")
 <script>
   const sheets = document.querySelectorAll("[data-slot='sheet']")
   sheets.forEach((sheet) => {
-    const overlay = sheet.querySelector("[data-slot='sheet-overlay']")
-    const content = sheet.querySelector("[data-slot='sheet-content']")
-    if (!overlay || !content) return
+    const dialog = sheet.querySelector("[data-slot='sheet-dialog']")
+    if (!(dialog instanceof HTMLDialogElement)) return
 
-    const open = () => {
-      overlay.setAttribute("data-state", "open")
-      content.setAttribute("data-state", "open")
-      document.body.style.overflow = "hidden"
-      if (content instanceof HTMLElement) {
-        content.focus()
-      }
-    }
+    // Close on backdrop click
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) dialog.close()
+    })
 
-    const close = () => {
-      overlay.setAttribute("data-state", "closed")
-      content.setAttribute("data-state", "closed")
-      document.body.style.overflow = ""
-    }
-
-    // Open on trigger click
     const triggers = sheet.querySelectorAll("[data-slot='sheet-trigger']")
     triggers.forEach((trigger) => {
-      trigger.addEventListener("click", open)
+      trigger.addEventListener("click", () => {
+        dialog.showModal()
+      })
     })
 
-    // Close on overlay click
-    overlay.addEventListener("click", close)
-
-    // Close on close button click
     const closes = sheet.querySelectorAll("[data-slot='sheet-close']")
-    closes.forEach((closeBtn) => {
-      closeBtn.addEventListener("click", close)
-    })
-
-    // Close on Escape key
-    document.addEventListener("keydown", (event) => {
-      if (
-        event.key === "Escape" &&
-        content.getAttribute("data-state") === "open"
-      ) {
-        close()
-      }
+    closes.forEach((close) => {
+      close.addEventListener("click", () => {
+        dialog.close()
+      })
     })
   })
 </script>

@@ -5,26 +5,37 @@ import XIcon from "lucide-static/icons/x.svg"
 
 import { cn } from "@/lib/utils"
 
-const overlayVariants = cva([
-  "fixed inset-0 z-50 bg-black/50",
-  "pointer-events-none opacity-0 transition-opacity duration-300",
-  "data-[state=open]:pointer-events-auto data-[state=open]:opacity-100",
-])
-
-const contentVariants = cva(
+const dialogVariants = cva(
   [
-    "bg-background fixed z-50 flex flex-col gap-4 shadow-lg",
-    "transition-transform duration-300 ease-in-out",
+    "fixed inset-0 z-50 m-0 max-h-none max-w-none border-0 bg-transparent p-0",
+    "backdrop:bg-black/50",
+    // Added for quick fix over horizontal scroll issue
+    "overflow-x-hidden",
   ],
   {
     variants: {
       side: {
-        right:
-          "inset-y-0 right-0 h-full w-3/4 translate-x-full border-l data-[state=open]:translate-x-0 sm:max-w-sm",
-        left: "inset-y-0 left-0 h-full w-3/4 -translate-x-full border-r data-[state=open]:translate-x-0 sm:max-w-sm",
-        top: "top-0 right-0 left-0 h-auto w-full -translate-y-full border-b data-[state=open]:translate-y-0",
-        bottom:
-          "right-0 bottom-0 left-0 h-auto w-full translate-y-full border-t data-[state=open]:translate-y-0",
+        right: "ml-auto h-full w-3/4 sm:max-w-sm",
+        left: "mr-auto h-full w-3/4 sm:max-w-sm",
+        top: "mb-auto h-auto w-full",
+        bottom: "mt-auto h-auto w-full",
+      },
+    },
+    defaultVariants: {
+      side: "right",
+    },
+  }
+)
+
+const contentVariants = cva(
+  "bg-background flex h-full flex-col gap-4 shadow-lg transition-transform duration-500 ease-in-out",
+  {
+    variants: {
+      side: {
+        right: "translate-x-full border-l",
+        left: "-translate-x-full border-r",
+        top: "-translate-y-full border-b",
+        bottom: "translate-y-full border-t",
       },
     },
     defaultVariants: {
@@ -43,35 +54,29 @@ const { class: className, side, showClose = true, ...props } = Astro.props
 const slot = await Astro.slots.render("default")
 ---
 
-<div
-  data-slot="sheet-overlay"
+<dialog
+  data-slot="sheet-dialog"
   data-side={side}
-  class={cn(overlayVariants())}
-  data-state="closed"
-  aria-hidden="true"
+  class={cn(dialogVariants({ side }))}
 >
-</div>
-<div
-  data-slot="sheet-content"
-  data-side={side}
-  class={cn(contentVariants({ side }), className)}
-  data-state="closed"
-  role="dialog"
-  aria-modal="true"
-  tabindex="-1"
-  {...props}
->
-  {
-    showClose && (
-      <button
-        type="button"
-        data-slot="sheet-close"
-        class="focus-visible:outline-ring text-foreground absolute top-4 right-4 cursor-pointer rounded-sm border-0 bg-transparent opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2"
-        aria-label="Close"
-      >
-        <XIcon class="size-4" />
-      </button>
-    )
-  }
-  <Fragment set:html={slot} />
-</div>
+  <div
+    data-slot="sheet-content"
+    data-side={side}
+    class={cn(contentVariants({ side }), className)}
+    {...props}
+  >
+    {
+      showClose && (
+        <button
+          type="button"
+          data-slot="sheet-close"
+          class="focus-visible:outline-ring text-foreground absolute top-4 right-4 cursor-pointer rounded-sm border-0 bg-transparent opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2"
+          aria-label="Close"
+        >
+          <XIcon class="size-4" />
+        </button>
+      )
+    }
+    <Fragment set:html={slot} />
+  </div>
+</dialog>
