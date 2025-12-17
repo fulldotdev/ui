@@ -1,19 +1,9 @@
 ---
 title: Introduction
-description: Built for internal use at our agency, shared with the community to help others.
 ---
 
-## Why we built it
+In 6 years of running an agency building client projects we built up a nice collection of knowledge and patterns that we wanted to share with the community.
 
-After repeatedly encountering the same challenges in our company's client projects, we decided to build this library. After successfully using it in production websites, we decided to open-source it to help others facing similar problems.
+In this version we decided to make modifications so that fulldev/ui is compatible with shadcn/ui. This makes it more familiar to use and very nice to use with AI agents too!
 
-## Some features
-
-- Built entirely with Astro components
-- Outputs vanilla CSS, html and minimal JavaScript
-- Compatible with all JS frameworks
-- Compatible with Tailwind and Shadcn/ui
-- Integrates with content collections
-- Blocks included, like Hero, CTA and Features
-- Automatically generated pages
-- And more…
+Fulldev/ui is built with vanilla Astro components, without framework dependencies. It uses a similar API to shadcn/ui, but with a focus on content-first components like section, tile and prose. Give it a try and let us know what you think!
