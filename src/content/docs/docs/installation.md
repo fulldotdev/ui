@@ -8,7 +8,7 @@ description: Install and configure fulldev/ui for Astro
 If you don't have a project yet, create one using the following command:
 
 ```bash
-npx create-astro@latest astro-fulldev-ui  --template with-tailwindcss --install --git
+npx create-astro@latest astro-fulldev  --template with-tailwindcss --install --git
 ```
 
 ### Edit tsconfig.json file
