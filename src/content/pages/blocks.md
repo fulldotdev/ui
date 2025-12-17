@@ -15,8 +15,6 @@ sections:
         href: /blocks/contact/
       - text: Cta
         href: /blocks/cta/
-      - text: Downloads
-        href: /blocks/downloads/
       - text: Faqs
         href: /blocks/faqs/
       - text: Features
@@ -39,10 +37,6 @@ sections:
         href: /blocks/products/
       - text: Reviews
         href: /blocks/reviews/
-      - text: Services
-        href: /blocks/services/
-      - text: Stats
-        href: /blocks/stats/
       - text: Steps
         href: /blocks/steps/
       - text: Table

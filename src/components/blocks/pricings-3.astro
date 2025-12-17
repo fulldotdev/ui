@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/section"
 import {
   Tile,
+  TileActions,
   TileContent,
   TileDescription,
   TileTitle,
@@ -31,11 +32,11 @@ interface Props {
     description?: string
     icon?: string
     list?: string[]
-    button?: {
+    links?: {
       text?: string
       href?: string
       target?: string
-    }
+    }[]
     price?: string | number
     unit?: string
   }[]
@@ -45,39 +46,41 @@ const { class: className, id, links, items } = Astro.props
 ---
 
 <Section class={className} id={id}>
-  <SectionContent>
-    <SectionProse>
-      <slot />
-    </SectionProse>
-    <SectionActions>
-      {
-        links?.map(({ icon, text, ...button }, i) => (
-          <Button variant={i === 0 ? "default" : "outline"} {...button}>
-            {icon && <Icon name={icon} />}
-            {text}
-          </Button>
-        ))
-      }
-    </SectionActions>
-  </SectionContent>
+  <SectionProse>
+    <slot />
+  </SectionProse>
   <SectionSpread>
     {
-      items?.map(({ title, description, button, list, price, unit }) => (
-        <Tile>
+      items?.map(({ title, description, links, list, price, unit }) => (
+        <Tile variant="floating">
           <TileContent>
             <TileTitle>{title}</TileTitle>
             <TileDescription>{description}</TileDescription>
             <Price>
-              <PriceValue price={price} />
-              <PriceUnit>{unit}</PriceUnit>
+              <PriceValue class="text-3xl" price={price} />
+              <PriceUnit class="mt-3">{unit}</PriceUnit>
             </Price>
-            <List>
+            <List class="mt-4 text-sm">
               {list?.map((item) => (
-                <ListItem>{item}</ListItem>
+                <ListItem>
+                  <Icon class="-mt-0.5" name="check" />
+                  {item}
+                </ListItem>
               ))}
             </List>
-            <Button class="mt-auto w-full" {...button} />
           </TileContent>
+          <TileActions class="mt-auto w-full">
+            {links?.map(({ text, ...link }, i) => (
+              <Button
+                class="w-full"
+                size="sm"
+                variant={i === 0 ? "default" : "outline"}
+                {...link}
+              >
+                {text}
+              </Button>
+            ))}
+          </TileActions>
         </Tile>
       ))
     }

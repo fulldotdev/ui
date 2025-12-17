@@ -14,6 +14,8 @@ refs:
   - /src/content/pages/blocks/hero-9.md
   - /src/content/pages/blocks/hero-10.md
   - /src/content/pages/blocks/hero-11.md
+  - /src/content/pages/blocks/hero-12.md
+  - /src/content/pages/blocks/hero-13.md
 seo:
   title: Hero blocks - fulldev/ui
   description: Here you can find all the hero blocks available in the library.

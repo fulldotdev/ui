@@ -1,6 +1,6 @@
 ---
 block: hero-7
-layout: block
+layout: hero
 seo:
   title: Hero 7 - fulldev/ui
   description: Here you can find version 7 of all hero blocks.

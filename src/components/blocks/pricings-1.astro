@@ -46,21 +46,9 @@ const { class: className, id, links, items } = Astro.props
 ---
 
 <Section class={className} id={id}>
-  <SectionContent>
-    <SectionProse>
-      <slot />
-    </SectionProse>
-    <SectionActions>
-      {
-        links?.map(({ icon, text, ...button }, i) => (
-          <Button variant={i === 0 ? "default" : "outline"} {...button}>
-            {icon && <Icon name={icon} />}
-            {text}
-          </Button>
-        ))
-      }
-    </SectionActions>
-  </SectionContent>
+  <SectionProse>
+    <slot />
+  </SectionProse>
   <SectionGrid>
     {
       items?.map(({ title, description, links, list, price, unit }) => (
@@ -72,18 +60,23 @@ const { class: className, id, links, items } = Astro.props
               <PriceValue price={price} />
               <PriceUnit>{unit}</PriceUnit>
             </Price>
-            <List class="mt-4">
+            <List class="mt-4 text-sm">
               {list?.map((item) => (
                 <ListItem>
-                  <Icon name="check" />
+                  <Icon class="-mt-0.5" name="check" />
                   {item}
                 </ListItem>
               ))}
             </List>
           </TileContent>
-          <TileActions class="w-full">
-            {links?.map(({ text, href, target }) => (
-              <Button class="w-full" href={href} target={target}>
+          <TileActions class="mt-auto w-full">
+            {links?.map(({ text, ...link }, i) => (
+              <Button
+                class="w-full"
+                size="sm"
+                variant={i === 0 ? "default" : "outline"}
+                {...link}
+              >
                 {text}
               </Button>
             ))}
