@@ -32,7 +32,7 @@ Add the following code to the `tsconfig.json` file to resolve paths:
 
 ### Run the CLI
 
-As this project is distrubuted as a shadcn registry, run the `shadcn` init command to setup your project:
+As this project is distributed as a shadcn registry, run the `shadcn` init command to setup your project:
 
 ```bash
 npx shadcn@latest init

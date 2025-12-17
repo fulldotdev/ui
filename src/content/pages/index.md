@@ -25,13 +25,13 @@ sections:
   - block: features-5
     items:
       - title: Built for developers
-        description: Work in the framework you know and love, het performance benefits of Astro out of the box.
+        description: Work in the framework you know and love, get performance benefits of Astro out of the box.
         icon: code
       - title: Built for content
         description: Integrates seamlessly with Astro content collections, which works great with AI agents.
         icon: file-text
       - title: Built for agents
-        description: Because we use the same API as shadcn/ui, AI agent understand how to use it.
+        description: Because we use the same API as shadcn/ui, AI agents understand how to use it.
         icon: rocket
   - block: content-5
     html: |
