@@ -35,7 +35,7 @@ sections:
         icon: rocket
   - block: content-5
     html: |
-      <h2>Complete Astro UI component library</h2>
+      <h2>Complete Astro UI <strong>components library</strong></h2>
       <p>fulldev/ui is an Astro component library built with vanilla Astro and zero framework dependencies. Our Astro UI components are fully compatible with shadcn/ui design patterns and work seamlessly with Astro content collections—perfect for building content-driven websites.</p>
     links:
       - text: View Components
@@ -45,7 +45,7 @@ sections:
       alt: Astro UI Components
   - block: content-6
     html: |
-      <h2>Ready-to-use Astro blocks for content-driven sites</h2>
+      <h2>Prebuilt Astro <strong>content blocks</strong></h2>
       <p>Skip the repetitive work. Our library of Astro blocks includes ready-to-use sections like heroes, testimonials, pricing tables, and call-to-actions. Designed for content-first websites, these pre-built Astro blocks help you scaffold complex layouts faster while maintaining design consistency.</p>
     links:
       - text: View Blocks
@@ -56,7 +56,7 @@ sections:
   - block: cta-8
     html: |
       <h2><strong>Free and open-source</strong> Astro UI component library</h2>
-      <p>Everything you need to build stunning content-driven websites with zero framework dependencies—production-ready Astro components, pre-built blocks, and full shadcn/ui compatibility.</p>
+      <p>Everything you need to build stunning content-driven websites with zero framework dependencies. Complete Astro components, pre-built blocks, and shadcn/ui compatibility.</p>
     links:
       - text: View Components
         href: /docs/components/
