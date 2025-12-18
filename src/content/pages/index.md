@@ -41,7 +41,7 @@ sections:
       - text: View Components
         href: /docs/components/
     image:
-      src: ../../assets/my-accordion-code-example-homepage.astro.png
+      src: ../../assets/my-accordion-code-example-homepage.astro.webp
       alt: Astro UI Components
   - block: content-6
     html: |
@@ -51,7 +51,7 @@ sections:
       - text: View Blocks
         href: /blocks/
     image:
-      src: ../../assets/my-cta-code-example-homepage.astro.png
+      src: ../../assets/my-cta-code-example-homepage.astro.webp
       alt: Astro Blocks
   - block: cta-8
     html: |
