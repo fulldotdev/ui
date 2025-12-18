@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-toggle",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "src/components/ui/theme-toggle/theme-toggle.astro",
+      "content": "---\nimport { cn } from \"@/lib/utils\"\nimport { Button } from \"@/components/ui/button\"\nimport { Icon } from \"@/components/ui/icon\"\n\ninterface Props {\n  class?: string\n}\n\nconst { class: className } = Astro.props\n---\n\n{/* This is intentionally inlined to avoid FOUC. */}\n<script is:inline>\n  if (!window.__themeInitialized) {\n    window.__themeInitialized = true\n\n    const getThemePreference = () => {\n      if (\n        typeof localStorage !== \"undefined\" &&\n        localStorage.getItem(\"theme\")\n      ) {\n        return localStorage.getItem(\"theme\")\n      }\n      return window.matchMedia(\"(prefers-color-scheme: dark)\").matches\n        ? \"dark\"\n        : \"light\"\n    }\n    const isDark = getThemePreference() === \"dark\"\n    document.documentElement.classList[isDark ? \"add\" : \"remove\"](\"dark\")\n    document.documentElement.setAttribute(\n      \"data-theme\",\n      isDark ? \"dark\" : \"light\"\n    )\n\n    if (typeof localStorage !== \"undefined\") {\n      const observer = new MutationObserver(() => {\n        const isDark = document.documentElement.classList.contains(\"dark\")\n        localStorage.setItem(\"theme\", isDark ? \"dark\" : \"light\")\n        document.documentElement.setAttribute(\n          \"data-theme\",\n          isDark ? \"dark\" : \"light\"\n        )\n      })\n      observer.observe(document.documentElement, {\n        attributes: true,\n        attributeFilter: [\"class\"],\n      })\n    }\n  }\n</script>\n\n<Button\n  data-slot=\"theme-toggle\"\n  variant=\"ghost\"\n  size=\"icon-sm\"\n  aria-label=\"Toggle theme\"\n  class={cn(\"relative\", className)}\n>\n  <Icon name=\"sun\" class=\"dark:hidden [&:is([data-theme=dark]_&)]:hidden\" />\n  <Icon\n    name=\"moon\"\n    class=\"hidden dark:block [&:is([data-theme=dark]_&)]:block\"\n  />\n</Button>\n\n<style>\n  :global(html.no-transitions *) {\n    @apply !transition-none !duration-0;\n  }\n</style>\n\n<script>\n  document.querySelectorAll(\"[data-slot='theme-toggle']\").forEach((toggle) => {\n    toggle.addEventListener(\"click\", () => {\n      const html = document.documentElement\n      html.classList.add(\"no-transitions\")\n      html.classList.toggle(\"dark\")\n\n      const isDark = html.classList.contains(\"dark\")\n      html.setAttribute(\"data-theme\", isDark ? \"dark\" : \"light\")\n\n      requestAnimationFrame(() => {\n        html.classList.remove(\"no-transitions\")\n      })\n    })\n  })\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/theme-toggle/index.ts",
+      "content": "export { default as ThemeToggle } from \"./theme-toggle.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}

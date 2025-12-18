@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "price",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "src/components/ui/price/price.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      class={cn(\"flex flex-wrap items-center gap-x-2\", className)}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/price/price-unit.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"span\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <span\n      class={cn(\"text-muted-foreground text-sm leading-tight\", className)}\n      {...props}\n    >\n      / <Fragment set:html={slot} />\n    </span>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/price/price-value.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends VariantProps<typeof variants>, HTMLAttributes<\"span\"> {\n  price?: number | string\n  currency?: string\n  locale?: string\n  variant?: \"default\" | \"sale\"\n}\n\nconst variants = cva(\"leading-tight\", {\n  variants: {\n    variant: {\n      default: \"text-foreground\",\n      sale: \"text-muted-foreground line-through\",\n    },\n  },\n})\n\nconst {\n  class: className,\n  price,\n  currency = \"USD\",\n  locale = \"en-US\",\n  variant = \"default\",\n  ...props\n} = Astro.props\n\n// Format price with currency only if it's a number\nconst formattedPrice =\n  typeof price === \"number\"\n    ? new Intl.NumberFormat(locale, {\n        style: \"currency\",\n        currency: currency,\n      }).format(price)\n    : price\n---\n\n{\n  price && (\n    <span class={cn(variants({ variant }), className)} {...props}>\n      {formattedPrice}\n    </span>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/price/index.ts",
+      "content": "export { default as Price } from \"./price.astro\"\nexport { default as PriceUnit } from \"./price-unit.astro\"\nexport { default as PriceValue } from \"./price-value.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}

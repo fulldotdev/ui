@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "header",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "src/components/ui/header/header.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props\n  extends HTMLAttributes<\"header\">,\n    VariantProps<typeof variants> {}\n\nconst variants = cva(\n  \"relative top-0 z-50 mx-auto flex h-(--header-height) items-center justify-between gap-8 border-b border-transparent px-(--header-px) py-4\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-background sticky w-full\",\n        floating: [\n          \"w-[calc(100%-2*var(--gutter))] max-w-(--header-width)\",\n          \"top-2 mt-2 h-[calc(var(--header-height)-var(--spacing)*2)] overflow-hidden rounded-xl\",\n          \"bg-background border-border sticky border\",\n        ],\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n    },\n  }\n)\n\nconst { class: className, variant, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <header\n      class={cn(variants({ variant }), className)}\n      data-slot=\"header\"\n      data-variant={variant}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </header>\n  )\n}\n\n<style is:global>\n  [data-slot=\"header\"] {\n    --header-width: var(--container);\n    --header-px: max(var(--gutter), calc((100cqw - var(--header-width)) / 2));\n  }\n\n  [data-slot=\"header\"][data-variant=\"floating\"] {\n    --header-px: calc(var(--spacing) * 6);\n  }\n\n  :root:has([data-slot=\"header\"]) {\n    --header-height: calc(var(--spacing) * 16);\n  }\n\n  @media (min-width: 1024px) {\n    [data-slot=\"header\"][data-variant=\"floating\"] {\n      --header-px: calc(var(--spacing) * 16);\n    }\n  }\n</style>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/header/header-actions.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div class={cn(\"flex items-center gap-2\", className)} {...props}>\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/header/header-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      class={cn(\"mx-auto flex w-full max-w-screen-xl gap-8 py-3\", className)}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/header/index.ts",
+      "content": "export { default as Header } from \"./header.astro\"\nexport { default as HeaderActions } from \"./header-actions.astro\"\nexport { default as HeaderContent } from \"./header-content.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}

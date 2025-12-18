@@ -1,0 +1,62 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "field",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "src/components/ui/field/field.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\">, VariantProps<typeof variants> {}\n\nconst variants = cva(\n  \"group/field data-[invalid=true]:text-destructive flex w-full gap-3\",\n  {\n    variants: {\n      orientation: {\n        vertical: [\"flex-col [&>*]:w-full [&>.sr-only]:w-auto\"],\n        horizontal: [\n          \"flex-row items-center\",\n          \"[&>[data-slot=field-label]]:flex-auto\",\n          \"has-[>[data-slot=field-content]]:items-start has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px\",\n        ],\n        responsive: [\n          \"flex-col @md/field-group:flex-row @md/field-group:items-center [&>*]:w-full @md/field-group:[&>*]:w-auto [&>.sr-only]:w-auto\",\n          \"@md/field-group:[&>[data-slot=field-label]]:flex-auto\",\n          \"@md/field-group:has-[>[data-slot=field-content]]:items-start @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px\",\n        ],\n      },\n    },\n    defaultVariants: {\n      orientation: \"vertical\",\n    },\n  }\n)\n\nconst { class: className, orientation = \"vertical\", ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      role=\"group\"\n      data-slot=\"field\"\n      data-orientation={orientation}\n      class={cn(variants({ orientation }), className)}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/field/field-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      data-slot=\"field-content\"\n      class={cn(\n        \"group/field-content flex flex-1 flex-col gap-1.5 leading-snug\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/field/field-description.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"p\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <p\n      data-slot=\"field-description\"\n      class={cn(\n        \"text-muted-foreground text-sm leading-normal font-normal group-has-[[data-orientation=horizontal]]/field:text-balance\",\n        \"last:mt-0 nth-last-2:-mt-1 [[data-variant=legend]+&]:-mt-1.5\",\n        \"[&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </p>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/field/field-error.astro",
+      "content": "\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/field/field-group.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      data-slot=\"field-group\"\n      class={cn(\n        \"group/field-group @container/field-group flex w-full flex-col gap-7 data-[slot=checkbox-group]:gap-3 [&>[data-slot=field-group]]:gap-4\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/field/field-label.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"label\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <label\n      data-slot=\"field-label\"\n      class={cn(\n        \"group/field-label peer/field-label flex w-fit gap-2 text-sm leading-snug font-medium select-none\",\n        \"group-data-[disabled=true]/field:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50\",\n        \"has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col has-[>[data-slot=field]]:rounded-md has-[>[data-slot=field]]:border [&>*]:data-[slot=field]:p-4\",\n        \"has-data-[state=checked]:bg-primary/5 has-data-[state=checked]:border-primary dark:has-data-[state=checked]:bg-primary/10\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </label>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/field/field-legend.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"legend\"> {\n  variant?: \"legend\" | \"label\"\n}\n\nconst { class: className, variant = \"legend\", ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <legend\n      data-slot=\"field-legend\"\n      data-variant={variant}\n      class={cn(\n        \"mb-3 font-medium\",\n        \"data-[variant=legend]:text-base\",\n        \"data-[variant=label]:text-sm\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </legend>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/field/field-separator.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Separator } from \"@/components/ui/separator\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n<div\n  data-slot=\"field-separator\"\n  data-content={slot}\n  class={cn(\n    \"relative -my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2\",\n    className\n  )}\n  {...props}\n>\n  <Separator class=\"absolute inset-0 top-1/2\" />\n  {\n    slot?.trim().length > 0 && (\n      <span\n        class=\"bg-background text-muted-foreground relative mx-auto block w-fit px-2\"\n        data-slot=\"field-separator-content\"\n      >\n        <Fragment set:html={slot} />\n      </span>\n    )\n  }\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/field/field-set.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"fieldset\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <fieldset\n      data-slot=\"field-set\"\n      class={cn(\n        \"flex flex-col gap-6\",\n        \"has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </fieldset>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/field/field-title.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      data-slot=\"field-label\"\n      class={cn(\n        \"flex w-fit items-center gap-2 text-sm leading-snug font-medium group-data-[disabled=true]/field:opacity-50\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/field/index.ts",
+      "content": "export { default as Field } from \"./field.astro\"\nexport { default as FieldContent } from \"./field-content.astro\"\nexport { default as FieldDescription } from \"./field-description.astro\"\nexport { default as FieldGroup } from \"./field-group.astro\"\nexport { default as FieldLabel } from \"./field-label.astro\"\nexport { default as FieldLegend } from \"./field-legend.astro\"\nexport { default as FieldSeparator } from \"./field-separator.astro\"\nexport { default as FieldSet } from \"./field-set.astro\"\nexport { default as FieldTitle } from \"./field-title.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}

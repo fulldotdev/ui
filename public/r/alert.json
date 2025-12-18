@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "alert",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "src/components/ui/alert/alert.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = VariantProps<typeof variants> & HTMLAttributes<\"div\">\n\nconst variants = cva(\n  \"relative grid w-full grid-cols-[0_1fr] items-start gap-y-0.5 rounded-lg border px-4 py-3 text-sm has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] has-[>svg]:gap-x-3 [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-card text-card-foreground\",\n        destructive:\n          \"text-destructive bg-card *:data-[slot=alert-description]:text-destructive/90 [&>svg]:text-current\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n    },\n  }\n)\n\nconst { class: className, variant, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      data-slot=\"alert\"\n      role=\"alert\"\n      class={cn(variants({ variant }), className)}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/alert/alert-description.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      data-slot=\"alert-description\"\n      class={cn(\n        \"text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/alert/alert-title.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      data-slot=\"alert-title\"\n      class={cn(\n        \"col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/alert/index.ts",
+      "content": "export { default as Alert } from \"./alert.astro\"\nexport { default as AlertTitle } from \"./alert-title.astro\"\nexport { default as AlertDescription } from \"./alert-description.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}
