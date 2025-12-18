@@ -1,6 +1,6 @@
 # Website Quality Checklist
 
-If you're an AI, run this checklist **without scripts or commands** except when it is explicitly stated. Also don't generate a report file, just fix the issues.
+If you're an AI, run this checklist **without scripts/commands/CLI** except when it is explicitly stated. Also don't generate a report file, just fix the issues.
 
 ## Automated Tests
 
