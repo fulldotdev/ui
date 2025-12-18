@@ -145,7 +145,15 @@ export default defineConfig({
       sidebar: [
         {
           label: "Get started",
-          items: ["docs", "docs/installation", "docs/theming"],
+          items: [
+            "docs",
+            "docs/installation",
+            "docs/theming",
+            {
+              label: "Blocks",
+              link: "/blocks/",
+            },
+          ],
         },
         {
           label: "Components",
@@ -164,6 +172,7 @@ export default defineConfig({
         SiteTitle: "/src/components/starlight-title.astro",
         ThemeSelect: "/src/components/starlight-icons.astro",
         MarkdownContent: "/src/components/starlight-markdown-content.astro",
+        ThemeProvider: "/src/components/ui/theme-toggle/theme-provider.astro",
       },
     }),
     liveCode({
