@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "marquee",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "src/components/ui/marquee/marquee.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  class={cn(\n    \"group/marquee flex justify-stretch overflow-hidden select-none\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/marquee/marquee-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & VariantProps<typeof contentVariants>\n\nconst contentVariants = cva(\n  \"animation-duration-40000 flex min-w-full shrink-0 justify-between gap-6 after:w-0\",\n  {\n    variants: {\n      direction: {\n        left: \"animate-[marquee-horizontal_linear_infinite]\",\n        right: \"reverse animate-[marquee-horizontal_linear_infinite_reverse]\",\n      },\n      pauseOnHover: {\n        true: \"group-hover/marquee:paused\",\n        false: \"\",\n      },\n    },\n    defaultVariants: {\n      direction: \"left\",\n      pauseOnHover: false,\n    },\n  }\n)\n\nconst { class: className, direction, pauseOnHover, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n<div\n  class={cn(contentVariants({ direction, pauseOnHover }), className)}\n  data-slot=\"marquee-content\"\n  data-direction={direction}\n  {...props}\n>\n  <Fragment set:html={slot} />\n</div>\n<div\n  class={cn(contentVariants({ direction, pauseOnHover }), className)}\n  data-slot=\"marquee-content\"\n  data-direction={direction}\n  {...props}\n>\n  <Fragment set:html={slot} />\n</div>\n\n<style>\n  @keyframes marquee-horizontal {\n    from {\n      transform: translateX(0);\n    }\n    to {\n      transform: translateX(-100%);\n    }\n  }\n</style>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/marquee/index.ts",
+      "content": "export { default as Marquee } from \"./marquee.astro\"\nexport { default as MarqueeContent } from \"./marquee-content.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}
