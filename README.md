@@ -1,4 +1,4 @@
-# Fulldev UI
+# fulldev/ui
 
 A shadcn-compatible component library built for [Astro][astro], designed for content-driven websites.
 
