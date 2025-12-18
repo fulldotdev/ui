@@ -5,7 +5,7 @@ sections:
       text: Inspired by shadcn/ui, but built for Astro 🚀
     html: |
       <h1><strong>Astro UI component and block library</strong> compatible with shadcn/ui</h1>
-      <p>Vanilla Astro components with no framework dependencies - Shadcn/ui compatible - content-first components like section, tile and prose.</p>
+      <p>Vanilla Astro components with no framework dependencies - Shadcn/ui compatible - content-first components like section and tile.</p>
     links:
       - text: View Components
         href: /docs/components/

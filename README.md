@@ -6,7 +6,7 @@ A shadcn-compatible component library built for [Astro][astro], designed for con
 
 - **Vanilla Astro Components** — No framework dependencies, pure Astro components
 - **shadcn Compatible** — Uses the shadcn CLI and registry system for easy installation
-- **Content-First** — Built for content-driven websites with components like sections, tiles, and prose
+- **Content-First** — Built for content-driven websites with components like sections and tiles
 - **100+ Components & Blocks** — Ready-to-use UI components and pre-built page blocks
 - **Tailwind CSS v4** — Styled with the latest Tailwind CSS
 - **TypeScript** — Full TypeScript support
