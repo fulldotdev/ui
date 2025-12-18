@@ -155,6 +155,8 @@ const page = (ctx: SchemaContext) =>
       sections: block(ctx).array(),
       footers: block(ctx).array(),
       seo: seo(ctx),
+      head: z.string(),
+      body: z.string(),
     })
     .partial()
     .strict()
