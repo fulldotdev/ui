@@ -3,7 +3,7 @@ sections:
   - block: links-1
     html: |
       <h2>Blocks</h2>
-      <p>Here you can find all the blocks available in the library. We are working on adding more blocks.</p>
+      <p>Here you can find all the blocks available in the library. Blocks have not been extensively tested, but they are good examples. We are working on improvements and adding more blocks.</p>
     links:
       - text: Article
         href: /blocks/article/
@@ -25,8 +25,6 @@ sections:
         href: /blocks/header/
       - text: Hero
         href: /blocks/hero/
-      - text: Links
-        href: /blocks/links/
       - text: Logos
         href: /blocks/logos/
       - text: Pricing
@@ -37,16 +35,8 @@ sections:
         href: /blocks/products/
       - text: Reviews
         href: /blocks/reviews/
-      - text: Steps
-        href: /blocks/steps/
-      - text: Table
-        href: /blocks/table/
-      - text: Tiles
-        href: /blocks/tiles/
-      - text: Video
-        href: /blocks/video/
-      - text: Videos
-        href: /blocks/videos/
+      - text: Services
+        href: /blocks/services/
 seo:
   title: Astro Blocks for content-driven websites - fulldev/ui
   description: fulldev/ui is a complete Astro block library with ready-to-use UI blocks. Build content-driven websites faster with our Astro UI blocks library designed for developers.
