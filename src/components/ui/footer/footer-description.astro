@@ -1,0 +1,37 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"p">, VariantProps<typeof variants> {}
+
+const variants = cva("text-muted-foreground text-sm", {
+  variants: {
+    size: {
+      lg: "text-base",
+      default: "text-sm",
+      sm: "text-xs",
+    },
+  },
+  defaultVariants: {
+    size: "default",
+  },
+})
+
+const { class: className, size, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <p
+      data-slot="footer-description"
+      class={cn(variants({ size }), className)}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </p>
+  )
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pricings-3",
+  "type": "registry:block",
+  "registryDependencies": [
+    "@fulldev/button",
+    "@fulldev/icon",
+    "@fulldev/list",
+    "@fulldev/price",
+    "@fulldev/section",
+    "@fulldev/tile"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/pricings-3.astro",
+      "content": "---\nimport { Button } from \"@/components/ui/button\"\nimport { Icon } from \"@/components/ui/icon\"\nimport { List, ListItem } from \"@/components/ui/list\"\nimport { Price, PriceUnit, PriceValue } from \"@/components/ui/price\"\nimport {\n  Section,\n  SectionProse,\n  SectionSpread,\n} from \"@/components/ui/section\"\nimport {\n  Tile,\n  TileActions,\n  TileContent,\n  TileDescription,\n  TileTitle,\n} from \"@/components/ui/tile\"\n\ninterface Props {\n  class?: string\n  id?: string\n  items?: {\n    title?: string\n    description?: string\n    icon?: string\n    list?: string[]\n    links?: {\n      text?: string\n      href?: string\n      target?: string\n    }[]\n    price?: string | number\n    unit?: string\n  }[]\n}\n\nconst { class: className, id, items } = Astro.props\n---\n\n<Section class={className} id={id}>\n  <SectionProse>\n    <slot />\n  </SectionProse>\n  <SectionSpread>\n    {\n      items?.map(({ title, description, links, list, price, unit }) => (\n        <Tile variant=\"floating\">\n          <TileContent>\n            <TileTitle>{title}</TileTitle>\n            <TileDescription>{description}</TileDescription>\n            <Price>\n              <PriceValue class=\"text-3xl\" price={price} />\n              <PriceUnit class=\"mt-3\">{unit}</PriceUnit>\n            </Price>\n            <List class=\"mt-4 text-sm\">\n              {list?.map((item) => (\n                <ListItem>\n                  <Icon class=\"-mt-0.5\" name=\"check\" />\n                  {item}\n                </ListItem>\n              ))}\n            </List>\n          </TileContent>\n          <TileActions class=\"mt-auto w-full\">\n            {links?.map(({ text, ...link }, i) => (\n              <Button\n                class=\"w-full\"\n                size=\"sm\"\n                variant={i === 0 ? \"default\" : \"outline\"}\n                {...link}\n              >\n                {text}\n              </Button>\n            ))}\n          </TileActions>\n        </Tile>\n      ))\n    }\n  </SectionSpread>\n</Section>\n",
+      "type": "registry:block"
+    }
+  ]
+}

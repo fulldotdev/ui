@@ -1,0 +1,88 @@
+---
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+} from "@/components/ui/item"
+import { Rating } from "@/components/ui/rating"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionMedia,
+  SectionProse,
+  SectionSpread,
+} from "@/components/ui/section"
+
+interface Props {
+  class?: string
+  id?: string
+  links?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  image?: {
+    src: string
+    alt: string
+  }
+  item?: {
+    images?: {
+      src: string
+      alt: string
+    }[]
+    rating?: number
+    description?: string
+  }
+}
+
+const { class: className, id, links, image, item } = Astro.props
+---
+
+<Section class={className} id={id} variant="floating">
+  <SectionSpread class="@5xl:items-center">
+    <SectionContent>
+      <SectionProse>
+        <slot />
+      </SectionProse>
+    </SectionContent>
+    <SectionContent>
+      <SectionActions>
+        {
+          links?.map(({ icon, text, ...link }, i) => (
+            <Button variant={i === 0 ? "default" : "outline"} {...link}>
+              {icon && <Icon name={icon} />}
+              {text}
+            </Button>
+          ))
+        }
+      </SectionActions>
+      <Item class="p-0">
+        <ItemMedia class="-space-x-5">
+          {
+            item?.images?.map((image) => (
+              <Avatar class="ring-background size-11 ring">
+                <AvatarImage {...image} />
+              </Avatar>
+            ))
+          }
+        </ItemMedia>
+        <ItemContent class="mt-1">
+          <Rating rating={item?.rating} />
+          <ItemDescription class="text-foreground">
+            {item?.description}
+          </ItemDescription>
+        </ItemContent>
+      </Item>
+    </SectionContent>
+  </SectionSpread>
+  <SectionMedia class="absolute inset-0 size-full opacity-50">
+    <Image sizes="(1536px) 1536px, 100vw" {...image} />
+  </SectionMedia>
+</Section>

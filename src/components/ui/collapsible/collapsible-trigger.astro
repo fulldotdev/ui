@@ -1,0 +1,33 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import ChevronDownIcon from "lucide-static/icons/chevron-down.svg"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends Omit<HTMLAttributes<"summary">, "class"> {
+  class?: string
+  showChevron?: boolean
+}
+
+const { class: className, showChevron = true, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <summary
+      data-slot="collapsible-trigger"
+      class={cn(
+        "flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden",
+        className
+      )}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+      {showChevron && (
+        <ChevronDownIcon class="ml-auto size-4 shrink-0 transition-transform duration-200 group-open/collapsible:rotate-180" />
+      )}
+    </summary>
+  )
+}

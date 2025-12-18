@@ -1,0 +1,26 @@
+---
+import { cn } from "@/lib/utils"
+
+interface Props {
+  class?: string
+  icon?: boolean
+}
+
+const { class: className, icon = true, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <li
+      class={cn(
+        "flex shrink-0 items-start gap-3 text-start not-first:mt-2 [&_svg]:shrink-0 [&_svg]:translate-y-[30%] [&_svg:not([class*='size-'])]:size-[1em]",
+        className
+      )}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </li>
+  )
+}

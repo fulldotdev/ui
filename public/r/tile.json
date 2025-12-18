@@ -1,0 +1,52 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tile",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "src/components/ui/tile/tile.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = VariantProps<typeof variants> &\n  HTMLAttributes<\"div\"> &\n  HTMLAttributes<\"a\">\n\nconst variants = cva(\n  \"group/tile focus-visible:border-ring focus-visible:ring-ring/50 [a]:hover:ring-accent/50 relative flex flex-col items-start gap-6 outline-none focus-visible:ring-[3px] [a]:transition-all\",\n  {\n    variants: {\n      variant: {\n        default:\n          \"[a]:hover:ring-accent/50 [a]:hover:bg-accent/50 rounded-sm bg-transparent [a]:hover:ring-12\",\n        floating:\n          \"bg-card text-card-foreground [a]:hover:bg-accent/50 overflow-hidden rounded-sm border p-6 shadow-sm duration-100\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n    },\n  }\n)\n\nconst { class: className, variant, href, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n\nconst Comp = href ? \"a\" : \"div\"\n---\n\n{\n  slot?.trim().length > 0 && (\n    <Comp\n      data-slot=\"tile\"\n      data-variant={variant}\n      class={cn(variants({ variant }), className)}\n      href={href}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </Comp>\n  )\n}\n\n<style is:global>\n  [data-slot=\"tile\"] {\n    --tile-padding: 0px;\n  }\n\n  [data-slot=\"tile\"][data-variant=\"floating\"] {\n    --tile-padding: 24px;\n  }\n</style>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tile/tile-actions.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div class={cn(\"flex flex-wrap gap-2\", className)} {...props}>\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tile/tile-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div class={cn(\"relative z-10 flex flex-col gap-3\", className)} {...props}>\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tile/tile-description.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"p\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <p class={cn(\"text-muted-foreground text-sm\", className)} {...props}>\n      <Fragment set:html={slot} />\n    </p>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tile/tile-media.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\nconst variants = cva(\n  [\n    \"flex shrink-0 items-center justify-center gap-2 group-has-[[data-slot=tile-description]]/tile:translate-y-0.5 group-has-[[data-slot=tile-description]]/tile:self-start [&_svg]:pointer-events-none\",\n    \"transition-opacity duration-100 [&:is(a:hover>&)]:opacity-75\",\n    \"relative overflow-hidden rounded-md\",\n  ],\n  {\n    variants: {\n      variant: {\n        default: \"rounded-md *:size-full *:object-cover\",\n        icon: \"bg-muted size-8 rounded-sm border [&_svg:not([class*='size-'])]:size-4\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n    },\n  }\n)\n\ninterface Props extends HTMLAttributes<\"div\">, VariantProps<typeof variants> {}\n\nconst { class: className, variant, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      data-slot=\"tile-media\"\n      data-variant={variant}\n      class={cn(variants({ variant }), className)}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tile/tile-split.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      class={cn(\"grid size-full grid-cols-[2fr_3fr] gap-6 *:w-full\", className)}\n      data-slot=\"tile-split\"\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tile/tile-spread.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      class={cn(\n        \"flex w-full flex-row items-start justify-between gap-4 @max-xs:flex-col\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tile/tile-title.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"h3\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <h3 class={cn(\"leading-none font-semibold\", className)} {...props}>\n      <Fragment set:html={slot} />\n    </h3>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tile/index.ts",
+      "content": "export { default as Tile } from \"./tile.astro\"\nexport { default as TileActions } from \"./tile-actions.astro\"\nexport { default as TileContent } from \"./tile-content.astro\"\nexport { default as TileDescription } from \"./tile-description.astro\"\nexport { default as TileMedia } from \"./tile-media.astro\"\nexport { default as TileSplit } from \"./tile-split.astro\"\nexport { default as TileSpread } from \"./tile-spread.astro\"\nexport { default as TileTitle } from \"./tile-title.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"p"> {}
+
+const { class: className, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <p
+      data-slot="item-description"
+      class={cn(
+        "text-muted-foreground line-clamp-2 text-sm leading-normal font-normal text-balance",
+        "[&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4",
+        className
+      )}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </p>
+  )
+}

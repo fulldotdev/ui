@@ -1,0 +1,36 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import Star from "lucide-static/icons/star.svg"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {
+  rating?: number
+}
+
+const { rating, class: className, ...props } = Astro.props
+---
+
+{
+  rating && (
+    <div class={cn("flex gap-1 text-base", className)} {...props}>
+      {Array.from({ length: 5 }).map((_, index) => {
+        const fillPercentage =
+          index < Math.floor(rating)
+            ? 100
+            : index === Math.floor(rating)
+              ? (rating % 1) * 100
+              : 0
+        return (
+          <Star
+            class="!text-primary size-[1em]"
+            fill="currentColor"
+            style={{
+              maskImage: `linear-gradient(to right, black ${fillPercentage}%, rgba(0,0,0,0.15) ${fillPercentage}%)`,
+            }}
+          />
+        )
+      })}
+    </div>
+  )
+}

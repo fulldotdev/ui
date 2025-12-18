@@ -1,0 +1,31 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"legend"> {
+  variant?: "legend" | "label"
+}
+
+const { class: className, variant = "legend", ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <legend
+      data-slot="field-legend"
+      data-variant={variant}
+      class={cn(
+        "mb-3 font-medium",
+        "data-[variant=legend]:text-base",
+        "data-[variant=label]:text-sm",
+        className
+      )}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </legend>
+  )
+}

@@ -1,0 +1,24 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {}
+
+const { class: className, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <div
+      role="list"
+      data-slot="item-group"
+      class={cn("group/item-group flex flex-col", className)}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </div>
+  )
+}

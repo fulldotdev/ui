@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon",
+  "type": "registry:ui",
+  "dependencies": [
+    "lucide-static",
+    "simple-icons"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/icon/icon.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\ninterface Props extends Omit<HTMLAttributes<\"svg\">, \"name\" | \"href\"> {\n  href?: HTMLAttributes<\"a\">[\"href\"]\n  name?: string | number\n}\n\nconst { name, href, ...rest } = Astro.props\n\nconst hrefMap = {\n  \"x.com\": \"x\",\n  twitter: \"twitter\",\n  facebook: \"facebook\",\n  instagram: \"instagram\",\n  pinterest: \"pinterest\",\n  youtube: \"youtube\",\n  tiktok: \"tiktok\",\n  snapchat: \"snapchat\",\n  reddit: \"reddit\",\n  tumblr: \"tumblr\",\n  \"wa.me\": \"whatsapp\",\n  telegram: \"telegram\",\n  discord: \"discord\",\n  vimeo: \"vimeo\",\n  flickr: \"flickr\",\n  yelp: \"yelp\",\n  spotify: \"spotify\",\n  behance: \"behance\",\n  dribbble: \"dribbble\",\n  soundcloud: \"soundcloud\",\n  github: \"github\",\n  twitch: \"twitch\",\n  \"tel:\": \"phone\",\n  \"mailto:\": \"mail\",\n  \"maps.app.goo.gl\": \"map-pin\",\n  linkedin: \"linkedin\",\n} as const\n\nconst icons = import.meta.glob([\n  \"node_modules/lucide-static/icons/*.svg\",\n  \"node_modules/simple-icons/icons/*.svg\",\n])\n\n// Get the right path from the icons glob\nconst foundPath = () => {\n  let foundPath: string | undefined = undefined\n  // For x.com, we use the simple-icons X instead of the lucide-static X, since they overlap\n  if (name === \"x.com\") {\n    foundPath = \"/node_modules/simple-icons/icons/x.svg\"\n  } else if (name) {\n    foundPath = Object.keys(icons).find((key) => key.includes(`/${name}.svg`))\n  } else if (href) {\n    const hrefKey =\n      Object.keys(hrefMap).find((key) => href.toString().includes(key)) || name\n    const hrefValue = hrefMap[hrefKey as keyof typeof hrefMap]\n    const foundPath = Object.keys(icons)\n      // If href, reverse so that simple-icons takes precedence\n      .reverse()\n      .find((key) => key.includes(`/${hrefValue}.svg`))\n    return foundPath\n  }\n  // Else return the found path with lucide-icons taking precedence\n  return foundPath\n}\n\nconst foundModule = foundPath() && icons[foundPath() as keyof typeof icons]\nconst module = foundModule && ((await foundModule()) as any)\nconst Comp = module?.default\n---\n\n{\n  Comp && foundPath()?.includes(\"simple-icons\") && (\n    <Comp\n      height={24}\n      width={24}\n      fill=\"currentColor\"\n      class=\"size-[1em] text-base\"\n      {...rest}\n    />\n  )\n}\n\n{\n  Comp && foundPath()?.includes(\"lucide-static\") && (\n    <Comp height={24} width={24} class=\"size-[1em] text-base\" {...rest} />\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/icon/index.ts",
+      "content": "export { default as Icon } from \"./icon.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}

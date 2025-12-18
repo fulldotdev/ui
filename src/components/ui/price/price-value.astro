@@ -1,0 +1,48 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends VariantProps<typeof variants>, HTMLAttributes<"span"> {
+  price?: number | string
+  currency?: string
+  locale?: string
+  variant?: "default" | "sale"
+}
+
+const variants = cva("leading-tight", {
+  variants: {
+    variant: {
+      default: "text-foreground",
+      sale: "text-muted-foreground line-through",
+    },
+  },
+})
+
+const {
+  class: className,
+  price,
+  currency = "USD",
+  locale = "en-US",
+  variant = "default",
+  ...props
+} = Astro.props
+
+// Format price with currency only if it's a number
+const formattedPrice =
+  typeof price === "number"
+    ? new Intl.NumberFormat(locale, {
+        style: "currency",
+        currency: currency,
+      }).format(price)
+    : price
+---
+
+{
+  price && (
+    <span class={cn(variants({ variant }), className)} {...props}>
+      {formattedPrice}
+    </span>
+  )
+}

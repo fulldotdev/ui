@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "badge",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "src/components/ui/badge/badge.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = VariantProps<typeof variants> &\n  HTMLAttributes<\"span\"> &\n  HTMLAttributes<\"a\"> & {\n    text?: string\n    html?: string\n  }\n\nconst variants = cva(\n  \"focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-md border px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] [&>svg]:pointer-events-none [&>svg]:size-3\",\n  {\n    variants: {\n      variant: {\n        default:\n          \"bg-primary text-primary-foreground [a&]:hover:bg-primary/90 border-transparent\",\n        secondary:\n          \"bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90 border-transparent\",\n        destructive:\n          \"bg-destructive [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 border-transparent text-white\",\n        outline:\n          \"text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n    },\n  }\n)\n\nconst { class: className, variant, href, text, html, ...props } = Astro.props\n\nconst Comp = href ? \"a\" : \"span\"\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <Comp\n      data-slot=\"badge\"\n      class={cn(variants({ variant }), className)}\n      href={href}\n      set:html={html}\n      set:text={text}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </Comp>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/badge/index.ts",
+      "content": "export { default as Badge } from \"./badge.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}

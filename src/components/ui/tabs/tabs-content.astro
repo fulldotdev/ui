@@ -1,0 +1,30 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {
+  value: string
+}
+
+const { class: className, value, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <div
+      role="tabpanel"
+      data-slot="tabs-content"
+      data-value={value}
+      data-state="inactive"
+      hidden
+      class={cn("flex-1 outline-none", className)}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </div>
+  )
+}
+

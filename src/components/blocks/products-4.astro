@@ -1,0 +1,81 @@
+---
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionGrid,
+  SectionProse,
+  SectionSplit,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileSpread,
+  TileTitle,
+} from "@/components/ui/tile"
+
+interface Props {
+  title?: string
+  description?: string
+  links?: {
+    text?: string
+    href?: string
+    icon?: string
+    target?: string
+  }[]
+  items?: {
+    title?: string
+    description?: string
+    price?: string
+    unit?: string
+    image?: {
+      src?: string
+      alt?: string
+    }
+  }[]
+}
+
+const { links, items, ...props } = Astro.props
+---
+
+<Section {...props}>
+  <SectionSplit
+    class="items-start @5xl:*:sticky @5xl:*:top-[calc(var(--section-py)+var(--header-height,0px))]"
+  >
+    <SectionContent>
+      <SectionProse>
+        <slot />
+      </SectionProse>
+    </SectionContent>
+    <SectionContent>
+      <SectionGrid size="lg">
+        {
+          items?.map(({ title, description, price }) => (
+            <Tile class="m-0 rounded-none border-t p-0 pt-6">
+              <TileSpread>
+                <TileContent>
+                  <TileTitle>{title}</TileTitle>
+                  <TileDescription>{description}</TileDescription>
+                </TileContent>
+                <p>{price}</p>
+              </TileSpread>
+            </Tile>
+          ))
+        }
+      </SectionGrid>
+      <SectionActions>
+        {
+          links?.map(({ icon, text, ...link }, i) => (
+            <Button variant={i === 0 ? "outline" : "ghost"} {...link}>
+              {icon && <Icon name={icon} />}
+              {text}
+            </Button>
+          ))
+        }
+      </SectionActions>
+    </SectionContent>
+  </SectionSplit>
+</Section>

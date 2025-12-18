@@ -1,0 +1,25 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {}
+
+const { class: className, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <div
+      class={cn(
+        "flex w-full flex-row items-start justify-between gap-4 @max-xs:flex-col",
+        className
+      )}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </div>
+  )
+}

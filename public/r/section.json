@@ -1,0 +1,62 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "section",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "src/components/ui/section/section.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props\n  extends HTMLAttributes<\"section\">,\n    VariantProps<typeof variants> {\n  size?: \"sm\" | \"default\" | \"lg\"\n}\n\nconst variants = cva(\n  \"relative mx-auto flex scroll-m-(--section-py) flex-col gap-16 px-(--section-px) py-(--section-py)\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-background w-full\",\n        floating: [\n          \"bg-background rounded-lg border shadow-md\",\n          \"w-[calc(100%-2*var(--gutter,24px))] max-w-(--section-width)\",\n          \"my-(--section-py) overflow-hidden rounded-xl\",\n        ],\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n    },\n  }\n)\n\nconst { class: className, variant, size, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <section\n      class={cn(variants({ variant }), className)}\n      data-slot=\"section\"\n      data-variant={variant}\n      data-size={size}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </section>\n  )\n}\n\n<style is:global>\n  [data-slot=\"section\"] {\n    --section-width: var(--container, var(--breakpoint-xl));\n    --section-py: calc(var(--spacing) * 12);\n    --section-px: max(\n      var(--gutter, 24px),\n      calc((100cqw - var(--section-width)) / 2)\n    );\n  }\n\n  [data-slot=\"section\"][data-variant=\"floating\"] {\n    --section-px: calc(var(--spacing) * 6);\n  }\n\n  [data-slot=\"section\"][data-size=\"sm\"] {\n    --section-py: calc(var(--spacing) * 8);\n  }\n\n  [data-slot=\"section\"][data-size=\"lg\"] {\n    --section-py: calc(var(--spacing) * 24);\n  }\n\n  @media (min-width: 1024px) {\n    [data-slot=\"section\"] {\n      --section-py: calc(var(--spacing) * 16);\n    }\n\n    [data-slot=\"section\"][data-variant=\"floating\"] {\n      --section-px: calc(var(--spacing) * 16);\n    }\n\n    [data-slot=\"section\"][data-size=\"sm\"] {\n      --section-py: calc(var(--spacing) * 12);\n    }\n\n    [data-slot=\"section\"][data-size=\"lg\"] {\n      --section-py: calc(var(--spacing) * 32);\n    }\n  }\n</style>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/section/section-actions.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div class={cn(\"relative z-10 flex flex-wrap gap-2\", className)} {...props}>\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/section/section-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      class={cn(\"relative z-10 flex flex-col gap-y-8\", className)}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/section/section-grid.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\">, VariantProps<typeof variants> {}\n\nconst variants = cva(\"grid w-full gap-6\", {\n  variants: {\n    frame: {\n      default: \"\",\n    },\n    size: {\n      sm: \"grid-cols-[repeat(auto-fit,minmax(200px,1fr))]\",\n      default: \"grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(260px,1fr))]\",\n      lg: \"grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(400px,1fr))]\",\n    },\n  },\n  defaultVariants: {\n    size: \"default\",\n    frame: \"default\",\n  },\n})\n\nconst { class: className, size, frame, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div class={cn(variants({ size, frame }), className)} {...props}>\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/section/section-masonry.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\">, VariantProps<typeof variants> {}\n\nconst variants = cva(\"w-full gap-6 space-y-6 *:break-inside-avoid\", {\n  variants: {\n    size: {\n      sm: \"columns-3xs\",\n      default: \"columns-2xs\",\n      lg: \"columns-xs\",\n    },\n  },\n  defaultVariants: {\n    size: \"default\",\n  },\n})\n\nconst { class: className, size, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div class={cn(variants({ size }), className)} {...props}>\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/section/section-media.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      data-slot=\"section-media\"\n      class={cn(\n        \"relative flex items-center justify-center overflow-hidden rounded-lg *:size-full *:object-cover\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/section/section-prose.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\nconst variants = cva(\n  [\n    \"text-foreground w-full space-y-4 text-pretty\",\n    \"[&_p]:leading-[1.8] [&_p]:not-first:mt-4\",\n    \"[&_ul]:ml-5 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:not-first:mt-4\",\n    \"[&_ol]:ml-5 [&_ol]:list-decimal [&_ol]:space-y-2 [&_ol]:not-first:mt-4\",\n    \"[&_li_p]:inline\",\n    \"[&_a]:text-primary [&_a]:hover:underline\",\n    \"@max-sm:[&_:is(h1,h2,h3,h4,h5,h6)]:break-words @max-sm:[&_:is(h1,h2,h3,h4,h5,h6)]:wrap-break-word @max-sm:[&_:is(h1,h2,h3,h4,h5,h6)]:hyphens-auto\",\n    \"[&_:is(h1,h2,h3,h4,h5,h6)]:scroll-mt-20 [&_:is(h1,h2,h3,h4,h5,h6)]:leading-[1.1] [&_:is(h1,h2,h3,h4,h5,h6)]:font-semibold [&_:is(h1,h2,h3,h4,h5,h6)]:not-first:mt-12\",\n    \"[&_img]:rounded-lg [&_img]:not-first:mt-12\",\n    \"[&_p:first-child:has(~:is(h1,h2,h3,h4,h5,h6))]:text-accent-foreground [&_p:first-child+:is(h1,h2,h3,h4,h5,h6)]:mt-4 [&_p:first-child:has(~:is(h1,h2,h3,h4,h5,h6))]:text-sm [&_p:first-child:has(~:is(h1,h2,h3,h4,h5,h6))]:font-medium\",\n    \"[&_pre]:bg-muted [&_pre]:mt-6 [&_pre]:rounded-lg [&_pre]:rounded-md [&_pre]:border [&_pre]:p-4 [&_pre]:text-sm\",\n  ],\n  {\n    variants: {\n      size: {\n        sm: \"max-w-2xl text-sm [&_h1]:text-3xl [&_h2]:text-2xl [&_h3]:text-xl [&_h4]:text-lg [&_h5]:text-base [&_h6]:text-sm\",\n        default:\n          \"max-w-3xl text-base [&_h1]:text-4xl [&_h2]:text-3xl [&_h3]:text-2xl [&_h4]:text-xl [&_h5]:text-lg [&_h6]:text-base\",\n        lg: \"max-w-4xl text-lg [&_h1]:text-4xl @5xl:[&_h1]:text-5xl [&_h2]:text-4xl [&_h3]:text-3xl [&_h4]:text-2xl [&_h5]:text-xl [&_h6]:text-lg\",\n      },\n    },\n    defaultVariants: {\n      size: \"default\",\n    },\n  }\n)\n\ninterface Props extends HTMLAttributes<\"div\">, VariantProps<typeof variants> {}\n\nconst { class: className, size, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div class={cn(variants({ size }), className)} {...props}>\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/section/section-provider.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"main\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <main\n      role=\"list\"\n      data-slot=\"section-provider\"\n      class={cn(\n        \"group/section-provider @container/section-provider flex flex-col\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </main>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/section/section-split.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      class={cn(\n        \"grid size-full grid-cols-1 gap-16 @5xl:grid-cols-2\",\n        className\n      )}\n      data-slot=\"section-split\"\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/section/section-spread.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      class={cn(\n        \"flex w-full flex-col items-start gap-8 @5xl:flex-row @5xl:justify-between\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/section/index.ts",
+      "content": "export { default as Section } from \"./section.astro\"\nexport { default as SectionActions } from \"./section-actions.astro\"\nexport { default as SectionContent } from \"./section-content.astro\"\nexport { default as SectionGrid } from \"./section-grid.astro\"\nexport { default as SectionMasonry } from \"./section-masonry.astro\"\nexport { default as SectionMedia } from \"./section-media.astro\"\nexport { default as SectionProse } from \"./section-prose.astro\"\nexport { default as SectionProvider } from \"./section-provider.astro\"\nexport { default as SectionSplit } from \"./section-split.astro\"\nexport { default as SectionSpread } from \"./section-spread.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}

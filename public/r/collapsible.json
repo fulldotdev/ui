@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "collapsible",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "src/components/ui/collapsible/collapsible.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends Omit<HTMLAttributes<\"details\">, \"class\"> {\n  class?: string\n  open?: boolean\n}\n\nconst { class: className, open = false, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <details\n      data-slot=\"collapsible\"\n      class={cn(\"group/collapsible\", className)}\n      open={open}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </details>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/collapsible/collapsible-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div data-slot=\"collapsible-content\" class={cn(className)} {...props}>\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/collapsible/collapsible-trigger.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport ChevronDownIcon from \"lucide-static/icons/chevron-down.svg\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends Omit<HTMLAttributes<\"summary\">, \"class\"> {\n  class?: string\n  showChevron?: boolean\n}\n\nconst { class: className, showChevron = true, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <summary\n      data-slot=\"collapsible-trigger\"\n      class={cn(\n        \"flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n      {showChevron && (\n        <ChevronDownIcon class=\"ml-auto size-4 shrink-0 transition-transform duration-200 group-open/collapsible:rotate-180\" />\n      )}\n    </summary>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/collapsible/index.ts",
+      "content": "export { default as Collapsible } from \"./collapsible.astro\"\nexport { default as CollapsibleContent } from \"./collapsible-content.astro\"\nexport { default as CollapsibleTrigger } from \"./collapsible-trigger.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}

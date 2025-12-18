@@ -1,0 +1,135 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldLabel,
+  FieldSet,
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Textarea } from "@/components/ui/textarea"
+
+type Field = {
+  label?: string
+  description?: string
+} & (
+  | (ComponentProps<typeof Textarea> & {
+      type: "textarea"
+    })
+  | (ComponentProps<typeof Checkbox> & {
+      type: "checkbox"
+    })
+  | (ComponentProps<typeof NativeSelect> & {
+      type: "select"
+      options: string[]
+      placeholder?: string
+    })
+  | (ComponentProps<typeof RadioGroupItem> & {
+      type: "radio-group"
+      options: string[]
+    })
+  | (ComponentProps<typeof Input> & {
+      type: "text" | "tel" | "email" | "number"
+    })
+)
+
+interface Props extends HTMLAttributes<"form"> {
+  inbox?: string
+  fields?: Field[]
+  submit?: string
+}
+
+const { class: className, inbox, fields, submit, ...props } = Astro.props
+---
+
+<form
+  method="POST"
+  data-netlify="true"
+  class={cn("flex w-full max-w-2xl flex-col gap-6", className)}
+  {...props}
+>
+  {
+    fields?.map(({ label, description, name = label, id = name, ...field }) => {
+      switch (field.type) {
+        case "textarea":
+          return (
+            <Field>
+              <FieldLabel for={id}>{label}</FieldLabel>
+              <Textarea id={id} name={name} {...field} />
+              <FieldDescription>{description}</FieldDescription>
+            </Field>
+          )
+        case "select":
+          const { options: selectOptions, placeholder, ...select } = field
+          return (
+            <Field>
+              <FieldLabel for={id}>{label}</FieldLabel>
+              <NativeSelect id={id} name={name} {...select}>
+                <NativeSelectOption
+                  value={placeholder}
+                  id={placeholder}
+                  disabled
+                  selected
+                >
+                  {placeholder}
+                </NativeSelectOption>
+                {selectOptions?.map((option) => (
+                  <NativeSelectOption value={option} id={option}>
+                    {option}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
+              <FieldDescription>{description}</FieldDescription>
+            </Field>
+          )
+        case "checkbox":
+          return (
+            <Field orientation="horizontal">
+              <Checkbox id={id} name={name} {...field} />
+              <FieldContent>
+                <FieldLabel for={id}>{label}</FieldLabel>
+                <FieldDescription>{description}</FieldDescription>
+              </FieldContent>
+            </Field>
+          )
+        case "radio-group":
+          const { options: radioOptions, ...radioGroup } = field
+          return (
+            <FieldSet>
+              <FieldLabel>{label}</FieldLabel>
+              <FieldDescription>{description}</FieldDescription>
+              <RadioGroup {...radioGroup}>
+                {radioOptions?.map((option) => (
+                  <Field orientation="horizontal">
+                    <RadioGroupItem value={option} id={option} name={name} />
+                    <FieldLabel for={option}>{option}</FieldLabel>
+                  </Field>
+                ))}
+              </RadioGroup>
+              <FieldDescription>{description}</FieldDescription>
+            </FieldSet>
+          )
+        default:
+          return (
+            <Field>
+              <FieldLabel for={id}>{label}</FieldLabel>
+              <Input id={id} name={name} {...field} />
+              <FieldDescription>{description}</FieldDescription>
+            </Field>
+          )
+      }
+    })
+  }
+  <slot />
+  {inbox && <input type="hidden" name="inbox_key" value={inbox} />}
+  <input type="text" name="_gotcha" class="hidden" />
+  <input type="text" name="Pagina" class="hidden" value={Astro.url.pathname} />
+  <Button type="submit">{submit}</Button>
+</form>

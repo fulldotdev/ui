@@ -1,0 +1,73 @@
+---
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionGrid,
+  SectionProse,
+  SectionSplit,
+} from "@/components/ui/section"
+import { Video } from "@/components/ui/video"
+
+interface Props {
+  class?: string
+  id?: string
+  links?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  video?: string
+  images?: {
+    src: string
+    alt: string
+  }[]
+  title?: string
+  description?: string
+}
+
+const {
+  class: className,
+  id,
+  links,
+  video,
+  images,
+  title,
+  description,
+} = Astro.props
+---
+
+<Section
+  class={cn("-mt-(--header-height) @5xl:gap-1 @5xl:pt-1", className)}
+  id={id}
+>
+  <SectionSplit class="@5xl:grid-cols-[1fr_3fr] @5xl:items-start">
+    <SectionContent
+      class="@5xl:sticky @5xl:top-[calc(24px+var(--header-height,0px))]"
+    >
+      <SectionProse class="text-balance" size="sm">
+        {title && <h1>{title}</h1>}
+        {description && <p>{description}</p>}
+      </SectionProse>
+      <SectionActions>
+        {
+          links?.map(({ href, text, ...link }) => (
+            <Button variant="link" class="h-auto p-0!" href={href} {...link}>
+              {text}
+              {href && <Icon name="arrow-up-right" />}
+            </Button>
+          ))
+        }
+      </SectionActions>
+    </SectionContent>
+    <SectionGrid class="-mx-5 grid-cols-1 gap-1 @5xl:grid-cols-2">
+      <Video class="@5xl:col-span-2" src={video} />
+      {images?.map(({ ...image }) => <Image {...image} />)}
+    </SectionGrid>
+  </SectionSplit>
+</Section>

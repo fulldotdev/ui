@@ -1,0 +1,55 @@
+---
+import { AutoForm } from "@/components/ui/auto-form"
+import { Icon } from "@/components/ui/icon"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
+import {
+  Section,
+  SectionContent,
+  SectionGrid,
+  SectionProse,
+} from "@/components/ui/section"
+
+interface Props {
+  class?: string
+  id?: string
+  form?: any
+  items?: {
+    icon?: string
+    title?: string
+    description?: string
+    href?: string
+  }[]
+}
+
+const { class: className, id, form, items } = Astro.props
+---
+
+<Section class={className} id={id} style="--section-width: 672px;">
+  <SectionContent>
+    <SectionProse>
+      <slot />
+    </SectionProse>
+  </SectionContent>
+  <SectionGrid>
+    {
+      items?.map(({ icon, title, description, href }) => (
+        <Item href={href} variant="outline">
+          <ItemMedia variant="icon">
+            <Icon href={href} name={icon} />
+          </ItemMedia>
+          <ItemContent>
+            <ItemTitle>{title}</ItemTitle>
+            <ItemDescription>{description}</ItemDescription>
+          </ItemContent>
+        </Item>
+      ))
+    }
+  </SectionGrid>
+  <AutoForm {...form} />
+</Section>

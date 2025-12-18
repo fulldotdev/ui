@@ -1,0 +1,61 @@
+---
+import {
+  Footer,
+  FooterCopyright,
+  FooterDescription,
+  FooterGroup,
+  FooterMenu,
+  FooterMenuItem,
+  FooterMenuLink,
+} from "@/components/ui/footer"
+import { Icon } from "@/components/ui/icon"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
+
+interface Props {
+  logo?: {
+    src?: string
+    alt?: string
+    text?: string
+    href?: string
+  }
+  description?: string
+  links?: {
+    text?: string
+    href?: string
+  }[]
+  socials?: string[]
+}
+
+const { logo, description, links, socials } = Astro.props
+---
+
+<Footer class="items-center">
+  <FooterGroup class="items-center">
+    <Logo href={logo?.href || "/"}>
+      <LogoImage src={logo?.src} alt={logo?.alt} />
+      <LogoText>{logo?.text}</LogoText>
+    </Logo>
+    <FooterDescription>{description}</FooterDescription>
+    <FooterMenu orientation="horizontal">
+      {
+        links?.map(({ href, text }) => (
+          <FooterMenuItem>
+            <FooterMenuLink href={href}>{text}</FooterMenuLink>
+          </FooterMenuItem>
+        ))
+      }
+    </FooterMenu>
+    <FooterMenu orientation="horizontal">
+      {
+        socials?.map((social) => (
+          <FooterMenuItem>
+            <FooterMenuLink href={social}>
+              <Icon href={social} />
+            </FooterMenuLink>
+          </FooterMenuItem>
+        ))
+      }
+    </FooterMenu>
+  </FooterGroup>
+  <FooterCopyright>{logo?.text}</FooterCopyright>
+</Footer>

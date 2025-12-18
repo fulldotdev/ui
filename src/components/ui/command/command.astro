@@ -1,0 +1,166 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {}
+
+const { class: className, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <div
+      data-slot="command"
+      class={cn(
+        "bg-popover text-popover-foreground flex h-full w-full flex-col overflow-hidden rounded-md",
+        className
+      )}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </div>
+  )
+}
+
+<script>
+  function initCommand() {
+    const commands = document.querySelectorAll("[data-slot='command']")
+
+    commands.forEach((command) => {
+      const input = command.querySelector(
+        "[data-slot='command-input']"
+      ) as HTMLInputElement
+      const list = command.querySelector("[data-slot='command-list']")
+      const empty = command.querySelector("[data-slot='command-empty']")
+      const items = list?.querySelectorAll(
+        "[data-slot='command-item']"
+      ) as NodeListOf<HTMLElement>
+
+      if (!input || !list) return
+
+      let selectedIndex = -1
+
+      // Filter items based on search
+      function filterItems() {
+        const searchTerm = input.value.toLowerCase().trim()
+        let visibleCount = 0
+
+        items.forEach((item) => {
+          if (item.hasAttribute("data-disabled")) return
+
+          const text = item.textContent?.toLowerCase() || ""
+          const shouldShow = searchTerm === "" || text.includes(searchTerm)
+
+          if (shouldShow) {
+            item.style.display = ""
+            visibleCount++
+          } else {
+            item.style.display = "none"
+          }
+        })
+
+        // Show/hide groups based on visible items
+        if (list) {
+          const groups = list.querySelectorAll("[data-slot='command-group']")
+          groups.forEach((group) => {
+            const groupItems = group.querySelectorAll(
+              "[data-slot='command-item']"
+            )
+            const hasVisible = Array.from(groupItems).some(
+              (item: Element) => (item as HTMLElement).style.display !== "none"
+            )
+            ;(group as HTMLElement).style.display = hasVisible ? "" : "none"
+          })
+        }
+
+        // Show/hide empty state
+        if (empty) {
+          ;(empty as HTMLElement).style.display =
+            visibleCount === 0 ? "" : "none"
+        }
+
+        // Reset selection when filtering
+        selectedIndex = -1
+        updateSelection()
+      }
+
+      // Update visual selection
+      function updateSelection() {
+        const visibleItems = Array.from(items).filter(
+          (item) =>
+            item.style.display !== "none" && !item.hasAttribute("data-disabled")
+        )
+
+        visibleItems.forEach((item, index) => {
+          if (index === selectedIndex) {
+            item.setAttribute("data-selected", "true")
+            item.scrollIntoView({ block: "nearest" })
+          } else {
+            item.removeAttribute("data-selected")
+          }
+        })
+      }
+
+      // Get visible items
+      function getVisibleItems() {
+        return Array.from(items).filter(
+          (item) =>
+            item.style.display !== "none" && !item.hasAttribute("data-disabled")
+        )
+      }
+
+      // Handle keyboard navigation
+      input.addEventListener("keydown", (e) => {
+        const visibleItems = getVisibleItems()
+
+        if (e.key === "ArrowDown") {
+          e.preventDefault()
+          selectedIndex = Math.min(selectedIndex + 1, visibleItems.length - 1)
+          updateSelection()
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault()
+          selectedIndex = Math.max(selectedIndex - 1, 0)
+          updateSelection()
+        } else if (e.key === "Enter") {
+          e.preventDefault()
+          if (selectedIndex >= 0 && selectedIndex < visibleItems.length) {
+            visibleItems[selectedIndex].click()
+          }
+        } else if (e.key === "Escape") {
+          e.preventDefault()
+          input.blur()
+        }
+      })
+
+      // Handle search input
+      input.addEventListener("input", filterItems)
+
+      // Handle item clicks
+      items.forEach((item) => {
+        item.addEventListener("click", () => {
+          if (item.hasAttribute("data-disabled")) return
+
+          const event = new CustomEvent("command-item-select", {
+            detail: { item },
+            bubbles: true,
+          })
+          command.dispatchEvent(event)
+        })
+      })
+
+      // Initialize
+      if (empty) {
+        ;(empty as HTMLElement).style.display = "none"
+      }
+    })
+  }
+
+  // Initialize on load
+  initCommand()
+
+  // Re-initialize after navigation (for Astro view transitions)
+  document.addEventListener("astro:page-load", initCommand)
+</script>

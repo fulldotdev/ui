@@ -1,0 +1,90 @@
+---
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionGrid,
+  SectionProse,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileActions,
+  TileContent,
+  TileDescription,
+  TileMedia,
+  TileTitle,
+} from "@/components/ui/tile"
+
+interface Props {
+  class?: string
+  id?: string
+  links?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  items?: {
+    title?: string
+    description?: string
+    icon?: string
+    href?: string
+    links?: {
+      icon?: string
+      text?: string
+      href?: string
+      target?: string
+    }[]
+  }[]
+}
+
+const { class: className, id, links, items } = Astro.props
+---
+
+<Section class={className} id={id}>
+  <SectionContent>
+    <SectionProse>
+      <slot />
+    </SectionProse>
+    <SectionActions>
+      {
+        links?.map(({ icon, text, ...link }, i) => (
+          <Button variant={i === 0 ? "default" : "outline"} {...link}>
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
+    </SectionActions>
+  </SectionContent>
+  <SectionGrid>
+    {
+      items?.map(({ title, description, icon, links }) => (
+        <Tile>
+          <TileMedia variant="icon">
+            <Icon name={icon} />
+          </TileMedia>
+          <TileContent>
+            <TileTitle>{title}</TileTitle>
+            <TileDescription>{description}</TileDescription>
+          </TileContent>
+          <TileActions>
+            {links?.map(({ icon, text, href, target }) => (
+              <Button
+                class="h-auto p-0"
+                variant="link"
+                href={href}
+                target={target}
+              >
+                {icon && <Icon name={icon} />}
+                {text}
+              </Button>
+            ))}
+          </TileActions>
+        </Tile>
+      ))
+    }
+  </SectionGrid>
+</Section>

@@ -1,0 +1,88 @@
+---
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+} from "@/components/ui/item"
+import { Rating } from "@/components/ui/rating"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionMedia,
+  SectionProse,
+  SectionSplit,
+} from "@/components/ui/section"
+
+interface Props {
+  class?: string
+  id?: string
+  links?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  image?: {
+    src: string
+    alt: string
+  }
+  item?: {
+    images?: {
+      src: string
+      alt: string
+    }[]
+    rating?: number
+    description?: string
+  }
+}
+
+const { class: className, id, links, image, item } = Astro.props
+---
+
+<Section class={className} id={id} variant="floating">
+  <SectionSplit class="@5xl:items-center">
+    <SectionContent>
+      <SectionProse>
+        <slot />
+      </SectionProse>
+      <SectionActions>
+        {
+          links?.map(({ icon, text, ...link }, i) => (
+            <Button variant={i === 0 ? "default" : "outline"} {...link}>
+              {icon && <Icon name={icon} />}
+              {text}
+            </Button>
+          ))
+        }
+      </SectionActions>
+      <Item class="p-0">
+        <ItemMedia class="-space-x-4">
+          {
+            item?.images?.map((image) => (
+              <Avatar class="ring-background size-10 ring-2">
+                <AvatarImage {...image} />
+              </Avatar>
+            ))
+          }
+        </ItemMedia>
+        <ItemContent>
+          <Rating rating={item?.rating} />
+          <ItemDescription>
+            {item?.description}
+          </ItemDescription>
+        </ItemContent>
+      </Item>
+    </SectionContent>
+    <SectionMedia
+      class="-mx-(--section-px) rounded-none @5xl:-my-(--section-py) @5xl:-ml-0"
+    >
+      <Image sizes="(1536px) 768px, (1024px) 50vw, 100vw" {...image} />
+    </SectionMedia>
+  </SectionSplit>
+</Section>

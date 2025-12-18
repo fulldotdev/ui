@@ -1,0 +1,102 @@
+---
+import {
+  Footer,
+  FooterCopyright,
+  FooterDescription,
+  FooterGrid,
+  FooterGroup,
+  FooterGroupLabel,
+  FooterMenu,
+  FooterMenuItem,
+  FooterMenuLink,
+  FooterSplit,
+  FooterSpread,
+} from "@/components/ui/footer"
+import { Icon } from "@/components/ui/icon"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
+
+interface Props {
+  logo?: {
+    src?: string
+    alt?: string
+    text?: string
+    href?: string
+  }
+  description?: string
+  socials?: string[]
+  menus?: {
+    text?: string
+    href?: string
+    links?: {
+      text?: string
+      href?: string
+    }[]
+  }[]
+  links?: {
+    href?: string
+    text?: string
+    icon?: string
+  }[]
+}
+
+const { logo, description, links, socials, menus } = Astro.props
+---
+
+<Footer>
+  <FooterSplit class="@5xl:grid-cols-[1fr_3fr]">
+    <FooterDescription class="text-base">{description}</FooterDescription>
+    <FooterGrid class="@5xl:justify-end">
+      {
+        menus?.map((menu) => (
+          <FooterGroup>
+            <FooterGroupLabel>{menu.text}</FooterGroupLabel>
+            <FooterMenu>
+              {menu.links?.map(({ href, text }) => (
+                <FooterMenuItem>
+                  <FooterMenuLink href={href}>{text}</FooterMenuLink>
+                </FooterMenuItem>
+              ))}
+            </FooterMenu>
+          </FooterGroup>
+        ))
+      }
+    </FooterGrid>
+  </FooterSplit>
+  <Logo class="h-auto max-h-none w-full max-w-none" href={logo?.href || "/"}>
+    <LogoImage
+      src={logo?.src}
+      alt={logo?.alt}
+      sizes="(min-width: 1536px) 1536px, 100vw"
+      class="h-auto max-h-none w-full max-w-none object-contain"
+    />
+    <LogoText>{logo?.text}</LogoText>
+  </Logo>
+  <FooterSpread>
+    <FooterCopyright>{logo?.text}</FooterCopyright>
+    <FooterMenu
+      orientation="horizontal"
+      class="@5xl:absolute @5xl:left-1/2 @5xl:-translate-x-1/2"
+    >
+      {
+        socials?.map((social) => (
+          <FooterMenuItem>
+            <FooterMenuLink href={social}>
+              <Icon href={social} />
+            </FooterMenuLink>
+          </FooterMenuItem>
+        ))
+      }
+    </FooterMenu>
+    <FooterMenu orientation="horizontal">
+      {
+        links?.map(({ href, text }) => (
+          <FooterMenuItem>
+            <FooterMenuLink class="text-xs" href={href}>
+              {text}
+            </FooterMenuLink>
+          </FooterMenuItem>
+        ))
+      }
+    </FooterMenu>
+  </FooterSpread>
+</Footer>

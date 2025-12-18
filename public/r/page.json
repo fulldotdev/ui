@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "page",
+  "type": "registry:file",
+  "registryDependencies": [
+    "@fulldev/layout",
+    "@fulldev/blocks",
+    "@fulldev/components"
+  ],
+  "files": [
+    {
+      "path": "src/pages/[...page].astro",
+      "content": "---\nimport { getCollection, getEntry, render } from \"astro:content\"\n\nimport Layout from \"@/components/layout.astro\"\n\nexport async function getStaticPaths() {\n  const pages = await getCollection(\"pages\")\n  return pages.map((page) => {\n    return {\n      params: {\n        page: page.id === \"index\" ? undefined : page.id,\n      },\n      props: page,\n    }\n  })\n}\n\nconst page = Astro.props\nconst { layout } = page.data\nconst { Content } = await render(Astro.props)\n\nconst indexLayout = await getEntry(\"layouts\", \"index\")\nconst pageLayout = layout ? await getEntry(\"layouts\", layout) : undefined\n---\n\n<Layout\n  {...indexLayout?.data}\n  {...pageLayout?.data}\n  {...page.data}\n  sections={[\n    ...(page.data?.sections || []),\n    ...(pageLayout?.data?.sections || []),\n    ...(indexLayout?.data?.sections || []),\n  ]}\n>\n  <Content />\n</Layout>\n",
+      "type": "registry:file",
+      "target": "src/pages/[...page].astro"
+    }
+  ]
+}

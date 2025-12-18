@@ -1,0 +1,22 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {}
+
+const { class: className, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <div
+      class={cn("flex flex-wrap items-center gap-x-2", className)}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </div>
+  )
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "item",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "src/components/ui/item/item.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props\n  extends VariantProps<typeof variants>,\n    HTMLAttributes<\"div\">,\n    HTMLAttributes<\"a\"> {}\n\nconst variants = cva(\n  \"group/item [a]:hover:bg-accent/50 focus-visible:border-ring focus-visible:ring-ring/50 flex flex-wrap items-center rounded-md border border-transparent text-sm transition-colors duration-100 outline-none focus-visible:ring-[3px] [a]:transition-colors\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-transparent\",\n        outline: \"border-border\",\n        muted: \"bg-muted/50\",\n      },\n      size: {\n        default: \"gap-4 p-4\",\n        sm: \"gap-2.5 px-4 py-3\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  }\n)\n\nconst { class: className, variant, size, href, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n\nconst Comp = href ? \"a\" : \"div\"\n---\n\n{\n  slot?.trim().length > 0 && (\n    <Comp\n      data-slot=\"item\"\n      class={cn(variants({ variant, size }), className)}\n      href={href}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </Comp>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/item/item-actions.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      data-slot=\"item-actions\"\n      class={cn(\"flex items-center gap-2\", className)}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/item/item-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      data-slot=\"item-content\"\n      class={cn(\n        \"flex flex-1 flex-col gap-1\",\n        \"[&+[data-slot=item-content]]:flex-none\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/item/item-description.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"p\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <p\n      data-slot=\"item-description\"\n      class={cn(\n        \"text-muted-foreground line-clamp-2 text-sm leading-normal font-normal text-balance\",\n        \"[&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </p>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/item/item-group.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      role=\"list\"\n      data-slot=\"item-group\"\n      class={cn(\"group/item-group flex flex-col\", className)}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/item/item-media.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\nconst variants = cva(\n  \"flex shrink-0 items-center justify-center gap-2 group-has-[[data-slot=item-description]]/item:translate-y-0.5 group-has-[[data-slot=item-description]]/item:self-start [&_svg]:pointer-events-none\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-transparent\",\n        icon: \"bg-muted size-8 rounded-sm border [&_svg:not([class*='size-'])]:size-4\",\n        image:\n          \"size-10 overflow-hidden rounded-sm [&_img]:size-full [&_img]:object-cover\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n    },\n  }\n)\n\ninterface Props extends HTMLAttributes<\"div\">, VariantProps<typeof variants> {}\n\nconst { class: className, variant, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      data-slot=\"item-media\"\n      class={cn(variants({ variant }), className)}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/item/item-title.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"h3\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <h3\n      data-slot=\"item-title\"\n      class={cn(\n        \"flex w-fit items-center gap-2 text-sm leading-snug font-medium\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </h3>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/item/index.ts",
+      "content": "export { default as Item } from \"./item.astro\"\nexport { default as ItemContent } from \"./item-content.astro\"\nexport { default as ItemDescription } from \"./item-description.astro\"\nexport { default as ItemGroup } from \"./item-group.astro\"\nexport { default as ItemMedia } from \"./item-media.astro\"\nexport { default as ItemTitle } from \"./item-title.astro\"\nexport { default as ItemActions } from \"./item-actions.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}

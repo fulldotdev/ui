@@ -1,0 +1,61 @@
+---
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionProse,
+} from "@/components/ui/section"
+
+interface Props {
+  class?: string
+  id?: string
+  links?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  items?: {
+    title?: string
+    description?: string
+  }[]
+}
+
+const { class: className, id, links, items } = Astro.props
+---
+
+<Section class={className} id={id} style="--section-width: 672px;">
+  <SectionContent>
+    <SectionProse>
+      <slot />
+    </SectionProse>
+    <SectionActions>
+      {
+        links?.map(({ icon, text, ...link }, i) => (
+          <Button variant={i === 0 ? "default" : "outline"} {...link}>
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
+    </SectionActions>
+  </SectionContent>
+  <Accordion>
+    {
+      items?.map(({ title, description }) => (
+        <AccordionItem>
+          <AccordionTrigger>{title}</AccordionTrigger>
+          <AccordionContent>{description}</AccordionContent>
+        </AccordionItem>
+      ))
+    }
+  </Accordion>
+</Section>

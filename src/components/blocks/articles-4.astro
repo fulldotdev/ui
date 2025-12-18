@@ -1,0 +1,103 @@
+---
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionGrid,
+  SectionProse,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileMedia,
+  TileTitle,
+} from "@/components/ui/tile"
+
+interface Props {
+  class?: string
+  id?: string
+  links?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  items?: {
+    href?: string
+    title?: string
+    description?: string
+    item?: {
+      image?: {
+        src: string
+        alt: string
+      }
+      title?: string
+      description?: string
+    }
+    image?: {
+      src: string
+      alt: string
+    }
+  }[]
+}
+
+const { class: className, id, links, items } = Astro.props
+---
+
+<Section class={className} id={id}>
+  <SectionContent>
+    <SectionProse>
+      <slot />
+    </SectionProse>
+    <SectionActions>
+      {
+        links?.map(({ icon, text, ...link }, i) => (
+          <Button variant={i === 0 ? "default" : "outline"} {...link}>
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
+    </SectionActions>
+  </SectionContent>
+  <SectionGrid>
+    {
+      items?.map(({ title, description, image, href, item }) => (
+        <Tile href={href} variant="floating">
+          <TileMedia class="-mx-6 -mt-6 aspect-video">
+            <Image sizes="600px" {...image} />
+          </TileMedia>
+          <TileContent>
+            <TileTitle class="line-clamp-2">{title}</TileTitle>
+            <TileDescription class="line-clamp-2">
+              {description}
+            </TileDescription>
+          </TileContent>
+          <Item class="p-0">
+            <ItemMedia>
+              <Avatar class="size-10">
+                <AvatarImage src={item?.image?.src} alt={item?.image?.alt} />
+              </Avatar>
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>{item?.title}</ItemTitle>
+              <ItemDescription>{item?.description}</ItemDescription>
+            </ItemContent>
+          </Item>
+        </Tile>
+      ))
+    }
+  </SectionGrid>
+</Section>

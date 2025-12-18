@@ -1,0 +1,98 @@
+---
+import { Button } from "@/components/ui/button"
+import { Image } from "@/components/ui/image"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionGrid,
+  SectionProse,
+  SectionSplit,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileActions,
+  TileContent,
+  TileDescription,
+  TileMedia,
+  TileSplit,
+  TileTitle,
+} from "@/components/ui/tile"
+
+interface Props {
+  class?: string
+  id?: string
+  links?: {
+    text?: string
+    href?: string
+  }[]
+  items?: {
+    href?: string
+    tagline?: string
+    title?: string
+    description?: string
+    image?: {
+      src: string
+      alt: string
+    }
+    links?: {
+      text?: string
+      href?: string
+    }[]
+  }[]
+}
+
+const { class: className, id, links, items } = Astro.props
+---
+
+<Section class={className} id={id}>
+  <SectionSplit
+    class="items-start @5xl:grid-cols-[2fr_3fr] @5xl:*:sticky @5xl:*:top-[calc(var(--section-py)+var(--header-height,0px))]"
+  >
+    <SectionContent>
+      <SectionProse>
+        <slot />
+      </SectionProse>
+      <SectionActions>
+        {
+          links?.map(({ text, ...link }, i) => (
+            <Button variant={i === 0 ? "default" : "outline"} {...link}>
+              {text}
+            </Button>
+          ))
+        }
+      </SectionActions>
+    </SectionContent>
+    <SectionGrid size="lg">
+      {
+        items?.map(({ title, tagline, description, image, links }) => (
+          <Tile>
+            <TileSplit>
+              <TileMedia>
+                <Image sizes="400px" {...image} />
+              </TileMedia>
+              <TileContent>
+                <TileDescription class="text-primary text-xs font-medium">
+                  {tagline}
+                </TileDescription>
+                <TileTitle>{title}</TileTitle>
+                <TileDescription>{description}</TileDescription>
+                <TileActions class="mt-2">
+                  {links?.map(({ text, ...link }, i) => (
+                    <Button
+                      variant={i === 0 ? "outline" : "ghost"}
+                      size="sm"
+                      {...link}
+                    >
+                      {text}
+                    </Button>
+                  ))}
+                </TileActions>
+              </TileContent>
+            </TileSplit>
+          </Tile>
+        ))
+      }
+    </SectionGrid>
+  </SectionSplit>
+</Section>

@@ -1,0 +1,100 @@
+---
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionGrid,
+  SectionProse,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileMedia,
+  TileTitle,
+} from "@/components/ui/tile"
+
+interface Props {
+  class?: string
+  id?: string
+  links?: {
+    text?: string
+    href?: string
+    icon?: string
+    target?: string
+  }[]
+  items?: {
+    title?: string
+    description?: string
+    image?: {
+      src: string
+      alt: string
+    }
+    links?: {
+      icon?: string
+      text?: string
+      href?: string
+      target?: string
+    }[]
+  }[]
+}
+
+const { class: className, id, links, items } = Astro.props
+---
+
+<Section class={className} id={id}>
+  <SectionContent>
+    <SectionProse>
+      <slot />
+    </SectionProse>
+    <SectionActions>
+      {
+        links?.map(({ text, icon, href, target }, i) => (
+          <Button
+            variant={i === 0 ? "default" : "outline"}
+            href={href}
+            target={target}
+          >
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
+    </SectionActions>
+  </SectionContent>
+  <SectionGrid size="lg">
+    {
+      items?.map(({ title, description, image, links }) => (
+        <Tile
+          class="dark aspect-4/3 justify-end rounded-md border-0 bg-black"
+          variant="floating"
+        >
+          <TileMedia class="absolute inset-0 size-full mask-b-from-0% mask-b-to-black/50">
+            <Image sizes="620px" {...image} />
+          </TileMedia>
+          <TileContent class="w-full text-white">
+            <TileTitle class="text-foreground text-3xl">{title}</TileTitle>
+            <TileDescription class="text-foreground text-lg">
+              {description}
+            </TileDescription>
+          </TileContent>
+          <SectionActions>
+            {links?.map(({ text, icon, href, target }, i) => (
+              <Button
+                variant={i === 0 ? "default" : "outline"}
+                href={href}
+                target={target}
+              >
+                {icon && <Icon name={icon} />}
+                {text}
+              </Button>
+            ))}
+          </SectionActions>
+        </Tile>
+      ))
+    }
+  </SectionGrid>
+</Section>

@@ -1,0 +1,89 @@
+---
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { List, ListItem } from "@/components/ui/list"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionProse,
+  SectionSplit,
+} from "@/components/ui/section"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+
+interface Props {
+  class?: string
+  id?: string
+  list?: string[]
+  links?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  items?: {
+    title?: string
+    description?: string
+  }[]
+}
+
+const { class: className, id, list, links, items } = Astro.props
+---
+
+<Section class={className} id={id}>
+  <SectionSplit class="items-start">
+    <SectionContent
+      class="@5xl:sticky @5xl:top-[calc(var(--section-py)+var(--header-height,0px))]"
+    >
+      <SectionProse>
+        <slot />
+      </SectionProse>
+      <List>
+        {
+          list?.map((item) => (
+            <ListItem>
+              <Icon name="check" />
+              {item}
+            </ListItem>
+          ))
+        }
+      </List>
+      <SectionActions>
+        {
+          links?.map(({ icon, text, ...link }, i) => (
+            <Button variant={i === 0 ? "default" : "outline"} {...link}>
+              {icon && <Icon name={icon} />}
+              {text}
+            </Button>
+          ))
+        }
+      </SectionActions>
+    </SectionContent>
+
+    <Table class="bg-muted/50 rounded-md">
+      <TableHeader>
+        <TableRow>
+          <TableHead>{items?.[0]?.title}</TableHead>
+          <TableHead>{items?.[0]?.description}</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {
+          items?.slice(1).map(({ title, description }) => (
+            <TableRow>
+              <TableCell>{title}</TableCell>
+              <TableCell>{description}</TableCell>
+            </TableRow>
+          ))
+        }
+      </TableBody>
+    </Table>
+  </SectionSplit>
+</Section>

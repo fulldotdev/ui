@@ -1,0 +1,6 @@
+export { default as SidebarMenu } from "./sidebar-menu.astro"
+export { default as SidebarMenuItem } from "./sidebar-menu-item.astro"
+export { default as SidebarMenuButton } from "./sidebar-menu-button.astro"
+export { default as SidebarMenuSub } from "./sidebar-menu-sub.astro"
+export { default as SidebarMenuSubButton } from "./sidebar-menu-sub-button.astro"
+export { default as SidebarMenuSubItem } from "./sidebar-menu-sub-item.astro"

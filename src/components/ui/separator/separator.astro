@@ -1,0 +1,31 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div">, VariantProps<typeof variants> {
+  orientation?: "horizontal" | "vertical"
+}
+
+const variants = cva("bg-border block shrink-0", {
+  variants: {
+    orientation: {
+      horizontal: "h-px w-full",
+      vertical: "h-full w-px",
+    },
+  },
+  defaultVariants: {
+    orientation: "horizontal",
+  },
+})
+
+const { class: className, orientation = "horizontal", ...props } = Astro.props
+---
+
+<div
+  data-slot="separator"
+  class={cn(variants({ orientation }), className)}
+  {...props}
+>
+</div>

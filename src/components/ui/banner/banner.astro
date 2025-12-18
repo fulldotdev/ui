@@ -1,0 +1,88 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+interface Props
+  extends HTMLAttributes<"header">,
+    VariantProps<typeof variants> {}
+
+const variants = cva(
+  "relative mx-auto flex min-h-12 items-center justify-between gap-8 border border-transparent px-(--banner-px) py-1",
+  {
+    variants: {
+      variant: {
+        default: "bg-foreground text-background w-full",
+        floating: [
+          "bg-foreground text-background rounded-xl shadow-sm",
+          "w-[calc(100%-2*var(--gutter,24px))] max-w-(--banner-width)",
+          "border-border my-2 overflow-hidden rounded-xl border",
+        ],
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
+
+const { class: className, variant, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+<script is:inline>
+  // Inline because it needs to run before the banner is rendered
+  if (sessionStorage.getItem("closedBanners")) {
+    document.body.classList.add("banner-hidden")
+  } else {
+    document.body.classList.remove("banner-hidden")
+  }
+</script>
+
+{
+  slot?.trim().length > 0 && (
+    <header
+      class={cn(variants({ variant }), className)}
+      data-slot="banner"
+      data-variant={variant}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </header>
+  )
+}
+
+<script>
+  document.querySelectorAll("[data-slot='banner-close']").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      sessionStorage.setItem("closedBanners", "true")
+      document.body.classList.add("banner-hidden")
+    })
+  })
+</script>
+
+<style is:global>
+  body.banner-hidden [data-slot="banner"] {
+    display: none;
+  }
+
+  [data-slot="banner"] {
+    --banner-width: var(--container, var(--breakpoint-xl));
+    --banner-px: max(
+      var(--gutter, 24px),
+      calc((100cqw - var(--banner-width)) / 2)
+    );
+  }
+
+  [data-slot="banner"][data-variant="floating"] {
+    --banner-px: calc(var(--spacing) * 6);
+  }
+
+  @media (min-width: 1024px) {
+    [data-slot="banner"][data-variant="floating"] {
+      --banner-px: calc(var(--spacing) * 16);
+    }
+  }
+</style>

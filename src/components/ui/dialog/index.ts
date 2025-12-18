@@ -1,0 +1,8 @@
+export { default as Dialog } from "./dialog.astro"
+export { default as DialogContent } from "./dialog-content.astro"
+export { default as DialogTrigger } from "./dialog-trigger.astro"
+export { default as DialogHeader } from "./dialog-header.astro"
+export { default as DialogTitle } from "./dialog-title.astro"
+export { default as DialogDescription } from "./dialog-description.astro"
+export { default as DialogFooter } from "./dialog-footer.astro"
+export { default as DialogClose } from "./dialog-close.astro"

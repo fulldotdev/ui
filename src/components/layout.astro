@@ -1,0 +1,195 @@
+---
+import { getImage } from "astro:assets"
+
+import "@/styles/global.css"
+
+import { Font } from "astro:assets"
+import site from "site.json"
+
+import type { PageSchema } from "@/lib/schemas"
+import { ThemeProvider } from "@/components/ui/theme-toggle"
+import Block from "@/components/block.astro"
+
+type Props = PageSchema
+
+const baseUrl = Astro.site?.origin || Astro.url.origin
+const pagePathname = Astro.url.pathname.endsWith("/")
+  ? Astro.url.pathname
+  : `${Astro.url.pathname}/`
+const pageUrl = `${baseUrl}${pagePathname}`
+
+const { headers, sections, footers, block, seo, head, ...props } = Astro.props
+
+const title = seo?.title || props?.title
+const description = seo?.description || props?.description
+const image = seo?.image || props?.image
+const transformedImage = image?.src
+  ? await getImage({
+      src: image.src,
+      format: "png",
+      width: 1200,
+      height: 630,
+      quality: "medium",
+    })
+  : undefined
+---
+
+<html class={site.theme} lang={Astro.currentLocale}>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta charset="UTF-8" />
+    <link rel="canonical" href={seo?.canonical} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:locale" content={Astro.currentLocale} />
+    <meta property="og:image" content={`${baseUrl}${transformedImage?.src}`} />
+    <meta
+      property="og:image:url"
+      content={`${baseUrl}${transformedImage?.src}`}
+    />
+    <meta
+      property="og:image:secure_url"
+      content={`${baseUrl}${transformedImage?.src}`}
+    />
+    <meta
+      property="og:image:type"
+      content={transformedImage?.attributes.format || "image/png"}
+    />
+    <meta
+      property="og:image:width"
+      content={transformedImage?.attributes.width.toString()}
+    />
+    <meta
+      property="og:image:height"
+      content={transformedImage?.attributes.height.toString()}
+    />
+    <meta property="og:image:alt" content={image?.alt} />
+    <meta
+      name="robots"
+      content={`${seo?.noindex ? "noindex" : "index"}, ${seo?.nofollow ? "nofollow" : "follow"}`}
+    />
+    <Fragment
+      set:html={`<script type="application/ld+json">${JSON.stringify(
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: site.name,
+          url: pageUrl,
+          logo: {
+            "@type": "ImageObject",
+            url: `${baseUrl}${transformedImage?.src}`,
+            alt: image?.alt,
+            width: transformedImage?.attributes.width.toString(),
+            height: transformedImage?.attributes.height.toString(),
+          },
+          description: description,
+          headline: title,
+          creator: {
+            "@type": "Organization",
+            name: site.name,
+            url: pageUrl,
+          },
+        },
+        null,
+        2
+      )}</script>`}
+    />
+    <Font cssVariable="--font-base" preload />
+    <Font cssVariable="--font-heading" preload />
+    <ThemeProvider />
+    <Fragment set:html={Astro.props.head} />
+    <slot name="head" />
+    <script is:inline>
+      !(function (t, e) {
+        var o, n, p, r
+        e.__SV ||
+          (window.posthog && window.posthog.__loaded) ||
+          ((window.posthog = e),
+          (e._i = []),
+          (e.init = function (i, s, a) {
+            function g(t, e) {
+              var o = e.split(".")
+              ;(2 == o.length && ((t = t[o[0]]), (e = o[1])),
+                (t[e] = function () {
+                  t.push([e].concat(Array.prototype.slice.call(arguments, 0)))
+                }))
+            }
+            ;(((p = t.createElement("script")).type = "text/javascript"),
+              (p.crossOrigin = "anonymous"),
+              (p.async = !0),
+              (p.src =
+                s.api_host.replace(".i.posthog.com", "-assets.i.posthog.com") +
+                "/static/array.js"),
+              (r = t.getElementsByTagName("script")[0]).parentNode.insertBefore(
+                p,
+                r
+              ))
+            var u = e
+            for (
+              void 0 !== a ? (u = e[a] = []) : (a = "posthog"),
+                u.people = u.people || [],
+                u.toString = function (t) {
+                  var e = "posthog"
+                  return (
+                    "posthog" !== a && (e += "." + a),
+                    t || (e += " (stub)"),
+                    e
+                  )
+                },
+                u.people.toString = function () {
+                  return u.toString(1) + ".people (stub)"
+                },
+                o =
+                  "init Br Vr ci Wr Jr zr qr capture Ni calculateEventProperties Xr register register_once register_for_session unregister unregister_for_session es getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty Zr Yr createPersonProfile ts Nr rs opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing Kr debug O Qr getPageViewId captureTraceFeedback captureTraceMetric Dr".split(
+                    " "
+                  ),
+                n = 0;
+              n < o.length;
+              n++
+            )
+              g(u, o[n])
+            e._i.push([i, s, a])
+          }),
+          (e.__SV = 1))
+      })(document, window.posthog || [])
+      posthog.init("phc_mVacbe8Xydu0UZlh4bNw5EGisvzyRcpqXEEuEEp5lOY", {
+        api_host: "https://eu.i.posthog.com",
+        defaults: "2025-11-30",
+        person_profiles: "identified_only", // or 'always' to create profiles for anonymous users as well
+      })
+    </script>
+  </head>
+  <body
+    class="text-foreground bg-background font-base @container overscroll-none antialiased"
+    id={Astro.url.pathname}
+  >
+    {headers?.map((header) => <Block {...header} />)}
+    <main class="@container flex flex-col">
+      <Block
+        data-cms-bind="#"
+        data-cms-bind-style="sidebar"
+        block={block}
+        {...props}
+      >
+        <slot />
+      </Block>
+      {
+        sections?.map((section, i) => (
+          <div data-cms-bind={`#sections[${i}]`} data-cms-bind-style="sidebar">
+            <Block {...section} />
+          </div>
+        ))
+      }
+    </main>
+    {footers?.map((footer) => <Block {...footer} />)}
+  </body><style>
+    body {
+      font-family: var(--font-base);
+    }
+  </style>
+</html>

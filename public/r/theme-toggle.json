@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-toggle",
+  "type": "registry:ui",
+  "registryDependencies": ["@fulldev/button", "@fulldev/icon"],
+  "files": [
+    {
+      "path": "src/components/ui/theme-toggle/theme-toggle.astro",
+      "content": "---\nimport { cn } from \"@/lib/utils\"\nimport { Button } from \"@/components/ui/button\"\nimport { Icon } from \"@/components/ui/icon\"\n\ninterface Props {\n  class?: string\n}\n\nconst { class: className } = Astro.props\n---\n\n<Button\n  data-slot=\"theme-toggle\"\n  variant=\"ghost\"\n  size=\"icon-sm\"\n  aria-label=\"Toggle theme\"\n  class={cn(\"relative\", className)}\n>\n  <Icon name=\"sun\" class=\"dark:hidden [&:is([data-theme=dark]_&)]:hidden\" />\n  <Icon\n    name=\"moon\"\n    class=\"hidden dark:block [&:is([data-theme=dark]_&)]:block\"\n  />\n</Button>\n\n<style>\n  :global(html.no-transitions *) {\n    @apply !transition-none !duration-0;\n  }\n</style>\n\n<script is:inline>\n  if (!window.__themeHandlersInitialized) {\n    window.__themeHandlersInitialized = true\n    document\n      .querySelectorAll(\"[data-slot='theme-toggle']\")\n      .forEach((toggle) => {\n        toggle.addEventListener(\"click\", () => {\n          const element = document.documentElement\n          element.classList.add(\"no-transitions\")\n          element.classList.toggle(\"dark\")\n\n          const isDark = element.classList.contains(\"dark\")\n          const newTheme = isDark ? \"dark\" : \"light\"\n          localStorage.setItem(\"theme\", newTheme)\n          element.setAttribute(\"data-theme\", newTheme)\n\n          requestAnimationFrame(() => {\n            element.classList.remove(\"no-transitions\")\n          })\n        })\n      })\n  }\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/theme-toggle/index.ts",
+      "content": "export { default as ThemeToggle } from \"./theme-toggle.astro\"\nexport { default as ThemeProvider } from \"./theme-provider.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}

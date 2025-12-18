@@ -1,0 +1,39 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends Omit<HTMLAttributes<"div">, "src"> {
+  src?: string
+}
+
+const { class: className, src, ...props } = Astro.props
+---
+
+{
+  src?.includes("youtube.com/watch") && (
+    <iframe
+      src={
+        src.replace("youtube.com/watch?v=", "youtube.com/embed/").split("&")[0]
+      }
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen
+      class={cn("aspect-video h-auto w-full", className)}
+      {...props}
+    />
+  )
+}
+
+{
+  src?.includes("youtube.com/shorts") && (
+    <iframe
+      src={
+        src.replace("youtube.com/shorts/", "youtube.com/embed/").split("&")[0]
+      }
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen
+      class={cn("aspect-9/16 h-auto w-full", className)}
+      {...props}
+    />
+  )
+}

@@ -1,0 +1,28 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"div"> & HTMLAttributes<"a">
+
+const { class: className, href, ...props } = Astro.props
+
+const Comp = href ? "a" : "div"
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <Comp
+      class={cn(
+        "flex items-center justify-start gap-2.5 text-base font-semibold whitespace-nowrap",
+        className
+      )}
+      href={href}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </Comp>
+  )
+}

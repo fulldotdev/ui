@@ -1,0 +1,102 @@
+---
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemTitle,
+} from "@/components/ui/item"
+import {
+  NativeCarousel,
+  NativeCarouselContent,
+  NativeCarouselItem,
+  NativeCarouselNext,
+  NativeCarouselPrevious,
+} from "@/components/ui/native-carousel"
+import { Rating } from "@/components/ui/rating"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionProse,
+} from "@/components/ui/section"
+import { Tile, TileDescription } from "@/components/ui/tile"
+
+interface Props {
+  class?: string
+  id?: string
+  links?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  items?: {
+    title?: string
+    description?: string
+    rating?: number
+    image?: {
+      src: string
+      alt: string
+    }
+    item?: {
+      title?: string
+      description?: string
+      image?: {
+        src: string
+        alt: string
+      }
+    }
+  }[]
+}
+
+const { class: className, id, links, items } = Astro.props
+---
+
+<Section
+  class={cn("items-center", className)}
+  id={id}
+  style={{ "--section-width": "var(--breakpoint-sm)" }}
+>
+  <SectionContent class="items-center text-center">
+    <SectionProse>
+      <slot />
+    </SectionProse>
+    <SectionActions>
+      {
+        links?.map(({ icon, text, ...link }, i) => (
+          <Button variant={i === 0 ? "default" : "outline"} {...link}>
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
+    </SectionActions>
+  </SectionContent>
+  <NativeCarousel>
+    <NativeCarouselContent>
+      {
+        items?.map(({ description, rating, item }) => (
+          <NativeCarouselItem>
+            <Tile class="items-center bg-transparent! ring-transparent!">
+              <Rating rating={rating} />
+              <TileDescription class="text-center">
+                {description}
+              </TileDescription>
+              <Item class="p-0">
+                <ItemContent class="items-center text-center">
+                  <ItemTitle>{item?.title}</ItemTitle>
+                  <ItemDescription>{item?.description}</ItemDescription>
+                </ItemContent>
+              </Item>
+            </Tile>
+          </NativeCarouselItem>
+        ))
+      }
+    </NativeCarouselContent>
+    <NativeCarouselPrevious class="top-auto -bottom-2 left-6" />
+    <NativeCarouselNext class="top-auto right-6 -bottom-2" />
+  </NativeCarousel>
+</Section>

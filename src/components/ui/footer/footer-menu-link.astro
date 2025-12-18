@@ -1,0 +1,25 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"a"> {}
+
+const { class: className, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <a
+      class={cn(
+        "text-muted-foreground hover:text-foreground focus-visible:outline-ring inline-flex cursor-pointer items-center gap-2 text-sm leading-5 outline-hidden transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
+        className
+      )}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </a>
+  )
+}

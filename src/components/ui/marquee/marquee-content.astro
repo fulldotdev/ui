@@ -1,0 +1,60 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"div"> & VariantProps<typeof contentVariants>
+
+const contentVariants = cva(
+  "animation-duration-40000 flex min-w-full shrink-0 justify-between gap-6 after:w-0",
+  {
+    variants: {
+      direction: {
+        left: "animate-[marquee-horizontal_linear_infinite]",
+        right: "reverse animate-[marquee-horizontal_linear_infinite_reverse]",
+      },
+      pauseOnHover: {
+        true: "group-hover/marquee:paused",
+        false: "",
+      },
+    },
+    defaultVariants: {
+      direction: "left",
+      pauseOnHover: false,
+    },
+  }
+)
+
+const { class: className, direction, pauseOnHover, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+<div
+  class={cn(contentVariants({ direction, pauseOnHover }), className)}
+  data-slot="marquee-content"
+  data-direction={direction}
+  {...props}
+>
+  <Fragment set:html={slot} />
+</div>
+<div
+  class={cn(contentVariants({ direction, pauseOnHover }), className)}
+  data-slot="marquee-content"
+  data-direction={direction}
+  {...props}
+>
+  <Fragment set:html={slot} />
+</div>
+
+<style>
+  @keyframes marquee-horizontal {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+</style>

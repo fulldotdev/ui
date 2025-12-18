@@ -1,0 +1,26 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {}
+
+const { class: className, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <div
+      class={cn(
+        "grid size-full grid-cols-1 gap-16 *:w-full @5xl:grid-cols-[1fr_3fr]",
+        className
+      )}
+      data-slot="footer-split"
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </div>
+  )
+}

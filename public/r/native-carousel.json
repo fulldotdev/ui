@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "native-carousel",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "src/components/ui/native-carousel/native-carousel.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {\n  orientation?: \"horizontal\" | \"vertical\"\n}\n\nconst { class: className, orientation = \"horizontal\", ...props } = Astro.props\n---\n\n<div\n  class={cn(\"relative\", className)}\n  data-slot=\"native-carousel\"\n  data-orientation={orientation}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/native-carousel/native-carousel-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  class={cn(\n    \"flex snap-x snap-mandatory overflow-x-auto scroll-smooth\",\n    \"scrollbar-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden\",\n    \"group-data-[orientation=vertical]/native-carousel:snap-y group-data-[orientation=vertical]/native-carousel:flex-col group-data-[orientation=vertical]/native-carousel:overflow-y-auto\",\n    className\n  )}\n  data-slot=\"native-carousel-content\"\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  // Add smooth scrolling behavior and snap support\n  document.addEventListener(\"DOMContentLoaded\", () => {\n    const carousels = document.querySelectorAll('[data-slot=\"native-carousel\"]')\n\n    carousels.forEach((carousel) => {\n      const content = carousel.querySelector(\n        '[data-slot=\"native-carousel-content\"]'\n      ) as HTMLElement\n      const prevButton = carousel.querySelector(\n        '[data-slot=\"native-carousel-previous\"]'\n      ) as HTMLButtonElement\n      const nextButton = carousel.querySelector(\n        '[data-slot=\"native-carousel-next\"]'\n      ) as HTMLButtonElement\n\n      if (!content) return\n\n      const orientation =\n        carousel.getAttribute(\"data-orientation\") || \"horizontal\"\n      const isVertical = orientation === \"vertical\"\n\n      const updateButtons = () => {\n        if (!prevButton || !nextButton) return\n\n        const scrollPos = isVertical ? content.scrollTop : content.scrollLeft\n        const maxScroll = isVertical\n          ? content.scrollHeight - content.clientHeight\n          : content.scrollWidth - content.clientWidth\n\n        prevButton.disabled = scrollPos <= 0\n        nextButton.disabled = scrollPos >= maxScroll - 1\n      }\n\n      const scroll = (direction: \"next\" | \"prev\") => {\n        const items = Array.from(\n          content.querySelectorAll('[data-slot=\"native-carousel-item\"]')\n        ) as HTMLElement[]\n\n        if (items.length === 0) return\n\n        const itemSize = isVertical\n          ? items[0].offsetHeight\n          : items[0].offsetWidth\n        const scrollAmount =\n          itemSize + parseFloat(getComputedStyle(items[0]).marginRight || \"0\")\n\n        const delta = direction === \"next\" ? scrollAmount : -scrollAmount\n\n        if (isVertical) {\n          content.scrollBy({ top: delta, behavior: \"smooth\" })\n        } else {\n          content.scrollBy({ left: delta, behavior: \"smooth\" })\n        }\n      }\n\n      if (prevButton) {\n        prevButton.addEventListener(\"click\", () => scroll(\"prev\"))\n      }\n\n      if (nextButton) {\n        nextButton.addEventListener(\"click\", () => scroll(\"next\"))\n      }\n\n      content.addEventListener(\"scroll\", updateButtons)\n      updateButtons()\n    })\n  })\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/native-carousel/native-carousel-item.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  class={cn(\"min-w-0 shrink-0 grow-0 basis-full snap-start\", className)}\n  data-slot=\"native-carousel-item\"\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/native-carousel/native-carousel-next.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport ChevronRightIcon from \"lucide-static/icons/chevron-right.svg\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends Omit<HTMLAttributes<\"button\">, \"type\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<button\n  type=\"button\"\n  class={cn(\n    \"border-input bg-background hover:bg-accent hover:text-accent-foreground absolute top-1/2 -right-12 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-md border shadow-sm transition-colors disabled:pointer-events-none disabled:opacity-50\",\n    \"group-data-[orientation=vertical]/native-carousel:top-auto group-data-[orientation=vertical]/native-carousel:right-1/2 group-data-[orientation=vertical]/native-carousel:-bottom-12 group-data-[orientation=vertical]/native-carousel:-translate-x-1/2 group-data-[orientation=vertical]/native-carousel:translate-y-0 group-data-[orientation=vertical]/native-carousel:rotate-90\",\n    className\n  )}\n  data-slot=\"native-carousel-next\"\n  {...props}\n>\n  <ChevronRightIcon class=\"size-4\" aria-hidden=\"true\" />\n  <span class=\"sr-only\">Next slide</span>\n</button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/native-carousel/native-carousel-previous.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport ChevronLeftIcon from \"lucide-static/icons/chevron-left.svg\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends Omit<HTMLAttributes<\"button\">, \"type\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<button\n  type=\"button\"\n  class={cn(\n    \"border-input bg-background hover:bg-accent hover:text-accent-foreground absolute top-1/2 -left-12 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-md border shadow-sm transition-colors disabled:pointer-events-none disabled:opacity-50\",\n    \"group-data-[orientation=vertical]/native-carousel:-top-12 group-data-[orientation=vertical]/native-carousel:left-1/2 group-data-[orientation=vertical]/native-carousel:-translate-x-1/2 group-data-[orientation=vertical]/native-carousel:translate-y-0 group-data-[orientation=vertical]/native-carousel:rotate-90\",\n    className\n  )}\n  data-slot=\"native-carousel-previous\"\n  {...props}\n>\n  <ChevronLeftIcon class=\"size-4\" aria-hidden=\"true\" />\n  <span class=\"sr-only\">Previous slide</span>\n</button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/native-carousel/index.ts",
+      "content": "export { default as NativeCarousel } from \"./native-carousel.astro\"\nexport { default as NativeCarouselContent } from \"./native-carousel-content.astro\"\nexport { default as NativeCarouselItem } from \"./native-carousel-item.astro\"\nexport { default as NativeCarouselPrevious } from \"./native-carousel-previous.astro\"\nexport { default as NativeCarouselNext } from \"./native-carousel-next.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}

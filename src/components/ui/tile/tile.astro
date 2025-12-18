@@ -1,0 +1,57 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+type Props = VariantProps<typeof variants> &
+  HTMLAttributes<"div"> &
+  HTMLAttributes<"a">
+
+const variants = cva(
+  "group/tile focus-visible:border-ring focus-visible:ring-ring/50 [a]:hover:ring-accent/50 relative flex flex-col items-start gap-6 outline-none focus-visible:ring-[3px] [a]:transition-all",
+  {
+    variants: {
+      variant: {
+        default:
+          "[a]:hover:ring-accent/50 [a]:hover:bg-accent/50 rounded-sm bg-transparent [a]:hover:ring-12",
+        floating:
+          "bg-card text-card-foreground [a]:hover:bg-accent/50 overflow-hidden rounded-sm border p-6 shadow-sm duration-100",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
+
+const { class: className, variant, href, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+
+const Comp = href ? "a" : "div"
+---
+
+{
+  slot?.trim().length > 0 && (
+    <Comp
+      data-slot="tile"
+      data-variant={variant}
+      class={cn(variants({ variant }), className)}
+      href={href}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </Comp>
+  )
+}
+
+<style is:global>
+  [data-slot="tile"] {
+    --tile-padding: 0px;
+  }
+
+  [data-slot="tile"][data-variant="floating"] {
+    --tile-padding: 24px;
+  }
+</style>

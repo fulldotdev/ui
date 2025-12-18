@@ -1,0 +1,125 @@
+---
+import { getCollection, getEntry, type CollectionEntry } from "astro:content"
+
+import type { BlockSchema, PageSchema } from "@/lib/schemas"
+
+type Props = BlockSchema & PageSchema
+
+// Helper functions
+function getHref(entry: CollectionEntry<"pages">) {
+  // If there is no content, return undefined
+  if (!entry.data.sections?.length && !entry.body?.length && !entry.data.block)
+    return undefined
+  // If the page is the index, return the root
+  if (entry.id === "index") return "/"
+  // else return href b yid
+  return `/${entry.id}/`
+}
+
+const pages = await getCollection("pages")
+
+// Get a single reference by file path
+async function getRef(value: string) {
+  const entry = pages.find((page) => `/${page.filePath}` === value)
+  const layout = entry?.data?.layout
+    ? await getEntry("layouts", entry?.data?.layout)
+    : undefined
+  if (!entry) return
+  return {
+    ...layout?.data,
+    href: getHref(entry),
+    ...entry.data,
+  }
+}
+
+// Get multiple references by file paths
+async function getRefs(values: string[]) {
+  return (await Promise.all(values.map(getRef))).filter(
+    (item) => item !== undefined
+  )
+}
+
+// Get a glob of pages by folder path
+async function getGlob(value: string) {
+  return pages
+    .filter((page) => page.filePath?.startsWith(`src/content/pages/${value}`))
+    .map((page) => ({
+      href: getHref(page),
+      ...page.data,
+    }))
+}
+
+// Recursively resolve references in items
+async function resolveItem(item: any): Promise<any> {
+  if (!item) return item
+
+  const resolved = { ...item }
+
+  // Resolve single reference
+  if (resolved.ref) {
+    const referencedItem = await getRef(resolved.ref)
+    resolved.item = referencedItem
+    delete resolved.ref
+  }
+
+  // Resolve multiple references
+  if (resolved.refs) {
+    resolved.items = await getRefs(resolved.refs)
+    delete resolved.refs
+  }
+
+  // Resolve glob pattern
+  if (resolved.glob) {
+    resolved.items = await getGlob(resolved.glob)
+    delete resolved.glob
+  }
+
+  // Recursively resolve nested items
+  if (resolved.items) {
+    resolved.items = await Promise.all(
+      resolved.items.map((nestedItem: any) => resolveItem(nestedItem))
+    )
+  }
+
+  // Recursively resolve single nested item
+  if (resolved.item) {
+    resolved.item = await resolveItem(resolved.item)
+  }
+
+  return resolved
+}
+
+const { block, ref, refs, glob, ...props } = Astro.props
+
+// Populate references at top level
+if (ref) {
+  props.item = await getRef(ref)
+}
+if (refs) {
+  props.items = await getRefs(refs)
+}
+if (glob) {
+  props.items = await getGlob(glob)
+}
+
+// Recursively resolve nested items
+if (props.items) {
+  props.items = await Promise.all(
+    props.items.map((item: any) => resolveItem(item))
+  )
+}
+
+const blockImports = import.meta.glob("./blocks/**/*.astro")
+const blockPath = `./blocks/${block}.astro`
+const blockImport = (await blockImports[blockPath]?.()) as any
+const BlockComponent = blockImport?.default as any
+---
+
+{
+  BlockComponent && (
+    <BlockComponent {...props}>
+      <slot />
+      {"html" in props && <Fragment set:html={props.html} />}
+    </BlockComponent>
+  )
+}

@@ -1,0 +1,110 @@
+---
+import fs from "fs"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Marquee, MarqueeContent } from "@/components/ui/marquee"
+import {
+  Section,
+  SectionContent,
+  SectionProse,
+  SectionSpread,
+} from "@/components/ui/section"
+import Block from "@/components/block.astro"
+
+interface Props {
+  class?: string
+  id?: string
+  title?: string
+  description?: string
+  items?: any[]
+}
+
+const { class: className, id, items } = Astro.props
+---
+
+<Section class={cn("", className)} id={id}>
+  <SectionSpread>
+    <SectionContent>
+      <SectionProse>
+        <slot />
+      </SectionProse>
+    </SectionContent>
+  </SectionSpread>
+  <div class="flex flex-col gap-6">
+    {
+      (["left", "right"] as const).map((direction) => (
+        <Marquee class="-mx-(--section-px) mask-x-from-95%">
+          <MarqueeContent
+            class="animation-duration-80000"
+            direction={direction}
+            pauseOnHover
+          >
+            {items?.map(({ block, href, ...props }) => {
+              if (!block) return null
+              const fileContent = fs.readFileSync(
+                `src/components/blocks/${block}.astro`,
+                "utf8"
+              )
+              return (
+                <div class="group relative aspect-video w-[320px] overflow-hidden rounded-lg border @5xl:w-[640px]">
+                  <div class="bg-background @container h-full w-[400%] origin-top-left scale-25 @5xl:w-[200%] @5xl:scale-50">
+                    <Block block={block} {...props} />
+                  </div>
+                  <div class="bg-background absolute bottom-0 left-0 hidden w-full items-center justify-between border-t p-4 text-sm shadow-lg group-hover:flex">
+                    <h3 class="text-sm font-medium">
+                      <a href={href}>{block}</a>
+                    </h3>
+                    <div class="flex gap-2">
+                      <Button
+                        class="copy"
+                        variant="outline"
+                        size="sm"
+                        data-copy={fileContent}
+                      >
+                        <Icon name="copy" class="[&:is(.copied_&)]:hidden" />
+                        <Icon
+                          name="check"
+                          class="hidden [&:is(.copied_&)]:block"
+                        />
+                        Copy code
+                      </Button>
+                      <Button
+                        class="copy"
+                        variant="outline"
+                        size="sm"
+                        data-copy={`npx shadcn@latest add @fulldev/${block}`}
+                      >
+                        <Icon
+                          name="terminal"
+                          class="[&:is(.copied_&)]:hidden"
+                        />
+                        <Icon
+                          name="check"
+                          class="hidden [&:is(.copied_&)]:block"
+                        />
+                        npx shadcn add
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </MarqueeContent>
+        </Marquee>
+      ))
+    }
+  </div>
+</Section>
+
+<script>
+  const buttons = document.querySelectorAll("button.copy")
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const copy = button.getAttribute("data-copy") || ""
+      navigator.clipboard.writeText(copy)
+      button.classList.add("copied")
+    })
+  })
+</script>

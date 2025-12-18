@@ -1,0 +1,200 @@
+---
+import MenuIcon from "lucide-static/icons/menu.svg"
+
+import { Button } from "@/components/ui/button"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+import { Header, HeaderActions } from "@/components/ui/header"
+import { Icon } from "@/components/ui/icon"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuSub,
+  NavigationMenuSubItem,
+  NavigationMenuSubLink,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+} from "@/components/ui/sidebar"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
+
+interface Props {
+  logo?: {
+    src?: string
+    alt?: string
+    text?: string
+    href?: string
+  }
+  links?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  socials?: string[]
+  menus?: {
+    text?: string
+    href?: string
+    links?: {
+      text?: string
+      href?: string
+    }[]
+  }[]
+}
+
+const { logo, menus, links, socials } = Astro.props
+---
+
+<Header>
+  <Logo href={logo?.href || "/"}>
+    <LogoImage src={logo?.src} alt={logo?.alt} />
+    <LogoText>{logo?.text}</LogoText>
+  </Logo>
+  <NavigationMenu class="mr-auto @max-5xl:hidden">
+    <NavigationMenuList>
+      {
+        menus?.map((menu) => (
+          <NavigationMenuItem>
+            {menu.links && menu.links.length > 0 ? (
+              <>
+                <NavigationMenuTrigger
+                  class="inline-flex h-8 items-center bg-transparent px-3 py-0"
+                  href={menu.href}
+                >
+                  {menu.text}
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <NavigationMenuSub>
+                    {menu.links?.map((link) => (
+                      <NavigationMenuSubItem>
+                        <NavigationMenuSubLink href={link.href}>
+                          {link.text}
+                        </NavigationMenuSubLink>
+                      </NavigationMenuSubItem>
+                    ))}
+                  </NavigationMenuSub>
+                </NavigationMenuContent>
+              </>
+            ) : (
+              <NavigationMenuLink
+                class="inline-flex h-8 items-center bg-transparent px-3 py-0"
+                variant="trigger"
+                href={menu.href}
+              >
+                {menu.text}
+              </NavigationMenuLink>
+            )}
+          </NavigationMenuItem>
+        ))
+      }
+    </NavigationMenuList>
+  </NavigationMenu>
+  <HeaderActions class="@max-5xl:hidden">
+    {
+      socials?.map((social) => (
+        <>
+          <Button variant="ghost" size="icon-sm" href={social} target="_blank">
+            <Icon href={social} />
+          </Button>
+        </>
+      ))
+    }
+    <ThemeToggle />
+    {
+      links?.map(({ icon, text, ...link }, i) => (
+        <Button
+          variant={i === links.length - 1 ? "default" : "outline"}
+          size="sm"
+          {...link}
+        >
+          {icon && <Icon name={icon} />}
+          {text}
+        </Button>
+      ))
+    }
+  </HeaderActions>
+  <Sheet class="first:ml-auto">
+    <SheetTrigger
+      class="@5xl:hidden"
+      variant="ghost"
+      size="icon"
+      name="open-menu-button"
+    >
+      <MenuIcon class="size-5" />
+    </SheetTrigger>
+    <SheetContent class="overflow-y-auto px-4 py-12">
+      <SidebarMenu>
+        {
+          menus?.map((menu) => (
+            <SidebarMenuItem>
+              {menu.links && menu.links.length > 0 ? (
+                <Collapsible>
+                  <CollapsibleTrigger>
+                    <SidebarMenuButton class="h-10 rounded-md px-4 text-xl">
+                      {menu.text}
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      {menu.links?.map((link) => (
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton href={link.href}>
+                            {link.text}
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </Collapsible>
+              ) : (
+                <SidebarMenuButton
+                  class="h-10 w-full rounded-md px-4 text-xl has-[>svg]:px-4"
+                  href={menu.href}
+                >
+                  {menu.text}
+                </SidebarMenuButton>
+              )}
+            </SidebarMenuItem>
+          ))
+        }
+      </SidebarMenu>
+      <HeaderActions class="flex flex-col gap-2">
+        {
+          links?.map(({ icon, text, ...link }, i) => (
+            <Button
+              variant={i === links.length - 1 ? "default" : "secondary"}
+              class="w-full"
+              {...link}
+            >
+              {icon && <Icon name={icon} />}
+              {text}
+            </Button>
+          ))
+        }
+      </HeaderActions>
+      <HeaderActions>
+        {
+          socials?.map((social) => (
+            <Button variant="ghost" size="icon" href={social}>
+              <Icon href={social} />
+            </Button>
+          ))
+        }
+      </HeaderActions>
+    </SheetContent>
+  </Sheet>
+</Header>

@@ -1,0 +1,41 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import XIcon from "lucide-static/icons/x.svg"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+
+interface Props extends HTMLAttributes<"div"> {
+  showClose?: boolean
+}
+
+const { class: className, showClose = true, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <div
+      class={cn(
+        "relative flex w-full flex-col gap-2 py-1 @5xl:flex-row @5xl:items-center",
+        className
+      )}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+      {showClose && (
+        <Button
+          type="button"
+          variant="ghost"
+          data-slot="banner-close"
+          class="focus-visible:outline-ring absolute top-1/2 right-0 z-20 -translate-y-1/2 cursor-pointer rounded-sm border-0 bg-transparent text-inherit opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2"
+          size="icon-sm"
+          aria-label="Close"
+        >
+          <XIcon class="size-4 text-inherit" />
+        </Button>
+      )}
+    </div>
+  )
+}

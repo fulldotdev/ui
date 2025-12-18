@@ -1,52 +1,73 @@
 ---
-title: This is a cool test
-description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-  eiusmod tempor incididunt ut labore et dolore magna aliqua.
-image:
-  src: /images/hero.webp
-  alt: Home
 sections:
-  - variant: "1"
-    html: <h2>Hello <strong>World!!!!!</strong></h2><p>This is a test of
+  - block: hero-14
+    link:
+      text: Inspired by shadcn/ui, but built for Astro 🚀
+    html: |
+      <h1><strong><span class="text-primary">Astro</span> UI component and block library</strong> compatible with shadcn/ui</h1>
+      <p>Vanilla Astro components with no framework dependencies - Shadcn/ui compatible - content-first components like section and tile.</p>
     links:
-      - href: /about/
-        text: About
-      - href: /contact/
-        text: Contact
-    features:
-      - icon: check
-      - icon: check
-        title: Hello there!!!!
-        description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      - icon: check
-        title: Lorem ipsum
-        description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      - title: Lorem ipsum
-        description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    type: features
-  - variant: "1"
-    html: <h1>Hello</h1><p></p><p></p>
-    features:
-      - title: Lorem ipsum
-        description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    type: features
-  - variant: "1"
-    faqs:
-      - question: What services do you offer?
-        answer: We offer a wide range of services including consulting, development, and
-          support.
-      - question: How can I contact support?
-        answer: You can reach our support team via email at support@example.com or phone
-          at (555) 123-4567.
-      - question: What are your business hours?
-        answer: We are open Monday through Friday from 9 AM to 6 PM EST.
-    type: faqs
-type: article
-
+      - text: View Components
+        href: /docs/components/
+      - text: View Blocks
+        href: /blocks/
+  - block: blocks-4
+    refs:
+      - /src/content/pages/blocks/articles-3.md
+      - /src/content/pages/blocks/contact-2.md
+      - /src/content/pages/blocks/cta-3.md
+      - /src/content/pages/blocks/cta-5.md
+      - /src/content/pages/blocks/faqs-2.md
+      - /src/content/pages/blocks/features-5.md
+      - /src/content/pages/blocks/footer-1.md
+      - /src/content/pages/blocks/header-1.md
+      - /src/content/pages/blocks/logos-2.md
+      - /src/content/pages/blocks/pricings-3.md
+      - /src/content/pages/blocks/products-1.md
+      - /src/content/pages/blocks/reviews-4.md
+      - /src/content/pages/blocks/services-4.md
+      - /src/content/pages/blocks/services-5.md
+  - block: features-5
+    items:
+      - title: Built for developers
+        description: Work in the framework you know and love, get performance benefits of Astro out of the box.
+        icon: code
+      - title: Built for content
+        description: Integrates seamlessly with Astro content collections, which works great with AI agents.
+        icon: file-text
+      - title: Built for agents
+        description: Because we use the same API as shadcn/ui, AI agents understand how to use it.
+        icon: rocket
+  - block: content-5
+    html: |
+      <h2>Complete Astro UI <strong>components library</strong></h2>
+      <p>fulldev/ui is an Astro component library built with vanilla Astro and zero framework dependencies. Our Astro UI components are fully compatible with shadcn/ui design patterns and work seamlessly with Astro content collections. Perfect for building content-driven websites.</p>
+    links:
+      - text: View Components
+        href: /docs/components/
+    image:
+      src: ../../assets/my-accordion-code-example-homepage.astro.webp
+      alt: Astro UI Components
+  - block: content-6
+    html: |
+      <h2>Prebuilt Astro <strong>content blocks</strong></h2>
+      <p>Skip the repetitive work. Our library of Astro blocks includes ready-to-use sections like heroes, reviews, pricings, and call-to-actions. Designed for content-first websites, these pre-built Astro blocks help you scaffold complex layouts faster while maintaining design consistency.</p>
+    links:
+      - text: View Blocks
+        href: /blocks/
+    image:
+      src: ../../assets/my-cta-code-example-homepage.astro.webp
+      alt: Astro Blocks
+  - block: cta-8
+    html: |
+      <h2><strong>Free and open-source</strong> Astro UI component library</h2>
+      <p>Everything you need to build stunning content-driven websites with zero framework dependencies. Complete Astro components, pre-built blocks, and shadcn/ui compatibility.</p>
+    links:
+      - text: View Components
+        href: /docs/components/
+      - text: View Blocks
+        href: /blocks/
+seo:
+  title: Astro UI component and block library for content-driven websites - fulldev/ui
+  description: fulldev/ui is a complete Astro component library with ready-to-use UI components and blocks. Build content-driven websites faster with our Astro UI components library designed for developers.
 ---
-
-Dit is een inline **blog** editor

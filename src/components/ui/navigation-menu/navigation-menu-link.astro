@@ -1,0 +1,49 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const variants = cva(
+  "focus-visible:ring-ring/50 inline-flex w-full items-start justify-start rounded-md transition-all outline-none focus-visible:ring-[3px] focus-visible:outline-none",
+  {
+    variants: {
+      variant: {
+        default:
+          "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground flex-col gap-1 p-2 text-sm [&_svg:not([class*='size-'])]:size-4",
+        trigger:
+          "bg-background hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground h-9 w-max px-4 py-2 text-sm font-medium disabled:pointer-events-none disabled:opacity-50",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
+
+interface Props extends HTMLAttributes<"a">, VariantProps<typeof variants> {
+  active?: boolean
+}
+
+const { class: className, variant, href, active, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <a
+      data-slot="navigation-menu-link"
+      class={cn(
+        variants({ variant }),
+        active &&
+          "bg-accent/50 text-accent-foreground hover:bg-accent focus:bg-accent",
+        className
+      )}
+      href={href}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </a>
+  )
+}

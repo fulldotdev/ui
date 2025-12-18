@@ -1,0 +1,61 @@
+---
+import { Badge } from "@/components/ui/badge"
+import { Section, SectionContent } from "@/components/ui/section"
+
+interface Props {
+  class?: string
+  id?: string
+}
+
+const { class: className, id } = Astro.props
+
+const allSkeletons = import.meta.glob("src/components/skeletons/**/*.astro", {
+  eager: true,
+})
+
+const sortedSkeletons = Object.entries(allSkeletons).sort(([a], [b]) => {
+  const aId = a.split("/").pop()?.split(".")[0] ?? ""
+  const bId = b.split("/").pop()?.split(".")[0] ?? ""
+  // Extract numeric parts for proper numeric sorting
+  const aNum = parseInt(aId.replace(/\D/g, "")) || 0
+  const bNum = parseInt(bId.replace(/\D/g, "")) || 0
+  // If both have numbers, compare numerically
+  if (aNum && bNum) return aNum - bNum
+  // Otherwise, fall back to string comparison
+  return aId.localeCompare(bId)
+})
+---
+
+<Section class={className} id={id}>
+  <SectionContent>
+    {
+      sortedSkeletons.map(([path, skeleton]: [string, any]) => {
+        const id = path.split("/").pop()?.split(".")[0]
+        const SkeletonComponent = skeleton.default
+        return SkeletonComponent ? (
+          <div class="no-scrollbar relative aspect-video overflow-hidden overflow-x-hidden overflow-y-auto rounded-lg border-2 border-dashed">
+            <Badge
+              class="absolute top-4 left-4"
+              variant="secondary"
+              href={`/skeletons/${id}/`}
+            >
+              {id}
+            </Badge>
+            <SkeletonComponent />
+          </div>
+        ) : null
+      })
+    }
+  </SectionContent>
+</Section>
+
+<style>
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+</style>

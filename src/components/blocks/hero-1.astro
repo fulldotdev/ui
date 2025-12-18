@@ -1,0 +1,65 @@
+---
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionMedia,
+  SectionProse,
+} from "@/components/ui/section"
+
+interface Props {
+  class?: string
+  id?: string
+  link?: {
+    text?: string
+    href?: string
+    icon?: string
+    target?: string
+  }
+  links?: {
+    text?: string
+    href?: string
+    icon?: string
+    target?: string
+  }[]
+  image?: {
+    src: string
+    alt: string
+  }
+}
+
+const { class: className, id, link, links, image } = Astro.props
+---
+
+<Section class={className} id={id}>
+  <SectionContent class="items-center">
+    <Badge variant="secondary" {...link}>
+      {link?.text}
+      {link?.href && <Icon name={link?.icon} />}
+    </Badge>
+    <SectionProse class="text-center text-balance" size="lg">
+      <slot />
+    </SectionProse>
+    <SectionActions class="justify-center">
+      {
+        links?.map(({ icon, text, ...link }, i) => (
+          <Button
+            variant={i === 0 ? "default" : "secondary"}
+            size="lg"
+            {...link}
+          >
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
+    </SectionActions>
+  </SectionContent>
+  <SectionMedia>
+    <Image sizes="(min-width: 1536px) 1536px, 100vw" priority {...image} />
+  </SectionMedia>
+</Section>

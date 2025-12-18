@@ -1,0 +1,28 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {}
+
+const { class: className, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <div
+      data-slot="navigation-menu-content"
+      class={cn(
+        "bg-popover text-popover-foreground invisible absolute top-full left-0 z-50 mt-1.5 w-auto -translate-y-1 overflow-hidden rounded-md border p-2 pr-2.5 opacity-0 shadow transition-all duration-200 group-focus-within/navigation-menu-item:visible group-focus-within/navigation-menu-item:translate-y-0 group-focus-within/navigation-menu-item:opacity-100 group-hover/navigation-menu-item:visible group-hover/navigation-menu-item:translate-y-0 group-hover/navigation-menu-item:opacity-100 before:absolute before:top-0 before:right-0 before:left-0 before:h-2 before:-translate-y-full before:content-[''] hover:visible hover:translate-y-0 hover:opacity-100",
+        "navigation-menu-content",
+        className
+      )}
+      role="menu"
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </div>
+  )
+}

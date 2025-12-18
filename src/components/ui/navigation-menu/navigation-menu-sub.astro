@@ -1,0 +1,23 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"ul"> {}
+
+const { class: className, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <ul
+      data-slot="navigation-menu-sub"
+      class={cn("flex min-w-[200px] flex-col gap-2", className)}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </ul>
+  )
+}

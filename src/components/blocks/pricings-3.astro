@@ -1,0 +1,80 @@
+---
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { List, ListItem } from "@/components/ui/list"
+import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
+import {
+  Section,
+  SectionProse,
+  SectionSpread,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileActions,
+  TileContent,
+  TileDescription,
+  TileTitle,
+} from "@/components/ui/tile"
+
+interface Props {
+  class?: string
+  id?: string
+  items?: {
+    title?: string
+    description?: string
+    icon?: string
+    list?: string[]
+    links?: {
+      text?: string
+      href?: string
+      target?: string
+    }[]
+    price?: string | number
+    unit?: string
+  }[]
+}
+
+const { class: className, id, items } = Astro.props
+---
+
+<Section class={className} id={id}>
+  <SectionProse>
+    <slot />
+  </SectionProse>
+  <SectionSpread>
+    {
+      items?.map(({ title, description, links, list, price, unit }) => (
+        <Tile variant="floating">
+          <TileContent>
+            <TileTitle>{title}</TileTitle>
+            <TileDescription>{description}</TileDescription>
+            <Price>
+              <PriceValue class="text-3xl" price={price} />
+              <PriceUnit class="mt-3">{unit}</PriceUnit>
+            </Price>
+            <List class="mt-4 text-sm">
+              {list?.map((item) => (
+                <ListItem>
+                  <Icon class="-mt-0.5" name="check" />
+                  {item}
+                </ListItem>
+              ))}
+            </List>
+          </TileContent>
+          <TileActions class="mt-auto w-full">
+            {links?.map(({ text, ...link }, i) => (
+              <Button
+                class="w-full"
+                size="sm"
+                variant={i === 0 ? "default" : "outline"}
+                {...link}
+              >
+                {text}
+              </Button>
+            ))}
+          </TileActions>
+        </Tile>
+      ))
+    }
+  </SectionSpread>
+</Section>

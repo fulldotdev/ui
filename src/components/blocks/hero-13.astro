@@ -1,0 +1,63 @@
+---
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionMedia,
+  SectionProse,
+  SectionSplit,
+} from "@/components/ui/section"
+
+interface Props {
+  class?: string
+  id?: string
+  links?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  image?: {
+    src: string
+    alt: string
+  }
+}
+
+const {
+  class: className,
+  id,
+  links,
+  image,
+} = Astro.props
+---
+
+<Section class={cn("@5xl:pt-1", className)} id={id}>
+  <SectionSplit class="@5xl:grid-cols-[1fr_3fr] @5xl:items-start">
+    <SectionContent class="pt-(--section-py)">
+      <SectionProse class="text-balance" size="sm">
+        <slot />
+      </SectionProse>
+      <SectionActions class="-my-2 -ml-3">
+        {
+          links?.map(({ href, text, ...link }) => (
+            <Button variant="link" href={href} {...link}>
+              {text}
+              {href && <Icon name="arrow-up-right" />}
+            </Button>
+          ))
+        }
+      </SectionActions>
+    </SectionContent>
+    <SectionMedia class="relative z-100 -mr-5">
+      <Image
+        sizes="(min-width: 1536px) 1152px, (min-width: 1024px) 75vw, 100vw"
+        priority
+        {...image}
+      />
+    </SectionMedia>
+  </SectionSplit>
+</Section>

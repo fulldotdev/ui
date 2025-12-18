@@ -1,0 +1,49 @@
+---
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import {
+  Section,
+  SectionContent,
+  SectionGrid,
+  SectionProse,
+  SectionSplit,
+} from "@/components/ui/section"
+
+interface Props {
+  class?: string
+  id?: string
+  links?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+}
+
+const { class: className, id, links } = Astro.props
+---
+
+<Section class={cn("bg-muted/50 mt-16", className)} id={id}>
+  <SectionSplit class="gap-x-32 @5xl:grid-cols-[1fr_2fr]">
+    <SectionContent>
+      <SectionProse class="max-w-sm">
+        <slot />
+      </SectionProse>
+    </SectionContent>
+    <SectionGrid class="-mx-4" size="sm">
+      {
+        links?.map(({ icon, text, ...link }) => (
+          <Button
+            class="text-foreground justify-start text-start text-base"
+            variant="link"
+            {...link}
+          >
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
+    </SectionGrid>
+  </SectionSplit>
+</Section>

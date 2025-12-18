@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "logo",
+  "type": "registry:ui",
+  "registryDependencies": ["@fulldev/image"],
+  "files": [
+    {
+      "path": "src/components/ui/logo/logo.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & HTMLAttributes<\"a\">\n\nconst { class: className, href, ...props } = Astro.props\n\nconst Comp = href ? \"a\" : \"div\"\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <Comp\n      class={cn(\n        \"flex items-center justify-start gap-2.5 text-base font-semibold whitespace-nowrap\",\n        className\n      )}\n      href={href}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </Comp>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/logo/logo-image.astro",
+      "content": "---\nimport type { ComponentProps } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Image } from \"@/components/ui/image\"\n\ntype props = ComponentProps<typeof Image>\n\nconst { class: className, src, alt = \"\", ...props } = Astro.props\n---\n\n{\n  src && (\n    <Image\n      class={cn(\"h-8 w-auto max-w-[200px] shrink-0 object-contain\", className)}\n      data-slot=\"logo-image\"\n      src={src}\n      alt={alt}\n      sizes=\"200px\"\n      widths={[200]}\n      {...props}\n    />\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/logo/logo-text.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"span\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <span class={cn(\"text-lg\", className)} {...props}>\n      <Fragment set:html={slot} />\n    </span>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/logo/index.ts",
+      "content": "export { default as Logo } from \"./logo.astro\"\nexport { default as LogoImage } from \"./logo-image.astro\"\nexport { default as LogoText } from \"./logo-text.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}

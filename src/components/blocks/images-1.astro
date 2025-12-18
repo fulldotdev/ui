@@ -1,0 +1,70 @@
+---
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionGrid,
+  SectionProse,
+} from "@/components/ui/section"
+import { Tile, TileContent, TileMedia, TileTitle } from "@/components/ui/tile"
+
+interface Props {
+  class?: string
+  id?: string
+  links?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  items?: {
+    href?: string
+    title?: string
+    image?: {
+      src: string
+      alt: string
+    }
+  }[]
+}
+
+const { class: className, id, links, items } = Astro.props
+---
+
+<Section class={cn("gap-12", className)} id={id}>
+  <SectionContent>
+    <SectionProse>
+      <slot />
+    </SectionProse>
+    <SectionActions>
+      {
+        links?.map(({ icon, text, ...link }, i) => (
+          <Button variant={i === 0 ? "default" : "outline"} {...link}>
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
+    </SectionActions>
+  </SectionContent>
+  <SectionGrid class="-mx-5 grid-cols-1 gap-1 @5xl:grid-cols-2">
+    {
+      items?.map(({ href, title, image }) => (
+        <Tile
+          href={href}
+          class="dark relative overflow-hidden bg-black! ring-0!"
+        >
+          <TileMedia class="w-full transition duration-500 ease-in-out group-hover/tile:scale-103">
+            <Image {...image} />
+          </TileMedia>
+          <TileContent class="absolute inset-0 z-10 size-full items-center justify-center p-6 text-center opacity-0 transition duration-500 ease-in-out group-hover/tile:opacity-100">
+            <TileTitle class="text-foreground">{title}</TileTitle>
+          </TileContent>
+        </Tile>
+      ))
+    }
+  </SectionGrid>
+</Section>

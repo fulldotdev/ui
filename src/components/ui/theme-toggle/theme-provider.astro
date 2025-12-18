@@ -1,0 +1,26 @@
+<script is:inline>
+  ;(() => {
+    if (window.__themeInitialized) return
+    window.__themeInitialized = true
+
+    const theme = (() => {
+      const localStorageTheme = localStorage?.getItem("theme") ?? ""
+      if (["dark", "light"].includes(localStorageTheme)) {
+        return localStorageTheme
+      }
+      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        return "dark"
+      }
+      return "light"
+    })()
+
+    if (theme === "light") {
+      document.documentElement.classList.remove("dark")
+    } else {
+      document.documentElement.classList.add("dark")
+    }
+
+    document.documentElement.setAttribute("data-theme", theme)
+    window.localStorage.setItem("theme", theme)
+  })()
+</script>

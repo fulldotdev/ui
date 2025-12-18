@@ -1,0 +1,93 @@
+---
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionGrid,
+  SectionProse,
+  SectionSpread,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileMedia,
+  TileSpread,
+  TileTitle,
+} from "@/components/ui/tile"
+
+interface Props {
+  class?: string
+  id?: string
+  links?: {
+    text?: string
+    href?: string
+  }[]
+  items?: {
+    href?: string
+    tagline?: string
+    title?: string
+    description?: string
+    image?: {
+      src: string
+      alt: string
+    }
+    links?: {
+      icon?: string
+      text?: string
+      href?: string
+      target?: string
+    }[]
+  }[]
+}
+
+const { class: className, id, links, items } = Astro.props
+---
+
+<Section class={className} id={id}>
+  <SectionSpread class="@5xl:items-end">
+    <SectionContent>
+      <SectionProse>
+        <slot />
+      </SectionProse>
+    </SectionContent>
+    <SectionActions>
+      {
+        links?.map(({ text, ...link }, i) => (
+          <Button variant={i === 0 ? "default" : "outline"} {...link}>
+            {text}
+          </Button>
+        ))
+      }
+    </SectionActions>
+  </SectionSpread>
+  <SectionGrid>
+    {
+      items?.map(({ title, tagline, description, href, image }) => (
+        <Tile href={href} variant="floating">
+          <TileMedia class="-mx-6 -mt-6 aspect-4/3">
+            <Image class="size-full! object-cover" sizes="600px" {...image} />
+          </TileMedia>
+          <TileSpread>
+            <TileContent>
+              <TileDescription class="text-primary text-xs font-medium">
+                {tagline}
+              </TileDescription>
+              <TileTitle>{title}</TileTitle>
+              <TileDescription>{description}</TileDescription>
+            </TileContent>
+            {href && (
+              <Icon
+                name="arrow-right"
+                class="size-5 shrink-0 transition-transform group-hover/tile:translate-x-2"
+              />
+            )}
+          </TileSpread>
+        </Tile>
+      ))
+    }
+  </SectionGrid>
+</Section>

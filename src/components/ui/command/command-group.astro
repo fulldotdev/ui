@@ -1,0 +1,34 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {
+  heading?: string
+}
+
+const { class: className, heading, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <div
+      data-slot="command-group"
+      class={cn(
+        "text-foreground overflow-hidden p-1 [&_[data-slot=command-group-heading]]:text-muted-foreground [&_[data-slot=command-group-heading]]:px-2 [&_[data-slot=command-group-heading]]:py-1.5 [&_[data-slot=command-group-heading]]:text-xs [&_[data-slot=command-group-heading]]:font-medium",
+        className
+      )}
+      {...props}
+    >
+      {heading && (
+        <div data-slot="command-group-heading" role="presentation">
+          {heading}
+        </div>
+      )}
+      <Fragment set:html={slot} />
+    </div>
+  )
+}
+

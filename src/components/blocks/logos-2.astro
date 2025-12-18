@@ -1,0 +1,41 @@
+---
+import { cn } from "@/lib/utils"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
+import { Marquee, MarqueeContent } from "@/components/ui/marquee"
+import { Section, SectionProse } from "@/components/ui/section"
+
+interface Props {
+  class?: string
+  id?: string
+  logos?: {
+    src: string
+    alt: string
+    text?: string
+    href?: string
+  }[]
+}
+
+const { class: className, id, logos } = Astro.props
+---
+
+<Section
+  class={cn("gap-12", className)}
+  id={id}
+  style={{ "--container": "768px" }}
+>
+  <SectionProse class="mx-auto text-center" size="sm">
+    <slot />
+  </SectionProse>
+  <Marquee class="mask-x-from-95%">
+    <MarqueeContent>
+      {
+        logos?.map(({ src, alt, text, href }) => (
+          <Logo href={href}>
+            <LogoImage src={src} alt={alt} />
+            <LogoText>{text}</LogoText>
+          </Logo>
+        ))
+      }
+    </MarqueeContent>
+  </Marquee>
+</Section>

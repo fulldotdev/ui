@@ -1,0 +1,66 @@
+---
+import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
+import { Section, SectionContent } from "@/components/ui/section"
+
+interface Props {
+  class?: string
+  id?: string
+  [key: string]: any
+}
+
+const { class: className, id, ...props } = Astro.props
+
+const allBlocks = import.meta.glob("src/components/blocks/**/*.astro", {
+  eager: true,
+})
+
+const sortedBlocks = Object.entries(allBlocks).sort(([a], [b]) =>
+  a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" })
+)
+---
+
+<Section class={cn("@container flex flex-col px-4 py-8", className)} id={id}>
+  <SectionContent
+    class="grid grid-cols-1 gap-6 @3xl:grid-cols-2 @5xl:grid-cols-3"
+  >
+    {
+      sortedBlocks.map(([path, block]: [string, any]) => {
+        const id = path.split("/").pop()?.split(".")[0]
+        const BlockComponent = block.default
+        return BlockComponent ? (
+          <div class="no-scrollbar flex flex-col gap-2">
+            <div class="flex flex-row items-center justify-between">
+              <Badge variant="secondary" href={`/blocks/${id}/`}>
+                {id}
+              </Badge>
+            </div>
+            <div
+              id={id}
+              class="relative overflow-hidden rounded-lg border-2 border-dashed"
+            >
+              <div class="bg-background no-scrollbar relative aspect-video overflow-x-hidden">
+                <div class="@container h-full w-[200%] origin-top-left scale-50">
+                  <BlockComponent {...props}>
+                    <Fragment set:html={props?.html} />
+                  </BlockComponent>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null
+      })
+    }
+  </SectionContent>
+</Section>
+
+<style>
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+</style>

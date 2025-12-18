@@ -1,0 +1,69 @@
+---
+import { AutoForm } from "@/components/ui/auto-form"
+import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
+import {
+  Section,
+  SectionContent,
+  SectionGrid,
+  SectionMedia,
+  SectionProse,
+  SectionSplit,
+} from "@/components/ui/section"
+
+interface Props {
+  class?: string
+  id?: string
+  form?: any
+  items?: {
+    icon?: string
+    title?: string
+    description?: string
+    href?: string
+  }[]
+  image?: {
+    src: string
+    alt: string
+  }
+}
+
+const { class: className, id, form, items, image } = Astro.props
+---
+
+<Section class={className} id={id}>
+  <SectionSplit class="gap-x-32">
+    <SectionContent class="gap-16">
+      <SectionProse>
+        <slot />
+      </SectionProse>
+      <SectionGrid class="max-w-2xl grid-cols-1!">
+        {
+          items?.map(({ icon, title, description, href }) => (
+            <Item href={href} variant="outline">
+              <ItemMedia variant="icon">
+                <Icon href={href} name={icon} />
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle>{title}</ItemTitle>
+                <ItemDescription>{description}</ItemDescription>
+              </ItemContent>
+            </Item>
+          ))
+        }
+      </SectionGrid>
+      <AutoForm {...form} />
+    </SectionContent>
+    <SectionMedia
+      class="-mr-(--section-px) p-1 @5xl:z-90 @5xl:-mt-[calc(var(--section-py)+var(--header-height,0px))]"
+    >
+      <Image {...image} />
+    </SectionMedia>
+  </SectionSplit>
+</Section>

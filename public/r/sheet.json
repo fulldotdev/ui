@@ -1,0 +1,53 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sheet",
+  "type": "registry:ui",
+  "registryDependencies": ["@fulldev/button"],
+  "files": [
+    {
+      "path": "src/components/ui/sheet/sheet.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      class=\"contents!\"\n      data-slot=\"sheet\"\n      class={cn(\"relative\", className)}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n\n<script>\n  const sheets = document.querySelectorAll(\"[data-slot='sheet']\")\n  sheets.forEach((sheet) => {\n    const dialog = sheet.querySelector(\"[data-slot='sheet-dialog']\")\n    if (!(dialog instanceof HTMLDialogElement)) return\n\n    // Close on backdrop click\n    dialog.addEventListener(\"click\", (event) => {\n      if (event.target === dialog) dialog.close()\n    })\n\n    const triggers = sheet.querySelectorAll(\"[data-slot='sheet-trigger']\")\n    triggers.forEach((trigger) => {\n      trigger.addEventListener(\"click\", () => {\n        dialog.showModal()\n      })\n    })\n\n    const closes = sheet.querySelectorAll(\"[data-slot='sheet-close']\")\n    closes.forEach((close) => {\n      close.addEventListener(\"click\", () => {\n        dialog.close()\n      })\n    })\n  })\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/sheet/sheet-close.astro",
+      "content": "---\nimport type { ComponentProps } from \"astro/types\"\nimport X from \"lucide-static/icons/x.svg\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Button } from \"@/components/ui/button\"\n\ninterface Props extends ComponentProps<typeof Button> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<Button\n  class={cn(\"ml-auto\", className)}\n  size=\"icon-sm\"\n  variant=\"ghost\"\n  data-slot=\"sheet-close\"\n  {...props}\n>\n  <X />\n</Button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/sheet/sheet-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport XIcon from \"lucide-static/icons/x.svg\"\n\nimport { cn } from \"@/lib/utils\"\n\nconst dialogVariants = cva(\n  [\n    \"fixed inset-0 z-50 m-0 max-h-none max-w-none border-0 bg-transparent p-0\",\n    \"backdrop:bg-black/50\",\n    // Added for quick fix over horizontal scroll issue\n    \"overflow-x-hidden\",\n  ],\n  {\n    variants: {\n      side: {\n        right: \"ml-auto h-full w-3/4 sm:max-w-sm\",\n        left: \"mr-auto h-full w-3/4 sm:max-w-sm\",\n        top: \"mb-auto h-auto w-full\",\n        bottom: \"mt-auto h-auto w-full\",\n      },\n    },\n    defaultVariants: {\n      side: \"right\",\n    },\n  }\n)\n\nconst contentVariants = cva(\n  \"bg-background flex h-full flex-col gap-4 shadow-lg transition-transform duration-500 ease-in-out\",\n  {\n    variants: {\n      side: {\n        right: \"translate-x-full border-l\",\n        left: \"-translate-x-full border-r\",\n        top: \"-translate-y-full border-b\",\n        bottom: \"translate-y-full border-t\",\n      },\n    },\n    defaultVariants: {\n      side: \"right\",\n    },\n  }\n)\n\ntype Props = VariantProps<typeof contentVariants> &\n  HTMLAttributes<\"div\"> & {\n    showClose?: boolean\n  }\n\nconst { class: className, side, showClose = true, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n<dialog\n  data-slot=\"sheet-dialog\"\n  data-side={side}\n  class={cn(dialogVariants({ side }))}\n>\n  <div\n    data-slot=\"sheet-content\"\n    data-side={side}\n    class={cn(contentVariants({ side }), className)}\n    {...props}\n  >\n    {\n      showClose && (\n        <button\n          type=\"button\"\n          data-slot=\"sheet-close\"\n          class=\"focus-visible:outline-ring text-foreground absolute top-4 right-4 cursor-pointer rounded-sm border-0 bg-transparent opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2\"\n          aria-label=\"Close\"\n        >\n          <XIcon class=\"size-4\" />\n        </button>\n      )\n    }\n    <Fragment set:html={slot} />\n  </div>\n</dialog>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/sheet/sheet-description.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"p\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <p\n      data-slot=\"sheet-description\"\n      class={cn(\"text-muted-foreground text-sm\", className)}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </p>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/sheet/sheet-footer.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      data-slot=\"sheet-footer\"\n      class={cn(\"mt-auto flex flex-col gap-2 p-4\", className)}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/sheet/sheet-header.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      data-slot=\"sheet-header\"\n      class={cn(\"flex flex-col gap-1.5 p-4\", className)}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/sheet/sheet-title.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"h2\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <h2\n      data-slot=\"sheet-title\"\n      class={cn(\"text-foreground font-semibold\", className)}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </h2>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/sheet/sheet-trigger.astro",
+      "content": "---\nimport type { ComponentProps } from \"astro/types\"\n\nimport { Button } from \"@/components/ui/button\"\n\ninterface Props extends ComponentProps<typeof Button> {}\n\nconst { ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <Button data-slot=\"sheet-trigger\" name=\"open-sheet-button\" {...props}>\n      <Fragment set:html={slot} />\n    </Button>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/sheet/index.ts",
+      "content": "export { default as Sheet } from \"./sheet.astro\"\nexport { default as SheetContent } from \"./sheet-content.astro\"\nexport { default as SheetTrigger } from \"./sheet-trigger.astro\"\nexport { default as SheetHeader } from \"./sheet-header.astro\"\nexport { default as SheetTitle } from \"./sheet-title.astro\"\nexport { default as SheetDescription } from \"./sheet-description.astro\"\nexport { default as SheetFooter } from \"./sheet-footer.astro\"\nexport { default as SheetClose } from \"./sheet-close.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}

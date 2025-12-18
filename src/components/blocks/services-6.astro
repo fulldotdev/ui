@@ -1,0 +1,87 @@
+---
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionGrid,
+  SectionProse,
+  SectionSplit,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileSpread,
+  TileTitle,
+} from "@/components/ui/tile"
+
+interface Props {
+  class?: string
+  id?: string
+  links?: {
+    text?: string
+    href?: string
+  }[]
+  items?: {
+    href?: string
+    tagline?: string
+    title?: string
+    description?: string
+    image?: {
+      src: string
+      alt: string
+    }
+    links?: {
+      text?: string
+      href?: string
+    }[]
+  }[]
+}
+
+const { class: className, id, links, items } = Astro.props
+---
+
+<Section class={className} id={id}>
+  <SectionSplit
+    class="items-start @5xl:grid-cols-[1fr_2fr] @5xl:*:sticky @5xl:*:top-[calc(var(--section-py)+var(--header-height,0px))]"
+  >
+    <SectionContent>
+      <SectionProse class="text-balance!">
+        <slot />
+      </SectionProse>
+      <SectionActions>
+        {
+          links?.map(({ text, ...link }, i) => (
+            <Button variant={i === 0 ? "outline" : "ghost"} {...link}>
+              {text}
+            </Button>
+          ))
+        }
+      </SectionActions>
+    </SectionContent>
+    <SectionGrid class="@5xl:grid-cols-2">
+      {
+        items?.map(({ title, description, href }) => (
+          <Tile href={href} variant="floating">
+            <TileSpread>
+              <TileContent>
+                <TileTitle>{title}</TileTitle>
+                <TileDescription class="text-foreground">
+                  {description}
+                </TileDescription>
+              </TileContent>
+              {href && (
+                <Icon
+                  name="arrow-right"
+                  class="size-5 shrink-0 transition-transform group-hover/tile:translate-x-2"
+                />
+              )}
+            </TileSpread>
+          </Tile>
+        ))
+      }
+    </SectionGrid>
+  </SectionSplit>
+</Section>

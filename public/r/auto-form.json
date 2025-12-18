@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "auto-form",
+  "type": "registry:ui",
+  "registryDependencies": [
+    "@fulldev/button",
+    "@fulldev/checkbox",
+    "@fulldev/field",
+    "@fulldev/input",
+    "@fulldev/native-select",
+    "@fulldev/radio-group",
+    "@fulldev/textarea"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/auto-form/auto-form.astro",
+      "content": "---\nimport type { ComponentProps, HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Button } from \"@/components/ui/button\"\nimport { Checkbox } from \"@/components/ui/checkbox\"\nimport {\n  Field,\n  FieldContent,\n  FieldDescription,\n  FieldLabel,\n  FieldSet,\n} from \"@/components/ui/field\"\nimport { Input } from \"@/components/ui/input\"\nimport { NativeSelect, NativeSelectOption } from \"@/components/ui/native-select\"\nimport { RadioGroup, RadioGroupItem } from \"@/components/ui/radio-group\"\nimport { Textarea } from \"@/components/ui/textarea\"\n\ntype Field = {\n  label?: string\n  description?: string\n} & (\n  | (ComponentProps<typeof Textarea> & {\n      type: \"textarea\"\n    })\n  | (ComponentProps<typeof Checkbox> & {\n      type: \"checkbox\"\n    })\n  | (ComponentProps<typeof NativeSelect> & {\n      type: \"select\"\n      options: string[]\n      placeholder?: string\n    })\n  | (ComponentProps<typeof RadioGroupItem> & {\n      type: \"radio-group\"\n      options: string[]\n    })\n  | (ComponentProps<typeof Input> & {\n      type: \"text\" | \"tel\" | \"email\" | \"number\"\n    })\n)\n\ninterface Props extends HTMLAttributes<\"form\"> {\n  inbox?: string\n  fields?: Field[]\n  submit?: string\n}\n\nconst { class: className, inbox, fields, submit, ...props } = Astro.props\n---\n\n<form\n  method=\"POST\"\n  data-netlify=\"true\"\n  class={cn(\"flex w-full max-w-2xl flex-col gap-6\", className)}\n  {...props}\n>\n  {\n    fields?.map(({ label, description, name = label, id = name, ...field }) => {\n      switch (field.type) {\n        case \"textarea\":\n          return (\n            <Field>\n              <FieldLabel for={id}>{label}</FieldLabel>\n              <Textarea id={id} name={name} {...field} />\n              <FieldDescription>{description}</FieldDescription>\n            </Field>\n          )\n        case \"select\":\n          const { options: selectOptions, placeholder, ...select } = field\n          return (\n            <Field>\n              <FieldLabel for={id}>{label}</FieldLabel>\n              <NativeSelect id={id} name={name} {...select}>\n                <NativeSelectOption\n                  value={placeholder}\n                  id={placeholder}\n                  disabled\n                  selected\n                >\n                  {placeholder}\n                </NativeSelectOption>\n                {selectOptions?.map((option) => (\n                  <NativeSelectOption value={option} id={option}>\n                    {option}\n                  </NativeSelectOption>\n                ))}\n              </NativeSelect>\n              <FieldDescription>{description}</FieldDescription>\n            </Field>\n          )\n        case \"checkbox\":\n          return (\n            <Field orientation=\"horizontal\">\n              <Checkbox id={id} name={name} {...field} />\n              <FieldContent>\n                <FieldLabel for={id}>{label}</FieldLabel>\n                <FieldDescription>{description}</FieldDescription>\n              </FieldContent>\n            </Field>\n          )\n        case \"radio-group\":\n          const { options: radioOptions, ...radioGroup } = field\n          return (\n            <FieldSet>\n              <FieldLabel>{label}</FieldLabel>\n              <FieldDescription>{description}</FieldDescription>\n              <RadioGroup {...radioGroup}>\n                {radioOptions?.map((option) => (\n                  <Field orientation=\"horizontal\">\n                    <RadioGroupItem value={option} id={option} name={name} />\n                    <FieldLabel for={option}>{option}</FieldLabel>\n                  </Field>\n                ))}\n              </RadioGroup>\n              <FieldDescription>{description}</FieldDescription>\n            </FieldSet>\n          )\n        default:\n          return (\n            <Field>\n              <FieldLabel for={id}>{label}</FieldLabel>\n              <Input id={id} name={name} {...field} />\n              <FieldDescription>{description}</FieldDescription>\n            </Field>\n          )\n      }\n    })\n  }\n  <slot />\n  {inbox && <input type=\"hidden\" name=\"inbox_key\" value={inbox} />}\n  <input type=\"text\" name=\"_gotcha\" class=\"hidden\" />\n  <input type=\"text\" name=\"Pagina\" class=\"hidden\" value={Astro.url.pathname} />\n  <Button type=\"submit\">{submit}</Button>\n</form>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/auto-form/index.ts",
+      "content": "export { default as AutoForm } from \"./auto-form.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}

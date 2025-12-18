@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "cta-1",
+  "type": "registry:block",
+  "registryDependencies": [
+    "@fulldev/avatar",
+    "@fulldev/button",
+    "@fulldev/icon",
+    "@fulldev/item",
+    "@fulldev/rating",
+    "@fulldev/section"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/cta-1.astro",
+      "content": "---\nimport { Avatar, AvatarImage } from \"@/components/ui/avatar\"\nimport { Button } from \"@/components/ui/button\"\nimport { Icon } from \"@/components/ui/icon\"\nimport {\n  Item,\n  ItemContent,\n  ItemDescription,\n  ItemMedia,\n} from \"@/components/ui/item\"\nimport { Rating } from \"@/components/ui/rating\"\nimport {\n  Section,\n  SectionActions,\n  SectionContent,\n  SectionProse,\n} from \"@/components/ui/section\"\n\ninterface Props {\n  class?: string\n  id?: string\n  links?: {\n    icon?: string\n    text?: string\n    href?: string\n    target?: string\n  }[]\n  item?: {\n    images?: {\n      src: string\n      alt: string\n    }[]\n    rating?: number\n    description?: string\n  }\n}\n\nconst { class: className, id, links, item } = Astro.props\n---\n\n<Section class={className} id={id} variant=\"floating\">\n  <SectionContent class=\"items-center\">\n    <Item class=\"p-0\">\n      <ItemMedia class=\"-space-x-5\">\n        {\n          item?.images?.map((image) => (\n            <Avatar class=\"ring-background size-11 ring\">\n              <AvatarImage {...image} />\n            </Avatar>\n          ))\n        }\n      </ItemMedia>\n      <ItemContent class=\"mt-1\">\n        <Rating rating={item?.rating} />\n        <ItemDescription>\n          {item?.description}\n        </ItemDescription>\n      </ItemContent>\n    </Item>\n    <SectionProse class=\"text-center\" size=\"lg\">\n      <slot />\n    </SectionProse>\n    <SectionActions class=\"justify-center\">\n      {\n        links?.map(({ icon, text, ...link }, i) => (\n          <Button\n            variant={i === 0 ? \"default\" : \"secondary\"}\n            size=\"lg\"\n            {...link}\n          >\n            {icon && <Icon name={icon} />}\n            {text}\n          </Button>\n        ))\n      }\n    </SectionActions>\n  </SectionContent>\n</Section>\n",
+      "type": "registry:block"
+    }
+  ]
+}

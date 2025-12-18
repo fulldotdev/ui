@@ -1,0 +1,8 @@
+export { default as Tile } from "./tile.astro"
+export { default as TileActions } from "./tile-actions.astro"
+export { default as TileContent } from "./tile-content.astro"
+export { default as TileDescription } from "./tile-description.astro"
+export { default as TileMedia } from "./tile-media.astro"
+export { default as TileSplit } from "./tile-split.astro"
+export { default as TileSpread } from "./tile-spread.astro"
+export { default as TileTitle } from "./tile-title.astro"

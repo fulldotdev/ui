@@ -1,0 +1,92 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {}
+
+const { class: className, ...props } = Astro.props
+---
+
+<div
+  class={cn(
+    "flex snap-x snap-mandatory overflow-x-auto scroll-smooth",
+    "scrollbar-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+    "group-data-[orientation=vertical]/native-carousel:snap-y group-data-[orientation=vertical]/native-carousel:flex-col group-data-[orientation=vertical]/native-carousel:overflow-y-auto",
+    className
+  )}
+  data-slot="native-carousel-content"
+  {...props}
+>
+  <slot />
+</div>
+
+<script>
+  // Add smooth scrolling behavior and snap support
+  document.addEventListener("DOMContentLoaded", () => {
+    const carousels = document.querySelectorAll('[data-slot="native-carousel"]')
+
+    carousels.forEach((carousel) => {
+      const content = carousel.querySelector(
+        '[data-slot="native-carousel-content"]'
+      ) as HTMLElement
+      const prevButton = carousel.querySelector(
+        '[data-slot="native-carousel-previous"]'
+      ) as HTMLButtonElement
+      const nextButton = carousel.querySelector(
+        '[data-slot="native-carousel-next"]'
+      ) as HTMLButtonElement
+
+      if (!content) return
+
+      const orientation =
+        carousel.getAttribute("data-orientation") || "horizontal"
+      const isVertical = orientation === "vertical"
+
+      const updateButtons = () => {
+        if (!prevButton || !nextButton) return
+
+        const scrollPos = isVertical ? content.scrollTop : content.scrollLeft
+        const maxScroll = isVertical
+          ? content.scrollHeight - content.clientHeight
+          : content.scrollWidth - content.clientWidth
+
+        prevButton.disabled = scrollPos <= 0
+        nextButton.disabled = scrollPos >= maxScroll - 1
+      }
+
+      const scroll = (direction: "next" | "prev") => {
+        const items = Array.from(
+          content.querySelectorAll('[data-slot="native-carousel-item"]')
+        ) as HTMLElement[]
+
+        if (items.length === 0) return
+
+        const itemSize = isVertical
+          ? items[0].offsetHeight
+          : items[0].offsetWidth
+        const scrollAmount =
+          itemSize + parseFloat(getComputedStyle(items[0]).marginRight || "0")
+
+        const delta = direction === "next" ? scrollAmount : -scrollAmount
+
+        if (isVertical) {
+          content.scrollBy({ top: delta, behavior: "smooth" })
+        } else {
+          content.scrollBy({ left: delta, behavior: "smooth" })
+        }
+      }
+
+      if (prevButton) {
+        prevButton.addEventListener("click", () => scroll("prev"))
+      }
+
+      if (nextButton) {
+        nextButton.addEventListener("click", () => scroll("next"))
+      }
+
+      content.addEventListener("scroll", updateButtons)
+      updateButtons()
+    })
+  })
+</script>

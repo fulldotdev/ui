@@ -1,0 +1,58 @@
+---
+import { Image } from "@/components/ui/image"
+import {
+  Section,
+  SectionContent,
+  SectionGrid,
+  SectionProse,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileMedia,
+  TileSplit,
+  TileTitle,
+} from "@/components/ui/tile"
+
+interface Props {
+  class?: string
+  id?: string
+  items?: {
+    href?: string
+    title?: string
+    description?: string
+    image?: {
+      src: string
+      alt: string
+    }
+  }[]
+}
+
+const { class: className, id, items } = Astro.props
+---
+
+<Section class={className} id={id}>
+  <SectionContent class="@5xl:items-center">
+    <SectionProse class="@5xl:text-center">
+      <slot />
+    </SectionProse>
+  </SectionContent>
+  <SectionGrid>
+    {
+      items?.map(({ title, description, href, image }) => (
+        <Tile href={href}>
+          <TileSplit class="items-center">
+            <TileMedia>
+              <Image sizes="230px" {...image} />
+            </TileMedia>
+            <TileContent>
+              <TileTitle>{title}</TileTitle>
+              <TileDescription>{description}</TileDescription>
+            </TileContent>
+          </TileSplit>
+        </Tile>
+      ))
+    }
+  </SectionGrid>
+</Section>

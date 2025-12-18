@@ -1,0 +1,98 @@
+---
+import { cn } from "@/lib/utils"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+} from "@/components/ui/item"
+import { Rating } from "@/components/ui/rating"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionMedia,
+  SectionProse,
+  SectionSpread,
+} from "@/components/ui/section"
+
+interface Props {
+  class?: string
+  id?: string
+  links?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  item?: {
+    images?: {
+      src: string
+      alt: string
+    }[]
+    rating?: number
+    description?: string
+  }
+  image?: {
+    src: string
+    alt: string
+  }
+}
+
+const { class: className, id, links, item, image } = Astro.props
+---
+
+<Section
+  class={cn("-mt-(--header-height) justify-start", className)}
+  id={id}
+  size="lg"
+>
+  <SectionSpread class="relative @5xl:items-center">
+    <SectionProse size="lg">
+      <slot />
+    </SectionProse>
+    <SectionContent class="shrink-0">
+      <SectionActions>
+        {
+          links?.map(({ icon, text, ...link }, i) => (
+            <Button
+              class="w-full"
+              variant={i === 0 ? "default" : "secondary"}
+              size="lg"
+              {...link}
+            >
+              {icon && <Icon name={icon} />}
+              {text}
+            </Button>
+          ))
+        }
+      </SectionActions>
+      <Item class="p-0">
+        <ItemMedia class="-space-x-5">
+          {
+            item?.images?.map((image) => (
+              <Avatar class="ring-background size-11 ring">
+                <AvatarImage {...image} />
+              </Avatar>
+            ))
+          }
+        </ItemMedia>
+        <ItemContent class="mt-1">
+          <Rating rating={item?.rating} />
+          <ItemDescription>
+            {item?.description}
+          </ItemDescription>
+        </ItemContent>
+      </Item>
+    </SectionContent>
+  </SectionSpread>
+  <SectionMedia
+    class="mask-y-to-black-100% absolute inset-0 size-full rounded-none bg-white mask-y-from-0% dark:bg-black"
+  >
+    <Image sizes="100vw" priority {...image} class="opacity-75" />
+  </SectionMedia>
+</Section>

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "banner",
+  "type": "registry:ui",
+  "registryDependencies": ["@fulldev/button", "@fulldev/icon"],
+  "files": [
+    {
+      "path": "src/components/ui/banner/banner.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props\n  extends HTMLAttributes<\"header\">,\n    VariantProps<typeof variants> {}\n\nconst variants = cva(\n  \"relative mx-auto flex min-h-12 items-center justify-between gap-8 border border-transparent px-(--banner-px) py-1\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-foreground text-background w-full\",\n        floating: [\n          \"bg-foreground text-background rounded-xl shadow-sm\",\n          \"w-[calc(100%-2*var(--gutter,24px))] max-w-(--banner-width)\",\n          \"border-border my-2 overflow-hidden rounded-xl border\",\n        ],\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n    },\n  }\n)\n\nconst { class: className, variant, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n<script is:inline>\n  // Inline because it needs to run before the banner is rendered\n  if (sessionStorage.getItem(\"closedBanners\")) {\n    document.body.classList.add(\"banner-hidden\")\n  } else {\n    document.body.classList.remove(\"banner-hidden\")\n  }\n</script>\n\n{\n  slot?.trim().length > 0 && (\n    <header\n      class={cn(variants({ variant }), className)}\n      data-slot=\"banner\"\n      data-variant={variant}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </header>\n  )\n}\n\n<script>\n  document.querySelectorAll(\"[data-slot='banner-close']\").forEach((btn) => {\n    btn.addEventListener(\"click\", () => {\n      sessionStorage.setItem(\"closedBanners\", \"true\")\n      document.body.classList.add(\"banner-hidden\")\n    })\n  })\n</script>\n\n<style is:global>\n  body.banner-hidden [data-slot=\"banner\"] {\n    display: none;\n  }\n\n  [data-slot=\"banner\"] {\n    --banner-width: var(--container, var(--breakpoint-xl));\n    --banner-px: max(\n      var(--gutter, 24px),\n      calc((100cqw - var(--banner-width)) / 2)\n    );\n  }\n\n  [data-slot=\"banner\"][data-variant=\"floating\"] {\n    --banner-px: calc(var(--spacing) * 6);\n  }\n\n  @media (min-width: 1024px) {\n    [data-slot=\"banner\"][data-variant=\"floating\"] {\n      --banner-px: calc(var(--spacing) * 16);\n    }\n  }\n</style>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/banner/banner-close.astro",
+      "content": "---\nimport type { ComponentProps } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Button } from \"@/components/ui/button\"\nimport { Icon } from \"@/components/ui/icon\"\n\ninterface Props extends ComponentProps<typeof Button> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<Button\n  class={cn(\"z-10 ml-auto\", className)}\n  size=\"icon-sm\"\n  variant=\"ghost\"\n  data-slot=\"banner-close\"\n  {...props}\n>\n  <Icon name=\"x\" />\n</Button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/banner/banner-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport XIcon from \"lucide-static/icons/x.svg\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Button } from \"@/components/ui/button\"\n\ninterface Props extends HTMLAttributes<\"div\"> {\n  showClose?: boolean\n}\n\nconst { class: className, showClose = true, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <div\n      class={cn(\n        \"relative flex w-full flex-col gap-2 py-1 @5xl:flex-row @5xl:items-center\",\n        className\n      )}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n      {showClose && (\n        <Button\n          type=\"button\"\n          variant=\"ghost\"\n          data-slot=\"banner-close\"\n          class=\"focus-visible:outline-ring absolute top-1/2 right-0 z-20 -translate-y-1/2 cursor-pointer rounded-sm border-0 bg-transparent text-inherit opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2\"\n          size=\"icon-sm\"\n          aria-label=\"Close\"\n        >\n          <XIcon class=\"size-4 text-inherit\" />\n        </Button>\n      )}\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/banner/banner-description.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"p\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <p class={cn(\"text-sm opacity-90\", className)} {...props}>\n      <Fragment set:html={slot} />\n    </p>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/banner/banner-title.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"p\"> {}\n\nconst { class: className, ...props } = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n---\n\n{\n  slot?.trim().length > 0 && (\n    <p class={cn(\"text-sm font-medium\", className)} {...props}>\n      <Fragment set:html={slot} />\n    </p>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/banner/index.ts",
+      "content": "export { default as Banner } from \"./banner.astro\"\nexport { default as BannerContent } from \"./banner-content.astro\"\nexport { default as BannerTitle } from \"./banner-title.astro\"\nexport { default as BannerDescription } from \"./banner-description.astro\"\nexport { default as BannerClose } from \"./banner-close.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}

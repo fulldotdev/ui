@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "src/components/ui/button/button.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = VariantProps<typeof variants> &\n  HTMLAttributes<\"button\"> &\n  HTMLAttributes<\"a\"> &\n  HTMLAttributes<\"label\"> & {\n    as?: \"button\" | \"a\" | \"label\"\n    text?: string\n    html?: string\n  }\n\nconst variants = cva(\n  \"focus-visible:border-ring text-foreground focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-primary text-primary-foreground hover:bg-primary/90\",\n        destructive:\n          \"bg-destructive hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 text-white\",\n        outline:\n          \"bg-background hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 border shadow-xs\",\n        secondary:\n          \"bg-secondary text-secondary-foreground hover:bg-secondary/80\",\n        ghost:\n          \"hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50\",\n        link: \"text-primary underline-offset-4 hover:underline\",\n      },\n      size: {\n        default: \"h-9 px-4 py-2 has-[>svg]:px-3\",\n        sm: \"h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5\",\n        lg: \"h-10 rounded-md px-6 has-[>svg]:px-4\",\n        icon: \"size-9\",\n        \"icon-sm\": \"size-8\",\n        \"icon-lg\": \"size-10\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  }\n)\n\nconst {\n  class: className,\n  variant,\n  size,\n  href,\n  text,\n  html,\n  ...props\n} = Astro.props\n\nconst slot = await Astro.slots.render(\"default\")\n\nconst Comp = href ? \"a\" : \"button\"\n---\n\n{\n  slot?.trim().length > 0 && (\n    <Comp\n      data-slot=\"button\"\n      class={cn(variants({ variant, size }), className)}\n      href={href}\n      {...props}\n    >\n      <Fragment set:html={slot} />\n    </Comp>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/button/index.ts",
+      "content": "export { default as Button } from \"./button.astro\"\n",
+      "type": "registry:ui"
+    }
+  ]
+}

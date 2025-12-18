@@ -1,0 +1,23 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"li"> {}
+
+const { class: className, ...props } = Astro.props
+
+const slot = await Astro.slots.render("default")
+---
+
+{
+  slot?.trim().length > 0 && (
+    <li
+      data-slot="sidebar-menu-sub-item"
+      class={cn("group/menu-sub-item relative", className)}
+      {...props}
+    >
+      <Fragment set:html={slot} />
+    </li>
+  )
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "services-3",
+  "type": "registry:block",
+  "registryDependencies": [
+    "@fulldev/button",
+    "@fulldev/image",
+    "@fulldev/section",
+    "@fulldev/tile"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/services-3.astro",
+      "content": "---\nimport { Button } from \"@/components/ui/button\"\nimport { Image } from \"@/components/ui/image\"\nimport {\n  Section,\n  SectionActions,\n  SectionContent,\n  SectionGrid,\n  SectionProse,\n  SectionSplit,\n} from \"@/components/ui/section\"\nimport {\n  Tile,\n  TileActions,\n  TileContent,\n  TileDescription,\n  TileMedia,\n  TileSplit,\n  TileTitle,\n} from \"@/components/ui/tile\"\n\ninterface Props {\n  class?: string\n  id?: string\n  links?: {\n    text?: string\n    href?: string\n  }[]\n  items?: {\n    href?: string\n    tagline?: string\n    title?: string\n    description?: string\n    image?: {\n      src: string\n      alt: string\n    }\n    links?: {\n      text?: string\n      href?: string\n    }[]\n  }[]\n}\n\nconst { class: className, id, links, items } = Astro.props\n---\n\n<Section class={className} id={id}>\n  <SectionSplit\n    class=\"items-start @5xl:grid-cols-[2fr_3fr] @5xl:*:sticky @5xl:*:top-[calc(var(--section-py)+var(--header-height,0px))]\"\n  >\n    <SectionContent>\n      <SectionProse>\n        <slot />\n      </SectionProse>\n      <SectionActions>\n        {\n          links?.map(({ text, ...link }, i) => (\n            <Button variant={i === 0 ? \"default\" : \"outline\"} {...link}>\n              {text}\n            </Button>\n          ))\n        }\n      </SectionActions>\n    </SectionContent>\n    <SectionGrid size=\"lg\">\n      {\n        items?.map(({ title, tagline, description, image, links }) => (\n          <Tile>\n            <TileSplit>\n              <TileMedia>\n                <Image sizes=\"400px\" {...image} />\n              </TileMedia>\n              <TileContent>\n                <TileDescription class=\"text-primary text-xs font-medium\">\n                  {tagline}\n                </TileDescription>\n                <TileTitle>{title}</TileTitle>\n                <TileDescription>{description}</TileDescription>\n                <TileActions class=\"mt-2\">\n                  {links?.map(({ text, ...link }, i) => (\n                    <Button\n                      variant={i === 0 ? \"outline\" : \"ghost\"}\n                      size=\"sm\"\n                      {...link}\n                    >\n                      {text}\n                    </Button>\n                  ))}\n                </TileActions>\n              </TileContent>\n            </TileSplit>\n          </Tile>\n        ))\n      }\n    </SectionGrid>\n  </SectionSplit>\n</Section>\n",
+      "type": "registry:block"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "articles-4",
+  "type": "registry:block",
+  "registryDependencies": [
+    "@fulldev/avatar",
+    "@fulldev/button",
+    "@fulldev/icon",
+    "@fulldev/image",
+    "@fulldev/item",
+    "@fulldev/section",
+    "@fulldev/tile"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/articles-4.astro",
+      "content": "---\nimport { Avatar, AvatarImage } from \"@/components/ui/avatar\"\nimport { Button } from \"@/components/ui/button\"\nimport { Icon } from \"@/components/ui/icon\"\nimport { Image } from \"@/components/ui/image\"\nimport {\n  Item,\n  ItemContent,\n  ItemDescription,\n  ItemMedia,\n  ItemTitle,\n} from \"@/components/ui/item\"\nimport {\n  Section,\n  SectionActions,\n  SectionContent,\n  SectionGrid,\n  SectionProse,\n} from \"@/components/ui/section\"\nimport {\n  Tile,\n  TileContent,\n  TileDescription,\n  TileMedia,\n  TileTitle,\n} from \"@/components/ui/tile\"\n\ninterface Props {\n  class?: string\n  id?: string\n  links?: {\n    icon?: string\n    text?: string\n    href?: string\n    target?: string\n  }[]\n  items?: {\n    href?: string\n    title?: string\n    description?: string\n    item?: {\n      image?: {\n        src: string\n        alt: string\n      }\n      title?: string\n      description?: string\n    }\n    image?: {\n      src: string\n      alt: string\n    }\n  }[]\n}\n\nconst { class: className, id, links, items } = Astro.props\n---\n\n<Section class={className} id={id}>\n  <SectionContent>\n    <SectionProse>\n      <slot />\n    </SectionProse>\n    <SectionActions>\n      {\n        links?.map(({ icon, text, ...link }, i) => (\n          <Button variant={i === 0 ? \"default\" : \"outline\"} {...link}>\n            {icon && <Icon name={icon} />}\n            {text}\n          </Button>\n        ))\n      }\n    </SectionActions>\n  </SectionContent>\n  <SectionGrid>\n    {\n      items?.map(({ title, description, image, href, item }) => (\n        <Tile href={href} variant=\"floating\">\n          <TileMedia class=\"-mx-6 -mt-6 aspect-video\">\n            <Image sizes=\"600px\" {...image} />\n          </TileMedia>\n          <TileContent>\n            <TileTitle class=\"line-clamp-2\">{title}</TileTitle>\n            <TileDescription class=\"line-clamp-2\">\n              {description}\n            </TileDescription>\n          </TileContent>\n          <Item class=\"p-0\">\n            <ItemMedia>\n              <Avatar class=\"size-10\">\n                <AvatarImage src={item?.image?.src} alt={item?.image?.alt} />\n              </Avatar>\n            </ItemMedia>\n            <ItemContent>\n              <ItemTitle>{item?.title}</ItemTitle>\n              <ItemDescription>{item?.description}</ItemDescription>\n            </ItemContent>\n          </Item>\n        </Tile>\n      ))\n    }\n  </SectionGrid>\n</Section>\n",
+      "type": "registry:block"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+---
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
+import {
+  Section,
+  SectionActions,
+  SectionGrid,
+  SectionProse,
+  SectionSpread,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileSpread,
+  TileTitle,
+} from "@/components/ui/tile"
+
+interface Props {
+  class?: string
+  id?: string
+  title?: string
+  description?: string
+  links?: {
+    text?: string
+    href?: string
+    icon?: string
+    target?: string
+  }[]
+  items?: {
+    title?: string
+    description?: string
+    price?: string | number
+    unit?: string
+  }[]
+}
+
+const { class: className, id, links, items } = Astro.props
+---
+
+<Section class={className} id={id}>
+  <SectionSpread class="@5xl:items-center">
+    <SectionProse>
+      <slot />
+    </SectionProse>
+    <SectionActions>
+      {
+        links?.map(({ icon, text, ...link }, i) => (
+          <Button variant={i === 0 ? "outline" : "ghost"} {...link}>
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
+    </SectionActions>
+  </SectionSpread>
+  <SectionGrid size="lg">
+    {
+      items?.map(({ title, description, price, unit }) => (
+        <Tile class="m-0 rounded-none border-t p-0 pt-6">
+          <TileSpread>
+            <TileContent>
+              <TileTitle>{title}</TileTitle>
+              <TileDescription>{description}</TileDescription>
+            </TileContent>
+            <Price>
+              <PriceValue price={price} />
+              <PriceUnit>{unit}</PriceUnit>
+            </Price>
+          </TileSpread>
+        </Tile>
+      ))
+    }
+  </SectionGrid>
+</Section>

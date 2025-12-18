@@ -1,0 +1,55 @@
+---
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+
+interface Props {
+  class?: string
+}
+
+const { class: className } = Astro.props
+---
+
+<Button
+  data-slot="theme-toggle"
+  variant="ghost"
+  size="icon-sm"
+  aria-label="Toggle theme"
+  class={cn("relative", className)}
+>
+  <Icon name="sun" class="dark:hidden [&:is([data-theme=dark]_&)]:hidden" />
+  <Icon
+    name="moon"
+    class="hidden dark:block [&:is([data-theme=dark]_&)]:block"
+  />
+</Button>
+
+<style>
+  :global(html.no-transitions *) {
+    @apply !transition-none !duration-0;
+  }
+</style>
+
+<script is:inline>
+  if (!window.__themeHandlersInitialized) {
+    window.__themeHandlersInitialized = true
+    document
+      .querySelectorAll("[data-slot='theme-toggle']")
+      .forEach((toggle) => {
+        toggle.addEventListener("click", () => {
+          const element = document.documentElement
+          element.classList.add("no-transitions")
+          element.classList.toggle("dark")
+
+          const isDark = element.classList.contains("dark")
+          const newTheme = isDark ? "dark" : "light"
+          localStorage.setItem("theme", newTheme)
+          element.setAttribute("data-theme", newTheme)
+
+          requestAnimationFrame(() => {
+            element.classList.remove("no-transitions")
+          })
+        })
+      })
+  }
+</script>

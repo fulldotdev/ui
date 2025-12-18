@@ -1,0 +1,66 @@
+---
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionMedia,
+  SectionProse,
+  SectionSpread,
+} from "@/components/ui/section"
+
+interface Props {
+  class?: string
+  id?: string
+  title?: string
+  description?: string
+  links?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  image?: {
+    src: string
+    alt: string
+  }
+}
+
+const {
+  class: className,
+  id,
+  title,
+  description,
+  links,
+  image,
+} = Astro.props
+---
+
+<Section class={cn("gap-8 pt-8", className)} id={id}>
+  <SectionContent class="border-y py-8">
+    <SectionSpread class="@5xl:items-end">
+      <SectionProse class="text-balance" size="sm">
+        {title && <h1>{title}</h1>}
+      </SectionProse>
+      <SectionProse class="text-muted-foreground text-balance" size="sm">
+        {description && <p>{description}</p>}
+      </SectionProse>
+      <SectionActions class="-my-2 -ml-3 flex-row flex-nowrap">
+        {
+          links?.map(({ href, text, ...link }) => (
+            <Button variant="link" href={href} {...link}>
+              {text}
+              {href && <Icon name="arrow-up-right" />}
+            </Button>
+          ))
+        }
+      </SectionActions>
+    </SectionSpread>
+  </SectionContent>
+  <SectionMedia>
+    <Image sizes="(min-width: 1536px) 1536px, 100vw" priority {...image} />
+  </SectionMedia>
+</Section>

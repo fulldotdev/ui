@@ -1,0 +1,82 @@
+---
+import CircleCheck from "lucide-static/icons/circle-check.svg"
+import X from "lucide-static/icons/x.svg"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { List, ListItem } from "@/components/ui/list"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionProse,
+  SectionSplit,
+} from "@/components/ui/section"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileMedia,
+  TileTitle,
+} from "@/components/ui/tile"
+
+interface Props {
+  class?: string
+  id?: string
+  links?: {
+    icon?: string
+    text?: string
+    href?: string
+    target?: string
+  }[]
+  items?: {
+    title?: string
+    description?: string
+    list?: string[]
+  }[]
+}
+
+const { class: className, id, links, items } = Astro.props
+---
+
+<Section class={className} id={id}>
+  <SectionContent>
+    <SectionProse>
+      <slot />
+    </SectionProse>
+    <SectionActions>
+      {
+        links?.map(({ icon, text, ...link }, i) => (
+          <Button variant={i === 0 ? "default" : "outline"} {...link}>
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
+    </SectionActions>
+    <SectionSplit
+      class="before:bg-border relative gap-8 before:absolute before:left-5.5 before:h-full before:w-px before:@5xl:top-5.5 before:@5xl:h-px before:@5xl:w-full"
+    >
+      {
+        items?.map(({ title, description, list }, i) => (
+          <Tile class="items-start gap-8 gap-x-4 @max-5xl:flex-row">
+            <TileMedia variant="icon">{i + 1}</TileMedia>
+            <TileContent class="p-0">
+              <TileTitle class="not-first:mt-4">{title}</TileTitle>
+              <TileDescription>{description}</TileDescription>
+              <List
+                class={`not-first:mt-4 ${i === 0 ? "text-muted-foreground" : "text-foreground"}`}
+              >
+                {list?.map((item) => (
+                  <ListItem>
+                    {i === 0 ? <X /> : <CircleCheck />}
+                    {item}
+                  </ListItem>
+                ))}
+              </List>
+            </TileContent>
+          </Tile>
+        ))
+      }
+    </SectionSplit>
+  </SectionContent>
+</Section>
