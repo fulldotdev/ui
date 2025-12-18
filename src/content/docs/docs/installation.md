@@ -75,7 +75,7 @@ import { Button } from "@/components/ui/button"
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/logo-fulldev.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>Astro + fulldev/ui</title>
   </head>

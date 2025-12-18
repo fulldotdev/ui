@@ -41,7 +41,7 @@ sections:
       - text: View Components
         href: /docs/components/
     image:
-      src: ../../assets/my-accordion.astro.png
+      src: ../../assets/my-accordion-code-example-homepage.astro.png
       alt: Astro UI Components
   - block: content-6
     html: |
@@ -51,7 +51,7 @@ sections:
       - text: View Blocks
         href: /blocks/
     image:
-      src: ../../assets/my-cta.astro.png
+      src: ../../assets/my-cta-code-example-homepage.astro.png
       alt: Astro Blocks
   - block: cta-8
     html: |
@@ -65,7 +65,4 @@ sections:
 seo:
   title: Astro UI component and block library for content-driven websites - fulldev/ui
   description: fulldev/ui is a complete Astro component library with ready-to-use UI components and blocks. Build content-driven websites faster with our Astro UI components library designed for developers.
-  image:
-    src: ../../assets/placeholder.webp
-    alt: Home
 ---
