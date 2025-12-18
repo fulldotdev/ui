@@ -1,33 +1,105 @@
 # Fulldev UI
 
-The [Astro][astro] UI library to build entire websites
+A shadcn-compatible component library built for [Astro][astro], designed for content-driven websites.
 
-Make websites with prebuilt components and blocks
+## Features
+
+- **Vanilla Astro Components** — No framework dependencies, pure Astro components
+- **shadcn Compatible** — Uses the shadcn CLI and registry system for easy installation
+- **Content-First** — Built for content-driven websites with components like sections, tiles, and prose
+- **100+ Components & Blocks** — Ready-to-use UI components and pre-built page blocks
+- **Tailwind CSS v4** — Styled with the latest Tailwind CSS
+- **TypeScript** — Full TypeScript support
+
+## Installation
+
+### Prerequisites
+
+- Node.js 18+
+- pnpm (recommended) or npm
+
+### Quick Start
+
+1. **Create a new Astro project** (skip if you have one):
+
+```bash
+npx create-astro@latest my-project --template with-tailwindcss --install --git
+cd my-project
+```
+
+2. **Configure TypeScript paths** in `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+```
+
+3. **Initialize shadcn**:
+
+```bash
+npx shadcn@latest init
+```
+
+4. **Add fulldev/ui registry** to `components.json`:
+
+```json
+{
+  "registries": {
+    "@fulldev-ui": "https://ui.full.dev/r/{name}.json"
+  }
+}
+```
+
+5. **Add components**:
+
+```bash
+pnpm dlx shadcn@latest add @fulldev-ui/button
+```
 
 ## Documentation
 
-Please visit the [documentation site][docs]
+Visit [ui.full.dev][docs] for complete documentation, component examples, and usage guides.
+
+## Development
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm dev
+
+# Build for production
+pnpm build
+
+# Preview production build
+pnpm preview
+
+# Type check
+pnpm check
+```
 
 ## Contributing
 
-We welcome all contributions. Please checkout the repository to get started, it is structured just like a normal Astro project.
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-## Support
+## Community
 
-Please [create a Github issue][issues] for things that cross your mind; feature requests, bug reports or feedback.
-
-## Community / Contact
-
-Looking to share your work using fulldev-ui, regular talks about it or support join our [discord server](https://discord.gg/tdmUyH2YE4).
+- **Discord** — Join our [Discord server][discord] to share your work and get support
+- **Issues** — Report bugs and request features on [GitHub Issues][issues]
 
 ## License
 
-MIT
-
-Copyright (c) 2024–present [Fulldev][fulldev]
+MIT License — Copyright (c) 2024–present [Fulldev][fulldev]
 
 [astro]: https://astro.build/
 [docs]: https://ui.full.dev/
 [fulldev]: https://full.dev/
-[issues]: https://github.com/fulldotdev/ui/issues/
-[discord]: https://discord.gg/vXZqMbadm8
+[issues]: https://github.com/fulldotdev/ui/issues
+[discord]: https://discord.gg/tdmUyH2YE4
