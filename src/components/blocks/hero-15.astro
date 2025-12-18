@@ -1,0 +1,75 @@
+---
+import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Image } from "@/components/ui/image"
+import {
+  Section,
+  SectionActions,
+  SectionContent,
+  SectionGrid,
+  SectionMedia,
+  SectionProse,
+} from "@/components/ui/section"
+
+interface Props {
+  class?: string
+  id?: string
+  link?: {
+    text?: string
+    href?: string
+    icon?: string
+    target?: string
+  }
+  links?: {
+    text?: string
+    href?: string
+    icon?: string
+    target?: string
+  }[]
+  image?: {
+    src: string
+    alt: string
+  }
+  items?: {
+    image?: {
+      src: string
+      alt: string
+    }
+  }[]
+}
+
+const { class: className, id, link, links, items } = Astro.props
+---
+
+<Section class={"pb-0"} id={id}>
+  <SectionContent
+    class={cn(
+      "before:from-primary/10 relative items-center before:absolute before:bottom-full before:left-0 before:h-[200%] before:w-full before:animate-pulse before:rounded-full before:bg-gradient-to-t before:to-transparent before:blur-3xl"
+    )}
+  >
+    <Badge variant="secondary" class="px-2 py-0.5 text-sm" {...link}>
+      {link?.text}
+      {link?.href && <Icon name={link?.icon} />}
+    </Badge>
+    <SectionProse class="text-center text-balance" size="lg">
+      <slot />
+    </SectionProse>
+    <SectionActions class="justify-center">
+      {
+        links?.map(({ icon, text, ...link }, i) => (
+          <Button
+            class="bg-primary/10! text-primary! h-11! border-transparent px-12 text-base font-semibold! shadow-none"
+            variant={i === 0 ? "outline" : "outline"}
+            size="lg"
+            {...link}
+          >
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
+    </SectionActions>
+  </SectionContent>
+</Section>
