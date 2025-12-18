@@ -13,15 +13,20 @@ sections:
         href: /blocks/
   - block: blocks-4
     refs:
-      - /src/content/pages/blocks/hero-4.md
-      - /src/content/pages/blocks/features-3.md
-      - /src/content/pages/blocks/products-2.md
-      - /src/content/pages/blocks/stats-2.md
-      - /src/content/pages/blocks/logos-1.md
-      - /src/content/pages/blocks/articles-1.md
-      - /src/content/pages/blocks/reviews-1.md
+      - /src/content/pages/blocks/articles-3.md
+      - /src/content/pages/blocks/contact-2.md
+      - /src/content/pages/blocks/cta-3.md
+      - /src/content/pages/blocks/cta-5.md
       - /src/content/pages/blocks/faqs-2.md
-      - /src/content/pages/blocks/services-1.md
+      - /src/content/pages/blocks/features-5.md
+      - /src/content/pages/blocks/footer-1.md
+      - /src/content/pages/blocks/header-1.md
+      - /src/content/pages/blocks/logos-2.md
+      - /src/content/pages/blocks/pricings-3.md
+      - /src/content/pages/blocks/products-1.md
+      - /src/content/pages/blocks/reviews-4.md
+      - /src/content/pages/blocks/services-4.md
+      - /src/content/pages/blocks/services-5.md
   - block: features-5
     items:
       - title: Built for developers
