@@ -13,13 +13,14 @@ import {
   FooterSpread,
 } from "@/components/ui/footer"
 import { Icon } from "@/components/ui/icon"
-import { Logo, LogoImage } from "@/components/ui/logo"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
 
 interface Props {
-  name?: string
-  image?: {
-    src: string
-    alt: string
+  logo?: {
+    src?: string
+    alt?: string
+    text?: string
+    href?: string
   }
   description?: string
   socials?: string[]
@@ -38,7 +39,7 @@ interface Props {
   }[]
 }
 
-const { name, image, description, links, socials, menus } = Astro.props
+const { logo, description, links, socials, menus } = Astro.props
 ---
 
 <Footer>
@@ -61,15 +62,17 @@ const { name, image, description, links, socials, menus } = Astro.props
       }
     </FooterGrid>
   </FooterSplit>
-  <Logo href="/">
+  <Logo href={logo?.href || "/"}>
     <LogoImage
+      src={logo?.src}
+      alt={logo?.alt}
       sizes="(min-width: 1536px) 1536px, 100vw"
       class="h-auto max-h-none w-full max-w-none"
-      {...image}
     />
+    <LogoText>{logo?.text}</LogoText>
   </Logo>
   <FooterSpread>
-    <FooterCopyright>{name}</FooterCopyright>
+    <FooterCopyright>{logo?.text}</FooterCopyright>
     <FooterMenu
       orientation="horizontal"
       class="@5xl:absolute @5xl:left-1/2 @5xl:-translate-x-1/2"

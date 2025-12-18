@@ -1,5 +1,4 @@
 ---
-import type { ComponentProps } from "astro/types"
 import MenuIcon from "lucide-static/icons/menu.svg"
 
 import { Button } from "@/components/ui/button"
@@ -34,8 +33,12 @@ import {
 } from "@/components/ui/sidebar"
 
 interface Props {
-  name?: string
-  image?: ComponentProps<typeof LogoImage>
+  logo?: {
+    src?: string
+    alt?: string
+    text?: string
+    href?: string
+  }
   links?: {
     icon?: string
     text?: string
@@ -53,13 +56,13 @@ interface Props {
   }[]
 }
 
-const { name, image, menus, links, socials } = Astro.props
+const { logo, menus, links, socials } = Astro.props
 ---
 
 <Header>
-  <Logo href="/">
-    <LogoImage {...image} />
-    <LogoText>{name}</LogoText>
+  <Logo href={logo?.href || "/"}>
+    <LogoImage src={logo?.src} alt={logo?.alt} />
+    <LogoText>{logo?.text}</LogoText>
   </Logo>
   <NavigationMenu class="mr-auto @max-5xl:hidden">
     <NavigationMenuList>

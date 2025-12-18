@@ -19,6 +19,17 @@ const image = ({ image }: SchemaContext) =>
     .partial()
     .strict()
 
+const logo = ({ image }: SchemaContext) =>
+  z
+    .object({
+      src: image(), // local relative: ../../assets/image.webp; remote: full URL
+      alt: z.string(),
+      text: z.string(),
+      href: z.string(),
+    })
+    .partial()
+    .strict()
+
 const seo = (ctx: SchemaContext) =>
   z
     .object({
@@ -95,6 +106,8 @@ const item = (ctx: SchemaContext) =>
       icon: z.string(),
       image: image(ctx),
       images: image(ctx).array(),
+      logo: logo(ctx),
+      logos: logo(ctx).array(),
       links: link.array(),
       rating: rating,
       price: z.string().or(z.number()),
