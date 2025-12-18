@@ -71,18 +71,29 @@ const { class: className } = Astro.props
 </style>
 
 <script>
-  document.querySelectorAll("[data-slot='theme-toggle']").forEach((toggle) => {
-    toggle.addEventListener("click", () => {
-      const html = document.documentElement
-      html.classList.add("no-transitions")
-      html.classList.toggle("dark")
+  function initThemeToggle() {
+    document
+      .querySelectorAll("[data-slot='theme-toggle']")
+      .forEach((toggle) => {
+        toggle.addEventListener("click", () => {
+          const html = document.documentElement
+          html.classList.add("no-transitions")
+          html.classList.toggle("dark")
 
-      const isDark = html.classList.contains("dark")
-      html.setAttribute("data-theme", isDark ? "dark" : "light")
+          const isDark = html.classList.contains("dark")
+          html.setAttribute("data-theme", isDark ? "dark" : "light")
 
-      requestAnimationFrame(() => {
-        html.classList.remove("no-transitions")
+          requestAnimationFrame(() => {
+            html.classList.remove("no-transitions")
+          })
+        })
       })
-    })
-  })
+  }
+
+  // Run when DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initThemeToggle)
+  } else {
+    initThemeToggle()
+  }
 </script>
