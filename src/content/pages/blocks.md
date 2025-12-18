@@ -13,15 +13,17 @@ sections:
         href: /blocks/banner/
       - text: Contact (3)
         href: /blocks/contact/
+      - text: Content (4)
+        href: /blocks/content/
       - text: Cta (8)
         href: /blocks/cta/
       - text: Faqs (4)
         href: /blocks/faqs/
-      - text: Features (4)
+      - text: Features (6)
         href: /blocks/features/
       - text: Footer (3)
         href: /blocks/footer/
-      - text: Header (2)
+      - text: Header (3)
         href: /blocks/header/
       - text: Hero (13)
         href: /blocks/hero/
@@ -37,7 +39,6 @@ sections:
         href: /blocks/reviews/
       - text: Services (7)
         href: /blocks/services/
-
 seo:
   title: Astro Blocks for content-driven websites - fulldev/ui
   description: fulldev/ui is a complete Astro block library with ready-to-use UI blocks. Build content-driven websites faster with our Astro UI blocks library designed for developers.
