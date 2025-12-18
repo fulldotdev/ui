@@ -51,7 +51,7 @@ npx shadcn@latest init
 ```json
 {
   "registries": {
-    "@fulldev-ui": "https://ui.full.dev/r/{name}.json"
+    "@fulldev": "https://ui.full.dev/r/{name}.json"
   }
 }
 ```
@@ -59,7 +59,7 @@ npx shadcn@latest init
 5. **Add components**:
 
 ```bash
-npx shadcn@latest add @fulldev-ui/button
+npx shadcn@latest add @fulldev/button
 ```
 
 ## Documentation

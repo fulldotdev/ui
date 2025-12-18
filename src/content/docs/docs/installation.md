@@ -41,7 +41,7 @@ Add fulldev/ui as a namespaced registry to your `components.json` file:
 ```json title="components.json"
 {
   "registries": {
-    "@fulldev-ui": "https://ui.full.dev/r/{name}.json"
+    "@fulldev": "https://ui.full.dev/r/{name}.json"
   }
 }
 ```
@@ -51,20 +51,20 @@ Add fulldev/ui as a namespaced registry to your `components.json` file:
 You can now start adding components to your project.
 
 ```bash
-npx shadcn@latest add @fulldev-ui/button
+npx shadcn@latest add @fulldev/button
 ```
 
 or multiple resources at once:
 
 ```bash
-npx shadcn@latest add @fulldev-ui/button @fulldev-ui/item @fulldev-ui/list
+npx shadcn@latest add @fulldev/button @fulldev/item @fulldev/list
 ```
 
 ### Add all components and blocks
 
 ```bash
-npx shadcn@latest add @fulldev-ui/components
-npx shadcn@latest add @fulldev-ui/blocks
+npx shadcn@latest add @fulldev/components
+npx shadcn@latest add @fulldev/blocks
 ```
 
 ### Usage
