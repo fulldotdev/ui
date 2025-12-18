@@ -59,7 +59,7 @@ npx shadcn@latest init
 5. **Add components**:
 
 ```bash
-pnpm dlx shadcn@latest add @fulldev-ui/button
+npx shadcn@latest add @fulldev-ui/button
 ```
 
 ## Documentation

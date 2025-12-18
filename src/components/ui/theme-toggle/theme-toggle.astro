@@ -12,9 +12,7 @@ const { class: className } = Astro.props
 
 {/* This is intentionally inlined to avoid FOUC. */}
 <script is:inline>
-  if (!window.__themeInitialized) {
-    window.__themeInitialized = true
-
+  ;(function () {
     const getThemePreference = () => {
       if (
         typeof localStorage !== "undefined" &&
@@ -47,7 +45,7 @@ const { class: className } = Astro.props
         attributeFilter: ["class"],
       })
     }
-  }
+  })()
 </script>
 
 <Button
@@ -71,29 +69,19 @@ const { class: className } = Astro.props
 </style>
 
 <script>
-  function initThemeToggle() {
-    document
-      .querySelectorAll("[data-slot='theme-toggle']")
-      .forEach((toggle) => {
-        toggle.addEventListener("click", () => {
-          const html = document.documentElement
-          html.classList.add("no-transitions")
-          html.classList.toggle("dark")
+  document.querySelectorAll("[data-slot='theme-toggle']").forEach((toggle) => {
+    toggle.addEventListener("click", () => {
+      console.log("toggle theme")
+      const html = document.documentElement
+      html.classList.add("no-transitions")
+      html.classList.toggle("dark")
 
-          const isDark = html.classList.contains("dark")
-          html.setAttribute("data-theme", isDark ? "dark" : "light")
+      const isDark = html.classList.contains("dark")
+      html.setAttribute("data-theme", isDark ? "dark" : "light")
 
-          requestAnimationFrame(() => {
-            html.classList.remove("no-transitions")
-          })
-        })
+      requestAnimationFrame(() => {
+        html.classList.remove("no-transitions")
       })
-  }
-
-  // Run when DOM is ready
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initThemeToggle)
-  } else {
-    initThemeToggle()
-  }
+    })
+  })
 </script>

@@ -15,7 +15,7 @@ const variants = cva(
       variant: {
         default: "bg-background sticky w-full",
         floating: [
-          "w-[calc(100%-2*var(--gutter))] max-w-(--header-width)",
+          "w-[calc(100%-2*var(--gutter,24px))] max-w-(--header-width)",
           "top-2 mt-2 h-[calc(var(--header-height)-var(--spacing)*2)] overflow-hidden rounded-xl",
           "bg-background border-border sticky border",
         ],
@@ -47,8 +47,11 @@ const slot = await Astro.slots.render("default")
 
 <style is:global>
   [data-slot="header"] {
-    --header-width: var(--container);
-    --header-px: max(var(--gutter), calc((100cqw - var(--header-width)) / 2));
+    --header-width: var(--container, var(--breakpoint-xl));
+    --header-px: max(
+      var(--gutter, 24px),
+      calc((100cqw - var(--header-width)) / 2)
+    );
   }
 
   [data-slot="header"][data-variant="floating"] {

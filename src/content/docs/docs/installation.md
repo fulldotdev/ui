@@ -3,12 +3,16 @@ title: Installation
 description: Install and configure fulldev/ui for Astro
 ---
 
-### Create project
+## Create new Astro project
 
-If you don't have a project yet, create one using the following command:
+If you don't have a project yet, we recommend using [this starter template](https://github.com/fulldotdev/starter).
+
+## Add to existing Astro project
+
+As this project is distributed as a shadcn registry, run the `shadcn` init command to setup your project:
 
 ```bash
-npx create-astro@latest astro-fulldev  --template with-tailwindcss --install --git
+npx shadcn@latest init
 ```
 
 ### Edit tsconfig.json file
@@ -30,14 +34,6 @@ Add the following code to the `tsconfig.json` file to resolve paths:
 }
 ```
 
-### Run the CLI
-
-As this project is distributed as a shadcn registry, run the `shadcn` init command to setup your project:
-
-```bash
-npx shadcn@latest init
-```
-
 ### Add fulldev/ui registry
 
 Add fulldev/ui as a namespaced registry to your `components.json` file:
@@ -50,19 +46,28 @@ Add fulldev/ui as a namespaced registry to your `components.json` file:
 }
 ```
 
-### Add Components
+## Add Components
 
 You can now start adding components to your project.
 
 ```bash
-pnpm dlx shadcn@latest add @fulldev-ui/button
+npx shadcn@latest add @fulldev-ui/button
 ```
 
 or multiple resources at once:
 
 ```bash
-pnpm dlx shadcn@latest add @fulldev-ui/button @fulldev-ui/item @fulldev-ui/list
+npx shadcn@latest add @fulldev-ui/button @fulldev-ui/item @fulldev-ui/list
 ```
+
+### Add all components and blocks
+
+```bash
+npx shadcn@latest add @fulldev-ui/components
+npx shadcn@latest add @fulldev-ui/blocks
+```
+
+### Usage
 
 The commands above will add components to your project. You can then import them like this:
 

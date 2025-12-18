@@ -16,7 +16,7 @@ const variants = cva(
         default: "bg-background w-full",
         floating: [
           "bg-background rounded-lg border shadow-sm",
-          "w-[calc(100%-2*var(--gutter))] max-w-(--footer-width)",
+          "w-[calc(100%-2*var(--gutter,24px))] max-w-(--footer-width)",
           "my-(--footer-py) overflow-hidden rounded-xl first:mt-2",
         ],
       },
@@ -47,9 +47,12 @@ const slot = await Astro.slots.render("default")
 
 <style is:global>
   [data-slot="footer"] {
-    --footer-width: var(--container);
+    --footer-width: var(--container, var(--breakpoint-xl));
     --footer-py: calc(var(--spacing) * 12);
-    --footer-px: max(var(--gutter), calc((100cqw - var(--footer-width)) / 2));
+    --footer-px: max(
+      var(--gutter, 24px),
+      calc((100cqw - var(--footer-width)) / 2)
+    );
   }
 
   [data-slot="footer"][data-variant="floating"] {

@@ -16,7 +16,7 @@ const variants = cva(
         default: "bg-foreground text-background w-full",
         floating: [
           "bg-foreground text-background rounded-xl shadow-sm",
-          "w-[calc(100%-2*var(--gutter))] max-w-(--banner-width)",
+          "w-[calc(100%-2*var(--gutter,24px))] max-w-(--banner-width)",
           "border-border my-2 overflow-hidden rounded-xl border",
         ],
       },
@@ -69,8 +69,11 @@ const slot = await Astro.slots.render("default")
   }
 
   [data-slot="banner"] {
-    --banner-width: var(--container);
-    --banner-px: max(var(--gutter), calc((100cqw - var(--banner-width)) / 2));
+    --banner-width: var(--container, var(--breakpoint-xl));
+    --banner-px: max(
+      var(--gutter, 24px),
+      calc((100cqw - var(--banner-width)) / 2)
+    );
   }
 
   [data-slot="banner"][data-variant="floating"] {
