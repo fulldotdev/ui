@@ -9,6 +9,8 @@ import { defineConfig, fontProviders } from "astro/config"
 
 import site from "./site.json"
 
+import react from "@astrojs/react";
+
 export default defineConfig({
   site: site.site,
   image: {
@@ -119,65 +121,58 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  integrations: [
-    robotsTxt(),
-    sitemap({
-      changefreq: "weekly",
-      lastmod: new Date(),
-      i18n: {
-        defaultLocale: site.defaultLocale,
-        locales: Object.fromEntries(
-          site.locales.map((locale) => [locale, locale])
-        ),
+  integrations: [robotsTxt(), sitemap({
+    changefreq: "weekly",
+    lastmod: new Date(),
+    i18n: {
+      defaultLocale: site.defaultLocale,
+      locales: Object.fromEntries(
+        site.locales.map((locale) => [locale, locale])
+      ),
+    },
+  }), favicons({
+    input: {
+      favicons: [site.favicon],
+    },
+    name: site.name,
+    short_name: site.name,
+  }), starlight({
+    title: site.name,
+    description:
+      "The Astro UI component and block library for content-driven websites.",
+    sidebar: [
+      {
+        label: "Get started",
+        items: [
+          "docs",
+          "docs/installation",
+          "docs/theming",
+          {
+            label: "Blocks",
+            link: "/blocks/",
+          },
+        ],
       },
-    }),
-    favicons({
-      input: {
-        favicons: [site.favicon],
+      {
+        label: "Components",
+        autogenerate: { directory: "docs/components" },
       },
-      name: site.name,
-      short_name: site.name,
-    }),
-    starlight({
-      title: site.name,
-      description:
-        "The Astro UI component and block library for content-driven websites.",
-      sidebar: [
-        {
-          label: "Get started",
-          items: [
-            "docs",
-            "docs/installation",
-            "docs/theming",
-            {
-              label: "Blocks",
-              link: "/blocks/",
-            },
-          ],
-        },
-        {
-          label: "Components",
-          autogenerate: { directory: "docs/components" },
-        },
-      ],
-      customCss: [
-        "./src/styles/global.css",
-        "@fontsource/inter/400.css",
-        "@fontsource/inter/500.css",
-        "@fontsource/inter/600.css",
-        "@fontsource/inter/700.css",
-        "@fontsource/inter/800.css",
-      ],
-      components: {
-        SiteTitle: "/src/components/starlight-title.astro",
-        ThemeSelect: "/src/components/starlight-icons.astro",
-        MarkdownContent: "/src/components/starlight-markdown-content.astro",
-        ThemeProvider: "/src/components/ui/theme-toggle/theme-provider.astro",
-      },
-    }),
-    liveCode({
-      layout: "/src/components/live-code-layout.astro",
-    }),
-    mdx(),
-  ],
+    ],
+    customCss: [
+      "./src/styles/global.css",
+      "@fontsource/inter/400.css",
+      "@fontsource/inter/500.css",
+      "@fontsource/inter/600.css",
+      "@fontsource/inter/700.css",
+      "@fontsource/inter/800.css",
+    ],
+    components: {
+      SiteTitle: "/src/components/starlight-title.astro",
+      ThemeSelect: "/src/components/starlight-icons.astro",
+      MarkdownContent: "/src/components/starlight-markdown-content.astro",
+      ThemeProvider: "/src/components/ui/theme-toggle/theme-provider.astro",
+    },
+  }), liveCode({
+    layout: "/src/components/live-code-layout.astro",
+  }), mdx(), react()],
 })
