@@ -1,3 +1,12 @@
+import { cn } from "@/lib/utils"
+
+export function navigationMenuTriggerStyle(className?: string) {
+  return cn(
+    "bg-background hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground h-9 w-max px-4 py-2 text-sm font-medium disabled:pointer-events-none disabled:opacity-50",
+    className
+  )
+}
+
 export { default as NavigationMenu } from "./navigation-menu.astro"
 export { default as NavigationMenuContent } from "./navigation-menu-content.astro"
 export { default as NavigationMenuItem } from "./navigation-menu-item.astro"

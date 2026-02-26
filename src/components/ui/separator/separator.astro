@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 
 interface Props extends HTMLAttributes<"div">, VariantProps<typeof variants> {
   orientation?: "horizontal" | "vertical"
+  decorative?: boolean
 }
 
 const variants = cva("bg-border block shrink-0", {
@@ -20,11 +21,19 @@ const variants = cva("bg-border block shrink-0", {
   },
 })
 
-const { class: className, orientation = "horizontal", ...props } = Astro.props
+const {
+  class: className,
+  orientation = "horizontal",
+  decorative = true,
+  ...props
+} = Astro.props
 ---
 
 <div
   data-slot="separator"
+  data-orientation={orientation}
+  role={decorative ? "none" : "separator"}
+  aria-orientation={decorative ? undefined : orientation}
   class={cn(variants({ orientation }), className)}
   {...props}
 >
