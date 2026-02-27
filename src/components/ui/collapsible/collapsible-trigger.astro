@@ -10,24 +10,18 @@ interface Props extends Omit<HTMLAttributes<"summary">, "class"> {
 }
 
 const { class: className, showChevron = true, ...props } = Astro.props
-
-const slot = await Astro.slots.render("default")
 ---
 
-{
-  slot?.trim().length > 0 && (
-    <summary
-      data-slot="collapsible-trigger"
-      class={cn(
-        "flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden",
-        className
-      )}
-      {...props}
-    >
-      <Fragment set:html={slot} />
-      {showChevron && (
-        <ChevronDownIcon class="ml-auto size-4 shrink-0 transition-transform duration-200 group-open/collapsible:rotate-180" />
-      )}
-    </summary>
-  )
-}
+<summary
+  data-slot="collapsible-trigger"
+  class={cn(
+    "flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden",
+    className
+  )}
+  {...props}
+>
+  <slot />
+  {showChevron && (
+    <ChevronDownIcon class="ml-auto size-4 shrink-0 transition-transform duration-200 group-open/collapsible:rotate-180" />
+  )}
+</summary>

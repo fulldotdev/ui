@@ -27,24 +27,18 @@ const variants = cva(
 
 const { class: className, variant, href, ...props } = Astro.props
 
-const slot = await Astro.slots.render("default")
-
 const Comp = href ? "a" : "div"
 ---
 
-{
-  slot?.trim().length > 0 && (
-    <Comp
-      data-slot="tile"
-      data-variant={variant}
-      class={cn(variants({ variant }), className)}
-      href={href}
-      {...props}
-    >
-      <Fragment set:html={slot} />
-    </Comp>
-  )
-}
+<Comp
+  data-slot="tile"
+  data-variant={variant}
+  class={cn(variants({ variant }), className)}
+  href={href}
+  {...props}
+>
+  <slot />
+</Comp>
 
 <style is:global>
   [data-slot="tile"] {
