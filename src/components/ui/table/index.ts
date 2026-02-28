@@ -6,4 +6,3 @@ export { default as TableRow } from "./table-row.astro"
 export { default as TableHead } from "./table-head.astro"
 export { default as TableCell } from "./table-cell.astro"
 export { default as TableCaption } from "./table-caption.astro"
-

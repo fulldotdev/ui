@@ -1,5 +1,5 @@
-import { axe } from "vitest-axe"
 import { describe, expect, it } from "vitest"
+import { axe } from "vitest-axe"
 
 describe("a11y smoke checks", () => {
   it("has no violations for a basic interactive snippet", async () => {

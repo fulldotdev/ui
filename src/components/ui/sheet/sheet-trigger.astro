@@ -1,14 +1,30 @@
 ---
-import type { ComponentProps } from "astro/types"
+import type { HTMLAttributes } from "astro/types"
 
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+import {
+  buttonVariants,
+  type ButtonVariantProps,
+} from "@/components/ui/button/button-variants"
 
-interface Props extends ComponentProps<typeof Button> {}
+interface Props extends HTMLAttributes<"button">, ButtonVariantProps {}
 
-const { ...props } = Astro.props
-
+const {
+  class: className,
+  variant = "ghost",
+  size = "icon",
+  type = "button",
+  name = "open-sheet-button",
+  ...props
+} = Astro.props
 ---
 
-<Button data-slot="sheet-trigger" name="open-sheet-button" {...props}>
+<button
+  data-slot="sheet-trigger"
+  class={cn(buttonVariants({ variant, size }), className)}
+  type={type}
+  name={name}
+  {...props}
+>
   <slot />
-</Button>
+</button>

@@ -1,3 +1,6 @@
 export { default as Avatar } from "./avatar.astro"
+export { default as AvatarBadge } from "./avatar-badge.astro"
 export { default as AvatarFallback } from "./avatar-fallback.astro"
+export { default as AvatarGroup } from "./avatar-group.astro"
+export { default as AvatarGroupCount } from "./avatar-group-count.astro"
 export { default as AvatarImage } from "./avatar-image.astro"

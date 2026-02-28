@@ -1,28 +1,24 @@
 ---
-import type { HTMLAttributes } from "astro/types"
+import type { HTMLTag, Polymorphic } from "astro/types"
 
 import { cn } from "@/lib/utils"
+
 import { badgeVariants, type BadgeVariantProps } from "./badge-variants"
 
-type Props = BadgeVariantProps &
-  HTMLAttributes<"span"> &
-  HTMLAttributes<"a"> & {
-    text?: string
-    html?: string
-  }
+type Props<Tag extends HTMLTag> = Polymorphic<{ as: Tag }> & BadgeVariantProps
 
-const { class: className, variant, href, text, html, ...props } = Astro.props
-
-const Comp = href ? "a" : "span"
+const {
+  as: Tag = "span",
+  class: className,
+  variant = "default",
+  ...props
+} = Astro.props
 ---
 
-<Comp
+<Tag
   data-slot="badge"
   class={cn(badgeVariants({ variant }), className)}
-  href={href}
-  set:html={html}
-  set:text={text}
   {...props}
 >
   <slot />
-</Comp>
+</Tag>
