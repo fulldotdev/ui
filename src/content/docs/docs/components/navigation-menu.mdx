@@ -12,45 +12,95 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
+
+const components = [
+  {
+    title: "Alert Dialog",
+    href: "/docs/components/dialog",
+    description: "A modal dialog that interrupts the user with important content.",
+  },
+  {
+    title: "Popover",
+    href: "/docs/components/popover",
+    description: "Displays rich content in a portal, triggered by a button.",
+  },
+  {
+    title: "Select",
+    href: "/docs/components/select",
+    description: "Displays a list of options for the user to pick from.",
+  },
+  {
+    title: "Tabs",
+    href: "/docs/components/tabs",
+    description: "A set of layered sections of content displayed one at a time.",
+  },
+]
 ---
 
 <NavigationMenu>
-  <NavigationMenuList class="flex-wrap">
-    <NavigationMenuItem>
-      <NavigationMenuTrigger>Home</NavigationMenuTrigger>
+  <NavigationMenuList class="flex-wrap gap-1">
+    <NavigationMenuItem value="getting-started">
+      <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
       <NavigationMenuContent>
-        <ul class="grid w-[300px] gap-2">
+        <ul class="w-96 p-1">
           <li>
-            <NavigationMenuLink href="/">
-              <div class="font-medium">Introduction</div>
-              <div class="text-muted-foreground text-sm">
-                Get started with our library.
-              </div>
+            <NavigationMenuLink href="/docs" class="w-full flex-col items-start">
+              <span class="font-medium leading-none">Introduction</span>
+              <span class="text-muted-foreground line-clamp-2 text-sm">
+                Re-usable components built with Tailwind CSS.
+              </span>
             </NavigationMenuLink>
           </li>
           <li>
-            <NavigationMenuLink href="/docs">
-              <div class="font-medium">Documentation</div>
-              <div class="text-muted-foreground text-sm">
-                Learn how to use components.
-              </div>
+            <NavigationMenuLink
+              href="/docs/getting-started/installation"
+              class="w-full flex-col items-start"
+            >
+              <span class="font-medium leading-none">Installation</span>
+              <span class="text-muted-foreground line-clamp-2 text-sm">
+                How to install dependencies and structure your app.
+              </span>
+            </NavigationMenuLink>
+          </li>
+          <li>
+            <NavigationMenuLink
+              href="/docs/getting-started/introduction"
+              class="w-full flex-col items-start"
+            >
+              <span class="font-medium leading-none">Typography</span>
+              <span class="text-muted-foreground line-clamp-2 text-sm">
+                Styles for headings, paragraphs, lists, and more.
+              </span>
             </NavigationMenuLink>
           </li>
         </ul>
       </NavigationMenuContent>
     </NavigationMenuItem>
-    <NavigationMenuItem>
+    <NavigationMenuItem value="components" class="hidden md:block">
       <NavigationMenuTrigger>Components</NavigationMenuTrigger>
       <NavigationMenuContent>
-        <ul class="grid w-[300px] gap-2">
-          <li>
-            <NavigationMenuLink href="/components">
-              <div class="font-medium">All Components</div>
-            </NavigationMenuLink>
-          </li>
+        <ul class="grid w-[400px] gap-2 p-1 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+          {
+            components.map((component) => (
+              <li>
+                <NavigationMenuLink href={component.href} class="w-full flex-col items-start">
+                  <span class="font-medium leading-none">{component.title}</span>
+                  <span class="text-muted-foreground line-clamp-2 text-sm">
+                    {component.description}
+                  </span>
+                </NavigationMenuLink>
+              </li>
+            ))
+          }
         </ul>
       </NavigationMenuContent>
+    </NavigationMenuItem>
+    <NavigationMenuItem value="docs">
+      <NavigationMenuLink href="/docs" class={navigationMenuTriggerStyle()}>
+        Docs
+      </NavigationMenuLink>
     </NavigationMenuItem>
   </NavigationMenuList>
 </NavigationMenu>
@@ -81,27 +131,17 @@ import {
 ```astro
 <NavigationMenu>
   <NavigationMenuList>
-    <NavigationMenuItem>
-      <NavigationMenuTrigger>Item</NavigationMenuTrigger>
+    <NavigationMenuItem value="item-one">
+      <NavigationMenuTrigger>Item One</NavigationMenuTrigger>
       <NavigationMenuContent>
-        <NavigationMenuLink href="#">Link</NavigationMenuLink>
+        <NavigationMenuLink href="/docs">Link</NavigationMenuLink>
       </NavigationMenuContent>
+    </NavigationMenuItem>
+    <NavigationMenuItem value="docs">
+      <NavigationMenuLink href="/docs" class={navigationMenuTriggerStyle()}>
+        Docs
+      </NavigationMenuLink>
     </NavigationMenuItem>
   </NavigationMenuList>
 </NavigationMenu>
-```
-
-### Trigger Style Helper
-
-```astro
----
-import {
-  NavigationMenuLink,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
----
-
-<NavigationMenuLink href="/" class={navigationMenuTriggerStyle()}>
-  Home
-</NavigationMenuLink>
 ```

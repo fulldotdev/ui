@@ -16,9 +16,6 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuSub,
-  NavigationMenuSubItem,
-  NavigationMenuSubLink,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -67,32 +64,28 @@ const { logo, menus, links, socials } = Astro.props
   <NavigationMenu class="mr-auto @max-5xl:hidden">
     <NavigationMenuList>
       {
-        menus?.map((menu) => (
-          <NavigationMenuItem>
+        menus?.map((menu, index) => (
+          <NavigationMenuItem value={`menu-${index}`}>
             {menu.links && menu.links.length > 0 ? (
               <>
-                <NavigationMenuTrigger
-                  class="inline-flex h-8 items-center bg-transparent px-3 py-0"
-                  href={menu.href}
-                >
+                <NavigationMenuTrigger class="inline-flex h-8 items-center bg-transparent px-3 py-0">
                   {menu.text}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <NavigationMenuSub>
+                  <ul class="grid min-w-48 gap-1">
                     {menu.links?.map((link) => (
-                      <NavigationMenuSubItem>
-                        <NavigationMenuSubLink href={link.href}>
+                      <li>
+                        <NavigationMenuLink href={link.href} class="w-full">
                           {link.text}
-                        </NavigationMenuSubLink>
-                      </NavigationMenuSubItem>
+                        </NavigationMenuLink>
+                      </li>
                     ))}
-                  </NavigationMenuSub>
+                  </ul>
                 </NavigationMenuContent>
               </>
             ) : (
               <NavigationMenuLink
                 class="inline-flex h-8 items-center bg-transparent px-3 py-0"
-                variant="trigger"
                 href={menu.href}
               >
                 {menu.text}
