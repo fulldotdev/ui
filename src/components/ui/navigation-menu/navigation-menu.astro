@@ -3,24 +3,45 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-interface Props extends HTMLAttributes<"nav"> {}
+import NavigationMenuViewport from "./navigation-menu-viewport.astro"
 
-const { class: className, ...props } = Astro.props
+interface Props extends HTMLAttributes<"nav"> {
+  viewport?: boolean
+  delayOpen?: number
+  delayClose?: number
+  openOnFocus?: boolean
+}
 
-const slot = await Astro.slots.render("default")
+const {
+  class: className = "",
+  viewport = true,
+  delayOpen = 0,
+  delayClose = 50,
+  openOnFocus,
+  ...props
+} = Astro.props
 ---
 
-{
-  slot?.trim().length > 0 && (
-    <nav
-      data-slot="navigation-menu"
-      class={cn(
-        "group/navigation-menu relative flex max-w-max flex-1 items-center justify-center",
-        className
-      )}
-      {...props}
-    >
-      <Fragment set:html={slot} />
-    </nav>
-  )
-}
+<nav
+  {...props}
+  data-slot="navigation-menu"
+  data-viewport={viewport}
+  data-delay-open={delayOpen}
+  data-delay-close={delayClose}
+  data-open-on-focus={openOnFocus}
+  class={cn(
+    "group/navigation-menu relative flex max-w-max flex-1 items-center justify-center",
+    className
+  )}
+>
+  <slot />
+  {viewport && <NavigationMenuViewport />}
+</nav>
+
+<script>
+  import { createNavigationMenu } from "@data-slot/navigation-menu"
+
+  document
+    .querySelectorAll('[data-slot="navigation-menu"]')
+    .forEach((el) => createNavigationMenu(el))
+</script>

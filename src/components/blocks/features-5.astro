@@ -42,6 +42,8 @@ interface Props {
 }
 
 const { class: className, id, links, items } = Astro.props
+const slot = await Astro.slots.render("default")
+const hasSlot = slot.length > 0
 ---
 
 <Section
@@ -52,21 +54,23 @@ const { class: className, id, links, items } = Astro.props
   id={id}
   variant="floating"
 >
-  <SectionContent class="items-center">
-    <SectionProse class="text-center">
-      <slot />
-    </SectionProse>
-    <SectionActions class="justify-center">
-      {
-        links?.map(({ icon, text, ...link }, i) => (
-          <Button variant={i === 0 ? "default" : "outline"} {...link}>
-            {icon && <Icon name={icon} />}
-            {text}
-          </Button>
-        ))
-      }
-    </SectionActions>
-  </SectionContent>
+  {
+    (hasSlot || links?.length) && (
+      <SectionContent class="items-center">
+        <SectionProse class="text-center">
+          <Fragment set:html={slot} />
+        </SectionProse>
+        <SectionActions class="justify-center">
+          {links?.map(({ icon, text, ...link }, i) => (
+            <Button variant={i === 0 ? "default" : "outline"} {...link}>
+              {icon && <Icon name={icon} />}
+              {text}
+            </Button>
+          ))}
+        </SectionActions>
+      </SectionContent>
+    )
+  }
   <SectionGrid>
     {
       items?.map(({ title, description, icon, links }) => (
@@ -83,6 +87,7 @@ const { class: className, id, links, items } = Astro.props
           <TileActions class="justify-center">
             {links?.map(({ icon, text, href, target }) => (
               <Button
+                as="a"
                 class="h-auto p-0"
                 variant="link"
                 href={href}

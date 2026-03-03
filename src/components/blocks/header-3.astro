@@ -16,9 +16,6 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuSub,
-  NavigationMenuSubItem,
-  NavigationMenuSubLink,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -58,9 +55,40 @@ interface Props {
 
 const { logo, menus, links, socials } = Astro.props
 
-const githubStarCount = (
-  await (await fetch("https://api.github.com/repos/fulldotdev/ui")).json()
-).stargazers_count
+const parseEnvStarCount = (value: string | undefined) => {
+  if (!value) return null
+  const parsed = Number(value)
+  return Number.isFinite(parsed) && parsed >= 0 ? Math.floor(parsed) : null
+}
+
+async function getGithubStarCount(repo: string): Promise<number | null> {
+  const envStarCount = parseEnvStarCount(
+    import.meta.env.PUBLIC_GITHUB_STAR_COUNT
+  )
+  if (envStarCount !== null) return envStarCount
+
+  if (import.meta.env.PUBLIC_FETCH_GITHUB_STARS !== "true") return null
+
+  try {
+    const response = await fetch(`https://api.github.com/repos/${repo}`, {
+      headers: {
+        Accept: "application/vnd.github+json",
+      },
+      signal: AbortSignal.timeout(2000),
+    })
+
+    if (!response.ok) return null
+
+    const data = (await response.json()) as { stargazers_count?: unknown }
+    return typeof data.stargazers_count === "number"
+      ? data.stargazers_count
+      : null
+  } catch {
+    return null
+  }
+}
+
+const githubStarCount = await getGithubStarCount("fulldotdev/ui")
 ---
 
 <Header class="bg-background/60 backdrop-blur-md">
@@ -71,32 +99,28 @@ const githubStarCount = (
   <NavigationMenu class="mr-auto @max-5xl:hidden">
     <NavigationMenuList>
       {
-        menus?.map((menu) => (
-          <NavigationMenuItem>
+        menus?.map((menu, index) => (
+          <NavigationMenuItem value={`menu-${index}`}>
             {menu.links && menu.links.length > 0 ? (
               <>
-                <NavigationMenuTrigger
-                  class="inline-flex h-8 items-center bg-transparent px-3 py-0"
-                  href={menu.href}
-                >
+                <NavigationMenuTrigger class="inline-flex h-8 items-center bg-transparent px-3 py-0">
                   {menu.text}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <NavigationMenuSub>
+                  <ul class="grid min-w-48 gap-1">
                     {menu.links?.map((link) => (
-                      <NavigationMenuSubItem>
-                        <NavigationMenuSubLink href={link.href}>
+                      <li>
+                        <NavigationMenuLink href={link.href} class="w-full">
                           {link.text}
-                        </NavigationMenuSubLink>
-                      </NavigationMenuSubItem>
+                        </NavigationMenuLink>
+                      </li>
                     ))}
-                  </NavigationMenuSub>
+                  </ul>
                 </NavigationMenuContent>
               </>
             ) : (
               <NavigationMenuLink
                 class="inline-flex h-8 items-center bg-transparent px-3 py-0"
-                variant="trigger"
                 href={menu.href}
               >
                 {menu.text}
@@ -112,7 +136,13 @@ const githubStarCount = (
     {
       socials?.map((social) => (
         <>
-          <Button variant="ghost" size="icon-sm" href={social} target="_blank">
+          <Button
+            as="a"
+            variant="ghost"
+            size="icon-sm"
+            href={social}
+            target="_blank"
+          >
             <Icon href={social} />
           </Button>
         </>
@@ -131,13 +161,14 @@ const githubStarCount = (
       ))
     }
     <Button
+      as="a"
       variant="outline"
       size="sm"
       href="https://github.com/fulldotdev/ui"
       target="_blank"
     >
       <Icon name="github" />
-      {githubStarCount}
+      {githubStarCount !== null && githubStarCount.toLocaleString()}
     </Button>
   </HeaderActions>
   <Sheet class="first:ml-auto @5xl:hidden">
@@ -202,7 +233,7 @@ const githubStarCount = (
       <HeaderActions>
         {
           socials?.map((social) => (
-            <Button variant="ghost" size="icon" href={social}>
+            <Button as="a" variant="ghost" size="icon" href={social}>
               <Icon href={social} />
             </Button>
           ))

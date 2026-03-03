@@ -44,14 +44,9 @@ const contentVariants = cva(
   }
 )
 
-type Props = VariantProps<typeof contentVariants> &
-  HTMLAttributes<"div"> & {
-    showClose?: boolean
-  }
+type Props = VariantProps<typeof contentVariants> & HTMLAttributes<"div">
 
-const { class: className, side, showClose = true, ...props } = Astro.props
-
-const slot = await Astro.slots.render("default")
+const { class: className, side, ...props } = Astro.props
 ---
 
 <dialog
@@ -65,18 +60,14 @@ const slot = await Astro.slots.render("default")
     class={cn(contentVariants({ side }), className)}
     {...props}
   >
-    {
-      showClose && (
-        <button
-          type="button"
-          data-slot="sheet-close"
-          class="focus-visible:outline-ring text-foreground absolute top-4 right-4 cursor-pointer rounded-sm border-0 bg-transparent opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2"
-          aria-label="Close"
-        >
-          <XIcon class="size-4" />
-        </button>
-      )
-    }
-    <Fragment set:html={slot} />
+    <button
+      type="button"
+      data-slot="sheet-close"
+      class="focus-visible:outline-ring text-foreground absolute top-4 right-4 cursor-pointer rounded-sm border-0 bg-transparent opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2"
+      aria-label="Close"
+    >
+      <XIcon class="size-4" />
+    </button>
+    <slot />
   </div>
 </dialog>

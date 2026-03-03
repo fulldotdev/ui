@@ -3,24 +3,21 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-interface Props extends HTMLAttributes<"div"> {}
+interface Props extends HTMLAttributes<"div"> {
+  size?: "default" | "sm" | "lg"
+}
 
-const { class: className, ...props } = Astro.props
-
-const slot = await Astro.slots.render("default")
+const { class: className, size = "default", ...props } = Astro.props
 ---
 
-{
-  slot?.trim().length > 0 && (
-    <div
-      data-slot="avatar"
-      class={cn(
-        "relative flex size-8 shrink-0 overflow-hidden rounded-full",
-        className
-      )}
-      {...props}
-    >
-      <Fragment set:html={slot} />
-    </div>
-  )
-}
+<div
+  data-slot="avatar"
+  data-size={size}
+  class={cn(
+    "after:border-border group/avatar relative flex size-8 shrink-0 overflow-hidden rounded-full select-none after:absolute after:inset-0 after:rounded-full after:border after:mix-blend-darken data-[size=lg]:size-10 data-[size=sm]:size-6 dark:after:mix-blend-lighten",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</div>

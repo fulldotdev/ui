@@ -1,32 +1,27 @@
 ---
 import type { HTMLAttributes } from "astro/types"
+import { type VariantProps } from "class-variance-authority"
 import ChevronDown from "lucide-static/icons/chevron-down.svg"
 
 import { cn } from "@/lib/utils"
 
-type Props = HTMLAttributes<"button"> & HTMLAttributes<"a">
+import navigationMenuTriggerStyle from "./navigation-menu-trigger-style"
 
-const { class: className, href, ...props } = Astro.props
+type Props = HTMLAttributes<"button"> &
+  VariantProps<typeof navigationMenuTriggerStyle>
 
-const slot = await Astro.slots.render("default")
-
-const Comp = href ? "a" : "button"
+const { class: className, ...props } = Astro.props
 ---
 
-{
-  slot?.trim().length > 0 && (
-    <Comp
-      data-slot="navigation-menu-trigger"
-      class={cn(
-        "bg-background hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-ring/50 inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-[3px] focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
-        "navigation-menu-trigger cursor-pointer [&:where(button)]:border-none [&:where(button)]:bg-transparent",
-        className
-      )}
-      href={href}
-      {...props}
-    >
-      <Fragment set:html={slot} />
-      <ChevronDown class="relative top-[1px] ml-1 size-3 transition-transform duration-300 group-focus-within/navigation-menu-item:rotate-180 group-hover/navigation-menu-item:rotate-180" />
-    </Comp>
-  )
-}
+<button
+  data-slot="navigation-menu-trigger"
+  class={cn(navigationMenuTriggerStyle(), "group", className)}
+  {...props}
+>
+  <slot />
+  <!-- Rotation meganism is slighly different than shadcn. Currently using bejamas/ui approach -->
+  <ChevronDown
+    class="relative top-px ml-1 size-3 transition duration-300 group-data-[state=open]/navigation-menu-trigger:rotate-180"
+    aria-hidden="true"
+  />
+</button>

@@ -7,13 +7,12 @@ import { Separator } from "@/components/ui/separator"
 interface Props extends HTMLAttributes<"div"> {}
 
 const { class: className, ...props } = Astro.props
-
-const slot = await Astro.slots.render("default")
+const hasContent = Astro.slots.has("default")
 ---
 
 <div
   data-slot="field-separator"
-  data-content={slot}
+  data-content={hasContent}
   class={cn(
     "relative -my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2",
     className
@@ -22,12 +21,12 @@ const slot = await Astro.slots.render("default")
 >
   <Separator class="absolute inset-0 top-1/2" />
   {
-    slot?.trim().length > 0 && (
+    hasContent && (
       <span
-        class="bg-background text-muted-foreground relative mx-auto block w-fit px-2"
+        class="text-muted-foreground bg-background relative mx-auto block w-fit px-2"
         data-slot="field-separator-content"
       >
-        <Fragment set:html={slot} />
+        <slot />
       </span>
     )
   }

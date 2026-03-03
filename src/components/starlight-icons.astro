@@ -8,29 +8,71 @@ import { ThemeToggle } from "@/components/ui/theme-toggle"
 
 const layout = await getEntry("layouts", "index")
 
-const socials = layout?.data?.headers?.[1]?.socials
+const header =
+  layout?.data?.headers?.find(
+    (entry) => entry?.logo || entry?.menus || entry?.socials
+  ) ?? layout?.data?.headers?.[0]
+const socials = header?.socials
 
-const githubStarCount = (
-  await (await fetch("https://api.github.com/repos/fulldotdev/ui")).json()
-).stargazers_count
+const parseEnvStarCount = (value: string | undefined) => {
+  if (!value) return null
+  const parsed = Number(value)
+  return Number.isFinite(parsed) && parsed >= 0 ? Math.floor(parsed) : null
+}
+
+async function getGithubStarCount(repo: string): Promise<number | null> {
+  const envStarCount = parseEnvStarCount(
+    import.meta.env.PUBLIC_GITHUB_STAR_COUNT
+  )
+  if (envStarCount !== null) return envStarCount
+
+  if (import.meta.env.PUBLIC_FETCH_GITHUB_STARS !== "true") return null
+
+  try {
+    const response = await fetch(`https://api.github.com/repos/${repo}`, {
+      headers: {
+        Accept: "application/vnd.github+json",
+      },
+      signal: AbortSignal.timeout(2000),
+    })
+
+    if (!response.ok) return null
+
+    const data = (await response.json()) as { stargazers_count?: unknown }
+    return typeof data.stargazers_count === "number"
+      ? data.stargazers_count
+      : null
+  } catch {
+    return null
+  }
+}
+
+const githubStarCount = await getGithubStarCount("fulldotdev/ui")
 ---
 
 <HeaderActions>
   <ThemeToggle />
   {
     socials?.map((social) => (
-      <Button variant="ghost" size="icon-sm" href={social} target="_blank">
+      <Button
+        as="a"
+        variant="ghost"
+        size="icon-sm"
+        href={social}
+        target="_blank"
+      >
         <Icon href={social} />
       </Button>
     ))
   }
   <Button
+    as="a"
     variant="outline"
     size="sm"
     href="https://github.com/fulldotdev/ui"
     target="_blank"
   >
     <Icon name="github" />
-    {githubStarCount}
+    {githubStarCount !== null && githubStarCount.toLocaleString()}
   </Button>
 </HeaderActions>

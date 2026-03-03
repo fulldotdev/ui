@@ -28,8 +28,6 @@ const variants = cva(
 )
 
 const { class: className, variant, ...props } = Astro.props
-
-const slot = await Astro.slots.render("default")
 ---
 
 <script is:inline>
@@ -41,18 +39,14 @@ const slot = await Astro.slots.render("default")
   }
 </script>
 
-{
-  slot?.trim().length > 0 && (
-    <header
-      class={cn(variants({ variant }), className)}
-      data-slot="banner"
-      data-variant={variant}
-      {...props}
-    >
-      <Fragment set:html={slot} />
-    </header>
-  )
-}
+<header
+  class={cn(variants({ variant }), className)}
+  data-slot="banner"
+  data-variant={variant}
+  {...props}
+>
+  <slot />
+</header>
 
 <script>
   document.querySelectorAll("[data-slot='banner-close']").forEach((btn) => {

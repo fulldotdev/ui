@@ -7,4 +7,3 @@ export { default as CommandGroup } from "./command-group.astro"
 export { default as CommandItem } from "./command-item.astro"
 export { default as CommandSeparator } from "./command-separator.astro"
 export { default as CommandShortcut } from "./command-shortcut.astro"
-

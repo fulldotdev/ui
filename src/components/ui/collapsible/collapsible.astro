@@ -3,25 +3,11 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-interface Props extends Omit<HTMLAttributes<"details">, "class"> {
-  class?: string
-  open?: boolean
-}
+interface Props extends HTMLAttributes<"details"> {}
 
-const { class: className, open = false, ...props } = Astro.props
-
-const slot = await Astro.slots.render("default")
+const { class: className, ...props } = Astro.props
 ---
 
-{
-  slot?.trim().length > 0 && (
-    <details
-      data-slot="collapsible"
-      class={cn("group/collapsible", className)}
-      open={open}
-      {...props}
-    >
-      <Fragment set:html={slot} />
-    </details>
-  )
-}
+<details data-slot="collapsible" class={cn(className)} {...props}>
+  <slot />
+</details>

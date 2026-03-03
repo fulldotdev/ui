@@ -1,27 +1,37 @@
 ---
 import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-interface Props extends HTMLAttributes<"div"> {}
+const tabsListVariants = cva(
+  "group/tabs-list text-muted-foreground inline-flex w-fit items-center justify-center rounded-lg p-[3px] group-data-horizontal/tabs:h-9 group-data-vertical/tabs:h-fit group-data-vertical/tabs:flex-col data-[variant=line]:rounded-none",
+  {
+    variants: {
+      variant: {
+        default: "bg-muted",
+        line: "gap-1 bg-transparent",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
 
-const { class: className, ...props } = Astro.props
+interface Props
+  extends HTMLAttributes<"div">,
+    VariantProps<typeof tabsListVariants> {}
 
-const slot = await Astro.slots.render("default")
+const { class: className, variant = "default", ...props } = Astro.props
 ---
 
-{
-  slot?.trim().length > 0 && (
-    <div
-      data-slot="tabs-list"
-      role="tablist"
-      class={cn(
-        "bg-muted text-muted-foreground flex h-auto w-auto flex-row items-center justify-center rounded-lg p-[3px]",
-        className
-      )}
-      {...props}
-    >
-      <Fragment set:html={slot} />
-    </div>
-  )
-}
+<div
+  data-slot="tabs-list"
+  data-variant={variant}
+  role="tablist"
+  class={cn(tabsListVariants({ variant }), className)}
+  {...props}
+>
+  <slot />
+</div>
