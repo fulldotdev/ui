@@ -11,14 +11,18 @@ import {
 
 const layout = await getEntry("layouts", "index")
 
-const menus = layout?.data?.headers?.[1]?.menus
-const logo = layout?.data?.headers?.[1]?.logo
+const header =
+  layout?.data?.headers?.find(
+    (entry) => entry?.logo || entry?.menus || entry?.socials
+  ) ?? layout?.data?.headers?.[0]
+const menus = header?.menus
+const logo = header?.logo
 ---
 
 <div class="flex items-center gap-8">
-  <Logo href="/">
-    <LogoImage src={logo?.src} alt={logo?.alt} />
-    <LogoText>{logo?.text}</LogoText>
+  <Logo href={logo?.href ?? "/"}>
+    <LogoImage src={logo?.src} alt={logo?.alt ?? "fulldev/ui logo"} />
+    <LogoText>{logo?.text ?? "fulldev/ui"}</LogoText>
   </Logo>
   <NavigationMenu class="mr-auto max-lg:hidden">
     <NavigationMenuList>

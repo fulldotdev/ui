@@ -15,9 +15,7 @@ This version is focused on reliability, stability, minimalism, and simplicity.
 - Interactive components must use `data-slot`.
 - New components in this version must be supported by `data-slot`.
 - Keep code surface small: prefer replacing/removing custom interaction code over adding wrappers.
-- v0.8 component additions are limited to:
-  - `tooltip`
-  - `popover`
+- No net-new primitives are required for v0.8 release hardening.
 
 ### Reference inputs
 
@@ -38,8 +36,7 @@ This version is focused on reliability, stability, minimalism, and simplicity.
 - Add linting with bug-risk-focused rules (avoid style-only friction).
 - Add Vitest coverage for:
   - core utility logic
-  - interaction logic used by migrated UI components
-  - accessibility checks using `vitest-axe` where applicable
+  - baseline accessibility checks using `vitest-axe`
 - Optionally add Lighthouse CI in non-blocking mode for trend visibility.
 
 ### Definitive PR queue (no fixed dates)
@@ -50,11 +47,8 @@ This version is focused on reliability, stability, minimalism, and simplicity.
 4. `PR-04` ShadCN API coherence pass (before migration).
 5. `PR-05` `data-slot` migration: `accordion`, `collapsible`.
 6. `PR-06` `data-slot` migration: `tabs`.
-7. `PR-07` `data-slot` migration: `dialog`, `sheet`.
-8. `PR-08` `data-slot` migration: `navigation-menu`.
-9. `PR-09` Add `tooltip` and `popover` only (+ docs + registry entries).
-10. `PR-10` Cleanup and packaging integrity (remove dead/empty artifacts, align docs/config).
-11. `PR-11` Release candidate + final stabilization + v0.8 release notes.
+7. `PR-07` Cleanup and packaging integrity (remove dead/empty artifacts, align docs/config).
+8. `PR-08` Release candidate + final stabilization + v0.8 release notes.
 
 ### Branching model for v0.8
 
@@ -66,4 +60,7 @@ This version is focused on reliability, stability, minimalism, and simplicity.
 ## Post-v0.8 direction
 
 - Resume broader component and block expansion after the reliability baseline is stable.
+- Expand interaction coverage for migrated primitives (`dialog`, `sheet`, `navigation-menu`) and deeper accessibility test scenarios.
+- Revisit `data-slot` migration for `dialog` and `sheet`.
+- Add `tooltip` and `popover` (+ docs + registry entries) in the next planned release phase.
 - Revisit additional features (e-commerce, expanded primitives, theme presets) in a later release.
