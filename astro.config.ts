@@ -5,11 +5,14 @@ import tailwindcss from "@tailwindcss/vite"
 import favicons from "astro-favicons"
 import liveCode from "astro-live-code"
 import robotsTxt from "astro-robots-txt"
-import { defineConfig, fontProviders } from "astro/config"
+import {
+  defineConfig,
+  fontProviders,
+} from "astro/config"
 
 import site from "./site.json"
 
-export default defineConfig({
+const config: object = defineConfig({
   site: site.site,
   image: {
     breakpoints: [640, 750, 828, 1080, 1280, 1668, 2048, 2560],
@@ -181,3 +184,5 @@ export default defineConfig({
     mdx(),
   ],
 })
+
+export default config
