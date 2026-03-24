@@ -56,7 +56,21 @@ npx shadcn@latest init
 }
 ```
 
-5. **Add components**:
+5. **Copy the base stylesheet** from [`src/styles/global.example.css`](./src/styles/global.example.css) to `src/styles/global.css`, then import it in your layout.
+
+6. **Use a container-aware app shell** because fulldev/ui uses Tailwind v4 container-query variants like `@2xl:` and `@max-5xl:`:
+
+```astro
+---
+import "@/styles/global.css"
+---
+
+<body class="@container">
+  <slot />
+</body>
+```
+
+7. **Add components**:
 
 ```bash
 npx shadcn@latest add @fulldev/button
