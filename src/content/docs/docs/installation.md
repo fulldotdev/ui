@@ -15,6 +15,12 @@ As this project is distributed as a shadcn registry, run the `shadcn` init comma
 npx shadcn@latest init
 ```
 
+### Add the fulldev/ui base styles
+
+Copy [`src/styles/global.example.css`](https://github.com/fulldotdev/ui/blob/main/src/styles/global.example.css) into your project as `src/styles/global.css`, then import it from your app layout.
+
+The starter stylesheet includes the theme variables used by fulldev/ui and is the expected baseline for the component examples.
+
 ### Edit tsconfig.json file
 
 Add the following code to the `tsconfig.json` file to resolve paths:
@@ -44,6 +50,22 @@ Add fulldev/ui as a namespaced registry to your `components.json` file:
     "@fulldev": "https://ui.full.dev/r/{name}.json"
   }
 }
+```
+
+### Use a container-aware app shell
+
+fulldev/ui uses Tailwind CSS v4 container query variants such as `@2xl:` and `@max-5xl:`. These are intentional and should not be converted to viewport breakpoints like `2xl:`.
+
+To make those variants work, add `@container` to the root wrapper that contains your page content:
+
+```astro title="src/layouts/Layout.astro" {2,6} showLineNumbers
+---
+import "@/styles/global.css"
+---
+
+<body class="@container">
+  <slot />
+</body>
 ```
 
 ## Add Components
@@ -84,7 +106,7 @@ import { Button } from "@/components/ui/button"
     <meta name="generator" content={Astro.generator} />
     <title>Astro + fulldev/ui</title>
   </head>
-  <body>
+  <body class="@container">
     <div class="grid h-screen place-items-center content-center">
       <Button>Button</Button>
     </div>

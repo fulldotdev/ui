@@ -3,9 +3,10 @@ import type { HTMLAttributes } from "astro/types"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
+import { formatPriceValue, type PriceValue } from "./format-price-value"
 
 interface Props extends VariantProps<typeof variants>, HTMLAttributes<"span"> {
-  price?: number | string
+  price?: PriceValue
   currency?: string
   locale?: string
   variant?: "default" | "sale"
@@ -29,18 +30,11 @@ const {
   ...props
 } = Astro.props
 
-// Format price with currency only if it's a number
-const formattedPrice =
-  typeof price === "number"
-    ? new Intl.NumberFormat(locale, {
-        style: "currency",
-        currency: currency,
-      }).format(price)
-    : price
+const formattedPrice = formatPriceValue(price, { currency, locale })
 ---
 
 {
-  price && (
+  formattedPrice && (
     <span class={cn(variants({ variant }), className)} {...props}>
       {formattedPrice}
     </span>
