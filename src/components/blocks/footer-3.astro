@@ -44,7 +44,24 @@ const { logo, description, links, socials, menus } = Astro.props
 
 <Footer>
   <FooterSplit class="lg:grid-cols-[1fr_3fr]">
-    <FooterDescription class="text-base">{description}</FooterDescription>
+    <FooterGroup>
+      <Logo href={logo?.href || "/"}>
+        <LogoImage src={logo?.src} alt={logo?.alt} />
+        <LogoText>{logo?.text}</LogoText>
+      </Logo>
+      <FooterDescription class="text-base">{description}</FooterDescription>
+      <FooterMenu orientation="horizontal">
+        {
+          socials?.map((social) => (
+            <FooterMenuItem>
+              <FooterMenuLink href={social}>
+                <Icon href={social} />
+              </FooterMenuLink>
+            </FooterMenuItem>
+          ))
+        }
+      </FooterMenu>
+    </FooterGroup>
     <FooterGrid class="lg:justify-end">
       {
         menus?.map((menu) => (
@@ -62,31 +79,8 @@ const { logo, description, links, socials, menus } = Astro.props
       }
     </FooterGrid>
   </FooterSplit>
-  <Logo class="h-auto max-h-none w-full max-w-none" href={logo?.href || "/"}>
-    <LogoImage
-      src={logo?.src}
-      alt={logo?.alt}
-      sizes="(min-width: 1536px) 1536px, 100vw"
-      class="h-auto max-h-none w-full max-w-none object-contain"
-    />
-    <LogoText>{logo?.text}</LogoText>
-  </Logo>
   <FooterSpread>
     <FooterCopyright>{logo?.text}</FooterCopyright>
-    <FooterMenu
-      orientation="horizontal"
-      class="lg:absolute lg:left-1/2 lg:-translate-x-1/2"
-    >
-      {
-        socials?.map((social) => (
-          <FooterMenuItem>
-            <FooterMenuLink href={social}>
-              <Icon href={social} />
-            </FooterMenuLink>
-          </FooterMenuItem>
-        ))
-      }
-    </FooterMenu>
     <FooterMenu orientation="horizontal">
       {
         links?.map(({ href, text }) => (
