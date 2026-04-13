@@ -21,7 +21,7 @@ sections:
         href: /blocks/faqs/
       - text: Features (6)
         href: /blocks/features/
-      - text: Footer (2)
+      - text: Footer (3)
         href: /blocks/footer/
       - text: Header (3)
         href: /blocks/header/
