@@ -7,15 +7,22 @@ import { cn } from "@/lib/utils"
 
 import navigationMenuTriggerStyle from "./navigation-menu-trigger-style"
 
-type Props = HTMLAttributes<"button"> &
-  VariantProps<typeof navigationMenuTriggerStyle>
+type Props = VariantProps<typeof navigationMenuTriggerStyle> &
+  HTMLAttributes<"button"> &
+  HTMLAttributes<"a"> & {
+    as?: "a" | "button"
+    href?: string
+  }
 
-const { class: className, ...props } = Astro.props
+const { class: className, as, href, ...props } = Astro.props
+
+const Comp = as || (href ? "a" : "button")
 ---
 
-<button
+<Comp
   data-slot="navigation-menu-trigger"
   class={cn(navigationMenuTriggerStyle(), "group", className)}
+  href={href}
   {...props}
 >
   <slot />
@@ -24,4 +31,4 @@ const { class: className, ...props } = Astro.props
     class="relative top-px ml-1 size-3 transition duration-300 group-data-[state=open]/navigation-menu-trigger:rotate-180"
     aria-hidden="true"
   />
-</button>
+</Comp>
