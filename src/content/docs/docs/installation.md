@@ -3,46 +3,43 @@ title: Installation
 description: Install and configure fulldev/ui for Astro
 ---
 
-## Create new Astro project
+## Prerequisites
 
-If you don't have a project yet, we recommend using [this starter template](https://github.com/fulldotdev/starter).
+- Node.js 20+
+- pnpm (recommended) or npm
 
-## Add to existing Astro project
+## Quick Start
 
-As this project is distributed as a shadcn registry, run the `shadcn` init command to setup your project:
+1. **Create a new Astro project** (skip if you have one):
+
+We recommend using the [fulldev starter](https://github.com/fulldotdev/starter). If you prefer to scaffold manually:
 
 ```bash
-npx shadcn@latest init
+pnpm create astro@latest my-project -- --template with-tailwindcss
+cd my-project
 ```
 
-### Add the fulldev/ui base styles
+2. **Configure TypeScript paths** in `tsconfig.json`:
 
-Copy [`src/styles/global.example.css`](https://github.com/fulldotdev/ui/blob/main/src/styles/global.example.css) into your project as `src/styles/global.css`, then import it from your app layout.
-
-The starter stylesheet includes the theme variables used by fulldev/ui and is the expected baseline for the component examples.
-
-### Edit tsconfig.json file
-
-Add the following code to the `tsconfig.json` file to resolve paths:
-
-```ts title="tsconfig.json" {4-9} showLineNumbers
+```json title="tsconfig.json" {4-6} showLineNumbers
 {
   "compilerOptions": {
     // ...
-    "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     }
     // ...
   }
 }
 ```
 
-### Add fulldev/ui registry
+3. **Initialize shadcn**:
 
-Add fulldev/ui as a namespaced registry to your `components.json` file:
+```bash
+npx shadcn@latest init
+```
+
+4. **Add fulldev/ui registry** to `components.json`:
 
 ```json title="components.json"
 {
@@ -52,9 +49,11 @@ Add fulldev/ui as a namespaced registry to your `components.json` file:
 }
 ```
 
-### Use a container-aware app shell
+5. **Copy the base stylesheet** from [`src/styles/global.example.css`](https://github.com/fulldotdev/ui/blob/main/src/styles/global.example.css) to `src/styles/global.css`, then import it in your layout.
 
-fulldev/ui uses Tailwind CSS v4 container query variants such as `@2xl:` and `@max-5xl:`. These are intentional and should not be converted to viewport breakpoints like `2xl:`.
+6. **Use a container-aware app shell** because fulldev/ui uses Tailwind v4 container-query variants like `@2xl:` and `@max-5xl:`:
+
+These are intentional and should not be converted to viewport breakpoints like `2xl:`.
 
 To make those variants work, add `@container` to the root wrapper that contains your page content:
 
@@ -68,15 +67,13 @@ import "@/styles/global.css"
 </body>
 ```
 
-## Add Components
-
-You can now start adding components to your project.
+7. **Add components**:
 
 ```bash
 npx shadcn@latest add @fulldev/button
 ```
 
-or multiple resources at once:
+Or add multiple resources at once:
 
 ```bash
 npx shadcn@latest add @fulldev/button @fulldev/item @fulldev/list
