@@ -6,18 +6,30 @@ import { cn } from "@/lib/utils"
 import NavigationMenuViewport from "./navigation-menu-viewport.astro"
 
 interface Props extends HTMLAttributes<"nav"> {
-  viewport?: boolean
   delayOpen?: number
   delayClose?: number
   openOnFocus?: boolean
+  side?: "top" | "right" | "bottom" | "left"
+  align?: "start" | "center" | "end"
+  sideOffset?: number
+  alignOffset?: number
+  positionMethod?: "absolute" | "fixed"
+  safeTriangle?: boolean
+  debugSafeTriangle?: boolean
 }
 
 const {
   class: className = "",
-  viewport = true,
   delayOpen = 0,
-  delayClose = 50,
+  delayClose = 0,
   openOnFocus,
+  side = "bottom",
+  align = "start",
+  sideOffset = 0,
+  alignOffset = 0,
+  positionMethod = "absolute",
+  safeTriangle,
+  debugSafeTriangle,
   ...props
 } = Astro.props
 ---
@@ -25,23 +37,27 @@ const {
 <nav
   {...props}
   data-slot="navigation-menu"
-  data-viewport={viewport}
   data-delay-open={delayOpen}
   data-delay-close={delayClose}
   data-open-on-focus={openOnFocus}
+  data-side={side}
+  data-align={align}
+  data-side-offset={sideOffset}
+  data-align-offset={alignOffset}
+  data-position-method={positionMethod}
+  data-safe-triangle={safeTriangle}
+  data-debug-safe-triangle={debugSafeTriangle}
   class={cn(
     "group/navigation-menu relative flex max-w-max flex-1 items-center justify-center",
     className
   )}
 >
   <slot />
-  {viewport && <NavigationMenuViewport />}
+  <NavigationMenuViewport />
 </nav>
 
 <script>
-  import { createNavigationMenu } from "@data-slot/navigation-menu"
+  import { create } from "@data-slot/navigation-menu"
 
-  document
-    .querySelectorAll('[data-slot="navigation-menu"]')
-    .forEach((el) => createNavigationMenu(el))
+  create()
 </script>

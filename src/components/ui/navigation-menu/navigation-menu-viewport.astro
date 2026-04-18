@@ -8,27 +8,42 @@ interface Props extends HTMLAttributes<"div"> {}
 const { class: className, ...props } = Astro.props
 ---
 
-<!-- Custom motion tuning for @data-slot/navigation-menu.
-Intentionally differs from shadcn/bejamas to keep transitions smooth in this Astro implementation. -->
-<div
-  data-slot="navigation-menu-viewport-positioner"
-  class={cn(
-    "absolute left-0 top-full isolate z-50 flex justify-center transition-[left,top] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] data-ending-style:opacity-0"
-  )}
->
+<div data-slot="navigation-menu-portal">
   <div
-    {...props}
-    data-slot="navigation-menu-viewport"
+    data-slot="navigation-menu-positioner"
     class={cn(
-      "bg-popover outline-border overflow-clip rounded-lg shadow-lg outline",
-      "h-(--viewport-height,0) w-(--viewport-width,0)",
-      "origin-(--transform-origin)",
-      "transition-[width,height,transform,opacity] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] data-instant:transition-none",
-      "data-[state=open]:pointer-events-auto data-[state=open]:opacity-100",
-      "data-starting-style:opacity-0 data-ending-style:opacity-0",
-      "will-change-[width,height,transform]",
-      className
+      "absolute left-0 top-full isolate z-50 flex justify-center",
+      "transition-[left,top] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)]",
+      "data-ending-style:opacity-0"
     )}
   >
+    <div
+      data-slot="navigation-menu-popup"
+      class={cn(
+        "h-(--popup-height,0) w-(--popup-width,0)",
+        "origin-(--transform-origin)",
+        "transition-[width,height,transform,opacity] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)]",
+        "data-instant:transition-none",
+        "data-starting-style:opacity-0 data-ending-style:opacity-0",
+        "will-change-[width,height,transform]"
+      )}
+    >
+      <div
+        {...props}
+        data-slot="navigation-menu-viewport"
+        class={cn(
+          "bg-popover outline-border overflow-clip rounded-lg shadow-lg outline",
+          "h-(--viewport-height,0) w-(--viewport-width,0)",
+          "origin-(--transform-origin)",
+          "transition-[width,height,transform,opacity] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)]",
+          "data-instant:transition-none",
+          "data-[state=open]:pointer-events-auto data-[state=open]:opacity-100",
+          "data-starting-style:opacity-0 data-ending-style:opacity-0",
+          "will-change-[width,height,transform]",
+          className
+        )}
+      >
+      </div>
+    </div>
   </div>
 </div>
