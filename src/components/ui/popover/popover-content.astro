@@ -2,9 +2,10 @@
 import type { HTMLAttributes } from "astro/types"
 import type {
   PopoverAlign,
-  PopoverPosition,
   PopoverSide,
 } from "@data-slot/popover"
+
+import { cn } from "@/lib/utils"
 
 interface Props extends HTMLAttributes<"div"> {
   side?: PopoverSide
@@ -16,9 +17,12 @@ interface Props extends HTMLAttributes<"div"> {
   position?: PopoverPosition
 }
 
+/** @deprecated Use `PopoverSide` and the `side` prop instead. */
+type PopoverPosition = PopoverSide
+
 const {
   class: className,
-  hidden: _hidden,
+  hidden = true,
   side,
   align,
   sideOffset,
@@ -28,6 +32,9 @@ const {
   position,
   ...props
 } = Astro.props
+
+const booleanDataAttr = (value?: boolean) =>
+  value === undefined ? undefined : value ? "" : "false"
 ---
 
 <div
@@ -36,11 +43,14 @@ const {
   data-align={align}
   data-side-offset={sideOffset}
   data-align-offset={alignOffset}
-  data-avoid-collisions={avoidCollisions}
+  data-avoid-collisions={booleanDataAttr(avoidCollisions)}
   data-collision-padding={collisionPadding}
   data-position={position}
-  hidden
-  class={className}
+  hidden={hidden}
+  class={cn(
+    "bg-popover text-popover-foreground ring-foreground/10 z-50 flex w-72 origin-(--transform-origin) flex-col gap-4 rounded-md p-4 text-sm shadow-md ring-1 outline-none duration-100 data-[closed]:animate-out data-[closed]:fade-out-0 data-[closed]:zoom-out-95 data-[open]:animate-in data-[open]:fade-in-0 data-[open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+    className
+  )}
   {...props}
 >
   <slot />

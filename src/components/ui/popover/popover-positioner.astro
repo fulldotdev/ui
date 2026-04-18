@@ -2,9 +2,10 @@
 import type { HTMLAttributes } from "astro/types"
 import type {
   PopoverAlign,
-  PopoverPosition,
   PopoverSide,
 } from "@data-slot/popover"
+
+import { cn } from "@/lib/utils"
 
 interface Props extends HTMLAttributes<"div"> {
   side?: PopoverSide
@@ -15,6 +16,9 @@ interface Props extends HTMLAttributes<"div"> {
   collisionPadding?: number
   position?: PopoverPosition
 }
+
+/** @deprecated Use `PopoverSide` and the `side` prop instead. */
+type PopoverPosition = PopoverSide
 
 const {
   class: className,
@@ -27,6 +31,9 @@ const {
   position,
   ...props
 } = Astro.props
+
+const booleanDataAttr = (value?: boolean) =>
+  value === undefined ? undefined : value ? "" : "false"
 ---
 
 <div
@@ -35,10 +42,10 @@ const {
   data-align={align}
   data-side-offset={sideOffset}
   data-align-offset={alignOffset}
-  data-avoid-collisions={avoidCollisions}
+  data-avoid-collisions={booleanDataAttr(avoidCollisions)}
   data-collision-padding={collisionPadding}
   data-position={position}
-  class={className}
+  class={cn("isolate z-50", className)}
   {...props}
 >
   <slot />
