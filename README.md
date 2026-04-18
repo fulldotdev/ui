@@ -15,15 +15,17 @@ A shadcn-compatible component library built for [Astro][astro], designed for con
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 20+
 - pnpm (recommended) or npm
 
 ### Quick Start
 
 1. **Create a new Astro project** (skip if you have one):
 
+We recommend using the [fulldev starter](https://github.com/fulldotdev/starter). If you prefer to scaffold manually:
+
 ```bash
-npx create-astro@latest my-project --template with-tailwindcss --install --git
+pnpm create astro@latest my-project -- --template with-tailwindcss
 cd my-project
 ```
 
@@ -32,7 +34,6 @@ cd my-project
 ```json
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }
@@ -59,6 +60,10 @@ npx shadcn@latest init
 5. **Copy the base stylesheet** from [`src/styles/global.example.css`](./src/styles/global.example.css) to `src/styles/global.css`, then import it in your layout.
 
 6. **Use a container-aware app shell** because fulldev/ui uses Tailwind v4 container-query variants like `@2xl:` and `@max-5xl:`:
+
+These are intentional and should not be converted to viewport breakpoints like `2xl:`.
+
+To make those variants work, add `@container` to the root wrapper that contains your page content:
 
 ```astro
 ---

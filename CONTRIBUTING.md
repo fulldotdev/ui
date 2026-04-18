@@ -10,7 +10,7 @@ We are here to build great software, learn, grow, and help each other. Please re
 
 ### Prerequisites
 
-- Node.js 18 or higher
+- Node.js 20 or higher
 - pnpm (recommended package manager)
 - Git
 
