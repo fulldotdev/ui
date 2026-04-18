@@ -1,5 +1,4 @@
-import { type SchemaContext } from "astro:content"
-import { z } from "astro/zod"
+import { z, type SchemaContext } from "astro:content"
 
 const link = z
   .object({

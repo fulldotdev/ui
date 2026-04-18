@@ -1,17 +1,40 @@
 ---
 import type { HTMLAttributes } from "astro/types"
 
+import { cn } from "@/lib/utils"
+
 interface Props extends HTMLAttributes<"div"> {}
 
 const { class: className, ...props } = Astro.props
 ---
 
-<div data-slot="dialog" class={className} {...props}>
+<div data-slot="dialog" class={cn("relative", className)} {...props}>
   <slot />
 </div>
 
 <script>
-  import { create } from "@data-slot/dialog"
+  const dialogs = document.querySelectorAll("[data-slot='dialog']")
+  dialogs.forEach((dialog) => {
+    const dialogElement = dialog.querySelector("[data-slot='dialog-element']")
+    if (!(dialogElement instanceof HTMLDialogElement)) return
 
-  create()
+    // Close on backdrop click
+    dialogElement.addEventListener("click", (event) => {
+      if (event.target === dialogElement) dialogElement.close()
+    })
+
+    const triggers = dialog.querySelectorAll("[data-slot='dialog-trigger']")
+    triggers.forEach((trigger) => {
+      trigger.addEventListener("click", () => {
+        dialogElement.showModal()
+      })
+    })
+
+    const closes = dialog.querySelectorAll("[data-slot='dialog-close']")
+    closes.forEach((close) => {
+      close.addEventListener("click", () => {
+        dialogElement.close()
+      })
+    })
+  })
 </script>

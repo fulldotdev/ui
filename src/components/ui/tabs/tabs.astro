@@ -3,18 +3,28 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-interface Props extends HTMLAttributes<"div"> {}
+interface Props extends HTMLAttributes<"div"> {
+  defaultValue?: string
+  orientation?: "horizontal" | "vertical"
+  activationMode?: "auto" | "manual"
+}
 
-const orientation =
-  Astro.props["data-orientation"] === "vertical" ? "vertical" : "horizontal"
-const { class: className, ...props } = Astro.props
+const {
+  class: className,
+  defaultValue,
+  orientation = "horizontal",
+  activationMode,
+  ...props
+} = Astro.props
 ---
 
 <div
   data-slot="tabs"
+  data-default-value={defaultValue}
   data-orientation={orientation}
   data-horizontal={orientation === "horizontal" ? "" : undefined}
   data-vertical={orientation === "vertical" ? "" : undefined}
+  data-activation-mode={activationMode}
   class={cn("group/tabs flex gap-2 data-horizontal:flex-col", className)}
   {...props}
 >
