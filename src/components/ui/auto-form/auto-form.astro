@@ -32,7 +32,7 @@ type Field = {
       options: string[]
       placeholder?: string
     })
-  | (ComponentProps<typeof RadioGroupItem> & {
+  | (ComponentProps<typeof RadioGroup> & {
       type: "radio-group"
       options: string[]
     })
@@ -106,13 +106,20 @@ const { class: className, inbox, fields, submit, ...props } = Astro.props
             <FieldSet>
               <FieldLabel>{label}</FieldLabel>
               <FieldDescription>{description}</FieldDescription>
-              <RadioGroup {...radioGroup}>
-                {radioOptions?.map((option) => (
-                  <Field orientation="horizontal">
-                    <RadioGroupItem value={option} id={option} name={name} />
-                    <FieldLabel for={option}>{option}</FieldLabel>
-                  </Field>
-                ))}
+              <RadioGroup {...radioGroup} name={name}>
+                {radioOptions?.map((option) => {
+                  const optionId = `${id}-${option}`
+                    .toLowerCase()
+                    .replace(/[^a-z0-9_-]+/g, "-")
+                    .replace(/^-+|-+$/g, "")
+
+                  return (
+                    <Field orientation="horizontal">
+                      <RadioGroupItem value={option} id={optionId} />
+                      <FieldLabel for={optionId}>{option}</FieldLabel>
+                    </Field>
+                  )
+                })}
               </RadioGroup>
               <FieldDescription>{description}</FieldDescription>
             </FieldSet>

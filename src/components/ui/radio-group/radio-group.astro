@@ -3,16 +3,43 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-interface Props extends HTMLAttributes<"div"> {}
+interface Props extends HTMLAttributes<"div"> {
+  defaultValue?: string
+  name?: string
+  disabled?: boolean
+  readOnly?: boolean
+  required?: boolean
+}
 
-const { class: className, ...props } = Astro.props
+const {
+  class: className,
+  defaultValue,
+  name,
+  disabled,
+  readOnly,
+  required,
+  ...props
+} = Astro.props
+
+const booleanDataAttr = (value?: boolean) =>
+  value === undefined ? undefined : value ? "" : "false"
 ---
 
 <div
-  role="radiogroup"
   data-slot="radio-group"
+  data-default-value={defaultValue}
+  data-name={name}
+  data-disabled={booleanDataAttr(disabled)}
+  data-read-only={booleanDataAttr(readOnly)}
+  data-required={booleanDataAttr(required)}
   class={cn("grid w-full gap-3", className)}
   {...props}
 >
   <slot />
 </div>
+
+<script>
+  import { create } from "@data-slot/radio-group"
+
+  create()
+</script>

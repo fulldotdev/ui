@@ -1,15 +1,17 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "radio-group",
+  "type": "registry:ui",
+  "dependencies": ["@data-slot/radio-group"],
   "files": [
     {
       "path": "src/components/ui/radio-group/radio-group.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  role=\"radiogroup\"\n  data-slot=\"radio-group\"\n  class={cn(\"grid w-full gap-3\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {\n  defaultValue?: string\n  name?: string\n  disabled?: boolean\n  readOnly?: boolean\n  required?: boolean\n}\n\nconst {\n  class: className,\n  defaultValue,\n  name,\n  disabled,\n  readOnly,\n  required,\n  ...props\n} = Astro.props\n\nconst booleanDataAttr = (value?: boolean) =>\n  value === undefined ? undefined : value ? \"\" : \"false\"\n---\n\n<div\n  data-slot=\"radio-group\"\n  data-default-value={defaultValue}\n  data-name={name}\n  data-disabled={booleanDataAttr(disabled)}\n  data-read-only={booleanDataAttr(readOnly)}\n  data-required={booleanDataAttr(required)}\n  class={cn(\"grid w-full gap-3\", className)}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/radio-group\"\n\n  create()\n</script>\n",
       "type": "registry:ui"
     },
     {
       "path": "src/components/ui/radio-group/radio-group-item.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends Omit<HTMLAttributes<\"input\">, \"type\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<input\n  type=\"radio\"\n  role=\"radio\"\n  data-slot=\"radio-group-item\"\n  class={cn(\n    \"border-input dark:bg-input/30 checked:bg-primary checked:text-primary-foreground dark:checked:bg-primary checked:border-primary aria-invalid:checked:border-primary aria-invalid:border-destructive focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:aria-invalid:border-destructive/50 group/radio-group-item peer relative flex aspect-square size-4 shrink-0 appearance-none rounded-full border outline-none after:absolute after:-inset-x-3 after:-inset-y-2 focus-visible:ring-3 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-3\",\n    className\n  )}\n  {...props}\n/>\n\n<style>\n  [data-slot=\"radio-group-item\"]::before {\n    content: \"\";\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    width: 0.5rem;\n    height: 0.5rem;\n    transform: translate(-50%, -50%);\n    border-radius: 9999px;\n    background: var(--primary-foreground);\n    opacity: 0;\n  }\n\n  [data-slot=\"radio-group-item\"]:checked::before {\n    opacity: 1;\n  }\n</style>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"span\"> {\n  value: string\n  disabled?: boolean\n  indicatorClass?: string\n}\n\nconst {\n  class: className,\n  value,\n  disabled,\n  indicatorClass,\n  ...props\n} = Astro.props\n---\n\n<span\n  data-slot=\"radio-group-item\"\n  data-value={value}\n  disabled={disabled ? true : undefined}\n  class={cn(\n    \"border-input bg-background group/radio-group-item data-[checked]:bg-primary data-[checked]:border-primary focus-visible:border-ring focus-visible:ring-ring/50 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 dark:bg-input/30 relative inline-flex size-4 shrink-0 items-center justify-center rounded-full border outline-none transition-colors focus-visible:ring-3\",\n    className\n  )}\n  {...props}\n>\n  <span\n    aria-hidden=\"true\"\n    data-slot=\"radio-group-indicator\"\n    class={cn(\n      \"bg-primary-foreground pointer-events-none size-2 rounded-full opacity-0 transition-[opacity,transform] data-[checked]:scale-100 data-[checked]:opacity-100 data-[unchecked]:scale-0\",\n      indicatorClass\n    )}\n  />\n</span>\n",
       "type": "registry:ui"
     },
     {
@@ -17,6 +19,5 @@
       "content": "export { default as RadioGroup } from \"./radio-group.astro\"\nexport { default as RadioGroupItem } from \"./radio-group-item.astro\"\n",
       "type": "registry:ui"
     }
-  ],
-  "type": "registry:ui"
+  ]
 }
