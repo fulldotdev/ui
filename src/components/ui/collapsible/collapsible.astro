@@ -3,11 +3,31 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-interface Props extends HTMLAttributes<"details"> {}
+interface Props extends HTMLAttributes<"div"> {
+  defaultOpen?: boolean
+  hiddenUntilFound?: boolean
+}
 
-const { class: className, ...props } = Astro.props
+const {
+  class: className,
+  defaultOpen,
+  hiddenUntilFound,
+  ...props
+} = Astro.props
 ---
 
-<details data-slot="collapsible" class={cn(className)} {...props}>
+<div
+  data-slot="collapsible"
+  data-default-open={defaultOpen}
+  data-hidden-until-found={hiddenUntilFound}
+  class={cn(className)}
+  {...props}
+>
   <slot />
-</details>
+</div>
+
+<script>
+  import { create } from "@data-slot/collapsible"
+
+  create()
+</script>

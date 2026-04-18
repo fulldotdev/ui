@@ -3,18 +3,53 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-interface Props extends HTMLAttributes<"div"> {}
+interface Props extends HTMLAttributes<"div"> {
+  multiple?: boolean
+  defaultValue?: string | string[]
+  disabled?: boolean
+  orientation?: "horizontal" | "vertical"
+  loopFocus?: boolean
+  hiddenUntilFound?: boolean
+  collapsible?: boolean
+}
 
-const { class: className, ...props } = Astro.props
+const {
+  class: className,
+  multiple,
+  defaultValue,
+  disabled,
+  orientation = "vertical",
+  loopFocus,
+  hiddenUntilFound,
+  collapsible,
+  ...props
+} = Astro.props
+
+const booleanDataAttr = (value?: boolean) =>
+  value === undefined ? undefined : value ? "" : "false"
+
+const serializedDefaultValue = Array.isArray(defaultValue)
+  ? JSON.stringify(defaultValue)
+  : defaultValue
 ---
 
 <div
   data-slot="accordion"
-  class={cn(
-    "flex w-full flex-col [interpolate-size:allow-keywords]",
-    className
-  )}
+  data-multiple={booleanDataAttr(multiple)}
+  data-default-value={serializedDefaultValue}
+  data-disabled={booleanDataAttr(disabled)}
+  data-orientation={orientation}
+  data-loop-focus={booleanDataAttr(loopFocus)}
+  data-hidden-until-found={booleanDataAttr(hiddenUntilFound)}
+  data-collapsible={booleanDataAttr(collapsible)}
+  class={cn("flex w-full flex-col", className)}
   {...props}
 >
   <slot />
 </div>
+
+<script>
+  import { create } from "@data-slot/accordion"
+
+  create()
+</script>

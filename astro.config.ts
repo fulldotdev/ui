@@ -1,38 +1,19 @@
 import mdx from "@astrojs/mdx"
-import sitemap from "@astrojs/sitemap"
 import starlight from "@astrojs/starlight"
-import tailwindcss from "@tailwindcss/vite"
-import favicons from "astro-favicons"
 import liveCode from "astro-live-code"
-import robotsTxt from "astro-robots-txt"
-import {
-  defineConfig,
-  fontProviders,
-} from "astro/config"
+import { defineConfig } from "astro/config"
 
-import site from "./site.json"
+import fulldevIntegration from "./src/lib/integration"
 
-const config: object = defineConfig({
-  site: site.site,
+export default defineConfig({
   image: {
     breakpoints: [640, 750, 828, 1080, 1280, 1668, 2048, 2560],
-    layout: "full-width",
-    responsiveStyles: false,
   },
   prefetch: {
     prefetchAll: true,
   },
   devToolbar: {
     enabled: false,
-  },
-  i18n: {
-    defaultLocale: site.defaultLocale,
-    locales: site.locales,
-    routing: {
-      prefixDefaultLocale: false,
-      redirectToDefaultLocale: false,
-      fallbackType: "redirect",
-    },
   },
   redirects: {
     // components
@@ -83,66 +64,22 @@ const config: object = defineConfig({
     "/docs/blocks/reviews": "/blocks/reviews/",
     "/docs/blocks/projects": "/blocks/services/",
   },
-  experimental: {
-    fonts: [
-      {
-        provider: fontProviders.google(),
-        cssVariable: "--font-base",
-        name: site.fonts.base,
-        weights: [
-          "100",
-          "200",
-          "300",
-          "400",
-          "500",
-          "600",
-          "700",
-          "800",
-          "900",
-        ],
-      },
-      {
-        provider: fontProviders.google(),
-        cssVariable: "--font-heading",
-        name: site.fonts.heading || site.fonts.base,
-        weights: [
-          "100",
-          "200",
-          "300",
-          "400",
-          "500",
-          "600",
-          "700",
-          "800",
-          "900",
-        ],
-      },
-    ],
-  },
-  vite: {
-    plugins: [tailwindcss()],
-  },
   integrations: [
-    robotsTxt(),
-    sitemap({
-      changefreq: "weekly",
-      lastmod: new Date(),
+    fulldevIntegration({
+      site: "https://ui.full.dev",
+      name: "Fulldev UI",
+      favicon: "src/assets/logo-fulldev-mark-light.svg",
+      fonts: {
+        sans: "Geist",
+        mono: "Geist Mono",
+      },
       i18n: {
-        defaultLocale: site.defaultLocale,
-        locales: Object.fromEntries(
-          site.locales.map((locale) => [locale, locale])
-        ),
+        defaultLocale: "en",
+        locales: ["en"],
       },
-    }),
-    favicons({
-      input: {
-        favicons: [site.favicon],
-      },
-      name: site.name,
-      short_name: site.name,
     }),
     starlight({
-      title: site.name,
+      title: "Fulldev UI",
       description:
         "The Astro UI component and block library for content-driven websites.",
       sidebar: [
@@ -163,14 +100,7 @@ const config: object = defineConfig({
           autogenerate: { directory: "docs/components" },
         },
       ],
-      customCss: [
-        "./src/styles/global.css",
-        "@fontsource/inter/400.css",
-        "@fontsource/inter/500.css",
-        "@fontsource/inter/600.css",
-        "@fontsource/inter/700.css",
-        "@fontsource/inter/800.css",
-      ],
+      customCss: ["./src/styles/global.css"],
       components: {
         SiteTitle: "/src/components/starlight-title.astro",
         ThemeSelect: "/src/components/starlight-icons.astro",
@@ -178,11 +108,9 @@ const config: object = defineConfig({
         ThemeProvider: "/src/components/ui/theme-toggle/theme-provider.astro",
       },
     }),
+    mdx(),
     liveCode({
       layout: "/src/components/live-code-layout.astro",
     }),
-    mdx(),
   ],
 })
-
-export default config

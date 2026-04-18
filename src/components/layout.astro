@@ -4,13 +4,14 @@ import { getImage } from "astro:assets"
 import "@/styles/global.css"
 
 import { Font } from "astro:assets"
-import site from "site.json"
 
 import type { PageSchema } from "@/lib/schemas"
 import { ThemeProvider } from "@/components/ui/theme-toggle"
 import Block from "@/components/block.astro"
 
 type Props = PageSchema
+const siteTheme = ""
+const siteName = "fulldev/ui"
 
 const baseUrl = Astro.site?.origin || Astro.url.origin
 const pagePathname = Astro.url.pathname.endsWith("/")
@@ -34,7 +35,7 @@ const transformedImage = image?.src
   : undefined
 ---
 
-<html class={site.theme} lang={Astro.currentLocale}>
+<html class={siteTheme} lang={Astro.currentLocale}>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
@@ -78,7 +79,7 @@ const transformedImage = image?.src
         {
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: site.name,
+          name: siteName,
           url: pageUrl,
           logo: {
             "@type": "ImageObject",
@@ -91,7 +92,7 @@ const transformedImage = image?.src
           headline: title,
           creator: {
             "@type": "Organization",
-            name: site.name,
+            name: siteName,
             url: pageUrl,
           },
         },
@@ -99,8 +100,8 @@ const transformedImage = image?.src
         2
       )}</script>`}
     />
-    <Font cssVariable="--font-base" preload />
-    <Font cssVariable="--font-heading" preload />
+    <Font cssVariable="--font-sans" preload />
+    <Font cssVariable="--font-mono" preload />
     <ThemeProvider />
     <Fragment set:html={Astro.props.head} />
     <slot name="head" />
@@ -165,7 +166,7 @@ const transformedImage = image?.src
     </script>
   </head>
   <body
-    class="text-foreground bg-background font-base @container overscroll-none antialiased"
+    class="text-foreground bg-background font-sans @container overscroll-none antialiased"
     id={Astro.url.pathname}
   >
     {headers?.map((header) => <Block {...header} />)}
@@ -189,7 +190,7 @@ const transformedImage = image?.src
     {footers?.map((footer) => <Block {...footer} />)}
   </body><style>
     body {
-      font-family: var(--font-base);
+      font-family: var(--font-sans);
     }
   </style>
 </html>
