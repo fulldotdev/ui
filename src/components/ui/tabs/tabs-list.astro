@@ -1,11 +1,11 @@
 ---
 import type { HTMLAttributes } from "astro/types"
-import { cva, type VariantProps } from "class-variance-authority"
+import { cva } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
 const tabsListVariants = cva(
-  "group/tabs-list text-muted-foreground relative inline-flex w-fit items-center justify-center rounded-lg p-[3px] group-data-horizontal/tabs:h-9 group-data-vertical/tabs:h-fit group-data-vertical/tabs:flex-col data-[variant=line]:rounded-none",
+  "group/tabs-list inline-flex w-fit items-center justify-center rounded-lg p-[3px] text-muted-foreground group-data-horizontal/tabs:h-9 group-data-vertical/tabs:h-fit group-data-vertical/tabs:flex-col data-[variant=line]:rounded-none",
   {
     variants: {
       variant: {
@@ -19,17 +19,15 @@ const tabsListVariants = cva(
   }
 )
 
-interface Props
-  extends HTMLAttributes<"div">,
-    VariantProps<typeof tabsListVariants> {}
+interface Props extends HTMLAttributes<"div"> {}
 
-const { class: className, variant = "default", ...props } = Astro.props
+const variant = Astro.props["data-variant"] === "line" ? "line" : "default"
+const { class: className, ...props } = Astro.props
 ---
 
 <div
   data-slot="tabs-list"
   data-variant={variant}
-  role="tablist"
   class={cn(tabsListVariants({ variant }), className)}
   {...props}
 >
