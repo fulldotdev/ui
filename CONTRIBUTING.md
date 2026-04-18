@@ -10,8 +10,7 @@ We are here to build great software, learn, grow, and help each other. Please re
 
 ### Prerequisites
 
-- Node.js 18 or higher
-- pnpm (recommended package manager)
+- Bun 1.0 or higher
 - Git
 
 ### Setup
@@ -26,13 +25,13 @@ cd ui
 2. **Install dependencies**:
 
 ```bash
-pnpm install
+bun install
 ```
 
 3. **Start the development server**:
 
 ```bash
-pnpm dev
+bun run dev
 ```
 
 ## How to Contribute
@@ -67,8 +66,8 @@ git checkout -b feature/your-feature-name
 3. **Test your changes**:
 
 ```bash
-pnpm check    # Type checking
-pnpm build    # Build the project
+bun run check    # Type checking
+bun run build    # Build the project
 ```
 
 4. **Commit your changes**:
@@ -121,15 +120,15 @@ const slot = await Astro.slots.render("default")
 ### Building
 
 ```bash
-pnpm build          # Build the project
-pnpm build:prod     # Type check + build
-pnpm build:test     # Type check + build + preview
+bun run build          # Build the project
+bun run build:prod     # Type check + build
+bun run build:test     # Type check + build + preview
 ```
 
 ### Registry
 
 ```bash
-pnpm registry:build    # Build the component registry
+bun run registry:build    # Build the component registry
 ```
 
 ## Questions?

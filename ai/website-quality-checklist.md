@@ -6,8 +6,8 @@ If you're an AI, run this checklist **without scripts/commands/CLI** except when
 
 Run the following commands to check for errors:
 
-- [ ] `pnpm check` - no errors
-- [ ] `pnpm build` - no errors
+- [ ] `bun run check` - no errors
+- [ ] `bun run build` - no errors
 
 ## Content
 
@@ -24,7 +24,7 @@ Look at all files in src/content/ and check for:
 
 ## Links
 
-Run `pnpm dev`, open the website in the browser on the port logged after the dev command. Based on src/content/pages/\*\* you should be able to navigate to all pages and check for:
+Run `bun run dev`, open the website in the browser on the port logged after the dev command. Based on src/content/pages/\*\* you should be able to navigate to all pages and check for:
 
 - [ ] No broken links
 - [ ] Website is responsive

@@ -27,11 +27,11 @@ This version is focused on reliability, stability, minimalism, and simplicity.
 ### Quality infrastructure requirements
 
 - Add CI workflow with:
-  - `pnpm check`
-  - `pnpm lint`
-  - `pnpm test` (Vitest only)
-  - `pnpm build`
-  - `pnpm registry:build`
+  - `bun run check`
+  - `bun run lint`
+  - `bun run test` (Vitest only)
+  - `bun run build`
+  - `bun run registry:build`
   - registry drift check
 - Add linting with bug-risk-focused rules (avoid style-only friction).
 - Add Vitest coverage for:
