@@ -1,0 +1,58 @@
+---
+import type { TooltipAlign, TooltipSide } from "@data-slot/tooltip"
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {
+  delay?: number
+  skipDelayDuration?: number
+  side?: TooltipSide
+  align?: TooltipAlign
+  sideOffset?: number
+  alignOffset?: number
+  avoidCollisions?: boolean
+  collisionPadding?: number
+  portal?: boolean
+}
+
+const {
+  class: className,
+  delay = 300,
+  skipDelayDuration = 300,
+  side = "top",
+  align = "center",
+  sideOffset = 4,
+  alignOffset = 0,
+  avoidCollisions = true,
+  collisionPadding = 8,
+  portal = true,
+  ...props
+} = Astro.props
+
+const booleanDataAttr = (value?: boolean) =>
+  value === undefined ? undefined : value ? "" : "false"
+---
+
+<div
+  data-slot="tooltip"
+  data-delay={delay}
+  data-skip-delay-duration={skipDelayDuration}
+  data-side={side}
+  data-align={align}
+  data-side-offset={sideOffset}
+  data-align-offset={alignOffset}
+  data-avoid-collisions={booleanDataAttr(avoidCollisions)}
+  data-collision-padding={collisionPadding}
+  data-portal={booleanDataAttr(portal)}
+  class={cn(className)}
+  {...props}
+>
+  <slot />
+</div>
+
+<script>
+  import { create } from "@data-slot/tooltip"
+
+  create()
+</script>

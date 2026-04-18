@@ -1,4 +1,6 @@
 export { default as Dialog } from "./dialog.astro"
+export { default as DialogPortal } from "./dialog-portal.astro"
+export { default as DialogOverlay } from "./dialog-overlay.astro"
 export { default as DialogContent } from "./dialog-content.astro"
 export { default as DialogTrigger } from "./dialog-trigger.astro"
 export { default as DialogHeader } from "./dialog-header.astro"

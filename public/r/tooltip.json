@@ -1,0 +1,45 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tooltip",
+  "dependencies": [
+    "@data-slot/tooltip"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/tooltip/tooltip.astro",
+      "content": "---\nimport type { TooltipAlign, TooltipSide } from \"@data-slot/tooltip\"\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {\n  delay?: number\n  skipDelayDuration?: number\n  side?: TooltipSide\n  align?: TooltipAlign\n  sideOffset?: number\n  alignOffset?: number\n  avoidCollisions?: boolean\n  collisionPadding?: number\n  portal?: boolean\n}\n\nconst {\n  class: className,\n  delay = 300,\n  skipDelayDuration = 300,\n  side = \"top\",\n  align = \"center\",\n  sideOffset = 4,\n  alignOffset = 0,\n  avoidCollisions = true,\n  collisionPadding = 8,\n  portal = true,\n  ...props\n} = Astro.props\n\nconst booleanDataAttr = (value?: boolean) =>\n  value === undefined ? undefined : value ? \"\" : \"false\"\n---\n\n<div\n  data-slot=\"tooltip\"\n  data-delay={delay}\n  data-skip-delay-duration={skipDelayDuration}\n  data-side={side}\n  data-align={align}\n  data-side-offset={sideOffset}\n  data-align-offset={alignOffset}\n  data-avoid-collisions={booleanDataAttr(avoidCollisions)}\n  data-collision-padding={collisionPadding}\n  data-portal={booleanDataAttr(portal)}\n  class={cn(className)}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/tooltip\"\n\n  create()\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tooltip/tooltip-arrow.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"tooltip-arrow\"\n  aria-hidden=\"true\"\n  class={cn(\n    \"absolute size-2.5 rotate-45 rounded-[2px] bg-inherit data-[side=bottom]:-top-1 data-[side=inline-end]:-left-1 data-[side=inline-end]:translate-x-[1.5px] data-[side=inline-start]:-right-1 data-[side=inline-start]:-translate-x-[1.5px] data-[side=left]:-right-1 data-[side=left]:-translate-x-[1.5px] data-[side=right]:-left-1 data-[side=right]:translate-x-[1.5px] data-[side=top]:-bottom-1\",\n    className\n  )}\n  {...props}\n>\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tooltip/tooltip-content.astro",
+      "content": "---\nimport type { TooltipAlign, TooltipSide } from \"@data-slot/tooltip\"\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {\n  side?: TooltipSide\n  align?: TooltipAlign\n  sideOffset?: number\n  alignOffset?: number\n  avoidCollisions?: boolean\n  collisionPadding?: number\n}\n\nconst {\n  class: className,\n  hidden = true,\n  side,\n  align,\n  sideOffset,\n  alignOffset,\n  avoidCollisions,\n  collisionPadding,\n  ...props\n} = Astro.props\n\nconst booleanDataAttr = (value?: boolean) =>\n  value === undefined ? undefined : value ? \"\" : \"false\"\n---\n\n<div\n  data-slot=\"tooltip-content\"\n  data-side={side}\n  data-align={align}\n  data-side-offset={sideOffset}\n  data-align-offset={alignOffset}\n  data-avoid-collisions={booleanDataAttr(avoidCollisions)}\n  data-collision-padding={collisionPadding}\n  hidden={hidden}\n  class={cn(\n    \"bg-foreground text-background pointer-events-none invisible absolute inline-flex [transform-origin:var(--transform-origin,center_center)] items-center gap-1.5 rounded-2xl px-3 py-1.5 text-xs whitespace-nowrap opacity-0 shadow-md transition-[opacity,visibility] duration-150 data-[closed]:pointer-events-none data-[instant]:transition-none data-[open]:pointer-events-auto data-[open]:visible data-[open]:opacity-100 data-[side=bottom]:[--tooltip-slide-y:-8px] data-[side=inline-end]:[--tooltip-slide-x:-8px] data-[side=inline-start]:[--tooltip-slide-x:8px] data-[side=left]:[--tooltip-slide-x:8px] data-[side=right]:[--tooltip-slide-x:-8px] data-[side=top]:[--tooltip-slide-y:8px]\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tooltip/tooltip-portal.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div data-slot=\"tooltip-portal\" class={cn(className)} {...props}>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tooltip/tooltip-positioner.astro",
+      "content": "---\nimport type { TooltipAlign, TooltipSide } from \"@data-slot/tooltip\"\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {\n  side?: TooltipSide\n  align?: TooltipAlign\n  sideOffset?: number\n  alignOffset?: number\n  avoidCollisions?: boolean\n  collisionPadding?: number\n}\n\nconst {\n  class: className,\n  side,\n  align,\n  sideOffset,\n  alignOffset,\n  avoidCollisions,\n  collisionPadding,\n  ...props\n} = Astro.props\n\nconst booleanDataAttr = (value?: boolean) =>\n  value === undefined ? undefined : value ? \"\" : \"false\"\n---\n\n<div\n  data-slot=\"tooltip-positioner\"\n  data-side={side}\n  data-align={align}\n  data-side-offset={sideOffset}\n  data-align-offset={alignOffset}\n  data-avoid-collisions={booleanDataAttr(avoidCollisions)}\n  data-collision-padding={collisionPadding}\n  class={cn(\"z-50\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tooltip/tooltip-trigger.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"button\"> {}\n\nconst { class: className, type = \"button\", ...props } = Astro.props\n---\n\n<button\n  data-slot=\"tooltip-trigger\"\n  type={type}\n  class={cn(className)}\n  {...props}\n>\n  <slot />\n</button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tooltip/index.ts",
+      "content": "export { default as Tooltip } from \"./tooltip.astro\"\nexport { default as TooltipArrow } from \"./tooltip-arrow.astro\"\nexport { default as TooltipContent } from \"./tooltip-content.astro\"\nexport { default as TooltipPortal } from \"./tooltip-portal.astro\"\nexport { default as TooltipPositioner } from \"./tooltip-positioner.astro\"\nexport { default as TooltipTrigger } from \"./tooltip-trigger.astro\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

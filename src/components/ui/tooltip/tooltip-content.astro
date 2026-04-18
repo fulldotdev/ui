@@ -1,0 +1,48 @@
+---
+import type { TooltipAlign, TooltipSide } from "@data-slot/tooltip"
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {
+  side?: TooltipSide
+  align?: TooltipAlign
+  sideOffset?: number
+  alignOffset?: number
+  avoidCollisions?: boolean
+  collisionPadding?: number
+}
+
+const {
+  class: className,
+  hidden = true,
+  side,
+  align,
+  sideOffset,
+  alignOffset,
+  avoidCollisions,
+  collisionPadding,
+  ...props
+} = Astro.props
+
+const booleanDataAttr = (value?: boolean) =>
+  value === undefined ? undefined : value ? "" : "false"
+---
+
+<div
+  data-slot="tooltip-content"
+  data-side={side}
+  data-align={align}
+  data-side-offset={sideOffset}
+  data-align-offset={alignOffset}
+  data-avoid-collisions={booleanDataAttr(avoidCollisions)}
+  data-collision-padding={collisionPadding}
+  hidden={hidden}
+  class={cn(
+    "bg-foreground text-background pointer-events-none invisible absolute inline-flex [transform-origin:var(--transform-origin,center_center)] items-center gap-1.5 rounded-2xl px-3 py-1.5 text-xs whitespace-nowrap opacity-0 shadow-md transition-[opacity,visibility] duration-150 data-[closed]:pointer-events-none data-[instant]:transition-none data-[open]:pointer-events-auto data-[open]:visible data-[open]:opacity-100 data-[side=bottom]:[--tooltip-slide-y:-8px] data-[side=inline-end]:[--tooltip-slide-x:-8px] data-[side=inline-start]:[--tooltip-slide-x:8px] data-[side=left]:[--tooltip-slide-x:8px] data-[side=right]:[--tooltip-slide-x:-8px] data-[side=top]:[--tooltip-slide-y:8px]",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</div>
