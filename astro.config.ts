@@ -68,7 +68,7 @@ export default defineConfig({
     fulldevIntegration({
       site: "https://ui.full.dev",
       name: "Fulldev UI",
-      favicon: "src/assets/logo-fulldev-mark-light.svg",
+      favicon: "src/assets/favicon.svg",
       fonts: {
         sans: "Geist",
         mono: "Geist Mono",
