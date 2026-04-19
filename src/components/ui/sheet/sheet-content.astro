@@ -4,21 +4,29 @@ import { cva, type VariantProps } from "class-variance-authority"
 import XIcon from "lucide-static/icons/x.svg"
 
 import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 
-const dialogVariants = cva(
-  [
-    "fixed inset-0 z-50 m-0 max-h-none max-w-none border-0 bg-transparent p-0",
-    "backdrop:bg-black/50",
-    // Added for quick fix over horizontal scroll issue
-    "overflow-x-hidden",
-  ],
+const sheetContentVariants = cva(
+  "bg-popover text-popover-foreground fixed flex flex-col gap-4 bg-clip-padding text-sm opacity-0 shadow-lg transition-all duration-200 ease-in-out outline-none data-[open]:opacity-100",
   {
     variants: {
       side: {
-        right: "ml-auto h-full w-3/4 sm:max-w-sm",
-        left: "mr-auto h-full w-3/4 sm:max-w-sm",
-        top: "mb-auto h-auto w-full",
-        bottom: "mt-auto h-auto w-full",
+        top: [
+          "inset-x-0 top-0 h-auto border-b",
+          "data-[ending-style]:-translate-y-10 data-[starting-style]:-translate-y-10",
+        ],
+        right: [
+          "inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm",
+          "data-[ending-style]:translate-x-10 data-[starting-style]:translate-x-10",
+        ],
+        bottom: [
+          "inset-x-0 bottom-0 h-auto border-t",
+          "data-[ending-style]:translate-y-10 data-[starting-style]:translate-y-10",
+        ],
+        left: [
+          "inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm",
+          "data-[ending-style]:-translate-x-10 data-[starting-style]:-translate-x-10",
+        ],
       },
     },
     defaultVariants: {
@@ -27,47 +35,51 @@ const dialogVariants = cva(
   }
 )
 
-const contentVariants = cva(
-  "bg-background flex h-full flex-col gap-4 shadow-lg transition-transform duration-500 ease-in-out",
-  {
-    variants: {
-      side: {
-        right: "translate-x-full border-l",
-        left: "-translate-x-full border-r",
-        top: "-translate-y-full border-b",
-        bottom: "translate-y-full border-t",
-      },
-    },
-    defaultVariants: {
-      side: "right",
-    },
-  }
-)
+interface Props
+  extends HTMLAttributes<"div">, VariantProps<typeof sheetContentVariants> {
+  showCloseButton?: boolean
+}
 
-type Props = VariantProps<typeof contentVariants> & HTMLAttributes<"div">
-
-const { class: className, side, ...props } = Astro.props
+const {
+  class: className,
+  side = "right",
+  showCloseButton = true,
+  style,
+  ...props
+} = Astro.props
 ---
 
-<dialog
-  data-slot="sheet-dialog"
-  data-side={side}
-  class={cn(dialogVariants({ side }))}
->
+<div data-slot="sheet-portal">
+  <div
+    data-slot="sheet-overlay"
+    hidden
+    class="fixed inset-0 bg-black/10 opacity-0 transition-opacity duration-200 data-[ending-style]:opacity-0 data-[open]:opacity-100 data-[starting-style]:opacity-0 supports-backdrop-filter:backdrop-blur-xs"
+    style="z-index: calc(var(--sheet-overlay-stack-index, 0) + 100);"
+  >
+  </div>
   <div
     data-slot="sheet-content"
     data-side={side}
-    class={cn(contentVariants({ side }), className)}
+    hidden
+    class={cn(sheetContentVariants({ side }), className)}
+    style={`z-index: calc(var(--sheet-content-stack-index, 0) + 101);${style ? ` ${style}` : ""}`}
     {...props}
   >
-    <button
-      type="button"
-      data-slot="sheet-close"
-      class="focus-visible:outline-ring text-foreground absolute top-4 right-4 cursor-pointer rounded-sm border-0 bg-transparent opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2"
-      aria-label="Close"
-    >
-      <XIcon class="size-4" />
-    </button>
     <slot />
+    {
+      showCloseButton && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          class="absolute top-4 right-4"
+          data-slot="sheet-close"
+          aria-label="Close"
+        >
+          <XIcon />
+          <span class="sr-only">Close</span>
+        </Button>
+      )
+    }
   </div>
-</dialog>
+</div>
