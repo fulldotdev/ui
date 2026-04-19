@@ -1,0 +1,45 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "input-group",
+  "registryDependencies": [
+    "@fulldev/button"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/input-group/input-group.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"input-group\"\n  role=\"group\"\n  class={cn(\n    \"group/input-group relative flex h-9 w-full min-w-0 items-center rounded-md border border-input shadow-xs transition-[color,box-shadow] outline-none in-data-[slot=combobox-content]:focus-within:border-inherit in-data-[slot=combobox-content]:focus-within:ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-3 has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50 has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-3 has-[[data-slot][aria-invalid=true]]:ring-destructive/20 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>textarea]:h-auto dark:bg-input/30 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40 has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>[data-slot=input-group-control]]:pr-1.5 has-[>[data-align=inline-start]]:[&>[data-slot=input-group-control]]:pl-1.5\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  if (!document.documentElement.dataset.inputGroupBound) {\n    document.documentElement.dataset.inputGroupBound = \"true\"\n\n    document.addEventListener(\"click\", (event) => {\n      const target = event.target\n\n      if (!(target instanceof Element)) return\n\n      const addon = target.closest('[data-slot=\"input-group-addon\"]')\n      if (!(addon instanceof HTMLElement)) return\n\n      if (\n        target.closest(\n          \"a, button, input, textarea, select, option, summary, [role='button']\"\n        )\n      ) {\n        return\n      }\n\n      const group = addon.closest('[data-slot=\"input-group\"]')\n      const control = group?.querySelector('[data-slot=\"input-group-control\"]')\n\n      if (control instanceof HTMLElement) {\n        control.focus()\n      }\n    })\n  }\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/input-group/input-group-addon.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\nconst variants = cva(\n  \"flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4\",\n  {\n    variants: {\n      align: {\n        \"inline-start\":\n          \"order-first pl-2 has-[>button]:-ml-1 has-[>a]:-ml-1 has-[>kbd]:ml-[-0.15rem]\",\n        \"inline-end\":\n          \"order-last pr-2 has-[>button]:-mr-1 has-[>a]:-mr-1 has-[>kbd]:mr-[-0.15rem]\",\n        \"block-start\":\n          \"order-first w-full justify-start px-2.5 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2\",\n        \"block-end\":\n          \"order-last w-full justify-start px-2.5 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2\",\n      },\n    },\n    defaultVariants: {\n      align: \"inline-start\",\n    },\n  }\n)\n\ninterface Props\n  extends HTMLAttributes<\"div\">,\n    VariantProps<typeof variants> {}\n\nconst { class: className, align = \"inline-start\", ...props } = Astro.props as Props\n---\n\n<div\n  role=\"group\"\n  data-slot=\"input-group-addon\"\n  data-align={align}\n  class={cn(variants({ align }), className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/input-group/input-group-button.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Button, type ButtonVariantProps } from \"@/components/ui/button\"\n\nconst variants = cva(\"flex items-center gap-2 text-sm shadow-none\", {\n  variants: {\n    size: {\n      xs: \"h-6 gap-1 rounded-[calc(var(--radius)-5px)] px-1.5 [&>svg:not([class*='size-'])]:size-3.5\",\n      sm: \"\",\n      \"icon-xs\":\n        \"size-6 rounded-[calc(var(--radius)-5px)] p-0 has-[>svg]:p-0\",\n      \"icon-sm\": \"size-8 p-0 has-[>svg]:p-0\",\n    },\n  },\n  defaultVariants: {\n    size: \"xs\",\n  },\n})\n\ntype Props = VariantProps<typeof variants> &\n  HTMLAttributes<\"button\"> &\n  HTMLAttributes<\"a\"> & {\n    type?: \"button\" | \"submit\" | \"reset\"\n    variant?: ButtonVariantProps[\"variant\"]\n  }\n\nconst {\n  class: className,\n  type = \"button\",\n  variant = \"ghost\",\n  size = \"xs\",\n  ...props\n} = Astro.props as Props\n\nconst isLink = \"href\" in Astro.props\n---\n\n<Button\n  data-size={size}\n  type={isLink ? undefined : type}\n  variant={variant}\n  size={size}\n  class={cn(variants({ size }), className)}\n  {...props}\n>\n  <slot />\n</Button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/input-group/input-group-input.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"input\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<input\n  data-slot=\"input-group-control\"\n  class={cn(\n    \"file:text-foreground placeholder:text-muted-foreground min-w-0 flex-1 border-0 bg-transparent px-2.5 py-1 text-base shadow-none outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-0 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-0 dark:bg-transparent md:text-sm h-full\",\n    className\n  )}\n  {...props}\n/>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/input-group/input-group-text.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"span\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<span\n  data-slot=\"input-group-text\"\n  class={cn(\n    \"flex items-center gap-2 text-sm text-muted-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</span>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/input-group/input-group-textarea.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"textarea\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<textarea\n  data-slot=\"input-group-control\"\n  class={cn(\n    \"min-h-16 w-full flex-1 resize-none border-0 bg-transparent px-2.5 py-2 text-base shadow-none outline-none field-sizing-content focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-0 dark:bg-transparent md:text-sm\",\n    className\n  )}\n  {...props}\n>\n</textarea>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/input-group/index.ts",
+      "content": "export { default as InputGroup } from \"./input-group.astro\"\nexport { default as InputGroupAddon } from \"./input-group-addon.astro\"\nexport { default as InputGroupButton } from \"./input-group-button.astro\"\nexport { default as InputGroupInput } from \"./input-group-input.astro\"\nexport { default as InputGroupText } from \"./input-group-text.astro\"\nexport { default as InputGroupTextarea } from \"./input-group-textarea.astro\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

@@ -1,0 +1,51 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {}
+
+const { class: className, ...props } = Astro.props
+---
+
+<div
+  data-slot="input-group"
+  role="group"
+  class={cn(
+    "group/input-group relative flex h-9 w-full min-w-0 items-center rounded-md border border-input shadow-xs transition-[color,box-shadow] outline-none in-data-[slot=combobox-content]:focus-within:border-inherit in-data-[slot=combobox-content]:focus-within:ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-3 has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50 has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-3 has-[[data-slot][aria-invalid=true]]:ring-destructive/20 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>textarea]:h-auto dark:bg-input/30 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40 has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>[data-slot=input-group-control]]:pr-1.5 has-[>[data-align=inline-start]]:[&>[data-slot=input-group-control]]:pl-1.5",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</div>
+
+<script>
+  if (!document.documentElement.dataset.inputGroupBound) {
+    document.documentElement.dataset.inputGroupBound = "true"
+
+    document.addEventListener("click", (event) => {
+      const target = event.target
+
+      if (!(target instanceof Element)) return
+
+      const addon = target.closest('[data-slot="input-group-addon"]')
+      if (!(addon instanceof HTMLElement)) return
+
+      if (
+        target.closest(
+          "a, button, input, textarea, select, option, summary, [role='button']"
+        )
+      ) {
+        return
+      }
+
+      const group = addon.closest('[data-slot="input-group"]')
+      const control = group?.querySelector('[data-slot="input-group-control"]')
+
+      if (control instanceof HTMLElement) {
+        control.focus()
+      }
+    })
+  }
+</script>

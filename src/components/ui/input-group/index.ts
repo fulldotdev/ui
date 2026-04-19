@@ -1,0 +1,6 @@
+export { default as InputGroup } from "./input-group.astro"
+export { default as InputGroupAddon } from "./input-group-addon.astro"
+export { default as InputGroupButton } from "./input-group-button.astro"
+export { default as InputGroupInput } from "./input-group-input.astro"
+export { default as InputGroupText } from "./input-group-text.astro"
+export { default as InputGroupTextarea } from "./input-group-textarea.astro"
