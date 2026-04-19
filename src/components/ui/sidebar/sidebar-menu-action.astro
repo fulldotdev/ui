@@ -1,0 +1,40 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"button"> &
+  HTMLAttributes<"a"> &
+  HTMLAttributes<"div"> &
+  HTMLAttributes<"span"> & {
+    as?: "button" | "a" | "div" | "span"
+    href?: string
+    showOnHover?: boolean
+  }
+
+const {
+  as: explicitTag,
+  class: className,
+  showOnHover = false,
+  type,
+  ...props
+} = Astro.props as Props
+
+const Tag = explicitTag || ("href" in Astro.props ? "a" : "button")
+const resolvedType = Tag === "button" ? type || "button" : undefined
+---
+
+<Tag
+  data-slot="sidebar-menu-action"
+  data-sidebar="menu-action"
+  type={resolvedType}
+  class={cn(
+    "absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform group-data-[collapsible=icon]:hidden peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[size=default]/menu-button:top-1.5 peer-data-[size=lg]/menu-button:top-2.5 peer-data-[size=sm]/menu-button:top-1 after:absolute after:-inset-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 md:after:hidden [&>svg]:size-4 [&>svg]:shrink-0",
+    showOnHover &&
+      "group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 peer-data-active/menu-button:text-sidebar-accent-foreground aria-expanded:opacity-100 md:opacity-0",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</Tag>

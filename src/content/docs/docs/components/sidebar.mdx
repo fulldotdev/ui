@@ -1,23 +1,11 @@
 ---
 title: Sidebar
-description: A collection of composable components for building sidebar navigation.
+description: A composable, themeable, and customizable Astro sidebar component.
 ---
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Icon } from "@/components/ui/icon"
 
-<Alert class="not-content">
-  <Icon name="alert-circle" />
-  <AlertTitle>Partial implementation</AlertTitle>
-  <AlertDescription>
-    Currently only the sidebar menu components are built. More sidebar
-    components coming soon.
-  </AlertDescription>
-</Alert>
-
 ## Installation
-
-To install the sidebar component, run the following command:
 
 ```bash
 npx shadcn@latest add @fulldev/sidebar
@@ -27,109 +15,220 @@ npx shadcn@latest add @fulldev/sidebar
 
 ```ts
 import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
 } from "@/components/ui/sidebar"
 ```
 
 ```astro
-<SidebarMenu>
-  <SidebarMenuItem>
-    <SidebarMenuButton href="/">Home</SidebarMenuButton>
-  </SidebarMenuItem>
-  <SidebarMenuItem>
-    <SidebarMenuButton href="/about">About</SidebarMenuButton>
-  </SidebarMenuItem>
-</SidebarMenu>
+---
+import { Icon } from "@/components/ui/icon"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+---
+
+<SidebarProvider>
+  <Sidebar>
+    <SidebarHeader />
+    <SidebarContent>
+      <SidebarGroup>
+        <SidebarGroupLabel>Application</SidebarGroupLabel>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton href="/">
+                <Icon name="home" />
+                <span>Home</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+    </SidebarContent>
+    <SidebarRail />
+  </Sidebar>
+  <SidebarInset>
+    <header class="flex h-14 items-center border-b px-4">
+      <SidebarTrigger />
+    </header>
+    <main class="flex-1 p-4">Your content</main>
+  </SidebarInset>
+</SidebarProvider>
 ```
+
+## Composition
+
+Use the following composition to build a sidebar layout:
+
+```text
+SidebarProvider
+├── Sidebar
+│   ├── SidebarHeader
+│   ├── SidebarContent
+│   │   ├── SidebarGroup
+│   │   │   ├── SidebarGroupLabel
+│   │   │   ├── SidebarGroupAction
+│   │   │   ├── SidebarGroupContent
+│   │   │   └── SidebarMenu
+│   │   │       ├── SidebarMenuItem
+│   │   │       │   ├── SidebarMenuButton
+│   │   │       │   ├── SidebarMenuAction
+│   │   │       │   └── SidebarMenuBadge
+│   │   │       └── SidebarMenuItem
+│   │   │           ├── SidebarMenuButton
+│   │   │           └── SidebarMenuSub
+│   │   │               ├── SidebarMenuSubItem
+│   │   │               └── SidebarMenuSubItem
+│   │   └── SidebarGroup
+│   │       └── SidebarMenu
+│   │           ├── SidebarMenuItem
+│   │           └── SidebarMenuItem
+│   ├── SidebarFooter
+│   └── SidebarRail
+├── SidebarInset
+└── SidebarTrigger
+```
+
+## Components
+
+- `SidebarProvider` wraps the layout, owns the collapse state, and persists desktop state in the `sidebar_state` cookie.
+- `Sidebar` renders the shell and supports `side`, `variant`, `collapsible`, and `dir`.
+- `SidebarTrigger` toggles the sidebar and supports the `cmd/ctrl+b` keyboard shortcut.
+- `SidebarRail` renders the clickable rail used by shadcn’s desktop sidebar.
+- `SidebarInset` wraps the main content when using the `inset` variant.
+- `SidebarHeader`, `SidebarFooter`, and `SidebarContent` match the shadcn layout regions.
+- `SidebarGroup`, `SidebarGroupLabel`, `SidebarGroupAction`, and `SidebarGroupContent` build sidebar sections.
+- `SidebarMenu`, `SidebarMenuItem`, `SidebarMenuButton`, `SidebarMenuAction`, `SidebarMenuBadge`, `SidebarMenuSkeleton`, `SidebarMenuSub`, `SidebarMenuSubItem`, and `SidebarMenuSubButton` match the menu primitives from shadcn.
+- `SidebarInput` and `SidebarSeparator` provide the shadcn sidebar input and separator styles.
+
+## SidebarProvider
+
+The Astro provider supports the same default width variables as shadcn:
+
+```astro
+<SidebarProvider style="--sidebar-width: 20rem; --sidebar-width-mobile: 20rem;">
+  <Sidebar />
+</SidebarProvider>
+```
+
+### Props
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `defaultOpen` | `boolean` | Sets the initial desktop state. Defaults to `true`. |
+| `open` | `boolean` | Sets the initial desktop state explicitly. In Astro this is not reactive after hydration. |
+
+## Sidebar
+
+### Props
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `side` | `"left" \| "right"` | Which side the sidebar should appear on. |
+| `variant` | `"sidebar" \| "floating" \| "inset"` | Visual variant for the desktop shell. |
+| `collapsible` | `"offcanvas" \| "icon" \| "none"` | Collapse behavior. |
+| `dir` | `"ltr" \| "rtl"` | Enables RTL positioning and trigger icon flipping. |
 
 ## Examples
 
-### Basic Menu
-
-A simple vertical navigation menu with menu items.
+### Basic Sidebar
 
 ```astro live
 ---
 import { Icon } from "@/components/ui/icon"
 import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarInset,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
 } from "@/components/ui/sidebar"
 ---
 
-<SidebarMenu class="w-64 space-y-1">
-  <SidebarMenuItem>
-    <SidebarMenuButton href="/">
-      <Icon name="home" />
-      <span>Home</span>
-    </SidebarMenuButton>
-  </SidebarMenuItem>
-  <SidebarMenuItem>
-    <SidebarMenuButton href="/dashboard">
-      <Icon name="layout-dashboard" />
-      <span>Dashboard</span>
-    </SidebarMenuButton>
-  </SidebarMenuItem>
-  <SidebarMenuItem>
-    <SidebarMenuButton href="/settings">
-      <Icon name="settings" />
-      <span>Settings</span>
-    </SidebarMenuButton>
-  </SidebarMenuItem>
-</SidebarMenu>
+<SidebarProvider>
+  <Sidebar collapsible="icon">
+    <SidebarContent>
+      <SidebarGroup>
+        <SidebarGroupLabel>Platform</SidebarGroupLabel>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton href="/" isActive>
+                <Icon name="home" />
+                <span>Home</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton href="/dashboard">
+                <Icon name="layout-dashboard" />
+                <span>Dashboard</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton href="/settings">
+                <Icon name="settings" />
+                <span>Settings</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+    </SidebarContent>
+  </Sidebar>
+  <SidebarInset>
+    <header class="flex h-14 items-center gap-2 border-b px-4">
+      <SidebarTrigger />
+      <span class="text-sm font-medium">Workspace</span>
+    </header>
+    <main class="flex-1 p-4">Main content</main>
+  </SidebarInset>
+</SidebarProvider>
 ```
 
-### Active State
-
-Use the `active` prop to highlight the current page.
+### Menu Actions, Badges, and Submenus
 
 ```astro live
 ---
 import { Icon } from "@/components/ui/icon"
 import {
+  SidebarGroup,
+  SidebarGroupAction,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar"
----
-
-<SidebarMenu class="w-64 space-y-1">
-  <SidebarMenuItem>
-    <SidebarMenuButton href="/">
-      <Icon name="home" />
-      <span>Home</span>
-    </SidebarMenuButton>
-  </SidebarMenuItem>
-  <SidebarMenuItem>
-    <SidebarMenuButton href="/dashboard" active>
-      <Icon name="layout-dashboard" />
-      <span>Dashboard</span>
-    </SidebarMenuButton>
-  </SidebarMenuItem>
-  <SidebarMenuItem>
-    <SidebarMenuButton href="/settings">
-      <Icon name="settings" />
-      <span>Settings</span>
-    </SidebarMenuButton>
-  </SidebarMenuItem>
-</SidebarMenu>
-```
-
-### With Submenu
-
-Create nested navigation with `SidebarMenuSub`.
-
-```astro live
----
-import { Icon } from "@/components/ui/icon"
-import {
-  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
@@ -138,71 +237,104 @@ import {
 } from "@/components/ui/sidebar"
 ---
 
-<SidebarMenu class="w-64 space-y-1">
-  <SidebarMenuItem>
-    <SidebarMenuButton href="/">
-      <Icon name="home" />
-      <span>Home</span>
-    </SidebarMenuButton>
-  </SidebarMenuItem>
-  <SidebarMenuItem>
-    <SidebarMenuButton>
-      <Icon name="folder" />
-      <span>Projects</span>
-    </SidebarMenuButton>
-    <SidebarMenuSub>
-      <SidebarMenuSubItem>
-        <SidebarMenuSubButton href="/projects/web">
-          Web App
-        </SidebarMenuSubButton>
-      </SidebarMenuSubItem>
-      <SidebarMenuSubItem>
-        <SidebarMenuSubButton href="/projects/mobile">
-          Mobile App
-        </SidebarMenuSubButton>
-      </SidebarMenuSubItem>
-      <SidebarMenuSubItem>
-        <SidebarMenuSubButton href="/projects/api"> API </SidebarMenuSubButton>
-      </SidebarMenuSubItem>
-    </SidebarMenuSub>
-  </SidebarMenuItem>
-  <SidebarMenuItem>
-    <SidebarMenuButton href="/settings">
-      <Icon name="settings" />
-      <span>Settings</span>
-    </SidebarMenuButton>
-  </SidebarMenuItem>
-</SidebarMenu>
+<SidebarGroup class="w-72 rounded-lg border bg-sidebar">
+  <SidebarGroupLabel>Projects</SidebarGroupLabel>
+  <SidebarGroupAction aria-label="Add project">
+    <Icon name="plus" />
+  </SidebarGroupAction>
+  <SidebarGroupContent>
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuButton href="/projects/web" isActive>
+          <Icon name="folder" />
+          <span>Web App</span>
+        </SidebarMenuButton>
+        <SidebarMenuAction showOnHover aria-label="More actions">
+          <Icon name="ellipsis" />
+        </SidebarMenuAction>
+        <SidebarMenuBadge>12</SidebarMenuBadge>
+      </SidebarMenuItem>
+      <SidebarMenuItem>
+        <SidebarMenuButton>
+          <Icon name="folder-git-2" />
+          <span>Internal Tools</span>
+        </SidebarMenuButton>
+        <SidebarMenuSub>
+          <SidebarMenuSubItem>
+            <SidebarMenuSubButton href="/projects/internal/design">
+              Design System
+            </SidebarMenuSubButton>
+          </SidebarMenuSubItem>
+          <SidebarMenuSubItem>
+            <SidebarMenuSubButton href="/projects/internal/docs">
+              Docs
+            </SidebarMenuSubButton>
+          </SidebarMenuSubItem>
+        </SidebarMenuSub>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  </SidebarGroupContent>
+</SidebarGroup>
 ```
 
-### Button Variants
-
-The `SidebarMenuButton` supports different variants and sizes.
+### Floating Variant
 
 ```astro live
 ---
 import { Icon } from "@/components/ui/icon"
 import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarInset,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
 } from "@/components/ui/sidebar"
 ---
 
-<div class="flex flex-col gap-4">
-  <SidebarMenu class="w-64">
-    <SidebarMenuItem>
-      <SidebarMenuButton variant="default">
-        <Icon name="home" />
-        <span>Default</span>
-      </SidebarMenuButton>
-    </SidebarMenuItem>
-    <SidebarMenuItem>
-      <SidebarMenuButton variant="outline">
-        <Icon name="folder" />
-        <span>Outline</span>
-      </SidebarMenuButton>
-    </SidebarMenuItem>
-  </SidebarMenu>
-</div>
+<SidebarProvider>
+  <Sidebar variant="floating" collapsible="icon">
+    <SidebarContent>
+      <SidebarGroup>
+        <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton href="/">
+                <Icon name="sparkles" />
+                <span>Overview</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton href="/activity">
+                <Icon name="activity" />
+                <span>Activity</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+    </SidebarContent>
+    <SidebarRail />
+  </Sidebar>
+  <SidebarInset>
+    <header class="flex h-14 items-center gap-2 border-b px-4">
+      <SidebarTrigger />
+      <span class="text-sm font-medium">Floating Sidebar</span>
+    </header>
+    <main class="flex-1 p-4">Main content</main>
+  </SidebarInset>
+</SidebarProvider>
 ```
+
+## Astro Notes
+
+- The visual structure, classes, keyboard shortcut, cookie persistence, `icon` collapse mode, `offcanvas` mode, `floating` variant, `inset` layout, and RTL support match shadcn as closely as possible in Astro.
+- `open`, `onOpenChange`, and `useSidebar` are React-only APIs in the original component. In Astro, the provider manages state internally on the client after hydration.
+- The `tooltip` prop on `SidebarMenuButton` maps to the native `title` attribute in Astro.

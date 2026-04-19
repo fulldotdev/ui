@@ -5,41 +5,53 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const variants = cva(
-  "hover:bg-accent hover:text-accent-foreground focus-visible:outline-ring flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 outline-hidden transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+  "flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 text-sidebar-foreground ring-sidebar-ring outline-hidden group-data-[collapsible=icon]:hidden hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[size=md]:text-sm data-[size=sm]:text-xs data-active:bg-sidebar-accent data-active:text-sidebar-accent-foreground [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-sidebar-accent-foreground",
   {
     variants: {
       size: {
         sm: "text-xs",
         md: "text-sm",
       },
-      active: {
-        true: "bg-accent text-accent-foreground",
-        false: "",
-      },
     },
     defaultVariants: {
       size: "md",
-      active: false,
     },
   }
 )
 
 type Props = VariantProps<typeof variants> &
   HTMLAttributes<"button"> &
-  HTMLAttributes<"a"> & {
+  HTMLAttributes<"a"> &
+  HTMLAttributes<"span"> & {
+    as?: "a" | "button" | "span"
     href?: string
+    isActive?: boolean
+    active?: boolean
   }
 
-const { class: className, size, active, href, ...props } = Astro.props
+const {
+  as: explicitTag,
+  class: className,
+  size = "md",
+  isActive,
+  active = false,
+  type,
+  ...props
+} = Astro.props as Props
 
-const Comp = href ? "a" : "button"
+const Tag = explicitTag || ("href" in Astro.props ? "a" : "button")
+const resolvedActive = isActive ?? active
 ---
 
-<Comp
+<Tag
   data-slot="sidebar-menu-sub-button"
-  class={cn(variants({ size, active }), className)}
-  href={href}
+  data-sidebar="menu-sub-button"
+  data-size={size}
+  data-active={resolvedActive ? "true" : undefined}
+  aria-current={resolvedActive ? "page" : undefined}
+  type={Tag === "button" ? type || "button" : undefined}
+  class={cn(variants({ size }), className)}
   {...props}
 >
   <slot />
-</Comp>
+</Tag>

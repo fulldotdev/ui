@@ -1,0 +1,36 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"button"> &
+  HTMLAttributes<"a"> &
+  HTMLAttributes<"div"> &
+  HTMLAttributes<"span"> & {
+    as?: "button" | "a" | "div" | "span"
+    href?: string
+  }
+
+const {
+  as: explicitTag,
+  class: className,
+  type,
+  ...props
+} = Astro.props as Props
+
+const Tag = explicitTag || ("href" in Astro.props ? "a" : "button")
+const resolvedType = Tag === "button" ? type || "button" : undefined
+---
+
+<Tag
+  data-slot="sidebar-group-action"
+  data-sidebar="group-action"
+  type={resolvedType}
+  class={cn(
+    "absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform group-data-[collapsible=icon]:hidden after:absolute after:-inset-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 md:after:hidden [&>svg]:size-4 [&>svg]:shrink-0",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</Tag>

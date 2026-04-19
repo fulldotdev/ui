@@ -1,0 +1,302 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+const SIDEBAR_WIDTH = "16rem"
+const SIDEBAR_WIDTH_MOBILE = "18rem"
+const SIDEBAR_WIDTH_ICON = "3rem"
+
+interface Props extends HTMLAttributes<"div"> {
+  defaultOpen?: boolean
+  open?: boolean
+}
+
+const {
+  class: className,
+  style,
+  defaultOpen = true,
+  open,
+  ...props
+} = Astro.props
+
+const resolvedStyle = [
+  `--sidebar-width: ${SIDEBAR_WIDTH}`,
+  `--sidebar-width-mobile: ${SIDEBAR_WIDTH_MOBILE}`,
+  `--sidebar-width-icon: ${SIDEBAR_WIDTH_ICON}`,
+  typeof style === "string" ? style : undefined,
+]
+  .filter(Boolean)
+  .join("; ")
+---
+
+<div
+  data-slot="sidebar-wrapper"
+  data-default-open={defaultOpen ? "true" : "false"}
+  data-open={open === undefined ? undefined : open ? "true" : "false"}
+  style={resolvedStyle}
+  class={cn(
+    "group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</div>
+
+<script is:inline>
+  // @ts-nocheck
+  const SIDEBAR_COOKIE_NAME = "sidebar_state"
+  const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
+  const SIDEBAR_KEYBOARD_SHORTCUT = "b"
+  const DESKTOP_MEDIA_QUERY = "(min-width: 768px)"
+
+  if (!window.__fulldevSidebarInitialized) {
+    window.__fulldevSidebarInitialized = true
+
+    const desktopMedia = window.matchMedia(DESKTOP_MEDIA_QUERY)
+    const providerState = new WeakMap()
+
+    const parseBoolean = (value, fallback) => {
+      if (value === "" || value === "true") return true
+      if (value === "false") return false
+      return fallback
+    }
+
+    const getCookie = (name) => {
+      const cookie = document.cookie
+        .split("; ")
+        .find((entry) => entry.startsWith(`${name}=`))
+
+      return cookie ? cookie.slice(name.length + 1) : null
+    }
+
+    const setCookie = (name, value, maxAge) => {
+      document.cookie = `${name}=${value}; path=/; max-age=${maxAge}`
+    }
+
+    const isProvider = (value) =>
+      value instanceof HTMLElement &&
+      value.dataset.slot === "sidebar-wrapper"
+
+    const getSidebarState = (provider) => {
+      const controlledOpen = provider.dataset.open
+      if (controlledOpen === "true" || controlledOpen === "false") {
+        return controlledOpen === "true"
+      }
+
+      const cookieValue = getCookie(SIDEBAR_COOKIE_NAME)
+      if (cookieValue === "true" || cookieValue === "false") {
+        return cookieValue === "true"
+      }
+
+      return parseBoolean(provider.dataset.defaultOpen, true)
+    }
+
+    const hasCollapsibleSidebar = (provider) =>
+      Array.from(provider.querySelectorAll("[data-slot='sidebar']")).some(
+        (sidebar) =>
+          sidebar instanceof HTMLElement &&
+          (sidebar.dataset.sidebarCollapsible ?? "offcanvas") !== "none"
+      )
+
+    const syncBodyScrollLock = () => {
+      const hasOpenMobileSidebar = Array.from(
+        document.querySelectorAll("[data-slot='sidebar-wrapper']")
+      ).some((wrapper) => {
+        if (!(wrapper instanceof HTMLElement)) return false
+        return Array.from(wrapper.querySelectorAll("[data-slot='sidebar']")).some(
+          (sidebar) =>
+            sidebar instanceof HTMLElement &&
+            sidebar.dataset.mobileOpen === "true"
+        )
+      })
+
+      document.body.style.overflow =
+        hasOpenMobileSidebar && !desktopMedia.matches ? "hidden" : ""
+    }
+
+    const syncProvider = (provider) => {
+      const state = providerState.get(provider)
+      if (!state) return
+
+      const desktopState = state.open ? "expanded" : "collapsed"
+      provider.dataset.desktopState = desktopState
+
+      provider.querySelectorAll("[data-slot='sidebar']").forEach((sidebar) => {
+        if (!(sidebar instanceof HTMLElement)) return
+
+        const collapsible = sidebar.dataset.sidebarCollapsible ?? "offcanvas"
+        sidebar.dataset.state = desktopState
+        sidebar.dataset.mobileOpen = state.openMobile ? "true" : "false"
+        sidebar.dataset.collapsible =
+          collapsible === "none"
+            ? "none"
+            : state.open
+              ? ""
+              : collapsible
+      })
+
+      provider
+        .querySelectorAll(
+          "[data-slot='sidebar-backdrop'], [data-slot='sidebar-container']"
+        )
+        .forEach((element) => {
+          if (!(element instanceof HTMLElement)) return
+          element.dataset.mobileOpen = state.openMobile ? "true" : "false"
+        })
+
+      provider
+        .querySelectorAll("[data-sidebar='trigger'], [data-sidebar='rail']")
+        .forEach((control) => {
+          if (!(control instanceof HTMLElement)) return
+
+          const isExpanded = desktopMedia.matches ? state.open : state.openMobile
+          control.setAttribute("aria-expanded", String(isExpanded))
+        })
+
+      provider
+        .querySelectorAll("[data-sidebar='menu-button'][data-tooltip]")
+        .forEach((button) => {
+          if (!(button instanceof HTMLElement)) return
+
+          const tooltip = button.dataset.tooltip
+          if (!tooltip) {
+            button.removeAttribute("title")
+            return
+          }
+
+          if (desktopMedia.matches && !state.open) {
+            button.setAttribute("title", tooltip)
+          } else {
+            button.removeAttribute("title")
+          }
+        })
+
+      syncBodyScrollLock()
+    }
+
+    const closeMobile = (provider) => {
+      const state = providerState.get(provider)
+      if (!state || !state.openMobile) return
+
+      state.openMobile = false
+      syncProvider(provider)
+    }
+
+    const toggleProvider = (provider) => {
+      const state = providerState.get(provider)
+      if (!state || !hasCollapsibleSidebar(provider)) return
+
+      if (desktopMedia.matches) {
+        state.open = !state.open
+        setCookie(
+          SIDEBAR_COOKIE_NAME,
+          state.open ? "true" : "false",
+          SIDEBAR_COOKIE_MAX_AGE
+        )
+      } else {
+        state.openMobile = !state.openMobile
+      }
+
+      syncProvider(provider)
+    }
+
+    const initProvider = (provider) => {
+      if (provider.dataset.sidebarInitialized === "true") return
+      provider.dataset.sidebarInitialized = "true"
+
+      providerState.set(provider, {
+        open: getSidebarState(provider),
+        openMobile: false,
+      })
+
+      provider
+        .querySelectorAll("[data-sidebar='trigger'], [data-sidebar='rail']")
+        .forEach((control) => {
+          if (!(control instanceof HTMLElement)) return
+
+          control.addEventListener("click", () => toggleProvider(provider))
+        })
+
+      provider
+        .querySelectorAll("[data-slot='sidebar-backdrop']")
+        .forEach((backdrop) => {
+          if (!(backdrop instanceof HTMLElement)) return
+
+          backdrop.addEventListener("click", () => closeMobile(provider))
+        })
+
+      syncProvider(provider)
+    }
+
+    const initAllProviders = () => {
+      document
+        .querySelectorAll("[data-slot='sidebar-wrapper']")
+        .forEach((provider) => {
+          if (isProvider(provider)) initProvider(provider)
+        })
+    }
+
+    const getActiveProvider = () => {
+      const activeElement = document.activeElement
+
+      if (activeElement instanceof HTMLElement) {
+        const activeProvider = activeElement.closest("[data-slot='sidebar-wrapper']")
+        if (isProvider(activeProvider)) return activeProvider
+      }
+
+      const firstProvider = document.querySelector("[data-slot='sidebar-wrapper']")
+      return isProvider(firstProvider) ? firstProvider : null
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (
+        event.key.toLowerCase() !== SIDEBAR_KEYBOARD_SHORTCUT ||
+        (!event.metaKey && !event.ctrlKey)
+      ) {
+        return
+      }
+
+      const provider = getActiveProvider()
+      if (!provider) return
+
+      event.preventDefault()
+      toggleProvider(provider)
+    })
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || desktopMedia.matches) return
+
+      const provider = getActiveProvider()
+      if (!provider) return
+
+      closeMobile(provider)
+    })
+
+    const syncAllProviders = () => {
+      document
+        .querySelectorAll("[data-slot='sidebar-wrapper']")
+        .forEach((provider) => {
+          if (!isProvider(provider)) return
+          syncProvider(provider)
+        })
+
+      syncBodyScrollLock()
+    }
+
+    if (typeof desktopMedia.addEventListener === "function") {
+      desktopMedia.addEventListener("change", syncAllProviders)
+    } else {
+      desktopMedia.addListener(syncAllProviders)
+    }
+
+    initAllProviders()
+    syncAllProviders()
+
+    document.addEventListener("astro:page-load", () => {
+      initAllProviders()
+      syncAllProviders()
+    })
+  }
+</script>

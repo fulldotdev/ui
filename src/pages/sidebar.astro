@@ -1,0 +1,404 @@
+---
+import "@/styles/global.css"
+
+import { ThemeProvider, ThemeToggle } from "@/components/ui/theme-toggle"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Layout, LayoutBody, LayoutHead, LayoutMain } from "@/components/ui/layout"
+import {
+  Sidebar as AppSidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupAction,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarInput,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarSeparator,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+
+type NavItem = {
+  title: string
+  href: string
+  icon: string
+  active?: boolean
+  badge?: string
+}
+
+type ProjectChild = {
+  title: string
+  href: string
+}
+
+type ProjectItem = {
+  title: string
+  href: string
+  icon: string
+  count: string
+  children?: ProjectChild[]
+}
+
+type ResourceItem = {
+  title: string
+  href: string
+  icon: string
+}
+
+const mainNav: NavItem[] = [
+  { title: "Home", href: "#home", icon: "home", active: true },
+  { title: "Dashboard", href: "#dashboard", icon: "layout-dashboard" },
+  { title: "Inbox", href: "#inbox", icon: "inbox", badge: "8" },
+  { title: "Calendar", href: "#calendar", icon: "calendar" },
+  { title: "Settings", href: "#settings", icon: "settings" },
+] 
+
+const projects: ProjectItem[] = [
+  {
+    title: "Website Redesign",
+    href: "#website-redesign",
+    icon: "folder-open",
+    count: "12",
+    children: [
+      { title: "Planning", href: "#planning" },
+      { title: "Assets", href: "#assets" },
+    ],
+  },
+  {
+    title: "Content Ops",
+    href: "#content-ops",
+    icon: "files",
+    count: "4",
+  },
+  {
+    title: "Support Queue",
+    href: "#support-queue",
+    icon: "life-buoy",
+    count: "2",
+  },
+] 
+
+const resources: ResourceItem[] = [
+  { title: "Documentation", href: "#docs", icon: "book-open" },
+  { title: "Messages", href: "#messages", icon: "send" },
+  { title: "Archive", href: "#archive", icon: "archive-x" },
+] 
+---
+
+<Layout lang="en">
+  <LayoutHead
+    name="Fulldev UI"
+    title="Sidebar Preview"
+    description="Interactive preview page for the Astro sidebar component."
+  >
+    <ThemeProvider />
+  </LayoutHead>
+  <LayoutBody class="min-h-svh">
+    <SidebarProvider style="--sidebar-width: 17rem; --sidebar-width-mobile: 20rem;">
+      <AppSidebar variant="inset" collapsible="icon">
+        <SidebarHeader>
+          <SidebarMenu>
+              <SidebarMenuItem>
+              <SidebarMenuButton
+                tooltip="Fulldev UI"
+                class="bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90 hover:text-sidebar-primary-foreground"
+              >
+                <Icon name="command" />
+                <span>Fulldev UI</span>
+                <Icon
+                  name="chevrons-up-down"
+                  class="ml-auto opacity-70"
+                />
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+          <SidebarInput placeholder="Search components..." />
+        </SidebarHeader>
+
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Platform</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {
+                  mainNav.map((item) => (
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        href={item.href}
+                        isActive={item.active}
+                        tooltip={item.title}
+                      >
+                        <Icon name={item.icon} />
+                        <span>{item.title}</span>
+                      </SidebarMenuButton>
+                      {
+                        item.badge && (
+                          <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
+                        )
+                      }
+                    </SidebarMenuItem>
+                  ))
+                }
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <SidebarGroup>
+            <SidebarGroupLabel>Projects</SidebarGroupLabel>
+            <SidebarGroupAction aria-label="Add project">
+              <Icon name="plus" />
+            </SidebarGroupAction>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {
+                  projects.map((project) => (
+                    <SidebarMenuItem>
+                      {
+                        project.children ? (
+                          <Collapsible defaultOpen class="group/collapsible">
+                            <SidebarMenuButton
+                              as="span"
+                              tooltip={project.title}
+                              class="group-data-[state=open]/collapsible:bg-sidebar-accent group-data-[state=open]/collapsible:text-sidebar-accent-foreground"
+                            >
+                              <CollapsibleTrigger
+                                aria-label={project.title}
+                                class="flex w-full items-center gap-2 border-0 bg-transparent p-0 text-left group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:[&>*:not(:first-child)]:hidden"
+                              >
+                                <Icon name={project.icon} />
+                                <span>{project.title}</span>
+                                <SidebarMenuBadge class="static ml-auto">
+                                  {project.count}
+                                </SidebarMenuBadge>
+                                <Icon
+                                  name="chevrons-up-down"
+                                  class="ml-1 size-3.5 opacity-60 transition-transform group-data-[state=open]/collapsible:rotate-180"
+                                />
+                              </CollapsibleTrigger>
+                            </SidebarMenuButton>
+                            <CollapsibleContent>
+                              <SidebarMenuSub>
+                                {project.children.map((child) => (
+                                  <SidebarMenuSubItem>
+                                    <SidebarMenuSubButton href={child.href}>
+                                      {child.title}
+                                    </SidebarMenuSubButton>
+                                  </SidebarMenuSubItem>
+                                ))}
+                              </SidebarMenuSub>
+                            </CollapsibleContent>
+                          </Collapsible>
+                        ) : (
+                          <>
+                            <SidebarMenuButton
+                              href={project.href}
+                              tooltip={project.title}
+                            >
+                              <Icon name={project.icon} />
+                              <span>{project.title}</span>
+                            </SidebarMenuButton>
+                            <SidebarMenuAction showOnHover aria-label="Open menu">
+                              <Icon name="ellipsis" />
+                            </SidebarMenuAction>
+                            <SidebarMenuBadge>{project.count}</SidebarMenuBadge>
+                          </>
+                        )
+                      }
+                    </SidebarMenuItem>
+                  ))
+                }
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <SidebarGroup class="group-data-[collapsible=icon]:hidden">
+            <SidebarGroupLabel>Resources</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {
+                  resources.map((item) => (
+                    <SidebarMenuItem>
+                      <SidebarMenuButton href={item.href}>
+                        <Icon name={item.icon} />
+                        <span>{item.title}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))
+                }
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+
+        <SidebarSeparator />
+
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton tooltip="Sil Veltman">
+                <Icon name="user-2" />
+                <span>Sil Veltman</span>
+              </SidebarMenuButton>
+              <SidebarMenuAction aria-label="Account options">
+                <Icon name="ellipsis" />
+              </SidebarMenuAction>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+
+        <SidebarRail />
+      </AppSidebar>
+
+      <SidebarInset>
+        <header class="bg-background/85 sticky top-0 z-30 flex h-16 items-center gap-3 border-b px-4 backdrop-blur">
+          <SidebarTrigger />
+          <div class="flex min-w-0 flex-1 items-center gap-3">
+            <div class="min-w-0">
+              <p class="text-sm font-semibold">Sidebar Preview</p>
+              <p class="text-muted-foreground text-xs">
+                Collapse to icons, expand with the rail, or use cmd/ctrl+b.
+              </p>
+            </div>
+          </div>
+          <Button variant="outline" size="sm" class="hidden sm:inline-flex">
+            <Icon name="bell" />
+            Notifications
+          </Button>
+          <ThemeToggle />
+        </header>
+
+        <LayoutMain class="min-h-[calc(100svh-4rem)] gap-6 p-4 md:p-6">
+          <section class="grid gap-4 lg:grid-cols-[1.4fr_0.9fr]">
+            <div class="bg-card text-card-foreground rounded-2xl border p-6 shadow-sm">
+              <div class="mb-6 flex flex-wrap items-start justify-between gap-4">
+                <div class="space-y-2">
+                  <p class="text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase">
+                    Astro Playground
+                  </p>
+                  <h1 class="text-3xl font-semibold tracking-tight">
+                    shadcn sidebar, translated into Astro
+                  </h1>
+                  <p class="text-muted-foreground max-w-2xl text-sm leading-6">
+                    This route exists purely as a clean test harness. It uses the
+                    real sidebar primitives, desktop collapse behavior, mobile
+                    off-canvas mode, footer actions, nested project items, and the
+                    inset layout shell.
+                  </p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <Button size="sm">
+                    <Icon name="plus" />
+                    New Project
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    <Icon name="credit-card" />
+                    Billing
+                  </Button>
+                </div>
+              </div>
+
+              <div class="grid gap-4 sm:grid-cols-3">
+                <div class="rounded-xl border bg-sidebar/30 p-4">
+                  <p class="text-muted-foreground text-xs uppercase">Teams</p>
+                  <p class="mt-3 text-2xl font-semibold">12</p>
+                  <p class="text-muted-foreground mt-2 text-sm">
+                    Active workspaces in this preview dataset.
+                  </p>
+                </div>
+                <div class="rounded-xl border bg-sidebar/30 p-4">
+                  <p class="text-muted-foreground text-xs uppercase">Open Tasks</p>
+                  <p class="mt-3 text-2xl font-semibold">38</p>
+                  <p class="text-muted-foreground mt-2 text-sm">
+                    Includes navigation badges and nested project counts.
+                  </p>
+                </div>
+                <div class="rounded-xl border bg-sidebar/30 p-4">
+                  <p class="text-muted-foreground text-xs uppercase">State</p>
+                  <p class="mt-3 text-2xl font-semibold">Live</p>
+                  <p class="text-muted-foreground mt-2 text-sm">
+                    The sidebar state persists in a cookie for desktop.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <aside class="bg-card text-card-foreground rounded-2xl border p-6 shadow-sm">
+              <p class="text-sm font-semibold">What to test</p>
+              <ul class="text-muted-foreground mt-4 space-y-3 text-sm leading-6">
+                <li>Use the trigger in the top bar to collapse and expand.</li>
+                <li>Click the rail at the sidebar edge on desktop.</li>
+                <li>Press <code>cmd+b</code> or <code>ctrl+b</code>.</li>
+                <li>Resize below the `md` breakpoint to test the mobile drawer.</li>
+                <li>Toggle light and dark mode to verify sidebar tokens.</li>
+              </ul>
+            </aside>
+          </section>
+
+          <section class="grid gap-4 xl:grid-cols-3">
+            <div class="bg-card text-card-foreground rounded-2xl border p-5 shadow-sm xl:col-span-2">
+              <div class="mb-4 flex items-center justify-between gap-3">
+                <div>
+                  <h2 class="text-base font-semibold">Implementation Notes</h2>
+                  <p class="text-muted-foreground text-sm">
+                    The provider drives state through data attributes so the Astro
+                    markup stays close to shadcn’s class model.
+                  </p>
+                </div>
+                <Button variant="ghost" size="icon-sm" aria-label="More info">
+                  <Icon name="badge-help" />
+                </Button>
+              </div>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <div class="rounded-xl border p-4">
+                  <p class="text-sm font-medium">Desktop</p>
+                  <p class="text-muted-foreground mt-2 text-sm leading-6">
+                    Supports `icon` and `offcanvas` collapse modes, the rail
+                    trigger, and persistent state through `sidebar_state`.
+                  </p>
+                </div>
+                <div class="rounded-xl border p-4">
+                  <p class="text-sm font-medium">Mobile</p>
+                  <p class="text-muted-foreground mt-2 text-sm leading-6">
+                    Uses the same sidebar content, presented as an off-canvas
+                    drawer with backdrop dismissal and `Escape` handling.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-card text-card-foreground rounded-2xl border p-5 shadow-sm">
+              <h2 class="text-base font-semibold">Quick Actions</h2>
+              <div class="mt-4 grid gap-2">
+                <Button variant="outline" class="justify-start">
+                  <Icon name="search" />
+                  Search Components
+                </Button>
+                <Button variant="outline" class="justify-start">
+                  <Icon name="book-open" />
+                  Open Docs
+                </Button>
+                <Button variant="outline" class="justify-start">
+                  <Icon name="trash-2" />
+                  Reset Draft
+                </Button>
+              </div>
+            </div>
+          </section>
+        </LayoutMain>
+      </SidebarInset>
+    </SidebarProvider>
+  </LayoutBody>
+</Layout>

@@ -1,0 +1,95 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {
+  side?: "left" | "right"
+  variant?: "sidebar" | "floating" | "inset"
+  collapsible?: "offcanvas" | "icon" | "none"
+  dir?: "ltr" | "rtl"
+}
+
+const {
+  class: className,
+  side = "left",
+  variant = "sidebar",
+  collapsible = "offcanvas",
+  dir,
+  ...props
+} = Astro.props
+---
+
+{
+  collapsible === "none" ? (
+    <div
+      data-slot="sidebar"
+      data-state="expanded"
+      data-collapsible="none"
+      data-variant={variant}
+      data-side={side}
+      data-sidebar-collapsible="none"
+      dir={dir}
+      class={cn(
+        "flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground",
+        className
+      )}
+      {...props}
+    >
+      <slot />
+    </div>
+  ) : (
+    <div
+      data-slot="sidebar"
+      data-state="expanded"
+      data-collapsible=""
+      data-variant={variant}
+      data-side={side}
+      data-mobile-open="false"
+      data-sidebar-collapsible={collapsible}
+      dir={dir}
+      class="group peer text-sidebar-foreground"
+      {...props}
+    >
+      <button
+        type="button"
+        aria-hidden="true"
+        tabindex={-1}
+        data-slot="sidebar-backdrop"
+        data-mobile-open="false"
+        class="fixed inset-0 z-40 bg-black/50 opacity-0 transition-opacity duration-200 ease-linear pointer-events-none data-[mobile-open=true]:pointer-events-auto data-[mobile-open=true]:opacity-100 md:hidden"
+      />
+      <div
+        data-slot="sidebar-gap"
+        class={cn(
+          "relative hidden w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear md:block",
+          "group-data-[collapsible=offcanvas]:w-0",
+          "group-data-[side=right]:rotate-180",
+          variant === "floating" || variant === "inset"
+            ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
+            : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)"
+        )}
+      />
+      <div
+        data-slot="sidebar-container"
+        data-side={side}
+        data-mobile-open="false"
+        class={cn(
+          "fixed inset-y-0 z-50 flex w-(--sidebar-width-mobile) transition-[left,right,width,transform] duration-200 ease-linear data-[side=left]:left-0 data-[side=right]:right-0 data-[mobile-open=false]:data-[side=left]:-translate-x-full data-[mobile-open=false]:data-[side=right]:translate-x-full data-[mobile-open=true]:translate-x-0 md:z-10 md:w-(--sidebar-width) md:data-[mobile-open=false]:data-[side=left]:translate-x-0 md:data-[mobile-open=false]:data-[side=right]:translate-x-0 md:data-[mobile-open=true]:translate-x-0 md:data-[side=left]:left-0 md:data-[side=left]:group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)] md:data-[side=right]:right-0 md:data-[side=right]:group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
+          variant === "floating" || variant === "inset"
+            ? "p-2 md:group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
+            : "md:group-data-[collapsible=icon]:w-(--sidebar-width-icon) md:group-data-[side=left]:border-r md:group-data-[side=right]:border-l",
+          className
+        )}
+      >
+        <div
+          data-sidebar="sidebar"
+          data-slot="sidebar-inner"
+          class="flex size-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:shadow-sm group-data-[variant=floating]:ring-1 group-data-[variant=floating]:ring-sidebar-border"
+        >
+          <slot />
+        </div>
+      </div>
+    </div>
+  )
+}
