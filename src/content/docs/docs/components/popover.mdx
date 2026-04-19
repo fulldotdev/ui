@@ -1,10 +1,11 @@
 ---
 title: Popover
-description: A headless popover powered by @data-slot/popover.
+description: Displays rich content in a floating layer, triggered by a button.
 ---
 
 ```astro live
 ---
+import { buttonVariants } from "@/components/ui/button"
 import {
   Popover,
   PopoverClose,
@@ -14,27 +15,56 @@ import {
 ---
 
 <Popover>
-  <PopoverTrigger class="rounded-md border px-3 py-2 text-sm">
-    Open Popover
+  <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
+    Open popover
   </PopoverTrigger>
-  <PopoverContent>
-    <p>Popover content here</p>
-    <PopoverClose class="mt-3 rounded-md border px-3 py-2 text-sm">
+  <PopoverContent class="w-80">
+    <div class="grid gap-1.5">
+      <h4 class="leading-none font-medium">Dimensions</h4>
+      <p class="text-muted-foreground text-sm">
+        Set the dimensions for the layer and its positioning behavior.
+      </p>
+    </div>
+    <PopoverClose
+      class={buttonVariants({ variant: "outline", size: "sm" })}
+    >
       Close
     </PopoverClose>
   </PopoverContent>
 </Popover>
 ```
 
+## About
+
+The `Popover` components in this repo follow the same mental model as the
+shadcn/ui popover, while using `@data-slot/popover` for the runtime behavior.
+The exported pieces are intentionally headless: you bring your own trigger
+styling and structure the content with regular Astro markup.
+
 ## Installation
+
+### Command
+
+```bash
+npx shadcn@latest add @fulldev/popover
+```
+
+### Manual
+
+1. Install the dependency:
 
 ```bash
 npm install @data-slot/popover
 ```
 
+2. Copy the files from `src/components/ui/popover/` into your project.
+
+3. Update the import paths to match your project setup.
+
 ## Usage
 
 ```ts
+import { buttonVariants } from "@/components/ui/button"
 import {
   Popover,
   PopoverClose,
@@ -47,21 +77,275 @@ import {
 
 ```astro
 <Popover>
-  <PopoverTrigger>Trigger</PopoverTrigger>
+  <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
+    Open popover
+  </PopoverTrigger>
   <PopoverContent>
-    Content
-    <PopoverClose>Close</PopoverClose>
+    <div class="grid gap-1.5">
+      <h4 class="leading-none font-medium">Popover title</h4>
+      <p class="text-muted-foreground text-sm">
+        Add any rich content here.
+      </p>
+    </div>
+    <PopoverClose class={buttonVariants({ variant: "outline", size: "sm" })}>
+      Close
+    </PopoverClose>
   </PopoverContent>
 </Popover>
 ```
 
+`PopoverContent` works as the default high-level entry point. If you need
+lower-level control over portaling or positioning, compose it with
+`PopoverPortal` and `PopoverPositioner`.
+
 ```astro
 <Popover>
-  <PopoverTrigger>Trigger</PopoverTrigger>
+  <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
+    Open popover
+  </PopoverTrigger>
   <PopoverPortal>
-    <PopoverPositioner>
-      <PopoverContent>Content</PopoverContent>
+    <PopoverPositioner side="bottom" align="start" sideOffset={8}>
+      <PopoverContent>Custom positioned content</PopoverContent>
     </PopoverPositioner>
   </PopoverPortal>
 </Popover>
 ```
+
+## Composition
+
+Use the following composition to build a `Popover`:
+
+```text
+Popover
+├── PopoverTrigger
+└── PopoverContent
+```
+
+For manual portal composition:
+
+```text
+Popover
+├── PopoverTrigger
+└── PopoverPortal
+    └── PopoverPositioner
+        └── PopoverContent
+```
+
+## Examples
+
+### Basic
+
+A simple popover with a title, supporting copy, and a close action.
+
+```astro live
+---
+import { buttonVariants } from "@/components/ui/button"
+import {
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+---
+
+<Popover>
+  <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
+    Open popover
+  </PopoverTrigger>
+  <PopoverContent class="w-80">
+    <div class="grid gap-1.5">
+      <h4 class="leading-none font-medium">Share project</h4>
+      <p class="text-muted-foreground text-sm">
+        Invite teammates or copy the link below.
+      </p>
+    </div>
+    <div class="rounded-md border px-3 py-2 text-sm">
+      https://ui.full.dev/project/acme-studio
+    </div>
+    <PopoverClose
+      class={buttonVariants({ variant: "outline", size: "sm" })}
+    >
+      Close
+    </PopoverClose>
+  </PopoverContent>
+</Popover>
+```
+
+### Align
+
+Use the `align` prop on `PopoverContent` to control the horizontal alignment.
+
+```astro live
+---
+import { buttonVariants } from "@/components/ui/button"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+---
+
+<div class="flex flex-wrap gap-3">
+  <Popover>
+    <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
+      Start
+    </PopoverTrigger>
+    <PopoverContent align="start" class="w-56">
+      Aligned to the start edge of the trigger.
+    </PopoverContent>
+  </Popover>
+
+  <Popover>
+    <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
+      Center
+    </PopoverTrigger>
+    <PopoverContent align="center" class="w-56">
+      Centered relative to the trigger.
+    </PopoverContent>
+  </Popover>
+
+  <Popover>
+    <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
+      End
+    </PopoverTrigger>
+    <PopoverContent align="end" class="w-56">
+      Aligned to the end edge of the trigger.
+    </PopoverContent>
+  </Popover>
+</div>
+```
+
+### With Form
+
+A popover with form fields inside.
+
+```astro live
+---
+import { Button, buttonVariants } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+---
+
+<Popover>
+  <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
+    Edit dimensions
+  </PopoverTrigger>
+  <PopoverContent class="w-80">
+    <div class="grid gap-1.5">
+      <h4 class="leading-none font-medium">Dimensions</h4>
+      <p class="text-muted-foreground text-sm">
+        Set the dimensions for the layer.
+      </p>
+    </div>
+    <div class="grid gap-3">
+      <div class="grid gap-2">
+        <Label for="popover-width">Width</Label>
+        <Input id="popover-width" defaultValue="100%" />
+      </div>
+      <div class="grid gap-2">
+        <Label for="popover-max-width">Max width</Label>
+        <Input id="popover-max-width" defaultValue="24rem" />
+      </div>
+    </div>
+    <div class="flex justify-end gap-2">
+      <PopoverClose
+        class={buttonVariants({ variant: "outline", size: "sm" })}
+      >
+        Cancel
+      </PopoverClose>
+      <Button size="sm">Save</Button>
+    </div>
+  </PopoverContent>
+</Popover>
+```
+
+### Manual Portal Composition
+
+Use `PopoverPortal` and `PopoverPositioner` when you want explicit control over
+where the content is rendered and how it is positioned.
+
+```astro live
+---
+import { buttonVariants } from "@/components/ui/button"
+import {
+  Popover,
+  PopoverContent,
+  PopoverPortal,
+  PopoverPositioner,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+---
+
+<Popover>
+  <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
+    Open custom popover
+  </PopoverTrigger>
+  <PopoverPortal>
+    <PopoverPositioner side="bottom" align="start" sideOffset={10}>
+      <PopoverContent class="w-72">
+        This popover is composed with an explicit portal and positioner.
+      </PopoverContent>
+    </PopoverPositioner>
+  </PopoverPortal>
+</Popover>
+```
+
+## RTL
+
+The underlying runtime supports directional layout. Apply `dir="rtl"` to a
+parent container to render the popover in right-to-left mode.
+
+```astro live
+---
+import { buttonVariants } from "@/components/ui/button"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+---
+
+<div dir="rtl" class="flex justify-start">
+  <Popover>
+    <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
+      افتح النافذة
+    </PopoverTrigger>
+    <PopoverContent class="w-64">
+      <div class="grid gap-1.5 text-right">
+        <h4 class="leading-none font-medium">إعدادات سريعة</h4>
+        <p class="text-muted-foreground text-sm">
+          يعمل التموضع واتجاه الحركة مع التخطيط من اليمين إلى اليسار.
+        </p>
+      </div>
+    </PopoverContent>
+  </Popover>
+</div>
+```
+
+## API Reference
+
+The `Popover` root forwards the `@data-slot/popover` controller options through
+data attributes:
+
+- `data-default-open`
+- `data-side`
+- `data-align`
+- `data-side-offset`
+- `data-align-offset`
+- `data-avoid-collisions`
+- `data-collision-padding`
+- `data-portal`
+- `data-close-on-click-outside`
+- `data-close-on-escape`
+- `data-position` (deprecated in favor of `side`)
+
+`PopoverContent` and `PopoverPositioner` also accept the positioning attributes
+for lower-level composition. See the
+[`@data-slot/popover`](https://www.npmjs.com/package/@data-slot/popover)
+package and the component source for runtime behavior and slot structure.
