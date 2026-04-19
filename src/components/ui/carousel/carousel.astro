@@ -1,0 +1,246 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import type { EmblaOptionsType } from "embla-carousel"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {
+  opts?: EmblaOptionsType
+  orientation?: "horizontal" | "vertical"
+}
+
+const {
+  class: className,
+  opts,
+  orientation = "horizontal",
+  ...props
+} = Astro.props
+
+const resolvedOpts: EmblaOptionsType = {
+  ...opts,
+  axis: orientation === "horizontal" ? "x" : "y",
+}
+---
+
+<div
+  data-slot="carousel"
+  data-orientation={orientation}
+  data-carousel-options={JSON.stringify(resolvedOpts)}
+  class={cn("group/carousel relative", className)}
+  role="region"
+  aria-roledescription="carousel"
+  {...props}
+>
+  <slot />
+</div>
+
+<script>
+  import EmblaCarousel, {
+    type EmblaCarouselType,
+    type EmblaOptionsType,
+  } from "embla-carousel"
+
+  type CarouselRoot = HTMLElement & {
+    __fulldevCarouselApi?: EmblaCarouselType
+  }
+
+  type CarouselInstance = {
+    cleanup: () => void
+  }
+
+  type CarouselStore = Map<CarouselRoot, CarouselInstance>
+
+  declare global {
+    interface Window {
+      __fulldevCarouselInitialized?: boolean
+      __fulldevCarouselStore?: CarouselStore
+    }
+  }
+
+  if (!window.__fulldevCarouselInitialized) {
+    window.__fulldevCarouselInitialized = true
+    window.__fulldevCarouselStore ??= new Map<CarouselRoot, CarouselInstance>()
+
+    const store = window.__fulldevCarouselStore
+
+    const getDetails = (api: EmblaCarouselType) => ({
+      api,
+      canScrollPrev: api.canScrollPrev(),
+      canScrollNext: api.canScrollNext(),
+      selectedScrollSnap: api.selectedScrollSnap(),
+      scrollSnapList: api.scrollSnapList(),
+    })
+
+    const emit = (
+      root: CarouselRoot,
+      type: "carousel:init" | "carousel:select",
+      api: EmblaCarouselType
+    ) => {
+      root.dispatchEvent(
+        new CustomEvent(type, {
+          detail: getDetails(api),
+        })
+      )
+    }
+
+    const parseOptions = (root: CarouselRoot): EmblaOptionsType => {
+      const rawOptions = root.getAttribute("data-carousel-options")
+
+      if (!rawOptions) {
+        return {}
+      }
+
+      try {
+        return JSON.parse(rawOptions) as EmblaOptionsType
+      } catch {
+        return {}
+      }
+    }
+
+    const syncButton = (button: Element | null, enabled: boolean) => {
+      if (!(button instanceof HTMLButtonElement)) {
+        return
+      }
+
+      if (button.dataset.manualDisabled === "true") {
+        button.disabled = true
+        return
+      }
+
+      button.disabled = !enabled
+    }
+
+    const cleanupDisconnectedCarousels = () => {
+      for (const [root, instance] of store.entries()) {
+        if (document.contains(root)) {
+          continue
+        }
+
+        instance.cleanup()
+        store.delete(root)
+      }
+    }
+
+    const initCarousel = (root: Element) => {
+      if (!(root instanceof HTMLElement) || store.has(root)) {
+        return
+      }
+
+      const carouselRoot = root as CarouselRoot
+      const viewport = carouselRoot.querySelector(
+        '[data-slot="carousel-content"]'
+      )
+      const prevButton = carouselRoot.querySelector(
+        '[data-slot="carousel-previous"]'
+      )
+      const nextButton = carouselRoot.querySelector(
+        '[data-slot="carousel-next"]'
+      )
+
+      if (!(viewport instanceof HTMLElement)) {
+        return
+      }
+
+      const api = EmblaCarousel(viewport, parseOptions(carouselRoot))
+
+      const sync = () => {
+        const details = getDetails(api)
+
+        carouselRoot.dataset.canScrollPrev = details.canScrollPrev
+          ? "true"
+          : "false"
+        carouselRoot.dataset.canScrollNext = details.canScrollNext
+          ? "true"
+          : "false"
+        carouselRoot.dataset.selectedScrollSnap = String(
+          details.selectedScrollSnap
+        )
+
+        syncButton(prevButton, details.canScrollPrev)
+        syncButton(nextButton, details.canScrollNext)
+
+        emit(carouselRoot, "carousel:select", api)
+      }
+
+      const onPrevClick = () => {
+        api.scrollPrev()
+      }
+
+      const onNextClick = () => {
+        api.scrollNext()
+      }
+
+      const onKeyDown = (event: KeyboardEvent) => {
+        const isVertical = carouselRoot.dataset.orientation === "vertical"
+
+        if (!isVertical && event.key === "ArrowLeft") {
+          event.preventDefault()
+          api.scrollPrev()
+        }
+
+        if (!isVertical && event.key === "ArrowRight") {
+          event.preventDefault()
+          api.scrollNext()
+        }
+
+        if (isVertical && event.key === "ArrowUp") {
+          event.preventDefault()
+          api.scrollPrev()
+        }
+
+        if (isVertical && event.key === "ArrowDown") {
+          event.preventDefault()
+          api.scrollNext()
+        }
+      }
+
+      if (prevButton instanceof HTMLElement) {
+        prevButton.addEventListener("click", onPrevClick)
+      }
+
+      if (nextButton instanceof HTMLElement) {
+        nextButton.addEventListener("click", onNextClick)
+      }
+
+      carouselRoot.addEventListener("keydown", onKeyDown, true)
+
+      api.on("reInit", sync)
+      api.on("select", sync)
+
+      carouselRoot.__fulldevCarouselApi = api
+
+      sync()
+      requestAnimationFrame(() => emit(carouselRoot, "carousel:init", api))
+
+      store.set(carouselRoot, {
+        cleanup: () => {
+          api.off("reInit", sync)
+          api.off("select", sync)
+
+          if (prevButton instanceof HTMLElement) {
+            prevButton.removeEventListener("click", onPrevClick)
+          }
+
+          if (nextButton instanceof HTMLElement) {
+            nextButton.removeEventListener("click", onNextClick)
+          }
+
+          carouselRoot.removeEventListener("keydown", onKeyDown, true)
+          delete carouselRoot.__fulldevCarouselApi
+          api.destroy()
+        },
+      })
+    }
+
+    const initCarousels = () => {
+      cleanupDisconnectedCarousels()
+
+      document
+        .querySelectorAll('[data-slot="carousel"]')
+        .forEach((root) => initCarousel(root))
+    }
+
+    initCarousels()
+    document.addEventListener("astro:page-load", initCarousels)
+  }
+</script>
