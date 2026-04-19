@@ -1,0 +1,79 @@
+---
+import type {
+  Align as ComboboxAlign,
+  Side as ComboboxSide,
+} from "@data-slot/combobox"
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {
+  defaultValue?: string
+  placeholder?: string
+  disabled?: boolean
+  required?: boolean
+  name?: string
+  openOnFocus?: boolean
+  autoHighlight?: boolean
+  side?: ComboboxSide
+  align?: ComboboxAlign
+  sideOffset?: number
+  alignOffset?: number
+  avoidCollisions?: boolean
+  collisionPadding?: number
+}
+
+const {
+  class: className,
+  defaultValue,
+  placeholder,
+  disabled,
+  required,
+  name,
+  openOnFocus,
+  autoHighlight,
+  side,
+  align,
+  sideOffset,
+  alignOffset,
+  avoidCollisions,
+  collisionPadding,
+  ...props
+} = Astro.props
+
+const booleanDataAttr = (value?: boolean) =>
+  value === undefined ? undefined : value ? "" : "false"
+---
+
+<div
+  data-slot="combobox"
+  data-default-value={defaultValue}
+  data-placeholder={placeholder}
+  data-disabled={booleanDataAttr(disabled)}
+  data-required={booleanDataAttr(required)}
+  data-name={name}
+  data-open-on-focus={booleanDataAttr(openOnFocus)}
+  data-auto-highlight={booleanDataAttr(autoHighlight)}
+  data-side={side}
+  data-align={align}
+  data-side-offset={sideOffset}
+  data-align-offset={alignOffset}
+  data-avoid-collisions={booleanDataAttr(avoidCollisions)}
+  data-collision-padding={collisionPadding}
+  class={cn("group/combobox relative", className)}
+  {...props}
+>
+  <slot />
+</div>
+
+<script>
+  import { create } from "@data-slot/combobox"
+
+  const initCombobox = () => {
+    create()
+  }
+
+  initCombobox()
+
+  document.addEventListener("astro:page-load", initCombobox)
+</script>

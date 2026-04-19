@@ -1,0 +1,90 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "combobox",
+  "dependencies": [
+    "@data-slot/combobox"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/combobox/combobox.astro",
+      "content": "---\nimport type {\n  Align as ComboboxAlign,\n  Side as ComboboxSide,\n} from \"@data-slot/combobox\"\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {\n  defaultValue?: string\n  placeholder?: string\n  disabled?: boolean\n  required?: boolean\n  name?: string\n  openOnFocus?: boolean\n  autoHighlight?: boolean\n  side?: ComboboxSide\n  align?: ComboboxAlign\n  sideOffset?: number\n  alignOffset?: number\n  avoidCollisions?: boolean\n  collisionPadding?: number\n}\n\nconst {\n  class: className,\n  defaultValue,\n  placeholder,\n  disabled,\n  required,\n  name,\n  openOnFocus,\n  autoHighlight,\n  side,\n  align,\n  sideOffset,\n  alignOffset,\n  avoidCollisions,\n  collisionPadding,\n  ...props\n} = Astro.props\n\nconst booleanDataAttr = (value?: boolean) =>\n  value === undefined ? undefined : value ? \"\" : \"false\"\n---\n\n<div\n  data-slot=\"combobox\"\n  data-default-value={defaultValue}\n  data-placeholder={placeholder}\n  data-disabled={booleanDataAttr(disabled)}\n  data-required={booleanDataAttr(required)}\n  data-name={name}\n  data-open-on-focus={booleanDataAttr(openOnFocus)}\n  data-auto-highlight={booleanDataAttr(autoHighlight)}\n  data-side={side}\n  data-align={align}\n  data-side-offset={sideOffset}\n  data-align-offset={alignOffset}\n  data-avoid-collisions={booleanDataAttr(avoidCollisions)}\n  data-collision-padding={collisionPadding}\n  class={cn(\"group/combobox relative\", className)}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/combobox\"\n\n  const initCombobox = () => {\n    create()\n  }\n\n  initCombobox()\n\n  document.addEventListener(\"astro:page-load\", initCombobox)\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/combobox/combobox-clear.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"button\"> {}\n\nconst { class: className, type = \"button\", ...props } = Astro.props\n---\n\n<button\n  type={type}\n  data-slot=\"combobox-clear\"\n  class={cn(\n    \"border-input dark:bg-input/30 hover:bg-accent hover:text-accent-foreground focus-visible:border-ring focus-visible:ring-ring/50 inline-flex size-8 shrink-0 items-center justify-center rounded-md border bg-transparent shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-3 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/combobox/combobox-content.astro",
+      "content": "---\nimport type {\n  Align as ComboboxAlign,\n  Side as ComboboxSide,\n} from \"@data-slot/combobox\"\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {\n  side?: ComboboxSide\n  align?: ComboboxAlign\n  sideOffset?: number\n  alignOffset?: number\n  avoidCollisions?: boolean\n  collisionPadding?: number\n}\n\nconst {\n  class: className,\n  hidden = true,\n  side,\n  align,\n  sideOffset,\n  alignOffset,\n  avoidCollisions,\n  collisionPadding,\n  ...props\n} = Astro.props\n\nconst booleanDataAttr = (value?: boolean) =>\n  value === undefined ? undefined : value ? \"\" : \"false\"\n---\n\n<div\n  data-slot=\"combobox-content\"\n  data-side={side}\n  data-align={align}\n  data-side-offset={sideOffset}\n  data-align-offset={alignOffset}\n  data-avoid-collisions={booleanDataAttr(avoidCollisions)}\n  data-collision-padding={collisionPadding}\n  hidden={hidden}\n  class={cn(\n    \"bg-popover text-popover-foreground ring-foreground/10 data-[closed]:animate-out data-[closed]:fade-out-0 data-[closed]:zoom-out-95 data-[open]:animate-in data-[open]:fade-in-0 data-[open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2 z-50 max-w-[min(24rem,var(--available-width))] min-w-[var(--anchor-width)] origin-(--transform-origin) overflow-hidden rounded-md shadow-md ring-1 duration-100 outline-none\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/combobox/combobox-empty.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, hidden = true, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"combobox-empty\"\n  hidden={hidden}\n  class={cn(\"text-muted-foreground px-2 py-6 text-center text-sm\", className)}\n  {...props}\n>\n  <slot>No results found.</slot>\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/combobox/combobox-group.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"combobox-group\"\n  class={cn(\"overflow-hidden p-1\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/combobox/combobox-input.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"input\"> {}\n\nconst { class: className, type = \"text\", ...props } = Astro.props\n---\n\n<input\n  type={type}\n  data-slot=\"combobox-input\"\n  class={cn(\n    \"border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 file:text-foreground placeholder:text-muted-foreground dark:bg-input/30 flex h-9 w-full min-w-0 rounded-md border bg-transparent px-2.5 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-3 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-3 md:text-sm\",\n    className\n  )}\n  {...props}\n/>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/combobox/combobox-item-indicator.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"span\"> {}\n\nconst { class: className, hidden = true, ...props } = Astro.props\n---\n\n<span\n  data-slot=\"combobox-item-indicator\"\n  hidden={hidden}\n  class={cn(\"ml-auto flex size-4 items-center justify-center\", className)}\n  {...props}\n>\n  <slot />\n</span>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/combobox/combobox-item.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {\n  value?: string\n  disabled?: boolean\n}\n\nconst { class: className, value, disabled, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"combobox-item\"\n  data-value={value}\n  data-disabled={disabled ? \"\" : undefined}\n  class={cn(\n    \"data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[selected]:font-medium [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/combobox/combobox-label.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"combobox-label\"\n  class={cn(\"text-muted-foreground px-2 py-1.5 text-xs font-medium\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/combobox/combobox-list.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"combobox-list\"\n  class={cn(\"max-h-[18rem] overflow-x-hidden overflow-y-auto p-1\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/combobox/combobox-portal.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div data-slot=\"combobox-portal\" class={cn(className)} {...props}>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/combobox/combobox-positioner.astro",
+      "content": "---\nimport type {\n  Align as ComboboxAlign,\n  Side as ComboboxSide,\n} from \"@data-slot/combobox\"\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {\n  side?: ComboboxSide\n  align?: ComboboxAlign\n  sideOffset?: number\n  alignOffset?: number\n  avoidCollisions?: boolean\n  collisionPadding?: number\n}\n\nconst {\n  class: className,\n  side,\n  align,\n  sideOffset,\n  alignOffset,\n  avoidCollisions,\n  collisionPadding,\n  ...props\n} = Astro.props\n\nconst booleanDataAttr = (value?: boolean) =>\n  value === undefined ? undefined : value ? \"\" : \"false\"\n---\n\n<div\n  data-slot=\"combobox-positioner\"\n  data-side={side}\n  data-align={align}\n  data-side-offset={sideOffset}\n  data-align-offset={alignOffset}\n  data-avoid-collisions={booleanDataAttr(avoidCollisions)}\n  data-collision-padding={collisionPadding}\n  class={cn(\"isolate z-50\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/combobox/combobox-separator.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"combobox-separator\"\n  class={cn(\"bg-border -mx-1 my-1 h-px\", className)}\n  {...props}\n>\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/combobox/combobox-trigger.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"button\"> {}\n\nconst { class: className, type = \"button\", ...props } = Astro.props\n---\n\n<button\n  type={type}\n  data-slot=\"combobox-trigger\"\n  class={cn(\n    \"border-input dark:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 inline-flex shrink-0 items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-3 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/combobox/combobox-value.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"span\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<span\n  data-slot=\"combobox-value\"\n  class={cn(\n    \"data-[placeholder]:text-muted-foreground block truncate\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</span>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/combobox/index.ts",
+      "content": "export { default as Combobox } from \"./combobox.astro\"\nexport { default as ComboboxClear } from \"./combobox-clear.astro\"\nexport { default as ComboboxContent } from \"./combobox-content.astro\"\nexport { default as ComboboxEmpty } from \"./combobox-empty.astro\"\nexport { default as ComboboxGroup } from \"./combobox-group.astro\"\nexport { default as ComboboxInput } from \"./combobox-input.astro\"\nexport { default as ComboboxItem } from \"./combobox-item.astro\"\nexport { default as ComboboxItemIndicator } from \"./combobox-item-indicator.astro\"\nexport { default as ComboboxLabel } from \"./combobox-label.astro\"\nexport { default as ComboboxList } from \"./combobox-list.astro\"\nexport { default as ComboboxPortal } from \"./combobox-portal.astro\"\nexport { default as ComboboxPositioner } from \"./combobox-positioner.astro\"\nexport { default as ComboboxSeparator } from \"./combobox-separator.astro\"\nexport { default as ComboboxTrigger } from \"./combobox-trigger.astro\"\nexport { default as ComboboxValue } from \"./combobox-value.astro\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

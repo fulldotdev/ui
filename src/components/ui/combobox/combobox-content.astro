@@ -1,0 +1,51 @@
+---
+import type {
+  Align as ComboboxAlign,
+  Side as ComboboxSide,
+} from "@data-slot/combobox"
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {
+  side?: ComboboxSide
+  align?: ComboboxAlign
+  sideOffset?: number
+  alignOffset?: number
+  avoidCollisions?: boolean
+  collisionPadding?: number
+}
+
+const {
+  class: className,
+  hidden = true,
+  side,
+  align,
+  sideOffset,
+  alignOffset,
+  avoidCollisions,
+  collisionPadding,
+  ...props
+} = Astro.props
+
+const booleanDataAttr = (value?: boolean) =>
+  value === undefined ? undefined : value ? "" : "false"
+---
+
+<div
+  data-slot="combobox-content"
+  data-side={side}
+  data-align={align}
+  data-side-offset={sideOffset}
+  data-align-offset={alignOffset}
+  data-avoid-collisions={booleanDataAttr(avoidCollisions)}
+  data-collision-padding={collisionPadding}
+  hidden={hidden}
+  class={cn(
+    "group/combobox-content bg-popover text-popover-foreground ring-foreground/10 data-[closed]:animate-out data-[closed]:fade-out-0 data-[closed]:zoom-out-95 data-[open]:animate-in data-[open]:fade-in-0 data-[open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2 z-50 max-h-(--available-height) w-(--anchor-width) max-w-(--available-width) min-w-[calc(var(--anchor-width)+--spacing(7))] origin-(--transform-origin) overflow-hidden rounded-lg shadow-md ring-1 duration-100 outline-none *:data-[slot=combobox-input]:m-1 *:data-[slot=combobox-input]:mb-0",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</div>

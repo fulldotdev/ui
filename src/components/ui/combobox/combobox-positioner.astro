@@ -1,0 +1,46 @@
+---
+import type {
+  Align as ComboboxAlign,
+  Side as ComboboxSide,
+} from "@data-slot/combobox"
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {
+  side?: ComboboxSide
+  align?: ComboboxAlign
+  sideOffset?: number
+  alignOffset?: number
+  avoidCollisions?: boolean
+  collisionPadding?: number
+}
+
+const {
+  class: className,
+  side,
+  align,
+  sideOffset,
+  alignOffset,
+  avoidCollisions,
+  collisionPadding,
+  ...props
+} = Astro.props
+
+const booleanDataAttr = (value?: boolean) =>
+  value === undefined ? undefined : value ? "" : "false"
+---
+
+<div
+  data-slot="combobox-positioner"
+  data-side={side}
+  data-align={align}
+  data-side-offset={sideOffset}
+  data-align-offset={alignOffset}
+  data-avoid-collisions={booleanDataAttr(avoidCollisions)}
+  data-collision-padding={collisionPadding}
+  class={cn("isolate z-50", className)}
+  {...props}
+>
+  <slot />
+</div>
