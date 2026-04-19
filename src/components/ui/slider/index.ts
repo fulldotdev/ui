@@ -1,0 +1,5 @@
+export { default as Slider } from "./slider.astro"
+export { default as SliderControl } from "./slider-control.astro"
+export { default as SliderRange } from "./slider-range.astro"
+export { default as SliderThumb } from "./slider-thumb.astro"
+export { default as SliderTrack } from "./slider-track.astro"

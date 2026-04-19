@@ -1,0 +1,64 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type SliderValue = number | [number, number] | string
+type ThumbAlignment = "center" | "edge" | "edge-client-only"
+
+interface Props extends HTMLAttributes<"div"> {
+  defaultValue?: SliderValue
+  min?: number
+  max?: number
+  step?: number
+  largeStep?: number
+  orientation?: "horizontal" | "vertical"
+  thumbAlignment?: ThumbAlignment
+  disabled?: boolean
+}
+
+const {
+  class: className,
+  defaultValue,
+  min,
+  max,
+  step,
+  largeStep,
+  orientation = "horizontal",
+  thumbAlignment,
+  disabled,
+  ...props
+} = Astro.props
+
+const booleanDataAttr = (value?: boolean) =>
+  value === undefined ? undefined : value ? "" : "false"
+
+const serializedDefaultValue = Array.isArray(defaultValue)
+  ? defaultValue.join(",")
+  : defaultValue
+---
+
+<div
+  data-slot="slider"
+  data-default-value={serializedDefaultValue}
+  data-min={min}
+  data-max={max}
+  data-step={step}
+  data-large-step={largeStep}
+  data-orientation={orientation}
+  data-thumb-alignment={thumbAlignment}
+  data-disabled={booleanDataAttr(disabled)}
+  class={cn(
+    "group/slider relative flex w-full touch-none items-center select-none data-[orientation=vertical]:h-40 data-[orientation=vertical]:w-5 data-[orientation=vertical]:flex-col",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</div>
+
+<script>
+  import { create } from "@data-slot/slider"
+
+  create()
+</script>
