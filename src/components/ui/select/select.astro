@@ -1,0 +1,79 @@
+---
+import type { Align, Position, Side } from "@data-slot/select"
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {
+  defaultValue?: string
+  placeholder?: string
+  disabled?: boolean
+  required?: boolean
+  name?: string
+  position?: Position
+  side?: Side
+  align?: Align
+  sideOffset?: number
+  alignOffset?: number
+  avoidCollisions?: boolean
+  collisionPadding?: number
+  highlightItemOnHover?: boolean
+}
+
+const {
+  class: className,
+  defaultValue,
+  placeholder,
+  disabled,
+  required,
+  name,
+  position,
+  side,
+  align,
+  sideOffset,
+  alignOffset,
+  avoidCollisions,
+  collisionPadding,
+  highlightItemOnHover,
+  ...props
+} = Astro.props
+
+const booleanDataAttr = (value?: boolean) =>
+  value === undefined ? undefined : value ? "" : "false"
+---
+
+<div
+  data-slot="select"
+  data-default-value={defaultValue}
+  data-placeholder={placeholder}
+  data-disabled={booleanDataAttr(disabled)}
+  data-required={booleanDataAttr(required)}
+  data-name={name}
+  data-position={position}
+  data-side={side}
+  data-align={align}
+  data-side-offset={sideOffset}
+  data-align-offset={alignOffset}
+  data-avoid-collisions={booleanDataAttr(avoidCollisions)}
+  data-collision-padding={collisionPadding}
+  data-highlight-item-on-hover={booleanDataAttr(highlightItemOnHover)}
+  class={cn(
+    "group/select relative inline-flex w-full flex-col gap-1.5",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</div>
+
+<script>
+  import { create } from "@data-slot/select"
+
+  const initSelect = () => {
+    create()
+  }
+
+  initSelect()
+
+  document.addEventListener("astro:page-load", initSelect)
+</script>

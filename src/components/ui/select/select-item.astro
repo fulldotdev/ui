@@ -1,0 +1,27 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {
+  value?: string
+  disabled?: boolean
+  label?: string
+}
+
+const { class: className, value, disabled, label, ...props } = Astro.props
+---
+
+<div
+  data-slot="select-item"
+  data-value={value}
+  data-disabled={disabled ? "true" : undefined}
+  data-label={label}
+  class={cn(
+    "data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-none select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-[selected]:font-medium [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</div>

@@ -1,0 +1,51 @@
+---
+import type { Align, Position, Side } from "@data-slot/select"
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {
+  position?: Position
+  side?: Side
+  align?: Align
+  sideOffset?: number
+  alignOffset?: number
+  avoidCollisions?: boolean
+  collisionPadding?: number
+}
+
+const {
+  class: className,
+  hidden = true,
+  position,
+  side,
+  align,
+  sideOffset,
+  alignOffset,
+  avoidCollisions,
+  collisionPadding,
+  ...props
+} = Astro.props
+
+const booleanDataAttr = (value?: boolean) =>
+  value === undefined ? undefined : value ? "" : "false"
+---
+
+<div
+  data-slot="select-content"
+  data-position={position}
+  data-side={side}
+  data-align={align}
+  data-side-offset={sideOffset}
+  data-align-offset={alignOffset}
+  data-avoid-collisions={booleanDataAttr(avoidCollisions)}
+  data-collision-padding={collisionPadding}
+  hidden={hidden}
+  class={cn(
+    "bg-popover text-popover-foreground ring-foreground/10 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[position=popper]:data-[side=bottom]:slide-in-from-top-2 data-[position=popper]:data-[side=top]:slide-in-from-bottom-2 relative isolate z-50 max-h-96 min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-md shadow-md ring-1 duration-100 outline-none data-[align-trigger=true]:animate-none",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</div>
