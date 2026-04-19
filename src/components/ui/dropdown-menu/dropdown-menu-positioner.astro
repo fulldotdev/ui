@@ -1,0 +1,43 @@
+---
+import type { Align, Side } from "@data-slot/dropdown-menu"
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {
+  side?: Side
+  align?: Align
+  sideOffset?: number
+  alignOffset?: number
+  avoidCollisions?: boolean
+  collisionPadding?: number
+}
+
+const {
+  class: className,
+  side,
+  align,
+  sideOffset,
+  alignOffset,
+  avoidCollisions,
+  collisionPadding,
+  ...props
+} = Astro.props
+
+const booleanDataAttr = (value?: boolean) =>
+  value === undefined ? undefined : value ? "" : "false"
+---
+
+<div
+  data-slot="dropdown-menu-positioner"
+  data-side={side}
+  data-align={align}
+  data-side-offset={sideOffset}
+  data-align-offset={alignOffset}
+  data-avoid-collisions={booleanDataAttr(avoidCollisions)}
+  data-collision-padding={collisionPadding}
+  class={cn("isolate z-50", className)}
+  {...props}
+>
+  <slot />
+</div>

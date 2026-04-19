@@ -1,0 +1,71 @@
+---
+import type { Align, Side } from "@data-slot/dropdown-menu"
+import type { HTMLAttributes } from "astro/types"
+
+interface Props extends HTMLAttributes<"div"> {
+  defaultOpen?: boolean
+  defaultValue?: string | null
+  defaultValues?: string[]
+  closeOnClickOutside?: boolean
+  closeOnEscape?: boolean
+  closeOnSelect?: boolean
+  highlightItemOnHover?: boolean
+  side?: Side
+  align?: Align
+  sideOffset?: number
+  alignOffset?: number
+  avoidCollisions?: boolean
+  collisionPadding?: number
+}
+
+const {
+  class: className,
+  defaultOpen,
+  defaultValue,
+  defaultValues,
+  closeOnClickOutside,
+  closeOnEscape,
+  closeOnSelect,
+  highlightItemOnHover,
+  side,
+  align,
+  sideOffset,
+  alignOffset,
+  avoidCollisions,
+  collisionPadding,
+  ...props
+} = Astro.props
+
+const booleanDataAttr = (value?: boolean) =>
+  value === undefined ? undefined : value ? "" : "false"
+
+const defaultValuesAttr =
+  defaultValues === undefined ? undefined : JSON.stringify(defaultValues)
+---
+
+<div
+  data-slot="dropdown-menu"
+  data-default-open={booleanDataAttr(defaultOpen)}
+  data-default-value={defaultValue}
+  data-default-values={defaultValuesAttr}
+  data-close-on-click-outside={booleanDataAttr(closeOnClickOutside)}
+  data-close-on-escape={booleanDataAttr(closeOnEscape)}
+  data-close-on-select={booleanDataAttr(closeOnSelect)}
+  data-highlight-item-on-hover={booleanDataAttr(highlightItemOnHover)}
+  data-side={side}
+  data-align={align}
+  data-side-offset={sideOffset}
+  data-align-offset={alignOffset}
+  data-avoid-collisions={booleanDataAttr(avoidCollisions)}
+  data-collision-padding={collisionPadding}
+  class={className}
+  {...props}
+>
+  <slot />
+</div>
+
+<script>
+  import { create } from "@data-slot/dropdown-menu"
+
+  create()
+</script>

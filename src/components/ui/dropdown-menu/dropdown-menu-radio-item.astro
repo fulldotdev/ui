@@ -1,0 +1,52 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import CheckIcon from "lucide-static/icons/check.svg"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"button"> {
+  value: string
+  defaultChecked?: boolean
+  disabled?: boolean
+  variant?: "default" | "destructive"
+  inset?: boolean
+}
+
+const {
+  class: className,
+  type = "button",
+  value,
+  defaultChecked,
+  disabled,
+  variant,
+  inset,
+  ...props
+} = Astro.props
+
+const booleanDataAttr = (value?: boolean) =>
+  value === undefined ? undefined : value ? "" : "false"
+---
+
+<button
+  data-slot="dropdown-menu-radio-item"
+  data-value={value}
+  data-default-checked={booleanDataAttr(defaultChecked)}
+  data-disabled={booleanDataAttr(disabled)}
+  data-variant={variant}
+  data-inset={booleanDataAttr(inset)}
+  disabled={disabled ? true : undefined}
+  type={type}
+  class={cn(
+    "group/dropdown-menu-radio-item relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm select-none transition-colors outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[inset]:pl-8 data-[variant=destructive]:text-destructive data-[variant=destructive]:data-[highlighted]:bg-destructive/10 data-[variant=destructive]:data-[highlighted]:text-destructive focus-visible:bg-accent focus-visible:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+    className
+  )}
+  {...props}
+>
+  <span
+    data-slot="dropdown-menu-radio-item-indicator"
+    class="pointer-events-none absolute right-2 flex items-center justify-center"
+  >
+    <CheckIcon class="size-4 opacity-0 group-data-[checked]/dropdown-menu-radio-item:opacity-100" />
+  </span>
+  <slot />
+</button>
