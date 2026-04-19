@@ -30,7 +30,6 @@ export default defineConfig({
     "/docs/components/paragraph": "/docs/components/section/",
     "/docs/components/social": "/docs/components/button/",
     "/docs/components/socials": "/docs/components/button/",
-    "/docs/components/switch": "/docs/components/",
     "/docs/components/tagline": "/docs/components/section/",
 
     // structures

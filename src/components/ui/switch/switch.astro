@@ -1,0 +1,66 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+import { switchVariants, type SwitchVariantProps } from "./switch-variants"
+
+interface Props
+  extends HTMLAttributes<"span">, Omit<SwitchVariantProps, "size"> {
+  defaultChecked?: boolean
+  disabled?: boolean
+  readOnly?: boolean
+  required?: boolean
+  name?: string
+  size?: NonNullable<SwitchVariantProps["size"]>
+  value?: string
+  uncheckedValue?: string
+}
+
+const {
+  class: className,
+  defaultChecked,
+  disabled,
+  readOnly,
+  required,
+  name,
+  size = "default",
+  value,
+  uncheckedValue,
+  ...props
+} = Astro.props
+
+const booleanDataAttr = (value?: boolean) =>
+  value === undefined ? undefined : value ? "" : "false"
+
+const initialChecked = defaultChecked === true
+---
+
+<span
+  role="switch"
+  aria-checked={initialChecked ? "true" : "false"}
+  aria-disabled={disabled ? "true" : undefined}
+  aria-readonly={readOnly ? "true" : undefined}
+  aria-required={required ? "true" : undefined}
+  data-slot="switch"
+  data-size={size}
+  data-checked={initialChecked ? "" : undefined}
+  data-unchecked={initialChecked ? undefined : ""}
+  data-default-checked={booleanDataAttr(defaultChecked)}
+  data-disabled={booleanDataAttr(disabled)}
+  data-read-only={booleanDataAttr(readOnly)}
+  data-required={booleanDataAttr(required)}
+  data-name={name}
+  data-value={value}
+  data-unchecked-value={uncheckedValue}
+  class={cn(switchVariants({ size }), className)}
+  {...props}
+>
+  <slot />
+</span>
+
+<script>
+  import { create } from "@data-slot/switch"
+
+  create()
+</script>
