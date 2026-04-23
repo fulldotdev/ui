@@ -18,7 +18,7 @@ export default function (options: Options): AstroIntegration {
   return {
     name: "starter/ui",
     hooks: {
-      "astro:config:setup": ({ updateConfig, injectScript }) => {
+      "astro:config:setup": ({ updateConfig }) => {
         updateConfig({
           site: options.site,
           image: {
