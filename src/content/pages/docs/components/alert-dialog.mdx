@@ -1,0 +1,114 @@
+---
+type: docs
+title: Alert Dialog
+description: A headless destructive confirmation dialog powered by @data-slot/alert-dialog.
+---
+
+```astro live
+---
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogOverlay,
+  AlertDialogPortal,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+---
+
+<AlertDialog data-demo-alert-dialog>
+  <AlertDialogTrigger variant="destructive">
+    Delete project
+  </AlertDialogTrigger>
+  <AlertDialogPortal>
+    <AlertDialogOverlay />
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogMedia>!</AlertDialogMedia>
+        <AlertDialogTitle>Delete project?</AlertDialogTitle>
+        <AlertDialogDescription>
+          This action cannot be undone.
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogAction data-demo-alert-dialog-action>
+          Delete
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialogPortal>
+</AlertDialog>
+
+<script>
+  const root = document.querySelector("[data-demo-alert-dialog]")
+  const action = root?.querySelector("[data-demo-alert-dialog-action]")
+
+  action?.addEventListener("click", () => {
+    root?.dispatchEvent(
+      new CustomEvent("alert-dialog:set", {
+        detail: { open: false },
+      })
+    )
+  })
+</script>
+```
+
+## Installation
+
+```bash
+npm install @data-slot/alert-dialog
+```
+
+## Usage
+
+```ts
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogOverlay,
+  AlertDialogPortal,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+```
+
+```astro
+<AlertDialog>
+  <AlertDialogTrigger variant="destructive">
+    Delete project
+  </AlertDialogTrigger>
+  <AlertDialogPortal>
+    <AlertDialogOverlay />
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogMedia>!</AlertDialogMedia>
+        <AlertDialogTitle>Delete project?</AlertDialogTitle>
+        <AlertDialogDescription>
+          This action cannot be undone.
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogAction>Delete</AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialogPortal>
+</AlertDialog>
+```
+
+`AlertDialogAction` is intentionally just the styled action slot. It does not
+close automatically. Close it explicitly after your confirm action by calling
+the controller or dispatching `alert-dialog:set` with `{ open: false }`.

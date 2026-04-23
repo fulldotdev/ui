@@ -1,0 +1,43 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const variants = cva(
+  [
+    "bg-background relative flex w-full flex-1 flex-col",
+    "peer-data-[variant=floating]:mx-auto peer-data-[variant=floating]:mb-(--header-inset-spacing) peer-data-[variant=floating]:w-[calc(100%-2*var(--gutter,24px))]",
+    "peer-data-[variant=inset]:mx-auto peer-data-[variant=inset]:mb-(--header-inset-spacing) peer-data-[variant=inset]:w-[calc(100%-1rem)] peer-data-[variant=inset]:overflow-hidden peer-data-[variant=inset]:rounded-xl peer-data-[variant=inset]:shadow-sm",
+  ],
+  {
+    variants: {
+      container: {
+        inherit: [
+          "peer-data-[container=contained]:mx-auto",
+          "peer-data-[container=contained]:max-w-[calc(var(--header-width)+1rem)]",
+          "peer-data-[container=full]:max-w-none",
+        ],
+        contained: "mx-auto max-w-[calc(var(--header-width)+1rem)]",
+        full: "max-w-none",
+      },
+    },
+    defaultVariants: {
+      container: "inherit",
+    },
+  }
+)
+
+interface Props extends HTMLAttributes<"main">, VariantProps<typeof variants> {}
+
+const { class: className, container, ...props } = Astro.props
+---
+
+<main
+  data-slot="header-inset"
+  data-container={container}
+  class={cn(variants({ container }), className)}
+  {...props}
+>
+  <slot />
+</main>

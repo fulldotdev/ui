@@ -4,61 +4,100 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-interface Props
-  extends HTMLAttributes<"header">,
-    VariantProps<typeof variants> {}
+type Container = "contained" | "full"
 
-const variants = cva(
-  "relative top-0 z-50 mx-auto flex h-(--header-height) items-center justify-between gap-8 border-b border-transparent px-(--header-px) py-4",
+interface Props extends HTMLAttributes<"header"> {
+  variant?: VariantProps<typeof variants>["variant"]
+  container?: Container
+  sticky?: "auto" | "always" | "never"
+}
+
+const variants = cva("group/header peer relative z-50", {
+  variants: {
+    variant: {
+      default: "w-full",
+      floating:
+        "mx-auto mt-(--header-inset-spacing) w-[calc(100%-2*var(--gutter,24px))]",
+      inset: "w-full",
+    },
+    container: {
+      contained:
+        "data-[variant=floating]:max-w-(--header-width)",
+      full: "max-w-none",
+    },
+    sticky: {
+      always: "sticky",
+      never: "relative",
+    },
+  },
+  compoundVariants: [
+    {
+      sticky: "always",
+      variant: "default",
+      class: "top-0",
+    },
+    {
+      sticky: "always",
+      variant: "floating",
+      class: "top-(--header-inset-spacing)",
+    },
+    {
+      sticky: "always",
+      variant: "inset",
+      class: "top-0",
+    },
+  ],
+  defaultVariants: {
+    variant: "default",
+    container: "contained",
+    sticky: "always",
+  },
+})
+
+const innerVariants = cva(
+  "mx-auto flex h-(--header-height) w-full items-center justify-between gap-8 px-4 lg:px-6",
   {
     variants: {
-      variant: {
-        default: "bg-background sticky w-full",
-        floating: [
-          "w-[calc(100%-2*var(--gutter,24px))] max-w-(--header-width)",
-          "top-2 mt-2 h-[calc(var(--header-height)-var(--spacing)*2)] overflow-hidden rounded-xl",
-          "bg-background border-border sticky border",
-        ],
+      container: {
+        contained: "max-w-(--header-width)",
+        full: "max-w-none",
       },
     },
     defaultVariants: {
-      variant: "default",
+      container: "contained",
     },
   }
 )
 
-const { class: className, variant, ...props } = Astro.props
+const {
+  class: className,
+  variant = "default",
+  container = "contained",
+  sticky = "auto",
+  ...props
+} = Astro.props
+
+const resolvedSticky =
+  sticky === "auto" ? (variant === "default" ? "always" : "never") : sticky
 ---
 
 <header
-  class={cn(variants({ variant }), className)}
+  class={cn(
+    variants({ variant, container, sticky: resolvedSticky }),
+    className
+  )}
+  data-container={container}
   data-slot="header"
   data-variant={variant}
+  data-sticky={resolvedSticky}
   {...props}
 >
-  <slot />
+  <div
+    data-container={container}
+    data-slot="header-inner"
+    data-variant={variant}
+    class={innerVariants({ container })}
+  >
+    <slot />
+  </div>
 </header>
-
-<style is:global>
-  [data-slot="header"] {
-    --header-width: var(--container, var(--breakpoint-xl));
-    --header-px: max(
-      var(--gutter, 24px),
-      calc((100cqw - var(--header-width)) / 2)
-    );
-  }
-
-  [data-slot="header"][data-variant="floating"] {
-    --header-px: calc(var(--spacing) * 6);
-  }
-
-  :root:has([data-slot="header"]) {
-    --header-height: calc(var(--spacing) * 16);
-  }
-
-  @media (min-width: 1024px) {
-    [data-slot="header"][data-variant="floating"] {
-      --header-px: calc(var(--spacing) * 16);
-    }
-  }
-</style>

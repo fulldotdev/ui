@@ -1,0 +1,47 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+interface Props extends HTMLAttributes<"div"> {
+  errors?: Array<{ message?: string } | undefined>
+}
+
+const { class: className, errors, ...props } = Astro.props
+
+const messages = [
+  ...new Set(
+    (errors ?? [])
+      .map((error) => error?.message?.trim())
+      .filter((message): message is string => Boolean(message))
+  ),
+]
+
+const hasDefaultSlot = Astro.slots.has("default")
+const shouldRender = hasDefaultSlot || messages.length > 0
+---
+
+{
+  shouldRender && (
+    <div
+      role="alert"
+      data-slot="field-error"
+      class={cn("text-sm font-normal text-destructive", className)}
+      {...props}
+    >
+      {
+        hasDefaultSlot ? (
+          <slot />
+        ) : messages.length === 1 ? (
+          messages[0]
+        ) : (
+          <ul class="ml-4 flex list-disc flex-col gap-1">
+            {messages.map((message) => (
+              <li>{message}</li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  )
+}

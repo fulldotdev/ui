@@ -1,13 +1,36 @@
 ---
 import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-interface Props extends HTMLAttributes<"main"> {}
+const variants = cva("@container flex flex-col", {
+  variants: {
+    inset: {
+      none: "",
+      contained:
+        "bg-background relative mx-auto mb-2 w-[calc(100%-2*var(--gutter,24px))] max-w-(--header-width) flex-1 overflow-hidden rounded-xl shadow-sm",
+      full: "bg-background relative mx-auto mb-2 w-[calc(100%-2*var(--gutter,24px))] max-w-none flex-1 overflow-hidden rounded-xl shadow-sm",
+    },
+  },
+  defaultVariants: {
+    inset: "none",
+  },
+})
 
-const { class: className, ...props } = Astro.props
+interface Props extends HTMLAttributes<"main">, VariantProps<typeof variants> {
+  as?: "div" | "main"
+}
+
+const { as = "main", class: className, inset, ...props } = Astro.props
+const Tag = as
 ---
 
-<main class={cn("flex flex-col", className)} data-slot="layout-main" {...props}>
+<Tag
+  data-inset={inset === "none" ? undefined : inset}
+  data-slot="layout-main"
+  class={cn(variants({ inset }), className)}
+  {...props}
+>
   <slot />
-</main>
+</Tag>

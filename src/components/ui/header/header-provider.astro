@@ -1,0 +1,34 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import { Sheet } from "@/components/ui/sheet"
+
+const HEADER_HEIGHT = "4rem"
+const HEADER_INSET_SPACING = "0.5rem"
+const HEADER_WIDTH = "var(--container, var(--breakpoint-xl))"
+
+interface Props extends HTMLAttributes<"div"> {}
+
+const { class: className, style, ...props } = Astro.props
+
+const resolvedStyle = [
+  `--header-height: ${HEADER_HEIGHT}`,
+  `--header-inset-spacing: ${HEADER_INSET_SPACING}`,
+  `--header-width: ${HEADER_WIDTH}`,
+  typeof style === "string" ? style : undefined,
+]
+  .filter(Boolean)
+  .join("; ")
+---
+
+<Sheet>
+  <div
+    data-slot="header-wrapper"
+    style={resolvedStyle}
+    class={cn("flex w-full flex-col", className)}
+    {...props}
+  >
+    <slot />
+  </div>
+</Sheet>

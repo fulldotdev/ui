@@ -1,9 +1,8 @@
-import { docsLoader } from "@astrojs/starlight/loaders"
-import { docsSchema } from "@astrojs/starlight/schema"
 import { defineCollection } from "astro:content"
 import { glob } from "astro/loaders"
 
-import { page } from "@/lib/schemas"
+import { globalSchema } from "@/schemas/global"
+import { pageSchema } from "@/schemas/page"
 
 export const collections = {
   pages: defineCollection({
@@ -11,18 +10,13 @@ export const collections = {
       pattern: "**/[^_]*.{md,mdx}",
       base: "src/content/pages",
     }),
-    schema: page,
+    schema: pageSchema,
   }),
-  layouts: defineCollection({
+  globals: defineCollection({
     loader: glob({
       pattern: "**/[^_]*.{yaml,yml,json}",
-      base: "src/content/layouts",
+      base: "src/content/globals",
     }),
-    schema: page,
-  }),
-  // Starlight docs
-  docs: defineCollection({
-    loader: docsLoader(),
-    schema: docsSchema(),
+    schema: globalSchema,
   }),
 }

@@ -1,37 +1,42 @@
 ---
 import { getCollection, getEntry, render } from "astro:content"
 
-import Layout from "@/components/layout.astro"
+import Docs from "@/components/layouts/docs.astro"
+import Home from "@/components/layouts/home.astro"
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages")
   return pages.map((page) => {
+    const route =
+      page.id === "index"
+        ? undefined
+        : page.id.endsWith("/index")
+          ? page.id.slice(0, -"/index".length)
+          : page.id
+
     return {
       params: {
-        page: page.id === "index" ? undefined : page.id,
+        page: route,
       },
       props: page,
     }
   })
 }
 
-const page = Astro.props
-const { layout } = page.data
+const page = Astro.props.data
+const type = page.type
 const { Content } = await render(Astro.props)
-
-const indexLayout = await getEntry("layouts", "index")
-const pageLayout = layout ? await getEntry("layouts", layout) : undefined
+const global = (await getEntry("globals", Astro.currentLocale || "en"))?.data
 ---
 
-<Layout
-  {...indexLayout?.data}
-  {...pageLayout?.data}
-  {...page.data}
-  sections={[
-    ...(page.data?.sections || []),
-    ...(pageLayout?.data?.sections || []),
-    ...(indexLayout?.data?.sections || []),
-  ]}
->
-  <Content />
-</Layout>
+{
+  type === "home" ? (
+    <Home global={global} page={page}>
+      <Content />
+    </Home>
+  ) : type === "docs" ? (
+    <Docs global={global} page={{ ...page, id: Astro.props.id }}>
+      <Content />
+    </Docs>
+  ) : null
+}

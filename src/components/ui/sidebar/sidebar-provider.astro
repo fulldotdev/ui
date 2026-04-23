@@ -79,6 +79,24 @@ const resolvedStyle = [
       value instanceof HTMLElement &&
       value.dataset.slot === "sidebar-wrapper"
 
+    const isDesktopSidebar = (value) =>
+      value instanceof HTMLElement &&
+      value.dataset.slot === "sidebar" &&
+      value.dataset.mobile !== "true"
+
+    const isMobileSheet = (value) =>
+      value instanceof HTMLElement && value.dataset.sidebar === "sheet"
+
+    const getDesktopSidebars = (provider) =>
+      Array.from(provider.querySelectorAll("[data-slot='sidebar']")).filter(
+        isDesktopSidebar
+      )
+
+    const getMobileSheets = (provider) =>
+      Array.from(provider.querySelectorAll("[data-sidebar='sheet']")).filter(
+        isMobileSheet
+      )
+
     const getSidebarState = (provider) => {
       const controlledOpen = provider.dataset.open
       if (controlledOpen === "true" || controlledOpen === "false") {
@@ -94,27 +112,10 @@ const resolvedStyle = [
     }
 
     const hasCollapsibleSidebar = (provider) =>
-      Array.from(provider.querySelectorAll("[data-slot='sidebar']")).some(
+      getDesktopSidebars(provider).some(
         (sidebar) =>
-          sidebar instanceof HTMLElement &&
           (sidebar.dataset.sidebarCollapsible ?? "offcanvas") !== "none"
-      )
-
-    const syncBodyScrollLock = () => {
-      const hasOpenMobileSidebar = Array.from(
-        document.querySelectorAll("[data-slot='sidebar-wrapper']")
-      ).some((wrapper) => {
-        if (!(wrapper instanceof HTMLElement)) return false
-        return Array.from(wrapper.querySelectorAll("[data-slot='sidebar']")).some(
-          (sidebar) =>
-            sidebar instanceof HTMLElement &&
-            sidebar.dataset.mobileOpen === "true"
-        )
-      })
-
-      document.body.style.overflow =
-        hasOpenMobileSidebar && !desktopMedia.matches ? "hidden" : ""
-    }
+      ) || getMobileSheets(provider).length > 0
 
     const syncProvider = (provider) => {
       const state = providerState.get(provider)
@@ -123,12 +124,9 @@ const resolvedStyle = [
       const desktopState = state.open ? "expanded" : "collapsed"
       provider.dataset.desktopState = desktopState
 
-      provider.querySelectorAll("[data-slot='sidebar']").forEach((sidebar) => {
-        if (!(sidebar instanceof HTMLElement)) return
-
+      getDesktopSidebars(provider).forEach((sidebar) => {
         const collapsible = sidebar.dataset.sidebarCollapsible ?? "offcanvas"
         sidebar.dataset.state = desktopState
-        sidebar.dataset.mobileOpen = state.openMobile ? "true" : "false"
         sidebar.dataset.collapsible =
           collapsible === "none"
             ? "none"
@@ -136,15 +134,6 @@ const resolvedStyle = [
               ? ""
               : collapsible
       })
-
-      provider
-        .querySelectorAll(
-          "[data-slot='sidebar-backdrop'], [data-slot='sidebar-container']"
-        )
-        .forEach((element) => {
-          if (!(element instanceof HTMLElement)) return
-          element.dataset.mobileOpen = state.openMobile ? "true" : "false"
-        })
 
       provider
         .querySelectorAll("[data-sidebar='trigger'], [data-sidebar='rail']")
@@ -172,15 +161,22 @@ const resolvedStyle = [
             button.removeAttribute("title")
           }
         })
-
-      syncBodyScrollLock()
     }
 
-    const closeMobile = (provider) => {
+    const setMobileOpen = (provider, openMobile) => {
       const state = providerState.get(provider)
-      if (!state || !state.openMobile) return
+      if (!state || state.openMobile === openMobile) return
 
-      state.openMobile = false
+      state.openMobile = openMobile
+
+      getMobileSheets(provider).forEach((sheet) => {
+        sheet.dispatchEvent(
+          new CustomEvent("sheet:set", {
+            detail: { open: openMobile },
+          })
+        )
+      })
+
       syncProvider(provider)
     }
 
@@ -196,7 +192,8 @@ const resolvedStyle = [
           SIDEBAR_COOKIE_MAX_AGE
         )
       } else {
-        state.openMobile = !state.openMobile
+        setMobileOpen(provider, !state.openMobile)
+        return
       }
 
       syncProvider(provider)
@@ -219,13 +216,18 @@ const resolvedStyle = [
           control.addEventListener("click", () => toggleProvider(provider))
         })
 
-      provider
-        .querySelectorAll("[data-slot='sidebar-backdrop']")
-        .forEach((backdrop) => {
-          if (!(backdrop instanceof HTMLElement)) return
+      getMobileSheets(provider).forEach((sheet) => {
+        sheet.addEventListener("sheet:change", (event) => {
+          const nextOpen = event.detail?.open
+          if (typeof nextOpen !== "boolean") return
 
-          backdrop.addEventListener("click", () => closeMobile(provider))
+          const state = providerState.get(provider)
+          if (!state) return
+
+          state.openMobile = nextOpen
+          syncProvider(provider)
         })
+      })
 
       syncProvider(provider)
     }
@@ -265,24 +267,19 @@ const resolvedStyle = [
       toggleProvider(provider)
     })
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key !== "Escape" || desktopMedia.matches) return
-
-      const provider = getActiveProvider()
-      if (!provider) return
-
-      closeMobile(provider)
-    })
-
     const syncAllProviders = () => {
       document
         .querySelectorAll("[data-slot='sidebar-wrapper']")
         .forEach((provider) => {
           if (!isProvider(provider)) return
+
+          const state = providerState.get(provider)
+          if (state && desktopMedia.matches && state.openMobile) {
+            setMobileOpen(provider, false)
+          }
+
           syncProvider(provider)
         })
-
-      syncBodyScrollLock()
     }
 
     if (typeof desktopMedia.addEventListener === "function") {

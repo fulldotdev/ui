@@ -2,6 +2,13 @@
 import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet"
 
 interface Props extends HTMLAttributes<"div"> {
   side?: "left" | "right"
@@ -31,7 +38,7 @@ const {
       data-sidebar-collapsible="none"
       dir={dir}
       class={cn(
-        "flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground",
+        "bg-sidebar text-sidebar-foreground flex h-full w-(--sidebar-width) flex-col",
         className
       )}
       {...props}
@@ -39,57 +46,72 @@ const {
       <slot />
     </div>
   ) : (
-    <div
-      data-slot="sidebar"
-      data-state="expanded"
-      data-collapsible=""
-      data-variant={variant}
-      data-side={side}
-      data-mobile-open="false"
-      data-sidebar-collapsible={collapsible}
-      dir={dir}
-      class="group peer text-sidebar-foreground"
-      {...props}
-    >
-      <button
-        type="button"
-        aria-hidden="true"
-        tabindex={-1}
-        data-slot="sidebar-backdrop"
-        data-mobile-open="false"
-        class="fixed inset-0 z-40 bg-black/50 opacity-0 transition-opacity duration-200 ease-linear pointer-events-none data-[mobile-open=true]:pointer-events-auto data-[mobile-open=true]:opacity-100 md:hidden"
-      />
+    <>
+      <Sheet data-sidebar="sheet">
+        <SheetContent
+          dir={dir}
+          side={side}
+          showCloseButton={false}
+          data-sidebar="sidebar"
+          data-slot="sidebar"
+          data-mobile="true"
+          class={cn(
+            "bg-sidebar text-sidebar-foreground w-(--sidebar-width-mobile) p-0 sm:max-w-(--sidebar-width-mobile) md:hidden",
+            className
+          )}
+        >
+          <SheetHeader class="sr-only">
+            <SheetTitle>Sidebar</SheetTitle>
+            <SheetDescription>Displays the mobile sidebar.</SheetDescription>
+          </SheetHeader>
+          <div class="flex h-full w-full flex-col">
+            <slot />
+          </div>
+        </SheetContent>
+      </Sheet>
+
       <div
-        data-slot="sidebar-gap"
-        class={cn(
-          "relative hidden w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear md:block",
-          "group-data-[collapsible=offcanvas]:w-0",
-          "group-data-[side=right]:rotate-180",
-          variant === "floating" || variant === "inset"
-            ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
-            : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)"
-        )}
-      />
-      <div
-        data-slot="sidebar-container"
+        data-slot="sidebar"
+        data-state="expanded"
+        data-collapsible=""
+        data-variant={variant}
         data-side={side}
-        data-mobile-open="false"
-        class={cn(
-          "fixed inset-y-0 z-50 flex w-(--sidebar-width-mobile) transition-[left,right,width,transform] duration-200 ease-linear data-[side=left]:left-0 data-[side=right]:right-0 data-[mobile-open=false]:data-[side=left]:-translate-x-full data-[mobile-open=false]:data-[side=right]:translate-x-full data-[mobile-open=true]:translate-x-0 md:z-10 md:w-(--sidebar-width) md:data-[mobile-open=false]:data-[side=left]:translate-x-0 md:data-[mobile-open=false]:data-[side=right]:translate-x-0 md:data-[mobile-open=true]:translate-x-0 md:data-[side=left]:left-0 md:data-[side=left]:group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)] md:data-[side=right]:right-0 md:data-[side=right]:group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
-          variant === "floating" || variant === "inset"
-            ? "p-2 md:group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
-            : "md:group-data-[collapsible=icon]:w-(--sidebar-width-icon) md:group-data-[side=left]:border-r md:group-data-[side=right]:border-l",
-          className
-        )}
+        data-sidebar-collapsible={collapsible}
+        dir={dir}
+        class="group peer text-sidebar-foreground hidden md:block"
+        {...props}
       >
         <div
-          data-sidebar="sidebar"
-          data-slot="sidebar-inner"
-          class="flex size-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:shadow-sm group-data-[variant=floating]:ring-1 group-data-[variant=floating]:ring-sidebar-border"
+          data-slot="sidebar-gap"
+          class={cn(
+            "relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear",
+            "group-data-[collapsible=offcanvas]:w-0",
+            "group-data-[side=right]:rotate-180",
+            variant === "floating" || variant === "inset"
+              ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
+              : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)"
+          )}
+        />
+        <div
+          data-slot="sidebar-container"
+          data-side={side}
+          class={cn(
+            "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear data-[side=left]:left-0 data-[side=left]:group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)] data-[side=right]:right-0 data-[side=right]:group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)] md:flex",
+            variant === "floating" || variant === "inset"
+              ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
+              : "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l",
+            className
+          )}
         >
-          <slot />
+          <div
+            data-sidebar="sidebar"
+            data-slot="sidebar-inner"
+            class="bg-sidebar group-data-[variant=floating]:ring-sidebar-border flex size-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:shadow-sm group-data-[variant=floating]:ring-1"
+          >
+            <slot />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

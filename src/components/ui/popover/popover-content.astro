@@ -14,11 +14,13 @@ interface Props extends HTMLAttributes<"div"> {
   alignOffset?: number
   avoidCollisions?: boolean
   collisionPadding?: number
-  position?: PopoverPosition
+  /** @deprecated Use `side` instead. */
+  position?: PopoverSide
 }
 
-/** @deprecated Use `PopoverSide` and the `side` prop instead. */
-type PopoverPosition = PopoverSide
+type PopoverContentInternalProps = Omit<Props, "position"> & {
+  position?: PopoverSide
+}
 
 const {
   class: className,
@@ -31,7 +33,7 @@ const {
   collisionPadding,
   position,
   ...props
-} = Astro.props
+} = Astro.props as PopoverContentInternalProps
 
 const booleanDataAttr = (value?: boolean) =>
   value === undefined ? undefined : value ? "" : "false"

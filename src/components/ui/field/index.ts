@@ -1,6 +1,7 @@
 export { default as Field } from "./field.astro"
 export { default as FieldContent } from "./field-content.astro"
 export { default as FieldDescription } from "./field-description.astro"
+export { default as FieldError } from "./field-error.astro"
 export { default as FieldGroup } from "./field-group.astro"
 export { default as FieldLabel } from "./field-label.astro"
 export { default as FieldLegend } from "./field-legend.astro"

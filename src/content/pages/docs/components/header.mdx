@@ -1,0 +1,222 @@
+---
+type: docs
+title: Header
+description: A responsive site header with grouped content, a mobile menu, and an optional inset content surface.
+---
+
+## Installation
+
+To install the header component, run the following command:
+
+```bash
+npx shadcn@latest add @fulldev/header
+```
+
+## Usage
+
+```ts
+import { Button } from "@/components/ui/button"
+import {
+  Header,
+  HeaderActions,
+  HeaderGroup,
+  HeaderInset,
+  HeaderMobile,
+  HeaderProvider,
+  HeaderTrigger,
+} from "@/components/ui/header"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
+```
+
+```astro
+<HeaderProvider>
+  <Header variant="inset" container="contained">
+    <HeaderGroup>
+      <Logo href="/">
+        <LogoText>fulldev/ui</LogoText>
+      </Logo>
+    </HeaderGroup>
+
+    <HeaderGroup side="end">
+      <HeaderActions class="max-lg:hidden">
+        <Button size="sm" variant="ghost">Sign In</Button>
+        <Button size="sm">Sign Up</Button>
+      </HeaderActions>
+      <HeaderTrigger class="lg:hidden" />
+    </HeaderGroup>
+
+    <HeaderMobile>
+      <nav class="flex flex-col gap-4">
+        <a href="/">Home</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/docs">Docs</a>
+      </nav>
+    </HeaderMobile>
+  </Header>
+
+  <HeaderInset>
+    <main class="p-6 lg:p-10">
+      <h1 class="text-2xl font-semibold">Content</h1>
+    </main>
+  </HeaderInset>
+</HeaderProvider>
+```
+
+## Examples
+
+### Basic Groups
+
+```astro live
+---
+import { Button } from "@/components/ui/button"
+import {
+  Header,
+  HeaderActions,
+  HeaderGroup,
+  HeaderMobile,
+  HeaderProvider,
+  HeaderTrigger,
+} from "@/components/ui/header"
+import { Logo, LogoText } from "@/components/ui/logo"
+---
+
+<HeaderProvider>
+  <Header>
+    <HeaderGroup>
+      <Logo href="/">
+        <LogoText>fulldev/ui</LogoText>
+      </Logo>
+    </HeaderGroup>
+
+    <HeaderGroup side="end">
+      <HeaderActions class="max-lg:hidden">
+        <Button size="sm" variant="ghost">Sign In</Button>
+        <Button size="sm">Sign Up</Button>
+      </HeaderActions>
+      <HeaderTrigger class="lg:hidden" />
+    </HeaderGroup>
+
+    <HeaderMobile>
+      <div class="flex flex-col gap-4">
+        <a href="/">Home</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/docs">Docs</a>
+      </div>
+    </HeaderMobile>
+  </Header>
+</HeaderProvider>
+```
+
+### Inset Surface
+
+```astro live
+---
+import {
+  Header,
+  HeaderGroup,
+  HeaderInset,
+  HeaderProvider,
+} from "@/components/ui/header"
+import { Logo, LogoText } from "@/components/ui/logo"
+---
+
+<HeaderProvider>
+  <Header variant="inset" container="contained">
+    <HeaderGroup>
+      <Logo href="/">
+        <LogoText>fulldev/ui</LogoText>
+      </Logo>
+    </HeaderGroup>
+  </Header>
+
+  <HeaderInset>
+    <div class="flex min-h-48 items-center justify-center p-8 text-sm text-muted-foreground">
+      Place just main content here, or put your footer inside this inset too.
+    </div>
+  </HeaderInset>
+</HeaderProvider>
+```
+
+### Full-Width Container
+
+```astro live
+---
+import {
+  Header,
+  HeaderGroup,
+  HeaderInset,
+  HeaderProvider,
+} from "@/components/ui/header"
+import { Logo, LogoText } from "@/components/ui/logo"
+---
+
+<HeaderProvider>
+  <Header variant="inset" container="full">
+    <HeaderGroup>
+      <Logo href="/">
+        <LogoText>fulldev/ui</LogoText>
+      </Logo>
+    </HeaderGroup>
+  </Header>
+
+  <HeaderInset>
+    <div class="flex min-h-48 items-center justify-center p-8 text-sm text-muted-foreground">
+      Full-width mode removes the max-width clamp but keeps the outer gutter.
+    </div>
+  </HeaderInset>
+</HeaderProvider>
+```
+
+### Floating
+
+```astro live
+---
+import { Button } from "@/components/ui/button"
+import {
+  Header,
+  HeaderActions,
+  HeaderGroup,
+  HeaderMobile,
+  HeaderProvider,
+  HeaderTrigger,
+} from "@/components/ui/header"
+import { Logo, LogoText } from "@/components/ui/logo"
+---
+
+<HeaderProvider>
+  <Header variant="floating">
+    <HeaderGroup>
+      <Logo href="/">
+        <LogoText>fulldev/ui</LogoText>
+      </Logo>
+    </HeaderGroup>
+
+    <HeaderGroup side="end">
+      <HeaderActions class="max-lg:hidden">
+        <Button size="sm" variant="ghost">Sign In</Button>
+        <Button size="sm">Sign Up</Button>
+      </HeaderActions>
+      <HeaderTrigger class="lg:hidden" />
+    </HeaderGroup>
+
+    <HeaderMobile>
+      <div class="flex flex-col gap-4">
+        <a href="/">Home</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/docs">Docs</a>
+      </div>
+    </HeaderMobile>
+  </Header>
+</HeaderProvider>
+```
+
+## Notes
+
+- Use `HeaderProvider` whenever you need `HeaderTrigger` and `HeaderMobile`.
+- `HeaderProvider` is intentionally thin. It just provides the shared header width and wraps the sheet-based mobile menu.
+- `Header` controls the sticky defaults and layout variants.
+- `Header` accepts `container="contained|full"` to switch between constrained and full-width layouts.
+- `HeaderInset` follows the header variant through peer data and inherits the header container mode when `container` is omitted.
+- `HeaderInset` is flexible: wrap only `main`, or wrap `main` and `Footer`.
+- `variant="default"` is sticky by default. `floating` and `inset` are non-sticky by default.
+- `full` removes the max-width constraint while preserving the page gutter. Use class overrides if you need true edge-to-edge rendering.

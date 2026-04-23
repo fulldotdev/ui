@@ -1,3 +1,8 @@
+export { default as HeaderProvider } from "./header-provider.astro"
 export { default as Header } from "./header.astro"
+export { default as HeaderGroup } from "./header-group.astro"
+export { default as HeaderTrigger } from "./header-trigger.astro"
+export { default as HeaderMobile } from "./header-mobile.astro"
+export { default as HeaderInset } from "./header-inset.astro"
 export { default as HeaderActions } from "./header-actions.astro"
 export { default as HeaderContent } from "./header-content.astro"

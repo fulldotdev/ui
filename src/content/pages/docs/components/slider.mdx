@@ -1,0 +1,294 @@
+---
+type: docs
+title: Slider
+description: An input where the user selects a value from within a given range.
+---
+
+```astro live
+---
+import {
+  Slider,
+  SliderRange,
+  SliderThumb,
+  SliderTrack,
+} from "@/components/ui/slider"
+---
+
+<Slider
+  defaultValue={33}
+  max={100}
+  step={1}
+  thumbAlignment="edge"
+  class="w-full max-w-md"
+>
+  <SliderTrack>
+    <SliderRange />
+  </SliderTrack>
+  <SliderThumb />
+</Slider>
+```
+
+## Installation
+
+### Command
+
+```bash
+npx shadcn@latest add @fulldev/slider
+```
+
+### Manual
+
+1. Install the following dependency:
+
+```bash
+npm install @data-slot/slider
+```
+
+2. Copy the files from `src/components/ui/slider/` into your project.
+
+3. Update the import paths to match your project setup.
+
+## Usage
+
+```astro
+---
+import {
+  Slider,
+  SliderRange,
+  SliderThumb,
+  SliderTrack,
+} from "@/components/ui/slider"
+---
+```
+
+```astro
+<Slider defaultValue={33} max={100} step={1}>
+  <SliderTrack>
+    <SliderRange />
+  </SliderTrack>
+  <SliderThumb />
+</Slider>
+```
+
+Unlike the React shadcn/Base UI example, this Astro wrapper keeps the authored
+slot structure from `@data-slot/slider`, so `SliderTrack`, `SliderRange`, and
+`SliderThumb` remain explicit in markup.
+
+## Examples
+
+### Range
+
+Use an array with two values for a range slider.
+
+```astro live
+---
+import {
+  Slider,
+  SliderRange,
+  SliderThumb,
+  SliderTrack,
+} from "@/components/ui/slider"
+---
+
+<Slider
+  defaultValue={[25, 75]}
+  max={100}
+  step={1}
+  thumbAlignment="edge"
+  class="w-full max-w-md"
+>
+  <SliderTrack>
+    <SliderRange />
+  </SliderTrack>
+  <SliderThumb label="Minimum value" />
+  <SliderThumb label="Maximum value" />
+</Slider>
+```
+
+### Multiple Thumbs
+
+In this Astro wrapper, multiple thumbs map to the supported two-thumb range
+mode from `@data-slot/slider`.
+
+```astro live
+---
+import {
+  Slider,
+  SliderRange,
+  SliderThumb,
+  SliderTrack,
+} from "@/components/ui/slider"
+---
+
+<Slider
+  defaultValue={[15, 85]}
+  max={100}
+  step={5}
+  thumbAlignment="edge"
+  class="w-full max-w-md"
+>
+  <SliderTrack>
+    <SliderRange />
+  </SliderTrack>
+  <SliderThumb label="Start value" />
+  <SliderThumb label="End value" />
+</Slider>
+```
+
+### Vertical
+
+Use `orientation="vertical"` for a vertical slider.
+
+```astro live
+---
+import {
+  Slider,
+  SliderRange,
+  SliderThumb,
+  SliderTrack,
+} from "@/components/ui/slider"
+---
+
+<div class="flex h-48 items-center">
+  <Slider
+    orientation="vertical"
+    defaultValue={60}
+    max={100}
+    step={5}
+    thumbAlignment="edge"
+    class="h-full"
+  >
+    <SliderTrack>
+      <SliderRange />
+    </SliderTrack>
+    <SliderThumb />
+  </Slider>
+</div>
+```
+
+### Controlled
+
+This wrapper does not expose a React-style controlled prop API. Use the runtime
+events from `@data-slot/slider` for programmatic control.
+
+```astro live
+---
+import { Button } from "@/components/ui/button"
+import {
+  Slider,
+  SliderRange,
+  SliderThumb,
+  SliderTrack,
+} from "@/components/ui/slider"
+---
+
+<div class="w-full max-w-md space-y-4" data-demo-slider-controlled>
+  <Slider
+    defaultValue={40}
+    max={100}
+    step={10}
+    thumbAlignment="edge"
+    data-demo-slider-controlled-root
+  >
+    <SliderTrack>
+      <SliderRange />
+    </SliderTrack>
+    <SliderThumb />
+  </Slider>
+
+  <div class="flex flex-wrap gap-2">
+    <Button data-demo-set-value="20" size="sm" variant="outline">20</Button>
+    <Button data-demo-set-value="50" size="sm" variant="outline">50</Button>
+    <Button data-demo-set-value="80" size="sm" variant="outline">80</Button>
+  </div>
+
+  <p class="text-muted-foreground text-sm" data-demo-slider-value>
+    Value: 40
+  </p>
+</div>
+
+<script>
+  const demo = document.querySelector("[data-demo-slider-controlled]")
+  const root = demo?.querySelector("[data-demo-slider-controlled-root]")
+  const output = demo?.querySelector("[data-demo-slider-value]")
+  const buttons = demo?.querySelectorAll("[data-demo-set-value]") ?? []
+
+  const renderValue = (value) => {
+    const label = Array.isArray(value) ? value.join(", ") : value
+    if (output) output.textContent = `Value: ${label}`
+  }
+
+  root?.addEventListener("slider:change", (event) => {
+    renderValue(event.detail.value)
+  })
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const value = Number(button.getAttribute("data-demo-set-value"))
+
+      root?.dispatchEvent(
+        new CustomEvent("slider:set", {
+          detail: { value },
+        })
+      )
+    })
+  })
+</script>
+```
+
+### Disabled
+
+Use the `disabled` prop to disable the slider.
+
+```astro live
+---
+import {
+  Slider,
+  SliderRange,
+  SliderThumb,
+  SliderTrack,
+} from "@/components/ui/slider"
+---
+
+<Slider
+  defaultValue={50}
+  disabled
+  thumbAlignment="edge"
+  class="w-full max-w-md"
+>
+  <SliderTrack>
+    <SliderRange />
+  </SliderTrack>
+  <SliderThumb />
+</Slider>
+```
+
+## RTL
+
+To preview RTL behavior, apply `dir="rtl"` to a parent element.
+
+```astro live
+---
+import {
+  Slider,
+  SliderRange,
+  SliderThumb,
+  SliderTrack,
+} from "@/components/ui/slider"
+---
+
+<div dir="rtl" class="w-full max-w-md">
+  <Slider defaultValue={70} max={100} step={1} thumbAlignment="edge">
+    <SliderTrack>
+      <SliderRange />
+    </SliderTrack>
+    <SliderThumb />
+  </Slider>
+</div>
+```
+
+## API Reference
+
+See the [@data-slot/slider](https://www.npmjs.com/package/@data-slot/slider)
+documentation for the runtime API, events, keyboard behavior, and slot
+structure.

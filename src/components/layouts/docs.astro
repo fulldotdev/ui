@@ -1,0 +1,196 @@
+---
+import { getCollection } from "astro:content"
+
+import type { GlobalSchema } from "@/schemas/global"
+import BaseSidebarLayout from "@/components/layouts/base-sidebar.astro"
+
+type DocsPage = {
+  id: string
+  title: string
+  description?: string
+}
+
+type Props = {
+  global?: GlobalSchema
+  page: DocsPage
+}
+
+const { global, page } = Astro.props as unknown as Props
+
+function hrefFromId(id: string) {
+  if (id === "index") return "/"
+  if (id.endsWith("/index")) return `/${id.slice(0, -"/index".length)}/`
+  return `/${id}/`
+}
+
+const isComponentsIndex = page.id === "docs/components"
+
+const componentPages = (await getCollection("pages")).filter((entry) => {
+  return entry.data.type === "docs" && entry.id.startsWith("docs/components/")
+}) as Array<{
+  id: string
+  data: {
+    type: "docs"
+    title: string
+    description?: string
+  }
+}>
+
+const componentLinks = componentPages
+  .filter((entry) => entry.id !== "docs/components")
+  .map((entry) => ({
+    href: hrefFromId(entry.id),
+    title: entry.data.title,
+    description: entry.data.description,
+  }))
+  .sort((a, b) => a.title.localeCompare(b.title))
+---
+
+<BaseSidebarLayout global={global} page={page}>
+  <div class="mx-auto flex w-full max-w-3xl flex-col gap-10 px-6 py-8 sm:px-8 sm:py-10">
+    <header class="border-border flex flex-col gap-3 border-b pb-6">
+      <p class="text-muted-foreground text-sm">
+        {isComponentsIndex ? "Components" : "Documentation"}
+      </p>
+      <div class="flex flex-col gap-2">
+        <h1 class="text-foreground text-3xl font-medium tracking-tight sm:text-4xl">
+          {page.title}
+        </h1>
+        {
+          page.description && (
+            <p class="text-muted-foreground max-w-2xl text-base leading-7">
+              {page.description}
+            </p>
+          )
+        }
+      </div>
+    </header>
+
+    {
+      isComponentsIndex && (
+        <section class="border-border divide-border flex flex-col divide-y rounded-xl border">
+          {componentLinks.map((item) => (
+            <a
+              href={item.href}
+              class="hover:bg-muted/40 flex flex-col gap-1 px-4 py-4 transition-colors"
+            >
+              <span class="text-sm font-medium">{item.title}</span>
+              {
+                item.description && (
+                  <span class="text-muted-foreground text-sm leading-6">
+                    {item.description}
+                  </span>
+                )
+              }
+            </a>
+          ))}
+        </section>
+      )
+    }
+
+    <article class="docs-content">
+      <slot />
+    </article>
+  </div>
+</BaseSidebarLayout>
+
+<style is:global>
+  .docs-content {
+    color: var(--foreground);
+    max-width: 100%;
+  }
+
+  .docs-content > * + * {
+    margin-top: 1rem;
+  }
+
+  .docs-content h2,
+  .docs-content h3,
+  .docs-content h4 {
+    color: var(--foreground);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .docs-content h2 {
+    font-size: 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .docs-content h3 {
+    font-size: 1.125rem;
+    margin-top: 2rem;
+  }
+
+  .docs-content p,
+  .docs-content li {
+    color: var(--foreground);
+    line-height: 1.75;
+  }
+
+  .docs-content ul,
+  .docs-content ol {
+    padding-left: 1.25rem;
+  }
+
+  .docs-content ul {
+    list-style: disc;
+  }
+
+  .docs-content ol {
+    list-style: decimal;
+  }
+
+  .docs-content a {
+    color: var(--foreground);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .docs-content pre {
+    background: color-mix(in oklab, var(--muted) 80%, transparent);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    overflow-x: auto;
+    padding: 1rem;
+  }
+
+  .docs-content :not(pre) > code {
+    background: color-mix(in oklab, var(--muted) 80%, transparent);
+    border-radius: 0.375rem;
+    font-size: 0.875em;
+    padding: 0.125rem 0.375rem;
+  }
+
+  .docs-content hr {
+    border-color: var(--border);
+    margin-block: 2rem;
+  }
+
+  .docs-content blockquote {
+    border-left: 1px solid var(--border);
+    color: var(--muted-foreground);
+    margin: 1.5rem 0;
+    padding-left: 1rem;
+  }
+
+  .docs-content table {
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    width: 100%;
+  }
+
+  .docs-content th,
+  .docs-content td {
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 0.5rem;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .docs-content th {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+</style>

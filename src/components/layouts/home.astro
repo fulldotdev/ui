@@ -1,0 +1,101 @@
+---
+import type { GlobalSchema } from "@/schemas/global"
+import type { HomeLayoutSchema } from "@/schemas/layouts/home"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import BaseHeaderLayout from "@/components/layouts/base-header.astro"
+
+interface Props {
+  global?: GlobalSchema
+  page: HomeLayoutSchema
+}
+
+const { global, page } = Astro.props
+
+const heroLinks = [page.hero.button1, page.hero.button2]
+const ctaLinks = [page.cta.button1, page.cta.button2]
+const features = [
+  page.features.feature1,
+  page.features.feature2,
+  page.features.feature3,
+]
+---
+
+<BaseHeaderLayout global={global} page={page} variant="inset">
+  <section class="mx-auto flex w-full max-w-(--container) flex-col gap-8 px-6 py-14 text-center sm:py-20">
+    <div class="mx-auto flex max-w-5xl flex-col gap-5">
+      <h1 class="text-foreground text-balance text-5xl font-medium leading-none tracking-[-0.05em] sm:text-6xl lg:text-7xl">
+        {page.hero.title}
+      </h1>
+      <p class="text-muted-foreground mx-auto max-w-2xl text-balance text-xl leading-8">
+        {page.hero.description}
+      </p>
+    </div>
+    <div class="flex flex-wrap items-center justify-center gap-3">
+      {heroLinks.map((link, index) => (
+        <Button
+          as="a"
+          href={link.href}
+          size="lg"
+          variant={index === 0 ? "default" : "outline"}
+        >
+          {link.text}
+        </Button>
+      ))}
+    </div>
+  </section>
+
+  <section class="mx-auto flex w-full max-w-(--container) flex-col gap-8 px-6 py-14 sm:py-16">
+    <div class="max-w-2xl">
+      <p class="text-muted-foreground text-sm font-medium uppercase tracking-[0.2em]">
+        {page.features.title}
+      </p>
+      <h2 class="text-foreground mt-3 text-3xl font-medium tracking-tight sm:text-4xl">
+        Built for developers, content, and agents.
+      </h2>
+      <p class="text-muted-foreground mt-4 text-lg leading-8">
+        {page.features.description}
+      </p>
+    </div>
+    <div class="grid gap-4 md:grid-cols-3">
+      {features.map((feature) => (
+        <article class="bg-background ring-border/60 flex flex-col gap-4 rounded-2xl p-6 shadow-sm ring-1">
+          <div class="bg-muted text-foreground flex size-11 items-center justify-center rounded-full">
+            <Icon name={feature.icon} class="size-5" />
+          </div>
+          <div class="flex flex-col gap-2">
+            <h3 class="text-lg font-medium tracking-tight">{feature.title}</h3>
+            <p class="text-muted-foreground text-sm leading-7">
+              {feature.description}
+            </p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="mx-auto w-full max-w-(--container) px-6 py-14 sm:py-16">
+    <div class="bg-background ring-border/60 flex flex-col gap-6 rounded-[2rem] p-8 shadow-sm ring-1 sm:p-10 lg:flex-row lg:items-end lg:justify-between">
+      <div class="max-w-2xl">
+        <h2 class="text-foreground text-3xl font-medium tracking-tight sm:text-4xl">
+          {page.cta.title}
+        </h2>
+        <p class="text-muted-foreground mt-4 text-lg leading-8">
+          {page.cta.description}
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        {ctaLinks.map((link, index) => (
+          <Button
+            as="a"
+            href={link.href}
+            size="lg"
+            variant={index === 0 ? "default" : "outline"}
+          >
+            {link.text}
+          </Button>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseHeaderLayout>

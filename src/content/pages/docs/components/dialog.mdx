@@ -1,0 +1,324 @@
+---
+type: docs
+title: Dialog
+description: A window overlaid on either the primary window or another dialog window, rendering the content underneath inert.
+---
+
+```astro live
+---
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+---
+
+<Dialog>
+  <DialogTrigger variant="outline">Edit Profile</DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Edit profile</DialogTitle>
+      <DialogDescription>
+        Make changes to your profile here. Click save when you're done.
+      </DialogDescription>
+    </DialogHeader>
+    <div class="grid gap-4">
+      <div class="grid gap-2">
+        <Label for="dialog-name">Name</Label>
+        <Input id="dialog-name" value="Pedro Duarte" />
+      </div>
+      <div class="grid gap-2">
+        <Label for="dialog-username">Username</Label>
+        <Input id="dialog-username" value="@peduarte" />
+      </div>
+    </div>
+    <DialogFooter>
+      <DialogClose variant="outline">Cancel</DialogClose>
+      <Button>Save changes</Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+```
+
+## Installation
+
+```bash
+npm install @data-slot/dialog
+```
+
+## Usage
+
+```ts
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+```
+
+```astro
+<Dialog>
+  <DialogTrigger>Open</DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Are you absolutely sure?</DialogTitle>
+      <DialogDescription>
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+      </DialogDescription>
+    </DialogHeader>
+    <DialogFooter>
+      <DialogClose variant="outline">Cancel</DialogClose>
+      <Button>Continue</Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+```
+
+`DialogContent` already composes `DialogPortal` and `DialogOverlay` for the
+default modal layout. If you need lower-level control, both are also exported
+from `@/components/ui/dialog`.
+
+## Composition
+
+Use the following composition to build a `Dialog`:
+
+```text
+Dialog
+├── DialogTrigger
+└── DialogContent
+    ├── DialogHeader
+    │   ├── DialogTitle
+    │   └── DialogDescription
+    └── DialogFooter
+        └── DialogClose
+```
+
+## Examples
+
+### Custom Close Button
+
+Replace the default close control with your own button.
+
+```astro live
+---
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+---
+
+<Dialog>
+  <DialogTrigger variant="outline">Open Custom Dialog</DialogTrigger>
+  <DialogContent showCloseButton={false}>
+    <DialogHeader>
+      <DialogTitle>Share project</DialogTitle>
+      <DialogDescription>
+        Invite a teammate or copy the share link below.
+      </DialogDescription>
+    </DialogHeader>
+    <div class="rounded-lg border p-4 text-sm">
+      https://ui.full.dev/project/acme-studio
+    </div>
+    <DialogFooter>
+      <DialogClose variant="outline">Not now</DialogClose>
+      <Button>Copy link</Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+```
+
+### No Close Button
+
+Use `showCloseButton={false}` to hide the close button.
+
+```astro live
+---
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+---
+
+<Dialog data-close-on-click-outside="false" data-close-on-escape="false">
+  <DialogTrigger variant="outline">Open Blocking Dialog</DialogTrigger>
+  <DialogContent showCloseButton={false}>
+    <DialogHeader>
+      <DialogTitle>Processing payment</DialogTitle>
+      <DialogDescription>
+        Please wait while we confirm your payment details.
+      </DialogDescription>
+    </DialogHeader>
+    <div class="rounded-lg border p-4 text-sm">
+      Do not close this window until the request completes.
+    </div>
+  </DialogContent>
+</Dialog>
+```
+
+### Sticky Footer
+
+Keep actions visible while the content scrolls.
+
+```astro live
+---
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+---
+
+<Dialog>
+  <DialogTrigger variant="outline">Open Sticky Footer</DialogTrigger>
+  <DialogContent class="max-h-[min(85vh,42rem)] overflow-hidden p-0">
+    <DialogHeader class="border-b px-6 pt-6 pb-4">
+      <DialogTitle>Review document</DialogTitle>
+      <DialogDescription>
+        The actions stay visible while the content area scrolls.
+      </DialogDescription>
+    </DialogHeader>
+    <div class="overflow-y-auto px-6 py-4">
+      <div class="text-muted-foreground grid gap-4 text-sm">
+        <p>
+          Section 1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        </p>
+        <p>
+          Section 2. Sed do eiusmod tempor incididunt ut labore et dolore magna
+          aliqua.
+        </p>
+        <p>
+          Section 3. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+          laboris.
+        </p>
+        <p>
+          Section 4. Duis aute irure dolor in reprehenderit in voluptate velit
+          esse cillum.
+        </p>
+        <p>
+          Section 5. Excepteur sint occaecat cupidatat non proident, sunt in
+          culpa.
+        </p>
+        <p>
+          Section 6. Curabitur blandit tempus porttitor. Integer posuere erat a
+          ante venenatis.
+        </p>
+        <p>Section 7. Aenean lacinia bibendum nulla sed consectetur.</p>
+        <p>
+          Section 8. Cras justo odio, dapibus ac facilisis in, egestas eget
+          quam.
+        </p>
+        <p>
+          Section 9. Morbi leo risus, porta ac consectetur ac, vestibulum at
+          eros.
+        </p>
+        <p>Section 10. Vestibulum id ligula porta felis euismod semper.</p>
+      </div>
+    </div>
+    <DialogFooter class="border-t px-6 py-4">
+      <DialogClose variant="outline">Cancel</DialogClose>
+      <Button>Approve</Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+```
+
+### Scrollable Content
+
+Long content can scroll while the header stays in view.
+
+```astro live
+---
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+---
+
+<Dialog>
+  <DialogTrigger variant="outline">Open Scrollable Dialog</DialogTrigger>
+  <DialogContent class="max-h-[min(85vh,42rem)] overflow-hidden p-0">
+    <DialogHeader class="bg-popover border-b px-6 pt-6 pb-4">
+      <DialogTitle>Terms of service</DialogTitle>
+      <DialogDescription>
+        Scroll through the content while the title and description stay visible.
+      </DialogDescription>
+    </DialogHeader>
+    <div class="overflow-y-auto px-6 py-4">
+      <div class="text-muted-foreground grid gap-4 text-sm">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <p>
+          Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
+        </p>
+        <p>Donec ullamcorper nulla non metus auctor fringilla.</p>
+        <p>
+          Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
+        </p>
+        <p>Nullam quis risus eget urna mollis ornare vel eu leo.</p>
+        <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+        <p>Maecenas faucibus mollis interdum. Aenean eu leo quam.</p>
+        <p>Etiam porta sem malesuada magna mollis euismod.</p>
+        <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+        <p>
+          Curabitur blandit tempus porttitor. Nullam id dolor id nibh ultricies.
+        </p>
+        <p>
+          Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum
+          nibh.
+        </p>
+        <p>Vestibulum id ligula porta felis euismod semper.</p>
+      </div>
+    </div>
+  </DialogContent>
+</Dialog>
+```
+
+## API Reference
+
+The `Dialog` root forwards the `@data-slot/dialog` controller options through
+data attributes:
+
+- `data-default-open`
+- `data-close-on-click-outside`
+- `data-close-on-escape`
+- `data-lock-scroll`
+- `data-alert-dialog`
+
+You can also control it programmatically with the `dialog:set` event and listen
+for `dialog:change` on the root element.

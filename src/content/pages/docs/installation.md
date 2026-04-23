@@ -1,0 +1,115 @@
+---
+type: docs
+title: Installation
+description: Install and configure fulldev/ui for Astro
+---
+
+## Create new Astro project
+
+If you don't have a project yet, we recommend using [this starter template](https://github.com/fulldotdev/starter).
+
+## Add to existing Astro project
+
+As this project is distributed as a shadcn registry, run the `shadcn` init command to setup your project:
+
+```bash
+npx shadcn@latest init
+```
+
+### Add the fulldev/ui base styles
+
+Copy [`src/styles/global.css`](https://github.com/fulldotdev/ui/blob/main/src/styles/global.css) into your project, then import it from your app layout.
+
+The starter stylesheet includes the theme variables used by fulldev/ui and is the expected baseline for the component examples.
+
+### Edit tsconfig.json file
+
+Add the following code to the `tsconfig.json` file to resolve paths:
+
+```ts title="tsconfig.json" {4-9} showLineNumbers
+{
+  "compilerOptions": {
+    // ...
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+    // ...
+  }
+}
+```
+
+### Add fulldev/ui registry
+
+Add fulldev/ui as a namespaced registry to your `components.json` file:
+
+```json title="components.json"
+{
+  "registries": {
+    "@fulldev": "https://ui.full.dev/r/{name}.json"
+  }
+}
+```
+
+### Use a container-aware app shell
+
+fulldev/ui uses Tailwind CSS v4 container query variants such as `@2xl:` and `@max-5xl:`. These are intentional and should not be converted to viewport breakpoints like `2xl:`.
+
+To make those variants work, add `@container` to the root wrapper that contains your page content:
+
+```astro title="src/layouts/Layout.astro" {2,6} showLineNumbers
+---
+import "@/styles/global.css"
+---
+
+<body class="@container">
+  <slot />
+</body>
+```
+
+## Add Components
+
+You can now start adding components to your project.
+
+```bash
+npx shadcn@latest add @fulldev/button
+```
+
+or multiple resources at once:
+
+```bash
+npx shadcn@latest add @fulldev/button @fulldev/item @fulldev/list
+```
+
+### Add all components
+
+```bash
+npx shadcn@latest add @fulldev/components
+```
+
+### Usage
+
+The commands above will add components to your project. You can then import them like this:
+
+```astro title="src/pages/index.astro" {2,16} showLineNumbers
+---
+import { Button } from "@/components/ui/button"
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/logo-fulldev-mark-light.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro + fulldev/ui</title>
+  </head>
+  <body class="@container">
+    <div class="grid h-screen place-items-center content-center">
+      <Button>Button</Button>
+    </div>
+  </body>
+</html>
+```
