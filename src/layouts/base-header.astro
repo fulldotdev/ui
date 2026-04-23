@@ -1,16 +1,19 @@
 ---
+import BaseLayout from "@/layouts/base.astro"
+
 import type { GlobalSchema } from "@/schemas/global"
-import type { BaseLayoutSchema } from "@/schemas/layouts/base"
+import type { SeoSchema } from "@/schemas/shared"
 import { Button } from "@/components/ui/button"
 import {
-  HeaderActions,
   Header,
+  HeaderActions,
   HeaderContent,
   HeaderGroup,
   HeaderInset,
+  HeaderMobile,
   HeaderProvider,
+  HeaderTrigger,
 } from "@/components/ui/header"
-import { Layout, LayoutBody, LayoutHead } from "@/components/ui/layout"
 import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
 import {
   NavigationMenu,
@@ -19,98 +22,145 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
 
 interface Props {
   global?: GlobalSchema
-  page: BaseLayoutSchema
+  seo?: SeoSchema
   hideHeader?: boolean
   hideFooter?: boolean
+  showThemeToggle?: boolean
   variant?: "default" | "floating" | "inset"
 }
 
 const {
   global,
-  page,
+  seo,
   hideHeader = false,
   hideFooter = false,
+  showThemeToggle = false,
   variant = "default",
-} = Astro.props
+} = Astro.props as Props
+
+const headerLinks = global?.header.links ?? []
+const headerButtons = global?.header.buttons ?? []
 
 const desktopMenuItemClass = navigationMenuTriggerStyle({
   class:
-    "text-muted-foreground hover:text-foreground focus:text-foreground data-[active=true]:text-foreground h-8 bg-transparent px-3 py-0 hover:bg-background/80 focus:bg-background/80 data-[active=true]:bg-background/70 data-open:bg-background/70 data-open:hover:bg-background/80",
+    "text-sidebar-foreground/70 hover:text-sidebar-foreground focus:text-sidebar-foreground data-[active=true]:text-sidebar-foreground h-8 bg-transparent px-3 py-0 hover:bg-sidebar-accent/80 focus:bg-sidebar-accent/80 data-[active=true]:bg-sidebar-accent/70 data-open:bg-sidebar-accent/70 data-open:hover:bg-sidebar-accent/80",
 })
 ---
 
-<Layout>
-  <LayoutHead name={global?.name} {...page.seo} />
-  <LayoutBody class={variant === "inset" ? "bg-muted" : undefined}>
-    <HeaderProvider>
-      {
-        !hideHeader && (
-          <Header container="full" sticky="never" variant={variant}>
-            <HeaderGroup class="shrink-0">
-              <Logo href="/">
-                <LogoImage
-                  src={global?.logo.dark}
-                  alt={`${global?.name} logo`}
-                  class="h-6 dark:hidden [&:is([data-theme=dark]_&)]:hidden"
-                />
-                <LogoImage
-                  src={global?.logo.light}
-                  alt={`${global?.name} logo`}
-                  class="hidden h-6 dark:block [&:is([data-theme=dark]_&)]:block"
-                />
-                <LogoText class="text-lg tracking-tight">
-                  {global?.name}
-                </LogoText>
-              </Logo>
-            </HeaderGroup>
-            <HeaderContent class="hidden min-w-0 flex-1 justify-start md:flex">
-              <NavigationMenu class="max-w-none justify-start">
-                <NavigationMenuList class="flex flex-none list-none items-center justify-start gap-0">
-                  {global?.header.links.map((link, index) => (
-                    <NavigationMenuItem value={`header-link-${index}`}>
-                      <NavigationMenuLink
-                        href={link.href}
-                        class={desktopMenuItemClass}
-                      >
-                        {link.text}
-                      </NavigationMenuLink>
-                    </NavigationMenuItem>
-                  ))}
-                </NavigationMenuList>
-              </NavigationMenu>
-            </HeaderContent>
-            <HeaderGroup side="end" class="hidden shrink-0 md:flex">
-              <HeaderActions class="justify-end">
-                {global?.header.buttons.map((button, index) => (
-                  <Button
-                    as="a"
-                    href={button.href}
-                    variant={button.variant ?? (index === 0 ? "default" : "ghost")}
-                    size="sm"
-                  >
-                    {button.text}
-                  </Button>
+<BaseLayout
+  global={global}
+  seo={seo}
+  bodyClass={variant === "inset" ? "bg-muted" : undefined}
+>
+  <HeaderProvider>
+    {
+      !hideHeader && (
+        <Header container="full" sticky="never" variant={variant}>
+          <HeaderGroup class="shrink-0">
+            <Logo href="/">
+              <LogoImage
+                src={global?.logo.dark}
+                alt={`${global?.name} logo`}
+                class="h-6 dark:hidden"
+              />
+              <LogoImage
+                src={global?.logo.light}
+                alt={`${global?.name} logo`}
+                class="hidden h-6 dark:block"
+              />
+              <LogoText class="text-lg tracking-tight">{global?.name}</LogoText>
+            </Logo>
+          </HeaderGroup>
+          <HeaderContent class="hidden min-w-0 flex-1 justify-start md:flex">
+            <NavigationMenu class="max-w-none justify-start">
+              <NavigationMenuList class="flex flex-none list-none items-center justify-start gap-0">
+                {headerLinks.map((link, index) => (
+                  <NavigationMenuItem value={`header-link-${index}`}>
+                    <NavigationMenuLink
+                      href={link.href}
+                      class={desktopMenuItemClass}
+                    >
+                      {link.text}
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
                 ))}
-              </HeaderActions>
-            </HeaderGroup>
-          </Header>
-        )
-      }
-      <HeaderInset>
-        <slot />
-      </HeaderInset>
-      {
-        !hideFooter && (
-          <footer class="px-6 py-8">
-            <p class="text-muted-foreground mx-auto max-w-(--container) text-sm">
-              {global?.name}
-            </p>
-          </footer>
-        )
-      }
-    </HeaderProvider>
-  </LayoutBody>
-</Layout>
+              </NavigationMenuList>
+            </NavigationMenu>
+          </HeaderContent>
+          <HeaderGroup side="end" class="hidden shrink-0 md:flex">
+            <HeaderActions class="justify-end">
+              {showThemeToggle ? <ThemeToggle size="icon-sm" /> : null}
+              {headerButtons.map((button, index) => (
+                <Button
+                  as="a"
+                  href={button.href}
+                  variant={
+                    button.variant ?? (index === 0 ? "default" : "ghost")
+                  }
+                  size="sm"
+                >
+                  {button.text}
+                </Button>
+              ))}
+            </HeaderActions>
+          </HeaderGroup>
+          <HeaderGroup side="end" class="shrink-0 md:hidden">
+            <HeaderTrigger />
+          </HeaderGroup>
+          <HeaderMobile>
+            <div class="flex flex-col gap-6">
+              <nav class="flex flex-col gap-3">
+                {headerLinks.map((link) => (
+                  <a
+                    href={link.href}
+                    class="text-sidebar-foreground/80 hover:bg-sidebar-accent/70 hover:text-sidebar-foreground rounded-md px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    {link.text}
+                  </a>
+                ))}
+              </nav>
+              {showThemeToggle ? (
+                <div class="flex justify-start">
+                  <ThemeToggle size="icon-sm" />
+                </div>
+              ) : null}
+              {headerButtons.length ? (
+                <div class="flex flex-col gap-2">
+                  {headerButtons.map((button, index) => (
+                    <Button
+                      as="a"
+                      href={button.href}
+                      variant={
+                        button.variant ?? (index === 0 ? "default" : "ghost")
+                      }
+                      size="sm"
+                      class="w-full justify-center"
+                    >
+                      {button.text}
+                    </Button>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          </HeaderMobile>
+        </Header>
+      )
+    }
+    <HeaderInset>
+      <slot />
+    </HeaderInset>
+    {
+      !hideFooter && (
+        <footer class="px-6 py-8">
+          <p class="text-muted-foreground mx-auto max-w-(--container) text-sm">
+            {global?.name}
+          </p>
+        </footer>
+      )
+    }
+  </HeaderProvider>
+</BaseLayout>
