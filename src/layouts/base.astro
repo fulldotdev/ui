@@ -1,0 +1,78 @@
+---
+import type { ImageMetadata } from "astro"
+
+import type { GlobalSchema } from "@/schemas/global"
+import { Layout, LayoutBody, LayoutHead } from "@/components/ui/layout"
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarShell,
+} from "@/components/ui/sidebar"
+import { ThemeProvider } from "@/components/ui/theme-toggle"
+import Header from "@/components/blocks/Header.astro"
+import Sidebar from "@/components/blocks/Sidebar.astro"
+
+type NavItem = {
+  label: string
+  href: string
+  isActive?: boolean
+}
+
+type NavGroup = {
+  label: string
+  items: NavItem[]
+}
+
+type HeadProps = {
+  title?: string
+  description?: string
+  image?: {
+    src?: ImageMetadata | string
+    alt?: string
+  }
+  canonical?: string
+  noindex?: boolean
+  nofollow?: boolean
+}
+
+type Props = {
+  global: GlobalSchema
+  navGroups: NavGroup[]
+  headerLinks?: GlobalSchema["header"]["links"]
+  headerButtons?: GlobalSchema["header"]["buttons"]
+  head?: HeadProps
+  desktopNavigation: "header" | "sidebar"
+}
+
+const props: Props = Astro.props
+---
+
+<Layout>
+  <LayoutHead name={props.global.name} {...props.head}>
+    <ThemeProvider />
+  </LayoutHead>
+  <LayoutBody>
+    <SidebarProvider
+      open={props.desktopNavigation === "sidebar"}
+      defaultOpen={props.desktopNavigation === "sidebar"}
+    >
+      <Sidebar
+        state={props.desktopNavigation === "sidebar" ? "expanded" : "collapsed"}
+        collapsible="offcanvas"
+        variant="inset"
+        global={props.global}
+        navGroups={props.navGroups}
+      />
+      <SidebarShell>
+        <Header
+          class={props.desktopNavigation === "sidebar" ? "md:hidden" : "p-2"}
+          global={props.global}
+          headerLinks={props.headerLinks}
+        />
+        <SidebarInset>
+          <slot />
+        </SidebarInset>
+      </SidebarShell>
+    </SidebarProvider>
+  </LayoutBody>
+</Layout>

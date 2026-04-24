@@ -16,15 +16,18 @@ const {
   lockScroll,
   ...props
 } = Astro.props
+
+const manageScrollLock = lockScroll !== false
 ---
 
 <div
   data-slot="dialog"
+  data-sheet-lock-scroll={manageScrollLock ? "" : undefined}
   class={className}
   data-default-open={defaultOpen}
   data-close-on-click-outside={closeOnClickOutside}
   data-close-on-escape={closeOnEscape}
-  data-lock-scroll={lockScroll}
+  data-lock-scroll="false"
   {...props}
 >
   <slot />
@@ -34,4 +37,87 @@ const {
   import { create } from "@data-slot/dialog"
 
   create()
+
+  declare global {
+    interface Window {
+      __fulldevSheetScrollLock?: {
+        roots: Set<HTMLElement>
+        savedHtmlOverflow: string
+        savedHtmlScrollbarGutter: string
+        savedBodyPaddingRight: string
+      }
+      __fulldevSheetScrollLockBound?: boolean
+    }
+  }
+
+  const state =
+    window.__fulldevSheetScrollLock ??
+    (window.__fulldevSheetScrollLock = {
+      roots: new Set<HTMLElement>(),
+      savedHtmlOverflow: "",
+      savedHtmlScrollbarGutter: "",
+      savedBodyPaddingRight: "",
+    })
+
+  const applyScrollLock = () => {
+    const html = document.documentElement
+    const body = document.body
+
+    if (state.roots.size === 0) {
+      html.style.overflow = state.savedHtmlOverflow
+      html.style.scrollbarGutter = state.savedHtmlScrollbarGutter
+      body.style.paddingRight = state.savedBodyPaddingRight
+      return
+    }
+
+    if (state.roots.size === 1) {
+      state.savedHtmlOverflow = html.style.overflow
+      state.savedHtmlScrollbarGutter = html.style.scrollbarGutter
+      state.savedBodyPaddingRight = body.style.paddingRight
+    }
+
+    const scrollbarWidth = window.innerWidth - html.clientWidth
+    const bodyPaddingRight = Number.parseFloat(
+      window.getComputedStyle(body).paddingRight || "0"
+    )
+
+    html.style.overflow = "hidden"
+    html.style.scrollbarGutter = "auto"
+    body.style.paddingRight = `${bodyPaddingRight + Math.max(scrollbarWidth, 0)}px`
+  }
+
+  const syncRoot = (root: HTMLElement, open: boolean) => {
+    const hasRoot = state.roots.has(root)
+    if (open === hasRoot) return
+
+    if (open) state.roots.add(root)
+    else state.roots.delete(root)
+
+    applyScrollLock()
+  }
+
+  if (!window.__fulldevSheetScrollLockBound) {
+    window.__fulldevSheetScrollLockBound = true
+
+    document.addEventListener("dialog:change", (event) => {
+      const target = event.target
+
+      if (
+        !(target instanceof HTMLElement) ||
+        target.dataset.slot !== "dialog" ||
+        target.dataset.sheetLockScroll === undefined
+      ) {
+        return
+      }
+
+      const detail = (event as CustomEvent<{ open?: boolean }>).detail
+      syncRoot(target, Boolean(detail?.open))
+    })
+  }
+
+  document
+    .querySelectorAll<HTMLElement>('[data-slot="dialog"][data-sheet-lock-scroll]')
+    .forEach((root) => {
+      syncRoot(root, root.hasAttribute("data-open"))
+    })
 </script>

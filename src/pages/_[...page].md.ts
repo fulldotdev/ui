@@ -3,6 +3,8 @@ import { getCollection } from "astro:content"
 
 import { hrefFromPageId } from "@/lib/pages"
 
+export const prerender = true
+
 export async function getStaticPaths() {
   const pages = await getCollection("pages")
   return pages.map(async (page) => ({

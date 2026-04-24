@@ -1,0 +1,81 @@
+---
+import { Image } from "astro:assets"
+import type { ComponentProps } from "astro/types"
+
+import type { GlobalSchema } from "@/schemas/global"
+import {
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  Sidebar as UiSidebar,
+} from "@/components/ui/sidebar"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
+
+type NavItem = {
+  label: string
+  href: string
+  isActive?: boolean
+}
+
+type NavGroup = {
+  label: string
+  items: NavItem[]
+}
+
+type Props = ComponentProps<typeof UiSidebar> & {
+  global: GlobalSchema
+  navGroups: NavGroup[]
+}
+
+const props: Props = Astro.props
+---
+
+<UiSidebar {...props}>
+  <SidebarHeader>
+    <a
+      href="/"
+      class="flex h-10 items-center justify-start gap-2.5 p-2 text-base font-semibold"
+    >
+      <Image
+        src={props.global.logo.dark}
+        alt={`${props.global.name} logo`}
+        class="h-full w-auto dark:hidden"
+      />
+      <Image
+        src={props.global.logo.light}
+        alt={`${props.global.name} logo`}
+        class="hidden h-full w-auto dark:block"
+      />
+      <span class="text-lg">{props.global.name}</span>
+    </a>
+  </SidebarHeader>
+  <SidebarContent>
+    {
+      props.navGroups.map((group) => (
+        <SidebarGroup>
+          <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+          <SidebarMenu>
+            {group.items.map((item) => (
+              <SidebarMenuItem>
+                <SidebarMenuButton href={item.href} isActive={item.isActive}>
+                  <span>{item.label}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
+      ))
+    }
+  </SidebarContent>
+  <SidebarFooter>
+    <ThemeToggle
+      size="icon-sm"
+      class="text-sidebar-foreground/70 hover:text-sidebar-accent-foreground"
+    />
+  </SidebarFooter>
+</UiSidebar>

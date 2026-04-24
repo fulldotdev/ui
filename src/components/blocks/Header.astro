@@ -1,0 +1,110 @@
+---
+import { Image } from "astro:assets"
+import type { ComponentProps } from "astro/types"
+
+import type { GlobalSchema } from "@/schemas/global"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+  HeaderContent,
+  HeaderGroup,
+  Header as UiHeader,
+} from "@/components/ui/header"
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from "@/components/ui/navigation-menu"
+import { Separator } from "@/components/ui/separator"
+import { SidebarTrigger } from "@/components/ui/sidebar"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
+import SiteSearch from "@/components/site-search.astro"
+
+type Props = ComponentProps<typeof UiHeader> & {
+  class?: string
+  global: GlobalSchema
+  headerLinks?: GlobalSchema["header"]["links"]
+}
+
+const props: Props = Astro.props
+---
+
+<UiHeader class={cn(props.class, `flex h-auto items-center p-2`)} {...props}>
+  <HeaderGroup>
+    <div class="md:hidden">
+      <SidebarTrigger />
+    </div>
+    <a
+      href="/"
+      class="flex h-10 items-center justify-start gap-2.5 p-2 text-base font-semibold"
+    >
+      <Image
+        src={props.global.logo.dark}
+        alt={`${props.global.name} logo`}
+        class="h-full w-auto dark:hidden"
+      />
+      <Image
+        src={props.global.logo.light}
+        alt={`${props.global.name} logo`}
+        class="hidden h-full w-auto dark:block"
+      />
+      <span class="text-lg">{props.global.name}</span>
+    </a>
+  </HeaderGroup>
+  <HeaderContent>
+    <NavigationMenu class="hidden max-w-none justify-start md:flex">
+      <NavigationMenuList class="justify-start">
+        {
+          props.headerLinks?.map((link, index) => (
+            <NavigationMenuItem value={`header-link-${index}`}>
+              <NavigationMenuLink href={link.href}>
+                {link.text}
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          ))
+        }
+      </NavigationMenuList>
+    </NavigationMenu>
+  </HeaderContent>
+  <HeaderGroup side="end">
+    <SiteSearch />
+    <Separator orientation="vertical" class="!h-5 !self-center" />
+    <Button
+      as="a"
+      href="https://github.com/fulldotdev/ui"
+      variant="ghost"
+      size="sm"
+      target="_blank"
+      rel="noreferrer"
+      aria-label="GitHub repository"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        class="size-4"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <path
+          d="M12 .5C5.65.5.5 5.65.5 12.02c0 5.09 3.29 9.4 7.86 10.93.57.1.78-.25.78-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.78 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.59.23 2.77.11 3.06.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.21.67.79.56 4.56-1.54 7.85-5.85 7.85-10.93C23.5 5.65 18.35.5 12 .5Z"
+        ></path>
+      </svg>
+      <span>557</span>
+    </Button>
+    <Separator orientation="vertical" class="!h-5 !self-center" />
+    <ThemeToggle variant="ghost" size="icon-sm" />
+    <Separator orientation="vertical" class="!h-5 !self-center" />
+    {
+      props.global.header.buttons.map((button, index) => (
+        <Button
+          as="a"
+          href={button.href}
+          variant={button.variant ?? (index === 0 ? "default" : "ghost")}
+          size="sm"
+        >
+          {button.text}
+        </Button>
+      ))
+    }
+  </HeaderGroup>
+</UiHeader>

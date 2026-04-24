@@ -16,26 +16,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
-  Layout,
-  LayoutBody,
-  LayoutHead,
   LayoutMain,
 } from "@/components/ui/layout"
-import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarInset,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-} from "@/components/ui/sidebar"
-import { ThemeProvider, ThemeToggle } from "@/components/ui/theme-toggle"
 import {
   Toc,
   TocMenu,
@@ -48,6 +30,7 @@ import {
   TypographyH1,
   TypographyLead,
 } from "@/components/ui/typography"
+import Base from "@/layouts/base.astro"
 
 type Props = {
   global: GlobalSchema
@@ -114,80 +97,43 @@ const tocItems = props.headings
 
 const showComponentNav = componentLinks.length > 0
 const showToc = tocItems.length > 0
+const navGroups = [
+  {
+    label: "Navigation",
+    items: primaryNav.map((item) => ({
+      label: item.label,
+      href: item.href,
+      isActive: item.isActive,
+    })),
+  },
+  ...(showComponentNav
+    ? [
+        {
+          label: "Components",
+          items: componentLinks.map((item) => ({
+            label: item.title,
+            href: item.href,
+            isActive: item.isActive,
+          })),
+        },
+      ]
+    : []),
+]
 ---
 
-<Layout>
-  <LayoutHead
-    name={props.global.name}
-    title={pageTitle}
-    description={pageDescription}
-    image={pageSeo?.image}
-    canonical={pageSeo?.canonical}
-    noindex={pageSeo?.noindex}
-    nofollow={pageSeo?.nofollow}
-  >
-    <ThemeProvider />
-  </LayoutHead>
-  <LayoutBody>
-    <SidebarProvider>
-      <Sidebar variant="inset">
-        <SidebarHeader>
-          <Logo href="/" class="px-2 py-0.5">
-            <LogoImage
-              src={props.global.logo.dark}
-              alt={`${props.global.name} logo`}
-              class="h-6 dark:hidden"
-            />
-            <LogoImage
-              src={props.global.logo.light}
-              alt={`${props.global.name} logo`}
-              class="hidden h-6 dark:block"
-            />
-            <LogoText>
-              {props.global.name}
-            </LogoText>
-          </Logo>
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-            <SidebarMenu>
-              {
-                primaryNav.map((item) => (
-                  <SidebarMenuItem>
-                    <SidebarMenuButton href={item.href} isActive={item.isActive}>
-                      <span>{item.label}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))
-              }
-            </SidebarMenu>
-          </SidebarGroup>
-          {
-            showComponentNav && (
-              <SidebarGroup>
-                <SidebarGroupLabel>Components</SidebarGroupLabel>
-                <SidebarMenu>
-                  {componentLinks.map((item) => (
-                    <SidebarMenuItem>
-                      <SidebarMenuButton href={item.href} isActive={item.isActive}>
-                        <span>{item.title}</span>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroup>
-            )
-          }
-        </SidebarContent>
-        <SidebarFooter>
-          <ThemeToggle
-            size="icon-sm"
-            class="text-sidebar-foreground/70 hover:text-sidebar-accent-foreground"
-          />
-        </SidebarFooter>
-      </Sidebar>
-      <SidebarInset>
+<Base
+  global={props.global}
+  desktopNavigation="sidebar"
+  navGroups={navGroups}
+  head={{
+    title: pageTitle,
+    description: pageDescription,
+    image: pageSeo?.image,
+    canonical: pageSeo?.canonical,
+    noindex: pageSeo?.noindex,
+    nofollow: pageSeo?.nofollow,
+  }}
+>
         <LayoutMain>
           <div class="mx-auto w-full px-6 pt-10 pb-8 sm:px-8 sm:pt-12 sm:pb-10">
             <div
@@ -315,10 +261,7 @@ const showToc = tocItems.length > 0
             </div>
           </div>
         </LayoutMain>
-      </SidebarInset>
-    </SidebarProvider>
-  </LayoutBody>
-</Layout>
+    </Base>
 
 <script is:inline define:vars={{ copyButtonId }}>
   const button = document.getElementById(copyButtonId)

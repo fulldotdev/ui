@@ -1,29 +1,112 @@
 ---
-import { CodeIcon, FileTextIcon, RocketIcon } from "@lucide/astro"
+import Base from "@/layouts/base.astro"
+import {
+  BlocksIcon,
+  BoldIcon,
+  ChevronDownIcon,
+  CodeIcon,
+  CreditCardIcon,
+  FileTextIcon,
+  ItalicIcon,
+  LayoutGridIcon,
+  LogOutIcon,
+  MailIcon,
+  PaletteIcon,
+  RocketIcon,
+  SearchIcon,
+  SignpostIcon,
+  SparklesIcon,
+  UnderlineIcon,
+  UserIcon,
+} from "@lucide/astro"
 import type { MarkdownHeading } from "astro"
 
 import type { GlobalSchema } from "@/schemas/global"
 import type { HomeSchema } from "@/schemas/layouts/home"
-import { Button } from "@/components/ui/button"
 import {
-  Header,
-  HeaderActions,
-  HeaderContent,
-  HeaderGroup,
-  HeaderInset,
-  HeaderMobile,
-  HeaderProvider,
-  HeaderTrigger,
-} from "@/components/ui/header"
-import { Layout, LayoutBody, LayoutHead } from "@/components/ui/layout"
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarGroupCount,
+} from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { Button, buttonVariants } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldLabel,
+  FieldTitle,
+} from "@/components/ui/field"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group"
 import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
+import { Price, PriceValue } from "@/components/ui/price"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Rating } from "@/components/ui/rating"
 import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-} from "@/components/ui/navigation-menu"
-import { ThemeProvider, ThemeToggle } from "@/components/ui/theme-toggle"
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectItemText,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Separator } from "@/components/ui/separator"
+import {
+  Slider,
+  SliderControl,
+  SliderRange,
+  SliderThumb,
+  SliderTrack,
+} from "@/components/ui/slider"
+import { Spinner } from "@/components/ui/spinner"
+import { Switch, SwitchThumb } from "@/components/ui/switch"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
+import {
+  Tile,
+  TileContent,
+  TileDescription,
+  TileTitle,
+} from "@/components/ui/tile"
+import { Toggle } from "@/components/ui/toggle"
 import SiteSearch from "@/components/site-search.astro"
 
 type Props = {
@@ -33,232 +116,737 @@ type Props = {
 }
 
 const props: Props = Astro.props
+
+const titleWords = props.page.hero.title.split(" ")
+const splitAt = Math.max(2, Math.floor(titleWords.length / 3))
+const titleStrong = titleWords.slice(0, splitAt).join(" ")
+const titleMuted = titleWords.slice(splitAt).join(" ")
+const currentPath = Astro.url.pathname
+const mobileNavGroups = [
+  {
+    label: "Navigation",
+    items: props.global.header.links.map((link) => ({
+      label: link.text,
+      href: link.href,
+      isActive: currentPath === link.href,
+    })),
+  },
+]
 ---
 
-<Layout>
-  <LayoutHead name={props.global.name} {...props.page.seo}>
-    <ThemeProvider />
-  </LayoutHead>
-  <LayoutBody class="bg-muted">
-    <HeaderProvider>
-      <Header container="full" sticky="never" variant="inset">
-        <HeaderGroup>
-          <Logo href="/">
-            <LogoImage
-              src={props.global.logo.dark}
-              alt={`${props.global.name} logo`}
-              class="dark:hidden"
-            />
-            <LogoImage
-              src={props.global.logo.light}
-              alt={`${props.global.name} logo`}
-              class="hidden dark:block"
-            />
-            <LogoText>{props.global.name}</LogoText>
-          </Logo>
-        </HeaderGroup>
-        <HeaderContent>
-          <NavigationMenu class="hidden max-w-none justify-start md:flex">
-            <NavigationMenuList class="justify-start">
-              {
-                props.global.header.links.map((link, index) => (
-                  <NavigationMenuItem value={`header-link-${index}`}>
-                    <NavigationMenuLink href={link.href}>
-                      {link.text}
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
-                ))
-              }
-            </NavigationMenuList>
-          </NavigationMenu>
-        </HeaderContent>
-        <HeaderGroup side="end">
-          <div class="hidden md:flex">
-            <HeaderActions>
-              <SiteSearch />
-              <ThemeToggle size="icon-sm" />
-              {
-                props.global.header.buttons.map((button, index) => (
-                  <Button
-                    as="a"
-                    href={button.href}
-                    variant={
-                      button.variant ?? (index === 0 ? "default" : "ghost")
-                    }
-                    size="sm"
-                  >
-                    {button.text}
-                  </Button>
-                ))
-              }
-            </HeaderActions>
-          </div>
-          <div class="md:hidden">
-            <HeaderTrigger />
-          </div>
-        </HeaderGroup>
-        <HeaderMobile>
-          <div class="flex flex-col gap-6">
-            <Logo href="/">
-              <LogoImage
-                src={props.global.logo.dark}
-                alt={`${props.global.name} logo`}
-                class="dark:hidden"
-              />
-              <LogoImage
-                src={props.global.logo.light}
-                alt={`${props.global.name} logo`}
-                class="hidden dark:block"
-              />
-              <LogoText>{props.global.name}</LogoText>
-            </Logo>
-            <SiteSearch mobile />
-            <nav class="flex flex-col gap-1">
-              {
-                props.global.header.links.map((link) => (
-                  <NavigationMenuLink href={link.href}>
-                    {link.text}
-                  </NavigationMenuLink>
-                ))
-              }
-            </nav>
-            <div class="flex justify-start">
-              <ThemeToggle size="icon-sm" />
-            </div>
-            {
-              props.global.header.buttons.length ? (
-                <div class="flex flex-col gap-2">
-                  {props.global.header.buttons.map((button, index) => (
-                    <Button
-                      as="a"
-                      href={button.href}
-                      variant={
-                        button.variant ?? (index === 0 ? "default" : "ghost")
-                      }
-                      size="sm"
-                      class="w-full justify-center"
-                    >
-                      {button.text}
-                    </Button>
-                  ))}
-                </div>
-              ) : null
-            }
-          </div>
-        </HeaderMobile>
-      </Header>
-      <HeaderInset>
-        <section
-          class="mx-auto flex w-full max-w-(--container) flex-col gap-8 px-6 py-14 text-center sm:py-20"
+<Base
+  global={props.global}
+  desktopNavigation="header"
+  headerLinks={props.global.header.links}
+  headerButtons={props.global.header.buttons}
+  navGroups={mobileNavGroups}
+  bodyClass="bg-muted"
+  head={props.page.seo}
+>
+  <!-- Hero -->
+  <section
+    class="grid gap-4 lg:h-[calc(100svh-var(--header-height,4rem))] lg:grid-cols-2"
+  >
+    <div class="flex flex-col justify-end gap-8 p-8">
+      <div class="flex flex-col gap-6">
+        <h1
+          class="text-3xl leading-[1.1] font-medium tracking-[-0.03em] sm:text-4xl lg:text-5xl"
         >
-          <div class="mx-auto flex max-w-5xl flex-col gap-5">
-            <h1
-              class="text-foreground text-5xl leading-none font-medium tracking-[-0.05em] text-balance sm:text-6xl lg:text-7xl"
+          <span class="text-foreground">{titleStrong}</span>{" "}
+          <span class="text-muted-foreground">{titleMuted}</span>
+        </h1>
+        <p
+          class="text-muted-foreground max-w-lg text-base leading-relaxed sm:text-lg"
+        >
+          {props.page.hero.description}
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        {
+          props.page.hero.buttons.map((button, index) => (
+            <Button
+              as="a"
+              href={button.href}
+              size="lg"
+              variant={index === 0 ? "default" : "outline"}
             >
-              {props.page.hero.title}
-            </h1>
-            <p
-              class="text-muted-foreground mx-auto max-w-2xl text-xl leading-8 text-balance"
-            >
-              {props.page.hero.description}
-            </p>
-          </div>
-          <div class="flex flex-wrap items-center justify-center gap-3">
+              {button.text}
+            </Button>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Component Cascade -->
+    <div class="relative hidden min-h-0 overflow-hidden p-3 lg:block">
+      <div
+        class="from-background pointer-events-none absolute inset-x-0 top-0 z-10 h-24 bg-gradient-to-b to-transparent"
+      >
+      </div>
+      <div
+        class="from-background pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t to-transparent"
+      >
+      </div>
+
+      <div class="grid h-full grid-cols-2 gap-3">
+        <!-- Left column: scrolls up -->
+        <div class="overflow-hidden">
+          <div
+            class="flex animate-[scroll-up_120s_linear_infinite] flex-col gap-10 px-1 py-1"
+          >
             {
-              props.page.hero.buttons.map((button, index) => (
-                <Button
-                  as="a"
-                  href={button.href}
-                  size="lg"
-                  variant={index === 0 ? "default" : "outline"}
-                >
-                  {button.text}
-                </Button>
+              [0, 1].map(() => (
+                <>
+                  {/* Search input */}
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <SearchIcon />
+                    </InputGroupAddon>
+                    <InputGroupInput placeholder="Search components..." />
+                  </InputGroup>
+
+                  {/* Alert */}
+                  <Alert>
+                    <SparklesIcon />
+                    <AlertTitle>New in v0.9</AlertTitle>
+                    <AlertDescription>
+                      ThemeToggle and Slider components now available.
+                    </AlertDescription>
+                  </Alert>
+
+                  {/* Buttons row */}
+                  <div class="flex flex-wrap gap-2">
+                    <Button size="sm">Get started</Button>
+                    <Button size="sm" variant="outline">
+                      Documentation
+                    </Button>
+                    <Button size="sm" variant="ghost">
+                      GitHub
+                    </Button>
+                  </div>
+
+                  {/* Select */}
+                  <Select class="w-full" placeholder="Select a framework">
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="astro">
+                          <SelectItemText>Astro</SelectItemText>
+                        </SelectItem>
+                        <SelectItem value="react">
+                          <SelectItemText>React</SelectItemText>
+                        </SelectItem>
+                        <SelectItem value="vue">
+                          <SelectItemText>Vue</SelectItemText>
+                        </SelectItem>
+                        <SelectItem value="svelte">
+                          <SelectItemText>Svelte</SelectItemText>
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+
+                  {/* Toggle toolbar */}
+                  <div class="flex gap-1">
+                    <Toggle aria-label="Bold" defaultPressed>
+                      <BoldIcon />
+                    </Toggle>
+                    <Toggle aria-label="Italic">
+                      <ItalicIcon />
+                    </Toggle>
+                    <Toggle aria-label="Underline">
+                      <UnderlineIcon />
+                    </Toggle>
+                  </div>
+
+                  {/* Slider */}
+                  <div class="flex flex-col gap-2 px-1">
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm">Brightness</span>
+                      <span class="text-muted-foreground font-mono text-xs">
+                        72
+                      </span>
+                    </div>
+                    <Slider
+                      defaultValue={72}
+                      max={100}
+                      step={1}
+                      thumbAlignment="edge"
+                    >
+                      <SliderControl>
+                        <SliderTrack>
+                          <SliderRange />
+                        </SliderTrack>
+                        <SliderThumb />
+                      </SliderControl>
+                    </Slider>
+                  </div>
+
+                  {/* Inline switches */}
+                  <div class="flex flex-col gap-3 px-1">
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm">Email notifications</span>
+                      <Switch defaultChecked>
+                        <SwitchThumb />
+                      </Switch>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm">Weekly digest</span>
+                      <Switch>
+                        <SwitchThumb />
+                      </Switch>
+                    </div>
+                  </div>
+
+                  {/* Testimonial card */}
+                  <Card size="sm">
+                    <CardContent>
+                      <div class="flex flex-col gap-3">
+                        <Rating rating={5} />
+                        <p class="text-sm leading-relaxed">
+                          "Finally, a component library built for Astro, not
+                          ported to it."
+                        </p>
+                        <div class="flex items-center gap-2">
+                          <Avatar size="sm">
+                            <AvatarFallback>JD</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p class="text-xs font-medium">Jamie Davis</p>
+                            <p class="text-muted-foreground text-xs">
+                              Sr. Developer
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Rating row */}
+                  <div class="flex items-center gap-3 px-1">
+                    <Rating rating={5} />
+                    <span class="text-muted-foreground text-xs">
+                      4.9 · 2,400+ developers
+                    </span>
+                  </div>
+                </>
               ))
             }
           </div>
-        </section>
+        </div>
 
-        <section
-          class="mx-auto flex w-full max-w-(--container) flex-col gap-8 px-6 py-14 sm:py-16"
-        >
-          <div class="max-w-2xl">
-            <p
-              class="text-muted-foreground text-sm font-medium tracking-[0.2em] uppercase"
-            >
-              {props.page.features.title}
-            </p>
-            <h2
-              class="text-foreground mt-3 text-3xl font-medium tracking-tight sm:text-4xl"
-            >
-              Built for developers, content, and agents.
-            </h2>
-            <p class="text-muted-foreground mt-4 text-lg leading-8">
-              {props.page.features.description}
-            </p>
-          </div>
-          <div class="grid gap-4 md:grid-cols-3">
+        <!-- Right column: scrolls down -->
+        <div class="overflow-hidden">
+          <div
+            class="flex animate-[scroll-down_120s_linear_infinite] flex-col gap-10 px-1 py-1"
+          >
             {
-              props.page.features.items.map((feature, index) => {
-                const featureIcons = [CodeIcon, FileTextIcon, RocketIcon]
-                const Icon = featureIcons[index] ?? CodeIcon
+              [0, 1].map(() => (
+                <>
+                  {/* Breadcrumb */}
+                  <div class="px-1">
+                    <Breadcrumb>
+                      <BreadcrumbList>
+                        <BreadcrumbItem>
+                          <BreadcrumbLink href="#">Docs</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                          <BreadcrumbLink href="#">Components</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                          <BreadcrumbPage>Button</BreadcrumbPage>
+                        </BreadcrumbItem>
+                      </BreadcrumbList>
+                    </Breadcrumb>
+                  </div>
 
-                return (
-                  <article class="bg-background ring-border/60 flex flex-col gap-4 rounded-2xl p-6 shadow-sm ring-1">
-                    <div class="bg-muted text-foreground flex size-11 items-center justify-center rounded-full">
-                      <Icon class="size-5" />
-                    </div>
-                    <div class="flex flex-col gap-2">
-                      <h3 class="text-lg font-medium tracking-tight">
-                        {feature.title}
-                      </h3>
-                      <p class="text-muted-foreground text-sm leading-7">
-                        {feature.description}
-                      </p>
-                    </div>
-                  </article>
-                )
-              })
+                  {/* Dropdown menu */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      class={buttonVariants({ variant: "outline" })}
+                      aria-label="Open menu"
+                    >
+                      My Account
+                      <ChevronDownIcon class="size-4 opacity-60" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent class="w-56">
+                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                          <UserIcon class="size-4" />
+                          Profile
+                          <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <CreditCardIcon class="size-4" />
+                          Billing
+                          <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem variant="destructive">
+                        <LogOutIcon class="size-4" />
+                        Log out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  {/* Radio group with cards */}
+                  <RadioGroup defaultValue="team" name="demo-audience">
+                    <FieldLabel class="w-full">
+                      <Field orientation="horizontal">
+                        <RadioGroupItem value="solo" />
+                        <FieldContent>
+                          <FieldTitle>Solo</FieldTitle>
+                          <FieldDescription>
+                            For freelancers and individual builders.
+                          </FieldDescription>
+                        </FieldContent>
+                      </Field>
+                    </FieldLabel>
+                    <FieldLabel class="w-full">
+                      <Field orientation="horizontal">
+                        <RadioGroupItem value="team" />
+                        <FieldContent>
+                          <FieldTitle>Team</FieldTitle>
+                          <FieldDescription>
+                            Collaboration and shared workspaces.
+                          </FieldDescription>
+                        </FieldContent>
+                      </Field>
+                    </FieldLabel>
+                  </RadioGroup>
+
+                  {/* Loading button */}
+                  <Button size="sm" variant="outline" disabled>
+                    <Spinner class="size-4" />
+                    Processing...
+                  </Button>
+
+                  {/* Badges row */}
+                  <div class="flex flex-wrap gap-2 px-1">
+                    <Badge>Default</Badge>
+                    <Badge variant="secondary">Pro</Badge>
+                    <Badge variant="outline">New</Badge>
+                    <Badge variant="destructive">Beta</Badge>
+                  </div>
+
+                  {/* Accordion */}
+                  <Accordion collapsible defaultValue="demo-1">
+                    <AccordionItem value="demo-1">
+                      <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                      <AccordionContent>
+                        Yes. Full WAI-ARIA support with keyboard navigation.
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="demo-2">
+                      <AccordionTrigger>Zero JavaScript?</AccordionTrigger>
+                      <AccordionContent hidden>
+                        Ships zero JS by default.
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+
+                  {/* Product card */}
+                  <Card size="sm">
+                    <CardHeader>
+                      <Badge variant="secondary" class="w-fit">
+                        Pro
+                      </Badge>
+                      <CardTitle>Team workspace</CardTitle>
+                      <CardDescription>
+                        Share components across projects with roles and access
+                        control.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button size="sm" variant="outline" class="w-full">
+                        Learn more
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  {/* Avatar group */}
+                  <div class="flex items-center gap-3 px-1">
+                    <AvatarGroup>
+                      <Avatar size="sm">
+                        <AvatarFallback>AK</AvatarFallback>
+                      </Avatar>
+                      <Avatar size="sm">
+                        <AvatarFallback>ML</AvatarFallback>
+                      </Avatar>
+                      <Avatar size="sm">
+                        <AvatarFallback>TS</AvatarFallback>
+                      </Avatar>
+                      <Avatar size="sm">
+                        <AvatarFallback>RN</AvatarFallback>
+                      </Avatar>
+                      <AvatarGroupCount>+48</AvatarGroupCount>
+                    </AvatarGroup>
+                    <span class="text-muted-foreground text-xs">
+                      52 contributors
+                    </span>
+                  </div>
+
+                  {/* Email input */}
+                  <div class="flex gap-2">
+                    <InputGroup class="flex-1">
+                      <InputGroupAddon>
+                        <MailIcon />
+                      </InputGroupAddon>
+                      <InputGroupInput
+                        type="email"
+                        placeholder="hello@you.dev"
+                      />
+                    </InputGroup>
+                    <Button size="sm" variant="outline">
+                      Notify me
+                    </Button>
+                  </div>
+                </>
+              ))
             }
           </div>
-        </section>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <section class="mx-auto w-full max-w-(--container) px-6 py-14 sm:py-16">
-          <div
-            class="bg-background ring-border/60 flex flex-col gap-6 rounded-[2rem] p-8 shadow-sm ring-1 sm:p-10 lg:flex-row lg:items-end lg:justify-between"
-          >
-            <div class="max-w-2xl">
-              <h2
-                class="text-foreground text-3xl font-medium tracking-tight sm:text-4xl"
-              >
-                {props.page.cta.title}
-              </h2>
-              <p class="text-muted-foreground mt-4 text-lg leading-8">
-                {props.page.cta.description}
+  <!-- Features -->
+  <section
+    class="mx-auto flex w-full max-w-(--container) flex-col gap-10 px-6 py-16 sm:py-24"
+  >
+    <div class="mx-auto max-w-2xl text-center">
+      <p
+        class="text-muted-foreground text-sm font-medium tracking-[0.2em] uppercase"
+      >
+        {props.page.features.title}
+      </p>
+      <h2
+        class="text-foreground mt-3 text-3xl font-medium tracking-tight sm:text-4xl"
+      >
+        {props.page.features.description}
+      </h2>
+    </div>
+
+    <div class="grid gap-12 md:grid-cols-3">
+      {
+        props.page.features.items.map((feature, index) => {
+          const featureIcons = [CodeIcon, FileTextIcon, RocketIcon]
+          const Icon = featureIcons[index] ?? CodeIcon
+
+          return (
+            <div class="flex flex-col gap-4">
+              <div class="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
+                <Icon class="size-5" />
+              </div>
+              <h3 class="text-foreground text-lg font-medium tracking-tight">
+                {feature.title}
+              </h3>
+              <p class="text-muted-foreground text-sm leading-relaxed">
+                {feature.description}
               </p>
             </div>
-            <div class="flex flex-wrap gap-3">
-              {
-                props.page.cta.buttons.map((button, index) => (
-                  <Button
-                    as="a"
-                    href={button.href}
-                    size="lg"
-                    variant={index === 0 ? "default" : "outline"}
-                  >
-                    {button.text}
-                  </Button>
-                ))
-              }
+          )
+        })
+      }
+    </div>
+  </section>
+
+  <!-- Everything You Need -->
+  <section
+    class="mx-auto flex w-full max-w-(--container) flex-col gap-10 px-6 py-16 sm:py-24"
+  >
+    <div class="mx-auto max-w-2xl text-center">
+      <h2
+        class="text-foreground text-3xl font-medium tracking-tight sm:text-4xl"
+      >
+        Everything you need to build content websites
+      </h2>
+      <p class="text-muted-foreground mt-4 text-lg leading-relaxed">
+        Over 50 components organized into clear categories, from page layout and
+        navigation to content display and forms. Each component is built as
+        vanilla Astro with zero framework dependencies.
+      </p>
+    </div>
+
+    <div
+      class="grid gap-px overflow-hidden rounded-xl border sm:grid-cols-2 lg:grid-cols-3"
+    >
+      {
+        [
+          {
+            icon: LayoutGridIcon,
+            title: "Layout",
+            description:
+              "Section, Container, Separator, and Page components to structure your content with flexible, responsive layout primitives.",
+          },
+          {
+            icon: SignpostIcon,
+            title: "Navigation",
+            description:
+              "Header, Sidebar, Breadcrumb, Tabs, and Navigation Menu to guide visitors through your content.",
+          },
+          {
+            icon: BlocksIcon,
+            title: "Content Display",
+            description:
+              "Card, Tile, Accordion, Badge, and Table to present articles, features, and structured information.",
+          },
+          {
+            icon: PaletteIcon,
+            title: "Theming",
+            description:
+              "Built-in dark mode, theme toggle, and CSS variables for complete control over your site's visual identity.",
+          },
+          {
+            icon: FileTextIcon,
+            title: "Forms & Input",
+            description:
+              "Input, Select, Checkbox, Switch, Radio Group, and Field components for accessible, styled forms.",
+          },
+          {
+            icon: CodeIcon,
+            title: "Shadcn Compatible",
+            description:
+              "Uses the same API conventions as shadcn/ui, so AI tools and developers can work with it immediately.",
+          },
+        ].map(({ icon: Icon, title, description }) => (
+          <div class="bg-background flex flex-col gap-3 p-6">
+            <div class="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
+              <Icon class="size-5" />
             </div>
+            <h3 class="text-foreground text-sm font-medium">{title}</h3>
+            <p class="text-muted-foreground text-sm leading-relaxed">
+              {description}
+            </p>
           </div>
-        </section>
-      </HeaderInset>
-      <footer class="px-6 py-8">
-        <p class="text-muted-foreground mx-auto max-w-(--container) text-sm">
-          {props.global.name}
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Browse Components -->
+  <section
+    class="mx-auto flex w-full max-w-(--container) flex-col gap-8 px-6 py-16 sm:py-24"
+  >
+    <div class="max-w-2xl">
+      <h2
+        class="text-foreground text-3xl font-medium tracking-tight sm:text-4xl"
+      >
+        Browse the component library
+      </h2>
+      <p class="text-muted-foreground mt-4 text-lg leading-relaxed">
+        Explore individual components with live examples, usage documentation,
+        and installation instructions.
+      </p>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <Tile href="/docs/components/section" variant="floating">
+        <TileContent>
+          <TileTitle>Section</TileTitle>
+          <TileDescription>
+            Organize page content into semantic, styled sections with flexible
+            padding and layout options.
+          </TileDescription>
+        </TileContent>
+      </Tile>
+      <Tile href="/docs/components/card" variant="floating">
+        <TileContent>
+          <TileTitle>Card</TileTitle>
+          <TileDescription>
+            Display content in a contained, elevated surface with header, body,
+            and footer slots.
+          </TileDescription>
+        </TileContent>
+      </Tile>
+      <Tile href="/docs/components/accordion" variant="floating">
+        <TileContent>
+          <TileTitle>Accordion</TileTitle>
+          <TileDescription>
+            Collapse and expand content sections with smooth animations and
+            keyboard support.
+          </TileDescription>
+        </TileContent>
+      </Tile>
+      <Tile href="/docs/components/tabs" variant="floating">
+        <TileContent>
+          <TileTitle>Tabs</TileTitle>
+          <TileDescription>
+            Switch between different views of content with accessible, animated
+            tab panels.
+          </TileDescription>
+        </TileContent>
+      </Tile>
+      <Tile href="/docs/components/header" variant="floating">
+        <TileContent>
+          <TileTitle>Header</TileTitle>
+          <TileDescription>
+            Full-featured site header with navigation, mobile menu, and inset
+            layout support.
+          </TileDescription>
+        </TileContent>
+      </Tile>
+      <Tile href="/docs/components/button" variant="floating">
+        <TileContent>
+          <TileTitle>Button</TileTitle>
+          <TileDescription>
+            Versatile button with multiple variants, sizes, and polymorphic
+            rendering support.
+          </TileDescription>
+        </TileContent>
+      </Tile>
+    </div>
+
+    <div>
+      <Button as="a" href="/docs/components/" variant="outline" size="lg">
+        View all components
+      </Button>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section
+    class="mx-auto flex w-full max-w-(--container) flex-col gap-10 px-6 py-16 sm:py-24"
+  >
+    <div class="mx-auto max-w-2xl text-center">
+      <h2
+        class="text-foreground text-3xl font-medium tracking-tight sm:text-4xl"
+      >
+        Frequently asked questions
+      </h2>
+      <p class="text-muted-foreground mt-4 text-lg leading-relaxed">
+        Common questions about fulldev/ui, installation, compatibility, and how
+        it works with Astro.
+      </p>
+    </div>
+
+    <div class="mx-auto w-full max-w-2xl">
+      <Accordion defaultValue="faq-1" collapsible>
+        <AccordionItem value="faq-1">
+          <AccordionTrigger>What is fulldev/ui?</AccordionTrigger>
+          <AccordionContent>
+            fulldev/ui is a free and open-source component library built
+            exclusively for Astro. It provides beautifully designed, accessible
+            components with zero framework dependencies — everything runs as
+            vanilla Astro components with no React, Vue, or Svelte required.
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="faq-2">
+          <AccordionTrigger>Is it compatible with shadcn/ui?</AccordionTrigger>
+          <AccordionContent hidden>
+            Yes. fulldev/ui uses the same API conventions and naming patterns as
+            shadcn/ui. This means AI coding tools and developers already
+            familiar with shadcn/ui can work with fulldev/ui right away without
+            learning new patterns.
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="faq-3">
+          <AccordionTrigger>How do I install components?</AccordionTrigger>
+          <AccordionContent hidden>
+            Install components individually using the shadcn CLI. For example,
+            run npx shadcn@latest add @fulldev/button to add the Button
+            component. Each component is self-contained and includes all its
+            dependencies.
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="faq-4">
+          <AccordionTrigger
+            >Does it require a JavaScript framework?</AccordionTrigger
+          >
+          <AccordionContent hidden>
+            No. Every component is built with vanilla Astro and ships zero
+            client-side JavaScript by default. Interactive components like Tabs
+            and Accordion use minimal, targeted scripts that are automatically
+            loaded only when needed.
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="faq-5">
+          <AccordionTrigger>Can I customize the design?</AccordionTrigger>
+          <AccordionContent hidden>
+            Absolutely. Components use CSS variables and Tailwind CSS for
+            styling, giving you full control over colors, spacing, typography,
+            and dark mode. You own the source code and can modify any component
+            to match your brand.
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="mx-auto w-full max-w-(--container) px-6 py-16 sm:py-24">
+    <div
+      class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"
+    >
+      <div class="max-w-2xl">
+        <h2
+          class="text-foreground text-3xl font-medium tracking-tight sm:text-4xl"
+        >
+          {props.page.cta.title}
+        </h2>
+        <p class="text-muted-foreground mt-4 text-lg leading-relaxed">
+          {props.page.cta.description}
         </p>
-      </footer>
-    </HeaderProvider>
-  </LayoutBody>
-</Layout>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        {
+          props.page.cta.buttons.map((button, index) => (
+            <Button
+              as="a"
+              href={button.href}
+              size="lg"
+              variant={index === 0 ? "default" : "outline"}
+            >
+              {button.text}
+            </Button>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+  <footer slot="footer" class="px-6 py-8">
+    <div
+      class="text-muted-foreground mx-auto flex max-w-(--container) items-center justify-between text-sm"
+    >
+      <Logo href="/">
+        <LogoImage
+          src={props.global.logo.dark}
+          alt={`${props.global.name} logo`}
+          class="dark:hidden"
+        />
+        <LogoImage
+          src={props.global.logo.light}
+          alt={`${props.global.name} logo`}
+          class="hidden dark:block"
+        />
+        <LogoText>{props.global.name}</LogoText>
+      </Logo>
+      <span>&copy; {new Date().getFullYear()} {props.global.name}</span>
+    </div>
+  </footer>
+</Base>
+
+<style is:global>
+  @keyframes scroll-up {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-50%);
+    }
+  }
+  @keyframes scroll-down {
+    from {
+      transform: translateY(-50%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+</style>

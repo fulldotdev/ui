@@ -1,5 +1,5 @@
 export const typographyH1Style =
-  "scroll-m-20 text-4xl font-extrabold tracking-tight text-balance"
+  "scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance"
 
 export const typographyH2Style =
   "scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0"
@@ -12,8 +12,7 @@ export const typographyH4Style =
 
 export const typographyPStyle = "leading-7 [&:not(:first-child)]:mt-6"
 
-export const typographyAStyle =
-  "text-foreground underline underline-offset-[0.2em]"
+export const typographyAStyle = "text-primary underline underline-offset-4"
 
 export const typographyBlockquoteStyle = "mt-6 border-l-2 pl-6 italic"
 
@@ -39,15 +38,15 @@ export const typographyOrderedListStyle = "list-decimal"
 
 export const typographyListItemStyle = "mt-2"
 
-export const typographyTableContainerStyle = "w-full overflow-y-auto"
+export const typographyTableContainerStyle = "my-6 w-full overflow-y-auto"
 
 export const typographyTableStyle = "w-full"
 
 export const typographyTableRowStyle = "m-0 border-t p-0 even:bg-muted"
 
-export const typographyTableHeadStyle = "border px-4 py-2 text-start font-bold"
+export const typographyTableHeadStyle = "border px-4 py-2 text-left font-bold"
 
-export const typographyTableCellStyle = "border px-4 py-2 text-start"
+export const typographyTableCellStyle = "border px-4 py-2 text-left"
 
 export const typographyHrStyle = "my-8 border-border"
 

@@ -1,100 +1,20 @@
 ---
 import type { HTMLAttributes } from "astro/types"
-import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-type Props = HTMLAttributes<"header"> & {
-  variant?: VariantProps<typeof variants>["variant"]
-  container?: "contained" | "full"
-  sticky?: "auto" | "always" | "never"
-}
+type Props = HTMLAttributes<"header">
 
-const variants = cva("group/header peer relative z-50", {
-  variants: {
-    variant: {
-      default: "w-full",
-      floating:
-        "mx-auto mt-(--header-inset-spacing) w-[calc(100%-2*var(--gutter,24px))]",
-      inset: "w-full",
-    },
-    container: {
-      contained: "data-[variant=floating]:max-w-(--header-width)",
-      full: "max-w-none",
-    },
-    sticky: {
-      always: "sticky",
-      never: "relative",
-    },
-  },
-  compoundVariants: [
-    {
-      sticky: "always",
-      variant: "default",
-      class: "top-0",
-    },
-    {
-      sticky: "always",
-      variant: "floating",
-      class: "top-(--header-inset-spacing)",
-    },
-    {
-      sticky: "always",
-      variant: "inset",
-      class: "top-0",
-    },
-  ],
-  defaultVariants: {
-    variant: "default",
-    container: "contained",
-    sticky: "always",
-  },
-})
-
-const innerVariants = cva(
-  "mx-auto flex h-(--header-height) w-full items-center justify-between gap-8 px-4 lg:px-6",
-  {
-    variants: {
-      container: {
-        contained: "max-w-(--header-width)",
-        full: "max-w-none",
-      },
-    },
-    defaultVariants: {
-      container: "contained",
-    },
-  }
-)
-
-const {
-  class: className,
-  variant = "default",
-  container = "contained",
-  sticky = "auto",
-  ...props
-} = Astro.props
-
-const resolvedSticky =
-  sticky === "auto" ? (variant === "default" ? "always" : "never") : sticky
+const { class: className, ...props } = Astro.props
 ---
 
 <header
   class={cn(
-    variants({ variant, container, sticky: resolvedSticky }),
+    "group/header text-sidebar-foreground relative z-50 flex w-full items-center justify-between gap-8 py-2",
     className
   )}
-  data-container={container}
   data-slot="header"
-  data-variant={variant}
-  data-sticky={resolvedSticky}
   {...props}
 >
-  <div
-    data-container={container}
-    data-slot="header-inner"
-    data-variant={variant}
-    class={innerVariants({ container })}
-  >
-    <slot />
-  </div>
+  <slot />
 </header>

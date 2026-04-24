@@ -15,6 +15,7 @@ type Props = HTMLAttributes<"div"> & {
   variant?: "sidebar" | "floating" | "inset"
   collapsible?: "offcanvas" | "icon" | "none"
   dir?: "ltr" | "rtl"
+  state?: "expanded" | "collapsed"
 }
 
 const {
@@ -23,8 +24,12 @@ const {
   variant = "sidebar",
   collapsible = "offcanvas",
   dir,
+  state = "expanded",
   ...props
 } = Astro.props
+
+const desktopState = collapsible === "none" ? "expanded" : state
+const desktopCollapsible = desktopState === "collapsed" ? collapsible : ""
 ---
 
 {
@@ -73,8 +78,8 @@ const {
 
       <div
         data-slot="sidebar"
-        data-state="expanded"
-        data-collapsible=""
+        data-state={desktopState}
+        data-collapsible={desktopCollapsible}
         data-variant={variant}
         data-side={side}
         data-sidebar-collapsible={collapsible}
