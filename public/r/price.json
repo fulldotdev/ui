@@ -4,17 +4,17 @@
   "files": [
     {
       "path": "src/components/ui/price/price.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div class={cn(\"flex flex-wrap items-center gap-x-2\", className)} {...props}>\n  <slot />\n</div>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div class={cn(\"flex flex-wrap items-center gap-x-2\", className)} {...props}>\n  <slot />\n</div>\n",
       "type": "registry:ui"
     },
     {
       "path": "src/components/ui/price/price-unit.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"span\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<span\n  class={cn(\"text-muted-foreground text-sm leading-tight\", className)}\n  {...props}\n>\n  / <slot />\n</span>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"span\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<span\n  class={cn(\"text-muted-foreground text-sm leading-tight\", className)}\n  {...props}\n>\n  / <slot />\n</span>\n",
       "type": "registry:ui"
     },
     {
       "path": "src/components/ui/price/price-value.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\nimport { formatPriceValue, type PriceValue } from \"./format-price-value\"\n\ninterface Props extends VariantProps<typeof variants>, HTMLAttributes<\"span\"> {\n  price?: PriceValue\n  currency?: string\n  locale?: string\n  variant?: \"default\" | \"sale\"\n}\n\nconst variants = cva(\"leading-tight\", {\n  variants: {\n    variant: {\n      default: \"text-foreground\",\n      sale: \"text-muted-foreground line-through\",\n    },\n  },\n})\n\nconst {\n  class: className,\n  price,\n  currency = \"USD\",\n  locale = \"en-US\",\n  variant = \"default\",\n  ...props\n} = Astro.props\n\nconst formattedPrice = formatPriceValue(price, { currency, locale })\n---\n\n{\n  formattedPrice && (\n    <span class={cn(variants({ variant }), className)} {...props}>\n      {formattedPrice}\n    </span>\n  )\n}\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { formatPriceValue, type PriceValue } from \"./format-price-value\"\n\ntype Props = VariantProps<typeof variants> &\n  HTMLAttributes<\"span\"> & {\n    price?: PriceValue\n    currency?: string\n    locale?: string\n    variant?: \"default\" | \"sale\"\n  }\n\nconst variants = cva(\"leading-tight\", {\n  variants: {\n    variant: {\n      default: \"text-foreground\",\n      sale: \"text-muted-foreground line-through\",\n    },\n  },\n})\n\nconst {\n  class: className,\n  price,\n  currency = \"USD\",\n  locale = \"en-US\",\n  variant = \"default\",\n  ...props\n} = Astro.props\n\nconst formattedPrice = formatPriceValue(price, { currency, locale })\n---\n\n{\n  formattedPrice && (\n    <span class={cn(variants({ variant }), className)} {...props}>\n      {formattedPrice}\n    </span>\n  )\n}\n",
       "type": "registry:ui"
     },
     {

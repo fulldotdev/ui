@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "src/pages/[...page].astro",
-      "content": "---\nimport { getCollection, getEntry, render } from \"astro:content\"\n\nimport Docs from \"@/components/layouts/docs.astro\"\nimport Home from \"@/components/layouts/home.astro\"\n\nexport async function getStaticPaths() {\n  const pages = await getCollection(\"pages\")\n  return pages.map((page) => {\n    return {\n      params: {\n        page: page.id === \"index\" ? undefined : page.id,\n      },\n      props: page,\n    }\n  })\n}\n\nconst page = Astro.props.data\nconst type = page.type\nconst { Content } = await render(Astro.props)\nconst global = (await getEntry(\"globals\", Astro.currentLocale || \"en\"))?.data\n---\n\n{\n  type === \"home\" ? (\n    <Home global={global} page={page}>\n      <Content />\n    </Home>\n  ) : // ) : type === \"docs\" ? (\n  //   <Docs global={global} page={page}>\n  //     <Content />\n  //   </Docs>\n  null\n}\n",
+      "content": "---\nimport { getCollection } from \"astro:content\"\n\nimport { hrefFromPageId } from \"@/lib/pages\"\nimport LayoutRenderer from \"@/components/layout-renderer.astro\"\n\nexport async function getStaticPaths() {\n  const pages = await getCollection(\"pages\")\n  return pages.map((page) => {\n    return {\n      params: {\n        page: hrefFromPageId(page.id) === \"/\" ? undefined : page.id,\n      },\n      props: page,\n    }\n  })\n}\n---\n\n<LayoutRenderer {...Astro.props} />\n",
       "type": "registry:file",
       "target": "src/pages/[...page].astro"
     }

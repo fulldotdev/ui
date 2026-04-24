@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toggle-group",
+  "registryDependencies": [
+    "@fulldev/toggle"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/toggle-group/toggle-group.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport type { ToggleVariantProps } from \"@/components/ui/toggle\"\n\ntype ToggleGroupValue = string | string[]\n\ntype Props = HTMLAttributes<\"div\"> &\n  ToggleVariantProps & {\n    defaultValue?: ToggleGroupValue\n    multiple?: boolean\n    orientation?: \"horizontal\" | \"vertical\"\n    loop?: boolean\n    disabled?: boolean\n    spacing?: number\n  }\n\nconst {\n  class: className,\n  defaultValue,\n  multiple = false,\n  orientation = \"horizontal\",\n  loop = true,\n  disabled = false,\n  spacing = 0,\n  variant = \"default\",\n  size = \"default\",\n  style,\n  ...props\n} = Astro.props\n\nconst serializedDefaultValue = Array.isArray(defaultValue)\n  ? defaultValue.join(\" \")\n  : defaultValue\nconst mergedStyle = `--gap:${spacing}px;${style ?? \"\"}`\n---\n\n<div\n  data-slot=\"toggle-group\"\n  data-default-value={serializedDefaultValue}\n  data-multiple={multiple}\n  data-orientation={orientation}\n  data-horizontal={orientation === \"horizontal\" ? true : undefined}\n  data-vertical={orientation === \"vertical\" ? true : undefined}\n  data-loop={loop}\n  data-disabled={disabled}\n  data-variant={variant}\n  data-size={size}\n  data-spacing={spacing}\n  style={mergedStyle}\n  class={cn(\n    \"group/toggle-group flex w-fit flex-row items-center gap-[--gap] rounded-md data-[spacing=0]:data-[variant=outline]:shadow-xs data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-stretch\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/toggle-group\"\n\n  create()\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/toggle-group/toggle-group-item.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { toggleVariants, type ToggleVariantProps } from \"@/components/ui/toggle\"\n\ntype Props = HTMLAttributes<\"button\"> &\n  ToggleVariantProps & {\n    value: string\n    disabled?: boolean\n  }\n\nconst {\n  class: className,\n  value,\n  disabled,\n  variant,\n  size,\n  type = \"button\",\n  ...props\n} = Astro.props\n---\n\n<button\n  data-slot=\"toggle-group-item\"\n  data-value={value}\n  data-disabled={disabled}\n  data-variant={variant}\n  data-size={size}\n  type={type}\n  class={cn(\n    toggleVariants({\n      variant: variant ?? undefined,\n      size: size ?? undefined,\n    }),\n    \"shrink-0 group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-2 group-data-[spacing=0]/toggle-group:shadow-none focus:z-10 focus-visible:z-10 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-end]:pr-1.5 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-start]:pl-1.5 group-data-horizontal/toggle-group:first:rounded-l-md group-data-vertical/toggle-group:first:rounded-t-md group-data-horizontal/toggle-group:last:rounded-r-md group-data-vertical/toggle-group:last:rounded-b-md data-[state=on]:bg-muted group-data-[variant=outline]/toggle-group:border group-data-[variant=outline]/toggle-group:border-input group-data-[variant=outline]/toggle-group:bg-transparent group-data-[variant=outline]/toggle-group:shadow-xs group-data-[variant=outline]/toggle-group:hover:bg-muted\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/toggle-group/index.ts",
+      "content": "export { default as ToggleGroup } from \"./toggle-group.astro\"\nexport { default as ToggleGroupItem } from \"./toggle-group-item.astro\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}
