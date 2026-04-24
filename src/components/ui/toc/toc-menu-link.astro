@@ -1,0 +1,37 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"a"> & {
+  depth?: number
+  isActive?: boolean
+  active?: boolean
+}
+
+const {
+  class: className,
+  depth = 2,
+  isActive,
+  active = false,
+  ...props
+} = Astro.props as Props
+
+const resolvedActive = isActive ?? active
+---
+
+<a
+  data-slot="toc-menu-link"
+  data-depth={depth}
+  data-active={resolvedActive ? "true" : undefined}
+  aria-current={resolvedActive ? "location" : undefined}
+  class={cn(
+    "text-muted-foreground hover:text-foreground data-[active=true]:text-foreground block text-sm leading-6 transition-colors",
+    depth === 3 && "pl-4",
+    depth >= 4 && "pl-8",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</a>

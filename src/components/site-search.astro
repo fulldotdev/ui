@@ -1,0 +1,205 @@
+---
+import { SearchIcon } from "@lucide/astro"
+import { getCollection } from "astro:content"
+
+import { hrefFromPageId } from "@/lib/pages"
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandShortcut,
+} from "@/components/ui/command"
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
+
+type Props = {
+  mobile?: boolean
+}
+
+type SearchItem = {
+  group: "Docs" | "Pages"
+  href: string
+  keywords: string[]
+  title: string
+}
+
+const { mobile = false } = Astro.props
+
+const compactStrings = (values: Array<string | undefined>) =>
+  values.filter((value): value is string => Boolean(value))
+
+const items = (await getCollection("pages"))
+  .flatMap((page): SearchItem[] => {
+    if (page.data.type === "doc") {
+      return [
+        {
+          group: "Docs",
+          href: hrefFromPageId(page.id),
+          keywords: compactStrings([page.id, page.data.description]),
+          title: page.data.title,
+        },
+      ]
+    }
+
+    if (page.data.type === "home") {
+      return [
+        {
+          group: "Pages",
+          href: hrefFromPageId(page.id),
+          keywords: ["index", "home", page.data.seo.title],
+          title: "Home",
+        },
+      ]
+    }
+
+    return []
+  })
+  .sort((a, b) => {
+    if (a.href === "/") return -1
+    if (b.href === "/") return 1
+    return a.title.localeCompare(b.title)
+  })
+
+const pageItems = items.filter((item) => item.group === "Pages")
+const docsItems = items.filter((item) => item.group === "Docs")
+---
+
+<Dialog>
+  <DialogTrigger
+    variant="outline"
+    size="sm"
+    data-site-search-shortcut-trigger={!mobile ? "true" : undefined}
+  >
+    <SearchIcon class="size-4" />
+    <span>Search</span>
+  </DialogTrigger>
+
+  <CommandDialog
+    title="Search pages"
+    description="Search the site and jump to a page."
+  >
+    <Command>
+      <CommandInput placeholder="Search pages..." />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+
+        {
+          pageItems.length > 0 && (
+            <CommandGroup heading="Pages">
+              {pageItems.map((item) => (
+                <CommandItem
+                  data-search-href={item.href}
+                  value={item.title}
+                  label={item.title}
+                  keywords={item.keywords}
+                >
+                  {item.title}
+                  <CommandShortcut>{item.href}</CommandShortcut>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          )
+        }
+
+        {
+          docsItems.length > 0 && (
+            <CommandGroup heading="Docs">
+              {docsItems.map((item) => (
+                <CommandItem
+                  data-search-href={item.href}
+                  value={item.title}
+                  label={item.title}
+                  keywords={item.keywords}
+                >
+                  {item.title}
+                  <CommandShortcut>{item.href}</CommandShortcut>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          )
+        }
+      </CommandList>
+    </Command>
+  </CommandDialog>
+</Dialog>
+
+<script is:inline>
+  if (!window.__siteSearchInitialized) {
+    window.__siteSearchInitialized = true
+
+    const isTypingTarget = (target) => {
+      if (!(target instanceof HTMLElement)) return false
+      if (target.isContentEditable) return true
+
+      return (
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement
+      )
+    }
+
+    const getActiveSearchItem = () => {
+      const item = document.querySelector(
+        "[data-slot=dialog-content][data-open] [data-search-href][data-selected]"
+      )
+
+      return item instanceof HTMLElement ? item : null
+    }
+
+    const openSearch = () => {
+      const trigger = document.querySelector(
+        "[data-site-search-shortcut-trigger]"
+      )
+
+      if (trigger instanceof HTMLElement) {
+        trigger.click()
+      }
+    }
+
+    const navigateToItem = (item) => {
+      const href = item?.dataset.searchHref
+
+      if (href) {
+        window.location.assign(href)
+      }
+    }
+
+    document.addEventListener("click", (event) => {
+      const target = event.target
+
+      if (!(target instanceof Element)) return
+
+      const item = target.closest("[data-search-href]")
+
+      if (item instanceof HTMLElement) {
+        navigateToItem(item)
+      }
+    })
+
+    document.addEventListener("keydown", (event) => {
+      if (
+        (event.metaKey || event.ctrlKey) &&
+        !event.altKey &&
+        !event.shiftKey &&
+        event.key.toLowerCase() === "k" &&
+        !isTypingTarget(event.target)
+      ) {
+        event.preventDefault()
+        openSearch()
+        return
+      }
+
+      if (event.key !== "Enter") return
+
+      const item = getActiveSearchItem()
+
+      if (!item) return
+
+      event.preventDefault()
+      navigateToItem(item)
+    })
+  }
+</script>

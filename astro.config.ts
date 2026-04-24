@@ -1,17 +1,26 @@
 import mdx from "@astrojs/mdx"
+import liveCode from "astro-live-code"
 import { defineConfig } from "astro/config"
 
 import fulldevIntegration from "./src/lib/integration"
 
 export default defineConfig({
-  image: {
-    breakpoints: [640, 750, 828, 1080, 1280, 1668, 2048, 2560],
-  },
   prefetch: {
     prefetchAll: true,
   },
   devToolbar: {
     enabled: false,
+  },
+  image: {
+    breakpoints: [640, 750, 828, 1080, 1280, 1668, 2048, 2560],
+  },
+  markdown: {
+    shikiConfig: {
+      themes: {
+        light: "github-light",
+        dark: "github-dark",
+      },
+    },
   },
   integrations: [
     fulldevIntegration({
@@ -22,6 +31,9 @@ export default defineConfig({
         defaultLocale: "en",
         locales: ["en"],
       },
+    }),
+    liveCode({
+      layout: "/src/components/live-code.astro",
     }),
     mdx(),
   ],

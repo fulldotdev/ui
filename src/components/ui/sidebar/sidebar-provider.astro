@@ -7,7 +7,7 @@ const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
 
-interface Props extends HTMLAttributes<"div"> {
+type Props = HTMLAttributes<"div"> & {
   defaultOpen?: boolean
   open?: boolean
 }
@@ -36,7 +36,7 @@ const resolvedStyle = [
   data-open={open === undefined ? undefined : open ? "true" : "false"}
   style={resolvedStyle}
   class={cn(
-    "group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar",
+    "group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full",
     className
   )}
   {...props}
@@ -45,7 +45,6 @@ const resolvedStyle = [
 </div>
 
 <script is:inline>
-  // @ts-nocheck
   const SIDEBAR_COOKIE_NAME = "sidebar_state"
   const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
   const SIDEBAR_KEYBOARD_SHORTCUT = "b"
@@ -76,8 +75,7 @@ const resolvedStyle = [
     }
 
     const isProvider = (value) =>
-      value instanceof HTMLElement &&
-      value.dataset.slot === "sidebar-wrapper"
+      value instanceof HTMLElement && value.dataset.slot === "sidebar-wrapper"
 
     const isDesktopSidebar = (value) =>
       value instanceof HTMLElement &&
@@ -128,11 +126,7 @@ const resolvedStyle = [
         const collapsible = sidebar.dataset.sidebarCollapsible ?? "offcanvas"
         sidebar.dataset.state = desktopState
         sidebar.dataset.collapsible =
-          collapsible === "none"
-            ? "none"
-            : state.open
-              ? ""
-              : collapsible
+          collapsible === "none" ? "none" : state.open ? "" : collapsible
       })
 
       provider
@@ -140,7 +134,9 @@ const resolvedStyle = [
         .forEach((control) => {
           if (!(control instanceof HTMLElement)) return
 
-          const isExpanded = desktopMedia.matches ? state.open : state.openMobile
+          const isExpanded = desktopMedia.matches
+            ? state.open
+            : state.openMobile
           control.setAttribute("aria-expanded", String(isExpanded))
         })
 
@@ -171,7 +167,7 @@ const resolvedStyle = [
 
       getMobileSheets(provider).forEach((sheet) => {
         sheet.dispatchEvent(
-          new CustomEvent("sheet:set", {
+          new CustomEvent("dialog:set", {
             detail: { open: openMobile },
           })
         )
@@ -217,7 +213,7 @@ const resolvedStyle = [
         })
 
       getMobileSheets(provider).forEach((sheet) => {
-        sheet.addEventListener("sheet:change", (event) => {
+        sheet.addEventListener("dialog:change", (event) => {
           const nextOpen = event.detail?.open
           if (typeof nextOpen !== "boolean") return
 
@@ -244,11 +240,15 @@ const resolvedStyle = [
       const activeElement = document.activeElement
 
       if (activeElement instanceof HTMLElement) {
-        const activeProvider = activeElement.closest("[data-slot='sidebar-wrapper']")
+        const activeProvider = activeElement.closest(
+          "[data-slot='sidebar-wrapper']"
+        )
         if (isProvider(activeProvider)) return activeProvider
       }
 
-      const firstProvider = document.querySelector("[data-slot='sidebar-wrapper']")
+      const firstProvider = document.querySelector(
+        "[data-slot='sidebar-wrapper']"
+      )
       return isProvider(firstProvider) ? firstProvider : null
     }
 

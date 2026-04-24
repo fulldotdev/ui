@@ -1,0 +1,32 @@
+---
+import type { HTMLTag, Polymorphic } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+import {
+  typographyListItemStyle,
+  typographyOrderedListStyle,
+  typographyListStyle,
+  typographyUnorderedListStyle,
+  toArbitrarySelectorClass,
+} from "./typography-styles"
+
+type Props<Tag extends "ul" | "ol"> = Polymorphic<{ as: Tag }>
+
+const { as: Tag = "ul", class: className, ...props } = Astro.props as Props<
+  HTMLTag & ("ul" | "ol")
+>
+---
+
+<Tag
+  data-slot="typography-list"
+  class={cn(
+    typographyListStyle,
+    Tag === "ol" ? typographyOrderedListStyle : typographyUnorderedListStyle,
+    toArbitrarySelectorClass("&>li", typographyListItemStyle),
+    className
+  )}
+  {...props}
+>
+  <slot />
+</Tag>

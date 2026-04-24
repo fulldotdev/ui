@@ -1,126 +1,264 @@
 ---
-import BaseHeaderLayout from "@/layouts/base-header.astro"
+import { CodeIcon, FileTextIcon, RocketIcon } from "@lucide/astro"
+import type { MarkdownHeading } from "astro"
 
 import type { GlobalSchema } from "@/schemas/global"
-import type { HomeLayoutSchema } from "@/schemas/layouts/home"
+import type { HomeSchema } from "@/schemas/layouts/home"
 import { Button } from "@/components/ui/button"
-import { Icon } from "@/components/ui/icon"
+import {
+  Header,
+  HeaderActions,
+  HeaderContent,
+  HeaderGroup,
+  HeaderInset,
+  HeaderMobile,
+  HeaderProvider,
+  HeaderTrigger,
+} from "@/components/ui/header"
+import { Layout, LayoutBody, LayoutHead } from "@/components/ui/layout"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from "@/components/ui/navigation-menu"
+import { ThemeProvider, ThemeToggle } from "@/components/ui/theme-toggle"
+import SiteSearch from "@/components/site-search.astro"
 
-interface Props {
-  global?: GlobalSchema
-  page: HomeLayoutSchema
+type Props = {
+  global: GlobalSchema
+  page: HomeSchema
+  headings: MarkdownHeading[]
 }
 
-const { global, page } = Astro.props
-
-const heroLinks = [page.hero.button1, page.hero.button2]
-const ctaLinks = [page.cta.button1, page.cta.button2]
-const features = [
-  page.features.feature1,
-  page.features.feature2,
-  page.features.feature3,
-]
+const props: Props = Astro.props
 ---
 
-<BaseHeaderLayout global={global} page={page} variant="inset">
-  <section
-    class="mx-auto flex w-full max-w-(--container) flex-col gap-8 px-6 py-14 text-center sm:py-20"
-  >
-    <div class="mx-auto flex max-w-5xl flex-col gap-5">
-      <h1
-        class="text-foreground text-5xl leading-none font-medium tracking-[-0.05em] text-balance sm:text-6xl lg:text-7xl"
-      >
-        {page.hero.title}
-      </h1>
-      <p
-        class="text-muted-foreground mx-auto max-w-2xl text-xl leading-8 text-balance"
-      >
-        {page.hero.description}
-      </p>
-    </div>
-    <div class="flex flex-wrap items-center justify-center gap-3">
-      {
-        heroLinks.map((link, index) => (
-          <Button
-            as="a"
-            href={link.href}
-            size="lg"
-            variant={index === 0 ? "default" : "outline"}
-          >
-            {link.text}
-          </Button>
-        ))
-      }
-    </div>
-  </section>
-
-  <section
-    class="mx-auto flex w-full max-w-(--container) flex-col gap-8 px-6 py-14 sm:py-16"
-  >
-    <div class="max-w-2xl">
-      <p
-        class="text-muted-foreground text-sm font-medium tracking-[0.2em] uppercase"
-      >
-        {page.features.title}
-      </p>
-      <h2
-        class="text-foreground mt-3 text-3xl font-medium tracking-tight sm:text-4xl"
-      >
-        Built for developers, content, and agents.
-      </h2>
-      <p class="text-muted-foreground mt-4 text-lg leading-8">
-        {page.features.description}
-      </p>
-    </div>
-    <div class="grid gap-4 md:grid-cols-3">
-      {
-        features.map((feature) => (
-          <article class="bg-background ring-border/60 flex flex-col gap-4 rounded-2xl p-6 shadow-sm ring-1">
-            <div class="bg-muted text-foreground flex size-11 items-center justify-center rounded-full">
-              <Icon name={feature.icon} class="size-5" />
+<Layout>
+  <LayoutHead name={props.global.name} {...props.page.seo}>
+    <ThemeProvider />
+  </LayoutHead>
+  <LayoutBody class="bg-muted">
+    <HeaderProvider>
+      <Header container="full" sticky="never" variant="inset">
+        <HeaderGroup>
+          <Logo href="/">
+            <LogoImage
+              src={props.global.logo.dark}
+              alt={`${props.global.name} logo`}
+              class="dark:hidden"
+            />
+            <LogoImage
+              src={props.global.logo.light}
+              alt={`${props.global.name} logo`}
+              class="hidden dark:block"
+            />
+            <LogoText>{props.global.name}</LogoText>
+          </Logo>
+        </HeaderGroup>
+        <HeaderContent>
+          <NavigationMenu class="hidden max-w-none justify-start md:flex">
+            <NavigationMenuList class="justify-start">
+              {
+                props.global.header.links.map((link, index) => (
+                  <NavigationMenuItem value={`header-link-${index}`}>
+                    <NavigationMenuLink href={link.href}>
+                      {link.text}
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                ))
+              }
+            </NavigationMenuList>
+          </NavigationMenu>
+        </HeaderContent>
+        <HeaderGroup side="end">
+          <div class="hidden md:flex">
+            <HeaderActions>
+              <SiteSearch />
+              <ThemeToggle size="icon-sm" />
+              {
+                props.global.header.buttons.map((button, index) => (
+                  <Button
+                    as="a"
+                    href={button.href}
+                    variant={
+                      button.variant ?? (index === 0 ? "default" : "ghost")
+                    }
+                    size="sm"
+                  >
+                    {button.text}
+                  </Button>
+                ))
+              }
+            </HeaderActions>
+          </div>
+          <div class="md:hidden">
+            <HeaderTrigger />
+          </div>
+        </HeaderGroup>
+        <HeaderMobile>
+          <div class="flex flex-col gap-6">
+            <Logo href="/">
+              <LogoImage
+                src={props.global.logo.dark}
+                alt={`${props.global.name} logo`}
+                class="dark:hidden"
+              />
+              <LogoImage
+                src={props.global.logo.light}
+                alt={`${props.global.name} logo`}
+                class="hidden dark:block"
+              />
+              <LogoText>{props.global.name}</LogoText>
+            </Logo>
+            <SiteSearch mobile />
+            <nav class="flex flex-col gap-1">
+              {
+                props.global.header.links.map((link) => (
+                  <NavigationMenuLink href={link.href}>
+                    {link.text}
+                  </NavigationMenuLink>
+                ))
+              }
+            </nav>
+            <div class="flex justify-start">
+              <ThemeToggle size="icon-sm" />
             </div>
-            <div class="flex flex-col gap-2">
-              <h3 class="text-lg font-medium tracking-tight">
-                {feature.title}
-              </h3>
-              <p class="text-muted-foreground text-sm leading-7">
-                {feature.description}
+            {
+              props.global.header.buttons.length ? (
+                <div class="flex flex-col gap-2">
+                  {props.global.header.buttons.map((button, index) => (
+                    <Button
+                      as="a"
+                      href={button.href}
+                      variant={
+                        button.variant ?? (index === 0 ? "default" : "ghost")
+                      }
+                      size="sm"
+                      class="w-full justify-center"
+                    >
+                      {button.text}
+                    </Button>
+                  ))}
+                </div>
+              ) : null
+            }
+          </div>
+        </HeaderMobile>
+      </Header>
+      <HeaderInset>
+        <section
+          class="mx-auto flex w-full max-w-(--container) flex-col gap-8 px-6 py-14 text-center sm:py-20"
+        >
+          <div class="mx-auto flex max-w-5xl flex-col gap-5">
+            <h1
+              class="text-foreground text-5xl leading-none font-medium tracking-[-0.05em] text-balance sm:text-6xl lg:text-7xl"
+            >
+              {props.page.hero.title}
+            </h1>
+            <p
+              class="text-muted-foreground mx-auto max-w-2xl text-xl leading-8 text-balance"
+            >
+              {props.page.hero.description}
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center justify-center gap-3">
+            {
+              props.page.hero.buttons.map((button, index) => (
+                <Button
+                  as="a"
+                  href={button.href}
+                  size="lg"
+                  variant={index === 0 ? "default" : "outline"}
+                >
+                  {button.text}
+                </Button>
+              ))
+            }
+          </div>
+        </section>
+
+        <section
+          class="mx-auto flex w-full max-w-(--container) flex-col gap-8 px-6 py-14 sm:py-16"
+        >
+          <div class="max-w-2xl">
+            <p
+              class="text-muted-foreground text-sm font-medium tracking-[0.2em] uppercase"
+            >
+              {props.page.features.title}
+            </p>
+            <h2
+              class="text-foreground mt-3 text-3xl font-medium tracking-tight sm:text-4xl"
+            >
+              Built for developers, content, and agents.
+            </h2>
+            <p class="text-muted-foreground mt-4 text-lg leading-8">
+              {props.page.features.description}
+            </p>
+          </div>
+          <div class="grid gap-4 md:grid-cols-3">
+            {
+              props.page.features.items.map((feature, index) => {
+                const featureIcons = [CodeIcon, FileTextIcon, RocketIcon]
+                const Icon = featureIcons[index] ?? CodeIcon
+
+                return (
+                  <article class="bg-background ring-border/60 flex flex-col gap-4 rounded-2xl p-6 shadow-sm ring-1">
+                    <div class="bg-muted text-foreground flex size-11 items-center justify-center rounded-full">
+                      <Icon class="size-5" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                      <h3 class="text-lg font-medium tracking-tight">
+                        {feature.title}
+                      </h3>
+                      <p class="text-muted-foreground text-sm leading-7">
+                        {feature.description}
+                      </p>
+                    </div>
+                  </article>
+                )
+              })
+            }
+          </div>
+        </section>
+
+        <section class="mx-auto w-full max-w-(--container) px-6 py-14 sm:py-16">
+          <div
+            class="bg-background ring-border/60 flex flex-col gap-6 rounded-[2rem] p-8 shadow-sm ring-1 sm:p-10 lg:flex-row lg:items-end lg:justify-between"
+          >
+            <div class="max-w-2xl">
+              <h2
+                class="text-foreground text-3xl font-medium tracking-tight sm:text-4xl"
+              >
+                {props.page.cta.title}
+              </h2>
+              <p class="text-muted-foreground mt-4 text-lg leading-8">
+                {props.page.cta.description}
               </p>
             </div>
-          </article>
-        ))
-      }
-    </div>
-  </section>
-
-  <section class="mx-auto w-full max-w-(--container) px-6 py-14 sm:py-16">
-    <div
-      class="bg-background ring-border/60 flex flex-col gap-6 rounded-[2rem] p-8 shadow-sm ring-1 sm:p-10 lg:flex-row lg:items-end lg:justify-between"
-    >
-      <div class="max-w-2xl">
-        <h2
-          class="text-foreground text-3xl font-medium tracking-tight sm:text-4xl"
-        >
-          {page.cta.title}
-        </h2>
-        <p class="text-muted-foreground mt-4 text-lg leading-8">
-          {page.cta.description}
+            <div class="flex flex-wrap gap-3">
+              {
+                props.page.cta.buttons.map((button, index) => (
+                  <Button
+                    as="a"
+                    href={button.href}
+                    size="lg"
+                    variant={index === 0 ? "default" : "outline"}
+                  >
+                    {button.text}
+                  </Button>
+                ))
+              }
+            </div>
+          </div>
+        </section>
+      </HeaderInset>
+      <footer class="px-6 py-8">
+        <p class="text-muted-foreground mx-auto max-w-(--container) text-sm">
+          {props.global.name}
         </p>
-      </div>
-      <div class="flex flex-wrap gap-3">
-        {
-          ctaLinks.map((link, index) => (
-            <Button
-              as="a"
-              href={link.href}
-              size="lg"
-              variant={index === 0 ? "default" : "outline"}
-            >
-              {link.text}
-            </Button>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-</BaseHeaderLayout>
+      </footer>
+    </HeaderProvider>
+  </LayoutBody>
+</Layout>

@@ -1,5 +1,5 @@
 ---
-type: docs
+type: doc
 title: Introduction
 ---
 

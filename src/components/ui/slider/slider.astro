@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 type SliderValue = number | [number, number] | string
 type ThumbAlignment = "center" | "edge" | "edge-client-only"
 
-interface Props extends HTMLAttributes<"div"> {
+type Props = HTMLAttributes<"div"> & {
   defaultValue?: SliderValue
   min?: number
   max?: number
@@ -30,9 +30,6 @@ const {
   ...props
 } = Astro.props
 
-const booleanDataAttr = (value?: boolean) =>
-  value === undefined ? undefined : value ? "" : "false"
-
 const serializedDefaultValue = Array.isArray(defaultValue)
   ? defaultValue.join(",")
   : defaultValue
@@ -47,7 +44,7 @@ const serializedDefaultValue = Array.isArray(defaultValue)
   data-large-step={largeStep}
   data-orientation={orientation}
   data-thumb-alignment={thumbAlignment}
-  data-disabled={booleanDataAttr(disabled)}
+  data-disabled={disabled}
   class={cn(
     "group/slider relative flex w-full touch-none items-center select-none data-[orientation=vertical]:h-40 data-[orientation=vertical]:w-5 data-[orientation=vertical]:flex-col",
     className

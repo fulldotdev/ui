@@ -1,0 +1,118 @@
+---
+import type { HTMLTag, Polymorphic } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+import {
+  typographyAStyle,
+  typographyBlockquoteStyle,
+  typographyH1Style,
+  typographyH2Style,
+  typographyH3Style,
+  typographyH4Style,
+  typographyHrStyle,
+  typographyInlineCodeStyle,
+  typographyLargeStyle,
+  typographyLeadStyle,
+  typographyListItemStyle,
+  typographyListStyle,
+  typographyMutedStyle,
+  typographyOrderedListStyle,
+  typographyPStyle,
+  typographyPreStyle,
+  typographySmallStyle,
+  typographyTableCellStyle,
+  typographyTableHeadStyle,
+  typographyTableRowStyle,
+  typographyTableStyle,
+  typographyUnorderedListStyle,
+  toArbitrarySelectorClass,
+} from "./typography-styles"
+
+type Props<Tag extends HTMLTag> = Polymorphic<{ as: Tag }>
+
+const { as: Tag = "div", class: className, ...props } = Astro.props
+---
+
+<Tag
+  data-slot="typography"
+  class={cn(
+    [
+      "text-foreground",
+      toArbitrarySelectorClass("&_h1", typographyH1Style),
+      toArbitrarySelectorClass("&_h2", typographyH2Style),
+      toArbitrarySelectorClass("&_h3", typographyH3Style),
+      toArbitrarySelectorClass("&_h4", typographyH4Style),
+      toArbitrarySelectorClass("&_p", typographyPStyle),
+      toArbitrarySelectorClass("&_a", typographyAStyle),
+      toArbitrarySelectorClass("&_blockquote", typographyBlockquoteStyle),
+      toArbitrarySelectorClass("&_hr", typographyHrStyle),
+      toArbitrarySelectorClass("&_pre", typographyPreStyle),
+      toArbitrarySelectorClass("&_ul", typographyListStyle),
+      toArbitrarySelectorClass("&_ul", typographyUnorderedListStyle),
+      toArbitrarySelectorClass("&_ul>li", typographyListItemStyle),
+      toArbitrarySelectorClass("&_ol", typographyListStyle),
+      toArbitrarySelectorClass("&_ol", typographyOrderedListStyle),
+      toArbitrarySelectorClass("&_ol>li", typographyListItemStyle),
+      "[&_table]:my-6",
+      toArbitrarySelectorClass("&_table", typographyTableStyle),
+      toArbitrarySelectorClass("&_tr", typographyTableRowStyle),
+      toArbitrarySelectorClass("&_th", typographyTableHeadStyle),
+      toArbitrarySelectorClass("&_td", typographyTableCellStyle),
+      toArbitrarySelectorClass("&:not(pre)>code", typographyInlineCodeStyle),
+      toArbitrarySelectorClass("&_.lead", typographyLeadStyle),
+      toArbitrarySelectorClass("&_.large", typographyLargeStyle),
+      toArbitrarySelectorClass("&_small", typographySmallStyle),
+      toArbitrarySelectorClass("&_.muted", typographyMutedStyle),
+      "[&>h2:first-child]:mt-0 [&>h2:not(:first-child)]:mt-10",
+      "[&>h3:not(:first-child)]:mt-8",
+      "[&>h4:not(:first-child)]:mt-8",
+      "[&>p:not(:first-child)]:mt-6",
+      "[&>blockquote:not(:first-child)]:mt-6",
+      "[&>ul]:my-6 [&>ol]:my-6",
+      "[&>ul>li+li]:mt-2 [&>ol>li+li]:mt-2",
+      "[&>[data-slot=typography-table-container]]:my-6 [&>table]:my-6",
+      "[&>[data-slot=typography-large]:not(:first-child)]:mt-6",
+    ],
+    className
+  )}
+  {...props}
+>
+  <slot />
+</Tag>
+
+<style is:global>
+  [data-slot="typography"] h1 {
+    font-weight: var(--font-weight-extrabold);
+  }
+
+  [data-slot="typography"] h2,
+  [data-slot="typography"] h3,
+  [data-slot="typography"] h4 {
+    font-weight: var(--font-weight-semibold);
+  }
+</style>
+
+<style is:global>
+  [data-slot="typography"] pre.astro-code {
+    background: color-mix(in oklab, var(--muted) 68%, var(--background)) !important;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    line-height: 1.5;
+  }
+
+  [data-slot="typography"] pre.astro-code code {
+    color: inherit !important;
+  }
+
+  .dark [data-slot="typography"] pre.astro-code {
+    color: var(--shiki-dark, var(--foreground)) !important;
+  }
+
+  .dark [data-slot="typography"] pre.astro-code span[style*="--shiki-dark"] {
+    color: var(--shiki-dark) !important;
+    font-style: var(--shiki-dark-font-style, inherit) !important;
+    font-weight: var(--shiki-dark-font-weight, inherit) !important;
+    text-decoration: var(--shiki-dark-text-decoration, inherit) !important;
+  }
+</style>

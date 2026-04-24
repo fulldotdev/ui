@@ -7,40 +7,35 @@ const featureSchema = z
   .object({
     title: z.string(),
     description: z.string(),
-    icon: z.string(),
   })
   .strict()
 
-export const homeLayoutSchema = (ctx: SchemaContext) =>
+export const homeSchema = (ctx: SchemaContext) =>
   z
     .object({
       hero: z
         .object({
           title: z.string(),
           description: z.string(),
-          button1: buttonSchema,
-          button2: buttonSchema,
+          buttons: buttonSchema.array().length(2),
         })
         .strict(),
       features: z
         .object({
           title: z.string(),
           description: z.string(),
-          feature1: featureSchema,
-          feature2: featureSchema,
-          feature3: featureSchema,
+          items: featureSchema.array().length(3),
         })
         .strict(),
       cta: z
         .object({
           title: z.string(),
           description: z.string(),
-          button1: buttonSchema,
-          button2: buttonSchema,
+          buttons: buttonSchema.array().length(2),
         })
         .strict(),
       seo: seoSchema(ctx),
     })
     .strict()
 
-export type HomeLayoutSchema = z.infer<ReturnType<typeof homeLayoutSchema>>
+export type HomeSchema = z.infer<ReturnType<typeof homeSchema>>

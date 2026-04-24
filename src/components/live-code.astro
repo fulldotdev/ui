@@ -1,0 +1,215 @@
+---
+import { Check, Copy } from "@lucide/astro"
+
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button/button-variants"
+
+type Props = {
+  code: string
+  lang?: string
+  filename?: string
+  componentProps?: Record<string, unknown>
+}
+
+const { code } = Astro.props as Props
+const toggleId = `live-code-${crypto.randomUUID()}`
+const copyButtonId = `live-code-copy-${crypto.randomUUID()}`
+---
+
+<div
+  data-slot="live-code"
+  class="border-border bg-background my-6 overflow-hidden rounded-3xl border"
+>
+  <div
+    data-slot="live-code-preview"
+    class="bg-background flex min-h-[18rem] w-full items-center justify-center px-6 py-10 sm:px-10 sm:py-14"
+  >
+    <div
+      class="live-code-example flex w-full max-w-full items-center justify-center gap-3"
+    >
+      <slot name="example" />
+    </div>
+  </div>
+
+  <input id={toggleId} class="peer sr-only" type="checkbox" />
+
+  <div class="live-code-body border-border border-t">
+    <div class="live-code-source-shell relative">
+      <div class="live-code-overlay pointer-events-none absolute inset-0 z-10">
+      </div>
+
+      <div
+        class="live-code-toggle absolute inset-0 z-20 flex items-center justify-center"
+      >
+        <label
+          class={cn(
+            buttonVariants({ variant: "outline", size: "sm" }),
+            "bg-background cursor-pointer rounded-xl shadow-none"
+          )}
+          for={toggleId}
+        >
+          View Code
+        </label>
+      </div>
+
+      <button
+        id={copyButtonId}
+        type="button"
+        class={cn(
+          buttonVariants({ variant: "ghost", size: "icon-sm" }),
+          "live-code-copy text-foreground absolute top-3 right-3 z-20 rounded-lg shadow-none"
+        )}
+        data-code={code}
+        aria-label="Copy code"
+      >
+        <Copy class="live-code-copy-icon size-4" />
+        <Check class="live-code-check-icon hidden size-4" />
+      </button>
+
+      <div
+        data-slot="live-code-source"
+        class="live-code-source overflow-x-auto px-0 py-0 text-[13px]"
+      >
+        <slot name="code" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ copyButtonId }}>
+  const button = document.getElementById(copyButtonId)
+
+  if (button instanceof HTMLButtonElement) {
+    button.addEventListener("click", async () => {
+      const code = button.dataset.code
+
+      if (!code) return
+
+      try {
+        await navigator.clipboard.writeText(code)
+        button.querySelector(".live-code-copy-icon")?.classList.add("hidden")
+        button
+          .querySelector(".live-code-check-icon")
+          ?.classList.remove("hidden")
+
+        window.setTimeout(() => {
+          button
+            .querySelector(".live-code-copy-icon")
+            ?.classList.remove("hidden")
+          button.querySelector(".live-code-check-icon")?.classList.add("hidden")
+        }, 1200)
+      } catch {
+        // Ignore clipboard failures; the control remains available for retry.
+      }
+    })
+  }
+</script>
+
+<style>
+  [data-slot="live-code"] .live-code-copy {
+    display: none;
+  }
+
+  [data-slot="live-code"] .live-code-source-shell {
+    min-height: 6rem;
+    background: color-mix(in oklab, var(--muted) 68%, var(--background));
+  }
+
+  [data-slot="live-code"] .live-code-overlay {
+    background: linear-gradient(
+      to top,
+      color-mix(in oklab, var(--muted) 68%, var(--background)) 0%,
+      color-mix(in oklab, var(--muted) 55%, transparent) 55%,
+      transparent 100%
+    );
+  }
+
+  [data-slot="live-code"] .live-code-source :global(pre) {
+    margin: 0;
+    overflow: auto;
+    padding: 1rem 1rem 1rem 0;
+    background: transparent !important;
+    border: 0;
+    border-radius: 0;
+    line-height: 1.5;
+  }
+
+  [data-slot="live-code"] .live-code-source :global(code) {
+    display: block;
+    min-width: max-content;
+    font-family: var(--font-geist-mono), monospace;
+    color: var(--shiki-light, var(--foreground)) !important;
+  }
+
+  [data-slot="live-code"]
+    .live-code-source
+    :global(.shiki span[style*="--shiki-light"]) {
+    color: var(--shiki-light) !important;
+    font-style: var(--shiki-light-font-style, inherit) !important;
+    font-weight: var(--shiki-light-font-weight, inherit) !important;
+    text-decoration: var(--shiki-light-text-decoration, inherit) !important;
+  }
+
+  :global(.dark) [data-slot="live-code"] .live-code-source :global(.shiki) {
+    color: var(--shiki-dark, var(--foreground)) !important;
+  }
+
+  :global(.dark)
+    [data-slot="live-code"]
+    .live-code-source
+    :global(.shiki span[style*="--shiki-dark"]) {
+    color: var(--shiki-dark) !important;
+    font-style: var(--shiki-dark-font-style) !important;
+    font-weight: var(--shiki-dark-font-weight) !important;
+    text-decoration: var(--shiki-dark-text-decoration) !important;
+  }
+
+  [data-slot="live-code"] .live-code-source :global(.line) {
+    position: relative;
+    display: block;
+    min-width: max-content;
+    padding-left: 3.5rem;
+  }
+
+  [data-slot="live-code"] .live-code-source :global(.line)::before {
+    content: counter(line);
+    counter-increment: line;
+    position: absolute;
+    left: 0;
+    width: 2.5rem;
+    text-align: right;
+    color: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
+    user-select: none;
+  }
+
+  [data-slot="live-code"] .live-code-source :global(pre code) {
+    counter-reset: line;
+  }
+
+  [data-slot="live-code"] .live-code-source :global(.line > span) {
+    white-space: pre;
+  }
+
+  [data-slot="live-code"] .live-code-example > :only-child {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  [data-slot="live-code"] input:checked ~ .live-code-body .live-code-overlay,
+  [data-slot="live-code"] input:checked ~ .live-code-body .live-code-toggle {
+    display: none;
+  }
+
+  [data-slot="live-code"] input:checked ~ .live-code-body .live-code-copy {
+    display: inline-flex;
+  }
+
+  [data-slot="live-code"]
+    input:not(:checked)
+    ~ .live-code-body
+    .live-code-source
+    :global(pre) {
+    max-height: 7.25rem;
+    overflow: hidden;
+  }
+</style>

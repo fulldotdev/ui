@@ -1,8 +1,9 @@
 ---
+import { AstroSeo } from "@lexingtonthemes/seo"
 import type { ImageMetadata } from "astro"
 import { getImage } from "astro:assets"
 
-interface Props {
+type Props = {
   name?: string
   title?: string
   description?: string
@@ -19,7 +20,6 @@ const baseUrl = Astro.site?.origin || Astro.url.origin
 const pagePathname = Astro.url.pathname.endsWith("/")
   ? Astro.url.pathname
   : `${Astro.url.pathname}/`
-const pageUrl = `${baseUrl}${pagePathname}`
 
 const {
   name,
@@ -28,95 +28,70 @@ const {
   image,
   noindex,
   nofollow,
-  canonical = pageUrl,
+  canonical,
   ...props
 } = Astro.props
 
-const transformedImage = image?.src
-  ? await getImage({
-      src: image.src,
-      format: "png",
-      width: 1200,
-      height: 630,
-      quality: "medium",
-    })
-  : undefined
+const resolvedCanonical = new URL(canonical || pagePathname, baseUrl).toString()
+
+const toImageMimeType = (format?: string) => {
+  if (!format) return undefined
+  if (format.includes("/")) return format
+  if (format === "jpg") return "image/jpeg"
+  return `image/${format}`
+}
+
+const transformedImage =
+  image?.src && typeof image.src !== "string"
+    ? await getImage({
+        src: image.src,
+        format: "png",
+        width: 1200,
+        height: 630,
+        quality: "medium",
+      })
+    : undefined
+
+const openGraphImage =
+  typeof image?.src === "string"
+    ? {
+        url: new URL(image.src, baseUrl).toString(),
+        alt: image.alt,
+      }
+    : transformedImage
+      ? {
+          url: new URL(transformedImage.src, baseUrl).toString(),
+          alt: image?.alt,
+          width: transformedImage.attributes.width,
+          height: transformedImage.attributes.height,
+          type: toImageMimeType(transformedImage.attributes.format),
+        }
+      : undefined
 ---
 
 <head data-slot="layout-head" {...props}>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="generator" content={Astro.generator} />
-  <meta charset="UTF-8" />
-  <link rel="canonical" href={canonical} />
-  <title>{title}</title>
-  <meta name="description" content={description} />
-  <meta property="og:title" content={title} />
-  <meta property="og:description" content={description} />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content={pageUrl} />
-  <meta property="og:locale" content={Astro.currentLocale} />
-  {
-    transformedImage && (
-      <>
-        <meta
-          property="og:image"
-          content={`${baseUrl}${transformedImage.src}`}
-        />
-        <meta
-          property="og:image:url"
-          content={`${baseUrl}${transformedImage.src}`}
-        />
-        <meta
-          property="og:image:secure_url"
-          content={`${baseUrl}${transformedImage.src}`}
-        />
-        <meta
-          property="og:image:type"
-          content={transformedImage.attributes.format || "image/png"}
-        />
-        <meta
-          property="og:image:width"
-          content={transformedImage.attributes.width.toString()}
-        />
-        <meta
-          property="og:image:height"
-          content={transformedImage.attributes.height.toString()}
-        />
-        <meta property="og:image:alt" content={image?.alt} />
-      </>
-    )
-  }
-  <meta
-    name="robots"
-    content={`${noindex ? "noindex" : "index"}, ${nofollow ? "nofollow" : "follow"}`}
-  />
-  <Fragment
-    set:html={`<script type="application/ld+json">${JSON.stringify(
-      {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        name: name,
-        url: pageUrl,
-        ...(transformedImage && {
-          logo: {
-            "@type": "ImageObject",
-            url: `${baseUrl}${transformedImage.src}`,
-            alt: image?.alt,
-            width: transformedImage.attributes.width.toString(),
-            height: transformedImage.attributes.height.toString(),
+  <meta charset="utf-8" />
+  <AstroSeo
+    title={title}
+    description={description}
+    canonical={resolvedCanonical}
+    noindex={noindex}
+    nofollow={nofollow}
+    openGraph={{
+      url: resolvedCanonical,
+      type: "website",
+      ...(name && { site_name: name }),
+      ...(openGraphImage && {
+        images: [
+          {
+            ...openGraphImage,
+            ...(openGraphImage.url.startsWith("https://") && {
+              secureUrl: openGraphImage.url,
+            }),
           },
-        }),
-        description: description,
-        headline: title,
-        creator: {
-          "@type": "Organization",
-          name: name,
-          url: pageUrl,
-        },
-      },
-      null,
-      2
-    )}</script>`}
+        ],
+      }),
+    }}
   />
   <slot />
 </head>

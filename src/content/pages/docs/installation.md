@@ -1,5 +1,5 @@
 ---
-type: docs
+type: doc
 title: Installation
 description: Install and configure fulldev/ui for Astro
 ---

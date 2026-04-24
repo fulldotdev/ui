@@ -1,0 +1,346 @@
+---
+import { Check, Copy } from "@lucide/astro"
+import type { MarkdownHeading } from "astro"
+import { getCollection, type CollectionEntry } from "astro:content"
+
+import type { GlobalSchema } from "@/schemas/global"
+import type { DocSchema } from "@/schemas/layouts/doc"
+import { hrefFromPageId } from "@/lib/pages"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Layout,
+  LayoutBody,
+  LayoutHead,
+  LayoutMain,
+} from "@/components/ui/layout"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+} from "@/components/ui/sidebar"
+import { ThemeProvider, ThemeToggle } from "@/components/ui/theme-toggle"
+import {
+  Toc,
+  TocMenu,
+  TocMenuItem,
+  TocMenuLink,
+  TocTitle,
+} from "@/components/ui/toc"
+import {
+  Typography,
+  TypographyH1,
+  TypographyLead,
+} from "@/components/ui/typography"
+
+type Props = {
+  global: GlobalSchema
+  page: DocSchema
+  headings: MarkdownHeading[]
+}
+
+const props: Props = Astro.props
+const currentPath = Astro.url.pathname
+const copyButtonId = `docs-copy-page-${crypto.randomUUID()}`
+const repositoryHref = "https://github.com/fulldotdev/ui"
+const pageSeo = props.page.seo
+const pageTitle = pageSeo?.title ?? props.page.title
+const pageDescription =
+  pageSeo?.description ??
+  props.page.description ??
+  "Documentation for the Fulldev UI Astro component library."
+const showCopyButton = Boolean(props.page.source)
+const isComponentsIndex = currentPath === "/docs/components/"
+
+const primaryNav = [
+  { label: "Introduction", href: "/docs/" },
+  { label: "Installation", href: "/docs/installation/" },
+  { label: "Theming", href: "/docs/theming/" },
+  { label: "Components", href: "/docs/components/" },
+].map((item) => ({
+  ...item,
+  isActive:
+    item.href === "/docs/components/"
+      ? currentPath.startsWith("/docs/components")
+      : currentPath === item.href,
+}))
+
+const componentPages = (await getCollection("pages")).filter(
+  (
+    entry,
+  ): entry is CollectionEntry<"pages"> & {
+    data: DocSchema & { type: "doc" }
+  } => {
+    return entry.data.type === "doc" && entry.id.startsWith("docs/components/")
+  },
+)
+
+const componentLinks = componentPages
+  .filter((entry) => entry.id !== "docs/components")
+  .map((entry) => ({
+    href: hrefFromPageId(entry.id),
+    title: entry.data.title,
+    description: entry.data.description,
+  }))
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .map((item) => ({
+    ...item,
+    isActive: item.href === currentPath,
+  }))
+
+const tocItems = props.headings
+  .filter((heading) => heading.depth === 2 || heading.depth === 3)
+  .map((heading) => ({
+    depth: heading.depth,
+    href: `#${heading.slug}`,
+    label: heading.text,
+  }))
+
+const showComponentNav = componentLinks.length > 0
+const showToc = tocItems.length > 0
+---
+
+<Layout>
+  <LayoutHead
+    name={props.global.name}
+    title={pageTitle}
+    description={pageDescription}
+    image={pageSeo?.image}
+    canonical={pageSeo?.canonical}
+    noindex={pageSeo?.noindex}
+    nofollow={pageSeo?.nofollow}
+  >
+    <ThemeProvider />
+  </LayoutHead>
+  <LayoutBody>
+    <SidebarProvider>
+      <Sidebar variant="inset">
+        <SidebarHeader>
+          <Logo href="/" class="px-2 py-0.5">
+            <LogoImage
+              src={props.global.logo.dark}
+              alt={`${props.global.name} logo`}
+              class="h-6 dark:hidden"
+            />
+            <LogoImage
+              src={props.global.logo.light}
+              alt={`${props.global.name} logo`}
+              class="hidden h-6 dark:block"
+            />
+            <LogoText>
+              {props.global.name}
+            </LogoText>
+          </Logo>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+            <SidebarMenu>
+              {
+                primaryNav.map((item) => (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton href={item.href} isActive={item.isActive}>
+                      <span>{item.label}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))
+              }
+            </SidebarMenu>
+          </SidebarGroup>
+          {
+            showComponentNav && (
+              <SidebarGroup>
+                <SidebarGroupLabel>Components</SidebarGroupLabel>
+                <SidebarMenu>
+                  {componentLinks.map((item) => (
+                    <SidebarMenuItem>
+                      <SidebarMenuButton href={item.href} isActive={item.isActive}>
+                        <span>{item.title}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroup>
+            )
+          }
+        </SidebarContent>
+        <SidebarFooter>
+          <ThemeToggle
+            size="icon-sm"
+            class="text-sidebar-foreground/70 hover:text-sidebar-accent-foreground"
+          />
+        </SidebarFooter>
+      </Sidebar>
+      <SidebarInset>
+        <LayoutMain>
+          <div class="mx-auto w-full px-6 pt-10 pb-8 sm:px-8 sm:pt-12 sm:pb-10">
+            <div
+              class="flex flex-col gap-10 xl:grid xl:grid-cols-[minmax(0,1fr)_16rem] xl:items-start xl:gap-x-16"
+            >
+              <div
+                class="mx-auto flex w-full max-w-3xl min-w-0 flex-col gap-10"
+              >
+                <header
+                  class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
+                >
+                  <div class="flex min-w-0 flex-1 flex-col gap-2">
+                    <TypographyH1
+                      class="text-foreground text-3xl tracking-tight sm:text-4xl"
+                    >
+                      {props.page.title}
+                    </TypographyH1>
+                    {
+                      props.page.description && (
+                        <TypographyLead class="max-w-2xl text-base leading-7">
+                          {props.page.description}
+                        </TypographyLead>
+                      )
+                    }
+                  </div>
+                  {
+                    showCopyButton && (
+                      <Button
+                        id={copyButtonId}
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        class="shrink-0 self-start rounded-xl"
+                        data-source={props.page.source}
+                        aria-label="Copy page markdown"
+                      >
+                        <Copy class="docs-copy-icon size-4" />
+                        <Check class="docs-check-icon hidden size-4" />
+                        <span>Copy Page</span>
+                      </Button>
+                    )
+                  }
+                </header>
+
+                {
+                  isComponentsIndex && (
+                    <section class="flex flex-col gap-2">
+                      {componentLinks.map((item) => (
+                        <a
+                          href={item.href}
+                          class="hover:bg-muted/40 rounded-xl px-4 py-4 transition-colors"
+                        >
+                          <span class="text-sm font-medium">{item.title}</span>
+                          {item.description && (
+                            <span class="text-muted-foreground text-sm leading-6">
+                              {item.description}
+                            </span>
+                          )}
+                        </a>
+                      ))}
+                    </section>
+                  )
+                }
+
+                <Typography as="article">
+                  <slot />
+                </Typography>
+              </div>
+
+              <aside
+                class="hidden w-64 xl:sticky xl:top-12 xl:mr-0 xl:ml-auto xl:block xl:self-start"
+              >
+                <div class="flex flex-col gap-6">
+                  {
+                    showToc && (
+                      <Toc aria-label="On This Page">
+                        <TocTitle>On This Page</TocTitle>
+                        <TocMenu>
+                          {tocItems.map((item) => (
+                            <TocMenuItem>
+                              <TocMenuLink href={item.href} depth={item.depth}>
+                                {item.label}
+                              </TocMenuLink>
+                            </TocMenuItem>
+                          ))}
+                        </TocMenu>
+                      </Toc>
+                    )
+                  }
+
+                  <Card
+                    size="sm"
+                    class="bg-muted/30 border-border/60 gap-0 rounded-2xl border shadow-none"
+                  >
+                    <CardHeader class="gap-2">
+                      <CardTitle class="text-sm leading-5 font-semibold">
+                        We&apos;re nearing version 1.0
+                      </CardTitle>
+                      <CardDescription class="text-sm leading-6">
+                        Star us on GitHub to stay updated.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent class="pt-1">
+                      <p class="text-muted-foreground text-xs leading-5">
+                        Follow the release as the component library settles into
+                        its first stable version.
+                      </p>
+                    </CardContent>
+                    <CardFooter class="pt-4">
+                      <Button
+                        as="a"
+                        href={repositoryHref}
+                        variant="outline"
+                        size="sm"
+                        class="rounded-xl"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Star on GitHub
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </LayoutMain>
+      </SidebarInset>
+    </SidebarProvider>
+  </LayoutBody>
+</Layout>
+
+<script is:inline define:vars={{ copyButtonId }}>
+  const button = document.getElementById(copyButtonId)
+
+  if (button instanceof HTMLButtonElement) {
+    button.addEventListener("click", async () => {
+      const source = button.dataset.source
+
+      if (!source) return
+
+      try {
+        await navigator.clipboard.writeText(source)
+        button.querySelector(".docs-copy-icon")?.classList.add("hidden")
+        button.querySelector(".docs-check-icon")?.classList.remove("hidden")
+
+        window.setTimeout(() => {
+          button.querySelector(".docs-copy-icon")?.classList.remove("hidden")
+          button.querySelector(".docs-check-icon")?.classList.add("hidden")
+        }, 1200)
+      } catch {
+        // Ignore clipboard failures; the button remains available for retry.
+      }
+    })
+  }
+</script>

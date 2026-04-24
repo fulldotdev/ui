@@ -1,0 +1,30 @@
+---
+import Doc from "@/layouts/doc.astro"
+import Home from "@/layouts/home.astro"
+import { getEntry, render, type CollectionEntry } from "astro:content"
+
+type Props = CollectionEntry<"pages">
+
+const page = Astro.props
+const pageData = page.data
+const { Content, headings } = await render(page)
+const global = await getEntry("globals", Astro.currentLocale || "en")
+if (!global) throw new Error("Add a global to content/globals")
+const globalData = global.data
+---
+
+{
+  pageData.type === "home" && (
+    <Home global={globalData} page={pageData} headings={headings}>
+      <Content />
+    </Home>
+  )
+}
+
+{
+  pageData.type === "doc" && (
+    <Doc global={globalData} page={pageData} headings={headings}>
+      <Content />
+    </Doc>
+  )
+}

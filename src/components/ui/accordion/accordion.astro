@@ -3,7 +3,7 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-interface Props extends HTMLAttributes<"div"> {
+type Props = HTMLAttributes<"div"> & {
   multiple?: boolean
   defaultValue?: string | string[]
   disabled?: boolean
@@ -25,9 +25,6 @@ const {
   ...props
 } = Astro.props
 
-const booleanDataAttr = (value?: boolean) =>
-  value === undefined ? undefined : value ? "" : "false"
-
 const serializedDefaultValue = Array.isArray(defaultValue)
   ? JSON.stringify(defaultValue)
   : defaultValue
@@ -35,13 +32,13 @@ const serializedDefaultValue = Array.isArray(defaultValue)
 
 <div
   data-slot="accordion"
-  data-multiple={booleanDataAttr(multiple)}
+  data-multiple={multiple}
   data-default-value={serializedDefaultValue}
-  data-disabled={booleanDataAttr(disabled)}
+  data-disabled={disabled}
   data-orientation={orientation}
-  data-loop-focus={booleanDataAttr(loopFocus)}
-  data-hidden-until-found={booleanDataAttr(hiddenUntilFound)}
-  data-collapsible={booleanDataAttr(collapsible)}
+  data-loop-focus={loopFocus}
+  data-hidden-until-found={hiddenUntilFound}
+  data-collapsible={collapsible}
   class={cn("flex w-full flex-col", className)}
   {...props}
 >

@@ -1,55 +1,73 @@
 ---
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Icon } from "@/components/ui/icon"
+import { Moon, Sun } from "@lucide/astro"
 
-interface Props {
+import { cn } from "@/lib/utils"
+import { Button, type ButtonVariantProps } from "@/components/ui/button"
+
+type Props = ButtonVariantProps & {
   class?: string
 }
 
-const { class: className } = Astro.props
+const { class: className, variant = "outline", size = "icon-sm" } = Astro.props
 ---
 
 <Button
-  data-slot="theme-toggle"
-  variant="ghost"
-  size="icon-sm"
+  data-theme-toggle
   aria-label="Toggle theme"
+  variant={variant}
+  size={size}
   class={cn("relative", className)}
 >
-  <Icon name="sun" class="dark:hidden [&:is([data-theme=dark]_&)]:hidden" />
-  <Icon
-    name="moon"
-    class="hidden dark:block [&:is([data-theme=dark]_&)]:block"
+  <Sun
+    class="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90"
   />
+  <Moon
+    class="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0"
+  />
+  <span class="sr-only">Toggle theme</span>
 </Button>
 
-<style>
-  :global(html.no-transitions *) {
-    @apply !transition-none !duration-0;
-  }
-</style>
-
 <script is:inline>
-  if (!window.__themeHandlersInitialized) {
-    window.__themeHandlersInitialized = true
-    document
-      .querySelectorAll("[data-slot='theme-toggle']")
-      .forEach((toggle) => {
-        toggle.addEventListener("click", () => {
-          const element = document.documentElement
-          element.classList.add("no-transitions")
-          element.classList.toggle("dark")
+  if (!window.__themeToggleHandlersInitialized) {
+    window.__themeToggleHandlersInitialized = true
 
-          const isDark = element.classList.contains("dark")
-          const newTheme = isDark ? "dark" : "light"
-          localStorage.setItem("theme", newTheme)
-          element.setAttribute("data-theme", newTheme)
+    const syncThemeToggles = () => {
+      const isDark = document.documentElement.classList.contains("dark")
 
-          requestAnimationFrame(() => {
-            element.classList.remove("no-transitions")
-          })
-        })
+      document.querySelectorAll("[data-theme-toggle]").forEach((toggle) => {
+        if (!(toggle instanceof HTMLButtonElement)) return
+
+        toggle.setAttribute("aria-pressed", isDark ? "true" : "false")
+        toggle.setAttribute("data-state", isDark ? "on" : "off")
+
+        if (isDark) {
+          toggle.setAttribute("data-pressed", "")
+        } else {
+          toggle.removeAttribute("data-pressed")
+        }
       })
+    }
+
+    syncThemeToggles()
+
+    const observer = new MutationObserver(syncThemeToggles)
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    })
+
+    document.addEventListener("click", (event) => {
+      const target = event.target
+
+      if (!(target instanceof Element)) return
+
+      const toggle = target.closest("[data-theme-toggle]")
+
+      if (!(toggle instanceof HTMLButtonElement)) return
+      if (toggle.disabled) return
+
+      document.documentElement.classList.toggle("dark")
+    })
   }
 </script>
