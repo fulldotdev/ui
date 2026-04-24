@@ -1,11 +1,17 @@
 ---
 import type { HTMLAttributes } from "astro/types"
+import type { TooltipAlign, TooltipSide } from "@data-slot/tooltip"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 const variants = cva(
-  "peer/menu-button group/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:[&>*:not(:first-child)]:hidden hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-open:hover:bg-sidebar-accent data-open:hover:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground [&_svg]:size-4 [&_svg]:shrink-0 [&>span:last-child]:truncate",
+  "peer/menu-button group/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-open:hover:bg-sidebar-accent data-open:hover:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground [&_svg]:size-4 [&_svg]:shrink-0 [&>span:last-child]:truncate",
   {
     variants: {
       variant: {
@@ -28,10 +34,16 @@ const variants = cva(
 
 type TooltipValue =
   | string
-  | {
+  | (HTMLAttributes<"div"> & {
       content?: string
       children?: string
-    }
+      side?: TooltipSide
+      align?: TooltipAlign
+      sideOffset?: number
+      alignOffset?: number
+      avoidCollisions?: boolean
+      collisionPadding?: number
+    })
 
 type Props = VariantProps<typeof variants> &
   HTMLAttributes<"button"> &
@@ -53,32 +65,65 @@ const {
   isActive,
   active = false,
   tooltip,
-  "aria-label": ariaLabel,
-  title,
   type,
   ...props
 } = Astro.props as Props
 
 const Tag = explicitTag || ("href" in Astro.props ? "a" : "button")
 const resolvedActive = isActive ?? active
+const baseClassName = cn(variants({ variant, size }), className)
+const resolvedTooltip =
+  typeof tooltip === "string" ? { children: tooltip } : tooltip
 const tooltipText =
-  typeof tooltip === "string"
-    ? tooltip
-    : tooltip?.content || tooltip?.children
+  resolvedTooltip?.content ??
+  (typeof resolvedTooltip?.children === "string"
+    ? resolvedTooltip.children
+    : undefined)
+const {
+  content: _tooltipContent,
+  children: _tooltipChildren,
+  ...tooltipProps
+} = resolvedTooltip ?? {}
 ---
 
-<Tag
-  data-slot="sidebar-menu-button"
-  data-sidebar="menu-button"
-  data-size={size}
-  data-active={resolvedActive ? "true" : undefined}
-  data-tooltip={tooltipText}
-  aria-current={resolvedActive ? "page" : undefined}
-  aria-label={typeof ariaLabel === "string" ? ariaLabel : tooltipText}
-  title={typeof title === "string" ? title : undefined}
-  type={Tag === "button" ? type || "button" : undefined}
-  class={cn(variants({ variant, size }), className)}
-  {...props}
->
-  <slot />
-</Tag>
+{
+  tooltipText ? (
+    <Tooltip>
+      <TooltipTrigger
+        as={Tag}
+        data-slot="sidebar-menu-button"
+        data-sidebar="menu-button"
+        data-size={size}
+        data-active={resolvedActive ? "true" : undefined}
+        aria-current={resolvedActive ? "page" : undefined}
+        type={Tag === "button" ? type || "button" : undefined}
+        class={baseClassName}
+        {...props}
+      >
+        <slot />
+      </TooltipTrigger>
+      <TooltipContent
+        data-sidebar="menu-tooltip"
+        side="right"
+        align="center"
+        hidden
+        {...tooltipProps}
+      >
+        {tooltipText}
+      </TooltipContent>
+    </Tooltip>
+  ) : (
+    <Tag
+      data-slot="sidebar-menu-button"
+      data-sidebar="menu-button"
+      data-size={size}
+      data-active={resolvedActive ? "true" : undefined}
+      aria-current={resolvedActive ? "page" : undefined}
+      type={Tag === "button" ? type || "button" : undefined}
+      class={baseClassName}
+      {...props}
+    >
+      <slot />
+    </Tag>
+  )
+}

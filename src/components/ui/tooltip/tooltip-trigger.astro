@@ -3,16 +3,29 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-type Props = HTMLAttributes<"button">
+type Props = HTMLAttributes<"button"> &
+  HTMLAttributes<"a"> &
+  HTMLAttributes<"div"> &
+  HTMLAttributes<"span"> & {
+    as?: "a" | "button" | "div" | "span"
+    href?: string
+  }
 
-const { class: className, type = "button", ...props } = Astro.props
+const {
+  as: explicitTag,
+  class: className,
+  type,
+  ...props
+} = Astro.props as Props
+
+const Tag = explicitTag || ("href" in Astro.props ? "a" : "button")
 ---
 
-<button
+<Tag
   data-slot="tooltip-trigger"
-  type={type}
+  type={Tag === "button" ? type || "button" : undefined}
   class={cn(className)}
   {...props}
 >
   <slot />
-</button>
+</Tag>
