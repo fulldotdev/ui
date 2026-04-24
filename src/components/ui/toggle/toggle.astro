@@ -1,0 +1,42 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+import {
+  toggleVariants,
+  type ToggleVariantProps,
+} from "./toggle-variants"
+
+type Props = HTMLAttributes<"button"> & ToggleVariantProps & {
+  defaultPressed?: boolean
+  disabled?: boolean
+}
+
+const {
+  class: className,
+  variant = "default",
+  size = "default",
+  defaultPressed,
+  disabled,
+  type = "button",
+  ...props
+} = Astro.props
+---
+
+<button
+  data-slot="toggle"
+  data-default-pressed={defaultPressed}
+  data-disabled={disabled}
+  type={type}
+  class={cn(toggleVariants({ variant, size }), className)}
+  {...props}
+>
+  <slot />
+</button>
+
+<script>
+  import { create } from "@data-slot/toggle"
+
+  create()
+</script>

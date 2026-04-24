@@ -1,8 +1,5 @@
 ---
-import type {
-  Align as ComboboxAlign,
-  Side as ComboboxSide,
-} from "@data-slot/combobox"
+import type { Align as ComboboxAlign, Side as ComboboxSide } from "@data-slot/combobox"
 import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
@@ -64,10 +61,19 @@ const {
 </div>
 
 <script>
-  import { create } from "@data-slot/combobox"
+  import { createCombobox } from "@data-slot/combobox"
 
   const initCombobox = () => {
-    create()
+    document.querySelectorAll('[data-slot="combobox"]').forEach((root) => {
+      if (
+        !root.querySelector('[data-slot="combobox-input"]') ||
+        !root.querySelector('[data-slot="combobox-content"]')
+      ) {
+        return
+      }
+
+      createCombobox(root as HTMLElement)
+    })
   }
 
   initCombobox()

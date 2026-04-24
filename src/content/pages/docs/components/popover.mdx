@@ -32,32 +32,11 @@ import {
 </Popover>
 ```
 
-## About
-
-The `Popover` components in this repo follow the same mental model as the
-shadcn/ui popover, while using `@data-slot/popover` for the runtime behavior.
-The exported pieces are intentionally headless: you bring your own trigger
-styling and structure the content with regular Astro markup.
-
 ## Installation
-
-### Command
 
 ```bash
 npx shadcn@latest add @fulldev/popover
 ```
-
-### Manual
-
-1. Install the dependency:
-
-```bash
-npm install @data-slot/popover
-```
-
-2. Copy the files from `src/components/ui/popover/` into your project.
-
-3. Update the import paths to match your project setup.
 
 ## Usage
 
@@ -69,8 +48,6 @@ import {
   PopoverDescription,
   PopoverHeader,
   PopoverTitle,
-  PopoverPortal,
-  PopoverPositioner,
   PopoverTrigger,
 } from "@/components/ui/popover"
 ```
@@ -87,43 +64,6 @@ import {
     </PopoverHeader>
   </PopoverContent>
 </Popover>
-```
-
-`PopoverContent` works as the default high-level entry point. If you need
-lower-level control over portaling or positioning, compose it with
-`PopoverPortal` and `PopoverPositioner`.
-
-```astro
-<Popover>
-  <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
-    Open popover
-  </PopoverTrigger>
-  <PopoverPortal>
-    <PopoverPositioner side="bottom" align="start" sideOffset={8}>
-      <PopoverContent>Custom positioned content</PopoverContent>
-    </PopoverPositioner>
-  </PopoverPortal>
-</Popover>
-```
-
-## Composition
-
-Use the following composition to build a `Popover`:
-
-```text
-Popover
-├── PopoverTrigger
-└── PopoverContent
-```
-
-For manual portal composition:
-
-```text
-Popover
-├── PopoverTrigger
-└── PopoverPortal
-    └── PopoverPositioner
-        └── PopoverContent
 ```
 
 ## Examples
@@ -160,7 +100,7 @@ import {
 </Popover>
 ```
 
-### Align
+### Alignments
 
 Use the `align` prop on `PopoverContent` to control the horizontal alignment.
 
@@ -251,88 +191,3 @@ import {
   </PopoverContent>
 </Popover>
 ```
-
-### Manual Portal Composition
-
-Use `PopoverPortal` and `PopoverPositioner` when you want explicit control over
-where the content is rendered and how it is positioned.
-
-```astro live
----
-import { buttonVariants } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverContent,
-  PopoverPortal,
-  PopoverPositioner,
-  PopoverTrigger,
-} from "@/components/ui/popover"
----
-
-<Popover>
-  <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
-    Open custom popover
-  </PopoverTrigger>
-  <PopoverPortal>
-    <PopoverPositioner side="bottom" align="start" sideOffset={10}>
-      <PopoverContent class="w-72">
-        This popover is composed with an explicit portal and positioner.
-      </PopoverContent>
-    </PopoverPositioner>
-  </PopoverPortal>
-</Popover>
-```
-
-## RTL
-
-The underlying runtime supports directional layout. Apply `dir="rtl"` to a
-parent container to render the popover in right-to-left mode.
-
-```astro live
----
-import { buttonVariants } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
----
-
-<div dir="rtl" class="flex justify-start">
-  <Popover>
-    <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
-      افتح النافذة
-    </PopoverTrigger>
-    <PopoverContent class="w-64">
-      <div class="grid gap-1.5 text-right">
-        <h4 class="leading-none font-medium">إعدادات سريعة</h4>
-        <p class="text-muted-foreground text-sm">
-          يعمل التموضع واتجاه الحركة مع التخطيط من اليمين إلى اليسار.
-        </p>
-      </div>
-    </PopoverContent>
-  </Popover>
-</div>
-```
-
-## API Reference
-
-The `Popover` root forwards the `@data-slot/popover` controller options through
-data attributes:
-
-- `data-default-open`
-- `data-side`
-- `data-align`
-- `data-side-offset`
-- `data-align-offset`
-- `data-avoid-collisions`
-- `data-collision-padding`
-- `data-portal`
-- `data-close-on-click-outside`
-- `data-close-on-escape`
-- `data-position` (deprecated in favor of `side`)
-
-`PopoverContent` and `PopoverPositioner` also accept the positioning attributes
-for lower-level composition. See the
-[`@data-slot/popover`](https://www.npmjs.com/package/@data-slot/popover)
-package and the component source for runtime behavior and slot structure.

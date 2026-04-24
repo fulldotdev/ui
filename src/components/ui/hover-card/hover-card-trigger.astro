@@ -1,0 +1,31 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"button"> &
+  HTMLAttributes<"a"> &
+  HTMLAttributes<"div"> &
+  HTMLAttributes<"span"> & {
+    as?: "a" | "button" | "div" | "span"
+    href?: string
+  }
+
+const {
+  as: explicitTag,
+  class: className,
+  type,
+  ...props
+} = Astro.props as Props
+
+const Tag = explicitTag || ("href" in Astro.props ? "a" : "button")
+---
+
+<Tag
+  data-slot="hover-card-trigger"
+  type={Tag === "button" ? type || "button" : undefined}
+  class={cn(className)}
+  {...props}
+>
+  <slot />
+</Tag>

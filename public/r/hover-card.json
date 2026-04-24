@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "hover-card",
+  "files": [
+    {
+      "path": "src/components/ui/hover-card/hover-card.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  defaultOpen?: boolean\n  open?: boolean\n  delay?: number\n  skipDelayDuration?: number\n  closeDelay?: number\n  side?: \"top\" | \"right\" | \"bottom\" | \"left\"\n  align?: \"start\" | \"center\" | \"end\"\n  sideOffset?: number\n  alignOffset?: number\n  avoidCollisions?: boolean\n  collisionPadding?: number\n  portal?: boolean\n  closeOnClickOutside?: boolean\n  closeOnEscape?: boolean\n}\n\nconst {\n  class: className,\n  defaultOpen,\n  open,\n  delay = 300,\n  skipDelayDuration = 300,\n  closeDelay = 300,\n  side = \"bottom\",\n  align = \"center\",\n  sideOffset = 4,\n  alignOffset = 4,\n  avoidCollisions = true,\n  collisionPadding = 8,\n  portal = true,\n  closeOnClickOutside = true,\n  closeOnEscape = true,\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot=\"hover-card\"\n  data-default-open={defaultOpen}\n  data-open={open}\n  data-delay={delay}\n  data-skip-delay-duration={skipDelayDuration}\n  data-close-delay={closeDelay}\n  data-side={side}\n  data-align={align}\n  data-side-offset={sideOffset}\n  data-align-offset={alignOffset}\n  data-avoid-collisions={avoidCollisions}\n  data-collision-padding={collisionPadding}\n  data-portal={portal}\n  data-close-on-click-outside={closeOnClickOutside}\n  data-close-on-escape={closeOnEscape}\n  class={cn(className)}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/hover-card\"\n\n  create()\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/hover-card/hover-card-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  side?: \"top\" | \"right\" | \"bottom\" | \"left\"\n  align?: \"start\" | \"center\" | \"end\"\n  sideOffset?: number\n  alignOffset?: number\n  avoidCollisions?: boolean\n  collisionPadding?: number\n}\n\nconst {\n  class: className,\n  hidden = true,\n  side = \"bottom\",\n  align = \"center\",\n  sideOffset = 4,\n  alignOffset = 4,\n  avoidCollisions,\n  collisionPadding,\n  ...props\n} = Astro.props\n---\n\n<div data-slot=\"hover-card-portal\">\n  <div\n    data-slot=\"hover-card-positioner\"\n    data-side={side}\n    data-align={align}\n    data-side-offset={sideOffset}\n    data-align-offset={alignOffset}\n    data-avoid-collisions={avoidCollisions}\n    data-collision-padding={collisionPadding}\n    class=\"isolate z-50\"\n  >\n    <div\n      data-slot=\"hover-card-content\"\n      hidden={hidden}\n      class={cn(\n        \"z-50 w-64 origin-(--transform-origin) rounded-lg bg-popover p-4 text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10 outline-hidden duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95\",\n        className\n      )}\n      {...props}\n    >\n      <slot />\n    </div>\n  </div>\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/hover-card/hover-card-trigger.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"button\"> &\n  HTMLAttributes<\"a\"> &\n  HTMLAttributes<\"div\"> &\n  HTMLAttributes<\"span\"> & {\n    as?: \"a\" | \"button\" | \"div\" | \"span\"\n    href?: string\n  }\n\nconst {\n  as: explicitTag,\n  class: className,\n  type,\n  ...props\n} = Astro.props as Props\n\nconst Tag = explicitTag || (\"href\" in Astro.props ? \"a\" : \"button\")\n---\n\n<Tag\n  data-slot=\"hover-card-trigger\"\n  type={Tag === \"button\" ? type || \"button\" : undefined}\n  class={cn(className)}\n  {...props}\n>\n  <slot />\n</Tag>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/hover-card/index.ts",
+      "content": "export { default as HoverCard } from \"./hover-card.astro\"\nexport { default as HoverCardContent } from \"./hover-card-content.astro\"\nexport { default as HoverCardTrigger } from \"./hover-card-trigger.astro\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}
