@@ -1,5 +1,4 @@
 export { default as Tooltip } from "./tooltip.astro"
-export { default as TooltipArrow } from "./tooltip-arrow.astro"
 export { default as TooltipContent } from "./tooltip-content.astro"
 export { default as TooltipPortal } from "./tooltip-portal.astro"
 export { default as TooltipPositioner } from "./tooltip-positioner.astro"

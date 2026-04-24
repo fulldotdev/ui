@@ -1,15 +1,7 @@
 ---
-import type { ComponentProps } from "astro/types"
+import type { HTMLAttributes } from "astro/types"
 
-import Dialog from "@/components/ui/dialog/dialog.astro"
-
-type Props = Omit<
-  ComponentProps<typeof Dialog>,
-  | "data-default-open"
-  | "data-close-on-click-outside"
-  | "data-close-on-escape"
-  | "data-lock-scroll"
-> & {
+type Props = HTMLAttributes<"div"> & {
   defaultOpen?: boolean
   closeOnClickOutside?: boolean
   closeOnEscape?: boolean
@@ -26,7 +18,8 @@ const {
 } = Astro.props
 ---
 
-<Dialog
+<div
+  data-slot="dialog"
   class={className}
   data-default-open={defaultOpen}
   data-close-on-click-outside={closeOnClickOutside}
@@ -35,4 +28,10 @@ const {
   {...props}
 >
   <slot />
-</Dialog>
+</div>
+
+<script>
+  import { create } from "@data-slot/dialog"
+
+  create()
+</script>

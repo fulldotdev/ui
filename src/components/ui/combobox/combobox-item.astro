@@ -1,14 +1,23 @@
 ---
+import { CheckIcon } from "@lucide/astro"
 import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
+import ComboboxItemIndicator from "./combobox-item-indicator.astro"
 
 type Props = HTMLAttributes<"div"> & {
   value?: string
   disabled?: boolean
+  showIndicator?: boolean
 }
 
-const { class: className, value, disabled, ...props } = Astro.props
+const {
+  class: className,
+  value,
+  disabled,
+  showIndicator = true,
+  ...props
+} = Astro.props
 ---
 
 <div
@@ -16,10 +25,20 @@ const { class: className, value, disabled, ...props } = Astro.props
   data-value={value}
   data-disabled={disabled ? "" : undefined}
   class={cn(
-    "data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+    "data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-[highlighted]:**:[svg]:text-accent-foreground",
     className
   )}
   {...props}
 >
   <slot />
+  {
+    showIndicator && (
+      <ComboboxItemIndicator
+        hidden={false}
+        class="pointer-events-none absolute right-2 flex size-4 items-center justify-center opacity-0 group-data-[checked=true]/combobox-item:opacity-100"
+      >
+        <CheckIcon class="pointer-events-none" />
+      </ComboboxItemIndicator>
+    )
+  }
 </div>
