@@ -1,0 +1,56 @@
+---
+import { LayoutGridIcon } from "@lucide/astro"
+
+import { Section, SectionContent } from "@/components/ui/section"
+
+type IconComponent = typeof LayoutGridIcon
+
+type Item = {
+  title: string
+  description: string
+  icon: IconComponent
+}
+
+type Props = {
+  title: string
+  description: string
+  items: Item[]
+}
+
+const props: Props = Astro.props
+---
+
+<Section size="lg">
+  <SectionContent class="gap-y-12">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2 class="text-foreground text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
+        {props.title}
+      </h2>
+      <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">
+        {props.description}
+      </p>
+    </div>
+
+    <div
+      class="ring-foreground/10 grid gap-px overflow-hidden rounded-xl bg-border ring-1 ring-inset sm:grid-cols-2 lg:grid-cols-3"
+    >
+      {
+        props.items.map((item) => {
+          const Icon = item.icon
+
+          return (
+            <div class="bg-background group/feature relative flex flex-col gap-4 p-7 transition-colors hover:bg-accent/30">
+              <div class="bg-primary/10 text-primary ring-primary/15 flex size-10 items-center justify-center rounded-lg ring-1 ring-inset transition-transform group-hover/feature:scale-105">
+                <Icon class="size-5" />
+              </div>
+              <h3 class="text-foreground text-base font-medium tracking-tight">{item.title}</h3>
+              <p class="text-muted-foreground text-sm leading-relaxed">
+                {item.description}
+              </p>
+            </div>
+          )
+        })
+      }
+    </div>
+  </SectionContent>
+</Section>

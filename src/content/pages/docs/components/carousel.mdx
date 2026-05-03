@@ -60,12 +60,9 @@ import {
 
 ## About
 
-The carousel component is built using the
-[Embla Carousel](https://www.embla-carousel.com/) library.
-
-This Astro implementation uses the plain `embla-carousel` module instead of the
-React hook package. The composition matches shadcn, but React-only props like
-`setApi` and `plugins` are replaced with Astro-friendly DOM events.
+The carousel is built with
+[Embla Carousel](https://www.embla-carousel.com/) for motion and swipe. The
+Astro components follow the same composition as shadcn/ui.
 
 ## Installation
 
@@ -275,111 +272,3 @@ import {
   </CarouselContent>
 </Carousel>
 ```
-
-## Options
-
-Pass Embla options through the `opts` prop. See the
-[Embla Carousel options docs](https://www.embla-carousel.com/api/options/) for
-the full API.
-
-```astro
-<Carousel
-  opts={{
-    align: "start",
-    loop: true,
-  }}
->
-  <CarouselContent>
-    <CarouselItem>...</CarouselItem>
-    <CarouselItem>...</CarouselItem>
-    <CarouselItem>...</CarouselItem>
-  </CarouselContent>
-</Carousel>
-```
-
-## Events
-
-You can subscribe to Embla lifecycle changes through the dispatched carousel
-events and then call any Embla method from `event.detail.api`.
-
-```astro
-<div data-carousel-events-demo>
-  <Carousel data-carousel-root>
-    <CarouselContent>
-      <CarouselItem>...</CarouselItem>
-      <CarouselItem>...</CarouselItem>
-      <CarouselItem>...</CarouselItem>
-    </CarouselContent>
-  </Carousel>
-</div>
-
-<script>
-  const demo = document.querySelector("[data-carousel-events-demo]")
-  const root = demo?.querySelector("[data-carousel-root]")
-
-  root?.addEventListener("carousel:init", (event) => {
-    const api = event.detail.api
-
-    api.on("select", () => {
-      // Do something on select.
-    })
-  })
-</script>
-```
-
-This keeps the selector scoped to the relevant example, which matters when you
-have multiple carousels on the same page.
-
-See the [Embla Carousel events docs](https://www.embla-carousel.com/api/events/)
-for more information.
-
-## Plugins
-
-Install the plugin package you want to use:
-
-```bash
-npm install embla-carousel-autoplay
-```
-
-In Astro, apply plugins from a client-side script after the `carousel:init`
-event fires:
-
-```astro
----
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel"
----
-
-<div data-carousel-plugin-demo>
-  <Carousel id="autoplay-demo" opts={{ loop: true }}>
-    <CarouselContent>
-      <CarouselItem>...</CarouselItem>
-      <CarouselItem>...</CarouselItem>
-      <CarouselItem>...</CarouselItem>
-    </CarouselContent>
-  </Carousel>
-</div>
-
-<script>
-  import Autoplay from "embla-carousel-autoplay"
-
-  const demo = document.querySelector("[data-carousel-plugin-demo]")
-  const root = demo?.querySelector("#autoplay-demo")
-
-  root?.addEventListener(
-    "carousel:init",
-    (event) => {
-      event.detail.api.reInit(undefined, [Autoplay({ delay: 2000 })])
-    },
-    { once: true }
-  )
-</script>
-```
-
-## API Reference
-
-See the [Embla Carousel API docs](https://www.embla-carousel.com/api/) for
-more information on options, methods, events, and plugins.

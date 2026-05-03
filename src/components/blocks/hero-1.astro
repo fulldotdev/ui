@@ -1,0 +1,444 @@
+---
+import {
+  BoldIcon,
+  ChevronDownIcon,
+  CreditCardIcon,
+  ItalicIcon,
+  LogOutIcon,
+  MailIcon,
+  SearchIcon,
+  SparklesIcon,
+  UnderlineIcon,
+  UserIcon,
+} from "@lucide/astro"
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarGroupCount,
+} from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { Button, buttonVariants } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldLabel,
+  FieldTitle,
+} from "@/components/ui/field"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Rating } from "@/components/ui/rating"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Slider } from "@/components/ui/slider"
+import { Section, SectionContent } from "@/components/ui/section"
+import { Spinner } from "@/components/ui/spinner"
+import { Switch } from "@/components/ui/switch"
+import { Toggle } from "@/components/ui/toggle"
+
+type Action = {
+  text: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+type Props = {
+  title: string
+  description: string
+  actions: Action[]
+}
+
+const props: Props = Astro.props
+---
+
+<Section class="overflow-hidden rounded-[inherit] py-0 lg:h-[calc(100svh-4.75rem)] lg:py-0">
+  <SectionContent class="grid h-full gap-8 lg:grid-cols-2 lg:gap-12">
+    <div class="flex flex-col justify-end gap-8 pb-12 lg:pb-16">
+    <div class="flex flex-col gap-6">
+      <h1
+        class="text-foreground text-3xl leading-[1.1] font-semibold tracking-[-0.03em] text-balance sm:text-4xl lg:text-5xl"
+      >
+        {props.title}
+      </h1>
+      <p
+        class="text-muted-foreground text-base leading-relaxed text-balance sm:text-lg"
+      >
+        {props.description}
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      {
+        props.actions.map((action) => (
+          <Button
+            as="a"
+            href={action.href}
+            size="lg"
+            variant={action.variant ?? "default"}
+          >
+            {action.text}
+          </Button>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="relative hidden h-full min-h-0 overflow-hidden lg:block">
+    <div
+      class="from-background pointer-events-none absolute inset-x-0 top-0 z-10 h-24 bg-gradient-to-b to-transparent"
+    >
+    </div>
+    <div
+      class="from-background pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t to-transparent"
+    >
+    </div>
+
+    <div class="grid h-full grid-cols-2 gap-3">
+      <div class="overflow-hidden">
+        <div
+          class="flex animate-[scroll-up_120s_linear_infinite] flex-col gap-10 px-1 py-1"
+        >
+          {
+            [0, 1].map(() => (
+              <>
+                <InputGroup>
+                  <InputGroupAddon>
+                    <SearchIcon />
+                  </InputGroupAddon>
+                  <InputGroupInput placeholder="Search components..." />
+                </InputGroup>
+
+                <Alert>
+                  <SparklesIcon />
+                  <AlertTitle>New in v0.9</AlertTitle>
+                  <AlertDescription>
+                    ThemeToggle and Slider components now available.
+                  </AlertDescription>
+                </Alert>
+
+                <div class="flex flex-wrap gap-2">
+                  <Button size="sm">Get started</Button>
+                  <Button size="sm" variant="outline">
+                    Documentation
+                  </Button>
+                  <Button size="sm" variant="ghost">
+                    GitHub
+                  </Button>
+                </div>
+
+                <Select class="w-full" placeholder="Select a framework">
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="astro">Astro</SelectItem>
+                      <SelectItem value="react">React</SelectItem>
+                      <SelectItem value="vue">Vue</SelectItem>
+                      <SelectItem value="svelte">Svelte</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+
+                <div class="flex gap-1">
+                  <Toggle aria-label="Bold" defaultPressed>
+                    <BoldIcon />
+                  </Toggle>
+                  <Toggle aria-label="Italic">
+                    <ItalicIcon />
+                  </Toggle>
+                  <Toggle aria-label="Underline">
+                    <UnderlineIcon />
+                  </Toggle>
+                </div>
+
+                <div class="flex flex-col gap-2 px-1">
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm">Brightness</span>
+                    <span class="text-muted-foreground font-mono text-xs">
+                      72
+                    </span>
+                  </div>
+                  <Slider
+                    defaultValue={72}
+                    max={100}
+                    step={1}
+                    thumbAlignment="edge"
+                  />
+                </div>
+
+                <div class="flex flex-col gap-3 px-1">
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm">Email notifications</span>
+                    <Switch defaultChecked />
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm">Weekly digest</span>
+                    <Switch />
+                  </div>
+                </div>
+
+                <Card size="sm">
+                  <CardContent>
+                    <div class="flex flex-col gap-3">
+                      <Rating value={5} />
+                      <p class="text-sm leading-relaxed">
+                        "Finally, Astro components designed for Astro, not
+                        ported to it."
+                      </p>
+                      <div class="flex items-center gap-2">
+                        <Avatar size="sm">
+                          <AvatarFallback>JD</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p class="text-xs font-medium">Jamie Davis</p>
+                          <p class="text-muted-foreground text-xs">
+                            Sr. Developer
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div class="flex items-center gap-3 px-1">
+                  <Rating value={5} />
+                  <span class="text-muted-foreground text-xs">
+                    4.9 · 2,400+ developers
+                  </span>
+                </div>
+              </>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="overflow-hidden">
+        <div
+          class="flex animate-[scroll-down_120s_linear_infinite] flex-col gap-10 px-1 py-1"
+        >
+          {
+            [0, 1].map(() => (
+              <>
+                <div class="px-1">
+                  <Breadcrumb>
+                    <BreadcrumbList>
+                      <BreadcrumbItem>
+                        <BreadcrumbLink href="#">Docs</BreadcrumbLink>
+                      </BreadcrumbItem>
+                      <BreadcrumbSeparator />
+                      <BreadcrumbItem>
+                        <BreadcrumbLink href="#">Components</BreadcrumbLink>
+                      </BreadcrumbItem>
+                      <BreadcrumbSeparator />
+                      <BreadcrumbItem>
+                        <BreadcrumbPage>Button</BreadcrumbPage>
+                      </BreadcrumbItem>
+                    </BreadcrumbList>
+                  </Breadcrumb>
+                </div>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    class={buttonVariants({ variant: "outline" })}
+                    aria-label="Open menu"
+                  >
+                    My Account
+                    <ChevronDownIcon class="size-4 opacity-60" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent class="w-56">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem>
+                        <UserIcon class="size-4" />
+                        Profile
+                        <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <CreditCardIcon class="size-4" />
+                        Billing
+                        <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem variant="destructive">
+                      <LogOutIcon class="size-4" />
+                      Log out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <RadioGroup defaultValue="team" name="demo-audience">
+                  <FieldLabel class="w-full">
+                    <Field orientation="horizontal">
+                      <RadioGroupItem value="solo" />
+                      <FieldContent>
+                        <FieldTitle>Solo</FieldTitle>
+                        <FieldDescription>
+                          For freelancers and individual builders.
+                        </FieldDescription>
+                      </FieldContent>
+                    </Field>
+                  </FieldLabel>
+                  <FieldLabel class="w-full">
+                    <Field orientation="horizontal">
+                      <RadioGroupItem value="team" />
+                      <FieldContent>
+                        <FieldTitle>Team</FieldTitle>
+                        <FieldDescription>
+                          Collaboration and shared workspaces.
+                        </FieldDescription>
+                      </FieldContent>
+                    </Field>
+                  </FieldLabel>
+                </RadioGroup>
+
+                <Button size="sm" variant="outline" disabled>
+                  <Spinner class="size-4" />
+                  Processing...
+                </Button>
+
+                <div class="flex flex-wrap gap-2 px-1">
+                  <Badge>Default</Badge>
+                  <Badge variant="secondary">Pro</Badge>
+                  <Badge variant="outline">New</Badge>
+                  <Badge variant="destructive">Beta</Badge>
+                </div>
+
+                <Accordion collapsible defaultValue="demo-1">
+                  <AccordionItem value="demo-1">
+                    <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                    <AccordionContent>
+                      Yes. Full WAI-ARIA support with keyboard navigation.
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="demo-2">
+                    <AccordionTrigger>Zero JavaScript?</AccordionTrigger>
+                    <AccordionContent hidden>
+                      Ships zero JS by default.
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+
+                <Card size="sm">
+                  <CardHeader>
+                    <Badge variant="secondary" class="w-fit">
+                      Pro
+                    </Badge>
+                    <CardTitle>Team workspace</CardTitle>
+                    <CardDescription>
+                      Share components across projects with roles and access
+                      control.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button size="sm" variant="outline" class="w-full">
+                      Learn more
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <div class="flex items-center gap-3 px-1">
+                  <AvatarGroup>
+                    <Avatar size="sm">
+                      <AvatarFallback>AK</AvatarFallback>
+                    </Avatar>
+                    <Avatar size="sm">
+                      <AvatarFallback>ML</AvatarFallback>
+                    </Avatar>
+                    <Avatar size="sm">
+                      <AvatarFallback>TS</AvatarFallback>
+                    </Avatar>
+                    <Avatar size="sm">
+                      <AvatarFallback>RN</AvatarFallback>
+                    </Avatar>
+                    <AvatarGroupCount>+48</AvatarGroupCount>
+                  </AvatarGroup>
+                  <span class="text-muted-foreground text-xs">
+                    52 contributors
+                  </span>
+                </div>
+
+                <div class="flex gap-2">
+                  <InputGroup class="flex-1">
+                    <InputGroupAddon>
+                      <MailIcon />
+                    </InputGroupAddon>
+                    <InputGroupInput type="email" placeholder="hello@you.dev" />
+                  </InputGroup>
+                  <Button size="sm" variant="outline">
+                    Notify me
+                  </Button>
+                </div>
+              </>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+  </SectionContent>
+</Section>
+
+<style is:global>
+  @keyframes scroll-up {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-50%);
+    }
+  }
+
+  @keyframes scroll-down {
+    from {
+      transform: translateY(-50%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+</style>

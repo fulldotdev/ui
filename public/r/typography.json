@@ -1,0 +1,112 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "typography",
+  "files": [
+    {
+      "path": "src/components/ui/typography/typography.astro",
+      "content": "---\nimport type { HTMLTag, Polymorphic } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport {\n  typographyAStyle,\n  typographyBlockquoteStyle,\n  typographyH1Style,\n  typographyH2Style,\n  typographyH3Style,\n  typographyH4Style,\n  typographyHrStyle,\n  typographyInlineCodeStyle,\n  typographyLargeStyle,\n  typographyLeadStyle,\n  typographyListItemStyle,\n  typographyListStyle,\n  typographyMutedStyle,\n  typographyOrderedListStyle,\n  typographyPStyle,\n  typographyPreStyle,\n  typographySmallStyle,\n  typographyTableCellStyle,\n  typographyTableHeadStyle,\n  typographyTableRowStyle,\n  typographyTableStyle,\n  typographyUnorderedListStyle,\n  toArbitrarySelectorClass,\n} from \"./typography-styles\"\n\ntype Props<Tag extends HTMLTag> = Polymorphic<{ as: Tag }>\n\nconst { as: Tag = \"div\", class: className, ...props } = Astro.props\n---\n\n<Tag\n  data-slot=\"typography\"\n  class={cn(\n    [\n      \"text-foreground\",\n      toArbitrarySelectorClass(\"&>h1\", typographyH1Style),\n      toArbitrarySelectorClass(\"&>h2\", typographyH2Style),\n      toArbitrarySelectorClass(\"&>h3\", typographyH3Style),\n      toArbitrarySelectorClass(\"&>h4\", typographyH4Style),\n      toArbitrarySelectorClass(\"&>p\", typographyPStyle),\n      toArbitrarySelectorClass(\"&>a\", typographyAStyle),\n      toArbitrarySelectorClass(\"&>p>a\", typographyAStyle),\n      toArbitrarySelectorClass(\"&>blockquote\", typographyBlockquoteStyle),\n      toArbitrarySelectorClass(\"&>blockquote>a\", typographyAStyle),\n      toArbitrarySelectorClass(\"&>hr\", typographyHrStyle),\n      toArbitrarySelectorClass(\"&>pre\", typographyPreStyle),\n      toArbitrarySelectorClass(\"&>ul\", typographyListStyle),\n      toArbitrarySelectorClass(\"&>ul\", typographyUnorderedListStyle),\n      toArbitrarySelectorClass(\"&>ul>li\", typographyListItemStyle),\n      toArbitrarySelectorClass(\"&>ul>li>a\", typographyAStyle),\n      toArbitrarySelectorClass(\"&>ol\", typographyListStyle),\n      toArbitrarySelectorClass(\"&>ol\", typographyOrderedListStyle),\n      toArbitrarySelectorClass(\"&>ol>li\", typographyListItemStyle),\n      toArbitrarySelectorClass(\"&>ol>li>a\", typographyAStyle),\n      \"[&>[data-slot=typography-table-container]]:my-6 [&>table]:my-6\",\n      toArbitrarySelectorClass(\"&>table\", typographyTableStyle),\n      toArbitrarySelectorClass(\"&>table tr\", typographyTableRowStyle),\n      toArbitrarySelectorClass(\"&>table th\", typographyTableHeadStyle),\n      toArbitrarySelectorClass(\"&>table td\", typographyTableCellStyle),\n      \"[&>table>thead]:border-b [&>table>tbody>tr:last-child]:border-0\",\n      toArbitrarySelectorClass(\"&>p:not(pre)>code\", typographyInlineCodeStyle),\n      toArbitrarySelectorClass(\"&>.lead\", typographyLeadStyle),\n      toArbitrarySelectorClass(\"&>.large\", typographyLargeStyle),\n      toArbitrarySelectorClass(\"&>small\", typographySmallStyle),\n      toArbitrarySelectorClass(\"&>.muted\", typographyMutedStyle),\n      \"[&>h2:first-child]:mt-0 [&>h2:not(:first-child)]:mt-10\",\n      \"[&>h3:not(:first-child)]:mt-8\",\n      \"[&>h4:not(:first-child)]:mt-8\",\n      \"[&>p:not(:first-child)]:mt-6\",\n      \"[&>blockquote:not(:first-child)]:mt-6\",\n      \"[&>ul]:my-6 [&>ol]:my-6\",\n      \"[&>ul>li+li]:mt-2 [&>ol>li+li]:mt-2\",\n      \"[&>pre]:my-6\",\n      \"[&>[data-slot=typography-large]:not(:first-child)]:mt-6\",\n    ],\n    className\n  )}\n  {...props}\n>\n  <slot />\n</Tag>\n\n<style is:global>\n  [data-slot=\"typography\"] > h1 {\n    font-weight: var(--font-weight-extrabold);\n  }\n\n  [data-slot=\"typography\"] > h2,\n  [data-slot=\"typography\"] > h3,\n  [data-slot=\"typography\"] > h4 {\n    font-weight: var(--font-weight-semibold);\n  }\n</style>\n\n<style is:global>\n  [data-slot=\"typography\"] > pre.astro-code {\n    background: var(--muted) !important;\n    border: 1px solid var(--border);\n    border-radius: var(--radius-lg);\n    padding: 1rem;\n    font-size: var(--text-sm);\n    line-height: var(--text-sm--line-height);\n  }\n\n  [data-slot=\"typography\"] > pre.astro-code code {\n    color: inherit !important;\n  }\n\n  [data-slot=\"typography\"] :not(pre) > code {\n    position: relative;\n    border-radius: var(--radius-sm);\n    background: var(--muted);\n    padding: 0.125rem 0.375rem;\n    font-family: var(--font-mono);\n    font-size: var(--text-sm);\n    font-weight: var(--font-weight-semibold);\n  }\n\n  .dark [data-slot=\"typography\"] > pre.astro-code {\n    color: var(--shiki-dark, var(--foreground)) !important;\n  }\n\n  .dark [data-slot=\"typography\"] > pre.astro-code span[style*=\"--shiki-dark\"] {\n    color: var(--shiki-dark) !important;\n    font-style: var(--shiki-dark-font-style, inherit) !important;\n    font-weight: var(--shiki-dark-font-weight, inherit) !important;\n    text-decoration: var(--shiki-dark-text-decoration, inherit) !important;\n  }\n</style>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-a.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { typographyAStyle } from \"./typography-styles\"\n\ntype Props = HTMLAttributes<\"a\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<a data-slot=\"typography-a\" class={cn(typographyAStyle, className)} {...props}>\n  <slot />\n</a>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-blockquote.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { typographyBlockquoteStyle } from \"./typography-styles\"\n\ntype Props = HTMLAttributes<\"blockquote\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<blockquote\n  data-slot=\"typography-blockquote\"\n  class={cn(typographyBlockquoteStyle, className)}\n  {...props}\n>\n  <slot />\n</blockquote>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-h1.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { typographyH1Style } from \"./typography-styles\"\n\ntype Props = HTMLAttributes<\"h1\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<h1\n  data-slot=\"typography-h1\"\n  class={cn(typographyH1Style, className)}\n  {...props}\n>\n  <slot />\n</h1>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-h2.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { typographyH2Style } from \"./typography-styles\"\n\ntype Props = HTMLAttributes<\"h2\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<h2\n  data-slot=\"typography-h2\"\n  class={cn(typographyH2Style, className)}\n  {...props}\n>\n  <slot />\n</h2>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-h3.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { typographyH3Style } from \"./typography-styles\"\n\ntype Props = HTMLAttributes<\"h3\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<h3\n  data-slot=\"typography-h3\"\n  class={cn(typographyH3Style, className)}\n  {...props}\n>\n  <slot />\n</h3>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-h4.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { typographyH4Style } from \"./typography-styles\"\n\ntype Props = HTMLAttributes<\"h4\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<h4\n  data-slot=\"typography-h4\"\n  class={cn(typographyH4Style, className)}\n  {...props}\n>\n  <slot />\n</h4>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-inline-code.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { typographyInlineCodeStyle } from \"./typography-styles\"\n\ntype Props = HTMLAttributes<\"code\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<code\n  data-slot=\"typography-inline-code\"\n  class={cn(typographyInlineCodeStyle, className)}\n  {...props}\n>\n  <slot />\n</code>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-large.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { typographyLargeStyle } from \"./typography-styles\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"typography-large\"\n  class={cn(typographyLargeStyle, className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-lead.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { typographyLeadStyle } from \"./typography-styles\"\n\ntype Props = HTMLAttributes<\"p\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<p\n  data-slot=\"typography-lead\"\n  class={cn(typographyLeadStyle, className)}\n  {...props}\n>\n  <slot />\n</p>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-list.astro",
+      "content": "---\nimport type { HTMLTag, Polymorphic } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport {\n  typographyListItemStyle,\n  typographyOrderedListStyle,\n  typographyListStyle,\n  typographyUnorderedListStyle,\n  toArbitrarySelectorClass,\n} from \"./typography-styles\"\n\ntype Props<Tag extends \"ul\" | \"ol\"> = Polymorphic<{ as: Tag }>\n\nconst { as: Tag = \"ul\", class: className, ...props } = Astro.props as Props<\n  HTMLTag & (\"ul\" | \"ol\")\n>\n---\n\n<Tag\n  data-slot=\"typography-list\"\n  class={cn(\n    typographyListStyle,\n    Tag === \"ol\" ? typographyOrderedListStyle : typographyUnorderedListStyle,\n    toArbitrarySelectorClass(\"&>li\", typographyListItemStyle),\n    className\n  )}\n  {...props}\n>\n  <slot />\n</Tag>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-list-item.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { typographyListItemStyle } from \"./typography-styles\"\n\ntype Props = HTMLAttributes<\"li\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<li\n  data-slot=\"typography-list-item\"\n  class={cn(typographyListItemStyle, className)}\n  {...props}\n>\n  <slot />\n</li>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-muted.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { typographyMutedStyle } from \"./typography-styles\"\n\ntype Props = HTMLAttributes<\"p\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<p\n  data-slot=\"typography-muted\"\n  class={cn(typographyMutedStyle, className)}\n  {...props}\n>\n  <slot />\n</p>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-p.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { typographyPStyle } from \"./typography-styles\"\n\ntype Props = HTMLAttributes<\"p\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<p data-slot=\"typography-p\" class={cn(typographyPStyle, className)} {...props}>\n  <slot />\n</p>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-small.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { typographySmallStyle } from \"./typography-styles\"\n\ntype Props = HTMLAttributes<\"small\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<small\n  data-slot=\"typography-small\"\n  class={cn(typographySmallStyle, className)}\n  {...props}\n>\n  <slot />\n</small>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-table.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport {\n  typographyTableContainerStyle,\n  typographyTableStyle,\n} from \"./typography-styles\"\n\ntype Props = HTMLAttributes<\"table\"> & {\n  containerClass?: string\n}\n\nconst { class: className, containerClass, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"typography-table-container\"\n  class={cn(typographyTableContainerStyle, containerClass)}\n>\n  <table\n    data-slot=\"typography-table\"\n    class={cn(typographyTableStyle, className)}\n    {...props}\n  >\n    <slot />\n  </table>\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-table-row.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { typographyTableRowStyle } from \"./typography-styles\"\n\ntype Props = HTMLAttributes<\"tr\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<tr\n  data-slot=\"typography-table-row\"\n  class={cn(typographyTableRowStyle, className)}\n  {...props}\n>\n  <slot />\n</tr>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-table-head.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { typographyTableHeadStyle } from \"./typography-styles\"\n\ntype Props = HTMLAttributes<\"th\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<th\n  data-slot=\"typography-table-head\"\n  class={cn(typographyTableHeadStyle, className)}\n  {...props}\n>\n  <slot />\n</th>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-table-cell.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { typographyTableCellStyle } from \"./typography-styles\"\n\ntype Props = HTMLAttributes<\"td\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<td\n  data-slot=\"typography-table-cell\"\n  class={cn(typographyTableCellStyle, className)}\n  {...props}\n>\n  <slot />\n</td>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/typography-styles.ts",
+      "content": "export const typographyH1Style =\n  \"scroll-m-20 text-4xl font-semibold tracking-tight text-balance\"\n\nexport const typographyH2Style =\n  \"scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0\"\n\nexport const typographyH3Style =\n  \"scroll-m-20 text-2xl font-semibold tracking-tight\"\n\nexport const typographyH4Style =\n  \"scroll-m-20 text-xl font-semibold tracking-tight\"\n\nexport const typographyPStyle = \"leading-7 [&:not(:first-child)]:mt-6\"\n\nexport const typographyAStyle = \"text-primary underline underline-offset-4\"\n\nexport const typographyBlockquoteStyle = \"mt-6 border-l-2 pl-6 italic\"\n\nexport const typographyLeadStyle = \"text-xl text-muted-foreground\"\n\nexport const typographyLargeStyle = \"text-lg font-semibold\"\n\nexport const typographySmallStyle = \"text-sm leading-none font-medium\"\n\nexport const typographyMutedStyle = \"text-sm text-muted-foreground\"\n\nexport const typographyInlineCodeStyle =\n  \"relative rounded bg-muted px-1.5 py-0.5 font-mono text-sm font-semibold\"\n\nexport const typographyPreStyle =\n  \"overflow-x-auto rounded-lg border border-border bg-muted p-4 text-sm\"\n\nexport const typographyListStyle = \"ms-6\"\n\nexport const typographyUnorderedListStyle = \"list-disc\"\n\nexport const typographyOrderedListStyle = \"list-decimal\"\n\nexport const typographyListItemStyle = \"mt-2\"\n\nexport const typographyTableContainerStyle = \"my-6 w-full overflow-x-auto\"\n\nexport const typographyTableStyle = \"w-full border-collapse caption-bottom text-sm\"\n\nexport const typographyTableRowStyle = \"border-b border-border transition-colors\"\n\nexport const typographyTableHeadStyle =\n  \"text-foreground px-3 py-2 text-left align-middle font-medium\"\n\nexport const typographyTableCellStyle = \"px-3 py-2 align-top text-left\"\n\nexport const typographyHrStyle = \"my-8 border-border\"\n\nexport function toArbitrarySelectorClass(selector: string, className: string) {\n  const normalizedSelector = selector.replaceAll(\" \", \"_\")\n  const structuralVariants: Record<string, string> = {\n    first: \":first-child\",\n    last: \":last-child\",\n    odd: \":nth-child(odd)\",\n    even: \":nth-child(even)\",\n  }\n\n  return className\n    .split(/\\s+/)\n    .filter(Boolean)\n    .map((token) => {\n      const arbitrarySelectorMatch = token.match(/^\\[&([^\\]]*)\\]:(.+)$/)\n\n      if (arbitrarySelectorMatch) {\n        const [, nestedSelector, utility] = arbitrarySelectorMatch\n\n        return `[${normalizedSelector}${nestedSelector}]:${utility}`\n      }\n\n      const structuralVariantMatch = token.match(\n        /^(first|last|odd|even):(.*)$/\n      )\n\n      if (structuralVariantMatch) {\n        const [, variant, utility] = structuralVariantMatch\n\n        return `[${normalizedSelector}${structuralVariants[variant]}]:${utility}`\n      }\n\n      return `[${normalizedSelector}]:${token}`\n    })\n    .join(\" \")\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/typography/index.ts",
+      "content": "export {\n  typographyAStyle,\n  typographyBlockquoteStyle,\n  typographyH1Style,\n  typographyH2Style,\n  typographyH3Style,\n  typographyH4Style,\n  typographyHrStyle,\n  typographyInlineCodeStyle,\n  typographyLargeStyle,\n  typographyLeadStyle,\n  typographyListItemStyle,\n  typographyListStyle,\n  typographyMutedStyle,\n  typographyOrderedListStyle,\n  typographyPStyle,\n  typographyPreStyle,\n  typographySmallStyle,\n  typographyTableCellStyle,\n  typographyTableContainerStyle,\n  typographyTableHeadStyle,\n  typographyTableRowStyle,\n  typographyTableStyle,\n  typographyUnorderedListStyle,\n  toArbitrarySelectorClass,\n} from \"./typography-styles\"\n\nexport { default as Typography } from \"./typography.astro\"\nexport { default as TypographyA } from \"./typography-a.astro\"\nexport { default as TypographyBlockquote } from \"./typography-blockquote.astro\"\nexport { default as TypographyH1 } from \"./typography-h1.astro\"\nexport { default as TypographyH2 } from \"./typography-h2.astro\"\nexport { default as TypographyH3 } from \"./typography-h3.astro\"\nexport { default as TypographyH4 } from \"./typography-h4.astro\"\nexport { default as TypographyInlineCode } from \"./typography-inline-code.astro\"\nexport { default as TypographyLarge } from \"./typography-large.astro\"\nexport { default as TypographyLead } from \"./typography-lead.astro\"\nexport { default as TypographyList } from \"./typography-list.astro\"\nexport { default as TypographyListItem } from \"./typography-list-item.astro\"\nexport { default as TypographyMuted } from \"./typography-muted.astro\"\nexport { default as TypographyP } from \"./typography-p.astro\"\nexport { default as TypographySmall } from \"./typography-small.astro\"\nexport { default as TypographyTable } from \"./typography-table.astro\"\nexport { default as TypographyTableCell } from \"./typography-table-cell.astro\"\nexport { default as TypographyTableHead } from \"./typography-table-head.astro\"\nexport { default as TypographyTableRow } from \"./typography-table-row.astro\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

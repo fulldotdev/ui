@@ -3,6 +3,7 @@ Repository structure
 - This repo is a content-driven Astro site and the source for the Fulldev registry. Preserve the current separation of concerns instead of introducing new patterns.
 - Source code lives in `src/`. Treat `dist/` as build output.
 - Use the existing `@/*` import alias for `src/*`.
+- Use kebab-case for filenames throughout the repo.
 
 Content and schemas
 
@@ -35,6 +36,9 @@ const props: Props = Astro.props
 
 - `page` should use the specific schema type for that layout, for example `HomeSchema` or `DocSchema`.
 - Keep the shared prop shape consistent across layouts even when the page schema differs.
+- `src/layouts/base.astro` is the shared shell. Pass `global`, `page`, `headings`, and `desktopNavigation` only.
+- Let `base.astro` forward `page.seo` to the head components directly. Do not add custom SEO mapping, fallback objects, or duplicate SEO prop types there.
+- Keep `base.astro` focused on shared chrome and navigation. Page-specific data shaping belongs in the page layout, not in `base.astro`.
 - When adding a new layout:
   1. Create `src/layouts/<name>.astro`
   2. Create `src/schemas/layouts/<name>.ts`
@@ -54,6 +58,12 @@ Components
 - Keep one folder per component family with an `index.ts` barrel as the public API.
 - Keep helper files next to the component they belong to, for example variant helpers like `button-variants.ts`.
 - Preserve the existing naming pattern: root component file plus clearly named subparts in the same folder.
+- For components that also exist in Shadcn UI, keep parity with Shadcn's public API, composition, and styling. These parity rules do not apply to Fulldev-only components.
+- For Shadcn-parity components, use `../shadcn-styling-reference` as the source of truth for API and styling, and `../data-slot` as the source of truth for required DOM/behavior.
+- If Shadcn exports a piece, we may export it as its own component. If Shadcn keeps a piece inside another component, keep it private and inline it into the owning Astro component.
+- Do not create extra public Astro components for `data-slot` internals such as portals, positioners, viewports, indicators, thumbs, or item-text wrappers unless Shadcn also exposes them.
+- Keep Shadcn-owned classes on the same component boundary as Shadcn. Do not split one Shadcn component's styling across extra public wrappers.
+- Preserve `data-slot` functionality by keeping the required internal `data-slot="..."` structure inline inside the owning component when needed.
 
 Registry
 

@@ -13,16 +13,15 @@ type Props = {
 
 const { code } = Astro.props as Props
 const toggleId = `live-code-${crypto.randomUUID()}`
-const copyButtonId = `live-code-copy-${crypto.randomUUID()}`
 ---
 
 <div
   data-slot="live-code"
-  class="border-border bg-background my-6 overflow-hidden rounded-3xl border"
+  class="border-border bg-background my-6 overflow-hidden rounded-lg border"
 >
   <div
     data-slot="live-code-preview"
-    class="bg-background flex min-h-[18rem] w-full items-center justify-center px-6 py-10 sm:px-10 sm:py-14"
+    class="bg-background flex min-h-72 w-full items-center justify-center px-6 py-10 sm:px-10 sm:py-14"
   >
     <div
       class="live-code-example flex w-full max-w-full items-center justify-center gap-3"
@@ -53,8 +52,8 @@ const copyButtonId = `live-code-copy-${crypto.randomUUID()}`
       </div>
 
       <button
-        id={copyButtonId}
         type="button"
+        data-slot="live-code-copy"
         class={cn(
           buttonVariants({ variant: "ghost", size: "icon-sm" }),
           "live-code-copy text-foreground absolute top-3 right-3 z-20 rounded-lg shadow-none"
@@ -68,7 +67,7 @@ const copyButtonId = `live-code-copy-${crypto.randomUUID()}`
 
       <div
         data-slot="live-code-source"
-        class="live-code-source overflow-x-auto px-0 py-0 text-[13px]"
+        class="live-code-source overflow-x-auto px-0 py-0 text-sm"
       >
         <slot name="code" />
       </div>
@@ -76,33 +75,32 @@ const copyButtonId = `live-code-copy-${crypto.randomUUID()}`
   </div>
 </div>
 
-<script is:inline define:vars={{ copyButtonId }}>
-  const button = document.getElementById(copyButtonId)
+<script>
+  document.addEventListener("click", async (event) => {
+    const target = event.target as Element | null
+    const button = target?.closest<HTMLButtonElement>(
+      'button[data-slot="live-code-copy"]'
+    )
 
-  if (button instanceof HTMLButtonElement) {
-    button.addEventListener("click", async () => {
-      const code = button.dataset.code
+    if (!button) return
 
-      if (!code) return
+    const code = button.dataset.code
 
-      try {
-        await navigator.clipboard.writeText(code)
-        button.querySelector(".live-code-copy-icon")?.classList.add("hidden")
-        button
-          .querySelector(".live-code-check-icon")
-          ?.classList.remove("hidden")
+    if (!code) return
 
-        window.setTimeout(() => {
-          button
-            .querySelector(".live-code-copy-icon")
-            ?.classList.remove("hidden")
-          button.querySelector(".live-code-check-icon")?.classList.add("hidden")
-        }, 1200)
-      } catch {
-        // Ignore clipboard failures; the control remains available for retry.
-      }
-    })
-  }
+    try {
+      await navigator.clipboard.writeText(code)
+      button.querySelector(".live-code-copy-icon")?.classList.add("hidden")
+      button.querySelector(".live-code-check-icon")?.classList.remove("hidden")
+
+      window.setTimeout(() => {
+        button.querySelector(".live-code-copy-icon")?.classList.remove("hidden")
+        button.querySelector(".live-code-check-icon")?.classList.add("hidden")
+      }, 1200)
+    } catch {
+      // Ignore clipboard failures; the control remains available for retry.
+    }
+  })
 </script>
 
 <style>
@@ -112,14 +110,17 @@ const copyButtonId = `live-code-copy-${crypto.randomUUID()}`
 
   [data-slot="live-code"] .live-code-source-shell {
     min-height: 6rem;
-    background: color-mix(in oklab, var(--muted) 68%, var(--background));
+    background: var(--muted);
   }
 
   [data-slot="live-code"] .live-code-overlay {
     background: linear-gradient(
       to top,
-      color-mix(in oklab, var(--muted) 68%, var(--background)) 0%,
-      color-mix(in oklab, var(--muted) 55%, transparent) 55%,
+      var(--muted) 0%,
+      color-mix(in oklab, var(--muted) 98%, transparent) 18%,
+      color-mix(in oklab, var(--muted) 92%, transparent) 36%,
+      color-mix(in oklab, var(--muted) 72%, transparent) 58%,
+      color-mix(in oklab, var(--muted) 38%, transparent) 82%,
       transparent 100%
     );
   }
@@ -139,6 +140,7 @@ const copyButtonId = `live-code-copy-${crypto.randomUUID()}`
     min-width: max-content;
     font-family: var(--font-geist-mono), monospace;
     color: var(--shiki-light, var(--foreground)) !important;
+    white-space: normal;
   }
 
   [data-slot="live-code"]

@@ -1,76 +1,98 @@
 ---
-import type { ImageMetadata } from "astro"
+import { getCollection, type CollectionEntry } from "astro:content"
 
-import type { GlobalSchema } from "@/schemas/global"
-import { Layout, LayoutBody, LayoutHead } from "@/components/ui/layout"
+import { hrefFromPageId } from "@/lib/pages"
+import { Layout, LayoutBody, LayoutHead, LayoutMain } from "@/components/ui/layout"
 import {
   SidebarInset,
   SidebarProvider,
   SidebarShell,
 } from "@/components/ui/sidebar"
-import { ThemeProvider } from "@/components/ui/theme-toggle"
-import Header from "@/components/blocks/Header.astro"
-import Sidebar from "@/components/blocks/Sidebar.astro"
+import { ThemeToggleProvider } from "@/components/ui/theme-toggle"
+import Header from "@/components/blocks/header-1.astro"
+import Sidebar from "@/components/blocks/sidebar-1.astro"
 
-type NavItem = {
-  label: string
-  href: string
-  isActive?: boolean
-}
+const { global, page, desktopNavigation } = Astro.props
+const currentPath = Astro.url.pathname
 
-type NavGroup = {
-  label: string
-  items: NavItem[]
-}
+const primaryNav = [
+  { label: "Introduction", href: "/docs/" },
+  { label: "Installation", href: "/docs/installation/" },
+  { label: "Theming", href: "/docs/theming/" },
+  { label: "Components", href: "/docs/components/" },
+].map((item) => ({
+  ...item,
+  isActive:
+    item.href === "/docs/components/"
+      ? currentPath.startsWith("/docs/components")
+      : currentPath === item.href,
+}))
 
-type HeadProps = {
-  title?: string
-  description?: string
-  image?: {
-    src?: ImageMetadata | string
-    alt?: string
+const componentPages = (await getCollection("pages")).filter(
+  (
+    entry
+  ): entry is CollectionEntry<"pages"> & {
+    data: { type: "doc"; title: string }
+  } => {
+    return entry.data.type === "doc" && entry.id.startsWith("docs/components/")
   }
-  canonical?: string
-  noindex?: boolean
-  nofollow?: boolean
-}
+)
 
-type Props = {
-  global: GlobalSchema
-  navGroups: NavGroup[]
-  headerLinks?: GlobalSchema["header"]["links"]
-  headerButtons?: GlobalSchema["header"]["buttons"]
-  head?: HeadProps
-  desktopNavigation: "header" | "sidebar"
-}
+const componentLinks = componentPages
+  .filter((entry) => entry.id !== "docs/components")
+  .map((entry) => ({
+    label: entry.data.title,
+    href: hrefFromPageId(entry.id),
+    isActive: hrefFromPageId(entry.id) === currentPath,
+  }))
+  .sort((a, b) => a.label.localeCompare(b.label))
 
-const props: Props = Astro.props
+const navGroups = [
+  {
+    label: "Navigation",
+    items: primaryNav,
+  },
+  ...(componentLinks.length > 0
+    ? [
+        {
+          label: "Components",
+          items: componentLinks,
+        },
+      ]
+    : []),
+]
+
+const headerLinks = global.header.links.filter((link: { href: string }) => {
+  return link.href === "/docs/" || link.href === "/docs/components/"
+})
 ---
 
 <Layout>
-  <LayoutHead name={props.global.name} {...props.head}>
-    <ThemeProvider />
+  <LayoutHead name={global.name} {...page.seo}>
+    <ThemeToggleProvider />
   </LayoutHead>
-  <LayoutBody>
+  <LayoutBody style="--container-width: 96rem">
     <SidebarProvider
-      open={props.desktopNavigation === "sidebar"}
-      defaultOpen={props.desktopNavigation === "sidebar"}
+      open={desktopNavigation === "sidebar"}
+      defaultOpen={desktopNavigation === "sidebar"}
     >
       <Sidebar
-        state={props.desktopNavigation === "sidebar" ? "expanded" : "collapsed"}
+        state={desktopNavigation === "sidebar" ? "expanded" : "collapsed"}
         collapsible="offcanvas"
         variant="inset"
-        global={props.global}
-        navGroups={props.navGroups}
+        global={global}
+        navGroups={navGroups}
       />
       <SidebarShell>
         <Header
-          class={props.desktopNavigation === "sidebar" ? "md:hidden" : "p-2"}
-          global={props.global}
-          headerLinks={props.headerLinks}
+          class={desktopNavigation === "sidebar" ? "md:hidden" : ""}
+          global={global}
+          headerLinks={headerLinks}
         />
         <SidebarInset>
-          <slot />
+          <LayoutMain>
+            <slot />
+          </LayoutMain>
         </SidebarInset>
       </SidebarShell>
     </SidebarProvider>

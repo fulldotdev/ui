@@ -3,13 +3,6 @@ import { z } from "astro/zod"
 
 import { buttonSchema, seoSchema } from "@/schemas/shared"
 
-const featureSchema = z
-  .object({
-    title: z.string(),
-    description: z.string(),
-  })
-  .strict()
-
 export const homeSchema = (ctx: SchemaContext) =>
   z
     .object({
@@ -18,13 +11,6 @@ export const homeSchema = (ctx: SchemaContext) =>
           title: z.string(),
           description: z.string(),
           buttons: buttonSchema.array().length(2),
-        })
-        .strict(),
-      features: z
-        .object({
-          title: z.string(),
-          description: z.string(),
-          items: featureSchema.array().length(3),
         })
         .strict(),
       cta: z

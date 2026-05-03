@@ -4,14 +4,22 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-import { formatPriceValue, type PriceValue } from "./format-price-value"
+import {
+  formatPriceDiscount,
+  formatPriceValue,
+  type DiscountFormat,
+  type PriceValue,
+} from "./format-price-value"
 
 type Props = VariantProps<typeof variants> &
   HTMLAttributes<"span"> & {
     price?: PriceValue
+    compareAt?: PriceValue
     currency?: string
     locale?: string
     variant?: "default" | "sale"
+    discountFormat?: DiscountFormat
+    showDiscount?: boolean
   }
 
 const variants = cva("leading-tight", {
@@ -26,19 +34,49 @@ const variants = cva("leading-tight", {
 const {
   class: className,
   price,
+  compareAt,
   currency = "USD",
   locale = "en-US",
   variant = "default",
+  discountFormat = "percentage",
+  showDiscount = true,
   ...props
 } = Astro.props
 
 const formattedPrice = formatPriceValue(price, { currency, locale })
+const formattedCompareAt = formatPriceValue(compareAt, { currency, locale })
+const formattedDiscount =
+  showDiscount && compareAt
+    ? formatPriceDiscount(price, compareAt, {
+        currency,
+        locale,
+        format: discountFormat,
+      })
+    : null
+const hasDiscount = Boolean(formattedCompareAt && formattedDiscount)
 ---
 
 {
   formattedPrice && (
-    <span class={cn(variants({ variant }), className)} {...props}>
-      {formattedPrice}
+    <span
+      class={cn("inline-flex flex-wrap items-center gap-x-2 gap-y-1", className)}
+      {...props}
+    >
+      <span class={cn(variants({ variant }))}>{formattedPrice}</span>
+      {
+        formattedCompareAt && (
+          <span class="text-muted-foreground text-sm leading-tight line-through">
+            {formattedCompareAt}
+          </span>
+        )
+      }
+      {
+        hasDiscount && (
+          <span class="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs font-medium">
+            Save {formattedDiscount}
+          </span>
+        )
+      }
     </span>
   )
 }

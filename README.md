@@ -1,6 +1,6 @@
-# fulldev/ui
+# Fulldev UI
 
-A shadcn-compatible component library built for [Astro][astro], designed for content-driven websites.
+A shadcn-compatible set of components built for [Astro][astro], designed for content-driven websites.
 
 ## Features
 
@@ -45,7 +45,7 @@ cd my-project
 npx shadcn@latest init
 ```
 
-4. **Add fulldev/ui registry** to `components.json`:
+4. **Add Fulldev UI registry** to `components.json`:
 
 ```json
 {
@@ -57,7 +57,7 @@ npx shadcn@latest init
 
 5. **Copy the base stylesheet** from [`src/styles/global.css`](./src/styles/global.css) into your project, then import it in your layout.
 
-6. **Use a container-aware app shell** because fulldev/ui uses Tailwind v4 container-query variants like `@2xl:` and `@max-5xl:`:
+6. **Use a container-aware app shell** because Fulldev UI uses Tailwind v4 container-query variants like `@2xl:` and `@max-5xl:`:
 
 ```astro
 ---

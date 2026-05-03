@@ -1,19 +1,84 @@
 ---
 import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-type Props = HTMLAttributes<"div">
+const trackVariants = cva(
+  "flex min-w-max shrink-0 items-center gap-[var(--marquee-gap)] [animation:marquee_var(--marquee-duration)_linear_infinite]",
+  {
+    variants: {
+      direction: {
+        left: "",
+        right: "[animation-direction:reverse]",
+      },
+      pauseOnHover: {
+        true: "group-hover/marquee:[animation-play-state:paused]",
+        false: "",
+      },
+    },
+    defaultVariants: {
+      direction: "left",
+      pauseOnHover: false,
+    },
+  }
+)
 
-const { class: className, ...props } = Astro.props
+type Props = HTMLAttributes<"div"> &
+  VariantProps<typeof trackVariants> & {
+    duration?: string
+    gap?: string
+    infinite?: boolean
+  }
+
+const {
+  class: className,
+  direction,
+  pauseOnHover,
+  duration = "40s",
+  gap = "1.5rem",
+  infinite = false,
+  style,
+  ...props
+} = Astro.props
+
+const resolvedStyle = [
+  `--marquee-duration:${duration}`,
+  `--marquee-gap:${gap}`,
+  typeof style === "string" ? style : undefined,
+]
+  .filter(Boolean)
+  .join(";")
 ---
 
 <div
   class={cn(
-    "group/marquee flex justify-stretch overflow-hidden select-none",
+    "group/marquee flex overflow-hidden [--marquee-gap:1.5rem] [--marquee-duration:40s] select-none",
     className
   )}
+  style={resolvedStyle}
   {...props}
 >
-  <slot />
+  <div class={trackVariants({ direction, pauseOnHover })}>
+    <slot />
+  </div>
+  {
+    infinite && (
+      <div aria-hidden="true" class={trackVariants({ direction, pauseOnHover })}>
+        <slot />
+      </div>
+    )
+  }
 </div>
+
+<style>
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(calc(-100% - var(--marquee-gap)));
+    }
+  }
+</style>

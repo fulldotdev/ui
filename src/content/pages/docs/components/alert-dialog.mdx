@@ -1,7 +1,7 @@
 ---
 type: doc
 title: Alert Dialog
-description: A headless destructive confirmation dialog powered by @data-slot/alert-dialog.
+description: A modal dialog for important confirmations that expects a response.
 ---
 
 ```astro live
@@ -14,38 +14,33 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogOverlay,
-  AlertDialogPortal,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 ---
 
 <AlertDialog>
-  <AlertDialogTrigger variant="outline">Default</AlertDialogTrigger>
-  <AlertDialogPortal>
-    <AlertDialogOverlay />
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-        <AlertDialogDescription>
-          This action cannot be undone. This will permanently delete your
-          account and remove your data from our servers.
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction>Continue</AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  </AlertDialogPortal>
+  <AlertDialogTrigger variant="outline">Show Dialog</AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+      <AlertDialogDescription>
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+      <AlertDialogAction>Continue</AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
 </AlertDialog>
 ```
 
 ## Installation
 
 ```bash
-npm install @data-slot/alert-dialog
+npx shadcn@latest add @fulldev/alert-dialog
 ```
 
 ## Usage
@@ -59,8 +54,6 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogOverlay,
-  AlertDialogPortal,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
@@ -68,25 +61,47 @@ import {
 
 ```astro
 <AlertDialog>
-  <AlertDialogTrigger variant="outline">Default</AlertDialogTrigger>
-  <AlertDialogPortal>
-    <AlertDialogOverlay />
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-        <AlertDialogDescription>
-          This action cannot be undone. This will permanently delete your
-          account and remove your data from our servers.
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction>Continue</AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  </AlertDialogPortal>
+  <AlertDialogTrigger variant="outline">Show Dialog</AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+      <AlertDialogDescription>
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+      <AlertDialogAction>Continue</AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
 </AlertDialog>
 ```
 
-`AlertDialogAction` is the styled destructive action. Handle confirm side
-effects and closing according to your `@data-slot/alert-dialog` flow.
+## Composition
+
+Use the following composition to build an `AlertDialog`:
+
+```text
+AlertDialog
+├── AlertDialogTrigger
+└── AlertDialogContent
+    ├── AlertDialogHeader
+    │   ├── AlertDialogMedia
+    │   ├── AlertDialogTitle
+    │   └── AlertDialogDescription
+    └── AlertDialogFooter
+        ├── AlertDialogCancel
+        └── AlertDialogAction
+```
+
+## Notes
+
+- Use `AlertDialog` for irreversible or high-risk actions, not routine inline
+  confirmations.
+- Keep `AlertDialogTitle` and `AlertDialogDescription` inside
+  `AlertDialogContent` so screen readers announce the dialog context clearly.
+- Pair the destructive path with `AlertDialogAction` and the safe path with
+  `AlertDialogCancel`.
+- Use `size="sm"` on `AlertDialogContent` for compact confirmations and
+  `AlertDialogMedia` when the dialog needs an icon or visual cue.

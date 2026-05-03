@@ -7,9 +7,9 @@ allowed-tools: Bash(npx shadcn@latest *), Bash(pnpm dlx shadcn@latest *), Bash(b
 
 # fulldev ui
 
-fulldev ui is a shadcn-compatible registry built for Astro projects. It keeps the shadcn CLI workflow, but the shipped components are Astro-first and based on `@data-slot/*` primitives.
+A shadcn-compatible registry for Astro projects. Components are added as source code via the shadcn CLI, but the shipped primitives and patterns are Astro-first and built around `@data-slot/*`.
 
-> **IMPORTANT:** Run all CLI commands using the project's package runner: `npx shadcn@latest`, `pnpm dlx shadcn@latest`, or `bunx --bun shadcn@latest` based on the project's `packageManager`. Examples below use `npx shadcn@latest` but substitute the correct runner for the project.
+> **IMPORTANT:** Run all CLI commands using the project's package runner: `npx shadcn@latest`, `pnpm dlx shadcn@latest`, or `bunx --bun shadcn@latest` — based on the project's `packageManager`. Examples below use `npx shadcn@latest` but substitute the correct runner for the project.
 
 ## Current Project Context
 
@@ -21,11 +21,11 @@ The JSON above contains the project config and installed components. Use `npx sh
 
 ## Principles
 
-1. **Use existing components first.** Search `@fulldev` before writing custom UI for Astro or content-driven work.
-2. **Compose, don't reinvent.** Settings page = Card + form controls. Marketing page = Section + Item/List + Button + media primitives.
+1. **Use existing components first.** Search `@fulldev` before writing custom UI. Check other registries only when fulldev does not provide what you need.
+2. **Compose, don't reinvent.** Settings page = Card + FieldGroup + form controls. Marketing page = Section + Item/List + Button + media primitives.
 3. **Use built-in variants before custom styles.** `variant="outline"`, `size="sm"`, etc.
 4. **Use semantic colors.** `bg-primary`, `text-muted-foreground` — never raw values like `bg-blue-500`.
-5. **Stay Astro-first.** Prefer `.astro` components, slots, and server-rendered markup. Do not introduce React client components unless the codebase already uses them or the user explicitly asks for them.
+5. **Stay Astro-first.** Prefer `.astro` components, slots, server-rendered markup, and `class`. Do not introduce React client components unless the project already uses them or the user explicitly asks for them.
 
 ## fulldev Setup
 
@@ -59,18 +59,21 @@ import "@/styles/global.css"
 
 ## Critical Rules
 
-These rules are always enforced. Each links to a file with incorrect/correct code pairs or fulldev-specific guidance.
+These rules are **always enforced**. Each links to a file with incorrect/correct code pairs or fulldev-specific guidance.
 
 ### Astro & Data Slot → [data-slot.md](./rules/data-slot.md)
 
-- **fulldev ui does not branch between `base` and `radix`.** Use the shipped Astro wrappers and data-slot patterns instead.
-- **Do not use `asChild`, `render`, or `nativeButton`.** Those are not fulldev ui patterns.
+- **fulldev does not branch between `base` and `radix`.** Use the shipped Astro wrappers and `@data-slot/*` patterns instead.
+- **Do not use `asChild`, `render`, or `nativeButton`.** Those are not fulldev patterns.
 - **Use `class` in Astro templates** and `className` only in JSX/TSX files.
 - **Prefer the provided trigger components** such as `DialogTrigger`, `SheetTrigger`, and `AlertDialogTrigger` instead of wrapping lower-level primitives manually.
+- **For components that also exist in shadcn/ui, shadcn is the source of truth for public API, composition, and styling.** `data-slot` is the source of truth for required internal DOM and behavior.
+- **If shadcn exports a piece, it can stay public. If shadcn inlines a piece, inline it here too.** Keep private `data-slot` structure inside the owning component instead of exposing extra Astro components.
 
 ### Styling & Tailwind → [styling.md](./rules/styling.md)
 
 - **`class`/`className` for layout, not styling.** Never override component colors or typography.
+- **For components that exist in shadcn/ui, keep styling parity with shadcn.** Use the same variant intent, slot-level styling decisions, and ownership boundaries unless fulldev needs an Astro-only adaptation.
 - **No `space-x-*` or `space-y-*`.** Use `flex` with `gap-*`. For vertical stacks, `flex flex-col gap-*`.
 - **Use `size-*` when width and height are equal.** `size-10` not `w-10 h-10`.
 - **Use `truncate` shorthand.** Not `overflow-hidden text-ellipsis whitespace-nowrap`.
@@ -90,7 +93,7 @@ These rules are always enforced. Each links to a file with incorrect/correct cod
 ### Component Structure → [composition.md](./rules/composition.md)
 
 - **Items always inside their Group.** `SelectItem` → `SelectGroup`. `DropdownMenuItem` → `DropdownMenuGroup`. `CommandItem` → `CommandGroup`.
-- **Dialog, Sheet, and AlertDialog always need a Title.** `DialogTitle`, `SheetTitle`, `AlertDialogTitle` are required for accessibility. Use `class="sr-only"` if visually hidden.
+- **Dialog, Sheet, and AlertDialog always need a Title.** `DialogTitle`, `SheetTitle`, and `AlertDialogTitle` are required for accessibility. Use `class="sr-only"` if visually hidden.
 - **Use full Card composition.** `CardHeader`/`CardTitle`/`CardDescription`/`CardContent`/`CardFooter`. Don't dump everything in `CardContent`.
 - **Button has no `isPending`/`isLoading`.** Compose with `Spinner`, `data-icon`, and `disabled`.
 - **`TabsTrigger` must be inside `TabsList`.** Never render triggers directly in `Tabs`.
@@ -118,7 +121,7 @@ These rules are always enforced. Each links to a file with incorrect/correct cod
 
 ## Key Patterns
 
-These are the most common patterns that differentiate correct fulldev ui code. For edge cases, see the linked rule files above.
+These are the most common patterns that differentiate correct fulldev code. For edge cases, see the linked rule files above.
 
 ```astro
 ---
@@ -163,7 +166,7 @@ import { Button } from "@/components/ui/button"
 | Navigation | `Sidebar`, `NavigationMenu`, `Breadcrumb`, `Tabs` |
 | Overlays | `Dialog`, `Sheet`, `AlertDialog`, `Popover`, `Tooltip`, `DropdownMenu` |
 | Feedback | `Alert`, `Skeleton`, `Spinner` |
-| Layout | `Card`, `Separator`, `Accordion`, `Collapsible`, `Section`, `Layout`, `Container` |
+| Layout | `Card`, `Separator`, `Accordion`, `Collapsible`, `Section`, `Layout` |
 | Empty states | `Empty` |
 | Media/content | `Image`, `Video`, `Logo`, `Price`, `Rating` |
 
@@ -190,7 +193,9 @@ Run `npx shadcn@latest docs <component>` to get the URLs for shared component do
 npx shadcn@latest docs input button
 ```
 
-For fulldev registry items, prefer `npx shadcn@latest view @fulldev/<item>` or `npx shadcn@latest add @fulldev/<item> --dry-run` to inspect what would be installed into the current project.
+**When creating, fixing, debugging, or using a component that also exists in shadcn/ui, always run `npx shadcn@latest docs` and fetch the URLs first.** This keeps API, composition, and styling aligned with the shadcn reference instead of guessing.
+
+For fulldev-only registry items, prefer `npx shadcn@latest view @fulldev/<item>` or `npx shadcn@latest add @fulldev/<item> --dry-run` to inspect what would be installed into the current project.
 
 ## Workflow
 
@@ -198,14 +203,16 @@ For fulldev registry items, prefer `npx shadcn@latest view @fulldev/<item>` or `
 2. **Check fulldev setup first** — before running `add`, ensure `components.json` contains `@fulldev`, the alias setup is correct, the fulldev base stylesheet is present, and the app shell is container-aware when needed.
 3. **Check installed components first** — before running `add`, always check the `components` list from project context or list the `resolvedPaths.ui` directory. Don't import components that haven't been added, and don't re-add ones already installed.
 4. **Find components** — search `@fulldev` first. Fall back to `@shadcn` or another explicit registry only when fulldev does not provide the needed component.
-5. **Get docs and examples** — run `npx shadcn@latest docs <component>` for shared primitives, then fetch the URLs. Use `npx shadcn@latest view @fulldev/<item>` to browse fulldev registry items you haven't installed. To preview changes to installed components, use `npx shadcn@latest add --diff`.
-6. **Install or update** — `npx shadcn@latest add`. When updating existing components, use `--dry-run` and `--diff` to preview changes first.
-7. **Review added components** — after adding a component or block from any registry, always read the added files and verify they are correct. Check for missing sub-components, missing imports, incorrect composition, invalid Astro syntax, or violations of the Critical Rules.
-8. **Preserve Astro-first patterns** — use `.astro` components, slots, `class`, and data-slot APIs unless the project clearly uses another pattern.
+5. **Get docs and examples** — for components that also exist in shadcn/ui, run `npx shadcn@latest docs <component>` to get URLs, then fetch them. Use `npx shadcn@latest view @fulldev/<item>` to browse fulldev registry items you haven't installed. To preview changes to installed components, use `npx shadcn@latest add --diff`.
+6. **Install or update** — `npx shadcn@latest add`. When updating existing components, use `--dry-run` and `--diff` to preview changes first (see [Updating Components](#updating-components) below).
+7. **Review added components** — after adding a component or block from any registry, **always read the added files and verify they are correct**. Check for missing sub-components, missing imports, incorrect composition, invalid Astro syntax, wrong icon package usage, or violations of the [Critical Rules](#critical-rules). Fix all issues before moving on.
+8. **Registry must be explicit when leaving fulldev** — if the user asks for a component or block and fulldev does not provide it, do not guess the fallback registry. Ask whether to use `@shadcn` or another registry.
+9. **Preserve Astro-first patterns** — use `.astro` components, slots, `class`, and `data-slot` APIs unless the project clearly uses another pattern.
+10. **For shared primitives, keep shadcn parity at the public component boundary** — separate public components only when shadcn exports them. Keep extra `data-slot` parts private and inline inside the owning component.
 
 ## Updating Components
 
-When the user asks to update a component from upstream while keeping local changes, use `--dry-run` and `--diff` to intelligently merge. **NEVER fetch raw files from GitHub manually — always use the CLI.**
+When the user asks to update a component from upstream while keeping their local changes, use `--dry-run` and `--diff` to intelligently merge. **NEVER fetch raw files from GitHub manually — always use the CLI.**
 
 1. Run `npx shadcn@latest add <component> --dry-run` to see all files that would be affected.
 2. For each file, run `npx shadcn@latest add <component> --diff <file>` to see what changed upstream vs local.
@@ -226,7 +233,7 @@ npx shadcn@latest add @fulldev/button
 npx shadcn@latest add @fulldev/button @fulldev/item @fulldev/list
 npx shadcn@latest add @fulldev/components
 
-# Preview changes before adding or updating.
+# Preview changes before adding/updating.
 npx shadcn@latest add @fulldev/button --dry-run
 npx shadcn@latest add @fulldev/button --diff button.astro
 
@@ -246,7 +253,7 @@ npx shadcn@latest view @fulldev/button
 - [rules/forms.md](./rules/forms.md) — `FieldGroup`, `Field`, `InputGroup`, validation states
 - [rules/composition.md](./rules/composition.md) — Groups, overlays, Card, Tabs, Avatar, Alert, Empty, Separator, Skeleton, Badge, Button loading
 - [rules/icons.md](./rules/icons.md) — `data-icon`, icon sizing, passing icons as objects
-- [rules/styling.md](./rules/styling.md) — Semantic colors, variants, `class`/`className`, spacing, size, truncate, dark mode, `cn()`, z-index
-- [rules/data-slot.md](./rules/data-slot.md) — data-slot APIs, trigger patterns, `Button as`, `Select`, `Combobox`, `Slider`, `Switch`
-- [cli.md](./cli.md) — Commands, flags, presets, templates
-- [customization.md](./customization.md) — Theming, CSS variables, extending components
+- [rules/styling.md](./rules/styling.md) — semantic colors, variants, `class`/`className`, spacing, size, truncate, dark mode, `cn()`, z-index
+- [rules/data-slot.md](./rules/data-slot.md) — `data-slot` APIs, trigger patterns, `Button as`, `Select`, `Combobox`, `Slider`, `Switch`
+- [cli.md](./cli.md) — commands, flags, presets, templates
+- [customization.md](./customization.md) — theming, CSS variables, extending components

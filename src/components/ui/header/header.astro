@@ -1,20 +1,36 @@
 ---
 import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-type Props = HTMLAttributes<"header">
+type Props = HTMLAttributes<"header"> & VariantProps<typeof variants>
 
-const { class: className, ...props } = Astro.props
+const variants = cva(
+  "group/header text-sidebar-foreground relative z-50 flex w-full items-center justify-between gap-8 px-6 py-2 in-[[data-slot=sidebar-inset]]:px-4",
+  {
+    variants: {
+      variant: {
+        default: "",
+        floating:
+          "bg-background border-border my-2 w-[calc(100%-3rem)] overflow-hidden rounded-xl border shadow-sm",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
+
+const { class: className, variant, ...props } = Astro.props
 ---
 
 <header
-  class={cn(
-    "group/header text-sidebar-foreground relative z-50 flex w-full items-center justify-between gap-8 py-2",
-    className
-  )}
+  class={cn(variants({ variant }), className)}
   data-slot="header"
+  data-variant={variant}
   {...props}
 >
   <slot />
 </header>
+

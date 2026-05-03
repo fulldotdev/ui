@@ -138,4 +138,4 @@ bun run registry:build    # Build the component registry
 
 ## License
 
-By contributing to fulldev/ui, you agree that your contributions will be licensed under the MIT License.
+By contributing to Fulldev UI, you agree that your contributions will be licensed under the MIT License.

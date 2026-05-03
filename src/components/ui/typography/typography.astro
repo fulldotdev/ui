@@ -63,6 +63,7 @@ const { as: Tag = "div", class: className, ...props } = Astro.props
       toArbitrarySelectorClass("&>table tr", typographyTableRowStyle),
       toArbitrarySelectorClass("&>table th", typographyTableHeadStyle),
       toArbitrarySelectorClass("&>table td", typographyTableCellStyle),
+      "[&>table>thead]:border-b [&>table>tbody>tr:last-child]:border-0",
       toArbitrarySelectorClass("&>p:not(pre)>code", typographyInlineCodeStyle),
       toArbitrarySelectorClass("&>.lead", typographyLeadStyle),
       toArbitrarySelectorClass("&>.large", typographyLargeStyle),
@@ -75,6 +76,7 @@ const { as: Tag = "div", class: className, ...props } = Astro.props
       "[&>blockquote:not(:first-child)]:mt-6",
       "[&>ul]:my-6 [&>ol]:my-6",
       "[&>ul>li+li]:mt-2 [&>ol>li+li]:mt-2",
+      "[&>pre]:my-6",
       "[&>[data-slot=typography-large]:not(:first-child)]:mt-6",
     ],
     className
@@ -98,14 +100,26 @@ const { as: Tag = "div", class: className, ...props } = Astro.props
 
 <style is:global>
   [data-slot="typography"] > pre.astro-code {
-    background: color-mix(in oklab, var(--muted) 68%, var(--background)) !important;
+    background: var(--muted) !important;
     border: 1px solid var(--border);
-    border-radius: 0.75rem;
-    line-height: 1.5;
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
   }
 
   [data-slot="typography"] > pre.astro-code code {
     color: inherit !important;
+  }
+
+  [data-slot="typography"] :not(pre) > code {
+    position: relative;
+    border-radius: var(--radius-sm);
+    background: var(--muted);
+    padding: 0.125rem 0.375rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-semibold);
   }
 
   .dark [data-slot="typography"] > pre.astro-code {

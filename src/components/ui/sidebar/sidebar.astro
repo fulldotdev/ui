@@ -10,11 +10,10 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 
-type Props = HTMLAttributes<"div"> & {
+type Props = Omit<HTMLAttributes<"div">, "dir"> & {
   side?: "left" | "right"
   variant?: "sidebar" | "floating" | "inset"
   collapsible?: "offcanvas" | "icon" | "none"
-  dir?: "ltr" | "rtl"
   state?: "expanded" | "collapsed"
 }
 
@@ -23,7 +22,6 @@ const {
   side = "left",
   variant = "sidebar",
   collapsible = "offcanvas",
-  dir,
   state = "expanded",
   ...props
 } = Astro.props
@@ -41,7 +39,6 @@ const desktopCollapsible = desktopState === "collapsed" ? collapsible : ""
       data-variant={variant}
       data-side={side}
       data-sidebar-collapsible="none"
-      dir={dir}
       class={cn(
         "bg-sidebar text-sidebar-foreground flex h-full w-(--sidebar-width) flex-col",
         className
@@ -54,7 +51,6 @@ const desktopCollapsible = desktopState === "collapsed" ? collapsible : ""
     <>
       <Sheet data-sidebar="sheet" defaultOpen={false}>
         <SheetContent
-          dir={dir}
           side={side}
           showCloseButton={false}
           data-sidebar="sidebar"
@@ -83,7 +79,6 @@ const desktopCollapsible = desktopState === "collapsed" ? collapsible : ""
         data-variant={variant}
         data-side={side}
         data-sidebar-collapsible={collapsible}
-        dir={dir}
         class="group peer text-sidebar-foreground hidden md:block"
       >
         <div
@@ -100,7 +95,6 @@ const desktopCollapsible = desktopState === "collapsed" ? collapsible : ""
         <div
           data-slot="sidebar-container"
           data-side={side}
-          dir={dir}
           class={cn(
             "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear data-[side=left]:left-0 data-[side=left]:group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)] data-[side=right]:right-0 data-[side=right]:group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)] md:flex",
             variant === "floating" || variant === "inset"

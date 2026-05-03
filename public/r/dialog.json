@@ -1,0 +1,69 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dialog",
+  "dependencies": [
+    "@data-slot/dialog",
+    "@lucide/astro"
+  ],
+  "registryDependencies": [
+    "@fulldev/button"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/dialog/dialog.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div data-slot=\"dialog\" class={className} {...props}>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/dialog\"\n\n  create()\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dialog/dialog-trigger.astro",
+      "content": "---\nimport type { ComponentProps } from \"astro/types\"\n\nimport { Button } from \"@/components/ui/button\"\n\ntype Props = ComponentProps<typeof Button>\n\nconst { ...props } = Astro.props\n---\n\n<Button data-slot=\"dialog-trigger\" {...props}>\n  <slot />\n</Button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dialog/dialog-portal.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div data-slot=\"dialog-portal\" class={cn(className)} {...props}>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dialog/dialog-overlay.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, style, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"dialog-overlay\"\n  hidden\n  class={cn(\n    \"fixed inset-0 isolate z-50 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0\",\n    className\n  )}\n  style={`z-index: calc(var(--dialog-overlay-stack-index, 0) + 100);${style ? ` ${style}` : \"\"}`}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dialog/dialog-content.astro",
+      "content": "---\nimport { XIcon } from \"@lucide/astro\"\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Button } from \"@/components/ui/button\"\nimport DialogOverlay from \"@/components/ui/dialog/dialog-overlay.astro\"\nimport DialogPortal from \"@/components/ui/dialog/dialog-portal.astro\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  showCloseButton?: boolean\n}\n\nconst { class: className, showCloseButton = true, style, ...props } = Astro.props\n---\n\n<DialogPortal>\n  <DialogOverlay />\n  <div\n    data-slot=\"dialog-content\"\n    hidden\n    class={cn(\n      \"fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6 rounded-xl bg-popover p-6 text-sm text-popover-foreground ring-1 ring-foreground/10 duration-100 outline-none sm:max-w-md data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95\",\n      className\n    )}\n    style={`z-index: calc(var(--dialog-content-stack-index, 0) + 101);${style ? ` ${style}` : \"\"}`}\n    {...props}\n  >\n    {\n      showCloseButton && (\n        <Button\n          type=\"button\"\n          data-slot=\"dialog-close\"\n          variant=\"ghost\"\n          size=\"icon-sm\"\n          class=\"absolute top-4 right-4\"\n        >\n          <XIcon class=\"size-4\" />\n          <span class=\"sr-only\">Close</span>\n        </Button>\n      )\n    }\n    <slot />\n  </div>\n</DialogPortal>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dialog/dialog-header.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"dialog-header\"\n  class={cn(\"flex flex-col gap-2\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dialog/dialog-footer.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\nimport DialogClose from \"@/components/ui/dialog/dialog-close.astro\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  showCloseButton?: boolean\n}\n\nconst { class: className, showCloseButton = false, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"dialog-footer\"\n  class={cn(\n    \"flex flex-col-reverse gap-2 sm:flex-row sm:justify-end\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n  {showCloseButton && <DialogClose variant=\"outline\">Close</DialogClose>}\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dialog/dialog-title.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"h2\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<h2\n  data-slot=\"dialog-title\"\n  class={cn(\"leading-none font-medium\", className)}\n  {...props}\n>\n  <slot />\n</h2>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dialog/dialog-description.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"p\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<p\n  data-slot=\"dialog-description\"\n  class={cn(\n    \"text-muted-foreground *:[a]:hover:text-foreground text-sm *:[a]:underline *:[a]:underline-offset-3\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</p>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dialog/dialog-close.astro",
+      "content": "---\nimport { X } from \"@lucide/astro\"\nimport type { ComponentProps } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Button } from \"@/components/ui/button\"\n\ntype Props = ComponentProps<typeof Button>\n\nconst { class: className, ...props } = Astro.props\n---\n\n<Button class={cn(className)} data-slot=\"dialog-close\" {...props}>\n  <slot>\n    <X />\n  </slot>\n</Button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dialog/index.ts",
+      "content": "export { default as Dialog } from \"./dialog.astro\"\nexport { default as DialogPortal } from \"./dialog-portal.astro\"\nexport { default as DialogOverlay } from \"./dialog-overlay.astro\"\nexport { default as DialogContent } from \"./dialog-content.astro\"\nexport { default as DialogTrigger } from \"./dialog-trigger.astro\"\nexport { default as DialogHeader } from \"./dialog-header.astro\"\nexport { default as DialogTitle } from \"./dialog-title.astro\"\nexport { default as DialogDescription } from \"./dialog-description.astro\"\nexport { default as DialogFooter } from \"./dialog-footer.astro\"\nexport { default as DialogClose } from \"./dialog-close.astro\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

@@ -1,0 +1,62 @@
+---
+import { Button } from "@/components/ui/button"
+import { Section, SectionContent } from "@/components/ui/section"
+
+type Action = {
+  text: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+type Props = {
+  title: string
+  description: string
+  actions: Action[]
+}
+
+const props: Props = Astro.props
+---
+
+<Section
+  size="lg"
+  variant="floating"
+  class="!mb-6 overflow-hidden !shadow-none"
+>
+  <div
+    class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,color-mix(in_oklch,var(--primary)_3%,transparent),transparent_55%)]"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,color-mix(in_oklch,var(--border)_60%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_oklch,var(--border)_60%,transparent)_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]"
+  >
+  </div>
+
+  <SectionContent class="relative items-center text-center">
+    <div class="flex max-w-2xl flex-col items-center gap-6">
+      <h2
+        class="text-foreground text-3xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {props.title}
+      </h2>
+
+      <p class="text-muted-foreground text-base leading-relaxed text-balance">
+        {props.description}
+      </p>
+
+      <div class="mt-2 flex flex-wrap justify-center gap-3">
+        {
+          props.actions.map((action) => (
+            <Button
+              as="a"
+              href={action.href}
+              size="lg"
+              variant={action.variant ?? "default"}
+            >
+              {action.text}
+            </Button>
+          ))
+        }
+      </div>
+    </div>
+  </SectionContent>
+</Section>

@@ -1,0 +1,56 @@
+---
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Section, SectionContent } from "@/components/ui/section"
+
+type Item = {
+  id: string
+  question: string
+  answer: string
+}
+
+type Props = {
+  title: string
+  description: string
+  items: Item[]
+  defaultItem?: string
+}
+
+const props: Props = Astro.props
+---
+
+<Section size="lg">
+  <SectionContent>
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:gap-16">
+      <div class="lg:sticky lg:top-24 lg:self-start">
+        <h2
+          class="text-foreground text-2xl font-semibold tracking-tight text-balance sm:text-3xl"
+        >
+          {props.title}
+        </h2>
+        <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">
+          {props.description}
+        </p>
+      </div>
+
+      <div>
+        <Accordion defaultValue={props.defaultItem} collapsible class="border-t">
+          {
+            props.items.map((item, index) => (
+              <AccordionItem value={item.id}>
+                <AccordionTrigger>{item.question}</AccordionTrigger>
+                <AccordionContent hidden={index !== 0}>
+                  {item.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))
+          }
+        </Accordion>
+      </div>
+    </div>
+  </SectionContent>
+</Section>

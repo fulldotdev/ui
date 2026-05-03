@@ -1,0 +1,310 @@
+---
+import { ChevronDownIcon } from "@lucide/astro"
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+import { Section, SectionContent } from "@/components/ui/section"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+type Item = {
+  href: string
+  title: string
+  description: string
+}
+
+type Action = {
+  text: string
+  href: string
+  variant?: "default" | "outline" | "ghost"
+}
+
+type Props = {
+  title: string
+  description: string
+  items: Item[]
+  action?: Action
+}
+
+const props: Props = Astro.props
+
+const previewByTitle: Record<string, "section" | "card" | "accordion" | "tabs" | "header" | "button"> = {
+  Section: "section",
+  Card: "card",
+  Accordion: "accordion",
+  Tabs: "tabs",
+  Header: "header",
+  Button: "button",
+}
+---
+
+<Section size="lg">
+  <Carousel
+    data-links-2-carousel
+    class="flex flex-col gap-12 [&_[data-slot=carousel-content]]:!overflow-x-clip [&_[data-slot=carousel-content]]:!overflow-y-visible [&_[data-slot=carousel-content]]:py-3"
+    opts={{ align: "start", loop: false, skipSnaps: false }}
+  >
+    <SectionContent class="gap-y-0" data-links-2-carousel-content>
+      <div class="flex items-end justify-between gap-6">
+        <div class="max-w-2xl" data-links-2-carousel-intro>
+          <h2
+            class="text-foreground text-2xl font-semibold tracking-tight text-balance sm:text-3xl"
+          >
+            {props.title}
+          </h2>
+          <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">
+            {props.description}
+          </p>
+        </div>
+        <div class="flex shrink-0 items-center gap-2">
+          <CarouselPrevious class="static translate-y-0" />
+          <CarouselNext class="static translate-y-0" />
+        </div>
+      </div>
+    </SectionContent>
+
+    <CarouselContent class="!ml-0">
+      {
+        props.items.map((item) => {
+          const kind = previewByTitle[item.title] ?? "card"
+
+          return (
+            <CarouselItem class="!pl-0 pr-4 sm:basis-1/2 lg:basis-1/3">
+                <a
+                  href={item.href}
+                  class="group/preview-card flex h-full min-w-0 flex-col"
+                >
+                  <Card class="ring-foreground/10 hover:ring-foreground/20 flex h-full flex-col gap-0 overflow-hidden p-0 transition-all hover:-translate-y-0.5 hover:shadow-md">
+                    <div
+                      class="bg-muted/40 group-hover/preview-card:bg-muted/60 relative flex h-44 items-center justify-center overflow-hidden border-b p-6 transition-colors"
+                    >
+                      <div
+                        class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,theme(colors.foreground/0.04),transparent_70%)]"
+                      />
+
+                      {kind === "section" && (
+                        <div class="flex w-full max-w-[220px] flex-col gap-2">
+                          <div class="bg-background ring-foreground/10 flex flex-col gap-2 rounded-lg p-3 shadow-xs ring-1">
+                            <div class="bg-foreground/80 h-2 w-16 rounded-full" />
+                            <div class="bg-muted-foreground/40 h-1.5 w-full rounded-full" />
+                            <div class="bg-muted-foreground/30 h-1.5 w-5/6 rounded-full" />
+                          </div>
+                          <div class="bg-background ring-foreground/10 flex flex-col gap-2 rounded-lg p-3 shadow-xs ring-1">
+                            <div class="bg-foreground/70 h-2 w-12 rounded-full" />
+                            <div class="bg-muted-foreground/40 h-1.5 w-full rounded-full" />
+                          </div>
+                        </div>
+                      )}
+
+                      {kind === "card" && (
+                        <Card size="sm" class="w-[220px]">
+                          <CardHeader>
+                            <CardTitle class="text-sm">Project status</CardTitle>
+                            <CardDescription class="text-xs">
+                              Updated 2 minutes ago
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <div class="flex items-center gap-2">
+                              <span class="bg-primary size-2 rounded-full" />
+                              <span class="text-xs">All systems normal</span>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {kind === "accordion" && (
+                        <div class="bg-background ring-foreground/10 w-[220px] rounded-lg px-4 py-1 shadow-xs ring-1">
+                          <Accordion collapsible defaultValue="preview-1">
+                            <AccordionItem value="preview-1">
+                              <AccordionTrigger class="text-xs">
+                                Is it accessible?
+                              </AccordionTrigger>
+                              <AccordionContent class="text-xs">
+                                Full WAI-ARIA support.
+                              </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="preview-2">
+                              <AccordionTrigger class="text-xs">
+                                Zero JavaScript?
+                              </AccordionTrigger>
+                              <AccordionContent class="text-xs" hidden>
+                                Ships zero JS by default.
+                              </AccordionContent>
+                            </AccordionItem>
+                          </Accordion>
+                        </div>
+                      )}
+
+                      {kind === "tabs" && (
+                        <Tabs data-default-value="preview-overview" class="w-[220px]">
+                          <TabsList class="grid w-full grid-cols-2">
+                            <TabsTrigger data-value="preview-overview" class="text-xs">
+                              Overview
+                            </TabsTrigger>
+                            <TabsTrigger data-value="preview-usage" class="text-xs">
+                              Usage
+                            </TabsTrigger>
+                          </TabsList>
+                          <TabsContent data-value="preview-overview">
+                            <div
+                              class="bg-background ring-foreground/10 mt-2 rounded-md p-3 text-xs shadow-xs ring-1"
+                            >
+                              Switch between views with smooth transitions.
+                            </div>
+                          </TabsContent>
+                          <TabsContent data-value="preview-usage" hidden>
+                            <div
+                              class="bg-background ring-foreground/10 mt-2 rounded-md p-3 text-xs shadow-xs ring-1"
+                            >
+                              Use Tabs to organize related content.
+                            </div>
+                          </TabsContent>
+                        </Tabs>
+                      )}
+
+                      {kind === "header" && (
+                        <div
+                          class="bg-background ring-foreground/10 flex w-[240px] items-center justify-between rounded-lg px-3 py-2.5 shadow-xs ring-1"
+                        >
+                          <div class="flex items-center gap-2">
+                            <div class="bg-foreground size-5 rounded" />
+                            <span class="text-xs font-medium">Acme</span>
+                          </div>
+                          <div class="flex items-center gap-3">
+                            <span class="text-muted-foreground text-[10px]">
+                              Docs
+                            </span>
+                            <span class="text-muted-foreground text-[10px]">
+                              Pricing
+                            </span>
+                            <span
+                              class="bg-foreground text-background rounded-md px-2 py-1 text-[10px] font-medium"
+                            >
+                              Sign in
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {kind === "button" && (
+                        <div class="flex flex-col gap-2">
+                          <div class="flex gap-2">
+                            <Button size="sm">Get started</Button>
+                            <Button size="sm" variant="outline">
+                              Learn more
+                              <ChevronDownIcon class="size-3" />
+                            </Button>
+                          </div>
+                          <div class="flex gap-2">
+                            <Button size="sm" variant="ghost">
+                              Cancel
+                            </Button>
+                            <Button size="sm" variant="secondary">
+                              Save
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div class="flex flex-1 flex-col gap-2 p-6">
+                      <CardTitle class="text-base">{item.title}</CardTitle>
+                      <CardDescription>{item.description}</CardDescription>
+                    </div>
+                  </Card>
+                </a>
+            </CarouselItem>
+          )
+        })
+      }
+    </CarouselContent>
+  </Carousel>
+</Section>
+
+<script>
+  type CarouselRoot = HTMLElement & {
+    __fulldevCarouselApi?: {
+      reInit: (opts: Record<string, unknown>) => void
+    }
+  }
+
+  declare global {
+    interface Window {
+      __fulldevLinks2CarouselResizeBound?: boolean
+    }
+  }
+
+  const applyContainerAlign = (root: CarouselRoot) => {
+    const viewport = root.querySelector<HTMLElement>(
+      '[data-slot="carousel-content"]'
+    )
+    const container = root.querySelector<HTMLElement>(
+      '[data-slot="carousel-container"]'
+    )
+    const content = root.querySelector<HTMLElement>(
+      "[data-links-2-carousel-content]"
+    )
+    const intro = root.querySelector<HTMLElement>(
+      "[data-links-2-carousel-intro]"
+    )
+    const api = root.__fulldevCarouselApi
+    if (!viewport || !container || !content || !intro || !api) return
+
+    const basePadding =
+      parseFloat(getComputedStyle(content).paddingLeft) || 24
+    const viewportLeft = viewport.getBoundingClientRect().left
+    const introLeft = intro.getBoundingClientRect().left
+    const alignOffset = Math.max(basePadding, introLeft - viewportLeft)
+
+    container.style.paddingLeft = `${alignOffset}px`
+    container.style.paddingRight = `${basePadding}px`
+
+    api.reInit({
+      align: () => alignOffset,
+    })
+  }
+
+  const init = () => {
+    document
+      .querySelectorAll<CarouselRoot>("[data-links-2-carousel]")
+      .forEach((root) => {
+        if (root.__fulldevCarouselApi) {
+          applyContainerAlign(root)
+          return
+        }
+
+        root.addEventListener(
+          "carousel:init" as keyof HTMLElementEventMap,
+          () => applyContainerAlign(root),
+          { once: true }
+        )
+      })
+  }
+
+  init()
+  document.addEventListener("astro:page-load", init)
+
+  if (!window.__fulldevLinks2CarouselResizeBound) {
+    window.__fulldevLinks2CarouselResizeBound = true
+    window.addEventListener("resize", init)
+  }
+</script>

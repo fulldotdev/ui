@@ -4,26 +4,26 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-type Props = HTMLAttributes<"section"> &
-  VariantProps<typeof variants> & {
-    size?: "sm" | "default" | "lg"
-  }
+type Props = HTMLAttributes<"section"> & VariantProps<typeof variants>
 
 const variants = cva(
-  "relative mx-auto flex scroll-m-(--section-py) flex-col gap-16 px-(--section-px) py-(--section-py)",
+  "relative flex scroll-mt-12 flex-col gap-16 lg:scroll-mt-16",
   {
     variants: {
       variant: {
         default: "bg-background w-full",
-        floating: [
-          "bg-background rounded-lg border shadow-md",
-          "w-[calc(100%-2*var(--gutter,24px))] max-w-(--section-width)",
-          "my-(--section-py) overflow-hidden rounded-xl",
-        ],
+        floating:
+          "bg-background max-w-container mx-auto my-12 w-[calc(100%-3rem)] overflow-hidden rounded-xl border shadow-md lg:my-16",
+      },
+      size: {
+        sm: "py-8 lg:py-12",
+        default: "py-12 lg:py-16",
+        lg: "py-24 lg:py-32",
       },
     },
     defaultVariants: {
       variant: "default",
+      size: "default",
     },
   }
 )
@@ -32,7 +32,7 @@ const { class: className, variant, size, ...props } = Astro.props
 ---
 
 <section
-  class={cn(variants({ variant }), className)}
+  class={cn(variants({ variant, size }), className)}
   data-slot="section"
   data-variant={variant}
   data-size={size}
@@ -40,44 +40,3 @@ const { class: className, variant, size, ...props } = Astro.props
 >
   <slot />
 </section>
-
-<style is:global>
-  [data-slot="section"] {
-    --section-width: var(--container, var(--breakpoint-xl));
-    --section-py: calc(var(--spacing) * 12);
-    --section-px: max(
-      var(--gutter, 24px),
-      calc((100cqw - var(--section-width)) / 2)
-    );
-  }
-
-  [data-slot="section"][data-variant="floating"] {
-    --section-px: calc(var(--spacing) * 6);
-  }
-
-  [data-slot="section"][data-size="sm"] {
-    --section-py: calc(var(--spacing) * 8);
-  }
-
-  [data-slot="section"][data-size="lg"] {
-    --section-py: calc(var(--spacing) * 24);
-  }
-
-  @media (min-width: 1024px) {
-    [data-slot="section"] {
-      --section-py: calc(var(--spacing) * 16);
-    }
-
-    [data-slot="section"][data-variant="floating"] {
-      --section-px: calc(var(--spacing) * 16);
-    }
-
-    [data-slot="section"][data-size="sm"] {
-      --section-py: calc(var(--spacing) * 12);
-    }
-
-    [data-slot="section"][data-size="lg"] {
-      --section-py: calc(var(--spacing) * 32);
-    }
-  }
-</style>

@@ -14,6 +14,14 @@ export const globalSchema = ({ image }: SchemaContext) =>
       links: linkSchema.array(),
       buttons: buttonSchema.array(),
     }),
+    docs: z
+      .object({
+        callout: z.object({
+          description: z.string(),
+          action: linkSchema,
+        }),
+      })
+      .optional(),
   })
 
 export type GlobalSchema = z.infer<ReturnType<typeof globalSchema>>
