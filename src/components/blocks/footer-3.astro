@@ -1,0 +1,64 @@
+---
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Logo, LogoText } from "@/components/ui/logo"
+import { Section, SectionContent } from "@/components/ui/section"
+
+type BlockAction = {
+  label: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+type BlockLink = {
+  label: string
+  href: string
+}
+
+interface Props {
+  props: {
+    badge: string
+    brandName: string
+    brandHref: string
+    description: string
+    actions: BlockAction[]
+    copyright: string
+    links: BlockLink[]
+  }
+}
+
+const { props } = Astro.props
+---
+
+<footer class="border-t bg-muted/20 py-10">
+  <Section>
+    <SectionContent class="gap-8">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div class="flex max-w-lg flex-col gap-4">
+          <Badge variant="outline" class="w-fit">{props.badge}</Badge>
+          <Logo href={props.brandHref}><LogoText>{props.brandName}</LogoText></Logo>
+          <p class="text-muted-foreground text-sm leading-6">{props.description}</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          {
+            props.actions.map((action) => (
+              <Button as="a" href={action.href} variant={action.variant}>
+                {action.label}
+              </Button>
+            ))
+          }
+        </div>
+      </div>
+      <div class="flex flex-col gap-3 border-t pt-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <p>{props.copyright}</p>
+        <div class="flex flex-wrap gap-4">
+          {
+            props.links.map((link) => (
+              <a href={link.href}>{link.label}</a>
+            ))
+          }
+        </div>
+      </div>
+    </SectionContent>
+  </Section>
+</footer>

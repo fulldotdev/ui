@@ -1,0 +1,59 @@
+---
+import { Button } from "@/components/ui/button"
+import { Logo, LogoText } from "@/components/ui/logo"
+import { Section, SectionContent } from "@/components/ui/section"
+
+type BlockAction = {
+  label: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+type BlockLink = {
+  label: string
+  href: string
+}
+
+interface Props {
+  props: {
+    brandName: string
+    brandHref: string
+    description: string
+    action: BlockAction
+    columns: {
+      title: string
+      links: BlockLink[]
+    }[]
+  }
+}
+
+const { props } = Astro.props
+---
+
+<footer class="border-t py-10">
+  <Section>
+    <SectionContent class="gap-8">
+      <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+        <div class="flex flex-col gap-4">
+          <Logo href={props.brandHref}><LogoText>{props.brandName}</LogoText></Logo>
+          <p class="text-muted-foreground max-w-sm text-sm leading-6">{props.description}</p>
+          <Button as="a" href={props.action.href} size="sm" variant={props.action.variant}>
+            {props.action.label}
+          </Button>
+        </div>
+        <div class="grid gap-6 sm:grid-cols-3">
+          {props.columns.map((column) => (
+            <div class="flex flex-col gap-3">
+              <p class="text-sm font-medium">{column.title}</p>
+              {column.links.map((link) => (
+                <a href={link.href} class="text-muted-foreground text-sm hover:text-foreground transition-colors">
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </SectionContent>
+  </Section>
+</footer>

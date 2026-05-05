@@ -1,0 +1,55 @@
+---
+import { Button } from "@/components/ui/button"
+import { Header, HeaderContent, HeaderGroup } from "@/components/ui/header"
+import { Logo, LogoText } from "@/components/ui/logo"
+import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu"
+
+type Link = {
+  label: string
+  href: string
+  active?: boolean
+}
+
+type BlockAction = {
+  label: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+interface Props {
+  props: {
+    brandName: string
+    brandHref: string
+    links: Link[]
+    secondaryAction: BlockAction
+    primaryAction: BlockAction
+  }
+}
+
+const { props } = Astro.props
+---
+
+<Header variant="floating">
+  <HeaderGroup>
+    <Logo href={props.brandHref}><LogoText>{props.brandName}</LogoText></Logo>
+  </HeaderGroup>
+  <HeaderContent>
+    <NavigationMenu class="hidden max-w-none justify-center md:flex">
+      <NavigationMenuList>
+        {props.links.map((link) => (
+          <NavigationMenuItem value={`nav-${link.label.toLowerCase()}`}>
+            <NavigationMenuLink href={link.href} active={link.active}>{link.label}</NavigationMenuLink>
+          </NavigationMenuItem>
+        ))}
+      </NavigationMenuList>
+    </NavigationMenu>
+  </HeaderContent>
+  <HeaderGroup class="ml-auto justify-end">
+    <Button as="a" href={props.secondaryAction.href} size="sm" variant={props.secondaryAction.variant}>
+      {props.secondaryAction.label}
+    </Button>
+    <Button as="a" href={props.primaryAction.href} size="sm" variant={props.primaryAction.variant}>
+      {props.primaryAction.label}
+    </Button>
+  </HeaderGroup>
+</Header>

@@ -30,7 +30,8 @@ type ActionVariant = "default" | "outline" | "ghost" | "secondary"
 const props: Props = Astro.props
 
 const heroActions = props.page.hero.buttons.map((button, index) => ({
-  ...button,
+  href: button.href,
+  label: button.text,
   variant: (index === 0 ? "default" : "outline") as ActionVariant,
 }))
 
@@ -79,36 +80,42 @@ const browseItems = [
     title: "Section",
     description:
       "Organize page content into semantic, styled sections with flexible padding and layout options.",
+    preview: "section" as const,
   },
   {
     href: "/docs/components/card",
     title: "Card",
     description:
       "Display content in a contained, elevated surface with header, body, and footer slots.",
+    preview: "card" as const,
   },
   {
     href: "/docs/components/accordion",
     title: "Accordion",
     description:
       "Collapse and expand content sections with smooth animations and keyboard support.",
+    preview: "accordion" as const,
   },
   {
     href: "/docs/components/tabs",
     title: "Tabs",
     description:
       "Switch between different views of content with accessible, animated tab panels.",
+    preview: "tabs" as const,
   },
   {
     href: "/docs/components/header",
     title: "Header",
     description:
       "Full-featured site header with navigation, mobile menu, and inset layout support.",
+    preview: "header" as const,
   },
   {
     href: "/docs/components/button",
     title: "Button",
     description:
       "Versatile button with multiple variants, sizes, and polymorphic rendering support.",
+    preview: "button" as const,
   },
 ]
 
@@ -146,7 +153,8 @@ const faqItems = [
 ]
 
 const ctaActions = props.page.cta.buttons.map((button, index) => ({
-  ...button,
+  href: button.href,
+  label: button.text,
   variant: (index === 0 ? "default" : "outline") as ActionVariant,
 }))
 ---
@@ -158,36 +166,186 @@ const ctaActions = props.page.cta.buttons.map((button, index) => ({
   desktopNavigation="header"
 >
   <HomeHeroBlock
-    title={props.page.hero.title}
-    description={props.page.hero.description}
-    actions={heroActions}
+    props={{
+      title: props.page.hero.title,
+      description: props.page.hero.description,
+      actions: heroActions,
+      preview: {
+        left: {
+          searchPlaceholder: "Search components...",
+          alert: {
+            title: "New in v0.9",
+            description: "ThemeToggle and Slider components now available.",
+          },
+          quickActions: [
+            { label: "Get started", href: "/docs/", variant: "default" },
+            {
+              label: "Documentation",
+              href: "/docs/components/",
+              variant: "outline",
+            },
+            {
+              label: "GitHub",
+              href: "https://github.com/fulldotdev/ui",
+              variant: "ghost",
+            },
+          ],
+          select: {
+            placeholder: "Select a framework",
+            options: [
+              { value: "astro", label: "Astro" },
+              { value: "react", label: "React" },
+              { value: "vue", label: "Vue" },
+              { value: "svelte", label: "Svelte" },
+            ],
+          },
+          formattingLabels: {
+            bold: "Bold",
+            italic: "Italic",
+            underline: "Underline",
+          },
+          brightness: {
+            label: "Brightness",
+            value: "72",
+            sliderValue: 72,
+          },
+          toggles: [
+            { label: "Email notifications", checked: true },
+            { label: "Weekly digest", checked: false },
+          ],
+          testimonial: {
+            rating: 5,
+            quote: "\"Finally, Astro components designed for Astro, not ported to it.\"",
+            initials: "JD",
+            name: "Jamie Davis",
+            role: "Sr. Developer",
+          },
+          ratingSummary: {
+            value: 5,
+            label: "4.9 · 2,400+ developers",
+          },
+        },
+        right: {
+          breadcrumb: {
+            home: "Docs",
+            section: "Components",
+            current: "Button",
+          },
+          accountMenu: {
+            triggerLabel: "Open menu",
+            title: "My Account",
+            profile: { label: "Profile", shortcut: "⇧⌘P" },
+            billing: { label: "Billing", shortcut: "⌘B" },
+            logout: "Log out",
+          },
+          audienceOptions: [
+            {
+              value: "solo",
+              title: "Solo",
+              description: "For freelancers and individual builders.",
+            },
+            {
+              value: "team",
+              title: "Team",
+              description: "Collaboration and shared workspaces.",
+            },
+          ],
+          processingLabel: "Processing...",
+          badgeLabels: {
+            default: "Default",
+            secondary: "Pro",
+            outline: "New",
+            destructive: "Beta",
+          },
+          faq: {
+            first: {
+              id: "demo-1",
+              question: "Is it accessible?",
+              answer: "Yes. Full WAI-ARIA support with keyboard navigation.",
+            },
+            second: {
+              id: "demo-2",
+              question: "Zero JavaScript?",
+              answer: "Ships zero JS by default.",
+            },
+          },
+          workspaceCard: {
+            badge: "Pro",
+            title: "Team workspace",
+            description:
+              "Share components across projects with roles and access control.",
+            action: {
+              label: "Learn more",
+              href: "/docs/components/card/",
+              variant: "outline",
+            },
+          },
+          contributors: {
+            avatars: [
+              { initials: "AK" },
+              { initials: "ML" },
+              { initials: "TS" },
+              { initials: "RN" },
+            ],
+            count: "+48",
+            label: "52 contributors",
+          },
+          emailCapture: {
+            placeholder: "hello@you.dev",
+            actionLabel: "Notify me",
+          },
+        },
+      },
+    }}
   />
   <IconFeatureGridBlock
-    title="Everything you need to build content websites"
-    description="Over 50 components organized into clear categories, from page layout and navigation to content display and forms. Each component is built as vanilla Astro with zero framework dependencies."
-    items={categoryItems}
+    props={{
+      title: "Everything you need to build content websites",
+      description:
+        "Over 50 components organized into clear categories, from page layout and navigation to content display and forms. Each component is built as vanilla Astro with zero framework dependencies.",
+      items: categoryItems,
+    }}
   />
   <LinkedTileGridBlock
-    title="Browse the components"
-    description="Explore individual components with live examples, usage documentation, and installation instructions."
-    items={browseItems}
+    props={{
+      title: "Browse the components",
+      description:
+        "Explore individual components with live examples, usage documentation, and installation instructions.",
+      items: browseItems,
+    }}
   />
   <FaqBlock
-    title="Frequently asked questions"
-    description="Common questions about Fulldev UI, installation, compatibility, and how it works with Astro."
-    items={faqItems}
-    defaultItem="faq-1"
+    props={{
+      title: "Frequently asked questions",
+      description:
+        "Common questions about Fulldev UI, installation, compatibility, and how it works with Astro.",
+      items: faqItems,
+      defaultItem: "faq-1",
+    }}
   />
   <CallToActionBlock
-    title={props.page.cta.title}
-    description={props.page.cta.description}
-    actions={ctaActions}
+    props={{
+      title: props.page.cta.title,
+      description: props.page.cta.description,
+      actions: ctaActions,
+    }}
   />
   <SiteFooterBlock
     slot="footer"
-    name={props.global.name}
-    darkLogo={props.global.logo.dark}
-    lightLogo={props.global.logo.light}
-    year={new Date().getFullYear()}
+    props={{
+      homeHref: "/",
+      name: props.global.name,
+      logos: {
+        dark: {
+          src: props.global.logo.dark,
+          alt: `${props.global.name} logo`,
+        },
+        light: {
+          src: props.global.logo.light,
+          alt: `${props.global.name} logo`,
+        },
+      },
+      copyright: `© ${new Date().getFullYear()} ${props.global.name}`,
+    }}
   />
 </Base>

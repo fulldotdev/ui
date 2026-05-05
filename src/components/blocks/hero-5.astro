@@ -1,0 +1,56 @@
+---
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Section, SectionContent } from "@/components/ui/section"
+
+type BlockAction = {
+  label: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+interface Props {
+  props: {
+    badge: string
+    title: string
+    description: string
+    actions: [BlockAction, BlockAction]
+    items: {
+      label: string
+      step: string
+    }[]
+  }
+}
+
+const { props } = Astro.props
+---
+
+<Section class="overflow-hidden rounded-3xl border bg-muted/20">
+  <SectionContent class="grid gap-8 p-8 sm:p-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-center">
+    <div class="flex flex-col gap-5">
+      <Badge variant="secondary" class="w-fit">{props.badge}</Badge>
+      <h1 class="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">{props.title}</h1>
+      <p class="text-muted-foreground text-lg leading-8">{props.description}</p>
+      <div class="flex flex-wrap gap-3">
+        {
+          props.actions.map((action) => (
+            <Button as="a" href={action.href} variant={action.variant}>
+              {action.label}
+            </Button>
+          ))
+        }
+      </div>
+    </div>
+    <Card>
+      <CardContent class="flex flex-col gap-3 p-6">
+        {props.items.map((item) => (
+          <div class="flex items-center justify-between rounded-xl border bg-background px-4 py-3 text-sm">
+            <span>{item.label}</span>
+            <span class="text-muted-foreground">{item.step}</span>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  </SectionContent>
+</Section>

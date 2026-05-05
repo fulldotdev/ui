@@ -1,6 +1,7 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content"
 
+import type { GlobalSchema } from "@/schemas/global"
 import { hrefFromPageId } from "@/lib/pages"
 import { Layout, LayoutBody, LayoutHead, LayoutMain } from "@/components/ui/layout"
 import {
@@ -20,11 +21,14 @@ const primaryNav = [
   { label: "Installation", href: "/docs/installation/" },
   { label: "Theming", href: "/docs/theming/" },
   { label: "Components", href: "/docs/components/" },
+  { label: "Blocks", href: "/blocks/" },
 ].map((item) => ({
   ...item,
   isActive:
     item.href === "/docs/components/"
       ? currentPath.startsWith("/docs/components")
+      : item.href === "/blocks/"
+        ? currentPath.startsWith("/blocks")
       : currentPath === item.href,
 }))
 
@@ -62,9 +66,12 @@ const navGroups = [
     : []),
 ]
 
-const headerLinks = global.header.links.filter((link: { href: string }) => {
-  return link.href === "/docs/" || link.href === "/docs/components/"
-})
+const headerLinks = global.header.links
+const headerButtons = global.header.buttons.map((button: GlobalSchema["header"]["buttons"][number], index: number) => ({
+  href: button.href,
+  label: button.text,
+  variant: button.variant ?? (index === 0 ? "default" : "ghost"),
+}))
 ---
 
 <Layout>
@@ -77,17 +84,34 @@ const headerLinks = global.header.links.filter((link: { href: string }) => {
       defaultOpen={desktopNavigation === "sidebar"}
     >
       <Sidebar
-        state={desktopNavigation === "sidebar" ? "expanded" : "collapsed"}
-        collapsible="offcanvas"
-        variant="inset"
-        global={global}
-        navGroups={navGroups}
+        props={{
+          state: desktopNavigation === "sidebar" ? "expanded" : "collapsed",
+          collapsible: "offcanvas",
+          variant: "inset",
+          global,
+          navGroups,
+          github: {
+            href: "https://github.com/fulldotdev/ui",
+            ariaLabel: "GitHub repository",
+            count: "557",
+          },
+        }}
       />
       <SidebarShell>
         <Header
-          class={desktopNavigation === "sidebar" ? "md:hidden" : ""}
-          global={global}
-          headerLinks={headerLinks}
+          props={{
+            class: desktopNavigation === "sidebar" ? "md:hidden" : "",
+            global,
+            headerLinks,
+            headerButtons,
+            homeHref: "/",
+            github: {
+              href: "https://github.com/fulldotdev/ui",
+              ariaLabel: "GitHub repository",
+              count: "557",
+            },
+            mobileMenuLabel: "Toggle Sidebar",
+          }}
         />
         <SidebarInset>
           <LayoutMain>

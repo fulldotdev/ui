@@ -1,0 +1,50 @@
+---
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Rating } from "@/components/ui/rating"
+import { Section, SectionContent } from "@/components/ui/section"
+
+interface Props {
+  props: {
+    featured: {
+      quote: string
+      initials: string
+      name: string
+      role: string
+    }
+    items: {
+      rating: number
+      quote: string
+      meta: string
+    }[]
+  }
+}
+
+const { props } = Astro.props
+---
+
+  <Section>
+  <SectionContent class="grid gap-8 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:items-start">
+    <Card>
+      <CardHeader><CardTitle class="text-3xl leading-tight">{props.featured.quote}</CardTitle></CardHeader>
+      <CardContent class="flex items-center gap-3">
+        <Avatar><AvatarFallback>{props.featured.initials}</AvatarFallback></Avatar>
+        <div>
+          <p class="font-medium">{props.featured.name}</p>
+          <p class="text-muted-foreground text-sm">{props.featured.role}</p>
+        </div>
+      </CardContent>
+    </Card>
+    <div class="grid gap-4">
+      {props.items.map((item) => (
+        <Card>
+          <CardContent class="flex flex-col gap-3 p-5">
+            <Rating value={item.rating} />
+            <p class="text-sm leading-7">{item.quote}</p>
+            <p class="text-muted-foreground text-sm">{item.meta}</p>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  </SectionContent>
+</Section>

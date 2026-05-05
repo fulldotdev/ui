@@ -2,14 +2,14 @@
 name: fulldev
 description: Manages fulldev ui components and projects — adding, searching, fixing, debugging, styling, and composing UI through the shadcn CLI. Provides project context, component docs, and usage examples. Applies when working with fulldev ui, @fulldev registry items, ui.full.dev, Astro component registries, or any project with a components.json file configured for the fulldev registry.
 user-invocable: false
-allowed-tools: Bash(npx shadcn@latest *), Bash(pnpm dlx shadcn@latest *), Bash(bunx --bun shadcn@latest *)
+allowed-tools: Bash(npx shadcn@latest *), Bash(pnpm dlx shadcn@latest *)
 ---
 
 # fulldev ui
 
 A shadcn-compatible registry for Astro projects. Components are added as source code via the shadcn CLI, but the shipped primitives and patterns are Astro-first and built around `@data-slot/*`.
 
-> **IMPORTANT:** Run all CLI commands using the project's package runner: `npx shadcn@latest`, `pnpm dlx shadcn@latest`, or `bunx --bun shadcn@latest` — based on the project's `packageManager`. Examples below use `npx shadcn@latest` but substitute the correct runner for the project.
+> **IMPORTANT:** Run all CLI commands using the project's package runner: `npx shadcn@latest` or `pnpm dlx shadcn@latest` — based on the project's `packageManager`. Examples below use `npx shadcn@latest` but substitute the correct runner for the project.
 
 ## Current Project Context
 

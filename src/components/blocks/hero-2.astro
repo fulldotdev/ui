@@ -1,0 +1,50 @@
+---
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Section, SectionContent } from "@/components/ui/section"
+
+type BlockAction = {
+  label: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+interface Props {
+  props: {
+    badge: string
+    title: string
+    description: string
+    actions: [BlockAction, BlockAction]
+    aside: {
+      title: string
+      description: string
+    }
+  }
+}
+
+const { props } = Astro.props
+---
+
+<Section>
+  <SectionContent class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-center">
+    <div class="flex flex-col gap-5">
+      <Badge variant="outline" class="w-fit">{props.badge}</Badge>
+      <h1 class="text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">{props.title}</h1>
+      <p class="text-muted-foreground max-w-2xl text-lg leading-8">{props.description}</p>
+      <div class="flex flex-wrap gap-3">
+        {
+          props.actions.map((action) => (
+            <Button as="a" href={action.href} variant={action.variant}>
+              {action.label}
+            </Button>
+          ))
+        }
+      </div>
+    </div>
+    <Card>
+      <CardHeader><CardTitle>{props.aside.title}</CardTitle></CardHeader>
+      <CardContent class="text-muted-foreground text-sm leading-7">{props.aside.description}</CardContent>
+    </Card>
+  </SectionContent>
+</Section>

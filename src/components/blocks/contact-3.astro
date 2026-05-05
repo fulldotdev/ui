@@ -1,0 +1,83 @@
+---
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Field, FieldGroup, FieldLabel, FieldSet, FieldLegend } from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+import { Section, SectionContent } from "@/components/ui/section"
+import { Textarea } from "@/components/ui/textarea"
+
+type BlockAction = {
+  label: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+interface Props {
+  props: {
+    channels: {
+      label: string
+      detail: string
+    }[]
+    title: string
+    description: string
+    form: {
+      legend: string
+      nameLabel: string
+      namePlaceholder: string
+      emailLabel: string
+      emailPlaceholder: string
+      goalsLabel: string
+      goalsPlaceholder: string
+      action: BlockAction
+    }
+  }
+}
+
+const { props } = Astro.props
+---
+
+<Section>
+  <SectionContent class="grid gap-8 xl:grid-cols-[18rem_minmax(0,1fr)] xl:items-start">
+    <div class="grid gap-3">
+      {props.channels.map((channel) => (
+        <Card>
+          <CardContent class="p-4">
+            <p class="font-medium">{channel.label}</p>
+            <p class="text-muted-foreground mt-2 text-sm leading-6">{channel.detail}</p>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+
+    <Card>
+      <CardHeader>
+        <CardTitle>{props.title}</CardTitle>
+        <CardDescription>{props.description}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <FieldSet>
+          <FieldLegend class="sr-only">{props.form.legend}</FieldLegend>
+          <FieldGroup>
+            <div class="grid gap-4 md:grid-cols-2">
+              <Field>
+                <FieldLabel for="contact-name-3">{props.form.nameLabel}</FieldLabel>
+                <Input id="contact-name-3" placeholder={props.form.namePlaceholder} />
+              </Field>
+              <Field>
+                <FieldLabel for="contact-email-3">{props.form.emailLabel}</FieldLabel>
+                <Input id="contact-email-3" placeholder={props.form.emailPlaceholder} />
+              </Field>
+            </div>
+            <Field>
+              <FieldLabel for="contact-goals-3">{props.form.goalsLabel}</FieldLabel>
+              <Textarea id="contact-goals-3" rows={5} placeholder={props.form.goalsPlaceholder} />
+            </Field>
+            <Button as="a" href={props.form.action.href} variant={props.form.action.variant}>
+              {props.form.action.label}
+            </Button>
+          </FieldGroup>
+        </FieldSet>
+      </CardContent>
+    </Card>
+  </SectionContent>
+</Section>

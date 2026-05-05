@@ -1,36 +1,44 @@
 ---
 import type { ImageMetadata } from "astro"
-
 import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
 
-type Props = {
-  homeHref?: string
-  name: string
-  darkLogo: ImageMetadata
-  lightLogo: ImageMetadata
-  year: number
+type BlockImage = {
+  src: ImageMetadata
+  alt: string
 }
 
-const props: Props = Astro.props
+interface Props {
+  props: {
+    homeHref: string
+    name: string
+    logos: {
+      dark: BlockImage
+      light: BlockImage
+    }
+    copyright: string
+  }
+}
+
+const { props } = Astro.props
 ---
 
 <footer class="px-6 py-8">
   <div
     class="text-muted-foreground mx-auto flex max-w-container items-center justify-between text-sm"
   >
-    <Logo href={props.homeHref ?? "/"}>
+    <Logo href={props.homeHref}>
       <LogoImage
-        src={props.darkLogo}
-        alt={`${props.name} logo`}
+        src={props.logos.dark.src}
+        alt={props.logos.dark.alt}
         class="dark:hidden"
       />
       <LogoImage
-        src={props.lightLogo}
-        alt={`${props.name} logo`}
+        src={props.logos.light.src}
+        alt={props.logos.light.alt}
         class="hidden dark:block"
       />
       <LogoText>{props.name}</LogoText>
     </Logo>
-    <span>&copy; {props.year} {props.name}</span>
+    <span>{props.copyright}</span>
   </div>
 </footer>

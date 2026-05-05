@@ -1,0 +1,54 @@
+---
+import { Avatar, AvatarFallback, AvatarGroup, AvatarGroupCount } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Section, SectionContent } from "@/components/ui/section"
+
+type BlockAction = {
+  label: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+interface Props {
+  props: {
+    badge: string
+    title: string
+    description: string
+    contributors: {
+      avatars: {
+        initials: string
+      }[]
+      count: string
+    }
+    actions: [BlockAction, BlockAction]
+  }
+}
+
+const { props } = Astro.props
+---
+
+<Section>
+  <SectionContent class="items-center gap-8 text-center">
+    <Badge variant="outline">{props.badge}</Badge>
+    <h1 class="max-w-4xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">{props.title}</h1>
+    <p class="text-muted-foreground max-w-2xl text-lg leading-8">{props.description}</p>
+    <AvatarGroup>
+      {
+        props.contributors.avatars.map((avatar) => (
+          <Avatar><AvatarFallback>{avatar.initials}</AvatarFallback></Avatar>
+        ))
+      }
+      <AvatarGroupCount>{props.contributors.count}</AvatarGroupCount>
+    </AvatarGroup>
+    <div class="flex flex-wrap justify-center gap-3">
+      {
+        props.actions.map((action) => (
+          <Button as="a" href={action.href} variant={action.variant}>
+            {action.label}
+          </Button>
+        ))
+      }
+    </div>
+  </SectionContent>
+</Section>

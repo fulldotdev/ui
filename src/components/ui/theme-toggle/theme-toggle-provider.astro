@@ -9,8 +9,43 @@
       : "light"
   }
 
-  const isDark = getThemePreference() === "dark"
-  document.documentElement.classList[isDark ? "add" : "remove"]("dark")
+  const disableTransitionsTemporarily = () => {
+    const style = document.createElement("style")
+
+    style.appendChild(
+      document.createTextNode(
+        "*, *::before, *::after { transition: none !important; }"
+      )
+    )
+
+    document.head.appendChild(style)
+
+    return () => {
+      void document.documentElement.offsetHeight
+
+      requestAnimationFrame(() => {
+        style.remove()
+      })
+    }
+  }
+
+  const applyTheme = (theme, disableTransitions = false) => {
+    const restoreTransitions = disableTransitions
+      ? disableTransitionsTemporarily()
+      : null
+
+    document.documentElement.classList[theme === "dark" ? "add" : "remove"](
+      "dark"
+    )
+
+    restoreTransitions?.()
+  }
+
+  window.__setTheme = (theme) => {
+    applyTheme(theme, true)
+  }
+
+  applyTheme(getThemePreference())
 
   if (typeof localStorage !== "undefined") {
     const observer = new MutationObserver(() => {

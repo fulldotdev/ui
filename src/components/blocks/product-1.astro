@@ -1,0 +1,65 @@
+---
+import type { ImageMetadata } from "astro"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
+import { Section, SectionContent } from "@/components/ui/section"
+import BlockPlaceholder from "@/components/block-placeholder.astro"
+
+type BlockAction = {
+  label: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+type BlockImage = {
+  src: ImageMetadata
+  alt: string
+}
+
+interface Props {
+  props: {
+    badge: string
+    title: string
+    description: string
+    image: BlockImage
+    price: {
+      value: number
+      currency: string
+      unit: string
+    }
+    note: string
+    actions: [BlockAction, BlockAction]
+  }
+}
+
+const { props } = Astro.props
+---
+
+<Section>
+  <SectionContent class="grid gap-8 lg:grid-cols-2 lg:items-center">
+    <BlockPlaceholder image={props.image} class="aspect-[16/11] rounded-3xl border" />
+    <div class="flex flex-col gap-5">
+      <Badge variant="outline" class="w-fit">{props.badge}</Badge>
+      <h1 class="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">{props.title}</h1>
+      <p class="text-muted-foreground text-lg leading-8">{props.description}</p>
+      <Price>
+        <PriceValue price={props.price.value} currency={props.price.currency} />
+        <PriceUnit>{props.price.unit}</PriceUnit>
+      </Price>
+      <Card>
+        <CardContent class="p-5 text-sm leading-7">{props.note}</CardContent>
+      </Card>
+      <div class="flex flex-wrap gap-3">
+        {
+          props.actions.map((action) => (
+            <Button as="a" href={action.href} variant={action.variant}>
+              {action.label}
+            </Button>
+          ))
+        }
+      </div>
+    </div>
+  </SectionContent>
+</Section>

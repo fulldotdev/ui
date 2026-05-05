@@ -15,7 +15,8 @@ A shadcn-compatible set of components built for [Astro][astro], designed for con
 
 ### Prerequisites
 
-- Bun 1.0+
+- Node.js 22.12.0+
+- pnpm 10+
 
 ### Quick Start
 
@@ -83,19 +84,19 @@ Visit [ui.full.dev][docs] for complete documentation, component examples, and us
 
 ```bash
 # Install dependencies
-bun install
+pnpm install
 
 # Start development server
-bun run dev
+pnpm dev
 
 # Build for production
-bun run build
+pnpm build
 
 # Preview production build
-bun run preview
+pnpm build:preview
 
 # Type check
-bun run check
+pnpm check
 ```
 
 ## Contributing

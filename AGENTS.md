@@ -70,12 +70,12 @@ Registry
 - This is a shadcn registry.
 - `registry.json` is the source of truth for registry items.
 - `public/r/*.json` and `public/r/registry.json` are generated output from `registry.json`. Do not hand-edit them unless you are intentionally debugging generated output.
-- After changing registry items, component file paths, registry dependencies, or installable source files, run `bun run registry:build` and commit the regenerated `public/r` files.
+- After changing registry items, component file paths, registry dependencies, or installable source files, run `pnpm registry:build` and commit the regenerated `public/r` files.
 - If files move during a repo reorg, update `registry.json` immediately. Stale paths will break the registry build.
 
 Tooling
 
-- Use Bun for repo commands: `bun install`, `bun run dev`, `bun run check`, `bun run build`.
-- Use `bun run registry:build` to regenerate the shadcn registry output in `public/r`.
+- Use pnpm for repo commands: `pnpm install`, `pnpm dev`, `pnpm check`, `pnpm build`.
+- Use `pnpm registry:build` to regenerate the shadcn registry output in `public/r`.
 - Node `>=22.12.0` is required by `package.json`.
-- After structural changes, run at least `bun run check`.
+- After structural changes, run at least `pnpm check`.

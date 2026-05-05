@@ -1,0 +1,41 @@
+---
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Badge } from "@/components/ui/badge"
+import { Section, SectionContent } from "@/components/ui/section"
+
+interface Props {
+  props: {
+    badge: string
+    title: string
+    defaultItem: string
+    items: {
+      id: string
+      question: string
+      answer: string
+    }[]
+  }
+}
+
+const { props } = Astro.props
+---
+
+<Section>
+  <SectionContent class="gap-8">
+    <div class="mx-auto max-w-2xl text-center">
+      <Badge variant="outline">{props.badge}</Badge>
+      <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
+    </div>
+    <div class="mx-auto w-full max-w-3xl rounded-2xl border px-6 py-2">
+      <Accordion collapsible defaultValue={props.defaultItem}>
+        {
+          props.items.map((item, index) => (
+            <AccordionItem value={item.id}>
+              <AccordionTrigger>{item.question}</AccordionTrigger>
+              <AccordionContent hidden={index !== 0}>{item.answer}</AccordionContent>
+            </AccordionItem>
+          ))
+        }
+      </Accordion>
+    </div>
+  </SectionContent>
+</Section>

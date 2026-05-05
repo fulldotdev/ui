@@ -1,0 +1,52 @@
+---
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Rating } from "@/components/ui/rating"
+import { Section, SectionContent } from "@/components/ui/section"
+
+type BlockAction = {
+  label: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+interface Props {
+  props: {
+    title: string
+    description: string
+    actions: [BlockAction, BlockAction]
+    testimonial: {
+      rating: number
+      quote: string
+      meta: string
+    }
+  }
+}
+
+const { props } = Astro.props
+---
+
+<Section class="rounded-3xl border bg-muted/10">
+  <SectionContent class="grid gap-8 p-8 sm:p-10 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center">
+    <div class="flex flex-col gap-5">
+      <h1 class="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">{props.title}</h1>
+      <p class="text-muted-foreground text-lg leading-8">{props.description}</p>
+      <div class="flex flex-wrap gap-3">
+        {
+          props.actions.map((action) => (
+            <Button as="a" href={action.href} variant={action.variant}>
+              {action.label}
+            </Button>
+          ))
+        }
+      </div>
+    </div>
+    <Card>
+      <CardContent class="flex flex-col gap-4 p-6">
+        <Rating value={props.testimonial.rating} />
+        <p class="text-sm leading-7">{props.testimonial.quote}</p>
+        <p class="text-muted-foreground text-sm">{props.testimonial.meta}</p>
+      </CardContent>
+    </Card>
+  </SectionContent>
+</Section>

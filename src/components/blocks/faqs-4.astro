@@ -1,0 +1,60 @@
+---
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Section, SectionContent } from "@/components/ui/section"
+
+type BlockAction = {
+  label: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+interface Props {
+  props: {
+    badge: string
+    title: string
+    defaultItem: string
+    items: {
+      id: string
+      question: string
+      answer: string
+    }[]
+    actions: [BlockAction, BlockAction]
+  }
+}
+
+const { props } = Astro.props
+---
+
+<Section>
+  <SectionContent class="rounded-3xl border bg-muted/20 p-8 sm:p-10">
+    <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start">
+      <div>
+        <Badge variant="secondary">{props.badge}</Badge>
+        <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
+        <div class="mt-8 rounded-2xl border bg-background px-6 py-2">
+          <Accordion collapsible defaultValue={props.defaultItem}>
+            {
+              props.items.map((item, index) => (
+                <AccordionItem value={item.id}>
+                  <AccordionTrigger>{item.question}</AccordionTrigger>
+                  <AccordionContent hidden={index !== 0}>{item.answer}</AccordionContent>
+                </AccordionItem>
+              ))
+            }
+          </Accordion>
+        </div>
+      </div>
+      <div class="flex flex-col gap-3 lg:items-end">
+        {
+          props.actions.map((action) => (
+            <Button as="a" href={action.href} variant={action.variant}>
+              {action.label}
+            </Button>
+          ))
+        }
+      </div>
+    </div>
+  </SectionContent>
+</Section>

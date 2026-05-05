@@ -1,0 +1,37 @@
+---
+import type { ImageMetadata } from "astro"
+import { Badge } from "@/components/ui/badge"
+import { Section, SectionContent } from "@/components/ui/section"
+import BlockPlaceholder from "@/components/block-placeholder.astro"
+
+type BlockImage = {
+  src: ImageMetadata
+  alt: string
+}
+
+interface Props {
+  props: {
+    image: BlockImage
+    badge: string
+    title: string
+    description: string
+    items: string[]
+  }
+}
+
+const { props } = Astro.props
+---
+
+<Section>
+  <SectionContent class="grid gap-8 lg:grid-cols-2 lg:items-center">
+    <BlockPlaceholder image={props.image} class="aspect-[16/11] rounded-3xl border" />
+    <div class="flex flex-col gap-4">
+      <Badge variant="secondary" class="w-fit">{props.badge}</Badge>
+      <h2 class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
+      <p class="text-muted-foreground text-base leading-7">{props.description}</p>
+      <ul class="text-muted-foreground flex list-disc flex-col gap-2 pl-5 text-sm leading-6">
+        {props.items.map((item) => <li>{item}</li>)}
+      </ul>
+    </div>
+  </SectionContent>
+</Section>

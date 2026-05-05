@@ -1,0 +1,38 @@
+---
+import { Banner, BannerContent, BannerDescription, BannerTitle } from "@/components/ui/banner"
+import { Button } from "@/components/ui/button"
+
+type BlockAction = {
+  label: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+interface Props {
+  props: {
+    title: string
+    description: string
+    actions: [BlockAction, BlockAction]
+  }
+}
+
+const { props } = Astro.props
+---
+
+<Banner variant="floating" storageKey="blocks-floating-banner">
+  <BannerContent showClose={false} class="gap-4">
+    <div class="flex flex-1 flex-col gap-1">
+      <BannerTitle>{props.title}</BannerTitle>
+      <BannerDescription>{props.description}</BannerDescription>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      {
+        props.actions.map((action) => (
+          <Button as="a" href={action.href} size="sm" variant={action.variant}>
+            {action.label}
+          </Button>
+        ))
+      }
+    </div>
+  </BannerContent>
+</Banner>

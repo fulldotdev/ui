@@ -1,0 +1,43 @@
+---
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
+import { Section, SectionContent } from "@/components/ui/section"
+
+type BlockAction = {
+  label: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+interface Props {
+  props: {
+    title: string
+    description: string
+    actions: [BlockAction, BlockAction]
+  }
+}
+
+const { props } = Astro.props
+---
+
+<Section>
+  <SectionContent>
+    <Card class="overflow-hidden">
+      <CardContent class="grid gap-8 p-8 sm:p-10 lg:grid-cols-[minmax(0,1fr)_14rem] lg:items-center">
+        <div>
+          <CardTitle class="text-3xl leading-tight sm:text-4xl">{props.title}</CardTitle>
+          <CardDescription class="mt-4 max-w-2xl text-base leading-7">{props.description}</CardDescription>
+        </div>
+        <div class="flex flex-col gap-3 lg:items-end">
+          {
+            props.actions.map((action) => (
+              <Button as="a" href={action.href} variant={action.variant}>
+                {action.label}
+              </Button>
+            ))
+          }
+        </div>
+      </CardContent>
+    </Card>
+  </SectionContent>
+</Section>

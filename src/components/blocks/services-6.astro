@@ -1,0 +1,45 @@
+---
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Section, SectionContent } from "@/components/ui/section"
+
+type BlockAction = {
+  label: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+interface Props {
+  props: {
+    title: string
+    action: BlockAction
+    items: {
+      title: string
+      description: string
+    }[]
+  }
+}
+
+const { props } = Astro.props
+---
+
+<Section>
+  <SectionContent class="gap-8">
+    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div class="max-w-2xl">
+        <h2 class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
+      </div>
+      <Button as="a" href={props.action.href} variant={props.action.variant}>{props.action.label}</Button>
+    </div>
+    <div class="grid gap-3">
+      {props.items.map((service) => (
+        <Card>
+          <CardContent class="grid gap-3 p-5 md:grid-cols-[14rem_minmax(0,1fr)] md:items-center">
+            <p class="font-medium">{service.title}</p>
+            <p class="text-muted-foreground text-sm leading-6">{service.description}</p>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  </SectionContent>
+</Section>

@@ -1,0 +1,57 @@
+---
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
+import { Section, SectionContent } from "@/components/ui/section"
+
+type BlockAction = {
+  label: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+interface Props {
+  props: {
+    badge: string
+    title: string
+    plans: {
+      name: string
+      detail: string
+      price: number
+      currency: string
+      unit: string
+      featured: boolean
+      action: BlockAction
+    }[]
+  }
+}
+
+const { props } = Astro.props
+---
+
+<Section>
+  <SectionContent class="gap-8">
+    <div class="mx-auto max-w-2xl text-center">
+      <Badge variant="outline">{props.badge}</Badge>
+      <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
+    </div>
+    <div class="grid gap-4 lg:grid-cols-3">
+      {props.plans.map((plan) => (
+        <Card class={plan.featured ? "border-primary" : undefined}>
+          <CardHeader>
+            <CardTitle>{plan.name}</CardTitle>
+            <CardDescription>{plan.detail}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Price>
+              <PriceValue price={plan.price} currency={plan.currency} />
+              <PriceUnit>{plan.unit}</PriceUnit>
+            </Price>
+          </CardContent>
+          <CardFooter><Button as="a" href={plan.action.href} variant={plan.action.variant}>{plan.action.label}</Button></CardFooter>
+        </Card>
+      ))}
+    </div>
+  </SectionContent>
+</Section>

@@ -1,6 +1,6 @@
 import mdx from "@astrojs/mdx"
 import liveCode from "astro-live-code"
-import { defineConfig } from "astro/config"
+import { defineConfig, fontProviders } from "astro/config"
 
 import fulldevIntegration from "./src/lib/integration"
 
@@ -22,6 +22,19 @@ export default defineConfig({
       },
     },
   },
+  fonts: [
+    {
+      provider: fontProviders.fontsource(),
+      name: "Geist",
+      cssVariable: "--font-sans",
+      weights: ["300 700"],
+    },
+    {
+      provider: fontProviders.fontsource(),
+      name: "Geist Mono",
+      cssVariable: "--font-mono",
+    },
+  ],
   integrations: [
     fulldevIntegration({
       site: "https://ui.full.dev",

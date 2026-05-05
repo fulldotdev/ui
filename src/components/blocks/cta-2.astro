@@ -1,0 +1,41 @@
+---
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Section, SectionContent } from "@/components/ui/section"
+
+type BlockAction = {
+  label: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+interface Props {
+  props: {
+    badge: string
+    title: string
+    description: string
+    actions: [BlockAction, BlockAction]
+  }
+}
+
+const { props } = Astro.props
+---
+
+<Section>
+  <SectionContent class="rounded-3xl border bg-muted/30 p-8 sm:p-12 lg:flex-row lg:items-end lg:justify-between">
+    <div class="max-w-2xl">
+      <Badge variant="outline">{props.badge}</Badge>
+      <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
+      <p class="text-muted-foreground mt-4 text-base leading-7">{props.description}</p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      {
+        props.actions.map((action) => (
+          <Button as="a" href={action.href} variant={action.variant}>
+            {action.label}
+          </Button>
+        ))
+      }
+    </div>
+  </SectionContent>
+</Section>

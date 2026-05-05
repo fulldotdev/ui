@@ -7,7 +7,7 @@ export const prerender = true
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages")
-  return pages.map(async (page) => ({
+  return pages.map((page) => ({
     params: {
       page: hrefFromPageId(page.id) === "/" ? undefined : page.id,
     },

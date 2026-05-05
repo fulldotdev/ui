@@ -1,0 +1,50 @@
+---
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
+import { Section, SectionContent } from "@/components/ui/section"
+
+type BlockAction = {
+  label: string
+  href: string
+  variant?: "default" | "outline" | "ghost" | "secondary"
+}
+
+interface Props {
+  props: {
+    title: string
+    frameDescription: string
+    featured: {
+      title: string
+      price: number
+      compareAt?: number
+      currency: string
+      unit: string
+      description: string
+      action: BlockAction
+    }
+  }
+}
+
+const { props } = Astro.props
+---
+
+<Section>
+  <SectionContent class="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-start">
+    <Card>
+      <CardHeader><CardTitle>{props.title}</CardTitle></CardHeader>
+      <CardContent class="text-muted-foreground text-base leading-7">{props.frameDescription}</CardContent>
+    </Card>
+    <Card>
+      <CardHeader><CardTitle>{props.featured.title}</CardTitle></CardHeader>
+      <CardContent class="flex flex-col gap-4">
+        <Price>
+          <PriceValue price={props.featured.price} compareAt={props.featured.compareAt} currency={props.featured.currency} />
+          <PriceUnit>{props.featured.unit}</PriceUnit>
+        </Price>
+        <p class="text-muted-foreground text-sm leading-6">{props.featured.description}</p>
+        <Button as="a" href={props.featured.action.href} variant={props.featured.action.variant}>{props.featured.action.label}</Button>
+      </CardContent>
+    </Card>
+  </SectionContent>
+</Section>

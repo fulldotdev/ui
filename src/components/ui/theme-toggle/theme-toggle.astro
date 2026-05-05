@@ -67,7 +67,17 @@ const { class: className, variant = "outline", size = "icon-sm" } = Astro.props
       if (!(toggle instanceof HTMLButtonElement)) return
       if (toggle.disabled) return
 
-      document.documentElement.classList.toggle("dark")
+      const isDark = document.documentElement.classList.contains("dark")
+      const nextTheme = isDark ? "light" : "dark"
+
+      if (typeof window.__setTheme === "function") {
+        window.__setTheme(nextTheme)
+        return
+      }
+
+      document.documentElement.classList[nextTheme === "dark" ? "add" : "remove"](
+        "dark"
+      )
     })
   }
 </script>

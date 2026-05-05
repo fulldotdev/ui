@@ -1,0 +1,41 @@
+---
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Card, CardContent } from "@/components/ui/card"
+import { Section, SectionContent } from "@/components/ui/section"
+
+interface Props {
+  props: {
+    note: string
+    defaultItem: string
+    items: {
+      id: string
+      question: string
+      answer: string
+    }[]
+  }
+}
+
+const { props } = Astro.props
+---
+
+<Section>
+  <SectionContent class="grid gap-8 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
+    <Card class="lg:sticky lg:top-24">
+      <CardContent class="p-6 text-sm leading-7">
+        {props.note}
+      </CardContent>
+    </Card>
+    <div class="rounded-2xl border px-6 py-2">
+      <Accordion collapsible defaultValue={props.defaultItem}>
+        {
+          props.items.map((item, index) => (
+            <AccordionItem value={item.id}>
+              <AccordionTrigger>{item.question}</AccordionTrigger>
+              <AccordionContent hidden={index !== 0}>{item.answer}</AccordionContent>
+            </AccordionItem>
+          ))
+        }
+      </Accordion>
+    </div>
+  </SectionContent>
+</Section>

@@ -1,0 +1,165 @@
+---
+import { ArrowLeft, ArrowRight, Check, Copy } from "@lucide/astro"
+
+import { Button } from "@/components/ui/button"
+import {
+  Typography,
+  TypographyH1,
+  TypographyLead,
+} from "@/components/ui/typography"
+
+type CopyButton = {
+  id: string
+  source: string
+}
+
+type PaginationLink = {
+  href: string
+  title: string
+}
+
+type Props = {
+  props: {
+    title: string
+    description?: string
+    copyButton?: CopyButton
+    previousPage?: PaginationLink
+    nextPage?: PaginationLink
+    labels: {
+      copyPage: string
+      pagination: {
+        previous: string
+        next: string
+        ariaLabel: string
+      }
+    }
+  }
+}
+
+const { props } = Astro.props
+const showCopyButton = Boolean(props.copyButton)
+const showPagination = Boolean(props.previousPage || props.nextPage)
+---
+
+<div
+  data-slot="blocks-page"
+  class="mx-auto w-full px-6 pt-10 pb-10 sm:px-8 sm:pt-12 sm:pb-12"
+>
+  <div class="mx-auto flex w-full max-w-[84rem] flex-col gap-10">
+    <header
+      class="flex flex-col gap-4 border-b pb-8 sm:flex-row sm:items-start sm:justify-between"
+    >
+      <div class="flex min-w-0 max-w-3xl flex-1 flex-col gap-2">
+        <TypographyH1
+          class="text-foreground text-left text-3xl tracking-tight sm:text-4xl"
+        >
+          {props.title}
+        </TypographyH1>
+        {
+          props.description && (
+            <TypographyLead class="max-w-2xl text-base leading-7">
+              {props.description}
+            </TypographyLead>
+          )
+        }
+      </div>
+      {
+        showCopyButton && (
+          <Button
+            id={props.copyButton?.id}
+            type="button"
+            variant="outline"
+            size="xs"
+            class="shrink-0 self-start"
+            data-source={props.copyButton?.source}
+            aria-label={props.labels.copyPage}
+          >
+            <Copy class="blocks-copy-icon size-3.5" />
+            <Check class="blocks-check-icon hidden size-3.5" />
+            <span>{props.labels.copyPage}</span>
+          </Button>
+        )
+      }
+    </header>
+
+    <Typography as="article" class="w-full max-w-none">
+      <slot />
+    </Typography>
+
+    {
+      showPagination && (
+        <nav
+          class="grid gap-3 sm:grid-cols-2"
+          aria-label={props.labels.pagination.ariaLabel}
+        >
+          {props.previousPage ? (
+            <Button
+              as="a"
+              href={props.previousPage.href}
+              variant="outline"
+              class="h-auto w-full items-center justify-start gap-3 rounded-xl px-4 py-3 whitespace-normal"
+            >
+              <ArrowLeft class="size-4" />
+              <span class="flex min-w-0 flex-col items-start">
+                <span class="text-muted-foreground text-xs uppercase">
+                  {props.labels.pagination.previous}
+                </span>
+                <span class="truncate text-sm font-medium">
+                  {props.previousPage.title}
+                </span>
+              </span>
+            </Button>
+          ) : (
+            <div class="hidden sm:block" aria-hidden="true"></div>
+          )}
+
+          {props.nextPage ? (
+            <Button
+              as="a"
+              href={props.nextPage.href}
+              variant="outline"
+              class="h-auto w-full items-center justify-end gap-3 rounded-xl px-4 py-3 text-right whitespace-normal"
+            >
+              <span class="flex min-w-0 flex-col items-end">
+                <span class="text-muted-foreground text-xs uppercase">
+                  {props.labels.pagination.next}
+                </span>
+                <span class="truncate text-sm font-medium">
+                  {props.nextPage.title}
+                </span>
+              </span>
+              <ArrowRight class="size-4" />
+            </Button>
+          ) : (
+            <div class="hidden sm:block" aria-hidden="true"></div>
+          )}
+        </nav>
+      )
+    }
+  </div>
+</div>
+
+<script is:inline define:vars={{ copyButtonId: props.copyButton?.id }}>
+  const button = copyButtonId ? document.getElementById(copyButtonId) : null
+
+  if (button instanceof HTMLButtonElement) {
+    button.addEventListener("click", async () => {
+      const source = button.dataset.source
+
+      if (!source) return
+
+      try {
+        await navigator.clipboard.writeText(source)
+        button.querySelector(".blocks-copy-icon")?.classList.add("hidden")
+        button.querySelector(".blocks-check-icon")?.classList.remove("hidden")
+
+        window.setTimeout(() => {
+          button.querySelector(".blocks-copy-icon")?.classList.remove("hidden")
+          button.querySelector(".blocks-check-icon")?.classList.add("hidden")
+        }, 1200)
+      } catch {
+        // Ignore clipboard failures; the button remains available for retry.
+      }
+    })
+  }
+</script>
