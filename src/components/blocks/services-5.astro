@@ -1,35 +1,89 @@
 ---
+import ArrowRightIcon from "@lucide/astro/icons/arrow-right"
+import LayoutGridIcon from "@lucide/astro/icons/layout-grid"
+
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Section, SectionContent } from "@/components/ui/section"
+import { Button } from "@/components/ui/button"
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    badge: string
+  badge?: string
+  title: string
+  description?: string
+  actions?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
+  items: {
+    icon?: typeof LayoutGridIcon
     title: string
-    items: {
-      title: string
-      description: string
-    }[]
-  }
+    description: string
+    href?: string
+  }[]
 }
 
-const { props } = Astro.props
+const { badge, title, description, actions, items } = Astro.props
 ---
 
 <Section>
-  <SectionContent class="grid gap-8 lg:grid-cols-[20rem_minmax(0,1fr)] lg:items-start">
-    <div class="max-w-sm">
-      <Badge variant="outline">{props.badge}</Badge>
-      <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance">{props.title}</h2>
+  <SectionContainer class="gap-12">
+    <div class="mx-auto max-w-2xl text-center">
+      {badge && <Badge variant="secondary">{badge}</Badge>}
+      <h2
+        class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      {
+        description && (
+          <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">
+            {description}
+          </p>
+        )
+      }
+      {
+        actions?.length ? (
+          <div class="mt-6 flex flex-wrap justify-center gap-3">
+            {actions.map((action) => (
+              <Button as="a" href={action.href} variant={action.variant}>
+                {action.label}
+              </Button>
+            ))}
+          </div>
+        ) : null
+      }
     </div>
-    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-      {props.items.map((service) => (
-        <Card>
-          <CardHeader><CardTitle class="text-lg">{service.title}</CardTitle></CardHeader>
-          <CardContent class="text-muted-foreground text-sm leading-6">{service.description}</CardContent>
-        </Card>
-      ))}
+    <div
+      class="ring-foreground/10 bg-border grid gap-px overflow-hidden rounded-xl ring-1 ring-inset sm:grid-cols-2 lg:grid-cols-4"
+    >
+      {
+        items.map((service) => {
+          const Icon = service.icon ?? LayoutGridIcon
+          return (
+            <div class="bg-background group/service hover:bg-accent/30 relative flex flex-col gap-4 p-7 transition-colors">
+              <div class="bg-primary/10 text-primary ring-primary/15 flex size-10 items-center justify-center rounded-lg ring-1 transition-transform ring-inset group-hover/service:scale-105">
+                <Icon class="size-5" />
+              </div>
+              <h3 class="text-base font-medium tracking-tight">
+                {service.title}
+              </h3>
+              <p class="text-muted-foreground text-sm leading-relaxed">
+                {service.description}
+              </p>
+              {service.href && (
+                <a
+                  href={service.href}
+                  class="text-primary mt-auto inline-flex items-center gap-1.5 text-sm font-medium"
+                >
+                  Learn more
+                  <ArrowRightIcon class="size-3.5 transition-transform group-hover/service:translate-x-1" />
+                </a>
+              )}
+            </div>
+          )
+        })
+      }
     </div>
-  </SectionContent>
+  </SectionContainer>
 </Section>

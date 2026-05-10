@@ -3,17 +3,38 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-import { typographyLeadStyle } from "./typography-styles"
+type Size = "sm" | "default" | "lg"
+type Props = HTMLAttributes<"p"> & {
+  size?: Size
+}
 
-type Props = HTMLAttributes<"p">
-
-const { class: className, ...props } = Astro.props
+const { class: className, size = "default", ...props } = Astro.props
 ---
 
-<p
-  data-slot="typography-lead"
-  class={cn(typographyLeadStyle, className)}
-  {...props}
->
+<p data-slot="typography-lead" data-size={size} class={cn(className)} {...props}>
   <slot />
 </p>
+
+<style is:global>
+  @reference "@/styles/global.css";
+
+  [data-slot="typography-lead"] {
+    @apply text-muted-foreground;
+  }
+
+  [data-slot="typography-lead"][data-size="sm"],
+  [data-slot="typography"][data-size="sm"] > [data-slot="typography-lead"] {
+    @apply text-base;
+  }
+
+  [data-slot="typography-lead"][data-size="default"],
+  [data-slot="typography"] > [data-slot="typography-lead"],
+  [data-slot="typography"][data-size="default"] > [data-slot="typography-lead"] {
+    @apply text-lg;
+  }
+
+  [data-slot="typography-lead"][data-size="lg"],
+  [data-slot="typography"][data-size="lg"] > [data-slot="typography-lead"] {
+    @apply text-xl;
+  }
+</style>

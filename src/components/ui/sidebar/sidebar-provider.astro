@@ -44,6 +44,14 @@ const resolvedStyle = [
   <slot />
 </div>
 
+<script is:inline>
+  const sidebarScrollTop = Number(sessionStorage.getItem("sidebar_scroll") || 0)
+
+  document.querySelectorAll("[data-sidebar='content']").forEach((content) => {
+    content.scrollTop = sidebarScrollTop
+  })
+</script>
+
 <script>
   declare global {
     interface Window {
@@ -62,6 +70,7 @@ const resolvedStyle = [
   const SIDEBAR_COOKIE_NAME = "sidebar_state"
   const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
   const SIDEBAR_KEYBOARD_SHORTCUT = "b"
+  const SIDEBAR_SCROLL_KEY = "sidebar_scroll"
   const DESKTOP_MEDIA_QUERY = "(min-width: 768px)"
 
   if (!window.__fulldevSidebarInitialized) {
@@ -322,6 +331,20 @@ const resolvedStyle = [
       event.preventDefault()
       toggleProvider(provider)
     })
+
+    document.addEventListener(
+      "scroll",
+      (event) => {
+        const target = event.target
+        if (
+          target instanceof HTMLElement &&
+          target.dataset.sidebar === "content"
+        ) {
+          sessionStorage.setItem(SIDEBAR_SCROLL_KEY, String(target.scrollTop))
+        }
+      },
+      true
+    )
 
     const syncAllProviders = () => {
       getProviders().forEach((provider) => {

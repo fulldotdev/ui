@@ -1,36 +1,96 @@
 ---
-import { Button } from "@/components/ui/button"
-import { Section, SectionContent } from "@/components/ui/section"
+import PlaceholderImage from "@/assets/placeholder.webp"
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
 
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
+import { Avatar, AvatarFallback, AvatarGroup } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Rating } from "@/components/ui/rating"
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    title: string
-    description: string
-    action: BlockAction
-    note: string
+  title: string
+  description: string
+  actions?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
+  socialProof?: {
+    avatars: string[]
+    rating: number
+    text: string
+  }
+  image?: {
+    src: ImageMetadata
+    alt: string
   }
 }
 
-const { props } = Astro.props
+const {
+  title,
+  description,
+  actions,
+  socialProof,
+  image = { src: PlaceholderImage, alt: "CTA image" },
+} = Astro.props
 ---
 
 <Section>
-  <SectionContent class="rounded-3xl border p-8 sm:p-10">
-    <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
-      <div>
-        <h2 class="text-3xl font-semibold tracking-tight text-balance">{props.title}</h2>
-        <p class="text-muted-foreground mt-4 text-base leading-7">{props.description}</p>
+  <SectionContainer class="grid gap-12 lg:grid-cols-2 lg:items-center">
+    <Image
+      src={image.src}
+      alt={image.alt}
+      class="aspect-[4/3] w-full rounded-xl border object-cover"
+      widths={[640, 960, 1280]}
+      sizes="(min-width: 1024px) 50vw, 100vw"
+    />
+    <div class="flex flex-col gap-6">
+      <div class="flex flex-col gap-4">
+        <h2
+          class="text-foreground text-3xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-4xl"
+        >
+          {title}
+        </h2>
+        <p class="text-muted-foreground text-lg leading-relaxed">
+          {description}
+        </p>
       </div>
-      <div class="flex flex-col gap-3 lg:items-end">
-        <Button as="a" href={props.action.href} variant={props.action.variant}>{props.action.label}</Button>
-        <p class="text-muted-foreground text-sm">{props.note}</p>
-      </div>
+      {
+        actions?.length ? (
+          <div class="flex flex-wrap gap-3">
+            {actions.map((action, i) => (
+              <Button
+                as="a"
+                href={action.href}
+                size="lg"
+                variant={action.variant ?? (i === 0 ? "default" : "outline")}
+              >
+                {action.label}
+              </Button>
+            ))}
+          </div>
+        ) : null
+      }
+      {
+        socialProof ? (
+          <div class="flex items-center gap-3">
+            <AvatarGroup>
+              {socialProof.avatars.map((initials) => (
+                <Avatar class="ring-background size-10 ring">
+                  <AvatarFallback>{initials}</AvatarFallback>
+                </Avatar>
+              ))}
+            </AvatarGroup>
+            <div class="flex flex-col gap-0.5">
+              <Rating value={socialProof.rating} />
+              <span class="text-muted-foreground text-xs">
+                {socialProof.text}
+              </span>
+            </div>
+          </div>
+        ) : null
+      }
     </div>
-  </SectionContent>
+  </SectionContainer>
 </Section>

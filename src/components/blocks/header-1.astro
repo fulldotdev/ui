@@ -1,117 +1,87 @@
 ---
-import { MenuIcon } from "@lucide/astro"
-import { Image } from "astro:assets"
-import { Github } from "simple-icons-astro"
-
-import type { GlobalSchema } from "@/schemas/global"
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Header, HeaderContent, HeaderGroup } from "@/components/ui/header"
+import { Header, HeaderContainer, HeaderGroup } from "@/components/ui/header"
+import { Icon } from "@/components/ui/icon"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu"
-import { Separator } from "@/components/ui/separator"
-import { ThemeToggle } from "@/components/ui/theme-toggle"
-import SiteSearch from "@/components/site-search.astro"
-
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
 
 interface Props {
-  props: {
-    class?: string
-    global: GlobalSchema
-    headerLinks?: GlobalSchema["header"]["links"]
-    headerButtons: BlockAction[]
-    homeHref: string
-    github: {
-      href: string
-      ariaLabel: string
-      count: string
-    }
-    mobileMenuLabel: string
+  class?: string
+  logo: {
+    text: string
+    href: string
+    src?: any
+    srcLight?: any
+    srcDark?: any
+    alt?: string
   }
+  links: {
+    text: string
+    href: string
+    links?: {
+      text: string
+      href: string
+    }[]
+  }[]
+  buttons: {
+    text: string
+    href: string
+    icon?: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
 }
 
-const { props } = Astro.props
+const { class: className, logo, links, buttons } = Astro.props
 ---
 
-<Header class={cn(props.class, `flex h-auto items-center p-2`)}>
-  <HeaderGroup>
-    <a href={props.homeHref} class="flex h-10 items-center gap-1 px-2 text-lg">
-      <Image
-        src={props.global.logo.dark}
-        alt={`${props.global.name} logo`}
-        class="size-5.5 shrink-0 dark:hidden"
-      />
-      <Image
-        src={props.global.logo.light}
-        alt={`${props.global.name} logo`}
-        class="hidden size-5.5 shrink-0 dark:block"
-      />
-      <span class="font-semibold">{props.global.name}</span>
-    </a>
-  </HeaderGroup>
-  <HeaderContent>
-    <NavigationMenu class="hidden max-w-none justify-start md:flex">
-      <NavigationMenuList class="justify-start">
+<Header class={className}>
+  <HeaderContainer>
+    <HeaderGroup>
+      <Logo href={logo.href}>
+        <LogoImage
+          src={logo.src}
+          srcLight={logo.srcLight}
+          srcDark={logo.srcDark}
+          alt={logo.alt}
+        />
+        {logo.text && <LogoText>{logo.text}</LogoText>}
+      </Logo>
+    </HeaderGroup>
+    <NavigationMenu class="hidden md:flex">
+      <NavigationMenuList>
         {
-          props.headerLinks?.map((link, index) => (
-            <NavigationMenuItem value={`header-link-${index}`}>
-              <NavigationMenuLink href={link.href}>
-                {link.text}
+          links.map((item, index) => (
+            <NavigationMenuItem value={`nav-${index}`}>
+              <NavigationMenuLink href={item.href}>
+                {item.text}
               </NavigationMenuLink>
             </NavigationMenuItem>
           ))
         }
       </NavigationMenuList>
     </NavigationMenu>
-  </HeaderContent>
-  <HeaderGroup class="ml-auto justify-end">
-    <ThemeToggle variant="ghost" size="icon-sm" />
-    <Separator orientation="vertical" class="!h-5 !self-center" />
-    <Button
-      as="a"
-      href={props.github.href}
-      variant="ghost"
-      size="sm"
-      target="_blank"
-      rel="noreferrer"
-      aria-label={props.github.ariaLabel}
-    >
-      <Github class="size-4" fill="currentColor" aria-hidden="true" />
-      <span>{props.github.count}</span>
-    </Button>
-    <Separator orientation="vertical" class="!h-5 !self-center" />
-    <SiteSearch />
-    {
-      props.headerButtons.map((button) => (
-        <Button
-          as="a"
-          href={button.href}
-          variant={button.variant}
-          size="sm"
-        >
-          {button.label}
-        </Button>
-      ))
-    }
-    <Button
-      class="md:hidden"
-      data-sidebar="trigger"
-      data-slot="sidebar-trigger"
-      variant="ghost"
-      size="icon-sm"
-      aria-label={props.mobileMenuLabel}
-    >
-      <MenuIcon class="size-5" />
-      <span class="sr-only">{props.mobileMenuLabel}</span>
-    </Button>
-  </HeaderGroup>
+    <HeaderGroup class="ml-auto hidden md:flex">
+      <slot />
+      {
+        buttons.map(({ text, icon, ...button }) => (
+          <Button
+            as="a"
+            size={icon && !text ? "icon-sm" : "sm"}
+            aria-label={text}
+            target={button.href.startsWith("http") ? "_blank" : undefined}
+            rel={button.href.startsWith("http") ? "noreferrer" : undefined}
+            {...button}
+          >
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
+    </HeaderGroup>
+  </HeaderContainer>
 </Header>

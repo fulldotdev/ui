@@ -1,94 +1,95 @@
 ---
 import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Section, SectionContent } from "@/components/ui/section"
-import BlockPlaceholder from "@/components/block-placeholder.astro"
-
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
-
-type BlockImage = {
-  src: ImageMetadata
-  alt: string
-}
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    badge: string
+  badge?: string
+  title: string
+  description: string
+  author: {
+    image?: ImageMetadata
+    initials: string
+    name: string
+    date: string
+    readingTime: string
+  }
+  image: {
+    src: ImageMetadata
+    alt: string
+  }
+  quote?: string
+  points?: {
     title: string
     description: string
-    meta: {
-      publishedLabel: string
-      publishedValue: string
-      readingTimeLabel: string
-      readingTimeValue: string
-      action: BlockAction
-    }
-    image: BlockImage
-    quote: string
-    points: {
-      kicker: string
-      title: string
-      description: string
-    }[]
-  }
+  }[]
 }
 
-const { props } = Astro.props
+const {
+  badge,
+  title,
+  description,
+  author,
+  image,
+  quote,
+  points = [],
+} = Astro.props
 ---
 
 <Section>
-  <SectionContent class="grid gap-8 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-12">
-    <aside class="flex flex-col gap-5 lg:sticky lg:top-24 lg:self-start">
-      <Badge variant="secondary">{props.badge}</Badge>
-      <div>
-        <p class="text-sm font-medium">{props.meta.publishedLabel}</p>
-        <p class="text-muted-foreground text-sm">{props.meta.publishedValue}</p>
-      </div>
-      <div>
-        <p class="text-sm font-medium">{props.meta.readingTimeLabel}</p>
-        <p class="text-muted-foreground text-sm">{props.meta.readingTimeValue}</p>
-      </div>
-      <Button as="a" href={props.meta.action.href} variant={props.meta.action.variant}>
-        {props.meta.action.label}
-      </Button>
-    </aside>
-
-    <div class="flex flex-col gap-8">
+  <SectionContainer class="mx-auto max-w-2xl items-center gap-8 text-center">
+    <div class="mx-auto flex w-full max-w-2xl flex-col items-center gap-6">
+      {badge && <Badge variant="secondary">{badge}</Badge>}
       <div class="flex flex-col gap-4">
-        <h2 class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
-        <p class="text-muted-foreground max-w-2xl text-lg leading-relaxed">{props.description}</p>
+        <h1
+          class="text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl"
+        >
+          {title}
+        </h1>
+        <p class="text-muted-foreground text-lg leading-8 text-balance">
+          {description}
+        </p>
       </div>
-
-      <div class="grid gap-4 sm:grid-cols-2">
-        <BlockPlaceholder image={props.image} class="aspect-[4/3] rounded-2xl border" />
-        <Card class="justify-center">
-          <CardHeader>
-            <CardTitle class="text-2xl leading-tight">{props.quote}</CardTitle>
-          </CardHeader>
-        </Card>
-      </div>
-
-      <div class="grid gap-4 sm:grid-cols-2">
-        {props.points.map((point) => (
-          <Card>
-            <CardContent class="flex items-center gap-3 p-6">
-              <div class="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-full font-medium">
-                {point.kicker}
-              </div>
-              <div>
-                <p class="font-medium">{point.title}</p>
-                <p class="text-muted-foreground text-sm">{point.description}</p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      <div class="flex items-center gap-3">
+        <Avatar size="lg">
+          <AvatarImage src={author.image} alt={author.name} />
+          <AvatarFallback>{author.initials}</AvatarFallback>
+        </Avatar>
+        <div class="flex flex-col text-left">
+          <p class="text-sm font-medium">
+            {author.name}
+            <span class="text-muted-foreground font-normal">
+              &middot; {author.date}
+            </span>
+          </p>
+          <p class="text-muted-foreground text-xs">{author.readingTime}</p>
+        </div>
       </div>
     </div>
-  </SectionContent>
+
+    <Image
+      src={image.src}
+      alt={image.alt}
+      class="aspect-[16/10] w-full rounded-xl object-cover"
+      widths={[640, 960]}
+      sizes="(min-width: 42rem) 42rem, 100vw"
+    />
+
+    <article
+      class="mx-auto flex w-full max-w-2xl flex-col gap-6 text-left text-base leading-8"
+    >
+      {quote && <p class="text-xl leading-8 font-medium">{quote}</p>}
+      {
+        points.map((point) => (
+          <section class="flex flex-col gap-2">
+            <p class="text-sm font-medium">{point.title}</p>
+            <p class="text-muted-foreground">{point.description}</p>
+          </section>
+        ))
+      }
+    </article>
+  </SectionContainer>
 </Section>

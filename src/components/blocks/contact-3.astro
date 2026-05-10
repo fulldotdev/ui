@@ -1,83 +1,128 @@
 ---
+import PlaceholderImage from "@/assets/placeholder.webp"
+import LayoutGridIcon from "@lucide/astro/icons/layout-grid"
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
+
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Field, FieldGroup, FieldLabel, FieldSet, FieldLegend } from "@/components/ui/field"
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Section, SectionContent } from "@/components/ui/section"
+import { Section, SectionContainer } from "@/components/ui/section"
 import { Textarea } from "@/components/ui/textarea"
 
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
-
 interface Props {
-  props: {
-    channels: {
-      label: string
-      detail: string
-    }[]
+  title: string
+  description: string
+  items: {
+    icon: typeof LayoutGridIcon
     title: string
     description: string
-    form: {
-      legend: string
-      nameLabel: string
-      namePlaceholder: string
-      emailLabel: string
-      emailPlaceholder: string
-      goalsLabel: string
-      goalsPlaceholder: string
-      action: BlockAction
-    }
+  }[]
+  form: {
+    legend: string
+    nameLabel: string
+    namePlaceholder: string
+    emailLabel: string
+    emailPlaceholder: string
+    messageLabel: string
+    messagePlaceholder: string
+    actionLabel: string
+  }
+  image?: {
+    src: ImageMetadata
+    alt: string
   }
 }
 
-const { props } = Astro.props
+const {
+  title,
+  description,
+  items,
+  form,
+  image = { src: PlaceholderImage, alt: "Contact image" },
+} = Astro.props
 ---
 
 <Section>
-  <SectionContent class="grid gap-8 xl:grid-cols-[18rem_minmax(0,1fr)] xl:items-start">
-    <div class="grid gap-3">
-      {props.channels.map((channel) => (
-        <Card>
-          <CardContent class="p-4">
-            <p class="font-medium">{channel.label}</p>
-            <p class="text-muted-foreground mt-2 text-sm leading-6">{channel.detail}</p>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-
-    <Card>
-      <CardHeader>
-        <CardTitle>{props.title}</CardTitle>
-        <CardDescription>{props.description}</CardDescription>
-      </CardHeader>
-      <CardContent>
+  <SectionContainer class="grid gap-12 lg:grid-cols-2 lg:items-start">
+    <div class="flex flex-col gap-8">
+      <div class="flex flex-col gap-4">
+        <h2
+          class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+        >
+          {title}
+        </h2>
+        <p class="text-muted-foreground max-w-xl text-base leading-relaxed">
+          {description}
+        </p>
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2">
+        {
+          items.map((item) => {
+            const Icon = item.icon
+            return (
+              <div class="flex gap-4">
+                <div class="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
+                  <Icon class="size-5" />
+                </div>
+                <div class="flex flex-col gap-1">
+                  <p class="text-foreground text-sm font-medium">
+                    {item.title}
+                  </p>
+                  <p class="text-muted-foreground text-sm leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            )
+          })
+        }
+      </div>
+      <div class="rounded-xl border p-6">
         <FieldSet>
-          <FieldLegend class="sr-only">{props.form.legend}</FieldLegend>
+          <FieldLegend class="sr-only">{form.legend}</FieldLegend>
           <FieldGroup>
             <div class="grid gap-4 md:grid-cols-2">
               <Field>
-                <FieldLabel for="contact-name-3">{props.form.nameLabel}</FieldLabel>
-                <Input id="contact-name-3" placeholder={props.form.namePlaceholder} />
+                <FieldLabel for="contact-name-3">{form.nameLabel}</FieldLabel>
+                <Input id="contact-name-3" placeholder={form.namePlaceholder} />
               </Field>
               <Field>
-                <FieldLabel for="contact-email-3">{props.form.emailLabel}</FieldLabel>
-                <Input id="contact-email-3" placeholder={props.form.emailPlaceholder} />
+                <FieldLabel for="contact-email-3">{form.emailLabel}</FieldLabel>
+                <Input
+                  id="contact-email-3"
+                  type="email"
+                  placeholder={form.emailPlaceholder}
+                />
               </Field>
             </div>
             <Field>
-              <FieldLabel for="contact-goals-3">{props.form.goalsLabel}</FieldLabel>
-              <Textarea id="contact-goals-3" rows={5} placeholder={props.form.goalsPlaceholder} />
+              <FieldLabel for="contact-message-3"
+                >{form.messageLabel}</FieldLabel
+              >
+              <Textarea
+                id="contact-message-3"
+                rows={5}
+                placeholder={form.messagePlaceholder}
+              />
             </Field>
-            <Button as="a" href={props.form.action.href} variant={props.form.action.variant}>
-              {props.form.action.label}
-            </Button>
+            <Button size="lg" class="w-full">{form.actionLabel}</Button>
           </FieldGroup>
         </FieldSet>
-      </CardContent>
-    </Card>
-  </SectionContent>
+      </div>
+    </div>
+    <Image
+      src={image.src}
+      alt={image.alt}
+      class="aspect-[3/4] w-full rounded-xl border object-cover lg:sticky lg:top-24"
+      widths={[640, 960, 1280]}
+      sizes="(min-width: 1024px) 50vw, 100vw"
+    />
+  </SectionContainer>
 </Section>

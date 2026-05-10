@@ -1,24 +1,33 @@
+import { readFile } from "node:fs/promises"
 import type { APIRoute } from "astro"
 import { getCollection } from "astro:content"
-
-import { hrefFromPageId } from "@/lib/pages"
 
 export const prerender = true
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages")
-  return pages.map((page) => ({
-    params: {
-      page: hrefFromPageId(page.id) === "/" ? undefined : page.id,
-    },
-    props: {
-      body: page.body,
-    },
-  }))
+  return Promise.all(
+    pages.map(async (page) => ({
+      params: {
+        page: page.id === "index" ? undefined : page.id,
+      },
+      props: {
+        source: await readPageSource(page.filePath),
+      },
+    }))
+  )
+}
+
+async function readPageSource(filePath: string | undefined) {
+  if (!filePath) {
+    throw new Error("Expected content page entry to include a file path.")
+  }
+
+  return readFile(filePath, "utf-8")
 }
 
 export const GET: APIRoute = ({ props }) => {
-  return new Response(props.body, {
+  return new Response(props.source, {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
     },

@@ -1,0 +1,36 @@
+---
+import XIcon from "@lucide/astro/icons/x"
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"div"> & {
+  showClose?: boolean
+}
+
+const { class: className, showClose = true, ...props } = Astro.props
+---
+
+<div
+  class={cn(
+    "max-w-container relative mx-auto flex w-full flex-col gap-2 px-6 @5xl:flex-row @5xl:items-center",
+    showClose && "pr-10",
+    className
+  )}
+  {...props}
+>
+  <slot />
+  {
+    showClose && (
+      <button
+        type="button"
+        class="focus-visible:ring-ring/50 absolute top-1/2 right-4 z-20 inline-flex shrink-0 -translate-y-1/2 items-center justify-center rounded-sm text-current/65 transition-colors outline-none hover:text-current focus-visible:text-current focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 in-[[data-variant=floating]]:right-5"
+        aria-label="Close"
+        data-slot="banner-close"
+      >
+        <XIcon class="size-4" />
+        <span class="sr-only">Close</span>
+      </button>
+    )
+  }
+</div>

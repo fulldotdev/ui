@@ -3,17 +3,53 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-import { typographyTableHeadStyle } from "./typography-styles"
+type Size = "sm" | "default" | "lg"
+type Props = HTMLAttributes<"th"> & {
+  size?: Size
+}
 
-type Props = HTMLAttributes<"th">
-
-const { class: className, ...props } = Astro.props
+const { class: className, size = "default", ...props } = Astro.props
 ---
 
 <th
   data-slot="typography-table-head"
-  class={cn(typographyTableHeadStyle, className)}
+  data-size={size}
+  class={cn(className)}
   {...props}
 >
   <slot />
 </th>
+
+<style is:global>
+  @reference "@/styles/global.css";
+
+  [data-slot="typography-table-head"],
+  [data-slot="typography-table"] th,
+  [data-slot="typography"] > table th {
+    @apply border px-4 py-2 text-left font-bold;
+  }
+
+  [data-slot="typography-table-head"][data-size="sm"] {
+    @apply text-sm;
+  }
+
+  [data-slot="typography-table-head"][data-size="default"] {
+    @apply text-base;
+  }
+
+  [data-slot="typography-table-head"][data-size="lg"] {
+    @apply text-lg;
+  }
+
+  [data-slot="typography-table-head"][align="center"],
+  [data-slot="typography-table"] th[align="center"],
+  [data-slot="typography"] > table th[align="center"] {
+    @apply text-center;
+  }
+
+  [data-slot="typography-table-head"][align="right"],
+  [data-slot="typography-table"] th[align="right"],
+  [data-slot="typography"] > table th[align="right"] {
+    @apply text-right;
+  }
+</style>

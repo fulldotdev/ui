@@ -3,27 +3,57 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-import {
-  typographyTableContainerStyle,
-  typographyTableStyle,
-} from "./typography-styles"
-
+type Size = "sm" | "default" | "lg"
 type Props = HTMLAttributes<"table"> & {
   containerClass?: string
+  size?: Size
 }
 
-const { class: className, containerClass, ...props } = Astro.props
+const {
+  class: className,
+  containerClass,
+  size = "default",
+  ...props
+} = Astro.props
 ---
 
 <div
   data-slot="typography-table-container"
-  class={cn(typographyTableContainerStyle, containerClass)}
+  data-size={size}
+  class={cn(containerClass)}
 >
   <table
     data-slot="typography-table"
-    class={cn(typographyTableStyle, className)}
+    data-size={size}
+    class={cn(className)}
     {...props}
   >
     <slot />
   </table>
 </div>
+
+<style is:global>
+  @reference "@/styles/global.css";
+
+  [data-slot="typography-table-container"] {
+    @apply my-6 w-full overflow-y-auto;
+  }
+
+  [data-slot="typography-table"],
+  [data-slot="typography"] > table {
+    @apply w-full;
+  }
+
+  [data-slot="typography-table"][data-size="sm"] {
+    @apply text-sm;
+  }
+
+  [data-slot="typography-table"][data-size="default"],
+  [data-slot="typography"] > table {
+    @apply text-base;
+  }
+
+  [data-slot="typography-table"][data-size="lg"] {
+    @apply text-lg;
+  }
+</style>

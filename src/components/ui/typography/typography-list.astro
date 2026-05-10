@@ -3,30 +3,61 @@ import type { HTMLTag, Polymorphic } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-import {
-  typographyListItemStyle,
-  typographyOrderedListStyle,
-  typographyListStyle,
-  typographyUnorderedListStyle,
-  toArbitrarySelectorClass,
-} from "./typography-styles"
+type Size = "sm" | "default" | "lg"
+type Props<Tag extends "ul" | "ol"> = Polymorphic<{ as: Tag; size?: Size }>
 
-type Props<Tag extends "ul" | "ol"> = Polymorphic<{ as: Tag }>
-
-const { as: Tag = "ul", class: className, ...props } = Astro.props as Props<
-  HTMLTag & ("ul" | "ol")
->
+const {
+  as: Tag = "ul",
+  class: className,
+  size = "default",
+  ...props
+} = Astro.props as Props<HTMLTag & ("ul" | "ol")>
 ---
 
 <Tag
   data-slot="typography-list"
-  class={cn(
-    typographyListStyle,
-    Tag === "ol" ? typographyOrderedListStyle : typographyUnorderedListStyle,
-    toArbitrarySelectorClass("&>li", typographyListItemStyle),
-    className
-  )}
+  data-size={size}
+  data-ordered={Tag === "ol" ? "" : undefined}
+  class={cn(className)}
   {...props}
 >
   <slot />
 </Tag>
+
+<style is:global>
+  @reference "@/styles/global.css";
+
+  [data-slot="typography-list"],
+  [data-slot="typography"] > ul,
+  [data-slot="typography"] > ol {
+    @apply my-6 ml-6;
+  }
+
+  [data-slot="typography-list"][data-size="sm"] {
+    @apply text-sm;
+  }
+
+  [data-slot="typography-list"][data-size="default"],
+  [data-slot="typography"] > ul,
+  [data-slot="typography"] > ol {
+    @apply text-base;
+  }
+
+  [data-slot="typography-list"][data-size="lg"] {
+    @apply text-lg;
+  }
+
+  [data-slot="typography-list"]:not([data-ordered]),
+  [data-slot="typography"] > ul {
+    @apply list-disc;
+  }
+
+  [data-slot="typography-list"][data-ordered],
+  [data-slot="typography"] > ol {
+    @apply list-decimal;
+  }
+
+  [data-slot="typography-list"] > li {
+    @apply mt-2;
+  }
+</style>

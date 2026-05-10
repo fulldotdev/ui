@@ -1,44 +1,74 @@
 ---
 import type { ImageMetadata } from "astro"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Section, SectionContent } from "@/components/ui/section"
-import BlockPlaceholder from "@/components/block-placeholder.astro"
+import { Image } from "astro:assets"
 
-type BlockImage = {
-  src: ImageMetadata
-  alt: string
-}
+import { Badge } from "@/components/ui/badge"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    badge: string
+  badge: string
+  title: string
+  products: {
+    image: {
+      src: ImageMetadata
+      alt: string
+    }
     title: string
-    products: {
-      image: BlockImage
-      title: string
-      description: string
-    }[]
-  }
+    description: string
+    price: {
+      value: number
+      currency: string
+      unit: string
+    }
+  }[]
 }
 
-const { props } = Astro.props
+const { badge, title, products } = Astro.props
 ---
 
 <Section>
-  <SectionContent class="gap-8">
-    <div class="max-w-2xl">
-      <Badge variant="outline">{props.badge}</Badge>
-      <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
+  <SectionContainer class="gap-8">
+    <div class="mx-auto max-w-2xl text-center">
+      <Badge variant="secondary">{badge}</Badge>
+      <h2
+        class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
     </div>
-    <div class="grid gap-4 lg:grid-cols-3">
-      {props.products.map((product) => (
-        <Card class="overflow-hidden">
-          <BlockPlaceholder image={product.image} class="aspect-[16/10] border-b" />
-          <CardHeader><CardTitle>{product.title}</CardTitle></CardHeader>
-          <CardContent class="text-muted-foreground text-sm leading-6">{product.description}</CardContent>
-        </Card>
-      ))}
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        products.map((product) => (
+          <Card>
+            <Image
+              src={product.image.src}
+              alt={product.image.alt}
+              class="aspect-[4/3] w-full object-cover"
+            />
+            <CardHeader>
+              <CardTitle>{product.title}</CardTitle>
+              <CardDescription>{product.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Price>
+                <PriceValue
+                  price={product.price.value}
+                  currency={product.price.currency}
+                />
+                <PriceUnit>{product.price.unit}</PriceUnit>
+              </Price>
+            </CardContent>
+          </Card>
+        ))
+      }
     </div>
-  </SectionContent>
+  </SectionContainer>
 </Section>

@@ -84,7 +84,7 @@ function StatusBadge({ icon }: { icon: string }) {
   return <Icon />
 }
 
-<StatusBadge icon="check" />
+;<StatusBadge icon="check" />
 ```
 
 **Correct:**
@@ -97,5 +97,5 @@ function StatusBadge({ icon: Icon }: { icon: React.ComponentType }) {
   return <Icon />
 }
 
-<StatusBadge icon={CheckIcon} />
+;<StatusBadge icon={CheckIcon} />
 ```

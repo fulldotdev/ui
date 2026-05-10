@@ -1,217 +1,188 @@
 ---
-import { Check, Copy } from "@lucide/astro"
+import Check from "@lucide/astro/icons/check"
+import Copy from "@lucide/astro/icons/copy"
 
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button/button-variants"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-type Props = {
-  code: string
-  lang?: string
-  filename?: string
-  componentProps?: Record<string, unknown>
+type ComponentProps = {
+  name?: string
 }
 
-const { code } = Astro.props as Props
-const toggleId = `live-code-${crypto.randomUUID()}`
+type Props = {
+  filename?: string
+  lang?: string
+  componentProps?: ComponentProps
+}
+
+const { componentProps = {} }: Props = Astro.props
+const componentSlug = componentProps.name
+  ?.trim()
+  .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+  .replace(/[\s_]+/g, "-")
+  .replace(/[^a-zA-Z0-9-]/g, "")
+  .replace(/-+/g, "-")
+  .toLowerCase()
+const isBlockPreview = Boolean(
+  componentSlug?.match(
+    /^(article|articles|banner|contact|content|cta|faqs|features|footer|header|hero|logos|pricing|product|products|reviews|services)-\d+$/
+  )
+)
+const installCommand = componentSlug
+  ? `npx shadcn@latest add @fulldev/${componentSlug}`
+  : undefined
+const installButtonId = installCommand
+  ? `live-code-copy-install-${crypto.randomUUID()}`
+  : undefined
 ---
 
-<div
-  data-slot="live-code"
-  class="border-border bg-background my-6 overflow-hidden rounded-lg border"
->
+<Tabs defaultValue="preview" class="live-code-layout w-full gap-3">
   <div
-    data-slot="live-code-preview"
-    class="bg-background flex min-h-72 w-full items-center justify-center px-6 py-10 sm:px-10 sm:py-14"
+    class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
   >
+    <TabsList class="justify-start self-start">
+      <TabsTrigger value="preview" class="flex-none"> Preview </TabsTrigger>
+      <TabsTrigger value="code" class="flex-none">Code</TabsTrigger>
+    </TabsList>
+
     <div
-      class="live-code-example flex w-full max-w-full items-center justify-center gap-3"
+      class="flex min-w-0 flex-col gap-3 sm:max-w-xl sm:flex-1 sm:flex-row sm:items-center sm:justify-end sm:gap-6"
     >
-      <slot name="example" />
+      {
+        installCommand && (
+          <Button
+            id={installButtonId}
+            type="button"
+            variant="outline"
+            size="sm"
+            class="max-w-full shrink-0 self-start font-mono text-xs sm:self-center sm:whitespace-nowrap"
+            data-source={installCommand}
+            aria-label={`Copy install command: ${installCommand}`}
+          >
+            <Copy class="live-code-copy-icon size-4" />
+            <Check class="live-code-check-icon hidden size-4" />
+            <span>{installCommand}</span>
+          </Button>
+        )
+      }
     </div>
   </div>
 
-  <input id={toggleId} class="peer sr-only" type="checkbox" />
-
-  <div class="live-code-body border-border border-t">
-    <div class="live-code-source-shell relative">
-      <div class="live-code-overlay pointer-events-none absolute inset-0 z-10">
-      </div>
-
+  <TabsContent value="preview" class="mt-0 w-full">
+    <div
+      class:list={[
+        "border-border bg-background w-full overflow-hidden border",
+        isBlockPreview
+          ? "rounded-lg"
+          : "flex min-h-64 items-center justify-center rounded-xl p-10",
+      ]}
+    >
       <div
-        class="live-code-toggle absolute inset-0 z-20 flex items-center justify-center"
+        class:list={[
+          isBlockPreview
+            ? "bg-background w-full"
+            : "flex w-full flex-wrap items-center justify-center gap-3",
+        ]}
       >
-        <label
-          class={cn(
-            buttonVariants({ variant: "outline", size: "sm" }),
-            "bg-background cursor-pointer rounded-xl shadow-none"
-          )}
-          for={toggleId}
+        <slot name="example" />
+      </div>
+    </div>
+  </TabsContent>
+
+  <TabsContent value="code" class="mt-0 w-full" hidden>
+    <div
+      data-slot="live-code-panel"
+      class="border-border bg-muted/60 [&_.live-code-source]:bg-background/40 w-full overflow-hidden rounded-xl border [&_.live-code-source]:rounded-lg [&_pre.astro-code]:m-0 [&_pre.astro-code]:rounded-none [&_pre.astro-code]:border-0 [&_pre.astro-code]:!bg-transparent [&_pre.astro-code]:p-4 dark:[&_pre.astro-code]:!text-[var(--shiki-dark,var(--foreground))] [&_pre.astro-code_code]:!text-[var(--shiki-light,var(--foreground))] dark:[&_pre.astro-code_code]:!text-[var(--shiki-dark,var(--foreground))] dark:[&_pre.astro-code_span[style*='--shiki-dark']]:[font-weight:var(--shiki-dark-font-weight,inherit)] dark:[&_pre.astro-code_span[style*='--shiki-dark']]:!text-[var(--shiki-dark)] dark:[&_pre.astro-code_span[style*='--shiki-dark']]:[font-style:var(--shiki-dark-font-style,inherit)] dark:[&_pre.astro-code_span[style*='--shiki-dark']]:[text-decoration:var(--shiki-dark-text-decoration,inherit)]"
+    >
+      <div class="relative">
+        <Button
+          type="button"
+          variant="outline"
+          size="icon-sm"
+          class="absolute top-3 right-3 z-10"
+          data-slot="live-code-copy-source"
+          aria-label="Copy code example"
         >
-          View Code
-        </label>
-      </div>
+          <Copy class="live-code-source-copy-icon size-4" />
+          <Check class="live-code-source-check-icon hidden size-4" />
+        </Button>
 
-      <button
-        type="button"
-        data-slot="live-code-copy"
-        class={cn(
-          buttonVariants({ variant: "ghost", size: "icon-sm" }),
-          "live-code-copy text-foreground absolute top-3 right-3 z-20 rounded-lg shadow-none"
-        )}
-        data-code={code}
-        aria-label="Copy code"
-      >
-        <Copy class="live-code-copy-icon size-4" />
-        <Check class="live-code-check-icon hidden size-4" />
-      </button>
-
-      <div
-        data-slot="live-code-source"
-        class="live-code-source overflow-x-auto px-0 py-0 text-sm"
-      >
         <slot name="code" />
       </div>
     </div>
-  </div>
-</div>
+  </TabsContent>
+</Tabs>
 
-<script>
-  document.addEventListener("click", async (event) => {
-    const target = event.target as Element | null
-    const button = target?.closest<HTMLButtonElement>(
-      'button[data-slot="live-code-copy"]'
-    )
+<script is:inline define:vars={{ installButtonId }}>
+  const button = installButtonId
+    ? document.getElementById(installButtonId)
+    : null
 
-    if (!button) return
+  if (button instanceof HTMLButtonElement) {
+    button.addEventListener("click", async () => {
+      const source = button.dataset.source
 
-    const code = button.dataset.code
+      if (!source) return
 
-    if (!code) return
+      try {
+        await navigator.clipboard.writeText(source)
+        button.querySelector(".live-code-copy-icon")?.classList.add("hidden")
+        button
+          .querySelector(".live-code-check-icon")
+          ?.classList.remove("hidden")
 
-    try {
-      await navigator.clipboard.writeText(code)
-      button.querySelector(".live-code-copy-icon")?.classList.add("hidden")
-      button.querySelector(".live-code-check-icon")?.classList.remove("hidden")
+        window.setTimeout(() => {
+          button
+            .querySelector(".live-code-copy-icon")
+            ?.classList.remove("hidden")
+          button.querySelector(".live-code-check-icon")?.classList.add("hidden")
+        }, 1200)
+      } catch {
+        // Ignore clipboard failures; the button remains available for retry.
+      }
+    })
+  }
 
-      window.setTimeout(() => {
-        button.querySelector(".live-code-copy-icon")?.classList.remove("hidden")
-        button.querySelector(".live-code-check-icon")?.classList.add("hidden")
-      }, 1200)
-    } catch {
-      // Ignore clipboard failures; the control remains available for retry.
-    }
-  })
+  if (!window["__fulldevLiveCodeInitialized"]) {
+    window["__fulldevLiveCodeInitialized"] = true
+
+    document.addEventListener("click", async (event) => {
+      const target = event.target
+
+      if (!(target instanceof Element)) return
+
+      const codeButton = target.closest("[data-slot='live-code-copy-source']")
+      if (!(codeButton instanceof HTMLButtonElement)) return
+
+      const codePanel = codeButton.closest("[data-slot='live-code-panel']")
+      if (!(codePanel instanceof HTMLElement)) return
+
+      const codeElement =
+        codePanel.querySelector("pre code") ?? codePanel.querySelector("pre")
+      const source = codeElement?.textContent?.replace(/\n$/, "")
+
+      if (!source) return
+
+      try {
+        await navigator.clipboard.writeText(source)
+        codeButton
+          .querySelector(".live-code-source-copy-icon")
+          ?.classList.add("hidden")
+        codeButton
+          .querySelector(".live-code-source-check-icon")
+          ?.classList.remove("hidden")
+
+        window.setTimeout(() => {
+          codeButton
+            .querySelector(".live-code-source-copy-icon")
+            ?.classList.remove("hidden")
+          codeButton
+            .querySelector(".live-code-source-check-icon")
+            ?.classList.add("hidden")
+        }, 1200)
+      } catch {
+        // Ignore clipboard failures; the button remains available for retry.
+      }
+    })
+  }
 </script>
-
-<style>
-  [data-slot="live-code"] .live-code-copy {
-    display: none;
-  }
-
-  [data-slot="live-code"] .live-code-source-shell {
-    min-height: 6rem;
-    background: var(--muted);
-  }
-
-  [data-slot="live-code"] .live-code-overlay {
-    background: linear-gradient(
-      to top,
-      var(--muted) 0%,
-      color-mix(in oklab, var(--muted) 98%, transparent) 18%,
-      color-mix(in oklab, var(--muted) 92%, transparent) 36%,
-      color-mix(in oklab, var(--muted) 72%, transparent) 58%,
-      color-mix(in oklab, var(--muted) 38%, transparent) 82%,
-      transparent 100%
-    );
-  }
-
-  [data-slot="live-code"] .live-code-source :global(pre) {
-    margin: 0;
-    overflow: auto;
-    padding: 1rem 1rem 1rem 0;
-    background: transparent !important;
-    border: 0;
-    border-radius: 0;
-    line-height: 1.5;
-  }
-
-  [data-slot="live-code"] .live-code-source :global(code) {
-    display: block;
-    min-width: max-content;
-    font-family: var(--font-geist-mono), monospace;
-    color: var(--shiki-light, var(--foreground)) !important;
-    white-space: normal;
-  }
-
-  [data-slot="live-code"]
-    .live-code-source
-    :global(.shiki span[style*="--shiki-light"]) {
-    color: var(--shiki-light) !important;
-    font-style: var(--shiki-light-font-style, inherit) !important;
-    font-weight: var(--shiki-light-font-weight, inherit) !important;
-    text-decoration: var(--shiki-light-text-decoration, inherit) !important;
-  }
-
-  :global(.dark) [data-slot="live-code"] .live-code-source :global(.shiki) {
-    color: var(--shiki-dark, var(--foreground)) !important;
-  }
-
-  :global(.dark)
-    [data-slot="live-code"]
-    .live-code-source
-    :global(.shiki span[style*="--shiki-dark"]) {
-    color: var(--shiki-dark) !important;
-    font-style: var(--shiki-dark-font-style) !important;
-    font-weight: var(--shiki-dark-font-weight) !important;
-    text-decoration: var(--shiki-dark-text-decoration) !important;
-  }
-
-  [data-slot="live-code"] .live-code-source :global(.line) {
-    position: relative;
-    display: block;
-    min-width: max-content;
-    padding-left: 3.5rem;
-  }
-
-  [data-slot="live-code"] .live-code-source :global(.line)::before {
-    content: counter(line);
-    counter-increment: line;
-    position: absolute;
-    left: 0;
-    width: 2.5rem;
-    text-align: right;
-    color: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
-    user-select: none;
-  }
-
-  [data-slot="live-code"] .live-code-source :global(pre code) {
-    counter-reset: line;
-  }
-
-  [data-slot="live-code"] .live-code-source :global(.line > span) {
-    white-space: pre;
-  }
-
-  [data-slot="live-code"] .live-code-example > :only-child {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  [data-slot="live-code"] input:checked ~ .live-code-body .live-code-overlay,
-  [data-slot="live-code"] input:checked ~ .live-code-body .live-code-toggle {
-    display: none;
-  }
-
-  [data-slot="live-code"] input:checked ~ .live-code-body .live-code-copy {
-    display: inline-flex;
-  }
-
-  [data-slot="live-code"]
-    input:not(:checked)
-    ~ .live-code-body
-    .live-code-source
-    :global(pre) {
-    max-height: 7.25rem;
-    overflow: hidden;
-  }
-</style>

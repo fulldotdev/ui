@@ -1,12 +1,10 @@
 ---
 import Base from "@/layouts/base.astro"
 import type { MarkdownHeading } from "astro"
-import { getCollection, type CollectionEntry } from "astro:content"
+import { getCollection } from "astro:content"
 
 import type { GlobalSchema } from "@/schemas/global"
 import type { BlockSchema } from "@/schemas/layouts/block"
-import type { SeoSchema } from "@/schemas/shared"
-import { hrefFromPageId } from "@/lib/pages"
 import BlocksBlock from "@/components/blocks/blocks-1.astro"
 
 type Props = {
@@ -18,51 +16,15 @@ type Props = {
 const props: Props = Astro.props
 const currentPath = Astro.url.pathname
 
-const fallbackSeo: SeoSchema = {
-  title: props.page.seo?.title ?? props.page.title,
-  description:
-    props.page.seo?.description ??
-    props.page.description ??
-    `${props.page.title} block previews for Fulldev UI.`,
-  image: props.page.seo?.image,
-  canonical: props.page.seo?.canonical,
-  noindex: props.page.seo?.noindex,
-  nofollow: props.page.seo?.nofollow,
-}
-
-const page: BlockSchema = {
-  ...props.page,
-  seo: fallbackSeo,
-}
-
-const blockPages = (await getCollection("pages")).filter(
-  (
-    entry
-  ): entry is CollectionEntry<"pages"> & {
-    data: BlockSchema & { type: "block" }
-  } => {
-    return entry.data.type === "block"
-  }
-)
-
+const blockPages = await getCollection("pages", ({ data }) => {
+  return data.type === "block"
+})
 const orderedBlockLinks = blockPages
-  .sort((a, b) => a.id.localeCompare(b.id))
   .map((entry) => ({
-    href: hrefFromPageId(entry.id),
+    href: `/${entry.id}/`,
     title: entry.data.title,
   }))
-
-const currentEntry = blockPages.find(
-  (entry) => hrefFromPageId(entry.id) === currentPath
-)
-
-const copyButton = currentEntry?.body
-  ? {
-      id: `blocks-copy-page-${crypto.randomUUID()}`,
-      source: currentEntry.body,
-    }
-  : undefined
-
+  .sort((a, b) => a.href.localeCompare(b.href))
 const currentPageIndex = orderedBlockLinks.findIndex(
   (item) => item.href === currentPath
 )
@@ -70,28 +32,30 @@ const previousPage =
   currentPageIndex > 0 ? orderedBlockLinks[currentPageIndex - 1] : undefined
 const nextPage =
   currentPageIndex >= 0 ? orderedBlockLinks[currentPageIndex + 1] : undefined
+const copySource = blockPages.find(
+  (entry) => `/${entry.id}/` === currentPath
+)?.body
+const copyButton = copySource
+  ? {
+      id: `blocks-copy-page-${crypto.randomUUID()}`,
+      source: copySource,
+    }
+  : undefined
 ---
 
-<Base
-  global={props.global}
-  page={page}
-  headings={props.headings}
-  desktopNavigation="header"
->
+<Base global={props.global} page={props.page} desktopNavigation="header">
   <BlocksBlock
-    props={{
-      title: props.page.title,
-      description: props.page.description,
-      copyButton,
-      previousPage,
-      nextPage,
-      labels: {
-        copyPage: "Copy Page",
-        pagination: {
-          previous: "Previous",
-          next: "Next",
-          ariaLabel: "Blocks pagination",
-        },
+    title={props.page.title}
+    description={props.page.description}
+    copyButton={copyButton}
+    previousPage={previousPage}
+    nextPage={nextPage}
+    labels={{
+      copyPage: "Copy Page",
+      pagination: {
+        previous: "Previous",
+        next: "Next",
+        ariaLabel: "Blocks pagination",
       },
     }}
   >

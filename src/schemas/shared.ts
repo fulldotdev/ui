@@ -10,9 +10,7 @@ export const buttonSchema = z.object({
   text: z.string(),
   href: z.string(),
   icon: z.string().optional(),
-  variant: z
-    .enum(["default", "outline", "secondary", "ghost", "link"])
-    .optional(),
+  variant: z.enum(["default", "outline", "secondary", "ghost"]).optional(),
 })
 
 export const imageSchema = ({ image }: SchemaContext) =>
@@ -30,15 +28,3 @@ export const seoSchema = (ctx: SchemaContext) =>
     noindex: z.boolean().optional(),
     nofollow: z.boolean().optional(),
   })
-
-export const baseSeoLayoutSchema = (ctx: SchemaContext) =>
-  z.object({
-    seo: seoSchema(ctx).optional(),
-  })
-
-export type SeoSchema = z.infer<ReturnType<typeof seoSchema>>
-export type BaseSeoLayoutSchema = z.infer<
-  ReturnType<typeof baseSeoLayoutSchema>
->
-export type LinkSchema = z.infer<typeof linkSchema>
-export type ButtonSchema = z.infer<typeof buttonSchema>

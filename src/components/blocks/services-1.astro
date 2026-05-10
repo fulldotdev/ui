@@ -1,35 +1,99 @@
 ---
+import PlaceholderImage from "@/assets/placeholder.webp"
+import ArrowRightIcon from "@lucide/astro/icons/arrow-right"
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
+
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Section, SectionContent } from "@/components/ui/section"
+import { Button } from "@/components/ui/button"
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    badge: string
+  badge?: string
+  title: string
+  actions?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
+  items: {
+    image?: {
+      src: ImageMetadata
+      alt: string
+    }
+    label?: string
     title: string
-    items: {
-      title: string
-      description: string
-    }[]
-  }
+    description: string
+    href?: string
+  }[]
 }
 
-const { props } = Astro.props
+const { badge, title, actions, items } = Astro.props
 ---
 
 <Section>
-  <SectionContent class="gap-8">
-    <div class="max-w-2xl">
-      <Badge variant="outline">{props.badge}</Badge>
-      <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
+  <SectionContainer class="gap-8">
+    <div
+      class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
+    >
+      <div class="max-w-2xl">
+        {badge && <Badge variant="secondary">{badge}</Badge>}
+        <h2
+          class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+        >
+          {title}
+        </h2>
+      </div>
+      {
+        actions?.length ? (
+          <div class="flex flex-wrap gap-3">
+            {actions.map((action) => (
+              <Button as="a" href={action.href} variant={action.variant}>
+                {action.label}
+              </Button>
+            ))}
+          </div>
+        ) : null
+      }
     </div>
-    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {props.items.map((service) => (
-        <Card>
-          <CardHeader><CardTitle>{service.title}</CardTitle></CardHeader>
-          <CardContent class="text-muted-foreground text-sm leading-6">{service.description}</CardContent>
-        </Card>
-      ))}
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        items.map((service) => {
+          const Wrapper = service.href ? "a" : "div"
+          return (
+            <Wrapper
+              href={service.href}
+              class={cn(
+                "group/service flex flex-col gap-4 overflow-hidden rounded-xl border shadow-xs transition-shadow",
+                service.href && "hover:shadow-md"
+              )}
+            >
+              <Image
+                src={service.image?.src ?? PlaceholderImage}
+                alt={service.image?.alt ?? service.title}
+                class="aspect-[4/3] w-full object-cover"
+                widths={[320, 480, 640]}
+                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+              />
+              <div class="flex flex-1 flex-col gap-2 px-5 pb-5">
+                {service.label && (
+                  <span class="text-primary text-xs font-medium">
+                    {service.label}
+                  </span>
+                )}
+                <h3 class="text-base font-medium">{service.title}</h3>
+                <p class="text-muted-foreground text-sm leading-relaxed">
+                  {service.description}
+                </p>
+                {service.href && (
+                  <ArrowRightIcon class="text-muted-foreground mt-auto size-4 transition-transform group-hover/service:translate-x-1" />
+                )}
+              </div>
+            </Wrapper>
+          )
+        })
+      }
     </div>
-  </SectionContent>
+  </SectionContainer>
 </Section>

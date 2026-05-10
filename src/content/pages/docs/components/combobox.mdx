@@ -8,7 +8,7 @@ sidebar:
     variant: success
 ---
 
-```astro live
+```astro live props={{ name: 'combobox' }}
 ---
 import {
   Combobox,
@@ -46,7 +46,6 @@ npx shadcn@latest add @fulldev/combobox
 ```ts
 import {
   Combobox,
-  ComboboxClear,
   ComboboxContent,
   ComboboxEmpty,
   ComboboxGroup,
@@ -76,23 +75,52 @@ import {
 </Combobox>
 ```
 
-## Examples
+## Composition
 
-### With Clear Button
+Use this composition for a single-line input and a flat list:
+
+```text
+Combobox
+├── ComboboxInput
+└── ComboboxContent
+    ├── ComboboxEmpty
+    └── ComboboxList
+        ├── ComboboxItem
+        └── ComboboxItem
+```
+
+Use `ComboboxGroup`, `ComboboxLabel`, and `ComboboxSeparator` to organize items:
+
+```text
+Combobox
+├── ComboboxInput
+└── ComboboxContent
+    ├── ComboboxEmpty
+    └── ComboboxList
+        ├── ComboboxGroup
+        │   ├── ComboboxLabel
+        │   ├── ComboboxItem
+        │   └── ComboboxItem
+        ├── ComboboxSeparator
+        └── ComboboxGroup
+            ├── ComboboxLabel
+            ├── ComboboxItem
+            └── ComboboxItem
+```
+
+Use `ComboboxTrigger` and `ComboboxValue` when composing a custom trigger. Use `showClear` on `ComboboxInput` when the input needs a clear control.
+
+## Examples
 
 ```astro live
 ---
-import { XIcon } from "@lucide/astro"
-
 import {
   Combobox,
-  ComboboxClear,
   ComboboxContent,
   ComboboxEmpty,
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-  ComboboxTrigger,
 } from "@/components/ui/combobox"
 ---
 
@@ -101,19 +129,7 @@ import {
   placeholder="Choose a timezone..."
   defaultValue="cet"
 >
-  <ComboboxInput class="pr-18" />
-  <div class="absolute top-1 right-1 flex items-center gap-1">
-    <ComboboxClear
-      class="text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring/50 size-7 rounded-md transition-colors outline-none focus-visible:ring-3"
-      aria-label="Clear timezone"
-    >
-      <XIcon class="size-4 opacity-60" />
-    </ComboboxClear>
-    <ComboboxTrigger
-      class="text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring/50 size-7 rounded-md px-0 transition-colors outline-none focus-visible:ring-3"
-      aria-label="Toggle timezones"
-    />
-  </div>
+  <ComboboxInput showClear />
   <ComboboxContent>
     <ComboboxList>
       <ComboboxEmpty>No timezones found.</ComboboxEmpty>
@@ -124,8 +140,6 @@ import {
   </ComboboxContent>
 </Combobox>
 ```
-
-### With Groups
 
 ```astro live
 ---
@@ -262,3 +276,9 @@ import {
   </ComboboxContent>
 </Combobox>
 ```
+
+## API Reference
+
+See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/components/ui/combobox) for more information on props.
+
+See the [data-slot docs](https://github.com/bejamas/data-slot/blob/main/packages/combobox/README.md) for more information on interactivity.

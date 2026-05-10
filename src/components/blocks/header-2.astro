@@ -1,55 +1,89 @@
 ---
 import { Button } from "@/components/ui/button"
-import { Header, HeaderContent, HeaderGroup } from "@/components/ui/header"
-import { Logo, LogoText } from "@/components/ui/logo"
-import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu"
-
-type Link = {
-  label: string
-  href: string
-  active?: boolean
-}
-
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
+import { Header, HeaderContainer, HeaderGroup } from "@/components/ui/header"
+import { Icon } from "@/components/ui/icon"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from "@/components/ui/navigation-menu"
 
 interface Props {
-  props: {
-    brandName: string
-    brandHref: string
-    links: Link[]
-    secondaryAction: BlockAction
-    primaryAction: BlockAction
+  class?: string
+  logo: {
+    text: string
+    href: string
+    src?: any
+    srcLight?: any
+    srcDark?: any
+    alt?: string
   }
+  links: {
+    text: string
+    href: string
+    links?: {
+      text: string
+      href: string
+    }[]
+  }[]
+  buttons: {
+    text: string
+    href: string
+    icon?: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
 }
 
-const { props } = Astro.props
+const { class: className, logo, links, buttons } = Astro.props
 ---
 
-<Header variant="floating">
-  <HeaderGroup>
-    <Logo href={props.brandHref}><LogoText>{props.brandName}</LogoText></Logo>
-  </HeaderGroup>
-  <HeaderContent>
-    <NavigationMenu class="hidden max-w-none justify-center md:flex">
+<Header variant="floating" class={className}>
+  <HeaderContainer>
+    <HeaderGroup>
+      <Logo href={logo.href}>
+        <LogoImage
+          src={logo.src}
+          srcLight={logo.srcLight}
+          srcDark={logo.srcDark}
+          alt={logo.alt}
+        />
+        {logo.text && <LogoText>{logo.text}</LogoText>}
+      </Logo>
+    </HeaderGroup>
+    <NavigationMenu
+      class="absolute left-1/2 hidden max-w-none -translate-x-1/2 md:flex"
+    >
       <NavigationMenuList>
-        {props.links.map((link) => (
-          <NavigationMenuItem value={`nav-${link.label.toLowerCase()}`}>
-            <NavigationMenuLink href={link.href} active={link.active}>{link.label}</NavigationMenuLink>
-          </NavigationMenuItem>
-        ))}
+        {
+          links.map((item, index) => (
+            <NavigationMenuItem value={`nav-${index}`}>
+              <NavigationMenuLink href={item.href}>
+                {item.text}
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          ))
+        }
       </NavigationMenuList>
     </NavigationMenu>
-  </HeaderContent>
-  <HeaderGroup class="ml-auto justify-end">
-    <Button as="a" href={props.secondaryAction.href} size="sm" variant={props.secondaryAction.variant}>
-      {props.secondaryAction.label}
-    </Button>
-    <Button as="a" href={props.primaryAction.href} size="sm" variant={props.primaryAction.variant}>
-      {props.primaryAction.label}
-    </Button>
-  </HeaderGroup>
+    <HeaderGroup class="ml-auto hidden justify-end md:flex">
+      <slot />
+      {
+        buttons.map(({ text, icon, ...button }) => (
+          <Button
+            as="a"
+            size={icon && !text ? "icon-sm" : "sm"}
+            aria-label={text}
+            target={button.href.startsWith("http") ? "_blank" : undefined}
+            rel={button.href.startsWith("http") ? "noreferrer" : undefined}
+            {...button}
+          >
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
+    </HeaderGroup>
+  </HeaderContainer>
 </Header>

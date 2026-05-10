@@ -1,43 +1,77 @@
 ---
+import { Avatar, AvatarFallback, AvatarGroup } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
-import { Section, SectionContent } from "@/components/ui/section"
-
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
+import { Rating } from "@/components/ui/rating"
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    title: string
-    description: string
-    actions: [BlockAction, BlockAction]
+  title: string
+  description: string
+  actions?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
+  socialProof?: {
+    avatars: string[]
+    rating: number
+    text: string
   }
 }
 
-const { props } = Astro.props
+const { title, description, actions, socialProof } = Astro.props
 ---
 
-<Section>
-  <SectionContent>
-    <Card class="overflow-hidden">
-      <CardContent class="grid gap-8 p-8 sm:p-10 lg:grid-cols-[minmax(0,1fr)_14rem] lg:items-center">
-        <div>
-          <CardTitle class="text-3xl leading-tight sm:text-4xl">{props.title}</CardTitle>
-          <CardDescription class="mt-4 max-w-2xl text-base leading-7">{props.description}</CardDescription>
-        </div>
-        <div class="flex flex-col gap-3 lg:items-end">
-          {
-            props.actions.map((action) => (
-              <Button as="a" href={action.href} variant={action.variant}>
+<Section variant="floating" class="bg-accent/50 shadow-none">
+  <SectionContainer
+    class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
+  >
+    <div class="flex flex-col gap-5">
+      <h2
+        class="text-foreground text-3xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      <p class="text-muted-foreground max-w-2xl text-lg leading-relaxed">
+        {description}
+      </p>
+    </div>
+    <div class="flex flex-col gap-6 lg:items-end">
+      {
+        actions?.length ? (
+          <div class="flex flex-wrap gap-3">
+            {actions.map((action, i) => (
+              <Button
+                as="a"
+                href={action.href}
+                size="lg"
+                variant={action.variant ?? (i === 0 ? "default" : "secondary")}
+              >
                 {action.label}
               </Button>
-            ))
-          }
-        </div>
-      </CardContent>
-    </Card>
-  </SectionContent>
+            ))}
+          </div>
+        ) : null
+      }
+      {
+        socialProof ? (
+          <div class="flex items-center gap-3">
+            <AvatarGroup>
+              {socialProof.avatars.map((initials) => (
+                <Avatar class="ring-background size-11 ring">
+                  <AvatarFallback>{initials}</AvatarFallback>
+                </Avatar>
+              ))}
+            </AvatarGroup>
+            <div class="flex flex-col gap-0.5">
+              <Rating value={socialProof.rating} />
+              <span class="text-muted-foreground text-xs">
+                {socialProof.text}
+              </span>
+            </div>
+          </div>
+        ) : null
+      }
+    </div>
+  </SectionContainer>
 </Section>

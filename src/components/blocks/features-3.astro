@@ -1,37 +1,63 @@
 ---
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Section, SectionContent } from "@/components/ui/section"
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
+
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    badge: string
+  title: string
+  description: string
+  items: {
     title: string
     description: string
-    items: {
-      title: string
-      detail: string
-    }[]
-  }
+    image: {
+      src: ImageMetadata
+      alt: string
+    }
+  }[]
 }
 
-const { props } = Astro.props
+const { title, description, items } = Astro.props
 ---
 
 <Section>
-  <SectionContent class="grid gap-8 lg:grid-cols-2 lg:items-center">
-    <div>
-      <Badge variant="secondary">{props.badge}</Badge>
-      <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
-      <p class="text-muted-foreground mt-4 text-base leading-7">{props.description}</p>
+  <SectionContainer class="items-center gap-6 text-center">
+    <div class="flex max-w-2xl flex-col items-center gap-4">
+      <h2
+        class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      <p
+        class="text-muted-foreground max-w-2xl text-lg leading-relaxed text-balance"
+      >
+        {description}
+      </p>
     </div>
-    <div class="grid gap-4">
-      {props.items.map((item) => (
-        <Card>
-          <CardHeader><CardTitle>{item.title}</CardTitle></CardHeader>
-          <CardContent class="text-muted-foreground text-sm leading-6">{item.detail}</CardContent>
-        </Card>
-      ))}
+  </SectionContainer>
+  <SectionContainer>
+    <div class="grid gap-6 sm:grid-cols-2">
+      {
+        items.map((item) => (
+          <div class="group/feature hover:bg-muted/40 flex items-center gap-5 rounded-xl border p-4 transition-colors">
+            <Image
+              src={item.image.src}
+              alt={item.image.alt}
+              class="size-20 shrink-0 rounded-lg object-cover"
+              widths={[160, 320]}
+              sizes="80px"
+            />
+            <div class="flex flex-col gap-1.5">
+              <h3 class="text-foreground text-base font-medium">
+                {item.title}
+              </h3>
+              <p class="text-muted-foreground text-sm leading-relaxed">
+                {item.description}
+              </p>
+            </div>
+          </div>
+        ))
+      }
     </div>
-  </SectionContent>
+  </SectionContainer>
 </Section>

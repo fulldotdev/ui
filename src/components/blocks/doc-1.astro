@@ -1,5 +1,8 @@
 ---
-import { ArrowLeft, ArrowRight, Check, Copy } from "@lucide/astro"
+import ArrowLeft from "@lucide/astro/icons/arrow-left"
+import ArrowRight from "@lucide/astro/icons/arrow-right"
+import Check from "@lucide/astro/icons/check"
+import Copy from "@lucide/astro/icons/copy"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -8,6 +11,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card"
+import { SectionContainer } from "@/components/ui/section"
 import {
   Toc,
   TocMenu,
@@ -21,235 +25,201 @@ import {
   TypographyLead,
 } from "@/components/ui/typography"
 
-type ComponentLink = {
-  href: string
+type Props = {
   title: string
   description?: string
-}
-
-type TocItem = {
-  depth: number
-  href: string
-  label: string
-}
-
-type Callout = {
-  description: string
-  action: {
-    text: string
-    href: string
+  copyButton?: {
+    id: string
+    source: string
   }
-}
-
-type CopyButton = {
-  id: string
-  source: string
-}
-
-type PaginationLink = {
-  href: string
-  title: string
-}
-
-type Props = {
-  props: {
-    title: string
-    description?: string
-    copyButton?: CopyButton
-    showComponentLinks: boolean
-    componentLinks: ComponentLink[]
-    tocItems: TocItem[]
-    callout?: Callout
-    previousPage?: PaginationLink
-    nextPage?: PaginationLink
-    labels: {
-      copyPage: string
-      pagination: {
-        previous: string
-        next: string
-        ariaLabel: string
-      }
-      toc: string
+  tocItems: {
+    depth: number
+    href: string
+    label: string
+  }[]
+  callout?: {
+    description: string
+    button: {
+      text: string
+      href: string
+      variant?: "default" | "outline" | "secondary" | "ghost"
     }
   }
+  previousPage?: {
+    href: string
+    title: string
+  }
+  nextPage?: {
+    href: string
+    title: string
+  }
+  labels: {
+    copyPage: string
+    pagination: {
+      previous: string
+      next: string
+      ariaLabel: string
+    }
+    toc: string
+  }
 }
 
-const { props } = Astro.props
-const tocItems = props.tocItems
-const componentLinks = props.componentLinks
-const showCopyButton = Boolean(props.copyButton)
-const showPagination = Boolean(props.previousPage || props.nextPage)
+const {
+  title,
+  description,
+  copyButton,
+  tocItems,
+  callout,
+  previousPage,
+  nextPage,
+  labels,
+} = Astro.props
+const showCopyButton = Boolean(copyButton)
+const showPagination = Boolean(previousPage || nextPage)
 ---
 
-<div class="mx-auto w-full px-6 pt-10 pb-8 sm:px-8 sm:pt-12 sm:pb-10">
-  <div
-    class="flex flex-col gap-10 xl:grid xl:grid-cols-[minmax(0,1fr)_16rem] xl:items-start xl:gap-x-16"
-  >
-    <div class="mx-auto flex w-full max-w-3xl min-w-0 flex-col gap-10">
-      <header
-        class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
-      >
-        <div class="flex min-w-0 flex-1 flex-col gap-2">
-          <TypographyH1
-            class="text-foreground text-left text-3xl tracking-tight sm:text-4xl"
-          >
-            {props.title}
-          </TypographyH1>
-          {
-            props.description && (
-              <TypographyLead class="max-w-2xl text-base leading-7">
-                {props.description}
-              </TypographyLead>
-            )
-          }
-        </div>
+<SectionContainer
+  class="gap-10 pt-10 pb-8 sm:pt-12 sm:pb-10 xl:grid xl:grid-cols-[minmax(0,1fr)_16rem] xl:items-start xl:gap-x-16"
+>
+  <div class="mx-auto flex w-full max-w-3xl min-w-0 flex-col gap-10">
+    <header
+      class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
+    >
+      <div class="flex min-w-0 flex-1 flex-col gap-2">
+        <TypographyH1
+          size="sm"
+          class="text-foreground text-left tracking-tight"
+        >
+          {title}
+        </TypographyH1>
         {
-          showCopyButton && (
-            <Button
-              id={props.copyButton?.id}
-              type="button"
-              variant="outline"
-              size="xs"
-              class="shrink-0 self-start"
-              data-source={props.copyButton?.source}
-              aria-label={props.labels.copyPage}
-            >
-              <Copy class="docs-copy-icon size-3.5" />
-              <Check class="docs-check-icon hidden size-3.5" />
-              <span>{props.labels.copyPage}</span>
-            </Button>
+          description && (
+            <TypographyLead size="sm" class="max-w-2xl leading-7">
+              {description}
+            </TypographyLead>
           )
         }
-      </header>
-
+      </div>
       {
-        props.showComponentLinks && (
-          <section class="flex flex-col gap-2">
-            {componentLinks.map((item) => (
-              <a
-                href={item.href}
-                class="bg-muted/40 hover:bg-muted/60 rounded-lg px-4 py-4 transition-colors"
-              >
-                <span class="text-sm font-medium">{item.title}</span>
-                {item.description && (
-                  <span class="text-muted-foreground text-sm leading-6">
-                    {item.description}
-                  </span>
-                )}
-              </a>
-            ))}
-          </section>
-        )
-      }
-
-      <Typography as="article">
-        <slot />
-      </Typography>
-
-      {
-        showPagination && (
-          <nav
-            class="grid gap-3 sm:grid-cols-2"
-            aria-label={props.labels.pagination.ariaLabel}
+        showCopyButton && (
+          <Button
+            id={copyButton?.id}
+            type="button"
+            variant="outline"
+            size="xs"
+            class="shrink-0 self-start"
+            data-source={copyButton?.source}
+            aria-label={labels.copyPage}
           >
-            {props.previousPage ? (
-              <Button
-                as="a"
-                href={props.previousPage.href}
-                variant="outline"
-                class="h-auto w-full items-center justify-start gap-3 rounded-xl px-4 py-3 whitespace-normal"
-              >
-                <ArrowLeft class="size-4" />
-                <span class="flex min-w-0 flex-col items-start">
-                  <span class="text-muted-foreground text-xs uppercase">
-                    {props.labels.pagination.previous}
-                  </span>
-                  <span class="truncate text-sm font-medium">
-                    {props.previousPage.title}
-                  </span>
-                </span>
-              </Button>
-            ) : (
-              <div class="hidden sm:block" aria-hidden="true"></div>
-            )}
-
-            {props.nextPage ? (
-              <Button
-                as="a"
-                href={props.nextPage.href}
-                variant="outline"
-                class="h-auto w-full items-center justify-end gap-3 rounded-xl px-4 py-3 text-right whitespace-normal"
-              >
-                <span class="flex min-w-0 flex-col items-end">
-                  <span class="text-muted-foreground text-xs uppercase">
-                    {props.labels.pagination.next}
-                  </span>
-                  <span class="truncate text-sm font-medium">
-                    {props.nextPage.title}
-                  </span>
-                </span>
-                <ArrowRight class="size-4" />
-              </Button>
-            ) : (
-              <div class="hidden sm:block" aria-hidden="true"></div>
-            )}
-          </nav>
+            <Copy class="docs-copy-icon size-3.5" />
+            <Check class="docs-check-icon hidden size-3.5" />
+            <span>{labels.copyPage}</span>
+          </Button>
         )
       }
-    </div>
+    </header>
+
+    <Typography as="article" size="sm">
+      <slot />
+    </Typography>
 
     {
-      <aside
-        class="hidden w-64 xl:sticky xl:top-12 xl:mr-0 xl:ml-auto xl:block xl:self-start"
-      >
-        <div class="flex flex-col gap-6">
-          {
-            tocItems.length > 0 && (
-              <Toc aria-label={props.labels.toc}>
-                <TocTitle>{props.labels.toc}</TocTitle>
-                <TocMenu>
-                  {tocItems.map((item) => (
-                    <TocMenuItem>
-                      <TocMenuLink href={item.href} depth={item.depth}>
-                        {item.label}
-                      </TocMenuLink>
-                    </TocMenuItem>
-                  ))}
-                </TocMenu>
-              </Toc>
-            )
-          }
+      showPagination && (
+        <nav
+          class="grid gap-3 sm:grid-cols-2"
+          aria-label={labels.pagination.ariaLabel}
+        >
+          {previousPage ? (
+            <Button
+              as="a"
+              href={previousPage.href}
+              variant="outline"
+              class="h-auto w-full items-center justify-start gap-3 rounded-xl px-4 py-3 whitespace-normal"
+            >
+              <ArrowLeft class="size-4" />
+              <span class="flex min-w-0 flex-col items-start">
+                <span class="text-muted-foreground text-xs uppercase">
+                  {labels.pagination.previous}
+                </span>
+                <span class="truncate text-sm font-medium">
+                  {previousPage.title}
+                </span>
+              </span>
+            </Button>
+          ) : (
+            <div class="hidden sm:block" aria-hidden="true" />
+          )}
 
-          {
-            props.callout && (
-              <Card size="sm">
-                <CardHeader>
-                  <CardDescription>
-                    {props.callout.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardFooter>
-                  <Button
-                    as="a"
-                    href={props.callout.action.href}
-                    variant="outline"
-                    size="sm"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {props.callout.action.text}
-                  </Button>
-                </CardFooter>
-              </Card>
-            )
-          }
-        </div>
-      </aside>
+          {nextPage ? (
+            <Button
+              as="a"
+              href={nextPage.href}
+              variant="outline"
+              class="h-auto w-full items-center justify-end gap-3 rounded-xl px-4 py-3 text-right whitespace-normal"
+            >
+              <span class="flex min-w-0 flex-col items-end">
+                <span class="text-muted-foreground text-xs uppercase">
+                  {labels.pagination.next}
+                </span>
+                <span class="truncate text-sm font-medium">
+                  {nextPage.title}
+                </span>
+              </span>
+              <ArrowRight class="size-4" />
+            </Button>
+          ) : (
+            <div class="hidden sm:block" aria-hidden="true" />
+          )}
+        </nav>
+      )
     }
   </div>
-</div>
 
-<script is:inline define:vars={{ copyButtonId: props.copyButton?.id }}>
+  {
+    (
+      <aside class="hidden w-64 xl:sticky xl:top-12 xl:mr-0 xl:ml-auto xl:block xl:self-start">
+        <div class="flex flex-col gap-6">
+          {tocItems.length > 0 && (
+            <Toc aria-label={labels.toc}>
+              <TocTitle>{labels.toc}</TocTitle>
+              <TocMenu>
+                {tocItems.map((item) => (
+                  <TocMenuItem>
+                    <TocMenuLink href={item.href} depth={item.depth}>
+                      {item.label}
+                    </TocMenuLink>
+                  </TocMenuItem>
+                ))}
+              </TocMenu>
+            </Toc>
+          )}
+
+          {callout && (
+            <Card size="sm">
+              <CardHeader>
+                <CardDescription>{callout.description}</CardDescription>
+              </CardHeader>
+              <CardFooter>
+                <Button
+                  as="a"
+                  href={callout.button.href}
+                  variant={callout.button.variant}
+                  size="sm"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {callout.button.text}
+                </Button>
+              </CardFooter>
+            </Card>
+          )}
+        </div>
+      </aside>
+    )
+  }
+</SectionContainer>
+
+<script is:inline define:vars={{ copyButtonId: copyButton?.id }}>
   const button = copyButtonId ? document.getElementById(copyButtonId) : null
 
   if (button instanceof HTMLButtonElement) {

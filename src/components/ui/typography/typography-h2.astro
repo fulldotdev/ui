@@ -3,17 +3,44 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-import { typographyH2Style } from "./typography-styles"
+type Size = "sm" | "default" | "lg"
+type Props = HTMLAttributes<"h2"> & {
+  size?: Size
+}
 
-type Props = HTMLAttributes<"h2">
-
-const { class: className, ...props } = Astro.props
+const { class: className, size = "default", ...props } = Astro.props
 ---
 
-<h2
-  data-slot="typography-h2"
-  class={cn(typographyH2Style, className)}
-  {...props}
->
+<h2 data-slot="typography-h2" data-size={size} class={cn(className)} {...props}>
   <slot />
 </h2>
+
+<style is:global>
+  @reference "@/styles/global.css";
+
+  [data-slot="typography-h2"],
+  [data-slot="typography"] > h2 {
+    @apply scroll-m-20 font-semibold tracking-tight;
+  }
+
+  [data-slot="typography-h2"][data-size="sm"],
+  [data-slot="typography"][data-size="sm"] > h2 {
+    @apply text-2xl;
+  }
+
+  [data-slot="typography-h2"][data-size="default"],
+  [data-slot="typography"] > h2,
+  [data-slot="typography"][data-size="default"] > h2 {
+    @apply text-3xl;
+  }
+
+  [data-slot="typography-h2"][data-size="lg"],
+  [data-slot="typography"][data-size="lg"] > h2 {
+    @apply text-4xl;
+  }
+
+  [data-slot="typography-h2"]:first-child,
+  [data-slot="typography"] > h2:first-child {
+    @apply mt-0;
+  }
+</style>

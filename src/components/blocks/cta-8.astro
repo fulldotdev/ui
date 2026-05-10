@@ -1,39 +1,49 @@
 ---
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Section, SectionContent } from "@/components/ui/section"
-
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    badge: string
-    title: string
-    description: string
-    actions: [BlockAction, BlockAction]
-  }
+  title: string
+  description: string
+  actions?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
 }
 
-const { props } = Astro.props
+const { title, description, actions } = Astro.props
 ---
 
-<Section>
-  <SectionContent class="items-center gap-6 text-center">
-    <Badge variant="outline">{props.badge}</Badge>
-    <h2 class="max-w-3xl text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
-    <p class="text-muted-foreground max-w-2xl text-base leading-7">{props.description}</p>
-    <div class="flex flex-wrap justify-center gap-3">
-      {
-        props.actions.map((action) => (
-          <Button as="a" href={action.href} variant={action.variant}>
-            {action.label}
-          </Button>
-        ))
-      }
+<Section variant="floating" class="border-primary/20 shadow-none">
+  <SectionContainer
+    class="before:from-primary/20 relative items-center before:absolute before:top-full before:left-1/2 before:-z-10 before:h-[200%] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-to-b before:to-transparent before:blur-3xl"
+  >
+    <div class="flex max-w-2xl flex-col items-center gap-5 text-center">
+      <h2
+        class="text-foreground text-3xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      <p class="text-muted-foreground text-lg leading-relaxed text-balance">
+        {description}
+      </p>
     </div>
-  </SectionContent>
+    {
+      actions?.length ? (
+        <div class="flex flex-wrap justify-center gap-3">
+          {actions.map((action, i) => (
+            <Button
+              as="a"
+              href={action.href}
+              size="lg"
+              variant={action.variant ?? (i === 0 ? "default" : "outline")}
+            >
+              {action.label}
+            </Button>
+          ))}
+        </div>
+      ) : null
+    }
+  </SectionContainer>
 </Section>

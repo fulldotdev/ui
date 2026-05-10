@@ -3,17 +3,41 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-import { typographyTableRowStyle } from "./typography-styles"
+type Size = "sm" | "default" | "lg"
+type Props = HTMLAttributes<"tr"> & {
+  size?: Size
+}
 
-type Props = HTMLAttributes<"tr">
-
-const { class: className, ...props } = Astro.props
+const { class: className, size = "default", ...props } = Astro.props
 ---
 
 <tr
   data-slot="typography-table-row"
-  class={cn(typographyTableRowStyle, className)}
+  data-size={size}
+  class={cn(className)}
   {...props}
 >
   <slot />
 </tr>
+
+<style is:global>
+  @reference "@/styles/global.css";
+
+  [data-slot="typography-table-row"],
+  [data-slot="typography-table"] tr,
+  [data-slot="typography"] > table tr {
+    @apply m-0 border-t p-0 even:bg-muted;
+  }
+
+  [data-slot="typography-table-row"][data-size="sm"] {
+    @apply text-sm;
+  }
+
+  [data-slot="typography-table-row"][data-size="default"] {
+    @apply text-base;
+  }
+
+  [data-slot="typography-table-row"][data-size="lg"] {
+    @apply text-lg;
+  }
+</style>

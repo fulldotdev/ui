@@ -1,19 +1,37 @@
 ---
-import { Banner, BannerContent, BannerDescription, BannerTitle } from "@/components/ui/banner"
+import ArrowRightIcon from "@lucide/astro/icons/arrow-right"
+
+import { Banner, BannerContainer } from "@/components/ui/banner"
 
 interface Props {
-  props: {
-    title: string
-    description: string
+  title: string
+  description: string
+  link?: {
+    label: string
+    href: string
   }
 }
 
-const { props } = Astro.props
+const { title, description, link } = Astro.props
 ---
 
-<Banner>
-  <BannerContent>
-    <BannerTitle>{props.title}</BannerTitle>
-    <BannerDescription>{props.description}</BannerDescription>
-  </BannerContent>
+<Banner storageKey="banner-1" class="dark bg-background text-foreground">
+  <BannerContainer class="flex-row items-center gap-x-4 gap-y-1">
+    <p class="text-sm leading-relaxed">
+      <span class="font-semibold">{title}</span>
+      <span class="mx-1.5 hidden opacity-50 sm:inline">&mdash;</span>
+      <span class="opacity-80">{description}</span>
+    </p>
+    {
+      link && (
+        <a
+          href={link.href}
+          class="group/link inline-flex shrink-0 items-center gap-1 text-sm font-medium underline underline-offset-4 transition-opacity hover:opacity-80"
+        >
+          {link.label}
+          <ArrowRightIcon class="size-3.5 transition-transform group-hover/link:translate-x-0.5" />
+        </a>
+      )
+    }
+  </BannerContainer>
 </Banner>

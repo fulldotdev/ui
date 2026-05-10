@@ -1,43 +1,91 @@
 ---
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Section, SectionContent } from "@/components/ui/section"
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
 
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
+  badge: string
+  title: string
+  actions: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
+  products: {
+    image: {
+      src: ImageMetadata
+      alt: string
+    }
     title: string
-    action: BlockAction
-    items: {
-      title: string
-      description: string
-    }[]
-  }
+    description: string
+    price: {
+      value: number
+      currency: string
+      unit: string
+    }
+  }[]
 }
 
-const { props } = Astro.props
+const { badge, title, actions, products } = Astro.props
 ---
 
 <Section>
-  <SectionContent class="gap-8">
-    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-      <div class="max-w-2xl">
-        <h2 class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
+  <SectionContainer class="gap-8">
+    <div class="mx-auto max-w-2xl text-center">
+      <Badge variant="secondary">{badge}</Badge>
+      <h2
+        class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      <div class="mt-4 flex flex-wrap justify-center gap-3">
+        {
+          actions.map((action) => (
+            <Button as="a" href={action.href} variant={action.variant}>
+              {action.label}
+            </Button>
+          ))
+        }
       </div>
-      <Button as="a" href={props.action.href} variant={props.action.variant}>{props.action.label}</Button>
     </div>
-    <div class="grid gap-4 md:grid-cols-3">
-      {props.items.map((item) => (
-        <Card>
-          <CardHeader><CardTitle>{item.title}</CardTitle></CardHeader>
-          <CardContent class="text-muted-foreground text-sm leading-6">{item.description}</CardContent>
-        </Card>
-      ))}
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        products.map((product) => (
+          <Card class="group/product overflow-hidden">
+            <div class="overflow-hidden">
+              <Image
+                src={product.image.src}
+                alt={product.image.alt}
+                class="aspect-[3/4] w-full object-cover transition-transform duration-300 group-hover/product:scale-105"
+              />
+            </div>
+            <CardHeader>
+              <CardTitle>{product.title}</CardTitle>
+              <CardDescription>{product.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Price>
+                <PriceValue
+                  price={product.price.value}
+                  currency={product.price.currency}
+                />
+                <PriceUnit>{product.price.unit}</PriceUnit>
+              </Price>
+            </CardContent>
+          </Card>
+        ))
+      }
     </div>
-  </SectionContent>
+  </SectionContainer>
 </Section>

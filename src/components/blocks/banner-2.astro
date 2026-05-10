@@ -1,38 +1,43 @@
 ---
-import { Banner, BannerContent, BannerDescription, BannerTitle } from "@/components/ui/banner"
+import { Banner, BannerContainer } from "@/components/ui/banner"
 import { Button } from "@/components/ui/button"
 
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
-
 interface Props {
-  props: {
-    title: string
-    description: string
-    actions: [BlockAction, BlockAction]
-  }
+  title: string
+  description: string
+  actions?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
 }
 
-const { props } = Astro.props
+const { title, description, actions = [] } = Astro.props
 ---
 
-<Banner variant="floating" storageKey="blocks-floating-banner">
-  <BannerContent showClose={false} class="gap-4">
-    <div class="flex flex-1 flex-col gap-1">
-      <BannerTitle>{props.title}</BannerTitle>
-      <BannerDescription>{props.description}</BannerDescription>
+<Banner variant="floating" storageKey="banner-2">
+  <BannerContainer class="gap-4 py-1" showClose={false}>
+    <div
+      class="flex flex-1 flex-col gap-0.5 @5xl:flex-row @5xl:items-center @5xl:gap-x-4"
+    >
+      <p class="text-sm font-semibold">{title}</p>
+      <p class="text-muted-foreground text-sm">{description}</p>
     </div>
-    <div class="flex flex-wrap gap-2">
-      {
-        props.actions.map((action) => (
-          <Button as="a" href={action.href} size="sm" variant={action.variant}>
-            {action.label}
-          </Button>
-        ))
-      }
-    </div>
-  </BannerContent>
+    {
+      actions.length > 0 && (
+        <div class="flex shrink-0 items-center gap-2">
+          {actions.map((action, i) => (
+            <Button
+              as="a"
+              href={action.href}
+              size="sm"
+              variant={action.variant ?? (i === 0 ? "default" : "outline")}
+            >
+              {action.label}
+            </Button>
+          ))}
+        </div>
+      )
+    }
+  </BannerContainer>
 </Banner>

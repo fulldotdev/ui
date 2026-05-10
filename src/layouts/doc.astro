@@ -1,12 +1,10 @@
 ---
 import Base from "@/layouts/base.astro"
 import type { MarkdownHeading } from "astro"
-import { getCollection, type CollectionEntry } from "astro:content"
+import { getCollection } from "astro:content"
 
 import type { GlobalSchema } from "@/schemas/global"
 import type { DocSchema } from "@/schemas/layouts/doc"
-import type { SeoSchema } from "@/schemas/shared"
-import { hrefFromPageId } from "@/lib/pages"
 import DocBlock from "@/components/blocks/doc-1.astro"
 
 type Props = {
@@ -17,79 +15,52 @@ type Props = {
 
 const props: Props = Astro.props
 const currentPath = Astro.url.pathname
-const isComponentsIndex = currentPath === "/docs/components/"
-const callout = props.global.docs?.callout
-const fallbackSeo: SeoSchema = {
-  title: props.page.seo?.title ?? props.page.title,
-  description:
-    props.page.seo?.description ??
-    props.page.description ??
-    `${props.page.title} documentation for Fulldev UI.`,
-  image: props.page.seo?.image,
-  canonical: props.page.seo?.canonical,
-  noindex: props.page.seo?.noindex,
-  nofollow: props.page.seo?.nofollow,
-}
-const page: DocSchema = {
-  ...props.page,
-  seo: fallbackSeo,
-}
+const globalCallout = props.global.docs?.callout
 
-const docPages = (await getCollection("pages")).filter(
-  (
-    entry
-  ): entry is CollectionEntry<"pages"> & {
-    data: DocSchema & { type: "doc" }
-  } => {
-    return entry.data.type === "doc"
-  }
-)
-
-const componentPages = docPages.filter((entry) =>
-  entry.id.startsWith("docs/components/")
-)
-
-const componentLinks = componentPages
-  .filter((entry) => entry.id !== "docs/components")
-  .map((entry) => ({
-    href: hrefFromPageId(entry.id),
-    title: entry.data.title,
-    description: entry.data.description,
-  }))
-  .sort((a, b) => a.title.localeCompare(b.title))
-
-const currentEntry = docPages.find(
-  (entry) => hrefFromPageId(entry.id) === currentPath
-)
-
-const copyButton = currentEntry?.body
-  ? {
-      id: `docs-copy-page-${crypto.randomUUID()}`,
-      source: currentEntry.body,
-    }
-  : undefined
-
+const docsPages = await getCollection("pages", ({ data, id }) => {
+  return (
+    (data.type === "doc" || data.type === "components") &&
+    id.startsWith("docs/")
+  )
+})
 const orderedDocLinks = [
   "docs",
   "docs/installation",
   "docs/theming",
   "docs/components",
 ]
-  .map((id) => docPages.find((entry) => entry.id === id))
-  .filter((entry): entry is (typeof docPages)[number] => Boolean(entry))
+  .map((id) => docsPages.find((entry) => entry.id === id))
+  .filter((entry): entry is (typeof docsPages)[number] => Boolean(entry))
   .map((entry) => ({
-    href: hrefFromPageId(entry.id),
+    href: `/${entry.id}/`,
     title: entry.data.title,
   }))
-
-const docsPagination = [...orderedDocLinks, ...componentLinks]
-const currentPageIndex = docsPagination.findIndex(
+const componentLinks = docsPages
+  .filter((entry) => entry.id.startsWith("docs/components/"))
+  .map((entry) => ({
+    href: `/${entry.id}/`,
+    title: entry.data.title,
+    description: entry.data.description,
+  }))
+  .sort((a, b) => a.title.localeCompare(b.title))
+const paginationLinks = [...orderedDocLinks, ...componentLinks]
+const currentPageIndex = paginationLinks.findIndex(
   (item) => item.href === currentPath
 )
 const previousPage =
-  currentPageIndex > 0 ? docsPagination[currentPageIndex - 1] : undefined
+  currentPageIndex > 0 ? paginationLinks[currentPageIndex - 1] : undefined
 const nextPage =
-  currentPageIndex >= 0 ? docsPagination[currentPageIndex + 1] : undefined
+  currentPageIndex >= 0 ? paginationLinks[currentPageIndex + 1] : undefined
+const currentDoc = await getCollection("pages", ({ data, id }) => {
+  return data.type === "doc" && `/${id}/` === currentPath
+})
+const copySource = currentDoc[0]?.body
+const copyButton = copySource
+  ? {
+      id: `docs-copy-page-${crypto.randomUUID()}`,
+      source: copySource,
+    }
+  : undefined
 
 const tocItems = props.headings
   .filter((heading) => heading.depth === 2 || heading.depth === 3)
@@ -100,32 +71,23 @@ const tocItems = props.headings
   }))
 ---
 
-<Base
-  global={props.global}
-  page={page}
-  headings={props.headings}
-  desktopNavigation="sidebar"
->
+<Base global={props.global} page={props.page} desktopNavigation="sidebar">
   <DocBlock
-    props={{
-      title: props.page.title,
-      description: props.page.description,
-      copyButton,
-      showComponentLinks: isComponentsIndex,
-      componentLinks,
-      tocItems,
-      callout,
-      previousPage,
-      nextPage,
-      labels: {
-        copyPage: "Copy Page",
-        pagination: {
-          previous: "Previous",
-          next: "Next",
-          ariaLabel: "Document pagination",
-        },
-        toc: "On This Page",
+    title={props.page.title}
+    description={props.page.description}
+    copyButton={copyButton}
+    tocItems={tocItems}
+    callout={globalCallout}
+    previousPage={previousPage}
+    nextPage={nextPage}
+    labels={{
+      copyPage: "Copy page",
+      pagination: {
+        previous: "Previous",
+        next: "Next",
+        ariaLabel: "Document pagination",
       },
+      toc: "On This Page",
     }}
   >
     <slot />

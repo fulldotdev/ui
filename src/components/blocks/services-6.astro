@@ -1,45 +1,95 @@
 ---
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Section, SectionContent } from "@/components/ui/section"
+import PlaceholderImage from "@/assets/placeholder.webp"
+import ArrowRightIcon from "@lucide/astro/icons/arrow-right"
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
 
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
+  badge?: string
+  title: string
+  description?: string
+  actions?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
+  items: {
+    image?: {
+      src: ImageMetadata
+      alt: string
+    }
     title: string
-    action: BlockAction
-    items: {
-      title: string
-      description: string
-    }[]
-  }
+    description: string
+    href?: string
+  }[]
 }
 
-const { props } = Astro.props
+const { badge, title, description, actions, items } = Astro.props
 ---
 
 <Section>
-  <SectionContent class="gap-8">
-    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-      <div class="max-w-2xl">
-        <h2 class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
-      </div>
-      <Button as="a" href={props.action.href} variant={props.action.variant}>{props.action.label}</Button>
+  <SectionContainer
+    class="grid gap-8 lg:grid-cols-[20rem_minmax(0,1fr)] lg:items-start"
+  >
+    <div class="lg:sticky lg:top-28">
+      {badge && <Badge variant="secondary">{badge}</Badge>}
+      <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance">
+        {title}
+      </h2>
+      {
+        description && (
+          <p class="text-muted-foreground mt-4 text-sm leading-relaxed">
+            {description}
+          </p>
+        )
+      }
+      {
+        actions?.length ? (
+          <div class="mt-6 flex flex-wrap gap-3">
+            {actions.map((action) => (
+              <Button as="a" href={action.href} variant={action.variant}>
+                {action.label}
+              </Button>
+            ))}
+          </div>
+        ) : null
+      }
     </div>
-    <div class="grid gap-3">
-      {props.items.map((service) => (
-        <Card>
-          <CardContent class="grid gap-3 p-5 md:grid-cols-[14rem_minmax(0,1fr)] md:items-center">
-            <p class="font-medium">{service.title}</p>
-            <p class="text-muted-foreground text-sm leading-6">{service.description}</p>
-          </CardContent>
-        </Card>
-      ))}
+    <div class="grid gap-6 sm:grid-cols-2">
+      {
+        items.map((service) => (
+          <div class="group/service relative isolate flex aspect-square flex-col justify-end overflow-hidden rounded-xl bg-black">
+            <Image
+              src={service.image?.src ?? PlaceholderImage}
+              alt={service.image?.alt ?? service.title}
+              class="absolute inset-0 -z-10 size-full object-cover opacity-60 transition-transform duration-500 group-hover/service:scale-105"
+              widths={[320, 480, 640]}
+              sizes="(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw"
+            />
+            <div class="absolute inset-0 -z-10 bg-gradient-to-t from-black/70 to-transparent" />
+            <div class="flex items-end justify-between gap-4 p-5 text-white">
+              <div class="flex flex-col gap-1">
+                <h3 class="text-lg font-semibold">{service.title}</h3>
+                <p class="text-sm leading-relaxed text-white/75">
+                  {service.description}
+                </p>
+              </div>
+              {service.href && (
+                <a
+                  href={service.href}
+                  class="shrink-0 rounded-full bg-white/15 p-2 backdrop-blur-sm transition-colors hover:bg-white/25"
+                >
+                  <ArrowRightIcon class="size-4 text-white" />
+                </a>
+              )}
+            </div>
+          </div>
+        ))
+      }
     </div>
-  </SectionContent>
+  </SectionContainer>
 </Section>

@@ -3,17 +3,42 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-import { typographyListItemStyle } from "./typography-styles"
+type Size = "sm" | "default" | "lg"
+type Props = HTMLAttributes<"li"> & {
+  size?: Size
+}
 
-type Props = HTMLAttributes<"li">
-
-const { class: className, ...props } = Astro.props
+const { class: className, size = "default", ...props } = Astro.props
 ---
 
 <li
   data-slot="typography-list-item"
-  class={cn(typographyListItemStyle, className)}
+  data-size={size}
+  class={cn(className)}
   {...props}
 >
   <slot />
 </li>
+
+<style is:global>
+  @reference "@/styles/global.css";
+
+  [data-slot="typography-list-item"],
+  [data-slot="typography-list"] > li,
+  [data-slot="typography"] > ul > li,
+  [data-slot="typography"] > ol > li {
+    @apply mt-2;
+  }
+
+  [data-slot="typography-list-item"][data-size="sm"] {
+    @apply text-sm;
+  }
+
+  [data-slot="typography-list-item"][data-size="default"] {
+    @apply text-base;
+  }
+
+  [data-slot="typography-list-item"][data-size="lg"] {
+    @apply text-lg;
+  }
+</style>

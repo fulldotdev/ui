@@ -1,52 +1,73 @@
 ---
-import { LayoutGridIcon } from "@lucide/astro"
+import LayoutGridIcon from "@lucide/astro/icons/layout-grid"
 
-import { Section, SectionContent } from "@/components/ui/section"
-
-type IconComponent = typeof LayoutGridIcon
-
-type Item = {
-  title: string
-  description: string
-  icon: IconComponent
-}
+import { Button } from "@/components/ui/button"
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
+  title: string
+  description: string
+  actions?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
+  items: {
     title: string
     description: string
-    items: Item[]
-  }
+    icon: typeof LayoutGridIcon
+  }[]
 }
 
-const { props } = Astro.props
+const { title, description, actions, items } = Astro.props
 ---
 
 <Section>
-  <SectionContent class="gap-y-12">
-    <div class="mx-auto max-w-2xl text-center">
-      <h2 class="text-foreground text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-        {props.title}
+  <SectionContainer class="items-center gap-6 text-center">
+    <div class="flex max-w-2xl flex-col items-center gap-4">
+      <h2
+        class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
       </h2>
-      <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">
-        {props.description}
+      <p
+        class="text-muted-foreground max-w-2xl text-lg leading-relaxed text-balance"
+      >
+        {description}
       </p>
     </div>
-
+    {
+      actions?.length ? (
+        <div class="flex flex-wrap justify-center gap-3">
+          {actions.map((action, i) => (
+            <Button
+              as="a"
+              href={action.href}
+              variant={action.variant ?? (i === 0 ? "default" : "outline")}
+            >
+              {action.label}
+            </Button>
+          ))}
+        </div>
+      ) : null
+    }
+  </SectionContainer>
+  <SectionContainer>
     <div
-      class="ring-foreground/10 grid gap-px overflow-hidden rounded-xl bg-border ring-1 ring-inset sm:grid-cols-2 lg:grid-cols-3"
+      class="ring-foreground/10 bg-border grid gap-px overflow-hidden rounded-xl ring-1 ring-inset sm:grid-cols-2 lg:grid-cols-3"
     >
       {
-        props.items.map((item) => {
+        items.map((item) => {
           const Icon = item.icon
-
           return (
-            <div class="bg-background group/feature relative flex flex-col gap-4 p-7 transition-colors hover:bg-accent/30">
-              <div class="bg-primary/10 text-primary ring-primary/15 flex size-10 items-center justify-center rounded-lg ring-1 ring-inset transition-transform group-hover/feature:scale-105">
+            <div class="bg-background group/feature hover:bg-accent/30 relative flex flex-col items-center gap-4 p-7 text-center transition-colors">
+              <div class="bg-primary/10 text-primary ring-primary/15 flex size-10 items-center justify-center rounded-lg ring-1 transition-transform ring-inset group-hover/feature:scale-105">
                 <Icon class="size-5" />
               </div>
-              <h3 class="text-foreground text-base font-medium tracking-tight">{item.title}</h3>
-              <p class="text-muted-foreground text-sm leading-relaxed">
+              <h3 class="text-foreground text-base font-medium tracking-tight text-balance">
+                {item.title}
+              </h3>
+              <p class="text-muted-foreground text-sm leading-relaxed text-balance">
                 {item.description}
               </p>
             </div>
@@ -54,5 +75,5 @@ const { props } = Astro.props
         })
       }
     </div>
-  </SectionContent>
+  </SectionContainer>
 </Section>

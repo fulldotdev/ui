@@ -1,40 +1,79 @@
 ---
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
+import QuoteIcon from "@lucide/astro/icons/quote"
+
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 import { Rating } from "@/components/ui/rating"
-import { Section, SectionContent } from "@/components/ui/section"
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    badge: string
-    title: string
-    items: {
-      rating: number
-      team: string
-      description: string
-    }[]
-  }
+  title?: string
+  description?: string
+  items: {
+    rating: number
+    quote: string
+    initials: string
+    name: string
+    role: string
+  }[]
 }
 
-const { props } = Astro.props
+const { title, description, items } = Astro.props
 ---
 
-<Section class="rounded-3xl border bg-muted/10">
-  <SectionContent class="gap-8 p-8 sm:p-10">
-    <div class="max-w-2xl">
-      <Badge variant="outline">{props.badge}</Badge>
-      <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
-    </div>
-    <div class="grid gap-4 md:grid-cols-3">
-      {props.items.map((item) => (
-        <Card>
-          <CardContent class="flex flex-col gap-3 p-5">
-            <Rating value={item.rating} />
-            <p class="font-medium">{item.team}</p>
-            <p class="text-muted-foreground text-sm leading-6">{item.description}</p>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  </SectionContent>
+<Section>
+  {
+    (title || description) && (
+      <SectionContainer class="items-center gap-4 text-center">
+        {title && (
+          <h2 class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+            {title}
+          </h2>
+        )}
+        {description && (
+          <p class="text-muted-foreground max-w-2xl text-lg leading-relaxed text-balance">
+            {description}
+          </p>
+        )}
+      </SectionContainer>
+    )
+  }
+  <SectionContainer>
+    <Carousel opts={{ loop: true, align: "center" }} class="mx-auto max-w-3xl">
+      <CarouselContent>
+        {
+          items.map((item) => (
+            <CarouselItem>
+              <div class="flex flex-col items-center gap-6 px-4 py-8 text-center">
+                <QuoteIcon class="text-primary size-10" />
+                <Rating value={item.rating} />
+                <blockquote class="text-foreground text-xl leading-relaxed font-medium text-balance sm:text-2xl">
+                  {item.quote}
+                </blockquote>
+                <div class="flex items-center gap-3 pt-2">
+                  <Avatar size="lg">
+                    <AvatarFallback>{item.initials}</AvatarFallback>
+                  </Avatar>
+                  <div class="text-left">
+                    <p class="text-foreground text-sm font-medium">
+                      {item.name}
+                    </p>
+                    <p class="text-muted-foreground text-xs">{item.role}</p>
+                  </div>
+                </div>
+              </div>
+            </CarouselItem>
+          ))
+        }
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  </SectionContainer>
 </Section>

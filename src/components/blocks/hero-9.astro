@@ -1,48 +1,101 @@
 ---
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Section, SectionContent } from "@/components/ui/section"
+import { CheckIcon } from "@lucide/astro"
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
 
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
+import { Avatar, AvatarFallback, AvatarGroup } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Rating } from "@/components/ui/rating"
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    badge: string
-    title: string
-    description: string
-    action: BlockAction
-    notes: {
-      title: string
-      description: string
-    }[]
+  title: string
+  description: string
+  features: string[]
+  actions: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
+  socialProof: {
+    avatars: string[]
+    rating: number
+    text: string
+  }
+  image: {
+    src: ImageMetadata
+    alt: string
   }
 }
 
-const { props } = Astro.props
+const { title, description, features, actions, socialProof, image } =
+  Astro.props
 ---
 
-<Section>
-  <SectionContent class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
-    <div class="flex flex-col gap-5">
-      <Badge variant="secondary" class="w-fit">{props.badge}</Badge>
-      <h1 class="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">{props.title}</h1>
-      <p class="text-muted-foreground text-lg leading-8">{props.description}</p>
-      <Button as="a" href={props.action.href} variant={props.action.variant}>{props.action.label}</Button>
+<Section class="dark bg-background">
+  <SectionContainer class="grid gap-12 lg:grid-cols-2 lg:items-center">
+    <div class="relative z-10 flex flex-col gap-6">
+      <div class="flex flex-col gap-4">
+        <h1
+          class="text-foreground text-4xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-5xl"
+        >
+          {title}
+        </h1>
+        <p class="text-foreground/80 text-lg leading-relaxed">
+          {description}
+        </p>
+      </div>
+      <ul class="flex flex-col gap-3">
+        {
+          features.map((feature) => (
+            <li class="flex items-center gap-3 text-sm">
+              <CheckIcon class="text-primary size-4 shrink-0" />
+              {feature}
+            </li>
+          ))
+        }
+      </ul>
+      <div class="flex flex-wrap gap-3">
+        {
+          actions.map((action, i) => (
+            <Button
+              as="a"
+              href={action.href}
+              size="lg"
+              variant={action.variant ?? (i === 0 ? "default" : "secondary")}
+            >
+              {action.label}
+            </Button>
+          ))
+        }
+      </div>
+      <div class="flex items-center gap-3">
+        <AvatarGroup>
+          {
+            socialProof.avatars.map((initials) => (
+              <Avatar class="ring-background size-11 ring">
+                <AvatarFallback>{initials}</AvatarFallback>
+              </Avatar>
+            ))
+          }
+        </AvatarGroup>
+        <div class="flex flex-col gap-0.5">
+          <Rating value={socialProof.rating} />
+          <span class="text-muted-foreground text-xs">{socialProof.text}</span>
+        </div>
+      </div>
     </div>
-    <div class="grid gap-4">
-      {props.notes.map((note) => (
-        <Card>
-          <CardContent class="p-5">
-            <p class="font-medium">{note.title}</p>
-            <p class="text-muted-foreground mt-2 text-sm leading-6">{note.description}</p>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  </SectionContent>
+  </SectionContainer>
+  <div
+    class="bg-background pointer-events-none absolute inset-0 lg:mask-l-from-30%"
+  >
+    <Image
+      src={image.src}
+      alt={image.alt}
+      class="size-full object-cover opacity-50"
+      widths={[640, 960, 1280, 1920]}
+      sizes="100vw"
+      loading="eager"
+    />
+  </div>
 </Section>

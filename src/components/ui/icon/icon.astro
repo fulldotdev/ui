@@ -1,0 +1,99 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+interface Props extends Omit<HTMLAttributes<"svg">, "name" | "href"> {
+  href?: HTMLAttributes<"a">["href"]
+  name?: string | number
+}
+
+const { name, href, ...rest } = Astro.props
+
+const hrefMap = {
+  "x.com": "x",
+  twitter: "twitter",
+  facebook: "facebook",
+  instagram: "instagram",
+  pinterest: "pinterest",
+  youtube: "youtube",
+  tiktok: "tiktok",
+  snapchat: "snapchat",
+  reddit: "reddit",
+  tumblr: "tumblr",
+  "wa.me": "whatsapp",
+  telegram: "telegram",
+  discord: "discord",
+  vimeo: "vimeo",
+  flickr: "flickr",
+  yelp: "yelp",
+  spotify: "spotify",
+  behance: "behance",
+  dribbble: "dribbble",
+  soundcloud: "soundcloud",
+  github: "github",
+  twitch: "twitch",
+  "tel:": "phone",
+  "mailto:": "mail",
+  "maps.app.goo.gl": "map-pin",
+  linkedin: "linkedin",
+} as const
+
+const icons = import.meta.glob([
+  "@lucide/astro/icons/*",
+  "simple-icons-astro/*",
+])
+
+const normalise = (value: string | number) =>
+  value
+    .toString()
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "")
+
+const foundPath = () => {
+  if (name === "x.com") {
+    return Object.keys(icons).find((key) => key === "simple-icons-astro/X")
+  }
+
+  if (name) {
+    return Object.keys(icons).find(
+      (key) => normalise(key.split("/").pop() ?? key) === normalise(name)
+    )
+  }
+
+  if (href) {
+    const hrefKey = Object.keys(hrefMap).find((key) =>
+      href.toString().includes(key)
+    )
+    const hrefValue = hrefMap[hrefKey as keyof typeof hrefMap]
+
+    return Object.keys(icons)
+      .reverse()
+      .find(
+        (key) =>
+          hrefValue &&
+          normalise(key.split("/").pop() ?? key) === normalise(hrefValue)
+      )
+  }
+}
+
+const foundModule = foundPath() && icons[foundPath() as keyof typeof icons]
+const module = foundModule && ((await foundModule()) as any)
+const Comp = module?.default
+---
+
+{
+  Comp && foundPath()?.startsWith("simple-icons-astro/") && (
+    <Comp
+      height={24}
+      width={24}
+      fill="currentColor"
+      class="size-[1em] text-base"
+      {...rest}
+    />
+  )
+}
+
+{
+  Comp && foundPath()?.startsWith("@lucide/astro/icons/") && (
+    <Comp height={24} width={24} class="size-[1em] text-base" {...rest} />
+  )
+}

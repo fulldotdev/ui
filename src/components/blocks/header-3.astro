@@ -1,45 +1,90 @@
 ---
-import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Header, HeaderGroup } from "@/components/ui/header"
-import { Logo, LogoText } from "@/components/ui/logo"
-
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
+import { Header, HeaderContainer, HeaderGroup } from "@/components/ui/header"
+import { Icon } from "@/components/ui/icon"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from "@/components/ui/navigation-menu"
+import { Separator } from "@/components/ui/separator"
 
 interface Props {
-  props: {
-    announcement: string
-    badge: string
-    brandName: string
-    brandHref: string
-    actions: [BlockAction, BlockAction]
+  class?: string
+  logo: {
+    text: string
+    href: string
+    src?: any
+    srcLight?: any
+    srcDark?: any
+    alt?: string
   }
+  links: {
+    text: string
+    href: string
+    links?: {
+      text: string
+      href: string
+    }[]
+  }[]
+  buttons: {
+    text: string
+    href: string
+    icon?: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
 }
 
-const { props } = Astro.props
+const { class: className, logo, links, buttons } = Astro.props
 ---
 
-<div class="flex flex-col gap-3">
-  <div class="rounded-xl border bg-muted/20 px-4 py-2 text-center text-sm">
-    {props.announcement}
-  </div>
-  <Header>
+<Header class={cn("border-b", className)}>
+  <HeaderContainer>
     <HeaderGroup>
-      <Logo href={props.brandHref}><LogoText>{props.brandName}</LogoText></Logo>
+      <Logo href={logo.href}>
+        <LogoImage
+          src={logo.src}
+          srcLight={logo.srcLight}
+          srcDark={logo.srcDark}
+          alt={logo.alt}
+        />
+        {logo.text && <LogoText>{logo.text}</LogoText>}
+      </Logo>
     </HeaderGroup>
-    <HeaderGroup class="ml-auto justify-end">
-      <Badge variant="outline">{props.badge}</Badge>
+    <HeaderGroup class="ml-auto hidden justify-end gap-1 md:flex">
+      <NavigationMenu class="hidden max-w-none justify-end md:flex">
+        <NavigationMenuList>
+          {
+            links.map((item, index) => (
+              <NavigationMenuItem value={`nav-${index}`}>
+                <NavigationMenuLink href={item.href}>
+                  {item.text}
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            ))
+          }
+        </NavigationMenuList>
+      </NavigationMenu>
+      <Separator orientation="vertical" class="mx-1 hidden h-5 md:block" />
+      <slot />
       {
-        props.actions.map((action) => (
-          <Button as="a" href={action.href} size="sm" variant={action.variant}>
-            {action.label}
+        buttons.map(({ text, icon, ...button }) => (
+          <Button
+            as="a"
+            size={icon && !text ? "icon-sm" : "sm"}
+            aria-label={text}
+            target={button.href.startsWith("http") ? "_blank" : undefined}
+            rel={button.href.startsWith("http") ? "noreferrer" : undefined}
+            {...button}
+          >
+            {icon && <Icon name={icon} />}
+            {text}
           </Button>
         ))
       }
     </HeaderGroup>
-  </Header>
-</div>
+  </HeaderContainer>
+</Header>

@@ -4,12 +4,12 @@
   "files": [
     {
       "path": "src/components/ui/logo/logo.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & HTMLAttributes<\"a\">\n\nconst { class: className, href, ...props } = Astro.props\n\nconst Comp = href ? \"a\" : \"div\"\n---\n\n<Comp\n  class={cn(\n    \"flex items-center justify-start gap-2.5 text-base font-semibold whitespace-nowrap\",\n    className\n  )}\n  href={href}\n  {...props}\n>\n  <slot />\n</Comp>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & HTMLAttributes<\"a\">\n\nconst { class: className, href, ...props } = Astro.props\n\nconst Comp = href ? \"a\" : \"div\"\n---\n\n<Comp\n  class={cn(\n    \"flex h-10 items-center justify-start gap-2 text-base font-semibold whitespace-nowrap\",\n    className\n  )}\n  href={href}\n  {...props}\n>\n  <slot />\n</Comp>\n",
       "type": "registry:ui"
     },
     {
       "path": "src/components/ui/logo/logo-image.astro",
-      "content": "---\nimport { Image } from \"astro:assets\"\n\nimport { cn } from \"@/lib/utils\"\n\nconst { class: className, src, alt = \"\", ...props } = Astro.props\n---\n\n{\n  src && (\n    <Image\n      class={cn(\"h-full w-auto shrink-0 object-contain\", className)}\n      data-slot=\"logo-image\"\n      src={src as any}\n      alt={alt}\n      sizes=\"200px\"\n      widths={[200]}\n      {...(props as any)}\n    />\n  )\n}\n",
+      "content": "---\nimport { Image } from \"astro:assets\"\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = Omit<HTMLAttributes<\"img\">, \"src\"> & {\n  src?: ImageMetadata\n  srcLight?: ImageMetadata\n  srcDark?: ImageMetadata\n}\n\nconst { class: className, src, srcLight, srcDark, ...props } = Astro.props\n\nconst baseClasses = \"w-auto shrink-0 h-6 object-contain\"\n---\n\n{\n  srcLight && srcDark ? (\n    <>\n      <Image\n        class={cn(baseClasses, \"dark:hidden\", className)}\n        data-slot=\"logo-image\"\n        src={srcLight}\n        sizes=\"200px\"\n        widths={[200]}\n        {...(props as any)}\n      />\n      <Image\n        class={cn(baseClasses, \"hidden dark:block\", className)}\n        data-slot=\"logo-image\"\n        src={srcDark}\n        sizes=\"200px\"\n        widths={[200]}\n        {...(props as any)}\n      />\n    </>\n  ) : src ? (\n    <Image\n      class={cn(baseClasses, className)}\n      data-slot=\"logo-image\"\n      src={src}\n      sizes=\"200px\"\n      widths={[200]}\n      {...(props as any)}\n    />\n  ) : null\n}\n",
       "type": "registry:ui"
     },
     {

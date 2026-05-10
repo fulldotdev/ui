@@ -1,64 +1,66 @@
 ---
-import { ArrowLeft, ArrowRight, Check, Copy } from "@lucide/astro"
+import ArrowLeft from "@lucide/astro/icons/arrow-left"
+import ArrowRight from "@lucide/astro/icons/arrow-right"
+import Check from "@lucide/astro/icons/check"
+import Copy from "@lucide/astro/icons/copy"
 
 import { Button } from "@/components/ui/button"
+import { SectionContainer } from "@/components/ui/section"
 import {
   Typography,
   TypographyH1,
   TypographyLead,
 } from "@/components/ui/typography"
 
-type CopyButton = {
-  id: string
-  source: string
-}
-
-type PaginationLink = {
-  href: string
-  title: string
-}
-
 type Props = {
-  props: {
+  title: string
+  description?: string
+  copyButton?: {
+    id: string
+    source: string
+  }
+  previousPage?: {
+    href: string
     title: string
-    description?: string
-    copyButton?: CopyButton
-    previousPage?: PaginationLink
-    nextPage?: PaginationLink
-    labels: {
-      copyPage: string
-      pagination: {
-        previous: string
-        next: string
-        ariaLabel: string
-      }
+  }
+  nextPage?: {
+    href: string
+    title: string
+  }
+  labels: {
+    copyPage: string
+    pagination: {
+      previous: string
+      next: string
+      ariaLabel: string
     }
   }
 }
 
-const { props } = Astro.props
-const showCopyButton = Boolean(props.copyButton)
-const showPagination = Boolean(props.previousPage || props.nextPage)
+const { title, description, copyButton, previousPage, nextPage, labels } =
+  Astro.props
+const showCopyButton = Boolean(copyButton)
+const showPagination = Boolean(previousPage || nextPage)
 ---
 
-<div
+<SectionContainer
   data-slot="blocks-page"
-  class="mx-auto w-full px-6 pt-10 pb-10 sm:px-8 sm:pt-12 sm:pb-12"
+  class="gap-10 pt-10 pb-10 sm:pt-12 sm:pb-12"
 >
   <div class="mx-auto flex w-full max-w-[84rem] flex-col gap-10">
     <header
       class="flex flex-col gap-4 border-b pb-8 sm:flex-row sm:items-start sm:justify-between"
     >
-      <div class="flex min-w-0 max-w-3xl flex-1 flex-col gap-2">
+      <div class="flex max-w-3xl min-w-0 flex-1 flex-col gap-2">
         <TypographyH1
           class="text-foreground text-left text-3xl tracking-tight sm:text-4xl"
         >
-          {props.title}
+          {title}
         </TypographyH1>
         {
-          props.description && (
+          description && (
             <TypographyLead class="max-w-2xl text-base leading-7">
-              {props.description}
+              {description}
             </TypographyLead>
           )
         }
@@ -66,17 +68,17 @@ const showPagination = Boolean(props.previousPage || props.nextPage)
       {
         showCopyButton && (
           <Button
-            id={props.copyButton?.id}
+            id={copyButton?.id}
             type="button"
             variant="outline"
             size="xs"
             class="shrink-0 self-start"
-            data-source={props.copyButton?.source}
-            aria-label={props.labels.copyPage}
+            data-source={copyButton?.source}
+            aria-label={labels.copyPage}
           >
             <Copy class="blocks-copy-icon size-3.5" />
             <Check class="blocks-check-icon hidden size-3.5" />
-            <span>{props.labels.copyPage}</span>
+            <span>{labels.copyPage}</span>
           </Button>
         )
       }
@@ -90,56 +92,56 @@ const showPagination = Boolean(props.previousPage || props.nextPage)
       showPagination && (
         <nav
           class="grid gap-3 sm:grid-cols-2"
-          aria-label={props.labels.pagination.ariaLabel}
+          aria-label={labels.pagination.ariaLabel}
         >
-          {props.previousPage ? (
+          {previousPage ? (
             <Button
               as="a"
-              href={props.previousPage.href}
+              href={previousPage.href}
               variant="outline"
               class="h-auto w-full items-center justify-start gap-3 rounded-xl px-4 py-3 whitespace-normal"
             >
               <ArrowLeft class="size-4" />
               <span class="flex min-w-0 flex-col items-start">
                 <span class="text-muted-foreground text-xs uppercase">
-                  {props.labels.pagination.previous}
+                  {labels.pagination.previous}
                 </span>
                 <span class="truncate text-sm font-medium">
-                  {props.previousPage.title}
+                  {previousPage.title}
                 </span>
               </span>
             </Button>
           ) : (
-            <div class="hidden sm:block" aria-hidden="true"></div>
+            <div class="hidden sm:block" aria-hidden="true" />
           )}
 
-          {props.nextPage ? (
+          {nextPage ? (
             <Button
               as="a"
-              href={props.nextPage.href}
+              href={nextPage.href}
               variant="outline"
               class="h-auto w-full items-center justify-end gap-3 rounded-xl px-4 py-3 text-right whitespace-normal"
             >
               <span class="flex min-w-0 flex-col items-end">
                 <span class="text-muted-foreground text-xs uppercase">
-                  {props.labels.pagination.next}
+                  {labels.pagination.next}
                 </span>
                 <span class="truncate text-sm font-medium">
-                  {props.nextPage.title}
+                  {nextPage.title}
                 </span>
               </span>
               <ArrowRight class="size-4" />
             </Button>
           ) : (
-            <div class="hidden sm:block" aria-hidden="true"></div>
+            <div class="hidden sm:block" aria-hidden="true" />
           )}
         </nav>
       )
     }
   </div>
-</div>
+</SectionContainer>
 
-<script is:inline define:vars={{ copyButtonId: props.copyButton?.id }}>
+<script is:inline define:vars={{ copyButtonId: copyButton?.id }}>
   const button = copyButtonId ? document.getElementById(copyButtonId) : null
 
   if (button instanceof HTMLButtonElement) {

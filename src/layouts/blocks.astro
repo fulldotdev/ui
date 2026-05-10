@@ -1,12 +1,11 @@
 ---
 import Base from "@/layouts/base.astro"
 import type { MarkdownHeading } from "astro"
-import { getCollection, type CollectionEntry } from "astro:content"
+import { getCollection } from "astro:content"
 
 import type { GlobalSchema } from "@/schemas/global"
 import type { BlocksSchema } from "@/schemas/layouts/blocks"
-import type { SeoSchema } from "@/schemas/shared"
-import { hrefFromPageId } from "@/lib/pages"
+import { SectionContainer } from "@/components/ui/section"
 import { TypographyH1, TypographyLead } from "@/components/ui/typography"
 
 type Props = {
@@ -17,51 +16,21 @@ type Props = {
 
 const props: Props = Astro.props
 
-const fallbackSeo: SeoSchema = {
-  title: props.page.seo?.title ?? props.page.title,
-  description:
-    props.page.seo?.description ??
-    props.page.description ??
-    `${props.page.title} block previews for Fulldev UI.`,
-  image: props.page.seo?.image,
-  canonical: props.page.seo?.canonical,
-  noindex: props.page.seo?.noindex,
-  nofollow: props.page.seo?.nofollow,
-}
-
-const page: BlocksSchema = {
-  ...props.page,
-  seo: fallbackSeo,
-}
-
-const blockPages = (await getCollection("pages")).filter(
-  (
-    entry
-  ): entry is CollectionEntry<"pages"> & {
-    data: { type: "block"; title: string; description?: string }
-  } => {
-    return entry.data.type === "block" && entry.id.startsWith("blocks/")
-  }
-)
-
-const blockCategories = blockPages
-  .sort((a, b) => a.id.localeCompare(b.id))
-  .map((entry) => {
-    return {
-      href: hrefFromPageId(entry.id),
-      title: entry.data.title,
-      description: entry.data.description,
-    }
+const blockCategories = (
+  await getCollection("pages", ({ data, id }) => {
+    return data.type === "block" && id.startsWith("blocks/")
   })
+)
+  .map((entry) => ({
+    href: `/${entry.id}/`,
+    title: entry.data.title,
+    description: entry.data.description,
+  }))
+  .sort((a, b) => a.title.localeCompare(b.title))
 ---
 
-<Base
-  global={props.global}
-  page={page}
-  headings={props.headings}
-  desktopNavigation="header"
->
-  <div class="mx-auto w-full px-6 pt-10 pb-10 sm:px-8 sm:pt-12 sm:pb-12">
+<Base global={props.global} page={props.page} desktopNavigation="header">
+  <SectionContainer class="gap-10 pt-10 pb-10 sm:pt-12 sm:pb-12">
     <div class="mx-auto flex w-full max-w-[84rem] flex-col gap-10">
       <header class="flex flex-col gap-4 border-b pb-8">
         <TypographyH1
@@ -99,5 +68,5 @@ const blockCategories = blockPages
         }
       </section>
     </div>
-  </div>
+  </SectionContainer>
 </Base>

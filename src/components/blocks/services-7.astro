@@ -1,41 +1,116 @@
 ---
+import PlaceholderImage from "@/assets/placeholder.webp"
+import ArrowRightIcon from "@lucide/astro/icons/arrow-right"
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
+
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Section, SectionContent } from "@/components/ui/section"
-
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    badge: string
+  badge?: string
+  title: string
+  description?: string
+  actions?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
+  items: {
+    image?: {
+      src: ImageMetadata
+      alt: string
+    }
+    label?: string
     title: string
     description: string
-    actions: [BlockAction, BlockAction]
-  }
+    href?: string
+  }[]
 }
 
-const { props } = Astro.props
+const { badge, title, description, actions, items } = Astro.props
 ---
 
-<Section class="overflow-hidden rounded-3xl border bg-foreground text-background">
-  <SectionContent class="grid gap-8 p-8 sm:p-10 lg:grid-cols-[minmax(0,1fr)_16rem] lg:items-center">
-    <div class="flex flex-col gap-5">
-      <Badge variant="secondary" class="w-fit">{props.badge}</Badge>
-      <h2 class="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">{props.title}</h2>
-      <p class="max-w-2xl text-sm leading-7 text-background/75 sm:text-base">{props.description}</p>
-    </div>
-    <div class="flex flex-col gap-3 lg:items-end">
+<Section>
+  <SectionContainer class="gap-8">
+    <div
+      class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
+    >
+      <div class="max-w-2xl">
+        {badge && <Badge variant="secondary">{badge}</Badge>}
+        <h2
+          class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+        >
+          {title}
+        </h2>
+        {
+          description && (
+            <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">
+              {description}
+            </p>
+          )
+        }
+      </div>
       {
-        props.actions.map((action) => (
-          <Button as="a" href={action.href} variant={action.variant}>
-            {action.label}
-          </Button>
+        actions?.length ? (
+          <div class="flex flex-wrap gap-3">
+            {actions.map((action) => (
+              <Button as="a" href={action.href} variant={action.variant}>
+                {action.label}
+              </Button>
+            ))}
+          </div>
+        ) : null
+      }
+    </div>
+    <div class="grid gap-6 lg:grid-cols-3">
+      {
+        items.map((service, index) => (
+          <a
+            href={service.href ?? "#"}
+            class={cn(
+              "group/service flex flex-col overflow-hidden rounded-xl border shadow-xs transition-shadow hover:shadow-md",
+              index === 0 && "lg:col-span-2 lg:row-span-2"
+            )}
+          >
+            <Image
+              src={service.image?.src ?? PlaceholderImage}
+              alt={service.image?.alt ?? service.title}
+              class={cn(
+                "w-full object-cover",
+                index === 0 ? "aspect-[16/9]" : "aspect-[16/10]"
+              )}
+              widths={[320, 480, 640, 960]}
+              sizes={
+                index === 0
+                  ? "(min-width: 1024px) 66vw, 100vw"
+                  : "(min-width: 1024px) 33vw, 100vw"
+              }
+            />
+            <div class="flex flex-1 flex-col gap-2 p-5">
+              {service.label && (
+                <Badge variant="secondary" class="w-fit">
+                  {service.label}
+                </Badge>
+              )}
+              <h3
+                class={cn("font-medium", index === 0 ? "text-xl" : "text-base")}
+              >
+                {service.title}
+              </h3>
+              <p class="text-muted-foreground text-sm leading-relaxed">
+                {service.description}
+              </p>
+              <div class="text-primary mt-auto flex items-center gap-1.5 pt-2 text-sm font-medium">
+                Learn more
+                <ArrowRightIcon class="size-3.5 transition-transform group-hover/service:translate-x-1" />
+              </div>
+            </div>
+          </a>
         ))
       }
     </div>
-  </SectionContent>
+  </SectionContainer>
 </Section>

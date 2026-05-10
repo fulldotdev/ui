@@ -1,35 +1,68 @@
 ---
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Section, SectionContent } from "@/components/ui/section"
+import { Button } from "@/components/ui/button"
+import { Section, SectionContainer } from "@/components/ui/section"
+import { Separator } from "@/components/ui/separator"
 
 interface Props {
-  props: {
-    badge: string
+  title: string
+  description: string
+  actions?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
+  items: {
     title: string
-    items: {
-      title: string
-      description: string
-    }[]
-  }
+    description: string
+  }[]
 }
 
-const { props } = Astro.props
+const { title, description, actions, items } = Astro.props
 ---
 
 <Section>
-  <SectionContent class="gap-8 rounded-3xl border bg-muted/20 p-8 sm:p-10">
-    <div class="max-w-2xl">
-      <Badge variant="secondary">{props.badge}</Badge>
-      <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
+  <SectionContainer>
+    <div class="flex max-w-2xl flex-col gap-4">
+      <h2
+        class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      <p class="text-muted-foreground text-base leading-relaxed text-balance">
+        {description}
+      </p>
+      {
+        actions?.length ? (
+          <div class="mt-2 flex flex-wrap gap-3">
+            {actions.map((action, i) => (
+              <Button
+                as="a"
+                href={action.href}
+                variant={action.variant ?? (i === 0 ? "default" : "outline")}
+              >
+                {action.label}
+              </Button>
+            ))}
+          </div>
+        ) : null
+      }
     </div>
-    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {props.items.map((item) => (
-        <Card>
-          <CardHeader><CardTitle class="text-lg">{item.title}</CardTitle></CardHeader>
-          <CardContent class="text-muted-foreground text-sm leading-6">{item.description}</CardContent>
-        </Card>
-      ))}
+  </SectionContainer>
+  <SectionContainer>
+    <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        items.map((item) => (
+          <div>
+            <Separator />
+            <div class="pt-6">
+              <h3 class="text-foreground text-lg font-medium">{item.title}</h3>
+              <p class="text-muted-foreground mt-2 text-sm leading-relaxed">
+                {item.description}
+              </p>
+            </div>
+          </div>
+        ))
+      }
     </div>
-  </SectionContent>
+  </SectionContainer>
 </Section>

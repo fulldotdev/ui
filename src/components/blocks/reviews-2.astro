@@ -1,50 +1,74 @@
 ---
+import QuoteIcon from "@lucide/astro/icons/quote"
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Rating } from "@/components/ui/rating"
-import { Section, SectionContent } from "@/components/ui/section"
+import { Section, SectionContainer } from "@/components/ui/section"
+import { Separator } from "@/components/ui/separator"
 
 interface Props {
-  props: {
-    featured: {
-      quote: string
-      initials: string
-      name: string
-      role: string
-    }
-    items: {
-      rating: number
-      quote: string
-      meta: string
-    }[]
+  featured: {
+    quote: string
+    initials: string
+    name: string
+    role: string
   }
+  items: {
+    rating: number
+    quote: string
+    initials: string
+    name: string
+    role: string
+  }[]
 }
 
-const { props } = Astro.props
+const { featured, items } = Astro.props
 ---
 
-  <Section>
-  <SectionContent class="grid gap-8 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:items-start">
-    <Card>
-      <CardHeader><CardTitle class="text-3xl leading-tight">{props.featured.quote}</CardTitle></CardHeader>
-      <CardContent class="flex items-center gap-3">
-        <Avatar><AvatarFallback>{props.featured.initials}</AvatarFallback></Avatar>
+<Section>
+  <SectionContainer
+    class="grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:items-start"
+  >
+    <article class="flex flex-col gap-6 rounded-xl border p-8">
+      <QuoteIcon class="text-primary size-8" />
+      <blockquote
+        class="text-foreground text-2xl leading-snug font-semibold text-balance sm:text-3xl"
+      >
+        {featured.quote}
+      </blockquote>
+      <div class="flex items-center gap-3 pt-2">
+        <Avatar size="lg">
+          <AvatarFallback>{featured.initials}</AvatarFallback>
+        </Avatar>
         <div>
-          <p class="font-medium">{props.featured.name}</p>
-          <p class="text-muted-foreground text-sm">{props.featured.role}</p>
+          <p class="text-foreground text-sm font-medium">{featured.name}</p>
+          <p class="text-muted-foreground text-xs">{featured.role}</p>
         </div>
-      </CardContent>
-    </Card>
-    <div class="grid gap-4">
-      {props.items.map((item) => (
-        <Card>
-          <CardContent class="flex flex-col gap-3 p-5">
-            <Rating value={item.rating} />
-            <p class="text-sm leading-7">{item.quote}</p>
-            <p class="text-muted-foreground text-sm">{item.meta}</p>
-          </CardContent>
-        </Card>
-      ))}
+      </div>
+    </article>
+    <div class="grid gap-6">
+      {
+        items.map((item) => (
+          <article class="flex flex-col">
+            <Separator />
+            <div class="flex flex-col gap-3 pt-6">
+              <Rating value={item.rating} />
+              <p class="text-muted-foreground text-sm leading-relaxed">
+                {item.quote}
+              </p>
+              <div class="flex items-center gap-3 pt-1">
+                <Avatar>
+                  <AvatarFallback>{item.initials}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <p class="text-foreground text-sm font-medium">{item.name}</p>
+                  <p class="text-muted-foreground text-xs">{item.role}</p>
+                </div>
+              </div>
+            </div>
+          </article>
+        ))
+      }
     </div>
-  </SectionContent>
+  </SectionContainer>
 </Section>

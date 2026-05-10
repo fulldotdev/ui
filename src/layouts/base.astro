@@ -1,81 +1,79 @@
 ---
-import { getCollection, type CollectionEntry } from "astro:content"
+import { getCollection } from "astro:content"
 
 import type { GlobalSchema } from "@/schemas/global"
-import { hrefFromPageId } from "@/lib/pages"
-import { Layout, LayoutBody, LayoutHead, LayoutMain } from "@/components/ui/layout"
+import type { BaseSchema } from "@/schemas/layouts/base"
 import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarShell,
-} from "@/components/ui/sidebar"
-import { ThemeToggleProvider } from "@/components/ui/theme-toggle"
+  Layout,
+  LayoutBody,
+  LayoutHead,
+  LayoutMain,
+  LayoutShell,
+} from "@/components/ui/layout"
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { ThemeToggle, ThemeToggleProvider } from "@/components/ui/theme-toggle"
 import Header from "@/components/blocks/header-1.astro"
 import Sidebar from "@/components/blocks/sidebar-1.astro"
+import SiteSearch from "@/components/site-search.astro"
 
-const { global, page, desktopNavigation } = Astro.props
-const currentPath = Astro.url.pathname
+type Props = {
+  global: GlobalSchema
+  page: BaseSchema
+  desktopNavigation: "header" | "sidebar"
+}
 
-const primaryNav = [
-  { label: "Introduction", href: "/docs/" },
-  { label: "Installation", href: "/docs/installation/" },
-  { label: "Theming", href: "/docs/theming/" },
-  { label: "Components", href: "/docs/components/" },
-  { label: "Blocks", href: "/blocks/" },
-].map((item) => ({
-  ...item,
-  isActive:
-    item.href === "/docs/components/"
-      ? currentPath.startsWith("/docs/components")
-      : item.href === "/blocks/"
-        ? currentPath.startsWith("/blocks")
-      : currentPath === item.href,
-}))
+const { global, page, desktopNavigation }: Props = Astro.props
 
-const componentPages = (await getCollection("pages")).filter(
-  (
-    entry
-  ): entry is CollectionEntry<"pages"> & {
-    data: { type: "doc"; title: string }
-  } => {
-    return entry.data.type === "doc" && entry.id.startsWith("docs/components/")
-  }
-)
-
-const componentLinks = componentPages
-  .filter((entry) => entry.id !== "docs/components")
-  .map((entry) => ({
-    label: entry.data.title,
-    href: hrefFromPageId(entry.id),
-    isActive: hrefFromPageId(entry.id) === currentPath,
-  }))
-  .sort((a, b) => a.label.localeCompare(b.label))
-
-const navGroups = [
+const pages = await getCollection("pages")
+const searchLink = (page: (typeof pages)[number]) => ({
+  text: page.data.title,
+  href: page.id === "index" ? "/" : `/${page.id}/`,
+  keywords: [
+    page.id,
+    page.data.type,
+    page.data.title,
+    page.data.description,
+    page.data.seo?.title,
+    page.data.seo?.description,
+  ].filter((value): value is string => Boolean(value)),
+})
+const searchLinks = [
   {
-    label: "Navigation",
-    items: primaryNav,
+    text: "Pages",
+    href: "/",
+    links: pages
+      .filter((page) => {
+        return !page.id.startsWith("docs/") && !page.id.startsWith("blocks/")
+      })
+      .map(searchLink),
   },
-  ...(componentLinks.length > 0
-    ? [
-        {
-          label: "Components",
-          items: componentLinks,
-        },
-      ]
-    : []),
+  {
+    text: "Docs",
+    href: "/docs/",
+    links: pages.filter((page) => page.id.startsWith("docs/")).map(searchLink),
+  },
+  {
+    text: "Blocks",
+    href: "/blocks/",
+    links: pages
+      .filter((page) => page.id.startsWith("blocks/"))
+      .map(searchLink),
+  },
 ]
+  .map((group) => ({
+    ...group,
+    links: group.links.sort((a, b) => {
+      if (a.href === group.href) return -1
+      if (b.href === group.href) return 1
 
-const headerLinks = global.header.links
-const headerButtons = global.header.buttons.map((button: GlobalSchema["header"]["buttons"][number], index: number) => ({
-  href: button.href,
-  label: button.text,
-  variant: button.variant ?? (index === 0 ? "default" : "ghost"),
-}))
+      return a.text.localeCompare(b.text)
+    }),
+  }))
+  .filter((group) => group.links.length > 0)
 ---
 
 <Layout>
-  <LayoutHead name={global.name} {...page.seo}>
+  <LayoutHead {...global} {...page} {...page.seo}>
     <ThemeToggleProvider />
   </LayoutHead>
   <LayoutBody style="--container-width: 96rem">
@@ -84,41 +82,32 @@ const headerButtons = global.header.buttons.map((button: GlobalSchema["header"][
       defaultOpen={desktopNavigation === "sidebar"}
     >
       <Sidebar
-        props={{
-          state: desktopNavigation === "sidebar" ? "expanded" : "collapsed",
-          collapsible: "offcanvas",
-          variant: "inset",
-          global,
-          navGroups,
-          github: {
-            href: "https://github.com/fulldotdev/ui",
-            ariaLabel: "GitHub repository",
-            count: "557",
-          },
-        }}
-      />
-      <SidebarShell>
+        state={desktopNavigation === "sidebar" ? "expanded" : "collapsed"}
+        collapsible="offcanvas"
+        variant="inset"
+        global={global}
+        links={global.sidebar.links}
+        buttons={global.header.buttons}
+      >
+        <SiteSearch links={searchLinks} />
+        <ThemeToggle />
+      </Sidebar>
+      <LayoutShell>
         <Header
-          props={{
-            class: desktopNavigation === "sidebar" ? "md:hidden" : "",
-            global,
-            headerLinks,
-            headerButtons,
-            homeHref: "/",
-            github: {
-              href: "https://github.com/fulldotdev/ui",
-              ariaLabel: "GitHub repository",
-              count: "557",
-            },
-            mobileMenuLabel: "Toggle Sidebar",
-          }}
-        />
+          class={desktopNavigation === "sidebar" ? "md:hidden" : ""}
+          logo={global.logo}
+          links={global.header.links}
+          buttons={global.header.buttons}
+        >
+          <SiteSearch size="compact" links={searchLinks} />
+          <ThemeToggle />
+        </Header>
         <SidebarInset>
           <LayoutMain>
             <slot />
           </LayoutMain>
         </SidebarInset>
-      </SidebarShell>
+      </LayoutShell>
     </SidebarProvider>
   </LayoutBody>
 </Layout>

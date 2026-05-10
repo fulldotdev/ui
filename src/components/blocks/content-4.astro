@@ -1,47 +1,88 @@
 ---
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Section, SectionContent } from "@/components/ui/section"
+import PlaceholderImage from "@/assets/placeholder.webp"
+import { CheckIcon } from "@lucide/astro"
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
+
+import { Button } from "@/components/ui/button"
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    badge: string
-    title: string
-    description: string
-    comparison: {
-      first: {
-        title: string
-        description: string
-      }
-      second: {
-        title: string
-        description: string
-      }
-    }
+  title: string
+  description: string
+  features?: string[]
+  actions?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
+  image?: {
+    src: ImageMetadata
+    alt: string
   }
 }
 
-const { props } = Astro.props
+const {
+  title,
+  description,
+  features,
+  actions,
+  image = { src: PlaceholderImage, alt: "Content image" },
+} = Astro.props
 ---
 
 <Section>
-  <SectionContent class="gap-8">
-    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-      <div class="max-w-2xl">
-        <Badge variant="outline" class="w-fit">{props.badge}</Badge>
-        <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
+  <SectionContainer>
+    <div class="grid gap-12 lg:grid-cols-[1fr_2fr] lg:items-center">
+      <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-4">
+          <h2
+            class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+          >
+            {title}
+          </h2>
+          <p class="text-muted-foreground text-lg leading-relaxed text-balance">
+            {description}
+          </p>
+        </div>
+        {
+          features?.length ? (
+            <ul class="flex flex-col gap-3">
+              {features.map((feature) => (
+                <li class="flex items-center gap-3 text-sm">
+                  <CheckIcon class="text-primary size-4 shrink-0" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+          ) : null
+        }
+        {
+          actions?.length ? (
+            <div class="flex flex-wrap gap-3">
+              {actions.map((action, i) => (
+                <Button
+                  as="a"
+                  href={action.href}
+                  size="lg"
+                  variant={
+                    action.variant ?? (i === 0 ? "default" : "secondary")
+                  }
+                >
+                  {action.label}
+                </Button>
+              ))}
+            </div>
+          ) : null
+        }
       </div>
-      <p class="text-muted-foreground max-w-md text-sm leading-6">{props.description}</p>
+      <Image
+        src={image.src}
+        alt={image.alt}
+        class="aspect-[4/3] w-full rounded-xl border object-cover"
+        widths={[640, 960, 1280]}
+        sizes="(min-width: 1024px) 66vw, 100vw"
+      />
     </div>
-    <div class="grid gap-4 lg:grid-cols-2">
-      <Card>
-        <CardHeader><CardTitle>{props.comparison.first.title}</CardTitle></CardHeader>
-        <CardContent class="text-muted-foreground text-sm leading-7">{props.comparison.first.description}</CardContent>
-      </Card>
-      <Card>
-        <CardHeader><CardTitle>{props.comparison.second.title}</CardTitle></CardHeader>
-        <CardContent class="text-muted-foreground text-sm leading-7">{props.comparison.second.description}</CardContent>
-      </Card>
-    </div>
-  </SectionContent>
+  </SectionContainer>
 </Section>

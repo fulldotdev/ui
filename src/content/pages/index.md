@@ -1,15 +1,17 @@
 ---
 type: home
+title: Fulldev UI
+description: Astro UI components and blocks for agents and developers.
 hero:
-  title: Astro UI components & blocks compatible with shadcn/ui
-  description: Vanilla Astro components with no framework dependencies. Shadcn/ui compatible. Content-first primitives like Section, Item, and Video.
+  title: Astro UI components & blocks for agents and developers
+  description: A set of beautifully designed components that you can customize, extend, and build on. Use this as a solid foundation for building content-driven websites with AI agents.
   buttons:
     - text: Start Project
       href: /docs/components/
     - text: Read Docs
       href: /docs/
 cta:
-  title: Free and open-source Astro UI components
+  title: Free and open-source Astro UI components for agents and developers
   description: Everything you need to build stunning content-driven websites with zero framework dependencies. Astro components, content primitives, and shadcn/ui compatibility.
   buttons:
     - text: View Components

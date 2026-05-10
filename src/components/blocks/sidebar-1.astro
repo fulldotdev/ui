@@ -1,11 +1,12 @@
 ---
-import { Image } from "astro:assets"
 import type { ComponentProps } from "astro/types"
-import { Github } from "simple-icons-astro"
 
 import type { GlobalSchema } from "@/schemas/global"
 import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
 import {
+  Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
@@ -14,65 +15,54 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  Sidebar as UiSidebar,
+  SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { ThemeToggle } from "@/components/ui/theme-toggle"
-import SiteSearch from "@/components/site-search.astro"
-
-type NavItem = {
-  label: string
-  href: string
-  isActive?: boolean
-}
-
-type NavGroup = {
-  label: string
-  items: NavItem[]
-}
 
 type Props = {
-  props: ComponentProps<typeof UiSidebar> & {
-    global: GlobalSchema
-    navGroups: NavGroup[]
-    github: {
-      href: string
-      ariaLabel: string
-      count: string
-    }
-  }
-}
+  global: GlobalSchema
+  links: GlobalSchema["sidebar"]["links"]
+  buttons: {
+    text: string
+    href: string
+    icon?: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
+} & ComponentProps<typeof Sidebar>
 
-const { props } = Astro.props
-const { global, navGroups, github, ...sidebarProps } = props
+const { global, links, buttons, ...sidebarProps } = Astro.props
 ---
 
-<UiSidebar {...sidebarProps}>
-  <SidebarHeader class="px-4">
-    <a href="/" class="flex h-10 items-center gap-2 text-lg font-semibold">
-      <Image
-        src={global.logo.dark}
-        alt={`${global.name} logo`}
-        class="size-5 shrink-0 dark:hidden"
-      />
-      <Image
-        src={global.logo.light}
-        alt={`${global.name} logo`}
-        class="hidden size-5 shrink-0 dark:block"
-      />
-      <span>{global.name}</span>
-    </a>
-    <SiteSearch class="w-full justify-start" />
+<Sidebar class="z-30" {...sidebarProps}>
+  <SidebarHeader>
+    <div class="flex items-center justify-between gap-2 pl-2">
+      <Logo href="/">
+        <LogoImage
+          src={global.logo.src}
+          srcLight={global.logo.srcLight}
+          srcDark={global.logo.srcDark}
+          alt={global.logo.alt}
+        />
+        <LogoText>{global.logo.text}</LogoText>
+      </Logo>
+      <SidebarTrigger />
+    </div>
+    <div class="flex items-center gap-2">
+      <slot />
+    </div>
   </SidebarHeader>
   <SidebarContent>
     {
-      navGroups.map((group) => (
+      links.map((group) => (
         <SidebarGroup>
-          <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+          <SidebarGroupLabel>{group.text}</SidebarGroupLabel>
           <SidebarMenu>
-            {group.items.map((item) => (
+            {(group.links ?? [group]).map((item) => (
               <SidebarMenuItem>
-                <SidebarMenuButton href={item.href} isActive={item.isActive}>
-                  <span>{item.label}</span>
+                <SidebarMenuButton
+                  href={item.href}
+                  isActive={item.href === Astro.url.pathname}
+                >
+                  <span>{item.text}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
@@ -82,20 +72,22 @@ const { global, navGroups, github, ...sidebarProps } = props
     }
   </SidebarContent>
   <SidebarFooter>
-    <div class="flex items-center gap-1">
-      <Button
-        as="a"
-        href={github.href}
-        variant="ghost"
-        size="sm"
-        target="_blank"
-        rel="noreferrer"
-        aria-label={github.ariaLabel}
-      >
-        <Github class="size-4" fill="currentColor" aria-hidden="true" />
-        <span>{github.count}</span>
-      </Button>
-      <ThemeToggle variant="ghost" size="icon-sm" />
+    <div class="flex items-center justify-end gap-1">
+      {
+        buttons.map(({ text, icon, ...button }) => (
+          <Button
+            as="a"
+            size={icon && !text ? "icon-sm" : "sm"}
+            aria-label={text}
+            target={button.href.startsWith("http") ? "_blank" : undefined}
+            rel={button.href.startsWith("http") ? "noreferrer" : undefined}
+            {...button}
+          >
+            {icon && <Icon name={icon} />}
+            {text}
+          </Button>
+        ))
+      }
     </div>
   </SidebarFooter>
-</UiSidebar>
+</Sidebar>

@@ -3,13 +3,35 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-import { typographyAStyle } from "./typography-styles"
+type Size = "sm" | "default" | "lg"
+type Props = HTMLAttributes<"a"> & {
+  size?: Size
+}
 
-type Props = HTMLAttributes<"a">
-
-const { class: className, ...props } = Astro.props
+const { class: className, size = "default", ...props } = Astro.props
 ---
 
-<a data-slot="typography-a" class={cn(typographyAStyle, className)} {...props}>
+<a data-slot="typography-a" data-size={size} class={cn(className)} {...props}>
   <slot />
 </a>
+
+<style is:global>
+  @reference "@/styles/global.css";
+
+  [data-slot="typography-a"],
+  [data-slot="typography"] > a:not([data-slot]) {
+    @apply text-primary font-medium underline underline-offset-4;
+  }
+
+  [data-slot="typography-a"][data-size="sm"] {
+    @apply text-sm;
+  }
+
+  [data-slot="typography-a"][data-size="default"] {
+    @apply text-base;
+  }
+
+  [data-slot="typography-a"][data-size="lg"] {
+    @apply text-lg;
+  }
+</style>

@@ -1,83 +1,109 @@
 ---
+import LayoutGridIcon from "@lucide/astro/icons/layout-grid"
+
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSet, FieldLegend } from "@/components/ui/field"
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Section, SectionContent } from "@/components/ui/section"
+import { Section, SectionContainer } from "@/components/ui/section"
 import { Textarea } from "@/components/ui/textarea"
 
 interface Props {
-  props: {
+  title: string
+  description: string
+  items: {
+    icon: typeof LayoutGridIcon
     title: string
     description: string
-    highlights: {
-      title: string
-      description: string
-    }[]
-    form: {
-      title: string
-      description: string
-      legend: string
-      nameLabel: string
-      namePlaceholder: string
-      emailLabel: string
-      emailPlaceholder: string
-      messageLabel: string
-      messagePlaceholder: string
-      messageDescription: string
-      actionLabel: string
-    }
+  }[]
+  form: {
+    legend: string
+    nameLabel: string
+    namePlaceholder: string
+    emailLabel: string
+    emailPlaceholder: string
+    messageLabel: string
+    messagePlaceholder: string
+    messageDescription: string
+    actionLabel: string
   }
 }
 
-const { props } = Astro.props
+const { title, description, items, form } = Astro.props
 ---
 
 <Section>
-  <SectionContent class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_26rem] lg:items-start">
-    <div class="flex flex-col gap-4">
-      <h2 class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
-      <p class="text-muted-foreground max-w-2xl text-base leading-7">{props.description}</p>
-      <div class="grid gap-4 sm:grid-cols-2">
-        {
-          props.highlights.map((highlight) => (
-            <Card>
-              <CardContent class="p-5">
-                <p class="font-medium">{highlight.title}</p>
-                <p class="text-muted-foreground text-sm">{highlight.description}</p>
-              </CardContent>
-            </Card>
-          ))
-        }
-      </div>
+  <SectionContainer class="items-center gap-6 text-center">
+    <div class="flex max-w-2xl flex-col items-center gap-4">
+      <h2
+        class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      <p
+        class="text-muted-foreground max-w-2xl text-lg leading-relaxed text-balance"
+      >
+        {description}
+      </p>
     </div>
-
-    <Card>
-      <CardHeader>
-        <CardTitle>{props.form.title}</CardTitle>
-        <CardDescription>{props.form.description}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <FieldSet>
-          <FieldLegend class="sr-only">{props.form.legend}</FieldLegend>
-          <FieldGroup>
+  </SectionContainer>
+  <SectionContainer>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        items.map((item) => {
+          const Icon = item.icon
+          return (
+            <div class="flex flex-col gap-3 rounded-xl border p-5">
+              <div class="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
+                <Icon class="size-5" />
+              </div>
+              <h3 class="text-foreground text-sm font-medium">{item.title}</h3>
+              <p class="text-muted-foreground text-sm leading-relaxed">
+                {item.description}
+              </p>
+            </div>
+          )
+        })
+      }
+    </div>
+  </SectionContainer>
+  <SectionContainer>
+    <div class="mx-auto w-full max-w-2xl rounded-xl border p-6 sm:p-8">
+      <FieldSet>
+        <FieldLegend class="sr-only">{form.legend}</FieldLegend>
+        <FieldGroup>
+          <div class="grid gap-4 md:grid-cols-2">
             <Field>
-              <FieldLabel for="contact-name-1">{props.form.nameLabel}</FieldLabel>
-              <Input id="contact-name-1" placeholder={props.form.namePlaceholder} />
+              <FieldLabel for="contact-name-1">{form.nameLabel}</FieldLabel>
+              <Input id="contact-name-1" placeholder={form.namePlaceholder} />
             </Field>
             <Field>
-              <FieldLabel for="contact-email-1">{props.form.emailLabel}</FieldLabel>
-              <Input id="contact-email-1" type="email" placeholder={props.form.emailPlaceholder} />
+              <FieldLabel for="contact-email-1">{form.emailLabel}</FieldLabel>
+              <Input
+                id="contact-email-1"
+                type="email"
+                placeholder={form.emailPlaceholder}
+              />
             </Field>
-            <Field>
-              <FieldLabel for="contact-message-1">{props.form.messageLabel}</FieldLabel>
-              <Textarea id="contact-message-1" rows={5} placeholder={props.form.messagePlaceholder} />
-              <FieldDescription>{props.form.messageDescription}</FieldDescription>
-            </Field>
-            <Button>{props.form.actionLabel}</Button>
-          </FieldGroup>
-        </FieldSet>
-      </CardContent>
-    </Card>
-  </SectionContent>
+          </div>
+          <Field>
+            <FieldLabel for="contact-message-1">{form.messageLabel}</FieldLabel>
+            <Textarea
+              id="contact-message-1"
+              rows={5}
+              placeholder={form.messagePlaceholder}
+            />
+            <FieldDescription>{form.messageDescription}</FieldDescription>
+          </Field>
+          <Button size="lg" class="w-full">{form.actionLabel}</Button>
+        </FieldGroup>
+      </FieldSet>
+    </div>
+  </SectionContainer>
 </Section>

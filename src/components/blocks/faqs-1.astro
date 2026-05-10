@@ -5,54 +5,71 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Section, SectionContent } from "@/components/ui/section"
-
-type Item = {
-  id: string
-  question: string
-  answer: string
-}
+import { Button } from "@/components/ui/button"
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    title: string
-    description: string
-    items: Item[]
-    defaultItem?: string
-  }
+  title: string
+  description: string
+  items: {
+    id: string
+    question: string
+    answer: string
+  }[]
+  defaultItem?: string
+  actions?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
 }
 
-const { props } = Astro.props
+const { title, description, items, defaultItem, actions } = Astro.props
 ---
 
 <Section>
-  <SectionContent>
-    <div class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:gap-16">
-      <div class="lg:sticky lg:top-24 lg:self-start">
-        <h2
-          class="text-foreground text-2xl font-semibold tracking-tight text-balance sm:text-3xl"
-        >
-          {props.title}
-        </h2>
-        <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">
-          {props.description}
-        </p>
-      </div>
-
-      <div>
-        <Accordion defaultValue={props.defaultItem} collapsible class="border-t">
-          {
-            props.items.map((item, index) => (
-              <AccordionItem value={item.id}>
-                <AccordionTrigger>{item.question}</AccordionTrigger>
-                <AccordionContent hidden={index !== 0}>
-                  {item.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))
-          }
-        </Accordion>
-      </div>
+  <SectionContainer class="items-center text-center">
+    <div class="flex max-w-2xl flex-col items-center gap-5">
+      <h2
+        class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      <p class="text-muted-foreground text-lg leading-relaxed text-balance">
+        {description}
+      </p>
     </div>
-  </SectionContent>
+    {
+      actions?.length ? (
+        <div class="flex flex-wrap justify-center gap-3">
+          {actions.map((action, i) => (
+            <Button
+              as="a"
+              href={action.href}
+              size="lg"
+              variant={action.variant ?? (i === 0 ? "default" : "secondary")}
+            >
+              {action.label}
+            </Button>
+          ))}
+        </div>
+      ) : null
+    }
+  </SectionContainer>
+  <SectionContainer>
+    <div class="mx-auto w-full max-w-3xl">
+      <Accordion defaultValue={defaultItem} collapsible>
+        {
+          items.map((item, index) => (
+            <AccordionItem value={item.id}>
+              <AccordionTrigger>{item.question}</AccordionTrigger>
+              <AccordionContent hidden={index !== 0}>
+                {item.answer}
+              </AccordionContent>
+            </AccordionItem>
+          ))
+        }
+      </Accordion>
+    </div>
+  </SectionContainer>
 </Section>

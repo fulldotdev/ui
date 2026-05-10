@@ -1,37 +1,84 @@
 ---
+import PlaceholderImage from "@/assets/placeholder.webp"
+import { CheckIcon } from "@lucide/astro"
 import type { ImageMetadata } from "astro"
-import { Badge } from "@/components/ui/badge"
-import { Section, SectionContent } from "@/components/ui/section"
-import BlockPlaceholder from "@/components/block-placeholder.astro"
+import { Image } from "astro:assets"
 
-type BlockImage = {
-  src: ImageMetadata
-  alt: string
-}
+import { Button } from "@/components/ui/button"
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    image: BlockImage
-    badge: string
-    title: string
-    description: string
-    items: string[]
+  title: string
+  description: string
+  features?: string[]
+  actions?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
+  image?: {
+    src: ImageMetadata
+    alt: string
   }
 }
 
-const { props } = Astro.props
+const {
+  title,
+  description,
+  features,
+  actions,
+  image = { src: PlaceholderImage, alt: "Content image" },
+} = Astro.props
 ---
 
 <Section>
-  <SectionContent class="grid gap-8 lg:grid-cols-2 lg:items-center">
-    <BlockPlaceholder image={props.image} class="aspect-[16/11] rounded-3xl border" />
-    <div class="flex flex-col gap-4">
-      <Badge variant="secondary" class="w-fit">{props.badge}</Badge>
-      <h2 class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
-      <p class="text-muted-foreground text-base leading-7">{props.description}</p>
-      <ul class="text-muted-foreground flex list-disc flex-col gap-2 pl-5 text-sm leading-6">
-        {props.items.map((item) => <li>{item}</li>)}
-      </ul>
+  <SectionContainer class="grid gap-12 lg:grid-cols-2 lg:items-center">
+    <div class="flex flex-col gap-6">
+      <div class="flex flex-col gap-4">
+        <h2
+          class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+        >
+          {title}
+        </h2>
+        <p class="text-muted-foreground text-lg leading-relaxed text-balance">
+          {description}
+        </p>
+      </div>
+      {
+        features?.length ? (
+          <ul class="flex flex-col gap-3">
+            {features.map((feature) => (
+              <li class="flex items-center gap-3 text-sm">
+                <CheckIcon class="text-primary size-4 shrink-0" />
+                {feature}
+              </li>
+            ))}
+          </ul>
+        ) : null
+      }
+      {
+        actions?.length ? (
+          <div class="flex flex-wrap gap-3">
+            {actions.map((action, i) => (
+              <Button
+                as="a"
+                href={action.href}
+                size="lg"
+                variant={action.variant ?? (i === 0 ? "default" : "secondary")}
+              >
+                {action.label}
+              </Button>
+            ))}
+          </div>
+        ) : null
+      }
     </div>
-  </SectionContent>
+    <Image
+      src={image.src}
+      alt={image.alt}
+      class="aspect-[4/3] w-full rounded-xl border object-cover"
+      widths={[640, 960, 1280]}
+      sizes="(min-width: 1024px) 50vw, 100vw"
+    />
+  </SectionContainer>
 </Section>

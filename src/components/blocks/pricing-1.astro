@@ -1,57 +1,106 @@
 ---
+import { CheckIcon } from "@lucide/astro"
+
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
-import { Section, SectionContent } from "@/components/ui/section"
-
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
+import { Section, SectionContainer } from "@/components/ui/section"
+import { Separator } from "@/components/ui/separator"
 
 interface Props {
-  props: {
-    badge: string
-    title: string
-    plans: {
-      name: string
-      detail: string
-      price: number
-      currency: string
-      unit: string
-      featured: boolean
-      action: BlockAction
-    }[]
-  }
+  title: string
+  description?: string
+  plans: {
+    name: string
+    description: string
+    price: number
+    currency: string
+    unit: string
+    featured?: boolean
+    features: string[]
+    action: {
+      label: string
+      href: string
+      variant?: "default" | "outline" | "ghost" | "secondary"
+    }
+  }[]
 }
 
-const { props } = Astro.props
+const { title, description, plans } = Astro.props
 ---
 
 <Section>
-  <SectionContent class="gap-8">
-    <div class="mx-auto max-w-2xl text-center">
-      <Badge variant="outline">{props.badge}</Badge>
-      <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
+  <SectionContainer class="items-center gap-8 text-center">
+    <div class="flex max-w-2xl flex-col items-center gap-4">
+      <h2
+        class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      {
+        description && (
+          <p class="text-muted-foreground text-lg leading-relaxed text-balance">
+            {description}
+          </p>
+        )
+      }
     </div>
-    <div class="grid gap-4 lg:grid-cols-3">
-      {props.plans.map((plan) => (
-        <Card class={plan.featured ? "border-primary" : undefined}>
-          <CardHeader>
-            <CardTitle>{plan.name}</CardTitle>
-            <CardDescription>{plan.detail}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Price>
-              <PriceValue price={plan.price} currency={plan.currency} />
-              <PriceUnit>{plan.unit}</PriceUnit>
-            </Price>
-          </CardContent>
-          <CardFooter><Button as="a" href={plan.action.href} variant={plan.action.variant}>{plan.action.label}</Button></CardFooter>
-        </Card>
-      ))}
+  </SectionContainer>
+  <SectionContainer>
+    <div
+      class="mx-auto grid w-full justify-center gap-6 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(16rem,18rem))]"
+    >
+      {
+        plans.map((plan) => (
+          <Card
+            class={cn("flex flex-col", plan.featured && "ring-primary ring-2")}
+          >
+            <CardHeader>
+              <div class="flex items-center gap-2">
+                <CardTitle>{plan.name}</CardTitle>
+                {plan.featured && <Badge>Popular</Badge>}
+              </div>
+              <CardDescription>{plan.description}</CardDescription>
+            </CardHeader>
+            <CardContent class="flex flex-col gap-6">
+              <Price>
+                <PriceValue price={plan.price} currency={plan.currency} />
+                <PriceUnit>{plan.unit}</PriceUnit>
+              </Price>
+              <Separator />
+              <ul class="flex flex-col gap-3">
+                {plan.features.map((feature) => (
+                  <li class="flex items-center gap-3 text-sm">
+                    <CheckIcon class="text-primary size-4 shrink-0" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+            <CardFooter class="mt-auto">
+              <Button
+                as="a"
+                href={plan.action.href}
+                variant={
+                  plan.action.variant ?? (plan.featured ? "default" : "outline")
+                }
+                class="w-full"
+              >
+                {plan.action.label}
+              </Button>
+            </CardFooter>
+          </Card>
+        ))
+      }
     </div>
-  </SectionContent>
+  </SectionContainer>
 </Section>

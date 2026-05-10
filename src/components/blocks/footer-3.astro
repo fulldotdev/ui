@@ -1,64 +1,128 @@
 ---
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import Discord from "simple-icons-astro/Discord"
+import Github from "simple-icons-astro/Github"
+import X from "simple-icons-astro/X"
+
 import { Logo, LogoText } from "@/components/ui/logo"
-import { Section, SectionContent } from "@/components/ui/section"
-
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
-
-type BlockLink = {
-  label: string
-  href: string
-}
+import { Section, SectionContainer } from "@/components/ui/section"
+import { Separator } from "@/components/ui/separator"
 
 interface Props {
-  props: {
-    badge: string
-    brandName: string
-    brandHref: string
-    description: string
-    actions: BlockAction[]
-    copyright: string
-    links: BlockLink[]
-  }
+  brandName: string
+  brandHref: string
+  description: string
+  socials?: {
+    label: string
+    href: string
+    icon: string
+  }[]
+  columns: {
+    title: string
+    links: {
+      label: string
+      href: string
+    }[]
+  }[]
+  copyright: string
+  bottomLinks?: {
+    label: string
+    href: string
+  }[]
 }
 
-const { props } = Astro.props
+const {
+  brandName,
+  brandHref,
+  description,
+  socials,
+  columns,
+  copyright,
+  bottomLinks,
+} = Astro.props
+
+const iconMap: Record<string, any> = {
+  github: Github,
+  discord: Discord,
+  x: X,
+}
 ---
 
-<footer class="border-t bg-muted/20 py-10">
-  <Section>
-    <SectionContent class="gap-8">
-      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-        <div class="flex max-w-lg flex-col gap-4">
-          <Badge variant="outline" class="w-fit">{props.badge}</Badge>
-          <Logo href={props.brandHref}><LogoText>{props.brandName}</LogoText></Logo>
-          <p class="text-muted-foreground text-sm leading-6">{props.description}</p>
-        </div>
-        <div class="flex flex-wrap gap-3">
+<footer>
+  <Section class="py-16 lg:py-20">
+    <SectionContainer>
+      <div class="grid gap-10 lg:grid-cols-[1fr_2fr]">
+        <div class="flex flex-col gap-5">
+          <Logo href={brandHref}>
+            <LogoText>{brandName}</LogoText>
+          </Logo>
+          <p class="text-muted-foreground max-w-xs text-sm leading-relaxed">
+            {description}
+          </p>
           {
-            props.actions.map((action) => (
-              <Button as="a" href={action.href} variant={action.variant}>
-                {action.label}
-              </Button>
+            socials && socials.length > 0 && (
+              <div class="flex items-center gap-3">
+                {socials.map((social) => {
+                  const IconComp = iconMap[social.icon]
+                  return (
+                    <a
+                      href={social.href}
+                      class="text-muted-foreground hover:text-foreground transition-colors"
+                      aria-label={social.label}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {IconComp && (
+                        <IconComp class="size-4" fill="currentColor" />
+                      )}
+                    </a>
+                  )
+                })}
+              </div>
+            )
+          }
+        </div>
+        <div class="grid gap-8 sm:grid-cols-3">
+          {
+            columns.map((column) => (
+              <div class="flex flex-col gap-3">
+                <p class="text-sm font-medium">{column.title}</p>
+                <ul class="flex flex-col gap-2.5">
+                  {column.links.map((link) => (
+                    <li>
+                      <a
+                        href={link.href}
+                        class="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))
           }
         </div>
       </div>
-      <div class="flex flex-col gap-3 border-t pt-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-        <p>{props.copyright}</p>
-        <div class="flex flex-wrap gap-4">
-          {
-            props.links.map((link) => (
-              <a href={link.href}>{link.label}</a>
-            ))
-          }
-        </div>
+      <Separator />
+      <div
+        class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <p class="text-muted-foreground text-sm">{copyright}</p>
+        {
+          bottomLinks && bottomLinks.length > 0 && (
+            <nav class="flex flex-wrap items-center gap-x-5 gap-y-2">
+              {bottomLinks.map((link) => (
+                <a
+                  href={link.href}
+                  class="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </nav>
+          )
+        }
       </div>
-    </SectionContent>
+    </SectionContainer>
   </Section>
 </footer>

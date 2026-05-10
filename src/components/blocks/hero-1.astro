@@ -1,542 +1,68 @@
 ---
-import {
-  BoldIcon,
-  ChevronDownIcon,
-  CreditCardIcon,
-  ItalicIcon,
-  LogOutIcon,
-  MailIcon,
-  SearchIcon,
-  SparklesIcon,
-  UnderlineIcon,
-  UserIcon,
-} from "@lucide/astro"
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarGroup,
-  AvatarGroupCount,
-} from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Button, buttonVariants } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldLabel,
-  FieldTitle,
-} from "@/components/ui/field"
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Rating } from "@/components/ui/rating"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
-import { Section, SectionContent } from "@/components/ui/section"
-import { Spinner } from "@/components/ui/spinner"
-import { Switch } from "@/components/ui/switch"
-import { Toggle } from "@/components/ui/toggle"
-
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
+import { Button } from "@/components/ui/button"
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    title: string
-    description: string
-    actions: BlockAction[]
-    preview: {
-      left: {
-        searchPlaceholder: string
-        alert: {
-          title: string
-          description: string
-        }
-        quickActions: BlockAction[]
-        select: {
-          placeholder: string
-          options: {
-            value: string
-            label: string
-          }[]
-        }
-        formattingLabels: {
-          bold: string
-          italic: string
-          underline: string
-        }
-        brightness: {
-          label: string
-          value: string
-          sliderValue: number
-        }
-        toggles: {
-          label: string
-          checked: boolean
-        }[]
-        testimonial: {
-          rating: number
-          quote: string
-          initials: string
-          name: string
-          role: string
-        }
-        ratingSummary: {
-          value: number
-          label: string
-        }
-      }
-      right: {
-        breadcrumb: {
-          home: string
-          section: string
-          current: string
-        }
-        accountMenu: {
-          triggerLabel: string
-          title: string
-          profile: {
-            label: string
-            shortcut: string
-          }
-          billing: {
-            label: string
-            shortcut: string
-          }
-          logout: string
-        }
-        audienceOptions: {
-          value: string
-          title: string
-          description: string
-        }[]
-        processingLabel: string
-        badgeLabels: {
-          default: string
-          secondary: string
-          outline: string
-          destructive: string
-        }
-        faq: {
-          first: {
-            id: string
-            question: string
-            answer: string
-          }
-          second: {
-            id: string
-            question: string
-            answer: string
-          }
-        }
-        workspaceCard: {
-          badge: string
-          title: string
-          description: string
-          action: BlockAction
-        }
-        contributors: {
-          avatars: {
-            initials: string
-          }[]
-          count: string
-          label: string
-        }
-        emailCapture: {
-          placeholder: string
-          actionLabel: string
-        }
-      }
-    }
+  title: string
+  description: string
+  badge: {
+    label: string
+    href: string
+  }
+  actions: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
+  image: {
+    src: ImageMetadata
+    alt: string
   }
 }
 
-const { props } = Astro.props
+const { title, description, badge, actions, image } = Astro.props
 ---
 
-<Section class="overflow-hidden rounded-[inherit] py-0 lg:h-[calc(100svh-4.75rem)] lg:py-0">
-  <SectionContent class="grid h-full gap-8 lg:grid-cols-2 lg:gap-12">
-    <div class="flex flex-col justify-end gap-8 pb-12 lg:pb-16">
-      <div class="flex flex-col gap-6">
-        <h1
-          class="text-foreground text-3xl leading-[1.1] font-semibold tracking-[-0.03em] text-balance sm:text-4xl lg:text-5xl"
-        >
-          {props.title}
-        </h1>
-        <p
-          class="text-muted-foreground text-base leading-relaxed text-balance sm:text-lg"
-        >
-          {props.description}
-        </p>
-      </div>
-      <div class="flex flex-wrap gap-3">
-        {
-          props.actions.map((action) => (
-            <Button as="a" href={action.href} size="lg" variant={action.variant}>
-              {action.label}
-            </Button>
-          ))
-        }
-      </div>
-    </div>
-
-    <div class="relative hidden h-full min-h-0 overflow-hidden lg:block">
-      <div
-        class="from-background pointer-events-none absolute inset-x-0 top-0 z-10 h-24 bg-gradient-to-b to-transparent"
-      >
-      </div>
-      <div
-        class="from-background pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t to-transparent"
-      >
-      </div>
-
-      <div class="grid h-full grid-cols-2 gap-3">
-        <div class="overflow-hidden">
-          <div
-            class="flex animate-[scroll-up_120s_linear_infinite] flex-col gap-10 px-1 py-1"
+<Section>
+  <SectionContainer class="items-center gap-8 text-center">
+    <Badge as="a" href={badge.href} variant="secondary">{badge.label}</Badge>
+    <h1
+      class="text-foreground max-w-4xl text-4xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl"
+    >
+      {title}
+    </h1>
+    <p
+      class="text-muted-foreground max-w-2xl text-lg leading-relaxed text-balance"
+    >
+      {description}
+    </p>
+    <div class="flex flex-wrap justify-center gap-3">
+      {
+        actions.map((action, i) => (
+          <Button
+            as="a"
+            href={action.href}
+            size="lg"
+            variant={action.variant ?? (i === 0 ? "default" : "secondary")}
           >
-            {
-              [0, 1].map(() => (
-                <>
-                  <InputGroup>
-                    <InputGroupAddon>
-                      <SearchIcon />
-                    </InputGroupAddon>
-                    <InputGroupInput placeholder={props.preview.left.searchPlaceholder} />
-                  </InputGroup>
-
-                  <Alert>
-                    <SparklesIcon />
-                    <AlertTitle>{props.preview.left.alert.title}</AlertTitle>
-                    <AlertDescription>
-                      {props.preview.left.alert.description}
-                    </AlertDescription>
-                  </Alert>
-
-                  <div class="flex flex-wrap gap-2">
-                    {
-                      props.preview.left.quickActions.map((action) => (
-                        <Button size="sm" as="a" href={action.href} variant={action.variant}>
-                          {action.label}
-                        </Button>
-                      ))
-                    }
-                  </div>
-
-                  <Select class="w-full" placeholder={props.preview.left.select.placeholder}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {
-                          props.preview.left.select.options.map((option) => (
-                            <SelectItem value={option.value}>{option.label}</SelectItem>
-                          ))
-                        }
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-
-                  <div class="flex gap-1">
-                    <Toggle aria-label={props.preview.left.formattingLabels.bold} defaultPressed>
-                      <BoldIcon />
-                    </Toggle>
-                    <Toggle aria-label={props.preview.left.formattingLabels.italic}>
-                      <ItalicIcon />
-                    </Toggle>
-                    <Toggle aria-label={props.preview.left.formattingLabels.underline}>
-                      <UnderlineIcon />
-                    </Toggle>
-                  </div>
-
-                  <div class="flex flex-col gap-2 px-1">
-                    <div class="flex items-center justify-between">
-                      <span class="text-sm">{props.preview.left.brightness.label}</span>
-                      <span class="text-muted-foreground font-mono text-xs">
-                        {props.preview.left.brightness.value}
-                      </span>
-                    </div>
-                    <Slider
-                      defaultValue={props.preview.left.brightness.sliderValue}
-                      max={100}
-                      step={1}
-                      thumbAlignment="edge"
-                    />
-                  </div>
-
-                  <div class="flex flex-col gap-3 px-1">
-                    {
-                      props.preview.left.toggles.map((toggle) => (
-                        <div class="flex items-center justify-between">
-                          <span class="text-sm">{toggle.label}</span>
-                          <Switch defaultChecked={toggle.checked} />
-                        </div>
-                      ))
-                    }
-                  </div>
-
-                  <Card size="sm">
-                    <CardContent>
-                      <div class="flex flex-col gap-3">
-                        <Rating value={props.preview.left.testimonial.rating} />
-                        <p class="text-sm leading-relaxed">
-                          {props.preview.left.testimonial.quote}
-                        </p>
-                        <div class="flex items-center gap-2">
-                          <Avatar size="sm">
-                            <AvatarFallback>{props.preview.left.testimonial.initials}</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <p class="text-xs font-medium">{props.preview.left.testimonial.name}</p>
-                            <p class="text-muted-foreground text-xs">
-                              {props.preview.left.testimonial.role}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <div class="flex items-center gap-3 px-1">
-                    <Rating value={props.preview.left.ratingSummary.value} />
-                    <span class="text-muted-foreground text-xs">
-                      {props.preview.left.ratingSummary.label}
-                    </span>
-                  </div>
-                </>
-              ))
-            }
-          </div>
-        </div>
-
-        <div class="overflow-hidden">
-          <div
-            class="flex animate-[scroll-down_120s_linear_infinite] flex-col gap-10 px-1 py-1"
-          >
-            {
-              [0, 1].map(() => (
-                <>
-                  <div class="px-1">
-                    <Breadcrumb>
-                      <BreadcrumbList>
-                        <BreadcrumbItem>
-                          <BreadcrumbLink href="#">{props.preview.right.breadcrumb.home}</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                          <BreadcrumbLink href="#">{props.preview.right.breadcrumb.section}</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                          <BreadcrumbPage>{props.preview.right.breadcrumb.current}</BreadcrumbPage>
-                        </BreadcrumbItem>
-                      </BreadcrumbList>
-                    </Breadcrumb>
-                  </div>
-
-                  <DropdownMenu>
-                    <DropdownMenuTrigger
-                      class={buttonVariants({ variant: "outline" })}
-                      aria-label={props.preview.right.accountMenu.triggerLabel}
-                    >
-                      {props.preview.right.accountMenu.title}
-                      <ChevronDownIcon class="size-4 opacity-60" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent class="w-56">
-                      <DropdownMenuLabel>{props.preview.right.accountMenu.title}</DropdownMenuLabel>
-                      <DropdownMenuGroup>
-                        <DropdownMenuItem>
-                          <UserIcon class="size-4" />
-                          {props.preview.right.accountMenu.profile.label}
-                          <DropdownMenuShortcut>
-                            {props.preview.right.accountMenu.profile.shortcut}
-                          </DropdownMenuShortcut>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <CreditCardIcon class="size-4" />
-                          {props.preview.right.accountMenu.billing.label}
-                          <DropdownMenuShortcut>
-                            {props.preview.right.accountMenu.billing.shortcut}
-                          </DropdownMenuShortcut>
-                        </DropdownMenuItem>
-                      </DropdownMenuGroup>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem variant="destructive">
-                        <LogOutIcon class="size-4" />
-                        {props.preview.right.accountMenu.logout}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-
-                  <RadioGroup defaultValue={props.preview.right.audienceOptions[1]?.value} name="demo-audience">
-                    {
-                      props.preview.right.audienceOptions.map((option) => (
-                        <FieldLabel class="w-full">
-                          <Field orientation="horizontal">
-                            <RadioGroupItem value={option.value} />
-                            <FieldContent>
-                              <FieldTitle>{option.title}</FieldTitle>
-                              <FieldDescription>{option.description}</FieldDescription>
-                            </FieldContent>
-                          </Field>
-                        </FieldLabel>
-                      ))
-                    }
-                  </RadioGroup>
-
-                  <Button size="sm" variant="outline" disabled>
-                    <Spinner class="size-4" />
-                    {props.preview.right.processingLabel}
-                  </Button>
-
-                  <div class="flex flex-wrap gap-2 px-1">
-                    <Badge>{props.preview.right.badgeLabels.default}</Badge>
-                    <Badge variant="secondary">{props.preview.right.badgeLabels.secondary}</Badge>
-                    <Badge variant="outline">{props.preview.right.badgeLabels.outline}</Badge>
-                    <Badge variant="destructive">{props.preview.right.badgeLabels.destructive}</Badge>
-                  </div>
-
-                  <Accordion collapsible defaultValue={props.preview.right.faq.first.id}>
-                    <AccordionItem value={props.preview.right.faq.first.id}>
-                      <AccordionTrigger>{props.preview.right.faq.first.question}</AccordionTrigger>
-                      <AccordionContent>
-                        {props.preview.right.faq.first.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value={props.preview.right.faq.second.id}>
-                      <AccordionTrigger>{props.preview.right.faq.second.question}</AccordionTrigger>
-                      <AccordionContent hidden>
-                        {props.preview.right.faq.second.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-
-                  <Card size="sm">
-                    <CardHeader>
-                      <Badge variant="secondary" class="w-fit">
-                        {props.preview.right.workspaceCard.badge}
-                      </Badge>
-                      <CardTitle>{props.preview.right.workspaceCard.title}</CardTitle>
-                      <CardDescription>
-                        {props.preview.right.workspaceCard.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Button
-                        size="sm"
-                        variant={props.preview.right.workspaceCard.action.variant}
-                        class="w-full"
-                        as="a"
-                        href={props.preview.right.workspaceCard.action.href}
-                      >
-                        {props.preview.right.workspaceCard.action.label}
-                      </Button>
-                    </CardContent>
-                  </Card>
-
-                  <div class="flex items-center gap-3 px-1">
-                    <AvatarGroup>
-                      {
-                        props.preview.right.contributors.avatars.map((avatar) => (
-                          <Avatar size="sm">
-                            <AvatarFallback>{avatar.initials}</AvatarFallback>
-                          </Avatar>
-                        ))
-                      }
-                      <AvatarGroupCount>{props.preview.right.contributors.count}</AvatarGroupCount>
-                    </AvatarGroup>
-                    <span class="text-muted-foreground text-xs">
-                      {props.preview.right.contributors.label}
-                    </span>
-                  </div>
-
-                  <div class="flex gap-2">
-                    <InputGroup class="flex-1">
-                      <InputGroupAddon>
-                        <MailIcon />
-                      </InputGroupAddon>
-                      <InputGroupInput
-                        type="email"
-                        placeholder={props.preview.right.emailCapture.placeholder}
-                      />
-                    </InputGroup>
-                    <Button size="sm" variant="outline">
-                      {props.preview.right.emailCapture.actionLabel}
-                    </Button>
-                  </div>
-                </>
-              ))
-            }
-          </div>
-        </div>
-      </div>
+            {action.label}
+          </Button>
+        ))
+      }
     </div>
-  </SectionContent>
+  </SectionContainer>
+  <SectionContainer>
+    <Image
+      src={image.src}
+      alt={image.alt}
+      class="aspect-video w-full rounded-xl border object-cover"
+      widths={[640, 960, 1280, 1536]}
+      sizes="(min-width: 80rem) 80rem, 100vw"
+      loading="eager"
+    />
+  </SectionContainer>
 </Section>
-
-<style is:global>
-  @keyframes scroll-up {
-    from {
-      transform: translateY(0);
-    }
-    to {
-      transform: translateY(-50%);
-    }
-  }
-
-  @keyframes scroll-down {
-    from {
-      transform: translateY(-50%);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-</style>

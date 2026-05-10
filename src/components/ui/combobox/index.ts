@@ -1,5 +1,4 @@
 export { default as Combobox } from "./combobox.astro"
-export { default as ComboboxClear } from "./combobox-clear.astro"
 export { default as ComboboxContent } from "./combobox-content.astro"
 export { default as ComboboxEmpty } from "./combobox-empty.astro"
 export { default as ComboboxGroup } from "./combobox-group.astro"

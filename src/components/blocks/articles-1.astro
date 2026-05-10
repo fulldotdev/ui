@@ -1,74 +1,93 @@
 ---
 import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Section, SectionContent } from "@/components/ui/section"
-import BlockPlaceholder from "@/components/block-placeholder.astro"
-
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
-
-type BlockImage = {
-  src: ImageMetadata
-  alt: string
-}
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    featured: {
-      badge: string
-      title: string
-      description: string
-      image: BlockImage
-      action: BlockAction
+  badge: string
+  title: string
+  description: string
+  articles: {
+    image: {
+      src: ImageMetadata
+      alt: string
     }
-    stories: {
-      image: BlockImage
-      category: string
-      title: string
-      description: string
-    }[]
-  }
+    category: string
+    title: string
+    description: string
+    href?: string
+    author: {
+      image?: ImageMetadata
+      initials: string
+      name: string
+      date: string
+    }
+  }[]
 }
 
-const { props } = Astro.props
+const { badge, title, description, articles } = Astro.props
 ---
 
 <Section>
-  <SectionContent class="grid gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-    <Card class="overflow-hidden">
-      <BlockPlaceholder image={props.featured.image} class="aspect-[16/10] border-b" />
-      <CardHeader class="gap-4">
-        <Badge variant="outline" class="w-fit">{props.featured.badge}</Badge>
-        <div>
-          <CardTitle class="text-3xl leading-tight">{props.featured.title}</CardTitle>
-          <CardDescription class="mt-3 max-w-2xl text-base leading-7">{props.featured.description}</CardDescription>
-        </div>
-      </CardHeader>
-      <CardFooter>
-        <Button as="a" href={props.featured.action.href} variant={props.featured.action.variant}>
-          {props.featured.action.label}
-        </Button>
-      </CardFooter>
-    </Card>
-
-    <div class="flex flex-col gap-4">
-      {props.stories.map((story) => (
-        <Card>
-          <CardContent class="flex gap-4 p-5">
-            <BlockPlaceholder image={story.image} class="size-24 shrink-0 rounded-xl border" />
-            <div class="flex flex-col gap-2">
-              <Badge variant="secondary" class="w-fit">{story.category}</Badge>
-              <h3 class="text-lg font-medium leading-snug">{story.title}</h3>
-              <p class="text-muted-foreground text-sm leading-6">{story.description}</p>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+  <SectionContainer class="gap-8">
+    <div class="flex max-w-2xl flex-col gap-4">
+      <Badge variant="secondary" class="w-fit">{badge}</Badge>
+      <h2
+        class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      <p class="text-muted-foreground text-base leading-7">
+        {description}
+      </p>
     </div>
-  </SectionContent>
+
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {
+        articles.map((article) => (
+          <a
+            href={article.href ?? "#"}
+            class="group hover:bg-muted/50 focus-visible:ring-ring/50 flex h-full flex-col gap-4 rounded-xl p-4 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+          >
+            <Image
+              src={article.image.src}
+              alt={article.image.alt}
+              class="aspect-[16/9] rounded-lg object-cover transition-opacity group-hover:opacity-85"
+              widths={[480, 720, 960]}
+              sizes="(min-width: 64rem) 26rem, (min-width: 48rem) 50vw, 100vw"
+            />
+            <div class="flex flex-col gap-2">
+              <p class="text-muted-foreground text-sm font-medium">
+                {article.category}
+              </p>
+              <h3 class="text-foreground line-clamp-2 text-xl leading-snug font-semibold">
+                {article.title}
+              </h3>
+              <p class="text-muted-foreground line-clamp-2 text-sm leading-6">
+                {article.description}
+              </p>
+            </div>
+            <div class="mt-auto flex items-center gap-3">
+              <Avatar>
+                <AvatarImage
+                  src={article.author.image}
+                  alt={article.author.name}
+                />
+                <AvatarFallback>{article.author.initials}</AvatarFallback>
+              </Avatar>
+              <div class="flex flex-col">
+                <p class="text-sm font-medium">{article.author.name}</p>
+                <p class="text-muted-foreground text-xs">
+                  {article.author.date}
+                </p>
+              </div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </SectionContainer>
 </Section>

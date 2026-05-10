@@ -1,43 +1,91 @@
 ---
+import { CheckIcon } from "@lucide/astro"
+
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
-import { Section, SectionContent } from "@/components/ui/section"
+import { Section, SectionContainer } from "@/components/ui/section"
+import { Separator } from "@/components/ui/separator"
 
 interface Props {
-  props: {
-    badge: string
-    title: string
-    offer: {
-      title: string
-      price: number
-      currency: string
-      unit: string
-      description: string
+  badge?: string
+  title: string
+  description?: string
+  offer: {
+    name: string
+    description: string
+    price: number
+    currency: string
+    unit: string
+    features: string[]
+    action: {
+      label: string
+      href: string
+      variant?: "default" | "outline" | "ghost" | "secondary"
     }
   }
 }
 
-const { props } = Astro.props
+const { badge, title, description, offer } = Astro.props
 ---
 
 <Section>
-  <SectionContent class="rounded-3xl border bg-muted/15 p-8 sm:p-10">
-    <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-      <div class="max-w-2xl">
-        <Badge variant="secondary">{props.badge}</Badge>
-        <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
-      </div>
-      <Card class="w-full max-w-sm">
-        <CardHeader><CardTitle>{props.offer.title}</CardTitle></CardHeader>
-        <CardContent class="flex flex-col gap-4">
-          <Price>
-            <PriceValue price={props.offer.price} currency={props.offer.currency} />
-            <PriceUnit>{props.offer.unit}</PriceUnit>
-          </Price>
-          <p class="text-muted-foreground text-sm leading-6">{props.offer.description}</p>
-        </CardContent>
-      </Card>
+  <SectionContainer class="items-center gap-8 text-center">
+    <div class="flex max-w-2xl flex-col items-center gap-4">
+      {badge && <Badge variant="secondary">{badge}</Badge>}
+      <h2
+        class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      {
+        description && (
+          <p class="text-muted-foreground text-lg leading-relaxed text-balance">
+            {description}
+          </p>
+        )
+      }
     </div>
-  </SectionContent>
+    <Card class="ring-primary w-full max-w-md ring-2">
+      <CardHeader class="text-left">
+        <CardTitle>{offer.name}</CardTitle>
+        <CardDescription>{offer.description}</CardDescription>
+      </CardHeader>
+      <CardContent class="flex flex-col gap-6 text-left">
+        <Price>
+          <PriceValue price={offer.price} currency={offer.currency} />
+          <PriceUnit>{offer.unit}</PriceUnit>
+        </Price>
+        <Separator />
+        <ul class="flex flex-col gap-3">
+          {
+            offer.features.map((feature) => (
+              <li class="flex items-center gap-3 text-sm">
+                <CheckIcon class="text-primary size-4 shrink-0" />
+                {feature}
+              </li>
+            ))
+          }
+        </ul>
+      </CardContent>
+      <CardFooter>
+        <Button
+          as="a"
+          href={offer.action.href}
+          variant={offer.action.variant ?? "default"}
+          class="w-full"
+        >
+          {offer.action.label}
+        </Button>
+      </CardFooter>
+    </Card>
+  </SectionContainer>
 </Section>

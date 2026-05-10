@@ -1,11 +1,12 @@
 import { type SchemaContext } from "astro:content"
 import { z } from "astro/zod"
 
-import { buttonSchema, seoSchema } from "@/schemas/shared"
+import { baseSchema } from "@/schemas/layouts/base"
+import { buttonSchema } from "@/schemas/shared"
 
 export const homeSchema = (ctx: SchemaContext) =>
-  z
-    .object({
+  baseSchema(ctx)
+    .extend({
       hero: z
         .object({
           title: z.string(),
@@ -20,7 +21,6 @@ export const homeSchema = (ctx: SchemaContext) =>
           buttons: buttonSchema.array().length(2),
         })
         .strict(),
-      seo: seoSchema(ctx),
     })
     .strict()
 

@@ -1,44 +1,99 @@
 ---
-import type { ImageMetadata } from "astro"
-import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
+import Discord from "simple-icons-astro/Discord"
+import Github from "simple-icons-astro/Github"
+import X from "simple-icons-astro/X"
 
-type BlockImage = {
-  src: ImageMetadata
-  alt: string
-}
+import { Logo, LogoText } from "@/components/ui/logo"
+import { Section, SectionContainer } from "@/components/ui/section"
+import { Separator } from "@/components/ui/separator"
 
 interface Props {
-  props: {
-    homeHref: string
-    name: string
-    logos: {
-      dark: BlockImage
-      light: BlockImage
-    }
-    copyright: string
-  }
+  brandName: string
+  brandHref: string
+  description: string
+  socials?: {
+    label: string
+    href: string
+    icon: string
+  }[]
+  columns: {
+    title: string
+    links: {
+      label: string
+      href: string
+    }[]
+  }[]
+  copyright: string
 }
 
-const { props } = Astro.props
+const { brandName, brandHref, description, socials, columns, copyright } =
+  Astro.props
+
+const iconMap: Record<string, any> = {
+  github: Github,
+  discord: Discord,
+  x: X,
+}
 ---
 
-<footer class="px-6 py-8">
-  <div
-    class="text-muted-foreground mx-auto flex max-w-container items-center justify-between text-sm"
-  >
-    <Logo href={props.homeHref}>
-      <LogoImage
-        src={props.logos.dark.src}
-        alt={props.logos.dark.alt}
-        class="dark:hidden"
-      />
-      <LogoImage
-        src={props.logos.light.src}
-        alt={props.logos.light.alt}
-        class="hidden dark:block"
-      />
-      <LogoText>{props.name}</LogoText>
-    </Logo>
-    <span>{props.copyright}</span>
-  </div>
+<footer>
+  <Section class="py-16 lg:py-20">
+    <SectionContainer>
+      <div class="grid gap-10 lg:grid-cols-[1fr_2fr]">
+        <div class="flex flex-col gap-5">
+          <Logo href={brandHref}>
+            <LogoText>{brandName}</LogoText>
+          </Logo>
+          <p class="text-muted-foreground max-w-xs text-sm leading-relaxed">
+            {description}
+          </p>
+          {
+            socials && socials.length > 0 && (
+              <div class="flex items-center gap-3">
+                {socials.map((social) => {
+                  const IconComp = iconMap[social.icon]
+                  return (
+                    <a
+                      href={social.href}
+                      class="text-muted-foreground hover:text-foreground transition-colors"
+                      aria-label={social.label}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {IconComp && (
+                        <IconComp class="size-4" fill="currentColor" />
+                      )}
+                    </a>
+                  )
+                })}
+              </div>
+            )
+          }
+        </div>
+        <div class="grid gap-8 sm:grid-cols-3">
+          {
+            columns.map((column) => (
+              <div class="flex flex-col gap-3">
+                <p class="text-sm font-medium">{column.title}</p>
+                <ul class="flex flex-col gap-2.5">
+                  {column.links.map((link) => (
+                    <li>
+                      <a
+                        href={link.href}
+                        class="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+      <Separator />
+      <p class="text-muted-foreground text-sm">{copyright}</p>
+    </SectionContainer>
+  </Section>
 </footer>

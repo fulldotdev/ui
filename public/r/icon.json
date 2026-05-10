@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon",
+  "dependencies": [
+    "@lucide/astro",
+    "simple-icons-astro"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/icon/icon.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\ninterface Props extends Omit<HTMLAttributes<\"svg\">, \"name\" | \"href\"> {\n  href?: HTMLAttributes<\"a\">[\"href\"]\n  name?: string | number\n}\n\nconst { name, href, ...rest } = Astro.props\n\nconst hrefMap = {\n  \"x.com\": \"x\",\n  twitter: \"twitter\",\n  facebook: \"facebook\",\n  instagram: \"instagram\",\n  pinterest: \"pinterest\",\n  youtube: \"youtube\",\n  tiktok: \"tiktok\",\n  snapchat: \"snapchat\",\n  reddit: \"reddit\",\n  tumblr: \"tumblr\",\n  \"wa.me\": \"whatsapp\",\n  telegram: \"telegram\",\n  discord: \"discord\",\n  vimeo: \"vimeo\",\n  flickr: \"flickr\",\n  yelp: \"yelp\",\n  spotify: \"spotify\",\n  behance: \"behance\",\n  dribbble: \"dribbble\",\n  soundcloud: \"soundcloud\",\n  github: \"github\",\n  twitch: \"twitch\",\n  \"tel:\": \"phone\",\n  \"mailto:\": \"mail\",\n  \"maps.app.goo.gl\": \"map-pin\",\n  linkedin: \"linkedin\",\n} as const\n\nconst icons = import.meta.glob([\n  \"@lucide/astro/icons/*\",\n  \"simple-icons-astro/*\",\n])\n\nconst normalise = (value: string | number) =>\n  value\n    .toString()\n    .toLowerCase()\n    .replace(/[^a-z0-9]/g, \"\")\n\nconst foundPath = () => {\n  if (name === \"x.com\") {\n    return Object.keys(icons).find((key) => key === \"simple-icons-astro/X\")\n  }\n\n  if (name) {\n    return Object.keys(icons).find(\n      (key) => normalise(key.split(\"/\").pop() ?? key) === normalise(name)\n    )\n  }\n\n  if (href) {\n    const hrefKey = Object.keys(hrefMap).find((key) =>\n      href.toString().includes(key)\n    )\n    const hrefValue = hrefMap[hrefKey as keyof typeof hrefMap]\n\n    return Object.keys(icons)\n      .reverse()\n      .find(\n        (key) =>\n          hrefValue &&\n          normalise(key.split(\"/\").pop() ?? key) === normalise(hrefValue)\n      )\n  }\n}\n\nconst foundModule = foundPath() && icons[foundPath() as keyof typeof icons]\nconst module = foundModule && ((await foundModule()) as any)\nconst Comp = module?.default\n---\n\n{\n  Comp && foundPath()?.startsWith(\"simple-icons-astro/\") && (\n    <Comp\n      height={24}\n      width={24}\n      fill=\"currentColor\"\n      class=\"size-[1em] text-base\"\n      {...rest}\n    />\n  )\n}\n\n{\n  Comp && foundPath()?.startsWith(\"@lucide/astro/icons/\") && (\n    <Comp height={24} width={24} class=\"size-[1em] text-base\" {...rest} />\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/icon/index.ts",
+      "content": "export { default as Icon } from \"./icon.astro\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

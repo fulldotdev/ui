@@ -3,17 +3,58 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-import { typographyTableCellStyle } from "./typography-styles"
+type Size = "sm" | "default" | "lg"
+type Props = HTMLAttributes<"td"> & {
+  size?: Size
+}
 
-type Props = HTMLAttributes<"td">
-
-const { class: className, ...props } = Astro.props
+const { class: className, size = "default", ...props } = Astro.props
 ---
 
 <td
   data-slot="typography-table-cell"
-  class={cn(typographyTableCellStyle, className)}
+  data-size={size}
+  class={cn(className)}
   {...props}
 >
   <slot />
 </td>
+
+<style is:global>
+  @reference "@/styles/global.css";
+
+  [data-slot="typography-table-cell"],
+  [data-slot="typography-table"] td,
+  [data-slot="typography"] > table td {
+    @apply border px-4 py-2 text-left;
+  }
+
+  [data-slot="typography-table-cell"][data-size="sm"] {
+    @apply text-sm;
+  }
+
+  [data-slot="typography-table-cell"][data-size="default"] {
+    @apply text-base;
+  }
+
+  [data-slot="typography-table-cell"][data-size="lg"] {
+    @apply text-lg;
+  }
+
+  [data-slot="typography-table"] tbody tr:last-child td,
+  [data-slot="typography"] > table tbody tr:last-child td {
+    @apply border-b-0;
+  }
+
+  [data-slot="typography-table-cell"][align="center"],
+  [data-slot="typography-table"] td[align="center"],
+  [data-slot="typography"] > table td[align="center"] {
+    @apply text-center;
+  }
+
+  [data-slot="typography-table-cell"][align="right"],
+  [data-slot="typography-table"] td[align="right"],
+  [data-slot="typography"] > table td[align="right"] {
+    @apply text-right;
+  }
+</style>

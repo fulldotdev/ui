@@ -1,59 +1,83 @@
 ---
-import { Button } from "@/components/ui/button"
+import Discord from "simple-icons-astro/Discord"
+import Github from "simple-icons-astro/Github"
+import X from "simple-icons-astro/X"
+
 import { Logo, LogoText } from "@/components/ui/logo"
-import { Section, SectionContent } from "@/components/ui/section"
-
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
-
-type BlockLink = {
-  label: string
-  href: string
-}
+import { Section, SectionContainer } from "@/components/ui/section"
+import { Separator } from "@/components/ui/separator"
 
 interface Props {
-  props: {
-    brandName: string
-    brandHref: string
-    description: string
-    action: BlockAction
-    columns: {
-      title: string
-      links: BlockLink[]
-    }[]
-  }
+  brandName: string
+  brandHref: string
+  description: string
+  links?: {
+    label: string
+    href: string
+  }[]
+  socials?: {
+    label: string
+    href: string
+    icon: string
+  }[]
+  copyright: string
 }
 
-const { props } = Astro.props
+const { brandName, brandHref, description, links, socials, copyright } =
+  Astro.props
+
+const iconMap: Record<string, any> = {
+  github: Github,
+  discord: Discord,
+  x: X,
+}
 ---
 
-<footer class="border-t py-10">
-  <Section>
-    <SectionContent class="gap-8">
-      <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
-        <div class="flex flex-col gap-4">
-          <Logo href={props.brandHref}><LogoText>{props.brandName}</LogoText></Logo>
-          <p class="text-muted-foreground max-w-sm text-sm leading-6">{props.description}</p>
-          <Button as="a" href={props.action.href} size="sm" variant={props.action.variant}>
-            {props.action.label}
-          </Button>
-        </div>
-        <div class="grid gap-6 sm:grid-cols-3">
-          {props.columns.map((column) => (
-            <div class="flex flex-col gap-3">
-              <p class="text-sm font-medium">{column.title}</p>
-              {column.links.map((link) => (
-                <a href={link.href} class="text-muted-foreground text-sm hover:text-foreground transition-colors">
-                  {link.label}
+<footer>
+  <Section class="py-12 lg:py-16">
+    <SectionContainer class="items-center text-center">
+      <Logo href={brandHref}>
+        <LogoText>{brandName}</LogoText>
+      </Logo>
+      <p class="text-muted-foreground max-w-md text-sm leading-relaxed">
+        {description}
+      </p>
+      {
+        links && links.length > 0 && (
+          <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+            {links.map((link) => (
+              <a
+                href={link.href}
+                class="text-muted-foreground hover:text-foreground text-sm transition-colors"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+        )
+      }
+      {
+        socials && socials.length > 0 && (
+          <div class="flex items-center justify-center gap-3">
+            {socials.map((social) => {
+              const IconComp = iconMap[social.icon]
+              return (
+                <a
+                  href={social.href}
+                  class="text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label={social.label}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {IconComp && <IconComp class="size-4" fill="currentColor" />}
                 </a>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-    </SectionContent>
+              )
+            })}
+          </div>
+        )
+      }
+      <Separator />
+      <p class="text-muted-foreground text-sm">{copyright}</p>
+    </SectionContainer>
   </Section>
 </footer>

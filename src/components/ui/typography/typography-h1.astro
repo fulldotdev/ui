@@ -3,17 +3,39 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-import { typographyH1Style } from "./typography-styles"
+type Size = "sm" | "default" | "lg"
+type Props = HTMLAttributes<"h1"> & {
+  size?: Size
+}
 
-type Props = HTMLAttributes<"h1">
-
-const { class: className, ...props } = Astro.props
+const { class: className, size = "default", ...props } = Astro.props
 ---
 
-<h1
-  data-slot="typography-h1"
-  class={cn(typographyH1Style, className)}
-  {...props}
->
+<h1 data-slot="typography-h1" data-size={size} class={cn(className)} {...props}>
   <slot />
 </h1>
+
+<style is:global>
+  @reference "@/styles/global.css";
+
+  [data-slot="typography-h1"],
+  [data-slot="typography"] > h1 {
+    @apply scroll-m-20 font-semibold tracking-tight text-balance;
+  }
+
+  [data-slot="typography-h1"][data-size="sm"],
+  [data-slot="typography"][data-size="sm"] > h1 {
+    @apply text-3xl;
+  }
+
+  [data-slot="typography-h1"][data-size="default"],
+  [data-slot="typography"] > h1,
+  [data-slot="typography"][data-size="default"] > h1 {
+    @apply text-4xl;
+  }
+
+  [data-slot="typography-h1"][data-size="lg"],
+  [data-slot="typography"][data-size="lg"] > h1 {
+    @apply text-5xl;
+  }
+</style>

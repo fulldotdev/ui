@@ -1,5 +1,5 @@
 ---
-import { ChevronDownIcon } from "@lucide/astro"
+import ChevronDownIcon from "@lucide/astro/icons/chevron-down"
 
 import {
   Accordion,
@@ -22,25 +22,21 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import { Section, SectionContent } from "@/components/ui/section"
+import { Section, SectionContainer } from "@/components/ui/section"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-type Item = {
-  href: string
+type Props = {
   title: string
   description: string
-  preview: "section" | "card" | "accordion" | "tabs" | "header" | "button"
-}
-
-type Props = {
-  props: {
+  items: {
+    href: string
     title: string
     description: string
-    items: Item[]
-  }
+    preview: "section" | "card" | "accordion" | "tabs" | "header" | "button"
+  }[]
 }
 
-const { props } = Astro.props
+const { title, description, items } = Astro.props
 ---
 
 <Section>
@@ -49,16 +45,18 @@ const { props } = Astro.props
     class="flex flex-col gap-12 [&_[data-slot=carousel-content]]:!overflow-x-clip [&_[data-slot=carousel-content]]:!overflow-y-visible [&_[data-slot=carousel-content]]:py-3"
     opts={{ align: "start", loop: false, skipSnaps: false }}
   >
-    <SectionContent class="gap-y-0" data-links-2-carousel-content>
+    <SectionContainer class="gap-y-0" data-links-2-carousel-content>
       <div class="flex items-end justify-between gap-6">
         <div class="max-w-2xl" data-links-2-carousel-intro>
           <h2
             class="text-foreground text-2xl font-semibold tracking-tight text-balance sm:text-3xl"
           >
-            {props.title}
+            {title}
           </h2>
-          <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">
-            {props.description}
+          <p
+            class="text-muted-foreground mt-4 text-base leading-relaxed text-balance"
+          >
+            {description}
           </p>
         </div>
         <div class="flex shrink-0 items-center gap-2">
@@ -66,158 +64,148 @@ const { props } = Astro.props
           <CarouselNext class="static translate-y-0" />
         </div>
       </div>
-    </SectionContent>
+    </SectionContainer>
 
     <CarouselContent class="!ml-0">
       {
-        props.items.map((item) => {
+        items.map((item) => {
           const kind = item.preview
 
           return (
-            <CarouselItem class="!pl-0 pr-4 sm:basis-1/2 lg:basis-1/3">
-                <a
-                  href={item.href}
-                  class="group/preview-card flex h-full min-w-0 flex-col"
-                >
-                  <Card class="ring-foreground/10 hover:ring-foreground/20 flex h-full flex-col gap-0 overflow-hidden p-0 transition-all hover:-translate-y-0.5 hover:shadow-md">
-                    <div
-                      class="bg-muted/40 group-hover/preview-card:bg-muted/60 relative flex h-44 items-center justify-center overflow-hidden border-b p-6 transition-colors"
-                    >
-                      <div
-                        class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,theme(colors.foreground/0.04),transparent_70%)]"
-                      />
+            <CarouselItem class="pr-4 !pl-0 sm:basis-1/2 lg:basis-1/3">
+              <a
+                href={item.href}
+                class="group/preview-card flex h-full min-w-0 flex-col"
+              >
+                <Card class="ring-foreground/10 hover:ring-foreground/20 flex h-full flex-col gap-0 overflow-hidden p-0 transition-all hover:-translate-y-0.5 hover:shadow-md">
+                  <div class="bg-muted/30 group-hover/preview-card:bg-muted/60 relative flex h-44 items-center justify-center overflow-hidden border-b p-6 transition-colors">
+                    <div class="bg-[radial-gradient(circle_at_50%_50%,theme(colors.foreground/0.04),transparent_70%)] pointer-events-none absolute inset-0" />
 
-                      {kind === "section" && (
-                        <div class="flex w-full max-w-[220px] flex-col gap-2">
-                          <div class="bg-background ring-foreground/10 flex flex-col gap-2 rounded-lg p-3 shadow-xs ring-1">
-                            <div class="bg-foreground/80 h-2 w-16 rounded-full" />
-                            <div class="bg-muted-foreground/40 h-1.5 w-full rounded-full" />
-                            <div class="bg-muted-foreground/30 h-1.5 w-5/6 rounded-full" />
-                          </div>
-                          <div class="bg-background ring-foreground/10 flex flex-col gap-2 rounded-lg p-3 shadow-xs ring-1">
-                            <div class="bg-foreground/70 h-2 w-12 rounded-full" />
-                            <div class="bg-muted-foreground/40 h-1.5 w-full rounded-full" />
-                          </div>
+                    {kind === "section" && (
+                      <div class="flex w-full max-w-[220px] flex-col gap-2">
+                        <div class="bg-background ring-foreground/10 flex flex-col gap-2 rounded-lg p-3 shadow-xs ring-1">
+                          <div class="bg-foreground/80 h-2 w-16 rounded-full" />
+                          <div class="bg-muted-foreground/40 h-1.5 w-full rounded-full" />
+                          <div class="bg-muted-foreground/30 h-1.5 w-5/6 rounded-full" />
                         </div>
-                      )}
-
-                      {kind === "card" && (
-                        <Card size="sm" class="w-[220px]">
-                          <CardHeader>
-                            <CardTitle class="sr-only">{item.title}</CardTitle>
-                            <CardDescription class="sr-only">
-                              {item.description}
-                            </CardDescription>
-                            <div class="bg-foreground/80 h-2 w-24 rounded-full" />
-                            <div class="bg-muted-foreground/35 h-1.5 w-28 rounded-full" />
-                          </CardHeader>
-                          <CardContent>
-                            <div class="flex items-center gap-2">
-                              <span class="bg-primary size-2 rounded-full" />
-                              <span class="bg-muted-foreground/35 h-1.5 w-24 rounded-full" />
-                            </div>
-                          </CardContent>
-                        </Card>
-                      )}
-
-                      {kind === "accordion" && (
-                        <div class="bg-background ring-foreground/10 w-[220px] rounded-lg px-4 py-1 shadow-xs ring-1">
-                          <Accordion collapsible defaultValue="preview-1">
-                            <AccordionItem value="preview-1">
-                              <AccordionTrigger class="text-xs">
-                                <span class="bg-foreground/75 h-1.5 w-24 rounded-full" />
-                              </AccordionTrigger>
-                              <AccordionContent class="text-xs">
-                                <div class="bg-muted-foreground/35 h-1.5 w-full rounded-full" />
-                              </AccordionContent>
-                            </AccordionItem>
-                            <AccordionItem value="preview-2">
-                              <AccordionTrigger class="text-xs">
-                                <span class="bg-foreground/60 h-1.5 w-20 rounded-full" />
-                              </AccordionTrigger>
-                              <AccordionContent class="text-xs" hidden>
-                                <div class="bg-muted-foreground/30 h-1.5 w-5/6 rounded-full" />
-                              </AccordionContent>
-                            </AccordionItem>
-                          </Accordion>
+                        <div class="bg-background ring-foreground/10 flex flex-col gap-2 rounded-lg p-3 shadow-xs ring-1">
+                          <div class="bg-foreground/70 h-2 w-12 rounded-full" />
+                          <div class="bg-muted-foreground/40 h-1.5 w-full rounded-full" />
                         </div>
-                      )}
+                      </div>
+                    )}
 
-                      {kind === "tabs" && (
-                        <Tabs data-default-value="preview-overview" class="w-[220px]">
-                          <TabsList class="grid w-full grid-cols-2">
-                            <TabsTrigger data-value="preview-overview" class="text-xs">
-                              <span class="bg-foreground/70 h-1.5 w-16 rounded-full" />
-                            </TabsTrigger>
-                            <TabsTrigger data-value="preview-usage" class="text-xs">
-                              <span class="bg-foreground/45 h-1.5 w-12 rounded-full" />
-                            </TabsTrigger>
-                          </TabsList>
-                          <TabsContent data-value="preview-overview">
-                            <div
-                              class="bg-background ring-foreground/10 mt-2 flex flex-col gap-2 rounded-md p-3 text-xs shadow-xs ring-1"
-                            >
-                              <div class="bg-foreground/75 h-1.5 w-28 rounded-full" />
-                              <div class="bg-muted-foreground/35 h-1.5 w-full rounded-full" />
-                              <div class="bg-muted-foreground/25 h-1.5 w-4/5 rounded-full" />
-                            </div>
-                          </TabsContent>
-                          <TabsContent data-value="preview-usage" hidden>
-                            <div
-                              class="bg-background ring-foreground/10 mt-2 flex flex-col gap-2 rounded-md p-3 text-xs shadow-xs ring-1"
-                            >
-                              <div class="bg-foreground/75 h-1.5 w-20 rounded-full" />
-                              <div class="bg-muted-foreground/35 h-1.5 w-full rounded-full" />
-                            </div>
-                          </TabsContent>
-                        </Tabs>
-                      )}
-
-                      {kind === "header" && (
-                        <div
-                          class="bg-background ring-foreground/10 flex w-[240px] items-center justify-between rounded-lg px-3 py-2.5 shadow-xs ring-1"
-                        >
+                    {kind === "card" && (
+                      <Card size="sm" class="w-[220px]">
+                        <CardHeader>
+                          <CardTitle class="sr-only">{item.title}</CardTitle>
+                          <CardDescription class="sr-only">
+                            {item.description}
+                          </CardDescription>
+                          <div class="bg-foreground/80 h-2 w-24 rounded-full" />
+                          <div class="bg-muted-foreground/35 h-1.5 w-28 rounded-full" />
+                        </CardHeader>
+                        <CardContent>
                           <div class="flex items-center gap-2">
-                            <div class="bg-foreground size-5 rounded" />
-                            <div class="bg-foreground/75 h-1.5 w-12 rounded-full" />
+                            <span class="bg-primary size-2 rounded-full" />
+                            <span class="bg-muted-foreground/35 h-1.5 w-24 rounded-full" />
                           </div>
-                          <div class="flex items-center gap-3">
-                            <div class="bg-muted-foreground/35 h-1.5 w-8 rounded-full" />
-                            <div class="bg-muted-foreground/35 h-1.5 w-10 rounded-full" />
-                            <div class="bg-foreground h-5 w-12 rounded-md" />
-                          </div>
-                        </div>
-                      )}
+                        </CardContent>
+                      </Card>
+                    )}
 
-                      {kind === "button" && (
-                        <div class="flex flex-col gap-2">
-                          <div class="flex gap-2">
-                            <Button size="sm">
-                              <span class="bg-background/85 h-1.5 w-14 rounded-full" />
-                            </Button>
-                            <Button size="sm" variant="outline">
-                              <span class="bg-foreground/60 h-1.5 w-12 rounded-full" />
-                              <ChevronDownIcon class="size-3" />
-                            </Button>
-                          </div>
-                          <div class="flex gap-2">
-                            <Button size="sm" variant="ghost">
-                              <span class="bg-foreground/50 h-1.5 w-10 rounded-full" />
-                            </Button>
-                            <Button size="sm" variant="secondary">
-                              <span class="bg-foreground/65 h-1.5 w-8 rounded-full" />
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                    {kind === "accordion" && (
+                      <div class="bg-background ring-foreground/10 w-[220px] rounded-lg px-4 py-1 shadow-xs ring-1">
+                        <Accordion collapsible defaultValue="preview-1">
+                          <AccordionItem value="preview-1">
+                            <AccordionTrigger class="text-xs">
+                              <span class="bg-foreground/75 h-1.5 w-24 rounded-full" />
+                            </AccordionTrigger>
+                            <AccordionContent class="text-xs">
+                              <div class="bg-muted-foreground/35 h-1.5 w-full rounded-full" />
+                            </AccordionContent>
+                          </AccordionItem>
+                          <AccordionItem value="preview-2">
+                            <AccordionTrigger class="text-xs">
+                              <span class="bg-foreground/60 h-1.5 w-20 rounded-full" />
+                            </AccordionTrigger>
+                            <AccordionContent class="text-xs" hidden>
+                              <div class="bg-muted-foreground/30 h-1.5 w-5/6 rounded-full" />
+                            </AccordionContent>
+                          </AccordionItem>
+                        </Accordion>
+                      </div>
+                    )}
 
-                    <div class="flex flex-1 flex-col gap-2 p-6">
-                      <CardTitle class="text-base">{item.title}</CardTitle>
-                      <CardDescription>{item.description}</CardDescription>
-                    </div>
-                  </Card>
-                </a>
+                    {kind === "tabs" && (
+                      <Tabs defaultValue="preview-overview" class="w-[220px]">
+                        <TabsList class="grid w-full grid-cols-2">
+                          <TabsTrigger value="preview-overview" class="text-xs">
+                            <span class="bg-foreground/70 h-1.5 w-16 rounded-full" />
+                          </TabsTrigger>
+                          <TabsTrigger value="preview-usage" class="text-xs">
+                            <span class="bg-foreground/45 h-1.5 w-12 rounded-full" />
+                          </TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="preview-overview">
+                          <div class="bg-background ring-foreground/10 mt-2 flex flex-col gap-2 rounded-md p-3 text-xs shadow-xs ring-1">
+                            <div class="bg-foreground/75 h-1.5 w-28 rounded-full" />
+                            <div class="bg-muted-foreground/35 h-1.5 w-full rounded-full" />
+                            <div class="bg-muted-foreground/25 h-1.5 w-4/5 rounded-full" />
+                          </div>
+                        </TabsContent>
+                        <TabsContent value="preview-usage" hidden>
+                          <div class="bg-background ring-foreground/10 mt-2 flex flex-col gap-2 rounded-md p-3 text-xs shadow-xs ring-1">
+                            <div class="bg-foreground/75 h-1.5 w-20 rounded-full" />
+                            <div class="bg-muted-foreground/35 h-1.5 w-full rounded-full" />
+                          </div>
+                        </TabsContent>
+                      </Tabs>
+                    )}
+
+                    {kind === "header" && (
+                      <div class="bg-background ring-foreground/10 flex w-[240px] items-center justify-between rounded-lg px-3 py-2.5 shadow-xs ring-1">
+                        <div class="flex items-center gap-2">
+                          <div class="bg-foreground size-5 rounded" />
+                          <div class="bg-foreground/75 h-1.5 w-12 rounded-full" />
+                        </div>
+                        <div class="flex items-center gap-3">
+                          <div class="bg-muted-foreground/35 h-1.5 w-8 rounded-full" />
+                          <div class="bg-muted-foreground/35 h-1.5 w-10 rounded-full" />
+                          <div class="bg-foreground h-5 w-12 rounded-md" />
+                        </div>
+                      </div>
+                    )}
+
+                    {kind === "button" && (
+                      <div class="flex flex-col gap-2">
+                        <div class="flex gap-2">
+                          <Button size="sm">
+                            <span class="bg-background/85 h-1.5 w-14 rounded-full" />
+                          </Button>
+                          <Button size="sm" variant="outline">
+                            <span class="bg-foreground/60 h-1.5 w-12 rounded-full" />
+                            <ChevronDownIcon class="size-3" />
+                          </Button>
+                        </div>
+                        <div class="flex gap-2">
+                          <Button size="sm" variant="ghost">
+                            <span class="bg-foreground/50 h-1.5 w-10 rounded-full" />
+                          </Button>
+                          <Button size="sm" variant="secondary">
+                            <span class="bg-foreground/65 h-1.5 w-8 rounded-full" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div class="flex flex-1 flex-col gap-2 p-6">
+                    <CardTitle class="text-base">{item.title}</CardTitle>
+                    <CardDescription>{item.description}</CardDescription>
+                  </div>
+                </Card>
+              </a>
             </CarouselItem>
           )
         })
@@ -255,8 +243,7 @@ const { props } = Astro.props
     const api = root.__fulldevCarouselApi
     if (!viewport || !container || !content || !intro || !api) return
 
-    const basePadding =
-      parseFloat(getComputedStyle(content).paddingLeft) || 24
+    const basePadding = parseFloat(getComputedStyle(content).paddingLeft) || 24
     const viewportLeft = viewport.getBoundingClientRect().left
     const introLeft = intro.getBoundingClientRect().left
     const alignOffset = Math.max(basePadding, introLeft - viewportLeft)

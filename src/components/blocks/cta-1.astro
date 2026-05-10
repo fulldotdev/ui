@@ -1,60 +1,73 @@
 ---
+import { Avatar, AvatarFallback, AvatarGroup } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Section, SectionContent } from "@/components/ui/section"
-
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
+import { Rating } from "@/components/ui/rating"
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    title: string
-    description: string
-    actions: BlockAction[]
+  title: string
+  description: string
+  actions?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
+  socialProof?: {
+    avatars: string[]
+    rating: number
+    text: string
   }
 }
 
-const { props } = Astro.props
+const { title, description, actions, socialProof } = Astro.props
 ---
 
-<Section variant="floating" class="!mb-6 overflow-hidden !shadow-none">
-  <div
-    class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,color-mix(in_oklch,var(--primary)_3%,transparent),transparent_55%)]"
-  >
-  </div>
-  <div
-    class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,color-mix(in_oklch,var(--border)_60%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_oklch,var(--border)_60%,transparent)_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]"
-  >
-  </div>
-
-  <SectionContent class="relative items-center text-center">
-    <div class="flex max-w-2xl flex-col items-center gap-6">
+<Section variant="floating">
+  <SectionContainer class="items-center text-center">
+    {
+      socialProof ? (
+        <div class="flex flex-col items-center gap-3">
+          <AvatarGroup>
+            {socialProof.avatars.map((initials) => (
+              <Avatar class="ring-background size-11 ring">
+                <AvatarFallback>{initials}</AvatarFallback>
+              </Avatar>
+            ))}
+          </AvatarGroup>
+          <div class="flex items-center gap-2">
+            <Rating value={socialProof.rating} />
+            <span class="text-muted-foreground text-sm">
+              {socialProof.text}
+            </span>
+          </div>
+        </div>
+      ) : null
+    }
+    <div class="flex max-w-2xl flex-col items-center gap-5">
       <h2
         class="text-foreground text-3xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-4xl"
       >
-        {props.title}
+        {title}
       </h2>
-
-      <p class="text-muted-foreground text-base leading-relaxed text-balance">
-        {props.description}
+      <p class="text-muted-foreground text-lg leading-relaxed text-balance">
+        {description}
       </p>
-
-      <div class="mt-2 flex flex-wrap justify-center gap-3">
-        {
-          props.actions.map((action) => (
+    </div>
+    {
+      actions?.length ? (
+        <div class="flex flex-wrap justify-center gap-3">
+          {actions.map((action, i) => (
             <Button
               as="a"
               href={action.href}
               size="lg"
-              variant={action.variant}
+              variant={action.variant ?? (i === 0 ? "default" : "secondary")}
             >
               {action.label}
             </Button>
-          ))
-        }
-      </div>
-    </div>
-  </SectionContent>
+          ))}
+        </div>
+      ) : null
+    }
+  </SectionContainer>
 </Section>

@@ -1,99 +1,81 @@
 ---
 import type { ImageMetadata } from "astro"
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Section, SectionContent } from "@/components/ui/section"
-import BlockPlaceholder from "@/components/block-placeholder.astro"
-
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
-
-type BlockImage = {
-  src: ImageMetadata
-  alt: string
-}
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    badge?: string
+  badge: string
+  title: string
+  description: string
+  articles: {
+    category: string
+    title: string
     description: string
-    stories: {
-      image: BlockImage
-      title: string
-    }[]
-    aside?: {
-      badge: string
-      title: string
-      description: string
-      panelText: string
-      action: BlockAction
+    href?: string
+    author: {
+      image?: ImageMetadata
+      initials: string
+      name: string
+      date: string
     }
-  }
+  }[]
 }
 
-const { props } = Astro.props
+const { badge, title, description, articles } = Astro.props
 ---
 
 <Section>
-  <SectionContent
-    class="grid gap-8 xl:grid-cols-[minmax(0,1.6fr)_20rem] xl:items-start"
-  >
-    <div class="grid gap-4 md:grid-cols-2">
+  <SectionContainer class="gap-8">
+    <div class="mx-auto max-w-2xl text-center">
+      <Badge variant="secondary">{badge}</Badge>
+      <h2
+        class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      <p class="text-muted-foreground mt-2 text-base leading-7 text-balance">
+        {description}
+      </p>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {
-        props.stories.map((story) => (
-          <Card class="overflow-hidden">
-            <BlockPlaceholder
-              image={story.image}
-              class="aspect-[16/10] border-b"
-            />
-            <CardHeader>
-              <Badge variant="secondary" class="w-fit">
-                {props.badge}
-              </Badge>
-              <CardTitle class="text-2xl leading-tight">
-                {story.title}
-              </CardTitle>
-              <CardDescription>{props.description}</CardDescription>
-            </CardHeader>
-          </Card>
+        articles.map((article) => (
+          <a
+            href={article.href ?? "#"}
+            class="group hover:bg-muted/50 focus-visible:ring-ring/50 flex h-full flex-col gap-4 rounded-xl border p-6 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+          >
+            <div class="flex flex-col gap-2">
+              <p class="text-muted-foreground text-sm font-medium">
+                {article.category}
+              </p>
+              <h3 class="text-foreground line-clamp-2 text-xl leading-snug font-semibold">
+                {article.title}
+              </h3>
+              <p class="text-muted-foreground line-clamp-2 text-sm leading-6">
+                {article.description}
+              </p>
+            </div>
+            <div class="mt-auto flex items-center gap-3">
+              <Avatar>
+                <AvatarImage
+                  src={article.author.image}
+                  alt={article.author.name}
+                />
+                <AvatarFallback>{article.author.initials}</AvatarFallback>
+              </Avatar>
+              <div class="flex flex-col">
+                <p class="text-sm font-medium">{article.author.name}</p>
+                <p class="text-muted-foreground text-xs">
+                  {article.author.date}
+                </p>
+              </div>
+            </div>
+          </a>
         ))
       }
     </div>
-
-    {
-      props.aside ? (
-        <Card class="xl:sticky xl:top-24">
-          <CardHeader>
-            <Badge variant="outline" class="w-fit">
-              {props.aside.badge}
-            </Badge>
-            <CardTitle>{props.aside.title}</CardTitle>
-            <CardDescription>{props.aside.description}</CardDescription>
-          </CardHeader>
-          <CardContent class="flex flex-col gap-3">
-            <div class="bg-muted/40 rounded-xl border p-4 text-sm leading-6">
-              {props.aside.panelText}
-            </div>
-            <Button
-              as="a"
-              href={props.aside.action.href}
-              variant={props.aside.action.variant}
-            >
-              {props.aside.action.label}
-            </Button>
-          </CardContent>
-        </Card>
-      ) : null
-    }
-  </SectionContent>
+  </SectionContainer>
 </Section>

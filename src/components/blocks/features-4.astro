@@ -1,38 +1,91 @@
 ---
-import { Card, CardContent } from "@/components/ui/card"
-import { Section, SectionContent } from "@/components/ui/section"
+import ArrowRightIcon from "@lucide/astro/icons/arrow-right"
+import LayoutGridIcon from "@lucide/astro/icons/layout-grid"
+
+import { Button } from "@/components/ui/button"
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
+  title: string
+  description: string
+  actions?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
+  items: {
     title: string
-    rows: {
-      number: string
-      title: string
-      description: string
-    }[]
-  }
+    description: string
+    icon: typeof LayoutGridIcon
+    href?: string
+    linkText?: string
+  }[]
 }
 
-const { props } = Astro.props
+const { title, description, actions, items } = Astro.props
 ---
 
 <Section>
-  <SectionContent class="gap-8">
-    <div class="max-w-2xl">
-      <h2 class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{props.title}</h2>
-    </div>
-    <div class="grid gap-3">
-      {props.rows.map((row) => (
-        <Card>
-          <CardContent class="grid gap-4 p-5 md:grid-cols-[4rem_minmax(0,1fr)] md:items-center">
-            <div class="text-primary text-2xl font-semibold">{row.number}</div>
-            <div>
-              <p class="font-medium">{row.title}</p>
-              <p class="text-muted-foreground mt-1 text-sm leading-6">{row.description}</p>
+  <SectionContainer>
+    <div class="grid gap-12 lg:grid-cols-[1fr_2fr] lg:items-start">
+      <div class="lg:sticky lg:top-28">
+        <h2
+          class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+        >
+          {title}
+        </h2>
+        <p
+          class="text-muted-foreground mt-4 text-base leading-relaxed text-balance"
+        >
+          {description}
+        </p>
+        {
+          actions?.length ? (
+            <div class="mt-6 flex flex-wrap gap-3">
+              {actions.map((action, i) => (
+                <Button
+                  as="a"
+                  href={action.href}
+                  variant={action.variant ?? (i === 0 ? "default" : "outline")}
+                >
+                  {action.label}
+                </Button>
+              ))}
             </div>
-          </CardContent>
-        </Card>
-      ))}
+          ) : null
+        }
+      </div>
+      <div class="grid gap-6 sm:grid-cols-2">
+        {
+          items.map((item) => {
+            const Icon = item.icon
+            return (
+              <div class="group/feature hover:bg-muted/40 flex flex-col gap-4 rounded-xl border p-6 transition-colors">
+                <div class="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
+                  <Icon class="size-5" />
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <h3 class="text-foreground text-base font-medium">
+                    {item.title}
+                  </h3>
+                  <p class="text-muted-foreground text-sm leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
+                {item.href && item.linkText && (
+                  <a
+                    href={item.href}
+                    class="text-primary mt-auto inline-flex items-center gap-1 text-sm font-medium hover:underline"
+                  >
+                    {item.linkText}
+                    <ArrowRightIcon class="size-3.5" />
+                  </a>
+                )}
+              </div>
+            )
+          })
+        }
+      </div>
     </div>
-  </SectionContent>
+  </SectionContainer>
 </Section>

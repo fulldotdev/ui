@@ -1,50 +1,84 @@
 ---
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Section, SectionContent } from "@/components/ui/section"
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
 
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
+import { Avatar, AvatarFallback, AvatarGroup } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Rating } from "@/components/ui/rating"
+import { Section, SectionContainer } from "@/components/ui/section"
 
 interface Props {
-  props: {
-    badge: string
-    title: string
-    description: string
-    actions: [BlockAction, BlockAction]
-    aside: {
-      title: string
-      description: string
-    }
+  title: string
+  description: string
+  actions: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "ghost" | "secondary"
+  }[]
+  socialProof: {
+    avatars: string[]
+    rating: number
+    text: string
+  }
+  image: {
+    src: ImageMetadata
+    alt: string
   }
 }
 
-const { props } = Astro.props
+const { title, description, actions, socialProof, image } = Astro.props
 ---
 
 <Section>
-  <SectionContent class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-center">
-    <div class="flex flex-col gap-5">
-      <Badge variant="outline" class="w-fit">{props.badge}</Badge>
-      <h1 class="text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">{props.title}</h1>
-      <p class="text-muted-foreground max-w-2xl text-lg leading-8">{props.description}</p>
-      <div class="flex flex-wrap gap-3">
+  <SectionContainer class="items-center gap-8 text-center">
+    <div class="flex flex-col items-center gap-3">
+      <AvatarGroup>
         {
-          props.actions.map((action) => (
-            <Button as="a" href={action.href} variant={action.variant}>
-              {action.label}
-            </Button>
+          socialProof.avatars.map((initials) => (
+            <Avatar class="ring-background size-11 ring">
+              <AvatarFallback>{initials}</AvatarFallback>
+            </Avatar>
           ))
         }
+      </AvatarGroup>
+      <div class="flex items-center gap-2">
+        <Rating value={socialProof.rating} />
+        <span class="text-muted-foreground text-sm">{socialProof.text}</span>
       </div>
     </div>
-    <Card>
-      <CardHeader><CardTitle>{props.aside.title}</CardTitle></CardHeader>
-      <CardContent class="text-muted-foreground text-sm leading-7">{props.aside.description}</CardContent>
-    </Card>
-  </SectionContent>
+    <h1
+      class="text-foreground max-w-4xl text-4xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl"
+    >
+      {title}
+    </h1>
+    <p
+      class="text-muted-foreground max-w-2xl text-lg leading-relaxed text-balance"
+    >
+      {description}
+    </p>
+    <div class="flex flex-wrap justify-center gap-3">
+      {
+        actions.map((action, i) => (
+          <Button
+            as="a"
+            href={action.href}
+            size="lg"
+            variant={action.variant ?? (i === 0 ? "default" : "secondary")}
+          >
+            {action.label}
+          </Button>
+        ))
+      }
+    </div>
+  </SectionContainer>
+  <SectionContainer>
+    <Image
+      src={image.src}
+      alt={image.alt}
+      class="aspect-video w-full rounded-xl border object-cover"
+      widths={[640, 960, 1280, 1536]}
+      sizes="(min-width: 80rem) 80rem, 100vw"
+      loading="eager"
+    />
+  </SectionContainer>
 </Section>

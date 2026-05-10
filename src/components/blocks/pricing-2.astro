@@ -1,50 +1,99 @@
 ---
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
-import { Section, SectionContent } from "@/components/ui/section"
+import { CheckIcon } from "@lucide/astro"
 
-type BlockAction = {
-  label: string
-  href: string
-  variant?: "default" | "outline" | "ghost" | "secondary"
-}
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
+import { Section, SectionContainer } from "@/components/ui/section"
+import { Separator } from "@/components/ui/separator"
 
 interface Props {
-  props: {
-    title: string
-    frameDescription: string
-    featured: {
-      title: string
-      price: number
-      compareAt?: number
-      currency: string
-      unit: string
-      description: string
-      action: BlockAction
+  title: string
+  description: string
+  plans: {
+    name: string
+    description: string
+    price: number
+    compareAt?: number
+    currency: string
+    unit: string
+    features: string[]
+    action: {
+      label: string
+      href: string
+      variant?: "default" | "outline" | "ghost" | "secondary"
     }
-  }
+  }[]
 }
 
-const { props } = Astro.props
+const { title, description, plans } = Astro.props
 ---
 
 <Section>
-  <SectionContent class="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-start">
-    <Card>
-      <CardHeader><CardTitle>{props.title}</CardTitle></CardHeader>
-      <CardContent class="text-muted-foreground text-base leading-7">{props.frameDescription}</CardContent>
-    </Card>
-    <Card>
-      <CardHeader><CardTitle>{props.featured.title}</CardTitle></CardHeader>
-      <CardContent class="flex flex-col gap-4">
-        <Price>
-          <PriceValue price={props.featured.price} compareAt={props.featured.compareAt} currency={props.featured.currency} />
-          <PriceUnit>{props.featured.unit}</PriceUnit>
-        </Price>
-        <p class="text-muted-foreground text-sm leading-6">{props.featured.description}</p>
-        <Button as="a" href={props.featured.action.href} variant={props.featured.action.variant}>{props.featured.action.label}</Button>
-      </CardContent>
-    </Card>
-  </SectionContent>
+  <SectionContainer class="gap-8">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2
+        class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      <p
+        class="text-muted-foreground mt-4 text-lg leading-relaxed text-balance"
+      >
+        {description}
+      </p>
+    </div>
+    <div
+      class="mx-auto grid w-full justify-center gap-6 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(16rem,18rem))]"
+    >
+      {
+        plans.map((plan, i) => (
+          <Card class="flex flex-col border-none shadow-none">
+            <CardHeader>
+              <CardTitle>{plan.name}</CardTitle>
+              <CardDescription>{plan.description}</CardDescription>
+            </CardHeader>
+            <CardContent class="flex flex-col gap-6">
+              <Price>
+                <PriceValue
+                  price={plan.price}
+                  compareAt={plan.compareAt}
+                  currency={plan.currency}
+                />
+                <PriceUnit>{plan.unit}</PriceUnit>
+              </Price>
+              <Separator />
+              <ul class="flex flex-col gap-3">
+                {plan.features.map((feature) => (
+                  <li class="flex items-center gap-3 text-sm">
+                    <CheckIcon class="text-primary size-4 shrink-0" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+            <CardFooter class="mt-auto">
+              <Button
+                as="a"
+                href={plan.action.href}
+                variant={
+                  plan.action.variant ?? (i === 0 ? "outline" : "default")
+                }
+                class="w-full"
+              >
+                {plan.action.label}
+              </Button>
+            </CardFooter>
+          </Card>
+        ))
+      }
+    </div>
+  </SectionContainer>
 </Section>
