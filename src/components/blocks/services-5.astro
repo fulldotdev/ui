@@ -1,32 +1,41 @@
 ---
 import ArrowRightIcon from "@lucide/astro/icons/arrow-right"
-import LayoutGridIcon from "@lucide/astro/icons/layout-grid"
 
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
+  class?: string
   badge?: string
   title: string
   description?: string
-  actions?: {
+  buttons?: {
     label: string
     href: string
-    variant?: "default" | "outline" | "ghost" | "secondary"
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
-  items: {
-    icon?: typeof LayoutGridIcon
+  services: {
+    icon?: string
     title: string
     description: string
     href?: string
   }[]
 }
 
-const { badge, title, description, actions, items } = Astro.props
+const {
+  class: className,
+  badge,
+  title,
+  description,
+  buttons,
+  services,
+} = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer class="gap-12">
     <div class="mx-auto max-w-2xl text-center">
       {badge && <Badge variant="secondary">{badge}</Badge>}
@@ -43,46 +52,43 @@ const { badge, title, description, actions, items } = Astro.props
         )
       }
       {
-        actions?.length ? (
+        buttons?.length && (
           <div class="mt-6 flex flex-wrap justify-center gap-3">
-            {actions.map((action) => (
-              <Button as="a" href={action.href} variant={action.variant}>
-                {action.label}
+            {buttons.map(({ href, label, ...button }) => (
+              <Button as="a" href={href} variant={button.variant}>
+                {label}
               </Button>
             ))}
           </div>
-        ) : null
+        )
       }
     </div>
     <div
       class="ring-foreground/10 bg-border grid gap-px overflow-hidden rounded-xl ring-1 ring-inset sm:grid-cols-2 lg:grid-cols-4"
     >
       {
-        items.map((service) => {
-          const Icon = service.icon ?? LayoutGridIcon
-          return (
-            <div class="bg-background group/service hover:bg-accent/30 relative flex flex-col gap-4 p-7 transition-colors">
-              <div class="bg-primary/10 text-primary ring-primary/15 flex size-10 items-center justify-center rounded-lg ring-1 transition-transform ring-inset group-hover/service:scale-105">
-                <Icon class="size-5" />
-              </div>
-              <h3 class="text-base font-medium tracking-tight">
-                {service.title}
-              </h3>
-              <p class="text-muted-foreground text-sm leading-relaxed">
-                {service.description}
-              </p>
-              {service.href && (
-                <a
-                  href={service.href}
-                  class="text-primary mt-auto inline-flex items-center gap-1.5 text-sm font-medium"
-                >
-                  Learn more
-                  <ArrowRightIcon class="size-3.5 transition-transform group-hover/service:translate-x-1" />
-                </a>
-              )}
+        services.map((service) => (
+          <div class="bg-background group/service hover:bg-accent/30 relative flex flex-col gap-4 p-7 transition-colors">
+            <div class="bg-primary/10 text-primary ring-primary/15 flex size-10 items-center justify-center rounded-lg ring-1 transition-transform ring-inset group-hover/service:scale-105">
+              <Icon name={service.icon ?? "layout-grid"} class="size-5" />
             </div>
-          )
-        })
+            <h3 class="text-base font-medium tracking-tight">
+              {service.title}
+            </h3>
+            <p class="text-muted-foreground text-sm leading-relaxed">
+              {service.description}
+            </p>
+            {service.href && (
+              <a
+                href={service.href}
+                class="text-primary mt-auto inline-flex items-center gap-1.5 text-sm font-medium"
+              >
+                Learn more
+                <ArrowRightIcon class="size-3.5 transition-transform group-hover/service:translate-x-1" />
+              </a>
+            )}
+          </div>
+        ))
       }
     </div>
   </SectionContainer>

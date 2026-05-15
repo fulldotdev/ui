@@ -9,16 +9,17 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
+  class?: string
   badge?: string
   title: string
   description?: string
-  actions?: {
+  buttons?: {
     label: string
     href: string
-    variant?: "default" | "outline" | "ghost" | "secondary"
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
-  items: {
+  services: {
     image?: {
       src: ImageMetadata
       alt: string
@@ -30,10 +31,17 @@ interface Props {
   }[]
 }
 
-const { badge, title, description, actions, items } = Astro.props
+const {
+  class: className,
+  badge,
+  title,
+  description,
+  buttons,
+  services,
+} = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer class="gap-8">
     <div
       class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
@@ -54,20 +62,20 @@ const { badge, title, description, actions, items } = Astro.props
         }
       </div>
       {
-        actions?.length ? (
+        buttons?.length && (
           <div class="flex flex-wrap gap-3">
-            {actions.map((action) => (
-              <Button as="a" href={action.href} variant={action.variant}>
-                {action.label}
+            {buttons.map(({ href, label, ...button }) => (
+              <Button as="a" href={href} variant={button.variant}>
+                {label}
               </Button>
             ))}
           </div>
-        ) : null
+        )
       }
     </div>
     <div class="grid gap-6 lg:grid-cols-3">
       {
-        items.map((service, index) => (
+        services.map((service, index) => (
           <a
             href={service.href ?? "#"}
             class={cn(
@@ -103,7 +111,12 @@ const { badge, title, description, actions, items } = Astro.props
               <p class="text-muted-foreground text-sm leading-relaxed">
                 {service.description}
               </p>
-              <div class="text-primary mt-auto flex items-center gap-1.5 pt-2 text-sm font-medium">
+              <div
+                class={cn(
+                  "text-primary flex items-center gap-1.5 pt-2 text-sm font-medium",
+                  index !== 0 && "mt-auto"
+                )}
+              >
                 Learn more
                 <ArrowRightIcon class="size-3.5 transition-transform group-hover/service:translate-x-1" />
               </div>

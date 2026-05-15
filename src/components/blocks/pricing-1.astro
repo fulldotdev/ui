@@ -16,7 +16,8 @@ import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
 import { Section, SectionContainer } from "@/components/ui/section"
 import { Separator } from "@/components/ui/separator"
 
-interface Props {
+type Props = {
+  class?: string
   title: string
   description?: string
   plans: {
@@ -27,18 +28,18 @@ interface Props {
     unit: string
     featured?: boolean
     features: string[]
-    action: {
+    button: {
       label: string
       href: string
-      variant?: "default" | "outline" | "ghost" | "secondary"
+      variant?: "default" | "outline" | "secondary" | "ghost"
     }
   }[]
 }
 
-const { title, description, plans } = Astro.props
+const { class: className, title, description, plans } = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer class="items-center gap-8 text-center">
     <div class="flex max-w-2xl flex-col items-center gap-4">
       <h2
@@ -89,13 +90,13 @@ const { title, description, plans } = Astro.props
             <CardFooter class="mt-auto">
               <Button
                 as="a"
-                href={plan.action.href}
+                href={plan.button.href}
                 variant={
-                  plan.action.variant ?? (plan.featured ? "default" : "outline")
+                  plan.button.variant ?? (plan.featured ? "default" : "outline")
                 }
                 class="w-full"
               >
-                {plan.action.label}
+                {plan.button.label}
               </Button>
             </CardFooter>
           </Card>

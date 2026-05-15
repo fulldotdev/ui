@@ -2,12 +2,12 @@ import { type SchemaContext } from "astro:content"
 import { z } from "astro/zod"
 
 export const linkSchema = z.object({
-  text: z.string(),
+  label: z.string(),
   href: z.string(),
 })
 
 export const buttonSchema = z.object({
-  text: z.string(),
+  label: z.string(),
   href: z.string(),
   icon: z.string().optional(),
   variant: z.enum(["default", "outline", "secondary", "ghost"]).optional(),

@@ -2,21 +2,23 @@
 import type { ImageMetadata } from "astro"
 import { Image } from "astro:assets"
 
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
+  class?: string
   title: string
   description: string
-  badge: {
+  badge?: {
     label: string
     href: string
   }
-  actions: {
+  buttons: {
     label: string
     href: string
-    variant?: "default" | "outline" | "ghost" | "secondary"
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
   image: {
     src: ImageMetadata
@@ -24,12 +26,25 @@ interface Props {
   }
 }
 
-const { title, description, badge, actions, image } = Astro.props
+const {
+  class: className,
+  title,
+  description,
+  badge,
+  buttons,
+  image,
+} = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer class="items-center gap-8 text-center">
-    <Badge as="a" href={badge.href} variant="secondary">{badge.label}</Badge>
+    {
+      badge && (
+        <Badge as="a" href={badge.href} variant="secondary">
+          {badge.label}
+        </Badge>
+      )
+    }
     <h1
       class="text-foreground max-w-4xl text-4xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl"
     >
@@ -42,14 +57,15 @@ const { title, description, badge, actions, image } = Astro.props
     </p>
     <div class="flex flex-wrap justify-center gap-3">
       {
-        actions.map((action, i) => (
+        buttons.map(({ href, label, ...button }, index) => (
           <Button
             as="a"
-            href={action.href}
+            href={href}
             size="lg"
-            variant={action.variant ?? (i === 0 ? "default" : "secondary")}
+            variant={button.variant ?? (index === 0 ? "default" : "secondary")}
+            {...button}
           >
-            {action.label}
+            {label}
           </Button>
         ))
       }

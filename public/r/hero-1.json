@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "hero-1",
+  "registryDependencies": [
+    "@fulldev/badge",
+    "@fulldev/button",
+    "@fulldev/section"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/hero-1.astro",
+      "content": "---\nimport type { ImageMetadata } from \"astro\"\nimport { Image } from \"astro:assets\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Badge } from \"@/components/ui/badge\"\nimport { Button } from \"@/components/ui/button\"\nimport { Section, SectionContainer } from \"@/components/ui/section\"\n\ntype Props = {\n  class?: string\n  title: string\n  description: string\n  badge?: {\n    label: string\n    href: string\n  }\n  buttons: {\n    label: string\n    href: string\n    variant?: \"default\" | \"outline\" | \"secondary\" | \"ghost\"\n  }[]\n  image: {\n    src: ImageMetadata\n    alt: string\n  }\n}\n\nconst {\n  class: className,\n  title,\n  description,\n  badge,\n  buttons,\n  image,\n} = Astro.props\n---\n\n<Section class={cn(\"\", className)}>\n  <SectionContainer class=\"items-center gap-8 text-center\">\n    {\n      badge && (\n        <Badge as=\"a\" href={badge.href} variant=\"secondary\">\n          {badge.label}\n        </Badge>\n      )\n    }\n    <h1\n      class=\"text-foreground max-w-4xl text-4xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl\"\n    >\n      {title}\n    </h1>\n    <p\n      class=\"text-muted-foreground max-w-2xl text-lg leading-relaxed text-balance\"\n    >\n      {description}\n    </p>\n    <div class=\"flex flex-wrap justify-center gap-3\">\n      {\n        buttons.map(({ href, label, ...button }, index) => (\n          <Button\n            as=\"a\"\n            href={href}\n            size=\"lg\"\n            variant={button.variant ?? (index === 0 ? \"default\" : \"secondary\")}\n            {...button}\n          >\n            {label}\n          </Button>\n        ))\n      }\n    </div>\n  </SectionContainer>\n  <SectionContainer>\n    <Image\n      src={image.src}\n      alt={image.alt}\n      class=\"aspect-video w-full rounded-xl border object-cover\"\n      widths={[640, 960, 1280, 1536]}\n      sizes=\"(min-width: 80rem) 80rem, 100vw\"\n      loading=\"eager\"\n    />\n  </SectionContainer>\n</Section>\n",
+      "type": "registry:block"
+    }
+  ],
+  "type": "registry:block"
+}

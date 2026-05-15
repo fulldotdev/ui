@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pricing-1",
+  "dependencies": [
+    "@lucide/astro"
+  ],
+  "registryDependencies": [
+    "@fulldev/badge",
+    "@fulldev/button",
+    "@fulldev/card",
+    "@fulldev/price",
+    "@fulldev/section",
+    "@fulldev/separator"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/pricing-1.astro",
+      "content": "---\nimport { CheckIcon } from \"@lucide/astro\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Badge } from \"@/components/ui/badge\"\nimport { Button } from \"@/components/ui/button\"\nimport {\n  Card,\n  CardContent,\n  CardDescription,\n  CardFooter,\n  CardHeader,\n  CardTitle,\n} from \"@/components/ui/card\"\nimport { Price, PriceUnit, PriceValue } from \"@/components/ui/price\"\nimport { Section, SectionContainer } from \"@/components/ui/section\"\nimport { Separator } from \"@/components/ui/separator\"\n\ntype Props = {\n  class?: string\n  title: string\n  description?: string\n  plans: {\n    name: string\n    description: string\n    price: number\n    currency: string\n    unit: string\n    featured?: boolean\n    features: string[]\n    button: {\n      label: string\n      href: string\n      variant?: \"default\" | \"outline\" | \"secondary\" | \"ghost\"\n    }\n  }[]\n}\n\nconst { class: className, title, description, plans } = Astro.props\n---\n\n<Section class={cn(\"\", className)}>\n  <SectionContainer class=\"items-center gap-8 text-center\">\n    <div class=\"flex max-w-2xl flex-col items-center gap-4\">\n      <h2\n        class=\"text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl\"\n      >\n        {title}\n      </h2>\n      {\n        description && (\n          <p class=\"text-muted-foreground text-lg leading-relaxed text-balance\">\n            {description}\n          </p>\n        )\n      }\n    </div>\n  </SectionContainer>\n  <SectionContainer>\n    <div\n      class=\"mx-auto grid w-full justify-center gap-6 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(16rem,18rem))]\"\n    >\n      {\n        plans.map((plan) => (\n          <Card\n            class={cn(\"flex flex-col\", plan.featured && \"ring-primary ring-2\")}\n          >\n            <CardHeader>\n              <div class=\"flex items-center gap-2\">\n                <CardTitle>{plan.name}</CardTitle>\n                {plan.featured && <Badge>Popular</Badge>}\n              </div>\n              <CardDescription>{plan.description}</CardDescription>\n            </CardHeader>\n            <CardContent class=\"flex flex-col gap-6\">\n              <Price>\n                <PriceValue price={plan.price} currency={plan.currency} />\n                <PriceUnit>{plan.unit}</PriceUnit>\n              </Price>\n              <Separator />\n              <ul class=\"flex flex-col gap-3\">\n                {plan.features.map((feature) => (\n                  <li class=\"flex items-center gap-3 text-sm\">\n                    <CheckIcon class=\"text-primary size-4 shrink-0\" />\n                    {feature}\n                  </li>\n                ))}\n              </ul>\n            </CardContent>\n            <CardFooter class=\"mt-auto\">\n              <Button\n                as=\"a\"\n                href={plan.button.href}\n                variant={\n                  plan.button.variant ?? (plan.featured ? \"default\" : \"outline\")\n                }\n                class=\"w-full\"\n              >\n                {plan.button.label}\n              </Button>\n            </CardFooter>\n          </Card>\n        ))\n      }\n    </div>\n  </SectionContainer>\n</Section>\n",
+      "type": "registry:block"
+    }
+  ],
+  "type": "registry:block"
+}

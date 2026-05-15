@@ -9,15 +9,16 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
+  class?: string
   badge?: string
   title: string
-  actions?: {
+  buttons?: {
     label: string
     href: string
-    variant?: "default" | "outline" | "ghost" | "secondary"
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
-  items: {
+  services: {
     image?: {
       src: ImageMetadata
       alt: string
@@ -29,10 +30,10 @@ interface Props {
   }[]
 }
 
-const { badge, title, actions, items } = Astro.props
+const { class: className, badge, title, buttons, services } = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer class="gap-8">
     <div
       class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
@@ -46,20 +47,20 @@ const { badge, title, actions, items } = Astro.props
         </h2>
       </div>
       {
-        actions?.length ? (
+        buttons?.length && (
           <div class="flex flex-wrap gap-3">
-            {actions.map((action) => (
-              <Button as="a" href={action.href} variant={action.variant}>
-                {action.label}
+            {buttons.map(({ href, label, ...button }) => (
+              <Button as="a" href={href} variant={button.variant}>
+                {label}
               </Button>
             ))}
           </div>
-        ) : null
+        )
       }
     </div>
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {
-        items.map((service) => {
+        services.map((service) => {
           const Wrapper = service.href ? "a" : "div"
           return (
             <Wrapper
@@ -87,7 +88,9 @@ const { badge, title, actions, items } = Astro.props
                   {service.description}
                 </p>
                 {service.href && (
-                  <ArrowRightIcon class="text-muted-foreground mt-auto size-4 transition-transform group-hover/service:translate-x-1" />
+                  <span class="mt-auto pt-2">
+                    <ArrowRightIcon class="text-muted-foreground size-4 transition-transform group-hover/service:translate-x-1" />
+                  </span>
                 )}
               </div>
             </Wrapper>

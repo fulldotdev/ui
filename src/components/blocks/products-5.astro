@@ -2,6 +2,7 @@
 import type { ImageMetadata } from "astro"
 import { Image } from "astro:assets"
 
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,13 +15,14 @@ import {
 import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
+  class?: string
   badge: string
   title: string
-  actions: {
+  buttons: {
     label: string
     href: string
-    variant?: "default" | "outline" | "ghost" | "secondary"
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
   products: {
     image: {
@@ -37,10 +39,10 @@ interface Props {
   }[]
 }
 
-const { badge, title, actions, products } = Astro.props
+const { class: className, badge, title, buttons, products } = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer class="gap-8">
     <div class="mx-auto max-w-2xl text-center">
       <Badge variant="secondary">{badge}</Badge>
@@ -51,9 +53,9 @@ const { badge, title, actions, products } = Astro.props
       </h2>
       <div class="mt-4 flex flex-wrap justify-center gap-3">
         {
-          actions.map((action) => (
-            <Button as="a" href={action.href} variant={action.variant}>
-              {action.label}
+          buttons.map(({ href, label, ...button }) => (
+            <Button as="a" href={href} variant={button.variant}>
+              {label}
             </Button>
           ))
         }
@@ -62,7 +64,7 @@ const { badge, title, actions, products } = Astro.props
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {
         products.map((product) => (
-          <Card class="group/product overflow-hidden">
+          <Card class="group/product gap-0 overflow-hidden">
             <div class="overflow-hidden">
               <Image
                 src={product.image.src}

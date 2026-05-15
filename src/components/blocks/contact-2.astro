@@ -1,6 +1,5 @@
 ---
-import LayoutGridIcon from "@lucide/astro/icons/layout-grid"
-
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Field,
@@ -9,17 +8,20 @@ import {
   FieldLegend,
   FieldSet,
 } from "@/components/ui/field"
+import { Icon } from "@/components/ui/icon"
 import { Input } from "@/components/ui/input"
 import { Section, SectionContainer } from "@/components/ui/section"
 import { Textarea } from "@/components/ui/textarea"
 
-interface Props {
+type Props = {
+  class?: string
   title: string
   description: string
-  items: {
-    icon: typeof LayoutGridIcon
+  contactItems: {
+    icon: string
     title: string
     description: string
+    href?: string
   }[]
   form: {
     title: string
@@ -34,10 +36,10 @@ interface Props {
   }
 }
 
-const { title, description, items, form } = Astro.props
+const { class: className, title, description, contactItems, form } = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer
     class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start"
   >
@@ -91,22 +93,37 @@ const { title, description, items, form } = Astro.props
 
     <div class="flex flex-col gap-3">
       {
-        items.map((item) => {
-          const Icon = item.icon
-          return (
-            <div class="flex gap-4 rounded-xl border p-4">
-              <div class="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
-                <Icon class="size-5" />
-              </div>
-              <div class="flex flex-col gap-1">
-                <p class="text-foreground text-sm font-medium">{item.title}</p>
-                <p class="text-muted-foreground text-sm leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
+        contactItems.map((item) => (
+          <div class="flex gap-4 rounded-xl border p-4">
+            {item.href ? (
+              <Button
+                as="a"
+                href={item.href}
+                variant="secondary"
+                size="icon"
+                class="text-primary shrink-0"
+                aria-label={item.title}
+              >
+                <Icon name={item.icon} />
+              </Button>
+            ) : (
+              <Button
+                variant="secondary"
+                size="icon"
+                class="text-primary shrink-0"
+                aria-label={item.title}
+              >
+                <Icon name={item.icon} />
+              </Button>
+            )}
+            <div class="flex flex-col gap-1">
+              <p class="text-foreground text-sm font-medium">{item.title}</p>
+              <p class="text-muted-foreground text-sm leading-relaxed">
+                {item.description}
+              </p>
             </div>
-          )
-        })
+          </div>
+        ))
       }
     </div>
   </SectionContainer>

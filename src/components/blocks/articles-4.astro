@@ -1,12 +1,14 @@
 ---
 import type { ImageMetadata } from "astro"
 
+import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
-  badge: string
+type Props = {
+  class?: string
+  badge?: string
   title: string
   description: string
   articles: {
@@ -23,15 +25,18 @@ interface Props {
   }[]
 }
 
-const { badge, title, description, articles } = Astro.props
+const { class: className, badge, title, description, articles } = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer class="gap-8">
     <div class="mx-auto max-w-2xl text-center">
-      <Badge variant="secondary">{badge}</Badge>
+      {badge && <Badge variant="secondary">{badge}</Badge>}
       <h2
-        class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+        class={cn(
+          "text-3xl font-semibold tracking-tight text-balance sm:text-4xl",
+          badge && "mt-4"
+        )}
       >
         {title}
       </h2>

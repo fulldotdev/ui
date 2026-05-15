@@ -49,6 +49,25 @@ const {
 
   const initCommand = () => {
     create()
+
+    document.querySelectorAll("[data-slot=command]").forEach((command) => {
+      if (!(command instanceof HTMLElement)) return
+      if (command.dataset.linkNavigation === "true") return
+
+      command.dataset.linkNavigation = "true"
+      command.addEventListener("command:select", (event) => {
+        const { detail } = event as CustomEvent<{ value?: unknown }>
+        const value = detail?.value
+        if (typeof value !== "string") return
+
+        const item = Array.from(
+          command.querySelectorAll("[data-slot=command-item][href]")
+        ).find((item) => item.getAttribute("data-value") === value)
+        const href = item?.getAttribute("href")
+
+        if (href) window.location.href = href
+      })
+    })
   }
 
   initCommand()

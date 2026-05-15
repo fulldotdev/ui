@@ -1,113 +1,50 @@
 ---
-import { getCollection } from "astro:content"
-
 import type { GlobalSchema } from "@/schemas/global"
 import type { BaseSchema } from "@/schemas/layouts/base"
+import { getPageBreadcrumbItems, getPageSearchItems } from "@/lib/pages"
 import {
   Layout,
   LayoutBody,
   LayoutHead,
   LayoutMain,
-  LayoutShell,
 } from "@/components/ui/layout"
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { ThemeToggle, ThemeToggleProvider } from "@/components/ui/theme-toggle"
-import Header from "@/components/blocks/header-1.astro"
-import Sidebar from "@/components/blocks/sidebar-1.astro"
-import SiteSearch from "@/components/site-search.astro"
+import { ThemeProvider } from "@/components/ui/theme-toggle"
+import Sidebar1 from "@/components/blocks/sidebar-1.astro"
 
 type Props = {
   global: GlobalSchema
   page: BaseSchema
-  desktopNavigation: "header" | "sidebar"
 }
 
-const { global, page, desktopNavigation }: Props = Astro.props
+const { global, page }: Props = Astro.props
 
-const pages = await getCollection("pages")
-const searchLink = (page: (typeof pages)[number]) => ({
-  text: page.data.title,
-  href: page.id === "index" ? "/" : `/${page.id}/`,
-  keywords: [
-    page.id,
-    page.data.type,
-    page.data.title,
-    page.data.description,
-    page.data.seo?.title,
-    page.data.seo?.description,
-  ].filter((value): value is string => Boolean(value)),
-})
-const searchLinks = [
-  {
-    text: "Pages",
-    href: "/",
-    links: pages
-      .filter((page) => {
-        return !page.id.startsWith("docs/") && !page.id.startsWith("blocks/")
-      })
-      .map(searchLink),
-  },
-  {
-    text: "Docs",
-    href: "/docs/",
-    links: pages.filter((page) => page.id.startsWith("docs/")).map(searchLink),
-  },
-  {
-    text: "Blocks",
-    href: "/blocks/",
-    links: pages
-      .filter((page) => page.id.startsWith("blocks/"))
-      .map(searchLink),
-  },
-]
-  .map((group) => ({
-    ...group,
-    links: group.links.sort((a, b) => {
-      if (a.href === group.href) return -1
-      if (b.href === group.href) return 1
-
-      return a.text.localeCompare(b.text)
-    }),
-  }))
-  .filter((group) => group.links.length > 0)
+const [searchItems, breadcrumbItems] = await Promise.all([
+  getPageSearchItems(),
+  getPageBreadcrumbItems(Astro.url.pathname),
+])
 ---
 
 <Layout>
   <LayoutHead {...global} {...page} {...page.seo}>
-    <ThemeToggleProvider />
+    <ThemeProvider />
   </LayoutHead>
-  <LayoutBody style="--container-width: 96rem">
-    <SidebarProvider
-      open={desktopNavigation === "sidebar"}
-      defaultOpen={desktopNavigation === "sidebar"}
+  <LayoutBody>
+    <Sidebar1
+      logo={global.logo}
+      search={{
+        items: searchItems,
+        ...global.sidebar.search,
+      }}
+      breadcrumb={{
+        items: breadcrumbItems,
+        menu: global.header.navigation,
+      }}
+      navigation={global.sidebar.navigation}
+      githubRepo={global.header.githubRepo}
     >
-      <Sidebar
-        state={desktopNavigation === "sidebar" ? "expanded" : "collapsed"}
-        collapsible="offcanvas"
-        variant="inset"
-        global={global}
-        links={global.sidebar.links}
-        buttons={global.header.buttons}
-      >
-        <SiteSearch links={searchLinks} />
-        <ThemeToggle />
-      </Sidebar>
-      <LayoutShell>
-        <Header
-          class={desktopNavigation === "sidebar" ? "md:hidden" : ""}
-          logo={global.logo}
-          links={global.header.links}
-          buttons={global.header.buttons}
-        >
-          <SiteSearch size="compact" links={searchLinks} />
-          <ThemeToggle />
-        </Header>
-        <SidebarInset>
-          <LayoutMain>
-            <slot />
-          </LayoutMain>
-        </SidebarInset>
-      </LayoutShell>
-    </SidebarProvider>
+      <LayoutMain>
+        <slot />
+      </LayoutMain>
+    </Sidebar1>
   </LayoutBody>
 </Layout>

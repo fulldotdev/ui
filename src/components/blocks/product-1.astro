@@ -2,12 +2,14 @@
 import type { ImageMetadata } from "astro"
 import { Image } from "astro:assets"
 
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
+  class?: string
   badge: string
   title: string
   description: string
@@ -21,17 +23,26 @@ interface Props {
     unit: string
   }
   note: string
-  actions: {
+  buttons: {
     label: string
     href: string
-    variant?: "default" | "outline" | "ghost" | "secondary"
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
 }
 
-const { badge, title, description, image, price, note, actions } = Astro.props
+const {
+  class: className,
+  badge,
+  title,
+  description,
+  image,
+  price,
+  note,
+  buttons,
+} = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer class="grid gap-8 lg:grid-cols-2 lg:items-center">
     <Image
       src={image.src}
@@ -53,9 +64,9 @@ const { badge, title, description, image, price, note, actions } = Astro.props
       <p class="border-y py-4 text-sm leading-7">{note}</p>
       <div class="flex flex-wrap gap-3">
         {
-          actions.map((action) => (
-            <Button as="a" href={action.href} variant={action.variant}>
-              {action.label}
+          buttons.map(({ href, label, ...button }) => (
+            <Button as="a" href={href} variant={button.variant}>
+              {label}
             </Button>
           ))
         }

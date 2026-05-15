@@ -1,4 +1,5 @@
 ---
+import { cn } from "@/lib/utils"
 import {
   Accordion,
   AccordionContent,
@@ -8,25 +9,25 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
+  class?: string
   badge?: string
   title: string
   description: string
-  items: {
+  faqs: {
     id: string
     question: string
     answer: string
   }[]
-  defaultItem?: string
 }
 
-const { badge, title, description, items, defaultItem } = Astro.props
+const { class: className, badge, title, description, faqs } = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer class="items-center text-center">
     <div class="flex max-w-2xl flex-col items-center gap-5">
-      {badge ? <Badge variant="secondary">{badge}</Badge> : null}
+      {badge && <Badge variant="secondary">{badge}</Badge>}
       <h2
         class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
       >
@@ -39,14 +40,12 @@ const { badge, title, description, items, defaultItem } = Astro.props
   </SectionContainer>
   <SectionContainer>
     <div class="mx-auto w-full max-w-3xl rounded-xl border px-6 py-2">
-      <Accordion collapsible defaultValue={defaultItem}>
+      <Accordion collapsible>
         {
-          items.map((item, index) => (
+          faqs.map((item) => (
             <AccordionItem value={item.id}>
               <AccordionTrigger>{item.question}</AccordionTrigger>
-              <AccordionContent hidden={index !== 0}>
-                {item.answer}
-              </AccordionContent>
+              <AccordionContent>{item.answer}</AccordionContent>
             </AccordionItem>
           ))
         }

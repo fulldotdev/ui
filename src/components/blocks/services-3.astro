@@ -3,37 +3,46 @@ import PlaceholderImage from "@/assets/placeholder.webp"
 import type { ImageMetadata } from "astro"
 import { Image } from "astro:assets"
 
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
+  class?: string
   badge?: string
   title: string
   description?: string
-  actions?: {
+  buttons?: {
     label: string
     href: string
-    variant?: "default" | "outline" | "ghost" | "secondary"
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
-  items: {
+  services: {
     image?: {
       src: ImageMetadata
       alt: string
     }
     title: string
     description: string
-    action?: {
+    button?: {
       label: string
       href: string
     }
   }[]
 }
 
-const { badge, title, description, actions, items } = Astro.props
+const {
+  class: className,
+  badge,
+  title,
+  description,
+  buttons,
+  services,
+} = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer class="gap-8">
     <div class="mx-auto max-w-2xl text-center">
       {badge && <Badge variant="secondary">{badge}</Badge>}
@@ -50,20 +59,20 @@ const { badge, title, description, actions, items } = Astro.props
         )
       }
       {
-        actions?.length ? (
+        buttons?.length && (
           <div class="mt-6 flex flex-wrap justify-center gap-3">
-            {actions.map((action) => (
-              <Button as="a" href={action.href} variant={action.variant}>
-                {action.label}
+            {buttons.map(({ href, label, ...button }) => (
+              <Button as="a" href={href} variant={button.variant}>
+                {label}
               </Button>
             ))}
           </div>
-        ) : null
+        )
       }
     </div>
     <div class="grid gap-6 sm:grid-cols-2">
       {
-        items.map((service) => (
+        services.map((service) => (
           <div class="group/service relative isolate flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-xl">
             <Image
               src={service.image?.src ?? PlaceholderImage}
@@ -78,14 +87,14 @@ const { badge, title, description, actions, items } = Astro.props
               <p class="text-sm leading-relaxed text-white/80">
                 {service.description}
               </p>
-              {service.action && (
+              {service.button && (
                 <Button
                   as="a"
-                  href={service.action.href}
+                  href={service.button.href}
                   variant="secondary"
                   class="mt-2 w-fit"
                 >
-                  {service.action.label}
+                  {service.button.label}
                 </Button>
               )}
             </div>

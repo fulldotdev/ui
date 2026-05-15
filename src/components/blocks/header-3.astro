@@ -11,38 +11,47 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu"
 import { Separator } from "@/components/ui/separator"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 
-interface Props {
+type Props = {
   class?: string
   logo: {
-    text: string
+    label: string
     href: string
     src?: any
     srcLight?: any
     srcDark?: any
     alt?: string
   }
-  links: {
-    text: string
+  navigation: {
+    label: string
     href: string
     links?: {
-      text: string
+      label: string
       href: string
     }[]
   }[]
   buttons: {
-    text: string
+    label: string
     href: string
     icon?: string
-    variant?: "default" | "outline" | "ghost" | "secondary"
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
 }
 
-const { class: className, logo, links, buttons } = Astro.props
+const { class: className, logo, navigation, buttons } = Astro.props
 ---
 
 <Header class={cn("border-b", className)}>
-  <HeaderContainer>
+  <HeaderContainer class="justify-between">
     <HeaderGroup>
       <Logo href={logo.href}>
         <LogoImage
@@ -51,40 +60,74 @@ const { class: className, logo, links, buttons } = Astro.props
           srcDark={logo.srcDark}
           alt={logo.alt}
         />
-        {logo.text && <LogoText>{logo.text}</LogoText>}
+        {logo.label && <LogoText>{logo.label}</LogoText>}
       </Logo>
     </HeaderGroup>
-    <HeaderGroup class="ml-auto hidden justify-end gap-1 md:flex">
-      <NavigationMenu class="hidden max-w-none justify-end md:flex">
+    <HeaderGroup class="ml-auto hidden justify-end gap-1 lg:flex">
+      <NavigationMenu class="hidden max-w-none justify-end lg:flex">
         <NavigationMenuList>
           {
-            links.map((item, index) => (
+            navigation.map((item, index) => (
               <NavigationMenuItem value={`nav-${index}`}>
                 <NavigationMenuLink href={item.href}>
-                  {item.text}
+                  {item.label}
                 </NavigationMenuLink>
               </NavigationMenuItem>
             ))
           }
         </NavigationMenuList>
       </NavigationMenu>
-      <Separator orientation="vertical" class="mx-1 hidden h-5 md:block" />
+      <Separator
+        orientation="vertical"
+        class="mx-1 hidden h-5 self-center lg:block"
+      />
       <slot />
       {
-        buttons.map(({ text, icon, ...button }) => (
+        buttons.map(({ label, icon, ...button }) => (
           <Button
             as="a"
-            size={icon && !text ? "icon-sm" : "sm"}
-            aria-label={text}
+            size={icon && !label ? "icon-sm" : "sm"}
+            aria-label={label}
             target={button.href.startsWith("http") ? "_blank" : undefined}
             rel={button.href.startsWith("http") ? "noreferrer" : undefined}
             {...button}
           >
             {icon && <Icon name={icon} />}
-            {text}
+            {label}
           </Button>
         ))
       }
     </HeaderGroup>
+    <Sheet class="lg:hidden">
+      <SheetTrigger
+        variant="ghost"
+        size="icon-sm"
+        class="ml-auto"
+        aria-label="Open menu"
+      >
+        <Icon name="menu" />
+      </SheetTrigger>
+      <SheetContent side="right" class="p-0">
+        <SheetHeader class="sr-only">
+          <SheetTitle>Menu</SheetTitle>
+          <SheetDescription>Site navigation and actions.</SheetDescription>
+        </SheetHeader>
+        <div class="flex h-full flex-col gap-6 px-4 py-12">
+          <nav aria-label="Main navigation" class="flex flex-col gap-1">
+            {
+              navigation.map((item) => (
+                <SheetClose variant="ghost" class="justify-start">
+                  {item.label}
+                </SheetClose>
+              ))
+            }
+          </nav>
+          <Separator />
+          <div class="mt-auto flex flex-col gap-2">
+            <slot />
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
   </HeaderContainer>
 </Header>

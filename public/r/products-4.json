@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "products-4",
+  "registryDependencies": [
+    "@fulldev/button",
+    "@fulldev/card",
+    "@fulldev/price",
+    "@fulldev/section"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/products-4.astro",
+      "content": "---\nimport type { ImageMetadata } from \"astro\"\nimport { Image } from \"astro:assets\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Button } from \"@/components/ui/button\"\nimport {\n  Card,\n  CardContent,\n  CardDescription,\n  CardHeader,\n  CardTitle,\n} from \"@/components/ui/card\"\nimport { Price, PriceUnit, PriceValue } from \"@/components/ui/price\"\nimport { Section, SectionContainer } from \"@/components/ui/section\"\n\ntype Props = {\n  class?: string\n  title: string\n  description: string\n  buttons: {\n    label: string\n    href: string\n    variant?: \"default\" | \"outline\" | \"secondary\" | \"ghost\"\n  }[]\n  products: {\n    image: {\n      src: ImageMetadata\n      alt: string\n    }\n    title: string\n    description: string\n    price: {\n      value: number\n      currency: string\n      unit: string\n    }\n  }[]\n}\n\nconst { class: className, title, description, buttons, products } = Astro.props\n---\n\n<Section class={cn(\"\", className)}>\n  <SectionContainer class=\"gap-8\">\n    <div\n      class=\"flex flex-col gap-4 md:flex-row md:items-end md:justify-between\"\n    >\n      <div class=\"max-w-2xl\">\n        <h2\n          class=\"text-3xl font-semibold tracking-tight text-balance sm:text-4xl\"\n        >\n          {title}\n        </h2>\n        <p class=\"text-muted-foreground mt-3 text-lg leading-8\">\n          {description}\n        </p>\n      </div>\n      <div class=\"flex flex-shrink-0 flex-wrap gap-3\">\n        {\n          buttons.map(({ href, label, ...button }) => (\n            <Button as=\"a\" href={href} variant={button.variant}>\n              {label}\n            </Button>\n          ))\n        }\n      </div>\n    </div>\n    <div class=\"grid gap-4 sm:grid-cols-2 lg:grid-cols-3\">\n      {\n        products.map((product) => (\n          <Card>\n            <Image\n              src={product.image.src}\n              alt={product.image.alt}\n              class=\"aspect-[4/3] w-full object-cover\"\n            />\n            <CardHeader>\n              <CardTitle>{product.title}</CardTitle>\n              <CardDescription>{product.description}</CardDescription>\n            </CardHeader>\n            <CardContent>\n              <Price>\n                <PriceValue\n                  price={product.price.value}\n                  currency={product.price.currency}\n                />\n                <PriceUnit>{product.price.unit}</PriceUnit>\n              </Price>\n            </CardContent>\n          </Card>\n        ))\n      }\n    </div>\n  </SectionContainer>\n</Section>\n",
+      "type": "registry:block"
+    }
+  ],
+  "type": "registry:block"
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "cta-1",
+  "registryDependencies": [
+    "@fulldev/avatar",
+    "@fulldev/button",
+    "@fulldev/rating",
+    "@fulldev/section"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/cta-1.astro",
+      "content": "---\nimport type { ImageMetadata } from \"astro\"\n\nimport { cn } from \"@/lib/utils\"\nimport {\n  Avatar,\n  AvatarFallback,\n  AvatarGroup,\n  AvatarImage,\n} from \"@/components/ui/avatar\"\nimport { Button } from \"@/components/ui/button\"\nimport { Rating } from \"@/components/ui/rating\"\nimport { Section, SectionContainer } from \"@/components/ui/section\"\n\ntype Props = {\n  class?: string\n  title: string\n  description: string\n  buttons?: {\n    label: string\n    href: string\n    variant?: \"default\" | \"outline\" | \"secondary\" | \"ghost\"\n  }[]\n  socialProof?: {\n    avatars: {\n      image?: ImageMetadata\n      initials: string\n      name?: string\n    }[]\n    rating: number\n    text: string\n  }\n}\n\nconst {\n  class: className,\n  title,\n  description,\n  buttons,\n  socialProof,\n} = Astro.props\n---\n\n<Section variant=\"floating\" class={cn(\"\", className)}>\n  <SectionContainer class=\"items-center text-center\">\n    {\n      socialProof && (\n        <div class=\"flex flex-col items-center gap-3\">\n          <AvatarGroup>\n            {socialProof.avatars.map((avatar) => (\n              <Avatar class=\"ring-background size-11 ring\">\n                <AvatarImage\n                  src={avatar.image}\n                  alt={avatar.name ?? avatar.initials}\n                />\n                <AvatarFallback>{avatar.initials}</AvatarFallback>\n              </Avatar>\n            ))}\n          </AvatarGroup>\n          <div class=\"flex items-center gap-2\">\n            <Rating value={socialProof.rating} />\n            <span class=\"text-muted-foreground text-sm\">\n              {socialProof.text}\n            </span>\n          </div>\n        </div>\n      )\n    }\n    <div class=\"flex max-w-2xl flex-col items-center gap-5\">\n      <h2\n        class=\"text-foreground text-3xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-4xl\"\n      >\n        {title}\n      </h2>\n      <p class=\"text-muted-foreground text-lg leading-relaxed text-balance\">\n        {description}\n      </p>\n    </div>\n    {\n      buttons?.length && (\n        <div class=\"flex flex-wrap justify-center gap-3\">\n          {buttons.map(({ href, label, ...button }, index) => (\n            <Button\n              as=\"a\"\n              href={href}\n              size=\"lg\"\n              variant={\n                button.variant ?? (index === 0 ? \"default\" : \"secondary\")\n              }\n              {...button}\n            >\n              {label}\n            </Button>\n          ))}\n        </div>\n      )\n    }\n  </SectionContainer>\n</Section>\n",
+      "type": "registry:block"
+    }
+  ],
+  "type": "registry:block"
+}

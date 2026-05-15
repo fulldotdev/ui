@@ -1,16 +1,20 @@
 ---
 import QuoteIcon from "@lucide/astro/icons/quote"
+import type { ImageMetadata } from "astro"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { cn } from "@/lib/utils"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Marquee } from "@/components/ui/marquee"
 import { Rating } from "@/components/ui/rating"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
+  class?: string
   title?: string
   description?: string
-  items: {
+  reviews: {
     quote: string
+    image?: ImageMetadata
     initials: string
     name: string
     role: string
@@ -18,15 +22,15 @@ interface Props {
   }[]
 }
 
-const { title, description, items } = Astro.props
+const { class: className, title, description, reviews } = Astro.props
 
-const third = Math.ceil(items.length / 3)
-const row1 = items.slice(0, third)
-const row2 = items.slice(third, third * 2)
-const row3 = items.slice(third * 2)
+const third = Math.ceil(reviews.length / 3)
+const row1 = reviews.slice(0, third)
+const row2 = reviews.slice(third, third * 2)
+const row3 = reviews.slice(third * 2)
 ---
 
-<Section>
+<Section class={cn("", className)}>
   {
     (title || description) && (
       <SectionContainer class="items-center gap-4 text-center">
@@ -44,14 +48,21 @@ const row3 = items.slice(third * 2)
     )
   }
   <div class="flex flex-col gap-5">
-    <Marquee direction="left" pauseOnHover infinite gap="1.25rem">
+    <Marquee
+      direction="left"
+      pauseOnHover
+      infinite
+      gap="1.25rem"
+      class="[&>div]:items-stretch"
+    >
       {
         row1.map((item) => (
-          <div class="bg-muted/50 w-[26rem] shrink-0 rounded-2xl p-6">
-            <div class="flex flex-col gap-4">
+          <div class="bg-muted/50 flex w-[26rem] shrink-0 rounded-2xl p-6">
+            <div class="flex flex-1 flex-col gap-4">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
                   <Avatar size="lg">
+                    <AvatarImage src={item.image} alt={item.name} />
                     <AvatarFallback>{item.initials}</AvatarFallback>
                   </Avatar>
                   <div>
@@ -74,14 +85,21 @@ const row3 = items.slice(third * 2)
         ))
       }
     </Marquee>
-    <Marquee direction="right" pauseOnHover infinite gap="1.25rem">
+    <Marquee
+      direction="right"
+      pauseOnHover
+      infinite
+      gap="1.25rem"
+      class="[&>div]:items-stretch"
+    >
       {
         row2.map((item) => (
-          <div class="bg-muted/50 w-[26rem] shrink-0 rounded-2xl p-6">
-            <div class="flex flex-col gap-4">
+          <div class="bg-muted/50 flex w-[26rem] shrink-0 rounded-2xl p-6">
+            <div class="flex flex-1 flex-col gap-4">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
                   <Avatar size="lg">
+                    <AvatarImage src={item.image} alt={item.name} />
                     <AvatarFallback>{item.initials}</AvatarFallback>
                   </Avatar>
                   <div>
@@ -104,14 +122,21 @@ const row3 = items.slice(third * 2)
         ))
       }
     </Marquee>
-    <Marquee direction="left" pauseOnHover infinite gap="1.25rem">
+    <Marquee
+      direction="left"
+      pauseOnHover
+      infinite
+      gap="1.25rem"
+      class="[&>div]:items-stretch"
+    >
       {
         row3.map((item) => (
-          <div class="bg-muted/50 w-[26rem] shrink-0 rounded-2xl p-6">
-            <div class="flex flex-col gap-4">
+          <div class="bg-muted/50 flex w-[26rem] shrink-0 rounded-2xl p-6">
+            <div class="flex flex-1 flex-col gap-4">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
                   <Avatar size="lg">
+                    <AvatarImage src={item.image} alt={item.name} />
                     <AvatarFallback>{item.initials}</AvatarFallback>
                   </Avatar>
                   <div>

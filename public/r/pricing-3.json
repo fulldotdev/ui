@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pricing-3",
+  "dependencies": [
+    "@lucide/astro"
+  ],
+  "registryDependencies": [
+    "@fulldev/badge",
+    "@fulldev/button",
+    "@fulldev/card",
+    "@fulldev/price",
+    "@fulldev/section",
+    "@fulldev/separator"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/pricing-3.astro",
+      "content": "---\nimport { CheckIcon } from \"@lucide/astro\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Badge } from \"@/components/ui/badge\"\nimport { Button } from \"@/components/ui/button\"\nimport {\n  Card,\n  CardContent,\n  CardDescription,\n  CardFooter,\n  CardHeader,\n  CardTitle,\n} from \"@/components/ui/card\"\nimport { Price, PriceUnit, PriceValue } from \"@/components/ui/price\"\nimport { Section, SectionContainer } from \"@/components/ui/section\"\nimport { Separator } from \"@/components/ui/separator\"\n\ntype Props = {\n  class?: string\n  badge?: string\n  title: string\n  description?: string\n  offer: {\n    name: string\n    description: string\n    price: number\n    currency: string\n    unit: string\n    features: string[]\n    button: {\n      label: string\n      href: string\n      variant?: \"default\" | \"outline\" | \"secondary\" | \"ghost\"\n    }\n  }\n}\n\nconst { class: className, badge, title, description, offer } = Astro.props\n---\n\n<Section class={cn(\"\", className)}>\n  <SectionContainer class=\"items-center gap-8 text-center\">\n    <div class=\"flex max-w-2xl flex-col items-center gap-4\">\n      {badge && <Badge variant=\"secondary\">{badge}</Badge>}\n      <h2\n        class=\"text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl\"\n      >\n        {title}\n      </h2>\n      {\n        description && (\n          <p class=\"text-muted-foreground text-lg leading-relaxed text-balance\">\n            {description}\n          </p>\n        )\n      }\n    </div>\n    <Card class=\"ring-primary w-full max-w-md ring-2\">\n      <CardHeader class=\"text-left\">\n        <CardTitle>{offer.name}</CardTitle>\n        <CardDescription>{offer.description}</CardDescription>\n      </CardHeader>\n      <CardContent class=\"flex flex-col gap-6 text-left\">\n        <Price>\n          <PriceValue price={offer.price} currency={offer.currency} />\n          <PriceUnit>{offer.unit}</PriceUnit>\n        </Price>\n        <Separator />\n        <ul class=\"flex flex-col gap-3\">\n          {\n            offer.features.map((feature) => (\n              <li class=\"flex items-center gap-3 text-sm\">\n                <CheckIcon class=\"text-primary size-4 shrink-0\" />\n                {feature}\n              </li>\n            ))\n          }\n        </ul>\n      </CardContent>\n      <CardFooter>\n        <Button\n          as=\"a\"\n          href={offer.button.href}\n          variant={offer.button.variant ?? \"default\"}\n          class=\"w-full\"\n        >\n          {offer.button.label}\n        </Button>\n      </CardFooter>\n    </Card>\n  </SectionContainer>\n</Section>\n",
+      "type": "registry:block"
+    }
+  ],
+  "type": "registry:block"
+}

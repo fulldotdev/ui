@@ -16,18 +16,17 @@ type Props = {
 const props: Props = Astro.props
 const currentPath = Astro.url.pathname
 const globalCallout = props.global.docs?.callout
+const markdownPath =
+  currentPath === "/" ? "/index.md" : `${currentPath.replace(/\/$/, "")}.md`
+const markdownUrl = new URL(markdownPath, Astro.url).toString()
 
-const docsPages = await getCollection("pages", ({ data, id }) => {
-  return (
-    (data.type === "doc" || data.type === "components") &&
-    id.startsWith("docs/")
-  )
-})
+const docsPages = await getCollection("pages")
 const orderedDocLinks = [
-  "docs",
+  "docs/introduction",
   "docs/installation",
   "docs/theming",
-  "docs/components",
+  "components",
+  "blocks",
 ]
   .map((id) => docsPages.find((entry) => entry.id === id))
   .filter((entry): entry is (typeof docsPages)[number] => Boolean(entry))
@@ -36,7 +35,9 @@ const orderedDocLinks = [
     title: entry.data.title,
   }))
 const componentLinks = docsPages
-  .filter((entry) => entry.id.startsWith("docs/components/"))
+  .filter(
+    (entry) => entry.data.type === "doc" && entry.id.startsWith("components/")
+  )
   .map((entry) => ({
     href: `/${entry.id}/`,
     title: entry.data.title,
@@ -71,17 +72,23 @@ const tocItems = props.headings
   }))
 ---
 
-<Base global={props.global} page={props.page} desktopNavigation="sidebar">
+<Base global={props.global} page={props.page}>
   <DocBlock
     title={props.page.title}
     description={props.page.description}
     copyButton={copyButton}
+    markdownUrl={markdownUrl}
     tocItems={tocItems}
     callout={globalCallout}
     previousPage={previousPage}
     nextPage={nextPage}
     labels={{
-      copyPage: "Copy page",
+      copyMarkdown: "Copy Markdown",
+      openIn: "Open in",
+      openInMarkdown: "Open in Markdown",
+      openInChatGPT: "Open in ChatGPT",
+      openInClaude: "Open in Claude",
+      openInCursor: "Open in Cursor",
       pagination: {
         previous: "Previous",
         next: "Next",

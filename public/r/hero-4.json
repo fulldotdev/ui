@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "hero-4",
+  "dependencies": [
+    "@lucide/astro"
+  ],
+  "registryDependencies": [
+    "@fulldev/button",
+    "@fulldev/section"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/hero-4.astro",
+      "content": "---\nimport { CheckIcon } from \"@lucide/astro\"\nimport type { ImageMetadata } from \"astro\"\nimport { Image } from \"astro:assets\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Button } from \"@/components/ui/button\"\nimport { Section, SectionContainer } from \"@/components/ui/section\"\n\ntype Props = {\n  class?: string\n  title: string\n  description: string\n  features: string[]\n  buttons: {\n    label: string\n    href: string\n    variant?: \"default\" | \"outline\" | \"secondary\" | \"ghost\"\n  }[]\n  image: {\n    src: ImageMetadata\n    alt: string\n  }\n}\n\nconst {\n  class: className,\n  title,\n  description,\n  features,\n  buttons,\n  image,\n} = Astro.props\n---\n\n<Section\n  class={cn(\"dark bg-background min-h-screen justify-center\", className)}\n>\n  <SectionContainer class=\"relative z-10 items-center gap-8 text-center\">\n    <h1\n      class=\"text-foreground max-w-4xl text-4xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl\"\n    >\n      {title}\n    </h1>\n    <p\n      class=\"text-foreground/80 max-w-2xl text-lg leading-relaxed text-balance\"\n    >\n      {description}\n    </p>\n    <ul class=\"flex flex-wrap justify-center gap-x-6 gap-y-2\">\n      {\n        features.map((feature) => (\n          <li class=\"flex items-center gap-2 text-sm\">\n            <CheckIcon class=\"text-primary size-4 shrink-0\" />\n            {feature}\n          </li>\n        ))\n      }\n    </ul>\n    <div class=\"flex flex-wrap justify-center gap-3\">\n      {\n        buttons.map(({ href, label, ...button }, index) => (\n          <Button\n            as=\"a\"\n            href={href}\n            size=\"lg\"\n            variant={button.variant ?? (index === 0 ? \"default\" : \"secondary\")}\n            {...button}\n          >\n            {label}\n          </Button>\n        ))\n      }\n    </div>\n  </SectionContainer>\n  <div class=\"bg-background pointer-events-none absolute inset-0\">\n    <Image\n      src={image.src}\n      alt={image.alt}\n      class=\"size-full object-cover opacity-50\"\n      widths={[640, 960, 1280, 1920]}\n      sizes=\"100vw\"\n      loading=\"eager\"\n    />\n  </div>\n</Section>\n",
+      "type": "registry:block"
+    }
+  ],
+  "type": "registry:block"
+}

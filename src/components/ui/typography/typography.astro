@@ -45,7 +45,7 @@ const {
       video,
       iframe
     ):not(:first-child) {
-    margin-top: 1.5rem;
+    @apply mt-6;
   }
 
   [data-slot="typography"] > h1 {
@@ -105,7 +105,7 @@ const {
       video,
       iframe
     ) {
-    margin-top: 1rem;
+    @apply mt-4;
   }
 
   [data-slot="typography"] > p {
@@ -119,7 +119,7 @@ const {
   [data-slot="typography"]
     > :is(h1, h2, h3, h4)
     + :is(p, [data-slot="typography-lead"]):not(:first-child) {
-    margin-top: 1rem;
+    @apply mt-4;
   }
 
   [data-slot="typography"] > a:not([data-slot]),
@@ -139,6 +139,40 @@ const {
 
   [data-slot="typography"] > pre {
     @apply border-border bg-muted/60 overflow-x-auto rounded-xl border p-4 text-sm;
+  }
+
+  [data-slot="typography"] > .docs-code-block {
+    @apply border-border bg-muted/60 relative overflow-hidden rounded-xl border;
+  }
+
+  [data-slot="typography"] > .docs-code-block > pre,
+  [data-slot="typography"] > .docs-code-block > pre.astro-code {
+    @apply m-0 rounded-none border-0 !bg-transparent p-4 pr-14 text-sm leading-[var(--text-sm--line-height)];
+    font-family: var(--font-mono);
+  }
+
+  [data-slot="typography"] > .docs-code-block > pre.astro-code code {
+    @apply text-sm leading-[var(--text-sm--line-height)] !text-[var(--shiki-light,var(--foreground))];
+  }
+
+  .dark [data-slot="typography"] > .docs-code-block > pre.astro-code code {
+    @apply !text-[var(--shiki-dark,var(--foreground))];
+  }
+
+  .dark
+    [data-slot="typography"]
+    > .docs-code-block
+    > pre.astro-code
+    span[style*="--shiki-dark"] {
+    @apply ![font-weight:var(--shiki-dark-font-weight,inherit)] !text-[var(--shiki-dark)] ![font-style:var(--shiki-dark-font-style,inherit)] ![text-decoration:var(--shiki-dark-text-decoration,inherit)];
+  }
+
+  [data-slot="typography"] > .docs-code-block > .docs-code-copy {
+    @apply border-border bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground absolute top-3 right-3 z-10 inline-flex size-8 items-center justify-center rounded-md border shadow-sm transition-colors;
+  }
+
+  [data-slot="typography"] > .docs-code-block svg {
+    @apply size-4;
   }
 
   [data-slot="typography"] > ul,
@@ -168,7 +202,8 @@ const {
   }
 
   [data-slot="typography"] > [data-slot="typography-lead"],
-  [data-slot="typography"][data-size="default"] > [data-slot="typography-lead"] {
+  [data-slot="typography"][data-size="default"]
+    > [data-slot="typography-lead"] {
     @apply text-lg;
   }
 
@@ -185,15 +220,40 @@ const {
   }
 
   [data-slot="typography"] > table {
-    @apply my-6 block w-full overflow-y-auto;
+    @apply border-border my-6 block w-full overflow-x-auto rounded-lg border;
+    border-collapse: separate;
+    border-spacing: 0;
   }
 
-  [data-slot="typography"] > table tr {
-    @apply m-0 border-t p-0 even:bg-muted;
+  [data-slot="typography"] > table th,
+  [data-slot="typography"] > table td {
+    @apply border-border border-b px-4 py-2 text-left align-top whitespace-nowrap;
   }
 
   [data-slot="typography"] > table th {
-    @apply border px-4 py-2 text-left font-bold;
+    @apply text-foreground bg-muted/40 font-medium;
+  }
+
+  [data-slot="typography"] > table tr:last-child td {
+    @apply border-b-0;
+  }
+
+  [data-slot="typography"] > table thead,
+  [data-slot="typography"] > table tbody,
+  [data-slot="typography"] > table tr {
+    @apply w-full;
+  }
+
+  [data-slot="typography"] > table tr {
+    @apply grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)];
+  }
+
+  [data-slot="typography"] > table tr {
+    @apply even:bg-muted/40 m-0 border-t p-0 first:border-t-0;
+  }
+
+  [data-slot="typography"] > table th {
+    @apply border-r px-4 py-2 text-left font-bold last:border-r-0;
   }
 
   [data-slot="typography"] > table th[align="center"] {
@@ -205,7 +265,7 @@ const {
   }
 
   [data-slot="typography"] > table td {
-    @apply border px-4 py-2 text-left;
+    @apply border-r px-4 py-2 text-left last:border-r-0;
   }
 
   [data-slot="typography"] > table td[align="center"] {
@@ -227,29 +287,20 @@ const {
   [data-slot="typography"] > table :not(pre) > code {
     @apply rounded-md text-sm leading-5 font-normal;
   }
-</style>
-
-<style is:global>
-  @reference "@/styles/global.css";
 
   [data-slot="typography"] > pre.astro-code {
-    @apply border-border rounded-xl border p-4 text-sm;
-    background: color-mix(in oklab, var(--muted) 60%, transparent) !important;
-    line-height: var(--text-sm--line-height);
+    @apply border-border !bg-muted/60 rounded-xl border p-4 text-sm leading-[var(--text-sm--line-height)];
   }
 
   [data-slot="typography"] > pre.astro-code code {
-    color: inherit !important;
+    @apply !text-inherit;
   }
 
   .dark [data-slot="typography"] > pre.astro-code {
-    color: var(--shiki-dark, var(--foreground)) !important;
+    @apply !text-[var(--shiki-dark,var(--foreground))];
   }
 
   .dark [data-slot="typography"] > pre.astro-code span[style*="--shiki-dark"] {
-    color: var(--shiki-dark) !important;
-    font-style: var(--shiki-dark-font-style, inherit) !important;
-    font-weight: var(--shiki-dark-font-weight, inherit) !important;
-    text-decoration: var(--shiki-dark-text-decoration, inherit) !important;
+    @apply ![font-weight:var(--shiki-dark-font-weight,inherit)] !text-[var(--shiki-dark)] ![font-style:var(--shiki-dark-font-style,inherit)] ![text-decoration:var(--shiki-dark-text-decoration,inherit)];
   }
 </style>

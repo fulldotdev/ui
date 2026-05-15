@@ -5,6 +5,10 @@ import { defineConfig, fontProviders } from "astro/config"
 import fulldevIntegration from "./src/lib/integration"
 
 export default defineConfig({
+  server: {
+    host: "127.0.0.1",
+    port: 4321,
+  },
   prefetch: {
     prefetchAll: true,
   },

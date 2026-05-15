@@ -1,21 +1,26 @@
 ---
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
+  class?: string
   title: string
   description: string
-  actions?: {
+  buttons?: {
     label: string
     href: string
-    variant?: "default" | "outline" | "ghost" | "secondary"
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
 }
 
-const { title, description, actions } = Astro.props
+const { class: className, title, description, buttons } = Astro.props
 ---
 
-<Section variant="floating" class="border-primary/20 shadow-none">
+<Section
+  variant="floating"
+  class={cn("border-primary/20 shadow-none", className)}
+>
   <SectionContainer
     class="before:from-primary/20 relative items-center before:absolute before:top-full before:left-1/2 before:-z-10 before:h-[200%] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-to-b before:to-transparent before:blur-3xl"
   >
@@ -30,20 +35,21 @@ const { title, description, actions } = Astro.props
       </p>
     </div>
     {
-      actions?.length ? (
+      buttons?.length && (
         <div class="flex flex-wrap justify-center gap-3">
-          {actions.map((action, i) => (
+          {buttons.map(({ href, label, ...button }, index) => (
             <Button
               as="a"
-              href={action.href}
+              href={href}
               size="lg"
-              variant={action.variant ?? (i === 0 ? "default" : "outline")}
+              variant={button.variant ?? (index === 0 ? "default" : "outline")}
+              {...button}
             >
-              {action.label}
+              {label}
             </Button>
           ))}
         </div>
-      ) : null
+      )
     }
   </SectionContainer>
 </Section>

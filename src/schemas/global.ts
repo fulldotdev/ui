@@ -12,7 +12,7 @@ export const globalSchema = ({ image }: SchemaContext) =>
     name: z.string(),
     logo: z
       .object({
-        text: z.string(),
+        label: z.string(),
         href: z.string(),
         src: image().optional(),
         srcLight: image().optional(),
@@ -23,11 +23,15 @@ export const globalSchema = ({ image }: SchemaContext) =>
         message: "Logo must define src or both srcLight and srcDark.",
       }),
     header: z.object({
-      links: nestedLinkSchema.array(),
-      buttons: buttonSchema.array(),
+      navigation: nestedLinkSchema.array(),
+      githubRepo: z.string(),
     }),
     sidebar: z.object({
-      links: nestedLinkSchema.array(),
+      search: z.object({
+        label: z.string(),
+        empty: z.string(),
+      }),
+      navigation: nestedLinkSchema.array(),
     }),
     docs: z
       .object({

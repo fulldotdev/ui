@@ -15,7 +15,7 @@ type Props = {
   componentProps?: ComponentProps
 }
 
-const { componentProps = {} }: Props = Astro.props
+const { componentProps = {} } = Astro.props
 const componentSlug = componentProps.name
   ?.trim()
   .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
@@ -59,8 +59,8 @@ const installButtonId = installCommand
             data-source={installCommand}
             aria-label={`Copy install command: ${installCommand}`}
           >
-            <Copy class="live-code-copy-icon size-4" />
-            <Check class="live-code-check-icon hidden size-4" />
+            <Copy data-copy-icon class="live-code-copy-icon size-4" />
+            <Check data-check-icon class="live-code-check-icon hidden size-4" />
             <span>{installCommand}</span>
           </Button>
         )
@@ -99,12 +99,15 @@ const installButtonId = installCommand
           type="button"
           variant="outline"
           size="icon-sm"
-          class="absolute top-3 right-3 z-10"
+          class="bg-background absolute top-3 right-3 z-10"
           data-slot="live-code-copy-source"
           aria-label="Copy code example"
         >
-          <Copy class="live-code-source-copy-icon size-4" />
-          <Check class="live-code-source-check-icon hidden size-4" />
+          <Copy data-copy-icon class="live-code-source-copy-icon size-4" />
+          <Check
+            data-check-icon
+            class="live-code-source-check-icon hidden size-4"
+          />
         </Button>
 
         <slot name="code" />
@@ -113,76 +116,27 @@ const installButtonId = installCommand
   </TabsContent>
 </Tabs>
 
-<script is:inline define:vars={{ installButtonId }}>
-  const button = installButtonId
-    ? document.getElementById(installButtonId)
-    : null
-
-  if (button instanceof HTMLButtonElement) {
-    button.addEventListener("click", async () => {
-      const source = button.dataset.source
-
-      if (!source) return
-
-      try {
-        await navigator.clipboard.writeText(source)
-        button.querySelector(".live-code-copy-icon")?.classList.add("hidden")
+<script is:inline>
+  if (!window.__fulldevLiveCodeCopy) {
+    window.__fulldevLiveCodeCopy = true
+    document.addEventListener("click", (event) => {
+      const button = event.target?.closest?.(
+        "[id^='live-code-copy-install-'], [data-slot='live-code-copy-source']"
+      )
+      if (!button) return
+      const source =
+        button.dataset.source ??
         button
-          .querySelector(".live-code-check-icon")
-          ?.classList.remove("hidden")
-
-        window.setTimeout(() => {
-          button
-            .querySelector(".live-code-copy-icon")
-            ?.classList.remove("hidden")
-          button.querySelector(".live-code-check-icon")?.classList.add("hidden")
-        }, 1200)
-      } catch {
-        // Ignore clipboard failures; the button remains available for retry.
-      }
-    })
-  }
-
-  if (!window["__fulldevLiveCodeInitialized"]) {
-    window["__fulldevLiveCodeInitialized"] = true
-
-    document.addEventListener("click", async (event) => {
-      const target = event.target
-
-      if (!(target instanceof Element)) return
-
-      const codeButton = target.closest("[data-slot='live-code-copy-source']")
-      if (!(codeButton instanceof HTMLButtonElement)) return
-
-      const codePanel = codeButton.closest("[data-slot='live-code-panel']")
-      if (!(codePanel instanceof HTMLElement)) return
-
-      const codeElement =
-        codePanel.querySelector("pre code") ?? codePanel.querySelector("pre")
-      const source = codeElement?.textContent?.replace(/\n$/, "")
-
-      if (!source) return
-
-      try {
-        await navigator.clipboard.writeText(source)
-        codeButton
-          .querySelector(".live-code-source-copy-icon")
-          ?.classList.add("hidden")
-        codeButton
-          .querySelector(".live-code-source-check-icon")
-          ?.classList.remove("hidden")
-
-        window.setTimeout(() => {
-          codeButton
-            .querySelector(".live-code-source-copy-icon")
-            ?.classList.remove("hidden")
-          codeButton
-            .querySelector(".live-code-source-check-icon")
-            ?.classList.add("hidden")
-        }, 1200)
-      } catch {
-        // Ignore clipboard failures; the button remains available for retry.
-      }
+          .closest("[data-slot='live-code-panel']")
+          ?.querySelector("pre")
+          ?.textContent?.replace(/\n$/, "")
+      button.querySelector("[data-copy-icon]")?.classList.add("hidden")
+      button.querySelector("[data-check-icon]")?.classList.remove("hidden")
+      navigator.clipboard?.writeText(source ?? "")
+      setTimeout(() => {
+        button.querySelector("[data-copy-icon]")?.classList.remove("hidden")
+        button.querySelector("[data-check-icon]")?.classList.add("hidden")
+      }, 1200)
     })
   }
 </script>

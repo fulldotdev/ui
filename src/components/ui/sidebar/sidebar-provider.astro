@@ -42,331 +42,139 @@ const resolvedStyle = [
   {...props}
 >
   <slot />
+  <script is:inline>
+    ;(() => {
+      window.__fulldevSyncSidebarProvider ??= (provider, open) => {
+        const state = open ? "expanded" : "collapsed"
+        const sidebar = provider.querySelector(
+          "[data-slot='sidebar']:not([data-mobile='true'])"
+        )
+        const collapsible = sidebar?.dataset.sidebarCollapsible ?? "offcanvas"
+
+        provider.dataset.open = open ? "true" : "false"
+        provider.dataset.state = state
+
+        if (sidebar) {
+          sidebar.dataset.state = collapsible === "none" ? "expanded" : state
+          sidebar.dataset.collapsible =
+            collapsible === "none" ? "none" : open ? "" : collapsible
+        }
+
+        provider
+          .querySelectorAll("[data-sidebar='trigger'], [data-sidebar='rail']")
+          .forEach((control) => {
+            control.setAttribute("aria-expanded", String(open))
+          })
+
+        provider
+          .querySelectorAll("[data-sidebar='menu-tooltip']")
+          .forEach((tooltip) => {
+            tooltip.hidden = state !== "collapsed"
+          })
+      }
+
+      const provider = document.currentScript?.closest(
+        "[data-slot='sidebar-wrapper']"
+      )
+      if (!(provider instanceof HTMLElement)) return
+
+      const controlledOpen = provider.dataset.open
+      const cookieValue = document.cookie
+        .split("; ")
+        .find((entry) => entry.startsWith("sidebar_state="))
+        ?.slice("sidebar_state=".length)
+
+      const isOpen =
+        controlledOpen === "true" || controlledOpen === "false"
+          ? controlledOpen === "true"
+          : cookieValue === "true" || cookieValue === "false"
+            ? cookieValue === "true"
+            : provider.dataset.defaultOpen !== "false"
+
+      provider.dataset.openMobile = "false"
+      window.__fulldevSyncSidebarProvider(provider, isOpen)
+    })()
+  </script>
 </div>
 
 <script is:inline>
-  const sidebarScrollTop = Number(sessionStorage.getItem("sidebar_scroll") || 0)
+  ;(() => {
+    const scrollTop = Number(sessionStorage.getItem("sidebar_scroll") || 0)
 
-  document.querySelectorAll("[data-sidebar='content']").forEach((content) => {
-    content.scrollTop = sidebarScrollTop
-  })
+    document.querySelectorAll("[data-sidebar='content']").forEach((content) => {
+      content.scrollTop = scrollTop
+    })
+  })()
 </script>
 
-<script>
-  declare global {
-    interface Window {
-      __fulldevSidebarInitialized?: boolean
-    }
-  }
-
-  type SidebarProviderElement = HTMLElement
-  type SidebarElement = HTMLElement
-  type SidebarSheetElement = HTMLElement
-  type SidebarRuntimeState = {
-    open: boolean
-    openMobile: boolean
-  }
-
-  const SIDEBAR_COOKIE_NAME = "sidebar_state"
-  const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
-  const SIDEBAR_KEYBOARD_SHORTCUT = "b"
-  const SIDEBAR_SCROLL_KEY = "sidebar_scroll"
-  const DESKTOP_MEDIA_QUERY = "(min-width: 768px)"
-
-  if (!window.__fulldevSidebarInitialized) {
+<script is:inline>
+  ;(() => {
+    if (window.__fulldevSidebarInitialized) return
     window.__fulldevSidebarInitialized = true
 
-    const desktopMedia = window.matchMedia(DESKTOP_MEDIA_QUERY)
-    const providerState = new WeakMap<
-      SidebarProviderElement,
-      SidebarRuntimeState
-    >()
+    const SIDEBAR_COOKIE_NAME = "sidebar_state"
+    const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 
-    const parseBoolean = (value: string | undefined, fallback: boolean) => {
-      if (value === "" || value === "true") return true
-      if (value === "false") return false
-      return fallback
-    }
-
-    const getCookie = (name: string) => {
-      const cookie = document.cookie
-        .split("; ")
-        .find((entry) => entry.startsWith(`${name}=`))
-
-      return cookie ? cookie.slice(name.length + 1) : null
-    }
-
-    const setCookie = (name: string, value: string, maxAge: number) => {
-      document.cookie = `${name}=${value}; path=/; max-age=${maxAge}`
-    }
-
-    const isProvider = (
-      value: Element | null
-    ): value is SidebarProviderElement =>
-      value instanceof HTMLElement && value.dataset.slot === "sidebar-wrapper"
-
-    const isDesktopSidebar = (value: Element): value is SidebarElement =>
-      value instanceof HTMLElement &&
-      value.dataset.slot === "sidebar" &&
-      value.dataset.mobile !== "true"
-
-    const isMobileSheet = (value: Element): value is SidebarSheetElement =>
-      value instanceof HTMLElement && value.dataset.sidebar === "sheet"
-
-    const getDesktopSidebar = (provider: SidebarProviderElement) => {
-      const sidebar = Array.from(
-        provider.querySelectorAll<HTMLElement>("[data-slot='sidebar']")
-      ).find(isDesktopSidebar)
-
-      return sidebar ?? null
-    }
-
-    const getMobileSheet = (provider: SidebarProviderElement) => {
-      const sheet = Array.from(
-        provider.querySelectorAll<HTMLElement>("[data-sidebar='sheet']")
-      ).find(isMobileSheet)
-
-      return sheet ?? null
-    }
-
-    const getProviders = (): SidebarProviderElement[] =>
-      Array.from(
-        document.querySelectorAll<HTMLElement>("[data-slot='sidebar-wrapper']")
-      ).filter(isProvider)
-
-    const ensureState = (provider: SidebarProviderElement) => {
-      const existingState = providerState.get(provider)
-      if (existingState) return existingState
-
-      const nextState: SidebarRuntimeState = {
-        open: getSidebarState(provider),
-        openMobile: false,
-      }
-
-      providerState.set(provider, nextState)
-      return nextState
-    }
-
-    const getSidebarState = (provider: SidebarProviderElement) => {
-      const controlledOpen = provider.dataset.open
-      if (controlledOpen === "true" || controlledOpen === "false") {
-        return controlledOpen === "true"
-      }
-
-      const cookieValue = getCookie(SIDEBAR_COOKIE_NAME)
-      if (cookieValue === "true" || cookieValue === "false") {
-        return cookieValue === "true"
-      }
-
-      return parseBoolean(provider.dataset.defaultOpen, true)
-    }
-
-    const hasCollapsibleSidebar = (provider: SidebarProviderElement) =>
-      (getDesktopSidebar(provider)?.dataset.sidebarCollapsible ??
-        "offcanvas") !== "none" || getMobileSheet(provider) !== null
-
-    const syncProvider = (provider: SidebarProviderElement) => {
-      const state = ensureState(provider)
-      const desktopSidebar = getDesktopSidebar(provider)
-      const collapsible =
-        desktopSidebar?.dataset.sidebarCollapsible ?? "offcanvas"
-
-      const desktopState = state.open ? "expanded" : "collapsed"
-      provider.dataset.open = state.open ? "true" : "false"
-      provider.dataset.openMobile = state.openMobile ? "true" : "false"
-      provider.dataset.state = desktopState
-
-      if (desktopSidebar) {
-        desktopSidebar.dataset.state =
-          collapsible === "none" ? "expanded" : desktopState
-        desktopSidebar.dataset.collapsible =
-          collapsible === "none" ? "none" : state.open ? "" : collapsible
-      }
-
-      provider
-        .querySelectorAll("[data-sidebar='trigger'], [data-sidebar='rail']")
-        .forEach((control: Element) => {
-          if (!(control instanceof HTMLElement)) return
-
-          const isExpanded = desktopMedia.matches
-            ? state.open
-            : state.openMobile
-          control.setAttribute("aria-expanded", String(isExpanded))
-        })
-
-      provider
-        .querySelectorAll("[data-sidebar='menu-tooltip']")
-        .forEach((tooltip: Element) => {
-          if (!(tooltip instanceof HTMLElement)) return
-
-          tooltip.hidden = !(
-            desktopMedia.matches && desktopState === "collapsed"
+    const toggleSidebar = (provider) => {
+      if (!window.matchMedia("(min-width: 768px)").matches) {
+        const openMobile = provider.dataset.openMobile !== "true"
+        provider.dataset.openMobile = openMobile ? "true" : "false"
+        provider
+          .querySelector("[data-sidebar='sheet']")
+          ?.dispatchEvent(
+            new CustomEvent("dialog:set", { detail: { open: openMobile } })
           )
-        })
-    }
-
-    const setMobileOpen = (
-      provider: SidebarProviderElement,
-      openMobile: boolean,
-      { syncSheet = true }: { syncSheet?: boolean } = {}
-    ) => {
-      const state = ensureState(provider)
-      if (state.openMobile === openMobile) return
-
-      state.openMobile = openMobile
-
-      const sheet = getMobileSheet(provider)
-      if (syncSheet && sheet) {
-        sheet.dispatchEvent(
-          new CustomEvent("dialog:set", {
-            detail: { open: openMobile },
-          })
-        )
-      }
-
-      syncProvider(provider)
-    }
-
-    const setDesktopOpen = (
-      provider: SidebarProviderElement,
-      openValue: boolean,
-      { writeCookie = true }: { writeCookie?: boolean } = {}
-    ) => {
-      const state = ensureState(provider)
-      if (state.open === openValue) return
-
-      state.open = openValue
-
-      if (writeCookie) {
-        setCookie(
-          SIDEBAR_COOKIE_NAME,
-          openValue ? "true" : "false",
-          SIDEBAR_COOKIE_MAX_AGE
-        )
-      }
-
-      syncProvider(provider)
-    }
-
-    const toggleProvider = (provider: SidebarProviderElement) => {
-      const state = ensureState(provider)
-      if (!hasCollapsibleSidebar(provider)) return
-
-      if (desktopMedia.matches) {
-        setDesktopOpen(provider, !state.open)
-      } else {
-        setMobileOpen(provider, !state.openMobile)
-      }
-    }
-
-    const initProvider = (provider: SidebarProviderElement) => {
-      if (provider.dataset.sidebarInitialized === "true") return
-      provider.dataset.sidebarInitialized = "true"
-
-      ensureState(provider)
-
-      const sheet = getMobileSheet(provider)
-      if (sheet) {
-        sheet.addEventListener("dialog:change", (event: Event) => {
-          const nextOpen = (event as CustomEvent<{ open?: boolean }>).detail
-            ?.open
-          if (typeof nextOpen !== "boolean") return
-
-          setMobileOpen(provider, nextOpen, { syncSheet: false })
-        })
-      }
-
-      syncProvider(provider)
-    }
-
-    const initAllProviders = () => {
-      getProviders().forEach(initProvider)
-    }
-
-    const getActiveProvider = (): SidebarProviderElement | null => {
-      const activeElement = document.activeElement
-
-      if (activeElement instanceof HTMLElement) {
-        const activeProvider = activeElement.closest(
-          "[data-slot='sidebar-wrapper']"
-        )
-        if (isProvider(activeProvider)) return activeProvider
-      }
-
-      const firstProvider = document.querySelector<HTMLElement>(
-        "[data-slot='sidebar-wrapper']"
-      )
-      return isProvider(firstProvider) ? firstProvider : null
-    }
-
-    document.addEventListener("click", (event) => {
-      const target = event.target
-
-      if (!(target instanceof Element)) return
-
-      const control = target.closest(
-        "[data-sidebar='trigger'], [data-sidebar='rail']"
-      )
-
-      if (!(control instanceof HTMLElement)) return
-      if (control.matches(":disabled, [aria-disabled='true']")) return
-
-      const provider = control.closest("[data-slot='sidebar-wrapper']")
-      if (!isProvider(provider)) return
-
-      toggleProvider(provider)
-    })
-
-    document.addEventListener("keydown", (event) => {
-      if (
-        event.key.toLowerCase() !== SIDEBAR_KEYBOARD_SHORTCUT ||
-        (!event.metaKey && !event.ctrlKey)
-      ) {
         return
       }
 
-      const provider = getActiveProvider()
+      const open = provider.dataset.open === "false"
+      document.cookie = `${SIDEBAR_COOKIE_NAME}=${open}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+      window.__fulldevSyncSidebarProvider?.(provider, open)
+    }
+
+    document.addEventListener("click", (event) => {
+      const control = event.target?.closest?.(
+        "[data-sidebar='trigger'], [data-sidebar='rail']"
+      )
+      if (!control || control.matches(":disabled, [aria-disabled='true']")) {
+        return
+      }
+
+      const provider = control.closest("[data-slot='sidebar-wrapper']")
       if (!provider) return
 
+      toggleSidebar(provider)
+    })
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key.toLowerCase() !== "b") return
+      if (!event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        return
+      }
+      if (event.defaultPrevented) return
+
+      const target = event.target
+      const isTyping =
+        target instanceof HTMLElement &&
+        (target.isContentEditable ||
+          target.matches("input, textarea, select, [role='textbox']"))
+      if (isTyping) return
+
+      const provider = document.querySelector("[data-slot='sidebar-wrapper']")
+      if (!(provider instanceof HTMLElement)) return
+
       event.preventDefault()
-      toggleProvider(provider)
+      toggleSidebar(provider)
     })
 
     document.addEventListener(
       "scroll",
       (event) => {
-        const target = event.target
-        if (
-          target instanceof HTMLElement &&
-          target.dataset.sidebar === "content"
-        ) {
-          sessionStorage.setItem(SIDEBAR_SCROLL_KEY, String(target.scrollTop))
+        if (event.target?.dataset?.sidebar === "content") {
+          sessionStorage.setItem("sidebar_scroll", event.target.scrollTop)
         }
       },
       true
     )
-
-    const syncAllProviders = () => {
-      getProviders().forEach((provider) => {
-        const state = ensureState(provider)
-
-        if (desktopMedia.matches && state.openMobile) {
-          setMobileOpen(provider, false)
-          return
-        }
-
-        syncProvider(provider)
-      })
-    }
-
-    desktopMedia.addEventListener("change", syncAllProviders)
-
-    initAllProviders()
-    syncAllProviders()
-
-    document.addEventListener("astro:page-load", () => {
-      initAllProviders()
-      syncAllProviders()
-    })
-  }
+  })()
 </script>

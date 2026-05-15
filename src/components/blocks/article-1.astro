@@ -2,11 +2,13 @@
 import type { ImageMetadata } from "astro"
 import { Image } from "astro:assets"
 
+import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
+  class?: string
   badge?: string
   title: string
   description: string
@@ -20,13 +22,19 @@ interface Props {
     src: ImageMetadata
     alt: string
   }
-  body: string[]
 }
 
-const { badge, title, description, author, image, body } = Astro.props
+const {
+  class: className,
+  badge,
+  title,
+  description,
+  author,
+  image,
+} = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer class="mx-auto max-w-2xl gap-8">
     <div class="mx-auto flex w-full max-w-2xl flex-col gap-6">
       {
@@ -69,7 +77,7 @@ const { badge, title, description, author, image, body } = Astro.props
     <article
       class="mx-auto flex w-full max-w-2xl flex-col gap-6 text-base leading-8"
     >
-      {body.map((paragraph) => <p>{paragraph}</p>)}
+      <slot />
     </article>
   </SectionContainer>
 </Section>

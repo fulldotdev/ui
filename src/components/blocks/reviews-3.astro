@@ -1,7 +1,9 @@
 ---
 import QuoteIcon from "@lucide/astro/icons/quote"
+import type { ImageMetadata } from "astro"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { cn } from "@/lib/utils"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Carousel,
   CarouselContent,
@@ -12,22 +14,24 @@ import {
 import { Rating } from "@/components/ui/rating"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
+  class?: string
   title?: string
   description?: string
-  items: {
+  reviews: {
     rating: number
     quote: string
+    image?: ImageMetadata
     initials: string
     name: string
     role: string
   }[]
 }
 
-const { title, description, items } = Astro.props
+const { class: className, title, description, reviews } = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   {
     (title || description) && (
       <SectionContainer class="items-center gap-4 text-center">
@@ -48,7 +52,7 @@ const { title, description, items } = Astro.props
     <Carousel opts={{ loop: true, align: "center" }} class="mx-auto max-w-3xl">
       <CarouselContent>
         {
-          items.map((item) => (
+          reviews.map((item) => (
             <CarouselItem>
               <div class="flex flex-col items-center gap-6 px-4 py-8 text-center">
                 <QuoteIcon class="text-primary size-10" />
@@ -58,6 +62,7 @@ const { title, description, items } = Astro.props
                 </blockquote>
                 <div class="flex items-center gap-3 pt-2">
                   <Avatar size="lg">
+                    <AvatarImage src={item.image} alt={item.name} />
                     <AvatarFallback>{item.initials}</AvatarFallback>
                   </Avatar>
                   <div class="text-left">

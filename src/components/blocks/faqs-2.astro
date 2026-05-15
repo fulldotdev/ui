@@ -1,4 +1,5 @@
 ---
+import { cn } from "@/lib/utils"
 import {
   Accordion,
   AccordionContent,
@@ -8,26 +9,26 @@ import {
 import { Button } from "@/components/ui/button"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
+  class?: string
   title: string
   description: string
-  items: {
+  faqs: {
     id: string
     question: string
     answer: string
   }[]
-  defaultItem?: string
-  actions?: {
+  buttons?: {
     label: string
     href: string
-    variant?: "default" | "outline" | "ghost" | "secondary"
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
 }
 
-const { title, description, items, defaultItem, actions } = Astro.props
+const { class: className, title, description, faqs, buttons } = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer>
     <div
       class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:gap-16"
@@ -44,34 +45,33 @@ const { title, description, items, defaultItem, actions } = Astro.props
           {description}
         </p>
         {
-          actions?.length ? (
+          buttons?.length && (
             <div class="mt-8 flex flex-wrap gap-3">
-              {actions.map((action, i) => (
+              {buttons.map(({ href, label, ...button }, index) => (
                 <Button
                   as="a"
-                  href={action.href}
+                  href={href}
                   size="lg"
                   variant={
-                    action.variant ?? (i === 0 ? "default" : "secondary")
+                    button.variant ?? (index === 0 ? "default" : "secondary")
                   }
+                  {...button}
                 >
-                  {action.label}
+                  {label}
                 </Button>
               ))}
             </div>
-          ) : null
+          )
         }
       </div>
 
       <div>
-        <Accordion defaultValue={defaultItem} collapsible>
+        <Accordion collapsible>
           {
-            items.map((item, index) => (
+            faqs.map((item) => (
               <AccordionItem value={item.id}>
                 <AccordionTrigger>{item.question}</AccordionTrigger>
-                <AccordionContent hidden={index !== 0}>
-                  {item.answer}
-                </AccordionContent>
+                <AccordionContent>{item.answer}</AccordionContent>
               </AccordionItem>
             ))
           }

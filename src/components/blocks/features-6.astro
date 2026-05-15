@@ -1,26 +1,28 @@
 ---
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Section, SectionContainer } from "@/components/ui/section"
 import { Separator } from "@/components/ui/separator"
 
-interface Props {
+type Props = {
+  class?: string
   title: string
   description: string
-  actions?: {
+  buttons?: {
     label: string
     href: string
-    variant?: "default" | "outline" | "ghost" | "secondary"
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
-  items: {
+  features: {
     title: string
     description: string
   }[]
 }
 
-const { title, description, actions, items } = Astro.props
+const { class: className, title, description, buttons, features } = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer>
     <div class="flex max-w-2xl flex-col gap-4">
       <h2
@@ -32,32 +34,37 @@ const { title, description, actions, items } = Astro.props
         {description}
       </p>
       {
-        actions?.length ? (
+        buttons?.length && (
           <div class="mt-2 flex flex-wrap gap-3">
-            {actions.map((action, i) => (
+            {buttons.map(({ href, label, ...button }, index) => (
               <Button
                 as="a"
-                href={action.href}
-                variant={action.variant ?? (i === 0 ? "default" : "outline")}
+                href={href}
+                variant={
+                  button.variant ?? (index === 0 ? "default" : "outline")
+                }
+                {...button}
               >
-                {action.label}
+                {label}
               </Button>
             ))}
           </div>
-        ) : null
+        )
       }
     </div>
   </SectionContainer>
   <SectionContainer>
     <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
       {
-        items.map((item) => (
+        features.map((feature) => (
           <div>
             <Separator />
             <div class="pt-6">
-              <h3 class="text-foreground text-lg font-medium">{item.title}</h3>
+              <h3 class="text-foreground text-lg font-medium">
+                {feature.title}
+              </h3>
               <p class="text-muted-foreground mt-2 text-sm leading-relaxed">
-                {item.description}
+                {feature.description}
               </p>
             </div>
           </div>

@@ -15,6 +15,9 @@ type Props = {
 
 const props: Props = Astro.props
 const currentPath = Astro.url.pathname
+const markdownPath =
+  currentPath === "/" ? "/index.md" : `${currentPath.replace(/\/$/, "")}.md`
+const markdownUrl = new URL(markdownPath, Astro.url).toString()
 
 const blockPages = await getCollection("pages", ({ data }) => {
   return data.type === "block"
@@ -43,15 +46,21 @@ const copyButton = copySource
   : undefined
 ---
 
-<Base global={props.global} page={props.page} desktopNavigation="header">
+<Base global={props.global} page={props.page}>
   <BlocksBlock
     title={props.page.title}
     description={props.page.description}
     copyButton={copyButton}
+    markdownUrl={markdownUrl}
     previousPage={previousPage}
     nextPage={nextPage}
     labels={{
-      copyPage: "Copy Page",
+      copyMarkdown: "Copy Markdown",
+      openIn: "Open in",
+      openInMarkdown: "Open in Markdown",
+      openInChatGPT: "Open in ChatGPT",
+      openInClaude: "Open in Claude",
+      openInCursor: "Open in Cursor",
       pagination: {
         previous: "Previous",
         next: "Next",

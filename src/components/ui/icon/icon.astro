@@ -1,12 +1,12 @@
 ---
 import type { HTMLAttributes } from "astro/types"
 
-interface Props extends Omit<HTMLAttributes<"svg">, "name" | "href"> {
+type Props = Omit<HTMLAttributes<"svg">, "name" | "href"> & {
   href?: HTMLAttributes<"a">["href"]
   name?: string | number
 }
 
-const { name, href, ...rest } = Astro.props
+const { name, href, ...props } = Astro.props
 
 const hrefMap = {
   "x.com": "x",
@@ -38,41 +38,29 @@ const hrefMap = {
 } as const
 
 const icons = import.meta.glob([
-  "@lucide/astro/icons/*",
-  "simple-icons-astro/*",
+  "node_modules/lucide-static/icons/*.svg",
+  "node_modules/simple-icons/icons/*.svg",
 ])
 
-const normalise = (value: string | number) =>
-  value
-    .toString()
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, "")
-
 const foundPath = () => {
+  let foundPath: string | undefined = undefined
+
+  // For x.com, use the Simple Icons X instead of Lucide's X icon.
   if (name === "x.com") {
-    return Object.keys(icons).find((key) => key === "simple-icons-astro/X")
-  }
-
-  if (name) {
-    return Object.keys(icons).find(
-      (key) => normalise(key.split("/").pop() ?? key) === normalise(name)
-    )
-  }
-
-  if (href) {
+    foundPath = "/node_modules/simple-icons/icons/x.svg"
+  } else if (name) {
+    foundPath = Object.keys(icons).find((key) => key.includes(`/${name}.svg`))
+  } else if (href) {
     const hrefKey = Object.keys(hrefMap).find((key) =>
       href.toString().includes(key)
     )
     const hrefValue = hrefMap[hrefKey as keyof typeof hrefMap]
-
-    return Object.keys(icons)
+    foundPath = Object.keys(icons)
       .reverse()
-      .find(
-        (key) =>
-          hrefValue &&
-          normalise(key.split("/").pop() ?? key) === normalise(hrefValue)
-      )
+      .find((key) => key.includes(`/${hrefValue}.svg`))
   }
+
+  return foundPath
 }
 
 const foundModule = foundPath() && icons[foundPath() as keyof typeof icons]
@@ -81,19 +69,19 @@ const Comp = module?.default
 ---
 
 {
-  Comp && foundPath()?.startsWith("simple-icons-astro/") && (
+  Comp && foundPath()?.includes("simple-icons") && (
     <Comp
       height={24}
       width={24}
       fill="currentColor"
       class="size-[1em] text-base"
-      {...rest}
+      {...props}
     />
   )
 }
 
 {
-  Comp && foundPath()?.startsWith("@lucide/astro/icons/") && (
-    <Comp height={24} width={24} class="size-[1em] text-base" {...rest} />
+  Comp && foundPath()?.includes("lucide-static") && (
+    <Comp height={24} width={24} class="size-[1em] text-base" {...props} />
   )
 }

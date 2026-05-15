@@ -132,6 +132,16 @@ pnpm build:test     # Type check + build + preview
 pnpm registry:build    # Build the component registry
 ```
 
+### Releases
+
+Fulldev UI is versioned as a registry, not published as an npm package. Add a changeset for user-facing registry, component, block, install, or documentation API changes:
+
+```bash
+pnpm changeset
+```
+
+Select `fulldev-ui` when prompted. GitHub releases are titled `Fulldev UI vX.Y.Z` and describe the registry hosted at `https://ui.full.dev/r/registry.json`.
+
 ## Questions?
 
 - Join our [Discord server](https://discord.gg/tdmUyH2YE4)

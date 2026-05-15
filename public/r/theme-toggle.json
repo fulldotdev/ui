@@ -1,12 +1,8 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "theme-toggle",
-  "dependencies": [
-    "@lucide/astro"
-  ],
-  "registryDependencies": [
-    "@fulldev/button"
-  ],
+  "dependencies": ["@lucide/astro"],
+  "registryDependencies": ["@fulldev/button"],
   "files": [
     {
       "path": "src/components/ui/theme-toggle/theme-toggle.astro",
@@ -14,13 +10,13 @@
       "type": "registry:ui"
     },
     {
-      "path": "src/components/ui/theme-toggle/theme-toggle-provider.astro",
+      "path": "src/components/ui/theme-toggle/theme-provider.astro",
       "content": "<script is:inline>\n  const getThemePreference = () => {\n    if (typeof localStorage !== \"undefined\" && localStorage.getItem(\"theme\")) {\n      return localStorage.getItem(\"theme\")\n    }\n\n    return window.matchMedia(\"(prefers-color-scheme: dark)\").matches\n      ? \"dark\"\n      : \"light\"\n  }\n\n  const disableTransitionsTemporarily = () => {\n    const style = document.createElement(\"style\")\n\n    style.appendChild(\n      document.createTextNode(\n        \"*, *::before, *::after { transition: none !important; }\"\n      )\n    )\n\n    document.head.appendChild(style)\n\n    return () => {\n      void document.documentElement.offsetHeight\n\n      requestAnimationFrame(() => {\n        style.remove()\n      })\n    }\n  }\n\n  const applyTheme = (theme, disableTransitions = false) => {\n    const restoreTransitions = disableTransitions\n      ? disableTransitionsTemporarily()\n      : null\n\n    document.documentElement.classList[theme === \"dark\" ? \"add\" : \"remove\"](\n      \"dark\"\n    )\n\n    restoreTransitions?.()\n  }\n\n  window.__setTheme = (theme) => {\n    applyTheme(theme, true)\n  }\n\n  applyTheme(getThemePreference())\n\n  if (typeof localStorage !== \"undefined\") {\n    const observer = new MutationObserver(() => {\n      const isDark = document.documentElement.classList.contains(\"dark\")\n      localStorage.setItem(\"theme\", isDark ? \"dark\" : \"light\")\n    })\n\n    observer.observe(document.documentElement, {\n      attributes: true,\n      attributeFilter: [\"class\"],\n    })\n  }\n</script>\n",
       "type": "registry:ui"
     },
     {
       "path": "src/components/ui/theme-toggle/index.ts",
-      "content": "export { default as ThemeToggle } from \"./theme-toggle.astro\"\nexport { default as ThemeToggleProvider } from \"./theme-toggle-provider.astro\"\n",
+      "content": "export { default as ThemeToggle } from \"./theme-toggle.astro\"\nexport { default as ThemeProvider } from \"./theme-provider.astro\"\n",
       "type": "registry:ui"
     }
   ],

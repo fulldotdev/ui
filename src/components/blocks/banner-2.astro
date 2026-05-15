@@ -1,21 +1,23 @@
 ---
+import { cn } from "@/lib/utils"
 import { Banner, BannerContainer } from "@/components/ui/banner"
 import { Button } from "@/components/ui/button"
 
-interface Props {
+type Props = {
+  class?: string
   title: string
   description: string
-  actions?: {
+  buttons?: {
     label: string
     href: string
-    variant?: "default" | "outline" | "ghost" | "secondary"
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
 }
 
-const { title, description, actions = [] } = Astro.props
+const { class: className, title, description, buttons } = Astro.props
 ---
 
-<Banner variant="floating" storageKey="banner-2">
+<Banner variant="floating" storageKey="banner-2" class={cn("", className)}>
   <BannerContainer class="gap-4 py-1" showClose={false}>
     <div
       class="flex flex-1 flex-col gap-0.5 @5xl:flex-row @5xl:items-center @5xl:gap-x-4"
@@ -24,16 +26,17 @@ const { title, description, actions = [] } = Astro.props
       <p class="text-muted-foreground text-sm">{description}</p>
     </div>
     {
-      actions.length > 0 && (
+      buttons?.length && (
         <div class="flex shrink-0 items-center gap-2">
-          {actions.map((action, i) => (
+          {buttons.map(({ href, label, ...button }, index) => (
             <Button
               as="a"
-              href={action.href}
+              href={href}
               size="sm"
-              variant={action.variant ?? (i === 0 ? "default" : "outline")}
+              variant={button.variant ?? (index === 0 ? "default" : "outline")}
+              {...button}
             >
-              {action.label}
+              {label}
             </Button>
           ))}
         </div>

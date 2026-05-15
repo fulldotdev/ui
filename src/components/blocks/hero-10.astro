@@ -2,21 +2,32 @@
 import type { ImageMetadata } from "astro"
 import { Image } from "astro:assets"
 
-import { Avatar, AvatarFallback, AvatarGroup } from "@/components/ui/avatar"
+import { cn } from "@/lib/utils"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarImage,
+} from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Rating } from "@/components/ui/rating"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
+  class?: string
   title: string
   description: string
-  actions: {
+  buttons: {
     label: string
     href: string
-    variant?: "default" | "outline" | "ghost" | "secondary"
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
   socialProof: {
-    avatars: string[]
+    avatars: {
+      image?: ImageMetadata
+      initials: string
+      name?: string
+    }[]
     rating: number
     text: string
   }
@@ -26,10 +37,17 @@ interface Props {
   }
 }
 
-const { title, description, actions, socialProof, image } = Astro.props
+const {
+  class: className,
+  title,
+  description,
+  buttons,
+  socialProof,
+  image,
+} = Astro.props
 ---
 
-<Section class="dark bg-background min-h-screen justify-start">
+<Section class={cn("dark bg-background min-h-screen justify-start", className)}>
   <SectionContainer
     class="relative z-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
   >
@@ -46,15 +64,18 @@ const { title, description, actions, socialProof, image } = Astro.props
     <div class="flex shrink-0 flex-col gap-5">
       <div class="flex flex-wrap gap-3">
         {
-          actions.map((action, i) => (
+          buttons.map(({ href, label, ...button }, index) => (
             <Button
               as="a"
-              href={action.href}
+              href={href}
               size="lg"
               class="w-full"
-              variant={action.variant ?? (i === 0 ? "default" : "secondary")}
+              variant={
+                button.variant ?? (index === 0 ? "default" : "secondary")
+              }
+              {...button}
             >
-              {action.label}
+              {label}
             </Button>
           ))
         }
@@ -62,9 +83,13 @@ const { title, description, actions, socialProof, image } = Astro.props
       <div class="flex items-center gap-3">
         <AvatarGroup>
           {
-            socialProof.avatars.map((initials) => (
+            socialProof.avatars.map((avatar) => (
               <Avatar class="ring-background size-11 ring">
-                <AvatarFallback>{initials}</AvatarFallback>
+                <AvatarImage
+                  src={avatar.image}
+                  alt={avatar.name ?? avatar.initials}
+                />
+                <AvatarFallback>{avatar.initials}</AvatarFallback>
               </Avatar>
             ))
           }

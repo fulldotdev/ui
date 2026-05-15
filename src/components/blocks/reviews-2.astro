@@ -1,31 +1,36 @@
 ---
 import QuoteIcon from "@lucide/astro/icons/quote"
+import type { ImageMetadata } from "astro"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { cn } from "@/lib/utils"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Rating } from "@/components/ui/rating"
 import { Section, SectionContainer } from "@/components/ui/section"
 import { Separator } from "@/components/ui/separator"
 
-interface Props {
+type Props = {
+  class?: string
   featured: {
     quote: string
+    image?: ImageMetadata
     initials: string
     name: string
     role: string
   }
-  items: {
+  reviews: {
     rating: number
     quote: string
+    image?: ImageMetadata
     initials: string
     name: string
     role: string
   }[]
 }
 
-const { featured, items } = Astro.props
+const { class: className, featured, reviews } = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer
     class="grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:items-start"
   >
@@ -38,6 +43,7 @@ const { featured, items } = Astro.props
       </blockquote>
       <div class="flex items-center gap-3 pt-2">
         <Avatar size="lg">
+          <AvatarImage src={featured.image} alt={featured.name} />
           <AvatarFallback>{featured.initials}</AvatarFallback>
         </Avatar>
         <div>
@@ -48,7 +54,7 @@ const { featured, items } = Astro.props
     </article>
     <div class="grid gap-6">
       {
-        items.map((item) => (
+        reviews.map((item) => (
           <article class="flex flex-col">
             <Separator />
             <div class="flex flex-col gap-3 pt-6">
@@ -58,6 +64,7 @@ const { featured, items } = Astro.props
               </p>
               <div class="flex items-center gap-3 pt-1">
                 <Avatar>
+                  <AvatarImage src={item.image} alt={item.name} />
                   <AvatarFallback>{item.initials}</AvatarFallback>
                 </Avatar>
                 <div>

@@ -2,11 +2,13 @@
 import type { ImageMetadata } from "astro"
 import { Image } from "astro:assets"
 
+import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
+  class?: string
   badge?: string
   title: string
   articles: {
@@ -27,10 +29,10 @@ interface Props {
   }[]
 }
 
-const { badge, title, articles } = Astro.props
+const { class: className, badge, title, articles } = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer class="gap-8">
     <div class="flex flex-wrap items-end justify-between gap-4">
       <div class="flex flex-col gap-4">
@@ -54,12 +56,12 @@ const { badge, title, articles } = Astro.props
         articles.map((article) => (
           <a
             href={article.href ?? "#"}
-            class="group hover:bg-muted/50 focus-visible:ring-ring/50 flex h-full flex-col gap-4 rounded-xl p-4 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+            class="group bg-muted/50 hover:bg-muted focus-visible:ring-ring/50 flex h-full flex-col gap-4 rounded-xl p-4 transition-colors focus-visible:ring-2 focus-visible:outline-none"
           >
             <Image
               src={article.image.src}
               alt={article.image.alt}
-              class="aspect-[16/9] rounded-lg object-cover transition-opacity group-hover:opacity-85"
+              class="-mx-4 -mt-4 aspect-[16/9] w-[calc(100%+2rem)] max-w-none rounded-lg object-cover transition-opacity group-hover:opacity-85"
               widths={[480, 720]}
               sizes="(min-width: 64rem) 18rem, (min-width: 48rem) 50vw, 100vw"
             />

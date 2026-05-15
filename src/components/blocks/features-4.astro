@@ -1,31 +1,33 @@
 ---
 import ArrowRightIcon from "@lucide/astro/icons/arrow-right"
-import LayoutGridIcon from "@lucide/astro/icons/layout-grid"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
+  class?: string
   title: string
   description: string
-  actions?: {
+  buttons?: {
     label: string
     href: string
-    variant?: "default" | "outline" | "ghost" | "secondary"
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
-  items: {
+  features: {
     title: string
     description: string
-    icon: typeof LayoutGridIcon
+    icon: string
     href?: string
     linkText?: string
   }[]
 }
 
-const { title, description, actions, items } = Astro.props
+const { class: className, title, description, buttons, features } = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer>
     <div class="grid gap-12 lg:grid-cols-[1fr_2fr] lg:items-start">
       <div class="lg:sticky lg:top-28">
@@ -40,50 +42,50 @@ const { title, description, actions, items } = Astro.props
           {description}
         </p>
         {
-          actions?.length ? (
+          buttons?.length && (
             <div class="mt-6 flex flex-wrap gap-3">
-              {actions.map((action, i) => (
+              {buttons.map(({ href, label, ...button }, index) => (
                 <Button
                   as="a"
-                  href={action.href}
-                  variant={action.variant ?? (i === 0 ? "default" : "outline")}
+                  href={href}
+                  variant={
+                    button.variant ?? (index === 0 ? "default" : "outline")
+                  }
+                  {...button}
                 >
-                  {action.label}
+                  {label}
                 </Button>
               ))}
             </div>
-          ) : null
+          )
         }
       </div>
       <div class="grid gap-6 sm:grid-cols-2">
         {
-          items.map((item) => {
-            const Icon = item.icon
-            return (
-              <div class="group/feature hover:bg-muted/40 flex flex-col gap-4 rounded-xl border p-6 transition-colors">
-                <div class="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
-                  <Icon class="size-5" />
-                </div>
-                <div class="flex flex-col gap-1.5">
-                  <h3 class="text-foreground text-base font-medium">
-                    {item.title}
-                  </h3>
-                  <p class="text-muted-foreground text-sm leading-relaxed">
-                    {item.description}
-                  </p>
-                </div>
-                {item.href && item.linkText && (
-                  <a
-                    href={item.href}
-                    class="text-primary mt-auto inline-flex items-center gap-1 text-sm font-medium hover:underline"
-                  >
-                    {item.linkText}
-                    <ArrowRightIcon class="size-3.5" />
-                  </a>
-                )}
+          features.map((feature) => (
+            <div class="group/feature hover:bg-muted/40 flex flex-col gap-4 rounded-xl border p-6 transition-colors">
+              <div class="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
+                <Icon name={feature.icon} class="size-5" />
               </div>
-            )
-          })
+              <div class="flex flex-col gap-1.5">
+                <h3 class="text-foreground text-base font-medium">
+                  {feature.title}
+                </h3>
+                <p class="text-muted-foreground text-sm leading-relaxed">
+                  {feature.description}
+                </p>
+              </div>
+              {feature.href && feature.linkText && (
+                <a
+                  href={feature.href}
+                  class="text-primary mt-auto inline-flex items-center gap-1 text-sm font-medium hover:underline"
+                >
+                  {feature.linkText}
+                  <ArrowRightIcon class="size-3.5" />
+                </a>
+              )}
+            </div>
+          ))
         }
       </div>
     </div>

@@ -1,28 +1,48 @@
 ---
-import { Avatar, AvatarFallback, AvatarGroup } from "@/components/ui/avatar"
+import type { ImageMetadata } from "astro"
+
+import { cn } from "@/lib/utils"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarGroupCount,
+  AvatarImage,
+} from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Rating } from "@/components/ui/rating"
 import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
+  class?: string
   title: string
   description: string
-  actions?: {
+  buttons?: {
     label: string
     href: string
-    variant?: "default" | "outline" | "ghost" | "secondary"
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
   socialProof?: {
-    avatars: string[]
-    rating: number
+    avatars: {
+      image?: ImageMetadata
+      initials: string
+      name?: string
+    }[]
+    count?: string | number
+    rating?: number
     text: string
   }
 }
 
-const { title, description, actions, socialProof } = Astro.props
+const {
+  class: className,
+  title,
+  description,
+  buttons,
+  socialProof,
+} = Astro.props
 ---
 
-<Section class="bg-accent/50">
+<Section class={cn("bg-primary/10 border-primary/15 border-y", className)}>
   <SectionContainer class="items-center text-center">
     <div class="flex max-w-2xl flex-col items-center gap-5">
       <h2
@@ -35,39 +55,48 @@ const { title, description, actions, socialProof } = Astro.props
       </p>
     </div>
     {
-      actions?.length ? (
+      buttons?.length && (
         <div class="flex flex-wrap justify-center gap-3">
-          {actions.map((action, i) => (
+          {buttons.map(({ href, label, ...button }, index) => (
             <Button
               as="a"
-              href={action.href}
+              href={href}
               size="lg"
-              variant={action.variant ?? (i === 0 ? "default" : "secondary")}
+              variant={
+                button.variant ?? (index === 0 ? "default" : "secondary")
+              }
+              {...button}
             >
-              {action.label}
+              {label}
             </Button>
           ))}
         </div>
-      ) : null
+      )
     }
     {
-      socialProof ? (
-        <div class="flex flex-col items-center gap-3">
+      socialProof && (
+        <div class="flex flex-col items-center gap-4">
           <AvatarGroup>
-            {socialProof.avatars.map((initials) => (
-              <Avatar class="ring-accent size-11 ring">
-                <AvatarFallback>{initials}</AvatarFallback>
+            {socialProof.avatars.map((avatar) => (
+              <Avatar class="ring-primary/10 bg-background size-11 ring">
+                <AvatarImage
+                  src={avatar.image}
+                  alt={avatar.name ?? avatar.initials}
+                />
+                <AvatarFallback>{avatar.initials}</AvatarFallback>
               </Avatar>
             ))}
+            {socialProof.count && (
+              <AvatarGroupCount class="bg-background text-foreground ring-primary/10 size-11 ring">
+                {socialProof.count}
+              </AvatarGroupCount>
+            )}
           </AvatarGroup>
-          <div class="flex items-center gap-2">
-            <Rating value={socialProof.rating} />
-            <span class="text-muted-foreground text-sm">
-              {socialProof.text}
-            </span>
-          </div>
+          <span class="text-muted-foreground text-sm leading-snug">
+            {socialProof.text.replace(/\s+/g, " ")}
+          </span>
         </div>
-      ) : null
+      )
     }
   </SectionContainer>
 </Section>

@@ -8,31 +8,49 @@ type Props = Omit<HTMLAttributes<"div">, "src"> & {
 }
 
 const { class: className, src, ...props } = Astro.props
+
+const getEmbedSrc = (value?: string) => {
+  if (!value) return undefined
+
+  try {
+    const url = new URL(value)
+    const host = url.hostname.replace(/^www\./, "")
+
+    if (host === "youtube.com" && url.pathname === "/watch") {
+      const id = url.searchParams.get("v")
+      return id ? `https://www.youtube.com/embed/${id}` : undefined
+    }
+
+    if (host === "youtube.com" && url.pathname.startsWith("/shorts/")) {
+      const id = url.pathname.split("/")[2]
+      return id ? `https://www.youtube.com/embed/${id}` : undefined
+    }
+
+    if (host === "youtu.be") {
+      const id = url.pathname.slice(1)
+      return id ? `https://www.youtube.com/embed/${id}` : undefined
+    }
+  } catch {
+    return undefined
+  }
+}
+
+const embedSrc = getEmbedSrc(src)
+const isShort = src?.includes("/shorts/")
 ---
 
 {
-  src?.includes("youtube.com/watch") && (
+  embedSrc && (
     <iframe
-      src={
-        src.replace("youtube.com/watch?v=", "youtube.com/embed/").split("&")[0]
-      }
+      src={embedSrc}
+      title="Embedded video"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
       allowfullscreen
-      class={cn("aspect-video h-auto w-full", className)}
-      {...props}
-    />
-  )
-}
-
-{
-  src?.includes("youtube.com/shorts") && (
-    <iframe
-      src={
-        src.replace("youtube.com/shorts/", "youtube.com/embed/").split("&")[0]
-      }
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      allowfullscreen
-      class={cn("aspect-9/16 h-auto w-full", className)}
+      class={cn(
+        "bg-muted w-full rounded-lg border",
+        isShort ? "aspect-9/16 max-w-xs" : "aspect-video",
+        className
+      )}
       {...props}
     />
   )

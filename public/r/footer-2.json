@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "footer-2",
+  "dependencies": [
+    "simple-icons-astro"
+  ],
+  "registryDependencies": [
+    "@fulldev/logo",
+    "@fulldev/section",
+    "@fulldev/separator"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/footer-2.astro",
+      "content": "---\nimport Discord from \"simple-icons-astro/Discord\"\nimport Github from \"simple-icons-astro/Github\"\nimport X from \"simple-icons-astro/X\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Logo, LogoText } from \"@/components/ui/logo\"\nimport { Section, SectionContainer } from \"@/components/ui/section\"\nimport { Separator } from \"@/components/ui/separator\"\n\ntype Props = {\n  class?: string\n  brandName: string\n  brandHref: string\n  description: string\n  links?: {\n    label: string\n    href: string\n  }[]\n  socials?: {\n    label: string\n    href: string\n    icon: string\n  }[]\n  copyright: string\n}\n\nconst {\n  class: className,\n  brandName,\n  brandHref,\n  description,\n  links,\n  socials,\n  copyright,\n} = Astro.props\n\nconst iconMap: Record<string, any> = {\n  github: Github,\n  discord: Discord,\n  x: X,\n}\n---\n\n<footer class={cn(\"\", className)}>\n  <Section class=\"py-12 lg:py-16\">\n    <SectionContainer class=\"items-center text-center\">\n      <Logo href={brandHref}>\n        <LogoText>{brandName}</LogoText>\n      </Logo>\n      <p class=\"text-muted-foreground max-w-md text-sm leading-relaxed\">\n        {description}\n      </p>\n      {\n        links && links.length > 0 && (\n          <nav class=\"flex flex-wrap items-center justify-center gap-x-6 gap-y-2\">\n            {links.map((link) => (\n              <a\n                href={link.href}\n                class=\"text-muted-foreground hover:text-foreground text-sm transition-colors\"\n              >\n                {link.label}\n              </a>\n            ))}\n          </nav>\n        )\n      }\n      {\n        socials && socials.length > 0 && (\n          <div class=\"flex items-center justify-center gap-3\">\n            {socials.map((social) => {\n              const IconComp = iconMap[social.icon]\n              return (\n                <a\n                  href={social.href}\n                  class=\"text-muted-foreground hover:text-foreground transition-colors\"\n                  aria-label={social.label}\n                  target=\"_blank\"\n                  rel=\"noreferrer\"\n                >\n                  {IconComp && <IconComp class=\"size-4\" fill=\"currentColor\" />}\n                </a>\n              )\n            })}\n          </div>\n        )\n      }\n      <Separator />\n      <p class=\"text-muted-foreground text-sm\">{copyright}</p>\n    </SectionContainer>\n  </Section>\n</footer>\n",
+      "type": "registry:block"
+    }
+  ],
+  "type": "registry:block"
+}

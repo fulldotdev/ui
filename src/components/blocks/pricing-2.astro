@@ -1,6 +1,7 @@
 ---
 import { CheckIcon } from "@lucide/astro"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -14,7 +15,8 @@ import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
 import { Section, SectionContainer } from "@/components/ui/section"
 import { Separator } from "@/components/ui/separator"
 
-interface Props {
+type Props = {
+  class?: string
   title: string
   description: string
   plans: {
@@ -25,18 +27,18 @@ interface Props {
     currency: string
     unit: string
     features: string[]
-    action: {
+    button: {
       label: string
       href: string
-      variant?: "default" | "outline" | "ghost" | "secondary"
+      variant?: "default" | "outline" | "secondary" | "ghost"
     }
   }[]
 }
 
-const { title, description, plans } = Astro.props
+const { class: className, title, description, plans } = Astro.props
 ---
 
-<Section>
+<Section class={cn("", className)}>
   <SectionContainer class="gap-8">
     <div class="mx-auto max-w-2xl text-center">
       <h2
@@ -54,7 +56,7 @@ const { title, description, plans } = Astro.props
       class="mx-auto grid w-full justify-center gap-6 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(16rem,18rem))]"
     >
       {
-        plans.map((plan, i) => (
+        plans.map((plan, index) => (
           <Card class="flex flex-col border-none shadow-none">
             <CardHeader>
               <CardTitle>{plan.name}</CardTitle>
@@ -82,13 +84,13 @@ const { title, description, plans } = Astro.props
             <CardFooter class="mt-auto">
               <Button
                 as="a"
-                href={plan.action.href}
+                href={plan.button.href}
                 variant={
-                  plan.action.variant ?? (i === 0 ? "outline" : "default")
+                  plan.button.variant ?? (index === 0 ? "outline" : "default")
                 }
                 class="w-full"
               >
-                {plan.action.label}
+                {plan.button.label}
               </Button>
             </CardFooter>
           </Card>
