@@ -41,4 +41,4 @@ This repo has extra responsibilities: it is the Fulldev UI registry source, docs
 - Use `pnpm preview` for the build-and-preview flow; it also clears port `4321` before starting Astro preview.
 - Do not run `pnpm check`, `pnpm build`, or `pnpm registry:build` after every small edit.
 - Format touched files when a change is settled.
-- For release prep, run `pnpm build`, then `pnpm check`, then formatting/registry generation as needed.
+- For release prep, run `pnpm check`, then `pnpm build`, then `pnpm registry:build`, then formatting as needed.

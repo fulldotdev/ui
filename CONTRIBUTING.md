@@ -121,9 +121,10 @@ const slot = await Astro.slots.render("default")
 ### Building
 
 ```bash
+pnpm check          # Type check the project
 pnpm build          # Build the project
 pnpm build:prod     # Type check + build
-pnpm build:test     # Type check + build + preview
+pnpm build:preview  # Build + preview
 ```
 
 ### Registry
@@ -131,6 +132,8 @@ pnpm build:test     # Type check + build + preview
 ```bash
 pnpm registry:build    # Build the component registry
 ```
+
+For release validation, run `pnpm check`, then `pnpm build`, then `pnpm registry:build`.
 
 ### Releases
 
