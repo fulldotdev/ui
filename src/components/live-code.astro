@@ -1,6 +1,6 @@
 ---
-import Check from "@lucide/astro/icons/check"
-import Copy from "@lucide/astro/icons/copy"
+import CheckIcon from "lucide-static/icons/check.svg"
+import CopyIcon from "lucide-static/icons/copy.svg"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -59,8 +59,11 @@ const installButtonId = installCommand
             data-source={installCommand}
             aria-label={`Copy install command: ${installCommand}`}
           >
-            <Copy data-copy-icon class="live-code-copy-icon size-4" />
-            <Check data-check-icon class="live-code-check-icon hidden size-4" />
+            <CopyIcon data-copy-icon class="live-code-copy-icon size-4" />
+            <CheckIcon
+              data-check-icon
+              class="live-code-check-icon hidden size-4"
+            />
             <span>{installCommand}</span>
           </Button>
         )
@@ -103,8 +106,8 @@ const installButtonId = installCommand
           data-slot="live-code-copy-source"
           aria-label="Copy code example"
         >
-          <Copy data-copy-icon class="live-code-source-copy-icon size-4" />
-          <Check
+          <CopyIcon data-copy-icon class="live-code-source-copy-icon size-4" />
+          <CheckIcon
             data-check-icon
             class="live-code-source-check-icon hidden size-4"
           />
@@ -119,7 +122,44 @@ const installButtonId = installCommand
 <script is:inline>
   if (!window.__fulldevLiveCodeCopy) {
     window.__fulldevLiveCodeCopy = true
-    document.addEventListener("click", (event) => {
+
+    const writeToClipboard = async (text) => {
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(text)
+          return true
+        } catch {
+          // Fall through to the textarea copy path.
+        }
+      }
+
+      const textarea = document.createElement("textarea")
+      textarea.value = text
+      textarea.setAttribute("readonly", "")
+      textarea.style.position = "fixed"
+      textarea.style.inset = "0 auto auto 0"
+      textarea.style.opacity = "0"
+      document.body.append(textarea)
+      textarea.select()
+      textarea.setSelectionRange(0, text.length)
+
+      try {
+        return document.execCommand("copy")
+      } finally {
+        textarea.remove()
+      }
+    }
+
+    const showCopySuccess = (button) => {
+      button.querySelector("[data-copy-icon]")?.classList.add("hidden")
+      button.querySelector("[data-check-icon]")?.classList.remove("hidden")
+      setTimeout(() => {
+        button.querySelector("[data-copy-icon]")?.classList.remove("hidden")
+        button.querySelector("[data-check-icon]")?.classList.add("hidden")
+      }, 1200)
+    }
+
+    document.addEventListener("click", async (event) => {
       const button = event.target?.closest?.(
         "[id^='live-code-copy-install-'], [data-slot='live-code-copy-source']"
       )
@@ -130,13 +170,10 @@ const installButtonId = installCommand
           .closest("[data-slot='live-code-panel']")
           ?.querySelector("pre")
           ?.textContent?.replace(/\n$/, "")
-      button.querySelector("[data-copy-icon]")?.classList.add("hidden")
-      button.querySelector("[data-check-icon]")?.classList.remove("hidden")
-      navigator.clipboard?.writeText(source ?? "")
-      setTimeout(() => {
-        button.querySelector("[data-copy-icon]")?.classList.remove("hidden")
-        button.querySelector("[data-check-icon]")?.classList.add("hidden")
-      }, 1200)
+      if (!source) return
+
+      const copied = await writeToClipboard(source)
+      if (copied) showCopySuccess(button)
     })
   }
 </script>

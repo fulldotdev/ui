@@ -45,6 +45,7 @@ Treat icons as one example of the broader content/code boundary:
 - UX/control icons belong in code: chevrons, close icons, menu icons, search icons, disclosure arrows, loading indicators, carousel arrows, and form affordances.
 - Content/meaning icons may come from content as plain icon names when the icon changes with the surrounding content, project, or locale.
 - Render content-owned icons through `src/components/ui/icon` with `<Icon name={item.icon} />`.
+- Import fixed code-owned icons directly from the static SVG packages, using local names with an `Icon` suffix such as `ArrowRightIcon`.
 - Keep the current `Icon` contract: plain names are normalized, Lucide is preferred by default, and Simple Icons is used as a fallback mainly for brand/social icons.
 
 ## Global Content

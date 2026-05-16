@@ -19,15 +19,14 @@ const variants = cva(
   }
 )
 
-type Props = VariantProps<typeof variants> &
-  HTMLAttributes<"button"> &
-  HTMLAttributes<"a"> &
-  HTMLAttributes<"span"> & {
-    as?: "a" | "button" | "span"
-    href?: string
-    isActive?: boolean
-    active?: boolean
-  }
+interface Props
+  extends VariantProps<typeof variants>,
+    HTMLAttributes<"button"> {
+  as?: "a" | "button" | "span"
+  href?: string
+  isActive?: boolean
+  active?: boolean
+}
 
 const {
   as: explicitTag,
@@ -37,7 +36,7 @@ const {
   active = false,
   type,
   ...props
-} = Astro.props
+} = Astro.props satisfies Props
 
 const Tag = explicitTag || "a"
 const resolvedActive = isActive ?? active

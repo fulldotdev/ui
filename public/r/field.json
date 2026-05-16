@@ -21,6 +21,11 @@
       "type": "registry:ui"
     },
     {
+      "path": "src/components/ui/field/field-error.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  errors?: Array<{ message?: string } | undefined>\n}\n\nconst { class: className, errors, ...props } = Astro.props\n\nconst messages = [\n  ...new Set(\n    (errors ?? [])\n      .map((error) => error?.message?.trim())\n      .filter((message): message is string => Boolean(message))\n  ),\n]\n\nconst hasDefaultSlot = Astro.slots.has(\"default\")\nconst shouldRender = hasDefaultSlot || messages.length > 0\n---\n\n{\n  shouldRender && (\n    <div\n      role=\"alert\"\n      data-slot=\"field-error\"\n      class={cn(\"text-destructive text-sm font-normal\", className)}\n      {...props}\n    >\n      {hasDefaultSlot ? (\n        <slot />\n      ) : messages.length === 1 ? (\n        messages[0]\n      ) : (\n        <ul class=\"ml-4 flex list-disc flex-col gap-1\">\n          {messages.map((message) => (\n            <li>{message}</li>\n          ))}\n        </ul>\n      )}\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    },
+    {
       "path": "src/components/ui/field/field-group.astro",
       "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"field-group\"\n  class={cn(\n    \"group/field-group @container/field-group flex w-full flex-col gap-7 data-[slot=checkbox-group]:gap-3 *:data-[slot=field-group]:gap-4\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n",
       "type": "registry:ui"

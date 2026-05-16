@@ -11,7 +11,7 @@ Keep development feedback fast:
 - Start or reuse the dev server.
 - Read dev server logs occasionally, especially after content, routing, layout, or component changes.
 - Use browser/manual inspection when UI presentation changed.
-- Do not run `check` or `build` after every small edit.
+- Do not run full checks or builds after every small edit.
 - Do not repeatedly restart the dev server unless logs show it is stale or broken.
 
 ## Formatting
@@ -19,19 +19,22 @@ Keep development feedback fast:
 Format touched files when the change is settled, not after every micro-edit:
 
 ```bash
-pnpm prettier <touched-files>
+pnpm exec prettier --write <touched-files>
 ```
 
-## Release Validation
+Avoid repo-wide formatting unless the user asks for it or the task is explicitly cleanup-oriented.
 
-For release prep, run the heavier checks once:
+## Validation
 
-1. Run `pnpm build`.
-2. Run `pnpm check`.
-3. Run `pnpm prettier <touched-files>` or the project formatting command if formatting has not already been applied.
-4. If registry inputs changed, run the repo-specific registry build command from local instructions.
+Each project owns its exact validation commands. Inspect `package.json`, project docs, and local agent instructions before choosing commands.
 
-For risky structural changes, run the smallest relevant subset instead of the whole release sequence.
+For local validation, run the smallest relevant subset:
+
+1. If formatting changed, run `pnpm exec prettier --write <touched-files>`.
+2. If the project has a typecheck or check command and the change affects contracts, run that command.
+3. If final validation is requested or warranted, run the project's documented build/check sequence.
+
+For risky structural changes, run the smallest relevant subset instead of the whole validation suite.
 
 ## Change Workflow
 

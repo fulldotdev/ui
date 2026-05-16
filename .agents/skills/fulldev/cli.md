@@ -1,6 +1,6 @@
 # Fulldev CLI Reference
 
-Fulldev UI uses the shadcn CLI and registry protocol. There is no assumed `fulldev` binary. Say "install the Fulldev component", but run shadcn-compatible commands against the `@fulldev` registry.
+Fulldev UI uses the shadcn CLI and registry protocol. There is no assumed `fulldev` binary. Say "install the Fulldev component" or "install the Fulldev block", but run shadcn-compatible commands against the `@fulldev` registry.
 
 ## Project Setup
 
@@ -42,7 +42,7 @@ Inspect project configuration:
 npx shadcn@latest info
 ```
 
-Install Fulldev components:
+Install Fulldev components or blocks:
 
 ```bash
 npx shadcn@latest add @fulldev/button
@@ -68,6 +68,6 @@ npx shadcn@latest view @fulldev/button
 
 - Do not invent Fulldev CLI flags or commands.
 - Do not fetch registry files manually when the shadcn CLI can preview, diff, view, or install them.
-- Before creating local UI, check whether an `@fulldev` component already exists.
-- After installing a component, read the added files when behavior, imports, or API details matter.
+- Before creating local UI or page sections, check whether an `@fulldev` component or block already exists.
+- After installing a component or block, read the added files when behavior, imports, or API details matter.
 - If a third-party registry item hardcodes aliases, adjust imports to the project's actual aliases.

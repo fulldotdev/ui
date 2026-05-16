@@ -9,7 +9,7 @@ Reusable UI components live in `src/components/ui/<component-name>/`.
 - Use the existing `@/*` import alias for `src/*`.
 - Preserve nearby naming and composition patterns.
 
-Prefer existing `@fulldev` components before creating local reusable UI. Local components are application code unless repo-specific instructions say otherwise.
+Prefer existing `@fulldev` components before creating local reusable UI. For complete page sections, check existing `@fulldev` blocks first. Local components are application code unless repo-specific instructions say otherwise.
 
 ## Astro Frontmatter
 
@@ -17,7 +17,9 @@ Astro frontmatter should make the file's contract obvious:
 
 - Use `type Props`, not `interface Props`.
 - Define `type Props` before reading `Astro.props`.
+- Keep `Props` local to the component frontmatter. Do not `export type Props` from `.astro` files unless an external TypeScript module explicitly imports it.
 - Let Astro infer prop types from `Props`; do not annotate the assignment or destructuring with `: Props`.
+- Do not cast `Astro.props` with `as Props`. If Astro cannot associate a complex local `Props` type with the destructuring, prefer simplifying the type shape or using `satisfies Props`.
 - Destructure `Astro.props` once near the top of the frontmatter.
 - Derive local values after destructuring.
 

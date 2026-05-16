@@ -1,0 +1,152 @@
+---
+type: doc
+title: Layouts
+description: Document the Fulldev layout and content collection architecture.
+---
+
+import BookOpenCheckIcon from "lucide-static/icons/book-open-check.svg"
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+
+<Alert>
+  <BookOpenCheckIcon />
+  <AlertTitle>Not part of the official library</AlertTitle>
+  <AlertDescription>
+    Layouts are not installable Fulldev UI registry items. This page documents
+    what we learned from building content-heavy Astro sites: standardizing
+    layouts, schemas, and content collections makes projects faster to build,
+    easier to review, and easier for AI agents to extend safely.
+  </AlertDescription>
+</Alert>
+
+Fulldev projects work best when page data moves through a predictable pipeline:
+
+```text
+content frontmatter/body -> schema validation -> layout orchestration -> components/blocks
+```
+
+This keeps authored content, validation, page composition, and reusable UI in
+separate layers. The result is a project where routes stay thin, content stays
+portable, and blocks can remain installable source instead of becoming coupled
+to one site's private data model.
+
+## Responsibility layers
+
+Content owns authored copy and semantic page configuration. In this repo that
+means `src/content/pages` for page entries and `src/content/globals` for
+cross-page site data such as navigation, shared labels, and site metadata.
+
+Schemas own contracts. Layout schemas live in `src/schemas/layouts`, and
+`src/schemas/page.ts` combines them into a discriminated union by `type`. A page
+with `type: doc` is validated by the doc schema and rendered by
+`src/layouts/doc.astro`.
+
+Layouts own page orchestration. They choose the blocks and components for a
+page type, map validated content into props, arrange sections, prepare derived
+values, and decide where the rendered Markdown body appears.
+
+Components and blocks own DOM, styling, accessibility, behavior, and responsive
+details. Blocks should receive props from layouts instead of importing content
+collections, page schemas, routes, globals, or project-owned placeholder media.
+
+## Thin routes
+
+Routes should hand content entries to a generic renderer and then get out of
+the way. In this repo, `src/pages/[...page].astro` collects page entries and
+`src/components/layout-renderer.astro` resolves the layout from the page type.
+
+```astro title="src/components/layout-renderer.astro"
+---
+const { Content, headings } = await render(page)
+const layoutPath = `../layouts/${page.data.type}.astro`
+const Layout = layoutImports[layoutPath]?.default
+---
+
+<Layout global={globalData} page={page.data} headings={headings}>
+  <Content />
+</Layout>
+```
+
+The important part is that the renderer stays generic. Adding a page type should
+not require new route branches.
+
+## Layout schemas
+
+Every page type gets a schema file under `src/schemas/layouts`. Keep the base
+fields shared, then add only the structured data that the layout needs.
+
+```ts title="src/schemas/page.ts"
+export const pageSchema = (ctx: SchemaContext) =>
+  z.discriminatedUnion("type", [
+    docSchema(ctx).extend({ type: z.literal("doc") }),
+    homeSchema(ctx).extend({ type: z.literal("home") }),
+    overviewSchema(ctx).extend({ type: z.literal("overview") }),
+  ])
+```
+
+Use strict schemas for fixed layout contracts. Keep values permissive only when
+the surrounding ecosystem needs it, such as icon names coming from content.
+
+## Layout files
+
+Layouts live in `src/layouts` and use the same small prop shape:
+
+```ts
+type Props = {
+  global: GlobalSchema
+  page: DocSchema
+  headings: MarkdownHeading[]
+}
+```
+
+Only include `headings` when the layout actually uses them. Derived data belongs
+in the layout frontmatter, with explicit props passed into the block or
+component that renders the interface.
+
+## Base layout
+
+`src/layouts/base.astro` is the shared shell. Keep it focused on document
+chrome, head integration, theme setup, global navigation, breadcrumbs, search,
+and the main page slot.
+
+Do not put page-specific block selection, content reshaping, or layout-specific
+SEO mapping in the base layout. Those decisions belong to the concrete layout
+for the page type.
+
+## Content boundaries
+
+Content should contain copy and semantic configuration, not implementation
+details. Avoid raw Astro components, imported icons, SVG or HTML fragments,
+Tailwind class strings, and DOM concerns in content collections.
+
+Use semantic values when the choice belongs to the content:
+
+```yaml
+features:
+  - icon: rocket
+    title: Launch faster
+    description: Compose the page from validated content and reusable blocks.
+```
+
+Then map that content in the layout:
+
+```astro
+<FeaturesBlock features={page.features} />
+```
+
+The block can render the icon name through the project `Icon` component, while
+fixed UI icons such as chevrons, close buttons, and copy buttons stay as direct
+static SVG imports in code.
+
+## Adding a page type
+
+To add a layout-backed page type:
+
+1. Create `src/schemas/layouts/<name>.ts`.
+2. Add it to the discriminated union in `src/schemas/page.ts`.
+3. Create `src/layouts/<name>.astro`.
+4. Add content in `src/content/pages` with `type: <name>`.
+5. Keep the route and generic layout renderer unchanged.
+
+This pattern keeps the system boring in the best way: new page types are
+explicit, validated, and easy to inspect without changing the routing layer.

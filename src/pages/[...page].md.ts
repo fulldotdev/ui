@@ -4,12 +4,14 @@ import { getCollection } from "astro:content"
 
 export const prerender = true
 
+const navigationPreamble = "Navigation: [/sitemap.md](/sitemap.md)\n\n"
+
 export async function getStaticPaths() {
   const pages = await getCollection("pages")
   return Promise.all(
     pages.map(async (page) => ({
       params: {
-        page: page.id === "index" ? undefined : page.id,
+        page: page.id === "index" ? null : page.id,
       },
       props: {
         source: await readPageSource(page.filePath),
@@ -27,7 +29,7 @@ async function readPageSource(filePath: string | undefined) {
 }
 
 export const GET: APIRoute = ({ props }) => {
-  return new Response(props.source, {
+  return new Response(`${navigationPreamble}${props.source}`, {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
     },

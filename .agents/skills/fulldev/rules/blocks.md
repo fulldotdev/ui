@@ -13,9 +13,10 @@ Blocks should:
 - Not import page schemas or content collection types.
 - Not import from `src/content`, `src/layouts`, route files, or private page architecture.
 - Not hardcode content-meaningful icons, entries, CTAs, links, labels, or images when they should vary by project, page, block instance, or locale.
+- Not import docs-site assets, placeholder images, or other project-owned media. Images rendered by installable blocks should be passed in through props.
 - Let layouts map schema-backed content into block props.
 
-It is fine to hardcode code-owned UX/control icons inside a block.
+It is fine to import fixed code-owned UX/control icons inside a block. Use the `Icon` component only when the icon name is content/config-owned data.
 
 Layouts importing reusable blocks and passing schema-backed content into them is the preferred orchestration pattern. In client projects, local blocks are application code unless repo-specific instructions say otherwise.
 
