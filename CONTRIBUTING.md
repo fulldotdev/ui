@@ -118,32 +118,37 @@ const slot = await Astro.slots.render("default")
 
 ## Development Workflow
 
-### Building
+### Common Commands
 
 ```bash
-pnpm check          # Type check the project
-pnpm build          # Build the project
-pnpm build:prod     # Type check + build
-pnpm build:preview  # Build + preview
+pnpm dev             # Start the docs site
+pnpm format:write    # Format files
+pnpm check           # Check formatting and types
+pnpm registry:build  # Build and format registry output
+pnpm build           # Build the project
 ```
+
+CI runs `pnpm format:check`, `pnpm typecheck`, `pnpm registry:check`, and `pnpm build` for pull requests. You do not need to run every command locally before every PR, but please run the relevant write command and commit its output when your change affects formatting or registry files.
 
 ### Registry
 
-```bash
-pnpm registry:build    # Build the component registry
-```
+When adding or modifying installable components or blocks:
 
-For release validation, run `pnpm check`, then `pnpm build`, then `pnpm registry:build`.
+1. Update the source files and docs.
+2. Update `registry.json` when paths, dependencies, metadata, or installable files change.
+3. Run `pnpm registry:build` and commit generated `public/r` output.
 
 ### Releases
 
-Fulldev UI is versioned as a registry, not published as an npm package. Add a changeset for user-facing registry, component, block, install, or documentation API changes:
+Fulldev UI is versioned with Changesets and published to npm. Add a changeset for user-facing registry, component, block, install, or documentation API changes:
 
 ```bash
 pnpm changeset
 ```
 
-Select `fulldev-ui` when prompted. GitHub releases are titled `Fulldev UI vX.Y.Z` and describe the registry hosted at `https://ui.full.dev/r/registry.json`.
+Select `fulldev-ui` when prompted. Each version represents the npm package and the registry hosted at `https://ui.full.dev/r/registry.json`.
+
+Release PRs are created by the GitHub release workflow. It runs `pnpm release`, which versions the package with Changesets and refreshes the lockfile. After that release PR is merged, Changesets publishes the package and creates the GitHub Release.
 
 ## Questions?
 

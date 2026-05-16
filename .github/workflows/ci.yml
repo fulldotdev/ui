@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v6
@@ -36,16 +38,16 @@ jobs:
 
       - name: Check changeset
         if: github.event_name == 'pull_request'
-        run: pnpm exec changeset status --since=${{ github.event.pull_request.base.ref }}
+        run: pnpm exec changeset status --since=origin/${{ github.event.pull_request.base.ref }}
+
+      - name: Check formatting
+        run: pnpm format:check
 
       - name: Type check
-        run: pnpm check
+        run: pnpm typecheck
+
+      - name: Check registry output
+        run: pnpm registry:check
 
       - name: Build site
         run: pnpm build
-
-      - name: Build registry
-        run: pnpm registry:build
-
-      - name: Verify generated registry output
-        run: git diff --exit-code -- registry.json public/r

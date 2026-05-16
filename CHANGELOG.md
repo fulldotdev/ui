@@ -4,7 +4,7 @@ See [GitHub Releases](https://github.com/fulldotdev/ui/releases) for previous re
 
 ## 0.8.3
 
-Current live registry version before the Fulldev UI v0.9.0 release.
+Baseline registry version before Changesets-managed Fulldev UI releases.
 
 ## 0.8.0 - 2026-03-03
 

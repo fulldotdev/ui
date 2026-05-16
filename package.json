@@ -1,6 +1,5 @@
 {
   "name": "fulldev-ui",
-  "private": true,
   "type": "module",
   "version": "0.8.3",
   "description": "Fulldev UI registry",
@@ -8,14 +7,16 @@
   "bugs": "https://github.com/fulldotdev/ui/issues",
   "license": "MIT",
   "author": "Fulldev <contact@full.dev> (https://full.dev)",
-  "repository": "github:fulldotdev/ui",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fulldotdev/ui.git"
+  },
   "keywords": [
     "astro-integration",
     "withastro",
     "astro",
     "astro-component",
     "astro-components",
-    "astro-ui",
     "astro-ui",
     "components",
     "ui",
@@ -29,6 +30,20 @@
     "fulldev",
     "fulldev-ui"
   ],
+  "files": [
+    "CHANGELOG.md",
+    "LICENCE",
+    "README.md",
+    "registry.json",
+    "public/r",
+    "src/components/blocks",
+    "src/components/ui",
+    "src/lib",
+    "src/styles/global.css"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=22.12.0"
   },
@@ -39,15 +54,18 @@
     "start": "pnpm dev",
     "stop": "lsof -tiTCP:4321 -sTCP:LISTEN | xargs kill 2>/dev/null || true",
     "preview": "pnpm stop && pnpm build && astro preview --host 127.0.0.1 --port 4321",
-    "check": "astro check",
+    "typecheck": "astro check",
+    "check": "pnpm format:check && pnpm typecheck",
     "build": "astro build",
-    "build:prod": "astro check && astro build",
-    "build:preview": "pnpm build && astro preview --host 127.0.0.1 --port 4321",
-    "build:test": "pnpm check && pnpm build && astro preview --host 127.0.0.1 --port 4321",
-    "registry:build": "shadcn build",
-    "release:version": "changeset version && pnpm install --lockfile-only",
-    "release:notes": "node scripts/github-release-notes.mjs",
-    "prettier": "prettier --write"
+    "build:prod": "pnpm check && pnpm registry:build && pnpm build",
+    "build:preview": "pnpm registry:build && pnpm build && astro preview --host 127.0.0.1 --port 4321",
+    "build:test": "pnpm check && pnpm registry:build && pnpm build && astro preview --host 127.0.0.1 --port 4321",
+    "registry:build": "shadcn build && pnpm format:write -- --log-level warn",
+    "registry:check": "pnpm registry:build && git diff --exit-code -- registry.json public/r",
+    "format:write": "prettier --write .",
+    "format:check": "prettier --check .",
+    "release": "changeset version && pnpm install --lockfile-only",
+    "release:publish": "pnpm registry:check && pnpm build && changeset publish"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.4",

@@ -5,6 +5,7 @@ module.exports = {
   singleQuote: false,
   tabWidth: 2,
   trailingComma: "es5",
+  printWidth: 80,
   importOrder: [
     "^(react/(.*)$)|^(react$)",
     "^(next/(.*)$)|^(next$)",
@@ -14,7 +15,6 @@ module.exports = {
     "",
     "^types$",
     "^@/types/(.*)$",
-    "^@/schemas/(.*)$",
     "^@/config/(.*)$",
     "^@/lib/(.*)$",
     "^@/hooks/(.*)$",
@@ -29,16 +29,11 @@ module.exports = {
     "",
     "^[./]",
   ],
-  importOrderSeparation: false,
-  importOrderSortSpecifiers: true,
-  importOrderBuiltinModulesToTop: true,
   importOrderParserPlugins: ["typescript", "jsx", "decorators-legacy"],
-  importOrderMergeDuplicateImports: true,
-  importOrderCombineTypeAndValueImports: true,
   plugins: [
     "prettier-plugin-astro",
     "@ianvs/prettier-plugin-sort-imports",
     "prettier-plugin-tailwindcss",
   ],
-  tailwindFunctions: ["cva", "cn"],
+  tailwindFunctions: ["cn", "cva"],
 }
