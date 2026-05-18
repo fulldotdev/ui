@@ -3,20 +3,12 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-type Size = "sm" | "default" | "lg"
-type Props = HTMLAttributes<"blockquote"> & {
-  size?: Size
-}
+type Props = HTMLAttributes<"blockquote">
 
-const { class: className, size = "default", ...props } = Astro.props
+const { class: className, ...props } = Astro.props
 ---
 
-<blockquote
-  data-slot="typography-blockquote"
-  data-size={size}
-  class={cn(className)}
-  {...props}
->
+<blockquote data-slot="typography-blockquote" class={cn(className)} {...props}>
   <slot />
 </blockquote>
 
@@ -24,20 +16,8 @@ const { class: className, size = "default", ...props } = Astro.props
   @reference "@/styles/global.css";
 
   [data-slot="typography-blockquote"],
-  [data-slot="typography"] > blockquote {
-    @apply mt-6 border-l-2 pl-6 italic;
-  }
-
-  [data-slot="typography-blockquote"][data-size="sm"] {
-    @apply text-sm;
-  }
-
-  [data-slot="typography-blockquote"][data-size="default"],
-  [data-slot="typography"] > blockquote {
-    @apply text-base;
-  }
-
-  [data-slot="typography-blockquote"][data-size="lg"] {
-    @apply text-lg;
+  [data-slot="typography"]
+    blockquote:not(.no-typography):not(.no-typography *) {
+    @apply border-l-2 pl-6 text-base italic;
   }
 </style>

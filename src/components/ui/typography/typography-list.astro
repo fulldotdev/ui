@@ -3,24 +3,16 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-type Size = "sm" | "default" | "lg"
 type Props = HTMLAttributes<"ul"> &
   HTMLAttributes<"ol"> & {
     as?: "ul" | "ol"
-    size?: Size
   }
 
-const {
-  as: Tag = "ul",
-  class: className,
-  size = "default",
-  ...props
-} = Astro.props
+const { as: Tag = "ul", class: className, ...props } = Astro.props
 ---
 
 <Tag
   data-slot="typography-list"
-  data-size={size}
   data-ordered={Tag === "ol" ? "" : undefined}
   class={cn(className)}
   {...props}
@@ -32,32 +24,18 @@ const {
   @reference "@/styles/global.css";
 
   [data-slot="typography-list"],
-  [data-slot="typography"] > ul,
-  [data-slot="typography"] > ol {
-    @apply my-6 ml-6;
-  }
-
-  [data-slot="typography-list"][data-size="sm"] {
-    @apply text-sm;
-  }
-
-  [data-slot="typography-list"][data-size="default"],
-  [data-slot="typography"] > ul,
-  [data-slot="typography"] > ol {
-    @apply text-base;
-  }
-
-  [data-slot="typography-list"][data-size="lg"] {
-    @apply text-lg;
+  [data-slot="typography"] ul:not(.no-typography):not(.no-typography *),
+  [data-slot="typography"] ol:not(.no-typography):not(.no-typography *) {
+    @apply ml-6 text-base;
   }
 
   [data-slot="typography-list"]:not([data-ordered]),
-  [data-slot="typography"] > ul {
+  [data-slot="typography"] ul:not(.no-typography):not(.no-typography *) {
     @apply list-disc;
   }
 
   [data-slot="typography-list"][data-ordered],
-  [data-slot="typography"] > ol {
+  [data-slot="typography"] ol:not(.no-typography):not(.no-typography *) {
     @apply list-decimal;
   }
 

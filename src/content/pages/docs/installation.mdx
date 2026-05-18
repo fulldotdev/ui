@@ -9,20 +9,90 @@ projects. Components and blocks install as source files in your project.
 
 ## Start with an AI agent
 
-Give your AI agent the Markdown version of the installation docs:
+Give your AI agent this prompt:
 
 ```text
-Read https://ui.full.dev/index.md, then install Fulldev UI in this Astro project and add @fulldev/button and @fulldev/section.
+Initialize Fulldev UI by following https://ui.full.dev/docs/installation.md. Choose the current-project or new-project path. If it is unclear which path to use, ask me before changing files.
 ```
 
-For a specific component or block, give the AI agent that page directly:
+If you are reading a local development copy of these docs, use the local
+Markdown URL instead:
 
 ```text
-Read https://ui.full.dev/components/button.md, then install and use @fulldev/button in this project.
+Initialize Fulldev UI by following http://127.0.0.1:4321/docs/installation.md. Choose the current-project or new-project path. If it is unclear which path to use, ask me before changing files.
 ```
 
 Every documentation page has a Markdown version. Add `.md` to the URL to read
 the source.
+
+## New project quickstart
+
+For a new project, use Astro's minimal template, add Tailwind CSS, configure the
+Fulldev registry, then install `@fulldev/init` with your first components.
+
+```bash
+pnpm create astro@latest my-project --template minimal --install --no-git --yes
+cd my-project
+pnpm astro add tailwind -y
+```
+
+```json title="tsconfig.json" {3-8} showLineNumbers
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"]
+}
+```
+
+```json title="components.json"
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/styles/global.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  },
+  "registries": {
+    "@fulldev": "https://ui.full.dev/r/{name}.json"
+  }
+}
+```
+
+If you are reading a local development copy of these docs, use the local dev
+server for the registry:
+
+```json title="components.json"
+{
+  "registries": {
+    "@fulldev": "http://127.0.0.1:4321/r/{name}.json"
+  }
+}
+```
+
+```bash
+npx shadcn@latest add @fulldev/init @fulldev/button @fulldev/section -y --overwrite
+```
+
+The quickstart uses `-y` so agents and scripts can run without confirmation
+prompts. Omit `-y` when you want shadcn to ask before applying changes.
 
 ## Create new Astro project
 
@@ -34,8 +104,10 @@ is named `minimal`.
 pnpm create astro@latest my-project --template minimal --install --no-git --yes
 cd my-project
 pnpm astro add tailwind -y
-pnpm add class-variance-authority clsx tailwind-merge
 ```
+
+Astro may print an action-required note to import `src/styles/global.css`. The
+example page below imports that file directly.
 
 Add the `@/*` import alias and registry config that the installable source
 expects:
@@ -80,14 +152,15 @@ expects:
 }
 ```
 
-Add the shared class helper:
+If you are reading a local development copy of these docs, use that same local
+server for the registry while testing. The local dev server normally prints
+`http://127.0.0.1:4321/`. In that case, change only the registry URL:
 
-```ts title="src/lib/utils.ts"
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+```json title="components.json"
+{
+  "registries": {
+    "@fulldev": "http://127.0.0.1:4321/r/{name}.json"
+  }
 }
 ```
 
@@ -95,14 +168,25 @@ export function cn(...inputs: ClassValue[]) {
 
 Because Fulldev UI uses Shadcn-compatible registry tooling, first make sure the
 project has Tailwind CSS v4, the `@/*` import alias, and the `components.json`
-file shown above. It also needs `class-variance-authority`, `clsx`, and
-`tailwind-merge` installed, plus the `src/lib/utils.ts` helper shown above.
+file shown above. Do not run `npx shadcn@latest init` for Fulldev UI setup.
+Install `@fulldev/init` instead; it adds the shared dependencies, class helper,
+and Tailwind token layer without installing a React component template.
+
+### What init installs
+
+`@fulldev/init` installs the shared setup that Fulldev UI source files expect:
+
+- `src/lib/utils.ts`
+- `src/styles/global.css`
+- `class-variance-authority`
+- `clsx`
+- `tailwind-merge`
 
 ### Check styles
 
-`pnpm astro add tailwind -y` creates `src/styles/global.css` with Tailwind. Keep
-that file imported from your app layout or page. Fulldev UI components use the
-semantic tokens installed with each registry item.
+`pnpm astro add tailwind -y` creates `src/styles/global.css` with Tailwind.
+`@fulldev/init` replaces that file with Fulldev's Tailwind v4 token layer. Keep
+that file imported from your app layout or page.
 
 ### Check tsconfig.json
 
@@ -124,18 +208,6 @@ If you did not already add the alias above, add it to `tsconfig.json`:
 ### Check components.json
 
 If you did not already create `components.json`, add the file shown above.
-
-If you are reading a local development copy of these docs, use that same local
-server for the registry while testing. The local dev server normally prints
-`http://127.0.0.1:4321/`. In that case, change only the registry URL:
-
-```json title="components.json"
-{
-  "registries": {
-    "@fulldev": "http://127.0.0.1:4321/r/{name}.json"
-  }
-}
-```
 
 Once the registry is present, all install commands in this docs site should work
 as written.
@@ -161,21 +233,25 @@ import "@/styles/global.css"
 You can now start adding components to your project.
 
 ```bash
-npx shadcn@latest add @fulldev/button @fulldev/section -y
+npx shadcn@latest add @fulldev/init @fulldev/button @fulldev/section -y --overwrite
 ```
 
 or multiple resources at once:
 
 ```bash
-npx shadcn@latest add @fulldev/button @fulldev/card @fulldev/section -y
+npx shadcn@latest add @fulldev/init @fulldev/button @fulldev/card @fulldev/section -y --overwrite
 ```
 
-If you are reinstalling over files that already exist, add `--overwrite`.
+`--overwrite` lets `@fulldev/init` replace Astro's generated
+`src/styles/global.css` with the Fulldev token layer. For an existing project,
+review that file before running the command if it already has custom styles.
+The `-y` flag is for agent and script-friendly installs; omit it for an
+interactive confirmation prompt.
 
 ### Add all components
 
 ```bash
-npx shadcn@latest add @fulldev/layout @fulldev/components
+npx shadcn@latest add @fulldev/init @fulldev/layout @fulldev/components --overwrite
 ```
 
 ### Usage

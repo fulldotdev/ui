@@ -3,20 +3,12 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-type Size = "sm" | "default" | "lg"
-type Props = HTMLAttributes<"tr"> & {
-  size?: Size
-}
+type Props = HTMLAttributes<"tr">
 
-const { class: className, size = "default", ...props } = Astro.props
+const { class: className, ...props } = Astro.props
 ---
 
-<tr
-  data-slot="typography-table-row"
-  data-size={size}
-  class={cn(className)}
-  {...props}
->
+<tr data-slot="typography-table-row" class={cn(className)} {...props}>
   <slot />
 </tr>
 
@@ -25,19 +17,17 @@ const { class: className, size = "default", ...props } = Astro.props
 
   [data-slot="typography-table-row"],
   [data-slot="typography-table"] tr,
-  [data-slot="typography"] > table tr {
-    @apply even:bg-muted m-0 border-t p-0;
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    tr:not(.no-typography):not(.no-typography *) {
+    @apply border-b transition-colors;
   }
 
-  [data-slot="typography-table-row"][data-size="sm"] {
-    @apply text-sm;
-  }
-
-  [data-slot="typography-table-row"][data-size="default"] {
-    @apply text-base;
-  }
-
-  [data-slot="typography-table-row"][data-size="lg"] {
-    @apply text-lg;
+  [data-slot="typography-table"] tbody tr:last-child,
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    tbody
+    tr:not(.no-typography):not(.no-typography *):last-child {
+    @apply border-b-0;
   }
 </style>

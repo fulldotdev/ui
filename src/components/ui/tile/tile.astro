@@ -1,0 +1,46 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+type Props = VariantProps<typeof variants> &
+  HTMLAttributes<"div"> &
+  HTMLAttributes<"a">
+
+const variants = cva(
+  "group/tile focus-visible:border-ring focus-visible:ring-ring/50 flex min-w-0 flex-col overflow-hidden rounded-xl transition-colors outline-none group-data-[variant=masonry]/tile-group:mb-4 group-data-[variant=masonry]/tile-group:break-inside-avoid focus-visible:ring-3",
+  {
+    variants: {
+      variant: {
+        default:
+          "text-foreground data-[link]:hover:bg-muted/40 border border-transparent",
+        inset:
+          "text-foreground data-[link]:hover:bg-muted/40 -mx-5 border border-transparent",
+        outline:
+          "border-border bg-background text-foreground data-[link]:hover:bg-muted/40 border",
+        muted:
+          "bg-muted/50 text-foreground data-[link]:hover:bg-muted/70 border-transparent",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
+
+const { class: className, variant = "default", href, ...props } = Astro.props
+
+const Comp = href ? "a" : "div"
+---
+
+<Comp
+  data-slot="tile"
+  data-variant={variant}
+  data-link={href ? "" : undefined}
+  class={cn(variants({ variant }), className)}
+  href={href}
+  {...props}
+>
+  <slot />
+</Comp>

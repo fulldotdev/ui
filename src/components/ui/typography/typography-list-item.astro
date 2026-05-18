@@ -3,20 +3,12 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-type Size = "sm" | "default" | "lg"
-type Props = HTMLAttributes<"li"> & {
-  size?: Size
-}
+type Props = HTMLAttributes<"li">
 
-const { class: className, size = "default", ...props } = Astro.props
+const { class: className, ...props } = Astro.props
 ---
 
-<li
-  data-slot="typography-list-item"
-  data-size={size}
-  class={cn(className)}
-  {...props}
->
+<li data-slot="typography-list-item" class={cn(className)} {...props}>
   <slot />
 </li>
 
@@ -25,20 +17,12 @@ const { class: className, size = "default", ...props } = Astro.props
 
   [data-slot="typography-list-item"],
   [data-slot="typography-list"] > li,
-  [data-slot="typography"] > ul > li,
-  [data-slot="typography"] > ol > li {
+  [data-slot="typography"]
+    ul:not(.no-typography):not(.no-typography *)
+    > li:not(.no-typography):not(.no-typography *),
+  [data-slot="typography"]
+    ol:not(.no-typography):not(.no-typography *)
+    > li:not(.no-typography):not(.no-typography *) {
     @apply mt-2;
-  }
-
-  [data-slot="typography-list-item"][data-size="sm"] {
-    @apply text-sm;
-  }
-
-  [data-slot="typography-list-item"][data-size="default"] {
-    @apply text-base;
-  }
-
-  [data-slot="typography-list-item"][data-size="lg"] {
-    @apply text-lg;
   }
 </style>

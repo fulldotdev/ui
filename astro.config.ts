@@ -44,6 +44,7 @@ const redirects = {
   "/docs/components/tabs/": "/components/tabs/",
   "/docs/components/textarea/": "/components/textarea/",
   "/docs/components/theme-toggle/": "/components/theme-toggle/",
+  "/docs/components/tile/": "/components/tile/",
   "/docs/components/video/": "/components/video/",
   "/blocks/pricings/": "/blocks/pricing/",
   "/blocks/pricings-1/": "/blocks/pricing-1/",

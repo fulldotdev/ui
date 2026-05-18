@@ -3,20 +3,12 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-type Size = "sm" | "default" | "lg"
-type Props = HTMLAttributes<"td"> & {
-  size?: Size
-}
+type Props = HTMLAttributes<"td">
 
-const { class: className, size = "default", ...props } = Astro.props
+const { class: className, ...props } = Astro.props
 ---
 
-<td
-  data-slot="typography-table-cell"
-  data-size={size}
-  class={cn(className)}
-  {...props}
->
+<td data-slot="typography-table-cell" class={cn(className)} {...props}>
   <slot />
 </td>
 
@@ -25,36 +17,25 @@ const { class: className, size = "default", ...props } = Astro.props
 
   [data-slot="typography-table-cell"],
   [data-slot="typography-table"] td,
-  [data-slot="typography"] > table td {
-    @apply border-border border-t px-4 py-3 text-left align-middle;
-  }
-
-  [data-slot="typography-table-cell"][data-size="sm"] {
-    @apply text-sm;
-  }
-
-  [data-slot="typography-table-cell"][data-size="default"] {
-    @apply text-base;
-  }
-
-  [data-slot="typography-table-cell"][data-size="lg"] {
-    @apply text-lg;
-  }
-
-  [data-slot="typography-table"] tbody tr:last-child td,
-  [data-slot="typography"] > table tbody tr:last-child td {
-    @apply border-b-0;
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    td:not(.no-typography):not(.no-typography *) {
+    @apply p-2 text-left align-middle text-sm whitespace-nowrap;
   }
 
   [data-slot="typography-table-cell"][align="center"],
   [data-slot="typography-table"] td[align="center"],
-  [data-slot="typography"] > table td[align="center"] {
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    td:not(.no-typography):not(.no-typography *)[align="center"] {
     @apply text-center;
   }
 
   [data-slot="typography-table-cell"][align="right"],
   [data-slot="typography-table"] td[align="right"],
-  [data-slot="typography"] > table td[align="right"] {
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    td:not(.no-typography):not(.no-typography *)[align="right"] {
     @apply text-right;
   }
 </style>

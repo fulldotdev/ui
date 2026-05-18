@@ -3,31 +3,15 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-type Size = "sm" | "default" | "lg"
 type Props = HTMLAttributes<"table"> & {
   containerClass?: string
-  size?: Size
 }
 
-const {
-  class: className,
-  containerClass,
-  size = "default",
-  ...props
-} = Astro.props
+const { class: className, containerClass, ...props } = Astro.props
 ---
 
-<div
-  data-slot="typography-table-container"
-  data-size={size}
-  class={cn(containerClass)}
->
-  <table
-    data-slot="typography-table"
-    data-size={size}
-    class={cn(className)}
-    {...props}
-  >
+<div data-slot="typography-table-container" class={cn(containerClass)}>
+  <table data-slot="typography-table" class={cn(className)} {...props}>
     <slot />
   </table>
 </div>
@@ -36,24 +20,31 @@ const {
   @reference "@/styles/global.css";
 
   [data-slot="typography-table-container"] {
-    @apply border-border my-6 w-full overflow-y-auto rounded-xl border;
+    @apply border-border w-full overflow-x-auto rounded-xl border;
   }
 
   [data-slot="typography-table"],
-  [data-slot="typography"] > table {
-    @apply w-full border-collapse;
+  [data-slot="typography"] table:not(.no-typography):not(.no-typography *) {
+    @apply w-full caption-bottom;
   }
 
-  [data-slot="typography-table"][data-size="sm"] {
+  [data-slot="typography"] table:not(.no-typography):not(.no-typography *) {
+    @apply border-border overflow-x-auto rounded-xl border;
+    border-spacing: 0;
+  }
+
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    thead,
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    tbody,
+  [data-slot="typography"] table:not(.no-typography):not(.no-typography *) tr {
+    @apply w-full;
+  }
+
+  [data-slot="typography-table"],
+  [data-slot="typography"] table:not(.no-typography):not(.no-typography *) {
     @apply text-sm;
-  }
-
-  [data-slot="typography-table"][data-size="default"],
-  [data-slot="typography"] > table {
-    @apply text-base;
-  }
-
-  [data-slot="typography-table"][data-size="lg"] {
-    @apply text-lg;
   }
 </style>

@@ -3,20 +3,12 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-type Size = "sm" | "default" | "lg"
-type Props = HTMLAttributes<"th"> & {
-  size?: Size
-}
+type Props = HTMLAttributes<"th">
 
-const { class: className, size = "default", ...props } = Astro.props
+const { class: className, ...props } = Astro.props
 ---
 
-<th
-  data-slot="typography-table-head"
-  data-size={size}
-  class={cn(className)}
-  {...props}
->
+<th data-slot="typography-table-head" class={cn(className)} {...props}>
   <slot />
 </th>
 
@@ -25,31 +17,25 @@ const { class: className, size = "default", ...props } = Astro.props
 
   [data-slot="typography-table-head"],
   [data-slot="typography-table"] th,
-  [data-slot="typography"] > table th {
-    @apply border-border border-b px-4 py-3 text-left font-semibold;
-  }
-
-  [data-slot="typography-table-head"][data-size="sm"] {
-    @apply text-sm;
-  }
-
-  [data-slot="typography-table-head"][data-size="default"] {
-    @apply text-base;
-  }
-
-  [data-slot="typography-table-head"][data-size="lg"] {
-    @apply text-lg;
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    th:not(.no-typography):not(.no-typography *) {
+    @apply text-foreground h-10 px-2 text-left align-middle text-sm font-medium whitespace-nowrap;
   }
 
   [data-slot="typography-table-head"][align="center"],
   [data-slot="typography-table"] th[align="center"],
-  [data-slot="typography"] > table th[align="center"] {
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    th:not(.no-typography):not(.no-typography *)[align="center"] {
     @apply text-center;
   }
 
   [data-slot="typography-table-head"][align="right"],
   [data-slot="typography-table"] th[align="right"],
-  [data-slot="typography"] > table th[align="right"] {
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    th:not(.no-typography):not(.no-typography *)[align="right"] {
     @apply text-right;
   }
 </style>

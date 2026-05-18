@@ -3,20 +3,12 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-type Size = "sm" | "default" | "lg"
-type Props = HTMLAttributes<"code"> & {
-  size?: Size
-}
+type Props = HTMLAttributes<"code">
 
-const { class: className, size = "default", ...props } = Astro.props
+const { class: className, ...props } = Astro.props
 ---
 
-<code
-  data-slot="typography-inline-code"
-  data-size={size}
-  class={cn(className)}
-  {...props}
->
+<code data-slot="typography-inline-code" class={cn(className)} {...props}>
   <slot />
 </code>
 
@@ -24,24 +16,16 @@ const { class: className, size = "default", ...props } = Astro.props
   @reference "@/styles/global.css";
 
   [data-slot="typography-inline-code"],
-  [data-slot="typography"] :not(pre) > code {
-    @apply bg-muted relative rounded px-[0.3rem] py-[0.2rem] font-mono font-semibold;
+  [data-slot="typography"]
+    :not(pre)
+    > code:not(.no-typography):not(.no-typography *) {
+    @apply bg-muted relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm;
   }
 
-  [data-slot="typography-inline-code"][data-size="sm"] {
-    @apply text-xs;
-  }
-
-  [data-slot="typography-inline-code"][data-size="default"],
-  [data-slot="typography"] :not(pre) > code {
-    @apply text-sm;
-  }
-
-  [data-slot="typography-inline-code"][data-size="lg"] {
-    @apply text-base;
-  }
-
-  [data-slot="typography"] > table :not(pre) > code {
-    @apply rounded-md text-sm leading-5 font-normal;
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    :not(pre)
+    > code:not(.no-typography):not(.no-typography *) {
+    @apply rounded-md text-sm leading-5;
   }
 </style>

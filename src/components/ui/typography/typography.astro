@@ -3,8 +3,10 @@ import type { HTMLTag, Polymorphic } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-type Size = "sm" | "default" | "lg"
-type Props<Tag extends HTMLTag> = Polymorphic<{ as: Tag; size?: Size }>
+type Props<Tag extends HTMLTag> = Polymorphic<{
+  as: Tag
+  size?: "sm" | "default" | "lg"
+}>
 
 const {
   as: Tag = "div",
@@ -28,7 +30,15 @@ const {
 
   [data-slot="typography"]
     > :is(
+      p,
+      blockquote,
+      ul,
+      ol,
+      table,
       [data-slot="typography-lead"],
+      [data-slot="typography-p"],
+      [data-slot="typography-blockquote"],
+      [data-slot="typography-list"],
       [data-slot="typography-table-container"],
       div,
       section,
@@ -37,6 +47,7 @@ const {
       nav,
       figure,
       details,
+      .docs-code-block,
       pre,
       small,
       dl,
@@ -48,42 +59,39 @@ const {
     @apply mt-6;
   }
 
-  [data-slot="typography"] > h1 {
-    @apply scroll-m-20 text-4xl font-semibold tracking-tight text-balance;
-  }
-
-  [data-slot="typography"] > h2 {
-    @apply scroll-m-20 text-3xl font-semibold tracking-tight;
-  }
-
-  [data-slot="typography"] > h2:first-child {
-    @apply mt-0;
-  }
-
-  [data-slot="typography"] > h2:not(:first-child) {
+  [data-slot="typography"]
+    > :is(h2, [data-slot="typography-h2"]):not(:first-child) {
     @apply mt-10;
   }
 
-  [data-slot="typography"] > h3 {
-    @apply scroll-m-20 text-2xl font-semibold tracking-tight;
-  }
-
-  [data-slot="typography"] > h3:not(:first-child) {
-    @apply mt-8;
-  }
-
-  [data-slot="typography"] > h4 {
-    @apply scroll-m-20 text-xl font-semibold tracking-tight;
-  }
-
-  [data-slot="typography"] > h4:not(:first-child) {
+  [data-slot="typography"]
+    > :is(h3, h4, [data-slot="typography-h3"], [data-slot="typography-h4"]):not(
+      :first-child
+    ) {
     @apply mt-8;
   }
 
   [data-slot="typography"]
-    > :is(h1, h2, h3, h4)
+    > :is(
+      h1,
+      h2,
+      h3,
+      h4,
+      [data-slot="typography-h1"],
+      [data-slot="typography-h2"],
+      [data-slot="typography-h3"],
+      [data-slot="typography-h4"]
+    )
     + :is(
+      p,
+      blockquote,
+      ul,
+      ol,
+      table,
       [data-slot="typography-lead"],
+      [data-slot="typography-p"],
+      [data-slot="typography-blockquote"],
+      [data-slot="typography-list"],
       [data-slot="typography-table-container"],
       div,
       section,
@@ -92,12 +100,8 @@ const {
       nav,
       figure,
       details,
-      p,
-      blockquote,
+      .docs-code-block,
       pre,
-      ul,
-      ol,
-      table,
       small,
       dl,
       img,
@@ -106,31 +110,6 @@ const {
       iframe
     ) {
     @apply mt-4;
-  }
-
-  [data-slot="typography"] > p {
-    @apply text-base leading-7;
-  }
-
-  [data-slot="typography"] > p:not(:first-child) {
-    @apply mt-6;
-  }
-
-  [data-slot="typography"]
-    > :is(h1, h2, h3, h4)
-    + :is(p, [data-slot="typography-lead"]):not(:first-child) {
-    @apply mt-4;
-  }
-
-  [data-slot="typography"] > a:not([data-slot]),
-  [data-slot="typography"]
-    > :is(p, blockquote, ul, ol, dl, table)
-    a:not([data-slot]) {
-    @apply text-primary font-medium underline underline-offset-4;
-  }
-
-  [data-slot="typography"] > blockquote {
-    @apply mt-6 border-l-2 pl-6 text-base italic;
   }
 
   [data-slot="typography"] > hr {
@@ -175,117 +154,12 @@ const {
     @apply size-4;
   }
 
-  [data-slot="typography"] > ul,
-  [data-slot="typography"] > ol {
-    @apply my-6 ml-6 text-base;
-  }
-
-  [data-slot="typography"] > ul {
-    @apply list-disc;
-  }
-
-  [data-slot="typography"] > ol {
-    @apply list-decimal;
-  }
-
-  [data-slot="typography"] > ul > li,
-  [data-slot="typography"] > ol > li {
-    @apply mt-2;
-  }
-
-  [data-slot="typography"] > [data-slot="typography-lead"] {
-    @apply text-muted-foreground;
-  }
-
-  [data-slot="typography"][data-size="sm"] > [data-slot="typography-lead"] {
-    @apply text-base;
-  }
-
-  [data-slot="typography"] > [data-slot="typography-lead"],
-  [data-slot="typography"][data-size="default"]
-    > [data-slot="typography-lead"] {
-    @apply text-lg;
-  }
-
-  [data-slot="typography"][data-size="lg"] > [data-slot="typography-lead"] {
-    @apply text-xl;
-  }
-
   [data-slot="typography"] > small {
     @apply block leading-none font-medium;
   }
 
   [data-slot="typography"] > small {
     @apply text-sm;
-  }
-
-  [data-slot="typography"] > table {
-    @apply border-border my-6 block w-full overflow-x-auto rounded-lg border;
-    border-collapse: separate;
-    border-spacing: 0;
-  }
-
-  [data-slot="typography"] > table th,
-  [data-slot="typography"] > table td {
-    @apply border-border border-b px-4 py-2 text-left align-top whitespace-nowrap;
-  }
-
-  [data-slot="typography"] > table th {
-    @apply text-foreground bg-muted/40 font-medium;
-  }
-
-  [data-slot="typography"] > table tr:last-child td {
-    @apply border-b-0;
-  }
-
-  [data-slot="typography"] > table thead,
-  [data-slot="typography"] > table tbody,
-  [data-slot="typography"] > table tr {
-    @apply w-full;
-  }
-
-  [data-slot="typography"] > table tr {
-    @apply grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)];
-  }
-
-  [data-slot="typography"] > table tr {
-    @apply even:bg-muted/40 m-0 border-t p-0 first:border-t-0;
-  }
-
-  [data-slot="typography"] > table th {
-    @apply border-r px-4 py-2 text-left font-bold last:border-r-0;
-  }
-
-  [data-slot="typography"] > table th[align="center"] {
-    @apply text-center;
-  }
-
-  [data-slot="typography"] > table th[align="right"] {
-    @apply text-right;
-  }
-
-  [data-slot="typography"] > table td {
-    @apply border-r px-4 py-2 text-left last:border-r-0;
-  }
-
-  [data-slot="typography"] > table td[align="center"] {
-    @apply text-center;
-  }
-
-  [data-slot="typography"] > table td[align="right"] {
-    @apply text-right;
-  }
-
-  [data-slot="typography"] > table tbody tr:last-child td {
-    @apply border-b-0;
-  }
-
-  [data-slot="typography"] :not(pre) > code {
-    @apply bg-muted relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold;
-  }
-
-  [data-slot="typography"] > table :not(pre) > code {
-    @apply rounded-md text-sm leading-5 font-normal;
   }
 
   [data-slot="typography"] > pre.astro-code {

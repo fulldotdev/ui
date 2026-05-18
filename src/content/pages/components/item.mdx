@@ -1,54 +1,62 @@
 ---
 type: doc
 title: Item
-description: A flexible container for displaying content items with various styles.
+description: A versatile component for displaying content with media, title, description, and actions.
 ---
 
 ```astro live props={{ name: 'item' }}
 ---
-import HeartIcon from "lucide-static/icons/heart.svg"
-import InfoIcon from "lucide-static/icons/info.svg"
-import StarIcon from "lucide-static/icons/star.svg"
+import BadgeCheckIcon from "lucide-static/icons/badge-check.svg"
+import ChevronRightIcon from "lucide-static/icons/chevron-right.svg"
+import ShieldAlertIcon from "lucide-static/icons/shield-alert.svg"
 
+import { Button } from "@/components/ui/button"
 import {
   Item,
+  ItemActions,
   ItemContent,
   ItemDescription,
+  ItemGroup,
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item"
 ---
 
-<div class="grid w-full max-w-sm gap-2">
+<div class="grid w-full max-w-md gap-2">
   <Item>
-    <ItemMedia>
-      <HeartIcon class="size-4" />
+    <ItemMedia variant="icon">
+      <BadgeCheckIcon />
     </ItemMedia>
     <ItemContent>
-      <ItemTitle>Item Title</ItemTitle>
-      <ItemDescription>Item description goes here</ItemDescription>
+      <ItemTitle>Your profile has been verified.</ItemTitle>
+      <ItemDescription>All account security checks passed.</ItemDescription>
     </ItemContent>
+    <ItemActions>
+      <Button variant="ghost" size="icon-sm" aria-label="Open profile">
+        <ChevronRightIcon />
+      </Button>
+    </ItemActions>
   </Item>
   <Item variant="outline">
-    <ItemMedia>
-      <StarIcon class="size-4" />
+    <ItemMedia variant="icon">
+      <ShieldAlertIcon />
     </ItemMedia>
     <ItemContent>
-      <ItemTitle>Outline Variant</ItemTitle>
-      <ItemDescription>This item has an outline variant</ItemDescription>
+      <ItemTitle>Security alert</ItemTitle>
+      <ItemDescription
+        >New login detected from an unknown device.</ItemDescription
+      >
     </ItemContent>
-  </Item>
-  <Item variant="muted">
-    <ItemMedia>
-      <InfoIcon class="size-4" />
-    </ItemMedia>
-    <ItemContent>
-      <ItemTitle>Muted Variant</ItemTitle>
-      <ItemDescription>This item has a muted variant</ItemDescription>
-    </ItemContent>
+    <ItemActions>
+      <Button size="sm">Review</Button>
+    </ItemActions>
   </Item>
 </div>
 ```
+
+The `Item` component is a flex container for content rows, compact cards, and
+navigation targets. Use it to display media, title, description, metadata, and
+actions. Group related rows with `ItemGroup`.
 
 ## Installation
 
@@ -61,6 +69,7 @@ npx shadcn@latest add @fulldev/item
 ```ts
 import {
   Item,
+  ItemActions,
   ItemContent,
   ItemDescription,
   ItemMedia,
@@ -70,17 +79,22 @@ import {
 
 ```astro
 ---
-import HeartIcon from "lucide-static/icons/heart.svg"
+import HomeIcon from "lucide-static/icons/house.svg"
+
+import { Button } from "@/components/ui/button"
 ---
 
 <Item>
-  <ItemMedia>
-    <HeartIcon />
+  <ItemMedia variant="icon">
+    <HomeIcon />
   </ItemMedia>
   <ItemContent>
-    <ItemTitle>Title</ItemTitle>
-    <ItemDescription>Description</ItemDescription>
+    <ItemTitle>Dashboard</ItemTitle>
+    <ItemDescription>Overview of your account and activity.</ItemDescription>
   </ItemContent>
+  <ItemActions>
+    <Button>Open</Button>
+  </ItemActions>
 </Item>
 ```
 
@@ -100,14 +114,552 @@ ItemGroup
     └── ItemFooter
 ```
 
-## Notes
+## Item vs Field
 
-- Use `ItemContent` to group the title and description instead of hand-rolled
-  wrappers.
-- Passing `href` turns the root `Item` into an anchor, which works well for
-  list rows and navigational cards.
-- Use variants for emphasis changes before adding custom surface styles.
+Use `Field` when the row contains a form control such as an input, checkbox,
+radio, select, switch, or textarea.
+
+Use `Item` when the row displays content such as a title, description, media,
+metadata, links, and actions.
+
+## Variant
+
+Use the `variant` prop to change the visual style of the item. Available
+variants are `default`, `inset`, `outline`, and `muted`.
+
+```astro live
+---
+import InboxIcon from "lucide-static/icons/inbox.svg"
+
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
+---
+
+<div class="grid w-full max-w-md gap-2">
+  <Item>
+    <ItemMedia variant="icon">
+      <InboxIcon />
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>Default variant</ItemTitle>
+      <ItemDescription>Transparent background with no border.</ItemDescription>
+    </ItemContent>
+  </Item>
+  <Item variant="outline">
+    <ItemMedia variant="icon">
+      <InboxIcon />
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>Outline variant</ItemTitle>
+      <ItemDescription>Outlined style with a visible border.</ItemDescription>
+    </ItemContent>
+  </Item>
+  <Item variant="inset">
+    <ItemMedia variant="icon">
+      <InboxIcon />
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>Inset variant</ItemTitle>
+      <ItemDescription>
+        Ghost style with negative horizontal margins for edge alignment.
+      </ItemDescription>
+    </ItemContent>
+  </Item>
+  <Item variant="muted">
+    <ItemMedia variant="icon">
+      <InboxIcon />
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>Muted variant</ItemTitle>
+      <ItemDescription>Muted background for secondary content.</ItemDescription>
+    </ItemContent>
+  </Item>
+</div>
+```
+
+## Size
+
+Use the `size` prop to change spacing and density. Available sizes are
+`default`, `sm`, and `xs`.
+
+```astro live
+---
+import InboxIcon from "lucide-static/icons/inbox.svg"
+
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
+---
+
+<div class="grid w-full max-w-md gap-2">
+  <Item>
+    <ItemMedia variant="icon">
+      <InboxIcon />
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>Default size</ItemTitle>
+      <ItemDescription>The standard size for most use cases.</ItemDescription>
+    </ItemContent>
+  </Item>
+  <Item size="sm">
+    <ItemMedia variant="icon">
+      <InboxIcon />
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>Small size</ItemTitle>
+      <ItemDescription>A compact size for dense layouts.</ItemDescription>
+    </ItemContent>
+  </Item>
+  <Item size="xs">
+    <ItemMedia variant="icon">
+      <InboxIcon />
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>Extra small size</ItemTitle>
+      <ItemDescription>The most compact size available.</ItemDescription>
+    </ItemContent>
+  </Item>
+</div>
+```
+
+## Examples
+
+### Icon
+
+Use `ItemMedia` with `variant="icon"` to display an icon.
+
+```astro live
+---
+import ShieldAlertIcon from "lucide-static/icons/shield-alert.svg"
+
+import { Button } from "@/components/ui/button"
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
+---
+
+<Item class="w-full max-w-md" variant="outline">
+  <ItemMedia variant="icon">
+    <ShieldAlertIcon />
+  </ItemMedia>
+  <ItemContent>
+    <ItemTitle>Security alert</ItemTitle>
+    <ItemDescription>New login detected from an unknown device.</ItemDescription
+    >
+  </ItemContent>
+  <ItemActions>
+    <Button size="sm">Review</Button>
+  </ItemActions>
+</Item>
+```
+
+### Avatar
+
+Place an `Avatar` inside `ItemMedia` for people, teams, and accounts.
+
+```astro live
+---
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
+---
+
+<ItemGroup class="w-full max-w-md">
+  <Item>
+    <ItemMedia>
+      <Avatar>
+        <AvatarFallback>ER</AvatarFallback>
+      </Avatar>
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>Evil Rabbit</ItemTitle>
+      <ItemDescription>Last seen 5 months ago</ItemDescription>
+    </ItemContent>
+  </Item>
+  <Item variant="outline">
+    <ItemContent>
+      <ItemTitle>No team members</ItemTitle>
+      <ItemDescription
+        >Invite your team to collaborate on this project.</ItemDescription
+      >
+    </ItemContent>
+    <ItemActions>
+      <Button size="sm">Invite</Button>
+    </ItemActions>
+  </Item>
+</ItemGroup>
+```
+
+### Image
+
+Use `ItemMedia` with `variant="image"` to display a thumbnail image.
+
+```astro live
+---
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
+---
+
+<ItemGroup class="w-full max-w-md">
+  <Item>
+    <ItemMedia variant="image">
+      <img
+        src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=160&h=160&fit=crop"
+        alt="City lights"
+      />
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>Midnight City Lights</ItemTitle>
+      <ItemDescription>Electric Nights</ItemDescription>
+    </ItemContent>
+    <ItemContent class="text-right">
+      <ItemTitle>3:45</ItemTitle>
+      <ItemDescription>Neon Dreams</ItemDescription>
+    </ItemContent>
+  </Item>
+  <Item>
+    <ItemMedia variant="image">
+      <img
+        src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=160&h=160&fit=crop"
+        alt="Coffee cup"
+      />
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>Coffee Shop Conversations</ItemTitle>
+      <ItemDescription>Urban Stories</ItemDescription>
+    </ItemContent>
+    <ItemContent class="text-right">
+      <ItemTitle>4:05</ItemTitle>
+      <ItemDescription>The Morning Brew</ItemDescription>
+    </ItemContent>
+  </Item>
+</ItemGroup>
+```
+
+### Group
+
+Use `ItemGroup` to group related items together. Add `ItemSeparator` when the
+group needs explicit dividers.
+
+```astro live
+---
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle,
+} from "@/components/ui/item"
+---
+
+<ItemGroup class="w-full max-w-md gap-0 rounded-md border">
+  <Item size="sm">
+    <ItemMedia>
+      <Avatar size="sm">
+        <AvatarFallback>S</AvatarFallback>
+      </Avatar>
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>shadcn</ItemTitle>
+      <ItemDescription>shadcn@vercel.com</ItemDescription>
+    </ItemContent>
+  </Item>
+  <ItemSeparator class="my-0" />
+  <Item size="sm">
+    <ItemMedia>
+      <Avatar size="sm">
+        <AvatarFallback>M</AvatarFallback>
+      </Avatar>
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>maxleiter</ItemTitle>
+      <ItemDescription>maxleiter@vercel.com</ItemDescription>
+    </ItemContent>
+  </Item>
+</ItemGroup>
+```
+
+### Header and Footer
+
+Use `ItemHeader` and `ItemFooter` for supplemental content above and below the
+main item content.
+
+```astro live
+---
+import CpuIcon from "lucide-static/icons/cpu.svg"
+
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemFooter,
+  ItemHeader,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
+---
+
+<Item class="w-full max-w-md" variant="outline">
+  <ItemHeader>
+    <span class="text-muted-foreground text-xs">Model</span>
+    <span class="text-muted-foreground text-xs">Fast</span>
+  </ItemHeader>
+  <ItemMedia variant="icon">
+    <CpuIcon />
+  </ItemMedia>
+  <ItemContent>
+    <ItemTitle>v0-1.5-sm</ItemTitle>
+    <ItemDescription>Everyday tasks and UI generation.</ItemDescription>
+  </ItemContent>
+  <ItemFooter>
+    <span class="text-muted-foreground text-xs">Low latency</span>
+    <span class="text-muted-foreground text-xs">General purpose</span>
+  </ItemFooter>
+</Item>
+```
+
+### Link
+
+Pass `href` to render the root item as an anchor. Hover and focus states apply
+to the link element.
+
+```astro live
+---
+import ChevronRightIcon from "lucide-static/icons/chevron-right.svg"
+import ExternalLinkIcon from "lucide-static/icons/external-link.svg"
+import HomeIcon from "lucide-static/icons/house.svg"
+
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
+---
+
+<div class="grid w-full max-w-md gap-2">
+  <Item href="/docs/">
+    <ItemMedia variant="icon">
+      <HomeIcon />
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>Visit our documentation</ItemTitle>
+      <ItemDescription
+        >Learn how to get started with our components.</ItemDescription
+      >
+    </ItemContent>
+    <ItemActions>
+      <ChevronRightIcon class="size-4" />
+    </ItemActions>
+  </Item>
+  <Item
+    href="https://ui.shadcn.com"
+    target="_blank"
+    rel="noreferrer"
+    variant="outline"
+  >
+    <ItemMedia variant="icon">
+      <ExternalLinkIcon />
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>External resource</ItemTitle>
+      <ItemDescription
+        >Opens in a new tab with security attributes.</ItemDescription
+      >
+    </ItemContent>
+  </Item>
+</div>
+```
+
+## RTL
+
+`Item` uses logical flex layout and inherits direction from its parent. Set
+`dir="rtl"` on a wrapper when the surrounding document or section is RTL.
+
+```astro live
+---
+import BadgeCheckIcon from "lucide-static/icons/badge-check.svg"
+
+import { Button } from "@/components/ui/button"
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
+---
+
+<div dir="rtl" class="w-full max-w-md">
+  <Item variant="outline">
+    <ItemMedia variant="icon">
+      <BadgeCheckIcon />
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>عنصر أساسي</ItemTitle>
+      <ItemDescription>عنصر بسيط يحتوي على عنوان ووصف.</ItemDescription>
+    </ItemContent>
+    <ItemActions>
+      <Button size="sm">إجراء</Button>
+    </ItemActions>
+  </Item>
+</div>
+```
 
 ## API Reference
 
-See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/components/ui/item) for more information on props.
+### Item
+
+The main component for displaying content with media, title, description, and
+actions.
+
+| Prop      | Type                                           | Default     |
+| --------- | ---------------------------------------------- | ----------- |
+| `variant` | `"default" \| "inset" \| "outline" \| "muted"` | `"default"` |
+| `size`    | `"default" \| "sm" \| "xs"`                    | `"default"` |
+| `href`    | `string`                                       | -           |
+
+### ItemGroup
+
+A container that groups related items together with consistent spacing.
+
+```astro
+<ItemGroup>
+  <Item />
+  <Item />
+</ItemGroup>
+```
+
+### ItemSeparator
+
+A separator between items in a group.
+
+```astro
+<ItemGroup>
+  <Item />
+  <ItemSeparator />
+  <Item />
+</ItemGroup>
+```
+
+### ItemMedia
+
+Use `ItemMedia` to display media content such as icons, images, or avatars.
+
+| Prop      | Type                             | Default     |
+| --------- | -------------------------------- | ----------- |
+| `variant` | `"default" \| "icon" \| "image"` | `"default"` |
+
+```astro
+<ItemMedia variant="icon">
+  <Icon />
+</ItemMedia>
+
+<ItemMedia variant="image">
+  <img src="..." alt="..." />
+</ItemMedia>
+```
+
+### ItemContent
+
+Wraps the title, description, or secondary metadata of the item.
+
+```astro
+<ItemContent>
+  <ItemTitle>Title</ItemTitle>
+  <ItemDescription>Description</ItemDescription>
+</ItemContent>
+```
+
+### ItemTitle
+
+Displays the title of the item.
+
+```astro
+<ItemTitle>Item title</ItemTitle>
+```
+
+### ItemDescription
+
+Displays the description of the item.
+
+```astro
+<ItemDescription>Item description</ItemDescription>
+```
+
+### ItemActions
+
+Container for action buttons or other interactive elements.
+
+```astro
+<ItemActions>
+  <Button>Action</Button>
+</ItemActions>
+```
+
+### ItemHeader
+
+Displays a header above the item content.
+
+```astro
+<Item>
+  <ItemHeader>Header</ItemHeader>
+  <ItemContent>...</ItemContent>
+</Item>
+```
+
+### ItemFooter
+
+Displays a footer below the item content.
+
+```astro
+<Item>
+  <ItemContent>...</ItemContent>
+  <ItemFooter>Footer</ItemFooter>
+</Item>
+```
+
+## Notes
+
+- `Item` follows the shadcn Item API where it maps cleanly to Astro. In Astro,
+  pass `href` to render a link instead of React's `render` prop.
+- Use `ItemContent` to group the title and description instead of hand-rolled
+  wrappers.
+- Use variants and sizes for emphasis and density before adding custom surface
+  styles.
+- Use `variant="inset"` when a ghost item should visually align with
+  surrounding content while keeping its hover and focus padding.
