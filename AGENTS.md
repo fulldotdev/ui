@@ -28,8 +28,6 @@ docs site, and reference implementation.
 
 - Follow [CONTRIBUTING.md](./CONTRIBUTING.md) for registry, validation, CI, and
   release workflow.
-- Keep `skills/fulldev` synced with `.agents/skills/fulldev` when changing the
-  Fulldev skill.
 - During development, run or reuse `pnpm dev` and inspect logs occasionally.
 - This project owns `http://localhost:4321` for local development and preview.
 - Do not run full validation or rebuild generated registry output after every

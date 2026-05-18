@@ -17,8 +17,6 @@ For product scope, installation, and user-facing positioning, see
   do not make something installable.
 - The Fulldev agent skill lives in `.agents/skills/fulldev` and describes
   reusable client-project architecture, not this repo's release process.
-- The public `skills` CLI entry lives in `skills/fulldev`. Keep it synced with
-  `.agents/skills/fulldev`.
 
 Registry items must be portable outside this docs site. Do not import private
 docs, content, layout, route, global, schema code, placeholder media, or other

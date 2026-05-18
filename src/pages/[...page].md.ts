@@ -11,7 +11,7 @@ export async function getStaticPaths() {
   return Promise.all(
     pages.map(async (page) => ({
       params: {
-        page: page.id === "index" ? null : page.id,
+        page: page.id === "index" ? undefined : page.id,
       },
       props: {
         source: await readPageSource(page.filePath),
