@@ -9,14 +9,16 @@ const navigationPreamble = "Navigation: [/sitemap.md](/sitemap.md)\n\n"
 export async function getStaticPaths() {
   const pages = await getCollection("pages")
   return Promise.all(
-    pages.map(async (page) => ({
-      params: {
-        page: page.id === "index" ? undefined : page.id,
-      },
-      props: {
-        source: await readPageSource(page.filePath),
-      },
-    }))
+    pages
+      .filter((page) => page.id !== "index")
+      .map(async (page) => ({
+        params: {
+          page: page.id,
+        },
+        props: {
+          source: await readPageSource(page.filePath),
+        },
+      }))
   )
 }
 

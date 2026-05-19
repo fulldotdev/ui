@@ -15,45 +15,39 @@ Give your AI agent this prompt:
 Initialize Fulldev UI by following https://ui.full.dev/docs/installation.md. Choose the current-project or new-project path. If it is unclear which path to use, ask me before changing files.
 ```
 
-If you are reading a local development copy of these docs, use the local
-Markdown URL instead:
-
-```text
-Initialize Fulldev UI by following http://127.0.0.1:4321/docs/installation.md. Choose the current-project or new-project path. If it is unclear which path to use, ask me before changing files.
-```
-
 Every documentation page has a Markdown version. Add `.md` to the URL to read
 the source.
 
-## New project quickstart
+## Manual setup
 
-For a new project, use Astro's minimal template, add Tailwind CSS, configure the
-Fulldev registry, then install `@fulldev/init` with your first components.
+Follow these steps in order. Skip the steps that your project already satisfies.
+
+### 1. Create an Astro project
+
+Skip this step if you are already in an Astro project.
 
 ```bash
 pnpm create astro@latest my-project --template minimal --install --no-git --yes
 cd my-project
+```
+
+### 2. Add Tailwind CSS
+
+Skip this step if your project already uses Tailwind CSS v4.
+
+```bash
 pnpm astro add tailwind -y
 ```
 
-```json title="tsconfig.json" {3-8} showLineNumbers
-{
-  "extends": "astro/tsconfigs/strict",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  },
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
-}
-```
+### 3. Add shadcn config
+
+Create `components.json` so the shadcn CLI can resolve the `@fulldev`
+registry namespace:
 
 ```json title="components.json"
 {
   "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "new-york",
+  "style": "base-vega",
   "rsc": false,
   "tsx": true,
   "tailwind": {
@@ -63,6 +57,7 @@ pnpm astro add tailwind -y
     "cssVariables": true,
     "prefix": ""
   },
+  "iconLibrary": "lucide",
   "aliases": {
     "components": "@/components",
     "utils": "@/lib/utils",
@@ -76,232 +71,102 @@ pnpm astro add tailwind -y
 }
 ```
 
-If you are reading a local development copy of these docs, use the local dev
-server for the registry:
+Update `tsconfig.json` so installed source files resolve `@/*` imports:
 
-```json title="components.json"
-{
-  "registries": {
-    "@fulldev": "http://127.0.0.1:4321/r/{name}.json"
-  }
-}
-```
-
-```bash
-npx shadcn@latest add @fulldev/init @fulldev/button @fulldev/section -y --overwrite
-```
-
-The quickstart uses `-y` so agents and scripts can run without confirmation
-prompts. Omit `-y` when you want shadcn to ask before applying changes.
-
-## Create new Astro project
-
-If you don't have a project yet, start from Astro's minimal template. In the
-interactive Astro wizard this is the "minimal (empty)" template; in a command it
-is named `minimal`.
-
-```bash
-pnpm create astro@latest my-project --template minimal --install --no-git --yes
-cd my-project
-pnpm astro add tailwind -y
-```
-
-Astro may print an action-required note to import `src/styles/global.css`. The
-example page below imports that file directly.
-
-Add the `@/*` import alias and registry config that the installable source
-expects:
-
-```json title="tsconfig.json" {3-8} showLineNumbers
+```json title="tsconfig.json"
 {
   "extends": "astro/tsconfigs/strict",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  },
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
-}
-```
-
-```json title="components.json"
-{
-  "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "new-york",
-  "rsc": false,
-  "tsx": true,
-  "tailwind": {
-    "config": "",
-    "css": "src/styles/global.css",
-    "baseColor": "neutral",
-    "cssVariables": true,
-    "prefix": ""
-  },
-  "aliases": {
-    "components": "@/components",
-    "utils": "@/lib/utils",
-    "ui": "@/components/ui",
-    "lib": "@/lib",
-    "hooks": "@/hooks"
-  },
-  "registries": {
-    "@fulldev": "https://ui.full.dev/r/{name}.json"
-  }
-}
-```
-
-If you are reading a local development copy of these docs, use that same local
-server for the registry while testing. The local dev server normally prints
-`http://127.0.0.1:4321/`. In that case, change only the registry URL:
-
-```json title="components.json"
-{
-  "registries": {
-    "@fulldev": "http://127.0.0.1:4321/r/{name}.json"
-  }
-}
-```
-
-## Add to existing Astro project
-
-Because Fulldev UI uses Shadcn-compatible registry tooling, first make sure the
-project has Tailwind CSS v4, the `@/*` import alias, and the `components.json`
-file shown above. Do not run `npx shadcn@latest init` for Fulldev UI setup.
-Install `@fulldev/init` instead; it adds the shared dependencies, class helper,
-and Tailwind token layer without installing a React component template.
-
-### What init installs
-
-`@fulldev/init` installs the shared setup that Fulldev UI source files expect:
-
-- `src/lib/utils.ts`
-- `src/styles/global.css`
-- `class-variance-authority`
-- `clsx`
-- `tailwind-merge`
-
-### Check styles
-
-`pnpm astro add tailwind -y` creates `src/styles/global.css` with Tailwind.
-`@fulldev/init` replaces that file with Fulldev's Tailwind v4 token layer. Keep
-that file imported from your app layout or page.
-
-### Check tsconfig.json
-
-If you did not already add the alias above, add it to `tsconfig.json`:
-
-```json title="tsconfig.json" {4-9} showLineNumbers
-{
+  "exclude": ["dist"],
   "compilerOptions": {
-    // ...
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }
-    // ...
   }
 }
 ```
 
-### Check components.json
+### 4. Initialize Fulldev
 
-If you did not already create `components.json`, add the file shown above.
-
-Once the registry is present, all install commands in this docs site should work
-as written.
-
-### Use a container-aware app shell
-
-Fulldev UI uses Tailwind CSS v4 container query variants such as `@2xl:` and `@max-5xl:`. These are intentional and should not be converted to viewport breakpoints like `2xl:`.
-
-To make those variants work, add `@container` to the root wrapper that contains your page content:
-
-```astro title="src/layouts/Layout.astro" {2,6} showLineNumbers
----
-import "@/styles/global.css"
----
-
-<body class="@container">
-  <slot />
-</body>
-```
-
-## Add Components
-
-You can now start adding components to your project.
+Run init after the project has Tailwind CSS and the config files above:
 
 ```bash
-npx shadcn@latest add @fulldev/init @fulldev/button @fulldev/section -y --overwrite
+npx shadcn@latest add @fulldev/init -y --overwrite
 ```
 
-or multiple resources at once:
+What this command does:
+
+- Installs the shared CSS tokens, class helper, and dependencies.
+- Uses `components.json` to resolve the `@fulldev` registry.
+- Uses `tsconfig.json` to keep installed source imports portable.
+
+`--overwrite` lets init replace Astro's generated `src/styles/global.css` with
+the Fulldev token layer. For an existing project, review that file before
+running the command if it already has custom styles. The `-y` flag is for agent
+and script-friendly installs; omit it for an interactive confirmation prompt.
+
+### 5. Add components
+
+Install your first source-owned UI file:
 
 ```bash
-npx shadcn@latest add @fulldev/init @fulldev/button @fulldev/card @fulldev/section -y --overwrite
+npx shadcn@latest add @fulldev/button -y
 ```
 
-`--overwrite` lets `@fulldev/init` replace Astro's generated
-`src/styles/global.css` with the Fulldev token layer. For an existing project,
-review that file before running the command if it already has custom styles.
-The `-y` flag is for agent and script-friendly installs; omit it for an
-interactive confirmation prompt.
-
-### Add all components
+Or install the components used in the example below:
 
 ```bash
-npx shadcn@latest add @fulldev/init @fulldev/layout @fulldev/components --overwrite
+npx shadcn@latest add @fulldev/layout @fulldev/button @fulldev/section -y
 ```
 
-### Usage
+To install the full component and block bundle:
+
+```bash
+npx shadcn@latest add @fulldev/blocks @fulldev/components
+```
+
+## Usage
 
 The commands above will add components to your project. You can then import them like this:
 
-```astro title="src/pages/index.astro" {2-4,10-31} showLineNumbers
+```astro title="src/pages/index.astro" {2-12,14-35} showLineNumbers
 ---
 import { Button } from "@/components/ui/button"
+import {
+  Layout,
+  LayoutBody,
+  LayoutHead,
+  LayoutMain,
+} from "@/components/ui/layout"
 import { Section, SectionContainer } from "@/components/ui/section"
-
-import "@/styles/global.css"
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Astro + Fulldev UI</title>
-  </head>
-  <body class="@container">
-    <Section>
-      <SectionContainer class="min-h-screen place-items-center text-center">
-        <div class="grid max-w-xl gap-4">
-          <h1 class="text-4xl font-semibold tracking-tight">
-            Astro + Fulldev UI
-          </h1>
-          <p class="text-muted-foreground">
-            A minimal Astro page using installed Fulldev UI source files.
-          </p>
-          <div>
-            <Button href="/docs/">Get started</Button>
+<Layout>
+  <LayoutHead title="Astro + Fulldev UI" />
+  <LayoutBody>
+    <LayoutMain>
+      <Section>
+        <SectionContainer class="min-h-screen place-items-center text-center">
+          <div class="grid max-w-xl gap-4">
+            <h1 class="text-4xl font-semibold tracking-tight">
+              Astro + Fulldev UI
+            </h1>
+            <p class="text-muted-foreground">
+              A minimal Astro page using installed Fulldev UI source files.
+            </p>
+            <div>
+              <Button href="/docs/">Get started</Button>
+            </div>
           </div>
-        </div>
-      </SectionContainer>
-    </Section>
-  </body>
-</html>
+        </SectionContainer>
+      </Section>
+    </LayoutMain>
+  </LayoutBody>
+</Layout>
 ```
 
 At that point, you can follow the component pages directly and install only the
 pieces you need.
-
-## Validate the install
-
-Run a production build after wiring the first installed components into a page:
-
-```bash
-pnpm build
-```
 
 ## Use with shadcn/ui
 

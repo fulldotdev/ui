@@ -29,6 +29,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Header, HeaderContainer, HeaderGroup } from "@/components/ui/header"
 import { Icon } from "@/components/ui/icon"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group"
 import { Kbd } from "@/components/ui/kbd"
 import { LogoImage, LogoText } from "@/components/ui/logo"
 import { Separator } from "@/components/ui/separator"
@@ -147,19 +152,28 @@ try {
       </SidebarMenuButton>
       <Dialog class="w-full" data-search-dialog>
         <DialogTrigger
-          variant="outline"
-          size="sm"
-          class="w-full justify-start shadow-none"
+          as="div"
+          role="button"
+          tabindex="0"
+          class="h-auto w-full cursor-pointer border-0 bg-transparent p-0 shadow-none hover:bg-transparent"
           aria-keyshortcuts="Meta+K Control+K"
         >
-          <Icon name="search" data-icon="inline-start" />
-          <span class="truncate">{search.label}</span>
-          <Kbd
-            class="bg-background/80 ml-auto h-4 min-w-4 translate-y-0 px-1 text-[10px]"
-            data-search-shortcut
-          >
-            ⌘ + K
-          </Kbd>
+          <InputGroup class="h-8 shadow-none">
+            <InputGroupInput
+              placeholder={search.label}
+              readonly
+              tabindex="-1"
+              aria-label={search.label}
+              class="cursor-pointer"
+            />
+            <InputGroupAddon>
+              <Icon name="search" />
+            </InputGroupAddon>
+            <InputGroupAddon align="inline-end">
+              <Kbd data-search-modifier>⌘</Kbd>
+              <Kbd>K</Kbd>
+            </InputGroupAddon>
+          </InputGroup>
         </DialogTrigger>
 
         <CommandDialog title={search.label} description={search.label}>
@@ -349,8 +363,8 @@ try {
     navigator.platform || navigator.userAgent
   )
 
-  document.querySelectorAll("[data-search-shortcut]").forEach((shortcut) => {
-    shortcut.textContent = isMac ? "⌘ + K" : "Ctrl + K"
+  document.querySelectorAll("[data-search-modifier]").forEach((shortcut) => {
+    shortcut.textContent = isMac ? "⌘" : "Ctrl"
   })
 
   document.addEventListener("keydown", (event) => {

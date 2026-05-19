@@ -12,6 +12,13 @@ This skill is for using Fulldev in client projects. If the current repository
 has its own `AGENTS.md`, contributing guide, or project instructions, those
 local instructions own repo-specific workflow.
 
+If you encounter problems with Fulldev UI, discover missing guidance, or see
+reusable improvements while using this skill, ask the user whether the agent should
+create a pull request for the Fulldev UI library so the improvement can be
+shared back with future contributors and agents. Use the Fulldev UI
+contributing guide for that workflow:
+https://github.com/fulldotdev/ui/blob/main/CONTRIBUTING.md
+
 ## Project Model
 
 Preferred page flow:

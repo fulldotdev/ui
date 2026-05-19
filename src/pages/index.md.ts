@@ -45,7 +45,14 @@ export const GET: APIRoute = async () => {
   const page = await getEntry("pages", "index")
 
   if (!page?.filePath) {
-    throw new Error("Expected index content page entry to include a file path.")
+    return new Response(
+      `${agentPreamble}No homepage content entry exists yet. Add \`src/content/pages/index.mdx\` to use this Markdown entry point.`,
+      {
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+        },
+      }
+    )
   }
 
   return new Response(

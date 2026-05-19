@@ -1,73 +1,81 @@
 ---
-import type { HTMLAttributes } from "astro/types"
-import { cva, type VariantProps } from "class-variance-authority"
+import { cva } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-const trackVariants = cva(
-  "flex min-w-max shrink-0 [animation:marquee_var(--marquee-duration)_linear_infinite] items-center gap-[var(--marquee-gap)] before:block before:size-0 before:shrink-0 before:content-['']",
-  {
-    variants: {
-      direction: {
-        left: "",
-        right: "[animation-direction:reverse]",
-      },
-      pauseOnHover: {
-        true: "group-hover/marquee:[animation-play-state:paused]",
-        false: "",
-      },
-    },
-    defaultVariants: {
-      direction: "left",
-      pauseOnHover: false,
-    },
-  }
-)
-
-type Props = HTMLAttributes<"div"> &
-  VariantProps<typeof trackVariants> & {
-    duration?: string
-    gap?: string
-    infinite?: boolean
-  }
+type Props = {
+  direction?: "left" | "right" | "top" | "bottom"
+  duration?: number | string
+  gap?: string
+  infinite?: boolean
+  pauseOnHover?: boolean
+  time?: number | string
+  variant?: "gradient" | "solid"
+  class?: string
+  style?: string
+}
 
 const {
-  class: className,
-  direction,
-  pauseOnHover,
-  duration = "40s",
-  gap = "1.5rem",
+  class: className = "",
+  direction = "left",
+  duration,
+  gap = "1rem",
   infinite = true,
+  pauseOnHover = false,
   style,
+  time = 30,
+  variant = "gradient",
   ...props
 } = Astro.props
 
-const resolvedStyle = [
-  `--marquee-duration:${duration}`,
-  `--marquee-gap:${gap}`,
-  typeof style === "string" ? style : undefined,
-]
-  .filter(Boolean)
-  .join(";")
+const resolvedDuration = duration ?? time
+const styleValue = `--duration:${
+  typeof resolvedDuration === "number"
+    ? `${resolvedDuration}s`
+    : resolvedDuration
+}; --gap:${gap}; ${style ?? ""}`
+const contentClass = cn(
+  "marquee-content flex min-w-full shrink-0 justify-around gap-[var(--gap)] will-change-transform group-data-[direction=bottom]:[animation-direction:reverse] group-data-[direction=right]:[animation-direction:reverse] data-[direction=bottom]:min-h-full data-[direction=bottom]:flex-col data-[direction=top]:min-h-full data-[direction=top]:flex-col motion-reduce:[animation-play-state:paused]",
+  infinite &&
+    "animate-[marquee-x_var(--duration,20s)_linear_infinite] group-data-[direction=bottom]:animate-[marquee-y_var(--duration,20s)_linear_infinite] group-data-[direction=top]:animate-[marquee-y_var(--duration,20s)_linear_infinite]",
+  direction === "top" && "flex-col",
+  direction === "bottom" && "flex-col"
+)
+
+const marqueeVariants = cva("relative w-full", {
+  variants: {
+    variant: {
+      gradient:
+        "[mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [&[data-direction=bottom]]:[mask-image:linear-gradient(to_top,transparent,black_10%,black_90%,transparent)] [&[data-direction=bottom]]:[-webkit-mask-image:linear-gradient(to_top,transparent,black_10%,black_90%,transparent)] [&[data-direction=top]]:[mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)] [&[data-direction=top]]:[-webkit-mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]",
+      solid: "",
+    },
+  },
+  defaultVariants: {
+    variant: "gradient",
+  },
+})
 ---
 
 <div
+  data-marquee
+  data-direction={direction}
+  data-pause-on-hover={pauseOnHover ? "true" : undefined}
   class={cn(
-    "group/marquee flex overflow-hidden select-none [--marquee-duration:40s] [--marquee-gap:1.5rem]",
+    "",
+    // container utilities
+    "group flex w-full overflow-hidden data-[direction=bottom]:flex-col data-[direction=top]:flex-col",
+    marqueeVariants({ variant }),
     className
   )}
-  style={resolvedStyle}
+  style={styleValue}
   {...props}
 >
-  <div class={trackVariants({ direction, pauseOnHover })}>
+  <div class={contentClass}>
     <slot />
   </div>
   {
     infinite && (
-      <div
-        aria-hidden="true"
-        class={trackVariants({ direction, pauseOnHover })}
-      >
+      <div class={contentClass} aria-hidden="true">
         <slot />
       </div>
     )
@@ -75,13 +83,24 @@ const resolvedStyle = [
 </div>
 
 <style>
-  @keyframes marquee {
+  @keyframes marquee-x {
     from {
       transform: translateX(0);
     }
-
     to {
       transform: translateX(-100%);
     }
+  }
+  @keyframes marquee-y {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-100%);
+    }
+  }
+
+  [data-marquee][data-pause-on-hover="true"]:hover .marquee-content {
+    animation-play-state: paused;
   }
 </style>
