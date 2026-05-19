@@ -1,55 +1,126 @@
 ---
-import { AutoForm } from "@/components/ui/auto-form"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from "@/components/ui/field"
 import { Icon } from "@/components/ui/icon"
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-  ItemTitle,
-} from "@/components/ui/item"
-import {
-  Section,
-  SectionContent,
-  SectionGrid,
-  SectionProse,
-} from "@/components/ui/section"
+import { Input } from "@/components/ui/input"
+import { Section, SectionContainer } from "@/components/ui/section"
+import { Textarea } from "@/components/ui/textarea"
 
-interface Props {
+type Props = {
   class?: string
-  id?: string
-  form?: any
-  items?: {
-    icon?: string
-    title?: string
-    description?: string
+  title: string
+  description: string
+  contactItems: {
+    icon: string
+    title: string
+    description: string
     href?: string
   }[]
+  form: {
+    legend: string
+    nameLabel: string
+    namePlaceholder: string
+    emailLabel: string
+    emailPlaceholder: string
+    messageLabel: string
+    messagePlaceholder: string
+    messageDescription: string
+    actionLabel: string
+  }
 }
 
-const { class: className, id, form, items } = Astro.props
+const { class: className, title, description, contactItems, form } = Astro.props
 ---
 
-<Section class={className} id={id} style="--section-width: 672px;">
-  <SectionContent>
-    <SectionProse>
-      <slot />
-    </SectionProse>
-  </SectionContent>
-  <SectionGrid>
-    {
-      items?.map(({ icon, title, description, href }) => (
-        <Item href={href} variant="outline">
-          <ItemMedia variant="icon">
-            <Icon href={href} name={icon} />
-          </ItemMedia>
-          <ItemContent>
-            <ItemTitle>{title}</ItemTitle>
-            <ItemDescription>{description}</ItemDescription>
-          </ItemContent>
-        </Item>
-      ))
-    }
-  </SectionGrid>
-  <AutoForm {...form} />
+<Section class={cn("", className)}>
+  <SectionContainer class="items-center gap-6 text-center">
+    <div class="flex max-w-2xl flex-col items-center gap-4">
+      <h2
+        class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      <p
+        class="text-muted-foreground max-w-2xl text-lg leading-relaxed text-balance"
+      >
+        {description}
+      </p>
+    </div>
+  </SectionContainer>
+  <SectionContainer>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        contactItems.map((item) => (
+          <div class="flex flex-col gap-3 rounded-xl border p-5">
+            {item.href ? (
+              <Button
+                as="a"
+                href={item.href}
+                variant="secondary"
+                size="icon"
+                class="text-primary"
+                aria-label={item.title}
+              >
+                <Icon name={item.icon} />
+              </Button>
+            ) : (
+              <Button
+                variant="secondary"
+                size="icon"
+                class="text-primary"
+                aria-label={item.title}
+              >
+                <Icon name={item.icon} />
+              </Button>
+            )}
+            <h3 class="text-foreground text-sm font-medium">{item.title}</h3>
+            <p class="text-muted-foreground text-sm leading-relaxed">
+              {item.description}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </SectionContainer>
+  <SectionContainer>
+    <div class="mx-auto w-full max-w-2xl rounded-xl border p-6 sm:p-8">
+      <FieldSet>
+        <FieldLegend class="sr-only">{form.legend}</FieldLegend>
+        <FieldGroup>
+          <div class="grid gap-4 md:grid-cols-2">
+            <Field>
+              <FieldLabel for="contact-name-1">{form.nameLabel}</FieldLabel>
+              <Input id="contact-name-1" placeholder={form.namePlaceholder} />
+            </Field>
+            <Field>
+              <FieldLabel for="contact-email-1">{form.emailLabel}</FieldLabel>
+              <Input
+                id="contact-email-1"
+                type="email"
+                placeholder={form.emailPlaceholder}
+              />
+            </Field>
+          </div>
+          <Field>
+            <FieldLabel for="contact-message-1">{form.messageLabel}</FieldLabel>
+            <Textarea
+              id="contact-message-1"
+              rows={5}
+              placeholder={form.messagePlaceholder}
+            />
+            <FieldDescription>{form.messageDescription}</FieldDescription>
+          </Field>
+          <Button size="lg" class="w-full">{form.actionLabel}</Button>
+        </FieldGroup>
+      </FieldSet>
+    </div>
+  </SectionContainer>
 </Section>

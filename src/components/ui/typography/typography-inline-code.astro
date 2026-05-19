@@ -1,0 +1,31 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"code">
+
+const { class: className, ...props } = Astro.props
+---
+
+<code data-slot="typography-inline-code" class={cn(className)} {...props}>
+  <slot />
+</code>
+
+<style is:global>
+  @reference "@/styles/global.css";
+
+  [data-slot="typography-inline-code"],
+  [data-slot="typography"]
+    :not(pre)
+    > code:not(.no-typography):not(.no-typography *) {
+    @apply bg-muted relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm;
+  }
+
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    :not(pre)
+    > code:not(.no-typography):not(.no-typography *) {
+    @apply rounded-md text-sm leading-5;
+  }
+</style>

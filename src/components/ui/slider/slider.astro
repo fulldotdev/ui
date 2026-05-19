@@ -1,0 +1,84 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type SliderValue = number | [number, number] | string
+type ThumbAlignment = "center" | "edge" | "edge-client-only"
+
+type Props = HTMLAttributes<"div"> & {
+  defaultValue?: SliderValue
+  min?: number
+  max?: number
+  step?: number
+  largeStep?: number
+  orientation?: "horizontal" | "vertical"
+  thumbAlignment?: ThumbAlignment
+  disabled?: boolean
+}
+
+const {
+  class: className,
+  defaultValue,
+  min,
+  max,
+  step,
+  largeStep,
+  orientation = "horizontal",
+  thumbAlignment = "edge",
+  disabled,
+  ...props
+} = Astro.props
+
+const serializedDefaultValue = Array.isArray(defaultValue)
+  ? defaultValue.join(",")
+  : defaultValue
+const thumbCount = Array.isArray(defaultValue) ? defaultValue.length : 1
+---
+
+<div
+  data-slot="slider"
+  data-default-value={serializedDefaultValue}
+  data-min={min}
+  data-max={max}
+  data-step={step}
+  data-large-step={largeStep}
+  data-orientation={orientation}
+  data-thumb-alignment={thumbAlignment}
+  data-disabled={disabled}
+  class={cn(
+    "relative flex touch-none items-center select-none data-disabled:opacity-50 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-40 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col",
+    className
+  )}
+  {...props}
+>
+  <div
+    data-slot="slider-control"
+    class="relative flex w-full touch-none items-center select-none data-disabled:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-40 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col"
+  >
+    <div
+      data-slot="slider-track"
+      class="bg-muted relative grow overflow-hidden rounded-full select-none data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5"
+    >
+      <div
+        data-slot="slider-range"
+        class="bg-primary rounded-full select-none data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full"
+      >
+      </div>
+    </div>
+    {
+      Array.from({ length: thumbCount }).map(() => (
+        <div
+          data-slot="slider-thumb"
+          class="border-primary bg-background ring-ring/50 block size-4 shrink-0 rounded-full border shadow-sm transition-[color,box-shadow] select-none hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden data-disabled:pointer-events-none data-disabled:opacity-50"
+        />
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  import { create } from "@data-slot/slider"
+
+  create()
+</script>

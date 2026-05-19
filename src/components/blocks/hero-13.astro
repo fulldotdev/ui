@@ -1,58 +1,66 @@
 ---
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Icon } from "@/components/ui/icon"
-import { Image } from "@/components/ui/image"
-import {
-  Section,
-  SectionActions,
-  SectionContent,
-  SectionMedia,
-  SectionProse,
-  SectionSplit,
-} from "@/components/ui/section"
+import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
   class?: string
-  id?: string
-  links?: {
-    icon?: string
-    text?: string
-    href?: string
-    target?: string
+  title: string
+  description: string
+  buttons: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
-  image?: {
-    src: string
+  image: {
+    src: ImageMetadata
     alt: string
   }
 }
 
-const { class: className, id, links, image } = Astro.props
+const { class: className, title, description, buttons, image } = Astro.props
 ---
 
-<Section class={cn("lg:pt-1", className)} id={id}>
-  <SectionSplit class="lg:grid-cols-[1fr_3fr] lg:items-start">
-    <SectionContent class="pt-(--section-py)">
-      <SectionProse class="text-balance" size="sm">
-        <slot />
-      </SectionProse>
-      <SectionActions class="-my-2 -ml-3">
+<Section class={cn("", className)}>
+  <SectionContainer class="grid gap-12 lg:grid-cols-[1fr_3fr] lg:items-start">
+    <div class="flex flex-col gap-6 pt-8">
+      <div class="flex flex-col gap-4">
+        <h1
+          class="text-foreground text-2xl leading-[1.2] font-semibold tracking-tight text-balance sm:text-3xl"
+        >
+          {title}
+        </h1>
+        <p class="text-muted-foreground text-base leading-relaxed">
+          {description}
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3">
         {
-          links?.map(({ href, text, ...link }) => (
-            <Button as="a" variant="link" href={href} {...link}>
-              {text}
-              {href && <Icon name="arrow-up-right" />}
+          buttons.map(({ href, label, ...button }, index) => (
+            <Button
+              as="a"
+              href={href}
+              variant={
+                button.variant ?? (index === 0 ? "default" : "secondary")
+              }
+              {...button}
+            >
+              {label}
             </Button>
           ))
         }
-      </SectionActions>
-    </SectionContent>
-    <SectionMedia class="relative z-100 -mr-5">
-      <Image
-        sizes="(min-width: 1536px) 1152px, (min-width: 1024px) 75vw, 100vw"
-        priority
-        {...image}
-      />
-    </SectionMedia>
-  </SectionSplit>
+      </div>
+    </div>
+    <Image
+      src={image.src}
+      alt={image.alt}
+      class="aspect-4/3 w-full rounded-xl border object-cover"
+      widths={[640, 960, 1280]}
+      sizes="(min-width: 1024px) 75vw, 100vw"
+      loading="eager"
+    />
+  </SectionContainer>
 </Section>

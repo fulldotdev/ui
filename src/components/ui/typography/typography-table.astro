@@ -1,0 +1,50 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"table"> & {
+  containerClass?: string
+}
+
+const { class: className, containerClass, ...props } = Astro.props
+---
+
+<div data-slot="typography-table-container" class={cn(containerClass)}>
+  <table data-slot="typography-table" class={cn(className)} {...props}>
+    <slot />
+  </table>
+</div>
+
+<style is:global>
+  @reference "@/styles/global.css";
+
+  [data-slot="typography-table-container"] {
+    @apply border-border w-full overflow-x-auto rounded-xl border;
+  }
+
+  [data-slot="typography-table"],
+  [data-slot="typography"] table:not(.no-typography):not(.no-typography *) {
+    @apply w-full caption-bottom;
+  }
+
+  [data-slot="typography"] table:not(.no-typography):not(.no-typography *) {
+    @apply border-border overflow-x-auto rounded-xl border;
+    border-spacing: 0;
+  }
+
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    thead,
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    tbody,
+  [data-slot="typography"] table:not(.no-typography):not(.no-typography *) tr {
+    @apply w-full;
+  }
+
+  [data-slot="typography-table"],
+  [data-slot="typography"] table:not(.no-typography):not(.no-typography *) {
+    @apply text-sm;
+  }
+</style>

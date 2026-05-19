@@ -1,34 +1,50 @@
 ---
 import type { HTMLAttributes } from "astro/types"
-import XIcon from "lucide-static/icons/x.svg"
 
 import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import DialogOverlay from "@/components/ui/dialog/dialog-overlay.astro"
+import DialogPortal from "@/components/ui/dialog/dialog-portal.astro"
+import { Icon } from "@/components/ui/icon"
 
-interface Props extends HTMLAttributes<"div"> {}
+type Props = HTMLAttributes<"div"> & {
+  showCloseButton?: boolean
+}
 
-const { class: className, ...props } = Astro.props
+const {
+  class: className,
+  showCloseButton = true,
+  style,
+  ...props
+} = Astro.props
 ---
 
-<dialog
-  data-slot="dialog-element"
-  class="fixed inset-0 z-50 m-0 max-h-none max-w-none border-0 bg-transparent p-0 backdrop:bg-black/50"
->
+<DialogPortal>
+  <DialogOverlay />
   <div
     data-slot="dialog-content"
+    hidden
     class={cn(
-      "bg-background fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg",
+      "bg-popover text-popover-foreground ring-foreground/10 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6 rounded-xl p-6 text-sm ring-1 duration-100 outline-none sm:max-w-md",
       className
     )}
+    style={`z-index: calc(var(--dialog-content-stack-index, 0) + 101);${style ? ` ${style}` : ""}`}
     {...props}
   >
-    <button
-      type="button"
-      data-slot="dialog-close"
-      class="ring-offset-background focus:ring-ring absolute top-4 right-4 cursor-pointer rounded-sm border-0 bg-transparent opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
-      aria-label="Close"
-    >
-      <XIcon class="size-4" />
-    </button>
+    {
+      showCloseButton && (
+        <Button
+          type="button"
+          data-slot="dialog-close"
+          variant="ghost"
+          size="icon-sm"
+          class="absolute top-4 right-4"
+        >
+          <Icon name="x" class="size-4" />
+          <span class="sr-only">Close</span>
+        </Button>
+      )
+    }
     <slot />
   </div>
-</dialog>
+</DialogPortal>

@@ -1,142 +1,122 @@
 # Contributing to Fulldev UI
 
-Thank you for your interest in contributing to Fulldev UI! We welcome contributions from everyone.
+Fulldev UI is the registry source, docs site, and reference implementation for
+the `@fulldev` Astro registry. This guide is the shared workflow for human
+contributors and AI agents working in this repository.
 
-## Code of Conduct
+For product scope, installation, and user-facing positioning, see
+[README.md](./README.md).
 
-We are here to build great software, learn, grow, and help each other. Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
+## Repository Model
 
-## Getting Started
+- Installable UI components live in `src/components/ui/<component-name>/`.
+- Installable blocks live in `src/components/blocks`.
+- Registry metadata lives in `registry.json`.
+- Generated registry output lives in `public/r`.
+- Docs pages live in `src/content/pages` and document installable source; they
+  do not make something installable.
+- The Fulldev agent skill lives in `.agents/skills/fulldev` and describes
+  reusable client-project architecture, not this repo's release process.
 
-### Prerequisites
+Registry items must be portable outside this docs site. Do not import private
+docs, content, layout, route, global, schema code, placeholder media, or other
+project-owned assets from installable registry items. Images rendered by
+installable blocks must come through props.
 
-- Node.js 20 or higher
-- pnpm (recommended package manager)
-- Git
+Examples and docs must reflect installable source. When docs and implementation
+disagree, fix the source contract or registry metadata first, then update docs.
 
-### Setup
+## Local Workflow
 
-1. **Fork and clone the repository**:
+Use the package manager, Node settings, and scripts declared by the repo. During
+normal development, prefer the dev server and focused inspection over full local
+validation after every edit.
 
-```bash
-git clone https://github.com/your-username/ui.git
-cd ui
-```
-
-2. **Install dependencies**:
+Common flow:
 
 ```bash
 pnpm install
-```
-
-3. **Start the development server**:
-
-```bash
 pnpm dev
 ```
 
-## How to Contribute
+This project owns `http://localhost:4321` for local development and preview.
+Use `pnpm stop` to close this project's local dev or preview server.
 
-### Reporting Bugs
-
-1. Check if the bug has already been reported in [Issues](https://github.com/fulldotdev/ui/issues)
-2. If not, create a new issue using the bug report template
-3. Provide clear steps to reproduce the issue
-4. Include screenshots or code snippets if applicable
-
-### Requesting Features
-
-1. Check if the feature has already been requested in [Issues](https://github.com/fulldotdev/ui/issues)
-2. Create a new issue using the feature request template
-3. Clearly describe the feature and its use case
-
-### Submitting Code
-
-1. **Create a new branch**:
+Format touched files when a change is settled:
 
 ```bash
-git checkout -b feature/your-feature-name
+pnpm exec prettier --write <touched-files>
 ```
 
-2. **Make your changes**:
-   - Follow existing code style and conventions
-   - Use TypeScript for type safety
-   - Follow Astro component best practices
-   - Ensure components follow the shared schema in `src/lib/schemas.ts`
+Avoid repo-wide formatting unless the change is explicitly formatting-focused.
 
-3. **Test your changes**:
+## Component and Block Changes
+
+Preserve shadcn parity where a component is intentionally shadcn-compatible.
+
+Use direct static SVG imports with an `Icon` suffix for fixed code-owned icons.
+Use the `Icon` component only for content/config-owned icon names.
+
+For source examples, prefer existing installable items over synthetic snippets:
+
+- UI component source: `src/components/ui`
+- Block source: `src/components/blocks`
+- Component docs: `src/content/pages/components`
+- Block docs: `src/content/pages/blocks`
+- Registry metadata: `registry.json`
+
+## Registry Workflow
+
+`registry.json` is the source of truth for installable items. Update it when
+adding or removing installable items, changing file paths, registry
+dependencies, npm dependencies, metadata, or installable source files.
+
+During normal development, do not rebuild the registry after every edit. Run
+`pnpm registry:build` when preparing a PR or release that changed registry
+inputs, when generated registry output is explicitly needed, or when validating
+registry drift.
+
+Commit regenerated `public/r/*.json` and `public/r/registry.json` when registry
+inputs change. Treat `public/r` as generated output and do not hand-edit it
+except when intentionally debugging generated output. Treat `dist/` as build
+output.
+
+## Validation and CI
+
+CI runs formatting, type checking, registry drift checks, and the production
+build for pull requests.
+
+For local validation, run the smallest relevant subset:
+
+- Formatting-only changes: `pnpm exec prettier --write <touched-files>`.
+- Registry input changes: `pnpm registry:build`, then review and commit the
+  generated `public/r` output.
+- Final local validation when requested or risky: run the same categories CI
+  covers.
+
+## Releases
+
+Fulldev UI is versioned with Changesets and published to npm. Add a changeset
+for user-facing registry, component, block, install, or documentation API
+changes:
 
 ```bash
-pnpm check    # Type checking
-pnpm build    # Build the project
+pnpm changeset
 ```
 
-4. **Commit your changes**:
+Select `fulldev-ui` when prompted. Each version represents the npm package and
+the registry hosted at `https://ui.full.dev/r/registry.json`.
 
-```bash
-git commit -m "feat: add new component"
-```
+Release PRs are created by the GitHub release workflow. It runs the release
+script, which versions the package with Changesets and refreshes the lockfile.
+After that release PR is merged, Changesets publishes the package and creates
+the GitHub Release.
 
-5. **Push and create a Pull Request**:
+## Community
 
-```bash
-git push origin feature/your-feature-name
-```
-
-Then create a PR on GitHub with a clear description of your changes.
-
-## Component Guidelines
-
-### Creating New Components
-
-1. Place component files in `src/components/ui/[component-name]/`
-2. Follow the naming convention: use single-word names when possible
-3. Use Astro component syntax (`.astro` files)
-4. Include TypeScript types for props
-5. Use Tailwind CSS for styling with primary/secondary color variables
-6. Avoid modifying existing shadcn components to prevent confusion
-
-### Example Component Structure
-
-```astro
----
-interface Props {
-  title?: string
-  variant?: "default" | "outline"
-}
-
-const { title, variant = "default" } = Astro.props
-
-const slot = await Astro.slots.render("default")
----
-
-<div class="component-name">
-  {title && <h2>{title}</h2>}
-  <Fragment set:html={slot} />
-</div>
-```
-
-## Development Workflow
-
-### Building
-
-```bash
-pnpm build          # Build the project
-pnpm build:prod     # Type check + build
-pnpm build:test     # Type check + build + preview
-```
-
-### Registry
-
-```bash
-pnpm registry:build    # Build the component registry
-```
-
-## Questions?
-
+- Read [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) before contributing.
 - Join our [Discord server](https://discord.gg/tdmUyH2YE4)
 - Reach out via [email](mailto:contact@full.dev)
 
-## License
-
-By contributing to fulldev/ui, you agree that your contributions will be licensed under the MIT License.
+By contributing to Fulldev UI, you agree that your contributions will be
+licensed under the MIT License.

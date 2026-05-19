@@ -1,93 +1,131 @@
 ---
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
+
+import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
-import { Image } from "@/components/ui/image"
-import {
-  Section,
-  SectionActions,
-  SectionContent,
-  SectionGrid,
-  SectionProse,
-  SectionSpread,
-} from "@/components/ui/section"
-import {
-  Tile,
-  TileContent,
-  TileDescription,
-  TileMedia,
-  TileSpread,
-  TileTitle,
-} from "@/components/ui/tile"
+import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
   class?: string
-  id?: string
-  links?: {
-    text?: string
-    href?: string
+  badge?: string
+  title: string
+  description?: string
+  buttons?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
-  items?: {
-    href?: string
-    tagline?: string
-    title?: string
-    description?: string
-    image?: {
-      src: string
+  services: {
+    image: {
+      src: ImageMetadata
       alt: string
     }
-    links?: {
-      icon?: string
-      text?: string
-      href?: string
-      target?: string
-    }[]
+    label?: string
+    title: string
+    description: string
+    href?: string
   }[]
 }
 
-const { class: className, id, links, items } = Astro.props
+const {
+  class: className,
+  badge,
+  title,
+  description,
+  buttons,
+  services,
+} = Astro.props
 ---
 
-<Section class={className} id={id}>
-  <SectionSpread class="lg:items-end">
-    <SectionContent>
-      <SectionProse>
-        <slot />
-      </SectionProse>
-    </SectionContent>
-    <SectionActions>
+<Section class={cn("", className)}>
+  <SectionContainer class="gap-8">
+    <div
+      class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
+    >
+      <div class="max-w-2xl">
+        {badge && <Badge variant="secondary">{badge}</Badge>}
+        <h2
+          class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+        >
+          {title}
+        </h2>
+        {
+          description && (
+            <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">
+              {description}
+            </p>
+          )
+        }
+      </div>
       {
-        links?.map(({ text, ...link }, i) => (
-          <Button variant={i === 0 ? "default" : "outline"} {...link}>
-            {text}
-          </Button>
+        buttons?.length && (
+          <div class="flex flex-wrap gap-3">
+            {buttons.map(({ href, label, ...button }) => (
+              <Button as="a" href={href} variant={button.variant}>
+                {label}
+              </Button>
+            ))}
+          </div>
+        )
+      }
+    </div>
+    <div class="grid gap-6 lg:grid-cols-3">
+      {
+        services.map((service, index) => (
+          <a
+            href={service.href ?? "#"}
+            class={cn(
+              "group/service flex flex-col overflow-hidden rounded-xl border shadow-xs transition-shadow hover:shadow-md",
+              index === 0 && "lg:col-span-2 lg:row-span-2"
+            )}
+          >
+            <Image
+              src={service.image.src}
+              alt={service.image.alt}
+              class={cn(
+                "w-full object-cover",
+                index === 0 ? "aspect-video" : "aspect-16/10"
+              )}
+              widths={[320, 480, 640, 960]}
+              sizes={
+                index === 0
+                  ? "(min-width: 1024px) 66vw, 100vw"
+                  : "(min-width: 1024px) 33vw, 100vw"
+              }
+            />
+            <div class="flex flex-1 flex-col gap-2 p-5">
+              {service.label && (
+                <Badge variant="secondary" class="w-fit">
+                  {service.label}
+                </Badge>
+              )}
+              <h3
+                class={cn("font-medium", index === 0 ? "text-xl" : "text-base")}
+              >
+                {service.title}
+              </h3>
+              <p class="text-muted-foreground text-sm leading-relaxed">
+                {service.description}
+              </p>
+              <div
+                class={cn(
+                  "text-primary flex items-center gap-1.5 pt-2 text-sm font-medium",
+                  index !== 0 && "mt-auto"
+                )}
+              >
+                Learn more
+                <Icon
+                  name="arrow-right"
+                  class="size-3.5 transition-transform group-hover/service:translate-x-1"
+                />
+              </div>
+            </div>
+          </a>
         ))
       }
-    </SectionActions>
-  </SectionSpread>
-  <SectionGrid>
-    {
-      items?.map(({ title, tagline, description, href, image }) => (
-        <Tile href={href} variant="floating">
-          <TileMedia class="-mx-6 -mt-6 aspect-4/3">
-            <Image class="size-full! object-cover" sizes="600px" {...image} />
-          </TileMedia>
-          <TileSpread>
-            <TileContent>
-              <TileDescription class="text-primary text-xs font-medium">
-                {tagline}
-              </TileDescription>
-              <TileTitle>{title}</TileTitle>
-              <TileDescription>{description}</TileDescription>
-            </TileContent>
-            {href && (
-              <Icon
-                name="arrow-right"
-                class="size-5 shrink-0 transition-transform group-hover/tile:translate-x-2"
-              />
-            )}
-          </TileSpread>
-        </Tile>
-      ))
-    }
-  </SectionGrid>
+    </div>
+  </SectionContainer>
 </Section>

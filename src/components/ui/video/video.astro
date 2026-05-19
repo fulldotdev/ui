@@ -3,36 +3,70 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-interface Props extends Omit<HTMLAttributes<"div">, "src"> {
+type Props = Omit<HTMLAttributes<"iframe">, "src"> & {
   src?: string
+  title?: string
 }
 
-const { class: className, src, ...props } = Astro.props
+const {
+  class: className,
+  src,
+  title = "Embedded video",
+  ...props
+} = Astro.props
+
+const getVideoId = (value?: string) => {
+  if (!value) return undefined
+
+  try {
+    const url = new URL(value)
+    const host = url.hostname.replace(/^www\./, "")
+
+    if (host === "youtube.com" && url.pathname === "/watch") {
+      return url.searchParams.get("v") ?? undefined
+    }
+
+    if (host === "youtube.com" && url.pathname.startsWith("/shorts/")) {
+      return url.pathname.split("/")[2]
+    }
+
+    if (host === "youtu.be") {
+      return url.pathname.slice(1)
+    }
+  } catch {
+    return undefined
+  }
+}
+
+const videoId = getVideoId(src)
+const embedSrc = videoId
+  ? `https://www.youtube-nocookie.com/embed/${videoId}`
+  : undefined
+const thumbnailSrc = videoId
+  ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+  : undefined
+const srcdoc =
+  embedSrc && thumbnailSrc
+    ? `<style>*{box-sizing:border-box}html,body{height:100%;margin:0}body{display:grid;place-items:center;background:#000;font-family:system-ui,sans-serif}a{position:absolute;inset:0;display:grid;place-items:center;color:white;text-decoration:none}img{width:100%;height:100%;object-fit:cover}span{position:absolute;display:grid;place-items:center;width:4.5rem;height:3.25rem;border-radius:1rem;background:rgb(0 0 0 / .72);box-shadow:0 10px 30px rgb(0 0 0 / .25);transition:background .15s ease}span:before{content:"";margin-left:.25rem;border-top:.7rem solid transparent;border-bottom:.7rem solid transparent;border-left:1.1rem solid currentColor}a:hover span{background:#ff0033}</style><a href="${embedSrc}?autoplay=1" aria-label="Play video"><img src="${thumbnailSrc}" alt="" /><span></span></a>`
+    : undefined
+const isShort = src?.includes("/shorts/")
 ---
 
 {
-  src?.includes("youtube.com/watch") && (
+  embedSrc && (
     <iframe
-      src={
-        src.replace("youtube.com/watch?v=", "youtube.com/embed/").split("&")[0]
-      }
+      src={embedSrc}
+      srcdoc={srcdoc}
+      title={title}
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
       allowfullscreen
-      class={cn("aspect-video h-auto w-full", className)}
-      {...props}
-    />
-  )
-}
-
-{
-  src?.includes("youtube.com/shorts") && (
-    <iframe
-      src={
-        src.replace("youtube.com/shorts/", "youtube.com/embed/").split("&")[0]
-      }
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      allowfullscreen
-      class={cn("aspect-9/16 h-auto w-full", className)}
+      loading="lazy"
+      referrerpolicy="strict-origin-when-cross-origin"
+      class={cn(
+        "bg-muted w-full rounded-lg border",
+        isShort ? "aspect-9/16 max-w-xs" : "aspect-video",
+        className
+      )}
       {...props}
     />
   )

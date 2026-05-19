@@ -1,25 +1,46 @@
 ---
-import {
-  Banner,
-  BannerContent,
-  BannerDescription,
-  BannerTitle,
-} from "@/components/ui/banner"
-import { Icon } from "@/components/ui/icon"
+import { cn } from "@/lib/utils"
+import { Banner, BannerContainer } from "@/components/ui/banner"
+import { Button } from "@/components/ui/button"
 
-interface Props {
-  icon?: string
-  title?: string
-  description?: string
+type Props = {
+  class?: string
+  title: string
+  description: string
+  buttons?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "secondary" | "ghost"
+  }[]
 }
 
-const { icon, title, description } = Astro.props
+const { class: className, title, description, buttons } = Astro.props
 ---
 
-<Banner>
-  <BannerContent class="justify-center pr-6">
-    <Icon class="size-5" name={icon} />
-    <BannerTitle>{title}</BannerTitle>
-    <BannerDescription>{description}</BannerDescription>
-  </BannerContent>
+<Banner variant="floating" storageKey="banner-2" class={cn("", className)}>
+  <BannerContainer class="gap-4 py-1" showClose={false}>
+    <div
+      class="flex flex-1 flex-col gap-0.5 lg:flex-row lg:items-center lg:gap-x-4"
+    >
+      <p class="text-sm font-semibold">{title}</p>
+      <p class="text-muted-foreground text-sm">{description}</p>
+    </div>
+    {
+      buttons?.length && (
+        <div class="flex shrink-0 items-center gap-2">
+          {buttons.map(({ href, label, ...button }, index) => (
+            <Button
+              as="a"
+              href={href}
+              size="sm"
+              variant={button.variant ?? (index === 0 ? "default" : "outline")}
+              {...button}
+            >
+              {label}
+            </Button>
+          ))}
+        </div>
+      )
+    }
+  </BannerContainer>
 </Banner>

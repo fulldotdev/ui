@@ -1,0 +1,99 @@
+---
+import { getCollection } from "astro:content"
+
+import type { GlobalSchema } from "@/schemas/global"
+import type { OverviewSchema } from "@/schemas/layouts/overview"
+import Base from "@/layouts/base.astro"
+import { SectionContainer } from "@/components/ui/section"
+import { TypographyH1, TypographyLead } from "@/components/ui/typography"
+
+type Props = {
+  global: GlobalSchema
+  page: OverviewSchema
+}
+
+const { global, page }: Props = Astro.props
+const currentPath = Astro.url.pathname
+const pages = await getCollection("pages")
+
+const docsIndexOrder = [
+  "docs/introduction",
+  "docs/installation",
+  "docs/theming",
+  "docs/dark-mode",
+  "docs/cli",
+  "docs/mcp",
+  "docs/skills",
+  "components",
+  "blocks",
+  "docs/layouts",
+]
+
+const entries =
+  currentPath === "/docs/"
+    ? docsIndexOrder
+        .map((id) => pages.find((entry) => entry.id === id))
+        .filter((entry): entry is (typeof pages)[number] => Boolean(entry))
+    : pages
+        .filter(({ data, id }) => {
+          if (currentPath === "/blocks/") {
+            return (
+              data.type === "block" &&
+              (!("category" in data) || !data.category) &&
+              id.startsWith("blocks/")
+            )
+          }
+
+          if (currentPath === "/components/") {
+            return data.type === "doc" && id.startsWith("components/")
+          }
+
+          return false
+        })
+        .sort((a, b) => a.data.title.localeCompare(b.data.title))
+
+const overviewLinks = entries.map((entry) => ({
+  href: `/${entry.id}/`,
+  title: entry.data.title,
+  description: entry.data.description,
+}))
+---
+
+<Base global={global} page={page}>
+  <SectionContainer class="gap-10 pt-10 pb-10 sm:pt-12 sm:pb-12">
+    <div class="mx-auto flex w-full max-w-336 flex-col gap-10">
+      <header class="flex min-w-0 flex-col gap-4 border-b pb-8">
+        <TypographyH1
+          class="text-foreground text-left text-3xl tracking-tight sm:text-4xl"
+        >
+          {page.title}
+        </TypographyH1>
+        {
+          page.description && (
+            <TypographyLead class="max-w-2xl text-base leading-7">
+              {page.description}
+            </TypographyLead>
+          )
+        }
+      </header>
+
+      <section class="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+        {
+          overviewLinks.map((item) => (
+            <a
+              href={item.href}
+              class="bg-muted/40 hover:bg-muted/60 focus-visible:ring-ring/50 rounded-lg px-4 py-4 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+            >
+              <span class="text-sm font-medium">{item.title}</span>
+              {item.description && (
+                <span class="text-muted-foreground mt-1 block text-sm leading-5">
+                  {item.description}
+                </span>
+              )}
+            </a>
+          ))
+        }
+      </section>
+    </div>
+  </SectionContainer>
+</Base>

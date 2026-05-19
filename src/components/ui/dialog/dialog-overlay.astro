@@ -1,0 +1,22 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"div">
+
+const { class: className, style, ...props } = Astro.props
+---
+
+<div
+  data-slot="dialog-overlay"
+  hidden
+  class={cn(
+    "data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0 fixed inset-0 isolate z-50 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs",
+    className
+  )}
+  style={`z-index: calc(var(--dialog-overlay-stack-index, 0) + 100);${style ? ` ${style}` : ""}`}
+  {...props}
+>
+  <slot />
+</div>

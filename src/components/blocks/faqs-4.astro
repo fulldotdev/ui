@@ -1,61 +1,46 @@
 ---
+import { cn } from "@/lib/utils"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Button } from "@/components/ui/button"
-import { Icon } from "@/components/ui/icon"
-import {
-  Section,
-  SectionActions,
-  SectionContent,
-  SectionProse,
-} from "@/components/ui/section"
+import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
   class?: string
-  id?: string
-  links?: {
-    icon?: string
-    text?: string
-    href?: string
-    target?: string
-  }[]
-  items?: {
-    title?: string
-    description?: string
+  title: string
+  faqs: {
+    id: string
+    question: string
+    answer: string
   }[]
 }
 
-const { class: className, id, links, items } = Astro.props
+const { class: className, title, faqs } = Astro.props
 ---
 
-<Section class={className} id={id} style="--section-width: 672px;">
-  <SectionContent>
-    <SectionProse>
-      <slot />
-    </SectionProse>
-    <SectionActions>
-      {
-        links?.map(({ icon, text, ...link }, i) => (
-          <Button variant={i === 0 ? "default" : "outline"} {...link}>
-            {icon && <Icon name={icon} />}
-            {text}
-          </Button>
-        ))
-      }
-    </SectionActions>
-  </SectionContent>
-  <Accordion>
-    {
-      items?.map(({ title, description }) => (
-        <AccordionItem>
-          <AccordionTrigger>{title}</AccordionTrigger>
-          <AccordionContent>{description}</AccordionContent>
-        </AccordionItem>
-      ))
-    }
-  </Accordion>
+<Section class={cn("", className)}>
+  <SectionContainer class="items-center">
+    <div class="mx-auto w-full max-w-3xl">
+      <h2
+        class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      <div class="mt-10">
+        <Accordion collapsible>
+          {
+            faqs.map((item) => (
+              <AccordionItem value={item.id}>
+                <AccordionTrigger>{item.question}</AccordionTrigger>
+                <AccordionContent>{item.answer}</AccordionContent>
+              </AccordionItem>
+            ))
+          }
+        </Accordion>
+      </div>
+    </div>
+  </SectionContainer>
 </Section>

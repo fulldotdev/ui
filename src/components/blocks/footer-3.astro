@@ -1,96 +1,117 @@
 ---
-import {
-  Footer,
-  FooterCopyright,
-  FooterDescription,
-  FooterGrid,
-  FooterGroup,
-  FooterGroupLabel,
-  FooterMenu,
-  FooterMenuItem,
-  FooterMenuLink,
-  FooterSplit,
-  FooterSpread,
-} from "@/components/ui/footer"
+import { cn } from "@/lib/utils"
 import { Icon } from "@/components/ui/icon"
-import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
+import { Logo, LogoText } from "@/components/ui/logo"
+import { Section, SectionContainer } from "@/components/ui/section"
+import { Separator } from "@/components/ui/separator"
 
-interface Props {
-  logo?: {
-    src?: string
-    alt?: string
-    text?: string
-    href?: string
-  }
-  description?: string
-  socials?: string[]
-  menus?: {
-    text?: string
-    href?: string
-    links?: {
-      text?: string
-      href?: string
+type Props = {
+  class?: string
+  brandName: string
+  brandHref: string
+  description: string
+  socials?: {
+    label: string
+    href: string
+    icon: string
+  }[]
+  columns: {
+    title: string
+    links: {
+      label: string
+      href: string
     }[]
   }[]
-  links?: {
-    href?: string
-    text?: string
-    icon?: string
+  copyright: string
+  bottomLinks?: {
+    label: string
+    href: string
   }[]
 }
 
-const { logo, description, links, socials, menus } = Astro.props
+const {
+  class: className,
+  brandName,
+  brandHref,
+  description,
+  socials,
+  columns,
+  copyright,
+  bottomLinks,
+} = Astro.props
 ---
 
-<Footer>
-  <FooterSplit class="lg:grid-cols-[1fr_3fr]">
-    <FooterGroup>
-      <Logo href={logo?.href || "/"}>
-        <LogoImage src={logo?.src} alt={logo?.alt} />
-        <LogoText>{logo?.text}</LogoText>
-      </Logo>
-      <FooterDescription class="text-base">{description}</FooterDescription>
-      <FooterMenu orientation="horizontal">
+<footer class={cn("", className)}>
+  <Section class="py-16 lg:py-20">
+    <SectionContainer>
+      <div class="grid gap-10 lg:grid-cols-[1fr_2fr]">
+        <div class="flex flex-col gap-5">
+          <Logo href={brandHref}>
+            <LogoText>{brandName}</LogoText>
+          </Logo>
+          <p class="text-muted-foreground max-w-xs text-sm leading-relaxed">
+            {description}
+          </p>
+          {
+            socials && socials.length > 0 && (
+              <div class="flex items-center gap-3">
+                {socials.map((social) => (
+                  <a
+                    href={social.href}
+                    class="text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label={social.label}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Icon name={social.icon} class="size-4" />
+                  </a>
+                ))}
+              </div>
+            )
+          }
+        </div>
+        <div class="grid gap-8 sm:grid-cols-3">
+          {
+            columns.map((column) => (
+              <div class="flex flex-col gap-3">
+                <p class="text-sm font-medium">{column.title}</p>
+                <ul class="flex flex-col gap-2.5">
+                  {column.links.map((link) => (
+                    <li>
+                      <a
+                        href={link.href}
+                        class="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+      <Separator />
+      <div
+        class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <p class="text-muted-foreground text-sm">{copyright}</p>
         {
-          socials?.map((social) => (
-            <FooterMenuItem>
-              <FooterMenuLink href={social}>
-                <Icon href={social} />
-              </FooterMenuLink>
-            </FooterMenuItem>
-          ))
-        }
-      </FooterMenu>
-    </FooterGroup>
-    <FooterGrid class="lg:justify-end">
-      {
-        menus?.map((menu) => (
-          <FooterGroup>
-            <FooterGroupLabel>{menu.text}</FooterGroupLabel>
-            <FooterMenu>
-              {menu.links?.map(({ href, text }) => (
-                <FooterMenuItem>
-                  <FooterMenuLink href={href}>{text}</FooterMenuLink>
-                </FooterMenuItem>
+          bottomLinks && bottomLinks.length > 0 && (
+            <nav class="flex flex-wrap items-center gap-x-5 gap-y-2">
+              {bottomLinks.map((link) => (
+                <a
+                  href={link.href}
+                  class="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                >
+                  {link.label}
+                </a>
               ))}
-            </FooterMenu>
-          </FooterGroup>
-        ))
-      }
-    </FooterGrid>
-  </FooterSplit>
-  <FooterSpread>
-    <FooterCopyright>{logo?.text}</FooterCopyright>
-    <FooterMenu orientation="horizontal">
-      {
-        links?.map(({ href, text }) => (
-          <FooterMenuItem>
-            <FooterMenuLink class="text-xs" href={href}>
-              {text}
-            </FooterMenuLink>
-          </FooterMenuItem>
-        ))
-      }
-    </FooterMenu>
-  </FooterSpread>
-</Footer>
+            </nav>
+          )
+        }
+      </div>
+    </SectionContainer>
+  </Section>
+</footer>

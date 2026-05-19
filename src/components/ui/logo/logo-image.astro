@@ -1,24 +1,48 @@
 ---
-import type { ComponentProps } from "astro/types"
+import { Image } from "astro:assets"
+import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
-import { Image } from "@/components/ui/image"
 
-type props = ComponentProps<typeof Image>
+type Props = Omit<HTMLAttributes<"img">, "src"> & {
+  src?: ImageMetadata
+  srcLight?: ImageMetadata
+  srcDark?: ImageMetadata
+}
 
-const { class: className, src, alt = "", ...props } = Astro.props
+const { class: className, src, srcLight, srcDark, ...props } = Astro.props
+
+const baseClasses = "w-auto shrink-0 h-6 object-contain"
 ---
 
 {
-  src && (
+  srcLight && srcDark ? (
+    <>
+      <Image
+        class={cn(baseClasses, "dark:hidden", className)}
+        data-slot="logo-image"
+        src={srcLight}
+        sizes="200px"
+        widths={[200]}
+        {...(props as any)}
+      />
+      <Image
+        class={cn(baseClasses, "hidden dark:block", className)}
+        data-slot="logo-image"
+        src={srcDark}
+        sizes="200px"
+        widths={[200]}
+        {...(props as any)}
+      />
+    </>
+  ) : src ? (
     <Image
-      class={cn("h-8 w-auto max-w-[200px] shrink-0 object-contain", className)}
+      class={cn(baseClasses, className)}
       data-slot="logo-image"
       src={src}
-      alt={alt}
       sizes="200px"
       widths={[200]}
-      {...props}
+      {...(props as any)}
     />
-  )
+  ) : null
 }

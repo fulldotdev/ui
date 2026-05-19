@@ -1,0 +1,385 @@
+---
+import { cn } from "@/lib/utils"
+import {
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { Button } from "@/components/ui/button"
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandShortcut,
+} from "@/components/ui/command"
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Header, HeaderContainer, HeaderGroup } from "@/components/ui/header"
+import { Icon } from "@/components/ui/icon"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group"
+import { Kbd } from "@/components/ui/kbd"
+import { LogoImage, LogoText } from "@/components/ui/logo"
+import { Separator } from "@/components/ui/separator"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
+
+type Props = {
+  class?: string
+  logo: {
+    label: string
+    href: string
+    src?: any
+    srcLight?: any
+    srcDark?: any
+    alt?: string
+  }
+  search: {
+    label: string
+    empty: string
+    items: {
+      label: string
+      href: string
+      title: string
+      path: string
+      description: string
+      group: string
+    }[]
+  }
+  breadcrumb: {
+    items: {
+      label: string
+      href: string
+    }[]
+    menu: {
+      label: string
+      href: string
+    }[]
+  }
+  navigation: {
+    label: string
+    href: string
+    links?: {
+      label: string
+      href: string
+    }[]
+  }[]
+  githubRepo: string
+}
+
+const {
+  class: className,
+  logo,
+  search,
+  breadcrumb,
+  navigation,
+  githubRepo,
+}: Props = Astro.props
+
+const normalizePath = (path: string) => {
+  if (path === "/") return path
+
+  return path.replace(/\/$/, "")
+}
+const currentPath = normalizePath(Astro.url.pathname)
+const searchGroups = search.items.reduce<
+  { label: string; items: typeof search.items }[]
+>((groups, item) => {
+  const group = groups.find((entry) => entry.label === item.group)
+
+  if (group) {
+    group.items.push(item)
+  } else {
+    groups.push({ label: item.group, items: [item] })
+  }
+
+  return groups
+}, [])
+
+let githubStars = "Stars"
+
+try {
+  const response = await fetch(`https://api.github.com/repos/${githubRepo}`)
+  const data = await response.json()
+
+  if (response.ok && typeof data.stargazers_count === "number") {
+    githubStars = new Intl.NumberFormat().format(data.stargazers_count)
+  }
+} catch {
+  // Keep the fallback label when GitHub is unavailable.
+}
+---
+
+<SidebarProvider>
+  <Sidebar class={cn("", className)} collapsible="offcanvas" variant="inset">
+    <SidebarHeader class="flex-col">
+      <SidebarMenuButton size="lg" variant="ghost" href={logo.href}>
+        <LogoImage
+          src={logo.src}
+          srcLight={logo.srcLight}
+          srcDark={logo.srcDark}
+          alt={logo.alt}
+        />
+        <LogoText class="font-semibold">{logo.label}</LogoText>
+      </SidebarMenuButton>
+      <Dialog class="w-full" data-search-dialog>
+        <DialogTrigger
+          as="div"
+          role="button"
+          tabindex="0"
+          class="h-auto w-full cursor-pointer border-0 bg-transparent p-0 shadow-none hover:bg-transparent"
+          aria-keyshortcuts="Meta+K Control+K"
+        >
+          <InputGroup class="h-8 shadow-none">
+            <InputGroupInput
+              placeholder={search.label}
+              readonly
+              tabindex="-1"
+              aria-label={search.label}
+              class="cursor-pointer"
+            />
+            <InputGroupAddon>
+              <Icon name="search" />
+            </InputGroupAddon>
+            <InputGroupAddon align="inline-end">
+              <Kbd data-search-modifier>⌘</Kbd>
+              <Kbd>K</Kbd>
+            </InputGroupAddon>
+          </InputGroup>
+        </DialogTrigger>
+
+        <CommandDialog title={search.label} description={search.label}>
+          <Command
+            class="[&_[data-slot=command-item][data-selected]]:bg-accent [&_[data-slot=command-item][data-selected]]:text-accent-foreground"
+          >
+            <CommandInput placeholder={search.label} />
+            <CommandList>
+              <CommandEmpty>{search.empty}</CommandEmpty>
+
+              {
+                searchGroups.map((group) => (
+                  <CommandGroup heading={group.label}>
+                    {group.items.map((item) => (
+                      <CommandItem
+                        href={item.href}
+                        value={item.path}
+                        label={item.label}
+                        keywords={[item.title, item.path]}
+                      >
+                        {item.label}
+                        <CommandShortcut>{item.href}</CommandShortcut>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                ))
+              }
+            </CommandList>
+          </Command>
+        </CommandDialog>
+      </Dialog>
+    </SidebarHeader>
+    <SidebarContent
+      class="mask-[linear-gradient(to_bottom,transparent,black_1rem,black_calc(100%-1rem),transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_1rem,black_calc(100%-1rem),transparent)] group-data-[collapsible=icon]:mask-none group-data-[collapsible=icon]:[-webkit-mask-image:none]"
+    >
+      {
+        navigation.map((group) => (
+          <SidebarGroup>
+            <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+            <SidebarMenu>
+              {(group.links ?? [group]).map((item) => (
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    href={item.href}
+                    isActive={normalizePath(item.href) === currentPath}
+                  >
+                    <span>{item.label}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        ))
+      }
+    </SidebarContent>
+  </Sidebar>
+  <SidebarInset>
+    <Header class="h-16">
+      <HeaderContainer class="max-w-none justify-between">
+        <HeaderGroup>
+          <SidebarTrigger />
+          <Separator orientation="vertical" class="my-auto mr-2 h-4" />
+          <Breadcrumb>
+            <BreadcrumbList>
+              {
+                breadcrumb.items.map((item, index) => {
+                  const isLast = index === breadcrumb.items.length - 1
+                  const isHome = item.href === "/"
+                  const hasMenu =
+                    !isHome &&
+                    breadcrumb.menu.some(
+                      (menuItem) =>
+                        normalizePath(menuItem.href) ===
+                        normalizePath(item.href)
+                    )
+
+                  return (
+                    <>
+                      {index > 0 && (
+                        <BreadcrumbSeparator>/</BreadcrumbSeparator>
+                      )}
+                      <BreadcrumbItem>
+                        {hasMenu ? (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger
+                              aria-label={`${item.label} pages`}
+                              aria-current={isLast ? "page" : undefined}
+                              class={cn(
+                                "hover:text-foreground inline-flex items-center gap-1 transition-colors",
+                                isLast && "text-foreground"
+                              )}
+                            >
+                              {item.label}
+                              <Icon
+                                name="chevron-down"
+                                class="size-3.5 opacity-70"
+                                aria-hidden="true"
+                              />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start">
+                              <DropdownMenuGroup>
+                                {breadcrumb.menu.map((menuItem) => (
+                                  <a
+                                    href={menuItem.href}
+                                    aria-current={
+                                      normalizePath(menuItem.href) ===
+                                      currentPath
+                                        ? "page"
+                                        : undefined
+                                    }
+                                    class="hover:bg-accent hover:text-accent-foreground aria-[current=page]:text-foreground flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none"
+                                  >
+                                    {menuItem.label}
+                                  </a>
+                                ))}
+                              </DropdownMenuGroup>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        ) : isLast ? (
+                          <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                        ) : (
+                          <BreadcrumbLink href={item.href}>
+                            {item.label}
+                          </BreadcrumbLink>
+                        )}
+                      </BreadcrumbItem>
+                    </>
+                  )
+                })
+              }
+              {
+                breadcrumb.menu.length > 0 && currentPath === "/" && (
+                  <>
+                    <BreadcrumbSeparator>/</BreadcrumbSeparator>
+                    <BreadcrumbItem>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger
+                          aria-label="Open page menu"
+                          class="hover:text-foreground inline-flex items-center leading-none transition-colors"
+                        >
+                          <BreadcrumbEllipsis />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start">
+                          <DropdownMenuGroup>
+                            {breadcrumb.menu.map((item) => (
+                              <a
+                                href={item.href}
+                                class="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none"
+                              >
+                                {item.label}
+                              </a>
+                            ))}
+                          </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </BreadcrumbItem>
+                  </>
+                )
+              }
+            </BreadcrumbList>
+          </Breadcrumb>
+        </HeaderGroup>
+        <HeaderGroup>
+          <Button
+            as="a"
+            href={`https://github.com/${githubRepo}`}
+            size="sm"
+            variant="ghost"
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`View ${githubRepo} on GitHub, ${githubStars}`}
+          >
+            <Icon name="github" />
+            <span>{githubStars}</span>
+          </Button>
+          <ThemeToggle />
+        </HeaderGroup>
+      </HeaderContainer>
+    </Header>
+    <slot />
+  </SidebarInset>
+</SidebarProvider>
+
+<script>
+  const isMac = /Mac|iPhone|iPad|iPod/i.test(
+    navigator.platform || navigator.userAgent
+  )
+
+  document.querySelectorAll("[data-search-modifier]").forEach((shortcut) => {
+    shortcut.textContent = isMac ? "⌘" : "Ctrl"
+  })
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key.toLowerCase() !== "k") return
+    if (event.shiftKey || event.altKey) return
+
+    const dialog = document.querySelector("[data-search-dialog]")
+    const isSearchShortcut = isMac
+      ? event.metaKey && !event.ctrlKey
+      : event.ctrlKey && !event.metaKey
+
+    if (!dialog || dialog.hasAttribute("data-open") || !isSearchShortcut) return
+
+    event.preventDefault()
+    dialog.dispatchEvent(
+      new CustomEvent("dialog:set", { detail: { open: true } })
+    )
+  })
+</script>

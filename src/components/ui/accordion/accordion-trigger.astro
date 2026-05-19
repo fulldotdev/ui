@@ -1,31 +1,34 @@
 ---
 import type { HTMLAttributes } from "astro/types"
-import ChevronDownIcon from "lucide-static/icons/chevron-down.svg"
-import ChevronUpIcon from "lucide-static/icons/chevron-up.svg"
 
 import { cn } from "@/lib/utils"
+import { Icon } from "@/components/ui/icon"
 
-interface Props extends HTMLAttributes<"summary"> {}
+type Props = HTMLAttributes<"button">
 
-const { class: className, ...props } = Astro.props
+const { class: className, type = "button", ...props } = Astro.props
 ---
 
-<summary
+<button
   data-slot="accordion-trigger"
+  type={type}
   class={cn(
-    "list-none [&::-webkit-details-marker]:hidden",
-    "focus-visible:ring-ring/50 focus-visible:border-ring focus-visible:after:border-ring **:data-[slot=accordion-trigger-icon]:text-muted-foreground relative flex flex-1 items-start justify-between rounded-md border border-transparent py-4 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:ring-3 disabled:pointer-events-none disabled:opacity-50",
+    "group/accordion-trigger focus-visible:border-ring focus-visible:ring-ring/50 relative flex w-full flex-1 items-center justify-between gap-4 rounded-md border border-transparent bg-transparent py-4 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:ring-3 aria-disabled:pointer-events-none aria-disabled:opacity-50",
     className
   )}
   {...props}
 >
   <slot />
-  <ChevronDownIcon
+  <Icon
+    name="chevron-down"
     data-slot="accordion-trigger-icon"
-    class="pointer-events-none ml-auto size-4 shrink-0 group-open/accordion-item:hidden"
+    aria-hidden="true"
+    class="text-muted-foreground pointer-events-none ml-auto size-4 shrink-0 group-aria-expanded/accordion-trigger:hidden"
   />
-  <ChevronUpIcon
+  <Icon
+    name="chevron-up"
     data-slot="accordion-trigger-icon"
-    class="pointer-events-none ml-auto hidden size-4 shrink-0 group-open/accordion-item:inline"
+    aria-hidden="true"
+    class="text-muted-foreground pointer-events-none ml-auto hidden size-4 shrink-0 group-aria-expanded/accordion-trigger:inline"
   />
-</summary>
+</button>

@@ -1,18 +1,25 @@
 ---
 import type { ComponentProps } from "astro/types"
 
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
-interface Props extends ComponentProps<typeof Dialog> {
+type Props = ComponentProps<typeof Dialog> & {
   title?: string
   description?: string
   contentClass?: string
+  showCloseButton?: boolean
 }
 
 const {
   title = "Command Palette",
   description = "Search for a command to run...",
   contentClass,
+  showCloseButton = false,
   ...props
 } = Astro.props
 ---
@@ -20,26 +27,27 @@ const {
 <Dialog {...props}>
   <DialogContent
     class:list={[
-      "overflow-hidden p-0",
-      "[&_[data-slot=command]]:border-0",
-      "[&_[data-slot=command]]:bg-transparent",
-      "[&_[data-slot=command-input-wrapper]]:h-12",
+      "top-1/3 translate-y-0 overflow-hidden rounded-xl! p-0",
+      "**:data-[slot=command]:border-0",
+      "**:data-[slot=command]:bg-transparent",
+      "**:data-[slot=command-input-wrapper]:h-12",
       "[&_[data-slot=command-input-wrapper]_svg]:size-5",
-      "[&_[data-slot=command-input]]:h-12",
-      "[&_[data-slot=command-item]]:px-2",
-      "[&_[data-slot=command-item]]:py-3",
+      "**:data-[slot=command-input]:h-12",
+      "**:data-[slot=command-item]:px-2",
+      "**:data-[slot=command-item]:py-3",
       "[&_[data-slot=command-item]_svg]:size-5",
-      "[&_[data-slot=command-group-heading]]:text-muted-foreground",
-      "[&_[data-slot=command-group-heading]]:px-2",
-      "[&_[data-slot=command-group-heading]]:font-medium",
-      "[&_[data-slot=command-group]]:px-2",
+      "**:data-[slot=command-group-heading]:text-muted-foreground",
+      "**:data-[slot=command-group-heading]:px-2",
+      "**:data-[slot=command-group-heading]:font-medium",
+      "**:data-[slot=command-group]:px-2",
       "[&_[data-slot=command-group]:not([hidden])_~[data-slot=command-group]]:pt-0",
       contentClass,
     ]}
+    showCloseButton={showCloseButton}
   >
     <div class="sr-only">
-      <h2>{title}</h2>
-      <p>{description}</p>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogDescription>{description}</DialogDescription>
     </div>
     <slot />
   </DialogContent>

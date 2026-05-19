@@ -1,98 +1,105 @@
 ---
-import { Button } from "@/components/ui/button"
-import { Image } from "@/components/ui/image"
-import {
-  Section,
-  SectionActions,
-  SectionContent,
-  SectionGrid,
-  SectionProse,
-  SectionSplit,
-} from "@/components/ui/section"
-import {
-  Tile,
-  TileActions,
-  TileContent,
-  TileDescription,
-  TileMedia,
-  TileSplit,
-  TileTitle,
-} from "@/components/ui/tile"
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
 
-interface Props {
+import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Section, SectionContainer } from "@/components/ui/section"
+
+type Props = {
   class?: string
-  id?: string
-  links?: {
-    text?: string
-    href?: string
+  badge?: string
+  title: string
+  description?: string
+  buttons?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
-  items?: {
-    href?: string
-    tagline?: string
-    title?: string
-    description?: string
-    image?: {
-      src: string
+  services: {
+    image: {
+      src: ImageMetadata
       alt: string
     }
-    links?: {
-      text?: string
-      href?: string
-    }[]
+    title: string
+    description: string
+    button?: {
+      label: string
+      href: string
+    }
   }[]
 }
 
-const { class: className, id, links, items } = Astro.props
+const {
+  class: className,
+  badge,
+  title,
+  description,
+  buttons,
+  services,
+} = Astro.props
 ---
 
-<Section class={className} id={id}>
-  <SectionSplit
-    class="items-start lg:grid-cols-[2fr_3fr] lg:*:sticky lg:*:top-[calc(var(--section-py)+var(--header-height,0px))]"
-  >
-    <SectionContent>
-      <SectionProse>
-        <slot />
-      </SectionProse>
-      <SectionActions>
-        {
-          links?.map(({ text, ...link }, i) => (
-            <Button variant={i === 0 ? "default" : "outline"} {...link}>
-              {text}
-            </Button>
-          ))
-        }
-      </SectionActions>
-    </SectionContent>
-    <SectionGrid size="lg">
+<Section class={cn("", className)}>
+  <SectionContainer class="gap-8">
+    <div class="mx-auto max-w-2xl text-center">
+      {badge && <Badge variant="secondary">{badge}</Badge>}
+      <h2
+        class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
       {
-        items?.map(({ title, tagline, description, image, links }) => (
-          <Tile>
-            <TileSplit>
-              <TileMedia>
-                <Image sizes="400px" {...image} />
-              </TileMedia>
-              <TileContent>
-                <TileDescription class="text-primary text-xs font-medium">
-                  {tagline}
-                </TileDescription>
-                <TileTitle>{title}</TileTitle>
-                <TileDescription>{description}</TileDescription>
-                <TileActions class="mt-2">
-                  {links?.map(({ text, ...link }, i) => (
-                    <Button
-                      variant={i === 0 ? "outline" : "ghost"}
-                      size="sm"
-                      {...link}
-                    >
-                      {text}
-                    </Button>
-                  ))}
-                </TileActions>
-              </TileContent>
-            </TileSplit>
-          </Tile>
+        description && (
+          <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">
+            {description}
+          </p>
+        )
+      }
+      {
+        buttons?.length && (
+          <div class="mt-6 flex flex-wrap justify-center gap-3">
+            {buttons.map(({ href, label, ...button }) => (
+              <Button as="a" href={href} variant={button.variant}>
+                {label}
+              </Button>
+            ))}
+          </div>
+        )
+      }
+    </div>
+    <div class="grid gap-6 sm:grid-cols-2">
+      {
+        services.map((service) => (
+          <div class="group/service relative isolate flex aspect-4/3 flex-col justify-end overflow-hidden rounded-xl">
+            <Image
+              src={service.image.src}
+              alt={service.image.alt}
+              class="absolute inset-0 -z-10 size-full object-cover transition-transform duration-500 group-hover/service:scale-105"
+              widths={[480, 640, 960]}
+              sizes="(min-width: 640px) 50vw, 100vw"
+            />
+            <div class="absolute inset-0 -z-10 bg-linear-to-t from-black/80 via-black/40 to-transparent" />
+            <div class="flex flex-col gap-2 p-6 text-white">
+              <h3 class="text-xl font-semibold">{service.title}</h3>
+              <p class="text-sm leading-relaxed text-white/80">
+                {service.description}
+              </p>
+              {service.button && (
+                <Button
+                  as="a"
+                  href={service.button.href}
+                  variant="secondary"
+                  class="mt-2 w-fit"
+                >
+                  {service.button.label}
+                </Button>
+              )}
+            </div>
+          </div>
         ))
       }
-    </SectionGrid>
-  </SectionSplit>
+    </div>
+  </SectionContainer>
 </Section>

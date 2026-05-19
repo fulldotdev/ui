@@ -1,102 +1,110 @@
 ---
-import { Button } from "@/components/ui/button"
-import { Icon } from "@/components/ui/icon"
-import { Image } from "@/components/ui/image"
-import {
-  Section,
-  SectionActions,
-  SectionContent,
-  SectionGrid,
-  SectionProse,
-} from "@/components/ui/section"
-import {
-  Tile,
-  TileContent,
-  TileDescription,
-  TileMedia,
-  TileTitle,
-} from "@/components/ui/tile"
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
 
-interface Props {
+import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Section, SectionContainer } from "@/components/ui/section"
+
+type Props = {
   class?: string
-  id?: string
-  links?: {
-    text?: string
-    href?: string
-    icon?: string
-    target?: string
+  badge?: string
+  title: string
+  description?: string
+  buttons?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
-  items?: {
-    title?: string
-    description?: string
-    image?: {
-      src: string
+  services: {
+    image: {
+      src: ImageMetadata
       alt: string
     }
-    links?: {
-      icon?: string
-      text?: string
-      href?: string
-      target?: string
-    }[]
+    label?: string
+    title: string
+    description: string
+    button?: {
+      label: string
+      href: string
+    }
   }[]
 }
 
-const { class: className, id, links, items } = Astro.props
+const {
+  class: className,
+  badge,
+  title,
+  description,
+  buttons,
+  services,
+} = Astro.props
 ---
 
-<Section class={className} id={id}>
-  <SectionContent>
-    <SectionProse>
-      <slot />
-    </SectionProse>
-    <SectionActions>
+<Section class={cn("", className)}>
+  <SectionContainer class="gap-12">
+    <div class="mx-auto max-w-2xl text-center">
+      {badge && <Badge variant="secondary">{badge}</Badge>}
+      <h2
+        class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
       {
-        links?.map(({ text, icon, href, target }, i) => (
-          <Button
-            as="a"
-            variant={i === 0 ? "default" : "outline"}
-            href={href}
-            target={target}
-          >
-            {icon && <Icon name={icon} />}
-            {text}
-          </Button>
-        ))
+        description && (
+          <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">
+            {description}
+          </p>
+        )
       }
-    </SectionActions>
-  </SectionContent>
-  <SectionGrid size="lg">
-    {
-      items?.map(({ title, description, image, links }) => (
-        <Tile
-          class="dark aspect-4/3 justify-end rounded-md border-0 bg-black"
-          variant="floating"
-        >
-          <TileMedia class="absolute inset-0 size-full mask-b-from-0% mask-b-to-black/50">
-            <Image sizes="620px" {...image} />
-          </TileMedia>
-          <TileContent class="w-full text-white">
-            <TileTitle class="text-foreground text-3xl">{title}</TileTitle>
-            <TileDescription class="text-foreground text-lg">
-              {description}
-            </TileDescription>
-          </TileContent>
-          <SectionActions>
-            {links?.map(({ text, icon, href, target }, i) => (
-              <Button
-                as="a"
-                variant={i === 0 ? "default" : "outline"}
-                href={href}
-                target={target}
-              >
-                {icon && <Icon name={icon} />}
-                {text}
+      {
+        buttons?.length && (
+          <div class="mt-6 flex flex-wrap justify-center gap-3">
+            {buttons.map(({ href, label, ...button }) => (
+              <Button as="a" href={href} variant={button.variant}>
+                {label}
               </Button>
             ))}
-          </SectionActions>
-        </Tile>
-      ))
-    }
-  </SectionGrid>
+          </div>
+        )
+      }
+    </div>
+    <div class="grid gap-6 lg:gap-8">
+      {
+        services.map((service) => (
+          <div class="group/service grid items-center gap-6 rounded-xl border p-4 shadow-xs transition-shadow hover:shadow-md md:grid-cols-[16rem_minmax(0,1fr)] md:p-0">
+            <Image
+              src={service.image.src}
+              alt={service.image.alt}
+              class="aspect-4/3 w-full rounded-lg object-cover md:aspect-auto md:h-full md:rounded-l-xl md:rounded-r-none"
+              widths={[320, 480]}
+              sizes="(min-width: 768px) 16rem, 100vw"
+            />
+            <div class="flex flex-col gap-2 py-2 md:py-6 md:pr-6">
+              {service.label && (
+                <span class="text-primary text-xs font-medium tracking-wider uppercase">
+                  {service.label}
+                </span>
+              )}
+              <h3 class="text-lg font-medium">{service.title}</h3>
+              <p class="text-muted-foreground text-sm leading-relaxed">
+                {service.description}
+              </p>
+              {service.button && (
+                <Button
+                  as="a"
+                  href={service.button.href}
+                  variant="secondary"
+                  class="mt-1 w-fit"
+                >
+                  {service.button.label}
+                </Button>
+              )}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </SectionContainer>
 </Section>

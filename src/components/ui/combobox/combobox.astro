@@ -1,0 +1,85 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import type {
+  Align as ComboboxAlign,
+  Side as ComboboxSide,
+} from "@data-slot/combobox"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"div"> & {
+  defaultValue?: string
+  placeholder?: string
+  disabled?: boolean
+  required?: boolean
+  name?: string
+  openOnFocus?: boolean
+  autoHighlight?: boolean
+  side?: ComboboxSide
+  align?: ComboboxAlign
+  sideOffset?: number
+  alignOffset?: number
+  avoidCollisions?: boolean
+  collisionPadding?: number
+}
+
+const {
+  class: className,
+  defaultValue,
+  placeholder,
+  disabled,
+  required,
+  name,
+  openOnFocus,
+  autoHighlight,
+  side,
+  align,
+  sideOffset,
+  alignOffset,
+  avoidCollisions,
+  collisionPadding,
+  ...props
+} = Astro.props
+---
+
+<div
+  data-slot="combobox"
+  data-default-value={defaultValue}
+  data-placeholder={placeholder}
+  data-disabled={disabled}
+  data-required={required}
+  data-name={name}
+  data-open-on-focus={openOnFocus}
+  data-auto-highlight={autoHighlight}
+  data-side={side}
+  data-align={align}
+  data-side-offset={sideOffset}
+  data-align-offset={alignOffset}
+  data-avoid-collisions={avoidCollisions}
+  data-collision-padding={collisionPadding}
+  class={cn("group/combobox relative", className)}
+  {...props}
+>
+  <slot />
+</div>
+
+<script>
+  import { createCombobox } from "@data-slot/combobox"
+
+  const initCombobox = () => {
+    document.querySelectorAll('[data-slot="combobox"]').forEach((root) => {
+      if (
+        !root.querySelector('[data-slot="combobox-input"]') ||
+        !root.querySelector('[data-slot="combobox-content"]')
+      ) {
+        return
+      }
+
+      createCombobox(root as HTMLElement)
+    })
+  }
+
+  initCombobox()
+
+  document.addEventListener("astro:page-load", initCombobox)
+</script>

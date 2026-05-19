@@ -1,0 +1,176 @@
+---
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+type ComponentProps = {
+  name?: string
+}
+
+type Props = {
+  filename?: string
+  lang?: string
+  componentProps?: ComponentProps
+}
+
+const { componentProps = {} } = Astro.props
+const componentSlug = componentProps.name
+  ?.trim()
+  .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+  .replace(/[\s_]+/g, "-")
+  .replace(/[^a-zA-Z0-9-]/g, "")
+  .replace(/-+/g, "-")
+  .toLowerCase()
+const isBlockPreview = Boolean(
+  componentSlug?.match(
+    /^(article|articles|banner|contact|content|cta|faqs|features|footer|header|hero|logos|pricing|product|products|reviews|services)-\d+$/
+  )
+)
+const installCommand = componentSlug
+  ? `npx shadcn@latest add @fulldev/${componentSlug}`
+  : undefined
+const installButtonId = installCommand
+  ? `live-code-copy-install-${crypto.randomUUID()}`
+  : undefined
+---
+
+<Tabs
+  defaultValue="preview"
+  class="live-code-layout no-typography w-full gap-3"
+>
+  <div
+    class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+  >
+    <TabsList class="justify-start self-start">
+      <TabsTrigger value="preview" class="flex-none"> Preview </TabsTrigger>
+      <TabsTrigger value="code" class="flex-none">Code</TabsTrigger>
+    </TabsList>
+
+    <div
+      class="flex min-w-0 flex-col gap-3 sm:max-w-xl sm:flex-1 sm:flex-row sm:items-center sm:justify-end sm:gap-6"
+    >
+      {
+        installCommand && (
+          <Button
+            id={installButtonId}
+            type="button"
+            variant="outline"
+            size="sm"
+            class="max-w-full shrink-0 self-start font-mono text-xs sm:self-center sm:whitespace-nowrap"
+            data-source={installCommand}
+            aria-label={`Copy install command: ${installCommand}`}
+          >
+            <Icon
+              name="copy"
+              data-copy-icon
+              class="live-code-copy-icon size-4"
+            />
+            <Icon
+              name="check"
+              data-check-icon
+              class="live-code-check-icon hidden size-4"
+            />
+            <span>{installCommand}</span>
+          </Button>
+        )
+      }
+    </div>
+  </div>
+
+  <TabsContent value="preview" class="mt-0 w-full">
+    <div
+      class:list={[
+        "border-border bg-background w-full overflow-hidden border",
+        isBlockPreview
+          ? "rounded-lg"
+          : "flex min-h-64 items-center justify-center rounded-xl p-10",
+      ]}
+    >
+      <div
+        class:list={[
+          isBlockPreview
+            ? "bg-background w-full"
+            : "flex w-full flex-wrap items-center justify-center gap-3",
+        ]}
+      >
+        <slot name="example" />
+      </div>
+    </div>
+  </TabsContent>
+
+  <TabsContent value="code" class="mt-0 w-full" hidden>
+    <div
+      data-slot="live-code-panel"
+      class="border-border bg-muted/60 [&_.live-code-source]:bg-background/40 w-full overflow-hidden rounded-xl border [&_.live-code-source]:rounded-lg [&_pre.astro-code]:m-0 [&_pre.astro-code]:rounded-none [&_pre.astro-code]:border-0 [&_pre.astro-code]:bg-transparent! [&_pre.astro-code]:p-4 dark:[&_pre.astro-code]:text-(--shiki-dark,var(--foreground))! [&_pre.astro-code_code]:text-(--shiki-light,var(--foreground))! dark:[&_pre.astro-code_code]:text-(--shiki-dark,var(--foreground))! dark:[&_pre.astro-code_span[style*='--shiki-dark']]:font-(--shiki-dark-font-weight,inherit) dark:[&_pre.astro-code_span[style*='--shiki-dark']]:text-(--shiki-dark)! dark:[&_pre.astro-code_span[style*='--shiki-dark']]:[font-style:var(--shiki-dark-font-style,inherit)] dark:[&_pre.astro-code_span[style*='--shiki-dark']]:[text-decoration:var(--shiki-dark-text-decoration,inherit)]"
+    >
+      <div class="relative">
+        <Button
+          type="button"
+          variant="outline"
+          size="icon-sm"
+          class="bg-background absolute top-3 right-3 z-10"
+          data-slot="live-code-copy-source"
+          aria-label="Copy code example"
+        >
+          <Icon
+            name="copy"
+            data-copy-icon
+            class="live-code-source-copy-icon size-4"
+          />
+          <Icon
+            name="check"
+            data-check-icon
+            class="live-code-source-check-icon hidden size-4"
+          />
+        </Button>
+
+        <slot name="code" />
+      </div>
+    </div>
+  </TabsContent>
+</Tabs>
+
+<script is:inline>
+  if (!window.__fulldevLiveCodeCopy) {
+    window.__fulldevLiveCodeCopy = true
+
+    const writeToClipboard = async (text) => {
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(text)
+          return true
+        } catch {
+          return false
+        }
+      }
+
+      return false
+    }
+
+    const showCopySuccess = (button) => {
+      button.querySelector("[data-copy-icon]")?.classList.add("hidden")
+      button.querySelector("[data-check-icon]")?.classList.remove("hidden")
+      setTimeout(() => {
+        button.querySelector("[data-copy-icon]")?.classList.remove("hidden")
+        button.querySelector("[data-check-icon]")?.classList.add("hidden")
+      }, 1200)
+    }
+
+    document.addEventListener("click", async (event) => {
+      const button = event.target?.closest?.(
+        "[id^='live-code-copy-install-'], [data-slot='live-code-copy-source']"
+      )
+      if (!button) return
+      const source =
+        button.dataset.source ??
+        button
+          .closest("[data-slot='live-code-panel']")
+          ?.querySelector("pre")
+          ?.textContent?.replace(/\n$/, "")
+      if (!source) return
+
+      const copied = await writeToClipboard(source)
+      if (copied) showCopySuccess(button)
+    })
+  }
+</script>

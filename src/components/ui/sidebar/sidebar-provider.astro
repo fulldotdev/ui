@@ -1,0 +1,180 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+const SIDEBAR_WIDTH = "16rem"
+const SIDEBAR_WIDTH_MOBILE = "18rem"
+const SIDEBAR_WIDTH_ICON = "3rem"
+
+type Props = HTMLAttributes<"div"> & {
+  defaultOpen?: boolean
+  open?: boolean
+}
+
+const {
+  class: className,
+  style,
+  defaultOpen = true,
+  open,
+  ...props
+} = Astro.props
+
+const resolvedStyle = [
+  `--sidebar-width: ${SIDEBAR_WIDTH}`,
+  `--sidebar-width-mobile: ${SIDEBAR_WIDTH_MOBILE}`,
+  `--sidebar-width-icon: ${SIDEBAR_WIDTH_ICON}`,
+  typeof style === "string" ? style : undefined,
+]
+  .filter(Boolean)
+  .join("; ")
+---
+
+<div
+  data-slot="sidebar-wrapper"
+  data-default-open={defaultOpen ? "true" : "false"}
+  data-open={open === undefined ? undefined : open ? "true" : "false"}
+  style={resolvedStyle}
+  class={cn(
+    "group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full",
+    className
+  )}
+  {...props}
+>
+  <slot />
+  <script is:inline>
+    ;(() => {
+      window.__fulldevSyncSidebarProvider ??= (provider, open) => {
+        const state = open ? "expanded" : "collapsed"
+        const sidebar = provider.querySelector(
+          "[data-slot='sidebar']:not([data-mobile='true'])"
+        )
+        const collapsible = sidebar?.dataset.sidebarCollapsible ?? "offcanvas"
+
+        provider.dataset.open = open ? "true" : "false"
+        provider.dataset.state = state
+
+        if (sidebar) {
+          sidebar.dataset.state = collapsible === "none" ? "expanded" : state
+          sidebar.dataset.collapsible =
+            collapsible === "none" ? "none" : open ? "" : collapsible
+        }
+
+        provider
+          .querySelectorAll("[data-sidebar='trigger'], [data-sidebar='rail']")
+          .forEach((control) => {
+            control.setAttribute("aria-expanded", String(open))
+          })
+
+        provider
+          .querySelectorAll("[data-sidebar='menu-tooltip']")
+          .forEach((tooltip) => {
+            tooltip.hidden = state !== "collapsed"
+          })
+      }
+
+      const provider = document.currentScript?.closest(
+        "[data-slot='sidebar-wrapper']"
+      )
+      if (!(provider instanceof HTMLElement)) return
+
+      const controlledOpen = provider.dataset.open
+      const cookieValue = document.cookie
+        .split("; ")
+        .find((entry) => entry.startsWith("sidebar_state="))
+        ?.slice("sidebar_state=".length)
+
+      const isOpen =
+        controlledOpen === "true" || controlledOpen === "false"
+          ? controlledOpen === "true"
+          : cookieValue === "true" || cookieValue === "false"
+            ? cookieValue === "true"
+            : provider.dataset.defaultOpen !== "false"
+
+      provider.dataset.openMobile = "false"
+      window.__fulldevSyncSidebarProvider(provider, isOpen)
+    })()
+  </script>
+</div>
+
+<script is:inline>
+  ;(() => {
+    const scrollTop = Number(sessionStorage.getItem("sidebar_scroll") || 0)
+
+    document.querySelectorAll("[data-sidebar='content']").forEach((content) => {
+      content.scrollTop = scrollTop
+    })
+  })()
+</script>
+
+<script is:inline>
+  ;(() => {
+    if (window.__fulldevSidebarInitialized) return
+    window.__fulldevSidebarInitialized = true
+
+    const SIDEBAR_COOKIE_NAME = "sidebar_state"
+    const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
+
+    const toggleSidebar = (provider) => {
+      if (!window.matchMedia("(min-width: 768px)").matches) {
+        const openMobile = provider.dataset.openMobile !== "true"
+        provider.dataset.openMobile = openMobile ? "true" : "false"
+        provider
+          .querySelector("[data-sidebar='sheet']")
+          ?.dispatchEvent(
+            new CustomEvent("dialog:set", { detail: { open: openMobile } })
+          )
+        return
+      }
+
+      const open = provider.dataset.open === "false"
+      document.cookie = `${SIDEBAR_COOKIE_NAME}=${open}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+      window.__fulldevSyncSidebarProvider?.(provider, open)
+    }
+
+    document.addEventListener("click", (event) => {
+      const control = event.target?.closest?.(
+        "[data-sidebar='trigger'], [data-sidebar='rail']"
+      )
+      if (!control || control.matches(":disabled, [aria-disabled='true']")) {
+        return
+      }
+
+      const provider = control.closest("[data-slot='sidebar-wrapper']")
+      if (!provider) return
+
+      toggleSidebar(provider)
+    })
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key.toLowerCase() !== "b") return
+      if (!event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        return
+      }
+      if (event.defaultPrevented) return
+
+      const target = event.target
+      const isTyping =
+        target instanceof HTMLElement &&
+        (target.isContentEditable ||
+          target.matches("input, textarea, select, [role='textbox']"))
+      if (isTyping) return
+
+      const provider = document.querySelector("[data-slot='sidebar-wrapper']")
+      if (!(provider instanceof HTMLElement)) return
+
+      event.preventDefault()
+      toggleSidebar(provider)
+    })
+
+    document.addEventListener(
+      "scroll",
+      (event) => {
+        if (event.target?.dataset?.sidebar === "content") {
+          sessionStorage.setItem("sidebar_scroll", event.target.scrollTop)
+        }
+      },
+      true
+    )
+  })()
+</script>

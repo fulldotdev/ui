@@ -1,0 +1,76 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"div"> & VariantProps<typeof variants>
+
+const variants = cva("group/tile-group w-full gap-4", {
+  variants: {
+    variant: {
+      default: "grid",
+      masonry: "columns-1",
+    },
+    size: {
+      sm: "",
+      default: "",
+      lg: "",
+    },
+  },
+  compoundVariants: [
+    {
+      variant: "default",
+      size: "sm",
+      class: "grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(240px,1fr))]",
+    },
+    {
+      variant: "default",
+      size: "default",
+      class: "grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(300px,1fr))]",
+    },
+    {
+      variant: "default",
+      size: "lg",
+      class: "grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(400px,1fr))]",
+    },
+    {
+      variant: "masonry",
+      size: "sm",
+      class: "sm:[column-count:5] sm:[column-width:240px]",
+    },
+    {
+      variant: "masonry",
+      size: "default",
+      class: "sm:[column-count:4] sm:[column-width:300px]",
+    },
+    {
+      variant: "masonry",
+      size: "lg",
+      class: "sm:[column-count:3] sm:[column-width:400px]",
+    },
+  ],
+  defaultVariants: {
+    variant: "default",
+    size: "default",
+  },
+})
+
+const {
+  class: className,
+  variant = "default",
+  size = "default",
+  ...props
+} = Astro.props
+---
+
+<div
+  role="list"
+  data-slot="tile-group"
+  data-variant={variant}
+  data-size={size}
+  class={cn(variants({ variant, size }), className)}
+  {...props}
+>
+  <slot />
+</div>

@@ -1,124 +1,35 @@
-# fulldev/ui
+# Fulldev UI
 
-A shadcn-compatible component library built for [Astro][astro], designed for content-driven websites.
+Open-source Astro components and blocks for developers and AI agents building
+content-driven websites.
 
-## Features
-
-- **Vanilla Astro Components** — No framework dependencies, pure Astro components
-- **shadcn Compatible** — Uses the shadcn CLI and registry system for easy installation
-- **Content-First** — Built for content-driven websites with components like sections and tiles
-- **100+ Components & Blocks** — Ready-to-use UI components and pre-built page blocks
-- **Tailwind CSS v4** — Styled with the latest Tailwind CSS
-- **TypeScript** — Full TypeScript support
-
-## Installation
-
-### Prerequisites
-
-- Node.js 20+
-- pnpm (recommended) or npm
-
-### Quick Start
-
-1. **Create a new Astro project** (skip if you have one):
-
-We recommend using the [fulldev starter](https://github.com/fulldotdev/starter). If you prefer to scaffold manually:
-
-```bash
-pnpm create astro@latest my-project -- --template with-tailwindcss
-cd my-project
-```
-
-2. **Configure TypeScript paths** in `tsconfig.json`:
-
-```json
-{
-  "compilerOptions": {
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
-}
-```
-
-3. **Initialize shadcn**:
-
-```bash
-npx shadcn@latest init
-```
-
-4. **Add fulldev/ui registry** to `components.json`:
-
-```json
-{
-  "registries": {
-    "@fulldev": "https://ui.full.dev/r/{name}.json"
-  }
-}
-```
-
-5. **Copy the base stylesheet** from [`src/styles/global.example.css`](./src/styles/global.example.css) to `src/styles/global.css`, then import it in your layout.
-
-6. **Use a container-aware app shell** because fulldev/ui uses Tailwind v4 container-query variants like `@2xl:` and `@max-5xl:`:
-
-These are intentional and should not be converted to viewport breakpoints like `2xl:`.
-
-To make those variants work, add `@container` to the root wrapper that contains your page content:
-
-```astro
----
-import "@/styles/global.css"
----
-
-<body class="@container">
-  <slot />
-</body>
-```
-
-7. **Add components**:
-
-```bash
-npx shadcn@latest add @fulldev/button
-```
+Fulldev UI is distributed as a shadcn-compatible registry. Install components
+and blocks as source files, then customize, extend, and compose them in your own
+Astro project.
 
 ## Documentation
 
-Visit [ui.full.dev][docs] for complete documentation, component examples, and usage guides.
+For humans: visit [ui.full.dev][docs].
 
-## Development
+For agents: read the Markdown entry point:
 
-```bash
-# Install dependencies
-pnpm install
+```text
+https://ui.full.dev/index.md
+```
 
-# Start development server
-pnpm dev
+You can add `.md` to any documentation URL to get Markdown source:
 
-# Build for production
-pnpm build
-
-# Preview production build
-pnpm preview
-
-# Type check
-pnpm check
+```text
+https://ui.full.dev/components/button.md
+https://ui.full.dev/blocks/hero.md
 ```
 
 ## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## Community
-
-- **Discord** — Join our [Discord server][discord] to share your work and get support
-- **Issues** — Report bugs and request features on [GitHub Issues][issues]
+Please read the [contributing guide](./CONTRIBUTING.md).
 
 ## License
 
-MIT License — Copyright (c) 2024–present [Fulldev][fulldev]
+Licensed under the [MIT license](./LICENCE).
 
-[astro]: https://astro.build/
 [docs]: https://ui.full.dev/
-[fulldev]: https://full.dev/
-[issues]: https://github.com/fulldotdev/ui/issues
-[discord]: https://discord.gg/tdmUyH2YE4

@@ -1,0 +1,26 @@
+---
+// Keep this renderer generic and stable. New page types should be wired by
+// adding a matching schema and src/layouts/<type>.astro file, not by adding
+// layout-specific branches here.
+import { getEntry, render, type CollectionEntry } from "astro:content"
+
+type Props = CollectionEntry<"pages">
+
+const page = Astro.props
+const pageData = page.data
+const { Content, headings } = await render(page)
+const global = await getEntry("globals", Astro.currentLocale || "en")
+if (!global) throw new Error("Add a global to content/globals")
+const globalData = global.data
+
+const layoutImports = import.meta.glob("../layouts/*.astro", { eager: true })
+const layoutPath = `../layouts/${pageData.type}.astro`
+const layoutImport = layoutImports[layoutPath] as { default?: any } | undefined
+const Layout = layoutImport?.default
+
+if (!Layout) throw new Error(`Add a layout for page type "${pageData.type}"`)
+---
+
+<Layout global={globalData} page={pageData} headings={headings}>
+  <Content />
+</Layout>

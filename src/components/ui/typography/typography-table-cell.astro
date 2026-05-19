@@ -1,0 +1,41 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"td">
+
+const { class: className, ...props } = Astro.props
+---
+
+<td data-slot="typography-table-cell" class={cn(className)} {...props}>
+  <slot />
+</td>
+
+<style is:global>
+  @reference "@/styles/global.css";
+
+  [data-slot="typography-table-cell"],
+  [data-slot="typography-table"] td,
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    td:not(.no-typography):not(.no-typography *) {
+    @apply p-2 text-left align-middle text-sm whitespace-nowrap;
+  }
+
+  [data-slot="typography-table-cell"][align="center"],
+  [data-slot="typography-table"] td[align="center"],
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    td:not(.no-typography):not(.no-typography *)[align="center"] {
+    @apply text-center;
+  }
+
+  [data-slot="typography-table-cell"][align="right"],
+  [data-slot="typography-table"] td[align="right"],
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    td:not(.no-typography):not(.no-typography *)[align="right"] {
+    @apply text-right;
+  }
+</style>

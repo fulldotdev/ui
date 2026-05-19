@@ -1,214 +1,127 @@
 ---
-import MenuIcon from "lucide-static/icons/menu.svg"
-
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
-import { Header, HeaderActions } from "@/components/ui/header"
+import { Header, HeaderContainer, HeaderGroup } from "@/components/ui/header"
 import { Icon } from "@/components/ui/icon"
 import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
-import { ThemeToggle } from "@/components/ui/theme-toggle"
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 
-interface Props {
-  logo?: {
-    src?: string
+type Props = {
+  class?: string
+  logo: {
+    label: string
+    href: string
+    src?: any
+    srcLight?: any
+    srcDark?: any
     alt?: string
-    text?: string
-    href?: string
   }
-  links?: {
-    icon?: string
-    text?: string
-    href?: string
-    target?: string
-  }[]
-  socials?: string[]
-  menus?: {
-    text?: string
-    href?: string
+  navigation: {
+    label: string
+    href: string
     links?: {
-      text?: string
-      href?: string
+      label: string
+      href: string
     }[]
+  }[]
+  buttons: {
+    label: string
+    href: string
+    icon?: string
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
 }
 
-const { logo, menus, links, socials } = Astro.props
-
-const desktopMenuItemClass =
-  "inline-flex h-8 items-center bg-transparent px-3 py-0 text-sm font-medium"
+const { class: className, logo, navigation, buttons } = Astro.props
 ---
 
-<Header>
-  <Logo href={logo?.href || "/"}>
-    <LogoImage src={logo?.src} alt={logo?.alt} />
-    <LogoText>{logo?.text}</LogoText>
-  </Logo>
-  <NavigationMenu class="mr-auto max-lg:hidden">
-    <NavigationMenuList>
-      {
-        menus?.map((menu, index) => (
-          <NavigationMenuItem value={`menu-${index}`}>
-            {menu.links && menu.links.length > 0 ? (
-              <>
-                <NavigationMenuTrigger
-                  class={desktopMenuItemClass}
-                  href={menu.href}
-                >
-                  {menu.text}
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul class="grid min-w-48 gap-1">
-                    {menu.links?.map((link) => (
-                      <li>
-                        <NavigationMenuLink href={link.href} class="w-full">
-                          {link.text}
-                        </NavigationMenuLink>
-                      </li>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
-              </>
-            ) : (
-              <NavigationMenuLink class={desktopMenuItemClass} href={menu.href}>
-                {menu.text}
+<Header class={cn("", className)}>
+  <HeaderContainer class="justify-between gap-4">
+    <HeaderGroup>
+      <Logo href={logo.href}>
+        <LogoImage
+          src={logo.src}
+          srcLight={logo.srcLight}
+          srcDark={logo.srcDark}
+          alt={logo.alt}
+        />
+        {logo.label && <LogoText>{logo.label}</LogoText>}
+      </Logo>
+    </HeaderGroup>
+    <NavigationMenu class="hidden flex-none justify-start lg:flex">
+      <NavigationMenuList class="justify-start">
+        {
+          navigation.map((item, index) => (
+            <NavigationMenuItem value={`nav-${index}`}>
+              <NavigationMenuLink href={item.href}>
+                {item.label}
               </NavigationMenuLink>
-            )}
-          </NavigationMenuItem>
-        ))
-      }
-    </NavigationMenuList>
-  </NavigationMenu>
-  <HeaderActions class="max-lg:hidden">
-    {
-      socials?.map((social) => (
-        <>
+            </NavigationMenuItem>
+          ))
+        }
+      </NavigationMenuList>
+    </NavigationMenu>
+    <HeaderGroup class="ml-auto hidden flex-1 justify-end lg:flex">
+      <slot />
+      {
+        buttons.map(({ label, icon, ...button }) => (
           <Button
             as="a"
-            variant="ghost"
-            size="icon-sm"
-            href={social}
-            target="_blank"
+            size={icon && !label ? "icon-sm" : "sm"}
+            aria-label={label}
+            target={button.href.startsWith("http") ? "_blank" : undefined}
+            rel={button.href.startsWith("http") ? "noreferrer" : undefined}
+            {...button}
           >
-            <Icon href={social} />
+            {icon && <Icon name={icon} />}
+            {label}
           </Button>
-        </>
-      ))
-    }
-    <ThemeToggle />
-    {
-      links?.map(({ icon, text, ...link }, i) => (
-        <Button
-          variant={i === links.length - 1 ? "default" : "outline"}
-          size="sm"
-          {...link}
-        >
-          {icon && <Icon name={icon} />}
-          {text}
-        </Button>
-      ))
-    }
-  </HeaderActions>
-  <Sheet class="first:ml-auto">
-    <SheetTrigger
-      class="lg:hidden"
-      variant="ghost"
-      size="icon"
-      name="open-menu-button"
-    >
-      <MenuIcon class="size-5" />
-    </SheetTrigger>
-    <SheetContent class="overflow-y-auto px-4 py-12">
-      <SidebarMenu>
-        {
-          menus?.map((menu) => (
-            <SidebarMenuItem>
-              {menu.links && menu.links.length > 0 ? (
-                <Collapsible class="group">
-                  <CollapsibleTrigger>
-                    <SidebarMenuButton as="div" class="h-10 rounded-md text-xl">
-                      {menu.href ? (
-                        <a class="truncate" href={menu.href}>
-                          {menu.text}
-                        </a>
-                      ) : (
-                        <span class="truncate">{menu.text}</span>
-                      )}
-                      <Icon
-                        name="chevron-down"
-                        class="text-muted-foreground ml-auto transition-transform duration-200 ease-out group-open:rotate-180"
-                        aria-hidden="true"
-                      />
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      {menu.links?.map((link) => (
-                        <SidebarMenuSubItem>
-                          <SidebarMenuSubButton href={link.href}>
-                            {link.text}
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </Collapsible>
-              ) : (
-                <SidebarMenuButton
-                  class="h-10 w-full rounded-md text-xl"
-                  href={menu.href}
-                >
-                  {menu.text}
-                </SidebarMenuButton>
-              )}
-            </SidebarMenuItem>
-          ))
-        }
-      </SidebarMenu>
-      <HeaderActions class="flex flex-col gap-2">
-        {
-          links?.map(({ icon, text, ...link }, i) => (
-            <Button
-              variant={i === links.length - 1 ? "default" : "secondary"}
-              class="w-full"
-              {...link}
-            >
-              {icon && <Icon name={icon} />}
-              {text}
-            </Button>
-          ))
-        }
-      </HeaderActions>
-      <HeaderActions>
-        <ThemeToggle />
-        {
-          socials?.map((social) => (
-            <Button as="a" variant="ghost" size="icon" href={social}>
-              <Icon href={social} />
-            </Button>
-          ))
-        }
-      </HeaderActions>
-    </SheetContent>
-  </Sheet>
+        ))
+      }
+    </HeaderGroup>
+    <Sheet class="lg:hidden">
+      <SheetTrigger
+        variant="ghost"
+        size="icon-sm"
+        class="ml-auto"
+        aria-label="Open menu"
+      >
+        <Icon name="menu" />
+      </SheetTrigger>
+      <SheetContent side="right" class="p-0">
+        <SheetHeader class="sr-only">
+          <SheetTitle>Menu</SheetTitle>
+          <SheetDescription>Site navigation and actions.</SheetDescription>
+        </SheetHeader>
+        <div class="flex h-full flex-col gap-6 px-4 py-12">
+          <nav aria-label="Main navigation" class="flex flex-col gap-1">
+            {
+              navigation.map((item) => (
+                <SheetClose variant="ghost" class="justify-start">
+                  {item.label}
+                </SheetClose>
+              ))
+            }
+          </nav>
+          <div class="mt-auto flex flex-col gap-2">
+            <slot />
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  </HeaderContainer>
 </Header>

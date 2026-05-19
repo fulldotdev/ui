@@ -1,0 +1,37 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import { Icon } from "@/components/ui/icon"
+
+type Props = HTMLAttributes<"button"> & {
+  showIcon?: boolean
+}
+
+const {
+  class: className,
+  type = "button",
+  showIcon = true,
+  ...props
+} = Astro.props
+---
+
+<button
+  type={type}
+  data-slot="combobox-trigger"
+  class={cn(
+    "[&_svg]:text-muted-foreground inline-flex size-6 shrink-0 items-center justify-center gap-2 rounded-[calc(var(--radius)-5px)] p-0 text-sm shadow-none outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+    className
+  )}
+  {...props}
+>
+  <slot />
+  {
+    showIcon && (
+      <Icon
+        name="chevron-down"
+        class="text-muted-foreground pointer-events-none size-4"
+      />
+    )
+  }
+</button>

@@ -1,36 +1,39 @@
 ---
 import type { HTMLAttributes } from "astro/types"
-import Star from "lucide-static/icons/star.svg"
 
 import { cn } from "@/lib/utils"
+import { Icon } from "@/components/ui/icon"
 
-interface Props extends HTMLAttributes<"div"> {
-  rating?: number
+type Props = HTMLAttributes<"div"> & {
+  value?: number
 }
 
-const { rating, class: className, ...props } = Astro.props
+const { value = 5, class: className, ...props } = Astro.props
 ---
 
-{
-  rating && (
-    <div class={cn("flex gap-1 text-base", className)} {...props}>
-      {Array.from({ length: 5 }).map((_, index) => {
-        const fillPercentage =
-          index < Math.floor(rating)
-            ? 100
-            : index === Math.floor(rating)
-              ? (rating % 1) * 100
-              : 0
-        return (
-          <Star
-            class="!text-primary size-[1em]"
-            fill="currentColor"
-            style={{
-              maskImage: `linear-gradient(to right, black ${fillPercentage}%, rgba(0,0,0,0.15) ${fillPercentage}%)`,
-            }}
-          />
-        )
-      })}
-    </div>
-  )
-}
+<div class={cn("flex items-center gap-1 text-base", className)} {...props}>
+  {
+    Array.from({ length: 5 }).map((_, index) => {
+      const fillPercentage =
+        index < Math.floor(value)
+          ? 100
+          : index === Math.floor(value)
+            ? (value % 1) * 100
+            : 0
+
+      return (
+        <span class="text-muted-foreground/25 relative inline-flex size-[1em]">
+          <Icon name="star" class="size-[1em] fill-current" />
+          {fillPercentage > 0 && (
+            <span
+              class="text-primary absolute inset-0 overflow-hidden"
+              style={{ width: `${fillPercentage}%` }}
+            >
+              <Icon name="star" class="size-[1em] fill-current" />
+            </span>
+          )}
+        </span>
+      )
+    })
+  }
+</div>

@@ -1,87 +1,107 @@
 ---
-import { Avatar, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Icon } from "@/components/ui/icon"
-import { Image } from "@/components/ui/image"
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-} from "@/components/ui/item"
-import { Rating } from "@/components/ui/rating"
-import {
-  Section,
-  SectionActions,
-  SectionContent,
-  SectionMedia,
-  SectionProse,
-} from "@/components/ui/section"
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
 
-interface Props {
+import { cn } from "@/lib/utils"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarImage,
+} from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Rating } from "@/components/ui/rating"
+import { Section, SectionContainer } from "@/components/ui/section"
+
+type Props = {
   class?: string
-  id?: string
-  item?: {
-    images?: {
-      src: string
-      alt: string
-    }[]
-    rating?: number
-    description?: string
-  }
-  links?: {
-    text?: string
-    href?: string
-    icon?: string
-    target?: string
+  title: string
+  description: string
+  buttons: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
-  image?: {
-    src: string
+  socialProof: {
+    avatars: {
+      image?: ImageMetadata
+      initials: string
+      name?: string
+    }[]
+    rating: number
+    text: string
+  }
+  image: {
+    src: ImageMetadata
     alt: string
   }
 }
 
-const { class: className, id, item, links, image } = Astro.props
+const {
+  class: className,
+  title,
+  description,
+  buttons,
+  socialProof,
+  image,
+} = Astro.props
 ---
 
-<Section class={className} id={id}>
-  <SectionContent class="items-center">
-    <Item class="w-auto p-0">
-      <ItemMedia class="-space-x-5">
+<Section class={cn("", className)}>
+  <SectionContainer class="items-center gap-8 text-center">
+    <div class="flex flex-col items-center gap-3">
+      <AvatarGroup>
         {
-          item?.images?.map((image) => (
+          socialProof.avatars.map((avatar) => (
             <Avatar class="ring-background size-11 ring">
-              <AvatarImage {...image} />
+              <AvatarImage
+                src={avatar.image}
+                alt={avatar.name ?? avatar.initials}
+              />
+              <AvatarFallback>{avatar.initials}</AvatarFallback>
             </Avatar>
           ))
         }
-      </ItemMedia>
-      <ItemContent class="mt-1">
-        <Rating rating={item?.rating} />
-        <ItemDescription>
-          {item?.description}
-        </ItemDescription>
-      </ItemContent>
-    </Item>
-    <SectionProse class="text-center text-balance" size="lg">
-      <slot />
-    </SectionProse>
-    <SectionActions class="justify-center">
+      </AvatarGroup>
+      <div class="flex items-center gap-2">
+        <Rating value={socialProof.rating} />
+        <span class="text-muted-foreground text-sm">{socialProof.text}</span>
+      </div>
+    </div>
+    <h1
+      class="text-foreground max-w-4xl text-4xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl"
+    >
+      {title}
+    </h1>
+    <p
+      class="text-muted-foreground max-w-2xl text-lg leading-relaxed text-balance"
+    >
+      {description}
+    </p>
+    <div class="flex flex-wrap justify-center gap-3">
       {
-        links?.map(({ icon, text, ...link }, i) => (
+        buttons.map(({ href, label, ...button }, index) => (
           <Button
-            variant={i === 0 ? "default" : "secondary"}
+            as="a"
+            href={href}
             size="lg"
-            {...link}
+            variant={button.variant ?? (index === 0 ? "default" : "secondary")}
+            {...button}
           >
-            {icon && <Icon name={icon} />}
-            {text}
+            {label}
           </Button>
         ))
       }
-    </SectionActions>
-  </SectionContent>
-  <SectionMedia>
-    <Image sizes="(min-width: 1536px) 1536px, 100vw" priority {...image} />
-  </SectionMedia>
+    </div>
+  </SectionContainer>
+  <SectionContainer>
+    <Image
+      src={image.src}
+      alt={image.alt}
+      class="aspect-video w-full rounded-xl border object-cover"
+      widths={[640, 960, 1280, 1536]}
+      sizes="(min-width: 80rem) 80rem, 100vw"
+      loading="eager"
+    />
+  </SectionContainer>
 </Section>

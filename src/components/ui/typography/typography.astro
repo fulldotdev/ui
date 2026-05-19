@@ -1,0 +1,180 @@
+---
+import type { HTMLTag, Polymorphic } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props<Tag extends HTMLTag> = Polymorphic<{
+  as: Tag
+  size?: "sm" | "default" | "lg"
+}>
+
+const {
+  as: Tag = "div",
+  class: className,
+  size = "default",
+  ...props
+} = Astro.props
+---
+
+<Tag
+  data-slot="typography"
+  data-size={size}
+  class={cn("text-foreground text-base", className)}
+  {...props}
+>
+  <slot />
+</Tag>
+
+<style is:global>
+  @reference "@/styles/global.css";
+
+  [data-slot="typography"]
+    > :is(
+      p,
+      blockquote,
+      ul,
+      ol,
+      table,
+      [data-slot="typography-lead"],
+      [data-slot="typography-p"],
+      [data-slot="typography-blockquote"],
+      [data-slot="typography-list"],
+      [data-slot="typography-table-container"],
+      div,
+      section,
+      article,
+      aside,
+      nav,
+      figure,
+      details,
+      .docs-code-block,
+      pre,
+      small,
+      dl,
+      img,
+      picture,
+      video,
+      iframe
+    ):not(:first-child) {
+    @apply mt-6;
+  }
+
+  [data-slot="typography"]
+    > :is(h2, [data-slot="typography-h2"]):not(:first-child) {
+    @apply mt-10;
+  }
+
+  [data-slot="typography"]
+    > :is(h3, h4, [data-slot="typography-h3"], [data-slot="typography-h4"]):not(
+      :first-child
+    ) {
+    @apply mt-8;
+  }
+
+  [data-slot="typography"]
+    > :is(
+      h1,
+      h2,
+      h3,
+      h4,
+      [data-slot="typography-h1"],
+      [data-slot="typography-h2"],
+      [data-slot="typography-h3"],
+      [data-slot="typography-h4"]
+    )
+    + :is(
+      p,
+      blockquote,
+      ul,
+      ol,
+      table,
+      [data-slot="typography-lead"],
+      [data-slot="typography-p"],
+      [data-slot="typography-blockquote"],
+      [data-slot="typography-list"],
+      [data-slot="typography-table-container"],
+      div,
+      section,
+      article,
+      aside,
+      nav,
+      figure,
+      details,
+      .docs-code-block,
+      pre,
+      small,
+      dl,
+      img,
+      picture,
+      video,
+      iframe
+    ) {
+    @apply mt-4;
+  }
+
+  [data-slot="typography"] > hr {
+    @apply border-border my-8;
+  }
+
+  [data-slot="typography"] > pre {
+    @apply border-border bg-muted/60 overflow-x-auto rounded-xl border p-4 text-sm;
+  }
+
+  [data-slot="typography"] > .docs-code-block {
+    @apply border-border bg-muted/60 relative overflow-hidden rounded-xl border;
+  }
+
+  [data-slot="typography"] > .docs-code-block > pre,
+  [data-slot="typography"] > .docs-code-block > pre.astro-code {
+    @apply m-0 rounded-none border-0 bg-transparent! p-4 pr-14 text-sm leading-(--text-sm--line-height);
+    font-family: var(--font-mono);
+  }
+
+  [data-slot="typography"] > .docs-code-block > pre.astro-code code {
+    @apply text-sm leading-(--text-sm--line-height) text-(--shiki-light,var(--foreground))!;
+  }
+
+  .dark [data-slot="typography"] > .docs-code-block > pre.astro-code code {
+    @apply text-(--shiki-dark,var(--foreground))!;
+  }
+
+  .dark
+    [data-slot="typography"]
+    > .docs-code-block
+    > pre.astro-code
+    span[style*="--shiki-dark"] {
+    @apply font-(--shiki-dark-font-weight,inherit)! text-(--shiki-dark)! [font-style:var(--shiki-dark-font-style,inherit)]! [text-decoration:var(--shiki-dark-text-decoration,inherit)]!;
+  }
+
+  [data-slot="typography"] > .docs-code-block > .docs-code-copy {
+    @apply border-border bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground absolute top-3 right-3 z-10 inline-flex size-8 items-center justify-center rounded-md border shadow-sm transition-colors;
+  }
+
+  [data-slot="typography"] > .docs-code-block svg {
+    @apply size-4;
+  }
+
+  [data-slot="typography"] > small {
+    @apply block leading-none font-medium;
+  }
+
+  [data-slot="typography"] > small {
+    @apply text-sm;
+  }
+
+  [data-slot="typography"] > pre.astro-code {
+    @apply border-border bg-muted/60! rounded-xl border p-4 text-sm leading-(--text-sm--line-height);
+  }
+
+  [data-slot="typography"] > pre.astro-code code {
+    @apply text-inherit!;
+  }
+
+  .dark [data-slot="typography"] > pre.astro-code {
+    @apply text-(--shiki-dark,var(--foreground))!;
+  }
+
+  .dark [data-slot="typography"] > pre.astro-code span[style*="--shiki-dark"] {
+    @apply font-(--shiki-dark-font-weight,inherit)! text-(--shiki-dark)! [font-style:var(--shiki-dark-font-style,inherit)]! [text-decoration:var(--shiki-dark-text-decoration,inherit)]!;
+  }
+</style>

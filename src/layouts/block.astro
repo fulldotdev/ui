@@ -1,0 +1,77 @@
+---
+import type { MarkdownHeading } from "astro"
+import { getCollection } from "astro:content"
+
+import type { GlobalSchema } from "@/schemas/global"
+import type { BlockSchema } from "@/schemas/layouts/block"
+import Base from "@/layouts/base.astro"
+import BlocksBlock from "@/components/blocks/blocks-1.astro"
+
+type Props = {
+  global: GlobalSchema
+  page: BlockSchema
+  headings: MarkdownHeading[]
+}
+
+const props: Props = Astro.props
+const currentPath = Astro.url.pathname
+const markdownPath =
+  currentPath === "/" ? "/index.md" : `${currentPath.replace(/\/$/, "")}.md`
+
+const blocks = await getCollection("pages", ({ data }) => {
+  return data.type === "block"
+})
+const currentBlock = blocks.find((entry) => `/${entry.id}/` === currentPath)
+const isBlockCategory = !props.page.category
+const orderedBlockCategoryLinks = blocks
+  .filter((entry) => !("category" in entry.data) || !entry.data.category)
+  .map((entry) => ({
+    href: `/${entry.id}/`,
+    title: entry.data.title,
+  }))
+  .sort((a, b) => a.href.localeCompare(b.href))
+const currentPageIndex = orderedBlockCategoryLinks.findIndex(
+  (item) => item.href === currentPath
+)
+const previousPage =
+  isBlockCategory && currentPageIndex > 0
+    ? orderedBlockCategoryLinks[currentPageIndex - 1]
+    : undefined
+const nextPage =
+  isBlockCategory && currentPageIndex >= 0
+    ? orderedBlockCategoryLinks[currentPageIndex + 1]
+    : undefined
+const copySource = blocks.find((entry) => `/${entry.id}/` === currentPath)?.body
+const copyButton = copySource
+  ? {
+      id: `blocks-copy-page-${crypto.randomUUID()}`,
+      source: currentBlock?.body ?? copySource,
+    }
+  : undefined
+---
+
+<Base global={props.global} page={props.page}>
+  <BlocksBlock
+    title={props.page.title}
+    description={props.page.description}
+    copyButton={copyButton}
+    markdownUrl={markdownPath}
+    previousPage={previousPage}
+    nextPage={nextPage}
+    labels={{
+      copyMarkdown: "Copy Markdown",
+      openIn: "Open in",
+      openInMarkdown: "Open in Markdown",
+      openInChatGPT: "Open in ChatGPT",
+      openInClaude: "Open in Claude",
+      openInCursor: "Open in Cursor",
+      pagination: {
+        previous: "Previous",
+        next: "Next",
+        ariaLabel: "Blocks pagination",
+      },
+    }}
+  >
+    <slot />
+  </BlocksBlock>
+</Base>

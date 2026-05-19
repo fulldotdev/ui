@@ -1,0 +1,106 @@
+---
+import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Icon } from "@/components/ui/icon"
+import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
+import { Section, SectionContainer } from "@/components/ui/section"
+import { Separator } from "@/components/ui/separator"
+
+type Props = {
+  class?: string
+  title: string
+  description?: string
+  plans: {
+    name: string
+    description: string
+    price: number
+    currency: string
+    unit: string
+    featured?: boolean
+    features: string[]
+    button: {
+      label: string
+      href: string
+      variant?: "default" | "outline" | "secondary" | "ghost"
+    }
+  }[]
+}
+
+const { class: className, title, description, plans } = Astro.props
+---
+
+<Section class={cn("", className)}>
+  <SectionContainer class="items-center gap-8 text-center">
+    <div class="flex max-w-2xl flex-col items-center gap-4">
+      <h2
+        class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      {
+        description && (
+          <p class="text-muted-foreground text-lg leading-relaxed text-balance">
+            {description}
+          </p>
+        )
+      }
+    </div>
+  </SectionContainer>
+  <SectionContainer>
+    <div
+      class="mx-auto grid w-full justify-center gap-6 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(16rem,18rem))]"
+    >
+      {
+        plans.map((plan) => (
+          <Card
+            class={cn("flex flex-col", plan.featured && "ring-primary ring-2")}
+          >
+            <CardHeader>
+              <div class="flex items-center gap-2">
+                <CardTitle>{plan.name}</CardTitle>
+                {plan.featured && <Badge>Popular</Badge>}
+              </div>
+              <CardDescription>{plan.description}</CardDescription>
+            </CardHeader>
+            <CardContent class="flex flex-col gap-6">
+              <Price>
+                <PriceValue price={plan.price} currency={plan.currency} />
+                <PriceUnit>{plan.unit}</PriceUnit>
+              </Price>
+              <Separator />
+              <ul class="flex flex-col gap-3">
+                {plan.features.map((feature) => (
+                  <li class="flex items-center gap-3 text-sm">
+                    <Icon name="check" class="text-primary size-4 shrink-0" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+            <CardFooter class="mt-auto">
+              <Button
+                as="a"
+                href={plan.button.href}
+                variant={
+                  plan.button.variant ?? (plan.featured ? "default" : "outline")
+                }
+                class="w-full"
+              >
+                {plan.button.label}
+              </Button>
+            </CardFooter>
+          </Card>
+        ))
+      }
+    </div>
+  </SectionContainer>
+</Section>

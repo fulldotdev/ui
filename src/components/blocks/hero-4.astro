@@ -1,64 +1,86 @@
 ---
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
-import { Image } from "@/components/ui/image"
-import {
-  Section,
-  SectionActions,
-  SectionContent,
-  SectionMedia,
-  SectionProse,
-} from "@/components/ui/section"
+import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
   class?: string
-  id?: string
-  links?: {
-    text?: string
-    href?: string
-    icon?: string
-    target?: string
+  title: string
+  description: string
+  features: string[]
+  buttons: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
-  image?: {
-    src: string
+  image: {
+    src: ImageMetadata
     alt: string
   }
 }
 
-const { class: className, id, links, image } = Astro.props
+const {
+  class: className,
+  title,
+  description,
+  features,
+  buttons,
+  image,
+} = Astro.props
 ---
 
 <Section
-  class={cn("justify-center py-[36vw] lg:py-[18vw]", className)}
-  id={id}
-  size="lg"
+  class={cn("dark bg-background min-h-screen justify-center", className)}
 >
-  <SectionContent class="items-center">
-    <SectionProse class="text-center text-balance" size="lg">
-      <slot />
-    </SectionProse>
-    <SectionActions class="justify-center">
+  <SectionContainer class="relative z-10 items-center gap-8 text-center">
+    <h1
+      class="text-foreground max-w-4xl text-4xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl"
+    >
+      {title}
+    </h1>
+    <p
+      class="text-foreground/80 max-w-2xl text-lg leading-relaxed text-balance"
+    >
+      {description}
+    </p>
+    <ul class="flex flex-wrap justify-center gap-x-6 gap-y-2">
       {
-        links?.map(({ icon, text, ...link }, i) => (
+        features.map((feature) => (
+          <li class="flex items-center gap-2 text-sm">
+            <Icon name="check" class="text-primary size-4 shrink-0" />
+            {feature}
+          </li>
+        ))
+      }
+    </ul>
+    <div class="flex flex-wrap justify-center gap-3">
+      {
+        buttons.map(({ href, label, ...button }, index) => (
           <Button
-            variant={i === 0 ? "default" : "secondary"}
+            as="a"
+            href={href}
             size="lg"
-            {...link}
+            variant={button.variant ?? (index === 0 ? "default" : "secondary")}
+            {...button}
           >
-            {icon && <Icon name={icon} />}
-            {text}
+            {label}
           </Button>
         ))
       }
-    </SectionActions>
-  </SectionContent>
-  <SectionMedia class="absolute inset-0 rounded-none bg-white dark:bg-black">
+    </div>
+  </SectionContainer>
+  <div class="bg-background pointer-events-none absolute inset-0">
     <Image
-      class="opacity-50"
-      sizes="(min-width: 1536px) 1536px, 100vw"
-      priority
-      {...image}
+      src={image.src}
+      alt={image.alt}
+      class="size-full object-cover opacity-50"
+      widths={[640, 960, 1280, 1920]}
+      sizes="100vw"
+      loading="eager"
     />
-  </SectionMedia>
+  </div>
 </Section>

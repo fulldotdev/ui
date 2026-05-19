@@ -1,0 +1,33 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"tr">
+
+const { class: className, ...props } = Astro.props
+---
+
+<tr data-slot="typography-table-row" class={cn(className)} {...props}>
+  <slot />
+</tr>
+
+<style is:global>
+  @reference "@/styles/global.css";
+
+  [data-slot="typography-table-row"],
+  [data-slot="typography-table"] tr,
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    tr:not(.no-typography):not(.no-typography *) {
+    @apply border-b transition-colors;
+  }
+
+  [data-slot="typography-table"] tbody tr:last-child,
+  [data-slot="typography"]
+    table:not(.no-typography):not(.no-typography *)
+    tbody
+    tr:not(.no-typography):not(.no-typography *):last-child {
+    @apply border-b-0;
+  }
+</style>

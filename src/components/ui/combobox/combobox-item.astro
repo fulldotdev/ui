@@ -1,0 +1,44 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import { Icon } from "@/components/ui/icon"
+
+type Props = HTMLAttributes<"div"> & {
+  value?: string
+  disabled?: boolean
+  showIndicator?: boolean
+}
+
+const {
+  class: className,
+  value,
+  disabled,
+  showIndicator = true,
+  ...props
+} = Astro.props
+---
+
+<div
+  data-slot="combobox-item"
+  data-value={value}
+  data-disabled={disabled ? "" : undefined}
+  class={cn(
+    "data-highlighted:bg-accent data-highlighted:text-accent-foreground data-highlighted:**:[svg]:text-accent-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+    className
+  )}
+  {...props}
+>
+  <slot />
+  {
+    showIndicator && (
+      <span
+        data-slot="combobox-item-indicator"
+        hidden={false}
+        class="pointer-events-none absolute right-2 flex size-4 items-center justify-center opacity-0 group-data-[checked=true]/combobox-item:opacity-100"
+      >
+        <Icon name="check" class="pointer-events-none" />
+      </span>
+    )
+  }
+</div>

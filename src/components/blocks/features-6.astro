@@ -1,72 +1,75 @@
 ---
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Icon } from "@/components/ui/icon"
-import {
-  Section,
-  SectionActions,
-  SectionContent,
-  SectionGrid,
-  SectionProse,
-} from "@/components/ui/section"
-import {
-  Tile,
-  TileDescription,
-  TileSplit,
-  TileTitle,
-} from "@/components/ui/tile"
+import { Section, SectionContainer } from "@/components/ui/section"
+import { Separator } from "@/components/ui/separator"
 
-interface Props {
+type Props = {
   class?: string
-  id?: string
-  links?: {
-    icon?: string
-    text?: string
-    href?: string
-    target?: string
+  title: string
+  description: string
+  buttons?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
-  items?: {
-    title?: string
-    description?: string
-    icon?: string
-    href?: string
-    links?: {
-      icon?: string
-      text?: string
-      href?: string
-      target?: string
-    }[]
+  features: {
+    title: string
+    description: string
   }[]
 }
 
-const { class: className, id, links, items } = Astro.props
+const { class: className, title, description, buttons, features } = Astro.props
 ---
 
-<Section class={className} id={id}>
-  <SectionContent>
-    <SectionProse>
-      <slot />
-    </SectionProse>
-    <SectionActions>
+<Section class={cn("", className)}>
+  <SectionContainer>
+    <div class="flex max-w-2xl flex-col gap-4">
+      <h2
+        class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      <p class="text-muted-foreground text-base leading-relaxed text-balance">
+        {description}
+      </p>
       {
-        links?.map(({ icon, text, ...link }, i) => (
-          <Button variant={i === 0 ? "default" : "outline"} {...link}>
-            {icon && <Icon name={icon} />}
-            {text}
-          </Button>
+        buttons?.length && (
+          <div class="mt-2 flex flex-wrap gap-3">
+            {buttons.map(({ href, label, ...button }, index) => (
+              <Button
+                as="a"
+                href={href}
+                variant={
+                  button.variant ?? (index === 0 ? "default" : "outline")
+                }
+                {...button}
+              >
+                {label}
+              </Button>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </SectionContainer>
+  <SectionContainer>
+    <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        features.map((feature) => (
+          <div>
+            <Separator />
+            <div class="pt-6">
+              <h3 class="text-foreground text-lg font-medium">
+                {feature.title}
+              </h3>
+              <p class="text-muted-foreground mt-2 text-sm leading-relaxed">
+                {feature.description}
+              </p>
+            </div>
+          </div>
         ))
       }
-    </SectionActions>
-  </SectionContent>
-  <SectionGrid class="grid-cols-1! gap-12">
-    {
-      items?.map(({ title, description }) => (
-        <Tile class="border-t pt-12">
-          <TileSplit>
-            <TileTitle>{title}</TileTitle>
-            <TileDescription>{description}</TileDescription>
-          </TileSplit>
-        </Tile>
-      ))
-    }
-  </SectionGrid>
+    </div>
+  </SectionContainer>
 </Section>

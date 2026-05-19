@@ -1,0 +1,45 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"ul"> &
+  HTMLAttributes<"ol"> & {
+    as?: "ul" | "ol"
+  }
+
+const { as: Tag = "ul", class: className, ...props } = Astro.props
+---
+
+<Tag
+  data-slot="typography-list"
+  data-ordered={Tag === "ol" ? "" : undefined}
+  class={cn(className)}
+  {...props}
+>
+  <slot />
+</Tag>
+
+<style is:global>
+  @reference "@/styles/global.css";
+
+  [data-slot="typography-list"],
+  [data-slot="typography"] ul:not(.no-typography):not(.no-typography *),
+  [data-slot="typography"] ol:not(.no-typography):not(.no-typography *) {
+    @apply ml-6 text-base;
+  }
+
+  [data-slot="typography-list"]:not([data-ordered]),
+  [data-slot="typography"] ul:not(.no-typography):not(.no-typography *) {
+    @apply list-disc;
+  }
+
+  [data-slot="typography-list"][data-ordered],
+  [data-slot="typography"] ol:not(.no-typography):not(.no-typography *) {
+    @apply list-decimal;
+  }
+
+  [data-slot="typography-list"] > li {
+    @apply mt-2;
+  }
+</style>

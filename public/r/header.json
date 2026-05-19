@@ -1,25 +1,29 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "header",
+  "registryDependencies": [
+    "@fulldev/button",
+    "@fulldev/sheet"
+  ],
   "files": [
     {
       "path": "src/components/ui/header/header.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props\n  extends HTMLAttributes<\"header\">,\n    VariantProps<typeof variants> {}\n\nconst variants = cva(\n  \"relative top-0 z-50 mx-auto flex h-(--header-height) items-center justify-between gap-8 border-b border-transparent px-(--header-px) py-4\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-background sticky w-full\",\n        floating: [\n          \"w-[calc(100%-2*var(--gutter,24px))] max-w-(--header-width)\",\n          \"top-2 mt-2 h-[calc(var(--header-height)-var(--spacing)*2)] overflow-hidden rounded-xl\",\n          \"bg-background border-border sticky border\",\n        ],\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n    },\n  }\n)\n\nconst { class: className, variant, ...props } = Astro.props\n---\n\n<header\n  class={cn(variants({ variant }), className)}\n  data-slot=\"header\"\n  data-variant={variant}\n  {...props}\n>\n  <slot />\n</header>\n\n<style is:global>\n  [data-slot=\"header\"] {\n    --header-width: var(--container, var(--breakpoint-xl));\n    --header-px: max(\n      var(--gutter, 24px),\n      calc((100cqw - var(--header-width)) / 2)\n    );\n  }\n\n  [data-slot=\"header\"][data-variant=\"floating\"] {\n    --header-px: calc(var(--spacing) * 6);\n  }\n\n  :root:has([data-slot=\"header\"]) {\n    --header-height: calc(var(--spacing) * 16);\n  }\n\n  @media (min-width: 1024px) {\n    [data-slot=\"header\"][data-variant=\"floating\"] {\n      --header-px: calc(var(--spacing) * 16);\n    }\n  }\n</style>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"header\"> & VariantProps<typeof variants>\n\nconst variants = cva(\"relative z-50 flex w-full items-center gap-4 py-2\", {\n  variants: {\n    variant: {\n      default: \"\",\n      floating:\n        \"bg-background mx-auto my-2 w-[calc(100%-2rem)] max-w-[calc(var(--container,1280px)-2rem)] overflow-hidden rounded-lg border shadow-sm\",\n    },\n  },\n  defaultVariants: {\n    variant: \"default\",\n  },\n})\n\nconst { class: className, variant, ...props } = Astro.props\n---\n\n<header\n  class={cn(variants({ variant }), className)}\n  data-slot=\"header\"\n  data-variant={variant}\n  {...props}\n>\n  <slot />\n</header>\n",
       "type": "registry:ui"
     },
     {
-      "path": "src/components/ui/header/header-actions.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div class={cn(\"flex items-center gap-2\", className)} {...props}>\n  <slot />\n</div>\n",
+      "path": "src/components/ui/header/header-container.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"header-container\"\n  class={cn(\"relative mx-auto flex w-full max-w-7xl gap-4 px-4\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
       "type": "registry:ui"
     },
     {
-      "path": "src/components/ui/header/header-content.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ninterface Props extends HTMLAttributes<\"div\"> {}\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  class={cn(\"mx-auto flex w-full max-w-screen-xl gap-8 py-3\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "path": "src/components/ui/header/header-group.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"header-group\"\n  class={cn(\"flex min-w-0 items-center gap-2\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
       "type": "registry:ui"
     },
     {
       "path": "src/components/ui/header/index.ts",
-      "content": "export { default as Header } from \"./header.astro\"\nexport { default as HeaderActions } from \"./header-actions.astro\"\nexport { default as HeaderContent } from \"./header-content.astro\"\n",
+      "content": "export { default as Header } from \"./header.astro\"\nexport { default as HeaderContainer } from \"./header-container.astro\"\nexport { default as HeaderGroup } from \"./header-group.astro\"\n",
       "type": "registry:ui"
     }
   ],

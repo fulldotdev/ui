@@ -1,0 +1,219 @@
+---
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Header, HeaderContainer, HeaderGroup } from "@/components/ui/header"
+import { Icon } from "@/components/ui/icon"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+
+type Props = {
+  class?: string
+  logo: {
+    label: string
+    href: string
+    src?: any
+    srcLight?: any
+    srcDark?: any
+    alt?: string
+  }
+  navigation: {
+    label: string
+    href: string
+    description?: string
+    active?: boolean
+    image?: {
+      src: ImageMetadata
+      alt: string
+    }
+    links?: {
+      label: string
+      href: string
+      description?: string
+      icon?: string
+      active?: boolean
+    }[]
+  }[]
+  buttons: {
+    label: string
+    href: string
+    icon?: string
+    variant?: "default" | "outline" | "secondary" | "ghost"
+  }[]
+}
+
+const { class: className, logo, navigation, buttons } = Astro.props
+---
+
+<Header class={cn("border-b", className)}>
+  <HeaderContainer class="justify-between">
+    <HeaderGroup>
+      <Logo href={logo.href}>
+        <LogoImage
+          src={logo.src}
+          srcLight={logo.srcLight}
+          srcDark={logo.srcDark}
+          alt={logo.alt}
+        />
+        {logo.label && <LogoText>{logo.label}</LogoText>}
+      </Logo>
+    </HeaderGroup>
+    <NavigationMenu
+      class="absolute left-1/2 hidden max-w-none -translate-x-1/2 lg:flex"
+      align="center"
+    >
+      <NavigationMenuList>
+        {
+          navigation.map((item, index) =>
+            item.links?.length ? (
+              <NavigationMenuItem value={`nav-${index}`}>
+                <NavigationMenuTrigger>{item.label}</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div class="grid w-[min(46rem,calc(100vw-2rem))] gap-2 p-1 lg:grid-cols-[1fr_1.1fr]">
+                    <NavigationMenuLink
+                      href={item.href}
+                      active={item.active}
+                      class="bg-muted/50 hover:bg-muted focus:bg-muted flex min-h-40 flex-col items-start justify-end gap-3 p-4 text-left"
+                    >
+                      {item.image && (
+                        <Image
+                          src={item.image.src}
+                          alt={item.image.alt}
+                          class="mb-auto aspect-[16/9] w-full rounded-md object-cover"
+                          widths={[320, 480, 640]}
+                          sizes="(min-width: 1024px) 22rem, 100vw"
+                        />
+                      )}
+                      <span class="text-base font-medium">{item.label}</span>
+                      {item.description && (
+                        <span class="text-muted-foreground text-sm leading-relaxed">
+                          {item.description}
+                        </span>
+                      )}
+                    </NavigationMenuLink>
+                    <div class="grid gap-1">
+                      {item.links.map((link) => (
+                        <NavigationMenuLink
+                          href={link.href}
+                          active={link.active}
+                          class="items-start gap-3 p-3"
+                        >
+                          {link.icon && (
+                            <Icon
+                              name={link.icon}
+                              class="text-muted-foreground mt-0.5"
+                            />
+                          )}
+                          <span class="grid gap-1">
+                            <span class="font-medium">{link.label}</span>
+                            {link.description && (
+                              <span class="text-muted-foreground text-sm leading-relaxed">
+                                {link.description}
+                              </span>
+                            )}
+                          </span>
+                        </NavigationMenuLink>
+                      ))}
+                    </div>
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            ) : (
+              <NavigationMenuItem value={`nav-${index}`}>
+                <NavigationMenuLink
+                  href={item.href}
+                  active={item.active}
+                  class={navigationMenuTriggerStyle()}
+                >
+                  {item.label}
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            )
+          )
+        }
+      </NavigationMenuList>
+    </NavigationMenu>
+    <HeaderGroup class="ml-auto hidden justify-end lg:flex">
+      <slot />
+      {
+        buttons.map(({ label, icon, ...button }) => (
+          <Button
+            as="a"
+            size={icon && !label ? "icon-sm" : "sm"}
+            aria-label={label}
+            target={button.href.startsWith("http") ? "_blank" : undefined}
+            rel={button.href.startsWith("http") ? "noreferrer" : undefined}
+            {...button}
+          >
+            {icon && <Icon name={icon} />}
+            {label}
+          </Button>
+        ))
+      }
+    </HeaderGroup>
+    <Sheet class="lg:hidden">
+      <SheetTrigger
+        variant="ghost"
+        size="icon-sm"
+        class="ml-auto"
+        aria-label="Open menu"
+      >
+        <Icon name="menu" />
+      </SheetTrigger>
+      <SheetContent side="right" class="p-0">
+        <SheetHeader class="sr-only">
+          <SheetTitle>Menu</SheetTitle>
+          <SheetDescription>Site navigation and actions.</SheetDescription>
+        </SheetHeader>
+        <div class="flex h-full flex-col gap-6 overflow-y-auto px-4 py-12">
+          <nav aria-label="Main navigation" class="flex flex-col gap-4">
+            {
+              navigation.map((item) => (
+                <div class="grid gap-1">
+                  <SheetClose variant="ghost" class="justify-start font-medium">
+                    {item.label}
+                  </SheetClose>
+                  {item.links?.length && (
+                    <div class="border-border ml-3 grid gap-1 border-l pl-3">
+                      {item.links.map((link) => (
+                        <SheetClose
+                          variant="ghost"
+                          class="text-muted-foreground justify-start"
+                        >
+                          {link.icon && <Icon name={link.icon} />}
+                          {link.label}
+                        </SheetClose>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))
+            }
+          </nav>
+          <div class="mt-auto flex flex-col gap-2">
+            <slot />
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  </HeaderContainer>
+</Header>

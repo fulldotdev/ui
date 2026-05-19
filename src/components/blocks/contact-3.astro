@@ -1,69 +1,144 @@
 ---
-import { AutoForm } from "@/components/ui/auto-form"
-import { Icon } from "@/components/ui/icon"
-import { Image } from "@/components/ui/image"
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-  ItemTitle,
-} from "@/components/ui/item"
-import {
-  Section,
-  SectionContent,
-  SectionGrid,
-  SectionMedia,
-  SectionProse,
-  SectionSplit,
-} from "@/components/ui/section"
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
 
-interface Props {
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from "@/components/ui/field"
+import { Icon } from "@/components/ui/icon"
+import { Input } from "@/components/ui/input"
+import { Section, SectionContainer } from "@/components/ui/section"
+import { Textarea } from "@/components/ui/textarea"
+
+type Props = {
   class?: string
-  id?: string
-  form?: any
-  items?: {
-    icon?: string
-    title?: string
-    description?: string
+  title: string
+  description: string
+  contactItems: {
+    icon: string
+    title: string
+    description: string
     href?: string
   }[]
-  image?: {
-    src: string
+  form: {
+    legend: string
+    nameLabel: string
+    namePlaceholder: string
+    emailLabel: string
+    emailPlaceholder: string
+    messageLabel: string
+    messagePlaceholder: string
+    actionLabel: string
+  }
+  image: {
+    src: ImageMetadata
     alt: string
   }
 }
 
-const { class: className, id, form, items, image } = Astro.props
+const {
+  class: className,
+  title,
+  description,
+  contactItems,
+  form,
+  image,
+} = Astro.props
 ---
 
-<Section class={className} id={id}>
-  <SectionSplit class="gap-x-32">
-    <SectionContent class="gap-16">
-      <SectionProse>
-        <slot />
-      </SectionProse>
-      <SectionGrid class="max-w-2xl grid-cols-1!">
+<Section class={cn("", className)}>
+  <SectionContainer class="grid gap-12 lg:grid-cols-2 lg:items-start">
+    <div class="flex flex-col gap-8">
+      <div class="flex flex-col gap-4">
+        <h2
+          class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+        >
+          {title}
+        </h2>
+        <p class="text-muted-foreground max-w-xl text-base leading-relaxed">
+          {description}
+        </p>
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2">
         {
-          items?.map(({ icon, title, description, href }) => (
-            <Item href={href} variant="outline">
-              <ItemMedia variant="icon">
-                <Icon href={href} name={icon} />
-              </ItemMedia>
-              <ItemContent>
-                <ItemTitle>{title}</ItemTitle>
-                <ItemDescription>{description}</ItemDescription>
-              </ItemContent>
-            </Item>
+          contactItems.map((item) => (
+            <div class="flex gap-4">
+              {item.href ? (
+                <Button
+                  as="a"
+                  href={item.href}
+                  variant="secondary"
+                  size="icon"
+                  class="text-primary shrink-0"
+                  aria-label={item.title}
+                >
+                  <Icon name={item.icon} />
+                </Button>
+              ) : (
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  class="text-primary shrink-0"
+                  aria-label={item.title}
+                >
+                  <Icon name={item.icon} />
+                </Button>
+              )}
+              <div class="flex flex-col gap-1">
+                <p class="text-foreground text-sm font-medium">{item.title}</p>
+                <p class="text-muted-foreground text-sm leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
+            </div>
           ))
         }
-      </SectionGrid>
-      <AutoForm {...form} />
-    </SectionContent>
-    <SectionMedia
-      class="-mr-(--section-px) p-1 lg:z-90 lg:-mt-[calc(var(--section-py)+var(--header-height,0px))]"
-    >
-      <Image {...image} />
-    </SectionMedia>
-  </SectionSplit>
+      </div>
+      <div class="rounded-xl border p-6">
+        <FieldSet>
+          <FieldLegend class="sr-only">{form.legend}</FieldLegend>
+          <FieldGroup>
+            <div class="grid gap-4 md:grid-cols-2">
+              <Field>
+                <FieldLabel for="contact-name-3">{form.nameLabel}</FieldLabel>
+                <Input id="contact-name-3" placeholder={form.namePlaceholder} />
+              </Field>
+              <Field>
+                <FieldLabel for="contact-email-3">{form.emailLabel}</FieldLabel>
+                <Input
+                  id="contact-email-3"
+                  type="email"
+                  placeholder={form.emailPlaceholder}
+                />
+              </Field>
+            </div>
+            <Field>
+              <FieldLabel for="contact-message-3"
+                >{form.messageLabel}</FieldLabel
+              >
+              <Textarea
+                id="contact-message-3"
+                rows={5}
+                placeholder={form.messagePlaceholder}
+              />
+            </Field>
+            <Button size="lg" class="w-full">{form.actionLabel}</Button>
+          </FieldGroup>
+        </FieldSet>
+      </div>
+    </div>
+    <Image
+      src={image.src}
+      alt={image.alt}
+      class="aspect-3/4 w-full rounded-xl border object-cover lg:sticky lg:top-24"
+      widths={[640, 960, 1280]}
+      sizes="(min-width: 1024px) 50vw, 100vw"
+    />
+  </SectionContainer>
 </Section>

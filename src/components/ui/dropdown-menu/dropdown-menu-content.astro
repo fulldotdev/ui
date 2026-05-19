@@ -1,0 +1,58 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import type { Align, Side } from "@data-slot/dropdown-menu"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"div"> & {
+  side?: Side
+  align?: Align
+  sideOffset?: number
+  alignOffset?: number
+  avoidCollisions?: boolean
+  collisionPadding?: number
+}
+
+const {
+  class: className,
+  hidden = true,
+  side = "bottom",
+  align = "start",
+  sideOffset = 4,
+  alignOffset = 0,
+  avoidCollisions,
+  collisionPadding,
+  ...props
+} = Astro.props
+---
+
+<div data-slot="dropdown-menu-portal">
+  <div
+    data-slot="dropdown-menu-positioner"
+    data-side={side}
+    data-align={align}
+    data-side-offset={sideOffset}
+    data-align-offset={alignOffset}
+    data-avoid-collisions={avoidCollisions}
+    data-collision-padding={collisionPadding}
+    class="isolate z-50 outline-none"
+  >
+    <div
+      data-slot="dropdown-menu-content"
+      data-side={side}
+      data-align={align}
+      data-side-offset={sideOffset}
+      data-align-offset={alignOffset}
+      data-avoid-collisions={avoidCollisions}
+      data-collision-padding={collisionPadding}
+      hidden={hidden}
+      class={cn(
+        "bg-popover text-popover-foreground ring-foreground/10 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 max-h-(--available-height) w-(--anchor-width) min-w-32 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-md p-1 shadow-md ring-1 duration-100 outline-none data-closed:overflow-hidden",
+        className
+      )}
+      {...props}
+    >
+      <slot />
+    </div>
+  </div>
+</div>

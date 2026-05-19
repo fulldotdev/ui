@@ -1,87 +1,103 @@
 ---
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
+
+import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
-import {
-  Section,
-  SectionActions,
-  SectionContent,
-  SectionGrid,
-  SectionProse,
-  SectionSplit,
-} from "@/components/ui/section"
-import {
-  Tile,
-  TileContent,
-  TileDescription,
-  TileSpread,
-  TileTitle,
-} from "@/components/ui/tile"
+import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
   class?: string
-  id?: string
-  links?: {
-    text?: string
-    href?: string
+  badge?: string
+  title: string
+  description?: string
+  buttons?: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
-  items?: {
-    href?: string
-    tagline?: string
-    title?: string
-    description?: string
-    image?: {
-      src: string
+  services: {
+    image: {
+      src: ImageMetadata
       alt: string
     }
-    links?: {
-      text?: string
-      href?: string
-    }[]
+    title: string
+    description: string
+    href?: string
   }[]
 }
 
-const { class: className, id, links, items } = Astro.props
+const {
+  class: className,
+  badge,
+  title,
+  description,
+  buttons,
+  services,
+} = Astro.props
 ---
 
-<Section class={className} id={id}>
-  <SectionSplit
-    class="items-start lg:grid-cols-[1fr_2fr] lg:*:sticky lg:*:top-[calc(var(--section-py)+var(--header-height,0px))]"
+<Section class={cn("", className)}>
+  <SectionContainer
+    class="grid gap-8 lg:grid-cols-[20rem_minmax(0,1fr)] lg:items-start"
   >
-    <SectionContent>
-      <SectionProse class="text-balance!">
-        <slot />
-      </SectionProse>
-      <SectionActions>
-        {
-          links?.map(({ text, ...link }, i) => (
-            <Button variant={i === 0 ? "outline" : "ghost"} {...link}>
-              {text}
-            </Button>
-          ))
-        }
-      </SectionActions>
-    </SectionContent>
-    <SectionGrid class="lg:grid-cols-2">
+    <div class="lg:sticky lg:top-28">
+      {badge && <Badge variant="secondary">{badge}</Badge>}
+      <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance">
+        {title}
+      </h2>
       {
-        items?.map(({ title, description, href }) => (
-          <Tile href={href} variant="floating">
-            <TileSpread>
-              <TileContent>
-                <TileTitle>{title}</TileTitle>
-                <TileDescription class="text-foreground">
-                  {description}
-                </TileDescription>
-              </TileContent>
-              {href && (
-                <Icon
-                  name="arrow-right"
-                  class="size-5 shrink-0 transition-transform group-hover/tile:translate-x-2"
-                />
+        description && (
+          <p class="text-muted-foreground mt-4 text-sm leading-relaxed">
+            {description}
+          </p>
+        )
+      }
+      {
+        buttons?.length && (
+          <div class="mt-6 flex flex-wrap gap-3">
+            {buttons.map(({ href, label, ...button }) => (
+              <Button as="a" href={href} variant={button.variant}>
+                {label}
+              </Button>
+            ))}
+          </div>
+        )
+      }
+    </div>
+    <div class="grid gap-6 sm:grid-cols-2">
+      {
+        services.map((service) => (
+          <div class="group/service relative isolate flex aspect-square flex-col justify-end overflow-hidden rounded-xl bg-black">
+            <Image
+              src={service.image.src}
+              alt={service.image.alt}
+              class="absolute inset-0 -z-10 size-full object-cover opacity-60 transition-transform duration-500 group-hover/service:scale-105"
+              widths={[320, 480, 640]}
+              sizes="(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw"
+            />
+            <div class="absolute inset-0 -z-10 bg-linear-to-t from-black/70 to-transparent" />
+            <div class="flex items-end justify-between gap-4 p-5 text-white">
+              <div class="flex flex-col gap-1">
+                <h3 class="text-lg font-semibold">{service.title}</h3>
+                <p class="text-sm leading-relaxed text-white/75">
+                  {service.description}
+                </p>
+              </div>
+              {service.href && (
+                <a
+                  href={service.href}
+                  class="shrink-0 rounded-full bg-white/15 p-2 backdrop-blur-sm transition-colors hover:bg-white/25"
+                >
+                  <Icon name="arrow-right" class="size-4 text-white" />
+                </a>
               )}
-            </TileSpread>
-          </Tile>
+            </div>
+          </div>
         ))
       }
-    </SectionGrid>
-  </SectionSplit>
+    </div>
+  </SectionContainer>
 </Section>

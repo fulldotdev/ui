@@ -1,0 +1,176 @@
+---
+type: doc
+title: Installation
+description: Install Fulldev UI for Astro.
+---
+
+Fulldev UI is distributed as a shadcn-compatible `@fulldev` registry for Astro
+projects. Components and blocks install as source files in your project.
+
+## Start with an AI agent
+
+Give your AI agent this prompt:
+
+```text
+Initialize Fulldev UI by following https://ui.full.dev/docs/installation.md. Choose the current-project or new-project path. If it is unclear which path to use, ask me before changing files.
+```
+
+Every documentation page has a Markdown version. Add `.md` to the URL to read
+the source.
+
+## Manual setup
+
+Follow these steps in order. Skip the steps that your project already satisfies.
+
+### 1. Create an Astro project
+
+Skip this step if you are already in an Astro project.
+
+```bash
+pnpm create astro@latest my-project --template minimal --install --no-git --yes
+cd my-project
+```
+
+### 2. Add Tailwind CSS
+
+Skip this step if your project already uses Tailwind CSS v4.
+
+```bash
+pnpm astro add tailwind -y
+```
+
+### 3. Add shadcn config
+
+Create `components.json` so the shadcn CLI can resolve the `@fulldev`
+registry namespace:
+
+```json title="components.json"
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "base-vega",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/styles/global.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  },
+  "registries": {
+    "@fulldev": "https://ui.full.dev/r/{name}.json"
+  }
+}
+```
+
+Update `tsconfig.json` so installed source files resolve `@/*` imports:
+
+```json title="tsconfig.json"
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"],
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+```
+
+### 4. Initialize Fulldev
+
+Run init after the project has Tailwind CSS and the config files above:
+
+```bash
+npx shadcn@latest add @fulldev/init -y --overwrite
+```
+
+What this command does:
+
+- Installs the shared CSS tokens, class helper, and dependencies.
+- Uses `components.json` to resolve the `@fulldev` registry.
+- Uses `tsconfig.json` to keep installed source imports portable.
+
+`--overwrite` lets init replace Astro's generated `src/styles/global.css` with
+the Fulldev token layer. For an existing project, review that file before
+running the command if it already has custom styles. The `-y` flag is for agent
+and script-friendly installs; omit it for an interactive confirmation prompt.
+
+### 5. Add components
+
+Install your first source-owned UI file:
+
+```bash
+npx shadcn@latest add @fulldev/button -y
+```
+
+Or install the components used in the example below:
+
+```bash
+npx shadcn@latest add @fulldev/layout @fulldev/button @fulldev/section -y
+```
+
+To install the full component and block bundle:
+
+```bash
+npx shadcn@latest add @fulldev/blocks @fulldev/components
+```
+
+## Usage
+
+The commands above will add components to your project. You can then import them like this:
+
+```astro title="src/pages/index.astro" {2-12,14-35} showLineNumbers
+---
+import { Button } from "@/components/ui/button"
+import {
+  Layout,
+  LayoutBody,
+  LayoutHead,
+  LayoutMain,
+} from "@/components/ui/layout"
+import { Section, SectionContainer } from "@/components/ui/section"
+---
+
+<Layout>
+  <LayoutHead title="Astro + Fulldev UI" />
+  <LayoutBody>
+    <LayoutMain>
+      <Section>
+        <SectionContainer class="min-h-screen place-items-center text-center">
+          <div class="grid max-w-xl gap-4">
+            <h1 class="text-4xl font-semibold tracking-tight">
+              Astro + Fulldev UI
+            </h1>
+            <p class="text-muted-foreground">
+              A minimal Astro page using installed Fulldev UI source files.
+            </p>
+            <div>
+              <Button href="/docs/">Get started</Button>
+            </div>
+          </div>
+        </SectionContainer>
+      </Section>
+    </LayoutMain>
+  </LayoutBody>
+</Layout>
+```
+
+At that point, you can follow the component pages directly and install only the
+pieces you need.
+
+## Use with shadcn/ui
+
+Fulldev UI keeps Shadcn-style installation and composition where it fits
+Astro. You can use Fulldev UI for content-driven Astro pages and complete page
+sections, and still use shadcn/ui when a more interactive part of the project
+needs React.

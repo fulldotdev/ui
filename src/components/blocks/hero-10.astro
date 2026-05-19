@@ -1,98 +1,116 @@
 ---
-import { cn } from "@/lib/utils"
-import { Avatar, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Icon } from "@/components/ui/icon"
-import { Image } from "@/components/ui/image"
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-} from "@/components/ui/item"
-import { Rating } from "@/components/ui/rating"
-import {
-  Section,
-  SectionActions,
-  SectionContent,
-  SectionMedia,
-  SectionProse,
-  SectionSpread,
-} from "@/components/ui/section"
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
 
-interface Props {
+import { cn } from "@/lib/utils"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarImage,
+} from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Rating } from "@/components/ui/rating"
+import { Section, SectionContainer } from "@/components/ui/section"
+
+type Props = {
   class?: string
-  id?: string
-  links?: {
-    icon?: string
-    text?: string
-    href?: string
-    target?: string
+  title: string
+  description: string
+  buttons: {
+    label: string
+    href: string
+    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
-  item?: {
-    images?: {
-      src: string
-      alt: string
+  socialProof: {
+    avatars: {
+      image?: ImageMetadata
+      initials: string
+      name?: string
     }[]
-    rating?: number
-    description?: string
+    rating: number
+    text: string
   }
-  image?: {
-    src: string
+  image: {
+    src: ImageMetadata
     alt: string
   }
 }
 
-const { class: className, id, links, item, image } = Astro.props
+const {
+  class: className,
+  title,
+  description,
+  buttons,
+  socialProof,
+  image,
+} = Astro.props
 ---
 
-<Section
-  class={cn("-mt-(--header-height) justify-start", className)}
-  id={id}
-  size="lg"
->
-  <SectionSpread class="relative lg:items-center">
-    <SectionProse size="lg">
-      <slot />
-    </SectionProse>
-    <SectionContent class="shrink-0">
-      <SectionActions>
+<Section class={cn("dark bg-background min-h-screen justify-start", className)}>
+  <SectionContainer
+    class="relative z-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
+  >
+    <div class="flex flex-col gap-5">
+      <h1
+        class="text-foreground text-4xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-5xl"
+      >
+        {title}
+      </h1>
+      <p class="text-foreground/80 max-w-2xl text-lg leading-relaxed">
+        {description}
+      </p>
+    </div>
+    <div class="flex shrink-0 flex-col gap-5">
+      <div class="flex flex-wrap gap-3">
         {
-          links?.map(({ icon, text, ...link }, i) => (
+          buttons.map(({ href, label, ...button }, index) => (
             <Button
-              class="w-full"
-              variant={i === 0 ? "default" : "secondary"}
+              as="a"
+              href={href}
               size="lg"
-              {...link}
+              class="w-full"
+              variant={
+                button.variant ?? (index === 0 ? "default" : "secondary")
+              }
+              {...button}
             >
-              {icon && <Icon name={icon} />}
-              {text}
+              {label}
             </Button>
           ))
         }
-      </SectionActions>
-      <Item class="p-0">
-        <ItemMedia class="-space-x-5">
+      </div>
+      <div class="flex items-center gap-3">
+        <AvatarGroup>
           {
-            item?.images?.map((image) => (
+            socialProof.avatars.map((avatar) => (
               <Avatar class="ring-background size-11 ring">
-                <AvatarImage {...image} />
+                <AvatarImage
+                  src={avatar.image}
+                  alt={avatar.name ?? avatar.initials}
+                />
+                <AvatarFallback>{avatar.initials}</AvatarFallback>
               </Avatar>
             ))
           }
-        </ItemMedia>
-        <ItemContent class="mt-1">
-          <Rating rating={item?.rating} />
-          <ItemDescription>
-            {item?.description}
-          </ItemDescription>
-        </ItemContent>
-      </Item>
-    </SectionContent>
-  </SectionSpread>
-  <SectionMedia
-    class="mask-y-to-black-100% absolute inset-0 size-full rounded-none bg-white mask-y-from-0% dark:bg-black"
+        </AvatarGroup>
+        <div class="flex flex-col gap-0.5">
+          <Rating value={socialProof.rating} />
+          <span class="text-muted-foreground text-xs">{socialProof.text}</span>
+        </div>
+      </div>
+    </div>
+  </SectionContainer>
+  <div
+    class="bg-background pointer-events-none absolute inset-0 mask-y-from-0% mask-y-to-100%"
   >
-    <Image sizes="100vw" priority {...image} class="opacity-75" />
-  </SectionMedia>
+    <Image
+      src={image.src}
+      alt={image.alt}
+      class="size-full object-cover opacity-75"
+      widths={[640, 960, 1280, 1920]}
+      sizes="100vw"
+      loading="eager"
+    />
+  </div>
 </Section>

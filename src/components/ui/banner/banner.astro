@@ -4,79 +4,82 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-interface Props
-  extends HTMLAttributes<"header">,
-    VariantProps<typeof variants> {}
-
-const variants = cva(
-  "relative mx-auto flex min-h-12 items-center justify-between gap-8 border border-transparent px-(--banner-px) py-1",
-  {
-    variants: {
-      variant: {
-        default: "bg-foreground text-background w-full",
-        floating: [
-          "bg-foreground text-background rounded-xl shadow-sm",
-          "w-[calc(100%-2*var(--gutter,24px))] max-w-(--banner-width)",
-          "border-border my-2 overflow-hidden rounded-xl border",
-        ],
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
+type Props = HTMLAttributes<"aside"> &
+  VariantProps<typeof variants> & {
+    storageKey?: string
   }
-)
 
-const { class: className, variant, ...props } = Astro.props
+const variants = cva("relative flex items-center py-2", {
+  variants: {
+    variant: {
+      default: "bg-foreground text-background w-full",
+      floating:
+        "bg-background mx-auto my-2 w-[calc(100%-2rem)] max-w-[calc(var(--container,1280px)-2rem)] overflow-hidden rounded-lg border shadow-sm",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+  },
+})
+
+const { class: className, variant, storageKey, ...props } = Astro.props
 ---
 
-<script is:inline>
-  // Inline because it needs to run before the banner is rendered
-  if (sessionStorage.getItem("closedBanners")) {
-    document.body.classList.add("banner-hidden")
-  } else {
-    document.body.classList.remove("banner-hidden")
-  }
-</script>
-
-<header
+<aside
   class={cn(variants({ variant }), className)}
   data-slot="banner"
+  data-banner-storage-key={storageKey}
   data-variant={variant}
   {...props}
 >
   <slot />
-</header>
+</aside>
 
-<script>
-  document.querySelectorAll("[data-slot='banner-close']").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      sessionStorage.setItem("closedBanners", "true")
-      document.body.classList.add("banner-hidden")
-    })
-  })
-</script>
+<script is:inline>
+  const initializedKey = "fulldevBannerInitialized"
 
-<style is:global>
-  body.banner-hidden [data-slot="banner"] {
-    display: none;
-  }
+  if (!document.documentElement.dataset[initializedKey]) {
+    document.documentElement.dataset[initializedKey] = "true"
 
-  [data-slot="banner"] {
-    --banner-width: var(--container, var(--breakpoint-xl));
-    --banner-px: max(
-      var(--gutter, 24px),
-      calc((100cqw - var(--banner-width)) / 2)
-    );
-  }
+    const getStorageToken = (key) => `banner:${key}`
 
-  [data-slot="banner"][data-variant="floating"] {
-    --banner-px: calc(var(--spacing) * 6);
-  }
+    const syncBanners = () => {
+      document.querySelectorAll("[data-slot='banner']").forEach((banner) => {
+        if (!(banner instanceof HTMLElement)) return
 
-  @media (min-width: 1024px) {
-    [data-slot="banner"][data-variant="floating"] {
-      --banner-px: calc(var(--spacing) * 16);
+        const storageKey = banner.dataset.bannerStorageKey
+
+        if (
+          storageKey &&
+          sessionStorage.getItem(getStorageToken(storageKey)) === "hidden"
+        ) {
+          banner.hidden = true
+        }
+      })
     }
+
+    syncBanners()
+
+    document.addEventListener("click", (event) => {
+      const target = event.target
+
+      if (!(target instanceof Element)) return
+
+      const closeButton = target.closest("[data-slot='banner-close']")
+
+      if (!(closeButton instanceof HTMLElement)) return
+
+      const banner = closeButton.closest("[data-slot='banner']")
+
+      if (!(banner instanceof HTMLElement)) return
+
+      banner.hidden = true
+
+      const storageKey = banner.dataset.bannerStorageKey
+
+      if (storageKey) {
+        sessionStorage.setItem(getStorageToken(storageKey), "hidden")
+      }
+    })
   }
-</style>
+</script>

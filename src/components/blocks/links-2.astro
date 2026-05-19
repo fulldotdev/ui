@@ -1,49 +1,56 @@
 ---
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
-import {
-  Section,
-  SectionContent,
-  SectionGrid,
-  SectionProse,
-  SectionSplit,
-} from "@/components/ui/section"
+import { Section, SectionContainer } from "@/components/ui/section"
 
-interface Props {
+type Props = {
   class?: string
-  id?: string
-  links?: {
-    icon?: string
-    text?: string
-    href?: string
-    target?: string
+  title: string
+  description: string
+  links: {
+    href: string
+    title: string
+    description: string
+    preview?: string
   }[]
 }
 
-const { class: className, id, links } = Astro.props
+const { class: className, title, description, links } = Astro.props
 ---
 
-<Section class={cn("bg-muted/50 mt-16", className)} id={id}>
-  <SectionSplit class="gap-x-32 lg:grid-cols-[1fr_2fr]">
-    <SectionContent>
-      <SectionProse class="max-w-sm">
-        <slot />
-      </SectionProse>
-    </SectionContent>
-    <SectionGrid class="-mx-4" size="sm">
+<Section class={cn("", className)}>
+  <SectionContainer class="gap-10">
+    <div class="flex min-w-0 flex-col gap-4 border-b pb-8">
+      <h2
+        class="text-foreground text-2xl font-semibold tracking-tight text-balance sm:text-3xl"
+      >
+        {title}
+      </h2>
+      <p class="text-muted-foreground max-w-2xl text-base leading-7">
+        {description}
+      </p>
+    </div>
+
+    <div class="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
       {
-        links?.map(({ icon, text, ...link }) => (
-          <Button
-            class="text-foreground justify-start text-start text-base"
-            variant="link"
-            {...link}
+        links.map((item) => (
+          <a
+            href={item.href}
+            class="bg-muted/40 hover:bg-muted/60 focus-visible:ring-ring/50 group/link rounded-lg px-4 py-4 transition-colors focus-visible:ring-2 focus-visible:outline-none"
           >
-            {icon && <Icon name={icon} />}
-            {text}
-          </Button>
+            <span class="flex min-w-0 items-center justify-between gap-3">
+              <span class="text-sm font-medium">{item.title}</span>
+              <Icon
+                name="arrow-right"
+                class="text-muted-foreground size-3.5 shrink-0 transition-transform group-hover/link:translate-x-0.5"
+              />
+            </span>
+            <span class="text-muted-foreground mt-1 block text-sm leading-6">
+              {item.description}
+            </span>
+          </a>
         ))
       }
-    </SectionGrid>
-  </SectionSplit>
+    </div>
+  </SectionContainer>
 </Section>

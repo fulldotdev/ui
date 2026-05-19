@@ -1,0 +1,57 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import { Icon } from "@/components/ui/icon"
+import InputGroupAddon from "@/components/ui/input-group/input-group-addon.astro"
+import InputGroupInput from "@/components/ui/input-group/input-group-input.astro"
+import InputGroup from "@/components/ui/input-group/input-group.astro"
+
+import ComboboxTrigger from "./combobox-trigger.astro"
+
+type Props = HTMLAttributes<"input"> & {
+  showTrigger?: boolean
+  showClear?: boolean
+}
+
+const {
+  class: className,
+  type = "text",
+  disabled = false,
+  showTrigger = true,
+  showClear = false,
+  ...props
+} = Astro.props
+---
+
+<InputGroup class={cn("w-auto", className)}>
+  <InputGroupInput
+    type={type}
+    data-slot="combobox-input"
+    disabled={disabled}
+    {...props}
+  />
+  <InputGroupAddon align="inline-end">
+    {
+      showTrigger && (
+        <ComboboxTrigger
+          class="group-has-data-[slot=combobox-clear]/input-group:hidden data-pressed:bg-transparent"
+          disabled={disabled}
+        />
+      )
+    }
+    {
+      showClear && (
+        <button
+          type="button"
+          data-slot="combobox-clear"
+          class="inline-flex size-6 shrink-0 items-center justify-center rounded-[calc(var(--radius)-5px)] p-0 text-sm shadow-none outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+          disabled={disabled}
+        >
+          <Icon name="x" class="pointer-events-none" />
+        </button>
+      )
+    }
+  </InputGroupAddon>
+  <slot />
+</InputGroup>

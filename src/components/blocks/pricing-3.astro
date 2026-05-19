@@ -1,0 +1,92 @@
+---
+import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Icon } from "@/components/ui/icon"
+import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
+import { Section, SectionContainer } from "@/components/ui/section"
+import { Separator } from "@/components/ui/separator"
+
+type Props = {
+  class?: string
+  badge?: string
+  title: string
+  description?: string
+  offer: {
+    name: string
+    description: string
+    price: number
+    currency: string
+    unit: string
+    features: string[]
+    button: {
+      label: string
+      href: string
+      variant?: "default" | "outline" | "secondary" | "ghost"
+    }
+  }
+}
+
+const { class: className, badge, title, description, offer } = Astro.props
+---
+
+<Section class={cn("", className)}>
+  <SectionContainer class="items-center gap-8 text-center">
+    <div class="flex max-w-2xl flex-col items-center gap-4">
+      {badge && <Badge variant="secondary">{badge}</Badge>}
+      <h2
+        class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
+        {title}
+      </h2>
+      {
+        description && (
+          <p class="text-muted-foreground text-lg leading-relaxed text-balance">
+            {description}
+          </p>
+        )
+      }
+    </div>
+    <Card class="ring-primary w-full max-w-md ring-2">
+      <CardHeader class="text-left">
+        <CardTitle>{offer.name}</CardTitle>
+        <CardDescription>{offer.description}</CardDescription>
+      </CardHeader>
+      <CardContent class="flex flex-col gap-6 text-left">
+        <Price>
+          <PriceValue price={offer.price} currency={offer.currency} />
+          <PriceUnit>{offer.unit}</PriceUnit>
+        </Price>
+        <Separator />
+        <ul class="flex flex-col gap-3">
+          {
+            offer.features.map((feature) => (
+              <li class="flex items-center gap-3 text-sm">
+                <Icon name="check" class="text-primary size-4 shrink-0" />
+                {feature}
+              </li>
+            ))
+          }
+        </ul>
+      </CardContent>
+      <CardFooter>
+        <Button
+          as="a"
+          href={offer.button.href}
+          variant={offer.button.variant ?? "default"}
+          class="w-full"
+        >
+          {offer.button.label}
+        </Button>
+      </CardFooter>
+    </Card>
+  </SectionContainer>
+</Section>

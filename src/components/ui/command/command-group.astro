@@ -3,27 +3,25 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-interface Props extends HTMLAttributes<"div"> {
+type Props = HTMLAttributes<"div"> & {
   heading?: string
+  value?: string
+  forceMount?: boolean
 }
 
-const { class: className, heading, ...props } = Astro.props
+const { class: className, heading, value, forceMount, ...props } = Astro.props
 ---
 
 <div
   data-slot="command-group"
+  data-value={value}
+  data-force-mount={forceMount ? "true" : undefined}
   class={cn(
     "text-foreground [&_[data-slot=command-group-heading]]:text-muted-foreground overflow-hidden p-1 [&_[data-slot=command-group-heading]]:px-2 [&_[data-slot=command-group-heading]]:py-1.5 [&_[data-slot=command-group-heading]]:text-xs [&_[data-slot=command-group-heading]]:font-medium",
     className
   )}
   {...props}
 >
-  {
-    heading && (
-      <div data-slot="command-group-heading" role="presentation">
-        {heading}
-      </div>
-    )
-  }
+  {heading && <div data-slot="command-group-heading">{heading}</div>}
   <slot />
 </div>

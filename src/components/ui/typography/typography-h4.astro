@@ -1,0 +1,43 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"h4"> & {
+  size?: "sm" | "default" | "lg"
+}
+
+const { class: className, size = "default", ...props } = Astro.props
+---
+
+<h4 data-slot="typography-h4" data-size={size} class={cn(className)} {...props}>
+  <slot />
+</h4>
+
+<style is:global>
+  @reference "@/styles/global.css";
+
+  [data-slot="typography-h4"],
+  [data-slot="typography"] h4:not(.no-typography):not(.no-typography *) {
+    @apply scroll-m-20 font-semibold tracking-tight;
+  }
+
+  [data-slot="typography-h4"][data-size="sm"],
+  [data-slot="typography"][data-size="sm"]
+    h4:not(.no-typography):not(.no-typography *) {
+    @apply text-lg;
+  }
+
+  [data-slot="typography-h4"][data-size="default"],
+  [data-slot="typography"] h4:not(.no-typography):not(.no-typography *),
+  [data-slot="typography"][data-size="default"]
+    h4:not(.no-typography):not(.no-typography *) {
+    @apply text-xl;
+  }
+
+  [data-slot="typography-h4"][data-size="lg"],
+  [data-slot="typography"][data-size="lg"]
+    h4:not(.no-typography):not(.no-typography *) {
+    @apply text-2xl;
+  }
+</style>

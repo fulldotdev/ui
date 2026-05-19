@@ -1,19 +1,106 @@
 ---
-import type { HTMLAttributes } from "astro/types"
+import { cva } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-type Props = HTMLAttributes<"div">
+type Props = {
+  direction?: "left" | "right" | "top" | "bottom"
+  duration?: number | string
+  gap?: string
+  infinite?: boolean
+  pauseOnHover?: boolean
+  time?: number | string
+  variant?: "gradient" | "solid"
+  class?: string
+  style?: string
+}
 
-const { class: className, ...props } = Astro.props
+const {
+  class: className = "",
+  direction = "left",
+  duration,
+  gap = "1rem",
+  infinite = true,
+  pauseOnHover = false,
+  style,
+  time = 30,
+  variant = "gradient",
+  ...props
+} = Astro.props
+
+const resolvedDuration = duration ?? time
+const styleValue = `--duration:${
+  typeof resolvedDuration === "number"
+    ? `${resolvedDuration}s`
+    : resolvedDuration
+}; --gap:${gap}; ${style ?? ""}`
+const contentClass = cn(
+  "marquee-content flex min-w-full shrink-0 justify-around gap-[var(--gap)] will-change-transform group-data-[direction=bottom]:[animation-direction:reverse] group-data-[direction=right]:[animation-direction:reverse] data-[direction=bottom]:min-h-full data-[direction=bottom]:flex-col data-[direction=top]:min-h-full data-[direction=top]:flex-col motion-reduce:[animation-play-state:paused]",
+  infinite &&
+    "animate-[marquee-x_var(--duration,20s)_linear_infinite] group-data-[direction=bottom]:animate-[marquee-y_var(--duration,20s)_linear_infinite] group-data-[direction=top]:animate-[marquee-y_var(--duration,20s)_linear_infinite]",
+  direction === "top" && "flex-col",
+  direction === "bottom" && "flex-col"
+)
+
+const marqueeVariants = cva("relative w-full", {
+  variants: {
+    variant: {
+      gradient:
+        "[mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [&[data-direction=bottom]]:[mask-image:linear-gradient(to_top,transparent,black_10%,black_90%,transparent)] [&[data-direction=bottom]]:[-webkit-mask-image:linear-gradient(to_top,transparent,black_10%,black_90%,transparent)] [&[data-direction=top]]:[mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)] [&[data-direction=top]]:[-webkit-mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]",
+      solid: "",
+    },
+  },
+  defaultVariants: {
+    variant: "gradient",
+  },
+})
 ---
 
 <div
+  data-marquee
+  data-direction={direction}
+  data-pause-on-hover={pauseOnHover ? "true" : undefined}
   class={cn(
-    "group/marquee flex justify-stretch overflow-hidden select-none",
+    "",
+    // container utilities
+    "group flex w-full overflow-hidden data-[direction=bottom]:flex-col data-[direction=top]:flex-col",
+    marqueeVariants({ variant }),
     className
   )}
+  style={styleValue}
   {...props}
 >
-  <slot />
+  <div class={contentClass}>
+    <slot />
+  </div>
+  {
+    infinite && (
+      <div class={contentClass} aria-hidden="true">
+        <slot />
+      </div>
+    )
+  }
 </div>
+
+<style>
+  @keyframes marquee-x {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  @keyframes marquee-y {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-100%);
+    }
+  }
+
+  [data-marquee][data-pause-on-hover="true"]:hover .marquee-content {
+    animation-play-state: paused;
+  }
+</style>

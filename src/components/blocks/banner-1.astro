@@ -1,25 +1,44 @@
 ---
-import {
-  Banner,
-  BannerContent,
-  BannerDescription,
-  BannerTitle,
-} from "@/components/ui/banner"
+import { cn } from "@/lib/utils"
+import { Banner, BannerContainer } from "@/components/ui/banner"
 import { Icon } from "@/components/ui/icon"
 
-interface Props {
-  icon?: string
-  title?: string
-  description?: string
+type Props = {
+  class?: string
+  title: string
+  description: string
+  link?: {
+    label: string
+    href: string
+  }
 }
 
-const { icon, title, description } = Astro.props
+const { class: className, title, description, link } = Astro.props
 ---
 
-<Banner>
-  <BannerContent>
-    <Icon class="size-5" name={icon} />
-    <BannerTitle>{title}</BannerTitle>
-    <BannerDescription>{description}</BannerDescription>
-  </BannerContent>
+<Banner
+  storageKey="banner-1"
+  class={cn("dark bg-background text-foreground", className)}
+>
+  <BannerContainer class="flex-row items-center gap-x-4 gap-y-1">
+    <p class="text-sm leading-relaxed">
+      <span class="font-semibold">{title}</span>
+      <span class="mx-1.5 hidden opacity-50 sm:inline">&mdash;</span>
+      <span class="opacity-80">{description}</span>
+    </p>
+    {
+      link && (
+        <a
+          href={link.href}
+          class="group/link inline-flex shrink-0 items-center gap-1 text-sm font-medium underline underline-offset-4 transition-opacity hover:opacity-80"
+        >
+          {link.label}
+          <Icon
+            name="arrow-right"
+            class="size-3.5 transition-transform group-hover/link:translate-x-0.5"
+          />
+        </a>
+      )
+    }
+  </BannerContainer>
 </Banner>

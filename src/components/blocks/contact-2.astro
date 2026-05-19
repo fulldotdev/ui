@@ -1,60 +1,130 @@
 ---
-import { AutoForm } from "@/components/ui/auto-form"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from "@/components/ui/field"
 import { Icon } from "@/components/ui/icon"
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-  ItemTitle,
-} from "@/components/ui/item"
-import {
-  Section,
-  SectionContent,
-  SectionGrid,
-  SectionProse,
-  SectionSplit,
-} from "@/components/ui/section"
+import { Input } from "@/components/ui/input"
+import { Section, SectionContainer } from "@/components/ui/section"
+import { Textarea } from "@/components/ui/textarea"
 
-interface Props {
+type Props = {
   class?: string
-  id?: string
-  form?: any
-  items?: {
-    icon?: string
-    title?: string
-    description?: string
+  title: string
+  description: string
+  contactItems: {
+    icon: string
+    title: string
+    description: string
     href?: string
   }[]
+  form: {
+    title: string
+    legend: string
+    nameLabel: string
+    namePlaceholder: string
+    emailLabel: string
+    emailPlaceholder: string
+    messageLabel: string
+    messagePlaceholder: string
+    actionLabel: string
+  }
 }
 
-const { class: className, id, form, items } = Astro.props
+const { class: className, title, description, contactItems, form } = Astro.props
 ---
 
-<Section class={className} id={id}>
-  <SectionSplit
-    class="items-start lg:grid-cols-[3fr_2fr] lg:*:sticky lg:*:top-[calc(var(--section-py)+var(--header-height,0px))]"
+<Section class={cn("", className)}>
+  <SectionContainer
+    class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start"
   >
-    <SectionContent>
-      <SectionProse>
-        <slot />
-      </SectionProse>
-      <SectionGrid class="flex max-w-md flex-col">
-        {
-          items?.map(({ icon, title, description, href }) => (
-            <Item href={href} variant="muted">
-              <ItemMedia variant="icon">
-                <Icon href={href} name={icon} />
-              </ItemMedia>
-              <ItemContent>
-                <ItemTitle>{title}</ItemTitle>
-                <ItemDescription>{description}</ItemDescription>
-              </ItemContent>
-            </Item>
-          ))
-        }
-      </SectionGrid>
-    </SectionContent>
-    <AutoForm {...form} />
-  </SectionSplit>
+    <div class="flex flex-col gap-6">
+      <div class="flex flex-col gap-4">
+        <h2
+          class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+        >
+          {title}
+        </h2>
+        <p class="text-muted-foreground max-w-xl text-base leading-relaxed">
+          {description}
+        </p>
+      </div>
+      <div class="rounded-xl border p-6">
+        <div class="mb-6">
+          <h3 class="text-lg font-medium">{form.title}</h3>
+        </div>
+        <FieldSet>
+          <FieldLegend class="sr-only">{form.legend}</FieldLegend>
+          <FieldGroup>
+            <div class="grid gap-4 md:grid-cols-2">
+              <Field>
+                <FieldLabel for="contact-name-2">{form.nameLabel}</FieldLabel>
+                <Input id="contact-name-2" placeholder={form.namePlaceholder} />
+              </Field>
+              <Field>
+                <FieldLabel for="contact-email-2">{form.emailLabel}</FieldLabel>
+                <Input
+                  id="contact-email-2"
+                  type="email"
+                  placeholder={form.emailPlaceholder}
+                />
+              </Field>
+            </div>
+            <Field>
+              <FieldLabel for="contact-message-2"
+                >{form.messageLabel}</FieldLabel
+              >
+              <Textarea
+                id="contact-message-2"
+                rows={5}
+                placeholder={form.messagePlaceholder}
+              />
+            </Field>
+            <Button size="lg" class="w-full">{form.actionLabel}</Button>
+          </FieldGroup>
+        </FieldSet>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-3">
+      {
+        contactItems.map((item) => (
+          <div class="flex gap-4 rounded-xl border p-4">
+            {item.href ? (
+              <Button
+                as="a"
+                href={item.href}
+                variant="secondary"
+                size="icon"
+                class="text-primary shrink-0"
+                aria-label={item.title}
+              >
+                <Icon name={item.icon} />
+              </Button>
+            ) : (
+              <Button
+                variant="secondary"
+                size="icon"
+                class="text-primary shrink-0"
+                aria-label={item.title}
+              >
+                <Icon name={item.icon} />
+              </Button>
+            )}
+            <div class="flex flex-col gap-1">
+              <p class="text-foreground text-sm font-medium">{item.title}</p>
+              <p class="text-muted-foreground text-sm leading-relaxed">
+                {item.description}
+              </p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </SectionContainer>
 </Section>
