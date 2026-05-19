@@ -1,7 +1,7 @@
 ---
 type: doc
 title: Icon
-description: Render Fulldev content icons or use Lucide and Simple Icons directly in Astro.
+description: Render Fulldev icons from Lucide and Simple Icons.
 sidebar:
   badge:
     text: ⋅
@@ -10,16 +10,9 @@ sidebar:
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
-Fulldev supports two icon workflows:
-
-- Use the Fulldev `Icon` component when an icon name comes from content,
-  frontmatter, or project configuration.
-- Import `lucide-static` or `simple-icons` components directly when the
-  icon is code-owned UI.
-
-The `Icon` component resolves Lucide icons first and falls back to Simple Icons
-for brand marks. Direct imports remain useful for fixed interface icons in
-buttons, controls, and examples.
+Fulldev uses the `Icon` component for interface icons, brand marks, and
+content-owned icon names. It resolves Lucide icons first and falls back to
+Simple Icons for brand marks.
 
 ```astro live props={{ name: 'icon' }}
 ---
@@ -32,77 +25,52 @@ import { Icon } from "@/components/ui/icon"
 
 ## Installation
 
-Install the Fulldev icon component when you want content-owned icon names:
+Install the Fulldev icon component when you need icons:
 
 ```bash
 npx shadcn@latest add @fulldev/icon
 ```
 
-Install direct icon packages only when you need to import icon components in
-code:
-
-```bash
-pnpm add lucide-static simple-icons
-```
-
-## Direct imports
+## Rendering
 
 <Alert>
-  <AlertTitle>Use path imports for fixed UI icons</AlertTitle>
+  <AlertTitle>Use the Icon component</AlertTitle>
   <AlertDescription>
-    Import fixed Lucide and Simple Icons components from their icon-specific
-    paths, such as `lucide-static/icons/check.svg` or
-    `simple-icons/icons/github.svg`. Avoid named imports from the package
-    entrypoint because they can make the dev server scan much more icon code and
-    noticeably slow startup and HMR. The Fulldev `Icon` component uses static
-    SVG packages for content-owned dynamic icon names.
+    Use `Icon` for both fixed UI icons and content-owned icon names. This keeps
+    Fulldev source consistent and avoids mixing static SVG imports with dynamic
+    icon resolution.
   </AlertDescription>
 </Alert>
 
 ```astro live
 ---
-import CheckIcon from "lucide-static/icons/check.svg"
-import HeartIcon from "lucide-static/icons/heart.svg"
-import MessageCircleIcon from "lucide-static/icons/message-circle.svg"
-import StarIcon from "lucide-static/icons/star.svg"
-import Trash2Icon from "lucide-static/icons/trash-2.svg"
-import GithubIcon from "simple-icons/icons/github.svg"
+import { Icon } from "@/components/ui/icon"
 ---
 
-<HeartIcon />
-<StarIcon />
-<CheckIcon />
-<Trash2Icon />
-<MessageCircleIcon />
-<GithubIcon class="size-6 fill-current" />
+<Icon name="heart" />
+<Icon name="star" />
+<Icon name="check" />
+<Icon name="trash-2" />
+<Icon name="message-circle" />
+<Icon name="github" class="size-6 fill-current" />
 ```
 
 ## Usage
 
-For content-owned icons, pass plain names to `Icon`:
+Pass plain names to `Icon`:
 
 ```astro
 <Icon name={feature.icon} />
 ```
 
-For UI icons that are fixed in code:
-
-```ts
-import HeartIcon from "lucide-static/icons/heart.svg"
-```
-
 ```astro
-<HeartIcon />
+<Icon name="heart" />
 ```
 
 For brand icons:
 
-```ts
-import GithubIcon from "simple-icons/icons/github.svg"
-```
-
 ```astro
-<GithubIcon class="size-6 fill-current" />
+<Icon name="github" class="size-6 fill-current" />
 ```
 
 ## Example
@@ -113,24 +81,22 @@ packages do not add this attribute automatically.
 
 ```astro live
 ---
-import ArrowRightIcon from "lucide-static/icons/arrow-right.svg"
-
 import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
 ---
 
 <Button>
   Continue
-  <ArrowRightIcon data-icon="inline-end" />
+  <Icon name="arrow-right" data-icon="inline-end" />
 </Button>
 ```
 
 ## Notes
 
-- Use plain icon names in content, frontmatter, or project configuration.
-- Render content-owned icon names through `Icon`.
-- Import icon components directly for fixed code-owned UI icons.
-- Prefer `lucide-static` for interface icons and `simple-icons` for brand
-  marks when importing directly.
+- Use Lucide icon names for interface icons.
+- Use Simple Icons names for brand marks.
+- Add `data-icon="inline-start"` or `data-icon="inline-end"` inside buttons
+  when the icon sits next to a label.
 
 ## API Reference
 

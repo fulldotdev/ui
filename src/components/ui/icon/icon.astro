@@ -3,7 +3,7 @@ import type { HTMLAttributes } from "astro/types"
 
 type Props = Omit<HTMLAttributes<"svg">, "name" | "href"> & {
   href?: HTMLAttributes<"a">["href"]
-  name?: string | number
+  name?: string | number | null
 }
 
 const { name, href, ...props } = Astro.props
@@ -37,10 +37,13 @@ const hrefMap = {
   linkedin: "linkedin",
 } as const
 
-const icons = import.meta.glob([
-  "/node_modules/lucide-static/icons/*.svg",
-  "/node_modules/simple-icons/icons/*.svg",
-])
+const icons = import.meta.glob(
+  [
+    "/node_modules/lucide-static/icons/*.svg",
+    "/node_modules/simple-icons/icons/*.svg",
+  ],
+  { eager: true }
+) as Record<string, { default: any }>
 
 const foundPath = () => {
   let foundPath: string | undefined = undefined
@@ -63,8 +66,8 @@ const foundPath = () => {
   return foundPath
 }
 
-const foundModule = foundPath() && icons[foundPath() as keyof typeof icons]
-const module = foundModule && ((await foundModule()) as any)
+const iconPath = foundPath()
+const module = iconPath ? icons[iconPath] : undefined
 const Comp = module?.default
 ---
 
