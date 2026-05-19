@@ -329,25 +329,11 @@ const openLinks = markdownUrl
         await navigator.clipboard.writeText(text)
         return true
       } catch {
-        // Fall through to the textarea copy path.
+        return false
       }
     }
 
-    const textarea = document.createElement("textarea")
-    textarea.value = text
-    textarea.setAttribute("readonly", "")
-    textarea.style.position = "fixed"
-    textarea.style.inset = "0 auto auto 0"
-    textarea.style.opacity = "0"
-    document.body.append(textarea)
-    textarea.select()
-    textarea.setSelectionRange(0, text.length)
-
-    try {
-      return document.execCommand("copy")
-    } finally {
-      textarea.remove()
-    }
+    return false
   }
 
   const showCopySuccess = (button) => {
