@@ -34,6 +34,7 @@ const resolvedStyle = [
   data-slot="sidebar-wrapper"
   data-default-open={defaultOpen ? "true" : "false"}
   data-open={open === undefined ? undefined : open ? "true" : "false"}
+  data-sidebar-initializing="true"
   style={resolvedStyle}
   class={cn(
     "group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full",
@@ -42,6 +43,14 @@ const resolvedStyle = [
   {...props}
 >
   <slot />
+  <style is:inline>
+    [data-slot="sidebar-wrapper"][data-sidebar-initializing="true"]
+      [data-slot="sidebar-gap"],
+    [data-slot="sidebar-wrapper"][data-sidebar-initializing="true"]
+      [data-slot="sidebar-container"] {
+      transition: none !important;
+    }
+  </style>
   <script is:inline>
     ;(() => {
       window.__fulldevSyncSidebarProvider ??= (provider, open) => {
@@ -93,6 +102,9 @@ const resolvedStyle = [
 
       provider.dataset.openMobile = "false"
       window.__fulldevSyncSidebarProvider(provider, isOpen)
+      requestAnimationFrame(() => {
+        provider.removeAttribute("data-sidebar-initializing")
+      })
     })()
   </script>
 </div>
