@@ -51,11 +51,11 @@ collections, page schemas, routes, globals, or project-owned placeholder media.
 
 ## Thin routes
 
-Routes should hand content entries to a generic renderer and then get out of
-the way. In this repo, `src/pages/[...page].astro` collects page entries and
-`src/components/layout-renderer.astro` resolves the layout from the page type.
+Routes should stay generic and then get out of the way. In this repo,
+`src/pages/[...page].astro` collects page entries and resolves the layout from
+the page type.
 
-```astro title="src/components/layout-renderer.astro"
+```astro title="src/pages/[...page].astro"
 ---
 const { Content, headings } = await render(page)
 const layoutPath = `../layouts/${page.data.type}.astro`
@@ -146,7 +146,7 @@ To add a layout-backed page type:
 2. Add it to the discriminated union in `src/schemas/page.ts`.
 3. Create `src/layouts/<name>.astro`.
 4. Add content in `src/content/pages` with `type: <name>`.
-5. Keep the route and generic layout renderer unchanged.
+5. Keep the route's generic layout resolution unchanged.
 
 This pattern keeps the system boring in the best way: new page types are
 explicit, validated, and easy to inspect without changing the routing layer.

@@ -1,7 +1,7 @@
 ---
-import { getCollection } from "astro:content"
+import { getCollection, getEntry, render } from "astro:content"
 
-import LayoutRenderer from "@/components/layout-renderer.astro"
+export const prerender = true
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages")
@@ -14,6 +14,22 @@ export async function getStaticPaths() {
     }
   })
 }
+
+const page = Astro.props
+const pageData = page.data
+const { Content, headings } = await render(page)
+const global = await getEntry("globals", Astro.currentLocale || "en")
+if (!global) throw new Error("Add a global to content/globals")
+const globalData = global.data
+
+const layoutImports = import.meta.glob("../layouts/*.astro", { eager: true })
+const layoutPath = `../layouts/${pageData.type}.astro`
+const layoutImport = layoutImports[layoutPath] as { default?: any } | undefined
+const Layout = layoutImport?.default
+
+if (!Layout) throw new Error(`Add a layout for page type "${pageData.type}"`)
 ---
 
-<LayoutRenderer {...Astro.props} />
+<Layout global={globalData} page={pageData} headings={headings}>
+  <Content />
+</Layout>
