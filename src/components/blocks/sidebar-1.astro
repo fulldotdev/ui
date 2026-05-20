@@ -222,10 +222,61 @@ const githubStars = "560+"
   <SidebarInset>
     <Header class="h-16">
       <HeaderContainer class="max-w-none justify-between">
-        <HeaderGroup>
+        <HeaderGroup class="flex-1 md:flex-none">
           <SidebarTrigger />
           <Separator orientation="vertical" class="my-auto mr-2 h-4" />
-          <Breadcrumb>
+          <Dialog class="block min-w-0 flex-1 md:hidden" data-search-dialog>
+            <DialogTrigger
+              as="div"
+              role="button"
+              tabindex="0"
+              class="h-auto w-full cursor-pointer border-0 bg-transparent p-0 shadow-none hover:bg-transparent"
+              aria-keyshortcuts="Meta+K Control+K"
+            >
+              <InputGroup class="h-8 shadow-none">
+                <InputGroupInput
+                  placeholder={search.label}
+                  readonly
+                  tabindex="-1"
+                  aria-label={search.label}
+                  class="cursor-pointer"
+                />
+                <InputGroupAddon>
+                  <Icon name="search" />
+                </InputGroupAddon>
+              </InputGroup>
+            </DialogTrigger>
+
+            <CommandDialog title={search.label} description={search.label}>
+              <Command
+                class="[&_[data-slot=command-item][data-selected]]:bg-accent [&_[data-slot=command-item][data-selected]]:text-accent-foreground"
+              >
+                <CommandInput placeholder={search.label} />
+                <CommandList>
+                  <CommandEmpty>{search.empty}</CommandEmpty>
+
+                  {
+                    searchGroups.map((group) => (
+                      <CommandGroup heading={group.label}>
+                        {group.items.map((item) => (
+                          <CommandItem
+                            href={item.href}
+                            value={item.path}
+                            label={item.label}
+                            keywords={[item.title, item.path]}
+                          >
+                            {item.label}
+                            <CommandShortcut>{item.href}</CommandShortcut>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    ))
+                  }
+                </CommandList>
+              </Command>
+            </CommandDialog>
+          </Dialog>
+          <Breadcrumb class="hidden md:block">
             <BreadcrumbList>
               {
                 breadcrumb.items.map((item, index) => {
@@ -359,7 +410,11 @@ const githubStars = "560+"
     if (event.key.toLowerCase() !== "k") return
     if (event.shiftKey || event.altKey) return
 
-    const dialog = document.querySelector("[data-search-dialog]")
+    const dialogs = Array.from(
+      document.querySelectorAll("[data-search-dialog]")
+    )
+    const dialog =
+      dialogs.find((dialog) => dialog.getClientRects().length > 0) ?? dialogs[0]
     const isSearchShortcut = isMac
       ? event.metaKey && !event.ctrlKey
       : event.ctrlKey && !event.metaKey
