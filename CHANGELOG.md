@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.9.1
+
+### Patch Changes
+
+- [#178](https://github.com/fulldotdev/ui/pull/178) [`e2c8f47`](https://github.com/fulldotdev/ui/commit/e2c8f476f3333d09eb21ff4fa251d84326664be3) Thanks [@silveltman](https://github.com/silveltman)! - Fix vertical alignment in the header block.
+
 ## 0.9.0
 
 ### Minor Changes
