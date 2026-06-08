@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.9.2
+
+### Patch Changes
+
+- [`c052c13`](https://github.com/fulldotdev/ui/commit/c052c13c356bae933ffd838de1a95a0af7e97e21) Thanks [@silveltman](https://github.com/silveltman)! - Add active navigation item support to the Header 1 block.
+
 ## 0.9.1
 
 ### Patch Changes
