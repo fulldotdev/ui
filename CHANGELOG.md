@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.9.3
+
+### Patch Changes
+
+- [`e641911`](https://github.com/fulldotdev/ui/commit/e64191143efe448a46999d63ca7ed6d8bd320d1e) Thanks [@silveltman](https://github.com/silveltman)! - Add the gradient component to the registry, keep Lucide icons unfilled, and fix marquee spacing during looping animations.
+
 ## 0.9.2
 
 ### Patch Changes
