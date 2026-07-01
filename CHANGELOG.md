@@ -1,5 +1,19 @@
 # Fulldev UI
 
+## 0.9.2
+
+### Patch Changes
+
+- [`c052c13`](https://github.com/fulldotdev/ui/commit/c052c13c356bae933ffd838de1a95a0af7e97e21) Thanks [@silveltman](https://github.com/silveltman)! - Add active navigation item support to the Header 1 block.
+
+- [`49e1bfc`](https://github.com/fulldotdev/ui/commit/49e1bfc3d1bbb7a6cb126094385704fdcc0a49d6) Thanks [@silveltman](https://github.com/silveltman)! - Update registry build and styling dependencies.
+
+## 0.9.1
+
+### Patch Changes
+
+- [#178](https://github.com/fulldotdev/ui/pull/178) [`e2c8f47`](https://github.com/fulldotdev/ui/commit/e2c8f476f3333d09eb21ff4fa251d84326664be3) Thanks [@silveltman](https://github.com/silveltman)! - Fix vertical alignment in the header block.
+
 ## 0.9.0
 
 ### Minor Changes
