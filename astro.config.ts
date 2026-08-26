@@ -9,6 +9,11 @@ export default defineConfig({
     host: "127.0.0.1",
     port: 4321,
   },
+  vite: {
+    server: {
+      allowedHosts: ["otis.tailb5cb80.ts.net"],
+    },
+  },
   prefetch: {
     prefetchAll: true,
   },
@@ -30,30 +35,13 @@ export default defineConfig({
     {
       provider: fontProviders.fontsource(),
       name: "Geist",
-      cssVariable: "--font-geist-sans",
+      cssVariable: "--font-sans",
       weights: ["300 700"],
-      subsets: ["latin"],
-      display: "swap",
-      fallbacks: ["Arial", "sans-serif"],
     },
     {
       provider: fontProviders.fontsource(),
       name: "Geist Mono",
-      cssVariable: "--font-geist-mono",
-      weights: ["400 700"],
-      subsets: ["latin"],
-      display: "swap",
-      fallbacks: [
-        "ui-monospace",
-        "SFMono-Regular",
-        "Menlo",
-        "Monaco",
-        "Consolas",
-        "Liberation Mono",
-        "Courier New",
-        "monospace",
-      ],
-      optimizedFallbacks: false,
+      cssVariable: "--font-mono",
     },
   ],
   integrations: [

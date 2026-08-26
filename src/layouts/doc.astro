@@ -18,19 +18,15 @@ const currentPath = Astro.url.pathname
 const globalCallout = props.global.docs?.callout
 const markdownPath =
   currentPath === "/" ? "/index.md" : `${currentPath.replace(/\/$/, "")}.md`
+const markdownUrl = new URL(markdownPath, Astro.url).toString()
 
 const docsPages = await getCollection("pages")
 const orderedDocLinks = [
   "docs/introduction",
   "docs/installation",
   "docs/theming",
-  "docs/dark-mode",
-  "docs/cli",
-  "docs/mcp",
-  "docs/skills",
   "components",
   "blocks",
-  "docs/layouts",
 ]
   .map((id) => docsPages.find((entry) => entry.id === id))
   .filter((entry): entry is (typeof docsPages)[number] => Boolean(entry))
@@ -81,7 +77,7 @@ const tocItems = props.headings
     title={props.page.title}
     description={props.page.description}
     copyButton={copyButton}
-    markdownUrl={markdownPath}
+    markdownUrl={markdownUrl}
     tocItems={tocItems}
     callout={globalCallout}
     previousPage={previousPage}

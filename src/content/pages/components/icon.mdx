@@ -1,18 +1,23 @@
 ---
 type: doc
 title: Icon
-description: Render Fulldev icons from Lucide and Simple Icons.
+description: Render Fulldev content icons or use Lucide and Simple Icons directly in Astro.
 sidebar:
   badge:
     text: ⋅
     variant: success
 ---
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+Fulldev supports two icon workflows:
 
-Fulldev uses the `Icon` component for interface icons, brand marks, and
-content-owned icon names. It resolves Lucide icons first and falls back to
-Simple Icons for brand marks.
+- Use the Fulldev `Icon` component when an icon name comes from content,
+  frontmatter, or project configuration.
+- Import `@lucide/astro` or `simple-icons-astro` components directly when the
+  icon is code-owned UI.
+
+The `Icon` component resolves Lucide icons first and falls back to Simple Icons
+for brand marks. Direct imports remain useful for fixed interface icons in
+buttons, controls, and examples.
 
 ```astro live props={{ name: 'icon' }}
 ---
@@ -25,58 +30,92 @@ import { Icon } from "@/components/ui/icon"
 
 ## Installation
 
-Install the Fulldev icon component when you need icons:
+Install the Fulldev icon component when you want content-owned icon names:
 
 ```bash
 npx shadcn@latest add @fulldev/icon
 ```
 
-## Rendering
+Install direct icon packages only when you need to import icon components in
+code:
 
-<Alert>
-  <AlertTitle>Use the Icon component</AlertTitle>
-  <AlertDescription>
-    Use `Icon` for both fixed UI icons and content-owned icon names. This keeps
-    Fulldev source consistent and avoids mixing static SVG imports with dynamic
-    icon resolution.
-  </AlertDescription>
-</Alert>
+```bash
+pnpm add @lucide/astro simple-icons-astro
+```
+
+## Direct imports
 
 ```astro live
 ---
-import { Icon } from "@/components/ui/icon"
+import Check from "@lucide/astro/icons/check"
+import Heart from "@lucide/astro/icons/heart"
+import MessageCircle from "@lucide/astro/icons/message-circle"
+import Star from "@lucide/astro/icons/star"
+import Trash2 from "@lucide/astro/icons/trash-2"
+import Github from "simple-icons-astro/Github"
 ---
 
-<Icon name="heart" />
-<Icon name="star" />
-<Icon name="check" />
-<Icon name="trash-2" />
-<Icon name="message-circle" />
-<Icon name="github" />
+<Heart />
+<Star />
+<Check />
+<Trash2 />
+<MessageCircle />
+<Github fill="currentColor" />
 ```
 
 ## Usage
 
-Pass plain names to `Icon`:
+For content-owned icons, pass plain names to `Icon`:
 
 ```astro
 <Icon name={feature.icon} />
 ```
 
+For UI icons that are fixed in code:
+
+```ts
+import Heart from "@lucide/astro/icons/heart"
+```
+
 ```astro
-<Icon name="heart" />
+<Heart />
 ```
 
 For brand icons:
 
+```ts
+import Github from "simple-icons-astro/Github"
+```
+
 ```astro
-<Icon name="github" />
+<Github fill="currentColor" />
+```
+
+## Example
+
+Inside buttons and similar controls, use `data-icon` for Lucide icons so the
+surrounding component can size and align the icon consistently.
+
+```astro live
+---
+import ArrowRight from "@lucide/astro/icons/arrow-right"
+
+import { Button } from "@/components/ui/button"
+---
+
+<Button>
+  Continue
+  <ArrowRight data-icon="inline-end" />
+</Button>
 ```
 
 ## Notes
 
-- Use Lucide icon names for interface icons.
-- Use Simple Icons names for brand marks.
+- Use plain icon names in content, frontmatter, or project configuration.
+- Render content-owned icon names through `Icon`.
+- Import icon components directly for fixed code-owned UI icons.
+- Prefer `@lucide/astro` for interface icons and `simple-icons-astro` for brand
+  marks when importing directly.
 
 ## API Reference
 

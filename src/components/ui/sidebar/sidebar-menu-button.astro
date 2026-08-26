@@ -17,7 +17,7 @@ const variants = cva(
       variant: {
         default: "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
         outline:
-          "bg-background hover:bg-sidebar-accent hover:text-sidebar-accent-foreground shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]",
+          "bg-background hover:bg-sidebar-accent hover:text-sidebar-accent-foreground shadow-[0_0_0_1px_var(--sidebar-border)] hover:shadow-[0_0_0_1px_var(--sidebar-accent)]",
       },
       size: {
         default: "h-8 text-sm",
@@ -45,14 +45,17 @@ type TooltipValue =
       collisionPadding?: number
     })
 
-interface Props
-  extends VariantProps<typeof variants>, HTMLAttributes<"button"> {
-  as?: "a" | "button" | "div" | "span"
-  href?: string
-  isActive?: boolean
-  active?: boolean
-  tooltip?: TooltipValue
-}
+type Props = VariantProps<typeof variants> &
+  HTMLAttributes<"button"> &
+  HTMLAttributes<"a"> &
+  HTMLAttributes<"div"> &
+  HTMLAttributes<"span"> & {
+    as?: "a" | "button" | "div" | "span"
+    href?: string
+    isActive?: boolean
+    active?: boolean
+    tooltip?: TooltipValue
+  }
 
 const {
   as: explicitTag,
@@ -64,7 +67,7 @@ const {
   tooltip,
   type,
   ...props
-} = Astro.props satisfies Props
+} = Astro.props
 
 const Tag = explicitTag || ("href" in Astro.props ? "a" : "button")
 const resolvedActive = isActive ?? active

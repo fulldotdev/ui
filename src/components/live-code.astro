@@ -1,6 +1,8 @@
 ---
+import Check from "@lucide/astro/icons/check"
+import Copy from "@lucide/astro/icons/copy"
+
 import { Button } from "@/components/ui/button"
-import { Icon } from "@/components/ui/icon"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 type ComponentProps = {
@@ -34,10 +36,7 @@ const installButtonId = installCommand
   : undefined
 ---
 
-<Tabs
-  defaultValue="preview"
-  class="live-code-layout no-typography w-full gap-3"
->
+<Tabs defaultValue="preview" class="live-code-layout w-full gap-3">
   <div
     class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
   >
@@ -60,16 +59,8 @@ const installButtonId = installCommand
             data-source={installCommand}
             aria-label={`Copy install command: ${installCommand}`}
           >
-            <Icon
-              name="copy"
-              data-copy-icon
-              class="live-code-copy-icon size-4"
-            />
-            <Icon
-              name="check"
-              data-check-icon
-              class="live-code-check-icon hidden size-4"
-            />
+            <Copy data-copy-icon class="live-code-copy-icon size-4" />
+            <Check data-check-icon class="live-code-check-icon hidden size-4" />
             <span>{installCommand}</span>
           </Button>
         )
@@ -101,7 +92,7 @@ const installButtonId = installCommand
   <TabsContent value="code" class="mt-0 w-full" hidden>
     <div
       data-slot="live-code-panel"
-      class="border-border bg-muted/60 [&_.live-code-source]:bg-background/40 w-full overflow-hidden rounded-xl border [&_.live-code-source]:rounded-lg [&_pre.astro-code]:m-0 [&_pre.astro-code]:rounded-none [&_pre.astro-code]:border-0 [&_pre.astro-code]:bg-transparent! [&_pre.astro-code]:p-4 dark:[&_pre.astro-code]:text-(--shiki-dark,var(--foreground))! [&_pre.astro-code_code]:text-(--shiki-light,var(--foreground))! dark:[&_pre.astro-code_code]:text-(--shiki-dark,var(--foreground))! dark:[&_pre.astro-code_span[style*='--shiki-dark']]:font-(--shiki-dark-font-weight,inherit) dark:[&_pre.astro-code_span[style*='--shiki-dark']]:text-(--shiki-dark)! dark:[&_pre.astro-code_span[style*='--shiki-dark']]:[font-style:var(--shiki-dark-font-style,inherit)] dark:[&_pre.astro-code_span[style*='--shiki-dark']]:[text-decoration:var(--shiki-dark-text-decoration,inherit)]"
+      class="border-border bg-muted/60 [&_.live-code-source]:bg-background/40 w-full overflow-hidden rounded-xl border [&_.live-code-source]:rounded-lg [&_pre.astro-code]:m-0 [&_pre.astro-code]:rounded-none [&_pre.astro-code]:border-0 [&_pre.astro-code]:!bg-transparent [&_pre.astro-code]:p-4 dark:[&_pre.astro-code]:!text-[var(--shiki-dark,var(--foreground))] [&_pre.astro-code_code]:!text-[var(--shiki-light,var(--foreground))] dark:[&_pre.astro-code_code]:!text-[var(--shiki-dark,var(--foreground))] dark:[&_pre.astro-code_span[style*='--shiki-dark']]:[font-weight:var(--shiki-dark-font-weight,inherit)] dark:[&_pre.astro-code_span[style*='--shiki-dark']]:!text-[var(--shiki-dark)] dark:[&_pre.astro-code_span[style*='--shiki-dark']]:[font-style:var(--shiki-dark-font-style,inherit)] dark:[&_pre.astro-code_span[style*='--shiki-dark']]:[text-decoration:var(--shiki-dark-text-decoration,inherit)]"
     >
       <div class="relative">
         <Button
@@ -112,13 +103,8 @@ const installButtonId = installCommand
           data-slot="live-code-copy-source"
           aria-label="Copy code example"
         >
-          <Icon
-            name="copy"
-            data-copy-icon
-            class="live-code-source-copy-icon size-4"
-          />
-          <Icon
-            name="check"
+          <Copy data-copy-icon class="live-code-source-copy-icon size-4" />
+          <Check
             data-check-icon
             class="live-code-source-check-icon hidden size-4"
           />
@@ -133,30 +119,7 @@ const installButtonId = installCommand
 <script is:inline>
   if (!window.__fulldevLiveCodeCopy) {
     window.__fulldevLiveCodeCopy = true
-
-    const writeToClipboard = async (text) => {
-      if (navigator.clipboard && window.isSecureContext) {
-        try {
-          await navigator.clipboard.writeText(text)
-          return true
-        } catch {
-          return false
-        }
-      }
-
-      return false
-    }
-
-    const showCopySuccess = (button) => {
-      button.querySelector("[data-copy-icon]")?.classList.add("hidden")
-      button.querySelector("[data-check-icon]")?.classList.remove("hidden")
-      setTimeout(() => {
-        button.querySelector("[data-copy-icon]")?.classList.remove("hidden")
-        button.querySelector("[data-check-icon]")?.classList.add("hidden")
-      }, 1200)
-    }
-
-    document.addEventListener("click", async (event) => {
+    document.addEventListener("click", (event) => {
       const button = event.target?.closest?.(
         "[id^='live-code-copy-install-'], [data-slot='live-code-copy-source']"
       )
@@ -167,10 +130,13 @@ const installButtonId = installCommand
           .closest("[data-slot='live-code-panel']")
           ?.querySelector("pre")
           ?.textContent?.replace(/\n$/, "")
-      if (!source) return
-
-      const copied = await writeToClipboard(source)
-      if (copied) showCopySuccess(button)
+      button.querySelector("[data-copy-icon]")?.classList.add("hidden")
+      button.querySelector("[data-check-icon]")?.classList.remove("hidden")
+      navigator.clipboard?.writeText(source ?? "")
+      setTimeout(() => {
+        button.querySelector("[data-copy-icon]")?.classList.remove("hidden")
+        button.querySelector("[data-check-icon]")?.classList.add("hidden")
+      }, 1200)
     })
   }
 </script>

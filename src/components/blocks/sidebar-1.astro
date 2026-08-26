@@ -1,4 +1,7 @@
 ---
+import ChevronDownIcon from "@lucide/astro/icons/chevron-down"
+import SearchIcon from "@lucide/astro/icons/search"
+
 import { cn } from "@/lib/utils"
 import {
   Breadcrumb,
@@ -29,11 +32,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Header, HeaderContainer, HeaderGroup } from "@/components/ui/header"
 import { Icon } from "@/components/ui/icon"
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group"
 import { Kbd } from "@/components/ui/kbd"
 import { LogoImage, LogoText } from "@/components/ui/logo"
 import { Separator } from "@/components/ui/separator"
@@ -124,7 +122,18 @@ const searchGroups = search.items.reduce<
   return groups
 }, [])
 
-const githubStars = "560+"
+let githubStars = "Stars"
+
+try {
+  const response = await fetch(`https://api.github.com/repos/${githubRepo}`)
+  const data = await response.json()
+
+  if (response.ok && typeof data.stargazers_count === "number") {
+    githubStars = new Intl.NumberFormat().format(data.stargazers_count)
+  }
+} catch {
+  // Keep the fallback label when GitHub is unavailable.
+}
 ---
 
 <SidebarProvider>
@@ -141,28 +150,19 @@ const githubStars = "560+"
       </SidebarMenuButton>
       <Dialog class="w-full" data-search-dialog>
         <DialogTrigger
-          as="div"
-          role="button"
-          tabindex="0"
-          class="h-auto w-full cursor-pointer border-0 bg-transparent p-0 shadow-none hover:bg-transparent"
+          variant="outline"
+          size="sm"
+          class="w-full justify-start shadow-none"
           aria-keyshortcuts="Meta+K Control+K"
         >
-          <InputGroup class="h-8 shadow-none">
-            <InputGroupInput
-              placeholder={search.label}
-              readonly
-              tabindex="-1"
-              aria-label={search.label}
-              class="cursor-pointer"
-            />
-            <InputGroupAddon>
-              <Icon name="search" />
-            </InputGroupAddon>
-            <InputGroupAddon align="inline-end">
-              <Kbd data-search-modifier>⌘</Kbd>
-              <Kbd>K</Kbd>
-            </InputGroupAddon>
-          </InputGroup>
+          <SearchIcon data-icon="inline-start" />
+          <span class="truncate">{search.label}</span>
+          <Kbd
+            class="bg-background/80 ml-auto h-4 min-w-4 translate-y-0 px-1 text-[10px]"
+            data-search-shortcut
+          >
+            ⌘ + K
+          </Kbd>
         </DialogTrigger>
 
         <CommandDialog title={search.label} description={search.label}>
@@ -179,9 +179,14 @@ const githubStars = "560+"
                     {group.items.map((item) => (
                       <CommandItem
                         href={item.href}
-                        value={item.path}
+                        value={`${item.group} ${item.label}`}
                         label={item.label}
-                        keywords={[item.title, item.path]}
+                        keywords={[
+                          item.group,
+                          item.title,
+                          item.path,
+                          item.description,
+                        ]}
                       >
                         {item.label}
                         <CommandShortcut>{item.href}</CommandShortcut>
@@ -196,7 +201,7 @@ const githubStars = "560+"
       </Dialog>
     </SidebarHeader>
     <SidebarContent
-      class="mask-[linear-gradient(to_bottom,transparent,black_1rem,black_calc(100%-1rem),transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_1rem,black_calc(100%-1rem),transparent)] group-data-[collapsible=icon]:mask-none group-data-[collapsible=icon]:[-webkit-mask-image:none]"
+      class="[mask-image:linear-gradient(to_bottom,transparent,black_1rem,black_calc(100%_-_1rem),transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_1rem,black_calc(100%_-_1rem),transparent)] group-data-[collapsible=icon]:[mask-image:none] group-data-[collapsible=icon]:[-webkit-mask-image:none]"
     >
       {
         navigation.map((group) => (
@@ -222,61 +227,10 @@ const githubStars = "560+"
   <SidebarInset>
     <Header class="h-16">
       <HeaderContainer class="max-w-none justify-between">
-        <HeaderGroup class="flex-1 md:flex-none">
+        <HeaderGroup>
           <SidebarTrigger />
           <Separator orientation="vertical" class="my-auto mr-2 h-4" />
-          <Dialog class="block min-w-0 flex-1 md:hidden" data-search-dialog>
-            <DialogTrigger
-              as="div"
-              role="button"
-              tabindex="0"
-              class="h-auto w-full cursor-pointer border-0 bg-transparent p-0 shadow-none hover:bg-transparent"
-              aria-keyshortcuts="Meta+K Control+K"
-            >
-              <InputGroup class="h-8 shadow-none">
-                <InputGroupInput
-                  placeholder={search.label}
-                  readonly
-                  tabindex="-1"
-                  aria-label={search.label}
-                  class="cursor-pointer"
-                />
-                <InputGroupAddon>
-                  <Icon name="search" />
-                </InputGroupAddon>
-              </InputGroup>
-            </DialogTrigger>
-
-            <CommandDialog title={search.label} description={search.label}>
-              <Command
-                class="[&_[data-slot=command-item][data-selected]]:bg-accent [&_[data-slot=command-item][data-selected]]:text-accent-foreground"
-              >
-                <CommandInput placeholder={search.label} />
-                <CommandList>
-                  <CommandEmpty>{search.empty}</CommandEmpty>
-
-                  {
-                    searchGroups.map((group) => (
-                      <CommandGroup heading={group.label}>
-                        {group.items.map((item) => (
-                          <CommandItem
-                            href={item.href}
-                            value={item.path}
-                            label={item.label}
-                            keywords={[item.title, item.path]}
-                          >
-                            {item.label}
-                            <CommandShortcut>{item.href}</CommandShortcut>
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    ))
-                  }
-                </CommandList>
-              </Command>
-            </CommandDialog>
-          </Dialog>
-          <Breadcrumb class="hidden md:block">
+          <Breadcrumb>
             <BreadcrumbList>
               {
                 breadcrumb.items.map((item, index) => {
@@ -299,7 +253,6 @@ const githubStars = "560+"
                         {hasMenu ? (
                           <DropdownMenu>
                             <DropdownMenuTrigger
-                              aria-label={`${item.label} pages`}
                               aria-current={isLast ? "page" : undefined}
                               class={cn(
                                 "hover:text-foreground inline-flex items-center gap-1 transition-colors",
@@ -307,8 +260,7 @@ const githubStars = "560+"
                               )}
                             >
                               {item.label}
-                              <Icon
-                                name="chevron-down"
+                              <ChevronDownIcon
                                 class="size-3.5 opacity-70"
                                 aria-hidden="true"
                               />
@@ -350,10 +302,7 @@ const githubStars = "560+"
                     <BreadcrumbSeparator>/</BreadcrumbSeparator>
                     <BreadcrumbItem>
                       <DropdownMenu>
-                        <DropdownMenuTrigger
-                          aria-label="Open page menu"
-                          class="hover:text-foreground inline-flex items-center leading-none transition-colors"
-                        >
+                        <DropdownMenuTrigger class="hover:text-foreground inline-flex items-center leading-none transition-colors">
                           <BreadcrumbEllipsis />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="start">
@@ -384,7 +333,7 @@ const githubStars = "560+"
             variant="ghost"
             target="_blank"
             rel="noreferrer"
-            aria-label={`View ${githubRepo} on GitHub, ${githubStars}`}
+            aria-label={`View ${githubRepo} on GitHub`}
           >
             <Icon name="github" />
             <span>{githubStars}</span>
@@ -402,19 +351,15 @@ const githubStars = "560+"
     navigator.platform || navigator.userAgent
   )
 
-  document.querySelectorAll("[data-search-modifier]").forEach((shortcut) => {
-    shortcut.textContent = isMac ? "⌘" : "Ctrl"
+  document.querySelectorAll("[data-search-shortcut]").forEach((shortcut) => {
+    shortcut.textContent = isMac ? "⌘ + K" : "Ctrl + K"
   })
 
   document.addEventListener("keydown", (event) => {
     if (event.key.toLowerCase() !== "k") return
     if (event.shiftKey || event.altKey) return
 
-    const dialogs = Array.from(
-      document.querySelectorAll("[data-search-dialog]")
-    )
-    const dialog =
-      dialogs.find((dialog) => dialog.getClientRects().length > 0) ?? dialogs[0]
+    const dialog = document.querySelector("[data-search-dialog]")
     const isSearchShortcut = isMac
       ? event.metaKey && !event.ctrlKey
       : event.ctrlKey && !event.metaKey
