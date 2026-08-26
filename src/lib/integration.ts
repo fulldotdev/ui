@@ -1,6 +1,6 @@
+import type { AstroIntegration } from "astro"
 import sitemap from "@astrojs/sitemap"
 import tailwindcss from "@tailwindcss/vite"
-import type { AstroIntegration } from "astro"
 import favicons from "astro-favicons"
 import robotsTxt from "astro-robots-txt"
 

@@ -1,6 +1,6 @@
+import { defineConfig, fontProviders } from "astro/config"
 import mdx from "@astrojs/mdx"
 import liveCode from "astro-live-code"
-import { defineConfig, fontProviders } from "astro/config"
 
 import fulldevIntegration from "./src/lib/integration"
 
