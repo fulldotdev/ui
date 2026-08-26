@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.10.0
+
+### Minor Changes
+
+- [#182](https://github.com/fulldotdev/ui/pull/182) [`751434e`](https://github.com/fulldotdev/ui/commit/751434ed8557b7b5e9250fcc4774eec7661e0ce6) Thanks [@silveltman](https://github.com/silveltman)! - Refresh existing Astro components against current data-slot wrappers and shadcn/ui Base UI Vega, including updated behavior, styling, public props, and registry dependencies.
+
 ## 0.9.3
 
 ### Patch Changes
