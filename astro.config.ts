@@ -9,6 +9,11 @@ export default defineConfig({
     host: "127.0.0.1",
     port: 4321,
   },
+  vite: {
+    server: {
+      allowedHosts: ["otis.tailb5cb80.ts.net"],
+    },
+  },
   prefetch: {
     prefetchAll: true,
   },

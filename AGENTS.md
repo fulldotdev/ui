@@ -37,6 +37,7 @@ This repo has extra responsibilities: it is the Fulldev UI registry source, docs
 - This project owns `http://localhost:4321` for local development and preview.
 - During development, run or reuse `pnpm dev` and read logs occasionally.
 - `pnpm dev` must stop any existing listener on port `4321` before starting Astro on `127.0.0.1:4321`.
+- For tailnet review from Otis, run `pnpm stop && pnpm exec astro dev --host 0.0.0.0 --port 4321`, then `tailscale serve --bg http://127.0.0.1:4321`; share `https://otis.tailb5cb80.ts.net/` and stop with `tailscale serve --https=443 off`.
 - Use `pnpm stop` to close this project's local dev or preview server.
 - Use `pnpm preview` for the build-and-preview flow; it also clears port `4321` before starting Astro preview.
 - Do not run `pnpm check`, `pnpm build`, or `pnpm registry:build` after every small edit.
