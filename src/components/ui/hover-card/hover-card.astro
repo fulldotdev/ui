@@ -43,7 +43,7 @@ const {
 <div
   data-slot="hover-card"
   data-default-open={defaultOpen}
-  data-open={open}
+  data-controlled-open={open}
   data-delay={delay}
   data-skip-delay-duration={skipDelayDuration}
   data-close-delay={closeDelay}
@@ -63,7 +63,16 @@ const {
 </div>
 
 <script>
-  import { create } from "@data-slot/hover-card"
+  import { getDataBool, hasRootBinding } from "@data-slot/core"
+  import { createHoverCard } from "@data-slot/hover-card"
 
-  create()
+  import { initDataSlot } from "@/lib/data-slot"
+
+  initDataSlot(() =>
+    Array.from(document.querySelectorAll('[data-slot="hover-card"]'))
+      .filter((root) => !hasRootBinding(root, "@data-slot/hover-card"))
+      .map((root) =>
+        createHoverCard(root, { open: getDataBool(root, "controlledOpen") })
+      )
+  )
 </script>

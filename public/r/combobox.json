@@ -3,7 +3,8 @@
   "name": "combobox",
   "dependencies": [
     "@data-slot/combobox",
-    "@lucide/astro"
+    "@lucide/astro",
+    "@data-slot/core"
   ],
   "registryDependencies": [
     "@fulldev/input-group"
@@ -11,7 +12,7 @@
   "files": [
     {
       "path": "src/components/ui/combobox/combobox.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport type {\n  Align as ComboboxAlign,\n  Side as ComboboxSide,\n} from \"@data-slot/combobox\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  defaultValue?: string\n  defaultOpen?: boolean\n  placeholder?: string\n  disabled?: boolean\n  required?: boolean\n  name?: string\n  openOnFocus?: boolean\n  autoHighlight?: boolean\n  side?: ComboboxSide\n  align?: ComboboxAlign\n  sideOffset?: number\n  alignOffset?: number\n  avoidCollisions?: boolean\n  collisionPadding?: number\n}\n\nconst {\n  class: className,\n  defaultValue,\n  defaultOpen,\n  placeholder,\n  disabled,\n  required,\n  name,\n  openOnFocus,\n  autoHighlight,\n  side,\n  align,\n  sideOffset,\n  alignOffset,\n  avoidCollisions,\n  collisionPadding,\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot=\"combobox\"\n  data-default-value={defaultValue}\n  data-default-open={defaultOpen}\n  data-placeholder={placeholder}\n  data-disabled={disabled}\n  data-required={required}\n  data-name={name}\n  data-open-on-focus={openOnFocus}\n  data-auto-highlight={autoHighlight}\n  data-side={side}\n  data-align={align}\n  data-side-offset={sideOffset}\n  data-align-offset={alignOffset}\n  data-avoid-collisions={avoidCollisions}\n  data-collision-padding={collisionPadding}\n  class={cn(\"group/combobox relative\", className)}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { createCombobox } from \"@data-slot/combobox\"\n\n  const initCombobox = () => {\n    document.querySelectorAll('[data-slot=\"combobox\"]').forEach((root) => {\n      if (\n        !root.querySelector('[data-slot=\"combobox-input\"]') ||\n        !root.querySelector('[data-slot=\"combobox-content\"]')\n      ) {\n        return\n      }\n\n      createCombobox(root as HTMLElement)\n    })\n  }\n\n  initCombobox()\n\n  document.addEventListener(\"astro:page-load\", initCombobox)\n</script>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport type {\n  Align as ComboboxAlign,\n  Side as ComboboxSide,\n} from \"@data-slot/combobox\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  defaultValue?: string\n  defaultOpen?: boolean\n  placeholder?: string\n  disabled?: boolean\n  required?: boolean\n  name?: string\n  openOnFocus?: boolean\n  autoHighlight?: boolean\n  side?: ComboboxSide\n  align?: ComboboxAlign\n  sideOffset?: number\n  alignOffset?: number\n  avoidCollisions?: boolean\n  collisionPadding?: number\n}\n\nconst {\n  class: className,\n  defaultValue,\n  defaultOpen,\n  placeholder,\n  disabled,\n  required,\n  name,\n  openOnFocus,\n  autoHighlight,\n  side,\n  align,\n  sideOffset,\n  alignOffset,\n  avoidCollisions,\n  collisionPadding,\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot=\"combobox\"\n  data-default-value={defaultValue}\n  data-default-open={defaultOpen}\n  data-placeholder={placeholder}\n  data-disabled={disabled ? \"true\" : undefined}\n  data-required={required}\n  data-name={name}\n  data-open-on-focus={openOnFocus}\n  data-auto-highlight={autoHighlight}\n  data-side={side}\n  data-align={align}\n  data-side-offset={sideOffset}\n  data-align-offset={alignOffset}\n  data-avoid-collisions={avoidCollisions}\n  data-collision-padding={collisionPadding}\n  class={cn(\"group/combobox relative\", className)}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { createCombobox } from \"@data-slot/combobox\"\n  import { hasRootBinding } from \"@data-slot/core\"\n\n  import { initDataSlot } from \"@/lib/data-slot\"\n\n  initDataSlot(() =>\n    Array.from(document.querySelectorAll('[data-slot=\"combobox\"]'))\n      .filter(\n        (root) =>\n          !hasRootBinding(root, \"@data-slot/combobox\") &&\n          root.querySelector('[data-slot=\"combobox-input\"]') &&\n          root.querySelector('[data-slot=\"combobox-content\"]')\n      )\n      .map((root) => createCombobox(root))\n  )\n</script>\n",
       "type": "registry:ui"
     },
     {
@@ -21,7 +22,7 @@
     },
     {
       "path": "src/components/ui/combobox/combobox-empty.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, hidden = true, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"combobox-empty\"\n  hidden={hidden}\n  class={cn(\n    \"text-muted-foreground hidden w-full items-center justify-center py-2 text-center text-sm group-data-empty/combobox-content:flex\",\n    className\n  )}\n  {...props}\n>\n  <slot>No results found.</slot>\n</div>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\n// The content's data-empty CSS also supports an empty message beside ComboboxList.\n// Data Slot only manages native hidden when the message is inside that list.\nconst { class: className, hidden = false, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"combobox-empty\"\n  hidden={hidden}\n  class={cn(\n    \"text-muted-foreground hidden w-full items-center justify-center py-2 text-center text-sm group-data-empty/combobox-content:flex\",\n    className\n  )}\n  {...props}\n>\n  <slot>No results found.</slot>\n</div>\n",
       "type": "registry:ui"
     },
     {
@@ -68,6 +69,11 @@
       "path": "src/components/ui/combobox/index.ts",
       "content": "export { default as Combobox } from \"./combobox.astro\"\nexport { default as ComboboxContent } from \"./combobox-content.astro\"\nexport { default as ComboboxEmpty } from \"./combobox-empty.astro\"\nexport { default as ComboboxGroup } from \"./combobox-group.astro\"\nexport { default as ComboboxInput } from \"./combobox-input.astro\"\nexport { default as ComboboxItem } from \"./combobox-item.astro\"\nexport { default as ComboboxLabel } from \"./combobox-label.astro\"\nexport { default as ComboboxList } from \"./combobox-list.astro\"\nexport { default as ComboboxSeparator } from \"./combobox-separator.astro\"\nexport { default as ComboboxTrigger } from \"./combobox-trigger.astro\"\nexport { default as ComboboxValue } from \"./combobox-value.astro\"\n",
       "type": "registry:ui"
+    },
+    {
+      "path": "src/lib/data-slot.ts",
+      "content": "type Controller = { destroy(): void }\n\n// Astro scripts run once; ClientRouter replaces their component roots on each page.\n// Keep every controller until the swap so open portals and scroll locks are cleaned up.\nconst initializers = new Set<() => Controller[]>()\n\nexport function initDataSlot(create: () => Controller[]) {\n  if (initializers.has(create)) return\n  initializers.add(create)\n  const controllers = new Set<Controller>()\n  const init = () => {\n    for (const controller of create()) controllers.add(controller)\n  }\n\n  document.addEventListener(\"astro:page-load\", init)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of [...controllers].reverse()) controller.destroy()\n    controllers.clear()\n  })\n  init()\n}\n",
+      "type": "registry:lib"
     }
   ],
   "type": "registry:ui"

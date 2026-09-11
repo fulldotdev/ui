@@ -49,7 +49,7 @@ const {
   data-default-value={defaultValue}
   data-default-open={defaultOpen}
   data-placeholder={placeholder}
-  data-disabled={disabled}
+  data-disabled={disabled ? "true" : undefined}
   data-required={required}
   data-name={name}
   data-open-on-focus={openOnFocus}
@@ -68,21 +68,18 @@ const {
 
 <script>
   import { createCombobox } from "@data-slot/combobox"
+  import { hasRootBinding } from "@data-slot/core"
 
-  const initCombobox = () => {
-    document.querySelectorAll('[data-slot="combobox"]').forEach((root) => {
-      if (
-        !root.querySelector('[data-slot="combobox-input"]') ||
-        !root.querySelector('[data-slot="combobox-content"]')
-      ) {
-        return
-      }
+  import { initDataSlot } from "@/lib/data-slot"
 
-      createCombobox(root as HTMLElement)
-    })
-  }
-
-  initCombobox()
-
-  document.addEventListener("astro:page-load", initCombobox)
+  initDataSlot(() =>
+    Array.from(document.querySelectorAll('[data-slot="combobox"]'))
+      .filter(
+        (root) =>
+          !hasRootBinding(root, "@data-slot/combobox") &&
+          root.querySelector('[data-slot="combobox-input"]') &&
+          root.querySelector('[data-slot="combobox-content"]')
+      )
+      .map((root) => createCombobox(root))
+  )
 </script>

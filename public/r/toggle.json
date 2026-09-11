@@ -7,7 +7,7 @@
   "files": [
     {
       "path": "src/components/ui/toggle/toggle.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { toggleVariants, type ToggleVariantProps } from \"./toggle-variants\"\n\ntype Props = HTMLAttributes<\"button\"> &\n  ToggleVariantProps & {\n    defaultPressed?: boolean\n    disabled?: boolean\n  }\n\nconst {\n  class: className,\n  variant = \"default\",\n  size = \"default\",\n  defaultPressed,\n  disabled,\n  type = \"button\",\n  ...props\n} = Astro.props\n---\n\n<button\n  data-slot=\"toggle\"\n  data-default-pressed={defaultPressed}\n  data-disabled={disabled}\n  type={type}\n  class={cn(toggleVariants({ variant, size }), className)}\n  {...props}\n>\n  <slot />\n</button>\n\n<script>\n  import { create } from \"@data-slot/toggle\"\n\n  create()\n</script>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { toggleVariants, type ToggleVariantProps } from \"./toggle-variants\"\n\ntype Props = HTMLAttributes<\"button\"> &\n  ToggleVariantProps & {\n    defaultPressed?: boolean\n    disabled?: boolean\n  }\n\nconst {\n  class: className,\n  variant = \"default\",\n  size = \"default\",\n  defaultPressed,\n  disabled,\n  type = \"button\",\n  ...props\n} = Astro.props\n---\n\n<button\n  data-slot=\"toggle\"\n  data-default-pressed={defaultPressed}\n  data-disabled={disabled ? \"true\" : undefined}\n  type={type}\n  disabled={disabled}\n  aria-pressed={defaultPressed === true ? \"true\" : \"false\"}\n  class={cn(toggleVariants({ variant, size }), className)}\n  {...props}\n>\n  <slot />\n</button>\n\n<script>\n  import { create } from \"@data-slot/toggle\"\n\n  import { initDataSlot } from \"@/lib/data-slot\"\n\n  initDataSlot(create)\n</script>\n",
       "type": "registry:ui"
     },
     {
@@ -19,6 +19,11 @@
       "path": "src/components/ui/toggle/index.ts",
       "content": "export { default as Toggle } from \"./toggle.astro\"\nexport { toggleVariants } from \"./toggle-variants\"\nexport type { ToggleVariantProps } from \"./toggle-variants\"\n",
       "type": "registry:ui"
+    },
+    {
+      "path": "src/lib/data-slot.ts",
+      "content": "type Controller = { destroy(): void }\n\n// Astro scripts run once; ClientRouter replaces their component roots on each page.\n// Keep every controller until the swap so open portals and scroll locks are cleaned up.\nconst initializers = new Set<() => Controller[]>()\n\nexport function initDataSlot(create: () => Controller[]) {\n  if (initializers.has(create)) return\n  initializers.add(create)\n  const controllers = new Set<Controller>()\n  const init = () => {\n    for (const controller of create()) controllers.add(controller)\n  }\n\n  document.addEventListener(\"astro:page-load\", init)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of [...controllers].reverse()) controller.destroy()\n    controllers.clear()\n  })\n  init()\n}\n",
+      "type": "registry:lib"
     }
   ],
   "type": "registry:ui"

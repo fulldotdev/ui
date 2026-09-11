@@ -33,7 +33,7 @@ const {
 const serializedDefaultValue = Array.isArray(defaultValue)
   ? defaultValue.join(",")
   : defaultValue
-const thumbCount = Array.isArray(defaultValue) ? defaultValue.length : 1
+const thumbCount = String(serializedDefaultValue ?? "").includes(",") ? 2 : 1
 ---
 
 <div
@@ -45,7 +45,7 @@ const thumbCount = Array.isArray(defaultValue) ? defaultValue.length : 1
   data-large-step={largeStep}
   data-orientation={orientation}
   data-thumb-alignment={thumbAlignment}
-  data-disabled={disabled}
+  data-disabled={disabled ? "true" : undefined}
   class={cn(
     "data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full",
     className
@@ -55,7 +55,7 @@ const thumbCount = Array.isArray(defaultValue) ? defaultValue.length : 1
   <div
     data-slot="slider-control"
     data-orientation={orientation}
-    data-disabled={disabled}
+    data-disabled={disabled ? "true" : undefined}
     class="relative flex w-full touch-none items-center select-none data-[disabled]:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-40 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col"
   >
     <div
@@ -82,5 +82,7 @@ const thumbCount = Array.isArray(defaultValue) ? defaultValue.length : 1
 <script>
   import { create } from "@data-slot/slider"
 
-  create()
+  import { initDataSlot } from "@/lib/data-slot"
+
+  initDataSlot(create)
 </script>
