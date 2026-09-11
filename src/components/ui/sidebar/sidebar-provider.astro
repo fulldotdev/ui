@@ -67,9 +67,16 @@ const resolvedStyle = [
           })
 
         provider
-          .querySelectorAll("[data-sidebar='menu-tooltip']")
+          .querySelectorAll("[data-slot='tooltip']")
           .forEach((tooltip) => {
-            tooltip.hidden = state !== "collapsed"
+            if (
+              state !== "collapsed" &&
+              tooltip.querySelector("[data-sidebar='menu-button']")
+            ) {
+              tooltip.dispatchEvent(
+                new CustomEvent("tooltip:set", { detail: { open: false } })
+              )
+            }
           })
       }
 
@@ -131,6 +138,33 @@ const resolvedStyle = [
       document.cookie = `${SIDEBAR_COOKIE_NAME}=${open}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
       window.__fulldevSyncSidebarProvider?.(provider, open)
     }
+
+    document.addEventListener("dialog:change", (event) => {
+      const root = event.target
+      if (!(root instanceof HTMLElement) || root.dataset.sidebar !== "sheet")
+        return
+      const provider = root.closest("[data-slot='sidebar-wrapper']")
+      if (provider)
+        provider.dataset.openMobile = String(Boolean(event.detail?.open))
+    })
+
+    document.addEventListener("tooltip:change", (event) => {
+      if (!event.detail?.open) return
+      const root = event.target
+      if (!(root instanceof HTMLElement)) return
+      if (!root.querySelector("[data-sidebar='menu-button']")) return
+      const provider = root.closest("[data-slot='sidebar-wrapper']")
+      const sidebar = root.closest("[data-slot='sidebar']")
+      if (
+        provider?.dataset.state !== "collapsed" ||
+        sidebar?.dataset.collapsible !== "icon" ||
+        !window.matchMedia("(min-width: 768px)").matches
+      ) {
+        root.dispatchEvent(
+          new CustomEvent("tooltip:set", { detail: { open: false } })
+        )
+      }
+    })
 
     document.addEventListener("click", (event) => {
       const control = event.target?.closest?.(
