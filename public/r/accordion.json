@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "src/components/ui/accordion/accordion.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  multiple?: boolean\n  defaultValue?: string | string[]\n  disabled?: boolean\n  orientation?: \"horizontal\" | \"vertical\"\n  loopFocus?: boolean\n  hiddenUntilFound?: boolean\n  collapsible?: boolean\n}\n\nconst {\n  class: className,\n  multiple,\n  defaultValue,\n  disabled,\n  orientation = \"vertical\",\n  loopFocus,\n  hiddenUntilFound,\n  collapsible,\n  ...props\n} = Astro.props\n\nconst serializedDefaultValue = Array.isArray(defaultValue)\n  ? JSON.stringify(defaultValue)\n  : defaultValue\n---\n\n<div\n  data-slot=\"accordion\"\n  data-multiple={multiple}\n  data-default-value={serializedDefaultValue}\n  data-disabled={disabled ? \"true\" : undefined}\n  data-orientation={orientation}\n  data-loop-focus={loopFocus}\n  data-hidden-until-found={hiddenUntilFound}\n  data-collapsible={collapsible}\n  class={cn(\"flex w-full flex-col\", className)}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/accordion\"\n\n  import { initDataSlot } from \"@/lib/data-slot\"\n\n  initDataSlot(create)\n</script>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  multiple?: boolean\n  defaultValue?: string | string[]\n  disabled?: boolean\n  orientation?: \"horizontal\" | \"vertical\"\n  loopFocus?: boolean\n  hiddenUntilFound?: boolean\n  collapsible?: boolean\n}\n\nconst {\n  class: className,\n  multiple,\n  defaultValue,\n  disabled,\n  orientation = \"vertical\",\n  loopFocus,\n  hiddenUntilFound,\n  collapsible,\n  ...props\n} = Astro.props\n\nconst serializedDefaultValue = Array.isArray(defaultValue)\n  ? JSON.stringify(defaultValue)\n  : defaultValue\n---\n\n<div\n  data-slot=\"accordion\"\n  data-multiple={multiple}\n  data-default-value={serializedDefaultValue}\n  data-disabled={disabled}\n  data-orientation={orientation}\n  data-loop-focus={loopFocus}\n  data-hidden-until-found={hiddenUntilFound}\n  data-collapsible={collapsible}\n  class={cn(\"flex w-full flex-col\", className)}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/accordion\"\n\n  create()\n</script>\n",
       "type": "registry:ui"
     },
     {
@@ -30,11 +30,6 @@
       "path": "src/components/ui/accordion/index.ts",
       "content": "export { default as Accordion } from \"./accordion.astro\"\nexport { default as AccordionContent } from \"./accordion-content.astro\"\nexport { default as AccordionItem } from \"./accordion-item.astro\"\nexport { default as AccordionTrigger } from \"./accordion-trigger.astro\"\n",
       "type": "registry:ui"
-    },
-    {
-      "path": "src/lib/data-slot.ts",
-      "content": "type Controller = { destroy(): void }\n\n// Astro scripts run once; ClientRouter replaces their component roots on each page.\n// Keep every controller until the swap so open portals and scroll locks are cleaned up.\nconst initializers = new Set<() => Controller[]>()\n\nexport function initDataSlot(create: () => Controller[]) {\n  if (initializers.has(create)) return\n  initializers.add(create)\n  const controllers = new Set<Controller>()\n  const init = () => {\n    for (const controller of create()) controllers.add(controller)\n  }\n\n  document.addEventListener(\"astro:page-load\", init)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of [...controllers].reverse()) controller.destroy()\n    controllers.clear()\n  })\n  init()\n}\n",
-      "type": "registry:lib"
     }
   ],
   "type": "registry:ui"
