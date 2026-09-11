@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.10.1
+
+### Patch Changes
+
+- [#184](https://github.com/fulldotdev/ui/pull/184) [`b4c6557`](https://github.com/fulldotdev/ui/commit/b4c6557df695a167c5ecb38761f65f809bdca918) Thanks [@silveltman](https://github.com/silveltman)! - Prevent navigation and inactive panels flashing before initialization. Correct Sidebar slot composition and state synchronization, use Data Slot's native Sheet scroll locking, align modal stack styles, and fix controlled HoverCard initialization, string range sliders and initial control states. Align Combobox examples with the documented list structure.
+
 ## 0.10.0
 
 ### Minor Changes
