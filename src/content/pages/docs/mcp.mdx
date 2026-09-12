@@ -1,16 +1,17 @@
 ---
 type: doc
 title: MCP
-description: Use shadcn MCP workflows with the Fulldev UI registry.
+description: Let AI assistants browse and install Fulldev UI through the shadcn MCP server.
 ---
 
-Fulldev UI is compatible with shadcn registry workflows. Use the official
-[shadcn MCP docs](https://ui.shadcn.com/docs/mcp) as the reference for MCP
-server setup and tool behavior.
+Fulldev UI is a shadcn-compatible registry, so the official
+[shadcn MCP server](https://ui.shadcn.com/docs/mcp) can search, view, and
+install `@fulldev` items for any MCP-capable assistant. There is no separate
+Fulldev MCP server.
 
-## components.json
+## 1. Add the registry
 
-Add the Fulldev registry to `components.json`:
+The MCP server reads registries from `components.json` in your project:
 
 ```json title="components.json"
 {
@@ -20,11 +21,57 @@ Add the Fulldev registry to `components.json`:
 }
 ```
 
-## Registry namespace
+If the project does not have a `components.json` yet, follow the
+[installation guide](/docs/installation/) first.
 
-When an MCP-capable client can install shadcn registry items, use the
-`@fulldev` namespace for Fulldev UI components and blocks:
+## 2. Configure your client
+
+Run the shadcn MCP setup for your client:
 
 ```bash
-@fulldev/button
+npx shadcn@latest mcp init --client claude
+npx shadcn@latest mcp init --client cursor
+npx shadcn@latest mcp init --client vscode
 ```
+
+Or add the server manually. For Claude Code, this is `.mcp.json` in the project
+root:
+
+```json title=".mcp.json"
+{
+  "mcpServers": {
+    "shadcn": {
+      "command": "npx",
+      "args": ["shadcn@latest", "mcp"]
+    }
+  }
+}
+```
+
+Cursor uses `.cursor/mcp.json` and VS Code uses `.vscode/mcp.json` with the
+same `command` and `args`.
+
+## 3. Ask for Fulldev items
+
+Once connected, the assistant can call the shadcn MCP tools against the
+`@fulldev` namespace:
+
+- `get_project_registries` lists the registries in `components.json`.
+- `search_items_in_registries` finds items by name or description.
+- `view_items_in_registries` shows an item's files and dependencies.
+- `get_item_examples_from_registries` returns usage examples.
+- `get_add_command_for_items` returns the install command.
+
+Example prompts:
+
+```text
+Search the @fulldev registry for pricing blocks.
+Install @fulldev/hero-1 and use it on the homepage.
+Show me the files in @fulldev/header-4.
+```
+
+## Skill
+
+For architecture guidance beyond installs, pair MCP with the
+[Fulldev skill](/docs/skills/). MCP answers "what can I install"; the skill
+answers "where should this live in the project".

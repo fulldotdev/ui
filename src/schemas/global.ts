@@ -25,6 +25,7 @@ export const globalSchema = ({ image }: SchemaContext) =>
     header: z.object({
       navigation: nestedLinkSchema.array(),
       githubRepo: z.string(),
+      githubStars: z.string().optional(),
     }),
     sidebar: z.object({
       search: z.object({

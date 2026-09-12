@@ -1,17 +1,17 @@
 # Layout Rules
 
-Routes stay thin. `src/pages/[...page].astro` should remain a content-to-renderer handoff. Do not put page orchestration, page-specific data shaping, SEO mapping, icon mapping, block selection, or layout branching in route files.
+Routes stay thin. Do not put page orchestration, page-specific data shaping, SEO mapping, icon mapping, block selection, or layout branching in route files.
 
-## Layout Renderer
+## Catch-all Route
 
-`src/components/layout-renderer.astro` is the generic bridge from content to layout:
+`src/pages/[...page].astro` is the generic bridge from content to layout:
 
 - Fetch/render the content entry.
 - Load the global content entry.
-- Resolve the layout by `page.data.type`.
+- Resolve the layout in `src/layouts` by `page.data.type`.
 - Pass `global`, `page`, and `headings` to the layout.
 - Render `<Content />` inside the selected layout.
-- Keep the renderer generic and stable.
+- Keep the route generic and stable.
 
 ## Layouts Own Orchestration
 
@@ -66,6 +66,5 @@ To add a new page type:
 1. Create `src/schemas/layouts/<name>.ts`.
 2. Add it to the discriminated union in `src/schemas/page.ts`.
 3. Create `src/layouts/<name>.astro` using the shared prop shape.
-4. Ensure `src/components/layout-renderer.astro` can resolve `src/layouts/<name>.astro` from `type: "<name>"`.
-5. Add content under `src/content/pages` with `type: <name>`.
-6. Keep route files unchanged.
+4. Add content under `src/content/pages` with `type: <name>`. The catch-all route resolves `src/layouts/<name>.astro` from `type: "<name>"` automatically.
+5. Keep route files unchanged.

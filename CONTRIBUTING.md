@@ -67,7 +67,15 @@ For source examples, prefer existing installable items over synthetic snippets:
 
 ## Registry Workflow
 
-`registry.json` is the source of truth for installable items. Update it when
+This repo's own `components.json` points the `@fulldev` registry at
+`http://localhost:4321` so the docs site can install from its running dev
+server. Do not copy it into a consumer project; use the snippet in the
+installation docs, which points at `https://ui.full.dev`.
+
+`registry.json` is the source of truth for installable items. Item titles,
+descriptions, categories, and docs links are generated from the matching page
+frontmatter in `src/content/pages` by `pnpm registry:meta`, which runs as part
+of `pnpm registry:build`. Update it when
 adding or removing installable items, changing file paths, registry
 dependencies, npm dependencies, metadata, or installable source files.
 
@@ -84,7 +92,10 @@ output.
 ## Validation and CI
 
 CI runs formatting, type checking, registry drift checks, and the production
-build for pull requests.
+build for pull requests and for pushes to `main` and `preview`. A separate job
+builds the site, serves it locally, and installs `@fulldev/init`,
+`@fulldev/components`, and `@fulldev/blocks` into a fresh Astro project to
+catch broken installs.
 
 For local validation, run the smallest relevant subset:
 

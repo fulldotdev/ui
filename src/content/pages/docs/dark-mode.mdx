@@ -1,14 +1,59 @@
 ---
 type: doc
 title: Dark mode
-description: Set up dark mode for Fulldev UI projects.
+description: Add a class-based dark mode with the theme toggle.
 ---
 
-Fulldev UI uses the same dark mode approach as shadcn/ui. Use the official
-[shadcn/ui dark mode docs](https://ui.shadcn.com/docs/dark-mode) as the
-reference.
+Fulldev UI uses class-based dark mode, like shadcn/ui. When `<html>` has the
+`dark` class, every component switches to the `.dark` token values from
+`src/styles/global.css`. The `dark:` Tailwind variant is wired to that class:
 
-## Fulldev note
+```css
+@custom-variant dark (&:where(.dark, .dark *));
+```
 
-`@fulldev/init` adds light and dark tokens to `src/styles/global.css`. If you
-install `@fulldev/theme-toggle`, render its provider in the document `<head>`.
+## Setup
+
+Install the theme toggle:
+
+```bash
+npx shadcn@latest add @fulldev/theme-toggle
+```
+
+Render `ThemeProvider` in the document head. It runs an inline script before
+paint that reads the saved preference (or the system preference) and sets the
+`dark` class, so there is no flash of the wrong theme:
+
+```astro title="src/layouts/layout.astro"
+---
+import { ThemeProvider, ThemeToggle } from "@/components/ui/theme-toggle"
+---
+
+<html lang="en">
+  <head>
+    <ThemeProvider />
+  </head>
+  <body>
+    <ThemeToggle />
+    <slot />
+  </body>
+</html>
+```
+
+`ThemeToggle` switches between light and dark and stores the choice in
+`localStorage`.
+
+## Dark sections on a light page
+
+Add the `dark` class to any element to force its subtree into dark tokens.
+Several blocks use this for contrast sections:
+
+```astro
+<Section class="dark bg-background text-foreground">...</Section>
+```
+
+## Without a toggle
+
+If the site should follow the system preference only, skip `ThemeToggle` and
+keep `ThemeProvider`. It falls back to `prefers-color-scheme` when nothing is
+stored.
