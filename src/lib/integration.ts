@@ -16,7 +16,7 @@ export interface Options {
 
 export default function (options: Options): AstroIntegration {
   return {
-    name: "starter/ui",
+    name: "fulldev-ui",
     hooks: {
       "astro:config:setup": ({ updateConfig }) => {
         updateConfig({
