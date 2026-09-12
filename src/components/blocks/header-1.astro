@@ -1,4 +1,6 @@
 ---
+import type { HTMLAttributes } from "astro/types"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Header, HeaderContainer, HeaderGroup } from "@/components/ui/header"
@@ -20,8 +22,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 
-type Props = {
-  class?: string
+type Props = HTMLAttributes<"header"> & {
   logo: {
     label: string
     href: string
@@ -47,10 +48,10 @@ type Props = {
   }[]
 }
 
-const { class: className, logo, navigation, buttons } = Astro.props
+const { class: className, logo, navigation, buttons, ...props } = Astro.props
 ---
 
-<Header class={cn("", className)}>
+<Header class={cn("", className)} {...props}>
   <HeaderContainer class="items-center justify-between gap-4">
     <HeaderGroup>
       <Logo href={logo.href}>
@@ -112,14 +113,19 @@ const { class: className, logo, navigation, buttons } = Astro.props
           <nav aria-label="Main navigation" class="flex flex-col gap-1">
             {
               navigation.map((item) => (
-                <SheetClose variant="ghost" class="justify-start">
+                <SheetClose
+                  as="a"
+                  href={item.href}
+                  variant="ghost"
+                  class="justify-start"
+                >
                   {item.label}
                 </SheetClose>
               ))
             }
           </nav>
           <div class="mt-auto flex flex-col gap-2">
-            <slot />
+            <slot name="mobile" />
           </div>
         </div>
       </SheetContent>

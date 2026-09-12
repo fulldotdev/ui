@@ -1,4 +1,6 @@
 ---
+import type { HTMLAttributes } from "astro/types"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -8,13 +10,17 @@ import {
   FieldLegend,
   FieldSet,
 } from "@/components/ui/field"
+import { Form } from "@/components/ui/form"
 import { Icon } from "@/components/ui/icon"
 import { Input } from "@/components/ui/input"
-import { Section, SectionContainer } from "@/components/ui/section"
+import {
+  Section,
+  SectionContainer,
+  SectionTitle,
+} from "@/components/ui/section"
 import { Textarea } from "@/components/ui/textarea"
 
-type Props = {
-  class?: string
+type Props = HTMLAttributes<"section"> & {
   title: string
   description: string
   contactItems: {
@@ -24,6 +30,9 @@ type Props = {
     href?: string
   }[]
   form: {
+    id?: string
+    action?: string
+    method?: "get" | "post"
     title: string
     legend: string
     nameLabel: string
@@ -36,20 +45,26 @@ type Props = {
   }
 }
 
-const { class: className, title, description, contactItems, form } = Astro.props
+const {
+  class: className,
+  title,
+  description,
+  contactItems,
+  form,
+  ...props
+} = Astro.props
+const formId = form.id ?? `contact-${crypto.randomUUID()}`
 ---
 
-<Section class={cn("", className)}>
+<Section class={cn("", className)} {...props}>
   <SectionContainer
     class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start"
   >
     <div class="flex flex-col gap-6">
       <div class="flex flex-col gap-4">
-        <h2
-          class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
-        >
+        <SectionTitle>
           {title}
-        </h2>
+        </SectionTitle>
         <p class="text-muted-foreground max-w-xl text-base leading-relaxed">
           {description}
         </p>
@@ -58,36 +73,55 @@ const { class: className, title, description, contactItems, form } = Astro.props
         <div class="mb-6">
           <h3 class="text-lg font-medium">{form.title}</h3>
         </div>
-        <FieldSet>
-          <FieldLegend class="sr-only">{form.legend}</FieldLegend>
-          <FieldGroup>
-            <div class="grid gap-4 md:grid-cols-2">
+        <Form action={form.action} method={form.method ?? "post"}>
+          <FieldSet>
+            <FieldLegend class="sr-only">{form.legend}</FieldLegend>
+            <FieldGroup>
+              <div class="grid gap-4 md:grid-cols-2">
+                <Field>
+                  <FieldLabel for={`${formId}-name`}
+                    >{form.nameLabel}</FieldLabel
+                  >
+                  <Input
+                    id={`${formId}-name`}
+                    name="name"
+                    autocomplete="name"
+                    required
+                    placeholder={form.namePlaceholder}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel for={`${formId}-email`}
+                    >{form.emailLabel}</FieldLabel
+                  >
+                  <Input
+                    id={`${formId}-email`}
+                    name="email"
+                    autocomplete="email"
+                    required
+                    type="email"
+                    placeholder={form.emailPlaceholder}
+                  />
+                </Field>
+              </div>
               <Field>
-                <FieldLabel for="contact-name-2">{form.nameLabel}</FieldLabel>
-                <Input id="contact-name-2" placeholder={form.namePlaceholder} />
-              </Field>
-              <Field>
-                <FieldLabel for="contact-email-2">{form.emailLabel}</FieldLabel>
-                <Input
-                  id="contact-email-2"
-                  type="email"
-                  placeholder={form.emailPlaceholder}
+                <FieldLabel for={`${formId}-message`}
+                  >{form.messageLabel}</FieldLabel
+                >
+                <Textarea
+                  id={`${formId}-message`}
+                  name="message"
+                  required
+                  rows={5}
+                  placeholder={form.messagePlaceholder}
                 />
               </Field>
-            </div>
-            <Field>
-              <FieldLabel for="contact-message-2"
-                >{form.messageLabel}</FieldLabel
+              <Button type="submit" size="lg" class="w-full"
+                >{form.actionLabel}</Button
               >
-              <Textarea
-                id="contact-message-2"
-                rows={5}
-                placeholder={form.messagePlaceholder}
-              />
-            </Field>
-            <Button size="lg" class="w-full">{form.actionLabel}</Button>
-          </FieldGroup>
-        </FieldSet>
+            </FieldGroup>
+          </FieldSet>
+        </Form>
       </div>
     </div>
 

@@ -1,11 +1,17 @@
 ---
+import type { HTMLAttributes } from "astro/types"
+
 import { cn } from "@/lib/utils"
 import { Logo, LogoText } from "@/components/ui/logo"
 import { Marquee } from "@/components/ui/marquee"
-import { Section, SectionContainer } from "@/components/ui/section"
+import {
+  Section,
+  SectionContainer,
+  SectionDescription,
+  SectionTitle,
+} from "@/components/ui/section"
 
-type Props = {
-  class?: string
+type Props = HTMLAttributes<"section"> & {
   title?: string
   description?: string
   brands: {
@@ -14,22 +20,18 @@ type Props = {
   }[]
 }
 
-const { class: className, title, description, brands } = Astro.props
+const { class: className, title, description, brands, ...props } = Astro.props
 ---
 
-<Section class={cn("", className)}>
+<Section class={cn("", className)} {...props}>
   {
     (title || description) && (
       <SectionContainer class="items-center gap-4 text-center">
-        {title && (
-          <h2 class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
-            {title}
-          </h2>
-        )}
+        {title && <SectionTitle>{title}</SectionTitle>}
         {description && (
-          <p class="text-muted-foreground max-w-2xl text-lg leading-relaxed text-balance">
+          <SectionDescription class="max-w-2xl">
             {description}
-          </p>
+          </SectionDescription>
         )}
       </SectionContainer>
     )

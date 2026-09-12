@@ -1,15 +1,20 @@
 ---
 import type { ImageMetadata } from "astro"
+import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Icon } from "@/components/ui/icon"
 import { Marquee } from "@/components/ui/marquee"
 import { Rating } from "@/components/ui/rating"
-import { Section, SectionContainer } from "@/components/ui/section"
+import {
+  Section,
+  SectionContainer,
+  SectionDescription,
+  SectionTitle,
+} from "@/components/ui/section"
 
-type Props = {
-  class?: string
+type Props = HTMLAttributes<"section"> & {
   title?: string
   description?: string
   reviews: {
@@ -22,7 +27,7 @@ type Props = {
   }[]
 }
 
-const { class: className, title, description, reviews } = Astro.props
+const { class: className, title, description, reviews, ...props } = Astro.props
 
 const third = Math.ceil(reviews.length / 3)
 const row1 = reviews.slice(0, third)
@@ -30,19 +35,15 @@ const row2 = reviews.slice(third, third * 2)
 const row3 = reviews.slice(third * 2)
 ---
 
-<Section class={cn("", className)}>
+<Section class={cn("", className)} {...props}>
   {
     (title || description) && (
       <SectionContainer class="items-center gap-4 text-center">
-        {title && (
-          <h2 class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
-            {title}
-          </h2>
-        )}
+        {title && <SectionTitle>{title}</SectionTitle>}
         {description && (
-          <p class="text-muted-foreground max-w-2xl text-lg leading-relaxed text-balance">
+          <SectionDescription class="max-w-2xl">
             {description}
-          </p>
+          </SectionDescription>
         )}
       </SectionContainer>
     )

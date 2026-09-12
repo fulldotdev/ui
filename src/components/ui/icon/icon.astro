@@ -37,59 +37,67 @@ const hrefMap = {
   linkedin: "linkedin",
 } as const
 
-const icons = import.meta.glob(
-  [
-    "/node_modules/lucide-static/icons/*.svg",
-    "/node_modules/simple-icons/icons/*.svg",
-  ],
-  { eager: true }
-) as Record<string, { default: any }>
+type Source = "lucide" | "simple"
 
-const foundPath = () => {
-  let foundPath: string | undefined = undefined
-
-  // For x.com, use the Simple Icons X instead of Lucide's X icon.
-  if (name === "x.com") {
-    foundPath = "/node_modules/simple-icons/icons/x.svg"
-  } else if (name) {
-    foundPath = Object.keys(icons).find((key) => key.includes(`/${name}.svg`))
-  } else if (href) {
-    const hrefKey = Object.keys(hrefMap).find((key) =>
-      href.toString().includes(key)
-    )
-    const hrefValue = hrefMap[hrefKey as keyof typeof hrefMap]
-    foundPath = Object.keys(icons)
-      .reverse()
-      .find((key) => key.includes(`/${hrefValue}.svg`))
-  }
-
-  return foundPath
+const icons: Record<Source, Record<string, () => Promise<unknown>>> = {
+  lucide: import.meta.glob("/node_modules/lucide-static/icons/*.svg"),
+  simple: import.meta.glob("/node_modules/simple-icons/icons/*.svg"),
 }
 
-const iconPath = foundPath()
-const module = iconPath ? icons[iconPath] : undefined
+const pathFor = (source: Source, icon: string) =>
+  source === "lucide"
+    ? `/node_modules/lucide-static/icons/${icon}.svg`
+    : `/node_modules/simple-icons/icons/${icon}.svg`
+
+// Resolve an icon by explicit name, or derive one from a link href.
+// Names may be prefixed with `lucide:` or `simple:` to pick a set when both
+// sets contain the same name (for example `github` or `figma`).
+const resolve = () => {
+  let key = name != null && name !== "" ? String(name) : undefined
+  let order: Source[] = ["lucide", "simple"]
+
+  if (!key && href) {
+    const hrefKey = Object.keys(hrefMap).find((candidate) =>
+      href.toString().includes(candidate)
+    )
+    if (hrefKey) {
+      key = hrefMap[hrefKey as keyof typeof hrefMap]
+      order = ["simple", "lucide"]
+    }
+  }
+
+  if (!key) return undefined
+  if (key === "x.com") key = "simple:x"
+
+  const [prefix, icon] = key.includes(":") ? key.split(":") : [undefined, key]
+  if (prefix === "lucide" || prefix === "simple") order = [prefix]
+
+  for (const source of order) {
+    const path = pathFor(source, icon)
+    if (path in icons[source]) return { source, path }
+  }
+
+  return undefined
+}
+
+const resolved = resolve()
+const module = resolved
+  ? ((await icons[resolved.source][resolved.path]()) as { default?: any })
+  : undefined
 const Comp = module?.default
+
+const isLabelled =
+  "aria-label" in props || "aria-labelledby" in props || "role" in props
 ---
 
 {
-  Comp && foundPath()?.includes("simple-icons") && (
+  Comp && resolved && (
     <Comp
       height={24}
       width={24}
-      fill="currentColor"
+      fill={resolved.source === "simple" ? "currentColor" : "none"}
       class="size-[1em] text-base"
-      {...props}
-    />
-  )
-}
-
-{
-  Comp && foundPath()?.includes("lucide-static") && (
-    <Comp
-      height={24}
-      width={24}
-      fill="none"
-      class="size-[1em] text-base"
+      aria-hidden={isLabelled ? undefined : "true"}
       {...props}
     />
   )
