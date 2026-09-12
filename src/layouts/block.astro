@@ -4,6 +4,7 @@ import { getCollection } from "astro:content"
 
 import type { GlobalSchema } from "@/schemas/global"
 import type { BlockSchema } from "@/schemas/layouts/block"
+import { getBlockCategoryLinks, getMarkdownHref } from "@/lib/pages"
 import Base from "@/layouts/base.astro"
 import BlocksBlock from "@/components/blocks/blocks-1.astro"
 
@@ -13,23 +14,16 @@ type Props = {
   headings: MarkdownHeading[]
 }
 
-const props: Props = Astro.props
+const { global, page } = Astro.props
 const currentPath = Astro.url.pathname
-const markdownPath =
-  currentPath === "/" ? "/index.md" : `${currentPath.replace(/\/$/, "")}.md`
+const markdownPath = getMarkdownHref(currentPath)
 
 const blocks = await getCollection("pages", ({ data }) => {
   return data.type === "block"
 })
 const currentBlock = blocks.find((entry) => `/${entry.id}/` === currentPath)
-const isBlockCategory = !props.page.category
-const orderedBlockCategoryLinks = blocks
-  .filter((entry) => !("category" in entry.data) || !entry.data.category)
-  .map((entry) => ({
-    href: `/${entry.id}/`,
-    title: entry.data.title,
-  }))
-  .sort((a, b) => a.href.localeCompare(b.href))
+const isBlockCategory = !page.category
+const orderedBlockCategoryLinks = await getBlockCategoryLinks()
 const currentPageIndex = orderedBlockCategoryLinks.findIndex(
   (item) => item.href === currentPath
 )
@@ -41,19 +35,19 @@ const nextPage =
   isBlockCategory && currentPageIndex >= 0
     ? orderedBlockCategoryLinks[currentPageIndex + 1]
     : undefined
-const copySource = blocks.find((entry) => `/${entry.id}/` === currentPath)?.body
+const copySource = currentBlock?.body
 const copyButton = copySource
   ? {
       id: `blocks-copy-page-${crypto.randomUUID()}`,
-      source: currentBlock?.body ?? copySource,
+      source: copySource,
     }
   : undefined
 ---
 
-<Base global={props.global} page={props.page}>
+<Base global={global} page={page}>
   <BlocksBlock
-    title={props.page.title}
-    description={props.page.description}
+    title={page.title}
+    description={page.description}
     copyButton={copyButton}
     markdownUrl={markdownPath}
     previousPage={previousPage}

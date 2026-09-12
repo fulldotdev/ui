@@ -1,4 +1,6 @@
 ---
+import type { HTMLAttributes } from "astro/types"
+
 import { cn } from "@/lib/utils"
 import {
   Accordion,
@@ -7,10 +9,13 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
-import { Section, SectionContainer } from "@/components/ui/section"
+import {
+  Section,
+  SectionContainer,
+  SectionTitle,
+} from "@/components/ui/section"
 
-type Props = {
-  class?: string
+type Props = HTMLAttributes<"section"> & {
   title: string
   description: string
   faqs: {
@@ -25,20 +30,25 @@ type Props = {
   }[]
 }
 
-const { class: className, title, description, faqs, buttons } = Astro.props
+const {
+  class: className,
+  title,
+  description,
+  faqs,
+  buttons,
+  ...props
+} = Astro.props
 ---
 
-<Section class={cn("", className)}>
+<Section class={cn("", className)} {...props}>
   <SectionContainer>
     <div
       class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:gap-16"
     >
       <div class="lg:sticky lg:top-24 lg:self-start">
-        <h2
-          class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
-        >
+        <SectionTitle>
           {title}
-        </h2>
+        </SectionTitle>
         <p
           class="text-muted-foreground mt-4 text-base leading-relaxed text-balance"
         >

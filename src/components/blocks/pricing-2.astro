@@ -1,4 +1,6 @@
 ---
+import type { HTMLAttributes } from "astro/types"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -11,11 +13,15 @@ import {
 } from "@/components/ui/card"
 import { Icon } from "@/components/ui/icon"
 import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
-import { Section, SectionContainer } from "@/components/ui/section"
+import {
+  Section,
+  SectionContainer,
+  SectionDescription,
+  SectionTitle,
+} from "@/components/ui/section"
 import { Separator } from "@/components/ui/separator"
 
-type Props = {
-  class?: string
+type Props = HTMLAttributes<"section"> & {
   title: string
   description: string
   plans: {
@@ -34,22 +40,18 @@ type Props = {
   }[]
 }
 
-const { class: className, title, description, plans } = Astro.props
+const { class: className, title, description, plans, ...props } = Astro.props
 ---
 
-<Section class={cn("", className)}>
+<Section class={cn("", className)} {...props}>
   <SectionContainer class="gap-8">
     <div class="mx-auto max-w-2xl text-center">
-      <h2
-        class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
-      >
+      <SectionTitle>
         {title}
-      </h2>
-      <p
-        class="text-muted-foreground mt-4 text-lg leading-relaxed text-balance"
-      >
+      </SectionTitle>
+      <SectionDescription class="mt-4">
         {description}
-      </p>
+      </SectionDescription>
     </div>
     <div
       class="mx-auto grid w-full justify-center gap-6 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(16rem,18rem))]"

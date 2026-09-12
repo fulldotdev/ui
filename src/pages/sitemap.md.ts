@@ -1,12 +1,9 @@
 import type { APIRoute } from "astro"
 import { getCollection } from "astro:content"
 
-import { getPageHref } from "@/lib/pages"
+import { getMarkdownHref, getPageHref } from "@/lib/pages"
 
 export const prerender = true
-
-const getMarkdownHref = (href: string) =>
-  href === "/" ? "/index.md" : `${href.replace(/\/$/, "")}.md`
 
 export const GET: APIRoute = async () => {
   const pages = await getCollection("pages")
@@ -26,6 +23,8 @@ Use the Markdown URLs when reading pages as an AI agent.
 ## Core
 
 - [Agent entry point](/index.md)
+- [llms.txt](/llms.txt)
+- [Full documentation](/llms-full.txt)
 - [Registry metadata](/r/registry.json)
 
 ## Pages
@@ -42,7 +41,7 @@ ${pageLinks
 
   return new Response(body, {
     headers: {
-      "Content-Type": "text/plain; charset=utf-8",
+      "Content-Type": "text/markdown; charset=utf-8",
     },
   })
 }

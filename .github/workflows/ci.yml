@@ -2,13 +2,16 @@ name: CI
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, preview]
   push:
-    branches: [main]
+    branches: [main, preview]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
 
 env:
   ASTRO_TELEMETRY_DISABLED: true
@@ -51,3 +54,93 @@ jobs:
 
       - name: Build site
         run: pnpm build
+
+  install:
+    name: Install smoke test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build registry and site
+        run: pnpm registry:build && pnpm build
+
+      - name: Serve registry
+        run: |
+          pnpm exec astro preview --host 127.0.0.1 --port 4321 &
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:4321/r/registry.json > /dev/null && break
+            sleep 1
+          done
+          curl -sf http://127.0.0.1:4321/r/registry.json > /dev/null
+
+      - name: Scaffold consumer project
+        working-directory: ${{ runner.temp }}
+        run: |
+          pnpm create astro@latest smoke --template minimal --install --no-git --yes
+          cd smoke
+          pnpm astro add tailwind -y
+          cat > components.json <<'JSON'
+          {
+            "$schema": "https://ui.shadcn.com/schema.json",
+            "style": "base-vega",
+            "rsc": false,
+            "tsx": true,
+            "tailwind": {
+              "config": "",
+              "css": "src/styles/global.css",
+              "baseColor": "neutral",
+              "cssVariables": true,
+              "prefix": ""
+            },
+            "iconLibrary": "lucide",
+            "aliases": {
+              "components": "@/components",
+              "utils": "@/lib/utils",
+              "ui": "@/components/ui",
+              "lib": "@/lib",
+              "hooks": "@/hooks"
+            },
+            "registries": {
+              "@fulldev": "http://127.0.0.1:4321/r/{name}.json"
+            }
+          }
+          JSON
+          cat > tsconfig.json <<'JSON'
+          {
+            "extends": "astro/tsconfigs/strict",
+            "include": [".astro/types.d.ts", "**/*"],
+            "exclude": ["dist"],
+            "compilerOptions": {
+              "paths": {
+                "@/*": ["./src/*"]
+              }
+            }
+          }
+          JSON
+
+      - name: Install Fulldev UI into consumer project
+        working-directory: ${{ runner.temp }}/smoke
+        run: |
+          pnpm dlx shadcn@latest add @fulldev/init -y --overwrite
+          pnpm dlx shadcn@latest add @fulldev/components @fulldev/blocks -y
+
+      - name: Type check and build consumer project
+        working-directory: ${{ runner.temp }}/smoke
+        run: |
+          pnpm add -D @astrojs/check typescript@6
+          pnpm astro check
+          pnpm astro build

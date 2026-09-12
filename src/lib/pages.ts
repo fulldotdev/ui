@@ -16,6 +16,12 @@ export type PageBreadcrumbItem = {
   href: string
 }
 
+export type PageLink = {
+  href: string
+  title: string
+  description?: string
+}
+
 export const normalizePath = (path: string) => {
   if (path === "/") return path
 
@@ -24,6 +30,15 @@ export const normalizePath = (path: string) => {
 
 export const getPageHref = (page: Page) =>
   page.id === "index" ? "/" : `/${page.id}/`
+
+export const getMarkdownHref = (href: string) =>
+  href === "/" ? "/index.md" : `${href.replace(/\/$/, "")}.md`
+
+export const getInstallCommand = (source: string) => {
+  const match = source.match(/props=\{\{\s*name:\s*['"]([^'"]+)['"]/)
+
+  return match ? `npx shadcn@latest add @fulldev/${match[1]}` : undefined
+}
 
 export const formatSlug = (slug: string) =>
   slug
@@ -38,8 +53,69 @@ const getPageSearchGroup = (href: string) => {
   return slug ? formatSlug(slug) : "Overview"
 }
 
-export const getPageSearchItems = async (): Promise<PageSearchItem[]> => {
+const toPageLink = (page: Page): PageLink => ({
+  href: getPageHref(page),
+  title: page.data.title,
+  description: page.data.description,
+})
+
+export const docsOrder = [
+  "docs/introduction",
+  "docs/installation",
+  "docs/theming",
+  "docs/dark-mode",
+  "docs/cli",
+  "docs/mcp",
+  "docs/skills",
+  "components",
+  "blocks",
+  "docs/layouts",
+]
+
+export const getDocLinks = async (): Promise<PageLink[]> => {
   const pages = await getCollection("pages")
+
+  return docsOrder
+    .map((id) => pages.find((page) => page.id === id))
+    .filter((page): page is Page => Boolean(page))
+    .map(toPageLink)
+}
+
+export const getComponentLinks = async (): Promise<PageLink[]> => {
+  const pages = await getCollection(
+    "pages",
+    ({ data, id }) =>
+      data.type === "doc" &&
+      id.startsWith("components/") &&
+      !("deprecated" in data && data.deprecated)
+  )
+
+  return pages.map(toPageLink).sort((a, b) => a.title.localeCompare(b.title))
+}
+
+export const getBlockCategoryLinks = async (): Promise<PageLink[]> => {
+  const pages = await getCollection(
+    "pages",
+    ({ data, id }) =>
+      data.type === "block" && !data.category && id.startsWith("blocks/")
+  )
+
+  return pages.map(toPageLink).sort((a, b) => a.href.localeCompare(b.href))
+}
+
+export const getOverviewLinks = async (href: string): Promise<PageLink[]> => {
+  if (href === "/docs/") return getDocLinks()
+  if (href === "/components/") return getComponentLinks()
+  if (href === "/blocks/") return getBlockCategoryLinks()
+
+  return []
+}
+
+export const getPageSearchItems = async (): Promise<PageSearchItem[]> => {
+  const pages = await getCollection(
+    "pages",
+    ({ data }) => !("deprecated" in data && data.deprecated)
+  )
 
   return pages
     .map((page) => ({

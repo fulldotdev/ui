@@ -1,13 +1,76 @@
 ---
 type: doc
 title: Theming
-description: Learn how to theme your components.
+description: Change colors, radius, fonts, and shadows through CSS variables.
 ---
 
-Fulldev UI uses the same theme token model as shadcn/ui. Use the official
-[shadcn/ui theming docs](https://ui.shadcn.com/docs/theming) as the reference.
+Fulldev UI uses the same CSS variable model as shadcn/ui. `@fulldev/init`
+writes the tokens below to `src/styles/global.css`. Change the variables there
+instead of editing component classes.
 
-## Fulldev note
+Every color has a light value in `:root` and a dark value in `.dark`. Colors
+are written in `oklch()`.
 
-After running `@fulldev/init`, theme tokens live in `src/styles/global.css`.
-Change those CSS variables instead of editing component classes.
+## Color tokens
+
+| Variable                                     | Used for                                       |
+| -------------------------------------------- | ---------------------------------------------- |
+| `--background` / `--foreground`              | Page background and default text               |
+| `--card` / `--card-foreground`               | Card surfaces                                  |
+| `--popover` / `--popover-foreground`         | Dropdowns, popovers, dialogs                   |
+| `--primary` / `--primary-foreground`         | Primary buttons, links, active states          |
+| `--secondary` / `--secondary-foreground`     | Secondary buttons and badges                   |
+| `--muted` / `--muted-foreground`             | Subtle backgrounds and supporting text         |
+| `--accent` / `--accent-foreground`           | Hover backgrounds                              |
+| `--destructive` / `--destructive-foreground` | Errors and destructive actions                 |
+| `--border`, `--input`, `--ring`              | Borders, form field borders, focus rings       |
+| `--chart-1` to `--chart-5`                   | Chart series                                   |
+| `--sidebar-*`                                | Sidebar background, text, borders, and accents |
+
+## Shape and typography
+
+| Variable                         | Used for                                           |
+| -------------------------------- | -------------------------------------------------- |
+| `--radius`                       | Base radius. `sm`, `md`, `lg`, `xl` derive from it |
+| `--shadow-2xs` to `--shadow-2xl` | Elevation scale                                    |
+| `--font-sans`, `--font-mono`     | Font families, set in `@theme inline`              |
+
+## Example
+
+Change the brand color and corner radius:
+
+```css title="src/styles/global.css"
+:root {
+  --primary: oklch(0.55 0.25 262);
+  --primary-foreground: oklch(1 0 0);
+  --radius: 0.75rem;
+}
+
+.dark {
+  --primary: oklch(0.7 0.2 262);
+  --primary-foreground: oklch(0.15 0 0);
+}
+```
+
+Keep the same hue in light and dark mode and adjust lightness. Components pick
+up the change automatically because they only reference the semantic tokens.
+
+## Fonts
+
+Set `--font-sans` and `--font-mono` in the `@theme inline` block. With Astro's
+font API, point them at the CSS variables Astro generates:
+
+```css title="src/styles/global.css"
+@theme inline {
+  --font-sans: var(--font-inter, ui-sans-serif, system-ui, sans-serif);
+}
+```
+
+## Block-level overrides
+
+Blocks accept `class` and any other HTML attribute on their root element. Use
+that for one-off spacing or backgrounds instead of editing block source:
+
+```astro
+<Hero1Block class="bg-muted" id="hero" {...content} />
+```

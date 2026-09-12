@@ -53,11 +53,17 @@ different architecture.
 Install Fulldev UI through shadcn-compatible tooling. Do not invent a `fulldev`
 CLI command unless the project actually provides one.
 
-Use the project package runner equivalent of:
+Install `@fulldev/init` once per project before any component. It provides
+the `cn` helper, the CSS token layer, and shared dependencies. Then install
+items with the project package runner equivalent of:
 
 ```bash
+npx shadcn@latest add @fulldev/init -y --overwrite
 npx shadcn@latest add @fulldev/<name>
 ```
+
+`@fulldev/beta-repo-setup` scaffolds the content, schema, layout, and route
+structure described below for a new project.
 
 Prefer existing `@fulldev` components and blocks before creating local reusable
 UI or complete page sections. Read installed source when behavior or API is
@@ -140,8 +146,9 @@ feedback fast:
 1. Inspect whether the project already has shadcn-compatible configuration.
 2. If needed, initialize shadcn-compatible component installation.
 3. Ensure `@fulldev` is configured as a registry.
-4. Install requested components or blocks with shadcn-compatible tooling.
-5. Read installed files and adapt imports only when the project requires it.
+4. Install `@fulldev/init` if `src/lib/utils.ts` or the token layer is missing.
+5. Install requested components or blocks with shadcn-compatible tooling.
+6. Read installed files and adapt imports only when the project requires it.
 
 ### New or Changed Page Type
 

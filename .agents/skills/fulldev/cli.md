@@ -22,6 +22,23 @@ Add the Fulldev registry:
 }
 ```
 
+Install the shared setup once per project, before any component. It adds the
+class helper, the Tailwind token layer, and shared dependencies:
+
+```bash
+npx shadcn@latest add @fulldev/init -y --overwrite
+```
+
+`--overwrite` replaces the generated `src/styles/global.css`. Review that file
+first in an existing project with custom styles.
+
+For a brand-new content-driven site, `@fulldev/beta-repo-setup` scaffolds the
+content, schema, layout, and route files described in this skill:
+
+```bash
+npx shadcn@latest add @fulldev/beta-repo-setup -y
+```
+
 Use the package runner already used by the project when possible. If the repo uses pnpm, prefer:
 
 ```bash
@@ -47,6 +64,12 @@ Install Fulldev components or blocks:
 ```bash
 npx shadcn@latest add @fulldev/button
 npx shadcn@latest add @fulldev/card @fulldev/section
+```
+
+Install every component or every block at once:
+
+```bash
+npx shadcn@latest add @fulldev/components @fulldev/blocks
 ```
 
 Preview what an install would change:

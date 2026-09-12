@@ -1,15 +1,19 @@
 ---
 import type { ImageMetadata } from "astro"
 import { Image } from "astro:assets"
+import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
-import { Section, SectionContainer } from "@/components/ui/section"
+import {
+  Section,
+  SectionContainer,
+  SectionTitle,
+} from "@/components/ui/section"
 
-type Props = {
-  class?: string
+type Props = HTMLAttributes<"section"> & {
   badge?: string
   title: string
   description?: string
@@ -37,21 +41,20 @@ const {
   description,
   buttons,
   services,
+  ...props
 } = Astro.props
 ---
 
-<Section class={cn("", className)}>
+<Section class={cn("", className)} {...props}>
   <SectionContainer class="gap-8">
     <div
       class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
     >
       <div class="max-w-2xl">
         {badge && <Badge variant="secondary">{badge}</Badge>}
-        <h2
-          class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
-        >
+        <SectionTitle class="mt-4">
           {title}
-        </h2>
+        </SectionTitle>
         {
           description && (
             <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">

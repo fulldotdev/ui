@@ -1,10 +1,11 @@
 ---
+import type { HTMLAttributes } from "astro/types"
+
 import { cn } from "@/lib/utils"
 import { Banner, BannerContainer } from "@/components/ui/banner"
 import { Button } from "@/components/ui/button"
 
-type Props = {
-  class?: string
+type Props = HTMLAttributes<"aside"> & {
   title: string
   description: string
   buttons?: {
@@ -14,10 +15,15 @@ type Props = {
   }[]
 }
 
-const { class: className, title, description, buttons } = Astro.props
+const { class: className, title, description, buttons, ...props } = Astro.props
 ---
 
-<Banner variant="floating" storageKey="banner-2" class={cn("", className)}>
+<Banner
+  variant="floating"
+  storageKey="banner-2"
+  class={cn("", className)}
+  {...props}
+>
   <BannerContainer class="gap-4 py-1" showClose={false}>
     <div
       class="flex flex-1 flex-col gap-0.5 lg:flex-row lg:items-center lg:gap-x-4"

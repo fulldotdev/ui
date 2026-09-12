@@ -93,6 +93,7 @@ type Props = {
     }[]
   }[]
   githubRepo: string
+  githubStars?: string
 }
 
 const {
@@ -102,6 +103,7 @@ const {
   breadcrumb,
   navigation,
   githubRepo,
+  githubStars,
 }: Props = Astro.props
 
 const normalizePath = (path: string) => {
@@ -123,8 +125,6 @@ const searchGroups = search.items.reduce<
 
   return groups
 }, [])
-
-const githubStars = "560+"
 ---
 
 <SidebarProvider>
@@ -384,10 +384,12 @@ const githubStars = "560+"
             variant="ghost"
             target="_blank"
             rel="noreferrer"
-            aria-label={`View ${githubRepo} on GitHub, ${githubStars}`}
+            aria-label={githubStars
+              ? `View ${githubRepo} on GitHub, ${githubStars}`
+              : `View ${githubRepo} on GitHub`}
           >
             <Icon name="github" />
-            <span>{githubStars}</span>
+            {githubStars && <span>{githubStars}</span>}
           </Button>
           <ThemeToggle />
         </HeaderGroup>

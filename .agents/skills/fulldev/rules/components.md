@@ -68,7 +68,7 @@ const { class: className, size = "default", ...props } = Astro.props
 
 ## Fulldev Components
 
-Fulldev UI components are installed with shadcn-compatible tooling from the `@fulldev` registry. Use the `shadcn` skill or `cli.md` for CLI details when needed.
+Fulldev UI components are installed with shadcn-compatible tooling from the `@fulldev` registry. See `cli.md` for CLI details when needed.
 
 - Install components before recreating them.
 - Read installed source when behavior or API is unclear.

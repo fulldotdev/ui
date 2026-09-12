@@ -1,11 +1,17 @@
 ---
+import type { HTMLAttributes } from "astro/types"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
-import { Section, SectionContainer } from "@/components/ui/section"
+import {
+  Section,
+  SectionContainer,
+  SectionDescription,
+  SectionTitle,
+} from "@/components/ui/section"
 
-type Props = {
-  class?: string
+type Props = HTMLAttributes<"section"> & {
   title: string
   description: string
   buttons?: {
@@ -20,22 +26,25 @@ type Props = {
   }[]
 }
 
-const { class: className, title, description, buttons, features } = Astro.props
+const {
+  class: className,
+  title,
+  description,
+  buttons,
+  features,
+  ...props
+} = Astro.props
 ---
 
-<Section class={cn("", className)}>
+<Section class={cn("", className)} {...props}>
   <SectionContainer class="items-center gap-6 text-center">
     <div class="flex max-w-2xl flex-col items-center gap-4">
-      <h2
-        class="text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
-      >
+      <SectionTitle>
         {title}
-      </h2>
-      <p
-        class="text-muted-foreground max-w-2xl text-lg leading-relaxed text-balance"
-      >
+      </SectionTitle>
+      <SectionDescription class="max-w-2xl">
         {description}
-      </p>
+      </SectionDescription>
     </div>
     {
       buttons?.length && (

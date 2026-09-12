@@ -49,7 +49,7 @@ export const GET: APIRoute = async () => {
       `${agentPreamble}No homepage content entry exists yet. Add \`src/content/pages/index.mdx\` to use this Markdown entry point.`,
       {
         headers: {
-          "Content-Type": "text/plain; charset=utf-8",
+          "Content-Type": "text/markdown; charset=utf-8",
         },
       }
     )
@@ -59,7 +59,7 @@ export const GET: APIRoute = async () => {
     `${agentPreamble}${await readFile(page.filePath, "utf-8")}`,
     {
       headers: {
-        "Content-Type": "text/plain; charset=utf-8",
+        "Content-Type": "text/markdown; charset=utf-8",
       },
     }
   )
