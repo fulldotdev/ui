@@ -1,6 +1,7 @@
 ---
 import type { ImageMetadata } from "astro"
 import { Image } from "astro:assets"
+import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 import {
@@ -11,11 +12,14 @@ import {
 } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Rating } from "@/components/ui/rating"
-import { Section, SectionContainer } from "@/components/ui/section"
+import {
+  Section,
+  SectionContainer,
+  SectionTitle,
+} from "@/components/ui/section"
 import PlaceholderImage from "@/assets/placeholder.webp"
 
-type Props = {
-  class?: string
+type Props = HTMLAttributes<"section"> & {
   title: string
   description: string
   buttons?: {
@@ -45,10 +49,11 @@ const {
   buttons,
   socialProof,
   image = { src: PlaceholderImage, alt: "CTA image" },
+  ...props
 } = Astro.props
 ---
 
-<Section class={cn("", className)}>
+<Section class={cn("", className)} {...props}>
   <SectionContainer class="grid gap-12 lg:grid-cols-2 lg:items-center">
     <Image
       src={image.src}
@@ -59,11 +64,9 @@ const {
     />
     <div class="flex flex-col gap-6">
       <div class="flex flex-col gap-4">
-        <h2
-          class="text-foreground text-3xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-4xl"
-        >
+        <SectionTitle class="leading-[1.1]">
           {title}
-        </h2>
+        </SectionTitle>
         <p class="text-muted-foreground text-lg leading-relaxed">
           {description}
         </p>

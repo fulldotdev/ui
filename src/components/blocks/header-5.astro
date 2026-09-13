@@ -1,6 +1,7 @@
 ---
 import type { ImageMetadata } from "astro"
 import { Image } from "astro:assets"
+import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -27,8 +28,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 
-type Props = {
-  class?: string
+type Props = HTMLAttributes<"header"> & {
   logo: {
     label: string
     href: string
@@ -62,10 +62,13 @@ type Props = {
   }[]
 }
 
-const { class: className, logo, navigation, buttons } = Astro.props
+const { class: className, logo, navigation, buttons, ...props } = Astro.props
 ---
 
-<Header class={cn("flex-col items-stretch gap-0 border-b py-0", className)}>
+<Header
+  class={cn("flex-col items-stretch gap-0 border-b py-0", className)}
+  {...props}
+>
   <HeaderContainer class="min-h-14 justify-between">
     <HeaderGroup>
       <Logo href={logo.href}>
@@ -115,13 +118,20 @@ const { class: className, logo, navigation, buttons } = Astro.props
             {
               navigation.map((item) => (
                 <div class="grid gap-1">
-                  <SheetClose variant="ghost" class="justify-start font-medium">
+                  <SheetClose
+                    as="a"
+                    href={item.href}
+                    variant="ghost"
+                    class="justify-start font-medium"
+                  >
                     {item.label}
                   </SheetClose>
                   {item.links?.length && (
                     <div class="border-border ml-3 grid gap-1 border-l pl-3">
                       {item.links.map((link) => (
                         <SheetClose
+                          as="a"
+                          href={link.href}
                           variant="ghost"
                           class="text-muted-foreground justify-start"
                         >
@@ -137,7 +147,7 @@ const { class: className, logo, navigation, buttons } = Astro.props
           </nav>
           <Separator />
           <div class="mt-auto flex flex-col gap-2">
-            <slot />
+            <slot name="mobile" />
           </div>
         </div>
       </SheetContent>

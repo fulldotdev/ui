@@ -1,6 +1,8 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "content-1",
+  "title": "Content 1",
+  "description": "Flexible narrative content sections for explainers, comparisons, and supporting context.",
   "dependencies": [
     "@lucide/astro"
   ],
@@ -11,7 +13,7 @@
   "files": [
     {
       "path": "src/components/blocks/content-1.astro",
-      "content": "---\nimport type { ImageMetadata } from \"astro\"\nimport { Image } from \"astro:assets\"\nimport { CheckIcon } from \"@lucide/astro\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Button } from \"@/components/ui/button\"\nimport { Section, SectionContainer } from \"@/components/ui/section\"\nimport PlaceholderImage from \"@/assets/placeholder.webp\"\n\ntype Props = {\n  class?: string\n  title: string\n  description: string\n  features?: string[]\n  buttons?: {\n    label: string\n    href: string\n    variant?: \"default\" | \"outline\" | \"secondary\" | \"ghost\"\n  }[]\n  image?: {\n    src: ImageMetadata\n    alt: string\n  }\n}\n\nconst {\n  class: className,\n  title,\n  description,\n  features,\n  buttons,\n  image = { src: PlaceholderImage, alt: \"Content image\" },\n} = Astro.props\n---\n\n<Section class={cn(\"\", className)}>\n  <SectionContainer class=\"gap-6\">\n    <div class=\"flex flex-col gap-4\">\n      <h2\n        class=\"text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl\"\n      >\n        {title}\n      </h2>\n      <p class=\"text-muted-foreground text-lg leading-relaxed text-balance\">\n        {description}\n      </p>\n    </div>\n    {\n      features?.length && (\n        <ul class=\"flex flex-col gap-3\">\n          {features.map((feature) => (\n            <li class=\"flex items-center gap-3 text-sm\">\n              <CheckIcon class=\"text-primary size-4 shrink-0\" />\n              {feature}\n            </li>\n          ))}\n        </ul>\n      )\n    }\n    {\n      buttons?.length && (\n        <div class=\"flex flex-wrap gap-3\">\n          {buttons.map(({ href, label, ...button }, index) => (\n            <Button\n              as=\"a\"\n              href={href}\n              size=\"lg\"\n              variant={\n                button.variant ?? (index === 0 ? \"default\" : \"secondary\")\n              }\n              {...button}\n            >\n              {label}\n            </Button>\n          ))}\n        </div>\n      )\n    }\n  </SectionContainer>\n  <SectionContainer>\n    <Image\n      src={image.src}\n      alt={image.alt}\n      class=\"aspect-video w-full rounded-xl border object-cover\"\n      widths={[640, 960, 1280, 1536]}\n      sizes=\"(min-width: 80rem) 80rem, 100vw\"\n    />\n  </SectionContainer>\n</Section>\n",
+      "content": "---\nimport type { ImageMetadata } from \"astro\"\nimport { Image } from \"astro:assets\"\nimport type { HTMLAttributes } from \"astro/types\"\nimport { CheckIcon } from \"@lucide/astro\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Button } from \"@/components/ui/button\"\nimport { Icon } from \"@/components/ui/icon\"\nimport {\n  Section,\n  SectionContainer,\n  SectionDescription,\n  SectionTitle,\n} from \"@/components/ui/section\"\nimport PlaceholderImage from \"@/assets/placeholder.webp\"\n\ntype Props = HTMLAttributes<\"section\"> & {\n  title: string\n  description: string\n  features?: string[]\n  buttons?: {\n    label: string\n    href: string\n    variant?: \"default\" | \"outline\" | \"secondary\" | \"ghost\"\n  }[]\n  image?: {\n    src: ImageMetadata\n    alt: string\n  }\n}\n\nconst {\n  class: className,\n  title,\n  description,\n  features,\n  buttons,\n  image = { src: PlaceholderImage, alt: \"Content image\" },\n  ...props\n} = Astro.props\n---\n\n<Section class={cn(\"\", className)} {...props}>\n  <SectionContainer class=\"gap-6\">\n    <div class=\"flex flex-col gap-4\">\n      <SectionTitle>\n        {title}\n      </SectionTitle>\n      <SectionDescription>\n        {description}\n      </SectionDescription>\n    </div>\n    {\n      features?.length && (\n        <ul class=\"flex flex-col gap-3\">\n          {features.map((feature) => (\n            <li class=\"flex items-center gap-3 text-sm\">\n              <CheckIcon class=\"text-primary size-4 shrink-0\" />\n              {feature}\n            </li>\n          ))}\n        </ul>\n      )\n    }\n    {\n      buttons?.length && (\n        <div class=\"flex flex-wrap gap-3\">\n          {buttons.map(({ href, label, ...button }, index) => (\n            <Button\n              as=\"a\"\n              href={href}\n              size=\"lg\"\n              variant={\n                button.variant ?? (index === 0 ? \"default\" : \"secondary\")\n              }\n              {...button}\n            >\n              {label}\n            </Button>\n          ))}\n        </div>\n      )\n    }\n  </SectionContainer>\n  <SectionContainer>\n    <Image\n      src={image.src}\n      alt={image.alt}\n      class=\"aspect-video w-full rounded-xl border object-cover\"\n      widths={[640, 960, 1280, 1536]}\n      sizes=\"(min-width: 80rem) 80rem, 100vw\"\n    />\n  </SectionContainer>\n</Section>\n",
       "type": "registry:block"
     },
     {
@@ -20,6 +22,10 @@
       "type": "registry:file",
       "target": "src/assets/placeholder.webp"
     }
+  ],
+  "docs": "https://ui.full.dev/blocks/content/",
+  "categories": [
+    "content"
   ],
   "type": "registry:block"
 }

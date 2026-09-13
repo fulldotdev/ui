@@ -1,6 +1,8 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "content-3",
+  "title": "Content 3",
+  "description": "Flexible narrative content sections for explainers, comparisons, and supporting context.",
   "registryDependencies": [
     "@fulldev/button",
     "@fulldev/section"
@@ -8,7 +10,7 @@
   "files": [
     {
       "path": "src/components/blocks/content-3.astro",
-      "content": "---\nimport type { ImageMetadata } from \"astro\"\nimport { Image } from \"astro:assets\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Button } from \"@/components/ui/button\"\nimport { Section, SectionContainer } from \"@/components/ui/section\"\nimport PlaceholderImage from \"@/assets/placeholder.webp\"\n\ntype Props = {\n  class?: string\n  title: string\n  description: string\n  buttons?: {\n    label: string\n    href: string\n    variant?: \"default\" | \"outline\" | \"secondary\" | \"ghost\"\n  }[]\n  image?: {\n    src: ImageMetadata\n    alt: string\n  }\n}\n\nconst {\n  class: className,\n  title,\n  description,\n  buttons,\n  image = { src: PlaceholderImage, alt: \"Content image\" },\n} = Astro.props\n---\n\n<Section class={cn(\"\", className)}>\n  <SectionContainer class=\"gap-8\">\n    <div\n      class=\"flex flex-col gap-4 md:flex-row md:items-end md:justify-between\"\n    >\n      <div class=\"max-w-2xl\">\n        <h2\n          class=\"text-foreground text-3xl font-semibold tracking-tight text-balance sm:text-4xl\"\n        >\n          {title}\n        </h2>\n        <p\n          class=\"text-muted-foreground mt-4 text-lg leading-relaxed text-balance\"\n        >\n          {description}\n        </p>\n      </div>\n      {\n        buttons?.length && (\n          <div class=\"flex flex-wrap gap-3\">\n            {buttons.map(({ href, label, ...button }, index) => (\n              <Button\n                as=\"a\"\n                href={href}\n                size=\"lg\"\n                variant={\n                  button.variant ?? (index === 0 ? \"default\" : \"secondary\")\n                }\n                {...button}\n              >\n                {label}\n              </Button>\n            ))}\n          </div>\n        )\n      }\n    </div>\n  </SectionContainer>\n  <SectionContainer>\n    <Image\n      src={image.src}\n      alt={image.alt}\n      class=\"aspect-video w-full rounded-xl border object-cover\"\n      widths={[640, 960, 1280, 1536]}\n      sizes=\"(min-width: 80rem) 80rem, 100vw\"\n    />\n  </SectionContainer>\n</Section>\n",
+      "content": "---\nimport type { ImageMetadata } from \"astro\"\nimport { Image } from \"astro:assets\"\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Button } from \"@/components/ui/button\"\nimport {\n  Section,\n  SectionContainer,\n  SectionDescription,\n  SectionTitle,\n} from \"@/components/ui/section\"\nimport PlaceholderImage from \"@/assets/placeholder.webp\"\n\ntype Props = HTMLAttributes<\"section\"> & {\n  title: string\n  description: string\n  buttons?: {\n    label: string\n    href: string\n    variant?: \"default\" | \"outline\" | \"secondary\" | \"ghost\"\n  }[]\n  image?: {\n    src: ImageMetadata\n    alt: string\n  }\n}\n\nconst {\n  class: className,\n  title,\n  description,\n  buttons,\n  image = { src: PlaceholderImage, alt: \"Content image\" },\n  ...props\n} = Astro.props\n---\n\n<Section class={cn(\"\", className)} {...props}>\n  <SectionContainer class=\"gap-8\">\n    <div\n      class=\"flex flex-col gap-4 md:flex-row md:items-end md:justify-between\"\n    >\n      <div class=\"max-w-2xl\">\n        <SectionTitle>\n          {title}\n        </SectionTitle>\n        <SectionDescription class=\"mt-4\">\n          {description}\n        </SectionDescription>\n      </div>\n      {\n        buttons?.length && (\n          <div class=\"flex flex-wrap gap-3\">\n            {buttons.map(({ href, label, ...button }, index) => (\n              <Button\n                as=\"a\"\n                href={href}\n                size=\"lg\"\n                variant={\n                  button.variant ?? (index === 0 ? \"default\" : \"secondary\")\n                }\n                {...button}\n              >\n                {label}\n              </Button>\n            ))}\n          </div>\n        )\n      }\n    </div>\n  </SectionContainer>\n  <SectionContainer>\n    <Image\n      src={image.src}\n      alt={image.alt}\n      class=\"aspect-video w-full rounded-xl border object-cover\"\n      widths={[640, 960, 1280, 1536]}\n      sizes=\"(min-width: 80rem) 80rem, 100vw\"\n    />\n  </SectionContainer>\n</Section>\n",
       "type": "registry:block"
     },
     {
@@ -17,6 +19,10 @@
       "type": "registry:file",
       "target": "src/assets/placeholder.webp"
     }
+  ],
+  "docs": "https://ui.full.dev/blocks/content/",
+  "categories": [
+    "content"
   ],
   "type": "registry:block"
 }

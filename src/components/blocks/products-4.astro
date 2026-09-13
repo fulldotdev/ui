@@ -1,6 +1,7 @@
 ---
 import type { ImageMetadata } from "astro"
 import { Image } from "astro:assets"
+import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -12,10 +13,13 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
-import { Section, SectionContainer } from "@/components/ui/section"
+import {
+  Section,
+  SectionContainer,
+  SectionTitle,
+} from "@/components/ui/section"
 
-type Props = {
-  class?: string
+type Props = HTMLAttributes<"section"> & {
   title: string
   description: string
   buttons: {
@@ -38,20 +42,25 @@ type Props = {
   }[]
 }
 
-const { class: className, title, description, buttons, products } = Astro.props
+const {
+  class: className,
+  title,
+  description,
+  buttons,
+  products,
+  ...props
+} = Astro.props
 ---
 
-<Section class={cn("", className)}>
+<Section class={cn("", className)} {...props}>
   <SectionContainer class="gap-8">
     <div
       class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
     >
       <div class="max-w-2xl">
-        <h2
-          class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
-        >
+        <SectionTitle>
           {title}
-        </h2>
+        </SectionTitle>
         <p class="text-muted-foreground mt-3 text-lg leading-8">
           {description}
         </p>

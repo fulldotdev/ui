@@ -38,7 +38,8 @@
     "src/components/blocks",
     "src/components/ui",
     "src/lib",
-    "src/styles/global.css"
+    "src/styles/global.css",
+    "registry/init"
   ],
   "publishConfig": {
     "access": "public"
@@ -59,12 +60,13 @@
     "build:prod": "pnpm check && pnpm registry:build && pnpm build",
     "build:preview": "pnpm registry:build && pnpm build && astro preview --host 127.0.0.1 --port 4321",
     "build:test": "pnpm check && pnpm registry:build && pnpm build && astro preview --host 127.0.0.1 --port 4321",
-    "registry:build": "shadcn build && pnpm format:write --log-level warn",
+    "registry:build": "pnpm registry:meta && shadcn build && pnpm format:write --log-level warn",
     "registry:check": "pnpm registry:build && git diff --exit-code -- registry.json public/r",
     "format:write": "prettier --write .",
     "format:check": "prettier --check .",
     "release": "changeset version && pnpm install --lockfile-only",
-    "release:publish": "pnpm registry:check && pnpm build && changeset publish"
+    "release:publish": "pnpm registry:check && pnpm build && changeset publish",
+    "registry:meta": "node scripts/registry-meta.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.6",

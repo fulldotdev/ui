@@ -1,4 +1,6 @@
 ---
+import type { HTMLAttributes } from "astro/types"
+
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -9,10 +11,13 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Price, PriceValue } from "@/components/ui/price"
-import { Section, SectionContainer } from "@/components/ui/section"
+import {
+  Section,
+  SectionContainer,
+  SectionTitle,
+} from "@/components/ui/section"
 
-type Props = {
-  class?: string
+type Props = HTMLAttributes<"section"> & {
   badge: string
   title: string
   products: {
@@ -25,18 +30,16 @@ type Props = {
   }[]
 }
 
-const { class: className, badge, title, products } = Astro.props
+const { class: className, badge, title, products, ...props } = Astro.props
 ---
 
-<Section class={cn("", className)}>
+<Section class={cn("", className)} {...props}>
   <SectionContainer class="gap-8">
     <div class="mx-auto max-w-2xl text-center">
       <Badge variant="secondary">{badge}</Badge>
-      <h2
-        class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
-      >
+      <SectionTitle class="mt-4">
         {title}
-      </h2>
+      </SectionTitle>
     </div>
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {

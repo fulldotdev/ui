@@ -23,11 +23,12 @@ const componentSlug = componentProps.name
   .replace(/[^a-zA-Z0-9-]/g, "")
   .replace(/-+/g, "-")
   .toLowerCase()
-const isBlockPreview = Boolean(
-  componentSlug?.match(
-    /^(article|articles|banner|contact|content|cta|faqs|features|footer|header|hero|logos|pricing|product|products|reviews|services)-\d+$/
+const blockSlugs = new Set(
+  Object.keys(import.meta.glob("/src/components/blocks/*.astro")).map((path) =>
+    path.replace(/^.*\//, "").replace(/\.astro$/, "")
   )
 )
+const isBlockPreview = componentSlug ? blockSlugs.has(componentSlug) : false
 const installCommand = componentSlug
   ? `npx shadcn@latest add @fulldev/${componentSlug}`
   : undefined

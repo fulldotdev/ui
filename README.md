@@ -56,7 +56,13 @@ npx shadcn@latest init
 }
 ```
 
-5. **Copy the base stylesheet** from [`src/styles/global.css`](./src/styles/global.css) into your project, then import it in your layout.
+5. **Install the base stylesheet and shared helpers**, then import the stylesheet in your layout:
+
+```bash
+npx shadcn@latest add @fulldev/init
+```
+
+Review stylesheet changes in an existing project to preserve your theme.
 
 6. **Use a container-aware app shell** because Fulldev UI uses Tailwind v4 container-query variants like `@2xl:` and `@max-5xl:`:
 

@@ -83,3 +83,15 @@ export const getPageBreadcrumbItems = async (
       }),
   ]
 }
+
+export const getMarkdownHref = (href: string) =>
+  href === "/" ? "/index.md" : `${href.replace(/\/$/, "")}.md`
+
+export const getInstallCommand = (source: string) => {
+  const names = [
+    ...source.matchAll(/props=\{\{\s*name:\s*['"]([^'"]+)['"]/g),
+  ].map((match) => `@fulldev/${match[1]}`)
+  return names.length
+    ? `npx shadcn@latest add ${[...new Set(names)].join(" ")}`
+    : undefined
+}
