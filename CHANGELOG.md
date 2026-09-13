@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.11.0
+
+### Minor Changes
+
+- [`4b0ccf6`](https://github.com/fulldotdev/ui/commit/4b0ccf6a70b0fd38e750755a1e9416e42e967352) Thanks [@silveltman](https://github.com/silveltman)! - Restore portable registry setup and complete component and block bundles. Add functional contact forms, mobile header links and slots, section heading primitives, HTML attribute forwarding, explicit icon sources, and Astro navigation reinitialization while preserving the latest component APIs. Add registry metadata and Markdown documentation indexes for agents.
+
 ## 0.10.1
 
 ### Patch Changes
