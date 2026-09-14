@@ -1,0 +1,57 @@
+---
+type: doc
+title: Cookie Banner
+description: A compact cookie choice with saved preferences and a footer settings button.
+---
+
+## Installation
+
+```bash
+pnpm dlx shadcn@latest add @fulldev/cookie-banner
+```
+
+## Usage
+
+Render one banner near the end of the page layout. It uses the site's theme colors and native buttons, with no client framework dependency.
+
+```astro
+---
+import { CookieBanner } from "@/components/ui/cookie-banner"
+---
+
+<script is:inline>
+  document.addEventListener("cookie-consent-change", (event) => {
+    if (event.detail.storageKey !== "site-consent-v1") return
+    if (event.detail.choice === "accepted") {
+      // Start your site's optional tracking once.
+    } else {
+      // Stop any running optional tracking.
+    }
+  })
+</script>
+<CookieBanner
+  storageKey="site-consent-v1"
+  privacyHref="/cookies/"
+  cookiePrefixes={["_ga", "_gid"]}
+/>
+```
+
+Register the listener **before** the banner. It receives the saved choice during initial rendering and every new choice. An unknown choice does not grant consent. Keep tracker IDs, loading, conversion events and withdrawal handling in the site integration. This component does not load tracking itself.
+
+`cookiePrefixes` lists first-party cookie names or prefixes to remove when rejecting. It cannot remove third-party or HttpOnly cookies, clear a provider's local storage, or stop scripts already running. The integration must stop those scripts, for example by reloading after saving a rejection, and use the provider's consent API when applicable.
+
+The preference uses local storage. If storage is unavailable, the choice still works for the current page and is requested again on the next visit. Use a new storage key if the purposes materially change.
+
+## Props
+
+| Prop                         | Purpose                                                            |
+| ---------------------------- | ------------------------------------------------------------------ |
+| `storageKey`                 | Required, site-specific preference key.                            |
+| `privacyHref`                | Required, link to the site's actual cookie or privacy information. |
+| `cookiePrefixes`             | Optional first-party cookie names/prefixes to clear on rejection.  |
+| `description`                | Short banner text.                                                 |
+| `acceptLabel`, `rejectLabel` | Choice labels, defaulting to Accepteren and Weigeren.              |
+| `settingsLabel`              | Footer button label, defaulting to Cookies aanpassen.              |
+| `moreLabel`                  | Information link label, defaulting to Meer over cookies.           |
+
+The banner gives both choices equal prominence and does not block navigation. Preferences reopen from the footer. It is intended for a small accept/reject setup, not a replacement for Shopify's native consent system or a provider-managed consent platform.
