@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.11.1
+
+### Patch Changes
+
+- [#190](https://github.com/fulldotdev/ui/pull/190) [`a7b9580`](https://github.com/fulldotdev/ui/commit/a7b9580c416a72abb4d09b721d2cba917c806f1b) Thanks [@silveltman](https://github.com/silveltman)! - Fix repeated banner initialization, render informational contact icons without inactive buttons, and improve narrow documentation headers and prose link contrast.
+
 ## 0.11.0
 
 ### Minor Changes
