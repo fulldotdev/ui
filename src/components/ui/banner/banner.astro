@@ -35,51 +35,33 @@ const { class: className, variant, storageKey, ...props } = Astro.props
   <slot />
 </aside>
 
-<script is:inline>
-  const initializedKey = "fulldevBannerInitialized"
+<script>
+  const getStorageToken = (key: string) => `banner:${key}`
 
-  if (!document.documentElement.dataset[initializedKey]) {
-    document.documentElement.dataset[initializedKey] = "true"
-
-    const getStorageToken = (key) => `banner:${key}`
-
-    const syncBanners = () => {
-      document.querySelectorAll("[data-slot='banner']").forEach((banner) => {
-        if (!(banner instanceof HTMLElement)) return
-
-        const storageKey = banner.dataset.bannerStorageKey
-
-        if (
-          storageKey &&
-          sessionStorage.getItem(getStorageToken(storageKey)) === "hidden"
-        ) {
-          banner.hidden = true
-        }
-      })
-    }
-
-    syncBanners()
-
-    document.addEventListener("click", (event) => {
-      const target = event.target
-
-      if (!(target instanceof Element)) return
-
-      const closeButton = target.closest("[data-slot='banner-close']")
-
-      if (!(closeButton instanceof HTMLElement)) return
-
-      const banner = closeButton.closest("[data-slot='banner']")
-
+  const syncBanners = () => {
+    document.querySelectorAll("[data-slot='banner']").forEach((banner) => {
       if (!(banner instanceof HTMLElement)) return
-
-      banner.hidden = true
-
       const storageKey = banner.dataset.bannerStorageKey
-
-      if (storageKey) {
-        sessionStorage.setItem(getStorageToken(storageKey), "hidden")
+      if (
+        storageKey &&
+        sessionStorage.getItem(getStorageToken(storageKey)) === "hidden"
+      ) {
+        banner.hidden = true
       }
     })
   }
+
+  syncBanners()
+  document.addEventListener("astro:page-load", syncBanners)
+
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return
+    const closeButton = event.target.closest("[data-slot='banner-close']")
+    const banner = closeButton?.closest("[data-slot='banner']")
+    if (!(banner instanceof HTMLElement)) return
+    banner.hidden = true
+    const storageKey = banner.dataset.bannerStorageKey
+    if (storageKey)
+      sessionStorage.setItem(getStorageToken(storageKey), "hidden")
+  })
 </script>
