@@ -1,13 +1,21 @@
 import { readFile } from "node:fs/promises"
 import type { APIRoute } from "astro"
-import { getCollection } from "astro:content"
+import { getEntry } from "astro:content"
 
-import { getInstallCommand, getMarkdownHref, getPageHref } from "@/lib/pages"
+import {
+  getInstallCommand,
+  getMarkdownHref,
+  getOverviewEntries,
+  getPageContext,
+  getPageHref,
+  getPages,
+  type Page,
+} from "@/lib/pages"
 
 export const prerender = true
 
 export async function getStaticPaths() {
-  const pages = await getCollection("pages")
+  const pages = await getPages()
   return Promise.all(
     pages.map(async (page) => ({
       params: {
@@ -29,7 +37,7 @@ async function readPageSource(
   filePath: string | undefined,
   id: string,
   overview: boolean,
-  pages: Awaited<ReturnType<typeof getCollection<"pages">>>
+  pages: Page[]
 ) {
   if (!filePath) {
     throw new Error("Expected content page entry to include a file path.")
@@ -38,13 +46,12 @@ async function readPageSource(
   const source = await readFile(filePath, "utf-8")
   const sections = [source.trimEnd()]
   if (overview) {
-    const links = pages.filter((page) =>
-      id === "index"
-        ? !page.id.includes("/") && page.id !== "index"
-        : page.id.startsWith(`${id}/`)
-    )
+    const page = pages.find((entry) => entry.id === id)!
+    const links = getOverviewEntries(pages, page)
+    const context = await getPageContext(page)
+    const global = await getEntry("globals", context.locale)
     sections.push(
-      `## Pages\n\n${links.map((page) => `- [${page.data.title}](${getMarkdownHref(getPageHref(page))}): ${page.data.description}`).join("\n")}`
+      `## ${global?.data.labels.pages ?? "Pages"}\n\n${links.map((page) => `- [${page.data.title}](${getMarkdownHref(getPageHref(page))}): ${page.data.description}`).join("\n")}`
     )
   }
   const install = getInstallCommand(source)

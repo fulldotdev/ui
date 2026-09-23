@@ -20,11 +20,13 @@ export const imageSchema = ({ image }: SchemaContext) =>
   })
 
 export const seoSchema = (ctx: SchemaContext) =>
-  z.object({
-    title: z.string(),
-    description: z.string(),
-    image: imageSchema(ctx).optional(),
-    canonical: z.string().optional(),
-    noindex: z.boolean().optional(),
-    nofollow: z.boolean().optional(),
-  })
+  z
+    .object({
+      title: z.string().trim().min(1).optional(),
+      description: z.string().trim().min(1).optional(),
+      image: imageSchema(ctx).optional(),
+      canonical: z.url().optional(),
+      noindex: z.boolean().optional(),
+      nofollow: z.boolean().optional(),
+    })
+    .strict()

@@ -1,17 +1,109 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "page",
+  "title": "Page foundation",
+  "description": "One path-driven pages collection, typed layouts, translations, and SEO.",
   "registryDependencies": [
-    "@fulldev/layout",
-    "@fulldev/components"
+    "@fulldev/layout"
   ],
   "files": [
     {
+      "path": "registry/page/components/layout-renderer.astro",
+      "content": "---\nimport { render } from \"astro:content\"\nimport type { AstroComponentFactory } from \"astro/runtime/server/index.js\"\n\nimport { getPages, type Page } from \"@/lib/pages\"\nimport OverviewLayout from \"@/layouts/overview.astro\"\nimport PageLayout from \"@/layouts/page.astro\"\n\ntype Props = Page\nconst page = Astro.props\nconst pages = await getPages()\nconst { Content } = await render(page)\nconst layouts = { page: PageLayout, overview: OverviewLayout } satisfies Record<\n  Page[\"data\"][\"type\"],\n  AstroComponentFactory\n>\nconst Layout = layouts[page.data.type]\n---\n\n<Layout page={page} pages={pages}><Content /></Layout>\n",
+      "type": "registry:file",
+      "target": "src/components/layout-renderer.astro"
+    },
+    {
+      "path": "registry/page/content.config.ts",
+      "content": "import { defineCollection, reference } from \"astro:content\"\nimport { z } from \"astro/zod\"\n\nimport { pageLoader } from \"@/lib/page-loader\"\n\nconst common = z.object({\n  title: z.string().trim().min(1),\n  description: z.string().trim().min(1),\n  translationKey: z.string().trim().min(1).optional(),\n  updatedAt: z.coerce.date().optional(),\n  seo: z\n    .object({\n      title: z.string().trim().min(1).optional(),\n      description: z.string().trim().min(1).optional(),\n      canonical: z.url().optional(),\n      noindex: z.boolean().optional(),\n      nofollow: z.boolean().optional(),\n    })\n    .strict()\n    .optional(),\n})\n\nexport const collections = {\n  pages: defineCollection({\n    loader: pageLoader(),\n    schema: z.discriminatedUnion(\"type\", [\n      common.extend({ type: z.literal(\"page\") }).strict(),\n      common\n        .extend({\n          type: z.literal(\"overview\"),\n          entries: z.array(reference(\"pages\")).optional(),\n        })\n        .strict(),\n    ]),\n  }),\n}\n",
+      "type": "registry:file",
+      "target": "src/content.config.ts"
+    },
+    {
+      "path": "registry/page/content/pages/about.md",
+      "content": "---\ntype: page\ntitle: About\ndescription: Tell visitors about your business.\n---\n\nWrite your content here. The layout owns its presentation.\n",
+      "type": "registry:file",
+      "target": "src/content/pages/about.md"
+    },
+    {
+      "path": "registry/page/content/pages/index.md",
+      "content": "---\ntype: overview\ntitle: Welcome\ndescription: Explore our website.\n---\n\nAdd Markdown files here. The folder tree is your URL tree.\n",
+      "type": "registry:file",
+      "target": "src/content/pages/index.md"
+    },
+    {
+      "path": "registry/page/layouts/base.astro",
+      "content": "---\nimport { siteConfig } from \"@/site.config\"\n\nimport {\n  getPageAlternates,\n  getPageBreadcrumbs,\n  getPageLocale,\n} from \"@/lib/page-paths\"\nimport type { Page } from \"@/lib/pages\"\nimport { getStructuredData } from \"@/lib/seo\"\nimport {\n  Layout,\n  LayoutBody,\n  LayoutHead,\n  LayoutMain,\n} from \"@/components/ui/layout\"\n\ntype Props = { page: Page; pages: Page[] }\nconst { page, pages } = Astro.props\nconst context = {\n  locale: getPageLocale(page, siteConfig.i18n),\n  breadcrumbs: getPageBreadcrumbs(pages, page, siteConfig.i18n),\n}\nconst alternates = getPageAlternates(pages, page, siteConfig.i18n)\n---\n\n<Layout lang={context.locale}>\n  <LayoutHead\n    name={siteConfig.name}\n    title={page.data.title} description={page.data.description}\n    {...page.data.seo}\n    canonical={page.data.seo?.canonical ??\n      new URL(Astro.url.pathname, siteConfig.site).href}\n    alternates={alternates.map((item) => ({\n      ...item,\n      href: new URL(item.href, siteConfig.site).href,\n    }))}\n    structuredData={getStructuredData(page, context, siteConfig)}\n  />\n  <LayoutBody\n    ><LayoutMain class=\"mx-auto w-full max-w-5xl gap-8 px-6 py-12\"\n      ><slot /></LayoutMain\n    ></LayoutBody\n  >\n</Layout>\n",
+      "type": "registry:file",
+      "target": "src/layouts/base.astro"
+    },
+    {
+      "path": "registry/page/layouts/overview.astro",
+      "content": "---\nimport { getPageHref } from \"@/lib/page-paths\"\nimport { getOverviewEntries, type Page } from \"@/lib/pages\"\n\nimport Base from \"./base.astro\"\n\ntype Props = { page: Page; pages: Page[] }\nconst { page, pages } = Astro.props\nconst entries = getOverviewEntries(pages, page)\n---\n\n<Base {...Astro.props}>\n  <h1 class=\"text-4xl font-bold\">{page.data.title}</h1>\n  <p class=\"text-muted-foreground text-lg\">{page.data.description}</p>\n  <article class=\"space-y-4\"><slot /></article>\n  <ul class=\"grid gap-4 sm:grid-cols-2\">\n    {\n      entries.map((entry) => (\n        <li class=\"rounded-lg border p-6\">\n          <>\n            <a class=\"font-medium underline\" href={getPageHref(entry)}>\n              {entry.data.title}\n            </a>\n            <p class=\"text-muted-foreground mt-2\">{entry.data.description}</p>\n          </>\n        </li>\n      ))\n    }\n  </ul>\n</Base>\n",
+      "type": "registry:file",
+      "target": "src/layouts/overview.astro"
+    },
+    {
+      "path": "registry/page/layouts/page.astro",
+      "content": "---\nimport type { Page } from \"@/lib/pages\"\n\nimport Base from \"./base.astro\"\n\ntype Props = { page: Page; pages: Page[] }\nconst { page } = Astro.props\n---\n\n<Base {...Astro.props}>\n  <h1 class=\"text-4xl font-bold\">{page.data.title}</h1>\n  <p class=\"text-muted-foreground text-lg\">{page.data.description}</p>\n  <article class=\"space-y-4\"><slot /></article>\n</Base>\n",
+      "type": "registry:file",
+      "target": "src/layouts/page.astro"
+    },
+    {
+      "path": "src/lib/page-loader.ts",
+      "content": "import { existsSync } from \"node:fs\"\nimport { glob } from \"astro/loaders\"\nimport type { Loader } from \"astro/loaders\"\n\nexport function pageLoader(base = \"src/content/pages\"): Loader {\n  const paths = new Map<string, string>()\n  const loader = glob({\n    base,\n    pattern: \"**/[^_]*.{md,mdx}\",\n    generateId: ({ entry, data, base }) => {\n      if (\"slug\" in data)\n        throw new Error(\n          `Remove the slug override in \"${entry}\". Page URLs are determined by file paths.`\n        )\n      const id = entry.replace(/\\.(md|mdx)$/, \"\").replace(/\\/index$/, \"\")\n      if (/[?#%\\\\\\s]/.test(id))\n        throw new Error(\n          `Invalid page path \"${entry}\". Use URL-safe file names.`\n        )\n      const previous = paths.get(id)\n      if (previous && previous !== entry && existsSync(new URL(encodeURI(previous), base)))\n        throw new Error(\n          `Page route collision: \"${previous}\" and \"${entry}\" both map to \"${id}\".`\n        )\n      paths.set(id, entry)\n      return id\n    },\n  })\n  return {\n    ...loader,\n    name: \"pages\",\n    async load(context) {\n      paths.clear()\n      await loader.load(context)\n    },\n  }\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/page-loader.ts"
+    },
+    {
+      "path": "src/lib/page-paths.ts",
+      "content": "export interface LocaleConfig {\n  defaultLocale: string\n  locales: readonly string[]\n  prefixDefaultLocale: boolean\n}\n\nexport interface RoutablePage {\n  id: string\n  data: {\n    type: string\n    title: string\n    description: string\n    translationKey?: string\n    updatedAt?: Date\n    seo?: { canonical?: string; noindex?: boolean }\n  }\n}\n\nexport const normalizePath = (path: string) =>\n  path === \"/\" ? path : path.replace(/\\/+$/, \"\")\n\nexport const getPageHref = (page: Pick<RoutablePage, \"id\">) =>\n  page.id === \"index\" ? \"/\" : `/${page.id}/`\n\nexport const getPageLocale = (\n  page: Pick<RoutablePage, \"id\">,\n  config: LocaleConfig\n) => {\n  const first = page.id.split(\"/\")[0]\n  return config.locales.includes(first) ? first : config.defaultLocale\n}\n\nexport const getLocaleHome = (locale: string, config: LocaleConfig) =>\n  locale === config.defaultLocale && !config.prefixDefaultLocale\n    ? \"/\"\n    : `/${locale}/`\n\nexport const getPageChildren = <T extends RoutablePage>(\n  pages: T[],\n  parent: Pick<RoutablePage, \"id\">,\n  type?: T[\"data\"][\"type\"]\n) => {\n  const prefix = parent.id === \"index\" ? \"\" : `${parent.id}/`\n  return pages.filter((page) => {\n    if (page.id === parent.id || !page.id.startsWith(prefix)) return false\n    return (\n      !page.id.slice(prefix.length).includes(\"/\") &&\n      (!type || page.data.type === type)\n    )\n  })\n}\n\nexport const resolvePageReference = <T extends RoutablePage>(\n  pages: T[],\n  id: string,\n  expectedType?: T[\"data\"][\"type\"]\n) => {\n  const page = pages.find((entry) => entry.id === id)\n  if (!page) throw new Error(`Unknown page reference \"${id}\".`)\n  if (expectedType && page.data.type !== expectedType) {\n    throw new Error(\n      `Page \"${id}\" must have type \"${expectedType}\", received \"${page.data.type}\".`\n    )\n  }\n  return page\n}\n\nexport const getPageAlternates = <T extends RoutablePage>(\n  pages: T[],\n  page: T,\n  config: LocaleConfig\n) => {\n  if (!page.data.translationKey) return []\n  return pages\n    .filter((entry) => entry.data.translationKey === page.data.translationKey)\n    .map((entry) => ({\n      locale: getPageLocale(entry, config),\n      href: getPageHref(entry),\n    }))\n}\n\nexport const validatePageTree = <T extends RoutablePage>(\n  pages: T[],\n  config: LocaleConfig\n) => {\n  const urls = new Set<string>()\n  const translations = new Map<string, string>()\n  for (const page of pages) {\n    const href = getPageHref(page)\n    if (urls.has(href)) throw new Error(`Duplicate page URL \"${href}\".`)\n    urls.add(href)\n    const first = page.id.split(\"/\")[0]\n    const locale = getPageLocale(page, config)\n    if (config.prefixDefaultLocale && !config.locales.includes(first)) {\n      throw new Error(\n        `Page \"${page.id}\" must live in a configured locale folder.`\n      )\n    }\n    if (!config.prefixDefaultLocale && first === config.defaultLocale) {\n      throw new Error(\n        `Default-locale page \"${page.id}\" must live outside the locale folder.`\n      )\n    }\n    if (page.data.translationKey) {\n      const key = `${locale}:${page.data.translationKey}`\n      if (translations.has(key))\n        throw new Error(\n          `Duplicate translation \"${key}\" on \"${page.id}\" and \"${translations.get(key)}\".`\n        )\n      translations.set(key, page.id)\n      const counterpart = pages.find(\n        (entry) =>\n          entry.data.translationKey === page.data.translationKey &&\n          entry.data.type !== page.data.type\n      )\n      if (counterpart)\n        throw new Error(\n          `Translations \"${page.id}\" and \"${counterpart.id}\" must use the same page type.`\n        )\n    }\n  }\n}\n\nexport const validatePageLinks = (\n  value: unknown,\n  pages: RoutablePage[],\n  owner: string\n): void => {\n  if (!value || typeof value !== \"object\") return\n  if (Array.isArray(value)) {\n    value.forEach((entry) => validatePageLinks(entry, pages, owner))\n    return\n  }\n  const record = value as Record<string, unknown>\n  if (record.collection === \"pages\" && typeof record.id === \"string\") {\n    resolvePageReference(\n      pages,\n      record.id,\n      typeof record.expectedType === \"string\" ? record.expectedType : undefined\n    )\n  }\n  if (\n    typeof record.href === \"string\" &&\n    record.href.startsWith(\"/\") &&\n    !record.href.startsWith(\"//\")\n  ) {\n    const path = record.href.split(/[?#]/)[0]\n    if (\n      !pages.some(\n        (page) => normalizePath(getPageHref(page)) === normalizePath(path)\n      )\n    ) {\n      throw new Error(\n        `Unknown internal page link \"${record.href}\" in ${owner}. Use a page URL or an explicit external URL.`\n      )\n    }\n  }\n  Object.values(record).forEach((entry) =>\n    validatePageLinks(entry, pages, owner)\n  )\n}\n\nexport const getPageBreadcrumbs = <T extends RoutablePage>(\n  pages: T[],\n  page: T,\n  config: LocaleConfig\n) => {\n  const locale = getPageLocale(page, config)\n  const home = getLocaleHome(locale, config)\n  const href = getPageHref(page)\n  return pages\n    .filter((entry) => {\n      const candidate = getPageHref(entry)\n      return (\n        getPageLocale(entry, config) === locale &&\n        (candidate === home ||\n          candidate === href ||\n          (candidate !== \"/\" && href.startsWith(candidate)))\n      )\n    })\n    .sort((a, b) => getPageHref(a).length - getPageHref(b).length)\n    .map((entry) => ({ label: entry.data.title, href: getPageHref(entry) }))\n}\n\nexport const getMarkdownHref = (href: string) =>\n  href === \"/\" ? \"/index.md\" : `${href.replace(/\\/$/, \"\")}.md`\n",
+      "type": "registry:file",
+      "target": "src/lib/page-paths.ts"
+    },
+    {
+      "path": "registry/page/lib/pages.ts",
+      "content": "import { getCollection, type CollectionEntry } from \"astro:content\"\nimport { siteConfig } from \"@/site.config\"\n\nimport {\n  getPageChildren,\n  getPageLocale,\n  resolvePageReference,\n  validatePageLinks,\n  validatePageTree,\n} from \"@/lib/page-paths\"\n\nexport type Page = CollectionEntry<\"pages\">\nexport const getPages = async () => {\n  const pages = await getCollection(\"pages\")\n  validatePageTree(pages, siteConfig.i18n)\n  pages.forEach((page) => validatePageLinks(page.data, pages, page.id))\n  return pages\n}\nexport const getOverviewEntries = (pages: Page[], page: Page) => {\n  const locale = getPageLocale(page, siteConfig.i18n)\n  const entries =\n    page.data.type === \"overview\" && page.data.entries\n      ? page.data.entries.map((reference) =>\n          resolvePageReference(pages, reference.id)\n        )\n      : getPageChildren(pages, page)\n          .filter((entry) => getPageLocale(entry, siteConfig.i18n) === locale)\n          .sort((a, b) => a.data.title.localeCompare(b.data.title, locale))\n  if (entries.some((entry) => getPageLocale(entry, siteConfig.i18n) !== locale))\n    throw new Error(`Overview \"${page.id}\" references another locale.`)\n  return entries\n}\nexport async function getPagesByType<T extends Page[\"data\"][\"type\"]>(type: T) {\n  return (await getPages()).filter(\n    (page): page is Page & { data: Extract<Page[\"data\"], { type: T }> } =>\n      page.data.type === type\n  )\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/pages.ts"
+    },
+    {
+      "path": "src/lib/seo.ts",
+      "content": "import { getPageHref, type RoutablePage } from \"./page-paths\"\n\ntype Context = {\n  locale: string\n  breadcrumbs: { href: string; label: string }[]\n}\n\nexport function getStructuredData(\n  page: RoutablePage,\n  context: Context,\n  site: { site: string; name: string },\n  organization?: { name: string; url: string }\n) {\n  const url = new URL(page.data.seo?.canonical ?? getPageHref(page), site.site)\n    .href\n  const websiteId = new URL(\"/#website\", site.site).href\n  const organizationId = new URL(\"/#organization\", site.site).href\n  const webpageId = `${url}#webpage`\n  const graph: Record<string, unknown>[] = [\n    {\n      \"@type\": \"WebSite\",\n      \"@id\": websiteId,\n      url: new URL(\"/\", site.site).href,\n      name: site.name,\n      ...(organization && { publisher: { \"@id\": organizationId } }),\n    },\n    {\n      \"@type\": page.data.type === \"overview\" ? \"CollectionPage\" : \"WebPage\",\n      \"@id\": webpageId,\n      url,\n      name: page.data.title,\n      description: page.data.description,\n      inLanguage: context.locale,\n      isPartOf: { \"@id\": websiteId },\n      ...(page.data.updatedAt && {\n        dateModified: page.data.updatedAt.toISOString(),\n      }),\n      ...(context.breadcrumbs.length > 1 && {\n        breadcrumb: { \"@id\": `${url}#breadcrumb` },\n      }),\n    },\n  ]\n  if (organization)\n    graph.push({\n      \"@type\": \"Organization\",\n      \"@id\": organizationId,\n      ...organization,\n    })\n  if (page.data.type === \"doc\")\n    graph.push({\n      \"@type\": \"TechArticle\",\n      \"@id\": `${url}#article`,\n      headline: page.data.title,\n      description: page.data.description,\n      inLanguage: context.locale,\n      mainEntityOfPage: { \"@id\": webpageId },\n      ...(page.data.updatedAt && {\n        dateModified: page.data.updatedAt.toISOString(),\n      }),\n    })\n  if (context.breadcrumbs.length > 1)\n    graph.push({\n      \"@type\": \"BreadcrumbList\",\n      \"@id\": `${url}#breadcrumb`,\n      itemListElement: context.breadcrumbs.map((item, index) => ({\n        \"@type\": \"ListItem\",\n        position: index + 1,\n        name: item.label,\n        item: new URL(item.href, site.site).href,\n      })),\n    })\n  return { \"@context\": \"https://schema.org\", \"@graph\": graph }\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/seo.ts"
+    },
+    {
+      "path": "src/lib/sitemap.ts",
+      "content": "import {\n  getPageAlternates,\n  getPageHref,\n  type LocaleConfig,\n  type RoutablePage,\n} from \"./page-paths\"\n\nexport const escapeXml = (value: string) =>\n  value.replace(\n    /[<>&\"']/g,\n    (char) =>\n      ({\n        \"<\": \"&lt;\",\n        \">\": \"&gt;\",\n        \"&\": \"&amp;\",\n        '\"': \"&quot;\",\n        \"'\": \"&apos;\",\n      })[char]!\n  )\n\nexport function renderSitemap(\n  pages: RoutablePage[],\n  site: string,\n  locales: LocaleConfig\n) {\n  const indexable = pages.filter(\n    (page) =>\n      !page.data.seo?.noindex &&\n      (!page.data.seo?.canonical ||\n        page.data.seo.canonical === new URL(getPageHref(page), site).href)\n  )\n  const entries = indexable\n    .map((page) => {\n      const url = escapeXml(new URL(getPageHref(page), site).href)\n      const alternates = getPageAlternates(indexable, page, locales)\n        .map(\n          (alternate) =>\n            `<xhtml:link rel=\"alternate\" hreflang=\"${escapeXml(alternate.locale)}\" href=\"${escapeXml(new URL(alternate.href, site).href)}\"/>`\n        )\n        .join(\"\")\n      return `<url><loc>${url}</loc>${page.data.updatedAt ? `<lastmod>${page.data.updatedAt.toISOString()}</lastmod>` : \"\"}${alternates}</url>`\n    })\n    .join(\"\")\n  return `<?xml version=\"1.0\" encoding=\"UTF-8\"?><urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:xhtml=\"http://www.w3.org/1999/xhtml\">${entries}</urlset>`\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/sitemap.ts"
+    },
+    {
       "path": "src/pages/[...page].astro",
-      "content": "---\nimport { getCollection } from \"astro:content\"\n\nimport LayoutRenderer from \"@/components/layout-renderer.astro\"\n\nexport async function getStaticPaths() {\n  const pages = await getCollection(\"pages\")\n  return pages.map((page) => {\n    return {\n      params: {\n        page: page.id === \"index\" ? undefined : page.id,\n      },\n      props: page,\n    }\n  })\n}\n---\n\n<LayoutRenderer {...Astro.props} />\n",
+      "content": "---\nimport { getPageHref } from \"@/lib/page-paths\"\nimport { getPages } from \"@/lib/pages\"\nimport LayoutRenderer from \"@/components/layout-renderer.astro\"\n\nexport async function getStaticPaths() {\n  const pages = await getPages()\n  return pages.map((page) => {\n    return {\n      params: {\n        page: getPageHref(page).slice(1, -1) || undefined,\n      },\n      props: page,\n    }\n  })\n}\n---\n\n<LayoutRenderer {...Astro.props} />\n",
       "type": "registry:file",
       "target": "src/pages/[...page].astro"
+    },
+    {
+      "path": "src/pages/sitemap-0.xml.ts",
+      "content": "import { siteConfig } from \"@/site.config\"\n\nimport { getPages } from \"@/lib/pages\"\nimport { renderSitemap } from \"@/lib/sitemap\"\n\nexport async function GET() {\n  return new Response(\n    renderSitemap(await getPages(), siteConfig.site, siteConfig.i18n),\n    { headers: { \"Content-Type\": \"application/xml; charset=utf-8\" } }\n  )\n}\n",
+      "type": "registry:file",
+      "target": "src/pages/sitemap-0.xml.ts"
+    },
+    {
+      "path": "src/pages/sitemap-index.xml.ts",
+      "content": "import { siteConfig } from \"@/site.config\"\n\nimport { escapeXml } from \"@/lib/sitemap\"\n\nexport function GET() {\n  return new Response(\n    `<?xml version=\"1.0\" encoding=\"UTF-8\"?><sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><sitemap><loc>${escapeXml(new URL(\"/sitemap-0.xml\", siteConfig.site).href)}</loc></sitemap></sitemapindex>`,\n    { headers: { \"Content-Type\": \"application/xml; charset=utf-8\" } }\n  )\n}\n",
+      "type": "registry:file",
+      "target": "src/pages/sitemap-index.xml.ts"
+    },
+    {
+      "path": "registry/page/site.config.ts",
+      "content": "export const siteConfig = {\n  site: \"https://example.com\",\n  name: \"My website\",\n  i18n: { defaultLocale: \"en\", locales: [\"en\"], prefixDefaultLocale: false },\n}\n",
+      "type": "registry:file",
+      "target": "src/site.config.ts"
     }
   ],
+  "docs": "https://ui.full.dev/docs/pages/",
   "type": "registry:file"
 }

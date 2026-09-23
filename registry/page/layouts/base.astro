@@ -1,0 +1,46 @@
+---
+import { siteConfig } from "@/site.config"
+
+import {
+  getPageAlternates,
+  getPageBreadcrumbs,
+  getPageLocale,
+} from "@/lib/page-paths"
+import type { Page } from "@/lib/pages"
+import { getStructuredData } from "@/lib/seo"
+import {
+  Layout,
+  LayoutBody,
+  LayoutHead,
+  LayoutMain,
+} from "@/components/ui/layout"
+
+type Props = { page: Page; pages: Page[] }
+const { page, pages } = Astro.props
+const context = {
+  locale: getPageLocale(page, siteConfig.i18n),
+  breadcrumbs: getPageBreadcrumbs(pages, page, siteConfig.i18n),
+}
+const alternates = getPageAlternates(pages, page, siteConfig.i18n)
+---
+
+<Layout lang={context.locale}>
+  <LayoutHead
+    name={siteConfig.name}
+    title={page.data.title}
+    description={page.data.description}
+    {...page.data.seo}
+    canonical={page.data.seo?.canonical ??
+      new URL(Astro.url.pathname, siteConfig.site).href}
+    alternates={alternates.map((item) => ({
+      ...item,
+      href: new URL(item.href, siteConfig.site).href,
+    }))}
+    structuredData={getStructuredData(page, context, siteConfig)}
+  />
+  <LayoutBody
+    ><LayoutMain class="mx-auto w-full max-w-5xl gap-8 px-6 py-12"
+      ><slot /></LayoutMain
+    ></LayoutBody
+  >
+</Layout>

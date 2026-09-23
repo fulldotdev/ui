@@ -1,0 +1,20 @@
+---
+import { render } from "astro:content"
+import type { AstroComponentFactory } from "astro/runtime/server/index.js"
+
+import { getPages, type Page } from "@/lib/pages"
+import OverviewLayout from "@/layouts/overview.astro"
+import PageLayout from "@/layouts/page.astro"
+
+type Props = Page
+const page = Astro.props
+const pages = await getPages()
+const { Content } = await render(page)
+const layouts = { page: PageLayout, overview: OverviewLayout } satisfies Record<
+  Page["data"]["type"],
+  AstroComponentFactory
+>
+const Layout = layouts[page.data.type]
+---
+
+<Layout page={page} pages={pages}><Content /></Layout>

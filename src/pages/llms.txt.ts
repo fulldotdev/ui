@@ -1,13 +1,12 @@
 import type { APIRoute } from "astro"
-import { getCollection } from "astro:content"
 
-import { getMarkdownHref, getPageHref } from "@/lib/pages"
+import { getMarkdownHref, getPageHref, getPages } from "@/lib/pages"
 
 export const prerender = true
 
 export const GET: APIRoute = async ({ site }) => {
   const origin = site?.origin ?? ""
-  const pages = await getCollection("pages")
+  const pages = await getPages()
   const groups = new Map<string, typeof pages>()
 
   for (const page of pages) {

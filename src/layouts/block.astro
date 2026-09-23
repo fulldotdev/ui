@@ -1,43 +1,29 @@
 ---
 import type { MarkdownHeading } from "astro"
-import { getCollection } from "astro:content"
 
 import type { GlobalSchema } from "@/schemas/global"
 import type { BlockSchema } from "@/schemas/layouts/block"
+import type { Page, PageContext } from "@/lib/pages"
+import { getMarkdownHref, getPageHref } from "@/lib/pages"
+import { getPagePagination } from "@/lib/pagination"
 import Base from "@/layouts/base.astro"
 import BlocksBlock from "@/components/blocks/blocks-1.astro"
 
 type Props = {
+  entry: Page
+  context: PageContext
   global: GlobalSchema
   page: BlockSchema
   headings: MarkdownHeading[]
 }
 
 const props: Props = Astro.props
-const currentPath = Astro.url.pathname
-const markdownPath =
-  currentPath === "/" ? "/index.md" : `${currentPath.replace(/\/$/, "")}.md`
-const markdownUrl = new URL(markdownPath, Astro.url).toString()
-
-const blockPages = await getCollection("pages", ({ data }) => {
-  return data.type === "block"
-})
-const orderedBlockLinks = blockPages
-  .map((entry) => ({
-    href: `/${entry.id}/`,
-    title: entry.data.title,
-  }))
-  .sort((a, b) => a.href.localeCompare(b.href))
-const currentPageIndex = orderedBlockLinks.findIndex(
-  (item) => item.href === currentPath
-)
-const previousPage =
-  currentPageIndex > 0 ? orderedBlockLinks[currentPageIndex - 1] : undefined
-const nextPage =
-  currentPageIndex >= 0 ? orderedBlockLinks[currentPageIndex + 1] : undefined
-const copySource = blockPages.find(
-  (entry) => `/${entry.id}/` === currentPath
-)?.body
+const markdownUrl = new URL(
+  getMarkdownHref(getPageHref(props.entry)),
+  Astro.url
+).toString()
+const { previousPage, nextPage } = await getPagePagination(props.entry)
+const copySource = props.entry.body
 const copyButton = copySource
   ? {
       id: `blocks-copy-page-${crypto.randomUUID()}`,
@@ -46,7 +32,7 @@ const copyButton = copySource
   : undefined
 ---
 
-<Base global={props.global} page={props.page}>
+<Base {...props}>
   <BlocksBlock
     title={props.page.title}
     description={props.page.description}
@@ -54,19 +40,7 @@ const copyButton = copySource
     markdownUrl={markdownUrl}
     previousPage={previousPage}
     nextPage={nextPage}
-    labels={{
-      copyMarkdown: "Copy Markdown",
-      openIn: "Open in",
-      openInMarkdown: "Open in Markdown",
-      openInChatGPT: "Open in ChatGPT",
-      openInClaude: "Open in Claude",
-      openInCursor: "Open in Cursor",
-      pagination: {
-        previous: "Previous",
-        next: "Next",
-        ariaLabel: "Blocks pagination",
-      },
-    }}
+    labels={props.global.labels}
   >
     <slot />
   </BlocksBlock>

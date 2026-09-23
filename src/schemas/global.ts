@@ -9,7 +9,26 @@ const nestedLinkSchema = linkSchema.extend({
 
 export const globalSchema = ({ image }: SchemaContext) =>
   z.object({
-    name: z.string(),
+    name: z.string().trim().min(1),
+    organization: z
+      .object({ name: z.string().trim().min(1), url: z.url() })
+      .strict()
+      .optional(),
+    labels: z.object({
+      copyMarkdown: z.string(),
+      openIn: z.string(),
+      openInMarkdown: z.string(),
+      openInChatGPT: z.string(),
+      openInClaude: z.string(),
+      openInCursor: z.string(),
+      toc: z.string(),
+      pages: z.string(),
+      pagination: z.object({
+        previous: z.string(),
+        next: z.string(),
+        ariaLabel: z.string(),
+      }),
+    }),
     logo: z
       .object({
         label: z.string(),

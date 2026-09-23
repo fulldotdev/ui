@@ -1,26 +1,26 @@
 ---
-// Keep this renderer generic and stable. New page types should be wired by
-// adding a matching schema and src/layouts/<type>.astro file, not by adding
-// layout-specific branches here.
 import { getEntry, render, type CollectionEntry } from "astro:content"
+import { layouts } from "@/layouts"
+
+import { validatePageLinks } from "@/lib/page-paths"
+import { getPageContext, getPages } from "@/lib/pages"
 
 type Props = CollectionEntry<"pages">
-
-const page = Astro.props
-const pageData = page.data
-const { Content, headings } = await render(page)
-const global = await getEntry("globals", Astro.currentLocale || "en")
-if (!global) throw new Error("Add a global to content/globals")
-const globalData = global.data
-
-const layoutImports = import.meta.glob("../layouts/*.astro", { eager: true })
-const layoutPath = `../layouts/${pageData.type}.astro`
-const layoutImport = layoutImports[layoutPath] as { default?: any } | undefined
-const Layout = layoutImport?.default
-
-if (!Layout) throw new Error(`Add a layout for page type "${pageData.type}"`)
+const entry = Astro.props
+const { Content, headings } = await render(entry)
+const context = await getPageContext(entry)
+const global = await getEntry("globals", context.locale)
+if (!global) throw new Error(`Add src/content/globals/${context.locale}.yaml.`)
+validatePageLinks(global.data, await getPages(), `globals/${context.locale}`)
+const Layout = layouts[entry.data.type]
 ---
 
-<Layout global={globalData} page={pageData} headings={headings}>
+<Layout
+  global={global.data}
+  page={entry.data}
+  entry={entry}
+  context={context}
+  headings={headings}
+>
   <Content />
 </Layout>

@@ -1,0 +1,166 @@
+---
+type: doc
+title: Pages
+description: One collection, file-based URLs, and a strict schema and layout per page type.
+---
+
+Every Markdown or MDX webpage belongs in `src/content/pages`. Folders define URLs;
+`type` selects the content schema and layout. Collections for records without their
+own page can be added separately.
+
+## Install the page foundation
+
+After the [Astro and Tailwind setup](/docs/installation/), run:
+
+```bash
+npx shadcn@latest add @fulldev/page
+```
+
+This installs a complete starter: the `pages` collection, strict `page` and
+`overview` schemas, layouts, path helpers, two sample pages, and sitemap endpoints.
+It includes the layout primitives and their dependencies. Review file replacements
+in an existing project, especially `src/content.config.ts`, `src/site.config.ts`,
+and any existing index route. An existing `src/pages/index.astro` takes precedence
+over the starter's content index, so remove that route when adopting the starter.
+
+Set your production origin and name in `src/site.config.ts`. Use that origin for
+Astro's `site` setting too. The starter does not replace `astro.config.*`; keep
+Tailwind configured and add `@astrojs/mdx` if you use MDX. Add your own fonts to the
+layout head slot. The layout primitives do not require Astro font configuration.
+
+The starter includes a generic page and an overview. This documentation site uses
+its own `home`, `doc`, `block`, and `overview` types and layouts.
+
+## Files are URLs
+
+```text
+src/content/pages/
+  index.md                         /
+  services/index.md                /services/
+  services/coating/black.md         /services/coating/black/
+  services/paint/black.md           /services/paint/black/
+  nl/index.md                      /nl/
+  nl/diensten/coating/zwart.md      /nl/diensten/coating/zwart/
+```
+
+Both `black.md` files are valid because their full paths differ. Do not add a
+`slug` field. The loader rejects overrides and collisions such as `services.md`
+alongside `services/index.md`. Keep file names URL-safe. Changing a file path
+changes its URL; add a permanent redirect in your hosting configuration when
+moving an existing public page. Restrict path editing in your CMS if clients
+should only edit content.
+
+## One schema and layout per type
+
+Use a Zod discriminated union on `type`. Require only content fields that the
+layout actually uses. Put presentation choices in layout code.
+
+```ts
+const serviceSchema = common
+  .extend({
+    type: z.literal("service"),
+    relatedServices: z.array(reference("pages")).optional(),
+  })
+  .strict()
+```
+
+Add the schema to the union and the corresponding component to the layout map.
+The map must cover every type. Use `getPagesByType("service")` for a narrowed
+query. `reference("pages")` checks collection membership, but cannot constrain the
+target's type within a union. Validate that relationship with
+`resolvePageReference(pages, reference.id, "service")` before rendering, or use
+this site's `getReferencedPage(id, "service")` helper. This rejects a reference to
+an existing page of the wrong type.
+
+Model content around your business. A service detail page can output a `WebPage`
+whose main entity is a Schema.org `Service`; a service overview can output a
+`CollectionPage`. Extend the shared structured-data helper when adding those
+types. Schema.org describes entities, not a required collection or URL structure.
+Only emit facts present in the content. The built-in helper emits website,
+webpage, breadcrumb, and documentation article data; it does not invent ratings,
+prices, authors, or dates.
+
+## Overview pages
+
+An overview is an ordinary page with `type: overview`. Its Markdown body renders
+above the listing. By default it lists immediate child pages in the same locale,
+alphabetically by title. Descendants deeper in the tree are listed by their own
+parent overview.
+
+For a curated list or explicit ordering, use page IDs:
+
+```yaml
+type: overview
+title: Services
+description: Explore our services.
+entries:
+  - services/coating
+  - services/paint
+```
+
+An explicit empty list displays no entries. This site's HTML and Markdown
+overviews use the same selection. Pagination follows the parent overview's order;
+without one, it follows same-type siblings.
+
+## Translations
+
+Configure locales in `src/site.config.ts`. The default locale lives at the root
+unless `prefixDefaultLocale` is enabled; other locales live in their own folders.
+When every locale has a prefix, put every page inside its locale folder. Mirror
+these settings in Astro's i18n configuration; Astro does not translate content or
+match pages with different slugs for you.
+
+Pair translations with a stable `translationKey`:
+
+```yaml
+# services/coating/black.md
+translationKey: black-coating
+```
+
+```yaml
+# nl/diensten/coating/zwart.md
+translationKey: black-coating
+```
+
+These files can have completely different translated paths. The key connects
+language links and sitemap alternates without controlling routing. A key must
+be unique within each locale, and translations must use the same page type.
+Only existing translations are linked. Unpaired pages have no alternate-language
+links. Missing translations do not silently fall back to English.
+
+The documentation site also requires `src/content/globals/<locale>.yaml`, with
+translated navigation, search labels, and documentation controls. Search,
+breadcrumbs, and pagination stay within the current locale. Breadcrumbs only
+link to ancestor pages that actually exist. The minimal starter has no global
+navigation or search UI; add translated globals when your layout needs them.
+
+## SEO and validation
+
+Title and description are required. `seo` overrides are optional and independent:
+
+```yaml
+seo:
+  title: A different search title
+updatedAt: 2026-09-23
+```
+
+Add `updatedAt` only when it reflects a meaningful content update. Without it the
+sitemap omits `lastmod`. `seo.noindex: true` excludes a page from the sitemap and
+this site's search. A page with a canonical URL pointing elsewhere is also
+excluded from the sitemap. Canonicals must be absolute URLs.
+
+Keep `/sitemap-index.xml` in `robots.txt` and submit it to your search engine
+console. Do not run another sitemap generator on the same endpoint. The docs site
+already configures robots output; the minimal starter leaves robots policy to
+your project.
+
+Collection loading checks schemas and path collisions. Page helpers validate
+translation pairs, references, and root-relative page links in frontmatter and
+this site's globals. These checks do not crawl links inside Markdown bodies or
+verify anchors and external URLs. Include a rendered-link check in your project's
+release QA. Routing checks also cannot prevent a client from moving a valid page;
+CMS permissions and redirects cover that workflow.
+
+When adopting this in an existing project, remove unused frontmatter fields,
+move layout configuration into code, and retain only fields declared in the
+chosen schema. Run `astro check` and `astro build` before publishing.

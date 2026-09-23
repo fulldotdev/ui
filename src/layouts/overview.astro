@@ -1,56 +1,34 @@
 ---
-import { getCollection } from "astro:content"
-
 import type { GlobalSchema } from "@/schemas/global"
 import type { OverviewSchema } from "@/schemas/layouts/overview"
+import type { Page, PageContext } from "@/lib/pages"
+import { getOverviewEntries, getPageHref, getPages } from "@/lib/pages"
 import Base from "@/layouts/base.astro"
 import { SectionContainer } from "@/components/ui/section"
-import { TypographyH1, TypographyLead } from "@/components/ui/typography"
+import {
+  Typography,
+  TypographyH1,
+  TypographyLead,
+} from "@/components/ui/typography"
 
 type Props = {
+  entry: Page
+  context: PageContext
   global: GlobalSchema
   page: OverviewSchema
 }
 
-const { global, page }: Props = Astro.props
-const currentPath = Astro.url.pathname
-const pages = await getCollection("pages")
-
-const docsIndexOrder = [
-  "docs/introduction",
-  "docs/installation",
-  "docs/theming",
-  "components",
-  "blocks",
-]
-
-const entries =
-  currentPath === "/docs/"
-    ? docsIndexOrder
-        .map((id) => pages.find((entry) => entry.id === id))
-        .filter((entry): entry is (typeof pages)[number] => Boolean(entry))
-    : pages
-        .filter(({ data, id }) => {
-          if (currentPath === "/blocks/") {
-            return data.type === "block" && id.startsWith("blocks/")
-          }
-
-          if (currentPath === "/components/") {
-            return data.type === "doc" && id.startsWith("components/")
-          }
-
-          return false
-        })
-        .sort((a, b) => a.data.title.localeCompare(b.data.title))
+const { global, page, entry, context }: Props = Astro.props
+const entries = getOverviewEntries(await getPages(), entry)
 
 const overviewLinks = entries.map((entry) => ({
-  href: `/${entry.id}/`,
+  href: getPageHref(entry),
   title: entry.data.title,
   description: entry.data.description,
 }))
 ---
 
-<Base global={global} page={page}>
+<Base global={global} page={page} entry={entry} context={context}>
   <SectionContainer class="gap-10 pt-10 pb-10 sm:pt-12 sm:pb-12">
     <div class="mx-auto flex w-full max-w-[84rem] flex-col gap-10">
       <header class="flex min-w-0 flex-col gap-4 border-b pb-8">
@@ -67,6 +45,8 @@ const overviewLinks = entries.map((entry) => ({
           )
         }
       </header>
+
+      <Typography><slot /></Typography>
 
       <section class="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
         {

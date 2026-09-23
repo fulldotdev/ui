@@ -1,5 +1,4 @@
 import type { AstroIntegration } from "astro"
-import sitemap from "@astrojs/sitemap"
 import tailwindcss from "@tailwindcss/vite"
 import favicons from "astro-favicons"
 import robotsTxt from "astro-robots-txt"
@@ -10,6 +9,7 @@ export interface Options {
   i18n: {
     defaultLocale: string
     locales: string[]
+    prefixDefaultLocale?: boolean
   }
   favicon: string
 }
@@ -31,23 +31,14 @@ export default function (options: Options): AstroIntegration {
           i18n: {
             routing: {
               fallbackType: "redirect",
-              prefixDefaultLocale: false,
+              prefixDefaultLocale: options.i18n.prefixDefaultLocale ?? false,
               redirectToDefaultLocale: false,
             },
-            ...options.i18n,
+            defaultLocale: options.i18n.defaultLocale,
+            locales: options.i18n.locales,
           },
           integrations: [
             robotsTxt(),
-            sitemap({
-              changefreq: "weekly",
-              lastmod: new Date(),
-              i18n: {
-                defaultLocale: options.i18n?.defaultLocale,
-                locales: Object.fromEntries(
-                  options.i18n.locales.map((locale) => [locale, locale])
-                ),
-              },
-            }),
             favicons({
               input: {
                 favicons: [options.favicon],

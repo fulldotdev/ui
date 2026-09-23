@@ -1,7 +1,12 @@
 ---
+import { Font } from "astro:assets"
+import { siteConfig } from "@/site.config"
+
 import type { GlobalSchema } from "@/schemas/global"
 import type { BaseSchema } from "@/schemas/layouts/base"
-import { getPageBreadcrumbItems, getPageSearchItems } from "@/lib/pages"
+import type { Page, PageContext } from "@/lib/pages"
+import { getPageSearchItems } from "@/lib/pages"
+import { getStructuredData } from "@/lib/seo"
 import Sidebar1 from "@/components/blocks/sidebar-1.astro"
 import {
   Layout,
@@ -12,20 +17,35 @@ import {
 import { ThemeProvider } from "@/components/ui/theme-toggle"
 
 type Props = {
+  entry: Page
+  context: PageContext
   global: GlobalSchema
   page: BaseSchema
 }
 
-const { global, page }: Props = Astro.props
+const { global, page, entry, context }: Props = Astro.props
 
-const [searchItems, breadcrumbItems] = await Promise.all([
-  getPageSearchItems(),
-  getPageBreadcrumbItems(Astro.url.pathname),
-])
+const searchItems = await getPageSearchItems(context.locale)
+const structuredData = getStructuredData(
+  entry,
+  context,
+  siteConfig,
+  global.organization
+)
 ---
 
-<Layout>
-  <LayoutHead {...global} {...page} {...page.seo}>
+<Layout lang={context.locale}>
+  <LayoutHead
+    name={global.name}
+    title={page.title}
+    description={page.description}
+    image={page.image}
+    {...page.seo}
+    alternates={context.alternates}
+    structuredData={structuredData}
+  >
+    <Font cssVariable="--font-sans" />
+    <Font cssVariable="--font-mono" />
     <ThemeProvider />
   </LayoutHead>
   <LayoutBody>
@@ -36,7 +56,7 @@ const [searchItems, breadcrumbItems] = await Promise.all([
         ...global.sidebar.search,
       }}
       breadcrumb={{
-        items: breadcrumbItems,
+        items: context.breadcrumbs,
         menu: global.header.navigation,
       }}
       navigation={global.sidebar.navigation}

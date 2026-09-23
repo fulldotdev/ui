@@ -3,6 +3,7 @@ import mdx from "@astrojs/mdx"
 import liveCode from "astro-live-code"
 
 import fulldevIntegration from "./src/lib/integration"
+import { siteConfig } from "./src/site.config"
 
 export default defineConfig({
   server: {
@@ -46,13 +47,8 @@ export default defineConfig({
   ],
   integrations: [
     fulldevIntegration({
-      site: "https://ui.full.dev",
-      name: "Fulldev UI",
+      ...siteConfig,
       favicon: "src/assets/favicon.svg",
-      i18n: {
-        defaultLocale: "en",
-        locales: ["en"],
-      },
     }),
     liveCode({
       layout: "/src/components/live-code.astro",

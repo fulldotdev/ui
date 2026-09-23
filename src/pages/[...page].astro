@@ -1,14 +1,14 @@
 ---
-import { getCollection } from "astro:content"
-
+import { getPageHref } from "@/lib/page-paths"
+import { getPages } from "@/lib/pages"
 import LayoutRenderer from "@/components/layout-renderer.astro"
 
 export async function getStaticPaths() {
-  const pages = await getCollection("pages")
+  const pages = await getPages()
   return pages.map((page) => {
     return {
       params: {
-        page: page.id === "index" ? undefined : page.id,
+        page: getPageHref(page).slice(1, -1) || undefined,
       },
       props: page,
     }
