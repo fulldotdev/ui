@@ -11,6 +11,7 @@ export interface Options {
     locales: string[]
     prefixDefaultLocale?: boolean
   }
+  sitemap?: string
   favicon: string
 }
 
@@ -38,7 +39,7 @@ export default function (options: Options): AstroIntegration {
             locales: options.i18n.locales,
           },
           integrations: [
-            robotsTxt(),
+            robotsTxt({ sitemap: options.sitemap ?? false }),
             favicons({
               input: {
                 favicons: [options.favicon],

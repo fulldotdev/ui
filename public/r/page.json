@@ -3,6 +3,9 @@
   "name": "page",
   "title": "Page foundation",
   "description": "One path-driven pages collection, typed layouts, translations, and SEO.",
+  "devDependencies": [
+    "@types/node"
+  ],
   "registryDependencies": [
     "@fulldev/layout"
   ],
@@ -33,7 +36,7 @@
     },
     {
       "path": "registry/page/layouts/base.astro",
-      "content": "---\nimport { siteConfig } from \"@/site.config\"\n\nimport {\n  getPageAlternates,\n  getPageBreadcrumbs,\n  getPageLocale,\n} from \"@/lib/page-paths\"\nimport type { Page } from \"@/lib/pages\"\nimport { getStructuredData } from \"@/lib/seo\"\nimport {\n  Layout,\n  LayoutBody,\n  LayoutHead,\n  LayoutMain,\n} from \"@/components/ui/layout\"\n\ntype Props = { page: Page; pages: Page[] }\nconst { page, pages } = Astro.props\nconst context = {\n  locale: getPageLocale(page, siteConfig.i18n),\n  breadcrumbs: getPageBreadcrumbs(pages, page, siteConfig.i18n),\n}\nconst alternates = getPageAlternates(pages, page, siteConfig.i18n)\n---\n\n<Layout lang={context.locale}>\n  <LayoutHead\n    name={siteConfig.name}\n    title={page.data.title} description={page.data.description}\n    {...page.data.seo}\n    canonical={page.data.seo?.canonical ??\n      new URL(Astro.url.pathname, siteConfig.site).href}\n    alternates={alternates.map((item) => ({\n      ...item,\n      href: new URL(item.href, siteConfig.site).href,\n    }))}\n    structuredData={getStructuredData(page, context, siteConfig)}\n  />\n  <LayoutBody\n    ><LayoutMain class=\"mx-auto w-full max-w-5xl gap-8 px-6 py-12\"\n      ><slot /></LayoutMain\n    ></LayoutBody\n  >\n</Layout>\n",
+      "content": "---\nimport { siteConfig } from \"@/site.config\"\n\nimport {\n  getPageAlternates,\n  getPageBreadcrumbs,\n  getPageLocale,\n} from \"@/lib/page-paths\"\nimport type { Page } from \"@/lib/pages\"\nimport { getStructuredData } from \"@/lib/seo\"\nimport {\n  Layout,\n  LayoutBody,\n  LayoutHead,\n  LayoutMain,\n} from \"@/components/ui/layout\"\n\ntype Props = { page: Page; pages: Page[] }\nconst { page, pages } = Astro.props\nconst context = {\n  locale: getPageLocale(page, siteConfig.i18n),\n  breadcrumbs: getPageBreadcrumbs(pages, page, siteConfig.i18n),\n}\nconst alternates = getPageAlternates(pages, page, siteConfig.i18n)\n---\n\n<Layout lang={context.locale}>\n  <LayoutHead\n    name={siteConfig.name}\n    title={page.data.title}\n    description={page.data.description}\n    {...page.data.seo}\n    canonical={page.data.seo?.canonical ??\n      new URL(Astro.url.pathname, siteConfig.site).href}\n    alternates={alternates.map((item) => ({\n      ...item,\n      href: new URL(item.href, siteConfig.site).href,\n    }))}\n    structuredData={getStructuredData(page, context, siteConfig)}\n  />\n  <LayoutBody\n    ><LayoutMain class=\"mx-auto w-full max-w-5xl gap-8 px-6 py-12\"\n      ><slot /></LayoutMain\n    ></LayoutBody\n  >\n</Layout>\n",
       "type": "registry:file",
       "target": "src/layouts/base.astro"
     },
@@ -51,7 +54,7 @@
     },
     {
       "path": "src/lib/page-loader.ts",
-      "content": "import { existsSync } from \"node:fs\"\nimport { glob } from \"astro/loaders\"\nimport type { Loader } from \"astro/loaders\"\n\nexport function pageLoader(base = \"src/content/pages\"): Loader {\n  const paths = new Map<string, string>()\n  const loader = glob({\n    base,\n    pattern: \"**/[^_]*.{md,mdx}\",\n    generateId: ({ entry, data, base }) => {\n      if (\"slug\" in data)\n        throw new Error(\n          `Remove the slug override in \"${entry}\". Page URLs are determined by file paths.`\n        )\n      const id = entry.replace(/\\.(md|mdx)$/, \"\").replace(/\\/index$/, \"\")\n      if (/[?#%\\\\\\s]/.test(id))\n        throw new Error(\n          `Invalid page path \"${entry}\". Use URL-safe file names.`\n        )\n      const previous = paths.get(id)\n      if (previous && previous !== entry && existsSync(new URL(encodeURI(previous), base)))\n        throw new Error(\n          `Page route collision: \"${previous}\" and \"${entry}\" both map to \"${id}\".`\n        )\n      paths.set(id, entry)\n      return id\n    },\n  })\n  return {\n    ...loader,\n    name: \"pages\",\n    async load(context) {\n      paths.clear()\n      await loader.load(context)\n    },\n  }\n}\n",
+      "content": "import { existsSync } from \"node:fs\"\nimport { glob } from \"astro/loaders\"\nimport type { Loader } from \"astro/loaders\"\n\nexport function pageLoader(base = \"src/content/pages\"): Loader {\n  const paths = new Map<string, string>()\n  const loader = glob({\n    base,\n    pattern: \"**/[^_]*.{md,mdx}\",\n    generateId: ({ entry, data, base }) => {\n      if (\"slug\" in data)\n        throw new Error(\n          `Remove the slug override in \"${entry}\". Page URLs are determined by file paths.`\n        )\n      const id = entry.replace(/\\.(md|mdx)$/, \"\").replace(/\\/index$/, \"\")\n      if (/[?#%\\\\\\s]/.test(id))\n        throw new Error(\n          `Invalid page path \"${entry}\". Use URL-safe file names.`\n        )\n      const previous = paths.get(id)\n      if (\n        previous &&\n        previous !== entry &&\n        existsSync(new URL(encodeURI(previous), base))\n      )\n        throw new Error(\n          `Page route collision: \"${previous}\" and \"${entry}\" both map to \"${id}\".`\n        )\n      paths.set(id, entry)\n      return id\n    },\n  })\n  return {\n    ...loader,\n    name: \"pages\",\n    async load(context) {\n      paths.clear()\n      await loader.load(context)\n    },\n  }\n}\n",
       "type": "registry:file",
       "target": "src/lib/page-loader.ts"
     },
@@ -96,6 +99,12 @@
       "content": "import { siteConfig } from \"@/site.config\"\n\nimport { escapeXml } from \"@/lib/sitemap\"\n\nexport function GET() {\n  return new Response(\n    `<?xml version=\"1.0\" encoding=\"UTF-8\"?><sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><sitemap><loc>${escapeXml(new URL(\"/sitemap-0.xml\", siteConfig.site).href)}</loc></sitemap></sitemapindex>`,\n    { headers: { \"Content-Type\": \"application/xml; charset=utf-8\" } }\n  )\n}\n",
       "type": "registry:file",
       "target": "src/pages/sitemap-index.xml.ts"
+    },
+    {
+      "path": "src/schemas/page-reference.ts",
+      "content": "import { reference } from \"astro:content\"\n\n// getPages validates this target type alongside normal collection references.\nexport const pageReference = <T extends string>(type: T) =>\n  reference(\"pages\").transform((value) => ({ ...value, expectedType: type }))\n",
+      "type": "registry:file",
+      "target": "src/schemas/page-reference.ts"
     },
     {
       "path": "registry/page/site.config.ts",

@@ -48,6 +48,7 @@ export default defineConfig({
   integrations: [
     fulldevIntegration({
       ...siteConfig,
+      sitemap: new URL("/sitemap-index.xml", siteConfig.site).href,
       favicon: "src/assets/favicon.svg",
     }),
     liveCode({

@@ -56,10 +56,12 @@ Use a Zod discriminated union on `type`. Require only content fields that the
 layout actually uses. Put presentation choices in layout code.
 
 ```ts
+import { pageReference } from "@/schemas/page-reference"
+
 const serviceSchema = common
   .extend({
     type: z.literal("service"),
-    relatedServices: z.array(reference("pages")).optional(),
+    relatedServices: z.array(pageReference("service")).optional(),
   })
   .strict()
 ```
@@ -67,7 +69,9 @@ const serviceSchema = common
 Add the schema to the union and the corresponding component to the layout map.
 The map must cover every type. Use `getPagesByType("service")` for a narrowed
 query. `reference("pages")` checks collection membership, but cannot constrain the
-target's type within a union. Validate that relationship with
+target's type within a union. The `pageReference("service")` helper adds a type
+constraint that `getPages()` validates during the build. You can also resolve a
+target explicitly with
 `resolvePageReference(pages, reference.id, "service")` before rendering, or use
 this site's `getReferencedPage(id, "service")` helper. This rejects a reference to
 an existing page of the wrong type.

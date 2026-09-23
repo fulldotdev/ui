@@ -36,7 +36,7 @@ export const globalSchema = ({ image }: SchemaContext) =>
         src: image().optional(),
         srcLight: image().optional(),
         srcDark: image().optional(),
-        alt: z.string().optional(),
+        alt: z.string(),
       })
       .refine((logo) => logo.src || (logo.srcLight && logo.srcDark), {
         message: "Logo must define src or both srcLight and srcDark.",
