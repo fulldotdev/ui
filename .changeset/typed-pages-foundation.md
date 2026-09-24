@@ -7,3 +7,5 @@ Ship a complete page starter with one path-driven pages collection, strict schem
 Layout now respects its lang prop and accepts alternate-language links and structured data. Font declarations belong to the consuming layout; projects using the existing LayoutHead should move their Font components into its slot. Existing page content must remove undeclared fields and slug overrides before adopting the strict schemas.
 
 The reusable integration now accepts an explicit sitemap URL for robots output. Install the page endpoints or provide your own sitemap before configuring that URL.
+
+The page installer ships infrastructure only, with no sample homepage or About content. Shared page fields live in schemas. The installed site configuration requires Astro's production site URL and the project's SITE_NAME environment value, so unset configuration cannot publish example metadata.

@@ -16,20 +16,44 @@ After the [Astro and Tailwind setup](/docs/installation/), run:
 npx shadcn@latest add @fulldev/page
 ```
 
-This installs a complete starter: the `pages` collection, strict `page` and
-`overview` schemas, layouts, path helpers, two sample pages, and sitemap endpoints.
-It includes the layout primitives and their dependencies. Review file replacements
-in an existing project, especially `src/content.config.ts`, `src/site.config.ts`,
-and any existing index route. An existing `src/pages/index.astro` takes precedence
-over the starter's content index, so remove that route when adopting the starter.
+This installs the page infrastructure: the `pages` collection, strict `page` and
+`overview` schemas, layouts, path helpers, and sitemap endpoints. It includes the
+layout primitives and their dependencies. **It installs no page content**, so it
+does not add or replace a homepage or About page.
 
-Set your production origin and name in `src/site.config.ts`. Use that origin for
-Astro's `site` setting too. The starter does not replace `astro.config.*`; keep
-Tailwind configured and add `@astrojs/mdx` if you use MDX. Add your own fonts to the
-layout head slot. The layout primitives do not require Astro font configuration.
+Review infrastructure file replacements in an existing project, especially
+`src/content.config.ts`, `src/site.config.ts`, schemas, and layouts. Extend your
+existing schema union and layout map when you already have page types. This
+documentation site keeps its real homepage and its `home`, `doc`, `block`, and
+`overview` types; those docs-specific layouts are not installed into other sites.
 
-The starter includes a generic page and an overview. This documentation site uses
-its own `home`, `doc`, `block`, and `overview` types and layouts.
+Configure the production `site` URL in `astro.config.*` and set `SITE_NAME` to your
+actual website name in your environment or `.env` file. The installed
+`src/site.config.ts` reads Astro's configured URL and requires that name. A missing
+value fails the build instead of publishing example metadata. Configure locales
+in the same file and mirror them in Astro's i18n configuration.
+
+Keep or add your real Markdown pages under `src/content/pages`. If your homepage
+currently lives at `src/pages/index.astro`, migrate its actual content and layout
+before removing that route. An existing explicit route takes precedence over the
+collection catch-all. Installing the foundation alone does not perform that
+migration.
+
+The starter does not replace `astro.config.*`; keep Tailwind configured and add
+`@astrojs/mdx` if you use MDX. Add your own fonts to the layout head slot. The layout
+primitives do not require Astro font configuration.
+
+Shared schema definitions live under `src/schemas`, not in the content data:
+
+```text
+src/content.config.ts       registers the collections
+src/content/pages/          real Markdown page content
+src/content/globals/        shared translated copy, when your site needs it
+src/schemas/layouts/base.ts shared page fields
+src/schemas/page.ts         discriminated union of page types
+src/layouts/                presentation and page orchestration
+src/lib/                    shared build-time helpers
+```
 
 ## Files are URLs
 
@@ -56,9 +80,10 @@ Use a Zod discriminated union on `type`. Require only content fields that the
 layout actually uses. Put presentation choices in layout code.
 
 ```ts
+import { baseSchema } from "@/schemas/layouts/base"
 import { pageReference } from "@/schemas/page-reference"
 
-const serviceSchema = common
+const serviceSchema = baseSchema(ctx)
   .extend({
     type: z.literal("service"),
     relatedServices: z.array(pageReference("service")).optional(),
@@ -152,6 +177,13 @@ Add `updatedAt` only when it reflects a meaningful content update. Without it th
 sitemap omits `lastmod`. `seo.noindex: true` excludes a page from the sitemap and
 this site's search. A page with a canonical URL pointing elsewhere is also
 excluded from the sitemap. Canonicals must be absolute URLs.
+
+The content-driven sitemap uses the validated pages collection directly. This
+lets it omit noindex pages, use actual update dates, and pair translated URLs even
+when their slugs differ. `src/lib/sitemap.ts` owns that XML output; it replaces
+`@astrojs/sitemap` for this setup rather than running alongside it. The official
+integration is a valid alternative if your project supplies these content rules
+through its `serialize` callback.
 
 Keep `/sitemap-index.xml` in `robots.txt` and submit it to your search engine
 console. Do not run another sitemap generator on the same endpoint. The docs site

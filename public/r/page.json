@@ -18,25 +18,13 @@
     },
     {
       "path": "registry/page/content.config.ts",
-      "content": "import { defineCollection, reference } from \"astro:content\"\nimport { z } from \"astro/zod\"\n\nimport { pageLoader } from \"@/lib/page-loader\"\n\nconst common = z.object({\n  title: z.string().trim().min(1),\n  description: z.string().trim().min(1),\n  translationKey: z.string().trim().min(1).optional(),\n  updatedAt: z.coerce.date().optional(),\n  seo: z\n    .object({\n      title: z.string().trim().min(1).optional(),\n      description: z.string().trim().min(1).optional(),\n      canonical: z.url().optional(),\n      noindex: z.boolean().optional(),\n      nofollow: z.boolean().optional(),\n    })\n    .strict()\n    .optional(),\n})\n\nexport const collections = {\n  pages: defineCollection({\n    loader: pageLoader(),\n    schema: z.discriminatedUnion(\"type\", [\n      common.extend({ type: z.literal(\"page\") }).strict(),\n      common\n        .extend({\n          type: z.literal(\"overview\"),\n          entries: z.array(reference(\"pages\")).optional(),\n        })\n        .strict(),\n    ]),\n  }),\n}\n",
+      "content": "import { defineCollection } from \"astro:content\"\n\nimport { pageSchema } from \"@/schemas/page\"\nimport { pageLoader } from \"@/lib/page-loader\"\n\nexport const collections = {\n  pages: defineCollection({ loader: pageLoader(), schema: pageSchema }),\n}\n",
       "type": "registry:file",
       "target": "src/content.config.ts"
     },
     {
-      "path": "registry/page/content/pages/about.md",
-      "content": "---\ntype: page\ntitle: About\ndescription: Tell visitors about your business.\n---\n\nWrite your content here. The layout owns its presentation.\n",
-      "type": "registry:file",
-      "target": "src/content/pages/about.md"
-    },
-    {
-      "path": "registry/page/content/pages/index.md",
-      "content": "---\ntype: overview\ntitle: Welcome\ndescription: Explore our website.\n---\n\nAdd Markdown files here. The folder tree is your URL tree.\n",
-      "type": "registry:file",
-      "target": "src/content/pages/index.md"
-    },
-    {
       "path": "registry/page/layouts/base.astro",
-      "content": "---\nimport { siteConfig } from \"@/site.config\"\n\nimport {\n  getPageAlternates,\n  getPageBreadcrumbs,\n  getPageLocale,\n} from \"@/lib/page-paths\"\nimport type { Page } from \"@/lib/pages\"\nimport { getStructuredData } from \"@/lib/seo\"\nimport {\n  Layout,\n  LayoutBody,\n  LayoutHead,\n  LayoutMain,\n} from \"@/components/ui/layout\"\n\ntype Props = { page: Page; pages: Page[] }\nconst { page, pages } = Astro.props\nconst context = {\n  locale: getPageLocale(page, siteConfig.i18n),\n  breadcrumbs: getPageBreadcrumbs(pages, page, siteConfig.i18n),\n}\nconst alternates = getPageAlternates(pages, page, siteConfig.i18n)\n---\n\n<Layout lang={context.locale}>\n  <LayoutHead\n    name={siteConfig.name}\n    title={page.data.title}\n    description={page.data.description}\n    {...page.data.seo}\n    canonical={page.data.seo?.canonical ??\n      new URL(Astro.url.pathname, siteConfig.site).href}\n    alternates={alternates.map((item) => ({\n      ...item,\n      href: new URL(item.href, siteConfig.site).href,\n    }))}\n    structuredData={getStructuredData(page, context, siteConfig)}\n  />\n  <LayoutBody\n    ><LayoutMain class=\"mx-auto w-full max-w-5xl gap-8 px-6 py-12\"\n      ><slot /></LayoutMain\n    ></LayoutBody\n  >\n</Layout>\n",
+      "content": "---\nimport { siteConfig } from \"@/site.config\"\n\nimport {\n  getPageAlternates,\n  getPageBreadcrumbs,\n  getPageLocale,\n} from \"@/lib/page-paths\"\nimport type { Page } from \"@/lib/pages\"\nimport { getStructuredData } from \"@/lib/seo\"\nimport {\n  Layout,\n  LayoutBody,\n  LayoutHead,\n  LayoutMain,\n} from \"@/components/ui/layout\"\n\ntype Props = { page: Page; pages: Page[] }\nconst { page, pages } = Astro.props\nconst context = {\n  locale: getPageLocale(page, siteConfig.i18n),\n  breadcrumbs: getPageBreadcrumbs(pages, page, siteConfig.i18n),\n}\nconst alternates = getPageAlternates(pages, page, siteConfig.i18n)\n---\n\n<Layout lang={context.locale}>\n  <LayoutHead\n    name={siteConfig.name}\n    title={page.data.title}\n    description={page.data.description}\n    image={page.data.image}\n    {...page.data.seo}\n    canonical={page.data.seo?.canonical ??\n      new URL(Astro.url.pathname, siteConfig.site).href}\n    alternates={alternates.map((item) => ({\n      ...item,\n      href: new URL(item.href, siteConfig.site).href,\n    }))}\n    structuredData={getStructuredData(page, context, siteConfig)}\n  />\n  <LayoutBody\n    ><LayoutMain class=\"mx-auto w-full max-w-5xl gap-8 px-6 py-12\"\n      ><slot /></LayoutMain\n    ></LayoutBody\n  >\n</Layout>\n",
       "type": "registry:file",
       "target": "src/layouts/base.astro"
     },
@@ -101,14 +89,38 @@
       "target": "src/pages/sitemap-index.xml.ts"
     },
     {
+      "path": "src/schemas/layouts/base.ts",
+      "content": "import { type SchemaContext } from \"astro:content\"\nimport { z } from \"astro/zod\"\n\nimport { imageSchema, seoSchema } from \"@/schemas/shared\"\n\nexport const baseSchema = (ctx: SchemaContext) =>\n  z.object({\n    title: z.string().trim().min(1),\n    description: z.string().trim().min(1),\n    translationKey: z.string().trim().min(1).optional(),\n    updatedAt: z.coerce.date().optional(),\n    image: imageSchema(ctx).optional(),\n    seo: seoSchema(ctx).optional(),\n  })\n\nexport type BaseSchema = z.infer<ReturnType<typeof baseSchema>>\n",
+      "type": "registry:file",
+      "target": "src/schemas/layouts/base.ts"
+    },
+    {
+      "path": "src/schemas/layouts/overview.ts",
+      "content": "import { reference, type SchemaContext } from \"astro:content\"\nimport { z } from \"astro/zod\"\n\nimport { baseSchema } from \"@/schemas/layouts/base\"\n\nexport const overviewSchema = (ctx: SchemaContext) =>\n  baseSchema(ctx)\n    .extend({ entries: z.array(reference(\"pages\")).optional() })\n    .strict()\n\nexport type OverviewSchema = z.infer<ReturnType<typeof overviewSchema>>\n",
+      "type": "registry:file",
+      "target": "src/schemas/layouts/overview.ts"
+    },
+    {
       "path": "src/schemas/page-reference.ts",
       "content": "import { reference } from \"astro:content\"\n\n// getPages validates this target type alongside normal collection references.\nexport const pageReference = <T extends string>(type: T) =>\n  reference(\"pages\").transform((value) => ({ ...value, expectedType: type }))\n",
       "type": "registry:file",
       "target": "src/schemas/page-reference.ts"
     },
     {
+      "path": "registry/page/schemas/page.ts",
+      "content": "import type { SchemaContext } from \"astro:content\"\nimport { z } from \"astro/zod\"\n\nimport { baseSchema } from \"@/schemas/layouts/base\"\nimport { overviewSchema } from \"@/schemas/layouts/overview\"\n\nexport const pageSchema = (ctx: SchemaContext) =>\n  z.discriminatedUnion(\"type\", [\n    baseSchema(ctx)\n      .extend({ type: z.literal(\"page\") })\n      .strict(),\n    overviewSchema(ctx).extend({ type: z.literal(\"overview\") }),\n  ])\n",
+      "type": "registry:file",
+      "target": "src/schemas/page.ts"
+    },
+    {
+      "path": "src/schemas/shared.ts",
+      "content": "import { type SchemaContext } from \"astro:content\"\nimport { z } from \"astro/zod\"\n\nexport const linkSchema = z.object({\n  label: z.string(),\n  href: z.string(),\n})\n\nexport const buttonSchema = z.object({\n  label: z.string(),\n  href: z.string(),\n  icon: z.string().optional(),\n  variant: z.enum([\"default\", \"outline\", \"secondary\", \"ghost\"]).optional(),\n})\n\nexport const imageSchema = ({ image }: SchemaContext) =>\n  z.object({\n    src: image(),\n    alt: z.string(),\n  })\n\nexport const seoSchema = (ctx: SchemaContext) =>\n  z\n    .object({\n      title: z.string().trim().min(1).optional(),\n      description: z.string().trim().min(1).optional(),\n      image: imageSchema(ctx).optional(),\n      canonical: z.url().optional(),\n      noindex: z.boolean().optional(),\n      nofollow: z.boolean().optional(),\n    })\n    .strict()\n",
+      "type": "registry:file",
+      "target": "src/schemas/shared.ts"
+    },
+    {
       "path": "registry/page/site.config.ts",
-      "content": "export const siteConfig = {\n  site: \"https://example.com\",\n  name: \"My website\",\n  i18n: { defaultLocale: \"en\", locales: [\"en\"], prefixDefaultLocale: false },\n}\n",
+      "content": "// Astro supplies SITE from astro.config; SITE_NAME is the project's real name.\nconst site = import.meta.env.SITE\nconst name = import.meta.env.SITE_NAME\n\nif (!site || !name) {\n  throw new Error(\n    \"Configure site in astro.config and SITE_NAME in your environment before building the page foundation.\"\n  )\n}\n\nexport const siteConfig = {\n  site,\n  name,\n  i18n: { defaultLocale: \"en\", locales: [\"en\"], prefixDefaultLocale: false },\n}\n",
       "type": "registry:file",
       "target": "src/site.config.ts"
     }
