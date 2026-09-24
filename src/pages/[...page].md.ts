@@ -2,12 +2,12 @@ import { readFile } from "node:fs/promises"
 import type { APIRoute } from "astro"
 import { getEntry } from "astro:content"
 
+import { getInstallCommand } from "@/lib/docs"
 import {
-  getInstallCommand,
   getMarkdownHref,
   getOverviewEntries,
-  getPageContext,
   getPageHref,
+  getPageLocale,
   getPages,
   type Page,
 } from "@/lib/pages"
@@ -18,40 +18,27 @@ export async function getStaticPaths() {
   const pages = await getPages()
   return Promise.all(
     pages.map(async (page) => ({
-      params: {
-        page: page.id,
-      },
-      props: {
-        source: await readPageSource(
-          page.filePath,
-          page.id,
-          page.data.type === "overview",
-          pages
-        ),
-      },
+      params: { page: page.id },
+      props: { source: await readPageSource(page, pages) },
     }))
   )
 }
 
-async function readPageSource(
-  filePath: string | undefined,
-  id: string,
-  overview: boolean,
-  pages: Page[]
-) {
-  if (!filePath) {
+async function readPageSource(page: Page, pages: Page[]) {
+  if (!page.filePath) {
     throw new Error("Expected content page entry to include a file path.")
   }
 
-  const source = await readFile(filePath, "utf-8")
+  const source = await readFile(page.filePath, "utf-8")
   const sections = [source.trimEnd()]
-  if (overview) {
-    const page = pages.find((entry) => entry.id === id)!
-    const links = getOverviewEntries(pages, page)
-    const context = await getPageContext(page)
-    const global = await getEntry("globals", context.locale)
+  if (page.data.type === "overview") {
+    const global = await getEntry("globals", getPageLocale(page))
+    const links = getOverviewEntries(pages, page).map(
+      (entry) =>
+        `- [${entry.data.title}](${getMarkdownHref(getPageHref(entry))}): ${entry.data.description}`
+    )
     sections.push(
-      `## ${global?.data.labels.pages ?? "Pages"}\n\n${links.map((page) => `- [${page.data.title}](${getMarkdownHref(getPageHref(page))}): ${page.data.description}`).join("\n")}`
+      `## ${global?.data.labels.pages ?? "Pages"}\n\n${links.join("\n")}`
     )
   }
   const install = getInstallCommand(source)

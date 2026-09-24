@@ -10,10 +10,6 @@ const nestedLinkSchema = linkSchema.extend({
 export const globalSchema = ({ image }: SchemaContext) =>
   z.object({
     name: z.string().trim().min(1),
-    organization: z
-      .object({ name: z.string().trim().min(1), url: z.url() })
-      .strict()
-      .optional(),
     labels: z.object({
       copyMarkdown: z.string(),
       openIn: z.string(),

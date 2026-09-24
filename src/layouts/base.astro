@@ -1,11 +1,16 @@
 ---
 import { Font } from "astro:assets"
-import { siteConfig } from "@/site.config"
 
 import type { GlobalSchema } from "@/schemas/global"
-import type { BaseSchema } from "@/schemas/layouts/base"
-import type { Page, PageContext } from "@/lib/pages"
-import { getPageSearchItems } from "@/lib/pages"
+import { getPageSearchItems } from "@/lib/docs"
+import {
+  getPageAlternates,
+  getPageBreadcrumbs,
+  getPageLocale,
+  getPages,
+  getPageUrl,
+  type Page,
+} from "@/lib/pages"
 import { getStructuredData } from "@/lib/seo"
 import Sidebar1 from "@/components/blocks/sidebar-1.astro"
 import {
@@ -17,32 +22,31 @@ import {
 import { ThemeProvider } from "@/components/ui/theme-toggle"
 
 type Props = {
-  entry: Page
-  context: PageContext
+  page: Page
   global: GlobalSchema
-  page: BaseSchema
 }
 
-const { global, page, entry, context }: Props = Astro.props
-
-const searchItems = await getPageSearchItems(context.locale)
-const structuredData = getStructuredData(
-  entry,
-  context,
-  siteConfig,
-  global.organization
-)
+const { page, global } = Astro.props
+const pages = await getPages()
+const locale = getPageLocale(page)
+const breadcrumbs = getPageBreadcrumbs(pages, page)
+const searchItems = await getPageSearchItems(locale)
 ---
 
-<Layout lang={context.locale}>
+<Layout lang={locale}>
   <LayoutHead
     name={global.name}
-    title={page.title}
-    description={page.description}
-    image={page.image}
-    {...page.seo}
-    alternates={context.alternates}
-    structuredData={structuredData}
+    title={page.data.title}
+    description={page.data.description}
+    image={page.data.image}
+    {...page.data.seo}
+    canonical={page.data.seo?.canonical ?? getPageUrl(page)}
+    alternates={getPageAlternates(pages, page)}
+    structuredData={getStructuredData(page, {
+      name: global.name,
+      locale,
+      breadcrumbs,
+    })}
   >
     <Font cssVariable="--font-sans" />
     <Font cssVariable="--font-mono" />
@@ -56,7 +60,7 @@ const structuredData = getStructuredData(
         ...global.sidebar.search,
       }}
       breadcrumb={{
-        items: context.breadcrumbs,
+        items: breadcrumbs,
         menu: global.header.navigation,
       }}
       navigation={global.sidebar.navigation}

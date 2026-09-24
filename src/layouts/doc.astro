@@ -2,37 +2,25 @@
 import type { MarkdownHeading } from "astro"
 
 import type { GlobalSchema } from "@/schemas/global"
-import type { DocSchema } from "@/schemas/layouts/doc"
-import type { Page, PageContext } from "@/lib/pages"
-import { getMarkdownHref, getPageHref } from "@/lib/pages"
-import { getPagePagination } from "@/lib/pagination"
+import { getPagePagination } from "@/lib/docs"
+import { getMarkdownHref, getPageHref, type Page } from "@/lib/pages"
 import Base from "@/layouts/base.astro"
 import DocBlock from "@/components/blocks/doc-1.astro"
 
 type Props = {
-  entry: Page
-  context: PageContext
+  page: Page
   global: GlobalSchema
-  page: DocSchema
   headings: MarkdownHeading[]
 }
 
-const props: Props = Astro.props
-const globalCallout = props.global.docs?.callout
-const markdownUrl = new URL(
-  getMarkdownHref(getPageHref(props.entry)),
-  Astro.url
-).toString()
-const { previousPage, nextPage } = await getPagePagination(props.entry)
-const copySource = props.entry.body
-const copyButton = copySource
-  ? {
-      id: `docs-copy-page-${crypto.randomUUID()}`,
-      source: copySource,
-    }
+const { page, global, headings } = Astro.props
+const markdownUrl = new URL(getMarkdownHref(getPageHref(page)), Astro.url).href
+const { previousPage, nextPage } = await getPagePagination(page)
+const copyButton = page.body
+  ? { id: `docs-copy-page-${crypto.randomUUID()}`, source: page.body }
   : undefined
 
-const tocItems = props.headings
+const tocItems = headings
   .filter((heading) => heading.depth === 2 || heading.depth === 3)
   .map((heading) => ({
     depth: heading.depth,
@@ -41,17 +29,17 @@ const tocItems = props.headings
   }))
 ---
 
-<Base {...props}>
+<Base page={page} global={global}>
   <DocBlock
-    title={props.page.title}
-    description={props.page.description}
+    title={page.data.title}
+    description={page.data.description}
     copyButton={copyButton}
     markdownUrl={markdownUrl}
     tocItems={tocItems}
-    callout={globalCallout}
+    callout={global.docs?.callout}
     previousPage={previousPage}
     nextPage={nextPage}
-    labels={props.global.labels}
+    labels={global.labels}
   >
     <slot />
   </DocBlock>

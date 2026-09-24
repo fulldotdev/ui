@@ -1,7 +1,8 @@
 import { readFile } from "node:fs/promises"
 import type { APIRoute } from "astro"
 
-import { getInstallCommand, getPageHref, getPages } from "@/lib/pages"
+import { getInstallCommand } from "@/lib/docs"
+import { getPageHref, getPages } from "@/lib/pages"
 
 export const prerender = true
 

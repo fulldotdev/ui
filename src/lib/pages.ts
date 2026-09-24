@@ -1,116 +1,128 @@
+import { i18n, site } from "astro:config/server"
 import { getCollection, type CollectionEntry } from "astro:content"
-import { siteConfig } from "@/site.config"
 
-import {
-  getPageAlternates,
-  getPageBreadcrumbs,
-  getPageChildren,
-  getPageHref,
-  getPageLocale,
-  resolvePageReference,
-  validatePageLinks,
-  validatePageTree,
-} from "@/lib/page-paths"
-
-export { getMarkdownHref, getPageHref, normalizePath } from "@/lib/page-paths"
 export type Page = CollectionEntry<"pages">
-export type PageType = Page["data"]["type"]
-export type PageOfType<T extends PageType> = Page & {
-  data: Extract<Page["data"], { type: T }>
+
+if (!site) {
+  throw new Error(
+    "Set `site` in astro.config. Page URLs, canonicals, and the sitemap need it."
+  )
 }
+
+export const siteUrl = site
+
+// Locale folders come from Astro's own i18n config, so there is nothing to mirror.
+const defaultLocale = i18n?.defaultLocale ?? "en"
+const locales =
+  i18n?.locales.map((locale) =>
+    typeof locale === "string" ? locale : locale.path
+  ) ?? []
+const prefixDefaultLocale =
+  typeof i18n?.routing === "object" && i18n.routing.prefixDefaultLocale
+
+export const getPageHref = (page: Pick<Page, "id">) =>
+  page.id === "index" ? "/" : `/${page.id}/`
+
+export const getPageUrl = (page: Pick<Page, "id">) =>
+  new URL(getPageHref(page), siteUrl).href
+
+export const getMarkdownHref = (href: string) =>
+  href === "/" ? "/index.md" : `${href.replace(/\/$/, "")}.md`
+
+export const getPageLocale = (page: Pick<Page, "id">) => {
+  const [first] = page.id.split("/")
+  return locales.includes(first) ? first : defaultLocale
+}
+
+const getHomeId = (locale: string) =>
+  locale === defaultLocale && !prefixDefaultLocale ? "index" : locale
+
+// One rule for sitemap inclusion, hreflang alternates, and search. Robots meta
+// stays explicit: layouts pass seo.noindex and seo.nofollow to the head as is.
+export const isIndexable = (page: Page) =>
+  !page.data.seo?.noindex &&
+  (page.data.seo?.canonical ?? getPageUrl(page)) === getPageUrl(page)
 
 export const getPages = async () => {
   const pages = await getCollection("pages")
-  validatePageTree(pages, siteConfig.i18n)
-  pages.forEach((page) => validatePageLinks(page.data, pages, page.id))
+  const byLocaleKey = new Map<string, Page>()
+  const byKey = new Map<string, Page>()
+  for (const page of pages) {
+    const [first] = page.id.split("/")
+    if (prefixDefaultLocale && !locales.includes(first))
+      throw new Error(
+        `Page "${page.id}" must live in a locale folder (${locales.join(", ")}).`
+      )
+    if (!prefixDefaultLocale && first === defaultLocale)
+      throw new Error(
+        `Page "${page.id}" must live at the root; the default locale has no folder.`
+      )
+    const key = page.data.translationKey
+    if (!key) continue
+    const localeKey = `${getPageLocale(page)}:${key}`
+    const twin = byLocaleKey.get(localeKey)
+    if (twin)
+      throw new Error(
+        `Pages "${twin.id}" and "${page.id}" share translationKey "${key}" in one locale.`
+      )
+    byLocaleKey.set(localeKey, page)
+    const other = byKey.get(key)
+    if (other && other.data.type !== page.data.type)
+      throw new Error(
+        `Translations "${other.id}" and "${page.id}" must use the same page type.`
+      )
+    byKey.set(key, page)
+  }
   return pages
 }
 
-export const getPagesByType = async <T extends PageType>(
-  type: T,
-  locale?: string
-) =>
-  (await getPages()).filter(
-    (page): page is PageOfType<T> =>
-      page.data.type === type &&
-      (!locale || getPageLocale(page, siteConfig.i18n) === locale)
+export const getPageChildren = (pages: Page[], parent: Pick<Page, "id">) => {
+  const prefix = parent.id === "index" ? "" : `${parent.id}/`
+  const locale = getPageLocale(parent)
+  return pages.filter(
+    (page) =>
+      page.id !== parent.id &&
+      page.id.startsWith(prefix) &&
+      !page.id.slice(prefix.length).includes("/") &&
+      getPageLocale(page) === locale
   )
-
-export const getReferencedPage = async <T extends PageType>(
-  id: string,
-  type: T
-): Promise<PageOfType<T>> =>
-  resolvePageReference(await getPages(), id, type) as PageOfType<T>
+}
 
 export const getOverviewEntries = (pages: Page[], page: Page) => {
-  const locale = getPageLocale(page, siteConfig.i18n)
-  const entries =
-    page.data.type === "overview" && page.data.entries
-      ? page.data.entries.map((reference) =>
-          resolvePageReference(pages, reference.id)
-        )
-      : getPageChildren(pages, page)
-          .filter((entry) => getPageLocale(entry, siteConfig.i18n) === locale)
-          .sort((a, b) => a.data.title.localeCompare(b.data.title, locale))
-  if (
-    entries.some((entry) => getPageLocale(entry, siteConfig.i18n) !== locale)
-  ) {
-    throw new Error(
-      `Overview "${page.id}" links to an entry in another locale.`
+  const locale = getPageLocale(page)
+  const entries = page.data.type === "overview" ? page.data.entries : undefined
+  if (!entries)
+    return getPageChildren(pages, page).sort((a, b) =>
+      a.data.title.localeCompare(b.data.title, locale)
     )
-  }
-  return entries
+  return entries.map(({ id }) => {
+    const entry = pages.find((candidate) => candidate.id === id)
+    if (!entry)
+      throw new Error(`Overview "${page.id}" references unknown page "${id}".`)
+    if (getPageLocale(entry) !== locale)
+      throw new Error(
+        `Overview "${page.id}" references "${id}" from another locale.`
+      )
+    return entry
+  })
 }
 
-export const getPageContext = async (page: Page) => {
-  const pages = await getPages()
-  return {
-    locale: getPageLocale(page, siteConfig.i18n),
-    breadcrumbs: getPageBreadcrumbs(pages, page, siteConfig.i18n),
-    alternates: getPageAlternates(pages, page, siteConfig.i18n),
-  }
+export const getPageBreadcrumbs = (pages: Page[], page: Page) => {
+  const segments = page.id === "index" ? [] : page.id.split("/")
+  const ids = new Set([
+    getHomeId(getPageLocale(page)),
+    ...segments.map((_, index) => segments.slice(0, index + 1).join("/")),
+  ])
+  return [...ids].flatMap((id) => {
+    const entry = pages.find((candidate) => candidate.id === id)
+    return entry ? [{ label: entry.data.title, href: getPageHref(entry) }] : []
+  })
 }
 
-export type PageContext = Awaited<ReturnType<typeof getPageContext>>
-export type PageSearchItem = {
-  label: string
-  href: string
-  title: string
-  path: string
-  description: string
-  group: string
-}
-
-export const getPageSearchItems = async (
-  locale: string
-): Promise<PageSearchItem[]> => {
-  const pages = (await getPages()).filter(
-    (page) =>
-      getPageLocale(page, siteConfig.i18n) === locale && !page.data.seo?.noindex
-  )
+export const getPageAlternates = (pages: Page[], page: Page) => {
+  const key = page.data.translationKey
+  if (!key) return []
   return pages
-    .map((page) => {
-      const breadcrumbs = getPageBreadcrumbs(pages, page, siteConfig.i18n)
-      return {
-        label: page.data.title,
-        href: getPageHref(page),
-        title: page.data.title,
-        path: getPageHref(page),
-        description: page.data.description,
-        group:
-          breadcrumbs.length > 2
-            ? breadcrumbs[1].label
-            : (breadcrumbs[0]?.label ?? page.data.title),
-      }
-    })
-    .sort((a, b) => a.label.localeCompare(b.label, locale))
-}
-
-export const getInstallCommand = (source: string) => {
-  const names = [
-    ...source.matchAll(/props=\{\{\s*name:\s*['"]([^'"]+)['"]/g),
-  ].map((match) => `@fulldev/${match[1]}`)
-  return names.length
-    ? `npx shadcn@latest add ${[...new Set(names)].join(" ")}`
-    : undefined
+    .filter((entry) => entry.data.translationKey === key && isIndexable(entry))
+    .map((entry) => ({ locale: getPageLocale(entry), href: getPageUrl(entry) }))
 }

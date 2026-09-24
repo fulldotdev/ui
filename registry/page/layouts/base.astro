@@ -5,8 +5,10 @@ import {
   getPageAlternates,
   getPageBreadcrumbs,
   getPageLocale,
-} from "@/lib/page-paths"
-import type { Page } from "@/lib/pages"
+  getPages,
+  getPageUrl,
+  type Page,
+} from "@/lib/pages"
 import { getStructuredData } from "@/lib/seo"
 import {
   Layout,
@@ -15,33 +17,31 @@ import {
   LayoutMain,
 } from "@/components/ui/layout"
 
-type Props = { page: Page; pages: Page[] }
-const { page, pages } = Astro.props
-const context = {
-  locale: getPageLocale(page, siteConfig.i18n),
-  breadcrumbs: getPageBreadcrumbs(pages, page, siteConfig.i18n),
-}
-const alternates = getPageAlternates(pages, page, siteConfig.i18n)
+type Props = { page: Page }
+const { page } = Astro.props
+const pages = await getPages()
+const locale = getPageLocale(page)
+const breadcrumbs = getPageBreadcrumbs(pages, page)
 ---
 
-<Layout lang={context.locale}>
+<Layout lang={locale}>
   <LayoutHead
     name={siteConfig.name}
     title={page.data.title}
     description={page.data.description}
     image={page.data.image}
     {...page.data.seo}
-    canonical={page.data.seo?.canonical ??
-      new URL(Astro.url.pathname, siteConfig.site).href}
-    alternates={alternates.map((item) => ({
-      ...item,
-      href: new URL(item.href, siteConfig.site).href,
-    }))}
-    structuredData={getStructuredData(page, context, siteConfig)}
+    canonical={page.data.seo?.canonical ?? getPageUrl(page)}
+    alternates={getPageAlternates(pages, page)}
+    structuredData={getStructuredData(page, {
+      name: siteConfig.name,
+      locale,
+      breadcrumbs,
+    })}
   />
-  <LayoutBody
-    ><LayoutMain class="mx-auto w-full max-w-5xl gap-8 px-6 py-12"
-      ><slot /></LayoutMain
-    ></LayoutBody
-  >
+  <LayoutBody>
+    <LayoutMain class="mx-auto w-full max-w-5xl gap-8 px-6 py-12">
+      <slot />
+    </LayoutMain>
+  </LayoutBody>
 </Layout>

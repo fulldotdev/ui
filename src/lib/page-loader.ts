@@ -1,41 +1,26 @@
 import { existsSync } from "node:fs"
 import { glob } from "astro/loaders"
-import type { Loader } from "astro/loaders"
 
-export function pageLoader(base = "src/content/pages"): Loader {
-  const paths = new Map<string, string>()
-  const loader = glob({
+// Files are URLs. `services.md` and `services/index.md` would both become
+// /services/, which Astro's glob loader only warns about, so reject it here.
+export const pageLoader = (base = "src/content/pages") => {
+  const files = new Map<string, string>()
+  return glob({
     base,
     pattern: "**/[^_]*.{md,mdx}",
-    generateId: ({ entry, data, base }) => {
-      if ("slug" in data)
-        throw new Error(
-          `Remove the slug override in "${entry}". Page URLs are determined by file paths.`
-        )
-      const id = entry.replace(/\.(md|mdx)$/, "").replace(/\/index$/, "")
-      if (/[?#%\\\s]/.test(id))
-        throw new Error(
-          `Invalid page path "${entry}". Use URL-safe file names.`
-        )
-      const previous = paths.get(id)
+    generateId: ({ entry, base }) => {
+      const id = entry.replace(/\.mdx?$/, "").replace(/\/index$/, "")
+      const other = files.get(id)
       if (
-        previous &&
-        previous !== entry &&
-        existsSync(new URL(encodeURI(previous), base))
+        other &&
+        other !== entry &&
+        existsSync(new URL(encodeURI(other), base))
       )
         throw new Error(
-          `Page route collision: "${previous}" and "${entry}" both map to "${id}".`
+          `Page route collision: "${other}" and "${entry}" both map to "/${id}/".`
         )
-      paths.set(id, entry)
+      files.set(id, entry)
       return id
     },
   })
-  return {
-    ...loader,
-    name: "pages",
-    async load(context) {
-      paths.clear()
-      await loader.load(context)
-    },
-  }
 }

@@ -1,26 +1,30 @@
 ---
-import { getEntry, render, type CollectionEntry } from "astro:content"
-import { layouts } from "@/layouts"
+import { getEntry, render } from "astro:content"
+import type { AstroComponentFactory } from "astro/runtime/server/index.js"
 
-import { validatePageLinks } from "@/lib/page-paths"
-import { getPageContext, getPages } from "@/lib/pages"
+import { getPageLocale, type Page } from "@/lib/pages"
+import Block from "@/layouts/block.astro"
+import Doc from "@/layouts/doc.astro"
+import Home from "@/layouts/home.astro"
+import Overview from "@/layouts/overview.astro"
 
-type Props = CollectionEntry<"pages">
-const entry = Astro.props
-const { Content, headings } = await render(entry)
-const context = await getPageContext(entry)
-const global = await getEntry("globals", context.locale)
-if (!global) throw new Error(`Add src/content/globals/${context.locale}.yaml.`)
-validatePageLinks(global.data, await getPages(), `globals/${context.locale}`)
-const Layout = layouts[entry.data.type]
+type Props = Page
+const page = Astro.props
+const { Content, headings } = await render(page)
+const locale = getPageLocale(page)
+const global = await getEntry("globals", locale)
+if (!global) throw new Error(`Add src/content/globals/${locale}.yaml.`)
+
+// Every page type needs a layout here; the schema union and this map move together.
+const layouts = {
+  block: Block,
+  doc: Doc,
+  home: Home,
+  overview: Overview,
+} satisfies Record<Page["data"]["type"], AstroComponentFactory>
+const Layout = layouts[page.data.type]
 ---
 
-<Layout
-  global={global.data}
-  page={entry.data}
-  entry={entry}
-  context={context}
-  headings={headings}
->
+<Layout page={page} global={global.data} headings={headings}>
   <Content />
 </Layout>
