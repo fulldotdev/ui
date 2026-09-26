@@ -26,8 +26,8 @@ test.describe("consumer dropdown links", () => {
     await page.evaluate(() => {
       ;(window as Window & { selections?: number }).selections = 0
       document.addEventListener("dropdown-menu:select", () => {
-        const state = window as Window & { selections: number }
-        state.selections++
+        const state = window as Window & { selections?: number }
+        state.selections = (state.selections ?? 0) + 1
       })
     })
     await link.press("Enter")
