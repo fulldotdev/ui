@@ -13,6 +13,7 @@ export default defineConfig({
       command: "node scripts/check-data-slot-consumer.mjs --serve",
       url: "http://127.0.0.1:4176",
       timeout: 180_000,
+      stdout: "pipe",
     },
   ],
   reporter: [["list"]],

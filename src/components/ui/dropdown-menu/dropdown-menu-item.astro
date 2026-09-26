@@ -3,13 +3,16 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-type Props = HTMLAttributes<"button"> & {
-  disabled?: boolean
-  variant?: "default" | "destructive"
-  inset?: boolean
-}
+type Props = HTMLAttributes<"button"> &
+  HTMLAttributes<"a"> & {
+    as?: "button" | "a"
+    disabled?: boolean
+    variant?: "default" | "destructive"
+    inset?: boolean
+  }
 
 const {
+  as: Tag = "href" in Astro.props ? "a" : "button",
   class: className,
   type = "button",
   disabled,
@@ -19,13 +22,13 @@ const {
 } = Astro.props
 ---
 
-<button
+<Tag
   data-slot="dropdown-menu-item"
   data-disabled={disabled}
   data-variant={variant}
   data-inset={inset}
-  disabled={disabled ? true : undefined}
-  type={type}
+  disabled={Tag === "button" && disabled ? true : undefined}
+  type={Tag === "button" ? type : undefined}
   class={cn(
     "group/dropdown-menu-item data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground not-data-[variant=destructive]:data-[highlighted]:**:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:data-[highlighted]:bg-destructive/10 data-[variant=destructive]:data-[highlighted]:text-destructive dark:data-[variant=destructive]:data-[highlighted]:bg-destructive/20 data-[variant=destructive]:*:[svg]:text-destructive relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
     className
@@ -33,4 +36,32 @@ const {
   {...props}
 >
   <slot />
-</button>
+</Tag>
+
+<script>
+  // Data Slot owns selection; links also need native keyboard activation.
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (
+        event.defaultPrevented ||
+        event.isComposing ||
+        !["Enter", " "].includes(event.key)
+      )
+        return
+      const item =
+        event.target instanceof Element
+          ? event.target.closest('[data-slot="dropdown-menu-item"][href]')
+          : null
+      if (
+        !(item instanceof HTMLAnchorElement) ||
+        item.getAttribute("aria-disabled") === "true"
+      )
+        return
+      event.preventDefault()
+      event.stopPropagation()
+      item.click()
+    },
+    true
+  )
+</script>

@@ -101,10 +101,40 @@ AlertDialog
   confirmations.
 - Keep `AlertDialogTitle` and `AlertDialogDescription` inside
   `AlertDialogContent` so screen readers announce the dialog context clearly.
-- Pair the destructive path with `AlertDialogAction` and the safe path with
-  `AlertDialogCancel`.
+- Use `AlertDialogCancel` for dismissive actions. It closes the dialog
+  automatically.
+- `AlertDialogAction` is an action hook and does not close the dialog. Run the
+  confirmation first, then close the dialog with the documented
+  `alert-dialog:set` event when the action succeeds.
 - Use `size="sm"` on `AlertDialogContent` for compact confirmations and
   `AlertDialogMedia` when the dialog needs an icon or visual cue.
+
+```astro
+<AlertDialog id="account-deletion-dialog">
+  <AlertDialogTrigger>Delete account</AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogTitle>Delete this account?</AlertDialogTitle>
+    <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+    <AlertDialogAction id="confirm-account-deletion">
+      Delete account
+    </AlertDialogAction>
+  </AlertDialogContent>
+</AlertDialog>
+
+<script>
+  const dialog = document.getElementById("account-deletion-dialog")
+  const action = document.getElementById("confirm-account-deletion")
+
+  action?.addEventListener("click", () => {
+    // Run the confirmed action here, then close after it succeeds.
+    dialog?.dispatchEvent(
+      new CustomEvent("alert-dialog:set", {
+        detail: { open: false },
+      })
+    )
+  })
+</script>
+```
 
 ## API Reference
 

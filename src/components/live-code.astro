@@ -117,27 +117,29 @@ const installButtonId = installCommand
   </TabsContent>
 </Tabs>
 
-<script is:inline>
-  if (!window.__fulldevLiveCodeCopy) {
-    window.__fulldevLiveCodeCopy = true
-    document.addEventListener("click", (event) => {
-      const button = event.target?.closest?.(
-        "[id^='live-code-copy-install-'], [data-slot='live-code-copy-source']"
-      )
-      if (!button) return
-      const source =
-        button.dataset.source ??
-        button
-          .closest("[data-slot='live-code-panel']")
-          ?.querySelector("pre")
-          ?.textContent?.replace(/\n$/, "")
+<script>
+  document.addEventListener("click", async (event) => {
+    if (!(event.target instanceof Element)) return
+    const button = event.target.closest(
+      "[id^='live-code-copy-install-'], [data-slot='live-code-copy-source']"
+    )
+    if (!(button instanceof HTMLButtonElement)) return
+    const source =
+      button.dataset.source ??
+      button
+        .closest("[data-slot='live-code-panel']")
+        ?.querySelector("pre")
+        ?.textContent?.replace(/\n$/, "")
+    try {
+      await navigator.clipboard.writeText(source ?? "")
       button.querySelector("[data-copy-icon]")?.classList.add("hidden")
       button.querySelector("[data-check-icon]")?.classList.remove("hidden")
-      navigator.clipboard?.writeText(source ?? "")
       setTimeout(() => {
         button.querySelector("[data-copy-icon]")?.classList.remove("hidden")
         button.querySelector("[data-check-icon]")?.classList.add("hidden")
       }, 1200)
-    })
-  }
+    } catch {
+      // Keep the copy action available for retry.
+    }
+  })
 </script>

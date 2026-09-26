@@ -21,6 +21,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
@@ -58,6 +64,7 @@ const next = Astro.url.pathname === "/" ? "/next/" : "/"
   </head>
   <body class="space-y-8 p-6">
     <h1>Data Slot consumer</h1>
+    <p id="page-location">{Astro.url.pathname}</p>
     <a href={next}>Navigate</a>
     <button id="initialize" type="button">Initialize again</button>
     <p id="initializations">0</p>
@@ -65,9 +72,20 @@ const next = Astro.url.pathname === "/" ? "/next/" : "/"
       <CommandInput placeholder="Navigate by command" />
       <CommandList
         ><CommandItem value="next" href={next}>Next consumer page</CommandItem
+        ><CommandItem value="new tab" href={next} target="_blank"
+          >Open consumer in new tab</CommandItem
         ></CommandList
       >
     </Command>
+    <form id="menu-actions">
+      <DropdownMenu>
+        <DropdownMenuTrigger>Consumer links</DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>Button action</DropdownMenuItem>
+          <DropdownMenuItem href={next}>Next consumer page</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </form>
     <Dialog>
       <DialogTrigger>Consumer dialog</DialogTrigger>
       <DialogContent>
@@ -83,29 +101,47 @@ const next = Astro.url.pathname === "/" ? "/next/" : "/"
         </Select>
       </DialogContent>
     </Dialog>
-    <NavigationMenu mountStrategy="lazy" delayOpen={0} delayClose={0}>
-      <NavigationMenuList
-        ><NavigationMenuItem value="nested">
-          <NavigationMenuTrigger>Lazy nested controls</NavigationMenuTrigger>
-          <NavigationMenuContent class="w-72 space-y-4 p-4">
-            <Combobox>
-              <ComboboxInput placeholder="Nested framework" />
-              <ComboboxContent
-                ><ComboboxList
-                  ><ComboboxItem value="astro">Astro</ComboboxItem><ComboboxItem
-                    value="vue">Vue</ComboboxItem
-                  ></ComboboxList
-                ></ComboboxContent
-              >
-            </Combobox>
-            <HoverCard delay={0} closeDelay={0} mountStrategy="lazy">
-              <HoverCardTrigger>Nested preview</HoverCardTrigger>
-              <HoverCardContent>Retained hover card</HoverCardContent>
-            </HoverCard>
-          </NavigationMenuContent>
-        </NavigationMenuItem></NavigationMenuList
-      >
-    </NavigationMenu>
+    <div transition:persist="nested-controls">
+      <NavigationMenu mountStrategy="lazy" delayOpen={0} delayClose={0}>
+        <NavigationMenuList
+          ><NavigationMenuItem value="nested">
+            <NavigationMenuTrigger>Lazy nested controls</NavigationMenuTrigger>
+            <NavigationMenuContent class="w-72 space-y-4 p-4">
+              <Combobox>
+                <ComboboxInput placeholder="Nested framework" />
+                <ComboboxContent
+                  ><ComboboxList
+                    ><ComboboxItem value="astro">Astro</ComboboxItem
+                    ><ComboboxItem value="vue">Vue</ComboboxItem></ComboboxList
+                  ></ComboboxContent
+                >
+              </Combobox>
+              <HoverCard delay={0} closeDelay={0} mountStrategy="lazy">
+                <HoverCardTrigger>Nested preview</HoverCardTrigger>
+                <HoverCardContent>Retained hover card</HoverCardContent>
+              </HoverCard>
+            </NavigationMenuContent>
+          </NavigationMenuItem></NavigationMenuList
+        >
+      </NavigationMenu>
+    </div>
+    <div transition:persist="persistent-dialog">
+      <Dialog>
+        <DialogTrigger>Persisted dialog</DialogTrigger>
+        <DialogContent>
+          <DialogTitle>Persisted dialog</DialogTitle>
+          <a href={next}>Navigate with persisted dialog</a>
+          <Switch aria-label="Preference in persisted portal" />
+          <Select placeholder="Persistent selection">
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="first">First persistent option</SelectItem>
+              <SelectItem value="second">Second persistent option</SelectItem>
+            </SelectContent>
+          </Select>
+        </DialogContent>
+      </Dialog>
+    </div>
     <Tooltip mountStrategy="lazy" delay={0}>
       <TooltipTrigger>Lazy tooltip</TooltipTrigger><TooltipContent
         >Retained tooltip</TooltipContent

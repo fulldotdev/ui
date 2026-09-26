@@ -11,7 +11,7 @@
     },
     {
       "path": "src/components/ui/button/button.astro",
-      "content": "---\nimport type { HTMLTag, Polymorphic } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { buttonVariants, type ButtonVariantProps } from \"./button-variants\"\n\ntype Props<Tag extends HTMLTag = \"button\"> = Polymorphic<{ as: Tag }> &\n  ButtonVariantProps\n\nconst {\n  as: Tag = \"href\" in Astro.props ? \"a\" : \"button\",\n  class: className,\n  variant,\n  size,\n  ...props\n} = Astro.props\n---\n\n<Tag\n  data-slot=\"button\"\n  class={cn(buttonVariants({ variant, size }), className)}\n  {...props}\n>\n  <slot />\n</Tag>\n",
+      "content": "---\nimport type { HTMLTag, Polymorphic } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { buttonVariants, type ButtonVariantProps } from \"./button-variants\"\n\ntype Props<Tag extends HTMLTag = \"button\"> = Polymorphic<{ as: Tag }> &\n  ButtonVariantProps\n\nconst {\n  as: Tag = \"href\" in Astro.props ? \"a\" : \"button\",\n  class: className,\n  variant,\n  size,\n  ...props\n} = Astro.props\n\nconst attributes: Record<string, unknown> = { ...props }\nif (Tag === \"button\") attributes.type ??= \"button\"\n---\n\n<Tag\n  data-slot=\"button\"\n  class={cn(buttonVariants({ variant, size }), className)}\n  {...attributes}\n>\n  <slot />\n</Tag>\n",
       "type": "registry:ui"
     },
     {

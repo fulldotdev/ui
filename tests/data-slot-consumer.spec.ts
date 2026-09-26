@@ -81,6 +81,9 @@ test("consumer: nested Select Escape leaves its parent dialog open", async ({
 test("consumer: CommandItem href navigates from the keyboard", async ({
   page,
 }) => {
+  await page.evaluate(() => {
+    ;(window as Window & { navigationProbe?: boolean }).navigationProbe = true
+  })
   for (let i = 0; i < 3; i++)
     await page.getByRole("button", { name: "Initialize again" }).click()
   const input = page.getByPlaceholder("Navigate by command")
@@ -88,6 +91,145 @@ test("consumer: CommandItem href navigates from the keyboard", async ({
   await input.press("ArrowDown")
   await input.press("Enter")
   await expect(page).toHaveURL(/\/next\/$/)
+  expect(
+    await page.evaluate(
+      () => (window as Window & { navigationProbe?: boolean }).navigationProbe
+    )
+  ).toBe(true)
+})
+
+for (const activation of ["pointer", "keyboard"] as const) {
+  test(`consumer: CommandItem target preserves native ${activation} navigation`, async ({
+    page,
+  }) => {
+    const input = page.getByPlaceholder("Navigate by command")
+    await input.fill("new tab")
+    const popupPromise = page.waitForEvent("popup")
+    if (activation === "pointer") {
+      await page
+        .getByRole("option", { name: "Open consumer in new tab" })
+        .click()
+    } else {
+      await input.press("Enter")
+    }
+    const popup = await popupPromise
+    await expect(popup).toHaveURL(/\/next\/$/)
+    await expect(page).toHaveURL(/:4176\/$/)
+    await popup.close()
+  })
+}
+
+test("consumer: persisted lazy panels retain nested control state after swaps", async ({
+  page,
+}) => {
+  const trigger = page.getByRole("button", { name: "Lazy nested controls" })
+  await trigger.press("Enter")
+  const input = page.getByPlaceholder("Nested framework")
+  await input.fill("Vue")
+  await input.press("ArrowDown")
+  await input.press("Enter")
+  await expect(input).toHaveValue("Vue")
+  await trigger.press("Escape")
+  await expect(
+    page.locator('[data-slot="navigation-menu-content"]')
+  ).toHaveCount(0)
+  await page.getByRole("link", { name: "Navigate", exact: true }).click()
+  await expect(page).toHaveURL(/\/next\/$/)
+  await expect(page.locator("#page-location")).toHaveText("/next/")
+  await trigger.press("Enter")
+  await expect(input).toHaveValue("Vue")
+  await input.fill("Astro")
+  await input.press("ArrowDown")
+  await input.press("Enter")
+  await expect(input).toHaveValue("Astro")
+})
+
+test("consumer: persisted dialog portals retain nested state and modal behavior", async ({
+  page,
+}) => {
+  const trigger = page.getByRole("button", {
+    name: "Persisted dialog",
+    exact: true,
+  })
+  await trigger.click()
+  const dialog = page.getByRole("dialog", {
+    name: "Persisted dialog",
+    exact: true,
+  })
+  const preference = page.getByRole("switch", {
+    name: "Preference in persisted portal",
+  })
+  await preference.click()
+  const select = dialog.getByRole("combobox")
+  await select.click()
+  await page.getByRole("option", { name: "Second persistent option" }).click()
+  await expect(select).toContainText("Second persistent option")
+  await dialog
+    .getByRole("link", { name: "Navigate with persisted dialog" })
+    .click()
+  await expect(page).toHaveURL(/\/next\/$/)
+  await expect(page.locator("#page-location")).toHaveText("/next/")
+  await expect(dialog).toBeHidden()
+  await trigger.click()
+  await expect(dialog).toBeVisible()
+  await expect(dialog).toHaveAttribute("data-stack-index", "0")
+  await expect(preference).toBeChecked()
+  await expect(select).toContainText("Second persistent option")
+  await expect
+    .poll(() => page.evaluate(() => document.documentElement.style.overflow))
+    .toBe("hidden")
+  await select.press("ArrowDown")
+  await expect(
+    page.getByRole("option", { name: "Second persistent option" })
+  ).toHaveAttribute("aria-selected", "true")
+  await page.keyboard.press("Escape")
+  await expect(
+    page.locator('[data-slot="select-content"]:visible')
+  ).toHaveCount(0)
+  await page.keyboard.press("Escape")
+  await expect(dialog).toBeHidden()
+  await expect
+    .poll(() => page.evaluate(() => document.documentElement.style.overflow))
+    .toBe("")
+  await trigger.click()
+  await expect(dialog).toBeVisible()
+  await expect(preference).toBeChecked()
+  await page.keyboard.press("Escape")
+  await expect(dialog).toBeHidden()
+  await page.getByRole("link", { name: "Navigate", exact: true }).click()
+  await expect(page).toHaveURL(/:4176\/$/)
+  await trigger.click()
+  await expect(dialog).toBeVisible()
+  await expect(preference).toBeChecked()
+  await expect(select).toContainText("Second persistent option")
+})
+
+test("consumer: sibling modal portals remain clickable in either open order", async ({
+  page,
+}) => {
+  for (const names of [
+    ["Consumer dialog", "Persisted dialog"],
+    ["Persisted dialog", "Consumer dialog"],
+  ]) {
+    for (const name of names) {
+      await page
+        .getByRole("button", { name, exact: true, includeHidden: true })
+        .evaluate((trigger) => {
+          trigger
+            .closest('[data-slot="dialog"]')!
+            .dispatchEvent(
+              new CustomEvent("dialog:set", { detail: { open: true } })
+            )
+        })
+    }
+    const top = page.getByRole("dialog", { name: names[1], exact: true })
+    await expect(top).toBeVisible()
+    await top.getByRole("button", { name: "Close", exact: true }).click()
+    await expect(top).toBeHidden()
+    const remaining = page.getByRole("dialog", { name: names[0], exact: true })
+    await remaining.getByRole("button", { name: "Close", exact: true }).click()
+    await expect(remaining).toBeHidden()
+  }
 })
 
 test("consumer: lazy retained roots initialize nested Combobox and Hover Card", async ({

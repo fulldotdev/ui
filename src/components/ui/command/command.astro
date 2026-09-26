@@ -52,29 +52,31 @@ const {
 
   initializeDataSlot("command", (root) => {
     const controller = createCommand(root)
-    // 1.x dialog autofocus includes the command's tabindex=-1 container.
-    // Keep opening a command palette ready for typing, as in 0.2.x.
-    const focusInput = () =>
-      getPart<HTMLInputElement>(root, "command-input")?.focus({
-        preventScroll: true,
-      })
-    root.addEventListener("focus", focusInput)
-    const navigate = (event: Event) => {
-      if (event.target !== root) return
-      const { value } = (event as CustomEvent<{ value?: unknown }>).detail
-      if (typeof value !== "string") return
+    const input = getPart<HTMLInputElement>(root, "command-input")!
+    // Data Slot emits selection; native activation also preserves link semantics
+    // and lets Astro's ClientRouter handle same-origin navigation.
+    const navigate = (event: KeyboardEvent) => {
+      if (
+        event.key !== "Enter" ||
+        event.defaultPrevented ||
+        event.isComposing ||
+        event.keyCode === 229
+      )
+        return
       const item = getParts<HTMLAnchorElement>(root, "command-item").find(
         (item) =>
-          item.getAttribute("data-value") === value && item.hasAttribute("href")
+          item.hasAttribute("data-selected") &&
+          item.hasAttribute("href") &&
+          item.getAttribute("aria-disabled") !== "true"
       )
-      const href = item?.getAttribute("href")
-      if (href) window.location.href = href
+      if (!item) return
+      event.preventDefault()
+      item.click()
     }
-    root.addEventListener("command:select", navigate)
+    input.addEventListener("keydown", navigate)
     return {
       destroy() {
-        root.removeEventListener("focus", focusInput)
-        root.removeEventListener("command:select", navigate)
+        input.removeEventListener("keydown", navigate)
         controller.destroy()
       },
     }

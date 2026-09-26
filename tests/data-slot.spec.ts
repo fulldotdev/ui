@@ -135,12 +135,12 @@ test("tabs: nested demo tabs retain independent keyboard selection", async ({
   await expect(account).toHaveAttribute("aria-selected", "true")
 })
 
-test("select: eager content, keyboard selection, typeahead and disabled controls", async ({
+test("select: lazy content, keyboard selection, typeahead and disabled controls", async ({
   page,
 }) => {
   await open(page, "select")
   const root = demo(page).locator('[data-slot="select"]')
-  await expect(root.locator('[data-slot="select-item"]')).toHaveCount(5)
+  await expect(root.locator('[data-slot="select-item"]')).toHaveCount(0)
   const trigger = root.getByRole("combobox")
   await trigger.press("ArrowDown")
   await page.keyboard.press("b")
@@ -200,14 +200,14 @@ test("dropdown menu: keyboard navigation and selection dismissal", async ({
   await expect(trigger).toHaveAttribute("aria-expanded", "false")
 })
 
-test("navigation menu: eager links, keyboard opening and focus restoration", async ({
+test("navigation menu: lazy links, keyboard opening and focus restoration", async ({
   page,
 }) => {
   await open(page, "navigation-menu")
   const trigger = demo(page).getByRole("button", { name: "Getting started" })
   await expect(
     demo(page).locator('[data-slot="navigation-menu-content"]')
-  ).toHaveCount(2)
+  ).toHaveCount(0)
   await trigger.press("Enter")
   const content = page.locator('[data-slot="navigation-menu-content"]:visible')
   await expect(content).toBeVisible()
@@ -217,7 +217,7 @@ test("navigation menu: eager links, keyboard opening and focus restoration", asy
 })
 
 for (const name of ["tooltip", "hover-card"]) {
-  test(`${name}: eager content, keyboard focus and Escape`, async ({
+  test(`${name}: lazy content, keyboard focus and Escape`, async ({
     page,
     browserName,
   }) => {
@@ -225,7 +225,7 @@ for (const name of ["tooltip", "hover-card"]) {
     const trigger = demo(page).locator(`[data-slot="${name}-trigger"]`)
     await expect(
       demo(page).locator(`[data-slot="${name}-content"]`)
-    ).toHaveCount(1)
+    ).toHaveCount(0)
     await trigger.focus()
     await page.keyboard.press(
       browserName === "webkit" ? "Alt+Shift+Tab" : "Shift+Tab"

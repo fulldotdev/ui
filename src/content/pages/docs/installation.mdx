@@ -141,12 +141,23 @@ customizations, including the shared `src/lib/data-slot.ts` helper.
 The helper initializes new roots on `astro:page-load` and destroys outgoing
 controllers on `astro:before-swap`. This releases modal stacks, portals, listeners
 and scroll locks before Astro's `ClientRouter` replaces the page. Roots within a
-matching `transition:persist` boundary retain their controllers.
+matching `transition:persist` boundary retain their controllers and values.
+Persisted overlays close on navigation through their public Data Slot methods.
+Their portals move with the retained roots, so reopening attaches modal state
+and scroll locking to the new document body.
 
-Select, Tooltip, Hover Card and Navigation Menu keep closed content mounted by
-default. Use their `mountStrategy="lazy"` prop to opt into Data Slot's detached
-content behavior. See each component's content mounting notes before changing
-custom scripts that query closed content.
+Select, Tooltip, Hover Card and Navigation Menu now use Data Slot's recommended
+lazy mounting. Closed content is retained outside the document. This changes DOM
+queries compared with 0.2.x: use `mountStrategy="eager"` if custom code needs to
+query closed content. Nested Data Slot components initialize in either mode.
 
 `CommandDialog` already includes a Dialog root. Use its `trigger` slot instead of
 wrapping it in another Dialog. See the [Command example](/components/command/#command-dialog).
+
+Command inputs inside dialogs should use native `autofocus` to receive initial
+focus. Standalone command inputs leave page focus unchanged. Slider now follows
+Data Slot's centered thumb default; use `thumbAlignment="edge"` to retain edge
+alignment. Tabs triggers and panels require an explicit `value`.
+
+Buttons and Tabs triggers default to `type="button"`, matching shadcn controls.
+Use `type="submit"` explicitly for form submission.
