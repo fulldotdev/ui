@@ -73,9 +73,14 @@ const {
 </div>
 
 <script>
-  import { createSelect } from "@data-slot/select"
+  import { create } from "@data-slot/select"
 
-  import { initializeDataSlot } from "@/lib/data-slot"
-
-  initializeDataSlot("select", createSelect)
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 </script>

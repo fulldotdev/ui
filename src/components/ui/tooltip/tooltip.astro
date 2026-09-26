@@ -52,9 +52,14 @@ const {
 </div>
 
 <script>
-  import { createTooltip } from "@data-slot/tooltip"
+  import { create } from "@data-slot/tooltip"
 
-  import { initializeDataSlot } from "@/lib/data-slot"
-
-  initializeDataSlot("tooltip", createTooltip)
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 </script>

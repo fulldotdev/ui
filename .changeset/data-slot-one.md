@@ -18,6 +18,5 @@ block dropdown links actual accessible menu items.
 Use shadcn button defaults and consistent overlay layers so nested popups receive
 pointer input. Form submissions should explicitly set type="submit".
 
-Close persisted overlays on navigation while retaining nested control values.
 Keep Data Slot modal stack layers and place floating positioners above them so
 Select and other popups remain clickable inside dialogs.

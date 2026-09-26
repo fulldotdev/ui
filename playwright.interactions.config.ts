@@ -4,18 +4,7 @@ import config from "./playwright.config"
 
 export default defineConfig({
   ...config,
-  testMatch: "data-slot*.spec.ts",
-  webServer: [
-    ...(Array.isArray(config.webServer)
-      ? config.webServer
-      : [config.webServer!]),
-    {
-      command: "node scripts/check-data-slot-consumer.mjs --serve",
-      url: "http://127.0.0.1:4176",
-      timeout: 180_000,
-      stdout: "pipe",
-    },
-  ],
+  testMatch: ["data-slot.spec.ts", "clipboard.spec.ts"],
   reporter: [["list"]],
   use: {
     ...config.use,

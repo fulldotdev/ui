@@ -66,12 +66,22 @@ const {
 </div>
 
 <script>
-  import { getDataBool } from "@data-slot/core"
+  import { getDataBool, getRoots, hasRootBinding } from "@data-slot/core"
   import { createHoverCard } from "@data-slot/hover-card"
 
-  import { initializeDataSlot } from "@/lib/data-slot"
-
-  initializeDataSlot("hover-card", (root) =>
-    createHoverCard(root, { open: getDataBool(root, "controlledOpen") })
-  )
+  const controllers: ReturnType<typeof createHoverCard>[] = []
+  const initialize = () => {
+    for (const root of getRoots(document, "hover-card")) {
+      if (hasRootBinding(root, "@data-slot/hover-card")) continue
+      controllers.push(
+        createHoverCard(root, { open: getDataBool(root, "controlledOpen") })
+      )
+    }
+  }
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 </script>

@@ -136,15 +136,11 @@ pieces you need.
 Interactive components require Data Slot 1.0.1 or newer within 1.x. Updating npm
 versions alone does not update component files previously copied by the registry.
 Reinstall the affected registry items and merge their source changes with your
-customizations, including the shared `src/lib/data-slot.ts` helper.
+customizations.
 
-The helper initializes new roots on `astro:page-load` and destroys outgoing
-controllers on `astro:before-swap`. This releases modal stacks, portals, listeners
-and scroll locks before Astro's `ClientRouter` replaces the page. Roots within a
-matching `transition:persist` boundary retain their controllers and values.
-Persisted overlays close on navigation through their public Data Slot methods.
-Their portals move with the retained roots, so reopening attaches modal state
-and scroll locking to the new document body.
+Components use Data Slot's own initialization and release their controllers before
+Astro's `ClientRouter` swaps the page. Component state is reinitialized on navigation;
+this integration does not preserve interactive state across `transition:persist`.
 
 Select, Tooltip, Hover Card and Navigation Menu now use Data Slot's recommended
 lazy mounting. Closed content is retained outside the document. This changes DOM

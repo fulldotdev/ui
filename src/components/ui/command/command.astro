@@ -45,17 +45,22 @@ const {
 </div>
 
 <script>
-  import { createCommand } from "@data-slot/command"
-  import { getPart, getParts } from "@data-slot/core"
+  import { create } from "@data-slot/command"
+  import { getParts } from "@data-slot/core"
 
-  import { initializeDataSlot } from "@/lib/data-slot"
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 
-  initializeDataSlot("command", (root) => {
-    const controller = createCommand(root)
-    const input = getPart<HTMLInputElement>(root, "command-input")!
-    // Data Slot emits selection; native activation also preserves link semantics
-    // and lets Astro's ClientRouter handle same-origin navigation.
-    const navigate = (event: KeyboardEvent) => {
+  // Data Slot selection does not activate links. Preserve native navigation.
+  document.addEventListener(
+    "keydown",
+    (event) => {
       if (
         event.key !== "Enter" ||
         event.defaultPrevented ||
@@ -63,6 +68,14 @@ const {
         event.keyCode === 229
       )
         return
+      const input = event.target
+      if (
+        !(input instanceof HTMLInputElement) ||
+        input.dataset.slot !== "command-input"
+      )
+        return
+      const root = input.closest('[data-slot="command"]')
+      if (!root) return
       const item = getParts<HTMLAnchorElement>(root, "command-item").find(
         (item) =>
           item.hasAttribute("data-selected") &&
@@ -72,13 +85,7 @@ const {
       if (!item) return
       event.preventDefault()
       item.click()
-    }
-    input.addEventListener("keydown", navigate)
-    return {
-      destroy() {
-        input.removeEventListener("keydown", navigate)
-        controller.destroy()
-      },
-    }
-  })
+    },
+    true
+  )
 </script>

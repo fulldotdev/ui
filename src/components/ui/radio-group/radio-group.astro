@@ -36,9 +36,14 @@ const {
 </div>
 
 <script>
-  import { createRadioGroup } from "@data-slot/radio-group"
+  import { create } from "@data-slot/radio-group"
 
-  import { initializeDataSlot } from "@/lib/data-slot"
-
-  initializeDataSlot("radio-group", createRadioGroup)
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 </script>

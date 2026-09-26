@@ -67,9 +67,14 @@ const {
 </div>
 
 <script>
-  import { createCombobox } from "@data-slot/combobox"
+  import { create } from "@data-slot/combobox"
 
-  import { initializeDataSlot } from "@/lib/data-slot"
-
-  initializeDataSlot("combobox", createCombobox)
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 </script>

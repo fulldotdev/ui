@@ -67,9 +67,14 @@ const switchSizeStyle = {
 </span>
 
 <script>
-  import { createSwitch } from "@data-slot/switch"
+  import { create } from "@data-slot/switch"
 
-  import { initializeDataSlot } from "@/lib/data-slot"
-
-  initializeDataSlot("switch", createSwitch)
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 </script>

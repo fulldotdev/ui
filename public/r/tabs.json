@@ -6,13 +6,10 @@
   "dependencies": [
     "@data-slot/tabs@^1.0.1"
   ],
-  "registryDependencies": [
-    "@fulldev/data-slot"
-  ],
   "files": [
     {
       "path": "src/components/ui/tabs/tabs.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  defaultValue?: string\n  orientation?: \"horizontal\" | \"vertical\"\n  activationMode?: \"auto\" | \"manual\"\n}\n\nconst {\n  class: className,\n  defaultValue,\n  orientation = \"horizontal\",\n  activationMode,\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot=\"tabs\"\n  data-default-value={defaultValue}\n  data-orientation={orientation}\n  data-activation-mode={activationMode}\n  data-horizontal={orientation === \"horizontal\" ? \"\" : undefined}\n  data-vertical={orientation === \"vertical\" ? \"\" : undefined}\n  class={cn(\"group/tabs flex gap-2 data-horizontal:flex-col\", className)}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { createTabs } from \"@data-slot/tabs\"\n\n  import { initializeDataSlot } from \"@/lib/data-slot\"\n\n  initializeDataSlot(\"tabs\", createTabs)\n</script>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  defaultValue?: string\n  orientation?: \"horizontal\" | \"vertical\"\n  activationMode?: \"auto\" | \"manual\"\n}\n\nconst {\n  class: className,\n  defaultValue,\n  orientation = \"horizontal\",\n  activationMode,\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot=\"tabs\"\n  data-default-value={defaultValue}\n  data-orientation={orientation}\n  data-activation-mode={activationMode}\n  data-horizontal={orientation === \"horizontal\" ? \"\" : undefined}\n  data-vertical={orientation === \"vertical\" ? \"\" : undefined}\n  class={cn(\"group/tabs flex gap-2 data-horizontal:flex-col\", className)}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/tabs\"\n\n  const controllers: ReturnType<typeof create> = []\n  const initialize = () => controllers.push(...create())\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of controllers) controller.destroy()\n    controllers.length = 0\n  })\n</script>\n",
       "type": "registry:ui"
     },
     {

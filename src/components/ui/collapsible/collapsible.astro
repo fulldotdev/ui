@@ -27,9 +27,14 @@ const {
 </div>
 
 <script>
-  import { createCollapsible } from "@data-slot/collapsible"
+  import { create } from "@data-slot/collapsible"
 
-  import { initializeDataSlot } from "@/lib/data-slot"
-
-  initializeDataSlot("collapsible", createCollapsible)
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 </script>

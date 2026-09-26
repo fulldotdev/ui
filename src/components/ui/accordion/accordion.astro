@@ -46,9 +46,14 @@ const serializedDefaultValue = Array.isArray(defaultValue)
 </div>
 
 <script>
-  import { createAccordion } from "@data-slot/accordion"
+  import { create } from "@data-slot/accordion"
 
-  import { initializeDataSlot } from "@/lib/data-slot"
-
-  initializeDataSlot("accordion", createAccordion)
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 </script>

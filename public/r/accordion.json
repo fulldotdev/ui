@@ -7,13 +7,10 @@
     "@data-slot/accordion@^1.0.1",
     "@lucide/astro"
   ],
-  "registryDependencies": [
-    "@fulldev/data-slot"
-  ],
   "files": [
     {
       "path": "src/components/ui/accordion/accordion.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  multiple?: boolean\n  defaultValue?: string | string[]\n  disabled?: boolean\n  orientation?: \"horizontal\" | \"vertical\"\n  loopFocus?: boolean\n  hiddenUntilFound?: boolean\n  collapsible?: boolean\n}\n\nconst {\n  class: className,\n  multiple,\n  defaultValue,\n  disabled,\n  orientation = \"vertical\",\n  loopFocus,\n  hiddenUntilFound,\n  collapsible,\n  ...props\n} = Astro.props\n\nconst serializedDefaultValue = Array.isArray(defaultValue)\n  ? JSON.stringify(defaultValue)\n  : defaultValue\n---\n\n<div\n  data-slot=\"accordion\"\n  data-multiple={multiple}\n  data-default-value={serializedDefaultValue}\n  data-disabled={disabled}\n  data-orientation={orientation}\n  data-loop-focus={loopFocus}\n  data-hidden-until-found={hiddenUntilFound}\n  data-collapsible={collapsible}\n  class={cn(\"flex w-full flex-col\", className)}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { createAccordion } from \"@data-slot/accordion\"\n\n  import { initializeDataSlot } from \"@/lib/data-slot\"\n\n  initializeDataSlot(\"accordion\", createAccordion)\n</script>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  multiple?: boolean\n  defaultValue?: string | string[]\n  disabled?: boolean\n  orientation?: \"horizontal\" | \"vertical\"\n  loopFocus?: boolean\n  hiddenUntilFound?: boolean\n  collapsible?: boolean\n}\n\nconst {\n  class: className,\n  multiple,\n  defaultValue,\n  disabled,\n  orientation = \"vertical\",\n  loopFocus,\n  hiddenUntilFound,\n  collapsible,\n  ...props\n} = Astro.props\n\nconst serializedDefaultValue = Array.isArray(defaultValue)\n  ? JSON.stringify(defaultValue)\n  : defaultValue\n---\n\n<div\n  data-slot=\"accordion\"\n  data-multiple={multiple}\n  data-default-value={serializedDefaultValue}\n  data-disabled={disabled}\n  data-orientation={orientation}\n  data-loop-focus={loopFocus}\n  data-hidden-until-found={hiddenUntilFound}\n  data-collapsible={collapsible}\n  class={cn(\"flex w-full flex-col\", className)}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/accordion\"\n\n  const controllers: ReturnType<typeof create> = []\n  const initialize = () => controllers.push(...create())\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of controllers) controller.destroy()\n    controllers.length = 0\n  })\n</script>\n",
       "type": "registry:ui"
     },
     {

@@ -54,9 +54,14 @@ const {
 </div>
 
 <script>
-  import { createPopover } from "@data-slot/popover"
+  import { create } from "@data-slot/popover"
 
-  import { initializeDataSlot } from "@/lib/data-slot"
-
-  initializeDataSlot("popover", createPopover)
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 </script>

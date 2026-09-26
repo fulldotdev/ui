@@ -8,13 +8,12 @@
     "@lucide/astro"
   ],
   "registryDependencies": [
-    "@fulldev/button",
-    "@fulldev/data-slot"
+    "@fulldev/button"
   ],
   "files": [
     {
       "path": "src/components/ui/dialog/dialog.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  defaultOpen?: boolean\n  closeOnClickOutside?: boolean\n  closeOnEscape?: boolean\n  lockScroll?: boolean\n  alertDialog?: boolean\n}\n\nconst {\n  class: className,\n  defaultOpen,\n  closeOnClickOutside,\n  closeOnEscape,\n  lockScroll,\n  alertDialog,\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot=\"dialog\"\n  data-default-open={defaultOpen}\n  data-close-on-click-outside={closeOnClickOutside}\n  data-close-on-escape={closeOnEscape}\n  data-lock-scroll={lockScroll}\n  data-alert-dialog={alertDialog}\n  class={className}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { createDialog } from \"@data-slot/dialog\"\n\n  import { initializeDataSlot } from \"@/lib/data-slot\"\n\n  initializeDataSlot(\"dialog\", createDialog)\n</script>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  defaultOpen?: boolean\n  closeOnClickOutside?: boolean\n  closeOnEscape?: boolean\n  lockScroll?: boolean\n  alertDialog?: boolean\n}\n\nconst {\n  class: className,\n  defaultOpen,\n  closeOnClickOutside,\n  closeOnEscape,\n  lockScroll,\n  alertDialog,\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot=\"dialog\"\n  data-default-open={defaultOpen}\n  data-close-on-click-outside={closeOnClickOutside}\n  data-close-on-escape={closeOnEscape}\n  data-lock-scroll={lockScroll}\n  data-alert-dialog={alertDialog}\n  class={className}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/dialog\"\n\n  const controllers: ReturnType<typeof create> = []\n  const initialize = () => controllers.push(...create())\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of controllers) controller.destroy()\n    controllers.length = 0\n  })\n</script>\n",
       "type": "registry:ui"
     },
     {

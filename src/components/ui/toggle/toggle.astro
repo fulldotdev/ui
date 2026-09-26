@@ -36,9 +36,14 @@ const {
 </button>
 
 <script>
-  import { createToggle } from "@data-slot/toggle"
+  import { create } from "@data-slot/toggle"
 
-  import { initializeDataSlot } from "@/lib/data-slot"
-
-  initializeDataSlot("toggle", createToggle)
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 </script>

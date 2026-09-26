@@ -60,9 +60,14 @@ const {
 </nav>
 
 <script>
-  import { createNavigationMenu } from "@data-slot/navigation-menu"
+  import { create } from "@data-slot/navigation-menu"
 
-  import { initializeDataSlot } from "@/lib/data-slot"
-
-  initializeDataSlot("navigation-menu", createNavigationMenu)
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 </script>
