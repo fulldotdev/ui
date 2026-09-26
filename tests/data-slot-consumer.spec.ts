@@ -173,6 +173,9 @@ test("consumer: persisted dialog portals retain nested state and modal behavior"
   await trigger.click()
   await expect(dialog).toBeVisible()
   await expect(dialog).toHaveAttribute("data-stack-index", "0")
+  await expect(
+    dialog.getByRole("button", { name: "Close", exact: true })
+  ).toBeFocused()
   await expect(preference).toBeChecked()
   await expect(select).toContainText("Second persistent option")
   await expect
