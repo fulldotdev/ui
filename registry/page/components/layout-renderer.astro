@@ -1,0 +1,21 @@
+---
+import { render } from "astro:content"
+import type { AstroComponentFactory } from "astro/runtime/server/index.js"
+
+import type { Page } from "@/lib/pages"
+import OverviewLayout from "@/layouts/overview.astro"
+import PageLayout from "@/layouts/page.astro"
+
+type Props = Page
+const page = Astro.props
+const { Content } = await render(page)
+
+// Every page type needs a layout here; the schema union and this map move together.
+const layouts = { page: PageLayout, overview: OverviewLayout } satisfies Record<
+  Page["data"]["type"],
+  AstroComponentFactory
+>
+const Layout = layouts[page.data.type]
+---
+
+<Layout page={page}><Content /></Layout>

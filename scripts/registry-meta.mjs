@@ -52,6 +52,7 @@ const order = [
   "categories",
   "docs",
   "dependencies",
+  "devDependencies",
   "registryDependencies",
   "files",
 ]

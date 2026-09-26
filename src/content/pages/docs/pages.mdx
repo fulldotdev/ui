@@ -1,0 +1,181 @@
+---
+type: doc
+title: Content-driven pages
+description: An optional setup for file-based URLs, typed content, and page layouts.
+---
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+
+<Alert role="note" aria-label="Optional architecture">
+  <AlertTitle>Optional architecture</AlertTitle>
+  <AlertDescription>
+    This is an opinionated starting point for content-driven Astro sites.
+    Fulldev UI components work independently of it. Keep your existing
+    collections, routing, and layouts, or adapt this setup to your project.
+  </AlertDescription>
+</Alert>
+
+In this setup, Markdown and MDX webpages live in `src/content/pages`. Folders define
+URLs; `type` selects the content schema and layout. Collections for records without
+their own page can be added separately.
+
+## Install this optional setup
+
+After the [Astro and Tailwind setup](/docs/installation/), run:
+
+```bash
+npx shadcn@latest add @fulldev/page
+```
+
+This installs infrastructure only: the `pages` collection and loader, a strict `page`
+schema and an example `overview` schema, their layouts, the page helpers, the catch-all route,
+and a `/sitemap.xml` endpoint. It includes the layout primitives and their
+dependencies. **It installs no page content**, so it does not add or replace a
+homepage or About page.
+
+Review file replacements in an existing project, especially `src/content.config.ts`,
+`src/site.config.ts`, schemas, and layouts. Extend the schema union and the layout
+map when you already have page types. This documentation site keeps its real
+homepage and its `home`, `doc`, `block`, and `overview` types; those docs-specific
+layouts are not installed into other sites.
+
+Then configure three things:
+
+1. `site` in `astro.config.*`: the production URL. Page URLs, canonicals, and the sitemap need it, and the build fails without it.
+2. `i18n` in `astro.config.*`: `defaultLocale`, `locales`, and `routing.prefixDefaultLocale`. The page helpers read these from Astro, so there is nothing to mirror.
+3. `name` in the installed `src/site.config.ts`: your website name for Open Graph and structured data. The build fails until it is set, so unset configuration cannot publish example metadata.
+
+Keep or add your real Markdown pages under `src/content/pages`. If your homepage
+currently lives at `src/pages/index.astro`, migrate its content and layout before
+removing that route. An existing explicit route takes precedence over the
+collection catch-all.
+
+The installer does not change `astro.config.*`; keep Tailwind configured and add
+`@astrojs/mdx` if you use MDX. Add your own fonts to the layout head slot. Advertise
+`/sitemap.xml` in your `robots.txt` once the endpoint is installed, and do not run
+another sitemap generator on the same site. This documentation site opts in through
+the `sitemap` option of its Astro integration.
+
+```text
+src/content.config.ts       registers the collections
+src/content/pages/          real Markdown page content
+src/content/globals/        shared translated copy, when your site needs it
+src/schemas/layouts/base.ts shared page fields
+src/schemas/page.ts         discriminated union of page types
+src/layouts/                presentation and page orchestration
+src/lib/pages.ts            validated pages, URLs, locales, breadcrumbs
+src/lib/seo.ts              structured data
+src/pages/sitemap.xml.ts    sitemap built from the same page data
+```
+
+## Files are URLs
+
+```text
+src/content/pages/
+  index.md                         /
+  services/index.md                /services/
+  services/coating/black.md         /services/coating/black/
+  services/paint/black.md           /services/paint/black/
+  nl/index.md                      /nl/
+  nl/diensten/coating/zwart.md      /nl/diensten/coating/zwart/
+```
+
+Both `black.md` files are valid because their full paths differ. This setup uses
+file paths as entry IDs and URLs, so its schemas reject a `slug` field, and the loader rejects collisions such as
+`services.md` alongside `services/index.md`. Changing a file path changes its URL;
+add a permanent redirect in your hosting configuration when moving a public page.
+
+## One schema and layout per type
+
+Use a Zod discriminated union on `type`. Require only content fields that the
+layout actually uses. Put presentation choices in layout code.
+
+```ts
+import { baseSchema } from "@/schemas/layouts/base"
+
+const articleSchema = baseSchema(ctx)
+  .extend({ type: z.literal("article") })
+  .strict()
+```
+
+Add the schema to the union in `src/schemas/page.ts` and the matching component to
+the layout map in `src/components/layout-renderer.astro`. The map is typed against
+the union, so a type without a layout fails `astro check`.
+
+The structured-data helper emits `WebSite`, `WebPage` or `CollectionPage`, and
+`BreadcrumbList` from page data only. Extend it in your project when a type needs
+its own entity; it does not invent ratings, prices, authors, or dates.
+
+## Example: an overview layout
+
+An overview is simply a layout that lists other pages. The included `overview`
+type is an example you can adapt or remove; it is not a separate routing feature
+or a required page category. A services layout could render service content and
+a list of subservices without using this type.
+
+The example layout renders its Markdown body above a listing of immediate child
+pages in the same locale, alphabetically by title. It does not include deeper
+descendants unless you reference them explicitly.
+
+For a curated list or explicit ordering, use page IDs:
+
+```yaml
+type: overview
+title: Services
+description: Explore our services.
+entries:
+  - services/coating
+  - services/paint
+```
+
+An explicit empty list displays no entries. An unknown id or an entry from another
+locale fails the build. This site's HTML and Markdown overviews use the same
+selection. Documentation pagination follows the sidebar navigation when available,
+then the parent overview's order or same-type siblings.
+
+## Translations
+
+The default locale lives at the root unless `prefixDefaultLocale` is enabled; other
+locales live in their own folders named after the locale. When every locale has a
+prefix, every page lives inside its locale folder. Astro does not translate content
+or match pages with different slugs for you.
+
+Translate the content and folder names directly. Each locale can have its own
+pages and nesting; the file path remains the URL. There is no automatic pairing
+between language versions.
+
+This documentation site also requires `src/content/globals/<locale>.yaml` with
+translated navigation, search labels, and documentation controls. Search,
+breadcrumbs, and pagination stay within the current locale. Breadcrumbs only link
+to ancestors that exist. The installed foundation has no global navigation or
+search UI; add translated globals when your layout needs them.
+
+## SEO
+
+In the included schemas, title and description are required. The following metadata
+is optional and comes from the same frontmatter:
+
+```yaml
+seo:
+  title: A different search title
+  noindex: true
+updatedAt: 2026-09-23
+```
+
+| Field                                       | Effect                                                                                              |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `seo.title`, `seo.description`, `seo.image` | Override the head and Open Graph values only.                                                       |
+| `seo.noindex`, `seo.nofollow`               | Robots meta. `noindex` also removes the page from the sitemap and this site's search.               |
+| `seo.canonical`                             | Absolute URL. A canonical elsewhere also removes the page from the sitemap.                         |
+| `updatedAt`                                 | `lastmod` in the sitemap and `dateModified` in structured data. Omit it unless the content changed. |
+
+This setup includes a content endpoint for the sitemap. `@astrojs/sitemap` works from
+the list of built URLs, so feeding it `noindex` and update dates means handing
+that metadata over separately, through its `filter` and `serialize`
+callbacks. Building `/sitemap.xml` straight from the validated pages collection
+skips that handoff: the same page data that renders the head also renders the
+sitemap. The integration remains a valid choice if you prefer to supply it.
+
+Checks do not crawl links inside Markdown bodies or verify anchors and external
+URLs. Include a rendered-link check in your release QA. Run `astro check` and
+`astro build` before publishing.

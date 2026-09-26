@@ -1,6 +1,6 @@
 ---
 import type { ImageMetadata } from "astro"
-import { Font, getImage } from "astro:assets"
+import { getImage } from "astro:assets"
 import { AstroSeo } from "@lexingtonthemes/seo"
 
 type Props = {
@@ -13,6 +13,7 @@ type Props = {
   }
   noindex?: boolean
   nofollow?: boolean
+  structuredData?: Record<string, unknown>
   canonical?: string
 }
 
@@ -29,6 +30,7 @@ const {
   noindex,
   nofollow,
   canonical,
+  structuredData,
   ...props
 } = Astro.props
 
@@ -73,8 +75,15 @@ const openGraphImage =
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="generator" content={Astro.generator} />
   <meta charset="utf-8" />
-  <Font cssVariable="--font-sans" />
-  <Font cssVariable="--font-mono" />
+  {
+    structuredData && (
+      <script
+        is:inline
+        type="application/ld+json"
+        set:html={JSON.stringify(structuredData).replace(/</g, "\\u003c")}
+      />
+    )
+  }
   <AstroSeo
     title={title}
     description={description}

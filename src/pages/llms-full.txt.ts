@@ -1,16 +1,14 @@
 import { readFile } from "node:fs/promises"
 import type { APIRoute } from "astro"
-import { getCollection } from "astro:content"
 
-import { getInstallCommand, getPageHref } from "@/lib/pages"
+import { getInstallCommand } from "@/lib/docs"
+import { getPageHref, getPages } from "@/lib/pages"
 
 export const prerender = true
 
 export const GET: APIRoute = async ({ site }) => {
   const origin = site?.origin ?? ""
-  const pages = (await getCollection("pages")).sort((a, b) =>
-    a.id.localeCompare(b.id)
-  )
+  const pages = (await getPages()).sort((a, b) => a.id.localeCompare(b.id))
 
   const documents = await Promise.all(
     pages.map(async (page) => {

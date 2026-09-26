@@ -9,7 +9,22 @@ const nestedLinkSchema = linkSchema.extend({
 
 export const globalSchema = ({ image }: SchemaContext) =>
   z.object({
-    name: z.string(),
+    name: z.string().trim().min(1),
+    labels: z.object({
+      copyMarkdown: z.string(),
+      openIn: z.string(),
+      openInMarkdown: z.string(),
+      openInChatGPT: z.string(),
+      openInClaude: z.string(),
+      openInCursor: z.string(),
+      toc: z.string(),
+      pages: z.string(),
+      pagination: z.object({
+        previous: z.string(),
+        next: z.string(),
+        ariaLabel: z.string(),
+      }),
+    }),
     logo: z
       .object({
         label: z.string(),
@@ -17,7 +32,7 @@ export const globalSchema = ({ image }: SchemaContext) =>
         src: image().optional(),
         srcLight: image().optional(),
         srcDark: image().optional(),
-        alt: z.string().optional(),
+        alt: z.string(),
       })
       .refine((logo) => logo.src || (logo.srcLight && logo.srcDark), {
         message: "Logo must define src or both srcLight and srcDark.",

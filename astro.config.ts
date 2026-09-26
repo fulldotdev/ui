@@ -49,6 +49,7 @@ export default defineConfig({
       site: "https://ui.full.dev",
       name: "Fulldev UI",
       favicon: "src/assets/favicon.svg",
+      sitemap: "/sitemap.xml",
       i18n: {
         defaultLocale: "en",
         locales: ["en"],
@@ -57,6 +58,6 @@ export default defineConfig({
     liveCode({
       layout: "/src/components/live-code.astro",
     }),
-    mdx(),
+    mdx({ gfm: true }),
   ],
 })

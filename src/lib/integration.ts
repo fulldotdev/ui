@@ -1,5 +1,4 @@
 import type { AstroIntegration } from "astro"
-import sitemap from "@astrojs/sitemap"
 import tailwindcss from "@tailwindcss/vite"
 import favicons from "astro-favicons"
 import robotsTxt from "astro-robots-txt"
@@ -10,7 +9,11 @@ export interface Options {
   i18n: {
     defaultLocale: string
     locales: string[]
+    prefixDefaultLocale?: boolean
   }
+  // Sitemap path or URL to advertise in robots.txt, for example "/sitemap.xml"
+  // once the page foundation's endpoint is installed. Off by default.
+  sitemap?: string
   favicon: string
 }
 
@@ -31,22 +34,17 @@ export default function (options: Options): AstroIntegration {
           i18n: {
             routing: {
               fallbackType: "redirect",
-              prefixDefaultLocale: false,
+              prefixDefaultLocale: options.i18n.prefixDefaultLocale ?? false,
               redirectToDefaultLocale: false,
             },
-            ...options.i18n,
+            defaultLocale: options.i18n.defaultLocale,
+            locales: options.i18n.locales,
           },
           integrations: [
-            robotsTxt(),
-            sitemap({
-              changefreq: "weekly",
-              lastmod: new Date(),
-              i18n: {
-                defaultLocale: options.i18n?.defaultLocale,
-                locales: Object.fromEntries(
-                  options.i18n.locales.map((locale) => [locale, locale])
-                ),
-              },
+            robotsTxt({
+              sitemap: options.sitemap
+                ? new URL(options.sitemap, options.site).href
+                : false,
             }),
             favicons({
               input: {
