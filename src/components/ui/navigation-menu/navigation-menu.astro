@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import NavigationMenuPositioner from "./navigation-menu-positioner.astro"
 
 type Props = HTMLAttributes<"nav"> & {
+  mountStrategy?: "lazy" | "eager"
   delayOpen?: number
   delayClose?: number
   openOnFocus?: boolean
@@ -19,6 +20,7 @@ type Props = HTMLAttributes<"nav"> & {
 }
 
 const {
+  mountStrategy,
   class: className = "",
   delayOpen = 0,
   delayClose = 0,
@@ -37,6 +39,7 @@ const {
 <nav
   {...props}
   data-slot="navigation-menu"
+  data-mount-strategy={mountStrategy}
   data-delay-open={delayOpen}
   data-delay-close={delayClose}
   data-open-on-focus={openOnFocus}
@@ -59,6 +62,12 @@ const {
 <script>
   import { create } from "@data-slot/navigation-menu"
 
-  create()
-  document.addEventListener("astro:page-load", () => create())
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 </script>

@@ -3,6 +3,7 @@ import { defineConfig } from "@playwright/test"
 
 export default defineConfig({
   testDir: "./tests",
+  testMatch: "visual.spec.ts",
   forbidOnly: !!process.env.CI,
   workers: 2,
   reporter: [

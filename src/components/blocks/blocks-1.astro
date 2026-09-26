@@ -15,6 +15,7 @@ import { buttonVariants } from "@/components/ui/button/button-variants"
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { SectionContainer } from "@/components/ui/section"
@@ -129,6 +130,7 @@ const openLinks = markdownUrl
               variant="outline"
               size="xs"
               data-source={copyButton?.source}
+              data-blocks-copy
               aria-label={labels.copyMarkdown}
             >
               <Copy class="blocks-copy-icon size-3.5" />
@@ -148,11 +150,10 @@ const openLinks = markdownUrl
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" sideOffset={6} class="w-56">
                 {openLinks.map((link) => (
-                  <a
+                  <DropdownMenuItem
                     href={link.href}
                     target="_blank"
                     rel="noreferrer noopener"
-                    class="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-colors outline-none"
                   >
                     {link.icon === "markdown" && <Markdown class="size-4" />}
                     {link.icon === "chatgpt" && (
@@ -170,7 +171,7 @@ const openLinks = markdownUrl
                     {link.icon === "cursor" && <Cursor class="size-4" />}
                     <span>{link.label}</span>
                     <ExternalLink class="text-muted-foreground ml-auto size-3.5" />
-                  </a>
+                  </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
@@ -224,27 +225,26 @@ const openLinks = markdownUrl
   </div>
 </SectionContainer>
 
-<script is:inline define:vars={{ copyButtonId: copyButton?.id }}>
-  const button = copyButtonId ? document.getElementById(copyButtonId) : null
+<script>
+  document.addEventListener("click", async (event) => {
+    if (!(event.target instanceof Element)) return
+    const button = event.target.closest("[data-blocks-copy]")
+    if (!(button instanceof HTMLButtonElement)) return
 
-  if (button instanceof HTMLButtonElement) {
-    button.addEventListener("click", async () => {
-      const source = button.dataset.source
+    const source = button.dataset.source
+    if (!source) return
 
-      if (!source) return
+    try {
+      await navigator.clipboard.writeText(source)
+      button.querySelector(".blocks-copy-icon")?.classList.add("hidden")
+      button.querySelector(".blocks-check-icon")?.classList.remove("hidden")
 
-      try {
-        await navigator.clipboard.writeText(source)
-        button.querySelector(".blocks-copy-icon")?.classList.add("hidden")
-        button.querySelector(".blocks-check-icon")?.classList.remove("hidden")
-
-        window.setTimeout(() => {
-          button.querySelector(".blocks-copy-icon")?.classList.remove("hidden")
-          button.querySelector(".blocks-check-icon")?.classList.add("hidden")
-        }, 1200)
-      } catch {
-        // Ignore clipboard failures; the button remains available for retry.
-      }
-    })
-  }
+      window.setTimeout(() => {
+        button.querySelector(".blocks-copy-icon")?.classList.remove("hidden")
+        button.querySelector(".blocks-check-icon")?.classList.add("hidden")
+      }, 1200)
+    } catch {
+      // Keep the copy state unchanged so the action can be retried.
+    }
+  })
 </script>

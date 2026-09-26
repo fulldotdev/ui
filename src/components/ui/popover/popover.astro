@@ -11,6 +11,7 @@ type Props = HTMLAttributes<"div"> & {
   avoidCollisions?: boolean
   collisionPadding?: number
   portal?: boolean
+  /** Compatibility alias. Prefer `side`. */
   position?: PopoverSide
   closeOnClickOutside?: boolean
   closeOnEscape?: boolean
@@ -55,6 +56,12 @@ const {
 <script>
   import { create } from "@data-slot/popover"
 
-  create()
-  document.addEventListener("astro:page-load", () => create())
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 </script>

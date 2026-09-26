@@ -23,11 +23,12 @@ import {
   CommandList,
   CommandShortcut,
 } from "@/components/ui/command"
-import { Dialog, DialogTrigger } from "@/components/ui/dialog"
+import { DialogTrigger } from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Header, HeaderContainer, HeaderGroup } from "@/components/ui/header"
@@ -139,7 +140,7 @@ try {
 <SidebarProvider>
   <Sidebar class={cn("", className)} collapsible="offcanvas" variant="inset">
     <SidebarHeader class="flex-col">
-      <SidebarMenuButton size="lg" variant="ghost" href={logo.href}>
+      <SidebarMenuButton size="lg" href={logo.href}>
         <LogoImage
           src={logo.src}
           srcLight={logo.srcLight}
@@ -148,8 +149,14 @@ try {
         />
         <LogoText class="font-semibold">{logo.label}</LogoText>
       </SidebarMenuButton>
-      <Dialog class="w-full" data-search-dialog>
+      <CommandDialog
+        class="w-full"
+        data-search-dialog
+        title={search.label}
+        description={search.label}
+      >
         <DialogTrigger
+          slot="trigger"
           variant="outline"
           size="sm"
           class="w-full justify-start shadow-none"
@@ -165,40 +172,38 @@ try {
           </Kbd>
         </DialogTrigger>
 
-        <CommandDialog title={search.label} description={search.label}>
-          <Command
-            class="[&_[data-slot=command-item][data-selected]]:bg-accent [&_[data-slot=command-item][data-selected]]:text-accent-foreground"
-          >
-            <CommandInput placeholder={search.label} />
-            <CommandList>
-              <CommandEmpty>{search.empty}</CommandEmpty>
+        <Command
+          class="[&_[data-slot=command-item][data-selected]]:bg-accent [&_[data-slot=command-item][data-selected]]:text-accent-foreground"
+        >
+          <CommandInput autofocus placeholder={search.label} />
+          <CommandList>
+            <CommandEmpty>{search.empty}</CommandEmpty>
 
-              {
-                searchGroups.map((group) => (
-                  <CommandGroup heading={group.label}>
-                    {group.items.map((item) => (
-                      <CommandItem
-                        href={item.href}
-                        value={`${item.group} ${item.label}`}
-                        label={item.label}
-                        keywords={[
-                          item.group,
-                          item.title,
-                          item.path,
-                          item.description,
-                        ]}
-                      >
-                        {item.label}
-                        <CommandShortcut>{item.href}</CommandShortcut>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                ))
-              }
-            </CommandList>
-          </Command>
-        </CommandDialog>
-      </Dialog>
+            {
+              searchGroups.map((group) => (
+                <CommandGroup heading={group.label}>
+                  {group.items.map((item) => (
+                    <CommandItem
+                      href={item.href}
+                      value={`${item.group} ${item.label}`}
+                      label={item.label}
+                      keywords={[
+                        item.group,
+                        item.title,
+                        item.path,
+                        item.description,
+                      ]}
+                    >
+                      {item.label}
+                      <CommandShortcut>{item.href}</CommandShortcut>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              ))
+            }
+          </CommandList>
+        </Command>
+      </CommandDialog>
     </SidebarHeader>
     <SidebarContent
       class="[mask-image:linear-gradient(to_bottom,transparent,black_1rem,black_calc(100%_-_1rem),transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_1rem,black_calc(100%_-_1rem),transparent)] group-data-[collapsible=icon]:[mask-image:none] group-data-[collapsible=icon]:[-webkit-mask-image:none]"
@@ -268,7 +273,7 @@ try {
                             <DropdownMenuContent align="start">
                               <DropdownMenuGroup>
                                 {breadcrumb.menu.map((menuItem) => (
-                                  <a
+                                  <DropdownMenuItem
                                     href={menuItem.href}
                                     aria-current={
                                       normalizePath(menuItem.href) ===
@@ -276,10 +281,10 @@ try {
                                         ? "page"
                                         : undefined
                                     }
-                                    class="hover:bg-accent hover:text-accent-foreground aria-[current=page]:text-foreground flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none"
+                                    class="aria-[current=page]:text-foreground"
                                   >
                                     {menuItem.label}
-                                  </a>
+                                  </DropdownMenuItem>
                                 ))}
                               </DropdownMenuGroup>
                             </DropdownMenuContent>
@@ -308,12 +313,9 @@ try {
                         <DropdownMenuContent align="start">
                           <DropdownMenuGroup>
                             {breadcrumb.menu.map((item) => (
-                              <a
-                                href={item.href}
-                                class="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none"
-                              >
+                              <DropdownMenuItem href={item.href}>
                                 {item.label}
-                              </a>
+                              </DropdownMenuItem>
                             ))}
                           </DropdownMenuGroup>
                         </DropdownMenuContent>

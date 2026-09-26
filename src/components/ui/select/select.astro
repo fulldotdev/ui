@@ -5,6 +5,7 @@ import type { Align, Position, Side } from "@data-slot/select"
 import { cn } from "@/lib/utils"
 
 type Props = HTMLAttributes<"div"> & {
+  mountStrategy?: "lazy" | "eager"
   defaultValue?: string
   defaultOpen?: boolean
   placeholder?: string
@@ -23,6 +24,7 @@ type Props = HTMLAttributes<"div"> & {
 }
 
 const {
+  mountStrategy,
   class: className,
   defaultValue,
   defaultOpen,
@@ -45,6 +47,7 @@ const {
 
 <div
   data-slot="select"
+  data-mount-strategy={mountStrategy}
   data-default-value={defaultValue}
   data-default-open={defaultOpen}
   data-placeholder={placeholder}
@@ -72,11 +75,12 @@ const {
 <script>
   import { create } from "@data-slot/select"
 
-  const initSelect = () => {
-    create()
-  }
-
-  initSelect()
-
-  document.addEventListener("astro:page-load", initSelect)
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 </script>

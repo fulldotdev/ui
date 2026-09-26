@@ -46,31 +46,46 @@ const {
 
 <script>
   import { create } from "@data-slot/command"
+  import { getParts } from "@data-slot/core"
 
-  const initCommand = () => {
-    create()
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 
-    document.querySelectorAll("[data-slot=command]").forEach((command) => {
-      if (!(command instanceof HTMLElement)) return
-      if (command.dataset.linkNavigation === "true") return
-
-      command.dataset.linkNavigation = "true"
-      command.addEventListener("command:select", (event) => {
-        const { detail } = event as CustomEvent<{ value?: unknown }>
-        const value = detail?.value
-        if (typeof value !== "string") return
-
-        const item = Array.from(
-          command.querySelectorAll("[data-slot=command-item][href]")
-        ).find((item) => item.getAttribute("data-value") === value)
-        const href = item?.getAttribute("href")
-
-        if (href) window.location.href = href
-      })
-    })
-  }
-
-  initCommand()
-
-  document.addEventListener("astro:page-load", initCommand)
+  // Data Slot selection does not activate links. Preserve native navigation.
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (
+        event.key !== "Enter" ||
+        event.defaultPrevented ||
+        event.isComposing ||
+        event.keyCode === 229
+      )
+        return
+      const input = event.target
+      if (
+        !(input instanceof HTMLInputElement) ||
+        input.dataset.slot !== "command-input"
+      )
+        return
+      const root = input.closest('[data-slot="command"]')
+      if (!root) return
+      const item = getParts<HTMLAnchorElement>(root, "command-item").find(
+        (item) =>
+          item.hasAttribute("data-selected") &&
+          item.hasAttribute("href") &&
+          item.getAttribute("aria-disabled") !== "true"
+      )
+      if (!item) return
+      event.preventDefault()
+      item.click()
+    },
+    true
+  )
 </script>

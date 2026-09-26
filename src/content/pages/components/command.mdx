@@ -130,6 +130,39 @@ Command
         └── CommandItem
 ```
 
+### Command dialog
+
+`CommandDialog` includes its own Dialog root. Put `DialogTrigger` in its `trigger`
+slot; wrapping it in another `Dialog` creates an outer root with no content owned
+by that root, which Data Slot 1.x rejects.
+
+```astro live
+---
+import {
+  Command,
+  CommandDialog,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+import { DialogTrigger } from "@/components/ui/dialog"
+---
+
+<CommandDialog title="Quick actions">
+  <DialogTrigger slot="trigger" variant="outline">Quick actions</DialogTrigger>
+  <Command>
+    <CommandInput autofocus placeholder="Find an action..." />
+    <CommandList>
+      <CommandItem value="profile">Profile</CommandItem>
+      <CommandItem value="settings">Settings</CommandItem>
+    </CommandList>
+  </Command>
+</CommandDialog>
+```
+
+Use native `autofocus` on a dialog's `CommandInput` so Data Slot places initial
+focus in the search field. Leave it off standalone command menus.
+
 ## Examples
 
 ### Basic
@@ -171,7 +204,7 @@ import {
       <DialogDescription>Search for a command to run...</DialogDescription>
     </DialogHeader>
     <Command>
-      <CommandInput placeholder="Search commands..." />
+      <CommandInput autofocus placeholder="Search commands..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Suggestions">

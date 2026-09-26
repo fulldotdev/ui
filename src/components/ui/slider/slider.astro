@@ -3,7 +3,7 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-type SliderValue = number | [number, number] | string
+type SliderValue = number | [number, number]
 type ThumbAlignment = "center" | "edge" | "edge-client-only"
 
 type Props = HTMLAttributes<"div"> & {
@@ -25,7 +25,7 @@ const {
   step,
   largeStep,
   orientation = "horizontal",
-  thumbAlignment = "edge",
+  thumbAlignment = "center",
   disabled,
   ...props
 } = Astro.props
@@ -82,6 +82,12 @@ const thumbCount = String(serializedDefaultValue ?? "").includes(",") ? 2 : 1
 <script>
   import { create } from "@data-slot/slider"
 
-  create()
-  document.addEventListener("astro:page-load", () => create())
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 </script>

@@ -4,12 +4,12 @@
   "title": "Toggle",
   "description": "A two-state button that can be either on or off.",
   "dependencies": [
-    "@data-slot/toggle"
+    "@data-slot/toggle@^1.0.1"
   ],
   "files": [
     {
       "path": "src/components/ui/toggle/toggle.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { toggleVariants, type ToggleVariantProps } from \"./toggle-variants\"\n\ntype Props = HTMLAttributes<\"button\"> &\n  ToggleVariantProps & {\n    defaultPressed?: boolean\n    disabled?: boolean\n  }\n\nconst {\n  class: className,\n  variant = \"default\",\n  size = \"default\",\n  defaultPressed,\n  disabled,\n  type = \"button\",\n  ...props\n} = Astro.props\n---\n\n<button\n  data-slot=\"toggle\"\n  data-default-pressed={defaultPressed}\n  data-disabled={disabled}\n  type={type}\n  disabled={disabled}\n  aria-pressed={defaultPressed === true ? \"true\" : \"false\"}\n  class={cn(toggleVariants({ variant, size }), className)}\n  {...props}\n>\n  <slot />\n</button>\n\n<script>\n  import { create } from \"@data-slot/toggle\"\n\n  create()\n  document.addEventListener(\"astro:page-load\", () => create())\n</script>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { toggleVariants, type ToggleVariantProps } from \"./toggle-variants\"\n\ntype Props = HTMLAttributes<\"button\"> &\n  ToggleVariantProps & {\n    defaultPressed?: boolean\n    disabled?: boolean\n  }\n\nconst {\n  class: className,\n  variant = \"default\",\n  size = \"default\",\n  defaultPressed,\n  disabled,\n  type = \"button\",\n  ...props\n} = Astro.props\n---\n\n<button\n  data-slot=\"toggle\"\n  data-default-pressed={defaultPressed}\n  data-disabled={disabled}\n  type={type}\n  disabled={disabled}\n  aria-pressed={defaultPressed === true ? \"true\" : \"false\"}\n  class={cn(toggleVariants({ variant, size }), className)}\n  {...props}\n>\n  <slot />\n</button>\n\n<script>\n  import { create } from \"@data-slot/toggle\"\n\n  const controllers: ReturnType<typeof create> = []\n  const initialize = () => controllers.push(...create())\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of controllers) controller.destroy()\n    controllers.length = 0\n  })\n</script>\n",
       "type": "registry:ui"
     },
     {

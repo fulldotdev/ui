@@ -130,3 +130,30 @@ import { Button } from "@/components/ui/button"
 
 At that point, you can follow the component pages directly and install only the
 pieces you need.
+
+## Data Slot 1.x upgrades
+
+Interactive components require Data Slot 1.0.1 or newer within 1.x. Updating npm
+versions alone does not update component files previously copied by the registry.
+Reinstall the affected registry items and merge their source changes with your
+customizations.
+
+Components use Data Slot's own initialization and release their controllers before
+Astro's `ClientRouter` swaps the page. Component state is reinitialized on navigation;
+this integration does not preserve interactive state across `transition:persist`.
+
+Select, Tooltip, Hover Card and Navigation Menu now use Data Slot's recommended
+lazy mounting. Closed content is retained outside the document. This changes DOM
+queries compared with 0.2.x: use `mountStrategy="eager"` if custom code needs to
+query closed content. Nested Data Slot components initialize in either mode.
+
+`CommandDialog` already includes a Dialog root. Use its `trigger` slot instead of
+wrapping it in another Dialog. See the [Command example](/components/command/#command-dialog).
+
+Command inputs inside dialogs should use native `autofocus` to receive initial
+focus. Standalone command inputs leave page focus unchanged. Slider now follows
+Data Slot's centered thumb default; use `thumbAlignment="edge"` to retain edge
+alignment. Tabs triggers and panels require an explicit `value`.
+
+Buttons and Tabs triggers default to `type="button"`, matching shadcn controls.
+Use `type="submit"` explicitly for form submission.

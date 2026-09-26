@@ -5,6 +5,7 @@ import type { TooltipAlign, TooltipSide } from "@data-slot/tooltip"
 import { cn } from "@/lib/utils"
 
 type Props = HTMLAttributes<"div"> & {
+  mountStrategy?: "lazy" | "eager"
   delay?: number
   skipDelayDuration?: number
   side?: TooltipSide
@@ -17,6 +18,7 @@ type Props = HTMLAttributes<"div"> & {
 }
 
 const {
+  mountStrategy,
   class: className,
   delay = 300,
   skipDelayDuration = 300,
@@ -33,6 +35,7 @@ const {
 
 <div
   data-slot="tooltip"
+  data-mount-strategy={mountStrategy}
   data-delay={delay}
   data-skip-delay-duration={skipDelayDuration}
   data-side={side}
@@ -51,6 +54,12 @@ const {
 <script>
   import { create } from "@data-slot/tooltip"
 
-  create()
-  document.addEventListener("astro:page-load", () => create())
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 </script>

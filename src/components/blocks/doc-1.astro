@@ -21,6 +21,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { SectionContainer } from "@/components/ui/section"
@@ -180,11 +181,10 @@ const openLinks = markdownUrl
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" sideOffset={6} class="w-56">
                 {openLinks.map((link) => (
-                  <a
+                  <DropdownMenuItem
                     href={link.href}
                     target="_blank"
                     rel="noreferrer noopener"
-                    class="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-colors outline-none"
                   >
                     {link.icon === "markdown" && <Markdown class="size-4" />}
                     {link.icon === "chatgpt" && (
@@ -202,7 +202,7 @@ const openLinks = markdownUrl
                     {link.icon === "cursor" && <Cursor class="size-4" />}
                     <span>{link.label}</span>
                     <ExternalLink class="text-muted-foreground ml-auto size-3.5" />
-                  </a>
+                  </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
@@ -299,38 +299,52 @@ const openLinks = markdownUrl
   }
 </SectionContainer>
 
-<script is:inline>
+<script>
   const copyIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>`
   const checkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>`
-  document.querySelectorAll("[data-slot='typography'] > pre").forEach((pre) => {
-    if (pre.closest(".docs-code-block")) return
-    const wrapper = document.createElement("div")
-    const button = document.createElement("button")
-    wrapper.className = "docs-code-block"
-    button.type = "button"
-    button.className = "docs-code-copy"
-    button.ariaLabel = "Copy code"
-    button.innerHTML = `<span data-copy-icon>${copyIcon}</span><span data-check-icon class="hidden">${checkIcon}</span>`
-    pre.before(wrapper)
-    wrapper.append(pre, button)
-  })
-  document.addEventListener("click", (event) => {
-    const button = event.target?.closest?.(
+  const initializeCodeBlocks = () => {
+    document
+      .querySelectorAll("[data-slot='typography'] > pre")
+      .forEach((pre) => {
+        if (pre.closest(".docs-code-block")) return
+        const wrapper = document.createElement("div")
+        const button = document.createElement("button")
+        wrapper.className = "docs-code-block"
+        button.type = "button"
+        button.className = "docs-code-copy"
+        button.ariaLabel = "Copy code"
+        button.innerHTML = `<span data-copy-icon>${copyIcon}</span><span data-check-icon class="hidden">${checkIcon}</span>`
+        pre.before(wrapper)
+        wrapper.append(pre, button)
+      })
+  }
+
+  initializeCodeBlocks()
+  document.addEventListener("astro:page-load", initializeCodeBlocks)
+
+  document.addEventListener("click", async (event) => {
+    if (!(event.target instanceof Element)) return
+    const button = event.target.closest(
       "[id^='docs-copy-page-'], .docs-code-copy"
     )
-    if (!button) return
+    if (!(button instanceof HTMLButtonElement)) return
     const source =
       button.dataset.source ??
       button
         .closest(".docs-code-block")
         ?.querySelector("pre")
         ?.textContent?.replace(/\n$/, "")
-    button.querySelector("[data-copy-icon]")?.classList.add("hidden")
-    button.querySelector("[data-check-icon]")?.classList.remove("hidden")
-    navigator.clipboard?.writeText(source ?? "")
-    setTimeout(() => {
-      button.querySelector("[data-copy-icon]")?.classList.remove("hidden")
-      button.querySelector("[data-check-icon]")?.classList.add("hidden")
-    }, 1200)
+
+    try {
+      await navigator.clipboard.writeText(source ?? "")
+      button.querySelector("[data-copy-icon]")?.classList.add("hidden")
+      button.querySelector("[data-check-icon]")?.classList.remove("hidden")
+      setTimeout(() => {
+        button.querySelector("[data-copy-icon]")?.classList.remove("hidden")
+        button.querySelector("[data-check-icon]")?.classList.add("hidden")
+      }, 1200)
+    } catch {
+      // Keep the copy state unchanged so the action can be retried.
+    }
   })
 </script>
