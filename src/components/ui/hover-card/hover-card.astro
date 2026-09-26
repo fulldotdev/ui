@@ -4,6 +4,7 @@ import type { HTMLAttributes } from "astro/types"
 import { cn } from "@/lib/utils"
 
 type Props = HTMLAttributes<"div"> & {
+  mountStrategy?: "lazy" | "eager"
   defaultOpen?: boolean
   open?: boolean
   delay?: number
@@ -21,6 +22,7 @@ type Props = HTMLAttributes<"div"> & {
 }
 
 const {
+  mountStrategy = "eager",
   class: className,
   defaultOpen,
   open,
@@ -42,6 +44,7 @@ const {
 
 <div
   data-slot="hover-card"
+  data-mount-strategy={mountStrategy}
   data-default-open={defaultOpen}
   data-controlled-open={open}
   data-delay={delay}
@@ -63,11 +66,12 @@ const {
 </div>
 
 <script>
-  import { getDataBool } from "@data-slot/core"
+  import { getDataBool, getRoots, hasRootBinding } from "@data-slot/core"
   import { createHoverCard } from "@data-slot/hover-card"
 
   const initialize = () => {
-    document.querySelectorAll('[data-slot="hover-card"]').forEach((root) => {
+    getRoots(document, "hover-card").forEach((root) => {
+      if (hasRootBinding(root, "@data-slot/hover-card")) return
       createHoverCard(root, { open: getDataBool(root, "controlledOpen") })
     })
   }
