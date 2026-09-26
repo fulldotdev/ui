@@ -46,12 +46,19 @@ const {
 
 <script>
   import { createCommand } from "@data-slot/command"
-  import { getParts } from "@data-slot/core"
+  import { getPart, getParts } from "@data-slot/core"
 
   import { initializeDataSlot } from "@/lib/data-slot"
 
   initializeDataSlot("command", (root) => {
     const controller = createCommand(root)
+    // 1.x dialog autofocus includes the command's tabindex=-1 container.
+    // Keep opening a command palette ready for typing, as in 0.2.x.
+    const focusInput = () =>
+      getPart<HTMLInputElement>(root, "command-input")?.focus({
+        preventScroll: true,
+      })
+    root.addEventListener("focus", focusInput)
     const navigate = (event: Event) => {
       if (event.target !== root) return
       const { value } = (event as CustomEvent<{ value?: unknown }>).detail
@@ -66,6 +73,7 @@ const {
     root.addEventListener("command:select", navigate)
     return {
       destroy() {
+        root.removeEventListener("focus", focusInput)
         root.removeEventListener("command:select", navigate)
         controller.destroy()
       },
