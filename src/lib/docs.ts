@@ -1,4 +1,5 @@
 // Helpers for this documentation site only. Shared page helpers live in pages.ts.
+import type { GlobalSchema } from "@/schemas/global"
 import {
   getOverviewEntries,
   getPageBreadcrumbs,
@@ -32,8 +33,25 @@ export const getPageSearchItems = async (locale: string) => {
     .sort((a, b) => a.label.localeCompare(b.label, locale))
 }
 
-// Previous and next follow the parent overview's order, or same-type siblings.
-export const getPagePagination = async (page: Page) => {
+// Use the visible navigation order, then the parent overview or same-type siblings.
+export const getPagePagination = async (
+  page: Page,
+  navigation: GlobalSchema["sidebar"]["navigation"]
+) => {
+  const navigationLinks = navigation.find((group) =>
+    group.links?.some((link) => link.href === getPageHref(page))
+  )?.links
+  if (navigationLinks) {
+    const links = navigationLinks.map((link) => ({
+      href: link.href,
+      title: link.label,
+    }))
+    const index = links.findIndex((link) => link.href === getPageHref(page))
+    return {
+      previousPage: index > 0 ? links[index - 1] : undefined,
+      nextPage: links[index + 1],
+    }
+  }
   const pages = await getPages()
   const parentId = page.id.includes("/")
     ? page.id.slice(0, page.id.lastIndexOf("/"))

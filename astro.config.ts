@@ -58,6 +58,6 @@ export default defineConfig({
     liveCode({
       layout: "/src/components/live-code.astro",
     }),
-    mdx(),
+    mdx({ gfm: true }),
   ],
 })

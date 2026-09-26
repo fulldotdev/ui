@@ -1,14 +1,25 @@
 ---
 type: doc
-title: Pages
-description: One collection, file-based URLs, and a strict schema and layout per page type.
+title: Content-driven pages
+description: An optional setup for file-based URLs, typed content, and page layouts.
 ---
 
-Every Markdown or MDX webpage belongs in `src/content/pages`. Folders define URLs;
-`type` selects the content schema and layout. Collections for records without their
-own page can be added separately.
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
-## Install the page foundation
+<Alert role="note" aria-label="Optional architecture">
+  <AlertTitle>Optional architecture</AlertTitle>
+  <AlertDescription>
+    This is an opinionated starting point for content-driven Astro sites.
+    Fulldev UI components work independently of it. Keep your existing
+    collections, routing, and layouts, or adapt this setup to your project.
+  </AlertDescription>
+</Alert>
+
+In this setup, Markdown and MDX webpages live in `src/content/pages`. Folders define
+URLs; `type` selects the content schema and layout. Collections for records without
+their own page can be added separately.
+
+## Install this optional setup
 
 After the [Astro and Tailwind setup](/docs/installation/), run:
 
@@ -16,8 +27,8 @@ After the [Astro and Tailwind setup](/docs/installation/), run:
 npx shadcn@latest add @fulldev/page
 ```
 
-This installs infrastructure only: the `pages` collection and loader, strict `page`
-and `overview` schemas, one layout per type, the page helpers, the catch-all route,
+This installs infrastructure only: the `pages` collection and loader, a strict `page`
+schema and an example `overview` schema, their layouts, the page helpers, the catch-all route,
 and a `/sitemap.xml` endpoint. It includes the layout primitives and their
 dependencies. **It installs no page content**, so it does not add or replace a
 homepage or About page.
@@ -69,8 +80,8 @@ src/content/pages/
   nl/diensten/coating/zwart.md      /nl/diensten/coating/zwart/
 ```
 
-Both `black.md` files are valid because their full paths differ. There is no `slug`
-field; the strict schemas reject it, and the loader rejects collisions such as
+Both `black.md` files are valid because their full paths differ. This setup uses
+file paths as entry IDs and URLs, so its schemas reject a `slug` field, and the loader rejects collisions such as
 `services.md` alongside `services/index.md`. Changing a file path changes its URL;
 add a permanent redirect in your hosting configuration when moving a public page.
 
@@ -113,11 +124,16 @@ The structured-data helper emits `WebSite`, `WebPage` or `CollectionPage`, and
 `BreadcrumbList` from page data only. Extend it in your project when a type needs
 its own entity; it does not invent ratings, prices, authors, or dates.
 
-## Overview pages
+## Example: an overview layout
 
-An overview is an ordinary page with `type: overview`. Its Markdown body renders
-above the listing. By default it lists immediate child pages in the same locale,
-alphabetically by title. Deeper descendants are listed by their own parent overview.
+An overview is simply a layout that lists other pages. The included `overview`
+type is an example you can adapt or remove; it is not a separate routing feature
+or a required page category. A services layout could render service content and
+a list of subservices without using this type.
+
+The example layout renders its Markdown body above a listing of immediate child
+pages in the same locale, alphabetically by title. It does not include deeper
+descendants unless you reference them explicitly.
 
 For a curated list or explicit ordering, use page IDs:
 
@@ -132,8 +148,8 @@ entries:
 
 An explicit empty list displays no entries. An unknown id or an entry from another
 locale fails the build. This site's HTML and Markdown overviews use the same
-selection, and its pagination follows the parent overview's order or, without one,
-same-type siblings.
+selection. Documentation pagination follows the sidebar navigation when available,
+then the parent overview's order or same-type siblings.
 
 ## Translations
 
@@ -142,7 +158,7 @@ locales live in their own folders named after the locale. When every locale has 
 prefix, every page lives inside its locale folder. Astro does not translate content
 or match pages with different slugs for you.
 
-Pair translations with a stable `translationKey`:
+The included helpers pair translations using an optional `translationKey`:
 
 ```yaml
 # services/coating/black.md
@@ -154,10 +170,12 @@ translationKey: black-coating
 translationKey: black-coating
 ```
 
-These files can have completely different paths. The key connects hreflang links
+These files can have completely different paths. This is one translation strategy,
+not a requirement for using Fulldev UI. The key connects hreflang links
 and sitemap alternates without controlling routing. A key must be unique within
 each locale, and translations must use the same page type. Only existing,
-indexable translations are linked; missing translations do not fall back.
+indexable translations are linked; missing translations do not fall back. References
+continue to use each page's full entry ID; `translationKey` does not change them.
 
 This documentation site also requires `src/content/globals/<locale>.yaml` with
 translated navigation, search labels, and documentation controls. Search,
@@ -167,8 +185,8 @@ search UI; add translated globals when your layout needs them.
 
 ## SEO
 
-Title and description are required. Everything else is optional and comes from the
-same frontmatter:
+In the included schemas, title and description are required. The following metadata
+is optional and comes from the same frontmatter:
 
 ```yaml
 seo:
@@ -185,7 +203,7 @@ updatedAt: 2026-09-23
 | `updatedAt`                                 | `lastmod` in the sitemap and `dateModified` in structured data. Omit it unless the content changed.         |
 | `translationKey`                            | Pairs hreflang links and sitemap alternates across locales.                                                 |
 
-The sitemap is a content endpoint, not an integration. `@astrojs/sitemap` works from
+This setup includes a content endpoint for the sitemap. `@astrojs/sitemap` works from
 the list of built URLs, so feeding it `noindex`, update dates, or translated slugs
 means handing that metadata over separately, through its `filter` and `serialize`
 callbacks. Building `/sitemap.xml` straight from the validated pages collection
