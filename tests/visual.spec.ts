@@ -40,5 +40,5 @@ test("command palette open", async ({ page }) => {
   const dialog = page.getByRole("dialog", { name: "Search", exact: true })
   await expect(dialog).toBeVisible()
   await expect(dialog.getByRole("combobox")).toBeFocused()
-  await argosScreenshot(page, "command-palette-open")
+  await argosScreenshot(page, "command-palette-open", { fullPage: false })
 })
