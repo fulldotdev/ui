@@ -285,6 +285,7 @@ test("command: new trigger slot, nested command filtering and dismissal", async 
   page,
 }) => {
   await open(page, "command")
+  await expect(page.getByPlaceholder("Search shortcuts...")).not.toBeFocused()
   await page
     .getByRole("button", { name: "Quick actions", exact: true })
     .press("Enter")
