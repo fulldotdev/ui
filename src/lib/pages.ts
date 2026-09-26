@@ -37,7 +37,7 @@ export const getPageLocale = (page: Pick<Page, "id">) => {
 const getHomeId = (locale: string) =>
   locale === defaultLocale && !prefixDefaultLocale ? "index" : locale
 
-// One rule for sitemap inclusion, hreflang alternates, and search. Robots meta
+// One rule for sitemap inclusion and search. Robots meta
 // stays explicit: layouts pass seo.noindex and seo.nofollow to the head as is.
 export const isIndexable = (page: Page) =>
   !page.data.seo?.noindex &&
@@ -45,8 +45,6 @@ export const isIndexable = (page: Page) =>
 
 export const getPages = async () => {
   const pages = await getCollection("pages")
-  const byLocaleKey = new Map<string, Page>()
-  const byKey = new Map<string, Page>()
   for (const page of pages) {
     const [first] = page.id.split("/")
     if (prefixDefaultLocale && !locales.includes(first))
@@ -57,21 +55,6 @@ export const getPages = async () => {
       throw new Error(
         `Page "${page.id}" must live at the root; the default locale has no folder.`
       )
-    const key = page.data.translationKey
-    if (!key) continue
-    const localeKey = `${getPageLocale(page)}:${key}`
-    const twin = byLocaleKey.get(localeKey)
-    if (twin)
-      throw new Error(
-        `Pages "${twin.id}" and "${page.id}" share translationKey "${key}" in one locale.`
-      )
-    byLocaleKey.set(localeKey, page)
-    const other = byKey.get(key)
-    if (other && other.data.type !== page.data.type)
-      throw new Error(
-        `Translations "${other.id}" and "${page.id}" must use the same page type.`
-      )
-    byKey.set(key, page)
   }
   return pages
 }
@@ -117,12 +100,4 @@ export const getPageBreadcrumbs = (pages: Page[], page: Page) => {
     const entry = pages.find((candidate) => candidate.id === id)
     return entry ? [{ label: entry.data.title, href: getPageHref(entry) }] : []
   })
-}
-
-export const getPageAlternates = (pages: Page[], page: Page) => {
-  const key = page.data.translationKey
-  if (!key) return []
-  return pages
-    .filter((entry) => entry.data.translationKey === key && isIndexable(entry))
-    .map((entry) => ({ locale: getPageLocale(entry), href: getPageUrl(entry) }))
 }

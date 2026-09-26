@@ -63,7 +63,7 @@ src/content/globals/        shared translated copy, when your site needs it
 src/schemas/layouts/base.ts shared page fields
 src/schemas/page.ts         discriminated union of page types
 src/layouts/                presentation and page orchestration
-src/lib/pages.ts            validated pages, URLs, locales, breadcrumbs, alternates
+src/lib/pages.ts            validated pages, URLs, locales, breadcrumbs
 src/lib/seo.ts              structured data
 src/pages/sitemap.xml.ts    sitemap built from the same page data
 ```
@@ -101,24 +101,6 @@ const articleSchema = baseSchema(ctx)
 Add the schema to the union in `src/schemas/page.ts` and the matching component to
 the layout map in `src/components/layout-renderer.astro`. The map is typed against
 the union, so a type without a layout fails `astro check`.
-
-Use `reference("pages")` for fields that point at other pages. It only shapes the
-value as `{ collection, id }`; Astro does not check that the id exists. Resolve and
-check a relation in the layout that uses it, the way `getOverviewEntries` does for
-`entries`:
-
-```ts
-const pages = await getPages()
-const related = page.data.related.map(({ id }) => {
-  const entry = pages.find((candidate) => candidate.id === id)
-  if (!entry || entry.data.type !== "article")
-    throw new Error(`Page "${page.id}" needs an article at "${id}".`)
-  return entry
-})
-```
-
-That fails the build for an unknown id or a page of the wrong type, and it lives
-next to the code that needs the guarantee.
 
 The structured-data helper emits `WebSite`, `WebPage` or `CollectionPage`, and
 `BreadcrumbList` from page data only. Extend it in your project when a type needs
@@ -158,24 +140,9 @@ locales live in their own folders named after the locale. When every locale has 
 prefix, every page lives inside its locale folder. Astro does not translate content
 or match pages with different slugs for you.
 
-The included helpers pair translations using an optional `translationKey`:
-
-```yaml
-# services/coating/black.md
-translationKey: black-coating
-```
-
-```yaml
-# nl/diensten/coating/zwart.md
-translationKey: black-coating
-```
-
-These files can have completely different paths. This is one translation strategy,
-not a requirement for using Fulldev UI. The key connects hreflang links
-and sitemap alternates without controlling routing. A key must be unique within
-each locale, and translations must use the same page type. Only existing,
-indexable translations are linked; missing translations do not fall back. References
-continue to use each page's full entry ID; `translationKey` does not change them.
+Translate the content and folder names directly. Each locale can have its own
+pages and nesting; the file path remains the URL. There is no automatic pairing
+between language versions.
 
 This documentation site also requires `src/content/globals/<locale>.yaml` with
 translated navigation, search labels, and documentation controls. Search,
@@ -195,17 +162,16 @@ seo:
 updatedAt: 2026-09-23
 ```
 
-| Field                                       | Effect                                                                                                      |
-| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `seo.title`, `seo.description`, `seo.image` | Override the head and Open Graph values only.                                                               |
-| `seo.noindex`, `seo.nofollow`               | Robots meta. `noindex` also removes the page from the sitemap, hreflang alternates, and this site's search. |
-| `seo.canonical`                             | Absolute URL. A canonical elsewhere also removes the page from the sitemap and alternates.                  |
-| `updatedAt`                                 | `lastmod` in the sitemap and `dateModified` in structured data. Omit it unless the content changed.         |
-| `translationKey`                            | Pairs hreflang links and sitemap alternates across locales.                                                 |
+| Field                                       | Effect                                                                                              |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `seo.title`, `seo.description`, `seo.image` | Override the head and Open Graph values only.                                                       |
+| `seo.noindex`, `seo.nofollow`               | Robots meta. `noindex` also removes the page from the sitemap and this site's search.               |
+| `seo.canonical`                             | Absolute URL. A canonical elsewhere also removes the page from the sitemap.                         |
+| `updatedAt`                                 | `lastmod` in the sitemap and `dateModified` in structured data. Omit it unless the content changed. |
 
 This setup includes a content endpoint for the sitemap. `@astrojs/sitemap` works from
-the list of built URLs, so feeding it `noindex`, update dates, or translated slugs
-means handing that metadata over separately, through its `filter` and `serialize`
+the list of built URLs, so feeding it `noindex` and update dates means handing
+that metadata over separately, through its `filter` and `serialize`
 callbacks. Building `/sitemap.xml` straight from the validated pages collection
 skips that handoff: the same page data that renders the head also renders the
 sitemap. The integration remains a valid choice if you prefer to supply it.

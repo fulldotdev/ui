@@ -7,7 +7,6 @@ export const baseSchema = (ctx: SchemaContext) =>
   z.object({
     title: z.string().trim().min(1),
     description: z.string().trim().min(1),
-    translationKey: z.string().trim().min(1).optional(),
     updatedAt: z.coerce.date().optional(),
     image: imageSchema(ctx).optional(),
     seo: seoSchema(ctx).optional(),
