@@ -130,3 +130,23 @@ import { Button } from "@/components/ui/button"
 
 At that point, you can follow the component pages directly and install only the
 pieces you need.
+
+## Data Slot 1.x upgrades
+
+Interactive components require Data Slot 1.0.1 or newer within 1.x. Updating npm
+versions alone does not update component files previously copied by the registry.
+Reinstall the affected registry items and merge their source changes with your
+customizations, including the shared `src/lib/data-slot.ts` helper.
+
+The helper initializes new roots on `astro:page-load` and destroys outgoing
+controllers on `astro:before-swap`. This releases modal stacks, portals, listeners
+and scroll locks before Astro's `ClientRouter` replaces the page. Roots within a
+matching `transition:persist` boundary retain their controllers.
+
+Select, Tooltip, Hover Card and Navigation Menu keep closed content mounted by
+default. Use their `mountStrategy="lazy"` prop to opt into Data Slot's detached
+content behavior. See each component's content mounting notes before changing
+custom scripts that query closed content.
+
+`CommandDialog` already includes a Dialog root. Use its `trigger` slot instead of
+wrapping it in another Dialog. See the [Command example](/components/command/#command-dialog).

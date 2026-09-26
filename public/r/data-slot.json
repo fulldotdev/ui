@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "data-slot",
+  "title": "Data Slot lifecycle",
+  "description": "Shared Data Slot initialization and Astro page-swap cleanup.",
+  "dependencies": [
+    "@data-slot/core@^1.0.1"
+  ],
+  "files": [
+    {
+      "path": "src/lib/data-slot.ts",
+      "content": "import { getRoots, hasRootBinding } from \"@data-slot/core\"\n\ntype Controller = { destroy(): void }\n\n/** Bind new roots once and release outgoing controllers before Astro swaps pages. */\nexport function initializeDataSlot(\n  slot: string,\n  create: (root: HTMLElement) => Controller | undefined\n) {\n  const controllers = new Map<HTMLElement, Controller>()\n\n  const initialize = () => {\n    for (const root of getRoots<HTMLElement>(document, slot)) {\n      if (hasRootBinding(root, `@data-slot/${slot}`)) continue\n      const controller = create(root)\n      if (controller) controllers.set(root, controller)\n    }\n  }\n\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n  document.addEventListener(\"astro:before-swap\", (event) => {\n    const nextDocument = (event as Event & { newDocument: Document })\n      .newDocument\n    const persisted = new Set(\n      Array.from(\n        nextDocument.querySelectorAll(\"[data-astro-transition-persist]\")\n      ).map((element) => element.getAttribute(\"data-astro-transition-persist\"))\n    )\n    for (const [root, controller] of controllers) {\n      const persist = root.closest(\"[data-astro-transition-persist]\")\n      if (\n        persist &&\n        persisted.has(persist.getAttribute(\"data-astro-transition-persist\"))\n      )\n        continue\n      controller.destroy()\n      controllers.delete(root)\n    }\n  })\n}\n",
+      "type": "registry:lib"
+    }
+  ],
+  "type": "registry:lib"
+}

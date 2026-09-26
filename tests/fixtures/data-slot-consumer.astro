@@ -1,0 +1,166 @@
+---
+import { ClientRouter } from "astro:transitions"
+
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox"
+import {
+  Command,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card"
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
+import "@/styles/global.css"
+
+const next = Astro.url.pathname === "/" ? "/next/" : "/"
+---
+
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Data Slot consumer</title><ClientRouter />
+  </head>
+  <body class="space-y-8 p-6">
+    <h1>Data Slot consumer</h1>
+    <a href={next}>Navigate</a>
+    <button id="initialize" type="button">Initialize again</button>
+    <p id="initializations">0</p>
+    <Command>
+      <CommandInput placeholder="Navigate by command" />
+      <CommandList
+        ><CommandItem value="next" href={next}>Next consumer page</CommandItem
+        ></CommandList
+      >
+    </Command>
+    <Dialog>
+      <DialogTrigger>Consumer dialog</DialogTrigger>
+      <DialogContent>
+        <DialogTitle>Consumer dialog</DialogTitle>
+        <a href={next}>Navigate while open</a>
+        <Select placeholder="Nested select">
+          <SelectTrigger><SelectValue /></SelectTrigger>
+          <SelectContent
+            ><SelectItem value="one">One</SelectItem><SelectItem value="two"
+              >Two</SelectItem
+            ></SelectContent
+          >
+        </Select>
+      </DialogContent>
+    </Dialog>
+    <NavigationMenu mountStrategy="lazy" delayOpen={0} delayClose={0}>
+      <NavigationMenuList
+        ><NavigationMenuItem value="nested">
+          <NavigationMenuTrigger>Lazy nested controls</NavigationMenuTrigger>
+          <NavigationMenuContent class="w-72 space-y-4 p-4">
+            <Combobox>
+              <ComboboxInput placeholder="Nested framework" />
+              <ComboboxContent
+                ><ComboboxList
+                  ><ComboboxItem value="astro">Astro</ComboboxItem><ComboboxItem
+                    value="vue">Vue</ComboboxItem
+                  ></ComboboxList
+                ></ComboboxContent
+              >
+            </Combobox>
+            <HoverCard delay={0} closeDelay={0} mountStrategy="lazy">
+              <HoverCardTrigger>Nested preview</HoverCardTrigger>
+              <HoverCardContent>Retained hover card</HoverCardContent>
+            </HoverCard>
+          </NavigationMenuContent>
+        </NavigationMenuItem></NavigationMenuList
+      >
+    </NavigationMenu>
+    <Tooltip mountStrategy="lazy" delay={0}>
+      <TooltipTrigger>Lazy tooltip</TooltipTrigger><TooltipContent
+        >Retained tooltip</TooltipContent
+      >
+    </Tooltip>
+    <HoverCard open={false} delay={0}>
+      <HoverCardTrigger>Controlled preview</HoverCardTrigger><HoverCardContent
+        >Controlled content</HoverCardContent
+      >
+    </HoverCard>
+    <div transition:persist="preferences">
+      <Switch name="persisted" aria-label="Persisted preference" />
+    </div>
+    <form id="choices" data-astro-reload>
+      <Select
+        name="fruit"
+        required
+        placeholder="Required fruit"
+        mountStrategy="lazy"
+      >
+        <SelectTrigger><SelectValue /></SelectTrigger>
+        <SelectContent
+          ><SelectItem value="apple">Apple</SelectItem><SelectItem
+            value="banana">Banana</SelectItem
+          ></SelectContent
+        >
+      </Select>
+      <Switch name="updates" defaultChecked aria-label="Updates" />
+      <button type="submit">Submit choices</button><button type="reset"
+        >Reset choices</button
+      >
+      <output id="result"></output>
+    </form>
+    <script>
+      document.addEventListener("click", (event) => {
+        if (
+          !(event.target instanceof Element) ||
+          !event.target.closest("#initialize")
+        )
+          return
+        document.dispatchEvent(new Event("astro:page-load"))
+        const output = document.querySelector("#initializations")!
+        output.textContent = String(Number(output.textContent) + 1)
+      })
+      document.addEventListener("submit", (event) => {
+        if (
+          !(event.target instanceof HTMLFormElement) ||
+          event.target.id !== "choices"
+        )
+          return
+        event.preventDefault()
+        document.querySelector("#result")!.textContent = JSON.stringify(
+          Object.fromEntries(new FormData(event.target))
+        )
+      })
+    </script>
+  </body>
+</html>

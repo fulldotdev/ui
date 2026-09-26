@@ -66,15 +66,12 @@ const {
 </div>
 
 <script>
-  import { getDataBool, getRoots, hasRootBinding } from "@data-slot/core"
+  import { getDataBool } from "@data-slot/core"
   import { createHoverCard } from "@data-slot/hover-card"
 
-  const initialize = () => {
-    getRoots(document, "hover-card").forEach((root) => {
-      if (hasRootBinding(root, "@data-slot/hover-card")) return
-      createHoverCard(root, { open: getDataBool(root, "controlledOpen") })
-    })
-  }
-  initialize()
-  document.addEventListener("astro:page-load", initialize)
+  import { initializeDataSlot } from "@/lib/data-slot"
+
+  initializeDataSlot("hover-card", (root) =>
+    createHoverCard(root, { open: getDataBool(root, "controlledOpen") })
+  )
 </script>

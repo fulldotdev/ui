@@ -45,32 +45,30 @@ const {
 </div>
 
 <script>
-  import { create } from "@data-slot/command"
+  import { createCommand } from "@data-slot/command"
+  import { getParts } from "@data-slot/core"
 
-  const initCommand = () => {
-    create()
+  import { initializeDataSlot } from "@/lib/data-slot"
 
-    document.querySelectorAll("[data-slot=command]").forEach((command) => {
-      if (!(command instanceof HTMLElement)) return
-      if (command.dataset.linkNavigation === "true") return
-
-      command.dataset.linkNavigation = "true"
-      command.addEventListener("command:select", (event) => {
-        const { detail } = event as CustomEvent<{ value?: unknown }>
-        const value = detail?.value
-        if (typeof value !== "string") return
-
-        const item = Array.from(
-          command.querySelectorAll("[data-slot=command-item][href]")
-        ).find((item) => item.getAttribute("data-value") === value)
-        const href = item?.getAttribute("href")
-
-        if (href) window.location.href = href
-      })
-    })
-  }
-
-  initCommand()
-
-  document.addEventListener("astro:page-load", initCommand)
+  initializeDataSlot("command", (root) => {
+    const controller = createCommand(root)
+    const navigate = (event: Event) => {
+      if (event.target !== root) return
+      const { value } = (event as CustomEvent<{ value?: unknown }>).detail
+      if (typeof value !== "string") return
+      const item = getParts<HTMLAnchorElement>(root, "command-item").find(
+        (item) =>
+          item.getAttribute("data-value") === value && item.hasAttribute("href")
+      )
+      const href = item?.getAttribute("href")
+      if (href) window.location.href = href
+    }
+    root.addEventListener("command:select", navigate)
+    return {
+      destroy() {
+        root.removeEventListener("command:select", navigate)
+        controller.destroy()
+      },
+    }
+  })
 </script>

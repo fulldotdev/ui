@@ -68,23 +68,13 @@ const {
 
 <script>
   import { createCombobox } from "@data-slot/combobox"
-  import { getPart, getRoots, hasRootBinding } from "@data-slot/core"
+  import { getPart } from "@data-slot/core"
 
-  const initCombobox = () => {
-    getRoots(document, "combobox").forEach((root) => {
-      if (
-        hasRootBinding(root, "@data-slot/combobox") ||
-        !getPart(root, "combobox-input") ||
-        !getPart(root, "combobox-content")
-      ) {
-        return
-      }
+  import { initializeDataSlot } from "@/lib/data-slot"
 
-      createCombobox(root as HTMLElement)
-    })
-  }
-
-  initCombobox()
-
-  document.addEventListener("astro:page-load", initCombobox)
+  initializeDataSlot("combobox", (root) => {
+    if (!getPart(root, "combobox-input") || !getPart(root, "combobox-content"))
+      return
+    return createCombobox(root)
+  })
 </script>
