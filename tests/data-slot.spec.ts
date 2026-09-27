@@ -320,7 +320,9 @@ test("drawer: focus, dismissal, repeated opening and nested Escape", async ({
     .getByRole("button", { name: "Open advanced settings", exact: true })
     .click()
   await expect(nestedPopup).toBeVisible()
-  await expect(outerPopup).toHaveAttribute("data-nested-drawer-open", "")
+  await expect(
+    page.locator('[data-slot="drawer-popup"][data-nested-drawer-open]')
+  ).toBeVisible()
   await page.keyboard.press("Escape")
   await expect(nestedPopup).toBeHidden()
   await expect(outerPopup).toBeVisible()
@@ -396,8 +398,14 @@ test("toast: events, actions, dismissal, paused timers and navigation", async ({
   const pagination = page.getByRole("navigation", {
     name: "Document pagination",
   })
-  await pagination.locator('a[href="/components/toggle/"]').click()
-  await expect(page).toHaveURL(/\/components\/toggle\/$/)
+  await page.addStyleTag({
+    content: "@view-transition { navigation: none; }",
+  })
+  await pagination.locator('a[href="/components/toc/"]').click()
+  await expect(page).toHaveURL(/\/components\/toc\/$/)
+  await page.addStyleTag({
+    content: "@view-transition { navigation: none; }",
+  })
   await page
     .getByRole("navigation", { name: "Document pagination" })
     .locator('a[href="/components/toast/"]')
@@ -474,6 +482,13 @@ test("resizable: pointer, keyboard bounds and collapsible panel", async ({
   await page.mouse.up()
   await expect(handle).not.toHaveAttribute("aria-valuenow", "70")
 
+  const verticalHandle = previews.nth(1).getByRole("separator", {
+    name: "Resize header and body",
+  })
+  await expect(verticalHandle).toHaveAttribute("aria-valuenow", "35")
+  await verticalHandle.press("ArrowDown")
+  await expect(verticalHandle).toHaveAttribute("aria-valuenow", "45")
+
   const collapsibleDemo = previews.nth(2)
   const collapsibleHandle = collapsibleDemo.getByRole("separator", {
     name: "Resize or collapse sidebar",
@@ -485,6 +500,19 @@ test("resizable: pointer, keyboard bounds and collapsible panel", async ({
   await collapsibleHandle.press("Enter")
   await expect(panel).toHaveAttribute("data-expanded", "")
   await expect(collapsibleHandle).toHaveAttribute("aria-valuenow", "30")
+
+  const nestedDemo = previews.nth(3)
+  const outerHandle = nestedDemo.getByRole("separator", {
+    name: "Resize navigation and workspace",
+  })
+  const innerHandle = nestedDemo.getByRole("separator", {
+    name: "Resize editor and console",
+  })
+  await expect(outerHandle).toHaveAttribute("aria-valuenow", "35")
+  await expect(innerHandle).toHaveAttribute("aria-valuenow", "60")
+  await innerHandle.press("ArrowDown")
+  await expect(innerHandle).toHaveAttribute("aria-valuenow", "70")
+  await expect(outerHandle).toHaveAttribute("aria-valuenow", "35")
 })
 
 test("carousel: controls, full-slide state and keyboard navigation", async ({
@@ -507,6 +535,21 @@ test("carousel: controls, full-slide state and keyboard navigation", async ({
   if (!contentBox || !itemBox) throw new Error("Carousel has no layout box")
   expect(Math.abs(contentBox.width - itemBox.width)).toBeLessThanOrEqual(1)
 
+  await page.mouse.move(
+    contentBox.x + contentBox.width * 0.75,
+    contentBox.y + contentBox.height / 2
+  )
+  await page.mouse.down()
+  await page.mouse.move(
+    contentBox.x + contentBox.width * 0.15,
+    contentBox.y + contentBox.height / 2,
+    { steps: 6 }
+  )
+  await page.mouse.up()
+  await expect(root).toHaveAttribute("data-index", "1")
+
+  await previous.click()
+  await expect(root).toHaveAttribute("data-index", "0")
   await next.click()
   await expect(root).toHaveAttribute("data-index", "1")
   await expect(items.nth(1)).toHaveAttribute("data-state", "active")
@@ -521,6 +564,70 @@ test("carousel: controls, full-slide state and keyboard navigation", async ({
   await expect(next).toBeDisabled()
   await previous.press("Home")
   await expect(root).toHaveAttribute("data-index", "0")
+
+  const loopRoot = page
+    .locator(".live-code-layout")
+    .nth(1)
+    .locator('[data-slot="carousel"]')
+  const loopItems = loopRoot.locator('[data-slot="carousel-item"]')
+  const loopPrevious = loopRoot.getByRole("button", { name: "Previous slide" })
+  const loopNext = loopRoot.getByRole("button", { name: "Next slide" })
+  await expect(loopRoot).toHaveAttribute("data-index", "1")
+  await expect(loopItems.nth(1)).toHaveAttribute("data-state", "active")
+  await loopPrevious.click()
+  await expect(loopRoot).toHaveAttribute("data-index", "0")
+  await loopPrevious.click()
+  await expect(loopRoot).toHaveAttribute("data-index", "2")
+  await loopNext.click()
+  await expect(loopRoot).toHaveAttribute("data-index", "0")
+
+  const verticalRoot = page
+    .locator(".live-code-layout")
+    .nth(2)
+    .locator('[data-slot="carousel"]')
+  const verticalContent = verticalRoot.locator('[data-slot="carousel-content"]')
+  const verticalItems = verticalRoot.locator('[data-slot="carousel-item"]')
+  const verticalNext = verticalRoot.getByRole("button", {
+    name: "Next slide",
+  })
+  const verticalPrevious = verticalRoot.getByRole("button", {
+    name: "Previous slide",
+  })
+  await verticalContent.scrollIntoViewIfNeeded()
+  const verticalContentBox = await verticalContent.boundingBox()
+  const verticalItemBox = await verticalItems.nth(0).boundingBox()
+  if (!verticalContentBox || !verticalItemBox)
+    throw new Error("Vertical carousel has no layout box")
+  expect(
+    Math.abs(verticalContentBox.height - verticalItemBox.height)
+  ).toBeLessThanOrEqual(1)
+  await verticalNext.click()
+  await expect(verticalRoot).toHaveAttribute("data-index", "1")
+  await verticalPrevious.click()
+  await expect(verticalRoot).toHaveAttribute("data-index", "0")
+  await expect
+    .poll(() => verticalContent.evaluate((element) => element.scrollTop))
+    .toBeLessThan(verticalContentBox.height * 0.2)
+  await verticalNext.focus()
+  await verticalNext.press("ArrowDown")
+  await expect(verticalRoot).toHaveAttribute("data-index", "1")
+  await expect
+    .poll(() => verticalContent.evaluate((element) => element.scrollTop))
+    .toBeGreaterThan(verticalContentBox.height * 0.8)
+  const verticalDragBox = await verticalContent.boundingBox()
+  if (!verticalDragBox) throw new Error("Vertical carousel moved out of view")
+  await page.mouse.move(
+    verticalDragBox.x + verticalDragBox.width / 2,
+    verticalDragBox.y + verticalDragBox.height * 0.75
+  )
+  await page.mouse.down()
+  await page.mouse.move(
+    verticalDragBox.x + verticalDragBox.width / 2,
+    verticalDragBox.y + verticalDragBox.height * 0.15,
+    { steps: 6 }
+  )
+  await page.mouse.up()
+  await expect(verticalRoot).toHaveAttribute("data-index", "2")
 })
 
 test("command: new trigger slot, nested command filtering and dismissal", async ({
