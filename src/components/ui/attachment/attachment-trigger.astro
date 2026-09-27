@@ -1,0 +1,24 @@
+---
+import type { HTMLTag, Polymorphic } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props<Tag extends HTMLTag = "button"> = Polymorphic<{ as: Tag }>
+
+const {
+  as: Tag = "href" in Astro.props ? "a" : "button",
+  class: className,
+  ...props
+} = Astro.props
+
+const attributes: Record<string, unknown> = { ...props }
+if (Tag === "button") attributes.type ??= "button"
+---
+
+<Tag
+  data-slot="attachment-trigger"
+  class={cn("absolute inset-0 z-10 outline-none", className)}
+  {...attributes}
+>
+  <slot />
+</Tag>

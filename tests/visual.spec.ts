@@ -12,6 +12,19 @@ const pages = [
   "/components/accordion",
   "/components/table",
   "/components/select",
+  "/components/attachment",
+  "/components/aspect-ratio",
+  "/components/button-group",
+  "/components/carousel",
+  "/components/combobox",
+  "/components/drawer",
+  "/components/navigation-menu",
+  "/components/pagination",
+  "/components/resizable",
+  "/components/slider",
+  "/components/toast",
+  "/components/toggle-group",
+  "/components/typography",
 ]
 
 for (const path of pages) {

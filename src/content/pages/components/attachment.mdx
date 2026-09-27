@@ -1,0 +1,227 @@
+---
+type: doc
+title: Attachment
+description: Displays a file or image attachment with media, metadata, state, and actions.
+---
+
+```astro live props={{ name: 'attachment' }}
+---
+import DownloadIcon from "@lucide/astro/icons/download"
+import FileTextIcon from "@lucide/astro/icons/file-text"
+
+import {
+  Attachment,
+  AttachmentAction,
+  AttachmentActions,
+  AttachmentContent,
+  AttachmentDescription,
+  AttachmentMedia,
+  AttachmentTitle,
+} from "@/components/ui/attachment"
+---
+
+<Attachment>
+  <AttachmentMedia><FileTextIcon /></AttachmentMedia>
+  <AttachmentContent>
+    <AttachmentTitle>LICENCE</AttachmentTitle>
+    <AttachmentDescription>Text document</AttachmentDescription>
+  </AttachmentContent>
+  <AttachmentActions>
+    <AttachmentAction
+      as="a"
+      href="https://raw.githubusercontent.com/fulldotdev/ui/main/LICENCE"
+      download
+      aria-label="Download LICENCE"
+    >
+      <DownloadIcon />
+    </AttachmentAction>
+  </AttachmentActions>
+</Attachment>
+```
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/attachment
+```
+
+## Usage
+
+```astro
+---
+import FileIcon from "@lucide/astro/icons/file"
+
+import {
+  Attachment,
+  AttachmentContent,
+  AttachmentDescription,
+  AttachmentMedia,
+  AttachmentTitle,
+} from "@/components/ui/attachment"
+---
+
+<Attachment>
+  <AttachmentMedia><FileIcon /></AttachmentMedia>
+  <AttachmentContent>
+    <AttachmentTitle>report.pdf</AttachmentTitle>
+    <AttachmentDescription>2.4 MB</AttachmentDescription>
+  </AttachmentContent>
+</Attachment>
+```
+
+Attachment is a presentation component. It does not select, upload, remove, or persist files.
+
+## Examples
+
+### Sizes
+
+```astro live
+---
+import FileTextIcon from "@lucide/astro/icons/file-text"
+
+import {
+  Attachment,
+  AttachmentContent,
+  AttachmentDescription,
+  AttachmentMedia,
+  AttachmentTitle,
+} from "@/components/ui/attachment"
+---
+
+<div class="flex flex-col items-start gap-3">
+  <Attachment size="xs">
+    <AttachmentMedia><FileTextIcon /></AttachmentMedia>
+    <AttachmentContent
+      ><AttachmentTitle>notes.txt</AttachmentTitle></AttachmentContent
+    >
+  </Attachment>
+  <Attachment size="sm">
+    <AttachmentMedia><FileTextIcon /></AttachmentMedia>
+    <AttachmentContent
+      ><AttachmentTitle>brief.txt</AttachmentTitle><AttachmentDescription
+        >18 KB</AttachmentDescription
+      ></AttachmentContent
+    >
+  </Attachment>
+  <Attachment>
+    <AttachmentMedia><FileTextIcon /></AttachmentMedia>
+    <AttachmentContent
+      ><AttachmentTitle>proposal.txt</AttachmentTitle><AttachmentDescription
+        >42 KB</AttachmentDescription
+      ></AttachmentContent
+    >
+  </Attachment>
+</div>
+```
+
+### Vertical Group
+
+```astro live
+---
+import FileIcon from "@lucide/astro/icons/file"
+import ImageIcon from "@lucide/astro/icons/image"
+
+import {
+  Attachment,
+  AttachmentContent,
+  AttachmentDescription,
+  AttachmentGroup,
+  AttachmentMedia,
+  AttachmentTitle,
+} from "@/components/ui/attachment"
+---
+
+<AttachmentGroup class="max-w-md">
+  <Attachment orientation="vertical">
+    <AttachmentMedia><ImageIcon /></AttachmentMedia>
+    <AttachmentContent
+      ><AttachmentTitle>cover.jpg</AttachmentTitle><AttachmentDescription
+        >1.8 MB</AttachmentDescription
+      ></AttachmentContent
+    >
+  </Attachment>
+  <Attachment orientation="vertical">
+    <AttachmentMedia><FileIcon /></AttachmentMedia>
+    <AttachmentContent
+      ><AttachmentTitle>outline.pdf</AttachmentTitle><AttachmentDescription
+        >320 KB</AttachmentDescription
+      ></AttachmentContent
+    >
+  </Attachment>
+</AttachmentGroup>
+```
+
+### States
+
+States provide visual status only. Your application owns the upload lifecycle and supplies truthful status text.
+
+```astro live
+---
+import FileIcon from "@lucide/astro/icons/file"
+
+import {
+  Attachment,
+  AttachmentContent,
+  AttachmentDescription,
+  AttachmentMedia,
+  AttachmentTitle,
+} from "@/components/ui/attachment"
+---
+
+<div class="flex flex-wrap gap-3">
+  <Attachment state="idle">
+    <AttachmentMedia><FileIcon /></AttachmentMedia>
+    <AttachmentContent
+      ><AttachmentTitle>queued.csv</AttachmentTitle><AttachmentDescription
+        >Ready</AttachmentDescription
+      ></AttachmentContent
+    >
+  </Attachment>
+  <Attachment state="processing">
+    <AttachmentMedia><FileIcon /></AttachmentMedia>
+    <AttachmentContent
+      ><AttachmentTitle>report.csv</AttachmentTitle><AttachmentDescription
+        >Processing</AttachmentDescription
+      ></AttachmentContent
+    >
+  </Attachment>
+  <Attachment state="error">
+    <AttachmentMedia><FileIcon /></AttachmentMedia>
+    <AttachmentContent
+      ><AttachmentTitle>archive.zip</AttachmentTitle><AttachmentDescription
+        >File is too large</AttachmentDescription
+      ></AttachmentContent
+    >
+  </Attachment>
+</div>
+```
+
+### Native File Input
+
+Use a native file input to let someone choose files. Rendering selected files as attachments requires application state and is separate from this static component.
+
+```astro live
+---
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+---
+
+<div class="grid w-full max-w-sm gap-2">
+  <Label for="attachments">Choose files</Label>
+  <Input id="attachments" type="file" multiple />
+</div>
+```
+
+## API Reference
+
+### Attachment
+
+| Prop          | Type                                                         | Default        | Description                     |
+| ------------- | ------------------------------------------------------------ | -------------- | ------------------------------- |
+| `state`       | `"idle" \| "uploading" \| "processing" \| "error" \| "done"` | `"done"`       | Visual file state.              |
+| `size`        | `"xs" \| "sm" \| "default"`                                  | `"default"`    | Controls spacing and type size. |
+| `orientation` | `"horizontal" \| "vertical"`                                 | `"horizontal"` | Controls card layout.           |
+
+`AttachmentMedia` accepts `variant="icon" | "image"`. `AttachmentAction` uses the Button API and supports `as`. `AttachmentTrigger` is polymorphic and covers the card, so give it visible or screen-reader-only link text. All parts forward native attributes.
+
+See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/components/ui/attachment) for the component source.

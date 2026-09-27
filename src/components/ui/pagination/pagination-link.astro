@@ -1,0 +1,41 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import { Button, type ButtonVariantProps } from "@/components/ui/button"
+
+type Props = HTMLAttributes<"a"> & {
+  isActive?: boolean
+  disabled?: boolean
+  size?: ButtonVariantProps["size"]
+}
+
+const {
+  class: className,
+  href,
+  isActive,
+  disabled,
+  size = "icon",
+  tabindex,
+  ...props
+} = Astro.props
+---
+
+<Button
+  as="a"
+  data-slot="pagination-link"
+  data-active={isActive ? "true" : undefined}
+  href={disabled ? undefined : href}
+  aria-current={isActive ? "page" : undefined}
+  aria-disabled={disabled ? "true" : undefined}
+  tabindex={disabled ? -1 : tabindex}
+  variant={isActive ? "outline" : "ghost"}
+  size={size}
+  class={cn(
+    "aria-disabled:pointer-events-none aria-disabled:opacity-50",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</Button>

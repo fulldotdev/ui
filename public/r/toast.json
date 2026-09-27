@@ -1,0 +1,80 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toast",
+  "title": "Toast",
+  "description": "A brief notification that appears without interrupting the user.",
+  "dependencies": [
+    "@data-slot/toast@^1.0.2",
+    "@lucide/astro"
+  ],
+  "registryDependencies": [
+    "@fulldev/button"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/toast/index.ts",
+      "content": "export { default as Toast } from \"./toast.astro\"\nexport { default as ToastTemplate } from \"./toast-template.astro\"\nexport { default as ToastViewport } from \"./toast-viewport.astro\"\nexport { default as ToastItem } from \"./toast-item.astro\"\nexport { default as ToastContent } from \"./toast-content.astro\"\nexport { default as ToastIcon } from \"./toast-icon.astro\"\nexport { default as ToastTitle } from \"./toast-title.astro\"\nexport { default as ToastDescription } from \"./toast-description.astro\"\nexport { default as ToastAction } from \"./toast-action.astro\"\nexport { default as ToastClose } from \"./toast-close.astro\"\nexport { default as Toaster } from \"./toaster.astro\"\n\nexport type {\n  ToastActionEvent,\n  ToastClearableField,\n  ToastController,\n  ToastOptions,\n  ToastPosition,\n  ToastPromiseErrorValue,\n  ToastPromiseHandle,\n  ToastPromiseOptions,\n  ToastPromiseState,\n  ToastPromiseStateValue,\n  ToastShowOptions,\n  ToastUpdateOptions,\n} from \"@data-slot/toast\"\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/toast/toast-action.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\nimport { buttonVariants } from \"@/components/ui/button\"\n\ntype Props = HTMLAttributes<\"button\">\n\nconst {\n  class: className,\n  hidden = true,\n  type = \"button\",\n  ...props\n} = Astro.props\n---\n\n<button\n  data-slot=\"toast-action\"\n  type={type}\n  class={cn(buttonVariants({ variant: \"outline\", size: \"sm\" }), className)}\n  hidden={hidden}\n  {...props}\n>\n  <slot />\n</button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/toast/toast-close.astro",
+      "content": "---\nimport type { ComponentProps } from \"astro/types\"\nimport XIcon from \"@lucide/astro/icons/x\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Button } from \"@/components/ui/button\"\n\ntype Props = ComponentProps<typeof Button>\n\nconst { class: className, ...props } = Astro.props\n---\n\n<Button\n  data-slot=\"toast-close\"\n  variant=\"ghost\"\n  size=\"icon-sm\"\n  aria-label=\"Close notification\"\n  class={cn(\n    \"text-muted-foreground hover:text-foreground relative shrink-0 after:absolute after:-inset-2 after:content-['']\",\n    className\n  )}\n  {...props}\n>\n  <slot>\n    <XIcon aria-hidden=\"true\" />\n  </slot>\n</Button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/toast/toast-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"toast-content\"\n  class={cn(\n    \"flex min-h-16 items-center gap-3 overflow-hidden p-4 transition-opacity duration-200\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/toast/toast-description.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, hidden = true, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"toast-description\"\n  class={cn(\"text-muted-foreground text-sm\", className)}\n  hidden={hidden}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/toast/toast-icon.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport CircleCheckIcon from \"@lucide/astro/icons/circle-check\"\nimport InfoIcon from \"@lucide/astro/icons/info\"\nimport LoaderIcon from \"@lucide/astro/icons/loader-circle\"\nimport OctagonXIcon from \"@lucide/astro/icons/octagon-x\"\nimport TriangleAlertIcon from \"@lucide/astro/icons/triangle-alert\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"span\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<span\n  data-slot=\"toast-icon\"\n  class={cn(\n    \"shrink-0 group-data-[type=error]/toast-item:[&_[data-toast-icon=error]]:block group-data-[type=info]/toast-item:[&_[data-toast-icon=info]]:block group-data-[type=loading]/toast-item:[&_[data-toast-icon=loading]]:block group-data-[type=success]/toast-item:[&_[data-toast-icon=success]]:block group-data-[type=warning]/toast-item:[&_[data-toast-icon=warning]]:block [&_svg]:hidden [&_svg]:size-4\",\n    className\n  )}\n  {...props}\n>\n  <CircleCheckIcon data-toast-icon=\"success\" aria-hidden=\"true\" />\n  <InfoIcon data-toast-icon=\"info\" aria-hidden=\"true\" />\n  <TriangleAlertIcon data-toast-icon=\"warning\" aria-hidden=\"true\" />\n  <OctagonXIcon\n    data-toast-icon=\"error\"\n    class=\"text-destructive\"\n    aria-hidden=\"true\"\n  />\n  <LoaderIcon\n    data-toast-icon=\"loading\"\n    class=\"animate-spin\"\n    aria-hidden=\"true\"\n  />\n</span>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/toast/toast-item.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"li\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<li\n  data-slot=\"toast-item\"\n  role=\"status\"\n  aria-atomic=\"true\"\n  class={cn(\n    \"group/toast-item bg-popover text-popover-foreground ring-foreground/10 focus-visible:border-ring focus-visible:ring-ring/50 pointer-events-auto absolute inset-x-0 z-[calc(1000-var(--toast-index))] box-border w-full rounded-xl opacity-0 shadow-lg ring-1 transition-[transform,opacity,height,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform outline-none select-none group-data-[position=bottom-center]/toast-viewport:bottom-0 group-data-[position=bottom-center]/toast-viewport:origin-bottom group-data-[position=bottom-left]/toast-viewport:bottom-0 group-data-[position=bottom-left]/toast-viewport:origin-bottom group-data-[position=bottom-right]/toast-viewport:bottom-0 group-data-[position=bottom-right]/toast-viewport:origin-bottom group-data-[position=top-center]/toast-viewport:top-0 group-data-[position=top-center]/toast-viewport:origin-top group-data-[position=top-left]/toast-viewport:top-0 group-data-[position=top-left]/toast-viewport:origin-top group-data-[position=top-right]/toast-viewport:top-0 group-data-[position=top-right]/toast-viewport:origin-top focus-visible:ring-3\",\n    \"[transform:translate3d(0,calc(var(--toast-lift,-1)*-100%),0)] data-[mounted=true]:[transform:translate3d(0,0,0)] data-[mounted=true]:opacity-100 data-[swiping=true]:transition-none data-[visible=false]:pointer-events-none data-[visible=false]:opacity-0\",\n    \"data-[mounted=true]:data-[expanded=true]:h-(--toast-initial-height) data-[mounted=true]:data-[expanded=true]:[transform:translate3d(0,calc(var(--toast-offset,0px)*var(--toast-lift,-1)),0)] data-[mounted=true]:data-[expanded=false]:data-[front=false]:h-(--toast-front-height) data-[mounted=true]:data-[expanded=false]:data-[front=false]:[transform:translate3d(0,calc(var(--toast-collapsed-offset-y,0px)*var(--toast-lift,-1)),0)_scale(calc(1-var(--toast-index,0)*0.05))]\",\n    \"data-[removed=true]:data-[front=false]:data-[expanded=false]:[transform:translate3d(0,40%,0)] data-[removed=true]:data-[front=false]:data-[expanded=false]:opacity-0 data-[removed=true]:data-[front=false]:data-[expanded=true]:[transform:translate3d(0,calc(var(--toast-lift,-1)*var(--toast-offset,0px)+var(--toast-lift,-1)*-100%),0)] data-[removed=true]:data-[front=false]:data-[expanded=true]:opacity-0 data-[removed=true]:data-[front=true]:[transform:translate3d(0,calc(var(--toast-lift,-1)*-100%),0)] data-[removed=true]:data-[front=true]:opacity-0\",\n    \"data-[swiping=true]:data-[expanded=true]:[transform:translate3d(var(--toast-swipe-amount-x,0px),calc(var(--toast-offset,0px)*var(--toast-lift,-1)+var(--toast-swipe-amount-y,0px)),0)] data-[swiping=true]:data-[front=false]:data-[expanded=false]:[transform:translate3d(var(--toast-swipe-amount-x,0px),calc(var(--toast-collapsed-offset-y,0px)*var(--toast-lift,-1)+var(--toast-swipe-amount-y,0px)),0)_scale(calc(1-var(--toast-index,0)*0.05))] data-[swiping=true]:data-[front=true]:[transform:translate3d(var(--toast-swipe-amount-x,0px),var(--toast-swipe-amount-y,0px),0)]\",\n    \"data-[removed=true]:data-[swipe-out=true]:opacity-0 data-[removed=true]:data-[swipe-out=true]:data-[front=false]:data-[expanded=false]:[transform:translate3d(var(--toast-swipe-end-x,0px),calc(var(--toast-collapsed-offset-y,0px)*var(--toast-lift,-1)+var(--toast-swipe-end-y,0px)),0)_scale(calc(1-var(--toast-index,0)*0.05))] data-[removed=true]:data-[swipe-out=true]:data-[front=false]:data-[expanded=true]:[transform:translate3d(var(--toast-swipe-end-x,0px),calc(var(--toast-lift,-1)*var(--toast-offset,0px)+var(--toast-swipe-end-y,0px)),0)] data-[removed=true]:data-[swipe-out=true]:data-[front=true]:[transform:translate3d(var(--toast-swipe-end-x,0px),var(--toast-swipe-end-y,0px),0)]\",\n    \"after:absolute after:left-0 after:h-[calc(var(--toast-gap,0px)+1px)] after:w-full after:content-[''] group-data-[position=bottom-center]/toast-viewport:after:bottom-full group-data-[position=bottom-left]/toast-viewport:after:bottom-full group-data-[position=bottom-right]/toast-viewport:after:bottom-full group-data-[position=top-center]/toast-viewport:after:top-full group-data-[position=top-left]/toast-viewport:after:top-full group-data-[position=top-right]/toast-viewport:after:top-full data-[expanded=false]:data-[front=false]:data-open:[&>*]:opacity-0\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</li>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/toast/toast-template.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { ...props } = Astro.props\n---\n\n<template data-slot=\"toast-template\" {...props}>\n  <slot />\n</template>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/toast/toast-title.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"toast-title\"\n  class={cn(\"text-sm font-medium\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/toast/toast-viewport.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"ol\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<ol\n  data-slot=\"toast-viewport\"\n  class={cn(\n    \"group/toast-viewport pointer-events-none fixed z-50 m-0 h-(--toast-stack-size,0px) w-[min(24rem,calc(100vw-2rem))] list-none p-0 outline-none [--toast-collapsed-peek:0.75rem] [--toast-gap:0.75rem] data-[position=bottom-center]:bottom-4 data-[position=bottom-center]:left-1/2 data-[position=bottom-center]:-translate-x-1/2 data-[position=bottom-left]:bottom-4 data-[position=bottom-left]:left-4 data-[position=bottom-right]:right-4 data-[position=bottom-right]:bottom-4 data-[position=top-center]:top-4 data-[position=top-center]:left-1/2 data-[position=top-center]:-translate-x-1/2 data-[position=top-left]:top-4 data-[position=top-left]:left-4 data-[position=top-right]:top-4 data-[position=top-right]:right-4\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</ol>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/toast/toast.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport type { ToastPosition } from \"@data-slot/toast\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  limit?: number\n  duration?: number\n  position?: ToastPosition\n  pauseOnHover?: boolean\n  pauseOnFocus?: boolean\n  portal?: boolean\n}\n\nconst {\n  class: className,\n  limit,\n  duration,\n  position,\n  pauseOnHover,\n  pauseOnFocus,\n  portal,\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot=\"toast\"\n  data-limit={limit}\n  data-duration={duration}\n  data-position={position}\n  data-pause-on-hover={pauseOnHover}\n  data-pause-on-focus={pauseOnFocus}\n  data-portal={portal}\n  class={className}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/toast\"\n\n  const controllers: ReturnType<typeof create> = []\n  const initialize = () => controllers.push(...create())\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of controllers) controller.destroy()\n    controllers.length = 0\n  })\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/toast/toaster.astro",
+      "content": "---\nimport type { ComponentProps } from \"astro/types\"\n\nimport ToastAction from \"./toast-action.astro\"\nimport ToastClose from \"./toast-close.astro\"\nimport ToastContent from \"./toast-content.astro\"\nimport ToastDescription from \"./toast-description.astro\"\nimport ToastIcon from \"./toast-icon.astro\"\nimport ToastItem from \"./toast-item.astro\"\nimport ToastTemplate from \"./toast-template.astro\"\nimport ToastTitle from \"./toast-title.astro\"\nimport ToastViewport from \"./toast-viewport.astro\"\nimport Toast from \"./toast.astro\"\n\ntype Props = ComponentProps<typeof Toast> & {\n  viewportClass?: string\n}\n\nconst { viewportClass, ...props } = Astro.props\n---\n\n<Toast {...props}>\n  <ToastTemplate>\n    <ToastItem>\n      <ToastContent>\n        <ToastIcon />\n        <div class=\"flex min-w-0 flex-1 flex-col gap-1\">\n          <ToastTitle />\n          <ToastDescription />\n        </div>\n        <ToastAction />\n        <ToastClose />\n      </ToastContent>\n    </ToastItem>\n  </ToastTemplate>\n  <ToastViewport class={viewportClass} />\n</Toast>\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/components/toast/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

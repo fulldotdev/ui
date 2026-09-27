@@ -1,0 +1,7 @@
+export { default as Pagination } from "./pagination.astro"
+export { default as PaginationContent } from "./pagination-content.astro"
+export { default as PaginationEllipsis } from "./pagination-ellipsis.astro"
+export { default as PaginationItem } from "./pagination-item.astro"
+export { default as PaginationLink } from "./pagination-link.astro"
+export { default as PaginationNext } from "./pagination-next.astro"
+export { default as PaginationPrevious } from "./pagination-previous.astro"

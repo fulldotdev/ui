@@ -9,52 +9,21 @@ type Props = HTMLAttributes<"td"> & {
 }
 
 const { class: className, size = "default", ...props } = Astro.props
+
+const sizeClass =
+  size === "sm" ? "text-sm" : size === "lg" ? "text-lg" : "text-base"
 ---
 
 <td
   data-slot="typography-table-cell"
   data-size={size}
-  class={cn(className)}
+  class={cn(
+    "border-border border-t px-4 py-3 text-left align-middle",
+    "[&[align=center]]:text-center [&[align=right]]:text-right",
+    sizeClass,
+    className
+  )}
   {...props}
 >
   <slot />
 </td>
-
-<style is:global>
-  @reference "@/styles/global.css";
-
-  [data-slot="typography-table-cell"],
-  [data-slot="typography-table"] td,
-  [data-slot="typography"] > table td {
-    @apply border-border border-t px-4 py-3 text-left align-middle;
-  }
-
-  [data-slot="typography-table-cell"][data-size="sm"] {
-    @apply text-sm;
-  }
-
-  [data-slot="typography-table-cell"][data-size="default"] {
-    @apply text-base;
-  }
-
-  [data-slot="typography-table-cell"][data-size="lg"] {
-    @apply text-lg;
-  }
-
-  [data-slot="typography-table"] tbody tr:last-child td,
-  [data-slot="typography"] > table tbody tr:last-child td {
-    @apply border-b-0;
-  }
-
-  [data-slot="typography-table-cell"][align="center"],
-  [data-slot="typography-table"] td[align="center"],
-  [data-slot="typography"] > table td[align="center"] {
-    @apply text-center;
-  }
-
-  [data-slot="typography-table-cell"][align="right"],
-  [data-slot="typography-table"] td[align="right"],
-  [data-slot="typography"] > table td[align="right"] {
-    @apply text-right;
-  }
-</style>
