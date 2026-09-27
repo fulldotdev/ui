@@ -8,6 +8,7 @@ type Props = HTMLAttributes<"div"> & {
   orientation?: "horizontal" | "vertical"
   drag?: boolean
   loop?: boolean
+  multiple?: boolean
 }
 
 const {
@@ -16,6 +17,7 @@ const {
   orientation = "horizontal",
   drag,
   loop,
+  multiple,
   ...props
 } = Astro.props
 ---
@@ -26,6 +28,7 @@ const {
   data-orientation={orientation}
   data-drag={drag}
   data-loop={loop}
+  data-multiple={multiple}
   class={cn("group/carousel relative", className)}
   {...props}
 >
@@ -35,12 +38,25 @@ const {
 <script>
   import { create } from "@data-slot/carousel"
 
+  import { observeCarouselVisibility } from "./carousel-visibility"
+
+  const visibility = new Map<HTMLElement, () => void>()
   const controllers: ReturnType<typeof create> = []
-  const initialize = () => controllers.push(...create())
+  const initialize = () => {
+    controllers.push(...create())
+    for (const root of document.querySelectorAll<HTMLElement>(
+      '[data-slot="carousel"][data-multiple="true"]'
+    )) {
+      if (!visibility.has(root))
+        visibility.set(root, observeCarouselVisibility(root))
+    }
+  }
   initialize()
   document.addEventListener("astro:page-load", initialize)
   document.addEventListener("astro:before-swap", () => {
     for (const controller of controllers) controller.destroy()
     controllers.length = 0
+    for (const cleanup of visibility.values()) cleanup()
+    visibility.clear()
   })
 </script>

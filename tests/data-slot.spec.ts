@@ -694,3 +694,46 @@ test("sidebar: mobile nested search, focus restoration and navigation reinitiali
     ).toBeVisible()
   }
 })
+
+test("carousel: all visible slides remain interactive in multiple mode", async ({
+  page,
+  isMobile,
+}) => {
+  await open(page, "carousel")
+  const root = page.locator('[data-slot="carousel"][data-multiple="true"]')
+  await root.scrollIntoViewIfNeeded()
+  const items = root.locator('[data-slot="carousel-item"]')
+  for (let index = 0; index < 3; index++) {
+    await expect(items.nth(index)).toHaveAttribute("aria-hidden", "false")
+    await expect(items.nth(index)).not.toHaveAttribute("inert")
+  }
+  await expect(items.nth(3)).toHaveAttribute("inert", "")
+  const second = root.getByRole("link", { name: "Slide 2", exact: true })
+  if (isMobile) {
+    const box = await second.boundingBox()
+    if (!box) throw new Error("Visible slide has no layout box")
+    await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2)
+  } else await second.click()
+  await expect(page).toHaveURL(/#slide-2$/)
+  const next = root.getByRole("button", { name: "Next slide" })
+  if (isMobile) {
+    const box = await next.boundingBox()
+    if (!box) throw new Error("Carousel control has no layout box")
+    await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2)
+  } else await next.click()
+  await expect(root).toHaveAttribute("data-index", "1")
+  await expect(items.nth(0)).toHaveAttribute("inert", "")
+  for (let index = 1; index < 4; index++)
+    await expect(items.nth(index)).toHaveAttribute("aria-hidden", "false")
+  // The primitive also writes its single-slide state after scrolling settles.
+  await page.waitForTimeout(300)
+  const third = root.getByRole("link", { name: "Slide 3", exact: true })
+  if (isMobile) {
+    const box = await third.boundingBox()
+    if (!box) throw new Error("Visible slide has no layout box")
+    await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2)
+  } else await third.click()
+  await expect(page).toHaveURL(/#slide-3$/)
+  await page.setViewportSize({ width: 768, height: 1000 })
+  await expect(items.nth(2)).not.toHaveAttribute("inert")
+})

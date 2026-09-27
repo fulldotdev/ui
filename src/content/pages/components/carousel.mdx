@@ -51,7 +51,7 @@ The carousel uses the
 primitive. It supports native scrolling, keyboard navigation, optional pointer
 dragging, looped navigation, and programmatic navigation through DOM events.
 
-The carousel shows one slide at a time. `CarouselItem` components must be direct
+By default, the carousel shows one slide at a time. `CarouselItem` components must be direct
 children of `CarouselContent`. Inactive slides are marked with `aria-hidden` and
 `inert` so their content leaves the accessibility tree and tab order.
 
@@ -220,3 +220,40 @@ See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/comp
 for component props and the
 [@data-slot/carousel README](https://github.com/bejamas/data-slot/tree/main/packages/carousel)
 for controller methods, events, keyboard behavior, and accessibility details.
+
+## Multiple visible slides
+
+Use `multiple` when CSS sizes show more than one slide. Visible slides remain
+interactive and available to assistive technology. Offscreen slides stay inert.
+The default single-slide behavior is unchanged.
+
+```astro live props={{ name: 'carousel-multiple' }}
+---
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+---
+
+<Carousel multiple drag class="w-[calc(100%-2rem)] max-w-xl">
+  <CarouselContent>
+    {
+      [1, 2, 3, 4, 5].map((number) => (
+        <CarouselItem class="basis-1/3 p-2">
+          <a
+            href={`#slide-${number}`}
+            class="bg-muted flex aspect-square items-center justify-center rounded-md"
+          >
+            Slide {number}
+          </a>
+        </CarouselItem>
+      ))
+    }
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+```
