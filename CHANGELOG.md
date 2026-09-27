@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.14.1
+
+### Patch Changes
+
+- [#202](https://github.com/fulldotdev/ui/pull/202) [`30b1949`](https://github.com/fulldotdev/ui/commit/30b19499edf55ba3ae15490562334f50476f21c0) Thanks [@silveltman](https://github.com/silveltman)! - Match Navigation Menu trigger styling and chevron rotation to Data Slot's data-state attribute, while retaining compatibility with data-open and data-popup-open.
+
 ## 0.14.0
 
 ### Minor Changes
