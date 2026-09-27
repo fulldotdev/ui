@@ -1,7 +1,7 @@
 ---
 type: doc
 title: Carousel
-description: An accessible carousel built on native scrolling with Data Slot.
+description: A carousel with motion, swipe and responsive slides built using Embla.
 ---
 
 ```astro live props={{ name: 'carousel' }}
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/carousel"
 ---
 
-<Carousel drag class="w-[calc(100%-2rem)] max-w-xl">
+<Carousel class="w-[calc(100%-2rem)] max-w-xl">
   <CarouselContent>
     <CarouselItem>
       <div
@@ -46,14 +46,14 @@ import {
 
 ## About
 
-The carousel uses the
-[@data-slot/carousel](https://github.com/bejamas/data-slot/tree/main/packages/carousel)
-primitive. It supports native scrolling, keyboard navigation, optional pointer
-dragging, looped navigation, and programmatic navigation through DOM events.
+The carousel uses the vanilla [Embla Carousel](https://www.embla-carousel.com/)
+engine, following shadcn/ui composition and CSS slide sizing. It needs no React.
+Other interactive Fulldev UI components continue to use Data Slot.
 
-By default, the carousel shows one slide at a time. `CarouselItem` components must be direct
-children of `CarouselContent`. Inactive slides are marked with `aria-hidden` and
-`inert` so their content leaves the accessibility tree and tab order.
+`CarouselContent` provides an overflow viewport and an inner track. Classes and
+HTML attributes passed to `CarouselContent` apply to the track. Use responsive
+`basis-*` classes on items and matching negative track margins / slide padding
+for spacing. No `multiple` option is needed.
 
 ## Installation
 
@@ -66,7 +66,7 @@ npx shadcn@latest add @fulldev/carousel
 Manual install:
 
 ```bash
-npm install @data-slot/carousel
+npm install embla-carousel
 ```
 
 Then copy the component files into `src/components/ui/carousel` and update the
@@ -109,14 +109,11 @@ Carousel
 
 ## Options
 
-Pass Data Slot options directly to `Carousel`.
-
-| Prop           | Type                         | Default        | Description                                           |
-| -------------- | ---------------------------- | -------------- | ----------------------------------------------------- |
-| `defaultIndex` | `number`                     | `0`            | Initial active slide index.                           |
-| `orientation`  | `"horizontal" \| "vertical"` | `"horizontal"` | Navigation and scrolling axis.                        |
-| `drag`         | `boolean`                    | `false`        | Enables pointer drag and swipe navigation.            |
-| `loop`         | `boolean`                    | `false`        | Wraps previous, next, keyboard, and event navigation. |
+Pass [Embla options](https://www.embla-carousel.com/) through `opts`:
+`align`, `loop`, `startIndex`, `watchDrag`, `slidesToScroll` and responsive
+`breakpoints` are supported. `orientation="vertical"` sets the scrolling axis;
+otherwise `opts.axis` is respected. Dragging and focus scrolling use Embla's
+defaults. Previous/next and keyboard navigation respect reduced motion.
 
 ```astro live
 ---
@@ -129,7 +126,10 @@ import {
 } from "@/components/ui/carousel"
 ---
 
-<Carousel defaultIndex={1} drag loop class="w-[calc(100%-2rem)] max-w-xl">
+<Carousel
+  opts={{ startIndex: 1, loop: true }}
+  class="w-[calc(100%-2rem)] max-w-xl"
+>
   <CarouselContent>
     <CarouselItem
       class="bg-muted flex min-h-40 items-center justify-center rounded-md"
@@ -165,7 +165,7 @@ import {
 } from "@/components/ui/carousel"
 ---
 
-<Carousel orientation="vertical" drag class="my-8 w-full max-w-xl">
+<Carousel orientation="vertical" class="my-8 w-full max-w-xl">
   <CarouselContent class="h-64">
     <CarouselItem
       class="bg-muted flex min-h-40 items-center justify-center rounded-md"
@@ -185,47 +185,35 @@ import {
 </Carousel>
 ```
 
-## Events
+## Events and API
 
-Listen for `carousel:change` on the root to react to a new active slide.
+Listen for `carousel:init` to receive the Embla API. `carousel:select` fires after
+selection or reinitialization. Both events expose `detail.api`, `canScrollPrev`,
+`canScrollNext`, `selectedScrollSnap` and `scrollSnapList`.
 
 ```ts
-const carousel = document.querySelector('[data-slot="carousel"]')
+import type { CarouselApi } from "@/components/ui/carousel"
 
-carousel?.addEventListener("carousel:change", (event) => {
-  const { index } = (event as CustomEvent<{ index: number }>).detail
-  console.log(index)
+const carousel = document.querySelector('[data-slot="carousel"]')
+carousel?.addEventListener("carousel:init", (event) => {
+  const { api } = (event as CustomEvent<{ api: CarouselApi }>).detail
+  api.scrollTo(2)
 })
 ```
 
-Dispatch `carousel:set` on the root to select an index or move by one slide.
+Register the listener before initialization. For code running later, the root's
+`__fulldevCarouselApi` property holds the current API. `CarouselOptions` and
+`CarouselPlugin` re-export Embla's corresponding types. Plugin instances are
+configured through Embla's API, not serialized Astro props.
 
-```ts
-carousel?.dispatchEvent(
-  new CustomEvent("carousel:set", { detail: { index: 2 } })
-)
-
-carousel?.dispatchEvent(
-  new CustomEvent("carousel:set", { detail: { action: "next" } })
-)
-```
-
-The root exposes its current index as `data-index`. Each item exposes
-`data-state="active"` or `data-state="inactive"`. Data Slot also keeps the
-previous and next controls' `disabled` and `aria-disabled` states in sync.
-
-## API Reference
-
-See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/components/ui/carousel)
-for component props and the
-[@data-slot/carousel README](https://github.com/bejamas/data-slot/tree/main/packages/carousel)
-for controller methods, events, keyboard behavior, and accessibility details.
+Instances are destroyed before Astro page swaps and recreated on page load.
+Visible links retain normal focus behavior; focusing an offscreen slide lets
+Embla bring it into view. No custom `inert` or `aria-hidden` overrides are added.
 
 ## Multiple visible slides
 
-Use `multiple` when CSS sizes show more than one slide. Visible slides remain
-interactive and available to assistive technology. Offscreen slides stay inert.
-The default single-slide behavior is unchanged.
+Use CSS widths just as in shadcn/ui. This example shows three clickable slides
+at once, with extra slides reachable through dragging, buttons or keyboard.
 
 ```astro live props={{ name: 'carousel-multiple' }}
 ---
@@ -238,11 +226,15 @@ import {
 } from "@/components/ui/carousel"
 ---
 
-<Carousel multiple drag class="w-[calc(100%-2rem)] max-w-xl">
+<Carousel
+  data-demo="multiple"
+  opts={{ align: "start" }}
+  class="w-[calc(100%-2rem)] max-w-xl"
+>
   <CarouselContent>
     {
       [1, 2, 3, 4, 5].map((number) => (
-        <CarouselItem class="basis-1/3 p-2">
+        <CarouselItem class="basis-1/3">
           <a
             href={`#slide-${number}`}
             class="bg-muted flex aspect-square items-center justify-center rounded-md"
@@ -257,3 +249,20 @@ import {
   <CarouselNext />
 </Carousel>
 ```
+
+## Migration from 0.13
+
+Reinstall the registry component so markup and runtime stay together.
+
+| 0.13                               | Embla carousel                                                 |
+| ---------------------------------- | -------------------------------------------------------------- |
+| `defaultIndex={1}`                 | `opts={{ startIndex: 1 }}`                                     |
+| `loop`                             | `opts={{ loop: true }}`                                        |
+| `drag`                             | Enabled by default; disable with `opts={{ watchDrag: false }}` |
+| `CarouselController`               | `CarouselApi`                                                  |
+| `carousel:change`                  | `carousel:select`                                              |
+| `carousel:set`                     | Call methods on `detail.api` from `carousel:init`              |
+| Content classes style the viewport | Content classes style the inner track                          |
+
+The former one-full-width-slide restriction no longer applies. Use matching
+negative margins on content and padding on items for spacing, like shadcn/ui.
