@@ -55,6 +55,14 @@ import {
 npx shadcn@latest add @fulldev/typography
 ```
 
+## Typeset
+
+`Typography` uses the recommended
+[shadcn Typeset](https://ui.shadcn.com/docs/typeset) stylesheet. Typeset applies
+one readable scale and vertical rhythm to semantic HTML, including headings,
+paragraphs, links, lists, code, blockquotes, media, and tables. It also supports
+task lists, footnotes, definition lists, keyboard keys, and print styles.
+
 ## Usage
 
 Use `Typography` as a wrapper around rendered content, markdown output, or
@@ -63,11 +71,11 @@ Use the individual typography components when you want explicit primitives in a
 component example or custom layout.
 
 Every typography component accepts `size="sm"`, `size="default"`, or
-`size="lg"`. The default size keeps body text at the base font size.
-On the `Typography` wrapper, `size` only scales the wrapper-level heading and
-lead styles. Regular child prose such as paragraphs, lists, blockquotes, code,
-small text, and tables keeps its normal default size. Use the individual
-components' own `size` prop when those elements need to change size.
+`size="lg"`. On `Typography`, the size preset changes the body size, line
+height, and flow spacing together so the whole document keeps a consistent
+rhythm. The default preset uses a `1rem` body size, `1.75` line height, and
+`1.25em` flow spacing. Use the individual components' size prop when a
+standalone element needs a different size.
 
 ```ts
 import {
@@ -96,7 +104,7 @@ The `Typography` wrapper styles supported child elements directly. Headings,
 paragraphs, links, blockquotes, lists, tables, inline code, and preformatted code
 can be regular HTML.
 
-```astro live
+```astro live props={{ name: 'typography' }}
 ---
 import { Typography } from "@/components/ui/typography"
 ---
@@ -123,7 +131,27 @@ import { Typography } from "@/components/ui/typography"
 </Typography>
 ```
 
+## Opt out
+
+Add `data-not-typeset` or `class="not-typeset"` to an embedded interface that
+should keep its component styles. The opt-out includes every descendant, so put
+it on the smallest wrapper that owns the interface. A nested `Typography`
+cannot reactivate Typeset inside an opted-out subtree.
+
+```astro
+<Typography as="article">
+  <p>This paragraph uses Typeset.</p>
+
+  <div data-not-typeset>
+    <YourInteractiveComponent />
+  </div>
+</Typography>
+```
+
 ## Child components
+
+The standalone parts render their semantic element with Tailwind classes. They
+preserve the same `size` props without depending on a `Typography` ancestor.
 
 ### TypographyH1
 
@@ -284,6 +312,8 @@ import { TypographyLead } from "@/components/ui/typography"
   headings, paragraphs, lists, tables, and inline code.
 - Use the individual typography primitives when you want explicit semantic
   composition inside a component example or a custom layout.
+- Wrap wide tables or other wide content in `class="typeset-scroll"` to retain
+  native table semantics with horizontal overflow.
 
 ## API Reference
 

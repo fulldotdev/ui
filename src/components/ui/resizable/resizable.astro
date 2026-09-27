@@ -1,0 +1,43 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"div"> & {
+  direction?: "horizontal" | "vertical"
+  keyboardResizeBy?: number
+}
+
+const {
+  class: className,
+  direction = "horizontal",
+  keyboardResizeBy,
+  ...props
+} = Astro.props
+---
+
+<div
+  data-slot="resizable"
+  data-direction={direction}
+  data-keyboard-resize-by={keyboardResizeBy}
+  class={cn(
+    "group/resizable flex h-full w-full data-[direction=vertical]:flex-col",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</div>
+
+<script>
+  import { create } from "@data-slot/resizable"
+
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
+</script>

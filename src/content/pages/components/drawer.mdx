@@ -1,0 +1,314 @@
+---
+type: doc
+title: Drawer
+description: A swipeable panel that opens from an edge of the screen.
+---
+
+```astro live props={{ name: 'drawer' }}
+---
+import { Button } from "@/components/ui/button"
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+---
+
+<Drawer>
+  <DrawerTrigger variant="outline">Open drawer</DrawerTrigger>
+  <DrawerContent showSwipeHandle class="h-[60dvh]">
+    <DrawerHeader>
+      <DrawerTitle>Edit profile</DrawerTitle>
+      <DrawerDescription>
+        Make changes to your profile and save when you are done.
+      </DrawerDescription>
+    </DrawerHeader>
+    <div class="grid gap-4 p-4">
+      <div class="bg-muted h-24 rounded-lg"></div>
+      <div class="bg-muted h-24 rounded-lg"></div>
+    </div>
+    <DrawerFooter>
+      <Button>Save changes</Button>
+      <DrawerClose variant="outline">Cancel</DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+```
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/drawer
+```
+
+## Usage
+
+```ts
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+```
+
+```astro
+<Drawer swipeDirection="down">
+  <DrawerTrigger>Open</DrawerTrigger>
+  <DrawerContent showSwipeHandle>
+    <DrawerHeader>
+      <DrawerTitle>Drawer title</DrawerTitle>
+      <DrawerDescription>Drawer description</DrawerDescription>
+    </DrawerHeader>
+    <div class="p-4">Drawer content</div>
+    <DrawerFooter>
+      <DrawerClose variant="outline">Close</DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+```
+
+## Composition
+
+`DrawerContent` renders the required portal, backdrop, viewport, popup, and
+inner content structure. Use the lower-level exports when you need to customize
+that structure. Its inner content wrapper scrolls vertically when the panel
+contains more content than the available viewport.
+
+```text
+Drawer
+├── DrawerTrigger
+└── DrawerContent
+    ├── DrawerSwipeHandle
+    ├── DrawerHeader
+    │   ├── DrawerTitle
+    │   └── DrawerDescription
+    ├── content
+    └── DrawerFooter
+        └── DrawerClose
+```
+
+## Examples
+
+### Directions
+
+The swipe direction also chooses the edge where the drawer opens.
+
+```astro live
+---
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+
+const directions = ["down", "up", "left", "right"] as const
+---
+
+<div class="flex flex-wrap gap-2">
+  {
+    directions.map((direction) => (
+      <Drawer swipeDirection={direction}>
+        <DrawerTrigger variant="outline" class="capitalize">
+          {direction}
+        </DrawerTrigger>
+        <DrawerContent showSwipeHandle>
+          <DrawerHeader>
+            <DrawerTitle class="capitalize">{direction} drawer</DrawerTitle>
+            <DrawerDescription>
+              Swipe {direction} or use the close button.
+            </DrawerDescription>
+          </DrawerHeader>
+          <div class="flex-1 p-4">
+            <div class="bg-muted h-40 rounded-lg" />
+          </div>
+          <DrawerFooter>
+            <DrawerClose variant="outline">Close</DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    ))
+  }
+</div>
+```
+
+### Nested
+
+Place a complete `Drawer` inside another drawer's content. Escape closes only
+the front drawer, then returns focus and interaction to its parent.
+
+```astro live
+---
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+---
+
+<Drawer id="nested-drawer-example">
+  <DrawerTrigger variant="outline">Open project settings</DrawerTrigger>
+  <DrawerContent showSwipeHandle>
+    <DrawerHeader>
+      <DrawerTitle>Project settings</DrawerTitle>
+      <DrawerDescription>
+        Review the project or open its advanced settings.
+      </DrawerDescription>
+    </DrawerHeader>
+    <div class="flex-1 p-4">
+      <div class="bg-muted h-40 rounded-lg"></div>
+    </div>
+    <DrawerFooter>
+      <Drawer id="nested-drawer-child">
+        <DrawerTrigger>Open advanced settings</DrawerTrigger>
+        <DrawerContent showSwipeHandle>
+          <DrawerHeader>
+            <DrawerTitle>Advanced settings</DrawerTitle>
+            <DrawerDescription>
+              This drawer is nested inside the project settings drawer.
+            </DrawerDescription>
+          </DrawerHeader>
+          <div class="flex-1 p-4">
+            <div class="bg-muted h-32 rounded-lg"></div>
+          </div>
+          <DrawerFooter>
+            <DrawerClose variant="outline">Close advanced settings</DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+      <DrawerClose variant="outline">Close project settings</DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+```
+
+### Non-modal
+
+Pair a non-modal drawer with `showOverlay={false}` so controls outside the
+drawer remain visible and interactive.
+
+```astro live
+---
+import { Button } from "@/components/ui/button"
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+---
+
+<div class="flex flex-wrap gap-2">
+  <Drawer modal={false}>
+    <DrawerTrigger variant="outline">Open non-modal drawer</DrawerTrigger>
+    <DrawerContent showOverlay={false} showSwipeHandle>
+      <DrawerHeader>
+        <DrawerTitle>Quick settings</DrawerTitle>
+        <DrawerDescription>
+          The rest of the page stays available while this drawer is open.
+        </DrawerDescription>
+      </DrawerHeader>
+      <div class="flex-1 p-4">
+        <div class="bg-muted h-32 rounded-lg"></div>
+      </div>
+      <DrawerFooter>
+        <DrawerClose variant="outline">Close</DrawerClose>
+      </DrawerFooter>
+    </DrawerContent>
+  </Drawer>
+  <Button variant="outline">Outside action</Button>
+</div>
+```
+
+`modal="trap-focus"` keeps keyboard focus inside the drawer without making the
+rest of the page inert. Also set `showOverlay={false}` when outside pointer
+interaction should remain available.
+
+### Snap point
+
+One optional snap point controls how much of the panel is visible when open. A
+fraction uses the viewport size. Pixel numbers and `px` or `rem` strings are
+also supported.
+
+```astro live
+---
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+---
+
+<Drawer snapPoint={0.6}>
+  <DrawerTrigger variant="outline">Open at 60%</DrawerTrigger>
+  <DrawerContent showSwipeHandle class="h-[60dvh]">
+    <DrawerHeader>
+      <DrawerTitle>Review changes</DrawerTitle>
+      <DrawerDescription>
+        This drawer opens at sixty percent of the viewport height.
+      </DrawerDescription>
+    </DrawerHeader>
+    <div class="flex-1 p-4">
+      <div class="bg-muted h-48 rounded-lg"></div>
+    </div>
+    <DrawerFooter>
+      <DrawerClose variant="outline">Close</DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+```
+
+## Props and events
+
+`Drawer` accepts `defaultOpen`, `modal`, `disablePointerDismissal`,
+`closeOnEscape`, `swipeDirection`, `snapPoint`, `defaultSnapPoint`, `triggerId`,
+and `defaultTriggerId`. `DrawerContent` accepts `showOverlay`,
+`showSwipeHandle`, `container`, `keepMounted`, `initialFocus`, and `finalFocus`.
+
+Use the `drawer:open`, `drawer:close`, `drawer:toggle`, and `drawer:set` DOM events
+for imperative changes. The root emits cancelable `drawer:beforechange` and
+`drawer:beforesnapchange` events, followed by `drawer:change`,
+`drawer:change-complete`, and `drawer:snapchange`.
+
+```js
+const drawer = document.querySelector('[data-slot="drawer"]')
+
+drawer?.dispatchEvent(
+  new CustomEvent("drawer:set", {
+    detail: { open: true, snapPoint: "24rem" },
+  })
+)
+```
+
+## API Reference
+
+See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/components/ui/drawer) for component props.
+See the [data-slot docs](https://github.com/bejamas/data-slot/blob/main/packages/drawer/README.md) for controllers, events, focus management, detached triggers, nested drawers, and keyboard-aware viewports.

@@ -1,5 +1,5 @@
 ---
-import type { HTMLTag, Polymorphic } from "astro/types"
+import type { Polymorphic } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
@@ -12,52 +12,22 @@ const {
   size = "default",
   ...props
 } = Astro.props
+
+const sizeClass =
+  size === "sm" ? "text-sm" : size === "lg" ? "text-lg" : "text-base"
 ---
 
 <Tag
   data-slot="typography-list"
   data-size={size}
   data-ordered={Tag === "ol" ? "" : undefined}
-  class={cn(className)}
+  class={cn(
+    "my-6 ml-6",
+    Tag === "ol" ? "list-decimal" : "list-disc",
+    sizeClass,
+    className
+  )}
   {...props}
 >
   <slot />
 </Tag>
-
-<style is:global>
-  @reference "@/styles/global.css";
-
-  [data-slot="typography-list"],
-  [data-slot="typography"] > ul,
-  [data-slot="typography"] > ol {
-    @apply my-6 ml-6;
-  }
-
-  [data-slot="typography-list"][data-size="sm"] {
-    @apply text-sm;
-  }
-
-  [data-slot="typography-list"][data-size="default"],
-  [data-slot="typography"] > ul,
-  [data-slot="typography"] > ol {
-    @apply text-base;
-  }
-
-  [data-slot="typography-list"][data-size="lg"] {
-    @apply text-lg;
-  }
-
-  [data-slot="typography-list"]:not([data-ordered]),
-  [data-slot="typography"] > ul {
-    @apply list-disc;
-  }
-
-  [data-slot="typography-list"][data-ordered],
-  [data-slot="typography"] > ol {
-    @apply list-decimal;
-  }
-
-  [data-slot="typography-list"] > li {
-    @apply mt-2;
-  }
-</style>

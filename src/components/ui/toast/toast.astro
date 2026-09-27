@@ -1,0 +1,51 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import type { ToastPosition } from "@data-slot/toast"
+
+type Props = HTMLAttributes<"div"> & {
+  limit?: number
+  duration?: number
+  position?: ToastPosition
+  pauseOnHover?: boolean
+  pauseOnFocus?: boolean
+  portal?: boolean
+}
+
+const {
+  class: className,
+  limit,
+  duration,
+  position,
+  pauseOnHover,
+  pauseOnFocus,
+  portal,
+  ...props
+} = Astro.props
+---
+
+<div
+  data-slot="toast"
+  data-limit={limit}
+  data-duration={duration}
+  data-position={position}
+  data-pause-on-hover={pauseOnHover}
+  data-pause-on-focus={pauseOnFocus}
+  data-portal={portal}
+  class={className}
+  {...props}
+>
+  <slot />
+</div>
+
+<script>
+  import { create } from "@data-slot/toast"
+
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
+</script>

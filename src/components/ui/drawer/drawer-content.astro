@@ -1,0 +1,43 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import DrawerOverlay from "./drawer-overlay.astro"
+import DrawerPopup from "./drawer-popup.astro"
+import DrawerPortal from "./drawer-portal.astro"
+import DrawerSwipeHandle from "./drawer-swipe-handle.astro"
+import DrawerViewport from "./drawer-viewport.astro"
+
+type Props = ComponentProps<typeof DrawerPopup> & {
+  showOverlay?: boolean
+  showSwipeHandle?: boolean
+  container?: string
+  keepMounted?: boolean
+  overlayClass?: string
+  viewportClass?: string
+}
+
+const {
+  showOverlay = true,
+  showSwipeHandle = false,
+  container,
+  keepMounted,
+  overlayClass,
+  viewportClass,
+  ...props
+} = Astro.props
+---
+
+<DrawerPortal container={container} keepMounted={keepMounted}>
+  {showOverlay && <DrawerOverlay class={overlayClass} />}
+  <DrawerViewport class={viewportClass}>
+    <DrawerPopup {...props}>
+      {showSwipeHandle && <DrawerSwipeHandle />}
+      <div
+        data-slot="drawer-content"
+        class="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain rounded-[inherit] transition-opacity duration-300 select-text group-data-nested-drawer-open/drawer-popup:opacity-0 group-data-nested-swiping/drawer-popup:opacity-100 group-data-swiping/drawer-popup:select-none"
+      >
+        <slot />
+      </div>
+    </DrawerPopup>
+  </DrawerViewport>
+</DrawerPortal>

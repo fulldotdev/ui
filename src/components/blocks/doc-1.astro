@@ -299,6 +299,81 @@ const openLinks = markdownUrl
   }
 </SectionContainer>
 
+<style is:global>
+  .docs-code-block {
+    position: relative;
+    overflow: hidden;
+    margin-block-start: var(--typeset-flow);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    background: color-mix(in oklab, var(--color-muted) 60%, transparent);
+  }
+
+  .docs-code-block > pre,
+  .docs-code-block > pre.astro-code {
+    margin: 0;
+    overflow-x: auto;
+    border: 0;
+    border-radius: 0;
+    background: transparent !important;
+    padding: 1rem 3.5rem 1rem 1rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+  }
+
+  .docs-code-block > pre.astro-code code {
+    color: var(--shiki-light, var(--color-foreground)) !important;
+    font: inherit;
+  }
+
+  .dark .docs-code-block > pre.astro-code code {
+    color: var(--shiki-dark, var(--color-foreground)) !important;
+  }
+
+  .dark .docs-code-block > pre.astro-code span[style*="--shiki-dark"] {
+    color: var(--shiki-dark) !important;
+    font-style: var(--shiki-dark-font-style, inherit) !important;
+    font-weight: var(--shiki-dark-font-weight, inherit) !important;
+    text-decoration: var(--shiki-dark-text-decoration, inherit) !important;
+  }
+
+  .docs-code-copy {
+    position: absolute;
+    z-index: 10;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: inline-flex;
+    width: 2rem;
+    height: 2rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-background);
+    color: var(--color-muted-foreground);
+    box-shadow: var(--shadow-sm);
+    transition:
+      color 150ms,
+      background-color 150ms;
+  }
+
+  .docs-code-copy:hover {
+    background: var(--color-accent);
+    color: var(--color-accent-foreground);
+  }
+
+  .docs-code-copy:focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+
+  .docs-code-copy svg {
+    width: 1rem;
+    height: 1rem;
+  }
+</style>
+
 <script>
   const copyIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>`
   const checkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>`
@@ -310,6 +385,7 @@ const openLinks = markdownUrl
         const wrapper = document.createElement("div")
         const button = document.createElement("button")
         wrapper.className = "docs-code-block"
+        wrapper.dataset.notTypeset = ""
         button.type = "button"
         button.className = "docs-code-copy"
         button.ariaLabel = "Copy code"

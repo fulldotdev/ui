@@ -1,0 +1,25 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"div"> & {
+  ratio: number
+}
+
+const { class: className, ratio, style, ...props } = Astro.props
+
+const resolvedStyle =
+  typeof style === "string"
+    ? `--ratio: ${ratio}; ${style}`
+    : { "--ratio": ratio, ...(style ?? {}) }
+---
+
+<div
+  data-slot="aspect-ratio"
+  style={resolvedStyle}
+  class={cn("relative aspect-(--ratio)", className)}
+  {...props}
+>
+  <slot />
+</div>

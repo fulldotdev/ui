@@ -9,33 +9,20 @@ type Props = HTMLAttributes<"h1"> & {
 }
 
 const { class: className, size = "default", ...props } = Astro.props
+
+const sizeClass =
+  size === "sm" ? "text-3xl" : size === "lg" ? "text-5xl" : "text-4xl"
 ---
 
-<h1 data-slot="typography-h1" data-size={size} class={cn(className)} {...props}>
+<h1
+  data-slot="typography-h1"
+  data-size={size}
+  class={cn(
+    "scroll-m-20 font-semibold tracking-tight text-balance",
+    sizeClass,
+    className
+  )}
+  {...props}
+>
   <slot />
 </h1>
-
-<style is:global>
-  @reference "@/styles/global.css";
-
-  [data-slot="typography-h1"],
-  [data-slot="typography"] > h1 {
-    @apply scroll-m-20 font-semibold tracking-tight text-balance;
-  }
-
-  [data-slot="typography-h1"][data-size="sm"],
-  [data-slot="typography"][data-size="sm"] > h1 {
-    @apply text-3xl;
-  }
-
-  [data-slot="typography-h1"][data-size="default"],
-  [data-slot="typography"] > h1,
-  [data-slot="typography"][data-size="default"] > h1 {
-    @apply text-4xl;
-  }
-
-  [data-slot="typography-h1"][data-size="lg"],
-  [data-slot="typography"][data-size="lg"] > h1 {
-    @apply text-5xl;
-  }
-</style>

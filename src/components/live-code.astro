@@ -29,6 +29,7 @@ const blockSlugs = new Set(
   )
 )
 const isBlockPreview = componentSlug ? blockSlugs.has(componentSlug) : false
+const isTypographyPreview = componentSlug === "typography"
 const installCommand = componentSlug
   ? `npx shadcn@latest add @fulldev/${componentSlug}`
   : undefined
@@ -39,6 +40,7 @@ const installButtonId = installCommand
 
 <Tabs defaultValue="preview" class="live-code-layout w-full gap-3">
   <div
+    data-not-typeset
     class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
   >
     <TabsList class="justify-start self-start">
@@ -79,6 +81,7 @@ const installButtonId = installCommand
       ]}
     >
       <div
+        data-not-typeset={isTypographyPreview ? undefined : ""}
         class:list={[
           isBlockPreview
             ? "bg-background w-full"
@@ -90,7 +93,7 @@ const installButtonId = installCommand
     </div>
   </TabsContent>
 
-  <TabsContent value="code" class="mt-0 w-full" hidden>
+  <TabsContent value="code" class="mt-0 w-full" data-not-typeset hidden>
     <div
       data-slot="live-code-panel"
       class="border-border bg-muted/60 [&_.live-code-source]:bg-background/40 w-full overflow-hidden rounded-xl border [&_.live-code-source]:rounded-lg [&_pre.astro-code]:m-0 [&_pre.astro-code]:rounded-none [&_pre.astro-code]:border-0 [&_pre.astro-code]:!bg-transparent [&_pre.astro-code]:p-4 dark:[&_pre.astro-code]:!text-[var(--shiki-dark,var(--foreground))] [&_pre.astro-code_code]:!text-[var(--shiki-light,var(--foreground))] dark:[&_pre.astro-code_code]:!text-[var(--shiki-dark,var(--foreground))] dark:[&_pre.astro-code_span[style*='--shiki-dark']]:[font-weight:var(--shiki-dark-font-weight,inherit)] dark:[&_pre.astro-code_span[style*='--shiki-dark']]:!text-[var(--shiki-dark)] dark:[&_pre.astro-code_span[style*='--shiki-dark']]:[font-style:var(--shiki-dark-font-style,inherit)] dark:[&_pre.astro-code_span[style*='--shiki-dark']]:[text-decoration:var(--shiki-dark-text-decoration,inherit)]"

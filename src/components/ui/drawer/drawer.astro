@@ -1,0 +1,60 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import type { DrawerSnapPoint, DrawerSwipeDirection } from "@data-slot/drawer"
+
+type Props = HTMLAttributes<"div"> & {
+  defaultOpen?: boolean
+  modal?: boolean | "trap-focus"
+  disablePointerDismissal?: boolean
+  closeOnEscape?: boolean
+  swipeDirection?: DrawerSwipeDirection
+  snapPoint?: DrawerSnapPoint | null
+  defaultSnapPoint?: DrawerSnapPoint | null
+  triggerId?: string | null
+  defaultTriggerId?: string | null
+}
+
+const {
+  class: className,
+  defaultOpen,
+  modal,
+  disablePointerDismissal,
+  closeOnEscape,
+  swipeDirection,
+  snapPoint,
+  defaultSnapPoint,
+  triggerId,
+  defaultTriggerId,
+  ...props
+} = Astro.props
+---
+
+<div
+  data-slot="drawer"
+  data-default-open={defaultOpen}
+  data-modal={modal}
+  data-disable-pointer-dismissal={disablePointerDismissal}
+  data-close-on-escape={closeOnEscape}
+  data-swipe-direction={swipeDirection}
+  data-snap-point={snapPoint}
+  data-default-snap-point={defaultSnapPoint}
+  data-trigger-id={triggerId}
+  data-default-trigger-id={defaultTriggerId}
+  class={className}
+  {...props}
+>
+  <slot />
+</div>
+
+<script>
+  import { create } from "@data-slot/drawer"
+
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
+</script>
