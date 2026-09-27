@@ -515,7 +515,7 @@ test("resizable: pointer, keyboard bounds and collapsible panel", async ({
   await expect(outerHandle).toHaveAttribute("aria-valuenow", "35")
 })
 
-test("carousel: controls, full-slide state and keyboard navigation", async ({
+test("carousel: controls, drag, loop, vertical and keyboard navigation", async ({
   page,
 }) => {
   await open(page, "carousel")
@@ -525,15 +525,12 @@ test("carousel: controls, full-slide state and keyboard navigation", async ({
   const previous = root.getByRole("button", { name: "Previous slide" })
   const next = root.getByRole("button", { name: "Next slide" })
 
-  await expect(root).toHaveAttribute("data-index", "0")
+  await expect(root).toHaveAttribute("data-selected-scroll-snap", "0")
   await expect(previous).toBeDisabled()
-  await expect(items.nth(0)).toHaveAttribute("data-state", "active")
-  await expect(items.nth(1)).toHaveAttribute("aria-hidden", "true")
-  await expect(items.nth(1)).toHaveAttribute("inert", "")
   const contentBox = await content.boundingBox()
   const itemBox = await items.nth(0).boundingBox()
   if (!contentBox || !itemBox) throw new Error("Carousel has no layout box")
-  expect(Math.abs(contentBox.width - itemBox.width)).toBeLessThanOrEqual(1)
+  expect(Math.abs(contentBox.width + 16 - itemBox.width)).toBeLessThanOrEqual(1)
 
   await page.mouse.move(
     contentBox.x + contentBox.width * 0.75,
@@ -546,40 +543,37 @@ test("carousel: controls, full-slide state and keyboard navigation", async ({
     { steps: 6 }
   )
   await page.mouse.up()
-  await expect(root).toHaveAttribute("data-index", "1")
+  await expect(root).toHaveAttribute("data-selected-scroll-snap", "1")
 
   await previous.click()
-  await expect(root).toHaveAttribute("data-index", "0")
+  await expect(root).toHaveAttribute("data-selected-scroll-snap", "0")
   await next.click()
-  await expect(root).toHaveAttribute("data-index", "1")
-  await expect(items.nth(1)).toHaveAttribute("data-state", "active")
+  await expect(root).toHaveAttribute("data-selected-scroll-snap", "1")
   await previous.click()
-  await expect(root).toHaveAttribute("data-index", "0")
+  await expect(root).toHaveAttribute("data-selected-scroll-snap", "0")
 
   await next.focus()
   await next.press("ArrowRight")
-  await expect(root).toHaveAttribute("data-index", "1")
+  await expect(root).toHaveAttribute("data-selected-scroll-snap", "1")
   await next.press("End")
-  await expect(root).toHaveAttribute("data-index", "2")
+  await expect(root).toHaveAttribute("data-selected-scroll-snap", "2")
   await expect(next).toBeDisabled()
   await previous.press("Home")
-  await expect(root).toHaveAttribute("data-index", "0")
+  await expect(root).toHaveAttribute("data-selected-scroll-snap", "0")
 
   const loopRoot = page
     .locator(".live-code-layout")
     .nth(1)
     .locator('[data-slot="carousel"]')
-  const loopItems = loopRoot.locator('[data-slot="carousel-item"]')
   const loopPrevious = loopRoot.getByRole("button", { name: "Previous slide" })
   const loopNext = loopRoot.getByRole("button", { name: "Next slide" })
-  await expect(loopRoot).toHaveAttribute("data-index", "1")
-  await expect(loopItems.nth(1)).toHaveAttribute("data-state", "active")
+  await expect(loopRoot).toHaveAttribute("data-selected-scroll-snap", "1")
   await loopPrevious.click()
-  await expect(loopRoot).toHaveAttribute("data-index", "0")
+  await expect(loopRoot).toHaveAttribute("data-selected-scroll-snap", "0")
   await loopPrevious.click()
-  await expect(loopRoot).toHaveAttribute("data-index", "2")
+  await expect(loopRoot).toHaveAttribute("data-selected-scroll-snap", "2")
   await loopNext.click()
-  await expect(loopRoot).toHaveAttribute("data-index", "0")
+  await expect(loopRoot).toHaveAttribute("data-selected-scroll-snap", "0")
 
   const verticalRoot = page
     .locator(".live-code-layout")
@@ -594,7 +588,9 @@ test("carousel: controls, full-slide state and keyboard navigation", async ({
     name: "Previous slide",
   })
   await verticalContent.scrollIntoViewIfNeeded()
-  const verticalContentBox = await verticalContent.boundingBox()
+  const verticalContentBox = await verticalRoot
+    .locator('[data-slot="carousel-container"]')
+    .boundingBox()
   const verticalItemBox = await verticalItems.nth(0).boundingBox()
   if (!verticalContentBox || !verticalItemBox)
     throw new Error("Vertical carousel has no layout box")
@@ -602,17 +598,37 @@ test("carousel: controls, full-slide state and keyboard navigation", async ({
     Math.abs(verticalContentBox.height - verticalItemBox.height)
   ).toBeLessThanOrEqual(1)
   await verticalNext.click()
-  await expect(verticalRoot).toHaveAttribute("data-index", "1")
+  await expect(verticalRoot).toHaveAttribute("data-selected-scroll-snap", "1")
   await verticalPrevious.click()
-  await expect(verticalRoot).toHaveAttribute("data-index", "0")
+  await expect(verticalRoot).toHaveAttribute("data-selected-scroll-snap", "0")
   await expect
-    .poll(() => verticalContent.evaluate((element) => element.scrollTop))
+    .poll(() =>
+      verticalItems
+        .nth(0)
+        .evaluate(
+          (element) =>
+            -element.getBoundingClientRect().top +
+            element
+              .closest('[data-slot="carousel-content"]')!
+              .getBoundingClientRect().top
+        )
+    )
     .toBeLessThan(verticalContentBox.height * 0.2)
   await verticalNext.focus()
   await verticalNext.press("ArrowDown")
-  await expect(verticalRoot).toHaveAttribute("data-index", "1")
+  await expect(verticalRoot).toHaveAttribute("data-selected-scroll-snap", "1")
   await expect
-    .poll(() => verticalContent.evaluate((element) => element.scrollTop))
+    .poll(() =>
+      verticalItems
+        .nth(0)
+        .evaluate(
+          (element) =>
+            -element.getBoundingClientRect().top +
+            element
+              .closest('[data-slot="carousel-content"]')!
+              .getBoundingClientRect().top
+        )
+    )
     .toBeGreaterThan(verticalContentBox.height * 0.8)
   const verticalDragBox = await verticalContent.boundingBox()
   if (!verticalDragBox) throw new Error("Vertical carousel moved out of view")
@@ -627,7 +643,7 @@ test("carousel: controls, full-slide state and keyboard navigation", async ({
     { steps: 6 }
   )
   await page.mouse.up()
-  await expect(verticalRoot).toHaveAttribute("data-index", "2")
+  await expect(verticalRoot).toHaveAttribute("data-selected-scroll-snap", "2")
 })
 
 test("command: new trigger slot, nested command filtering and dismissal", async ({
@@ -692,5 +708,67 @@ test("sidebar: mobile nested search, focus restoration and navigation reinitiali
     await expect(
       demo(page).getByRole("button", { name: "Edit Profile" })
     ).toBeVisible()
+  }
+})
+
+test("carousel: visible links, focus, end controls and responsive sizing", async ({
+  page,
+  isMobile,
+  browserName,
+}) => {
+  await open(page, "carousel")
+  const root = page.locator('[data-slot="carousel"][data-demo="multiple"]')
+  await root.scrollIntoViewIfNeeded()
+  const links = root.getByRole("link")
+  const second = links.nth(1)
+  if (isMobile) {
+    const box = await second.boundingBox()
+    if (!box) throw new Error("Visible slide has no layout box")
+    await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2)
+  } else await second.click()
+  await expect(page).toHaveURL(/#slide-2$/)
+  await second.focus()
+  await expect(second).toBeFocused()
+  await page.waitForTimeout(200)
+  await expect(second).toBeFocused()
+  await second.press(browserName === "webkit" ? "Alt+Tab" : "Tab")
+  await expect(links.nth(2)).toBeFocused()
+  await links.nth(2).press(browserName === "webkit" ? "Alt+Tab" : "Tab")
+  await expect(links.nth(3)).toBeFocused()
+  await expect(root).toHaveAttribute("data-can-scroll-prev", "true")
+  const next = root.getByRole("button", { name: "Next slide" })
+  await links.nth(3).press("End")
+  await expect(next).toBeDisabled()
+  await expect(links.nth(3)).toBeFocused()
+  await links.nth(3).press("Home")
+  await expect(
+    root.getByRole("button", { name: "Previous slide" })
+  ).toBeDisabled()
+  await page.setViewportSize({ width: 768, height: 1000 })
+  await expect(next).toBeEnabled()
+  await links.nth(1).focus()
+  await expect(links.nth(1)).toBeFocused()
+  await links.nth(1).press("Enter")
+  await expect(page).toHaveURL(/#slide-2$/)
+})
+
+test("carousel: Astro cleanup and reinitialization do not duplicate controls", async ({
+  page,
+}) => {
+  await open(page, "carousel")
+  const root = demo(page).locator('[data-slot="carousel"]')
+  for (let pass = 0; pass < 2; pass++) {
+    const cleaned = await root.evaluate((element) => {
+      document.dispatchEvent(new Event("astro:before-swap"))
+      return !("__fulldevCarouselApi" in element)
+    })
+    expect(cleaned).toBe(true)
+    await page.evaluate(() => {
+      document.dispatchEvent(new Event("astro:page-load"))
+      document.dispatchEvent(new Event("astro:page-load"))
+    })
+    await expect(root).toHaveAttribute("data-selected-scroll-snap", "0")
+    await root.getByRole("button", { name: "Next slide" }).click()
+    await expect(root).toHaveAttribute("data-selected-scroll-snap", "1")
   }
 })

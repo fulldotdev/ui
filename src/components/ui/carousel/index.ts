@@ -1,4 +1,8 @@
-export type { CarouselController, CarouselOptions } from "@data-slot/carousel"
+export type {
+  EmblaCarouselType as CarouselApi,
+  EmblaOptionsType as CarouselOptions,
+  EmblaPluginType as CarouselPlugin,
+} from "embla-carousel"
 
 export { default as Carousel } from "./carousel.astro"
 export { default as CarouselContent } from "./carousel-content.astro"

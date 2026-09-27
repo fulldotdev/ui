@@ -1,46 +1,154 @@
 ---
 import type { HTMLAttributes } from "astro/types"
+import type { EmblaOptionsType } from "embla-carousel"
 
 import { cn } from "@/lib/utils"
 
 type Props = HTMLAttributes<"div"> & {
-  defaultIndex?: number
+  opts?: EmblaOptionsType
   orientation?: "horizontal" | "vertical"
-  drag?: boolean
-  loop?: boolean
 }
 
 const {
   class: className,
-  defaultIndex,
-  orientation = "horizontal",
-  drag,
-  loop,
+  opts,
+  orientation = opts?.axis === "y" ? "vertical" : "horizontal",
   ...props
 } = Astro.props
+
+const resolvedOpts: EmblaOptionsType = {
+  ...opts,
+  axis: orientation === "horizontal" ? "x" : "y",
+}
 ---
 
 <div
   data-slot="carousel"
-  data-default-index={defaultIndex}
   data-orientation={orientation}
-  data-drag={drag}
-  data-loop={loop}
+  data-carousel-options={JSON.stringify(resolvedOpts)}
   class={cn("group/carousel relative", className)}
+  role="region"
+  aria-roledescription="carousel"
   {...props}
 >
   <slot />
 </div>
 
 <script>
-  import { create } from "@data-slot/carousel"
+  import EmblaCarousel, {
+    type EmblaCarouselType,
+    type EmblaOptionsType,
+  } from "embla-carousel"
 
-  const controllers: ReturnType<typeof create> = []
-  const initialize = () => controllers.push(...create())
+  type CarouselRoot = HTMLElement & {
+    __fulldevCarouselApi?: EmblaCarouselType
+  }
+
+  const instances = new Map<CarouselRoot, () => void>()
+  const initialize = () => {
+    for (const root of document.querySelectorAll<CarouselRoot>(
+      '[data-slot="carousel"]'
+    )) {
+      if (instances.has(root)) continue
+      const viewport = root.querySelector<HTMLElement>(
+        '[data-slot="carousel-content"]'
+      )
+      if (!viewport) continue
+      const opts: EmblaOptionsType = JSON.parse(
+        root.dataset.carouselOptions || "{}"
+      )
+      const api = EmblaCarousel(viewport, opts)
+      root.__fulldevCarouselApi = api
+      const previous = root.querySelectorAll<HTMLButtonElement>(
+        '[data-slot="carousel-previous"]'
+      )
+      const next = root.querySelectorAll<HTMLButtonElement>(
+        '[data-slot="carousel-next"]'
+      )
+      const emit = (type: "carousel:init" | "carousel:select") => {
+        root.dispatchEvent(
+          new CustomEvent(type, {
+            detail: {
+              api,
+              canScrollPrev: api.canScrollPrev(),
+              canScrollNext: api.canScrollNext(),
+              selectedScrollSnap: api.selectedScrollSnap(),
+              scrollSnapList: api.scrollSnapList(),
+            },
+          })
+        )
+      }
+      const sync = () => {
+        root.dataset.canScrollPrev = String(api.canScrollPrev())
+        root.dataset.canScrollNext = String(api.canScrollNext())
+        root.dataset.selectedScrollSnap = String(api.selectedScrollSnap())
+        for (const button of previous)
+          if (button.dataset.manualDisabled !== "true")
+            button.disabled = !api.canScrollPrev()
+        for (const button of next)
+          if (button.dataset.manualDisabled !== "true")
+            button.disabled = !api.canScrollNext()
+        emit("carousel:select")
+      }
+      const jump = () =>
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      const onPrevious = () => api.scrollPrev(jump())
+      const onNext = () => api.scrollNext(jump())
+      const onKeyDown = (event: KeyboardEvent) => {
+        const target = event.target
+        if (
+          event.defaultPrevented ||
+          !(target instanceof Element) ||
+          target.closest('[data-slot="carousel"]') !== root ||
+          target.closest(
+            'input, textarea, select, [contenteditable]:not([contenteditable="false"])'
+          )
+        )
+          return
+        const vertical = root.dataset.orientation === "vertical"
+        switch (event.key) {
+          case vertical ? "ArrowUp" : "ArrowLeft":
+            onPrevious()
+            break
+          case vertical ? "ArrowDown" : "ArrowRight":
+            onNext()
+            break
+          case "Home":
+            api.scrollTo(0, jump())
+            break
+          case "End":
+            api.scrollTo(api.scrollSnapList().length - 1, jump())
+            break
+          default:
+            return
+        }
+        event.preventDefault()
+      }
+      for (const button of previous)
+        button.addEventListener("click", onPrevious)
+      for (const button of next) button.addEventListener("click", onNext)
+      root.addEventListener("keydown", onKeyDown)
+      api.on("select", sync)
+      api.on("reInit", sync)
+      sync()
+      const frame = requestAnimationFrame(() => emit("carousel:init"))
+      instances.set(root, () => {
+        cancelAnimationFrame(frame)
+        for (const button of previous)
+          button.removeEventListener("click", onPrevious)
+        for (const button of next) button.removeEventListener("click", onNext)
+        root.removeEventListener("keydown", onKeyDown)
+        api.off("select", sync)
+        api.off("reInit", sync)
+        api.destroy()
+        delete root.__fulldevCarouselApi
+      })
+    }
+  }
   initialize()
   document.addEventListener("astro:page-load", initialize)
   document.addEventListener("astro:before-swap", () => {
-    for (const controller of controllers) controller.destroy()
-    controllers.length = 0
+    for (const cleanup of instances.values()) cleanup()
+    instances.clear()
   })
 </script>
