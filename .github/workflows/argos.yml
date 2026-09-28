@@ -2,38 +2,26 @@ name: Argos
 
 on:
   pull_request:
+    branches: [main, master]
     types: [opened, synchronize, reopened, ready_for_review]
   push:
-    branches: [main, preview]
+    branches: [main, master]
+  workflow_dispatch:
 
 concurrency:
-  group: argos-${{ github.ref }}
+  group: argos-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  screenshots:
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-latest
+  visual:
     permissions:
       contents: read
       pull-requests: read
       id-token: write
-    steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-      - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm exec playwright test
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: visual-test-failures
-          path: test-results/
-          retention-days: 7
+    uses: fulldotdev/agents/.github/workflows/visual.yml@8c4b578287f11560e469a1183d54607a38ececd6
+    with:
+      content-profile: none
+      node-version: "24"

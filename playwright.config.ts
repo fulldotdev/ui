@@ -36,6 +36,18 @@ export default defineConfig({
         hasTouch: true,
       },
     },
+    {
+      name: "mobile-webkit",
+      // A compact engine check. This is not a physical iPhone.
+      grep: /(?:^|\s)(?:homepage|\/|\/contact\/?)$/,
+      use: {
+        browserName: "webkit",
+        viewport: { width: 390, height: 844 },
+        isMobile: true,
+        hasTouch: true,
+        launchOptions: {},
+      },
+    },
   ],
   webServer: {
     command: "pnpm exec astro preview --host 127.0.0.1 --port 4174",
