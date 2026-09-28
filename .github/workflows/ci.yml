@@ -69,29 +69,30 @@ jobs:
 
   interactions:
     name: Browser interactions
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     permissions:
       contents: read
       pull-requests: read
+      actions: read
     env:
       pnpm_config_ignore_scripts: "true"
       pnpm_config_ignore_pnpmfile: "true"
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          persist-credentials: false
       - name: Resolve exact Netlify deployment
         id: deploy
-        uses: fulldotdev/agents/.github/actions/netlify-deploy@0d33327b83f3cdd0e25fe05c5664e0f23abf72fe
+        uses: fulldotdev/agents/.github/actions/netlify-deploy@ca122547b6f61d5574ee46817c6fd745085a662a
         with:
           site: fulldev-ui
           expected-sha: ${{ inputs.expected-sha }}
           pr-number: ${{ inputs.pr-number }}
           base-sha: ${{ inputs.base-sha }}
           allow-draft: "true"
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
       - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
           run_install: false
