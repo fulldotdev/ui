@@ -8,6 +8,7 @@ export default defineConfig({
   reporter: [["list"]],
   use: {
     ...config.use,
+    launchOptions: {},
     reducedMotion: "no-preference",
     trace: "retain-on-failure",
   },
