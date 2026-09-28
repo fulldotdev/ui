@@ -3,14 +3,14 @@ name: Argos
 on:
   pull_request:
     branches: [main, master]
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened, ready_for_review, edited]
   push:
     branches: [main, master]
   workflow_dispatch:
 
 concurrency:
   group: argos-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event.action != 'edited' || github.event.changes.base.ref.from != '' }}
 
 permissions:
   contents: read
@@ -21,7 +21,7 @@ jobs:
       contents: read
       pull-requests: read
       id-token: write
-    uses: fulldotdev/agents/.github/workflows/visual.yml@4dd768cedaaffd78fdd831623d30c89bd5fb593e
+    uses: fulldotdev/agents/.github/workflows/visual.yml@2f3b8a86de8456772a5a9a6d5d204cb2988421ef
     with:
       content-profile: none
       node-version: "24"
