@@ -1,15 +1,23 @@
 name: Argos
 
 on:
-  pull_request:
-    branches: [main, master]
-    types: [opened, synchronize, reopened, ready_for_review, edited]
-  push:
-    branches: [main, master]
   workflow_dispatch:
+    inputs:
+      expected-sha:
+        description: Expected deployed commit; empty selects the current branch head
+        type: string
+        default: ""
+      pr-number:
+        description: Exact PR; empty discovers the open PR for this head
+        type: string
+        default: ""
+      base-sha:
+        description: Previous successful production browser run
+        type: string
+        default: ""
 
 concurrency:
-  group: argos-${{ github.event_name == 'pull_request' && (github.event.action != 'edited' || github.event.changes.base.ref.from != '') && github.ref || github.run_id }}
+  group: argos-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -21,8 +29,11 @@ jobs:
       contents: read
       pull-requests: read
       id-token: write
-    uses: fulldotdev/agents/.github/workflows/visual.yml@ba7089dc49048185471d265df54e026033c7bf84
+    uses: fulldotdev/agents/.github/workflows/visual.yml@e7ef8ad336cecf96d9f5c3af0ee07502abb03351
     with:
+      expected-sha: ${{ inputs.expected-sha }}
+      pr-number: ${{ inputs.pr-number }}
+      base-sha: ${{ inputs.base-sha }}
       content-profile: none
       node-version: "24"
       netlify-site: fulldev-ui
