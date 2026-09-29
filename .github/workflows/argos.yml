@@ -13,13 +13,9 @@ on:
         description: Exact PR; empty discovers the open PR for this head
         type: string
         default: ""
-      base-sha:
-        description: Previous successful production browser run
-        type: string
-        default: ""
 
 concurrency:
-  group: argos-${{ github.ref }}
+  group: argos-${{ github.event_name == 'workflow_dispatch' && github.run_id || github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -36,7 +32,6 @@ jobs:
     with:
       expected-sha: ${{ inputs.expected-sha }}
       pr-number: ${{ inputs.pr-number }}
-      base-sha: ${{ inputs.base-sha }}
       content-profile: none
       node-version: "24"
       netlify-site: fulldev-ui
