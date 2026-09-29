@@ -16,21 +16,12 @@ export default defineConfig({
   projects: [
     {
       name: "chromium-desktop",
-      use: {
-        browserName: "chromium",
-        viewport: { width: 1440, height: 1000 },
-        launchOptions: {
-          args: ["--disable-blink-features=ViewTransitionOnNavigation"],
-        },
-      },
+      use: { browserName: "chromium", viewport: { width: 1440, height: 1000 } },
     },
     {
       name: "chromium-mobile",
       use: {
         browserName: "chromium",
-        launchOptions: {
-          args: ["--disable-blink-features=ViewTransitionOnNavigation"],
-        },
         viewport: { width: 390, height: 844 },
         isMobile: true,
         hasTouch: true,

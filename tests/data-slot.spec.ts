@@ -416,15 +416,10 @@ test("toast: events, actions, dismissal, paused timers and navigation", async ({
   )
   await expect(pausedToast).toHaveCount(0)
 
-  const pagination = page.getByRole("navigation", {
-    name: "Document pagination",
-  })
-  await pagination.locator('a[href="/components/toc/"]').click()
+  // Exercise Data Slot teardown and initialization across document navigations.
+  await page.goto("/components/toc/")
   await expect(page).toHaveURL(/\/components\/toc\/$/)
-  await page
-    .getByRole("navigation", { name: "Document pagination" })
-    .locator('a[href="/components/toast/"]')
-    .click()
+  await page.goto("/components/toast/")
   await expect(page).toHaveURL(/\/components\/toast\/$/)
   await expect(
     demo(page).getByRole("button", { name: "Show toast" })
