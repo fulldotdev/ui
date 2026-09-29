@@ -99,7 +99,7 @@ pnpm dev
 pnpm build
 
 # Preview production build
-pnpm build:preview
+pnpm preview
 
 # Type check
 pnpm check
