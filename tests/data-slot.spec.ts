@@ -419,14 +419,8 @@ test("toast: events, actions, dismissal, paused timers and navigation", async ({
   const pagination = page.getByRole("navigation", {
     name: "Document pagination",
   })
-  await page.addStyleTag({
-    content: "@view-transition { navigation: none; }",
-  })
   await pagination.locator('a[href="/components/toc/"]').click()
   await expect(page).toHaveURL(/\/components\/toc\/$/)
-  await page.addStyleTag({
-    content: "@view-transition { navigation: none; }",
-  })
   await page
     .getByRole("navigation", { name: "Document pagination" })
     .locator('a[href="/components/toast/"]')
