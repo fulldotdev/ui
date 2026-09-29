@@ -4,6 +4,7 @@ import config from "./playwright.config"
 
 export default defineConfig({
   ...config,
+  workers: process.env.CI ? 1 : config.workers,
   testMatch: ["data-slot.spec.ts", "clipboard.spec.ts"],
   reporter: [["list"]],
   use: {

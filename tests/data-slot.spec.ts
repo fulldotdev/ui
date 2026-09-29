@@ -366,6 +366,12 @@ test("toast: events, actions, dismissal, paused timers and navigation", async ({
   await expect(basic).toHaveAttribute("data-type", "success")
   await expect(basic).toContainText("Event created")
   await expect(basic).toContainText("Sunday, December 3 at 9:00 AM")
+  await expect(basic).toHaveAttribute("data-mounted", "true")
+  await basic.evaluate(async (element) => {
+    await Promise.all(
+      element.getAnimations().map((animation) => animation.finished)
+    )
+  })
   await basic.getByRole("button", { name: "Close notification" }).click()
   await expect(items).toHaveCount(0)
   await expect(root).toHaveAttribute(
@@ -375,10 +381,21 @@ test("toast: events, actions, dismissal, paused timers and navigation", async ({
 
   await demo(page).getByRole("button", { name: "Toast with action" }).click()
   const actionToast = items.filter({ hasText: "You can undo this action." })
+  // Data Slot mounts the toast before its entry transition finishes.
+  await expect(actionToast).toHaveAttribute("data-mounted", "true")
+  await actionToast.evaluate(async (element) => {
+    await Promise.all(
+      element.getAnimations().map((animation) => animation.finished)
+    )
+  })
   await actionToast.getByRole("button", { name: "Undo" }).click()
   await expect(root).toHaveAttribute("data-test-action", /:undo-event$/)
   await expect(actionToast).toHaveCount(0)
 
+  // Test hover pausing without retaining focus or a pointer over the toast.
+  await page.bringToFront()
+  await demo(page).getByRole("button", { name: "Toast with action" }).focus()
+  await page.mouse.move(0, 0)
   await root.evaluate((element) =>
     element.dispatchEvent(
       new CustomEvent("toast:show", {
