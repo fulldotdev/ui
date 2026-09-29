@@ -1,0 +1,27 @@
+name: Netlify browser start
+
+on:
+  status:
+  pull_request_target:
+    branches: [main, master]
+    types: [opened, reopened, ready_for_review, edited]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: netlify-browser-${{ github.event_name == 'pull_request_target' && github.event.action == 'edited' && github.event.changes.base.ref.from == '' && github.run_id || github.event.pull_request.head.sha || github.event.sha }}
+  cancel-in-progress: false
+  queue: max
+
+jobs:
+  start:
+    permissions:
+      contents: read
+      pull-requests: read
+      statuses: read
+      actions: write
+    uses: fulldotdev/agents/.github/workflows/netlify-dispatch.yml@3be4641e84e24e1c921e3e6dbd64978e4e7b04ab
+    with:
+      netlify-site: fulldev-ui
+      browser-workflow: ci.yml

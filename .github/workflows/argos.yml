@@ -1,39 +1,42 @@
 name: Argos
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
   push:
-    branches: [main, preview]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      expected-sha:
+        description: Expected deployed commit; empty selects the current branch head
+        type: string
+        default: ""
+      pr-number:
+        description: Exact PR; empty discovers the open PR for this head
+        type: string
+        default: ""
+
+      base-sha:
+        description: Dispatcher compatibility; comparison base is resolved automatically
+        type: string
+        default: ""
 
 concurrency:
-  group: argos-${{ github.ref }}
+  group: argos-${{ github.event_name == 'workflow_dispatch' && github.run_id || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  screenshots:
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-latest
+  visual:
     permissions:
       contents: read
       pull-requests: read
+      actions: read
       id-token: write
-    steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-      - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm exec playwright test
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: visual-test-failures
-          path: test-results/
-          retention-days: 7
+    uses: fulldotdev/agents/.github/workflows/visual.yml@b34b6451317ddd57c7a0de8bff1b84c18dbf8d65
+    with:
+      expected-sha: ${{ inputs.expected-sha }}
+      pr-number: ${{ inputs.pr-number }}
+      content-profile: none
+      node-version: "24"
+      netlify-site: fulldev-ui

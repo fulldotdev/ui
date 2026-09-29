@@ -1,6 +1,20 @@
 name: CI
 
 on:
+  workflow_dispatch:
+    inputs:
+      expected-sha:
+        description: Expected deployed commit; empty selects the current branch head
+        type: string
+        default: ""
+      pr-number:
+        description: Exact PR; empty discovers the open PR for this head
+        type: string
+        default: ""
+      base-sha:
+        description: Previous successful production browser run
+        type: string
+        default: ""
   pull_request:
     branches: [main, preview]
   push:
@@ -10,7 +24,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -18,6 +32,7 @@ env:
 
 jobs:
   validate:
+    if: github.event_name != 'workflow_dispatch'
     name: Validate
     runs-on: ubuntu-latest
 
@@ -52,5 +67,50 @@ jobs:
       - name: Check registry output
         run: pnpm registry:check
 
-      - name: Build site
-        run: pnpm build
+  interactions:
+    name: Browser interactions
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      pull-requests: read
+      actions: read
+    env:
+      pnpm_config_ignore_scripts: "true"
+      pnpm_config_ignore_pnpmfile: "true"
+    steps:
+      - name: Resolve exact Netlify deployment
+        id: deploy
+        uses: fulldotdev/agents/.github/actions/netlify-deploy@ca122547b6f61d5574ee46817c6fd745085a662a
+        with:
+          site: fulldev-ui
+          expected-sha: ${{ inputs.expected-sha }}
+          pr-number: ${{ inputs.pr-number }}
+          base-sha: ${{ inputs.base-sha }}
+          allow-draft: "true"
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "24"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --ignore-scripts --ignore-pnpmfile
+      - run: pnpm exec playwright install --with-deps chromium webkit
+      - name: Run browser tests
+        run: pnpm test:interactions
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ steps.deploy.outputs.url }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: failure()
+        with:
+          name: interaction-test-failures
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
