@@ -1,4 +1,4 @@
-name: CI
+name: Browser interactions
 
 on:
   workflow_dispatch:
@@ -15,10 +15,8 @@ on:
         description: Previous successful production browser run
         type: string
         default: ""
-  pull_request:
-    branches: [main, preview]
   push:
-    branches: [main, preview]
+    branches: [main]
 
 permissions:
   contents: read
@@ -31,45 +29,8 @@ env:
   ASTRO_TELEMETRY_DISABLED: true
 
 jobs:
-  validate:
-    if: github.event_name != 'workflow_dispatch'
-    name: Validate
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v6
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Check changeset
-        if: github.event_name == 'pull_request' && !startsWith(github.head_ref, 'changeset-release/')
-        run: pnpm exec changeset status --since=origin/${{ github.event.pull_request.base.ref }}
-
-      - name: Check formatting
-        run: pnpm format:check
-
-      - name: Type check
-        run: pnpm typecheck
-
-      - name: Check registry output
-        run: pnpm registry:check
-
   interactions:
     name: Browser interactions
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     permissions:
