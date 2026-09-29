@@ -1,4 +1,4 @@
-name: CI
+name: Browser interactions
 
 on:
   workflow_dispatch:
@@ -15,10 +15,8 @@ on:
         description: Previous successful production browser run
         type: string
         default: ""
-  pull_request:
-    branches: [main, preview]
   push:
-    branches: [main, preview]
+    branches: [main]
 
 permissions:
   contents: read
@@ -31,58 +29,23 @@ env:
   ASTRO_TELEMETRY_DISABLED: true
 
 jobs:
-  validate:
-    if: github.event_name != 'workflow_dispatch'
-    name: Validate
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v6
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Check changeset
-        if: github.event_name == 'pull_request' && !startsWith(github.head_ref, 'changeset-release/')
-        run: pnpm exec changeset status --since=origin/${{ github.event.pull_request.base.ref }}
-
-      - name: Check formatting
-        run: pnpm format:check
-
-      - name: Type check
-        run: pnpm typecheck
-
-      - name: Check registry output
-        run: pnpm registry:check
-
   interactions:
     name: Browser interactions
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     permissions:
       contents: read
       pull-requests: read
       actions: read
+    outputs:
+      tested-sha: ${{ steps.deploy.outputs.sha }}
     env:
       pnpm_config_ignore_scripts: "true"
       pnpm_config_ignore_pnpmfile: "true"
     steps:
       - name: Resolve exact Netlify deployment
         id: deploy
-        uses: fulldotdev/agents/.github/actions/netlify-deploy@ca122547b6f61d5574ee46817c6fd745085a662a
+        uses: fulldotdev/agents/.github/actions/netlify-deploy@32535d2fc34ff946de6c33217b266f976ee702f4
         with:
           site: fulldev-ui
           expected-sha: ${{ inputs.expected-sha }}
@@ -114,3 +77,31 @@ jobs:
             test-results/
             playwright-report/
           retention-days: 7
+
+  report:
+    name: Report interaction result
+    needs: interactions
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    permissions:
+      statuses: write
+    steps:
+      # No checkout or PR code executes with this status-writing token.
+      - name: Report the tested commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TEST_RESULT: ${{ needs.interactions.result }}
+          TESTED_SHA: ${{ needs.interactions.outputs.tested-sha }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { writeFileSync } from "node:fs";
+          const passed = process.env.TEST_RESULT === "success" && process.env.TESTED_SHA === process.env.GITHUB_SHA;
+          writeFileSync("status.json", JSON.stringify({
+            context: "UI interaction checks",
+            state: passed ? "success" : "failure",
+            description: passed ? "Browser interactions passed on the exact Netlify commit" : "Browser interactions did not pass for this commit",
+            target_url: `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
+          }));
+          NODE
+          gh api --method POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" --input status.json
