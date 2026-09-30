@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.14.2
+
+### Patch Changes
+
+- [#213](https://github.com/fulldotdev/ui/pull/213) [`1304c8b`](https://github.com/fulldotdev/ui/commit/1304c8b49e14a6f4cf3576433014ecf396019913) Thanks [@silveltman](https://github.com/silveltman)! - Improve the `LayoutHead` social tags: add `twitter:card` (`summary_large_image` with an image, `summary` without), emit `og:image:type` for optimized images, skip `og:image` when the image source is empty, and follow `trailingSlash: "never"` in the canonical and `og:url`.
+
 ## 0.14.1
 
 ### Patch Changes
