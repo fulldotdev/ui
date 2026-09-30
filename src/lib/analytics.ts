@@ -31,6 +31,11 @@ export function startAnalytics() {
       "code",
     ],
     disable_capture_url_hashes: true,
+    property_denylist: [
+      "$referrer",
+      "$initial_referrer",
+      "$session_entry_referrer",
+    ],
     loaded: trackInteractions,
     capture_pageview: true,
     capture_pageleave: true,

@@ -42,7 +42,12 @@ export function trackInteractions(posthog) {
       if (url.protocol === "tel:") capture("phone_click")
       else if (url.protocol === "mailto:") capture("email_click")
       else if (url.protocol === "whatsapp:") capture("whatsapp_click")
-      else if (url.protocol === "https:" || url.protocol === "http:") {
+      else if (
+        link.hasAttribute("download") &&
+        (url.protocol === "blob:" || url.protocol === "data:")
+      ) {
+        capture("download_click")
+      } else if (url.protocol === "https:" || url.protocol === "http:") {
         if (
           ["wa.me", "api.whatsapp.com", "web.whatsapp.com"].includes(
             url.hostname
