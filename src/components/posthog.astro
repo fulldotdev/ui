@@ -1,0 +1,25 @@
+<script>
+  const hostname = window.location.hostname.replace(/^www\./, "")
+  const siteHostname = new URL(import.meta.env.SITE).hostname.replace(
+    /^www\./,
+    ""
+  )
+
+  if (hostname === siteHostname) {
+    const startAnalytics = () => {
+      void import("../lib/analytics").then(({ startAnalytics }) =>
+        startAnalytics()
+      )
+    }
+    const scheduleAnalytics = () => {
+      if ("requestIdleCallback" in window) {
+        window.requestIdleCallback(startAnalytics, { timeout: 1000 })
+      } else {
+        setTimeout(startAnalytics, 0)
+      }
+    }
+
+    if (document.readyState === "complete") scheduleAnalytics()
+    else window.addEventListener("load", scheduleAnalytics, { once: true })
+  }
+</script>
