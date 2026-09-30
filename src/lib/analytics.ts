@@ -1,8 +1,13 @@
+import "posthog-js/dist/web-vitals"
+
 import { sanitizeExceptionUrls } from "./analytics-privacy.js"
 
 import "posthog-js/dist/exception-autocapture"
 
-import { ErrorTrackingExtensions } from "posthog-js/dist/extension-bundles"
+import {
+  AnalyticsExtensions,
+  ErrorTrackingExtensions,
+} from "posthog-js/dist/extension-bundles"
 import posthog from "posthog-js/dist/module.slim.no-external"
 
 import { trackInteractions } from "./analytics-interactions.js"
@@ -14,13 +19,16 @@ export function startAnalytics() {
     cookieless_mode: "always",
     person_profiles: "never",
     autocapture: false,
-    __extensionClasses: { ...ErrorTrackingExtensions },
+    __extensionClasses: {
+      ...ErrorTrackingExtensions,
+      webVitalsAutocapture: AnalyticsExtensions.webVitalsAutocapture,
+    },
     capture_exceptions: {
       capture_unhandled_errors: true,
       capture_unhandled_rejections: true,
       capture_console_errors: true,
     },
-    capture_performance: false,
+    capture_performance: { web_vitals: true, web_vitals_attribution: false },
     mask_personal_data_properties: true,
     custom_personal_data_properties: [
       "email",

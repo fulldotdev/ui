@@ -1,30 +1,39 @@
-/** Remove URL credentials, queries and fragments from exception data. */
+/** Remove URL details from exceptions; redact ambiguous text as a whole. */
 export function sanitizeExceptionUrls(event) {
   if (event?.event !== "$exception") return event
-  // Keep structured line/column fields; remove entire URL queries, including numeric suffixes.
   const seen = new WeakSet()
   const clean = (value) => {
     if (typeof value === "string") {
-      return value.replace(/(?:https?:|[\\/]|[\w.-]+[?#])\S+/gi, (url) => {
-        try {
-          const normalized = url.replace(/\\/g, "/")
-          const absolute = /^https?:/i.test(normalized)
-          const parsed = new URL(
-            normalized,
-            absolute ? undefined : "https://redacted.invalid"
-          )
-          // Ambiguous joined URLs are safer to redact than partially preserve.
-          if (/https?:/i.test(parsed.pathname)) return "[redacted-url]"
-          const prefix = absolute
-            ? parsed.protocol + "//" + parsed.host
-            : normalized.startsWith("//")
-              ? "//" + parsed.host
-              : ""
-          return prefix + parsed.pathname
-        } catch {
-          return "[redacted-url]"
-        }
-      })
+      if (!/[?#@]/.test(value)) return value
+      const normalized = value.replace(/\\/g, "/")
+      // Only preserve an unambiguous standalone URL or relative filename.
+      if (
+        /\s|["'<>]/.test(normalized) ||
+        !/^(?:https?:|\/|\.\.?\/|[\w.-]+[?#])/i.test(normalized)
+      ) {
+        return "[redacted-url-details]"
+      }
+      try {
+        const absolute = /^https?:/i.test(normalized)
+        const parsed = new URL(
+          normalized,
+          absolute ? undefined : "https://redacted.invalid"
+        )
+        if (/https?:|\/\/|@/i.test(parsed.pathname))
+          return "[redacted-url-details]"
+        const prefix = absolute
+          ? parsed.protocol + "//" + parsed.host
+          : normalized.startsWith("//")
+            ? "//" + parsed.host
+            : ""
+        const pathname =
+          !absolute && !normalized.startsWith("/")
+            ? parsed.pathname.slice(1)
+            : parsed.pathname
+        return prefix + pathname
+      } catch {
+        return "[redacted-url-details]"
+      }
     }
     if (value && typeof value === "object" && !seen.has(value)) {
       seen.add(value)
