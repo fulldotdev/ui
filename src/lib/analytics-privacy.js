@@ -5,25 +5,26 @@ export function sanitizeExceptionUrls(event) {
   const seen = new WeakSet()
   const clean = (value) => {
     if (typeof value === "string") {
-      return value.replace(
-        /(?:https?:[\\/]{2}|\/)(?:(?!https?:[\\/]{2})[^\s<>"])+/gi,
-        (url) => {
-          try {
-            const parsed = new URL(
-              url.replace(/\\/g, "/"),
-              "https://redacted.invalid"
-            )
-            const prefix = /^https?:/i.test(url)
-              ? parsed.protocol + "//" + parsed.host
-              : url.startsWith("//")
-                ? "//" + parsed.host
-                : ""
-            return prefix + parsed.pathname
-          } catch {
-            return "[redacted-url]"
-          }
+      return value.replace(/(?:https?:|[\\/]|[\w.-]+[?#])\S+/gi, (url) => {
+        try {
+          const normalized = url.replace(/\\/g, "/")
+          const absolute = /^https?:/i.test(normalized)
+          const parsed = new URL(
+            normalized,
+            absolute ? undefined : "https://redacted.invalid"
+          )
+          // Ambiguous joined URLs are safer to redact than partially preserve.
+          if (/https?:/i.test(parsed.pathname)) return "[redacted-url]"
+          const prefix = absolute
+            ? parsed.protocol + "//" + parsed.host
+            : normalized.startsWith("//")
+              ? "//" + parsed.host
+              : ""
+          return prefix + parsed.pathname
+        } catch {
+          return "[redacted-url]"
         }
-      )
+      })
     }
     if (value && typeof value === "object" && !seen.has(value)) {
       seen.add(value)
