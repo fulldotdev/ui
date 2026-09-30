@@ -1,6 +1,7 @@
 ---
 import type { ImageMetadata } from "astro"
 import { Font, getImage } from "astro:assets"
+import { trailingSlash } from "astro:config/server"
 import { AstroSeo } from "@lexingtonthemes/seo"
 
 type Props = {
@@ -17,9 +18,13 @@ type Props = {
 }
 
 const baseUrl = Astro.site?.origin || Astro.url.origin
-const pagePathname = Astro.url.pathname.endsWith("/")
+const pathnameWithSlash = Astro.url.pathname.endsWith("/")
   ? Astro.url.pathname
   : `${Astro.url.pathname}/`
+const pagePathname =
+  trailingSlash === "never" && pathnameWithSlash !== "/"
+    ? pathnameWithSlash.slice(0, -1)
+    : pathnameWithSlash
 
 const {
   name,
@@ -53,7 +58,7 @@ const transformedImage =
     : undefined
 
 const openGraphImage =
-  typeof image?.src === "string"
+  image?.src && typeof image.src === "string"
     ? {
         url: new URL(image.src, baseUrl).toString(),
         alt: image.alt,
@@ -64,7 +69,7 @@ const openGraphImage =
           alt: image?.alt,
           width: transformedImage.attributes.width,
           height: transformedImage.attributes.height,
-          type: toImageMimeType(transformedImage.attributes.format),
+          type: toImageMimeType(transformedImage.options.format),
         }
       : undefined
 ---
@@ -95,6 +100,9 @@ const openGraphImage =
           },
         ],
       }),
+    }}
+    twitter={{
+      cardType: openGraphImage ? "summary_large_image" : "summary",
     }}
   />
   <slot />
