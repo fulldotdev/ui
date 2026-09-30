@@ -20,10 +20,20 @@ jobs:
       pull-requests: write
 
     steps:
+      # A GitHub App token instead of GITHUB_TOKEN, so the release pull request
+      # triggers the organization Check like any other pull request.
+      - name: Create release token
+        id: token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
       - name: Checkout
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          token: ${{ steps.token.outputs.token }}
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v6
@@ -47,4 +57,4 @@ jobs:
           commit: "[ci] release"
           title: "[ci] release"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
