@@ -16,11 +16,6 @@ const errors = []
 const baseItems = ["init"]
 // Projects set up Tailwind before installing from a shadcn registry.
 const prerequisites = new Set(["astro", "tailwindcss"])
-// Known open problems. Remove an entry when its item is fixed.
-const knownIssues = new Set([
-  // The docs site catch-all route needs the private layout renderer.
-  'page: src/pages/[...page].astro imports "@/components/layout-renderer.astro"',
-])
 const builtins = new Set(builtinModules)
 const decoder = new TextDecoder("utf-8", { fatal: true })
 const extensions = ["", ".ts", ".astro", ".js", "/index.ts"]
@@ -101,10 +96,7 @@ for (const item of registry.items) {
     for (const specifier of specifiers(source)) {
       if (specifier.startsWith(".") || specifier.startsWith("@/")) {
         const problem = `${item.name}: ${file.path} imports "${specifier}"`
-        if (
-          !resolve(specifier, installedPath(file), provided) &&
-          !knownIssues.has(problem)
-        ) {
+        if (!resolve(specifier, installedPath(file), provided)) {
           errors.push(
             `${problem}, which no file in the item or its registry dependencies provides`
           )
