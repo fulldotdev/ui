@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.14.3
+
+### Patch Changes
+
+- [#215](https://github.com/fulldotdev/ui/pull/215) [`b87b9e1`](https://github.com/fulldotdev/ui/commit/b87b9e113f14453f9fd349555ee3654679457dc9) Thanks [@silveltman](https://github.com/silveltman)! - Pause the `Marquee` animation when the visitor prefers reduced motion, and keep a `disabled` value passed to `CarouselPrevious` or `CarouselNext` instead of overwriting it when the carousel scrolls.
+
 ## 0.14.2
 
 ### Patch Changes
