@@ -52,8 +52,10 @@ const pathFor = (source: Source, icon: string) =>
 // Resolve an icon by explicit name, or derive one from a link href.
 // Names may be prefixed with `lucide:` or `simple:` to pick a set when both
 // sets contain the same name (for example `github` or `figma`).
+const hasName = name != null && name !== ""
+
 const resolve = () => {
-  let key = name != null && name !== "" ? String(name) : undefined
+  let key = hasName ? String(name) : undefined
   let order: Source[] = ["lucide", "simple"]
 
   if (!key && href) {
@@ -84,7 +86,7 @@ const resolve = () => {
 
   // A link always gets an icon, even when its brand has no logo in either set
   // (Simple Icons removed LinkedIn, for example).
-  if (!name && href) return linkIcon
+  if (!hasName && href) return linkIcon
 
   return undefined
 }
