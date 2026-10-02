@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "collapsible",
+  "title": "Collapsible",
+  "description": "An interactive component which expands/collapses a panel.",
+  "dependencies": [
+    "@data-slot/collapsible@^1.0.2"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/collapsible/collapsible.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  defaultOpen?: boolean\n  hiddenUntilFound?: boolean\n}\n\nconst {\n  class: className,\n  defaultOpen,\n  hiddenUntilFound,\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot=\"collapsible\"\n  data-default-open={defaultOpen}\n  data-hidden-until-found={hiddenUntilFound}\n  class={cn(className)}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/collapsible\"\n\n  const controllers: ReturnType<typeof create> = []\n  const initialize = () => controllers.push(...create())\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of controllers) controller.destroy()\n    controllers.length = 0\n  })\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/collapsible/collapsible-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, hidden: _hidden, ...props } = Astro.props\n---\n\n<div data-slot=\"collapsible-content\" hidden class={cn(className)} {...props}>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/collapsible/collapsible-trigger.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"button\">\n\nconst { class: className, type = \"button\", ...props } = Astro.props\n---\n\n<button\n  data-slot=\"collapsible-trigger\"\n  type={type}\n  class={cn(className)}\n  {...props}\n>\n  <slot />\n</button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/collapsible/index.ts",
+      "content": "export { default as Collapsible } from \"./collapsible.astro\"\nexport { default as CollapsibleContent } from \"./collapsible-content.astro\"\nexport { default as CollapsibleTrigger } from \"./collapsible-trigger.astro\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/components/collapsible/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

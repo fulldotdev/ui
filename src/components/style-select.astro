@@ -1,0 +1,77 @@
+---
+// Docs-only control to preview examples in each shadcn/ui style.
+import { defaultStyle, styles } from "@/lib/styles"
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
+---
+
+<NativeSelect
+  size="sm"
+  data-style-select
+  data-default-style={defaultStyle}
+  aria-label="Component style"
+>
+  {
+    styles.map((style) => (
+      <NativeSelectOption value={style}>
+        {style[0].toUpperCase() + style.slice(1)}
+      </NativeSelectOption>
+    ))
+  }
+</NativeSelect>
+
+<script>
+  const key = "fulldev-ui-style"
+  const select = document.querySelector<HTMLSelectElement>(
+    "[data-style-select]"
+  )
+  let current = select?.dataset.defaultStyle ?? "vega"
+  // Rendered previews per style, kept so switching back keeps their state.
+  const cache = new Map<HTMLElement, Map<string, DocumentFragment>>()
+
+  // Other styles are stored as JSON, so they are not part of the page HTML.
+  const render = (preview: HTMLElement, style: string) => {
+    const data = preview.parentElement?.querySelector(
+      `script[data-style-template="${style}"]`
+    )
+    if (!data?.textContent) return
+    const template = document.createElement("template")
+    template.innerHTML = JSON.parse(data.textContent)
+    return template.content
+  }
+
+  const show = (style: string) => {
+    if (style === current) return
+    const previews = document.querySelectorAll<HTMLElement>(
+      "[data-style-preview]"
+    )
+    previews.forEach((preview) => {
+      const stored = cache.get(preview) ?? new Map<string, DocumentFragment>()
+      cache.set(preview, stored)
+      const fragment = document.createDocumentFragment()
+      fragment.append(...preview.childNodes)
+      stored.set(current, fragment)
+      const next = stored.get(style) ?? render(preview, style) ?? fragment
+      preview.replaceChildren(next)
+      preview.dataset.stylePreview = style
+    })
+    // Component scripts initialize new elements on page-load and skip elements
+    // they already control, so the rest of the page and cached previews keep state.
+    document.dispatchEvent(new Event("astro:page-load"))
+    current = style
+    document
+      .querySelectorAll<HTMLSelectElement>("[data-style-select]")
+      .forEach((element) => (element.value = style))
+  }
+
+  const saved = localStorage.getItem(key)
+  if ([...(select?.options ?? [])].some((option) => option.value === saved)) {
+    show(saved!)
+  }
+
+  document.addEventListener("change", (event) => {
+    if (!(event.target instanceof HTMLSelectElement)) return
+    if (!event.target.matches("[data-style-select]")) return
+    localStorage.setItem(key, event.target.value)
+    show(event.target.value)
+  })
+</script>

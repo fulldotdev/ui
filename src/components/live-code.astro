@@ -2,8 +2,10 @@
 import Check from "@lucide/astro/icons/check"
 import Copy from "@lucide/astro/icons/copy"
 
+import { applyStyle, defaultStyle, styles } from "@/lib/styles"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import StyleSelect from "@/components/style-select.astro"
 
 type ComponentProps = {
   name?: string
@@ -36,6 +38,13 @@ const installCommand = componentSlug
 const installButtonId = installCommand
   ? `live-code-copy-install-${crypto.randomUUID()}`
   : undefined
+// Render the example once per style; the style menu shows one of them.
+const example = Astro.slots.has("example")
+  ? await Astro.slots.render("example")
+  : ""
+const previews = Object.fromEntries(
+  styles.map((style) => [style, applyStyle(example, style)])
+)
 ---
 
 <Tabs defaultValue="preview" class="live-code-layout w-full gap-3">
@@ -43,10 +52,13 @@ const installButtonId = installCommand
     data-not-typeset
     class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
   >
-    <TabsList class="justify-start self-start">
-      <TabsTrigger value="preview" class="flex-none"> Preview </TabsTrigger>
-      <TabsTrigger value="code" class="flex-none">Code</TabsTrigger>
-    </TabsList>
+    <div class="flex items-center gap-3">
+      <TabsList class="justify-start self-start">
+        <TabsTrigger value="preview" class="flex-none"> Preview </TabsTrigger>
+        <TabsTrigger value="code" class="flex-none">Code</TabsTrigger>
+      </TabsList>
+      <StyleSelect />
+    </div>
 
     <div
       class="flex min-w-0 flex-col gap-3 sm:max-w-xl sm:flex-1 sm:flex-row sm:items-center sm:justify-end sm:gap-6"
@@ -81,15 +93,30 @@ const installButtonId = installCommand
       ]}
     >
       <div
+        data-style-preview={defaultStyle}
         data-not-typeset={isTypographyPreview ? undefined : ""}
         class:list={[
           isBlockPreview
             ? "bg-background w-full"
             : "flex w-full flex-wrap items-center justify-center gap-3",
         ]}
-      >
-        <slot name="example" />
-      </div>
+        set:html={previews[defaultStyle]}
+      />
+      {
+        styles
+          .filter((style) => style !== defaultStyle)
+          .map((style) => (
+            <script
+              is:inline
+              type="application/json"
+              data-style-template={style}
+              set:html={JSON.stringify(previews[style]).replace(
+                /</g,
+                "\\u003c"
+              )}
+            />
+          ))
+      }
     </div>
   </TabsContent>
 

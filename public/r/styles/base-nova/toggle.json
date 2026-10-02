@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toggle",
+  "title": "Toggle",
+  "description": "A two-state button that can be either on or off.",
+  "dependencies": [
+    "@data-slot/toggle@^1.0.2"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/toggle/toggle.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { toggleVariants, type ToggleVariantProps } from \"./toggle-variants\"\n\ntype Props = HTMLAttributes<\"button\"> &\n  ToggleVariantProps & {\n    defaultPressed?: boolean\n    disabled?: boolean\n  }\n\nconst {\n  class: className,\n  variant = \"default\",\n  size = \"default\",\n  defaultPressed,\n  disabled,\n  type = \"button\",\n  ...props\n} = Astro.props\n---\n\n<button\n  data-slot=\"toggle\"\n  data-default-pressed={defaultPressed}\n  data-disabled={disabled}\n  type={type}\n  disabled={disabled}\n  aria-pressed={defaultPressed === true ? \"true\" : \"false\"}\n  class={cn(toggleVariants({ variant, size }), className)}\n  {...props}\n>\n  <slot />\n</button>\n\n<script>\n  import { create } from \"@data-slot/toggle\"\n\n  const controllers: ReturnType<typeof create> = []\n  const initialize = () => controllers.push(...create())\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of controllers) controller.destroy()\n    controllers.length = 0\n  })\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/toggle/toggle-variants.ts",
+      "content": "import { cva, type VariantProps } from \"class-variance-authority\"\n\nexport const toggleVariants = cva(\n  \"hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[state=on]:bg-muted gap-1 rounded-lg text-sm font-medium transition-all [&_svg:not([class*='size-'])]:size-4 group/toggle hover:bg-muted inline-flex items-center justify-center whitespace-nowrap outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-transparent\",\n        outline: \"border-input hover:bg-muted border bg-transparent\",\n      },\n      size: {\n        default: \"h-8 min-w-8 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2\",\n        sm: \"h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5\",\n        lg: \"h-9 min-w-9 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  }\n)\n\nexport type ToggleVariantProps = VariantProps<typeof toggleVariants>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/toggle/index.ts",
+      "content": "export { default as Toggle } from \"./toggle.astro\"\nexport { toggleVariants } from \"./toggle-variants\"\nexport type { ToggleVariantProps } from \"./toggle-variants\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/components/toggle/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

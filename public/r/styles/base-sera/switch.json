@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "switch",
+  "title": "Switch",
+  "description": "A control that allows the user to toggle between checked and not checked.",
+  "dependencies": [
+    "@data-slot/switch@^1.0.2"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/switch/switch.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"span\"> & {\n  defaultChecked?: boolean\n  disabled?: boolean\n  readOnly?: boolean\n  required?: boolean\n  name?: string\n  size?: \"default\" | \"sm\"\n  value?: string\n  uncheckedValue?: string\n}\n\nconst {\n  class: className,\n  defaultChecked,\n  disabled,\n  readOnly,\n  required,\n  name,\n  size = \"default\",\n  value,\n  uncheckedValue,\n  ...props\n} = Astro.props\n\nconst initialChecked = defaultChecked === true\nconst switchStyle =\n  \"data-checked:bg-primary data-unchecked:bg-input data-checked:border-primary border data-unchecked:border-input/50 focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 shrink-0 rounded-none focus-visible:ring-2 aria-invalid:ring-2 group-has-[:focus-visible]/field-label:ring-0 group-has-[:focus-visible]/field-label:data-unchecked:border-input/50 group-has-[:focus-visible]/field-label:data-checked:border-primary data-[size=default]:h-4.5 data-[size=default]:w-8.25 data-[size=sm]:h-3.5 data-[size=sm]:w-6.25 peer group/switch relative inline-flex items-center transition-all outline-none after:absolute after:-inset-x-3 after:-inset-y-2 data-disabled:cursor-not-allowed data-disabled:opacity-50 data-readonly:cursor-default\"\n---\n\n<span\n  role=\"switch\"\n  aria-checked={initialChecked ? \"true\" : \"false\"}\n  aria-disabled={disabled ? \"true\" : undefined}\n  aria-readonly={readOnly ? \"true\" : undefined}\n  aria-required={required ? \"true\" : undefined}\n  data-slot=\"switch\"\n  data-size={size}\n  data-checked={initialChecked ? \"\" : undefined}\n  data-unchecked={initialChecked ? undefined : \"\"}\n  data-default-checked={defaultChecked}\n  data-disabled={disabled ? \"true\" : undefined}\n  data-read-only={readOnly}\n  data-readonly={readOnly ? \"\" : undefined}\n  data-required={required}\n  data-name={name}\n  data-value={value}\n  data-unchecked-value={uncheckedValue}\n  class={cn(switchStyle, className)}\n  {...props}\n>\n  <span\n    aria-hidden=\"true\"\n    data-slot=\"switch-thumb\"\n    data-checked={initialChecked ? \"\" : undefined}\n    data-unchecked={initialChecked ? undefined : \"\"}\n    class=\"bg-background dark:data-unchecked:bg-foreground dark:data-checked:bg-primary-foreground group-data-[size=default]/switch:size-3.5 group-data-[size=sm]/switch:size-2.5 data-checked:translate-x-[calc(100%+2px)] data-unchecked:translate-x-0.25 pointer-events-none block ring-0 transition-transform\"\n  ></span>\n</span>\n\n<script>\n  import { create } from \"@data-slot/switch\"\n\n  const controllers: ReturnType<typeof create> = []\n  const initialize = () => controllers.push(...create())\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of controllers) controller.destroy()\n    controllers.length = 0\n  })\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/switch/index.ts",
+      "content": "export { default as Switch } from \"./switch.astro\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/components/switch/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

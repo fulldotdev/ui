@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toggle-group",
+  "title": "Toggle Group",
+  "description": "A set of two-state buttons that can be toggled independently or as a single choice.",
+  "dependencies": [
+    "@data-slot/toggle-group@^1.0.2"
+  ],
+  "registryDependencies": [
+    "@fulldev/toggle"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/toggle-group/index.ts",
+      "content": "export { default as ToggleGroup } from \"./toggle-group.astro\"\nexport { default as ToggleGroupItem } from \"./toggle-group-item.astro\"\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/toggle-group/toggle-group-item.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\nimport {\n  toggleVariants,\n  type ToggleVariantProps,\n} from \"@/components/ui/toggle/toggle-variants\"\n\ntype Props = HTMLAttributes<\"button\"> &\n  ToggleVariantProps & {\n    value: string\n    disabled?: boolean\n  }\n\nconst {\n  class: className,\n  value,\n  disabled,\n  variant = \"default\",\n  size = \"default\",\n  type = \"button\",\n  ...props\n} = Astro.props\n---\n\n<button\n  data-slot=\"toggle-group-item\"\n  data-value={value}\n  data-disabled={disabled ? \"\" : undefined}\n  type={type}\n  disabled={disabled}\n  aria-pressed=\"false\"\n  class={cn(\n    \"data-[state=on]:bg-muted data-[state=on]:text-foreground group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-6 group-data-[spacing=0]/toggle-group:shadow-none group-data-horizontal/toggle-group:group-data-[spacing=0]/toggle-group:first:rounded-none group-data-vertical/toggle-group:group-data-[spacing=0]/toggle-group:first:rounded-none group-data-horizontal/toggle-group:group-data-[spacing=0]/toggle-group:last:rounded-none group-data-vertical/toggle-group:group-data-[spacing=0]/toggle-group:last:rounded-none group-data-[spacing=0]/toggle-group:has-data-[icon=inline-end]:pr-4 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-start]:pl-4 shrink-0 group-aria-disabled/toggle-group:pointer-events-none group-aria-disabled/toggle-group:opacity-50 focus:z-10 focus-visible:z-10\",\n    \"group-data-[variant=outline]/toggle-group:border-input group-data-[variant=outline]/toggle-group:hover:bg-muted group-data-[variant=outline]/toggle-group:border group-data-[variant=outline]/toggle-group:bg-transparent group-data-[variant=default]/toggle-group:border-0 group-data-[variant=default]/toggle-group:shadow-none group-data-[variant=default]/toggle-group:data-[state=off]:bg-transparent group-data-[variant=outline]/toggle-group:data-[state=off]:bg-transparent\",\n    \"group-data-[size=default]/toggle-group:h-10 group-data-[size=default]/toggle-group:min-w-10 group-data-[size=default]/toggle-group:px-6 group-data-[size=default]/toggle-group:has-data-[icon=inline-end]:pr-4 group-data-[size=default]/toggle-group:has-data-[icon=inline-start]:pl-4 group-data-[size=sm]/toggle-group:h-9 group-data-[size=sm]/toggle-group:min-w-9 group-data-[size=sm]/toggle-group:px-4 group-data-[size=sm]/toggle-group:has-data-[icon=inline-end]:pr-3 group-data-[size=sm]/toggle-group:has-data-[icon=inline-start]:pl-3 group-data-[size=lg]/toggle-group:h-11 group-data-[size=lg]/toggle-group:min-w-11 group-data-[size=lg]/toggle-group:px-8 group-data-[size=lg]/toggle-group:has-data-[icon=inline-end]:pr-5 group-data-[size=lg]/toggle-group:has-data-[icon=inline-start]:pl-5\",\n    toggleVariants({ variant, size }),\n    className\n  )}\n  {...props}\n>\n  <slot />\n</button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/toggle-group/toggle-group.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\nimport type { ToggleVariantProps } from \"@/components/ui/toggle/toggle-variants\"\n\ntype Props = HTMLAttributes<\"div\"> &\n  ToggleVariantProps & {\n    defaultValue?: string | string[]\n    multiple?: boolean\n    orientation?: \"horizontal\" | \"vertical\"\n    loop?: boolean\n    disabled?: boolean\n    spacing?: number\n  }\n\nconst {\n  class: className,\n  style,\n  defaultValue,\n  multiple,\n  orientation = \"horizontal\",\n  loop,\n  disabled,\n  variant,\n  size,\n  spacing = 2,\n  ...props\n} = Astro.props\n\nconst serializedDefaultValue = Array.isArray(defaultValue)\n  ? defaultValue.join(\" \")\n  : defaultValue\n\nconst resolvedStyle =\n  typeof style === \"string\"\n    ? `--gap: ${spacing}; ${style}`\n    : { \"--gap\": spacing, ...(style ?? {}) }\n---\n\n<div\n  role=\"group\"\n  data-slot=\"toggle-group\"\n  data-default-value={serializedDefaultValue}\n  data-multiple={multiple ? \"\" : undefined}\n  data-orientation={orientation}\n  data-horizontal={orientation === \"horizontal\" ? \"\" : undefined}\n  data-vertical={orientation === \"vertical\" ? \"\" : undefined}\n  data-loop={loop}\n  data-disabled={disabled ? \"\" : undefined}\n  data-variant={variant}\n  data-size={size}\n  data-spacing={spacing}\n  style={resolvedStyle}\n  class={cn(\n    \"data-[spacing=0]:data-[variant=outline]:rounded-none group/toggle-group flex w-fit flex-row items-center gap-[--spacing(var(--gap))] data-vertical:flex-col data-vertical:items-stretch [&[data-orientation=horizontal][data-spacing='0'][data-variant=outline]>[data-slot=toggle-group-item]:not(:first-child)]:border-l-0 [&[data-orientation=vertical][data-spacing='0'][data-variant=outline]>[data-slot=toggle-group-item]:not(:first-child)]:border-t-0 [&[data-spacing='0']>[data-slot=toggle-group-item]]:shadow-none\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/toggle-group\"\n\n  const controllers: ReturnType<typeof create> = []\n  const initialize = () => controllers.push(...create())\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of controllers) controller.destroy()\n    controllers.length = 0\n  })\n</script>\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/components/toggle-group/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}
