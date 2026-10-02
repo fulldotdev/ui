@@ -16,6 +16,7 @@ This repo has extra responsibilities: it is the Fulldev UI registry source, docs
 - Installable blocks live in `src/components/blocks`.
 - Registry items must be portable outside this docs site.
 - Do not import private docs, content, layout, route, global, or schema code from installable registry items.
+- Import another component through its index (`@/components/ui/<name>`) and a file of the same component with `./`. ESLint enforces it, so a site's knip sees every part of a component it uses.
 - Preserve shadcn parity where a component is intentionally shadcn-compatible.
 - Fix docs/API mismatches at the implementation source, not by hiding the mismatch in examples.
 

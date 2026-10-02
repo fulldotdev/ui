@@ -13,4 +13,23 @@ export default defineConfig([
   },
   ...astro.configs.recommended,
   ...astro.configs["jsx-a11y-recommended"],
+  {
+    // A site installs whole components, so tools such as knip can only tell
+    // which ones it uses when components import each other through index.ts.
+    files: ["**/*.{js,mjs,ts,astro}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              regex: "^@/components/ui/[^/]+/",
+              message:
+                "Import another component through its index, and a file of the same component with ./",
+            },
+          ],
+        },
+      ],
+    },
+  },
 ])
