@@ -13,7 +13,7 @@ import posthog from "posthog-js/dist/module.slim.no-external"
 import { trackInteractions } from "./analytics-interactions.js"
 
 export function startAnalytics() {
-  posthog.init("phc_mVacbe8Xydu0UZlh4bNw5EGisvzyRcpqXEEuEEp5lOY", {
+  posthog.init("phc_txCmZNAK3YueTeNyvtXmnh9JvK2LdbF3hK3kvxRcEJou", {
     api_host: "https://eu.i.posthog.com",
     defaults: "2025-11-30",
     cookieless_mode: "always",
