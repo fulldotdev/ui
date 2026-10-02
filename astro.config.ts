@@ -1,4 +1,5 @@
 import { defineConfig, fontProviders } from "astro/config"
+import { unified } from "@astrojs/markdown-remark"
 import mdx from "@astrojs/mdx"
 import liveCode from "astro-live-code"
 
@@ -24,6 +25,9 @@ export default defineConfig({
     breakpoints: [640, 750, 828, 1080, 1280, 1668, 2048, 2560],
   },
   markdown: {
+    // astro-live-code adds a remark plugin, which only runs on the unified
+    // processor. Astro 7 defaults to Sätteri.
+    processor: unified(),
     shikiConfig: {
       themes: {
         light: "github-light",
