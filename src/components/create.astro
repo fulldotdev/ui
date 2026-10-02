@@ -6,7 +6,6 @@ import Shuffle from "@lucide/astro/icons/shuffle"
 
 import {
   baseColorOptions,
-  chartOptions,
   DEFAULT_CONFIG,
   FONTS,
   MENU_ACCENTS,
@@ -39,7 +38,11 @@ const controls = [
     label: "Theme",
     options: themeOptions(DEFAULT_CONFIG.baseColor),
   },
-  { name: "chartColor", label: "Chart color", options: chartOptions },
+  {
+    name: "chartColor",
+    label: "Chart color",
+    options: themeOptions(DEFAULT_CONFIG.baseColor),
+  },
   { name: "font", label: "Font" },
   { name: "fontHeading", label: "Heading font" },
   { name: "radius", label: "Radius", options: RADII },
@@ -128,7 +131,9 @@ const command = (template: string) => template.replace("{preset}", code)
       class="bg-muted/40 flex flex-wrap items-center justify-between gap-3 rounded-xl border p-3"
     >
       <div class="flex min-w-0 flex-col">
-        <span class="text-muted-foreground text-xs">Preset</span>
+        <span class="text-muted-foreground text-xs" data-preset-status
+          >Fulldev UI default, change an option to create a preset</span
+        >
         <code class="font-mono text-sm font-medium" data-preset-code
           >{code}</code
         >
@@ -174,18 +179,18 @@ const command = (template: string) => template.replace("{preset}", code)
           In your Astro project, initialize shadcn/ui with the preset:
         </p>
         <pre
-          class="bg-muted overflow-x-auto rounded-lg p-3 font-mono text-xs"><code data-preset-command={commands.init}>{command(commands.init)}</code></pre>
+          class="bg-muted rounded-lg p-3 font-mono text-xs break-all whitespace-pre-wrap"><code data-preset-command={commands.init}>{command(commands.init)}</code></pre>
         <p class="text-muted-foreground">
           Add the Fulldev UI registry to <code>components.json</code>:
         </p>
         <pre
-          class="bg-muted overflow-x-auto rounded-lg p-3 font-mono text-xs"><code>{registry}</code></pre>
+          class="bg-muted rounded-lg p-3 font-mono text-xs break-all whitespace-pre-wrap"><code>{registry}</code></pre>
         <p class="text-muted-foreground">
           Install the Fulldev UI base, then apply the preset's theme and fonts
           on top of it:
         </p>
         <pre
-          class="bg-muted overflow-x-auto rounded-lg p-3 font-mono text-xs"><code>{commands.base}</code>
+          class="bg-muted rounded-lg p-3 font-mono text-xs break-all whitespace-pre-wrap"><code>{commands.base}</code>
 <code data-preset-command={commands.theme}>{command(commands.theme)}</code></pre>
       </TabsContent>
       <TabsContent value="existing" class="flex flex-col gap-3 text-sm" hidden>
@@ -195,7 +200,7 @@ const command = (template: string) => template.replace("{preset}", code)
           registry.
         </p>
         <pre
-          class="bg-muted overflow-x-auto rounded-lg p-3 font-mono text-xs"><code data-preset-command={commands.apply}>{command(commands.apply)}</code>
+          class="bg-muted rounded-lg p-3 font-mono text-xs break-all whitespace-pre-wrap"><code data-preset-command={commands.apply}>{command(commands.apply)}</code>
 <code>{commands.reinstall}</code></pre>
       </TabsContent>
     </Tabs>
@@ -203,16 +208,20 @@ const command = (template: string) => template.replace("{preset}", code)
 </div>
 
 <script>
-  import { generateRandomConfig } from "shadcn/preset"
-
-  import { PRESET_EVENT, readPreset, writePreset } from "@/lib/preset-store"
   import {
-    BASE_COLORS,
+    applyPreset,
+    PRESET_EVENT,
+    readPreset,
+    writePreset,
+  } from "@/lib/preset-store"
+  import {
     decodePreset,
     DEFAULT_CONFIG,
     encodePreset,
+    normalizeConfig,
     presetCss,
     presetFontUrls,
+    randomConfig,
     themeOptions,
     type PresetConfig,
   } from "@/lib/presets"
@@ -227,22 +236,27 @@ const command = (template: string) => template.replace("{preset}", code)
     ...(readPreset()?.config as Partial<PresetConfig>),
   })
 
-  const save = (config: PresetConfig) =>
+  const save = (input: PresetConfig) => {
+    const config = normalizeConfig(input)
     writePreset({
       config,
       css: presetCss(config),
       fonts: presetFontUrls(config),
     })
+  }
 
-  // Themes depend on the base color, like on ui.shadcn.com.
+  // Theme and chart colors depend on the base color, like on ui.shadcn.com.
   const fillThemes = (baseColor: string) => {
-    const select = fields.find((field) => field.dataset.presetField === "theme")
-    if (!select) return
-    select.replaceChildren(
-      ...themeOptions(baseColor).map(
-        ({ name, label }) => new Option(label, name)
+    for (const field of fields) {
+      if (!["theme", "chartColor"].includes(field.dataset.presetField ?? "")) {
+        continue
+      }
+      field.replaceChildren(
+        ...themeOptions(baseColor).map(
+          ({ name, label }) => new Option(label, name)
+        )
       )
-    )
+    }
   }
 
   const render = () => {
@@ -253,9 +267,16 @@ const command = (template: string) => template.replace("{preset}", code)
         config[field.dataset.presetField as keyof PresetConfig] ?? ""
     }
     const code = encodePreset(config)
+    const custom = Boolean(readPreset()?.css)
     root?.querySelectorAll("[data-preset-code]").forEach((element) => {
       element.textContent = code
     })
+    const status = root?.querySelector("[data-preset-status]")
+    if (status) {
+      status.textContent = custom
+        ? "Preset"
+        : "Fulldev UI default, change an option to create a preset"
+    }
     root
       ?.querySelectorAll<HTMLElement>("[data-preset-command]")
       .forEach((element) => {
@@ -269,33 +290,31 @@ const command = (template: string) => template.replace("{preset}", code)
       ?.setAttribute("href", `https://ui.shadcn.com/create?preset=${code}`)
   }
 
-  // A shared link opens that preset.
-  const shared = new URLSearchParams(location.search).get("preset")
+  // A shared link opens that preset, then the address drops it, so later
+  // changes and Reset survive a reload.
+  const url = new URL(location.href)
+  const shared = url.searchParams.get("preset")
   const decoded = shared ? decodePreset(shared) : null
-  if (decoded) save({ ...decoded, iconLibrary: "lucide" })
+  if (shared) {
+    url.searchParams.delete("preset")
+    history.replaceState(history.state, "", url)
+  }
+  if (decoded) save({ ...decoded, iconLibrary: "lucide", menuColor: "default" })
+  else applyPreset(readPreset())
   render()
   document.addEventListener(PRESET_EVENT, render)
 
   for (const field of fields) {
     field.addEventListener("change", () => {
-      const config = {
+      save({
         ...current(),
         [field.dataset.presetField!]: field.value,
-      } as PresetConfig
-      // A base color is also its own theme; keep the theme valid.
-      if (
-        field.dataset.presetField === "baseColor" &&
-        BASE_COLORS.includes(config.theme)
-      ) {
-        config.theme = config.baseColor
-      }
-      save(config)
+      } as PresetConfig)
     })
   }
 
   root?.querySelector("[data-preset-random]")?.addEventListener("click", () => {
-    const random = generateRandomConfig() as PresetConfig
-    save({ ...random, iconLibrary: "lucide", menuColor: "default" })
+    save(randomConfig())
   })
 
   root?.querySelector("[data-preset-reset]")?.addEventListener("click", () => {

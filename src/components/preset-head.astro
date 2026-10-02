@@ -8,7 +8,9 @@
     const preset = JSON.parse(
       localStorage.getItem("fulldev-ui-preset") ?? "null"
     )
-    if (preset?.css) {
+    // A shared link (?preset=) sets its own theme; skip the stored one.
+    const shared = new URLSearchParams(location.search).has("preset")
+    if (preset?.css && !shared) {
       const style = document.createElement("style")
       style.id = "fulldev-ui-preset"
       style.textContent = preset.css

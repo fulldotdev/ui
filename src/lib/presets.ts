@@ -67,15 +67,45 @@ export const themeOptions = (baseColor: string) =>
     )
     .map(({ name, title }) => ({ name, label: title }))
 
-export const chartOptions = themeList.map(({ name, title }) => ({
-  name,
-  label: title,
-}))
-
 export const baseColorOptions = BASE_COLORS.map((name) => ({
   name,
   label: themeList.find((theme) => theme.name === name)?.title ?? name,
 }))
+
+// Keep theme and chart color valid for the base color, like ui.shadcn.com.
+export function normalizeConfig(config: PresetConfig): PresetConfig {
+  const valid = themeOptions(config.baseColor).map((option) => option.name)
+  const pick = (name: string | undefined) =>
+    (name && valid.includes(name)
+      ? name
+      : config.baseColor) as PresetConfig["theme"]
+  return {
+    ...config,
+    theme: pick(config.theme),
+    chartColor: pick(config.chartColor),
+  }
+}
+
+const sample = <T>(items: T[]) =>
+  items[Math.floor(Math.random() * items.length)]
+
+// A random preset from the options Fulldev UI supports.
+export function randomConfig(): PresetConfig {
+  const baseColor = sample(BASE_COLORS)
+  const themes = themeOptions(baseColor).map((option) => option.name)
+  const font = sample(fonts).name
+  return {
+    ...DEFAULT_CONFIG,
+    style: sample(STYLE_OPTIONS).name,
+    baseColor,
+    theme: sample(themes),
+    chartColor: sample(themes),
+    font,
+    fontHeading: Math.random() < 0.5 ? "inherit" : sample(fonts).name,
+    radius: sample(RADII).name,
+    menuAccent: sample(MENU_ACCENTS).name,
+  } as PresetConfig
+}
 
 const findTheme = (name: string) =>
   themeList.find((theme) => theme.name === name)
