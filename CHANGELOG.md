@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.16.1
+
+### Patch Changes
+
+- [#231](https://github.com/fulldotdev/ui/pull/231) [`ddf24cc`](https://github.com/fulldotdev/ui/commit/ddf24cc1ecae126f75e8ef8196bf5fc8a443cb9b) Thanks [@silveltman](https://github.com/silveltman)! - - `src/lib/utils.ts` re-exports `cn` from shadcn's `cn` package, which replaces `clsx` and `tailwind-merge`. The `init` item installs `cn` instead of those two. Existing sites keep working; to switch, replace `src/lib/utils.ts` with `export { cn } from "cn"`, add `cn`, and remove `clsx` and `tailwind-merge`.
+
 ## 0.16.0
 
 ### Minor Changes
