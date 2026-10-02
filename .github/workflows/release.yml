@@ -39,6 +39,9 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ steps.token.outputs.token }}
+          # Keep the token out of .git/config during the install; Changesets
+          # pushes through the GitHub API instead (commitMode below).
+          persist-credentials: false
 
       - name: Setup PNPM
         # v6.1.0 is the first release that installs pnpm 12; the v6 tag still points to 6.0.10.
@@ -62,5 +65,8 @@ jobs:
           publish: pnpm release:publish
           commit: "[ci] release"
           title: "[ci] release"
+          # Commits and tags go through the GitHub API with the App token, signed
+          # and attributed to the App, so no Git credential is needed in the checkout.
+          commitMode: github-api
         env:
           GITHUB_TOKEN: ${{ steps.token.outputs.token }}
