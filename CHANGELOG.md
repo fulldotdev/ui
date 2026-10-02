@@ -1,5 +1,16 @@
 # Fulldev UI
 
+## 0.17.0
+
+### Minor Changes
+
+- [#234](https://github.com/fulldotdev/ui/pull/234) [`d5783f6`](https://github.com/fulldotdev/ui/commit/d5783f61e23fcd704cee68ccbd418c5c57a869a8) Thanks [@silveltman](https://github.com/silveltman)! - Support all shadcn/ui styles: vega, nova, maia, lyra, mira, luma, sera, and rhea.
+  Components use shadcn/ui `cn-*` style placeholders, and the registry serves every
+  style at `https://ui.full.dev/r/styles/{style}/{name}.json`, so components install in
+  the style from your `components.json`. `/r/{name}.json` keeps serving vega. The docs
+  previews have a style menu, and a new Create page builds shadcn/ui presets
+  that apply to all docs previews.
+
 ## 0.16.2
 
 ### Patch Changes
