@@ -1,10 +1,8 @@
 ---
 import type { HTMLAttributes } from "astro/types"
-import Discord from "simple-icons/icons/discord.svg"
-import Github from "simple-icons/icons/github.svg"
-import X from "simple-icons/icons/x.svg"
 
 import { cn } from "@/lib/utils"
+import { Icon } from "@/components/ui/icon"
 import { Logo, LogoText } from "@/components/ui/logo"
 import { Section, SectionContainer } from "@/components/ui/section"
 import { Separator } from "@/components/ui/separator"
@@ -20,7 +18,7 @@ type Props = HTMLAttributes<"footer"> & {
   socials?: {
     label: string
     href: string
-    icon: string
+    icon?: string
   }[]
   copyright: string
   navigationLabel?: string
@@ -37,12 +35,6 @@ const {
   navigationLabel = "Footer navigation",
   ...props
 } = Astro.props
-
-const iconMap: Record<string, any> = {
-  github: Github,
-  discord: Discord,
-  x: X,
-}
 ---
 
 <footer class={cn("", className)} {...props}>
@@ -74,26 +66,17 @@ const iconMap: Record<string, any> = {
       {
         socials && socials.length > 0 && (
           <div class="flex items-center justify-center gap-3">
-            {socials.map((social) => {
-              const IconComp = iconMap[social.icon]
-              return (
-                <a
-                  href={social.href}
-                  class="text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label={social.label}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {IconComp && (
-                    <IconComp
-                      class="size-4"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    />
-                  )}
-                </a>
-              )
-            })}
+            {socials.map((social) => (
+              <a
+                href={social.href}
+                class="text-muted-foreground hover:text-foreground transition-colors"
+                aria-label={social.label}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Icon name={social.icon} href={social.href} class="size-4" />
+              </a>
+            ))}
           </div>
         )
       }
