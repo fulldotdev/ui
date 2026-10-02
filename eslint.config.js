@@ -28,7 +28,7 @@ export default defineConfig([
                 "Import another component through its index, and a file of the same component with ./",
             },
             {
-              regex: "^\\.\\./",
+              regex: "(^|/)\\.\\./",
               message:
                 "Import through @/ instead of ../, and another component through its index",
             },
