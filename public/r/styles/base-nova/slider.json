@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "slider",
+  "title": "Slider",
+  "description": "An input where the user selects a value from within a given range.",
+  "dependencies": [
+    "@data-slot/slider@^1.0.2"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/slider/slider.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype SliderValue = number | [number, number]\ntype ThumbAlignment = \"center\" | \"edge\" | \"edge-client-only\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  defaultValue?: SliderValue\n  min?: number\n  max?: number\n  step?: number\n  largeStep?: number\n  orientation?: \"horizontal\" | \"vertical\"\n  thumbAlignment?: ThumbAlignment\n  disabled?: boolean\n}\n\nconst {\n  class: className,\n  defaultValue,\n  min,\n  max,\n  step,\n  largeStep,\n  orientation = \"horizontal\",\n  thumbAlignment = \"edge\",\n  disabled,\n  ...props\n} = Astro.props\n\nconst serializedDefaultValue = Array.isArray(defaultValue)\n  ? defaultValue.join(\",\")\n  : defaultValue\nconst thumbCount = String(serializedDefaultValue ?? \"\").includes(\",\") ? 2 : 1\nconst orientationAttributes = {\n  \"data-horizontal\": orientation === \"horizontal\" ? \"\" : undefined,\n  \"data-vertical\": orientation === \"vertical\" ? \"\" : undefined,\n}\n---\n\n<div\n  data-slot=\"slider\"\n  data-default-value={serializedDefaultValue}\n  data-min={min}\n  data-max={max}\n  data-step={step}\n  data-large-step={largeStep}\n  data-orientation={orientation}\n  {...orientationAttributes}\n  data-thumb-alignment={thumbAlignment}\n  data-disabled={disabled ? \"true\" : undefined}\n  class={cn(\"data-horizontal:w-full data-vertical:h-full\", className)}\n  {...props}\n>\n  <div\n    data-slot=\"slider-control\"\n    data-orientation={orientation}\n    {...orientationAttributes}\n    data-disabled={disabled ? \"true\" : undefined}\n    class=\"data-vertical:min-h-40 relative flex w-full touch-none items-center select-none data-disabled:opacity-50 data-vertical:h-full data-vertical:w-auto data-vertical:flex-col\"\n  >\n    <div\n      data-slot=\"slider-track\"\n      {...orientationAttributes}\n      class=\"bg-muted rounded-full data-horizontal:h-1 data-horizontal:w-full data-vertical:h-full data-vertical:w-1 relative grow overflow-hidden select-none\"\n    >\n      <div\n        data-slot=\"slider-range\"\n        {...orientationAttributes}\n        class=\"bg-primary select-none data-horizontal:h-full data-vertical:w-full\"\n      >\n      </div>\n    </div>\n    {\n      Array.from({ length: thumbCount }).map(() => (\n        <div\n          data-slot=\"slider-thumb\"\n          class=\"border-ring ring-ring/50 relative size-3 rounded-full border bg-white transition-[color,box-shadow] after:absolute after:-inset-2 hover:ring-3 focus-visible:ring-3 focus-visible:outline-hidden active:ring-3 block shrink-0 select-none data-disabled:pointer-events-none data-disabled:opacity-50\"\n        />\n      ))\n    }\n  </div>\n</div>\n\n<script>\n  import { create } from \"@data-slot/slider\"\n\n  const controllers: ReturnType<typeof create> = []\n  const initialize = () => controllers.push(...create())\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of controllers) controller.destroy()\n    controllers.length = 0\n  })\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/slider/index.ts",
+      "content": "export { default as Slider } from \"./slider.astro\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/components/slider/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "select",
+  "title": "Select",
+  "description": "Displays a list of options for the user to pick from, triggered by a button.",
+  "dependencies": [
+    "@data-slot/select@^1.0.2",
+    "@lucide/astro"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/select/select.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport type { Align, Position, Side } from \"@data-slot/select\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  mountStrategy?: \"lazy\" | \"eager\"\n  defaultValue?: string\n  defaultOpen?: boolean\n  placeholder?: string\n  disabled?: boolean\n  required?: boolean\n  name?: string\n  position?: Position\n  side?: Side\n  align?: Align\n  sideOffset?: number\n  alignOffset?: number\n  avoidCollisions?: boolean\n  collisionPadding?: number\n  highlightItemOnHover?: boolean\n  lockScroll?: boolean\n}\n\nconst {\n  mountStrategy,\n  class: className,\n  defaultValue,\n  defaultOpen,\n  placeholder,\n  disabled,\n  required,\n  name,\n  position,\n  side,\n  align,\n  sideOffset,\n  alignOffset,\n  avoidCollisions,\n  collisionPadding,\n  highlightItemOnHover,\n  lockScroll,\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot=\"select\"\n  data-mount-strategy={mountStrategy}\n  data-default-value={defaultValue}\n  data-default-open={defaultOpen}\n  data-placeholder={placeholder}\n  data-disabled={disabled}\n  data-required={required}\n  data-name={name}\n  data-position={position}\n  data-side={side}\n  data-align={align}\n  data-side-offset={sideOffset}\n  data-align-offset={alignOffset}\n  data-avoid-collisions={avoidCollisions}\n  data-collision-padding={collisionPadding}\n  data-highlight-item-on-hover={highlightItemOnHover}\n  data-lock-scroll={lockScroll}\n  class={cn(\n    \"group/select relative inline-flex w-fit flex-col gap-1.5\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/select\"\n\n  const controllers: ReturnType<typeof create> = []\n  const initialize = () => controllers.push(...create())\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of controllers) controller.destroy()\n    controllers.length = 0\n  })\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/select/select-trigger.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport ChevronDownIcon from \"@lucide/astro/icons/chevron-down\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"button\"> & {\n  size?: \"sm\" | \"default\"\n  showIcon?: boolean\n}\n\nconst {\n  class: className,\n  type = \"button\",\n  size = \"default\",\n  showIcon = true,\n  ...props\n} = Astro.props\n---\n\n<button\n  data-slot=\"select-trigger\"\n  data-size={size}\n  type={type}\n  class={cn(\n    \"border-transparent border-b-input bg-transparent data-placeholder:text-muted-foreground focus-visible:border-b-ring aria-invalid:border-b-destructive dark:aria-invalid:border-b-destructive/50 gap-1.5 rounded-none border py-2 px-0 text-sm transition-[color,border-color] data-[size=default]:h-10 data-[size=sm]:h-9 *:data-[slot=select-value]:gap-1.5 [&_svg:not([class*='size-'])]:size-3.5 flex w-fit items-center justify-between whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center [&_svg]:pointer-events-none [&_svg]:shrink-0\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n  {\n    showIcon && (\n      <ChevronDownIcon class=\"text-muted-foreground size-3.5 pointer-events-none\" />\n    )\n  }\n</button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/select/select-value.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"span\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<span\n  data-slot=\"select-value\"\n  class={cn(\"flex flex-1 text-left\", className)}\n  {...props}\n>\n  <slot />\n</span>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/select/select-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport type { Align, Position, Side } from \"@data-slot/select\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  position?: Position\n  side?: Side\n  align?: Align\n  sideOffset?: number\n  alignOffset?: number\n  avoidCollisions?: boolean\n  collisionPadding?: number\n}\n\nconst {\n  class: className,\n  hidden = true,\n  position,\n  side,\n  align,\n  sideOffset,\n  alignOffset,\n  avoidCollisions,\n  collisionPadding,\n  ...props\n} = Astro.props\n---\n\n<div data-slot=\"select-portal\">\n  <div\n    data-slot=\"select-positioner\"\n    data-position={position}\n    data-side={side}\n    data-align={align}\n    data-side-offset={sideOffset}\n    data-align-offset={alignOffset}\n    data-avoid-collisions={avoidCollisions}\n    data-collision-padding={collisionPadding}\n    class=\"isolate z-[1000]\"\n  >\n    <div\n      data-slot=\"select-content\"\n      data-position={position}\n      data-align-trigger={position === \"item-aligned\" ? \"true\" : undefined}\n      data-side={side}\n      data-align={align}\n      data-side-offset={sideOffset}\n      data-align-offset={alignOffset}\n      data-avoid-collisions={avoidCollisions}\n      data-collision-padding={collisionPadding}\n      hidden={hidden}\n      class={cn(\n        \"bg-popover text-popover-foreground data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 min-w-36 rounded-none shadow-md ring-1 duration-100 data-[side=inline-start]:slide-in-from-right-2 data-[side=inline-end]:slide-in-from-left-2 relative isolate z-[1000] max-h-(--available-height) w-(--anchor-width) origin-(--transform-origin) overflow-x-hidden overflow-y-auto outline-none data-[align-trigger=true]:animate-none\",\n        className\n      )}\n      {...props}\n    >\n      <div\n        data-slot=\"select-viewport\"\n        data-position={position}\n        class=\"data-[position=item-aligned]:w-full data-[position=popper]:min-w-36\"\n      >\n        <slot />\n      </div>\n    </div>\n  </div>\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/select/select-group.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"select-group\"\n  class={cn(\"scroll-my-1.5 p-1.5\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/select/select-label.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"select-label\"\n  class={cn(\"px-3 py-2 text-xs uppercase tracking-wider font-semibold text-muted-foreground\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/select/select-item.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport CheckIcon from \"@lucide/astro/icons/check\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  value?: string\n  disabled?: boolean\n  label?: string\n}\n\nconst { class: className, value, disabled, label, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"select-item\"\n  data-value={value}\n  data-disabled={disabled ? \"true\" : undefined}\n  data-label={label}\n  class={cn(\n    \"data-highlighted:bg-accent data-highlighted:text-accent-foreground not-data-[variant=destructive]:data-highlighted:**:text-accent-foreground gap-2.5 rounded-none py-2 pr-8 pl-3 text-sm [&_svg:not([class*='size-'])]:size-3.5 *:data-[slot=select-item-text]:flex *:data-[slot=select-item-text]:items-center *:data-[slot=select-item-text]:gap-2 group/select-item data-highlighted:**:[svg]:text-accent-foreground relative flex w-full cursor-default items-center outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 *:data-[slot=select-item-text]:shrink-0 *:data-[slot=select-item-text]:whitespace-nowrap [&_svg]:pointer-events-none [&_svg]:shrink-0\",\n    className\n  )}\n  {...props}\n>\n  <span\n    data-slot=\"select-item-text\"\n    class=\"flex flex-1 gap-2 shrink-0 items-center whitespace-nowrap\"\n  >\n    <slot />\n  </span>\n  <span\n    aria-hidden=\"true\"\n    class=\"pointer-events-none absolute right-2 flex size-4 items-center justify-center opacity-0 group-data-selected/select-item:opacity-100\"\n  >\n    <CheckIcon />\n  </span>\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/select/select-separator.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"select-separator\"\n  class={cn(\"bg-border/50 -mx-1.5 my-1.5 h-px pointer-events-none\", className)}\n  {...props}\n>\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/select/index.ts",
+      "content": "export { default as Select } from \"./select.astro\"\nexport { default as SelectContent } from \"./select-content.astro\"\nexport { default as SelectGroup } from \"./select-group.astro\"\nexport { default as SelectItem } from \"./select-item.astro\"\nexport { default as SelectLabel } from \"./select-label.astro\"\nexport { default as SelectSeparator } from \"./select-separator.astro\"\nexport { default as SelectTrigger } from \"./select-trigger.astro\"\nexport { default as SelectValue } from \"./select-value.astro\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/components/select/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

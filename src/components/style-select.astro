@@ -1,0 +1,50 @@
+---
+// Docs-only control to preview examples in each shadcn/ui style.
+import { defaultStyle, styles } from "@/lib/styles"
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
+---
+
+<NativeSelect
+  size="sm"
+  data-style-select
+  data-default-style={defaultStyle}
+  aria-label="Component style"
+>
+  {
+    styles.map((style) => (
+      <NativeSelectOption value={style}>
+        {style[0].toUpperCase() + style.slice(1)}
+      </NativeSelectOption>
+    ))
+  }
+</NativeSelect>
+
+<script>
+  import {
+    applyPreset,
+    PRESET_EVENT,
+    readPreset,
+    writePreset,
+  } from "@/lib/preset-store"
+
+  const sync = () => {
+    const style = readPreset()?.config.style ?? "vega"
+    document
+      .querySelectorAll<HTMLSelectElement>("[data-style-select]")
+      .forEach((select) => (select.value = style))
+  }
+
+  applyPreset(readPreset())
+  sync()
+  document.addEventListener(PRESET_EVENT, sync)
+
+  document.addEventListener("change", (event) => {
+    if (!(event.target instanceof HTMLSelectElement)) return
+    if (!event.target.matches("[data-style-select]")) return
+    const preset = readPreset()
+    writePreset({
+      ...preset,
+      config: { ...preset?.config, style: event.target.value },
+    })
+  })
+</script>

@@ -39,10 +39,10 @@ cd my-project
 }
 ```
 
-3. **Initialize shadcn**:
+3. **Initialize shadcn** with the Base UI library:
 
 ```bash
-npx shadcn@latest init
+npx shadcn@latest init --base base
 ```
 
 4. **Add Fulldev UI registry** to `components.json`:
@@ -50,7 +50,7 @@ npx shadcn@latest init
 ```json
 {
   "registries": {
-    "@fulldev": "https://ui.full.dev/r/{name}.json"
+    "@fulldev": "https://ui.full.dev/r/styles/{style}/{name}.json"
   }
 }
 ```

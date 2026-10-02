@@ -19,6 +19,7 @@ This repo has extra responsibilities: it is the Fulldev UI registry source, docs
 - Import another component through its index (`@/components/ui/<name>`) and a file of the same component with `./`. ESLint enforces it, so a site's knip sees every part of a component it uses.
 - Preserve shadcn parity where a component is intentionally shadcn-compatible.
 - Fix docs/API mismatches at the implementation source, not by hiding the mismatch in examples.
+- Visual classes in installable UI components are `cn-*` placeholders that each shadcn/ui style fills in. Follow `registry/styles/README.md` when adding or changing component styling.
 
 ## Registry Workflow
 

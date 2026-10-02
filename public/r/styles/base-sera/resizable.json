@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "resizable",
+  "title": "Resizable",
+  "description": "Accessible panel groups with pointer and keyboard resizing.",
+  "dependencies": [
+    "@data-slot/resizable@^1.0.2"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/resizable/index.ts",
+      "content": "export { default as Resizable } from \"./resizable.astro\"\nexport { default as ResizablePanelGroup } from \"./resizable.astro\"\nexport { default as ResizablePanel } from \"./resizable-panel.astro\"\nexport { default as ResizableHandle } from \"./resizable-handle.astro\"\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/resizable/resizable-handle.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  withHandle?: boolean\n  disabled?: boolean\n}\n\nconst { class: className, withHandle, disabled, ...props } = Astro.props\n---\n\n<div\n  role=\"separator\"\n  data-slot=\"resizable-handle\"\n  data-disabled={disabled ? \"true\" : undefined}\n  class={cn(\n    \"bg-border ring-offset-background focus-visible:ring-ring data-active:bg-ring relative flex w-px shrink-0 items-center justify-center after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:ring-1 focus-visible:outline-hidden aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:w-full aria-[orientation=horizontal]:after:inset-x-0 aria-[orientation=horizontal]:after:top-1/2 aria-[orientation=horizontal]:after:h-1 aria-[orientation=horizontal]:after:w-full aria-[orientation=horizontal]:after:translate-x-0 aria-[orientation=horizontal]:after:-translate-y-1/2 data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&[aria-orientation=horizontal]>div]:rotate-90\",\n    className\n  )}\n  {...props}\n>\n  {\n    withHandle && (\n      <div\n        data-slot=\"resizable-handle-indicator\"\n        aria-hidden=\"true\"\n        class=\"bg-border h-6 w-1 rounded-none z-10 flex shrink-0\"\n      />\n    )\n  }\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/resizable/resizable-panel.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  defaultSize?: number\n  minSize?: number\n  maxSize?: number\n  collapsible?: boolean\n  collapsedSize?: number\n}\n\nconst {\n  class: className,\n  defaultSize,\n  minSize,\n  maxSize,\n  collapsible,\n  collapsedSize,\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot=\"resizable-panel\"\n  data-default-size={defaultSize}\n  data-min-size={minSize}\n  data-max-size={maxSize}\n  data-collapsible={collapsible}\n  data-collapsed-size={collapsedSize}\n  class={cn(\"min-h-0 min-w-0\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/resizable/resizable.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  direction?: \"horizontal\" | \"vertical\"\n  keyboardResizeBy?: number\n}\n\nconst {\n  class: className,\n  direction = \"horizontal\",\n  keyboardResizeBy,\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot=\"resizable\"\n  data-direction={direction}\n  data-keyboard-resize-by={keyboardResizeBy}\n  class={cn(\n    \"group/resizable flex h-full w-full data-[direction=vertical]:flex-col\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/resizable\"\n\n  const controllers: ReturnType<typeof create> = []\n  const initialize = () => controllers.push(...create())\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of controllers) controller.destroy()\n    controllers.length = 0\n  })\n</script>\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/components/resizable/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

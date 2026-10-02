@@ -1,0 +1,77 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dropdown-menu",
+  "title": "Dropdown Menu",
+  "description": "Displays a menu to the user, such as a set of actions or functions, triggered by a button.",
+  "dependencies": [
+    "@data-slot/dropdown-menu@^1.0.2",
+    "@lucide/astro"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/dropdown-menu/dropdown-menu.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport type { Align, Side } from \"@data-slot/dropdown-menu\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  defaultOpen?: boolean\n  defaultValue?: string | null\n  defaultValues?: string[]\n  closeOnClickOutside?: boolean\n  closeOnEscape?: boolean\n  closeOnSelect?: boolean\n  highlightItemOnHover?: boolean\n  side?: Side\n  align?: Align\n  sideOffset?: number\n  alignOffset?: number\n  avoidCollisions?: boolean\n  collisionPadding?: number\n  lockScroll?: boolean\n}\n\nconst {\n  class: className,\n  defaultOpen,\n  defaultValue,\n  defaultValues,\n  closeOnClickOutside,\n  closeOnEscape,\n  closeOnSelect,\n  highlightItemOnHover,\n  side,\n  align,\n  sideOffset,\n  alignOffset,\n  avoidCollisions,\n  collisionPadding,\n  lockScroll,\n  ...props\n} = Astro.props\n\nconst defaultValuesAttr =\n  defaultValues === undefined ? undefined : JSON.stringify(defaultValues)\n---\n\n<div\n  data-slot=\"dropdown-menu\"\n  data-default-open={defaultOpen}\n  data-default-value={defaultValue}\n  data-default-values={defaultValuesAttr}\n  data-close-on-click-outside={closeOnClickOutside}\n  data-close-on-escape={closeOnEscape}\n  data-close-on-select={closeOnSelect}\n  data-highlight-item-on-hover={highlightItemOnHover}\n  data-side={side}\n  data-align={align}\n  data-side-offset={sideOffset}\n  data-align-offset={alignOffset}\n  data-avoid-collisions={avoidCollisions}\n  data-collision-padding={collisionPadding}\n  data-lock-scroll={lockScroll}\n  class={className}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/dropdown-menu\"\n\n  const controllers: ReturnType<typeof create> = []\n  const initialize = () => controllers.push(...create())\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of controllers) controller.destroy()\n    controllers.length = 0\n  })\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dropdown-menu/dropdown-menu-trigger.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\ntype Props = HTMLAttributes<\"button\">\n\nconst { class: className, type = \"button\", ...props } = Astro.props\n---\n\n<button\n  data-slot=\"dropdown-menu-trigger\"\n  type={type}\n  class={className}\n  {...props}\n>\n  <slot />\n</button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dropdown-menu/dropdown-menu-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport type { Align, Side } from \"@data-slot/dropdown-menu\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  side?: Side\n  align?: Align\n  sideOffset?: number\n  alignOffset?: number\n  avoidCollisions?: boolean\n  collisionPadding?: number\n}\n\nconst {\n  class: className,\n  hidden = true,\n  side,\n  align,\n  sideOffset,\n  alignOffset,\n  avoidCollisions,\n  collisionPadding,\n  ...props\n} = Astro.props\n---\n\n<div data-slot=\"dropdown-menu-portal\">\n  <div\n    data-slot=\"dropdown-menu-positioner\"\n    data-side={side}\n    data-align={align}\n    data-side-offset={sideOffset}\n    data-align-offset={alignOffset}\n    data-avoid-collisions={avoidCollisions}\n    data-collision-padding={collisionPadding}\n    class=\"isolate z-[1000] outline-none\"\n  >\n    <div\n      data-slot=\"dropdown-menu-content\"\n      data-side={side}\n      data-align={align}\n      data-side-offset={sideOffset}\n      data-align-offset={alignOffset}\n      data-avoid-collisions={avoidCollisions}\n      data-collision-padding={collisionPadding}\n      hidden={hidden}\n      class={cn(\n        \"data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/5 dark:ring-foreground/10 bg-popover text-popover-foreground min-w-48 rounded-3xl p-1.5 shadow-lg ring-1 duration-100 data-[side=inline-start]:slide-in-from-right-2 data-[side=inline-end]:slide-in-from-left-2 z-50 max-h-(--available-height) w-(--anchor-width) origin-(--transform-origin) overflow-x-hidden overflow-y-auto outline-none data-closed:overflow-hidden\",\n        className\n      )}\n      {...props}\n    >\n      <slot />\n    </div>\n  </div>\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dropdown-menu/dropdown-menu-item.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"button\"> &\n  HTMLAttributes<\"a\"> & {\n    as?: \"button\" | \"a\"\n    disabled?: boolean\n    variant?: \"default\" | \"destructive\"\n    inset?: boolean\n  }\n\nconst {\n  as: Tag = \"href\" in Astro.props ? \"a\" : \"button\",\n  class: className,\n  type = \"button\",\n  disabled,\n  variant,\n  inset,\n  ...props\n} = Astro.props\n---\n\n<Tag\n  data-slot=\"dropdown-menu-item\"\n  data-disabled={disabled}\n  data-variant={variant}\n  data-inset={inset}\n  disabled={Tag === \"button\" && disabled ? true : undefined}\n  type={Tag === \"button\" ? type : undefined}\n  class={cn(\n    \"data-highlighted:bg-accent data-highlighted:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:data-highlighted:bg-destructive/10 dark:data-[variant=destructive]:data-highlighted:bg-destructive/20 data-[variant=destructive]:data-highlighted:text-destructive data-[variant=destructive]:*:[svg]:text-destructive not-data-[variant=destructive]:data-highlighted:**:text-accent-foreground gap-2.5 rounded-2xl px-3 py-2 text-sm font-medium data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 group/dropdown-menu-item relative flex w-full cursor-default items-center outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</Tag>\n\n<script>\n  // Data Slot owns selection; links also need native keyboard activation.\n  document.addEventListener(\n    \"keydown\",\n    (event) => {\n      if (\n        event.defaultPrevented ||\n        event.isComposing ||\n        ![\"Enter\", \" \"].includes(event.key)\n      )\n        return\n      const item =\n        event.target instanceof Element\n          ? event.target.closest('[data-slot=\"dropdown-menu-item\"][href]')\n          : null\n      if (\n        !(item instanceof HTMLAnchorElement) ||\n        item.getAttribute(\"aria-disabled\") === \"true\"\n      )\n        return\n      event.preventDefault()\n      event.stopPropagation()\n      item.click()\n    },\n    true\n  )\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dropdown-menu/dropdown-menu-radio-item.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport CheckIcon from \"@lucide/astro/icons/check\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"button\"> & {\n  value: string\n  defaultChecked?: boolean\n  disabled?: boolean\n  variant?: \"default\" | \"destructive\"\n  inset?: boolean\n}\n\nconst {\n  class: className,\n  type = \"button\",\n  value,\n  defaultChecked,\n  disabled,\n  variant,\n  inset,\n  ...props\n} = Astro.props\n---\n\n<button\n  data-slot=\"dropdown-menu-radio-item\"\n  data-value={value}\n  data-default-checked={defaultChecked}\n  data-disabled={disabled}\n  data-variant={variant}\n  data-inset={inset}\n  disabled={disabled ? true : undefined}\n  type={type}\n  class={cn(\n    \"data-highlighted:bg-accent data-highlighted:text-accent-foreground data-highlighted:**:text-accent-foreground gap-2.5 rounded-2xl py-2 pr-8 pl-3 text-sm font-medium data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 group/dropdown-menu-radio-item relative flex w-full cursor-default items-center outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0\",\n    className\n  )}\n  {...props}\n>\n  <span\n    data-slot=\"dropdown-menu-radio-item-indicator\"\n    class=\"absolute right-2 flex items-center justify-center pointer-events-none\"\n  >\n    <CheckIcon\n      class=\"opacity-0 group-data-checked/dropdown-menu-radio-item:opacity-100\"\n    />\n  </span>\n  <slot />\n</button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dropdown-menu/dropdown-menu-checkbox-item.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport CheckIcon from \"@lucide/astro/icons/check\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"button\"> & {\n  value: string\n  defaultChecked?: boolean\n  disabled?: boolean\n  variant?: \"default\" | \"destructive\"\n  inset?: boolean\n}\n\nconst {\n  class: className,\n  type = \"button\",\n  value,\n  defaultChecked,\n  disabled,\n  variant,\n  inset,\n  ...props\n} = Astro.props\n---\n\n<button\n  data-slot=\"dropdown-menu-checkbox-item\"\n  data-value={value}\n  data-default-checked={defaultChecked}\n  data-disabled={disabled}\n  data-variant={variant}\n  data-inset={inset}\n  disabled={disabled ? true : undefined}\n  type={type}\n  class={cn(\n    \"data-highlighted:bg-accent data-highlighted:text-accent-foreground data-highlighted:**:text-accent-foreground gap-2.5 rounded-2xl py-2 pr-8 pl-3 text-sm font-medium data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 group/dropdown-menu-checkbox-item relative flex w-full cursor-default items-center outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0\",\n    className\n  )}\n  {...props}\n>\n  <span\n    data-slot=\"dropdown-menu-checkbox-item-indicator\"\n    class=\"absolute right-2 flex items-center justify-center pointer-events-none\"\n  >\n    <CheckIcon\n      class=\"opacity-0 group-data-checked/dropdown-menu-checkbox-item:opacity-100\"\n    />\n  </span>\n  <slot />\n</button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dropdown-menu/dropdown-menu-group.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div data-slot=\"dropdown-menu-group\" class={cn(className)} {...props}>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dropdown-menu/dropdown-menu-label.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  inset?: boolean\n}\n\nconst { class: className, inset, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"dropdown-menu-label\"\n  data-inset={inset}\n  class={cn(\"text-muted-foreground px-3 py-2.5 text-xs data-inset:pl-9.5\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dropdown-menu/dropdown-menu-separator.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"dropdown-menu-separator\"\n  class={cn(\"bg-border/50 -mx-1.5 my-1.5 h-px\", className)}\n  {...props}\n>\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dropdown-menu/dropdown-menu-shortcut.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"span\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<span\n  data-slot=\"dropdown-menu-shortcut\"\n  class={cn(\"text-muted-foreground group-data-highlighted/dropdown-menu-item:text-accent-foreground ml-auto text-xs tracking-widest\", className)}\n  {...props}\n>\n  <slot />\n</span>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dropdown-menu/dropdown-menu-portal.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div data-slot=\"dropdown-menu-portal\" class={className} {...props}>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/dropdown-menu/index.ts",
+      "content": "export { default as DropdownMenu } from \"./dropdown-menu.astro\"\nexport { default as DropdownMenuCheckboxItem } from \"./dropdown-menu-checkbox-item.astro\"\nexport { default as DropdownMenuContent } from \"./dropdown-menu-content.astro\"\nexport { default as DropdownMenuGroup } from \"./dropdown-menu-group.astro\"\nexport { default as DropdownMenuItem } from \"./dropdown-menu-item.astro\"\nexport { default as DropdownMenuLabel } from \"./dropdown-menu-label.astro\"\nexport { default as DropdownMenuPortal } from \"./dropdown-menu-portal.astro\"\nexport { default as DropdownMenuRadioItem } from \"./dropdown-menu-radio-item.astro\"\nexport { default as DropdownMenuSeparator } from \"./dropdown-menu-separator.astro\"\nexport { default as DropdownMenuShortcut } from \"./dropdown-menu-shortcut.astro\"\nexport { default as DropdownMenuTrigger } from \"./dropdown-menu-trigger.astro\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/components/dropdown-menu/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

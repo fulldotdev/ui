@@ -1,0 +1,46 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tabs",
+  "title": "Tabs",
+  "description": "A set of layered sections of content, known as tabs, that display one panel of content at a time.",
+  "dependencies": [
+    "@data-slot/tabs@^1.0.2"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/tabs/tabs.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  defaultValue?: string\n  orientation?: \"horizontal\" | \"vertical\"\n  activationMode?: \"auto\" | \"manual\"\n}\n\nconst {\n  class: className,\n  defaultValue,\n  orientation = \"horizontal\",\n  activationMode,\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot=\"tabs\"\n  data-default-value={defaultValue}\n  data-orientation={orientation}\n  data-activation-mode={activationMode}\n  data-horizontal={orientation === \"horizontal\" ? \"\" : undefined}\n  data-vertical={orientation === \"vertical\" ? \"\" : undefined}\n  class={cn(\"gap-2 group/tabs flex data-horizontal:flex-col\", className)}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/tabs\"\n\n  const controllers: ReturnType<typeof create> = []\n  const initialize = () => controllers.push(...create())\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of controllers) controller.destroy()\n    controllers.length = 0\n  })\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tabs/tabs-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  value: string\n}\n\nconst { class: className, hidden = true, value, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"tabs-content\"\n  hidden={hidden}\n  data-value={value}\n  class={cn(\"text-xs/relaxed flex-1 outline-none\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tabs/tabs-list.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport { tabsListVariants } from \"./tabs-list-variants\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  variant?: \"default\" | \"line\"\n}\n\nconst { class: className, variant = \"default\", ...props } = Astro.props\n---\n\n<div\n  data-slot=\"tabs-list\"\n  data-variant={variant}\n  class={cn(tabsListVariants({ variant }), className)}\n  {...props}\n>\n  {\n    variant === \"line\" && (\n      <div\n        data-slot=\"tabs-indicator\"\n        class=\"bg-border/60 pointer-events-none absolute rounded-full transition-[left,top,width,height] duration-200 group-data-horizontal/tabs-list:bottom-0 group-data-horizontal/tabs-list:left-(--active-tab-left,0px) group-data-horizontal/tabs-list:h-0.5 group-data-horizontal/tabs-list:w-(--active-tab-width,0px) group-data-vertical/tabs-list:top-(--active-tab-top,0px) group-data-vertical/tabs-list:left-0 group-data-vertical/tabs-list:h-(--active-tab-height,0px) group-data-vertical/tabs-list:w-0.5\"\n      />\n    )\n  }\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tabs/tabs-list-variants.ts",
+      "content": "import { cva, type VariantProps } from \"class-variance-authority\"\n\nexport const tabsListVariants = cva(\n  \"rounded-none p-[3px] group-data-horizontal/tabs:h-8 data-[variant=line]:rounded-none group/tabs-list text-muted-foreground relative inline-flex w-fit items-center justify-center group-data-vertical/tabs:h-fit group-data-vertical/tabs:flex-col\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-muted\",\n        line: \"gap-1 bg-transparent\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n    },\n  }\n)\n\nexport type TabsListVariantProps = VariantProps<typeof tabsListVariants>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tabs/tabs-trigger.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"button\"> & {\n  value: string\n}\n\nconst { class: className, value, type = \"button\", ...props } = Astro.props\n---\n\n<button\n  data-slot=\"tabs-trigger\"\n  type={type}\n  data-value={value}\n  class={cn(\n    \"gap-1.5 rounded-none border border-transparent px-1.5 py-0.5 text-xs font-medium group-data-vertical/tabs:py-[calc(--spacing(1.25))] [&_svg:not([class*='size-'])]:size-4 has-data-[icon=inline-end]:pr-1 has-data-[icon=inline-start]:pl-1 text-foreground/60 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:text-muted-foreground dark:hover:text-foreground relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center whitespace-nowrap transition-all group-data-vertical/tabs:w-full group-data-vertical/tabs:justify-start focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0\",\n    \"group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent dark:group-data-[variant=line]/tabs-list:data-[state=active]:border-transparent dark:group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent\",\n    \"data-[state=active]:bg-background data-[state=active]:text-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground\",\n    \"after:bg-foreground after:absolute after:opacity-0 after:transition-opacity group-data-horizontal/tabs:after:inset-x-0 group-data-horizontal/tabs:after:bottom-[-5px] group-data-horizontal/tabs:after:h-0.5 group-data-vertical/tabs:after:inset-y-0 group-data-vertical/tabs:after:-right-1 group-data-vertical/tabs:after:w-0.5 group-data-[variant=line]/tabs-list:data-[state=active]:after:opacity-100\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tabs/index.ts",
+      "content": "export { default as Tabs } from \"./tabs.astro\"\nexport { default as TabsList } from \"./tabs-list.astro\"\nexport { default as TabsTrigger } from \"./tabs-trigger.astro\"\nexport { default as TabsContent } from \"./tabs-content.astro\"\nexport {\n  tabsListVariants,\n  type TabsListVariantProps,\n} from \"./tabs-list-variants\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/components/tabs/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

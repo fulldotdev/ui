@@ -1,0 +1,109 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "drawer",
+  "title": "Drawer",
+  "description": "A swipeable panel that opens from an edge of the screen.",
+  "dependencies": [
+    "@data-slot/drawer@^1.0.2"
+  ],
+  "registryDependencies": [
+    "@fulldev/button"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/drawer/drawer-close.astro",
+      "content": "---\nimport type { ComponentProps } from \"astro/types\"\n\nimport { Button } from \"@/components/ui/button\"\n\ntype Props = ComponentProps<typeof Button>\n\nconst { ...props } = Astro.props\n---\n\n<Button data-slot=\"drawer-close\" {...props}>\n  <slot />\n</Button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/drawer/drawer-content.astro",
+      "content": "---\nimport type { ComponentProps } from \"astro/types\"\n\nimport DrawerOverlay from \"./drawer-overlay.astro\"\nimport DrawerPopup from \"./drawer-popup.astro\"\nimport DrawerPortal from \"./drawer-portal.astro\"\nimport DrawerSwipeHandle from \"./drawer-swipe-handle.astro\"\nimport DrawerViewport from \"./drawer-viewport.astro\"\n\ntype Props = ComponentProps<typeof DrawerPopup> & {\n  showOverlay?: boolean\n  showSwipeHandle?: boolean\n  container?: string\n  keepMounted?: boolean\n  overlayClass?: string\n  viewportClass?: string\n}\n\nconst {\n  showOverlay = true,\n  showSwipeHandle = false,\n  container,\n  keepMounted,\n  overlayClass,\n  viewportClass,\n  ...props\n} = Astro.props\n---\n\n<DrawerPortal container={container} keepMounted={keepMounted}>\n  {showOverlay && <DrawerOverlay class={overlayClass} />}\n  <DrawerViewport class={viewportClass}>\n    <DrawerPopup {...props}>\n      {showSwipeHandle && <DrawerSwipeHandle />}\n      <div\n        data-slot=\"drawer-content\"\n        class=\"flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain rounded-[inherit] transition-opacity duration-300 select-text group-data-nested-drawer-open/drawer-popup:opacity-0 group-data-nested-swiping/drawer-popup:opacity-100 group-data-swiping/drawer-popup:select-none\"\n      >\n        <slot />\n      </div>\n    </DrawerPopup>\n  </DrawerViewport>\n</DrawerPortal>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/drawer/drawer-description.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"p\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<p\n  data-slot=\"drawer-description\"\n  class={cn(\"text-muted-foreground text-sm text-balance\", className)}\n  {...props}\n>\n  <slot />\n</p>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/drawer/drawer-footer.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"drawer-footer\"\n  class={cn(\"gap-2 p-4 mt-auto flex shrink-0 flex-col pt-0\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/drawer/drawer-header.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"drawer-header\"\n  class={cn(\"flex shrink-0 flex-col gap-1.5 p-4 pb-0\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/drawer/drawer-indent-background.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div data-slot=\"drawer-indent-background\" class={className} {...props}>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/drawer/drawer-indent.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div data-slot=\"drawer-indent\" class={className} {...props}>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/drawer/drawer-overlay.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, hidden = true, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"drawer-backdrop\"\n  hidden={hidden}\n  class={cn(\n    \"bg-black/80 supports-backdrop-filter:backdrop-blur-xs fixed inset-0 z-50 min-h-dvh opacity-[calc(1-var(--drawer-swipe-progress,0))] transition-opacity duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] select-none data-ending-style:pointer-events-none data-ending-style:opacity-0 data-starting-style:opacity-0 data-swiping:duration-0\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/drawer/drawer-popup.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  initialFocus?: boolean | string\n  finalFocus?: boolean | string\n}\n\nconst {\n  class: className,\n  initialFocus,\n  finalFocus,\n  hidden = true,\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot=\"drawer-popup\"\n  data-initial-focus={initialFocus}\n  data-final-focus={finalFocus}\n  hidden={hidden}\n  class={cn(\n    \"bg-popover text-popover-foreground border-popover dark:border-border rounded-4xl border text-sm [--drawer-bleed-background:transparent] [--drawer-inset:--spacing(2)] shadow-lg group/drawer-popup pointer-events-auto fixed z-50 m-(--drawer-inset,0px) flex min-h-0 transform-gpu flex-col transition-[transform,height,opacity,filter] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform outline-none select-none data-ending-style:duration-[calc(var(--drawer-swipe-strength,1)*400ms)] data-nested-drawer-open:overflow-hidden data-nested-drawer-open:brightness-95 data-swiping:duration-0\",\n    \"data-[swipe-direction=down]:inset-x-0 data-[swipe-direction=down]:bottom-0 data-[swipe-direction=down]:max-h-[calc(100dvh-3rem)] data-[swipe-direction=down]:[transform:translate3d(0,calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-amount-y,0px)),0)] data-[swipe-direction=down]:data-ending-style:[transform:translate3d(0,calc(100%+2px),0)] data-[swipe-direction=down]:data-starting-style:[transform:translate3d(0,calc(100%+2px),0)]\",\n    \"data-[swipe-direction=up]:inset-x-0 data-[swipe-direction=up]:top-0 data-[swipe-direction=up]:max-h-[calc(100dvh-3rem)] data-[swipe-direction=up]:[transform:translate3d(0,calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-amount-y,0px)),0)] data-[swipe-direction=up]:data-ending-style:[transform:translate3d(0,calc(-100%-2px),0)] data-[swipe-direction=up]:data-starting-style:[transform:translate3d(0,calc(-100%-2px),0)]\",\n    \"data-[swipe-direction=left]:inset-y-0 data-[swipe-direction=left]:left-0 data-[swipe-direction=left]:h-full data-[swipe-direction=left]:w-3/4 data-[swipe-direction=left]:max-w-sm data-[swipe-direction=left]:[transform:translate3d(calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-amount-x,0px)),0,0)] data-[swipe-direction=left]:flex-row data-[swipe-direction=left]:data-ending-style:[transform:translate3d(calc(-100%-2px),0,0)] data-[swipe-direction=left]:data-starting-style:[transform:translate3d(calc(-100%-2px),0,0)]\",\n    \"data-[swipe-direction=right]:inset-y-0 data-[swipe-direction=right]:right-0 data-[swipe-direction=right]:h-full data-[swipe-direction=right]:w-3/4 data-[swipe-direction=right]:max-w-sm data-[swipe-direction=right]:[transform:translate3d(calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-amount-x,0px)),0,0)] data-[swipe-direction=right]:flex-row data-[swipe-direction=right]:data-ending-style:[transform:translate3d(calc(100%+2px),0,0)] data-[swipe-direction=right]:data-starting-style:[transform:translate3d(calc(100%+2px),0,0)]\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/drawer/drawer-portal.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  container?: string\n  keepMounted?: boolean\n}\n\nconst {\n  class: className,\n  container,\n  keepMounted,\n  hidden = true,\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot=\"drawer-portal\"\n  data-container={container}\n  data-keep-mounted={keepMounted}\n  class={className}\n  hidden={hidden}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/drawer/drawer-provider.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div data-slot=\"drawer-provider\" class={className} {...props}>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/drawer/drawer-swipe-handle.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"drawer-handle\"\n  aria-hidden=\"true\"\n  class={cn(\n    \"after:bg-muted relative z-10 flex shrink-0 cursor-grab transition-opacity duration-200 group-data-nested-drawer-open/drawer-popup:opacity-0 group-data-nested-swiping/drawer-popup:opacity-100 group-data-[swipe-direction=down]/drawer-popup:h-3 group-data-[swipe-direction=down]/drawer-popup:w-full group-data-[swipe-direction=down]/drawer-popup:items-end group-data-[swipe-direction=down]/drawer-popup:justify-center group-data-[swipe-direction=left]/drawer-popup:order-last group-data-[swipe-direction=left]/drawer-popup:h-full group-data-[swipe-direction=left]/drawer-popup:w-3 group-data-[swipe-direction=left]/drawer-popup:items-center group-data-[swipe-direction=left]/drawer-popup:justify-start group-data-[swipe-direction=right]/drawer-popup:h-full group-data-[swipe-direction=right]/drawer-popup:w-3 group-data-[swipe-direction=right]/drawer-popup:items-center group-data-[swipe-direction=right]/drawer-popup:justify-end group-data-[swipe-direction=up]/drawer-popup:order-last group-data-[swipe-direction=up]/drawer-popup:h-3 group-data-[swipe-direction=up]/drawer-popup:w-full group-data-[swipe-direction=up]/drawer-popup:items-start group-data-[swipe-direction=up]/drawer-popup:justify-center after:block after:shrink-0 after:rounded-full group-data-[swipe-direction=down]/drawer-popup:after:h-1.5 group-data-[swipe-direction=down]/drawer-popup:after:w-24 group-data-[swipe-direction=left]/drawer-popup:after:h-24 group-data-[swipe-direction=left]/drawer-popup:after:w-1.5 group-data-[swipe-direction=right]/drawer-popup:after:h-24 group-data-[swipe-direction=right]/drawer-popup:after:w-1.5 group-data-[swipe-direction=up]/drawer-popup:after:h-1.5 group-data-[swipe-direction=up]/drawer-popup:after:w-24 active:cursor-grabbing\",\n    className\n  )}\n  {...props}\n>\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/drawer/drawer-title.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"h2\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<h2\n  data-slot=\"drawer-title\"\n  class={cn(\"text-foreground text-base font-medium font-heading\", className)}\n  {...props}\n>\n  <slot />\n</h2>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/drawer/drawer-trigger.astro",
+      "content": "---\nimport type { ComponentProps } from \"astro/types\"\n\nimport { Button } from \"@/components/ui/button\"\n\ntype Props = ComponentProps<typeof Button> & {\n  drawerTarget?: string\n  payload?: string\n}\n\nconst { drawerTarget, payload, ...props } = Astro.props\n---\n\n<Button\n  data-slot=\"drawer-trigger\"\n  data-drawer-target={drawerTarget}\n  data-payload={payload}\n  {...props}\n>\n  <slot />\n</Button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/drawer/drawer-viewport.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, hidden = true, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"drawer-viewport\"\n  hidden={hidden}\n  class={cn(\n    \"pointer-events-none fixed inset-0 z-50 min-h-dvh select-none\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/drawer/drawer-virtual-keyboard-provider.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div data-slot=\"drawer-virtual-keyboard-provider\" class={className} {...props}>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/drawer/drawer.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport type { DrawerSnapPoint, DrawerSwipeDirection } from \"@data-slot/drawer\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  defaultOpen?: boolean\n  modal?: boolean | \"trap-focus\"\n  disablePointerDismissal?: boolean\n  closeOnEscape?: boolean\n  swipeDirection?: DrawerSwipeDirection\n  snapPoint?: DrawerSnapPoint | null\n  defaultSnapPoint?: DrawerSnapPoint | null\n  triggerId?: string | null\n  defaultTriggerId?: string | null\n}\n\nconst {\n  class: className,\n  defaultOpen,\n  modal,\n  disablePointerDismissal,\n  closeOnEscape,\n  swipeDirection,\n  snapPoint,\n  defaultSnapPoint,\n  triggerId,\n  defaultTriggerId,\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot=\"drawer\"\n  data-default-open={defaultOpen}\n  data-modal={modal}\n  data-disable-pointer-dismissal={disablePointerDismissal}\n  data-close-on-escape={closeOnEscape}\n  data-swipe-direction={swipeDirection}\n  data-snap-point={snapPoint}\n  data-default-snap-point={defaultSnapPoint}\n  data-trigger-id={triggerId}\n  data-default-trigger-id={defaultTriggerId}\n  class={className}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/drawer\"\n\n  const controllers: ReturnType<typeof create> = []\n  const initialize = () => controllers.push(...create())\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of controllers) controller.destroy()\n    controllers.length = 0\n  })\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/drawer/index.ts",
+      "content": "export { default as Drawer } from \"./drawer.astro\"\nexport { default as DrawerTrigger } from \"./drawer-trigger.astro\"\nexport { default as DrawerClose } from \"./drawer-close.astro\"\nexport { default as DrawerPortal } from \"./drawer-portal.astro\"\nexport { default as DrawerOverlay } from \"./drawer-overlay.astro\"\nexport { default as DrawerBackdrop } from \"./drawer-overlay.astro\"\nexport { default as DrawerViewport } from \"./drawer-viewport.astro\"\nexport { default as DrawerPopup } from \"./drawer-popup.astro\"\nexport { default as DrawerContent } from \"./drawer-content.astro\"\nexport { default as DrawerSwipeHandle } from \"./drawer-swipe-handle.astro\"\nexport { default as DrawerHeader } from \"./drawer-header.astro\"\nexport { default as DrawerFooter } from \"./drawer-footer.astro\"\nexport { default as DrawerTitle } from \"./drawer-title.astro\"\nexport { default as DrawerDescription } from \"./drawer-description.astro\"\nexport { default as DrawerProvider } from \"./drawer-provider.astro\"\nexport { default as DrawerIndent } from \"./drawer-indent.astro\"\nexport { default as DrawerIndentBackground } from \"./drawer-indent-background.astro\"\nexport { default as DrawerVirtualKeyboardProvider } from \"./drawer-virtual-keyboard-provider.astro\"\n\nexport type {\n  DrawerChangeDetails,\n  DrawerChangeReason,\n  DrawerController,\n  DrawerOptions,\n  DrawerSnapChangeDetails,\n  DrawerSnapPoint,\n  DrawerSwipeDirection,\n} from \"@data-slot/drawer\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/components/drawer/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

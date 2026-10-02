@@ -1,0 +1,59 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pagination",
+  "title": "Pagination",
+  "description": "Page navigation with previous, next, numbered, and overflow links.",
+  "dependencies": [
+    "@lucide/astro"
+  ],
+  "registryDependencies": [
+    "@fulldev/button"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/pagination/index.ts",
+      "content": "export { default as Pagination } from \"./pagination.astro\"\nexport { default as PaginationContent } from \"./pagination-content.astro\"\nexport { default as PaginationEllipsis } from \"./pagination-ellipsis.astro\"\nexport { default as PaginationItem } from \"./pagination-item.astro\"\nexport { default as PaginationLink } from \"./pagination-link.astro\"\nexport { default as PaginationNext } from \"./pagination-next.astro\"\nexport { default as PaginationPrevious } from \"./pagination-previous.astro\"\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/pagination/pagination-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"ul\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<ul\n  data-slot=\"pagination-content\"\n  class={cn(\"gap-0.5 flex items-center\", className)}\n  {...props}\n>\n  <slot />\n</ul>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/pagination/pagination-ellipsis.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport EllipsisIcon from \"@lucide/astro/icons/ellipsis\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"span\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<span\n  data-slot=\"pagination-ellipsis\"\n  class={cn(\"size-8 items-center justify-center [&_svg:not([class*='size-'])]:size-4 flex\", className)}\n  {...props}\n>\n  <EllipsisIcon aria-hidden=\"true\" />\n  <span class=\"sr-only\">More pages</span>\n</span>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/pagination/pagination-item.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\ntype Props = HTMLAttributes<\"li\">\n\nconst { ...props } = Astro.props\n---\n\n<li data-slot=\"pagination-item\" {...props}>\n  <slot />\n</li>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/pagination/pagination-link.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Button, type ButtonVariantProps } from \"@/components/ui/button\"\n\ntype Props = HTMLAttributes<\"a\"> & {\n  isActive?: boolean\n  disabled?: boolean\n  size?: ButtonVariantProps[\"size\"]\n}\n\nconst {\n  class: className,\n  href,\n  isActive,\n  disabled,\n  size = \"icon\",\n  tabindex,\n  ...props\n} = Astro.props\n---\n\n<Button\n  as=\"a\"\n  data-slot=\"pagination-link\"\n  data-active={isActive ? \"true\" : undefined}\n  href={disabled ? undefined : href}\n  aria-current={isActive ? \"page\" : undefined}\n  aria-disabled={disabled ? \"true\" : undefined}\n  tabindex={disabled ? -1 : tabindex}\n  variant={isActive ? \"outline\" : \"ghost\"}\n  size={size}\n  class={cn(\n    \"aria-disabled:pointer-events-none aria-disabled:opacity-50\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</Button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/pagination/pagination-next.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport ChevronRightIcon from \"@lucide/astro/icons/chevron-right\"\n\nimport { cn } from \"@/lib/utils\"\nimport type { ButtonVariantProps } from \"@/components/ui/button\"\n\nimport PaginationLink from \"./pagination-link.astro\"\n\ntype Props = HTMLAttributes<\"a\"> & {\n  text?: string\n  disabled?: boolean\n  size?: ButtonVariantProps[\"size\"]\n}\n\nconst { class: className, text = \"Next\", ...props } = Astro.props\n---\n\n<PaginationLink\n  aria-label=\"Go to next page\"\n  size=\"default\"\n  class={cn(\"pr-1.5!\", className)}\n  {...props}\n>\n  <span class=\"hidden sm:block\">{text}</span>\n  <ChevronRightIcon data-icon=\"inline-end\" class=\"rtl:rotate-180\" />\n</PaginationLink>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/pagination/pagination-previous.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport ChevronLeftIcon from \"@lucide/astro/icons/chevron-left\"\n\nimport { cn } from \"@/lib/utils\"\nimport type { ButtonVariantProps } from \"@/components/ui/button\"\n\nimport PaginationLink from \"./pagination-link.astro\"\n\ntype Props = HTMLAttributes<\"a\"> & {\n  text?: string\n  disabled?: boolean\n  size?: ButtonVariantProps[\"size\"]\n}\n\nconst { class: className, text = \"Previous\", ...props } = Astro.props\n---\n\n<PaginationLink\n  aria-label=\"Go to previous page\"\n  size=\"default\"\n  class={cn(\"pl-1.5!\", className)}\n  {...props}\n>\n  <ChevronLeftIcon data-icon=\"inline-start\" class=\"rtl:rotate-180\" />\n  <span class=\"hidden sm:block\">{text}</span>\n</PaginationLink>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/pagination/pagination.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"nav\">\n\nconst {\n  class: className,\n  \"aria-label\": ariaLabel = \"pagination\",\n  ...props\n} = Astro.props\n---\n\n<nav\n  aria-label={ariaLabel}\n  data-slot=\"pagination\"\n  class={cn(\"mx-auto flex w-full justify-center\", className)}\n  {...props}\n>\n  <slot />\n</nav>\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/components/pagination/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

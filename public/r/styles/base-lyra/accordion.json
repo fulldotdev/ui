@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion",
+  "title": "Accordion",
+  "description": "A vertically stacked set of interactive headings that each reveal a section of content.",
+  "dependencies": [
+    "@data-slot/accordion@^1.0.2",
+    "@lucide/astro"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/accordion/accordion.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  multiple?: boolean\n  defaultValue?: string | string[]\n  disabled?: boolean\n  orientation?: \"horizontal\" | \"vertical\"\n  loopFocus?: boolean\n  hiddenUntilFound?: boolean\n  collapsible?: boolean\n}\n\nconst {\n  class: className,\n  multiple,\n  defaultValue,\n  disabled,\n  orientation = \"vertical\",\n  loopFocus,\n  hiddenUntilFound,\n  collapsible,\n  ...props\n} = Astro.props\n\nconst serializedDefaultValue = Array.isArray(defaultValue)\n  ? JSON.stringify(defaultValue)\n  : defaultValue\n---\n\n<div\n  data-slot=\"accordion\"\n  data-multiple={multiple}\n  data-default-value={serializedDefaultValue}\n  data-disabled={disabled}\n  data-orientation={orientation}\n  data-loop-focus={loopFocus}\n  data-hidden-until-found={hiddenUntilFound}\n  data-collapsible={collapsible}\n  class={cn(\"flex w-full flex-col\", className)}\n  {...props}\n>\n  <slot />\n</div>\n\n<script>\n  import { create } from \"@data-slot/accordion\"\n\n  const controllers: ReturnType<typeof create> = []\n  const initialize = () => controllers.push(...create())\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const controller of controllers) controller.destroy()\n    controllers.length = 0\n  })\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/accordion/accordion-content.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, hidden = true, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"accordion-content\"\n  hidden={hidden}\n  class=\"data-open:animate-accordion-down data-closed:animate-accordion-up text-xs overflow-hidden\"\n  {...props}\n>\n  <div\n    data-slot=\"accordion-content-inner\"\n    class={cn(\n      \"pt-0 pb-2.5 [&_a]:hover:text-foreground h-(--accordion-panel-height) data-ending-style:h-0 data-starting-style:h-0 [&_a]:underline [&_a]:underline-offset-3 [&_p:not(:last-child)]:mb-4\",\n      className\n    )}\n  >\n    <slot />\n  </div>\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/accordion/accordion-item.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  value: string\n  disabled?: boolean\n}\n\nconst { class: className, value, disabled, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"accordion-item\"\n  data-value={value}\n  data-disabled={disabled ? \"\" : undefined}\n  class={cn(\"not-last:border-b\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/accordion/accordion-trigger.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport ChevronDownIcon from \"@lucide/astro/icons/chevron-down\"\nimport ChevronUpIcon from \"@lucide/astro/icons/chevron-up\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"button\">\n\nconst { class: className, type = \"button\", ...props } = Astro.props\n---\n\n<button\n  data-slot=\"accordion-trigger\"\n  type={type}\n  class={cn(\n    \"focus-visible:ring-ring/50 focus-visible:border-ring focus-visible:after:border-ring **:data-[slot=accordion-trigger-icon]:text-muted-foreground rounded-none py-2.5 text-left text-xs font-medium hover:underline focus-visible:ring-1 **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4 group/accordion-trigger relative flex w-full flex-1 items-start justify-between border border-transparent bg-transparent transition-all outline-none aria-disabled:pointer-events-none aria-disabled:opacity-50\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n  <ChevronDownIcon\n    data-slot=\"accordion-trigger-icon\"\n    aria-hidden=\"true\"\n    class=\"pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden\"\n  />\n  <ChevronUpIcon\n    data-slot=\"accordion-trigger-icon\"\n    aria-hidden=\"true\"\n    class=\"pointer-events-none hidden shrink-0 group-aria-expanded/accordion-trigger:inline\"\n  />\n</button>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/accordion/index.ts",
+      "content": "export { default as Accordion } from \"./accordion.astro\"\nexport { default as AccordionContent } from \"./accordion-content.astro\"\nexport { default as AccordionItem } from \"./accordion-item.astro\"\nexport { default as AccordionTrigger } from \"./accordion-trigger.astro\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/components/accordion/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

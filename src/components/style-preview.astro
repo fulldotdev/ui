@@ -1,0 +1,37 @@
+---
+// Docs only: render the slot in every shadcn/ui style. The default style is
+// part of the page; the others are stored as JSON, so the page HTML stays
+// valid, and src/lib/preset-store.ts swaps them in. Keep the parent element
+// for this preview alone.
+import type { HTMLAttributes } from "astro/types"
+
+import { applyStyle, defaultStyle, styles } from "@/lib/styles"
+
+type Props = HTMLAttributes<"div">
+
+const props = Astro.props
+const html = Astro.slots.has("default")
+  ? await Astro.slots.render("default")
+  : ""
+---
+
+<div
+  {...props}
+  data-style-preview={defaultStyle}
+  set:html={applyStyle(html, defaultStyle)}
+/>
+{
+  styles
+    .filter((style) => style !== defaultStyle)
+    .map((style) => (
+      <script
+        is:inline
+        type="application/json"
+        data-style-template={style}
+        set:html={JSON.stringify(applyStyle(html, style)).replace(
+          /</g,
+          "\\u003c"
+        )}
+      />
+    ))
+}
