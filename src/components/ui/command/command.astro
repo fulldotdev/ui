@@ -57,23 +57,47 @@ const {
     controllers.length = 0
   })
 
+  const isCommandInput = (
+    target: EventTarget | null
+  ): target is HTMLInputElement =>
+    target instanceof HTMLInputElement &&
+    target.dataset.slot === "command-input"
+
+  // Do not act on the Enter that confirms an IME composition. Safari fires
+  // that keydown right after compositionend with isComposing set to false, so
+  // also skip a single Enter that arrives within a few frames of it.
+  let composing = false
+  let compositionEndedAt = -Infinity
+  document.addEventListener(
+    "compositionstart",
+    (event) => {
+      if (isCommandInput(event.target)) composing = true
+    },
+    true
+  )
+  document.addEventListener(
+    "compositionend",
+    (event) => {
+      if (!isCommandInput(event.target)) return
+      composing = false
+      compositionEndedAt = event.timeStamp
+    },
+    true
+  )
+  const confirmsComposition = (event: KeyboardEvent) => {
+    if (event.isComposing || composing) return true
+    if (event.timeStamp - compositionEndedAt > 100) return false
+    compositionEndedAt = -Infinity
+    return true
+  }
+
   // Data Slot selection does not activate links. Preserve native navigation.
   document.addEventListener(
     "keydown",
     (event) => {
-      if (
-        event.key !== "Enter" ||
-        event.defaultPrevented ||
-        event.isComposing ||
-        event.keyCode === 229
-      )
-        return
+      if (event.key !== "Enter" || event.defaultPrevented) return
       const input = event.target
-      if (
-        !(input instanceof HTMLInputElement) ||
-        input.dataset.slot !== "command-input"
-      )
-        return
+      if (!isCommandInput(input) || confirmsComposition(event)) return
       const root = input.closest('[data-slot="command"]')
       if (!root) return
       const item = getParts<HTMLAnchorElement>(root, "command-item").find(
