@@ -4,7 +4,7 @@ import type { EmblaOptionsType } from "embla-carousel"
 
 import { cn } from "@/lib/utils"
 
-type Props = HTMLAttributes<"div"> & {
+type Props = HTMLAttributes<"section"> & {
   opts?: EmblaOptionsType
   orientation?: "horizontal" | "vertical"
 }
@@ -16,23 +16,27 @@ const {
   ...props
 } = Astro.props
 
+// A named section is a region landmark. Without a name it would have no role,
+// so it becomes a group, the other container role the APG carousel allows.
+const named = Boolean(props["aria-label"] || props["aria-labelledby"])
+
 const resolvedOpts: EmblaOptionsType = {
   ...opts,
   axis: orientation === "horizontal" ? "x" : "y",
 }
 ---
 
-<div
+<section
   data-slot="carousel"
   data-orientation={orientation}
   data-carousel-options={JSON.stringify(resolvedOpts)}
   class={cn("group/carousel relative", className)}
-  role="region"
+  role={named ? undefined : "group"}
   aria-roledescription="carousel"
   {...props}
 >
   <slot />
-</div>
+</section>
 
 <script>
   import EmblaCarousel, {

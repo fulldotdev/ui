@@ -1,8 +1,8 @@
 ---
 import type { HTMLAttributes } from "astro/types"
-import Discord from "simple-icons-astro/Discord"
-import Github from "simple-icons-astro/Github"
-import X from "simple-icons-astro/X"
+import Discord from "simple-icons/icons/discord.svg"
+import Github from "simple-icons/icons/github.svg"
+import X from "simple-icons/icons/x.svg"
 
 import { cn } from "@/lib/utils"
 import { Logo, LogoText } from "@/components/ui/logo"
@@ -23,6 +23,7 @@ type Props = HTMLAttributes<"footer"> & {
     icon: string
   }[]
   copyright: string
+  navigationLabel?: string
 }
 
 const {
@@ -33,6 +34,7 @@ const {
   links,
   socials,
   copyright,
+  navigationLabel = "Footer navigation",
   ...props
 } = Astro.props
 
@@ -54,7 +56,10 @@ const iconMap: Record<string, any> = {
       </p>
       {
         links && links.length > 0 && (
-          <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+          <nav
+            aria-label={navigationLabel}
+            class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2"
+          >
             {links.map((link) => (
               <a
                 href={link.href}
@@ -79,7 +84,13 @@ const iconMap: Record<string, any> = {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  {IconComp && <IconComp class="size-4" fill="currentColor" />}
+                  {IconComp && (
+                    <IconComp
+                      class="size-4"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    />
+                  )}
                 </a>
               )
             })}
