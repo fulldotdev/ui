@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.16.2
+
+### Patch Changes
+
+- [#235](https://github.com/fulldotdev/ui/pull/235) [`b7e997d`](https://github.com/fulldotdev/ui/commit/b7e997defbf1a072cda5ab0eb8b4afac06cce304) Thanks [@silveltman](https://github.com/silveltman)! - - Components import each other through their index, and their own files with `./`. `sheet` now imports `DialogPortal` from `@/components/ui/dialog`, `combobox` from `@/components/ui/input-group`, `toggle-group` from `@/components/ui/toggle`, and `sheet-close` from `@/components/ui/button`. A site's knip then counts every installed part of a used component as used, so it can report components a site does not use.
+
 ## 0.16.1
 
 ### Patch Changes
