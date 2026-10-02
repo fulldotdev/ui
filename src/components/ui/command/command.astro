@@ -65,7 +65,8 @@ const {
 
   // Do not act on the Enter that confirms an IME composition. Safari fires
   // that keydown right after compositionend with isComposing set to false, so
-  // also skip a single Enter that arrives within a few frames of it.
+  // treat the first keydown after compositionend as the confirming key when it
+  // arrives within 50 ms. Any later keydown is a new key press.
   let composing = false
   let compositionEndedAt = -Infinity
   document.addEventListener(
@@ -86,18 +87,19 @@ const {
   )
   const confirmsComposition = (event: KeyboardEvent) => {
     if (event.isComposing || composing) return true
-    if (event.timeStamp - compositionEndedAt > 100) return false
+    const confirming = event.timeStamp - compositionEndedAt < 50
     compositionEndedAt = -Infinity
-    return true
+    return confirming
   }
 
   // Data Slot selection does not activate links. Preserve native navigation.
   document.addEventListener(
     "keydown",
     (event) => {
-      if (event.key !== "Enter" || event.defaultPrevented) return
       const input = event.target
-      if (!isCommandInput(input) || confirmsComposition(event)) return
+      if (!isCommandInput(input)) return
+      const confirming = confirmsComposition(event)
+      if (event.key !== "Enter" || event.defaultPrevented || confirming) return
       const root = input.closest('[data-slot="command"]')
       if (!root) return
       const item = getParts<HTMLAnchorElement>(root, "command-item").find(
