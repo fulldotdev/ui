@@ -14,6 +14,11 @@ export default defineConfig({
     server: {
       allowedHosts: ["otis.tailb5cb80.ts.net"],
     },
+    // The docs create page imports this; prebundle it so the first dev visit
+    // does not trigger a dependency re-optimization.
+    optimizeDeps: {
+      include: ["shadcn/preset"],
+    },
   },
   prefetch: {
     prefetchAll: true,
