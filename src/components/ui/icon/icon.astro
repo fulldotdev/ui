@@ -66,7 +66,12 @@ const resolve = () => {
     }
   }
 
-  if (!key) return undefined
+  const linkIcon = {
+    source: "lucide" as const,
+    path: pathFor("lucide", "link"),
+  }
+
+  if (!key) return href ? linkIcon : undefined
   if (key === "x.com") key = "simple:x"
 
   const [prefix, icon] = key.includes(":") ? key.split(":") : [undefined, key]
@@ -79,9 +84,7 @@ const resolve = () => {
 
   // A link always gets an icon, even when its brand has no logo in either set
   // (Simple Icons removed LinkedIn, for example).
-  if (!name && href) {
-    return { source: "lucide" as const, path: pathFor("lucide", "link") }
-  }
+  if (!name && href) return linkIcon
 
   return undefined
 }
