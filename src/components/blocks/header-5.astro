@@ -60,9 +60,27 @@ type Props = HTMLAttributes<"header"> & {
     icon?: string
     variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
+  navigationLabel?: string
+  menu?: {
+    label: string
+    title: string
+    description: string
+  }
 }
 
-const { class: className, logo, navigation, buttons, ...props } = Astro.props
+const {
+  class: className,
+  logo,
+  navigation,
+  buttons,
+  navigationLabel = "Main navigation",
+  menu = {
+    label: "Open menu",
+    title: "Menu",
+    description: "Site navigation and actions.",
+  },
+  ...props
+} = Astro.props
 ---
 
 <Header
@@ -104,17 +122,17 @@ const { class: className, logo, navigation, buttons, ...props } = Astro.props
         variant="ghost"
         size="icon-sm"
         class="ml-auto"
-        aria-label="Open menu"
+        aria-label={menu.label}
       >
         <Icon name="menu" />
       </SheetTrigger>
       <SheetContent side="right" class="p-0">
         <SheetHeader class="sr-only">
-          <SheetTitle>Menu</SheetTitle>
-          <SheetDescription>Site navigation and actions.</SheetDescription>
+          <SheetTitle>{menu.title}</SheetTitle>
+          <SheetDescription>{menu.description}</SheetDescription>
         </SheetHeader>
         <div class="flex h-full flex-col gap-6 overflow-y-auto px-4 py-12">
-          <nav aria-label="Main navigation" class="flex flex-col gap-4">
+          <nav aria-label={menu.title} class="flex flex-col gap-4">
             {
               navigation.map((item) => (
                 <div class="grid gap-1">
@@ -155,7 +173,11 @@ const { class: className, logo, navigation, buttons, ...props } = Astro.props
   </HeaderContainer>
   <Separator class="hidden lg:block" />
   <HeaderContainer class="hidden min-h-11 lg:flex">
-    <NavigationMenu class="max-w-none justify-start" align="start">
+    <NavigationMenu
+      aria-label={navigationLabel}
+      class="max-w-none justify-start"
+      align="start"
+    >
       <NavigationMenuList class="justify-start">
         {
           navigation.map((item, index) =>
