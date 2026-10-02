@@ -1,10 +1,6 @@
 // Docs only: render cn-* placeholders in HTML the way an install in that style
 // would, so previews match installed components exactly.
-import {
-  createStyleMaps,
-  replacePlaceholders,
-  STYLES,
-} from "../../scripts/styles.mjs"
+import { createStyleMaps, replacePlaceholders, STYLES } from "#styles"
 
 const files = import.meta.glob<string>("/registry/styles/*/style-*.css", {
   query: "?raw",

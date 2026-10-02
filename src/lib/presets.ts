@@ -8,8 +8,18 @@ import {
   type PresetConfig,
 } from "shadcn/preset"
 
-import fonts from "../../registry/styles/shadcn/fonts.json"
-import themes from "../../registry/styles/shadcn/themes.json"
+const data = import.meta.glob<unknown>("/registry/styles/shadcn/*.json", {
+  import: "default",
+  eager: true,
+})
+const fonts = data["/registry/styles/shadcn/fonts.json"] as {
+  name: string
+  title: string
+  type: string
+  family: string
+  dependency: string
+}[]
+const themes = data["/registry/styles/shadcn/themes.json"]
 
 export type { PresetConfig }
 export { decodePreset, encodePreset }
