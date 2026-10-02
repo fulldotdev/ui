@@ -2,9 +2,9 @@
 import Check from "@lucide/astro/icons/check"
 import Copy from "@lucide/astro/icons/copy"
 
-import { applyStyle, defaultStyle, styles } from "@/lib/styles"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import StylePreview from "@/components/style-preview.astro"
 import StyleSelect from "@/components/style-select.astro"
 
 type ComponentProps = {
@@ -38,13 +38,6 @@ const installCommand = componentSlug
 const installButtonId = installCommand
   ? `live-code-copy-install-${crypto.randomUUID()}`
   : undefined
-// Render the example once per style; the style menu shows one of them.
-const example = Astro.slots.has("example")
-  ? await Astro.slots.render("example")
-  : ""
-const previews = Object.fromEntries(
-  styles.map((style) => [style, applyStyle(example, style)])
-)
 ---
 
 <Tabs defaultValue="preview" class="live-code-layout w-full gap-3">
@@ -92,31 +85,16 @@ const previews = Object.fromEntries(
           : "flex min-h-64 items-center justify-center rounded-xl p-10",
       ]}
     >
-      <div
-        data-style-preview={defaultStyle}
+      <StylePreview
         data-not-typeset={isTypographyPreview ? undefined : ""}
         class:list={[
           isBlockPreview
             ? "bg-background w-full"
             : "flex w-full flex-wrap items-center justify-center gap-3",
         ]}
-        set:html={previews[defaultStyle]}
-      />
-      {
-        styles
-          .filter((style) => style !== defaultStyle)
-          .map((style) => (
-            <script
-              is:inline
-              type="application/json"
-              data-style-template={style}
-              set:html={JSON.stringify(previews[style]).replace(
-                /</g,
-                "\\u003c"
-              )}
-            />
-          ))
-      }
+      >
+        <slot name="example" />
+      </StylePreview>
     </div>
   </TabsContent>
 

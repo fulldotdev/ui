@@ -1,0 +1,81 @@
+---
+type: doc
+title: Presets
+description: Use shadcn/ui presets to set the style, theme, and fonts of Fulldev UI.
+---
+
+Fulldev UI works with [shadcn/ui presets](https://ui.shadcn.com/docs/cli#preset).
+A preset is a short code, such as `b0`, for a set of design choices. Build one on
+the [Create](/create/) page, or on [ui.shadcn.com/create](https://ui.shadcn.com/create).
+
+## What a preset sets
+
+- **Style**: the shape of components, such as radius, density, and type. Fulldev
+  UI supports all shadcn/ui styles: Vega, Nova, Maia, Lyra, Mira, Luma, Sera, and
+  Rhea.
+- **Theme**: the base color, theme color, chart colors, radius, and menu accent,
+  as CSS variables in your stylesheet.
+- **Fonts**: the body and heading fonts.
+
+Fulldev UI uses the Base UI library and Lucide icons, so pass `--base base` and
+keep the Lucide icon library. Menu colors are not supported yet.
+
+## Start a project with a preset
+
+In your Astro project, initialize shadcn/ui with the preset:
+
+```bash
+npx shadcn@latest init --preset <preset> --base base
+```
+
+Add the Fulldev UI registry to `components.json`. The CLI fills in `{style}`
+from your `components.json`, so components install in the preset's style:
+
+```json title="components.json"
+{
+  "registries": {
+    "@fulldev": "https://ui.full.dev/r/styles/{style}/{name}.json"
+  }
+}
+```
+
+Install the Fulldev UI base stylesheet and helpers, then apply the preset's
+theme and fonts on top of it:
+
+```bash
+npx shadcn@latest add @fulldev/init --overwrite
+npx shadcn@latest apply <preset> --only theme,font
+```
+
+Then add components as usual, for example `npx shadcn@latest add @fulldev/button`.
+
+## Switch an existing project
+
+Apply the new preset, then reinstall the Fulldev UI components you use, so they
+take the new style:
+
+```bash
+npx shadcn@latest apply <preset>
+npx shadcn@latest add @fulldev/button @fulldev/card --overwrite
+```
+
+`apply` updates `components.json`, CSS variables, and fonts. It only reinstalls
+components from the shadcn/ui registry, which is why the second command is
+needed. Commit your changes first, because `--overwrite` replaces your component
+files.
+
+To change only the theme or fonts and keep your components as they are:
+
+```bash
+npx shadcn@latest apply <preset> --only theme,font
+```
+
+## Inspect a preset
+
+```bash
+npx shadcn@latest preset decode <preset>
+npx shadcn@latest preset resolve
+```
+
+`decode` shows the choices in a code, and `resolve` shows the preset of the
+current project.

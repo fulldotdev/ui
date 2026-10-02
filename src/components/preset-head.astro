@@ -1,0 +1,26 @@
+---
+// Docs only: apply the preset chosen on the create page before the first
+// paint. Keep the key and element id in sync with src/lib/preset-store.ts.
+---
+
+<script is:inline>
+  try {
+    const preset = JSON.parse(
+      localStorage.getItem("fulldev-ui-preset") ?? "null"
+    )
+    if (preset?.css) {
+      const style = document.createElement("style")
+      style.id = "fulldev-ui-preset"
+      style.textContent = preset.css
+      document.head.append(style)
+    }
+    for (const href of preset?.fonts ?? []) {
+      const link = document.createElement("link")
+      link.rel = "stylesheet"
+      link.href = href
+      document.head.append(link)
+    }
+  } catch {
+    // Ignore unreadable or blocked storage.
+  }
+</script>

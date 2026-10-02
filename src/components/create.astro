@@ -1,0 +1,321 @@
+---
+// Docs only: build a shadcn/ui preset and preview Fulldev UI with it.
+import Check from "@lucide/astro/icons/check"
+import Copy from "@lucide/astro/icons/copy"
+import Shuffle from "@lucide/astro/icons/shuffle"
+
+import {
+  baseColorOptions,
+  chartOptions,
+  DEFAULT_CONFIG,
+  FONTS,
+  MENU_ACCENTS,
+  presetCode,
+  RADII,
+  STYLE_OPTIONS,
+  themeOptions,
+} from "@/lib/presets"
+import { Button } from "@/components/ui/button"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
+import {
+  NativeSelect,
+  NativeSelectOptGroup,
+  NativeSelectOption,
+} from "@/components/ui/native-select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import CreatePreview from "@/components/create-preview.astro"
+import StylePreview from "@/components/style-preview.astro"
+
+const fontGroups = ["sans", "serif", "mono"].map((type) => ({
+  label: type[0].toUpperCase() + type.slice(1),
+  fonts: FONTS.filter((font) => font.type === type),
+}))
+
+const controls = [
+  { name: "style", label: "Style", options: STYLE_OPTIONS },
+  { name: "baseColor", label: "Base color", options: baseColorOptions },
+  {
+    name: "theme",
+    label: "Theme",
+    options: themeOptions(DEFAULT_CONFIG.baseColor),
+  },
+  { name: "chartColor", label: "Chart color", options: chartOptions },
+  { name: "font", label: "Font" },
+  { name: "fontHeading", label: "Heading font" },
+  { name: "radius", label: "Radius", options: RADII },
+  { name: "menuAccent", label: "Menu accent", options: MENU_ACCENTS },
+]
+const code = presetCode(DEFAULT_CONFIG)
+const registry = `{
+  "registries": {
+    "@fulldev": "https://ui.full.dev/r/styles/{style}/{name}.json"
+  }
+}`
+// {preset} is replaced with the current preset code.
+const commands = {
+  init: "npx shadcn@latest init --preset {preset} --base base",
+  base: "npx shadcn@latest add @fulldev/init --overwrite",
+  theme: "npx shadcn@latest apply {preset} --only theme,font",
+  apply: "npx shadcn@latest apply {preset}",
+  reinstall: "npx shadcn@latest add @fulldev/button @fulldev/card --overwrite",
+}
+const command = (template: string) => template.replace("{preset}", code)
+---
+
+<div class="grid gap-6 @5xl:grid-cols-[16rem_minmax(0,1fr)]" data-create>
+  <aside class="flex flex-col gap-6 @5xl:sticky @5xl:top-6 @5xl:self-start">
+    <FieldGroup class="gap-4">
+      {
+        controls.map(({ name, label, options }) => (
+          <Field>
+            <FieldLabel for={`create-${name}`}>{label}</FieldLabel>
+            <NativeSelect
+              id={`create-${name}`}
+              data-preset-field={name}
+              class="w-full"
+            >
+              {name === "fontHeading" && (
+                <NativeSelectOption value="inherit">
+                  Same as font
+                </NativeSelectOption>
+              )}
+              {options
+                ? options.map((option) => (
+                    <NativeSelectOption
+                      value={option.name}
+                      selected={
+                        DEFAULT_CONFIG[name as keyof typeof DEFAULT_CONFIG] ===
+                        option.name
+                      }
+                    >
+                      {option.label}
+                    </NativeSelectOption>
+                  ))
+                : fontGroups.map((group) => (
+                    <NativeSelectOptGroup label={group.label}>
+                      {group.fonts.map((font) => (
+                        <NativeSelectOption
+                          value={font.name}
+                          selected={
+                            DEFAULT_CONFIG[
+                              name as keyof typeof DEFAULT_CONFIG
+                            ] === font.name
+                          }
+                        >
+                          {font.title}
+                        </NativeSelectOption>
+                      ))}
+                    </NativeSelectOptGroup>
+                  ))}
+            </NativeSelect>
+          </Field>
+        ))
+      }
+    </FieldGroup>
+    <div class="flex gap-2">
+      <Button variant="outline" size="sm" data-preset-random class="flex-1">
+        <Shuffle data-icon="inline-start" />
+        Shuffle
+      </Button>
+      <Button variant="outline" size="sm" data-preset-reset class="flex-1">
+        Reset
+      </Button>
+    </div>
+  </aside>
+
+  <div class="flex min-w-0 flex-col gap-6">
+    <div
+      class="bg-muted/40 flex flex-wrap items-center justify-between gap-3 rounded-xl border p-3"
+    >
+      <div class="flex min-w-0 flex-col">
+        <span class="text-muted-foreground text-xs">Preset</span>
+        <code class="font-mono text-sm font-medium" data-preset-code
+          >{code}</code
+        >
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <Button variant="outline" size="sm" data-copy="code">
+          <Copy data-icon="inline-start" data-copy-icon />
+          <Check data-icon="inline-start" data-check-icon class="hidden" />
+          Copy code
+        </Button>
+        <Button variant="outline" size="sm" data-copy="link">
+          <Copy data-icon="inline-start" data-copy-icon />
+          <Check data-icon="inline-start" data-check-icon class="hidden" />
+          Copy link
+        </Button>
+        <Button
+          as="a"
+          variant="outline"
+          size="sm"
+          href={`https://ui.shadcn.com/create?preset=${code}`}
+          target="_blank"
+          rel="noopener"
+          data-preset-shadcn
+        >
+          Open in shadcn/ui
+        </Button>
+      </div>
+    </div>
+
+    <div class="@container rounded-xl border p-4 @3xl:p-6">
+      <StylePreview class="w-full">
+        <CreatePreview />
+      </StylePreview>
+    </div>
+
+    <Tabs defaultValue="new" class="gap-3">
+      <TabsList>
+        <TabsTrigger value="new">New project</TabsTrigger>
+        <TabsTrigger value="existing">Existing Fulldev UI project</TabsTrigger>
+      </TabsList>
+      <TabsContent value="new" class="flex flex-col gap-3 text-sm">
+        <p class="text-muted-foreground">
+          In your Astro project, initialize shadcn/ui with the preset:
+        </p>
+        <pre
+          class="bg-muted overflow-x-auto rounded-lg p-3 font-mono text-xs"><code data-preset-command={commands.init}>{command(commands.init)}</code></pre>
+        <p class="text-muted-foreground">
+          Add the Fulldev UI registry to <code>components.json</code>:
+        </p>
+        <pre
+          class="bg-muted overflow-x-auto rounded-lg p-3 font-mono text-xs"><code>{registry}</code></pre>
+        <p class="text-muted-foreground">
+          Install the Fulldev UI base, then apply the preset's theme and fonts
+          on top of it:
+        </p>
+        <pre
+          class="bg-muted overflow-x-auto rounded-lg p-3 font-mono text-xs"><code>{commands.base}</code>
+<code data-preset-command={commands.theme}>{command(commands.theme)}</code></pre>
+      </TabsContent>
+      <TabsContent value="existing" class="flex flex-col gap-3 text-sm" hidden>
+        <p class="text-muted-foreground">
+          Apply the preset, then reinstall the Fulldev UI components you use in
+          the new style. <code>apply</code> only reinstalls components from the shadcn/ui
+          registry.
+        </p>
+        <pre
+          class="bg-muted overflow-x-auto rounded-lg p-3 font-mono text-xs"><code data-preset-command={commands.apply}>{command(commands.apply)}</code>
+<code>{commands.reinstall}</code></pre>
+      </TabsContent>
+    </Tabs>
+  </div>
+</div>
+
+<script>
+  import { generateRandomConfig } from "shadcn/preset"
+
+  import { PRESET_EVENT, readPreset, writePreset } from "@/lib/preset-store"
+  import {
+    BASE_COLORS,
+    decodePreset,
+    DEFAULT_CONFIG,
+    encodePreset,
+    presetCss,
+    presetFontUrls,
+    themeOptions,
+    type PresetConfig,
+  } from "@/lib/presets"
+
+  const root = document.querySelector<HTMLElement>("[data-create]")
+  const fields = [
+    ...document.querySelectorAll<HTMLSelectElement>("[data-preset-field]"),
+  ]
+
+  const current = (): PresetConfig => ({
+    ...DEFAULT_CONFIG,
+    ...(readPreset()?.config as Partial<PresetConfig>),
+  })
+
+  const save = (config: PresetConfig) =>
+    writePreset({
+      config,
+      css: presetCss(config),
+      fonts: presetFontUrls(config),
+    })
+
+  // Themes depend on the base color, like on ui.shadcn.com.
+  const fillThemes = (baseColor: string) => {
+    const select = fields.find((field) => field.dataset.presetField === "theme")
+    if (!select) return
+    select.replaceChildren(
+      ...themeOptions(baseColor).map(
+        ({ name, label }) => new Option(label, name)
+      )
+    )
+  }
+
+  const render = () => {
+    const config = current()
+    fillThemes(config.baseColor)
+    for (const field of fields) {
+      field.value =
+        config[field.dataset.presetField as keyof PresetConfig] ?? ""
+    }
+    const code = encodePreset(config)
+    root?.querySelectorAll("[data-preset-code]").forEach((element) => {
+      element.textContent = code
+    })
+    root
+      ?.querySelectorAll<HTMLElement>("[data-preset-command]")
+      .forEach((element) => {
+        element.textContent = (element.dataset.presetCommand ?? "").replace(
+          "{preset}",
+          code
+        )
+      })
+    root
+      ?.querySelector<HTMLAnchorElement>("[data-preset-shadcn]")
+      ?.setAttribute("href", `https://ui.shadcn.com/create?preset=${code}`)
+  }
+
+  // A shared link opens that preset.
+  const shared = new URLSearchParams(location.search).get("preset")
+  const decoded = shared ? decodePreset(shared) : null
+  if (decoded) save({ ...decoded, iconLibrary: "lucide" })
+  render()
+  document.addEventListener(PRESET_EVENT, render)
+
+  for (const field of fields) {
+    field.addEventListener("change", () => {
+      const config = {
+        ...current(),
+        [field.dataset.presetField!]: field.value,
+      } as PresetConfig
+      // A base color is also its own theme; keep the theme valid.
+      if (
+        field.dataset.presetField === "baseColor" &&
+        BASE_COLORS.includes(config.theme)
+      ) {
+        config.theme = config.baseColor
+      }
+      save(config)
+    })
+  }
+
+  root?.querySelector("[data-preset-random]")?.addEventListener("click", () => {
+    const random = generateRandomConfig() as PresetConfig
+    save({ ...random, iconLibrary: "lucide", menuColor: "default" })
+  })
+
+  root?.querySelector("[data-preset-reset]")?.addEventListener("click", () => {
+    writePreset(undefined)
+  })
+
+  root?.querySelectorAll<HTMLElement>("[data-copy]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const code = encodePreset(current())
+      const text =
+        button.dataset.copy === "link"
+          ? `${location.origin}/create/?preset=${code}`
+          : code
+      await navigator.clipboard.writeText(text).catch(() => {})
+      button.querySelector("[data-copy-icon]")?.classList.add("hidden")
+      button.querySelector("[data-check-icon]")?.classList.remove("hidden")
+      setTimeout(() => {
+        button.querySelector("[data-copy-icon]")?.classList.remove("hidden")
+        button.querySelector("[data-check-icon]")?.classList.add("hidden")
+      }, 1500)
+    })
+  })
+</script>
