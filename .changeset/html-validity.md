@@ -9,7 +9,7 @@ Fix invalid HTML and accessibility problems that html-validate and `astro check`
 - `NavigationMenu` defaults its `aria-label` to `Main`, as in shadcn/ui.
 - `Pagination` no longer sets the redundant `role="navigation"`, and an `aria-label` you pass replaces the default instead of rendering the attribute twice.
 - `BreadcrumbPage` no longer sets `role="link"` and `aria-disabled` on its text. `aria-current="page"` still marks the current page.
-- `Carousel` renders a `section` instead of a `div` with `role="region"`. Give it an `aria-label` so it is exposed as a named region, as the docs now explain.
+- `Carousel` renders a `section` instead of a `div` with `role="region"`. With an `aria-label` or `aria-labelledby` it is a named region; without one it gets `role="group"`, so `aria-roledescription="carousel"` stays valid.
 - `ToggleGroup` renders `role="group"` and `ResizableHandle` renders `role="separator"` in the HTML, so an `aria-label` on them is valid before scripts run. Data Slot only added these roles at runtime.
 - `Avatar` and `AvatarFallback` render a `span`, as in shadcn/ui, so an avatar can sit inside a button or link.
 - `Input` and `NativeSelect` render `multiple` as a bare attribute. Astro rendered `multiple="true"`, and `multiple={false}` still turned it on.
