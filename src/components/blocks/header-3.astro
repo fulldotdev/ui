@@ -46,9 +46,27 @@ type Props = HTMLAttributes<"header"> & {
     icon?: string
     variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
+  navigationLabel?: string
+  menu?: {
+    label: string
+    title: string
+    description: string
+  }
 }
 
-const { class: className, logo, navigation, buttons, ...props } = Astro.props
+const {
+  class: className,
+  logo,
+  navigation,
+  buttons,
+  navigationLabel = "Main navigation",
+  menu = {
+    label: "Open menu",
+    title: "Menu",
+    description: "Site navigation and actions.",
+  },
+  ...props
+} = Astro.props
 ---
 
 <Header class={cn("border-b", className)} {...props}>
@@ -65,7 +83,10 @@ const { class: className, logo, navigation, buttons, ...props } = Astro.props
       </Logo>
     </HeaderGroup>
     <HeaderGroup class="ml-auto hidden justify-end gap-1 lg:flex">
-      <NavigationMenu class="hidden max-w-none justify-end lg:flex">
+      <NavigationMenu
+        aria-label={navigationLabel}
+        class="hidden max-w-none justify-end lg:flex"
+      >
         <NavigationMenuList>
           {
             navigation.map((item, index) => (
@@ -104,17 +125,17 @@ const { class: className, logo, navigation, buttons, ...props } = Astro.props
         variant="ghost"
         size="icon-sm"
         class="ml-auto"
-        aria-label="Open menu"
+        aria-label={menu.label}
       >
         <Icon name="menu" />
       </SheetTrigger>
       <SheetContent side="right" class="p-0">
         <SheetHeader class="sr-only">
-          <SheetTitle>Menu</SheetTitle>
-          <SheetDescription>Site navigation and actions.</SheetDescription>
+          <SheetTitle>{menu.title}</SheetTitle>
+          <SheetDescription>{menu.description}</SheetDescription>
         </SheetHeader>
         <div class="flex h-full flex-col gap-6 px-4 py-12">
-          <nav aria-label="Main navigation" class="flex flex-col gap-1">
+          <nav aria-label={menu.title} class="flex flex-col gap-1">
             {
               navigation.map((item) => (
                 <SheetClose
