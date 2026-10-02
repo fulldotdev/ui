@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.17.2
+
+### Patch Changes
+
+- [#242](https://github.com/fulldotdev/ui/pull/242) [`529d800`](https://github.com/fulldotdev/ui/commit/529d80089783204e6ef3008785f490485c4b943b) Thanks [@silveltman](https://github.com/silveltman)! - Fix the navigation menu popup's closing easing: use Tailwind's `ease-[ease]` instead of the nonexistent `easing-[ease]` utility.
+
 ## 0.17.1
 
 ### Patch Changes
