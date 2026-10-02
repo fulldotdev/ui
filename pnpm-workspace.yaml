@@ -9,8 +9,12 @@ overrides:
   # work the same in 0.35.
   "favilib>sharp": ^0.35.4
 
-# Supply-chain protection on top of the pnpm 11 defaults (24h release age, no exotic subdependencies).
-# Enforce the release age, and reject releases from the last 7 days that lost publish trust.
+# Supply-chain protection on top of the pnpm defaults (24h release age, no exotic subdependencies).
+# When only a release under a day old fits, ask (fail in CI) instead of installing it anyway.
+minimumReleaseAgeStrict: true
+# Reject a release published with weaker trust (provenance) than earlier versions.
+# Only releases from the last 7 days are checked, so older ones in existing lockfiles still install.
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 10080
-minimumReleaseAgeStrict: true
+# Never run .pnpmfile hooks.
+ignorePnpmfile: true
