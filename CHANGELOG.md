@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.17.1
+
+### Patch Changes
+
+- [#239](https://github.com/fulldotdev/ui/pull/239) [`037eeeb`](https://github.com/fulldotdev/ui/commit/037eeebd6d16c05c4f4619faa1b3d8522c6527f6) Thanks [@silveltman](https://github.com/silveltman)! - Put `<meta charset>` first in `LayoutHead`, so browsers read it within the first bytes of the page.
+
 ## 0.17.0
 
 ### Minor Changes
