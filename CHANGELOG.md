@@ -1,5 +1,35 @@
 # Fulldev UI
 
+## 0.15.0
+
+### Minor Changes
+
+- [#222](https://github.com/fulldotdev/ui/pull/222) [`d3f0fd0`](https://github.com/fulldotdev/ui/commit/d3f0fd03eba765ad414f04cabaeac23a33b44ce5) Thanks [@silveltman](https://github.com/silveltman)! - - `astro` (`^7.0.0`) and `tailwindcss` (`^4.1.0`) are now peer dependencies instead of dependencies. Sites that install `fulldev-ui` keep their own Astro and Tailwind, so the package no longer adds a second, older Astro to the site's dependency tree. Sites need Astro 7.
+  - The package now depends only on what its shipped files import. Tools for the docs site (`@astrojs/mdx`, `@astrojs/sitemap`, `@tailwindcss/vite`, `astro-favicons`, `astro-live-code`, `astro-robots-txt`, `posthog-js` and `typescript`) are no longer installed with it, and the unused `@fontsource-variable/geist` and `@fontsource-variable/geist-mono` are removed.
+  - `src/lib` in the package now contains only `utils.ts`, the file the registry installs. The docs site's own helpers (`integration.ts`, `pages.ts` and the analytics files) are no longer published.
+  - The `layout` item now installs `@lexingtonthemes/seo@^0.4.0`, which supports Astro 7. Its code is the same as 0.2.0. The package also requires `@lucide/astro` 1.49.0 or later, because versions before 1.30 do not support Astro 7.
+  - `banner-1` and `article-2` add explicit spaces between their inline parts. Astro 7 removes whitespace that spans a line break, which made `banner-1` read "titleDescription" on small screens and `article-2` read "Name· date".
+
+### Patch Changes
+
+- [#223](https://github.com/fulldotdev/ui/pull/223) [`080b948`](https://github.com/fulldotdev/ui/commit/080b948acd1a34911e953c394f86b3daf27ebd0c) Thanks [@silveltman](https://github.com/silveltman)! - Fix invalid HTML and accessibility problems that html-validate and `astro check` report in sites:
+
+  - Brand icons in `footer-1`, `footer-2`, `footer-3`, `doc-1` and `blocks-1` render one `fill` attribute instead of two. The blocks import the SVG files from `simple-icons` instead of the `simple-icons-astro` components, which render `fill` twice, so they now depend on `simple-icons`.
+  - `footer-2` and `footer-3` take a `navigationLabel` prop (default `Footer navigation`) that names their link navigation, so it no longer clashes with the header navigation.
+  - `NavigationMenu` defaults its `aria-label` to `Main`, as in shadcn/ui.
+  - `Pagination` no longer sets the redundant `role="navigation"`, and an `aria-label` you pass replaces the default instead of rendering the attribute twice.
+  - `BreadcrumbPage` no longer sets `role="link"` and `aria-disabled` on its text. `aria-current="page"` still marks the current page.
+  - `Carousel` renders a `section` instead of a `div` with `role="region"`. With an `aria-label` or `aria-labelledby` it is a named region; without one it gets `role="group"`, so `aria-roledescription="carousel"` stays valid.
+  - `ToggleGroup` renders `role="group"` and `ResizableHandle` renders `role="separator"` in the HTML, so an `aria-label` on them is valid before scripts run. Data Slot only added these roles at runtime.
+  - `Avatar` and `AvatarFallback` render a `span`, as in shadcn/ui, so an avatar can sit inside a button or link.
+  - `Input` and `NativeSelect` render `multiple` as a bare attribute. Astro rendered `multiple="true"`, and `multiple={false}` still turned it on.
+  - The `sidebar-1` breadcrumb menu button has the accessible text "Toggle menu".
+  - `doc-1` wraps its table of contents in a `div` instead of an unnamed `aside`, so it no longer clashes with other complementary landmarks such as `Banner`.
+  - `SidebarMenuButton` and `SidebarMenuSubButton` have typed props again. Astro's compiler did not find their `Props` type, so the props were untyped and `astro check --minimumFailingSeverity hint` reported `Props` as unused.
+  - `Command` tracks IME composition with `compositionstart` and `compositionend` instead of the deprecated `keyCode`, and still ignores the Enter that confirms a composition, including in Safari.
+  - The Switch, Radio Group, Checkbox and Field docs label controls by wrapping them in `Label` and use only inline content inside labels. `Switch` and `RadioGroupItem` render a `span`, which `Label for` cannot point to.
+  - `reviews-3` names its carousel with the block title.
+
 ## 0.14.5
 
 ### Patch Changes
