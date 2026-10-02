@@ -18,3 +18,4 @@ Fix invalid HTML and accessibility problems that html-validate and `astro check`
 - `SidebarMenuButton` and `SidebarMenuSubButton` have typed props again. Astro's compiler did not find their `Props` type, so the props were untyped and `astro check --minimumFailingSeverity hint` reported `Props` as unused.
 - `Command` tracks IME composition with `compositionstart` and `compositionend` instead of the deprecated `keyCode`, and still ignores the Enter that confirms a composition, including in Safari.
 - The Switch, Radio Group, Checkbox and Field docs label controls by wrapping them in `Label` and use only inline content inside labels. `Switch` and `RadioGroupItem` render a `span`, which `Label for` cannot point to.
+- `reviews-3` names its carousel with the block title.
