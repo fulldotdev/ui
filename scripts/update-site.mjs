@@ -20,8 +20,9 @@
 //    next to it as <file>.upstream.
 // 4. Any other existing file the install changed, also git-ignored ones, apart
 //    from package manifests, lockfiles and components.json, is restored the
-//    same way, so a client edit is never overwritten silently. This also runs
-//    when the install fails partway; the report then has an `error`.
+//    same way, and a deleted file comes back, so a client edit is never lost
+//    silently. This also runs when the install fails partway; the report then
+//    has an `error`.
 //
 // Review every file in `merged` and `conflicts`, and delete the .upstream files.
 import { execFileSync } from "node:child_process"
@@ -52,17 +53,11 @@ const run = (cmd, args, cwd, options = {}) =>
   })
 const git = (args, cwd) => run("git", args, cwd)
 
-// Compare ignoring formatting: line breaks, indentation, quotes, semicolons
-// and trailing commas. Spaces between words still count, so "Log in" and
-// "Login" differ. When in doubt a file is custom, which is the safe side.
-const norm = (s) =>
-  s
-    .replace(/;(\s*\n)/g, "$1")
-    .replace(/'/g, '"')
-    .replace(/\s+/g, " ")
-    .replace(/ ?([^\w\s]) ?/g, "$1")
-    .replace(/,([)\]}>])/g, "$1")
-    .trim()
+// Exact comparison, apart from line endings and surrounding blank lines.
+// Formatting differences are handled by formatting with the site's Prettier
+// first; without it a file is custom, which is the safe side.
+const same = (a, b) =>
+  a.replace(/\r\n/g, "\n").trim() === b.replace(/\r\n/g, "\n").trim()
 
 const lineDiff = (a, b) => {
   const A = a.split("\n")
@@ -204,11 +199,11 @@ export const classify = ({ cwd = process.cwd(), ui = UI } = {}) => {
       const local = fs.readFileSync(path.join(cwd, file), "utf8")
       const versions = history(item.name, f.path, config.style)
       // Formatting is slow, so only when the plain comparison finds nothing.
-      let match = versions.findIndex((v) => norm(v) === norm(local))
+      let match = versions.findIndex((v) => same(v, local))
       const formatted =
         match === -1 ? versions.map((v) => format(v, file)) : versions
       if (match === -1) {
-        match = formatted.findIndex((v) => norm(v) === norm(local))
+        match = formatted.findIndex((v) => same(v, local))
       }
       let status = "custom"
       if (match === 0) status = "current"
@@ -320,12 +315,15 @@ const ignored = (cwd) =>
       .map((file) => [file, fs.readFileSync(path.join(cwd, file))])
   )
 
-// Keep the local file and put the new version next to it for review.
+// Keep the local file and put the new version, if any, next to it for review.
 const keepLocal = (cwd, file, local, theirs) => {
   const target = path.join(cwd, file)
+  fs.mkdirSync(path.dirname(target), { recursive: true })
   fs.writeFileSync(target, local)
-  fs.writeFileSync(`${target}.upstream`, theirs)
+  if (theirs !== null) fs.writeFileSync(`${target}.upstream`, theirs)
 }
+const readOrNull = (file, encoding) =>
+  fs.existsSync(file) ? fs.readFileSync(file, encoding) : null
 
 // 2 to 4. Writes to the site.
 export const update = ({
@@ -350,48 +348,63 @@ export const update = ({
     report.error = `Install failed: ${error.message}`
   }
 
-  // 3. Re-apply local edits.
-  for (const f of files.filter((f) => f.status === "custom")) {
-    const target = path.join(cwd, f.file)
-    const theirs = format(fs.readFileSync(target, "utf8"), f.file)
-    if (norm(theirs) === norm(f.local)) continue
-    // Equally close releases must give the same merge, or the base is a guess.
-    const merges = f.bases.map((base) => mergeFile(f.local, base, theirs))
-    const merged = merges[0]
-    if (!merges.length || merges.some((m) => m === null || m !== merged)) {
-      keepLocal(cwd, f.file, f.local, theirs)
-      report.conflicts.push(f.file)
-    } else {
-      fs.writeFileSync(target, merged)
-      report.merged.push(f.file)
+  // One file failing to recover must not stop the others.
+  const recover = (file, step) => {
+    try {
+      step()
+    } catch (error) {
+      report.error = [report.error, `${file}: ${error.message}`]
+        .filter(Boolean)
+        .join("; ")
     }
   }
-
-  // 4. Restore files that were not known unmodified registry files.
-  const known = new Set(files.map((f) => f.file))
-  for (const file of changed(cwd)) {
-    if (known.has(file) || EXPECTED.has(file)) continue
-    const target = path.join(cwd, file)
-    if (!fs.existsSync(target)) continue
-    const theirs = fs.readFileSync(target)
-    keepLocal(
-      cwd,
-      file,
-      execFileSync("git", ["show", `HEAD:${file}`], {
-        cwd,
-        maxBuffer: 1 << 28,
-      }),
-      theirs
-    )
-    report.conflicts.push(file)
-  }
-  for (const [file, local] of before) {
-    const target = path.join(cwd, file)
-    if (known.has(file) || !fs.existsSync(target)) continue
-    const theirs = fs.readFileSync(target)
-    if (theirs.equals(local)) continue
+  const conflict = (file, local, theirs) => {
     keepLocal(cwd, file, local, theirs)
     report.conflicts.push(file)
+  }
+
+  // 3. Re-apply local edits.
+  for (const f of files.filter((f) => f.status === "custom")) {
+    recover(f.file, () => {
+      const raw = readOrNull(path.join(cwd, f.file), "utf8")
+      if (raw === null) return conflict(f.file, f.local, null)
+      const theirs = format(raw, f.file)
+      if (same(theirs, f.local)) return
+      // Equally close releases must give the same merge, or the base is a guess.
+      const merges = f.bases.map((base) => mergeFile(f.local, base, theirs))
+      const merged = merges[0]
+      if (!merges.length || merges.some((m) => m === null || m !== merged)) {
+        return conflict(f.file, f.local, theirs)
+      }
+      fs.writeFileSync(path.join(cwd, f.file), merged)
+      report.merged.push(f.file)
+    })
+  }
+
+  // 4. Restore every other changed or deleted file, unless it was a known
+  // unmodified registry file that the install updated.
+  const known = new Set(files.map((f) => f.file))
+  const custom = new Set(report.custom)
+  for (const file of changed(cwd)) {
+    if (EXPECTED.has(file) || custom.has(file)) continue
+    const theirs = readOrNull(path.join(cwd, file))
+    if (known.has(file) && theirs !== null) continue
+    recover(file, () =>
+      conflict(
+        file,
+        execFileSync("git", ["show", `HEAD:${file}`], {
+          cwd,
+          maxBuffer: 1 << 28,
+        }),
+        theirs
+      )
+    )
+  }
+  for (const [file, local] of before) {
+    if (custom.has(file)) continue
+    const theirs = readOrNull(path.join(cwd, file))
+    if (theirs !== null && (known.has(file) || theirs.equals(local))) continue
+    recover(file, () => conflict(file, local, theirs))
   }
 
   report.added = untracked(cwd).filter((f) => !f.endsWith(".upstream"))

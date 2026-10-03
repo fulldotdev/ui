@@ -219,10 +219,10 @@ test("the command is a dry run unless --write is given", () => {
 })
 
 test("a space inside a string is an edit", () => {
-  const site = createSite({
-    [BOX]: V17.replace("rounded-lg p-4", "rounded-lgp-4"),
-  })
-  assert.equal(status(site)[BOX], "custom")
+  for (const edit of ["rounded-lgp-4", "rounded-lg,p-4", "rounded-lg  p-4"]) {
+    const site = createSite({ [BOX]: V17.replace("rounded-lg p-4", edit) })
+    assert.equal(status(site)[BOX], "custom", edit)
+  }
 })
 
 test("equally close releases that merge differently are a conflict", () => {
@@ -277,4 +277,30 @@ test("an ignored file the install changes is kept", () => {
   assert.equal(read(site, "src/private/config.ts"), "export const key = 1\n")
   assert.equal(read(site, "src/private/config.ts.upstream"), "export {}\n")
   assert.deepEqual(report.conflicts, ["src/private/config.ts"])
+})
+
+test("deleted files come back, also when the install fails", () => {
+  const edited = box("rounded-none p-8")
+  const utils = 'export { cn } from "cn"\nexport const brand = "red"\n'
+  const site = createSite({
+    ".gitignore": "src/private/\n",
+    [BOX]: edited,
+    [UTILS_FILE]: utils,
+  })
+  write(site, { "src/private/config.ts": "export const key = 1\n" })
+  const report = update({
+    cwd: site,
+    ui,
+    install: ({ cwd }) => {
+      fs.rmSync(path.join(cwd, "src/components"), { recursive: true })
+      fs.rmSync(path.join(cwd, "src/private"), { recursive: true })
+      write(cwd, { [UTILS_FILE]: UTILS })
+      throw new Error("network")
+    },
+  })
+  assert.match(report.error, /network/)
+  assert.equal(read(site, BOX), edited)
+  assert.equal(read(site, UTILS_FILE), utils)
+  assert.equal(read(site, "src/private/config.ts"), "export const key = 1\n")
+  assert.deepEqual(report.conflicts.sort(), [BOX, "src/private/config.ts"])
 })
