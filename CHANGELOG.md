@@ -1,5 +1,17 @@
 # Fulldev UI
 
+## 0.17.4
+
+### Patch Changes
+
+- [#252](https://github.com/fulldotdev/ui/pull/252) [`cd76b28`](https://github.com/fulldotdev/ui/commit/cd76b28df0b327b720cc05effddb2c06dfef9b7c) Thanks [@silveltman](https://github.com/silveltman)! - Field choice cards now show their selected state for checked native checkboxes, command items that are links get the pointer cursor without underline (the `href:` variant did not exist), and the navigation menu popup drops a class for a nonexistent `xs` breakpoint.
+
+## 0.17.3
+
+### Patch Changes
+
+- [#246](https://github.com/fulldotdev/ui/pull/246) [`41f1f73`](https://github.com/fulldotdev/ui/commit/41f1f73c687043265bca59c7dc39fc39c1fab6e5) Thanks [@silveltman](https://github.com/silveltman)! - Give the default `DialogClose` icon a screen-reader "Close" label, and expose `Rating` to assistive technology as an image labelled "Rated N out of 5" (override with `aria-label`).
+
 ## 0.17.2
 
 ### Patch Changes

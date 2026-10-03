@@ -83,7 +83,11 @@ export const baseColorOptions = BASE_COLORS.map((name) => ({
 }))
 
 // Keep theme and chart color valid for the base color, like ui.shadcn.com.
-export function normalizeConfig(config: PresetConfig): PresetConfig {
+export function normalizeConfig(input: PresetConfig): PresetConfig {
+  // Older preset codes can name a base color the current options lack (gray).
+  const config = BASE_COLORS.includes(input.baseColor)
+    ? input
+    : ({ ...input, baseColor: "neutral" } as PresetConfig)
   const valid = themeOptions(config.baseColor).map((option) => option.name)
   const pick = (name: string | undefined) =>
     (name && valid.includes(name)
