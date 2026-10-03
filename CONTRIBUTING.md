@@ -10,8 +10,8 @@ We are here to build great software, learn, grow, and help each other. Please re
 
 ### Prerequisites
 
-- Node.js 22.12.0 or higher
-- pnpm 10 or higher
+- Node.js 24 (`.node-version`)
+- pnpm 12 (`packageManager` in `package.json`)
 - Git
 
 ### Setup
@@ -67,8 +67,8 @@ git checkout -b feature/your-feature-name
 3. **Test your changes**:
 
 ```bash
-pnpm check    # Type checking
-pnpm build    # Build the project
+pnpm check    # Format, lint, types and registry
+pnpm build    # Build the site and validate its HTML
 ```
 
 4. **Commit your changes**:
@@ -121,7 +121,8 @@ const slot = await Astro.slots.render("default")
 ### Building
 
 ```bash
-pnpm build          # Build the project
+pnpm build          # Build the site and validate its HTML
+pnpm fix            # Format and apply lint fixes
 ```
 
 ### Registry
@@ -132,7 +133,7 @@ pnpm registry:build    # Build the component registry
 
 ### Releases
 
-Fulldev UI is versioned as a registry, not published as an npm package. Add a changeset for user-facing registry, component, block, install, or documentation API changes:
+Fulldev UI is versioned with Changesets; a release publishes the registry and the `fulldev-ui` npm package. Add a changeset for user-facing registry, component, block, install, or documentation API changes:
 
 ```bash
 pnpm changeset

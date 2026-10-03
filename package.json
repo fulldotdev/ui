@@ -57,18 +57,15 @@
     "stop": "lsof -tiTCP:4321 -sTCP:LISTEN | xargs kill 2>/dev/null || true",
     "preview": "pnpm stop && pnpm build && astro preview --host 127.0.0.1 --port 4321",
     "typecheck": "tsc --noEmit --noCheck && astro check --minimumFailingSeverity hint",
-    "check": "pnpm format:check && pnpm typecheck && pnpm lint && pnpm registry:check && pnpm build && html-validate dist",
-    "build": "astro build",
-    "registry:build": "pnpm registry:meta && node scripts/registry-adapt.mjs && shadcn build --output node_modules/.cache/fulldev-registry && node scripts/registry-styles.mjs && pnpm format:write --log-level warn",
+    "check": "prettier --check . && pnpm typecheck && eslint . && pnpm registry:check",
+    "fix": "prettier --write . && eslint . --fix",
+    "build": "astro build && html-validate dist",
+    "registry:build": "pnpm registry:meta && node scripts/registry-adapt.mjs && shadcn build --output node_modules/.cache/fulldev-registry && node scripts/registry-styles.mjs && prettier --write . --log-level warn",
     "registry:check": "pnpm registry:validate && pnpm registry:build && git diff --exit-code -- registry.json public/r",
     "registry:validate": "node scripts/registry-validate.mjs",
-    "format:write": "prettier --write .",
-    "format:check": "prettier --check .",
     "release": "changeset version && pnpm install --lockfile-only",
     "release:publish": "pnpm registry:check && changeset publish",
-    "registry:meta": "node scripts/registry-meta.mjs",
-    "format": "prettier --write .",
-    "lint": "eslint ."
+    "registry:meta": "node scripts/registry-meta.mjs"
   },
   "dependencies": {
     "@data-slot/accordion": "^1.0.2",
