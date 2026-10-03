@@ -10,10 +10,10 @@ Keep component styling on tokens such as `background`, `foreground`, `primary`,
 
 ## Where to make changes
 
-Start from the copied `src/styles/global.css` baseline. Update values in
-`:root` and `.dark`, and keep the `@theme inline` mappings in place so Tailwind
-utilities like `bg-background`, `text-foreground`, and `border-border` keep
-working across all installed components.
+Change the tokens in your stylesheet, the one `components.json` points to.
+Update values in `:root` and `.dark`, and keep the `@theme inline` mappings in
+place so Tailwind utilities like `bg-background`, `text-foreground`, and
+`border-border` keep working across all installed components.
 
 ## Styles and presets
 
@@ -25,6 +25,55 @@ next to any preview to compare them.
 A shadcn/ui preset sets the style, theme, and fonts at once. Build one on the
 [Create](/create/) page and see [Presets](/docs/presets/) for how to start or
 switch a project with it.
+
+## Override component styles
+
+A `class` you pass to a component is merged after the style's classes, so it
+wins when both set the same thing, such as `class="rounded-md"`. Two cases need
+the same form as the style's class:
+
+- **Important classes.** Some shadcn/ui styles mark a class with `!`, such as
+  `rounded-xl!` on `Command` and `CommandDialog` and `rounded-lg!` on
+  `CommandItem` inside a dialog. Add `!` to yours as well, for example
+  `contentClass="rounded-md!"` on `CommandDialog`. The `CommandItem` class also
+  has a variant, so match both:
+  `class="in-data-[slot=dialog-content]:rounded-md!"`. shadcn/ui components
+  behave the same way.
+- **Classes with a variant.** A class such as
+  `in-data-[slot=navigation-menu-content]:rounded-sm` on `NavigationMenuLink`
+  only applies inside a menu panel, so a plain `rounded-md` does not replace it
+  there. Use the same variant:
+  `class="in-data-[slot=navigation-menu-content]:rounded-md"`.
+
+## What styles do not cover
+
+Fulldev UI follows the shadcn/ui token model, so a few things stay per
+component instead of becoming tokens:
+
+- **Radius.** One `--radius` sets the whole radius scale, from `--radius-sm` to
+  `--radius-4xl`, the same as shadcn/ui. There are no separate radius tokens per
+  role, such as for buttons or cards, and no `corner-shape` option. Pass a
+  radius class to a component or pick a style with the shape you want.
+- **Control sizes and borders.** Each style sets its own control heights.
+  Borders are 1px, except the 2px switch border in Luma and Rhea, and there is
+  no border-width token. Use the size props, such as `size="lg"` on
+  `Button` (44px in Sera), or a class such as `h-11` for a larger touch target.
+- **Navigation menu width.** The menu panel is positioned next to its trigger,
+  and the navigation menu script writes its position and width inline. Until it
+  has a full-width option, override both with `!important`. The panel moves to
+  `body` while open, so it spans the page:
+
+  ```css title="src/styles/global.css"
+  [data-slot="navigation-menu-positioner"] {
+    left: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  [data-slot="navigation-menu-popup"] {
+    width: 100% !important;
+  }
+  ```
 
 ## Tokens to keep in sync
 
