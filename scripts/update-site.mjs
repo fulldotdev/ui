@@ -212,7 +212,7 @@ export const classify = ({ cwd = process.cwd(), ui = UI } = {}) => {
       if (status === "custom" && formatted.length) {
         const distance = formatted.map((v) => lineDiff(v, local))
         const closest = Math.min(...distance)
-        bases = formatted.filter((v, i) => distance[i] === closest)
+        bases = formatted.filter((_, i) => distance[i] === closest)
       }
       files.push({ item: item.name, file, status, local, bases })
     }
