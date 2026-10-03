@@ -8,10 +8,20 @@ type Props = HTMLAttributes<"div"> & {
   value?: number
 }
 
-const { value = 5, class: className, ...props } = Astro.props
+const {
+  value = 5,
+  class: className,
+  "aria-label": ariaLabel = `Rated ${value} out of 5`,
+  ...props
+} = Astro.props
 ---
 
-<div class={cn("flex items-center gap-1 text-base", className)} {...props}>
+<div
+  role="img"
+  aria-label={ariaLabel}
+  class={cn("flex items-center gap-1 text-base", className)}
+  {...props}
+>
   {
     Array.from({ length: 5 }).map((_, index) => {
       const fillPercentage =
@@ -22,7 +32,10 @@ const { value = 5, class: className, ...props } = Astro.props
             : 0
 
       return (
-        <span class="text-muted-foreground/25 relative inline-flex size-[1em]">
+        <span
+          aria-hidden="true"
+          class="text-muted-foreground/25 relative inline-flex size-[1em]"
+        >
           <Star class="size-[1em] fill-current" />
           {fillPercentage > 0 && (
             <span
