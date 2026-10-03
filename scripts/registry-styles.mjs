@@ -51,6 +51,8 @@ for (const style of STYLES) {
   for (const file of files) {
     const raw = readFileSync(`${input}/${file}`, "utf8")
     const item = JSON.parse(raw)
+    // `shadcn init <url>` writes the base item's style to components.json.
+    if (item.config?.style) item.config.style = `base-${style}`
     for (const entry of item.files ?? []) {
       if (typeof entry.content !== "string") continue
       entry.content = transform(entry.content, styleMap)

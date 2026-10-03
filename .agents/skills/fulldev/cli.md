@@ -1,25 +1,25 @@
 # Install Fulldev UI
 
 Use the shadcn CLI with the project's package runner, such as `pnpm dlx shadcn@latest`.
-There is no separate Fulldev CLI. Initialize with `shadcn init` only if
-`components.json` is missing. Client projects use this registry entry:
+There is no separate Fulldev CLI. When `components.json` is missing, initialize
+from the Fulldev UI base in the project's style. It writes `components.json`
+with the `@fulldev` registry, adds the theme tokens to the stylesheet in
+`components.json`, and installs `cn` and the shared dependencies:
+
+```bash
+pnpm dlx shadcn@latest init https://ui.full.dev/r/styles/base-vega/init.json
+pnpm dlx shadcn@latest add @fulldev/button
+```
+
+When `components.json` exists, do not run `init` again, because it replaces
+the theme tokens. Add the registry entry instead:
 
 ```json
 {
   "registries": {
-    "@fulldev": "https://ui.full.dev/r/{name}.json"
+    "@fulldev": "https://ui.full.dev/r/styles/{style}/{name}.json"
   }
 }
-```
-
-Install `@fulldev/init` once before components. It supplies `cn`, the CSS token
-layer and shared dependencies. Inspect existing setup first: the command below
-replaces `src/styles/global.css`, so preserve custom styles when applying it to
-an existing project.
-
-```bash
-pnpm dlx shadcn@latest add @fulldev/init -y --overwrite
-pnpm dlx shadcn@latest add @fulldev/button
 ```
 
 `@fulldev/components` and `@fulldev/blocks` are bulk installs, for requests that

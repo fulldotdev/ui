@@ -17,37 +17,24 @@ the [Create](/create/) page, or on [ui.shadcn.com/create](https://ui.shadcn.com/
   as CSS variables in your stylesheet.
 - **Fonts**: the body and heading fonts.
 
-Fulldev UI uses the Base UI library and Lucide icons, so pass `--base base` and
-keep the Lucide icon library. Menu colors are not supported yet.
+Fulldev UI serves the Base UI styles (`base-vega`, `base-nova`, and so on) and
+uses Lucide icons, so keep a `base-` style and the Lucide icon library. Menu
+colors are not supported yet.
 
 ## Start a project with a preset
 
-In your Astro project, initialize shadcn/ui with the preset:
+In your Astro project, initialize Fulldev UI in the preset's style, then apply
+the preset's theme and fonts:
 
 ```bash
-npx shadcn@latest init --preset <preset> --base base
-```
-
-Add the Fulldev UI registry to `components.json`. The CLI fills in `{style}`
-from your `components.json`, so components install in the preset's style:
-
-```json title="components.json"
-{
-  "registries": {
-    "@fulldev": "https://ui.full.dev/r/styles/{style}/{name}.json"
-  }
-}
-```
-
-Install the Fulldev UI base stylesheet and helpers, then apply the preset's
-theme and fonts on top of it:
-
-```bash
-npx shadcn@latest add @fulldev/init --overwrite
+npx shadcn@latest init https://ui.full.dev/r/styles/base-<style>/init.json
 npx shadcn@latest apply <preset> --only theme,font
 ```
 
-Then add components as usual, for example `npx shadcn@latest add @fulldev/button`.
+Replace `<style>` with the preset's style, such as `vega` or `nova`. The
+[Create](/create/) page fills in both commands for you. `init` writes
+`components.json` with the `@fulldev` registry, so you can add components right
+away, for example `npx shadcn@latest add @fulldev/button`.
 
 ## Switch an existing project
 
@@ -64,11 +51,23 @@ components from the shadcn/ui registry, which is why the second command is
 needed. Commit your changes first, because `--overwrite` replaces your component
 files.
 
-To change only the theme or fonts and keep your components as they are:
+`apply` also adds `@base-ui/react` and `lucide-react` to `package.json`, because
+the shadcn/ui preset lists them. Fulldev UI components do not use them, so you
+can remove them again.
+
+To change only the theme or fonts and keep your style and components as they
+are, apply only those parts. This adds no packages besides fonts:
 
 ```bash
 npx shadcn@latest apply <preset> --only theme,font
 ```
+
+### Projects with a legacy style
+
+`apply` keeps the component library from the `style` in `components.json`. A
+legacy style such as `new-york` or `default` means Radix to the shadcn CLI, so
+`apply` sets a `radix-` style, which Fulldev UI does not serve. Set `style` to a
+Base UI style, such as `base-vega`, before you run `apply`.
 
 ## Inspect a preset
 

@@ -23,7 +23,7 @@ const manual = {
   init: {
     title: "Init",
     description:
-      "Shared setup: class helper, Tailwind token layer, and dependencies.",
+      "Sets up a project for Fulldev UI: registry, theme, class helper, and dependencies.",
     docs: `${site}/docs/installation/`,
   },
   components: {
@@ -47,13 +47,17 @@ const manual = {
 const order = [
   "name",
   "type",
+  "extends",
   "title",
   "description",
   "categories",
   "docs",
+  "config",
   "dependencies",
   "registryDependencies",
   "files",
+  "cssVars",
+  "css",
 ]
 
 registry.items = registry.items.map((item) => {

@@ -39,31 +39,15 @@ cd my-project
 }
 ```
 
-3. **Initialize shadcn** with the Base UI library:
+3. **Initialize Fulldev UI** with the shadcn CLI. This writes `components.json` with the `@fulldev` registry, adds the theme tokens to your stylesheet, and installs the class helper:
 
 ```bash
-npx shadcn@latest init --base base
+npx shadcn@latest init https://ui.full.dev/r/styles/base-vega/init.json
 ```
 
-4. **Add Fulldev UI registry** to `components.json`:
+Replace `base-vega` with another shadcn/ui style, such as `base-nova`. To use a shadcn/ui preset, see [Presets][presets].
 
-```json
-{
-  "registries": {
-    "@fulldev": "https://ui.full.dev/r/styles/{style}/{name}.json"
-  }
-}
-```
-
-5. **Install the base stylesheet and shared helpers**, then import the stylesheet in your layout:
-
-```bash
-npx shadcn@latest add @fulldev/init
-```
-
-Review stylesheet changes in an existing project to preserve your theme.
-
-6. **Use a container-aware app shell** because Fulldev UI uses Tailwind v4 container-query variants like `@2xl:` and `@max-5xl:`:
+4. **Use a container-aware app shell** because Fulldev UI uses Tailwind v4 container-query variants like `@2xl:` and `@max-5xl:`:
 
 ```astro
 ---
@@ -75,7 +59,7 @@ import "@/styles/global.css"
 </body>
 ```
 
-7. **Add components**:
+5. **Add components**:
 
 ```bash
 npx shadcn@latest add @fulldev/button
@@ -119,6 +103,7 @@ MIT License — Copyright (c) 2024–present [Fulldev][fulldev]
 
 [astro]: https://astro.build/
 [docs]: https://ui.full.dev/
+[presets]: https://ui.full.dev/docs/presets/
 [fulldev]: https://full.dev/
 [issues]: https://github.com/fulldotdev/ui/issues
 [discord]: https://discord.gg/tdmUyH2YE4
