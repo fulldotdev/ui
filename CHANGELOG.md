@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.17.3
+
+### Patch Changes
+
+- [#246](https://github.com/fulldotdev/ui/pull/246) [`41f1f73`](https://github.com/fulldotdev/ui/commit/41f1f73c687043265bca59c7dc39fc39c1fab6e5) Thanks [@silveltman](https://github.com/silveltman)! - Give the default `DialogClose` icon a screen-reader "Close" label, and expose `Rating` to assistive technology as an image labelled "Rated N out of 5" (override with `aria-label`).
+
 ## 0.17.2
 
 ### Patch Changes
