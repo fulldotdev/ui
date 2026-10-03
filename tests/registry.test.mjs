@@ -70,18 +70,20 @@ test("base sets up each style through `shadcn init`", () => {
   }
 })
 
-// shadcn always replaces a registry:base item's tokens, but only adds missing
-// tokens for other types, so `add @fulldev/init` keeps a site's colors.
-test("init only adds missing tokens and matches base", () => {
+// The shadcn CLI can override a site's colors even when it only adds missing
+// tokens, for example when the site defines them inside @layer base. So only
+// base, which sets up a new project, writes theme tokens.
+test("init leaves theme tokens alone and shares the rest with base", () => {
   const init = registry.items.find((item) => item.name === "init")
   const base = registry.items.find((item) => item.name === "base")
   assert.equal(init.type, "registry:lib")
   assert.equal(init.config, undefined)
-  for (const key of ["dependencies", "files", "cssVars", "css"]) {
+  assert.equal(init.cssVars, undefined)
+  for (const key of ["dependencies", "files", "css"]) {
     assert.deepEqual(base[key], init[key], `base and init differ in ${key}`)
   }
-  assert.ok(init.cssVars.light.primary && init.cssVars.dark.primary)
-  assert.ok(init.cssVars.light["shadow-md"], "init keeps the shadow scale")
+  assert.ok(base.cssVars.light.primary && base.cssVars.dark.primary)
+  assert.ok(base.cssVars.light["shadow-md"], "base keeps the shadow scale")
 })
 
 test("no item writes into the project's stylesheet folder", () => {

@@ -12,8 +12,9 @@ pnpm dlx shadcn@latest add @fulldev/button
 ```
 
 When `components.json` exists, do not run `init`, because it replaces the theme
-tokens. Add the registry entry instead, then `add @fulldev/init`, which adds the
-helpers and only the missing tokens, so the project's colors stay:
+tokens. Set `style` to a `base-` style if it is a legacy or `radix-` style, add
+the registry entry, then `add @fulldev/init`, which adds the helpers and base
+styles and leaves the theme tokens alone:
 
 ```json
 {
