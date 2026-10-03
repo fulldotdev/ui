@@ -195,10 +195,14 @@ export const classify = ({ cwd = process.cwd(), ui = UI } = {}) => {
       if (seen.has(file)) continue
       seen.add(file)
       const local = fs.readFileSync(path.join(cwd, file), "utf8")
-      const formatted = history(item.name, f.path, config.style).map((v) =>
-        format(v, file)
-      )
-      const match = formatted.findIndex((v) => norm(v) === norm(local))
+      const versions = history(item.name, f.path, config.style)
+      // Formatting is slow, so only when the plain comparison finds nothing.
+      let match = versions.findIndex((v) => norm(v) === norm(local))
+      const formatted =
+        match === -1 ? versions.map((v) => format(v, file)) : versions
+      if (match === -1) {
+        match = formatted.findIndex((v) => norm(v) === norm(local))
+      }
       let status = "custom"
       if (match === 0) status = "current"
       else if (match > 0) status = "old"
