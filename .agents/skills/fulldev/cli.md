@@ -7,12 +7,13 @@ with the `@fulldev` registry, adds the theme tokens to the stylesheet in
 `components.json`, and installs `cn` and the shared dependencies:
 
 ```bash
-pnpm dlx shadcn@latest init https://ui.full.dev/r/styles/base-vega/init.json
+pnpm dlx shadcn@latest init https://ui.full.dev/r/styles/base-vega/base.json
 pnpm dlx shadcn@latest add @fulldev/button
 ```
 
-When `components.json` exists, do not run `init` or `add @fulldev/init`, because
-both replace the theme tokens. Add the registry entry instead:
+When `components.json` exists, do not run `init`, because it replaces the theme
+tokens. Add the registry entry instead, then `add @fulldev/init`, which adds the
+helpers and only the missing tokens, so the project's colors stay:
 
 ```json
 {

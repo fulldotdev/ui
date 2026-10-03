@@ -42,7 +42,7 @@ cd my-project
 3. **Initialize Fulldev UI** with the shadcn CLI. This writes `components.json` with the `@fulldev` registry, adds the theme tokens to your stylesheet, and installs the class helper:
 
 ```bash
-npx shadcn@latest init https://ui.full.dev/r/styles/base-vega/init.json
+npx shadcn@latest init https://ui.full.dev/r/styles/base-vega/base.json
 ```
 
 Replace `base-vega` with another shadcn/ui style, such as `base-nova`. To use a shadcn/ui preset, see [Presets][presets].

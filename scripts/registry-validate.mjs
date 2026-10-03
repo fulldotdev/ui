@@ -12,7 +12,8 @@ const registry = JSON.parse(readFileSync("registry.json", "utf8"))
 const items = new Map(registry.items.map((item) => [item.name, item]))
 const errors = []
 
-// Projects start with `shadcn init` from @fulldev/init, before any other item.
+// Projects install @fulldev/init (through `shadcn init` with @fulldev/base, or
+// `shadcn add`) before any other item.
 const baseItems = ["init"]
 // Projects set up Tailwind before installing from a shadcn registry.
 const prerequisites = new Set(["astro", "tailwindcss"])

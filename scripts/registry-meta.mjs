@@ -23,7 +23,13 @@ const manual = {
   init: {
     title: "Init",
     description:
-      "Sets up a project for Fulldev UI: registry, theme, class helper, and dependencies.",
+      "Theme tokens, class helper, and dependencies. Adds only the tokens a stylesheet is missing.",
+    docs: `${site}/docs/installation/`,
+  },
+  base: {
+    title: "Base",
+    description:
+      "Sets up a new project with `shadcn init`: style, registry, theme, class helper, and dependencies.",
     docs: `${site}/docs/installation/`,
   },
   components: {
@@ -114,6 +120,35 @@ const bundle = (name, type) => {
     .map((entry) => `@fulldev/${entry.name}`)
     .sort()
 }
+// `shadcn init <base url>` sets up a new project. A registry:base item always
+// replaces the stylesheet's theme tokens, so it is a separate item: `add
+// @fulldev/init` in an existing project only adds missing tokens and keeps the
+// site's colors.
+const init = registry.items.find((entry) => entry.name === "init")
+const base = {
+  ...init,
+  ...manual.base,
+  name: "base",
+  type: "registry:base",
+  extends: "none",
+  config: {
+    style: "base-vega",
+    iconLibrary: "lucide",
+    tailwind: { baseColor: "neutral" },
+    registries: {
+      "@fulldev": "https://ui.full.dev/r/styles/{style}/{name}.json",
+    },
+  },
+}
+registry.items = registry.items.filter((entry) => entry.name !== "base")
+registry.items.splice(
+  registry.items.indexOf(init) + 1,
+  0,
+  Object.fromEntries(
+    order.filter((key) => key in base).map((key) => [key, base[key]])
+  )
+)
+
 bundle("components", "registry:ui")
 bundle("blocks", "registry:block")
 

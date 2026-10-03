@@ -47,32 +47,41 @@ test("Sera input group keeps its bottom border color in docs and install", () =>
   )
 })
 
-test("init sets up each style and the stylesheet from components.json", () => {
+test("base sets up each style through `shadcn init`", () => {
   for (const style of STYLES) {
     const index = json(`public/r/styles/base-${style}/registry.json`)
     const items = [
-      json(`public/r/styles/base-${style}/init.json`),
-      index.items.find((item) => item.name === "init"),
+      json(`public/r/styles/base-${style}/base.json`),
+      index.items.find((item) => item.name === "base"),
     ]
-    for (const init of items) {
-      assert.equal(init.type, "registry:base")
+    for (const base of items) {
+      assert.equal(base.type, "registry:base")
       assert.equal(
-        init.extends,
+        base.extends,
         "none",
-        "init must not pull in shadcn's React style index"
+        "base must not pull in shadcn's React style index"
       )
-      assert.equal(init.config.style, `base-${style}`)
+      assert.equal(base.config.style, `base-${style}`)
       assert.match(
-        init.config.registries["@fulldev"],
+        base.config.registries["@fulldev"],
         /\{style\}\/\{name\}\.json$/
-      )
-      assert.ok(init.cssVars.light.primary && init.cssVars.dark.primary)
-      assert.ok(
-        init.cssVars.light["shadow-md"],
-        "init keeps the existing shadow scale"
       )
     }
   }
+})
+
+// shadcn always replaces a registry:base item's tokens, but only adds missing
+// tokens for other types, so `add @fulldev/init` keeps a site's colors.
+test("init only adds missing tokens and matches base", () => {
+  const init = registry.items.find((item) => item.name === "init")
+  const base = registry.items.find((item) => item.name === "base")
+  assert.equal(init.type, "registry:lib")
+  assert.equal(init.config, undefined)
+  for (const key of ["dependencies", "files", "cssVars", "css"]) {
+    assert.deepEqual(base[key], init[key], `base and init differ in ${key}`)
+  }
+  assert.ok(init.cssVars.light.primary && init.cssVars.dark.primary)
+  assert.ok(init.cssVars.light["shadow-md"], "init keeps the shadow scale")
 })
 
 test("no item writes into the project's stylesheet folder", () => {
