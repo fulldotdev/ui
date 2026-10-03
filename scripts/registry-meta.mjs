@@ -99,9 +99,12 @@ registry.items = registry.items.map((item) => {
     }
   }
   const merged = { ...item, ...meta }
-  return Object.fromEntries(
-    order.filter((key) => key in merged).map((key) => [key, merged[key]])
-  )
+  // Known fields first, in a fixed order; keep any other schema field after them.
+  const keys = [
+    ...order.filter((key) => key in merged),
+    ...Object.keys(merged).filter((key) => !order.includes(key)),
+  ]
+  return Object.fromEntries(keys.map((key) => [key, merged[key]]))
 })
 
 const bundle = (name, type) => {

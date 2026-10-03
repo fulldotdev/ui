@@ -3,12 +3,7 @@
 // Input is the plain `shadcn build` output, output goes to public/r.
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 
-import {
-  createStyleMaps,
-  KEEP,
-  replacePlaceholders,
-  STYLES,
-} from "./styles.mjs"
+import { createStyleMaps, KEEP, STYLES, transformSource } from "./styles.mjs"
 
 // Served at the old /r/{name}.json path, so existing installs keep working.
 const DEFAULT_STYLE = "vega"
@@ -17,14 +12,6 @@ const [input = "node_modules/.cache/fulldev-registry"] = process.argv.slice(2)
 const { maps, known } = createStyleMaps((path) =>
   readFileSync(new URL(`../registry/styles/${path}`, import.meta.url), "utf8")
 )
-
-// Replace the placeholders in every double-quoted string that contains one.
-// Style classes can contain single quotes, so other strings are not supported.
-const transform = (source, styleMap) =>
-  source.replace(
-    /"([^"\n]*?\bcn-[\w-]+[^"\n]*?)"/g,
-    (_, value) => `"${replacePlaceholders(value, styleMap, known)}"`
-  )
 
 // Placeholders left over: a typo, or a placeholder outside a double-quoted string.
 const leftovers = (source) =>
@@ -57,7 +44,7 @@ for (const style of STYLES) {
     }
     for (const entry of item.files ?? []) {
       if (typeof entry.content !== "string") continue
-      entry.content = transform(entry.content, styleMap)
+      entry.content = transformSource(entry.content, styleMap, known)
       for (const token of new Set(leftovers(entry.content))) {
         errors.push(`${style}: ${entry.path} still has ${token}`)
       }

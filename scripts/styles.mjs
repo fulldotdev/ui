@@ -54,3 +54,12 @@ export function replacePlaceholders(value, styleMap, known) {
     })
   return twMerge(tokens.join(" "))
 }
+
+// Replace the placeholders in every double-quoted string that contains one.
+// Style classes can contain single quotes, so other strings are not supported.
+export function transformSource(source, styleMap, known) {
+  return source.replace(
+    /"([^"\n]*?\bcn-[\w-]+[^"\n]*?)"/g,
+    (_, value) => `"${replacePlaceholders(value, styleMap, known)}"`
+  )
+}
