@@ -387,24 +387,23 @@ export const update = ({
   const custom = new Set(report.custom)
   for (const file of changed(cwd)) {
     if (EXPECTED.has(file) || custom.has(file)) continue
-    const theirs = readOrNull(path.join(cwd, file))
-    if (known.has(file) && theirs !== null) continue
-    recover(file, () =>
-      conflict(
-        file,
-        execFileSync("git", ["show", `HEAD:${file}`], {
-          cwd,
-          maxBuffer: 1 << 28,
-        }),
-        theirs
-      )
-    )
+    recover(file, () => {
+      const theirs = readOrNull(path.join(cwd, file))
+      if (known.has(file) && theirs !== null) return
+      const local = execFileSync("git", ["show", `HEAD:${file}`], {
+        cwd,
+        maxBuffer: 1 << 28,
+      })
+      conflict(file, local, theirs)
+    })
   }
   for (const [file, local] of before) {
     if (custom.has(file)) continue
-    const theirs = readOrNull(path.join(cwd, file))
-    if (theirs !== null && (known.has(file) || theirs.equals(local))) continue
-    recover(file, () => conflict(file, local, theirs))
+    recover(file, () => {
+      const theirs = readOrNull(path.join(cwd, file))
+      if (theirs !== null && (known.has(file) || theirs.equals(local))) return
+      conflict(file, local, theirs)
+    })
   }
 
   report.added = untracked(cwd).filter((f) => !f.endsWith(".upstream"))

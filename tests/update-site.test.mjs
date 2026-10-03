@@ -304,3 +304,23 @@ test("deleted files come back, also when the install fails", () => {
   assert.equal(read(site, "src/private/config.ts"), "export const key = 1\n")
   assert.deepEqual(report.conflicts.sort(), [BOX, "src/private/config.ts"])
 })
+
+test("a file that fails to recover does not stop the others", () => {
+  const site = createSite({
+    [BOX]: V17,
+    "src/app.ts": "export const app = 1\n",
+  })
+  const css = path.join(site, "src/styles/global.css")
+  const report = update({
+    cwd: site,
+    ui,
+    install: ({ cwd }) => {
+      write(cwd, { "src/styles/global.css": "", "src/app.ts": "export {}\n" })
+      fs.chmodSync(css, 0)
+    },
+  })
+  fs.chmodSync(css, 0o644)
+  assert.match(report.error, /global\.css/)
+  assert.equal(read(site, "src/app.ts"), "export const app = 1\n")
+  assert.ok(report.conflicts.includes("src/app.ts"))
+})
