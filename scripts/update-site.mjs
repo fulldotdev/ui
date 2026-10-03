@@ -15,11 +15,13 @@
 //    registry, which also adds new files, registry dependencies, and npm
 //    dependencies. It needs a clean git worktree, so every change shows in git.
 // 3. Re-applies local edits to custom files with a three-way merge, using the
-//    closest earlier release as the base. A conflict keeps the local file and
-//    writes the new version next to it as <file>.upstream.
-// 4. Any other existing file the install changed, apart from package manifests,
-//    lockfiles and components.json, is restored the same way, so a client edit
-//    is never overwritten silently.
+//    closest earlier release as the base. A conflict, or equally close releases
+//    that merge differently, keeps the local file and writes the new version
+//    next to it as <file>.upstream.
+// 4. Any other existing file the install changed, also git-ignored ones, apart
+//    from package manifests, lockfiles and components.json, is restored the
+//    same way, so a client edit is never overwritten silently. This also runs
+//    when the install fails partway; the report then has an `error`.
 //
 // Review every file in `merged` and `conflicts`, and delete the .upstream files.
 import { execFileSync } from "node:child_process"
@@ -50,12 +52,17 @@ const run = (cmd, args, cwd, options = {}) =>
   })
 const git = (args, cwd) => run("git", args, cwd)
 
-// Compare ignoring formatting.
+// Compare ignoring formatting: line breaks, indentation, quotes, semicolons
+// and trailing commas. Spaces between words still count, so "Log in" and
+// "Login" differ. When in doubt a file is custom, which is the safe side.
 const norm = (s) =>
   s
     .replace(/;(\s*\n)/g, "$1")
     .replace(/'/g, '"')
-    .replace(/\s+/g, "")
+    .replace(/\s+/g, " ")
+    .replace(/ ?([^\w\s]) ?/g, "$1")
+    .replace(/,([)\]}>])/g, "$1")
+    .trim()
 
 const lineDiff = (a, b) => {
   const A = a.split("\n")
@@ -206,13 +213,13 @@ export const classify = ({ cwd = process.cwd(), ui = UI } = {}) => {
       let status = "custom"
       if (match === 0) status = "current"
       else if (match > 0) status = "old"
-      let base = null
+      let bases = []
       if (status === "custom" && formatted.length) {
-        base = formatted.reduce((best, v) =>
-          lineDiff(v, local) < lineDiff(best, local) ? v : best
-        )
+        const distance = formatted.map((v) => lineDiff(v, local))
+        const closest = Math.min(...distance)
+        bases = formatted.filter((v, i) => distance[i] === closest)
       }
-      files.push({ item: item.name, file, status, local, base })
+      files.push({ item: item.name, file, status, local, bases })
     }
   }
   return {
@@ -266,6 +273,53 @@ const untracked = (cwd) =>
     .split("\0")
     .filter(Boolean)
 
+// Three-way merge, or null on a conflict.
+const mergeFile = (ours, base, theirs) => {
+  const dir = fs.mkdtempSync(
+    path.join(fs.realpathSync(os.tmpdir()), "fd-merge-")
+  )
+  fs.writeFileSync(`${dir}/ours`, ours)
+  fs.writeFileSync(`${dir}/base`, base)
+  fs.writeFileSync(`${dir}/theirs`, theirs)
+  try {
+    return run("git", [
+      "merge-file",
+      "-p",
+      `${dir}/ours`,
+      `${dir}/base`,
+      `${dir}/theirs`,
+    ])
+  } catch {
+    return null
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true })
+  }
+}
+
+// Ignored files outside dependencies and build output, which git diff misses.
+const ignored = (cwd) =>
+  new Map(
+    git(
+      [
+        "ls-files",
+        "--others",
+        "--ignored",
+        "--exclude-standard",
+        "-z",
+        "--",
+        ".",
+        ":!:**/node_modules/**",
+        ":!:dist/**",
+        ":!:.astro/**",
+        ":!:.netlify/**",
+      ],
+      cwd
+    )
+      .split("\0")
+      .filter(Boolean)
+      .map((file) => [file, fs.readFileSync(path.join(cwd, file))])
+  )
+
 // Keep the local file and put the new version next to it for review.
 const keepLocal = (cwd, file, local, theirs) => {
   const target = path.join(cwd, file)
@@ -288,35 +342,23 @@ export const update = ({
   Object.assign(report, { merged: [], conflicts: [], added: [] })
   if (!report.items.length) return report
 
-  install({ cwd, items: report.items })
+  const before = ignored(cwd)
+  try {
+    install({ cwd, items: report.items })
+  } catch (error) {
+    // Still restore and merge what it wrote before failing.
+    report.error = `Install failed: ${error.message}`
+  }
 
   // 3. Re-apply local edits.
   for (const f of files.filter((f) => f.status === "custom")) {
     const target = path.join(cwd, f.file)
     const theirs = format(fs.readFileSync(target, "utf8"), f.file)
     if (norm(theirs) === norm(f.local)) continue
-    const dir = fs.mkdtempSync(
-      path.join(fs.realpathSync(os.tmpdir()), "fd-merge-")
-    )
-    fs.writeFileSync(`${dir}/ours`, f.local)
-    fs.writeFileSync(`${dir}/base`, f.base ?? "")
-    fs.writeFileSync(`${dir}/theirs`, theirs)
-    let merged
-    let conflict = false
-    try {
-      merged = run("git", [
-        "merge-file",
-        "-p",
-        `${dir}/ours`,
-        `${dir}/base`,
-        `${dir}/theirs`,
-      ])
-    } catch (error) {
-      conflict = true
-      merged = error.stdout
-    }
-    fs.rmSync(dir, { recursive: true, force: true })
-    if (conflict || !f.base) {
+    // Equally close releases must give the same merge, or the base is a guess.
+    const merges = f.bases.map((base) => mergeFile(f.local, base, theirs))
+    const merged = merges[0]
+    if (!merges.length || merges.some((m) => m === null || m !== merged)) {
       keepLocal(cwd, f.file, f.local, theirs)
       report.conflicts.push(f.file)
     } else {
@@ -341,6 +383,14 @@ export const update = ({
       }),
       theirs
     )
+    report.conflicts.push(file)
+  }
+  for (const [file, local] of before) {
+    const target = path.join(cwd, file)
+    if (known.has(file) || !fs.existsSync(target)) continue
+    const theirs = fs.readFileSync(target)
+    if (theirs.equals(local)) continue
+    keepLocal(cwd, file, local, theirs)
     report.conflicts.push(file)
   }
 
@@ -384,6 +434,7 @@ if (
     const json = JSON.stringify(report, null, 1)
     if (reportFile) fs.writeFileSync(reportFile, json + "\n")
     console.log(json)
+    if (report.error) process.exit(1)
   } catch (error) {
     console.error(error.message)
     process.exit(1)

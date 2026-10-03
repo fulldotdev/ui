@@ -59,7 +59,7 @@ const { class: className, ...props } = Astro.props
 `
 // Releases of one component. 0.16 installed the source as it was; since 0.17
 // the source has placeholders and installs come from public/r.
-const V16 = box("rounded p-2")
+const V16 = box("rounded p-2").replace('data-slot="box"', "data-box")
 const V17 = box("rounded-lg p-4")
 const V18 = box("rounded-lg p-4", '\n  <slot name="footer" />')
 const SOURCE17 = box("cn-box")
@@ -71,7 +71,12 @@ const UTILS_FILE = "src/lib/utils.ts"
 const built = (content) =>
   JSON.stringify({ name: "box", files: [{ path: BOX, content }] })
 
-const createUi = () => {
+const createUi = (
+  releases = [
+    [SOURCE17, V17],
+    [SOURCE18, V18],
+  ]
+) => {
   const ui = repo("ui")
   const registry = JSON.stringify({
     items: [
@@ -89,10 +94,7 @@ const createUi = () => {
     [UTILS_FILE]: UTILS,
     "public/r/utils.json": utils,
   })
-  for (const [source, content] of [
-    [SOURCE17, V17],
-    [SOURCE18, V18],
-  ]) {
+  for (const [source, content] of releases) {
     commit(ui, {
       [BOX]: source,
       "public/r/box.json": built(content),
@@ -214,4 +216,65 @@ test("the command is a dry run unless --write is given", () => {
   })
   assert.equal(JSON.parse(output).dryRun, true)
   assert.equal(git(site, "status", "--porcelain"), "")
+})
+
+test("a space inside a string is an edit", () => {
+  const site = createSite({
+    [BOX]: V17.replace("rounded-lg p-4", "rounded-lgp-4"),
+  })
+  assert.equal(status(site)[BOX], "custom")
+})
+
+test("equally close releases that merge differently are a conflict", () => {
+  const list = (order, brand, extra = "") =>
+    `const items = [\n${order.map((i) => `  "${i}",\n`).join("")}]\n${gap}const brand = "${brand}"\n${gap}${extra}`
+  // Unrelated lines, so the changes are separate hunks.
+  const gap = "// one\n// two\n// three\n"
+  const placeholder = (text) => `${text}// cn-box\n`
+  const R1 = list(["a", "b"], "red")
+  const R2 = list(["b", "a"], "red")
+  const R3 = list(["a", "b"], "red", "export { items, brand }\n")
+  const ordered = createUi(
+    [R1, R2, R3].map((content) => [placeholder(content), content])
+  )
+  // Installed from R1, reordered by the client, and a new brand.
+  const local = list(["b", "a"], "blue")
+  const site = createSite({ [BOX]: local })
+  const report = update({
+    cwd: site,
+    ui: ordered,
+    install: ({ cwd }) => write(cwd, { [BOX]: R3 }),
+  })
+  assert.deepEqual(report.conflicts, [BOX])
+  assert.equal(read(site, BOX), local)
+  assert.equal(read(site, `${BOX}.upstream`), R3)
+})
+
+test("a failing install still keeps customized files", () => {
+  const edited = box("rounded-none p-8")
+  const site = createSite({ [BOX]: edited })
+  const report = update({
+    cwd: site,
+    ui,
+    install: ({ cwd }) => {
+      write(cwd, { [BOX]: V18 })
+      throw new Error("network")
+    },
+  })
+  assert.match(report.error, /network/)
+  assert.match(read(site, BOX), /rounded-none p-8/)
+})
+
+test("an ignored file the install changes is kept", () => {
+  const site = createSite({ ".gitignore": "src/private/\n", [BOX]: V17 })
+  write(site, { "src/private/config.ts": "export const key = 1\n" })
+  const report = update({
+    cwd: site,
+    ui,
+    install: ({ cwd }) =>
+      write(cwd, { [BOX]: V18, "src/private/config.ts": "export {}\n" }),
+  })
+  assert.equal(read(site, "src/private/config.ts"), "export const key = 1\n")
+  assert.equal(read(site, "src/private/config.ts.upstream"), "export {}\n")
+  assert.deepEqual(report.conflicts, ["src/private/config.ts"])
 })
