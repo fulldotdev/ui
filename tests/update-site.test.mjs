@@ -324,3 +324,15 @@ test("a file that fails to recover does not stop the others", () => {
   assert.equal(read(site, "src/app.ts"), "export const app = 1\n")
   assert.ok(report.conflicts.includes("src/app.ts"))
 })
+
+test("a broken ignored symlink does not stop the update", () => {
+  const site = createSite({ ".gitignore": ".env\n", [BOX]: V17 })
+  fs.symlinkSync(path.join(site, "missing"), path.join(site, ".env"))
+  const report = update({
+    cwd: site,
+    ui,
+    install: ({ cwd }) => write(cwd, { [BOX]: V18 }),
+  })
+  assert.equal(report.error, undefined)
+  assert.equal(read(site, BOX), V18)
+})

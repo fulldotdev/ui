@@ -305,6 +305,15 @@ const mergeFile = (ours, base, theirs) => {
   }
 }
 
+// Readable regular files only: symlinks and unreadable files cannot be kept.
+const snapshot = (file) => {
+  try {
+    return fs.lstatSync(file).isFile() ? fs.readFileSync(file) : null
+  } catch {
+    return null
+  }
+}
+
 // Ignored files outside dependencies and build output, which git diff misses.
 const ignored = (cwd) =>
   new Map(
@@ -326,7 +335,8 @@ const ignored = (cwd) =>
     )
       .split("\0")
       .filter(Boolean)
-      .map((file) => [file, fs.readFileSync(path.join(cwd, file))])
+      .map((file) => [file, snapshot(path.join(cwd, file))])
+      .filter(([, content]) => content !== null)
   )
 
 // Keep the local file and put the new version, if any, next to it for review.
