@@ -38,8 +38,7 @@
     "src/components/blocks",
     "src/components/ui",
     "src/lib/utils.ts",
-    "src/styles/global.css",
-    "registry/init"
+    "src/styles/global.css"
   ],
   "publishConfig": {
     "access": "public"
@@ -57,11 +56,12 @@
     "stop": "lsof -tiTCP:4321 -sTCP:LISTEN | xargs kill 2>/dev/null || true",
     "preview": "pnpm stop && pnpm build && astro preview --host 127.0.0.1 --port 4321",
     "typecheck": "tsc --noEmit --noCheck && astro check --minimumFailingSeverity hint",
-    "check": "prettier --check . && pnpm typecheck && eslint . && pnpm registry:check",
+    "check": "prettier --check . && pnpm typecheck && eslint . && pnpm registry:check && pnpm test",
+    "test": "node --test tests/*.test.mjs",
     "fix": "prettier --write . && eslint . --fix",
     "build": "astro build && html-validate dist",
     "registry:build": "pnpm registry:meta && node scripts/registry-adapt.mjs && shadcn build --output node_modules/.cache/fulldev-registry && node scripts/registry-styles.mjs && prettier --write . --log-level warn",
-    "registry:check": "pnpm registry:validate && pnpm registry:build && git diff --exit-code -- registry.json public/r",
+    "registry:check": "pnpm registry:validate && pnpm registry:build && git diff --exit-code -- registry.json public/r registry/styles/adapted",
     "registry:validate": "node scripts/registry-validate.mjs",
     "release": "changeset version && pnpm install --lockfile-only",
     "release:publish": "pnpm registry:check && changeset publish",

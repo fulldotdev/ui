@@ -12,10 +12,13 @@ const registry = JSON.parse(readFileSync("registry.json", "utf8"))
 const items = new Map(registry.items.map((item) => [item.name, item]))
 const errors = []
 
-// @fulldev/init is installed once before any other item.
+// Projects install @fulldev/init (through `shadcn init` with @fulldev/base, or
+// `shadcn add`) before any other item.
 const baseItems = ["init"]
 // Projects set up Tailwind before installing from a shadcn registry.
 const prerequisites = new Set(["astro", "tailwindcss"])
+// The project's own stylesheet, which `shadcn init` writes the theme into.
+const stylesheet = normalize("src/styles/global.css")
 const builtins = new Set(builtinModules)
 const decoder = new TextDecoder("utf-8", { fatal: true })
 const extensions = ["", ".ts", ".astro", ".js", "/index.ts"]
@@ -55,7 +58,7 @@ const specifiers = (source) =>
 for (const item of registry.items) {
   if (item.type === "registry:item") continue
   const scope = [...collect(item.name), ...baseItems]
-  const provided = new Set()
+  const provided = new Set([stylesheet])
   const packages = new Set()
   for (const name of scope) {
     const scoped = items.get(name)

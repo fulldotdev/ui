@@ -23,7 +23,13 @@ const manual = {
   init: {
     title: "Init",
     description:
-      "Shared setup: class helper, Tailwind token layer, and dependencies.",
+      "Class helper, dependencies, and base styles for an existing project. Leaves theme tokens alone.",
+    docs: `${site}/docs/installation/`,
+  },
+  base: {
+    title: "Base",
+    description:
+      "Sets up a new project with `shadcn init`: style, registry, theme, class helper, and dependencies.",
     docs: `${site}/docs/installation/`,
   },
   components: {
@@ -47,13 +53,17 @@ const manual = {
 const order = [
   "name",
   "type",
+  "extends",
   "title",
   "description",
   "categories",
   "docs",
+  "config",
   "dependencies",
   "registryDependencies",
   "files",
+  "cssVars",
+  "css",
 ]
 
 registry.items = registry.items.map((item) => {
@@ -95,9 +105,12 @@ registry.items = registry.items.map((item) => {
     }
   }
   const merged = { ...item, ...meta }
-  return Object.fromEntries(
-    order.filter((key) => key in merged).map((key) => [key, merged[key]])
-  )
+  // Known fields first, in a fixed order; keep any other schema field after them.
+  const keys = [
+    ...order.filter((key) => key in merged),
+    ...Object.keys(merged).filter((key) => !order.includes(key)),
+  ]
+  return Object.fromEntries(keys.map((key) => [key, merged[key]]))
 })
 
 const bundle = (name, type) => {

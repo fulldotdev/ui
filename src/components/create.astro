@@ -49,20 +49,15 @@ const controls = [
   { name: "menuAccent", label: "Menu accent", options: MENU_ACCENTS },
 ]
 const code = presetCode(DEFAULT_CONFIG)
-const registry = `{
-  "registries": {
-    "@fulldev": "https://ui.full.dev/r/styles/{style}/{name}.json"
-  }
-}`
-// {preset} is replaced with the current preset code.
+// {preset} and {style} are replaced with the current preset code and style.
 const commands = {
-  init: "npx shadcn@latest init --preset {preset} --base base",
-  base: "npx shadcn@latest add @fulldev/init --overwrite",
+  init: "npx shadcn@latest init https://ui.full.dev/r/styles/base-{style}/base.json",
   theme: "npx shadcn@latest apply {preset} --only theme,font",
-  apply: "npx shadcn@latest apply {preset}",
+  style: '"style": "base-{style}"',
   reinstall: "npx shadcn@latest add @fulldev/button @fulldev/card --overwrite",
 }
-const command = (template: string) => template.replace("{preset}", code)
+const command = (template: string) =>
+  template.replace("{preset}", code).replace("{style}", DEFAULT_CONFIG.style)
 ---
 
 <div class="grid gap-6 @5xl:grid-cols-[16rem_minmax(0,1fr)]" data-create>
@@ -176,31 +171,25 @@ const command = (template: string) => template.replace("{preset}", code)
       </TabsList>
       <TabsContent value="new" class="flex flex-col gap-3 text-sm">
         <p class="text-muted-foreground">
-          In your Astro project, initialize shadcn/ui with the preset:
+          In your Astro project, set up Fulldev UI in the preset's style, then
+          apply the preset's theme and fonts:
         </p>
         <pre
-          class="bg-muted rounded-lg p-3 font-mono text-xs break-all whitespace-pre-wrap"><code data-preset-command={commands.init}>{command(commands.init)}</code></pre>
-        <p class="text-muted-foreground">
-          Add the Fulldev UI registry to <code>components.json</code>:
-        </p>
-        <pre
-          class="bg-muted rounded-lg p-3 font-mono text-xs break-all whitespace-pre-wrap"><code>{registry}</code></pre>
-        <p class="text-muted-foreground">
-          Install the Fulldev UI base, then apply the preset's theme and fonts
-          on top of it:
-        </p>
-        <pre
-          class="bg-muted rounded-lg p-3 font-mono text-xs break-all whitespace-pre-wrap"><code>{commands.base}</code>
+          class="bg-muted rounded-lg p-3 font-mono text-xs break-all whitespace-pre-wrap"><code data-preset-command={commands.init}>{command(commands.init)}</code>
 <code data-preset-command={commands.theme}>{command(commands.theme)}</code></pre>
       </TabsContent>
       <TabsContent value="existing" class="flex flex-col gap-3 text-sm" hidden>
         <p class="text-muted-foreground">
-          Apply the preset, then reinstall the Fulldev UI components you use in
-          the new style. <code>apply</code> only reinstalls components from the shadcn/ui
-          registry.
+          Set the style in <code>components.json</code>, apply the theme and
+          fonts, then reinstall the Fulldev UI components you use in the new
+          style. Commit first, because <code>--overwrite</code> replaces your component
+          files. The <code>@fulldev</code> registry must contain{" "}
+          <code>{"{style}"}</code>, or components install in Vega.
         </p>
         <pre
-          class="bg-muted rounded-lg p-3 font-mono text-xs break-all whitespace-pre-wrap"><code data-preset-command={commands.apply}>{command(commands.apply)}</code>
+          class="bg-muted rounded-lg p-3 font-mono text-xs break-all whitespace-pre-wrap"><code data-preset-command={commands.style}>{command(commands.style)}</code></pre>
+        <pre
+          class="bg-muted rounded-lg p-3 font-mono text-xs break-all whitespace-pre-wrap"><code data-preset-command={commands.theme}>{command(commands.theme)}</code>
 <code>{commands.reinstall}</code></pre>
       </TabsContent>
     </Tabs>
@@ -280,10 +269,9 @@ const command = (template: string) => template.replace("{preset}", code)
     root
       ?.querySelectorAll<HTMLElement>("[data-preset-command]")
       .forEach((element) => {
-        element.textContent = (element.dataset.presetCommand ?? "").replace(
-          "{preset}",
-          code
-        )
+        element.textContent = (element.dataset.presetCommand ?? "")
+          .replace("{preset}", code)
+          .replace("{style}", config.style)
       })
     root
       ?.querySelector<HTMLAnchorElement>("[data-preset-shadcn]")
