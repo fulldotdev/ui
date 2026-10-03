@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.17.4
+
+### Patch Changes
+
+- [#252](https://github.com/fulldotdev/ui/pull/252) [`cd76b28`](https://github.com/fulldotdev/ui/commit/cd76b28df0b327b720cc05effddb2c06dfef9b7c) Thanks [@silveltman](https://github.com/silveltman)! - Field choice cards now show their selected state for checked native checkboxes, command items that are links get the pointer cursor without underline (the `href:` variant did not exist), and the navigation menu popup drops a class for a nonexistent `xs` breakpoint.
+
 ## 0.17.3
 
 ### Patch Changes
