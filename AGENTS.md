@@ -35,7 +35,7 @@ This repo has extra responsibilities: it is the Fulldev UI registry source, docs
 ## Updating Client Sites
 
 - `scripts/update-site.mjs` brings the Fulldev UI items installed in a client site up to date and keeps the site's edits. Its header comment explains each step.
-- Run it inside a worktree of the site on a fresh branch from `main`, with this checkout on an up-to-date `main`: `node ~/projects/ui/scripts/update-site.mjs`.
+- Run it inside a worktree of the site on a fresh branch from `main`, after installing the site's dependencies, with this checkout on an up-to-date `main`: `node ~/projects/ui/scripts/update-site.mjs`. It formats with the site's Prettier to compare; without it, files that differ only in formatting count as custom.
 - Without `--write` it is a dry run: it only reports which installed files are current, an unmodified older release (`old`), or edited (`custom`). It compares against the built history in `public/r` for the site's style, so keep committing `public/r`.
 - `--write` needs a clean git worktree. It reinstalls through the shadcn CLI from the live registry, three-way merges edited files, and on a conflict, or for any other file the install changed apart from package files and `components.json`, keeps the local file and writes the new version next to it as `<file>.upstream`.
 - Before committing, review every file in `merged` and `conflicts`, fold in upstream fixes by hand, and delete the `.upstream` files. `--report <file>` also saves the report.

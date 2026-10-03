@@ -1,6 +1,7 @@
 // Bring the Fulldev UI items installed in a client site up to date, keeping the
 // site's own edits. Run it inside a worktree of the site, on a fresh branch from
-// main, with this ui checkout on an up-to-date main:
+// main, after installing its dependencies, with this ui checkout on an
+// up-to-date main:
 //
 //   node ~/projects/ui/scripts/update-site.mjs                  # dry run, changes nothing
 //   node ~/projects/ui/scripts/update-site.mjs --write          # update the site
@@ -133,8 +134,20 @@ const createHistory = (ui) => {
 const createFormat = (cwd) => {
   const bin = path.join(cwd, "node_modules/.bin/prettier")
   const cache = new Map()
+  // Without Prettier, files that differ only in formatting count as custom.
+  let warned = false
+  const warn = (reason) => {
+    if (warned) return
+    warned = true
+    console.error(
+      `${reason}. Files that differ only in formatting count as custom; install the site's dependencies first.`
+    )
+  }
   const format = (text, file) => {
-    if (!fs.existsSync(bin)) return text
+    if (!fs.existsSync(bin)) {
+      warn("No Prettier in node_modules")
+      return text
+    }
     const key = `${file}\0${text}`
     if (!cache.has(key)) {
       try {
@@ -142,10 +155,11 @@ const createFormat = (cwd) => {
           key,
           run(bin, ["--stdin-filepath", path.join(cwd, file)], cwd, {
             input: text,
-            stdio: ["pipe", "pipe", "ignore"],
+            stdio: ["pipe", "pipe", "pipe"],
           })
         )
-      } catch {
+      } catch (error) {
+        warn(`Prettier failed on ${file}: ${error.stderr?.split("\n")[0]}`)
         cache.set(key, text)
       }
     }
