@@ -11,8 +11,8 @@ pnpm dlx shadcn@latest init https://ui.full.dev/r/styles/base-vega/init.json
 pnpm dlx shadcn@latest add @fulldev/button
 ```
 
-When `components.json` exists, do not run `init` again, because it replaces
-the theme tokens. Add the registry entry instead:
+When `components.json` exists, do not run `init` or `add @fulldev/init`, because
+both replace the theme tokens. Add the registry entry instead:
 
 ```json
 {
