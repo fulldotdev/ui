@@ -76,7 +76,8 @@ const builtPaths = (name, style) => [
   `public/r/${name}.json`,
 ]
 
-// Every released version of one file of an item, newest first. The first entry
+// Every released version of one file of an item, newest first. --full-history
+// keeps versions from merged branches that a later merge replaced. The first entry
 // is the current version when the item is still in the registry.
 const createHistory = (ui) => {
   const shown = new Map()
@@ -102,7 +103,7 @@ const createHistory = (ui) => {
   return (name, source, style) => {
     const built = builtPaths(name, style)
     const commits = git(
-      ["log", "--format=%H", "HEAD", "--", ...built, source],
+      ["log", "--format=%H", "--full-history", "HEAD", "--", ...built, source],
       ui
     )
       .split("\n")

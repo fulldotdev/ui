@@ -130,6 +130,22 @@ test("an install from before 0.17 is still recognized", () => {
   assert.equal(status(createSite({ [BOX]: V16 }))[BOX], "old")
 })
 
+test("a release from a merged branch counts, also when the merge replaced it", () => {
+  const branched = repo("ui")
+  git(branched, "fetch", "-q", ui, "main")
+  git(branched, "checkout", "-q", "-b", "main", "FETCH_HEAD")
+  git(branched, "checkout", "-q", "-b", "side")
+  const side = box("rounded-xl p-4")
+  commit(branched, { "public/r/styles/base-vega/box.json": built(side) })
+  git(branched, "checkout", "-q", "main")
+  commit(branched, { "public/r/styles/base-vega/box.json": built(V18 + "\n") })
+  git(branched, "merge", "-q", "-s", "ours", "--no-edit", "side")
+  git(branched, "branch", "-q", "-D", "side")
+  const site = createSite({ [BOX]: side })
+  const { files } = classify({ cwd: site, ui: branched })
+  assert.equal(files.find((f) => f.file === BOX).status, "old")
+})
+
 test("a customized file merges with the release it came from", () => {
   const edited = box("rounded-none p-8")
   const site = createSite({ [BOX]: edited })
