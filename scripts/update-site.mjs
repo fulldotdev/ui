@@ -355,7 +355,11 @@ export const update = ({
   return report
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+// realpath, because /tmp and other paths can be symlinks.
+if (
+  process.argv[1] &&
+  fs.realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)
+) {
   const args = process.argv.slice(2)
   const write = args.includes("--write")
   const reportFile = args.includes("--report")

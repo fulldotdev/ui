@@ -189,7 +189,10 @@ test("--write refuses a dirty worktree", () => {
 
 test("the command is a dry run unless --write is given", () => {
   const site = createSite({ [BOX]: V17 })
-  const output = execFileSync(process.execPath, [fileURLToPath(script)], {
+  // Through a symlink, as /tmp is one on macOS.
+  const link = path.join(temp, `update-site-${count++}.mjs`)
+  fs.symlinkSync(fileURLToPath(script), link)
+  const output = execFileSync(process.execPath, [link], {
     cwd: site,
     encoding: "utf8",
   })
