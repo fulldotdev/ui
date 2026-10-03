@@ -26,6 +26,39 @@ A shadcn/ui preset sets the style, theme, and fonts at once. Build one on the
 [Create](/create/) page and see [Presets](/docs/presets/) for how to start or
 switch a project with it.
 
+## Override component styles
+
+A `class` you pass to a component is merged after the style's classes, so it
+wins when both set the same thing, such as `class="rounded-md"`. Two cases need
+the same form as the style's class:
+
+- **Important classes.** Some shadcn/ui styles mark a class with `!`, such as
+  `rounded-xl!` on `Command` and `CommandDialog` and `rounded-lg!` on
+  `CommandItem` inside a dialog. Add `!` to yours as well, for example
+  `contentClass="rounded-md!"` on `CommandDialog`. shadcn/ui components behave the
+  same way.
+- **Classes with a variant.** A class such as
+  `in-data-[slot=navigation-menu-content]:rounded-sm` on `NavigationMenuLink`
+  only applies inside a menu panel, so a plain `rounded-md` does not replace it
+  there. Use the same variant:
+  `class="in-data-[slot=navigation-menu-content]:rounded-md"`.
+
+## What styles do not cover
+
+Fulldev UI follows the shadcn/ui token model, so a few things stay per
+component instead of becoming tokens:
+
+- **Radius.** One `--radius` sets the whole radius scale, from `--radius-sm` to
+  `--radius-4xl`, the same as shadcn/ui. There are no separate radius tokens per
+  role, such as for buttons or cards, and no `corner-shape` option. Pass a
+  radius class to a component or pick a style with the shape you want.
+- **Control sizes and borders.** Each style sets its own control heights, and
+  all styles use a 1px border. Use the size props, such as `size="lg"` on
+  `Button` (44px in Sera), or a class such as `h-11` for a larger touch target.
+- **Navigation menu width.** The menu panel is positioned next to its trigger.
+  A full-width panel is not supported yet, because the navigation menu script
+  writes the panel's position and width inline.
+
 ## Tokens to keep in sync
 
 Most projects only need to tune the core surface and action tokens, the sidebar
