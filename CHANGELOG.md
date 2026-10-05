@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.18.1
+
+### Patch Changes
+
+- [#256](https://github.com/fulldotdev/ui/pull/256) [`3ac9a53`](https://github.com/fulldotdev/ui/commit/3ac9a530dec89c07ea381da932dea517a074936b) Thanks [@silveltman](https://github.com/silveltman)! - Embed YouTube videos from the privacy-enhanced `youtube-nocookie.com` domain, and show the focus ring on navigation menu links inside menu content for keyboard users.
+
 ## 0.18.0
 
 ### Minor Changes
