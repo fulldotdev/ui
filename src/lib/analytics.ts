@@ -1,5 +1,6 @@
 import "posthog-js/dist/web-vitals"
 
+import { dropViewTransitionNoise } from "./analytics-exceptions.js"
 import { sanitizeExceptionUrls } from "./analytics-privacy.js"
 
 import "posthog-js/dist/exception-autocapture"
@@ -47,7 +48,7 @@ export function startAnalytics() {
       "$session_entry_referrer",
     ],
     loaded: trackInteractions,
-    before_send: sanitizeExceptionUrls,
+    before_send: [dropViewTransitionNoise, sanitizeExceptionUrls],
     capture_pageview: true,
     capture_pageleave: true,
     disable_session_recording: true,
