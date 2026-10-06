@@ -78,6 +78,24 @@ import {
 </Card>
 ```
 
+### Polymorphic
+
+`Card` and `CardTitle` are polymorphic via `as`. Pass `as` to render another
+element and use the attributes for that element. Both render a `div` by
+default. A `dl` card holds `dt` and `dd` pairs, optionally wrapped in a `div`.
+
+```astro
+<Card as="article">...</Card>
+<Card as="section" aria-labelledby="plan-title">...</Card>
+<Card as="a" href="/pricing">...</Card>
+<Card as="li">...</Card>
+<Card as="dl">
+  <div><dt>Plan</dt><dd>Pro</dd></div>
+</Card>
+
+<CardTitle as="h3">Card Title</CardTitle>
+```
+
 ## Composition
 
 Use the following composition to build a `Card`:
@@ -126,6 +144,91 @@ import image from "@/assets/placeholder.svg"
     <p>The first child image automatically gets top rounding behavior.</p>
   </CardContent>
 </Card>
+```
+
+### Article
+
+Render the card as an `article` with a heading as its title.
+
+```astro live
+---
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+---
+
+<Card as="article" class="w-full max-w-md">
+  <CardHeader>
+    <CardTitle as="h3">Release notes</CardTitle>
+    <CardDescription>What changed in this version.</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <p>An article card is a self-contained piece of content.</p>
+  </CardContent>
+</Card>
+```
+
+### Link
+
+Render the whole card as a link. Keep other links and buttons out of a link
+card.
+
+```astro live
+---
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+---
+
+<Card
+  as="a"
+  href="/components/button/"
+  class="hover:bg-muted/50 w-full max-w-md transition-colors"
+>
+  <CardHeader>
+    <CardTitle as="h3">Button</CardTitle>
+    <CardDescription>
+      Displays a button or a component that looks like a button.
+    </CardDescription>
+  </CardHeader>
+</Card>
+```
+
+### List
+
+Render cards as list items inside a `ul`.
+
+```astro live
+---
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+---
+
+<ul class="grid w-full max-w-md gap-4">
+  <Card as="li" size="sm">
+    <CardHeader>
+      <CardTitle as="h3">Design</CardTitle>
+      <CardDescription>Tokens, styles, and components.</CardDescription>
+    </CardHeader>
+  </Card>
+  <Card as="li" size="sm">
+    <CardHeader>
+      <CardTitle as="h3">Build</CardTitle>
+      <CardDescription>Astro pages and content collections.</CardDescription>
+    </CardHeader>
+  </Card>
+</ul>
 ```
 
 ## API Reference

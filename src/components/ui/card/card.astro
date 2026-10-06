@@ -1,20 +1,26 @@
 ---
-import type { HTMLAttributes } from "astro/types"
+import type { HTMLTag, Polymorphic } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-type Props = HTMLAttributes<"div"> & {
+type Props<Tag extends HTMLTag = "div"> = Polymorphic<{
+  as: Tag
   size?: "default" | "sm"
-}
+}>
 
-const { class: className, size = "default", ...props } = Astro.props
+const {
+  as: Tag = "div",
+  class: className,
+  size = "default",
+  ...props
+} = Astro.props
 ---
 
-<div
+<Tag
   data-slot="card"
   data-size={size}
   class={cn("cn-card group/card flex flex-col", className)}
   {...props}
 >
   <slot />
-</div>
+</Tag>
