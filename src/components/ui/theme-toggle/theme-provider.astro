@@ -41,16 +41,54 @@
     restoreTransitions?.()
   }
 
+  let currentTheme = getThemePreference()
+  let isSwapping = false
+
   window.__setTheme = (theme) => {
+    currentTheme = theme
     applyTheme(theme, true)
+
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem("theme", theme)
+    }
   }
 
-  applyTheme(getThemePreference())
+  applyTheme(currentTheme)
+
+  // Astro's `<ClientRouter />` swaps the `<html>` element's attributes with the
+  // incoming document's on every client-side navigation. The server cannot know
+  // the visitor's theme, so the `dark` class is dropped and the site falls back
+  // to light mode. Carry the active theme onto the incoming document before the
+  // swap, then re-apply it afterwards for custom swaps that bypass this.
+  document.addEventListener("astro:before-swap", (event) => {
+    isSwapping = true
+
+    event.newDocument?.documentElement.classList.toggle(
+      "dark",
+      currentTheme === "dark"
+    )
+  })
+
+  document.addEventListener("astro:after-swap", () => {
+    isSwapping = false
+
+    applyTheme(currentTheme)
+  })
+
+  document.addEventListener("astro:page-load", () => {
+    applyTheme(currentTheme)
+  })
 
   if (typeof localStorage !== "undefined") {
     const observer = new MutationObserver(() => {
-      const isDark = document.documentElement.classList.contains("dark")
-      localStorage.setItem("theme", isDark ? "dark" : "light")
+      // Skip the class changes caused by the swap itself, otherwise the
+      // server-rendered value overwrites the stored preference.
+      if (isSwapping) return
+
+      currentTheme = document.documentElement.classList.contains("dark")
+        ? "dark"
+        : "light"
+      localStorage.setItem("theme", currentTheme)
     })
 
     observer.observe(document.documentElement, {
