@@ -1,5 +1,13 @@
 # Fulldev UI
 
+## 0.19.0
+
+### Minor Changes
+
+- [#262](https://github.com/fulldotdev/ui/pull/262) [`ac31d53`](https://github.com/fulldotdev/ui/commit/ac31d535756fb844b7e09c70ee597f03076a963b) Thanks [@silveltman](https://github.com/silveltman)! - - `Button` writes `data-variant` and `data-size` on its root element, as shadcn/ui's Button does. Without a `variant` or `size`, both are `default`. Classes and props are unchanged.
+  - `Card` takes a polymorphic `as` prop, so a card can render as an `article`, `section`, `a`, `li`, `dl` or any other element, with that element's attributes. It keeps `data-slot="card"` and `data-size`, and still renders a `div` by default.
+  - `CardTitle` takes a polymorphic `as` prop, so a title can be a heading such as `h2` or `h3`. It still renders a `div` by default.
+
 ## 0.18.1
 
 ### Patch Changes
