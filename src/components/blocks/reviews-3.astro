@@ -25,8 +25,12 @@ import {
 type Props = HTMLAttributes<"section"> & {
   title: string
   description: string
-  previousLabel: string
-  nextLabel: string
+  labels: {
+    previous: string
+    next: string
+    carousel: string
+    slide: string
+  }
   reviews: {
     rating: number
     ratingLabel: string
@@ -42,8 +46,7 @@ const {
   class: className,
   title,
   description,
-  previousLabel,
-  nextLabel,
+  labels,
   reviews,
   ...props
 } = Astro.props
@@ -57,12 +60,13 @@ const {
   <SectionContainer>
     <Carousel
       aria-label={title}
+      aria-roledescription={labels.carousel}
       opts={{ loop: true }}
       class="mx-auto w-[calc(100%-6rem)] max-w-3xl"
     >
       <CarouselContent>
         {reviews.map((item) => (
-          <CarouselItem>
+          <CarouselItem aria-roledescription={labels.slide}>
             <div class="flex flex-col items-center gap-6 px-4 py-8 text-center">
               <QuoteIcon class="text-primary size-10" />
               <Rating value={item.rating} aria-label={item.ratingLabel} />
@@ -85,11 +89,11 @@ const {
       </CarouselContent>
       <CarouselPrevious>
         <ChevronLeftIcon aria-hidden="true" />
-        <span class="sr-only">{previousLabel}</span>
+        <span class="sr-only">{labels.previous}</span>
       </CarouselPrevious>
       <CarouselNext>
         <ChevronRightIcon aria-hidden="true" />
-        <span class="sr-only">{nextLabel}</span>
+        <span class="sr-only">{labels.next}</span>
       </CarouselNext>
     </Carousel>
   </SectionContainer>
