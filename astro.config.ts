@@ -38,7 +38,7 @@ export default defineConfig({
     processor: unified(),
     shikiConfig: {
       themes: {
-        light: "github-light-default",
+        light: "github-light-high-contrast",
         dark: "github-dark-default",
       },
     },
