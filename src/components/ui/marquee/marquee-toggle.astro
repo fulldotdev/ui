@@ -21,28 +21,32 @@ const {
   "data-slot": dataSlot = "marquee-toggle",
   ...props
 } = Astro.props
+
+// The marquee shows and hides the toggle through its wrapper, so the button's
+// own hidden attribute, class and style stay the caller's.
 ---
 
-<button
-  type="button"
-  hidden
-  data-slot={dataSlot}
-  data-marquee-toggle
-  data-state="playing"
-  data-play-label={playLabel}
-  data-pause-label={pauseLabel}
-  data-variant={variant}
-  data-size={size}
-  class={cn(
-    buttonVariants({ variant, size }),
-    "group/marquee-toggle",
-    className
-  )}
-  {...props}
->
-  <PauseIcon class="group-data-[state=paused]/marquee-toggle:hidden" />
-  <PlayIcon class="hidden group-data-[state=paused]/marquee-toggle:block" />
-  <span class="sr-only" data-marquee-label>
-    {pauseLabel}
-  </span>
-</button>
+<span data-marquee-control hidden class="contents">
+  <button
+    type="button"
+    data-slot={dataSlot}
+    data-marquee-toggle
+    data-state="playing"
+    data-play-label={playLabel}
+    data-pause-label={pauseLabel}
+    data-variant={variant}
+    data-size={size}
+    class={cn(
+      buttonVariants({ variant, size }),
+      "group/marquee-toggle",
+      className
+    )}
+    {...props}
+  >
+    <PauseIcon class="group-data-[state=paused]/marquee-toggle:hidden" />
+    <PlayIcon class="hidden group-data-[state=paused]/marquee-toggle:block" />
+    <span class="sr-only" data-marquee-label>
+      {pauseLabel}
+    </span>
+  </button>
+</span>

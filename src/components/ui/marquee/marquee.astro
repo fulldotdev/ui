@@ -50,14 +50,23 @@ const {
     element.checkVisibility?.({ visibilityProperty: true }) ??
     element.getClientRects().length > 0
   // A toggle is a pause control when it can be pressed and seen. The marquee
-  // hides the toggle itself while no row moves, so visibility is read from its
-  // parent, where the caller's hiding applies.
+  // hides a toggle through its private wrapper, so visibility is read from the
+  // button's own styles and from the wrapper's parent.
+  const shown = (toggle: HTMLButtonElement) => {
+    const style = getComputedStyle(toggle)
+    const outside = toggle.closest("[data-marquee-control]")?.parentElement
+    return (
+      style.display !== "none" &&
+      style.visibility !== "hidden" &&
+      outside != null &&
+      visible(outside)
+    )
+  }
   const usable = (toggle: HTMLButtonElement) =>
     !toggle.matches(":disabled") &&
     toggle.getAttribute("aria-disabled") !== "true" &&
     !toggle.closest("[inert]") &&
-    toggle.parentElement !== null &&
-    visible(toggle.parentElement)
+    shown(toggle)
   const reachable = (element: HTMLElement) =>
     element.tabIndex >= 0 &&
     !element.matches(":disabled") &&
@@ -93,7 +102,9 @@ const {
           else row.autoScroll?.stop()
         }
         for (const toggle of toggles) {
-          toggle.hidden = moving.length === 0
+          const control = toggle.closest<HTMLElement>("[data-marquee-control]")
+          if (control && control.hidden !== (moving.length === 0))
+            control.hidden = moving.length === 0
           toggle.dataset.state = playing ? "playing" : "paused"
           const label = toggle.querySelector("[data-marquee-label]")
           if (label)
@@ -165,8 +176,9 @@ const {
       }
 
       // Rows start or stop when their size changes, such as a static row
-      // whose content no longer fits or a toggle hidden at a breakpoint, and
-      // when a toggle is disabled or made inert.
+      // whose content no longer fits, and when a toggle can no longer be
+      // pressed or seen. That covers changes to the toggle and its ancestors,
+      // and breakpoints that hide the toggle or its container.
       let frame = 0
       const refresh = () => {
         cancelAnimationFrame(frame)
@@ -176,11 +188,27 @@ const {
         })
       }
       const observer = new ResizeObserver(refresh)
-      const availability = new MutationObserver(refresh)
-      availability.observe(document.documentElement, {
-        subtree: true,
-        attributeFilter: ["disabled", "aria-disabled", "inert"],
-      })
+      const controls = new MutationObserver(refresh)
+      for (const toggle of toggles) {
+        for (
+          let element: Element | null = toggle;
+          element;
+          element = element.parentElement
+        ) {
+          if (element.hasAttribute("data-marquee-control")) continue
+          controls.observe(element, {
+            attributeFilter: [
+              "class",
+              "style",
+              "hidden",
+              "disabled",
+              "aria-disabled",
+              "inert",
+            ],
+          })
+          if (root.contains(element)) observer.observe(element)
+        }
+      }
       for (const row of rows) {
         observer.observe(row.viewport)
         for (const item of row.viewport.firstElementChild?.children ?? [])
@@ -227,7 +255,7 @@ const {
       instances.set(root, () => {
         cancelAnimationFrame(frame)
         observer.disconnect()
-        availability.disconnect()
+        controls.disconnect()
         reducedMotion.removeEventListener("change", onMotionChange)
         root.removeEventListener("focusin", onFocusIn)
         for (const row of rows) {
