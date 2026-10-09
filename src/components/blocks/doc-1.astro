@@ -74,6 +74,8 @@ type Props = HTMLAttributes<"div"> & {
     openInChatGPT: string
     openInClaude: string
     openInCursor: string
+    assistantPrompt: string
+    copyCode: string
     pagination: string
     toc: string
   }
@@ -95,9 +97,6 @@ const {
 const showCopyButton = Boolean(copyButton)
 const showOpenButton = Boolean(markdownUrl)
 const showPagination = Boolean(previousPage || nextPage)
-const assistantPrompt = markdownUrl
-  ? `Read ${new URL(markdownUrl, Astro.site ?? Astro.url.origin).href}, I want to ask questions about it.`
-  : ""
 const openLinks = markdownUrl
   ? [
       {
@@ -107,17 +106,17 @@ const openLinks = markdownUrl
       },
       {
         label: labels.openInChatGPT,
-        href: `https://chatgpt.com/?hints=search&q=${encodeURIComponent(assistantPrompt)}`,
+        href: `https://chatgpt.com/?hints=search&q=${encodeURIComponent(labels.assistantPrompt)}`,
         icon: "chatgpt",
       },
       {
         label: labels.openInClaude,
-        href: `https://claude.ai/new?q=${encodeURIComponent(assistantPrompt)}`,
+        href: `https://claude.ai/new?q=${encodeURIComponent(labels.assistantPrompt)}`,
         icon: "claude",
       },
       {
         label: labels.openInCursor,
-        href: `https://cursor.com/link/prompt?text=${encodeURIComponent(assistantPrompt)}`,
+        href: `https://cursor.com/link/prompt?text=${encodeURIComponent(labels.assistantPrompt)}`,
         icon: "cursor",
       },
     ]
@@ -219,7 +218,12 @@ const openLinks = markdownUrl
       </div>
     </header>
 
-    <Typography as="article" size="sm" data-doc-content>
+    <Typography
+      as="article"
+      size="sm"
+      data-doc-content
+      data-copy-label={labels.copyCode}
+    >
       <slot />
     </Typography>
 
@@ -382,19 +386,23 @@ const openLinks = markdownUrl
   const copyIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>`
   const checkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>`
   const initializeCodeBlocks = () => {
-    document.querySelectorAll("[data-doc-content] > pre").forEach((pre) => {
-      if (pre.closest(".docs-code-block")) return
-      const wrapper = document.createElement("div")
-      const button = document.createElement("button")
-      wrapper.className = "docs-code-block"
-      wrapper.dataset.notTypeset = ""
-      button.type = "button"
-      button.className = "docs-code-copy"
-      button.ariaLabel = "Copy code"
-      button.innerHTML = `<span data-copy-icon>${copyIcon}</span><span data-check-icon class="hidden">${checkIcon}</span>`
-      pre.before(wrapper)
-      wrapper.append(pre, button)
-    })
+    document
+      .querySelectorAll<HTMLElement>("[data-doc-content]")
+      .forEach((content) => {
+        content.querySelectorAll(":scope > pre").forEach((pre) => {
+          if (pre.closest(".docs-code-block")) return
+          const wrapper = document.createElement("div")
+          const button = document.createElement("button")
+          wrapper.className = "docs-code-block"
+          wrapper.dataset.notTypeset = ""
+          button.type = "button"
+          button.className = "docs-code-copy"
+          button.ariaLabel = content.dataset.copyLabel ?? null
+          button.innerHTML = `<span data-copy-icon>${copyIcon}</span><span data-check-icon class="hidden">${checkIcon}</span>`
+          pre.before(wrapper)
+          wrapper.append(pre, button)
+        })
+      })
   }
 
   initializeCodeBlocks()

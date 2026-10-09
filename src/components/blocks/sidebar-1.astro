@@ -93,6 +93,18 @@ type Props = {
   }[]
   githubRepo: string
   githubStars?: number
+  labels: {
+    github: string
+    stars: string
+    breadcrumb: string
+    breadcrumbMenu: string
+    sidebar: string
+    theme: string
+    shortcut: {
+      mac: string
+      other: string
+    }
+  }
 }
 
 const {
@@ -103,6 +115,7 @@ const {
   navigation,
   githubRepo,
   githubStars,
+  labels,
 } = Astro.props
 
 const normalizePath = (path: string) => {
@@ -127,7 +140,7 @@ const searchGroups = search.items.reduce<
 
 const githubStarsLabel =
   githubStars === undefined
-    ? "Stars"
+    ? labels.stars
     : new Intl.NumberFormat().format(githubStars)
 
 /* eslint-disable astro/jsx-a11y/no-autofocus -- Focus moves into the search dialog when it opens. */
@@ -163,8 +176,10 @@ const githubStarsLabel =
           <Kbd
             class="bg-background/80 ml-auto h-4 min-w-4 translate-y-0 px-1 text-[10px]"
             data-search-shortcut
+            data-shortcut-mac={labels.shortcut.mac}
+            data-shortcut-other={labels.shortcut.other}
           >
-            ⌘ + K
+            {labels.shortcut.mac}
           </Kbd>
         </DialogTrigger>
 
@@ -221,9 +236,9 @@ const githubStarsLabel =
     <Header class="h-16">
       <HeaderContainer class="max-w-none justify-between">
         <HeaderGroup>
-          <SidebarTrigger />
+          <SidebarTrigger aria-label={labels.sidebar} />
           <Separator orientation="vertical" class="my-auto mr-2 h-4" />
-          <Breadcrumb>
+          <Breadcrumb aria-label={labels.breadcrumb}>
             <BreadcrumbList>
               {breadcrumb.items.map((item, index) => {
                 const isLast = index === breadcrumb.items.length - 1
@@ -290,7 +305,7 @@ const githubStarsLabel =
                     <DropdownMenu>
                       <DropdownMenuTrigger class="hover:text-foreground inline-flex items-center leading-none transition-colors">
                         <BreadcrumbEllipsis />
-                        <span class="sr-only">Toggle menu</span>
+                        <span class="sr-only">{labels.breadcrumbMenu}</span>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="start">
                         <DropdownMenuGroup>
@@ -316,12 +331,12 @@ const githubStarsLabel =
             variant="ghost"
             target="_blank"
             rel="noreferrer"
-            aria-label={`View ${githubRepo} on GitHub`}
+            aria-label={labels.github}
           >
             <Icon name="github" />
             <span class="hidden sm:inline">{githubStarsLabel}</span>
           </Button>
-          <ThemeToggle />
+          <ThemeToggle aria-label={labels.theme} />
         </HeaderGroup>
       </HeaderContainer>
     </Header>
@@ -334,9 +349,14 @@ const githubStarsLabel =
     navigator.platform || navigator.userAgent
   )
 
-  document.querySelectorAll("[data-search-shortcut]").forEach((shortcut) => {
-    shortcut.textContent = isMac ? "⌘ + K" : "Ctrl + K"
-  })
+  document
+    .querySelectorAll<HTMLElement>("[data-search-shortcut]")
+    .forEach((shortcut) => {
+      shortcut.textContent =
+        (isMac
+          ? shortcut.dataset.shortcutMac
+          : shortcut.dataset.shortcutOther) ?? null
+    })
 
   document.addEventListener("keydown", (event) => {
     if (event.key.toLowerCase() !== "k") return

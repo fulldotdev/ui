@@ -1,5 +1,6 @@
 ---
 import type { HTMLAttributes } from "astro/types"
+import XIcon from "@lucide/astro/icons/x"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -42,11 +43,12 @@ type Props = HTMLAttributes<"header"> & {
     href: string
     icon?: string
   }[]
-  navigationLabel?: string
-  menu?: {
+  navigationLabel: string
+  menu: {
     label: string
     title: string
     description: string
+    closeLabel: string
   }
 }
 
@@ -55,12 +57,8 @@ const {
   logo,
   navigation,
   buttons,
-  navigationLabel = "Main navigation",
-  menu = {
-    label: "Open menu",
-    title: "Menu",
-    description: "Site navigation and actions.",
-  },
+  navigationLabel,
+  menu,
   ...props
 } = Astro.props
 ---
@@ -122,7 +120,7 @@ const {
       >
         <Icon name="menu" />
       </SheetTrigger>
-      <SheetContent side="right" class="p-0">
+      <SheetContent side="right" showCloseButton={false} class="p-0">
         <SheetHeader class="sr-only">
           <SheetTitle>{menu.title}</SheetTitle>
           <SheetDescription>{menu.description}</SheetDescription>
@@ -146,6 +144,15 @@ const {
             <slot name="mobile" />
           </div>
         </div>
+        <SheetClose
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          class="cn-sheet-close"
+        >
+          <XIcon />
+          <span class="sr-only">{menu.closeLabel}</span>
+        </SheetClose>
       </SheetContent>
     </Sheet>
   </HeaderContainer>
