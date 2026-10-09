@@ -10,7 +10,8 @@
 // them, so they did not pass. Requests to other origins are blocked, so the
 // scan needs no network. The report goes to .dev/a11y/report.json.
 //
-// Axe checks the rendered default state of each page. Menus, dialogs, focus
+// Axe checks the rendered default state of each page, after fonts, eager
+// images and finite animations have settled. Menus, dialogs, focus
 // order and motion still need a manual check.
 import { createReadStream, existsSync, statSync } from "node:fs"
 import { mkdir, readdir, writeFile } from "node:fs/promises"
@@ -162,6 +163,24 @@ try {
           { timeout: 10_000 }
         )
         .catch(() => errors.push("Images did not finish loading in 10s"))
+      // Axe measures colors as they are now, so let finite animations and
+      // transitions, such as styles settling after load, finish first.
+      // Endless animations are not waited for.
+      const settled = await page.evaluate(() =>
+        Promise.race([
+          Promise.all(
+            document
+              .getAnimations()
+              .filter((animation) => {
+                const { endTime } = animation.effect?.getComputedTiming() ?? {}
+                return endTime !== undefined && endTime !== Infinity
+              })
+              .map((animation) => animation.finished.catch(() => {}))
+          ).then(() => true),
+          new Promise((done) => setTimeout(() => done(false), 5_000)),
+        ])
+      )
+      if (!settled) errors.push("Animations did not finish in 5s")
       const axe = await new AxeBuilder({ page }).analyze()
       const rules = (list) =>
         list.map((rule) => ({
