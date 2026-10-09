@@ -49,26 +49,25 @@ const resolvedOpts: EmblaOptionsType = {
   }
 
   const instances = new Map<CarouselRoot, () => void>()
+  // A nested carousel owns its own parts.
+  const getParts = <T extends Element>(root: CarouselRoot, slot: string) =>
+    [...root.querySelectorAll<T>(`[data-slot="${slot}"]`)].filter(
+      (part) => part.closest('[data-slot="carousel"]') === root
+    )
   const initialize = () => {
     for (const root of document.querySelectorAll<CarouselRoot>(
       '[data-slot="carousel"]'
     )) {
       if (instances.has(root)) continue
-      const viewport = root.querySelector<HTMLElement>(
-        '[data-slot="carousel-content"]'
-      )
+      const viewport = getParts<HTMLElement>(root, "carousel-content")[0]
       if (!viewport) continue
       const opts: EmblaOptionsType = JSON.parse(
         root.dataset.carouselOptions || "{}"
       )
       const api = EmblaCarousel(viewport, opts)
       root.__fulldevCarouselApi = api
-      const previous = root.querySelectorAll<HTMLButtonElement>(
-        '[data-slot="carousel-previous"]'
-      )
-      const next = root.querySelectorAll<HTMLButtonElement>(
-        '[data-slot="carousel-next"]'
-      )
+      const previous = getParts<HTMLButtonElement>(root, "carousel-previous")
+      const next = getParts<HTMLButtonElement>(root, "carousel-next")
       const emit = (type: "carousel:init" | "carousel:select") => {
         root.dispatchEvent(
           new CustomEvent(type, {
