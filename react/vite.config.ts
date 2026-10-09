@@ -42,7 +42,8 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       outDir: process.env.OUT_DIR ?? "dist",
-      emptyOutDir: true,
+      // Each style builds into its own folder; vega, built first, holds the others.
+      emptyOutDir: process.env.STYLE === "vega" || !process.env.STYLE,
       // Keep the gallery small enough to scan: one chunk per demo page.
       chunkSizeWarningLimit: 4096,
     },

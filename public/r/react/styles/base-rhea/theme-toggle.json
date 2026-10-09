@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-toggle",
+  "title": "Theme Toggle",
+  "description": "A two-state theme toggle that switches immediately between light and dark mode.",
+  "dependencies": [
+    "cn",
+    "lucide-react",
+    "next-themes"
+  ],
+  "registryDependencies": [
+    "@fulldev/button"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/theme-toggle.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"cn\"\nimport { MoonIcon, SunIcon } from \"lucide-react\"\nimport { ThemeProvider as NextThemesProvider, useTheme } from \"next-themes\"\n\nimport { Button } from \"@/components/ui/button\"\n\n// Puts the theme in a `dark` class on <html>, follows the system until the\n// visitor picks one, and remembers that choice.\nfunction ThemeProvider({\n  children,\n  ...props\n}: React.ComponentProps<typeof NextThemesProvider>) {\n  return (\n    <NextThemesProvider\n      attribute=\"class\"\n      defaultTheme=\"system\"\n      enableSystem\n      disableTransitionOnChange\n      {...props}\n    >\n      {children}\n    </NextThemesProvider>\n  )\n}\n\nconst subscribe = () => () => {}\n\nfunction ThemeToggle({\n  className,\n  variant = \"ghost\",\n  size = \"icon-sm\",\n  label = \"Toggle theme\",\n  onClick,\n  ...props\n}: React.ComponentProps<typeof Button> & {\n  label?: string\n}) {\n  const { resolvedTheme, setTheme } = useTheme()\n  // The theme is only known in the browser, so the server renders no state.\n  const mounted = React.useSyncExternalStore(\n    subscribe,\n    () => true,\n    () => false\n  )\n  const dark = mounted ? resolvedTheme === \"dark\" : undefined\n\n  return (\n    <Button\n      data-slot=\"theme-toggle\"\n      variant={variant}\n      size={size}\n      aria-pressed={dark}\n      data-pressed={dark ? \"\" : undefined}\n      className={cn(\"relative\", className)}\n      onClick={(event) => {\n        onClick?.(event)\n        if (!event.defaultPrevented) setTheme(dark ? \"light\" : \"dark\")\n      }}\n      {...props}\n    >\n      <SunIcon className=\"dark:hidden\" />\n      <MoonIcon className=\"hidden dark:block\" />\n      <span className=\"sr-only\">{label}</span>\n    </Button>\n  )\n}\n\nexport { ThemeProvider, ThemeToggle }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/react/#/ui/theme-toggle",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

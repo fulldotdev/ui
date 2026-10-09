@@ -22,6 +22,7 @@ const BannerContext = React.createContext<(() => void) | null>(null)
 
 // A closed banner stays closed for the browser session when it has a storage key.
 const storageToken = (key: string) => `banner:${key}`
+const subscribe = () => () => {}
 
 function Banner({
   className,
@@ -34,12 +35,14 @@ function Banner({
     storageKey?: string
   }) {
   const [closed, setClosed] = React.useState(false)
-
-  React.useEffect(() => {
-    if (storageKey && sessionStorage.getItem(storageToken(storageKey))) {
-      setClosed(true)
-    }
-  }, [storageKey])
+  // The server renders the banner; the browser hides one closed earlier.
+  const stored = React.useSyncExternalStore(
+    subscribe,
+    () =>
+      storageKey != null &&
+      sessionStorage.getItem(storageToken(storageKey)) === "hidden",
+    () => false
+  )
 
   const close = React.useCallback(() => {
     setClosed(true)
@@ -51,7 +54,7 @@ function Banner({
       <aside
         data-slot="banner"
         data-variant={variant}
-        hidden={closed || hidden}
+        hidden={closed || stored || hidden}
         className={cn(bannerVariants({ variant }), className)}
         {...props}
       />

@@ -104,24 +104,70 @@ registry.items = registry.items.map((item) => {
       })
     }
   }
-  const merged = { ...item, ...meta }
-  // Known fields first, in a fixed order; keep any other schema field after them.
-  const keys = [
-    ...order.filter((key) => key in merged),
-    ...Object.keys(merged).filter((key) => !order.includes(key)),
-  ]
-  return Object.fromEntries(keys.map((key) => [key, merged[key]]))
+  return sorted({ ...item, ...meta })
 })
 
-const bundle = (name, type) => {
-  const item = registry.items.find((entry) => entry.name === name)
-  item.registryDependencies = registry.items
+// Known fields first, in a fixed order; keep any other schema field after them.
+function sorted(item) {
+  const keys = [
+    ...order.filter((key) => key in item),
+    ...Object.keys(item).filter((key) => !order.includes(key)),
+  ]
+  return Object.fromEntries(keys.map((key) => [key, item[key]]))
+}
+
+const bundle = (items, name, type) => {
+  const item = items.find((entry) => entry.name === name)
+  item.registryDependencies = items
     .filter((entry) => entry.type === type)
     .map((entry) => `@fulldev/${entry.name}`)
     .sort()
 }
-bundle("components", "registry:ui")
-bundle("blocks", "registry:block")
+bundle(registry.items, "components", "registry:ui")
+bundle(registry.items, "blocks", "registry:block")
 
 writeFileSync(registryPath, JSON.stringify(registry, null, 2) + "\n")
 console.log(`Synced metadata for ${registry.items.length} registry items.`)
+
+// The React registry shares base and init with this one; base points the
+// @fulldev registry at the React items instead.
+const reactPath = new URL("../react/registry.json", import.meta.url)
+const react = JSON.parse(readFileSync(reactPath, "utf8"))
+const gallery = `${site}/react/`
+const reactManual = {
+  components: {
+    title: "All components",
+    description: "Installs every Fulldev UI React component.",
+  },
+  blocks: {
+    title: "All blocks",
+    description: "Installs every Fulldev UI React block.",
+  },
+}
+react.items = react.items.map((item) => {
+  if (item.name === "base" || item.name === "init") {
+    const shared = structuredClone(
+      registry.items.find((entry) => entry.name === item.name)
+    )
+    if (shared.config) {
+      shared.config.registries["@fulldev"] =
+        `${site}/r/react/styles/{style}/{name}.json`
+    }
+    return sorted({ ...shared, docs: gallery })
+  }
+  if (reactManual[item.name]) {
+    return sorted({
+      ...item,
+      name: item.name,
+      type: "registry:item",
+      ...reactManual[item.name],
+      docs: gallery,
+    })
+  }
+  return sorted(item)
+})
+bundle(react.items, "components", "registry:ui")
+bundle(react.items, "blocks", "registry:block")
+
+writeFileSync(reactPath, JSON.stringify(react, null, 2) + "\n")
+console.log(`Synced metadata for ${react.items.length} React registry items.`)

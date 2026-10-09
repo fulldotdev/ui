@@ -1,9 +1,6 @@
 import * as React from "react"
 
-import { placeholderImage as placeholder } from "@/lib/placeholder-image"
 import { Links2 } from "@/components/blocks/links-2"
-
-const placeholderImage = placeholder.src
 
 const demos: Record<string, React.ComponentType> = {
   "links-2": () => {

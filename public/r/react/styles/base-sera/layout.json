@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "layout",
+  "title": "Layout",
+  "description": "Page-shell primitives for the root html, head, body, and main structure.",
+  "dependencies": [
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/layout.tsx",
+      "content": "import * as React from \"react\"\nimport { cn } from \"cn\"\n\nfunction Layout({\n  className,\n  lang = \"en\",\n  ...props\n}: React.ComponentProps<\"html\">) {\n  return (\n    <html\n      data-slot=\"layout\"\n      lang={lang}\n      // The theme provider sets the `dark` class before React hydrates.\n      suppressHydrationWarning\n      className={cn(\n        \"overscroll-none scroll-smooth bg-background text-foreground has-data-[variant=inset]:bg-sidebar\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\ntype LayoutImage = {\n  src: string\n  alt?: string\n  width?: number\n  height?: number\n  type?: string\n}\n\n// Page metadata for search engines and link previews. `canonical` is the\n// page's absolute URL; relative image sources resolve against it.\nfunction LayoutHead({\n  children,\n  name,\n  title,\n  description,\n  image,\n  noindex,\n  nofollow,\n  canonical,\n  ...props\n}: React.ComponentProps<\"head\"> & {\n  name?: string\n  title?: string\n  description?: string\n  image?: LayoutImage\n  noindex?: boolean\n  nofollow?: boolean\n  canonical?: string\n}) {\n  const imageUrl = image?.src\n    ? canonical\n      ? new URL(image.src, canonical).toString()\n      : image.src\n    : undefined\n  const robots = [\n    noindex === undefined ? \"\" : noindex ? \"noindex\" : \"index\",\n    nofollow === undefined ? \"\" : nofollow ? \"nofollow\" : \"follow\",\n  ]\n    .filter(Boolean)\n    .join(\",\")\n\n  return (\n    <head data-slot=\"layout-head\" {...props}>\n      <meta charSet=\"utf-8\" />\n      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n      {title && <title>{title}</title>}\n      {description && <meta name=\"description\" content={description} />}\n      {canonical && <link rel=\"canonical\" href={canonical} />}\n      {robots && <meta name=\"robots\" content={robots} />}\n      {title && <meta property=\"og:title\" content={title} />}\n      {description && <meta property=\"og:description\" content={description} />}\n      {canonical && <meta property=\"og:url\" content={canonical} />}\n      <meta property=\"og:type\" content=\"website\" />\n      {name && <meta property=\"og:site_name\" content={name} />}\n      {imageUrl && <meta property=\"og:image\" content={imageUrl} />}\n      {imageUrl?.startsWith(\"https://\") && (\n        <meta property=\"og:image:secure_url\" content={imageUrl} />\n      )}\n      {imageUrl && image?.alt && (\n        <meta property=\"og:image:alt\" content={image.alt} />\n      )}\n      {imageUrl && image?.width && (\n        <meta property=\"og:image:width\" content={String(image.width)} />\n      )}\n      {imageUrl && image?.height && (\n        <meta property=\"og:image:height\" content={String(image.height)} />\n      )}\n      {imageUrl && image?.type && (\n        <meta property=\"og:image:type\" content={image.type} />\n      )}\n      <meta\n        name=\"twitter:card\"\n        content={imageUrl ? \"summary_large_image\" : \"summary\"}\n      />\n      {children}\n    </head>\n  )\n}\n\nfunction LayoutBody({ className, ...props }: React.ComponentProps<\"body\">) {\n  return (\n    <body\n      data-slot=\"layout-body\"\n      className={cn(\n        \"overscroll-none bg-background font-sans text-foreground antialiased\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction LayoutMain({ className, ...props }: React.ComponentProps<\"main\">) {\n  return (\n    <main\n      data-slot=\"layout-main\"\n      className={cn(\n        \"@container flex flex-col in-[[data-slot=sidebar-inset]]:rounded-[inherit]\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nexport { Layout, LayoutBody, LayoutHead, LayoutMain }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/react/#/ui/layout",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

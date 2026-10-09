@@ -1,6 +1,5 @@
 import * as React from "react"
 
-import { placeholderImage as placeholder } from "@/lib/placeholder-image"
 import { Contact1 } from "@/components/blocks/contact-1"
 import { Contact2 } from "@/components/blocks/contact-2"
 import { Contact3 } from "@/components/blocks/contact-3"
@@ -14,8 +13,6 @@ import {
 import { Form } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-
-const placeholderImage = placeholder.src
 
 const demos: Record<string, React.ComponentType> = {
   "contact-1": () => {

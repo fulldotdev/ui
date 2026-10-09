@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "articles-1",
+  "title": "Articles 1",
+  "description": "Collection and listing layouts for journals, magazines, and editorial feeds.",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@fulldev/avatar",
+    "@fulldev/section"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/articles-1.tsx",
+      "content": "import * as React from \"react\"\nimport { cn } from \"cn\"\n\nimport { Avatar, AvatarFallback, AvatarImage } from \"@/components/ui/avatar\"\nimport {\n  Section,\n  SectionContainer,\n  SectionTitle,\n} from \"@/components/ui/section\"\n\nfunction Articles1({\n  title,\n  description,\n  articles,\n  ...props\n}: React.ComponentProps<\"section\"> & {\n  title: string\n  description: string\n  articles: {\n    image: {\n      src: string\n      srcSet?: string\n      alt: string\n      width?: number\n      height?: number\n    }\n    category: string\n    title: string\n    description: string\n    href?: string\n    author: {\n      image?: string\n      initials: string\n      name: string\n      date: string\n    }\n  }[]\n}) {\n  return (\n    <Section {...props}>\n      <SectionContainer className=\"flex flex-col gap-8\">\n        <div className=\"flex max-w-2xl flex-col gap-4\">\n          <SectionTitle>{title}</SectionTitle>\n          <p className=\"text-base leading-7 text-muted-foreground\">\n            {description}\n          </p>\n        </div>\n\n        <div className=\"grid gap-6 md:grid-cols-2 lg:grid-cols-3\">\n          {articles.map((article) => {\n            const className = cn(\n              \"flex h-full flex-col gap-4 rounded-xl p-4\",\n              article.href != null &&\n                \"group transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none\"\n            )\n            const content = (\n              <>\n                <img\n                  src={article.image.src}\n                  srcSet={article.image.srcSet}\n                  alt={article.image.alt}\n                  width={article.image.width}\n                  height={article.image.height}\n                  sizes=\"(min-width: 64rem) 26rem, (min-width: 48rem) 50vw, 100vw\"\n                  loading=\"lazy\"\n                  decoding=\"async\"\n                  className=\"-mx-4 -mt-4 aspect-[16/9] w-[calc(100%+2rem)] max-w-none rounded-lg object-cover transition-opacity group-hover:opacity-85\"\n                />\n                <div className=\"flex flex-col gap-2\">\n                  <p className=\"text-sm font-medium text-muted-foreground\">\n                    {article.category}\n                  </p>\n                  <h3 className=\"line-clamp-2 text-xl leading-snug font-semibold text-foreground\">\n                    {article.title}\n                  </h3>\n                  <p className=\"line-clamp-2 text-sm leading-6 text-muted-foreground\">\n                    {article.description}\n                  </p>\n                </div>\n                <div className=\"mt-auto flex items-center gap-3\">\n                  <Avatar aria-hidden=\"true\">\n                    <AvatarImage src={article.author.image} alt=\"\" />\n                    <AvatarFallback>{article.author.initials}</AvatarFallback>\n                  </Avatar>\n                  <div className=\"flex flex-col\">\n                    <p className=\"text-sm font-medium\">{article.author.name}</p>\n                    <p className=\"text-xs text-muted-foreground\">\n                      {article.author.date}\n                    </p>\n                  </div>\n                </div>\n              </>\n            )\n            return article.href != null ? (\n              <a\n                key={article.href + article.title}\n                href={article.href}\n                className={className}\n              >\n                {content}\n              </a>\n            ) : (\n              <div key={article.title} className={className}>\n                {content}\n              </div>\n            )\n          })}\n        </div>\n      </SectionContainer>\n    </Section>\n  )\n}\n\nexport { Articles1 }\n",
+      "type": "registry:block"
+    }
+  ],
+  "docs": "https://ui.full.dev/react/#/blocks/articles-1",
+  "categories": [
+    "articles"
+  ],
+  "type": "registry:block"
+}
