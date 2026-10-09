@@ -36,7 +36,7 @@ export default function Demo() {
   return (
     <div className="flex flex-col gap-10 p-6">
       <Example title="Default">
-        <Breadcrumb>
+        <Breadcrumb aria-label="Breadcrumb example 1">
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="#/">Home</BreadcrumbLink>
@@ -53,7 +53,7 @@ export default function Demo() {
         </Breadcrumb>
       </Example>
       <Example title="Custom separator">
-        <Breadcrumb>
+        <Breadcrumb aria-label="Breadcrumb example 2">
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="#/">Home</BreadcrumbLink>
@@ -74,7 +74,7 @@ export default function Demo() {
         </Breadcrumb>
       </Example>
       <Example title="Collapsed with menu">
-        <Breadcrumb>
+        <Breadcrumb aria-label="Breadcrumb example 3">
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="#/">Home</BreadcrumbLink>
@@ -107,7 +107,7 @@ export default function Demo() {
         </Breadcrumb>
       </Example>
       <Example title="Link rendered through render">
-        <Breadcrumb>
+        <Breadcrumb aria-label="Breadcrumb example 4">
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink render={<a href="#/" />}>Home</BreadcrumbLink>

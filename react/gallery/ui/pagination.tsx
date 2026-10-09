@@ -53,7 +53,7 @@ export default function Demo() {
   return (
     <div className="flex flex-col gap-10 p-6">
       <Example title="Static">
-        <Pagination>
+        <Pagination aria-label="Pagination example 1">
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious href="#/ui/pagination" />
@@ -81,7 +81,7 @@ export default function Demo() {
 
       <Example title="Controlled">
         <div className="flex w-full flex-col items-center gap-2">
-          <Pagination>
+          <Pagination aria-label="Pagination example 2">
             <PaginationContent>
               <PaginationItem>
                 <PaginationPrevious
@@ -127,7 +127,7 @@ export default function Demo() {
       </Example>
 
       <Example title="Custom text and size">
-        <Pagination>
+        <Pagination aria-label="Pagination example 3">
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious href="#/ui/pagination" text="Newer" />

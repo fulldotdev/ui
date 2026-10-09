@@ -10,7 +10,9 @@ import { App } from "./app"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider>
+    {/* The gallery renders only in the browser, where React warns about the
+    theme script that server rendering needs; keep it inert here. */}
+    <ThemeProvider scriptProps={{ type: "application/json" }}>
       <TooltipProvider>
         <App />
       </TooltipProvider>

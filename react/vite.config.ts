@@ -47,6 +47,11 @@ export default defineConfig(({ mode }) => {
       // Keep the gallery small enough to scan: one chunk per demo page.
       chunkSizeWarningLimit: 4096,
     },
+    // Demos load on demand; scan them all up front so the dev server does
+    // not reload the page when it meets a new dependency.
+    optimizeDeps: {
+      entries: ["index.html", "gallery/**/*.tsx"],
+    },
     server: { strictPort: true },
     logLevel: mode === "production" ? "warn" : "info",
   }

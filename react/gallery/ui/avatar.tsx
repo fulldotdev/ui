@@ -41,7 +41,7 @@ export default function Demo() {
           <AvatarFallback>SV</AvatarFallback>
         </Avatar>
         <Avatar>
-          <AvatarImage src="/missing-avatar.png" alt="Jan de Vries" />
+          <AvatarImage src="data:image/png;base64,broken" alt="Jan de Vries" />
           <AvatarFallback>JV</AvatarFallback>
         </Avatar>
         <Avatar>

@@ -63,13 +63,19 @@ export default function Demo() {
       </Example>
       <Example title="Vertical and disabled">
         <div className="flex h-40 items-stretch gap-8">
+          <span id="slider-bass-label" className="sr-only">
+            Bass
+          </span>
+          <span id="slider-treble-label" className="sr-only">
+            Treble
+          </span>
           <Slider
-            aria-label="Bass"
+            aria-labelledby="slider-bass-label"
             orientation="vertical"
             defaultValue={[60]}
           />
           <Slider
-            aria-label="Treble"
+            aria-labelledby="slider-treble-label"
             orientation="vertical"
             defaultValue={[30]}
           />
