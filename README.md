@@ -10,6 +10,7 @@ A shadcn-compatible set of components built for [Astro][astro], designed for con
 - **100+ Components & Blocks** — Ready-to-use UI components and pre-built page blocks
 - **Tailwind CSS v4** — Styled with the latest Tailwind CSS
 - **TypeScript** — Full TypeScript support
+- **React**: the same components and blocks for React; see [react/README.md](react/README.md)
 
 ## Installation
 
