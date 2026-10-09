@@ -1,0 +1,89 @@
+import * as React from "react"
+
+import { placeholderImage as placeholder } from "@/lib/placeholder-image"
+import { Doc1 } from "@/components/blocks/doc-1"
+
+const placeholderImage = placeholder.src
+
+const demos: Record<string, React.ComponentType> = {
+  "doc-1": () => {
+    return (
+      <>
+        <Doc1
+          title="Command Menu"
+          copyButton={{
+            id: "doc-1-copy",
+            source: "# Command Menu\n\nA searchable command surface.",
+          }}
+          markdownUrl="https://ui.full.dev/components/command.md"
+          description="A searchable command surface for navigation, quick actions, and dense picker workflows."
+          tocItems={[
+            { depth: 2, href: "#installation", label: "Installation" },
+            { depth: 2, href: "#anatomy", label: "Anatomy" },
+            { depth: 3, href: "#empty-state", label: "Empty state" },
+            { depth: 2, href: "#usage", label: "Usage" },
+          ]}
+          callout={{
+            description:
+              "Command menus work best when actions use short labels and predictable grouping.",
+            button: { label: "View examples", href: "/components/command/" },
+          }}
+          previousPage={{
+            href: "/components/combobox/",
+            title: "Combobox",
+          }}
+          nextPage={{
+            href: "/components/dialog/",
+            title: "Dialog",
+          }}
+          labels={{
+            copyMarkdown: "Copy Markdown",
+            openIn: "Open in",
+            openInMarkdown: "Open in Markdown",
+            openInChatGPT: "Open in ChatGPT",
+            openInClaude: "Open in Claude",
+            openInCursor: "Open in Cursor",
+            assistantPrompt:
+              "Read https://ui.full.dev/components/command.md, I want to ask questions about it.",
+            copyCode: "Copy code",
+            pagination: "Docs pagination",
+            toc: "On this page",
+          }}
+        >
+          <h2 id="installation">Installation</h2>
+          <p>
+            Add the command component from the @fulldev registry with the shadcn
+            CLI, then import the pieces you need from the local component
+            folder. The installed files include the root, input, list, group,
+            item, separator, and empty state primitives.
+          </p>
+          <h2 id="anatomy">Anatomy</h2>
+          <p>
+            A command menu usually starts with a text input, followed by grouped
+            results. Keep destructive actions visually separate from navigation
+            and creation actions so keyboard users can move quickly without
+            losing context.
+          </p>
+          <h3 id="empty-state">Empty state</h3>
+          <p>
+            Empty states should explain what was searched and offer a next
+            action when possible. For example, a project switcher can show a
+            create-project action when no existing project matches the query.
+          </p>
+          <pre>
+            <code>pnpm dlx shadcn@latest add @fulldev/command</code>
+          </pre>
+          <h2 id="usage">Usage</h2>
+          <p>
+            Use command menus for focused, high-frequency workflows. For simple
+            forms, prefer a combobox or select; for global navigation and
+            actions, pair the command menu with a dialog trigger and a keyboard
+            shortcut.
+          </p>
+        </Doc1>
+      </>
+    )
+  },
+}
+
+export default demos

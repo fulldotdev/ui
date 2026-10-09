@@ -1,0 +1,104 @@
+import * as React from "react"
+import { cn } from "cn"
+import { CheckIcon } from "lucide-react"
+
+import { Badge } from "@/components/ui/badge"
+import { buttonVariants } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Price, PriceUnit, PriceValue } from "@/components/ui/price"
+import {
+  Section,
+  SectionContainer,
+  SectionDescription,
+  SectionTitle,
+} from "@/components/ui/section"
+import { Separator } from "@/components/ui/separator"
+
+function Pricing3({
+  badge,
+  title,
+  description,
+  locale,
+  discountLabel,
+  offer,
+  ...props
+}: React.ComponentProps<"section"> & {
+  badge: string
+  title: string
+  description: string
+  locale?: string
+  discountLabel?: string
+  offer: {
+    name: string
+    description: string
+    price: {
+      value: number
+      compareAt?: number
+      currency: string
+      unit: string
+    }
+    features: string[]
+    button: {
+      label: string
+      href: string
+    }
+  }
+}) {
+  return (
+    <Section {...props}>
+      <SectionContainer className="flex flex-col items-center gap-8 text-center">
+        <div className="flex max-w-2xl flex-col items-center gap-4">
+          <Badge variant="secondary">{badge}</Badge>
+          <SectionTitle>{title}</SectionTitle>
+          <SectionDescription>{description}</SectionDescription>
+        </div>
+        <Card className="w-full max-w-md ring-2 ring-primary">
+          <CardHeader className="text-left">
+            <CardTitle>
+              <h3>{offer.name}</h3>
+            </CardTitle>
+            <CardDescription>{offer.description}</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-6 text-left">
+            <Price>
+              <PriceValue
+                price={offer.price.value}
+                compareAt={offer.price.compareAt}
+                currency={offer.price.currency}
+                locale={locale}
+                discountLabel={discountLabel}
+              />
+              <PriceUnit>{offer.price.unit}</PriceUnit>
+            </Price>
+            <Separator />
+            <ul className="flex flex-col gap-3">
+              {offer.features.map((feature) => (
+                <li key={feature} className="flex items-start gap-3 text-sm">
+                  <CheckIcon className="mt-0.5 size-4 shrink-0 text-primary" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+          <CardFooter>
+            <a
+              href={offer.button.href}
+              className={cn(buttonVariants(), "w-full")}
+            >
+              {offer.button.label}
+            </a>
+          </CardFooter>
+        </Card>
+      </SectionContainer>
+    </Section>
+  )
+}
+
+export { Pricing3 }
