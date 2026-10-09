@@ -102,6 +102,13 @@ const server = createServer((request, response) => {
 
 await new Promise((done) => server.listen(0, "127.0.0.1", done))
 const origin = `http://127.0.0.1:${server.address().port}`
+const sameOrigin = (url) => {
+  try {
+    return new URL(url).origin === origin
+  } catch {
+    return false
+  }
+}
 
 let browser
 const results = []
@@ -126,7 +133,7 @@ try {
   }
   const context = await browser.newContext()
   await context.route("**/*", (route) =>
-    route.request().url().startsWith(origin) ? route.continue() : route.abort()
+    sameOrigin(route.request().url()) ? route.continue() : route.abort()
   )
 
   const scan = async (route) => {
@@ -134,11 +141,11 @@ try {
     const errors = []
     page.on("pageerror", (error) => errors.push(`Page error: ${error.message}`))
     page.on("requestfailed", (request) => {
-      if (request.url().startsWith(origin))
+      if (sameOrigin(request.url()))
         errors.push(`Request failed: ${request.url()}`)
     })
     page.on("response", (response) => {
-      if (response.url().startsWith(origin) && response.status() >= 400)
+      if (sameOrigin(response.url()) && response.status() >= 400)
         errors.push(`HTTP ${response.status()}: ${response.url()}`)
     })
     try {
@@ -156,21 +163,23 @@ try {
         )
         .catch(() => errors.push("Images did not finish loading in 10s"))
       const axe = await new AxeBuilder({ page }).analyze()
-      results.push({
-        route,
-        errors,
-        violations: axe.violations.map((rule) => ({
+      const rules = (list) =>
+        list.map((rule) => ({
           id: rule.id,
           impact: rule.impact,
           help: rule.help,
           helpUrl: rule.helpUrl,
-          targets: rule.nodes.map((node) => node.target.join(" ")),
-        })),
-        incomplete: axe.incomplete.map((rule) => ({
-          id: rule.id,
-          help: rule.help,
-          count: rule.nodes.length,
-        })),
+          nodes: rule.nodes.map((node) => ({
+            target: node.target.join(" "),
+            html: node.html,
+            summary: node.failureSummary,
+          })),
+        }))
+      results.push({
+        route,
+        errors,
+        violations: rules(axe.violations),
+        incomplete: rules(axe.incomplete),
       })
     } catch (error) {
       results.push({
@@ -207,27 +216,30 @@ for (const { route, errors, violations } of results) {
   for (const rule of violations) {
     failures++
     console.log(`${route}\n  ${rule.id} (${rule.impact}): ${rule.help}`)
-    for (const target of rule.targets) console.log(`    ${target}`)
+    for (const node of rule.nodes) console.log(`    ${node.target}`)
     console.log(`    ${rule.helpUrl}`)
   }
 }
 
+// Incomplete results, grouped by rule, with the first elements per page.
+// The report lists every element with its HTML and axe's reason.
 const review = new Map()
-for (const { incomplete } of results)
+for (const { route, incomplete } of results)
   for (const rule of incomplete) {
-    const entry = review.get(rule.id) ?? {
-      help: rule.help,
-      routes: 0,
-      nodes: 0,
-    }
-    entry.routes++
-    entry.nodes += rule.count
+    const entry = review.get(rule.id) ?? { ...rule, pages: [] }
+    entry.pages.push({ route, nodes: rule.nodes })
     review.set(rule.id, entry)
   }
 if (review.size > 0) {
   console.log("\nNeeds manual review (axe could not decide, so not a pass):")
-  for (const [id, { help, routes, nodes }] of review)
-    console.log(`  ${id}: ${help} (${nodes} elements on ${routes} pages)`)
+  for (const [id, { help, helpUrl, pages }] of review) {
+    console.log(`  ${id}: ${help}\n    ${helpUrl}`)
+    for (const { route, nodes } of pages) {
+      const more = nodes.length > 2 ? ` (+${nodes.length - 2} more)` : ""
+      const targets = nodes.slice(0, 2).map((node) => node.target)
+      console.log(`    ${route} ${targets.join(", ")}${more}`)
+    }
+  }
 }
 
 console.log(
