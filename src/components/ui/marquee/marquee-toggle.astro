@@ -1,0 +1,48 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import PauseIcon from "@lucide/astro/icons/pause"
+import PlayIcon from "@lucide/astro/icons/play"
+
+import { cn } from "@/lib/utils"
+import { buttonVariants, type ButtonVariantProps } from "@/components/ui/button"
+
+type Props = Omit<HTMLAttributes<"button">, "type"> &
+  ButtonVariantProps & {
+    playLabel: string
+    pauseLabel: string
+  }
+
+const {
+  class: className,
+  variant = "outline",
+  size = "icon-sm",
+  playLabel,
+  pauseLabel,
+  "data-slot": dataSlot = "marquee-toggle",
+  ...props
+} = Astro.props
+---
+
+<button
+  type="button"
+  hidden
+  data-slot={dataSlot}
+  data-marquee-toggle
+  data-state="playing"
+  data-play-label={playLabel}
+  data-pause-label={pauseLabel}
+  data-variant={variant}
+  data-size={size}
+  class={cn(
+    buttonVariants({ variant, size }),
+    "group/marquee-toggle",
+    className
+  )}
+  {...props}
+>
+  <PauseIcon class="group-data-[state=paused]/marquee-toggle:hidden" />
+  <PlayIcon class="hidden group-data-[state=paused]/marquee-toggle:block" />
+  <span class="sr-only" data-marquee-label>
+    {pauseLabel}
+  </span>
+</button>

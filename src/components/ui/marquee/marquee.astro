@@ -1,84 +1,215 @@
 ---
 import type { HTMLAttributes } from "astro/types"
-import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-const trackVariants = cva(
-  "flex min-w-max shrink-0 [animation:marquee_var(--marquee-duration)_linear_infinite] items-center gap-[var(--marquee-gap)] before:block before:size-0 before:shrink-0 before:content-[''] motion-reduce:[animation-play-state:paused]",
-  {
-    variants: {
-      direction: {
-        left: "",
-        right: "[animation-direction:reverse]",
-      },
-      pauseOnHover: {
-        true: "group-hover/marquee:[animation-play-state:paused]",
-        false: "",
-      },
-    },
-    defaultVariants: {
-      direction: "left",
-      pauseOnHover: false,
-    },
-  }
-)
-
-type Props = HTMLAttributes<"div"> &
-  VariantProps<typeof trackVariants> & {
-    duration?: string
-    gap?: string
-    infinite?: boolean
-  }
+type Props = HTMLAttributes<"div">
 
 const {
   class: className,
-  direction,
-  pauseOnHover,
-  duration = "40s",
-  gap = "1.5rem",
-  infinite = true,
-  style,
   "data-slot": dataSlot = "marquee",
   ...props
 } = Astro.props
-
-const resolvedStyle = [
-  `--marquee-duration:${duration}`,
-  `--marquee-gap:${gap}`,
-  typeof style === "string" ? style : undefined,
-]
-  .filter(Boolean)
-  .join(";")
 ---
 
 <div
-  class={cn(
-    "group/marquee flex overflow-hidden select-none [--marquee-duration:40s] [--marquee-gap:1.5rem]",
-    className
-  )}
   data-slot={dataSlot}
-  style={resolvedStyle}
+  data-marquee
+  class={cn("relative", className)}
   {...props}
 >
-  <div class={trackVariants({ direction, pauseOnHover })}>
-    <slot />
-  </div>
-  {infinite && (
-    <div aria-hidden="true" class={trackVariants({ direction, pauseOnHover })}>
-      <slot />
-    </div>
-  )}
+  <slot />
 </div>
 
-<style>
-  @keyframes marquee {
-    from {
-      transform: translateX(0);
-    }
+<script>
+  import EmblaCarousel, { type EmblaCarouselType } from "embla-carousel"
+  import AutoScroll, { type AutoScrollType } from "embla-carousel-auto-scroll"
 
-    to {
-      transform: translateX(-100%);
+  type Row = {
+    viewport: HTMLElement
+    api?: EmblaCarouselType
+    autoScroll?: AutoScrollType
+  }
+
+  // The data-marquee* markers stay in place when a caller overrides data-slot.
+  const rootSelector = "[data-marquee]"
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)")
+  const instances = new Map<HTMLElement, () => void>()
+
+  // A nested marquee owns its own parts.
+  const getParts = <T extends Element>(root: HTMLElement, selector: string) =>
+    [...root.querySelectorAll<T>(selector)].filter(
+      (part) => part.closest(rootSelector) === root
+    )
+
+  // Embla turns loop off when the slides are too few to fill the viewport.
+  const loops = (api: EmblaCarouselType) =>
+    api.internalEngine().options.loop && api.scrollSnapList().length > 1
+
+  const initialize = () => {
+    for (const root of document.querySelectorAll<HTMLElement>(rootSelector)) {
+      if (instances.has(root)) continue
+      const toggles = getParts<HTMLButtonElement>(root, "[data-marquee-toggle]")
+      const rows: Row[] = getParts<HTMLElement>(
+        root,
+        "[data-marquee-viewport]"
+      ).map((viewport) => ({ viewport }))
+      // Moving content needs a way to pause it, so a marquee without a toggle
+      // stays static. Focus, dragging and the toggle pause it until the toggle
+      // plays it again; hovering a row pauses it only while the pointer is
+      // over it.
+      let playing = true
+      let hovered = false
+
+      const sync = () => {
+        const moving = rows.filter((row) => row.autoScroll)
+        for (const row of moving) {
+          if (playing && !hovered) row.autoScroll?.play()
+          else row.autoScroll?.stop()
+        }
+        for (const toggle of toggles) {
+          toggle.hidden = moving.length === 0
+          toggle.dataset.state = playing ? "playing" : "paused"
+          const label = toggle.querySelector("[data-marquee-label]")
+          if (label)
+            label.textContent =
+              (playing
+                ? toggle.dataset.pauseLabel
+                : toggle.dataset.playLabel) ?? ""
+        }
+      }
+
+      const stop = (row: Row) => {
+        row.api?.destroy()
+        row.api = undefined
+        row.autoScroll = undefined
+        delete row.viewport.dataset.active
+        // A static row scrolls natively; give it a tab stop when it overflows
+        // and has no focusable content of its own.
+        const overflows = row.viewport.scrollWidth > row.viewport.clientWidth
+        const focusable = row.viewport.querySelector(
+          "a[href], button, input, select, textarea, [tabindex]"
+        )
+        if (overflows && !focusable) row.viewport.tabIndex = 0
+        else row.viewport.removeAttribute("tabindex")
+      }
+
+      const evaluate = (row: Row) => {
+        if (reducedMotion.matches || toggles.length === 0) return stop(row)
+        if (row.api) return
+        row.viewport.scrollLeft = 0
+        const autoScroll = AutoScroll({
+          speed: 1,
+          startDelay: 0,
+          playOnInit: false,
+          stopOnFocusIn: false,
+          stopOnInteraction: true,
+          direction: row.viewport.hasAttribute("data-reverse")
+            ? "backward"
+            : "forward",
+        })
+        const api = EmblaCarousel(
+          row.viewport,
+          {
+            loop: true,
+            dragFree: true,
+            direction:
+              getComputedStyle(row.viewport).direction === "rtl"
+                ? "rtl"
+                : "ltr",
+          },
+          [autoScroll]
+        )
+        if (!loops(api)) {
+          api.destroy()
+          return stop(row)
+        }
+        row.api = api
+        row.autoScroll = autoScroll
+        row.viewport.dataset.active = ""
+        row.viewport.removeAttribute("tabindex")
+        api.on("pointerDown", () => {
+          playing = false
+          sync()
+        })
+        api.on("reInit", () => {
+          if (!loops(api)) stop(row)
+          sync()
+        })
+      }
+
+      // Embla watches size changes while it runs; this observer lets a static
+      // row start once its content no longer fits.
+      let frame = 0
+      const observer = new ResizeObserver(() => {
+        cancelAnimationFrame(frame)
+        frame = requestAnimationFrame(() => {
+          for (const row of rows) if (!row.api) evaluate(row)
+          sync()
+        })
+      })
+      for (const row of rows) {
+        observer.observe(row.viewport)
+        for (const item of row.viewport.firstElementChild?.children ?? [])
+          observer.observe(item)
+      }
+
+      const onMotionChange = () => {
+        for (const row of rows) evaluate(row)
+        sync()
+      }
+      const onFocusIn = (event: FocusEvent) => {
+        if (
+          event.target instanceof Element &&
+          event.target.closest("[data-marquee-toggle]")
+        )
+          return
+        playing = false
+        sync()
+      }
+      const onPointerEnter = (event: PointerEvent) => {
+        if (event.pointerType !== "mouse") return
+        hovered = true
+        sync()
+      }
+      const onPointerLeave = () => {
+        hovered = false
+        sync()
+      }
+      const onToggle = () => {
+        playing = !playing
+        sync()
+      }
+
+      reducedMotion.addEventListener("change", onMotionChange)
+      root.addEventListener("focusin", onFocusIn)
+      for (const row of rows) {
+        row.viewport.addEventListener("pointerenter", onPointerEnter)
+        row.viewport.addEventListener("pointerleave", onPointerLeave)
+      }
+      for (const toggle of toggles) toggle.addEventListener("click", onToggle)
+      for (const row of rows) evaluate(row)
+      sync()
+
+      instances.set(root, () => {
+        cancelAnimationFrame(frame)
+        observer.disconnect()
+        reducedMotion.removeEventListener("change", onMotionChange)
+        root.removeEventListener("focusin", onFocusIn)
+        for (const row of rows) {
+          row.viewport.removeEventListener("pointerenter", onPointerEnter)
+          row.viewport.removeEventListener("pointerleave", onPointerLeave)
+        }
+        for (const toggle of toggles)
+          toggle.removeEventListener("click", onToggle)
+        for (const row of rows) row.api?.destroy()
+      })
     }
   }
-</style>
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const cleanup of instances.values()) cleanup()
+    instances.clear()
+  })
+</script>

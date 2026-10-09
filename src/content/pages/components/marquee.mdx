@@ -1,20 +1,53 @@
 ---
 type: doc
 title: Marquee
-description: A continuous scrolling animation component for displaying content in a loop.
+description: A continuously scrolling row of content, with a pause control and a static fallback.
 ---
 
 ```astro live props={{ name: 'marquee' }}
 ---
-import { Marquee } from "@/components/ui/marquee"
+import {
+  Marquee,
+  MarqueeContent,
+  MarqueeItem,
+  MarqueeToggle,
+} from "@/components/ui/marquee"
 
-const items = ["React", "Vue", "Angular", "Svelte", "Astro", "Next.js"]
+const items = [
+  "Astro",
+  "Tailwind CSS",
+  "TypeScript",
+  "Content collections",
+  "Design tokens",
+  "Accessibility",
+  "Responsive images",
+  "View transitions",
+  "Markdown",
+  "Static output",
+  "Registries",
+  "Themes",
+  "Dark mode",
+  "Forms",
+  "Navigation",
+  "Search",
+  "Localization",
+  "Sitemaps",
+  "Performance",
+  "SEO",
+]
 ---
 
-<Marquee class="mask-x-from-95%">
-  {items.map((item) => (
-    <span class="text-muted-foreground text-sm">{item}</span>
-  ))}
+<Marquee class="flex w-full flex-col items-end gap-4">
+  <MarqueeToggle playLabel="Play" pauseLabel="Pause" />
+  <MarqueeContent class="w-full mask-x-from-90%">
+    {items.map((item) => (
+      <MarqueeItem>
+        <span class="text-muted-foreground text-sm whitespace-nowrap">
+          {item}
+        </span>
+      </MarqueeItem>
+    ))}
+  </MarqueeContent>
 </Marquee>
 ```
 
@@ -27,92 +60,124 @@ npx shadcn@latest add @fulldev/marquee
 ## Usage
 
 ```ts
-import { Marquee } from "@/components/ui/marquee"
+import {
+  Marquee,
+  MarqueeContent,
+  MarqueeItem,
+  MarqueeToggle,
+} from "@/components/ui/marquee"
 ```
 
 ```astro
-<Marquee>
-  <span>Design systems</span>
-  <span>Astro</span>
-  <span>Content sites</span>
+<Marquee class="w-full">
+  <MarqueeToggle playLabel="Play" pauseLabel="Pause" />
+  <MarqueeContent>
+    <MarqueeItem>Design systems</MarqueeItem>
+    <MarqueeItem>Astro</MarqueeItem>
+    <MarqueeItem>Content sites</MarqueeItem>
+  </MarqueeContent>
 </Marquee>
 ```
 
-The marquee duplicates its slot by default for a seamless loop.
+Each item renders once. The row loops by moving its own items with [Embla](https://www.embla-carousel.com/) and its Auto Scroll plugin, so links and other content are never duplicated.
 
-```astro
-<Marquee>
-  <span>Design systems</span>
-  <span>Astro</span>
-  <span>Content sites</span>
-</Marquee>
-```
+The row only moves when it can loop and the visitor allows motion. It stays a static, horizontally scrollable row when:
+
+- the items do not fill the row,
+- the visitor prefers reduced motion,
+- the marquee has no `MarqueeToggle`, because moving content needs a way to pause it,
+- JavaScript has not run.
+
+`MarqueeToggle` shows only while the row moves. Its labels come from you, so they can be in the page language. Focus inside the row, dragging it or pressing the toggle pauses the motion until the toggle plays it again. Hovering with a mouse pauses it while the pointer is over the marquee.
 
 ## Examples
 
-### Seamless Loop
+### Rows
+
+A marquee can hold several `MarqueeContent` rows. One toggle controls all of them. Set `reverse` to move a row against the reading direction.
 
 ```astro live
 ---
-import { Marquee } from "@/components/ui/marquee"
+import {
+  Marquee,
+  MarqueeContent,
+  MarqueeItem,
+  MarqueeToggle,
+} from "@/components/ui/marquee"
 
-const items = ["React", "Vue", "Angular", "Svelte", "Astro", "Next.js"]
+const languages = [
+  "TypeScript",
+  "JavaScript",
+  "Python",
+  "Go",
+  "Rust",
+  "Kotlin",
+  "Swift",
+  "Ruby",
+  "Elixir",
+  "PHP",
+  "C#",
+  "Java",
+  "Scala",
+  "Haskell",
+  "Dart",
+  "Zig",
+  "Lua",
+  "Perl",
+  "OCaml",
+  "Julia",
+]
 ---
 
-<Marquee class="mask-x-from-95%">
-  {items.map((item) => (
-    <span class="text-muted-foreground text-sm">{item}</span>
-  ))}
+<Marquee class="flex w-full flex-col items-end gap-4">
+  <MarqueeToggle playLabel="Play" pauseLabel="Pause" />
+  <MarqueeContent class="w-full mask-x-from-90%">
+    {languages.map((language) => (
+      <MarqueeItem>
+        <span class="text-muted-foreground text-sm">{language}</span>
+      </MarqueeItem>
+    ))}
+  </MarqueeContent>
+  <MarqueeContent reverse class="w-full mask-x-from-90%">
+    {languages.map((language) => (
+      <MarqueeItem>
+        <span class="text-muted-foreground text-sm">{language}</span>
+      </MarqueeItem>
+    ))}
+  </MarqueeContent>
 </Marquee>
 ```
 
-### Direction
+### Few items
 
-Control the scroll direction with the `direction` prop.
-
-```astro live
----
-import { Marquee } from "@/components/ui/marquee"
-
-const items = ["TypeScript", "JavaScript", "Python", "Go", "Rust"]
----
-
-<div class="flex flex-col gap-8">
-  <Marquee class="mask-x-from-95%">
-    {items.map((item) => (
-      <span class="text-muted-foreground text-sm">{item}</span>
-    ))}
-  </Marquee>
-
-  <Marquee class="mask-x-from-95%" direction="right">
-    {items.map((item) => (
-      <span class="text-muted-foreground text-sm">{item}</span>
-    ))}
-  </Marquee>
-</div>
-```
-
-### Pause on Hover
-
-Enable pause on hover with the `pauseOnHover` prop.
+Items that fit the row stay centered and do not move.
 
 ```astro live
 ---
-import { Marquee } from "@/components/ui/marquee"
-
-const items = ["Tailwind CSS", "Bootstrap", "Sass", "PostCSS"]
+import {
+  Marquee,
+  MarqueeContent,
+  MarqueeItem,
+  MarqueeToggle,
+} from "@/components/ui/marquee"
 ---
 
-<Marquee class="mask-x-from-95%" pauseOnHover>
-  {items.map((item) => (
-    <span class="text-muted-foreground text-sm">{item}</span>
-  ))}
+<Marquee class="w-full">
+  <MarqueeToggle playLabel="Play" pauseLabel="Pause" />
+  <MarqueeContent>
+    <MarqueeItem>
+      <span class="text-muted-foreground text-sm">Tailwind CSS</span>
+    </MarqueeItem>
+    <MarqueeItem>
+      <span class="text-muted-foreground text-sm">PostCSS</span>
+    </MarqueeItem>
+  </MarqueeContent>
 </Marquee>
 ```
 
 ## Styling
 
-Set `infinite={false}` when you only want to render the slot once.
+Items are `--spacing(4)` apart. Set `--marquee-gap` on the marquee to change that, for example `class="[--marquee-gap:--spacing(12)]"`.
 
 ## API Reference
 
