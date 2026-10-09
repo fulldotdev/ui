@@ -36,7 +36,7 @@ const { class: className, title, description, articles, ...props } = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContainer class="gap-8">
+  <SectionContainer class="flex flex-col gap-8">
     <div class="flex max-w-2xl flex-col gap-4">
       <SectionTitle>{title}</SectionTitle>
       <p class="text-muted-foreground text-base leading-7">{description}</p>
@@ -48,7 +48,11 @@ const { class: className, title, description, articles, ...props } = Astro.props
         return (
           <Wrapper
             href={article.href}
-            class="group hover:bg-muted/50 focus-visible:ring-ring/50 flex h-full flex-col gap-4 rounded-xl p-4 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+            class={cn(
+              "flex h-full flex-col gap-4 rounded-xl p-4",
+              article.href != null &&
+                "group hover:bg-muted/50 focus-visible:ring-ring/50 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+            )}
           >
             <Image
               src={article.image.src}
@@ -69,11 +73,8 @@ const { class: className, title, description, articles, ...props } = Astro.props
               </p>
             </div>
             <div class="mt-auto flex items-center gap-3">
-              <Avatar>
-                <AvatarImage
-                  src={article.author.image}
-                  alt={article.author.name}
-                />
+              <Avatar aria-hidden="true">
+                <AvatarImage src={article.author.image} />
                 <AvatarFallback>{article.author.initials}</AvatarFallback>
               </Avatar>
               <div class="flex flex-col">
