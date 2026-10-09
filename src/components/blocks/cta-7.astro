@@ -21,11 +21,11 @@ import {
 type Props = HTMLAttributes<"section"> & {
   title: string
   description: string
-  buttons?: {
+  buttons: {
     label: string
     href: string
   }[]
-  socialProof?: {
+  socialProof: {
     avatars: {
       image?: ImageMetadata
       initials: string
@@ -55,42 +55,38 @@ const {
       <SectionTitle class="leading-[1.1]">{title}</SectionTitle>
       <SectionDescription>{description}</SectionDescription>
     </div>
-    {buttons && buttons.length > 0 && (
-      <div class="flex flex-wrap justify-center gap-3">
-        {buttons.map(({ href, label }, index) => (
-          <Button
-            as="a"
-            href={href}
-            size="lg"
-            variant={index === 0 ? "default" : "secondary"}
-          >
-            {label}
-          </Button>
+    <div class="flex flex-wrap justify-center gap-3">
+      {buttons.map(({ href, label }, index) => (
+        <Button
+          as="a"
+          href={href}
+          size="lg"
+          variant={index === 0 ? "default" : "secondary"}
+        >
+          {label}
+        </Button>
+      ))}
+    </div>
+    <div class="flex flex-col items-center gap-4">
+      <AvatarGroup>
+        {socialProof.avatars.map((avatar) => (
+          <Avatar class="ring-primary/10 bg-background size-11 ring">
+            <AvatarImage
+              src={avatar.image}
+              alt={avatar.name ?? avatar.initials}
+            />
+            <AvatarFallback>{avatar.initials}</AvatarFallback>
+          </Avatar>
         ))}
-      </div>
-    )}
-    {socialProof && (
-      <div class="flex flex-col items-center gap-4">
-        <AvatarGroup>
-          {socialProof.avatars.map((avatar) => (
-            <Avatar class="ring-primary/10 bg-background size-11 ring">
-              <AvatarImage
-                src={avatar.image}
-                alt={avatar.name ?? avatar.initials}
-              />
-              <AvatarFallback>{avatar.initials}</AvatarFallback>
-            </Avatar>
-          ))}
-          {socialProof.count && (
-            <AvatarGroupCount class="bg-background text-foreground ring-primary/10 size-11 ring">
-              {socialProof.count}
-            </AvatarGroupCount>
-          )}
-        </AvatarGroup>
-        <span class="text-muted-foreground text-sm leading-snug">
-          {socialProof.text.replace(/\s+/g, " ")}
-        </span>
-      </div>
-    )}
+        {socialProof.count != null && (
+          <AvatarGroupCount class="bg-background text-foreground ring-primary/10 size-11 ring">
+            {socialProof.count}
+          </AvatarGroupCount>
+        )}
+      </AvatarGroup>
+      <span class="text-muted-foreground text-sm leading-snug">
+        {socialProof.text}
+      </span>
+    </div>
   </SectionContainer>
 </Section>

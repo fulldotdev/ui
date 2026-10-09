@@ -4,7 +4,6 @@ import ArrowRightIcon from "@lucide/astro/icons/arrow-right"
 
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import {
   Section,
@@ -13,15 +12,11 @@ import {
 } from "@/components/ui/section"
 
 type Props = HTMLAttributes<"section"> & {
-  badge?: string
+  badge: string
   title: string
-  description?: string
-  buttons?: {
-    label: string
-    href: string
-  }[]
+  description: string
   services: {
-    icon?: string
+    icon: string
     title: string
     description: string
     href?: string
@@ -33,7 +28,6 @@ const {
   badge,
   title,
   description,
-  buttons,
   services,
   ...props
 } = Astro.props
@@ -42,32 +36,17 @@ const {
 <Section class={cn("", className)} {...props}>
   <SectionContainer class="gap-12">
     <div class="mx-auto max-w-2xl text-center">
-      {badge && <Badge variant="secondary">{badge}</Badge>}
+      <Badge variant="secondary">{badge}</Badge>
       <SectionTitle class="mt-4">{title}</SectionTitle>
-      {description && (
-        <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">
-          {description}
-        </p>
-      )}
-      {buttons && buttons.length > 0 && (
-        <div class="mt-6 flex flex-wrap justify-center gap-3">
-          {buttons.map(({ href, label }, index) => (
-            <Button
-              as="a"
-              href={href}
-              variant={index === 0 ? "default" : "outline"}
-            >
-              {label}
-            </Button>
-          ))}
-        </div>
-      )}
+      <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">
+        {description}
+      </p>
     </div>
     <div class="ring-foreground/10 bg-border grid gap-px overflow-hidden rounded-xl ring-1 ring-inset sm:grid-cols-2 lg:grid-cols-4">
       {services.map((service) => (
         <div class="bg-background group/service hover:bg-accent/30 relative flex flex-col gap-4 p-7 transition-colors">
           <div class="bg-primary/10 text-primary ring-primary/15 flex size-10 items-center justify-center rounded-lg ring-1 transition-transform ring-inset group-hover/service:scale-105">
-            <Icon name={service.icon ?? "layout-grid"} class="size-5" />
+            <Icon name={service.icon} class="size-5" />
           </div>
           <h3 class="text-base font-medium tracking-tight">{service.title}</h3>
           <p class="text-muted-foreground text-sm leading-relaxed">
