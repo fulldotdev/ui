@@ -1,4 +1,6 @@
 ---
+import type { ImageMetadata } from "astro"
+import type { HTMLAttributes } from "astro/types"
 import ChevronDownIcon from "@lucide/astro/icons/chevron-down"
 import SearchIcon from "@lucide/astro/icons/search"
 
@@ -51,15 +53,14 @@ import {
 } from "@/components/ui/sidebar"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 
-type Props = {
-  class?: string
+type Props = HTMLAttributes<"div"> & {
+  currentPath: string
   logo: {
     label: string
     href: string
-    src?: any
-    srcLight?: any
-    srcDark?: any
-    alt?: string
+    src?: ImageMetadata
+    srcLight?: ImageMetadata
+    srcDark?: ImageMetadata
   }
   search: {
     label: string
@@ -94,11 +95,12 @@ type Props = {
   githubRepo: string
   githubStars?: number
   labels: {
+    sidebar: string
     github: string
     stars: string
     breadcrumb: string
     breadcrumbMenu: string
-    sidebar: string
+    sidebarToggle: string
     mobileTitle: string
     mobileDescription: string
     theme: string
@@ -110,7 +112,7 @@ type Props = {
 }
 
 const {
-  class: className,
+  currentPath: rawCurrentPath,
   logo,
   search,
   breadcrumb,
@@ -118,6 +120,7 @@ const {
   githubRepo,
   githubStars,
   labels,
+  ...props
 } = Astro.props
 
 const normalizePath = (path: string) => {
@@ -125,7 +128,7 @@ const normalizePath = (path: string) => {
 
   return path.replace(/\/$/, "")
 }
-const currentPath = normalizePath(Astro.url.pathname)
+const currentPath = normalizePath(rawCurrentPath)
 const searchGroups = search.items.reduce<
   { label: string; items: typeof search.items }[]
 >((groups, item) => {
@@ -148,9 +151,9 @@ const githubStarsLabel =
 /* eslint-disable astro/jsx-a11y/no-autofocus -- Focus moves into the search dialog when it opens. */
 ---
 
-<SidebarProvider>
+<SidebarProvider {...props}>
   <Sidebar
-    class={cn("", className)}
+    aria-label={labels.sidebar}
     collapsible="offcanvas"
     variant="inset"
     mobileTitle={labels.mobileTitle}
@@ -162,7 +165,7 @@ const githubStarsLabel =
           src={logo.src}
           srcLight={logo.srcLight}
           srcDark={logo.srcDark}
-          alt={logo.alt}
+          alt=""
         />
         <LogoText class="font-semibold">{logo.label}</LogoText>
       </SidebarMenuButton>
@@ -244,7 +247,7 @@ const githubStarsLabel =
     <Header class="h-16">
       <HeaderContainer class="max-w-none justify-between">
         <HeaderGroup>
-          <SidebarTrigger aria-label={labels.sidebar} />
+          <SidebarTrigger aria-label={labels.sidebarToggle} />
           <Separator orientation="vertical" class="my-auto mr-2 h-4" />
           <Breadcrumb aria-label={labels.breadcrumb}>
             <BreadcrumbList>
@@ -337,11 +340,9 @@ const githubStarsLabel =
             href={`https://github.com/${githubRepo}`}
             size="sm"
             variant="ghost"
-            target="_blank"
-            rel="noreferrer"
-            aria-label={labels.github}
           >
             <Icon name="github" />
+            <span class="sr-only">{labels.github}</span>
             <span class="hidden sm:inline">{githubStarsLabel}</span>
           </Button>
           <ThemeToggle aria-label={labels.theme} />
