@@ -15,12 +15,14 @@ type Props = HTMLAttributes<"section"> & {
   badge: string
   title: string
   description: string
-  linkLabel: string
   services: {
     icon: string
     title: string
     description: string
-    href?: string
+    link?: {
+      label: string
+      href: string
+    }
   }[]
 }
 
@@ -29,14 +31,13 @@ const {
   badge,
   title,
   description,
-  linkLabel,
   services,
   ...props
 } = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContainer class="gap-12">
+  <SectionContainer class="flex flex-col gap-12">
     <div class="mx-auto max-w-2xl text-center">
       <Badge variant="secondary">{badge}</Badge>
       <SectionTitle class="mt-4">{title}</SectionTitle>
@@ -46,21 +47,21 @@ const {
     </div>
     <div class="ring-foreground/10 bg-border grid gap-px overflow-hidden rounded-xl ring-1 ring-inset sm:grid-cols-2 lg:grid-cols-4">
       {services.map((service) => (
-        <div class="bg-background group/service hover:bg-accent/30 relative flex flex-col gap-4 p-7 transition-colors">
-          <div class="bg-primary/10 text-primary ring-primary/15 flex size-10 items-center justify-center rounded-lg ring-1 transition-transform ring-inset group-hover/service:scale-105">
+        <div class="bg-background relative flex flex-col gap-4 p-7">
+          <div class="bg-primary/10 text-primary ring-primary/15 flex size-10 items-center justify-center rounded-lg ring-1 ring-inset">
             <Icon name={service.icon} class="size-5" />
           </div>
           <h3 class="text-base font-medium tracking-tight">{service.title}</h3>
           <p class="text-muted-foreground text-sm leading-relaxed">
             {service.description}
           </p>
-          {service.href != null && (
+          {service.link && (
             <a
-              href={service.href}
-              class="text-primary mt-auto inline-flex items-center gap-1.5 text-sm font-medium"
+              href={service.link.href}
+              class="text-primary mt-auto inline-flex w-fit items-center gap-1.5 text-sm font-medium underline-offset-4 hover:underline"
             >
-              {linkLabel}
-              <ArrowRightIcon class="size-3.5 transition-transform group-hover/service:translate-x-1" />
+              {service.link.label}
+              <ArrowRightIcon class="size-3.5" />
             </a>
           )}
         </div>
