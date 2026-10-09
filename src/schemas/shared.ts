@@ -6,13 +6,6 @@ export const linkSchema = z.object({
   href: z.string(),
 })
 
-export const buttonSchema = z.object({
-  label: z.string(),
-  href: z.string(),
-  icon: z.string().optional(),
-  variant: z.enum(["default", "outline", "secondary", "ghost"]).optional(),
-})
-
 export const imageSchema = ({ image }: SchemaContext) =>
   z.object({
     src: image(),

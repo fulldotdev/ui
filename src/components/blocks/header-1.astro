@@ -40,7 +40,6 @@ type Props = HTMLAttributes<"header"> & {
     label: string
     href: string
     icon?: string
-    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
   navigationLabel?: string
   menu?: {
@@ -94,14 +93,15 @@ const {
     </NavigationMenu>
     <HeaderGroup class="ml-auto hidden flex-1 justify-end lg:flex">
       <slot />
-      {buttons.map(({ label, icon, ...button }) => (
+      {buttons.map(({ label, href, icon }, index) => (
         <Button
           as="a"
+          href={href}
           size={icon && !label ? "icon-sm" : "sm"}
+          variant={index === buttons.length - 1 ? "default" : "ghost"}
           aria-label={label}
-          target={button.href.startsWith("http") ? "_blank" : undefined}
-          rel={button.href.startsWith("http") ? "noreferrer" : undefined}
-          {...button}
+          target={href.startsWith("http") ? "_blank" : undefined}
+          rel={href.startsWith("http") ? "noreferrer" : undefined}
         >
           {icon && <Icon name={icon} />}
           {label}
