@@ -27,6 +27,8 @@ type Props = HTMLAttributes<"section"> & {
     label: string
     href: string
   }[]
+  locale?: string
+  discountLabel?: string
   products: {
     image: {
       src: ImageMetadata
@@ -36,6 +38,7 @@ type Props = HTMLAttributes<"section"> & {
     description: string
     price: {
       value: number
+      compareAt?: number
       currency: string
       unit: string
     }
@@ -47,13 +50,15 @@ const {
   badge,
   title,
   buttons,
+  locale,
+  discountLabel,
   products,
   ...props
 } = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContainer class="gap-8">
+  <SectionContainer class="flex flex-col gap-8">
     <div class="mx-auto max-w-2xl text-center">
       <Badge variant="secondary">{badge}</Badge>
       <SectionTitle class="mt-4">{title}</SectionTitle>
@@ -67,23 +72,26 @@ const {
     </div>
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {products.map((product) => (
-        <Card class="group/product gap-0 overflow-hidden">
-          <div class="overflow-hidden">
-            <Image
-              src={product.image.src}
-              alt={product.image.alt}
-              class="aspect-[3/4] w-full object-cover transition-transform duration-300 group-hover/product:scale-105"
-            />
-          </div>
+        <Card class="gap-0 overflow-hidden">
+          <Image
+            src={product.image.src}
+            alt={product.image.alt}
+            class="aspect-[3/4] w-full object-cover"
+            widths={[320, 480, 640]}
+            sizes="(min-width: 80rem) 302px, (min-width: 64rem) 25vw, (min-width: 40rem) 50vw, 100vw"
+          />
           <CardHeader>
-            <CardTitle>{product.title}</CardTitle>
+            <CardTitle as="h3">{product.title}</CardTitle>
             <CardDescription>{product.description}</CardDescription>
           </CardHeader>
           <CardContent>
             <Price>
               <PriceValue
                 price={product.price.value}
+                compareAt={product.price.compareAt}
                 currency={product.price.currency}
+                locale={locale}
+                discountLabel={discountLabel}
               />
               <PriceUnit>{product.price.unit}</PriceUnit>
             </Price>

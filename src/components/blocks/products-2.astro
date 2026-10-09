@@ -14,22 +14,33 @@ import { Separator } from "@/components/ui/separator"
 type Props = HTMLAttributes<"section"> & {
   badge: string
   title: string
+  locale?: string
+  discountLabel?: string
   products: {
     title: string
     description: string
     price: {
       value: number
+      compareAt?: number
       currency: string
       unit: string
     }
   }[]
 }
 
-const { class: className, badge, title, products, ...props } = Astro.props
+const {
+  class: className,
+  badge,
+  title,
+  locale,
+  discountLabel,
+  products,
+  ...props
+} = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContainer class="gap-8">
+  <SectionContainer class="flex flex-col gap-8">
     <div class="max-w-2xl">
       <Badge variant="secondary">{badge}</Badge>
       <SectionTitle class="mt-4">{title}</SectionTitle>
@@ -48,7 +59,10 @@ const { class: className, badge, title, products, ...props } = Astro.props
             <Price>
               <PriceValue
                 price={item.price.value}
+                compareAt={item.price.compareAt}
                 currency={item.price.currency}
+                locale={locale}
+                discountLabel={discountLabel}
               />
               <PriceUnit>{item.price.unit}</PriceUnit>
             </Price>

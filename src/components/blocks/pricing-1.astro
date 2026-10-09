@@ -26,12 +26,17 @@ type Props = HTMLAttributes<"section"> & {
   title: string
   description: string
   featuredLabel: string
+  locale?: string
+  discountLabel?: string
   plans: {
     name: string
     description: string
-    price: number
-    currency: string
-    unit: string
+    price: {
+      value: number
+      compareAt?: number
+      currency: string
+      unit: string
+    }
     featured?: boolean
     features: string[]
     button: {
@@ -46,13 +51,15 @@ const {
   title,
   description,
   featuredLabel,
+  locale,
+  discountLabel,
   plans,
   ...props
 } = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContainer class="items-center gap-8 text-center">
+  <SectionContainer class="flex flex-col items-center gap-8 text-center">
     <div class="flex max-w-2xl flex-col items-center gap-4">
       <SectionTitle>{title}</SectionTitle>
       <SectionDescription>{description}</SectionDescription>
@@ -66,21 +73,27 @@ const {
         >
           <CardHeader>
             <div class="flex items-center gap-2">
-              <CardTitle>{plan.name}</CardTitle>
+              <CardTitle as="h3">{plan.name}</CardTitle>
               {plan.featured && <Badge>{featuredLabel}</Badge>}
             </div>
             <CardDescription>{plan.description}</CardDescription>
           </CardHeader>
           <CardContent class="flex flex-col gap-6">
             <Price>
-              <PriceValue price={plan.price} currency={plan.currency} />
-              <PriceUnit>{plan.unit}</PriceUnit>
+              <PriceValue
+                price={plan.price.value}
+                compareAt={plan.price.compareAt}
+                currency={plan.price.currency}
+                locale={locale}
+                discountLabel={discountLabel}
+              />
+              <PriceUnit>{plan.price.unit}</PriceUnit>
             </Price>
             <Separator />
             <ul class="flex flex-col gap-3">
               {plan.features.map((feature) => (
-                <li class="flex items-center gap-3 text-sm">
-                  <CheckIcon class="text-primary size-4 shrink-0" />
+                <li class="flex items-start gap-3 text-sm">
+                  <CheckIcon class="text-primary mt-0.5 size-4 shrink-0" />
                   {feature}
                 </li>
               ))}

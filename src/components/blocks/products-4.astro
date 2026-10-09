@@ -26,6 +26,8 @@ type Props = HTMLAttributes<"section"> & {
     label: string
     href: string
   }[]
+  locale?: string
+  discountLabel?: string
   products: {
     image: {
       src: ImageMetadata
@@ -35,6 +37,7 @@ type Props = HTMLAttributes<"section"> & {
     description: string
     price: {
       value: number
+      compareAt?: number
       currency: string
       unit: string
     }
@@ -46,13 +49,15 @@ const {
   title,
   description,
   buttons,
+  locale,
+  discountLabel,
   products,
   ...props
 } = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContainer class="gap-8">
+  <SectionContainer class="flex flex-col gap-8">
     <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
       <div class="max-w-2xl">
         <SectionTitle>{title}</SectionTitle>
@@ -75,16 +80,21 @@ const {
             src={product.image.src}
             alt={product.image.alt}
             class="aspect-[4/3] w-full object-cover"
+            widths={[320, 480, 640]}
+            sizes="(min-width: 80rem) 405px, (min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 100vw"
           />
           <CardHeader>
-            <CardTitle>{product.title}</CardTitle>
+            <CardTitle as="h3">{product.title}</CardTitle>
             <CardDescription>{product.description}</CardDescription>
           </CardHeader>
           <CardContent>
             <Price>
               <PriceValue
                 price={product.price.value}
+                compareAt={product.price.compareAt}
                 currency={product.price.currency}
+                locale={locale}
+                discountLabel={discountLabel}
               />
               <PriceUnit>{product.price.unit}</PriceUnit>
             </Price>
