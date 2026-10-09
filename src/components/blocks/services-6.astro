@@ -11,13 +11,12 @@ import { Section, SectionContainer } from "@/components/ui/section"
 import PlaceholderImage from "@/assets/placeholder.svg"
 
 type Props = HTMLAttributes<"section"> & {
-  badge?: string
+  badge: string
   title: string
-  description?: string
-  buttons?: {
+  description: string
+  buttons: {
     label: string
     href: string
-    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
   services: {
     image?: {
@@ -44,34 +43,34 @@ const {
 <Section class={cn("", className)} {...props}>
   <SectionContainer class="grid gap-8 lg:grid-cols-[20rem_minmax(0,1fr)] lg:items-start">
     <div class="lg:sticky lg:top-28">
-      {badge && <Badge variant="secondary">{badge}</Badge>}
+      <Badge variant="secondary">{badge}</Badge>
       <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance">
         {title}
       </h2>
-      {description && (
-        <p class="text-muted-foreground mt-4 text-sm leading-relaxed">
-          {description}
-        </p>
-      )}
-      {buttons?.length && (
-        <div class="mt-6 flex flex-wrap gap-3">
-          {buttons.map(({ href, label, ...button }) => (
-            <Button as="a" href={href} variant={button.variant}>
-              {label}
-            </Button>
-          ))}
-        </div>
-      )}
+      <p class="text-muted-foreground mt-4 text-sm leading-relaxed">
+        {description}
+      </p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        {buttons.map(({ href, label }, index) => (
+          <Button
+            as="a"
+            href={href}
+            variant={index === 0 ? "default" : "outline"}
+          >
+            {label}
+          </Button>
+        ))}
+      </div>
     </div>
     <div class="grid gap-6 sm:grid-cols-2">
       {services.map((service) => (
-        <div class="group/service relative isolate flex aspect-square flex-col justify-end overflow-hidden rounded-xl bg-black">
+        <div class="relative isolate flex aspect-square flex-col justify-end overflow-hidden rounded-xl bg-black">
           <Image
             src={service.image?.src ?? PlaceholderImage}
-            alt={service.image?.alt ?? service.title}
-            class="absolute inset-0 -z-10 size-full object-cover opacity-60 transition-transform duration-500 group-hover/service:scale-105"
+            alt={service.image?.alt ?? ""}
+            class="absolute inset-0 -z-10 size-full object-cover opacity-60"
             widths={[320, 480, 640]}
-            sizes="(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw"
+            sizes="(min-width: 80rem) 436px, (min-width: 64rem) 35vw, (min-width: 40rem) 50vw, 100vw"
           />
           <div class="absolute inset-0 -z-10 bg-gradient-to-t from-black/70 to-transparent" />
           <div class="flex items-end justify-between gap-4 p-5 text-white">
@@ -81,9 +80,10 @@ const {
                 {service.description}
               </p>
             </div>
-            {service.href && (
+            {service.href != null && (
               <a
                 href={service.href}
+                aria-label={service.title}
                 class="shrink-0 rounded-full bg-white/15 p-2 backdrop-blur-sm transition-colors hover:bg-white/25"
               >
                 <ArrowRightIcon class="size-4 text-white" />

@@ -15,20 +15,20 @@ import {
 import PlaceholderImage from "@/assets/placeholder.svg"
 
 type Props = HTMLAttributes<"section"> & {
-  badge?: string
+  badge: string
   title: string
-  description?: string
-  buttons?: {
+  description: string
+  linkLabel: string
+  buttons: {
     label: string
     href: string
-    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
   services: {
     image?: {
       src: ImageMetadata
       alt: string
     }
-    label?: string
+    label: string
     title: string
     description: string
     href?: string
@@ -41,82 +41,87 @@ const {
   title,
   description,
   buttons,
+  linkLabel,
   services,
   ...props
 } = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContainer class="gap-8">
+  <SectionContainer class="flex flex-col gap-8">
     <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
       <div class="max-w-2xl">
-        {badge && <Badge variant="secondary">{badge}</Badge>}
+        <Badge variant="secondary">{badge}</Badge>
         <SectionTitle class="mt-4">{title}</SectionTitle>
-        {description && (
-          <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">
-            {description}
-          </p>
-        )}
+        <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">
+          {description}
+        </p>
       </div>
-      {buttons?.length && (
-        <div class="flex flex-wrap gap-3">
-          {buttons.map(({ href, label, ...button }) => (
-            <Button as="a" href={href} variant={button.variant}>
-              {label}
-            </Button>
-          ))}
-        </div>
-      )}
+      <div class="flex flex-wrap gap-3">
+        {buttons.map(({ href, label }, index) => (
+          <Button
+            as="a"
+            href={href}
+            variant={index === 0 ? "default" : "outline"}
+          >
+            {label}
+          </Button>
+        ))}
+      </div>
     </div>
     <div class="grid gap-6 lg:grid-cols-3">
-      {services.map((service, index) => (
-        <a
-          href={service.href ?? "#"}
-          class={cn(
-            "group/service flex flex-col overflow-hidden rounded-xl border shadow-xs transition-shadow hover:shadow-md",
-            index === 0 && "lg:col-span-2 lg:row-span-2"
-          )}
-        >
-          <Image
-            src={service.image?.src ?? PlaceholderImage}
-            alt={service.image?.alt ?? service.title}
+      {services.map((service, index) => {
+        const Wrapper = service.href != null ? "a" : "div"
+        return (
+          <Wrapper
+            href={service.href}
             class={cn(
-              "w-full object-cover",
-              index === 0 ? "aspect-[16/9]" : "aspect-[16/10]"
+              "group/service flex flex-col overflow-hidden rounded-xl border shadow-xs",
+              service.href != null && "transition-shadow hover:shadow-md",
+              index === 0 && "lg:col-span-2 lg:row-span-2"
             )}
-            widths={[320, 480, 640, 960]}
-            sizes={
-              index === 0
-                ? "(min-width: 1024px) 66vw, 100vw"
-                : "(min-width: 1024px) 33vw, 100vw"
-            }
-          />
-          <div class="flex flex-1 flex-col gap-2 p-5">
-            {service.label && (
+          >
+            <Image
+              src={service.image?.src ?? PlaceholderImage}
+              alt={service.image?.alt ?? ""}
+              class={cn(
+                "w-full object-cover",
+                index === 0 ? "aspect-[16/9]" : "aspect-[16/10]"
+              )}
+              widths={[320, 480, 640, 960]}
+              sizes={
+                index === 0
+                  ? "(min-width: 80rem) 824px, (min-width: 64rem) 66vw, 100vw"
+                  : "(min-width: 80rem) 400px, (min-width: 64rem) 33vw, 100vw"
+              }
+            />
+            <div class="flex flex-1 flex-col gap-2 p-5">
               <Badge variant="secondary" class="w-fit">
                 {service.label}
               </Badge>
-            )}
-            <h3
-              class={cn("font-medium", index === 0 ? "text-xl" : "text-base")}
-            >
-              {service.title}
-            </h3>
-            <p class="text-muted-foreground text-sm leading-relaxed">
-              {service.description}
-            </p>
-            <div
-              class={cn(
-                "text-primary flex items-center gap-1.5 pt-2 text-sm font-medium",
-                index !== 0 && "mt-auto"
+              <h3
+                class={cn("font-medium", index === 0 ? "text-xl" : "text-base")}
+              >
+                {service.title}
+              </h3>
+              <p class="text-muted-foreground text-sm leading-relaxed">
+                {service.description}
+              </p>
+              {service.href != null && (
+                <div
+                  class={cn(
+                    "text-primary flex items-center gap-1.5 pt-2 text-sm font-medium",
+                    index !== 0 && "mt-auto"
+                  )}
+                >
+                  {linkLabel}
+                  <ArrowRightIcon class="size-3.5 transition-transform group-hover/service:translate-x-1" />
+                </div>
               )}
-            >
-              Learn more
-              <ArrowRightIcon class="size-3.5 transition-transform group-hover/service:translate-x-1" />
             </div>
-          </div>
-        </a>
-      ))}
+          </Wrapper>
+        )
+      })}
     </div>
   </SectionContainer>
 </Section>

@@ -5,7 +5,12 @@ import QuoteIcon from "@lucide/astro/icons/quote"
 
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Marquee } from "@/components/ui/marquee"
+import {
+  Marquee,
+  MarqueeContent,
+  MarqueeItem,
+  MarqueeToggle,
+} from "@/components/ui/marquee"
 import { Rating } from "@/components/ui/rating"
 import {
   Section,
@@ -15,8 +20,12 @@ import {
 } from "@/components/ui/section"
 
 type Props = HTMLAttributes<"section"> & {
-  title?: string
-  description?: string
+  title: string
+  description: string
+  labels: {
+    play: string
+    pause: string
+  }
   reviews: {
     quote: string
     image?: ImageMetadata
@@ -24,131 +33,68 @@ type Props = HTMLAttributes<"section"> & {
     name: string
     role: string
     rating: number
+    ratingLabel: string
   }[]
 }
 
-const { class: className, title, description, reviews, ...props } = Astro.props
+const {
+  class: className,
+  title,
+  description,
+  labels,
+  reviews,
+  ...props
+} = Astro.props
 
 const third = Math.ceil(reviews.length / 3)
-const row1 = reviews.slice(0, third)
-const row2 = reviews.slice(third, third * 2)
-const row3 = reviews.slice(third * 2)
+const rows = [
+  reviews.slice(0, third),
+  reviews.slice(third, third * 2),
+  reviews.slice(third * 2),
+]
 ---
 
 <Section class={cn("", className)} {...props}>
-  {(title || description) && (
-    <SectionContainer class="items-center gap-4 text-center">
-      {title && <SectionTitle>{title}</SectionTitle>}
-      {description && (
-        <SectionDescription class="max-w-2xl">{description}</SectionDescription>
-      )}
+  <SectionContainer class="flex flex-col items-center gap-4 text-center">
+    <SectionTitle>{title}</SectionTitle>
+    <SectionDescription class="max-w-2xl">{description}</SectionDescription>
+  </SectionContainer>
+  <Marquee class="flex flex-col gap-5">
+    <SectionContainer class="flex justify-end">
+      <MarqueeToggle playLabel={labels.play} pauseLabel={labels.pause} />
     </SectionContainer>
-  )}
-  <div class="flex flex-col gap-5">
-    <Marquee
-      direction="left"
-      pauseOnHover
-      infinite
-      gap="1.25rem"
-      class="[&>div]:items-stretch"
-    >
-      {row1.map((item) => (
-        <div class="bg-muted/50 flex w-[26rem] shrink-0 rounded-2xl p-6">
-          <div class="flex flex-1 flex-col gap-4">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <Avatar size="lg">
-                  <AvatarImage src={item.image} alt={item.name} />
-                  <AvatarFallback>{item.initials}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p class="text-foreground text-sm font-semibold">
-                    {item.name}
-                  </p>
-                  <p class="text-muted-foreground text-xs">{item.role}</p>
+    {rows
+      .filter((row) => row.length > 0)
+      .map((row, index) => (
+        <MarqueeContent reverse={index % 2 === 1} class="py-1">
+          {row.map((item) => (
+            <MarqueeItem class="flex">
+              <figure class="bg-muted/50 flex w-[26rem] flex-col gap-4 rounded-2xl p-6">
+                <figcaption class="flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-3">
+                    <Avatar size="lg" aria-hidden="true">
+                      <AvatarImage src={item.image} />
+                      <AvatarFallback>{item.initials}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p class="text-foreground text-sm font-semibold">
+                        {item.name}
+                      </p>
+                      <p class="text-muted-foreground text-xs">{item.role}</p>
+                    </div>
+                  </div>
+                  <Rating value={item.rating} aria-label={item.ratingLabel} />
+                </figcaption>
+                <div class="flex gap-2.5">
+                  <QuoteIcon class="text-primary/30 mt-0.5 size-5 shrink-0" />
+                  <blockquote class="text-foreground/80 text-sm leading-relaxed">
+                    <p>{item.quote}</p>
+                  </blockquote>
                 </div>
-              </div>
-              <Rating value={item.rating} />
-            </div>
-            <div class="flex gap-2.5">
-              <QuoteIcon class="text-primary/30 mt-0.5 size-5 shrink-0" />
-              <p class="text-foreground/80 text-sm leading-relaxed">
-                {item.quote}
-              </p>
-            </div>
-          </div>
-        </div>
+              </figure>
+            </MarqueeItem>
+          ))}
+        </MarqueeContent>
       ))}
-    </Marquee>
-    <Marquee
-      direction="right"
-      pauseOnHover
-      infinite
-      gap="1.25rem"
-      class="[&>div]:items-stretch"
-    >
-      {row2.map((item) => (
-        <div class="bg-muted/50 flex w-[26rem] shrink-0 rounded-2xl p-6">
-          <div class="flex flex-1 flex-col gap-4">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <Avatar size="lg">
-                  <AvatarImage src={item.image} alt={item.name} />
-                  <AvatarFallback>{item.initials}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p class="text-foreground text-sm font-semibold">
-                    {item.name}
-                  </p>
-                  <p class="text-muted-foreground text-xs">{item.role}</p>
-                </div>
-              </div>
-              <Rating value={item.rating} />
-            </div>
-            <div class="flex gap-2.5">
-              <QuoteIcon class="text-primary/30 mt-0.5 size-5 shrink-0" />
-              <p class="text-foreground/80 text-sm leading-relaxed">
-                {item.quote}
-              </p>
-            </div>
-          </div>
-        </div>
-      ))}
-    </Marquee>
-    <Marquee
-      direction="left"
-      pauseOnHover
-      infinite
-      gap="1.25rem"
-      class="[&>div]:items-stretch"
-    >
-      {row3.map((item) => (
-        <div class="bg-muted/50 flex w-[26rem] shrink-0 rounded-2xl p-6">
-          <div class="flex flex-1 flex-col gap-4">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <Avatar size="lg">
-                  <AvatarImage src={item.image} alt={item.name} />
-                  <AvatarFallback>{item.initials}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p class="text-foreground text-sm font-semibold">
-                    {item.name}
-                  </p>
-                  <p class="text-muted-foreground text-xs">{item.role}</p>
-                </div>
-              </div>
-              <Rating value={item.rating} />
-            </div>
-            <div class="flex gap-2.5">
-              <QuoteIcon class="text-primary/30 mt-0.5 size-5 shrink-0" />
-              <p class="text-foreground/80 text-sm leading-relaxed">
-                {item.quote}
-              </p>
-            </div>
-          </div>
-        </div>
-      ))}
-    </Marquee>
-  </div>
+  </Marquee>
 </Section>

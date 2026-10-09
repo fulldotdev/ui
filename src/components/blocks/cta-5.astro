@@ -16,11 +16,10 @@ import PlaceholderImage from "@/assets/placeholder.svg"
 type Props = HTMLAttributes<"section"> & {
   title: string
   description: string
-  features?: string[]
-  buttons?: {
+  features: string[]
+  buttons: {
     label: string
     href: string
-    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
   image?: {
     src: ImageMetadata
@@ -34,7 +33,7 @@ const {
   description,
   features,
   buttons,
-  image = { src: PlaceholderImage, alt: "CTA image" },
+  image = { src: PlaceholderImage, alt: "" },
   ...props
 } = Astro.props
 ---
@@ -48,25 +47,24 @@ const {
           {description}
         </p>
       </div>
-      {features?.length && (
+      {features.length > 0 && (
         <ul class="flex flex-col gap-3">
           {features.map((feature) => (
-            <li class="flex items-center gap-3 text-sm">
-              <CheckIcon class="text-primary size-4 shrink-0" />
+            <li class="flex items-start gap-3 text-sm">
+              <CheckIcon class="text-primary mt-0.5 size-4 shrink-0" />
               {feature}
             </li>
           ))}
         </ul>
       )}
-      {buttons?.length && (
+      {buttons.length > 0 && (
         <div class="flex flex-wrap gap-3">
-          {buttons.map(({ href, label, ...button }, index) => (
+          {buttons.map(({ href, label }, index) => (
             <Button
               as="a"
               href={href}
               size="lg"
-              variant={button.variant ?? (index === 0 ? "default" : "outline")}
-              {...button}
+              variant={index === 0 ? "default" : "outline"}
             >
               {label}
             </Button>
@@ -79,7 +77,7 @@ const {
       alt={image.alt}
       class="aspect-[4/3] w-full rounded-xl border object-cover"
       widths={[640, 960, 1280]}
-      sizes="(min-width: 1024px) 50vw, 100vw"
+      sizes="(min-width: 80rem) 600px, (min-width: 64rem) 50vw, 100vw"
     />
   </SectionContainer>
 </Section>

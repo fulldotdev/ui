@@ -12,7 +12,7 @@ import {
 
 type Props = HTMLAttributes<"section"> & {
   title: string
-  description?: string
+  description: string
   brands: {
     name: string
     href?: string
@@ -23,20 +23,25 @@ const { class: className, title, description, brands, ...props } = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContainer class="items-center gap-10 text-center">
+  <SectionContainer class="flex flex-col items-center gap-10 text-center">
     <div class="flex max-w-2xl flex-col items-center gap-4">
       <SectionTitle>{title}</SectionTitle>
-      {description && <SectionDescription>{description}</SectionDescription>}
+      <SectionDescription>{description}</SectionDescription>
     </div>
-    <div class="text-muted-foreground flex w-full flex-wrap items-center justify-center gap-x-12 gap-y-6">
+    <ul class="text-muted-foreground flex w-full flex-wrap items-center justify-center gap-x-12 gap-y-6">
       {brands.map((brand) => (
-        <Logo
-          class="hover:text-foreground grayscale transition-all hover:grayscale-0"
-          href={brand.href}
-        >
-          <LogoText>{brand.name}</LogoText>
-        </Logo>
+        <li>
+          <Logo
+            class={cn(
+              brand.href != null &&
+                "hover:text-foreground transition-colors focus-visible:text-foreground"
+            )}
+            href={brand.href}
+          >
+            <LogoText>{brand.name}</LogoText>
+          </Logo>
+        </li>
       ))}
-    </div>
+    </ul>
   </SectionContainer>
 </Section>

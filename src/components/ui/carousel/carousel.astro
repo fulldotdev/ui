@@ -13,12 +13,16 @@ const {
   class: className,
   opts,
   orientation = opts?.axis === "y" ? "vertical" : "horizontal",
+  "aria-roledescription": roleDescription = "carousel",
+  "data-slot": dataSlot = "carousel",
+  // A named section is a region landmark. Without a name it would have no
+  // role, so it becomes a group, the other container role the APG carousel
+  // allows.
+  role = Astro.props["aria-label"] || Astro.props["aria-labelledby"]
+    ? undefined
+    : "group",
   ...props
 } = Astro.props
-
-// A named section is a region landmark. Without a name it would have no role,
-// so it becomes a group, the other container role the APG carousel allows.
-const named = Boolean(props["aria-label"] || props["aria-labelledby"])
 
 const resolvedOpts: EmblaOptionsType = {
   ...opts,
@@ -27,12 +31,12 @@ const resolvedOpts: EmblaOptionsType = {
 ---
 
 <section
-  data-slot="carousel"
+  data-slot={dataSlot}
   data-orientation={orientation}
   data-carousel-options={JSON.stringify(resolvedOpts)}
   class={cn("group/carousel relative", className)}
-  role={named ? undefined : "group"}
-  aria-roledescription="carousel"
+  role={role}
+  aria-roledescription={roleDescription}
   {...props}
 >
   <slot />
@@ -49,26 +53,25 @@ const resolvedOpts: EmblaOptionsType = {
   }
 
   const instances = new Map<CarouselRoot, () => void>()
+  // A nested carousel owns its own parts. The data-carousel-* markers stay
+  // in place when a caller overrides data-slot.
+  const rootSelector = "[data-carousel-options]"
+  const getParts = <T extends Element>(root: CarouselRoot, part: string) =>
+    [...root.querySelectorAll<T>(`[data-carousel-${part}]`)].filter(
+      (element) => element.closest(rootSelector) === root
+    )
   const initialize = () => {
-    for (const root of document.querySelectorAll<CarouselRoot>(
-      '[data-slot="carousel"]'
-    )) {
+    for (const root of document.querySelectorAll<CarouselRoot>(rootSelector)) {
       if (instances.has(root)) continue
-      const viewport = root.querySelector<HTMLElement>(
-        '[data-slot="carousel-content"]'
-      )
+      const viewport = getParts<HTMLElement>(root, "viewport")[0]
       if (!viewport) continue
       const opts: EmblaOptionsType = JSON.parse(
         root.dataset.carouselOptions || "{}"
       )
       const api = EmblaCarousel(viewport, opts)
       root.__fulldevCarouselApi = api
-      const previous = root.querySelectorAll<HTMLButtonElement>(
-        '[data-slot="carousel-previous"]'
-      )
-      const next = root.querySelectorAll<HTMLButtonElement>(
-        '[data-slot="carousel-next"]'
-      )
+      const previous = getParts<HTMLButtonElement>(root, "previous")
+      const next = getParts<HTMLButtonElement>(root, "next")
       const emit = (type: "carousel:init" | "carousel:select") => {
         root.dispatchEvent(
           new CustomEvent(type, {
@@ -103,7 +106,7 @@ const resolvedOpts: EmblaOptionsType = {
         if (
           event.defaultPrevented ||
           !(target instanceof Element) ||
-          target.closest('[data-slot="carousel"]') !== root ||
+          target.closest(rootSelector) !== root ||
           target.closest(
             'input, textarea, select, [contenteditable]:not([contenteditable="false"])'
           )

@@ -8,22 +8,16 @@ import { Button } from "@/components/ui/button"
 type Props = HTMLAttributes<"aside"> & {
   title: string
   description: string
-  buttons?: {
+  buttons: {
     label: string
     href: string
-    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
 }
 
 const { class: className, title, description, buttons, ...props } = Astro.props
 ---
 
-<Banner
-  variant="floating"
-  storageKey="banner-2"
-  class={cn("@container", className)}
-  {...props}
->
+<Banner variant="floating" class={cn("@container", className)} {...props}>
   <BannerContainer
     class="flex-col items-start gap-4 py-1 @2xl:flex-row @2xl:items-center"
     showClose={false}
@@ -32,20 +26,17 @@ const { class: className, title, description, buttons, ...props } = Astro.props
       <p class="text-sm font-semibold">{title}</p>
       <p class="text-muted-foreground text-sm">{description}</p>
     </div>
-    {buttons?.length && (
-      <div class="flex flex-wrap items-center gap-2">
-        {buttons.map(({ href, label, ...button }, index) => (
-          <Button
-            as="a"
-            href={href}
-            size="sm"
-            variant={button.variant ?? (index === 0 ? "default" : "outline")}
-            {...button}
-          >
-            {label}
-          </Button>
-        ))}
-      </div>
-    )}
+    <div class="flex flex-wrap items-center gap-2">
+      {buttons.map(({ href, label }, index) => (
+        <Button
+          as="a"
+          href={href}
+          size="sm"
+          variant={index === 0 ? "default" : "outline"}
+        >
+          {label}
+        </Button>
+      ))}
+    </div>
   </BannerContainer>
 </Banner>

@@ -15,10 +15,11 @@ import {
 } from "@/components/ui/section"
 
 type Props = HTMLAttributes<"section"> & {
-  title?: string
-  description?: string
+  title: string
+  description: string
   reviews: {
     rating: number
+    ratingLabel: string
     quote: string
     image?: ImageMetadata
     initials: string
@@ -31,36 +32,34 @@ const { class: className, title, description, reviews, ...props } = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
-  {(title || description) && (
-    <SectionContainer class="items-center gap-4 text-center">
-      {title && <SectionTitle>{title}</SectionTitle>}
-      {description && (
-        <SectionDescription class="max-w-2xl">{description}</SectionDescription>
-      )}
-    </SectionContainer>
-  )}
+  <SectionContainer class="flex flex-col items-center gap-4 text-center">
+    <SectionTitle>{title}</SectionTitle>
+    <SectionDescription class="max-w-2xl">{description}</SectionDescription>
+  </SectionContainer>
   <SectionContainer>
     <div class="grid gap-6 md:grid-cols-3">
       {reviews.map((item) => (
         <Card>
-          <CardContent class="flex flex-col gap-4">
-            <div class="flex items-center justify-between">
-              <Rating value={item.rating} />
-              <QuoteIcon class="text-muted-foreground/20 size-6" />
-            </div>
-            <p class="text-muted-foreground text-sm leading-relaxed">
-              {item.quote}
-            </p>
-            <div class="flex items-center gap-3 pt-2">
-              <Avatar size="lg">
-                <AvatarImage src={item.image} alt={item.name} />
-                <AvatarFallback>{item.initials}</AvatarFallback>
-              </Avatar>
-              <div>
-                <p class="text-foreground text-sm font-medium">{item.name}</p>
-                <p class="text-muted-foreground text-xs">{item.role}</p>
+          <CardContent class="flex flex-1 flex-col">
+            <figure class="flex flex-1 flex-col gap-4">
+              <div class="flex items-center justify-between">
+                <Rating value={item.rating} aria-label={item.ratingLabel} />
+                <QuoteIcon class="text-muted-foreground/20 size-6" />
               </div>
-            </div>
+              <blockquote class="text-muted-foreground text-sm leading-relaxed">
+                <p>{item.quote}</p>
+              </blockquote>
+              <figcaption class="mt-auto flex items-center gap-3 pt-2">
+                <Avatar size="lg" aria-hidden="true">
+                  <AvatarImage src={item.image} />
+                  <AvatarFallback>{item.initials}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <p class="text-foreground text-sm font-medium">{item.name}</p>
+                  <p class="text-muted-foreground text-xs">{item.role}</p>
+                </div>
+              </figcaption>
+            </figure>
           </CardContent>
         </Card>
       ))}

@@ -5,7 +5,12 @@ import type { HTMLAttributes } from "astro/types"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
-import { Marquee } from "@/components/ui/marquee"
+import {
+  Marquee,
+  MarqueeContent,
+  MarqueeItem,
+  MarqueeToggle,
+} from "@/components/ui/marquee"
 import { Rating } from "@/components/ui/rating"
 import {
   Section,
@@ -15,10 +20,15 @@ import {
 } from "@/components/ui/section"
 
 type Props = HTMLAttributes<"section"> & {
-  title?: string
-  description?: string
+  title: string
+  description: string
+  labels: {
+    play: string
+    pause: string
+  }
   reviews: {
     rating: number
+    ratingLabel: string
     quote: string
     image?: ImageMetadata
     initials: string
@@ -27,78 +37,59 @@ type Props = HTMLAttributes<"section"> & {
   }[]
 }
 
-const { class: className, title, description, reviews, ...props } = Astro.props
+const {
+  class: className,
+  title,
+  description,
+  labels,
+  reviews,
+  ...props
+} = Astro.props
 
 const half = Math.ceil(reviews.length / 2)
-const topRow = reviews.slice(0, half)
-const bottomRow = reviews.slice(half)
+const rows = [reviews.slice(0, half), reviews.slice(half)]
 ---
 
 <Section class={cn("", className)} {...props}>
-  {(title || description) && (
-    <SectionContainer class="items-center gap-4 text-center">
-      {title && <SectionTitle>{title}</SectionTitle>}
-      {description && (
-        <SectionDescription class="max-w-2xl">{description}</SectionDescription>
-      )}
+  <SectionContainer class="flex flex-col items-center gap-4 text-center">
+    <SectionTitle>{title}</SectionTitle>
+    <SectionDescription class="max-w-2xl">{description}</SectionDescription>
+  </SectionContainer>
+  <Marquee class="flex flex-col gap-6">
+    <SectionContainer class="flex justify-end">
+      <MarqueeToggle playLabel={labels.play} pauseLabel={labels.pause} />
     </SectionContainer>
-  )}
-  <div class="flex flex-col gap-6 overflow-x-hidden py-1">
-    <Marquee
-      direction="left"
-      pauseOnHover
-      infinite
-      gap="1rem"
-      class="py-1 [&>div]:items-stretch"
-    >
-      {topRow.map((item) => (
-        <Card class="flex w-[22rem] shrink-0 self-stretch">
-          <CardContent class="flex flex-1 flex-col gap-3">
-            <Rating value={item.rating} />
-            <p class="text-muted-foreground text-sm leading-relaxed">
-              {item.quote}
-            </p>
-            <div class="mt-auto flex items-center gap-3 pt-1">
-              <Avatar>
-                <AvatarImage src={item.image} alt={item.name} />
-                <AvatarFallback>{item.initials}</AvatarFallback>
-              </Avatar>
-              <div>
-                <p class="text-foreground text-sm font-medium">{item.name}</p>
-                <p class="text-muted-foreground text-xs">{item.role}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+    {rows
+      .filter((row) => row.length > 0)
+      .map((row, index) => (
+        <MarqueeContent reverse={index % 2 === 1} class="py-1">
+          {row.map((item) => (
+            <MarqueeItem class="flex">
+              <Card class="w-[22rem]">
+                <CardContent class="flex flex-1 flex-col">
+                  <figure class="flex flex-1 flex-col gap-3">
+                    <Rating value={item.rating} aria-label={item.ratingLabel} />
+                    <blockquote class="text-muted-foreground text-sm leading-relaxed">
+                      <p>{item.quote}</p>
+                    </blockquote>
+                    <figcaption class="mt-auto flex items-center gap-3 pt-1">
+                      <Avatar aria-hidden="true">
+                        <AvatarImage src={item.image} />
+                        <AvatarFallback>{item.initials}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p class="text-foreground text-sm font-medium">
+                          {item.name}
+                        </p>
+                        <p class="text-muted-foreground text-xs">{item.role}</p>
+                      </div>
+                    </figcaption>
+                  </figure>
+                </CardContent>
+              </Card>
+            </MarqueeItem>
+          ))}
+        </MarqueeContent>
       ))}
-    </Marquee>
-    <Marquee
-      direction="right"
-      pauseOnHover
-      infinite
-      gap="1rem"
-      class="py-1 [&>div]:items-stretch"
-    >
-      {bottomRow.map((item) => (
-        <Card class="flex w-[22rem] shrink-0 self-stretch">
-          <CardContent class="flex flex-1 flex-col gap-3">
-            <Rating value={item.rating} />
-            <p class="text-muted-foreground text-sm leading-relaxed">
-              {item.quote}
-            </p>
-            <div class="mt-auto flex items-center gap-3 pt-1">
-              <Avatar>
-                <AvatarImage src={item.image} alt={item.name} />
-                <AvatarFallback>{item.initials}</AvatarFallback>
-              </Avatar>
-              <div>
-                <p class="text-foreground text-sm font-medium">{item.name}</p>
-                <p class="text-muted-foreground text-xs">{item.role}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </Marquee>
-  </div>
+  </Marquee>
 </Section>

@@ -1,82 +1,277 @@
 ---
 import type { HTMLAttributes } from "astro/types"
-import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-const trackVariants = cva(
-  "flex min-w-max shrink-0 [animation:marquee_var(--marquee-duration)_linear_infinite] items-center gap-[var(--marquee-gap)] before:block before:size-0 before:shrink-0 before:content-[''] motion-reduce:[animation-play-state:paused]",
-  {
-    variants: {
-      direction: {
-        left: "",
-        right: "[animation-direction:reverse]",
-      },
-      pauseOnHover: {
-        true: "group-hover/marquee:[animation-play-state:paused]",
-        false: "",
-      },
-    },
-    defaultVariants: {
-      direction: "left",
-      pauseOnHover: false,
-    },
-  }
-)
-
-type Props = HTMLAttributes<"div"> &
-  VariantProps<typeof trackVariants> & {
-    duration?: string
-    gap?: string
-    infinite?: boolean
-  }
+type Props = HTMLAttributes<"div">
 
 const {
   class: className,
-  direction,
-  pauseOnHover,
-  duration = "40s",
-  gap = "1.5rem",
-  infinite = true,
-  style,
+  "data-slot": dataSlot = "marquee",
   ...props
 } = Astro.props
-
-const resolvedStyle = [
-  `--marquee-duration:${duration}`,
-  `--marquee-gap:${gap}`,
-  typeof style === "string" ? style : undefined,
-]
-  .filter(Boolean)
-  .join(";")
 ---
 
 <div
-  class={cn(
-    "group/marquee flex overflow-hidden select-none [--marquee-duration:40s] [--marquee-gap:1.5rem]",
-    className
-  )}
-  style={resolvedStyle}
+  data-slot={dataSlot}
+  data-marquee
+  class={cn("relative", className)}
   {...props}
 >
-  <div class={trackVariants({ direction, pauseOnHover })}>
-    <slot />
-  </div>
-  {infinite && (
-    <div aria-hidden="true" class={trackVariants({ direction, pauseOnHover })}>
-      <slot />
-    </div>
-  )}
+  <slot />
 </div>
 
-<style>
-  @keyframes marquee {
-    from {
-      transform: translateX(0);
-    }
+<script>
+  import EmblaCarousel, { type EmblaCarouselType } from "embla-carousel"
+  import AutoScroll, { type AutoScrollType } from "embla-carousel-auto-scroll"
 
-    to {
-      transform: translateX(-100%);
+  type Row = {
+    viewport: HTMLElement
+    // Whether the caller left tabindex to the marquee.
+    ownTabIndex: boolean
+    api?: EmblaCarouselType
+    autoScroll?: AutoScrollType
+  }
+
+  // The data-marquee* markers stay in place when a caller overrides data-slot.
+  const rootSelector = "[data-marquee]"
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)")
+  const instances = new Map<HTMLElement, () => void>()
+
+  // A nested marquee owns its own parts.
+  const getParts = <T extends Element>(root: HTMLElement, selector: string) =>
+    [...root.querySelectorAll<T>(selector)].filter(
+      (part) => part.closest(rootSelector) === root
+    )
+
+  const focusableSelector =
+    "a[href], area[href], button, input, select, textarea, iframe, summary, [contenteditable], [tabindex]"
+  const visible = (element: Element) =>
+    element.checkVisibility?.({ visibilityProperty: true }) ??
+    element.getClientRects().length > 0
+  // A toggle is a pause control when it can be pressed and seen. The marquee
+  // hides a toggle through its private wrapper, so visibility is read from the
+  // button's own styles and from the wrapper's parent.
+  const shown = (toggle: HTMLButtonElement) => {
+    const style = getComputedStyle(toggle)
+    const outside = toggle.closest("[data-marquee-control]")?.parentElement
+    return (
+      style.display !== "none" &&
+      style.visibility !== "hidden" &&
+      outside != null &&
+      visible(outside)
+    )
+  }
+  const usable = (toggle: HTMLButtonElement) =>
+    !toggle.matches(":disabled") &&
+    toggle.getAttribute("aria-disabled") !== "true" &&
+    !toggle.closest("[inert]") &&
+    shown(toggle)
+  const reachable = (element: HTMLElement) =>
+    element.tabIndex >= 0 &&
+    !element.matches(":disabled") &&
+    !element.closest("[inert]") &&
+    visible(element)
+
+  // Embla turns loop off when the slides are too few to fill the viewport.
+  const loops = (api: EmblaCarouselType) =>
+    api.internalEngine().options.loop && api.scrollSnapList().length > 1
+
+  const initialize = () => {
+    for (const root of document.querySelectorAll<HTMLElement>(rootSelector)) {
+      if (instances.has(root)) continue
+      const toggles = getParts<HTMLButtonElement>(root, "[data-marquee-toggle]")
+      const rows: Row[] = getParts<HTMLElement>(
+        root,
+        "[data-marquee-viewport]"
+      ).map((viewport) => ({
+        viewport,
+        ownTabIndex: !viewport.hasAttribute("tabindex"),
+      }))
+      // Moving content needs a way to pause it, so a marquee without an
+      // enabled toggle stays static. Focus, dragging and the toggle pause it until the toggle
+      // plays it again; hovering a row pauses it only while the pointer is
+      // over it.
+      let playing = true
+      let hovered = false
+
+      const sync = () => {
+        const moving = rows.filter((row) => row.autoScroll)
+        for (const row of moving) {
+          if (playing && !hovered) row.autoScroll?.play()
+          else row.autoScroll?.stop()
+        }
+        for (const toggle of toggles) {
+          const control = toggle.closest<HTMLElement>("[data-marquee-control]")
+          if (control && control.hidden !== (moving.length === 0))
+            control.hidden = moving.length === 0
+          toggle.dataset.state = playing ? "playing" : "paused"
+          const label = toggle.querySelector("[data-marquee-label]")
+          if (label)
+            label.textContent =
+              (playing
+                ? toggle.dataset.pauseLabel
+                : toggle.dataset.playLabel) ?? ""
+        }
+      }
+
+      const stop = (row: Row) => {
+        row.api?.destroy()
+        row.api = undefined
+        row.autoScroll = undefined
+        delete row.viewport.dataset.active
+        // A static row scrolls natively; give it a tab stop when it overflows
+        // and has no reachable content of its own.
+        if (!row.ownTabIndex) return
+        const overflows = row.viewport.scrollWidth > row.viewport.clientWidth
+        const focusable = [
+          ...row.viewport.querySelectorAll<HTMLElement>(focusableSelector),
+        ].some(reachable)
+        if (overflows && !focusable) row.viewport.tabIndex = 0
+        else row.viewport.removeAttribute("tabindex")
+      }
+
+      const evaluate = (row: Row) => {
+        if (reducedMotion.matches || !toggles.some(usable)) return stop(row)
+        if (row.api) return
+        row.viewport.scrollLeft = 0
+        const autoScroll = AutoScroll({
+          speed: 1,
+          startDelay: 0,
+          playOnInit: false,
+          stopOnFocusIn: false,
+          stopOnInteraction: true,
+          direction: row.viewport.hasAttribute("data-reverse")
+            ? "backward"
+            : "forward",
+        })
+        const api = EmblaCarousel(
+          row.viewport,
+          {
+            loop: true,
+            dragFree: true,
+            direction:
+              getComputedStyle(row.viewport).direction === "rtl"
+                ? "rtl"
+                : "ltr",
+          },
+          [autoScroll]
+        )
+        if (!loops(api)) {
+          api.destroy()
+          return stop(row)
+        }
+        row.api = api
+        row.autoScroll = autoScroll
+        row.viewport.dataset.active = ""
+        if (row.ownTabIndex) row.viewport.removeAttribute("tabindex")
+        api.on("pointerDown", () => {
+          playing = false
+          sync()
+        })
+        api.on("reInit", () => {
+          if (!loops(api)) stop(row)
+          sync()
+        })
+      }
+
+      // Rows start or stop when their size changes, such as a static row
+      // whose content no longer fits, and when a toggle can no longer be
+      // pressed or seen. That covers changes to the toggle and its ancestors,
+      // and breakpoints that hide the toggle or its container.
+      let frame = 0
+      const refresh = () => {
+        cancelAnimationFrame(frame)
+        frame = requestAnimationFrame(() => {
+          for (const row of rows) evaluate(row)
+          sync()
+        })
+      }
+      const observer = new ResizeObserver(refresh)
+      const controls = new MutationObserver(refresh)
+      for (const toggle of toggles) {
+        for (
+          let element: Element | null = toggle;
+          element;
+          element = element.parentElement
+        ) {
+          if (element.hasAttribute("data-marquee-control")) continue
+          controls.observe(element, {
+            attributeFilter: [
+              "class",
+              "style",
+              "hidden",
+              "disabled",
+              "aria-disabled",
+              "inert",
+            ],
+          })
+          if (root.contains(element)) observer.observe(element)
+        }
+      }
+      for (const row of rows) {
+        observer.observe(row.viewport)
+        for (const item of row.viewport.firstElementChild?.children ?? [])
+          observer.observe(item)
+      }
+
+      const onMotionChange = () => {
+        for (const row of rows) evaluate(row)
+        sync()
+      }
+      const onFocusIn = (event: FocusEvent) => {
+        if (
+          event.target instanceof Element &&
+          event.target.closest("[data-marquee-toggle]")
+        )
+          return
+        playing = false
+        sync()
+      }
+      const onPointerEnter = (event: PointerEvent) => {
+        if (event.pointerType !== "mouse") return
+        hovered = true
+        sync()
+      }
+      const onPointerLeave = () => {
+        hovered = false
+        sync()
+      }
+      const onToggle = () => {
+        playing = !playing
+        sync()
+      }
+
+      reducedMotion.addEventListener("change", onMotionChange)
+      root.addEventListener("focusin", onFocusIn)
+      for (const row of rows) {
+        row.viewport.addEventListener("pointerenter", onPointerEnter)
+        row.viewport.addEventListener("pointerleave", onPointerLeave)
+      }
+      for (const toggle of toggles) toggle.addEventListener("click", onToggle)
+      for (const row of rows) evaluate(row)
+      sync()
+
+      instances.set(root, () => {
+        cancelAnimationFrame(frame)
+        observer.disconnect()
+        controls.disconnect()
+        reducedMotion.removeEventListener("change", onMotionChange)
+        root.removeEventListener("focusin", onFocusIn)
+        for (const row of rows) {
+          row.viewport.removeEventListener("pointerenter", onPointerEnter)
+          row.viewport.removeEventListener("pointerleave", onPointerLeave)
+        }
+        for (const toggle of toggles)
+          toggle.removeEventListener("click", onToggle)
+        for (const row of rows) row.api?.destroy()
+      })
     }
   }
-</style>
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const cleanup of instances.values()) cleanup()
+    instances.clear()
+  })
+</script>

@@ -22,6 +22,21 @@ const [searchItems, breadcrumbItems] = await Promise.all([
   getPageSearchItems(),
   getPageBreadcrumbItems(Astro.url.pathname),
 ])
+
+let githubStars: number | undefined
+
+try {
+  const response = await fetch(
+    `https://api.github.com/repos/${global.header.githubRepo}`
+  )
+  const data = await response.json()
+
+  if (response.ok && typeof data.stargazers_count === "number") {
+    githubStars = data.stargazers_count
+  }
+} catch {
+  // Leave the stars unset so Sidebar1 shows its fallback label.
+}
 ---
 
 <Layout>
@@ -41,6 +56,7 @@ const [searchItems, breadcrumbItems] = await Promise.all([
   </LayoutHead>
   <LayoutBody>
     <Sidebar1
+      currentPath={Astro.url.pathname}
       logo={global.logo}
       search={{
         items: searchItems,
@@ -52,6 +68,19 @@ const [searchItems, breadcrumbItems] = await Promise.all([
       }}
       navigation={global.sidebar.navigation}
       githubRepo={global.header.githubRepo}
+      githubStars={githubStars}
+      labels={{
+        sidebar: "Documentation",
+        github: `View ${global.header.githubRepo} on GitHub`,
+        stars: "Stars",
+        breadcrumb: "Breadcrumb",
+        breadcrumbMenu: "Toggle menu",
+        sidebarToggle: "Toggle Sidebar",
+        mobileTitle: "Sidebar",
+        mobileDescription: "Displays the mobile sidebar.",
+        theme: "Toggle theme",
+        shortcut: { mac: "⌘ + K", other: "Ctrl + K" },
+      }}
     >
       {/* SidebarInset already renders the page's main element. */}
       <div class="@container flex flex-col rounded-[inherit]">

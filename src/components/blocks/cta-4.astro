@@ -23,23 +23,21 @@ import PlaceholderImage from "@/assets/placeholder.svg"
 type Props = HTMLAttributes<"section"> & {
   title: string
   description: string
-  buttons?: {
+  buttons: {
     label: string
     href: string
-    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
-  socialProof?: {
+  socialProof: {
     avatars: {
       image?: ImageMetadata
       initials: string
-      name?: string
     }[]
     rating: number
+    ratingLabel: string
     text: string
   }
   image?: {
     src: ImageMetadata
-    alt: string
   }
 }
 
@@ -49,61 +47,56 @@ const {
   description,
   buttons,
   socialProof,
-  image = { src: PlaceholderImage, alt: "CTA image" },
+  image = { src: PlaceholderImage },
   ...props
 } = Astro.props
 ---
 
 <Section
   variant="floating"
-  class={cn("dark bg-background overflow-hidden", className)}
+  class={cn("dark bg-background text-foreground overflow-hidden", className)}
   {...props}
 >
   <Image
     src={image.src}
-    alt={image.alt}
+    alt=""
     class="absolute inset-0 size-full object-cover opacity-50"
     widths={[640, 960, 1280, 1536]}
     sizes="(min-width: 80rem) 80rem, 100vw"
   />
-  <SectionContainer class="items-center text-center">
+  <SectionContainer class="flex flex-col gap-8 items-center text-center">
     <div class="flex max-w-2xl flex-col items-center gap-5">
       <SectionTitle class="leading-[1.1]">{title}</SectionTitle>
       <SectionDescription>{description}</SectionDescription>
     </div>
-    {buttons?.length && (
-      <div class="flex flex-wrap justify-center gap-3">
-        {buttons.map(({ href, label, ...button }, index) => (
-          <Button
-            as="a"
-            href={href}
-            size="lg"
-            variant={button.variant ?? (index === 0 ? "default" : "outline")}
-            {...button}
-          >
-            {label}
-          </Button>
+    <div class="flex flex-wrap justify-center gap-3">
+      {buttons.map(({ href, label }, index) => (
+        <Button
+          as="a"
+          href={href}
+          size="lg"
+          variant={index === 0 ? "default" : "outline"}
+        >
+          {label}
+        </Button>
+      ))}
+    </div>
+    <div class="flex items-center gap-3">
+      <AvatarGroup aria-hidden="true">
+        {socialProof.avatars.map((avatar) => (
+          <Avatar class="ring-background size-11 ring">
+            <AvatarImage src={avatar.image} />
+            <AvatarFallback>{avatar.initials}</AvatarFallback>
+          </Avatar>
         ))}
+      </AvatarGroup>
+      <div class="flex flex-col gap-0.5">
+        <Rating
+          value={socialProof.rating}
+          aria-label={socialProof.ratingLabel}
+        />
+        <span class="text-muted-foreground text-sm">{socialProof.text}</span>
       </div>
-    )}
-    {socialProof && (
-      <div class="flex items-center gap-3">
-        <AvatarGroup>
-          {socialProof.avatars.map((avatar) => (
-            <Avatar class="ring-background size-11 ring">
-              <AvatarImage
-                src={avatar.image}
-                alt={avatar.name ?? avatar.initials}
-              />
-              <AvatarFallback>{avatar.initials}</AvatarFallback>
-            </Avatar>
-          ))}
-        </AvatarGroup>
-        <div class="flex flex-col gap-0.5">
-          <Rating value={socialProof.rating} />
-          <span class="text-muted-foreground text-sm">{socialProof.text}</span>
-        </div>
-      </div>
-    )}
+    </div>
   </SectionContainer>
 </Section>

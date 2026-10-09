@@ -3,24 +3,13 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-  FieldLegend,
-  FieldSet,
-} from "@/components/ui/field"
-import { Form } from "@/components/ui/form"
 import { Icon } from "@/components/ui/icon"
-import { Input } from "@/components/ui/input"
 import {
   Section,
   SectionContainer,
   SectionDescription,
   SectionTitle,
 } from "@/components/ui/section"
-import { Textarea } from "@/components/ui/textarea"
 
 type Props = HTMLAttributes<"section"> & {
   title: string
@@ -31,20 +20,6 @@ type Props = HTMLAttributes<"section"> & {
     description: string
     href?: string
   }[]
-  form: {
-    id?: string
-    action?: string
-    method?: "get" | "post"
-    legend: string
-    nameLabel: string
-    namePlaceholder: string
-    emailLabel: string
-    emailPlaceholder: string
-    messageLabel: string
-    messagePlaceholder: string
-    messageDescription: string
-    actionLabel: string
-  }
 }
 
 const {
@@ -52,103 +27,52 @@ const {
   title,
   description,
   contactItems,
-  form,
   ...props
 } = Astro.props
-const formId = form.id ?? `contact-${crypto.randomUUID()}`
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContainer class="items-center gap-6 text-center">
+  <SectionContainer class="flex flex-col items-center gap-6 text-center">
     <div class="flex max-w-2xl flex-col items-center gap-4">
       <SectionTitle>{title}</SectionTitle>
       <SectionDescription class="max-w-2xl">{description}</SectionDescription>
     </div>
   </SectionContainer>
   <SectionContainer>
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {contactItems.map((item) => (
-        <div class="flex flex-col gap-3 rounded-xl border p-5">
-          {item.href ? (
-            <Button
-              as="a"
-              href={item.href}
-              variant="secondary"
-              size="icon"
-              class="text-primary"
-              aria-label={item.title}
-            >
-              <Icon name={item.icon} />
-            </Button>
-          ) : (
-            <Button
-              as="span"
-              variant="secondary"
-              size="icon"
-              class="text-primary"
-              aria-hidden="true"
-            >
-              <Icon name={item.icon} />
-            </Button>
-          )}
+        <li class="flex flex-col gap-3 rounded-xl border p-5">
+          <Button
+            as="span"
+            variant="secondary"
+            size="icon"
+            class="text-primary"
+            aria-hidden="true"
+          >
+            <Icon name={item.icon} />
+          </Button>
           <h3 class="text-foreground text-sm font-medium">{item.title}</h3>
-          <p class="text-muted-foreground text-sm leading-relaxed">
-            {item.description}
-          </p>
-        </div>
+          {item.href != null ? (
+            <a
+              href={item.href}
+              class="text-muted-foreground hover:text-foreground text-sm leading-relaxed wrap-anywhere underline-offset-4 hover:underline"
+            >
+              {item.description}
+            </a>
+          ) : (
+            <p class="text-muted-foreground text-sm leading-relaxed wrap-anywhere">
+              {item.description}
+            </p>
+          )}
+        </li>
       ))}
-    </div>
+    </ul>
   </SectionContainer>
-  <SectionContainer>
-    <div class="mx-auto w-full max-w-2xl rounded-xl border p-6 sm:p-8">
-      <Form id={formId} action={form.action} method={form.method ?? "post"}>
-        <FieldSet>
-          <FieldLegend class="sr-only">{form.legend}</FieldLegend>
-          <FieldGroup>
-            <div class="grid gap-4 md:grid-cols-2">
-              <Field>
-                <FieldLabel for={`${formId}-name`}>{form.nameLabel}</FieldLabel>
-                <Input
-                  id={`${formId}-name`}
-                  name="name"
-                  autocomplete="name"
-                  required
-                  placeholder={form.namePlaceholder}
-                />
-              </Field>
-              <Field>
-                <FieldLabel for={`${formId}-email`}>
-                  {form.emailLabel}
-                </FieldLabel>
-                <Input
-                  id={`${formId}-email`}
-                  name="email"
-                  autocomplete="email"
-                  required
-                  type="email"
-                  placeholder={form.emailPlaceholder}
-                />
-              </Field>
-            </div>
-            <Field>
-              <FieldLabel for={`${formId}-message`}>
-                {form.messageLabel}
-              </FieldLabel>
-              <Textarea
-                id={`${formId}-message`}
-                name="message"
-                required
-                rows={5}
-                placeholder={form.messagePlaceholder}
-              />
-              <FieldDescription>{form.messageDescription}</FieldDescription>
-            </Field>
-            <Button type="submit" size="lg" class="w-full">
-              {form.actionLabel}
-            </Button>
-          </FieldGroup>
-        </FieldSet>
-      </Form>
-    </div>
-  </SectionContainer>
+  {Astro.slots.has("default") && (
+    <SectionContainer>
+      <div class="mx-auto w-full max-w-2xl rounded-xl border p-6 sm:p-8">
+        <slot />
+      </div>
+    </SectionContainer>
+  )}
 </Section>

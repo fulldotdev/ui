@@ -19,14 +19,16 @@ type Props = HTMLAttributes<"section"> & {
   }
   price: {
     value: number
+    compareAt?: number
     currency: string
     unit: string
   }
+  locale?: string
+  discountLabel?: string
   note: string
   buttons: {
     label: string
     href: string
-    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
 }
 
@@ -37,6 +39,8 @@ const {
   description,
   image,
   price,
+  locale,
+  discountLabel,
   note,
   buttons,
   ...props
@@ -48,7 +52,11 @@ const {
     <Image
       src={image.src}
       alt={image.alt}
-      class="aspect-[16/11] rounded-lg object-cover"
+      class="aspect-[16/11] w-full rounded-lg object-cover"
+      widths={[640, 960, 1280]}
+      sizes="(min-width: 80rem) 608px, (min-width: 64rem) 50vw, 100vw"
+      loading="eager"
+      fetchpriority="high"
     />
     <div class="flex flex-col gap-5">
       <Badge variant="secondary" class="w-fit">
@@ -59,13 +67,23 @@ const {
       </h1>
       <p class="text-muted-foreground text-lg leading-8">{description}</p>
       <Price>
-        <PriceValue price={price.value} currency={price.currency} />
+        <PriceValue
+          price={price.value}
+          compareAt={price.compareAt}
+          currency={price.currency}
+          locale={locale}
+          discountLabel={discountLabel}
+        />
         <PriceUnit>{price.unit}</PriceUnit>
       </Price>
       <p class="border-y py-4 text-sm leading-7">{note}</p>
       <div class="flex flex-wrap gap-3">
-        {buttons.map(({ href, label, ...button }) => (
-          <Button as="a" href={href} variant={button.variant}>
+        {buttons.map(({ href, label }, index) => (
+          <Button
+            as="a"
+            href={href}
+            variant={index === 0 ? "default" : "outline"}
+          >
             {label}
           </Button>
         ))}

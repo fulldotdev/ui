@@ -24,10 +24,10 @@ type Props = HTMLAttributes<"section"> & {
     question: string
     answer: string
   }[]
+  defaultItem?: string
   buttons?: {
     label: string
     href: string
-    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
 }
 
@@ -36,26 +36,26 @@ const {
   title,
   description,
   faqs,
+  defaultItem,
   buttons,
   ...props
 } = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContainer class="items-center text-center">
+  <SectionContainer class="flex flex-col gap-8 items-center text-center">
     <div class="flex max-w-2xl flex-col items-center gap-5">
       <SectionTitle>{title}</SectionTitle>
       <SectionDescription>{description}</SectionDescription>
     </div>
-    {buttons?.length && (
+    {buttons && buttons.length > 0 && (
       <div class="flex flex-wrap justify-center gap-3">
-        {buttons.map(({ href, label, ...button }, index) => (
+        {buttons.map(({ href, label }, index) => (
           <Button
             as="a"
             href={href}
             size="lg"
-            variant={button.variant ?? (index === 0 ? "default" : "secondary")}
-            {...button}
+            variant={index === 0 ? "default" : "secondary"}
           >
             {label}
           </Button>
@@ -65,7 +65,7 @@ const {
   </SectionContainer>
   <SectionContainer>
     <div class="mx-auto w-full max-w-3xl">
-      <Accordion collapsible>
+      <Accordion collapsible defaultValue={defaultItem}>
         {faqs.map((item) => (
           <AccordionItem value={item.id}>
             <AccordionTrigger>{item.question}</AccordionTrigger>

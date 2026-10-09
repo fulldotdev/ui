@@ -3,11 +3,19 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-type Props = Omit<HTMLAttributes<"div">, "src"> & {
+type Props = Omit<HTMLAttributes<"iframe">, "src"> & {
   src?: string
 }
 
-const { class: className, src, ...props } = Astro.props
+const {
+  class: className,
+  src,
+  title = "Embedded video",
+  allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
+  allowfullscreen = true,
+  "data-slot": dataSlot = "video",
+  ...props
+} = Astro.props
 
 const getEmbedSrc = (value?: string) => {
   if (!value) return undefined
@@ -42,14 +50,15 @@ const isShort = src?.includes("/shorts/")
 {embedSrc && (
   <iframe
     src={embedSrc}
-    title="Embedded video"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-    allowfullscreen
+    title={title}
+    allow={allow}
+    allowfullscreen={allowfullscreen}
     class={cn(
       "cn-video w-full",
       isShort ? "aspect-9/16 max-w-xs" : "aspect-video",
       className
     )}
+    data-slot={dataSlot}
     {...props}
   />
 )}

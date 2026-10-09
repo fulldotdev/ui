@@ -15,17 +15,18 @@ import {
 type Props = HTMLAttributes<"section"> & {
   title: string
   description: string
-  buttons?: {
+  buttons: {
     label: string
     href: string
-    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
   features: {
     title: string
     description: string
     icon: string
-    href?: string
-    linkText?: string
+    link?: {
+      label: string
+      href: string
+    }
   }[]
 }
 
@@ -40,19 +41,18 @@ const {
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContainer class="items-center gap-6 text-center">
+  <SectionContainer class="flex flex-col items-center gap-6 text-center">
     <div class="flex max-w-2xl flex-col items-center gap-4">
       <SectionTitle>{title}</SectionTitle>
       <SectionDescription class="max-w-2xl">{description}</SectionDescription>
     </div>
-    {buttons?.length && (
+    {buttons.length > 0 && (
       <div class="flex flex-wrap justify-center gap-3">
-        {buttons.map(({ href, label, ...button }, index) => (
+        {buttons.map(({ href, label }, index) => (
           <Button
             as="a"
             href={href}
-            variant={button.variant ?? (index === 0 ? "default" : "outline")}
-            {...button}
+            variant={index === 0 ? "default" : "outline"}
           >
             {label}
           </Button>
@@ -61,9 +61,9 @@ const {
     )}
   </SectionContainer>
   <SectionContainer>
-    <div class="grid gap-6 sm:grid-cols-2">
+    <ul class="grid gap-6 sm:grid-cols-2">
       {features.map((feature) => (
-        <div class="group/feature hover:bg-muted/40 flex flex-col gap-4 rounded-xl border p-6 transition-colors">
+        <li class="flex flex-col gap-4 rounded-xl border p-6">
           <div class="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
             <Icon name={feature.icon} class="size-5" />
           </div>
@@ -75,17 +75,17 @@ const {
               {feature.description}
             </p>
           </div>
-          {feature.href && feature.linkText && (
+          {feature.link && (
             <a
-              href={feature.href}
+              href={feature.link.href}
               class="text-primary mt-auto inline-flex items-center gap-1 text-sm font-medium hover:underline"
             >
-              {feature.linkText}
+              {feature.link.label}
               <ArrowRightIcon class="size-3.5" />
             </a>
           )}
-        </div>
+        </li>
       ))}
-    </div>
+    </ul>
   </SectionContainer>
 </Section>

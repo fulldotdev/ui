@@ -14,23 +14,18 @@ import {
 import PlaceholderImage from "@/assets/placeholder.svg"
 
 type Props = HTMLAttributes<"section"> & {
-  badge?: string
+  badge: string
   title: string
-  description?: string
-  buttons?: {
-    label: string
-    href: string
-    variant?: "default" | "outline" | "secondary" | "ghost"
-  }[]
+  description: string
   services: {
     image?: {
       src: ImageMetadata
       alt: string
     }
-    label?: string
+    label: string
     title: string
     description: string
-    button?: {
+    button: {
       label: string
       href: string
     }
@@ -42,62 +37,46 @@ const {
   badge,
   title,
   description,
-  buttons,
   services,
   ...props
 } = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContainer class="gap-12">
+  <SectionContainer class="flex flex-col gap-12">
     <div class="mx-auto max-w-2xl text-center">
-      {badge && <Badge variant="secondary">{badge}</Badge>}
+      <Badge variant="secondary">{badge}</Badge>
       <SectionTitle class="mt-4">{title}</SectionTitle>
-      {description && (
-        <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">
-          {description}
-        </p>
-      )}
-      {buttons?.length && (
-        <div class="mt-6 flex flex-wrap justify-center gap-3">
-          {buttons.map(({ href, label, ...button }) => (
-            <Button as="a" href={href} variant={button.variant}>
-              {label}
-            </Button>
-          ))}
-        </div>
-      )}
+      <p class="text-muted-foreground mt-4 text-base leading-relaxed text-balance">
+        {description}
+      </p>
     </div>
     <div class="grid gap-6 lg:gap-8">
       {services.map((service) => (
-        <div class="group/service grid items-center gap-6 rounded-xl border p-4 shadow-xs transition-shadow hover:shadow-md md:grid-cols-[16rem_minmax(0,1fr)] md:p-0">
+        <div class="grid items-center gap-6 rounded-xl border p-4 shadow-xs md:grid-cols-[16rem_minmax(0,1fr)] md:p-0">
           <Image
             src={service.image?.src ?? PlaceholderImage}
-            alt={service.image?.alt ?? service.title}
+            alt={service.image?.alt ?? ""}
             class="aspect-[4/3] w-full rounded-lg object-cover md:aspect-auto md:h-full md:rounded-l-xl md:rounded-r-none"
             widths={[320, 480]}
             sizes="(min-width: 768px) 16rem, 100vw"
           />
           <div class="flex flex-col gap-2 py-2 md:py-6 md:pr-6">
-            {service.label && (
-              <span class="text-primary text-xs font-medium tracking-wider uppercase">
-                {service.label}
-              </span>
-            )}
+            <span class="text-primary text-xs font-medium tracking-wider uppercase">
+              {service.label}
+            </span>
             <h3 class="text-lg font-medium">{service.title}</h3>
             <p class="text-muted-foreground text-sm leading-relaxed">
               {service.description}
             </p>
-            {service.button && (
-              <Button
-                as="a"
-                href={service.button.href}
-                variant="secondary"
-                class="mt-1 w-fit"
-              >
-                {service.button.label}
-              </Button>
-            )}
+            <Button
+              as="a"
+              href={service.button.href}
+              variant="secondary"
+              class="mt-1 w-fit"
+            >
+              {service.button.label}
+            </Button>
           </div>
         </div>
       ))}

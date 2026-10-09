@@ -13,11 +13,9 @@ type Props = HTMLAttributes<"section"> & {
   buttons: {
     label: string
     href: string
-    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
   image: {
     src: ImageMetadata
-    alt: string
   }
 }
 
@@ -35,7 +33,7 @@ const {
   class={cn("dark bg-background min-h-[80vh] justify-center", className)}
   {...props}
 >
-  <SectionContainer class="relative z-10 items-center gap-8 text-center">
+  <SectionContainer class="flex flex-col relative z-10 items-center gap-8 text-center">
     <h1 class="text-foreground max-w-4xl text-4xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
       {title}
     </h1>
@@ -43,13 +41,12 @@ const {
       {description}
     </p>
     <div class="flex flex-wrap justify-center gap-3">
-      {buttons.map(({ href, label, ...button }, index) => (
+      {buttons.map(({ href, label }, index) => (
         <Button
           as="a"
           href={href}
           size="lg"
-          variant={button.variant ?? (index === 0 ? "default" : "secondary")}
-          {...button}
+          variant={index === 0 ? "default" : "secondary"}
         >
           {label}
         </Button>
@@ -59,7 +56,7 @@ const {
   <div class="bg-background pointer-events-none absolute inset-0">
     <Image
       src={image.src}
-      alt={image.alt}
+      alt=""
       class="size-full object-cover opacity-50"
       widths={[640, 960, 1280, 1920]}
       sizes="100vw"

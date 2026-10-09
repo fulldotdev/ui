@@ -1,0 +1,31 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"div"> & {
+  reverse?: boolean
+}
+
+const {
+  class: className,
+  reverse = false,
+  "data-slot": dataSlot = "marquee-content",
+  ...props
+} = Astro.props
+---
+
+<div
+  data-slot={dataSlot}
+  data-marquee-viewport
+  data-reverse={reverse ? "" : undefined}
+  class={cn(
+    "focus-visible:ring-ring/50 overflow-x-auto outline-none contain-inline-size focus-visible:ring-3 data-active:overflow-hidden",
+    className
+  )}
+  {...props}
+>
+  <div class="-ms-[var(--marquee-gap,--spacing(4))] flex justify-center-safe">
+    <slot />
+  </div>
+</div>

@@ -21,18 +21,17 @@ import {
 type Props = HTMLAttributes<"section"> & {
   title: string
   description: string
-  buttons?: {
+  buttons: {
     label: string
     href: string
-    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
   socialProof?: {
     avatars: {
       image?: ImageMetadata
       initials: string
-      name?: string
     }[]
     rating: number
+    ratingLabel: string
     text: string
   }
 }
@@ -48,22 +47,22 @@ const {
 ---
 
 <Section variant="floating" class={cn("", className)} {...props}>
-  <SectionContainer class="items-center text-center">
+  <SectionContainer class="flex flex-col gap-8 items-center text-center">
     {socialProof && (
       <div class="flex flex-col items-center gap-3">
-        <AvatarGroup>
+        <AvatarGroup aria-hidden="true">
           {socialProof.avatars.map((avatar) => (
             <Avatar class="ring-background size-11 ring">
-              <AvatarImage
-                src={avatar.image}
-                alt={avatar.name ?? avatar.initials}
-              />
+              <AvatarImage src={avatar.image} />
               <AvatarFallback>{avatar.initials}</AvatarFallback>
             </Avatar>
           ))}
         </AvatarGroup>
         <div class="flex items-center gap-2">
-          <Rating value={socialProof.rating} />
+          <Rating
+            value={socialProof.rating}
+            aria-label={socialProof.ratingLabel}
+          />
           <span class="text-muted-foreground text-sm">{socialProof.text}</span>
         </div>
       </div>
@@ -72,20 +71,17 @@ const {
       <SectionTitle class="leading-[1.1]">{title}</SectionTitle>
       <SectionDescription>{description}</SectionDescription>
     </div>
-    {buttons?.length && (
-      <div class="flex flex-wrap justify-center gap-3">
-        {buttons.map(({ href, label, ...button }, index) => (
-          <Button
-            as="a"
-            href={href}
-            size="lg"
-            variant={button.variant ?? (index === 0 ? "default" : "secondary")}
-            {...button}
-          >
-            {label}
-          </Button>
-        ))}
-      </div>
-    )}
+    <div class="flex flex-wrap justify-center gap-3">
+      {buttons.map(({ href, label }, index) => (
+        <Button
+          as="a"
+          href={href}
+          size="lg"
+          variant={index === 0 ? "default" : "secondary"}
+        >
+          {label}
+        </Button>
+      ))}
+    </div>
   </SectionContainer>
 </Section>

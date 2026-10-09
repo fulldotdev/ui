@@ -20,21 +20,32 @@ import {
 type Props = HTMLAttributes<"section"> & {
   badge: string
   title: string
+  locale?: string
+  discountLabel?: string
   products: {
     title: string
     description: string
     price: {
       value: number
+      compareAt?: number
       currency: string
     }
   }[]
 }
 
-const { class: className, badge, title, products, ...props } = Astro.props
+const {
+  class: className,
+  badge,
+  title,
+  locale,
+  discountLabel,
+  products,
+  ...props
+} = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
-  <SectionContainer class="gap-8">
+  <SectionContainer class="flex flex-col gap-8">
     <div class="mx-auto max-w-2xl text-center">
       <Badge variant="secondary">{badge}</Badge>
       <SectionTitle class="mt-4">{title}</SectionTitle>
@@ -47,12 +58,15 @@ const { class: className, badge, title, products, ...props } = Astro.props
               <PriceValue
                 class="text-3xl font-semibold"
                 price={product.price.value}
+                compareAt={product.price.compareAt}
                 currency={product.price.currency}
+                locale={locale}
+                discountLabel={discountLabel}
               />
             </Price>
           </CardHeader>
           <CardContent class="flex flex-col gap-2">
-            <CardTitle>{product.title}</CardTitle>
+            <CardTitle as="h3">{product.title}</CardTitle>
             <CardDescription>{product.description}</CardDescription>
           </CardContent>
         </Card>

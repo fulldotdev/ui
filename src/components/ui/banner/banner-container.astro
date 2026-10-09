@@ -6,9 +6,16 @@ import { cn } from "@/lib/utils"
 
 type Props = HTMLAttributes<"div"> & {
   showClose?: boolean
+  closeLabel?: string
 }
 
-const { class: className, showClose = true, ...props } = Astro.props
+const {
+  class: className,
+  showClose = true,
+  closeLabel = "Close",
+  "data-slot": dataSlot = "banner-container",
+  ...props
+} = Astro.props
 ---
 
 <div
@@ -17,6 +24,7 @@ const { class: className, showClose = true, ...props } = Astro.props
     showClose && "pr-10",
     className
   )}
+  data-slot={dataSlot}
   {...props}
 >
   <slot />
@@ -24,11 +32,11 @@ const { class: className, showClose = true, ...props } = Astro.props
     <button
       type="button"
       class="cn-banner-close absolute top-1/2 right-4 z-20 inline-flex shrink-0 -translate-y-1/2 items-center justify-center transition-colors outline-none disabled:pointer-events-none disabled:opacity-50 in-[[data-variant=floating]]:right-5"
-      aria-label="Close"
+      aria-label={closeLabel}
       data-slot="banner-close"
     >
       <XIcon class="size-4" />
-      <span class="sr-only">Close</span>
+      <span class="sr-only">{closeLabel}</span>
     </button>
   )}
 </div>

@@ -22,20 +22,18 @@ type Props = HTMLAttributes<"section"> & {
   buttons: {
     label: string
     href: string
-    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
   socialProof: {
     avatars: {
       image?: ImageMetadata
       initials: string
-      name?: string
     }[]
     rating: number
+    ratingLabel: string
     text: string
   }
   image: {
     src: ImageMetadata
-    alt: string
   }
 }
 
@@ -51,7 +49,7 @@ const {
 } = Astro.props
 ---
 
-<Section class={cn("dark bg-background", className)} {...props}>
+<Section class={cn("dark bg-background text-foreground", className)} {...props}>
   <SectionContainer class="grid gap-12 lg:grid-cols-2 lg:items-center">
     <div class="relative z-10 flex flex-col gap-6">
       <div class="flex flex-col gap-4">
@@ -62,39 +60,38 @@ const {
       </div>
       <ul class="flex flex-col gap-3">
         {features.map((feature) => (
-          <li class="flex items-center gap-3 text-sm">
-            <CheckIcon class="text-primary size-4 shrink-0" />
+          <li class="flex items-start gap-3 text-sm">
+            <CheckIcon class="text-primary mt-0.5 size-4 shrink-0" />
             {feature}
           </li>
         ))}
       </ul>
       <div class="flex flex-wrap gap-3">
-        {buttons.map(({ href, label, ...button }, index) => (
+        {buttons.map(({ href, label }, index) => (
           <Button
             as="a"
             href={href}
             size="lg"
-            variant={button.variant ?? (index === 0 ? "default" : "secondary")}
-            {...button}
+            variant={index === 0 ? "default" : "secondary"}
           >
             {label}
           </Button>
         ))}
       </div>
       <div class="flex items-center gap-3">
-        <AvatarGroup>
+        <AvatarGroup aria-hidden="true">
           {socialProof.avatars.map((avatar) => (
             <Avatar class="ring-background size-11 ring">
-              <AvatarImage
-                src={avatar.image}
-                alt={avatar.name ?? avatar.initials}
-              />
+              <AvatarImage src={avatar.image} />
               <AvatarFallback>{avatar.initials}</AvatarFallback>
             </Avatar>
           ))}
         </AvatarGroup>
         <div class="flex flex-col gap-0.5">
-          <Rating value={socialProof.rating} />
+          <Rating
+            value={socialProof.rating}
+            aria-label={socialProof.ratingLabel}
+          />
           <span class="text-muted-foreground text-xs">{socialProof.text}</span>
         </div>
       </div>
@@ -103,7 +100,7 @@ const {
   <div class="bg-background pointer-events-none absolute inset-0 lg:mask-l-from-30%">
     <Image
       src={image.src}
-      alt={image.alt}
+      alt=""
       class="size-full object-cover opacity-50"
       widths={[640, 960, 1280, 1920]}
       sizes="100vw"

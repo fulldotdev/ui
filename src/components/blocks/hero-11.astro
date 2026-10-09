@@ -20,20 +20,18 @@ type Props = HTMLAttributes<"section"> & {
   buttons: {
     label: string
     href: string
-    variant?: "default" | "outline" | "secondary" | "ghost"
   }[]
   socialProof: {
     avatars: {
       image?: ImageMetadata
       initials: string
-      name?: string
     }[]
     rating: number
+    ratingLabel: string
     text: string
   }
   image: {
     src: ImageMetadata
-    alt: string
   }
 }
 
@@ -52,7 +50,7 @@ const {
   class={cn("dark bg-background min-h-screen justify-center", className)}
   {...props}
 >
-  <SectionContainer class="relative z-10 items-center gap-8 text-center">
+  <SectionContainer class="flex flex-col relative z-10 items-center gap-8 text-center">
     <h1 class="text-foreground max-w-3xl text-4xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
       {title}
     </h1>
@@ -60,32 +58,31 @@ const {
       {description}
     </p>
     <div class="flex flex-wrap justify-center gap-3">
-      {buttons.map(({ href, label, ...button }, index) => (
+      {buttons.map(({ href, label }, index) => (
         <Button
           as="a"
           href={href}
           size="lg"
-          variant={button.variant ?? (index === 0 ? "default" : "secondary")}
-          {...button}
+          variant={index === 0 ? "default" : "secondary"}
         >
           {label}
         </Button>
       ))}
     </div>
     <div class="flex items-center gap-3">
-      <AvatarGroup>
+      <AvatarGroup aria-hidden="true">
         {socialProof.avatars.map((avatar) => (
           <Avatar class="ring-background size-11 ring">
-            <AvatarImage
-              src={avatar.image}
-              alt={avatar.name ?? avatar.initials}
-            />
+            <AvatarImage src={avatar.image} />
             <AvatarFallback>{avatar.initials}</AvatarFallback>
           </Avatar>
         ))}
       </AvatarGroup>
       <div class="flex flex-col gap-0.5">
-        <Rating value={socialProof.rating} />
+        <Rating
+          value={socialProof.rating}
+          aria-label={socialProof.ratingLabel}
+        />
         <span class="text-muted-foreground text-xs">{socialProof.text}</span>
       </div>
     </div>
@@ -93,7 +90,7 @@ const {
   <div class="bg-background pointer-events-none absolute inset-0 mask-y-from-0% mask-y-to-100%">
     <Image
       src={image.src}
-      alt={image.alt}
+      alt=""
       class="size-full object-cover opacity-75"
       widths={[640, 960, 1280, 1920]}
       sizes="100vw"

@@ -1,7 +1,7 @@
 import { type SchemaContext } from "astro:content"
 import { z } from "astro/zod"
 
-import { buttonSchema, linkSchema } from "@/schemas/shared"
+import { linkSchema } from "@/schemas/shared"
 
 const nestedLinkSchema = linkSchema.extend({
   links: linkSchema.array().optional(),
@@ -37,7 +37,7 @@ export const globalSchema = ({ image }: SchemaContext) =>
       .object({
         callout: z.object({
           description: z.string(),
-          button: buttonSchema,
+          button: linkSchema,
         }),
       })
       .optional(),

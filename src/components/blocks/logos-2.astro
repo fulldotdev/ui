@@ -3,7 +3,12 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 import { Logo, LogoText } from "@/components/ui/logo"
-import { Marquee } from "@/components/ui/marquee"
+import {
+  Marquee,
+  MarqueeContent,
+  MarqueeItem,
+  MarqueeToggle,
+} from "@/components/ui/marquee"
 import {
   Section,
   SectionContainer,
@@ -12,40 +17,51 @@ import {
 } from "@/components/ui/section"
 
 type Props = HTMLAttributes<"section"> & {
-  title?: string
-  description?: string
+  title: string
+  description: string
   brands: {
     name: string
     href?: string
   }[]
+  labels: {
+    play: string
+    pause: string
+  }
 }
 
-const { class: className, title, description, brands, ...props } = Astro.props
+const {
+  class: className,
+  title,
+  description,
+  brands,
+  labels,
+  ...props
+} = Astro.props
 ---
 
 <Section class={cn("", className)} {...props}>
-  {(title || description) && (
-    <SectionContainer class="items-center gap-4 text-center">
-      {title && <SectionTitle>{title}</SectionTitle>}
-      {description && (
-        <SectionDescription class="max-w-2xl">{description}</SectionDescription>
-      )}
+  <SectionContainer class="flex flex-col items-center gap-4 text-center">
+    <SectionTitle>{title}</SectionTitle>
+    <SectionDescription class="max-w-2xl">{description}</SectionDescription>
+  </SectionContainer>
+  <Marquee class="flex flex-col gap-4 [--marquee-gap:--spacing(12)]">
+    <SectionContainer class="flex justify-end">
+      <MarqueeToggle playLabel={labels.play} pauseLabel={labels.pause} />
     </SectionContainer>
-  )}
-  <Marquee
-    class="text-muted-foreground mask-x-from-90%"
-    gap="3rem"
-    duration="30s"
-    pauseOnHover
-    infinite
-  >
-    {brands.map((brand) => (
-      <Logo
-        class="hover:text-foreground grayscale transition-all hover:grayscale-0"
-        href={brand.href}
-      >
-        <LogoText>{brand.name}</LogoText>
-      </Logo>
-    ))}
+    <MarqueeContent class="text-muted-foreground mask-x-from-90%">
+      {brands.map((brand) => (
+        <MarqueeItem class="flex items-center">
+          <Logo
+            class={cn(
+              brand.href != null &&
+                "hover:text-foreground focus-visible:text-foreground transition-colors"
+            )}
+            href={brand.href}
+          >
+            <LogoText>{brand.name}</LogoText>
+          </Logo>
+        </MarqueeItem>
+      ))}
+    </MarqueeContent>
   </Marquee>
 </Section>
