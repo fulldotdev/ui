@@ -1,5 +1,32 @@
 [build]
-# The same settings as the site had in the Netlify UI. Netlify reads Node from
-# .node-version.
 command = "pnpm run build"
 publish = "dist"
+
+[build.environment]
+NODE_VERSION = "24"
+PNPM_FLAGS = "--frozen-lockfile --ignore-scripts --ignore-pnpmfile"
+pnpm_config_ignore_scripts = "true"
+pnpm_config_ignore_pnpmfile = "true"
+
+# PostHog, through this domain so blockers of analytics domains don't drop it.
+# The asset rules come first; see posthog.com/docs/advanced/proxy/netlify.
+[[redirects]]
+from = "/ingest/static/*"
+to = "https://eu-assets.i.posthog.com/static/:splat"
+host = "eu-assets.i.posthog.com"
+status = 200
+force = true
+
+[[redirects]]
+from = "/ingest/array/*"
+to = "https://eu-assets.i.posthog.com/array/:splat"
+host = "eu-assets.i.posthog.com"
+status = 200
+force = true
+
+[[redirects]]
+from = "/ingest/*"
+to = "https://eu.i.posthog.com/:splat"
+host = "eu.i.posthog.com"
+status = 200
+force = true

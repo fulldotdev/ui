@@ -21,10 +21,6 @@ export default function (options: Options): AstroIntegration {
       "astro:config:setup": ({ updateConfig }) => {
         updateConfig({
           site: options.site,
-          image: {
-            responsiveStyles: true,
-            breakpoints: [640, 960, 1280, 1600, 1920],
-          },
           prefetch: {
             prefetchAll: false,
           },
@@ -54,6 +50,26 @@ export default function (options: Options): AstroIntegration {
               },
               name: options.name,
               short_name: options.name,
+              // A website, not an app: open in the browser and keep only the
+              // icons current browsers use.
+              manifest: {
+                display: "browser",
+                display_override: [],
+                start_url: "/",
+              },
+              // Keep the head in the order base.astro writes it.
+              withCapo: false,
+              icons: {
+                favicons: true,
+                android: [
+                  "android-chrome-192x192.png",
+                  "android-chrome-512x512.png",
+                ],
+                appleIcon: ["apple-touch-icon.png"],
+                appleStartup: false,
+                windows: false,
+                yandex: false,
+              },
             }),
           ],
           vite: {

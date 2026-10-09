@@ -6,7 +6,7 @@ export type StoredPreset = {
   fonts?: string[]
 }
 
-export const PRESET_KEY = "fulldev-ui-preset"
+const PRESET_KEY = "fulldev-ui-preset"
 export const PRESET_EVENT = "preset:change"
 
 export function readPreset(): StoredPreset | undefined {
@@ -26,7 +26,7 @@ export function writePreset(preset: StoredPreset | undefined) {
 
 // Theme variables and fonts. The head script in preset-head.astro does the
 // same before the first paint.
-export function applyTheme(preset: StoredPreset | undefined) {
+function applyTheme(preset: StoredPreset | undefined) {
   let style = document.getElementById(PRESET_KEY)
   if (!style) {
     style = document.createElement("style")
@@ -57,7 +57,7 @@ const render = (preview: HTMLElement, style: string) => {
   return template.content
 }
 
-export function applyStyle(style: string) {
+function applyStyle(style: string) {
   let changed = false
   document
     .querySelectorAll<HTMLElement>("[data-style-preview]")

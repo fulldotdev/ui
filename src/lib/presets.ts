@@ -33,7 +33,7 @@ type Theme = {
 
 const themeList = themes as Theme[]
 
-export const BASE_COLORS = [
+const BASE_COLORS = [
   "neutral",
   "stone",
   "zinc",
@@ -125,7 +125,7 @@ const findTheme = (name: string) =>
   themeList.find((theme) => theme.name === name)
 
 // Same rules as shadcn/ui's buildRegistryTheme.
-export function themeVars(config: PresetConfig) {
+function themeVars(config: PresetConfig) {
   const base = findTheme(config.baseColor)
   const theme = findTheme(config.theme) ?? base
   const light: Vars = { ...base?.cssVars.light, ...theme?.cssVars.light }
@@ -151,10 +151,9 @@ export function themeVars(config: PresetConfig) {
   return { light, dark }
 }
 
-export const findFont = (name: string) =>
-  fonts.find((font) => font.name === name)
+const findFont = (name: string) => fonts.find((font) => font.name === name)
 
-export const fontUrl = (dependency: string) =>
+const fontUrl = (dependency: string) =>
   `https://cdn.jsdelivr.net/npm/${dependency}/index.css`
 
 // CSS for the whole docs page. :root:root wins over the site theme.

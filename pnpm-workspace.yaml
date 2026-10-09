@@ -1,13 +1,15 @@
+# No dependency runs install scripts, here, in CI or on Netlify. esbuild and sharp
+# ship prebuilt binaries as optional dependencies.
 allowBuilds:
   core-js: false
-  esbuild: true
-  sharp: true
+  esbuild: false
+  sharp: false
 
 overrides:
   # favilib 1.0.5 (via astro-favicons, docs site only) pins sharp ^0.33.5,
   # which is vulnerable below 0.35.4. It only uses resize and metadata, which
   # work the same in 0.35.
-  "favilib>sharp": ^0.35.4
+  "favilib>sharp": ^0.35.5
 
 # Supply-chain protection on top of the pnpm defaults (24h release age, no exotic subdependencies).
 # When only a release under a day old fits, ask (fail in CI) instead of installing it anyway.
@@ -18,3 +20,5 @@ trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 10080
 # Never run .pnpmfile hooks.
 ignorePnpmfile: true
+# Never run lifecycle scripts, including this project's own. allowBuilds only covers dependencies.
+ignoreScripts: true

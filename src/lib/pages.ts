@@ -16,7 +16,7 @@ export type PageBreadcrumbItem = {
   href: string
 }
 
-export const normalizePath = (path: string) => {
+const normalizePath = (path: string) => {
   if (path === "/") return path
 
   return path.replace(/\/$/, "")
@@ -25,7 +25,7 @@ export const normalizePath = (path: string) => {
 export const getPageHref = (page: Page) =>
   page.id === "index" ? "/" : `/${page.id}/`
 
-export const formatSlug = (slug: string) =>
+const formatSlug = (slug: string) =>
   slug
     .split("-")
     .filter(Boolean)

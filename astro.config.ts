@@ -27,7 +27,10 @@ export default defineConfig({
     enabled: false,
   },
   image: {
-    breakpoints: [640, 750, 828, 1080, 1280, 1668, 2048, 2560],
+    responsiveStyles: true,
+    // Widths for images with a layout. Source photos are at most 3840 pixels,
+    // so the list ends there; the browser picks one through srcset and sizes.
+    breakpoints: [640, 828, 1080, 1280, 1920, 2560, 3840],
   },
   markdown: {
     // astro-live-code adds a remark plugin, which only runs on the unified

@@ -71,22 +71,19 @@ Visit [ui.full.dev][docs] for complete documentation, component examples, and us
 
 ## Development
 
+Requires Node 24 (`.node-version`) and pnpm 12. The published package supports Node 22.12+. Installs never run dependency or project lifecycle scripts (`pnpm-workspace.yaml`).
+
 ```bash
-# Install dependencies
-pnpm install
-
-# Start development server
-pnpm dev
-
-# Build for production
-pnpm build
-
-# Preview production build
-pnpm preview
-
-# Type check
-pnpm check
+pnpm install         # frozen lockfile in CI and on Netlify
+pnpm dev             # docs site at http://127.0.0.1:4321
+pnpm build           # builds the docs, then validates HTML and internal links and anchors
+pnpm check           # the checks every PR runs
+pnpm fix             # Prettier and ESLint fixes
+pnpm images          # converts source photos in src to WebP
+pnpm registry:build  # regenerates public/r after registry changes
 ```
+
+`pnpm check` runs Prettier, TypeScript and `astro check`, ESLint, knip, the source photo check, and, specific to this registry, `registry:check` (the committed `public/r` must match a fresh build) and the tests in `tests`.
 
 ## Contributing
 
