@@ -92,13 +92,19 @@ function Nav({ route }: { route: string }) {
         <h2 className="px-2 text-xs font-medium text-muted-foreground">
           Components ({ui.length})
         </h2>
-        <ul>{ui.map((item) => link(`ui/${item.name}`, item.title ?? item.name))}</ul>
+        <ul>
+          {ui.map((item) => link(`ui/${item.name}`, item.title ?? item.name))}
+        </ul>
       </div>
       <div className="flex flex-col gap-2">
         <h2 className="px-2 text-xs font-medium text-muted-foreground">
           Blocks ({blocks.length})
         </h2>
-        <ul>{blocks.map((item) => link(`blocks/${item.name}`, item.title ?? item.name))}</ul>
+        <ul>
+          {blocks.map((item) =>
+            link(`blocks/${item.name}`, item.title ?? item.name)
+          )}
+        </ul>
       </div>
     </nav>
   )

@@ -1,0 +1,46 @@
+import * as React from "react"
+
+import { placeholderImage } from "@/lib/placeholder-image"
+import { Logo, LogoImage, LogoText } from "@/components/ui/logo"
+
+function Example({
+  title,
+  children,
+}: {
+  title: string
+  children: React.ReactNode
+}) {
+  return (
+    <section className="flex flex-col gap-3">
+      <h2 className="text-sm font-medium text-muted-foreground">{title}</h2>
+      <div className="flex flex-wrap items-start gap-4">{children}</div>
+    </section>
+  )
+}
+
+export default function Demo() {
+  return (
+    <div className="flex flex-col gap-10 p-6">
+      <Example title="Text">
+        <Logo>
+          <LogoText>Acme</LogoText>
+        </Logo>
+      </Example>
+      <Example title="Link with image">
+        <Logo href="#/ui/logo">
+          <LogoImage src={placeholderImage.src} />
+          <LogoText>Acme</LogoText>
+        </Logo>
+      </Example>
+      <Example title="Light and dark images">
+        <Logo href="#/ui/logo">
+          <LogoImage
+            srcLight={placeholderImage.src}
+            srcDark={placeholderImage.src}
+          />
+          <LogoText>Acme</LogoText>
+        </Logo>
+      </Example>
+    </div>
+  )
+}

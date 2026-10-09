@@ -15,6 +15,8 @@ for (const style of ["vega", ...STYLES.filter((style) => style !== "vega")]) {
     GALLERY_ROOT: root,
     OUT_DIR: output + path,
   })
-  await build({ configFile: new URL("../vite.config.ts", import.meta.url).pathname })
+  await build({
+    configFile: new URL("../vite.config.ts", import.meta.url).pathname,
+  })
   console.log(`Built the ${style} gallery.`)
 }
