@@ -46,12 +46,23 @@ const {
 
   const focusableSelector =
     "a[href], area[href], button, input, select, textarea, iframe, summary, [contenteditable], [tabindex]"
+  const visible = (element: Element) =>
+    element.checkVisibility?.({ visibilityProperty: true }) ??
+    element.getClientRects().length > 0
+  // A toggle is a pause control when it can be pressed and seen. The marquee
+  // hides the toggle itself while no row moves, so visibility is read from its
+  // parent, where the caller's hiding applies.
+  const usable = (toggle: HTMLButtonElement) =>
+    !toggle.matches(":disabled") &&
+    toggle.getAttribute("aria-disabled") !== "true" &&
+    !toggle.closest("[inert]") &&
+    toggle.parentElement !== null &&
+    visible(toggle.parentElement)
   const reachable = (element: HTMLElement) =>
     element.tabIndex >= 0 &&
     !element.matches(":disabled") &&
     !element.closest("[inert]") &&
-    (element.checkVisibility?.({ visibilityProperty: true }) ??
-      element.getClientRects().length > 0)
+    visible(element)
 
   // Embla turns loop off when the slides are too few to fill the viewport.
   const loops = (api: EmblaCarouselType) =>
@@ -110,13 +121,7 @@ const {
       }
 
       const evaluate = (row: Row) => {
-        const usable = toggles.some(
-          (toggle) =>
-            !toggle.disabled &&
-            toggle.getAttribute("aria-disabled") !== "true" &&
-            !toggle.closest("[inert]")
-        )
-        if (reducedMotion.matches || !usable) return stop(row)
+        if (reducedMotion.matches || !toggles.some(usable)) return stop(row)
         if (row.api) return
         row.viewport.scrollLeft = 0
         const autoScroll = AutoScroll({
@@ -159,15 +164,22 @@ const {
         })
       }
 
-      // Embla watches size changes while it runs; this observer lets a static
-      // row start once its content no longer fits.
+      // Rows start or stop when their size changes, such as a static row
+      // whose content no longer fits or a toggle hidden at a breakpoint, and
+      // when a toggle is disabled or made inert.
       let frame = 0
-      const observer = new ResizeObserver(() => {
+      const refresh = () => {
         cancelAnimationFrame(frame)
         frame = requestAnimationFrame(() => {
-          for (const row of rows) if (!row.api) evaluate(row)
+          for (const row of rows) evaluate(row)
           sync()
         })
+      }
+      const observer = new ResizeObserver(refresh)
+      const availability = new MutationObserver(refresh)
+      availability.observe(document.documentElement, {
+        subtree: true,
+        attributeFilter: ["disabled", "aria-disabled", "inert"],
       })
       for (const row of rows) {
         observer.observe(row.viewport)
@@ -215,6 +227,7 @@ const {
       instances.set(root, () => {
         cancelAnimationFrame(frame)
         observer.disconnect()
+        availability.disconnect()
         reducedMotion.removeEventListener("change", onMotionChange)
         root.removeEventListener("focusin", onFocusIn)
         for (const row of rows) {
