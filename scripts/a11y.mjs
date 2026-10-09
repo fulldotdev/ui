@@ -165,7 +165,7 @@ try {
         .catch(() => errors.push("Images did not finish loading in 10s"))
       // Axe measures colors as they are now, so let finite animations and
       // transitions, such as styles settling after load, finish first.
-      // Endless animations are not waited for.
+      // Endless and paused animations are not waited for.
       const settled = await page.evaluate(() =>
         Promise.race([
           Promise.all(
@@ -173,7 +173,11 @@ try {
               .getAnimations()
               .filter((animation) => {
                 const { endTime } = animation.effect?.getComputedTiming() ?? {}
-                return endTime !== undefined && endTime !== Infinity
+                return (
+                  animation.playState !== "paused" &&
+                  endTime !== undefined &&
+                  endTime !== Infinity
+                )
               })
               .map((animation) => animation.finished.catch(() => {}))
           ).then(() => true),
