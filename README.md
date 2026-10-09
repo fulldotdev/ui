@@ -80,10 +80,14 @@ pnpm build           # builds the docs, then validates HTML and internal links a
 pnpm check           # the checks every PR runs
 pnpm fix             # Prettier and ESLint fixes
 pnpm images          # converts source photos in src to WebP
+pnpm ui:add @shadcn/card     # installs with the shadcn CLI, then runs Prettier
+pnpm ui:add @fulldev/button  # @fulldev resolves to the local docs site, so run pnpm dev first
 pnpm registry:build  # regenerates public/r after registry changes
 ```
 
 `pnpm check` runs Prettier, TypeScript and `astro check`, ESLint, knip, the source photo check, and, specific to this registry, `registry:check` (the committed `public/r` must match a fresh build) and the tests in `tests`.
+
+`pnpm ui:add` formats the project right after the install, so a later `pnpm fix` or `pnpm check` does not change the installed components. A plain `pnpm dlx shadcn@latest add` leaves the CLI's own formatting, which the next format run may change.
 
 ## Contributing
 
