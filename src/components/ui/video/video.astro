@@ -7,7 +7,13 @@ type Props = Omit<HTMLAttributes<"iframe">, "src"> & {
   src?: string
 }
 
-const { class: className, src, ...props } = Astro.props
+const {
+  class: className,
+  src,
+  title = "Embedded video",
+  "data-slot": dataSlot = "video",
+  ...props
+} = Astro.props
 
 const getEmbedSrc = (value?: string) => {
   if (!value) return undefined
@@ -42,7 +48,7 @@ const isShort = src?.includes("/shorts/")
 {embedSrc && (
   <iframe
     src={embedSrc}
-    title="Embedded video"
+    title={title}
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     allowfullscreen
     class={cn(
@@ -50,7 +56,7 @@ const isShort = src?.includes("/shorts/")
       isShort ? "aspect-9/16 max-w-xs" : "aspect-video",
       className
     )}
-    data-slot="video"
+    data-slot={dataSlot}
     {...props}
   />
 )}
