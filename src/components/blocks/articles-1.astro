@@ -43,44 +43,49 @@ const { class: className, title, description, articles, ...props } = Astro.props
     </div>
 
     <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {articles.map((article) => (
-        <a
-          href={article.href ?? "#"}
-          class="group hover:bg-muted/50 focus-visible:ring-ring/50 flex h-full flex-col gap-4 rounded-xl p-4 transition-colors focus-visible:ring-2 focus-visible:outline-none"
-        >
-          <Image
-            src={article.image.src}
-            alt={article.image.alt}
-            class="-mx-4 -mt-4 aspect-[16/9] w-[calc(100%+2rem)] max-w-none rounded-lg object-cover transition-opacity group-hover:opacity-85"
-            widths={[480, 720, 960]}
-            sizes="(min-width: 64rem) 26rem, (min-width: 48rem) 50vw, 100vw"
-          />
-          <div class="flex flex-col gap-2">
-            <p class="text-muted-foreground text-sm font-medium">
-              {article.category}
-            </p>
-            <h3 class="text-foreground line-clamp-2 text-xl leading-snug font-semibold">
-              {article.title}
-            </h3>
-            <p class="text-muted-foreground line-clamp-2 text-sm leading-6">
-              {article.description}
-            </p>
-          </div>
-          <div class="mt-auto flex items-center gap-3">
-            <Avatar>
-              <AvatarImage
-                src={article.author.image}
-                alt={article.author.name}
-              />
-              <AvatarFallback>{article.author.initials}</AvatarFallback>
-            </Avatar>
-            <div class="flex flex-col">
-              <p class="text-sm font-medium">{article.author.name}</p>
-              <p class="text-muted-foreground text-xs">{article.author.date}</p>
+      {articles.map((article) => {
+        const Wrapper = article.href != null ? "a" : "div"
+        return (
+          <Wrapper
+            href={article.href}
+            class="group hover:bg-muted/50 focus-visible:ring-ring/50 flex h-full flex-col gap-4 rounded-xl p-4 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+          >
+            <Image
+              src={article.image.src}
+              alt={article.image.alt}
+              class="-mx-4 -mt-4 aspect-[16/9] w-[calc(100%+2rem)] max-w-none rounded-lg object-cover transition-opacity group-hover:opacity-85"
+              widths={[480, 720, 960]}
+              sizes="(min-width: 64rem) 26rem, (min-width: 48rem) 50vw, 100vw"
+            />
+            <div class="flex flex-col gap-2">
+              <p class="text-muted-foreground text-sm font-medium">
+                {article.category}
+              </p>
+              <h3 class="text-foreground line-clamp-2 text-xl leading-snug font-semibold">
+                {article.title}
+              </h3>
+              <p class="text-muted-foreground line-clamp-2 text-sm leading-6">
+                {article.description}
+              </p>
             </div>
-          </div>
-        </a>
-      ))}
+            <div class="mt-auto flex items-center gap-3">
+              <Avatar>
+                <AvatarImage
+                  src={article.author.image}
+                  alt={article.author.name}
+                />
+                <AvatarFallback>{article.author.initials}</AvatarFallback>
+              </Avatar>
+              <div class="flex flex-col">
+                <p class="text-sm font-medium">{article.author.name}</p>
+                <p class="text-muted-foreground text-xs">
+                  {article.author.date}
+                </p>
+              </div>
+            </div>
+          </Wrapper>
+        )
+      })}
     </div>
   </SectionContainer>
 </Section>
