@@ -3,22 +3,12 @@ import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-  FieldLegend,
-  FieldSet,
-} from "@/components/ui/field"
-import { Form } from "@/components/ui/form"
 import { Icon } from "@/components/ui/icon"
-import { Input } from "@/components/ui/input"
 import {
   Section,
   SectionContainer,
   SectionTitle,
 } from "@/components/ui/section"
-import { Textarea } from "@/components/ui/textarea"
 
 type Props = HTMLAttributes<"section"> & {
   title: string
@@ -29,20 +19,6 @@ type Props = HTMLAttributes<"section"> & {
     description: string
     href?: string
   }[]
-  form: {
-    id?: string
-    action?: string
-    method?: "get" | "post"
-    title: string
-    legend: string
-    nameLabel: string
-    namePlaceholder: string
-    emailLabel: string
-    emailPlaceholder: string
-    messageLabel: string
-    messagePlaceholder: string
-    actionLabel: string
-  }
 }
 
 const {
@@ -50,10 +26,8 @@ const {
   title,
   description,
   contactItems,
-  form,
   ...props
 } = Astro.props
-const formId = form.id ?? `contact-${crypto.randomUUID()}`
 ---
 
 <Section class={cn("", className)} {...props}>
@@ -65,95 +39,42 @@ const formId = form.id ?? `contact-${crypto.randomUUID()}`
           {description}
         </p>
       </div>
-      <div class="rounded-xl border p-6">
-        <div class="mb-6">
-          <h3 class="text-lg font-medium">{form.title}</h3>
+      {Astro.slots.has("default") && (
+        <div class="rounded-xl border p-6">
+          <slot />
         </div>
-        <Form id={formId} action={form.action} method={form.method ?? "post"}>
-          <FieldSet>
-            <FieldLegend class="sr-only">{form.legend}</FieldLegend>
-            <FieldGroup>
-              <div class="grid gap-4 md:grid-cols-2">
-                <Field>
-                  <FieldLabel for={`${formId}-name`}>
-                    {form.nameLabel}
-                  </FieldLabel>
-                  <Input
-                    id={`${formId}-name`}
-                    name="name"
-                    autocomplete="name"
-                    required
-                    placeholder={form.namePlaceholder}
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel for={`${formId}-email`}>
-                    {form.emailLabel}
-                  </FieldLabel>
-                  <Input
-                    id={`${formId}-email`}
-                    name="email"
-                    autocomplete="email"
-                    required
-                    type="email"
-                    placeholder={form.emailPlaceholder}
-                  />
-                </Field>
-              </div>
-              <Field>
-                <FieldLabel for={`${formId}-message`}>
-                  {form.messageLabel}
-                </FieldLabel>
-                <Textarea
-                  id={`${formId}-message`}
-                  name="message"
-                  required
-                  rows={5}
-                  placeholder={form.messagePlaceholder}
-                />
-              </Field>
-              <Button type="submit" size="lg" class="w-full">
-                {form.actionLabel}
-              </Button>
-            </FieldGroup>
-          </FieldSet>
-        </Form>
-      </div>
+      )}
     </div>
 
-    <div class="flex flex-col gap-3">
+    <ul class="flex flex-col gap-3">
       {contactItems.map((item) => (
-        <div class="flex gap-4 rounded-xl border p-4">
-          {item.href ? (
-            <Button
-              as="a"
-              href={item.href}
-              variant="secondary"
-              size="icon"
-              class="text-primary shrink-0"
-              aria-label={item.title}
-            >
-              <Icon name={item.icon} />
-            </Button>
-          ) : (
-            <Button
-              as="span"
-              variant="secondary"
-              size="icon"
-              class="text-primary shrink-0"
-              aria-hidden="true"
-            >
-              <Icon name={item.icon} />
-            </Button>
-          )}
+        <li class="flex gap-4 rounded-xl border p-4">
+          <Button
+            as="span"
+            variant="secondary"
+            size="icon"
+            class="text-primary shrink-0"
+            aria-hidden="true"
+          >
+            <Icon name={item.icon} />
+          </Button>
           <div class="flex flex-col gap-1">
             <p class="text-foreground text-sm font-medium">{item.title}</p>
-            <p class="text-muted-foreground text-sm leading-relaxed">
-              {item.description}
-            </p>
+            {item.href != null ? (
+              <a
+                href={item.href}
+                class="text-muted-foreground hover:text-foreground text-sm leading-relaxed wrap-anywhere underline-offset-4 hover:underline"
+              >
+                {item.description}
+              </a>
+            ) : (
+              <p class="text-muted-foreground text-sm leading-relaxed wrap-anywhere">
+                {item.description}
+              </p>
+            )}
           </div>
-        </div>
+        </li>
       ))}
-    </div>
+    </ul>
   </SectionContainer>
 </Section>
