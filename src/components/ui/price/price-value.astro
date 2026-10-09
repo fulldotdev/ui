@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 import {
   formatPriceDiscount,
   formatPriceValue,
+  parseSinglePriceValue,
   type DiscountFormat,
   type PriceValue,
 } from "./format-price-value"
@@ -20,6 +21,7 @@ type Props = VariantProps<typeof variants> &
     variant?: "default" | "sale"
     discountFormat?: DiscountFormat
     showDiscount?: boolean
+    discountLabel?: string
   }
 
 const variants = cva("leading-tight", {
@@ -40,24 +42,32 @@ const {
   variant = "default",
   discountFormat = "percentage",
   showDiscount = true,
+  discountLabel = "Save",
   "data-slot": dataSlot = "price-value",
   ...props
 } = Astro.props
 
 const formattedPrice = formatPriceValue(price, { currency, locale })
-const formattedCompareAt = formatPriceValue(compareAt, { currency, locale })
+const currentValue = parseSinglePriceValue(price)
+const compareAtValue = parseSinglePriceValue(compareAt)
+// A compare-at price only shows when it is higher than the price.
+const formattedCompareAt =
+  currentValue !== null &&
+  compareAtValue !== null &&
+  compareAtValue <= currentValue
+    ? null
+    : formatPriceValue(compareAt, { currency, locale })
 const formattedDiscount =
-  showDiscount && compareAt
+  showDiscount && formattedCompareAt !== null
     ? formatPriceDiscount(price, compareAt, {
         currency,
         locale,
         format: discountFormat,
       })
     : null
-const hasDiscount = Boolean(formattedCompareAt && formattedDiscount)
 ---
 
-{formattedPrice && (
+{formattedPrice !== null && (
   <span
     class={cn("inline-flex flex-wrap items-center gap-x-2 gap-y-1", className)}
     data-slot={dataSlot}
@@ -65,13 +75,15 @@ const hasDiscount = Boolean(formattedCompareAt && formattedDiscount)
     {...props}
   >
     <span class={cn(variants({ variant }))}>{formattedPrice}</span>
-    {formattedCompareAt && (
-      <span class="text-muted-foreground text-sm leading-tight line-through">
+    {formattedCompareAt !== null && (
+      <del class="text-muted-foreground text-sm leading-tight line-through">
         {formattedCompareAt}
-      </span>
+      </del>
     )}
-    {hasDiscount && (
-      <span class="cn-price-badge">Save {formattedDiscount}</span>
+    {formattedDiscount !== null && (
+      <span class="cn-price-badge">
+        {discountLabel} {formattedDiscount}
+      </span>
     )}
   </span>
 )}
