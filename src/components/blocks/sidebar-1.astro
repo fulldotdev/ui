@@ -92,6 +92,7 @@ type Props = {
     }[]
   }[]
   githubRepo: string
+  githubStars?: number
 }
 
 const {
@@ -101,7 +102,8 @@ const {
   breadcrumb,
   navigation,
   githubRepo,
-}: Props = Astro.props
+  githubStars,
+} = Astro.props
 
 const normalizePath = (path: string) => {
   if (path === "/") return path
@@ -123,18 +125,10 @@ const searchGroups = search.items.reduce<
   return groups
 }, [])
 
-let githubStars = "Stars"
-
-try {
-  const response = await fetch(`https://api.github.com/repos/${githubRepo}`)
-  const data = await response.json()
-
-  if (response.ok && typeof data.stargazers_count === "number") {
-    githubStars = new Intl.NumberFormat().format(data.stargazers_count)
-  }
-} catch {
-  // Keep the fallback label when GitHub is unavailable.
-}
+const githubStarsLabel =
+  githubStars === undefined
+    ? "Stars"
+    : new Intl.NumberFormat().format(githubStars)
 
 /* eslint-disable astro/jsx-a11y/no-autofocus -- Focus moves into the search dialog when it opens. */
 ---
@@ -325,7 +319,7 @@ try {
             aria-label={`View ${githubRepo} on GitHub`}
           >
             <Icon name="github" />
-            <span class="hidden sm:inline">{githubStars}</span>
+            <span class="hidden sm:inline">{githubStarsLabel}</span>
           </Button>
           <ThemeToggle />
         </HeaderGroup>
