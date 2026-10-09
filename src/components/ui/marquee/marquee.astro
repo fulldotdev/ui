@@ -27,6 +27,8 @@ const {
 
   type Row = {
     viewport: HTMLElement
+    // Whether the caller left tabindex to the marquee.
+    ownTabIndex: boolean
     api?: EmblaCarouselType
     autoScroll?: AutoScrollType
   }
@@ -42,6 +44,15 @@ const {
       (part) => part.closest(rootSelector) === root
     )
 
+  const focusableSelector =
+    "a[href], area[href], button, input, select, textarea, iframe, summary, [contenteditable], [tabindex]"
+  const reachable = (element: HTMLElement) =>
+    element.tabIndex >= 0 &&
+    !element.matches(":disabled") &&
+    !element.closest("[inert]") &&
+    (element.checkVisibility?.({ visibilityProperty: true }) ??
+      element.getClientRects().length > 0)
+
   // Embla turns loop off when the slides are too few to fill the viewport.
   const loops = (api: EmblaCarouselType) =>
     api.internalEngine().options.loop && api.scrollSnapList().length > 1
@@ -53,9 +64,12 @@ const {
       const rows: Row[] = getParts<HTMLElement>(
         root,
         "[data-marquee-viewport]"
-      ).map((viewport) => ({ viewport }))
-      // Moving content needs a way to pause it, so a marquee without a toggle
-      // stays static. Focus, dragging and the toggle pause it until the toggle
+      ).map((viewport) => ({
+        viewport,
+        ownTabIndex: !viewport.hasAttribute("tabindex"),
+      }))
+      // Moving content needs a way to pause it, so a marquee without an
+      // enabled toggle stays static. Focus, dragging and the toggle pause it until the toggle
       // plays it again; hovering a row pauses it only while the pointer is
       // over it.
       let playing = true
@@ -85,17 +99,24 @@ const {
         row.autoScroll = undefined
         delete row.viewport.dataset.active
         // A static row scrolls natively; give it a tab stop when it overflows
-        // and has no focusable content of its own.
+        // and has no reachable content of its own.
+        if (!row.ownTabIndex) return
         const overflows = row.viewport.scrollWidth > row.viewport.clientWidth
-        const focusable = row.viewport.querySelector(
-          "a[href], button, input, select, textarea, [tabindex]"
-        )
+        const focusable = [
+          ...row.viewport.querySelectorAll<HTMLElement>(focusableSelector),
+        ].some(reachable)
         if (overflows && !focusable) row.viewport.tabIndex = 0
         else row.viewport.removeAttribute("tabindex")
       }
 
       const evaluate = (row: Row) => {
-        if (reducedMotion.matches || toggles.length === 0) return stop(row)
+        const usable = toggles.some(
+          (toggle) =>
+            !toggle.disabled &&
+            toggle.getAttribute("aria-disabled") !== "true" &&
+            !toggle.closest("[inert]")
+        )
+        if (reducedMotion.matches || !usable) return stop(row)
         if (row.api) return
         row.viewport.scrollLeft = 0
         const autoScroll = AutoScroll({
@@ -127,7 +148,7 @@ const {
         row.api = api
         row.autoScroll = autoScroll
         row.viewport.dataset.active = ""
-        row.viewport.removeAttribute("tabindex")
+        if (row.ownTabIndex) row.viewport.removeAttribute("tabindex")
         api.on("pointerDown", () => {
           playing = false
           sync()
