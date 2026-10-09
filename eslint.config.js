@@ -14,7 +14,7 @@ export default defineConfig([
   },
   {
     // The React port, with the same rules as the shadcn/ui React templates.
-    files: ["react/**/*.tsx"],
+    files: ["react/**/*.{ts,tsx}"],
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
@@ -24,7 +24,10 @@ export default defineConfig([
   },
   {
     // Official shadcn/ui source, kept as the CLI installs it.
-    files: ["react/src/components/ui/carousel.tsx"],
+    files: [
+      "react/src/components/ui/carousel.tsx",
+      "react/src/hooks/use-mobile.ts",
+    ],
     rules: { "react-hooks/set-state-in-effect": "off" },
   },
   ...astro.configs.recommended,
