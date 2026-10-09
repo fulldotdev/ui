@@ -32,10 +32,9 @@ type Props = HTMLAttributes<"header"> & {
   logo: {
     label: string
     href: string
-    src?: any
-    srcLight?: any
-    srcDark?: any
-    alt?: string
+    src?: ImageMetadata
+    srcLight?: ImageMetadata
+    srcDark?: ImageMetadata
   }
   navigation: {
     label: string
@@ -44,7 +43,6 @@ type Props = HTMLAttributes<"header"> & {
     active?: boolean
     image?: {
       src: ImageMetadata
-      alt: string
     }
     links?: {
       label: string
@@ -58,6 +56,7 @@ type Props = HTMLAttributes<"header"> & {
     label: string
     href: string
     icon?: string
+    target?: "_self" | "_blank"
   }[]
   navigationLabel: string
   menu: {
@@ -87,9 +86,9 @@ const {
           src={logo.src}
           srcLight={logo.srcLight}
           srcDark={logo.srcDark}
-          alt={logo.alt}
+          alt=""
         />
-        {logo.label && <LogoText>{logo.label}</LogoText>}
+        <LogoText>{logo.label}</LogoText>
       </Logo>
     </HeaderGroup>
     <NavigationMenu
@@ -112,7 +111,7 @@ const {
                     {item.image && (
                       <Image
                         src={item.image.src}
-                        alt={item.image.alt}
+                        alt=""
                         class="mb-auto aspect-[16/9] w-full rounded-md object-cover"
                         widths={[320, 480, 640]}
                         sizes="(min-width: 1024px) 22rem, 100vw"
@@ -167,16 +166,14 @@ const {
       </NavigationMenuList>
     </NavigationMenu>
     <HeaderGroup class="ml-auto hidden justify-end lg:flex">
-      <slot />
-      {buttons.map(({ label, href, icon }, index) => (
+      {buttons.map(({ label, href, icon, target }, index) => (
         <Button
           as="a"
           href={href}
-          size={icon && !label ? "icon-sm" : "sm"}
+          target={target}
+          rel={target === "_blank" ? "noreferrer" : undefined}
+          size="sm"
           variant={index === buttons.length - 1 ? "default" : "ghost"}
-          aria-label={label}
-          target={href.startsWith("http") ? "_blank" : undefined}
-          rel={href.startsWith("http") ? "noreferrer" : undefined}
         >
           {icon && <Icon name={icon} />}
           {label}
@@ -229,9 +226,22 @@ const {
               </div>
             ))}
           </nav>
-          <div class="mt-auto flex flex-col gap-2">
-            <slot name="mobile" />
-          </div>
+          {buttons.length > 0 && (
+            <div class="mt-auto flex flex-col gap-2">
+              {buttons.map(({ label, href, icon, target }, index) => (
+                <SheetClose
+                  as="a"
+                  href={href}
+                  target={target}
+                  rel={target === "_blank" ? "noreferrer" : undefined}
+                  variant={index === buttons.length - 1 ? "default" : "outline"}
+                >
+                  {icon && <Icon name={icon} />}
+                  {label}
+                </SheetClose>
+              ))}
+            </div>
+          )}
         </div>
         <SheetClose
           type="button"
