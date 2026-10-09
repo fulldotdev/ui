@@ -101,21 +101,19 @@ const {
     </HeaderGroup>
     <HeaderGroup class="ml-auto hidden justify-end lg:flex">
       <slot />
-      {
-        buttons.map(({ label, icon, ...button }) => (
-          <Button
-            as="a"
-            size={icon && !label ? "icon-sm" : "sm"}
-            aria-label={label}
-            target={button.href.startsWith("http") ? "_blank" : undefined}
-            rel={button.href.startsWith("http") ? "noreferrer" : undefined}
-            {...button}
-          >
-            {icon && <Icon name={icon} />}
-            {label}
-          </Button>
-        ))
-      }
+      {buttons.map(({ label, icon, ...button }) => (
+        <Button
+          as="a"
+          size={icon && !label ? "icon-sm" : "sm"}
+          aria-label={label}
+          target={button.href.startsWith("http") ? "_blank" : undefined}
+          rel={button.href.startsWith("http") ? "noreferrer" : undefined}
+          {...button}
+        >
+          {icon && <Icon name={icon} />}
+          {label}
+        </Button>
+      ))}
     </HeaderGroup>
     <Sheet class="lg:hidden">
       <SheetTrigger
@@ -133,35 +131,33 @@ const {
         </SheetHeader>
         <div class="flex h-full flex-col gap-6 overflow-y-auto px-4 py-12">
           <nav aria-label={menu.title} class="flex flex-col gap-4">
-            {
-              navigation.map((item) => (
-                <div class="grid gap-1">
-                  <SheetClose
-                    as="a"
-                    href={item.href}
-                    variant="ghost"
-                    class="justify-start font-medium"
-                  >
-                    {item.label}
-                  </SheetClose>
-                  {item.links?.length && (
-                    <div class="border-border ml-3 grid gap-1 border-l pl-3">
-                      {item.links.map((link) => (
-                        <SheetClose
-                          as="a"
-                          href={link.href}
-                          variant="ghost"
-                          class="text-muted-foreground justify-start"
-                        >
-                          {link.icon && <Icon name={link.icon} />}
-                          {link.label}
-                        </SheetClose>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))
-            }
+            {navigation.map((item) => (
+              <div class="grid gap-1">
+                <SheetClose
+                  as="a"
+                  href={item.href}
+                  variant="ghost"
+                  class="justify-start font-medium"
+                >
+                  {item.label}
+                </SheetClose>
+                {item.links?.length && (
+                  <div class="border-border ml-3 grid gap-1 border-l pl-3">
+                    {item.links.map((link) => (
+                      <SheetClose
+                        as="a"
+                        href={link.href}
+                        variant="ghost"
+                        class="text-muted-foreground justify-start"
+                      >
+                        {link.icon && <Icon name={link.icon} />}
+                        {link.label}
+                      </SheetClose>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
           </nav>
           <Separator />
           <div class="mt-auto flex flex-col gap-2">
@@ -179,76 +175,74 @@ const {
       align="start"
     >
       <NavigationMenuList class="justify-start">
-        {
-          navigation.map((item, index) =>
-            item.links?.length ? (
-              <NavigationMenuItem value={`nav-${index}`}>
-                <NavigationMenuTrigger>{item.label}</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <div class="grid w-[min(52rem,calc(100vw-2rem))] gap-2 p-2 lg:grid-cols-[1fr_1.2fr]">
-                    <NavigationMenuLink
-                      href={item.href}
-                      active={item.active}
-                      class="bg-muted/50 hover:bg-muted focus:bg-muted items-start gap-3 p-3"
-                    >
-                      {item.image && (
-                        <Image
-                          src={item.image.src}
-                          alt={item.image.alt}
-                          class="aspect-[16/9] w-full rounded-md object-cover"
-                          widths={[320, 480, 640]}
-                          sizes="(min-width: 1024px) 22rem, 100vw"
-                        />
+        {navigation.map((item, index) =>
+          item.links?.length ? (
+            <NavigationMenuItem value={`nav-${index}`}>
+              <NavigationMenuTrigger>{item.label}</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <div class="grid w-[min(52rem,calc(100vw-2rem))] gap-2 p-2 lg:grid-cols-[1fr_1.2fr]">
+                  <NavigationMenuLink
+                    href={item.href}
+                    active={item.active}
+                    class="bg-muted/50 hover:bg-muted focus:bg-muted items-start gap-3 p-3"
+                  >
+                    {item.image && (
+                      <Image
+                        src={item.image.src}
+                        alt={item.image.alt}
+                        class="aspect-[16/9] w-full rounded-md object-cover"
+                        widths={[320, 480, 640]}
+                        sizes="(min-width: 1024px) 22rem, 100vw"
+                      />
+                    )}
+                    <span class="grid gap-1">
+                      <span class="font-medium">{item.label}</span>
+                      {item.description && (
+                        <span class="text-muted-foreground text-sm leading-relaxed">
+                          {item.description}
+                        </span>
                       )}
-                      <span class="grid gap-1">
-                        <span class="font-medium">{item.label}</span>
-                        {item.description && (
-                          <span class="text-muted-foreground text-sm leading-relaxed">
-                            {item.description}
-                          </span>
+                    </span>
+                  </NavigationMenuLink>
+                  <div class="grid gap-1 lg:grid-cols-2">
+                    {item.links.map((link) => (
+                      <NavigationMenuLink
+                        href={link.href}
+                        active={link.active}
+                        class="items-start gap-3 p-3"
+                      >
+                        {link.icon && (
+                          <Icon
+                            name={link.icon}
+                            class="text-muted-foreground mt-0.5"
+                          />
                         )}
-                      </span>
-                    </NavigationMenuLink>
-                    <div class="grid gap-1 lg:grid-cols-2">
-                      {item.links.map((link) => (
-                        <NavigationMenuLink
-                          href={link.href}
-                          active={link.active}
-                          class="items-start gap-3 p-3"
-                        >
-                          {link.icon && (
-                            <Icon
-                              name={link.icon}
-                              class="text-muted-foreground mt-0.5"
-                            />
+                        <span class="grid gap-1">
+                          <span class="font-medium">{link.label}</span>
+                          {link.description && (
+                            <span class="text-muted-foreground text-sm leading-relaxed">
+                              {link.description}
+                            </span>
                           )}
-                          <span class="grid gap-1">
-                            <span class="font-medium">{link.label}</span>
-                            {link.description && (
-                              <span class="text-muted-foreground text-sm leading-relaxed">
-                                {link.description}
-                              </span>
-                            )}
-                          </span>
-                        </NavigationMenuLink>
-                      ))}
-                    </div>
+                        </span>
+                      </NavigationMenuLink>
+                    ))}
                   </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            ) : (
-              <NavigationMenuItem value={`nav-${index}`}>
-                <NavigationMenuLink
-                  href={item.href}
-                  active={item.active}
-                  class={navigationMenuTriggerStyle()}
-                >
-                  {item.label}
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            )
+                </div>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          ) : (
+            <NavigationMenuItem value={`nav-${index}`}>
+              <NavigationMenuLink
+                href={item.href}
+                active={item.active}
+                class={navigationMenuTriggerStyle()}
+              >
+                {item.label}
+              </NavigationMenuLink>
+            </NavigationMenuItem>
           )
-        }
+        )}
       </NavigationMenuList>
     </NavigationMenu>
   </HeaderContainer>

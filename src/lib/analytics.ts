@@ -15,7 +15,9 @@ import { trackInteractions } from "./analytics-interactions.js"
 
 export function startAnalytics() {
   posthog.init("phc_txCmZNAK3YueTeNyvtXmnh9JvK2LdbF3hK3kvxRcEJou", {
-    api_host: "https://eu.i.posthog.com",
+    // Netlify forwards /ingest to PostHog (netlify.toml).
+    api_host: "/ingest",
+    ui_host: "https://eu.posthog.com",
     defaults: "2025-11-30",
     cookieless_mode: "always",
     person_profiles: "never",

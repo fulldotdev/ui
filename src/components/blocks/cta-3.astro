@@ -51,60 +51,52 @@ const {
   class={cn("bg-accent/50 shadow-none", className)}
   {...props}
 >
-  <SectionContainer
-    class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
-  >
+  <SectionContainer class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
     <div class="flex flex-col gap-5">
-      <SectionTitle class="leading-[1.1]">
-        {title}
-      </SectionTitle>
+      <SectionTitle class="leading-[1.1]">{title}</SectionTitle>
       <p class="text-muted-foreground max-w-2xl text-lg leading-relaxed">
         {description}
       </p>
     </div>
     <div class="flex flex-col gap-6 lg:items-end">
-      {
-        buttons?.length && (
-          <div class="flex flex-wrap gap-3">
-            {buttons.map(({ href, label, ...button }, index) => (
-              <Button
-                as="a"
-                href={href}
-                size="lg"
-                variant={
-                  button.variant ?? (index === 0 ? "default" : "secondary")
-                }
-                {...button}
-              >
-                {label}
-              </Button>
+      {buttons?.length && (
+        <div class="flex flex-wrap gap-3">
+          {buttons.map(({ href, label, ...button }, index) => (
+            <Button
+              as="a"
+              href={href}
+              size="lg"
+              variant={
+                button.variant ?? (index === 0 ? "default" : "secondary")
+              }
+              {...button}
+            >
+              {label}
+            </Button>
+          ))}
+        </div>
+      )}
+      {socialProof && (
+        <div class="flex items-center gap-3">
+          <AvatarGroup>
+            {socialProof.avatars.map((avatar) => (
+              <Avatar class="ring-background size-11 ring">
+                <AvatarImage
+                  src={avatar.image}
+                  alt={avatar.name ?? avatar.initials}
+                />
+                <AvatarFallback>{avatar.initials}</AvatarFallback>
+              </Avatar>
             ))}
+          </AvatarGroup>
+          <div class="flex flex-col gap-0.5">
+            <Rating value={socialProof.rating} />
+            <span class="text-muted-foreground text-xs">
+              {socialProof.text}
+            </span>
           </div>
-        )
-      }
-      {
-        socialProof && (
-          <div class="flex items-center gap-3">
-            <AvatarGroup>
-              {socialProof.avatars.map((avatar) => (
-                <Avatar class="ring-background size-11 ring">
-                  <AvatarImage
-                    src={avatar.image}
-                    alt={avatar.name ?? avatar.initials}
-                  />
-                  <AvatarFallback>{avatar.initials}</AvatarFallback>
-                </Avatar>
-              ))}
-            </AvatarGroup>
-            <div class="flex flex-col gap-0.5">
-              <Rating value={socialProof.rating} />
-              <span class="text-muted-foreground text-xs">
-                {socialProof.text}
-              </span>
-            </div>
-          </div>
-        )
-      }
+        </div>
+      )}
     </div>
   </SectionContainer>
 </Section>

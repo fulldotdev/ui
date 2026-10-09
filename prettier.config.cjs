@@ -1,4 +1,6 @@
-/** @type {import('prettier').Config} */
+/** @type {import("prettier").Config} */
+// shadcn/ui's prettier.config.cjs, plus Astro support and the astro, schemas,
+// layouts, blocks and catch-all "@/" import groups.
 module.exports = {
   endOfLine: "lf",
   semi: false,
@@ -16,8 +18,8 @@ module.exports = {
     "",
     "^types$",
     "^@/types/(.*)$",
-    "^@/schemas/(.*)$",
     "^@/config/(.*)$",
+    "^@/schemas/(.*)$",
     "^@/lib/(.*)$",
     "^@/hooks/(.*)$",
     "^@/layouts/(.*)$",
@@ -26,9 +28,9 @@ module.exports = {
     "^@/components/(.*)$",
     "^@/registry/(.*)$",
     "^@/styles/(.*)$",
-    "^@/assets/(.*)$",
     "^@/app/(.*)$",
     "^@/www/(.*)$",
+    "^@/(.*)$",
     "",
     "^[./]",
   ],
@@ -38,5 +40,7 @@ module.exports = {
     "@ianvs/prettier-plugin-sort-imports",
     "prettier-plugin-tailwindcss",
   ],
+  tailwindStylesheet: "src/styles/global.css",
   tailwindFunctions: ["cn", "cva"],
+  overrides: [{ files: "*.astro", options: { parser: "astro" } }],
 }

@@ -174,61 +174,53 @@ try {
           </Kbd>
         </DialogTrigger>
 
-        <Command
-          class="[&_[data-slot=command-item][data-selected]]:bg-accent [&_[data-slot=command-item][data-selected]]:text-accent-foreground"
-        >
+        <Command class="[&_[data-slot=command-item][data-selected]]:bg-accent [&_[data-slot=command-item][data-selected]]:text-accent-foreground">
           <CommandInput autofocus placeholder={search.label} />
           <CommandList>
             <CommandEmpty>{search.empty}</CommandEmpty>
 
-            {
-              searchGroups.map((group) => (
-                <CommandGroup heading={group.label}>
-                  {group.items.map((item) => (
-                    <CommandItem
-                      href={item.href}
-                      value={`${item.group} ${item.label}`}
-                      label={item.label}
-                      keywords={[
-                        item.group,
-                        item.title,
-                        item.path,
-                        item.description,
-                      ]}
-                    >
-                      {item.label}
-                      <CommandShortcut>{item.href}</CommandShortcut>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              ))
-            }
+            {searchGroups.map((group) => (
+              <CommandGroup heading={group.label}>
+                {group.items.map((item) => (
+                  <CommandItem
+                    href={item.href}
+                    value={`${item.group} ${item.label}`}
+                    label={item.label}
+                    keywords={[
+                      item.group,
+                      item.title,
+                      item.path,
+                      item.description,
+                    ]}
+                  >
+                    {item.label}
+                    <CommandShortcut>{item.href}</CommandShortcut>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            ))}
           </CommandList>
         </Command>
       </CommandDialog>
     </SidebarHeader>
-    <SidebarContent
-      class="[mask-image:linear-gradient(to_bottom,transparent,black_1rem,black_calc(100%_-_1rem),transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_1rem,black_calc(100%_-_1rem),transparent)] group-data-[collapsible=icon]:[mask-image:none] group-data-[collapsible=icon]:[-webkit-mask-image:none]"
-    >
-      {
-        navigation.map((group) => (
-          <SidebarGroup>
-            <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
-            <SidebarMenu>
-              {(group.links ?? [group]).map((item) => (
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    href={item.href}
-                    isActive={normalizePath(item.href) === currentPath}
-                  >
-                    <span>{item.label}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroup>
-        ))
-      }
+    <SidebarContent class="[mask-image:linear-gradient(to_bottom,transparent,black_1rem,black_calc(100%_-_1rem),transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_1rem,black_calc(100%_-_1rem),transparent)] group-data-[collapsible=icon]:[mask-image:none] group-data-[collapsible=icon]:[-webkit-mask-image:none]">
+      {navigation.map((group) => (
+        <SidebarGroup>
+          <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+          <SidebarMenu>
+            {(group.links ?? [group]).map((item) => (
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  href={item.href}
+                  isActive={normalizePath(item.href) === currentPath}
+                >
+                  <span>{item.label}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
+      ))}
     </SidebarContent>
   </Sidebar>
   <SidebarInset>
@@ -239,94 +231,86 @@ try {
           <Separator orientation="vertical" class="my-auto mr-2 h-4" />
           <Breadcrumb>
             <BreadcrumbList>
-              {
-                breadcrumb.items.map((item, index) => {
-                  const isLast = index === breadcrumb.items.length - 1
-                  const isHome = item.href === "/"
-                  const hasMenu =
-                    !isHome &&
-                    breadcrumb.menu.some(
-                      (menuItem) =>
-                        normalizePath(menuItem.href) ===
-                        normalizePath(item.href)
-                    )
-
-                  return (
-                    <>
-                      {index > 0 && (
-                        <BreadcrumbSeparator>/</BreadcrumbSeparator>
-                      )}
-                      <BreadcrumbItem>
-                        {hasMenu ? (
-                          <DropdownMenu>
-                            <DropdownMenuTrigger
-                              aria-current={isLast ? "page" : undefined}
-                              class={cn(
-                                "hover:text-foreground inline-flex items-center gap-1 transition-colors",
-                                isLast && "text-foreground"
-                              )}
-                            >
-                              {item.label}
-                              <ChevronDownIcon
-                                class="size-3.5 opacity-70"
-                                aria-hidden="true"
-                              />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="start">
-                              <DropdownMenuGroup>
-                                {breadcrumb.menu.map((menuItem) => (
-                                  <DropdownMenuItem
-                                    href={menuItem.href}
-                                    aria-current={
-                                      normalizePath(menuItem.href) ===
-                                      currentPath
-                                        ? "page"
-                                        : undefined
-                                    }
-                                    class="aria-[current=page]:text-foreground"
-                                  >
-                                    {menuItem.label}
-                                  </DropdownMenuItem>
-                                ))}
-                              </DropdownMenuGroup>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        ) : isLast ? (
-                          <BreadcrumbPage>{item.label}</BreadcrumbPage>
-                        ) : (
-                          <BreadcrumbLink href={item.href}>
-                            {item.label}
-                          </BreadcrumbLink>
-                        )}
-                      </BreadcrumbItem>
-                    </>
+              {breadcrumb.items.map((item, index) => {
+                const isLast = index === breadcrumb.items.length - 1
+                const isHome = item.href === "/"
+                const hasMenu =
+                  !isHome &&
+                  breadcrumb.menu.some(
+                    (menuItem) =>
+                      normalizePath(menuItem.href) === normalizePath(item.href)
                   )
-                })
-              }
-              {
-                breadcrumb.menu.length > 0 && currentPath === "/" && (
+
+                return (
                   <>
-                    <BreadcrumbSeparator>/</BreadcrumbSeparator>
+                    {index > 0 && <BreadcrumbSeparator>/</BreadcrumbSeparator>}
                     <BreadcrumbItem>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger class="hover:text-foreground inline-flex items-center leading-none transition-colors">
-                          <BreadcrumbEllipsis />
-                          <span class="sr-only">Toggle menu</span>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start">
-                          <DropdownMenuGroup>
-                            {breadcrumb.menu.map((item) => (
-                              <DropdownMenuItem href={item.href}>
-                                {item.label}
-                              </DropdownMenuItem>
-                            ))}
-                          </DropdownMenuGroup>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      {hasMenu ? (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger
+                            aria-current={isLast ? "page" : undefined}
+                            class={cn(
+                              "hover:text-foreground inline-flex items-center gap-1 transition-colors",
+                              isLast && "text-foreground"
+                            )}
+                          >
+                            {item.label}
+                            <ChevronDownIcon
+                              class="size-3.5 opacity-70"
+                              aria-hidden="true"
+                            />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="start">
+                            <DropdownMenuGroup>
+                              {breadcrumb.menu.map((menuItem) => (
+                                <DropdownMenuItem
+                                  href={menuItem.href}
+                                  aria-current={
+                                    normalizePath(menuItem.href) === currentPath
+                                      ? "page"
+                                      : undefined
+                                  }
+                                  class="aria-[current=page]:text-foreground"
+                                >
+                                  {menuItem.label}
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuGroup>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      ) : isLast ? (
+                        <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                      ) : (
+                        <BreadcrumbLink href={item.href}>
+                          {item.label}
+                        </BreadcrumbLink>
+                      )}
                     </BreadcrumbItem>
                   </>
                 )
-              }
+              })}
+              {breadcrumb.menu.length > 0 && currentPath === "/" && (
+                <>
+                  <BreadcrumbSeparator>/</BreadcrumbSeparator>
+                  <BreadcrumbItem>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger class="hover:text-foreground inline-flex items-center leading-none transition-colors">
+                        <BreadcrumbEllipsis />
+                        <span class="sr-only">Toggle menu</span>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start">
+                        <DropdownMenuGroup>
+                          {breadcrumb.menu.map((item) => (
+                            <DropdownMenuItem href={item.href}>
+                              {item.label}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </BreadcrumbItem>
+                </>
+              )}
             </BreadcrumbList>
           </Breadcrumb>
         </HeaderGroup>
