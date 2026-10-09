@@ -80,8 +80,7 @@ pnpm build           # builds the docs, then validates HTML and internal links a
 pnpm check           # the checks every PR runs
 pnpm fix             # Prettier and ESLint fixes
 pnpm images          # converts source photos in src to WebP
-pnpm ui:add @shadcn/card     # installs with the shadcn CLI, then runs Prettier
-pnpm ui:add @fulldev/button  # @fulldev resolves to the local docs site, so run pnpm dev first
+pnpm ui:add @shadcn/card  # installs with the shadcn CLI, then runs Prettier
 pnpm registry:build  # regenerates public/r after registry changes
 ```
 

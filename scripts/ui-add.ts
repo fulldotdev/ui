@@ -13,15 +13,23 @@ import { spawnSync } from "node:child_process"
 const args = process.argv.slice(2)
 let cwd = false
 let preview = false
-for (const arg of args) {
+for (let i = 0; i < args.length; i++) {
+  const arg = args[i]
+  if (arg === "--") break
   if (/^--cwd(=|$)/.test(arg)) cwd = true
   if (/^--(dry-run|diff|view|help)(=|$)/.test(arg)) preview = true
-  // A short flag group like -yc: -c and -p take the rest as their value.
+  // --path takes the next argument as its value, even one starting with -.
+  if (arg === "--path") i++
+  // A short flag group like -yc: -c and -p take the rest of the group as
+  // their value, or the next argument when nothing is left.
   if (/^-[^-]/.test(arg)) {
-    for (const flag of arg.slice(1)) {
-      if (flag === "c") cwd = true
-      if (flag === "h") preview = true
-      if (flag === "c" || flag === "p") break
+    for (let j = 1; j < arg.length; j++) {
+      if (arg[j] === "c") cwd = true
+      if (arg[j] === "h") preview = true
+      if (arg[j] === "c" || arg[j] === "p") {
+        if (j === arg.length - 1) i++
+        break
+      }
     }
   }
 }
