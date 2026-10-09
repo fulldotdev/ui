@@ -29,7 +29,6 @@ type Props = HTMLAttributes<"section"> & {
     avatars: {
       image?: ImageMetadata
       initials: string
-      name?: string
     }[]
     count?: string | number
     text: string
@@ -50,10 +49,12 @@ const {
   class={cn("bg-primary/10 border-primary/15 border-y", className)}
   {...props}
 >
-  <SectionContainer class="items-center text-center">
+  <SectionContainer class="flex flex-col gap-8 items-center text-center">
     <div class="flex max-w-2xl flex-col items-center gap-5">
       <SectionTitle class="leading-[1.1]">{title}</SectionTitle>
-      <SectionDescription>{description}</SectionDescription>
+      <SectionDescription class="text-foreground/80">
+        {description}
+      </SectionDescription>
     </div>
     <div class="flex flex-wrap justify-center gap-3">
       {buttons.map(({ href, label }, index) => (
@@ -68,13 +69,10 @@ const {
       ))}
     </div>
     <div class="flex flex-col items-center gap-4">
-      <AvatarGroup>
+      <AvatarGroup aria-hidden="true">
         {socialProof.avatars.map((avatar) => (
           <Avatar class="ring-primary/10 bg-background size-11 ring">
-            <AvatarImage
-              src={avatar.image}
-              alt={avatar.name ?? avatar.initials}
-            />
+            <AvatarImage src={avatar.image} />
             <AvatarFallback>{avatar.initials}</AvatarFallback>
           </Avatar>
         ))}
@@ -84,7 +82,7 @@ const {
           </AvatarGroupCount>
         )}
       </AvatarGroup>
-      <span class="text-muted-foreground text-sm leading-snug">
+      <span class="text-foreground/80 text-sm leading-snug">
         {socialProof.text}
       </span>
     </div>
