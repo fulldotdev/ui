@@ -75,10 +75,12 @@ function Sidebar1({
   githubRepo,
   githubStars,
   labels,
+  header,
   children,
   ...props
 }: React.ComponentProps<"div"> & {
   currentPath: string
+  header?: React.ReactNode
   logo: {
     label: string
     href: string
@@ -222,6 +224,7 @@ function Sidebar1({
             />
             <LogoText className="font-semibold">{logo.label}</LogoText>
           </SidebarMenuButton>
+          {header}
           <Button
             variant="outline"
             size="sm"

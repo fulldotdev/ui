@@ -3,10 +3,20 @@ import { Font } from "astro:assets"
 
 import type { GlobalSchema } from "@/schemas/global"
 import type { BaseSchema } from "@/schemas/layouts/base"
-import { getPageBreadcrumbItems, getPageSearchItems } from "@/lib/pages"
+import {
+  frameworks,
+  getCounterpartHref,
+  getFramework,
+  getNavigation,
+  getPageBreadcrumbItems,
+  getPageId,
+  getPageSearchItems,
+  getSectionMenu,
+} from "@/lib/pages"
 import Sidebar1 from "@/components/blocks/sidebar-1.astro"
 import { Layout, LayoutBody, LayoutHead } from "@/components/ui/layout"
 import { ThemeProvider } from "@/components/ui/theme-toggle"
+import FrameworkSelect from "@/components/framework-select.astro"
 import Posthog from "@/components/posthog.astro"
 import PresetHead from "@/components/preset-head.astro"
 import socialImage from "@/assets/social.png"
@@ -18,10 +28,22 @@ type Props = {
 
 const { global, page }: Props = Astro.props
 
-const [searchItems, breadcrumbItems] = await Promise.all([
-  getPageSearchItems(),
-  getPageBreadcrumbItems(Astro.url.pathname),
-])
+const pageId = getPageId(Astro.url.pathname)
+const framework = getFramework(pageId)
+const [searchItems, breadcrumbItems, navigation, ...counterparts] =
+  await Promise.all([
+    getPageSearchItems(framework),
+    getPageBreadcrumbItems(Astro.url.pathname),
+    getNavigation(framework),
+    ...frameworks.map((target) =>
+      target === framework
+        ? Astro.url.pathname
+        : getCounterpartHref(pageId, target)
+    ),
+  ])
+const frameworkHrefs = Object.fromEntries(
+  frameworks.map((target, index) => [target, counterparts[index]])
+) as Record<(typeof frameworks)[number], string>
 
 let githubStars: number | undefined
 
@@ -64,9 +86,9 @@ try {
       }}
       breadcrumb={{
         items: breadcrumbItems,
-        menu: global.header.navigation,
+        menu: getSectionMenu(framework),
       }}
-      navigation={global.sidebar.navigation}
+      navigation={navigation}
       githubRepo={global.header.githubRepo}
       githubStars={githubStars}
       labels={{
@@ -82,6 +104,21 @@ try {
         shortcut: { mac: "⌘ + K", other: "Ctrl + K" },
       }}
     >
+      <div slot="header" class="contents">
+        <FrameworkSelect current={framework} hrefs={frameworkHrefs} />
+        {
+          /* Local design option while the selector is open: ?shell=menu. */
+          import.meta.env.DEV && (
+            <div data-shell-option="menu" hidden>
+              <FrameworkSelect
+                current={framework}
+                hrefs={frameworkHrefs}
+                variant="menu"
+              />
+            </div>
+          )
+        }
+      </div>
       {/* SidebarInset already renders the page's main element. */}
       <div class="@container flex flex-col rounded-[inherit]">
         <slot />

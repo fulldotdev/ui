@@ -4,6 +4,8 @@ import { getCollection } from "astro:content"
 
 import type { GlobalSchema } from "@/schemas/global"
 import type { BlockSchema } from "@/schemas/layouts/block"
+import { getPageMarkdown } from "@/lib/markdown"
+import { getFramework, getPageId } from "@/lib/pages"
 import Base from "@/layouts/base.astro"
 import BlocksBlock from "@/components/blocks/blocks-1.astro"
 
@@ -23,11 +25,14 @@ const blockPages = await getCollection("pages", ({ data }) => {
   return data.type === "block"
 })
 const orderedBlockLinks = blockPages
+  .filter(
+    (entry) => getFramework(entry.id) === getFramework(getPageId(currentPath))
+  )
   .map((entry) => ({
     href: `/${entry.id}/`,
     title: entry.data.title,
   }))
-  .sort((a, b) => a.href.localeCompare(b.href))
+  .sort((a, b) => a.title.localeCompare(b.title))
 const currentPageIndex = orderedBlockLinks.findIndex(
   (item) => item.href === currentPath
 )
@@ -35,9 +40,8 @@ const previousPage =
   currentPageIndex > 0 ? orderedBlockLinks[currentPageIndex - 1] : undefined
 const nextPage =
   currentPageIndex >= 0 ? orderedBlockLinks[currentPageIndex + 1] : undefined
-const copySource = blockPages.find(
-  (entry) => `/${entry.id}/` === currentPath
-)?.body
+const currentBlock = blockPages.find((entry) => `/${entry.id}/` === currentPath)
+const copySource = currentBlock && (await getPageMarkdown(currentBlock))
 const copyButton = copySource
   ? {
       id: `blocks-copy-page-${crypto.randomUUID()}`,

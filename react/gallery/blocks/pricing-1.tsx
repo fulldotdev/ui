@@ -1,0 +1,67 @@
+import { Pricing1 } from "@/components/blocks/pricing-1"
+
+export default function Pricing1Demo() {
+  return (
+    <>
+      <Pricing1
+        title="Simple, transparent pricing"
+        description="Choose the plan that fits your workflow. Upgrade or downgrade at any time."
+        featuredLabel="Popular"
+        plans={[
+          {
+            name: "Starter",
+            description: "For individuals and small projects getting started.",
+            price: {
+              value: 19,
+              currency: "USD",
+              unit: "month",
+            },
+            features: [
+              "Up to 3 projects",
+              "Basic analytics",
+              "Community support",
+              "1 GB storage",
+            ],
+            button: { label: "Get started", href: "/docs/" },
+          },
+          {
+            name: "Team",
+            description:
+              "For growing teams that need more power and collaboration.",
+            price: {
+              value: 49,
+              currency: "USD",
+              unit: "month",
+            },
+            featured: true,
+            features: [
+              "Unlimited projects",
+              "Advanced analytics",
+              "Priority support",
+              "10 GB storage",
+              "Team collaboration",
+            ],
+            button: { label: "Get started", href: "/docs/" },
+          },
+          {
+            name: "Studio",
+            description: "For agencies and large teams with advanced needs.",
+            price: {
+              value: 99,
+              currency: "USD",
+              unit: "month",
+            },
+            features: [
+              "Everything in Team",
+              "Custom integrations",
+              "Dedicated support",
+              "Unlimited storage",
+              "SSO and audit logs",
+            ],
+            button: { label: "Contact sales", href: "/docs/" },
+          },
+        ]}
+      />
+    </>
+  )
+}

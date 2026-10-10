@@ -1,8 +1,8 @@
-import { readFile } from "node:fs/promises"
 import type { APIRoute } from "astro"
 import { getCollection } from "astro:content"
 
-import { getInstallCommand, getPageHref } from "@/lib/pages"
+import { getPageMarkdown } from "@/lib/markdown"
+import { getPageHref } from "@/lib/pages"
 
 export const prerender = true
 
@@ -13,17 +13,10 @@ export const GET: APIRoute = async ({ site }) => {
   )
 
   const documents = await Promise.all(
-    pages.map(async (page) => {
-      if (!page.filePath) return ""
-      const source = await readFile(page.filePath, "utf-8")
-      const installCommand = getInstallCommand(source)
-      const install =
-        installCommand && !source.includes(installCommand)
-          ? `\n\n## Installation\n\n\`\`\`bash\n${installCommand}\n\`\`\``
-          : ""
-
-      return `<!-- ${origin}${getPageHref(page)} -->\n\n${source.trimEnd()}${install}`
-    })
+    pages.map(
+      async (page) =>
+        `<!-- ${origin}${getPageHref(page)} -->\n\n${(await getPageMarkdown(page)).trimEnd()}`
+    )
   )
 
   const body = `# Fulldev UI\n\nFull documentation source for every page on ${origin}. Each section starts with a comment containing the page URL.\n\n${documents.filter(Boolean).join("\n\n---\n\n")}\n`

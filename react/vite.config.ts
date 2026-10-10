@@ -28,13 +28,9 @@ function styles(style: string): Plugin {
 export default defineConfig(({ mode }) => {
   const style = process.env.STYLE ?? "vega"
   return {
-    base: process.env.BASE ?? "/",
+    // The docs site proxies /preview/react/ to the dev server.
+    base: process.env.BASE ?? "/preview/react/",
     plugins: [styles(style), react(), tailwindcss()],
-    define: {
-      __STYLE__: JSON.stringify(style),
-      // Where the vega build lives; the other styles are in subfolders.
-      __GALLERY_ROOT__: JSON.stringify(process.env.GALLERY_ROOT ?? "/"),
-    },
     resolve: {
       alias: {
         "@": source,
@@ -51,7 +47,11 @@ export default defineConfig(({ mode }) => {
     // Demos load on demand; scan them all up front so the dev server does
     // not reload the page when it meets a new dependency.
     optimizeDeps: {
-      entries: ["index.html", "gallery/**/*.tsx"],
+      entries: [
+        "index.html",
+        "gallery/**/*.tsx",
+        "src/components/examples/**/*.tsx",
+      ],
     },
     server: { strictPort: true },
     logLevel: mode === "production" ? "warn" : "info",

@@ -1,0 +1,89 @@
+---
+// Docs only: preview, source and install command of one example file, see
+// src/lib/examples.ts. Astro examples render here; React examples render in
+// an iframe of the preview app, in the style picked in the docs.
+import { Code } from "astro:components"
+
+import { getExample } from "@/lib/examples"
+import { getFramework, getPageId } from "@/lib/pages"
+import LiveCode from "@/components/live-code.astro"
+
+type Props = {
+  name: string
+}
+
+const { name } = Astro.props
+const framework = getFramework(getPageId(Astro.url.pathname))
+const example = getExample(name, framework)
+if (!example) throw new Error(`No ${framework} example named ${name}`)
+
+const components = import.meta.glob<{ default: unknown }>(
+  "/src/components/examples/*/*.astro",
+  { eager: true }
+)
+const Component = components[`/${example.path}`]?.default as
+  ((props: Record<string, never>) => unknown) | undefined
+const block = example.kind === "blocks"
+---
+
+<LiveCode
+  componentProps={{
+    name: example.item,
+    frame: framework === "react",
+  }}
+>
+  {Component ? (
+    <Component slot="example" />
+  ) : (
+    <iframe
+      slot="example"
+      data-react-preview={example.route}
+      data-dev={import.meta.env.DEV ? "" : undefined}
+      src={`/preview/react/#/${example.route}`}
+      title={`${name} preview`}
+      loading="lazy"
+      class="block w-full"
+      style={`height: ${block ? 640 : 360}px`}
+    />
+  )}
+  <Code
+    slot="code"
+    code={example.source}
+    lang={example.lang}
+    themes={{
+      light: "github-light-high-contrast",
+      dark: "github-dark-default",
+    }}
+  />
+</LiveCode>
+
+<script>
+  import { PRESET_EVENT, readPreset } from "@/lib/preset-store"
+
+  // Show each React preview in the docs style. Development serves only vega.
+  const sync = () => {
+    const style = readPreset()?.config.style ?? "vega"
+    document
+      .querySelectorAll<HTMLIFrameElement>("iframe[data-react-preview]")
+      .forEach((frame) => {
+        const path =
+          style === "vega" || frame.dataset.dev !== undefined ? "" : `${style}/`
+        const src = `/preview/react/${path}#/${frame.dataset.reactPreview}`
+        if (frame.getAttribute("src") !== src) frame.setAttribute("src", src)
+      })
+  }
+  sync()
+  document.addEventListener(PRESET_EVENT, sync)
+
+  // The preview app reports its height.
+  window.addEventListener("message", (event) => {
+    if (event.origin !== location.origin) return
+    if (event.data?.type !== "fulldev:preview-height") return
+    const frame = [
+      ...document.querySelectorAll<HTMLIFrameElement>(
+        "iframe[data-react-preview]"
+      ),
+    ].find((frame) => frame.contentWindow === event.source)
+    if (frame) frame.style.height = `${Math.ceil(event.data.height)}px`
+  })
+</script>

@@ -1,253 +1,98 @@
 import * as React from "react"
 
-import { buttonVariants } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/ui/theme-toggle"
+// The docs show React previews in an iframe of this app, one per style build.
+// Routes are #/examples/<family>/<name> for the official shadcn/ui examples,
+// #/blocks/<name> for a block and #/ui/<name> for a Fulldev component demo.
+// A query after the route belongs to the demo.
+const examples = import.meta.glob<Record<string, unknown>>(
+  "../src/components/examples/*/*.tsx"
+)
+const blocks = import.meta.glob<{ default: React.ComponentType }>(
+  "./blocks/*.tsx"
+)
+const ui = import.meta.glob<{ default: React.ComponentType }>("./ui/*.tsx")
 
-import registry from "../registry.json"
+type Preview = { kind: string; Demo?: React.ComponentType }
 
-declare const __STYLE__: string
-declare const __GALLERY_ROOT__: string
-
-type Demos = Record<string, React.ComponentType>
-
-// One module per UI family (default export) and per block category (a map
-// from block name to demo), loaded when its page opens.
-const uiDemos = import.meta.glob<{ default: React.ComponentType }>("./ui/*.tsx")
-const blockDemos = import.meta.glob<{ default: Demos }>("./blocks/*.tsx")
-
-const styles = ["vega", "nova", "maia", "lyra", "mira", "luma", "sera", "rhea"]
-const ui = registry.items.filter((item) => item.type === "registry:ui")
-const blocks = registry.items.filter((item) => item.type === "registry:block")
-
-// Gallery pages are #/ routes; a query after the route belongs to the demo.
-// Any other fragment, including an empty # link, is an in-page anchor. Next
-// to an anchor the page is kept in ?page=, so a reload, a style switch and
-// Back still show it.
-function readRoute(fallback = "") {
+function readRoute() {
   const hash = window.location.hash
-  if (hash.startsWith("#/")) return hash.slice(2).split("?")[0]
-  const page = new URLSearchParams(window.location.search).get("page")
-  return page ?? (isAnchor() ? fallback : "")
+  return hash.startsWith("#/") ? hash.slice(2).split("?")[0] : ""
 }
 
-// location.hash is empty for a bare #, so look for the fragment in the URL.
-function isAnchor() {
-  return (
-    window.location.href.includes("#") && !window.location.hash.startsWith("#/")
-  )
-}
-
-// Keep ?page= in the current history entry only while it holds an anchor.
-function syncUrl(route: string) {
-  const url = new URL(window.location.href)
-  if (isAnchor() && route) url.searchParams.set("page", route)
-  else url.searchParams.delete("page")
-  if (url.href !== window.location.href) {
-    window.history.replaceState(window.history.state, "", url)
+async function load(route: string): Promise<Preview> {
+  const [kind, ...rest] = route.split("/")
+  const name = rest.join("/")
+  if (kind === "examples") {
+    const module = await examples[`../src/components/examples/${name}.tsx`]?.()
+    // Each official example file exports its one example component.
+    const Demo = Object.values(module ?? {}).find(
+      (value) => typeof value === "function"
+    ) as React.ComponentType | undefined
+    return { kind, Demo }
   }
+  const modules = kind === "blocks" ? blocks : kind === "ui" ? ui : {}
+  const module = await modules[`./${kind}/${name}.tsx`]?.()
+  return { kind, Demo: module?.default }
 }
 
-function useRoute() {
-  const [route, setRoute] = React.useState(() => readRoute())
-  const current = React.useRef(route)
+// Send the page height to the docs, which size the iframe to it.
+function useReportHeight() {
   React.useEffect(() => {
-    syncUrl(current.current)
-    const onChange = () => {
-      const next = readRoute(current.current)
-      syncUrl(next)
-      if (next === current.current) return
-      current.current = next
-      setRoute(next)
-      // The page's anchor is scrolled to once the page has loaded.
-      if (!isAnchor()) window.scrollTo(0, 0)
-    }
-    window.addEventListener("hashchange", onChange)
-    window.addEventListener("popstate", onChange)
-    return () => {
-      window.removeEventListener("hashchange", onChange)
-      window.removeEventListener("popstate", onChange)
-    }
+    if (window.parent === window) return
+    const report = () =>
+      window.parent.postMessage(
+        {
+          type: "fulldev:preview-height",
+          height: document.body.getBoundingClientRect().height,
+        },
+        window.location.origin
+      )
+    const observer = new ResizeObserver(report)
+    observer.observe(document.body)
+    return () => observer.disconnect()
   }, [])
-  return route
-}
-
-function load(route: string): Promise<React.ComponentType | undefined> {
-  const [kind, name = ""] = route.split("/")
-  if (kind === "ui") {
-    const module = uiDemos[`./ui/${name}.tsx`]
-    return module ? module().then((m) => m.default) : Promise.resolve(undefined)
-  }
-  if (kind === "blocks") {
-    const category = name.replace(/-\d+$/, "")
-    const module = blockDemos[`./blocks/${category}.tsx`]
-    return module
-      ? module().then((m) => m.default[name])
-      : Promise.resolve(undefined)
-  }
-  return Promise.resolve(undefined)
-}
-
-function Page({ route }: { route: string }) {
-  const [state, setState] = React.useState<{
-    route: string
-    Demo?: React.ComponentType
-  }>()
-  React.useEffect(() => {
-    let current = true
-    load(route).then((Demo) => {
-      if (current) setState({ route, Demo })
-    })
-    return () => {
-      current = false
-    }
-  }, [route])
-  // A page opened with an anchor, by a reload, a style switch or Back,
-  // renders after the browser looked for the anchor; scroll to it now.
-  React.useEffect(() => {
-    if (state?.route !== route || !isAnchor()) return
-    const id = decodeURIComponent(window.location.hash.slice(1))
-    const target = id && document.getElementById(id)
-    if (target) target.scrollIntoView()
-    else window.scrollTo(0, 0)
-  }, [state, route])
-  if (state?.route !== route) return null
-  if (!state.Demo) {
-    return <p className="p-6 text-sm text-muted-foreground">No demo yet.</p>
-  }
-  const Demo = state.Demo
-  return <Demo />
-}
-
-function Nav({ route }: { route: string }) {
-  const link = (href: string, label: string) => (
-    <li key={href}>
-      <a
-        href={`#/${href}`}
-        aria-current={route === href ? "page" : undefined}
-        className="block rounded-md px-2 py-1 text-sm text-muted-foreground hover:text-foreground aria-[current=page]:bg-muted aria-[current=page]:text-foreground"
-      >
-        {label}
-      </a>
-    </li>
-  )
-  return (
-    <nav
-      aria-label="Gallery"
-      className="hidden flex-col gap-6 overflow-y-auto border-e p-4 lg:sticky lg:top-0 lg:flex lg:h-svh"
-    >
-      <div className="flex flex-col gap-2">
-        <h2 className="px-2 text-xs font-medium text-muted-foreground">
-          Components ({ui.length})
-        </h2>
-        <ul>
-          {ui.map((item) => link(`ui/${item.name}`, item.title ?? item.name))}
-        </ul>
-      </div>
-      <div className="flex flex-col gap-2">
-        <h2 className="px-2 text-xs font-medium text-muted-foreground">
-          Blocks ({blocks.length})
-        </h2>
-        <ul>
-          {blocks.map((item) =>
-            link(`blocks/${item.name}`, item.title ?? item.name)
-          )}
-        </ul>
-      </div>
-    </nav>
-  )
-}
-
-// Below lg the link list would push every page far down, so a picker
-// takes its place.
-function Picker({ route }: { route: string }) {
-  return (
-    <label className="flex w-full items-center gap-2 text-sm text-muted-foreground lg:hidden">
-      Page
-      <select
-        className="min-w-0 flex-1 rounded-md border bg-background px-2 py-1 text-foreground"
-        value={route}
-        onChange={(event) => {
-          window.location.hash = `/${event.target.value}`
-        }}
-      >
-        <option value="">Overview</option>
-        <optgroup label={`Components (${ui.length})`}>
-          {ui.map((item) => (
-            <option key={item.name} value={`ui/${item.name}`}>
-              {item.title ?? item.name}
-            </option>
-          ))}
-        </optgroup>
-        <optgroup label={`Blocks (${blocks.length})`}>
-          {blocks.map((item) => (
-            <option key={item.name} value={`blocks/${item.name}`}>
-              {item.title ?? item.name}
-            </option>
-          ))}
-        </optgroup>
-      </select>
-    </label>
-  )
 }
 
 // Demos that render a page's main element themselves.
 const ownMain = new Set(["ui/layout", "ui/sidebar", "blocks/sidebar-1"])
 
 export function App() {
-  const route = useRoute()
+  const [route, setRoute] = React.useState(readRoute)
+  const [preview, setPreview] = React.useState<Preview & { route: string }>()
+  useReportHeight()
+  React.useEffect(() => {
+    const onChange = () => setRoute(readRoute())
+    window.addEventListener("hashchange", onChange)
+    return () => window.removeEventListener("hashchange", onChange)
+  }, [])
+  React.useEffect(() => {
+    let current = true
+    load(route).then((next) => {
+      if (current) setPreview({ ...next, route })
+    })
+    return () => {
+      current = false
+    }
+  }, [route])
+  if (preview?.route !== route) return null
+  const { kind, Demo } = preview
+  if (!Demo) {
+    return (
+      <p className="p-6 text-sm text-muted-foreground">
+        No preview for {route || "this address"}.
+      </p>
+    )
+  }
   const Main = ownMain.has(route) ? "div" : "main"
   return (
-    <div className="grid min-h-svh lg:grid-cols-[16rem_1fr]">
-      <Nav route={route} />
-      <div className="flex min-w-0 flex-col">
-        <header className="flex flex-wrap items-center gap-2 border-b p-3">
-          <a href="#/" className="me-auto text-sm font-semibold">
-            Fulldev UI for React
-          </a>
-          <label className="flex items-center gap-2 text-sm text-muted-foreground">
-            Style
-            <select
-              className="rounded-md border bg-background px-2 py-1 text-foreground"
-              value={__STYLE__}
-              onChange={(event) => {
-                const style = event.target.value
-                const path = style === "vega" ? "" : `${style}/`
-                // Keep the query and fragment, also a bare # that
-                // location.hash leaves out.
-                const { href, origin, pathname } = window.location
-                const rest = href.slice((origin + pathname).length)
-                window.location.href = `${__GALLERY_ROOT__}${path}${rest}`
-              }}
-              disabled={import.meta.env.DEV}
-            >
-              {styles.map((style) => (
-                <option key={style}>{style}</option>
-              ))}
-            </select>
-          </label>
-          <ThemeToggle />
-          <Picker route={route} />
-        </header>
-        <Main className="@container flex flex-col">
-          {route ? (
-            <Page route={route} />
-          ) : (
-            <div className="flex flex-col gap-4 p-6">
-              <h1 className="text-2xl font-semibold">Fulldev UI for React</h1>
-              <p className="max-w-prose text-muted-foreground">
-                Every component and block of the React registry, in the{" "}
-                {__STYLE__} style. Pick one from the list or the page picker.
-              </p>
-              <a
-                href="#/ui/button"
-                className={buttonVariants({ variant: "outline" })}
-              >
-                Start with Button
-              </a>
-            </div>
-          )}
-        </Main>
-      </div>
-    </div>
+    <Main
+      className={
+        kind === "examples"
+          ? "flex min-h-[22.5rem] w-full items-center justify-center p-6 md:p-10"
+          : "@container flex flex-col"
+      }
+    >
+      <Demo />
+    </Main>
   )
 }

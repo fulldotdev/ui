@@ -1,3 +1,4 @@
+import { readdirSync } from "node:fs"
 import { defineConfig, fontProviders } from "astro/config"
 import { unified } from "@astrojs/markdown-remark"
 import mdx from "@astrojs/mdx"
@@ -5,7 +6,21 @@ import liveCode from "astro-live-code"
 
 import fulldevIntegration from "./src/lib/integration"
 
+// The docs used to live at /docs/, /components/ and /blocks/; they are the
+// Astro edition now. Netlify answers these with a 301 (netlify.toml).
+const legacyRedirects = Object.fromEntries(
+  readdirSync("src/content/pages/astro", { recursive: true })
+    .map((file) => String(file).replace(/(\/?index)?\.mdx$/, ""))
+    .filter((path) => /^(docs|components|blocks)/.test(path))
+    .map((path) => [`/${path}/`, `/astro/${path}/`])
+)
+
+// React previews come from the gallery in react/, at /preview/react/. In
+// development its Vite server runs on REACT_PREVIEW_PORT (pnpm dev:react).
+const reactPreviewPort = process.env.REACT_PREVIEW_PORT ?? "4322"
+
 export default defineConfig({
+  redirects: legacyRedirects,
   server: {
     host: "127.0.0.1",
     port: 4321,
@@ -13,6 +28,12 @@ export default defineConfig({
   vite: {
     server: {
       allowedHosts: ["otis.tailb5cb80.ts.net"],
+      proxy: {
+        "/preview/react/": {
+          target: `http://127.0.0.1:${reactPreviewPort}`,
+          ws: true,
+        },
+      },
     },
     // The docs create page imports this; prebundle it so the first dev visit
     // does not trigger a dependency re-optimization.

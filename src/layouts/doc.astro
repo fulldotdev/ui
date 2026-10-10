@@ -1,9 +1,11 @@
 ---
 import type { MarkdownHeading } from "astro"
-import { getCollection } from "astro:content"
+import { getEntry } from "astro:content"
 
 import type { GlobalSchema } from "@/schemas/global"
 import type { DocSchema } from "@/schemas/layouts/doc"
+import { getPageMarkdown } from "@/lib/markdown"
+import { getFramework, getPageId, getReadingOrder } from "@/lib/pages"
 import Base from "@/layouts/base.astro"
 import DocBlock from "@/components/blocks/doc-1.astro"
 
@@ -20,32 +22,9 @@ const markdownPath =
   currentPath === "/" ? "/index.md" : `${currentPath.replace(/\/$/, "")}.md`
 const markdownUrl = new URL(markdownPath, Astro.site ?? Astro.url).toString()
 
-const docsPages = await getCollection("pages")
-const orderedDocLinks = [
-  "docs/introduction",
-  "docs/installation",
-  "docs/theming",
-  "docs/presets",
-  "components",
-  "blocks",
-]
-  .map((id) => docsPages.find((entry) => entry.id === id))
-  .filter((entry): entry is (typeof docsPages)[number] => Boolean(entry))
-  .map((entry) => ({
-    href: `/${entry.id}/`,
-    title: entry.data.title,
-  }))
-const componentLinks = docsPages
-  .filter(
-    (entry) => entry.data.type === "doc" && entry.id.startsWith("components/")
-  )
-  .map((entry) => ({
-    href: `/${entry.id}/`,
-    title: entry.data.title,
-    description: entry.data.description,
-  }))
-  .sort((a, b) => a.title.localeCompare(b.title))
-const paginationLinks = [...orderedDocLinks, ...componentLinks]
+const paginationLinks = await getReadingOrder(
+  getFramework(getPageId(currentPath))
+)
 const currentPageIndex = paginationLinks.findIndex(
   (item) => item.href === currentPath
 )
@@ -53,10 +32,8 @@ const previousPage =
   currentPageIndex > 0 ? paginationLinks[currentPageIndex - 1] : undefined
 const nextPage =
   currentPageIndex >= 0 ? paginationLinks[currentPageIndex + 1] : undefined
-const currentDoc = await getCollection("pages", ({ data, id }) => {
-  return data.type === "doc" && `/${id}/` === currentPath
-})
-const copySource = currentDoc[0]?.body
+const currentDoc = await getEntry("pages", getPageId(currentPath))
+const copySource = currentDoc && (await getPageMarkdown(currentDoc))
 const copyButton = copySource
   ? {
       id: `docs-copy-page-${crypto.randomUUID()}`,

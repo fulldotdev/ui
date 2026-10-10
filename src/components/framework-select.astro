@@ -1,0 +1,113 @@
+---
+// Docs only: switch between the Astro and React editions of the current page.
+// The URL decides the edition; the links keep the query and fragment.
+import ChevronsUpDown from "@lucide/astro/icons/chevrons-up-down"
+import AstroLogo from "simple-icons/icons/astro.svg"
+import ReactLogo from "simple-icons/icons/react.svg"
+
+import { frameworkLabels, frameworks, type Framework } from "@/lib/pages"
+import { cn } from "@/lib/utils"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+type Props = {
+  current: Framework
+  hrefs: Record<Framework, string>
+  // Two presentations while the design is open: segmented links or a menu.
+  variant?: "segmented" | "menu"
+}
+
+const { current, hrefs, variant = "segmented" } = Astro.props
+const logos = { astro: AstroLogo, react: ReactLogo }
+const CurrentLogo = logos[current]
+---
+
+{variant === "segmented" ? (
+  <nav
+    data-shell-option="segmented"
+    aria-label="Framework"
+    class="bg-muted text-muted-foreground grid grid-cols-2 gap-1 rounded-lg p-1"
+  >
+    {frameworks.map((framework) => {
+      const Logo = logos[framework]
+      return (
+        <a
+          href={hrefs[framework]}
+          data-framework-link
+          aria-current={framework === current ? "page" : undefined}
+          class="hover:text-foreground focus-visible:ring-ring/50 aria-[current=page]:bg-background aria-[current=page]:text-foreground flex h-7 items-center justify-center gap-1.5 rounded-md text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none aria-[current=page]:shadow-sm"
+        >
+          <Logo class="size-3.5" fill="currentColor" aria-hidden="true" />
+          {frameworkLabels[framework]}
+        </a>
+      )
+    })}
+  </nav>
+) : (
+  <DropdownMenu>
+    <DropdownMenuTrigger
+      aria-label={`Framework: ${frameworkLabels[current]}`}
+      class={cn(
+        "hover:bg-sidebar-accent focus-visible:ring-ring/50 flex h-9 w-full items-center gap-2 rounded-md border px-2 text-sm font-medium focus-visible:ring-2 focus-visible:outline-none"
+      )}
+    >
+      <CurrentLogo class="size-4" fill="currentColor" aria-hidden="true" />
+      {frameworkLabels[current]}
+      <ChevronsUpDown class="text-muted-foreground ml-auto size-4" />
+    </DropdownMenuTrigger>
+    <DropdownMenuContent
+      side="bottom"
+      align="start"
+      class="w-(--anchor-width) min-w-48"
+    >
+      <DropdownMenuGroup>
+        {frameworks.map((framework) => {
+          const Logo = logos[framework]
+          return (
+            <DropdownMenuItem
+              href={hrefs[framework]}
+              data-framework-link
+              aria-current={framework === current ? "page" : undefined}
+            >
+              <Logo class="size-4" fill="currentColor" aria-hidden="true" />
+              {frameworkLabels[framework]}
+            </DropdownMenuItem>
+          )
+        })}
+      </DropdownMenuGroup>
+    </DropdownMenuContent>
+  </DropdownMenu>
+)}
+
+<script>
+  // Carry the query and heading over to the other edition, except the note
+  // about a missing page.
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return
+    const link = event.target.closest("a[data-framework-link]")
+    if (!(link instanceof HTMLAnchorElement)) return
+    const target = new URL(link.href)
+    const query = new URLSearchParams(location.search)
+    query.delete("missing")
+    target.searchParams.forEach((value, key) => query.set(key, value))
+    target.search = query.toString()
+    target.hash = location.hash
+    link.href = target.href
+  })
+</script>
+
+<script>
+  // Local design option: ?shell=menu shows the menu instead.
+  if (new URLSearchParams(location.search).get("shell") === "menu") {
+    document
+      .querySelectorAll<HTMLElement>("[data-shell-option]")
+      .forEach((option) => {
+        option.hidden = option.dataset.shellOption !== "menu"
+      })
+  }
+</script>

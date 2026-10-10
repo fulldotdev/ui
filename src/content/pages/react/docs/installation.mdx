@@ -1,0 +1,72 @@
+---
+type: doc
+title: Installation
+description: Install Fulldev UI for React.
+---
+
+You need a React project with Tailwind CSS v4 and the `@/*` import alias for
+`src/*`, such as a Vite or Next.js project.
+
+## New project
+
+Initialize from the Fulldev UI base. It writes `components.json` with the
+`@fulldev` registry, the theme tokens, the class helper and dependencies:
+
+```bash
+npx shadcn@latest init https://ui.full.dev/r/react/styles/base-vega/base.json
+```
+
+Replace `base-vega` with another shadcn/ui style, such as `base-nova`.
+
+## Existing project
+
+If the project has a `components.json`, do not run `init` again: it replaces
+the theme tokens. Add the registry instead:
+
+```json title="components.json"
+{
+  "registries": {
+    "@fulldev": "https://ui.full.dev/r/react/styles/{style}/{name}.json"
+  }
+}
+```
+
+Then install the helpers, which leave your theme alone:
+
+```bash
+npx shadcn@latest add @fulldev/init
+```
+
+Fulldev UI serves the Base UI styles only. If `style` in `components.json` is
+a legacy style such as `new-york`, or starts with `radix-`, set it to a Base UI
+style such as `base-vega` first.
+
+## Add components
+
+```bash
+npx shadcn@latest add @fulldev/button @fulldev/hero-1
+```
+
+Add the examples of a component with `@fulldev/<name>-examples`, and every
+component or block with `@fulldev/components` and `@fulldev/blocks`.
+
+```tsx
+import { Hero1 } from "@/components/blocks/hero-1"
+import { Button } from "@/components/ui/button"
+```
+
+## Notes
+
+- `Icon` renders any Lucide icon or Simple Icons brand by its content name,
+  such as `rocket` or `figma`; `lucide:` and `simple:` pick a set. With only
+  an `href`, it shows the brand of a social or contact link. It includes both
+  sets, about 2 MB gzipped in a client bundle; in a server component it stays
+  on the server. Import an icon fixed in code from `lucide-react` or
+  `simple-icons` directly.
+- `Doc1` adds a copy button to `<pre>` elements passed as direct children.
+  Map compiled MDX to the exported code block:
+  `<Content components={{ pre: Doc1CodeBlock }} />`.
+- Wrap the app in `ThemeProvider` from `@/components/ui/theme-toggle` to use
+  `ThemeToggle`.
+- The Sonner examples need a `<Toaster />` from `@/components/ui/sonner` in
+  the root layout, as in the [Sonner](/react/components/sonner/) docs.

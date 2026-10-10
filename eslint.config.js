@@ -30,6 +30,27 @@ export default defineConfig([
     ],
     rules: { "react-hooks/set-state-in-effect": "off" },
   },
+  {
+    // The official shadcn/ui docs examples and the docs helpers they import,
+    // unchanged.
+    files: [
+      "react/src/components/examples/**/*.tsx",
+      "react/src/components/language-selector.tsx",
+      "react/src/components/markdown.tsx",
+      "react/src/components/message-animated.tsx",
+      "react/src/lib/ai.ts",
+      "react/src/lib/message-animations.ts",
+      "react/src/hooks/use-copy-to-clipboard.ts",
+      "react/src/hooks/use-media-query.tsx",
+    ],
+    rules: {
+      "@typescript-eslint/no-unused-expressions": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "no-useless-assignment": "off",
+      "react-hooks/refs": "off",
+      "react-hooks/set-state-in-effect": "off",
+    },
+  },
   ...astro.configs.recommended,
   ...astro.configs["jsx-a11y-recommended"],
   {

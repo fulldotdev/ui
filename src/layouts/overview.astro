@@ -3,6 +3,7 @@ import { getCollection } from "astro:content"
 
 import type { GlobalSchema } from "@/schemas/global"
 import type { OverviewSchema } from "@/schemas/layouts/overview"
+import { getFramework, getPageId, getReadingOrder } from "@/lib/pages"
 import Base from "@/layouts/base.astro"
 import { SectionContainer } from "@/components/ui/section"
 import { TypographyH1, TypographyLead } from "@/components/ui/typography"
@@ -13,35 +14,23 @@ type Props = {
 }
 
 const { global, page }: Props = Astro.props
-const currentPath = Astro.url.pathname
+const pageId = getPageId(Astro.url.pathname)
+const [framework, section] = pageId.split("/")
 const pages = await getCollection("pages")
 
-const docsIndexOrder = [
-  "docs/introduction",
-  "docs/installation",
-  "docs/theming",
-  "components",
-  "blocks",
-]
-
-const entries =
-  currentPath === "/docs/"
-    ? docsIndexOrder
-        .map((id) => pages.find((entry) => entry.id === id))
+// An edition's index lists its sections; a section lists its pages.
+const entries = section
+  ? section === "docs"
+    ? (await getReadingOrder(getFramework(pageId)))
+        .filter((link) => link.href.startsWith(`/${pageId}/`))
+        .map((link) => pages.find((entry) => `/${entry.id}/` === link.href))
         .filter((entry): entry is (typeof pages)[number] => Boolean(entry))
     : pages
-        .filter(({ data, id }) => {
-          if (currentPath === "/blocks/") {
-            return data.type === "block" && id.startsWith("blocks/")
-          }
-
-          if (currentPath === "/components/") {
-            return data.type === "doc" && id.startsWith("components/")
-          }
-
-          return false
-        })
+        .filter(({ id }) => id.startsWith(`${pageId}/`))
         .sort((a, b) => a.data.title.localeCompare(b.data.title))
+  : ["docs", "components", "blocks"]
+      .map((name) => pages.find((entry) => entry.id === `${framework}/${name}`))
+      .filter((entry): entry is (typeof pages)[number] => Boolean(entry))
 
 const overviewLinks = entries.map((entry) => ({
   href: `/${entry.id}/`,
@@ -64,6 +53,13 @@ const overviewLinks = entries.map((entry) => ({
         )}
       </header>
 
+      <p
+        data-missing-page
+        hidden
+        role="status"
+        class="bg-muted/60 rounded-lg px-4 py-3 text-sm"
+      ></p>
+
       <section class="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
         {overviewLinks.map((item) => (
           <a
@@ -82,3 +78,27 @@ const overviewLinks = entries.map((entry) => ({
     </div>
   </SectionContainer>
 </Base>
+
+<script>
+  // Another edition links here when it has a page this one lacks.
+  const missing = new URLSearchParams(location.search).get("missing")
+  const note = document.querySelector<HTMLElement>("[data-missing-page]")
+  if (missing && note) {
+    const title = missing
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ")
+    note.textContent = `${title} is not in this edition yet. These are the pages it has.`
+    note.hidden = false
+  }
+</script>
+
+<script is:inline>
+  // Links to the former React gallery, such as /react/#/ui/button.
+  if (location.pathname === "/react/" && location.hash.startsWith("#/")) {
+    const [kind, name] = location.hash.slice(2).split("?")[0].split("/")
+    if (kind === "ui" && name) location.replace(`/react/components/${name}/`)
+    if (kind === "blocks" && name)
+      location.replace(`/react/blocks/${name.replace(/-\d+$/, "")}/#${name}`)
+  }
+</script>
