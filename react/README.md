@@ -41,7 +41,7 @@ import { Button } from "@/components/ui/button"
 
 Blocks take plain content props, such as `title`, `buttons` and `image: { src, srcSet, alt }`, and render native elements, so they work with any router and image pipeline. Caller-owned content, such as a form or an article body, goes in `children`.
 
-- `Icon` renders any Lucide icon or Simple Icons brand by its content name, such as `rocket` or `figma`; `lucide:` and `simple:` pick a set. With only an `href`, it shows the brand of a social or contact link. Import an icon fixed in code from `lucide-react` or `simple-icons` directly.
+- `Icon` renders any Lucide icon or Simple Icons brand by its content name, such as `rocket` or `figma`; `lucide:` and `simple:` pick a set. With only an `href`, it shows the brand of a social or contact link. Because names resolve at runtime, `Icon` includes both sets, about 2 MB gzipped in a client bundle; in a server component it stays on the server. Import an icon fixed in code from `lucide-react` or `simple-icons` directly.
 - `Doc1` adds a copy button to `<pre>` elements passed as direct children. Content from a component, such as compiled MDX, renders its own `<pre>`, so map it to the exported code block: `<Content components={{ pre: Doc1CodeBlock }} />`.
 - Wrap the app in `ThemeProvider` from `@/components/ui/theme-toggle` to use `ThemeToggle`.
 

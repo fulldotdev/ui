@@ -44,8 +44,9 @@ export default defineConfig(({ mode }) => {
       outDir: process.env.OUT_DIR ?? "dist",
       // Each style builds into its own folder; vega, built first, holds the others.
       emptyOutDir: process.env.STYLE === "vega" || !process.env.STYLE,
-      // Keep the gallery small enough to scan: one chunk per demo page.
-      chunkSizeWarningLimit: 4096,
+      // Icon resolves content names at runtime, so its chunk holds every
+      // Simple Icons brand (about 5 MB, 2 MB gzipped).
+      chunkSizeWarningLimit: 6144,
     },
     // Demos load on demand; scan them all up front so the dev server does
     // not reload the page when it meets a new dependency.
