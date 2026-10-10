@@ -45,8 +45,8 @@ function RemovableAttachments() {
   ])
 
   return (
-    <div className="flex flex-col items-start gap-3">
-      <AttachmentGroup className="max-w-md">
+    <div className="flex w-full flex-col items-start gap-3">
+      <AttachmentGroup className="w-full max-w-md">
         {files.map((file) => (
           <Attachment key={file.name} size="sm">
             <AttachmentMedia>
@@ -107,7 +107,7 @@ export default function Demo() {
         </Attachment>
       </Example>
       <Example title="Sizes">
-        <div className="flex flex-col items-start gap-3">
+        <div className="flex w-full flex-col items-start gap-3">
           <Attachment size="xs">
             <AttachmentMedia>
               <FileTextIcon />
@@ -180,7 +180,7 @@ export default function Demo() {
         </Attachment>
       </Example>
       <Example title="Vertical group with image media">
-        <AttachmentGroup className="max-w-md">
+        <AttachmentGroup className="w-full max-w-md">
           <Attachment orientation="vertical">
             <AttachmentMedia variant="image">
               <img src={placeholderImage.src} alt="Cover photo preview" />

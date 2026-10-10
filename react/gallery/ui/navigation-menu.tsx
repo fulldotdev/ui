@@ -98,7 +98,7 @@ export default function Demo() {
             ))}
           </div>
           <NavigationMenu align={align}>
-            <NavigationMenuList>
+            <NavigationMenuList className="flex-wrap">
               <NavigationMenuItem>
                 <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
                 <NavigationMenuContent>

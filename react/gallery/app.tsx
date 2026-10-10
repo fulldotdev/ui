@@ -86,7 +86,7 @@ function Nav({ route }: { route: string }) {
   return (
     <nav
       aria-label="Gallery"
-      className="flex flex-col gap-6 overflow-y-auto border-e p-4 lg:sticky lg:top-0 lg:h-svh"
+      className="hidden flex-col gap-6 overflow-y-auto border-e p-4 lg:sticky lg:top-0 lg:flex lg:h-svh"
     >
       <div className="flex flex-col gap-2">
         <h2 className="px-2 text-xs font-medium text-muted-foreground">
@@ -107,6 +107,39 @@ function Nav({ route }: { route: string }) {
         </ul>
       </div>
     </nav>
+  )
+}
+
+// Below lg the link list would push every page far down, so a picker
+// takes its place.
+function Picker({ route }: { route: string }) {
+  return (
+    <label className="flex w-full items-center gap-2 text-sm text-muted-foreground lg:hidden">
+      Page
+      <select
+        className="min-w-0 flex-1 rounded-md border bg-background px-2 py-1 text-foreground"
+        value={route}
+        onChange={(event) => {
+          window.location.hash = `/${event.target.value}`
+        }}
+      >
+        <option value="">Overview</option>
+        <optgroup label={`Components (${ui.length})`}>
+          {ui.map((item) => (
+            <option key={item.name} value={`ui/${item.name}`}>
+              {item.title ?? item.name}
+            </option>
+          ))}
+        </optgroup>
+        <optgroup label={`Blocks (${blocks.length})`}>
+          {blocks.map((item) => (
+            <option key={item.name} value={`blocks/${item.name}`}>
+              {item.title ?? item.name}
+            </option>
+          ))}
+        </optgroup>
+      </select>
+    </label>
   )
 }
 
@@ -138,6 +171,7 @@ export function App() {
             </select>
           </label>
           <ThemeToggle />
+          <Picker route={route} />
         </header>
         <main className="@container flex flex-col">
           {route ? (
@@ -147,7 +181,7 @@ export function App() {
               <h1 className="text-2xl font-semibold">Fulldev UI for React</h1>
               <p className="max-w-prose text-muted-foreground">
                 Every component and block of the React registry, in the{" "}
-                {__STYLE__} style. Pick one from the list.
+                {__STYLE__} style. Pick one from the list or the page picker.
               </p>
               <a
                 href="#/ui/button"

@@ -50,7 +50,7 @@ export default function Demo() {
       </Example>
 
       <Example title="Horizontal">
-        <ScrollArea className="w-96 rounded-md border whitespace-nowrap">
+        <ScrollArea className="w-full max-w-96 rounded-md border whitespace-nowrap">
           <div className="flex w-max gap-4 p-4">
             {works.map((work) => (
               <figure key={work.title} className="shrink-0">
