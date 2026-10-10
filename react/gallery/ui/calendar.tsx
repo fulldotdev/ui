@@ -28,6 +28,7 @@ function SingleCalendar() {
     <div className="flex flex-col gap-2">
       <Calendar
         mode="single"
+        labels={{ labelNav: () => "Single date months" }}
         selected={date}
         onSelect={setDate}
         defaultMonth={month}
@@ -49,6 +50,7 @@ function RangeCalendar() {
   return (
     <Calendar
       mode="range"
+      labels={{ labelNav: () => "Range months" }}
       selected={range}
       onSelect={setRange}
       defaultMonth={month}
@@ -72,6 +74,7 @@ export default function Demo() {
       <Example title="Month and year dropdowns">
         <Calendar
           mode="single"
+          labels={{ labelNav: () => "Dropdown months" }}
           captionLayout="dropdown"
           defaultMonth={month}
           startMonth={new Date(2020, 0)}
@@ -82,6 +85,7 @@ export default function Demo() {
       <Example title="Disabled weekends and week numbers">
         <Calendar
           mode="single"
+          labels={{ labelNav: () => "Week number months" }}
           defaultMonth={month}
           disabled={{ dayOfWeek: [0, 6] }}
           showWeekNumber
@@ -91,6 +95,7 @@ export default function Demo() {
       <Example title="Custom day button">
         <Calendar
           mode="single"
+          labels={{ labelNav: () => "Custom day months" }}
           defaultMonth={month}
           className="rounded-lg border [--cell-size:--spacing(11)]"
           components={{

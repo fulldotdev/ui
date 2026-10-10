@@ -23,6 +23,19 @@ function Example({
   )
 }
 
+const accountFaqs = [
+  {
+    value: "password",
+    question: "How do I change my password?",
+    answer: "Open your account settings and choose Change password.",
+  },
+  {
+    value: "invoices",
+    question: "Where are my invoices?",
+    answer: "Every invoice is under Billing, ready to download as a PDF.",
+  },
+]
+
 const faqs = [
   {
     value: "shipping",
@@ -95,10 +108,10 @@ export default function Demo() {
       <Example title="Multiple open at once">
         <Accordion
           multiple
-          defaultValue={["shipping", "returns"]}
+          defaultValue={["password", "invoices"]}
           className="max-w-md"
         >
-          {faqs.map((faq) => (
+          {accountFaqs.map((faq) => (
             <AccordionItem key={faq.value} value={faq.value}>
               <AccordionTrigger>{faq.question}</AccordionTrigger>
               <AccordionContent>

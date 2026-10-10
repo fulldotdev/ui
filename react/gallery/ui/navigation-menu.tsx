@@ -97,7 +97,7 @@ export default function Demo() {
               </Button>
             ))}
           </div>
-          <NavigationMenu align={align}>
+          <NavigationMenu align={align} aria-label="Documentation">
             <NavigationMenuList className="flex-wrap">
               <NavigationMenuItem>
                 <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
@@ -170,7 +170,7 @@ export default function Demo() {
       </Example>
 
       <Example title="Open indicator">
-        <NavigationMenu>
+        <NavigationMenu aria-label="Account">
           <NavigationMenuList>
             <NavigationMenuItem className="flex flex-col items-center">
               <NavigationMenuTrigger>Account</NavigationMenuTrigger>

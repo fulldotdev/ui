@@ -234,7 +234,8 @@ export default function Demo() {
             open={open}
             onOpenChange={setOpen}
           >
-            <SidebarInset className="gap-4 p-4">
+            {/* A page has one main element, the inset of the first example. */}
+            <div className="flex w-full flex-1 flex-col gap-4 p-4">
               <header className="flex items-center gap-2">
                 <span className="me-auto text-sm font-medium">Projects</span>
                 <SidebarTrigger />
@@ -242,7 +243,7 @@ export default function Demo() {
               <p className="text-sm text-muted-foreground">
                 Controlled open state: {String(open)}
               </p>
-            </SidebarInset>
+            </div>
             <LoadingSidebar />
           </SidebarProvider>
         </div>

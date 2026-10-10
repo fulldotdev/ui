@@ -143,30 +143,43 @@ export default function Demo() {
         </div>
       </Example>
 
-      <Example title="Group with separators">
+      <Example title="Group">
         <ItemGroup className="max-w-md">
+          {people.map((person) => (
+            <Item key={person.email} role="listitem">
+              <ItemMedia>
+                <Avatar>
+                  <AvatarFallback>{person.initials}</AvatarFallback>
+                </Avatar>
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle>{person.name}</ItemTitle>
+                <ItemDescription>{person.email}</ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <Button variant="ghost" size="sm">
+                  Invite
+                </Button>
+              </ItemActions>
+            </Item>
+          ))}
+        </ItemGroup>
+      </Example>
+
+      <Example title="Separated items">
+        <div className="flex w-full max-w-md flex-col">
           {people.map((person, index) => (
             <React.Fragment key={person.email}>
               {index > 0 && <ItemSeparator />}
-              <Item>
-                <ItemMedia>
-                  <Avatar>
-                    <AvatarFallback>{person.initials}</AvatarFallback>
-                  </Avatar>
-                </ItemMedia>
+              <Item size="sm">
                 <ItemContent>
                   <ItemTitle>{person.name}</ItemTitle>
                   <ItemDescription>{person.email}</ItemDescription>
                 </ItemContent>
-                <ItemActions>
-                  <Button variant="ghost" size="sm">
-                    Invite
-                  </Button>
-                </ItemActions>
               </Item>
             </React.Fragment>
           ))}
-        </ItemGroup>
+        </div>
       </Example>
 
       <Example title="Header and footer">

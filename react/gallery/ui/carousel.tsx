@@ -62,7 +62,7 @@ function ApiCarousel() {
 
   return (
     <div className="flex w-full max-w-xs flex-col items-center gap-2">
-      <Carousel setApi={setApi} className="w-full">
+      <Carousel aria-label="Slides with API" setApi={setApi} className="w-full">
         <CarouselContent>
           {slides.map((number) => (
             <CarouselItem key={number}>
@@ -110,7 +110,7 @@ export default function Demo() {
     <div className="flex flex-col gap-10 p-6">
       <Example title="Default">
         <div className="w-full max-w-xs px-12">
-          <Carousel>
+          <Carousel aria-label="Basic slides">
             <CarouselContent>
               {slides.map((number) => (
                 <CarouselItem key={number}>
@@ -125,7 +125,10 @@ export default function Demo() {
       </Example>
       <Example title="Several per view, looping">
         <div className="w-full max-w-md px-12">
-          <Carousel opts={{ align: "start", loop: true }}>
+          <Carousel
+            aria-label="Looping slides"
+            opts={{ align: "start", loop: true }}
+          >
             <CarouselContent>
               {slides.map((number) => (
                 <CarouselItem key={number} className="basis-1/2 sm:basis-1/3">
@@ -144,7 +147,11 @@ export default function Demo() {
       </Example>
       <Example title="Vertical">
         <div className="w-full max-w-xs py-12">
-          <Carousel orientation="vertical" opts={{ align: "start" }}>
+          <Carousel
+            aria-label="Vertical slides"
+            orientation="vertical"
+            opts={{ align: "start" }}
+          >
             <CarouselContent className="h-48">
               {slides.map((number) => (
                 <CarouselItem key={number} className="basis-1/2">
@@ -168,7 +175,7 @@ export default function Demo() {
       </Example>
       <Example title="Custom controls with useCarousel">
         <div className="w-full max-w-xs">
-          <Carousel>
+          <Carousel aria-label="Slides with custom controls">
             <CarouselContent>
               {slides.map((number) => (
                 <CarouselItem key={number}>
