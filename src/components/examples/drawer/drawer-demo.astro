@@ -105,21 +105,40 @@ const deliveryTimes = [
 
   // Like useIsMobile: a bottom drawer with a swipe handle below 768px.
   const query = matchMedia("(max-width: 767px)")
+  const triggerOf = (root: HTMLElement) =>
+    [...root.querySelectorAll('[data-slot="drawer-trigger"]')].find(
+      (element) => element.closest('[data-slot="drawer"]') === root
+    )
   const update = () => {
-    for (const root of document.querySelectorAll<HTMLElement>(
-      "[data-drawer-responsive]"
-    )) {
-      root
-        .querySelectorAll('[data-slot="drawer-handle"]')
-        .forEach((handle) => handle.toggleAttribute("hidden", !query.matches))
-      const direction = query.matches ? "down" : "right"
-      if (root.dataset.swipeDirection === direction) continue
-      // Data Slot reads the direction when it binds, and restores it when
-      // destroyed, so rebind.
-      createDrawer(root).destroy()
-      root.dataset.swipeDirection = direction
-      createDrawer(root)
+    const direction = query.matches ? "down" : "right"
+    const roots = [
+      ...document.querySelectorAll<HTMLElement>("[data-drawer-responsive]"),
+    ]
+    for (const root of roots) {
+      // An open popup lives in the body, outside its root.
+      const popup = document.getElementById(
+        triggerOf(root)?.getAttribute("aria-controls") ?? ""
+      )
+      for (const parent of [root, popup])
+        parent
+          ?.querySelectorAll('[data-slot="drawer-handle"]')
+          .forEach((handle) => handle.toggleAttribute("hidden", !query.matches))
     }
+    // Data Slot reads the direction when it binds, and restores it when
+    // destroyed, so rebind. Open drawers stay open: nested ones unbind first
+    // and bind last.
+    const stale = roots.filter(
+      (root) => root.dataset.swipeDirection !== direction
+    )
+    const open = stale.map((root) => createDrawer(root).isOpen)
+    for (const root of [...stale].reverse()) createDrawer(root).destroy()
+    stale.forEach((root, index) => {
+      root.dataset.swipeDirection = direction
+      const drawer = createDrawer(root, { open: open[index] })
+      // Reselect the trigger, which gets aria-expanded back.
+      const trigger = triggerOf(root)
+      if (open[index] && trigger?.id) drawer.open(trigger.id)
+    })
   }
 
   update()
