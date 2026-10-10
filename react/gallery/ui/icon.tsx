@@ -59,6 +59,10 @@ export default function Demo() {
       </Example>
       <Example title="Prefixed sets and labelled icons">
         <Icon name="simple:github" className="size-6" />
+        <Icon name="simple:figma" className="size-6" />
+        <Icon name="simple:astro" className="size-6" />
+        <Icon name="simple:apple" className="size-6" />
+        <Icon name="x.com" className="size-6" />
         <Icon name="lucide:github" className="size-6" />
         <Icon name="rocket" aria-label="Launch" role="img" className="size-6" />
         <Icon name="does-not-exist" className="size-6" />

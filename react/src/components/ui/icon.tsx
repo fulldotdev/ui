@@ -1,56 +1,12 @@
 import * as React from "react"
 import { cn } from "cn"
 import * as lucide from "lucide-react"
-import {
-  siBehance,
-  siDiscord,
-  siDribbble,
-  siFacebook,
-  siFlickr,
-  siGithub,
-  siInstagram,
-  siPinterest,
-  siReddit,
-  siSnapchat,
-  siSoundcloud,
-  siSpotify,
-  siTelegram,
-  siTiktok,
-  siTumblr,
-  siTwitch,
-  siVimeo,
-  siWhatsapp,
-  siX,
-  siYelp,
-  siYoutube,
-  type SimpleIcon,
-} from "simple-icons"
+import * as simpleIcons from "simple-icons"
+import type { SimpleIcon } from "simple-icons"
 
-// Brand logos for social and contact links. Other Simple Icons are left out,
-// because the package bundles every logo into one module.
-const brands: Record<string, SimpleIcon> = {
-  behance: siBehance,
-  discord: siDiscord,
-  dribbble: siDribbble,
-  facebook: siFacebook,
-  flickr: siFlickr,
-  github: siGithub,
-  instagram: siInstagram,
-  pinterest: siPinterest,
-  reddit: siReddit,
-  snapchat: siSnapchat,
-  soundcloud: siSoundcloud,
-  spotify: siSpotify,
-  telegram: siTelegram,
-  tiktok: siTiktok,
-  tumblr: siTumblr,
-  twitch: siTwitch,
-  vimeo: siVimeo,
-  whatsapp: siWhatsapp,
-  x: siX,
-  yelp: siYelp,
-  youtube: siYoutube,
-}
+// Names come from content, so every Lucide icon and every Simple Icons brand
+// can be rendered. For an icon fixed in code, import it from lucide-react or
+// simple-icons directly instead.
 
 // The icon for a link, by a part of its href.
 const hrefIcons = {
@@ -87,20 +43,29 @@ type Resolved =
   | { source: "lucide"; icon: lucide.LucideIcon }
   | { source: "simple"; icon: SimpleIcon }
 
-// `map-pin` is the `MapPin` export, aliases included.
+// `map-pin` is the `MapPin` export of lucide-react, aliases included.
 function lucideIcon(name: string) {
   const key = name
     .split("-")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join("")
   const icon = (lucide as Record<string, unknown>)[key]
-  if (key === "Icon" || typeof icon !== "object" || icon === null) return
+  if (typeof icon !== "object" || icon === null || !("$$typeof" in icon)) return
   return icon as lucide.LucideIcon
+}
+
+// `github` is the `siGithub` export of simple-icons.
+function simpleIcon(slug: string) {
+  const icon = (simpleIcons as Record<string, unknown>)[
+    `si${slug.charAt(0).toUpperCase()}${slug.slice(1)}`
+  ]
+  if (typeof icon !== "object" || icon === null || !("path" in icon)) return
+  return icon as SimpleIcon
 }
 
 function find(source: Source, name: string): Resolved | undefined {
   if (source === "simple") {
-    const icon = brands[name]
+    const icon = simpleIcon(name)
     return icon && { source, icon }
   }
   const icon = lucideIcon(name)
@@ -124,6 +89,7 @@ function resolveIcon(name?: string | number, href?: string) {
 
   const link = find("lucide", "link")
   if (!key) return href ? link : undefined
+  if (key === "x.com") key = "simple:x"
 
   const [prefix, icon] = key.includes(":") ? key.split(":") : [undefined, key]
   if (prefix === "lucide" || prefix === "simple") order = [prefix]
