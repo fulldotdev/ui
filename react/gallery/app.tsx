@@ -19,12 +19,22 @@ const styles = ["vega", "nova", "maia", "lyra", "mira", "luma", "sera", "rhea"]
 const ui = registry.items.filter((item) => item.type === "registry:ui")
 const blocks = registry.items.filter((item) => item.type === "registry:block")
 
+// Gallery pages are #/ routes. A query after the route belongs to the demo,
+// and any other hash is an in-page anchor that keeps the current page.
+function readRoute() {
+  const hash = window.location.hash
+  return hash.startsWith("#/") ? hash.slice(2).split("?")[0] : undefined
+}
+
 function useRoute() {
-  const read = () => window.location.hash.replace(/^#\/?/, "")
-  const [route, setRoute] = React.useState(read)
+  const [route, setRoute] = React.useState(() => readRoute() ?? "")
+  const current = React.useRef(route)
   React.useEffect(() => {
     const onChange = () => {
-      setRoute(read())
+      const next = readRoute()
+      if (next === undefined || next === current.current) return
+      current.current = next
+      setRoute(next)
       window.scrollTo(0, 0)
     }
     window.addEventListener("hashchange", onChange)
@@ -143,8 +153,12 @@ function Picker({ route }: { route: string }) {
   )
 }
 
+// Demos that render a page's main element themselves.
+const ownMain = new Set(["ui/layout", "ui/sidebar", "blocks/sidebar-1"])
+
 export function App() {
   const route = useRoute()
+  const Main = ownMain.has(route) ? "div" : "main"
   return (
     <div className="grid min-h-svh lg:grid-cols-[16rem_1fr]">
       <Nav route={route} />
@@ -173,7 +187,7 @@ export function App() {
           <ThemeToggle />
           <Picker route={route} />
         </header>
-        <main className="@container flex flex-col">
+        <Main className="@container flex flex-col">
           {route ? (
             <Page route={route} />
           ) : (
@@ -191,7 +205,7 @@ export function App() {
               </a>
             </div>
           )}
-        </main>
+        </Main>
       </div>
     </div>
   )
