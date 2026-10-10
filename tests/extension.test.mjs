@@ -47,8 +47,9 @@ test("the Astro docs keep their original addresses", () => {
   const redirects = read("public/_redirects")
     .split("\n")
     .filter((line) => line && !line.startsWith("#"))
+  assert.ok(redirects.includes("/astro.md  /index.md  301!"))
   for (const line of redirects) {
-    assert.match(line, /^\/(astro|react\/components)\//, line)
+    assert.match(line, /^\/(astro\.md |astro\/|react\/components\/)/, line)
     // Only the standard components the extension leaves to shadcn/ui.
     const name = line.match(/^\/react\/components\/([^/.]+)/)?.[1]
     if (name) assert.ok(!pages("react/components").includes(name), line)

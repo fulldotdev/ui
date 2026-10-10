@@ -28,6 +28,9 @@ const block = example.kind === "blocks"
 // transform keeps their fixed parts in it and the viewport heights become the
 // frame height.
 const fullPage = ["sidebar-demo"].includes(name)
+// Header menus open as overlays outside the page height the preview reports,
+// so their frames keep room for them.
+const minHeight = /^header-\d+$/.test(name) ? 640 : undefined
 ---
 
 <LiveCode
@@ -52,6 +55,7 @@ const fullPage = ["sidebar-demo"].includes(name)
       data-react-preview={example.route}
       data-dev={import.meta.env.DEV ? "" : undefined}
       data-full-page={fullPage ? "" : undefined}
+      data-min-height={minHeight}
       src={`/preview/react/#/${example.route}`}
       title={`${name} preview`}
       loading="lazy"
@@ -97,8 +101,26 @@ const fullPage = ["sidebar-demo"].includes(name)
         "iframe[data-react-preview]:not([data-full-page])"
       ),
     ].find((frame) => frame.contentWindow === event.source)
+    if (!frame) return
     // Bounded, so a runaway layout cannot grow the page without end.
-    const height = Math.min(Math.max(Math.ceil(event.data.height), 120), 4000)
-    if (frame) frame.style.height = `${height}px`
+    const min = Number(frame.dataset.minHeight ?? 120)
+    const height = Math.min(Math.max(Math.ceil(event.data.height), min), 4000)
+    frame.style.height = `${height}px`
+  })
+
+  // A React preview's theme toggle writes the same localStorage key as the
+  // docs theme. Follow it here; the docs write back only a changed value, so
+  // the previews' own storage listener does not loop.
+  window.addEventListener("storage", (event) => {
+    if (event.storageArea !== localStorage || event.key !== "theme") return
+    const theme =
+      event.newValue === "dark" || event.newValue === "light"
+        ? event.newValue
+        : matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light"
+    const setTheme = (window as { __setTheme?: (theme: string) => void })
+      .__setTheme
+    setTheme?.(theme)
   })
 </script>
