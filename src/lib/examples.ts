@@ -7,7 +7,7 @@
 // come from that one file.
 import type { Framework } from "@/lib/pages"
 
-export type Example = {
+type Example = {
   name: string
   framework: Framework
   kind: "examples" | "blocks" | "ui"
@@ -60,7 +60,7 @@ export const getExample = (name: string, framework: Framework) =>
     (example) => example.name === name && example.framework === framework
   )
 
-export const exampleTag = /^<Example\s+name="([^"]+)"\s*\/>$/gm
+const exampleTag = /^<Example\s+name="([^"]+)"\s*\/>$/gm
 
 // The Markdown version of a page shows each example's source.
 export const inlineExamples = (body: string, framework: Framework) => {
