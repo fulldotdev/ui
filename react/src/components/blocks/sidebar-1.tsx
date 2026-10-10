@@ -170,6 +170,41 @@ function Sidebar1({
 
   return (
     <SidebarProvider {...props}>
+      {/* Outside the sidebar, which unmounts on mobile while closed, so the
+      shortcut opens the search at any time. */}
+      <CommandDialog
+        open={searchOpen}
+        onOpenChange={setSearchOpen}
+        title={search.label}
+        description={search.label}
+      >
+        <Command className="[&_[data-slot=command-item][data-selected=true]]:bg-accent [&_[data-slot=command-item][data-selected=true]]:text-accent-foreground">
+          <CommandInput placeholder={search.label} />
+          <CommandList>
+            <CommandEmpty>{search.empty}</CommandEmpty>
+            {searchGroups.map((group) => (
+              <CommandGroup key={group.label} heading={group.label}>
+                {group.items.map((item) => (
+                  <CommandItem
+                    key={item.href}
+                    value={`${item.group} ${item.label}`}
+                    keywords={[
+                      item.group,
+                      item.title,
+                      item.path,
+                      item.description,
+                    ]}
+                    onSelect={() => window.location.assign(item.href)}
+                  >
+                    {item.label}
+                    <CommandShortcut>{item.href}</CommandShortcut>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            ))}
+          </CommandList>
+        </Command>
+      </CommandDialog>
       <Sidebar
         aria-label={labels.sidebar}
         mobileTitle={labels.mobileTitle}
@@ -200,39 +235,6 @@ function Sidebar1({
               {isMac ? labels.shortcut.mac : labels.shortcut.other}
             </Kbd>
           </Button>
-          <CommandDialog
-            open={searchOpen}
-            onOpenChange={setSearchOpen}
-            title={search.label}
-            description={search.label}
-          >
-            <Command className="[&_[data-slot=command-item][data-selected=true]]:bg-accent [&_[data-slot=command-item][data-selected=true]]:text-accent-foreground">
-              <CommandInput placeholder={search.label} />
-              <CommandList>
-                <CommandEmpty>{search.empty}</CommandEmpty>
-                {searchGroups.map((group) => (
-                  <CommandGroup key={group.label} heading={group.label}>
-                    {group.items.map((item) => (
-                      <CommandItem
-                        key={item.href}
-                        value={`${item.group} ${item.label}`}
-                        keywords={[
-                          item.group,
-                          item.title,
-                          item.path,
-                          item.description,
-                        ]}
-                        onSelect={() => window.location.assign(item.href)}
-                      >
-                        {item.label}
-                        <CommandShortcut>{item.href}</CommandShortcut>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                ))}
-              </CommandList>
-            </Command>
-          </CommandDialog>
         </SidebarHeader>
         <SidebarContent className="[mask-image:linear-gradient(to_bottom,transparent,black_1rem,black_calc(100%_-_1rem),transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_1rem,black_calc(100%_-_1rem),transparent)] group-data-[collapsible=icon]:[mask-image:none] group-data-[collapsible=icon]:[-webkit-mask-image:none]">
           {navigation.map((group) => (
