@@ -39,7 +39,11 @@ import { Hero1 } from "@/components/blocks/hero-1"
 import { Button } from "@/components/ui/button"
 ```
 
-Blocks take plain content props, such as `title`, `buttons` and `image: { src, srcSet, alt }`, and render native elements, so they work with any router and image pipeline. `Icon` renders Lucide icons by name and brand logos for social links. Wrap the app in `ThemeProvider` from `@/components/ui/theme-toggle` to use `ThemeToggle`.
+Blocks take plain content props, such as `title`, `buttons` and `image: { src, srcSet, alt }`, and render native elements, so they work with any router and image pipeline. Caller-owned content, such as a form or an article body, goes in `children`.
+
+- `Icon` renders any Lucide icon or Simple Icons brand by its content name, such as `rocket` or `figma`; `lucide:` and `simple:` pick a set. With only an `href`, it shows the brand of a social or contact link. Import an icon fixed in code from `lucide-react` or `simple-icons` directly.
+- `Doc1` adds a copy button to `<pre>` elements passed as direct children. Content from a component, such as compiled MDX, renders its own `<pre>`, so map it to the exported code block: `<Content components={{ pre: Doc1CodeBlock }} />`.
+- Wrap the app in `ThemeProvider` from `@/components/ui/theme-toggle` to use `ThemeToggle`.
 
 ## Development
 
@@ -51,4 +55,4 @@ pnpm registry:build    # regenerates public/r/react from react/registry.json
 
 `react/registry.json` lists the installable items. Components use the same `cn-*` placeholders and style files as the Astro components (see `registry/styles/README.md`).
 
-The shadcn/ui components are the official source, installed with `pnpm dlx shadcn@latest add` in this folder (`components.json`: base-vega, rsc), with the `cn-*` placeholders of the canonical shadcn/ui source restored so every style builds from the shared style files. Their output in each style matches an official install of that style. They are copyright shadcn, under the MIT license in `registry/styles/shadcn/LICENSE.md`.
+The shadcn/ui components are the official source, installed with `pnpm dlx shadcn@latest add` in this folder (`components.json`: base-vega, rsc), with the `cn-*` placeholders of the canonical shadcn/ui source restored so every style builds from the shared style files. Their output in each style matches an official install of that style, except for two additions: Drawer content scrolls when it is taller than the drawer and the Drawer parts (viewport, popup, provider, indent, indent background, virtual keyboard provider) are exported, and Sidebar takes `mobileTitle` and `mobileDescription` for its mobile sheet. They are copyright shadcn, under the MIT license in `registry/styles/shadcn/LICENSE.md`.
