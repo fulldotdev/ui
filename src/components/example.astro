@@ -107,20 +107,4 @@ const minHeight = /^header-\d+$/.test(name) ? 640 : undefined
     const height = Math.min(Math.max(Math.ceil(event.data.height), min), 4000)
     frame.style.height = `${height}px`
   })
-
-  // A React preview's theme toggle writes the same localStorage key as the
-  // docs theme. Follow it here; the docs write back only a changed value, so
-  // the previews' own storage listener does not loop.
-  window.addEventListener("storage", (event) => {
-    if (event.storageArea !== localStorage || event.key !== "theme") return
-    const theme =
-      event.newValue === "dark" || event.newValue === "light"
-        ? event.newValue
-        : matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light"
-    const setTheme = (window as { __setTheme?: (theme: string) => void })
-      .__setTheme
-    setTheme?.(theme)
-  })
 </script>

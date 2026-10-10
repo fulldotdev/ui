@@ -1,13 +1,16 @@
 <script is:inline>
-  const getThemePreference = () => {
-    if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
-      return localStorage.getItem("theme")
-    }
-
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light"
+  // A stored "dark" or "light" is the visitor's choice. Without one, such as
+  // no value or "system", the theme follows the system.
+  const getStoredTheme = () => {
+    if (typeof localStorage === "undefined") return null
+    const theme = localStorage.getItem("theme")
+    return theme === "dark" || theme === "light" ? theme : null
   }
+
+  const media = window.matchMedia("(prefers-color-scheme: dark)")
+
+  const getThemePreference = () =>
+    getStoredTheme() ?? (media.matches ? "dark" : "light")
 
   const disableTransitionsTemporarily = () => {
     const style = document.createElement("style")
@@ -29,11 +32,17 @@
     }
   }
 
+  // The theme this provider applied last. A class change to another theme
+  // comes from outside, such as a toggle without the provider, and is saved
+  // as the visitor's choice.
+  let appliedTheme
+
   const applyTheme = (theme, disableTransitions = false) => {
     const restoreTransitions = disableTransitions
       ? disableTransitionsTemporarily()
       : null
 
+    appliedTheme = theme
     document.documentElement.classList[theme === "dark" ? "add" : "remove"](
       "dark"
     )
@@ -41,16 +50,34 @@
     restoreTransitions?.()
   }
 
+  // "dark" or "light" saves a choice; "system" follows the system again.
   window.__setTheme = (theme) => {
-    applyTheme(theme, true)
+    if (typeof localStorage !== "undefined")
+      localStorage.setItem("theme", theme)
+    applyTheme(getThemePreference(), true)
   }
 
   applyTheme(getThemePreference())
 
+  // Follow the system while there is no choice, and a choice made in
+  // another window or frame of the site.
+  media.addEventListener("change", () => {
+    if (!getStoredTheme()) applyTheme(getThemePreference(), true)
+  })
+  window.addEventListener("storage", (event) => {
+    if (event.storageArea !== localStorage) return
+    if (event.key === "theme" || event.key === null)
+      applyTheme(getThemePreference(), true)
+  })
+
   if (typeof localStorage !== "undefined") {
     const observer = new MutationObserver(() => {
-      const isDark = document.documentElement.classList.contains("dark")
-      localStorage.setItem("theme", isDark ? "dark" : "light")
+      const theme = document.documentElement.classList.contains("dark")
+        ? "dark"
+        : "light"
+      if (theme === appliedTheme) return
+      appliedTheme = theme
+      localStorage.setItem("theme", theme)
     })
 
     observer.observe(document.documentElement, {

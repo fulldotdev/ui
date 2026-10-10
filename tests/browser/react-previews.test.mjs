@@ -94,9 +94,65 @@ test("the docs and the React previews keep the same theme", async () => {
   const writes = () =>
     page.evaluate(() => Number(localStorage.getItem("theme-writes") ?? 0))
 
-  // No choice yet: both follow the system.
+  const stored = () => page.evaluate(() => localStorage.getItem("theme"))
+
+  // No choice yet: both follow the system, also when it changes, and the
+  // docs save no choice for it.
   let frame = await preview(page)
   await aligned(page, frame, true)
+  await page.emulateMedia({ colorScheme: "light" })
+  await aligned(page, frame, false)
+  await page.emulateMedia({ colorScheme: "dark" })
+  await aligned(page, frame, true)
+  assert.equal(await stored(), null)
+
+  // Returning to the system, from another window or through the docs'
+  // __setTheme, makes both follow the system again, and no explicit theme
+  // is stored. next-themes in the preview stores its default, "system", for
+  // a removed choice.
+  const sibling = await context.newPage()
+  await sibling.goto(`${origin}/`)
+  const resets = {
+    "another window removes the choice": () =>
+      sibling.evaluate(() => localStorage.removeItem("theme")),
+    'another window sets "system"': () =>
+      sibling.evaluate(() => localStorage.setItem("theme", "system")),
+    "another window clears the storage": () =>
+      sibling.evaluate(() => localStorage.clear()),
+    '__setTheme("system")': () =>
+      page.evaluate(() => window.__setTheme("system")),
+  }
+  for (const [reset, run] of Object.entries(resets)) {
+    // A documented caller of __setTheme saves a choice.
+    await page.evaluate(() => window.__setTheme("light"))
+    await aligned(page, frame, false)
+    assert.equal(await stored(), "light", reset)
+    await run()
+    await aligned(page, frame, true)
+    await page.emulateMedia({ colorScheme: "light" })
+    await aligned(page, frame, false)
+    await page.emulateMedia({ colorScheme: "dark" })
+    await aligned(page, frame, true)
+    assert.ok([null, "system"].includes(await stored()), reset)
+  }
+  // Clearing session storage keeps the choice. Its storage events only
+  // reach the frames of the same tab, so the preview clears it for the docs
+  // and the docs clear it for the preview.
+  await page.evaluate(() => window.__setTheme("light"))
+  await aligned(page, frame, false)
+  for (const window of [frame, page]) {
+    await window.evaluate(() => {
+      sessionStorage.setItem("unrelated", "1")
+      sessionStorage.clear()
+    })
+    await page.waitForTimeout(300)
+    await aligned(page, frame, false)
+    assert.equal(await stored(), "light")
+  }
+  await page.evaluate(() => window.__setTheme("dark"))
+  await aligned(page, frame, true)
+  assert.equal(await stored(), "dark")
+  await sibling.close()
 
   // A toggle in the preview reaches the docs.
   await frame.locator("[data-slot=theme-toggle]").first().click()
@@ -117,12 +173,19 @@ test("the docs and the React previews keep the same theme", async () => {
   assert.equal(await writes(), settled)
   await aligned(page, frame, true)
 
-  // An explicit choice outlasts a reload against the system theme.
+  // An explicit choice outlasts system changes and a reload.
   await frame.locator("[data-slot=theme-toggle]").first().click()
   await aligned(page, frame, false)
+  for (const colorScheme of ["light", "dark"]) {
+    await page.emulateMedia({ colorScheme })
+    await page.waitForTimeout(300)
+    await aligned(page, frame, false)
+    assert.equal(await stored(), "light", colorScheme)
+  }
   await page.reload()
   frame = await preview(page)
   await aligned(page, frame, false)
+  assert.equal(await stored(), "light")
   await context.close()
 })
 
