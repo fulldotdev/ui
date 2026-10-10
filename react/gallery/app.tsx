@@ -19,26 +19,51 @@ const styles = ["vega", "nova", "maia", "lyra", "mira", "luma", "sera", "rhea"]
 const ui = registry.items.filter((item) => item.type === "registry:ui")
 const blocks = registry.items.filter((item) => item.type === "registry:block")
 
-// Gallery pages are #/ routes. A query after the route belongs to the demo,
-// and any other hash is an in-page anchor that keeps the current page.
-function readRoute() {
+// Gallery pages are #/ routes; a query after the route belongs to the demo.
+// Any other hash is an in-page anchor. Next to an anchor the page is kept in
+// ?page=, so a reload, a style switch and Back still show it.
+function readRoute(fallback = "") {
   const hash = window.location.hash
-  return hash.startsWith("#/") ? hash.slice(2).split("?")[0] : undefined
+  if (hash.startsWith("#/")) return hash.slice(2).split("?")[0]
+  const page = new URLSearchParams(window.location.search).get("page")
+  return page ?? (hash.length > 1 ? fallback : "")
+}
+
+function isAnchor() {
+  const hash = window.location.hash
+  return hash.length > 1 && !hash.startsWith("#/")
+}
+
+// Keep ?page= in the current history entry only while it holds an anchor.
+function syncUrl(route: string) {
+  const url = new URL(window.location.href)
+  if (isAnchor() && route) url.searchParams.set("page", route)
+  else url.searchParams.delete("page")
+  if (url.href !== window.location.href) {
+    window.history.replaceState(window.history.state, "", url)
+  }
 }
 
 function useRoute() {
-  const [route, setRoute] = React.useState(() => readRoute() ?? "")
+  const [route, setRoute] = React.useState(() => readRoute())
   const current = React.useRef(route)
   React.useEffect(() => {
+    syncUrl(current.current)
     const onChange = () => {
-      const next = readRoute()
-      if (next === undefined || next === current.current) return
+      const next = readRoute(current.current)
+      syncUrl(next)
+      if (next === current.current) return
       current.current = next
       setRoute(next)
-      window.scrollTo(0, 0)
+      // The page's anchor is scrolled to once the page has loaded.
+      if (!isAnchor()) window.scrollTo(0, 0)
     }
     window.addEventListener("hashchange", onChange)
-    return () => window.removeEventListener("hashchange", onChange)
+    window.addEventListener("popstate", onChange)
+    return () => {
+      window.removeEventListener("hashchange", onChange)
+      window.removeEventListener("popstate", onChange)
+    }
   }, [])
   return route
 }
@@ -73,6 +98,13 @@ function Page({ route }: { route: string }) {
       current = false
     }
   }, [route])
+  // A page opened with an anchor, by a reload, a style switch or Back,
+  // renders after the browser looked for the anchor; scroll to it now.
+  React.useEffect(() => {
+    if (state?.route !== route || !isAnchor()) return
+    const id = decodeURIComponent(window.location.hash.slice(1))
+    document.getElementById(id)?.scrollIntoView()
+  }, [state, route])
   if (state?.route !== route) return null
   if (!state.Demo) {
     return <p className="p-6 text-sm text-muted-foreground">No demo yet.</p>
@@ -175,7 +207,7 @@ export function App() {
               onChange={(event) => {
                 const style = event.target.value
                 const path = style === "vega" ? "" : `${style}/`
-                window.location.href = `${__GALLERY_ROOT__}${path}${window.location.hash}`
+                window.location.href = `${__GALLERY_ROOT__}${path}${window.location.search}${window.location.hash}`
               }}
               disabled={import.meta.env.DEV}
             >
