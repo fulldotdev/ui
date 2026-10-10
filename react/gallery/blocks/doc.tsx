@@ -1,6 +1,25 @@
 import * as React from "react"
 
-import { Doc1 } from "@/components/blocks/doc-1"
+import { Doc1, Doc1CodeBlock } from "@/components/blocks/doc-1"
+
+// Stands in for compiled MDX: content from a component renders its own
+// elements and takes a components map, the standard MDX convention.
+function UsageContent({
+  components = {},
+}: {
+  components?: { pre?: React.ElementType }
+}) {
+  const Pre = components.pre ?? "pre"
+  return (
+    <>
+      <h2 id="usage-in-code">Usage in code</h2>
+      <p>Import the parts you need from the installed file.</p>
+      <Pre>
+        <code>{`import { Command, CommandInput } from "@/components/ui/command"`}</code>
+      </Pre>
+    </>
+  )
+}
 
 const demos: Record<string, React.ComponentType> = {
   "doc-1": () => {
@@ -70,6 +89,7 @@ const demos: Record<string, React.ComponentType> = {
           <pre>
             <code>pnpm dlx shadcn@latest add @fulldev/command</code>
           </pre>
+          <UsageContent components={{ pre: Doc1CodeBlock }} />
           <h2 id="usage">Usage</h2>
           <p>
             Use command menus for focused, high-frequency workflows. For simple

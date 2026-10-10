@@ -82,13 +82,39 @@ function ChatGPTIcon() {
   )
 }
 
+// One callback ref for several refs. A callback ref's own cleanup runs when
+// the node detaches (React 19); other refs are set back to null.
+function composeRefs<T>(...refs: (React.Ref<T> | undefined)[]) {
+  return (node: T | null) => {
+    const cleanups = refs.map((ref) => {
+      if (typeof ref === "function") {
+        const cleanup = ref(node)
+        return typeof cleanup === "function" ? cleanup : () => ref(null)
+      }
+      if (ref) {
+        ref.current = node
+        return () => {
+          ref.current = null
+        }
+      }
+    })
+    return () => cleanups.forEach((cleanup) => cleanup?.())
+  }
+}
+
 const CopyLabelContext = React.createContext("Copy code")
 
 // A code block with a copy button. Doc1 uses it for the <pre> elements it
-// gets as children; for nested content such as MDX, map `pre` to it.
-function Doc1CodeBlock({ className, ...props }: React.ComponentProps<"pre">) {
+// gets as direct children. Content from a component, such as compiled MDX,
+// renders its own <pre>, so map it there: <Content components={{ pre: Doc1CodeBlock }} />.
+function Doc1CodeBlock({
+  className,
+  ref,
+  ...props
+}: React.ComponentProps<"pre">) {
   const label = React.useContext(CopyLabelContext)
   const pre = React.useRef<HTMLPreElement>(null)
+  const setPre = React.useMemo(() => composeRefs(pre, ref), [ref])
   const { copied, copy } = useCopy()
   return (
     <div
@@ -96,7 +122,7 @@ function Doc1CodeBlock({ className, ...props }: React.ComponentProps<"pre">) {
       className="relative mt-(--typeset-flow) overflow-hidden rounded-xl border bg-muted/60"
     >
       <pre
-        ref={pre}
+        ref={setPre}
         className={cn(
           "m-0 overflow-x-auto rounded-none border-0 bg-transparent! py-4 ps-4 pe-14 font-mono text-sm [&_code]:font-[inherit] [&_code]:text-(--shiki-light,var(--color-foreground)) dark:[&_code]:text-(--shiki-dark,var(--color-foreground)) dark:[&_span[style*=--shiki-dark]]:text-(--shiki-dark)!",
           className

@@ -32,9 +32,24 @@ function useMarquee() {
   return context
 }
 
-function assignRef<T>(ref: React.Ref<T> | undefined, node: T | null) {
-  if (typeof ref === "function") ref(node)
-  else if (ref) ref.current = node
+// One callback ref for several refs. A callback ref's own cleanup runs when
+// the node detaches (React 19); other refs are set back to null.
+function composeRefs<T>(...refs: (React.Ref<T> | undefined)[]) {
+  return (node: T | null) => {
+    const cleanups = refs.map((ref) => {
+      if (typeof ref === "function") {
+        const cleanup = ref(node)
+        return typeof cleanup === "function" ? cleanup : () => ref(null)
+      }
+      if (ref) {
+        ref.current = node
+        return () => {
+          ref.current = null
+        }
+      }
+    })
+    return () => cleanups.forEach((cleanup) => cleanup?.())
+  }
 }
 
 const reducedMotionQuery = "(prefers-reduced-motion: reduce)"
@@ -82,13 +97,7 @@ function Marquee({
   ...props
 }: React.ComponentProps<"div">) {
   const root = React.useRef<HTMLDivElement>(null)
-  const setRoot = React.useCallback(
-    (node: HTMLDivElement | null) => {
-      root.current = node
-      assignRef(ref, node)
-    },
-    [ref]
-  )
+  const setRoot = React.useMemo(() => composeRefs(root, ref), [ref])
   const reducedMotion = useReducedMotion()
   const [toggles, setToggles] = React.useState<HTMLButtonElement[]>([])
   const [controllable, setControllable] = React.useState(false)
@@ -255,12 +264,8 @@ function MarqueeContent({
   )
   const [emblaRef, api] = useEmblaCarousel(options, plugins)
 
-  const setViewport = React.useCallback(
-    (node: HTMLDivElement | null) => {
-      viewport.current = node
-      emblaRef(node)
-      assignRef(ref, node)
-    },
+  const setViewport = React.useMemo(
+    () => composeRefs(viewport, emblaRef, ref),
     [emblaRef, ref]
   )
 
@@ -382,13 +387,7 @@ function MarqueeToggle({
     if (button.current) return registerToggle(button.current)
   }, [registerToggle])
 
-  const setButton = React.useCallback(
-    (node: HTMLButtonElement | null) => {
-      button.current = node
-      assignRef(ref, node)
-    },
-    [ref]
-  )
+  const setButton = React.useMemo(() => composeRefs(button, ref), [ref])
 
   // The wrapper shows the toggle while a row moves, so the button's own
   // hidden attribute, class and style stay the caller's.
