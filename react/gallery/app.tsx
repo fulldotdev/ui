@@ -20,18 +20,21 @@ const ui = registry.items.filter((item) => item.type === "registry:ui")
 const blocks = registry.items.filter((item) => item.type === "registry:block")
 
 // Gallery pages are #/ routes; a query after the route belongs to the demo.
-// Any other hash is an in-page anchor. Next to an anchor the page is kept in
-// ?page=, so a reload, a style switch and Back still show it.
+// Any other fragment, including an empty # link, is an in-page anchor. Next
+// to an anchor the page is kept in ?page=, so a reload, a style switch and
+// Back still show it.
 function readRoute(fallback = "") {
   const hash = window.location.hash
   if (hash.startsWith("#/")) return hash.slice(2).split("?")[0]
   const page = new URLSearchParams(window.location.search).get("page")
-  return page ?? (hash.length > 1 ? fallback : "")
+  return page ?? (isAnchor() ? fallback : "")
 }
 
+// location.hash is empty for a bare #, so look for the fragment in the URL.
 function isAnchor() {
-  const hash = window.location.hash
-  return hash.length > 1 && !hash.startsWith("#/")
+  return (
+    window.location.href.includes("#") && !window.location.hash.startsWith("#/")
+  )
 }
 
 // Keep ?page= in the current history entry only while it holds an anchor.
@@ -103,7 +106,9 @@ function Page({ route }: { route: string }) {
   React.useEffect(() => {
     if (state?.route !== route || !isAnchor()) return
     const id = decodeURIComponent(window.location.hash.slice(1))
-    document.getElementById(id)?.scrollIntoView()
+    const target = id && document.getElementById(id)
+    if (target) target.scrollIntoView()
+    else window.scrollTo(0, 0)
   }, [state, route])
   if (state?.route !== route) return null
   if (!state.Demo) {
@@ -207,7 +212,11 @@ export function App() {
               onChange={(event) => {
                 const style = event.target.value
                 const path = style === "vega" ? "" : `${style}/`
-                window.location.href = `${__GALLERY_ROOT__}${path}${window.location.search}${window.location.hash}`
+                // Keep the query and fragment, also a bare # that
+                // location.hash leaves out.
+                const { href, origin, pathname } = window.location
+                const rest = href.slice((origin + pathname).length)
+                window.location.href = `${__GALLERY_ROOT__}${path}${rest}`
               }}
               disabled={import.meta.env.DEV}
             >
