@@ -8,12 +8,19 @@ import {
   DrawerDescription,
   DrawerFooter,
   DrawerHeader,
+  DrawerIndent,
+  DrawerIndentBackground,
   DrawerOverlay,
+  DrawerPopup,
   DrawerPortal,
+  DrawerProvider,
   DrawerSwipeHandle,
   DrawerTitle,
   DrawerTrigger,
+  DrawerViewport,
+  DrawerVirtualKeyboardProvider,
 } from "@/components/ui/drawer"
+import { Input } from "@/components/ui/input"
 
 function Example({
   title,
@@ -213,6 +220,72 @@ export default function Demo() {
             </DrawerFooter>
           </DrawerContent>
         </Drawer>
+      </Example>
+      <Example title="Long content scrolls">
+        <Drawer>
+          <DrawerTrigger render={<Button variant="outline" />}>
+            Release notes
+          </DrawerTrigger>
+          <DrawerContent data-testid="drawer-long">
+            <DrawerHeader>
+              <DrawerTitle>Release notes</DrawerTitle>
+              <DrawerDescription>
+                Every change in this release, newest first.
+              </DrawerDescription>
+            </DrawerHeader>
+            <ol className="flex flex-col gap-2 px-4 text-sm">
+              {Array.from({ length: 40 }, (_, index) => (
+                <li key={index}>Change {40 - index}: small improvements.</li>
+              ))}
+            </ol>
+            <DrawerFooter>
+              <DrawerClose render={<Button variant="outline" />}>
+                Close
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      </Example>
+      <Example title="Composed from parts, with an indented page">
+        <DrawerProvider>
+          <div className="relative w-full max-w-md overflow-hidden rounded-xl border">
+            <DrawerIndentBackground className="absolute inset-0 bg-foreground" />
+            <DrawerIndent className="relative flex flex-col gap-3 bg-background p-4 transition-[transform,border-radius] duration-300 data-active:scale-95 data-active:rounded-xl">
+              <p className="text-sm text-muted-foreground">
+                The page scales back while the drawer is open.
+              </p>
+              <Drawer>
+                <DrawerTrigger render={<Button variant="outline" />}>
+                  Leave a note
+                </DrawerTrigger>
+                <DrawerPortal>
+                  <DrawerOverlay />
+                  <DrawerViewport>
+                    <DrawerVirtualKeyboardProvider>
+                      <DrawerPopup>
+                        <DrawerSwipeHandle />
+                        <DrawerHeader>
+                          <DrawerTitle>Leave a note</DrawerTitle>
+                          <DrawerDescription>
+                            The field stays above the on-screen keyboard.
+                          </DrawerDescription>
+                        </DrawerHeader>
+                        <div className="px-4">
+                          <Input aria-label="Note" placeholder="Your note" />
+                        </div>
+                        <DrawerFooter>
+                          <DrawerClose render={<Button variant="outline" />}>
+                            Done
+                          </DrawerClose>
+                        </DrawerFooter>
+                      </DrawerPopup>
+                    </DrawerVirtualKeyboardProvider>
+                  </DrawerViewport>
+                </DrawerPortal>
+              </Drawer>
+            </DrawerIndent>
+          </div>
+        </DrawerProvider>
       </Example>
       <Example title="Non modal">
         <Drawer modal={false} disablePointerDismissal swipeDirection="right">
