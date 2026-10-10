@@ -54,6 +54,11 @@ export default defineConfig({
         },
       },
     },
+    // Vite's preview server would inherit the proxy; astro preview serves the
+    // built galleries from dist/preview/react/ instead.
+    preview: {
+      proxy: {},
+    },
     // The docs create page imports this; prebundle it so the first dev visit
     // does not trigger a dependency re-optimization.
     optimizeDeps: {
