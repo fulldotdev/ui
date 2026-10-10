@@ -9,6 +9,10 @@ import StyleSelect from "@/components/style-select.astro"
 
 type ComponentProps = {
   name?: string
+  // The example is a React preview in an iframe, styled by the preview app.
+  frame?: boolean
+  // "Usage" when the code uses an installed item but is not installed itself.
+  codeLabel?: string
 }
 
 type Props = {
@@ -52,7 +56,7 @@ const installButtonId = installCommand
           Preview{" "}
         </TabsTrigger>
         <TabsTrigger value="code" class="flex-none">
-          Code
+          {componentProps.codeLabel ?? "Code"}
         </TabsTrigger>
       </TabsList>
       <StyleSelect />
@@ -81,21 +85,25 @@ const installButtonId = installCommand
     <div
       class:list={[
         "border-border bg-background w-full overflow-hidden border",
-        isBlockPreview
+        isBlockPreview || componentProps.frame
           ? "rounded-lg"
           : "flex min-h-64 items-center justify-center rounded-xl p-10",
       ]}
     >
-      <StylePreview
-        data-not-typeset={isTypographyPreview ? undefined : ""}
-        class:list={[
-          isBlockPreview
-            ? "bg-background w-full"
-            : "flex w-full flex-wrap items-center justify-center gap-3",
-        ]}
-      >
+      {componentProps.frame ? (
         <slot name="example" />
-      </StylePreview>
+      ) : (
+        <StylePreview
+          data-not-typeset={isTypographyPreview ? undefined : ""}
+          class:list={[
+            isBlockPreview
+              ? "bg-background w-full"
+              : "flex w-full flex-wrap items-center justify-center gap-3",
+          ]}
+        >
+          <slot name="example" />
+        </StylePreview>
+      )}
     </div>
   </TabsContent>
 

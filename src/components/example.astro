@@ -1,0 +1,104 @@
+---
+// Docs only: preview, source and install command of one example file, see
+// src/lib/examples.ts. Astro examples render here; React examples render in
+// an iframe of the preview app, in the style picked in the docs.
+import { Code } from "astro:components"
+
+import { getExample } from "@/lib/examples"
+import { getFramework, getPageId } from "@/lib/pages"
+import LiveCode from "@/components/live-code.astro"
+
+type Props = {
+  name: string
+}
+
+const { name } = Astro.props
+const framework = getFramework(getPageId(Astro.url.pathname))
+const example = getExample(name, framework)
+if (!example) throw new Error(`No ${framework} example named ${name}`)
+
+const components = import.meta.glob<{ default: unknown }>(
+  "/src/components/examples/*/*.astro",
+  { eager: true }
+)
+const Component = components[`/${example.path}`]?.default as
+  ((props: Record<string, unknown>) => unknown) | undefined
+const block = example.kind === "blocks"
+// Full-page examples (a block preview upstream) stay inside a frame: the
+// transform keeps their fixed parts in it and the viewport heights become the
+// frame height.
+const fullPage = ["sidebar-demo"].includes(name)
+---
+
+<LiveCode
+  componentProps={{
+    name: example.item,
+    frame: framework === "react",
+    codeLabel: example.kind === "examples" ? "Code" : "Usage",
+  }}
+>
+  {Component && fullPage ? (
+    <div
+      slot="example"
+      class="relative h-[640px] w-full transform-gpu overflow-hidden text-left [&_[data-slot=sidebar-container]]:h-full [&_[data-slot=sidebar-wrapper]]:min-h-full"
+    >
+      <Component />
+    </div>
+  ) : Component ? (
+    <Component slot="example" />
+  ) : (
+    <iframe
+      slot="example"
+      data-react-preview={example.route}
+      data-dev={import.meta.env.DEV ? "" : undefined}
+      data-full-page={fullPage ? "" : undefined}
+      src={`/preview/react/#/${example.route}`}
+      title={`${name} preview`}
+      loading="lazy"
+      class="block w-full"
+      style={`height: ${block || fullPage ? 640 : 360}px`}
+    />
+  )}
+  <Code
+    slot="code"
+    code={example.source}
+    lang={example.lang}
+    themes={{
+      light: "github-light-high-contrast",
+      dark: "github-dark-default",
+    }}
+  />
+</LiveCode>
+
+<script>
+  import { PRESET_EVENT, readPreset } from "@/lib/preset-store"
+
+  // Show each React preview in the docs style. Development serves only vega.
+  const sync = () => {
+    const style = readPreset()?.config.style ?? "vega"
+    document
+      .querySelectorAll<HTMLIFrameElement>("iframe[data-react-preview]")
+      .forEach((frame) => {
+        const path =
+          style === "vega" || frame.dataset.dev !== undefined ? "" : `${style}/`
+        const src = `/preview/react/${path}#/${frame.dataset.reactPreview}`
+        if (frame.getAttribute("src") !== src) frame.setAttribute("src", src)
+      })
+  }
+  sync()
+  document.addEventListener(PRESET_EVENT, sync)
+
+  // The preview app reports its height.
+  window.addEventListener("message", (event) => {
+    if (event.origin !== location.origin) return
+    if (event.data?.type !== "fulldev:preview-height") return
+    const frame = [
+      ...document.querySelectorAll<HTMLIFrameElement>(
+        "iframe[data-react-preview]:not([data-full-page])"
+      ),
+    ].find((frame) => frame.contentWindow === event.source)
+    // Bounded, so a runaway layout cannot grow the page without end.
+    const height = Math.min(Math.max(Math.ceil(event.data.height), 120), 4000)
+    if (frame) frame.style.height = `${height}px`
+  })
+</script>

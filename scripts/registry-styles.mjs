@@ -8,7 +8,13 @@ import { createStyleMaps, KEEP, STYLES, transformSource } from "./styles.mjs"
 // Served at the old /r/{name}.json path, so existing installs keep working.
 const DEFAULT_STYLE = "vega"
 
-const [input = "node_modules/.cache/fulldev-registry"] = process.argv.slice(2)
+// The React registry passes its own registry.json and output folder.
+const [
+  input = "node_modules/.cache/fulldev-registry",
+  registryPath = "registry.json",
+  output = "public/r",
+] = process.argv.slice(2)
+const legacy = output === "public/r"
 const { maps, known } = createStyleMaps((path) =>
   readFileSync(new URL(`../registry/styles/${path}`, import.meta.url), "utf8")
 )
@@ -20,9 +26,7 @@ const leftovers = (source) =>
     .filter((token) => !KEEP.has(token))
 
 // Only items in registry.json; the cache can hold files of removed items.
-const registry = JSON.parse(
-  readFileSync(new URL("../registry.json", import.meta.url), "utf8")
-)
+const registry = JSON.parse(readFileSync(registryPath, "utf8"))
 const files = [
   "registry.json",
   ...registry.items.map((item) => `${item.name}.json`),
@@ -31,8 +35,8 @@ const errors = []
 
 for (const style of STYLES) {
   const styleMap = maps[style]
-  const outputs = [`public/r/styles/base-${style}`]
-  if (style === DEFAULT_STYLE) outputs.push("public/r")
+  const outputs = [`${output}/styles/base-${style}`]
+  if (legacy && style === DEFAULT_STYLE) outputs.push(output)
   rmSync(outputs[0], { recursive: true, force: true })
 
   for (const file of files) {
@@ -44,7 +48,7 @@ for (const style of STYLES) {
     }
     for (const entry of item.files ?? []) {
       if (typeof entry.content !== "string") continue
-      entry.content = transformSource(entry.content, styleMap, known)
+      entry.content = transformSource(entry.content, styleMap, known, style)
       for (const token of new Set(leftovers(entry.content))) {
         errors.push(`${style}: ${entry.path} still has ${token}`)
       }
@@ -52,9 +56,9 @@ for (const style of STYLES) {
     // Keep the exact formatting of `shadcn build` to avoid noise in diffs.
     const json =
       JSON.stringify(item, null, 2) + (raw.endsWith("\n") ? "\n" : "")
-    for (const output of outputs) {
-      mkdirSync(output, { recursive: true })
-      writeFileSync(`${output}/${file}`, json)
+    for (const dir of outputs) {
+      mkdirSync(dir, { recursive: true })
+      writeFileSync(`${dir}/${file}`, json)
     }
   }
 }

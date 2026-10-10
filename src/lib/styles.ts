@@ -1,6 +1,11 @@
 // Docs only: render cn-* placeholders in HTML the way an install in that style
 // would, so previews match installed components exactly.
-import { createStyleMaps, replacePlaceholders, STYLES } from "#styles"
+import {
+  createStyleMaps,
+  hasPlaceholder,
+  replacePlaceholders,
+  STYLES,
+} from "#styles"
 
 const files = import.meta.glob<string>("/registry/styles/*/style-*.css", {
   query: "?raw",
@@ -27,10 +32,14 @@ const encode = (value: string) =>
 // Replace placeholders in every class attribute.
 export function applyStyle(html: string, style: string) {
   return html.replace(
-    /(\sclass=")([^"]*\bcn-[^"]*)"/g,
-    (_, start: string, value: string) =>
-      start +
-      encode(replacePlaceholders(decode(value), maps[style], known)) +
-      '"'
+    /(\sclass=")([^"]*)"/g,
+    (match, start: string, value: string) =>
+      hasPlaceholder.test(value)
+        ? start +
+          encode(
+            replacePlaceholders(decode(value), maps[style], known, style)
+          ) +
+          '"'
+        : match
   )
 }

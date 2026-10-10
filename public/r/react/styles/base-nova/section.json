@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "section",
+  "title": "Section",
+  "description": "A layout component for organizing page content into sections.",
+  "dependencies": [
+    "@base-ui/react",
+    "class-variance-authority",
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/section.tsx",
+      "content": "import * as React from \"react\"\nimport { mergeProps } from \"@base-ui/react/merge-props\"\nimport { useRender } from \"@base-ui/react/use-render\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { cn } from \"cn\"\n\nconst sectionVariants = cva(\"gap-12 py-[var(--section-padding,--spacing(14))] relative flex scroll-mt-12 flex-col\", {\n  variants: {\n    variant: {\n      default: \"w-full bg-background\",\n      floating:\n        \"my-14 rounded-xl bg-background ring-1 ring-foreground/10 mx-auto w-[calc(100%-2*var(--gutter,--spacing(4)))] max-w-[calc(var(--container,var(--container-7xl))-2*var(--gutter,--spacing(4)))] overflow-hidden\",\n    },\n  },\n  defaultVariants: {\n    variant: \"default\",\n  },\n})\n\nfunction Section({\n  className,\n  variant = \"default\",\n  ...props\n}: React.ComponentProps<\"section\"> & VariantProps<typeof sectionVariants>) {\n  return (\n    <section\n      data-slot=\"section\"\n      data-variant={variant}\n      className={cn(sectionVariants({ variant }), className)}\n      {...props}\n    />\n  )\n}\n\nfunction SectionContainer({\n  className,\n  ...props\n}: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"section-container\"\n      className={cn(\n        \"relative mx-auto w-full max-w-[var(--container,var(--container-7xl))] px-[var(--gutter,--spacing(4))]\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction SectionTitle({\n  className,\n  render,\n  ...props\n}: useRender.ComponentProps<\"h2\">) {\n  return useRender({\n    defaultTagName: \"h2\",\n    props: mergeProps<\"h2\">(\n      {\n        className: cn(\n          \"text-3xl font-semibold tracking-tight sm:text-4xl font-heading text-balance text-foreground\",\n          className\n        ),\n      },\n      props\n    ),\n    render,\n    state: {\n      slot: \"section-title\",\n    },\n  })\n}\n\nfunction SectionDescription({\n  className,\n  ...props\n}: React.ComponentProps<\"p\">) {\n  return (\n    <p\n      data-slot=\"section-description\"\n      className={cn(\n        \"text-lg leading-relaxed text-balance text-muted-foreground\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nexport {\n  Section,\n  SectionContainer,\n  SectionDescription,\n  SectionTitle,\n  sectionVariants,\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/react/components/section/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

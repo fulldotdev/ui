@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "marker",
+  "title": "Marker",
+  "description": "Marks a status or event in a conversation, with an icon and text.",
+  "dependencies": [
+    "@base-ui/react",
+    "class-variance-authority",
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/marker.tsx",
+      "content": "import * as React from \"react\"\nimport { mergeProps } from \"@base-ui/react/merge-props\"\nimport { useRender } from \"@base-ui/react/use-render\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { cn } from \"cn\"\n\nconst markerVariants = cva(\n  \"gap-2 text-sm text-muted-foreground [a]:hover:text-foreground [a]:underline-offset-3 [a]:underline [&_svg:not([class*='size-'])]:size-4 min-h-4 text-left group/marker relative flex w-full items-center\",\n  {\n    variants: {\n      variant: {\n        default: \"\",\n        separator: \"before:h-px before:min-w-0 before:flex-1 before:bg-border after:h-px after:min-w-0 after:flex-1 after:bg-border before:mr-1 after:ml-1\",\n        border: \"border-b border-border pb-2\",\n      },\n    },\n  }\n)\n\nfunction Marker({\n  className,\n  variant = \"default\",\n  render,\n  ...props\n}: useRender.ComponentProps<\"div\"> & VariantProps<typeof markerVariants>) {\n  return useRender({\n    defaultTagName: \"div\",\n    props: mergeProps<\"div\">(\n      {\n        className: cn(markerVariants({ variant, className })),\n      },\n      props\n    ),\n    render,\n    state: {\n      slot: \"marker\",\n      variant,\n    },\n  })\n}\n\nfunction MarkerIcon({ className, ...props }: React.ComponentProps<\"span\">) {\n  return (\n    <span\n      data-slot=\"marker-icon\"\n      aria-hidden=\"true\"\n      className={cn(\"size-4 [&_svg:not([class*='size-'])]:size-4 shrink-0\", className)}\n      {...props}\n    />\n  )\n}\n\nfunction MarkerContent({ className, ...props }: React.ComponentProps<\"span\">) {\n  return (\n    <span\n      data-slot=\"marker-content\"\n      className={cn(\"group-data-[variant=separator]/marker:flex-none group-data-[variant=separator]/marker:text-center *:[a]:hover:text-foreground *:[a]:underline *:[a]:underline-offset-3 min-w-0 wrap-break-word\", className)}\n      {...props}\n    />\n  )\n}\n\nexport { Marker, MarkerIcon, MarkerContent, markerVariants }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/react/components/marker/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

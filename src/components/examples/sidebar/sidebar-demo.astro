@@ -1,0 +1,450 @@
+---
+import AudioWaveform from "@lucide/astro/icons/audio-waveform"
+import BadgeCheck from "@lucide/astro/icons/badge-check"
+import Bell from "@lucide/astro/icons/bell"
+import BookOpen from "@lucide/astro/icons/book-open"
+import Bot from "@lucide/astro/icons/bot"
+import PieChart from "@lucide/astro/icons/chart-pie"
+import ChevronRight from "@lucide/astro/icons/chevron-right"
+import ChevronsUpDown from "@lucide/astro/icons/chevrons-up-down"
+import Command from "@lucide/astro/icons/command"
+import CreditCard from "@lucide/astro/icons/credit-card"
+import MoreHorizontal from "@lucide/astro/icons/ellipsis"
+import Folder from "@lucide/astro/icons/folder"
+import Forward from "@lucide/astro/icons/forward"
+import Frame from "@lucide/astro/icons/frame"
+import GalleryVerticalEnd from "@lucide/astro/icons/gallery-vertical-end"
+import LogOut from "@lucide/astro/icons/log-out"
+import MapIcon from "@lucide/astro/icons/map"
+import Plus from "@lucide/astro/icons/plus"
+import Settings2 from "@lucide/astro/icons/settings-2"
+import Sparkles from "@lucide/astro/icons/sparkles"
+import SquareTerminal from "@lucide/astro/icons/square-terminal"
+import Trash2 from "@lucide/astro/icons/trash"
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+} from "@/components/ui/dropdown-menu"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+
+// This is sample data.
+const data = {
+  user: {
+    name: "shadcn",
+    email: "m@example.com",
+    avatar: "https://ui.shadcn.com/avatars/shadcn.jpg",
+  },
+  teams: [
+    {
+      name: "Acme Inc",
+      logo: GalleryVerticalEnd,
+      plan: "Enterprise",
+    },
+    {
+      name: "Acme Corp.",
+      logo: AudioWaveform,
+      plan: "Startup",
+    },
+    {
+      name: "Evil Corp.",
+      logo: Command,
+      plan: "Free",
+    },
+  ],
+  navMain: [
+    {
+      title: "Playground",
+      url: "#",
+      icon: SquareTerminal,
+      isActive: true,
+      items: [
+        {
+          title: "History",
+          url: "#",
+        },
+        {
+          title: "Starred",
+          url: "#",
+        },
+        {
+          title: "Settings",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Models",
+      url: "#",
+      icon: Bot,
+      items: [
+        {
+          title: "Genesis",
+          url: "#",
+        },
+        {
+          title: "Explorer",
+          url: "#",
+        },
+        {
+          title: "Quantum",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Documentation",
+      url: "#",
+      icon: BookOpen,
+      items: [
+        {
+          title: "Introduction",
+          url: "#",
+        },
+        {
+          title: "Get Started",
+          url: "#",
+        },
+        {
+          title: "Tutorials",
+          url: "#",
+        },
+        {
+          title: "Changelog",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Settings",
+      url: "#",
+      icon: Settings2,
+      items: [
+        {
+          title: "General",
+          url: "#",
+        },
+        {
+          title: "Team",
+          url: "#",
+        },
+        {
+          title: "Billing",
+          url: "#",
+        },
+        {
+          title: "Limits",
+          url: "#",
+        },
+      ],
+    },
+  ],
+  projects: [
+    {
+      name: "Design Engineering",
+      url: "#",
+      icon: Frame,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Travel",
+      url: "#",
+      icon: MapIcon,
+    },
+  ],
+}
+
+const [activeTeam] = data.teams
+---
+
+<SidebarProvider>
+  <Sidebar collapsible="icon">
+    <SidebarHeader>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <DropdownMenu data-team-switcher>
+            <SidebarMenuButton
+              data-slot="dropdown-menu-trigger"
+              size="lg"
+              class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            >
+              <span class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                {data.teams.map((team) => (
+                  <team.logo
+                    class={team === activeTeam ? "size-4" : "hidden size-4"}
+                    data-team-logo={team.name}
+                  />
+                ))}
+              </span>
+              <span class="grid flex-1 text-left text-sm leading-tight">
+                <span class="truncate font-medium" data-team-name>
+                  {activeTeam.name}
+                </span>
+                <span class="truncate text-xs" data-team-plan>
+                  {activeTeam.plan}
+                </span>
+              </span>
+              <ChevronsUpDown class="ml-auto" />
+            </SidebarMenuButton>
+            <DropdownMenuContent
+              class="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+              align="start"
+              side="right"
+              sideOffset={4}
+            >
+              <DropdownMenuGroup>
+                <DropdownMenuLabel class="text-xs text-muted-foreground">
+                  Teams
+                </DropdownMenuLabel>
+                {data.teams.map((team, index) => (
+                  <DropdownMenuItem
+                    as="div"
+                    class="gap-2 p-2"
+                    data-team={team.name}
+                    data-plan={team.plan}
+                  >
+                    <span class="flex size-6 items-center justify-center rounded-md border">
+                      <team.logo class="size-3.5 shrink-0" />
+                    </span>
+                    {team.name}
+                    <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem as="div" class="gap-2 p-2">
+                  <span class="flex size-6 items-center justify-center rounded-md border bg-transparent">
+                    <Plus class="size-4" />
+                  </span>
+                  <span class="font-medium text-muted-foreground">
+                    Add team
+                  </span>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarHeader>
+    <SidebarContent>
+      <SidebarGroup>
+        <SidebarGroupLabel>Platform</SidebarGroupLabel>
+        <SidebarMenu>
+          {data.navMain.map((item) => (
+            <Collapsible
+              as="li"
+              defaultOpen={item.isActive}
+              data-sidebar="menu-item"
+              class="group/collapsible group/menu-item relative"
+            >
+              <SidebarMenuButton data-slot="collapsible-trigger">
+                {item.icon && <item.icon />}
+                <span>{item.title}</span>
+                <ChevronRight class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+              </SidebarMenuButton>
+              <CollapsibleContent>
+                <SidebarMenuSub>
+                  {item.items?.map((subItem) => (
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton href={subItem.url}>
+                        <span>{subItem.title}</span>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  ))}
+                </SidebarMenuSub>
+              </CollapsibleContent>
+            </Collapsible>
+          ))}
+        </SidebarMenu>
+      </SidebarGroup>
+      <SidebarGroup class="group-data-[collapsible=icon]:hidden">
+        <SidebarGroupLabel>Projects</SidebarGroupLabel>
+        <SidebarMenu>
+          {data.projects.map((item) => (
+            <SidebarMenuItem>
+              <DropdownMenu class="contents">
+                <SidebarMenuButton href={item.url}>
+                  <item.icon />
+                  <span>{item.name}</span>
+                </SidebarMenuButton>
+                <SidebarMenuAction
+                  showOnHover
+                  data-slot="dropdown-menu-trigger"
+                >
+                  <MoreHorizontal />
+                  <span class="sr-only">More</span>
+                </SidebarMenuAction>
+                <DropdownMenuContent
+                  class="w-48 rounded-lg"
+                  side="right"
+                  align="start"
+                >
+                  <DropdownMenuItem>
+                    <Folder class="text-muted-foreground" />
+                    <span>View Project</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Forward class="text-muted-foreground" />
+                    <span>Share Project</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <Trash2 class="text-muted-foreground" />
+                    <span>Delete Project</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </SidebarMenuItem>
+          ))}
+          <SidebarMenuItem>
+            <SidebarMenuButton class="text-sidebar-foreground/70">
+              <MoreHorizontal class="text-sidebar-foreground/70" />
+              <span>More</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarGroup>
+    </SidebarContent>
+    <SidebarFooter>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <DropdownMenu>
+            <SidebarMenuButton
+              data-slot="dropdown-menu-trigger"
+              size="lg"
+              class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            >
+              <Avatar class="h-8 w-8 rounded-lg">
+                <AvatarImage src={data.user.avatar} alt={data.user.name} />
+                <AvatarFallback class="rounded-lg">CN</AvatarFallback>
+              </Avatar>
+              <span class="grid flex-1 text-left text-sm leading-tight">
+                <span class="truncate font-medium">{data.user.name}</span>
+                <span class="truncate text-xs">{data.user.email}</span>
+              </span>
+              <ChevronsUpDown class="ml-auto size-4" />
+            </SidebarMenuButton>
+            <DropdownMenuContent
+              class="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+              side="right"
+              align="end"
+              sideOffset={4}
+            >
+              <DropdownMenuGroup>
+                <DropdownMenuLabel class="p-0 font-normal">
+                  <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                    <Avatar class="h-8 w-8 rounded-lg">
+                      <AvatarImage
+                        src={data.user.avatar}
+                        alt={data.user.name}
+                      />
+                      <AvatarFallback class="rounded-lg">CN</AvatarFallback>
+                    </Avatar>
+                    <span class="grid flex-1 text-left text-sm leading-tight">
+                      <span class="truncate font-medium">{data.user.name}</span>
+                      <span class="truncate text-xs">{data.user.email}</span>
+                    </span>
+                  </div>
+                </DropdownMenuLabel>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  <Sparkles />
+                  Upgrade to Pro
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  <BadgeCheck />
+                  Account
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <CreditCard />
+                  Billing
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Bell />
+                  Notifications
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  <LogOut />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarFooter>
+    <SidebarRail />
+  </Sidebar>
+  <SidebarInset>
+    <header class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+      <div class="flex items-center gap-2 px-4">
+        <SidebarTrigger class="-ml-1" />
+      </div>
+    </header>
+  </SidebarInset>
+</SidebarProvider>
+
+<script>
+  // The selected team shows in the switcher, as the React state does.
+  const initialize = () => {
+    for (const root of document.querySelectorAll<HTMLElement>(
+      "[data-team-switcher]"
+    )) {
+      if (root.hasAttribute("data-bound")) continue
+      root.setAttribute("data-bound", "")
+      root.addEventListener("dropdown-menu:select", (event) => {
+        const { item } = (event as CustomEvent<{ item: HTMLElement }>).detail
+        const team = item.closest<HTMLElement>("[data-team]")
+        if (!team) return
+        for (const logo of root.querySelectorAll("[data-team-logo]"))
+          logo.classList.toggle(
+            "hidden",
+            logo.getAttribute("data-team-logo") !== team.dataset.team
+          )
+        root.querySelector("[data-team-name]")!.textContent = team.dataset.team!
+        root.querySelector("[data-team-plan]")!.textContent = team.dataset.plan!
+      })
+    }
+  }
+
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+</script>

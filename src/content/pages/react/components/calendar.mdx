@@ -1,0 +1,157 @@
+---
+type: doc
+title: Calendar
+description: A calendar component that allows users to select a date or a range of dates.
+---
+
+<Example name="calendar-demo" />
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/calendar
+```
+
+## Usage
+
+```tsx showLineNumbers
+import { Calendar } from "@/components/ui/calendar"
+```
+
+```tsx showLineNumbers
+const [date, setDate] = React.useState<Date | undefined>(new Date())
+
+return (
+  <Calendar
+    mode="single"
+    selected={date}
+    onSelect={setDate}
+    className="rounded-lg border"
+  />
+)
+```
+
+## Date Picker
+
+You can use the `<Calendar>` component to build a date picker.
+
+## Persian / Hijri / Jalali Calendar
+
+To use the Persian calendar, edit `components/ui/calendar.tsx` and replace `react-day-picker` with `react-day-picker/persian`.
+
+```diff
+- import { DayPicker } from "react-day-picker"
++ import { DayPicker } from "react-day-picker/persian"
+```
+
+<Example name="calendar-hijri" />
+
+Changed from the official source: react-day-picker 10 moved the Persian calendar to the @daypicker/persian add-on (same DayPicker API). The Vazirmatn font loads from @fontsource-variable/vazirmatn instead of next/font/google.
+
+## Selected Date (With TimeZone)
+
+The Calendar component accepts a `timeZone` prop to ensure dates are displayed and selected in the user's local timezone.
+
+```tsx showLineNumbers
+export function CalendarWithTimezone() {
+  const [date, setDate] = React.useState<Date | undefined>(undefined)
+  const [timeZone, setTimeZone] = React.useState<string | undefined>(undefined)
+
+  React.useEffect(() => {
+    setTimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone)
+  }, [])
+
+  return (
+    <Calendar
+      mode="single"
+      selected={date}
+      onSelect={setDate}
+      timeZone={timeZone}
+    />
+  )
+}
+```
+
+**Note:** If you notice a selected date offset (for example, selecting the 20th highlights the 19th), make sure the `timeZone` prop is set to the user's local timezone.
+
+## Basic
+
+A basic calendar component.
+
+<Example name="calendar-basic" />
+
+## Range Calendar
+
+Use the `mode="range"` prop to enable range selection.
+
+<Example name="calendar-range" />
+
+## Month and Year Selector
+
+Use `captionLayout="dropdown"` to show month and year dropdowns.
+
+<Example name="calendar-caption" />
+
+## Presets
+
+<Example name="calendar-presets" />
+
+## Date and Time Picker
+
+<Example name="calendar-time" />
+
+## Booked dates
+
+<Example name="calendar-booked-dates" />
+
+## Custom Cell Size
+
+<Example name="calendar-custom-days" />
+
+```tsx showLineNumbers
+<Calendar
+  mode="single"
+  selected={date}
+  onSelect={setDate}
+  className="rounded-lg border [--cell-size:--spacing(11)] md:[--cell-size:--spacing(12)]"
+/>
+```
+
+```tsx showLineNumbers
+<Calendar
+  mode="single"
+  selected={date}
+  onSelect={setDate}
+  className="rounded-lg border [--cell-size:2.75rem] md:[--cell-size:3rem]"
+/>
+```
+
+## Week Numbers
+
+Use `showWeekNumber` to show week numbers.
+
+<Example name="calendar-week-numbers" />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](https://ui.shadcn.com/docs/rtl).
+
+<Example name="calendar-rtl" />
+
+```tsx showLineNumbers
+import { arSA } from "react-day-picker/locale"
+
+;<Calendar
+  mode="single"
+  selected={date}
+  onSelect={setDate}
+  locale={arSA}
+  dir="rtl"
+/>
+```
+
+## API Reference
+
+Source: [`react/src/components/ui/calendar.tsx`](https://github.com/fulldotdev/ui/blob/main/react/src/components/ui/calendar.tsx)
+
+See the [React DayPicker](https://react-day-picker.js.org) documentation for more information on the `Calendar` component.

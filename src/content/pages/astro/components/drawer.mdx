@@ -1,0 +1,166 @@
+---
+type: doc
+title: Drawer
+description: A drawer component that slides in from any edge of the screen.
+---
+
+<Example name="drawer-demo" />
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/drawer
+```
+
+## Usage
+
+```ts
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+```
+
+```astro
+<Drawer swipeDirection="down">
+  <DrawerTrigger>Open</DrawerTrigger>
+  <DrawerContent showSwipeHandle>
+    <DrawerHeader>
+      <DrawerTitle>Drawer title</DrawerTitle>
+      <DrawerDescription>Drawer description</DrawerDescription>
+    </DrawerHeader>
+    <div class="p-4">Drawer content</div>
+    <DrawerFooter>
+      <DrawerClose variant="outline">Close</DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+```
+
+`DrawerTrigger` and `DrawerClose` render a `Button` and take its props.
+
+## Composition
+
+`DrawerContent` renders the portal, backdrop, viewport, popup and inner content
+wrapper. Use the lower-level exports to customize that structure.
+
+```text
+Drawer
+├── DrawerTrigger
+└── DrawerContent
+    ├── DrawerHeader
+    │   ├── DrawerTitle
+    │   └── DrawerDescription
+    ├── content
+    └── DrawerFooter
+        └── DrawerClose
+```
+
+## Custom Sizes
+
+A vertical drawer sizes itself to its content, capped at `calc(100dvh - 3rem)`.
+A side drawer spans `75%` of the viewport width, up to `24rem`. Override with
+`h-*`, `max-h-*`, `w-*` or `max-w-*` on `DrawerContent`. To make a region
+scrollable, make it a flex item: `<div class="flex-1 overflow-y-auto p-4">`.
+
+The popup exposes `data-swipe-direction`, so scope styles to a side with
+`data-[swipe-direction=down]:` on `DrawerContent` or
+`group-data-[swipe-direction=down]/drawer-popup:` on its descendants. It does not
+set `data-swipe-axis`.
+
+## Position
+
+Use `swipeDirection` on `Drawer` to set the side: `up`, `right`, `down`
+(default) or `left`.
+
+<Example name="drawer-sides" />
+
+## Swipe Handle
+
+Use `showSwipeHandle` on `DrawerContent` to render a swipe handle.
+
+<Example name="drawer-swipe-handle" />
+
+## Nested
+
+Place a complete `Drawer` inside another drawer's content. Parent drawers stay
+mounted behind the frontmost drawer, and Escape closes only the front one.
+
+<Example name="drawer-nested" />
+
+## Non Modal
+
+Set `modal={false}` and `showOverlay={false}` on `DrawerContent` to keep the
+rest of the page interactive. Add `disablePointerDismissal` to keep the drawer
+open on outside presses. `modal="trap-focus"` keeps focus inside the drawer
+without making the page inert.
+
+<Example name="drawer-non-modal" />
+
+## Snap Points
+
+The official example moves between two snap points. Data Slot supports one
+`snapPoint` (a fraction of the viewport, a pixel number, or a `px` or `rem`
+string), so this example is in the [React Drawer](/react/components/drawer/)
+docs only.
+
+## Responsive
+
+Render a `Dialog` from `md` up and a `Drawer` below it, with `hidden md:block`
+and `md:hidden` on the roots.
+
+<Example name="drawer-dialog" />
+
+## Events
+
+Use the `drawer:open`, `drawer:close`, `drawer:toggle` and `drawer:set` DOM
+events for imperative changes. The root emits cancelable `drawer:beforechange`
+and `drawer:beforesnapchange` events, followed by `drawer:change` (with
+`reason` and `originalEvent`), `drawer:change-complete` and `drawer:snapchange`.
+
+```js
+const drawer = document.querySelector('[data-slot="drawer"]')
+
+drawer?.dispatchEvent(
+  new CustomEvent("drawer:set", {
+    detail: { open: true, snapPoint: "24rem" },
+  })
+)
+```
+
+## API Reference
+
+Source: [`src/components/ui/drawer`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/drawer)
+
+| `Drawer` prop             | Type                                  | Default  |
+| ------------------------- | ------------------------------------- | -------- |
+| `swipeDirection`          | `"up" \| "right" \| "down" \| "left"` | `"down"` |
+| `modal`                   | `boolean \| "trap-focus"`             | `true`   |
+| `disablePointerDismissal` | `boolean`                             | `false`  |
+| `closeOnEscape`           | `boolean`                             | `true`   |
+| `defaultOpen`             | `boolean`                             | `false`  |
+| `snapPoint`               | `number \| string \| null`            | `null`   |
+| `defaultSnapPoint`        | `number \| string \| null`            | `null`   |
+| `triggerId`               | `string \| null`                      |          |
+| `defaultTriggerId`        | `string \| null`                      |          |
+
+| `DrawerContent` prop | Type                | Default |
+| -------------------- | ------------------- | ------- |
+| `showOverlay`        | `boolean`           | `true`  |
+| `showSwipeHandle`    | `boolean`           | `false` |
+| `container`          | `string`            |         |
+| `keepMounted`        | `boolean`           |         |
+| `initialFocus`       | `boolean \| string` |         |
+| `finalFocus`         | `boolean \| string` |         |
+| `overlayClass`       | `string`            |         |
+| `viewportClass`      | `string`            |         |
+
+See the [Data Slot docs](https://github.com/bejamas/data-slot/blob/main/packages/drawer/README.md)
+for controllers, focus management, detached triggers and keyboard-aware
+viewports.

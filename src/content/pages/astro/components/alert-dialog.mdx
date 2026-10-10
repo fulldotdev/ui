@@ -1,0 +1,163 @@
+---
+type: doc
+title: Alert Dialog
+description: A modal dialog for important confirmations that expects a response.
+---
+
+<Example name="alert-dialog-demo" />
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/alert-dialog
+```
+
+## Usage
+
+```ts
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+```
+
+```astro
+<AlertDialog>
+  <AlertDialogTrigger variant="outline">Show Dialog</AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+      <AlertDialogDescription>
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+      <AlertDialogAction>Continue</AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+`AlertDialogTrigger`, `AlertDialogCancel` and `AlertDialogAction` are `Button`s
+and take its props, such as `variant`. `AlertDialogCancel` closes the dialog.
+`AlertDialogAction` does not: run the action, then close the dialog with the
+`alert-dialog:set` event.
+
+```astro
+<AlertDialog id="account-deletion-dialog">
+  <AlertDialogTrigger>Delete account</AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogTitle>Delete this account?</AlertDialogTitle>
+    <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+    <AlertDialogAction id="confirm-account-deletion">
+      Delete account
+    </AlertDialogAction>
+  </AlertDialogContent>
+</AlertDialog>
+
+<script>
+  const dialog = document.getElementById("account-deletion-dialog")
+  const action = document.getElementById("confirm-account-deletion")
+
+  action?.addEventListener("click", () => {
+    // Run the confirmed action here, then close after it succeeds.
+    dialog?.dispatchEvent(
+      new CustomEvent("alert-dialog:set", {
+        detail: { open: false },
+      })
+    )
+  })
+</script>
+```
+
+## Composition
+
+```text
+AlertDialog
+├── AlertDialogTrigger
+└── AlertDialogContent
+    ├── AlertDialogHeader
+    │   ├── AlertDialogMedia
+    │   ├── AlertDialogTitle
+    │   └── AlertDialogDescription
+    └── AlertDialogFooter
+        ├── AlertDialogCancel
+        └── AlertDialogAction
+```
+
+Keep `AlertDialogTitle` and `AlertDialogDescription` inside
+`AlertDialogContent` so screen readers announce the dialog context.
+
+## Basic
+
+A basic alert dialog with a title, description, and cancel and continue
+buttons.
+
+<Example name="alert-dialog-basic" />
+
+## Small
+
+Use the `size="sm"` prop to make the alert dialog smaller.
+
+<Example name="alert-dialog-small" />
+
+## Media
+
+Use the `AlertDialogMedia` component to add a media element such as an icon or
+image to the alert dialog.
+
+<Example name="alert-dialog-media" />
+
+## Small with Media
+
+Use `size="sm"` and `AlertDialogMedia` together.
+
+<Example name="alert-dialog-small-media" />
+
+## Destructive
+
+Pass `variant="destructive"` to `AlertDialogAction` for a destructive action.
+
+<Example name="alert-dialog-destructive" />
+
+## RTL
+
+Pass `dir="rtl"` on `AlertDialogContent` as well: the content is portaled to
+`document.body`.
+
+<Example name="alert-dialog-rtl" />
+
+## API Reference
+
+Source: [`src/components/ui/alert-dialog`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/alert-dialog)
+
+Interactivity comes from [`@data-slot/alert-dialog`](https://github.com/bejamas/data-slot/blob/main/packages/alert-dialog/README.md).
+
+### AlertDialog
+
+| Prop                  | Type      | Default |
+| --------------------- | --------- | ------- |
+| `defaultOpen`         | `boolean` | `false` |
+| `closeOnClickOutside` | `boolean` | `false` |
+| `closeOnEscape`       | `boolean` | `true`  |
+| `lockScroll`          | `boolean` | `true`  |
+
+| Event                 | Detail              | Description                        |
+| --------------------- | ------------------- | ---------------------------------- |
+| `alert-dialog:change` | `{ open: boolean }` | Fired when the open state changes. |
+| `alert-dialog:set`    | `{ open: boolean }` | Dispatch to set the open state.    |
+
+### AlertDialogContent
+
+| Prop   | Type                | Default     |
+| ------ | ------------------- | ----------- |
+| `size` | `"default" \| "sm"` | `"default"` |

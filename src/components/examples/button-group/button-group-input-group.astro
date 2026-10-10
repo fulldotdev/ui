@@ -1,0 +1,70 @@
+---
+import AudioLinesIcon from "@lucide/astro/icons/audio-lines"
+import PlusIcon from "@lucide/astro/icons/plus"
+
+import { Button } from "@/components/ui/button"
+import { ButtonGroup } from "@/components/ui/button-group"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+---
+
+<ButtonGroup class="[--radius:9999rem]" data-voice-input>
+  <ButtonGroup>
+    <Button variant="outline" size="icon">
+      <PlusIcon />
+    </Button>
+  </ButtonGroup>
+  <ButtonGroup>
+    <InputGroup>
+      <InputGroupInput placeholder="Send a message..." />
+      <InputGroupAddon align="inline-end">
+        <Tooltip>
+          <TooltipTrigger as="span" class="flex">
+            <InputGroupButton
+              size="icon-xs"
+              data-active="false"
+              class="data-[active=true]:bg-orange-100 data-[active=true]:text-orange-700 dark:data-[active=true]:bg-orange-800 dark:data-[active=true]:text-orange-100"
+              aria-pressed="false"
+            >
+              <AudioLinesIcon />
+            </InputGroupButton>
+          </TooltipTrigger>
+          <TooltipContent>Voice Mode</TooltipContent>
+        </Tooltip>
+      </InputGroupAddon>
+    </InputGroup>
+  </ButtonGroup>
+</ButtonGroup>
+
+<script>
+  const initialize = () => {
+    for (const root of document.querySelectorAll("[data-voice-input]")) {
+      if (root.hasAttribute("data-bound")) continue
+      root.setAttribute("data-bound", "")
+      const input = root.querySelector("input")
+      const button = root.querySelector("[aria-pressed]")
+      button?.addEventListener("click", () => {
+        const enabled = button.getAttribute("aria-pressed") !== "true"
+        button.setAttribute("aria-pressed", String(enabled))
+        button.setAttribute("data-active", String(enabled))
+        if (!input) return
+        input.disabled = enabled
+        input.placeholder = enabled
+          ? "Record and send audio..."
+          : "Send a message..."
+      })
+    }
+  }
+
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+</script>

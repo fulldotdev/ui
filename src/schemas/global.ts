@@ -3,10 +3,6 @@ import { z } from "astro/zod"
 
 import { linkSchema } from "@/schemas/shared"
 
-const nestedLinkSchema = linkSchema.extend({
-  links: linkSchema.array().optional(),
-})
-
 export const globalSchema = ({ image }: SchemaContext) =>
   z.object({
     name: z.string(),
@@ -23,7 +19,6 @@ export const globalSchema = ({ image }: SchemaContext) =>
         message: "Logo must define src or both srcLight and srcDark.",
       }),
     header: z.object({
-      navigation: nestedLinkSchema.array(),
       githubRepo: z.string(),
     }),
     sidebar: z.object({
@@ -31,7 +26,6 @@ export const globalSchema = ({ image }: SchemaContext) =>
         label: z.string(),
         empty: z.string(),
       }),
-      navigation: nestedLinkSchema.array(),
     }),
     docs: z
       .object({

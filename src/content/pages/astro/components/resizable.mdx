@@ -1,0 +1,144 @@
+---
+type: doc
+title: Resizable
+description: Accessible panel groups with pointer and keyboard resizing.
+---
+
+<Example name="resizable-demo" />
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/resizable
+```
+
+## Usage
+
+```ts
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable"
+```
+
+```astro
+<ResizablePanelGroup direction="horizontal">
+  <ResizablePanel>One</ResizablePanel>
+  <ResizableHandle />
+  <ResizablePanel>Two</ResizablePanel>
+</ResizablePanelGroup>
+```
+
+A group needs one handle between each pair of panels. Sizes are percentages,
+such as `defaultSize={50}`. Each group owns only its direct panels and handles,
+so a panel can contain another group.
+
+## Composition
+
+```text
+ResizablePanelGroup
+├── ResizablePanel
+├── ResizableHandle
+└── ResizablePanel
+```
+
+## Vertical
+
+Use `direction="vertical"` for vertical resizing.
+
+<Example name="resizable-vertical" />
+
+## Handle
+
+Use the `withHandle` prop on `ResizableHandle` to show a visible handle.
+
+<Example name="resizable-handle" />
+
+## RTL
+
+<Example name="resizable-rtl" />
+
+## Collapsible
+
+Add `collapsible` and `collapsedSize` to a panel. Focus the handle and press
+`Enter` to collapse or restore the panel before it. Dragging through `minSize`
+also collapses it.
+
+```astro live
+---
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable"
+---
+
+<ResizablePanelGroup class="h-48 max-w-2xl rounded-lg border">
+  <ResizablePanel
+    defaultSize={30}
+    minSize={20}
+    collapsible
+    collapsedSize={0}
+    class="flex items-center justify-center p-4"
+  >
+    Collapsible sidebar
+  </ResizablePanel>
+  <ResizableHandle withHandle aria-label="Resize or collapse sidebar" />
+  <ResizablePanel
+    defaultSize={70}
+    minSize={30}
+    class="flex items-center justify-center p-4"
+  >
+    Main content
+  </ResizablePanel>
+</ResizablePanelGroup>
+```
+
+## Keyboard Controls
+
+| Key                   | Action                                                       |
+| --------------------- | ------------------------------------------------------------ |
+| Arrow keys            | Resize by `keyboardResizeBy` in the group direction.         |
+| `Shift` + arrow       | Resize to the available limit.                               |
+| `Home` / `End`        | Minimize or maximize the panel before the handle.            |
+| `Enter`               | Collapse or restore the collapsible panel before the handle. |
+| `F6` / `Shift` + `F6` | Focus the next or previous handle in the group.              |
+
+## API Reference
+
+Source: [`src/components/ui/resizable`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/resizable)
+
+### ResizablePanelGroup
+
+`Resizable` is an alias for `ResizablePanelGroup`.
+
+| Prop               | Type                         | Default        | Description                            |
+| ------------------ | ---------------------------- | -------------- | -------------------------------------- |
+| `direction`        | `"horizontal" \| "vertical"` | `"horizontal"` | Sets the layout and resize axis.       |
+| `keyboardResizeBy` | `number`                     | `10`           | Percentage moved by an arrow keypress. |
+
+### ResizablePanel
+
+All sizes are percentages between 0 and 100.
+
+| Prop            | Type      | Default    | Description                                 |
+| --------------- | --------- | ---------- | ------------------------------------------- |
+| `defaultSize`   | `number`  | even split | Initial panel size.                         |
+| `minSize`       | `number`  | `0`        | Minimum expanded size.                      |
+| `maxSize`       | `number`  | `100`      | Maximum size.                               |
+| `collapsible`   | `boolean` | `false`    | Allows the panel to use its collapsed size. |
+| `collapsedSize` | `number`  | `0`        | Size used while collapsed.                  |
+
+### ResizableHandle
+
+| Prop         | Type      | Default | Description                              |
+| ------------ | --------- | ------- | ---------------------------------------- |
+| `withHandle` | `boolean` | `false` | Shows a visible grip on the separator.   |
+| `disabled`   | `boolean` | `false` | Blocks keyboard resizing on this handle. |
+
+The root emits `resizable:change` with `{ layout: number[] }` and
+`resizable:dragging` with `{ dragging: boolean }`. Dispatch `resizable:set` with
+`{ layout: number[] }` to set a layout from client code. See the
+[Data Slot docs](https://github.com/bejamas/data-slot/blob/main/packages/resizable/README.md)
+for constraints and controller methods.

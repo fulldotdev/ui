@@ -1,0 +1,163 @@
+---
+type: doc
+title: Combobox
+description: Autocomplete input with a list of suggestions.
+sidebar:
+  badge:
+    text: ⋅
+    variant: success
+---
+
+<Example name="combobox-demo" />
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/combobox
+```
+
+## Usage
+
+```ts
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox"
+```
+
+```astro
+<Combobox>
+  <ComboboxInput placeholder="Select a framework" />
+  <ComboboxContent>
+    <ComboboxList>
+      <ComboboxEmpty>No items found.</ComboboxEmpty>
+      <ComboboxItem value="Next.js">Next.js</ComboboxItem>
+      <ComboboxItem value="SvelteKit">SvelteKit</ComboboxItem>
+      <ComboboxItem value="Astro">Astro</ComboboxItem>
+    </ComboboxList>
+  </ComboboxContent>
+</Combobox>
+```
+
+Items are authored markup, so render a data array with `.map()`. Data Slot
+filters items by their label and selects one value at a time.
+
+## Composition
+
+Place `ComboboxEmpty` inside `ComboboxList`, as required by Data Slot.
+
+```text
+Combobox
+├── ComboboxInput
+└── ComboboxContent
+    └── ComboboxList
+        ├── ComboboxEmpty
+        ├── ComboboxItem
+        └── ComboboxItem
+```
+
+Put `ComboboxSeparator` between groups as a direct child of `ComboboxList`:
+Data Slot only shows separators there, and hides them when a filter leaves no
+items on one side.
+
+```text
+Combobox
+├── ComboboxInput
+└── ComboboxContent
+    └── ComboboxList
+        ├── ComboboxEmpty
+        ├── ComboboxGroup
+        │   ├── ComboboxLabel
+        │   └── ComboboxItem
+        ├── ComboboxSeparator
+        └── ComboboxGroup
+            ├── ComboboxLabel
+            └── ComboboxItem
+```
+
+## Basic
+
+A simple combobox with a list of frameworks.
+
+<Example name="combobox-basic" />
+
+## Multiple
+
+The Astro combobox has no multiple selection or chips, so the official Multiple and RTL examples, which both use chips, are in the [React Combobox](/react/components/combobox/) docs only.
+
+## Clear Button
+
+Use the `showClear` prop on `ComboboxInput` to show a clear button.
+
+<Example name="combobox-clear" />
+
+## Groups
+
+Use `ComboboxGroup` and `ComboboxSeparator` to group items.
+
+<Example name="combobox-groups" />
+
+## Custom Items
+
+You can render a custom component inside `ComboboxItem`. Set `data-label` on
+the item to the text used for filtering and for the input after selection.
+
+<Example name="combobox-custom" />
+
+## Invalid
+
+Use the `aria-invalid` prop on `ComboboxInput` to make the combobox invalid.
+
+<Example name="combobox-invalid" />
+
+## Disabled
+
+Use the `disabled` prop on `ComboboxInput` to disable the input and its
+trigger, or on `Combobox` to disable all interaction.
+
+<Example name="combobox-disabled" />
+
+## Auto Highlight
+
+Use the `autoHighlight` prop to automatically highlight the first item on filter.
+
+<Example name="combobox-auto-highlight" />
+
+## Popup
+
+Trigger the combobox from any button with `data-slot="combobox-trigger"` that
+contains a `ComboboxValue`, and move `ComboboxInput` inside `ComboboxContent`
+with `showTrigger={false}`.
+
+<Example name="combobox-popup" />
+
+## Input Group
+
+Add an addon by placing an `InputGroupAddon` inside `ComboboxInput`.
+
+<Example name="combobox-input-group" />
+
+## API Reference
+
+Source: [`src/components/ui/combobox`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/combobox)
+
+Interactivity comes from
+[`@data-slot/combobox`](https://github.com/bejamas/data-slot/blob/main/packages/combobox/README.md).
+
+| Component         | Prop                                                                                | Notes                                                 |
+| ----------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `Combobox`        | `defaultValue`, `defaultOpen`, `placeholder`, `disabled`, `required`, `name`        | `name` adds a hidden input that submits the value     |
+| `Combobox`        | `openOnFocus`, `autoHighlight`                                                      | `openOnFocus` defaults to `true`                      |
+| `Combobox`        | `side`, `align`, `sideOffset`, `alignOffset`, `avoidCollisions`, `collisionPadding` | Popup placement, also accepted on `ComboboxContent`   |
+| `ComboboxInput`   | `showTrigger` (`true`), `showClear` (`false`), `disabled`, input attributes         | Extra children render inside the input group          |
+| `ComboboxItem`    | `value`, `disabled`, `showIndicator` (`true`), `data-label`                         | Without `data-label`, the item text is the label      |
+| `ComboboxTrigger` | `showIcon` (`true`)                                                                 | Ghost icon button with a chevron                      |
+| `ComboboxValue`   | span attributes                                                                     | Shows the selected label, or `placeholder` when empty |
+
+The root emits `combobox:change`, `combobox:open-change` and
+`combobox:input-change`, and accepts `combobox:set` with `value`, `open` or
+`inputValue` in `detail`.

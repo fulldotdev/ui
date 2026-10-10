@@ -1,0 +1,165 @@
+---
+type: doc
+title: Sidebar
+description: A composable, themeable, and customizable Astro sidebar component.
+---
+
+<Example name="sidebar-demo" />
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/sidebar
+```
+
+## Usage
+
+```ts
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+```
+
+```astro
+---
+import Home from "@lucide/astro/icons/house"
+
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+---
+
+<SidebarProvider>
+  <Sidebar>
+    <SidebarHeader />
+    <SidebarContent>
+      <SidebarGroup>
+        <SidebarGroupLabel>Application</SidebarGroupLabel>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton href="/">
+                <Home />
+                <span>Home</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+    </SidebarContent>
+    <SidebarRail />
+  </Sidebar>
+  <SidebarInset>
+    <header class="flex h-14 items-center border-b px-6">
+      <SidebarTrigger />
+    </header>
+    <main class="flex-1 p-4">Your content</main>
+  </SidebarInset>
+</SidebarProvider>
+```
+
+## Composition
+
+Use the following composition to build a sidebar layout:
+
+```text
+SidebarProvider
+├── Sidebar
+│   ├── SidebarHeader
+│   ├── SidebarContent
+│   │   ├── SidebarGroup
+│   │   │   ├── SidebarGroupLabel
+│   │   │   ├── SidebarGroupAction
+│   │   │   ├── SidebarGroupContent
+│   │   │   └── SidebarMenu
+│   │   │       ├── SidebarMenuItem
+│   │   │       │   ├── SidebarMenuButton
+│   │   │       │   ├── SidebarMenuAction
+│   │   │       │   └── SidebarMenuBadge
+│   │   │       └── SidebarMenuItem
+│   │   │           ├── SidebarMenuButton
+│   │   │           └── SidebarMenuSub
+│   │   │               ├── SidebarMenuSubItem
+│   │   │               └── SidebarMenuSubItem
+│   │   └── SidebarGroup
+│   │       └── SidebarMenu
+│   │           ├── SidebarMenuItem
+│   │           └── SidebarMenuItem
+│   ├── SidebarFooter
+│   └── SidebarRail
+└── SidebarInset
+    └── SidebarTrigger
+```
+
+## Components
+
+- `SidebarProvider` wraps the layout, owns the collapse state, and persists desktop state in the `sidebar_state` cookie.
+- `Sidebar` renders the desktop shell and uses the shared `Sheet` primitive for the mobile drawer. It supports `side`, `variant`, `collapsible`, and `dir`, plus `mobileTitle` and `mobileDescription` for the mobile drawer's screen reader heading.
+- `SidebarTrigger` toggles the sidebar and supports the `cmd/ctrl+b` keyboard shortcut.
+- `SidebarRail` renders the clickable rail used by shadcn’s desktop sidebar.
+- `SidebarInset` wraps the main content when using the `inset` variant. It renders the page's `<main>`, so do not nest `LayoutMain` inside it.
+- `SidebarHeader`, `SidebarFooter`, and `SidebarContent` match the shadcn layout regions.
+- `SidebarGroup`, `SidebarGroupLabel`, `SidebarGroupAction`, and `SidebarGroupContent` build sidebar sections.
+- `SidebarMenu`, `SidebarMenuItem`, `SidebarMenuButton`, `SidebarMenuAction`, `SidebarMenuBadge`, `SidebarMenuSkeleton`, `SidebarMenuSub`, `SidebarMenuSubItem`, and `SidebarMenuSubButton` match the menu primitives from shadcn.
+- `SidebarInput` and `SidebarSeparator` provide the shadcn sidebar input and separator styles.
+
+## SidebarProvider
+
+The Astro provider supports the same default width variables as shadcn:
+
+```astro
+<SidebarProvider style="--sidebar-width: 20rem; --sidebar-width-mobile: 20rem;">
+  <Sidebar />
+</SidebarProvider>
+```
+
+### Props
+
+| Name          | Type      | Description                                         |
+| ------------- | --------- | --------------------------------------------------- |
+| `defaultOpen` | `boolean` | Sets the initial desktop state. Defaults to `true`. |
+| `open`        | `boolean` | Sets the initial desktop state explicitly.          |
+
+## Sidebar
+
+### Props
+
+| Name          | Type                                 | Description                              |
+| ------------- | ------------------------------------ | ---------------------------------------- |
+| `side`        | `"left" \| "right"`                  | Which side the sidebar should appear on. |
+| `variant`     | `"sidebar" \| "floating" \| "inset"` | Visual variant for the desktop shell.    |
+| `collapsible` | `"offcanvas" \| "icon" \| "none"`    | Collapse behavior.                       |
+
+## Astro Notes
+
+- Astro has no `render` prop. To make a menu button the trigger of a `DropdownMenu` or `Collapsible`, pass `data-slot="dropdown-menu-trigger"` or `data-slot="collapsible-trigger"` to `SidebarMenuButton` or `SidebarMenuAction`, as the example does. A button used as such a trigger cannot also show a `tooltip`.
+- `SidebarMenuButton` accepts the same tooltip-style shorthand as the shadcn component, including a string or tooltip-content props object.
+
+## API Reference
+
+Source: [`src/components/ui/sidebar`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/sidebar)

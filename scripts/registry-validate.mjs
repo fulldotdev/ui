@@ -1,4 +1,5 @@
-// Check that every registry item installs as-is with the shadcn CLI:
+// Check that every registry item installs as-is with the shadcn CLI. Run it
+// from the registry's root: the repository, or react/ for the React registry.
 // - every local file an item imports ships with the item or a registry dependency,
 // - every package an item imports is listed in its dependencies,
 // - item files are UTF-8 text, because shadcn build reads files as UTF-8,
@@ -15,13 +16,21 @@ const errors = []
 // Projects install @fulldev/init (through `shadcn init` with @fulldev/base, or
 // `shadcn add`) before any other item.
 const baseItems = ["init"]
-// Projects set up Tailwind before installing from a shadcn registry.
-const prerequisites = new Set(["astro", "tailwindcss"])
+// Projects set up their framework and Tailwind before installing from a
+// shadcn registry.
+const react = Boolean(
+  JSON.parse(readFileSync("package.json", "utf8")).dependencies?.react
+)
+const prerequisites = new Set(
+  react ? ["react", "react-dom", "tailwindcss"] : ["astro", "tailwindcss"]
+)
 // The project's own stylesheet, which `shadcn init` writes the theme into.
-const stylesheet = normalize("src/styles/global.css")
+const stylesheet = normalize(
+  JSON.parse(readFileSync("components.json", "utf8")).tailwind.css
+)
 const builtins = new Set(builtinModules)
 const decoder = new TextDecoder("utf-8", { fatal: true })
-const extensions = ["", ".ts", ".astro", ".js", "/index.ts"]
+const extensions = ["", ".ts", ".tsx", ".astro", ".js", "/index.ts"]
 
 const installedPath = (file) => normalize(file.target ?? file.path)
 const packageName = (dependency) =>

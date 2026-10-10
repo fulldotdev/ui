@@ -1,0 +1,136 @@
+---
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+
+const swipeDirection = "right"
+const placeholder =
+  "bg-muted group-data-[swipe-direction=right]/drawer-popup:size-full group-data-[swipe-direction=down]/drawer-popup:aspect-video group-data-[swipe-direction=down]/drawer-popup:w-full"
+---
+
+<Drawer swipeDirection={swipeDirection} data-drawer-responsive>
+  <DrawerTrigger variant="secondary">Open Drawer</DrawerTrigger>
+  <DrawerContent showSwipeHandle>
+    <DrawerHeader>
+      <DrawerTitle>Drawer</DrawerTitle>
+      <DrawerDescription>
+        Open another drawer from the same direction.
+      </DrawerDescription>
+    </DrawerHeader>
+    <div class="flex-1 p-4">
+      <div class={placeholder}></div>
+    </div>
+    <DrawerFooter>
+      <Drawer swipeDirection={swipeDirection} data-drawer-responsive>
+        <DrawerTrigger variant="outline">Open Nested Drawer</DrawerTrigger>
+        <DrawerContent showSwipeHandle>
+          <DrawerHeader>
+            <DrawerTitle>Nested Drawer</DrawerTitle>
+            <DrawerDescription>
+              The parent drawer stays mounted behind this one.
+            </DrawerDescription>
+          </DrawerHeader>
+          <div class="flex-1 p-4">
+            <div class={placeholder}></div>
+          </div>
+          <DrawerFooter>
+            <Drawer swipeDirection={swipeDirection} data-drawer-responsive>
+              <DrawerTrigger variant="outline">Open Third Drawer</DrawerTrigger>
+              <DrawerContent showSwipeHandle>
+                <DrawerHeader>
+                  <DrawerTitle>Third Drawer</DrawerTitle>
+                  <DrawerDescription>
+                    Two drawers are stacked behind this one.
+                  </DrawerDescription>
+                </DrawerHeader>
+                <div class="flex-1 p-4">
+                  <div class={placeholder}></div>
+                </div>
+                <DrawerFooter>
+                  <Drawer
+                    swipeDirection={swipeDirection}
+                    data-drawer-responsive
+                  >
+                    <DrawerTrigger variant="outline">
+                      Open Fourth Drawer
+                    </DrawerTrigger>
+                    <DrawerContent showSwipeHandle>
+                      <DrawerHeader>
+                        <DrawerTitle>Fourth Drawer</DrawerTitle>
+                        <DrawerDescription>
+                          This is the frontmost drawer in the stack.
+                        </DrawerDescription>
+                      </DrawerHeader>
+                      <div class="flex-1 p-4">
+                        <div class={placeholder}></div>
+                      </div>
+                      <DrawerFooter>
+                        <DrawerClose variant="outline">Close</DrawerClose>
+                      </DrawerFooter>
+                    </DrawerContent>
+                  </Drawer>
+                  <DrawerClose variant="outline">Close</DrawerClose>
+                </DrawerFooter>
+              </DrawerContent>
+            </Drawer>
+            <DrawerClose variant="outline">Close</DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+      <DrawerClose variant="outline">Close</DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+
+<script>
+  import { createDrawer } from "@data-slot/drawer"
+
+  // Like useIsMobile: bottom drawers with a swipe handle below 768px.
+  const query = matchMedia("(max-width: 767px)")
+  const triggerOf = (root: HTMLElement) =>
+    [...root.querySelectorAll('[data-slot="drawer-trigger"]')].find(
+      (element) => element.closest('[data-slot="drawer"]') === root
+    )
+  const update = () => {
+    const direction = query.matches ? "down" : "right"
+    const roots = [
+      ...document.querySelectorAll<HTMLElement>("[data-drawer-responsive]"),
+    ]
+    for (const root of roots) {
+      // An open popup lives in the body, outside its root.
+      const popup = document.getElementById(
+        triggerOf(root)?.getAttribute("aria-controls") ?? ""
+      )
+      for (const parent of [root, popup])
+        parent
+          ?.querySelectorAll('[data-slot="drawer-handle"]')
+          .forEach((handle) => handle.toggleAttribute("hidden", !query.matches))
+    }
+    // Data Slot reads the direction when it binds, and restores it when
+    // destroyed, so rebind. Open drawers stay open: nested ones unbind first
+    // and bind last.
+    const stale = roots.filter(
+      (root) => root.dataset.swipeDirection !== direction
+    )
+    const open = stale.map((root) => createDrawer(root).isOpen)
+    for (const root of [...stale].reverse()) createDrawer(root).destroy()
+    stale.forEach((root, index) => {
+      root.dataset.swipeDirection = direction
+      const drawer = createDrawer(root, { open: open[index] })
+      // Reselect the trigger, which gets aria-expanded back.
+      const trigger = triggerOf(root)
+      if (open[index] && trigger?.id) drawer.open(trigger.id)
+    })
+  }
+
+  update()
+  document.addEventListener("astro:page-load", update)
+  query.addEventListener("change", update)
+</script>

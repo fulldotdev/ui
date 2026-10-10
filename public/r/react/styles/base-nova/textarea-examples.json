@@ -1,0 +1,54 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "textarea-examples",
+  "title": "Textarea examples",
+  "description": "The examples from the shadcn/ui Textarea docs.",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@fulldev/button",
+    "@fulldev/field",
+    "@fulldev/select",
+    "@fulldev/textarea"
+  ],
+  "files": [
+    {
+      "path": "src/components/examples/textarea/textarea-button.tsx",
+      "content": "import { Button } from \"@/components/ui/button\"\nimport { Textarea } from \"@/components/ui/textarea\"\n\nexport function TextareaButton() {\n  return (\n    <div className=\"grid w-full gap-2\">\n      <Textarea placeholder=\"Type your message here.\" />\n      <Button>Send message</Button>\n    </div>\n  )\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/textarea/textarea-demo.tsx",
+      "content": "import { Textarea } from \"@/components/ui/textarea\"\n\nexport function TextareaDemo() {\n  return <Textarea placeholder=\"Type your message here.\" />\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/textarea/textarea-disabled.tsx",
+      "content": "import { Field, FieldLabel } from \"@/components/ui/field\"\nimport { Textarea } from \"@/components/ui/textarea\"\n\nexport function TextareaDisabled() {\n  return (\n    <Field data-disabled>\n      <FieldLabel htmlFor=\"textarea-disabled\">Message</FieldLabel>\n      <Textarea\n        id=\"textarea-disabled\"\n        placeholder=\"Type your message here.\"\n        disabled\n      />\n    </Field>\n  )\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/textarea/textarea-field.tsx",
+      "content": "import { Field, FieldDescription, FieldLabel } from \"@/components/ui/field\"\nimport { Textarea } from \"@/components/ui/textarea\"\n\nexport function TextareaField() {\n  return (\n    <Field>\n      <FieldLabel htmlFor=\"textarea-message\">Message</FieldLabel>\n      <FieldDescription>Enter your message below.</FieldDescription>\n      <Textarea id=\"textarea-message\" placeholder=\"Type your message here.\" />\n    </Field>\n  )\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/textarea/textarea-invalid.tsx",
+      "content": "import { Field, FieldDescription, FieldLabel } from \"@/components/ui/field\"\nimport { Textarea } from \"@/components/ui/textarea\"\n\nexport function TextareaInvalid() {\n  return (\n    <Field data-invalid>\n      <FieldLabel htmlFor=\"textarea-invalid\">Message</FieldLabel>\n      <Textarea\n        id=\"textarea-invalid\"\n        placeholder=\"Type your message here.\"\n        aria-invalid\n      />\n      <FieldDescription>Please enter a valid message.</FieldDescription>\n    </Field>\n  )\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/textarea/textarea-rtl.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nimport { Field, FieldDescription, FieldLabel } from \"@/components/ui/field\"\nimport { Textarea } from \"@/components/ui/textarea\"\nimport {\n  useTranslation,\n  type Translations,\n} from \"@/components/language-selector\"\n\nconst translations: Translations = {\n  en: {\n    dir: \"ltr\",\n    values: {\n      label: \"Feedback\",\n      placeholder: \"Your feedback helps us improve...\",\n      description: \"Share your thoughts about our service.\",\n    },\n  },\n  ar: {\n    dir: \"rtl\",\n    values: {\n      label: \"التعليقات\",\n      placeholder: \"تعليقاتك تساعدنا على التحسين...\",\n      description: \"شاركنا أفكارك حول خدمتنا.\",\n    },\n  },\n  he: {\n    dir: \"rtl\",\n    values: {\n      label: \"משוב\",\n      placeholder: \"המשוב שלך עוזר לנו להשתפר...\",\n      description: \"שתף את מחשבותיך על השירות שלנו.\",\n    },\n  },\n}\n\nexport function TextareaRtl() {\n  const { dir, t } = useTranslation(translations, \"ar\")\n\n  return (\n    <Field className=\"w-full max-w-xs\" dir={dir}>\n      <FieldLabel htmlFor=\"feedback\" dir={dir}>\n        {t.label}\n      </FieldLabel>\n      <Textarea id=\"feedback\" placeholder={t.placeholder} dir={dir} rows={4} />\n      <FieldDescription dir={dir}>{t.description}</FieldDescription>\n    </Field>\n  )\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/language-selector.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"cn\"\n\nimport {\n  Select,\n  SelectContent,\n  SelectGroup,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from \"@/components/ui/select\"\n\nexport type Language = \"en\" | \"ar\" | \"he\"\n\nexport type Direction = \"ltr\" | \"rtl\"\n\nexport type Translations<\n  T extends Record<string, string> = Record<string, string>,\n> = Record<\n  Language,\n  {\n    dir: Direction\n    locale?: string\n    values: T\n  }\n>\n\nexport const languageOptions = [\n  { value: \"en\", label: \"English\" },\n  { value: \"ar\", label: \"Arabic (العربية)\" },\n  { value: \"he\", label: \"Hebrew (עברית)\" },\n] as const\n\ntype LanguageContextType = {\n  language: Language\n  setLanguage: (language: Language) => void\n}\n\nconst LanguageContext = React.createContext<LanguageContextType | undefined>(\n  undefined\n)\n\nexport function LanguageProvider({\n  children,\n  defaultLanguage = \"ar\",\n}: {\n  children: React.ReactNode\n  defaultLanguage?: Language\n}) {\n  const [language, setLanguage] = React.useState<Language>(defaultLanguage)\n\n  return (\n    <LanguageContext.Provider value={{ language, setLanguage }}>\n      {children}\n    </LanguageContext.Provider>\n  )\n}\n\nexport function useLanguageContext() {\n  const context = React.useContext(LanguageContext)\n  return context\n}\n\nexport function useTranslation<T extends Record<string, string>>(\n  translations: Translations<T>,\n  defaultLanguage: Language = \"ar\"\n) {\n  const context = useLanguageContext()\n  const [localLanguage, setLocalLanguage] =\n    React.useState<Language>(defaultLanguage)\n\n  const language = context?.language ?? localLanguage\n  const setLanguage = context?.setLanguage ?? setLocalLanguage\n\n  const { dir, locale, values: t } = translations[language]\n  return { language, setLanguage, dir, locale, t }\n}\n\nexport interface LanguageSelectorProps {\n  value: Language\n  onValueChange: (value: Language) => void\n}\n\nexport function LanguageSelector({\n  value,\n  onValueChange,\n  className,\n  languages = [\"en\", \"ar\", \"he\"],\n}: LanguageSelectorProps & {\n  className?: string\n  languages?: Language[]\n}) {\n  return (\n    <Select\n      items={languageOptions}\n      value={value}\n      onValueChange={(value) => onValueChange(value as Language)}\n    >\n      <SelectTrigger\n        size=\"sm\"\n        className={cn(\"w-36\", className)}\n        dir=\"ltr\"\n        data-name=\"language-selector\"\n      >\n        <SelectValue />\n      </SelectTrigger>\n      <SelectContent\n        dir=\"ltr\"\n        className=\"data-open:animate-none data-closed:animate-none\"\n      >\n        <SelectGroup>\n          {languageOptions\n            .filter((option) => languages.includes(option.value as Language))\n            .map((option) => (\n              <SelectItem key={option.value} value={option.value}>\n                {option.label}\n              </SelectItem>\n            ))}\n        </SelectGroup>\n      </SelectContent>\n    </Select>\n  )\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "docs": "https://ui.full.dev/react/components/textarea/",
+  "type": "registry:example"
+}

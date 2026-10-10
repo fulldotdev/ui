@@ -1,0 +1,158 @@
+---
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group"
+import { Popover, PopoverContent } from "@/components/ui/popover"
+---
+
+<div class="grid w-full max-w-sm gap-6" data-input-group-button-example>
+  <InputGroup>
+    <InputGroupInput placeholder="https://x.com/shadcn" readonly />
+    <InputGroupAddon align="inline-end">
+      <InputGroupButton
+        aria-label="Copy"
+        title="Copy"
+        size="icon-xs"
+        data-copy-value="https://x.com/shadcn"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="tabler-icon tabler-icon-check hidden"
+          data-copied-icon
+        >
+          <path d="M5 12l5 5l10 -10"></path>
+        </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="tabler-icon tabler-icon-copy"
+          data-copy-icon
+        >
+          <path d="M7 9.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667l0 -8.666"></path>
+          <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1"></path>
+        </svg>
+      </InputGroupButton>
+    </InputGroupAddon>
+  </InputGroup>
+  <InputGroup class="[--radius:9999px]">
+    <InputGroupAddon>
+      <Popover>
+        <InputGroupButton
+          data-slot="popover-trigger"
+          variant="secondary"
+          size="icon-xs"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="tabler-icon tabler-icon-info-circle"
+          >
+            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
+            <path d="M12 9h.01"></path>
+            <path d="M11 12h1v4h1"></path>
+          </svg>
+        </InputGroupButton>
+        <PopoverContent
+          align="start"
+          class="flex flex-col gap-1 rounded-xl text-sm"
+        >
+          <p class="font-medium">Your connection is not secure.</p>
+          <p>You should not enter any sensitive information on this site.</p>
+        </PopoverContent>
+      </Popover>
+    </InputGroupAddon>
+    <InputGroupAddon class="pl-1.5 text-muted-foreground">
+      https://
+    </InputGroupAddon>
+    <InputGroupInput id="input-secure-19" />
+    <InputGroupAddon align="inline-end">
+      <InputGroupButton size="icon-xs" data-favorite-toggle>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="tabler-icon tabler-icon-star data-[favorite=true]:fill-blue-600 data-[favorite=true]:stroke-blue-600"
+          data-favorite="false"
+        >
+          <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245"></path>
+        </svg>
+      </InputGroupButton>
+    </InputGroupAddon>
+  </InputGroup>
+  <InputGroup>
+    <InputGroupInput placeholder="Type to search..." />
+    <InputGroupAddon align="inline-end">
+      <InputGroupButton variant="secondary">Search</InputGroupButton>
+    </InputGroupAddon>
+  </InputGroup>
+</div>
+
+<script>
+  const initialize = () => {
+    for (const root of document.querySelectorAll<HTMLElement>(
+      "[data-input-group-button-example]"
+    )) {
+      if (root.hasAttribute("data-bound")) continue
+      root.setAttribute("data-bound", "")
+
+      const copy = root.querySelector<HTMLElement>("[data-copy-value]")!
+      const copyIcon = copy.querySelector("[data-copy-icon]")!
+      const copiedIcon = copy.querySelector("[data-copied-icon]")!
+      let timeout: ReturnType<typeof setTimeout> | undefined
+      const setCopied = (copied: boolean) => {
+        copiedIcon.classList.toggle("hidden", !copied)
+        copyIcon.classList.toggle("hidden", copied)
+      }
+      copy.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(copy.dataset.copyValue!)
+        } catch {
+          return
+        }
+        setCopied(true)
+        clearTimeout(timeout)
+        timeout = setTimeout(() => setCopied(false), 2000)
+      })
+
+      const favorite = root.querySelector("[data-favorite-toggle]")!
+      const star = favorite.querySelector<SVGElement>("[data-favorite]")!
+      favorite.addEventListener("click", () => {
+        star.dataset.favorite = String(star.dataset.favorite !== "true")
+      })
+    }
+  }
+
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+</script>

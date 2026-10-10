@@ -1,0 +1,167 @@
+---
+type: doc
+title: Toast
+description: A brief notification that appears without interrupting the user.
+---
+
+<Example name="toast-demo" />
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/toast
+```
+
+## Usage
+
+Place one `Toaster` in the page shell or layout. Give it an ID when commands
+need a stable target.
+
+```astro
+---
+import { Toaster } from "@/components/ui/toast"
+---
+
+<Toaster id="notifications" portal />
+```
+
+Show a notification by dispatching a `toast:show` event on that root.
+
+```js
+const toaster = document.getElementById("notifications")
+
+toaster?.dispatchEvent(
+  new CustomEvent("toast:show", {
+    detail: {
+      title: "Changes saved",
+      description: "All updates are synced.",
+      type: "success",
+    },
+  })
+)
+```
+
+When Astro's `ClientRouter` can replace the page containing your trigger,
+reconnect page-specific event handlers on `astro:page-load`. Keep a toaster in
+the shared layout when the notification API should remain available across
+route changes. Active notifications are reset during a route swap; persist any
+notification data in your own application state when it must survive.
+
+## Options
+
+`Toaster` accepts these runtime options as props:
+
+- `limit`: maximum visible notifications, default `3`
+- `duration`: automatic dismissal delay in milliseconds, default `5000`; use
+  `0` for persistent notifications
+- `position`: `top-left`, `top-center`, `top-right`, `bottom-left`,
+  `bottom-center`, or `bottom-right`
+- `pauseOnHover` and `pauseOnFocus`: pause active timers during interaction
+- `portal`: move the viewport to `document.body`
+
+Toast data accepts `id`, `title`, `description`, `type`, `duration`, `action`,
+`dismissible`, `closeButtonAriaLabel`, and `testId`. `title` is required. Types
+are `default`, `success`, `error`, `warning`, `info`, and `loading`.
+
+## Types
+
+Set `type` to render a status icon: `success`, `info`, `warning`, `error`, or `loading`.
+
+<Example name="toast-types" />
+
+## Action
+
+Pass `action` with a `label` and `value`. The action closes its toast; listen for `toast:action` to handle it.
+
+## Promise
+
+Show a `loading` toast with an `id` and `duration: 0`, then patch it with `toast:update` when the task ends.
+
+<Example name="toast-promise" />
+
+## Commands
+
+The root listens for framework-neutral DOM events.
+
+```js
+// Show and keep a stable ID for later updates.
+toaster.dispatchEvent(
+  new CustomEvent("toast:show", {
+    detail: { id: "upload", title: "Uploading", type: "loading", duration: 0 },
+  })
+)
+
+// Patch an active toast.
+toaster.dispatchEvent(
+  new CustomEvent("toast:update", {
+    detail: { id: "upload", title: "Upload complete", type: "success" },
+  })
+)
+
+// Dismiss one toast or clear all active toasts.
+toaster.dispatchEvent(
+  new CustomEvent("toast:dismiss", { detail: { id: "upload" } })
+)
+toaster.dispatchEvent(new CustomEvent("toast:clear"))
+```
+
+The root emits `toast:change` with `{ id, action: "show" | "dismiss" }` and
+`toast:action` with `{ id, value }`. Listen for `toast:action` to handle action
+buttons.
+
+```js
+toaster.addEventListener("toast:action", (event) => {
+  if (event.detail.value === "undo-event") {
+    // Undo the operation here.
+  }
+})
+```
+
+For controller access, import `createToast` from `@data-slot/toast`. Its
+`show`, `update`, `promise`, `dismiss`, and `dismissAll` methods use the same
+data model. The Astro `Toast` component already initializes roots, so create a
+controller directly only when you own initialization yourself.
+
+## Custom template
+
+`Toaster` includes the standard template and viewport. Use the lower-level
+parts when you need different markup or classes.
+
+```astro
+---
+import {
+  Toast,
+  ToastAction,
+  ToastClose,
+  ToastContent,
+  ToastDescription,
+  ToastIcon,
+  ToastItem,
+  ToastTemplate,
+  ToastTitle,
+  ToastViewport,
+} from "@/components/ui/toast"
+---
+
+<Toast id="notifications">
+  <ToastTemplate>
+    <ToastItem>
+      <ToastContent>
+        <ToastIcon />
+        <div class="min-w-0 flex-1">
+          <ToastTitle />
+          <ToastDescription />
+        </div>
+        <ToastAction />
+        <ToastClose />
+      </ToastContent>
+    </ToastItem>
+  </ToastTemplate>
+  <ToastViewport />
+</Toast>
+```
+
+## API Reference
+
+Source: [`src/components/ui/toast`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/toast)
+See the [data-slot docs](https://github.com/bejamas/data-slot/blob/main/packages/toast/README.md) for controller methods, promise notifications, timers, stacking, swipe dismissal, and events.

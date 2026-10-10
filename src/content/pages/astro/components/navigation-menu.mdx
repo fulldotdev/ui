@@ -1,0 +1,93 @@
+---
+type: doc
+title: Navigation Menu
+description: A collection of links for navigating websites.
+---
+
+<Example name="navigation-menu-demo" />
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/navigation-menu
+```
+
+## Usage
+
+```ts
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu"
+```
+
+```astro
+<NavigationMenu>
+  <NavigationMenuList>
+    <NavigationMenuItem value="item-one">
+      <NavigationMenuTrigger>Item One</NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <NavigationMenuLink href="/docs">Link</NavigationMenuLink>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+  </NavigationMenuList>
+</NavigationMenu>
+```
+
+Every `NavigationMenuItem` needs a unique `value`. `NavigationMenuLink` renders
+an `a`; pass `href` and, for the current route, `active`. Use
+`navigationMenuTriggerStyle()` to give a top-level link the trigger look.
+
+## Composition
+
+```text
+NavigationMenu
+├── NavigationMenuList
+│   ├── NavigationMenuItem
+│   │   ├── NavigationMenuTrigger
+│   │   └── NavigationMenuContent
+│   │       ├── NavigationMenuLink
+│   │       └── NavigationMenuLink
+│   └── NavigationMenuItem
+│       └── NavigationMenuLink
+└── NavigationMenuIndicator
+```
+
+## RTL
+
+Set `dir` on `NavigationMenu` and `NavigationMenuContent`, and `align="end"` to
+open panels from the start edge in RTL.
+
+<Example name="navigation-menu-rtl" />
+
+## Notes
+
+- Closed panels start hidden in the rendered HTML to prevent a flash before
+  JavaScript initializes. The controller manages visibility after
+  initialization.
+- Place `NavigationMenuIndicator` inside `NavigationMenuList` so its position is
+  relative to the list whose measurements Data Slot uses.
+- The menu opens below its trigger, aligned to the start, with an 8px gap. Set
+  `side`, `align`, `sideOffset` and `alignOffset` on `NavigationMenu` to change
+  this placement. Data Slot reads the root configuration and positions the
+  shared popup.
+
+## Content mounting
+
+Data Slot's recommended `"lazy"` strategy is the default: closed content is
+retained but detached from the document. Fulldev initializes nested Data Slot
+components inside that retained content too.
+
+Use `mountStrategy="eager"` when an integration needs to query closed content
+through the document. Both strategies include content in server-rendered HTML;
+neither adds a no-JavaScript fallback.
+
+## API Reference
+
+Source: [`src/components/ui/navigation-menu`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/navigation-menu)
+
+See the [Data Slot docs](https://github.com/bejamas/data-slot/blob/main/packages/navigation-menu/README.md) for the interactive behavior.

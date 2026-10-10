@@ -1,0 +1,193 @@
+---
+type: doc
+title: Marker
+description: Displays an inline status, system note, bordered row, or labeled separator in a conversation.
+---
+
+<Example name="marker-demo" />
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/marker
+```
+
+## Usage
+
+```tsx showLineNumbers
+import { Marker, MarkerContent, MarkerIcon } from "@/components/ui/marker"
+```
+
+```tsx showLineNumbers
+<Marker>
+  <MarkerIcon>
+    <CheckIcon />
+  </MarkerIcon>
+  <MarkerContent>Explored 4 files</MarkerContent>
+</Marker>
+```
+
+## Composition
+
+Use the following composition to build a marker:
+
+```text
+Marker
+├── MarkerIcon
+└── MarkerContent
+```
+
+## Variants
+
+Use `variant` to switch between an inline marker, bordered row, and labeled separator.
+
+<Example name="marker-variants" />
+
+| Variant     | Description                                          |
+| ----------- | ---------------------------------------------------- |
+| `default`   | An inline marker for status, notes, and actions.     |
+| `border`    | A default marker with a bottom border under the row. |
+| `separator` | A centered label with divider lines on each side.    |
+
+## Status
+
+Set `role="status"` and include a [`Spinner`](/react/components/spinner/) for streaming or in-progress markers so updates are announced.
+
+<Example name="marker-status" />
+
+## Shimmer
+
+Add the [`shimmer`](https://ui.shadcn.com/docs/utils/shimmer) utility class to `MarkerContent` for an animated streaming-text effect.
+
+<Example name="marker-shimmer" />
+
+## Separator
+
+Use the `separator` variant for labeled dividers, such as dates or section breaks, in a conversation.
+
+<Example name="marker-separator" />
+
+## Border
+
+Use the `border` variant for status rows that should keep the default marker alignment while separating the next row.
+
+<Example name="marker-border" />
+
+## With Icon
+
+Use `MarkerIcon` to render an icon alongside the content.
+
+<Example name="marker-icon" />
+
+## Links and Buttons
+
+Turn a marker into a link or button with the `render` prop on `Marker`.
+
+<Example name="marker-link-button" />
+
+```tsx showLineNumbers
+import { Marker, MarkerContent } from "@/components/ui/marker"
+
+export function MarkerLinkDemo() {
+  return (
+    <Marker render={<a href="#" />}>
+      <MarkerContent>View the pull request</MarkerContent>
+    </Marker>
+  )
+}
+```
+
+## Accessibility
+
+`Marker` is presentational by default.
+
+### Status and Progress
+
+For streaming or progress markers such as "Thinking..." or a running tool, set `role="status"` so assistive tech announces the update as it appears.
+
+```tsx showLineNumbers
+<Marker role="status">
+  <MarkerIcon>
+    <Spinner />
+  </MarkerIcon>
+  <MarkerContent>Compacting conversation</MarkerContent>
+</Marker>
+```
+
+### Labeled Separators
+
+A separator that carries text, such as a date or a section label, needs no role.
+
+```tsx showLineNumbers
+<Marker variant="separator">
+  <MarkerContent>Today</MarkerContent>
+</Marker>
+```
+
+### Bordered Markers
+
+A bordered marker keeps the same semantics as the default marker.
+
+```tsx showLineNumbers
+<Marker variant="border">
+  <MarkerIcon>
+    <FileTextIcon />
+  </MarkerIcon>
+  <MarkerContent>Opened implementation notes</MarkerContent>
+</Marker>
+```
+
+### Decorative Icons
+
+`MarkerIcon` is decorative and hidden from assistive tech with `aria-hidden`, so the adjacent `MarkerContent` carries the meaning.
+
+```tsx showLineNumbers
+<Marker aria-label="Synced">
+  <MarkerIcon>
+    <CheckIcon />
+  </MarkerIcon>
+</Marker>
+```
+
+### Interactive Markers
+
+When a marker links or triggers an action, render it as a real `<button>` or `<a>` with the `render` prop so it is focusable and exposes the correct role.
+
+```tsx showLineNumbers
+<Marker render={<a href="/files" />}>
+  <MarkerIcon>
+    <FileTextIcon />
+  </MarkerIcon>
+  <MarkerContent>Explored 4 files</MarkerContent>
+</Marker>
+```
+
+## API Reference
+
+Source: [`react/src/components/ui/marker.tsx`](https://github.com/fulldotdev/ui/blob/main/react/src/components/ui/marker.tsx)
+
+### Marker
+
+The root marker element.
+
+| Prop        | Type                                   | Default     | Description                                      |
+| ----------- | -------------------------------------- | ----------- | ------------------------------------------------ |
+| `variant`   | `"default" \| "border" \| "separator"` | `"default"` | The marker layout.                               |
+| `render`    | `ReactElement \| function`             | -           | Render as a different element, such as a link.   |
+| `className` | `string`                               | -           | Additional classes to apply to the root element. |
+
+### MarkerIcon
+
+A decorative icon slot.
+
+| Prop        | Type     | Default | Description                                   |
+| ----------- | -------- | ------- | --------------------------------------------- |
+| `className` | `string` | -       | Additional classes to apply to the icon slot. |
+
+### MarkerContent
+
+The marker text content.
+
+| Prop        | Type     | Default | Description                                      |
+| ----------- | -------- | ------- | ------------------------------------------------ |
+| `className` | `string` | -       | Additional classes to apply to the content slot. |

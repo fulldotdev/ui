@@ -1,0 +1,29 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pricing-2",
+  "title": "Pricing 2",
+  "description": "Pricing sections for plan grids, featured offers, and concise offer presentation.",
+  "dependencies": [
+    "cn",
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "@fulldev/button",
+    "@fulldev/card",
+    "@fulldev/price",
+    "@fulldev/section",
+    "@fulldev/separator"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/pricing-2.tsx",
+      "content": "import * as React from \"react\"\nimport { cn } from \"cn\"\nimport { CheckIcon } from \"lucide-react\"\n\nimport { buttonVariants } from \"@/components/ui/button\"\nimport {\n  Card,\n  CardContent,\n  CardDescription,\n  CardFooter,\n  CardHeader,\n  CardTitle,\n} from \"@/components/ui/card\"\nimport { Price, PriceUnit, PriceValue } from \"@/components/ui/price\"\nimport {\n  Section,\n  SectionContainer,\n  SectionDescription,\n  SectionTitle,\n} from \"@/components/ui/section\"\nimport { Separator } from \"@/components/ui/separator\"\n\nfunction Pricing2({\n  title,\n  description,\n  locale,\n  discountLabel,\n  plans,\n  ...props\n}: React.ComponentProps<\"section\"> & {\n  title: string\n  description: string\n  locale?: string\n  discountLabel?: string\n  plans: {\n    name: string\n    description: string\n    price: {\n      value: number\n      compareAt?: number\n      currency: string\n      unit: string\n    }\n    featured?: boolean\n    features: string[]\n    button: {\n      label: string\n      href: string\n    }\n  }[]\n}) {\n  return (\n    <Section {...props}>\n      <SectionContainer className=\"flex flex-col gap-8\">\n        <div className=\"mx-auto max-w-2xl text-center\">\n          <SectionTitle>{title}</SectionTitle>\n          <SectionDescription className=\"mt-4\">\n            {description}\n          </SectionDescription>\n        </div>\n        <div className=\"mx-auto grid w-full justify-center gap-6 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(16rem,18rem))]\">\n          {plans.map((plan) => (\n            <Card\n              key={plan.name}\n              className=\"flex flex-col border-none shadow-none\"\n            >\n              <CardHeader>\n                <CardTitle>\n                  <h3>{plan.name}</h3>\n                </CardTitle>\n                <CardDescription>{plan.description}</CardDescription>\n              </CardHeader>\n              <CardContent className=\"flex flex-col gap-6\">\n                <Price>\n                  <PriceValue\n                    price={plan.price.value}\n                    compareAt={plan.price.compareAt}\n                    currency={plan.price.currency}\n                    locale={locale}\n                    discountLabel={discountLabel}\n                  />\n                  <PriceUnit>{plan.price.unit}</PriceUnit>\n                </Price>\n                <Separator />\n                <ul className=\"flex flex-col gap-3\">\n                  {plan.features.map((feature) => (\n                    <li\n                      key={feature}\n                      className=\"flex items-start gap-3 text-sm\"\n                    >\n                      <CheckIcon className=\"mt-0.5 size-4 shrink-0 text-primary\" />\n                      {feature}\n                    </li>\n                  ))}\n                </ul>\n              </CardContent>\n              <CardFooter className=\"mt-auto\">\n                <a\n                  href={plan.button.href}\n                  className={cn(\n                    buttonVariants({\n                      variant: plan.featured ? \"default\" : \"outline\",\n                    }),\n                    \"w-full\"\n                  )}\n                >\n                  {plan.button.label}\n                </a>\n              </CardFooter>\n            </Card>\n          ))}\n        </div>\n      </SectionContainer>\n    </Section>\n  )\n}\n\nexport { Pricing2 }\n",
+      "type": "registry:block"
+    }
+  ],
+  "docs": "https://ui.full.dev/react/blocks/pricing/",
+  "categories": [
+    "pricing"
+  ],
+  "type": "registry:block"
+}

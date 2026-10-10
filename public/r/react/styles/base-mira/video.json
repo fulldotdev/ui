@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "video",
+  "title": "Video",
+  "description": "A responsive video component that supports YouTube videos and shorts.",
+  "dependencies": [
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/video.tsx",
+      "content": "import * as React from \"react\"\nimport { cn } from \"cn\"\n\n// YouTube watch, short and share links become privacy-enhanced embeds.\nfunction getEmbedSrc(value?: string) {\n  if (!value) return undefined\n  try {\n    const url = new URL(value)\n    const host = url.hostname.replace(/^www\\./, \"\")\n    let id: string | null | undefined\n    if (host === \"youtube.com\" && url.pathname === \"/watch\") {\n      id = url.searchParams.get(\"v\")\n    } else if (host === \"youtube.com\" && url.pathname.startsWith(\"/shorts/\")) {\n      id = url.pathname.split(\"/\")[2]\n    } else if (host === \"youtu.be\") {\n      id = url.pathname.slice(1)\n    }\n    return id ? `https://www.youtube-nocookie.com/embed/${id}` : undefined\n  } catch {\n    return undefined\n  }\n}\n\nfunction Video({\n  className,\n  src,\n  title = \"Embedded video\",\n  allow = \"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\",\n  allowFullScreen = true,\n  ...props\n}: React.ComponentProps<\"iframe\">) {\n  const embedSrc = getEmbedSrc(src)\n  if (!embedSrc) return null\n  return (\n    <iframe\n      data-slot=\"video\"\n      src={embedSrc}\n      title={title}\n      allow={allow}\n      allowFullScreen={allowFullScreen}\n      className={cn(\n        \"rounded-md border bg-muted w-full\",\n        src?.includes(\"/shorts/\") ? \"aspect-9/16 max-w-xs\" : \"aspect-video\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nexport { Video }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/react/components/video/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

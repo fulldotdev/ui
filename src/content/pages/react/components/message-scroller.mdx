@@ -1,0 +1,258 @@
+---
+type: doc
+title: Message Scroller
+description: A chat scroll container that anchors turns, opens saved transcripts, follows streamed responses, loads history without jumping, and jumps to any message.
+---
+
+<Example name="message-scroller-demo" />
+
+## MessageScroller
+
+MessageScroller is a chat transcript scroller built for these behaviors.
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/message-scroller
+```
+
+## Usage
+
+```tsx
+import { Message } from "@/components/ui/message"
+import {
+  MessageScroller,
+  MessageScrollerButton,
+  MessageScrollerContent,
+  MessageScrollerItem,
+  MessageScrollerProvider,
+  MessageScrollerViewport,
+} from "@/components/ui/message-scroller"
+```
+
+```tsx
+<MessageScrollerProvider>
+  <MessageScroller>
+    <MessageScrollerViewport>
+      <MessageScrollerContent>
+        {messages.map((message) => (
+          <MessageScrollerItem
+            key={message.id}
+            messageId={message.id}
+            scrollAnchor={message.role === "user"}
+          >
+            <Message />
+          </MessageScrollerItem>
+        ))}
+      </MessageScrollerContent>
+    </MessageScrollerViewport>
+    <MessageScrollerButton />
+  </MessageScroller>
+</MessageScrollerProvider>
+```
+
+```tsx
+<div className="flex h-screen flex-col">
+  <MessageScrollerProvider>
+    <MessageScroller className="flex-1">{/* transcript */}</MessageScroller>
+  </MessageScrollerProvider>
+</div>
+```
+
+## Composition
+
+```tsx
+<MessageScrollerProvider>
+  <MessageScroller>
+    <MessageScrollerViewport>
+      <MessageScrollerContent>
+        <MessageScrollerItem>
+          {/* a message, marker, or row */}
+        </MessageScrollerItem>
+        <MessageScrollerItem />
+        <MessageScrollerItem />
+      </MessageScrollerContent>
+    </MessageScrollerViewport>
+    <MessageScrollerButton />
+  </MessageScroller>
+</MessageScrollerProvider>
+```
+
+- **`MessageScrollerProvider`**: the headless root. Owns scroll state and the
+  behavior props for opening position, auto-scroll, anchoring, scroll commands,
+  and visibility tracking.
+- **`MessageScroller`**: the styled frame. Lays out the viewport, content, and
+  controls inside the provider.
+- **`MessageScrollerViewport`**: the scrollable element. Receives native scroll
+  events and preserves the visible row when older messages are prepended.
+- **`MessageScrollerContent`**: the transcript container. Holds the rows and
+  provides the live-region defaults for new messages.
+- **`MessageScrollerItem`**: the transcript row boundary. Wrap every direct
+  child of the content so the scroller can measure, anchor, preserve position,
+  track visibility, and jump to it. An item can be a message, marker, typing
+  indicator, separator, join/leave event, or "load earlier" row.
+- **`MessageScrollerButton`**: the scroll control. Scrolls to the start or end of the transcript and is inert until there is content in its direction.
+
+## Core Concepts
+
+### Anchoring Turns
+
+A turn is the part of the conversation that starts a new exchange.
+
+```tsx
+// This tells the scroller to anchor the user's message for the next turn.
+<MessageScrollerItem
+  messageId={message.id}
+  scrollAnchor={message.role === "user"}
+/>
+```
+
+<Example name="message-scroller-anchoring" />
+
+### Group Chat
+
+In a group chat, the turn boundary is more specific than "the user message".
+
+```tsx
+<MessageScrollerItem messageId="marcus-joined" scrollAnchor>
+  <Marker variant="separator">
+    <MarkerContent>Marcus joined the chat</MarkerContent>
+  </Marker>
+</MessageScrollerItem>
+```
+
+<Example name="message-scroller-group-chat" />
+
+### Keeping Context Visible
+
+When a new turn starts, it should still feel like part of the same continuous thread.
+
+```tsx
+// Keep 64px of the previous turn visible above the newly anchored row.
+<MessageScrollerProvider scrollPreviousItemPeek={64}>
+  <MessageScroller>{/* anchored turns */}</MessageScroller>
+</MessageScrollerProvider>
+```
+
+<Example name="message-scroller-previous-context" />
+
+### Following the Live Edge
+
+When the reader is at the live edge, either because they stayed there or returned there, `autoScroll` keeps streamed replies in view as they grow.
+
+```tsx
+<MessageScrollerProvider autoScroll>
+  <MessageScroller>{/* streamed turns */}</MessageScroller>
+</MessageScrollerProvider>
+```
+
+<Example name="message-scroller-streaming" />
+
+### Opening Saved Threads
+
+It can seem reasonable to reopen a saved thread at the absolute end of the transcript, but that often drops the reader into the conversation without enough context.
+
+```tsx
+<MessageScrollerProvider defaultScrollPosition="last-anchor">
+  <MessageScroller>{/* transcript */}</MessageScroller>
+</MessageScrollerProvider>
+```
+
+<Example name="message-scroller-opening-position" />
+
+### Avoiding a Flash on Reload
+
+A scroll container always opens at the top.
+
+```tsx
+const scrollToEndScript = `(function () {
+  var viewport = document.getElementById("messages")
+  if (!viewport) {
+    return
+  }
+  viewport.scrollTop = viewport.scrollHeight
+  viewport.removeAttribute("data-pending-scroll")
+})()`
+
+<MessageScroller>
+  <MessageScrollerViewport id="messages" suppressHydrationWarning>
+    <MessageScrollerContent>{/* transcript */}</MessageScrollerContent>
+  </MessageScrollerViewport>
+  <script dangerouslySetInnerHTML={{ __html: scrollToEndScript }} />
+  <MessageScrollerButton />
+</MessageScroller>
+```
+
+### Loading Earlier Messages
+
+Loading earlier messages should not move the conversation the reader is already looking at.
+
+<Example name="message-scroller-load-history" />
+
+### Animating New Messages
+
+`MessageScrollerItem` can be animated directly.
+
+```tsx
+const MotionMessageScrollerItem = motion.create(MessageScrollerItem)
+```
+
+<Example name="message-scroller-animation" />
+
+### Jumping to Messages
+
+Search results, permalinks, outline items, and toolbar buttons often need to drive the transcript from outside the message list.
+
+```tsx
+import { useMessageScroller } from "@/components/ui/message-scroller"
+```
+
+```tsx
+const { scrollToMessage, scrollToEnd, scrollToStart } = useMessageScroller()
+```
+
+<Example name="message-scroller-commands" />
+
+### Tracking the Reader's Position
+
+Use `useMessageScrollerVisibility` to track the reader's position in the conversation.
+
+```tsx
+import { useMessageScrollerVisibility } from "@/components/ui/message-scroller"
+```
+
+```tsx
+const { currentAnchorId, visibleMessageIds } = useMessageScrollerVisibility()
+```
+
+<Example name="message-scroller-visibility" />
+
+### Reading Scroll State
+
+Use `useMessageScrollerScrollable` when you need scroll state in JavaScript, such as a status indicator or a custom "jump to latest" control.
+
+```tsx
+import { useMessageScrollerScrollable } from "@/components/ui/message-scroller"
+```
+
+```tsx
+const { start, end } = useMessageScrollerScrollable()
+```
+
+<Example name="message-scroller-scrollable" />
+
+## Accessibility
+
+`MessageScroller` keeps the scroll container keyboard reachable and the transcript announceable without forcing a specific message UI.
+
+```tsx
+<MessageScrollerContent aria-busy={status === "streaming"}>
+  {/* messages */}
+</MessageScrollerContent>
+```
+
+## API Reference
+
+Source: [`react/src/components/ui/message-scroller.tsx`](https://github.com/fulldotdev/ui/blob/main/react/src/components/ui/message-scroller.tsx)
+
+The props, data attributes, and hooks for every part are documented on the [@shadcn/react Message Scroller](https://ui.shadcn.com/docs/react/message-scroller#api-reference) page.

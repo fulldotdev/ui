@@ -1,0 +1,150 @@
+---
+type: doc
+title: Select
+description: Displays a list of options for the user to pick from, triggered by a button.
+---
+
+<Example name="select-demo" />
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/select
+```
+
+## Usage
+
+```ts
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+```
+
+```astro
+<Select placeholder="Theme">
+  <SelectTrigger class="w-[180px]">
+    <SelectValue />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectGroup>
+      <SelectItem value="light">Light</SelectItem>
+      <SelectItem value="dark">Dark</SelectItem>
+      <SelectItem value="system">System</SelectItem>
+    </SelectGroup>
+  </SelectContent>
+</Select>
+```
+
+`SelectValue` shows the label of the selected item, or the `placeholder` of
+`Select` when nothing is selected. Pass `name` to submit the value with a form,
+and `required` for native validation. The `Select` root is an `inline-flex
+w-fit` wrapper, so give it the trigger's width classes when the trigger uses
+`w-full`.
+
+## Composition
+
+```text
+Select
+├── SelectTrigger
+│   └── SelectValue
+└── SelectContent
+    ├── SelectGroup
+    │   ├── SelectLabel
+    │   ├── SelectItem
+    │   └── SelectItem
+    ├── SelectSeparator
+    └── SelectGroup
+        ├── SelectLabel
+        ├── SelectItem
+        └── SelectItem
+```
+
+## Align Item With Trigger
+
+Use `position` on `Select` or `SelectContent`. With `"item-aligned"` (default),
+the popup positions so the selected item appears over the trigger. With
+`"popper"`, it opens below the trigger and takes `side`, `align`,
+`sideOffset`, and `alignOffset`. Data Slot reads the position when it binds, so
+the example rebinds the select when the switch changes.
+
+<Example name="select-align-item" />
+
+## Groups
+
+Use `SelectGroup`, `SelectLabel`, and `SelectSeparator` to organize items.
+
+<Example name="select-groups" />
+
+## Scrollable
+
+A select with many items that scrolls.
+
+<Example name="select-scrollable" />
+
+## Disabled
+
+Pass `disabled` to `Select` or to a `SelectItem`.
+
+<Example name="select-disabled" />
+
+## Invalid
+
+Add the `data-invalid` attribute to the `Field` component and the
+`aria-invalid` attribute to the `SelectTrigger` component to show an error
+state.
+
+<Example name="select-invalid" />
+
+## RTL
+
+<Example name="select-rtl" />
+
+## Content mounting
+
+Data Slot's recommended `"lazy"` strategy is the default: closed content is
+retained but detached from the document. Fulldev initializes nested Data Slot
+components inside that retained content too.
+
+Use `mountStrategy="eager"` when an integration needs to query closed content
+through the document. Both strategies include content in server-rendered HTML;
+neither adds a no-JavaScript fallback.
+
+## API Reference
+
+Source: [`src/components/ui/select`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/select)
+
+### Select
+
+| Prop                   | Type                           | Default          |
+| ---------------------- | ------------------------------ | ---------------- |
+| `defaultValue`         | `string`                       |                  |
+| `placeholder`          | `string`                       | `""`             |
+| `disabled`             | `boolean`                      | `false`          |
+| `required`             | `boolean`                      | `false`          |
+| `name`                 | `string`                       |                  |
+| `position`             | `"item-aligned" \| "popper"`   | `"item-aligned"` |
+| `side`                 | `"top" \| "bottom"`            | `"bottom"`       |
+| `align`                | `"start" \| "center" \| "end"` | `"start"`        |
+| `sideOffset`           | `number`                       | `4`              |
+| `alignOffset`          | `number`                       | `0`              |
+| `avoidCollisions`      | `boolean`                      | `true`           |
+| `collisionPadding`     | `number`                       | `8`              |
+| `highlightItemOnHover` | `boolean`                      | `true`           |
+| `lockScroll`           | `boolean`                      | `true`           |
+| `mountStrategy`        | `"lazy" \| "eager"`            | `"lazy"`         |
+
+`SelectContent` takes the placement props too and overrides the root.
+`SelectItem` takes `value`, `disabled`, and `label` (the text shown in the
+trigger when it differs from the item content). `SelectTrigger` takes `size`
+(`"default" \| "sm"`).
+
+The root emits `select:change` with `{ value }` and `select:open-change` with
+`{ open }`. Dispatch `select:set` with `{ value?, open? }` to change it from
+client code. See the
+[Data Slot select docs](https://github.com/bejamas/data-slot/blob/main/packages/select/README.md)
+for keyboard and controller details.

@@ -1,0 +1,184 @@
+---
+import { Badge } from "@/components/ui/badge"
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldLabel,
+  FieldTitle,
+} from "@/components/ui/field"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Toaster } from "@/components/ui/toast"
+
+const deliveryTimes = [
+  {
+    value: "asap",
+    id: "delivery-asap",
+    label: "Standard delivery",
+    description: "25–35 min · Driver assigned now",
+    badge: "Fastest",
+  },
+  {
+    value: "5-00",
+    id: "delivery-5-00",
+    label: "5:00 PM – 5:15 PM",
+    description: "Prep starts at 4:45 PM",
+  },
+  {
+    value: "5-30",
+    id: "delivery-5-30",
+    label: "5:30 PM – 5:45 PM",
+    description: "Good if you're heading home",
+  },
+  {
+    value: "6-00",
+    id: "delivery-6-00",
+    label: "6:00 PM – 6:15 PM",
+    description: "Most popular · High demand",
+  },
+  {
+    value: "6-30",
+    id: "delivery-6-30",
+    label: "6:30 PM – 6:45 PM",
+    description: "Last slot before kitchen closes",
+  },
+]
+---
+
+<Drawer swipeDirection="right" data-drawer-demo data-drawer-responsive>
+  <DrawerTrigger variant="secondary">Open Drawer</DrawerTrigger>
+  <DrawerContent showSwipeHandle>
+    <DrawerHeader>
+      <DrawerTitle>Pick a delivery time</DrawerTitle>
+      <DrawerDescription>
+        We&apos;ll prepare your order as soon as possible.
+      </DrawerDescription>
+    </DrawerHeader>
+    <div class="flex-1 scroll-fade overflow-y-auto p-4">
+      <RadioGroup defaultValue="asap" class="gap-2">
+        {deliveryTimes.map((time) => (
+          <FieldLabel>
+            <Field as="span" orientation="horizontal">
+              <FieldContent as="span">
+                <FieldTitle as="span" class="flex items-center gap-2">
+                  {time.label}
+                  {time.badge ? (
+                    <Badge variant="secondary">{time.badge}</Badge>
+                  ) : null}
+                </FieldTitle>
+                <FieldDescription as="span">
+                  {time.description}
+                </FieldDescription>
+              </FieldContent>
+              <RadioGroupItem
+                value={time.value}
+                id={time.id}
+                data-label={time.label}
+              />
+            </Field>
+          </FieldLabel>
+        ))}
+      </RadioGroup>
+    </div>
+    <DrawerFooter>
+      <DrawerClose class="h-[34px]" data-drawer-demo-confirm>
+        Confirm Delivery Time
+      </DrawerClose>
+      <DrawerClose variant="outline">Cancel</DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+  <Toaster portal />
+</Drawer>
+
+<script>
+  import { createDrawer } from "@data-slot/drawer"
+
+  // Like useIsMobile: a bottom drawer with a swipe handle below 768px.
+  const query = matchMedia("(max-width: 767px)")
+  const triggerOf = (root: HTMLElement) =>
+    [...root.querySelectorAll('[data-slot="drawer-trigger"]')].find(
+      (element) => element.closest('[data-slot="drawer"]') === root
+    )
+  const update = () => {
+    const direction = query.matches ? "down" : "right"
+    const roots = [
+      ...document.querySelectorAll<HTMLElement>("[data-drawer-responsive]"),
+    ]
+    for (const root of roots) {
+      // An open popup lives in the body, outside its root.
+      const popup = document.getElementById(
+        triggerOf(root)?.getAttribute("aria-controls") ?? ""
+      )
+      for (const parent of [root, popup])
+        parent
+          ?.querySelectorAll('[data-slot="drawer-handle"]')
+          .forEach((handle) => handle.toggleAttribute("hidden", !query.matches))
+    }
+    // Data Slot reads the direction when it binds, and restores it when
+    // destroyed, so rebind. Open drawers stay open: nested ones unbind first
+    // and bind last.
+    const stale = roots.filter(
+      (root) => root.dataset.swipeDirection !== direction
+    )
+    const open = stale.map((root) => createDrawer(root).isOpen)
+    for (const root of [...stale].reverse()) createDrawer(root).destroy()
+    stale.forEach((root, index) => {
+      root.dataset.swipeDirection = direction
+      const drawer = createDrawer(root, { open: open[index] })
+      // Reselect the trigger, which gets aria-expanded back.
+      const trigger = triggerOf(root)
+      if (open[index] && trigger?.id) drawer.open(trigger.id)
+    })
+  }
+
+  update()
+  document.addEventListener("astro:page-load", update)
+  query.addEventListener("change", update)
+</script>
+
+<script>
+  const initialize = () => {
+    for (const root of document.querySelectorAll<HTMLElement>(
+      "[data-drawer-demo]"
+    )) {
+      if (root.hasAttribute("data-bound")) continue
+      root.setAttribute("data-bound", "")
+      root.addEventListener("drawer:change", (event) => {
+        const { open, originalEvent } = (event as CustomEvent).detail
+        const target = originalEvent?.target
+        const confirm =
+          target instanceof Element
+            ? target.closest("[data-drawer-demo-confirm]")
+            : null
+        if (open || !confirm) return
+        const selected = confirm
+          .closest('[data-slot="drawer-popup"]')
+          ?.querySelector<HTMLElement>(
+            '[data-slot="radio-group-item"][aria-checked="true"]'
+          )
+        if (!selected) return
+        root.querySelector('[data-slot="toast"]')?.dispatchEvent(
+          new CustomEvent("toast:show", {
+            detail: {
+              title: "Delivery time confirmed",
+              description: selected.dataset.label,
+            },
+          })
+        )
+      })
+    }
+  }
+
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+</script>

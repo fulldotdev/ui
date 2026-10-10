@@ -1,0 +1,56 @@
+---
+import { Button } from "@/components/ui/button"
+import { Toaster } from "@/components/ui/toast"
+---
+
+<div data-toast-promise>
+  <Button variant="outline" data-create-event>
+    Create Event
+  </Button>
+  <Toaster portal />
+</div>
+
+<script>
+  const initialize = () => {
+    for (const root of document.querySelectorAll("[data-toast-promise]")) {
+      if (root.hasAttribute("data-bound")) continue
+      root.setAttribute("data-bound", "")
+      const toaster = root.querySelector('[data-slot="toast"]')
+      const send = (name: string, detail: object) =>
+        toaster?.dispatchEvent(new CustomEvent(name, { detail }))
+      root
+        .querySelector("[data-create-event]")
+        ?.addEventListener("click", async () => {
+          // One toast moves from loading to success or error.
+          const id = `event-${Date.now()}`
+          send("toast:show", {
+            id,
+            title: "Creating event…",
+            type: "loading",
+            duration: 0,
+          })
+          try {
+            const data = await new Promise<{ name: string }>((resolve) => {
+              window.setTimeout(() => resolve({ name: "Event" }), 2000)
+            })
+            send("toast:update", {
+              id,
+              title: `${data.name} created.`,
+              type: "success",
+              duration: 5000,
+            })
+          } catch {
+            send("toast:update", {
+              id,
+              title: "Could not create event.",
+              type: "error",
+              duration: 5000,
+            })
+          }
+        })
+    }
+  }
+
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+</script>

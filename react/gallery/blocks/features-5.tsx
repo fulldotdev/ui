@@ -1,0 +1,50 @@
+import { Features5 } from "@/components/blocks/features-5"
+
+export default function Features5Demo() {
+  return (
+    <>
+      <Features5
+        title="A better way to build"
+        description="Clean, centered feature cards inside a floating section that stands out from the page background."
+        features={[
+          {
+            icon: "zap",
+            title: "Instant builds",
+            description:
+              "Pages compile in milliseconds so you never wait for feedback during development.",
+          },
+          {
+            icon: "palette",
+            title: "Themeable",
+            description:
+              "Switch between color schemes with a single token change. Dark mode included.",
+          },
+          {
+            icon: "lock",
+            title: "Secure defaults",
+            description:
+              "Content Security Policy headers, sanitized output, and no inline scripts.",
+          },
+          {
+            icon: "globe",
+            title: "i18n ready",
+            description:
+              "Built-in support for multi-language content and locale-aware routing.",
+          },
+          {
+            icon: "settings",
+            title: "Configurable",
+            description:
+              "Every component exposes a clean props API so you can adapt it to your needs.",
+          },
+          {
+            icon: "sparkles",
+            title: "Polished UI",
+            description:
+              "Subtle animations, consistent spacing, and refined typography out of the box.",
+          },
+        ]}
+      />
+    </>
+  )
+}

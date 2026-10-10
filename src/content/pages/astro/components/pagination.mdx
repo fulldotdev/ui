@@ -1,0 +1,130 @@
+---
+type: doc
+title: Pagination
+description: Page navigation with previous, next, numbered, and overflow links.
+---
+
+<Example name="pagination-demo" />
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/pagination
+```
+
+## Usage
+
+```ts
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
+```
+
+```astro
+<Pagination>
+  <PaginationContent>
+    <PaginationItem>
+      <PaginationPrevious href="?page=1" />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="?page=2" isActive>
+        2
+      </PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationEllipsis />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationNext href="?page=3" />
+    </PaginationItem>
+  </PaginationContent>
+</Pagination>
+```
+
+Pagination uses normal links, so navigation works without JavaScript.
+`isActive` sets `aria-current="page"`.
+
+## Composition
+
+```text
+Pagination
+└── PaginationContent
+    ├── PaginationItem
+    │   └── PaginationPrevious
+    ├── PaginationItem
+    │   └── PaginationLink
+    ├── PaginationItem
+    │   └── PaginationEllipsis
+    └── PaginationItem
+        └── PaginationNext
+```
+
+## Simple
+
+A simple pagination with only page numbers.
+
+<Example name="pagination-simple" />
+
+## Icons Only
+
+Use just the previous and next links without page numbers, such as for a data
+table with a rows per page selector.
+
+<Example name="pagination-icons-only" />
+
+## Disabled
+
+Pass `disabled` to a link at a boundary. It drops its `href`, leaves the tab
+order and gets `aria-disabled="true"`.
+
+```astro live
+---
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
+---
+
+<Pagination>
+  <PaginationContent>
+    <PaginationItem>
+      <PaginationPrevious disabled />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationNext href="?page=2" />
+    </PaginationItem>
+  </PaginationContent>
+</Pagination>
+```
+
+## RTL
+
+Directional icons mirror inside `dir="rtl"`. Pass `text` to translate the
+previous and next labels.
+
+<Example name="pagination-rtl" />
+
+## API Reference
+
+Source: [`src/components/ui/pagination`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/pagination)
+
+### PaginationLink
+
+| Prop       | Type          | Default  | Description                                          |
+| ---------- | ------------- | -------- | ---------------------------------------------------- |
+| `href`     | `string`      | optional | Link destination.                                    |
+| `isActive` | `boolean`     | `false`  | Marks the current page and uses the outline variant. |
+| `disabled` | `boolean`     | `false`  | Removes navigation and tab focus.                    |
+| `size`     | `Button` size | `"icon"` | Controls link dimensions.                            |
+
+`PaginationPrevious` and `PaginationNext` accept the same link attributes plus
+a `text` prop. All components forward their native element attributes.

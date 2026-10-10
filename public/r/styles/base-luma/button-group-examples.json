@@ -1,0 +1,75 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-group-examples",
+  "title": "Button Group examples",
+  "description": "The examples from the shadcn/ui Button Group docs.",
+  "dependencies": [
+    "@lucide/astro"
+  ],
+  "registryDependencies": [
+    "@fulldev/button",
+    "@fulldev/button-group",
+    "@fulldev/dropdown-menu",
+    "@fulldev/field",
+    "@fulldev/input",
+    "@fulldev/input-group",
+    "@fulldev/popover",
+    "@fulldev/select",
+    "@fulldev/textarea",
+    "@fulldev/tooltip"
+  ],
+  "files": [
+    {
+      "path": "src/components/examples/button-group/button-group-dropdown.astro",
+      "content": "---\nimport CheckIcon from \"@lucide/astro/icons/check\"\nimport ChevronDownIcon from \"@lucide/astro/icons/chevron-down\"\nimport CopyIcon from \"@lucide/astro/icons/copy\"\nimport ShareIcon from \"@lucide/astro/icons/share\"\nimport TrashIcon from \"@lucide/astro/icons/trash\"\nimport AlertTriangleIcon from \"@lucide/astro/icons/triangle-alert\"\nimport UserRoundXIcon from \"@lucide/astro/icons/user-round-x\"\nimport VolumeOffIcon from \"@lucide/astro/icons/volume-off\"\n\nimport { Button, buttonVariants } from \"@/components/ui/button\"\nimport { ButtonGroup } from \"@/components/ui/button-group\"\nimport {\n  DropdownMenu,\n  DropdownMenuContent,\n  DropdownMenuGroup,\n  DropdownMenuItem,\n  DropdownMenuSeparator,\n  DropdownMenuTrigger,\n} from \"@/components/ui/dropdown-menu\"\n---\n\n<ButtonGroup>\n  <Button variant=\"outline\">Follow</Button>\n  <DropdownMenu>\n    <DropdownMenuTrigger\n      class={buttonVariants({\n        variant: \"outline\",\n        class: \"rounded-l-none border-l-0 pl-2!\",\n      })}\n    >\n      <ChevronDownIcon />\n    </DropdownMenuTrigger>\n    <DropdownMenuContent align=\"end\" class=\"w-44\">\n      <DropdownMenuGroup>\n        <DropdownMenuItem>\n          <VolumeOffIcon />\n          Mute Conversation\n        </DropdownMenuItem>\n        <DropdownMenuItem>\n          <CheckIcon />\n          Mark as Read\n        </DropdownMenuItem>\n        <DropdownMenuItem>\n          <AlertTriangleIcon />\n          Report Conversation\n        </DropdownMenuItem>\n        <DropdownMenuItem>\n          <UserRoundXIcon />\n          Block User\n        </DropdownMenuItem>\n        <DropdownMenuItem>\n          <ShareIcon />\n          Share Conversation\n        </DropdownMenuItem>\n        <DropdownMenuItem>\n          <CopyIcon />\n          Copy Conversation\n        </DropdownMenuItem>\n      </DropdownMenuGroup>\n      <DropdownMenuSeparator />\n      <DropdownMenuGroup>\n        <DropdownMenuItem variant=\"destructive\">\n          <TrashIcon />\n          Delete Conversation\n        </DropdownMenuItem>\n      </DropdownMenuGroup>\n    </DropdownMenuContent>\n  </DropdownMenu>\n</ButtonGroup>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/button-group/button-group-input-group.astro",
+      "content": "---\nimport AudioLinesIcon from \"@lucide/astro/icons/audio-lines\"\nimport PlusIcon from \"@lucide/astro/icons/plus\"\n\nimport { Button } from \"@/components/ui/button\"\nimport { ButtonGroup } from \"@/components/ui/button-group\"\nimport {\n  InputGroup,\n  InputGroupAddon,\n  InputGroupButton,\n  InputGroupInput,\n} from \"@/components/ui/input-group\"\nimport {\n  Tooltip,\n  TooltipContent,\n  TooltipTrigger,\n} from \"@/components/ui/tooltip\"\n---\n\n<ButtonGroup class=\"[--radius:9999rem]\" data-voice-input>\n  <ButtonGroup>\n    <Button variant=\"outline\" size=\"icon\">\n      <PlusIcon />\n    </Button>\n  </ButtonGroup>\n  <ButtonGroup>\n    <InputGroup>\n      <InputGroupInput placeholder=\"Send a message...\" />\n      <InputGroupAddon align=\"inline-end\">\n        <Tooltip>\n          <TooltipTrigger as=\"span\" class=\"flex\">\n            <InputGroupButton\n              size=\"icon-xs\"\n              data-active=\"false\"\n              class=\"data-[active=true]:bg-orange-100 data-[active=true]:text-orange-700 dark:data-[active=true]:bg-orange-800 dark:data-[active=true]:text-orange-100\"\n              aria-pressed=\"false\"\n            >\n              <AudioLinesIcon />\n            </InputGroupButton>\n          </TooltipTrigger>\n          <TooltipContent>Voice Mode</TooltipContent>\n        </Tooltip>\n      </InputGroupAddon>\n    </InputGroup>\n  </ButtonGroup>\n</ButtonGroup>\n\n<script>\n  const initialize = () => {\n    for (const root of document.querySelectorAll(\"[data-voice-input]\")) {\n      if (root.hasAttribute(\"data-bound\")) continue\n      root.setAttribute(\"data-bound\", \"\")\n      const input = root.querySelector(\"input\")\n      const button = root.querySelector(\"[aria-pressed]\")\n      button?.addEventListener(\"click\", () => {\n        const enabled = button.getAttribute(\"aria-pressed\") !== \"true\"\n        button.setAttribute(\"aria-pressed\", String(enabled))\n        button.setAttribute(\"data-active\", String(enabled))\n        if (!input) return\n        input.disabled = enabled\n        input.placeholder = enabled\n          ? \"Record and send audio...\"\n          : \"Send a message...\"\n      })\n    }\n  }\n\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n</script>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/button-group/button-group-input.astro",
+      "content": "---\nimport SearchIcon from \"@lucide/astro/icons/search\"\n\nimport { Button } from \"@/components/ui/button\"\nimport { ButtonGroup } from \"@/components/ui/button-group\"\nimport { Input } from \"@/components/ui/input\"\n---\n\n<ButtonGroup>\n  <Input placeholder=\"Search...\" />\n  <Button variant=\"outline\" aria-label=\"Search\">\n    <SearchIcon />\n  </Button>\n</ButtonGroup>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/button-group/button-group-nested.astro",
+      "content": "---\nimport AudioLinesIcon from \"@lucide/astro/icons/audio-lines\"\nimport PlusIcon from \"@lucide/astro/icons/plus\"\n\nimport { Button } from \"@/components/ui/button\"\nimport { ButtonGroup } from \"@/components/ui/button-group\"\nimport {\n  InputGroup,\n  InputGroupAddon,\n  InputGroupInput,\n} from \"@/components/ui/input-group\"\nimport {\n  Tooltip,\n  TooltipContent,\n  TooltipTrigger,\n} from \"@/components/ui/tooltip\"\n---\n\n<ButtonGroup>\n  <ButtonGroup>\n    <Button variant=\"outline\" size=\"icon\">\n      <PlusIcon />\n    </Button>\n  </ButtonGroup>\n  <ButtonGroup>\n    <InputGroup>\n      <InputGroupInput placeholder=\"Send a message...\" />\n      <InputGroupAddon align=\"inline-end\">\n        <Tooltip>\n          <TooltipTrigger as=\"span\" class=\"flex\">\n            <AudioLinesIcon />\n          </TooltipTrigger>\n          <TooltipContent>Voice Mode</TooltipContent>\n        </Tooltip>\n      </InputGroupAddon>\n    </InputGroup>\n  </ButtonGroup>\n</ButtonGroup>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/button-group/button-group-orientation.astro",
+      "content": "---\nimport MinusIcon from \"@lucide/astro/icons/minus\"\nimport PlusIcon from \"@lucide/astro/icons/plus\"\n\nimport { Button } from \"@/components/ui/button\"\nimport { ButtonGroup } from \"@/components/ui/button-group\"\n---\n\n<ButtonGroup orientation=\"vertical\" aria-label=\"Media controls\" class=\"h-fit\">\n  <Button variant=\"outline\" size=\"icon\">\n    <PlusIcon />\n  </Button>\n  <Button variant=\"outline\" size=\"icon\">\n    <MinusIcon />\n  </Button>\n</ButtonGroup>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/button-group/button-group-popover.astro",
+      "content": "---\nimport BotIcon from \"@lucide/astro/icons/bot\"\nimport ChevronDownIcon from \"@lucide/astro/icons/chevron-down\"\n\nimport { Button, buttonVariants } from \"@/components/ui/button\"\nimport { ButtonGroup } from \"@/components/ui/button-group\"\nimport { Field, FieldDescription, FieldLabel } from \"@/components/ui/field\"\nimport {\n  Popover,\n  PopoverContent,\n  PopoverDescription,\n  PopoverHeader,\n  PopoverTitle,\n  PopoverTrigger,\n} from \"@/components/ui/popover\"\nimport { Textarea } from \"@/components/ui/textarea\"\n---\n\n<ButtonGroup>\n  <Button variant=\"outline\">\n    <BotIcon /> Copilot\n  </Button>\n  <Popover>\n    <PopoverTrigger\n      class={buttonVariants({\n        variant: \"outline\",\n        size: \"icon\",\n        class: \"rounded-l-none border-l-0\",\n      })}\n      aria-label=\"Open Popover\"\n    >\n      <ChevronDownIcon />\n    </PopoverTrigger>\n    <PopoverContent align=\"end\" class=\"rounded-xl text-sm\">\n      <PopoverHeader>\n        <PopoverTitle>Start a new task with Copilot</PopoverTitle>\n        <PopoverDescription>\n          Describe your task in natural language.\n        </PopoverDescription>\n      </PopoverHeader>\n      <Field>\n        <FieldLabel for=\"task\" class=\"sr-only\">\n          Task Description\n        </FieldLabel>\n        <Textarea id=\"task\" placeholder=\"I need to...\" class=\"resize-none\" />\n        <FieldDescription>\n          Copilot will open a pull request for review.\n        </FieldDescription>\n      </Field>\n    </PopoverContent>\n  </Popover>\n</ButtonGroup>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/button-group/button-group-select.astro",
+      "content": "---\nimport ArrowRightIcon from \"@lucide/astro/icons/arrow-right\"\n\nimport { Button } from \"@/components/ui/button\"\nimport { ButtonGroup } from \"@/components/ui/button-group\"\nimport { Input } from \"@/components/ui/input\"\nimport {\n  Select,\n  SelectContent,\n  SelectGroup,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from \"@/components/ui/select\"\n\nconst CURRENCIES = [\n  { label: \"US Dollar\", value: \"$\" },\n  { label: \"Euro\", value: \"€\" },\n  { label: \"British Pound\", value: \"£\" },\n]\n---\n\n<ButtonGroup>\n  <ButtonGroup>\n    <Select defaultValue=\"$\">\n      <SelectTrigger class=\"rounded-r-none font-mono\">\n        <SelectValue />\n      </SelectTrigger>\n      <SelectContent position=\"popper\" align=\"start\">\n        <SelectGroup>\n          {CURRENCIES.map((item) => (\n            <SelectItem value={item.value} label={item.value}>\n              {item.value}{\" \"}\n              <span class=\"text-muted-foreground\">{item.label}</span>\n            </SelectItem>\n          ))}\n        </SelectGroup>\n      </SelectContent>\n    </Select>\n    <Input placeholder=\"10.00\" pattern=\"[0-9]*\" />\n  </ButtonGroup>\n  <ButtonGroup>\n    <Button aria-label=\"Send\" size=\"icon\" variant=\"outline\">\n      <ArrowRightIcon />\n    </Button>\n  </ButtonGroup>\n</ButtonGroup>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/button-group/button-group-separator.astro",
+      "content": "---\nimport { Button } from \"@/components/ui/button\"\nimport { ButtonGroup, ButtonGroupSeparator } from \"@/components/ui/button-group\"\n---\n\n<ButtonGroup>\n  <Button variant=\"secondary\" size=\"sm\">\n    Copy\n  </Button>\n  <ButtonGroupSeparator />\n  <Button variant=\"secondary\" size=\"sm\">\n    Paste\n  </Button>\n</ButtonGroup>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/button-group/button-group-size.astro",
+      "content": "---\nimport PlusIcon from \"@lucide/astro/icons/plus\"\n\nimport { Button } from \"@/components/ui/button\"\nimport { ButtonGroup } from \"@/components/ui/button-group\"\n---\n\n<div class=\"flex flex-col items-start gap-8\">\n  <ButtonGroup>\n    <Button variant=\"outline\" size=\"sm\">\n      Small\n    </Button>\n    <Button variant=\"outline\" size=\"sm\">\n      Button\n    </Button>\n    <Button variant=\"outline\" size=\"sm\">\n      Group\n    </Button>\n    <Button variant=\"outline\" size=\"icon-sm\">\n      <PlusIcon />\n    </Button>\n  </ButtonGroup>\n  <ButtonGroup>\n    <Button variant=\"outline\">Default</Button>\n    <Button variant=\"outline\">Button</Button>\n    <Button variant=\"outline\">Group</Button>\n    <Button variant=\"outline\" size=\"icon\">\n      <PlusIcon />\n    </Button>\n  </ButtonGroup>\n  <ButtonGroup>\n    <Button variant=\"outline\" size=\"lg\">\n      Large\n    </Button>\n    <Button variant=\"outline\" size=\"lg\">\n      Button\n    </Button>\n    <Button variant=\"outline\" size=\"lg\">\n      Group\n    </Button>\n    <Button variant=\"outline\" size=\"icon-lg\">\n      <PlusIcon />\n    </Button>\n  </ButtonGroup>\n</div>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/button-group/button-group-split.astro",
+      "content": "---\nimport { Button } from \"@/components/ui/button\"\nimport { ButtonGroup, ButtonGroupSeparator } from \"@/components/ui/button-group\"\n---\n\n<ButtonGroup>\n  <Button variant=\"secondary\">Button</Button>\n  <ButtonGroupSeparator />\n  <Button size=\"icon\" variant=\"secondary\">\n    <svg\n      xmlns=\"http://www.w3.org/2000/svg\"\n      width=\"24\"\n      height=\"24\"\n      viewBox=\"0 0 24 24\"\n      fill=\"none\"\n      stroke=\"currentColor\"\n      stroke-width=\"2\"\n      stroke-linecap=\"round\"\n      stroke-linejoin=\"round\"\n      class=\"tabler-icon tabler-icon-plus\"\n    >\n      <path d=\"M12 5l0 14\"></path>\n      <path d=\"M5 12l14 0\"></path>\n    </svg>\n  </Button>\n</ButtonGroup>\n",
+      "type": "registry:component"
+    }
+  ],
+  "docs": "https://ui.full.dev/astro/components/button-group/",
+  "type": "registry:example"
+}

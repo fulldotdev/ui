@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fulldev UI for React</title>
+    <script>
+      // The preset chosen in the docs (src/lib/preset-store.ts), applied here
+      // too and kept in step when the docs change it.
+      function applyPreset() {
+        let preset
+        try {
+          preset = JSON.parse(
+            localStorage.getItem("fulldev-ui-preset") ?? "null"
+          )
+        } catch {}
+        let style = document.getElementById("fulldev-ui-preset")
+        if (!style) {
+          style = document.createElement("style")
+          style.id = "fulldev-ui-preset"
+          document.head.append(style)
+        }
+        style.textContent = preset?.css ?? ""
+        for (const href of preset?.fonts ?? []) {
+          if (document.querySelector(`link[href="${href}"]`)) continue
+          const link = document.createElement("link")
+          link.rel = "stylesheet"
+          link.href = href
+          document.head.append(link)
+        }
+      }
+      applyPreset()
+      addEventListener("storage", (event) => {
+        if (event.key === "fulldev-ui-preset") applyPreset()
+      })
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/gallery/main.tsx"></script>
+  </body>
+</html>

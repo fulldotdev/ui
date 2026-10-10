@@ -1,0 +1,110 @@
+---
+type: doc
+title: Dialog
+description: A window overlaid on either the primary window or another dialog window, rendering the content underneath inert.
+---
+
+<Example name="dialog-demo" />
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/dialog
+```
+
+## Usage
+
+```ts
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+```
+
+```astro
+<Dialog>
+  <DialogTrigger>Open</DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Are you absolutely sure?</DialogTitle>
+      <DialogDescription>
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+      </DialogDescription>
+    </DialogHeader>
+  </DialogContent>
+</Dialog>
+```
+
+`DialogTrigger` and `DialogClose` render a `Button` and take its props, such as
+`variant="outline"`. `DialogContent` moves to `document.body` while open, so a
+`form` around the whole dialog does not contain the content: put the `form`
+inside `DialogContent` when the dialog submits.
+
+## Composition
+
+```text
+Dialog
+├── DialogTrigger
+└── DialogContent
+    ├── DialogHeader
+    │   ├── DialogTitle
+    │   └── DialogDescription
+    └── DialogFooter
+```
+
+## Custom Close Button
+
+Replace the default close control with your own `DialogClose`.
+
+<Example name="dialog-close-button" />
+
+## No Close Button
+
+Use `showCloseButton={false}` to hide the close button.
+
+<Example name="dialog-no-close-button" />
+
+## Sticky Footer
+
+Keep actions visible while the content scrolls.
+
+<Example name="dialog-sticky-footer" />
+
+## Scrollable Content
+
+Long content can scroll while the header stays in view.
+
+<Example name="dialog-scrollable-content" />
+
+## RTL
+
+<Example name="dialog-rtl" />
+
+## API Reference
+
+Source: [`src/components/ui/dialog`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/dialog)
+
+| `Dialog` prop         | Type      | Default |
+| --------------------- | --------- | ------- |
+| `defaultOpen`         | `boolean` | `false` |
+| `closeOnClickOutside` | `boolean` | `true`  |
+| `closeOnEscape`       | `boolean` | `true`  |
+| `lockScroll`          | `boolean` | `true`  |
+| `alertDialog`         | `boolean` | `false` |
+
+| `DialogContent` prop | Type      | Default |
+| -------------------- | --------- | ------- |
+| `showCloseButton`    | `boolean` | `true`  |
+
+Open or close a dialog from a script with
+`root.dispatchEvent(new CustomEvent("dialog:set", { detail: { open: true } }))`
+and listen for `dialog:change`. See the
+[Data Slot docs](https://github.com/bejamas/data-slot/blob/main/packages/dialog/README.md)
+for all events and data attributes.

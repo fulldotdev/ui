@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "banner",
+  "title": "Banner",
+  "description": "A full-width container for important messages or announcements.",
+  "dependencies": [
+    "class-variance-authority",
+    "cn",
+    "lucide-react"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/banner.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { cn } from \"cn\"\nimport { XIcon } from \"lucide-react\"\n\nconst bannerVariants = cva(\"py-2 text-xs relative flex items-center\", {\n  variants: {\n    variant: {\n      default: \"bg-foreground text-background w-full\",\n      floating:\n        \"my-2 rounded-none border bg-background mx-auto w-[calc(100%-2*var(--gutter,--spacing(4)))] max-w-[calc(var(--container,var(--container-7xl))-2*var(--gutter,--spacing(4)))] overflow-hidden\",\n    },\n  },\n  defaultVariants: {\n    variant: \"default\",\n  },\n})\n\nconst BannerContext = React.createContext<(() => void) | null>(null)\n\n// A closed banner stays closed for the browser session when it has a storage key.\nconst storageToken = (key: string) => `banner:${key}`\nconst subscribe = () => () => {}\n\nfunction Banner({\n  className,\n  variant = \"default\",\n  storageKey,\n  hidden,\n  ...props\n}: React.ComponentProps<\"aside\"> &\n  VariantProps<typeof bannerVariants> & {\n    storageKey?: string\n  }) {\n  const [closed, setClosed] = React.useState(false)\n  // The server renders the banner; the browser hides one closed earlier.\n  const stored = React.useSyncExternalStore(\n    subscribe,\n    () =>\n      storageKey != null &&\n      sessionStorage.getItem(storageToken(storageKey)) === \"hidden\",\n    () => false\n  )\n\n  const close = React.useCallback(() => {\n    setClosed(true)\n    if (storageKey) sessionStorage.setItem(storageToken(storageKey), \"hidden\")\n  }, [storageKey])\n\n  return (\n    <BannerContext.Provider value={close}>\n      <aside\n        data-slot=\"banner\"\n        data-variant={variant}\n        hidden={closed || stored || hidden}\n        className={cn(bannerVariants({ variant }), className)}\n        {...props}\n      />\n    </BannerContext.Provider>\n  )\n}\n\nfunction BannerContainer({\n  className,\n  children,\n  showClose = true,\n  closeLabel = \"Close\",\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  showClose?: boolean\n  closeLabel?: string\n}) {\n  const close = React.useContext(BannerContext)\n  return (\n    <div\n      data-slot=\"banner-container\"\n      className={cn(\n        \"relative mx-auto flex w-full max-w-[var(--container,var(--container-7xl))] gap-4 px-[var(--gutter,--spacing(4))]\",\n        showClose && \"pr-10\",\n        className\n      )}\n      {...props}\n    >\n      {children}\n      {showClose && (\n        <button\n          type=\"button\"\n          data-slot=\"banner-close\"\n          aria-label={closeLabel}\n          onClick={() => close?.()}\n          className=\"rounded-none text-current/65 hover:text-current focus-visible:text-current focus-visible:ring-2 focus-visible:ring-ring/50 absolute top-1/2 right-4 z-20 inline-flex shrink-0 -translate-y-1/2 items-center justify-center transition-colors outline-none disabled:pointer-events-none disabled:opacity-50 in-[[data-variant=floating]]:right-5\"\n        >\n          <XIcon className=\"size-4\" />\n          <span className=\"sr-only\">{closeLabel}</span>\n        </button>\n      )}\n    </div>\n  )\n}\n\nexport { Banner, BannerContainer, bannerVariants }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/react/components/banner/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "hover-card-examples",
+  "title": "Hover Card examples",
+  "description": "The examples from the shadcn/ui Hover Card docs.",
+  "registryDependencies": [
+    "@fulldev/button",
+    "@fulldev/hover-card"
+  ],
+  "files": [
+    {
+      "path": "src/components/examples/hover-card/hover-card-demo.astro",
+      "content": "---\nimport { buttonVariants } from \"@/components/ui/button\"\nimport {\n  HoverCard,\n  HoverCardContent,\n  HoverCardTrigger,\n} from \"@/components/ui/hover-card\"\n---\n\n<HoverCard delay={10} closeDelay={100}>\n  <HoverCardTrigger class={buttonVariants({ variant: \"link\" })}>\n    Hover Here\n  </HoverCardTrigger>\n  <HoverCardContent class=\"flex w-64 flex-col gap-0.5\">\n    <div class=\"font-semibold\">@nextjs</div>\n    <div>The React Framework – created and maintained by @vercel.</div>\n    <div class=\"mt-1 text-xs text-muted-foreground\">Joined December 2021</div>\n  </HoverCardContent>\n</HoverCard>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/hover-card/hover-card-rtl.astro",
+      "content": "---\nimport { buttonVariants } from \"@/components/ui/button\"\nimport {\n  HoverCard,\n  HoverCardContent,\n  HoverCardTrigger,\n} from \"@/components/ui/hover-card\"\n\nconst translations = {\n  en: {\n    dir: \"ltr\",\n    values: {\n      trigger: \"Wireless Headphones\",\n      name: \"Wireless Headphones\",\n      price: \"$99.99\",\n      \"inline-start\": \"Inline Start\",\n      left: \"Left\",\n      top: \"Top\",\n      bottom: \"Bottom\",\n      right: \"Right\",\n      \"inline-end\": \"Inline End\",\n    },\n  },\n  ar: {\n    dir: \"rtl\",\n    values: {\n      trigger: \"سماعات لاسلكية\",\n      name: \"سماعات لاسلكية\",\n      price: \"٩٩.٩٩ $\",\n      \"inline-start\": \"بداية السطر\",\n      left: \"يسار\",\n      top: \"أعلى\",\n      bottom: \"أسفل\",\n      right: \"يمين\",\n      \"inline-end\": \"نهاية السطر\",\n    },\n  },\n  he: {\n    dir: \"rtl\",\n    values: {\n      trigger: \"אוזניות אלחוטיות\",\n      name: \"אוזניות אלחוטיות\",\n      price: \"99.99 $\",\n      \"inline-start\": \"תחילת השורה\",\n      left: \"שמאל\",\n      top: \"למעלה\",\n      bottom: \"למטה\",\n      right: \"ימין\",\n      \"inline-end\": \"סוף השורה\",\n    },\n  },\n} as const\n\nconst physicalSides = [\"left\", \"top\", \"bottom\", \"right\"] as const\nconst logicalSides = [\"inline-start\", \"inline-end\"] as const\n\nconst { dir, values: t } = translations.ar\n\n// HoverCard takes physical sides only: resolve the logical ones for `dir`.\nconst physicalSide = (side: (typeof logicalSides)[number]) =>\n  (side === \"inline-start\") === (dir === \"rtl\") ? \"right\" : \"left\"\n---\n\n<div class=\"grid gap-4\">\n  <div class=\"flex flex-wrap justify-center gap-2\">\n    {physicalSides.map((side) => (\n      <HoverCard delay={10} closeDelay={100}>\n        <HoverCardTrigger class={buttonVariants({ variant: \"outline\" })}>\n          {t[side]}\n        </HoverCardTrigger>\n        <HoverCardContent\n          side={side}\n          class=\"flex w-64 flex-col gap-1\"\n          dir={dir}\n        >\n          <div class=\"font-semibold\">{t.name}</div>\n          <div class=\"text-sm text-muted-foreground\">{t.price}</div>\n        </HoverCardContent>\n      </HoverCard>\n    ))}\n  </div>\n  <div class=\"flex flex-wrap justify-center gap-2\">\n    {logicalSides.map((side) => (\n      <HoverCard delay={10} closeDelay={100}>\n        <HoverCardTrigger class={buttonVariants({ variant: \"outline\" })}>\n          {t[side]}\n        </HoverCardTrigger>\n        <HoverCardContent\n          side={physicalSide(side)}\n          class=\"flex w-64 flex-col gap-1\"\n          dir={dir}\n        >\n          <div class=\"font-semibold\">{t.name}</div>\n          <div class=\"text-sm text-muted-foreground\">{t.price}</div>\n        </HoverCardContent>\n      </HoverCard>\n    ))}\n  </div>\n</div>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/hover-card/hover-card-sides.astro",
+      "content": "---\nimport { buttonVariants } from \"@/components/ui/button\"\nimport {\n  HoverCard,\n  HoverCardContent,\n  HoverCardTrigger,\n} from \"@/components/ui/hover-card\"\n\nconst HOVER_CARD_SIDES = [\"left\", \"top\", \"bottom\", \"right\"] as const\n---\n\n<div class=\"flex flex-wrap justify-center gap-2\">\n  {HOVER_CARD_SIDES.map((side) => (\n    <HoverCard delay={100} closeDelay={100}>\n      <HoverCardTrigger\n        class={buttonVariants({ variant: \"outline\", class: \"capitalize\" })}\n      >\n        {side}\n      </HoverCardTrigger>\n      <HoverCardContent side={side}>\n        <div class=\"flex flex-col gap-1\">\n          <h4 class=\"font-medium\">Hover Card</h4>\n          <p>This hover card appears on the {side} side of the trigger.</p>\n        </div>\n      </HoverCardContent>\n    </HoverCard>\n  ))}\n</div>\n",
+      "type": "registry:component"
+    }
+  ],
+  "docs": "https://ui.full.dev/astro/components/hover-card/",
+  "type": "registry:example"
+}

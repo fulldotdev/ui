@@ -1,0 +1,104 @@
+---
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+
+const tableData = [
+  {
+    id: "1",
+    name: "Sarah Chen",
+    email: "sarah.chen@example.com",
+    role: "Admin",
+  },
+  {
+    id: "2",
+    name: "Marcus Rodriguez",
+    email: "marcus.rodriguez@example.com",
+    role: "User",
+  },
+  {
+    id: "3",
+    name: "Priya Patel",
+    email: "priya.patel@example.com",
+    role: "User",
+  },
+  {
+    id: "4",
+    name: "David Kim",
+    email: "david.kim@example.com",
+    role: "Editor",
+  },
+]
+
+const selectedRows = new Set(["1"])
+---
+
+<Table data-checkbox-table>
+  <TableHeader>
+    <TableRow>
+      <TableHead class="w-8">
+        <Checkbox
+          id="select-all-checkbox"
+          name="select-all-checkbox"
+          checked={selectedRows.size === tableData.length}
+          data-select-all
+        />
+      </TableHead>
+      <TableHead>Name</TableHead>
+      <TableHead>Email</TableHead>
+      <TableHead>Role</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    {tableData.map((row) => (
+      <TableRow data-state={selectedRows.has(row.id) ? "selected" : undefined}>
+        <TableCell>
+          <Checkbox
+            id={`row-${row.id}-checkbox`}
+            name={`row-${row.id}-checkbox`}
+            checked={selectedRows.has(row.id)}
+            data-select-row
+          />
+        </TableCell>
+        <TableCell class="font-medium">{row.name}</TableCell>
+        <TableCell>{row.email}</TableCell>
+        <TableCell>{row.role}</TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+</Table>
+
+<script>
+  const initialize = () => {
+    for (const table of document.querySelectorAll("[data-checkbox-table]")) {
+      if (table.hasAttribute("data-bound")) continue
+      table.setAttribute("data-bound", "")
+      const all = table.querySelector<HTMLInputElement>("[data-select-all]")
+      const rows = [
+        ...table.querySelectorAll<HTMLInputElement>("[data-select-row]"),
+      ]
+      const update = () => {
+        for (const row of rows) {
+          const tr = row.closest("tr")
+          if (row.checked) tr?.setAttribute("data-state", "selected")
+          else tr?.removeAttribute("data-state")
+        }
+        if (all) all.checked = rows.every((row) => row.checked)
+      }
+      all?.addEventListener("change", () => {
+        for (const row of rows) row.checked = all.checked
+        update()
+      })
+      for (const row of rows) row.addEventListener("change", update)
+    }
+  }
+
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+</script>

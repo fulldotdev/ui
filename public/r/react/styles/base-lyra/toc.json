@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toc",
+  "title": "Toc",
+  "description": "Displays a simple table of contents for page sections and subsections.",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/toc.tsx",
+      "content": "import * as React from \"react\"\nimport { mergeProps } from \"@base-ui/react/merge-props\"\nimport { useRender } from \"@base-ui/react/use-render\"\nimport { cn } from \"cn\"\n\nfunction Toc({ className, ...props }: React.ComponentProps<\"nav\">) {\n  return (\n    <nav\n      data-slot=\"toc\"\n      className={cn(\"flex flex-col gap-3\", className)}\n      {...props}\n    />\n  )\n}\n\nfunction TocTitle({\n  className,\n  render,\n  ...props\n}: useRender.ComponentProps<\"p\">) {\n  return useRender({\n    defaultTagName: \"p\",\n    props: mergeProps<\"p\">({ className: cn(\"text-xs font-medium\", className) }, props),\n    render,\n    state: {\n      slot: \"toc-title\",\n    },\n  })\n}\n\nfunction TocMenu({ className, ...props }: React.ComponentProps<\"ul\">) {\n  return (\n    <ul\n      data-slot=\"toc-menu\"\n      className={cn(\"flex flex-col gap-1\", className)}\n      {...props}\n    />\n  )\n}\n\nfunction TocMenuItem({ className, ...props }: React.ComponentProps<\"li\">) {\n  return (\n    <li\n      data-slot=\"toc-menu-item\"\n      className={cn(\"relative\", className)}\n      {...props}\n    />\n  )\n}\n\nfunction TocMenuLink({\n  className,\n  depth = 2,\n  active = false,\n  ...props\n}: React.ComponentProps<\"a\"> & {\n  depth?: number\n  active?: boolean\n}) {\n  return (\n    <a\n      data-slot=\"toc-menu-link\"\n      data-depth={depth}\n      data-active={active ? \"true\" : undefined}\n      aria-current={active ? \"location\" : undefined}\n      className={cn(\n        \"text-xs leading-6 block text-muted-foreground transition-colors hover:text-foreground data-[active=true]:text-foreground\",\n        depth === 3 && \"ps-4\",\n        depth >= 4 && \"ps-8\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nexport { Toc, TocMenu, TocMenuItem, TocMenuLink, TocTitle }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/react/components/toc/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

@@ -1,27 +1,52 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "entry": [
-    // The registry publishes these; sites import a component through its index.
-    "src/components/ui/*/index.ts",
-    "src/components/blocks/*.astro",
-    "src/lib/utils.ts",
-    // The page route loads layouts through import.meta.glob.
-    "src/layouts/*.astro",
-    // Docs pages, loaded by the content collection, import the examples.
-    "src/content/**/*.mdx",
-    // astro.config.ts passes this to astro-live-code by path.
-    "src/components/live-code.astro",
-    // Read by the html-validate CLI in the build.
-    "html-validate.config.mjs",
-  ],
-  // Read as text by src/lib/styles.ts and the registry scripts.
-  "ignoreFiles": ["registry/styles/**/*.css"],
-  "ignoreIssues": {
-    // Part of the installed price component, shipped unchanged.
-    "src/components/ui/price/format-price-value.ts": ["exports"],
+  "workspaces": {
+    ".": {
+      "entry": [
+        // The registry publishes these; sites import a component through its index.
+        "src/components/ui/*/index.ts",
+        "src/components/blocks/*.astro",
+        "src/lib/utils.ts",
+        // The page route loads layouts through import.meta.glob.
+        "src/layouts/*.astro",
+        // Example files install from the registry; the docs load them through
+        // import.meta.glob.
+        "src/components/examples/*/*.astro",
+        // Docs pages, loaded by the content collection, import the examples.
+        "src/content/**/*.mdx",
+        // astro.config.ts passes this to astro-live-code by path.
+        "src/components/live-code.astro",
+        // Read by the html-validate CLI in the build.
+        "html-validate.config.mjs",
+      ],
+      // Read as text by src/lib/styles.ts and the registry scripts.
+      "ignoreFiles": ["registry/styles/**/*.css"],
+      "ignoreIssues": {
+        // Part of the installed price component, shipped unchanged.
+        "src/components/ui/price/format-price-value.ts": ["exports"],
+      },
+      "ignoreDependencies": [
+        // Read from node_modules by the Icon component.
+        "lucide-static",
+      ],
+    },
+    "react": {
+      "entry": [
+        // The React registry publishes these as installable files.
+        "src/components/ui/*.tsx",
+        "src/components/blocks/*.tsx",
+        "src/components/examples/*/*.tsx",
+        "src/hooks/*.{ts,tsx}",
+        "src/lib/*.ts",
+        // The gallery loads its demos through import.meta.glob.
+        "gallery/ui/*.tsx",
+        "gallery/blocks/*.tsx",
+      ],
+      "ignoreIssues": {
+        // shadcn/ui docs helpers that example items install, shipped unchanged.
+        "src/components/language-selector.tsx": ["exports", "types"],
+        "src/components/message-animated.tsx": ["types"],
+      },
+    },
   },
-  "ignoreDependencies": [
-    // Read from node_modules by the Icon component.
-    "lucide-static",
-  ],
 }

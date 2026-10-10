@@ -10,17 +10,17 @@
   "files": [
     {
       "path": "src/components/ui/field/field.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & VariantProps<typeof variants>\n\nconst variants = cva(\"data-[invalid=true]:text-destructive gap-2 group/field flex w-full\", {\n  variants: {\n    orientation: {\n      vertical:\n        \"flex-col [&>.sr-only]:w-auto [&>:not([role=checkbox]):not([role=radio])]:w-full\",\n      horizontal:\n        \"flex-row items-center has-[>[data-slot=field-content]]:items-start *:data-[slot=field-label]:flex-auto has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px\",\n      responsive:\n        \"flex-col @md/field-group:flex-row @md/field-group:items-center @md/field-group:has-[>[data-slot=field-content]]:items-start @md/field-group:*:data-[slot=field-label]:flex-auto [&>.sr-only]:w-auto [&>:not([role=checkbox]):not([role=radio])]:w-full @md/field-group:[&>:not([role=checkbox]):not([role=radio])]:w-auto @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px\",\n    },\n  },\n  defaultVariants: {\n    orientation: \"vertical\",\n  },\n})\n\nconst { class: className, orientation = \"vertical\", ...props } = Astro.props\n---\n\n<div\n  role=\"group\"\n  data-slot=\"field\"\n  data-orientation={orientation}\n  class={cn(variants({ orientation }), className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> &\n  VariantProps<typeof variants> & {\n    as?: \"div\" | \"span\"\n  }\n\nconst variants = cva(\"data-[invalid=true]:text-destructive gap-2 group/field flex w-full\", {\n  variants: {\n    orientation: {\n      vertical:\n        \"flex-col [&>.sr-only]:w-auto [&>:not([role=checkbox]):not([role=radio])]:w-full\",\n      horizontal:\n        \"flex-row items-center has-[>[data-slot=field-content]]:items-start *:data-[slot=field-label]:flex-auto has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px\",\n      responsive:\n        \"flex-col @md/field-group:flex-row @md/field-group:items-center @md/field-group:has-[>[data-slot=field-content]]:items-start @md/field-group:*:data-[slot=field-label]:flex-auto [&>.sr-only]:w-auto [&>:not([role=checkbox]):not([role=radio])]:w-full @md/field-group:[&>:not([role=checkbox]):not([role=radio])]:w-auto @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px\",\n    },\n  },\n  defaultVariants: {\n    orientation: \"vertical\",\n  },\n})\n\nconst {\n  as: Tag = \"div\",\n  class: className,\n  orientation = \"vertical\",\n  ...props\n} = Astro.props\n---\n\n<Tag\n  role=\"group\"\n  data-slot=\"field\"\n  data-orientation={orientation}\n  class={cn(variants({ orientation }), className)}\n  {...props}\n>\n  <slot />\n</Tag>\n",
       "type": "registry:ui"
     },
     {
       "path": "src/components/ui/field/field-content.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"field-content\"\n  class={cn(\n    \"gap-0.5 group/field-content flex flex-1 flex-col leading-snug\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  as?: \"div\" | \"span\"\n}\n\nconst { as: Tag = \"div\", class: className, ...props } = Astro.props\n---\n\n<Tag\n  data-slot=\"field-content\"\n  class={cn(\n    \"gap-0.5 group/field-content flex flex-1 flex-col leading-snug\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</Tag>\n",
       "type": "registry:ui"
     },
     {
       "path": "src/components/ui/field/field-description.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"p\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<p\n  data-slot=\"field-description\"\n  class={cn(\n    \"text-muted-foreground text-left text-xs/relaxed [[data-variant=legend]+&]:-mt-1.5 leading-normal font-normal group-has-data-horizontal/field:text-balance\",\n    \"last:mt-0 nth-last-2:-mt-1\",\n    \"[&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</p>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"p\"> & {\n  as?: \"p\" | \"span\"\n}\n\nconst { as: Tag = \"p\", class: className, ...props } = Astro.props\n---\n\n<Tag\n  data-slot=\"field-description\"\n  class={cn(\n    \"text-muted-foreground text-left text-xs/relaxed [[data-variant=legend]+&]:-mt-1.5 leading-normal font-normal group-has-data-horizontal/field:text-balance\",\n    \"last:mt-0 nth-last-2:-mt-1\",\n    \"[&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</Tag>\n",
       "type": "registry:ui"
     },
     {
@@ -30,7 +30,7 @@
     },
     {
       "path": "src/components/ui/field/field-group.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"field-group\"\n  class={cn(\n    \"gap-4 data-[slot=checkbox-group]:gap-3 *:data-[slot=field-group]:gap-4 group/field-group @container/field-group flex w-full flex-col\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst {\n  class: className,\n  \"data-slot\": dataSlot = \"field-group\",\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot={dataSlot}\n  class={cn(\n    \"gap-4 data-[slot=checkbox-group]:gap-3 *:data-[slot=field-group]:gap-4 group/field-group @container/field-group flex w-full flex-col\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n",
       "type": "registry:ui"
     },
     {
@@ -50,12 +50,12 @@
     },
     {
       "path": "src/components/ui/field/field-set.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"fieldset\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<fieldset\n  data-slot=\"field-set\"\n  class={cn(\"gap-4 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3 flex flex-col\", className)}\n  {...props}\n>\n  <slot />\n</fieldset>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"fieldset\"> & {\n  as?: \"fieldset\" | \"div\"\n}\n\nconst { as: Tag = \"fieldset\", class: className, ...props } = Astro.props\n---\n\n<Tag\n  data-slot=\"field-set\"\n  class={cn(\"gap-4 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3 flex flex-col\", className)}\n  {...props}\n>\n  <slot />\n</Tag>\n",
       "type": "registry:ui"
     },
     {
       "path": "src/components/ui/field/field-title.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\n\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"field-label\"\n  class={cn(\"gap-2 text-xs/relaxed font-medium group-data-[disabled=true]/field:opacity-50 flex w-fit items-center\", className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  as?: \"div\" | \"span\"\n}\n\nconst { as: Tag = \"div\", class: className, ...props } = Astro.props\n---\n\n<Tag\n  data-slot=\"field-label\"\n  class={cn(\"gap-2 text-xs/relaxed font-medium group-data-[disabled=true]/field:opacity-50 flex w-fit items-center\", className)}\n  {...props}\n>\n  <slot />\n</Tag>\n",
       "type": "registry:ui"
     },
     {
@@ -64,7 +64,7 @@
       "type": "registry:ui"
     }
   ],
-  "docs": "https://ui.full.dev/components/field/",
+  "docs": "https://ui.full.dev/astro/components/field/",
   "categories": [
     "ui"
   ],

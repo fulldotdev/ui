@@ -1,0 +1,70 @@
+---
+// Docs only: switch between the Astro and React editions of the current page.
+// The URL decides the edition; the links keep the query and fragment.
+import ChevronsUpDown from "@lucide/astro/icons/chevrons-up-down"
+import AstroLogo from "simple-icons/icons/astro.svg"
+import ReactLogo from "simple-icons/icons/react.svg"
+
+import { frameworkLabels, frameworks, type Framework } from "@/lib/pages"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+type Props = {
+  current: Framework
+  hrefs: Record<Framework, string>
+}
+
+const { current, hrefs } = Astro.props
+const logos = { astro: AstroLogo, react: ReactLogo }
+const CurrentLogo = logos[current]
+---
+
+<DropdownMenu>
+  <DropdownMenuTrigger
+    aria-label={`Framework: ${frameworkLabels[current]}`}
+    class="hover:bg-sidebar-accent focus-visible:ring-ring/50 flex h-9 w-full items-center gap-2 rounded-md border px-2 text-sm font-medium focus-visible:ring-2 focus-visible:outline-none"
+  >
+    <CurrentLogo class="size-4" fill="currentColor" aria-hidden="true" />
+    {frameworkLabels[current]}
+    <ChevronsUpDown class="text-muted-foreground ml-auto size-4" />
+  </DropdownMenuTrigger>
+  <DropdownMenuContent side="bottom" align="start" class="min-w-48">
+    <DropdownMenuGroup>
+      {frameworks.map((framework) => {
+        const Logo = logos[framework]
+        return (
+          <DropdownMenuItem
+            href={hrefs[framework]}
+            data-framework-link
+            aria-current={framework === current ? "page" : undefined}
+          >
+            <Logo class="size-4" fill="currentColor" aria-hidden="true" />
+            {frameworkLabels[framework]}
+          </DropdownMenuItem>
+        )
+      })}
+    </DropdownMenuGroup>
+  </DropdownMenuContent>
+</DropdownMenu>
+
+<script>
+  // Carry the query and heading over to the other edition, except the note
+  // about a missing page. A heading the other page lacks leaves it at the top.
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return
+    const link = event.target.closest("a[data-framework-link]")
+    if (!(link instanceof HTMLAnchorElement)) return
+    const target = new URL(link.href)
+    const query = new URLSearchParams(location.search)
+    query.delete("missing")
+    target.searchParams.forEach((value, key) => query.set(key, value))
+    target.search = query.toString()
+    if (!target.searchParams.has("missing")) target.hash = location.hash
+    link.href = target.href
+  })
+</script>

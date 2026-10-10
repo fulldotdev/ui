@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "logo",
+  "title": "Logo",
+  "description": "A component for displaying a brand logo.",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/logo.tsx",
+      "content": "import * as React from \"react\"\nimport { mergeProps } from \"@base-ui/react/merge-props\"\nimport { useRender } from \"@base-ui/react/use-render\"\nimport { cn } from \"cn\"\n\nfunction Logo({ className, render, ...props }: useRender.ComponentProps<\"a\">) {\n  return useRender({\n    // A logo with a destination is a link, otherwise a plain container.\n    defaultTagName: props.href == null ? \"div\" : \"a\",\n    props: mergeProps<\"a\">(\n      {\n        className: cn(\n          \"text-sm font-semibold flex h-10 items-center justify-start gap-2 whitespace-nowrap\",\n          className\n        ),\n      },\n      props\n    ),\n    render,\n    state: {\n      slot: \"logo\",\n    },\n  })\n}\n\nfunction LogoImage({\n  className,\n  src,\n  srcLight,\n  srcDark,\n  alt = \"\",\n  ...props\n}: React.ComponentProps<\"img\"> & {\n  srcLight?: string\n  srcDark?: string\n}) {\n  const classes = \"h-6 w-auto shrink-0 object-contain\"\n  if (srcLight && srcDark) {\n    return (\n      <>\n        <img\n          data-slot=\"logo-image\"\n          src={srcLight}\n          alt={alt}\n          className={cn(classes, \"dark:hidden\", className)}\n          {...props}\n        />\n        <img\n          data-slot=\"logo-image\"\n          src={srcDark}\n          alt={alt}\n          className={cn(classes, \"hidden dark:block\", className)}\n          {...props}\n        />\n      </>\n    )\n  }\n  if (!src) return null\n  return (\n    <img\n      data-slot=\"logo-image\"\n      src={src}\n      alt={alt}\n      className={cn(classes, className)}\n      {...props}\n    />\n  )\n}\n\nfunction LogoText({ className, ...props }: React.ComponentProps<\"span\">) {\n  return (\n    <span\n      data-slot=\"logo-text\"\n      className={cn(\"text-lg\", className)}\n      {...props}\n    />\n  )\n}\n\nexport { Logo, LogoImage, LogoText }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/react/components/logo/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

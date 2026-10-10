@@ -1,0 +1,141 @@
+---
+type: doc
+title: Command
+description: Command menu for search and quick actions.
+---
+
+<Example name="command-demo" />
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/command
+```
+
+## Usage
+
+```ts
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "@/components/ui/command"
+```
+
+```astro
+<Command class="max-w-sm rounded-lg border">
+  <CommandInput placeholder="Type a command or search..." />
+  <CommandList>
+    <CommandEmpty>No results found.</CommandEmpty>
+    <CommandGroup heading="Suggestions">
+      <CommandItem>Calendar</CommandItem>
+      <CommandItem>Search Emoji</CommandItem>
+      <CommandItem>Calculator</CommandItem>
+    </CommandGroup>
+    <CommandSeparator />
+    <CommandGroup heading="Settings">
+      <CommandItem>Profile</CommandItem>
+      <CommandItem>Billing</CommandItem>
+      <CommandItem>Settings</CommandItem>
+    </CommandGroup>
+  </CommandList>
+</Command>
+```
+
+Filtering, keyboard navigation and selection run on Data Slot. A `CommandItem`
+with `href` renders a link that Enter follows.
+
+## Composition
+
+```text
+Command
+├── CommandInput
+└── CommandList
+    ├── CommandEmpty
+    ├── CommandGroup
+    │   ├── CommandItem
+    │   └── CommandItem
+    ├── CommandSeparator
+    └── CommandGroup
+        ├── CommandItem
+        └── CommandItem
+```
+
+## Command Dialog
+
+`CommandDialog` includes its own `Dialog` root. Put a `DialogTrigger` in its
+`trigger` slot; wrapping it in another `Dialog` creates an outer root with no
+content, which Data Slot rejects. Focus starts in the search field, the first
+focusable element while `showCloseButton` is `false` (the default).
+
+```astro
+<CommandDialog>
+  <DialogTrigger slot="trigger" variant="outline">
+    Open Menu
+  </DialogTrigger>
+  <Command>
+    <CommandInput placeholder="Type a command or search..." />
+    <CommandList>...</CommandList>
+  </Command>
+</CommandDialog>
+```
+
+## Basic
+
+A simple command menu in a dialog.
+
+<Example name="command-basic" />
+
+## Shortcuts
+
+<Example name="command-shortcuts" />
+
+## Groups
+
+A command menu with groups, icons and separators.
+
+<Example name="command-groups" />
+
+## Scrollable
+
+Scrollable command menu with multiple items.
+
+<Example name="command-scrollable" />
+
+## RTL
+
+<Example name="command-rtl" />
+
+## API Reference
+
+Source: [`src/components/ui/command`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/command)
+
+| `Command` prop            | Type      | Description                             |
+| ------------------------- | --------- | --------------------------------------- |
+| `label`                   | `string`  | Accessible label                        |
+| `defaultValue`            | `string`  | Initially selected item value           |
+| `defaultSearch`           | `string`  | Initial search text                     |
+| `shouldFilter`            | `boolean` | Set `false` to filter items yourself    |
+| `loop`                    | `boolean` | Wrap keyboard navigation                |
+| `disablePointerSelection` | `boolean` | Do not select items on hover            |
+| `vimBindings`             | `boolean` | Ctrl+J/K/N/P navigation (on by default) |
+
+| `CommandItem` prop | Type                 | Description                      |
+| ------------------ | -------------------- | -------------------------------- |
+| `value`            | `string`             | Value used for filtering         |
+| `keywords`         | `string \| string[]` | Extra search terms               |
+| `disabled`         | `boolean`            | Not selectable                   |
+| `href`             | `string`             | Render a link                    |
+| `forceMount`       | `boolean`            | Always visible, even if filtered |
+
+`CommandGroup` takes `heading`, `value` and `forceMount`. `CommandDialog` takes
+the `Dialog` props plus `title`, `description` (screen reader only),
+`contentClass` and `showCloseButton` (default `false`). See the
+[Data Slot docs](https://github.com/bejamas/data-slot/blob/main/packages/command/README.md)
+for events.

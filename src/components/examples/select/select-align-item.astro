@@ -1,0 +1,83 @@
+---
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+
+const items = [
+  { label: "Select a fruit", value: null },
+  { label: "Apple", value: "apple" },
+  { label: "Banana", value: "banana" },
+  { label: "Blueberry", value: "blueberry" },
+  { label: "Grapes", value: "grapes" },
+  { label: "Pineapple", value: "pineapple" },
+]
+---
+
+<FieldGroup class="w-full max-w-xs" data-select-align-item>
+  <Field orientation="horizontal">
+    <FieldContent>
+      <FieldLabel for="align-item">Align Item</FieldLabel>
+      <FieldDescription>
+        Toggle to align the item with the trigger.
+      </FieldDescription>
+    </FieldContent>
+    <Switch id="align-item" defaultChecked />
+  </Field>
+  <Field>
+    <Select placeholder="Select a fruit" defaultValue="banana">
+      <SelectTrigger>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {items.map((item) => (
+            <SelectItem value={item.value ?? ""}>{item.label}</SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+  </Field>
+</FieldGroup>
+
+<script>
+  import { createSelect } from "@data-slot/select"
+
+  // Data Slot reads the position when it binds, so rebind on a toggle.
+  const initialize = () => {
+    for (const root of document.querySelectorAll("[data-select-align-item]")) {
+      if (root.hasAttribute("data-bound")) continue
+      root.setAttribute("data-bound", "")
+      const select = root.querySelector('[data-slot="select"]')
+      root
+        .querySelector('[data-slot="switch"]')
+        ?.addEventListener("switch:change", (event) => {
+          if (!select) return
+          const { checked } = (event as CustomEvent<{ checked: boolean }>)
+            .detail
+          const current = createSelect(select)
+          const value = current.value ?? undefined
+          current.destroy()
+          createSelect(select, {
+            defaultValue: value,
+            position: checked ? "item-aligned" : "popper",
+          })
+        })
+    }
+  }
+
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+</script>

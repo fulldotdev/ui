@@ -44,9 +44,17 @@ const resolvedStyle = [
   <slot />
   <script is:inline>
     ;(() => {
+      // Only the parts of this provider, not of a sidebar nested inside it.
+      const owned = (provider, selector) =>
+        [...provider.querySelectorAll(selector)].filter(
+          (element) =>
+            element.closest("[data-slot='sidebar-wrapper']") === provider
+        )
+
       window.__fulldevSyncSidebarProvider ??= (provider, open) => {
         const state = open ? "expanded" : "collapsed"
-        const sidebar = provider.querySelector(
+        const [sidebar] = owned(
+          provider,
           "[data-slot='sidebar']:not([data-mobile='true'])"
         )
         const collapsible = sidebar?.dataset.sidebarCollapsible ?? "offcanvas"
@@ -60,46 +68,55 @@ const resolvedStyle = [
             collapsible === "none" ? "none" : open ? "" : collapsible
         }
 
-        provider
-          .querySelectorAll("[data-sidebar='trigger'], [data-sidebar='rail']")
-          .forEach((control) => {
-            control.setAttribute("aria-expanded", String(open))
-          })
+        owned(
+          provider,
+          "[data-sidebar='trigger'], [data-sidebar='rail']"
+        ).forEach((control) => {
+          control.setAttribute("aria-expanded", String(open))
+        })
 
-        provider
-          .querySelectorAll("[data-slot='tooltip']")
-          .forEach((tooltip) => {
-            if (
-              state !== "collapsed" &&
-              tooltip.querySelector("[data-sidebar='menu-button']")
-            ) {
-              tooltip.dispatchEvent(
-                new CustomEvent("tooltip:set", { detail: { open: false } })
-              )
-            }
-          })
+        owned(provider, "[data-slot='tooltip']").forEach((tooltip) => {
+          if (
+            state !== "collapsed" &&
+            tooltip.querySelector("[data-sidebar='menu-button']")
+          ) {
+            tooltip.dispatchEvent(
+              new CustomEvent("tooltip:set", { detail: { open: false } })
+            )
+          }
+        })
+      }
+
+      // A sidebar inside a page that has one, such as an example, keeps its
+      // state out of the shared cookie.
+      window.__fulldevInitSidebarProvider ??= (provider) => {
+        const controlledOpen = provider.dataset.open
+        const nested = provider.parentElement?.closest(
+          "[data-slot='sidebar-wrapper']"
+        )
+        const cookieValue = nested
+          ? undefined
+          : document.cookie
+              .split("; ")
+              .find((entry) => entry.startsWith("sidebar_state="))
+              ?.slice("sidebar_state=".length)
+
+        const isOpen =
+          controlledOpen === "true" || controlledOpen === "false"
+            ? controlledOpen === "true"
+            : cookieValue === "true" || cookieValue === "false"
+              ? cookieValue === "true"
+              : provider.dataset.defaultOpen !== "false"
+
+        provider.dataset.openMobile = "false"
+        window.__fulldevSyncSidebarProvider(provider, isOpen)
       }
 
       const provider = document.currentScript?.closest(
         "[data-slot='sidebar-wrapper']"
       )
-      if (!(provider instanceof HTMLElement)) return
-
-      const controlledOpen = provider.dataset.open
-      const cookieValue = document.cookie
-        .split("; ")
-        .find((entry) => entry.startsWith("sidebar_state="))
-        ?.slice("sidebar_state=".length)
-
-      const isOpen =
-        controlledOpen === "true" || controlledOpen === "false"
-          ? controlledOpen === "true"
-          : cookieValue === "true" || cookieValue === "false"
-            ? cookieValue === "true"
-            : provider.dataset.defaultOpen !== "false"
-
-      provider.dataset.openMobile = "false"
-      window.__fulldevSyncSidebarProvider(provider, isOpen)
+      if (provider instanceof HTMLElement)
+        window.__fulldevInitSidebarProvider(provider)
     })()
   </script>
 </div>
@@ -109,6 +126,12 @@ const resolvedStyle = [
     const scrollTop = Number(sessionStorage.getItem("sidebar_scroll") || 0)
 
     document.querySelectorAll("[data-sidebar='content']").forEach((content) => {
+      if (
+        content.closest(
+          "[data-slot='sidebar-wrapper'] [data-slot='sidebar-wrapper']"
+        )
+      )
+        return
       content.scrollTop = scrollTop
     })
   })()
@@ -118,6 +141,14 @@ const resolvedStyle = [
   ;(() => {
     if (window.__fulldevSidebarInitialized) return
     window.__fulldevSidebarInitialized = true
+
+    // Markup added without running its inline script, such as a swapped
+    // preview, initializes here.
+    document.addEventListener("astro:page-load", () => {
+      document
+        .querySelectorAll("[data-slot='sidebar-wrapper']:not([data-state])")
+        .forEach((provider) => window.__fulldevInitSidebarProvider?.(provider))
+    })
 
     const SIDEBAR_COOKIE_NAME = "sidebar_state"
     const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -135,7 +166,8 @@ const resolvedStyle = [
       }
 
       const open = provider.dataset.open === "false"
-      document.cookie = `${SIDEBAR_COOKIE_NAME}=${open}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+      if (!provider.parentElement?.closest("[data-slot='sidebar-wrapper']"))
+        document.cookie = `${SIDEBAR_COOKIE_NAME}=${open}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
       window.__fulldevSyncSidebarProvider?.(provider, open)
     }
 
@@ -204,7 +236,12 @@ const resolvedStyle = [
     document.addEventListener(
       "scroll",
       (event) => {
-        if (event.target?.dataset?.sidebar === "content") {
+        if (
+          event.target?.dataset?.sidebar === "content" &&
+          !event.target.closest(
+            "[data-slot='sidebar-wrapper'] [data-slot='sidebar-wrapper']"
+          )
+        ) {
           sessionStorage.setItem("sidebar_scroll", event.target.scrollTop)
         }
       },

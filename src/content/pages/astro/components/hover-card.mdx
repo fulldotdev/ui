@@ -1,0 +1,127 @@
+---
+type: doc
+title: Hover Card
+description: For sighted users to preview content available behind a link.
+---
+
+<Example name="hover-card-demo" />
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/hover-card
+```
+
+## Usage
+
+```ts
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card"
+```
+
+```astro
+<HoverCard>
+  <HoverCardTrigger>Hover</HoverCardTrigger>
+  <HoverCardContent>
+    The React Framework – created and maintained by @vercel.
+  </HoverCardContent>
+</HoverCard>
+```
+
+`HoverCardTrigger` renders a `button`, or an `a` with `href`. Style it as a
+button with `buttonVariants`, such as
+`class={buttonVariants({ variant: "link" })}`.
+
+## Composition
+
+```text
+HoverCard
+├── HoverCardTrigger
+└── HoverCardContent
+```
+
+## Trigger Delays
+
+Set `delay` and `closeDelay` (in ms) on `HoverCard`, not on the trigger.
+
+```astro
+<HoverCard delay={100} closeDelay={200}>
+  <HoverCardTrigger>Hover</HoverCardTrigger>
+  <HoverCardContent>Content</HoverCardContent>
+</HoverCard>
+```
+
+## Positioning
+
+Use the `side` and `align` props on `HoverCardContent` to control placement.
+
+```astro
+<HoverCard>
+  <HoverCardTrigger>Hover</HoverCardTrigger>
+  <HoverCardContent side="top" align="start">
+    Content
+  </HoverCardContent>
+</HoverCard>
+```
+
+## Basic
+
+<Example name="hover-card-demo" />
+
+## Sides
+
+<Example name="hover-card-sides" />
+
+## RTL
+
+`side` takes physical sides only (`top`, `right`, `bottom`, `left`), so the
+example resolves `inline-start` and `inline-end` from `dir`.
+
+<Example name="hover-card-rtl" />
+
+## Open state
+
+Use `defaultOpen` for an initially open card that still responds to pointer and
+keyboard interactions. The `open` prop enables controlled mode: interactions
+request changes but do not update the state themselves. Dispatch `hover-card:set`
+with `{ detail: { open: false } }` (or `true`) on the root to update it.
+
+## Content mounting
+
+Data Slot's recommended `"lazy"` strategy is the default: closed content is
+retained but detached from the document. Fulldev initializes nested Data Slot
+components inside that retained content too.
+
+Use `mountStrategy="eager"` when an integration needs to query closed content
+through the document. Both strategies include content in server-rendered HTML;
+neither adds a no-JavaScript fallback.
+
+## API Reference
+
+Source: [`src/components/ui/hover-card`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/hover-card)
+
+| `HoverCard` prop      | Type                                     | Default    |
+| --------------------- | ---------------------------------------- | ---------- |
+| `delay`               | `number`                                 | `700`      |
+| `closeDelay`          | `number`                                 | `300`      |
+| `skipDelayDuration`   | `number`                                 | `300`      |
+| `defaultOpen`         | `boolean`                                |            |
+| `open`                | `boolean`                                |            |
+| `side`                | `"top" \| "right" \| "bottom" \| "left"` | `"bottom"` |
+| `align`               | `"start" \| "center" \| "end"`           | `"center"` |
+| `sideOffset`          | `number`                                 | `4`        |
+| `alignOffset`         | `number`                                 | `0`        |
+| `avoidCollisions`     | `boolean`                                | `true`     |
+| `collisionPadding`    | `number`                                 | `8`        |
+| `portal`              | `boolean`                                | `true`     |
+| `closeOnClickOutside` | `boolean`                                | `true`     |
+| `closeOnEscape`       | `boolean`                                | `true`     |
+| `mountStrategy`       | `"lazy" \| "eager"`                      | `"lazy"`   |
+
+`HoverCardContent` takes `side`, `align`, `sideOffset`, `alignOffset`,
+`avoidCollisions` and `collisionPadding` to override the root per content.
+See the [Data Slot docs](https://github.com/bejamas/data-slot/blob/main/packages/hover-card/README.md)
+for events and behavior.

@@ -1,0 +1,67 @@
+---
+import { Button } from "@/components/ui/button"
+import { Toaster } from "@/components/ui/toast"
+
+const toasts = [
+  { label: "Default", description: "Event has been created." },
+  {
+    label: "Success",
+    type: "success",
+    description: "Event has been created.",
+  },
+  {
+    label: "Info",
+    type: "info",
+    description: "Arrive 10 minutes before the event.",
+  },
+  {
+    label: "Warning",
+    type: "warning",
+    description: "The event cannot start before 8:00 AM.",
+  },
+  {
+    label: "Error",
+    type: "error",
+    description: "The event could not be created.",
+  },
+]
+---
+
+<div class="flex flex-wrap gap-2" data-toast-types>
+  {toasts.map((toast) => (
+    <Button
+      variant="outline"
+      data-toast-type={toast.type}
+      data-toast-description={toast.description}
+    >
+      {toast.label}
+    </Button>
+  ))}
+  <Toaster portal />
+</div>
+
+<script>
+  const initialize = () => {
+    for (const root of document.querySelectorAll("[data-toast-types]")) {
+      if (root.hasAttribute("data-bound")) continue
+      root.setAttribute("data-bound", "")
+      const toaster = root.querySelector('[data-slot="toast"]')
+      for (const button of root.querySelectorAll<HTMLElement>(
+        "[data-toast-description]"
+      )) {
+        button.addEventListener("click", () => {
+          const { toastType, toastDescription } = button.dataset
+          // A toast needs a title, so the text shows as the title.
+          toaster?.dispatchEvent(
+            new CustomEvent("toast:show", {
+              detail: { title: toastDescription, type: toastType },
+            })
+          )
+        })
+      }
+    }
+  }
+
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+</script>
