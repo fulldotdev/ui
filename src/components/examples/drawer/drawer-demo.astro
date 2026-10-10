@@ -67,16 +67,18 @@ const deliveryTimes = [
     <div class="flex-1 scroll-fade overflow-y-auto p-4">
       <RadioGroup defaultValue="asap" class="gap-2">
         {deliveryTimes.map((time) => (
-          <FieldLabel for={time.id}>
-            <Field orientation="horizontal">
-              <FieldContent>
-                <FieldTitle class="flex items-center gap-2">
+          <FieldLabel>
+            <Field as="span" orientation="horizontal">
+              <FieldContent as="span">
+                <FieldTitle as="span" class="flex items-center gap-2">
                   {time.label}
                   {time.badge ? (
                     <Badge variant="secondary">{time.badge}</Badge>
                   ) : null}
                 </FieldTitle>
-                <FieldDescription>{time.description}</FieldDescription>
+                <FieldDescription as="span">
+                  {time.description}
+                </FieldDescription>
               </FieldContent>
               <RadioGroupItem
                 value={time.value}
@@ -102,28 +104,27 @@ const deliveryTimes = [
   import { createDrawer } from "@data-slot/drawer"
 
   // Like useIsMobile: a bottom drawer with a swipe handle below 768px.
-  const initializeResponsive = () => {
-    const mobile = matchMedia("(max-width: 767px)").matches
+  const query = matchMedia("(max-width: 767px)")
+  const update = () => {
     for (const root of document.querySelectorAll<HTMLElement>(
       "[data-drawer-responsive]"
     )) {
-      if (root.hasAttribute("data-responsive")) continue
-      root.setAttribute("data-responsive", "")
-      if (!mobile) {
-        root
-          .querySelectorAll('[data-slot="drawer-handle"]')
-          .forEach((handle) => handle.remove())
-        continue
-      }
-      // Data Slot reads the direction when it binds, so rebind.
-      root.dataset.swipeDirection = "down"
+      root
+        .querySelectorAll('[data-slot="drawer-handle"]')
+        .forEach((handle) => handle.toggleAttribute("hidden", !query.matches))
+      const direction = query.matches ? "down" : "right"
+      if (root.dataset.swipeDirection === direction) continue
+      // Data Slot reads the direction when it binds, and restores it when
+      // destroyed, so rebind.
       createDrawer(root).destroy()
+      root.dataset.swipeDirection = direction
       createDrawer(root)
     }
   }
 
-  initializeResponsive()
-  document.addEventListener("astro:page-load", initializeResponsive)
+  update()
+  document.addEventListener("astro:page-load", update)
+  query.addEventListener("change", update)
 </script>
 
 <script>
@@ -135,9 +136,11 @@ const deliveryTimes = [
       root.setAttribute("data-bound", "")
       root.addEventListener("drawer:change", (event) => {
         const { open, originalEvent } = (event as CustomEvent).detail
-        const confirm = (originalEvent?.target as Element | null)?.closest(
-          "[data-drawer-demo-confirm]"
-        )
+        const target = originalEvent?.target
+        const confirm =
+          target instanceof Element
+            ? target.closest("[data-drawer-demo-confirm]")
+            : null
         if (open || !confirm) return
         const selected = confirm
           .closest('[data-slot="drawer-popup"]')

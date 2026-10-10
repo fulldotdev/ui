@@ -25,7 +25,12 @@ test("installed files match the docs rendering in every style", () => {
     for (const item of registry.items) {
       const built = json(`public/r/styles/base-${style}/${item.name}.json`)
       for (const [index, file] of (item.files ?? []).entries()) {
-        const expected = transformSource(read(file.path), maps[style], known)
+        const expected = transformSource(
+          read(file.path),
+          maps[style],
+          known,
+          style
+        )
         assert.equal(
           built.files[index].content,
           expected,

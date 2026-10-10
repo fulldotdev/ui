@@ -48,7 +48,7 @@ for (const style of STYLES) {
     }
     for (const entry of item.files ?? []) {
       if (typeof entry.content !== "string") continue
-      entry.content = transformSource(entry.content, styleMap, known)
+      entry.content = transformSource(entry.content, styleMap, known, style)
       for (const token of new Set(leftovers(entry.content))) {
         errors.push(`${style}: ${entry.path} still has ${token}`)
       }

@@ -93,26 +93,25 @@ const placeholder =
   import { createDrawer } from "@data-slot/drawer"
 
   // Like useIsMobile: bottom drawers with a swipe handle below 768px.
-  const initializeResponsive = () => {
-    const mobile = matchMedia("(max-width: 767px)").matches
+  const query = matchMedia("(max-width: 767px)")
+  const update = () => {
     for (const root of document.querySelectorAll<HTMLElement>(
       "[data-drawer-responsive]"
     )) {
-      if (root.hasAttribute("data-responsive")) continue
-      root.setAttribute("data-responsive", "")
-      if (!mobile) {
-        root
-          .querySelectorAll('[data-slot="drawer-handle"]')
-          .forEach((handle) => handle.remove())
-        continue
-      }
-      // Data Slot reads the direction when it binds, so rebind.
-      root.dataset.swipeDirection = "down"
+      root
+        .querySelectorAll('[data-slot="drawer-handle"]')
+        .forEach((handle) => handle.toggleAttribute("hidden", !query.matches))
+      const direction = query.matches ? "down" : "right"
+      if (root.dataset.swipeDirection === direction) continue
+      // Data Slot reads the direction when it binds, and restores it when
+      // destroyed, so rebind.
       createDrawer(root).destroy()
+      root.dataset.swipeDirection = direction
       createDrawer(root)
     }
   }
 
-  initializeResponsive()
-  document.addEventListener("astro:page-load", initializeResponsive)
+  update()
+  document.addEventListener("astro:page-load", update)
+  query.addEventListener("change", update)
 </script>

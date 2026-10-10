@@ -51,11 +51,12 @@ const fullPage = ["sidebar-demo"].includes(name)
       slot="example"
       data-react-preview={example.route}
       data-dev={import.meta.env.DEV ? "" : undefined}
+      data-full-page={fullPage ? "" : undefined}
       src={`/preview/react/#/${example.route}`}
       title={`${name} preview`}
       loading="lazy"
       class="block w-full"
-      style={`height: ${block ? 640 : 360}px`}
+      style={`height: ${block || fullPage ? 640 : 360}px`}
     />
   )}
   <Code
@@ -93,7 +94,7 @@ const fullPage = ["sidebar-demo"].includes(name)
     if (event.data?.type !== "fulldev:preview-height") return
     const frame = [
       ...document.querySelectorAll<HTMLIFrameElement>(
-        "iframe[data-react-preview]"
+        "iframe[data-react-preview]:not([data-full-page])"
       ),
     ].find((frame) => frame.contentWindow === event.source)
     // Bounded, so a runaway layout cannot grow the page without end.

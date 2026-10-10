@@ -197,23 +197,22 @@ const [activeTeam] = data.teams
               size="lg"
               class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+              <span class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 {data.teams.map((team) => (
                   <team.logo
-                    class="size-4"
+                    class={team === activeTeam ? "size-4" : "hidden size-4"}
                     data-team-logo={team.name}
-                    hidden={team !== activeTeam}
                   />
                 ))}
-              </div>
-              <div class="grid flex-1 text-left text-sm leading-tight">
+              </span>
+              <span class="grid flex-1 text-left text-sm leading-tight">
                 <span class="truncate font-medium" data-team-name>
                   {activeTeam.name}
                 </span>
                 <span class="truncate text-xs" data-team-plan>
                   {activeTeam.plan}
                 </span>
-              </div>
+              </span>
               <ChevronsUpDown class="ml-auto" />
             </SidebarMenuButton>
             <DropdownMenuContent
@@ -228,13 +227,14 @@ const [activeTeam] = data.teams
                 </DropdownMenuLabel>
                 {data.teams.map((team, index) => (
                   <DropdownMenuItem
+                    as="div"
                     class="gap-2 p-2"
                     data-team={team.name}
                     data-plan={team.plan}
                   >
-                    <div class="flex size-6 items-center justify-center rounded-md border">
+                    <span class="flex size-6 items-center justify-center rounded-md border">
                       <team.logo class="size-3.5 shrink-0" />
-                    </div>
+                    </span>
                     {team.name}
                     <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
                   </DropdownMenuItem>
@@ -242,11 +242,13 @@ const [activeTeam] = data.teams
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem class="gap-2 p-2">
-                  <div class="flex size-6 items-center justify-center rounded-md border bg-transparent">
+                <DropdownMenuItem as="div" class="gap-2 p-2">
+                  <span class="flex size-6 items-center justify-center rounded-md border bg-transparent">
                     <Plus class="size-4" />
-                  </div>
-                  <div class="font-medium text-muted-foreground">Add team</div>
+                  </span>
+                  <span class="font-medium text-muted-foreground">
+                    Add team
+                  </span>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
@@ -259,25 +261,28 @@ const [activeTeam] = data.teams
         <SidebarGroupLabel>Platform</SidebarGroupLabel>
         <SidebarMenu>
           {data.navMain.map((item) => (
-            <Collapsible defaultOpen={item.isActive} class="group/collapsible">
-              <SidebarMenuItem>
-                <SidebarMenuButton data-slot="collapsible-trigger">
-                  {item.icon && <item.icon />}
-                  <span>{item.title}</span>
-                  <ChevronRight class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                </SidebarMenuButton>
-                <CollapsibleContent>
-                  <SidebarMenuSub>
-                    {item.items?.map((subItem) => (
-                      <SidebarMenuSubItem>
-                        <SidebarMenuSubButton href={subItem.url}>
-                          <span>{subItem.title}</span>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    ))}
-                  </SidebarMenuSub>
-                </CollapsibleContent>
-              </SidebarMenuItem>
+            <Collapsible
+              as="li"
+              defaultOpen={item.isActive}
+              data-sidebar="menu-item"
+              class="group/collapsible group/menu-item relative"
+            >
+              <SidebarMenuButton data-slot="collapsible-trigger">
+                {item.icon && <item.icon />}
+                <span>{item.title}</span>
+                <ChevronRight class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+              </SidebarMenuButton>
+              <CollapsibleContent>
+                <SidebarMenuSub>
+                  {item.items?.map((subItem) => (
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton href={subItem.url}>
+                        <span>{subItem.title}</span>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  ))}
+                </SidebarMenuSub>
+              </CollapsibleContent>
             </Collapsible>
           ))}
         </SidebarMenu>
@@ -343,10 +348,10 @@ const [activeTeam] = data.teams
                 <AvatarImage src={data.user.avatar} alt={data.user.name} />
                 <AvatarFallback class="rounded-lg">CN</AvatarFallback>
               </Avatar>
-              <div class="grid flex-1 text-left text-sm leading-tight">
+              <span class="grid flex-1 text-left text-sm leading-tight">
                 <span class="truncate font-medium">{data.user.name}</span>
                 <span class="truncate text-xs">{data.user.email}</span>
-              </div>
+              </span>
               <ChevronsUpDown class="ml-auto size-4" />
             </SidebarMenuButton>
             <DropdownMenuContent
@@ -365,10 +370,10 @@ const [activeTeam] = data.teams
                       />
                       <AvatarFallback class="rounded-lg">CN</AvatarFallback>
                     </Avatar>
-                    <div class="grid flex-1 text-left text-sm leading-tight">
+                    <span class="grid flex-1 text-left text-sm leading-tight">
                       <span class="truncate font-medium">{data.user.name}</span>
                       <span class="truncate text-xs">{data.user.email}</span>
-                    </div>
+                    </span>
                   </div>
                 </DropdownMenuLabel>
               </DropdownMenuGroup>
@@ -430,7 +435,7 @@ const [activeTeam] = data.teams
         const team = item.closest<HTMLElement>("[data-team]")
         if (!team) return
         for (const logo of root.querySelectorAll("[data-team-logo]"))
-          logo.toggleAttribute(
+          logo.classList.toggle(
             "hidden",
             logo.getAttribute("data-team-logo") !== team.dataset.team
           )

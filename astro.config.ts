@@ -8,6 +8,25 @@ import fulldevIntegration from "./src/lib/integration"
 
 // The docs used to live at /docs/, /components/ and /blocks/; they are the
 // Astro edition now. Netlify answers these with a 301 (netlify.toml).
+// Docs tables scroll inside the content column instead of widening the page.
+type Node = { type: string; tagName?: string; children?: Node[] }
+const scrollTables = () => (tree: Node) => {
+  const wrap = (node: Node) => {
+    node.children = node.children?.map((child) => {
+      if (child.type === "element" && child.tagName === "table")
+        return {
+          type: "element",
+          tagName: "div",
+          properties: { className: ["typeset-scroll"] },
+          children: [child],
+        } as Node
+      wrap(child)
+      return child
+    })
+  }
+  wrap(tree)
+}
+
 const legacyRedirects = Object.fromEntries(
   readdirSync("src/content/pages/astro", { recursive: true })
     .map((file) => String(file).replace(/(\/?index)?\.mdx$/, ""))
@@ -56,7 +75,7 @@ export default defineConfig({
   markdown: {
     // astro-live-code adds a remark plugin, which only runs on the unified
     // processor. Astro 7 defaults to Sätteri.
-    processor: unified(),
+    processor: unified({ rehypePlugins: [scrollTables] }),
     shikiConfig: {
       themes: {
         light: "github-light-high-contrast",

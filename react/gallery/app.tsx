@@ -58,6 +58,9 @@ function useReportHeight() {
 
 // Demos that render a page's main element themselves.
 const ownMain = new Set(["ui/layout", "ui/sidebar", "blocks/sidebar-1"])
+// Official examples that fill the page (a block preview upstream). The docs
+// give their frame a fixed height, so they render without padding.
+const fullPage = new Set(["examples/sidebar/sidebar-demo"])
 
 export function App() {
   const [route, setRoute] = React.useState(readRoute)
@@ -86,6 +89,7 @@ export function App() {
       </p>
     )
   }
+  if (fullPage.has(route)) return <Demo />
   const Main = ownMain.has(route) ? "div" : "main"
   return (
     <Main

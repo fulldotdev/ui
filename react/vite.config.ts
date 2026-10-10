@@ -20,7 +20,10 @@ function styles(style: string): Plugin {
     enforce: "pre",
     transform(code, id) {
       if (!id.startsWith(source) || !/\.tsx?$/.test(id)) return
-      return { code: transformSource(code, maps[style], known), map: null }
+      return {
+        code: transformSource(code, maps[style], known, style),
+        map: null,
+      }
     },
   }
 }
