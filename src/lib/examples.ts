@@ -1,8 +1,7 @@
 // Docs only: find the source file behind an <Example name="..." /> on a page.
-// - Official shadcn/ui examples: React originals in react/src/components/examples,
-//   Astro ports in src/components/examples, one folder and registry item
-//   (<family>-examples) per component.
-// - React block and Fulldev component demos of the preview app in react/gallery.
+// - Astro ports of the official shadcn/ui examples in src/components/examples,
+//   one folder and registry item (<family>-examples) per component.
+// - React block and Fulldev extra demos of the preview app in react/gallery.
 // The preview, the Code tab, the Markdown version and the install command all
 // come from that one file.
 import type { Framework } from "@/lib/pages"
@@ -25,11 +24,7 @@ const astroSources = import.meta.glob<string>(
   { query: "?raw", import: "default", eager: true }
 )
 const reactSources = import.meta.glob<string>(
-  [
-    "/react/src/components/examples/*/*.tsx",
-    "/react/gallery/blocks/*.tsx",
-    "/react/gallery/ui/*.tsx",
-  ],
+  ["/react/gallery/blocks/*.tsx", "/react/gallery/ui/*.tsx"],
   { query: "?raw", import: "default", eager: true }
 )
 

@@ -25,23 +25,23 @@ const manual = {
     title: "Init",
     description:
       "Class helper, dependencies, and base styles for an existing project. Leaves theme tokens alone.",
-    docs: `${site}/astro/docs/installation/`,
+    docs: `${site}/docs/installation/`,
   },
   base: {
     title: "Base",
     description:
       "Sets up a new project with `shadcn init`: style, registry, theme, class helper, and dependencies.",
-    docs: `${site}/astro/docs/installation/`,
+    docs: `${site}/docs/installation/`,
   },
   components: {
     title: "All components",
     description: "Installs every Fulldev UI component.",
-    docs: `${site}/astro/components/`,
+    docs: `${site}/components/`,
   },
   blocks: {
     title: "All blocks",
     description: "Installs every Fulldev UI block.",
-    docs: `${site}/astro/blocks/`,
+    docs: `${site}/blocks/`,
   },
   "beta-repo-setup": {
     title: "Repo setup (beta)",
@@ -67,15 +67,15 @@ const order = [
   "css",
 ]
 
-// One example item per folder of src/components/examples (and its React
-// counterpart): the examples from the shadcn/ui docs for that component,
-// with the packages and registry items their imports need.
+// One example item per folder of src/components/examples: the Astro ports of
+// the examples from the shadcn/ui docs for that component, with the packages
+// and registry items their imports need.
 const titleOf = (name) =>
   name
     .split("-")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ")
-const syncExamples = (items, root, docs) => {
+const syncExamples = (items, root) => {
   const dir = `${root}src/components/examples/`
   const pkg = JSON.parse(readFileSync(`${root}package.json`, "utf8"))
   const folders = existsSync(dir) ? readdirSync(dir).sort() : []
@@ -135,7 +135,7 @@ const syncExamples = (items, root, docs) => {
       type: "registry:example",
       title: `${title} examples`,
       description: `The examples from the shadcn/ui ${title} docs.`,
-      docs: `${site}/${docs}/components/${family}/`,
+      docs: `${site}/components/${family}/`,
       dependencies: dependencies.size ? [...dependencies].sort() : undefined,
       registryDependencies: [...registryDependencies].sort(),
       files,
@@ -150,27 +150,25 @@ registry.items = registry.items.map((item) => {
   if (manual[item.name]) {
     Object.assign(meta, manual[item.name])
   } else if (item.type === "registry:ui") {
-    const fm = readFrontmatter(
-      `src/content/pages/astro/components/${item.name}.mdx`
-    )
+    const fm = readFrontmatter(`src/content/pages/components/${item.name}.mdx`)
     if (!fm) throw new Error(`Missing docs page for component ${item.name}`)
     Object.assign(meta, {
       title: fm.title,
       description: fm.description,
       categories: ["ui"],
-      docs: `${site}/astro/components/${item.name}/`,
+      docs: `${site}/components/${item.name}/`,
     })
   } else if (item.type === "registry:block") {
     const category = item.name.replace(/-\d+$/, "")
     const fm =
-      readFrontmatter(`src/content/pages/astro/blocks/${item.name}.mdx`) ??
-      readFrontmatter(`src/content/pages/astro/blocks/${category}.mdx`)
+      readFrontmatter(`src/content/pages/blocks/${item.name}.mdx`) ??
+      readFrontmatter(`src/content/pages/blocks/${category}.mdx`)
     if (fm) {
       Object.assign(meta, {
         title: `${fm.title} ${item.name.match(/\d+$/)?.[0] ?? ""}`.trim(),
         description: fm.description,
         categories: [fm.category ?? category],
-        docs: `${site}/astro/blocks/${category}/`,
+        docs: `${site}/blocks/${category}/`,
       })
     } else {
       // Docs-site blocks without a dedicated page.
@@ -181,7 +179,7 @@ registry.items = registry.items.map((item) => {
       Object.assign(meta, {
         title,
         categories: [category],
-        docs: `${site}/astro/blocks/`,
+        docs: `${site}/blocks/`,
       })
     }
   }
@@ -206,19 +204,20 @@ const bundle = (items, name, type) => {
 }
 bundle(registry.items, "components", "registry:ui")
 bundle(registry.items, "blocks", "registry:block")
-registry.items = syncExamples(registry.items, "", "astro")
+registry.items = syncExamples(registry.items, "")
 
 writeFileSync(registryPath, JSON.stringify(registry, null, 2) + "\n")
 console.log(`Synced metadata for ${registry.items.length} registry items.`)
 
-// The React registry shares base and init with this one; base points the
-// @fulldev registry at the React items instead.
+// The React registry is an extension of shadcn/ui: Fulldev extras and blocks
+// only. Projects set up with the official `shadcn init`; standard components
+// install from the shadcn/ui registry by their plain name.
 const reactPath = new URL("../react/registry.json", import.meta.url)
 const react = JSON.parse(readFileSync(reactPath, "utf8"))
 const reactManual = {
   components: {
-    title: "All components",
-    description: "Installs every Fulldev UI React component.",
+    title: "All extras",
+    description: "Installs every Fulldev UI React extra.",
     docs: `${site}/react/components/`,
   },
   blocks: {
@@ -228,23 +227,8 @@ const reactManual = {
   },
 }
 react.items = react.items.map((item) => {
-  if (item.name === "base" || item.name === "init") {
-    const shared = structuredClone(
-      registry.items.find((entry) => entry.name === item.name)
-    )
-    if (shared.config) {
-      shared.config.registries["@fulldev"] =
-        `${site}/r/react/styles/{style}/{name}.json`
-    }
-    return sorted({ ...shared, docs: `${site}/react/docs/installation/` })
-  }
   if (reactManual[item.name]) {
-    return sorted({
-      ...item,
-      name: item.name,
-      type: "registry:item",
-      ...reactManual[item.name],
-    })
+    return sorted({ ...item, type: "registry:item", ...reactManual[item.name] })
   }
   if (item.type === "registry:ui")
     return sorted({ ...item, docs: `${site}/react/components/${item.name}/` })
@@ -256,7 +240,6 @@ react.items = react.items.map((item) => {
 })
 bundle(react.items, "components", "registry:ui")
 bundle(react.items, "blocks", "registry:block")
-react.items = syncExamples(react.items, "react/", "react")
 
 writeFileSync(reactPath, JSON.stringify(react, null, 2) + "\n")
 console.log(`Synced metadata for ${react.items.length} React registry items.`)

@@ -6,7 +6,6 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
-import { Form } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -42,7 +41,7 @@ export default function Contact1Demo() {
           },
         ]}
       >
-        <Form method="post">
+        <form method="post" className="flex flex-col gap-6">
           <FieldGroup>
             <div className="grid gap-4 md:grid-cols-2">
               <Field>
@@ -82,7 +81,7 @@ export default function Contact1Demo() {
               Send message
             </Button>
           </FieldGroup>
-        </Form>
+        </form>
       </Contact1>
     </>
   )

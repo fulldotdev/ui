@@ -1,7 +1,6 @@
 import { Contact2 } from "@/components/blocks/contact-2"
 import { Button } from "@/components/ui/button"
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
-import { Form } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -37,7 +36,7 @@ export default function Contact2Demo() {
           },
         ]}
       >
-        <Form method="post">
+        <form method="post" className="flex flex-col gap-6">
           <FieldGroup>
             <div className="grid gap-4 md:grid-cols-2">
               <Field>
@@ -73,7 +72,7 @@ export default function Contact2Demo() {
               Send message
             </Button>
           </FieldGroup>
-        </Form>
+        </form>
       </Contact2>
     </>
   )

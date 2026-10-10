@@ -1,27 +1,26 @@
 ---
 type: doc
 title: Installation
-description: Install Fulldev UI for React.
+description: Add the Fulldev UI extension to a shadcn/ui React project.
 ---
 
-You need a React project with Tailwind CSS v4 and the `@/*` import alias for
-`src/*`, such as a Vite or Next.js project.
-
-## New project
-
-Initialize from the Fulldev UI base. It writes `components.json` with the
-`@fulldev` registry, the theme tokens, the class helper and dependencies:
+You need a React project set up with shadcn/ui for Base UI, such as a Vite or
+Next.js project. If it does not have a `components.json` yet, follow the
+official [installation](https://ui.shadcn.com/docs/installation) and run
+`init` with a Base UI style:
 
 ```bash
-npx shadcn@latest init https://ui.full.dev/r/react/styles/base-vega/base.json
+npx shadcn@latest init
 ```
 
-Replace `base-vega` with another shadcn/ui style, such as `base-nova`.
+Fulldev UI serves the Base UI styles only, such as `base-vega` and
+`base-nova`. If `style` in `components.json` is a legacy style such as
+`new-york`, or starts with `radix-`, the extension does not apply.
 
-## Existing project
+## Add the registry
 
-If the project has a `components.json`, do not run `init` again: it replaces
-the theme tokens. Add the registry instead:
+Add the `@fulldev` registry to `components.json`. The CLI fills in `{style}`
+from your `style`, so extras and blocks install in that style:
 
 ```json title="components.json"
 {
@@ -31,28 +30,19 @@ the theme tokens. Add the registry instead:
 }
 ```
 
-Then install the helpers, which leave your theme alone:
+## Add extras and blocks
 
 ```bash
-npx shadcn@latest add @fulldev/init
+npx shadcn@latest add @fulldev/section @fulldev/hero-1
 ```
 
-Fulldev UI serves the Base UI styles only. If `style` in `components.json` is
-a legacy style such as `new-york`, or starts with `radix-`, set it to a Base UI
-style such as `base-vega` first.
-
-## Add components
-
-```bash
-npx shadcn@latest add @fulldev/button @fulldev/hero-1
-```
-
-Add the examples of a component with `@fulldev/<name>-examples`, and every
-component or block with `@fulldev/components` and `@fulldev/blocks`.
+Add every extra or block with `@fulldev/components` and `@fulldev/blocks`.
+Standard components that a block uses, such as `button` or `badge`, install
+from the official shadcn/ui registry.
 
 ```tsx
 import { Hero1 } from "@/components/blocks/hero-1"
-import { Button } from "@/components/ui/button"
+import { Section } from "@/components/ui/section"
 ```
 
 ## Notes
@@ -68,5 +58,3 @@ import { Button } from "@/components/ui/button"
   `<Content components={{ pre: Doc1CodeBlock }} />`.
 - Wrap the app in `ThemeProvider` from `@/components/ui/theme-toggle` to use
   `ThemeToggle`.
-- The Sonner examples need a `<Toaster />` from `@/components/ui/sonner` in
-  the root layout, as in the [Sonner](/react/components/sonner/) docs.

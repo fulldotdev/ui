@@ -1,6 +1,6 @@
 // Docs only: the Markdown version of a page, for .md URLs, llms-full.txt and
-// the Copy Markdown button. Examples become their source, and each edition
-// page says how its @fulldev registry is set up.
+// the Copy Markdown button. Examples become their source, and each React
+// extension page says how its @fulldev registry is set up.
 import { readFile } from "node:fs/promises"
 import { getCollection, type CollectionEntry } from "astro:content"
 
@@ -14,17 +14,10 @@ import {
 
 type Page = CollectionEntry<"pages">
 
-const registries = {
-  astro: "https://ui.full.dev/r/styles/{style}/{name}.json",
-  react: "https://ui.full.dev/r/react/styles/{style}/{name}.json",
-}
-
-const setup = (page: Page) => {
-  if (!/^(astro|react)\//.test(page.id)) return ""
-  const framework = getFramework(page.id)
-  const label = framework === "react" ? "React" : "Astro"
-  return `> Fulldev UI for ${label}. The \`@fulldev\` registry in \`components.json\` points at \`${registries[framework]}\`; see [installation](/${framework}/docs/installation.md).\n\n`
-}
+const setup = (page: Page) =>
+  getFramework(page.id) === "react"
+    ? "> Fulldev UI React extension for an official shadcn/ui project. The `@fulldev` registry in `components.json` points at `https://ui.full.dev/r/react/styles/{style}/{name}.json`; see [installation](/react/docs/installation.md).\n\n"
+    : ""
 
 export async function getPageMarkdown(page: Page) {
   if (!page.filePath) {

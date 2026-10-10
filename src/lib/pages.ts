@@ -21,8 +21,9 @@ export type PageLink = {
   href: string
 }
 
-// The docs come in an Astro and a React edition, each under its own path.
-// The home and create pages are shared and show the Astro edition's links.
+// The docs are the Astro library at the root of the site. The React extension
+// lives under /react/: Fulldev extras and blocks for an official shadcn/ui
+// project, which links to shadcn/ui for the standard components.
 export const frameworks = ["astro", "react"] as const
 export type Framework = (typeof frameworks)[number]
 export const frameworkLabels: Record<Framework, string> = {
@@ -30,13 +31,10 @@ export const frameworkLabels: Record<Framework, string> = {
   react: "React",
 }
 
-const editionPattern = /^(astro|react)(?:\/|$)/
+const reactPattern = /^react(?:\/|$)/
 
 export const getFramework = (id: string): Framework =>
-  (id.match(editionPattern)?.[1] as Framework | undefined) ?? "astro"
-
-// The path of a page inside its edition, such as components/button.
-const getEditionPath = (id: string) => id.replace(editionPattern, "")
+  reactPattern.test(id) ? "react" : "astro"
 
 const normalizePath = (path: string) => {
   if (path === "/") return path
@@ -50,6 +48,12 @@ export const getPageHref = (page: Page) =>
 export const getPageId = (pathname: string) =>
   normalizePath(pathname).replace(/^\//, "") || "index"
 
+// The official docs of a standard shadcn/ui component. Its legacy Form item
+// is empty; forms are built with Field now.
+export const shadcnComponentsHref = "https://ui.shadcn.com/docs/components"
+const getShadcnHref = (slug: string) =>
+  `${shadcnComponentsHref}/base/${slug === "form" ? "field" : slug}`
+
 const formatSlug = (slug: string) =>
   slug
     .split("-")
@@ -57,20 +61,20 @@ const formatSlug = (slug: string) =>
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ")
 
-const sections = [
+const reactSections = [
   { path: "docs", label: "Get started" },
   { path: "components", label: "Components" },
   { path: "blocks", label: "Blocks" },
 ]
-const docsOrder = ["introduction", "installation", "theming", "presets"]
+const reactDocsOrder = ["introduction", "installation"]
 
 const byTitle = (a: Page, b: Page) => a.data.title.localeCompare(b.data.title)
 
-const sectionPages = (pages: Page[], framework: Framework, section: string) => {
-  const prefix = `${framework}/${section}/`
+const reactSectionPages = (pages: Page[], section: string) => {
+  const prefix = `react/${section}/`
   const entries = pages.filter((page) => page.id.startsWith(prefix))
   if (section !== "docs") return entries.sort(byTitle)
-  return docsOrder
+  return reactDocsOrder
     .map((slug) => entries.find((page) => page.id === prefix + slug))
     .filter((page): page is Page => Boolean(page))
 }
@@ -80,67 +84,73 @@ const toLink = (page: Page): PageLink => ({
   href: getPageHref(page),
 })
 
-const createLink = { label: "Create", href: "/create/" }
+// The standard components are not part of the extension, so the sidebar
+// points to their official docs.
+const shadcnLink = {
+  label: "shadcn/ui components ↗",
+  href: shadcnComponentsHref,
+}
 
-// Sidebar groups for one edition, from its pages.
-export const getNavigation = async (framework: Framework) => {
+// Sidebar groups of the React extension. The Astro docs keep the navigation
+// in their global content.
+export const getReactNavigation = async () => {
   const pages = await getCollection("pages")
-  return sections.map((section) => {
-    const links = sectionPages(pages, framework, section.path).map(toLink)
+  return reactSections.map((section) => {
+    const links = reactSectionPages(pages, section.path).map(toLink)
     return {
       label: section.label,
-      href: `/${framework}/${section.path}/`,
-      links: section.path === "docs" ? [...links, createLink] : links,
+      href: `/react/${section.path}/`,
+      links: section.path === "components" ? [...links, shadcnLink] : links,
     }
   })
 }
 
-// Pages in reading order, for previous and next links.
-export const getReadingOrder = async (framework: Framework) => {
+// React pages in reading order, for previous and next links.
+export const getReactReadingOrder = async () => {
   const pages = await getCollection("pages")
-  return sections.flatMap((section) =>
-    sectionPages(pages, framework, section.path).map((page) => ({
+  return reactSections.flatMap((section) =>
+    reactSectionPages(pages, section.path).map((page) => ({
       href: getPageHref(page),
       title: page.data.title,
     }))
   )
 }
 
-export const getSectionMenu = (framework: Framework): PageLink[] => [
-  ...sections.map((section) => ({
-    label: section.path === "docs" ? "Docs" : section.label,
-    href: `/${framework}/${section.path}/`,
-  })),
-  createLink,
-]
+export const reactSectionMenu: PageLink[] = reactSections.map((section) => ({
+  label: section.path === "docs" ? "Docs" : section.label,
+  href: `/react/${section.path}/`,
+}))
 
-// The same page in another edition, or that edition's catalog with the
-// missing page named, so the reader sees why they did not land on it.
+// The same page in the other library. A standard component the React
+// extension does not ship goes to its official shadcn/ui docs.
 export const getCounterpartHref = async (id: string, framework: Framework) => {
   const pages = await getCollection("pages")
-  if (!editionPattern.test(id)) return `/${framework}/docs/introduction/`
-  const path = getEditionPath(id)
-  const target = path ? `${framework}/${path}` : framework
-  if (pages.some((page) => page.id === target)) return `/${target}/`
-  const [section, slug] = path.split("/")
-  const catalog = `${framework}/${section}`
-  return pages.some((page) => page.id === catalog)
-    ? `/${catalog}/?missing=${slug}`
-    : `/${framework}/`
+  const exists = (target: string) => pages.some((page) => page.id === target)
+  if (framework === "react") {
+    if (reactPattern.test(id)) return `/${id}/`
+    if (exists(`react/${id}`)) return `/react/${id}/`
+    const [section, slug] = id.split("/")
+    if (section === "components" && slug) return getShadcnHref(slug)
+    return exists(`react/${section}`) ? `/react/${section}/` : "/react/"
+  }
+  if (!reactPattern.test(id)) return id === "index" ? "/" : `/${id}/`
+  const path = id.replace(reactPattern, "")
+  if (!path) return "/"
+  if (exists(path)) return `/${path}/`
+  const [section] = path.split("/")
+  return exists(section) ? `/${section}/` : "/"
 }
 
+// Search stays inside the library of the current page.
 export const getPageSearchItems = async (
   framework: Framework
 ): Promise<PageSearchItem[]> => {
   const pages = await getCollection("pages")
 
   return pages
-    .filter(
-      (page) =>
-        !editionPattern.test(page.id) || getFramework(page.id) === framework
-    )
+    .filter((page) => getFramework(page.id) === framework)
     .map((page) => {
-      const [section] = getEditionPath(page.id).split("/")
+      const [section] = page.id.replace(reactPattern, "").split("/")
       return {
         label: page.data.title,
         href: getPageHref(page),
@@ -148,7 +158,9 @@ export const getPageSearchItems = async (
         path: getPageHref(page),
         description: page.data.description,
         group:
-          page.id === "index" || !section ? "Overview" : formatSlug(section),
+          page.id === "index" || page.id === "react" || !section
+            ? "Overview"
+            : formatSlug(section),
       }
     })
     .sort((a, b) => a.label.localeCompare(b.label))

@@ -13,9 +13,6 @@ const registry = JSON.parse(readFileSync("registry.json", "utf8"))
 const items = new Map(registry.items.map((item) => [item.name, item]))
 const errors = []
 
-// Projects install @fulldev/init (through `shadcn init` with @fulldev/base, or
-// `shadcn add`) before any other item.
-const baseItems = ["init"]
 // Projects set up their framework and Tailwind before installing from a
 // shadcn registry.
 const react = Boolean(
@@ -24,6 +21,16 @@ const react = Boolean(
 const prerequisites = new Set(
   react ? ["react", "react-dom", "tailwindcss"] : ["astro", "tailwindcss"]
 )
+// Astro projects install @fulldev/init (through `shadcn init` with
+// @fulldev/base, or `shadcn add`) before any other item. React projects start
+// from the official `shadcn init`, which provides the cn package.
+const baseItems = react ? [] : ["init"]
+// A dependency without the @fulldev/ prefix is a standard shadcn/ui item,
+// which installs from the official registry to its usual path.
+const upstreamPaths = (name) => [
+  normalize(`src/components/ui/${name}.tsx`),
+  normalize(`src/hooks/${name}.ts`),
+]
 // The project's own stylesheet, which `shadcn init` writes the theme into.
 const stylesheet = normalize(
   JSON.parse(readFileSync("components.json", "utf8")).tailwind.css
@@ -36,13 +43,15 @@ const installedPath = (file) => normalize(file.target ?? file.path)
 const packageName = (dependency) =>
   dependency.match(/^(@[^/@]+\/[^/@]+|[^/@]+)/)?.[1]
 
-const collect = (name, seen = new Set()) => {
-  if (seen.has(name)) return seen
+const collect = (name, seen = new Set(), upstream = new Set()) => {
+  if (seen.has(name)) return { seen, upstream }
   seen.add(name)
   for (const dependency of items.get(name)?.registryDependencies ?? []) {
-    collect(dependency.replace(/^@fulldev\//, ""), seen)
+    if (dependency.startsWith("@fulldev/"))
+      collect(dependency.slice("@fulldev/".length), seen, upstream)
+    else upstream.add(dependency)
   }
-  return seen
+  return { seen, upstream }
 }
 
 const resolve = (specifier, from, provided) => {
@@ -66,8 +75,15 @@ const specifiers = (source) =>
 
 for (const item of registry.items) {
   if (item.type === "registry:item") continue
-  const scope = [...collect(item.name), ...baseItems]
+  const { seen, upstream } = collect(item.name)
+  const scope = [...seen, ...baseItems]
   const provided = new Set([stylesheet])
+  for (const name of upstream) {
+    if (!react) errors.push(`${item.name}: unknown registry dependency ${name}`)
+    else if (items.has(name))
+      errors.push(`${item.name}: ${name} is a local item; use @fulldev/${name}`)
+    for (const path of upstreamPaths(name)) provided.add(path)
+  }
   const packages = new Set()
   for (const name of scope) {
     const scoped = items.get(name)

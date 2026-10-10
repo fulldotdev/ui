@@ -50,11 +50,7 @@ export default defineConfig(({ mode }) => {
     // Demos load on demand; scan them all up front so the dev server does
     // not reload the page when it meets a new dependency.
     optimizeDeps: {
-      entries: [
-        "index.html",
-        "gallery/**/*.tsx",
-        "src/components/examples/**/*.tsx",
-      ],
+      entries: ["index.html", "gallery/**/*.tsx"],
     },
     server: { strictPort: true },
     logLevel: mode === "production" ? "warn" : "info",
