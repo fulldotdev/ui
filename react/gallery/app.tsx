@@ -1,5 +1,8 @@
 import * as React from "react"
 
+import { Toaster as SonnerToaster } from "@/components/ui/sonner"
+import { Toaster } from "@/components/ui/toast"
+
 // The docs show React previews in an iframe of this app, one per style build.
 // Routes are #/examples/<family>/<name> for the official shadcn/ui examples,
 // #/blocks/<name> for a block and #/ui/<name> for a Fulldev component demo.
@@ -93,6 +96,15 @@ export function App() {
       }
     >
       <Demo />
+      {/* Official examples call toast() of Sonner or toast.add() of Toast,
+      which render in the Toaster of the app root layout. The Fulldev demos
+      render their own. */}
+      {kind === "examples" && (
+        <>
+          <Toaster />
+          <SonnerToaster />
+        </>
+      )}
     </Main>
   )
 }

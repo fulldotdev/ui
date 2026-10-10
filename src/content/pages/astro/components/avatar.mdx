@@ -4,45 +4,7 @@ title: Avatar
 description: An image element with a fallback for representing the user.
 ---
 
-```astro live props={{ name: 'avatar' }}
----
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarGroup,
-  AvatarImage,
-} from "@/components/ui/avatar"
-import avatar from "@/assets/avatar-sil-veltman.webp"
----
-
-<div class="flex flex-row flex-wrap items-center gap-12">
-  <Avatar>
-    <AvatarImage src={avatar} alt="@silveltm" />
-    <AvatarFallback>SV</AvatarFallback>
-  </Avatar>
-  <Avatar size="lg">
-    <AvatarImage src={avatar} alt="@silveltm" />
-    <AvatarFallback>SV</AvatarFallback>
-  </Avatar>
-  <Avatar size="lg">
-    <AvatarFallback>FD</AvatarFallback>
-  </Avatar>
-  <AvatarGroup class="*:grayscale">
-    <Avatar>
-      <AvatarImage src={avatar} alt="@silveltm" />
-      <AvatarFallback>SV</AvatarFallback>
-    </Avatar>
-    <Avatar>
-      <AvatarImage src={avatar} alt="@silveltm" />
-      <AvatarFallback>SV</AvatarFallback>
-    </Avatar>
-    <Avatar>
-      <AvatarImage src={avatar} alt="@silveltm" />
-      <AvatarFallback>SV</AvatarFallback>
-    </Avatar>
-  </AvatarGroup>
-</div>
-```
+<Example name="avatar-demo" />
 
 ## Installation
 
@@ -58,10 +20,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 ```astro
 <Avatar>
-  <AvatarImage src="/avatar.jpg" alt="Team member" />
-  <AvatarFallback>TM</AvatarFallback>
+  <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+  <AvatarFallback>CN</AvatarFallback>
 </Avatar>
 ```
+
+`AvatarImage` renders Astro's `Image` from `astro:assets`, so `src` takes an
+imported image or a URL. It renders nothing without `src`, and `AvatarFallback`
+sits behind the image, so always include it for a missing or broken image.
 
 ## Composition
 
@@ -89,58 +55,81 @@ AvatarGroup
 └── AvatarGroupCount
 ```
 
-## Examples
+## Basic
 
-### Fallback
+A basic avatar with an image and a fallback.
 
-Use `AvatarFallback` when an image is unavailable or intentionally omitted.
+<Example name="avatar-basic" />
 
-```astro live
----
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
----
+## Badge
 
-<Avatar size="lg">
-  <AvatarFallback>FD</AvatarFallback>
-</Avatar>
-```
+`AvatarBadge` sits at the bottom right of the avatar. Use `class` for custom
+colors, such as `bg-green-600 dark:bg-green-800`.
 
-### Group
+<Example name="avatar-badge" />
 
-Use `AvatarGroup` when you need overlapping participant or collaborator lists.
+## Badge with Icon
 
-```astro live
----
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarGroup,
-  AvatarGroupCount,
-  AvatarImage,
-} from "@/components/ui/avatar"
-import avatar from "@/assets/avatar-sil-veltman.webp"
----
+<Example name="avatar-badge-icon" />
 
-<AvatarGroup>
-  <Avatar>
-    <AvatarImage src={avatar} alt="Sil Veltman" />
-    <AvatarFallback>SV</AvatarFallback>
-  </Avatar>
-  <Avatar>
-    <AvatarImage src={avatar} alt="Teammate" />
-    <AvatarFallback>TM</AvatarFallback>
-  </Avatar>
-  <AvatarGroupCount>+3</AvatarGroupCount>
-</AvatarGroup>
-```
+## Avatar Group
 
-## Notes
+<Example name="avatar-group" />
 
-- Always include `AvatarFallback` so initials or placeholder content remain
-  visible when the image fails to load.
-- Use size variants on `Avatar` instead of custom width and height classes when
-  possible.
+## Avatar Group Count
+
+Use `AvatarGroupCount` to add a count to the group.
+
+<Example name="avatar-group-count" />
+
+## Avatar Group with Icon
+
+<Example name="avatar-group-count-icon" />
+
+## Sizes
+
+Use the `size` prop to change the size of the avatar.
+
+<Example name="avatar-size" />
+
+## Dropdown
+
+Put the `Avatar` inside a `DropdownMenuTrigger` styled with `buttonVariants`.
+See [Dropdown Menu](/astro/components/dropdown-menu/).
+
+<Example name="avatar-dropdown" />
+
+## RTL
+
+<Example name="avatar-rtl" />
 
 ## API Reference
 
-See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/components/ui/avatar) for more information on props.
+Source: [`src/components/ui/avatar`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/avatar)
+
+### Avatar
+
+| Prop   | Type                        | Default     |
+| ------ | --------------------------- | ----------- |
+| `size` | `"default" \| "sm" \| "lg"` | `"default"` |
+
+Renders a `span` with `data-size`, which `AvatarFallback` and `AvatarBadge` read
+through `group/avatar`.
+
+### AvatarImage
+
+Accepts the props of Astro's `Image`.
+
+| Prop     | Type                      | Default         |
+| -------- | ------------------------- | --------------- |
+| `src`    | `ImageMetadata \| string` | -               |
+| `alt`    | `string`                  | `""`            |
+| `width`  | `number`                  | `44`            |
+| `height` | `number`                  | `44`            |
+| `sizes`  | `string`                  | `"44px"`        |
+| `widths` | `number[]`                | `[44, 88, 176]` |
+
+### AvatarFallback, AvatarBadge, AvatarGroup, AvatarGroupCount
+
+These take the attributes of their element (`span` for `AvatarFallback` and
+`AvatarBadge`, `div` for `AvatarGroup` and `AvatarGroupCount`) and a `class`.

@@ -18,7 +18,7 @@ function Markdown({
       data-slot="markdown"
       plugins={plugins}
       controls={controls}
-      className={cn("cn-markdown w-full min-w-0 overflow-hidden", className)}
+      className={cn("w-full min-w-0 overflow-hidden", className)}
       {...props}
     />
   )

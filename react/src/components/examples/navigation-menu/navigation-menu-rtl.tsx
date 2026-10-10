@@ -46,7 +46,7 @@ const translations: Translations = {
       scrollAreaDesc: "Visually or semantically separates content.",
       tabs: "Tabs",
       tabsDesc:
-        "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
+        "A set of layered sections of content, known as tab panels, that are displayed one at a time.",
       tooltip: "Tooltip",
       tooltipDesc:
         "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
@@ -80,7 +80,7 @@ const translations: Translations = {
       scrollAreaDesc: "يفصل المحتوى بصريًا أو دلاليًا.",
       tabs: "التبويبات",
       tabsDesc:
-        "مجموعة من أقسام المحتوى المتعددة الطبقات—المعروفة بألواح التبويب—التي يتم عرضها واحدة في كل مرة.",
+        "مجموعة من أقسام المحتوى المتعددة الطبقات، المعروفة بألواح التبويب، التي يتم عرضها واحدة في كل مرة.",
       tooltip: "تلميح",
       tooltipDesc:
         "نافذة منبثقة تعرض معلومات متعلقة بعنصر عندما يتلقى العنصر التركيز على لوحة المفاتيح أو عند تحويم الماوس فوقه.",
@@ -114,7 +114,7 @@ const translations: Translations = {
       scrollAreaDesc: "מפריד תוכן חזותית או סמנטית.",
       tabs: "כרטיסיות",
       tabsDesc:
-        "קבוצה של חלקי תוכן מרובדים—המכונים לוחות כרטיסיות—המוצגים אחד בכל פעם.",
+        "קבוצה של חלקי תוכן מרובדים, המכונים לוחות כרטיסיות, המוצגים אחד בכל פעם.",
       tooltip: "טולטיפ",
       tooltipDesc:
         "חלון קופץ המציג מידע הקשור לאלמנט כאשר האלמנט מקבל מיקוד מקלדת או כאשר העכבר מרחף מעליו.",

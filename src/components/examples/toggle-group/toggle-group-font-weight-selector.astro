@@ -1,0 +1,80 @@
+---
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+
+const fontWeight = "normal"
+---
+
+<Field data-font-weight-selector>
+  <FieldLabel>Font Weight</FieldLabel>
+  <ToggleGroup
+    defaultValue={[fontWeight]}
+    variant="outline"
+    spacing={2}
+    size="lg"
+  >
+    <ToggleGroupItem
+      value="light"
+      aria-label="Light"
+      class="flex size-16 flex-col items-center justify-center rounded-xl"
+    >
+      <span class="text-2xl leading-none font-light">Aa</span>
+      <span class="text-xs text-muted-foreground">Light</span>
+    </ToggleGroupItem>
+    <ToggleGroupItem
+      value="normal"
+      aria-label="Normal"
+      class="flex size-16 flex-col items-center justify-center rounded-xl"
+    >
+      <span class="text-2xl leading-none font-normal">Aa</span>
+      <span class="text-xs text-muted-foreground">Normal</span>
+    </ToggleGroupItem>
+    <ToggleGroupItem
+      value="medium"
+      aria-label="Medium"
+      class="flex size-16 flex-col items-center justify-center rounded-xl"
+    >
+      <span class="text-2xl leading-none font-medium">Aa</span>
+      <span class="text-xs text-muted-foreground">Medium</span>
+    </ToggleGroupItem>
+    <ToggleGroupItem
+      value="bold"
+      aria-label="Bold"
+      class="flex size-16 flex-col items-center justify-center rounded-xl"
+    >
+      <span class="text-2xl leading-none font-bold">Aa</span>
+      <span class="text-xs text-muted-foreground">Bold</span>
+    </ToggleGroupItem>
+  </ToggleGroup>
+  <FieldDescription>
+    Use{" "}
+    <code
+      class="rounded-md bg-muted px-1 py-0.5 font-mono"
+      data-font-weight-class
+    >
+      font-{fontWeight}
+    </code>{" "}
+    to set the font weight.
+  </FieldDescription>
+</Field>
+
+<script>
+  const initialize = () => {
+    for (const root of document.querySelectorAll(
+      "[data-font-weight-selector]"
+    )) {
+      if (root.hasAttribute("data-bound")) continue
+      root.setAttribute("data-bound", "")
+      const output = root.querySelector("[data-font-weight-class]")
+      root
+        .querySelector('[data-slot="toggle-group"]')
+        ?.addEventListener("toggle-group:change", (event) => {
+          const { value } = (event as CustomEvent<{ value: string[] }>).detail
+          if (output) output.textContent = `font-${value[0] ?? ""}`
+        })
+    }
+  }
+
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+</script>

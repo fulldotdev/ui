@@ -1,0 +1,64 @@
+---
+import { Card, CardContent } from "@/components/ui/card"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+
+const count = 5
+---
+
+<div class="mx-auto max-w-[10rem] sm:max-w-xs" data-carousel-api-demo>
+  <Carousel class="w-full max-w-xs">
+    <CarouselContent>
+      {Array.from({ length: count }).map((_, index) => (
+        <CarouselItem>
+          <Card class="m-px">
+            <CardContent class="flex aspect-square items-center justify-center p-6">
+              <span class="text-4xl font-semibold">{index + 1}</span>
+            </CardContent>
+          </Card>
+        </CarouselItem>
+      ))}
+    </CarouselContent>
+    <CarouselPrevious />
+    <CarouselNext />
+  </Carousel>
+  <div
+    class="py-2 text-center text-sm text-muted-foreground"
+    data-carousel-api-status
+  >
+    Slide 1 of {count}
+  </div>
+</div>
+
+<script>
+  import type { CarouselApi } from "@/components/ui/carousel"
+
+  type CarouselRoot = HTMLElement & { __fulldevCarouselApi?: CarouselApi }
+
+  const initialize = () => {
+    for (const root of document.querySelectorAll("[data-carousel-api-demo]")) {
+      if (root.hasAttribute("data-bound")) continue
+      root.setAttribute("data-bound", "")
+      const carousel = root.querySelector<CarouselRoot>(
+        '[data-slot="carousel"]'
+      )
+      const status = root.querySelector("[data-carousel-api-status]")
+      if (!carousel || !status) continue
+      const update = (api: CarouselApi) => {
+        status.textContent = `Slide ${api.selectedScrollSnap() + 1} of ${api.scrollSnapList().length}`
+      }
+      if (carousel.__fulldevCarouselApi) update(carousel.__fulldevCarouselApi)
+      carousel.addEventListener("carousel:select", (event) =>
+        update((event as CustomEvent<{ api: CarouselApi }>).detail.api)
+      )
+    }
+  }
+
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+</script>

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scroll-area-examples",
+  "title": "Scroll Area examples",
+  "description": "The examples from the shadcn/ui Scroll Area docs.",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@fulldev/scroll-area",
+    "@fulldev/select",
+    "@fulldev/separator"
+  ],
+  "files": [
+    {
+      "path": "src/components/examples/scroll-area/scroll-area-demo.tsx",
+      "content": "import * as React from \"react\"\n\nimport { ScrollArea } from \"@/components/ui/scroll-area\"\nimport { Separator } from \"@/components/ui/separator\"\n\nconst tags = Array.from({ length: 50 }).map(\n  (_, i, a) => `v1.2.0-beta.${a.length - i}`\n)\n\nexport function ScrollAreaDemo() {\n  return (\n    <ScrollArea className=\"h-72 w-48 rounded-md border\">\n      <div className=\"p-4\">\n        <h4 className=\"mb-4 text-sm leading-none font-medium\">Tags</h4>\n        {tags.map((tag) => (\n          <React.Fragment key={tag}>\n            <div className=\"text-sm\">{tag}</div>\n            <Separator className=\"my-2\" />\n          </React.Fragment>\n        ))}\n      </div>\n    </ScrollArea>\n  )\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/scroll-area/scroll-area-horizontal-demo.tsx",
+      "content": "import * as React from \"react\"\n\nimport { ScrollArea, ScrollBar } from \"@/components/ui/scroll-area\"\n\nexport interface Artwork {\n  artist: string\n  art: string\n}\n\nexport const works: Artwork[] = [\n  {\n    artist: \"Ornella Binni\",\n    art: \"https://images.unsplash.com/photo-1465869185982-5a1a7522cbcb?auto=format&fit=crop&w=300&q=80\",\n  },\n  {\n    artist: \"Tom Byrom\",\n    art: \"https://images.unsplash.com/photo-1548516173-3cabfa4607e9?auto=format&fit=crop&w=300&q=80\",\n  },\n  {\n    artist: \"Vladimir Malyavko\",\n    art: \"https://images.unsplash.com/photo-1494337480532-3725c85fd2ab?auto=format&fit=crop&w=300&q=80\",\n  },\n]\n\nexport function ScrollAreaHorizontalDemo() {\n  return (\n    <ScrollArea className=\"w-96 rounded-md border whitespace-nowrap\">\n      <div className=\"flex w-max space-x-4 p-4\">\n        {works.map((artwork) => (\n          <figure key={artwork.artist} className=\"shrink-0\">\n            <div className=\"overflow-hidden rounded-md\">\n              <img\n                src={artwork.art}\n                alt={`Photo by ${artwork.artist}`}\n                className=\"aspect-[3/4] h-fit w-fit object-cover\"\n                width={300}\n                height={400}\n              />\n            </div>\n            <figcaption className=\"pt-2 text-xs text-muted-foreground\">\n              Photo by{\" \"}\n              <span className=\"font-semibold text-foreground\">\n                {artwork.artist}\n              </span>\n            </figcaption>\n          </figure>\n        ))}\n      </div>\n      <ScrollBar orientation=\"horizontal\" />\n    </ScrollArea>\n  )\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/scroll-area/scroll-area-rtl.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nimport { ScrollArea } from \"@/components/ui/scroll-area\"\nimport { Separator } from \"@/components/ui/separator\"\nimport {\n  useTranslation,\n  type Translations,\n} from \"@/components/language-selector\"\n\nconst tags = Array.from({ length: 50 }).map(\n  (_, i, a) => `v1.2.0-beta.${a.length - i}`\n)\n\nconst translations: Translations = {\n  en: {\n    dir: \"ltr\",\n    values: {\n      tags: \"Tags\",\n    },\n  },\n  ar: {\n    dir: \"rtl\",\n    values: {\n      tags: \"العلامات\",\n    },\n  },\n  he: {\n    dir: \"rtl\",\n    values: {\n      tags: \"תגיות\",\n    },\n  },\n}\n\nexport function ScrollAreaRtl() {\n  const { dir, t } = useTranslation(translations, \"ar\")\n\n  return (\n    <ScrollArea className=\"h-72 w-48 rounded-md border\" dir={dir}>\n      <div className=\"p-4\">\n        <h4 className=\"mb-4 text-sm leading-none font-medium\">{t.tags}</h4>\n        {tags.map((tag) => (\n          <React.Fragment key={tag}>\n            <div className=\"text-sm\">{tag}</div>\n            <Separator className=\"my-2\" />\n          </React.Fragment>\n        ))}\n      </div>\n    </ScrollArea>\n  )\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/language-selector.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"cn\"\n\nimport {\n  Select,\n  SelectContent,\n  SelectGroup,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from \"@/components/ui/select\"\n\nexport type Language = \"en\" | \"ar\" | \"he\"\n\nexport type Direction = \"ltr\" | \"rtl\"\n\nexport type Translations<\n  T extends Record<string, string> = Record<string, string>,\n> = Record<\n  Language,\n  {\n    dir: Direction\n    locale?: string\n    values: T\n  }\n>\n\nexport const languageOptions = [\n  { value: \"en\", label: \"English\" },\n  { value: \"ar\", label: \"Arabic (العربية)\" },\n  { value: \"he\", label: \"Hebrew (עברית)\" },\n] as const\n\ntype LanguageContextType = {\n  language: Language\n  setLanguage: (language: Language) => void\n}\n\nconst LanguageContext = React.createContext<LanguageContextType | undefined>(\n  undefined\n)\n\nexport function LanguageProvider({\n  children,\n  defaultLanguage = \"ar\",\n}: {\n  children: React.ReactNode\n  defaultLanguage?: Language\n}) {\n  const [language, setLanguage] = React.useState<Language>(defaultLanguage)\n\n  return (\n    <LanguageContext.Provider value={{ language, setLanguage }}>\n      {children}\n    </LanguageContext.Provider>\n  )\n}\n\nexport function useLanguageContext() {\n  const context = React.useContext(LanguageContext)\n  return context\n}\n\nexport function useTranslation<T extends Record<string, string>>(\n  translations: Translations<T>,\n  defaultLanguage: Language = \"ar\"\n) {\n  const context = useLanguageContext()\n  const [localLanguage, setLocalLanguage] =\n    React.useState<Language>(defaultLanguage)\n\n  const language = context?.language ?? localLanguage\n  const setLanguage = context?.setLanguage ?? setLocalLanguage\n\n  const { dir, locale, values: t } = translations[language]\n  return { language, setLanguage, dir, locale, t }\n}\n\nexport interface LanguageSelectorProps {\n  value: Language\n  onValueChange: (value: Language) => void\n}\n\nexport function LanguageSelector({\n  value,\n  onValueChange,\n  className,\n  languages = [\"en\", \"ar\", \"he\"],\n}: LanguageSelectorProps & {\n  className?: string\n  languages?: Language[]\n}) {\n  return (\n    <Select\n      items={languageOptions}\n      value={value}\n      onValueChange={(value) => onValueChange(value as Language)}\n    >\n      <SelectTrigger\n        size=\"sm\"\n        className={cn(\"w-36\", className)}\n        dir=\"ltr\"\n        data-name=\"language-selector\"\n      >\n        <SelectValue />\n      </SelectTrigger>\n      <SelectContent\n        dir=\"ltr\"\n        className=\"data-open:animate-none data-closed:animate-none\"\n      >\n        <SelectGroup>\n          {languageOptions\n            .filter((option) => languages.includes(option.value as Language))\n            .map((option) => (\n              <SelectItem key={option.value} value={option.value}>\n                {option.label}\n              </SelectItem>\n            ))}\n        </SelectGroup>\n      </SelectContent>\n    </Select>\n  )\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "docs": "https://ui.full.dev/react/components/scroll-area/",
+  "type": "registry:example"
+}

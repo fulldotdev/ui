@@ -4,38 +4,7 @@ title: Alert Dialog
 description: A modal dialog for important confirmations that expects a response.
 ---
 
-```astro live props={{ name: 'alert-dialog' }}
----
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
----
-
-<AlertDialog>
-  <AlertDialogTrigger variant="outline">Show Dialog</AlertDialogTrigger>
-  <AlertDialogContent>
-    <AlertDialogHeader>
-      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-      <AlertDialogDescription>
-        This action cannot be undone. This will permanently delete your account
-        and remove your data from our servers.
-      </AlertDialogDescription>
-    </AlertDialogHeader>
-    <AlertDialogFooter>
-      <AlertDialogCancel>Cancel</AlertDialogCancel>
-      <AlertDialogAction>Continue</AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>
-```
+<Example name="alert-dialog-demo" />
 
 ## Installation
 
@@ -78,36 +47,10 @@ import {
 </AlertDialog>
 ```
 
-## Composition
-
-Use the following composition to build an `AlertDialog`:
-
-```text
-AlertDialog
-├── AlertDialogTrigger
-└── AlertDialogContent
-    ├── AlertDialogHeader
-    │   ├── AlertDialogMedia
-    │   ├── AlertDialogTitle
-    │   └── AlertDialogDescription
-    └── AlertDialogFooter
-        ├── AlertDialogCancel
-        └── AlertDialogAction
-```
-
-## Notes
-
-- Use `AlertDialog` for irreversible or high-risk actions, not routine inline
-  confirmations.
-- Keep `AlertDialogTitle` and `AlertDialogDescription` inside
-  `AlertDialogContent` so screen readers announce the dialog context clearly.
-- Use `AlertDialogCancel` for dismissive actions. It closes the dialog
-  automatically.
-- `AlertDialogAction` is an action hook and does not close the dialog. Run the
-  confirmation first, then close the dialog with the documented
-  `alert-dialog:set` event when the action succeeds.
-- Use `size="sm"` on `AlertDialogContent` for compact confirmations and
-  `AlertDialogMedia` when the dialog needs an icon or visual cue.
+`AlertDialogTrigger`, `AlertDialogCancel` and `AlertDialogAction` are `Button`s
+and take its props, such as `variant`. `AlertDialogCancel` closes the dialog.
+`AlertDialogAction` does not: run the action, then close the dialog with the
+`alert-dialog:set` event.
 
 ```astro
 <AlertDialog id="account-deletion-dialog">
@@ -136,7 +79,85 @@ AlertDialog
 </script>
 ```
 
+## Composition
+
+```text
+AlertDialog
+├── AlertDialogTrigger
+└── AlertDialogContent
+    ├── AlertDialogHeader
+    │   ├── AlertDialogMedia
+    │   ├── AlertDialogTitle
+    │   └── AlertDialogDescription
+    └── AlertDialogFooter
+        ├── AlertDialogCancel
+        └── AlertDialogAction
+```
+
+Keep `AlertDialogTitle` and `AlertDialogDescription` inside
+`AlertDialogContent` so screen readers announce the dialog context.
+
+## Basic
+
+A basic alert dialog with a title, description, and cancel and continue
+buttons.
+
+<Example name="alert-dialog-basic" />
+
+## Small
+
+Use the `size="sm"` prop to make the alert dialog smaller.
+
+<Example name="alert-dialog-small" />
+
+## Media
+
+Use the `AlertDialogMedia` component to add a media element such as an icon or
+image to the alert dialog.
+
+<Example name="alert-dialog-media" />
+
+## Small with Media
+
+Use `size="sm"` and `AlertDialogMedia` together.
+
+<Example name="alert-dialog-small-media" />
+
+## Destructive
+
+Pass `variant="destructive"` to `AlertDialogAction` for a destructive action.
+
+<Example name="alert-dialog-destructive" />
+
+## RTL
+
+Pass `dir="rtl"` on `AlertDialogContent` as well: the content is portaled to
+`document.body`.
+
+<Example name="alert-dialog-rtl" />
+
 ## API Reference
 
-See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/components/ui/alert-dialog) for more information on props.
-See the [data-slot docs](https://github.com/bejamas/data-slot/blob/main/packages/alert-dialog/README.md) for more information on interactivity.
+Source: [`src/components/ui/alert-dialog`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/alert-dialog)
+
+Interactivity comes from [`@data-slot/alert-dialog`](https://github.com/bejamas/data-slot/blob/main/packages/alert-dialog/README.md).
+
+### AlertDialog
+
+| Prop                  | Type      | Default |
+| --------------------- | --------- | ------- |
+| `defaultOpen`         | `boolean` | `false` |
+| `closeOnClickOutside` | `boolean` | `false` |
+| `closeOnEscape`       | `boolean` | `true`  |
+| `lockScroll`          | `boolean` | `true`  |
+
+| Event                 | Detail              | Description                        |
+| --------------------- | ------------------- | ---------------------------------- |
+| `alert-dialog:change` | `{ open: boolean }` | Fired when the open state changes. |
+| `alert-dialog:set`    | `{ open: boolean }` | Dispatch to set the open state.    |
+
+### AlertDialogContent
+
+| Prop   | Type                | Default     |
+| ------ | ------------------- | ----------- |
+| `size` | `"default" \| "sm"` | `"default"` |

@@ -1,0 +1,58 @@
+---
+import { Field, FieldDescription, FieldTitle } from "@/components/ui/field"
+import { Slider } from "@/components/ui/slider"
+
+const value = [200, 800]
+---
+
+<Field class="w-full max-w-xs" data-field-slider>
+  <FieldTitle data-slider-label>Price Range</FieldTitle>
+  <!-- prettier-ignore -->
+  <FieldDescription>
+    Set your budget range ($<span class="font-medium tabular-nums" data-field-slider-min>{value[0]}</span> - <span class="font-medium tabular-nums" data-field-slider-max>{value[1]}</span>).
+  </FieldDescription>
+  <Slider
+    defaultValue={[value[0], value[1]]}
+    max={1000}
+    min={0}
+    step={10}
+    class="mt-2 w-full"
+  />
+</Field>
+
+<script>
+  const initialize = () => {
+    for (const root of document.querySelectorAll("[data-field-slider]")) {
+      if (root.hasAttribute("data-bound")) continue
+      root.setAttribute("data-bound", "")
+      // Name each thumb after the visible label: the thumbs are the
+      // focusable sliders, not the root.
+      const name = root
+        .querySelector("[data-slider-label]")
+        ?.textContent?.trim()
+      const thumbs = root.querySelectorAll('[data-slot="slider-thumb"]')
+      thumbs.forEach((thumb, index) =>
+        thumb.setAttribute(
+          "aria-label",
+          thumbs.length > 1
+            ? `${name} ${index === 0 ? "minimum" : "maximum"}`
+            : `${name}`
+        )
+      )
+      const min = root.querySelector("[data-field-slider-min]")
+      const max = root.querySelector("[data-field-slider-max]")
+      root
+        .querySelector('[data-slot="slider"]')
+        ?.addEventListener("slider:change", (event) => {
+          const [start, end] = [
+            (event as CustomEvent<{ value: number | number[] }>).detail.value,
+          ].flat()
+          if (min) min.textContent = String(start)
+          if (max) max.textContent = String(end)
+        })
+    }
+  }
+
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+</script>

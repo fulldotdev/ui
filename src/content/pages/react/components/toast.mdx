@@ -1,10 +1,10 @@
 ---
 type: doc
 title: Toast
-description: A brief notification that appears without interrupting the user.
+description: A succinct message that is displayed temporarily.
 ---
 
-<Example name="toast" />
+<Example name="toast-demo" />
 
 ## Installation
 
@@ -12,26 +12,72 @@ description: A brief notification that appears without interrupting the user.
 npx shadcn@latest add @fulldev/toast
 ```
 
+Add the `Toaster` to the root layout:
+
+```tsx title="app/layout.tsx"
+import { Toaster } from "@/components/ui/toast"
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>
+        <main>{children}</main>
+        <Toaster />
+      </body>
+    </html>
+  )
+}
+```
+
 ## Usage
 
 ```tsx
-import {
-  createToastManager,
-  Toast,
-  toast,
-  ToastAction,
-  ToastClose,
-  ToastContent,
-  ToastDescription,
-  Toaster,
-  ToastPortal,
-  ToastProvider,
-  ToastTitle,
-  ToastViewport,
-  useToastManager,
-} from "@/components/ui/toast"
+import { toast } from "@/components/ui/toast"
 ```
+
+```tsx
+toast.add({
+  title: "Event created",
+  description: "Sunday, December 3 at 9:00 AM",
+})
+```
+
+## Types
+
+Set the `type` option to render a status icon. The built-in renderer recognizes `success`, `info`, `warning`, `error`, and `loading`.
+
+<Example name="toast-types" />
+
+## Action
+
+Pass button props with `actionProps` to render an action.
+
+```tsx
+const id = toast.add({
+  title: "Event created",
+  actionProps: {
+    children: "Undo",
+    onClick() {
+      toast.close(id)
+    },
+  },
+})
+```
+
+## Promise
+
+Use `toast.promise` to update one toast as an asynchronous task moves through loading, success, and error states.
+
+<Example name="toast-promise" />
+
+## Custom layout
+
+`createToastManager`, `ToastProvider`, `ToastViewport` and the `Toast` parts build a second toast stack with its own layout.
+
+<Example name="toast" />
 
 ## API Reference
 
 Source: [`react/src/components/ui/toast.tsx`](https://github.com/fulldotdev/ui/blob/main/react/src/components/ui/toast.tsx)
+
+See the [Base UI Toast documentation](https://base-ui.com/react/components/toast) for manager options, stacking, swipe dismissal, and the primitive API.

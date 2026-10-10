@@ -4,35 +4,7 @@ title: Sheet
 description: A sliding panel component that appears from the edge of the screen.
 ---
 
-```astro live props={{ name: 'sheet' }}
----
-import Menu from "@lucide/astro/icons/menu"
-
-import { Button } from "@/components/ui/button"
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
----
-
-<Sheet>
-  <SheetTrigger variant="outline">
-    <Menu />
-  </SheetTrigger>
-  <SheetContent>
-    <SheetHeader>
-      <SheetTitle>Sheet Title</SheetTitle>
-      <SheetDescription>
-        This is a description of the sheet. You can add any content here.
-      </SheetDescription>
-    </SheetHeader>
-  </SheetContent>
-</Sheet>
-```
+<Example name="sheet-demo" />
 
 ## Installation
 
@@ -57,23 +29,21 @@ import {
 
 ```astro
 <Sheet>
-  <SheetTrigger>Open</SheetTrigger>
+  <SheetTrigger variant="outline">Open</SheetTrigger>
   <SheetContent>
     <SheetHeader>
-      <SheetTitle>Sheet Title</SheetTitle>
-      <SheetDescription>Sheet Description</SheetDescription>
+      <SheetTitle>Are you absolutely sure?</SheetTitle>
+      <SheetDescription>This action cannot be undone.</SheetDescription>
     </SheetHeader>
-    <SheetFooter>
-      <SheetClose variant="outline">Close</SheetClose>
-      <Button>Save</Button>
-    </SheetFooter>
   </SheetContent>
 </Sheet>
 ```
 
-## Composition
+`SheetTrigger` and `SheetClose` render a `Button` and take its `variant` and
+`size` props. The sheet uses the Data Slot dialog: it traps focus, closes on
+`Escape` and outside click, and locks page scroll while open.
 
-Use the following composition to build a `Sheet`:
+## Composition
 
 ```text
 Sheet
@@ -85,86 +55,42 @@ Sheet
     └── SheetFooter
 ```
 
-## Examples
+## Side
 
-```astro live
----
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
----
+Use the `side` prop on `SheetContent` to set the edge of the screen where the
+sheet appears. Values are `top`, `right`, `bottom`, or `left`.
 
-<Sheet>
-  <SheetTrigger variant="outline">Open</SheetTrigger>
-  <SheetContent>
-    <SheetHeader>
-      <SheetTitle>Edit profile</SheetTitle>
-      <SheetDescription>
-        Make changes to your profile here. Click save when you&apos;re done.
-      </SheetDescription>
-    </SheetHeader>
-    <div class="grid gap-4 px-4">
-      <div class="grid gap-2">
-        <Label for="sheet-name">Name</Label>
-        <Input id="sheet-name" value="Pedro Duarte" />
-      </div>
-      <div class="grid gap-2">
-        <Label for="sheet-username">Username</Label>
-        <Input id="sheet-username" value="@peduarte" />
-      </div>
-    </div>
-    <SheetFooter>
-      <SheetClose variant="outline">Cancel</SheetClose>
-      <Button>Save changes</Button>
-    </SheetFooter>
-  </SheetContent>
-</Sheet>
-```
+<Example name="sheet-side" />
 
-### Sides
+## No Close Button
 
-```astro live
----
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
----
+Use `showCloseButton={false}` on `SheetContent` to hide the close button.
 
-<div class="flex flex-wrap gap-3">
-  <Sheet>
-    <SheetTrigger variant="outline">Left</SheetTrigger>
-    <SheetContent side="left">
-      <SheetHeader>
-        <SheetTitle>Left sheet</SheetTitle>
-      </SheetHeader>
-    </SheetContent>
-  </Sheet>
-  <Sheet>
-    <SheetTrigger variant="outline">Right</SheetTrigger>
-    <SheetContent side="right">
-      <SheetHeader>
-        <SheetTitle>Right sheet</SheetTitle>
-      </SheetHeader>
-    </SheetContent>
-  </Sheet>
-</div>
-```
+<Example name="sheet-no-close-button" />
+
+## RTL
+
+<Example name="sheet-rtl" />
 
 ## API Reference
 
-See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/components/ui/sheet) for more information on props.
-See the [data-slot docs](https://github.com/bejamas/data-slot/blob/main/packages/dialog/README.md) for more information on interactivity.
+Source: [`src/components/ui/sheet`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/sheet)
+
+### Sheet
+
+| Prop                  | Type      | Default |
+| --------------------- | --------- | ------- |
+| `defaultOpen`         | `boolean` | `false` |
+| `closeOnClickOutside` | `boolean` | `true`  |
+| `closeOnEscape`       | `boolean` | `true`  |
+| `lockScroll`          | `boolean` | `true`  |
+
+### SheetContent
+
+| Prop              | Type                                     | Default   |
+| ----------------- | ---------------------------------------- | --------- |
+| `side`            | `"top" \| "right" \| "bottom" \| "left"` | `"right"` |
+| `showCloseButton` | `boolean`                                | `true`    |
+
+See the [Data Slot dialog docs](https://github.com/bejamas/data-slot/blob/main/packages/dialog/README.md)
+for events and programmatic control.

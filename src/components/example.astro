@@ -24,6 +24,10 @@ const components = import.meta.glob<{ default: unknown }>(
 const Component = components[`/${example.path}`]?.default as
   ((props: Record<string, never>) => unknown) | undefined
 const block = example.kind === "blocks"
+// Full-page examples (a block preview upstream) stay inside a frame: the
+// transform keeps their fixed parts in it and the viewport heights become the
+// frame height.
+const fullPage = ["sidebar-demo"].includes(name)
 ---
 
 <LiveCode
@@ -33,7 +37,14 @@ const block = example.kind === "blocks"
     codeLabel: example.kind === "examples" ? "Code" : "Usage",
   }}
 >
-  {Component ? (
+  {Component && fullPage ? (
+    <div
+      slot="example"
+      class="relative h-[640px] w-full transform-gpu overflow-hidden text-left [&_[data-slot=sidebar-container]]:h-full [&_[data-slot=sidebar-wrapper]]:min-h-full"
+    >
+      <Component />
+    </div>
+  ) : Component ? (
     <Component slot="example" />
   ) : (
     <iframe

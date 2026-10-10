@@ -1,0 +1,36 @@
+---
+import { Button } from "@/components/ui/button"
+import { Toaster } from "@/components/ui/toast"
+---
+
+<div data-toast-demo>
+  <Button variant="outline" data-show-toast>
+    Show Toast
+  </Button>
+  <Toaster portal />
+</div>
+
+<script>
+  const initialize = () => {
+    for (const root of document.querySelectorAll("[data-toast-demo]")) {
+      if (root.hasAttribute("data-bound")) continue
+      root.setAttribute("data-bound", "")
+      const toaster = root.querySelector('[data-slot="toast"]')
+      root.querySelector("[data-show-toast]")?.addEventListener("click", () => {
+        // The action closes its toast, like toast.close(id) in the React example.
+        toaster?.dispatchEvent(
+          new CustomEvent("toast:show", {
+            detail: {
+              title: "Event created",
+              description: "Sunday, December 3 at 9:00 AM",
+              action: { label: "Undo", value: "undo" },
+            },
+          })
+        )
+      })
+    }
+  }
+
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+</script>

@@ -4,28 +4,7 @@ title: Button Group
 description: Groups related controls with connected edges and consistent focus behavior.
 ---
 
-```astro live props={{ name: 'button-group' }}
----
-import ArchiveIcon from "@lucide/astro/icons/archive"
-import MailIcon from "@lucide/astro/icons/mail"
-import TrashIcon from "@lucide/astro/icons/trash"
-
-import { Button } from "@/components/ui/button"
-import { ButtonGroup } from "@/components/ui/button-group"
----
-
-<ButtonGroup aria-label="Message actions">
-  <Button variant="outline">
-    <ArchiveIcon /> Archive
-  </Button>
-  <Button variant="outline">
-    <MailIcon /> Mark unread
-  </Button>
-  <Button variant="outline" size="icon" aria-label="Delete">
-    <TrashIcon />
-  </Button>
-</ButtonGroup>
-```
+<Example name="button-group-demo" />
 
 ## Installation
 
@@ -35,76 +14,111 @@ npx shadcn@latest add @fulldev/button-group
 
 ## Usage
 
-```astro
----
-import { Button } from "@/components/ui/button"
-import { ButtonGroup } from "@/components/ui/button-group"
----
+```ts
+import {
+  ButtonGroup,
+  ButtonGroupSeparator,
+  ButtonGroupText,
+} from "@/components/ui/button-group"
+```
 
+```astro
 <ButtonGroup aria-label="Document actions">
   <Button variant="outline">Save</Button>
   <Button variant="outline">Publish</Button>
 </ButtonGroup>
 ```
 
-Give each group an accessible name with `aria-label` or `aria-labelledby`.
+`ButtonGroup` renders a `div` with `role="group"`. Give each group an
+accessible name with `aria-label` or `aria-labelledby`. The group connects the
+edges of its direct children that have a `data-slot`. Dropdown Menu, Popover
+and Select render a wrapper element around their trigger, so give that trigger
+the connected edge classes itself, such as `rounded-l-none border-l-0`.
 
-## Examples
+Use `ButtonGroup` for buttons that perform an action and
+[Toggle Group](/astro/components/toggle-group/) for buttons that toggle a state.
 
-### Sizes
+## Orientation
 
-Button sizes continue to work inside a group.
+Set the `orientation` prop to change the button group layout.
 
-```astro live
----
-import { Button } from "@/components/ui/button"
-import { ButtonGroup } from "@/components/ui/button-group"
----
+<Example name="button-group-orientation" />
 
-<div class="flex flex-col items-start gap-4">
-  <ButtonGroup aria-label="Small view controls">
-    <Button variant="outline" size="sm">
-      List
-    </Button>
-    <Button variant="outline" size="sm">
-      Grid
-    </Button>
-  </ButtonGroup>
-  <ButtonGroup aria-label="Default view controls">
-    <Button variant="outline">List</Button>
-    <Button variant="outline">Grid</Button>
-  </ButtonGroup>
-</div>
-```
+## Size
 
-### Vertical
+Control the size of buttons using the `size` prop on individual buttons.
 
-```astro live
----
-import CopyIcon from "@lucide/astro/icons/copy"
-import SearchIcon from "@lucide/astro/icons/search"
-import SettingsIcon from "@lucide/astro/icons/settings"
+<Example name="button-group-size" />
 
-import { Button } from "@/components/ui/button"
-import { ButtonGroup } from "@/components/ui/button-group"
----
+## Nested
 
-<ButtonGroup orientation="vertical" aria-label="Document tools">
-  <Button variant="outline" size="icon" aria-label="Search">
-    <SearchIcon />
-  </Button>
-  <Button variant="outline" size="icon" aria-label="Copy">
-    <CopyIcon />
-  </Button>
-  <Button variant="outline" size="icon" aria-label="Settings">
-    <SettingsIcon />
-  </Button>
-</ButtonGroup>
-```
+Nest `ButtonGroup` components to create button groups with spacing.
 
-### With Text
+<Example name="button-group-nested" />
 
-`ButtonGroupText` is polymorphic. Render it as a label when it describes a form control.
+## Separator
+
+`ButtonGroupSeparator` visually divides buttons within a group. Outline
+buttons have a border and do not need one.
+
+<Example name="button-group-separator" />
+
+## Split
+
+Create a split button group by adding two buttons separated by a
+`ButtonGroupSeparator`.
+
+<Example name="button-group-split" />
+
+## Input
+
+Wrap an `Input` component with buttons.
+
+<Example name="button-group-input" />
+
+## Input Group
+
+Wrap an `InputGroup` component to create complex input layouts.
+
+<Example name="button-group-input-group" />
+
+## Dropdown Menu
+
+Create a split button group with a `DropdownMenu` component.
+
+<Example name="button-group-dropdown" />
+
+## Select
+
+Pair with a `Select` component.
+
+<Example name="button-group-select" />
+
+## Popover
+
+Use with a `Popover` component.
+
+<Example name="button-group-popover" />
+
+## RTL
+
+<Example name="button-group-rtl" />
+
+## API Reference
+
+Source: [`src/components/ui/button-group`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/button-group)
+
+### ButtonGroup
+
+| Prop          | Type                         | Default        | Description                              |
+| ------------- | ---------------------------- | -------------- | ---------------------------------------- |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Controls the layout and connected edges. |
+| `as`          | `HTMLTag`                    | `"div"`        | Changes the rendered element.            |
+
+### ButtonGroupText
+
+Accepts `as` and the attributes for that HTML element. Render it as a label
+when it describes a form control.
 
 ```astro live
 ---
@@ -120,69 +134,6 @@ import { Input } from "@/components/ui/input"
 </ButtonGroup>
 ```
 
-### Nested Groups
-
-Nested groups keep a gap between related sets while preserving connected controls inside each set.
-
-```astro live
----
-import ChevronLeftIcon from "@lucide/astro/icons/chevron-left"
-import ChevronRightIcon from "@lucide/astro/icons/chevron-right"
-
-import { Button } from "@/components/ui/button"
-import { ButtonGroup } from "@/components/ui/button-group"
----
-
-<ButtonGroup aria-label="Pagination controls">
-  <ButtonGroup aria-label="Pages">
-    <Button as="a" href="?page=1" variant="outline">
-      1
-    </Button>
-    <Button as="a" href="?page=2" variant="outline">
-      2
-    </Button>
-    <Button as="a" href="?page=3" variant="outline">
-      3
-    </Button>
-  </ButtonGroup>
-  <ButtonGroup aria-label="Previous and next page">
-    <Button
-      as="a"
-      href="?page=1"
-      variant="outline"
-      size="icon-xs"
-      aria-label="Previous page"
-    >
-      <ChevronLeftIcon />
-    </Button>
-    <Button
-      as="a"
-      href="?page=3"
-      variant="outline"
-      size="icon-xs"
-      aria-label="Next page"
-    >
-      <ChevronRightIcon />
-    </Button>
-  </ButtonGroup>
-</ButtonGroup>
-```
-
-## API Reference
-
-### ButtonGroup
-
-| Prop          | Type                         | Default        | Description                              |
-| ------------- | ---------------------------- | -------------- | ---------------------------------------- |
-| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Controls the layout and connected edges. |
-| `as`          | `HTMLTag`                    | `"div"`        | Changes the rendered element.            |
-
-### ButtonGroupText
-
-Accepts `as` and the attributes for that HTML element.
-
 ### ButtonGroupSeparator
 
 Uses the Separator API. Its `orientation` defaults to `"vertical"`.
-
-See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/components/ui/button-group) for the component source.

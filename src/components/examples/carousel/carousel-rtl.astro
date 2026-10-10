@@ -1,0 +1,70 @@
+---
+import { Card, CardContent } from "@/components/ui/card"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+
+const translations = {
+  en: {
+    dir: "ltr",
+    values: {},
+  },
+  ar: {
+    dir: "rtl",
+    values: {},
+  },
+  he: {
+    dir: "rtl",
+    values: {},
+  },
+} as const
+
+function toArabicNumerals(num: number): string {
+  const arabicNumerals = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"]
+  return num
+    .toString()
+    .split("")
+    .map((digit) => arabicNumerals[parseInt(digit, 10)])
+    .join("")
+}
+
+const language = "ar"
+const { dir } = translations[language]
+
+const formatNumber = (num: number): string => {
+  if (language === "ar") {
+    return toArabicNumerals(num)
+  }
+  return num.toString()
+}
+---
+
+<Carousel
+  dir={dir}
+  class="w-full max-w-[12rem] sm:max-w-xs"
+  opts={{
+    direction: dir,
+  }}
+>
+  <CarouselContent>
+    {Array.from({ length: 5 }).map((_, index) => (
+      <CarouselItem>
+        <div class="p-1">
+          <Card>
+            <CardContent class="flex aspect-square items-center justify-center p-6">
+              <span class="text-4xl font-semibold">
+                {formatNumber(index + 1)}
+              </span>
+            </CardContent>
+          </Card>
+        </div>
+      </CarouselItem>
+    ))}
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>

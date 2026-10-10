@@ -2,7 +2,7 @@
 
 The React version of Fulldev UI: every shadcn/ui component for Base UI, the Fulldev components (banner, header, icon, layout, logo, marquee, price, rating, section, theme toggle, table of contents, typography, video, form) and all blocks, in every shadcn/ui style.
 
-Preview every component and block at [ui.full.dev/react](https://ui.full.dev/react/).
+Docs, with every component, official shadcn/ui example and block: [ui.full.dev/react](https://ui.full.dev/react/).
 
 ## Installation
 
@@ -48,10 +48,12 @@ Blocks take plain content props, such as `title`, `buttons` and `image: { src, s
 ## Development
 
 ```bash
-pnpm --dir react dev   # gallery at http://127.0.0.1:4322
-pnpm build             # docs site with the gallery in every style at /react/
+pnpm --dir react dev   # preview app; the docs dev server proxies /preview/react/ to it
+pnpm build             # docs site with the previews in every style at /preview/react/
 pnpm registry:build    # regenerates public/r/react from react/registry.json
 ```
+
+`src/components/examples/<component>/` holds the examples of the shadcn/ui docs, unchanged except where noted on their docs page; `@fulldev/<component>-examples` installs them.
 
 `react/registry.json` lists the installable items. Components use the same `cn-*` placeholders and style files as the Astro components (see `registry/styles/README.md`).
 

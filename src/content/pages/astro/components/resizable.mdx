@@ -4,33 +4,7 @@ title: Resizable
 description: Accessible panel groups with pointer and keyboard resizing.
 ---
 
-```astro live props={{ name: 'resizable' }}
----
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable"
----
-
-<ResizablePanelGroup class="h-48 max-w-2xl rounded-lg border">
-  <ResizablePanel
-    defaultSize={35}
-    minSize={20}
-    class="flex items-center justify-center p-6"
-  >
-    Sidebar
-  </ResizablePanel>
-  <ResizableHandle withHandle aria-label="Resize sidebar and content" />
-  <ResizablePanel
-    defaultSize={65}
-    minSize={30}
-    class="flex items-center justify-center p-6"
-  >
-    Content
-  </ResizablePanel>
-</ResizablePanelGroup>
-```
+<Example name="resizable-demo" />
 
 ## Installation
 
@@ -40,64 +14,56 @@ npx shadcn@latest add @fulldev/resizable
 
 ## Usage
 
+```ts
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable"
+```
+
 ```astro
----
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable"
----
-
-<ResizablePanelGroup class="h-48">
-  <ResizablePanel defaultSize={40}>Sidebar</ResizablePanel>
-  <ResizableHandle aria-label="Resize panels" />
-  <ResizablePanel defaultSize={60}>Content</ResizablePanel>
+<ResizablePanelGroup direction="horizontal">
+  <ResizablePanel>One</ResizablePanel>
+  <ResizableHandle />
+  <ResizablePanel>Two</ResizablePanel>
 </ResizablePanelGroup>
 ```
 
-A group needs one handle between each pair of panels. Give every handle an accessible label. Drag a handle with a pointer, or focus it and use the arrow keys.
+A group needs one handle between each pair of panels. Sizes are percentages,
+such as `defaultSize={50}`. Each group owns only its direct panels and handles,
+so a panel can contain another group.
 
-## Examples
+## Composition
 
-### Vertical
-
-Use `direction="vertical"` for rows. The handle responds to the up and down arrow keys.
-
-```astro live
----
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable"
----
-
-<ResizablePanelGroup
-  direction="vertical"
-  class="h-72 max-w-2xl rounded-lg border"
->
-  <ResizablePanel
-    defaultSize={35}
-    minSize={20}
-    class="flex items-center justify-center p-4"
-  >
-    Header
-  </ResizablePanel>
-  <ResizableHandle withHandle aria-label="Resize header and body" />
-  <ResizablePanel
-    defaultSize={65}
-    minSize={30}
-    class="flex items-center justify-center p-4"
-  >
-    Body
-  </ResizablePanel>
-</ResizablePanelGroup>
+```text
+ResizablePanelGroup
+├── ResizablePanel
+├── ResizableHandle
+└── ResizablePanel
 ```
 
-### Collapsible
+## Vertical
 
-Focus the handle and press `Enter` to collapse or restore the first panel. Dragging through the minimum size also collapses it.
+Use `direction="vertical"` for vertical resizing.
+
+<Example name="resizable-vertical" />
+
+## Handle
+
+Use the `withHandle` prop on `ResizableHandle` to show a visible handle.
+
+<Example name="resizable-handle" />
+
+## RTL
+
+<Example name="resizable-rtl" />
+
+## Collapsible
+
+Add `collapsible` and `collapsedSize` to a panel. Focus the handle and press
+`Enter` to collapse or restore the panel before it. Dragging through `minSize`
+also collapses it.
 
 ```astro live
 ---
@@ -129,50 +95,6 @@ import {
 </ResizablePanelGroup>
 ```
 
-### Nested
-
-Each group owns only its direct panels and handles, so a panel can safely contain another resizable group.
-
-```astro live
----
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable"
----
-
-<ResizablePanelGroup class="h-72 max-w-2xl rounded-lg border">
-  <ResizablePanel
-    defaultSize={35}
-    minSize={20}
-    class="flex items-center justify-center p-4"
-  >
-    Navigation
-  </ResizablePanel>
-  <ResizableHandle aria-label="Resize navigation and workspace" />
-  <ResizablePanel defaultSize={65} minSize={30}>
-    <ResizablePanelGroup direction="vertical" class="h-full">
-      <ResizablePanel
-        defaultSize={60}
-        minSize={25}
-        class="flex items-center justify-center p-4"
-      >
-        Editor
-      </ResizablePanel>
-      <ResizableHandle withHandle aria-label="Resize editor and console" />
-      <ResizablePanel
-        defaultSize={40}
-        minSize={20}
-        class="flex items-center justify-center p-4"
-      >
-        Console
-      </ResizablePanel>
-    </ResizablePanelGroup>
-  </ResizablePanel>
-</ResizablePanelGroup>
-```
-
 ## Keyboard Controls
 
 | Key                   | Action                                                       |
@@ -184,6 +106,8 @@ import {
 | `F6` / `Shift` + `F6` | Focus the next or previous handle in the group.              |
 
 ## API Reference
+
+Source: [`src/components/ui/resizable`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/resizable)
 
 ### ResizablePanelGroup
 
@@ -213,7 +137,8 @@ All sizes are percentages between 0 and 100.
 | `withHandle` | `boolean` | `false` | Shows a visible grip on the separator.   |
 | `disabled`   | `boolean` | `false` | Blocks keyboard resizing on this handle. |
 
-The root emits `resizable:change` with `{ layout: number[] }` and `resizable:dragging` with `{ dragging: boolean }`. Dispatch `resizable:set` with `{ layout: number[] }` to set a layout from client code.
-
-See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/components/ui/resizable) for the component source.
-See the [data-slot docs](https://github.com/bejamas/data-slot/blob/main/packages/resizable/README.md) for constraints, controller methods, and event details.
+The root emits `resizable:change` with `{ layout: number[] }` and
+`resizable:dragging` with `{ dragging: boolean }`. Dispatch `resizable:set` with
+`{ layout: number[] }` to set a layout from client code. See the
+[Data Slot docs](https://github.com/bejamas/data-slot/blob/main/packages/resizable/README.md)
+for constraints and controller methods.

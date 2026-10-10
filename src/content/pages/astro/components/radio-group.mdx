@@ -4,23 +4,7 @@ title: Radio Group
 description: A set of checkable buttons, known as radio buttons, where no more than one of the buttons can be checked at a time.
 ---
 
-```astro live props={{ name: 'radio-group' }}
----
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
----
-
-<RadioGroup defaultValue="option-one" name="demo">
-  <Label class="gap-3">
-    <RadioGroupItem value="option-one" />
-    Option One
-  </Label>
-  <Label class="gap-3">
-    <RadioGroupItem value="option-two" />
-    Option Two
-  </Label>
-</RadioGroup>
-```
+<Example name="radio-group-demo" />
 
 ## Installation
 
@@ -30,32 +14,29 @@ npx shadcn@latest add @fulldev/radio-group
 
 ## Usage
 
-```astro
----
+```ts
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
----
 ```
 
 ```astro
 <RadioGroup defaultValue="option-one" name="example">
-  <Label class="gap-3">
-    <RadioGroupItem value="option-one" />
-    Option One
-  </Label>
-  <Label class="gap-3">
-    <RadioGroupItem value="option-two" />
-    Option Two
-  </Label>
+  <div class="flex items-center gap-3">
+    <RadioGroupItem value="option-one" id="option-one" />
+    <Label for="option-one">Option One</Label>
+  </div>
+  <div class="flex items-center gap-3">
+    <RadioGroupItem value="option-two" id="option-two" />
+    <Label for="option-two">Option Two</Label>
+  </div>
 </RadioGroup>
 ```
 
-Label each item by wrapping it in `Label`. `RadioGroupItem` renders a `span`,
-which `Label for` cannot point to.
+`RadioGroupItem` renders a `span` with `role="radio"`. Label it with a sibling
+`Label for` its `id`, or by wrapping it in a `Label`. The group creates a hidden
+native radio per item, so with `name` it submits with a form.
 
 ## Composition
-
-Use the following composition to build a `RadioGroup`:
 
 ```text
 RadioGroup
@@ -63,136 +44,64 @@ RadioGroup
 └── RadioGroupItem
 ```
 
-## Examples
+## Description
 
-### With Descriptions
+Radio group items with a description using the `Field` component.
 
-Radio group items with a title and supporting copy. Wrap the item and its text
-in `Label`. A label may only contain phrasing content, so use `span` elements
-for the text.
+<Example name="radio-group-description" />
 
-```astro live
----
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
----
+## Choice Card
 
-<RadioGroup defaultValue="starter" name="plan" class="w-full max-w-sm">
-  <Label class="items-start gap-3">
-    <RadioGroupItem value="starter" />
-    <span class="flex flex-col gap-1 leading-snug">
-      Starter
-      <span class="text-muted-foreground font-normal">
-        Basic features for personal projects.
-      </span>
-    </span>
-  </Label>
-  <Label class="items-start gap-3">
-    <RadioGroupItem value="pro" />
-    <span class="flex flex-col gap-1 leading-snug">
-      Pro
-      <span class="text-muted-foreground font-normal">
-        Advanced tooling for growing teams.
-      </span>
-    </span>
-  </Label>
-</RadioGroup>
-```
+Use `FieldLabel` to wrap the entire `Field` for a clickable card-style selection.
 
-### Grid Layout
+<Example name="radio-group-choice-card" />
 
-Wrap the whole row in `FieldLabel` when you want the entire card to act as the
-click target. `FieldLabel` highlights the card when its item is checked.
+## Fieldset
 
-```astro live
----
-import { FieldLabel } from "@/components/ui/field"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
----
+Use `FieldSet` and `FieldLegend` to group radio items with a label and description.
 
-<RadioGroup defaultValue="team" name="audience" class="w-full max-w-md">
-  <FieldLabel class="has-[:focus-visible]:border-ring has-[:focus-visible]:ring-ring/50 hover:bg-muted/50 w-full items-start gap-3 rounded-md border p-3 has-[:focus-visible]:ring-3">
-    <RadioGroupItem value="solo" />
-    <span class="flex flex-col gap-1">
-      Solo
-      <span class="text-muted-foreground font-normal">
-        Best for freelancers and individual builders.
-      </span>
-    </span>
-  </FieldLabel>
-  <FieldLabel class="has-[:focus-visible]:border-ring has-[:focus-visible]:ring-ring/50 hover:bg-muted/50 w-full items-start gap-3 rounded-md border p-3 has-[:focus-visible]:ring-3">
-    <RadioGroupItem value="team" />
-    <span class="flex flex-col gap-1">
-      Team
-      <span class="text-muted-foreground font-normal">
-        Collaboration, approvals, and shared workspace access.
-      </span>
-    </span>
-  </FieldLabel>
-</RadioGroup>
-```
+<Example name="radio-group-fieldset" />
 
-### With FieldSet
+## Disabled
 
-Use `FieldSet` and `FieldLegend` to group radio items with a shared label and
-description.
+Use the `disabled` prop on `RadioGroupItem` to disable one item, or on
+`RadioGroup` to disable all items.
 
-```astro live
----
-import { FieldDescription, FieldLegend, FieldSet } from "@/components/ui/field"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
----
+<Example name="radio-group-disabled" />
 
-<div class="w-full max-w-sm">
-  <FieldSet>
-    <FieldLegend>Notifications</FieldLegend>
-    <FieldDescription>Choose how you want to be notified.</FieldDescription>
-    <RadioGroup defaultValue="email" name="notifications">
-      <Label class="gap-3">
-        <RadioGroupItem value="email" />
-        Email
-      </Label>
-      <Label class="gap-3">
-        <RadioGroupItem value="sms" />
-        SMS
-      </Label>
-      <Label class="gap-3">
-        <RadioGroupItem value="push" />
-        Push notification
-      </Label>
-    </RadioGroup>
-  </FieldSet>
-</div>
-```
+## Invalid
 
-### Disabled
+Use `aria-invalid` on `RadioGroupItem` and `data-invalid` on `Field` to show validation errors.
 
-Use the `disabled` prop on `RadioGroupItem` to disable individual items.
+<Example name="radio-group-invalid" />
 
-```astro live
----
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
----
+## RTL
 
-<RadioGroup defaultValue="pro" name="plans">
-  <Label class="gap-3">
-    <RadioGroupItem value="starter" />
-    Starter
-  </Label>
-  <Label class="gap-3">
-    <RadioGroupItem value="pro" />
-    Pro
-  </Label>
-  <Label class="gap-3">
-    <RadioGroupItem value="enterprise" disabled />
-    Enterprise (Disabled)
-  </Label>
-</RadioGroup>
-```
+<Example name="radio-group-rtl" />
 
 ## API Reference
 
-See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/components/ui/radio-group) for more information on props.
-See the [data-slot docs](https://github.com/bejamas/data-slot/blob/main/packages/radio-group/README.md) for more information on interactivity.
+Source: [`src/components/ui/radio-group`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/radio-group)
+
+Behavior comes from [`@data-slot/radio-group`](https://github.com/bejamas/data-slot/blob/main/packages/radio-group/README.md).
+
+### RadioGroup
+
+| Prop           | Type      | Default |
+| -------------- | --------- | ------- |
+| `defaultValue` | `string`  |         |
+| `name`         | `string`  |         |
+| `disabled`     | `boolean` | `false` |
+| `readOnly`     | `boolean` | `false` |
+| `required`     | `boolean` | `false` |
+
+Listen for `radio-group:change` (`{ value }`) on the root, and dispatch
+`radio-group:set` with `{ value }` to select a value from a script.
+
+### RadioGroupItem
+
+| Prop             | Type      | Default |
+| ---------------- | --------- | ------- |
+| `value`          | `string`  |         |
+| `disabled`       | `boolean` | `false` |
+| `indicatorClass` | `string`  |         |

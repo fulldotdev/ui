@@ -4,31 +4,7 @@ title: Popover
 description: Displays rich content in a floating layer, triggered by a button.
 ---
 
-```astro live props={{ name: 'popover' }}
----
-import { buttonVariants } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverContent,
-  PopoverDescription,
-  PopoverHeader,
-  PopoverTitle,
-  PopoverTrigger,
-} from "@/components/ui/popover"
----
-
-<Popover>
-  <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
-    Open Popover
-  </PopoverTrigger>
-  <PopoverContent align="start">
-    <PopoverHeader>
-      <PopoverTitle>Dimensions</PopoverTitle>
-      <PopoverDescription>Set the dimensions for the layer.</PopoverDescription>
-    </PopoverHeader>
-  </PopoverContent>
-</Popover>
-```
+<Example name="popover-demo" />
 
 ## Installation
 
@@ -55,18 +31,20 @@ import {
   <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
     Open Popover
   </PopoverTrigger>
-  <PopoverContent align="start">
+  <PopoverContent>
     <PopoverHeader>
-      <PopoverTitle>Popover title</PopoverTitle>
-      <PopoverDescription>Add any rich content here.</PopoverDescription>
+      <PopoverTitle>Title</PopoverTitle>
+      <PopoverDescription>Description text here.</PopoverDescription>
     </PopoverHeader>
   </PopoverContent>
 </Popover>
 ```
 
-## Composition
+`PopoverTrigger` is a plain `button`: style it with `buttonVariants`, or give
+another button `data-slot="popover-trigger"` inside `Popover`. Add
+`data-slot="popover-close"` to a button inside the content to close it.
 
-Use the following composition to build a `Popover`:
+## Composition
 
 ```text
 Popover
@@ -77,97 +55,60 @@ Popover
         └── PopoverDescription
 ```
 
-## Examples
+## Basic
 
-### Alignments
+A simple popover with a header, title, and description.
+
+<Example name="popover-basic" />
+
+## Align
 
 Use the `align` prop on `PopoverContent` to control the horizontal alignment.
 
-```astro live
----
-import { buttonVariants } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
----
+<Example name="popover-alignments" />
 
-<div class="flex flex-wrap gap-3">
-  <Popover>
-    <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
-      Start
-    </PopoverTrigger>
-    <PopoverContent align="start" class="w-56">
-      Aligned to the start edge of the trigger.
-    </PopoverContent>
-  </Popover>
-
-  <Popover>
-    <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
-      Center
-    </PopoverTrigger>
-    <PopoverContent align="center" class="w-56">
-      Centered relative to the trigger.
-    </PopoverContent>
-  </Popover>
-
-  <Popover>
-    <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
-      End
-    </PopoverTrigger>
-    <PopoverContent align="end" class="w-56">
-      Aligned to the end edge of the trigger.
-    </PopoverContent>
-  </Popover>
-</div>
-```
-
-### With Form
+## With Form
 
 A popover with form fields inside.
 
-```astro live
----
-import { Button, buttonVariants } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
----
+<Example name="popover-form" />
 
-<Popover>
-  <PopoverTrigger class={buttonVariants({ variant: "outline" })}>
-    Edit dimensions
-  </PopoverTrigger>
-  <PopoverContent class="w-80">
-    <div class="grid gap-1.5">
-      <h4 class="leading-none font-medium">Dimensions</h4>
-      <p class="text-muted-foreground text-sm">
-        Set the dimensions for the layer.
-      </p>
-    </div>
-    <div class="grid gap-3">
-      <div class="grid gap-2">
-        <Label for="popover-width">Width</Label>
-        <Input id="popover-width" defaultValue="100%" />
-      </div>
-      <div class="grid gap-2">
-        <Label for="popover-max-width">Max width</Label>
-        <Input id="popover-max-width" defaultValue="24rem" />
-      </div>
-    </div>
-    <div class="flex justify-end">
-      <Button size="sm">Save changes</Button>
-    </div>
-  </PopoverContent>
-</Popover>
-```
+## RTL
+
+`side` takes physical sides only, so this example resolves `inline-start` and
+`inline-end` for the text direction.
+
+<Example name="popover-rtl" />
 
 ## API Reference
 
-See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/components/ui/popover) for more information on props.
-See the [data-slot docs](https://github.com/bejamas/data-slot/blob/main/packages/popover/README.md) for more information on interactivity.
+Source: [`src/components/ui/popover`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/popover)
+
+Behavior comes from [`@data-slot/popover`](https://github.com/bejamas/data-slot/blob/main/packages/popover/README.md).
+
+### Popover
+
+| Prop                  | Type      | Default |
+| --------------------- | --------- | ------- |
+| `defaultOpen`         | `boolean` | `false` |
+| `portal`              | `boolean` | `true`  |
+| `closeOnClickOutside` | `boolean` | `true`  |
+| `closeOnEscape`       | `boolean` | `true`  |
+
+The positioning props of `PopoverContent` also work on `Popover`.
+
+### PopoverContent
+
+| Prop               | Type                                     | Default    |
+| ------------------ | ---------------------------------------- | ---------- |
+| `side`             | `"top" \| "right" \| "bottom" \| "left"` | `"bottom"` |
+| `align`            | `"start" \| "center" \| "end"`           | `"center"` |
+| `sideOffset`       | `number`                                 | `4`        |
+| `alignOffset`      | `number`                                 | `0`        |
+| `avoidCollisions`  | `boolean`                                | `true`     |
+| `collisionPadding` | `number`                                 | `8`        |
+
+### Events
+
+Listen for `popover:change` on the `Popover` root, and dispatch
+`popover:set` with `{ open: boolean }` to open or close it from a script.

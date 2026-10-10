@@ -8,32 +8,7 @@ sidebar:
     variant: success
 ---
 
-```astro live props={{ name: 'combobox' }}
----
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "@/components/ui/combobox"
----
-
-<Combobox class="w-full max-w-sm">
-  <ComboboxInput placeholder="Select a framework" />
-  <ComboboxContent>
-    <ComboboxList>
-      <ComboboxEmpty>No items found.</ComboboxEmpty>
-      <ComboboxItem value="nextjs">Next.js</ComboboxItem>
-      <ComboboxItem value="sveltekit">SvelteKit</ComboboxItem>
-      <ComboboxItem value="nuxt">Nuxt.js</ComboboxItem>
-      <ComboboxItem value="remix">Remix</ComboboxItem>
-      <ComboboxItem value="astro">Astro</ComboboxItem>
-    </ComboboxList>
-  </ComboboxContent>
-</Combobox>
-```
+<Example name="combobox-demo" />
 
 ## Installation
 
@@ -48,38 +23,32 @@ import {
   Combobox,
   ComboboxContent,
   ComboboxEmpty,
-  ComboboxGroup,
   ComboboxInput,
   ComboboxItem,
-  ComboboxLabel,
   ComboboxList,
-  ComboboxSeparator,
-  ComboboxTrigger,
-  ComboboxValue,
 } from "@/components/ui/combobox"
 ```
 
 ```astro
-<Combobox class="w-full max-w-sm">
+<Combobox>
   <ComboboxInput placeholder="Select a framework" />
   <ComboboxContent>
     <ComboboxList>
       <ComboboxEmpty>No items found.</ComboboxEmpty>
-      <ComboboxItem value="nextjs">Next.js</ComboboxItem>
-      <ComboboxItem value="sveltekit">SvelteKit</ComboboxItem>
-      <ComboboxItem value="nuxt">Nuxt.js</ComboboxItem>
-      <ComboboxItem value="remix">Remix</ComboboxItem>
-      <ComboboxItem value="astro">Astro</ComboboxItem>
+      <ComboboxItem value="Next.js">Next.js</ComboboxItem>
+      <ComboboxItem value="SvelteKit">SvelteKit</ComboboxItem>
+      <ComboboxItem value="Astro">Astro</ComboboxItem>
     </ComboboxList>
   </ComboboxContent>
 </Combobox>
 ```
 
+Items are authored markup, so render a data array with `.map()`. Data Slot
+filters items by their label and selects one value at a time.
+
 ## Composition
 
 Place `ComboboxEmpty` inside `ComboboxList`, as required by Data Slot.
-
-Use this composition for a single-line input and a flat list:
 
 ```text
 Combobox
@@ -91,7 +60,9 @@ Combobox
         └── ComboboxItem
 ```
 
-Use `ComboboxGroup`, `ComboboxLabel`, and `ComboboxSeparator` to organize items:
+Put `ComboboxSeparator` between groups as a direct child of `ComboboxList`:
+Data Slot only shows separators there, and hides them when a filter leaves no
+items on one side.
 
 ```text
 Combobox
@@ -101,183 +72,92 @@ Combobox
         ├── ComboboxEmpty
         ├── ComboboxGroup
         │   ├── ComboboxLabel
-        │   ├── ComboboxItem
         │   └── ComboboxItem
         ├── ComboboxSeparator
         └── ComboboxGroup
             ├── ComboboxLabel
-            ├── ComboboxItem
             └── ComboboxItem
 ```
 
-Use `ComboboxTrigger` and `ComboboxValue` when composing a custom trigger. Use `showClear` on `ComboboxInput` when the input needs a clear control.
+## Basic
 
-## Examples
+A simple combobox with a list of frameworks.
 
-```astro live
----
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "@/components/ui/combobox"
----
+<Example name="combobox-basic" />
 
-<Combobox
-  class="relative w-full max-w-sm"
-  placeholder="Choose a timezone..."
-  defaultValue="cet"
->
-  <ComboboxInput showClear />
-  <ComboboxContent>
-    <ComboboxList>
-      <ComboboxEmpty>No timezones found.</ComboboxEmpty>
-      <ComboboxItem value="cet">Central European Time</ComboboxItem>
-      <ComboboxItem value="est">Eastern Standard Time</ComboboxItem>
-      <ComboboxItem value="pst">Pacific Standard Time</ComboboxItem>
-    </ComboboxList>
-  </ComboboxContent>
-</Combobox>
-```
+## Multiple
 
-```astro live
----
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxGroup,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxLabel,
-  ComboboxList,
-  ComboboxSeparator,
-} from "@/components/ui/combobox"
----
+The Astro combobox has no multiple selection or chips, so the official Multiple and RTL examples, which both use chips, are in the [React Combobox](/react/components/combobox/) docs only.
 
-<Combobox class="w-full max-w-sm" placeholder="Search technologies...">
-  <ComboboxInput />
-  <ComboboxContent>
-    <ComboboxList>
-      <ComboboxEmpty>No items found.</ComboboxEmpty>
-      <ComboboxGroup>
-        <ComboboxLabel>Frontend</ComboboxLabel>
-        <ComboboxItem value="astro">Astro</ComboboxItem>
-        <ComboboxItem value="nextjs">Next.js</ComboboxItem>
-        <ComboboxItem value="sveltekit">SvelteKit</ComboboxItem>
-      </ComboboxGroup>
-      <ComboboxSeparator />
-      <ComboboxGroup>
-        <ComboboxLabel>Backend</ComboboxLabel>
-        <ComboboxItem value="express">Express</ComboboxItem>
-        <ComboboxItem value="fastify">Fastify</ComboboxItem>
-      </ComboboxGroup>
-    </ComboboxList>
-  </ComboboxContent>
-</Combobox>
-```
+## Clear Button
 
-### Auto Highlight
+Use the `showClear` prop on `ComboboxInput` to show a clear button.
 
-Use `autoHighlight` to automatically highlight the first visible item after a
-non-whitespace query.
+<Example name="combobox-clear" />
 
-```astro live
----
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "@/components/ui/combobox"
----
+## Groups
 
-<Combobox
-  class="w-full max-w-sm"
-  placeholder="Search frameworks..."
-  autoHighlight
->
-  <ComboboxInput />
-  <ComboboxContent>
-    <ComboboxList>
-      <ComboboxEmpty>No items found.</ComboboxEmpty>
-      <ComboboxItem value="nextjs">Next.js</ComboboxItem>
-      <ComboboxItem value="sveltekit">SvelteKit</ComboboxItem>
-      <ComboboxItem value="nuxt">Nuxt.js</ComboboxItem>
-      <ComboboxItem value="remix">Remix</ComboboxItem>
-      <ComboboxItem value="astro">Astro</ComboboxItem>
-    </ComboboxList>
-  </ComboboxContent>
-</Combobox>
-```
+Use `ComboboxGroup` and `ComboboxSeparator` to group items.
 
-### Combobox in Popup
+<Example name="combobox-groups" />
 
-Trigger the combobox from a button and move the search input inside the popup.
+## Custom Items
 
-```astro live
----
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-  ComboboxTrigger,
-  ComboboxValue,
-} from "@/components/ui/combobox"
----
+You can render a custom component inside `ComboboxItem`. Set `data-label` on
+the item to the text used for filtering and for the input after selection.
 
-<Combobox class="w-full max-w-sm" defaultValue="astro">
-  <ComboboxTrigger class="border-input bg-background dark:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/50 inline-flex h-9 w-full items-center justify-between gap-2 rounded-md border px-3 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-3">
-    <ComboboxValue>Select a framework...</ComboboxValue>
-  </ComboboxTrigger>
-  <ComboboxContent>
-    <ComboboxInput showTrigger={false} placeholder="Search frameworks..." />
-    <ComboboxList>
-      <ComboboxEmpty>No items found.</ComboboxEmpty>
-      <ComboboxItem value="nextjs">Next.js</ComboboxItem>
-      <ComboboxItem value="sveltekit">SvelteKit</ComboboxItem>
-      <ComboboxItem value="astro">Astro</ComboboxItem>
-    </ComboboxList>
-  </ComboboxContent>
-</Combobox>
-```
+<Example name="combobox-custom" />
 
-### Disabled
+## Invalid
 
-Use `disabled` on `Combobox` to disable interaction.
+Use the `aria-invalid` prop on `ComboboxInput` to make the combobox invalid.
 
-```astro live
----
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "@/components/ui/combobox"
----
+<Example name="combobox-invalid" />
 
-<Combobox class="w-full max-w-sm" placeholder="Select a framework" disabled>
-  <ComboboxInput />
-  <ComboboxContent>
-    <ComboboxList>
-      <ComboboxItem value="nextjs">Next.js</ComboboxItem>
-      <ComboboxItem value="sveltekit">SvelteKit</ComboboxItem>
-      <ComboboxItem value="astro">Astro</ComboboxItem>
-    </ComboboxList>
-  </ComboboxContent>
-</Combobox>
-```
+## Disabled
+
+Use the `disabled` prop on `ComboboxInput` to disable the input and its
+trigger, or on `Combobox` to disable all interaction.
+
+<Example name="combobox-disabled" />
+
+## Auto Highlight
+
+Use the `autoHighlight` prop to automatically highlight the first item on filter.
+
+<Example name="combobox-auto-highlight" />
+
+## Popup
+
+Trigger the combobox from any button with `data-slot="combobox-trigger"` that
+contains a `ComboboxValue`, and move `ComboboxInput` inside `ComboboxContent`
+with `showTrigger={false}`.
+
+<Example name="combobox-popup" />
+
+## Input Group
+
+Add an addon by placing an `InputGroupAddon` inside `ComboboxInput`.
+
+<Example name="combobox-input-group" />
 
 ## API Reference
 
-See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/components/ui/combobox) for more information on props.
-See the [data-slot docs](https://github.com/bejamas/data-slot/blob/main/packages/combobox/README.md) for more information on interactivity.
+Source: [`src/components/ui/combobox`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/combobox)
+
+Interactivity comes from
+[`@data-slot/combobox`](https://github.com/bejamas/data-slot/blob/main/packages/combobox/README.md).
+
+| Component         | Prop                                                                                | Notes                                                 |
+| ----------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `Combobox`        | `defaultValue`, `defaultOpen`, `placeholder`, `disabled`, `required`, `name`        | `name` adds a hidden input that submits the value     |
+| `Combobox`        | `openOnFocus`, `autoHighlight`                                                      | `openOnFocus` defaults to `true`                      |
+| `Combobox`        | `side`, `align`, `sideOffset`, `alignOffset`, `avoidCollisions`, `collisionPadding` | Popup placement, also accepted on `ComboboxContent`   |
+| `ComboboxInput`   | `showTrigger` (`true`), `showClear` (`false`), `disabled`, input attributes         | Extra children render inside the input group          |
+| `ComboboxItem`    | `value`, `disabled`, `showIndicator` (`true`), `data-label`                         | Without `data-label`, the item text is the label      |
+| `ComboboxTrigger` | `showIcon` (`true`)                                                                 | Ghost icon button with a chevron                      |
+| `ComboboxValue`   | span attributes                                                                     | Shows the selected label, or `placeholder` when empty |
+
+The root emits `combobox:change`, `combobox:open-change` and
+`combobox:input-change`, and accepts `combobox:set` with `value`, `open` or
+`inputValue` in `detail`.

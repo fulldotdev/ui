@@ -44,7 +44,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-// New in v9: declare the features this table uses — anything you don't
+// New in v9: declare the features this table uses, anything you don't
 // register is tree-shaken out of the bundle.
 const features = tableFeatures({
   columnFilteringFeature,

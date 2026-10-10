@@ -1,0 +1,53 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toggle-examples",
+  "title": "Toggle examples",
+  "description": "The examples from the shadcn/ui Toggle docs.",
+  "dependencies": [
+    "cn",
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "@fulldev/select",
+    "@fulldev/toggle"
+  ],
+  "files": [
+    {
+      "path": "src/components/examples/toggle/toggle-demo.tsx",
+      "content": "import { BookmarkIcon } from \"lucide-react\"\n\nimport { Toggle } from \"@/components/ui/toggle\"\n\nexport function ToggleDemo() {\n  return (\n    <Toggle aria-label=\"Toggle bookmark\" size=\"sm\" variant=\"outline\">\n      <BookmarkIcon className=\"group-aria-pressed/toggle:fill-foreground\" />\n      Bookmark\n    </Toggle>\n  )\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/toggle/toggle-disabled.tsx",
+      "content": "import { Toggle } from \"@/components/ui/toggle\"\n\nexport function ToggleDisabled() {\n  return (\n    <div className=\"flex flex-wrap items-center gap-2\">\n      <Toggle aria-label=\"Toggle disabled\" disabled>\n        Disabled\n      </Toggle>\n      <Toggle variant=\"outline\" aria-label=\"Toggle disabled outline\" disabled>\n        Disabled\n      </Toggle>\n    </div>\n  )\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/toggle/toggle-outline.tsx",
+      "content": "import { BoldIcon, ItalicIcon } from \"lucide-react\"\n\nimport { Toggle } from \"@/components/ui/toggle\"\n\nexport function ToggleOutline() {\n  return (\n    <div className=\"flex flex-wrap items-center gap-2\">\n      <Toggle variant=\"outline\" aria-label=\"Toggle italic\">\n        <ItalicIcon />\n        Italic\n      </Toggle>\n      <Toggle variant=\"outline\" aria-label=\"Toggle bold\">\n        <BoldIcon />\n        Bold\n      </Toggle>\n    </div>\n  )\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/toggle/toggle-rtl.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { BookmarkIcon } from \"lucide-react\"\n\nimport { Toggle } from \"@/components/ui/toggle\"\nimport {\n  useTranslation,\n  type Translations,\n} from \"@/components/language-selector\"\n\nconst translations: Translations = {\n  en: {\n    dir: \"ltr\",\n    values: {\n      label: \"Bookmark\",\n    },\n  },\n  ar: {\n    dir: \"rtl\",\n    values: {\n      label: \"إشارة مرجعية\",\n    },\n  },\n  he: {\n    dir: \"rtl\",\n    values: {\n      label: \"סימנייה\",\n    },\n  },\n}\n\nexport function ToggleRtl() {\n  const { dir, t } = useTranslation(translations, \"ar\")\n\n  return (\n    <Toggle aria-label=\"Toggle bookmark\" size=\"sm\" variant=\"outline\" dir={dir}>\n      <BookmarkIcon className=\"group-aria-pressed/toggle:fill-foreground\" />\n      {t.label}\n    </Toggle>\n  )\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/toggle/toggle-sizes.tsx",
+      "content": "import { Toggle } from \"@/components/ui/toggle\"\n\nexport function ToggleSizes() {\n  return (\n    <div className=\"flex flex-wrap items-center gap-2\">\n      <Toggle variant=\"outline\" aria-label=\"Toggle small\" size=\"sm\">\n        Small\n      </Toggle>\n      <Toggle variant=\"outline\" aria-label=\"Toggle default\" size=\"default\">\n        Default\n      </Toggle>\n      <Toggle variant=\"outline\" aria-label=\"Toggle large\" size=\"lg\">\n        Large\n      </Toggle>\n    </div>\n  )\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/toggle/toggle-text.tsx",
+      "content": "import { ItalicIcon } from \"lucide-react\"\n\nimport { Toggle } from \"@/components/ui/toggle\"\n\nexport function ToggleText() {\n  return (\n    <Toggle aria-label=\"Toggle italic\">\n      <ItalicIcon />\n      Italic\n    </Toggle>\n  )\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/language-selector.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"cn\"\n\nimport {\n  Select,\n  SelectContent,\n  SelectGroup,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from \"@/components/ui/select\"\n\nexport type Language = \"en\" | \"ar\" | \"he\"\n\nexport type Direction = \"ltr\" | \"rtl\"\n\nexport type Translations<\n  T extends Record<string, string> = Record<string, string>,\n> = Record<\n  Language,\n  {\n    dir: Direction\n    locale?: string\n    values: T\n  }\n>\n\nexport const languageOptions = [\n  { value: \"en\", label: \"English\" },\n  { value: \"ar\", label: \"Arabic (العربية)\" },\n  { value: \"he\", label: \"Hebrew (עברית)\" },\n] as const\n\ntype LanguageContextType = {\n  language: Language\n  setLanguage: (language: Language) => void\n}\n\nconst LanguageContext = React.createContext<LanguageContextType | undefined>(\n  undefined\n)\n\nexport function LanguageProvider({\n  children,\n  defaultLanguage = \"ar\",\n}: {\n  children: React.ReactNode\n  defaultLanguage?: Language\n}) {\n  const [language, setLanguage] = React.useState<Language>(defaultLanguage)\n\n  return (\n    <LanguageContext.Provider value={{ language, setLanguage }}>\n      {children}\n    </LanguageContext.Provider>\n  )\n}\n\nexport function useLanguageContext() {\n  const context = React.useContext(LanguageContext)\n  return context\n}\n\nexport function useTranslation<T extends Record<string, string>>(\n  translations: Translations<T>,\n  defaultLanguage: Language = \"ar\"\n) {\n  const context = useLanguageContext()\n  const [localLanguage, setLocalLanguage] =\n    React.useState<Language>(defaultLanguage)\n\n  const language = context?.language ?? localLanguage\n  const setLanguage = context?.setLanguage ?? setLocalLanguage\n\n  const { dir, locale, values: t } = translations[language]\n  return { language, setLanguage, dir, locale, t }\n}\n\nexport interface LanguageSelectorProps {\n  value: Language\n  onValueChange: (value: Language) => void\n}\n\nexport function LanguageSelector({\n  value,\n  onValueChange,\n  className,\n  languages = [\"en\", \"ar\", \"he\"],\n}: LanguageSelectorProps & {\n  className?: string\n  languages?: Language[]\n}) {\n  return (\n    <Select\n      items={languageOptions}\n      value={value}\n      onValueChange={(value) => onValueChange(value as Language)}\n    >\n      <SelectTrigger\n        size=\"sm\"\n        className={cn(\"w-36\", className)}\n        dir=\"ltr\"\n        data-name=\"language-selector\"\n      >\n        <SelectValue />\n      </SelectTrigger>\n      <SelectContent\n        dir=\"ltr\"\n        className=\"data-open:animate-none data-closed:animate-none\"\n      >\n        <SelectGroup>\n          {languageOptions\n            .filter((option) => languages.includes(option.value as Language))\n            .map((option) => (\n              <SelectItem key={option.value} value={option.value}>\n                {option.label}\n              </SelectItem>\n            ))}\n        </SelectGroup>\n      </SelectContent>\n    </Select>\n  )\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "docs": "https://ui.full.dev/react/components/toggle/",
+  "type": "registry:example"
+}

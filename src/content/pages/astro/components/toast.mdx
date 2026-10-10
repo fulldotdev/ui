@@ -4,62 +4,7 @@ title: Toast
 description: A brief notification that appears without interrupting the user.
 ---
 
-```astro live props={{ name: 'toast' }}
----
-import { Button } from "@/components/ui/button"
-import { Toaster } from "@/components/ui/toast"
----
-
-<div class="flex flex-wrap gap-2">
-  <Button id="show-basic-toast" variant="outline">
-    Show toast
-  </Button>
-  <Button id="show-action-toast" variant="outline">
-    Toast with action
-  </Button>
-</div>
-
-<Toaster id="example-toaster" portal />
-
-<script>
-  const initializeToastDemo = () => {
-    const toaster = document.getElementById("example-toaster")
-    const basicButton = document.getElementById("show-basic-toast")
-    const actionButton = document.getElementById("show-action-toast")
-
-    if (basicButton) {
-      basicButton.onclick = () => {
-        toaster?.dispatchEvent(
-          new CustomEvent("toast:show", {
-            detail: {
-              title: "Event created",
-              description: "Sunday, December 3 at 9:00 AM",
-              type: "success",
-            },
-          })
-        )
-      }
-    }
-
-    if (actionButton) {
-      actionButton.onclick = () => {
-        toaster?.dispatchEvent(
-          new CustomEvent("toast:show", {
-            detail: {
-              title: "Event created",
-              description: "You can undo this action.",
-              action: { label: "Undo", value: "undo-event" },
-            },
-          })
-        )
-      }
-    }
-  }
-
-  initializeToastDemo()
-  document.addEventListener("astro:page-load", initializeToastDemo)
-</script>
-```
+<Example name="toast-demo" />
 
 ## Installation
 
@@ -117,6 +62,22 @@ notification data in your own application state when it must survive.
 Toast data accepts `id`, `title`, `description`, `type`, `duration`, `action`,
 `dismissible`, `closeButtonAriaLabel`, and `testId`. `title` is required. Types
 are `default`, `success`, `error`, `warning`, `info`, and `loading`.
+
+## Types
+
+Set `type` to render a status icon: `success`, `info`, `warning`, `error`, or `loading`.
+
+<Example name="toast-types" />
+
+## Action
+
+Pass `action` with a `label` and `value`. The action closes its toast; listen for `toast:action` to handle it.
+
+## Promise
+
+Show a `loading` toast with an `id` and `duration: 0`, then patch it with `toast:update` when the task ends.
+
+<Example name="toast-promise" />
 
 ## Commands
 
@@ -202,5 +163,5 @@ import {
 
 ## API Reference
 
-See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/components/ui/toast) for component props.
+Source: [`src/components/ui/toast`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/toast)
 See the [data-slot docs](https://github.com/bejamas/data-slot/blob/main/packages/toast/README.md) for controller methods, promise notifications, timers, stacking, swipe dismissal, and events.

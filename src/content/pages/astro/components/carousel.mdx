@@ -4,77 +4,17 @@ title: Carousel
 description: A carousel with motion, swipe and responsive slides built using Embla.
 ---
 
-```astro live props={{ name: 'carousel' }}
----
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
----
-
-<Carousel aria-label="Featured slides" class="w-[calc(100%-2rem)] max-w-xl">
-  <CarouselContent>
-    <CarouselItem>
-      <div class="bg-muted flex aspect-video items-center justify-center rounded-md">
-        <span class="text-3xl font-semibold">1</span>
-      </div>
-    </CarouselItem>
-    <CarouselItem>
-      <div class="bg-muted flex aspect-video items-center justify-center rounded-md">
-        <span class="text-3xl font-semibold">2</span>
-      </div>
-    </CarouselItem>
-    <CarouselItem>
-      <div class="bg-muted flex aspect-video items-center justify-center rounded-md">
-        <span class="text-3xl font-semibold">3</span>
-      </div>
-    </CarouselItem>
-  </CarouselContent>
-  <CarouselPrevious />
-  <CarouselNext />
-</Carousel>
-```
-
-## About
-
-The carousel uses the vanilla [Embla Carousel](https://www.embla-carousel.com/)
-engine, following shadcn/ui composition and CSS slide sizing. It needs no React.
-Other interactive Fulldev UI components continue to use Data Slot.
-
-`CarouselContent` provides an overflow viewport and an inner track. Classes and
-HTML attributes passed to `CarouselContent` apply to the track. Use responsive
-`basis-*` classes on items and matching negative track margins / slide padding
-for spacing. No `multiple` option is needed.
-
-`Carousel` renders a `section` with `aria-roledescription="carousel"`. Give it
-an `aria-label` or `aria-labelledby`, as the
-[carousel pattern](https://www.w3.org/WAI/ARIA/apg/patterns/carousel/)
-recommends, so assistive technology exposes it as a named region.
+<Example name="carousel-demo" />
 
 ## Installation
-
-Install the component from the `@fulldev` registry with the shadcn CLI:
 
 ```bash
 npx shadcn@latest add @fulldev/carousel
 ```
 
-Manual install:
-
-```bash
-npm install embla-carousel
-```
-
-Then copy the component files into `src/components/ui/carousel` and update the
-imports to match your project structure.
-
 ## Usage
 
-```astro
----
+```ts
 import {
   Carousel,
   CarouselContent,
@@ -82,9 +22,10 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
----
+```
 
-<Carousel>
+```astro
+<Carousel aria-label="Featured slides">
   <CarouselContent>
     <CarouselItem>...</CarouselItem>
     <CarouselItem>...</CarouselItem>
@@ -94,6 +35,16 @@ import {
   <CarouselNext />
 </Carousel>
 ```
+
+The carousel runs the vanilla [Embla Carousel](https://www.embla-carousel.com/)
+engine in a client script and needs no React. `CarouselContent` renders
+the overflow viewport and an inner track; its classes and attributes apply to
+the track.
+
+`Carousel` renders a `section` with `aria-roledescription="carousel"`. Give it
+an `aria-label` or `aria-labelledby` so it becomes a named region, as the
+[carousel pattern](https://www.w3.org/WAI/ARIA/apg/patterns/carousel/)
+recommends; without a name it gets `role="group"`.
 
 ## Composition
 
@@ -106,142 +57,103 @@ Carousel
 └── CarouselNext
 ```
 
+## Sizes
+
+Set the size of the items with a `basis-*` class on `CarouselItem`, such as
+`basis-1/3` or `md:basis-1/2 lg:basis-1/3`.
+
+<Example name="carousel-size" />
+
+## Spacing
+
+Use `pl-[VALUE]` on `CarouselItem` and a matching `-ml-[VALUE]` on
+`CarouselContent`.
+
+<Example name="carousel-spacing" />
+
+## Orientation
+
+Use the `orientation` prop to set the scroll axis. Give a vertical
+`CarouselContent` an explicit height.
+
+<Example name="carousel-orientation" />
+
 ## Options
 
-Pass serializable [Embla options](https://www.embla-carousel.com/) through `opts`:
-`align`, `loop`, `startIndex`, `watchDrag`, `slidesToScroll` and responsive
-`breakpoints` are supported. `orientation="vertical"` sets the scrolling axis;
-otherwise `opts.axis` is respected. Dragging and focus scrolling use Embla's
-defaults. Previous/next and keyboard navigation respect reduced motion.
+Pass serializable [Embla options](https://www.embla-carousel.com/api/options/)
+through `opts`, such as `align`, `loop`, `startIndex`, `watchDrag`,
+`slidesToScroll`, `direction` and `breakpoints`. `orientation` sets `axis`.
+Previous, next and keyboard navigation (arrow keys, Home, End) jump instead of
+animate when the user prefers reduced motion.
 
-```astro live
----
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
----
-
-<Carousel
-  opts={{ startIndex: 1, loop: true }}
-  class="w-[calc(100%-2rem)] max-w-xl"
->
+```astro
+<Carousel opts={{ align: "start", loop: true }}>
   <CarouselContent>
-    <CarouselItem class="bg-muted flex min-h-40 items-center justify-center rounded-md">
-      First slide
-    </CarouselItem>
-    <CarouselItem class="bg-muted flex min-h-40 items-center justify-center rounded-md">
-      Second slide
-    </CarouselItem>
-    <CarouselItem class="bg-muted flex min-h-40 items-center justify-center rounded-md">
-      Third slide
-    </CarouselItem>
+    <CarouselItem>...</CarouselItem>
+    <CarouselItem>...</CarouselItem>
+    <CarouselItem>...</CarouselItem>
   </CarouselContent>
-  <CarouselPrevious />
-  <CarouselNext />
 </Carousel>
 ```
 
-### Vertical
+## API
 
-Give a vertical `CarouselContent` an explicit height so each item can fill its
-viewport.
+Listen for `carousel:init` on the root to receive the Embla API. For code that
+runs after initialization, the root's `__fulldevCarouselApi` property holds the
+current API.
 
-```astro live
----
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
----
+<Example name="carousel-api" />
 
-<Carousel orientation="vertical" class="my-8 w-full max-w-xl">
-  <CarouselContent class="h-64">
-    <CarouselItem class="bg-muted flex min-h-40 items-center justify-center rounded-md">
-      First slide
-    </CarouselItem>
-    <CarouselItem class="bg-muted flex min-h-40 items-center justify-center rounded-md">
-      Second slide
-    </CarouselItem>
-    <CarouselItem class="bg-muted flex min-h-40 items-center justify-center rounded-md">
-      Third slide
-    </CarouselItem>
-  </CarouselContent>
-  <CarouselPrevious />
-  <CarouselNext />
-</Carousel>
-```
+## Events
 
-## Events and API
-
-Listen for `carousel:init` to receive the Embla API. `carousel:select` fires after
-selection or reinitialization. Both events expose `detail.api`, `canScrollPrev`,
-`canScrollNext`, `selectedScrollSnap` and `scrollSnapList`.
+`carousel:select` fires after each selection and reinitialization. Both events
+expose `detail.api`, `canScrollPrev`, `canScrollNext`, `selectedScrollSnap` and
+`scrollSnapList`.
 
 ```ts
 import type { CarouselApi } from "@/components/ui/carousel"
 
 const carousel = document.querySelector('[data-slot="carousel"]')
-carousel?.addEventListener("carousel:init", (event) => {
+carousel?.addEventListener("carousel:select", (event) => {
   const { api } = (event as CustomEvent<{ api: CarouselApi }>).detail
-  api.scrollTo(2)
+  // Do something on select.
 })
 ```
 
-Register the listener before initialization. For code running later, the root's
-`__fulldevCarouselApi` property holds the current API. `CarouselOptions` and
-`CarouselPlugin` re-export Embla's corresponding types. Plugin instances are
-configured through Embla's API, not serialized Astro props.
-
 Instances are destroyed before Astro page swaps and recreated on page load.
-Visible links retain normal focus behavior; focusing an offscreen slide lets
-Embla bring it into view. No custom `inert` or `aria-hidden` overrides are added.
 
-## Multiple visible slides
+## Plugins
 
-Use CSS widths just as in shadcn/ui. This example shows three clickable slides
-at once, with extra slides reachable through dragging, buttons or keyboard.
+Plugin instances are functions, so they cannot be passed as Astro props. This
+example adds autoplay with a short script on the Embla API from
+`carousel:init`: it advances every 2 seconds and stops on hover, drag or focus.
 
-```astro live props={{ name: 'carousel' }}
----
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
----
+<Example name="carousel-plugin" />
 
-<Carousel
-  data-demo="multiple"
-  opts={{ align: "start" }}
-  class="w-[calc(100%-2rem)] max-w-xl"
->
-  <CarouselContent>
-    {[1, 2, 3, 4, 5].map((number) => (
-      <CarouselItem id={`slide-${number}`} class="basis-1/3">
-        <a
-          href={`#slide-${number}`}
-          class="bg-muted flex aspect-square items-center justify-center rounded-md"
-        >
-          Slide {number}
-        </a>
-      </CarouselItem>
-    ))}
-  </CarouselContent>
-  <CarouselPrevious />
-  <CarouselNext />
-</Carousel>
-```
+## RTL
 
-## Migration from 0.13
+Set `dir` on `Carousel` and the matching `direction` option in `opts` so the
+carousel scrolls in the reading direction.
+
+<Example name="carousel-rtl" />
+
+## API Reference
+
+Source: [`src/components/ui/carousel`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/carousel)
+
+| Prop          | Type                         | Default        |
+| ------------- | ---------------------------- | -------------- |
+| `opts`        | `CarouselOptions`            | `undefined`    |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` |
+
+`CarouselPrevious` and `CarouselNext` accept the `Button` `variant` and `size`
+props (default `"outline"` and `"icon-sm"`) and are disabled automatically when
+the carousel cannot scroll that way, unless you pass `disabled`. The root
+exposes `data-orientation`, `data-can-scroll-prev`, `data-can-scroll-next` and
+`data-selected-scroll-snap`. `CarouselApi`, `CarouselOptions` and
+`CarouselPlugin` re-export Embla's types.
+
+### Migration from 0.13
 
 Reinstall the registry component so markup and runtime stay together.
 
@@ -254,6 +166,3 @@ Reinstall the registry component so markup and runtime stay together.
 | `carousel:change`                  | `carousel:select`                                              |
 | `carousel:set`                     | Call methods on `detail.api` from `carousel:init`              |
 | Content classes style the viewport | Content classes style the inner track                          |
-
-The former one-full-width-slide restriction no longer applies. Use matching
-negative margins on content and padding on items for spacing, like shadcn/ui.

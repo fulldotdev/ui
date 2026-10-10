@@ -1,0 +1,29 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toast-examples",
+  "title": "Toast examples",
+  "description": "The examples from the shadcn/ui Toast docs.",
+  "registryDependencies": [
+    "@fulldev/button",
+    "@fulldev/toast"
+  ],
+  "files": [
+    {
+      "path": "src/components/examples/toast/toast-demo.astro",
+      "content": "---\nimport { Button } from \"@/components/ui/button\"\nimport { Toaster } from \"@/components/ui/toast\"\n---\n\n<div data-toast-demo>\n  <Button variant=\"outline\" data-show-toast>\n    Show Toast\n  </Button>\n  <Toaster portal />\n</div>\n\n<script>\n  const initialize = () => {\n    for (const root of document.querySelectorAll(\"[data-toast-demo]\")) {\n      if (root.hasAttribute(\"data-bound\")) continue\n      root.setAttribute(\"data-bound\", \"\")\n      const toaster = root.querySelector('[data-slot=\"toast\"]')\n      root.querySelector(\"[data-show-toast]\")?.addEventListener(\"click\", () => {\n        // The action closes its toast, like toast.close(id) in the React example.\n        toaster?.dispatchEvent(\n          new CustomEvent(\"toast:show\", {\n            detail: {\n              title: \"Event created\",\n              description: \"Sunday, December 3 at 9:00 AM\",\n              action: { label: \"Undo\", value: \"undo\" },\n            },\n          })\n        )\n      })\n    }\n  }\n\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n</script>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/toast/toast-promise.astro",
+      "content": "---\nimport { Button } from \"@/components/ui/button\"\nimport { Toaster } from \"@/components/ui/toast\"\n---\n\n<div data-toast-promise>\n  <Button variant=\"outline\" data-create-event>\n    Create Event\n  </Button>\n  <Toaster portal />\n</div>\n\n<script>\n  const initialize = () => {\n    for (const root of document.querySelectorAll(\"[data-toast-promise]\")) {\n      if (root.hasAttribute(\"data-bound\")) continue\n      root.setAttribute(\"data-bound\", \"\")\n      const toaster = root.querySelector('[data-slot=\"toast\"]')\n      const send = (name: string, detail: object) =>\n        toaster?.dispatchEvent(new CustomEvent(name, { detail }))\n      root\n        .querySelector(\"[data-create-event]\")\n        ?.addEventListener(\"click\", async () => {\n          // One toast moves from loading to success or error.\n          const id = `event-${Date.now()}`\n          send(\"toast:show\", {\n            id,\n            title: \"Creating event…\",\n            type: \"loading\",\n            duration: 0,\n          })\n          try {\n            const data = await new Promise<{ name: string }>((resolve) => {\n              window.setTimeout(() => resolve({ name: \"Event\" }), 2000)\n            })\n            send(\"toast:update\", {\n              id,\n              title: `${data.name} created.`,\n              type: \"success\",\n              duration: 5000,\n            })\n          } catch {\n            send(\"toast:update\", {\n              id,\n              title: \"Could not create event.\",\n              type: \"error\",\n              duration: 5000,\n            })\n          }\n        })\n    }\n  }\n\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n</script>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/examples/toast/toast-types.astro",
+      "content": "---\nimport { Button } from \"@/components/ui/button\"\nimport { Toaster } from \"@/components/ui/toast\"\n\nconst toasts = [\n  { label: \"Default\", description: \"Event has been created.\" },\n  {\n    label: \"Success\",\n    type: \"success\",\n    description: \"Event has been created.\",\n  },\n  {\n    label: \"Info\",\n    type: \"info\",\n    description: \"Arrive 10 minutes before the event.\",\n  },\n  {\n    label: \"Warning\",\n    type: \"warning\",\n    description: \"The event cannot start before 8:00 AM.\",\n  },\n  {\n    label: \"Error\",\n    type: \"error\",\n    description: \"The event could not be created.\",\n  },\n]\n---\n\n<div class=\"flex flex-wrap gap-2\" data-toast-types>\n  {toasts.map((toast) => (\n    <Button\n      variant=\"outline\"\n      data-toast-type={toast.type}\n      data-toast-description={toast.description}\n    >\n      {toast.label}\n    </Button>\n  ))}\n  <Toaster portal />\n</div>\n\n<script>\n  const initialize = () => {\n    for (const root of document.querySelectorAll(\"[data-toast-types]\")) {\n      if (root.hasAttribute(\"data-bound\")) continue\n      root.setAttribute(\"data-bound\", \"\")\n      const toaster = root.querySelector('[data-slot=\"toast\"]')\n      for (const button of root.querySelectorAll<HTMLElement>(\n        \"[data-toast-description]\"\n      )) {\n        button.addEventListener(\"click\", () => {\n          const { toastType, toastDescription } = button.dataset\n          // A toast needs a title, so the text shows as the title.\n          toaster?.dispatchEvent(\n            new CustomEvent(\"toast:show\", {\n              detail: { title: toastDescription, type: toastType },\n            })\n          )\n        })\n      }\n    }\n  }\n\n  initialize()\n  document.addEventListener(\"astro:page-load\", initialize)\n</script>\n",
+      "type": "registry:component"
+    }
+  ],
+  "docs": "https://ui.full.dev/astro/components/toast/",
+  "type": "registry:example"
+}

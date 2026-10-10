@@ -4,8 +4,17 @@ title: Pagination
 description: Page navigation with previous, next, numbered, and overflow links.
 ---
 
-```astro live props={{ name: 'pagination' }}
----
+<Example name="pagination-demo" />
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/pagination
+```
+
+## Usage
+
+```ts
 import {
   Pagination,
   PaginationContent,
@@ -15,23 +24,18 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
----
+```
 
+```astro
 <Pagination>
   <PaginationContent>
     <PaginationItem>
       <PaginationPrevious href="?page=1" />
     </PaginationItem>
     <PaginationItem>
-      <PaginationLink href="?page=1">1</PaginationLink>
-    </PaginationItem>
-    <PaginationItem>
       <PaginationLink href="?page=2" isActive>
         2
       </PaginationLink>
-    </PaginationItem>
-    <PaginationItem>
-      <PaginationLink href="?page=3">3</PaginationLink>
     </PaginationItem>
     <PaginationItem>
       <PaginationEllipsis />
@@ -43,45 +47,41 @@ import {
 </Pagination>
 ```
 
-## Installation
+Pagination uses normal links, so navigation works without JavaScript.
+`isActive` sets `aria-current="page"`.
 
-```bash
-npx shadcn@latest add @fulldev/pagination
+## Composition
+
+```text
+Pagination
+└── PaginationContent
+    ├── PaginationItem
+    │   └── PaginationPrevious
+    ├── PaginationItem
+    │   └── PaginationLink
+    ├── PaginationItem
+    │   └── PaginationEllipsis
+    └── PaginationItem
+        └── PaginationNext
 ```
 
-## Usage
+## Simple
 
-```astro
----
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-} from "@/components/ui/pagination"
----
+A simple pagination with only page numbers.
 
-<Pagination>
-  <PaginationContent>
-    <PaginationItem>
-      <PaginationLink href="?page=1">1</PaginationLink>
-    </PaginationItem>
-    <PaginationItem>
-      <PaginationLink href="?page=2" isActive>
-        2
-      </PaginationLink>
-    </PaginationItem>
-  </PaginationContent>
-</Pagination>
-```
+<Example name="pagination-simple" />
 
-Pagination uses normal links, so navigation works without JavaScript. `isActive` sets `aria-current="page"`.
+## Icons Only
 
-## Examples
+Use just the previous and next links without page numbers, such as for a data
+table with a rows per page selector.
 
-### Disabled Boundary
+<Example name="pagination-icons-only" />
 
-A disabled link has no `href`, is removed from the tab order, and receives `aria-disabled="true"`.
+## Disabled
+
+Pass `disabled` to a link at a boundary. It drops its `href`, leaves the tab
+order and gets `aria-disabled="true"`.
 
 ```astro live
 ---
@@ -106,97 +106,16 @@ import {
 </Pagination>
 ```
 
-### Compact
+## RTL
 
-```astro live
----
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-} from "@/components/ui/pagination"
----
+Directional icons mirror inside `dir="rtl"`. Pass `text` to translate the
+previous and next labels.
 
-<Pagination>
-  <PaginationContent>
-    <PaginationItem>
-      <PaginationLink href="?page=1" size="sm">
-        1
-      </PaginationLink>
-    </PaginationItem>
-    <PaginationItem>
-      <PaginationLink href="?page=2" size="sm" isActive>
-        2
-      </PaginationLink>
-    </PaginationItem>
-    <PaginationItem>
-      <PaginationLink href="?page=3" size="sm">
-        3
-      </PaginationLink>
-    </PaginationItem>
-    <PaginationItem>
-      <PaginationLink href="?page=4" size="sm">
-        4
-      </PaginationLink>
-    </PaginationItem>
-  </PaginationContent>
-</Pagination>
-```
-
-### RTL
-
-Directional icons mirror when the document or a containing element uses `dir="rtl"`.
-
-```astro live
----
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination"
----
-
-<div dir="rtl">
-  <Pagination aria-label="ترقيم الصفحات">
-    <PaginationContent>
-      <PaginationItem>
-        <PaginationPrevious
-          href="?page=1"
-          text="السابق"
-          aria-label="الصفحة السابقة"
-        />
-      </PaginationItem>
-      <PaginationItem>
-        <PaginationNext
-          href="?page=3"
-          text="التالي"
-          aria-label="الصفحة التالية"
-        />
-      </PaginationItem>
-    </PaginationContent>
-  </Pagination>
-</div>
-```
-
-## Composition
-
-```text
-Pagination
-└── PaginationContent
-    ├── PaginationItem
-    │   └── PaginationPrevious
-    ├── PaginationItem
-    │   └── PaginationLink
-    ├── PaginationItem
-    │   └── PaginationEllipsis
-    └── PaginationItem
-        └── PaginationNext
-```
+<Example name="pagination-rtl" />
 
 ## API Reference
+
+Source: [`src/components/ui/pagination`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/pagination)
 
 ### PaginationLink
 
@@ -207,6 +126,5 @@ Pagination
 | `disabled` | `boolean`     | `false`  | Removes navigation and tab focus.                    |
 | `size`     | `Button` size | `"icon"` | Controls link dimensions.                            |
 
-`PaginationPrevious` and `PaginationNext` accept the same link attributes plus a `text` prop. All components forward their native element attributes.
-
-See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/components/ui/pagination) for the component source.
+`PaginationPrevious` and `PaginationNext` accept the same link attributes plus
+a `text` prop. All components forward their native element attributes.

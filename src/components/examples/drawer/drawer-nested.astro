@@ -1,0 +1,118 @@
+---
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+
+const swipeDirection = "right"
+const placeholder =
+  "bg-muted group-data-[swipe-direction=right]/drawer-popup:size-full group-data-[swipe-direction=down]/drawer-popup:aspect-video group-data-[swipe-direction=down]/drawer-popup:w-full"
+---
+
+<Drawer swipeDirection={swipeDirection} data-drawer-responsive>
+  <DrawerTrigger variant="secondary">Open Drawer</DrawerTrigger>
+  <DrawerContent showSwipeHandle>
+    <DrawerHeader>
+      <DrawerTitle>Drawer</DrawerTitle>
+      <DrawerDescription>
+        Open another drawer from the same direction.
+      </DrawerDescription>
+    </DrawerHeader>
+    <div class="flex-1 p-4">
+      <div class={placeholder}></div>
+    </div>
+    <DrawerFooter>
+      <Drawer swipeDirection={swipeDirection} data-drawer-responsive>
+        <DrawerTrigger variant="outline">Open Nested Drawer</DrawerTrigger>
+        <DrawerContent showSwipeHandle>
+          <DrawerHeader>
+            <DrawerTitle>Nested Drawer</DrawerTitle>
+            <DrawerDescription>
+              The parent drawer stays mounted behind this one.
+            </DrawerDescription>
+          </DrawerHeader>
+          <div class="flex-1 p-4">
+            <div class={placeholder}></div>
+          </div>
+          <DrawerFooter>
+            <Drawer swipeDirection={swipeDirection} data-drawer-responsive>
+              <DrawerTrigger variant="outline">Open Third Drawer</DrawerTrigger>
+              <DrawerContent showSwipeHandle>
+                <DrawerHeader>
+                  <DrawerTitle>Third Drawer</DrawerTitle>
+                  <DrawerDescription>
+                    Two drawers are stacked behind this one.
+                  </DrawerDescription>
+                </DrawerHeader>
+                <div class="flex-1 p-4">
+                  <div class={placeholder}></div>
+                </div>
+                <DrawerFooter>
+                  <Drawer
+                    swipeDirection={swipeDirection}
+                    data-drawer-responsive
+                  >
+                    <DrawerTrigger variant="outline">
+                      Open Fourth Drawer
+                    </DrawerTrigger>
+                    <DrawerContent showSwipeHandle>
+                      <DrawerHeader>
+                        <DrawerTitle>Fourth Drawer</DrawerTitle>
+                        <DrawerDescription>
+                          This is the frontmost drawer in the stack.
+                        </DrawerDescription>
+                      </DrawerHeader>
+                      <div class="flex-1 p-4">
+                        <div class={placeholder}></div>
+                      </div>
+                      <DrawerFooter>
+                        <DrawerClose variant="outline">Close</DrawerClose>
+                      </DrawerFooter>
+                    </DrawerContent>
+                  </Drawer>
+                  <DrawerClose variant="outline">Close</DrawerClose>
+                </DrawerFooter>
+              </DrawerContent>
+            </Drawer>
+            <DrawerClose variant="outline">Close</DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+      <DrawerClose variant="outline">Close</DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+
+<script>
+  import { createDrawer } from "@data-slot/drawer"
+
+  // Like useIsMobile: bottom drawers with a swipe handle below 768px.
+  const initializeResponsive = () => {
+    const mobile = matchMedia("(max-width: 767px)").matches
+    for (const root of document.querySelectorAll<HTMLElement>(
+      "[data-drawer-responsive]"
+    )) {
+      if (root.hasAttribute("data-responsive")) continue
+      root.setAttribute("data-responsive", "")
+      if (!mobile) {
+        root
+          .querySelectorAll('[data-slot="drawer-handle"]')
+          .forEach((handle) => handle.remove())
+        continue
+      }
+      // Data Slot reads the direction when it binds, so rebind.
+      root.dataset.swipeDirection = "down"
+      createDrawer(root).destroy()
+      createDrawer(root)
+    }
+  }
+
+  initializeResponsive()
+  document.addEventListener("astro:page-load", initializeResponsive)
+</script>

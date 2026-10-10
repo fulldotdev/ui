@@ -1,0 +1,90 @@
+---
+import { Card, CardContent } from "@/components/ui/card"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+---
+
+<Carousel
+  data-carousel-autoplay="2000"
+  class="w-full max-w-[10rem] sm:max-w-xs"
+>
+  <CarouselContent>
+    {Array.from({ length: 5 }).map((_, index) => (
+      <CarouselItem>
+        <div class="p-1">
+          <Card>
+            <CardContent class="flex aspect-square items-center justify-center p-6">
+              <span class="text-4xl font-semibold">{index + 1}</span>
+            </CardContent>
+          </Card>
+        </div>
+      </CarouselItem>
+    ))}
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+
+<script>
+  import type { CarouselApi } from "@/components/ui/carousel"
+
+  type CarouselRoot = HTMLElement & { __fulldevCarouselApi?: CarouselApi }
+
+  // Autoplay with delay 2000 and stopOnInteraction, like
+  // embla-carousel-autoplay: hovering, dragging or focusing a slide stops it.
+  const autoplay = (root: HTMLElement, api: CarouselApi) => {
+    const delay = Number(root.dataset.carouselAutoplay)
+    let timer = 0
+    let active = false
+    const play = () => {
+      clearTimeout(timer)
+      active = true
+      timer = window.setTimeout(() => {
+        if (api.canScrollNext()) api.scrollNext()
+        else api.scrollTo(0)
+        play()
+      }, delay)
+    }
+    const stop = () => {
+      clearTimeout(timer)
+      active = false
+    }
+    const reset = () => {
+      if (active) play()
+    }
+    root.addEventListener("mouseenter", stop)
+    root.addEventListener("mouseleave", reset)
+    api.on("pointerDown", stop)
+    api.on("slideFocusStart", stop)
+    api.on("destroy", stop)
+    if (api.scrollSnapList().length > 1) play()
+  }
+
+  const initialize = () => {
+    for (const root of document.querySelectorAll<CarouselRoot>(
+      "[data-carousel-autoplay]"
+    )) {
+      if (root.hasAttribute("data-bound")) continue
+      root.setAttribute("data-bound", "")
+      if (root.__fulldevCarouselApi) autoplay(root, root.__fulldevCarouselApi)
+      else
+        root.addEventListener(
+          "carousel:init",
+          (event) =>
+            autoplay(
+              root,
+              (event as CustomEvent<{ api: CarouselApi }>).detail.api
+            ),
+          { once: true }
+        )
+    }
+  }
+
+  initialize()
+  document.addEventListener("astro:page-load", initialize)
+</script>

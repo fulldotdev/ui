@@ -4,33 +4,7 @@ title: Select
 description: Displays a list of options for the user to pick from, triggered by a button.
 ---
 
-```astro live props={{ name: 'select' }}
----
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
----
-
-<Select class="w-[180px]" placeholder="Select a fruit">
-  <SelectTrigger>
-    <SelectValue />
-  </SelectTrigger>
-  <SelectContent>
-    <SelectGroup>
-      <SelectItem value="apple">Apple</SelectItem>
-      <SelectItem value="banana">Banana</SelectItem>
-      <SelectItem value="blueberry">Blueberry</SelectItem>
-      <SelectItem value="grapes">Grapes</SelectItem>
-      <SelectItem value="pineapple">Pineapple</SelectItem>
-    </SelectGroup>
-  </SelectContent>
-</Select>
-```
+<Example name="select-demo" />
 
 ## Installation
 
@@ -40,8 +14,7 @@ npx shadcn@latest add @fulldev/select
 
 ## Usage
 
-```astro
----
+```ts
 import {
   Select,
   SelectContent,
@@ -50,29 +23,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
----
 ```
 
 ```astro
-<Select class="w-[180px]" placeholder="Select a fruit">
-  <SelectTrigger>
+<Select placeholder="Theme">
+  <SelectTrigger class="w-[180px]">
     <SelectValue />
   </SelectTrigger>
   <SelectContent>
     <SelectGroup>
-      <SelectItem value="apple">Apple</SelectItem>
-      <SelectItem value="banana">Banana</SelectItem>
-      <SelectItem value="blueberry">Blueberry</SelectItem>
-      <SelectItem value="grapes">Grapes</SelectItem>
-      <SelectItem value="pineapple">Pineapple</SelectItem>
+      <SelectItem value="light">Light</SelectItem>
+      <SelectItem value="dark">Dark</SelectItem>
+      <SelectItem value="system">System</SelectItem>
     </SelectGroup>
   </SelectContent>
 </Select>
 ```
 
-## Composition
+`SelectValue` shows the label of the selected item, or the `placeholder` of
+`Select` when nothing is selected. Pass `name` to submit the value with a form,
+and `required` for native validation. The `Select` root is an `inline-flex
+w-fit` wrapper, so give it the trigger's width classes when the trigger uses
+`w-full`.
 
-Use the following composition to build a `Select`:
+## Composition
 
 ```text
 Select
@@ -90,189 +64,45 @@ Select
         └── SelectItem
 ```
 
-## Examples
+## Align Item With Trigger
 
-### Item Aligned
+Use `position` on `Select` or `SelectContent`. With `"item-aligned"` (default),
+the popup positions so the selected item appears over the trigger. With
+`"popper"`, it opens below the trigger and takes `side`, `align`,
+`sideOffset`, and `alignOffset`. Data Slot reads the position when it binds, so
+the example rebinds the select when the switch changes.
 
-Use the `position` prop on `SelectContent` to control alignment. When
-`position="item-aligned"` (default), the popup positions so the selected item
-appears over the trigger. When `position="popper"`, Data Slot positions the
-popup against the trigger with its default collision handling. Set `side`,
-`align`, `sideOffset`, `alignOffset`, `avoidCollisions`, or
-`collisionPadding` on `Select` or `SelectContent` when you need a different
-placement.
+<Example name="select-align-item" />
 
-```astro live
----
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
----
-
-<div class="grid w-full max-w-2xl gap-6 @md:grid-cols-2">
-  <div class="flex flex-col gap-3">
-    <p class="text-sm font-medium">Item aligned</p>
-    <Select defaultValue="team" class="max-w-xs">
-      <SelectTrigger>
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent position="item-aligned">
-        <SelectItem value="starter">Starter workspace</SelectItem>
-        <SelectItem value="team">Team workspace</SelectItem>
-        <SelectItem value="enterprise">Enterprise workspace</SelectItem>
-      </SelectContent>
-    </Select>
-  </div>
-
-  <div class="flex flex-col gap-3">
-    <p class="text-sm font-medium">Popper</p>
-    <Select defaultValue="team" class="max-w-xs">
-      <SelectTrigger>
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent position="popper" side="bottom" align="start">
-        <SelectItem value="starter">Starter workspace</SelectItem>
-        <SelectItem value="team">Team workspace</SelectItem>
-        <SelectItem value="enterprise">Enterprise workspace</SelectItem>
-      </SelectContent>
-    </Select>
-  </div>
-</div>
-```
-
-### With Groups & Labels
+## Groups
 
 Use `SelectGroup`, `SelectLabel`, and `SelectSeparator` to organize items.
 
-```astro live
----
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectSeparator,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
----
+<Example name="select-groups" />
 
-<Select class="max-w-xs" placeholder="Pick produce">
-  <SelectTrigger>
-    <SelectValue />
-  </SelectTrigger>
-  <SelectContent>
-    <SelectGroup>
-      <SelectLabel>Fruits</SelectLabel>
-      <SelectItem value="apple">Apple</SelectItem>
-      <SelectItem value="banana">Banana</SelectItem>
-    </SelectGroup>
-    <SelectSeparator />
-    <SelectGroup>
-      <SelectLabel>Vegetables</SelectLabel>
-      <SelectItem value="carrot">Carrot</SelectItem>
-      <SelectItem value="spinach">Spinach</SelectItem>
-    </SelectGroup>
-  </SelectContent>
-</Select>
-```
-
-### Large List
+## Scrollable
 
 A select with many items that scrolls.
 
-```astro live
----
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+<Example name="select-scrollable" />
 
-const timezones = [
-  "Pacific/Honolulu",
-  "America/Anchorage",
-  "America/Los_Angeles",
-  "America/Denver",
-  "America/Chicago",
-  "America/New_York",
-  "America/Sao_Paulo",
-  "Europe/London",
-  "Europe/Amsterdam",
-  "Europe/Berlin",
-  "Europe/Athens",
-  "Asia/Dubai",
-  "Asia/Kolkata",
-  "Asia/Bangkok",
-  "Asia/Tokyo",
-  "Australia/Sydney",
-]
----
+## Disabled
 
-<Select class="max-w-xs" placeholder="Select timezone">
-  <SelectTrigger>
-    <SelectValue />
-  </SelectTrigger>
-  <SelectContent class="max-h-56">
-    {timezones.map((timezone) => (
-      <SelectItem value={timezone}>{timezone}</SelectItem>
-    ))}
-  </SelectContent>
-</Select>
-```
+Pass `disabled` to `Select` or to a `SelectItem`.
 
-### Disabled
+<Example name="select-disabled" />
 
-Disable the entire select or individual items.
+## Invalid
 
-```astro live
----
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
----
+Add the `data-invalid` attribute to the `Field` component and the
+`aria-invalid` attribute to the `SelectTrigger` component to show an error
+state.
 
-<div class="grid w-full max-w-md gap-6 @md:grid-cols-2">
-  <div class="flex flex-col gap-3">
-    <p class="text-sm font-medium">Disabled item</p>
-    <Select defaultValue="pro" class="max-w-xs">
-      <SelectTrigger>
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="starter">Starter</SelectItem>
-        <SelectItem value="pro">Pro</SelectItem>
-        <SelectItem value="enterprise" disabled>
-          Enterprise
-        </SelectItem>
-      </SelectContent>
-    </Select>
-  </div>
+<Example name="select-invalid" />
 
-  <div class="flex flex-col gap-3">
-    <p class="text-sm font-medium">Disabled select</p>
-    <Select disabled class="max-w-xs" placeholder="Unavailable">
-      <SelectTrigger>
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="starter">Starter</SelectItem>
-      </SelectContent>
-    </Select>
-  </div>
-</div>
-```
+## RTL
+
+<Example name="select-rtl" />
 
 ## Content mounting
 
@@ -286,5 +116,35 @@ neither adds a no-JavaScript fallback.
 
 ## API Reference
 
-See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/components/ui/select) for more information on props.
-See the [data-slot docs](https://github.com/bejamas/data-slot/blob/main/packages/select/README.md) for more information on interactivity.
+Source: [`src/components/ui/select`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/select)
+
+### Select
+
+| Prop                   | Type                           | Default          |
+| ---------------------- | ------------------------------ | ---------------- |
+| `defaultValue`         | `string`                       |                  |
+| `placeholder`          | `string`                       | `""`             |
+| `disabled`             | `boolean`                      | `false`          |
+| `required`             | `boolean`                      | `false`          |
+| `name`                 | `string`                       |                  |
+| `position`             | `"item-aligned" \| "popper"`   | `"item-aligned"` |
+| `side`                 | `"top" \| "bottom"`            | `"bottom"`       |
+| `align`                | `"start" \| "center" \| "end"` | `"start"`        |
+| `sideOffset`           | `number`                       | `4`              |
+| `alignOffset`          | `number`                       | `0`              |
+| `avoidCollisions`      | `boolean`                      | `true`           |
+| `collisionPadding`     | `number`                       | `8`              |
+| `highlightItemOnHover` | `boolean`                      | `true`           |
+| `lockScroll`           | `boolean`                      | `true`           |
+| `mountStrategy`        | `"lazy" \| "eager"`            | `"lazy"`         |
+
+`SelectContent` takes the placement props too and overrides the root.
+`SelectItem` takes `value`, `disabled`, and `label` (the text shown in the
+trigger when it differs from the item content). `SelectTrigger` takes `size`
+(`"default" \| "sm"`).
+
+The root emits `select:change` with `{ value }` and `select:open-change` with
+`{ open }`. Dispatch `select:set` with `{ value?, open? }` to change it from
+client code. See the
+[Data Slot select docs](https://github.com/bejamas/data-slot/blob/main/packages/select/README.md)
+for keyboard and controller details.

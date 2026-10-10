@@ -4,23 +4,7 @@ title: Tooltip
 description: Displays contextual information when a user hovers or focuses a trigger.
 ---
 
-```astro live props={{ name: 'tooltip' }}
----
-import { buttonVariants } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
----
-
-<Tooltip>
-  <TooltipTrigger class={buttonVariants({ variant: "outline" })}>
-    Show Tooltip
-  </TooltipTrigger>
-  <TooltipContent>Add to project</TooltipContent>
-</Tooltip>
-```
+<Example name="tooltip-demo" />
 
 ## Installation
 
@@ -40,16 +24,18 @@ import {
 
 ```astro
 <Tooltip>
-  <TooltipTrigger class="rounded-md border px-3 py-2">
-    Show Tooltip
-  </TooltipTrigger>
-  <TooltipContent>Add to project</TooltipContent>
+  <TooltipTrigger>Hover</TooltipTrigger>
+  <TooltipContent>
+    <p>Add to library</p>
+  </TooltipContent>
 </Tooltip>
 ```
 
-## Composition
+`TooltipTrigger` renders an unstyled `button`, or an `a` with `href`. Pass
+`as="span"` or `as="div"` for another element, and
+`class={buttonVariants({ variant: "outline" })}` for button styles.
 
-Use the following composition to build a `Tooltip`:
+## Composition
 
 ```text
 Tooltip
@@ -57,48 +43,28 @@ Tooltip
 └── TooltipContent
 ```
 
-## Examples
+## Side
 
-```astro live
----
-import { buttonVariants } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
----
+Use the `side` prop on `TooltipContent` or `Tooltip` to change the position of
+the tooltip. Logical sides `inline-start` and `inline-end` follow the text
+direction.
 
-<div class="flex flex-wrap items-center gap-3">
-  <Tooltip side="top">
-    <TooltipTrigger class={buttonVariants({ variant: "outline" })}>
-      Top
-    </TooltipTrigger>
-    <TooltipContent>Top tooltip</TooltipContent>
-  </Tooltip>
+<Example name="tooltip-sides" />
 
-  <Tooltip side="right">
-    <TooltipTrigger class={buttonVariants({ variant: "outline" })}>
-      Right
-    </TooltipTrigger>
-    <TooltipContent>Right tooltip</TooltipContent>
-  </Tooltip>
+## With Keyboard Shortcut
 
-  <Tooltip side="bottom">
-    <TooltipTrigger class={buttonVariants({ variant: "outline" })}>
-      Bottom
-    </TooltipTrigger>
-    <TooltipContent>Bottom tooltip</TooltipContent>
-  </Tooltip>
+<Example name="tooltip-keyboard" />
 
-  <Tooltip side="left">
-    <TooltipTrigger class={buttonVariants({ variant: "outline" })}>
-      Left
-    </TooltipTrigger>
-    <TooltipContent>Left tooltip</TooltipContent>
-  </Tooltip>
-</div>
-```
+## Disabled Button
+
+Show a tooltip on a disabled button by wrapping it with
+`<TooltipTrigger as="span">`.
+
+<Example name="tooltip-disabled" />
+
+## RTL
+
+<Example name="tooltip-rtl" />
 
 ## Content mounting
 
@@ -112,5 +78,23 @@ neither adds a no-JavaScript fallback.
 
 ## API Reference
 
-See the [GitHub source code](https://github.com/fulldotdev/ui/tree/main/src/components/ui/tooltip) for more information on props.
-See the [data-slot docs](https://github.com/bejamas/data-slot/blob/main/packages/tooltip/README.md) for more information on interactivity.
+Source: [`src/components/ui/tooltip`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/tooltip)
+
+### Tooltip
+
+| Prop                | Type                                                                       | Default    |
+| ------------------- | -------------------------------------------------------------------------- | ---------- |
+| `delay`             | `number`                                                                   | `300`      |
+| `skipDelayDuration` | `number`                                                                   | `300`      |
+| `side`              | `"top" \| "right" \| "bottom" \| "left" \| "inline-start" \| "inline-end"` | `"top"`    |
+| `align`             | `"start" \| "center" \| "end"`                                             | `"center"` |
+| `sideOffset`        | `number`                                                                   | `4`        |
+| `alignOffset`       | `number`                                                                   | `0`        |
+| `avoidCollisions`   | `boolean`                                                                  | `true`     |
+| `collisionPadding`  | `number`                                                                   | `8`        |
+| `mountStrategy`     | `"lazy" \| "eager"`                                                        | `"lazy"`   |
+
+`TooltipContent` takes the same placement props and overrides the root.
+
+See the [Data Slot tooltip docs](https://github.com/bejamas/data-slot/blob/main/packages/tooltip/README.md)
+for events and programmatic control.

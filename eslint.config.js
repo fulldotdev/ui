@@ -54,6 +54,15 @@ export default defineConfig([
   ...astro.configs.recommended,
   ...astro.configs["jsx-a11y-recommended"],
   {
+    // Ports of the official shadcn/ui examples keep their content, such as
+    // alt="Photo" and href="#".
+    files: ["src/components/examples/**/*.astro"],
+    rules: {
+      "astro/jsx-a11y/anchor-is-valid": "off",
+      "astro/jsx-a11y/img-redundant-alt": "off",
+    },
+  },
+  {
     // A site installs whole components, so tools such as knip can only tell
     // which ones it uses when components import each other through index.ts.
     files: ["**/*.{js,mjs,ts,tsx,astro}"],
