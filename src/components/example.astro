@@ -30,6 +30,7 @@ const block = example.kind === "blocks"
   componentProps={{
     name: example.item,
     frame: framework === "react",
+    codeLabel: example.kind === "examples" ? "Code" : "Usage",
   }}
 >
   {Component ? (
@@ -84,6 +85,8 @@ const block = example.kind === "blocks"
         "iframe[data-react-preview]"
       ),
     ].find((frame) => frame.contentWindow === event.source)
-    if (frame) frame.style.height = `${Math.ceil(event.data.height)}px`
+    // Bounded, so a runaway layout cannot grow the page without end.
+    const height = Math.min(Math.max(Math.ceil(event.data.height), 120), 4000)
+    if (frame) frame.style.height = `${height}px`
   })
 </script>

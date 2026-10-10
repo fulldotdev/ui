@@ -69,7 +69,11 @@ export const inlineExamples = (body: string, framework: Framework) => {
     const example = getExample(name, framework)
     if (!example) return tag
     items.add(example.item)
-    return `\`\`\`${example.lang} title="${example.path}"\n${example.source}\n\`\`\``
+    const title =
+      example.kind === "examples"
+        ? example.path.replace(/^react\//, "")
+        : `Usage of @fulldev/${example.item} (${example.path}, not installed)`
+    return `\`\`\`${example.lang} title="${title}"\n${example.source}\n\`\`\``
   })
   return { text, items: [...items] }
 }

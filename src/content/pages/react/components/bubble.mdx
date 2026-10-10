@@ -6,10 +6,6 @@ description: Displays conversational content in a message bubble. Supports varia
 
 <Example name="bubble-demo" />
 
-The `Bubble` component displays framed conversational content. Use it for chat text, short structured output, quoted replies, suggestions, and reactions.
-
-For full-featured chat interfaces, use the [`Message`](/react/components/message/) component. `Bubble` is intentionally scoped to the bubble surface. Place avatars, names, timestamps, metadata, and message-level actions in [`Message`](/react/components/message/).
-
 ## Installation
 
 ```bash
@@ -19,7 +15,7 @@ npx shadcn@latest add @fulldev/bubble
 ## Usage
 
 ```tsx showLineNumbers
-
+import { Bubble, BubbleContent, BubbleReactions } from "@/components/ui/bubble"
 ```
 
 ```tsx showLineNumbers
@@ -43,8 +39,6 @@ Bubble
 └── BubbleReactions
 ```
 
-Use `BubbleGroup` to group consecutive bubbles from the same sender:
-
 ```text
 BubbleGroup
 ├── Bubble
@@ -52,15 +46,6 @@ BubbleGroup
 └── Bubble
     └── BubbleContent
 ```
-
-## Features
-
-- Seven visual variants, from a strong primary bubble to unframed ghost content
-- Start and end alignment for sender and receiver bubbles
-- Reactions that anchor to the bubble edge with configurable side and alignment
-- Bubbles size to their content, up to 80% of the container width
-- Polymorphic content via `render` for link and button bubbles
-- Customizable styling through the `className` prop on every part
 
 ## Variants
 
@@ -78,8 +63,6 @@ Use `variant` to change the visual treatment of the bubble.
 | `ghost`       | Unframed content for assistant text or rich content.   |
 | `destructive` | A destructive bubble for error or failed actions.      |
 
-A bubble sizes to its content, up to 80% of the container width. The `ghost` variant removes the max-width so assistant text and rich content can span the full row.
-
 ## Alignment
 
 Use `align` on `Bubble` to align the bubble to the start or end of the conversation.
@@ -95,7 +78,7 @@ Use `align` on `Bubble` to align the bubble to the start or end of the conversat
 
 ## Bubble Group
 
-Use `BubbleGroup` to group consecutive bubbles from the same sender. Note the `align` prop should be set on the `Bubble` component itself, not the `BubbleGroup` component.
+Use `BubbleGroup` to group consecutive bubbles from the same sender.
 
 ```text
 BubbleGroup
@@ -114,6 +97,8 @@ You can turn a bubble into a link or button by using the `render` prop on `Bubbl
 <Example name="bubble-link-button" />
 
 ```tsx showLineNumbers
+import { Bubble, BubbleContent } from "@/components/ui/bubble"
+
 export function BubbleLinkDemo() {
   return (
     <Bubble variant="muted">
@@ -125,13 +110,13 @@ export function BubbleLinkDemo() {
 
 ## Reactions
 
-Use `BubbleReactions` for bubble reactions. You can use it to display reactions or quick action buttons. Use `side` and `align` to position the row — `side="top"` anchors it to the upper edge. Reactions overlap the bubble edge, so leave vertical space between rows — the examples below use a larger `gap` for this reason.
+Use `BubbleReactions` for bubble reactions.
 
 <Example name="bubble-reactions" />
 
 ## Show More / Collapsible
 
-Long bubble content can be composed with [`Collapsible`](/react/components/collapsible/) to allow for a show more or show less interaction. Use the `CollapsibleTrigger` component to trigger the collapsible content.
+Long bubble content can be composed with [`Collapsible`](/react/components/collapsible/) to allow for a show more or show less interaction.
 
 <Example name="bubble-collapsible" />
 
@@ -149,11 +134,11 @@ Pair a bubble with a [`Popover`](/react/components/popover/) to surface more inf
 
 ## Accessibility
 
-`Bubble` renders the presentational message surface. Keep conversation-level semantics on the surrounding container and follow the guidelines below.
+`Bubble` renders the presentational message surface.
 
 ### Labeling Reactions
 
-Reactions render as a row of emoji. A screen reader reads each glyph with no context, and counters like `+8` are announced as "plus eight". Group the row as a single image with a descriptive `aria-label` so it announces once. `role="img"` also hides the individual emoji from assistive tech, so no `aria-hidden` is needed.
+Reactions render as a row of emoji.
 
 ```tsx showLineNumbers
 <BubbleReactions role="img" aria-label="Reactions: thumbs up, fire, and 8 more">
@@ -162,8 +147,6 @@ Reactions render as a row of emoji. A screen reader reads each glyph with no con
   <span>+8</span>
 </BubbleReactions>
 ```
-
-When reactions are interactive, render buttons instead and give icon-only buttons an `aria-label`.
 
 ```tsx showLineNumbers
 <BubbleReactions>
@@ -175,7 +158,7 @@ When reactions are interactive, render buttons instead and give icon-only button
 
 ### Interactive Bubbles
 
-When a bubble is clickable, render it as a real `<button>` or `<a>` with the `render` prop so it is focusable and exposes the correct role. `BubbleContent` ships a visible focus ring for interactive elements, and the accessible name comes from the bubble text. No extra label is needed.
+When a bubble is clickable, render it as a real `<button>` or `<a>` with the `render` prop so it is focusable and exposes the correct role.
 
 ```tsx showLineNumbers
 <Bubble variant="muted" align="end">
@@ -187,7 +170,7 @@ When a bubble is clickable, render it as a real `<button>` or `<a>` with the `re
 
 ### Meaning Beyond Color
 
-Bubble variants signal role and tone with color. Pair them with text, alignment, or icons so meaning is not conveyed by color alone. For a `destructive` bubble, keep the error context in the message text rather than relying on the color treatment.
+Bubble variants signal role and tone with color.
 
 ## API Reference
 

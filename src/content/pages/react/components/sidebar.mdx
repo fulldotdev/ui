@@ -6,14 +6,6 @@ description: A composable, themeable and customizable sidebar component.
 
 <Example name="sidebar-demo" />A sidebar that collapses to icons.
 
-Sidebars are one of the most complex components to build. They are central
-to any application and often contain a lot of moving parts.
-
-We now have a solid foundation to build on top of. Composable. Themeable.
-Customizable.
-
-[Browse the Blocks Library](https://ui.shadcn.com/blocks).
-
 ## Installation
 
 ```bash
@@ -23,6 +15,9 @@ npx shadcn@latest add @fulldev/sidebar
 ## Usage
 
 ```tsx showLineNumbers title="app/layout.tsx"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
@@ -37,6 +32,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 ```
 
 ```tsx showLineNumbers title="components/app-sidebar.tsx"
+import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -93,35 +89,11 @@ SidebarProvider
 
 ## Structure
 
-- **SidebarProvider** — Handles collapsible state and provides sidebar context to child components.
-- **Sidebar** — The main collapsible sidebar panel.
-- **SidebarHeader** — Sticky at the top; use for branding, titles, or workspace switchers.
-- **SidebarFooter** — Sticky at the bottom; use for user menus, settings, or actions.
-- **SidebarContent** — Scrollable region between the header and footer.
-- **SidebarGroup** — Groups related navigation with optional label, action, and content areas.
-- **SidebarMenu** / **SidebarMenuItem** — Menu structure for links, badges, actions, and nested submenus.
-- **SidebarRail** — Resize handle for adjusting sidebar width when applicable.
-- **SidebarInset** — Wraps main content when using the `inset` variant.
-- **SidebarTrigger** — Control that toggles the sidebar open or collapsed.
-
-<img
-  src="https://ui.shadcn.com/images/sidebar-structure.png"
-  width="716"
-  height="420"
-  alt="Sidebar Structure"
-  class="mt-6 w-full overflow-hidden rounded-2xl border dark:hidden"
-/>
-<img
-  src="https://ui.shadcn.com/images/sidebar-structure-dark.png"
-  width="716"
-  height="420"
-  alt="Sidebar Structure"
-  class="mt-6 hidden w-full overflow-hidden rounded-2xl border dark:block"
-/>
+- **SidebarProvider**: Handles collapsible state and provides sidebar context to child components.
 
 ## SidebarProvider
 
-The `SidebarProvider` component is used to provide the sidebar context to the `Sidebar` component. You should always wrap your application in a `SidebarProvider` component.
+The `SidebarProvider` component is used to provide the sidebar context to the `Sidebar` component.
 
 ### Props
 
@@ -138,21 +110,6 @@ If you have a single sidebar in your application, you can use the `SIDEBAR_WIDTH
 ```tsx showLineNumbers title="components/ui/sidebar.tsx"
 const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
-```
-
-For multiple sidebars in your application, you can use the `--sidebar-width` and `--sidebar-width-mobile` CSS variables in the `style` prop.
-
-```tsx showLineNumbers
-<SidebarProvider
-  style={
-    {
-      "--sidebar-width": "20rem",
-      "--sidebar-width-mobile": "20rem",
-    } as React.CSSProperties
-  }
->
-  <Sidebar />
-</SidebarProvider>
 ```
 
 ### Keyboard Shortcut
@@ -181,9 +138,6 @@ The main `Sidebar` component used to render a collapsible sidebar.
 | `icon`      | A sidebar that collapses to icons.                           |
 | `none`      | A non-collapsible sidebar.                                   |
 
-**Note:** If you use the `inset` variant, remember to wrap your main content
-in a `SidebarInset` component.
-
 ```tsx showLineNumbers
 <SidebarProvider>
   <Sidebar variant="inset" />
@@ -198,6 +152,8 @@ in a `SidebarInset` component.
 The `useSidebar` hook is used to control the sidebar.
 
 ```tsx showLineNumbers
+import { useSidebar } from "@/components/ui/sidebar"
+
 export function AppSidebar() {
   const {
     state,
@@ -267,7 +223,7 @@ Use the `SidebarFooter` component to add a sticky footer to the sidebar.
 
 ## SidebarContent
 
-The `SidebarContent` component is used to wrap the content of the sidebar. This is where you add your `SidebarGroup` components. It is scrollable.
+The `SidebarContent` component is used to wrap the content of the sidebar.
 
 ```tsx showLineNumbers
 <Sidebar>
@@ -282,8 +238,6 @@ The `SidebarContent` component is used to wrap the content of the sidebar. This 
 
 Use the `SidebarGroup` component to create a section within the sidebar.
 
-A `SidebarGroup` has a `SidebarGroupLabel`, a `SidebarGroupContent` and an optional `SidebarGroupAction`.
-
 ```tsx showLineNumbers
 <SidebarGroup>
   <SidebarGroupLabel>Application</SidebarGroupLabel>
@@ -294,40 +248,9 @@ A `SidebarGroup` has a `SidebarGroupLabel`, a `SidebarGroupContent` and an optio
 </SidebarGroup>
 ```
 
-To make a `SidebarGroup` collapsible, wrap it in a `Collapsible`.
-
-```tsx showLineNumbers
-<Collapsible defaultOpen className="group/collapsible">
-  <SidebarGroup>
-    <SidebarGroupLabel render={<CollapsibleTrigger />}>
-      Help
-      <ChevronDown className="ml-auto transition-transform group-data-open/collapsible:rotate-180" />
-    </SidebarGroupLabel>
-    <CollapsibleContent>
-      <SidebarGroupContent />
-    </CollapsibleContent>
-  </SidebarGroup>
-</Collapsible>
-```
-
 ## SidebarMenu
 
 The `SidebarMenu` component is used for building a menu within a `SidebarGroup`.
-
-<img
-  src="https://ui.shadcn.com/images/sidebar-menu.png"
-  width="716"
-  height="420"
-  alt="Sidebar Menu"
-  class="mt-6 w-full overflow-hidden rounded-2xl border dark:hidden"
-/>
-<img
-  src="https://ui.shadcn.com/images/sidebar-menu-dark.png"
-  width="716"
-  height="420"
-  alt="Sidebar Menu"
-  class="mt-6 hidden w-full overflow-hidden rounded-2xl border dark:block"
-/>
 
 ```tsx showLineNumbers
 <SidebarMenu>
@@ -345,10 +268,6 @@ The `SidebarMenu` component is used for building a menu within a `SidebarGroup`.
 ## SidebarMenuButton
 
 The `SidebarMenuButton` component is used to render a menu button within a `SidebarMenuItem`.
-
-By default, the `SidebarMenuButton` renders a button but you can use the `render` prop to render a different component such as a `Link` or an `a` tag.
-
-Use the `isActive` prop to mark a menu item as active.
 
 ```tsx showLineNumbers
 <SidebarMenuButton render={<a href="#" />} isActive>
@@ -417,6 +336,8 @@ The `SidebarMenuSkeleton` component is used to render a skeleton for a `SidebarM
 Use the `SidebarTrigger` component to render a button that toggles the sidebar.
 
 ```tsx showLineNumbers
+import { useSidebar } from "@/components/ui/sidebar"
+
 export function CustomTrigger() {
   const { toggleSidebar } = useSidebar()
 
@@ -426,7 +347,7 @@ export function CustomTrigger() {
 
 ## SidebarRail
 
-The `SidebarRail` component is used to render a rail within a `Sidebar`. This rail can be used to toggle the sidebar.
+The `SidebarRail` component is used to render a rail within a `Sidebar`.
 
 ```tsx showLineNumbers
 <Sidebar>
@@ -455,60 +376,9 @@ export function AppSidebar() {
 }
 ```
 
-## Theming
-
-We use the following CSS variables to theme the sidebar.
-
-```css
-@layer base {
-  :root {
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 0 0% 98%;
-    --sidebar-primary-foreground: 240 5.9% 10%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-}
-```
-
-## Styling
-
-Here are some tips for styling the sidebar based on different states.
-
-```tsx
-<Sidebar collapsible="icon">
-  <SidebarContent>
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden" />
-  </SidebarContent>
-</Sidebar>
-```
-
-```tsx
-<SidebarMenuItem>
-  <SidebarMenuButton />
-  <SidebarMenuAction className="peer-data-[active=true]/menu-button:opacity-100" />
-</SidebarMenuItem>
-```
-
 ## RTL
 
 To enable RTL support in shadcn/ui, see the [RTL configuration guide](https://ui.shadcn.com/docs/rtl).
-
-[View RTL Sidebar](https://ui.shadcn.com/view/base-nova/sidebar-rtl)
 
 ## API Reference
 
