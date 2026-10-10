@@ -21,7 +21,9 @@ export function BreadcrumbEllipsisDemo() {
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink render={<a href="/docs/components" />}>
+          <BreadcrumbLink
+            render={<a href="https://ui.shadcn.com/docs/components" />}
+          >
             Components
           </BreadcrumbLink>
         </BreadcrumbItem>

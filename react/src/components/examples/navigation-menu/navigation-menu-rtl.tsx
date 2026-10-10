@@ -131,32 +131,32 @@ const components = [
   {
     titleKey: "alertDialog" as const,
     descriptionKey: "alertDialogDesc" as const,
-    href: "/docs/primitives/alert-dialog",
+    href: "https://ui.shadcn.com/docs/components/base/alert-dialog",
   },
   {
     titleKey: "hoverCard" as const,
     descriptionKey: "hoverCardDesc" as const,
-    href: "/docs/primitives/hover-card",
+    href: "https://ui.shadcn.com/docs/components/base/hover-card",
   },
   {
     titleKey: "progress" as const,
     descriptionKey: "progressDesc" as const,
-    href: "/docs/primitives/progress",
+    href: "https://ui.shadcn.com/docs/components/base/progress",
   },
   {
     titleKey: "scrollArea" as const,
     descriptionKey: "scrollAreaDesc" as const,
-    href: "/docs/primitives/scroll-area",
+    href: "https://ui.shadcn.com/docs/components/base/scroll-area",
   },
   {
     titleKey: "tabs" as const,
     descriptionKey: "tabsDesc" as const,
-    href: "/docs/primitives/tabs",
+    href: "https://ui.shadcn.com/docs/components/base/tabs",
   },
   {
     titleKey: "tooltip" as const,
     descriptionKey: "tooltipDesc" as const,
-    href: "/docs/primitives/tooltip",
+    href: "https://ui.shadcn.com/docs/components/base/tooltip",
   },
 ] as const
 
@@ -179,7 +179,10 @@ export function NavigationMenuRtl() {
               <ListItem href="/docs/installation" title={t.installation}>
                 {t.installationDesc}
               </ListItem>
-              <ListItem href="/docs/primitives/typography" title={t.typography}>
+              <ListItem
+                href="https://ui.shadcn.com/docs/typeset"
+                title={t.typography}
+              >
                 {t.typographyDesc}
               </ListItem>
             </ul>

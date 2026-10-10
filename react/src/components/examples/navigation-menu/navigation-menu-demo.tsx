@@ -20,36 +20,36 @@ import {
 const components: { title: string; href: string; description: string }[] = [
   {
     title: "Alert Dialog",
-    href: "/docs/primitives/alert-dialog",
+    href: "https://ui.shadcn.com/docs/components/base/alert-dialog",
     description:
       "A modal dialog that interrupts the user with important content and expects a response.",
   },
   {
     title: "Hover Card",
-    href: "/docs/primitives/hover-card",
+    href: "https://ui.shadcn.com/docs/components/base/hover-card",
     description:
       "For sighted users to preview content available behind a link.",
   },
   {
     title: "Progress",
-    href: "/docs/primitives/progress",
+    href: "https://ui.shadcn.com/docs/components/base/progress",
     description:
       "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
   },
   {
     title: "Scroll-area",
-    href: "/docs/primitives/scroll-area",
+    href: "https://ui.shadcn.com/docs/components/base/scroll-area",
     description: "Visually or semantically separates content.",
   },
   {
     title: "Tabs",
-    href: "/docs/primitives/tabs",
+    href: "https://ui.shadcn.com/docs/components/base/tabs",
     description:
       "A set of layered sections of content, known as tab panels, that are displayed one at a time.",
   },
   {
     title: "Tooltip",
-    href: "/docs/primitives/tooltip",
+    href: "https://ui.shadcn.com/docs/components/base/tooltip",
     description:
       "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
   },
@@ -69,7 +69,10 @@ export function NavigationMenuDemo() {
               <ListItem href="/docs/installation" title="Installation">
                 How to install dependencies and structure your app.
               </ListItem>
-              <ListItem href="/docs/primitives/typography" title="Typography">
+              <ListItem
+                href="https://ui.shadcn.com/docs/typeset"
+                title="Typography"
+              >
                 Styles for headings, paragraphs, lists...etc
               </ListItem>
             </ul>
