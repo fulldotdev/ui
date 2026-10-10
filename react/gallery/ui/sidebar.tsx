@@ -78,7 +78,12 @@ function SidebarState() {
 
 function IconSidebar() {
   return (
-    <Sidebar collapsible="icon" className={contained}>
+    <Sidebar
+      collapsible="icon"
+      className={contained}
+      mobileTitle="Workspace"
+      mobileDescription="Projects, inbox and settings."
+    >
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

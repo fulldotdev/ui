@@ -76,6 +76,8 @@ const demos: Record<string, React.ComponentType> = {
         breadcrumb: "Breadcrumb",
         breadcrumbMenu: "Toggle menu",
         sidebarToggle: "Toggle Sidebar",
+        mobileTitle: "Documentation",
+        mobileDescription: "Pages of the documentation.",
         theme: "Toggle theme",
         shortcut: { mac: "⌘ + K", other: "Ctrl + K" },
       }}

@@ -125,6 +125,8 @@ function Sidebar1({
     breadcrumb: string
     breadcrumbMenu: string
     sidebarToggle: string
+    mobileTitle: string
+    mobileDescription: string
     theme: string
     shortcut: {
       mac: string
@@ -170,6 +172,8 @@ function Sidebar1({
     <SidebarProvider {...props}>
       <Sidebar
         aria-label={labels.sidebar}
+        mobileTitle={labels.mobileTitle}
+        mobileDescription={labels.mobileDescription}
         collapsible="offcanvas"
         variant="inset"
       >
