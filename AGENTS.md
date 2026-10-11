@@ -1,6 +1,6 @@
 # Fulldev UI
 
-This repository is the Fulldev UI registry source, docs site and reference implementation. For conventions in client projects, use the `fulldev` skill in `.agents/skills`.
+This repository is the Fulldev UI registry source, docs site and reference implementation. `skills/fulldev-ui` is the public skill for projects that use Fulldev UI; keep it in line with the docs when behavior changes.
 
 ## Components
 
