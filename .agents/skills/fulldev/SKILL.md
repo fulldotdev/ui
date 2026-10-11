@@ -19,6 +19,12 @@ Install through shadcn using the project's `components.json`; see
 source for the actual API. Local components are application code unless the
 repository says otherwise.
 
+Fulldev UI builds on shadcn/ui. Where a component has a shadcn/ui counterpart,
+the [shadcn skill](https://github.com/shadcn-ui/ui/tree/main/skills/shadcn)
+rules for composition, styling, forms and icons apply, and so does its
+DESIGN.md workflow for tokens, type, radius, elevation and focus. Its React-only
+APIs, such as `asChild`, `render` and hooks, do not.
+
 Read the relevant rules when changing:
 
 - [Content and schemas](rules/source-ownership.md): authored data, globals and icons.
