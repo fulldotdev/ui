@@ -42,7 +42,7 @@ Use this skill only in the Fulldev UI registry source. The goal is a deliberate 
 ## Pass 2: shadcn/ui
 
 1. In a throwaway directory outside the repo (`mktemp -d`), scaffold a Vite project with Base UI and the Vega style and install every component, as the shadcn skill describes.
-2. Copy the current shadcn style files into `registry/styles/shadcn/` as its README describes.
+2. Copy the current shadcn style files into `registry/styles/shadcn/` as `registry/styles/README.md` describes.
 3. Use `shadcn docs <component>` for current official component docs.
 4. Intersect the scratch project's components with this repo's existing families. Do not expand the audit to missing components.
 5. Compare each matching family sequentially. Check markup order, class names, variants, sizes, default props, data attributes, focus and validation states, icon treatment, RTL behavior, and accessibility.
