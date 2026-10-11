@@ -70,6 +70,13 @@ npx shadcn@latest add @fulldev/button
 
 Visit [ui.full.dev][docs] for complete documentation, component examples, and usage guides.
 
+For coding agents, install the shadcn skill and the Fulldev UI skill:
+
+```bash
+npx skills add shadcn/ui
+npx skills add fulldotdev/ui --skill fulldev-ui
+```
+
 ## Development
 
 Requires Node 24 (`.node-version`) and pnpm 12. The published package supports Node 22.12+. Installs never run dependency or project lifecycle scripts (`pnpm-workspace.yaml`).

@@ -1,6 +1,8 @@
 ---
 name: ui-upstream-sync
 description: Audit and update the existing Fulldev Astro UI registry against current data-slot and shadcn/ui Base UI Vega. Use for periodic whole-library upstream parity passes, not ordinary single-component edits.
+metadata:
+  internal: true
 ---
 
 # Fulldev UI upstream sync
@@ -14,7 +16,7 @@ Use this skill only in the Fulldev UI registry source. The goal is a deliberate 
 - Treat Base UI with the Vega style as the shadcn comparison baseline. Do not accept the current CLI default if it differs.
 - Preserve Astro APIs, data-slot behavior, forwarded props, state attributes, keyboard behavior, and accessibility.
 - Port useful HTML, classes, variants, and public defaults. Do not port React-only state, refs, hooks, or composition that conflicts with data-slot.
-- Do not copy theme-dependent classes unless this repo defines the required token. For example, `font-heading` is a no-op without a heading-font mapping.
+- Do not copy theme-dependent classes unless this repo defines the required token.
 - Treat `registry.json` as source and `public/r` as generated output. Never hand-edit generated registry files.
 
 ## Prepare the audit
@@ -39,18 +41,12 @@ Use this skill only in the Fulldev UI registry source. The goal is a deliberate 
 
 ## Pass 2: shadcn/ui
 
-1. Create a throwaway project outside the repo with `mktemp -d`.
-2. Inspect current CLI help, then create a Vite project using Base UI and the Vega preset. The last known form is:
-
-   ```bash
-   pnpm dlx shadcn@latest create --template vite --base base --preset vega
-   pnpm dlx shadcn@latest add --all
-   ```
-
-3. Use `pnpm dlx shadcn@latest docs <component>` for current official component docs.
+1. In a throwaway directory outside the repo (`mktemp -d`), scaffold a Vite project with Base UI and the Vega style and install every component, as the shadcn skill describes.
+2. Copy the current shadcn style files into `registry/styles/shadcn/` as `registry/styles/README.md` describes.
+3. Use `shadcn docs <component>` for current official component docs.
 4. Intersect the scratch project's components with this repo's existing families. Do not expand the audit to missing components.
 5. Compare each matching family sequentially. Check markup order, class names, variants, sizes, default props, data attributes, focus and validation states, icon treatment, RTL behavior, and accessibility.
-6. Adapt relevant differences to Astro and data-slot. Record intentional differences instead of forcing literal parity.
+6. Adapt relevant differences to Astro and data-slot. Make visual changes through the placeholders and style files in `registry/styles/README.md`; never paste rendered Vega classes into component source. Record intentional differences instead of forcing literal parity.
 
 ## Registry and generated output
 
@@ -65,8 +61,7 @@ Use this skill only in the Fulldev UI registry source. The goal is a deliberate 
 ## Validation and handoff
 
 1. Format settled source and manifest changes.
-2. Follow the release validation order in `AGENTS.md`.
+2. Run `pnpm check`.
 3. Run the dev server and inspect every changed component page in a real browser. Exercise relevant keyboard, pointer, open and close, selection, disabled, and RTL behavior. Check the browser console and server logs.
-4. Use the Otis sharing instruction in `AGENTS.md` when the user needs tailnet access.
-5. Give a concise per-family report. For each changed family, name the source change, whether it came from data-slot, shadcn, registry metadata, or more than one, and include its preview URL.
-6. Also list reviewed unchanged families, validation results, intentional differences, generated-only drift, and release blockers.
+4. Give a concise per-family report. For each changed family, name the source change, whether it came from data-slot, shadcn, registry metadata, or more than one, and include its preview URL.
+5. Also list reviewed unchanged families, validation results, intentional differences, generated-only drift, and release blockers.
