@@ -5,6 +5,6 @@ import { getLlms } from "@/lib/llms"
 export const prerender = true
 
 export const GET: APIRoute = async ({ site }) =>
-  new Response(await getLlms(site?.origin ?? ""), {
+  new Response(await getLlms(site?.origin ?? "", "astro"), {
     headers: { "Content-Type": "text/plain; charset=utf-8" },
   })

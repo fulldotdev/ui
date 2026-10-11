@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs"
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs"
 import { fileURLToPath } from "node:url"
 import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
@@ -7,6 +7,13 @@ import { defineConfig, type Plugin } from "vite"
 import { createStyleMaps, transformSource } from "../scripts/styles.mjs"
 
 const source = fileURLToPath(new URL("./src/", import.meta.url))
+// The transformed sources of one style. Tailwind reads the files on disk, so
+// it only sees the classes the placeholders become through this file, which
+// src/styles/globals.css adds with @source.
+const classes = new URL(
+  "./node_modules/.cache/fulldev-gallery/",
+  import.meta.url
+)
 
 // Render the cn-* placeholders of the components in one style, the same way
 // an install in that style gets them.
@@ -15,9 +22,28 @@ function styles(style: string): Plugin {
     readFileSync(new URL(`../registry/styles/${path}`, import.meta.url), "utf8")
   )
   if (!maps[style]) throw new Error(`Unknown style: ${style}`)
+  const writeClasses = () => {
+    const transformed = readdirSync(source, { recursive: true })
+      .filter((path) => /\.tsx?$/.test(String(path)))
+      .sort()
+      .map((path) =>
+        transformSource(
+          readFileSync(source + String(path), "utf8"),
+          maps[style],
+          known,
+          style
+        )
+      )
+    mkdirSync(classes, { recursive: true })
+    writeFileSync(new URL("classes.txt", classes), transformed.join("\n"))
+  }
+  writeClasses()
   return {
     name: "fulldev-styles",
     enforce: "pre",
+    watchChange(id) {
+      if (id.startsWith(source) && /\.tsx?$/.test(id)) writeClasses()
+    },
     transform(code, id) {
       if (!id.startsWith(source) || !/\.tsx?$/.test(id)) return
       return {
@@ -50,11 +76,7 @@ export default defineConfig(({ mode }) => {
     // Demos load on demand; scan them all up front so the dev server does
     // not reload the page when it meets a new dependency.
     optimizeDeps: {
-      entries: [
-        "index.html",
-        "gallery/**/*.tsx",
-        "src/components/examples/**/*.tsx",
-      ],
+      entries: ["index.html", "gallery/**/*.tsx"],
     },
     server: { strictPort: true },
     logLevel: mode === "production" ? "warn" : "info",

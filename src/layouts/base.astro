@@ -7,11 +7,11 @@ import {
   frameworks,
   getCounterpartHref,
   getFramework,
-  getNavigation,
   getPageBreadcrumbItems,
   getPageId,
   getPageSearchItems,
-  getSectionMenu,
+  getReactNavigation,
+  reactSectionMenu,
 } from "@/lib/pages"
 import Sidebar1 from "@/components/blocks/sidebar-1.astro"
 import { Layout, LayoutBody, LayoutHead } from "@/components/ui/layout"
@@ -34,7 +34,7 @@ const [searchItems, breadcrumbItems, navigation, ...counterparts] =
   await Promise.all([
     getPageSearchItems(framework),
     getPageBreadcrumbItems(Astro.url.pathname),
-    getNavigation(framework),
+    framework === "react" ? getReactNavigation() : global.sidebar.navigation,
     ...frameworks.map((target) =>
       target === framework
         ? Astro.url.pathname
@@ -86,7 +86,8 @@ try {
       }}
       breadcrumb={{
         items: breadcrumbItems,
-        menu: getSectionMenu(framework),
+        menu:
+          framework === "react" ? reactSectionMenu : global.header.navigation,
       }}
       navigation={navigation}
       githubRepo={global.header.githubRepo}
