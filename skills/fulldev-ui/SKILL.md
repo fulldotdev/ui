@@ -10,14 +10,15 @@ plus content components, such as section, banner, header and typography, and
 page blocks. Its React extension adds those extras and blocks to an official
 shadcn/ui React project.
 
-The [shadcn skill](https://github.com/shadcn-ui/ui/tree/main/skills/shadcn) is
-the base: its CLI, registry, theming, DESIGN.md workflow and component rules
-apply. This skill covers only where Fulldev UI differs. Every docs page has a
-Markdown version: add `.md` to its URL, or start at
-[llms.txt](https://ui.full.dev/llms.txt) or, for React,
-[react/llms.txt](https://ui.full.dev/react/llms.txt).
+Use the [shadcn skill](https://github.com/shadcn-ui/ui/tree/main/skills/shadcn)
+for the CLI, registries, semantic tokens and design principles. For Astro
+component APIs, read the installed source and the docs at
+`https://ui.full.dev/components/<name>.md`; `shadcn docs` describes the React
+components. Start at [llms.txt](https://ui.full.dev/llms.txt), or
+[react/llms.txt](https://ui.full.dev/react/llms.txt) for React. Where this skill
+and the shadcn skill differ, this skill wins.
 
-## Setup
+## Astro setup
 
 - Fulldev UI serves only the Base UI styles (`base-vega`, `base-nova` and so
   on) with Lucide icons. Move a legacy style, such as `new-york`, or a `radix-`
@@ -26,50 +27,56 @@ Markdown version: add `.md` to its URL, or start at
 - The registry is `https://ui.full.dev/r/styles/{style}/{name}.json`. An older
   URL without `{style}` always installs Vega.
 - Start a project with
-  `init https://ui.full.dev/r/styles/base-<style>/base.json`, not
-  `init --preset`. With an existing `components.json`, never run `init`,
-  because it replaces the theme tokens: add the registry, then
-  `add @fulldev/init`.
-- Apply a preset with `apply <preset> --only theme,font`. A full `apply` adds
-  `@base-ui/react` and `lucide-react`, which Fulldev UI does not use.
+  `init https://ui.full.dev/r/styles/base-<style>/base.json` in the preset's
+  style, not `init --preset`, then `apply <preset> --only theme,font`. With an
+  existing `components.json`, never run `init`, because it replaces the theme
+  tokens: add the registry, then `add @fulldev/init`.
+- A full `apply` adds `@base-ui/react` and `lucide-react`, which Fulldev UI
+  does not use. Preset menu colors are not supported.
 - `@fulldev/components` and `@fulldev/blocks` take the place of `add --all`.
-- The page needs `class="@container"` on `body`, because components use
-  container-query variants such as `@2xl:`.
-- React extension: the official `shadcn init` with a Base UI style and the
-  registry `https://ui.full.dev/r/react/styles/{style}/{name}.json`. Standard
-  components come from shadcn/ui itself.
+- Components use container-query variants such as `@2xl:`, so page content
+  needs an `@container` ancestor, such as `LayoutMain` or `body`.
 
 ## Astro components
 
-Read the installed source for the API. Compared with shadcn/ui React:
-
-- There is no `asChild` or `render`. Components take `as` for the element, and
-  `Button` renders a link when it gets `href`.
-- Interactive components run on `@data-slot/*` scripts instead of React state.
-  Keep their `data-slot` structure and state attributes.
+- There is no `asChild` or `render`. Components that can change element, such
+  as `Button`, `Card` and `Typography`, take `as`, and `Button` renders a link
+  when it gets `href`.
+- Interactive components run on `@data-slot/*` scripts. Keep their `data-slot`
+  structure and state attributes.
 - `class` is merged after the style's classes; other attributes go to the root.
 - Content-owned icons are names rendered by `Icon`: Lucide, with Simple Icons
-  for brands and social links. Import icons fixed in code from `@lucide/astro`.
+  for brands and social links. Import icons fixed in code from
+  `@lucide/astro/icons/<name>`.
 
-## Customize
+## Astro customization
 
-Try these in order: theme tokens in the stylesheet, a `class` on one instance,
-a rule keyed on `data-slot`, `data-variant` or `data-size` for a site-wide
-look, and only then an edit to the installed file.
+Use built-in variants and size props first. A `class` on one instance is for
+layout, as in shadcn/ui. To change the look, edit the theme tokens in the
+stylesheet, then add a rule keyed on `data-slot`, `data-variant` or
+`data-size`, and only then edit the installed file.
 [Theming](https://ui.full.dev/docs/theming.md) lists what styles do not cover
 and how to override important or variant classes.
 
 In the DESIGN.md workflow, the steps for tokens, radius, elevation, type scale
-and focus apply. Instead of editing `cva` variants, use the order above. Load
-fonts the project's way; Fulldev UI loads none. The design system page helpers
-are React-only.
+and the focus outline apply. Make variant and focus-ring changes in the order
+above instead of editing `cva` variants or component classes. Presets load
+fonts from Fontsource; in a project that loads fonts another way, such as
+Astro's font config, keep one. The design system page helpers are React-only.
+
+## React extension
+
+Set up the project with the official `shadcn init` and a Base UI style, then
+add the registry `https://ui.full.dev/r/react/styles/{style}/{name}.json`.
+Standard components, their APIs and customization follow the shadcn skill.
+Fulldev extras and blocks use `className` and their documented React props.
 
 ## Blocks
 
 A block is a portable section: it takes plain props and imports no project
 schemas, content, layouts or routes. Pass images, labels, links, buttons and
-content-owned icons as props. Accept `class`, destructure it as
-`class: className` and merge it on the root with `cn("", className)`.
+content-owned icons as props. Forward `class` in Astro and `className` in
+React, merged on the root with `cn()`.
 
 Name props by role: `label` for controls, `title` for headings, `description`
 for copy, `icon` for icon names, `href` for destinations and `buttons` for

@@ -56,7 +56,7 @@ ${sections.join("\n\n")}
 
 > Open-source Astro components and blocks for content-driven websites, distributed as a shadcn-compatible registry.
 
-Install items with \`npx shadcn@latest add @fulldev/<name>\` after adding the \`@fulldev\` registry (\`${origin}/r/{name}.json\`) to \`components.json\`. Every documentation page has a Markdown version: add \`.md\` to the page URL.
+Install items with \`npx shadcn@latest add @fulldev/<name>\` after adding the \`@fulldev\` registry (\`${origin}/r/styles/{style}/{name}.json\`) to \`components.json\`. Every documentation page has a Markdown version: add \`.md\` to the page URL.
 
 - [Agent entry point](${origin}/index.md)
 - [Full documentation in one file](${origin}/llms-full.txt)
