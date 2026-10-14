@@ -1,28 +1,24 @@
 ---
 // Docs only: the homepage hero. The framework names in the title show with
-// their logos, the tabs give the install command per framework, and the
-// tiles show real blocks and components in the current preset.
-import Check from "@lucide/astro/icons/check"
-import Copy from "@lucide/astro/icons/copy"
-
+// their logos, and the tiles show real blocks and components in the current
+// preset.
 import type { HomeSchema } from "@/schemas/layouts/home"
 import Features2 from "@/components/blocks/features-2.astro"
 import Pricing1 from "@/components/blocks/pricing-1.astro"
 import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import CreatePreview from "@/components/create-preview.astro"
 import FrameworkLogo from "@/components/framework-logo.astro"
 
 type Props = HomeSchema["hero"] & {
   counts: { blocks: number; components: number }
-  // The same pages in React, for the visitor who chose React last.
-  reactHrefs: { blocks?: string; components?: string }
+  // The same pages in React by href, for the visitor who chose React last.
+  reactHrefs: Record<string, string | undefined>
 }
 
 const {
   title,
   description,
-  copyLabel,
+  buttons,
   frameworks,
   blocks,
   components,
@@ -112,58 +108,24 @@ const sample = {
   <p class="text-muted-foreground mt-6 max-w-2xl text-lg text-balance">
     {description}
   </p>
-  <Tabs
-    data-home-install
-    defaultValue={frameworks[0]?.name}
-    class="mt-8 w-full max-w-xl items-center gap-3"
-  >
-    <TabsList>
-      {frameworks.map((framework) => (
-        <TabsTrigger value={framework.name}>
-          <FrameworkLogo name={framework.name} class="size-3.5" />
-          {framework.label}
-        </TabsTrigger>
-      ))}
-    </TabsList>
-    {frameworks.map((framework, index) => (
-      <TabsContent
-        value={framework.name}
-        class="flex w-full flex-col items-center gap-2"
-        hidden={index > 0}
+  <div class="mt-8 flex flex-wrap justify-center gap-2">
+    {buttons.map((button, index) => (
+      <Button
+        as="a"
+        href={button.href}
+        data-react-href={reactHrefs[button.href]}
+        variant={index === 0 ? "default" : "outline"}
       >
-        <div class="bg-muted flex w-full items-center gap-2 rounded-lg py-1.5 pr-1.5 pl-4">
-          <code class="min-w-0 flex-1 truncate text-left font-mono text-xs">
-            <span class="text-muted-foreground select-none">$ </span>
-            {framework.command}
-          </code>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            data-home-copy={framework.command}
-            aria-label={copyLabel}
-          >
-            <Copy data-copy-icon />
-            <Check data-check-icon class="hidden" />
-          </Button>
-        </div>
-        {framework.note && (
-          <a
-            href={framework.note.href}
-            class="text-muted-foreground hover:text-foreground text-xs underline-offset-4 hover:underline"
-          >
-            {framework.note.label}
-          </a>
-        )}
-      </TabsContent>
+        {button.label}
+      </Button>
     ))}
-  </Tabs>
+  </div>
   <div class="mt-14 grid w-full grid-cols-6 gap-4 text-left">
     <div class="bg-background relative col-span-6 flex flex-col overflow-hidden rounded-xl border lg:col-span-4">
       <div class="flex items-baseline justify-between gap-4 px-5 pt-4 pb-3">
         <a
           href={blocks.href}
-          data-react-href={reactHrefs.blocks}
+          data-react-href={reactHrefs[blocks.href]}
           class="shrink-0 font-medium after:absolute after:inset-0"
         >
           {counts.blocks} {blocks.label}
@@ -186,7 +148,7 @@ const sample = {
       <div class="flex items-baseline justify-between gap-4 px-5 pt-4 pb-3">
         <a
           href={components.href}
-          data-react-href={reactHrefs.components}
+          data-react-href={reactHrefs[components.href]}
           class="font-medium after:absolute after:inset-0"
         >
           {counts.components} {components.label}
@@ -231,41 +193,3 @@ const sample = {
     </a>
   </div>
 </section>
-
-<script>
-  // The install tab follows the framework chosen last, here, in the docs
-  // switcher or on the create page.
-  const KEY = "fulldev-ui-framework"
-  const tabs = document.querySelector<HTMLElement>("[data-home-install]")
-  const stored = localStorage.getItem(KEY)
-  // After every module script ran, so the tabs listen.
-  const select = () =>
-    tabs?.dispatchEvent(new CustomEvent("tabs:select", { detail: stored }))
-  if (stored)
-    if (document.readyState === "loading")
-      document.addEventListener("DOMContentLoaded", select)
-    else select()
-  tabs?.addEventListener("tabs:change", (event) =>
-    localStorage.setItem(
-      KEY,
-      (event as CustomEvent<{ value: string }>).detail.value
-    )
-  )
-
-  document.addEventListener("click", async (event) => {
-    if (!(event.target instanceof Element)) return
-    const button = event.target.closest<HTMLButtonElement>("[data-home-copy]")
-    if (!button) return
-    try {
-      await navigator.clipboard.writeText(button.dataset.homeCopy ?? "")
-      button.querySelector("[data-copy-icon]")?.classList.add("hidden")
-      button.querySelector("[data-check-icon]")?.classList.remove("hidden")
-      setTimeout(() => {
-        button.querySelector("[data-copy-icon]")?.classList.remove("hidden")
-        button.querySelector("[data-check-icon]")?.classList.add("hidden")
-      }, 1200)
-    } catch {
-      // Keep the copy action available for retry.
-    }
-  })
-</script>

@@ -22,14 +22,12 @@ export const homeSchema = (ctx: SchemaContext) =>
         // The framework names in the title show as their logos.
         title: z.string(),
         description: z.string(),
-        copyLabel: z.string(),
+        buttons: linkSchema.array(),
         frameworks: z
           .object({
             name: z.enum(["astro", "react"]),
             label: z.string(),
             description: z.string(),
-            command: z.string(),
-            note: linkSchema.optional(),
             href: z.string(),
           })
           .array(),
@@ -37,6 +35,12 @@ export const homeSchema = (ctx: SchemaContext) =>
         blocks: tileSchema,
         components: tileSchema,
         presets: tileSchema,
+      }),
+      // Components React has from Fulldev UI show extraLabel.
+      components: sectionSchema.extend({
+        button: linkSchema,
+        extraLabel: z.string(),
+        items: linkSchema.array(),
       }),
       blocks: sectionSchema.extend({
         button: linkSchema,
@@ -58,6 +62,9 @@ export const homeSchema = (ctx: SchemaContext) =>
       }),
       faqs: sectionSchema.extend({
         faqs: z.object({ question: z.string(), answer: z.string() }).array(),
+      }),
+      cta: sectionSchema.extend({
+        buttons: linkSchema.array(),
       }),
     })
     .strict()

@@ -6,13 +6,9 @@ import Base from "@/layouts/base.astro"
 import Faqs1 from "@/components/blocks/faqs-1.astro"
 import Features2 from "@/components/blocks/features-2.astro"
 import { Button } from "@/components/ui/button"
-import {
-  Section,
-  SectionContainer,
-  SectionDescription,
-  SectionTitle,
-} from "@/components/ui/section"
+import { Section, SectionContainer } from "@/components/ui/section"
 import HomeHero from "@/components/home-hero.astro"
+import HomeLinks from "@/components/home-links.astro"
 import HomePresets from "@/components/home-presets.astro"
 
 type Props = {
@@ -45,64 +41,54 @@ const counts = {
   components: items.filter((item) => item.type === "registry:ui").length,
 }
 
-// The same pages in React, for the visitor who chose React last.
-const reactHref = async (href: string) => {
-  const id = getPageId(href)
-  const react = await getCounterpartHref(id, "react")
-  return react === `/react/${id}/` ? react : undefined
-}
-const categories = await Promise.all(
-  page.blocks.categories.map(async (category) => ({
-    ...category,
-    count: countBlocks(category.href),
-    reactHref: await reactHref(category.href),
-  }))
+// The same pages in React by href, for the visitor who chose React last. A
+// component with a React page is one React has from Fulldev UI.
+const links = [
+  ...page.hero.buttons,
+  page.hero.blocks,
+  page.hero.components,
+  page.components.button,
+  ...page.components.items,
+  page.blocks.button,
+  ...page.blocks.categories,
+  ...page.cta.buttons,
+]
+const reactHrefs: Record<string, string | undefined> = Object.fromEntries(
+  await Promise.all(
+    [...new Set(links.map((link) => link.href))].map(async (href) => {
+      const id = getPageId(href)
+      const react = await getCounterpartHref(id, "react")
+      return [href, react === `/react/${id}/` ? react : undefined]
+    })
+  )
 )
-const reactHrefs = {
-  blocks: await reactHref(page.hero.blocks.href),
-  components: await reactHref(page.hero.components.href),
-}
+const withReact = <T extends { href: string }>(link: T) => ({
+  ...link,
+  reactHref: reactHrefs[link.href],
+})
 ---
 
 <Base global={global} page={page}>
-  <div class="flex flex-col pb-16 [--container:var(--container-6xl)] lg:[--gutter:--spacing(6)]">
+  <div class="flex flex-col pb-8 [--container:var(--container-6xl)] lg:[--gutter:--spacing(6)]">
     <HomeHero {...page.hero} counts={counts} reactHrefs={reactHrefs} />
-    <Section>
-      <SectionContainer class="flex flex-col gap-10">
-        <div class="flex items-end justify-between gap-6">
-          <div class="flex max-w-2xl flex-col gap-3">
-            <SectionTitle>{page.blocks.title}</SectionTitle>
-            <SectionDescription>{page.blocks.description}</SectionDescription>
-          </div>
-          <Button
-            as="a"
-            href={page.blocks.button.href}
-            data-react-href={reactHrefs.blocks}
-            size="sm"
-            variant="outline"
-            class="hidden sm:inline-flex"
-          >
-            {page.blocks.button.label}
-          </Button>
-        </div>
-        <ul class="bg-border grid grid-cols-2 gap-px overflow-hidden rounded-xl border sm:grid-cols-3 lg:grid-cols-6">
-          {categories.map((category) => (
-            <li class="bg-background">
-              <a
-                href={category.href}
-                data-react-href={category.reactHref}
-                class="hover:bg-muted/50 flex items-center justify-between gap-2 px-4 py-4 text-sm font-medium transition-colors"
-              >
-                {category.label}
-                <span class="text-muted-foreground text-xs tabular-nums">
-                  {category.count}
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </SectionContainer>
-    </Section>
+    <HomeLinks
+      title={page.components.title}
+      description={page.components.description}
+      button={withReact(page.components.button)}
+      links={page.components.items.map((item) => ({
+        ...withReact(item),
+        note: reactHrefs[item.href] && page.components.extraLabel,
+      }))}
+    />
+    <HomeLinks
+      title={page.blocks.title}
+      description={page.blocks.description}
+      button={withReact(page.blocks.button)}
+      links={page.blocks.categories.map((category) => ({
+        ...withReact(category),
+        note: countBlocks(category.href),
+      }))}
+    />
     <Features2 {...page.features} />
     <HomePresets {...page.presets} />
     <Faqs1
@@ -112,5 +98,37 @@ const reactHrefs = {
         ...faq,
       }))}
     />
+    <Section>
+      <SectionContainer>
+        <div class="bg-primary text-primary-foreground flex flex-col gap-8 rounded-2xl bg-[image:linear-gradient(rgb(255_255_255/0.12),rgb(255_255_255/0)_60%)] px-8 py-12 sm:px-12 sm:py-14 lg:flex-row lg:items-end lg:justify-between">
+          <div class="flex max-w-2xl flex-col gap-3">
+            <h2 class="font-heading text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+              {page.cta.title}
+            </h2>
+            <p class="text-primary-foreground/80 text-lg">
+              {page.cta.description}
+            </p>
+          </div>
+          <div class="flex shrink-0 flex-wrap gap-2">
+            {page.cta.buttons.map((button, index) => (
+              <Button
+                as="a"
+                href={button.href}
+                data-react-href={reactHrefs[button.href]}
+                size="lg"
+                variant={index === 0 ? "secondary" : "ghost"}
+                class={
+                  index === 0
+                    ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+                    : "text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                }
+              >
+                {button.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+      </SectionContainer>
+    </Section>
   </div>
 </Base>
