@@ -125,45 +125,32 @@ const presets = NAMED_PRESETS.map(({ id, label, config }) => ({
 
 <script>
   import {
+    keepCustomPreset,
     PRESET_EVENT,
+    readCustomPreset,
     readPreset,
+    sameConfig,
     writePreset,
     type StoredPreset,
   } from "@/lib/preset-store"
 
   type Named = { id: string; label: string; preset: StoredPreset }
 
-  const CUSTOM_KEY = "fulldev-ui-custom-preset"
-  const FRAMEWORK_KEY = "fulldev-ui-framework"
   const title = (value: string) => value[0].toUpperCase() + value.slice(1)
-  const same = (a: Record<string, string>, b: Record<string, string>) =>
-    [...new Set([...Object.keys(a), ...Object.keys(b)])].every(
-      (key) => a[key] === b[key]
-    )
 
   const named = (): Named[] =>
     JSON.parse(
       document.querySelector<HTMLElement>("[data-docs-switcher]")?.dataset
         .presets ?? "[]"
     )
-  const readCustom = (): StoredPreset | undefined =>
-    JSON.parse(localStorage.getItem(CUSTOM_KEY) ?? "null") ?? undefined
-
-  // A preset made on the create page is kept as the visitor's own.
-  const remember = () => {
-    const preset = readPreset()
-    if (
-      preset &&
-      !named().some((item) => same(item.preset.config, preset.config))
-    )
-      localStorage.setItem(CUSTOM_KEY, JSON.stringify(preset))
-  }
+  const remember = () =>
+    keepCustomPreset(named().map((item) => item.preset.config))
 
   const sync = () => {
     const presets = named()
     if (!presets.length) return
     const config = readPreset()?.config ?? presets[0].preset.config
-    const match = presets.find((item) => same(item.preset.config, config))
+    const match = presets.find((item) => sameConfig(item.preset.config, config))
     const current = match?.id ?? "custom"
     const customLabel =
       document
@@ -185,23 +172,18 @@ const presets = NAMED_PRESETS.map(({ id, label, config }) => ({
       )
     document
       .querySelectorAll<HTMLElement>("[data-preset-choice=custom]")
-      .forEach((element) => (element.hidden = !readCustom()))
+      .forEach((element) => (element.hidden = !readCustomPreset()))
   }
 
   document.addEventListener("click", (event) => {
     if (!(event.target instanceof Element)) return
-    const framework = event.target.closest<HTMLElement>(
-      "[data-framework-choice]"
-    )
-    if (framework?.dataset.frameworkChoice)
-      localStorage.setItem(FRAMEWORK_KEY, framework.dataset.frameworkChoice)
     const choice = event.target.closest<HTMLElement>("[data-preset-choice]")
     if (!choice) return
     const id = choice.dataset.presetChoice
     const presets = named()
     // The first named preset is the docs default, which needs no storage.
     if (id === presets[0]?.id) writePreset(undefined)
-    else if (id === "custom") writePreset(readCustom())
+    else if (id === "custom") writePreset(readCustomPreset())
     else writePreset(presets.find((item) => item.id === id)?.preset)
   })
 

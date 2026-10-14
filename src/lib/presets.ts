@@ -209,18 +209,22 @@ const findFont = (name: string) => fonts.find((font) => font.name === name)
 const fontUrl = (dependency: string) =>
   `https://cdn.jsdelivr.net/npm/${dependency}/index.css`
 
+// The fonts a preset loads. Geist as the body font is the site's own font
+// (Geist 1.7.2 with the full.dev stylistic sets, astro.config.ts), so the
+// preset keeps it instead of loading another; Geist for headings only comes
+// from the font's package like any other font.
+function presetFonts(config: PresetConfig) {
+  const body = config.font === "geist" ? undefined : findFont(config.font)
+  const heading =
+    config.fontHeading === "inherit" ? body : findFont(config.fontHeading)
+  return { body, heading }
+}
+
 // CSS for the whole docs page. :root:root wins over the site theme. The dark
 // variables also go to .dark elements inside the page, such as inverted menus.
-// Geist is the site's own font (Geist 1.7.2 with the full.dev stylistic sets,
-// astro.config.ts), so a preset in Geist keeps it instead of loading another.
-const siteFont = (name: string) =>
-  name === "geist" ? undefined : findFont(name)
-
 export function presetCss(config: PresetConfig) {
   const { light, dark } = themeVars(config)
-  const body = siteFont(config.font)
-  const heading =
-    config.fontHeading === "inherit" ? body : siteFont(config.fontHeading)
+  const { body, heading } = presetFonts(config)
   const fontVars: Vars = {}
   if (body) fontVars["font-sans"] = body.family
   if (heading) fontVars["font-heading"] = heading.family
@@ -232,9 +236,8 @@ export function presetCss(config: PresetConfig) {
 }
 
 export function presetFontUrls(config: PresetConfig) {
-  const names = new Set([config.font, config.fontHeading])
-  return [...names]
-    .map((name) => siteFont(name)?.dependency)
+  const { body, heading } = presetFonts(config)
+  return [...new Set([body?.dependency, heading?.dependency])]
     .filter((dependency): dependency is string => Boolean(dependency))
     .map(fontUrl)
 }

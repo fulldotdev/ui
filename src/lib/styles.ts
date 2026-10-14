@@ -139,24 +139,37 @@ function encodeDefault(source: string) {
 
 const siteStyleScript = `(() => {
   const table = JSON.parse(document.getElementById("site-styles").textContent)
-  const apply = (style) => {
+  let current = "${defaultStyle}"
+  const applyTo = (root) => {
     const translucent = (document.documentElement.dataset.menuColor || "").endsWith("translucent")
-    document.querySelectorAll("[data-cn]").forEach((element) => {
+    const elements = [...root.querySelectorAll("[data-cn]")]
+    if (root.matches?.("[data-cn]")) elements.push(root)
+    elements.forEach((element) => {
       const entry = table[element.dataset.cn]
-      const value = entry && (entry[style] || entry.${defaultStyle})
+      const value = entry && (entry[current] || entry.${defaultStyle})
       if (!value) return
       if (Array.isArray(value)) {
         const dark = element.classList.contains("dark")
         element.dataset.menuSolid = value[0]
         element.dataset.menuTranslucent = value[1]
-        element.className = translucent ? value[1] : value[0]
+        element.setAttribute("class", translucent ? value[1] : value[0])
         if (dark) element.classList.add("dark")
-      } else element.className = value
+      } else element.setAttribute("class", value)
     })
   }
-  window.applySiteStyle = apply
+  window.applySiteStyle = (style) => {
+    current = style
+    applyTo(document)
+  }
+  // Content that mounts later, such as an opened Select, follows too.
+  new MutationObserver((records) => {
+    records.forEach((record) =>
+      record.addedNodes.forEach((node) => node.nodeType === 1 && applyTo(node))
+    )
+  }).observe(document.body, { childList: true, subtree: true })
   try {
     const style = JSON.parse(localStorage.getItem("fulldev-ui-preset") || "null")?.config?.style
-    if (style && style !== "${defaultStyle}") apply(style)
+    if (style && style !== "${defaultStyle}") window.applySiteStyle(style)
   } catch {}
+  delete document.documentElement.dataset.stylePending
 })()`

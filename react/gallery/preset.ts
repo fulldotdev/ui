@@ -2,6 +2,8 @@
 // this origin's localStorage: theme variables, fonts and menu color.
 import { twMerge } from "cn"
 
+import fonts from "../../registry/styles/shadcn/fonts.json"
+
 // The style's cn-menu-translucent classes, from vite.config.ts.
 declare const __MENU_TRANSLUCENT__: string
 
@@ -21,6 +23,34 @@ function readPreset(): StoredPreset | undefined {
   }
 }
 
+// Without a stored preset the docs default applies, which the docs page
+// around the preview holds (src/components/preset-head.astro).
+function defaultPreset(): StoredPreset | undefined {
+  try {
+    const style = parent.document.getElementById("fulldev-ui-default-preset")
+    if (!style?.dataset.config) return undefined
+    return {
+      config: JSON.parse(style.dataset.config),
+      css: style.textContent ?? "",
+    }
+  } catch {
+    return undefined
+  }
+}
+
+const currentPreset = () => readPreset() ?? defaultPreset()
+
+// The docs keep their own Geist for a preset in Geist, which the preview does
+// not have, so the preview loads Geist from its package.
+const geist = fonts.find((font) => font.name === "geist")
+const geistFont = (preset: StoredPreset | undefined) =>
+  geist && preset?.config?.font === "geist"
+    ? {
+        css: `:root:root{--font-sans:${geist.family};}`,
+        url: `https://cdn.jsdelivr.net/npm/${geist.dependency}/index.css`,
+      }
+    : undefined
+
 function applyTheme(preset: StoredPreset | undefined) {
   let style = document.getElementById(PRESET_KEY)
   if (!style) {
@@ -28,8 +58,9 @@ function applyTheme(preset: StoredPreset | undefined) {
     style.id = PRESET_KEY
     document.head.append(style)
   }
-  style.textContent = preset?.css ?? ""
-  for (const href of preset?.fonts ?? []) {
+  const font = geistFont(preset)
+  style.textContent = (preset?.css ?? "") + (font?.css ?? "")
+  for (const href of [...(preset?.fonts ?? []), ...(font ? [font.url] : [])]) {
     if (document.querySelector(`link[href="${href}"]`)) continue
     const link = document.createElement("link")
     link.rel = "stylesheet"
@@ -59,14 +90,14 @@ function applyMenuColor(menuColor = "default") {
 }
 
 export function syncPreset() {
-  let preset = readPreset()
+  let preset = currentPreset()
   applyTheme(preset)
   applyMenuColor(preset?.config?.menuColor)
 
   addEventListener("storage", (event) => {
     if (event.storageArea !== localStorage) return
     if (event.key !== PRESET_KEY && event.key !== null) return
-    preset = readPreset()
+    preset = currentPreset()
     applyTheme(preset)
     applyMenuColor(preset?.config?.menuColor)
   })

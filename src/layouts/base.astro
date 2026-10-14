@@ -166,18 +166,35 @@ const switcherLabels = {
 
 <script>
   // The whole site follows the stored preset; see src/lib/preset-store.ts.
-  import { applyPreset, readPreset } from "@/lib/preset-store"
+  import {
+    applyPreset,
+    FRAMEWORK_EVENT,
+    FRAMEWORK_KEY,
+    readPreset,
+    writeFramework,
+  } from "@/lib/preset-store"
 
   applyPreset(readPreset())
 
   // On a page of both libraries, the homepage and Create, links lead to the
   // library chosen last, in the switcher, on the homepage or on Create.
-  if (
-    document.body.hasAttribute("data-framework-neutral") &&
-    localStorage.getItem("fulldev-ui-framework") === "react"
-  ) {
+  const followFramework = () => {
+    if (!document.body.hasAttribute("data-framework-neutral")) return
+    const react = localStorage.getItem(FRAMEWORK_KEY) === "react"
     document
       .querySelectorAll<HTMLAnchorElement>("a[data-react-href]")
-      .forEach((link) => (link.href = link.dataset.reactHref ?? link.href))
+      .forEach((link) => {
+        link.dataset.astroHref ??= link.getAttribute("href") ?? ""
+        const href = react ? link.dataset.reactHref : link.dataset.astroHref
+        if (href) link.setAttribute("href", href)
+      })
   }
+  followFramework()
+  document.addEventListener(FRAMEWORK_EVENT, followFramework)
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return
+    const choice = event.target.closest<HTMLElement>("[data-framework-choice]")
+      ?.dataset.frameworkChoice
+    if (choice) writeFramework(choice)
+  })
 </script>

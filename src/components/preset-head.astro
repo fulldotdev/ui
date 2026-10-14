@@ -10,7 +10,17 @@ const defaults = {
 }
 ---
 
-<style is:inline set:html={presetCss(DEFAULT_CONFIG)}></style>
+<style
+  is:inline
+  id="fulldev-ui-default-preset"
+  data-config={JSON.stringify(DEFAULT_CONFIG)}
+  set:html={presetCss(DEFAULT_CONFIG)}
+></style>
+<style is:inline>
+  html[data-style-pending] body {
+    visibility: hidden;
+  }
+</style>
 <script is:inline define:vars={{ defaults }}>
   const root = document.documentElement
   root.dataset.defaultStyle = defaults.style
@@ -22,6 +32,14 @@ const defaults = {
     )
     if (preset?.config?.menuColor)
       root.dataset.menuColor = preset.config.menuColor
+    // Another style switches its classes at the end of the page (the script
+    // src/lib/styles.ts adds); hide the page until then, or until it loads.
+    if (preset?.config?.style && preset.config.style !== defaults.style) {
+      root.dataset.stylePending = ""
+      addEventListener("DOMContentLoaded", () => {
+        delete root.dataset.stylePending
+      })
+    }
     // A shared link (?preset=) sets its own theme; skip the stored one.
     const shared = new URLSearchParams(location.search).has("preset")
     if (preset?.css && !shared) {

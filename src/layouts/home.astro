@@ -41,8 +41,10 @@ const counts = {
   components: items.filter((item) => item.type === "registry:ui").length,
 }
 
-// The same pages in React by href, for the visitor who chose React last. A
-// component with a React page is one React has from Fulldev UI.
+// The same pages in React by href, for the visitor who chose React last: a
+// React page of these docs, or the official shadcn/ui docs of a standard
+// component. A component with a React page here is one React has from
+// Fulldev UI.
 const links = [
   ...page.hero.buttons,
   page.hero.blocks,
@@ -53,14 +55,23 @@ const links = [
   ...page.blocks.categories,
   ...page.cta.buttons,
 ]
+const counterparts = await Promise.all(
+  [...new Set(links.map((link) => link.href))].map(async (href) => {
+    const id = getPageId(href)
+    const react = await getCounterpartHref(id, "react")
+    const own = react === `/react/${id}/`
+    return {
+      href,
+      own,
+      react: own || /^https?:/.test(react) ? react : undefined,
+    }
+  })
+)
 const reactHrefs: Record<string, string | undefined> = Object.fromEntries(
-  await Promise.all(
-    [...new Set(links.map((link) => link.href))].map(async (href) => {
-      const id = getPageId(href)
-      const react = await getCounterpartHref(id, "react")
-      return [href, react === `/react/${id}/` ? react : undefined]
-    })
-  )
+  counterparts.map(({ href, react }) => [href, react])
+)
+const extras = new Set(
+  counterparts.filter((item) => item.own).map((item) => item.href)
 )
 const withReact = <T extends { href: string }>(link: T) => ({
   ...link,
@@ -77,7 +88,7 @@ const withReact = <T extends { href: string }>(link: T) => ({
       button={withReact(page.components.button)}
       links={page.components.items.map((item) => ({
         ...withReact(item),
-        note: reactHrefs[item.href] && page.components.extraLabel,
+        note: extras.has(item.href) ? page.components.extraLabel : undefined,
       }))}
     />
     <HomeLinks
