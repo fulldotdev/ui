@@ -32,7 +32,10 @@ and the shadcn skill differ, this skill wins.
   existing `components.json`, never run `init`, because it replaces the theme
   tokens: add the registry, then `add @fulldev/init`.
 - A full `apply` adds `@base-ui/react` and `lucide-react`, which Fulldev UI
-  does not use. Preset menu colors are not supported.
+  does not use.
+- The shadcn CLI applies the preset's menu color (`menuColor`) to React
+  components only, so Astro menus, selects and comboboxes install with the
+  default menu color. The menu accent works, because it is a theme variable.
 - `@fulldev/components` and `@fulldev/blocks` take the place of `add --all`.
 - Components use container-query variants such as `@2xl:`, so page content
   needs an `@container` ancestor, such as `LayoutMain` or `body`.

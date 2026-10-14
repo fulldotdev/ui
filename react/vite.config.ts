@@ -22,6 +22,8 @@ function styles(style: string): Plugin {
     readFileSync(new URL(`../registry/styles/${path}`, import.meta.url), "utf8")
   )
   if (!maps[style]) throw new Error(`Unknown style: ${style}`)
+  // Translucent menus take these classes in the browser, see gallery/preset.ts.
+  const translucent = maps[style]["cn-menu-translucent"] ?? ""
   const writeClasses = () => {
     const transformed = readdirSync(source, { recursive: true })
       .filter((path) => /\.tsx?$/.test(String(path)))
@@ -35,12 +37,18 @@ function styles(style: string): Plugin {
         )
       )
     mkdirSync(classes, { recursive: true })
-    writeFileSync(new URL("classes.txt", classes), transformed.join("\n"))
+    writeFileSync(
+      new URL("classes.txt", classes),
+      [...transformed, translucent].join("\n")
+    )
   }
   writeClasses()
   return {
     name: "fulldev-styles",
     enforce: "pre",
+    config: () => ({
+      define: { __MENU_TRANSLUCENT__: JSON.stringify(translucent) },
+    }),
     watchChange(id) {
       if (id.startsWith(source) && /\.tsx?$/.test(id)) writeClasses()
     },

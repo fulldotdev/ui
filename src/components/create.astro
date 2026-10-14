@@ -9,6 +9,7 @@ import {
   DEFAULT_CONFIG,
   FONTS,
   MENU_ACCENTS,
+  MENU_COLORS,
   presetCode,
   RADII,
   STYLE_OPTIONS,
@@ -46,6 +47,7 @@ const controls = [
   { name: "font", label: "Font" },
   { name: "fontHeading", label: "Heading font" },
   { name: "radius", label: "Radius", options: RADII },
+  { name: "menuColor", label: "Menu color", options: MENU_COLORS },
   { name: "menuAccent", label: "Menu accent", options: MENU_ACCENTS },
 ]
 const code = presetCode(DEFAULT_CONFIG)
@@ -189,6 +191,11 @@ const command = (template: string) =>
 <code>{commands.reinstall}</code></pre>
       </TabsContent>
     </Tabs>
+    <p class="text-muted-foreground text-sm" data-menu-color-note hidden>
+      The shadcn CLI applies menu colors to React components only, so the Astro
+      components of Fulldev UI install with the default menu color. The React
+      extension uses the shadcn/ui menus, which get the preset's menu color.
+    </p>
   </div>
 </div>
 
@@ -272,6 +279,9 @@ const command = (template: string) =>
     root
       ?.querySelector<HTMLAnchorElement>("[data-preset-shadcn]")
       ?.setAttribute("href", `https://ui.shadcn.com/create?preset=${code}`)
+    root
+      ?.querySelector<HTMLElement>("[data-menu-color-note]")
+      ?.toggleAttribute("hidden", config.menuColor === "default")
   }
 
   // A shared link opens that preset, then the address drops it, so later
@@ -283,7 +293,7 @@ const command = (template: string) =>
     url.searchParams.delete("preset")
     history.replaceState(history.state, "", url)
   }
-  if (decoded) save({ ...decoded, iconLibrary: "lucide", menuColor: "default" })
+  if (decoded) save({ ...decoded, iconLibrary: "lucide" })
   else applyPreset(readPreset())
   render()
   document.addEventListener(PRESET_EVENT, render)

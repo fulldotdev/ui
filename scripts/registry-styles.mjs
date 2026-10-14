@@ -3,7 +3,13 @@
 // Input is the plain `shadcn build` output, output goes to public/r.
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 
-import { createStyleMaps, KEEP, STYLES, transformSource } from "./styles.mjs"
+import {
+  buildsMenuColor,
+  createStyleMaps,
+  KEEP,
+  STYLES,
+  transformSource,
+} from "./styles.mjs"
 
 // Served at the old /r/{name}.json path, so existing installs keep working.
 const DEFAULT_STYLE = "vega"
@@ -48,7 +54,13 @@ for (const style of STYLES) {
     }
     for (const entry of item.files ?? []) {
       if (typeof entry.content !== "string") continue
-      entry.content = transformSource(entry.content, styleMap, known, style)
+      entry.content = transformSource(
+        entry.content,
+        styleMap,
+        known,
+        style,
+        buildsMenuColor(entry.path) ? "default" : undefined
+      )
       for (const token of new Set(leftovers(entry.content))) {
         errors.push(`${style}: ${entry.path} still has ${token}`)
       }

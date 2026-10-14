@@ -56,6 +56,15 @@ export const MENU_ACCENTS = [
   { name: "bold", label: "Bold" },
 ]
 
+export const MENU_COLORS = [
+  { name: "default", label: "Default" },
+  { name: "inverted", label: "Inverted" },
+  { name: "default-translucent", label: "Default Translucent" },
+  { name: "inverted-translucent", label: "Inverted Translucent" },
+]
+
+const isTranslucent = (menuColor: string) => menuColor.endsWith("-translucent")
+
 export const STYLE_OPTIONS = PRESET_STYLES.map((name) => ({
   name,
   label: name[0].toUpperCase() + name.slice(1),
@@ -82,22 +91,34 @@ export const baseColorOptions = BASE_COLORS.map((name) => ({
   label: themeList.find((theme) => theme.name === name)?.title ?? name,
 }))
 
-// Keep theme and chart color valid for the base color, like ui.shadcn.com.
+// Keep the options valid together, with the same rules as ui.shadcn.com/create.
 export function normalizeConfig(input: PresetConfig): PresetConfig {
   // Older preset codes can name a base color the current options lack (gray).
   const config = BASE_COLORS.includes(input.baseColor)
     ? input
     : ({ ...input, baseColor: "neutral" } as PresetConfig)
+  // Theme and chart color depend on the base color.
   const valid = themeOptions(config.baseColor).map((option) => option.name)
   const pick = (name: string | undefined) =>
     (name && valid.includes(name)
       ? name
       : config.baseColor) as PresetConfig["theme"]
+  // Lyra and Sera have no radius, Rhea has no large radius.
+  const radius = ["lyra", "sera"].includes(config.style)
+    ? "none"
+    : config.style === "rhea" && config.radius === "large"
+      ? "default"
+      : config.radius
   return {
     ...config,
     theme: pick(config.theme),
     chartColor: pick(config.chartColor),
-  }
+    fontHeading:
+      config.fontHeading === config.font ? "inherit" : config.fontHeading,
+    radius,
+    // Translucent menus keep the subtle accent.
+    menuAccent: isTranslucent(config.menuColor) ? "subtle" : config.menuAccent,
+  } as PresetConfig
 }
 
 const sample = <T>(items: T[]) =>
@@ -118,6 +139,7 @@ export function randomConfig(): PresetConfig {
     fontHeading: Math.random() < 0.5 ? "inherit" : sample(fonts).name,
     radius: sample(RADII).name,
     menuAccent: sample(MENU_ACCENTS).name,
+    menuColor: sample(MENU_COLORS).name,
   } as PresetConfig
 }
 
@@ -156,7 +178,8 @@ const findFont = (name: string) => fonts.find((font) => font.name === name)
 const fontUrl = (dependency: string) =>
   `https://cdn.jsdelivr.net/npm/${dependency}/index.css`
 
-// CSS for the whole docs page. :root:root wins over the site theme.
+// CSS for the whole docs page. :root:root wins over the site theme. The dark
+// variables also go to .dark elements inside the page, such as inverted menus.
 export function presetCss(config: PresetConfig) {
   const { light, dark } = themeVars(config)
   const body = findFont(config.font)
@@ -169,7 +192,7 @@ export function presetCss(config: PresetConfig) {
     Object.entries(vars)
       .map(([key, value]) => `--${key}:${value};`)
       .join("")
-  return `:root:root{${declarations({ ...light, ...fontVars })}}:root:root.dark{${declarations(dark)}}`
+  return `:root:root{${declarations({ ...light, ...fontVars })}}:root:root.dark,:root:root .dark{${declarations(dark)}}`
 }
 
 export function presetFontUrls(config: PresetConfig) {

@@ -80,7 +80,31 @@ function applyStyle(style: string) {
   if (changed) document.dispatchEvent(new Event("astro:page-load"))
 }
 
+// Switch menus to the preset's menu color, using the classes that installs in
+// that menu color get, rendered by applyStyle in src/lib/styles.ts.
+function applyMenuColor(menuColor = "default") {
+  const inverted = menuColor.startsWith("inverted")
+  const translucent = menuColor.endsWith("-translucent")
+  document
+    .querySelectorAll<HTMLElement>(
+      "[data-menu-target], [data-menu-translucent]"
+    )
+    .forEach((element) => {
+      const { menuTranslucent } = element.dataset
+      if (menuTranslucent !== undefined) {
+        element.dataset.menuSolid ??= element.className
+        element.className = translucent
+          ? menuTranslucent
+          : element.dataset.menuSolid
+      }
+      if (element.hasAttribute("data-menu-target")) {
+        element.classList.toggle("dark", inverted)
+      }
+    })
+}
+
 export function applyPreset(preset: StoredPreset | undefined) {
   applyTheme(preset)
   applyStyle(preset?.config.style ?? "vega")
+  applyMenuColor(preset?.config.menuColor)
 }
