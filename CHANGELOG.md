@@ -1,5 +1,13 @@
 # Fulldev UI
 
+## 0.22.1
+
+### Patch Changes
+
+- [#277](https://github.com/fulldotdev/ui/pull/277) [`4cfce5f`](https://github.com/fulldotdev/ui/commit/4cfce5fb26f823a8783db294ed9f64bc58b3f354) Thanks [@silveltman](https://github.com/silveltman)! - `Doc1` puts the description under the row with the title and the copy and open buttons, so it uses the full width of the column, and narrows the content column to 40rem, as on ui.shadcn.com. This holds for the Astro and the React block.
+
+  `Sidebar1` is deprecated. It stays installable for now and will be removed in a future version; the docs no longer use it.
+
 ## 0.22.0
 
 ### Minor Changes
