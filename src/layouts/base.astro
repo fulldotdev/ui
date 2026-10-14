@@ -3,6 +3,7 @@ import { Font } from "astro:assets"
 
 import type { GlobalSchema } from "@/schemas/global"
 import type { BaseSchema } from "@/schemas/layouts/base"
+import { getGithubStars } from "@/lib/github"
 import {
   frameworks,
   getCounterpartHref,
@@ -65,20 +66,9 @@ const headerNavigation = await Promise.all(
   })
 )
 
-let githubStars: string | undefined
-
-try {
-  const response = await fetch(
-    `https://api.github.com/repos/${global.header.githubRepo}`
-  )
-  const data = await response.json()
-
-  if (response.ok && typeof data.stargazers_count === "number") {
-    githubStars = new Intl.NumberFormat().format(data.stargazers_count)
-  }
-} catch {
-  // Leave the stars unset; the header then shows only the GitHub icon.
-}
+const stars = await getGithubStars(global.header.githubRepo)
+const githubStars =
+  stars === undefined ? undefined : new Intl.NumberFormat("en").format(stars)
 
 const switcherLabels = {
   framework: "Framework",

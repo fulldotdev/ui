@@ -126,11 +126,12 @@ const { logo, navigation, button, githubRepo, githubStars, labels } =
       >
         <Icon name="github" />
         <span class="sr-only">{labels.github}</span>
-        {githubStars && (
-          <span class="text-muted-foreground text-xs tabular-nums">
-            {githubStars}
-          </span>
-        )}
+        <span
+          class="text-muted-foreground text-xs tabular-nums empty:hidden"
+          data-github-stars={githubStars ? undefined : githubRepo}
+        >
+          {githubStars}
+        </span>
       </Button>
       <Separator orientation="vertical" class="my-auto h-4" />
       <ThemeToggle aria-label={labels.theme} />
@@ -148,3 +149,29 @@ const { logo, navigation, button, githubRepo, githubStars, labels } =
     </div>
   </div>
 </header>
+
+<script>
+  // When the build could not read the star count, read it in the browser
+  // and keep it for a day.
+  const KEY = "fulldev-ui-github-stars"
+  const element = document.querySelector<HTMLElement>("[data-github-stars]")
+  const repo = element?.dataset.githubStars
+  if (element && repo) {
+    const show = (stars: number) =>
+      (element.textContent = new Intl.NumberFormat("en").format(stars))
+    const cached = JSON.parse(localStorage.getItem(KEY) ?? "null")
+    if (cached && Date.now() - cached.time < 86_400_000) show(cached.stars)
+    else
+      fetch(`https://api.github.com/repos/${repo}`)
+        .then((response) => (response.ok ? response.json() : undefined))
+        .then((data) => {
+          if (typeof data?.stargazers_count !== "number") return
+          localStorage.setItem(
+            KEY,
+            JSON.stringify({ stars: data.stargazers_count, time: Date.now() })
+          )
+          show(data.stargazers_count)
+        })
+        .catch(() => {})
+  }
+</script>
