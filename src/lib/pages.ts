@@ -11,12 +11,7 @@ export type PageSearchItem = {
   group: string
 }
 
-export type PageBreadcrumbItem = {
-  label: string
-  href: string
-}
-
-export type PageLink = {
+type PageLink = {
   label: string
   href: string
 }
@@ -116,11 +111,6 @@ export const getReactReadingOrder = async () => {
   )
 }
 
-export const reactSectionMenu: PageLink[] = reactSections.map((section) => ({
-  label: section.path === "docs" ? "Docs" : section.label,
-  href: `/react/${section.path}/`,
-}))
-
 // The same page in the other library. A standard component the React
 // extension does not ship goes to its official shadcn/ui docs.
 export const getCounterpartHref = async (id: string, framework: Framework) => {
@@ -164,37 +154,6 @@ export const getPageSearchItems = async (
       }
     })
     .sort((a, b) => a.label.localeCompare(b.label))
-}
-
-export const getPageBreadcrumbItems = async (
-  pathname: string
-): Promise<PageBreadcrumbItem[]> => {
-  const currentPath = normalizePath(pathname)
-  const pages = await getCollection("pages")
-  const pageTitlesByHref = new Map(
-    pages.map((page) => [getPageHref(page), page.data.title])
-  )
-  const homeLink = {
-    label: pageTitlesByHref.get("/") ?? "Home",
-    href: "/",
-  }
-
-  if (currentPath === "/") return [homeLink]
-
-  return [
-    homeLink,
-    ...currentPath
-      .split("/")
-      .filter(Boolean)
-      .map((slug, index, slugs) => {
-        const href = `/${slugs.slice(0, index + 1).join("/")}/`
-
-        return {
-          label: pageTitlesByHref.get(href) ?? formatSlug(slug),
-          href,
-        }
-      }),
-  ]
 }
 
 export const getMarkdownHref = (href: string) =>

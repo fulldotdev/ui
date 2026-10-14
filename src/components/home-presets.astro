@@ -1,0 +1,149 @@
+---
+// Docs only: the presets on the homepage. Using one applies it to the whole
+// site, as the docs switcher does; Create makes the visitor's own.
+import type { HomeSchema } from "@/schemas/layouts/home"
+import {
+  NAMED_PRESETS,
+  presetCss,
+  presetFontUrls,
+  presetSwatches,
+} from "@/lib/presets"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Section,
+  SectionContainer,
+  SectionDescription,
+  SectionTitle,
+} from "@/components/ui/section"
+
+type Props = HomeSchema["presets"]
+
+const { title, description, useLabel, activeLabel, custom } = Astro.props
+const capitalize = (value: string) => value[0].toUpperCase() + value.slice(1)
+const presets = NAMED_PRESETS.map(({ id, label, config }) => ({
+  id,
+  label,
+  detail: `${capitalize(config.style)} · ${capitalize(config.theme)}`,
+  swatches: presetSwatches(config),
+  preset: { config, css: presetCss(config), fonts: presetFontUrls(config) },
+}))
+---
+
+<Section>
+  <SectionContainer class="flex flex-col gap-10">
+    <div class="flex max-w-2xl flex-col gap-3">
+      <SectionTitle>{title}</SectionTitle>
+      <SectionDescription>{description}</SectionDescription>
+    </div>
+    <div
+      class="grid gap-4 md:grid-cols-3"
+      data-home-presets={JSON.stringify(
+        presets.map(({ id, preset }) => ({ id, preset }))
+      )}
+    >
+      {presets.map((preset) => (
+        <Card>
+          <CardHeader>
+            <span class="mb-3 flex gap-1.5">
+              {preset.swatches.map((color) => (
+                <span
+                  class="size-6 rounded-full border"
+                  style={`background:${color}`}
+                />
+              ))}
+            </span>
+            <CardTitle>{preset.label}</CardTitle>
+            <CardDescription>{preset.detail}</CardDescription>
+          </CardHeader>
+          <CardFooter class="mt-auto">
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              data-home-preset={preset.id}
+            >
+              <span data-preset-use>{useLabel}</span>
+              <span data-preset-active hidden>
+                {activeLabel}
+              </span>
+            </Button>
+          </CardFooter>
+        </Card>
+      ))}
+      <Card>
+        <CardHeader>
+          <span class="mb-3 flex">
+            <span class="size-6 rounded-full border border-dashed" />
+          </span>
+          <CardTitle>{custom.label}</CardTitle>
+          <CardDescription>{custom.description}</CardDescription>
+        </CardHeader>
+        <CardFooter class="mt-auto">
+          <Button as="a" href={custom.href} size="sm">
+            {custom.button}
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
+  </SectionContainer>
+</Section>
+
+<script>
+  import {
+    keepCustomPreset,
+    PRESET_EVENT,
+    readPreset,
+    sameConfig,
+    writePreset,
+    type StoredPreset,
+  } from "@/lib/preset-store"
+
+  type Named = { id: string; preset: StoredPreset }
+
+  const root = document.querySelector<HTMLElement>("[data-home-presets]")
+  const presets: Named[] = JSON.parse(root?.dataset.homePresets ?? "[]")
+  const remember = () =>
+    keepCustomPreset(presets.map((item) => item.preset.config))
+
+  const sync = () => {
+    const config = readPreset()?.config ?? presets[0]?.preset.config
+    const current = presets.find(
+      (item) => config && sameConfig(item.preset.config, config)
+    )?.id
+    root
+      ?.querySelectorAll<HTMLButtonElement>("[data-home-preset]")
+      .forEach((button) => {
+        const active = button.dataset.homePreset === current
+        button.disabled = active
+        button.querySelector<HTMLElement>("[data-preset-use]")!.hidden = active
+        button.querySelector<HTMLElement>("[data-preset-active]")!.hidden =
+          !active
+      })
+  }
+
+  root?.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return
+    const id =
+      event.target.closest<HTMLElement>("[data-home-preset]")?.dataset
+        .homePreset
+    if (!id) return
+    remember()
+    // The first preset is the docs default, which needs no storage.
+    writePreset(
+      id === presets[0]?.id
+        ? undefined
+        : presets.find((item) => item.id === id)?.preset
+    )
+  })
+
+  remember()
+  sync()
+  document.addEventListener(PRESET_EVENT, sync)
+</script>

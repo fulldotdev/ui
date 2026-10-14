@@ -78,11 +78,28 @@ export default defineConfig({
     },
   },
   fonts: [
+    // EXPERIMENT: Geist 1.7.2 with the stylistic sets of the full.dev
+    // websites (fulldotdev/fulldev packages/web/astro.js): ss02 single-storey
+    // a, ss03 straight l, ss06 alternate G, ss08 round dots and punctuation.
     {
-      provider: fontProviders.fontsource(),
+      provider: fontProviders.local(),
       name: "Geist",
       cssVariable: "--font-sans",
-      weights: ["300 700"],
+      featureSettings: '"ss02" 1, "ss03" 1, "ss06" 1, "ss08" 1',
+      options: {
+        variants: [
+          {
+            src: ["./src/assets/fonts/geist-variable.woff2"],
+            weight: "100 900",
+            style: "normal",
+          },
+          {
+            src: ["./src/assets/fonts/geist-italic-variable.woff2"],
+            weight: "100 900",
+            style: "italic",
+          },
+        ],
+      },
     },
     {
       provider: fontProviders.fontsource(),

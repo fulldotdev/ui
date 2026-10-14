@@ -1,0 +1,59 @@
+---
+// Docs only: a homepage section with a grid of links, such as the components
+// or the block categories, each with a short note on the right.
+import { Button } from "@/components/ui/button"
+import {
+  Section,
+  SectionContainer,
+  SectionDescription,
+  SectionTitle,
+} from "@/components/ui/section"
+
+type Link = { label: string; href: string; reactHref?: string }
+
+type Props = {
+  title: string
+  description: string
+  button: Link
+  links: (Link & { note?: string | number })[]
+}
+
+const { title, description, button, links } = Astro.props
+---
+
+<Section>
+  <SectionContainer class="flex flex-col gap-10">
+    <div class="flex items-end justify-between gap-6">
+      <div class="flex max-w-2xl flex-col gap-3">
+        <SectionTitle>{title}</SectionTitle>
+        <SectionDescription>{description}</SectionDescription>
+      </div>
+      <Button
+        as="a"
+        href={button.href}
+        data-react-href={button.reactHref}
+        size="sm"
+        variant="outline"
+        class="hidden sm:inline-flex"
+      >
+        {button.label}
+      </Button>
+    </div>
+    <ul class="bg-border grid grid-cols-2 gap-px overflow-hidden rounded-xl border sm:grid-cols-3 lg:grid-cols-6">
+      {links.map((link) => (
+        <li class="bg-background">
+          <a
+            href={link.href}
+            data-react-href={link.reactHref}
+            class="hover:bg-muted/50 flex items-center justify-between gap-2 px-4 py-4 text-sm font-medium transition-colors"
+          >
+            {link.label}
+            <span class="text-muted-foreground text-xs tabular-nums">
+              {link.note}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </SectionContainer>
+</Section>

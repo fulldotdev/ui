@@ -17,6 +17,41 @@ export function readPreset(): StoredPreset | undefined {
   }
 }
 
+// The framework chosen last, in the switcher, on the homepage or on Create.
+export const FRAMEWORK_KEY = "fulldev-ui-framework"
+export const FRAMEWORK_EVENT = "framework:change"
+
+export function writeFramework(framework: string) {
+  localStorage.setItem(FRAMEWORK_KEY, framework)
+  document.dispatchEvent(new Event(FRAMEWORK_EVENT))
+}
+
+const CUSTOM_KEY = "fulldev-ui-custom-preset"
+
+export const sameConfig = (
+  a: Record<string, string>,
+  b: Record<string, string>
+) =>
+  [...new Set([...Object.keys(a), ...Object.keys(b)])].every(
+    (key) => a[key] === b[key]
+  )
+
+export function readCustomPreset(): StoredPreset | undefined {
+  try {
+    return JSON.parse(localStorage.getItem(CUSTOM_KEY) ?? "null") ?? undefined
+  } catch {
+    return undefined
+  }
+}
+
+// A preset that is none of the named ones, such as one made on Create, is
+// kept as the visitor's own, so choosing a named preset does not lose it.
+export function keepCustomPreset(named: Record<string, string>[]) {
+  const preset = readPreset()
+  if (preset && !named.some((config) => sameConfig(config, preset.config)))
+    localStorage.setItem(CUSTOM_KEY, JSON.stringify(preset))
+}
+
 export function writePreset(preset: StoredPreset | undefined) {
   if (preset) localStorage.setItem(PRESET_KEY, JSON.stringify(preset))
   else localStorage.removeItem(PRESET_KEY)
@@ -80,7 +115,65 @@ function applyStyle(style: string) {
   if (changed) document.dispatchEvent(new Event("astro:page-load"))
 }
 
+// Switch menus to the preset's menu color, using the classes that installs in
+// that menu color get, rendered by applyStyle in src/lib/styles.ts.
+function applyMenuColor(menuColor = "default") {
+  const inverted = menuColor.startsWith("inverted")
+  const translucent = menuColor.endsWith("-translucent")
+  document
+    .querySelectorAll<HTMLElement>(
+      "[data-menu-target], [data-menu-translucent]"
+    )
+    .forEach((element) => {
+      const { menuTranslucent } = element.dataset
+      if (menuTranslucent !== undefined) {
+        element.dataset.menuSolid ??= element.className
+        element.className = translucent
+          ? menuTranslucent
+          : element.dataset.menuSolid
+      }
+      if (element.hasAttribute("data-menu-target")) {
+        element.classList.toggle("dark", inverted)
+      }
+    })
+}
+
+// Menus that mount when they open, such as Select, get the menu color then.
+let observing = false
+function observeMenus() {
+  if (observing) return
+  observing = true
+  const selector = "[data-menu-target], [data-menu-translucent]"
+  new MutationObserver((records) => {
+    const added = records.some((record) =>
+      [...record.addedNodes].some(
+        (node) =>
+          node instanceof Element &&
+          (node.matches(selector) || node.querySelector(selector))
+      )
+    )
+    if (added) applyMenuColor(document.documentElement.dataset.menuColor)
+  }).observe(document.body, { childList: true, subtree: true })
+}
+
+declare global {
+  interface Window {
+    // Set by the script src/lib/styles.ts adds to every docs page.
+    applySiteStyle?: (style: string) => void
+  }
+}
+
+// The whole site follows the preset: theme, style and menu color. Without a
+// stored preset, the docs default from preset-head.astro applies.
 export function applyPreset(preset: StoredPreset | undefined) {
   applyTheme(preset)
-  applyStyle(preset?.config.style ?? "vega")
+  const root = document.documentElement
+  const style = preset?.config.style ?? root.dataset.defaultStyle ?? "vega"
+  const menuColor =
+    preset?.config.menuColor ?? root.dataset.defaultMenuColor ?? "default"
+  root.dataset.menuColor = menuColor
+  applyStyle(style)
+  window.applySiteStyle?.(style)
+  applyMenuColor(menuColor)
+  observeMenus()
 }

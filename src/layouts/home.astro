@@ -1,8 +1,15 @@
 ---
 import type { GlobalSchema } from "@/schemas/global"
 import type { HomeSchema } from "@/schemas/layouts/home"
+import { getCounterpartHref, getPageId } from "@/lib/pages"
 import Base from "@/layouts/base.astro"
-import { Typography } from "@/components/ui/typography"
+import Faqs1 from "@/components/blocks/faqs-1.astro"
+import Features2 from "@/components/blocks/features-2.astro"
+import { Button } from "@/components/ui/button"
+import { Section, SectionContainer } from "@/components/ui/section"
+import HomeHero from "@/components/home-hero.astro"
+import HomeLinks from "@/components/home-links.astro"
+import HomePresets from "@/components/home-presets.astro"
 
 type Props = {
   global: GlobalSchema
@@ -10,14 +17,129 @@ type Props = {
 }
 
 const { global, page } = Astro.props
+
+// Counts from the registry: blocks by name, such as hero-1, and components.
+const registry = Object.values(
+  import.meta.glob<{
+    items: { name: string; type: string; description?: string }[]
+  }>("/registry.json", { import: "default", eager: true })
+)[0]
+const items = registry.items.filter(
+  (item) => !item.description?.startsWith("Deprecated")
+)
+const blockNames = items
+  .filter((item) => item.type === "registry:block")
+  .map((item) => item.name)
+const countBlocks = (href: string) => {
+  const category = href.split("/").filter(Boolean).at(-1)
+  return blockNames.filter((name) =>
+    new RegExp(`^${category}-\\d+$`).test(name)
+  ).length
+}
+const counts = {
+  blocks: blockNames.filter((name) => /-\d+$/.test(name)).length,
+  components: items.filter((item) => item.type === "registry:ui").length,
+}
+
+// The same pages in React by href, for the visitor who chose React last: a
+// React page of these docs, or the official shadcn/ui docs of a standard
+// component. A component with a React page here is one React has from
+// Fulldev UI.
+const links = [
+  ...page.hero.buttons,
+  page.hero.blocks,
+  page.hero.components,
+  page.components.button,
+  ...page.components.items,
+  page.blocks.button,
+  ...page.blocks.categories,
+  ...page.cta.buttons,
+]
+const counterparts = await Promise.all(
+  [...new Set(links.map((link) => link.href))].map(async (href) => {
+    const id = getPageId(href)
+    const react = await getCounterpartHref(id, "react")
+    const own = react === `/react/${id}/`
+    return {
+      href,
+      own,
+      react: own || /^https?:/.test(react) ? react : undefined,
+    }
+  })
+)
+const reactHrefs: Record<string, string | undefined> = Object.fromEntries(
+  counterparts.map(({ href, react }) => [href, react])
+)
+const extras = new Set(
+  counterparts.filter((item) => item.own).map((item) => item.href)
+)
+const withReact = <T extends { href: string }>(link: T) => ({
+  ...link,
+  reactHref: reactHrefs[link.href],
+})
 ---
 
 <Base global={global} page={page}>
-  <Typography
-    as="article"
-    size="lg"
-    class="mx-auto w-full max-w-7xl px-4 py-16 lg:px-6 [&>:is(p,ul,ol,blockquote,h1,h2)]:max-w-4xl [&>:is(p,ul,ol,blockquote,h3,h4)]:max-w-3xl [&>[data-slot='tabs']:not(:first-child)]:mt-10"
-  >
-    <slot />
-  </Typography>
+  <div class="flex flex-col pb-8 [--container:var(--container-6xl)] lg:[--gutter:--spacing(6)]">
+    <HomeHero {...page.hero} counts={counts} reactHrefs={reactHrefs} />
+    <HomeLinks
+      title={page.components.title}
+      description={page.components.description}
+      button={withReact(page.components.button)}
+      links={page.components.items.map((item) => ({
+        ...withReact(item),
+        note: extras.has(item.href) ? page.components.extraLabel : undefined,
+      }))}
+    />
+    <HomeLinks
+      title={page.blocks.title}
+      description={page.blocks.description}
+      button={withReact(page.blocks.button)}
+      links={page.blocks.categories.map((category) => ({
+        ...withReact(category),
+        note: countBlocks(category.href),
+      }))}
+    />
+    <Features2 {...page.features} />
+    <HomePresets {...page.presets} />
+    <Faqs1
+      {...page.faqs}
+      faqs={page.faqs.faqs.map((faq, index) => ({
+        id: `faq-${index + 1}`,
+        ...faq,
+      }))}
+    />
+    <Section>
+      <SectionContainer>
+        <div class="bg-primary text-primary-foreground flex flex-col gap-8 rounded-2xl bg-[image:linear-gradient(rgb(255_255_255/0.12),rgb(255_255_255/0)_60%)] px-8 py-12 sm:px-12 sm:py-14 lg:flex-row lg:items-end lg:justify-between">
+          <div class="flex max-w-2xl flex-col gap-3">
+            <h2 class="font-heading text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+              {page.cta.title}
+            </h2>
+            <p class="text-primary-foreground/80 text-lg">
+              {page.cta.description}
+            </p>
+          </div>
+          <div class="flex shrink-0 flex-wrap gap-2">
+            {page.cta.buttons.map((button, index) => (
+              <Button
+                as="a"
+                href={button.href}
+                data-react-href={reactHrefs[button.href]}
+                size="lg"
+                variant={index === 0 ? "secondary" : "ghost"}
+                class={
+                  index === 0
+                    ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+                    : "text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                }
+              >
+                {button.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+      </SectionContainer>
+    </Section>
+  </div>
 </Base>

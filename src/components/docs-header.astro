@@ -1,0 +1,178 @@
+---
+// Docs only: the header of ui.shadcn.com, built from Fulldev UI components.
+// It turns to glass when the preset's menus are translucent. Below lg the
+// navigation moves into a sheet with the slot "menu".
+import PlusIcon from "@lucide/astro/icons/plus"
+import XIcon from "@lucide/astro/icons/x"
+
+import { markPaths, markViewBox } from "@/lib/brand-mark"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
+import { Logo, LogoText } from "@/components/ui/logo"
+import { Separator } from "@/components/ui/separator"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
+
+type Props = {
+  logo: { label: string; href: string; alt?: string }
+  navigation: { label: string; href: string; reactHref?: string }[]
+  button: { label: string; href: string }
+  githubRepo: string
+  githubStars?: string
+  labels: {
+    navigation: string
+    menu: string
+    menuTitle: string
+    closeMenu: string
+    github: string
+    theme: string
+  }
+}
+
+const { logo, navigation, button, githubRepo, githubStars, labels } =
+  Astro.props
+---
+
+<header class="bg-background sticky top-0 z-50 w-full in-[[data-menu-color$=translucent]]:bg-background/70 in-[[data-menu-color$=translucent]]:backdrop-blur-2xl in-[[data-menu-color$=translucent]]:backdrop-saturate-150">
+  <div class="flex h-16 items-center gap-2 px-4 lg:px-6">
+    <Sheet class="lg:hidden">
+      <SheetTrigger
+        variant="ghost"
+        size="icon-sm"
+        class="-ml-1.5"
+        aria-label={labels.menu}
+      >
+        <Icon name="menu" />
+      </SheetTrigger>
+      <SheetContent side="left" showCloseButton={false} class="w-72 p-0">
+        <SheetHeader class="sr-only">
+          <SheetTitle>{labels.menuTitle}</SheetTitle>
+          <SheetDescription>{labels.navigation}</SheetDescription>
+        </SheetHeader>
+        <div class="flex h-full flex-col gap-6 overflow-y-auto px-6 py-6">
+          <nav aria-label={labels.menuTitle} class="flex flex-col">
+            {navigation.map((item) => (
+              <a
+                href={item.href}
+                data-react-href={item.reactHref}
+                class="text-foreground py-1.5 text-base font-medium"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+          <slot name="menu" />
+        </div>
+        <SheetClose
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          class="cn-sheet-close"
+        >
+          <XIcon />
+          <span class="sr-only">{labels.closeMenu}</span>
+        </SheetClose>
+      </SheetContent>
+    </Sheet>
+    <Logo href={logo.href} aria-label={logo.alt} class="mr-3 gap-1.5">
+      {/* The logo tile of the full.dev websites (fulldotdev/fulldev
+          packages/web, .logo-tile): the brand blue with a sheen, a light rim
+          and a soft shadow, a squircle where the browser has corner-shape. */}
+      <span class="grid size-6.5 flex-none place-items-center rounded-[4.9px] bg-[#1442e9] bg-[image:linear-gradient(rgb(255_255_255/0.17),rgb(255_255_255/0)_55%)] text-white shadow-[inset_0_0_0_1px_rgb(255_255_255/0.14),inset_0_1px_0_rgb(255_255_255/0.34),0_1px_2px_rgb(20_66_233/0.3),0_3px_8px_-3px_rgb(20_66_233/0.45)] supports-[corner-shape:squircle]:rounded-[8.7px] supports-[corner-shape:squircle]:[corner-shape:squircle]">
+        <svg
+          viewBox={markViewBox}
+          class="block h-[60%] w-[30%] fill-current"
+          overflow="visible"
+          aria-hidden="true"
+        >
+          {markPaths.map((d) => (
+            <path d={d} />
+          ))}
+        </svg>
+      </span>
+      <LogoText class="text-[1.0625rem] leading-[1.3] font-[550] tracking-[-0.01em]">
+        {logo.label}
+      </LogoText>
+    </Logo>
+    <nav aria-label={labels.navigation} class="hidden items-center lg:flex">
+      {navigation.map((item) => (
+        <Button
+          as="a"
+          href={item.href}
+          variant="ghost"
+          size="sm"
+          data-react-href={item.reactHref}
+        >
+          {item.label}
+        </Button>
+      ))}
+    </nav>
+    <div class="ml-auto flex items-center gap-2">
+      <slot name="search" />
+      <Separator orientation="vertical" class="my-auto hidden h-4 sm:block" />
+      <Button
+        as="a"
+        href={`https://github.com/${githubRepo}`}
+        size="sm"
+        variant="ghost"
+        class="hidden sm:inline-flex"
+      >
+        <Icon name="github" />
+        <span class="sr-only">{labels.github}</span>
+        <span
+          class="text-muted-foreground text-xs tabular-nums empty:hidden"
+          data-github-stars={githubStars ? undefined : githubRepo}
+        >
+          {githubStars}
+        </span>
+      </Button>
+      <Separator orientation="vertical" class="my-auto h-4" />
+      <ThemeToggle aria-label={labels.theme} />
+      <Separator orientation="vertical" class="my-auto hidden h-4 sm:block" />
+      <Button
+        as="a"
+        href={button.href}
+        size="sm"
+        variant="secondary"
+        class="hidden sm:inline-flex"
+      >
+        <PlusIcon data-icon="inline-start" />
+        {button.label}
+      </Button>
+    </div>
+  </div>
+</header>
+
+<script>
+  // When the build could not read the star count, read it in the browser
+  // and keep it for a day.
+  const KEY = "fulldev-ui-github-stars"
+  const element = document.querySelector<HTMLElement>("[data-github-stars]")
+  const repo = element?.dataset.githubStars
+  if (element && repo) {
+    const show = (stars: number) =>
+      (element.textContent = new Intl.NumberFormat("en").format(stars))
+    const cached = JSON.parse(localStorage.getItem(KEY) ?? "null")
+    if (cached && Date.now() - cached.time < 86_400_000) show(cached.stars)
+    else
+      fetch(`https://api.github.com/repos/${repo}`)
+        .then((response) => (response.ok ? response.json() : undefined))
+        .then((data) => {
+          if (typeof data?.stargazers_count !== "number") return
+          localStorage.setItem(
+            KEY,
+            JSON.stringify({ stars: data.stargazers_count, time: Date.now() })
+          )
+          show(data.stargazers_count)
+        })
+        .catch(() => {})
+  }
+</script>

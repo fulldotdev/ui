@@ -1,13 +1,45 @@
 ---
-// Docs only: apply the preset chosen on the create page before the first
-// paint. Keep the key and element id in sync with src/lib/preset-store.ts.
+// Docs only: apply the docs default preset, and the preset chosen on the
+// create page or in the switcher, before the first paint. Keep the key and
+// element id in sync with src/lib/preset-store.ts.
+import { DEFAULT_CONFIG, presetCss } from "@/lib/presets"
+
+const defaults = {
+  style: DEFAULT_CONFIG.style,
+  menuColor: DEFAULT_CONFIG.menuColor,
+}
 ---
 
-<script is:inline>
+<style
+  is:inline
+  id="fulldev-ui-default-preset"
+  data-config={JSON.stringify(DEFAULT_CONFIG)}
+  set:html={presetCss(DEFAULT_CONFIG)}
+></style>
+<style is:inline>
+  html[data-style-pending] body {
+    visibility: hidden;
+  }
+</style>
+<script is:inline define:vars={{ defaults }}>
+  const root = document.documentElement
+  root.dataset.defaultStyle = defaults.style
+  root.dataset.defaultMenuColor = defaults.menuColor
+  root.dataset.menuColor = defaults.menuColor
   try {
     const preset = JSON.parse(
       localStorage.getItem("fulldev-ui-preset") ?? "null"
     )
+    if (preset?.config?.menuColor)
+      root.dataset.menuColor = preset.config.menuColor
+    // Another style switches its classes at the end of the page (the script
+    // src/lib/styles.ts adds); hide the page until then, or until it loads.
+    if (preset?.config?.style && preset.config.style !== defaults.style) {
+      root.dataset.stylePending = ""
+      addEventListener("DOMContentLoaded", () => {
+        delete root.dataset.stylePending
+      })
+    }
     // A shared link (?preset=) sets its own theme; skip the stored one.
     const shared = new URLSearchParams(location.search).has("preset")
     if (preset?.css && !shared) {

@@ -4,11 +4,16 @@ import assert from "node:assert/strict"
 import { readFileSync } from "node:fs"
 import { test } from "node:test"
 import {
+  applyMenuColor,
+  buildsMenuColor,
   createStyleMaps,
+  hasMenuHook,
+  MENU_COLORS,
   replacePlaceholders,
   STYLES,
   transformSource,
 } from "#styles"
+import { transformMenu } from "shadcn/utils"
 
 const read = (path) =>
   readFileSync(new URL(`../${path}`, import.meta.url), "utf8")
@@ -29,7 +34,8 @@ test("installed files match the docs rendering in every style", () => {
           read(file.path),
           maps[style],
           known,
-          style
+          style,
+          buildsMenuColor(file.path) ? "default" : undefined
         )
         assert.equal(
           built.files[index].content,
@@ -50,6 +56,70 @@ test("Sera input group keeps its bottom border color in docs and install", () =>
   assert.ok(
     installed.files.some((file) => file.content.includes("border-b-input"))
   )
+})
+
+// shadcn/ui marks the menu surfaces with cn-menu-target and cn-menu-translucent
+// in these parts, for components.json `menuColor`.
+test("menu surfaces carry the shadcn/ui menu hooks", () => {
+  for (const name of [
+    "dropdown-menu/dropdown-menu-content",
+    "select/select-content",
+    "combobox/combobox-content",
+  ]) {
+    assert.match(
+      read(`src/components/ui/${name}.astro`),
+      /"cn-[\w-]+-content cn-[\w-]+-content-logical cn-menu-target cn-menu-translucent /,
+      `${name} lacks the menu hooks`
+    )
+  }
+})
+
+// The shadcn CLI's own menu transform, on one className string. It takes a
+// ts-morph source file; this one holds a single className attribute.
+async function shadcnMenu(classes, menuColor) {
+  let text = `"${classes}"`
+  const attribute = {
+    getNameNode: () => ({ getText: () => "className" }),
+    getInitializer: () => ({ getText: () => text }),
+    setInitializer: (value) => (text = value),
+  }
+  await transformMenu({
+    sourceFile: { getDescendantsOfKind: () => [attribute] },
+    config: { menuColor },
+  })
+  return text.slice(1, -1)
+}
+
+test("menu colors give the classes the shadcn CLI installs", async () => {
+  let checked = 0
+  for (const style of STYLES) {
+    for (const item of registry.items) {
+      for (const file of item.files ?? []) {
+        for (const [, value] of read(file.path).matchAll(/"([^"\n]*)"/g)) {
+          if (!hasMenuHook(value)) continue
+          const classes = replacePlaceholders(value, maps[style], known, style)
+          for (const menuColor of MENU_COLORS) {
+            assert.equal(
+              applyMenuColor(classes, menuColor, maps[style]),
+              await shadcnMenu(classes, menuColor),
+              `${style}: ${file.path} in ${menuColor}`
+            )
+            checked++
+          }
+        }
+      }
+    }
+  }
+  assert.ok(checked > 0)
+})
+
+test("the docs generate the translucent menu classes of every style", () => {
+  const inline = read("src/styles/global.css").match(
+    /@source inline\(\s*"([^"]*)"\s*\)/
+  )?.[1]
+  for (const style of STYLES) {
+    assert.equal(inline, maps[style]["cn-menu-translucent"], style)
+  }
 })
 
 test("base sets up each style through `shadcn init`", () => {

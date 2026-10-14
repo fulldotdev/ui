@@ -12,6 +12,7 @@ Components use `cn-*` placeholder classes for their visual styling. A style maps
 - Use a shadcn/ui placeholder with the same name when a component matches shadcn/ui. Keep structural classes (layout, positioning, behavior) in the component and visual classes (radius, color, density, type) in the placeholder.
 - A placeholder only goes in a quoted class string, before the other classes in that string. The build replaces placeholders in every quoted string that contains one.
 - A placeholder that a style does not define is removed for that style. A placeholder that no style defines fails the build.
+- Menu surfaces carry `cn-menu-target cn-menu-translucent` on the same parts as shadcn/ui, for `menuColor` in `components.json`. The shadcn CLI applies it to JSX `className` only, so the build gives Astro files the default menu color (`applyMenuColor` in `scripts/styles.mjs`) and React files keep the hooks for the CLI. The docs previews switch menu colors with the preset; `src/styles/global.css` lists the translucent classes with `@source inline`, because no source file holds them.
 
 ## Build
 

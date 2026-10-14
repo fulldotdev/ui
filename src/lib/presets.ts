@@ -56,6 +56,15 @@ export const MENU_ACCENTS = [
   { name: "bold", label: "Bold" },
 ]
 
+export const MENU_COLORS = [
+  { name: "default", label: "Default" },
+  { name: "inverted", label: "Inverted" },
+  { name: "default-translucent", label: "Default Translucent" },
+  { name: "inverted-translucent", label: "Inverted Translucent" },
+]
+
+const isTranslucent = (menuColor: string) => menuColor.endsWith("-translucent")
+
 export const STYLE_OPTIONS = PRESET_STYLES.map((name) => ({
   name,
   label: name[0].toUpperCase() + name.slice(1),
@@ -64,11 +73,36 @@ export const STYLE_OPTIONS = PRESET_STYLES.map((name) => ({
 export const FONTS = fonts
 
 // Fulldev UI serves the Base UI library and uses Lucide icons.
+// The docs default: the preset closest to the full.dev websites (bJfEY5IW in
+// fulldotdev/fulldev packages/web/DESIGN.md) with translucent menus. Installs
+// keep the theme of the registry's init item.
 export const DEFAULT_CONFIG: PresetConfig = {
   ...DEFAULT_PRESET_CONFIG,
   style: "vega",
+  baseColor: "stone",
+  theme: "blue",
+  chartColor: "stone",
+  font: "geist",
+  fontHeading: "inherit",
+  radius: "large",
+  menuAccent: "subtle",
+  menuColor: "default-translucent",
   iconLibrary: "lucide",
-}
+} as PresetConfig
+
+// ui.shadcn.com: Nova, neutral and the default radius, in Geist.
+const SHADCN_CONFIG: PresetConfig = {
+  ...DEFAULT_PRESET_CONFIG,
+  style: "nova",
+  font: "geist",
+  iconLibrary: "lucide",
+} as PresetConfig
+
+// The presets the docs switcher offers, besides the visitor's own.
+export const NAMED_PRESETS = [
+  { id: "fulldev", label: "Fulldev", config: DEFAULT_CONFIG },
+  { id: "shadcn", label: "shadcn/ui", config: SHADCN_CONFIG },
+]
 
 export const themeOptions = (baseColor: string) =>
   themeList
@@ -82,22 +116,34 @@ export const baseColorOptions = BASE_COLORS.map((name) => ({
   label: themeList.find((theme) => theme.name === name)?.title ?? name,
 }))
 
-// Keep theme and chart color valid for the base color, like ui.shadcn.com.
+// Keep the options valid together, with the same rules as ui.shadcn.com/create.
 export function normalizeConfig(input: PresetConfig): PresetConfig {
   // Older preset codes can name a base color the current options lack (gray).
   const config = BASE_COLORS.includes(input.baseColor)
     ? input
     : ({ ...input, baseColor: "neutral" } as PresetConfig)
+  // Theme and chart color depend on the base color.
   const valid = themeOptions(config.baseColor).map((option) => option.name)
   const pick = (name: string | undefined) =>
     (name && valid.includes(name)
       ? name
       : config.baseColor) as PresetConfig["theme"]
+  // Lyra and Sera have no radius, Rhea has no large radius.
+  const radius = ["lyra", "sera"].includes(config.style)
+    ? "none"
+    : config.style === "rhea" && config.radius === "large"
+      ? "default"
+      : config.radius
   return {
     ...config,
     theme: pick(config.theme),
     chartColor: pick(config.chartColor),
-  }
+    fontHeading:
+      config.fontHeading === config.font ? "inherit" : config.fontHeading,
+    radius,
+    // Translucent menus keep the subtle accent.
+    menuAccent: isTranslucent(config.menuColor) ? "subtle" : config.menuAccent,
+  } as PresetConfig
 }
 
 const sample = <T>(items: T[]) =>
@@ -118,6 +164,7 @@ export function randomConfig(): PresetConfig {
     fontHeading: Math.random() < 0.5 ? "inherit" : sample(fonts).name,
     radius: sample(RADII).name,
     menuAccent: sample(MENU_ACCENTS).name,
+    menuColor: sample(MENU_COLORS).name,
   } as PresetConfig
 }
 
@@ -151,17 +198,33 @@ function themeVars(config: PresetConfig) {
   return { light, dark }
 }
 
+// The colors a preset card shows: primary, foreground and muted, in light mode.
+export const presetSwatches = (config: PresetConfig) => {
+  const { light } = themeVars(config)
+  return [light.primary, light.foreground, light.muted]
+}
+
 const findFont = (name: string) => fonts.find((font) => font.name === name)
 
 const fontUrl = (dependency: string) =>
   `https://cdn.jsdelivr.net/npm/${dependency}/index.css`
 
-// CSS for the whole docs page. :root:root wins over the site theme.
-export function presetCss(config: PresetConfig) {
-  const { light, dark } = themeVars(config)
-  const body = findFont(config.font)
+// The fonts a preset loads. Geist as the body font is the site's own font
+// (Geist 1.7.2 with the full.dev stylistic sets, astro.config.ts), so the
+// preset keeps it instead of loading another; Geist for headings only comes
+// from the font's package like any other font.
+function presetFonts(config: PresetConfig) {
+  const body = config.font === "geist" ? undefined : findFont(config.font)
   const heading =
     config.fontHeading === "inherit" ? body : findFont(config.fontHeading)
+  return { body, heading }
+}
+
+// CSS for the whole docs page. :root:root wins over the site theme. The dark
+// variables also go to .dark elements inside the page, such as inverted menus.
+export function presetCss(config: PresetConfig) {
+  const { light, dark } = themeVars(config)
+  const { body, heading } = presetFonts(config)
   const fontVars: Vars = {}
   if (body) fontVars["font-sans"] = body.family
   if (heading) fontVars["font-heading"] = heading.family
@@ -169,13 +232,12 @@ export function presetCss(config: PresetConfig) {
     Object.entries(vars)
       .map(([key, value]) => `--${key}:${value};`)
       .join("")
-  return `:root:root{${declarations({ ...light, ...fontVars })}}:root:root.dark{${declarations(dark)}}`
+  return `:root:root{${declarations({ ...light, ...fontVars })}}:root:root.dark,:root:root .dark{${declarations(dark)}}`
 }
 
 export function presetFontUrls(config: PresetConfig) {
-  const names = new Set([config.font, config.fontHeading])
-  return [...names]
-    .map((name) => findFont(name)?.dependency)
+  const { body, heading } = presetFonts(config)
+  return [...new Set([body?.dependency, heading?.dependency])]
     .filter((dependency): dependency is string => Boolean(dependency))
     .map(fontUrl)
 }

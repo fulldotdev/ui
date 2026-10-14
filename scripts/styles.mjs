@@ -69,12 +69,53 @@ export function replacePlaceholders(value, styleMap, known, style) {
   return twMerge([...tokens, ...active].join(" "))
 }
 
+export const MENU_COLORS = [
+  "default",
+  "inverted",
+  "default-translucent",
+  "inverted-translucent",
+]
+
+export const hasMenuHook = (value) =>
+  /(?:^|\s)cn-menu-(?:target|translucent)(?:\s|$)/.test(value)
+
+// Apply `menuColor` from components.json to a class string, the way the shadcn
+// CLI does at install time (its transformMenu): an inverted menu gets `dark`
+// for cn-menu-target, a translucent menu merges in the style's
+// cn-menu-translucent classes, and both hooks go.
+export function applyMenuColor(value, menuColor, styleMap) {
+  const inverted =
+    menuColor === "inverted" || menuColor === "inverted-translucent"
+  const translucent =
+    menuColor === "default-translucent" || menuColor === "inverted-translucent"
+  let tokens = value
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((token) =>
+      token === "cn-menu-target" ? (inverted ? "dark" : "") : token
+    )
+  if (translucent && tokens.includes("cn-menu-translucent")) {
+    tokens = twMerge(
+      tokens.join(" "),
+      styleMap["cn-menu-translucent"] ?? ""
+    ).split(" ")
+  }
+  return tokens
+    .filter((token) => token && token !== "cn-menu-translucent")
+    .join(" ")
+}
+
+// The shadcn CLI applies `menuColor` to the className attributes of JSX files
+// only, so files it cannot read, such as .astro, get the default at build time.
+export const buildsMenuColor = (path) => !/\.[jt]sx$/.test(path)
+
 // Replace the placeholders in every double-quoted string that contains one.
 // Style classes can contain single quotes, so other strings are not supported.
-export function transformSource(source, styleMap, known, style) {
-  return source.replace(/"([^"\n]*)"/g, (string, value) =>
-    hasPlaceholder.test(value)
-      ? `"${replacePlaceholders(value, styleMap, known, style)}"`
-      : string
-  )
+// With a menuColor, the menu hooks are applied too.
+export function transformSource(source, styleMap, known, style, menuColor) {
+  return source.replace(/"([^"\n]*)"/g, (string, value) => {
+    if (!hasPlaceholder.test(value)) return string
+    const classes = replacePlaceholders(value, styleMap, known, style)
+    return `"${menuColor ? applyMenuColor(classes, menuColor, styleMap) : classes}"`
+  })
 }

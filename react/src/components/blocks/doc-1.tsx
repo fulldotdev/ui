@@ -230,72 +230,75 @@ function Doc1({
       )}
       {...props}
     >
-      <div className="mx-auto flex w-full max-w-3xl min-w-0 flex-col gap-10">
-        <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex min-w-0 flex-1 flex-col gap-2">
+      <div className="mx-auto flex w-full max-w-160 min-w-0 flex-col gap-10">
+        <header className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <TypographyH1
               size="sm"
-              className="text-left tracking-tight text-foreground"
+              className="min-w-0 text-left tracking-tight text-foreground"
             >
               {title}
             </TypographyH1>
-            <TypographyLead size="sm" className="max-w-2xl leading-7">
-              {description}
-            </TypographyLead>
-          </div>
-          <div className="flex shrink-0 items-center gap-2 self-start">
-            {copyButton && (
-              <Button
-                id={copyButton.id}
-                type="button"
-                variant="outline"
-                size="xs"
-                aria-label={labels.copyMarkdown}
-                onClick={() => copy(copyButton.source)}
-              >
-                {copied ? (
-                  <CheckIcon className="size-3.5" />
-                ) : (
-                  <CopyIcon className="size-3.5" />
-                )}
-                <span>{labels.copyMarkdown}</span>
-              </Button>
-            )}
-            {openLinks.length > 0 && (
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  className={buttonVariants({ variant: "outline", size: "xs" })}
+            <div className="flex shrink-0 items-center gap-2 self-start">
+              {copyButton && (
+                <Button
+                  id={copyButton.id}
+                  type="button"
+                  variant="outline"
+                  size="xs"
+                  aria-label={labels.copyMarkdown}
+                  onClick={() => copy(copyButton.source)}
                 >
-                  <span>{labels.openIn}</span>
-                  <ChevronDownIcon className="size-3.5 opacity-70" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  sideOffset={6}
-                  className="w-56"
-                >
-                  <DropdownMenuGroup>
-                    {openLinks.map((link) => (
-                      <DropdownMenuItem
-                        key={link.label}
-                        render={
-                          <a
-                            href={link.href}
-                            target="_blank"
-                            rel="noreferrer noopener"
-                          />
-                        }
-                      >
-                        {link.icon}
-                        <span>{link.label}</span>
-                        <ExternalLinkIcon className="ml-auto size-3.5 text-muted-foreground" />
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+                  {copied ? (
+                    <CheckIcon className="size-3.5" />
+                  ) : (
+                    <CopyIcon className="size-3.5" />
+                  )}
+                  <span>{labels.copyMarkdown}</span>
+                </Button>
+              )}
+              {openLinks.length > 0 && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    className={buttonVariants({
+                      variant: "outline",
+                      size: "xs",
+                    })}
+                  >
+                    <span>{labels.openIn}</span>
+                    <ChevronDownIcon className="size-3.5 opacity-70" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    sideOffset={6}
+                    className="w-56"
+                  >
+                    <DropdownMenuGroup>
+                      {openLinks.map((link) => (
+                        <DropdownMenuItem
+                          key={link.label}
+                          render={
+                            <a
+                              href={link.href}
+                              target="_blank"
+                              rel="noreferrer noopener"
+                            />
+                          }
+                        >
+                          {link.icon}
+                          <span>{link.label}</span>
+                          <ExternalLinkIcon className="ml-auto size-3.5 text-muted-foreground" />
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
           </div>
+          <TypographyLead size="sm" className="max-w-2xl leading-7">
+            {description}
+          </TypographyLead>
         </header>
 
         <CopyLabelContext.Provider value={labels.copyCode}>

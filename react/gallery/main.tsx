@@ -8,6 +8,9 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import "@/styles/globals.css"
 
 import { App } from "./app"
+import { syncPreset } from "./preset"
+
+syncPreset()
 
 // next-themes ignores a cleared storage (a storage event without a key), which
 // the docs around the previews treat as a return to the system theme.
