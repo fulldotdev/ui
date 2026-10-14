@@ -42,12 +42,17 @@ const groups = items.reduce<{ label: string; items: typeof items }[]>(
 /* eslint-disable astro/jsx-a11y/no-autofocus -- Focus moves into the search dialog when it opens. */
 ---
 
-<CommandDialog data-search-dialog title={label} description={label}>
+<CommandDialog
+  data-search-dialog
+  title={label}
+  description={label}
+  contentClass="top-3 sm:top-1/3"
+>
   <DialogTrigger
     slot="trigger"
     variant="secondary"
     size="sm"
-    class="text-foreground/60 justify-start font-normal shadow-none md:w-64"
+    class="text-foreground/60 size-9 justify-center font-normal shadow-none max-md:bg-transparent max-md:text-foreground md:h-8 md:w-64 md:justify-start [&_svg]:max-md:size-5"
     aria-label={label}
     aria-keyshortcuts="Meta+K Control+K"
   >
@@ -61,20 +66,22 @@ const groups = items.reduce<{ label: string; items: typeof items }[]>(
     </Kbd>
   </DialogTrigger>
   <Command class="[&_[data-slot=command-item][data-selected]]:bg-accent [&_[data-slot=command-item][data-selected]]:text-accent-foreground">
-    <CommandInput autofocus placeholder={label} />
-    <CommandList>
+    <CommandInput autofocus placeholder={label} class="max-md:text-base" />
+    <CommandList class="max-h-[min(24rem,50svh)]">
       <CommandEmpty>{empty}</CommandEmpty>
       {groups.map((group) => (
         <CommandGroup heading={group.label}>
           {group.items.map((item) => (
             <CommandItem
               href={item.href}
-              value={`${item.group} ${item.label}`}
+              value={`${item.label} ${item.group}`}
               label={item.label}
-              keywords={[item.group, item.title, item.path, item.description]}
+              keywords={[item.title]}
             >
               {item.label}
-              <CommandShortcut>{item.href}</CommandShortcut>
+              <CommandShortcut class="hidden sm:inline">
+                {item.href}
+              </CommandShortcut>
             </CommandItem>
           ))}
         </CommandGroup>
@@ -84,6 +91,28 @@ const groups = items.reduce<{ label: string; items: typeof items }[]>(
 </CommandDialog>
 
 <script>
+  // iOS opens the keyboard only for focus within the tap, and the search
+  // input appears after it: hold the keyboard with a temporary input until
+  // the dialog moves focus to the search input.
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return
+    if (!matchMedia("(pointer: coarse)").matches) return
+    if (
+      !event.target.closest("[data-search-dialog] [data-slot=dialog-trigger]")
+    )
+      return
+    const holder = document.createElement("input")
+    holder.setAttribute("aria-hidden", "true")
+    holder.tabIndex = -1
+    holder.style.cssText =
+      "position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;font-size:16px"
+    document.body.append(holder)
+    holder.focus()
+    const release = () => holder.remove()
+    holder.addEventListener("blur", release, { once: true })
+    setTimeout(release, 1000)
+  })
+
   const isMac = /Mac|iPhone|iPad|iPod/i.test(
     navigator.platform || navigator.userAgent
   )

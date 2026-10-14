@@ -124,7 +124,7 @@ function Doc1CodeBlock({
       <pre
         ref={setPre}
         className={cn(
-          "m-0 overflow-x-auto rounded-none border-0 bg-transparent! py-4 ps-4 pe-14 font-mono text-sm [&_code]:font-[inherit] [&_code]:text-(--shiki-light,var(--color-foreground)) dark:[&_code]:text-(--shiki-dark,var(--color-foreground)) dark:[&_span[style*=--shiki-dark]]:text-(--shiki-dark)!",
+          "m-0 overflow-x-auto rounded-none border-0 bg-transparent! [mask-image:linear-gradient(to_left,transparent_3.25rem,#000_4.75rem)] py-4 ps-4 pe-14 font-mono text-sm [&_code]:font-[inherit] [&_code]:text-(--shiki-light,var(--color-foreground)) dark:[&_code]:text-(--shiki-dark,var(--color-foreground)) dark:[&_span[style*=--shiki-dark]]:text-(--shiki-dark)!",
           className
         )}
         {...props}

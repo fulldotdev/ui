@@ -1,24 +1,22 @@
 ---
 // Docs only: the header of ui.shadcn.com, built from Fulldev UI components.
 // It turns to glass when the preset's menus are translucent. Below lg the
-// navigation moves into a sheet with the slot "menu".
+// navigation moves into a drawer from the bottom with the slot "menu".
 import PlusIcon from "@lucide/astro/icons/plus"
-import XIcon from "@lucide/astro/icons/x"
 
 import { markPaths, markViewBox } from "@/lib/brand-mark"
 import { Button } from "@/components/ui/button"
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
 import { Icon } from "@/components/ui/icon"
 import { Logo, LogoText } from "@/components/ui/logo"
 import { Separator } from "@/components/ui/separator"
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 
 type Props = {
@@ -31,7 +29,6 @@ type Props = {
     navigation: string
     menu: string
     menuTitle: string
-    closeMenu: string
     github: string
     theme: string
   }
@@ -39,49 +36,13 @@ type Props = {
 
 const { logo, navigation, button, githubRepo, githubStars, labels } =
   Astro.props
+const currentPath = Astro.url.pathname
+const isCurrent = (href: string) =>
+  href === "/" ? currentPath === "/" : currentPath.startsWith(href)
 ---
 
 <header class="bg-background sticky top-0 z-50 w-full in-[[data-menu-color$=translucent]]:bg-background/70 in-[[data-menu-color$=translucent]]:backdrop-blur-2xl in-[[data-menu-color$=translucent]]:backdrop-saturate-150">
-  <div class="flex h-16 items-center gap-2 px-4 lg:px-6">
-    <Sheet class="lg:hidden">
-      <SheetTrigger
-        variant="ghost"
-        size="icon-sm"
-        class="-ml-1.5"
-        aria-label={labels.menu}
-      >
-        <Icon name="menu" />
-      </SheetTrigger>
-      <SheetContent side="left" showCloseButton={false} class="w-72 p-0">
-        <SheetHeader class="sr-only">
-          <SheetTitle>{labels.menuTitle}</SheetTitle>
-          <SheetDescription>{labels.navigation}</SheetDescription>
-        </SheetHeader>
-        <div class="flex h-full flex-col gap-6 overflow-y-auto px-6 py-6">
-          <nav aria-label={labels.menuTitle} class="flex flex-col">
-            {navigation.map((item) => (
-              <a
-                href={item.href}
-                data-react-href={item.reactHref}
-                class="text-foreground py-1.5 text-base font-medium"
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
-          <slot name="menu" />
-        </div>
-        <SheetClose
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          class="cn-sheet-close"
-        >
-          <XIcon />
-          <span class="sr-only">{labels.closeMenu}</span>
-        </SheetClose>
-      </SheetContent>
-    </Sheet>
+  <div class="flex h-14 items-center gap-2 px-4 lg:h-16 lg:px-6">
     <Logo href={logo.href} aria-label={logo.alt} class="mr-3 gap-1.5">
       {/* The logo tile of the full.dev websites (fulldotdev/fulldev
           packages/web, .logo-tile): the brand blue with a sheen, a light rim
@@ -115,7 +76,7 @@ const { logo, navigation, button, githubRepo, githubStars, labels } =
         </Button>
       ))}
     </nav>
-    <div class="ml-auto flex items-center gap-2">
+    <div class="ml-auto flex items-center gap-1 sm:gap-2">
       <slot name="search" />
       <Separator orientation="vertical" class="my-auto hidden h-4 sm:block" />
       <Button
@@ -134,24 +95,70 @@ const { logo, navigation, button, githubRepo, githubStars, labels } =
           {githubStars}
         </span>
       </Button>
-      <Separator orientation="vertical" class="my-auto h-4" />
-      <ThemeToggle aria-label={labels.theme} />
       <Separator orientation="vertical" class="my-auto hidden h-4 sm:block" />
+      <ThemeToggle aria-label={labels.theme} size="icon" class="lg:size-8" />
+      <Separator orientation="vertical" class="my-auto hidden h-4 lg:block" />
       <Button
         as="a"
         href={button.href}
         size="sm"
         variant="secondary"
-        class="hidden sm:inline-flex"
+        class="hidden lg:inline-flex"
       >
         <PlusIcon data-icon="inline-start" />
         {button.label}
       </Button>
+      <Drawer class="lg:hidden" data-docs-menu>
+        <DrawerTrigger
+          variant="ghost"
+          size="icon"
+          class="-mr-1.5 [&_svg]:size-5.5"
+          aria-label={labels.menu}
+        >
+          <Icon name="menu" />
+        </DrawerTrigger>
+        <DrawerContent showSwipeHandle data-docs-menu-content>
+          <DrawerHeader class="sr-only">
+            <DrawerTitle>{labels.menuTitle}</DrawerTitle>
+            <DrawerDescription>{labels.navigation}</DrawerDescription>
+          </DrawerHeader>
+          <div class="flex flex-col gap-8 px-6 pt-4 pb-[max(2.5rem,env(safe-area-inset-bottom))]">
+            <nav aria-label={labels.menuTitle} class="flex flex-col gap-1">
+              {navigation.map((item) => (
+                <a
+                  href={item.href}
+                  data-react-href={item.reactHref}
+                  aria-current={isCurrent(item.href) ? "page" : undefined}
+                  class="text-foreground aria-[current=page]:text-primary -mx-2 rounded-md px-2 py-2 text-xl font-medium"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+            <slot name="menu" />
+          </div>
+        </DrawerContent>
+      </Drawer>
     </div>
   </div>
 </header>
 
 <script>
+  // The menu opens at the current page in the docs navigation.
+  document.addEventListener("drawer:change", (event) => {
+    const drawer = event.target
+    if (!(drawer instanceof Element) || !drawer.matches("[data-docs-menu]"))
+      return
+    if (!(event as CustomEvent<{ open: boolean }>).detail.open) return
+    requestAnimationFrame(() =>
+      document
+        .querySelector(
+          "[data-docs-menu-content] a[data-slot=button][aria-current=page]"
+        )
+        ?.scrollIntoView({ block: "center" })
+    )
+  })
+
   // When the build could not read the star count, read it in the browser
   // and keep it for a day.
   const KEY = "fulldev-ui-github-stars"
