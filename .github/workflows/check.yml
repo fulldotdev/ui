@@ -1,0 +1,18 @@
+name: Check
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.event.pull_request.number }}-${{ github.event.pull_request.draft && 'draft' || 'ready' }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Check
+    uses: fulldotdev/.github/.github/workflows/check.yml@288d0a18bdcc83e2376c91f557577f0dfe4d1e56

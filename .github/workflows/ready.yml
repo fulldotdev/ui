@@ -1,0 +1,33 @@
+name: Ready
+
+on:
+  pull_request_target:
+    branches: [main]
+    types:
+      [
+        opened,
+        synchronize,
+        reopened,
+        ready_for_review,
+        converted_to_draft,
+        labeled,
+        unlabeled,
+      ]
+  workflow_run:
+    workflows: [Check, Review event]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+  statuses: write
+  checks: read
+
+jobs:
+  ready:
+    uses: fulldotdev/.github/.github/workflows/ready.yml@82c066718d458f59b63bbb6634da9eb441f106aa
+    with:
+      netlify-checks: '["netlify/fulldev-ui/deploy-preview"]'
+      merge-app-client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
+    secrets:
+      merge-app-private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
