@@ -9,6 +9,14 @@ A copy of the ui.shadcn.com docs, built from Fulldev UI components: a 64px heade
 - Header (`src/components/docs-header.astro`): logo, main navigation as ghost buttons, search, GitHub, theme toggle and the "New" button to Create as a secondary button. Below `lg` the navigation and the sidebar move into a sheet.
 - Sidebar: the switcher (`src/components/docs-switcher.astro`) on top, then the navigation (`src/components/docs-nav.astro`). The logo, the switcher, the group labels and the link text share one left edge; the highlight of a link reaches 9px past it. The space from the switcher to the first group equals the space between groups.
 
+## Homepage
+
+A general homepage for both frameworks, with its content in the frontmatter of `src/content/pages/index.mdx`.
+
+- Hero (`src/components/home-hero.astro`): the title names Astro and React, shown with their logos in their own colors; Astro and React tabs with the install command; then a bento of real blocks and components in the current preset, and tiles for Astro, React and presets.
+- Then the block categories with their counts from the registry, the features block, the presets and the FAQ block. Sections follow the 6xl container; the blocks render as they would on a site, without Preview or Code frames.
+- The homepage, like Create, belongs to both frameworks: its links lead to the framework chosen last.
+
 ## Presets
 
 The site follows one preset everywhere: theme, style, fonts and menu color, previews included.
@@ -28,3 +36,4 @@ The site follows one preset everywhere: theme, style, fonts and menu color, prev
 - The inset app shell with a collapsible sidebar and breadcrumbs (`Sidebar1`): too busy for docs.
 - Per-page Astro/React tabs and a style menu next to every preview: both are global choices in the switcher and on Create.
 - Docs without a left navigation: too hard to browse 60+ components.
+- Blocks in Preview and Code frames on the homepage, a hero that leads with Astro only, a split hero, and a closing call to action block.

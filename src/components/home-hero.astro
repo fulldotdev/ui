@@ -1,0 +1,271 @@
+---
+// Docs only: the homepage hero. The framework names in the title show with
+// their logos, the tabs give the install command per framework, and the
+// tiles show real blocks and components in the current preset.
+import Check from "@lucide/astro/icons/check"
+import Copy from "@lucide/astro/icons/copy"
+
+import type { HomeSchema } from "@/schemas/layouts/home"
+import Features2 from "@/components/blocks/features-2.astro"
+import Pricing1 from "@/components/blocks/pricing-1.astro"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import CreatePreview from "@/components/create-preview.astro"
+import FrameworkLogo from "@/components/framework-logo.astro"
+
+type Props = HomeSchema["hero"] & {
+  counts: { blocks: number; components: number }
+  // The same pages in React, for the visitor who chose React last.
+  reactHrefs: { blocks?: string; components?: string }
+}
+
+const {
+  title,
+  description,
+  copyLabel,
+  frameworks,
+  blocks,
+  components,
+  presets,
+  counts,
+  reactHrefs,
+} = Astro.props
+
+// The title in parts, with each framework name as its own part.
+const names = frameworks.map((framework) => framework.label)
+const parts = title
+  .split(new RegExp(`(${names.join("|")})`))
+  .filter(Boolean)
+  .map((text) => ({
+    text,
+    framework: frameworks.find((framework) => framework.label === text),
+  }))
+
+// Sample content for the blocks tile.
+const sample = {
+  features: {
+    title: "Why teams choose us",
+    description: "Three reasons in one block.",
+    features: [
+      {
+        icon: "pencil",
+        title: "Easy to edit",
+        description: "Text and images live in content files.",
+      },
+      {
+        icon: "zap",
+        title: "Fast by default",
+        description: "Static pages, scripts only where needed.",
+      },
+      {
+        icon: "search",
+        title: "Found in search",
+        description: "Metadata and structured data built in.",
+      },
+    ],
+  },
+  pricing: {
+    title: "Simple pricing",
+    description: "Pick the plan that fits.",
+    featuredLabel: "Popular",
+    plans: [
+      {
+        name: "Starter",
+        description: "For a small site.",
+        price: { value: 19, currency: "USD", unit: "month" },
+        features: ["5 pages", "Contact form"],
+        button: { label: "Choose", href: "/blocks/pricing/" },
+      },
+      {
+        name: "Business",
+        description: "For a growing site.",
+        price: { value: 49, currency: "USD", unit: "month" },
+        featured: true,
+        features: ["Unlimited pages", "Blog", "Analytics"],
+        button: { label: "Choose", href: "/blocks/pricing/" },
+      },
+      {
+        name: "Agency",
+        description: "For many sites.",
+        price: { value: 99, currency: "USD", unit: "month" },
+        features: ["Everything in Business", "Priority support"],
+        button: { label: "Choose", href: "/blocks/pricing/" },
+      },
+    ],
+  },
+}
+---
+
+<section class="mx-auto flex w-full max-w-6xl flex-col items-center px-4 pt-16 pb-8 text-center lg:px-6 lg:pt-24">
+  <h1 class="max-w-4xl text-4xl leading-[1.15] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
+    {parts.map(({ text, framework }) =>
+      framework ? (
+        <span class="bg-muted mx-[0.1em] inline-flex h-[1.05em] translate-y-[-0.06em] items-center gap-[0.22em] rounded-[0.25em] px-[0.25em] align-middle text-[0.8em]">
+          <FrameworkLogo name={framework.name} class="size-[0.75em]" />
+          {text}
+        </span>
+      ) : (
+        text
+      )
+    )}
+  </h1>
+  <p class="text-muted-foreground mt-6 max-w-2xl text-lg text-balance">
+    {description}
+  </p>
+  <Tabs
+    data-home-install
+    defaultValue={frameworks[0]?.name}
+    class="mt-8 w-full max-w-xl items-center gap-3"
+  >
+    <TabsList>
+      {frameworks.map((framework) => (
+        <TabsTrigger value={framework.name}>
+          <FrameworkLogo name={framework.name} class="size-3.5" />
+          {framework.label}
+        </TabsTrigger>
+      ))}
+    </TabsList>
+    {frameworks.map((framework, index) => (
+      <TabsContent
+        value={framework.name}
+        class="flex w-full flex-col items-center gap-2"
+        hidden={index > 0}
+      >
+        <div class="bg-muted flex w-full items-center gap-2 rounded-lg py-1.5 pr-1.5 pl-4">
+          <code class="min-w-0 flex-1 truncate text-left font-mono text-xs">
+            <span class="text-muted-foreground select-none">$ </span>
+            {framework.command}
+          </code>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            data-home-copy={framework.command}
+            aria-label={copyLabel}
+          >
+            <Copy data-copy-icon />
+            <Check data-check-icon class="hidden" />
+          </Button>
+        </div>
+        {framework.note && (
+          <a
+            href={framework.note.href}
+            class="text-muted-foreground hover:text-foreground text-xs underline-offset-4 hover:underline"
+          >
+            {framework.note.label}
+          </a>
+        )}
+      </TabsContent>
+    ))}
+  </Tabs>
+  <div class="mt-14 grid w-full grid-cols-6 gap-4 text-left">
+    <div class="bg-background relative col-span-6 flex flex-col overflow-hidden rounded-xl border lg:col-span-4">
+      <div class="flex items-baseline justify-between gap-4 px-5 pt-4 pb-3">
+        <a
+          href={blocks.href}
+          data-react-href={reactHrefs.blocks}
+          class="shrink-0 font-medium after:absolute after:inset-0"
+        >
+          {counts.blocks} {blocks.label}
+        </a>
+        <span class="text-muted-foreground hidden truncate text-sm sm:block">
+          {blocks.description}
+        </span>
+      </div>
+      <div class="h-[330px] overflow-hidden border-t">
+        <div
+          class="w-[1280px] [zoom:0.26] sm:[zoom:0.46] md:[zoom:0.56] lg:[zoom:0.5] xl:[zoom:0.53]"
+          inert
+        >
+          <Features2 {...sample.features} />
+          <Pricing1 {...sample.pricing} />
+        </div>
+      </div>
+    </div>
+    <div class="bg-muted/40 relative col-span-6 flex flex-col overflow-hidden rounded-xl border lg:col-span-2">
+      <div class="flex items-baseline justify-between gap-4 px-5 pt-4 pb-3">
+        <a
+          href={components.href}
+          data-react-href={reactHrefs.components}
+          class="font-medium after:absolute after:inset-0"
+        >
+          {counts.components} {components.label}
+        </a>
+      </div>
+      <div class="h-[330px] overflow-hidden border-t p-4">
+        <div
+          class="@container w-[560px] [zoom:0.58] lg:[zoom:0.5] xl:[zoom:0.6]"
+          inert
+        >
+          <CreatePreview />
+        </div>
+      </div>
+    </div>
+    {frameworks.map((framework) => (
+      <a
+        href={framework.href}
+        class="hover:bg-muted/50 col-span-6 flex items-center gap-4 rounded-xl border p-5 transition-colors sm:col-span-3 lg:col-span-2"
+      >
+        <FrameworkLogo name={framework.name} class="size-7" />
+        <span class="flex flex-col">
+          <span class="font-medium">{framework.label}</span>
+          <span class="text-muted-foreground text-sm">
+            {framework.description}
+          </span>
+        </span>
+      </a>
+    ))}
+    <a
+      href={presets.href}
+      class="hover:bg-muted/50 col-span-6 flex items-center gap-4 rounded-xl border p-5 transition-colors lg:col-span-2"
+    >
+      <span class="flex shrink-0 -space-x-1.5">
+        <span class="border-background bg-primary size-6 rounded-full border-2" />
+        <span class="border-background bg-foreground size-6 rounded-full border-2" />
+        <span class="border-background bg-muted size-6 rounded-full border-2" />
+      </span>
+      <span class="flex flex-col">
+        <span class="font-medium">{presets.label}</span>
+        <span class="text-muted-foreground text-sm">{presets.description}</span>
+      </span>
+    </a>
+  </div>
+</section>
+
+<script>
+  // The install tab follows the framework chosen last, here, in the docs
+  // switcher or on the create page.
+  const KEY = "fulldev-ui-framework"
+  const tabs = document.querySelector<HTMLElement>("[data-home-install]")
+  const stored = localStorage.getItem(KEY)
+  // After every module script ran, so the tabs listen.
+  const select = () =>
+    tabs?.dispatchEvent(new CustomEvent("tabs:select", { detail: stored }))
+  if (stored)
+    if (document.readyState === "loading")
+      document.addEventListener("DOMContentLoaded", select)
+    else select()
+  tabs?.addEventListener("tabs:change", (event) =>
+    localStorage.setItem(
+      KEY,
+      (event as CustomEvent<{ value: string }>).detail.value
+    )
+  )
+
+  document.addEventListener("click", async (event) => {
+    if (!(event.target instanceof Element)) return
+    const button = event.target.closest<HTMLButtonElement>("[data-home-copy]")
+    if (!button) return
+    try {
+      await navigator.clipboard.writeText(button.dataset.homeCopy ?? "")
+      button.querySelector("[data-copy-icon]")?.classList.add("hidden")
+      button.querySelector("[data-check-icon]")?.classList.remove("hidden")
+      setTimeout(() => {
+        button.querySelector("[data-copy-icon]")?.classList.remove("hidden")
+        button.querySelector("[data-check-icon]")?.classList.add("hidden")
+      }, 1200)
+    } catch {
+      // Keep the copy action available for retry.
+    }
+  })
+</script>

@@ -1,8 +1,19 @@
 ---
 import type { GlobalSchema } from "@/schemas/global"
 import type { HomeSchema } from "@/schemas/layouts/home"
+import { getCounterpartHref, getPageId } from "@/lib/pages"
 import Base from "@/layouts/base.astro"
-import { Typography } from "@/components/ui/typography"
+import Faqs1 from "@/components/blocks/faqs-1.astro"
+import Features2 from "@/components/blocks/features-2.astro"
+import { Button } from "@/components/ui/button"
+import {
+  Section,
+  SectionContainer,
+  SectionDescription,
+  SectionTitle,
+} from "@/components/ui/section"
+import HomeHero from "@/components/home-hero.astro"
+import HomePresets from "@/components/home-presets.astro"
 
 type Props = {
   global: GlobalSchema
@@ -10,14 +21,96 @@ type Props = {
 }
 
 const { global, page } = Astro.props
+
+// Counts from the registry: blocks by name, such as hero-1, and components.
+const registry = Object.values(
+  import.meta.glob<{
+    items: { name: string; type: string; description?: string }[]
+  }>("/registry.json", { import: "default", eager: true })
+)[0]
+const items = registry.items.filter(
+  (item) => !item.description?.startsWith("Deprecated")
+)
+const blockNames = items
+  .filter((item) => item.type === "registry:block")
+  .map((item) => item.name)
+const countBlocks = (href: string) => {
+  const category = href.split("/").filter(Boolean).at(-1)
+  return blockNames.filter((name) =>
+    new RegExp(`^${category}-\\d+$`).test(name)
+  ).length
+}
+const counts = {
+  blocks: blockNames.filter((name) => /-\d+$/.test(name)).length,
+  components: items.filter((item) => item.type === "registry:ui").length,
+}
+
+// The same pages in React, for the visitor who chose React last.
+const reactHref = async (href: string) => {
+  const id = getPageId(href)
+  const react = await getCounterpartHref(id, "react")
+  return react === `/react/${id}/` ? react : undefined
+}
+const categories = await Promise.all(
+  page.blocks.categories.map(async (category) => ({
+    ...category,
+    count: countBlocks(category.href),
+    reactHref: await reactHref(category.href),
+  }))
+)
+const reactHrefs = {
+  blocks: await reactHref(page.hero.blocks.href),
+  components: await reactHref(page.hero.components.href),
+}
 ---
 
 <Base global={global} page={page}>
-  <Typography
-    as="article"
-    size="lg"
-    class="mx-auto w-full max-w-7xl px-4 py-16 lg:px-6 [&>:is(p,ul,ol,blockquote,h1,h2)]:max-w-4xl [&>:is(p,ul,ol,blockquote,h3,h4)]:max-w-3xl [&>[data-slot='tabs']:not(:first-child)]:mt-10"
-  >
-    <slot />
-  </Typography>
+  <div class="flex flex-col pb-16 [--container:var(--container-6xl)] lg:[--gutter:--spacing(6)]">
+    <HomeHero {...page.hero} counts={counts} reactHrefs={reactHrefs} />
+    <Section>
+      <SectionContainer class="flex flex-col gap-10">
+        <div class="flex items-end justify-between gap-6">
+          <div class="flex max-w-2xl flex-col gap-3">
+            <SectionTitle>{page.blocks.title}</SectionTitle>
+            <SectionDescription>{page.blocks.description}</SectionDescription>
+          </div>
+          <Button
+            as="a"
+            href={page.blocks.button.href}
+            data-react-href={reactHrefs.blocks}
+            size="sm"
+            variant="outline"
+            class="hidden sm:inline-flex"
+          >
+            {page.blocks.button.label}
+          </Button>
+        </div>
+        <ul class="bg-border grid grid-cols-2 gap-px overflow-hidden rounded-xl border sm:grid-cols-3 lg:grid-cols-6">
+          {categories.map((category) => (
+            <li class="bg-background">
+              <a
+                href={category.href}
+                data-react-href={category.reactHref}
+                class="hover:bg-muted/50 flex items-center justify-between gap-2 px-4 py-4 text-sm font-medium transition-colors"
+              >
+                {category.label}
+                <span class="text-muted-foreground text-xs tabular-nums">
+                  {category.count}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </SectionContainer>
+    </Section>
+    <Features2 {...page.features} />
+    <HomePresets {...page.presets} />
+    <Faqs1
+      {...page.faqs}
+      faqs={page.faqs.faqs.map((faq, index) => ({
+        id: `faq-${index + 1}`,
+        ...faq,
+      }))}
+    />
+  </div>
 </Base>

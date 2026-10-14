@@ -198,6 +198,12 @@ function themeVars(config: PresetConfig) {
   return { light, dark }
 }
 
+// The colors a preset card shows: primary, foreground and muted, in light mode.
+export const presetSwatches = (config: PresetConfig) => {
+  const { light } = themeVars(config)
+  return [light.primary, light.foreground, light.muted]
+}
+
 const findFont = (name: string) => fonts.find((font) => font.name === name)
 
 const fontUrl = (dependency: string) =>
