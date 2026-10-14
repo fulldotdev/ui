@@ -26,7 +26,7 @@ and the shadcn skill differ, this skill wins.
   [Presets](https://ui.full.dev/docs/presets.md).
 - The registry is `https://ui.full.dev/r/styles/{style}/{name}.json`. An older
   URL without `{style}` always installs Vega.
-- Start a project with
+- Start a project that has Tailwind CSS v4 (`astro add tailwind`) with
   `init https://ui.full.dev/r/styles/base-<style>/base.json` in the preset's
   style, not `init --preset`, then `apply <preset> --only theme,font`. With an
   existing `components.json`, never run `init`, because it replaces the theme
