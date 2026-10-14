@@ -103,8 +103,23 @@ function applyMenuColor(menuColor = "default") {
     })
 }
 
+declare global {
+  interface Window {
+    // Set by the script src/lib/styles.ts adds to every docs page.
+    applySiteStyle?: (style: string) => void
+  }
+}
+
+// The whole site follows the preset: theme, style and menu color. Without a
+// stored preset, the docs default from preset-head.astro applies.
 export function applyPreset(preset: StoredPreset | undefined) {
   applyTheme(preset)
-  applyStyle(preset?.config.style ?? "vega")
-  applyMenuColor(preset?.config.menuColor)
+  const root = document.documentElement
+  const style = preset?.config.style ?? root.dataset.defaultStyle ?? "vega"
+  const menuColor =
+    preset?.config.menuColor ?? root.dataset.defaultMenuColor ?? "default"
+  root.dataset.menuColor = menuColor
+  applyStyle(style)
+  window.applySiteStyle?.(style)
+  applyMenuColor(menuColor)
 }

@@ -1,0 +1,49 @@
+---
+// Docs only: the navigation of the docs sidebar, as on ui.shadcn.com. Its text
+// lines up with the logo and the switcher; the highlight of a link reaches
+// past that line.
+import { Button } from "@/components/ui/button"
+
+type Props = {
+  currentPath: string
+  navigation: {
+    label: string
+    href: string
+    links?: { label: string; href: string }[]
+  }[]
+  label: string
+}
+
+const { currentPath, navigation, label } = Astro.props
+const normalize = (path: string) =>
+  path === "/" ? path : path.replace(/\/$/, "")
+---
+
+<nav aria-label={label} class="flex flex-col gap-4">
+  {navigation.map((group) => (
+    <div class="flex flex-col">
+      <p class="text-muted-foreground pb-1.5 text-xs font-medium">
+        {group.label}
+      </p>
+      <ul class="flex flex-col gap-0.5">
+        {(group.links ?? [group]).map((item) => {
+          const active = normalize(item.href) === normalize(currentPath)
+          return (
+            <li>
+              <Button
+                as="a"
+                href={item.href}
+                size="sm"
+                variant={active ? "secondary" : "ghost"}
+                aria-current={active ? "page" : undefined}
+                class="-ml-[9px] h-[30px] w-fit justify-start px-2 text-[0.8rem]"
+              >
+                {item.label}
+              </Button>
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  ))}
+</nav>

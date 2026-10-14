@@ -1,13 +1,27 @@
 ---
-// Docs only: apply the preset chosen on the create page before the first
-// paint. Keep the key and element id in sync with src/lib/preset-store.ts.
+// Docs only: apply the docs default preset, and the preset chosen on the
+// create page or in the switcher, before the first paint. Keep the key and
+// element id in sync with src/lib/preset-store.ts.
+import { DEFAULT_CONFIG, presetCss } from "@/lib/presets"
+
+const defaults = {
+  style: DEFAULT_CONFIG.style,
+  menuColor: DEFAULT_CONFIG.menuColor,
+}
 ---
 
-<script is:inline>
+<style is:inline set:html={presetCss(DEFAULT_CONFIG)}></style>
+<script is:inline define:vars={{ defaults }}>
+  const root = document.documentElement
+  root.dataset.defaultStyle = defaults.style
+  root.dataset.defaultMenuColor = defaults.menuColor
+  root.dataset.menuColor = defaults.menuColor
   try {
     const preset = JSON.parse(
       localStorage.getItem("fulldev-ui-preset") ?? "null"
     )
+    if (preset?.config?.menuColor)
+      root.dataset.menuColor = preset.config.menuColor
     // A shared link (?preset=) sets its own theme; skip the stored one.
     const shared = new URLSearchParams(location.search).has("preset")
     if (preset?.css && !shared) {

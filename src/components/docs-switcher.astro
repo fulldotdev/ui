@@ -1,0 +1,214 @@
+---
+// Docs only: the framework and preset of the whole site, at the top of the
+// docs sidebar. The framework comes from the page; the preset from the
+// visitor's choice here or on the create page.
+import ArrowUpRightIcon from "@lucide/astro/icons/arrow-up-right"
+import CheckIcon from "@lucide/astro/icons/check"
+import ChevronsUpDownIcon from "@lucide/astro/icons/chevrons-up-down"
+import AstroLogo from "simple-icons/icons/astro.svg"
+import ReactLogo from "simple-icons/icons/react.svg"
+
+import { frameworkLabels, frameworks, type Framework } from "@/lib/pages"
+import { NAMED_PRESETS, presetCss, presetFontUrls } from "@/lib/presets"
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+type Props = {
+  current: Framework
+  hrefs: Record<Framework, string>
+  labels: {
+    framework: string
+    preset: string
+    custom: string
+    create: string
+  }
+}
+
+const { current, hrefs, labels } = Astro.props
+const logos = { astro: AstroLogo, react: ReactLogo }
+const Logo = logos[current]
+const title = (value: string) => value[0].toUpperCase() + value.slice(1)
+const [fallback] = NAMED_PRESETS
+// The switcher stores what the create page stores: config, css and fonts.
+const presets = NAMED_PRESETS.map(({ id, label, config }) => ({
+  id,
+  label,
+  preset: { config, css: presetCss(config), fonts: presetFontUrls(config) },
+}))
+---
+
+<div data-docs-switcher data-presets={JSON.stringify(presets)}>
+  <DropdownMenu>
+    <DropdownMenuTrigger
+      class={cn(
+        buttonVariants({ variant: "outline" }),
+        "h-auto w-full justify-between gap-2 px-2.5 py-2 text-left shadow-none"
+      )}
+    >
+      <span class="bg-muted grid size-8 shrink-0 place-items-center rounded-md">
+        <Logo class="size-4" fill="currentColor" aria-hidden="true" />
+      </span>
+      <span class="flex min-w-0 flex-1 flex-col">
+        <span class="truncate text-sm font-medium">
+          {frameworkLabels[current]}
+        </span>
+        <span class="text-muted-foreground truncate text-xs font-normal">
+          <span data-preset-name>{fallback.label}</span> ·{" "}
+          <span data-preset-detail>
+            {title(fallback.config.style)}, {title(fallback.config.theme)}
+          </span>
+        </span>
+      </span>
+      <ChevronsUpDownIcon class="text-muted-foreground size-4" />
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="start" class="w-56">
+      <DropdownMenuGroup>
+        <DropdownMenuLabel>{labels.framework}</DropdownMenuLabel>
+        {frameworks.map((framework) => {
+          const ItemLogo = logos[framework]
+          return (
+            <DropdownMenuItem
+              href={hrefs[framework]}
+              data-framework-choice={framework}
+            >
+              <ItemLogo class="size-4" fill="currentColor" aria-hidden="true" />
+              {frameworkLabels[framework]}
+              {framework === current && <CheckIcon class="ml-auto size-4" />}
+            </DropdownMenuItem>
+          )
+        })}
+      </DropdownMenuGroup>
+      <DropdownMenuSeparator />
+      <DropdownMenuGroup>
+        <DropdownMenuLabel>{labels.preset}</DropdownMenuLabel>
+        {presets.map(({ id, label }) => (
+          <DropdownMenuItem data-preset-choice={id}>
+            <span
+              class:list={[
+                "size-3.5 rounded-full",
+                id === "shadcn" ? "bg-foreground" : "bg-[#1442e9]",
+              ]}
+            />
+            {label}
+            <CheckIcon
+              class="invisible ml-auto size-4"
+              data-preset-check={id}
+            />
+          </DropdownMenuItem>
+        ))}
+        <DropdownMenuItem data-preset-choice="custom" hidden>
+          <span class="bg-primary size-3.5 rounded-full" />
+          {labels.custom}
+          <CheckIcon
+            class="invisible ml-auto size-4"
+            data-preset-check="custom"
+          />
+        </DropdownMenuItem>
+      </DropdownMenuGroup>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem href="/create/">
+        <ArrowUpRightIcon class="size-4" />
+        {labels.create}
+      </DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+</div>
+
+<script>
+  import {
+    PRESET_EVENT,
+    readPreset,
+    writePreset,
+    type StoredPreset,
+  } from "@/lib/preset-store"
+
+  type Named = { id: string; label: string; preset: StoredPreset }
+
+  const CUSTOM_KEY = "fulldev-ui-custom-preset"
+  const FRAMEWORK_KEY = "fulldev-ui-framework"
+  const title = (value: string) => value[0].toUpperCase() + value.slice(1)
+  const same = (a: Record<string, string>, b: Record<string, string>) =>
+    [...new Set([...Object.keys(a), ...Object.keys(b)])].every(
+      (key) => a[key] === b[key]
+    )
+
+  const named = (): Named[] =>
+    JSON.parse(
+      document.querySelector<HTMLElement>("[data-docs-switcher]")?.dataset
+        .presets ?? "[]"
+    )
+  const readCustom = (): StoredPreset | undefined =>
+    JSON.parse(localStorage.getItem(CUSTOM_KEY) ?? "null") ?? undefined
+
+  // A preset made on the create page is kept as the visitor's own.
+  const remember = () => {
+    const preset = readPreset()
+    if (
+      preset &&
+      !named().some((item) => same(item.preset.config, preset.config))
+    )
+      localStorage.setItem(CUSTOM_KEY, JSON.stringify(preset))
+  }
+
+  const sync = () => {
+    const presets = named()
+    if (!presets.length) return
+    const config = readPreset()?.config ?? presets[0].preset.config
+    const match = presets.find((item) => same(item.preset.config, config))
+    const current = match?.id ?? "custom"
+    const customLabel =
+      document
+        .querySelector("[data-preset-choice=custom]")
+        ?.textContent?.trim() ?? ""
+    document.querySelectorAll("[data-preset-name]").forEach((element) => {
+      element.textContent = match?.label ?? customLabel
+    })
+    document.querySelectorAll("[data-preset-detail]").forEach((element) => {
+      element.textContent = `${title(config.style)}, ${title(config.theme)}`
+    })
+    document
+      .querySelectorAll<HTMLElement>("[data-preset-check]")
+      .forEach((element) =>
+        element.classList.toggle(
+          "invisible",
+          element.dataset.presetCheck !== current
+        )
+      )
+    document
+      .querySelectorAll<HTMLElement>("[data-preset-choice=custom]")
+      .forEach((element) => (element.hidden = !readCustom()))
+  }
+
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return
+    const framework = event.target.closest<HTMLElement>(
+      "[data-framework-choice]"
+    )
+    if (framework?.dataset.frameworkChoice)
+      localStorage.setItem(FRAMEWORK_KEY, framework.dataset.frameworkChoice)
+    const choice = event.target.closest<HTMLElement>("[data-preset-choice]")
+    if (!choice) return
+    const id = choice.dataset.presetChoice
+    const presets = named()
+    // The first named preset is the docs default, which needs no storage.
+    if (id === presets[0]?.id) writePreset(undefined)
+    else if (id === "custom") writePreset(readCustom())
+    else writePreset(presets.find((item) => item.id === id)?.preset)
+  })
+
+  remember()
+  sync()
+  document.addEventListener(PRESET_EVENT, () => {
+    remember()
+    sync()
+  })
+</script>

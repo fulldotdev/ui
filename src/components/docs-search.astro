@@ -1,0 +1,103 @@
+---
+// Docs only: search the docs pages from the header. The trigger shows its
+// label from md up and only the icon below.
+import SearchIcon from "@lucide/astro/icons/search"
+
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandShortcut,
+} from "@/components/ui/command"
+import { DialogTrigger } from "@/components/ui/dialog"
+import { Kbd } from "@/components/ui/kbd"
+
+type Props = {
+  label: string
+  empty: string
+  items: {
+    label: string
+    href: string
+    title: string
+    path: string
+    description: string
+    group: string
+  }[]
+}
+
+const { label, empty, items } = Astro.props
+const groups = items.reduce<{ label: string; items: typeof items }[]>(
+  (all, item) => {
+    const group = all.find((entry) => entry.label === item.group)
+    if (group) group.items.push(item)
+    else all.push({ label: item.group, items: [item] })
+    return all
+  },
+  []
+)
+/* eslint-disable astro/jsx-a11y/no-autofocus -- Focus moves into the search dialog when it opens. */
+---
+
+<CommandDialog data-search-dialog title={label} description={label}>
+  <DialogTrigger
+    slot="trigger"
+    variant="secondary"
+    size="sm"
+    class="text-muted-foreground justify-start font-normal shadow-none md:w-64"
+    aria-label={label}
+    aria-keyshortcuts="Meta+K Control+K"
+  >
+    <SearchIcon data-icon="inline-start" />
+    <span class="hidden truncate md:inline">{label}</span>
+    <Kbd class="ml-auto hidden md:inline-flex" data-search-shortcut>
+      ⌘K
+    </Kbd>
+  </DialogTrigger>
+  <Command class="[&_[data-slot=command-item][data-selected]]:bg-accent [&_[data-slot=command-item][data-selected]]:text-accent-foreground">
+    <CommandInput autofocus placeholder={label} />
+    <CommandList>
+      <CommandEmpty>{empty}</CommandEmpty>
+      {groups.map((group) => (
+        <CommandGroup heading={group.label}>
+          {group.items.map((item) => (
+            <CommandItem
+              href={item.href}
+              value={`${item.group} ${item.label}`}
+              label={item.label}
+              keywords={[item.group, item.title, item.path, item.description]}
+            >
+              {item.label}
+              <CommandShortcut>{item.href}</CommandShortcut>
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      ))}
+    </CommandList>
+  </Command>
+</CommandDialog>
+
+<script>
+  const isMac = /Mac|iPhone|iPad|iPod/i.test(
+    navigator.platform || navigator.userAgent
+  )
+  document
+    .querySelectorAll<HTMLElement>("[data-search-shortcut]")
+    .forEach((shortcut) => (shortcut.textContent = isMac ? "⌘K" : "Ctrl K"))
+  document.addEventListener("keydown", (event) => {
+    if (event.key.toLowerCase() !== "k" || event.shiftKey || event.altKey)
+      return
+    const dialog = document.querySelector("[data-search-dialog]")
+    const isShortcut = isMac
+      ? event.metaKey && !event.ctrlKey
+      : event.ctrlKey && !event.metaKey
+    if (!dialog || dialog.hasAttribute("data-open") || !isShortcut) return
+    event.preventDefault()
+    dialog.dispatchEvent(
+      new CustomEvent("dialog:set", { detail: { open: true } })
+    )
+  })
+</script>

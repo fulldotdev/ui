@@ -70,3 +70,93 @@ export function applyStyle(html: string, style: string) {
     }
   )
 }
+
+// The docs site follows the preset's style everywhere, not only in previews.
+// Previews are rendered per style already (style-preview.astro); every other
+// class string with placeholders gets data-cn, an index into a table of that
+// string in each style, and the script below switches them before the first
+// paint and when the preset changes (src/lib/preset-store.ts).
+export function applySiteStyle(html: string) {
+  const table: Record<string, string | [string, string]>[] = []
+  const ids = new Map<string, number>()
+  const rendered = html.replace(
+    /(\sclass=")([^"]*)"/g,
+    (match, start: string, value: string) => {
+      if (!hasPlaceholder.test(value)) return match
+      const source = decode(value)
+      const render = (style: string) => {
+        const classes = replacePlaceholders(source, maps[style], known, style)
+        return hasMenuHook(classes)
+          ? ([
+              applyMenuColor(classes, "default", maps[style]),
+              applyMenuColor(classes, "default-translucent", maps[style]),
+            ] as [string, string])
+          : classes
+      }
+      const variants = Object.fromEntries(
+        STYLES.map((style) => [style, render(style)])
+      )
+      const own = start + encodeDefault(source)
+      const same = STYLES.every(
+        (style) =>
+          JSON.stringify(variants[style]) ===
+          JSON.stringify(variants[defaultStyle])
+      )
+      if (same) return own
+      let id = ids.get(source)
+      if (id === undefined) {
+        id = table.length
+        ids.set(source, id)
+        table.push(variants)
+      }
+      return `${own} data-cn="${id}"`
+    }
+  )
+  if (!table.length) return rendered
+  const data = JSON.stringify(table).replace(/</g, "\\u003c")
+  // The last </body>: code samples on the page can contain one too.
+  const end = rendered.lastIndexOf("</body>")
+  if (end === -1) return rendered
+  return (
+    rendered.slice(0, end) +
+    `<script type="application/json" id="site-styles">${data}</script><script>${siteStyleScript}</script>` +
+    rendered.slice(end)
+  )
+}
+
+// The default style's attribute value, as applyStyle renders it.
+function encodeDefault(source: string) {
+  const classes = replacePlaceholders(
+    source,
+    maps[defaultStyle],
+    known,
+    defaultStyle
+  )
+  return hasMenuHook(classes)
+    ? menuAttributes(classes, defaultStyle)
+    : encode(classes) + '"'
+}
+
+const siteStyleScript = `(() => {
+  const table = JSON.parse(document.getElementById("site-styles").textContent)
+  const apply = (style) => {
+    const translucent = (document.documentElement.dataset.menuColor || "").endsWith("translucent")
+    document.querySelectorAll("[data-cn]").forEach((element) => {
+      const entry = table[element.dataset.cn]
+      const value = entry && (entry[style] || entry.${defaultStyle})
+      if (!value) return
+      if (Array.isArray(value)) {
+        const dark = element.classList.contains("dark")
+        element.dataset.menuSolid = value[0]
+        element.dataset.menuTranslucent = value[1]
+        element.className = translucent ? value[1] : value[0]
+        if (dark) element.classList.add("dark")
+      } else element.className = value
+    })
+  }
+  window.applySiteStyle = apply
+  try {
+    const style = JSON.parse(localStorage.getItem("fulldev-ui-preset") || "null")?.config?.style
+    if (style && style !== "${defaultStyle}") apply(style)
+  } catch {}
+})()`

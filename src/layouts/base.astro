@@ -7,16 +7,21 @@ import {
   frameworks,
   getCounterpartHref,
   getFramework,
-  getPageBreadcrumbItems,
   getPageId,
   getPageSearchItems,
   getReactNavigation,
-  reactSectionMenu,
 } from "@/lib/pages"
-import Sidebar1 from "@/components/blocks/sidebar-1.astro"
-import { Layout, LayoutBody, LayoutHead } from "@/components/ui/layout"
+import {
+  Layout,
+  LayoutBody,
+  LayoutHead,
+  LayoutMain,
+} from "@/components/ui/layout"
 import { ThemeProvider } from "@/components/ui/theme-toggle"
-import FrameworkSelect from "@/components/framework-select.astro"
+import DocsHeader from "@/components/docs-header.astro"
+import DocsNav from "@/components/docs-nav.astro"
+import DocsSearch from "@/components/docs-search.astro"
+import DocsSwitcher from "@/components/docs-switcher.astro"
 import Posthog from "@/components/posthog.astro"
 import PresetHead from "@/components/preset-head.astro"
 import socialImage from "@/assets/social.png"
@@ -30,22 +35,37 @@ const { global, page }: Props = Astro.props
 
 const pageId = getPageId(Astro.url.pathname)
 const framework = getFramework(pageId)
-const [searchItems, breadcrumbItems, navigation, ...counterparts] =
-  await Promise.all([
-    getPageSearchItems(framework),
-    getPageBreadcrumbItems(Astro.url.pathname),
-    framework === "react" ? getReactNavigation() : global.sidebar.navigation,
-    ...frameworks.map((target) =>
-      target === framework
-        ? Astro.url.pathname
-        : getCounterpartHref(pageId, target)
-    ),
-  ])
+// The homepage and the create page span the full width; the create page has
+// its own sidebar.
+const withSidebar = pageId !== "index" && pageId !== "create"
+const [searchItems, navigation, ...counterparts] = await Promise.all([
+  getPageSearchItems(framework),
+  framework === "react" ? getReactNavigation() : global.sidebar.navigation,
+  ...frameworks.map((target) =>
+    target === framework
+      ? Astro.url.pathname
+      : getCounterpartHref(pageId, target)
+  ),
+])
 const frameworkHrefs = Object.fromEntries(
   frameworks.map((target, index) => [target, counterparts[index]])
 ) as Record<(typeof frameworks)[number], string>
 
-let githubStars: number | undefined
+// Docs, Components and Blocks lead to the library of the current page.
+const headerNavigation = await Promise.all(
+  global.header.navigation.map(async (item) => {
+    const id = getPageId(item.href)
+    const react = await getCounterpartHref(id, "react")
+    const reactHref = react === `/react/${id}/` ? react : undefined
+    return {
+      ...item,
+      href: framework === "react" && reactHref ? reactHref : item.href,
+      reactHref,
+    }
+  })
+)
+
+let githubStars: string | undefined
 
 try {
   const response = await fetch(
@@ -54,10 +74,17 @@ try {
   const data = await response.json()
 
   if (response.ok && typeof data.stargazers_count === "number") {
-    githubStars = data.stargazers_count
+    githubStars = new Intl.NumberFormat().format(data.stargazers_count)
   }
 } catch {
-  // Leave the stars unset so Sidebar1 shows its fallback label.
+  // Leave the stars unset; the header then shows only the GitHub icon.
+}
+
+const switcherLabels = {
+  framework: "Framework",
+  preset: "Preset",
+  custom: "Your preset",
+  create: "Create a preset",
 }
 ---
 
@@ -70,50 +97,93 @@ try {
       page.seo?.image || page.image || { src: socialImage, alt: "Fulldev UI" }
     }
   >
-    <Font cssVariable="--font-sans" />
+    <Font cssVariable="--font-sans" preload />
     <Font cssVariable="--font-mono" />
     <ThemeProvider />
     <PresetHead />
     <Posthog />
   </LayoutHead>
-  <LayoutBody>
-    <Sidebar1
-      currentPath={Astro.url.pathname}
+  <LayoutBody data-framework-neutral={pageId === "create" ? "" : undefined}>
+    <DocsHeader
       logo={global.logo}
-      search={{
-        items: searchItems,
-        ...global.sidebar.search,
-      }}
-      breadcrumb={{
-        items: breadcrumbItems,
-        menu:
-          framework === "react" ? reactSectionMenu : global.header.navigation,
-      }}
-      navigation={navigation}
+      navigation={headerNavigation}
+      button={global.header.button}
       githubRepo={global.header.githubRepo}
       githubStars={githubStars}
       labels={{
-        sidebar: "Documentation",
+        navigation: "Main navigation",
+        menu: "Open menu",
+        menuTitle: "Menu",
+        closeMenu: "Close menu",
         github: `View ${global.header.githubRepo} on GitHub`,
-        stars: "Stars",
-        breadcrumb: "Breadcrumb",
-        breadcrumbMenu: "Toggle menu",
-        sidebarToggle: "Toggle Sidebar",
-        mobileTitle: "Sidebar",
-        mobileDescription: "Displays the mobile sidebar.",
         theme: "Toggle theme",
-        shortcut: { mac: "⌘ + K", other: "Ctrl + K" },
       }}
     >
-      <FrameworkSelect
-        slot="header"
-        current={framework}
-        hrefs={frameworkHrefs}
+      <DocsSearch
+        slot="search"
+        label={global.sidebar.search.label}
+        empty={global.sidebar.search.empty}
+        items={searchItems}
       />
-      {/* SidebarInset already renders the page's main element. */}
-      <div class="@container flex flex-col rounded-[inherit]">
-        <slot />
+      {withSidebar && (
+        <div slot="menu" class="flex flex-col gap-6">
+          <DocsSwitcher
+            current={framework}
+            hrefs={frameworkHrefs}
+            labels={switcherLabels}
+          />
+          <DocsNav
+            currentPath={Astro.url.pathname}
+            navigation={navigation}
+            label="Documentation menu"
+          />
+        </div>
+      )}
+    </DocsHeader>
+    {withSidebar ? (
+      <div class="flex flex-1 flex-col px-4 lg:px-6">
+        <div class="lg:grid lg:grid-cols-[16.5rem_minmax(0,1fr)]">
+          <aside class="sticky top-20 -ml-2 hidden h-[calc(100svh-6rem)] overflow-y-auto pl-2 [scrollbar-width:none] lg:block">
+            <div class="flex w-56 flex-col gap-6 pb-8">
+              <DocsSwitcher
+                current={framework}
+                hrefs={frameworkHrefs}
+                labels={switcherLabels}
+              />
+              <DocsNav
+                currentPath={Astro.url.pathname}
+                navigation={navigation}
+                label="Documentation"
+              />
+            </div>
+          </aside>
+          <LayoutMain id="main" class="min-w-0">
+            <slot />
+          </LayoutMain>
+        </div>
       </div>
-    </Sidebar1>
+    ) : (
+      <LayoutMain id="main">
+        <slot />
+      </LayoutMain>
+    )}
   </LayoutBody>
 </Layout>
+
+<script>
+  // The whole site follows the stored preset; see src/lib/preset-store.ts.
+  import { applyPreset, readPreset } from "@/lib/preset-store"
+
+  applyPreset(readPreset())
+
+  // On a page of both libraries, such as Create, the header leads to the
+  // library chosen last, in the switcher or on the create page.
+  if (
+    document.body.hasAttribute("data-framework-neutral") &&
+    localStorage.getItem("fulldev-ui-framework") === "react"
+  ) {
+    document
+      .querySelectorAll<HTMLAnchorElement>("a[data-react-href]")
+      .forEach((link) => (link.href = link.dataset.reactHref ?? link.href))
+  }
+</script>

@@ -73,11 +73,36 @@ export const STYLE_OPTIONS = PRESET_STYLES.map((name) => ({
 export const FONTS = fonts
 
 // Fulldev UI serves the Base UI library and uses Lucide icons.
+// The docs default: the preset closest to the full.dev websites (bJfEY5IW in
+// fulldotdev/fulldev packages/web/DESIGN.md) with translucent menus. Installs
+// keep the theme of the registry's init item.
 export const DEFAULT_CONFIG: PresetConfig = {
   ...DEFAULT_PRESET_CONFIG,
   style: "vega",
+  baseColor: "stone",
+  theme: "blue",
+  chartColor: "stone",
+  font: "geist",
+  fontHeading: "inherit",
+  radius: "large",
+  menuAccent: "subtle",
+  menuColor: "default-translucent",
   iconLibrary: "lucide",
-}
+} as PresetConfig
+
+// ui.shadcn.com: Nova, neutral and the default radius, in Geist.
+const SHADCN_CONFIG: PresetConfig = {
+  ...DEFAULT_PRESET_CONFIG,
+  style: "nova",
+  font: "geist",
+  iconLibrary: "lucide",
+} as PresetConfig
+
+// The presets the docs switcher offers, besides the visitor's own.
+export const NAMED_PRESETS = [
+  { id: "fulldev", label: "Fulldev", config: DEFAULT_CONFIG },
+  { id: "shadcn", label: "shadcn/ui", config: SHADCN_CONFIG },
+]
 
 export const themeOptions = (baseColor: string) =>
   themeList
@@ -180,11 +205,16 @@ const fontUrl = (dependency: string) =>
 
 // CSS for the whole docs page. :root:root wins over the site theme. The dark
 // variables also go to .dark elements inside the page, such as inverted menus.
+// Geist is the site's own font (Geist 1.7.2 with the full.dev stylistic sets,
+// astro.config.ts), so a preset in Geist keeps it instead of loading another.
+const siteFont = (name: string) =>
+  name === "geist" ? undefined : findFont(name)
+
 export function presetCss(config: PresetConfig) {
   const { light, dark } = themeVars(config)
-  const body = findFont(config.font)
+  const body = siteFont(config.font)
   const heading =
-    config.fontHeading === "inherit" ? body : findFont(config.fontHeading)
+    config.fontHeading === "inherit" ? body : siteFont(config.fontHeading)
   const fontVars: Vars = {}
   if (body) fontVars["font-sans"] = body.family
   if (heading) fontVars["font-heading"] = heading.family
@@ -198,7 +228,7 @@ export function presetCss(config: PresetConfig) {
 export function presetFontUrls(config: PresetConfig) {
   const names = new Set([config.font, config.fontHeading])
   return [...names]
-    .map((name) => findFont(name)?.dependency)
+    .map((name) => siteFont(name)?.dependency)
     .filter((dependency): dependency is string => Boolean(dependency))
     .map(fontUrl)
 }

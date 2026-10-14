@@ -62,18 +62,46 @@ const command = (template: string) =>
   template.replace("{preset}", code).replace("{style}", DEFAULT_CONFIG.style)
 ---
 
-<div class="grid gap-6 @5xl:grid-cols-[16rem_minmax(0,1fr)]" data-create>
+{/* The create sidebar takes the place of the docs sidebar, as on
+    ui.shadcn.com/create: the framework, then the preset options. */}
+<div
+  class="flex flex-col gap-8 lg:grid lg:grid-cols-[16.5rem_minmax(0,1fr)] lg:gap-0"
+  data-create
+>
   <aside
     aria-label="Preset options"
-    class="flex flex-col gap-6 @5xl:sticky @5xl:top-6 @5xl:self-start"
+    class="flex flex-col gap-6 pt-4 pb-8 lg:sticky lg:top-16 lg:h-[calc(100svh-4rem)] lg:w-56 lg:overflow-y-auto lg:[scrollbar-width:none]"
   >
-    <FieldGroup class="gap-4">
+    <Field class="gap-1.5">
+      <FieldLabel
+        for="create-option-framework"
+        class="text-muted-foreground text-xs"
+      >
+        Framework
+      </FieldLabel>
+      <NativeSelect
+        id="create-option-framework"
+        size="sm"
+        class="w-full"
+        data-create-framework
+      >
+        <NativeSelectOption value="astro">Astro</NativeSelectOption>
+        <NativeSelectOption value="react">React</NativeSelectOption>
+      </NativeSelect>
+    </Field>
+    <FieldGroup class="gap-3">
       {controls.map(({ name, label, options }) => (
-        <Field>
-          <FieldLabel for={`create-${name}`}>{label}</FieldLabel>
+        <Field class="gap-1.5">
+          <FieldLabel
+            for={`create-${name}`}
+            class="text-muted-foreground text-xs"
+          >
+            {label}
+          </FieldLabel>
           <NativeSelect
             id={`create-${name}`}
             data-preset-field={name}
+            size="sm"
             class="w-full"
           >
             {name === "fontHeading" && (
@@ -124,7 +152,7 @@ const command = (template: string) =>
     </div>
   </aside>
 
-  <div class="flex min-w-0 flex-col gap-6">
+  <div class="flex min-w-0 flex-col gap-6 pt-4 pb-16">
     <div class="bg-muted/40 flex flex-wrap items-center justify-between gap-3 rounded-xl border p-3">
       <div class="flex min-w-0 flex-col">
         <span class="text-muted-foreground text-xs" data-preset-status>
@@ -159,7 +187,7 @@ const command = (template: string) =>
       </div>
     </div>
 
-    <div class="@container rounded-xl border p-4 @3xl:p-6">
+    <div class="bg-muted/30 @container rounded-xl border p-4 @3xl:p-10">
       <StylePreview class="w-full">
         <CreatePreview />
       </StylePreview>
@@ -171,12 +199,23 @@ const command = (template: string) =>
         <TabsTrigger value="existing">Existing Fulldev UI project</TabsTrigger>
       </TabsList>
       <TabsContent value="new" class="flex flex-col gap-3 text-sm">
-        <p class="text-muted-foreground">
-          In your Astro project, set up Fulldev UI in the preset's style, then
-          apply the preset's theme and fonts:
-        </p>
-        <pre class="bg-muted rounded-lg p-3 font-mono text-xs break-all whitespace-pre-wrap"><code data-preset-command={commands.init}>{command(commands.init)}</code>
+        <div class="flex flex-col gap-3" data-framework-panel="astro">
+          <p class="text-muted-foreground">
+            In your Astro project, set up Fulldev UI in the preset's style, then
+            apply the preset's theme and fonts:
+          </p>
+          <pre class="bg-muted rounded-lg p-3 font-mono text-xs break-all whitespace-pre-wrap"><code data-preset-command={commands.init}>{command(commands.init)}</code>
 <code data-preset-command={commands.theme}>{command(commands.theme)}</code></pre>
+        </div>
+        <div class="flex flex-col gap-3" data-framework-panel="react" hidden>
+          <p class="text-muted-foreground">
+            Create a shadcn/ui project with the preset, add the{" "}
+            <code>@fulldev</code> registry to <code>components.json</code>, then
+            add Fulldev UI extras and blocks:
+          </p>
+          <pre class="bg-muted rounded-lg p-3 font-mono text-xs break-all whitespace-pre-wrap"><code data-preset-command="npx shadcn@latest init --preset {preset}">{`npx shadcn@latest init --preset ${code}`}</code>
+<code>npx shadcn@latest add @fulldev/section @fulldev/hero-1</code></pre>
+        </div>
       </TabsContent>
       <TabsContent value="existing" class="flex flex-col gap-3 text-sm" hidden>
         <p class="text-muted-foreground">
@@ -196,8 +235,33 @@ const command = (template: string) =>
       components of Fulldev UI install with the default menu color. The React
       extension uses the shadcn/ui menus, which get the preset's menu color.
     </p>
+    <slot />
   </div>
 </div>
+
+<script>
+  // The framework choice picks the install steps and is remembered for the
+  // docs header and switcher.
+  const KEY = "fulldev-ui-framework"
+  const select = document.querySelector<HTMLSelectElement>(
+    "[data-create-framework]"
+  )
+  const show = (framework: string) => {
+    document
+      .querySelectorAll<HTMLElement>("[data-framework-panel]")
+      .forEach((panel) => {
+        panel.hidden = panel.dataset.frameworkPanel !== framework
+      })
+  }
+  if (select) {
+    select.value = localStorage.getItem(KEY) ?? "astro"
+    show(select.value)
+    select.addEventListener("change", () => {
+      localStorage.setItem(KEY, select.value)
+      show(select.value)
+    })
+  }
+</script>
 
 <script>
   import {
