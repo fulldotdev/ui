@@ -48,8 +48,18 @@ test("the Astro docs keep their original addresses", () => {
     .split("\n")
     .filter((line) => line && !line.startsWith("#"))
   assert.ok(redirects.includes("/astro.md  /index.md  301!"))
+  const existing = new Set(
+    readdirSync(new URL("../src/content/pages", import.meta.url), {
+      recursive: true,
+    })
+      .filter((file) => file.endsWith(".mdx"))
+      .map((file) => file.replace(/(\/?index)?\.mdx$/, ""))
+  )
   for (const line of redirects) {
-    assert.match(line, /^\/(astro\.md |astro\/|react\/components\/)/, line)
+    // Redirects only send former addresses on; no page is taken away.
+    const from = line.split(/\s+/)[0]
+    const page = from.replace(/^\//, "").replace(/(\/\*|\/|\.md)$/, "")
+    assert.ok(!existing.has(page), line)
     // Only the standard components the extension leaves to shadcn/ui.
     const name = line.match(/^\/react\/components\/([^/.]+)/)?.[1]
     if (name) assert.ok(!pages("react/components").includes(name), line)
