@@ -78,7 +78,7 @@ export default defineConfig({
     },
   },
   fonts: [
-    // EXPERIMENT: Geist 1.7.2 with the stylistic sets of the full.dev
+    // Geist 1.7.2 with the stylistic sets of the full.dev
     // websites (fulldotdev/fulldev packages/web/astro.js): ss02 single-storey
     // a, ss03 straight l, ss06 alternate G, ss08 round dots and punctuation.
     {
