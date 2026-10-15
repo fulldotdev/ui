@@ -70,6 +70,16 @@
       applyTheme(getThemePreference(), true)
   })
 
+  // Astro's <ClientRouter /> replaces the <html> attributes with those of the
+  // next page, which cannot know the theme. Carry the theme over before the
+  // swap, so it neither flashes nor reaches the observer below as a choice.
+  document.addEventListener("astro:before-swap", (event) => {
+    event.newDocument.documentElement.classList.toggle(
+      "dark",
+      appliedTheme === "dark"
+    )
+  })
+
   if (typeof localStorage !== "undefined") {
     const observer = new MutationObserver(() => {
       const theme = document.documentElement.classList.contains("dark")
