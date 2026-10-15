@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.22.3
+
+### Patch Changes
+
+- [#282](https://github.com/fulldotdev/ui/pull/282) [`068e1e9`](https://github.com/fulldotdev/ui/commit/068e1e977cbfa86eba6fdf843fffd36af979a94e) Thanks [@silveltman](https://github.com/silveltman)! - `ThemeProvider` keeps the theme across Astro `<ClientRouter />` navigation. Before, each navigation briefly showed the light theme and saved it as the visitor's choice, so a dark theme was lost.
+
 ## 0.22.2
 
 ### Patch Changes
