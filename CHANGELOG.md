@@ -1,5 +1,15 @@
 # Fulldev UI
 
+## 0.22.2
+
+### Patch Changes
+
+- [#279](https://github.com/fulldotdev/ui/pull/279) [`74e78e9`](https://github.com/fulldotdev/ui/commit/74e78e92acec722f3150952e5ca0ec10fa0b4015) Thanks [@silveltman](https://github.com/silveltman)! - `Select` and `DropdownMenu` keep their popup within the screen: when the script does not set `--available-height`, the popup is at most 24rem and never taller than the screen, and long lists scroll. Before, a long list on a phone ran past the bottom and its last items could not be reached.
+
+  `Pricing1` cards fill the width on phones instead of shrinking to their content. This holds for the Astro and the React block.
+
+  `Doc1` code blocks fade long lines out before the copy button instead of running under it. This holds for the Astro and the React block.
+
 ## 0.22.1
 
 ### Patch Changes
