@@ -74,10 +74,14 @@
   // next page, which cannot know the theme. Carry the theme over before the
   // swap, so it neither flashes nor reaches the observer below as a choice.
   document.addEventListener("astro:before-swap", (event) => {
-    event.newDocument.documentElement.classList.toggle(
-      "dark",
-      appliedTheme === "dark"
-    )
+    const swap = event.swap
+    event.swap = () => {
+      event.newDocument.documentElement.classList.toggle(
+        "dark",
+        appliedTheme === "dark"
+      )
+      swap()
+    }
   })
 
   if (typeof localStorage !== "undefined") {

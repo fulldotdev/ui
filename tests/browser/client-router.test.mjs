@@ -1,7 +1,7 @@
 // Checks that ThemeProvider keeps the theme across Astro <ClientRouter />
 // navigation in Chromium, Firefox and WebKit: no flash, and no theme saved
 // that the visitor did not choose. Builds its own two-page site, so it needs
-// no docs build. Run with `vp run test:browser`.
+// no docs build. Run with `vp node --test tests/browser/client-router.test.mjs`.
 import assert from "node:assert/strict"
 import { mkdirSync, rmSync, writeFileSync } from "node:fs"
 import { join, resolve } from "node:path"
@@ -16,7 +16,7 @@ import { ClientRouter } from "astro:transitions"
 import { ThemeProvider, ThemeToggle } from "${src}/components/ui/theme-toggle"
 ---
 
-<html lang="en">
+<html lang="en" transition:animate="fade">
   <head>
     <title>${title}</title>
     <ThemeProvider />
@@ -115,6 +115,29 @@ for (const browserType of [chromium, firefox, webkit]) {
       const page = await context.newPage()
       await page.goto(`${origin}/`)
       await page.click("[data-theme-toggle]")
+      await navigate(page, () => page.click("a"))
+      assert.deepEqual(await state(page), {
+        dark: false,
+        stored: "light",
+        toggle: "off",
+      })
+      await context.close()
+    })
+
+    await t.test("a newer choice during the fallback fade", async () => {
+      const context = await browser.newContext({ colorScheme: "dark" })
+      await context.addInitScript(() => {
+        document.startViewTransition = undefined
+      })
+      const page = await context.newPage()
+      await page.goto(`${origin}/`)
+      await page.evaluate(() => {
+        document.addEventListener(
+          "astro:before-swap",
+          () => setTimeout(() => window.__setTheme("light"), 20),
+          { once: true }
+        )
+      })
       await navigate(page, () => page.click("a"))
       assert.deepEqual(await state(page), {
         dark: false,
