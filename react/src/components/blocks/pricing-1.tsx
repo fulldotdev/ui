@@ -61,7 +61,7 @@ function Pricing1({
         </div>
       </SectionContainer>
       <SectionContainer>
-        <div className="mx-auto grid w-full justify-center gap-6 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(16rem,18rem))]">
+        <div className="mx-auto grid w-full grid-cols-1 justify-center gap-6 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(16rem,18rem))]">
           {plans.map((plan) => (
             <Card
               key={plan.name}

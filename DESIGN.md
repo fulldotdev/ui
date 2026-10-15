@@ -6,7 +6,7 @@ The design of the docs site at ui.full.dev. Installable components and blocks ha
 
 A copy of the ui.shadcn.com docs, built from Fulldev UI components: a 64px header, a 16.5rem sidebar on the left, a centered 40rem content column (`Doc1`) and the table of contents on the right. The homepage and the create page have no docs sidebar; the create page has its own sidebar with the preset options.
 
-- Header (`src/components/docs-header.astro`): logo, main navigation as ghost buttons, search, GitHub, theme toggle and the "New" button to Create as a secondary button. Below `lg` the navigation and the sidebar move into a sheet.
+- Header (`src/components/docs-header.astro`): logo, main navigation as ghost buttons, search, GitHub, theme toggle and the "New" button to Create as a secondary button. Below `lg` the header keeps the logo on the left and search, theme and a larger menu button on the right; the menu is a drawer from the bottom with the navigation, the switcher and the docs navigation, opened at the current page.
 - Sidebar: the switcher (`src/components/docs-switcher.astro`) on top, then the navigation (`src/components/docs-nav.astro`). The logo, the switcher, the group labels and the link text share one left edge; the highlight of a link reaches 9px past it. The space from the switcher to the first group equals the space between groups.
 
 ## Homepage
