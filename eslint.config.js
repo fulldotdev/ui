@@ -6,7 +6,14 @@ import globals from "globals"
 import tseslint from "typescript-eslint"
 
 export default defineConfig([
-  globalIgnores(["dist", ".astro", ".netlify", ".dev", "public/r"]),
+  globalIgnores([
+    "dist",
+    ".astro",
+    ".netlify",
+    ".dev",
+    "public/r",
+    "liquid/vendor",
+  ]),
   {
     files: ["**/*.{js,mjs,ts}"],
     extends: [js.configs.recommended, tseslint.configs.recommended],

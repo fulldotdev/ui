@@ -1,0 +1,114 @@
+/* The card surface and its parts, as in Vega. Header, content and footer carry the inline
+   padding, so media placed first spans the full width. Fulldev UI's blocks restyle the card with
+   classes; the theme names the two they use, outline (a border on the background) and muted (a
+   muted fill), as variants. A card that is one link holds no buttons or forms. */
+[data-slot='card'] {
+  --card-spacing: calc(var(--spacing) * 6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--card-spacing);
+  min-width: 0;
+  padding-block: var(--card-spacing);
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: var(--card);
+  color: var(--card-foreground);
+  font-size: 0.875rem;
+  text-decoration: none;
+  box-shadow:
+    var(--shadow-xs),
+    0 0 0 1px color-mix(in oklch, var(--foreground) 10%, transparent);
+  outline: none;
+  transition:
+    background-color 150ms,
+    box-shadow 150ms;
+}
+[data-slot='card'][data-size='sm'] {
+  --card-spacing: calc(var(--spacing) * 4);
+}
+[data-slot='card']:has(> :is(img, [data-slot='aspect-ratio']):first-child) {
+  padding-top: 0;
+}
+[data-slot='card-header'] {
+  display: grid;
+  grid-auto-rows: min-content;
+  align-items: start;
+  gap: var(--spacing);
+  padding-inline: var(--card-spacing);
+}
+[data-slot='card-header']:has(> [data-slot='card-action']) {
+  grid-template-columns: 1fr auto;
+}
+[data-slot='card-action'] {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  place-self: start end;
+}
+[data-slot='card-title'] {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: var(--tracking-normal);
+}
+[data-slot='card'][data-size='sm'] [data-slot='card-title'] {
+  font-size: 0.875rem;
+}
+[data-slot='card-description'] {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.625;
+}
+[data-slot='card-content'] {
+  padding-inline: var(--card-spacing);
+}
+[data-slot='card-footer'] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  margin-top: auto;
+  padding-inline: var(--card-spacing);
+}
+[data-slot='card'][data-variant='outline'] {
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: none;
+}
+[data-slot='card'][data-variant='muted'] {
+  background: color-mix(in oklch, var(--muted) 50%, transparent);
+  color: var(--foreground);
+  box-shadow: none;
+}
+a[data-slot='card']:not([data-variant='muted']):hover {
+  background-color: color-mix(in oklch, var(--muted) 40%, transparent);
+}
+a[data-slot='card'][data-variant='muted']:hover {
+  background-color: color-mix(in oklch, var(--muted) 70%, transparent);
+}
+/* After the variants, which drop the card's shadow, so every linked card shows the ring. */
+[data-slot='card']:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+:is([data-slot='card'][data-variant='outline'], [data-slot='card'][data-variant='muted']):focus-visible {
+  border-color: var(--ring);
+}
+/* The arrow link at the foot of a content card; inside a linked card it is text. */
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing);
+  color: var(--primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-underline-offset: 4px;
+}
+.card-link > .icon {
+  width: calc(var(--spacing) * 3.5);
+  height: calc(var(--spacing) * 3.5);
+}
+a:hover .card-link,
+a.card-link:hover {
+  text-decoration: underline;
+}
