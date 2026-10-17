@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.24.1
+
+### Patch Changes
+
+- [#292](https://github.com/fulldotdev/ui/pull/292) [`8f36a67`](https://github.com/fulldotdev/ui/commit/8f36a67fafb6c85a958fb37cd61782c39ab139b1) Thanks [@silveltman](https://github.com/silveltman)! - `Toast` renders its viewport as a `section` and each toast as a `div`, like the native Liquid toast. The `region` role the toast script gives the viewport was not allowed on the `ol` it was before, which axe reported as `aria-allowed-role`. The Collapsible, Hover Card and Popover examples show their card titles as text instead of `h4` headings, so docs pages keep their heading order. The Switch description no longer repeats the Checkbox description.
+
 ## 0.24.0
 
 ### Minor Changes
