@@ -1,0 +1,1156 @@
+{% comment %}
+  The template's shared parts in one place, for checking them in a store preview: open any page
+  with ?view=components. Only templates/page.components.json uses this section; it has no preset,
+  so it stays out of the editor's section list and the storefront's navigation.
+{% endcomment %}
+{% liquid
+  assign id = section.id
+  assign scheme = 'scheme-' | append: section.settings.scheme
+  assign groups = 'typography,rich_text,forms,actions,content,overlays' | split: ','
+  assign sizes = 'small,medium,large' | split: ','
+  assign deliveries = 'standard,express,pickup' | split: ','
+  assign typeset_sizes = 'sm,lg' | split: ','
+  assign tabs = 'description,details,care' | split: ','
+  assign sorts = 'featured,newest' | split: ','
+%}
+<section class="{{ scheme }}" data-slot="section" data-variant="page">
+  <div class="component-reference__layout" data-slot="section-container">
+    <nav
+      class="component-reference__toc"
+      data-slot="toc"
+      aria-labelledby="{{ id }}-toc"
+    >
+      <p id="{{ id }}-toc" data-slot="toc-title">
+        {{ 'component_reference.contents' | t }}
+      </p>
+      <ul data-slot="toc-menu">
+        {% for group in groups %}
+          {% assign key = 'component_reference.' | append: group %}
+          <li data-slot="toc-menu-item">
+            <a
+              href="#{{ id }}-{{ group }}"
+              data-slot="toc-menu-link"
+              data-depth="2"
+            >
+              {{- key | t -}}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+    <div class="component-reference__content">
+      <div class="component-reference__intro">
+        <h1 data-slot="section-title">{{ 'component_reference.title' | t }}</h1>
+        <p data-slot="section-description">
+          {{ 'component_reference.intro' | t }}
+        </p>
+      </div>
+
+      <section
+        class="component-reference__group"
+        id="{{ id }}-typography"
+        aria-labelledby="{{ id }}-typography-title"
+      >
+        <h2 id="{{ id }}-typography-title" data-slot="typography-h3">
+          {{ 'component_reference.typography' | t }}
+        </h2>
+        <div class="component-reference__demo">
+          <p data-slot="typography-h1">
+            {{ 'component_reference.heading' | t: level: 1 }}
+          </p>
+          <p data-slot="typography-h2">
+            {{ 'component_reference.heading' | t: level: 2 }}
+          </p>
+          <p data-slot="typography-h3">
+            {{ 'component_reference.heading' | t: level: 3 }}
+          </p>
+          <p data-slot="typography-h4">
+            {{ 'component_reference.heading' | t: level: 4 }}
+          </p>
+          <p data-slot="typography-lead">
+            {{ 'component_reference.lead' | t }}
+          </p>
+          <p data-slot="typography-p">
+            {{ 'component_reference.paragraph' | t }}
+            <a
+              href="{{ routes.all_products_collection_url }}"
+              data-slot="typography-a"
+            >
+              {{- 'component_reference.link' | t -}}
+            </a>
+            <code data-slot="typography-inline-code">data-slot</code>
+          </p>
+          <blockquote data-slot="typography-blockquote">
+            {{ 'component_reference.quote' | t }}
+          </blockquote>
+          <ul data-slot="typography-list">
+            <li>{{ 'component_reference.list_item' | t: number: 1 }}</li>
+            <li>{{ 'component_reference.list_item' | t: number: 2 }}</li>
+            <li>{{ 'component_reference.list_item' | t: number: 3 }}</li>
+          </ul>
+          <p data-slot="typography-large">
+            {{ 'component_reference.large' | t }}
+          </p>
+          <p data-slot="typography-small">
+            {{ 'component_reference.small' | t }}
+          </p>
+          <p data-slot="typography-muted">
+            {{ 'component_reference.muted' | t }}
+          </p>
+          <div data-slot="typography-table-container">
+            <table data-slot="typography-table" data-size="sm">
+              <thead>
+                <tr data-slot="typography-table-row">
+                  <th data-slot="typography-table-head" scope="col">
+                    {{ 'component_reference.role' | t }}
+                  </th>
+                  <th data-slot="typography-table-head" scope="col">
+                    {{ 'component_reference.size' | t }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-slot="typography-table-row">
+                  <td data-slot="typography-table-cell">
+                    {{ 'component_reference.lead' | t }}
+                  </td>
+                  <td data-slot="typography-table-cell">18px</td>
+                </tr>
+                <tr data-slot="typography-table-row">
+                  <td data-slot="typography-table-cell">
+                    {{ 'component_reference.paragraph' | t }}
+                  </td>
+                  <td data-slot="typography-table-cell">16px</td>
+                </tr>
+                <tr data-slot="typography-table-row">
+                  <td data-slot="typography-table-cell">
+                    {{ 'component_reference.muted' | t }}
+                  </td>
+                  <td data-slot="typography-table-cell">14px</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="component-reference__group"
+        id="{{ id }}-rich_text"
+        aria-labelledby="{{ id }}-rich_text-title"
+      >
+        <h2 id="{{ id }}-rich_text-title" data-slot="typography-h3">
+          {{ 'component_reference.rich_text' | t }}
+        </h2>
+        <p data-slot="typography-muted">
+          {{ 'component_reference.rich_text_text' | t }}
+        </p>
+        {% comment %} Shopify rich text as the editor, articles and product descriptions output it. {% endcomment %}
+        <div class="component-reference__demo">
+          <div data-slot="typography">
+            <h2>{{ 'component_reference.heading' | t: level: 2 }}</h2>
+            <p>
+              {{ 'component_reference.rich_inline_html' | t }}
+              <a href="{{ routes.all_products_collection_url }}">
+                {{- 'component_reference.link' | t -}}
+              </a>
+            </p>
+            <h3>{{ 'component_reference.heading' | t: level: 3 }}</h3>
+            <ul>
+              <li>
+                <p>{{ 'component_reference.list_item' | t: number: 1 }}</p>
+                <p>{{ 'component_reference.rich_nested' | t }}</p>
+                <ul>
+                  <li>
+                    {{ 'component_reference.list_item' | t: number: 2 }}
+                    <ul>
+                      <li>
+                        {{ 'component_reference.list_item' | t: number: 3 }}
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <li>{{ 'component_reference.list_item' | t: number: 4 }}</li>
+            </ul>
+            <ol>
+              <li>{{ 'component_reference.list_item' | t: number: 1 }}</li>
+              <li>{{ 'component_reference.list_item' | t: number: 2 }}</li>
+            </ol>
+            <blockquote>
+              <p>{{ 'component_reference.quote' | t }}</p>
+            </blockquote>
+            <h4>{{ 'component_reference.heading' | t: level: 4 }}</h4>
+            <table>
+              <caption>
+                {{ 'component_reference.table_caption' | t }}
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">{{ 'component_reference.role' | t }}</th>
+                  <th scope="col">{{ 'component_reference.size' | t }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">
+                    {{ 'component_reference.heading' | t: level: 2 }}
+                  </th>
+                  <td>1.25em</td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    {{ 'component_reference.heading' | t: level: 3 }}
+                  </th>
+                  <td>1.125em</td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    {{ 'component_reference.heading' | t: level: 5 }}
+                  </th>
+                  <td>0.875em</td>
+                </tr>
+              </tbody>
+            </table>
+            <h5>{{ 'component_reference.heading' | t: level: 5 }}</h5>
+            <p>{{ 'component_reference.rich_paragraph' | t }}</p>
+            <h6>{{ 'component_reference.heading' | t: level: 6 }}</h6>
+            <dl>
+              <dt>{{ 'component_reference.delivery' | t }}</dt>
+              <dd>{{ 'component_reference.standard' | t }}</dd>
+            </dl>
+            <hr>
+            <div data-not-typeset>
+              <p>{{ 'component_reference.rich_opt_out' | t }}</p>
+              <ul>
+                <li>{{ 'component_reference.list_item' | t: number: 1 }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        {% for size in typeset_sizes %}
+          {% if size == 'sm' %}
+            {% assign key = 'component_reference.size_small' %}
+          {% else %}
+            {% assign key = 'component_reference.size_large' %}
+          {% endif %}
+          <div class="component-reference__demo">
+            <p data-slot="typography-muted">{{ key | t }}</p>
+            <div data-slot="typography" data-size="{{ size }}">
+              <h3>{{ 'component_reference.heading' | t: level: 3 }}</h3>
+              <p>{{ 'component_reference.rich_paragraph' | t }}</p>
+              <ul>
+                <li>{{ 'component_reference.list_item' | t: number: 1 }}</li>
+                <li>{{ 'component_reference.list_item' | t: number: 2 }}</li>
+              </ul>
+            </div>
+          </div>
+        {% endfor %}
+        {% comment %} Rich text in an accordion, as in product descriptions, policies and FAQ answers. {% endcomment %}
+        <div class="component-reference__demo">
+          <div data-slot="accordion" data-default-value="rich-text">
+            <div data-slot="accordion-item" data-value="rich-text">
+              <h3 class="accordion__heading">
+                <button type="button" data-slot="accordion-trigger">
+                  <span>{{ 'component_reference.rich_accordion' | t }}</span>
+                  {% render 'icon', name: 'chevron-down' %}
+                </button>
+              </h3>
+              <div data-slot="accordion-content">
+                <div data-slot="accordion-content-inner">
+                  <div data-slot="typography" data-size="sm">
+                    <p>{{ 'component_reference.rich_paragraph' | t }}</p>
+                    <ul>
+                      <li>
+                        <p>
+                          {{ 'component_reference.list_item' | t: number: 1 }}
+                        </p>
+                        <p>{{ 'component_reference.rich_nested' | t }}</p>
+                        <ul>
+                          <li>
+                            {{ 'component_reference.list_item' | t: number: 2 }}
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                    <ol>
+                      <li>
+                        {{ 'component_reference.list_item' | t: number: 1 }}
+                      </li>
+                    </ol>
+                    <p>
+                      {{ 'component_reference.rich_paragraph' | t }}
+                      <a href="{{ routes.all_products_collection_url }}">
+                        {{- 'component_reference.link' | t -}}
+                      </a>
+                    </p>
+                    <div data-not-typeset>
+                      <p>{{ 'component_reference.rich_opt_out' | t }}</p>
+                      <ul>
+                        <li>
+                          {{ 'component_reference.list_item' | t: number: 1 }}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="component-reference__group"
+        id="{{ id }}-forms"
+        aria-labelledby="{{ id }}-forms-title"
+      >
+        <h2 id="{{ id }}-forms-title" data-slot="typography-h3">
+          {{ 'component_reference.forms' | t }}
+        </h2>
+        <p data-slot="typography-muted">
+          {{ 'component_reference.forms_text' | t }}
+        </p>
+        {% comment %} A GET form back to this page, so the submitted values show in the address. {% endcomment %}
+        <form
+          id="{{ id }}-form"
+          class="component-reference__demo"
+          data-slot="form"
+          action="{{ request.path }}"
+          method="get"
+        >
+          <input type="hidden" name="view" value="components">
+          <div data-slot="field">
+            <label data-slot="field-label" for="{{ id }}-size">
+              {{- 'component_reference.size' | t -}}
+            </label>
+            <select id="{{ id }}-size" name="size" required data-fallback>
+              <option value="" disabled selected>
+                {{ 'component_reference.choose' | t }}
+              </option>
+              {% for option in sizes %}
+                {% assign key = 'component_reference.size_' | append: option %}
+                <option value="{{ option }}">{{ key | t }}</option>
+              {% endfor %}
+            </select>
+            <div
+              data-slot="select"
+              data-name="size"
+              data-required
+              data-placeholder="{{ 'component_reference.choose' | t | escape }}"
+              hidden
+            >
+              <button type="button" data-slot="select-trigger">
+                <span data-slot="select-value"></span>
+                {% render 'icon', name: 'chevron-down' %}
+              </button>
+              <div class="{{ scheme }}" data-slot="select-portal">
+                <div data-slot="select-positioner">
+                  <div data-slot="select-content" hidden>
+                    <div data-slot="select-viewport">
+                      {% for option in sizes %}
+                        {% assign key = 'component_reference.size_'
+                          | append: option
+                        %}
+                        <div data-slot="select-item" data-value="{{ option }}">
+                          <span data-slot="select-item-text">
+                            {{- key | t -}}
+                          </span>
+                          <span data-slot="select-item-indicator">
+                            {%- render 'icon', name: 'check' -%}
+                          </span>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <fieldset data-slot="field-set">
+            <legend
+              id="{{ id }}-delivery-label"
+              data-slot="field-legend"
+              data-variant="label"
+            >
+              {{ 'component_reference.delivery' | t }}
+            </legend>
+            <div class="component-reference__options" data-fallback>
+              {% for option in deliveries %}
+                {% assign key = 'component_reference.' | append: option %}
+                <label data-slot="label">
+                  <input
+                    type="radio"
+                    name="delivery"
+                    value="{{ option }}"
+                    {% if forloop.first %}
+                      checked
+                    {% endif %}
+                  >
+                  {{ key | t }}
+                </label>
+              {% endfor %}
+            </div>
+            <div
+              data-slot="radio-group"
+              data-name="delivery"
+              data-default-value="standard"
+              aria-labelledby="{{ id }}-delivery-label"
+              hidden
+            >
+              {% for option in deliveries %}
+                {% assign key = 'component_reference.' | append: option %}
+                <label data-slot="label">
+                  <span data-slot="radio-group-item" data-value="{{ option }}">
+                    <span data-slot="radio-group-indicator"></span>
+                  </span>
+                  {{ key | t }}
+                </label>
+              {% endfor %}
+            </div>
+          </fieldset>
+
+          <div class="component-reference__options">
+            <label data-slot="label">
+              <input
+                type="checkbox"
+                data-slot="checkbox"
+                name="gift_wrap"
+                value="yes"
+              >
+              {{ 'component_reference.gift_wrap' | t }}
+            </label>
+            <label data-slot="label">
+              <input
+                type="checkbox"
+                data-slot="checkbox"
+                name="updates"
+                value="yes"
+                data-fallback
+              >
+              <span
+                data-slot="switch"
+                data-name="updates"
+                data-value="yes"
+                hidden
+              >
+                <span data-slot="switch-thumb"></span>
+              </span>
+              {{ 'component_reference.updates' | t }}
+            </label>
+          </div>
+
+          <div data-slot="field">
+            <span id="{{ id }}-range-label" data-slot="label">
+              {{- 'component_reference.range' | t -}}
+            </span>
+            <div
+              class="component-reference__options"
+              role="group"
+              aria-labelledby="{{ id }}-range-label"
+              data-fallback
+            >
+              <input
+                type="range"
+                name="range_min"
+                min="0"
+                max="100"
+                step="5"
+                value="20"
+                aria-label="{{ 'component_reference.minimum' | t }}"
+              >
+              <input
+                type="range"
+                name="range_max"
+                min="0"
+                max="100"
+                step="5"
+                value="80"
+                aria-label="{{ 'component_reference.maximum' | t }}"
+              >
+            </div>
+            <div
+              data-slot="slider"
+              data-min="0"
+              data-max="100"
+              data-step="5"
+              data-default-value="20,80"
+              hidden
+            >
+              <div data-slot="slider-control">
+                <div data-slot="slider-track">
+                  <div data-slot="slider-range"></div>
+                </div>
+                <div
+                  data-slot="slider-thumb"
+                  aria-label="{{ 'component_reference.minimum' | t }}"
+                ></div>
+                <div
+                  data-slot="slider-thumb"
+                  aria-label="{{ 'component_reference.maximum' | t }}"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-actions">
+            <button type="submit" data-slot="button">
+              {{ 'component_reference.submit' | t }}
+            </button>
+            <div data-slot="alert-dialog">
+              <button
+                type="button"
+                data-slot="alert-dialog-trigger"
+                data-button
+                data-variant="outline"
+              >
+                {{ 'component_reference.reset' | t }}
+              </button>
+              <div class="{{ scheme }}" data-slot="alert-dialog-portal">
+                <div data-slot="alert-dialog-overlay" hidden></div>
+                <div data-slot="alert-dialog-content" hidden>
+                  <div data-slot="alert-dialog-header">
+                    <div data-slot="alert-dialog-media">
+                      {% render 'icon', name: 'refresh' %}
+                    </div>
+                    <h3 data-slot="alert-dialog-title">
+                      {{ 'component_reference.reset_title' | t }}
+                    </h3>
+                    <p data-slot="alert-dialog-description">
+                      {{ 'component_reference.reset_text' | t }}
+                    </p>
+                  </div>
+                  <div data-slot="alert-dialog-footer">
+                    <button
+                      type="button"
+                      data-slot="alert-dialog-cancel"
+                      data-button
+                      data-variant="outline"
+                    >
+                      {{ 'component_reference.cancel' | t }}
+                    </button>
+                    <button
+                      type="reset"
+                      form="{{ id }}-form"
+                      data-slot="alert-dialog-action"
+                      data-button
+                      data-variant="destructive"
+                    >
+                      {{ 'component_reference.reset' | t }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <section
+        class="component-reference__group"
+        id="{{ id }}-actions"
+        aria-labelledby="{{ id }}-actions-title"
+      >
+        <h2 id="{{ id }}-actions-title" data-slot="typography-h3">
+          {{ 'component_reference.actions' | t }}
+        </h2>
+        <div class="component-reference__demo">
+          <div
+            data-slot="button-group"
+            role="group"
+            aria-label="{{ 'component_reference.shortcuts' | t }}"
+          >
+            <span data-slot="button-group-text">
+              {{- 'component_reference.go_to' | t -}}
+            </span>
+            <a
+              href="{{ routes.all_products_collection_url }}"
+              data-slot="button"
+              data-variant="outline"
+            >
+              {{- 'component_reference.products' | t -}}
+            </a>
+            <a
+              href="{{ routes.search_url }}"
+              data-slot="button"
+              data-variant="outline"
+            >
+              {{- 'search.title' | t -}}
+            </a>
+            <a
+              href="{{ routes.cart_url }}"
+              data-slot="button"
+              data-variant="outline"
+            >
+              {{- 'cart.title' | t -}}
+            </a>
+          </div>
+          <div class="component-reference__row">
+            <button
+              type="button"
+              data-slot="toggle"
+              data-variant="outline"
+              aria-label="{{ 'component_reference.favorite' | t }}"
+            >
+              {% render 'icon', name: 'heart' %}
+            </button>
+            <div
+              data-slot="toggle-group"
+              data-variant="outline"
+              data-default-value="grid"
+              aria-label="{{ 'component_reference.view' | t }}"
+            >
+              <button
+                type="button"
+                data-slot="toggle-group-item"
+                data-value="grid"
+                aria-label="{{ 'component_reference.grid' | t }}"
+              >
+                {% render 'icon', name: 'grid' %}
+              </button>
+              <button
+                type="button"
+                data-slot="toggle-group-item"
+                data-value="list"
+                aria-label="{{ 'component_reference.list' | t }}"
+              >
+                {% render 'icon', name: 'list' %}
+              </button>
+            </div>
+            <button
+              type="button"
+              data-slot="button"
+              data-variant="outline"
+              disabled
+            >
+              <span
+                data-slot="spinner"
+                role="status"
+                aria-label="{{ 'component_reference.loading' | t }}"
+              >
+                {%- render 'icon', name: 'loader' -%}
+              </span>
+              {{ 'component_reference.please_wait' | t }}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="component-reference__group"
+        id="{{ id }}-content"
+        aria-labelledby="{{ id }}-content-title"
+      >
+        <h2 id="{{ id }}-content-title" data-slot="typography-h3">
+          {{ 'component_reference.content' | t }}
+        </h2>
+        <div class="component-reference__demo">
+          <ul data-slot="item-group">
+            <li data-slot="item" data-variant="outline">
+              <div data-slot="item-media">
+                {% render 'icon', name: 'package' %}
+              </div>
+              <div data-slot="item-content">
+                <p data-slot="item-title">
+                  {{ 'component_reference.item_title' | t }}
+                </p>
+                <p data-slot="item-description">
+                  {{ 'component_reference.item_text' | t }}
+                </p>
+              </div>
+              <div data-slot="item-actions">
+                <a
+                  href="{{ routes.all_products_collection_url }}"
+                  data-slot="button"
+                  data-variant="outline"
+                  data-size="sm"
+                >
+                  {{- 'component_reference.view_products' | t -}}
+                </a>
+              </div>
+            </li>
+            <li>
+              <a
+                href="{{ routes.cart_url }}"
+                data-slot="item"
+                data-variant="muted"
+                data-size="sm"
+              >
+                <span data-slot="item-media">
+                  {%- render 'icon', name: 'bag' -%}
+                </span>
+                <span data-slot="item-content">
+                  <span data-slot="item-title">{{ 'cart.title' | t }}</span>
+                </span>
+                <span data-slot="item-actions">
+                  {%- render 'icon', name: 'chevron-right' -%}
+                </span>
+              </a>
+            </li>
+          </ul>
+
+          <div data-slot="table-container">
+            <table data-slot="table">
+              <caption data-slot="table-caption">
+                {{ 'component_reference.table_caption' | t }}
+              </caption>
+              <thead data-slot="table-header">
+                <tr data-slot="table-row">
+                  <th data-slot="table-head" scope="col">
+                    {{ 'component_reference.item' | t }}
+                  </th>
+                  <th data-slot="table-head" scope="col">
+                    {{ 'products.quantity' | t }}
+                  </th>
+                  <th
+                    class="component-reference__number"
+                    data-slot="table-head"
+                    scope="col"
+                  >
+                    {{ 'products.price' | t }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody data-slot="table-body">
+                {% for number in (1..3) %}
+                  <tr data-slot="table-row">
+                    <td data-slot="table-cell">
+                      {{ 'component_reference.example' | t: number: number }}
+                    </td>
+                    <td data-slot="table-cell">{{ number }}</td>
+                    <td
+                      class="component-reference__number"
+                      data-slot="table-cell"
+                    >
+                      {{ number | times: 1000 | money }}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+              <tfoot data-slot="table-footer">
+                <tr data-slot="table-row">
+                  <td data-slot="table-cell" colspan="2">
+                    {{ 'component_reference.total' | t }}
+                  </td>
+                  <td
+                    class="component-reference__number"
+                    data-slot="table-cell"
+                  >
+                    {{ 14000 | money }}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <div data-slot="attachment-group">
+            <div data-slot="attachment" data-state="done">
+              <div data-slot="attachment-media">
+                {% render 'icon', name: 'file' %}
+              </div>
+              <div data-slot="attachment-content">
+                <span data-slot="attachment-title">
+                  {{- 'component_reference.file' | t -}}
+                </span>
+                <span data-slot="attachment-description">PDF</span>
+              </div>
+            </div>
+            <div data-slot="attachment" data-state="uploading">
+              <div data-slot="attachment-media">
+                <span
+                  data-slot="spinner"
+                  role="status"
+                  aria-label="{{ 'component_reference.loading' | t }}"
+                >
+                  {%- render 'icon', name: 'loader' -%}
+                </span>
+              </div>
+              <div data-slot="attachment-content">
+                <span data-slot="attachment-title">
+                  {{- 'component_reference.file' | t -}}
+                </span>
+                <span data-slot="attachment-description">
+                  {{- 'component_reference.uploading' | t -}}
+                </span>
+              </div>
+            </div>
+            <div data-slot="attachment" data-state="error" data-size="sm">
+              <div data-slot="attachment-media">
+                {% render 'icon', name: 'file' %}
+              </div>
+              <div data-slot="attachment-content">
+                <span data-slot="attachment-title">
+                  {{- 'component_reference.file' | t -}}
+                </span>
+                <span data-slot="attachment-description">
+                  {{- 'component_reference.failed' | t -}}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div data-slot="tabs" data-default-value="description">
+            <div
+              data-slot="tabs-list"
+              aria-label="{{ 'component_reference.product_details' | t }}"
+            >
+              {% for tab in tabs %}
+                {% assign key = 'component_reference.' | append: tab %}
+                <button
+                  type="button"
+                  data-slot="tabs-trigger"
+                  data-value="{{ tab }}"
+                >
+                  {{ key | t }}
+                </button>
+              {% endfor %}
+            </div>
+            {% for tab in tabs %}
+              {% assign key = 'component_reference.'
+                | append: tab
+                | append: '_text'
+              %}
+              <div data-slot="tabs-content" data-value="{{ tab }}">
+                <p data-slot="typography-muted">{{ key | t }}</p>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="component-reference__collapsible" data-slot="collapsible">
+            <button
+              type="button"
+              data-slot="collapsible-trigger"
+              data-button
+              data-variant="ghost"
+              data-size="sm"
+            >
+              {{ 'component_reference.more' | t }}
+              {% render 'icon', name: 'chevron-down' %}
+            </button>
+            <div data-slot="collapsible-content">
+              <p data-slot="typography-muted">
+                {{ 'component_reference.more_text' | t }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="component-reference__group"
+        id="{{ id }}-overlays"
+        aria-labelledby="{{ id }}-overlays-title"
+      >
+        <h2 id="{{ id }}-overlays-title" data-slot="typography-h3">
+          {{ 'component_reference.overlays' | t }}
+        </h2>
+        <p data-slot="typography-muted">
+          {{ 'component_reference.overlays_text' | t }}
+        </p>
+        <div class="component-reference__demo component-reference__row">
+          <div data-slot="popover">
+            <button
+              type="button"
+              data-slot="popover-trigger"
+              data-button
+              data-variant="outline"
+            >
+              {{ 'component_reference.popover' | t }}
+            </button>
+            <div class="{{ scheme }}" data-slot="popover-portal">
+              <div data-slot="popover-positioner">
+                <div
+                  data-slot="popover-content"
+                  aria-labelledby="{{ id }}-popover-title"
+                  hidden
+                >
+                  <div data-slot="popover-header">
+                    <p id="{{ id }}-popover-title" data-slot="popover-title">
+                      {{ 'component_reference.popover' | t }}
+                    </p>
+                    <p data-slot="popover-description">
+                      {{ 'component_reference.popover_text' | t }}
+                    </p>
+                  </div>
+                  <a
+                    href="{{ routes.search_url }}"
+                    data-slot="button"
+                    data-variant="outline"
+                    data-size="sm"
+                  >
+                    {{- 'search.title' | t -}}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div data-slot="hover-card">
+            <a
+              href="{{ routes.all_products_collection_url }}"
+              data-slot="hover-card-trigger"
+              data-button
+              data-variant="link"
+            >
+              {{- 'component_reference.products' | t -}}
+            </a>
+            <div class="{{ scheme }}" data-slot="hover-card-portal">
+              <div data-slot="hover-card-positioner">
+                <div data-slot="hover-card-content" hidden>
+                  <p data-slot="typography-muted">
+                    {{ 'component_reference.hover_card_text' | t }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div data-slot="tooltip">
+            <a
+              href="{{ routes.cart_url }}"
+              data-slot="tooltip-trigger"
+              data-button
+              data-variant="outline"
+              data-size="icon"
+              aria-label="{{ 'cart.title' | t }}"
+            >
+              {% render 'icon', name: 'bag' %}
+            </a>
+            <div class="{{ scheme }}" data-slot="tooltip-portal">
+              <div data-slot="tooltip-positioner">
+                <div data-slot="tooltip-content" hidden>
+                  {{ 'cart.title' | t }}
+                  <div data-slot="tooltip-arrow"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            data-slot="dropdown-menu"
+            data-default-value="featured"
+            data-close-on-select="false"
+          >
+            <button
+              type="button"
+              data-slot="dropdown-menu-trigger"
+              data-button
+              data-variant="outline"
+            >
+              {{ 'component_reference.menu' | t }}
+              {% render 'icon', name: 'ellipsis' %}
+            </button>
+            <div class="{{ scheme }}" data-slot="dropdown-menu-portal">
+              <div data-slot="dropdown-menu-positioner">
+                <div data-slot="dropdown-menu-content" hidden>
+                  <p data-slot="dropdown-menu-label">
+                    {{ 'component_reference.sort' | t }}
+                  </p>
+                  {% for option in sorts %}
+                    {% assign key = 'component_reference.' | append: option %}
+                    <button
+                      type="button"
+                      data-slot="dropdown-menu-radio-item"
+                      data-value="{{ option }}"
+                    >
+                      {{ key | t }}
+                      <span data-slot="dropdown-menu-item-indicator">
+                        {%- render 'icon', name: 'check' -%}
+                      </span>
+                    </button>
+                  {% endfor %}
+                  <div data-slot="dropdown-menu-separator"></div>
+                  <button
+                    type="button"
+                    data-slot="dropdown-menu-checkbox-item"
+                    data-value="in_stock"
+                  >
+                    {{ 'component_reference.in_stock' | t }}
+                    <span data-slot="dropdown-menu-item-indicator">
+                      {%- render 'icon', name: 'check' -%}
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div data-slot="drawer">
+            <button
+              type="button"
+              data-slot="drawer-trigger"
+              data-button
+              data-variant="outline"
+            >
+              {{ 'component_reference.drawer' | t }}
+            </button>
+            <div class="{{ scheme }}" data-slot="drawer-portal">
+              <div data-slot="drawer-backdrop" hidden></div>
+              <div data-slot="drawer-popup" hidden>
+                <div data-slot="drawer-handle"></div>
+                <div data-slot="drawer-content">
+                  <div data-slot="drawer-header">
+                    <h3 data-slot="drawer-title">
+                      {{ 'component_reference.drawer' | t }}
+                    </h3>
+                    <p data-slot="drawer-description">
+                      {{ 'component_reference.drawer_text' | t }}
+                    </p>
+                  </div>
+                  <div data-slot="drawer-footer">
+                    <button
+                      type="button"
+                      data-slot="drawer-close"
+                      data-button
+                      data-variant="outline"
+                    >
+                      {{ 'general.close' | t }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div data-slot="toast">
+            <button
+              type="button"
+              data-slot="button"
+              data-variant="outline"
+              data-toast-title="{{ 'component_reference.toast_title' | t | escape }}"
+              data-toast-description="{{ 'component_reference.toast_text' | t | escape }}"
+            >
+              {{ 'component_reference.toast' | t }}
+            </button>
+            <template data-slot="toast-template">
+              <div data-slot="toast-item" role="status" aria-atomic="true">
+                <div data-slot="toast-content">
+                  <div class="toast-text">
+                    <p data-slot="toast-title"></p>
+                    <p data-slot="toast-description"></p>
+                  </div>
+                  <button
+                    type="button"
+                    data-slot="toast-action"
+                    data-button
+                    data-variant="outline"
+                    data-size="sm"
+                  ></button>
+                  <button
+                    type="button"
+                    data-slot="toast-close"
+                    aria-label="{{ 'general.close' | t }}"
+                  >
+                    {% render 'icon', name: 'close' %}
+                  </button>
+                </div>
+              </div>
+            </template>
+            <div
+              data-slot="toast-viewport"
+              aria-label="{{ 'component_reference.notifications' | t }}"
+            ></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .component-reference__layout {
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 1fr);
+    align-items: start;
+    gap: 48px;
+  }
+  .component-reference__toc {
+    position: sticky;
+    top: calc(var(--header-height) + 24px);
+  }
+  .component-reference__content {
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+    min-width: 0;
+    max-width: 48rem;
+  }
+  .component-reference__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .component-reference__group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    scroll-margin-top: calc(var(--header-height) + 24px);
+  }
+  .component-reference__demo {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+  }
+  .component-reference__row {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 12px;
+  }
+  .component-reference__options {
+    display: grid;
+    gap: 12px;
+  }
+  .component-reference__number {
+    text-align: right;
+  }
+  .component-reference__collapsible {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .component-reference__collapsible[data-state='open'] .icon {
+    rotate: 180deg;
+  }
+  @media (max-width: 767px) {
+    .component-reference__layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .component-reference__toc {
+      position: static;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Component reference",
+  "settings": [
+    {
+      "type": "select",
+      "id": "scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "muted",
+          "label": "Light gray"
+        },
+        {
+          "value": "dark",
+          "label": "Dark"
+        }
+      ],
+      "default": "default"
+    }
+  ]
+}
+{% endschema %}
