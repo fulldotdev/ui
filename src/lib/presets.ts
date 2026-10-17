@@ -73,14 +73,13 @@ export const STYLE_OPTIONS = PRESET_STYLES.map((name) => ({
 export const FONTS = fonts
 
 // Fulldev UI serves the Base UI library and uses Lucide icons.
-// The docs default: the preset closest to the full.dev websites (bJfEY5IW in
-// fulldotdev/fulldev packages/web/DESIGN.md) with translucent menus. Installs
-// keep the theme of the registry's init item.
+// The docs default: the full.dev website treatment with Fulldev UI's orange
+// product color and translucent menus. Installs keep the registry's theme.
 export const DEFAULT_CONFIG: PresetConfig = {
   ...DEFAULT_PRESET_CONFIG,
   style: "vega",
   baseColor: "stone",
-  theme: "blue",
+  theme: "orange",
   chartColor: "stone",
   font: "geist",
   fontHeading: "inherit",

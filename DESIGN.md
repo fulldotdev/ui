@@ -21,14 +21,14 @@ A general homepage for both frameworks, with its content in the frontmatter of `
 
 The site follows one preset everywhere: theme, style, fonts and menu color, previews included.
 
-- The default is the Fulldev preset (`DEFAULT_CONFIG` in `src/lib/presets.ts`): Vega, Stone, Blue, Geist, the large radius and translucent menus, the preset closest to the full.dev websites (`bJfEY5IW` in `fulldotdev/fulldev` `packages/web/DESIGN.md`, plus translucent menus). Installs keep the theme of the registry's init item.
+- The default is the Fulldev preset (`DEFAULT_CONFIG` in `src/lib/presets.ts`): Vega, Stone, Orange, Geist, the large radius and translucent menus. It follows the full.dev website treatment with orange as Fulldev UI's product color. Installs keep the theme of the registry's init item.
 - The switcher offers Fulldev, shadcn/ui (`SHADCN_CONFIG`: Nova, Neutral, Geist, the default radius) and the visitor's own preset from Create. Astro or React comes from the page.
 - `src/lib/styles.ts` renders the site in Vega and adds, per class string, the classes of every style; the inline script it adds switches them before the first paint. Previews are rendered per style already (`style-preview.astro`).
 - The header turns to glass when the preset's menus are translucent (`data-menu-color` on `<html>`).
 
 ## Brand
 
-- Logo: the Fulldev mark on a tile in the brand blue `#1442e9`, with the sheen, rim and shadow of the full.dev logo tile, and "UI" in the wordmark type (Geist, 550, -0.01em). The tile stays blue in every preset; the Blue theme's primary matches it within rounding.
+- Logo: the Fulldev mark on an orange tile (`--fd-brand` in `src/styles/global.css`), with the sheen, rim and shadow of the full.dev logo tile, and "UI" in the wordmark type (Geist, 550, -0.01em). The tile stays orange in every preset. The favicon, logo assets and social image use the same orange; the default theme uses shadcn/ui's Orange palette.
 - Font: Geist 1.7.2 from the full.dev websites with their stylistic sets (ss02 single-storey a, ss03 straight l, ss06 alternate G, ss08 round dots), configured in `astro.config.ts`. A preset in Geist keeps this font.
 
 ## Rejected
