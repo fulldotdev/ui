@@ -1,0 +1,116 @@
+{% doc %}
+  Fulldev UI alert-dialog styles. Use native markup with its data-slot parts.
+{% enddoc %}
+
+{% stylesheet %}
+  /* A confirmation over the page, as Vega's alert dialog: a centered stack on phones and in the small
+   size; from 640px the default size aligns text left with the media beside the title and description. */
+  [data-slot='alert-dialog-overlay'] {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--alert-dialog-overlay-stack-index, 0) * 2 + 100);
+    background: var(--scrim);
+    transition: opacity 100ms;
+  }
+  @supports (backdrop-filter: blur(4px)) {
+    [data-slot='alert-dialog-overlay'] {
+      backdrop-filter: blur(4px);
+    }
+  }
+  [data-slot='alert-dialog-content'] {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: calc(var(--alert-dialog-content-stack-index, 0) * 2 + 101);
+    display: grid;
+    gap: calc(var(--spacing) * 6);
+    width: calc(100% - 2rem);
+    max-width: 20rem;
+    padding: calc(var(--spacing) * 6);
+    border-radius: var(--radius-xl);
+    background: var(--popover);
+    color: var(--popover-foreground);
+    font-size: 0.875rem;
+    box-shadow: 0 0 0 1px color-mix(in oklch, var(--foreground) 10%, transparent);
+    outline: none;
+    translate: -50% -50%;
+    transition:
+      opacity 100ms,
+      scale 100ms;
+  }
+  [data-slot='alert-dialog-overlay']:is([data-starting-style], [data-ending-style]) {
+    opacity: 0;
+  }
+  [data-slot='alert-dialog-content']:is([data-starting-style], [data-ending-style]) {
+    opacity: 0;
+    scale: 0.95;
+  }
+  [data-slot='alert-dialog-header'] {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    place-items: center;
+    gap: calc(var(--spacing) * 1.5);
+    text-align: center;
+  }
+  [data-slot='alert-dialog-header']:has([data-slot='alert-dialog-media']) {
+    grid-template-rows: auto auto 1fr;
+    column-gap: calc(var(--spacing) * 6);
+  }
+  [data-slot='alert-dialog-media'] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--spacing) * 16);
+    height: calc(var(--spacing) * 16);
+    margin-bottom: calc(var(--spacing) * 2);
+    border-radius: var(--radius-md);
+    background: var(--muted);
+  }
+  [data-slot='alert-dialog-media'] > .icon {
+    width: calc(var(--spacing) * 8);
+    height: calc(var(--spacing) * 8);
+  }
+  [data-slot='alert-dialog-title'] {
+    font-size: 1.125rem;
+    font-weight: 500;
+    letter-spacing: var(--tracking-normal);
+  }
+  [data-slot='alert-dialog-description'] {
+    color: var(--muted-foreground);
+    text-wrap: balance;
+  }
+  [data-slot='alert-dialog-footer'] {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: calc(var(--spacing) * 2);
+  }
+  [data-slot='alert-dialog-content'][data-size='sm'] [data-slot='alert-dialog-footer'] {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (min-width: 640px) {
+    [data-slot='alert-dialog-content']:not([data-size='sm']) {
+      max-width: 32rem;
+    }
+    [data-slot='alert-dialog-content']:not([data-size='sm']) [data-slot='alert-dialog-header'] {
+      place-items: start;
+      text-align: left;
+    }
+    [data-slot='alert-dialog-content']:not([data-size='sm'])
+      [data-slot='alert-dialog-header']:has([data-slot='alert-dialog-media']) {
+      grid-template-rows: auto 1fr;
+    }
+    [data-slot='alert-dialog-content']:not([data-size='sm']) [data-slot='alert-dialog-media'] {
+      grid-row: span 2;
+    }
+    [data-slot='alert-dialog-content']:not([data-size='sm'])
+      [data-slot='alert-dialog-header']:has([data-slot='alert-dialog-media'])
+      > [data-slot='alert-dialog-title'] {
+      grid-column-start: 2;
+    }
+    [data-slot='alert-dialog-content']:not([data-size='sm']) [data-slot='alert-dialog-footer'] {
+      flex-direction: row;
+      justify-content: flex-end;
+    }
+  }
+{% endstylesheet %}

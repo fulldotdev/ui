@@ -36,11 +36,25 @@ module.exports = {
   ],
   importOrderParserPlugins: ["typescript", "jsx", "decorators-legacy"],
   plugins: [
+    "@shopify/prettier-plugin-liquid",
     "prettier-plugin-astro",
     "@ianvs/prettier-plugin-sort-imports",
     "prettier-plugin-tailwindcss",
   ],
   tailwindStylesheet: "src/styles/global.css",
   tailwindFunctions: ["cn", "cva"],
-  overrides: [{ files: "*.astro", options: { parser: "astro" } }],
+  overrides: [
+    { files: "*.astro", options: { parser: "astro" } },
+    {
+      files: "liquid/**/*.{liquid,css,js}",
+      options: {
+        semi: true,
+        singleQuote: true,
+        liquidSingleQuote: true,
+        embeddedSingleQuote: true,
+        printWidth: 120,
+        trailingComma: "all",
+      },
+    },
+  ],
 }

@@ -1,0 +1,134 @@
+{% doc %}
+  Fulldev UI attachment styles. Use native markup with its data-slot parts.
+{% enddoc %}
+
+{% stylesheet %}
+  /* A file with its icon or preview, name and actions, as Fulldev UI's attachment. The caller sets
+   data-state: idle (dashed), uploading or processing (pulsing name), error, or done. */
+  [data-slot='attachment'] {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--spacing) * 2);
+    width: fit-content;
+    min-width: 10rem;
+    max-width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--card);
+    color: var(--card-foreground);
+    font-size: 0.875rem;
+    transition: background-color 150ms;
+  }
+  [data-slot='attachment']:has([data-slot='attachment-content']) {
+    padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2.5);
+  }
+  [data-slot='attachment']:focus-within {
+    box-shadow: 0 0 0 1px color-mix(in oklch, var(--ring) 50%, transparent);
+  }
+  [data-slot='attachment']:has([data-slot='attachment-trigger']):hover {
+    background: color-mix(in oklch, var(--muted) 50%, transparent);
+  }
+  [data-slot='attachment'][data-state='idle'] {
+    border-style: dashed;
+  }
+  [data-slot='attachment'][data-state='error'] {
+    border-color: color-mix(in oklch, var(--destructive) 30%, transparent);
+  }
+  [data-slot='attachment'][data-size='sm'] {
+    gap: calc(var(--spacing) * 2.5);
+    font-size: 0.75rem;
+  }
+  [data-slot='attachment'][data-size='sm']:has([data-slot='attachment-content']) {
+    padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
+  }
+  [data-slot='attachment-media'] {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--spacing) * 10);
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--muted);
+    color: var(--foreground);
+  }
+  [data-slot='attachment-media'] > .icon {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+  }
+  [data-slot='attachment'][data-size='sm'] [data-slot='attachment-media'] {
+    width: calc(var(--spacing) * 8);
+  }
+  [data-slot='attachment'][data-state='error'] [data-slot='attachment-media'] {
+    background: color-mix(in oklch, var(--destructive) 10%, transparent);
+    color: var(--destructive);
+  }
+  [data-slot='attachment-content'] {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.25;
+  }
+  [data-slot='attachment-title'],
+  [data-slot='attachment-description'] {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  [data-slot='attachment-title'] {
+    font-weight: 500;
+  }
+  /* The skeleton's pulse reads at about 3.6:1 at 0.5; the name pulses to 0.65 to keep 4.5:1. */
+  [data-slot='attachment'][data-state='uploading'] [data-slot='attachment-title'] {
+    animation: attachment-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  @keyframes attachment-pulse {
+    50% {
+      opacity: 0.65;
+    }
+  }
+  [data-slot='attachment-description'] {
+    margin-top: calc(var(--spacing) * 0.5);
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+  }
+  [data-slot='attachment'][data-state='error'] [data-slot='attachment-description'] {
+    color: var(--destructive);
+  }
+  [data-slot='attachment-actions'] {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+  }
+  /* A link or button that covers the whole attachment, under its actions. */
+  [data-slot='attachment-trigger'] {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    outline: none;
+  }
+  [data-slot='attachment-group'] {
+    display: flex;
+    gap: calc(var(--spacing) * 3);
+    min-width: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding-block: var(--spacing);
+    scroll-snap-type: x mandatory;
+  }
+  [data-slot='attachment-group'] > [data-slot='attachment'] {
+    flex: none;
+    scroll-snap-align: start;
+  }
+{% endstylesheet %}

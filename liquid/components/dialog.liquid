@@ -1,0 +1,80 @@
+{% doc %}
+  Fulldev UI dialog styles. Use native markup with its data-slot parts.
+{% enddoc %}
+
+{% stylesheet %}
+  /* Dialogs, sheets and search, after shadcn/ui's base-vega dialog, sheet and command styles. */
+  [data-slot='dialog-overlay'] {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--dialog-overlay-stack-index, 0) * 2 + 100);
+    background: var(--scrim);
+    opacity: 1;
+    transition: opacity 150ms;
+  }
+  @supports (backdrop-filter: blur(4px)) {
+    [data-slot='dialog-overlay'] {
+      backdrop-filter: blur(4px);
+    }
+  }
+  [data-slot='dialog-overlay'][data-starting-style],
+  [data-slot='dialog-overlay'][data-ending-style] {
+    opacity: 0;
+  }
+
+  /* A centered panel, as Vega's DialogContent. Sheets and the search dialog adjust it below. */
+  [data-slot='dialog-content'] {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: calc(var(--dialog-content-stack-index, 0) * 2 + 101);
+    display: grid;
+    gap: calc(var(--spacing) * 6);
+    width: 100%;
+    max-width: calc(100% - 2rem);
+    max-height: calc(100% - 2rem);
+    overflow-y: auto;
+    padding: calc(var(--spacing) * 6);
+    border-radius: var(--radius-xl);
+    background: var(--popover);
+    color: var(--popover-foreground);
+    font-size: 0.875rem;
+    box-shadow: 0 0 0 1px color-mix(in oklch, var(--foreground) 10%, transparent);
+    outline: none;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    transition:
+      opacity 100ms,
+      transform 100ms;
+  }
+  [data-slot='dialog-content'][data-starting-style],
+  [data-slot='dialog-content'][data-ending-style] {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  [data-slot='dialog-header'] {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 2);
+  }
+  [data-slot='dialog-title'] {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: var(--tracking-normal);
+    line-height: 1;
+  }
+  [data-slot='dialog-description'] {
+    color: var(--muted-foreground);
+  }
+  /* The close button in a panel's corner, as Vega's dialog. */
+  [data-slot='dialog-content']:not([data-side]) > [data-slot='dialog-close'] {
+    position: absolute;
+    top: calc(var(--spacing) * 4);
+    right: calc(var(--spacing) * 4);
+  }
+  @media (min-width: 640px) {
+    [data-slot='dialog-content'] {
+      max-width: 28rem;
+    }
+  }
+{% endstylesheet %}

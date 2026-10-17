@@ -1,0 +1,17 @@
+# Fulldev UI for Liquid
+
+Native Shopify Liquid, readable CSS and ES modules. The consumer needs no Tailwind, framework, package manifest or build step. See the [installation and API guide](https://ui.full.dev/liquid/).
+
+`components/` owns each component's styles and optional markup. Most use Shopify's `{% stylesheet %}` tag. Components with global classes, such as typography's `typeset`, keep their CSS in `styles/`, so Shopify Theme Check can resolve those classes across snippets. Shopify bundles the stylesheet tags; the source stays small and separate. Card parts remain native HTML, styled through `data-slot`.
+
+`runtime/` owns initialization, native form fallbacks, asynchronous imports, cleanup, editor section events and block selection. It uses unmodified data-slot controllers in `vendor/`. `snippets/ui.liquid` loads the complete component set once. A theme with commerce adapters uses `runtime: false` and imports the lifecycle and control adapters into its existing initializer.
+
+`registry.json` is the install contract. Every item is universal, every file has an explicit `~/assets/` or `~/snippets/` target, and dependencies use full Liquid registry URLs. Individual items install their prerequisites, including shared popup styles and runtime where needed. `components` is the complete set. `init` is tokens and base styles only.
+
+CSS and Liquid are maintained by hand. The shared neutral palette comes from `registry/styles/shadcn/themes.json`; `styles/primitives.css` holds native sizes, radii, shadows and media roles. Theme colors, settings, content, Shopify forms and layouts remain theme-owned. A consumer loads its scheme overrides after `ui`, and `custom.css` after `content_for_header`.
+
+Registry generation and installation tests are added separately from this source layer. Local LiquidJS fixtures do not verify a store's commerce objects or Shopify's stylesheet subsetting.
+
+This first port follows Vega and the complete reusable storefront layer from `fulldotdev/liquid-template` at `e13fc25`. Sidebar, Resizable, Menubar, Scroll Area and React-only app components are outside this native storefront set. Shopify blocks, commerce adapters, translation keys and settings are not installed by the UI registry. The existing storefront media and card variants are additive to the shared component contract. Other Tailwind presets are not translated automatically.
+
+Vendored modules stay byte-identical to data-slot 1.1.1. Update them together with `vendor.json` and verify the recorded SHA-256 hashes. Every installation includes `assets/ui-licenses.json`, including the original shadcn/ui and data-slot notices. The complete install includes `assets/ui-manifest.json`; consumers can check those hashes to detect drift. Store customizations belong in their own files.

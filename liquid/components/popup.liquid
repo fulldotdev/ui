@@ -1,0 +1,189 @@
+{% doc %}
+  Fulldev UI popup styles. Use native markup with its data-slot parts.
+{% enddoc %}
+
+{% stylesheet %}
+  /* Shared surface of the anchored popups, as Vega's popover, select, dropdown menu and hover card
+   content: the popover colors, a hairline ring, a medium shadow and a 100ms fade and zoom. */
+  :is(
+    [data-slot='select-positioner'],
+    [data-slot='popover-positioner'],
+    [data-slot='hover-card-positioner'],
+    [data-slot='dropdown-menu-positioner'],
+    [data-slot='tooltip-positioner']
+  ) {
+    z-index: 1000;
+    isolation: isolate;
+  }
+  [data-slot='select-content'],
+  [data-slot='popover-content'],
+  [data-slot='hover-card-content'],
+  [data-slot='dropdown-menu-content'] {
+    border-radius: var(--radius-md);
+    background: var(--popover);
+    color: var(--popover-foreground);
+    font-size: 0.875rem;
+    box-shadow:
+      0 0 0 1px color-mix(in oklch, var(--foreground) 10%, transparent),
+      var(--shadow-md);
+    outline: none;
+    transform-origin: var(--transform-origin, center);
+    transition:
+      opacity 100ms,
+      scale 100ms;
+  }
+  :is(
+    [data-slot='select-content'],
+    [data-slot='popover-content'],
+    [data-slot='hover-card-content'],
+    [data-slot='dropdown-menu-content'],
+    [data-slot='tooltip-content']
+  ):is([data-starting-style], [data-ending-style]) {
+    opacity: 0;
+    scale: 0.95;
+  }
+  :is([data-slot='hover-card-content'], [data-slot='tooltip-content'])[data-instant] {
+    transition: none;
+  }
+  [data-slot='select-content'] {
+    min-width: 9rem;
+    max-height: var(--available-height, 24rem);
+    overflow: hidden auto;
+  }
+  [data-slot='select-viewport'] {
+    padding: var(--spacing);
+  }
+  [data-slot='select-label'],
+  [data-slot='dropdown-menu-label'] {
+    padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+  }
+  [data-slot='dropdown-menu-label'] {
+    font-weight: 500;
+  }
+  [data-slot='select-item'],
+  [data-slot='dropdown-menu-item'],
+  [data-slot='dropdown-menu-checkbox-item'],
+  [data-slot='dropdown-menu-radio-item'] {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing) * 2);
+    width: 100%;
+    padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    text-align: left;
+    text-decoration: none;
+    cursor: default;
+    user-select: none;
+    outline: none;
+  }
+  [data-slot='select-item'],
+  [data-slot='dropdown-menu-checkbox-item'],
+  [data-slot='dropdown-menu-radio-item'] {
+    padding-right: calc(var(--spacing) * 8);
+  }
+  :is(
+    [data-slot='select-item'],
+    [data-slot='dropdown-menu-item'],
+    [data-slot='dropdown-menu-checkbox-item'],
+    [data-slot='dropdown-menu-radio-item']
+  )[data-highlighted] {
+    background: var(--accent);
+    color: var(--accent-foreground);
+  }
+  :is(
+    [data-slot='select-item'],
+    [data-slot='dropdown-menu-item'],
+    [data-slot='dropdown-menu-checkbox-item'],
+    [data-slot='dropdown-menu-radio-item']
+  )[data-disabled] {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  :is(
+      [data-slot='select-item'],
+      [data-slot='dropdown-menu-item'],
+      [data-slot='dropdown-menu-checkbox-item'],
+      [data-slot='dropdown-menu-radio-item']
+    )
+    > .icon {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+  }
+  [data-slot='dropdown-menu-item'][data-variant='destructive'] {
+    color: var(--destructive);
+  }
+  [data-slot='dropdown-menu-item'][data-variant='destructive'][data-highlighted] {
+    background: light-dark(
+      color-mix(in oklch, var(--destructive) 10%, transparent),
+      color-mix(in oklch, var(--destructive) 20%, transparent)
+    );
+    color: var(--destructive);
+  }
+  /* The check of a selected option sits at the end of its row. */
+  [data-slot='select-item-indicator'],
+  [data-slot='dropdown-menu-item-indicator'] {
+    position: absolute;
+    right: calc(var(--spacing) * 2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+    visibility: hidden;
+    pointer-events: none;
+  }
+  [data-slot='select-item-indicator'] > .icon,
+  [data-slot='dropdown-menu-item-indicator'] > .icon {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+  }
+  [data-selected] > [data-slot='select-item-indicator'],
+  [data-checked] > [data-slot='dropdown-menu-item-indicator'] {
+    visibility: visible;
+  }
+  [data-slot='select-separator'],
+  [data-slot='dropdown-menu-separator'] {
+    height: 1px;
+    margin: var(--spacing) calc(var(--spacing) * -1);
+    background: var(--border);
+  }
+  [data-slot='dropdown-menu-content'] {
+    min-width: 8rem;
+    padding: var(--spacing);
+  }
+  [data-slot='dropdown-menu-shortcut'] {
+    margin-left: auto;
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+  }
+  [data-slot='popover-content'] {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 4);
+    width: min(18rem, var(--available-width, 18rem));
+    padding: calc(var(--spacing) * 4);
+  }
+  [data-slot='popover-header'] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing);
+  }
+  [data-slot='popover-title'] {
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: var(--tracking-normal);
+  }
+  [data-slot='popover-description'] {
+    color: var(--muted-foreground);
+  }
+  [data-slot='hover-card-content'] {
+    width: min(16rem, var(--available-width, 16rem));
+    padding: calc(var(--spacing) * 4);
+    border-radius: var(--radius-lg);
+  }
+{% endstylesheet %}

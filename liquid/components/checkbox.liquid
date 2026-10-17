@@ -1,0 +1,54 @@
+{% doc %}
+  Fulldev UI checkbox styles. Use native markup with its data-slot parts.
+{% enddoc %}
+
+{% stylesheet %}
+  /* Fulldev UI's checkbox: a native checkbox with Vega's box and a check mark. */
+  [data-slot='checkbox'] {
+    position: relative;
+    flex-shrink: 0;
+    appearance: none;
+    border: 1px solid var(--input);
+    border-radius: 4px;
+    background-color: light-dark(transparent, color-mix(in oklch, var(--input) 30%, transparent));
+    color: var(--primary-foreground);
+    box-shadow: var(--shadow-xs);
+    outline: none;
+    transition: box-shadow 150ms;
+  }
+  [data-slot='checkbox']::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 14px;
+    height: 14px;
+    background-color: currentcolor;
+    opacity: 0;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E")
+      center / 14px no-repeat;
+  }
+  [data-slot='checkbox']:checked {
+    border-color: var(--primary);
+    background-color: var(--primary);
+  }
+  [data-slot='checkbox']:checked::before {
+    opacity: 1;
+  }
+  [data-slot='checkbox']:focus-visible {
+    border-color: var(--ring);
+    box-shadow: var(--focus-ring);
+  }
+  [data-slot='checkbox'][aria-invalid='true'] {
+    border-color: light-dark(var(--destructive), color-mix(in oklch, var(--destructive) 50%, transparent));
+    box-shadow: 0 0 0 3px
+      light-dark(
+        color-mix(in oklch, var(--destructive) 20%, transparent),
+        color-mix(in oklch, var(--destructive) 40%, transparent)
+      );
+  }
+  /* As Fulldev UI's compiled checkbox: checked keeps the primary border, except in dark mode. */
+  [data-slot='checkbox'][aria-invalid='true']:checked {
+    border-color: light-dark(var(--primary), color-mix(in oklch, var(--destructive) 50%, transparent));
+  }
+{% endstylesheet %}

@@ -17,6 +17,10 @@ A general homepage for both frameworks, with its content in the frontmatter of `
 - Then a selection of components, with the extras React gets from Fulldev UI marked; the block categories with their counts from the registry; the features block; the presets; the FAQ block; and a closing call to action on the primary color. Sections follow the 6xl container; the blocks render as they would on a site, without Preview or Code frames.
 - The homepage, like Create, belongs to both frameworks: its links lead to the framework chosen last.
 
+## Liquid
+
+Liquid is the third framework in the shared switcher. It has its own navigation, component pages, native Liquid examples, installation commands and Markdown endpoints under `/liquid/`. Previews render the actual Liquid and CSS in isolated frames, with the shared theme tokens. Native styles stay Vega; Tailwind style presets do not transform Liquid. Shopify blocks and commerce stay theme-owned.
+
 ## Presets
 
 The site follows one preset everywhere: theme, style, fonts and menu color, previews included.
@@ -34,6 +38,6 @@ The site follows one preset everywhere: theme, style, fonts and menu color, prev
 ## Rejected
 
 - The inset app shell with a collapsible sidebar and breadcrumbs (`Sidebar1`): too busy for docs.
-- Per-page Astro/React tabs and a style menu next to every preview: both are global choices in the switcher and on Create.
+- Per-page Astro/React/Liquid tabs and a style menu next to every preview: both are global choices in the switcher and on Create.
 - Docs without a left navigation: too hard to browse 60+ components.
 - On the homepage: blocks in Preview and Code frames, a hero that leads with Astro only, a split hero, install tabs in the hero, and the bordered call to action card (`Cta8`).

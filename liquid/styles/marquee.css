@@ -1,0 +1,65 @@
+/* Fulldev UI's marquee parts on a CSS animation. Each marquee-content row holds its items once in a
+   track and again in an inert duplicate. Rows stay static and wrapped without JavaScript and with
+   reduced motion; motion.js sets data-motion-ready once the marquee-toggle pause button works.
+   data-reverse runs a row the other way. Hover, focus and the toggle pause every row. */
+[data-slot='marquee'] {
+  --marquee-gap: calc(var(--spacing) * 4);
+  position: relative;
+}
+[data-slot='marquee-content'] {
+  display: flex;
+  overflow: hidden;
+}
+.marquee-track {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  min-width: 100%;
+  margin-inline-start: calc(var(--marquee-gap) * -1);
+}
+.marquee-track[aria-hidden='true'] {
+  display: none;
+}
+[data-slot='marquee-item'] {
+  flex: none;
+  min-width: 0;
+  padding-inline-start: var(--marquee-gap);
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-slot='marquee'][data-motion-ready] .marquee-track {
+    flex: none;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    margin-inline-start: 0;
+    animation: marquee var(--marquee-duration, 40s) linear infinite;
+  }
+  [data-slot='marquee'][data-motion-ready] .marquee-track[aria-hidden='true'] {
+    display: flex;
+  }
+  [data-slot='marquee'][data-motion-ready] [data-reverse] .marquee-track {
+    animation-direction: reverse;
+  }
+}
+[data-slot='marquee']:hover .marquee-track,
+[data-slot='marquee']:focus-within .marquee-track,
+[data-slot='marquee'][data-paused] .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-100%);
+  }
+}
+/* The marquee's pause button, an outline icon-sm button. */
+[data-slot='marquee-toggle'] {
+  z-index: 1;
+}
+/* The pause buttons of marquees swap their icon once pressed. */
+.motion-pause .icon--play,
+.motion-pause[aria-pressed='true'] .icon--pause {
+  display: none;
+}
+.motion-pause[aria-pressed='true'] .icon--play {
+  display: block;
+}
