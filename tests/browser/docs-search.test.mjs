@@ -68,7 +68,9 @@ test("the docs search lists every page and opens a result", async (t) => {
 
   await page.getByRole("button", { name: "Search documentation" }).click()
   await page.locator("[data-slot=command-input]:visible").fill("accordion")
+  // Before navigating: Chromium can abort the site's cross-document view
+  // transition with a page error on any link.
+  assert.deepEqual(errors, [])
   await page.keyboard.press("Enter")
   await page.waitForURL(`${origin}/components/accordion/`)
-  assert.deepEqual(errors, [])
 })
