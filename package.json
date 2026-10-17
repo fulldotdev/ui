@@ -2,7 +2,7 @@
   "name": "fulldev-ui",
   "type": "module",
   "version": "0.22.3",
-  "description": "Open-source Astro UI components and blocks",
+  "description": "Open-source UI components for Astro, React and native Liquid",
   "homepage": "https://ui.full.dev",
   "bugs": "https://github.com/fulldotdev/ui/issues",
   "license": "MIT",
@@ -40,7 +40,8 @@
     "src/components/examples",
     "src/components/ui",
     "src/lib/utils.ts",
-    "src/styles/global.css"
+    "src/styles/global.css",
+    "liquid"
   ],
   "publishConfig": {
     "access": "public"
@@ -50,7 +51,8 @@
   },
   "packageManager": "pnpm@12.11.2",
   "imports": {
-    "#styles": "./scripts/styles.mjs"
+    "#styles": "./scripts/styles.mjs",
+    "#liquid-fixture": "./tests/helpers/liquid.mjs"
   },
   "scripts": {
     "astro": "astro",
@@ -66,12 +68,14 @@
     "ui:add": "node scripts/ui-add.ts",
     "build": "astro build && pnpm --dir react build && html-validate dist && linkinator dist",
     "a11y": "pnpm build && playwright install chromium --only-shell && node scripts/a11y.mjs",
-    "registry:build": "pnpm registry:meta && node scripts/registry-adapt.mjs && shadcn build --output node_modules/.cache/fulldev-registry && node scripts/registry-styles.mjs && shadcn build -c react -o ../node_modules/.cache/fulldev-registry-react && node scripts/registry-styles.mjs node_modules/.cache/fulldev-registry-react react/registry.json public/r/react && prettier --write registry.json react/registry.json public/r registry/styles/adapted --log-level warn",
-    "registry:check": "pnpm registry:validate && pnpm registry:build && git diff --exit-code -- registry.json react/registry.json public/r registry/styles/adapted",
-    "registry:validate": "node scripts/registry-validate.mjs && cd react && node ../scripts/registry-validate.mjs",
+    "registry:build": "pnpm registry:meta && node scripts/registry-adapt.mjs && shadcn build --output node_modules/.cache/fulldev-registry && node scripts/registry-styles.mjs && shadcn build -c react -o ../node_modules/.cache/fulldev-registry-react && node scripts/registry-styles.mjs node_modules/.cache/fulldev-registry-react react/registry.json public/r/react && pnpm registry:liquid && prettier --write registry.json react/registry.json public/r registry/styles/adapted --log-level warn",
+    "registry:check": "pnpm registry:validate && pnpm registry:build && git diff --exit-code -- registry.json react/registry.json liquid public/r registry/styles/adapted",
+    "registry:validate": "node scripts/registry-validate.mjs && cd react && node ../scripts/registry-validate.mjs && cd .. && node scripts/registry-liquid.mjs --check",
     "release": "changeset version && pnpm install --lockfile-only",
     "release:publish": "pnpm registry:check && changeset publish",
-    "registry:meta": "node scripts/registry-meta.mjs"
+    "registry:meta": "node scripts/registry-meta.mjs",
+    "registry:liquid": "node scripts/registry-liquid.mjs && shadcn build -c liquid -o ../public/r/liquid",
+    "test:liquid": "node --test tests/liquid.test.mjs"
   },
   "dependencies": {
     "@data-slot/accordion": "^1.0.2",
@@ -136,6 +140,7 @@
     "html-validate": "^11.16.1",
     "knip": "^6.39.0",
     "linkinator": "^8.1.0",
+    "liquidjs": "10.25.1",
     "playwright": "1.64.0",
     "posthog-js": "1.434.15",
     "prettier": "^3.9.9",
