@@ -99,6 +99,20 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
           .getAttribute("aria-expanded"),
         "false"
       )
+      await page
+        .locator(slot("accordion-item"))
+        .first()
+        .evaluate((item) => {
+          item.dispatchEvent(
+            new CustomEvent("shopify:block:select", { bubbles: true })
+          )
+        })
+      await page.waitForFunction(
+        () =>
+          document
+            .querySelector('[data-slot="accordion-trigger"]')
+            .getAttribute("aria-expanded") === "true"
+      )
       await page.locator(slot("toggle")).first().click()
       assert.equal(
         await page.locator(slot("toggle")).first().getAttribute("aria-pressed"),
@@ -167,6 +181,19 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
         () =>
           document.querySelector('[data-slot="carousel-content"]').scrollLeft >
           0
+      )
+      await page
+        .locator(slot("carousel-item"))
+        .first()
+        .evaluate((slide) => {
+          slide.dispatchEvent(
+            new CustomEvent("shopify:block:select", { bubbles: true })
+          )
+        })
+      await page.waitForFunction(
+        () =>
+          document.querySelector('[data-slot="carousel-content"]')
+            .scrollLeft === 0
       )
       await page.locator(slot("navigation-menu-trigger")).click()
       assert.equal(

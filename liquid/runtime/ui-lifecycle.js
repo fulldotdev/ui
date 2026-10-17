@@ -39,6 +39,20 @@ export function createLifecycle(factories, scope = document) {
     }
   }
 
+  function reveal(root, method, value) {
+    const owner = components.get(root);
+    const apply = (controller) => {
+      if (owner && components.get(root) === owner) controller?.[method]?.(value);
+    };
+    // A selected block can arrive while its controller is still loading.
+    if (owner?.ready)
+      owner.ready.then(
+        (controller) => apply(controller ?? owner),
+        () => {},
+      );
+    else apply(owner);
+  }
+
   initialize(scope);
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
@@ -57,10 +71,10 @@ export function createLifecycle(factories, scope = document) {
     'shopify:block:select',
     (event) => {
       const item = event.target.closest('[data-slot="accordion-item"]');
-      if (item) components.get(item.closest('[data-slot="accordion"]'))?.expand(item.dataset.value);
+      if (item) reveal(item.closest('[data-slot="accordion"]'), 'expand', item.dataset.value);
       const slide = event.target.closest('[data-slot="carousel-item"]');
       if (slide)
-        components.get(slide.closest('[data-slot="carousel"]'))?.goTo([...slide.parentElement.children].indexOf(slide));
+        reveal(slide.closest('[data-slot="carousel"]'), 'goTo', [...slide.parentElement.children].indexOf(slide));
     },
     { signal: events.signal },
   );
@@ -80,7 +94,7 @@ export function deferred(load, start) {
     let controller;
     let destroyed = false;
     const ready = load().then((module) => {
-      if (!destroyed && root.isConnected) controller = start(module, root);
+      if (!destroyed && root.isConnected) return (controller = start(module, root));
     });
     return {
       ready,
