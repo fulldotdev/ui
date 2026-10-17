@@ -1,5 +1,14 @@
 # Fulldev UI
 
+## 0.24.0
+
+### Minor Changes
+
+- [#285](https://github.com/fulldotdev/ui/pull/285) [`56afa23`](https://github.com/fulldotdev/ui/commit/56afa23ca2c3cc6b57bd4ed66d16a625ee4db284) Thanks [@silveltman](https://github.com/silveltman)! - Add Astro Code Block and Progress components with examples and all eight styles.
+  Update data-slot to 1.1.2, expose optional Collapsible dismissal, and fix the
+  Combobox clear button's accessible name and empty state. Refresh the upstream
+  shadcn style sources and the React preview's Base UI dependency.
+
 ## 0.23.0
 
 ### Minor Changes
