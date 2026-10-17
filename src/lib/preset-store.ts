@@ -78,45 +78,8 @@ function applyTheme(preset: StoredPreset | undefined) {
   }
 }
 
-// Rendered previews per style, kept so switching back keeps their state.
-const cache = new Map<HTMLElement, Map<string, DocumentFragment>>()
-
-// Other styles are stored as JSON next to the preview.
-const render = (preview: HTMLElement, style: string) => {
-  const data = preview.parentElement?.querySelector(
-    `script[data-style-template="${style}"]`
-  )
-  if (!data?.textContent) return
-  const template = document.createElement("template")
-  template.innerHTML = JSON.parse(data.textContent)
-  return template.content
-}
-
-function applyStyle(style: string) {
-  let changed = false
-  document
-    .querySelectorAll<HTMLElement>("[data-style-preview]")
-    .forEach((preview) => {
-      const current = preview.dataset.stylePreview ?? ""
-      if (current === style) return
-      const stored = cache.get(preview) ?? new Map<string, DocumentFragment>()
-      const next = stored.get(style) ?? render(preview, style)
-      if (!next) return
-      cache.set(preview, stored)
-      const fragment = document.createDocumentFragment()
-      fragment.append(...preview.childNodes)
-      stored.set(current, fragment)
-      preview.replaceChildren(next)
-      preview.dataset.stylePreview = style
-      changed = true
-    })
-  // Component scripts initialize new elements on page-load and skip elements
-  // they already control, so the rest of the page and cached previews keep state.
-  if (changed) document.dispatchEvent(new Event("astro:page-load"))
-}
-
 // Switch menus to the preset's menu color, using the classes that installs in
-// that menu color get, rendered by applyStyle in src/lib/styles.ts.
+// that menu color get, rendered by src/lib/styles.ts.
 function applyMenuColor(menuColor = "default") {
   const inverted = menuColor.startsWith("inverted")
   const translucent = menuColor.endsWith("-translucent")
@@ -172,7 +135,6 @@ export function applyPreset(preset: StoredPreset | undefined) {
   const menuColor =
     preset?.config.menuColor ?? root.dataset.defaultMenuColor ?? "default"
   root.dataset.menuColor = menuColor
-  applyStyle(style)
   window.applySiteStyle?.(style)
   applyMenuColor(menuColor)
   observeMenus()

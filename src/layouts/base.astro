@@ -165,25 +165,14 @@ const switcherLabels = {
         items={searchItems}
       />
       {withSidebar && (
-        <div slot="menu" class="flex flex-col gap-6">
-          <DocsSwitcher
-            current={framework}
-            hrefs={frameworkHrefs}
-            labels={switcherLabels}
-          />
-          <DocsNav
-            currentPath={Astro.url.pathname}
-            navigation={navigation}
-            label="Documentation menu"
-          />
-        </div>
+        <div slot="menu" class="flex flex-col gap-6" data-docs-menu-sidebar />
       )}
     </DocsHeader>
     {withSidebar ? (
       <div class="flex flex-1 flex-col px-4 lg:px-6">
         <div class="lg:grid lg:grid-cols-[16.5rem_minmax(0,1fr)]">
           <aside class="sticky top-20 -ml-2 hidden h-[calc(100svh-6rem)] overflow-y-auto pl-2 [scrollbar-width:none] lg:block">
-            <div class="flex w-56 flex-col gap-6 pb-8">
+            <div class="flex w-56 flex-col gap-6 pb-8" data-docs-sidebar>
               <DocsSwitcher
                 current={framework}
                 hrefs={frameworkHrefs}
@@ -220,6 +209,18 @@ const switcherLabels = {
   } from "@/lib/preset-store"
 
   applyPreset(readPreset())
+
+  // The page holds the switcher and the navigation once: in the sidebar from
+  // lg up, in the menu drawer below.
+  const sidebar = document.querySelector("[data-docs-sidebar]")
+  const menu = document.querySelector("[data-docs-menu-sidebar]")
+  const wide = matchMedia("(min-width: 64rem)")
+  const placeSidebar = () => {
+    const [from, to] = wide.matches ? [menu, sidebar] : [sidebar, menu]
+    if (from && to) to.append(...from.childNodes)
+  }
+  placeSidebar()
+  wide.addEventListener("change", placeSidebar)
 
   // On a page of both libraries, the homepage and Create, links lead to the
   // library chosen last, in the switcher, on the homepage or on Create.
