@@ -27,7 +27,7 @@ The site follows one preset everywhere: theme, style, fonts and menu color, prev
 
 - The default is the Fulldev preset (`DEFAULT_CONFIG` in `src/lib/presets.ts`): Vega, Stone, Orange, Geist, the large radius and translucent menus. It follows the full.dev website treatment with orange as Fulldev UI's product color. Installs keep the theme of the registry's init item.
 - The switcher offers Fulldev, shadcn/ui (`SHADCN_CONFIG`: Nova, Neutral, Geist, the default radius) and the visitor's own preset from Create. Astro or React comes from the page.
-- `src/lib/styles.ts` renders the site in Vega and adds, per class string, the classes of every style; the inline script it adds switches them before the first paint. Previews are rendered per style already (`style-preview.astro`).
+- `src/lib/styles.ts` renders the site, previews included, in Vega once and adds, per class string, the classes every other style removes and adds; the inline script it adds switches them before the first paint.
 - The header turns to glass when the preset's menus are translucent (`data-menu-color` on `<html>`).
 
 ## Brand

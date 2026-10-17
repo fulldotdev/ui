@@ -39,6 +39,13 @@ const groups = items.reduce<{ label: string; items: typeof items }[]>(
   },
   []
 )
+// The items of each group, rendered by the script below.
+const data = JSON.stringify(
+  groups.map((group) => [
+    group.label,
+    group.items.map((item) => [item.label, item.href, item.title]),
+  ])
+).replace(/</g, "\\u003c")
 /* eslint-disable astro/jsx-a11y/no-autofocus -- Focus moves into the search dialog when it opens. */
 ---
 
@@ -70,25 +77,47 @@ const groups = items.reduce<{ label: string; items: typeof items }[]>(
     <CommandList class="max-h-[min(24rem,50svh)]">
       <CommandEmpty>{empty}</CommandEmpty>
       {groups.map((group) => (
-        <CommandGroup heading={group.label}>
-          {group.items.map((item) => (
-            <CommandItem
-              href={item.href}
-              value={`${item.label} ${item.group}`}
-              label={item.label}
-              keywords={[item.title]}
-            >
-              {item.label}
-              <CommandShortcut class="hidden sm:inline">
-                {item.href}
-              </CommandShortcut>
-            </CommandItem>
-          ))}
-        </CommandGroup>
+        <CommandGroup heading={group.label} data-search-group />
       ))}
     </CommandList>
   </Command>
 </CommandDialog>
+
+<template data-search-item>
+  <CommandItem href="/">
+    {label}
+    <CommandShortcut class="hidden sm:inline">/</CommandShortcut>
+  </CommandItem>
+</template>
+<script is:inline type="application/json" data-search-items set:html={data} />
+<script is:inline>
+  // Every page searches all pages of its library. The page holds them as data
+  // and renders the items from one template while it loads, before the
+  // command and the site style script start, instead of carrying the markup
+  // of every item.
+  ;(() => {
+    const template = document.querySelector("template[data-search-item]")
+    const data = JSON.parse(
+      document.querySelector("[data-search-items]").textContent
+    )
+    const groups = document.querySelectorAll(
+      "[data-search-dialog] [data-search-group]"
+    )
+    groups.forEach((group, index) => {
+      const [heading, items] = data[index]
+      for (const [label, href, title] of items) {
+        const item = template.content.firstElementChild.cloneNode(true)
+        item.setAttribute("href", href)
+        item.dataset.value = `${label} ${heading}`
+        item.dataset.label = label
+        item.dataset.keywords = title
+        item.firstChild.replaceWith(label)
+        item.querySelector("[data-slot=command-shortcut]").textContent = href
+        group.append(item)
+      }
+    })
+  })()
+</script>
 
 <script>
   // iOS opens the keyboard only for focus within the tap, and the search
