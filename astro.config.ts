@@ -3,6 +3,7 @@ import { unified } from "@astrojs/markdown-remark"
 import mdx from "@astrojs/mdx"
 import liveCode from "astro-live-code"
 
+import { inheritCodeColors } from "./src/lib/code"
 import fulldevIntegration from "./src/lib/integration"
 
 // Docs tables scroll inside the content column instead of widening the page.
@@ -75,6 +76,7 @@ export default defineConfig({
         light: "github-light-high-contrast",
         dark: "github-dark-default",
       },
+      transformers: [inheritCodeColors],
     },
   },
   fonts: [
