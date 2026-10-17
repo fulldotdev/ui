@@ -11,6 +11,7 @@ import {
   getLiquidNavigation,
   getPageId,
   getPageSearchItems,
+  getPageSeo,
   getReactNavigation,
 } from "@/lib/pages"
 import {
@@ -89,6 +90,24 @@ const stars = await getGithubStars(global.header.githubRepo)
 const githubStars =
   stars === undefined ? undefined : new Intl.NumberFormat("en").format(stars)
 
+const seo = getPageSeo(pageId, {
+  title: page.seo?.title ?? page.title,
+  description: page.seo?.description ?? page.description,
+})
+
+// The homepage tells search engines what the site is and who publishes it.
+const websiteData = pageId === "index" && {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Fulldev UI",
+  url: new URL("/", Astro.site ?? Astro.url).toString(),
+  publisher: {
+    "@type": "Organization",
+    name: "Fulldev",
+    url: "https://full.dev",
+  },
+}
+
 const switcherLabels = {
   framework: "Framework",
   preset: "Preset",
@@ -102,6 +121,7 @@ const switcherLabels = {
     {...global}
     {...page}
     {...page.seo}
+    {...seo}
     image={
       page.seo?.image || page.image || { src: socialImage, alt: "Fulldev UI" }
     }
@@ -111,6 +131,13 @@ const switcherLabels = {
     <ThemeProvider />
     <PresetHead />
     <Posthog />
+    {websiteData && (
+      <script
+        is:inline
+        type="application/ld+json"
+        set:html={JSON.stringify(websiteData)}
+      />
+    )}
   </LayoutHead>
   <LayoutBody
     data-framework-neutral={

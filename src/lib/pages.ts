@@ -32,6 +32,41 @@ const platformPattern = /^(react|liquid)(?:\/|$)/
 export const getFramework = (id: string): Framework =>
   (id.match(platformPattern)?.[1] as Framework) ?? "astro"
 
+// The title and description of a page in search results, unique across the
+// site: a component or block page says what it is, and every page of one
+// framework names it, such as "Hero blocks for React - Fulldev UI". The
+// homepage and Create belong to all frameworks.
+const pageKinds: Record<string, string> = {
+  components: "component",
+  blocks: "blocks",
+}
+
+export const getPageSeo = (
+  id: string,
+  { title, description }: { title: string; description: string }
+) => {
+  const name = "Fulldev UI"
+  const withName = (value: string) =>
+    value.includes(name) ? value : `${value} - ${name}`
+  if (id === "index" || id === "create")
+    return { title: withName(title), description }
+  const label = frameworkLabels[getFramework(id)]
+  const [section, slug] = id.replace(platformPattern, "").split("/")
+  const kind = slug ? pageKinds[section] : undefined
+  const subject =
+    kind && !title.toLowerCase().includes(kind.replace(/s$/, ""))
+      ? `${title} ${kind}`
+      : title
+  return {
+    title: withName(
+      title === label ? `${name} for ${label}` : `${subject} for ${label}`
+    ),
+    description: new RegExp(`\\b${label}\\b`).test(description)
+      ? description
+      : `${/[.!?]$/.test(description) ? description : `${description}.`} ${name} for ${label}.`,
+  }
+}
+
 const normalizePath = (path: string) => {
   if (path === "/") return path
 
