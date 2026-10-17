@@ -88,8 +88,9 @@ export async function renderFixture(
   )
   const engine = new Liquid({ root: renderRoot, extname: ".liquid" })
   engine.registerFilter("t", (key, ...args) => {
-    let value =
-      key.split(".").reduce((value, part) => value?.[part], locale) ?? key
+    let value = key.split(".").reduce((value, part) => value?.[part], locale)
+    if (typeof value !== "string")
+      throw new Error(`Missing fixture translation: ${key}`)
     for (const [name, replacement] of args)
       value = value.replaceAll(`{{ ${name} }}`, replacement)
     return value
@@ -122,7 +123,11 @@ export async function renderFixture(
     `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Fulldev Liquid components</title>${head}</head><body>${reference}${extra}</body></html>`,
     {
       section: { id: "ui-reference", settings: { scheme: "default" } },
-      routes: { all_products_collection_url: "/collections/all" },
+      routes: {
+        all_products_collection_url: "/collections/all",
+        search_url: "/search",
+        cart_url: "/cart",
+      },
     }
   )
   // Model Shopify's stylesheet collection: shared snippet styles after the theme assets.

@@ -63,6 +63,15 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
           .first()
           .waitFor({ state: "attached" })
       assert.deepEqual(errors, [])
+      for (const [label, href] of [
+        ["Search", "/search"],
+        ["Cart", "/cart"],
+      ]) {
+        const links = page.getByRole("link", { name: label, exact: true })
+        assert((await links.count()) > 0, `${label}: translated link`)
+        for (const link of await links.all())
+          assert.equal(await link.getAttribute("href"), href)
+      }
       assert.equal(
         await page
           .getByRole("button", { name: "<Escaped label>", exact: true })
