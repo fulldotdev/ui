@@ -20,7 +20,7 @@ export async function getLlms(origin: string, framework: Framework) {
   const pages = await getPages(framework)
   const groups = new Map<string, typeof pages>()
   for (const page of pages) {
-    const parts = page.id.replace(/^react\/?/, "").split("/")
+    const parts = page.id.replace(/^(react|liquid)\/?/, "").split("/")
     const key = parts.length > 1 ? parts[0] : "Overview"
     groups.set(key, [...(groups.get(key) ?? []), page])
   }
@@ -37,6 +37,9 @@ export async function getLlms(origin: string, framework: Framework) {
         .join("\n")
       return `## ${heading}\n\n${links}`
     })
+
+  if (framework === "liquid")
+    return `# Fulldev UI for Liquid\n\n> Native Shopify Liquid, readable CSS and ES modules. No Tailwind or theme build.\n\nInstall with \`npx shadcn@latest add ${origin}/r/liquid/components.json\`, then render \`ui\` once in the layout head. Individual items use ${origin}/r/liquid/{name}.json. Every page has a Markdown version.\n\n- [Installation](${origin}/liquid/docs/installation.md)\n- [Full documentation](${origin}/liquid/llms-full.txt)\n- [Registry](${origin}/r/liquid/registry.json)\n\n${sections.join("\n\n")}\n`
 
   if (framework === "react")
     return `# Fulldev UI React extension
@@ -61,7 +64,7 @@ Install items with \`npx shadcn@latest add @fulldev/<name>\` after adding the \`
 - [Agent entry point](${origin}/index.md)
 - [Full documentation in one file](${origin}/llms-full.txt)
 - [Registry index](${origin}/r/registry.json)
-- [Native Liquid and Shopify](${origin}/docs/liquid.md): universal registry, readable CSS and no consuming build step
+- [Native Liquid and Shopify](${origin}/liquid/llms.txt): universal registry, readable CSS and no consuming build step
 - [React extension](${origin}/react/llms.txt): Fulldev extras and blocks for shadcn/ui React projects
 
 ${sections.join("\n\n")}
@@ -79,6 +82,10 @@ export async function getLlmsFull(origin: string, framework: Framework) {
     )
   )
   const title =
-    framework === "react" ? "Fulldev UI React extension" : "Fulldev UI"
+    framework === "liquid"
+      ? "Fulldev UI for Liquid"
+      : framework === "react"
+        ? "Fulldev UI React extension"
+        : "Fulldev UI"
   return `# ${title}\n\nFull documentation source for every page${framework === "react" ? " of the React extension" : ""} on ${origin}. Each section starts with a comment containing the page URL.\n\n${documents.join("\n\n---\n\n")}\n`
 }

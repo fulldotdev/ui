@@ -20,7 +20,7 @@ and the shadcn skill differ, this skill wins.
 
 ## Native Liquid
 
-For Shopify themes, use `https://ui.full.dev/r/liquid/<name>.json` with `shadcn add`; `components` installs the full set. Read [Liquid](https://ui.full.dev/docs/liquid.md). These are universal items with explicit theme targets. Do not run `shadcn init` or add Tailwind to the theme. Render `ui` once in each layout head before theme overrides and other modules. Keep `content_for_header`; load `custom.css` after it. Existing Shopify adapters use `runtime: false` and the exported lifecycle with their own import map. Installed UI stays unchanged; theme settings and commerce code stay local. Native source supports Vega, not the Tailwind preset generator.
+For Shopify themes, use `https://ui.full.dev/r/liquid/<name>.json` with `shadcn add`; `components` installs the full set. Read [Liquid](https://ui.full.dev/liquid/docs/installation.md). These are universal items with explicit theme targets. Do not run `shadcn init` or add Tailwind to the theme. Render `ui` once in each layout head before theme overrides and other modules. Keep `content_for_header`; load `custom.css` after it. Existing Shopify adapters use `runtime: false` and the exported lifecycle with their own import map. Installed UI stays unchanged; theme settings and commerce code stay local. Native source supports Vega, not the Tailwind preset generator.
 
 ## Astro setup
 

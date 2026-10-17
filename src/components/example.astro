@@ -36,11 +36,25 @@ const minHeight = /^header-\d+$/.test(name) ? 640 : undefined
 <LiveCode
   componentProps={{
     name: example.item,
-    frame: framework === "react",
+    frame: framework !== "astro",
+    installCommand:
+      framework === "liquid"
+        ? `npx shadcn@latest add ${(example.dependencies ?? [example.item]).map((name) => `https://ui.full.dev/r/liquid/${name}.json`).join(" ")}`
+        : undefined,
     codeLabel: example.kind === "examples" ? "Code" : "Usage",
   }}
 >
-  {Component && fullPage ? (
+  {framework === "liquid" ? (
+    <iframe
+      slot="example"
+      data-liquid-preview
+      src={`/preview/liquid/${example.route}.html`}
+      title={`${name} native Liquid preview`}
+      loading="lazy"
+      class="block w-full"
+      style="height: 360px"
+    />
+  ) : Component && fullPage ? (
     <div
       slot="example"
       class="relative h-[640px] w-full transform-gpu overflow-hidden text-left [&_[data-slot=sidebar-container]]:h-full [&_[data-slot=sidebar-wrapper]]:min-h-full"
@@ -76,6 +90,7 @@ const minHeight = /^header-\d+$/.test(name) ? 640 : undefined
 
 <script>
   import { PRESET_EVENT, readPreset } from "@/lib/preset-store"
+  import { DEFAULT_CONFIG, presetCss, presetFontUrls } from "@/lib/presets"
 
   // Show each React preview in the docs style. Development serves only vega.
   const sync = () => {
@@ -91,6 +106,44 @@ const minHeight = /^header-\d+$/.test(name) ? 640 : undefined
   }
   sync()
   document.addEventListener(PRESET_EVENT, sync)
+
+  const syncLiquid = () => {
+    const preset = readPreset()
+    for (const frame of document.querySelectorAll<HTMLIFrameElement>(
+      "iframe[data-liquid-preview]"
+    )) {
+      frame.contentWindow?.postMessage(
+        {
+          type: "fulldev:liquid-theme",
+          dark: document.documentElement.classList.contains("dark"),
+          css: preset?.css ?? presetCss(DEFAULT_CONFIG),
+          fonts: preset?.fonts ?? presetFontUrls(DEFAULT_CONFIG),
+        },
+        location.origin
+      )
+    }
+  }
+  syncLiquid()
+  document.addEventListener(PRESET_EVENT, syncLiquid)
+  new MutationObserver(syncLiquid).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  })
+  window.addEventListener("message", (event) => {
+    if (event.origin !== location.origin) return
+    const frame = [
+      ...document.querySelectorAll<HTMLIFrameElement>(
+        "iframe[data-liquid-preview]"
+      ),
+    ].find((frame) => frame.contentWindow === event.source)
+    if (!frame) return
+    if (event.data?.type === "fulldev:liquid-ready") syncLiquid()
+    if (
+      event.data?.type === "fulldev:liquid-height" &&
+      Number.isFinite(event.data.height)
+    )
+      frame.style.height = `${Math.min(Math.max(Math.ceil(event.data.height), 240), 2000)}px`
+  })
 
   // The preview app reports its height.
   window.addEventListener("message", (event) => {

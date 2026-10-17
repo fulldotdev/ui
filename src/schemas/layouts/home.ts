@@ -25,7 +25,7 @@ export const homeSchema = (ctx: SchemaContext) =>
         buttons: linkSchema.array(),
         frameworks: z
           .object({
-            name: z.enum(["astro", "react"]),
+            name: z.enum(["astro", "react", "liquid"]),
             label: z.string(),
             description: z.string(),
             href: z.string(),

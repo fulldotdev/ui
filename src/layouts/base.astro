@@ -8,6 +8,7 @@ import {
   frameworks,
   getCounterpartHref,
   getFramework,
+  getLiquidNavigation,
   getPageId,
   getPageSearchItems,
   getReactNavigation,
@@ -41,7 +42,11 @@ const framework = getFramework(pageId)
 const withSidebar = pageId !== "index" && pageId !== "create"
 const [searchItems, navigation, ...counterparts] = await Promise.all([
   getPageSearchItems(framework),
-  framework === "react" ? getReactNavigation() : global.sidebar.navigation,
+  framework === "react"
+    ? getReactNavigation()
+    : framework === "liquid"
+      ? getLiquidNavigation()
+      : global.sidebar.navigation,
   ...frameworks.map((target) =>
     target === framework
       ? Astro.url.pathname
@@ -54,16 +59,30 @@ const frameworkHrefs = Object.fromEntries(
 
 // Docs, Components and Blocks lead to the library of the current page.
 const headerNavigation = await Promise.all(
-  global.header.navigation.map(async (item) => {
-    const id = getPageId(item.href)
-    const react = await getCounterpartHref(id, "react")
-    const reactHref = react === `/react/${id}/` ? react : undefined
-    return {
-      ...item,
-      href: framework === "react" && reactHref ? reactHref : item.href,
-      reactHref,
-    }
-  })
+  global.header.navigation
+    .filter(
+      (item) =>
+        framework !== "liquid" || !["/blocks/", "/create/"].includes(item.href)
+    )
+    .map(async (item) => {
+      const id = getPageId(item.href)
+      const react = await getCounterpartHref(id, "react")
+      const reactHref = react === `/react/${id}/` ? react : undefined
+      const liquidHref = await getCounterpartHref(id, "liquid")
+      return {
+        ...item,
+        href:
+          framework === "liquid" && ["docs", "components"].includes(id)
+            ? liquidHref
+            : framework === "react" && reactHref
+              ? reactHref
+              : item.href,
+        reactHref,
+        liquidHref: ["docs", "components"].includes(id)
+          ? liquidHref
+          : undefined,
+      }
+    })
 )
 
 const stars = await getGithubStars(global.header.githubRepo)
@@ -179,12 +198,19 @@ const switcherLabels = {
   // library chosen last, in the switcher, on the homepage or on Create.
   const followFramework = () => {
     if (!document.body.hasAttribute("data-framework-neutral")) return
-    const react = localStorage.getItem(FRAMEWORK_KEY) === "react"
+    const framework = localStorage.getItem(FRAMEWORK_KEY) ?? "astro"
     document
-      .querySelectorAll<HTMLAnchorElement>("a[data-react-href]")
+      .querySelectorAll<HTMLAnchorElement>(
+        "a[data-react-href], a[data-liquid-href]"
+      )
       .forEach((link) => {
         link.dataset.astroHref ??= link.getAttribute("href") ?? ""
-        const href = react ? link.dataset.reactHref : link.dataset.astroHref
+        const href =
+          framework === "liquid"
+            ? link.dataset.liquidHref
+            : framework === "react"
+              ? link.dataset.reactHref
+              : link.dataset.astroHref
         if (href) link.setAttribute("href", href)
       })
   }

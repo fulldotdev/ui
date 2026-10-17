@@ -1,6 +1,6 @@
 # Fulldev UI for Liquid
 
-Native Shopify Liquid, readable CSS and ES modules. The consumer needs no Tailwind, framework, package manifest or build step. See the [installation and API guide](https://ui.full.dev/docs/liquid/).
+Native Shopify Liquid, readable CSS and ES modules. The consumer needs no Tailwind, framework, package manifest or build step. See the [installation and API guide](https://ui.full.dev/liquid/).
 
 `components/` owns each component's styles and optional markup. Most use Shopify's `{% stylesheet %}` tag. Components with global classes, such as typography's `typeset`, keep their CSS in `styles/`, so Shopify Theme Check can resolve those classes across snippets. Shopify bundles the stylesheet tags; the source stays small and separate. Card parts remain native HTML, styled through `data-slot`.
 

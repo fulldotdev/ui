@@ -12,6 +12,7 @@ type ComponentProps = {
   frame?: boolean
   // "Usage" when the code uses an installed item but is not installed itself.
   codeLabel?: string
+  installCommand?: string
 }
 
 type Props = {
@@ -35,9 +36,11 @@ const blockSlugs = new Set(
 )
 const isBlockPreview = componentSlug ? blockSlugs.has(componentSlug) : false
 const isTypographyPreview = componentSlug === "typography"
-const installCommand = componentSlug
-  ? `npx shadcn@latest add @fulldev/${componentSlug}`
-  : undefined
+const installCommand =
+  componentProps.installCommand ??
+  (componentSlug
+    ? `npx shadcn@latest add @fulldev/${componentSlug}`
+    : undefined)
 const installButtonId = installCommand
   ? `live-code-copy-install-${crypto.randomUUID()}`
   : undefined

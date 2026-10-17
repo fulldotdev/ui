@@ -5,6 +5,7 @@
 import ArrowUpRightIcon from "@lucide/astro/icons/arrow-up-right"
 import CheckIcon from "@lucide/astro/icons/check"
 import ChevronsUpDownIcon from "@lucide/astro/icons/chevrons-up-down"
+import LiquidLogo from "@lucide/astro/icons/droplet"
 import AstroLogo from "simple-icons/icons/astro.svg"
 import ReactLogo from "simple-icons/icons/react.svg"
 
@@ -34,7 +35,7 @@ type Props = {
 }
 
 const { current, hrefs, labels } = Astro.props
-const logos = { astro: AstroLogo, react: ReactLogo }
+const logos = { astro: AstroLogo, react: ReactLogo, liquid: LiquidLogo }
 const Logo = logos[current]
 const title = (value: string) => value[0].toUpperCase() + value.slice(1)
 const [fallback] = NAMED_PRESETS
@@ -46,7 +47,11 @@ const presets = NAMED_PRESETS.map(({ id, label, config }) => ({
 }))
 ---
 
-<div data-docs-switcher data-presets={JSON.stringify(presets)}>
+<div
+  data-docs-switcher
+  data-framework={current}
+  data-presets={JSON.stringify(presets)}
+>
   <DropdownMenu>
     <DropdownMenuTrigger
       class={cn(
@@ -55,7 +60,11 @@ const presets = NAMED_PRESETS.map(({ id, label, config }) => ({
       )}
     >
       <span class="bg-muted grid size-8 shrink-0 place-items-center rounded-md">
-        <Logo class="size-4" fill="currentColor" aria-hidden="true" />
+        <Logo
+          class="size-4"
+          fill={current === "liquid" ? "none" : "currentColor"}
+          aria-hidden="true"
+        />
       </span>
       <span class="flex min-w-0 flex-1 flex-col">
         <span class="truncate text-sm font-medium">
@@ -80,7 +89,11 @@ const presets = NAMED_PRESETS.map(({ id, label, config }) => ({
               href={hrefs[framework]}
               data-framework-choice={framework}
             >
-              <ItemLogo class="size-4" fill="currentColor" aria-hidden="true" />
+              <ItemLogo
+                class="size-4"
+                fill={framework === "liquid" ? "none" : "currentColor"}
+                aria-hidden="true"
+              />
               {frameworkLabels[framework]}
               {framework === current && <CheckIcon class="ml-auto size-4" />}
             </DropdownMenuItem>
@@ -160,7 +173,7 @@ const presets = NAMED_PRESETS.map(({ id, label, config }) => ({
       element.textContent = match?.label ?? customLabel
     })
     document.querySelectorAll("[data-preset-detail]").forEach((element) => {
-      element.textContent = `${title(config.style)}, ${title(config.theme)}`
+      element.textContent = `${element.closest("[data-docs-switcher]")?.getAttribute("data-framework") === "liquid" ? "Vega" : title(config.style)}, ${title(config.theme)}`
     })
     document
       .querySelectorAll<HTMLElement>("[data-preset-check]")

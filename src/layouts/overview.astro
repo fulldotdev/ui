@@ -36,6 +36,7 @@ const byId = (ids: string[]) =>
 
 // The React extension: its index lists its sections, a section its pages.
 const reactEntries = async () => {
+  if (pageId === "liquid") return byId(["liquid/docs", "liquid/components"])
   if (pageId === "react")
     return byId(["react/docs", "react/components", "react/blocks"])
   if (pageId === "react/docs")
@@ -49,23 +50,24 @@ const reactEntries = async () => {
     .sort((a, b) => a.data.title.localeCompare(b.data.title))
 }
 
-const entries = pageId.startsWith("react")
-  ? await reactEntries()
-  : currentPath === "/docs/"
-    ? byId(docsIndexOrder)
-    : pages
-        .filter(({ data, id }) => {
-          if (currentPath === "/blocks/") {
-            return data.type === "block" && id.startsWith("blocks/")
-          }
+const entries =
+  pageId.startsWith("react") || pageId.startsWith("liquid")
+    ? await reactEntries()
+    : currentPath === "/docs/"
+      ? byId(docsIndexOrder)
+      : pages
+          .filter(({ data, id }) => {
+            if (currentPath === "/blocks/") {
+              return data.type === "block" && id.startsWith("blocks/")
+            }
 
-          if (currentPath === "/components/") {
-            return data.type === "doc" && id.startsWith("components/")
-          }
+            if (currentPath === "/components/") {
+              return data.type === "doc" && id.startsWith("components/")
+            }
 
-          return false
-        })
-        .sort((a, b) => a.data.title.localeCompare(b.data.title))
+            return false
+          })
+          .sort((a, b) => a.data.title.localeCompare(b.data.title))
 
 // The extras the React extension documents, for links to the 0.21 gallery.
 const reactExtras = pages

@@ -4,6 +4,8 @@
 // - React block and Fulldev extra demos of the preview app in react/gallery.
 // The preview, the Code tab, the Markdown version and the install command all
 // come from that one file.
+import liquidDependencies from "@liquid/examples/dependencies.json"
+
 import type { Framework } from "@/lib/pages"
 
 type Example = {
@@ -14,9 +16,10 @@ type Example = {
   item: string
   path: string
   source: string
-  lang: "astro" | "tsx"
+  lang: "astro" | "tsx" | "liquid"
   // The preview app route, for React.
   route: string
+  dependencies?: string[]
 }
 
 const astroSources = import.meta.glob<string>(
@@ -50,6 +53,31 @@ const examples = [astroSources, reactSources].flatMap((sources) =>
   })
 )
 
+const liquidSources = import.meta.glob<string>("/liquid/examples/*.liquid", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+})
+examples.push(
+  ...Object.entries(liquidSources).map(([path, source]): Example => {
+    const name = path
+      .split("/")
+      .at(-1)!
+      .replace(/\.liquid$/, "")
+    return {
+      name,
+      framework: "liquid",
+      kind: "ui",
+      item: name,
+      path: path.slice(1),
+      source: source.trimEnd(),
+      lang: "liquid",
+      route: name,
+      dependencies: liquidDependencies[name as keyof typeof liquidDependencies],
+    }
+  })
+)
+
 export const getExample = (name: string, framework: Framework) =>
   examples.find(
     (example) => example.name === name && example.framework === framework
@@ -63,11 +91,13 @@ export const inlineExamples = (body: string, framework: Framework) => {
   const text = body.replace(exampleTag, (tag, name: string) => {
     const example = getExample(name, framework)
     if (!example) return tag
-    items.add(example.item)
+    for (const item of example.dependencies ?? [example.item]) items.add(item)
     const title =
-      example.kind === "examples"
-        ? example.path.replace(/^react\//, "")
-        : `Usage of @fulldev/${example.item} (${example.path}, not installed)`
+      framework === "liquid"
+        ? example.path
+        : example.kind === "examples"
+          ? example.path.replace(/^react\//, "")
+          : `Usage of @fulldev/${example.item} (${example.path}, not installed)`
     return `\`\`\`${example.lang} title="${title}"\n${example.source}\n\`\`\``
   })
   return { text, items: [...items] }
