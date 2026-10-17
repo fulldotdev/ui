@@ -67,8 +67,10 @@ git checkout -b feature/your-feature-name
 3. **Test your changes**:
 
 ```bash
-pnpm check    # Format, lint, types and registry
-pnpm build    # Build the site and validate its HTML
+vp run check:source  # Format, lint, types and registry
+vp run test:unit     # Unit and registry tests
+vp run build         # Build the site
+vp run check:build   # Validate its HTML and links
 ```
 
 4. **Commit your changes**:
@@ -121,8 +123,9 @@ const slot = await Astro.slots.render("default")
 ### Building
 
 ```bash
-pnpm build          # Build the site and validate its HTML
-pnpm fix            # Format and apply lint fixes
+vp run build        # Build the site
+vp run check:build  # Validate its HTML and links
+vp run fix:source   # Format and apply lint fixes
 ```
 
 ### Registry

@@ -14,10 +14,11 @@ on:
         unlabeled,
       ]
   workflow_run:
-    workflows: [Check, Review event]
-    types: [completed]
+    workflows: [Check, Test]
+    types: [requested, in_progress, completed]
 
 permissions:
+  actions: read
   contents: write
   pull-requests: write
   statuses: write
@@ -25,9 +26,11 @@ permissions:
 
 jobs:
   ready:
-    uses: fulldotdev/.github/.github/workflows/ready.yml@579bcf444a2f964e48ecbeb580b01c921c9f1ea4
+    uses: fulldotdev/.github/.github/workflows/ready.yml@f2895c09a7d688a58f2bacc200c7b18bc07574e7
     with:
+      runner: blacksmith-2vcpu-ubuntu-2404
       netlify-checks: '["netlify/fulldev-ui/deploy-preview"]'
+      test-checks: '["Test / Test"]'
       merge-app-client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
     secrets:
       merge-app-private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}

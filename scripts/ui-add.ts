@@ -1,6 +1,6 @@
 // Installs registry items with the official shadcn CLI, then formats the
 // project with its own Prettier config and ignores, the same pass as
-// `pnpm fix`, so a later format run leaves the installed files unchanged.
+// `vp run fix:source`, so a later format run leaves the installed files unchanged.
 //
 //   pnpm ui:add @shadcn/card @fulldev/button
 //

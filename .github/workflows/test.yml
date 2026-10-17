@@ -1,0 +1,25 @@
+name: Test
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
+
+permissions:
+  contents: read
+  pull-requests: read
+  statuses: read
+
+concurrency:
+  group: test-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test
+    uses: fulldotdev/.github/.github/workflows/test.yml@f2895c09a7d688a58f2bacc200c7b18bc07574e7
+    with:
+      runner: blacksmith-4vcpu-ubuntu-2404
+      unit: true
+      http: false
+      browser: false

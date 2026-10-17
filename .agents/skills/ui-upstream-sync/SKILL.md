@@ -61,7 +61,7 @@ Use this skill only in the Fulldev UI registry source. The goal is a deliberate 
 ## Validation and handoff
 
 1. Format settled source and manifest changes.
-2. Run `pnpm check`.
+2. Run `vp run check:source` and `vp run test:unit`.
 3. Run the dev server and inspect every changed component page in a real browser. Exercise relevant keyboard, pointer, open and close, selection, disabled, and RTL behavior. Check the browser console and server logs.
 4. Give a concise per-family report. For each changed family, name the source change, whether it came from data-slot, shadcn, registry metadata, or more than one, and include its preview URL.
 5. Also list reviewed unchanged families, validation results, intentional differences, generated-only drift, and release blockers.
