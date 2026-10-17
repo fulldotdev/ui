@@ -53,7 +53,13 @@ export async function renderLiquidExample(source: string) {
   engine.registerFilter("json", JSON.stringify)
   const head = await engine.parseAndRender("{% render 'ui' %}")
   const body = await engine.parseAndRender(source, {
-    routes: { all_products_collection_url: "/collections/all" },
+    // Native examples use Shopify routes. Point them at docs in this fixture.
+    routes: {
+      root_url: "/liquid/",
+      all_products_collection_url: "/liquid/components/",
+      search_url: "/liquid/components/command/",
+      cart_url: "/liquid/components/sheet/",
+    },
   })
   return `<!doctype html><html lang="en"><head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width">
