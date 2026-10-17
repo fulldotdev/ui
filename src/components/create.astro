@@ -87,6 +87,7 @@ const command = (template: string) =>
       >
         <NativeSelectOption value="astro">Astro</NativeSelectOption>
         <NativeSelectOption value="react">React</NativeSelectOption>
+        <NativeSelectOption value="liquid">Liquid</NativeSelectOption>
       </NativeSelect>
     </Field>
     <FieldGroup class="grid grid-cols-2 gap-3 lg:flex lg:flex-col">
@@ -193,7 +194,22 @@ const command = (template: string) =>
       </StylePreview>
     </div>
 
-    <Tabs defaultValue="new" class="gap-3">
+    <div
+      data-framework-panel="liquid"
+      hidden
+      class="flex flex-col gap-3 text-sm"
+    >
+      <p>
+        Install in your Shopify theme and render <code>ui</code> once in the
+        layout head. Liquid uses native Vega CSS; Tailwind style presets do not
+        transform it. Customize the shared tokens in your theme.
+      </p>
+      <pre class="bg-muted overflow-x-auto rounded-lg p-3 font-mono text-xs"><code>npx shadcn@latest add https://ui.full.dev/r/liquid/components.json</code></pre>
+      <a href="/liquid/docs/installation/" class="underline">
+        Liquid installation and theming
+      </a>
+    </div>
+    <Tabs defaultValue="new" class="gap-3" data-framework-exclude="liquid">
       <TabsList>
         <TabsTrigger value="new">New project</TabsTrigger>
         <TabsTrigger value="existing">Existing Fulldev UI project</TabsTrigger>
@@ -248,6 +264,11 @@ const command = (template: string) =>
     "[data-create-framework]"
   )
   const show = (framework: string) => {
+    document
+      .querySelectorAll<HTMLElement>("[data-framework-exclude]")
+      .forEach((panel) => {
+        panel.hidden = panel.dataset.frameworkExclude === framework
+      })
     document
       .querySelectorAll<HTMLElement>("[data-framework-panel]")
       .forEach((panel) => {

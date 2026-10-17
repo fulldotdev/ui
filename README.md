@@ -1,6 +1,6 @@
 # Fulldev UI
 
-A shadcn-compatible set of components built for [Astro][astro], designed for content-driven websites.
+A shadcn-compatible UI library for Astro, React and native Shopify Liquid.
 
 ## Features
 
@@ -11,6 +11,10 @@ A shadcn-compatible set of components built for [Astro][astro], designed for con
 - **Tailwind CSS v4** — Styled with the latest Tailwind CSS
 - **TypeScript** — Full TypeScript support
 - **React extension**: the Fulldev extras and blocks for official shadcn/ui React projects; see [react/README.md](react/README.md)
+
+## Native Liquid
+
+Install into a Shopify theme with `vp dlx shadcn@latest add https://ui.full.dev/r/liquid/components.json`, then render `ui` once in the layout head. Readable CSS, native ES modules and shared tokens, with no theme build step. See [Liquid](https://ui.full.dev/liquid/) and [liquid/README.md](liquid/README.md).
 
 ## Installation
 

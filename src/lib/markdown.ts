@@ -17,7 +17,9 @@ type Page = CollectionEntry<"pages">
 const setup = (page: Page) =>
   getFramework(page.id) === "react"
     ? "> Fulldev UI React extension for an official shadcn/ui project. The `@fulldev` registry in `components.json` points at `https://ui.full.dev/r/react/styles/{style}/{name}.json`; see [installation](/react/docs/installation.md).\n\n"
-    : ""
+    : getFramework(page.id) === "liquid"
+      ? "> Native Liquid and CSS. Install from `https://ui.full.dev/r/liquid/{name}.json`; see [layout setup](/liquid/docs/installation.md). No Tailwind or consuming build.\n\n"
+      : ""
 
 export async function getPageMarkdown(page: Page) {
   if (!page.filePath) {
@@ -47,7 +49,7 @@ export async function getPageMarkdown(page: Page) {
     sections.push(`## Installation\n\n\`\`\`bash\n${install}\n\`\`\``)
   if (items.length)
     sections.push(
-      `## Install what this page shows\n\n\`\`\`bash\nnpx shadcn@latest add ${items.map((item) => `@fulldev/${item}`).join(" ")}\n\`\`\``
+      `## Install what this page shows\n\n\`\`\`bash\nnpx shadcn@latest add ${items.map((item) => (getFramework(page.id) === "liquid" ? `https://ui.full.dev/r/liquid/${item}.json` : `@fulldev/${item}`)).join(" ")}\n\`\`\``
     )
   return sections.join("\n\n") + "\n"
 }

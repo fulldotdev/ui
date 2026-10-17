@@ -64,11 +64,18 @@ const counterparts = await Promise.all(
       href,
       own,
       react: own || /^https?:/.test(react) ? react : undefined,
+      liquid:
+        !id.startsWith("blocks") && id !== "create"
+          ? await getCounterpartHref(id, "liquid")
+          : undefined,
     }
   })
 )
 const reactHrefs: Record<string, string | undefined> = Object.fromEntries(
   counterparts.map(({ href, react }) => [href, react])
+)
+const liquidHrefs: Record<string, string | undefined> = Object.fromEntries(
+  counterparts.map(({ href, liquid }) => [href, liquid])
 )
 const extras = new Set(
   counterparts.filter((item) => item.own).map((item) => item.href)
@@ -76,12 +83,18 @@ const extras = new Set(
 const withReact = <T extends { href: string }>(link: T) => ({
   ...link,
   reactHref: reactHrefs[link.href],
+  liquidHref: liquidHrefs[link.href],
 })
 ---
 
 <Base global={global} page={page}>
   <div class="flex flex-col pb-8 [--container:var(--container-6xl)] lg:[--gutter:--spacing(6)]">
-    <HomeHero {...page.hero} counts={counts} reactHrefs={reactHrefs} />
+    <HomeHero
+      {...page.hero}
+      counts={counts}
+      reactHrefs={reactHrefs}
+      liquidHrefs={liquidHrefs}
+    />
     <HomeLinks
       title={page.components.title}
       description={page.components.description}
@@ -126,6 +139,7 @@ const withReact = <T extends { href: string }>(link: T) => ({
                 as="a"
                 href={button.href}
                 data-react-href={reactHrefs[button.href]}
+                data-liquid-href={liquidHrefs[button.href]}
                 size="lg"
                 variant={index === 0 ? "secondary" : "ghost"}
                 class={

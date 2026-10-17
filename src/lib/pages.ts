@@ -19,17 +19,18 @@ type PageLink = {
 // The docs are the Astro library at the root of the site. The React extension
 // lives under /react/: Fulldev extras and blocks for an official shadcn/ui
 // project, which links to shadcn/ui for the standard components.
-export const frameworks = ["astro", "react"] as const
+export const frameworks = ["astro", "react", "liquid"] as const
 export type Framework = (typeof frameworks)[number]
 export const frameworkLabels: Record<Framework, string> = {
   astro: "Astro",
   react: "React",
+  liquid: "Liquid",
 }
 
-const reactPattern = /^react(?:\/|$)/
+const platformPattern = /^(react|liquid)(?:\/|$)/
 
 export const getFramework = (id: string): Framework =>
-  reactPattern.test(id) ? "react" : "astro"
+  (id.match(platformPattern)?.[1] as Framework) ?? "astro"
 
 const normalizePath = (path: string) => {
   if (path === "/") return path
@@ -111,25 +112,56 @@ export const getReactReadingOrder = async () => {
   )
 }
 
-// The same page in the other library. A standard component the React
-// extension does not ship goes to its official shadcn/ui docs.
+// Keep the same component when switching platforms. Unsupported items fall
+// back to the target platform's catalog rather than showing another API.
 export const getCounterpartHref = async (id: string, framework: Framework) => {
   const pages = await getCollection("pages")
   const exists = (target: string) => pages.some((page) => page.id === target)
-  if (framework === "react") {
-    if (reactPattern.test(id)) return `/${id}/`
-    if (exists(`react/${id}`)) return `/react/${id}/`
-    const [section, slug] = id.split("/")
-    if (section === "components" && slug) return getShadcnHref(slug)
-    return exists(`react/${section}`) ? `/react/${section}/` : "/react/"
-  }
-  if (!reactPattern.test(id)) return id === "index" ? "/" : `/${id}/`
-  const path = id.replace(reactPattern, "")
-  if (!path) return "/"
-  if (exists(path)) return `/${path}/`
-  const [section] = path.split("/")
-  return exists(section) ? `/${section}/` : "/"
+  const path = id.replace(platformPattern, "").replace(/^index$/, "")
+  const target =
+    framework === "astro" ? path : `${framework}/${path}`.replace(/\/$/, "")
+  if (exists(target)) return target ? `/${target}/` : "/"
+  if (!path) return framework === "astro" ? "/" : `/${framework}/`
+  const [section, slug] = path.split("/")
+  if (framework === "react" && section === "components" && slug)
+    return getShadcnHref(slug)
+  const fallback = framework === "astro" ? section : `${framework}/${section}`
+  return exists(fallback)
+    ? `/${fallback}/`
+    : framework === "astro"
+      ? "/"
+      : `/${framework}/`
 }
+
+export const getLiquidNavigation = async () => {
+  const pages = await getCollection("pages")
+  return [
+    { path: "docs", label: "Get started" },
+    { path: "components", label: "Components" },
+  ].map(({ path, label }) => ({
+    label,
+    href: `/liquid/${path}/`,
+    links: pages
+      .filter((page) => page.id.startsWith(`liquid/${path}/`))
+      .sort(
+        path === "docs"
+          ? (a, b) =>
+              ["introduction", "installation", "theming"].indexOf(
+                a.id.split("/").at(-1)!
+              ) -
+              ["introduction", "installation", "theming"].indexOf(
+                b.id.split("/").at(-1)!
+              )
+          : byTitle
+      )
+      .map(toLink),
+  }))
+}
+
+export const getLiquidReadingOrder = async () =>
+  (await getLiquidNavigation()).flatMap((group) =>
+    group.links.map((link) => ({ href: link.href, title: link.label }))
+  )
 
 // Search stays inside the library of the current page.
 export const getPageSearchItems = async (
@@ -140,7 +172,7 @@ export const getPageSearchItems = async (
   return pages
     .filter((page) => getFramework(page.id) === framework)
     .map((page) => {
-      const [section] = page.id.replace(reactPattern, "").split("/")
+      const [section] = page.id.replace(platformPattern, "").split("/")
       return {
         label: page.data.title,
         href: getPageHref(page),
@@ -148,7 +180,10 @@ export const getPageSearchItems = async (
         path: getPageHref(page),
         description: page.data.description,
         group:
-          page.id === "index" || page.id === "react" || !section
+          page.id === "index" ||
+          page.id === "react" ||
+          page.id === "liquid" ||
+          !section
             ? "Overview"
             : formatSlug(section),
       }

@@ -5,7 +5,12 @@ import { getCollection, getEntry } from "astro:content"
 import type { GlobalSchema } from "@/schemas/global"
 import type { DocSchema } from "@/schemas/layouts/doc"
 import { getPageMarkdown } from "@/lib/markdown"
-import { getFramework, getPageId, getReactReadingOrder } from "@/lib/pages"
+import {
+  getFramework,
+  getLiquidReadingOrder,
+  getPageId,
+  getReactReadingOrder,
+} from "@/lib/pages"
 import Base from "@/layouts/base.astro"
 import DocBlock from "@/components/blocks/doc-1.astro"
 
@@ -50,7 +55,9 @@ const componentLinks = docsPages
 const paginationLinks =
   getFramework(getPageId(currentPath)) === "react"
     ? await getReactReadingOrder()
-    : [...orderedDocLinks, ...componentLinks]
+    : getFramework(getPageId(currentPath)) === "liquid"
+      ? await getLiquidReadingOrder()
+      : [...orderedDocLinks, ...componentLinks]
 const currentPageIndex = paginationLinks.findIndex(
   (item) => item.href === currentPath
 )
