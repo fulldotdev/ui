@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "progress",
+  "title": "Progress",
+  "description": "Shows how much of a task or sequence is complete.",
+  "files": [
+    {
+      "path": "src/components/ui/progress/index.ts",
+      "content": "export { default as Progress } from \"./progress.astro\"\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/progress/progress.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\"> & {\n  value?: number | null\n  max?: number\n  label?: string\n  showValue?: boolean\n}\n\nconst {\n  class: className,\n  value,\n  max = 100,\n  label,\n  showValue = false,\n  \"aria-label\": ariaLabel = label || \"Progress\",\n  \"aria-labelledby\": ariaLabelledby,\n  \"aria-valuetext\": ariaValueText,\n  ...props\n} = Astro.props\n\nconst resolvedMax = Number.isFinite(max) && max > 0 ? max : 100\nconst resolvedValue =\n  typeof value === \"number\" && Number.isFinite(value)\n    ? Math.min(resolvedMax, Math.max(0, value))\n    : undefined\nconst percentage =\n  resolvedValue === undefined ? undefined : (resolvedValue / resolvedMax) * 100\nconst stateAttributes = {\n  \"data-indeterminate\": resolvedValue === undefined ? \"\" : undefined,\n  \"data-complete\": resolvedValue === resolvedMax ? \"\" : undefined,\n  \"data-progressing\":\n    resolvedValue !== undefined && resolvedValue < resolvedMax ? \"\" : undefined,\n}\n---\n\n<div\n  {...props}\n  data-slot=\"progress\"\n  {...stateAttributes}\n  class={cn(\"flex flex-wrap gap-3\", className)}\n>\n  <progress\n    data-slot=\"progress-control\"\n    class=\"sr-only\"\n    value={resolvedValue}\n    max={resolvedMax}\n    aria-label={ariaLabel}\n    aria-labelledby={ariaLabelledby}\n    aria-valuetext={ariaValueText}\n  ></progress>\n  {label && (\n    <span data-slot=\"progress-label\" class=\"text-sm font-medium\">\n      {label}\n    </span>\n  )}\n  {showValue && percentage !== undefined && (\n    <span\n      data-slot=\"progress-value\"\n      class=\"text-muted-foreground ml-auto text-sm tabular-nums rtl:mr-auto rtl:ml-0\"\n      aria-hidden=\"true\"\n    >\n      {Math.round(percentage)}%\n    </span>\n  )}\n  <slot />\n  <div\n    data-slot=\"progress-track\"\n    aria-hidden=\"true\"\n    {...stateAttributes}\n    class=\"bg-muted h-1.5 rounded-full relative flex w-full items-center overflow-x-hidden\"\n  >\n    <div\n      data-slot=\"progress-indicator\"\n      {...stateAttributes}\n      class=\"bg-primary h-full transition-[width] motion-safe:data-indeterminate:animate-pulse motion-reduce:transition-none\"\n      style={{ width: `${percentage ?? 100}%` }}\n    ></div>\n  </div>\n</div>\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/components/progress/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

@@ -4,8 +4,8 @@
   "title": "Combobox",
   "description": "Autocomplete input with a list of suggestions.",
   "dependencies": [
-    "@data-slot/combobox@^1.0.2",
-    "@data-slot/core@^1.0.2",
+    "@data-slot/combobox@^1.1.2",
+    "@data-slot/core@^1.1.2",
     "@lucide/astro"
   ],
   "registryDependencies": [
@@ -34,7 +34,7 @@
     },
     {
       "path": "src/components/ui/combobox/combobox-input.astro",
-      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport XIcon from \"@lucide/astro/icons/x\"\n\nimport { cn } from \"@/lib/utils\"\nimport {\n  InputGroup,\n  InputGroupAddon,\n  InputGroupButton,\n  InputGroupInput,\n} from \"@/components/ui/input-group\"\n\nimport ComboboxTrigger from \"./combobox-trigger.astro\"\n\ntype Props = HTMLAttributes<\"input\"> & {\n  showTrigger?: boolean\n  showClear?: boolean\n}\n\nconst {\n  class: className,\n  type = \"text\",\n  disabled = false,\n  showTrigger = true,\n  showClear = false,\n  ...props\n} = Astro.props\n---\n\n<InputGroup\n  class={cn(\n    \"has-[[data-slot=combobox-input]:focus-visible]:border-ring has-[[data-slot=combobox-input]:focus-visible]:ring-ring/50 w-auto has-[[data-slot=combobox-input]:focus-visible]:ring-3\",\n    className\n  )}\n>\n  <InputGroupInput\n    type={type}\n    data-slot=\"combobox-input\"\n    disabled={disabled}\n    {...props}\n  />\n  <InputGroupAddon align=\"inline-end\">\n    {showTrigger && (\n      <ComboboxTrigger\n        class=\"group-has-data-[slot=combobox-clear]/input-group:hidden data-pressed:bg-transparent\"\n        disabled={disabled}\n      />\n    )}\n    {showClear && (\n      <InputGroupButton\n        type=\"button\"\n        variant=\"ghost\"\n        size=\"icon-xs\"\n        data-slot=\"combobox-clear\"\n        disabled={disabled}\n      >\n        <XIcon class=\"pointer-events-none\" />\n      </InputGroupButton>\n    )}\n  </InputGroupAddon>\n  <slot />\n</InputGroup>\n",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport XIcon from \"@lucide/astro/icons/x\"\n\nimport { cn } from \"@/lib/utils\"\nimport {\n  InputGroup,\n  InputGroupAddon,\n  InputGroupButton,\n  InputGroupInput,\n} from \"@/components/ui/input-group\"\n\nimport ComboboxTrigger from \"./combobox-trigger.astro\"\n\ntype Props = HTMLAttributes<\"input\"> & {\n  showTrigger?: boolean\n  showClear?: boolean\n  clearLabel?: string\n}\n\nconst {\n  class: className,\n  type = \"text\",\n  disabled = false,\n  showTrigger = true,\n  showClear = false,\n  clearLabel = \"Clear selection\",\n  ...props\n} = Astro.props\n---\n\n<InputGroup\n  class={cn(\n    \"has-[[data-slot=combobox-input]:focus-visible]:border-ring has-[[data-slot=combobox-input]:focus-visible]:ring-ring/50 w-auto has-[[data-slot=combobox-input]:focus-visible]:ring-3\",\n    className\n  )}\n>\n  <InputGroupInput\n    type={type}\n    data-slot=\"combobox-input\"\n    disabled={disabled}\n    {...props}\n  />\n  <InputGroupAddon align=\"inline-end\">\n    {showTrigger && (\n      <ComboboxTrigger\n        class={cn(\n          \"data-pressed:bg-transparent\",\n          showClear && \"group-data-[value]/combobox:hidden\"\n        )}\n        disabled={disabled}\n      />\n    )}\n    {showClear && (\n      <InputGroupButton\n        type=\"button\"\n        variant=\"ghost\"\n        size=\"icon-xs\"\n        data-slot=\"combobox-clear\"\n        aria-label={clearLabel}\n        class=\"hidden group-data-[value]/combobox:inline-flex\"\n        disabled={disabled}\n      >\n        <XIcon class=\"pointer-events-none\" aria-hidden=\"true\" />\n      </InputGroupButton>\n    )}\n  </InputGroupAddon>\n  <slot />\n</InputGroup>\n",
       "type": "registry:ui"
     },
     {

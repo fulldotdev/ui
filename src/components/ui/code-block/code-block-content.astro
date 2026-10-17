@@ -1,0 +1,39 @@
+---
+/* eslint-disable astro/jsx-a11y/no-noninteractive-tabindex -- Focusable code supports keyboard scrolling, as in shadcn/ui. */
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+import CodeBlockLine from "./code-block-line.astro"
+
+type Props = HTMLAttributes<"pre"> & {
+  code?: string
+  wrap?: boolean
+  lineNumbers?: boolean
+  startLine?: number
+}
+
+const {
+  class: className,
+  code,
+  wrap = false,
+  lineNumbers = false,
+  startLine = 1,
+  style,
+  ...props
+} = Astro.props
+---
+
+<pre
+  data-slot="code-block-content"
+  data-wrap={wrap || undefined}
+  data-numbered={lineNumbers || undefined}
+  dir="ltr"
+  tabindex="0"
+  style={[{ counterReset: `line ${startLine - 1}` }, style]}
+  class={cn(
+    "cn-code-block-content min-h-0 min-w-0 overflow-auto text-start font-mono outline-none data-wrap:wrap-break-word data-wrap:whitespace-pre-wrap",
+    className
+  )}
+  {...props}
+><code data-slot="code-block-code" class="grid min-h-lh min-w-max content-start in-data-numbered:grid-cols-[auto_1fr] in-data-wrap:min-w-0">{code !== undefined ? lineNumbers ? code.replace(/\n$/, "").split("\n").map((line) => <CodeBlockLine>{line}</CodeBlockLine>) : code : <slot />}</code></pre>
