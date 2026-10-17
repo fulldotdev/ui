@@ -1,0 +1,73 @@
+---
+type: doc
+title: Progress
+description: Shows how much of a task or sequence is complete.
+---
+
+<Example name="progress-demo" />
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/progress
+```
+
+## Usage
+
+```ts
+import { Progress } from "@/components/ui/progress"
+```
+
+```astro
+<Progress value={56} label="Course progress" showValue />
+```
+
+`label` supplies a visible label and the accessible name. Use `aria-label` or
+`aria-labelledby` when the label is elsewhere. The fallback accessible name is
+`"Progress"`.
+
+## Indeterminate
+
+Omit `value` or pass `null` when the amount of progress is unknown. The full-width
+indicator pulses only when the visitor allows motion. No percentage is shown,
+and the native progress control has no `value` attribute.
+
+<Example name="progress-indeterminate" />
+
+## Custom Maximum
+
+Set `max` to show progress through a fixed number of steps. `showValue` displays
+the percentage; use `aria-valuetext` to describe the count in words.
+
+<Example name="progress-custom-max" />
+
+## RTL
+
+The label, value and indicator follow the document direction.
+
+<Example name="progress-rtl" />
+
+## API Reference
+
+Source: [`src/components/ui/progress`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/progress)
+
+| Prop        | Type             | Default | Description                                                            |
+| ----------- | ---------------- | ------- | ---------------------------------------------------------------------- |
+| `value`     | `number \| null` |         | Current value. Omitted, `null` or non-finite values are indeterminate. |
+| `max`       | `number`         | `100`   | Maximum value. Non-positive or non-finite values fall back to `100`.   |
+| `label`     | `string`         |         | Visible label and default accessible name.                             |
+| `showValue` | `boolean`        | `false` | Shows a rounded percentage for a known value.                          |
+
+Finite values are clamped between `0` and `max`. Standard attributes and `class`
+are forwarded to the root. The default slot renders before the track.
+
+The root, track and indicator expose `data-indeterminate`, `data-progressing` or
+`data-complete` for their current state. The other parts use `data-slot` values
+`progress-label` and `progress-value`.
+
+This Astro component renders its value on the server. A visually hidden native
+`progress` control supplies its accessible semantics; the visible track and
+indicator use the selected shadcn/ui style. It composes the label, value, track
+and indicator through props and a slot without a client script.
+See the [shadcn/ui Progress documentation](https://ui.shadcn.com/docs/components/base/progress)
+for the upstream design.

@@ -1,0 +1,88 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import CheckIcon from "@lucide/astro/icons/check"
+import CopyIcon from "@lucide/astro/icons/copy"
+
+import { cn } from "@/lib/utils"
+import { Button, type ButtonVariantProps } from "@/components/ui/button"
+
+type Props = Omit<HTMLAttributes<"button">, "value" | "type"> &
+  ButtonVariantProps & {
+    value: string
+    copyLabel?: string
+    copiedLabel?: string
+    errorLabel?: string
+  }
+
+const {
+  class: className,
+  value,
+  variant = "ghost",
+  size = "icon-xs",
+  copyLabel = "Copy",
+  copiedLabel = "Copied",
+  errorLabel = "Could not copy",
+  ...props
+} = Astro.props
+---
+
+<Button
+  data-slot="code-block-copy-button"
+  data-copy-value={value}
+  data-copy-label={copyLabel}
+  data-copied-label={copiedLabel}
+  data-error-label={errorLabel}
+  aria-label={copyLabel}
+  variant={variant}
+  size={size}
+  class={cn("cn-code-block-copy-button group/code-copy", className)}
+  {...props}
+>
+  <CopyIcon aria-hidden="true" class="group-data-copied/code-copy:hidden" />
+  <CheckIcon
+    aria-hidden="true"
+    class="hidden group-data-copied/code-copy:block"
+  />
+</Button>
+<span data-copy-status aria-live="polite" class="sr-only"></span>
+
+<script>
+  const timers = new Map<HTMLButtonElement, ReturnType<typeof setTimeout>>()
+  document.addEventListener("click", async (event) => {
+    if (!(event.target instanceof Element)) return
+    const button = event.target.closest<HTMLButtonElement>(
+      "[data-slot=code-block-copy-button]"
+    )
+    if (!button || button.disabled || event.defaultPrevented) return
+    const status = button.nextElementSibling
+    try {
+      await navigator.clipboard.writeText(button.dataset.copyValue ?? "")
+      if (!button.isConnected) return
+      clearTimeout(timers.get(button))
+      button.dataset.copied = ""
+      button.setAttribute("aria-label", button.dataset.copiedLabel ?? "Copied")
+      if (status) status.textContent = button.dataset.copiedLabel ?? "Copied"
+      timers.set(
+        button,
+        setTimeout(() => {
+          delete button.dataset.copied
+          button.setAttribute("aria-label", button.dataset.copyLabel ?? "Copy")
+          if (status) status.textContent = ""
+          timers.delete(button)
+        }, 2000)
+      )
+    } catch {
+      if (!button.isConnected) return
+      clearTimeout(timers.get(button))
+      timers.delete(button)
+      delete button.dataset.copied
+      button.setAttribute("aria-label", button.dataset.copyLabel ?? "Copy")
+      if (status)
+        status.textContent = button.dataset.errorLabel ?? "Could not copy"
+    }
+  })
+  document.addEventListener("astro:before-swap", () => {
+    for (const timer of timers.values()) clearTimeout(timer)
+    timers.clear()
+  })
+</script>

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "code-block",
+  "title": "Code Block",
+  "description": "Code and plain-text snippets with copy actions, line numbers and highlighted lines.",
+  "dependencies": [
+    "@lucide/astro",
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "@fulldev/button"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/code-block/code-block-actions.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"code-block-actions\"\n  class={cn(\n    \"-my-1 -me-1.5 gap-1 [[data-slot=code-block]>&]:m-0 [[data-slot=code-block]>&]:top-3 [[data-slot=code-block]>&]:end-3 group-data-[size=sm]/code-block:[[data-slot=code-block]>&]:top-2 group-data-[size=sm]/code-block:[[data-slot=code-block]>&]:end-2 [[data-slot=code-block]>&]:*:[button]:bg-background [[data-slot=code-block]>&]:*:[button]:ring-1 [[data-slot=code-block]>&]:*:[button]:ring-foreground/10 ms-auto flex shrink-0 items-center [[data-slot=code-block]>&]:absolute [[data-slot=code-block]>&]:z-10 [[data-slot=code-block]>&]:opacity-0 [[data-slot=code-block]>&]:transition-opacity [[data-slot=code-block]>&]:group-focus-within/code-block:opacity-100 [[data-slot=code-block]>&]:group-hover/code-block:opacity-100 [[data-slot=code-block]>&]:pointer-coarse:opacity-100\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/code-block/code-block-content.astro",
+      "content": "---\n/* eslint-disable astro/jsx-a11y/no-noninteractive-tabindex -- Focusable code supports keyboard scrolling, as in shadcn/ui. */\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\nimport CodeBlockLine from \"./code-block-line.astro\"\n\ntype Props = HTMLAttributes<\"pre\"> & {\n  code?: string\n  wrap?: boolean\n  lineNumbers?: boolean\n  startLine?: number\n}\n\nconst {\n  class: className,\n  code,\n  wrap = false,\n  lineNumbers = false,\n  startLine = 1,\n  style,\n  ...props\n} = Astro.props\n\nconst contentStyle =\n  typeof style === \"string\"\n    ? `counter-reset: line ${startLine - 1}; ${style}`\n    : { counterReset: `line ${startLine - 1}`, ...style }\n---\n\n<pre\n  data-slot=\"code-block-content\"\n  data-wrap={wrap || undefined}\n  data-numbered={lineNumbers || undefined}\n  dir=\"ltr\"\n  tabindex=\"0\"\n  style={contentStyle}\n  class={cn(\n    \"px-4 py-4 leading-relaxed group-has-data-[slot=code-block-header]/code-block:pt-2 group-has-data-[slot=code-block-footer]/code-block:pb-2 group-data-[size=sm]/code-block:px-3 group-data-[size=sm]/code-block:py-3 group-data-[size=sm]/code-block:group-has-data-[slot=code-block-header]/code-block:pt-1.5 min-h-0 min-w-0 overflow-auto text-start font-mono outline-none data-wrap:wrap-break-word data-wrap:whitespace-pre-wrap\",\n    className\n  )}\n  {...props}\n><code data-slot=\"code-block-code\" class=\"grid min-h-lh min-w-max content-start in-data-numbered:grid-cols-[auto_1fr] in-data-wrap:min-w-0\">{code !== undefined ? lineNumbers ? code.replace(/\\n$/, \"\").split(\"\\n\").map((line) => <CodeBlockLine>{line}</CodeBlockLine>) : code : <slot />}</code></pre>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/code-block/code-block-copy-button.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport CheckIcon from \"@lucide/astro/icons/check\"\nimport CopyIcon from \"@lucide/astro/icons/copy\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Button, type ButtonVariantProps } from \"@/components/ui/button\"\n\ntype Props = Omit<HTMLAttributes<\"button\">, \"value\" | \"type\"> &\n  ButtonVariantProps & {\n    value: string\n    copyLabel?: string\n    copiedLabel?: string\n    errorLabel?: string\n  }\n\nconst {\n  class: className,\n  value,\n  variant = \"ghost\",\n  size = \"icon-xs\",\n  copyLabel = \"Copy\",\n  copiedLabel = \"Copied\",\n  errorLabel = \"Could not copy\",\n  ...props\n} = Astro.props\n---\n\n<Button\n  data-slot=\"code-block-copy-button\"\n  data-copy-value={value}\n  data-copy-label={copyLabel}\n  data-copied-label={copiedLabel}\n  data-error-label={errorLabel}\n  aria-label={copyLabel}\n  variant={variant}\n  size={size}\n  class={cn(\"group/code-copy\", className)}\n  {...props}\n>\n  <CopyIcon aria-hidden=\"true\" class=\"group-data-copied/code-copy:hidden\" />\n  <CheckIcon\n    aria-hidden=\"true\"\n    class=\"hidden group-data-copied/code-copy:block\"\n  />\n</Button>\n<span data-copy-status aria-live=\"polite\" class=\"sr-only\"></span>\n\n<script>\n  const timers = new Map<HTMLButtonElement, ReturnType<typeof setTimeout>>()\n  document.addEventListener(\"click\", async (event) => {\n    if (!(event.target instanceof Element)) return\n    const button = event.target.closest<HTMLButtonElement>(\n      \"[data-slot=code-block-copy-button]\"\n    )\n    if (!button || button.disabled || event.defaultPrevented) return\n    const status = button.nextElementSibling\n    try {\n      await navigator.clipboard.writeText(button.dataset.copyValue ?? \"\")\n      if (!button.isConnected) return\n      clearTimeout(timers.get(button))\n      button.dataset.copied = \"\"\n      button.setAttribute(\"aria-label\", button.dataset.copiedLabel ?? \"Copied\")\n      if (status) status.textContent = button.dataset.copiedLabel ?? \"Copied\"\n      timers.set(\n        button,\n        setTimeout(() => {\n          delete button.dataset.copied\n          button.setAttribute(\"aria-label\", button.dataset.copyLabel ?? \"Copy\")\n          if (status) status.textContent = \"\"\n          timers.delete(button)\n        }, 2000)\n      )\n    } catch {\n      if (!button.isConnected) return\n      clearTimeout(timers.get(button))\n      timers.delete(button)\n      delete button.dataset.copied\n      button.setAttribute(\"aria-label\", button.dataset.copyLabel ?? \"Copy\")\n      if (status)\n        status.textContent = button.dataset.errorLabel ?? \"Could not copy\"\n    }\n  })\n  document.addEventListener(\"astro:before-swap\", () => {\n    for (const timer of timers.values()) clearTimeout(timer)\n    timers.clear()\n  })\n</script>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/code-block/code-block-footer.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"code-block-footer\"\n  class={cn(\n    \"gap-2 px-4 pb-4 text-muted-foreground group-data-[size=sm]/code-block:px-3 group-data-[size=sm]/code-block:pb-3 flex min-w-0 shrink-0 items-center\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/code-block/code-block-header.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"code-block-header\"\n  class={cn(\n    \"gap-2 px-4 pt-4 text-muted-foreground group-data-[variant=destructive]/code-block:text-destructive group-data-[size=sm]/code-block:px-3 group-data-[size=sm]/code-block:pt-3 flex min-w-0 shrink-0 items-center *:has-[>[data-slot=code-block-title]]:min-w-0\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/code-block/code-block-line.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\nconst variants = cva(\n  \"-mx-4 px-4 in-data-numbered:gap-x-3 before:min-w-6 before:text-end before:text-muted-foreground after:start-1 after:text-muted-foreground group-data-[size=sm]/code-block:-mx-3 group-data-[size=sm]/code-block:px-3 relative block min-h-lh before:select-none after:absolute after:top-0 after:select-none in-data-numbered:col-span-2 in-data-numbered:grid in-data-numbered:grid-cols-subgrid in-data-numbered:[counter-increment:line] in-data-numbered:before:content-[counter(line)] in-data-numbered:supports-[content:counter(line)_/_'']:before:content-[counter(line)_/_'']\",\n  {\n    variants: {\n      variant: {\n        default: \"\",\n        added: \"bg-muted after:content-['+']\",\n        removed: \"bg-destructive/10 after:text-destructive after:content-['−']\",\n        highlighted: \"bg-muted\",\n      },\n    },\n    defaultVariants: { variant: \"default\" },\n  }\n)\n\ntype Props = HTMLAttributes<\"span\"> & VariantProps<typeof variants>\nconst { class: className, variant = \"default\", ...props } = Astro.props\n---\n\n<span\n  data-slot=\"code-block-line\"\n  data-variant={variant}\n  class={cn(variants({ variant }), className)}\n  {...props}\n>\n  <span data-slot=\"code-block-line-content\" class=\"min-w-0\">\n    <slot />\n    {\"\\n\"}\n  </span>\n</span>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/code-block/code-block-title.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"div\">\nconst { class: className, ...props } = Astro.props\n---\n\n<div\n  data-slot=\"code-block-title\"\n  class={cn(\n    \"font-sans text-sm font-medium text-foreground group-data-[variant=destructive]/code-block:text-destructive *:[svg]:me-1.5 [&_svg:not([class*='size-'])]:size-4 group-data-[size=sm]/code-block:text-xs group-data-[size=sm]/code-block:[&_svg:not([class*='size-'])]:size-3.5 min-w-0 truncate [&_svg]:pointer-events-none [&_svg]:inline-block [&_svg]:align-middle\",\n    className\n  )}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/code-block/code-block.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\nconst variants = cva(\n  \"rounded-lg text-sm data-[size=sm]:text-xs has-[>[data-slot=code-block-content]:focus-visible]:ring-3 has-[>[data-slot=code-block-content]:focus-visible]:ring-ring/50 group/code-block relative flex w-full min-w-0 flex-col overflow-hidden\",\n  {\n    variants: {\n      variant: {\n        default: \"border border-input text-foreground dark:bg-input/30 has-[>[data-slot=code-block-content]:focus-visible]:border-ring\",\n        destructive: \"border border-destructive/30 text-destructive dark:border-destructive/40\",\n      },\n    },\n    defaultVariants: { variant: \"default\" },\n  }\n)\n\ntype Props = HTMLAttributes<\"div\"> &\n  VariantProps<typeof variants> & {\n    size?: \"default\" | \"sm\"\n  }\n\nconst {\n  class: className,\n  variant = \"default\",\n  size = \"default\",\n  ...props\n} = Astro.props\n---\n\n<div\n  data-slot=\"code-block\"\n  data-variant={variant}\n  data-size={size}\n  class={cn(variants({ variant }), className)}\n  {...props}\n>\n  <slot />\n</div>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/code-block/index.ts",
+      "content": "export { default as CodeBlock } from \"./code-block.astro\"\nexport { default as CodeBlockHeader } from \"./code-block-header.astro\"\nexport { default as CodeBlockTitle } from \"./code-block-title.astro\"\nexport { default as CodeBlockActions } from \"./code-block-actions.astro\"\nexport { default as CodeBlockCopyButton } from \"./code-block-copy-button.astro\"\nexport { default as CodeBlockContent } from \"./code-block-content.astro\"\nexport { default as CodeBlockLine } from \"./code-block-line.astro\"\nexport { default as CodeBlockFooter } from \"./code-block-footer.astro\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/components/code-block/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

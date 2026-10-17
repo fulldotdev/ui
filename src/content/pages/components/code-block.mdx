@@ -1,0 +1,94 @@
+---
+type: doc
+title: Code Block
+description: Code and plain-text snippets with copy actions, line numbers and highlighted lines.
+---
+
+<Example name="code-block-demo" />
+
+## Installation
+
+```bash
+npx shadcn@latest add @fulldev/code-block
+```
+
+## Usage
+
+```astro
+---
+import {
+  CodeBlock,
+  CodeBlockActions,
+  CodeBlockContent,
+  CodeBlockCopyButton,
+  CodeBlockHeader,
+  CodeBlockTitle,
+} from "@/components/ui/code-block"
+
+const code = "const greeting = 'Hello'"
+---
+
+<CodeBlock>
+  <CodeBlockHeader>
+    <CodeBlockTitle>greeting.ts</CodeBlockTitle>
+    <CodeBlockActions>
+      <CodeBlockCopyButton value={code} />
+    </CodeBlockActions>
+  </CodeBlockHeader>
+  <CodeBlockContent code={code} />
+</CodeBlock>
+```
+
+`CodeBlockContent` renders escaped text from `code`, or accepts composed
+`CodeBlockLine` children in its slot. Code stays left to right inside an RTL
+page. The content scrolls by keyboard; floating actions appear on hover,
+focus and touch screens. Copying requires HTTPS or localhost.
+
+## Line numbers
+
+Set `lineNumbers` to split `code` into numbered lines. Use `startLine` for an
+excerpt from the middle of a file. Numbers are CSS counters and are excluded
+from copied text.
+
+<Example name="code-block-numbered" />
+
+## Highlighted lines and diffs
+
+Import `CodeBlockLine` and set its `variant` to `highlighted`, `added` or
+`removed`. Add `lineNumbers` to the content to number composed lines.
+Diff markers are excluded from copied text. Empty lines preserve a newline.
+Use string expressions inside composed lines to preserve indentation.
+
+<Example name="code-block-lines" />
+
+The component renders plain text by default. Syntax highlighting is optional:
+pass server-highlighted token markup inside each `CodeBlockLine`. The React
+`useHighlightedCode` hook is not needed in Astro.
+
+## Wrapping and size
+
+Long lines scroll by default. Set `wrap` on the content to wrap them, or add a
+`max-h-*` class to limit the content height. Use `size="sm"` on `CodeBlock` for
+a compact snippet, `variant="destructive"` for error output, and
+`CodeBlockFooter` for a caption or additional actions.
+
+Without a header, put `CodeBlockActions` directly inside `CodeBlock` for
+floating actions.
+
+<Example name="code-block-wrap" />
+
+## API Reference
+
+Source: [`src/components/ui/code-block`](https://github.com/fulldotdev/ui/tree/main/src/components/ui/code-block)
+
+| Component             | Props                                                                            | Default                |
+| --------------------- | -------------------------------------------------------------------------------- | ---------------------- |
+| `CodeBlock`           | `variant: "default" \| "destructive"`, `size: "default" \| "sm"`                 | `"default"`            |
+| `CodeBlockContent`    | `code?: string`, `wrap?: boolean`, `lineNumbers?: boolean`, `startLine?: number` | `false`, `false`, `1`  |
+| `CodeBlockLine`       | `variant: "default" \| "highlighted" \| "added" \| "removed"`                    | `"default"`            |
+| `CodeBlockCopyButton` | `value: string`, Button `variant` and `size`                                     | `"ghost"`, `"icon-xs"` |
+
+`CodeBlockCopyButton` also accepts `copyLabel`, `copiedLabel` and `errorLabel`
+for translation. Its live region announces successful or failed copies, and
+its success state resets after two seconds. Header, title, actions and footer
+forward HTML attributes and `class` to their root.

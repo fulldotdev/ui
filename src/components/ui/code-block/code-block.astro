@@ -1,0 +1,41 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const variants = cva(
+  "cn-code-block group/code-block relative flex w-full min-w-0 flex-col overflow-hidden",
+  {
+    variants: {
+      variant: {
+        default: "cn-code-block-variant-default",
+        destructive: "cn-code-block-variant-destructive",
+      },
+    },
+    defaultVariants: { variant: "default" },
+  }
+)
+
+type Props = HTMLAttributes<"div"> &
+  VariantProps<typeof variants> & {
+    size?: "default" | "sm"
+  }
+
+const {
+  class: className,
+  variant = "default",
+  size = "default",
+  ...props
+} = Astro.props
+---
+
+<div
+  data-slot="code-block"
+  data-variant={variant}
+  data-size={size}
+  class={cn(variants({ variant }), className)}
+  {...props}
+>
+  <slot />
+</div>

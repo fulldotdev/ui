@@ -15,6 +15,7 @@ import ComboboxTrigger from "./combobox-trigger.astro"
 type Props = HTMLAttributes<"input"> & {
   showTrigger?: boolean
   showClear?: boolean
+  clearLabel?: string
 }
 
 const {
@@ -23,6 +24,7 @@ const {
   disabled = false,
   showTrigger = true,
   showClear = false,
+  clearLabel = "Clear selection",
   ...props
 } = Astro.props
 ---
@@ -42,7 +44,10 @@ const {
   <InputGroupAddon align="inline-end">
     {showTrigger && (
       <ComboboxTrigger
-        class="group-has-data-[slot=combobox-clear]/input-group:hidden data-pressed:bg-transparent"
+        class={cn(
+          "data-pressed:bg-transparent",
+          showClear && "group-data-[value]/combobox:hidden"
+        )}
         disabled={disabled}
       />
     )}
@@ -52,9 +57,11 @@ const {
         variant="ghost"
         size="icon-xs"
         data-slot="combobox-clear"
+        aria-label={clearLabel}
+        class="hidden group-data-[value]/combobox:inline-flex"
         disabled={disabled}
       >
-        <XIcon class="pointer-events-none" />
+        <XIcon class="pointer-events-none" aria-hidden="true" />
       </InputGroupButton>
     )}
   </InputGroupAddon>

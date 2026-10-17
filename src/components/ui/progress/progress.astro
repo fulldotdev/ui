@@ -1,0 +1,83 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"div"> & {
+  value?: number | null
+  max?: number
+  label?: string
+  showValue?: boolean
+}
+
+const {
+  class: className,
+  value,
+  max = 100,
+  label,
+  showValue = false,
+  "aria-label": ariaLabel = label || "Progress",
+  "aria-labelledby": ariaLabelledby,
+  "aria-valuetext": ariaValueText,
+  ...props
+} = Astro.props
+
+const resolvedMax = Number.isFinite(max) && max > 0 ? max : 100
+const resolvedValue =
+  typeof value === "number" && Number.isFinite(value)
+    ? Math.min(resolvedMax, Math.max(0, value))
+    : undefined
+const percentage =
+  resolvedValue === undefined ? undefined : (resolvedValue / resolvedMax) * 100
+const stateAttributes = {
+  "data-indeterminate": resolvedValue === undefined ? "" : undefined,
+  "data-complete": resolvedValue === resolvedMax ? "" : undefined,
+  "data-progressing":
+    resolvedValue !== undefined && resolvedValue < resolvedMax ? "" : undefined,
+}
+---
+
+<div
+  {...props}
+  data-slot="progress"
+  {...stateAttributes}
+  class={cn("flex flex-wrap gap-3", className)}
+>
+  <progress
+    data-slot="progress-control"
+    class="sr-only"
+    value={resolvedValue}
+    max={resolvedMax}
+    aria-label={ariaLabel}
+    aria-labelledby={ariaLabelledby}
+    aria-valuetext={ariaValueText}
+  ></progress>
+  {label && (
+    <span data-slot="progress-label" class="cn-progress-label">
+      {label}
+    </span>
+  )}
+  {showValue && percentage !== undefined && (
+    <span
+      data-slot="progress-value"
+      class="cn-progress-value rtl:mr-auto rtl:ml-0"
+      aria-hidden="true"
+    >
+      {Math.round(percentage)}%
+    </span>
+  )}
+  <slot />
+  <div
+    data-slot="progress-track"
+    aria-hidden="true"
+    {...stateAttributes}
+    class="cn-progress-track relative flex w-full items-center overflow-x-hidden"
+  >
+    <div
+      data-slot="progress-indicator"
+      {...stateAttributes}
+      class="cn-progress-indicator h-full transition-[width] motion-safe:data-indeterminate:animate-pulse motion-reduce:transition-none"
+      style={{ width: `${percentage ?? 100}%` }}
+    ></div>
+  </div>
+</div>

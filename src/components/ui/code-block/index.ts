@@ -1,0 +1,8 @@
+export { default as CodeBlock } from "./code-block.astro"
+export { default as CodeBlockHeader } from "./code-block-header.astro"
+export { default as CodeBlockTitle } from "./code-block-title.astro"
+export { default as CodeBlockActions } from "./code-block-actions.astro"
+export { default as CodeBlockCopyButton } from "./code-block-copy-button.astro"
+export { default as CodeBlockContent } from "./code-block-content.astro"
+export { default as CodeBlockLine } from "./code-block-line.astro"
+export { default as CodeBlockFooter } from "./code-block-footer.astro"
