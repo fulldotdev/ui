@@ -61,6 +61,7 @@ Install items with \`npx shadcn@latest add @fulldev/<name>\` after adding the \`
 - [Agent entry point](${origin}/index.md)
 - [Full documentation in one file](${origin}/llms-full.txt)
 - [Registry index](${origin}/r/registry.json)
+- [Native Liquid and Shopify](${origin}/docs/liquid.md): universal registry, readable CSS and no consuming build step
 - [React extension](${origin}/react/llms.txt): Fulldev extras and blocks for shadcn/ui React projects
 
 ${sections.join("\n\n")}

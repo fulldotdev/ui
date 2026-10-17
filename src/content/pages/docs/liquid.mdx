@@ -1,0 +1,96 @@
+---
+type: doc
+title: Liquid and Shopify
+description: Install native Liquid components with readable CSS and no theme build step.
+---
+
+Fulldev UI for Liquid uses the same semantic tokens, component names and `data-slot` parts as Astro and React. Its Vega styling is handwritten CSS. Shopify renders the markup and bundles the `{% stylesheet %}` tags. Small ES modules initialize the data-slot controllers and follow the theme editor lifecycle.
+
+## Installation
+
+Run in the Shopify theme root:
+
+```bash
+vp dlx shadcn@latest add https://ui.full.dev/r/liquid/components.json
+```
+
+This installs the full native component set into `snippets/` and `assets/`, including the original licenses. There is no `shadcn init`, `components.json`, Tailwind or build step in the theme. The CLI runs only when adding or updating files.
+
+Add this once to each layout's head, before your theme stylesheet and scheme settings, and before any other module scripts:
+
+```liquid
+{% render 'ui' %}
+```
+
+Keep Shopify's `{{ content_for_header }}` in the head. Load your store's `custom.css` after it. The registry leaves layouts, sections, locales, settings and templates alone. The same hook belongs in a separate password or gift card document when it uses the UI.
+
+## Individual components
+
+```bash
+vp dlx shadcn@latest add https://ui.full.dev/r/liquid/button.json
+vp dlx shadcn@latest add https://ui.full.dev/r/liquid/card.json
+```
+
+For individual installs, render `ui-init` once in the head and render each installed component's stylesheet snippet once. Button can render a label too:
+
+```liquid
+{% render 'ui-init' %}
+{% render 'ui-card' %}
+{% render 'ui-button',
+  label: 'View collection',
+  href: routes.all_products_collection_url,
+  variant: 'outline'
+%}
+```
+
+Put the labeled button where the link belongs in the body. `label` and `href` are escaped. Native buttons also accept `type` and `disabled`. Omitting `label` registers the styles without rendering markup, as the complete `ui` snippet does.
+
+Interactive items install `runtime` as a dependency. Render `ui-runtime` once in the head before other modules for individual interactive installs. The complete `ui` hook already includes it. Keep one import map and one initializer per document.
+
+## Native markup and parts
+
+You can always write HTML directly. Card has one stylesheet and the same part structure:
+
+```liquid
+<article data-slot="card">
+  <header data-slot="card-header">
+    <h2 data-slot="card-title">{{ product.title | escape }}</h2>
+    <p data-slot="card-description">{{ product.vendor | escape }}</p>
+    <div data-slot="card-action">...</div>
+  </header>
+  <div data-slot="card-content">...</div>
+  <footer data-slot="card-footer">
+    <a href="{{ product.url }}" data-slot="button" data-variant="outline">
+      {{ 'products.product.view_full_details' | t }}
+    </a>
+  </footer>
+</article>
+```
+
+Add the translation key in every storefront locale. Your store owns the text and Shopify data. Button keeps the shared `default`, `outline`, `secondary`, `ghost`, `destructive` and `link` variants and the shared sizes. The Liquid port also includes storefront media variants and the `outline` and `muted` card compositions. A behavioral part such as `dialog-trigger` keeps its own slot and takes the button look with `data-button`.
+
+The [registry index](/r/liquid/registry.json) lists installable items. The [source and part inventory](https://github.com/fulldotdev/ui/tree/main/liquid) show each component's actual selectors and required structure. The native inventory covers the reusable storefront components, including all 21 data-slot controllers. Sidebar, Resizable, Menubar, Scroll Area, React-only app components and Shopify commerce sections are outside this set. This port supports Vega; the Astro and React Tailwind preset generator does not transform Liquid CSS.
+
+## Tokens and customization
+
+Neutral light and dark palette values are generated from the same palette source as the other platforms. Native primitives share names such as `--radius`, `--spacing`, `--font-sans`, `--primary` and `--ring`. Override tokens in your theme's scheme rules after `ui`; put component adjustments in `custom.css` or a section's stylesheet. Keep installed library files unchanged and fix shared behavior upstream.
+
+Each component has a small source file. Shopify serves most CSS through `content_for_header`. Components with global classes, including `typeset`, use separate CSS assets so Theme Check can resolve their classes across snippets. These are readable native rules, without generated Tailwind helpers.
+
+## Existing Shopify runtime
+
+A theme that already connects dialogs, search and cart requests should keep its adapters:
+
+```liquid
+{% render 'ui', runtime: false %}
+```
+
+Add the `@fulldev/lifecycle`, `@fulldev/controls`, `@fulldev/carousel` and `@fulldev/motion` entries from `ui-runtime.liquid` to your existing import map, along with its data-slot entries. Use the exported `createLifecycle(factories)` once with your selector/factory pairs. It starts roots once, cancels stale asynchronous setup, destroys removed roots, handles section load/unload and reveals selected accordion/carousel blocks. The returned object exposes `components`, `initialize(scope)` and `destroy()`.
+
+`ui-controls.js` exports the lazy controller factories and native form adapters. A select, radio group, switch or slider starts `hidden` immediately after its native `data-fallback`. The adapter preserves the current value, labels and form reset defaults, and restores the fallback on teardown. Keep native Shopify routes and forms as the server-rendered behavior. Default UI initialization does not implement Shopify cart requests, predictive search, localization submission or checkout.
+
+## Updates and validation
+
+Run the same CLI command to add missing items. The CLI skips unchanged files and protects changed files unless you explicitly overwrite them. Review updates before using `--overwrite`; keep your theme's settings and layout integration. The full install includes `assets/ui-manifest.json` with the upstream file hashes for a consistency check.
+
+The library tests real CLI installation into an empty theme, individual dependency closure, repeated installation, preservation and controller behavior in Chromium, Firefox and WebKit. Shopify Theme Check validates the consuming template. Store rendering, stylesheet subsetting and commerce flows still need an approved store/theme test before release.

@@ -1,0 +1,58 @@
+[data-slot='carousel'] {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+/* The strip bleeds into the gutters. Each item's box starts at a scroll position and insets its
+     content by the gutter, so the controller's positions and the snap points line up with the
+     section's columns; the end padding keeps the last item off the edge. It is the containing block
+     of absolutely positioned content in the cards, such as screen reader labels, so its overflow
+     clips them and they cannot widen the page. */
+[data-slot='carousel-content'] {
+  position: relative;
+  display: flex;
+  margin-inline: calc(var(--gutter) * -1);
+  padding-inline-end: var(--gutter);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+[data-slot='carousel-content']::-webkit-scrollbar {
+  display: none;
+}
+[data-slot='carousel'][data-dragging='true'] [data-slot='carousel-content'] {
+  cursor: grabbing;
+}
+[data-slot='carousel-item'] {
+  flex: 0 0 calc(100% / var(--carousel-columns, 1));
+  min-width: 0;
+  padding-left: var(--gutter);
+  scroll-snap-align: start;
+}
+.carousel__controls {
+  display: flex;
+  gap: 8px;
+}
+.carousel__controls[data-align='end'] {
+  justify-content: flex-end;
+}
+.carousel__controls[data-align='center'] {
+  justify-content: center;
+}
+.carousel__controls:not(:has(button:not([hidden]))) {
+  display: none;
+}
+.carousel__button[data-button] {
+  border-radius: 50%;
+}
+@media (max-width: 1023px) {
+  [data-slot='carousel-item'] {
+    flex-basis: calc(100% / var(--carousel-columns-tablet, 1));
+  }
+}
+@media (max-width: 767px) {
+  [data-slot='carousel-item'] {
+    flex-basis: calc(100% / var(--carousel-columns-mobile, 1));
+  }
+}

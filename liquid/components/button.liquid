@@ -1,0 +1,232 @@
+{% doc %}
+  A button or link. Omitting label registers its styles for native data-slot markup.
+
+  @param {string} [label] - Plain text label, escaped.
+  @param {string} [href] - Link destination.
+  @param {string} [variant] - Visual variant.
+  @param {string} [size] - Button size.
+  @param {string} [type] - Native button type, defaults to button.
+  @param {boolean} [disabled] - Disable the button.
+{% enddoc %}
+
+{% if label != blank %}
+  {% if href != blank %}
+    <a
+      href='{{ href | escape }}'
+      data-slot='button'
+      data-variant='{{ variant | default: 'default' | escape }}'
+      data-size='{{ size | default: 'default' | escape }}'
+    >
+      {{- label | escape -}}
+    </a>
+  {% else %}
+    <button
+      type='{{ type | default: 'button' | escape }}'
+      data-slot='button'
+      data-variant='{{ variant | default: 'default' | escape }}'
+      data-size='{{ size | default: 'default' | escape }}'
+      {% if disabled %}
+        disabled
+      {% endif %}
+    >
+      {{ label | escape }}
+    </button>
+  {% endif %}
+{% endif %}
+
+{% stylesheet %}
+  /* A part that keeps a behavioral data-slot of its own, such as dialog-close or carousel-next,
+   takes the button look with data-button and the same data-variant and data-size values. */
+  /* Merchant labels can be long: a label wider than its container wraps inside the button, which
+   then grows from its fixed height. One line keeps the Vega height in every size. */
+  :is([data-slot='button'], [data-button]) {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    gap: calc(var(--spacing) * 1.5);
+    max-width: 100%;
+    min-height: calc(var(--spacing) * 9);
+    padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2.5);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    background: var(--primary);
+    background-clip: padding-box;
+    color: var(--primary-foreground);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25;
+    text-align: center;
+    overflow-wrap: anywhere;
+    text-decoration: none;
+    text-underline-offset: 4px;
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+    transition:
+      background-color 150ms,
+      color 150ms,
+      border-color 150ms,
+      box-shadow 150ms,
+      translate 150ms;
+  }
+  :is([data-slot='button'], [data-button]) > .icon {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+    pointer-events: none;
+  }
+  :is([data-slot='button'], [data-button]):where(:has(> .icon:last-child:not(:first-child))) {
+    padding-right: calc(var(--spacing) * 2);
+  }
+  :is([data-slot='button'], [data-button]):where(:has(> .icon:first-child:not(:last-child))) {
+    padding-left: calc(var(--spacing) * 2);
+  }
+  :is([data-slot='button'], [data-button]):hover {
+    background-color: color-mix(in oklch, var(--primary) 80%, transparent);
+  }
+  :is([data-slot='button'], [data-button]):focus-visible {
+    border-color: var(--ring);
+    box-shadow: var(--focus-ring);
+  }
+  :is([data-slot='button'], [data-button])[aria-invalid='true'] {
+    border-color: light-dark(var(--destructive), color-mix(in oklch, var(--destructive) 50%, transparent));
+    box-shadow: 0 0 0 3px
+      light-dark(
+        color-mix(in oklch, var(--destructive) 20%, transparent),
+        color-mix(in oklch, var(--destructive) 40%, transparent)
+      );
+  }
+  :is([data-slot='button'], [data-button]):active:not([aria-haspopup]) {
+    translate: 0 1px;
+  }
+  :is([data-slot='button'], [data-button]):disabled,
+  :is([data-slot='button'], [data-button])[aria-disabled='true'] {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  :is([data-slot='button'], [data-button])[data-variant='outline'] {
+    border-color: light-dark(var(--border), var(--input));
+    background-color: light-dark(var(--background), color-mix(in oklch, var(--input) 30%, transparent));
+    color: var(--foreground);
+    box-shadow: var(--shadow-xs);
+  }
+  :is([data-slot='button'], [data-button])[data-variant='outline']:hover {
+    background-color: light-dark(var(--muted), color-mix(in oklch, var(--input) 50%, transparent));
+    color: var(--foreground);
+  }
+  :is([data-slot='button'], [data-button])[data-variant='outline'][aria-expanded='true'] {
+    background-color: var(--muted);
+  }
+  :is([data-slot='button'], [data-button])[data-variant='outline']:focus-visible {
+    border-color: var(--ring);
+    box-shadow: var(--focus-ring);
+  }
+  :is([data-slot='button'], [data-button])[data-variant='secondary'] {
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+  }
+  :is([data-slot='button'], [data-button])[data-variant='secondary']:hover {
+    background-color: color-mix(in oklch, var(--secondary), var(--foreground) 5%);
+  }
+  :is([data-slot='button'], [data-button])[data-variant='ghost'] {
+    background-color: transparent;
+    color: inherit;
+  }
+  :is([data-slot='button'], [data-button])[data-variant='ghost']:hover {
+    background-color: light-dark(var(--muted), color-mix(in oklch, var(--muted) 50%, transparent));
+    color: var(--foreground);
+  }
+  :is([data-slot='button'], [data-button])[data-variant='ghost'][aria-expanded='true'] {
+    background-color: var(--muted);
+    color: var(--foreground);
+  }
+  :is([data-slot='button'], [data-button])[data-variant='destructive'] {
+    background-color: light-dark(
+      color-mix(in oklch, var(--destructive) 10%, transparent),
+      color-mix(in oklch, var(--destructive) 20%, transparent)
+    );
+    /* Vega's destructive text on its own tint is about 4:1; mixing in the foreground keeps 4.5:1. */
+    color: color-mix(in oklch, var(--destructive) 65%, var(--foreground));
+  }
+  :is([data-slot='button'], [data-button])[data-variant='destructive']:hover {
+    background-color: light-dark(
+      color-mix(in oklch, var(--destructive) 20%, transparent),
+      color-mix(in oklch, var(--destructive) 30%, transparent)
+    );
+  }
+  :is([data-slot='button'], [data-button])[data-variant='destructive']:focus-visible {
+    border-color: color-mix(in oklch, var(--destructive) 40%, transparent);
+    box-shadow: 0 0 0 3px
+      light-dark(
+        color-mix(in oklch, var(--destructive) 20%, transparent),
+        color-mix(in oklch, var(--destructive) 40%, transparent)
+      );
+  }
+  :is([data-slot='button'], [data-button])[data-variant='link'] {
+    background: none;
+    color: var(--primary);
+  }
+  :is([data-slot='button'], [data-button])[data-variant='link']:hover {
+    text-decoration: underline;
+  }
+  /* A fixed white button on photos and video. */
+  :is([data-slot='button'], [data-button])[data-variant='media'] {
+    background-color: var(--media-button);
+    color: var(--media-button-foreground);
+  }
+  :is([data-slot='button'], [data-button])[data-variant='media']:hover {
+    background-color: var(--media-button-hover);
+  }
+  /* The secondary button on photos: a translucent white fill. */
+  :is([data-slot='button'], [data-button])[data-variant='media-secondary'] {
+    background-color: var(--media-secondary);
+    color: var(--on-media);
+  }
+  :is([data-slot='button'], [data-button])[data-variant='media-secondary']:hover {
+    background-color: var(--media-secondary-hover);
+  }
+  :is([data-slot='button'], [data-button])[data-size='xs'] {
+    gap: var(--spacing);
+    min-height: calc(var(--spacing) * 6);
+    padding: calc(var(--spacing) * 0.75) calc(var(--spacing) * 2);
+    border-radius: min(var(--radius-md), 8px);
+    font-size: 0.75rem;
+  }
+  :is([data-slot='button'], [data-button])[data-size='xs'] > .icon {
+    width: calc(var(--spacing) * 3);
+    height: calc(var(--spacing) * 3);
+  }
+  :is([data-slot='button'], [data-button])[data-size='sm'] {
+    gap: var(--spacing);
+    min-height: calc(var(--spacing) * 8);
+    padding-block: calc(var(--spacing) * 1.5);
+    border-radius: min(var(--radius-md), 10px);
+  }
+  :is([data-slot='button'], [data-button])[data-size='lg'] {
+    min-height: calc(var(--spacing) * 10);
+  }
+  :is([data-slot='button'], [data-button])[data-size^='icon'] {
+    width: calc(var(--spacing) * 9);
+    height: calc(var(--spacing) * 9);
+    min-height: 0;
+    padding: 0;
+  }
+  :is([data-slot='button'], [data-button])[data-size='icon-xs'] {
+    width: calc(var(--spacing) * 6);
+    height: calc(var(--spacing) * 6);
+    border-radius: min(var(--radius-md), 8px);
+  }
+  :is([data-slot='button'], [data-button])[data-size='icon-xs'] > .icon {
+    width: calc(var(--spacing) * 3);
+    height: calc(var(--spacing) * 3);
+  }
+  :is([data-slot='button'], [data-button])[data-size='icon-sm'] {
+    width: calc(var(--spacing) * 8);
+    height: calc(var(--spacing) * 8);
+    border-radius: min(var(--radius-md), 10px);
+  }
+  :is([data-slot='button'], [data-button])[data-size='icon-lg'] {
+    width: calc(var(--spacing) * 10);
+    height: calc(var(--spacing) * 10);
+  }
+{% endstylesheet %}
