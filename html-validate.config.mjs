@@ -1,8 +1,10 @@
 import {
   builtinRules,
+  classifyNodeText,
   defineFlatConfig,
   esmResolver,
   FlatCompat,
+  TextClassification,
 } from "html-validate"
 
 const compat = new FlatCompat([esmResolver()])
@@ -34,15 +36,23 @@ const labelable = "button, input, meter, output, progress, select, textarea"
 function hasLabel(document, node) {
   const id = node.getAttributeValue("id")
   const wrapping = node.closest("label")
+  // A <label for> names the first element with that id.
+  const first = id ? document.querySelector(`[id="${id}"]`) : null
   const labels = [
-    ...(id ? document.querySelectorAll(`label[for="${id}"]`) : []),
+    ...(first?.isSameNode(node)
+      ? document.querySelectorAll(`label[for="${id}"]`)
+      : []),
     ...(wrapping &&
     !wrapping.hasAttribute("for") &&
     wrapping.querySelector(labelable) === node
       ? [wrapping]
       : []),
   ]
-  return labels.some((label) => label.textContent.trim())
+  return labels.some(
+    (label) =>
+      classifyNodeText(label, { accessible: true }) !==
+      TextClassification.EMPTY_TEXT
+  )
 }
 
 export default defineFlatConfig([

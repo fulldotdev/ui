@@ -44,52 +44,118 @@ const {
   ...props
 } = Astro.props
 
-// Show the text Data Slot puts in the SelectValue when it starts: the label
-// of the default item, or the placeholder. Without it the trigger is empty, and
+// Show the text Data Slot puts in the SelectValue when it starts: the label of
+// the default item, or the placeholder. Without it the trigger is empty, and
 // has no accessible name, until the script runs.
 const html = await Astro.slots.render("default")
+const entities: Record<string, string> = {
+  amp: "&",
+  lt: "<",
+  gt: ">",
+  quot: '"',
+  apos: "'",
+}
 const decode = (value: string) =>
-  value.replace(/&(#\d+|amp|lt|gt|quot|apos);/g, (_, entity: string) =>
-    entity.startsWith("#")
-      ? String.fromCharCode(Number(entity.slice(1)))
-      : { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'" }[entity]!
+  value.replace(
+    /&(#x?[\da-f]+|amp|lt|gt|quot|apos);/gi,
+    (entity, code: string) =>
+      code.startsWith("#")
+        ? String.fromCodePoint(Number(code.replace("#", "0")))
+        : (entities[code] ?? entity)
   )
+// Attribute values can hold ">", as Tailwind classes do.
+const tags =
+  /<!--[\s\S]*?-->|<(script|style)\b[\s\S]*?<\/\1\s*>|<(\/?)([a-z][\w:-]*)((?:[^>"']|"[^"]*"|'[^']*')*)>/gi
+const attributes = (source: string) =>
+  [
+    ...source.matchAll(/([^\s"'>/=]+)(?:\s*=\s*("[^"]*"|'[^']*'|[^\s>]+))?/g),
+  ].map(({ 0: text, 1: name, 2: value = "", index }) => ({
+    name: name.toLowerCase(),
+    value: decode(/^["']/.test(value) ? value.slice(1, -1) : value),
+    index,
+    text,
+  }))
+// Elements without an end tag.
+const empty = new Set(
+  "area base br col embed hr img input link meta source track wbr".split(" ")
+)
 const escape = (value: string) =>
-  value.replace(/[&<>"]/g, (char) => `&#${char.charCodeAt(0)};`)
-// Attributes of a tag. Their values can hold ">", as Tailwind classes do.
-const attributes = String.raw`(?:[^>"']|"[^"]*"|'[^']*')*`
-const part = (tag: string, slot: string, rest = "", flags?: string) =>
-  new RegExp(
-    `<${tag}\\b(${attributes}data-slot="${slot}"${attributes})>${rest}`,
-    flags
-  )
-const item =
+  value.replace(/[&<>]/g, (char) => `&#${char.charCodeAt(0)};`)
+
+type Item = { value?: string; label?: string; text: string; itemText?: string }
+const items: Item[] = []
+let trigger: number | undefined
+let value: { start: number; end?: number; placeholder?: string } | undefined
+const open: { name: string; item?: Item; itemText?: Item; value?: true }[] = []
+let last = 0
+for (const match of html.matchAll(tags)) {
+  const { 0: whole, 2: close, 3: tag, 4: source = "", index } = match
+  const text = html.slice(last, index)
+  last = index + whole.length
+  for (const element of open) {
+    if (element.item) element.item.text += text
+    if (element.itemText) element.itemText.itemText += text
+  }
+  if (!tag) continue
+  const name = tag.toLowerCase()
+  if (close) {
+    const at = open.findLastIndex((element) => element.name === name)
+    if (at < 0) continue
+    if (value && open.slice(at).some((element) => element.value)) {
+      value.end ??= index
+    }
+    open.length = at
+    continue
+  }
+  const list = attributes(source)
+  const get = (key: string) => list.find((item) => item.name === key)?.value
+  const slot = get("data-slot")
+  const element: (typeof open)[number] = { name }
+  if (slot === "select-item") {
+    element.item = {
+      value: get("data-value"),
+      label: get("data-label")?.trim(),
+      text: "",
+    }
+    items.push(element.item)
+  }
+  const owner = open.findLast((element) => element.item)?.item
+  if (slot === "select-item-text" && owner && owner.itemText === undefined) {
+    owner.itemText = ""
+    element.itemText = owner
+  }
+  if (slot === "select-trigger" && get("data-placeholder") === undefined) {
+    trigger ??= index + whole.length - 1
+  }
+  if (slot === "select-value" && !value) {
+    value = { start: last, placeholder: get("data-placeholder") }
+    element.value = true
+  }
+  if (!empty.has(name) && !source.trimEnd().endsWith("/")) open.push(element)
+}
+
+// The label as Data Slot reads it: data-label, the SelectItemText, the item's
+// text, or else the value itself.
+const item = items.find((item) => item.value === defaultValue)
+const label =
   defaultValue === undefined
-    ? undefined
-    : [
-        ...html.matchAll(part("div", "select-item", "([\\s\\S]*?)</div>", "g")),
-      ].find(
-        ([, attrs]) =>
-          decode(attrs.match(/data-value="([^"]*)"/)?.[1] ?? "") ===
-          defaultValue
-      )
-const text =
-  defaultValue === undefined
-    ? escape(placeholder ?? "")
-    : item?.[1].match(/data-label="([^"]*)"/)?.[1].trim() ||
-      item?.[2].replace(new RegExp(`<${attributes}>`, "g"), "").trim() ||
-      escape(defaultValue)
-const empty = part("span", "select-value", "</span>")
-const content =
-  text && empty.test(html)
-    ? html
-        .replace(empty, (_, attrs: string) => `<span${attrs}>${text}</span>`)
-        .replace(part("button", "select-trigger"), (trigger, attrs: string) =>
-          defaultValue === undefined
-            ? `<button${attrs} data-placeholder>`
-            : trigger
-        )
-    : html
+    ? escape(placeholder ?? value?.placeholder ?? "")
+    : item?.label
+      ? escape(item.label)
+      : item?.itemText?.trim() || item?.text.trim() || escape(defaultValue)
+const edits: [start: number, end: number, text: string][] = []
+if (value?.end !== undefined && label) {
+  if (!html.slice(value.start, value.end).trim()) {
+    edits.push([value.start, value.end, label])
+  }
+}
+if (defaultValue === undefined && trigger !== undefined) {
+  edits.push([trigger, trigger, " data-placeholder"])
+}
+let content = html
+for (const [start, end, text] of edits.sort(([a], [b]) => b - a)) {
+  content = content.slice(0, start) + text + content.slice(end)
+}
 ---
 
 <div

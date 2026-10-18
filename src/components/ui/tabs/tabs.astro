@@ -17,33 +17,89 @@ const {
   ...props
 } = Astro.props
 
-// Show the initial panel in the HTML, the one Data Slot selects: the default
-// value or the first enabled trigger. TabsContent renders hidden, so without
-// this the page shifts when the script starts.
+// Show the initial panels in the HTML, the ones Data Slot shows when it
+// starts: those of the default value, or of the first enabled trigger.
+// TabsContent renders hidden, so without this the page shifts when the script
+// starts. Like Data Slot, skip the parts of nested tabs.
 const html = await Astro.slots.render("default")
+const entities: Record<string, string> = {
+  amp: "&",
+  lt: "<",
+  gt: ">",
+  quot: '"',
+  apos: "'",
+}
 const decode = (value: string) =>
-  value.replace(/&(#\d+|amp|lt|gt|quot|apos);/g, (_, entity: string) =>
-    entity.startsWith("#")
-      ? String.fromCharCode(Number(entity.slice(1)))
-      : { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'" }[entity]!
+  value.replace(
+    /&(#x?[\da-f]+|amp|lt|gt|quot|apos);/gi,
+    (entity, code: string) =>
+      code.startsWith("#")
+        ? String.fromCodePoint(Number(code.replace("#", "0")))
+        : (entities[code] ?? entity)
   )
-const trigger = [
-  ...html.matchAll(/<button\b[^>]*data-slot="tabs-trigger"[^>]*>/g),
-]
-  .map(([tag]) => tag)
-  .find((tag) => !/\sdisabled\b/.test(tag))
-  ?.match(/data-value="([^"]*)"/)?.[1]
-const initial =
-  defaultValue ?? (trigger === undefined ? undefined : decode(trigger))
-let shown = false
-const content = html.replace(
-  /data-slot="tabs-content" hidden data-value="([^"]*)"/g,
-  (panel, value: string) => {
-    if (shown || decode(value) !== initial) return panel
-    shown = true
-    return `data-slot="tabs-content" data-value="${value}"`
-  }
+// Attribute values can hold ">", as Tailwind classes do.
+const tags =
+  /<!--[\s\S]*?-->|<(script|style)\b[\s\S]*?<\/\1\s*>|<(\/?)([a-z][\w:-]*)((?:[^>"']|"[^"]*"|'[^']*')*)>/gi
+const attributes = (source: string) =>
+  [
+    ...source.matchAll(/([^\s"'>/=]+)(?:\s*=\s*("[^"]*"|'[^']*'|[^\s>]+))?/g),
+  ].map(({ 0: text, 1: name, 2: value = "", index }) => ({
+    name: name.toLowerCase(),
+    value: decode(/^["']/.test(value) ? value.slice(1, -1) : value),
+    index,
+    text,
+  }))
+// Elements without an end tag.
+const empty = new Set(
+  "area base br col embed hr img input link meta source track wbr".split(" ")
 )
+
+const triggers: { value: string; disabled: boolean }[] = []
+const hidden: { value: string; start: number; end: number }[] = []
+const open: { name: string; tabs: boolean }[] = []
+for (const { 2: close, 3: tag, 4: source = "", index } of html.matchAll(tags)) {
+  if (!tag) continue
+  const name = tag.toLowerCase()
+  if (close) {
+    const at = open.findLastIndex((element) => element.name === name)
+    if (at >= 0) open.length = at
+    continue
+  }
+  const list = attributes(source)
+  const get = (key: string) => list.find((item) => item.name === key)?.value
+  const slot = get("data-slot")
+  if (!open.some((element) => element.tabs)) {
+    const value = get("data-value")?.trim() ?? ""
+    if (slot === "tabs-trigger" && value) {
+      triggers.push({
+        value,
+        disabled:
+          get("disabled") !== undefined ||
+          get("data-disabled") !== undefined ||
+          get("aria-disabled") === "true",
+      })
+    }
+    const attribute = list.find((item) => item.name === "hidden")
+    if (slot === "tabs-content" && value && attribute) {
+      const start = index + 1 + tag.length + attribute.index
+      hidden.push({ value, start, end: start + attribute.text.length })
+    }
+  }
+  if (!empty.has(name) && !source.trimEnd().endsWith("/")) {
+    open.push({ name, tabs: slot === "tabs" })
+  }
+}
+const preferred = triggers.findLast(
+  (trigger) => trigger.value === defaultValue?.trim()
+)
+const initial =
+  preferred && !preferred.disabled
+    ? preferred.value
+    : triggers.find((trigger) => !trigger.disabled)?.value
+let content = html
+for (const { value, start, end } of hidden.reverse()) {
+  if (value === initial) content = content.slice(0, start) + content.slice(end)
+}
 ---
 
 <div
