@@ -1,5 +1,13 @@
 # Fulldev UI
 
+## 0.25.2
+
+### Patch Changes
+
+- [#305](https://github.com/fulldotdev/ui/pull/305) [`18063bb`](https://github.com/fulldotdev/ui/commit/18063bb16e6e2d2329ed2dfae85200ae5876a748) Thanks [@silveltman](https://github.com/silveltman)! - Select triggers show their text in the server-rendered HTML: an empty `SelectValue` gets the label of the `defaultValue` item, or the `placeholder`, the text Data Slot shows when it starts. Before, the trigger stayed empty, and had no accessible name, until the select script ran. `ComboboxTrigger` is named "Toggle" in the HTML, the name Data Slot gives it. Icon-only buttons in the button, collapsible, combobox, input group, item and tooltip examples have an accessible name.
+
+- [#305](https://github.com/fulldotdev/ui/pull/305) [`18063bb`](https://github.com/fulldotdev/ui/commit/18063bb16e6e2d2329ed2dfae85200ae5876a748) Thanks [@silveltman](https://github.com/silveltman)! - Tabs show their initial panel in the server-rendered HTML, the one Data Slot selects: the `defaultValue` when its trigger is enabled, or else the first enabled trigger. Before, every panel stayed hidden until the tabs script started, so the page shifted when it did; it also works without JavaScript now.
+
 ## 0.25.1
 
 ### Patch Changes
