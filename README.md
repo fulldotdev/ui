@@ -92,18 +92,17 @@ Requires Node 24 (`.node-version`), pnpm 12 and [Vite+](https://viteplus.dev) (`
 pnpm install         # frozen lockfile in CI and on Netlify
 pnpm dev             # docs site at http://127.0.0.1:4321
 vp run build         # builds the docs and the React previews
-vp run check:build   # validates the built HTML and internal links and anchors
-vp run check:source  # the source checks every Ready PR runs
+vp run check  # the source checks every Ready PR runs
 vp run test:unit     # the tests in tests, which Ready PRs also run
-vp run fix:source    # Prettier and ESLint fixes
+vp run fix    # Prettier and ESLint fixes
 pnpm images          # converts source photos in src to WebP
 pnpm ui:add @shadcn/card  # installs with the shadcn CLI, then runs Prettier
 pnpm registry:build  # regenerates public/r after registry changes
 ```
 
-`vp run check:source` runs Prettier, TypeScript and `astro check`, ESLint, knip, the source photo check, and, specific to this registry, `registry:check` (the committed `public/r` must match a fresh build). `vp run test:unit` runs the tests in `tests`.
+`vp run check` runs Prettier, TypeScript and `astro check`, ESLint, knip, the source photo check, and, specific to this registry, `registry:check` (the committed `public/r` must match a fresh build). `vp run test:unit` runs the tests in `tests`.
 
-`pnpm ui:add` formats the project right after the install, so a later `vp run fix:source` or `vp run check:source` does not change the installed components. A plain `pnpm dlx shadcn@latest add` leaves the CLI's own formatting, which the next format run may change.
+`pnpm ui:add` formats the project right after the install, so a later `vp run fix` or `vp run check` does not change the installed components. A plain `pnpm dlx shadcn@latest add` leaves the CLI's own formatting, which the next format run may change.
 
 ## Contributing
 

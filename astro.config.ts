@@ -2,11 +2,13 @@ import { defineConfig, fontProviders } from "astro/config"
 import { unified } from "@astrojs/markdown-remark"
 import mdx from "@astrojs/mdx"
 import sitemap from "@astrojs/sitemap"
+import netlifyDev from "@netlify/vite-plugin"
 import tailwindcss from "@tailwindcss/vite"
 import favicons from "astro-favicons"
 import liveCode from "astro-live-code"
 import robotsTxt from "astro-robots-txt"
 
+import checkBuild from "./src/integrations/check-build"
 import { inheritCodeColors } from "./src/lib/code"
 
 // Docs tables scroll inside the content column instead of widening the page.
@@ -48,7 +50,7 @@ export default defineConfig({
     port: 4321,
   },
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), netlifyDev({ edgeFunctions: { enabled: false } })],
     server: {
       allowedHosts: ["otis.tailb5cb80.ts.net"],
       proxy: {
@@ -152,5 +154,7 @@ export default defineConfig({
       layout: "/src/components/live-code.astro",
     }),
     mdx({ gfm: true }),
+
+    checkBuild(),
   ],
 })

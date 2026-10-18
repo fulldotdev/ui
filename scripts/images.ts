@@ -3,7 +3,7 @@
 //
 //   pnpm images                      fix everything under src
 //   pnpm images <file>               also convert this file, such as a PNG photo
-//   node scripts/images.ts --check   check src, part of check:source
+//   node scripts/images.ts --check   check src, part of check
 //
 // Fix mode converts JPEG content and PNG content saved as .jpg, .jpeg or .webp
 // to WebP, renames WebP content saved as .jpg without encoding it again,

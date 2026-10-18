@@ -66,10 +66,9 @@ git checkout -b feature/your-feature-name
 3. **Test your changes**:
 
 ```bash
-vp run check:source  # Format, lint, types and registry
+vp run check  # Format, lint, types and registry
 vp run test:unit     # Unit and registry tests
 vp run build         # Build the site
-vp run check:build   # Validate its HTML and links
 ```
 
 4. **Commit your changes**:
@@ -105,8 +104,7 @@ The React items live in `react/` and the native Liquid items in `liquid/`; see t
 
 ```bash
 vp run build        # Build the site
-vp run check:build  # Validate its HTML and links
-vp run fix:source   # Format and apply lint fixes
+vp run fix   # Format and apply lint fixes
 ```
 
 ### Registry
