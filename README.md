@@ -86,7 +86,7 @@ The [`fulldev-ui`](https://www.npmjs.com/package/fulldev-ui) package holds the r
 
 ## Development
 
-Requires Node 24 (`.node-version`) and pnpm 12. Installs never run dependency or project lifecycle scripts (`pnpm-workspace.yaml`).
+Requires Node 24 (`.node-version`), pnpm 12 and [Vite+](https://viteplus.dev) (`vp`), which runs the scripts locally and in CI. Installs never run dependency or project lifecycle scripts (`pnpm-workspace.yaml`).
 
 ```bash
 pnpm install         # frozen lockfile in CI and on Netlify
