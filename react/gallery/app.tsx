@@ -23,19 +23,18 @@ async function load(route: string): Promise<Preview> {
   return { kind, Demo: module?.default }
 }
 
-// Send the page height to the docs, which size the iframe to it.
-function useReportHeight() {
+// Size the docs iframe to this page. The docs share the origin, so the frame
+// sets its own height, bounded so a runaway layout cannot grow the page
+// without end. Full-page previews keep their fixed height.
+function useFrameHeight() {
   React.useEffect(() => {
-    if (window.parent === window) return
-    const report = () =>
-      window.parent.postMessage(
-        {
-          type: "fulldev:preview-height",
-          height: document.body.getBoundingClientRect().height,
-        },
-        window.location.origin
-      )
-    const observer = new ResizeObserver(report)
+    const frame = window.frameElement as HTMLElement | null
+    if (!frame || frame.hasAttribute("data-full-page")) return
+    const min = Number(frame.dataset.minHeight ?? 120)
+    const observer = new ResizeObserver(() => {
+      const height = document.body.getBoundingClientRect().height
+      frame.style.height = `${Math.min(Math.max(Math.ceil(height), min), 4000)}px`
+    })
     observer.observe(document.body)
     return () => observer.disconnect()
   }, [])
@@ -47,7 +46,7 @@ const ownMain = new Set(["ui/layout", "blocks/sidebar-1"])
 export function App() {
   const [route, setRoute] = React.useState(readRoute)
   const [preview, setPreview] = React.useState<Preview & { route: string }>()
-  useReportHeight()
+  useFrameHeight()
   React.useEffect(() => {
     const onChange = () => setRoute(readRoute())
     window.addEventListener("hashchange", onChange)

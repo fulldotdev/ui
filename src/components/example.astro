@@ -109,21 +109,6 @@ const minHeight = /^header-\d+$/.test(name) ? 640 : undefined
   sync()
   document.addEventListener(PRESET_EVENT, sync)
 
-  // React and Liquid previews read the theme and preset from localStorage
-  // themselves, and report their height.
-  window.addEventListener("message", (event) => {
-    if (event.origin !== location.origin) return
-    if (event.data?.type !== "fulldev:preview-height") return
-    if (!Number.isFinite(event.data.height)) return
-    const frame = [
-      ...document.querySelectorAll<HTMLIFrameElement>(
-        "iframe[data-react-preview]:not([data-full-page]), iframe[data-liquid-preview]"
-      ),
-    ].find((frame) => frame.contentWindow === event.source)
-    if (!frame) return
-    // Bounded, so a runaway layout cannot grow the page without end.
-    const min = Number(frame.dataset.minHeight ?? 120)
-    const height = Math.min(Math.max(Math.ceil(event.data.height), min), 4000)
-    frame.style.height = `${height}px`
-  })
+  // React and Liquid previews read the theme and preset from localStorage and
+  // set their own height.
 </script>

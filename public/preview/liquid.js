@@ -1,5 +1,5 @@
 // Docs-only bridge, the same as the React previews: the theme and preset come
-// from the docs' localStorage, and the frame reports its height. The component
+// from the docs' localStorage, and the frame sizes itself. The component
 // controllers come from the native library.
 const theme = document.querySelector("#preview-theme")
 const defaultCss = theme.textContent
@@ -41,9 +41,13 @@ addEventListener("storage", (event) => {
 })
 media.addEventListener("change", apply)
 
-const report = () =>
-  parent.postMessage(
-    { type: "fulldev:preview-height", height: document.body.scrollHeight },
-    location.origin
-  )
-new ResizeObserver(report).observe(document.querySelector("#example"))
+// The docs share the origin, so the frame sets its own height, bounded so a
+// runaway layout cannot grow the page without end.
+const frame = window.frameElement
+if (frame) {
+  const min = Number(frame.dataset.minHeight ?? 120)
+  new ResizeObserver(() => {
+    const height = Math.ceil(document.body.scrollHeight)
+    frame.style.height = `${Math.min(Math.max(height, min), 4000)}px`
+  }).observe(document.querySelector("#example"))
+}
