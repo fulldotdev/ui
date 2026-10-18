@@ -2,6 +2,7 @@ import { defineConfig, fontProviders } from "astro/config"
 import { unified } from "@astrojs/markdown-remark"
 import mdx from "@astrojs/mdx"
 import sitemap from "@astrojs/sitemap"
+import netlifyDev from "@netlify/vite-plugin"
 import tailwindcss from "@tailwindcss/vite"
 import favicons from "astro-favicons"
 import liveCode from "astro-live-code"
@@ -48,7 +49,7 @@ export default defineConfig({
     port: 4321,
   },
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), netlifyDev({ edgeFunctions: { enabled: false } })],
     server: {
       allowedHosts: ["otis.tailb5cb80.ts.net"],
       proxy: {

@@ -41,7 +41,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "packageManager": "pnpm@12.11.2",
+  "packageManager": "pnpm@12.14.0",
   "imports": {
     "#styles": "./scripts/styles.mjs",
     "#liquid-fixture": "./tests/helpers/liquid.mjs",
@@ -49,18 +49,16 @@
   },
   "scripts": {
     "astro": "astro",
-    "dev": "pnpm stop && astro dev --host 127.0.0.1 --port 4321",
-    "stop": "lsof -tiTCP:4321 -sTCP:LISTEN | xargs kill 2>/dev/null || true",
-    "preview": "pnpm stop && pnpm build && astro preview --host 127.0.0.1 --port 4321",
+    "dev": "astro dev --host 127.0.0.1 --port 4321",
+    "preview": "vp dlx --package=netlify-cli@27.12.1 netlify serve --context deploy-preview",
     "typecheck": "tsc --noEmit --noCheck && astro check --minimumFailingSeverity hint && tsc --noEmit -p react",
-    "check:source": "prettier --check . && pnpm typecheck && eslint . && knip && node scripts/images.ts --check && node scripts/liquid-theme-check.mjs && pnpm registry:check",
+    "check": "prettier --check . && pnpm typecheck && eslint . && knip && node scripts/images.ts --check && node scripts/liquid-theme-check.mjs && pnpm registry:check",
     "test:unit": "node --test tests/*.test.mjs",
     "test:browser": "node --test tests/browser/*.test.mjs",
-    "fix:source": "prettier --write . && eslint . --fix",
+    "fix": "prettier --write . && eslint . --fix",
     "images": "node scripts/images.ts",
     "ui:add": "node scripts/ui-add.ts",
-    "build": "astro build && pnpm --dir react build",
-    "check:build": "html-validate dist && linkinator dist",
+    "build": "astro build && pnpm --dir react build && node scripts/check-build.ts",
     "a11y": "pnpm build && playwright install chromium --only-shell && node scripts/a11y.mjs",
     "registry:build": "pnpm registry:meta && node scripts/registry-adapt.mjs && shadcn build --output node_modules/.cache/fulldev-registry && node scripts/registry-styles.mjs && shadcn build -c react -o ../node_modules/.cache/fulldev-registry-react && node scripts/registry-styles.mjs node_modules/.cache/fulldev-registry-react react/registry.json public/r/react && pnpm registry:liquid && prettier --write registry.json react/registry.json liquid/registry.json public/r registry/styles/adapted --log-level warn",
     "registry:check": "pnpm registry:validate && pnpm registry:build && git diff --exit-code -- registry.json react/registry.json liquid public/r registry/styles/adapted",
@@ -68,7 +66,8 @@
     "release": "changeset version && pnpm install --lockfile-only",
     "release:publish": "pnpm registry:check && changeset publish",
     "registry:meta": "node scripts/registry-meta.mjs",
-    "registry:liquid": "node scripts/registry-liquid.mjs && shadcn build -c liquid -o ../public/r/liquid"
+    "registry:liquid": "node scripts/registry-liquid.mjs && shadcn build -c liquid -o ../public/r/liquid",
+    "test": "vp run test:unit"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
@@ -138,6 +137,7 @@
     "tailwindcss": "^4.3.3",
     "tw-animate-css": "^1.4.0",
     "typescript": "~6.0.3",
-    "typescript-eslint": "^8.71.0"
+    "typescript-eslint": "^8.71.0",
+    "@netlify/vite-plugin": "3.0.1"
   }
 }

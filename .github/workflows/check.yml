@@ -1,6 +1,9 @@
 name: Check
 
 on:
+  workflow_dispatch:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
     types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
@@ -9,13 +12,14 @@ permissions:
   contents: read
 
 concurrency:
-  group: check-${{ github.event.pull_request.number }}-${{ github.event.pull_request.draft && 'draft' || 'ready' }}
+  group: check-${{ github.event.pull_request.number || github.ref }}-${{ github.event.pull_request.draft && 'draft' || 'ready' }}
   cancel-in-progress: true
 
 jobs:
   check:
     name: Check
-    uses: fulldotdev/.github/.github/workflows/check.yml@f2895c09a7d688a58f2bacc200c7b18bc07574e7
+    uses: fulldotdev/.github/.github/workflows/check.yml@b5761e7b9037b147651d781816334bf3abe19873
     with:
       runner: blacksmith-4vcpu-ubuntu-2404
-      command: vp run check:source
+      command: vp run check
+      test-command: vp run test:unit
