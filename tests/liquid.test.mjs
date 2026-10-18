@@ -19,7 +19,7 @@ const digest = (source) => createHash("sha256").update(source).digest("hex")
 test("Liquid retains the shared semantic palette and Card/Button parts", async () => {
   const themes = await json("registry/styles/shadcn/themes.json")
   const neutral = themes.find((theme) => theme.name === "neutral").cssVars
-  const css = await readFile("liquid/styles/tokens.css", "utf8")
+  const css = await readFile("liquid/assets/ui-tokens.css", "utf8")
   for (const [key, value] of Object.entries(neutral.light)) {
     assert(css.includes(`--${key}: ${value};`), key)
   }
@@ -36,7 +36,7 @@ test("Liquid retains the shared semantic palette and Card/Button parts", async (
   ).join("\n")
   for (const [, part] of astroCard.matchAll(/data-slot="([^"]+)"/g))
     assert(contract.card.includes(part), part)
-  const button = await readFile("liquid/components/button.liquid", "utf8")
+  const button = await readFile("liquid/snippets/ui-button.liquid", "utf8")
   const astroButton = await readFile(
     "src/components/ui/button/button-variants.ts",
     "utf8"
