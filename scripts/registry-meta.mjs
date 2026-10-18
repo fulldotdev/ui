@@ -43,12 +43,6 @@ const manual = {
     description: "Installs every Fulldev UI block.",
     docs: `${site}/blocks/`,
   },
-  "beta-repo-setup": {
-    title: "Repo setup (beta)",
-    description:
-      "Content, schema, layout, and route scaffolding for a content-driven Astro site.",
-    docs: `${site}/docs/layouts/`,
-  },
 }
 
 const order = [
@@ -243,3 +237,23 @@ bundle(react.items, "blocks", "registry:block")
 
 writeFileSync(reactPath, JSON.stringify(react, null, 2) + "\n")
 console.log(`Synced metadata for ${react.items.length} React registry items.`)
+
+// The Liquid registry takes its titles, descriptions and docs links from the
+// Liquid docs pages; shared items without a page keep their own.
+const liquidPath = new URL("../liquid/registry.json", import.meta.url)
+const liquid = JSON.parse(readFileSync(liquidPath, "utf8"))
+liquid.items = liquid.items.map((item) => {
+  const fm = readFrontmatter(
+    `src/content/pages/liquid/components/${item.name}.mdx`
+  )
+  if (!fm) return sorted(item)
+  return sorted({
+    ...item,
+    title: fm.title,
+    description: fm.description,
+    docs: `${site}/liquid/components/${item.name}/`,
+  })
+})
+
+writeFileSync(liquidPath, JSON.stringify(liquid, null, 2) + "\n")
+console.log(`Synced metadata for ${liquid.items.length} Liquid registry items.`)
