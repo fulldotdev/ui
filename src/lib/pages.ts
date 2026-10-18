@@ -33,12 +33,18 @@ export const getFramework = (id: string): Framework =>
   (id.match(platformPattern)?.[1] as Framework) ?? "astro"
 
 // The title and description of a page in search results, unique across the
-// site: a component or block page says what it is, and every page of one
-// framework names it, such as "Hero blocks for React - Fulldev UI". The
-// homepage and Create belong to all frameworks.
+// site. Component and block pages name the framework first, the way people
+// search for them, such as "Astro Hero Blocks - Fulldev UI"; other pages of a
+// framework end with it. Liquid is Shopify Liquid there. The homepage and
+// Create belong to all frameworks.
+const searchLabels: Record<Framework, string> = {
+  astro: "Astro",
+  react: "React",
+  liquid: "Shopify Liquid",
+}
 const pageKinds: Record<string, string> = {
-  components: "component",
-  blocks: "blocks",
+  components: "Component",
+  blocks: "Blocks",
 }
 
 export const getPageSeo = (
@@ -50,20 +56,26 @@ export const getPageSeo = (
     value.includes(name) ? value : `${value} - ${name}`
   if (id === "index" || id === "create")
     return { title: withName(title), description }
-  const label = frameworkLabels[getFramework(id)]
+  const framework = getFramework(id)
+  const label = searchLabels[framework]
   const [section, slug] = id.replace(platformPattern, "").split("/")
-  const kind = slug ? pageKinds[section] : undefined
+  if (!section) return { title: withName(`${name} for ${label}`), description }
+  const kind = pageKinds[section]
   const subject =
-    kind && !title.toLowerCase().includes(kind.replace(/s$/, ""))
+    kind &&
+    slug &&
+    !title.toLowerCase().includes(kind.toLowerCase().replace(/s$/, ""))
       ? `${title} ${kind}`
       : title
+  const suffix =
+    kind && slug
+      ? `${label} ${kind.toLowerCase()} from ${name}.`
+      : `${name} for ${label}.`
   return {
-    title: withName(
-      title === label ? `${name} for ${label}` : `${subject} for ${label}`
-    ),
-    description: new RegExp(`\\b${label}\\b`).test(description)
+    title: withName(kind ? `${label} ${subject}` : `${title} for ${label}`),
+    description: description.includes(frameworkLabels[framework])
       ? description
-      : `${/[.!?]$/.test(description) ? description : `${description}.`} ${name} for ${label}.`,
+      : `${/[.!?]$/.test(description) ? description : `${description}.`} ${suffix}`,
   }
 }
 
