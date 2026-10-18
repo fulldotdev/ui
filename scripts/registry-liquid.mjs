@@ -1,9 +1,11 @@
-// Only tokens, contracts and provenance are generated. Component CSS is handwritten.
-// liquid/ mirrors a theme: every file is stored at the path it installs to.
+// Only tokens, contracts, provenance and the data-slot copies are generated.
+// Component CSS is handwritten. liquid/ mirrors a theme: every file is stored
+// at the path it installs to.
 import assert from "node:assert/strict"
 import { createHash } from "node:crypto"
 import { readFileSync, writeFileSync } from "node:fs"
 import { resolve } from "node:path"
+import { fileURLToPath } from "node:url"
 import { format } from "prettier"
 
 const root = resolve("liquid")
@@ -35,10 +37,25 @@ write(
     { parser: "css", singleQuote: true, printWidth: 120 }
   )
 )
+// A theme has no package manager, so the data-slot controllers ship as
+// unchanged copies of the ES modules of their packages in package.json.
+const dataSlotVersions = new Set()
+for (const path of new Set(
+  registry.items.flatMap((item) => item.files ?? []).map((file) => file.path)
+)) {
+  const name = path.match(/^assets\/data-slot-([a-z-]+)\.js$/)?.[1]
+  if (!name) continue
+  const entry = fileURLToPath(import.meta.resolve(`@data-slot/${name}`))
+  const pkg = JSON.parse(readFileSync(resolve(entry, "../../package.json")))
+  dataSlotVersions.add(pkg.version)
+  write(path, readFileSync(entry, "utf8"))
+}
+assert.equal(dataSlotVersions.size, 1, "Use one data-slot version")
+const [dataSlot] = dataSlotVersions
 const licenses = [
   ["Fulldev UI", "LICENSE-FULLDEV.txt"],
   ["shadcn/ui (derived Vega styles)", "LICENSE-SHADCN.md"],
-  ["data-slot 1.1.1", "LICENSE-DATA-SLOT.md"],
+  [`data-slot ${dataSlot}`, "LICENSE-DATA-SLOT.md"],
 ].map(([name, file]) => ({ name, text: read(file).trim() }))
 write("assets/ui-licenses.json", `${JSON.stringify(licenses, null, 2)}\n`)
 
@@ -67,11 +84,6 @@ for (const item of registry.items) {
     files.set(file.path, hash)
   }
   if (slots.size) contract[item.name] = [...slots].sort()
-}
-const vendor = JSON.parse(read("vendor.json"))
-for (const entry of vendor.files) {
-  const hash = createHash("sha256").update(read(entry.path)).digest("hex")
-  assert.equal(hash, entry.sha256, entry.path)
 }
 write("contracts.json", `${JSON.stringify(contract, null, 2)}\n`)
 write(
