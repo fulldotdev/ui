@@ -16,6 +16,34 @@ const {
   activationMode,
   ...props
 } = Astro.props
+
+// Show the initial panel in the HTML, the one Data Slot selects: the default
+// value or the first enabled trigger. TabsContent renders hidden, so without
+// this the page shifts when the script starts.
+const html = await Astro.slots.render("default")
+const decode = (value: string) =>
+  value.replace(/&(#\d+|amp|lt|gt|quot|apos);/g, (_, entity: string) =>
+    entity.startsWith("#")
+      ? String.fromCharCode(Number(entity.slice(1)))
+      : { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'" }[entity]!
+  )
+const trigger = [
+  ...html.matchAll(/<button\b[^>]*data-slot="tabs-trigger"[^>]*>/g),
+]
+  .map(([tag]) => tag)
+  .find((tag) => !/\sdisabled\b/.test(tag))
+  ?.match(/data-value="([^"]*)"/)?.[1]
+const initial =
+  defaultValue ?? (trigger === undefined ? undefined : decode(trigger))
+let shown = false
+const content = html.replace(
+  /data-slot="tabs-content" hidden data-value="([^"]*)"/g,
+  (panel, value: string) => {
+    if (shown || decode(value) !== initial) return panel
+    shown = true
+    return `data-slot="tabs-content" data-value="${value}"`
+  }
+)
 ---
 
 <div
@@ -28,7 +56,7 @@ const {
   class={cn("cn-tabs group/tabs flex data-horizontal:flex-col", className)}
   {...props}
 >
-  <slot />
+  <Fragment set:html={content} />
 </div>
 
 <script>
