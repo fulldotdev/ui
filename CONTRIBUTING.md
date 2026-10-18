@@ -40,14 +40,14 @@ pnpm dev
 ### Reporting Bugs
 
 1. Check if the bug has already been reported in [Issues](https://github.com/fulldotdev/ui/issues)
-2. If not, create a new issue using the bug report template
+2. If not, create a new issue
 3. Provide clear steps to reproduce the issue
 4. Include screenshots or code snippets if applicable
 
 ### Requesting Features
 
 1. Check if the feature has already been requested in [Issues](https://github.com/fulldotdev/ui/issues)
-2. Create a new issue using the feature request template
+2. If not, create a new issue
 3. Clearly describe the feature and its use case
 
 ### Submitting Code
@@ -62,7 +62,6 @@ git checkout -b feature/your-feature-name
    - Follow existing code style and conventions
    - Use TypeScript for type safety
    - Follow Astro component best practices
-   - Ensure components follow the shared schema in `src/lib/schemas.ts`
 
 3. **Test your changes**:
 
@@ -91,32 +90,14 @@ Then create a PR on GitHub with a clear description of your changes.
 
 ### Creating New Components
 
-1. Place component files in `src/components/ui/[component-name]/`
+1. Place component files in `src/components/ui/[component-name]/`, exported through its `index.ts`
 2. Follow the naming convention: use single-word names when possible
 3. Use Astro component syntax (`.astro` files)
 4. Include TypeScript types for props
-5. Use Tailwind CSS for styling with primary/secondary color variables
+5. Keep structural classes in the component and visual classes in `cn-*` placeholders; see [registry/styles/README.md](registry/styles/README.md)
 6. Avoid modifying existing shadcn components to prevent confusion
 
-### Example Component Structure
-
-```astro
----
-interface Props {
-  title?: string
-  variant?: "default" | "outline"
-}
-
-const { title, variant = "default" } = Astro.props
-
-const slot = await Astro.slots.render("default")
----
-
-<div class="component-name">
-  {title && <h2>{title}</h2>}
-  <Fragment set:html={slot} />
-</div>
-```
+The React items live in `react/` and the native Liquid items in `liquid/`; see their READMEs. Existing components are the best examples.
 
 ## Development Workflow
 
