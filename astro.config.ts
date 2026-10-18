@@ -8,7 +8,6 @@ import favicons from "astro-favicons"
 import liveCode from "astro-live-code"
 import robotsTxt from "astro-robots-txt"
 
-import checkBuild from "./src/integrations/check-build"
 import { inheritCodeColors } from "./src/lib/code"
 
 // Docs tables scroll inside the content column instead of widening the page.
@@ -154,7 +153,5 @@ export default defineConfig({
       layout: "/src/components/live-code.astro",
     }),
     mdx({ gfm: true }),
-
-    checkBuild(),
   ],
 })
