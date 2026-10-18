@@ -1,4 +1,5 @@
 // Only tokens, contracts and provenance are generated. Component CSS is handwritten.
+// liquid/ mirrors a theme: every file is stored at the path it installs to.
 import assert from "node:assert/strict"
 import { createHash } from "node:crypto"
 import { readFileSync, writeFileSync } from "node:fs"
@@ -27,7 +28,7 @@ const declarations = (values) =>
     .map(([name, value]) => `  --${name}: ${value};`)
     .join("\n")
 const primitives = Object.fromEntries(
-  [...read("styles/primitives.css").matchAll(/--([\w-]+):\s*([^;]+);/g)].map(
+  [...read("primitives.css").matchAll(/--([\w-]+):\s*([^;]+);/g)].map(
     ([, name, value]) => [name, value]
   )
 )
@@ -35,7 +36,7 @@ const focus = {
   "focus-ring": "0 0 0 3px color-mix(in oklch, var(--ring) 50%, transparent)",
 }
 write(
-  "styles/tokens.css",
+  "assets/ui-tokens.css",
   await format(
     `/* Generated from the shared neutral palette and Liquid primitives. */\n:root {\n  color-scheme: light;\n\n${declarations({ ...palette.light, ...primitives, ...focus })}\n}\n.dark {\n  color-scheme: dark;\n\n${declarations({ ...palette.dark, ...focus })}\n}\n`,
     { parser: "css", singleQuote: true, printWidth: 120 }
@@ -46,7 +47,7 @@ const licenses = [
   ["shadcn/ui (derived Vega styles)", "LICENSE-SHADCN.md"],
   ["data-slot 1.1.1", "LICENSE-DATA-SLOT.md"],
 ].map(([name, file]) => ({ name, text: read(file).trim() }))
-write("licenses.json", `${JSON.stringify(licenses, null, 2)}\n`)
+write("assets/ui-licenses.json", `${JSON.stringify(licenses, null, 2)}\n`)
 
 const files = new Map()
 const contract = {}
@@ -61,29 +62,27 @@ for (const item of registry.items) {
   for (const file of item.files ?? []) {
     assert.equal(file.type, "registry:file")
     assert.match(file.target, /^~\/(assets|snippets)\/[a-z0-9.-]+$/)
-    assert(!file.path.includes(".."))
-    if (file.path === "manifest.json") continue
+    assert.equal(file.path, file.target.slice(2), file.path)
+    if (file.path === "assets/ui-manifest.json") continue
     const content = read(file.path)
     assert(!/--tw-|@tailwind|@apply\b/.test(content), file.path)
     for (const match of content.matchAll(/data-slot=['"]([^'"]+)['"]/g))
       slots.add(match[1])
     const hash = createHash("sha256").update(content).digest("hex")
-    const target = file.target.slice(2)
-    if (files.has(target)) assert.equal(files.get(target), hash, target)
-    files.set(target, hash)
+    if (files.has(file.path))
+      assert.equal(files.get(file.path), hash, file.path)
+    files.set(file.path, hash)
   }
   if (slots.size) contract[item.name] = [...slots].sort()
 }
 const vendor = JSON.parse(read("vendor.json"))
 for (const entry of vendor.files) {
-  const hash = createHash("sha256")
-    .update(read(`vendor/${entry.path.split("/").at(-1)}`))
-    .digest("hex")
+  const hash = createHash("sha256").update(read(entry.path)).digest("hex")
   assert.equal(hash, entry.sha256, entry.path)
 }
 write("contracts.json", `${JSON.stringify(contract, null, 2)}\n`)
 write(
-  "manifest.json",
+  "assets/ui-manifest.json",
   `${JSON.stringify({ registry: prefix, files: Object.fromEntries(files) }, null, 2)}\n`
 )
 console.log(

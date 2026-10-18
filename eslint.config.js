@@ -12,7 +12,7 @@ export default defineConfig([
     ".netlify",
     ".dev",
     "public/r",
-    "liquid/vendor",
+    "liquid/assets/data-slot-*.js",
   ]),
   {
     files: ["**/*.{js,mjs,ts}"],
