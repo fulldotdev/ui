@@ -16,6 +16,96 @@ const {
   activationMode,
   ...props
 } = Astro.props
+
+// Show the initial panels in the HTML, the ones Data Slot shows when it
+// starts: those of the default value, or of the first enabled trigger.
+// TabsContent renders hidden, so without this the page shifts when the script
+// starts. Like Data Slot, skip the parts of nested tabs.
+const html = await Astro.slots.render("default")
+const entities: Record<string, string> = {
+  amp: "&",
+  lt: "<",
+  gt: ">",
+  quot: '"',
+  apos: "'",
+  nbsp: "\u00a0",
+}
+const decode = (value: string) =>
+  value.replace(
+    /&(#x?[\da-f]+|amp|lt|gt|quot|apos|nbsp);/gi,
+    (entity, code: string) =>
+      code.startsWith("#")
+        ? String.fromCodePoint(Number(code.replace("#", "0")))
+        : (entities[code] ?? entity)
+  )
+// Attribute values can hold ">", as Tailwind classes do.
+const tags =
+  /<!--[\s\S]*?-->|<(script|style|textarea)\b[\s\S]*?<\/\1\s*>|<(\/?)([a-z][\w:-]*)((?:[^>"']|"[^"]*"|'[^']*')*)>/gi
+const attributes = (source: string) =>
+  [
+    ...source.matchAll(/([^\s"'>/=]+)(?:\s*=\s*("[^"]*"|'[^']*'|[^\s>]+))?/g),
+  ].map(({ 0: text, 1: name, 2: value = "", index }) => ({
+    name: name.toLowerCase(),
+    value: decode(/^["']/.test(value) ? value.slice(1, -1) : value),
+    index,
+    text,
+  }))
+// Elements without an end tag.
+const empty = new Set(
+  "area base br col embed hr img input link meta source track wbr".split(" ")
+)
+
+const triggers: { value: string; disabled: boolean }[] = []
+const panels: { value: string; hidden: boolean; start: number; end: number }[] =
+  []
+const open: { name: string; tabs: boolean }[] = []
+for (const { 2: close, 3: tag, 4: source = "", index } of html.matchAll(tags)) {
+  if (!tag) continue
+  const name = tag.toLowerCase()
+  if (close) {
+    const at = open.findLastIndex((element) => element.name === name)
+    if (at >= 0) open.length = at
+    continue
+  }
+  const list = attributes(source)
+  const get = (key: string) => list.find((item) => item.name === key)?.value
+  const slot = get("data-slot")
+  if (!open.some((element) => element.tabs)) {
+    const value = get("data-value")?.trim() ?? ""
+    if (slot === "tabs-trigger" && value) {
+      triggers.push({
+        value,
+        disabled:
+          get("disabled") !== undefined ||
+          get("data-disabled") !== undefined ||
+          get("aria-disabled") === "true",
+      })
+    }
+    if (slot === "tabs-content" && value) {
+      const attribute = list.find((item) => item.name === "hidden")
+      const start = index + 1 + tag.length + (attribute?.index ?? 0)
+      const end = start + (attribute?.text.length ?? 0)
+      panels.push({ value, hidden: attribute !== undefined, start, end })
+    }
+  }
+  if (!empty.has(name) && !source.trimEnd().endsWith("/")) {
+    open.push({ name, tabs: slot === "tabs" })
+  }
+}
+const preferred = triggers.findLast(
+  (trigger) => trigger.value === defaultValue?.trim()
+)
+const initial =
+  preferred && !preferred.disabled
+    ? preferred.value
+    : triggers.find((trigger) => !trigger.disabled)?.value
+// Data Slot shows the panels of the initial value and hides the others.
+let content = html
+for (const { value, hidden, start, end } of panels.reverse()) {
+  if (initial === undefined || hidden !== (value === initial)) continue
+  content =
+    content.slice(0, start) + (hidden ? "" : " hidden") + content.slice(end)
+}
 ---
 
 <div
@@ -28,7 +118,7 @@ const {
   class={cn("cn-tabs group/tabs flex data-horizontal:flex-col", className)}
   {...props}
 >
-  <slot />
+  <Fragment set:html={content} />
 </div>
 
 <script>

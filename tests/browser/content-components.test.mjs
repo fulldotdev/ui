@@ -290,6 +290,43 @@ for (const browserType of [chromium, firefox, webkit]) {
       }
     )
 
+    await t.test(
+      "tabs and selects render what their script shows when it starts",
+      async () => {
+        // The shown panels of each tabs with panels, and the text of each
+        // select trigger.
+        const state = () =>
+          [...document.querySelectorAll('[data-slot="tabs"]')]
+            .map((tabs) =>
+              [...tabs.querySelectorAll('[data-slot="tabs-content"]')].filter(
+                (panel) => panel.closest('[data-slot="tabs"]') === tabs
+              )
+            )
+            .filter((panels) => panels.length)
+            .map((panels) =>
+              panels
+                .filter((panel) => !panel.hidden)
+                .map((panel) => panel.dataset.value)
+                .join()
+            )
+            .concat(
+              [
+                ...document.querySelectorAll('[data-slot="select-trigger"]'),
+              ].map((trigger) => trigger.textContent.trim())
+            )
+        const noScript = await browser.newPage({ javaScriptEnabled: false })
+        t.after(() => noScript.close())
+        for (const path of ["/components/tabs/", "/components/select/"]) {
+          await noScript.goto(`${origin}${path}`)
+          await page.goto(`${origin}${path}`)
+          await page.waitForLoadState("networkidle")
+          const rendered = await noScript.evaluate(state)
+          assert.ok(rendered.every(Boolean), path)
+          assert.deepEqual(rendered, await page.evaluate(state), path)
+        }
+      }
+    )
+
     assert.deepEqual(errors, [])
   })
 }

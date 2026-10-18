@@ -1,6 +1,59 @@
-import { defineFlatConfig, esmResolver, FlatCompat } from "html-validate"
+import {
+  builtinRules,
+  classifyNodeText,
+  defineFlatConfig,
+  esmResolver,
+  FlatCompat,
+  TextClassification,
+} from "html-validate"
 
 const compat = new FlatCompat([esmResolver()])
+
+// text-content counts only a button's text, aria-label and aria-labelledby as
+// its name. Browsers also name it with a <label for> or a wrapping <label>,
+// the way shadcn/ui switches and radio items are named. This version reports
+// the same, except a button with such a label. A label can follow its button,
+// so buttons are checked once the document is complete.
+class TextContent extends builtinRules["text-content"] {
+  #buttons = []
+
+  setup() {
+    super.setup()
+    this.on("dom:ready", ({ document }) => {
+      for (const button of this.#buttons.splice(0)) {
+        if (!hasLabel(document, button)) super.validateAccessible(button)
+      }
+    })
+  }
+
+  validateAccessible(node) {
+    this.#buttons.push(node)
+  }
+}
+
+const labelable = "button, input, meter, output, progress, select, textarea"
+
+function hasLabel(document, node) {
+  const id = node.getAttributeValue("id")
+  const wrapping = node.closest("label")
+  // A <label for> names the first element with that id.
+  const first = id ? document.querySelector(`[id="${id}"]`) : null
+  const labels = [
+    ...(first?.isSameNode(node)
+      ? document.querySelectorAll(`label[for="${id}"]`)
+      : []),
+    ...(wrapping &&
+    !wrapping.hasAttribute("for") &&
+    wrapping.querySelector(labelable) === node
+      ? [wrapping]
+      : []),
+  ]
+  return labels.some(
+    (label) =>
+      classifyNodeText(label, { accessible: true }) !==
+      TextClassification.EMPTY_TEXT
+  )
+}
 
 export default defineFlatConfig([
   {
@@ -10,6 +63,13 @@ export default defineFlatConfig([
       elements: ["html5"],
       extends: ["html-validate:standard", "html-validate:a11y"],
     })),
+    plugins: [
+      { name: "fulldev", rules: { "fulldev/text-content": TextContent } },
+    ],
+  },
+  {
+    files: ["**/*.html"],
+    rules: { "text-content": "off", "fulldev/text-content": "error" },
   },
   {
     // These docs pages render a landmark component several times, and next to
