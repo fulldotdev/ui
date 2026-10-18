@@ -1,5 +1,15 @@
 # Fulldev UI
 
+## 0.25.0
+
+### Minor Changes
+
+- [#296](https://github.com/fulldotdev/ui/pull/296) [`6c14ec6`](https://github.com/fulldotdev/ui/commit/6c14ec6fd902a76733d450af84fad26d8339f163) Thanks [@silveltman](https://github.com/silveltman)! - The npm package now holds only the registry of each release: the files served at `https://ui.full.dev/r`, now including React, and the native Liquid files at their theme paths. It no longer installs dependencies or peer dependencies, and no longer ships the unstyled component sources, which need the registry build for their styles. Install components with the shadcn CLI as before.
+
+### Patch Changes
+
+- [#299](https://github.com/fulldotdev/ui/pull/299) [`ebca5f0`](https://github.com/fulldotdev/ui/commit/ebca5f026bcfe1626ecbd53cb88368537a95a047) Thanks [@silveltman](https://github.com/silveltman)! - Native Liquid registry items now link to their docs page and take their title and description from it, like the Astro items.
+
 ## 0.24.1
 
 ### Patch Changes
