@@ -1,5 +1,13 @@
 # Fulldev UI
 
+## 0.25.1
+
+### Patch Changes
+
+- [#301](https://github.com/fulldotdev/ui/pull/301) [`205d053`](https://github.com/fulldotdev/ui/commit/205d053bf1b3552349fae6a179c219f3a174e527) Thanks [@silveltman](https://github.com/silveltman)! - The native Liquid data-slot controllers are now copied from the data-slot npm packages when the registry is built. The files do not change; `assets/ui-licenses.json` now names data-slot 1.1.2, the version they come from, and the installation docs require data-slot 1.1.2 or newer, the version the registry installs.
+
+- [#302](https://github.com/fulldotdev/ui/pull/302) [`a69c425`](https://github.com/fulldotdev/ui/commit/a69c425b99c46158d3a2774dba0f60ebbeed8f25) Thanks [@silveltman](https://github.com/silveltman)! - The registry no longer keeps a second copy of the vega style at `public/r/{name}.json`. ui.full.dev keeps serving those URLs, used by installs from before 0.17, from `public/r/styles/base-vega/`. In the npm package, use `public/r/styles/base-vega/` instead.
+
 ## 0.25.0
 
 ### Minor Changes
