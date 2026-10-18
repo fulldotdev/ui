@@ -43,6 +43,53 @@ const {
   lockScroll,
   ...props
 } = Astro.props
+
+// Show the text Data Slot puts in the SelectValue when it starts: the label
+// of the default item, or the placeholder. Without it the trigger is empty, and
+// has no accessible name, until the script runs.
+const html = await Astro.slots.render("default")
+const decode = (value: string) =>
+  value.replace(/&(#\d+|amp|lt|gt|quot|apos);/g, (_, entity: string) =>
+    entity.startsWith("#")
+      ? String.fromCharCode(Number(entity.slice(1)))
+      : { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'" }[entity]!
+  )
+const escape = (value: string) =>
+  value.replace(/[&<>"]/g, (char) => `&#${char.charCodeAt(0)};`)
+// Attributes of a tag. Their values can hold ">", as Tailwind classes do.
+const attributes = String.raw`(?:[^>"']|"[^"]*"|'[^']*')*`
+const part = (tag: string, slot: string, rest = "", flags?: string) =>
+  new RegExp(
+    `<${tag}\\b(${attributes}data-slot="${slot}"${attributes})>${rest}`,
+    flags
+  )
+const item =
+  defaultValue === undefined
+    ? undefined
+    : [
+        ...html.matchAll(part("div", "select-item", "([\\s\\S]*?)</div>", "g")),
+      ].find(
+        ([, attrs]) =>
+          decode(attrs.match(/data-value="([^"]*)"/)?.[1] ?? "") ===
+          defaultValue
+      )
+const text =
+  defaultValue === undefined
+    ? escape(placeholder ?? "")
+    : item?.[1].match(/data-label="([^"]*)"/)?.[1].trim() ||
+      item?.[2].replace(new RegExp(`<${attributes}>`, "g"), "").trim() ||
+      escape(defaultValue)
+const empty = part("span", "select-value", "</span>")
+const content =
+  text && empty.test(html)
+    ? html
+        .replace(empty, (_, attrs: string) => `<span${attrs}>${text}</span>`)
+        .replace(part("button", "select-trigger"), (trigger, attrs: string) =>
+          defaultValue === undefined
+            ? `<button${attrs} data-placeholder>`
+            : trigger
+        )
+    : html
 ---
 
 <div
@@ -69,7 +116,7 @@ const {
   )}
   {...props}
 >
-  <slot />
+  <Fragment set:html={content} />
 </div>
 
 <script>
