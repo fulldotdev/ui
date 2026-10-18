@@ -123,7 +123,7 @@ const syncExamples = (items, root) => {
         }
         const name = specifier.match(/^(@[^/]+\/[^/]+|[^/]+)/)[1]
         if (["react", "react-dom", "astro"].includes(name)) continue
-        const version = pkg.dependencies?.[name]
+        const version = pkg.dependencies?.[name] ?? pkg.devDependencies?.[name]
         dependencies.add(
           version && /^\d/.test(version) ? `${name}@${version}` : name
         )
