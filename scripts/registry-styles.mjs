@@ -11,16 +11,12 @@ import {
   transformSource,
 } from "./styles.mjs"
 
-// Served at the old /r/{name}.json path, so existing installs keep working.
-const DEFAULT_STYLE = "vega"
-
 // The React registry passes its own registry.json and output folder.
 const [
   input = "node_modules/.cache/fulldev-registry",
   registryPath = "registry.json",
   output = "public/r",
 ] = process.argv.slice(2)
-const legacy = output === "public/r"
 const { maps, known } = createStyleMaps((path) =>
   readFileSync(new URL(`../registry/styles/${path}`, import.meta.url), "utf8")
 )
@@ -41,9 +37,9 @@ const errors = []
 
 for (const style of STYLES) {
   const styleMap = maps[style]
-  const outputs = [`${output}/styles/base-${style}`]
-  if (legacy && style === DEFAULT_STYLE) outputs.push(output)
-  rmSync(outputs[0], { recursive: true, force: true })
+  const dir = `${output}/styles/base-${style}`
+  rmSync(dir, { recursive: true, force: true })
+  mkdirSync(dir, { recursive: true })
 
   for (const file of files) {
     const raw = readFileSync(`${input}/${file}`, "utf8")
@@ -68,10 +64,7 @@ for (const style of STYLES) {
     // Keep the exact formatting of `shadcn build` to avoid noise in diffs.
     const json =
       JSON.stringify(item, null, 2) + (raw.endsWith("\n") ? "\n" : "")
-    for (const dir of outputs) {
-      mkdirSync(dir, { recursive: true })
-      writeFileSync(`${dir}/${file}`, json)
-    }
+    writeFileSync(`${dir}/${file}`, json)
   }
 }
 

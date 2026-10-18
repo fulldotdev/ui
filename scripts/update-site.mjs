@@ -71,11 +71,10 @@ const lineDiff = (a, b) => {
 }
 
 // The site's style decides which built registry it installed from. Before 0.17
-// every install got the output that public/r/{name}.json still serves.
+// every install got the vega output at public/r/{name}.json, which Netlify now
+// serves from public/r/styles/base-vega; git keeps the history of both paths.
 const builtPaths = (name, style) => [
-  ...(/^base-/.test(style ?? "")
-    ? [`public/r/styles/${style}/${name}.json`]
-    : []),
+  `public/r/styles/${/^base-/.test(style ?? "") ? style : "base-vega"}/${name}.json`,
   `public/r/${name}.json`,
 ]
 
