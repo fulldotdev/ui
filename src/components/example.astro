@@ -49,6 +49,7 @@ const minHeight = /^header-\d+$/.test(name) ? 640 : undefined
     <iframe
       slot="example"
       data-liquid-preview
+      data-min-height="240"
       src={`/preview/liquid/${example.route}.html`}
       title={`${name} native Liquid preview`}
       loading="lazy"
@@ -92,7 +93,6 @@ const minHeight = /^header-\d+$/.test(name) ? 640 : undefined
 
 <script>
   import { PRESET_EVENT, readPreset } from "@/lib/preset-store"
-  import { DEFAULT_CONFIG, presetCss, presetFontUrls } from "@/lib/presets"
 
   // Show each React preview in the docs style. Development serves only vega.
   const sync = () => {
@@ -109,57 +109,6 @@ const minHeight = /^header-\d+$/.test(name) ? 640 : undefined
   sync()
   document.addEventListener(PRESET_EVENT, sync)
 
-  const syncLiquid = () => {
-    const preset = readPreset()
-    for (const frame of document.querySelectorAll<HTMLIFrameElement>(
-      "iframe[data-liquid-preview]"
-    )) {
-      frame.contentWindow?.postMessage(
-        {
-          type: "fulldev:liquid-theme",
-          dark: document.documentElement.classList.contains("dark"),
-          css: preset?.css ?? presetCss(DEFAULT_CONFIG),
-          fonts: preset?.fonts ?? presetFontUrls(DEFAULT_CONFIG),
-        },
-        location.origin
-      )
-    }
-  }
-  syncLiquid()
-  document.addEventListener(PRESET_EVENT, syncLiquid)
-  new MutationObserver(syncLiquid).observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["class"],
-  })
-  window.addEventListener("message", (event) => {
-    if (event.origin !== location.origin) return
-    const frame = [
-      ...document.querySelectorAll<HTMLIFrameElement>(
-        "iframe[data-liquid-preview]"
-      ),
-    ].find((frame) => frame.contentWindow === event.source)
-    if (!frame) return
-    if (event.data?.type === "fulldev:liquid-ready") syncLiquid()
-    if (
-      event.data?.type === "fulldev:liquid-height" &&
-      Number.isFinite(event.data.height)
-    )
-      frame.style.height = `${Math.min(Math.max(Math.ceil(event.data.height), 240), 2000)}px`
-  })
-
-  // The preview app reports its height.
-  window.addEventListener("message", (event) => {
-    if (event.origin !== location.origin) return
-    if (event.data?.type !== "fulldev:preview-height") return
-    const frame = [
-      ...document.querySelectorAll<HTMLIFrameElement>(
-        "iframe[data-react-preview]:not([data-full-page])"
-      ),
-    ].find((frame) => frame.contentWindow === event.source)
-    if (!frame) return
-    // Bounded, so a runaway layout cannot grow the page without end.
-    const min = Number(frame.dataset.minHeight ?? 120)
-    const height = Math.min(Math.max(Math.ceil(event.data.height), min), 4000)
-    frame.style.height = `${height}px`
-  })
+  // React and Liquid previews read the theme and preset from localStorage and
+  // set their own height.
 </script>
