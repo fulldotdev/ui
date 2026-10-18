@@ -28,10 +28,11 @@ const entities: Record<string, string> = {
   gt: ">",
   quot: '"',
   apos: "'",
+  nbsp: "\u00a0",
 }
 const decode = (value: string) =>
   value.replace(
-    /&(#x?[\da-f]+|amp|lt|gt|quot|apos);/gi,
+    /&(#x?[\da-f]+|amp|lt|gt|quot|apos|nbsp);/gi,
     (entity, code: string) =>
       code.startsWith("#")
         ? String.fromCodePoint(Number(code.replace("#", "0")))
@@ -39,7 +40,7 @@ const decode = (value: string) =>
   )
 // Attribute values can hold ">", as Tailwind classes do.
 const tags =
-  /<!--[\s\S]*?-->|<(script|style)\b[\s\S]*?<\/\1\s*>|<(\/?)([a-z][\w:-]*)((?:[^>"']|"[^"]*"|'[^']*')*)>/gi
+  /<!--[\s\S]*?-->|<(script|style|textarea)\b[\s\S]*?<\/\1\s*>|<(\/?)([a-z][\w:-]*)((?:[^>"']|"[^"]*"|'[^']*')*)>/gi
 const attributes = (source: string) =>
   [
     ...source.matchAll(/([^\s"'>/=]+)(?:\s*=\s*("[^"]*"|'[^']*'|[^\s>]+))?/g),
@@ -55,7 +56,8 @@ const empty = new Set(
 )
 
 const triggers: { value: string; disabled: boolean }[] = []
-const hidden: { value: string; start: number; end: number }[] = []
+const panels: { value: string; hidden: boolean; start: number; end: number }[] =
+  []
 const open: { name: string; tabs: boolean }[] = []
 for (const { 2: close, 3: tag, 4: source = "", index } of html.matchAll(tags)) {
   if (!tag) continue
@@ -79,10 +81,11 @@ for (const { 2: close, 3: tag, 4: source = "", index } of html.matchAll(tags)) {
           get("aria-disabled") === "true",
       })
     }
-    const attribute = list.find((item) => item.name === "hidden")
-    if (slot === "tabs-content" && value && attribute) {
-      const start = index + 1 + tag.length + attribute.index
-      hidden.push({ value, start, end: start + attribute.text.length })
+    if (slot === "tabs-content" && value) {
+      const attribute = list.find((item) => item.name === "hidden")
+      const start = index + 1 + tag.length + (attribute?.index ?? 0)
+      const end = start + (attribute?.text.length ?? 0)
+      panels.push({ value, hidden: attribute !== undefined, start, end })
     }
   }
   if (!empty.has(name) && !source.trimEnd().endsWith("/")) {
@@ -96,9 +99,12 @@ const initial =
   preferred && !preferred.disabled
     ? preferred.value
     : triggers.find((trigger) => !trigger.disabled)?.value
+// Data Slot shows the panels of the initial value and hides the others.
 let content = html
-for (const { value, start, end } of hidden.reverse()) {
-  if (value === initial) content = content.slice(0, start) + content.slice(end)
+for (const { value, hidden, start, end } of panels.reverse()) {
+  if (initial === undefined || hidden !== (value === initial)) continue
+  content =
+    content.slice(0, start) + (hidden ? "" : " hidden") + content.slice(end)
 }
 ---
 
