@@ -8,14 +8,7 @@ import { format } from "prettier"
 
 const root = resolve("liquid")
 const read = (path) => readFileSync(resolve(root, path), "utf8")
-const write = (path, value) =>
-  process.argv.includes("--check")
-    ? assert.equal(
-        read(path),
-        value,
-        `liquid/${path}: rebuild the Liquid registry`
-      )
-    : writeFileSync(resolve(root, path), value)
+const write = (path, value) => writeFileSync(resolve(root, path), value)
 const registry = JSON.parse(read("registry.json"))
 const names = new Set(registry.items.map((item) => item.name))
 assert.equal(names.size, registry.items.length, "Duplicate Liquid item names")

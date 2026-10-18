@@ -1,10 +1,13 @@
 import { defineConfig, fontProviders } from "astro/config"
 import { unified } from "@astrojs/markdown-remark"
 import mdx from "@astrojs/mdx"
+import sitemap from "@astrojs/sitemap"
+import tailwindcss from "@tailwindcss/vite"
+import favicons from "astro-favicons"
 import liveCode from "astro-live-code"
+import robotsTxt from "astro-robots-txt"
 
 import { inheritCodeColors } from "./src/lib/code"
-import fulldevIntegration from "./src/lib/integration"
 
 // Docs tables scroll inside the content column instead of widening the page.
 type Node = { type: string; tagName?: string; children?: Node[] }
@@ -26,15 +29,26 @@ const scrollTables = () => (tree: Node) => {
 }
 
 // React previews come from the gallery in react/, at /preview/react/. In
-// development its Vite server runs on REACT_PREVIEW_PORT (pnpm dev:react).
+// development its Vite server runs on REACT_PREVIEW_PORT (pnpm --dir react dev).
 const reactPreviewPort = process.env.REACT_PREVIEW_PORT ?? "4322"
 
 export default defineConfig({
+  site: "https://ui.full.dev",
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en"],
+    routing: {
+      fallbackType: "redirect",
+      prefixDefaultLocale: false,
+      redirectToDefaultLocale: false,
+    },
+  },
   server: {
     host: "127.0.0.1",
     port: 4321,
   },
   vite: {
+    plugins: [tailwindcss()],
     server: {
       allowedHosts: ["otis.tailb5cb80.ts.net"],
       proxy: {
@@ -56,7 +70,7 @@ export default defineConfig({
     },
   },
   prefetch: {
-    prefetchAll: true,
+    prefetchAll: false,
   },
   devToolbar: {
     enabled: false,
@@ -110,13 +124,28 @@ export default defineConfig({
     },
   ],
   integrations: [
-    fulldevIntegration({
-      site: "https://ui.full.dev",
+    robotsTxt(),
+    sitemap({
+      changefreq: "weekly",
+      lastmod: new Date(),
+      i18n: { defaultLocale: "en", locales: { en: "en" } },
+    }),
+    favicons({
+      input: { favicons: ["src/assets/favicon.svg"] },
       name: "Fulldev UI",
-      favicon: "src/assets/favicon.svg",
-      i18n: {
-        defaultLocale: "en",
-        locales: ["en"],
+      short_name: "Fulldev UI",
+      // A website, not an app: open in the browser and keep only the icons
+      // current browsers use.
+      manifest: { display: "browser", display_override: [], start_url: "/" },
+      // Keep the head in the order base.astro writes it.
+      withCapo: false,
+      icons: {
+        favicons: true,
+        android: ["android-chrome-192x192.png", "android-chrome-512x512.png"],
+        appleIcon: ["apple-touch-icon.png"],
+        appleStartup: false,
+        windows: false,
+        yandex: false,
       },
     }),
     liveCode({

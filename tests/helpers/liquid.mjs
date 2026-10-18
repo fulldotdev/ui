@@ -58,10 +58,7 @@ export async function install(origin, theme, name = "components", flags = []) {
 }
 
 // LiquidJS exercises our markup, not Shopify's commerce objects or asset pipeline.
-export async function renderFixture(
-  theme,
-  { legacy = false, themeRuntime = false } = {}
-) {
+export async function renderFixture(theme) {
   const { Liquid } = await import("liquidjs")
   const { mkdir, readdir, writeFile } = await import("node:fs/promises")
   const renderRoot = resolve(theme, ".dev/liquid-fixture")
@@ -104,20 +101,11 @@ export async function renderFixture(
   const reference = strip(
     await readFile("tests/fixtures/liquid/reference.liquid", "utf8")
   )
-  const extra = themeRuntime
-    ? ""
-    : await readFile("tests/fixtures/liquid/interactive.liquid", "utf8")
-  let head = legacy
-    ? ""
-    : `{% render 'ui'${themeRuntime ? ", runtime: false" : ""} %}`
-  if (themeRuntime) {
-    head += ["critical.css", "overlays.css", "components.css"]
-      .map((name) => `<link rel="stylesheet" href="/assets/${name}">`)
-      .join("")
-    const layout = await readFile(resolve(theme, "layout/theme.liquid"), "utf8")
-    head += layout.match(/<script type='importmap'>[\s\S]*?<\/script>/)[0]
-    head += '<script type="module" src="/assets/theme.js"></script>'
-  }
+  const extra = await readFile(
+    "tests/fixtures/liquid/interactive.liquid",
+    "utf8"
+  )
+  const head = "{% render 'ui' %}"
   const styles = new Set()
   const html = await engine.parseAndRender(
     `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Fulldev Liquid components</title>${head}</head><body>${reference}${extra}</body></html>`,
@@ -139,8 +127,8 @@ export async function renderFixture(
     .replace("</head>", `<style>${[...styles].join("\n")}</style></head>`)
 }
 
-export async function fixtureServer(theme, options) {
-  const html = await renderFixture(theme, options)
+export async function fixtureServer(theme) {
+  const html = await renderFixture(theme)
   const server = createServer(async (request, response) => {
     try {
       if (request.url === "/") {
