@@ -15,7 +15,7 @@ export default function Hero4Demo() {
           "Dark mode included",
         ]}
         buttons={[
-          { label: "Learn more", href: "/docs/" },
+          { label: "Read the docs", href: "/docs/" },
           { label: "Contact sales", href: "#" },
         ]}
         image={{ src: placeholderImage }}

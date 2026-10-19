@@ -103,3 +103,46 @@ test("the docs follow the preset's style, also when it changes", async (t) => {
   assert.deepEqual(await snapshot(page), vega)
   assert.deepEqual([...stored.errors, ...errors], [])
 })
+
+// Astro blocks render in frames of /preview/astro/, which read the preset
+// themselves and size their frame.
+test("block previews follow a preset change and size their frame", async (t) => {
+  const browser = await chromium.launch()
+  t.after(() => browser.close())
+  const page = await browser.newPage({ viewport: { width: 1280, height: 900 } })
+  const errors = []
+  page.on("pageerror", (error) => errors.push(error.message))
+  await page.goto(`${origin}/blocks/cta/`, { waitUntil: "load" })
+  const element = page.locator("iframe[data-astro-preview]").first()
+  const frame = await (await element.elementHandle()).contentFrame()
+  const button = "[data-slot=button]"
+  await frame.waitForSelector(button)
+  assert.notEqual(await radius(frame, button), "0px")
+
+  await page.waitForFunction(() => {
+    const element = document.querySelector("iframe[data-astro-preview]")
+    const body = element.contentDocument?.body.getBoundingClientRect().height
+    return body && Math.abs(element.clientHeight - body) < 1
+  })
+  assert.notEqual(
+    await element.evaluate((element) => element.clientHeight),
+    640
+  )
+
+  const [fulldev] = await page
+    .locator("[data-docs-switcher]")
+    .evaluate((element) => JSON.parse(element.dataset.presets))
+  await page.evaluate(
+    (preset) => {
+      localStorage.setItem("fulldev-ui-preset", JSON.stringify(preset))
+    },
+    { ...fulldev.preset, config: { ...fulldev.preset.config, style: "lyra" } }
+  )
+  await frame.waitForFunction(
+    (selector) =>
+      getComputedStyle(document.querySelector(selector)).borderTopLeftRadius ===
+      "0px",
+    button
+  )
+  assert.deepEqual(errors, [])
+})

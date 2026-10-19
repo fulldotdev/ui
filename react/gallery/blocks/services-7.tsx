@@ -40,7 +40,7 @@ export default function Services7Demo() {
             href: "/docs/installation/",
           },
         ]}
-        linkLabel="Learn more"
+        linkLabel="View service"
       />
     </>
   )

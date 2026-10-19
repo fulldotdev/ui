@@ -17,7 +17,7 @@ export default function Services2Demo() {
             title: "Audit & discovery",
             description:
               "A process-led service section is useful when the offer is really a workflow rather than a product bundle.",
-            button: { label: "Learn more", href: "#" },
+            button: { label: "About discovery", href: "#" },
           },
           {
             image: { src: placeholderImage, alt: "" },
@@ -25,7 +25,7 @@ export default function Services2Demo() {
             title: "Refine & prototype",
             description:
               "A process-led service section is useful when the offer is really a workflow rather than a product bundle.",
-            button: { label: "Learn more", href: "#" },
+            button: { label: "About prototyping", href: "#" },
           },
           {
             image: { src: placeholderImage, alt: "" },
@@ -33,7 +33,7 @@ export default function Services2Demo() {
             title: "Ship & iterate",
             description:
               "A process-led service section is useful when the offer is really a workflow rather than a product bundle.",
-            button: { label: "Learn more", href: "#" },
+            button: { label: "About shipping", href: "#" },
           },
         ]}
       />

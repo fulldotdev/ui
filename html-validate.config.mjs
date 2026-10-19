@@ -76,9 +76,6 @@ export default defineFlatConfig([
     // the page's own breadcrumb or table of contents, so the landmark names
     // repeat. A site renders each of these landmarks once.
     files: [
-      "dist/blocks/banner/index.html",
-      "dist/blocks/footer/index.html",
-      "dist/blocks/header/index.html",
       "dist/components/banner/index.html",
       "dist/components/breadcrumb/index.html",
       "dist/components/navigation-menu/index.html",

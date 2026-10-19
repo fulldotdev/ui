@@ -1,7 +1,10 @@
 ---
 // Docs only: preview, source and install command of one example file, see
-// src/lib/examples.ts. Astro examples render here; React examples render in
-// an iframe of the preview app, in the style picked in the docs.
+// src/lib/examples.ts. Astro component examples render here, as on
+// ui.shadcn.com. Astro blocks render in an iframe of /preview/astro/<name>/
+// and React examples in one of the preview app, in the style picked in the
+// docs. Search engines do not index the frames (public/_headers), so the
+// headings and copy of a block are not part of the docs page.
 import { Code } from "astro:components"
 
 import { inheritCodeColors } from "@/lib/code"
@@ -30,14 +33,18 @@ const block = example.kind === "blocks"
 // frame height.
 const fullPage = ["sidebar-demo"].includes(name)
 // Header menus open as overlays outside the page height the preview reports,
-// so their frames keep room for them.
-const minHeight = /^header-\d+$/.test(name) ? 640 : undefined
+// so their frames keep room for them. Heroes as tall as the viewport take
+// the height of their frame, so it keeps the height of a viewport.
+const minHeight =
+  /^header-\d+$/.test(name) || ["hero-4", "hero-10", "hero-11"].includes(name)
+    ? 640
+    : undefined
 ---
 
 <LiveCode
   componentProps={{
     name: example.item,
-    frame: framework !== "astro",
+    frame: framework !== "astro" || block,
     installCommand:
       framework === "liquid"
         ? `npx shadcn@latest add ${(example.dependencies ?? [example.item]).map((name) => `https://ui.full.dev/r/liquid/${name}.json`).join(" ")}`
@@ -55,6 +62,17 @@ const minHeight = /^header-\d+$/.test(name) ? 640 : undefined
       loading="lazy"
       class="block w-full"
       style="height: 360px"
+    />
+  ) : framework === "astro" && block ? (
+    <iframe
+      slot="example"
+      data-astro-preview={name}
+      data-min-height={minHeight}
+      src={`/preview/astro/${name}/`}
+      title={`${name} preview`}
+      loading="lazy"
+      class="block w-full"
+      style="height: 640px"
     />
   ) : Component && fullPage ? (
     <div
@@ -109,6 +127,6 @@ const minHeight = /^header-\d+$/.test(name) ? 640 : undefined
   sync()
   document.addEventListener(PRESET_EVENT, sync)
 
-  // React and Liquid previews read the theme and preset from localStorage and
-  // set their own height.
+  // The previews read the theme and preset from localStorage and set their
+  // own height.
 </script>

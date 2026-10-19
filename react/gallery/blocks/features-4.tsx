@@ -16,7 +16,7 @@ export default function Features4Demo() {
             title: "Composable architecture",
             description:
               "Build pages from pre-designed sections that snap together. Mix and match hero, features, pricing, and CTA blocks.",
-            link: { label: "Learn more", href: "/docs/" },
+            link: { label: "How blocks compose", href: "/docs/" },
           },
           {
             icon: "shield",

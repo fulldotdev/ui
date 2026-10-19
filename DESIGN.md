@@ -8,6 +8,7 @@ A copy of the ui.shadcn.com docs, built from Fulldev UI components: a 64px heade
 
 - Header (`src/components/docs-header.astro`): logo, main navigation as ghost buttons, search, GitHub, theme toggle and the "New" button to Create as a secondary button. Below `lg` the header keeps the logo on the left and search, theme and a larger menu button on the right; the menu is a drawer from the bottom with the navigation, the switcher and the docs navigation, opened at the current page.
 - Sidebar: the switcher (`src/components/docs-switcher.astro`) on top, then the navigation (`src/components/docs-nav.astro`). The logo, the switcher, the group labels and the link text share one left edge; the highlight of a link reaches 9px past it. The space from the switcher to the first group equals the space between groups.
+- Previews: Astro component examples render in the page, as on ui.shadcn.com. Blocks render in frames on their own URLs under `/preview/`, which search engines do not index, so the headings and copy of a block are not part of its docs page. React and Liquid examples always render in frames.
 
 ## Homepage
 
