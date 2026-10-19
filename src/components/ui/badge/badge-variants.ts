@@ -10,7 +10,9 @@ export const badgeVariants = cva(
         destructive: "cn-badge-variant-destructive",
         outline: "cn-badge-variant-outline",
         ghost: "cn-badge-variant-ghost",
-        link: "cn-badge-variant-link",
+        // shadcn/ui uses text-primary, below 4.5:1 in dark mode with most theme
+        // colors. A lighter step of the primary keeps 4.5:1 there.
+        link: "cn-fd-badge-variant-link",
       },
     },
     defaultVariants: {

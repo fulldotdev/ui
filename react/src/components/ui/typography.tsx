@@ -181,7 +181,10 @@ function TypographyA({
       data-slot="typography-a"
       data-size={size}
       className={cn(
-        "font-medium text-primary underline underline-offset-4",
+        // shadcn/ui's typography link uses text-primary, below 4.5:1 in dark
+        // mode with most theme colors. There a lighter step of the primary
+        // keeps 4.5:1, as in the Astro Button's link variant.
+        "font-medium text-(--fd-link,var(--primary)) underline underline-offset-4 dark:supports-[color:oklch(from_red_l_c_h)]:[--fd-link:oklch(from_var(--primary)_max(l,0.7)_calc(c*1.2)_h)]",
         typographyASizes[size],
         className
       )}
