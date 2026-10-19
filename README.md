@@ -102,6 +102,13 @@ pnpm registry:build  # regenerates public/r after registry changes
 
 `vp run check` runs Prettier, TypeScript and `astro check`, ESLint, knip, the source photo check, and, specific to this registry, `registry:check` (the committed `public/r` must match a fresh build). `vp run test:unit` runs the tests in `tests`.
 
+`vp run og` regenerates the per-page Open Graph screenshots in `public/og/`.
+Run it after changing a page's opening content and commit the JPEGs. It
+uses Playwright's Chromium; `CHROME` can point to an existing test-browser
+executable and `OG_PORT` sets its local preview port. The normal build
+checks image coverage and dimensions without launching a browser. See
+[DESIGN.md](DESIGN.md) for the screenshot treatment.
+
 `pnpm ui:add` formats the project right after the install, so a later `vp run fix` or `vp run check` does not change the installed components. A plain `pnpm dlx shadcn@latest add` leaves the CLI's own formatting, which the next format run may change.
 
 ## Contributing
