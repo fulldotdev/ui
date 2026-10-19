@@ -8,7 +8,7 @@ export default function Content3Demo() {
         description="This variation uses a spread layout with title and description on the left, action buttons on the right, and a prominent full-width image below."
         buttons={[
           { label: "Get started", href: "#" },
-          { label: "Browse sections", href: "#" },
+          { label: "See layouts", href: "#" },
         ]}
       />
     </>
