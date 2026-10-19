@@ -13,7 +13,9 @@ export const buttonVariants = cva(
         // Mixing in a fifth of the foreground keeps 4.5:1, as the native Liquid
         // button does.
         destructive: "cn-fd-button-variant-destructive",
-        link: "cn-button-variant-link",
+        // shadcn/ui uses text-primary, below 4.5:1 in dark mode with most theme
+        // colors. A lighter step of the primary keeps 4.5:1 there.
+        link: "cn-fd-button-variant-link",
       },
       size: {
         default: "cn-button-size-default",
