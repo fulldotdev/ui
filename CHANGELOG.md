@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.25.3
+
+### Patch Changes
+
+- [#311](https://github.com/fulldotdev/ui/pull/311) [`d622fe2`](https://github.com/fulldotdev/ui/commit/d622fe2245b35dd9659f52865347e8fb18505730) Thanks [@silveltman](https://github.com/silveltman)! - Error and destructive text use the full destructive color, as shadcn/ui's `FieldError` does. `AttachmentDescription` in an attachment with an error was at 80%, about 4.1:1 in light mode and 4.3:1 in dark mode, and the description of a destructive `Alert` at 90%, in Astro and native Liquid, below the 4.5:1 WCAG AA asks for. The destructive `Button` mixes a fifth of the foreground into its text, because the destructive color on the button's own tint is about 3.9:1. The native Liquid button already mixed in the foreground; it now uses the same mix, in oklab, which keeps the text red in dark mode instead of orange. `AttachmentTitle` shimmers while an attachment uploads or processes, as in shadcn/ui, instead of pulsing to half opacity, where the name fell to about 3.7:1; the shimmer comes from `shadcn/tailwind.css`, so update the `shadcn` package if the name stays still. The attachment demo's `AttachmentGroup` takes keyboard focus, so it can be scrolled without a pointer, and the Typography docs now say that a `typeset-scroll` wrapper needs `tabindex="0"` for the same reason.
+
 ## 0.25.2
 
 ### Patch Changes
