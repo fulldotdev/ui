@@ -14,6 +14,18 @@ const highlighted = [
   [/group-focus\//g, "group-data-highlighted/"],
 ]
 
+// shadcn/ui's dark themes use the primary as a button fill, too dark for link
+// text: most colors fall below 4.5:1, orange to 2.7:1. In dark mode links take
+// a lighter step of it; neutral primaries stay as they are. --fd-link carries
+// it, so a text color passed to the component still wins. Browsers without
+// relative colors keep the primary.
+const darkLink = [
+  [
+    /(^|\s)text-primary(?=\s|$)/g,
+    "$1text-(--fd-link,var(--primary)) dark:supports-[color:oklch(from_red_l_c_h)]:[--fd-link:oklch(from_var(--primary)_max(l,0.7)_calc(c*1.2)_h)]",
+  ],
+]
+
 // Toggle group items take variant and size from the group.
 const fromGroup = (attribute) => [
   [/(^|\s)(?=\S)/g, `$1group-data-[${attribute}]/toggle-group:`],
@@ -132,6 +144,8 @@ const ADAPTED = {
       ],
     ],
   ],
+  "cn-fd-button-variant-link": ["cn-button-variant-link", darkLink],
+  "cn-fd-badge-variant-link": ["cn-badge-variant-link", darkLink],
 }
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), "utf8")

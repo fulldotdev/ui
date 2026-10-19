@@ -12,13 +12,16 @@ const { class: className, size = "default", ...props } = Astro.props
 
 const sizeClass =
   size === "sm" ? "text-sm" : size === "lg" ? "text-lg" : "text-base"
+// shadcn/ui's typography link uses text-primary, below 4.5:1 in dark mode with
+// most theme colors. There a lighter step of the primary keeps 4.5:1, as in
+// Button's link variant.
 ---
 
 <a
   data-slot="typography-a"
   data-size={size}
   class={cn(
-    "text-primary font-medium underline underline-offset-4",
+    "text-(--fd-link,var(--primary)) font-medium underline underline-offset-4 dark:supports-[color:oklch(from_red_l_c_h)]:[--fd-link:oklch(from_var(--primary)_max(l,0.7)_calc(c*1.2)_h)]",
     sizeClass,
     className
   )}
