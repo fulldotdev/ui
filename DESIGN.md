@@ -33,7 +33,7 @@ The site follows one preset everywhere: theme, style, fonts and menu color, prev
 
 ## Brand
 
-- Logo: the Fulldev mark on an orange tile (`--fd-brand` in `src/styles/global.css`), with the sheen, rim and shadow of the full.dev logo tile, a muted slash, and "UI" in the wordmark type (Geist, 550, -0.01em). Each part has 12px of space between it and the next. The tile stays orange in every preset. The favicon, logo assets and social image use the same orange; the default theme uses shadcn/ui's Orange palette.
+- Logo: the Fulldev mark on a 24px orange tile (`--fd-brand` in `src/styles/global.css`), with the sheen, rim and shadow of the full.dev logo tile, then an 8px gap and "UI" in the wordmark type (Geist, 18px, 600, -0.01em). This shares the proportions of full.dev and the other product names. The tile stays orange in every preset. The favicon, logo assets and social image use the same orange; the default theme uses shadcn/ui's Orange palette.
 - Font: Geist 1.7.2 from the full.dev websites with their stylistic sets (ss02 single-storey a, ss03 straight l, ss06 alternate G, ss08 round dots), configured in `astro.config.ts`. A preset in Geist keeps this font.
 
 ## Rejected
