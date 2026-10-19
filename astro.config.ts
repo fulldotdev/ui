@@ -135,7 +135,13 @@ export default defineConfig({
       i18n: { defaultLocale: "en", locales: { en: "en" } },
     }),
     favicons({
-      input: { favicons: ["src/assets/favicon.svg"] },
+      // The rounded tile with transparent corners for the browser, the
+      // full-bleed square for the touch icon that iOS rounds.
+      input: {
+        favicons: ["src/assets/favicon.svg"],
+        android: ["src/assets/favicon.svg"],
+        appleIcon: ["src/assets/touch-icon.svg"],
+      },
       name: "Fulldev UI",
       short_name: "Fulldev UI",
       // A website, not an app: open in the browser and keep only the icons
