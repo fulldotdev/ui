@@ -20,28 +20,28 @@ export default function Services3Demo() {
             title: "Strategy workshops",
             description:
               "Guide teams through product discovery and service definition with structured facilitation.",
-            button: { label: "Learn more", href: "#" },
+            button: { label: "About workshops", href: "#" },
           },
           {
             image: { src: placeholderImage, alt: "" },
             title: "Component audits",
             description:
               "Review existing design systems and recommend improvements for consistency and scale.",
-            button: { label: "Learn more", href: "#" },
+            button: { label: "About audits", href: "#" },
           },
           {
             image: { src: placeholderImage, alt: "" },
             title: "Section implementation",
             description:
               "Translate designs into production-ready, responsive section layouts.",
-            button: { label: "Learn more", href: "#" },
+            button: { label: "About implementation", href: "#" },
           },
           {
             image: { src: placeholderImage, alt: "" },
             title: "Launch support",
             description:
               "Dedicated hands-on support for shipping day and the critical first week.",
-            button: { label: "Learn more", href: "#" },
+            button: { label: "About launch support", href: "#" },
           },
         ]}
       />

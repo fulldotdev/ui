@@ -1,6 +1,7 @@
 // Docs only: find the source file behind an <Example name="..." /> on a page.
 // - Astro ports of the official shadcn/ui examples in src/components/examples,
 //   one folder and registry item (<family>-examples) per component.
+// - Astro block demos in src/gallery/blocks, shown at /preview/astro/<name>/.
 // - React block and Fulldev extra demos of the preview app in react/gallery.
 // The preview, the Code tab, the Markdown version and the install command all
 // come from that one file.
@@ -23,7 +24,7 @@ type Example = {
 }
 
 const astroSources = import.meta.glob<string>(
-  "/src/components/examples/*/*.astro",
+  ["/src/components/examples/*/*.astro", "/src/gallery/blocks/*.astro"],
   { query: "?raw", import: "default", eager: true }
 )
 const reactSources = import.meta.glob<string>(
@@ -32,7 +33,7 @@ const reactSources = import.meta.glob<string>(
 )
 
 const pattern =
-  /^\/(?:react\/)?(?:src\/components\/(examples)\/([^/]+)|gallery\/(blocks|ui))\/([^/]+)\.(?:astro|tsx)$/
+  /^\/(?:react|src)\/(?:components\/(examples)\/([^/]+)|gallery\/(blocks|ui))\/([^/]+)\.(?:astro|tsx)$/
 
 const examples = [astroSources, reactSources].flatMap((sources) =>
   Object.entries(sources).map(([path, source]): Example => {

@@ -8,7 +8,7 @@ export default function Features1Demo() {
         description="A complete set of tools designed to streamline your workflow and help your team ship with confidence."
         buttons={[
           { label: "Get started", href: "#" },
-          { label: "Learn more", href: "#" },
+          { label: "See all features", href: "#" },
         ]}
         features={[
           {
@@ -16,7 +16,7 @@ export default function Features1Demo() {
             title: "Lightning fast",
             description:
               "Optimized for speed at every layer. Pages load instantly and interactions feel native.",
-            link: { label: "Learn more", href: "/docs/" },
+            link: { label: "Performance docs", href: "/docs/" },
           },
           {
             icon: "layers",
