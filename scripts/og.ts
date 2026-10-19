@@ -12,6 +12,7 @@ import {
   rmSync,
 } from "node:fs"
 import { dirname, join, relative } from "node:path"
+import { preview } from "astro"
 import { chromium } from "playwright"
 import sharp from "sharp"
 
@@ -52,6 +53,7 @@ const pages = () =>
         {
           path: `/${dirname(file).replace(/^\.$/, "")}/`.replace("//", "/"),
           image: url.pathname,
+          docs: html.includes("data-og-doc"),
         },
       ]
     })
@@ -65,9 +67,9 @@ const isolate = () => {
     html, body { overflow: hidden !important; }
     body > header, netlify-drawer,
     aside:has([data-docs-sidebar]),
-    #main > [data-slot=section-container] > div:has(> div > [data-slot=toc]) { display: none !important; }
+    [data-og-doc] > :not(:first-child) { display: none !important; }
     div:has(> #main) { display: block !important; }
-    #main > div:has([data-slot=toc]) { display: block !important; }
+    [data-og-doc] { display: block !important; }
     #main { max-width: 1440px; margin-inline: auto; padding: 0 40px; }
   `
   document.head.append(style)
@@ -116,38 +118,14 @@ if (process.argv.includes("--check")) {
     )
   )
     throw new Error(`OG_PORT ${port} is already in use`)
-  const server = spawn(
-    "vp",
-    [
-      "exec",
-      "astro",
-      "preview",
-      "--ignore-lock",
-      "--host",
-      "127.0.0.1",
-      "--port",
-      String(port),
-    ],
-    {
-      cwd: root,
-      stdio: "inherit",
-    }
-  )
+  const server = await preview({
+    root,
+    server: { host: "127.0.0.1", port },
+  })
   const next = `${out}.next`
   rmSync(next, { recursive: true, force: true })
   let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined
   try {
-    for (let tries = 0; ; tries++) {
-      if (
-        await fetch(base).then(
-          () => true,
-          () => false
-        )
-      )
-        break
-      if (tries > 60) throw new Error("Astro preview did not start")
-      await new Promise((resolve) => setTimeout(resolve, 500))
-    }
     browser = await chromium.launch({ executablePath: process.env.CHROME })
     const context = await browser.newContext({
       viewport: shot,
@@ -155,15 +133,11 @@ if (process.argv.includes("--check")) {
       reducedMotion: "reduce",
     })
     const page = await context.newPage()
-    // Avoid analytics and third-party requests affecting capture timing.
-    await context.route("**/*", (route) =>
-      new URL(route.request().url()).origin === base
-        ? route.continue()
-        : route.abort()
-    )
     const targets = pages()
     if (!targets.length) throw new Error("No generated OG images found in dist")
-    for (const { path, image } of targets) {
+    for (const { path, image, docs } of targets) {
+      // Docs have one narrow content column; capture it closer for legibility.
+      await page.setViewportSize({ ...shot, width: docs ? 1200 : shot.width })
       await page.goto(base + path, { waitUntil: "networkidle" })
       await page.evaluate(isolate)
       await page.evaluate(() => document.fonts.ready)
@@ -180,15 +154,17 @@ if (process.argv.includes("--check")) {
       const file = join(next, relative("/og", image))
       mkdirSync(dirname(file), { recursive: true })
       await page.screenshot({ path: file, type: "jpeg", quality: 85 })
-      await page.setViewportSize(shot)
       console.log(`public${image}`)
     }
     rmSync(out, { recursive: true, force: true })
     renameSync(next, out)
     console.log(`Drew ${targets.length} OG images.`)
   } finally {
-    await browser?.close()
-    server.kill("SIGTERM")
-    rmSync(next, { recursive: true, force: true })
+    try {
+      await browser?.close()
+    } finally {
+      await server.stop()
+      rmSync(next, { recursive: true, force: true })
+    }
   }
 }

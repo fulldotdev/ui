@@ -50,6 +50,8 @@ its real component examples. Use the same raised browser window on stone
 as full.dev, at 1200 by 630 pixels. The site header, docs navigation and
 table of contents stay outside the capture. Keep the docs' default light
 preset, fonts and content. No additional logo, headline or banner artwork.
+Capture docs at 1200px wide so their narrower content stays legible; full
+pages use the same 1680px capture width as full.dev.
 
 `vp run og` builds the site and its React previews and writes the JPEGs to
 `public/og/`. Regenerate them when a page's opening content changes and
