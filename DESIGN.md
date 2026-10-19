@@ -42,3 +42,17 @@ The site follows one preset everywhere: theme, style, fonts and menu color, prev
 - Per-page Astro/React/Liquid tabs and a style menu next to every preview: both are global choices in the switcher and on Create.
 - Docs without a left navigation: too hard to browse 60+ components.
 - On the homepage: blocks in Preview and Code frames, a hero that leads with Astro only, a split hero, install tabs in the hero, and the bordered call to action card (`Cta8`).
+
+## Open Graph images
+
+Each indexed page shares a screenshot of its own opening content, including
+its real component examples. Use the same raised browser window on stone
+as full.dev, at 1200 by 630 pixels. The site header, docs navigation and
+table of contents stay outside the capture. Keep the docs' default light
+preset, fonts and content. No additional logo, headline or banner artwork.
+
+`vp run og` builds the site and its React previews and writes the JPEGs to
+`public/og/`. Regenerate them when a page's opening content changes and
+commit the images. Ordinary builds use the committed files and check that
+each generated image exists with the right dimensions. Explicit page and
+SEO image overrides keep priority.
