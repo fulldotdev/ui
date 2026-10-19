@@ -20,7 +20,7 @@ const root = process.cwd()
 const dist = join(root, "dist")
 const out = join(root, "public", "og")
 const port = Number(process.env.OG_PORT ?? 4517)
-const base = `http://127.0.0.1:${port}`
+const base = `http://localhost:${port}`
 const shot = { width: 1680, height: 882 }
 const card = { width: 1200, height: 630 }
 
@@ -129,6 +129,7 @@ if (process.argv.includes("--check")) {
     browser = await chromium.launch({ executablePath: process.env.CHROME })
     const context = await browser.newContext({
       viewport: shot,
+      locale: "en-US",
       colorScheme: "light",
       reducedMotion: "reduce",
     })
