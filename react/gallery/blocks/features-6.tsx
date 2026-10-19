@@ -8,7 +8,7 @@ export default function Features6Demo() {
         description="A clean text-only layout when features need to speak for themselves without icons or images."
         buttons={[
           { label: "Get started", href: "#" },
-          { label: "Learn more", href: "#" },
+          { label: "Compare features", href: "#" },
         ]}
         features={[
           {

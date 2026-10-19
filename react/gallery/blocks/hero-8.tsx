@@ -11,7 +11,7 @@ export default function Hero8Demo() {
         description="Minimal text with maximum image. A 1:3 split where the product screenshot dominates and the message stays compact."
         buttons={[
           { label: "Get started", href: "/docs/" },
-          { label: "Learn more", href: "#" },
+          { label: "View screenshots", href: "#" },
         ]}
         image={{ src: placeholderImage, alt: "" }}
       />

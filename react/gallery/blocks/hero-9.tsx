@@ -16,7 +16,7 @@ export default function Hero9Demo() {
           "Ideal for atmospheric pages",
         ]}
         buttons={[
-          { label: "Explore", href: "/docs/" },
+          { label: "Explore the docs", href: "/docs/" },
           { label: "View source", href: "#" },
         ]}
         socialProof={{

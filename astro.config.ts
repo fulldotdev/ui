@@ -127,6 +127,8 @@ export default defineConfig({
   integrations: [
     robotsTxt(),
     sitemap({
+      // The previews in the docs' iframes are not pages for search results.
+      filter: (page) => !page.includes("/preview/"),
       changefreq: "weekly",
       lastmod: new Date(),
       i18n: { defaultLocale: "en", locales: { en: "en" } },

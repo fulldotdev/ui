@@ -6,7 +6,7 @@ export default function Banner1Demo() {
       <Banner1
         title="New block previews are live"
         description="Browse wider, content-first layouts that mirror real sections instead of isolated UI primitives."
-        link={{ label: "Learn more", href: "#" }}
+        link={{ label: "Browse blocks", href: "#" }}
         closeLabel="Close"
         storageKey="banner-1"
       />

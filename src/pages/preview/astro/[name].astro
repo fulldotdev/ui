@@ -1,0 +1,66 @@
+---
+// Docs only: one Astro block demo of src/gallery/blocks on a bare page, for
+// the iframe of a block page (src/components/example.astro). Like the React
+// and Liquid previews, it follows the theme and preset of the docs and sets
+// the height of its frame.
+import { Font } from "astro:assets"
+
+import { Layout, LayoutBody, LayoutMain } from "@/components/ui/layout"
+import { ThemeProvider } from "@/components/ui/theme-toggle"
+import PresetHead from "@/components/preset-head.astro"
+
+export const getStaticPaths = () =>
+  Object.entries(
+    import.meta.glob<{ default: unknown }>("/src/gallery/blocks/*.astro", {
+      eager: true,
+    })
+  ).map(([path, module]) => ({
+    params: { name: path.replace(/^.*\/|\.astro$/g, "") },
+    props: { Demo: module.default },
+  }))
+
+const { name } = Astro.params
+const Demo = Astro.props.Demo as (props: Record<string, unknown>) => unknown
+---
+
+<Layout>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{`${name} preview`}</title>
+    <Font cssVariable="--font-sans" />
+    <Font cssVariable="--font-mono" />
+    <ThemeProvider />
+    <PresetHead />
+  </head>
+  <LayoutBody>
+    <LayoutMain>
+      <Demo />
+    </LayoutMain>
+  </LayoutBody>
+</Layout>
+
+<script>
+  // ThemeProvider follows the theme of the docs; this follows their preset
+  // (src/lib/preset-store.ts) when the docs change it.
+  import { applyPreset, readPreset } from "@/lib/preset-store"
+
+  applyPreset(readPreset())
+  addEventListener("storage", (event) => {
+    if (event.storageArea !== localStorage) return
+    if (event.key === "fulldev-ui-preset" || event.key === null)
+      applyPreset(readPreset())
+  })
+
+  // The docs share the origin, so the frame sets its own height, bounded so a
+  // runaway layout cannot grow the page without end. The block renders with
+  // the page, so a short one, such as a banner, keeps its own height.
+  const frame = window.frameElement as HTMLElement | null
+  if (frame) {
+    const min = Number(frame.dataset.minHeight ?? 0)
+    new ResizeObserver(() => {
+      const height = document.body.getBoundingClientRect().height
+      frame.style.height = `${Math.min(Math.max(Math.ceil(height), min), 4000)}px`
+    }).observe(document.body)
+  }
+</script>

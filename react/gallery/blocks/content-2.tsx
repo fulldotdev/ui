@@ -13,7 +13,7 @@ export default function Content2Demo() {
         ]}
         buttons={[
           { label: "Get started", href: "#" },
-          { label: "Learn more", href: "#" },
+          { label: "View examples", href: "#" },
         ]}
       />
     </>

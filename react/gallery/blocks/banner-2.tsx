@@ -8,7 +8,7 @@ export default function Banner2Demo() {
         description="Floating banners work well for launch moments, limited promos, and product announcements."
         buttons={[
           { label: "Get started", href: "#" },
-          { label: "Learn more", href: "#" },
+          { label: "Release notes", href: "#" },
         ]}
       />
     </>
