@@ -9,7 +9,10 @@ export const buttonVariants = cva(
         outline: "cn-button-variant-outline",
         secondary: "cn-button-variant-secondary",
         ghost: "cn-button-variant-ghost",
-        destructive: "cn-button-variant-destructive",
+        // shadcn/ui uses text-destructive, about 4:1 on the button's tint.
+        // Mixing in a fifth of the foreground keeps 4.5:1, as the native Liquid
+        // button does.
+        destructive: "cn-fd-button-variant-destructive",
         link: "cn-button-variant-link",
       },
       size: {

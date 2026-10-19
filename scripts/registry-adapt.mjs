@@ -1,5 +1,6 @@
 // Write Fulldev versions of shadcn/ui placeholders, for components whose markup
-// exposes state through different attributes than Base UI. Each cn-fd-* class
+// exposes state through different attributes than Base UI, and for the few
+// classes Fulldev UI deliberately changes. Each cn-fd-* class
 // copies a shadcn/ui placeholder per style and rewrites its selectors, so it
 // follows upstream style changes. Output: registry/styles/adapted/style-<name>.css
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
@@ -112,6 +113,24 @@ const ADAPTED = {
   "cn-fd-select-item": [
     "cn-select-item",
     [...highlighted, [/\*:\[span\]:last:/g, "*:data-[slot=select-item-text]:"]],
+  ],
+  // The description keeps the full destructive color, like FieldError. At 90%
+  // it falls below 4.5:1 on the card.
+  "cn-fd-alert-variant-destructive": [
+    "cn-alert-variant-destructive",
+    [[/(^|[\s:])text-destructive\/\d+(?=\s|$)/g, "$1text-destructive"]],
+  ],
+  // Destructive text on its own tint is about 4:1. Mixing in a fifth of the
+  // foreground keeps 4.5:1, also on hover, as the native Liquid button does.
+  // Mixed in oklab, the text stays red; oklch turns it orange in dark mode.
+  "cn-fd-button-variant-destructive": [
+    "cn-button-variant-destructive",
+    [
+      [
+        /(^|\s)text-destructive(?=\s|$)/g,
+        "$1text-[color-mix(in_oklab,var(--destructive)_80%,var(--foreground))]",
+      ],
+    ],
   ],
 }
 

@@ -61,6 +61,8 @@ export async function renderLiquidExample(source: string) {
       cart_url: "/liquid/components/sheet/",
     },
   })
+  // A div, not main: axe counts the iframe's landmarks with the docs page's,
+  // and the page already has its main.
   return `<!doctype html><html lang="en"><head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width">
   <title>Native Liquid preview</title>
@@ -69,5 +71,5 @@ export async function renderLiquidExample(source: string) {
   <style>@font-face{font-family:Geist;src:url('${fontUrl}') format('woff2');font-weight:100 900}${previewCss}</style>
   <style id="preview-theme">${presetCss(DEFAULT_CONFIG)}</style>
   <script type="module" src="/preview/liquid.js"></script>
-  </head><body><main id="example">${body}</main></body></html>`
+  </head><body><div id="example">${body}</div></body></html>`
 }
