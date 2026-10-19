@@ -11,6 +11,7 @@ import robotsTxt from "astro-robots-txt"
 import { inheritCodeColors } from "./src/lib/code"
 
 // Docs tables scroll inside the content column instead of widening the page.
+// The wrapper takes focus, so a keyboard can scroll it too.
 type Node = { type: string; tagName?: string; children?: Node[] }
 const scrollTables = () => (tree: Node) => {
   const wrap = (node: Node) => {
@@ -19,7 +20,7 @@ const scrollTables = () => (tree: Node) => {
         return {
           type: "element",
           tagName: "div",
-          properties: { className: ["typeset-scroll"] },
+          properties: { className: ["typeset-scroll"], tabIndex: 0 },
           children: [child],
         } as Node
       wrap(child)
