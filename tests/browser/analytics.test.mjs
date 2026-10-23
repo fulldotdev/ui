@@ -17,7 +17,7 @@ const source =
     { mode: "strip" }
   ) + "\nstartAnalytics()"
 const sdk = readFileSync(
-  new URL(import.meta.resolve("posthog-js/dist/module.slim.no-external")),
+  new URL(import.meta.resolve("posthog-js/dist/module.slim.no-external.js")),
   "utf8"
 )
 const privacy = readFileSync(

@@ -3,11 +3,12 @@ import posthog from "posthog-js/dist/module.slim.no-external"
 import { sanitizeEventUrls } from "./analytics-privacy.js"
 
 export function startAnalytics() {
+  const fetchOptions: RequestInit = { credentials: "omit", cache: "no-store" }
   posthog.init("phc_txCmZNAK3YueTeNyvtXmnh9JvK2LdbF3hK3kvxRcEJou", {
     api_host: "https://eu.i.posthog.com",
     api_transport: "fetch",
     disable_beacon: true,
-    fetch_options: { credentials: "omit", cache: "no-store" },
+    fetch_options: fetchOptions,
     defaults: "2025-11-30",
     cookieless_mode: "always",
     persistence: "memory",
