@@ -1,46 +1,25 @@
-/** Remove URL details from exceptions; redact ambiguous text as a whole. */
-export function sanitizeExceptionUrls(event) {
-  if (event?.event !== "$exception") return event
+/** Keep basic page statistics and remove URL query strings and fragments. */
+export function sanitizeEventUrls(event) {
+  if (!event || !["$pageview", "$pageleave"].includes(event.event)) return null
   const seen = new WeakSet()
-  const clean = (value) => {
-    if (typeof value === "string") {
-      if (!/[?#@]/.test(value)) return value
-      const normalized = value.replace(/\\/g, "/")
-      // Only preserve an unambiguous standalone URL or relative filename.
-      if (
-        /\s|["'<>]/.test(normalized) ||
-        !/^(?:https?:|\/|\.\.?\/|[\w.-]+[?#])/i.test(normalized)
-      ) {
-        return "[redacted-url-details]"
-      }
-      try {
-        const absolute = /^https?:/i.test(normalized)
-        const parsed = new URL(
-          normalized,
-          absolute ? undefined : "https://redacted.invalid"
-        )
-        if (/https?:|\/\/|@/i.test(parsed.pathname))
-          return "[redacted-url-details]"
-        const prefix = absolute
-          ? parsed.protocol + "//" + parsed.host
-          : normalized.startsWith("//")
-            ? "//" + parsed.host
-            : ""
-        const pathname =
-          !absolute && !normalized.startsWith("/")
-            ? parsed.pathname.slice(1)
-            : parsed.pathname
-        return prefix + pathname
-      } catch {
-        return "[redacted-url-details]"
-      }
+  function scrub(value) {
+    if (!value || typeof value !== "object" || seen.has(value)) return
+    seen.add(value)
+    for (const [key, nested] of Object.entries(value)) {
+      if (typeof nested === "string" && /^https?:\/\//i.test(nested)) {
+        try {
+          const url = new URL(nested)
+          if (/referrer/i.test(key)) url.pathname = "/"
+          url.search = ""
+          url.hash = ""
+          value[key] = url.href
+        } catch {
+          value[key] = ""
+        }
+      } else scrub(nested)
     }
-    if (value && typeof value === "object" && !seen.has(value)) {
-      seen.add(value)
-      for (const key of Object.keys(value)) value[key] = clean(value[key])
-    }
-    return value
   }
-  clean(event.properties)
+  for (const values of [event.properties, event.$set, event.$set_once])
+    scrub(values)
   return event
 }
