@@ -7,7 +7,7 @@ test("keeps page statistics without private URL details, including nested metada
     event: "$pageview",
     properties: {
       $current_url: "https://example.com/path?token=secret#private",
-      nested: [{ $referrer: "https://source.example/?email=private" }],
+      nested: [{ $referrer: "https://source.example/account/orders/private?email=private" }],
     },
     $set_once: { $initial_current_url: "https://example.com/?code=private" },
   }
