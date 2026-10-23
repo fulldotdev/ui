@@ -9,6 +9,7 @@ export function sanitizeEventUrls(event) {
       if (typeof nested === "string" && /^https?:\/\//i.test(nested)) {
         try {
           const url = new URL(nested)
+          if (/referrer/i.test(key)) url.pathname = "/"
           url.search = ""
           url.hash = ""
           value[key] = url.href

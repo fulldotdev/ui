@@ -130,7 +130,11 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
             return route.abort()
           })
           await page.goto(
-            `${origin}/?token=private-query&gclid=private-google&fbclid=private-meta&li_fat_id=private-linkedin#private-fragment`
+            `${origin}/?token=private-query&gclid=private-google&fbclid=private-meta&li_fat_id=private-linkedin#private-fragment`,
+            {
+              referer:
+                "https://www.google.com/search?q=private-search%40example.com",
+            }
           )
           await page.waitForFunction(
             () =>
@@ -162,6 +166,12 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
           )
           assert.ok(requests.every((request) => !request.headers.cookie))
           assert.ok(!JSON.stringify(events).includes("private-"))
+          assert.ok(!JSON.stringify(events).includes("_scroll"))
+          assert.ok(
+            events.every(
+              (event) => !Object.hasOwn(event.properties, "ph_keyword")
+            )
+          )
           assert.deepEqual(await context.cookies(), initialCookies)
           const writes = await page.evaluate(() => window.__writes)
           assert.deepEqual(
