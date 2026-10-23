@@ -1,6 +1,6 @@
 ---
 import type { ImageMetadata } from "astro"
-import { Image } from "astro:assets"
+import { Picture } from "astro:assets"
 import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
@@ -65,9 +65,20 @@ const {
     </div>
   </SectionContainer>
   <SectionContainer>
-    <Image
+    <Picture
       src={image.src}
       alt={image.alt}
+      formats={
+        ["svg", "gif"].includes(image.src.format)
+          ? [image.src.format as "svg" | "gif"]
+          : ["avif", "webp"]
+      }
+      fallbackFormat={
+        ["svg", "gif"].includes(image.src.format)
+          ? (image.src.format as "svg" | "gif")
+          : "webp"
+      }
+      pictureAttributes={{ class: "contents [&>source]:hidden" }}
       class="aspect-video w-full rounded-xl border object-cover"
       widths={[640, 960, 1280, 1536]}
       sizes="(min-width: 80rem) 80rem, 100vw"
