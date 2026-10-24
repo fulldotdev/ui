@@ -33,9 +33,10 @@ import wordmarkFont from "@/assets/fonts/fulldev-wordmark.woff2?url"
 type Props = {
   global: GlobalSchema
   page: BaseSchema
+  preloadMono?: boolean
 }
 
-const { global, page }: Props = Astro.props
+const { global, page, preloadMono = true }: Props = Astro.props
 
 const pageId = getPageId(Astro.url.pathname)
 const framework = getFramework(pageId)
@@ -131,7 +132,10 @@ const switcherLabels = {
     {/* Preload only the upright face: few pages use italic text, and the
     italic file would compete with the stylesheets and the upright file. */}
     <Font cssVariable="--font-sans" preload={[{ style: "normal" }]} />
-    <Font cssVariable="--font-mono" preload={[{ style: "normal" }]} />
+    <Font
+      cssVariable="--font-mono"
+      preload={preloadMono ? [{ style: "normal" }] : false}
+    />
     <link
       rel="preload"
       href={wordmarkFont}
