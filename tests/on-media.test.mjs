@@ -226,3 +226,66 @@ for (const action of ["click", "request"])
         Object.assign(globalThis, previous)
       }
     })
+
+for (const link of [true, false])
+  for (const input of [
+    "plain",
+    "metaKey",
+    "ctrlKey",
+    "shiftKey",
+    "altKey",
+    "button",
+  ])
+    test(`pending ${input} click on a ${link ? "link" : "button"} trigger`, async () => {
+      const previous = {
+        window: globalThis.window,
+        Element: globalThis.Element,
+        MouseEvent: globalThis.MouseEvent,
+      }
+      class Element extends EventTarget {
+        isConnected = true
+        closest() {
+          return this
+        }
+        contains(target) {
+          return target === this
+        }
+        matches(selector) {
+          return link && selector === "a[href], area[href]"
+        }
+      }
+      const media = new EventTarget()
+      media.matches = true
+      globalThis.window = { matchMedia: () => media }
+      globalThis.Element = Element
+      globalThis.MouseEvent = Event
+      const root = new Element()
+      const replayed = []
+      let done
+      const dispose = onMedia(
+        "all",
+        () => new Promise((resolve) => (done = resolve)),
+        () => {
+          const receive = (event) => replayed.push(event)
+          root.addEventListener("click", receive)
+          return () => root.removeEventListener("click", receive)
+        },
+        { root, selector: "a" }
+      )
+      try {
+        const click = new Event("click", { cancelable: true })
+        if (input === "button") click.button = 1
+        else if (input !== "plain") click[input] = true
+        root.dispatchEvent(click)
+        done({})
+        await Promise.resolve()
+        await Promise.resolve()
+        // Only a modified or non-primary link click keeps its native action.
+        const native = link && input !== "plain"
+        assert.equal(click.defaultPrevented, !native)
+        assert.equal(replayed.length, native ? 0 : 1)
+      } finally {
+        dispose()
+        Object.assign(globalThis, previous)
+      }
+    })
