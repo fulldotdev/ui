@@ -16,7 +16,7 @@ export function initializeDialogs() {
           const controller = createDialog(root)
           return () => controller.destroy()
         },
-        { root, selector: '[data-slot="dialog-trigger"]' }
+        { root, selector: '[data-slot="dialog-trigger"]', event: "dialog:set" }
       )
     )
   }

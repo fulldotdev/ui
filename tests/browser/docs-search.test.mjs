@@ -7,7 +7,7 @@ import { createReadStream, existsSync, statSync } from "node:fs"
 import { createServer } from "node:http"
 import { extname, join, resolve } from "node:path"
 import { after, before, test } from "node:test"
-import { chromium } from "playwright"
+import { chromium, firefox, webkit } from "playwright"
 
 const root = resolve(process.env.DIST ?? "dist")
 const types = {
@@ -74,3 +74,90 @@ test("the docs search lists every page and opens a result", async (t) => {
   await page.keyboard.press("Enter")
   await page.waitForURL(`${origin}/components/accordion/`)
 })
+
+for (const type of [chromium, firefox, webkit])
+  test(`${type.name()} search shortcut survives a pending dialog import`, async (t) => {
+    const browser = await type.launch()
+    t.after(() => browser.close())
+    const page = await browser.newPage()
+    const delay = await delayDialog(page)
+    await page.goto(`${origin}/docs/theming/`, {
+      waitUntil: "domcontentloaded",
+    })
+    await delay.started
+    await page.keyboard.press("Control+k")
+    delay.release()
+    await page.locator("[data-slot=command-input]:visible").waitFor()
+    assert.equal(
+      await page
+        .locator("[data-slot=command-input]:visible")
+        .evaluate((input) => document.activeElement === input),
+      true
+    )
+  })
+
+for (const type of [chromium, webkit])
+  test(`${type.name()} original search tap holds keyboard focus while loading`, async (t) => {
+    const browser = await type.launch()
+    t.after(() => browser.close())
+    const page = await browser.newPage({
+      viewport: { width: 390, height: 844 },
+      hasTouch: true,
+      isMobile: true,
+    })
+    const delay = await delayDialog(page)
+    await page.goto(`${origin}/docs/theming/`, {
+      waitUntil: "domcontentloaded",
+    })
+    await delay.started
+    await page.evaluate(() => {
+      window.__searchGestures = []
+      document.addEventListener("click", (event) => {
+        if (
+          event.target.closest(
+            "[data-search-dialog] [data-slot=dialog-trigger]"
+          )
+        )
+          window.__searchGestures.push({
+            trusted: event.isTrusted,
+            holder: document.activeElement?.matches(
+              'input[aria-hidden="true"]'
+            ),
+          })
+      })
+    })
+    await page.getByRole("button", { name: "Search documentation" }).tap()
+    assert.deepEqual(await page.evaluate(() => window.__searchGestures), [
+      { trusted: true, holder: true },
+    ])
+    delay.release()
+    const input = page.locator("[data-slot=command-input]:visible")
+    await input.waitFor()
+    await page.waitForFunction(() =>
+      document.activeElement?.matches("[data-slot=command-input]")
+    )
+    assert.deepEqual(await page.evaluate(() => window.__searchGestures), [
+      { trusted: true, holder: true },
+    ])
+  })
+
+async function delayDialog(page) {
+  let release
+  const pending = new Promise((done) => {
+    release = done
+  })
+  let intercepted
+  const started = new Promise((done) => {
+    intercepted = done
+  })
+  await page.route("**/*.js", async (route) => {
+    const response = await route.fetch()
+    const body = await response.text()
+    if (body.includes("Dialog requires dialog-content slot")) {
+      intercepted()
+      await pending
+    }
+    await route.fulfill({ response, body })
+  })
+  return { started, release }
+}
