@@ -7,6 +7,8 @@ on:
   workflow_run:
     workflows: [Check]
     types: [requested, in_progress, completed]
+  # Netlify's previews often finish after Check.
+  status:
 
 permissions:
   actions: read
@@ -17,7 +19,8 @@ permissions:
 
 jobs:
   ready:
-    uses: fulldotdev/.github/.github/workflows/ready.yml@c343f825f2ae7e4cecc484a9a41dee47af2105b9
+    if: github.event_name != 'status' || (startsWith(github.event.context, 'netlify/') && github.event.state != 'pending')
+    uses: fulldotdev/.github/.github/workflows/ready.yml@b614208c0b4d73f6f15836777777b2c1ac5a94b3
     with:
       runner: blacksmith-2vcpu-ubuntu-2404
       netlify-checks: '["netlify/fulldev-ui/deploy-preview"]'
