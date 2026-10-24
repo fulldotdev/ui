@@ -1,6 +1,6 @@
 ---
 import type { ImageMetadata } from "astro"
-import { Image } from "astro:assets"
+import { Picture } from "astro:assets"
 import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
@@ -54,9 +54,20 @@ const { class: className, title, description, articles, ...props } = Astro.props
                 "group hover:bg-muted/50 focus-visible:ring-ring/50 transition-colors focus-visible:ring-2 focus-visible:outline-none"
             )}
           >
-            <Image
+            <Picture
               src={article.image.src}
               alt={article.image.alt}
+              formats={
+                ["svg", "gif"].includes(article.image.src.format)
+                  ? [article.image.src.format as "svg" | "gif"]
+                  : ["avif", "webp"]
+              }
+              fallbackFormat={
+                ["svg", "gif"].includes(article.image.src.format)
+                  ? (article.image.src.format as "svg" | "gif")
+                  : "webp"
+              }
+              pictureAttributes={{ class: "contents [&>source]:hidden" }}
               class="-mx-4 -mt-4 aspect-[16/9] w-[calc(100%+2rem)] max-w-none rounded-lg object-cover transition-opacity group-hover:opacity-85"
               widths={[480, 720, 960]}
               sizes="(min-width: 64rem) 26rem, (min-width: 48rem) 50vw, 100vw"
