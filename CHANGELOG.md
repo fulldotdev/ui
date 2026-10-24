@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.26.0
+
+### Minor Changes
+
+- [#328](https://github.com/fulldotdev/ui/pull/328) [`53e43a0`](https://github.com/fulldotdev/ui/commit/53e43a065b6ca055134f1af599ddedfe9f40a2e3) Thanks [@silveltman](https://github.com/silveltman)! - Add an optional Image component with Astro Picture formats, responsive sources and an unchanged single-image default.
+
 ## 0.25.5
 
 ### Patch Changes
