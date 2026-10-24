@@ -1,0 +1,47 @@
+---
+import { Image as AstroImage, Picture as AstroPicture } from "astro:assets"
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = Partial<ComponentProps<typeof AstroImage>> &
+  Pick<
+    Partial<ComponentProps<typeof AstroPicture>>,
+    "formats" | "fallbackFormat" | "pictureAttributes"
+  >
+
+const {
+  class: className,
+  alt = "",
+  src,
+  formats,
+  fallbackFormat,
+  pictureAttributes,
+  ...props
+} = Astro.props
+---
+
+{src &&
+  (formats?.length ? (
+    <AstroPicture
+      {...(props as ComponentProps<typeof AstroPicture>)}
+      src={src}
+      alt={alt}
+      class={cn("h-auto w-full", className)}
+      inferSize={props.inferSize ?? true}
+      formats={formats}
+      fallbackFormat={fallbackFormat}
+      pictureAttributes={{
+        ...pictureAttributes,
+        class: cn("contents [&>source]:hidden", pictureAttributes?.class),
+      }}
+    />
+  ) : (
+    <AstroImage
+      {...(props as ComponentProps<typeof AstroImage>)}
+      src={src}
+      alt={alt}
+      class={cn("h-auto w-full", className)}
+      inferSize={props.inferSize ?? true}
+    />
+  ))}
