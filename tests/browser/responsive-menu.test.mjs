@@ -7,18 +7,19 @@ import { chromium, firefox, webkit } from "playwright"
 
 const src = resolve("src")
 const root = resolve("node_modules/.cache/responsive-menu-site")
-const page = (dialog) => `---
+const page = (dialog, router = false) => `---
+import { ClientRouter } from "astro:transitions"
 import { Sheet, SheetTrigger, SheetContent, SheetTitle } from "${src}/components/ui/sheet"
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "${src}/components/ui/dialog"
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger, NavigationMenuContent } from "${src}/components/ui/navigation-menu"
 ---
-<html lang="en"><head><title>Responsive menus</title>
+<html lang="en"><head><title>Responsive menus</title>${router ? "<ClientRouter />" : ""}
 <style>body{min-height:150vh} [data-slot="dialog"][data-media]{display:none} @media(width < 64rem){[data-slot="dialog"][data-media]{display:block} nav{display:none}} [data-slot="dialog-content"]{background:white;padding:20px}</style>
 </head><body>
 <Sheet media="(width < 64rem)"><SheetTrigger>Menu</SheetTrigger><SheetContent><SheetTitle>Mobile navigation</SheetTitle><a href="#target">Inside sheet</a></SheetContent></Sheet>
 <NavigationMenu media="(min-width:64rem)"><NavigationMenuList><NavigationMenuItem value="products"><NavigationMenuTrigger>Products</NavigationMenuTrigger><NavigationMenuContent><a href="#target">Product one</a></NavigationMenuContent></NavigationMenuItem></NavigationMenuList></NavigationMenu>
 ${dialog ? "<Dialog><DialogTrigger>Search</DialogTrigger><DialogContent><DialogTitle>Search dialog</DialogTitle></DialogContent></Dialog>" : ""}
-<div id="target">Destination</div></body></html>`
+<a href="/router-two/">Next page</a><div id="target">Destination</div></body></html>`
 let server
 let origin
 before(async () => {
@@ -26,6 +27,8 @@ before(async () => {
   mkdirSync(join(root, "src/pages"), { recursive: true })
   writeFileSync(join(root, "src/pages/index.astro"), page(true))
   writeFileSync(join(root, "src/pages/pending.astro"), page(false))
+  writeFileSync(join(root, "src/pages/router-one.astro"), page(true, true))
+  writeFileSync(join(root, "src/pages/router-two.astro"), page(true, true))
   const config = {
     root,
     configFile: false,
@@ -42,6 +45,35 @@ after(async () => {
 })
 
 for (const type of [chromium, firefox, webkit]) {
+  test(`${type.name()} disposes and recreates after ClientRouter navigation`, async (t) => {
+    const browser = await type.launch()
+    t.after(() => browser.close())
+    const page = await browser.newPage({
+      viewport: { width: 390, height: 900 },
+    })
+    await page.goto(origin + "/router-one/")
+    await page.getByRole("button", { name: "Menu", exact: true }).click()
+    await page.getByRole("dialog", { name: "Mobile navigation" }).waitFor()
+    await page.evaluate(() => {
+      window.__menuSwap = false
+      document.addEventListener(
+        "astro:page-load",
+        () => {
+          window.__menuSwap = true
+        },
+        { once: true }
+      )
+      document.querySelector('a[href="/router-two/"]').click()
+    })
+    await page.waitForFunction(() => window.__menuSwap)
+    assert.equal(await page.evaluate(() => document.body.style.overflow), "")
+    await page.getByRole("button", { name: "Menu", exact: true }).click()
+    await page.getByRole("dialog", { name: "Mobile navigation" }).waitFor()
+    await page.keyboard.press("Escape")
+    await page.getByRole("button", { name: "Search", exact: true }).click()
+    await page.getByRole("dialog", { name: "Search dialog" }).waitFor()
+  })
+
   test(`${type.name()} responsive controllers and portal cleanup`, async (t) => {
     const browser = await type.launch()
     t.after(() => browser.close())

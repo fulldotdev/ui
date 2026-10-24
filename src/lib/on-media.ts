@@ -13,6 +13,12 @@ export function onMedia<T>(
   let cleanup: (() => void) | undefined
   let pendingClick: HTMLElement | undefined
 
+  const replayClick = () => {
+    const target = pendingClick
+    pendingClick = undefined
+    if (target?.isConnected) target.click()
+  }
+
   const update = async () => {
     const current = ++epoch
     pendingClick = undefined
@@ -23,9 +29,7 @@ export function onMedia<T>(
       const module = await load()
       if (disposed || !media.matches || current !== epoch) return
       cleanup = mount(module)
-      const target = pendingClick
-      pendingClick = undefined
-      if (target?.isConnected) target.click()
+      replayClick()
     } catch (error) {
       if (!disposed && current === epoch) {
         pendingClick = undefined
