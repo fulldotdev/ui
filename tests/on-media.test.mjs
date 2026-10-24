@@ -1,7 +1,9 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
 
-import { onMedia } from "../src/lib/on-media.ts"
+const { onMedia } = await import(
+  new URL("../src/lib/on-media.ts", import.meta.url)
+)
 
 test("media loading cancels stale imports and recreates on return", async () => {
   const media = new EventTarget()
