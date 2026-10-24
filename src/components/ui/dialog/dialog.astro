@@ -2,6 +2,7 @@
 import type { HTMLAttributes } from "astro/types"
 
 type Props = HTMLAttributes<"div"> & {
+  media?: string
   defaultOpen?: boolean
   closeOnClickOutside?: boolean
   closeOnEscape?: boolean
@@ -10,6 +11,7 @@ type Props = HTMLAttributes<"div"> & {
 }
 
 const {
+  media,
   class: className,
   defaultOpen,
   closeOnClickOutside,
@@ -21,6 +23,7 @@ const {
 ---
 
 <div
+  data-media={media}
   data-slot="dialog"
   data-default-open={defaultOpen}
   data-close-on-click-outside={closeOnClickOutside}
@@ -34,14 +37,7 @@ const {
 </div>
 
 <script>
-  import { create } from "@data-slot/dialog"
+  import { initializeDialogs } from "@/lib/dialog"
 
-  const controllers: ReturnType<typeof create> = []
-  const initialize = () => controllers.push(...create())
-  initialize()
-  document.addEventListener("astro:page-load", initialize)
-  document.addEventListener("astro:before-swap", () => {
-    for (const controller of controllers) controller.destroy()
-    controllers.length = 0
-  })
+  initializeDialogs()
 </script>

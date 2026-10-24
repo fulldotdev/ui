@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/sheet"
 
 type Props = HTMLAttributes<"header"> & {
+  fold?: "lg" | "xl"
   logo: {
     label: string
     href: string
@@ -54,6 +55,7 @@ type Props = HTMLAttributes<"header"> & {
 }
 
 const {
+  fold = "lg",
   class: className,
   logo,
   navigation,
@@ -62,6 +64,11 @@ const {
   menu,
   ...props
 } = Astro.props
+
+const desktopQuery = fold === "xl" ? "(min-width: 80rem)" : "(min-width: 64rem)"
+const mobileQuery = fold === "xl" ? "(width < 80rem)" : "(width < 64rem)"
+const desktopClass = fold === "xl" ? "xl:flex" : "lg:flex"
+const mobileClass = fold === "xl" ? "xl:hidden" : "lg:hidden"
 ---
 
 <Header class={cn("border-b", className)} {...props}>
@@ -77,10 +84,11 @@ const {
         <LogoText>{logo.label}</LogoText>
       </Logo>
     </HeaderGroup>
-    <HeaderGroup class="ml-auto hidden justify-end gap-1 lg:flex">
+    <HeaderGroup class={cn("ml-auto hidden justify-end gap-1", desktopClass)}>
       <NavigationMenu
+        media={desktopQuery}
         aria-label={navigationLabel}
-        class="hidden max-w-none justify-end lg:flex"
+        class={cn("hidden max-w-none justify-end", desktopClass)}
       >
         <NavigationMenuList>
           {navigation.map((item, index) => (
@@ -110,7 +118,7 @@ const {
         </Button>
       ))}
     </HeaderGroup>
-    <Sheet class="lg:hidden">
+    <Sheet media={mobileQuery} class={mobileClass}>
       <SheetTrigger
         variant="ghost"
         size="icon-sm"

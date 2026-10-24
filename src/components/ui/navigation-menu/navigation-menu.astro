@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import NavigationMenuPositioner from "./navigation-menu-positioner.astro"
 
 type Props = HTMLAttributes<"nav"> & {
+  media?: string
   mountStrategy?: "lazy" | "eager"
   delayOpen?: number
   delayClose?: number
@@ -20,6 +21,7 @@ type Props = HTMLAttributes<"nav"> & {
 }
 
 const {
+  media,
   mountStrategy,
   class: className = "",
   delayOpen = 0,
@@ -41,6 +43,7 @@ const {
   {...props}
   aria-label={ariaLabel}
   data-slot="navigation-menu"
+  data-media={media}
   data-mount-strategy={mountStrategy}
   data-delay-open={delayOpen}
   data-delay-close={delayClose}
@@ -62,14 +65,36 @@ const {
 </nav>
 
 <script>
-  import { create } from "@data-slot/navigation-menu"
+  import { onMedia } from "@/lib/on-media"
 
-  const controllers: ReturnType<typeof create> = []
-  const initialize = () => controllers.push(...create())
+  const roots = new Map<Element, () => void>()
+  const initialize = () => {
+    for (const root of document.querySelectorAll<HTMLElement>(
+      '[data-slot="navigation-menu"]'
+    )) {
+      if (roots.has(root)) continue
+      roots.set(
+        root,
+        onMedia(
+          root.dataset.media ?? "all",
+          () => import("@data-slot/navigation-menu"),
+          ({ createNavigationMenu }) => {
+            const controller = createNavigationMenu(root)
+            return () => controller.destroy()
+          },
+          {
+            root,
+            selector: '[data-slot="navigation-menu-trigger"]',
+            event: "navigation-menu:set",
+          }
+        )
+      )
+    }
+  }
   initialize()
   document.addEventListener("astro:page-load", initialize)
   document.addEventListener("astro:before-swap", () => {
-    for (const controller of controllers) controller.destroy()
-    controllers.length = 0
+    for (const dispose of roots.values()) dispose()
+    roots.clear()
   })
 </script>
