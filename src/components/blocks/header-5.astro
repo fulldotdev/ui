@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/sheet"
 
 type Props = HTMLAttributes<"header"> & {
+  fold?: "lg" | "xl"
   logo: {
     label: string
     href: string
@@ -69,6 +70,7 @@ type Props = HTMLAttributes<"header"> & {
 }
 
 const {
+  fold = "lg",
   class: className,
   logo,
   navigation,
@@ -77,6 +79,12 @@ const {
   menu,
   ...props
 } = Astro.props
+
+const desktopQuery = fold === "xl" ? "(min-width: 80rem)" : "(min-width: 64rem)"
+const mobileQuery = fold === "xl" ? "(width < 80rem)" : "(width < 64rem)"
+const desktopClass = fold === "xl" ? "xl:flex" : "lg:flex"
+const mobileClass = fold === "xl" ? "xl:hidden" : "lg:hidden"
+const dividerClass = fold === "xl" ? "xl:block" : "lg:block"
 ---
 
 <Header
@@ -95,7 +103,7 @@ const {
         <LogoText>{logo.label}</LogoText>
       </Logo>
     </HeaderGroup>
-    <HeaderGroup class="ml-auto hidden justify-end lg:flex">
+    <HeaderGroup class={cn("ml-auto hidden justify-end", desktopClass)}>
       {buttons.map(({ label, href, icon, target }, index) => (
         <Button
           as="a"
@@ -110,7 +118,7 @@ const {
         </Button>
       ))}
     </HeaderGroup>
-    <Sheet class="lg:hidden">
+    <Sheet media={mobileQuery} class={mobileClass}>
       <SheetTrigger
         variant="ghost"
         size="icon-sm"
@@ -186,9 +194,10 @@ const {
       </SheetContent>
     </Sheet>
   </HeaderContainer>
-  <Separator class="hidden lg:block" />
-  <HeaderContainer class="hidden min-h-11 lg:flex">
+  <Separator class={cn("hidden", dividerClass)} />
+  <HeaderContainer class={cn("hidden min-h-11", desktopClass)}>
     <NavigationMenu
+      media={desktopQuery}
       aria-label={navigationLabel}
       class="max-w-none justify-start"
       align="start"
