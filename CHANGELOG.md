@@ -1,5 +1,13 @@
 # Fulldev UI
 
+## 0.25.5
+
+### Patch Changes
+
+- [#325](https://github.com/fulldotdev/ui/pull/325) [`57e3ff2`](https://github.com/fulldotdev/ui/commit/57e3ff25f89ea0e97f47725d62bf36c92c72246e) Thanks [@silveltman](https://github.com/silveltman)! - Import each icon in the Content, CTA, Hero and Pricing blocks from its own path, so a page loads only the icons it uses instead of all of Lucide.
+
+- [#323](https://github.com/fulldotdev/ui/pull/323) [`cec3667`](https://github.com/fulldotdev/ui/commit/cec3667f28590b0beedd9100b8b0573abf865fac) Thanks [@silveltman](https://github.com/silveltman)! - Serve AVIF images with WebP fallbacks in Hero1, Article1 and Articles1, preserving responsive sizes and image priority.
+
 ## 0.25.4
 
 ### Patch Changes
