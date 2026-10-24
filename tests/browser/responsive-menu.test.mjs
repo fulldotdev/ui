@@ -30,6 +30,13 @@ import "../header.css"
 <html lang="en"><head><title>Header ${number} ${fold}</title></head><body>
 <Header fold="${fold}" logo={{label:"Example",href:"/"}} navigation={[{label:"Products",href:"#products",links:[{label:"Product one",href:"#target"}]},{label:"About",href:"#about"}]} buttons={[{label:"Contact",href:"#contact"}]} navigationLabel="Primary" menu={{label:"Menu",title:"Mobile navigation",description:"All pages",closeLabel:"Close menu"}} />
 <main id="target">Destination</main></body></html>`
+// A site navigation trigger that is also a link, as on category menus.
+const linkTriggerPage = `---
+import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuContent } from "${src}/components/ui/navigation-menu"
+---
+<html lang="en"><head><title>Link trigger</title></head><body>
+<NavigationMenu media="(min-width:64rem)"><NavigationMenuList><NavigationMenuItem value="category"><a href="/category/" data-slot="navigation-menu-trigger">Category</a><NavigationMenuContent><a href="#target">Category item</a></NavigationMenuContent></NavigationMenuItem></NavigationMenuList></NavigationMenu>
+<div id="target">Destination</div></body></html>`
 let server
 let origin
 before(async () => {
@@ -39,6 +46,11 @@ before(async () => {
   writeFileSync(join(root, "src/pages/pending.astro"), page(false))
   writeFileSync(join(root, "src/pages/router-one.astro"), page(true, true))
   writeFileSync(join(root, "src/pages/router-two.astro"), page(true, true))
+  writeFileSync(join(root, "src/pages/link-trigger.astro"), linkTriggerPage)
+  writeFileSync(
+    join(root, "src/pages/category.astro"),
+    `<html lang="en"><head><title>Category</title></head><body>Category page</body></html>`
+  )
   writeFileSync(
     join(root, "src/header.css"),
     `@import "tailwindcss"; @source "${src}/components"; body {min-height:150vh} button {min-width:32px;min-height:32px} [data-slot="dialog-content"] {position:fixed;top:0;right:0;background:white;padding:24px}`
@@ -264,6 +276,69 @@ for (const type of [chromium, firefox, webkit]) {
         .getByRole("dialog", { name: "Mobile navigation" })
         .waitFor({ state: "visible" })
       assert.ok((await page.evaluate(() => window.__menuClicks)).every(Boolean))
+    })
+
+  for (const input of ["click", "Enter", "ControlOrMeta", "Shift", "Alt"])
+    test(`${type.name()} link trigger during import: ${input}`, async (t) => {
+      const browser = await type.launch()
+      t.after(() => browser.close())
+      const page = await browser.newPage({
+        viewport: { width: 1440, height: 900 },
+      })
+      let release
+      const pending = new Promise((done) => {
+        release = done
+      })
+      let intercepted
+      const started = new Promise((done) => {
+        intercepted = done
+      })
+      await page.route("**/*.js", async (route) => {
+        const response = await route.fetch()
+        const body = await response.text()
+        if (body.includes("NavigationMenu requires")) {
+          intercepted()
+          await pending
+        }
+        await route.fulfill({ response, body })
+      })
+      await page.goto(origin + "/link-trigger/", {
+        waitUntil: "domcontentloaded",
+      })
+      await started
+      const link = page.getByRole("link", { name: "Category", exact: true })
+      if (input === "click" || input === "Enter") {
+        if (input === "click") await link.click()
+        else await link.press("Enter")
+        // The first activation waits for the controller, then navigates.
+        assert.equal(new URL(page.url()).pathname, "/link-trigger/")
+        release()
+        await page.waitForURL(origin + "/category/")
+        return
+      }
+      // The browser owns a modified click, such as opening a new tab. The test
+      // records and stops it; the helper must neither consume nor replay it.
+      // A replayed click does not bubble, so capture records that one.
+      await page.evaluate(() => {
+        window.__clicks = []
+        const record = (event) => {
+          window.__clicks.push([event.isTrusted, event.defaultPrevented])
+          event.preventDefault()
+        }
+        window.addEventListener("click", (e) => e.isTrusted || record(e), true)
+        window.addEventListener("click", (e) => e.isTrusted && record(e))
+      })
+      await link.click({ modifiers: [input] })
+      release()
+      await page.waitForFunction(() =>
+        document
+          .querySelector('[data-slot="navigation-menu-trigger"]')
+          .hasAttribute("aria-expanded")
+      )
+      assert.deepEqual(await page.evaluate(() => window.__clicks), [
+        [true, false],
+      ])
+      assert.equal(new URL(page.url()).pathname, "/link-trigger/")
     })
 
   for (const action of ["open", "click", "latest-close", "exit", "swap"])

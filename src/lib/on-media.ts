@@ -1,5 +1,15 @@
 type Trigger = { root: Element; selector: string; event?: string }
 
+// A modified or non-primary click on a link keeps its native action, such as
+// opening a new tab, instead of being replayed as a plain click.
+const nativeLinkClick = (event: Event, target: Element) => {
+  const { button = 0, metaKey, ctrlKey, shiftKey, altKey } = event as MouseEvent
+  return (
+    (button !== 0 || metaKey || ctrlKey || shiftKey || altKey) &&
+    target.matches("a[href], area[href]")
+  )
+}
+
 /** Import and mount only while the query matches; dispose on exit. */
 export function onMedia<T>(
   query: string,
@@ -64,6 +74,7 @@ export function onMedia<T>(
     if (!(event.target instanceof Element)) return
     const target = event.target.closest<HTMLElement>(trigger.selector)
     if (!target || !trigger.root.contains(target)) return
+    if (nativeLinkClick(event, target)) return
     pendingClick ??= target
     pendingEvent = undefined
     event.preventDefault()
