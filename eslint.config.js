@@ -69,6 +69,11 @@ export default defineConfig([
               message:
                 "Import through @/ instead of ../, and another component through its index",
             },
+            {
+              regex: "^@lucide/astro$",
+              message:
+                "Import each icon from @lucide/astro/icons/<name>: the package's index makes a site's dev server load all of them",
+            },
           ],
         },
       ],
