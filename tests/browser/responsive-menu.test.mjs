@@ -117,7 +117,16 @@ for (const type of [chromium, firefox, webkit]) {
             .getByRole("link", { name: "Product one", exact: true })
             .waitFor({ state: "hidden" })
         assert.equal(await navigation.isVisible(), false)
-        await trigger.click()
+        await trigger.waitFor({ state: "visible" })
+        await trigger.focus()
+        assert.equal(
+          await trigger.evaluate(
+            (element) => element === document.activeElement
+          ),
+          true,
+          `header ${number} ${fold}: keyboard trigger focus`
+        )
+        await trigger.press("Enter")
         await page
           .getByRole("dialog", { name: "Mobile navigation", exact: true })
           .waitFor()

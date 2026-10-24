@@ -81,59 +81,66 @@ test("disposing during import prevents a later mount", async () => {
   globalThis.window = previous
 })
 
-for (const action of ["click", "request"])
-  test(`retains ${action} before the media change event arrives`, async () => {
-    const previous = {
-      window: globalThis.window,
-      Element: globalThis.Element,
-      MouseEvent: globalThis.MouseEvent,
-    }
-    class Element extends EventTarget {
-      isConnected = true
-      closest() {
-        return this
+for (const stale of [false, true])
+  for (const action of ["click", "request"])
+    test(`retains ${action} before the media change event arrives, stale=${stale}`, async () => {
+      const previous = {
+        window: globalThis.window,
+        Element: globalThis.Element,
+        MouseEvent: globalThis.MouseEvent,
       }
-      contains(target) {
-        return target === this
+      class Element extends EventTarget {
+        isConnected = true
+        closest() {
+          return this
+        }
+        contains(target) {
+          return target === this
+        }
       }
-    }
-    const media = new EventTarget()
-    media.matches = false
-    globalThis.window = { matchMedia: () => media }
-    globalThis.Element = Element
-    globalThis.MouseEvent = Event
-    const root = new Element()
-    const received = []
-    const event = action === "click" ? "click" : "dialog:set"
-    const receive = (event) => received.push(event.detail?.open ?? "click")
-    const dispose = onMedia(
-      "mobile",
-      async () => ({}),
-      () => {
-        root.addEventListener(event, receive)
-        return () => root.removeEventListener(event, receive)
-      },
-      { root, selector: "button", event: "dialog:set" }
-    )
-    try {
-      media.matches = true
-      root.dispatchEvent(
-        action === "click"
-          ? new Event("click", { cancelable: true })
-          : new CustomEvent("dialog:set", { detail: { open: true } })
-      )
-      assert.deepEqual(received, [])
-      media.dispatchEvent(new Event("change"))
-      await Promise.resolve()
-      assert.deepEqual(received, [action === "click" ? "click" : true])
+      const media = new EventTarget()
       media.matches = false
-      media.dispatchEvent(new Event("change"))
-      media.matches = true
-      media.dispatchEvent(new Event("change"))
-      await Promise.resolve()
-      assert.equal(received.length, 1)
-    } finally {
-      dispose()
-      Object.assign(globalThis, previous)
-    }
-  })
+      let current = false
+      let reads = 0
+      globalThis.window = {
+        matchMedia: () => (stale && reads++ > 0 ? { matches: current } : media),
+      }
+      globalThis.Element = Element
+      globalThis.MouseEvent = Event
+      const root = new Element()
+      const received = []
+      const event = action === "click" ? "click" : "dialog:set"
+      const receive = (event) => received.push(event.detail?.open ?? "click")
+      const dispose = onMedia(
+        "mobile",
+        async () => ({}),
+        () => {
+          root.addEventListener(event, receive)
+          return () => root.removeEventListener(event, receive)
+        },
+        { root, selector: "button", event: "dialog:set" }
+      )
+      try {
+        current = true
+        if (!stale) media.matches = true
+        root.dispatchEvent(
+          action === "click"
+            ? new Event("click", { cancelable: true })
+            : new CustomEvent("dialog:set", { detail: { open: true } })
+        )
+        assert.deepEqual(received, [])
+        media.matches = true
+        media.dispatchEvent(new Event("change"))
+        await Promise.resolve()
+        assert.deepEqual(received, [action === "click" ? "click" : true])
+        current = media.matches = false
+        media.dispatchEvent(new Event("change"))
+        current = media.matches = true
+        media.dispatchEvent(new Event("change"))
+        await Promise.resolve()
+        assert.equal(received.length, 1)
+      } finally {
+        dispose()
+        Object.assign(globalThis, previous)
+      }
+    })
